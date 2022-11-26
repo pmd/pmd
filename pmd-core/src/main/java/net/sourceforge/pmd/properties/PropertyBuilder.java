@@ -439,7 +439,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
 
 
         private C getDefaultValue(Iterable<? extends V> list) {
-            return IteratorUtil.stream(list).collect(collector);
+            return IteratorUtil.toStream(list).collect(collector);
         }
 
         @Override

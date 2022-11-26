@@ -320,7 +320,8 @@ public final class PropertyFactory {
 
     /**
      * Returns a builder for an enumerated property for the given enum
-     * class, using the name of its enum constants as labels.
+     * class, using the {@link Object#toString() toString} of its enum
+     * constants as labels.
      *
      * @param name      Property name
      * @param enumClass Enum class
@@ -329,7 +330,7 @@ public final class PropertyFactory {
      * @return A new builder
      */
     public static <T extends Enum<T>> GenericPropertyBuilder<T> enumProperty(String name, Class<T> enumClass) {
-        return enumProperty(name, enumClass, Enum::name);
+        return enumProperty(name, enumClass, Object::toString);
     }
 
     /**

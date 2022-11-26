@@ -6,6 +6,7 @@ package net.sourceforge.pmd.internal.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -503,7 +504,10 @@ public final class IteratorUtil {
         return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iter, 0), false);
     }
 
-    public static <T> Stream<T> stream(Iterable<T> iter) {
+    public static <T> Stream<T> toStream(Iterable<T> iter) {
+        if (iter instanceof Collection) {
+            return ((Collection<T>) iter).stream();
+        }
         return StreamSupport.stream(iter.spliterator(), false);
     }
 

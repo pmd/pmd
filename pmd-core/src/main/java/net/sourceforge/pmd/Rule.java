@@ -44,7 +44,6 @@ public interface Rule extends PropertySource {
      * Name of the property to universally suppress violations on nodes which
      * match a given relative XPath expression.
      */
-    // TODO 7.0.0 use PropertyDescriptor<Optional<String>>
     PropertyDescriptor<Optional<String>> VIOLATION_SUPPRESS_XPATH_DESCRIPTOR =
         PropertyFactory.stringProperty("violationSuppressXPath")
                        .desc("Suppress violations on nodes which match a given relative XPath expression.")
