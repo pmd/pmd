@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.vm.rule.design;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class CollapsibleIfStatementsTest extends PmdRuleTst {
+class CollapsibleIfStatementsTest extends PmdRuleTst {
     // no additional unit tests
 }

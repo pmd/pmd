@@ -6,5 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.performance;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class UseIOStreamsWithApacheCommonsFileItemTest extends PmdRuleTst {
+class UseIOStreamsWithApacheCommonsFileItemTest extends PmdRuleTst {
+    // no additional unit tests
 }

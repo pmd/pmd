@@ -37,6 +37,7 @@ import net.sourceforge.pmd.util.log.internal.NoopReporter;
 public final class RuleSetLoader {
     private static final Logger LOG = LoggerFactory.getLogger(RuleSetLoader.class);
 
+    private LanguageRegistry languageRegistry = LanguageRegistry.PMD;
     private ResourceLoader resourceLoader = new ResourceLoader(RuleSetLoader.class.getClassLoader());
     private RulePriority minimumPriority = RulePriority.LOW;
     private boolean warnDeprecated = true;
@@ -52,8 +53,9 @@ public final class RuleSetLoader {
         // default
     }
 
-    void setReporter(MessageReporter reporter) {
+    RuleSetLoader withReporter(MessageReporter reporter) {
         this.reporter = reporter;
+        return this;
     }
 
     /**
@@ -69,6 +71,11 @@ public final class RuleSetLoader {
     // internal
     RuleSetLoader loadResourcesWith(ResourceLoader loader) {
         this.resourceLoader = loader;
+        return this;
+    }
+
+    public RuleSetLoader withLanguages(LanguageRegistry languageRegistry) {
+        this.languageRegistry = languageRegistry;
         return this;
     }
 
@@ -137,6 +144,7 @@ public final class RuleSetLoader {
     public RuleSetFactory toFactory() {
         return new RuleSetFactory(
             this.resourceLoader,
+            this.languageRegistry,
             this.minimumPriority,
             this.warnDeprecated,
             this.compatFilter,
@@ -270,7 +278,9 @@ public final class RuleSetLoader {
      */
     public static RuleSetLoader fromPmdConfig(PMDConfiguration configuration) {
         return new RuleSetLoader().filterAbovePriority(configuration.getMinimumPriority())
-                                  .enableCompatibility(configuration.isRuleSetFactoryCompatibilityEnabled());
+                                  .enableCompatibility(configuration.isRuleSetFactoryCompatibilityEnabled())
+                                  .withLanguages(configuration.languages())
+                                  .withReporter(configuration.getReporter());
     }
 
 
@@ -289,7 +299,7 @@ public final class RuleSetLoader {
     public List<RuleSet> getStandardRuleSets() {
         String rulesetsProperties;
         List<String> ruleSetReferenceIds = new ArrayList<>();
-        for (Language language : LanguageRegistry.getLanguages()) {
+        for (Language language : languageRegistry.getLanguages()) {
             Properties props = new Properties();
             rulesetsProperties = "category/" + language.getTerseName() + "/categories.properties";
             try (InputStream inputStream = resourceLoader.loadClassPathResourceAsStreamOrThrow(rulesetsProperties)) {

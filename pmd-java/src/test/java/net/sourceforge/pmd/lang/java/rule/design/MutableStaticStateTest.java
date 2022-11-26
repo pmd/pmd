@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class MutableStaticStateTest extends PmdRuleTst {
+class MutableStaticStateTest extends PmdRuleTst {
     // no additional unit tests
 }

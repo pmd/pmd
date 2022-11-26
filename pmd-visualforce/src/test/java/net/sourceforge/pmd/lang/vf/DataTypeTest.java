@@ -4,17 +4,17 @@
 
 package net.sourceforge.pmd.lang.vf;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import apex.jorje.semantic.symbol.type.BasicType;
 
-public class DataTypeTest {
+class DataTypeTest {
     @Test
-    public void testFromString() {
+    void testFromString() {
         assertEquals(DataType.AutoNumber, DataType.fromString("AutoNumber"));
         assertEquals(DataType.AutoNumber, DataType.fromString("autonumber"));
         assertEquals(DataType.Unknown, DataType.fromString(""));
@@ -22,7 +22,19 @@ public class DataTypeTest {
     }
 
     @Test
-    public void testFromBasicType() {
+    void testFromTypeName() {
+        assertEquals(DataType.Checkbox, DataType.fromTypeName("Boolean"));
+        assertEquals(DataType.Currency, DataType.fromTypeName("Currency"));
+        assertEquals(DataType.DateTime, DataType.fromTypeName("Datetime"));
+        assertEquals(DataType.Number, DataType.fromTypeName("DECIMAL"));
+        assertEquals(DataType.Number, DataType.fromTypeName("double"));
+        assertEquals(DataType.Text, DataType.fromTypeName("string"));
+        assertEquals(DataType.Unknown, DataType.fromTypeName("Object"));
+        assertEquals(DataType.Unknown, DataType.fromTypeName(null));
+    }
+
+    @Test
+    void testDeprecatedFromBasicType() {
         assertEquals(DataType.Checkbox, DataType.fromBasicType(BasicType.BOOLEAN));
         assertEquals(DataType.Number, DataType.fromBasicType(BasicType.DECIMAL));
         assertEquals(DataType.Number, DataType.fromBasicType(BasicType.DOUBLE));
@@ -31,7 +43,7 @@ public class DataTypeTest {
     }
 
     @Test
-    public void testRequiresEncoding() {
+    void testRequiresEncoding() {
         assertFalse(DataType.AutoNumber.requiresEscaping);
         assertTrue(DataType.Text.requiresEscaping);
     }

@@ -388,4 +388,142 @@ public class Scratch {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#4224 [java] MissingStaticMethodInNonInstantiatableClass should considers lombok's UtilityClass</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
+public final class Test {
+   private int x;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4224 [java] MissingStaticMethodInNonInstantiatableClass should considers lombok's UtilityClass</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
+public final class Test {
+    public int test(){
+        return 0;
+    }
+   private int x;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4224 [java] MissingStaticMethodInNonInstantiatableClass should consider lombok's UtilityClass</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
+public final class Test {
+    private int test(){
+        return 0;
+    }
+   private int x;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4224 [java] MissingStaticMethodInNonInstantiatableClass should consider lombok's UtilityClass</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
+public final class Test {
+    private int test(){
+        return 0;
+    }
+    public int test0(){
+        return 0;
+    }
+   private int x;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4225 [java] MissingStaticMethodInNonInstantiatableClass should consider Lombok's @NoArgsConstructor</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+public class Test {
+    private int a;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4225 [java] MissingStaticMethodInNonInstantiatableClass should consider Lombok's @RequiredArgsConstructor</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+public class Test {
+    private int a;
+    private final int b;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4225 [java] MissingStaticMethodInNonInstantiatableClass should consider Lombok's @AllArgsConstructor</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
+public class Test {
+    private int a;
+    private final int b;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] MissingStaticMethodInNonInstantiatableClass does not consider nested builder class #4174</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public final class TestPrivateClassWithFactory implements GenericTest {
+  private final boolean shouldFail;
+
+  private TestPrivateClassWithFactory(TestStep step) {
+    this.shouldFail = step.shouldFail;
+  }
+
+  public void run() {
+    if (shouldFail) {
+      throw new AssertionError("fail");
+    }
+  }
+
+  public static final class TestStep {
+    private boolean shouldFail = false;
+
+    public TestStep shouldFail() {
+      this.shouldFail = true;
+      return this;
+    }
+
+    public GenericTest newTest() {
+      return new TestPrivateClassWithFactory(this);
+    }
+  }
+}
+]]></code>
+    </test-code>
 </test-data>

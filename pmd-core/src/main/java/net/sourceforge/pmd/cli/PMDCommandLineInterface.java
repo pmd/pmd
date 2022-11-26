@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.cli;
 
 import java.util.Properties;
-import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMD.StatusCode;
@@ -145,7 +144,7 @@ public final class PMDCommandLineInterface {
 
     private static String supportedVersions() {
         return "Languages and version suported:" + PMD.EOL
-                + LanguageRegistry.getLanguages().stream().map(Language::getTerseName).collect(Collectors.joining(", "))
+                + LanguageRegistry.PMD.commaSeparatedList(Language::getId)
                 + PMD.EOL;
     }
 
@@ -167,7 +166,7 @@ public final class PMDCommandLineInterface {
 
     private static String getReports() {
         StringBuilder buf = new StringBuilder();
-        for (String reportName : RendererFactory.REPORT_FORMAT_TO_RENDERER.keySet()) {
+        for (String reportName : RendererFactory.supportedRenderers()) {
             Renderer renderer = RendererFactory.createRenderer(reportName, new Properties());
             buf.append("   ").append(reportName).append(": ");
             if (!reportName.equals(renderer.getName())) {

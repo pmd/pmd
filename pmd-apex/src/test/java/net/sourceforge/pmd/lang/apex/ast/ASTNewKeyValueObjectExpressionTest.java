@@ -4,15 +4,16 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ASTNewKeyValueObjectExpressionTest extends ApexParserTestBase {
+class ASTNewKeyValueObjectExpressionTest extends ApexParserTestBase {
 
     @Test
-    public void testParameterName() {
+    void testParameterName() {
         ASTUserClassOrInterface<?> node = parse("public class Foo { \n"
                 + "    public void foo(String newName, String tempID) { \n"
                 + "        if (Contact.sObjectType.getDescribe().isCreateable() && Contact.sObjectType.getDescribe().isUpdateable()) {\n"
@@ -20,13 +21,13 @@ public class ASTNewKeyValueObjectExpressionTest extends ApexParserTestBase {
                 + "        }\n" + "    } \n" + "}");
 
         ASTNewKeyValueObjectExpression keyValueExpr = node.getFirstDescendantOfType(ASTNewKeyValueObjectExpression.class);
-        Assert.assertEquals(3, keyValueExpr.getParameterCount());
+        assertEquals(3, keyValueExpr.getParameterCount());
 
         List<ASTLiteralExpression> literals = keyValueExpr.findDescendantsOfType(ASTLiteralExpression.class);
-        Assert.assertEquals(3, literals.size());
-        Assert.assertEquals("FirstName", literals.get(0).getName());
-        Assert.assertEquals("LastName", literals.get(1).getName());
-        Assert.assertEquals("Phone", literals.get(2).getName());
+        assertEquals(3, literals.size());
+        assertEquals("FirstName", literals.get(0).getName());
+        assertEquals("LastName", literals.get(1).getName());
+        assertEquals("Phone", literals.get(2).getName());
     }
 
 }

@@ -10,6 +10,7 @@ import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.slf4j.Logger;
@@ -27,7 +28,7 @@ public final class RendererFactory {
 
     private static final Logger LOG = LoggerFactory.getLogger(RendererFactory.class);
 
-    public static final Map<String, Class<? extends Renderer>> REPORT_FORMAT_TO_RENDERER;
+    private static final Map<String, Class<? extends Renderer>> REPORT_FORMAT_TO_RENDERER;
 
     static {
         Map<String, Class<? extends Renderer>> map = new TreeMap<>();
@@ -51,6 +52,15 @@ public final class RendererFactory {
     }
 
     private RendererFactory() { }
+
+    /**
+     * Retrieves a collection of all supported renderer names.
+     *
+     * @return The set of all supported renderer names.
+     */
+    public static Set<String> supportedRenderers() {
+        return Collections.unmodifiableSet(REPORT_FORMAT_TO_RENDERER.keySet());
+    }
 
     /**
      * Construct an instance of a Renderer based on report format name.

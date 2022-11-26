@@ -6,13 +6,13 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.Properties;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
-public class SwiftTokenizerTest extends CpdTextComparisonTest {
+class SwiftTokenizerTest extends CpdTextComparisonTest {
 
-    public SwiftTokenizerTest() {
+    SwiftTokenizerTest() {
         super(".swift");
     }
 
@@ -28,32 +28,32 @@ public class SwiftTokenizerTest extends CpdTextComparisonTest {
 
 
     @Test
-    public void testSwift42() {
+    void testSwift42() {
         doTest("Swift4.2");
     }
 
     @Test
-    public void testSwift50() {
+    void testSwift50() {
         doTest("Swift5.0");
     }
 
     @Test
-    public void testSwift51() {
+    void testSwift51() {
         doTest("Swift5.1");
     }
 
     @Test
-    public void testSwift52() {
+    void testSwift52() {
         doTest("Swift5.2");
     }
 
     @Test
-    public void testStackoverflowOnLongLiteral() {
+    void testStackoverflowOnLongLiteral() {
         doTest("Issue628");
     }
 
     @Test
-    public void testTabWidth() {
+    void testTabWidth() {
         doTest("tabWidth");
     }
 }

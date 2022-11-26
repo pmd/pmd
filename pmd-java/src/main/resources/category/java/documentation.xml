@@ -97,7 +97,10 @@ and unintentional empty constructors.
                 <value>
 <![CDATA[
 //ConstructorDeclaration[@Visibility != "private"]
-                        [not(pmd-java:hasAnnotation('javax.inject.Inject'))]
+                        [not(
+                               pmd-java:hasAnnotation('javax.inject.Inject')
+                            or pmd-java:hasAnnotation('org.springframework.beans.factory.annotation.Autowired')
+                        )]
                         [Block[
                             @containsComment = false()
                             and (count(*) = 0 or ($ignoreExplicitConstructorInvocation = true() and count(*) = 1 and ExplicitConstructorInvocation))

@@ -6,20 +6,22 @@ package net.sourceforge.pmd.lang.java.types;
 
 import static net.sourceforge.pmd.lang.java.types.InvocationMatcher.parse;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.hamcrest.MatcherAssert;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.java.BaseParserTest;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 
-public class InvocationMatcherTest extends BaseParserTest {
+class InvocationMatcherTest extends BaseParserTest {
 
     @Test
-    public void testSimpleMatcher() {
+    void testSimpleMatcher() {
 
         ASTMethodCall call =
             java.parse("class Foo {{ Integer.valueOf('c'); }}")
@@ -36,7 +38,7 @@ public class InvocationMatcherTest extends BaseParserTest {
     }
 
     @Test
-    public void testCtorMatchers() {
+    void testCtorMatchers() {
 
         ASTConstructorCall call =
             java.parse("class Foo {{ new java.util.ArrayList('c'); }}")
@@ -56,7 +58,7 @@ public class InvocationMatcherTest extends BaseParserTest {
     }
 
     @Test
-    public void testArray() {
+    void testArray() {
 
         ASTMethodCall call =
             java.parse("class Foo {{ new int[0].toString(); }}")
@@ -75,10 +77,10 @@ public class InvocationMatcherTest extends BaseParserTest {
     }
 
     @Test
-    public void testWhitespaceErrorMessage() {
+    void testWhitespaceErrorMessage() {
 
         parse("_#_(int,int)"); // does not fail
-        IllegalArgumentException e = Assert.assertThrows(IllegalArgumentException.class, () -> parse("_#_(int, int)"));
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> parse("_#_(int, int)"));
         MatcherAssert.assertThat(e.getMessage(), equalTo("Expected type at index 8:\n"
                                                              + "    \"_#_(int, int)\"\n"
                                                              + "             ^\n"));
@@ -86,13 +88,11 @@ public class InvocationMatcherTest extends BaseParserTest {
     }
 
     private void assertMatch(InvocationNode call, String sig) {
-        Assert.assertTrue(sig + " should match " + call,
-                          parse(sig).matchesCall(call));
+        assertTrue(parse(sig).matchesCall(call), sig + " should match " + call);
     }
 
     private void assertNoMatch(InvocationNode call, String s) {
-        Assert.assertFalse(s + " should not match " + call,
-                           parse(s).matchesCall(call));
+        assertFalse(parse(s).matchesCall(call), s + " should not match " + call);
     }
 
 }

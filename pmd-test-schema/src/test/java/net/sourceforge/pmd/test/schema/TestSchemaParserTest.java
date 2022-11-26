@@ -84,7 +84,7 @@ public class TestSchemaParserTest {
 
         assertEquals(1, parsed.getTests().size());
         MatcherAssert.assertThat(errStreamCaptor.getLog(), containsString(" 6|     <test-code regressionTest='false'>\n"
-                                                                          + "                   ^^^^^^^^^^^^^^ Attribute 'regressionTest' is deprecated, use 'ignored' with inverted value\n"));
+                                                                          + "                   ^^^^^^^^^^^^^^ Attribute 'regressionTest' is deprecated, use 'disabled' with inverted value\n"));
     }
 
     @Test

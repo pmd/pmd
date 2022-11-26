@@ -8,8 +8,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.PMD;
@@ -166,6 +168,9 @@ public class PMDParameters {
     @Parameter(names = { "--no-cache", "-no-cache" }, description = "Explicitly disable incremental analysis. The '-cache' option is ignored if this switch is present in the command line.")
     private boolean noCache = false;
 
+    @Parameter(names = "--use-version", description = "The language version PMD should use when parsing source code in the language-version format, ie: 'java-1.8'")
+    private List<String> languageVersions = new ArrayList<>();
+
     @Parameter(names = { "--no-progress", "-no-progress" }, description = "Disables progress bar indicator of live analysis progress.")
     private boolean noProgressBar = false;
 
@@ -229,8 +234,24 @@ public class PMDParameters {
      * @throws IllegalArgumentException if the parameters are inconsistent or incomplete
      */
     public PMDConfiguration toConfiguration() {
+        return toConfiguration(LanguageRegistry.PMD);
+    }
+
+    /**
+     * Converts these parameters into a configuration. The given language
+     * registry is used to resolve references to languages in the parameters.
+     *
+     * @return A new PMDConfiguration corresponding to these parameters
+     *
+     * @throws IllegalArgumentException if the parameters are inconsistent or incomplete
+     */
+    public @NonNull PMDConfiguration toConfiguration(LanguageRegistry registry) {
+        if (null == this.getSourceDir() && null == this.getUri() && null == this.getFileListPath()) {
+            throw new IllegalArgumentException(
+                    "Please provide a parameter for source root directory (-dir or -d), database URI (-uri or -u), or file list path (-filelist).");
+        }
         PMDConfiguration configuration = new PMDConfiguration();
-        configuration.setInputPaths(this.getInputPaths());
+        configuration.setInputPaths(this.getInputPaths().stream().collect(Collectors.joining(",")));
         configuration.setInputFilePath(this.getFileListPath());
         configuration.setIgnoreFilePath(this.getIgnoreListPath());
         configuration.setInputUri(this.getUri());
@@ -253,14 +274,32 @@ public class PMDParameters {
         configuration.setIgnoreIncrementalAnalysis(this.isIgnoreIncrementalAnalysis());
         configuration.setProgressBar(this.isProgressBar());
 
-        LanguageVersion forceLangVersion = getForceLangVersion();
+        LanguageVersion forceLangVersion = getForceLangVersion(registry);
         if (forceLangVersion != null) {
             configuration.setForceLanguageVersion(forceLangVersion);
         }
 
-        LanguageVersion languageVersion = getLangVersion();
+        LanguageVersion languageVersion = getLangVersion(registry);
         if (languageVersion != null) {
             configuration.getLanguageVersionDiscoverer().setDefaultLanguageVersion(languageVersion);
+        }
+
+        for (String langVerStr : this.getLanguageVersions()) {
+            int dashPos = langVerStr.indexOf('-');
+            if (dashPos == -1) {
+                throw new IllegalArgumentException("Invalid language version: " + langVerStr);
+            }
+            String langStr = langVerStr.substring(0, dashPos);
+            String verStr = langVerStr.substring(dashPos + 1);
+            Language lang = LanguageRegistry.findLanguageByTerseName(langStr);
+            LanguageVersion langVer = null;
+            if (lang != null) {
+                langVer = lang.getVersion(verStr);
+            }
+            if (lang == null || langVer == null) {
+                throw new IllegalArgumentException("Invalid language version: " + langVerStr);
+            }
+            configuration.getLanguageVersionDiscoverer().setDefaultLanguageVersion(langVer);
         }
 
         try {
@@ -276,15 +315,6 @@ public class PMDParameters {
         return noCache;
     }
 
-
-    /**
-     * {@link #toConfiguration()}.
-     * @deprecated To be removed in 7.0.0. Use the instance method {@link #toConfiguration()}.
-     */
-    @Deprecated
-    public static PMDConfiguration transformParametersIntoConfiguration(PMDParameters params) {
-        return params.toConfiguration();
-    }
 
     public boolean isDebug() {
         return debug;
@@ -342,28 +372,28 @@ public class PMDParameters {
         return reportfile;
     }
 
-    private @Nullable LanguageVersion getLangVersion() {
-        Language lang = language != null ? LanguageRegistry.findLanguageByTerseName(language)
-                                         : LanguageRegistry.getDefaultLanguage();
-
-        return version != null ? lang.getVersion(version)
-                               : lang.getDefaultVersion();
-    }
-    
-    public String getVersion() {
-        if (version != null) {
-            return version;
+    private @Nullable LanguageVersion getLangVersion(LanguageRegistry registry) {
+        if (language != null) {
+            Language lang = registry.getLanguageById(language);
+            if (lang != null) {
+                return version != null ? lang.getVersion(version)
+                                       : lang.getDefaultVersion();
+            }
         }
-        return LanguageRegistry.findLanguageByTerseName(getLanguage()).getDefaultVersion().getVersion();
+        return null;
     }
 
-    public String getLanguage() {
-        return language != null ? language : LanguageRegistry.getDefaultLanguage().getTerseName();
+    public @Nullable String getLanguage() {
+        return language;
     }
 
-    private @Nullable LanguageVersion getForceLangVersion() {
-        Language lang = forceLanguage != null ? LanguageRegistry.findLanguageByTerseName(forceLanguage) : null;
+    private @Nullable LanguageVersion getForceLangVersion(LanguageRegistry registry) {
+        Language lang = forceLanguage != null ? registry.getLanguageById(forceLanguage) : null;
         return lang != null ? lang.getDefaultVersion() : null;
+    }
+
+    public List<String> getLanguageVersions() {
+        return languageVersions;
     }
 
     public String getForceLanguage() {

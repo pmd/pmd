@@ -6,6 +6,7 @@ on:
       - main
       - master
       - pmd/7.0.x
+      - experimental-apex-parser
     tags:
       - '**'
   pull_request:
@@ -14,9 +15,17 @@ on:
     - cron:  '0 4 1 * *'
   workflow_dispatch:
 
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
+    permissions:
+      # read to fetch code (actions/checkout)
+      # write to push code to gh-pages, create releases
+      # note: forked repositories will have maximum read access
+      contents: write
     continue-on-error: false
     strategy:
       matrix:

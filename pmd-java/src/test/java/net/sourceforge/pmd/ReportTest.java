@@ -6,30 +6,28 @@ package net.sourceforge.pmd;
 
 import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertSize;
 import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertSuppressed;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 
-public class ReportTest {
+class ReportTest {
 
 
     private final JavaParsingHelper java = JavaParsingHelper.DEFAULT;
 
     @Test
-    public void testBasic() {
+    void testBasic() {
         Report r = java.executeRule(new FooRule(), TEST1);
         assertFalse(r.getViolations().isEmpty());
     }
 
     @Test
-    public void testExclusionsInReportWithRuleViolationSuppressRegex() {
+    void testExclusionsInReportWithRuleViolationSuppressRegex() {
         Rule rule = new FooRule();
         rule.setProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR, Optional.of(Pattern.compile(".*No Foo.*")));
         Report rpt = java.executeRule(rule, TEST1);
@@ -38,7 +36,7 @@ public class ReportTest {
     }
 
     @Test
-    public void testExclusionsInReportWithRuleViolationSuppressXPath() {
+    void testExclusionsInReportWithRuleViolationSuppressXPath() {
         Rule rule = new FooRule();
         rule.setProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR, Optional.of(".[@SimpleName = 'Foo']"));
         Report rpt = java.executeRule(rule, TEST1);
@@ -47,8 +45,7 @@ public class ReportTest {
     }
 
     @Test
-    public void testExclusionsInReportWithAnnotations() {
-        LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5");
+    void testExclusionsInReportWithAnnotations() {
         Report rpt =
             java.executeRule(new FooRule(), TEST2);
         assertSize(rpt, 0);
@@ -56,15 +53,14 @@ public class ReportTest {
     }
 
     @Test
-    public void testExclusionsInReportWithAnnotationsFullName() {
-        LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5");
+    void testExclusionsInReportWithAnnotationsFullName() {
         Report rpt = java.executeRule(new FooRule(), TEST2_FULL);
         assertSize(rpt, 0);
         assertSuppressed(rpt, 1);
     }
 
     @Test
-    public void testExclusionsInReportWithNOPMD() {
+    void testExclusionsInReportWithNOPMD() {
         Report rpt = java.executeRule(new FooRule(), TEST3);
         assertSize(rpt, 0);
         assertSuppressed(rpt, 1);

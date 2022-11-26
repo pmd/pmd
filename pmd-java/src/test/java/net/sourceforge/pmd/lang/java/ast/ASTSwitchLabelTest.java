@@ -4,25 +4,25 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.java.BaseParserTest;
 
-public class ASTSwitchLabelTest extends BaseParserTest {
+class ASTSwitchLabelTest extends BaseParserTest {
 
     @Test
-    public void testDefaultOff() {
+    void testDefaultOff() {
         List<ASTSwitchLabel> ops = java.getNodes(ASTSwitchLabel.class, "public class Foo {\n void bar() {\n  switch (x) {\n   case 1: y = 2;\n  }\n }\n}");
         assertFalse(ops.get(0).isDefault());
     }
 
     @Test
-    public void testDefaultSet() {
+    void testDefaultSet() {
         List<ASTSwitchLabel> ops = java.getNodes(ASTSwitchLabel.class, TEST2);
         assertTrue(ops.get(0).isDefault());
     }

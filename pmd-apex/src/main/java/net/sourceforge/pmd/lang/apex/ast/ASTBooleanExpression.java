@@ -21,9 +21,15 @@ public final class ASTBooleanExpression extends AbstractApexNode<BooleanExpressi
         return visitor.visit(this, data);
     }
 
-
+    /**
+     * @deprecated Use {@link #getOp()} instead.
+     */
+    @Deprecated
     public BooleanOp getOperator() {
         return this.node.getOp();
     }
 
+    public BooleanOperator getOp() {
+        return BooleanOperator.valueOf(this.node.getOp());
+    }
 }

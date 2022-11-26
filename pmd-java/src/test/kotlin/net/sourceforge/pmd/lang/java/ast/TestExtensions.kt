@@ -8,9 +8,9 @@ import com.github.oowekyala.treeutils.matchers.TreeNodeWrapper
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.collections.shouldBeEmpty
-import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.types.shouldBeInstanceOf
 import net.sourceforge.pmd.internal.util.IteratorUtil
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken

@@ -6,14 +6,14 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.Properties;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
 
-public class JSPTokenizerTest extends CpdTextComparisonTest {
+class JSPTokenizerTest extends CpdTextComparisonTest {
 
-    public JSPTokenizerTest() {
+    JSPTokenizerTest() {
         super(".jsp");
     }
 
@@ -28,7 +28,7 @@ public class JSPTokenizerTest extends CpdTextComparisonTest {
     }
 
     @Test
-    public void scriptletWithString() {
+    void scriptletWithString() {
         doTest("scriptletWithString");
     }
 }

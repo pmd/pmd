@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException;
@@ -17,10 +17,10 @@ import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException.Phase;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public class MatchesSignatureXPathTest extends BaseXPathFunctionTest {
+class MatchesSignatureXPathTest extends BaseXPathFunctionTest {
 
     @Test
-    public void testMatchSig1() {
+    void testMatchSig1() {
         Rule rule = makeXpathRuleFromXPath("//MethodCall[pmd-java:matchesSig('_#equals(java.lang.Object)')]");
 
         assertFinds(rule, 1, "class O { { this.equals(\"\"); } }");
@@ -29,7 +29,7 @@ public class MatchesSignatureXPathTest extends BaseXPathFunctionTest {
 
 
     @Test
-    public void testMatchSigWithReceiver() {
+    void testMatchSigWithReceiver() {
         Rule rule = makeXpathRuleFromXPath("//MethodCall[pmd-java:matchesSig('java.lang.Enum#equals(java.lang.Object)')]");
 
         assertFinds(rule, 1, "enum O {; { this.equals(\"\"); } }");
@@ -37,14 +37,14 @@ public class MatchesSignatureXPathTest extends BaseXPathFunctionTest {
     }
 
     @Test
-    public void testMatchSigUnresolved() {
+    void testMatchSigUnresolved() {
         Rule rule = makeXpathRuleFromXPath("//MethodCall[pmd-java:matchesSig('java.lang.String#foobar()')]");
 
         assertFinds(rule, 0, "enum O {; { \"\".foobar(); } }");
     }
 
     @Test
-    public void testMatchSigNoName() {
+    void testMatchSigNoName() {
         Rule rule = makeXpathRuleFromXPath("//MethodCall[pmd-java:matchesSig('_#_(int,int)')]");
 
         assertFinds(rule, 2, "enum O {; { \"\".substring(1, 2); this.foo(1, 'c');} void foo(int a, int b) {} }");
@@ -52,17 +52,17 @@ public class MatchesSignatureXPathTest extends BaseXPathFunctionTest {
 
 
     @Test
-    public void testMatchSigWrongTypeReturnsFalse() {
+    void testMatchSigWrongTypeReturnsFalse() {
         Rule rule = makeXpathRuleFromXPath("//EnumDeclaration[pmd-java:matchesSig('_#_(int,int)')]");
 
         assertFinds(rule, 0, "enum O {; { \"\".substring(1, 2); this.foo(1, 'c');} void foo(int a, int b) {} }");
     }
 
     @Test
-    public void testMatchInvalidSig() {
+    void testMatchInvalidSig() {
         Rule rule = makeXpathRuleFromXPath("//*[pmd-java:matchesSig('_#')]");
 
-        PmdXPathException e = Assert.assertThrows(PmdXPathException.class, rule::getTargetSelector);
+        PmdXPathException e = assertThrows(PmdXPathException.class, rule::getTargetSelector);
         assertEquals(Phase.INITIALIZATION, e.getPhase());
     }
 

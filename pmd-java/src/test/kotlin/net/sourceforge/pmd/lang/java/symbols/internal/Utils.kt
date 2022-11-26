@@ -8,6 +8,7 @@ import io.kotest.assertions.withClue
 import io.kotest.matchers.collections.haveSize
 import io.kotest.matchers.should
 import io.kotest.property.*
+import io.kotest.property.arbitrary.arbitrary
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver
 import net.sourceforge.pmd.lang.java.types.testTypeSystem
@@ -44,12 +45,14 @@ suspend fun <T, R> Gen<T>.forAllEqual(test: (T) -> Pair<R, R>) {
 
 /** Generator of test instances. */
 object TestClassesGen : Arb<Class<*>>() {
-    override fun edgecases(): List<Class<*>> =
-            listOf(java.lang.Object::class.java,
-                    IntArray::class.java,
-                    Cloneable::class.java,
-                    Integer.TYPE,
-                    Array<String>::class.java)
+    override fun edgecase(rs: RandomSource): Class<*> {
+        val classes = listOf(java.lang.Object::class.java,
+            IntArray::class.java,
+            Cloneable::class.java,
+            Integer.TYPE,
+            Array<String>::class.java)
+        return classes.random(rs.random)
+    }
 
     override fun sample(rs: RandomSource): Sample<Class<*>> {
         val classes = getClassesInPackage()

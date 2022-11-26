@@ -4,14 +4,14 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 
-public class RecordTypeTest extends AbstractPLSQLParserTst {
+class RecordTypeTest extends AbstractPLSQLParserTst {
 
     @Test
-    public void parseRecordType() {
+    void parseRecordType() {
         plsql.parseResource("RecordType.pls");
     }
 }

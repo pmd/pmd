@@ -152,6 +152,12 @@ public final class XMLRenderer implements Renderer, CPDRenderer, CPDReportRender
             if (endCol != -1) {
                 file.setAttribute("endcolumn", String.valueOf(endCol));
             }
+            final int beginIndex = mark.getBeginTokenIndex();
+            final int endIndex = mark.getEndTokenIndex();
+            file.setAttribute("begintoken", String.valueOf(beginIndex));
+            if (endIndex != -1) {
+                file.setAttribute("endtoken", String.valueOf(endIndex));
+            }
             duplication.appendChild(file);
         }
         return duplication;

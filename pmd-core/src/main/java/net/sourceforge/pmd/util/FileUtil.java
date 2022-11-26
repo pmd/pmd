@@ -118,11 +118,12 @@ public final class FileUtil {
      *
      * @throws IOException if the file couldn't be read
      */
-    public static List<String> readFilelistEntries(Path filelist) throws IOException {
+    public static List<Path> readFilelistEntries(Path filelist) throws IOException {
         return Files.readAllLines(filelist).stream()
                     .flatMap(it -> Arrays.stream(it.split(",")))
                     .map(String::trim)
                     .filter(StringUtils::isNotBlank)
+                    .map(Paths::get)
                     .collect(Collectors.toList());
     }
 

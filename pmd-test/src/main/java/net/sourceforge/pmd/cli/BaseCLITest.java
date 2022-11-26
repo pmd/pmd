@@ -31,7 +31,9 @@ import net.sourceforge.pmd.internal.util.AssertionUtil;
 /**
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
  *
+ * @deprecated Only pmd-cli module should use / test the CLI.
  */
+@Deprecated
 public abstract class BaseCLITest {
 
     protected static final String TEST_OUPUT_DIRECTORY = "target/cli-tests/";

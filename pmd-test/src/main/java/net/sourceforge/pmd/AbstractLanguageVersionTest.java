@@ -69,6 +69,10 @@ public class AbstractLanguageVersionTest {
         this.expected = expected;
     }
 
+    protected static Language getLanguage(String name) {
+        return LanguageRegistry.PMD.getLanguageByFullName(name);
+    }
+
     /**
      * Checks that the expected {@link LanguageVersion} can be found via
      * {@link #name} and {@link #version}.
@@ -79,7 +83,7 @@ public class AbstractLanguageVersionTest {
         sourceLanguage.setName(name);
         sourceLanguage.setVersion(version);
 
-        Language language = LanguageRegistry.getLanguage(sourceLanguage.getName());
+        Language language = getLanguage(sourceLanguage.getName());
         LanguageVersion languageVersion = null;
         if (language != null) {
             languageVersion = language.getVersion(sourceLanguage.getVersion());

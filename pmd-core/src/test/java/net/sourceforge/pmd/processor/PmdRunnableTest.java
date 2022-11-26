@@ -38,7 +38,6 @@ import net.sourceforge.pmd.internal.util.ContextedAssertionError;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.DummyLanguageModule.Handler;
 import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.Parser;
@@ -175,7 +174,7 @@ public class PmdRunnableTest {
     private static class RuleThatThrows extends AbstractRule {
 
         RuleThatThrows() {
-            Language dummyLanguage = LanguageRegistry.findLanguageByTerseName(DummyLanguageModule.TERSE_NAME);
+            Language dummyLanguage = DummyLanguageModule.getInstance();
             setLanguage(dummyLanguage);
         }
 

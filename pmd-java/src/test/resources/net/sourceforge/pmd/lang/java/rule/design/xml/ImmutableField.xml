@@ -484,6 +484,7 @@ class Foo {
         <code><![CDATA[
 public class Foo {
     @Deprecated
+    @SuppressWarnings("PMD.ImmutableField")
     private int x;
 
     public Foo() {

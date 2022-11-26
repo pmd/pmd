@@ -4,19 +4,19 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 
-public class AnonymousBlockTest extends AbstractPLSQLParserTst {
+class AnonymousBlockTest extends AbstractPLSQLParserTst {
 
     @Test
-    public void parseCursorInsideProcAnonymousBlock() {
+    void parseCursorInsideProcAnonymousBlock() {
         plsql.parseResource("AnonymousBlock1.sql");
     }
 
     @Test
-    public void parseCursorInsideAnonymousBlock() {
+    void parseCursorInsideAnonymousBlock() {
         plsql.parseResource("AnonymousBlock2.sql");
     }
 }

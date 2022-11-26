@@ -5,22 +5,22 @@
 package net.sourceforge.pmd.util;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.document.Chars;
 
 /**
  * @author Clément Fournier
  */
-public class CollectionUtilTest {
+class CollectionUtilTest {
 
     @Test
-    public void testJoinOn() {
+    void testJoinOn() {
         testJoinOn(listOf("a", "b", "c"), ".",
                    "a.b.c");
         testJoinOn(Collections.emptyList(), ".",

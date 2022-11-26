@@ -13,18 +13,11 @@ import org.junit.jupiter.api.Test;
 
 class LanguageRegistryTest {
 
-    @Test
-    void getDefaultLanguageTest() {
-        Language defaultLanguage = LanguageRegistry.getDefaultLanguage();
-        assertNotNull(defaultLanguage);
-        // as we don't have java language in this test, we get the first
-        // available language now -> DummyLanguage
-        assertSame(DummyLanguageModule.class, defaultLanguage.getClass());
-    }
+    private final LanguageRegistry languageRegistry = LanguageRegistry.PMD;
 
     @Test
-    void getDefaultVersionLanguageTest() {
-        Language dummy = LanguageRegistry.findLanguageByTerseName("dummy");
+    public void getDefaultVersionLanguageTest() {
+        Language dummy = languageRegistry.getLanguageById("dummy");
         LanguageVersion dummy12 = dummy.getVersion("1.2");
         assertNotNull(dummy12);
 
@@ -35,8 +28,8 @@ class LanguageRegistryTest {
     }
 
     @Test
-    void getLanguageVersionByAliasTest() {
-        Language dummy = LanguageRegistry.findLanguageByTerseName("dummy");
+    public void getLanguageVersionByAliasTest() {
+        Language dummy = languageRegistry.getLanguageById("dummy");
 
         LanguageVersion dummy17 = dummy.getVersion("1.7");
         assertNotNull(dummy17);

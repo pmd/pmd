@@ -124,7 +124,7 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRulechainRule {
         } else if (node instanceof ASTNamedReferenceExpr) {
             DataflowResult dataflow = DataflowPass.getDataflowResult(node.getRoot());
             ReachingDefinitionSet reaching = dataflow.getReachingDefinitions((ASTNamedReferenceExpr) node);
-            if (reaching == null || reaching.isNotFullyKnown()) {
+            if (reaching.isNotFullyKnown()) {
                 return OptionalInt.empty();
             }
 

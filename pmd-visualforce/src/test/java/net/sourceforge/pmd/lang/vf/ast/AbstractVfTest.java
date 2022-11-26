@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.vf.ast;
 
 public abstract class AbstractVfTest {
 
-    protected final VfParsingHelper vf = VfParsingHelper.DEFAULT.withResourceContext(getClass());
+    protected final VfParsingHelper vf =
+        VfParsingHelper.DEFAULT
+            .withResourceContext(getClass());
 
 }

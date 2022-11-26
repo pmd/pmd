@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
@@ -24,7 +24,7 @@ import net.sourceforge.pmd.lang.vf.DataType;
 import net.sourceforge.pmd.lang.vf.VFTestUtils;
 import net.sourceforge.pmd.util.treeexport.XmlTreeRenderer;
 
-public class VfExpressionTypeVisitorTest {
+class VfExpressionTypeVisitorTest {
     private static final Map<String, DataType> EXPECTED_CUSTOM_FIELD_DATA_TYPES;
     private static final Map<String, DataType> EXPECTED_APEX_DATA_TYPES;
 
@@ -53,19 +53,19 @@ public class VfExpressionTypeVisitorTest {
      * Strings that use dot notation(Account.CreatedDate) result in ASTIdentifier nodes
      */
     @Test
-    public void testXpathQueryForCustomFieldIdentifiers() {
+    void testXpathQueryForCustomFieldIdentifiers() {
         Node rootNode = compile("StandardAccount.page");
 
         for (Map.Entry<String, DataType> entry : EXPECTED_CUSTOM_FIELD_DATA_TYPES.entrySet()) {
             List<ASTIdentifier> nodes = getIdentifiers(rootNode, entry);
 
             // Each string appears twice, it is set on a "value" attribute and inline
-            assertEquals(entry.getKey(), 2, nodes.size());
+            assertEquals(2, nodes.size(), entry.getKey());
             for (Node node : nodes) {
                 assertEquals(entry.getKey(), node.getImage());
-                assertTrue(node.getClass().getSimpleName(), node instanceof ASTIdentifier);
+                assertTrue(node instanceof ASTIdentifier, node.getClass().getSimpleName());
                 ASTIdentifier identifier = (ASTIdentifier) node;
-                assertEquals(entry.getKey(), entry.getValue(), identifier.getDataType());
+                assertEquals(entry.getValue(), identifier.getDataType(), entry.getKey());
             }
         }
     }
@@ -75,7 +75,7 @@ public class VfExpressionTypeVisitorTest {
      * creates ambiguous situations with Apex methods that return Maps. This may be addressed in a future release.
      */
     @Test
-    public void testXpathQueryForCustomFieldLiteralsHaveNullDataType() {
+    void testXpathQueryForCustomFieldLiteralsHaveNullDataType() {
         Node rootNode = compile("StandardAccount.page");
 
         for (Map.Entry<String, DataType> entry : EXPECTED_CUSTOM_FIELD_DATA_TYPES.entrySet()) {
@@ -86,12 +86,12 @@ public class VfExpressionTypeVisitorTest {
                                              .toList();
 
             // Each string appears twice, it is set on a "value" attribute and inline
-            assertEquals(entry.getKey(), 2, nodes.size());
+            assertEquals(2, nodes.size(), entry.getKey());
             for (Node node : nodes) {
                 assertEquals(String.format("'%s'", entry.getKey()), node.getImage());
-                assertTrue(node.getClass().getSimpleName(), node instanceof ASTLiteral);
+                assertTrue(node instanceof ASTLiteral, node.getClass().getSimpleName());
                 ASTLiteral literal = (ASTLiteral) node;
-                assertEquals(entry.getKey(), null, literal.getDataType());
+                assertNull(literal.getDataType(), entry.getKey());
             }
         }
     }
@@ -100,7 +100,7 @@ public class VfExpressionTypeVisitorTest {
      * Nodes where the DataType can't be determined should have a null DataType
      */
     @Test
-    public void testDataTypeForCustomFieldsNotFound() {
+    void testDataTypeForCustomFieldsNotFound() {
         Node rootNode = compile("StandardAccount.page");
 
         checkNodes(rootNode.descendants(ASTIdentifier.class)
@@ -122,19 +122,19 @@ public class VfExpressionTypeVisitorTest {
      * Apex properties result in ASTIdentifier nodes
      */
     @Test
-    public void testXpathQueryForProperties() {
+    void testXpathQueryForProperties() {
         Node rootNode = compile("ApexController.page");
 
         for (Map.Entry<String, DataType> entry : EXPECTED_APEX_DATA_TYPES.entrySet()) {
             List<ASTIdentifier> nodes = getIdentifiers(rootNode, entry);
 
             // Each string appears twice, it is set on a "value" attribute and inline
-            assertEquals(entry.getKey(), 2, nodes.size());
+            assertEquals(2, nodes.size(), entry.getKey());
             for (Node node : nodes) {
                 assertEquals(entry.getKey(), node.getImage());
-                assertTrue(node.getClass().getSimpleName(), node instanceof ASTIdentifier);
+                assertTrue(node instanceof ASTIdentifier, node.getClass().getSimpleName());
                 ASTIdentifier identifier = (ASTIdentifier) node;
-                assertEquals(entry.getKey(), entry.getValue(), identifier.getDataType());
+                assertEquals(entry.getValue(), identifier.getDataType(), entry.getKey());
             }
         }
     }
@@ -150,7 +150,7 @@ public class VfExpressionTypeVisitorTest {
      * Nodes where the DataType can't be determined should have a null DataType
      */
     @Test
-    public void testDataTypeForApexPropertiesNotFound() {
+    void testDataTypeForApexPropertiesNotFound() {
         Node rootNode = compile("ApexController.page");
 
         // Each string appears twice, it is set on a "value" attribute and inline

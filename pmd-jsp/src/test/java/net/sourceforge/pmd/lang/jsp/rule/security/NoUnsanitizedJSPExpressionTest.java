@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.jsp.rule.security;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class NoUnsanitizedJSPExpressionTest extends PmdRuleTst {
+class NoUnsanitizedJSPExpressionTest extends PmdRuleTst {
     // no additional unit tests
 }

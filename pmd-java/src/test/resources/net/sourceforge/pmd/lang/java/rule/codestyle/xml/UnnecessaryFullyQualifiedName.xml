@@ -638,6 +638,40 @@ public class UnnecessaryFullyQualifiedName {
     </test-code>
 
     <test-code>
+        <description>False positive when same package inner class is referenced (not enum) #4085</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname;
+
+public class OuterTestClass {
+	public static class TestClass{
+        private final net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname.TestClass test;
+
+        public TestClass(net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname.TestClass test){
+
+            this.test = test;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Should report fully-qualified name usage of a class in itself #4085</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname;
+
+public class TestClass {
+    public static net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname.TestClass INSTANCE(){
+        return new TestClass();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>#2098 false positive with annotated package</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -883,7 +917,7 @@ class Assert {
             }
             ]]></code>
     </test-code>
-    <test-code regressionTest="false">
+    <test-code disabled="true">
         <!-- TODO this causes an error, bc of early disambiguation       -->
         <!--  solution: import on demands must be made entirely lazy     -->
         <description>FN with static method imported through subtype (same file)</description>
@@ -1009,5 +1043,30 @@ class Assert {
                 static int i = MockitoInherited.TWO * 2;
             }
             ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UnnecessaryFullyQualifiedName - FP for inner class pkg.ClassA.Foo implementing pkg.Foo #4133</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname;
+
+public class ClassA {
+    public static class Foo implements net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname.Foo {}
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UnnecessaryFullyQualifiedName FP when the same simple class name exists in the current package #4139</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname;
+class Scratch {
+    // note: there is also net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname.Deprecated...
+    @java.lang.Deprecated
+    int aField;
+}
+]]></code>
     </test-code>
 </test-data>

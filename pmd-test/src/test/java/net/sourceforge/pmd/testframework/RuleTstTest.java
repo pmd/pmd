@@ -16,16 +16,16 @@ import org.mockito.Mockito;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.test.lang.DummyLanguageModule;
 import net.sourceforge.pmd.test.lang.DummyLanguageModule.DummyRootNode;
 
 public class RuleTstTest {
-    private LanguageVersion dummyLanguage = LanguageRegistry.findLanguageByTerseName("dummy").getDefaultVersion();
+    private LanguageVersion dummyLanguage = DummyLanguageModule.getInstance().getDefaultVersion();
 
     private Rule rule = spy(AbstractRule.class);
 

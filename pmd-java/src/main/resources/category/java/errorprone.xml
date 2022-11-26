@@ -660,36 +660,7 @@ k = i * j;      // set k with 80 not 120
         </example>
     </rule>
 
-    <rule name="BeanMembersShouldSerialize"
-          language="java"
-          since="1.1"
-          message="Found non-transient, non-static member. Please mark as transient or provide accessors."
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.BeanMembersShouldSerializeRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#beanmembersshouldserialize">
-        <description>
-If a class is a bean, or is referenced by a bean directly or indirectly it needs to be serializable.
-Member variables need to be marked as transient, static, or have accessor methods in the class. Marking
-variables as transient is the safest and easiest modification. Accessor methods should follow the Java
-naming conventions, i.e. for a variable named foo, getFoo() and setFoo() accessor methods should be provided.
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
-private transient int someFoo;  // good, it's transient
-private static int otherFoo;    // also OK
-private int moreFoo;            // OK, has proper accessors, see below
-private int badFoo;             // bad, should be marked transient
-
-private void setMoreFoo(int moreFoo){
-      this.moreFoo = moreFoo;
-}
-
-private int getMoreFoo(){
-      return this.moreFoo;
-}
-]]>
-        </example>
-    </rule>
+    <rule name="BeanMembersShouldSerialize" ref="NonSerializableClass" deprecated="true" />
 
     <rule name="BrokenNullCheck"
           language="java"
@@ -1127,7 +1098,7 @@ boolean x = (y == Double.NaN);
     <rule name="ConstructorCallsOverridableMethod"
           language="java"
           since="1.04"
-          message="Overridable {0} called during object construction"
+          message="Overridable {0} called during object construction{1}"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.ConstructorCallsOverridableMethodRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#constructorcallsoverridablemethod">
         <description>
@@ -2364,7 +2335,23 @@ See the property `annotations`.
             <property name="xpath">
                 <value>
 <![CDATA[
+//ClassOrInterfaceDeclaration
+    [pmd-java:hasAnnotation('lombok.experimental.UtilityClass')]
+    [ClassOrInterfaceBody
+        [
+            (: no methods :)
+            not(MethodDeclaration)
+            or
+            (: only private methods :)
+            count(MethodDeclaration) = count(MethodDeclaration[@Private=true()])
+        ]
+    ]
+|
 //ClassOrInterfaceDeclaration[@Nested= false() and @Local= false()]
+(: no lombok constructor annotations :)
+[not(pmd-java:hasAnnotation('lombok.NoArgsConstructor') or
+     pmd-java:hasAnnotation('lombok.RequiredArgsConstructor') or
+     pmd-java:hasAnnotation('lombok.AllArgsConstructor'))]
 [
     (: at least one constructor :) ./ClassOrInterfaceBody/ConstructorDeclaration
     and
@@ -2386,7 +2373,7 @@ See the property `annotations`.
            [not(./ClassOrInterfaceBody/ConstructorDeclaration) or ./ClassOrInterfaceBody/ConstructorDeclaration[pmd-java:modifiers() = "public"]]
            [(./ClassOrInterfaceBody/MethodDeclaration
                 [pmd-java:modifiers() = "public"]
-                [./ClassOrInterfaceType
+                [.//ClassOrInterfaceType
                     [@SimpleName = //ClassOrInterfaceDeclaration[@Nested = false()]/@SimpleName]
                 ]
             ) or (
@@ -2483,6 +2470,47 @@ public class Foo {
        break;
     }
   }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="NonSerializableClass"
+          language="java"
+          since="1.1"
+          message="The field ''{0}'' of serializable class ''{1}'' is of non-serializable type ''{2}''."
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.NonSerializableClassRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#nonserializableclass">
+        <description>
+If a class is marked as `Serializable`, then all fields need to be serializable as well. In order to exclude
+a field, it can be marked as transient. Static fields are not considered.
+
+This rule reports all fields, that are not serializable.
+
+If a class implements the methods to perform manual serialization (`writeObject`, `readObject`) or uses
+a replacement object (`writeReplace`, `readResolve`) then this class is ignored.
+
+Note: This rule has been revamped with PMD 6.52.0. It was previously called "BeanMembersShouldSerialize".
+The property `prefix` has been deprecated, since in a serializable class all fields have to be
+serializable regardless of the name.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+class Buzz implements java.io.Serializable {
+    private static final long serialVersionUID = 1L;
+
+    private transient int someFoo;          // good, it's transient
+    private static int otherFoo;            // also OK, it's static
+    private java.io.FileInputStream stream; // bad - FileInputStream is not serializable
+
+    public void setStream(FileInputStream stream) {
+        this.stream = stream;
+    }
+
+    public int getSomeFoo() {
+          return this.someFoo;
+    }
 }
 ]]>
         </example>
@@ -3046,12 +3074,16 @@ public void foo() {
     <rule name="TestClassWithoutTestCases"
           language="java"
           since="3.0"
-          message="This class name ends with 'Test' but contains no test cases"
+          message="The class ''{0}'' might be a test class, but it contains no test cases."
           class="net.sourceforge.pmd.lang.java.rule.errorprone.TestClassWithoutTestCasesRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#testclasswithouttestcases">
         <description>
-Test classes end with the suffix Test. Having a non-test class with that name is not a good practice,
-since most people will assume it is a test case. Test classes have test methods named testXXX.
+Test classes typically end with the suffix "Test", "Tests" or "TestCase". Having a non-test class with that name
+is not a good practice, since most people will assume it is a test case. Test classes have test methods
+named "testXXX" (JUnit3) or use annotations (e.g. `@Test`).
+
+The suffix can be configured using the property `testClassPattern`. To disable the detection of possible test classes
+by name, set this property to an empty string.
         </description>
         <priority>3</priority>
         <example>

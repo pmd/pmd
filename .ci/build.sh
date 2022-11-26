@@ -28,22 +28,34 @@ function build() {
     pmd_ci_utils_determine_build_env pmd/pmd
     echo
 
+    if ! pmd_ci_utils_is_fork_or_pull_request; then
+      if [ "${PMD_CI_BRANCH}" = "experimental-apex-parser" ]; then
+        pmd_ci_log_group_start "Build with mvnw"
+            ./mvnw clean install --show-version --errors --batch-mode --no-transfer-progress "${PMD_MAVEN_EXTRA_OPTS[@]}"
+        pmd_ci_log_group_end
+        exit 0
+      fi
+    fi
+
     if pmd_ci_utils_is_fork_or_pull_request; then
         pmd_ci_log_group_start "Build with mvnw"
             ./mvnw clean install --show-version --errors --batch-mode --no-transfer-progress "${PMD_MAVEN_EXTRA_OPTS[@]}"
         pmd_ci_log_group_end
 
-        # Danger is executed only on the linux runner
-        if [ "$(pmd_ci_utils_get_os)" = "linux" ]; then
-            pmd_ci_log_group_start "Executing danger"
-                regression_tester_setup_ci
-                regression_tester_executeDanger
-            pmd_ci_log_group_end
+        # Execute danger and dogfood only for pull requests in our own repository
+        if [[ "${PMD_CI_IS_FORK}" = "false" && -n "${PMD_CI_PULL_REQUEST_NUMBER}" ]]; then
+          # Danger is executed only on the linux runner
+          if [ "$(pmd_ci_utils_get_os)" = "linux" ]; then
+              pmd_ci_log_group_start "Executing danger"
+                  regression_tester_setup_ci
+                  regression_tester_executeDanger
+              pmd_ci_log_group_end
 
-            # also run dogfood for PRs (only on linux)
-            pmd_ci_log_group_start "Executing PMD dogfood test with ${PMD_CI_MAVEN_PROJECT_VERSION}"
-                pmd_ci_dogfood
-            pmd_ci_log_group_end
+              # also run dogfood for PRs (only on linux)
+              pmd_ci_log_group_start "Executing PMD dogfood test with ${PMD_CI_MAVEN_PROJECT_VERSION}"
+                  pmd_ci_dogfood
+              pmd_ci_log_group_end
+          fi
         fi
 
         exit 0

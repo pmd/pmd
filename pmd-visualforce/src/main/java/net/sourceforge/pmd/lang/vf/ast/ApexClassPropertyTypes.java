@@ -15,7 +15,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -25,8 +24,6 @@ import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.vf.DataType;
-
-import apex.jorje.semantic.symbol.type.BasicType;
 
 /**
  * Responsible for storing a mapping of Apex Class properties that can be referenced from Visualforce to the type of the
@@ -53,8 +50,8 @@ class ApexClassPropertyTypes extends SalesforceFieldTypes {
                     ApexClassPropertyTypesVisitor visitor = new ApexClassPropertyTypesVisitor();
                     node.acceptVisitor(visitor, null);
 
-                    for (Pair<String, BasicType> variable : visitor.getVariables()) {
-                        putDataType(variable.getKey(), DataType.fromBasicType(variable.getValue()));
+                    for (Pair<String, String> variable : visitor.getVariables()) {
+                        putDataType(variable.getKey(), DataType.fromTypeName(variable.getValue()));
                     }
 
                     if (containsExpression(expression)) {
@@ -67,7 +64,7 @@ class ApexClassPropertyTypes extends SalesforceFieldTypes {
     }
 
     static Node parseApex(Path apexFilePath) {
-        LanguageVersion languageVersion = LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion();
+        LanguageVersion languageVersion = ApexLanguageModule.getInstance().getDefaultVersion();
         try (TextFile file = TextFile.forPath(apexFilePath, StandardCharsets.UTF_8, languageVersion);
              TextDocument textDocument = TextDocument.create(file)) {
 

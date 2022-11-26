@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.apex.rule.errorprone;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class EmptyIfStmtTest extends PmdRuleTst {
+class EmptyIfStmtTest extends PmdRuleTst {
     // no additional unit tests
 }

@@ -64,12 +64,15 @@ import com.github.oowekyala.ooxml.messages.XmlException;
 public class RuleFactory {
 
     private final ResourceLoader resourceLoader;
+    private final LanguageRegistry languageRegistry;
 
     /**
      * @param resourceLoader The resource loader to load the rule from jar
      */
-    public RuleFactory(final ResourceLoader resourceLoader) {
+    public RuleFactory(ResourceLoader resourceLoader,
+                       LanguageRegistry languageRegistry) {
         this.resourceLoader = resourceLoader;
+        this.languageRegistry = languageRegistry;
     }
 
     /**
@@ -252,7 +255,7 @@ public class RuleFactory {
 
     private void setLanguage(Element ruleElement, PmdXmlReporter err, Rule rule) {
         String langId = SchemaConstants.LANGUAGE.getNonBlankAttribute(ruleElement, err);
-        Language lang = LanguageRegistry.findLanguageByTerseName(langId);
+        Language lang = languageRegistry.getLanguageById(langId);
         if (lang == null) {
             Attr node = SchemaConstants.LANGUAGE.getAttributeNode(ruleElement);
             throw err.at(node)
@@ -262,7 +265,7 @@ public class RuleFactory {
     }
 
     private @NonNull String supportedLanguages() {
-        return LanguageRegistry.getLanguages().stream().map(Language::getTerseName).map(StringUtil::inSingleQuotes).collect(Collectors.joining(", "));
+        return languageRegistry.commaSeparatedList(l -> StringUtil.inSingleQuotes(l.getId()));
     }
 
     /**

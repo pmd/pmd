@@ -99,7 +99,7 @@ class JDocNamespaceDeclaration < Liquid::Tag
   private
 
   JDOC_NAMESPACE_MAP = "jdoc_nspaces"
-  RESERVED_NSPACES = ['apex', 'core', 'cpp', 'cs', 'dart', 'dist', 'doc', 'fortran', 'go', 'groovy', 'java',
+  RESERVED_NSPACES = ['ant', 'apex', 'core', 'cpp', 'cs', 'dart', 'dist', 'doc', 'fortran', 'go', 'groovy', 'java',
     'javascript', 'jsp',
     'kotlin', 'lua', 'matlab', 'objectivec', 'perl', 'php', 'plsql', 'python', 'ruby', 'scala', 'swift',
     'test', 'test-schema', 'ui',

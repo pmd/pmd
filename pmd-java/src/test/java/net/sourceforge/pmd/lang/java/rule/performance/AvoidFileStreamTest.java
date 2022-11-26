@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.performance;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class AvoidFileStreamTest extends PmdRuleTst {
+class AvoidFileStreamTest extends PmdRuleTst {
     // no additional unit tests
 }

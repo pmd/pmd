@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
@@ -123,6 +124,11 @@ public abstract class RuleTst {
                         Object value = propertyDescriptor.valueFrom((String) entry.getValue());
                         rule.setProperty(propertyDescriptor, value);
                     }
+                }
+
+                String dysfunctionReason = rule.dysfunctionReason();
+                if (StringUtils.isNotBlank(dysfunctionReason)) {
+                    throw new RuntimeException("Rule is not configured correctly: " + dysfunctionReason);
                 }
 
                 report = processUsingStringReader(test, rule);

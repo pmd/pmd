@@ -6,13 +6,13 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.Properties;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
-public class DartTokenizerTest extends CpdTextComparisonTest {
+class DartTokenizerTest extends CpdTextComparisonTest {
 
-    public DartTokenizerTest() {
+    DartTokenizerTest() {
         super(".dart");
     }
 
@@ -23,75 +23,75 @@ public class DartTokenizerTest extends CpdTextComparisonTest {
 
 
     @Test
-    public void testComment() {
+    void testComment() {
         doTest("comment");
     }
 
     @Test
-    public void testEscapeSequences() {
+    void testEscapeSequences() {
         doTest("escape_sequences");
     }
 
     @Test
-    public void testEscapedBackslash() {
+    void testEscapedBackslash() {
         doTest("escaped_backslash");
     }
 
     @Test
-    public void testEscapedString() {
+    void testEscapedString() {
         doTest("escaped_string");
     }
 
 
     @Test
-    public void testIncrement() {
+    void testIncrement() {
         doTest("increment");
     }
 
 
     @Test
-    public void testImports() {
+    void testImports() {
         doTest("imports");
     }
 
     @Test
-    public void testStringInterpolation() {
+    void testStringInterpolation() {
         doTest("string_interpolation");
     }
 
     @Test
-    public void testEscapedDollar() {
+    void testEscapedDollar() {
         doTest("escaped_dollar");
     }
 
     @Test
-    public void testRegex() {
+    void testRegex() {
         doTest("regex");
     }
 
 
     @Test
-    public void testRegex2() {
+    void testRegex2() {
         doTest("regex2");
     }
 
     @Test
-    public void testRegex3() {
+    void testRegex3() {
         doTest("regex3");
     }
 
     @Test
-    public void testStringWithBackslashes() {
+    void testStringWithBackslashes() {
         doTest("string_with_backslashes");
     }
 
     @Test
-    public void testMultiline() {
+    void testMultiline() {
         doTest("string_multiline");
     }
 
     @Test
-    public void testTabWidth() {
+    void testTabWidth() {
         doTest("tabWidth");
     }
 
