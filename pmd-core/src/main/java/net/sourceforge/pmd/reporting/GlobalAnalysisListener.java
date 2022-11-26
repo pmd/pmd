@@ -114,12 +114,6 @@ public interface GlobalAnalysisListener extends AutoCloseable {
         AssertionUtil.requireParamNotNull("Listeners", listeners);
         AssertionUtil.requireContainsNoNullValue("Listeners", listeners);
 
-        if (listeners.isEmpty()) {
-            return noop();
-        } else if (listeners.size() == 1) {
-            return listeners.iterator().next();
-        }
-
         final class TeeListener implements GlobalAnalysisListener {
 
             final List<GlobalAnalysisListener> myList;
@@ -151,7 +145,7 @@ public interface GlobalAnalysisListener extends AutoCloseable {
                 return "TeeListener{" + myList + '}';
             }
         }
-
+        
         // Flatten other tee listeners in the list
         // This prevents suppressed exceptions from being chained too deep if they occur in close()
         List<GlobalAnalysisListener> myList =
@@ -159,7 +153,12 @@ public interface GlobalAnalysisListener extends AutoCloseable {
                      .flatMap(l -> l instanceof TeeListener ? ((TeeListener) l).myList.stream() : Stream.of(l))
                      .filter(l -> !(l instanceof NoopAnalysisListener))
                      .collect(CollectionUtil.toUnmodifiableList());
-
+        
+        if (myList.isEmpty()) {
+            return noop();
+        } else if (myList.size() == 1) {
+            return myList.iterator().next();
+        }
 
         return new TeeListener(myList);
     }

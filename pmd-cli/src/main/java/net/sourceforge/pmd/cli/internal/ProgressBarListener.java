@@ -32,7 +32,7 @@ public final class ProgressBarListener implements GlobalAnalysisListener {
         return new ListenerInitializer() {
             @Override
             public void setNumberOfFilesToAnalyze(int totalFiles) {
-             // We need to delay initialization until we know how many files there are to avoid a first bogus render
+                // We need to delay initialization until we know how many files there are to avoid a first bogus render
                 progressBar = new ProgressBarBuilder()
                         .setTaskName("Processing files")
                         .setStyle(ProgressBarStyle.ASCII)

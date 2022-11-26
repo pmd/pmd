@@ -22,7 +22,9 @@ public interface ListenerInitializer extends AutoCloseable {
     /**
      * Notifies the total number of files collected for analysis.
      */
-    default void setNumberOfFilesToAnalyze(int totalFiles) { }
+    default void setNumberOfFilesToAnalyze(int totalFiles) {
+        // noop
+    }
 
     /**
      * Signals the end of initialization: no further calls will be made
@@ -63,10 +65,10 @@ public interface ListenerInitializer extends AutoCloseable {
         List<ListenerInitializer> list = new ArrayList<>(listeners);
         list.removeIf(it -> it == NoopListenerInitializer.INSTANCE);
 
-        if (listeners.isEmpty()) {
+        if (list.isEmpty()) {
             return noop();
-        } else if (listeners.size() == 1) {
-            return listeners.iterator().next();
+        } else if (list.size() == 1) {
+            return list.iterator().next();
         }
 
         class TeeListener implements ListenerInitializer {
