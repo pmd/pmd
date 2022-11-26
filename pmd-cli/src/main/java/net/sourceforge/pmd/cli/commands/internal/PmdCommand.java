@@ -327,7 +327,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
                 if (showProgressBar) {
                     if (reportFile == null) {
                         pmdReporter.log(Level.WARN, "Progressbar rendering conflicts with reporting to STDOUT. "
-                                + "No progressbar will be shown. Try running with '-r'");
+                                + "No progressbar will be shown. Try running with argument '-r <file>' to output the report to a file instead.");
                     } else {
                         pmd.addListener(new ProgressBarListener());
                     }

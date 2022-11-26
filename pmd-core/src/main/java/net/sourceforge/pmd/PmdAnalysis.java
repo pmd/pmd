@@ -292,7 +292,7 @@ public final class PmdAnalysis implements AutoCloseable {
 
         try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING)) {
             // Notify analysis is starting with so many files collected
-            listener.startAnalysis(textFiles.size());
+            listener.initializer().setNumberOfFilesToAnalyze(textFiles.size());
 
             for (final Rule rule : removeBrokenRules(rulesets)) {
                 // todo Just like we throw for invalid properties, "broken rules"

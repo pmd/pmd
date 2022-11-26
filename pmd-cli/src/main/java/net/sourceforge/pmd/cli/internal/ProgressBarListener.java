@@ -11,6 +11,7 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.reporting.ListenerInitializer;
 
 import me.tongfei.progressbar.PmdProgressBarFriend;
 import me.tongfei.progressbar.ProgressBar;
@@ -27,18 +28,23 @@ public final class ProgressBarListener implements GlobalAnalysisListener {
     private final AtomicInteger numViolations = new AtomicInteger(0);
 
     @Override
-    public void startAnalysis(int totalFilesToAnalyze) {
-        // We need to delay initialization until we know how many files there are to avoid a first bogus render
-        progressBar = new ProgressBarBuilder()
-                .setTaskName("Processing files")
-                .setStyle(ProgressBarStyle.ASCII)
-                .hideEta()
-                .continuousUpdate()
-                .setInitialMax(totalFilesToAnalyze)
-                .setConsumer(PmdProgressBarFriend.createConsoleConsumer(System.out))
-                .clearDisplayOnFinish()
-                .build();
-        progressBar.setExtraMessage(extraMessage());
+    public ListenerInitializer initializer() {
+        return new ListenerInitializer() {
+            @Override
+            public void setNumberOfFilesToAnalyze(int totalFiles) {
+             // We need to delay initialization until we know how many files there are to avoid a first bogus render
+                progressBar = new ProgressBarBuilder()
+                        .setTaskName("Processing files")
+                        .setStyle(ProgressBarStyle.ASCII)
+                        .hideEta()
+                        .continuousUpdate()
+                        .setInitialMax(totalFiles)
+                        .setConsumer(PmdProgressBarFriend.createConsoleConsumer(System.out))
+                        .clearDisplayOnFinish()
+                        .build();
+                progressBar.setExtraMessage(extraMessage());
+            }
+        };
     }
 
     /**
