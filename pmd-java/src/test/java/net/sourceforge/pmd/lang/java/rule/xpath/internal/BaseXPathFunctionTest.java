@@ -74,9 +74,7 @@ class BaseXPathFunctionTest extends BaseParserTest {
 
         Rule rule = makeXpathRuleFromXPath(xpath);
         try (LanguageProcessor proc = java.newProcessor()) {
-            PmdXPathException thrown = Assert.assertThrows(
-                PmdXPathException.class,
-                () -> rule.initialize(proc));
+            PmdXPathException thrown = assertThrows(PmdXPathException.class, () -> rule.initialize(proc));
             exceptionSpec.accept(thrown);
             assertThat(thrown.getPhase(), equalTo(Phase.INITIALIZATION));
             assertThat(thrown.getRuleName(), equalTo(RULE_NAME_PLACEHOLDER));

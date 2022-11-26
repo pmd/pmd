@@ -7006,6 +7006,42 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "deining",
+      "name": "Andreas Deininger",
+      "avatar_url": "https://avatars.githubusercontent.com/u/18169566?v=4",
+      "profile": "https://github.com/deining",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "ctoomey",
+      "name": "Chris Toomey",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2244924?v=4",
+      "profile": "https://github.com/ctoomey",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "mihalyr",
+      "name": "Robert Mihaly",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26523902?v=4",
+      "profile": "https://www.linkedin.com/in/mihalyr",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "nvervelle",
+      "name": "Nicolas Vervelle",
+      "avatar_url": "https://avatars.githubusercontent.com/u/77850427?v=4",
+      "profile": "https://www.quicksign.com/en/",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,

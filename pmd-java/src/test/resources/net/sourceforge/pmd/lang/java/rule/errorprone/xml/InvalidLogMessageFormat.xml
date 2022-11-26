@@ -1147,4 +1147,21 @@ public class Foo {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] InvalidLogMessageFormat false positive on externally formatted strings #4172</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+public class Foo {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Foo.class);
+    public void bar() {
+        String msg = "Got kafka msg, headers=%s, body=%s".formatted(headers, new String(body, UTF_8));
+        LOGGER.info(msg);
+        return msg;
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
