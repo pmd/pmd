@@ -174,7 +174,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.52.0-SNAPSHOT</li>
+    <li class="sidebarTitle">PMD 6.52.0</li>
     <div class="sidebarTitleDate">Release date: 26-November-2022</div>
     
     
@@ -1614,22 +1614,22 @@
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[tom@hal building]$ ls -l
 total 5716
--rw-rw-r--    1 tom      tom       5837216 Jul 17 13:09 pmd-src-6.52.0-SNAPSHOT.zip
-[tom@hal building]$ unzip -q pmd-src-6.52.0-SNAPSHOT.zip
+-rw-rw-r--    1 tom      tom       5837216 Jul 17 13:09 pmd-src-6.52.0.zip
+[tom@hal building]$ unzip -q pmd-src-6.52.0.zip
 [tom@hal building]$
 </code></pre></div></div>
 
 <p>Now cd down into the <code class="language-plaintext highlighter-rouge">pmd</code> directory:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[tom@hal building]$ cd pmd-src-6.52.0-SNAPSHOT
-[tom@hal pmd-src-6.52.0-SNAPSHOT]$ ls -l | grep pom.xml
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[tom@hal building]$ cd pmd-src-6.52.0
+[tom@hal pmd-src-6.52.0]$ ls -l | grep pom.xml
 -rw-rw-r--    1 tom      tom          36482 14\. Nov 17:36 pom.xml
-[tom@hal pmd-src-6.52.0-SNAPSHOT]$
+[tom@hal pmd-src-6.52.0]$
 </code></pre></div></div>
 
 <p>That’s the project configuration for maven… let’s compile!</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[tom@hal pmd-src-6.52.0-SNAPSHOT]$ ./mvnw clean verify
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[tom@hal pmd-src-6.52.0]$ ./mvnw clean verify
 [INFO] Scanning for projects...
 [INFO] ------------------------------------------------------------------------
 [INFO] Reactor Build Order:
@@ -1669,7 +1669,7 @@ total 5716
 [INFO] Finished at: 2015-11-14T17:46:06+01:00
 [INFO] Final Memory: 63M/765M
 [INFO] ------------------------------------------------------------------------
-[tom@hal pmd-src-6.52.0-SNAPSHOT]$
+[tom@hal pmd-src-6.52.0]$
 </code></pre></div></div>
 
 <p>Now the source and binary distribution zip files can be found in the folder <code class="language-plaintext highlighter-rouge">pmd-dist/target</code>.</p>
@@ -1720,7 +1720,7 @@ They’re also in the jar file that’s included with both the source and binary
         <div class="col-lg-12 footer">
             &copy;2022 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Nov 25, 2022 <br />
+             Site last generated: Nov 26, 2022 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>

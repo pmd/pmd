@@ -174,7 +174,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.52.0-SNAPSHOT</li>
+    <li class="sidebarTitle">PMD 6.52.0</li>
     <div class="sidebarTitleDate">Release date: 26-November-2022</div>
     
     
@@ -1598,9 +1598,9 @@
    
     <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
     
-  <h2 id="26-november-2022---6520-snapshot">26-November-2022 - 6.52.0-SNAPSHOT</h2>
+  <h2 id="26-november-2022---6520">26-November-2022 - 6.52.0</h2>
 
-<p>The PMD team is pleased to announce PMD 6.52.0-SNAPSHOT.</p>
+<p>The PMD team is pleased to announce PMD 6.52.0.</p>
 
 <p>This is a minor release.</p>
 
@@ -1744,25 +1744,25 @@ PMD 7 will remove support for <code class="language-plaintext highlighter-rouge"
 <ul>
   <li>The following core APIs have been marked as deprecated for removal in PMD 7:
     <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMD.html#"><code>PMD</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMD.StatusCode.html#"><code>PMD.StatusCode</code></a> - PMD 7 will ship with a revamped CLI split from pmd-core. To programmatically launch analysis you can use <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PmdAnalysis.html#"><code>PmdAnalysis</code></a>.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#getAllInputPaths()"><code>PMDConfiguration#getAllInputPaths</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#getInputPathList()"><code>PMDConfiguration#getInputPathList</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setInputPaths(List)"><code>PMDConfiguration#setInputPaths</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setInputPathList(List)"><code>PMDConfiguration#setInputPathList</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#addInputPath(String)"><code>PMDConfiguration#addInputPath</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#addInputPath(Path)"><code>PMDConfiguration#addInputPath</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#getInputFilePath()"><code>PMDConfiguration#getInputFilePath</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#getInputFile()"><code>PMDConfiguration#getInputFile</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#getIgnoreFilePath()"><code>PMDConfiguration#getIgnoreFilePath</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#getIgnoreFile()"><code>PMDConfiguration#getIgnoreFile</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setInputFilePath(String)"><code>PMDConfiguration#setInputFilePath</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setInputFilePath(Path)"><code>PMDConfiguration#setInputFilePath</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setIgnoreFilePath(String)"><code>PMDConfiguration#setIgnoreFilePath</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setIgnoreFilePath(Path)"><code>PMDConfiguration#setIgnoreFilePath</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#getInputUri()"><code>PMDConfiguration#getInputUri</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#getUri()"><code>PMDConfiguration#getUri</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setInputUri(String)"><code>PMDConfiguration#setInputUri</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setInputUri(URI)"><code>PMDConfiguration#setInputUri</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#getReportFile()"><code>PMDConfiguration#getReportFile</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#getReportFilePath()"><code>PMDConfiguration#getReportFilePath</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setReportFile(String)"><code>PMDConfiguration#setReportFile</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setReportFile(Path)"><code>PMDConfiguration#setReportFile</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#isStressTest()"><code>PMDConfiguration#isStressTest</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setStressTest(boolean)"><code>PMDConfiguration#setStressTest</code></a> - Will be removed with no replacement.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#isBenchmark()"><code>PMDConfiguration#isBenchmark</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setBenchmark(boolean)"><code>PMDConfiguration#setBenchmark</code></a> - Will be removed with no replacement, the CLI will still support it.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPD.html#"><code>CPD</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPD.StatusCode.html#"><code>CPD.StatusCode</code></a> - PMD 7 will ship with a revamped CLI split from pmd-core. An alterative to programatically launch CPD analysis will be added in due time.</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMD.html#"><code>PMD</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMD.StatusCode.html#"><code>PMD.StatusCode</code></a> - PMD 7 will ship with a revamped CLI split from pmd-core. To programmatically launch analysis you can use <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PmdAnalysis.html#"><code>PmdAnalysis</code></a>.</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#getAllInputPaths()"><code>PMDConfiguration#getAllInputPaths</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#getInputPathList()"><code>PMDConfiguration#getInputPathList</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#setInputPaths(List)"><code>PMDConfiguration#setInputPaths</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#setInputPathList(List)"><code>PMDConfiguration#setInputPathList</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#addInputPath(String)"><code>PMDConfiguration#addInputPath</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#addInputPath(Path)"><code>PMDConfiguration#addInputPath</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#getInputFilePath()"><code>PMDConfiguration#getInputFilePath</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#getInputFile()"><code>PMDConfiguration#getInputFile</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#getIgnoreFilePath()"><code>PMDConfiguration#getIgnoreFilePath</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#getIgnoreFile()"><code>PMDConfiguration#getIgnoreFile</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#setInputFilePath(String)"><code>PMDConfiguration#setInputFilePath</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#setInputFilePath(Path)"><code>PMDConfiguration#setInputFilePath</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#setIgnoreFilePath(String)"><code>PMDConfiguration#setIgnoreFilePath</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#setIgnoreFilePath(Path)"><code>PMDConfiguration#setIgnoreFilePath</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#getInputUri()"><code>PMDConfiguration#getInputUri</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#getUri()"><code>PMDConfiguration#getUri</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#setInputUri(String)"><code>PMDConfiguration#setInputUri</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#setInputUri(URI)"><code>PMDConfiguration#setInputUri</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#getReportFile()"><code>PMDConfiguration#getReportFile</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#getReportFilePath()"><code>PMDConfiguration#getReportFilePath</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#setReportFile(String)"><code>PMDConfiguration#setReportFile</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#setReportFile(Path)"><code>PMDConfiguration#setReportFile</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#isStressTest()"><code>PMDConfiguration#isStressTest</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#setStressTest(boolean)"><code>PMDConfiguration#setStressTest</code></a> - Will be removed with no replacement.</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#isBenchmark()"><code>PMDConfiguration#isBenchmark</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#setBenchmark(boolean)"><code>PMDConfiguration#setBenchmark</code></a> - Will be removed with no replacement, the CLI will still support it.</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/cpd/CPD.html#"><code>CPD</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/cpd/CPD.StatusCode.html#"><code>CPD.StatusCode</code></a> - PMD 7 will ship with a revamped CLI split from pmd-core. An alterative to programatically launch CPD analysis will be added in due time.</li>
     </ul>
   </li>
-  <li>In order to reduce the dependency on Apex Jorje classes, the method <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/6.52.0-SNAPSHOT/net/sourceforge/pmd/lang/vf/DataType.html#fromBasicType(apex.jorje.semantic.symbol.type.BasicType)"><code>DataType#fromBasicType</code></a>
-has been deprecated. The equivalent method <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/6.52.0-SNAPSHOT/net/sourceforge/pmd/lang/vf/DataType.html#fromTypeName(java.lang.String)"><code>fromTypeName</code></a> should be used instead.</li>
+  <li>In order to reduce the dependency on Apex Jorje classes, the method <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/6.52.0/net/sourceforge/pmd/lang/vf/DataType.html#fromBasicType(apex.jorje.semantic.symbol.type.BasicType)"><code>DataType#fromBasicType</code></a>
+has been deprecated. The equivalent method <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/6.52.0/net/sourceforge/pmd/lang/vf/DataType.html#fromTypeName(java.lang.String)"><code>fromTypeName</code></a> should be used instead.</li>
 </ul>
 
 <h3 id="external-contributions">External Contributions</h3>
@@ -1775,6 +1775,13 @@ has been deprecated. The equivalent method <a href="https://docs.pmd-code.org/ap
   <li><a href="https://github.com/pmd/pmd/pull/4227">#4227</a>: [java] Fix #4225 MissingStaticMethodInNonInstantiatableClass: Exclude lombok’s @<!-- -->NoArgsConstructor annotation - <a href="https://github.com/LynnBroe">Lynn</a> (@LynnBroe)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4228">#4228</a>: [java] Fix #4224 MissingStaticMethodInNonInstantiatableClass: Exclude lombok’s UtilityClass - <a href="https://github.com/LynnBroe">Lynn</a> (@LynnBroe)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4232">#4232</a>: [doc] Fixing typos - <a href="https://github.com/deining">Andreas Deininger</a> (@deining)</li>
+</ul>
+
+<h3 id="stats">Stats</h3>
+<ul>
+  <li>96 commits</li>
+  <li>40 closed tickets &amp; PRs</li>
+  <li>Days since last release: 28</li>
 </ul>
 
 
@@ -1808,7 +1815,7 @@ has been deprecated. The equivalent method <a href="https://docs.pmd-code.org/ap
         <div class="col-lg-12 footer">
             &copy;2022 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Nov 25, 2022 <br />
+             Site last generated: Nov 26, 2022 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>
