@@ -151,31 +151,9 @@ public class SymbolReflectionTest {
         Assert.assertEquals(YES, target.attributeMatches("valueNoDefault", "ohio"));
         Assert.assertEquals(YES, target.attributeMatches("stringArrayDefault", new String[] {}));
         Assert.assertEquals(NO, target.attributeMatches("stringArrayDefault", "0"));
-        Assert.assertEquals(UNKNOWN, target.attributeMatches("stringArrayEmptyDefault", new String[] {}));
-
-    }
-
-
-    @Test
-    public void testAnnotOnMethod() {
-        // note that this asserts, that the param names are unavailable
-
-        /*
-            @AnnotWithDefaults(valueNoDefault = "ohio",
-                       stringArrayDefault = {})
-
-         */
-        JClassSymbol sym = loadClass(SomeClass.class);
-
-        Assert.assertTrue(sym.isAnnotationPresent(AnnotWithDefaults.class));
-
-        SymAnnot target = sym.getDeclaredAnnotation(AnnotWithDefaults.class);
-
-
-        Assert.assertEquals(YES, target.attributeMatches("valueNoDefault", "ohio"));
-        Assert.assertEquals(YES, target.attributeMatches("stringArrayDefault", new String[] {}));
-        Assert.assertEquals(NO, target.attributeMatches("stringArrayDefault", "0"));
-        Assert.assertEquals(UNKNOWN, target.attributeMatches("stringArrayEmptyDefault", new String[] {}));
+        Assert.assertEquals(YES, target.attributeMatches("stringArrayEmptyDefault", new String[] {}));
+        Assert.assertEquals(NO, target.attributeMatches("stringArrayEmptyDefault", new String[] {"a"}));
+        Assert.assertEquals(UNKNOWN, target.attributeMatches("attributeDoesNotExist", new String[] {"a"}));
 
     }
 

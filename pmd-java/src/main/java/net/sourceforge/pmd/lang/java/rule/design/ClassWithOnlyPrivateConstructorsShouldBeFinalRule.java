@@ -53,12 +53,9 @@ public class ClassWithOnlyPrivateConstructorsShouldBeFinalRule extends AbstractJ
     }
 
     private boolean hasPrivateAccessModifierOption(ASTAnnotation annotation) {
-        return annotation.getValuesForName("access")
-                .filter(v -> v instanceof ASTFieldAccess)
-                .map(v -> ASTFieldAccess.class.cast(v))
-                .toStream()
-                .map(ASTFieldAccess::getName)
-                .anyMatch(name -> LOMBOK_PRIVATE_ACCESS.equals(name));
+        return annotation.getFlatValue("access")
+                         .filterIs(ASTFieldAccess.class)
+                         .any(it -> LOMBOK_PRIVATE_ACCESS.equals(it.getName()));
     }
 
     private boolean hasNoSubclasses(ASTClassOrInterfaceDeclaration klass) {

@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.java.BaseParserTest;
 
 class ASTSwitchLabelTest extends BaseParserTest {
 
-    private final JavaParsingHelper java = JavaParsingHelper.DEFAULT.withDefaultVersion("15-preview");
+    private final JavaParsingHelper java = JavaParsingHelper.DEFAULT;
 
     @Test
     void testDefaultOff() {

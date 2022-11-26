@@ -360,7 +360,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
     public String toString() {
         // do not use SymbolToString as it triggers the class parsing,
         // making tests undebuggable
-        return internalName;
+        return getInternalName();
     }
 
     @Override

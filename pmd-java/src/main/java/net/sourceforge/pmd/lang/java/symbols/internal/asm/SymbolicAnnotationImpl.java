@@ -32,7 +32,7 @@ final class SymbolicAnnotationImpl implements SymAnnot {
     // TODO would be nice to link back to the class symbol, to get default values
     SymbolicAnnotationImpl(AsmSymbolResolver resolver, boolean runtimeVisible, String descriptor) {
         this.runtimeVisible = runtimeVisible;
-        this.typeStub = resolver.resolveFromInternalNameCannotFail(ClassNamesUtil.classDescriptorToBinaryName(descriptor));
+        this.typeStub = resolver.resolveFromInternalNameCannotFail(ClassNamesUtil.classDescriptorToInternalName(descriptor));
     }
 
     void addAttribute(String name, SymbolicValue value) {

@@ -226,12 +226,12 @@ class AsmLoaderTest : IntelliMarker, FunSpec({
         val outerName = Enums::class.java.name
 
         val emptyEnum = symLoader().resolveClassFromBinaryName("$outerName\$Empty")!!
-        emptyEnum::getEnumConstants shouldBe emptySet()
+        emptyEnum::getEnumConstants shouldBe emptyList()
 
         val withConstants = symLoader().resolveClassFromBinaryName("$outerName\$SomeConstants")!!
-        withConstants.enumConstants.map { it.simpleName } shouldBe setOf("A", "B")
+        withConstants.enumConstants.map { it.simpleName } shouldBe listOf("A", "B")
 
         val notAnEnum = symLoader().resolveClassFromBinaryName(outerName)!!
-        notAnEnum::getEnumConstants shouldBe emptySet()
+        notAnEnum::getEnumConstants shouldBe emptyList()
     }
 })

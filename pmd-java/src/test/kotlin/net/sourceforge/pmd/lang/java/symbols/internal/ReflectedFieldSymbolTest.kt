@@ -11,12 +11,13 @@ import io.kotest.matchers.shouldNotBe
 import io.kotest.property.arbitrary.filterNot
 import javasymbols.testdata.impls.IdenticalToSomeFields
 import javasymbols.testdata.impls.SomeFields
+import net.sourceforge.pmd.lang.ast.test.IntelliMarker
 
 /**
  * @author Clément Fournier
  * @since 7.0.0
  */
-class ReflectedFieldSymbolTest : WordSpec({
+class ReflectedFieldSymbolTest : IntelliMarker, WordSpec({
 
     "A field symbol" should {
 
