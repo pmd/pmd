@@ -66,6 +66,7 @@ public interface SymbolicValue {
      * must be a {@link SymbolicValue} of the same type. Use {@link #valueEquals(Object)}
      * to compare to a java object.
      */
+    @Override
     boolean equals(Object o);
 
     /**

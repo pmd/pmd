@@ -181,6 +181,7 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
             return defaultAnnotValue;
         }
 
+        @Override
         void setDefaultAnnotValue(@Nullable SymbolicValue defaultAnnotValue) {
             this.defaultAnnotValue = defaultAnnotValue;
         }

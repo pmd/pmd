@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.java.types.TypeSystem;
 /**
  * Wraps an instance of a JVM {@link Annotation} and provide the same API as {@link SymAnnot}.
  */
-class AnnotWrapper implements SymAnnot {
+final class AnnotWrapper implements SymAnnot {
 
     private final Annotation annotation;
     private final Class<? extends Annotation> annotationClass;

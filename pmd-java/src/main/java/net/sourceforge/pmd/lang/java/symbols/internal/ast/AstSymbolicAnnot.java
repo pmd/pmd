@@ -93,7 +93,7 @@ public class AstSymbolicAnnot implements SymbolicValue.SymAnnot {
         if (valueNode instanceof ASTMemberValueArrayInitializer) {
             // array
             List<SymbolicValue> elements = new ArrayList<>(valueNode.getNumChildren());
-            for (ASTMemberValue elt : ((ASTMemberValueArrayInitializer) valueNode)) {
+            for (ASTMemberValue elt : (ASTMemberValueArrayInitializer) valueNode) {
                 SymbolicValue symElt = ofNode(elt);
                 if (symElt == null) {
                     return null;
