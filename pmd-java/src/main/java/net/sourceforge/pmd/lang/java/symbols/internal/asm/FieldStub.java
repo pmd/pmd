@@ -6,14 +6,16 @@ package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.TypePath;
 
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolEquality;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolToStrings;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 
-class FieldStub extends MemberStubBase implements JFieldSymbol {
+class FieldStub extends MemberStubBase implements JFieldSymbol, TypeAnnotationReceiver {
 
     private final LazyTypeSig type;
     private final @Nullable Object constValue;
@@ -27,6 +29,11 @@ class FieldStub extends MemberStubBase implements JFieldSymbol {
         super(classStub, name, accessFlags);
         this.type = new LazyTypeSig(classStub, descriptor, signature);
         this.constValue = constValue;
+    }
+
+    @Override
+    public void addTypeAnnotation(TypePath path, SymAnnot annot) {
+        this.type.addTypeAnnotation(path, annot);
     }
 
     @Nullable

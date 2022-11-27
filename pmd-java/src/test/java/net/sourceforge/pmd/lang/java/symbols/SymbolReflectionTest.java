@@ -21,7 +21,6 @@ import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymArray;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymEnum;
-import net.sourceforge.pmd.lang.java.symbols.internal.asm.AsmSymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.testdata.AnnotWithDefaults;
 import net.sourceforge.pmd.lang.java.symbols.testdata.AnnotWithDefaults.MyEnum;
 import net.sourceforge.pmd.lang.java.symbols.testdata.SomeClass;
@@ -34,7 +33,6 @@ import net.sourceforge.pmd.lang.java.types.TypeSystem;
 public class SymbolReflectionTest {
 
     private final TypeSystem ts = JavaParsingHelper.TEST_TYPE_SYSTEM;
-    private final AsmSymbolResolver loader = (AsmSymbolResolver) ts.bootstrapResolver();
 
     private SymbolicValue symValueOf(Object o) {
         return SymbolicValue.of(ts, o);
@@ -45,9 +43,8 @@ public class SymbolReflectionTest {
     public void testReflectionOfParamNames() {
         // note that this asserts, that the param names are unavailable
 
-        JClassSymbol sym = loader.resolveClassFromBinaryName(SomeClass.class.getName());
+        JClassSymbol sym = loadClass(SomeClass.class);
 
-        Assert.assertNotNull(sym);
         List<JMethodSymbol> ms = sym.getDeclaredMethods();
         Assert.assertEquals(2, ms.size());
 
@@ -208,7 +205,7 @@ public class SymbolReflectionTest {
     }
 
     private @NonNull JClassSymbol loadClass(Class<?> klass) {
-        JClassSymbol sym = loader.resolveClassFromBinaryName(klass.getName());
+        JClassSymbol sym = ts.getClassSymbol(klass);
         Assert.assertNotNull(sym);
         return sym;
     }
