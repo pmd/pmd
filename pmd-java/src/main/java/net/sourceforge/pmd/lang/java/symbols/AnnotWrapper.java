@@ -80,25 +80,21 @@ class AnnotWrapper implements SymAnnot {
         return annotation.equals(o);
     }
 
+
+    @Override
+    public String getBinaryName() {
+        return annotationClassSymbol.getBinaryName();
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof SymAnnot)) {
-            return false;
-        }
-        SymAnnot that = (SymAnnot) o;
-        if (!that.isOfType(annotationClassSymbol.getBinaryName())) {
-            return false;
-        }
-
-        for (String attr : getAttributeNames()) {
-            if (!Objects.equals(getAttribute(attr), ((SymAnnot) o).getAttribute(attr))) {
-                return false;
-            }
-        }
-        return true;
+        return SymbolEquality.ANNOTATION.equals(this, o);
     }
+
+    @Override
+    public int hashCode() {
+        return SymbolEquality.ANNOTATION.hash(this);
+    }
+
 
 }

@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
+import net.sourceforge.pmd.lang.java.symbols.internal.SymbolEquality;
 
 /**
  * An annotation parsed from a class file.
@@ -81,29 +82,18 @@ final class SymbolicAnnotationImpl implements SymAnnot {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof SymAnnot)) {
-            return false;
-        }
-        SymAnnot that = (SymAnnot) o;
-        if (!that.isOfType(typeStub.getBinaryName())) {
-            return false;
-        }
+    public String getBinaryName() {
+        return typeStub.getBinaryName();
+    }
 
-        for (String attr : getAttributeNames()) {
-            if (!Objects.equals(getAttribute(attr), ((SymAnnot) o).getAttribute(attr))) {
-                return false;
-            }
-        }
-        return true;
+    @Override
+    public boolean equals(Object o) {
+        return SymbolEquality.ANNOTATION.equals(this, o);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(explicitAttrs, typeStub);
+        return SymbolEquality.ANNOTATION.hash(this);
     }
 
     @Override

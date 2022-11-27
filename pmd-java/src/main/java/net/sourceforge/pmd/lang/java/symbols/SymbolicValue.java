@@ -121,6 +121,8 @@ public interface SymbolicValue {
 
         Set<String> getAttributeNames();
 
+        String getBinaryName();
+
         @Override
         default boolean valueEquals(Object o) {
             if (!(o instanceof Annotation)) {

@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.symbols.internal.ast;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -23,6 +22,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMemberValuePair;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
+import net.sourceforge.pmd.lang.java.symbols.internal.SymbolEquality;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 
@@ -60,39 +60,22 @@ public class AstSymbolicAnnot implements SymbolicValue.SymAnnot {
 
     @Override
     public boolean isOfType(String binaryName) {
-        return myBinaryName().equals(binaryName);
+        return getBinaryName().equals(binaryName);
     }
 
-    private @NonNull String myBinaryName() {
+    @Override
+    public @NonNull String getBinaryName() {
         return node.getTypeMirror().getSymbol().getBinaryName();
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof SymAnnot)) {
-            return false;
-        }
-        SymAnnot that = (SymAnnot) o;
-        if (!that.isOfType(myBinaryName())) {
-            return false;
-        } else if (!getAttributeNames().equals(that.getAttributeNames())) {
-            return false;
-        }
-
-        for (String attrName : getAttributeNames()) {
-            if (!Objects.equals(getAttribute(attrName), that.getAttribute(attrName))) {
-                return false;
-            }
-        }
-        return true;
+        return SymbolEquality.ANNOTATION.equals(this, o);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(myBinaryName(), getAttributeNames());
+        return SymbolEquality.ANNOTATION.hash(this);
     }
 
     static SymbolicValue ofNode(ASTMemberValue valueNode) {
