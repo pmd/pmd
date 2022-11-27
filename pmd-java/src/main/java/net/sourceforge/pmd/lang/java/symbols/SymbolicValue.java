@@ -88,7 +88,7 @@ public interface SymbolicValue {
         }
 
         if (value instanceof Annotation) {
-            return AnnotWrapperImpl.wrap(ts, (Annotation) value);
+            return AnnotWrapper.wrap(ts, (Annotation) value);
         }
 
         if (value instanceof Class<?>) {

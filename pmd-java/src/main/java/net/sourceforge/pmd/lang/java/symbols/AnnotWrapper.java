@@ -15,19 +15,20 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
+import net.sourceforge.pmd.lang.java.symbols.internal.SymbolEquality;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
 /**
- *
+ * Wraps an instance of a JVM {@link Annotation} and provide the same API as {@link SymAnnot}.
  */
-class AnnotWrapperImpl implements SymAnnot {
+class AnnotWrapper implements SymAnnot {
 
     private final Annotation annotation;
     private final Class<? extends Annotation> annotationClass;
     private final JClassSymbol annotationClassSymbol;
 
 
-    private AnnotWrapperImpl(JClassSymbol annotationClassSymbol, @NonNull Annotation annotation) {
+    private AnnotWrapper(JClassSymbol annotationClassSymbol, @NonNull Annotation annotation) {
         this.annotationClassSymbol = annotationClassSymbol;
         this.annotation = annotation;
         this.annotationClass = annotation.annotationType();
@@ -38,7 +39,7 @@ class AnnotWrapperImpl implements SymAnnot {
         if (sym == null) {
             return null;
         }
-        return new AnnotWrapperImpl(sym, annotation);
+        return new AnnotWrapper(sym, annotation);
     }
 
     @Override
@@ -69,7 +70,9 @@ class AnnotWrapperImpl implements SymAnnot {
                          } catch (Exception ignored) {
                              return null;
                          }
-                     }).findAny().orElse(null);
+                     })
+                     .filter(Objects::nonNull)
+                     .findAny().orElse(null);
     }
 
     @Override

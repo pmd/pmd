@@ -206,6 +206,7 @@ public class SymbolReflectionTest {
         Assert.assertTrue(sym.isInterface());
         return sym;
     }
+
     private @NonNull JClassSymbol loadClass(Class<?> klass) {
         JClassSymbol sym = loader.resolveClassFromBinaryName(klass.getName());
         Assert.assertNotNull(sym);
