@@ -31,7 +31,7 @@ final class BoxedPrimitive extends ClassTypeImpl {
     }
 
     @Override
-    public JTypeMirror withAnnotations(List<SymAnnot> symAnnots) {
+    public JClassType withAnnotations(List<SymAnnot> symAnnots) {
         if (symAnnots.equals(this.getTypeAnnotations())) {
             return this;
         }

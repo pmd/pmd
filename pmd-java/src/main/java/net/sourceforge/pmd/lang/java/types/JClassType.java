@@ -16,6 +16,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 
 /**
  * Represents class and interface types, including functional interface
@@ -52,6 +53,9 @@ public interface JClassType extends JTypeMirror {
     @NonNull
     JClassSymbol getSymbol();
 
+
+    @Override
+    JClassType withAnnotations(List<SymAnnot> symAnnots);
 
     @Override
     default JClassType subst(Function<? super SubstVar, ? extends @NonNull JTypeMirror> fun) {

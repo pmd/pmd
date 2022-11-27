@@ -104,8 +104,8 @@ class ClassTypeImpl implements JClassType {
     }
 
     @Override
-    public JTypeMirror withAnnotations(List<SymAnnot> symAnnots) {
-        if (symAnnots.equals(this.getTypeAnnotations())) {
+    public JClassType withAnnotations(List<SymAnnot> symAnnots) {
+        if (symAnnots.isEmpty() && this.typeAnnotations.isEmpty()) {
             return this;
         }
         return new ClassTypeImpl(ts, enclosingType, symbol, typeArgs, CollectionUtil.defensiveUnmodifiableCopy(symAnnots), isDecl);
