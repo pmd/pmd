@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SuperTypesEnumerator;
 import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
 import net.sourceforge.pmd.util.CollectionUtil;
@@ -31,6 +32,7 @@ class ClassTypeImpl implements JClassType {
     private final JClassSymbol symbol;
     private final TypeSystem ts;
     private final List<JTypeMirror> typeArgs;
+    private final List<SymAnnot> typeAnnotations;
     private final boolean isDecl;
 
     private JClassType superClass;
@@ -57,11 +59,12 @@ class ClassTypeImpl implements JClassType {
      *                                  as the type's type parameters
      * @throws IllegalArgumentException if any type argument is of a primitive type.
      */
-    ClassTypeImpl(TypeSystem ts, JClassSymbol symbol, List<JTypeMirror> typeArgs, boolean isDecl) {
-        this(ts, null, symbol, typeArgs, isDecl);
+    ClassTypeImpl(TypeSystem ts, JClassSymbol symbol, List<JTypeMirror> typeArgs, boolean isDecl, List<SymAnnot> typeAnnotations) {
+        this(ts, null, symbol, typeArgs, typeAnnotations, isDecl);
     }
 
-    private ClassTypeImpl(TypeSystem ts, JClassType enclosing, JClassSymbol symbol, List<JTypeMirror> typeArgs, boolean isDecl) {
+    private ClassTypeImpl(TypeSystem ts, JClassType enclosing, JClassSymbol symbol, List<JTypeMirror> typeArgs, List<SymAnnot> typeAnnotations, boolean isDecl) {
+        this.typeAnnotations = typeAnnotations;
         validateParams(enclosing, symbol, typeArgs);
 
         this.ts = ts;
@@ -93,6 +96,19 @@ class ClassTypeImpl implements JClassType {
     @Override
     public TypeSystem getTypeSystem() {
         return ts;
+    }
+
+    @Override
+    public List<SymAnnot> getTypeAnnotations() {
+        return typeAnnotations;
+    }
+
+    @Override
+    public JTypeMirror withAnnotations(List<SymAnnot> symAnnots) {
+        if (symAnnots.equals(this.getTypeAnnotations())) {
+            return this;
+        }
+        return new ClassTypeImpl(ts, enclosingType, symbol, typeArgs, CollectionUtil.defensiveUnmodifiableCopy(symAnnots), isDecl);
     }
 
     @Override
@@ -138,6 +154,7 @@ class ClassTypeImpl implements JClassType {
                                  this,
                                  symbol,
                                  CollectionUtil.defensiveUnmodifiableCopy(targs),
+                                 Collections.emptyList(), // tne empty list
                                  this.isDecl);
     }
 
@@ -189,7 +206,7 @@ class ClassTypeImpl implements JClassType {
             return this;
         }
 
-        return new ErasedClassType(ts, symbol);
+        return new ErasedClassType(ts, symbol, typeAnnotations);
     }
 
     @Override
@@ -202,7 +219,7 @@ class ClassTypeImpl implements JClassType {
         if (expected == 0 && typeArgs.isEmpty() && this.typeArgs.isEmpty()) {
             return this; // non-generic
         }
-        return new ClassTypeImpl(ts, symbol, CollectionUtil.defensiveUnmodifiableCopy(typeArgs), false);
+        return new ClassTypeImpl(ts, symbol, CollectionUtil.defensiveUnmodifiableCopy(typeArgs), false, typeAnnotations);
     }
 
     @Override
@@ -241,7 +258,7 @@ class ClassTypeImpl implements JClassType {
 
     private JClassType getDeclaredClass(JClassSymbol inner) {
         if (Modifier.isStatic(inner.getModifiers())) {
-            return new ClassTypeImpl(ts, null, inner, Collections.emptyList(), true);
+            return new ClassTypeImpl(ts, null, inner, Collections.emptyList(), typeAnnotations, true);
         } else {
             return selectInner(inner, Collections.emptyList());
         }
@@ -261,7 +278,7 @@ class ClassTypeImpl implements JClassType {
         JClassSymbol declaredClass = symbol.getDeclaredClass(simpleName);
         if (declaredClass != null) {
             if (Modifier.isStatic(declaredClass.getModifiers())) {
-                return new ClassTypeImpl(ts, null, declaredClass, Collections.emptyList(), true);
+                return new ClassTypeImpl(ts, null, declaredClass, Collections.emptyList(), typeAnnotations, true);
             } else {
                 return selectInner(declaredClass, Collections.emptyList());
             }

@@ -5,6 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -15,6 +16,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
@@ -25,17 +27,20 @@ public final class JArrayType implements JTypeMirror {
 
     private final JTypeMirror component;
     private final TypeSystem ts;
+    private final List<SymAnnot> typeAnnots;
     private JClassSymbol symbol;
 
     JArrayType(TypeSystem ts, JTypeMirror component) {
-        this(ts, component, null);
+        this(ts, component, null, Collections.emptyList());
     }
 
-    JArrayType(TypeSystem ts, JTypeMirror component, JClassSymbol arraySymbol) {
+    JArrayType(TypeSystem ts, JTypeMirror component, JClassSymbol arraySymbol, List<SymAnnot> typeAnnots) {
         assert component != null : "Expected non-null component";
+        assert typeAnnots != null : "Expected non-null annotations";
         this.component = component;
         this.ts = ts;
         this.symbol = arraySymbol;
+        this.typeAnnots = typeAnnots;
     }
 
     @Override
@@ -56,6 +61,19 @@ public final class JArrayType implements JTypeMirror {
     }
 
     @Override
+    public List<SymAnnot> getTypeAnnotations() {
+        return typeAnnots;
+    }
+
+    @Override
+    public JTypeMirror withAnnotations(List<SymAnnot> symAnnots) {
+        if (symAnnots.equals(typeAnnots)) {
+            return this;
+        }
+        return new JArrayType(ts, component, symbol, CollectionUtil.defensiveUnmodifiableCopy(symAnnots));
+    }
+
+    @Override
     public boolean isInterface() {
         return false;
     }
@@ -63,7 +81,8 @@ public final class JArrayType implements JTypeMirror {
     @Override
     public JArrayType getErasure() {
         JTypeMirror erasedComp = component.getErasure();
-        return erasedComp == component ? this : new JArrayType(ts, erasedComp); // NOPMD CompareObjectsWithEquals
+        return erasedComp == component ? this
+                                       : new JArrayType(ts, erasedComp, symbol, typeAnnots); // NOPMD CompareObjectsWithEquals
     }
 
 

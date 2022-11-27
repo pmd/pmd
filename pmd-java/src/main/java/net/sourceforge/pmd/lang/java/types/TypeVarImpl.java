@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -11,6 +12,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 
 @SuppressWarnings("PMD.CompareObjectsWithEquals")
 abstract class TypeVarImpl implements JTypeVar {
@@ -57,6 +59,15 @@ abstract class TypeVarImpl implements JTypeVar {
             this.symbol = symbol;
         }
 
+        @Override
+        public JTypeMirror withAnnotations(List<SymAnnot> symAnnots) {
+            return this;
+        }
+
+        @Override
+        public List<SymAnnot> getTypeAnnotations() {
+            return symbol.getDeclaredAnnotations();
+        }
 
         @Override
         public boolean isCaptured() {
@@ -157,6 +168,16 @@ abstract class TypeVarImpl implements JTypeVar {
             this.upperBound = upper;
             this.lowerBound = lower;
             this.wildcard = wild;
+        }
+
+        @Override
+        public JTypeMirror withAnnotations(List<SymAnnot> symAnnots) {
+            return this;
+        }
+
+        @Override
+        public List<SymAnnot> getTypeAnnotations() {
+            return wildcard.getTypeAnnotations();
         }
 
         void setUpperBound(@NonNull JTypeMirror upperBound) {

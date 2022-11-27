@@ -21,6 +21,8 @@ import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * An intersection type. Intersections type act as the
@@ -58,6 +60,19 @@ public final class JIntersectionType implements JTypeMirror {
 
     }
 
+    @Override
+    public List<SymAnnot> getTypeAnnotations() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public JTypeMirror withAnnotations(List<SymAnnot> symAnnots) {
+        return new JIntersectionType(
+            ts,
+            primaryBound.withAnnotations(symAnnots),
+            CollectionUtil.map(components, c -> c.withAnnotations(symAnnots))
+        );
+    }
 
     /**
      * Returns the list of components. Their erasure must be pairwise disjoint.

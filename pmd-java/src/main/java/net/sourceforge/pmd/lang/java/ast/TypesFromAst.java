@@ -95,6 +95,10 @@ final class TypesFromAst {
 
             return ts.lub(CollectionUtil.map(((ASTUnionType) node).getComponents(), TypeNode::getTypeMirror));
 
+        } else if (node instanceof ASTVoidType) {
+
+            return ts.NO_TYPE;
+
         }
 
         throw new IllegalStateException("Illegal type " + node.getClass() + " " + node);

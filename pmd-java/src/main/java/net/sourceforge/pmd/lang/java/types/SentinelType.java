@@ -5,16 +5,18 @@
 package net.sourceforge.pmd.lang.java.types;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 
 /**
- * A "type" that exists outside of the main type hierarchy. This is only
- * used to have some sentinel values, to eg represent failure or errors.
+ * A "type" that exists outside the main type hierarchy. This is only
+ * used to have some sentinel values, to e.g. represent failure or errors.
  */
 final class SentinelType implements JTypeMirror {
 
@@ -26,6 +28,16 @@ final class SentinelType implements JTypeMirror {
         this.ts = ts;
         this.name = name;
         this.symbol = symbol;
+    }
+
+    @Override
+    public JTypeMirror withAnnotations(List<SymAnnot> symAnnots) {
+        return this;
+    }
+
+    @Override
+    public List<SymAnnot> getTypeAnnotations() {
+        return Collections.emptyList();
     }
 
     @Override

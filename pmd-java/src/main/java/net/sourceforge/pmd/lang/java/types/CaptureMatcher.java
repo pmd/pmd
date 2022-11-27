@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -11,6 +12,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 
 /**
  * Test only. This binds to the first capture variable it tests equal
@@ -33,6 +35,16 @@ final class CaptureMatcher implements JTypeVar {
     @Override
     public boolean isCaptured() {
         return true;
+    }
+
+    @Override
+    public JTypeMirror withAnnotations(List<SymAnnot> symAnnots) {
+        throw new UnsupportedOperationException("this is a test only object which should only be used for equals");
+    }
+
+    @Override
+    public List<SymAnnot> getTypeAnnotations() {
+        throw new UnsupportedOperationException("this is a test only object which should only be used for equals");
     }
 
     @Override

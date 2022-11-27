@@ -29,7 +29,6 @@ final class SymbolicAnnotationImpl implements SymAnnot {
     private @NonNull Map<String, SymbolicValue> explicitAttrs = Collections.emptyMap();
     private final boolean runtimeVisible;
 
-    // TODO would be nice to link back to the class symbol, to get default values
     SymbolicAnnotationImpl(AsmSymbolResolver resolver, boolean runtimeVisible, String descriptor) {
         this.runtimeVisible = runtimeVisible;
         this.typeStub = resolver.resolveFromInternalNameCannotFail(ClassNamesUtil.classDescriptorToInternalName(descriptor));

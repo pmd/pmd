@@ -4,9 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
-import java.util.Collections;
+import static java.util.Collections.emptyList;
+
+import java.util.List;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 
 /**
  * Special primitive wrappers, these are the only ones for which
@@ -22,14 +25,27 @@ final class BoxedPrimitive extends ClassTypeImpl {
     private final JPrimitiveType unboxed;
 
     // constructor called by JPrimitiveType, exactly once per type system and per primitive
-    BoxedPrimitive(TypeSystem factory, JClassSymbol boxType, JPrimitiveType unboxed) {
-        super(factory, boxType, Collections.emptyList(), true); // not erased
+    BoxedPrimitive(TypeSystem factory, JClassSymbol boxType, JPrimitiveType unboxed, List<SymAnnot> typeAnnots) {
+        super(factory, boxType, emptyList(), true, typeAnnots); // not erased
         this.unboxed = unboxed;
     }
 
     @Override
+    public JTypeMirror withAnnotations(List<SymAnnot> symAnnots) {
+        if (symAnnots.equals(this.getTypeAnnotations())) {
+            return this;
+        }
+        return new BoxedPrimitive(
+            getTypeSystem(),
+            this.getSymbol(),
+            this.unboxed,
+            symAnnots
+        );
+    }
+
+    @Override
     public JTypeMirror unbox() {
-        return unboxed;
+        return unboxed.withAnnotations(this.getTypeAnnotations());
     }
 
     @Override

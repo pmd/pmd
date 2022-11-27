@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 import net.sourceforge.pmd.lang.java.types.TypeOps.Convertibility;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
@@ -80,6 +81,12 @@ public interface JTypeMirror extends JTypeVisitable {
      * Returns the type system that built this type.
      */
     TypeSystem getTypeSystem();
+
+
+    JTypeMirror withAnnotations(List<SymAnnot> symAnnots);
+
+    /** Return a list of type annotations on this type. */
+    List<SymAnnot> getTypeAnnotations();
 
 
     /**
