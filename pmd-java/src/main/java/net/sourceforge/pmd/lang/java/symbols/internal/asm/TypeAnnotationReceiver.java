@@ -4,12 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.objectweb.asm.TypePath;
 
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 
 interface TypeAnnotationReceiver {
 
-    void addTypeAnnotation(TypePath path, SymAnnot annot);
+    void acceptTypeAnnotation(int typeRef, @Nullable TypePath path, SymAnnot annot);
 
 }

@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.TypePath;
+import org.objectweb.asm.TypeReference;
 
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
@@ -32,13 +33,13 @@ class FieldStub extends MemberStubBase implements JFieldSymbol, TypeAnnotationRe
     }
 
     @Override
-    public void addTypeAnnotation(TypePath path, SymAnnot annot) {
+    public void acceptTypeAnnotation(int typeRef, @Nullable TypePath path, SymAnnot annot) {
+        assert new TypeReference(typeRef).getSort() == TypeReference.FIELD : typeRef;
         this.type.addTypeAnnotation(path, annot);
     }
 
-    @Nullable
     @Override
-    public Object getConstValue() {
+    public @Nullable Object getConstValue() {
         return constValue;
     }
 

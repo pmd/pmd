@@ -10,12 +10,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.Validate;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.TypePath;
+import org.objectweb.asm.TypeReference;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
+import net.sourceforge.pmd.lang.java.symbols.internal.asm.TypeAnnotationHelper.TypeAnnotationSetWithReferences;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
@@ -63,7 +69,7 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
         return enclosing == null ? LexicalScope.EMPTY : enclosing.getLexicalScope();
     }
 
-    protected void ensureParsed() {
+    protected final void ensureParsed() {
         lock.ensureParsed();
     }
 
@@ -187,16 +193,18 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
     /**
      * Method or constructor type.
      */
-    static class LazyMethodType extends GenericSigBase<ExecutableStub> {
+    static class LazyMethodType extends GenericSigBase<ExecutableStub> implements TypeAnnotationReceiver {
 
         private final @NonNull String signature;
 
         private List<JTypeMirror> parameterTypes;
         private List<JTypeMirror> exceptionTypes;
         private JTypeMirror returnType;
+        private TypeAnnotationSetWithReferences typeAnnots;
 
         /** Used for constructors of inner non-static classes. */
         private final boolean skipFirstParam;
+
 
         LazyMethodType(ExecutableStub ctx, @NonNull String descriptor, @Nullable String genericSig, @SuppressWarnings("PMD.UnusedFormalParameter") @Nullable String[] exceptions, boolean skipFirstParam) {
             super(ctx);
@@ -208,6 +216,11 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
         @Override
         protected void doParse() {
             ctx.sigParser().parseMethodType(this, signature);
+            if (typeAnnots != null) {
+                // apply type annotations here
+                typeAnnots.forEach(this::acceptAnnotationAfterParse);
+            }
+            typeAnnots = null; // null this out.
         }
 
         @Override
@@ -249,6 +262,45 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
         @Override
         public String toString() {
             return signature;
+        }
+
+
+        @Override
+        public void acceptTypeAnnotation(int typeRefInt, @Nullable TypePath path, SymAnnot annot) {
+            // Accumulate type annotations for later
+            // They shouldn't be applied right now because the descriptor maybe has not been parsed yet.
+            if (typeAnnots == null) {
+                typeAnnots = new TypeAnnotationSetWithReferences();
+            }
+            typeAnnots.add(new TypeReference(typeRefInt), path, annot);
+        }
+
+        /**
+         * See {@link MethodVisitor#visitTypeAnnotation(int, TypePath, String, boolean)} for possible
+         * values of typeRefInt
+         */
+        void acceptAnnotationAfterParse(TypeReference tyRef, @Nullable TypePath path, SymAnnot annot) {
+            switch (tyRef.getSort()) {
+            case TypeReference.METHOD_RETURN: {
+                assert returnType != null : "Return type is not set";
+                returnType = TypeAnnotationHelper.applySinglePath(returnType, path, annot);
+                return;
+            }
+            case TypeReference.METHOD_FORMAL_PARAMETER: {
+                assert parameterTypes != null : "Parameter types are not set";
+                int idx = tyRef.getFormalParameterIndex();
+                JTypeMirror annotatedFormal = TypeAnnotationHelper.applySinglePath(parameterTypes.get(idx), path, annot);
+                parameterTypes = TypeAnnotationHelper.replaceAtIndex(parameterTypes, idx, annotatedFormal);
+                return;
+            }
+            case TypeReference.METHOD_TYPE_PARAMETER_BOUND:
+            case TypeReference.METHOD_TYPE_PARAMETER:
+            case TypeReference.METHOD_RECEIVER:
+            case TypeReference.THROWS:
+                throw new NotImplementedException("Not yet implemented: type ref " + tyRef.getSort());
+            default:
+                throw new IllegalArgumentException("Invalid type reference for method or ctor type annotation: " + tyRef.getSort());
+            }
         }
     }
 }

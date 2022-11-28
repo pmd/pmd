@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.TypePath;
 
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
 
@@ -36,6 +37,11 @@ class MethodInfoVisitor extends MethodVisitor {
     @Override
     public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
         return new AnnotationBuilderVisitor(execStub, execStub.getResolver(), visible, descriptor);
+    }
+
+    @Override
+    public AnnotationVisitor visitTypeAnnotation(int typeRef, TypePath typePath, String descriptor, boolean visible) {
+        return new AnnotationBuilderVisitor.TypeAnnotBuilderImpl(execStub.getResolver(), execStub, typeRef, typePath, visible, descriptor);
     }
 
     private class DefaultAnnotValueVisitor extends SymbolicValueBuilder {

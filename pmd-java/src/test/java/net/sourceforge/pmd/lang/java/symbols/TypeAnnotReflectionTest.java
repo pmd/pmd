@@ -12,13 +12,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
+import java.util.Objects;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
-import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
@@ -39,42 +38,43 @@ public class TypeAnnotReflectionTest {
     private final TypeSystem ts = JavaParsingHelper.TEST_TYPE_SYSTEM;
 
 
+    private final JClassSymbol sym = Objects.requireNonNull(ts.getClassSymbol(ClassWithTypeAnnotationsInside.class.getName()));
+    private final List<Annotation> aAnnot = listOf(new AnnotAImpl());
+    private final List<Annotation> bAnnot = listOf(new AnnotBImpl());
+    private final List<Annotation> aAndBAnnot = listOf(new AnnotAImpl(), new AnnotBImpl());
+
     @Test
     public void testTypeAnnotsOnFields() {
 
-        JClassSymbol sym = loadClass(ClassWithTypeAnnotationsInside.class);
 
-        List<Annotation> oneAnnot = listOf(new AnnotAImpl());
-        assertHasTypeAnnots(getFieldType(sym, "intField"), oneAnnot);
-        assertHasTypeAnnots(getFieldType(sym, "annotOnList"), oneAnnot);
+        assertHasTypeAnnots(getFieldType(sym, "intField"), aAnnot);
+        assertHasTypeAnnots(getFieldType(sym, "annotOnList"), aAnnot);
 
         {
             JClassType t = (JClassType) getFieldType(sym, "annotOnListArg");
             assertHasTypeAnnots(t, emptyList());
-            assertHasTypeAnnots(t.getTypeArgs().get(0), oneAnnot);
+            assertHasTypeAnnots(t.getTypeArgs().get(0), aAnnot);
         }
         {
             JClassType t = (JClassType) getFieldType(sym, "annotOnBothListAndArg");
-            assertHasTypeAnnots(t, oneAnnot);
-            assertHasTypeAnnots(t.getTypeArgs().get(0), oneAnnot);
+            assertHasTypeAnnots(t, aAnnot);
+            assertHasTypeAnnots(t.getTypeArgs().get(0), aAnnot);
         }
     }
 
     @Test
     public void testArrayTypeAnnotsOnFields() {
 
-        JClassSymbol sym = loadClass(ClassWithTypeAnnotationsInside.class);
 
-        List<Annotation> oneAnnot = listOf(new AnnotAImpl());
         {
             JArrayType t = (JArrayType) getFieldType(sym, "annotOnArrayComponent");
             assertHasTypeAnnots(t, emptyList());
-            assertHasTypeAnnots(t.getComponentType(), oneAnnot);
-            assertHasTypeAnnots(t.getElementType(), oneAnnot);
+            assertHasTypeAnnots(t.getComponentType(), aAnnot);
+            assertHasTypeAnnots(t.getElementType(), aAnnot);
         }
         {
             JArrayType t = (JArrayType) getFieldType(sym, "annotOnArrayDimension");
-            assertHasTypeAnnots(t, oneAnnot);
+            assertHasTypeAnnots(t, aAnnot);
             assertHasTypeAnnots(t.getComponentType(), emptyList());
             assertHasTypeAnnots(t.getElementType(), emptyList());
         }
@@ -83,7 +83,7 @@ public class TypeAnnotReflectionTest {
             JArrayType t = (JArrayType) getFieldType(sym, "twoAnnotsOnOuterArrayDim");
             assertHasTypeAnnots(t, emptyList());
             assertThat(t.getComponentType(), Matchers.isA(JArrayType.class));
-            assertHasTypeAnnots(t.getComponentType(), listOf(new AnnotBImpl(), new AnnotAImpl()));
+            assertHasTypeAnnots(t.getComponentType(), aAndBAnnot);
             assertHasTypeAnnots(t.getElementType(), emptyList());
         }
         {
@@ -98,9 +98,7 @@ public class TypeAnnotReflectionTest {
     @Test
     public void testInnerTypeAnnotsOnFields() {
 
-        JClassSymbol sym = loadClass(ClassWithTypeAnnotationsInside.class);
 
-        List<Annotation> oneAnnot = listOf(new AnnotAImpl());
         /*
     Outer. @A Inner1                    inner1WithAnnot;
     @A Outer. @A Inner1                 inner1WithAnnotOnOuterToo;
@@ -112,31 +110,31 @@ public class TypeAnnotReflectionTest {
 
         {
             JClassType t = (JClassType) getFieldType(sym, "inner1WithAnnot");
-            assertHasTypeAnnots(t, oneAnnot);
+            assertHasTypeAnnots(t, aAnnot);
             assertHasTypeAnnots(t.getEnclosingType(), emptyList());
         }
         {
             JClassType t = (JClassType) getFieldType(sym, "inner1WithAnnotOnOuterToo");
-            assertHasTypeAnnots(t, oneAnnot);
-            assertHasTypeAnnots(t.getEnclosingType(), oneAnnot);
+            assertHasTypeAnnots(t, aAnnot);
+            assertHasTypeAnnots(t.getEnclosingType(), aAnnot);
             assertNull(t.getEnclosingType().getEnclosingType());
         }
         {
             JClassType t = (JClassType) getFieldType(sym, "inner2WithAnnotOnBothOuter");
             assertHasTypeAnnots(t, emptyList());
-            assertHasTypeAnnots(t.getEnclosingType(), oneAnnot);
-            assertHasTypeAnnots(t.getEnclosingType().getEnclosingType(), oneAnnot);
+            assertHasTypeAnnots(t.getEnclosingType(), aAnnot);
+            assertHasTypeAnnots(t.getEnclosingType().getEnclosingType(), aAnnot);
         }
         {
             JClassType t = (JClassType) getFieldType(sym, "inner2WithAnnotOnAll");
-            assertHasTypeAnnots(t, oneAnnot);
-            assertHasTypeAnnots(t.getEnclosingType(), listOf(new AnnotAImpl(), new AnnotBImpl()));
-            assertHasTypeAnnots(t.getEnclosingType().getEnclosingType(), oneAnnot);
+            assertHasTypeAnnots(t, aAnnot);
+            assertHasTypeAnnots(t.getEnclosingType(), aAndBAnnot);
+            assertHasTypeAnnots(t.getEnclosingType().getEnclosingType(), aAnnot);
         }
         {
             JClassType t = (JClassType) getFieldType(sym, "inner2WithAnnotOnAllExceptOuter");
-            assertHasTypeAnnots(t, oneAnnot);
-            assertHasTypeAnnots(t.getEnclosingType(), listOf(new AnnotAImpl(), new AnnotBImpl()));
+            assertHasTypeAnnots(t, aAnnot);
+            assertHasTypeAnnots(t.getEnclosingType(), aAndBAnnot);
             assertHasTypeAnnots(t.getEnclosingType().getEnclosingType(), emptyList());
         }
     }
@@ -144,9 +142,7 @@ public class TypeAnnotReflectionTest {
     @Test
     public void testInnerTypeAnnotsWithGenerics() {
 
-        JClassSymbol sym = loadClass(ClassWithTypeAnnotationsInside.class);
 
-        List<Annotation> oneAnnot = listOf(new AnnotAImpl());
         /*
 
     OuterG<A, T>.@A Inner5 annotOnInnerWithOuterGeneric;
@@ -159,46 +155,44 @@ public class TypeAnnotReflectionTest {
 
         {
             JClassType t = (JClassType) getFieldType(sym, "annotOnInnerWithOuterGeneric");
-            assertHasTypeAnnots(t, oneAnnot);
+            assertHasTypeAnnots(t, aAnnot);
             assertHasTypeAnnots(t.getEnclosingType(), emptyList());
         }
         {
             JClassType t = (JClassType) getFieldType(sym, "annotOnOuterGenericArg");
-            assertHasTypeAnnots(t, oneAnnot);
+            assertHasTypeAnnots(t, aAnnot);
             assertHasTypeAnnots(t.getEnclosingType(), emptyList());
-            assertHasTypeAnnots(t.getEnclosingType().getTypeArgs().get(0), oneAnnot);
+            assertHasTypeAnnots(t.getEnclosingType().getTypeArgs().get(0), aAnnot);
             assertHasTypeAnnots(t.getEnclosingType().getTypeArgs().get(1), emptyList());
         }
         {
             JClassType t = (JClassType) getFieldType(sym, "annotOnOuterGenericArg2");
-            assertHasTypeAnnots(t, oneAnnot);
+            assertHasTypeAnnots(t, aAnnot);
             assertHasTypeAnnots(t.getEnclosingType(), emptyList());
             assertHasTypeAnnots(t.getEnclosingType().getTypeArgs().get(0), emptyList());
-            assertHasTypeAnnots(t.getEnclosingType().getTypeArgs().get(1), oneAnnot);
+            assertHasTypeAnnots(t.getEnclosingType().getTypeArgs().get(1), aAnnot);
         }
         {
             JClassType t = (JClassType) getFieldType(sym, "annotOnOuterGenericArgAndOuter");
             assertHasTypeAnnots(t, emptyList());
-            assertHasTypeAnnots(t.getEnclosingType(), oneAnnot);
+            assertHasTypeAnnots(t.getEnclosingType(), aAnnot);
             assertHasTypeAnnots(t.getEnclosingType().getTypeArgs().get(0), emptyList());
-            assertHasTypeAnnots(t.getEnclosingType().getTypeArgs().get(1), oneAnnot);
+            assertHasTypeAnnots(t.getEnclosingType().getTypeArgs().get(1), aAnnot);
         }
         {
             JClassType t = (JClassType) getFieldType(sym, "annotOnOuterGenericArgAndInner");
-            assertHasTypeAnnots(t, oneAnnot);
-            assertHasTypeAnnots(t.getTypeArgs().get(0), oneAnnot);
-            assertHasTypeAnnots(t.getEnclosingType(), oneAnnot);
+            assertHasTypeAnnots(t, aAnnot);
+            assertHasTypeAnnots(t.getTypeArgs().get(0), aAnnot);
+            assertHasTypeAnnots(t.getEnclosingType(), aAnnot);
             assertHasTypeAnnots(t.getEnclosingType().getTypeArgs().get(0), emptyList());
-            assertHasTypeAnnots(t.getEnclosingType().getTypeArgs().get(1), oneAnnot);
+            assertHasTypeAnnots(t.getEnclosingType().getTypeArgs().get(1), aAnnot);
         }
     }
 
     @Test
     public void testTypeAnnotOnMultipleGenericsAndInner() {
 
-        JClassSymbol sym = loadClass(ClassWithTypeAnnotationsInside.class);
 
-        List<Annotation> oneAnnot = listOf(new AnnotAImpl());
         /*
 
     @A OuterG<A, @A T>.@A InnerG<@A T> annotOnOuterGenericArgAndInner;
@@ -207,22 +201,19 @@ public class TypeAnnotReflectionTest {
 
         {
             JClassType t = (JClassType) getFieldType(sym, "annotOnOuterGenericArgAndInner");
-            assertHasTypeAnnots(t, oneAnnot);
-            assertHasTypeAnnots(t.getTypeArgs().get(0), oneAnnot);
-            assertHasTypeAnnots(t.getEnclosingType(), oneAnnot);
+            assertHasTypeAnnots(t, aAnnot);
+            assertHasTypeAnnots(t.getTypeArgs().get(0), aAnnot);
+            assertHasTypeAnnots(t.getEnclosingType(), aAnnot);
             assertHasTypeAnnots(t.getEnclosingType().getTypeArgs().get(0), emptyList());
-            assertHasTypeAnnots(t.getEnclosingType().getTypeArgs().get(1), oneAnnot);
+            assertHasTypeAnnots(t.getEnclosingType().getTypeArgs().get(1), aAnnot);
         }
     }
 
     @Test
     public void testTypeAnnotOnWildcards() {
 
-        JClassSymbol sym = loadClass(ClassWithTypeAnnotationsInside.class);
 
         List<Annotation> aAnnot = listOf(new AnnotAImpl());
-        List<Annotation> bAnnot = listOf(new AnnotBImpl());
-        List<Annotation> aAndBAnnot = listOf(new AnnotAImpl(), new AnnotBImpl());
         /*
 
     OuterG<@A @B ? extends @B String, ? super @A @B T>          severalWildcards;
@@ -262,15 +253,8 @@ public class TypeAnnotReflectionTest {
     }
 
 
-    private @NonNull JClassSymbol loadClass(Class<?> klass) {
-        JClassSymbol sym = ts.getClassSymbol(klass.getName());
-        Assert.assertNotNull(sym);
-        return sym;
-    }
-
-
-    private void assertHasTypeAnnots(JTypeMirror t, List<Annotation> annots) {
-        assertThat(t.getTypeAnnotations(), Matchers.hasItems(annots.stream().map(this::matchesAnnot).toArray(Matcher[]::new)));
+    static void assertHasTypeAnnots(JTypeMirror t, List<Annotation> annots) {
+        assertThat(t.getTypeAnnotations(), Matchers.hasItems(annots.stream().map(TypeAnnotReflectionTest::matchesAnnot).toArray(Matcher[]::new)));
     }
 
     static final class AnnotAImpl implements ClassWithTypeAnnotationsInside.A {
@@ -314,7 +298,7 @@ public class TypeAnnotReflectionTest {
         }
     }
 
-    private Matcher<SymAnnot> matchesAnnot(Annotation o) {
+    private static Matcher<SymAnnot> matchesAnnot(Annotation o) {
         return new BaseMatcher<SymAnnot>() {
             @Override
             public boolean matches(Object actual) {
