@@ -56,7 +56,7 @@ public interface JClassType extends JTypeMirror {
 
 
     @Override
-    JClassType withAnnotations(List<SymAnnot> symAnnots);
+    JClassType withAnnotations(List<SymAnnot> newTypeAnnots);
 
     @Override
     default JClassType subst(Function<? super SubstVar, ? extends @NonNull JTypeMirror> fun) {

@@ -31,15 +31,15 @@ final class BoxedPrimitive extends ClassTypeImpl {
     }
 
     @Override
-    public JClassType withAnnotations(List<SymAnnot> symAnnots) {
-        if (symAnnots.equals(this.getTypeAnnotations())) {
+    public JClassType withAnnotations(List<SymAnnot> newTypeAnnots) {
+        if (newTypeAnnots.equals(this.getTypeAnnotations())) {
             return this;
         }
         return new BoxedPrimitive(
             getTypeSystem(),
             this.getSymbol(),
             this.unboxed,
-            symAnnots
+            newTypeAnnots
         );
     }
 

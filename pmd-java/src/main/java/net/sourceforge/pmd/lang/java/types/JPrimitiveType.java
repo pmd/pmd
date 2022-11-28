@@ -49,11 +49,11 @@ public final class JPrimitiveType implements JTypeMirror {
     }
 
     @Override
-    public JTypeMirror withAnnotations(List<SymAnnot> newAnnotations) {
-        if (newAnnotations.equals(this.typeAnnots)) {
+    public JTypeMirror withAnnotations(List<SymAnnot> newTypeAnnots) {
+        if (newTypeAnnots.isEmpty() && this.typeAnnots.isEmpty()) {
             return this;
         }
-        return new JPrimitiveType(ts, kind, type, box.getSymbol(), CollectionUtil.defensiveUnmodifiableCopy(newAnnotations));
+        return new JPrimitiveType(ts, kind, type, box.getSymbol(), CollectionUtil.defensiveUnmodifiableCopy(newTypeAnnots));
     }
 
     @Override

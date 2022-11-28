@@ -25,6 +25,7 @@ import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 import net.sourceforge.pmd.lang.java.types.TypeOps.Convertibility;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * Type mirrors represent Java types. They are created by a {@link TypeSystem}
@@ -83,7 +84,11 @@ public interface JTypeMirror extends JTypeVisitable {
     TypeSystem getTypeSystem();
 
 
-    JTypeMirror withAnnotations(List<SymAnnot> symAnnots);
+    JTypeMirror withAnnotations(List<SymAnnot> newTypeAnnots);
+
+    default JTypeMirror addAnnotation(SymAnnot symAnnot) {
+        return withAnnotations(CollectionUtil.plus(getTypeAnnotations(), symAnnot));
+    }
 
     /** Return a list of type annotations on this type. */
     List<SymAnnot> getTypeAnnotations();

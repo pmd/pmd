@@ -60,7 +60,7 @@ abstract class TypeVarImpl implements JTypeVar {
         }
 
         @Override
-        public JTypeMirror withAnnotations(List<SymAnnot> symAnnots) {
+        public JTypeMirror withAnnotations(List<SymAnnot> newTypeAnnots) {
             return this;
         }
 
@@ -171,7 +171,7 @@ abstract class TypeVarImpl implements JTypeVar {
         }
 
         @Override
-        public JTypeMirror withAnnotations(List<SymAnnot> symAnnots) {
+        public JTypeMirror withAnnotations(List<SymAnnot> newTypeAnnots) {
             return this;
         }
 

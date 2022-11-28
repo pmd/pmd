@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
-import static java.util.Collections.emptyList;
+import static net.sourceforge.pmd.util.CollectionUtil.emptyList;
 import static net.sourceforge.pmd.util.CollectionUtil.immutableSetOf;
 
 import java.io.Serializable;
@@ -741,7 +741,7 @@ public final class TypeSystem {
         }
 
         @Override
-        public JTypeMirror withAnnotations(List<SymAnnot> symAnnots) {
+        public JTypeMirror withAnnotations(List<SymAnnot> newTypeAnnots) {
             return this;
         }
 

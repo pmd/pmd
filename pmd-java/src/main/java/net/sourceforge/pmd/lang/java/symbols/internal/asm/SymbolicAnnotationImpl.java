@@ -102,6 +102,6 @@ final class SymbolicAnnotationImpl implements SymAnnot {
 
     @Override
     public String toString() {
-        return "@" + typeStub + explicitAttrs;
+        return "@" + typeStub.getCanonicalName() + explicitAttrs;
     }
 }

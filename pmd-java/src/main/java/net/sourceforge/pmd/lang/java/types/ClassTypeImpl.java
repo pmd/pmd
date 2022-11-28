@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
+import static net.sourceforge.pmd.util.CollectionUtil.emptyList;
 import static net.sourceforge.pmd.util.CollectionUtil.map;
 
 import java.lang.reflect.Modifier;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -104,11 +104,11 @@ class ClassTypeImpl implements JClassType {
     }
 
     @Override
-    public JClassType withAnnotations(List<SymAnnot> symAnnots) {
-        if (symAnnots.isEmpty() && this.typeAnnotations.isEmpty()) {
+    public JClassType withAnnotations(List<SymAnnot> newTypeAnnots) {
+        if (newTypeAnnots.isEmpty() && this.typeAnnotations.isEmpty()) {
             return this;
         }
-        return new ClassTypeImpl(ts, enclosingType, symbol, typeArgs, CollectionUtil.defensiveUnmodifiableCopy(symAnnots), isDecl);
+        return new ClassTypeImpl(ts, enclosingType, symbol, typeArgs, CollectionUtil.defensiveUnmodifiableCopy(newTypeAnnots), isDecl);
     }
 
     @Override
@@ -258,9 +258,9 @@ class ClassTypeImpl implements JClassType {
 
     private JClassType getDeclaredClass(JClassSymbol inner) {
         if (Modifier.isStatic(inner.getModifiers())) {
-            return new ClassTypeImpl(ts, null, inner, Collections.emptyList(), typeAnnotations, true);
+            return new ClassTypeImpl(ts, null, inner, emptyList(), typeAnnotations, true);
         } else {
-            return selectInner(inner, Collections.emptyList());
+            return selectInner(inner, emptyList());
         }
     }
 
@@ -278,9 +278,9 @@ class ClassTypeImpl implements JClassType {
         JClassSymbol declaredClass = symbol.getDeclaredClass(simpleName);
         if (declaredClass != null) {
             if (Modifier.isStatic(declaredClass.getModifiers())) {
-                return new ClassTypeImpl(ts, null, declaredClass, Collections.emptyList(), Collections.emptyList(), true);
+                return new ClassTypeImpl(ts, null, declaredClass, emptyList(), emptyList(), true);
             } else {
-                return selectInner(declaredClass, Collections.emptyList());
+                return selectInner(declaredClass, emptyList());
             }
         }
         return null;

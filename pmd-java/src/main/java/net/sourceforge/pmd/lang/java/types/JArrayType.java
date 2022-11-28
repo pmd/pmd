@@ -5,7 +5,6 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -31,7 +30,7 @@ public final class JArrayType implements JTypeMirror {
     private JClassSymbol symbol;
 
     JArrayType(TypeSystem ts, JTypeMirror component) {
-        this(ts, component, null, Collections.emptyList());
+        this(ts, component, null, CollectionUtil.emptyList());
     }
 
     JArrayType(TypeSystem ts, JTypeMirror component, JClassSymbol arraySymbol, List<SymAnnot> typeAnnots) {
@@ -66,11 +65,11 @@ public final class JArrayType implements JTypeMirror {
     }
 
     @Override
-    public JTypeMirror withAnnotations(List<SymAnnot> symAnnots) {
-        if (symAnnots.equals(typeAnnots)) {
+    public JArrayType withAnnotations(List<SymAnnot> newTypeAnnots) {
+        if (newTypeAnnots.isEmpty() && this.typeAnnots.isEmpty()) {
             return this;
         }
-        return new JArrayType(ts, component, symbol, CollectionUtil.defensiveUnmodifiableCopy(symAnnots));
+        return new JArrayType(ts, component, symbol, CollectionUtil.defensiveUnmodifiableCopy(newTypeAnnots));
     }
 
     @Override
@@ -153,7 +152,7 @@ public final class JArrayType implements JTypeMirror {
     public JArrayType subst(Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst) {
         JTypeMirror newComp = getComponentType().subst(subst);
         return newComp == component ? this // NOPMD UseEqualsToCompareObjectReferences
-                                    : getTypeSystem().arrayType(newComp);
+                                    : getTypeSystem().arrayType(newComp).withAnnotations(getTypeAnnotations());
     }
 
     @Override

@@ -43,11 +43,11 @@ final class WildcardTypeImpl implements JWildcardType {
     }
 
     @Override
-    public JTypeMirror withAnnotations(List<SymAnnot> symAnnots) {
-        if (symAnnots.isEmpty() && !typeAnnots.isEmpty()) {
+    public JTypeMirror withAnnotations(List<SymAnnot> newTypeAnnots) {
+        if (newTypeAnnots.isEmpty() && !typeAnnots.isEmpty()) {
             return ts.wildcard(isUpperBound, bound);
-        } else if (!symAnnots.isEmpty()) {
-            return new WildcardTypeImpl(ts, isUpperBound(), bound, CollectionUtil.defensiveUnmodifiableCopy(symAnnots));
+        } else if (!newTypeAnnots.isEmpty()) {
+            return new WildcardTypeImpl(ts, isUpperBound(), bound, CollectionUtil.defensiveUnmodifiableCopy(newTypeAnnots));
         }
         return this;
     }

@@ -83,7 +83,7 @@ public class TypeAnnotReflectionTest {
             JArrayType t = (JArrayType) getFieldType(sym, "twoAnnotsOnOuterArrayDim");
             assertHasTypeAnnots(t, emptyList());
             assertThat(t.getComponentType(), Matchers.isA(JArrayType.class));
-            assertHasTypeAnnots(t.getComponentType(), listOf(new AnnotAImpl(), new AnnotBImpl()));
+            assertHasTypeAnnots(t.getComponentType(), listOf(new AnnotBImpl(), new AnnotAImpl()));
             assertHasTypeAnnots(t.getElementType(), emptyList());
         }
         {
@@ -270,7 +270,7 @@ public class TypeAnnotReflectionTest {
 
 
     private void assertHasTypeAnnots(JTypeMirror t, List<Annotation> annots) {
-        assertThat(t.getTypeAnnotations().toArray(), Matchers.array(annots.stream().map(this::matchesAnnot).toArray(Matcher[]::new)));
+        assertThat(t.getTypeAnnotations(), Matchers.hasItems(annots.stream().map(this::matchesAnnot).toArray(Matcher[]::new)));
     }
 
     static final class AnnotAImpl implements ClassWithTypeAnnotationsInside.A {

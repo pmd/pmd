@@ -6,10 +6,9 @@ package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.objectweb.asm.TypePath;
@@ -70,70 +69,37 @@ class LazyTypeSig {
 
     static final class TypeAnnotationSet {
 
-        private final Map<ComparableTypePath, List<SymAnnot>> pathAndAnnot = new HashMap<>();
+        private final List<Pair<TypePath, SymAnnot>> pathAndAnnot = new ArrayList<>();
 
         void add(TypePath path, SymAnnot annot) {
-            pathAndAnnot.computeIfAbsent(new ComparableTypePath(path), k -> new ArrayList<>(1)).add(annot);
+            pathAndAnnot.add(Pair.of(path, annot));
         }
 
-        /** TypePath does not implement equals or hashcode so we wrap it. */
-        static class ComparableTypePath {
-
-            String toString;
-            final TypePath path;
-
-            ComparableTypePath(@Nullable TypePath path) {
-                this.path = path;
-            }
-
-            @Override
-            public String toString() {
-                if (toString == null) {
-                    toString = path == null ? "" : path.toString();
-                }
-                return toString;
-            }
-
-            @Override
-            public boolean equals(Object obj) {
-                return obj instanceof ComparableTypePath && obj.toString().equals(this.toString());
-            }
-
-            @Override
-            public int hashCode() {
-                return toString().hashCode();
-            }
-        }
-
+        /**
+         * Transform the given type to apply type annotations. Returns
+         * the type decorated with type annotations in the right places.
+         */
         JTypeMirror decorate(JTypeMirror base) {
-            for (Map.Entry<ComparableTypePath, List<SymAnnot>> pair : pathAndAnnot.entrySet()) {
-                TypePath path = pair.getKey().path;
+            for (Pair<TypePath, SymAnnot> pair : pathAndAnnot) {
+                TypePath path = pair.getKey();
 
-                base = resolvePath(base, path, pair.getValue());
+                base = resolvePathStep(base, path, 0, pair.getValue());
             }
             return base;
         }
 
-        private JTypeMirror resolvePath(JTypeMirror t, @Nullable TypePath path, List<SymAnnot> annot) {
+        private static JTypeMirror resolvePathStep(JTypeMirror t, @Nullable TypePath path, int i, SymAnnot annot) {
             if (t instanceof JClassType && ((JClassType) t).getEnclosingType() != null) {
-                return handleEnclosingType((JClassType) t, path, 0, annot);
+                return handleEnclosingType((JClassType) t, path, i, annot);
             }
-
-            return resolvePathStep(t, path, 0, annot);
+            return resolvePathStepNoInner(t, path, i, annot);
         }
 
-        private static JTypeMirror resolvePathStep(JTypeMirror t, @Nullable TypePath path, int i, List<SymAnnot> annots) {
-            if (t instanceof JClassType && ((JClassType) t).getEnclosingType() != null) {
-                return handleEnclosingType((JClassType) t, path, i, annots);
-            }
-            return resolvePathStepNoInner(t, path, i, annots);
-        }
-
-        private static JTypeMirror resolvePathStepNoInner(JTypeMirror t, @Nullable TypePath path, int i, List<SymAnnot> annots) {
+        private static JTypeMirror resolvePathStepNoInner(JTypeMirror t, @Nullable TypePath path, int i, SymAnnot annot) {
             assert path == null || path.getStep(i) != TypePath.INNER_TYPE;
 
             if (path == null || i == path.getLength()) {
-                return t.withAnnotations(annots);
+                return t.addAnnotation(annot);
             }
 
             switch (path.getStep(i)) {
@@ -141,7 +107,7 @@ class LazyTypeSig {
                 if (t instanceof JClassType) {
                     int typeArgIndex = path.getStepArgument(i);
                     JTypeMirror arg = ((JClassType) t).getTypeArgs().get(typeArgIndex);
-                    JTypeMirror newArg = resolvePathStep(arg, path, i + 1, annots);
+                    JTypeMirror newArg = resolvePathStep(arg, path, i + 1, annot);
                     List<JTypeMirror> newArgs = replaceAtIndex(((JClassType) t).getTypeArgs(), typeArgIndex, newArg);
                     return ((JClassType) t).withTypeArguments(newArgs);
                 }
@@ -149,7 +115,7 @@ class LazyTypeSig {
             case TypePath.ARRAY_ELEMENT:
                 if (t instanceof JArrayType) {
                     JTypeMirror component = ((JArrayType) t).getComponentType();
-                    JTypeMirror newComponent = resolvePathStep(component, path, i + 1, annots);
+                    JTypeMirror newComponent = resolvePathStep(component, path, i + 1, annot);
                     return t.getTypeSystem().arrayType(newComponent).withAnnotations(t.getTypeAnnotations());
                 }
                 throw new IllegalArgumentException("Expected array type: " + t);
@@ -158,7 +124,7 @@ class LazyTypeSig {
             case TypePath.WILDCARD_BOUND:
                 if (t instanceof JWildcardType) {
                     JWildcardType wild = (JWildcardType) t;
-                    JTypeMirror newBound = resolvePathStep(wild.getBound(), path, i + 1, annots);
+                    JTypeMirror newBound = resolvePathStep(wild.getBound(), path, i + 1, annot);
                     return wild.getTypeSystem().wildcard(wild.isUpperBound(), newBound).withAnnotations(wild.getTypeAnnotations());
                 }
                 throw new IllegalArgumentException("Expected wilcard type: " + t);
@@ -167,7 +133,7 @@ class LazyTypeSig {
             }
         }
 
-        private static JClassType handleEnclosingType(JClassType t, @Nullable TypePath path, int i, List<SymAnnot> annots) {
+        private static JClassType handleEnclosingType(JClassType t, @Nullable TypePath path, int i, SymAnnot annot) {
             // We need to resolve the inner types left to right as given in the path.
             // Because JClassType is left-recursive its structure does not match the
             // structure of the path.
@@ -183,8 +149,7 @@ class LazyTypeSig {
             selectedT = enclosingTypes.get(selectedTypeIndex);
 
             // interpret the rest of the path as with this type as context
-            JClassType rebuiltType = (JClassType) resolvePathStepNoInner(selectedT, path,
-                                                                         i + selectionDepth, annots);
+            JClassType rebuiltType = (JClassType) resolvePathStepNoInner(selectedT, path, i + selectionDepth, annot);
             // Then, we may need to rebuild the type by adding the remaining segments.
             for (int j = selectedTypeIndex - 1; j >= 0; j--) {
                 JClassType nextInner = enclosingTypes.get(j);

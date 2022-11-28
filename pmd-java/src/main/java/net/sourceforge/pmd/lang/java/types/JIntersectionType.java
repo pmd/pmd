@@ -66,11 +66,11 @@ public final class JIntersectionType implements JTypeMirror {
     }
 
     @Override
-    public JTypeMirror withAnnotations(List<SymAnnot> symAnnots) {
+    public JTypeMirror withAnnotations(List<SymAnnot> newTypeAnnots) {
         return new JIntersectionType(
             ts,
-            primaryBound.withAnnotations(symAnnots),
-            CollectionUtil.map(components, c -> c.withAnnotations(symAnnots))
+            primaryBound.withAnnotations(newTypeAnnots),
+            CollectionUtil.map(components, c -> c.withAnnotations(newTypeAnnots))
         );
     }
 

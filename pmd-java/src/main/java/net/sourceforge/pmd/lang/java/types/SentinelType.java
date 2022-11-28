@@ -31,7 +31,7 @@ final class SentinelType implements JTypeMirror {
     }
 
     @Override
-    public JTypeMirror withAnnotations(List<SymAnnot> symAnnots) {
+    public JTypeMirror withAnnotations(List<SymAnnot> newTypeAnnots) {
         return this;
     }
 
