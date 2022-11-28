@@ -134,6 +134,12 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
         public TypeSystem getTypeSystem() {
             return ExecutableStub.this.getTypeSystem();
         }
+        
+        @Override
+        public List<SymAnnot> getDeclaredAnnotations() {
+            int paramIndex = ExecutableStub.this.getFormalParameters().indexOf(this);
+            return ExecutableStub.this.getFormalParameterAnnotations(paramIndex);
+        }
     }
 
     /**

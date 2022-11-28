@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -194,7 +195,7 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
 
         private final @NonNull String signature;
 
-        private Map<Integer, List<SymAnnot>> parameterAnnotations;
+        private Map<Integer, List<SymAnnot>> parameterAnnotations = Collections.emptyMap();
         private List<JTypeMirror> parameterTypes;
         private List<JTypeMirror> exceptionTypes;
         private JTypeMirror returnType;
@@ -256,6 +257,9 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
         }
 
         void addParameterAnnotation(int paramIndex, SymAnnot annot) {
+            if (parameterAnnotations.isEmpty()) {
+                parameterAnnotations = new HashMap<>(); // Make writable
+            }
             parameterAnnotations.computeIfAbsent(paramIndex, ArrayList::new).add(annot);
         }
         
