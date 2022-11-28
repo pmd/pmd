@@ -14,6 +14,7 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
 import net.sourceforge.pmd.util.OptionalBool;
 
@@ -53,6 +54,8 @@ public final class TypePrettyPrint {
         private boolean qualifyTvars = false;
         private boolean qualifyNames = true;
         private boolean isVarargs = false;
+        private boolean printTypeAnnotations = true;
+        private boolean qualifyAnnotations = false;
 
         /** Create a new pretty printer with the default configuration. */
         public TypePrettyPrinter() { // NOPMD
@@ -104,6 +107,25 @@ public final class TypePrettyPrint {
         }
 
         /**
+         * Whether to print the binary name of a type annotation or
+         * just the simple name if false.
+         * Default: false.
+         */
+        public TypePrettyPrinter qualifyAnnotations(boolean qualifyAnnotations) {
+            this.qualifyAnnotations = qualifyAnnotations;
+            return this;
+        }
+
+        /**
+         * Whether to print the type annotations.
+         * Default: true.
+         */
+        public TypePrettyPrinter printAnnotations(boolean printAnnotations) {
+            this.printTypeAnnotations = printAnnotations;
+            return this;
+        }
+
+        /**
          * Use simple names for class types instead of binary names.
          * Default: false.
          */
@@ -117,6 +139,16 @@ public final class TypePrettyPrint {
             this.sb.setLength(0);
             return result;
         }
+
+        private void printTypeAnnotations(List<SymAnnot> annots) {
+            if (this.printTypeAnnotations) {
+                for (SymAnnot annot : annots) {
+                    String name = this.qualifyAnnotations ? annot.getBinaryName()
+                                                          : annot.getSimpleName();
+                    append('@').append(name).append(' ');
+                }
+            }
+        }
     }
 
     private static final class PrettyPrintVisitor implements JTypeVisitor<Void, TypePrettyPrinter> {
@@ -125,6 +157,7 @@ public final class TypePrettyPrint {
 
         @Override
         public Void visit(JTypeMirror t, TypePrettyPrinter sb) {
+            sb.printTypeAnnotations(t.getTypeAnnotations());
             sb.append(t.toString());
             return null;
         }
@@ -142,6 +175,7 @@ public final class TypePrettyPrint {
                 sb.append("(erased) ");
             }
 
+            sb.printTypeAnnotations(t.getTypeAnnotations());
 
             if (t.getSymbol().isUnresolved()) {
                 sb.append('*'); // a small marker to spot them
@@ -179,6 +213,7 @@ public final class TypePrettyPrint {
 
         @Override
         public Void visitPrimitive(JPrimitiveType t, TypePrettyPrinter sb) {
+            sb.printTypeAnnotations(t.getTypeAnnotations());
             sb.append(t.getSimpleName());
             return null;
         }
@@ -192,6 +227,8 @@ public final class TypePrettyPrint {
                     sb.append('#');
                 }
             }
+
+            sb.printTypeAnnotations(t.getTypeAnnotations());
             sb.append(t.getName());
 
             if (sb.printTypeVarBounds == YES) {
@@ -258,6 +295,8 @@ public final class TypePrettyPrint {
             if (component instanceof JIntersectionType) {
                 sb.append(")");
             }
+            // todo I think the annotation placement might be wrong, add tests
+            sb.printTypeAnnotations(t.getTypeAnnotations());
             sb.append(isVarargs ? "..." : "[]");
             return null;
         }

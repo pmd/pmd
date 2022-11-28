@@ -86,6 +86,11 @@ final class SymbolicAnnotationImpl implements SymAnnot {
     }
 
     @Override
+    public String getSimpleName() {
+        return typeStub.getSimpleName();
+    }
+
+    @Override
     public boolean equals(Object o) {
         return SymbolEquality.ANNOTATION.equals(this, o);
     }

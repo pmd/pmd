@@ -193,6 +193,28 @@ public class TypeAnnotReflectionTest {
         }
     }
 
+    @Test
+    public void testTypeAnnot() {
+
+        JClassSymbol sym = loadClass(ClassWithTypeAnnotationsInside.class);
+
+        List<Annotation> oneAnnot = listOf(new TypeUseAnnotImpl());
+        /*
+
+    @TypeUseAnnot OuterG<A, @TypeUseAnnot A>.@TypeUseAnnot InnerG<@TypeUseAnnot A> annotOnOuterGenericArgAndInner;
+
+         */
+
+        {
+            JClassType t = (JClassType) getFieldType(sym, "annotOnOuterGenericArgAndInner");
+            assertHasTypeAnnots(t, oneAnnot);
+            assertHasTypeAnnots(t.getTypeArgs().get(0), oneAnnot);
+            assertHasTypeAnnots(t.getEnclosingType(), oneAnnot);
+            assertHasTypeAnnots(t.getEnclosingType().getTypeArgs().get(0), emptyList());
+            assertHasTypeAnnots(t.getEnclosingType().getTypeArgs().get(1), oneAnnot);
+        }
+    }
+
     private static JTypeMirror getFieldType(JClassSymbol sym, String fieldName) {
         return sym.getDeclaredField(fieldName).getTypeMirror(Substitution.EMPTY);
     }

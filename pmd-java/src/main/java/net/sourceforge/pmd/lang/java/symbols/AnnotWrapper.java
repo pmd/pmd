@@ -87,6 +87,11 @@ final class AnnotWrapper implements SymAnnot {
     }
 
     @Override
+    public String getSimpleName() {
+        return annotationClass.getSimpleName();
+    }
+
+    @Override
     public boolean equals(Object o) {
         return SymbolEquality.ANNOTATION.equals(this, o);
     }

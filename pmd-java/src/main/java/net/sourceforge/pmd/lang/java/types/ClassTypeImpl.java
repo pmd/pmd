@@ -149,12 +149,12 @@ class ClassTypeImpl implements JClassType {
     }
 
     @Override
-    public JClassType selectInner(JClassSymbol symbol, List<? extends JTypeMirror> targs) {
+    public JClassType selectInner(JClassSymbol symbol, List<? extends JTypeMirror> targs, List<SymAnnot> typeAnnotations) {
         return new ClassTypeImpl(ts,
                                  this,
                                  symbol,
                                  CollectionUtil.defensiveUnmodifiableCopy(targs),
-                                 Collections.emptyList(), // tne empty list
+                                 CollectionUtil.defensiveUnmodifiableCopy(typeAnnotations),
                                  this.isDecl);
     }
 
@@ -212,7 +212,7 @@ class ClassTypeImpl implements JClassType {
     @Override
     public JClassType withTypeArguments(List<? extends JTypeMirror> typeArgs) {
         if (enclosingType != null) {
-            return enclosingType.selectInner(symbol, typeArgs);
+            return enclosingType.selectInner(this.symbol, typeArgs, this.typeAnnotations);
         }
 
         int expected = symbol.getTypeParameterCount();
@@ -278,7 +278,7 @@ class ClassTypeImpl implements JClassType {
         JClassSymbol declaredClass = symbol.getDeclaredClass(simpleName);
         if (declaredClass != null) {
             if (Modifier.isStatic(declaredClass.getModifiers())) {
-                return new ClassTypeImpl(ts, null, declaredClass, Collections.emptyList(), typeAnnotations, true);
+                return new ClassTypeImpl(ts, null, declaredClass, Collections.emptyList(), Collections.emptyList(), true);
             } else {
                 return selectInner(declaredClass, Collections.emptyList());
             }

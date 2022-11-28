@@ -113,7 +113,7 @@ class LazyTypeSig {
             return base;
         }
 
-        private JTypeMirror resolvePath(JTypeMirror t, TypePath path, List<SymAnnot> annot) {
+        private JTypeMirror resolvePath(JTypeMirror t, @Nullable TypePath path, List<SymAnnot> annot) {
             if (t instanceof JClassType && ((JClassType) t).getEnclosingType() != null) {
                 return handleEnclosingType((JClassType) t, path, 0, annot);
             }
@@ -122,12 +122,17 @@ class LazyTypeSig {
         }
 
         private static JTypeMirror resolvePathStep(JTypeMirror t, @Nullable TypePath path, int i, List<SymAnnot> annots) {
-            if (path == null || i == path.getLength()) {
-                return t.withAnnotations(annots);
-            }
-
             if (t instanceof JClassType && ((JClassType) t).getEnclosingType() != null) {
                 return handleEnclosingType((JClassType) t, path, i, annots);
+            }
+            return resolvePathStepNoInner(t, path, i, annots);
+        }
+
+        private static JTypeMirror resolvePathStepNoInner(JTypeMirror t, @Nullable TypePath path, int i, List<SymAnnot> annots) {
+            assert path == null || path.getStep(i) != TypePath.INNER_TYPE;
+
+            if (path == null || i == path.getLength()) {
+                return t.withAnnotations(annots);
             }
 
             switch (path.getStep(i)) {
@@ -160,7 +165,28 @@ class LazyTypeSig {
             // We need to resolve the inner types left to right as given in the path.
             // Because JClassType is left-recursive its structure does not match the
             // structure of the path.
+            final JClassType selectedT;
+            // this list is in inner to outer order
+            // eg for A.B.C, the list is [A.B.C, A.B, A]
+            List<JClassType> enclosingTypes = getEnclosingTypes(t);
+            int selectionDepth = 0;
+            while (path != null && path.getStep(i + selectionDepth) == TypePath.INNER_TYPE) {
+                selectionDepth++;
+            }
+            final int selectedTypeIndex = enclosingTypes.size() - 1 - selectionDepth;
+            selectedT = enclosingTypes.get(selectedTypeIndex);
 
+            // interpret the rest of the path as with this type as context
+            JClassType rebuiltType = (JClassType) resolvePathStepNoInner(selectedT, path,
+                                                                         i + selectionDepth, annots);
+            // Then, we may need to rebuild the type by adding the remaining segments.
+            for (int j = selectedTypeIndex - 1; j >= 0; j--) {
+                JClassType nextInner = enclosingTypes.get(j);
+                rebuiltType = rebuiltType.selectInner(nextInner.getSymbol(), nextInner.getTypeArgs(), nextInner.getTypeAnnotations());
+            }
+            return rebuiltType;
+        }
+        /*{
             // These are the enclosing types in inner-to-outer order (inverse of source order).
             // Eg Map.Entry will give [Map.Entry, Map]
             List<JClassType> enclosing = getEnclosingTypes(t);
@@ -181,7 +207,7 @@ class LazyTypeSig {
                 rebuiltType = rebuiltType.selectInner(nextInner.getSymbol(), nextInner.getTypeArgs()).withAnnotations(nextInner.getTypeAnnotations());
             }
             return rebuiltType;
-        }
+        }*/
 
 
         /** Returns a list containing the given type and all its enclosing types, in reverse order. */

@@ -69,6 +69,11 @@ public class AstSymbolicAnnot implements SymbolicValue.SymAnnot {
     }
 
     @Override
+    public String getSimpleName() {
+        return node.getTypeMirror().getSymbol().getSimpleName();
+    }
+
+    @Override
     public boolean equals(Object o) {
         return SymbolEquality.ANNOTATION.equals(this, o);
     }

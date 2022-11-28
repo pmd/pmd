@@ -643,6 +643,8 @@ public final class CollectionUtil {
     public static <T> List<T> defensiveUnmodifiableCopy(List<? extends T> list) {
         if (list.isEmpty()) {
             return emptyList();
+        } else if (list.size() == 1) {
+            return singletonList(list.get(0));
         }
         return Collections.unmodifiableList(new ArrayList<>(list));
     }

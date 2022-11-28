@@ -123,6 +123,7 @@ public interface SymbolicValue {
         Set<String> getAttributeNames();
 
         String getBinaryName();
+        String getSimpleName();
 
         @Override
         default boolean valueEquals(Object o) {

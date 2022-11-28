@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.types;
 
 import static net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -176,7 +177,7 @@ public interface JClassType extends JTypeMirror {
 
 
     /**
-     * Select an enclosing type. This can only be called if the given
+     * Select an inner type. This can only be called if the given
      * symbol represents a non-static member type of this type declaration.
      *
      * @param symbol Symbol for the inner type
@@ -196,7 +197,33 @@ public interface JClassType extends JTypeMirror {
      * @throws IllegalArgumentException If this type is raw and the inner type is not,
      *                                  or this type is parameterized and the inner type is not
      */
-    JClassType selectInner(JClassSymbol symbol, List<? extends JTypeMirror> targs);
+    default JClassType selectInner(JClassSymbol symbol, List<? extends JTypeMirror> targs) {
+        return selectInner(symbol, targs, Collections.emptyList());
+    }
+
+    /**
+     * Select an inner type, with new type annotations. This can only be called if the given
+     * symbol represents a non-static member type of this type declaration.
+     *
+     * @param symbol          Symbol for the inner type
+     * @param targs           Type arguments of the inner type. If that is an empty
+     *                        list, and the given symbol is generic, then the inner
+     *                        type will be raw, or a generic type declaration,
+     *                        depending on whether this type is erased or not.
+     * @param typeAnnotations Type annotations on the inner type
+     *
+     * @return A type for the inner type
+     *
+     * @throws NullPointerException     If one of the parameter is null
+     * @throws IllegalArgumentException If the given symbol is static
+     * @throws IllegalArgumentException If the symbol is not a member type
+     *                                  of this type (local/anon classes don't work)
+     * @throws IllegalArgumentException If the type arguments don't match the
+     *                                  type parameters of the symbol (see {@link #withTypeArguments(List)})
+     * @throws IllegalArgumentException If this type is raw and the inner type is not,
+     *                                  or this type is parameterized and the inner type is not
+     */
+    JClassType selectInner(JClassSymbol symbol, List<? extends JTypeMirror> targs, List<SymAnnot> typeAnnotations);
 
 
     /**
