@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.types.JArrayType;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.JWildcardType;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 
 class LazyTypeSig {
@@ -153,8 +154,13 @@ class LazyTypeSig {
                 }
                 throw new IllegalArgumentException("Expected array type: " + t);
             case TypePath.INNER_TYPE:
-                throw new IllegalStateException("Should be handled elsewhere");
+                throw new IllegalStateException("Should be handled elsewhere"); // there's an assert above too
             case TypePath.WILDCARD_BOUND:
+                if (t instanceof JWildcardType) {
+                    JWildcardType wild = (JWildcardType) t;
+                    JTypeMirror newBound = resolvePathStep(wild.getBound(), path, i + 1, annots);
+                    return wild.getTypeSystem().wildcard(wild.isUpperBound(), newBound).withAnnotations(wild.getTypeAnnotations());
+                }
                 throw new IllegalArgumentException("Expected wilcard type: " + t);
             default:
                 throw new IllegalArgumentException("Illegal path step for annotation TypePath" + i);
@@ -186,29 +192,6 @@ class LazyTypeSig {
             }
             return rebuiltType;
         }
-        /*{
-            // These are the enclosing types in inner-to-outer order (inverse of source order).
-            // Eg Map.Entry will give [Map.Entry, Map]
-            List<JClassType> enclosing = getEnclosingTypes(t);
-            final int innerTStart = i;
-            while (path != null && path.getStep(i) == TypePath.INNER_TYPE) {
-                i++;
-            }
-            final int numInnerTypeSegments = i - innerTStart; // could be zero
-            final int selectedTypeIndex = enclosing.size() - 1 - numInnerTypeSegments;
-            JClassType newType = (JClassType) resolvePathStep(enclosing.get(selectedTypeIndex), path, i, annots);
-            enclosing.set(selectedTypeIndex, newType);
-
-            // this is the outermost type
-            JClassType rebuiltType = enclosing.get(enclosing.size() - 1);
-            // Then, we may need to rebuild the type by adding the remaining segments.
-            for (int j = enclosing.size() - 2; j >= 0; j--) {
-                JClassType nextInner = enclosing.get(j);
-                rebuiltType = rebuiltType.selectInner(nextInner.getSymbol(), nextInner.getTypeArgs()).withAnnotations(nextInner.getTypeAnnotations());
-            }
-            return rebuiltType;
-        }*/
-
 
         /** Returns a list containing the given type and all its enclosing types, in reverse order. */
         private static List<JClassType> getEnclosingTypes(JClassType t) {

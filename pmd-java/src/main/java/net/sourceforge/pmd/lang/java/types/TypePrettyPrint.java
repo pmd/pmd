@@ -33,7 +33,7 @@ public final class TypePrettyPrint {
     }
 
     public static @NonNull String prettyPrintWithSimpleNames(@NonNull JTypeVisitable t) {
-        return prettyPrint(t, new TypePrettyPrinter().useSimpleNames(true));
+        return prettyPrint(t, new TypePrettyPrinter().qualifyNames(false));
     }
 
     public static String prettyPrint(@NonNull JTypeVisitable t, TypePrettyPrinter prettyPrinter) {
@@ -126,15 +126,17 @@ public final class TypePrettyPrint {
         }
 
         /**
-         * Use simple names for class types instead of binary names.
-         * Default: false.
+         * Use qualified names for class types instead of simple names.
+         * Default: true.
          */
-        public TypePrettyPrinter useSimpleNames(boolean useSimpleNames) {
-            this.qualifyNames = !useSimpleNames;
+        public TypePrettyPrinter qualifyNames(boolean qualifyNames) {
+            this.qualifyNames = qualifyNames;
             return this;
         }
 
         String consumeResult() {
+            // The pretty printer might be reused by another call,
+            // delete the buffer.
             String result = sb.toString();
             this.sb.setLength(0);
             return result;
@@ -200,6 +202,7 @@ public final class TypePrettyPrint {
 
         @Override
         public Void visitWildcard(JWildcardType t, TypePrettyPrinter sb) {
+            sb.printTypeAnnotations(t.getTypeAnnotations());
             sb.append("?");
             if (t.isUnbounded()) {
                 return null;

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.symbols.testdata;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.java.symbols.TypeAnnotReflectionTest;
@@ -16,44 +18,63 @@ import net.sourceforge.pmd.lang.java.symbols.TypeAnnotReflectionTest;
 public class ClassWithTypeAnnotationsInside {
 
 
-    @TypeUseAnnot int intField;
+    @A int intField;
 
-    @TypeUseAnnot List<String> annotOnList;
-    List<@TypeUseAnnot String> annotOnListArg;
-    @TypeUseAnnot List<@TypeUseAnnot String> annotOnBothListAndArg;
+    @A List<String> annotOnList;
+    List<@A String> annotOnListArg;
+    @A List<@A String> annotOnBothListAndArg;
 
-    @TypeUseAnnot int[] annotOnArrayComponent;
-    int @TypeUseAnnot [] annotOnArrayDimension;
+    @A int[] annotOnArrayComponent;
+    int @A [] annotOnArrayDimension;
     // this annotates the int[]
-    int[] @TypeUseAnnot @SecondTypeUseAnnot [] twoAnnotsOnOuterArrayDim;
-    int @TypeUseAnnot [][] annotOnInnerArrayDim;
-    int @TypeUseAnnot(1) [] @TypeUseAnnot(2) [] annotsOnBothArrayDims;
+    int[] @A @B [] twoAnnotsOnOuterArrayDim;
+    int @A [][] annotOnInnerArrayDim;
+    int @A(1) [] @A(2) [] annotsOnBothArrayDims;
 
 
-    ClassWithTypeAnnotationsInside.@TypeUseAnnot Inner1 inner1WithAnnot;
-    @TypeUseAnnot ClassWithTypeAnnotationsInside.@TypeUseAnnot Inner1 inner1WithAnnotOnOuterToo;
-    @TypeUseAnnot ClassWithTypeAnnotationsInside.@TypeUseAnnot Inner1.Inner2 inner2WithAnnotOnBothOuter;
-    @TypeUseAnnot ClassWithTypeAnnotationsInside.@TypeUseAnnot @SecondTypeUseAnnot Inner1.@TypeUseAnnot Inner2 inner2WithAnnotOnAll;
-    ClassWithTypeAnnotationsInside.@TypeUseAnnot @SecondTypeUseAnnot Inner1.@TypeUseAnnot Inner2 inner2WithAnnotOnAllExceptOuter;
+    Outer.@A Inner1 inner1WithAnnot;
+    @A Outer.@A Inner1 inner1WithAnnotOnOuterToo;
+    @A Outer.@A Inner1.Inner2 inner2WithAnnotOnBothOuter;
+    @A Outer.@A @B Inner1.@A Inner2 inner2WithAnnotOnAll;
+    Outer.@A @B Inner1.@A Inner2 inner2WithAnnotOnAllExceptOuter;
 
 
-    OuterG<A, A>.@TypeUseAnnot Inner5 annotOnInnerWithOuterGeneric;
-    OuterG<@TypeUseAnnot A, A>.@TypeUseAnnot Inner5 annotOnOuterGenericArg;
-    OuterG<A, @TypeUseAnnot A>.@TypeUseAnnot Inner5 annotOnOuterGenericArg2;
-    @TypeUseAnnot OuterG<A, @TypeUseAnnot A>.Inner5 annotOnOuterGenericArgAndOuter;
-    @TypeUseAnnot OuterG<A, @TypeUseAnnot A>.@TypeUseAnnot InnerG<@TypeUseAnnot A> annotOnOuterGenericArgAndInner;
+    OuterG<T, T>.@A Inner5 annotOnInnerWithOuterGeneric;
+    OuterG<@A T, T>.@A Inner5 annotOnOuterGenericArg;
+    OuterG<T, @A T>.@A Inner5 annotOnOuterGenericArg2;
+    @A OuterG<T, @A T>.Inner5 annotOnOuterGenericArgAndOuter;
+    @A OuterG<T, @A T>.@A InnerG<@A T> annotOnOuterGenericArgAndInner;
 
 
-    private static class A { }
+    OuterG<@A ? extends @B String, ? super @A @B T> severalWildcards;
+    @A OuterG<@A @B ? extends @B String, @A List<@A @B Object>> complicatedField;
 
-    class Inner1 {
 
-        class Inner2 { }
+    @Target( { ElementType.TYPE_USE, ElementType.TYPE, ElementType.TYPE_PARAMETER })
+    public @interface A {
+
+        int value() default 1;
+    }
+
+    @Target( { ElementType.TYPE_USE, ElementType.TYPE, ElementType.TYPE_PARAMETER })
+    public @interface B { }
+
+
+    private static class T { }
+
+    static class Outer {
+
+        class Inner1 {
+
+            class Inner2 { }
+        }
+
     }
 
     static class OuterG<A, B> {
 
         class Inner5 { }
+
         class InnerG<X> { }
     }
 }
