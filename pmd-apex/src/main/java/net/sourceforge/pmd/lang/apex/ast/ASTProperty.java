@@ -22,8 +22,14 @@ public class ASTProperty extends AbstractApexNode.Single<PropertyDeclaration> {
         return visitor.visit(this, data);
     }
 
+    /**
+     * Returns the property value's type name.
+     *
+     * This includes any type arguments.
+     * If the type is a primitive, its case will be normalized.
+     */
     public String getType() {
-        return node.getType().asCodeString();
+        return caseNormalizedTypeIfPrimitive(node.getType().asCodeString());
     }
 
     public ASTModifierNode getModifiers() {

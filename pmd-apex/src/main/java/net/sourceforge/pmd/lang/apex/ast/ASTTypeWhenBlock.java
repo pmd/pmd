@@ -12,8 +12,14 @@ public final class ASTTypeWhenBlock extends AbstractApexNode.Single<SwitchStatem
         super(whenType);
     }
 
+    /**
+     * Returns the when block's matching type name.
+     *
+     * This includes any type arguments.
+     * If the type is a primitive, its case will be normalized.
+     */
     public String getType() {
-        return node.getType().asCodeString();
+        return caseNormalizedTypeIfPrimitive(node.getType().asCodeString());
     }
 
     public String getName() {

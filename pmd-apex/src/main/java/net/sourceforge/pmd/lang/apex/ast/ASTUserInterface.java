@@ -65,7 +65,12 @@ public class ASTUserInterface extends ApexRootNode<InterfaceDeclaration> impleme
         return getFirstChildOfType(ASTModifierNode.class);
     }
 
+    /**
+     * Returns the name of the superclass of this class, or an empty string if there is none.
+     *
+     * The type name does NOT include type arguments.
+     */
     public String getSuperInterfaceName() {
-        return node.getExtendsTypes().stream().map(TypeRef::asCodeString).findFirst().orElse("");
+        return node.getExtendsTypes().stream().map(TypeRef::asTypeErasedString).findFirst().orElse("");
     }
 }

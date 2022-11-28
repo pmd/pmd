@@ -160,8 +160,14 @@ public class ASTMethod extends AbstractApexNode.Single<MethodDeclaration> implem
         return getFirstChildOfType(ASTModifierNode.class);
     }
 
+    /**
+     * Returns the method return type name.
+     *
+     * This includes any type arguments.
+     * If the type is a primitive, its case will be normalized.
+     */
     public String getReturnType() {
-        return node.getReturnType().asCodeString();
+        return caseNormalizedTypeIfPrimitive(node.getReturnType().asCodeString());
     }
 
     public int getArity() {

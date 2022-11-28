@@ -66,8 +66,16 @@ public class ASTField extends AbstractApexNode.Many<Node> implements CanSuppress
         return false;
     }
 
+    /**
+     * Returns the type name.
+     *
+     * This includes any type arguments. (This is tested.)
+     * If the type is a primitive, its case will be normalized.
+     */
     public String getType() {
-        return typeRef != null ? typeRef.asCodeString() : enumType.getId().asCodeString();
+        return typeRef != null
+            ? caseNormalizedTypeIfPrimitive(typeRef.asCodeString())
+            : enumType.getId().asCodeString();
     }
 
     public ASTModifierNode getModifiers() {

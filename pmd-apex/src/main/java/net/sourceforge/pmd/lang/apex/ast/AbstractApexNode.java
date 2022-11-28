@@ -4,7 +4,9 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.TreeSet;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
@@ -179,5 +181,38 @@ public abstract class AbstractApexNode extends AbstractApexNodeBase implements A
             return "";
         }
         return expr.asCodeString();
+    }
+
+    /**
+      * Normalizes case of primitive type names.
+      *
+      * All other strings are returned unchanged.
+      *
+      * See: https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/langCon_apex_primitives.htm
+      */
+    public static String caseNormalizedTypeIfPrimitive(String name) {
+        String floor = CASE_NORMALIZED_TYPE_NAMES.floor(name);
+        return name.equalsIgnoreCase(floor) ? floor : name;
+    }
+
+    private static TreeSet<String> CASE_NORMALIZED_TYPE_NAMES =
+        new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+
+    static {
+        CASE_NORMALIZED_TYPE_NAMES.addAll(Arrays.asList(
+            "Blob",
+            "Boolean",
+            "Currency",
+            "Date",
+            "Datetime",
+            "Decimal",
+            "Double",
+            "ID",
+            "Integer",
+            "Long",
+            "Object",
+            "String",
+            "Time"
+        ));
     }
 }
