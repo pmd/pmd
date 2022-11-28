@@ -6,9 +6,16 @@ package net.sourceforge.pmd.lang.java.symbols.internal.ast;
 
 import static net.sourceforge.pmd.lang.java.types.TypeOps.subst;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 
@@ -18,9 +25,20 @@ import net.sourceforge.pmd.lang.java.types.Substitution;
 abstract class AbstractAstVariableSym
     extends AbstractAstBackedSymbol<ASTVariableDeclaratorId>
     implements JVariableSymbol {
+    
+    private final List<SymAnnot> declaredAnnotations;
 
     AbstractAstVariableSym(ASTVariableDeclaratorId node, AstSymFactory factory) {
         super(node, factory);
+        
+        NodeStream<ASTAnnotation> annotStream = node.getDeclaredAnnotations();
+        if (annotStream.isEmpty()) {
+            declaredAnnotations = Collections.emptyList();
+        } else {
+            final List<SymAnnot> annotations = new ArrayList<>();
+            annotStream.forEach(n -> annotations.add(new AstSymbolicAnnot(n)));
+            declaredAnnotations = Collections.unmodifiableList(annotations);
+        }
     }
 
     @Override
@@ -31,6 +49,11 @@ abstract class AbstractAstVariableSym
     @Override
     public String getSimpleName() {
         return node.getVariableName();
+    }
+    
+    @Override
+    public List<SymAnnot> getDeclaredAnnotations() {
+        return declaredAnnotations;
     }
 
     @Override

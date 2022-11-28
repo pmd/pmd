@@ -69,8 +69,8 @@ final class AstClassSym
         final List<JConstructorSymbol> myCtors = new ArrayList<>();
         final List<JFieldSymbol> myFields = new ArrayList<>();
         final List<JFieldSymbol> enumConstants;
-
         final List<JFieldSymbol> recordComponents;
+        
         if (isRecord()) {
             ASTRecordComponentList components = Objects.requireNonNull(node.getRecordComponents(),
                                                                        "Null component list for " + node);

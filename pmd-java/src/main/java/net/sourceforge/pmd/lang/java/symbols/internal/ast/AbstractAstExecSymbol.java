@@ -55,7 +55,7 @@ abstract class AbstractAstExecSymbol<T extends ASTMethodOrConstructorDeclaration
             t -> t.getTypeMirror().subst(subst)
         );
     }
-
+    
 
     @Override
     public @NonNull JClassSymbol getEnclosingClass() {
