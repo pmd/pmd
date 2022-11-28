@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolEquality;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolToStrings;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.GenericSigBase.LazyMethodType;
@@ -72,6 +73,11 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
     public int getArity() {
         return type.getParameterTypes().size();
     }
+    
+    @Override
+    public List<SymAnnot> getFormalParameterAnnotations(int parameterIndex) {
+        return type.getParameterAnnotations(parameterIndex);
+    }
 
     @Override
     public List<JTypeMirror> getFormalParameterTypes(Substitution subst) {
@@ -87,6 +93,9 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
         // overridden by MethodStub
     }
 
+    void addParameterAnnotation(int paramIndex, SymbolicValue.SymAnnot annot) {
+        type.addParameterAnnotation(paramIndex, annot);
+    }
 
     /**
      * Formal parameter symbols obtained from the class have no info

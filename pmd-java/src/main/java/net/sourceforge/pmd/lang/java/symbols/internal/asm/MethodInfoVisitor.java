@@ -19,12 +19,16 @@ class MethodInfoVisitor extends MethodVisitor {
         super(AsmSymbolResolver.ASM_API_V);
         this.execStub = execStub;
     }
-
+    
     @Override
     public AnnotationVisitor visitAnnotationDefault() {
         return new DefaultAnnotValueVisitor(execStub.getResolver());
     }
 
+    @Override
+    public AnnotationVisitor visitParameterAnnotation(int parameter, String descriptor, boolean visible) {
+        return new ParameterAnnotVisitor(execStub.getResolver(), parameter, visible, descriptor);
+    }
 
     @Override
     public void visitEnd() {
@@ -51,5 +55,26 @@ class MethodInfoVisitor extends MethodVisitor {
         }
     }
 
+    private class ParameterAnnotVisitor extends SymbolicValueBuilder {
 
+        private final SymbolicAnnotationImpl annot;
+        private final int paramIndex;
+        
+        ParameterAnnotVisitor(AsmSymbolResolver resolver, int paramIndex, boolean visible, String descriptor) {
+            super(resolver);
+            this.annot = new SymbolicAnnotationImpl(resolver, visible, descriptor);
+            this.paramIndex = paramIndex;
+        }
+        
+        @Override
+        protected void acceptValue(String name, SymbolicValue v) {
+            annot.addAttribute(name, v);
+        }
+
+        
+        @Override
+        public void visitEnd() {
+            execStub.addParameterAnnotation(paramIndex, annot);
+        }
+    }
 }
