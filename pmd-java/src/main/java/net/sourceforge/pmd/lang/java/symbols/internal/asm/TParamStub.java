@@ -4,15 +4,19 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
+import java.util.List;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolEquality;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolToStrings;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 class TParamStub implements JTypeParameterSymbol {
 
@@ -21,6 +25,7 @@ class TParamStub implements JTypeParameterSymbol {
     private final JTypeVar typeVar;
     private final String boundSignature;
     private final SignatureParser sigParser;
+    private List<SymAnnot> typeAnnots = CollectionUtil.emptyList();
 
     TParamStub(String name, GenericSigBase<?> sig, String bound) {
         this.name = name;
@@ -45,6 +50,15 @@ class TParamStub implements JTypeParameterSymbol {
     @Override
     public JTypeParameterOwnerSymbol getDeclaringSymbol() {
         return owner;
+    }
+
+    @Override
+    public List<SymAnnot> getDeclaredAnnotations() {
+        return typeAnnots;
+    }
+
+    void addAnnotation(SymAnnot annot) {
+        typeAnnots = CollectionUtil.plus(typeAnnots, annot);
     }
 
     @Override

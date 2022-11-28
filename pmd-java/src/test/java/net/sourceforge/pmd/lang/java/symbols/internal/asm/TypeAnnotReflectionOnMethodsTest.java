@@ -2,9 +2,9 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.symbols;
+package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
-import static net.sourceforge.pmd.lang.java.symbols.TypeAnnotReflectionTest.assertHasTypeAnnots;
+import static net.sourceforge.pmd.lang.java.symbols.internal.asm.TypeAnnotReflectionTest.assertHasTypeAnnots;
 import static net.sourceforge.pmd.util.CollectionUtil.emptyList;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
@@ -14,8 +14,8 @@ import java.util.List;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
-import net.sourceforge.pmd.lang.java.symbols.TypeAnnotReflectionTest.AnnotAImpl;
-import net.sourceforge.pmd.lang.java.symbols.TypeAnnotReflectionTest.AnnotBImpl;
+import net.sourceforge.pmd.lang.java.symbols.internal.asm.TypeAnnotReflectionTest.AnnotAImpl;
+import net.sourceforge.pmd.lang.java.symbols.internal.asm.TypeAnnotReflectionTest.AnnotBImpl;
 import net.sourceforge.pmd.lang.java.symbols.testdata.ClassWithTypeAnnotationsOnMethods;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
@@ -82,6 +82,33 @@ public class TypeAnnotReflectionOnMethodsTest {
             JMethodSig t = getMethodType(sym, "aOnThrows");
             assertHasTypeAnnots(t.getReturnType(), emptyList());
             assertHasTypeAnnots(t.getThrownExceptions().get(0), aAnnot);
+        }
+    }
+
+    @Test
+    public void testTypeAnnotOnTParam() {
+
+        /*
+
+    abstract <@A @B T, E extends T> void abOnTypeParm();
+    abstract <@A @B T, E extends T> T abOnTypeParm2(T t);
+    abstract <@A T, E extends @B T> void bOnTypeParmBound();
+    abstract <@A T, E extends @B T> E bOnTypeParmBound(T t);
+
+
+         */
+
+        {
+            JMethodSig t = getMethodType(sym, "abOnTypeParm");
+            assertHasTypeAnnots(t.getTypeParameters().get(0), aAndBAnnot);
+            assertHasTypeAnnots(t.getTypeParameters().get(1), emptyList());
+        }
+        {
+            JMethodSig t = getMethodType(sym, "abOnTypeParm2");
+            assertHasTypeAnnots(t.getTypeParameters().get(0), aAndBAnnot);
+            assertHasTypeAnnots(t.getTypeParameters().get(1), emptyList());
+            assertHasTypeAnnots(t.getReturnType(), emptyList());
+            assertHasTypeAnnots(t.getFormalParameters().get(0), emptyList());
         }
     }
 

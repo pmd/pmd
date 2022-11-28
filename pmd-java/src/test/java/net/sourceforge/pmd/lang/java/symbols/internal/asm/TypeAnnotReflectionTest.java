@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.symbols;
+package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
 import static java.util.Collections.emptyList;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
@@ -21,6 +21,7 @@ import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.symbols.testdata.ClassWithTypeAnnotationsInside;
 import net.sourceforge.pmd.lang.java.types.JArrayType;

@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
-import java.util.Collections;
+
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.LexicalScope;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * Parses type signatures. This is basically convenience wrappers for
@@ -84,6 +85,7 @@ class SignatureParser {
             int tparamsEnd = TypeParamsParser.typeParams(b.start, b);
 
             List<JTypeVar> sigTypeParams = b.getOwnerTypeParams();
+            // todo at this point we need to add type annotations right?
             owner.setTypeParams(sigTypeParams);
 
             LexicalScope lexScope = owner.getEnclosingTypeParams().andThen(sigTypeParams);
@@ -91,7 +93,7 @@ class SignatureParser {
             // the new type builder has the owner's type parameters in scope
             return new MyTypeBuilder(lexScope, b.chars, tparamsEnd, b.end);
         } else {
-            owner.setTypeParams(Collections.emptyList());
+            owner.setTypeParams(CollectionUtil.emptyList());
             return new MyTypeBuilder(owner.getEnclosingTypeParams(), sig);
         }
     }

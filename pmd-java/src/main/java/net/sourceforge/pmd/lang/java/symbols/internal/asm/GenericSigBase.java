@@ -326,8 +326,14 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
                 exceptionTypes = TypeAnnotationHelper.replaceAtIndex(exceptionTypes, idx, annotatedFormal);
                 return;
             }
+            case TypeReference.METHOD_TYPE_PARAMETER: {
+                assert typeParameters != null;
+                int idx = tyRef.getTypeParameterIndex();
+                assert path == null: "unexpected path " + path;
+                ((TParamStub) typeParameters.get(idx).getSymbol()).addAnnotation(annot);
+                return;
+            }
             case TypeReference.METHOD_TYPE_PARAMETER_BOUND:
-            case TypeReference.METHOD_TYPE_PARAMETER:
             case TypeReference.METHOD_RECEIVER:
                 throw new NotImplementedException("Not yet implemented: type ref " + tyRef.getSort());
             default:

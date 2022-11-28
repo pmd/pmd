@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.symbols.testdata;
 
-import net.sourceforge.pmd.lang.java.symbols.TypeAnnotReflectionOnMethodsTest;
+import net.sourceforge.pmd.lang.java.symbols.internal.asm.TypeAnnotReflectionOnMethodsTest;
 import net.sourceforge.pmd.lang.java.symbols.testdata.ClassWithTypeAnnotationsInside.A;
 import net.sourceforge.pmd.lang.java.symbols.testdata.ClassWithTypeAnnotationsInside.B;
 
@@ -23,6 +23,10 @@ public abstract class ClassWithTypeAnnotationsOnMethods {
 
     abstract void aOnThrows() throws @A RuntimeException;
 
+    abstract <@A @B T, E extends T> void abOnTypeParm();
+    abstract <@A @B T, E extends T> T abOnTypeParm2(T t);
+    abstract <@A T, E extends @B T> void bOnTypeParmBound();
+    abstract <@A T, E extends @B T> E bOnTypeParmBound(T t);
 
     static class CtorOwner {
 
