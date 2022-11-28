@@ -23,4 +23,12 @@ public abstract class ClassWithTypeAnnotationsOnMethods {
 
     abstract void aOnThrows() throws @A RuntimeException;
 
+
+    static class CtorOwner {
+
+        CtorOwner(@A @B int i) { }
+        @A CtorOwner() { }
+        CtorOwner(String i) throws @A RuntimeException {}
+    }
+
 }

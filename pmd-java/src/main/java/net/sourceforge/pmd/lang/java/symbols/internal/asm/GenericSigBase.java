@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -201,26 +202,51 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
         private List<JTypeMirror> exceptionTypes;
         private JTypeMirror returnType;
         private TypeAnnotationSetWithReferences typeAnnots;
+        private @Nullable String[] rawExceptions;
 
         /** Used for constructors of inner non-static classes. */
         private final boolean skipFirstParam;
 
 
-        LazyMethodType(ExecutableStub ctx, @NonNull String descriptor, @Nullable String genericSig, @SuppressWarnings("PMD.UnusedFormalParameter") @Nullable String[] exceptions, boolean skipFirstParam) {
+        // TODO exceptions. Couple of notes:
+        //  - the descriptor never contains thrown exceptions
+        //  - the signature might not contain the thrown exception types (if they do not depend on type variables)
+        //  - the exceptions array also contains unchecked exceptions
+        //
+        //  See https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.9.1
+        // TODO test cases
+        //  <E extends Exception> void foo()    throws E;          // descriptor "()V"                     signature "<TE;>()V^TE;"   exceptions: ???
+        //  <E>                   void foo(E e) throws Exception;  // descriptor "(Ljava.lang.Object;)V"   signature "<TE;>(TE;)V"    exceptions: [ "java/lang/Exception" ]
+        //                        void foo()    throws Exception;  // descriptor "()V"                     signature null             exceptions: [ "java/lang/Exception" ]
+        LazyMethodType(ExecutableStub ctx,
+                       @NonNull String descriptor,
+                       @Nullable String genericSig,
+                       @Nullable String[] exceptions,
+                       boolean skipFirstParam) {
             super(ctx);
             this.signature = genericSig != null ? genericSig : descriptor;
             // generic signatures already omit the synthetic param
             this.skipFirstParam = skipFirstParam && genericSig == null;
+            this.rawExceptions = exceptions;
         }
 
         @Override
         protected void doParse() {
             ctx.sigParser().parseMethodType(this, signature);
+            if (rawExceptions != null && this.exceptionTypes.isEmpty()) {
+                // the descriptor did not contain exceptions. They're in this string array.
+                this.exceptionTypes = Arrays.stream(rawExceptions)
+                                            .map(ctx.getResolver()::resolveFromInternalNameCannotFail)
+                                            .map(ctx.getTypeSystem()::rawType)
+                                            .collect(CollectionUtil.toUnmodifiableList());
+            }
             if (typeAnnots != null) {
                 // apply type annotations here
                 typeAnnots.forEach(this::acceptAnnotationAfterParse);
             }
-            typeAnnots = null; // null this out.
+            // null this transient data out
+            this.rawExceptions = null;
+            this.typeAnnots = null;
         }
 
         @Override
@@ -293,13 +319,20 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
                 parameterTypes = TypeAnnotationHelper.replaceAtIndex(parameterTypes, idx, annotatedFormal);
                 return;
             }
+            case TypeReference.THROWS: {
+                assert exceptionTypes != null : "Exception types are not set";
+                int idx = tyRef.getExceptionIndex();
+                JTypeMirror annotatedFormal = TypeAnnotationHelper.applySinglePath(exceptionTypes.get(idx), path, annot);
+                exceptionTypes = TypeAnnotationHelper.replaceAtIndex(exceptionTypes, idx, annotatedFormal);
+                return;
+            }
             case TypeReference.METHOD_TYPE_PARAMETER_BOUND:
             case TypeReference.METHOD_TYPE_PARAMETER:
             case TypeReference.METHOD_RECEIVER:
-            case TypeReference.THROWS:
                 throw new NotImplementedException("Not yet implemented: type ref " + tyRef.getSort());
             default:
-                throw new IllegalArgumentException("Invalid type reference for method or ctor type annotation: " + tyRef.getSort());
+                throw new IllegalArgumentException(
+                    "Invalid type reference for method or ctor type annotation: " + tyRef.getSort());
             }
         }
     }

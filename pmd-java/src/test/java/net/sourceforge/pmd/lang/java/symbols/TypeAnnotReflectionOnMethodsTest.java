@@ -71,6 +71,20 @@ public class TypeAnnotReflectionOnMethodsTest {
         }
     }
 
+    @Test
+    public void testTypeAnnotOnThrows() {
+
+        /*
+            abstract void aOnThrows() throws @A RuntimeException;
+         */
+
+        {
+            JMethodSig t = getMethodType(sym, "aOnThrows");
+            assertHasTypeAnnots(t.getReturnType(), emptyList());
+            assertHasTypeAnnots(t.getThrownExceptions().get(0), aAnnot);
+        }
+    }
+
     private static JMethodSig getMethodType(JClassType sym, String fieldName) {
         return sym.streamMethods(it -> it.nameEquals(fieldName)).findFirst().get();
     }
