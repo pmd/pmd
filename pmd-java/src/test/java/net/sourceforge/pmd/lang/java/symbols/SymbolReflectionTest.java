@@ -14,6 +14,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -128,7 +130,24 @@ public class SymbolReflectionTest {
         Assert.assertTrue(target.isOfType(Target.class.getName()));
 
         Assert.assertEquals(YES, target.attributeMatches("value", new ElementType[] {ElementType.TYPE, ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD}));
+    }
+    
+    @Test
+    public void testAnnotOnParameter() { // This is for Target.PARAMETER annotations, do not confuse with TYPE_PARAMETER
+        JClassSymbol sym = loader.resolveClassFromBinaryName(SomeClass.class.getName());
+        List<JMethodSymbol> ms = sym.getDeclaredMethods();
 
+        JMethodSymbol m1 = ms.stream().filter(it -> it.getSimpleName().equals("m1")).findFirst().orElseThrow(AssertionError::new);
+        List<JFormalParamSymbol> m1Formals = m1.getFormalParameters();
+        
+        // Non-annotated first param
+        JFormalParamSymbol p = m1Formals.get(0);
+        MatcherAssert.assertThat(p.getDeclaredAnnotations(), Matchers.empty());
+
+        // Annotated second param
+        p = m1Formals.get(1);
+        SymAnnot annot = p.getDeclaredAnnotation(AnnotWithDefaults.class);
+        Assert.assertEquals(YES, annot.attributeMatches("valueNoDefault", "param"));
     }
 
 

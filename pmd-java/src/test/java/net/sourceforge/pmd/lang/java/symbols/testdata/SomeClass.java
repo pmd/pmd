@@ -9,7 +9,7 @@ package net.sourceforge.pmd.lang.java.symbols.testdata;
 public class SomeClass {
 
 
-    void m1(int a, final String foo) {
+    void m1(int a, @AnnotWithDefaults(valueNoDefault = "param") final String foo) {
 
     }
 
