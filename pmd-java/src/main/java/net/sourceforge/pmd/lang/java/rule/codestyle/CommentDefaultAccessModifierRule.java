@@ -66,6 +66,7 @@ public class CommentDefaultAccessModifierRule extends AbstractIgnoredAnnotationR
         ignoredStrings.add("org.junit.jupiter.api.BeforeAll");
         ignoredStrings.add("org.junit.jupiter.api.AfterEach");
         ignoredStrings.add("org.junit.jupiter.api.AfterAll");
+        ignoredStrings.add("lombok.Value");
         return ignoredStrings;
     }
 
@@ -140,7 +141,7 @@ public class CommentDefaultAccessModifierRule extends AbstractIgnoredAnnotationR
         boolean isConcreteClass = parentClassOrInterface.getTypeKind() == ASTAnyTypeDeclaration.TypeKind.CLASS;
 
         // ignore if it's inside an interface / Annotation
-        return isConcreteClass && isMissingComment(decl);
+        return isConcreteClass && isMissingComment(decl) && !hasIgnoredAnnotation(parentClassOrInterface);
     }
 
     protected boolean hasIgnoredAnnotation(AccessNode node) {

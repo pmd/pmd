@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
+import java.util.Objects;
 
 import net.sourceforge.pmd.annotation.Experimental;
 
@@ -48,7 +49,7 @@ public final class ASTTypePattern extends AbstractJavaAnnotatableNode implements
      * Gets the type against which the expression is tested.
      */
     public ASTType getTypeNode() {
-        return getFirstChildOfType(ASTType.class);
+        return Objects.requireNonNull(getFirstChildOfType(ASTType.class));
     }
 
     /** Returns the declared variable. */
