@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.types;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -14,6 +15,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 
 /**
  * The type of a type variable. There are two sorts of those:
@@ -112,6 +114,18 @@ public interface JTypeVar extends JTypeMirror, SubstVar {
      */
     JTypeVar cloneWithBounds(JTypeMirror lower, JTypeMirror upper);
 
+    /**
+     * Return a new type variable with the same underlying symbol or
+     * capture variable, but the upper bound is now the given type.
+     *
+     * @param newUB New upper bound
+     *
+     * @return a new tvar
+     */
+    JTypeVar withUpperBound(@NonNull JTypeMirror newUB);
+
+    @Override // refine return type
+    JTypeVar withAnnotations(List<SymAnnot> newTypeAnnots);
 
     @Override
     default Stream<JMethodSig> streamMethods(Predicate<? super JMethodSymbol> prefilter) {

@@ -37,6 +37,7 @@ class TParamStub implements JTypeParameterSymbol {
         this.typeVar = ts.newTypeVar(this);
     }
 
+
     @Override
     public @NonNull String getSimpleName() {
         return name;
@@ -44,6 +45,7 @@ class TParamStub implements JTypeParameterSymbol {
 
     @Override
     public JTypeMirror computeUpperBound() {
+        // todo apply type annotations on bound here
         return sigParser.parseTypeVarBound(owner.getLexicalScope(), boundSignature);
     }
 

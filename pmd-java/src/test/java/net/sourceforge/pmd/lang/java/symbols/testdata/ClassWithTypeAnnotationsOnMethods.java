@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.symbols.testdata;
 
+import java.io.Serializable;
+
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.TypeAnnotReflectionOnMethodsTest;
 import net.sourceforge.pmd.lang.java.symbols.testdata.ClassWithTypeAnnotationsInside.A;
 import net.sourceforge.pmd.lang.java.symbols.testdata.ClassWithTypeAnnotationsInside.B;
@@ -23,10 +25,13 @@ public abstract class ClassWithTypeAnnotationsOnMethods {
 
     abstract void aOnThrows() throws @A RuntimeException;
 
+    // tparams
     abstract <@A @B T, E extends T> void abOnTypeParm();
     abstract <@A @B T, E extends T> T abOnTypeParm2(T t);
-    abstract <@A T, E extends @B T> void bOnTypeParmBound();
+
+    // tparam bounds
     abstract <@A T, E extends @B T> E bOnTypeParmBound(T t);
+    abstract <@A T, E extends @B Cloneable & @A Serializable> E bOnTypeParmBoundIntersection(T t);
 
     static class CtorOwner {
 

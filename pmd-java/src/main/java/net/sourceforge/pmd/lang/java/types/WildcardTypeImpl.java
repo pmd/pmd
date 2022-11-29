@@ -34,7 +34,7 @@ final class WildcardTypeImpl implements JWildcardType {
     @Override
     public JWildcardType subst(Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst) {
         JTypeMirror newBound = getBound().subst(subst);
-        return newBound == getBound() ? this : ts.wildcard(isUpperBound(), newBound); // NOPMD CompareObjectsWithEquals
+        return newBound == getBound() ? this : ts.wildcard(isUpperBound(), newBound).withAnnotations(typeAnnots); // NOPMD CompareObjectsWithEquals
     }
 
     @Override
@@ -43,7 +43,7 @@ final class WildcardTypeImpl implements JWildcardType {
     }
 
     @Override
-    public JTypeMirror withAnnotations(List<SymAnnot> newTypeAnnots) {
+    public JWildcardType withAnnotations(List<SymAnnot> newTypeAnnots) {
         if (newTypeAnnots.isEmpty() && !typeAnnots.isEmpty()) {
             return ts.wildcard(isUpperBound, bound);
         } else if (!newTypeAnnots.isEmpty()) {

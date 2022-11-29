@@ -60,6 +60,9 @@ public interface JClassType extends JTypeMirror {
 
     @Override
     default JClassType subst(Function<? super SubstVar, ? extends @NonNull JTypeMirror> fun) {
+        if (Substitution.isEmptySubst(fun)) {
+            return this;
+        }
         JClassType encl = getEnclosingType();
         if (encl != null) {
             encl = encl.subst(fun);
@@ -73,7 +76,7 @@ public interface JClassType extends JTypeMirror {
         if (newArgs == targs && encl == getEnclosingType()) { // NOPMD CompareObjectsWithEquals
             return this;
         }
-        return encl != null ? encl.selectInner(getSymbol(), newArgs)
+        return encl != null ? encl.selectInner(getSymbol(), newArgs, getTypeAnnotations())
                             : withTypeArguments(newArgs);
     }
 

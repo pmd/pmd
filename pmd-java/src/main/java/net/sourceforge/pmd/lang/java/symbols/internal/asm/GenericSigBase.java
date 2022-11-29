@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -24,6 +25,7 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.TypeAnnotationHelper.TypeAnnotationSetWithReferences;
 import net.sourceforge.pmd.lang.java.types.JClassType;
+import net.sourceforge.pmd.lang.java.types.JIntersectionType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.LexicalScope;
@@ -329,17 +331,48 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
             case TypeReference.METHOD_TYPE_PARAMETER: {
                 assert typeParameters != null;
                 int idx = tyRef.getTypeParameterIndex();
-                assert path == null: "unexpected path " + path;
-                ((TParamStub) typeParameters.get(idx).getSymbol()).addAnnotation(annot);
+                assert path == null : "unexpected path " + path;
+                JTypeVar tparam = typeParameters.get(idx);
+                tparam = tparam.withAnnotations(CollectionUtil.plus(tparam.getTypeAnnotations(), annot));
+                typeParameters.set(idx, tparam);
                 return;
             }
-            case TypeReference.METHOD_TYPE_PARAMETER_BOUND:
+            case TypeReference.METHOD_TYPE_PARAMETER_BOUND: {
+                assert typeParameters != null;
+                int tparamIdx = tyRef.getTypeParameterIndex();
+                int boundIdx = tyRef.getTypeParameterBoundIndex();
+
+                JTypeVar tparam = typeParameters.get(tparamIdx);
+                final JTypeMirror newUb = computeNewUpperBound(path, annot, boundIdx, tparam.getUpperBound());
+                typeParameters.set(tparamIdx, tparam.withUpperBound(newUb));
+                return;
+            }
             case TypeReference.METHOD_RECEIVER:
                 throw new NotImplementedException("Not yet implemented: type ref " + tyRef.getSort());
             default:
                 throw new IllegalArgumentException(
                     "Invalid type reference for method or ctor type annotation: " + tyRef.getSort());
             }
+        }
+
+        private static JTypeMirror computeNewUpperBound(@Nullable TypePath path, SymAnnot annot, int boundIdx, JTypeMirror ub) {
+            final JTypeMirror newUb;
+            if (ub instanceof JIntersectionType) {
+                JIntersectionType intersection = (JIntersectionType) ub;
+
+                // Object is pruned from the component list
+                boundIdx = intersection.getPrimaryBound().isTop() ? boundIdx - 1 : boundIdx;
+
+                List<JTypeMirror> components = new ArrayList<>(intersection.getComponents());
+                JTypeMirror bound = components.get(boundIdx);
+                JTypeMirror newBound = TypeAnnotationHelper.applySinglePath(bound, path, annot);
+                components.set(boundIdx, newBound);
+                JTypeMirror newIntersection = intersection.getTypeSystem().glb(components);
+                newUb = newIntersection;
+            } else {
+                newUb = TypeAnnotationHelper.applySinglePath(ub, path, annot);
+            }
+            return newUb;
         }
     }
 }

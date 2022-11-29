@@ -109,6 +109,7 @@ class ClassMethodSigImpl implements JMethodSig, InternalMethodTypeItf {
             } else {
                 formals = symbol.getFormalParameterTypes(getTypeParamSubst());
             }
+            formals = TypeOps.subst(formals, Substitution.mapping(symbol.getTypeParameters(), getTypeParameters()));
         }
         return formals;
     }
@@ -132,6 +133,7 @@ class ClassMethodSigImpl implements JMethodSig, InternalMethodTypeItf {
             } else {
                 thrown = symbol.getThrownExceptionTypes(getTypeParamSubst());
             }
+            thrown = TypeOps.subst(thrown, Substitution.mapping(symbol.getTypeParameters(), getTypeParameters()));
         }
         return thrown;
     }
@@ -198,7 +200,7 @@ class ClassMethodSigImpl implements JMethodSig, InternalMethodTypeItf {
 
     @Override
     public String toString() {
-        return TypePrettyPrint.prettyPrint(this);
+        return "UOE";//TypePrettyPrint.prettyPrint(this);
     }
 
 

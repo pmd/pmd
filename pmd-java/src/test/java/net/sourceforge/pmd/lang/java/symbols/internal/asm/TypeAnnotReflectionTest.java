@@ -255,6 +255,8 @@ public class TypeAnnotReflectionTest {
 
 
     static void assertHasTypeAnnots(JTypeMirror t, List<Annotation> annots) {
+        Objects.requireNonNull(t);
+        Objects.requireNonNull(annots);
         assertThat(t.getTypeAnnotations(), Matchers.hasItems(annots.stream().map(TypeAnnotReflectionTest::matchesAnnot).toArray(Matcher[]::new)));
     }
 

@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.java.symbols.internal.asm.TypeAnnotReflectionTes
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.TypeAnnotReflectionTest.AnnotBImpl;
 import net.sourceforge.pmd.lang.java.symbols.testdata.ClassWithTypeAnnotationsOnMethods;
 import net.sourceforge.pmd.lang.java.types.JClassType;
+import net.sourceforge.pmd.lang.java.types.JIntersectionType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
@@ -109,6 +110,43 @@ public class TypeAnnotReflectionOnMethodsTest {
             assertHasTypeAnnots(t.getTypeParameters().get(1), emptyList());
             assertHasTypeAnnots(t.getReturnType(), emptyList());
             assertHasTypeAnnots(t.getFormalParameters().get(0), emptyList());
+        }
+    }
+
+    @Test
+    public void testTypeAnnotOnTParamBound() {
+
+        /*
+            abstract <@A T, E extends @B T> void bOnTypeParmBound();
+            abstract <@A T, E extends @B T> E bOnTypeParmBound(T t);
+            abstract <@A T, E extends @B Cloneable & @A Serializable> E bOnTypeParmBoundIntersection(T t);
+         */
+
+        {
+            JMethodSig t = getMethodType(sym, "bOnTypeParmBound");
+            assertHasTypeAnnots(t.getTypeParameters().get(0), aAnnot);
+            assertHasTypeAnnots(t.getTypeParameters().get(1), emptyList());
+            assertHasTypeAnnots(t.getTypeParameters().get(1).getUpperBound(), bAnnot);
+        }
+        {
+            JMethodSig t = getMethodType(sym, "bOnTypeParmBound");
+            assertHasTypeAnnots(t.getTypeParameters().get(0), aAnnot);
+            assertHasTypeAnnots(t.getTypeParameters().get(1), emptyList());
+            assertHasTypeAnnots(t.getTypeParameters().get(1).getUpperBound(), bAnnot);
+
+            assertHasTypeAnnots(t.getReturnType(), emptyList());
+            assertHasTypeAnnots(t.getFormalParameters().get(0), aAnnot); // this is inherited from the declaration
+        }
+        {
+            JMethodSig t = getMethodType(sym, "bOnTypeParmBoundIntersection");
+            assertHasTypeAnnots(t.getTypeParameters().get(0), aAnnot);
+            assertHasTypeAnnots(t.getTypeParameters().get(1), emptyList());
+            assertHasTypeAnnots(t.getFormalParameters().get(0), aAnnot); // this is inherited from the declaration
+
+            JIntersectionType ub = (JIntersectionType) t.getTypeParameters().get(1).getUpperBound();
+            assertHasTypeAnnots(ub, emptyList());
+            assertHasTypeAnnots(ub.getComponents().get(0), bAnnot);
+            assertHasTypeAnnots(ub.getComponents().get(1), aAnnot);
         }
     }
 

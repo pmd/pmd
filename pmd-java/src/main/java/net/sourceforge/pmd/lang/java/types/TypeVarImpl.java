@@ -11,19 +11,35 @@ import java.util.function.Function;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 @SuppressWarnings("PMD.CompareObjectsWithEquals")
 abstract class TypeVarImpl implements JTypeVar {
 
 
     final TypeSystem ts;
+    JTypeMirror upperBound;
+    final List<SymAnnot> typeAnnots;
 
     // constructor only for the captured version.
-    private TypeVarImpl(TypeSystem ts) {
+    private TypeVarImpl(TypeSystem ts, List<SymAnnot> typeAnnots) {
         this.ts = ts;
+        this.typeAnnots = Objects.requireNonNull(typeAnnots);
     }
+
+
+    protected abstract List<SymAnnot> getAnnotationsOnDeclaration();
+
+    @Override
+    public List<SymAnnot> getTypeAnnotations() {
+        return CollectionUtil.concatView(getAnnotationsOnDeclaration(), typeAnnots);
+    }
+
+    @Override
+    public abstract JTypeMirror addAnnotation(SymAnnot symAnnot);
 
     @Override
     public TypeSystem getTypeSystem() {
@@ -46,27 +62,21 @@ abstract class TypeVarImpl implements JTypeVar {
      * Captured variables use reference identity as equality relation.
      */
     static TypeVarImpl.CapturedTypeVar freshCapture(JWildcardType wildcard) {
-        return new CapturedTypeVar(wildcard);
+        return new CapturedTypeVar(wildcard, wildcard.getTypeAnnotations());
     }
 
     static final class RegularTypeVar extends TypeVarImpl {
 
         private final @NonNull JTypeParameterSymbol symbol;
-        private JTypeMirror upperBound;
 
-        RegularTypeVar(TypeSystem ts, @NonNull JTypeParameterSymbol symbol) {
-            super(ts);
+        RegularTypeVar(TypeSystem ts, @NonNull JTypeParameterSymbol symbol, List<SymAnnot> typeAnnots) {
+            super(ts, typeAnnots);
             this.symbol = symbol;
         }
 
-        @Override
-        public JTypeMirror withAnnotations(List<SymAnnot> newTypeAnnots) {
-            return this;
-        }
-
-        @Override
-        public List<SymAnnot> getTypeAnnotations() {
-            return symbol.getDeclaredAnnotations();
+        private RegularTypeVar(RegularTypeVar base, List<SymAnnot> typeAnnots) {
+            this(base.ts, base.symbol, typeAnnots);
+            this.upperBound = base.upperBound;
         }
 
         @Override
@@ -98,14 +108,40 @@ abstract class TypeVarImpl implements JTypeVar {
         }
 
         @Override
+        public JTypeVar withUpperBound(@NonNull JTypeMirror newUB) {
+            RegularTypeVar tv = new RegularTypeVar(this, this.typeAnnots);
+            tv.upperBound = newUB;
+            return tv;
+        }
+
+
+        @Override
+        public JTypeVar withAnnotations(List<SymAnnot> newTypeAnnots) {
+            return new RegularTypeVar(this, CollectionUtil.defensiveUnmodifiableCopy(newTypeAnnots));
+        }
+
+        @Override
+        public JTypeMirror addAnnotation(SymAnnot symAnnot) {
+            return new RegularTypeVar(this, CollectionUtil.plus(typeAnnots, symAnnot));
+        }
+
+        @Override
+        protected List<SymAnnot> getAnnotationsOnDeclaration() {
+            return symbol.getDeclaredAnnotations();
+        }
+
+        @Override
         public JTypeVar substInBounds(Function<? super SubstVar, ? extends @NonNull JTypeMirror> substitution) {
+            if (Substitution.isEmptySubst(substitution)) {
+                return this;
+            }
             JTypeMirror newBound = getUpperBound().subst(substitution);
             if (newBound == upperBound) {
                 return this;
             }
-            RegularTypeVar clone = new RegularTypeVar(this.ts, this.symbol);
-            clone.upperBound = newBound;
-            return clone;
+            RegularTypeVar newTVar = new RegularTypeVar(this.ts, this.symbol, this.getTypeAnnotations());
+            newTVar.upperBound = newBound;
+            return newTVar;
         }
 
         @Override
@@ -159,25 +195,15 @@ abstract class TypeVarImpl implements JTypeVar {
         private JTypeMirror upperBound;
         private JTypeMirror lowerBound;
 
-        private CapturedTypeVar(JWildcardType wild) {
-            this(wild, wild.asLowerBound(), wild.asUpperBound());
+        private CapturedTypeVar(JWildcardType wild, List<SymAnnot> typeAnnots) {
+            this(wild, wild.asLowerBound(), wild.asUpperBound(), typeAnnots);
         }
 
-        private CapturedTypeVar(JWildcardType wild, JTypeMirror lower, JTypeMirror upper) {
-            super(wild.getTypeSystem());
+        private CapturedTypeVar(JWildcardType wild, @NonNull JTypeMirror lower, @NonNull JTypeMirror upper, List<SymAnnot> typeAnnots) {
+            super(wild.getTypeSystem(), typeAnnots);
             this.upperBound = upper;
             this.lowerBound = lower;
             this.wildcard = wild;
-        }
-
-        @Override
-        public JTypeMirror withAnnotations(List<SymAnnot> newTypeAnnots) {
-            return this;
-        }
-
-        @Override
-        public List<SymAnnot> getTypeAnnotations() {
-            return wildcard.getTypeAnnotations();
         }
 
         void setUpperBound(@NonNull JTypeMirror upperBound) {
@@ -189,6 +215,10 @@ abstract class TypeVarImpl implements JTypeVar {
             this.lowerBound = lowerBound;
         }
 
+        @Override
+        protected List<SymAnnot> getAnnotationsOnDeclaration() {
+            return wildcard.getTypeAnnotations();
+        }
 
         @Override
         public boolean equals(Object o) {
@@ -223,12 +253,29 @@ abstract class TypeVarImpl implements JTypeVar {
             if (wild == this.wildcard && lower == this.lowerBound && upper == this.lowerBound) {
                 return this;
             }
-            return new CapturedTypeVar(wild, lower, upper);
+            return new CapturedTypeVar(wild, lower, upper, getTypeAnnotations());
         }
 
         @Override
         public JTypeVar cloneWithBounds(JTypeMirror lower, JTypeMirror upper) {
-            return new CapturedTypeVar(wildcard, lower, upper);
+            return new CapturedTypeVar(wildcard, lower, upper, getTypeAnnotations());
+        }
+
+
+        @Override
+        public JTypeVar withAnnotations(List<SymAnnot> newTypeAnnots) {
+            return new CapturedTypeVar(wildcard, lowerBound, upperBound, CollectionUtil.defensiveUnmodifiableCopy(newTypeAnnots));
+        }
+
+        @Override
+        public JTypeMirror addAnnotation(SymAnnot symAnnot) {
+            return new CapturedTypeVar(wildcard, lowerBound, upperBound, CollectionUtil.plus(typeAnnots, symAnnot));
+        }
+
+        @Override
+        public JTypeVar withUpperBound(@NonNull JTypeMirror newUB) {
+            AssertionUtil.requireParamNotNull("upper bound", newUB);
+            return new CapturedTypeVar(wildcard, lowerBound, newUB, getTypeAnnotations());
         }
 
         @Override

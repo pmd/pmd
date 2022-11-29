@@ -159,9 +159,9 @@ public final class CollectionUtil {
      */
     public static <T> List<T> concatView(List<? extends T> head, List<? extends T> tail) {
         if (head.isEmpty()) {
-            return Collections.unmodifiableList(tail);
+            return makeUnmodifiableAndNonNull(tail);
         } else if (tail.isEmpty()) {
-            return Collections.unmodifiableList(head);
+            return makeUnmodifiableAndNonNull(head);
         } else {
             return new ConsList<>(head, tail);
         }
@@ -268,7 +268,7 @@ public final class CollectionUtil {
     @SafeVarargs
     public static <T> List<T> listOf(T first, T... rest) {
         if (rest.length == 0) {
-            return Collections.singletonList(first);
+            return ConsPStack.singleton(first);
         }
         List<T> union = new ArrayList<>();
         union.add(first);
@@ -721,6 +721,9 @@ public final class CollectionUtil {
     }
 
     public static @NonNull <T> List<T> makeUnmodifiableAndNonNull(@Nullable List<? extends T> list) {
+        if (list instanceof PSequence) {
+            return (List<T>) list;
+        }
         return list == null || list.isEmpty() ? emptyList()
                                               : Collections.unmodifiableList(list);
     }

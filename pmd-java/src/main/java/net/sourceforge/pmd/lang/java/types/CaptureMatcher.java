@@ -38,7 +38,12 @@ final class CaptureMatcher implements JTypeVar {
     }
 
     @Override
-    public JTypeMirror withAnnotations(List<SymAnnot> newTypeAnnots) {
+    public JTypeVar withAnnotations(List<SymAnnot> newTypeAnnots) {
+        throw new UnsupportedOperationException("this is a test only object which should only be used for equals");
+    }
+
+    @Override
+    public JTypeVar withUpperBound(@NonNull JTypeMirror newUB) {
         throw new UnsupportedOperationException("this is a test only object which should only be used for equals");
     }
 

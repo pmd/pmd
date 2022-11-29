@@ -860,14 +860,23 @@ public final class TypeOps {
 
     /** Substitute on a list of types. */
     public static List<JTypeMirror> subst(List<? extends JTypeMirror> ts, Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst) {
+        if (Substitution.isEmptySubst(subst)) {
+            return CollectionUtil.makeUnmodifiableAndNonNull(ts);
+        }
         return mapPreservingSelf(ts, t -> t.subst(subst));
     }
 
     public static List<JClassType> substClasses(List<JClassType> ts, Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst) {
+        if (Substitution.isEmptySubst(subst)) {
+            return ts;
+        }
         return mapPreservingSelf(ts, t -> t.subst(subst));
     }
 
     public static List<JTypeVar> substInBoundsOnly(List<JTypeVar> ts, Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst) {
+        if (Substitution.isEmptySubst(subst)) {
+            return ts;
+        }
         return mapPreservingSelf(ts, t -> t.substInBounds(subst));
     }
 
