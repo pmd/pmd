@@ -123,12 +123,7 @@ final class AstClassSym
         }
         
         final NodeStream<ASTAnnotation> annotStream = node.getDeclaredAnnotations();
-        if (annotStream.nonEmpty()) {
-            myAnnotations = new ArrayList<>();
-            annotStream.forEach(anode -> myAnnotations.add(new AstSymbolicAnnot(anode)));
-        } else {
-            myAnnotations = Collections.emptyList();
-        }
+            this.declaredAnnotations = Collections.unmodifiableList(annotStream.toList(ASTSymbolicAnnot::new));
 
         if (!recordComponents.isEmpty()) {
             // then the recordsComponents contains all record components
