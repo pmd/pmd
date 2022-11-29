@@ -130,8 +130,13 @@ public final class TypeOps {
 
         @Override
         public Boolean visit(JTypeMirror t, JTypeMirror s) {
-            // for primitive & sentinel types
+            // for sentinel types
             return t == s;
+        }
+
+        @Override
+        public Boolean visitPrimitive(JPrimitiveType t, JTypeMirror s) {
+            return s.isPrimitive(t.getKind());
         }
 
         @Override

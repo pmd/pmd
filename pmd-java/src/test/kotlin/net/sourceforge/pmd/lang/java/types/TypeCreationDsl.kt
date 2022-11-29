@@ -7,7 +7,13 @@
 package net.sourceforge.pmd.lang.java.types
 
 import net.sourceforge.pmd.lang.java.ast.JavaNode
+import net.sourceforge.pmd.lang.java.ast.NodeParsingCtx
+import net.sourceforge.pmd.lang.java.ast.ParserTestSpec
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot
+import net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil
+import net.sourceforge.pmd.lang.java.symbols.testdata.ClassWithTypeAnnotationsInside
 import net.sourceforge.pmd.lang.java.types.TypeOps.isSameType
 import kotlin.reflect.KClass
 
@@ -52,14 +58,26 @@ interface TypeDslMixin {
     val void get() = ts.NO_TYPE
 
 
+    infix fun JTypeMirror.withAnnot(a: SymAnnot) = this.addAnnotation(a)
+
+    val `@A`: SymAnnotDsl
+        get() = SymAnnotDsl(SymbolicValue.of(ts, TypeAnnotTestUtil.AnnotAImpl()) as SymAnnot)
+
+    class SymAnnotDsl(delegate: SymAnnot) : SymAnnot by delegate {
+
+        operator fun invoke(t: JTypeMirror): JTypeMirror = t.addAnnotation(this)
+        override fun toString(): String = "@$binaryName"
+    }
+
+
     /** intersection */
     operator fun JTypeMirror.times(t: JTypeMirror): JTypeMirror =
-            ts.glb(listOf(this, t))
+        ts.glb(listOf(this, t))
 
     // for some tests we assert whether the intersection is flattened, which doesn't work if we use `a * b * c`
     fun glb(t1: JTypeMirror, t2: JTypeMirror, vararg tail: JTypeMirror): JTypeMirror =
-            // flatten
-            ts.glb(listOf(t1, t2, *tail))
+        // flatten
+        ts.glb(listOf(t1, t2, *tail))
 
     // for some tests we assert whether the intersection is flattened, which doesn't work if we use `a * b * c`
     fun lub(vararg tail: JTypeMirror): JTypeMirror =
@@ -106,6 +124,8 @@ interface TypeDslMixin {
 }
 
 
+/** See [TypeDslMixin.@A]. */
+val ParserTestSpec.GroupTestCtx.VersionedTestCtx.ImplicitNodeParsingCtx<*>.AnnotA get() = "@" + ClassWithTypeAnnotationsInside.A::class.java.canonicalName
 
 class TypeDslOf(override val ts: TypeSystem) : TypeDslMixin
 

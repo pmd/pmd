@@ -52,15 +52,15 @@ public class TypeAnnotTestUtil {
         assertThat(t.getTypeAnnotations(), Matchers.hasItems(annots.stream().map(TypeAnnotTestUtil::matchesAnnot).toArray(Matcher[]::new)));
     }
 
-    static final class AnnotAImpl implements ClassWithTypeAnnotationsInside.A {
+    public static final class AnnotAImpl implements ClassWithTypeAnnotationsInside.A {
 
         private final int val;
 
-        AnnotAImpl(int val) {
+        public AnnotAImpl(int val) {
             this.val = val;
         }
 
-        AnnotAImpl() {
+        public AnnotAImpl() {
             this.val = 1; // the default declared in interface
         }
 
@@ -80,7 +80,7 @@ public class TypeAnnotTestUtil {
         }
     }
 
-    static final class AnnotBImpl implements ClassWithTypeAnnotationsInside.B {
+    public static final class AnnotBImpl implements ClassWithTypeAnnotationsInside.B {
 
         @Override
         public Class<? extends Annotation> annotationType() {

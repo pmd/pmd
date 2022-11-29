@@ -47,7 +47,7 @@ class StandaloneTypesTest : ProcessorTestSpec({
         }
     }
 
-    parserTest("Test array length") {
+    parserTest("f:Test array length") {
 
         inContext(ExpressionParsingCtx) {
 
@@ -66,6 +66,7 @@ class StandaloneTypesTest : ProcessorTestSpec({
                     }
 
             "new int[0].length" should matchArrayLength { int }
+            "new $AnnotA int[0].length" should matchArrayLength { `@A`(int) }
             "new String[0].length" should matchArrayLength { gen.t_String }
             "new String[0][].length" should matchArrayLength { gen.t_String.toArray() }
         }
