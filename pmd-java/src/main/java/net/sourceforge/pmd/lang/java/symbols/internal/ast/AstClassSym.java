@@ -56,7 +56,6 @@ final class AstClassSym
     private final List<JConstructorSymbol> declaredCtors;
     private final List<JFieldSymbol> declaredFields;
     private final List<JFieldSymbol> enumConstants; // subset of declaredFields
-    private final PSet<SymAnnot> declaredAnnotations;
 
     AstClassSym(ASTAnyTypeDeclaration node,
                 AstSymFactory factory,
@@ -144,7 +143,6 @@ final class AstClassSym
         this.declaredCtors = Collections.unmodifiableList(myCtors);
         this.declaredFields = Collections.unmodifiableList(myFields);
         this.enumConstants = CollectionUtil.makeUnmodifiableAndNonNull(enumConstants);
-        this.declaredAnnotations = SymbolResolutionPass.getSymbolicAnnotations(node);
     }
 
     private List<JFieldSymbol> mapComponentsToMutableList(AstSymFactory factory, ASTRecordComponentList components) {
@@ -219,7 +217,7 @@ final class AstClassSym
     
     @Override
     public PSet<SymAnnot> getDeclaredAnnotations() {
-        return declaredAnnotations;
+        return SymbolResolutionPass.getSymbolicAnnotations(node);
     }
 
     @Override

@@ -19,7 +19,6 @@ import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
-import net.sourceforge.pmd.lang.java.symbols.internal.ast.SymbolResolutionPass;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaResolvers;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
@@ -71,7 +70,7 @@ final class TypesFromAst {
             } else {
                 isUpperBound = wild.hasUpperBound();
             }
-            return ts.wildcard(isUpperBound, bound).withAnnotations(getSymbolicAnnotations(node));
+            return ts.wildcard(isUpperBound, bound).withAnnotations(getTypeAnnotations(node));
 
 
         } else if (node instanceof ASTIntersectionType) {
@@ -88,13 +87,20 @@ final class TypesFromAst {
             }
         } else if (node instanceof ASTArrayType) {
 
-            JTypeMirror eltType = fromAst(ts, lexicalSubst, ((ASTArrayType) node).getElementType());
+            JTypeMirror t = fromAst(ts, lexicalSubst, ((ASTArrayType) node).getElementType());
+            ASTArrayDimensions dimensions = ((ASTArrayType) node).getDimensions();
+            // we have to iterate in reverse
+            for (int i = dimensions.size() - 1; i >= 0; i--) {
+                ASTArrayTypeDim dim = dimensions.get(i);
+                PSet<SymAnnot> annots = getSymbolicAnnotations(dim);
+                t = ts.arrayType(t).withAnnotations(annots);
+            }
 
-            return ts.arrayType(eltType, node.getArrayDepth()); //todo type annotations
+            return t;
 
         } else if (node instanceof ASTPrimitiveType) {
 
-            return ts.getPrimitive(((ASTPrimitiveType) node).getKind()).withAnnotations(getSymbolicAnnotations(node));
+            return ts.getPrimitive(((ASTPrimitiveType) node).getKind()).withAnnotations(getTypeAnnotations(node));
 
         } else if (node instanceof ASTAmbiguousName) {
 
@@ -236,12 +242,35 @@ final class TypesFromAst {
         return !Modifier.isStatic(reference.getModifiers());
     }
 
-    private static PSet<SymAnnot> getTypeAnnotations(ASTType type) {
-        PSet<SymAnnot> baseAnnots = getSymbolicAnnotations(type);
-        JavaNode parent = type.getParent();
-        if (!(parent instanceof ASTType) && parent instanceof Annotatable) {
-            return baseAnnots.plusAll(getSymbolicAnnotations((Annotatable) parent));
+    /**
+     * Returns the variable declaration or field or formal, etc, that
+     * may give additional type annotations to the given type.
+     */
+    private static @Nullable Annotatable getEnclosingAnnotationGiver(JavaNode node) {
+        JavaNode parent = node.getParent();
+        if (node.getIndexInParent() == 0 && parent instanceof ASTClassOrInterfaceType) {
+            // this is an enclosing type
+            return getEnclosingAnnotationGiver(parent);
+        } else if (node.getIndexInParent() == 0 && parent instanceof ASTArrayType) {
+            // the element type of an array type
+            return getEnclosingAnnotationGiver(parent);
+        } else if (!(parent instanceof ASTType) && parent instanceof Annotatable) {
+            return (Annotatable) parent;
         }
-        return baseAnnots;
+        return null;
+    }
+
+    private static PSet<SymAnnot> getTypeAnnotations(ASTType type) {
+        PSet<SymAnnot> annotsOnTypes = getSymbolicAnnotations(type);
+        Annotatable parent = getEnclosingAnnotationGiver(type);
+        if (parent != null) {
+            // todo parent annots should be filtered by target TYPE_USE
+            PSet<SymAnnot> parentAnnots = getSymbolicAnnotations(parent);
+            if (annotsOnTypes.isEmpty()) {
+                return parentAnnots;
+            }
+            return annotsOnTypes.plusAll(parentAnnots);
+        }
+        return annotsOnTypes;
     }
 }

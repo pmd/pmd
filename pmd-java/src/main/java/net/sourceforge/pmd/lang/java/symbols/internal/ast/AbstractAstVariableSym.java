@@ -22,12 +22,8 @@ abstract class AbstractAstVariableSym
     extends AbstractAstBackedSymbol<ASTVariableDeclaratorId>
     implements JVariableSymbol {
     
-    private final PSet<SymAnnot> declaredAnnotations;
-
     AbstractAstVariableSym(ASTVariableDeclaratorId node, AstSymFactory factory) {
         super(node, factory);
-
-        this.declaredAnnotations = SymbolResolutionPass.getSymbolicAnnotations(node);
     }
 
     @Override
@@ -42,7 +38,7 @@ abstract class AbstractAstVariableSym
     
     @Override
     public PSet<SymAnnot> getDeclaredAnnotations() {
-        return declaredAnnotations;
+        return SymbolResolutionPass.getSymbolicAnnotations(node);
     }
 
     @Override

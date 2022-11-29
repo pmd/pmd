@@ -4,10 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.symbols;
 
-import java.util.List;
-
 import org.junit.Assert;
 import org.junit.Test;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
@@ -45,7 +44,7 @@ public class SymbolParsingTest extends AbstractSymbolTest {
         ASTVariableDeclarator variableDeclarator = method.tryGetNode().descendants(ASTVariableDeclarator.class).first();
         JVariableSymbol localSym = variableDeclarator.getSymbolTable().variables().resolveFirst("local").getSymbol();
         
-        List<SymAnnot> declaredAnnotations = localSym.getDeclaredAnnotations();
+        PSet<SymAnnot> declaredAnnotations = localSym.getDeclaredAnnotations();
         
         Assert.assertEquals(1, declaredAnnotations.size());
         Assert.assertNotNull(localSym.getDeclaredAnnotation(LocalVarAnnotation.class));

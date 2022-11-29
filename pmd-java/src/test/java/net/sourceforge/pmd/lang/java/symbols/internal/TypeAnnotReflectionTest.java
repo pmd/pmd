@@ -11,11 +11,9 @@ import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.b
 import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.getFieldType;
 import static net.sourceforge.pmd.util.CollectionUtil.emptyList;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.hamcrest.Matchers;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -61,6 +59,17 @@ public class TypeAnnotReflectionTest {
     @EnumSource
     public void testArrayTypeAnnotsOnFields(SymImplementation impl) {
 
+        /*
+
+            @A int[] annotOnArrayComponent;
+            int @A [] annotOnArrayDimension;
+            // this annotates the int[]
+            int[] @A @B [] twoAnnotsOnOuterArrayDim;
+            int @A [][] annotOnInnerArrayDim;
+            int @A(1) [] @A(2) [] annotsOnBothArrayDims;
+
+         */
+
         JClassType sym = impl.getDeclaration(ts, ClassWithTypeAnnotationsInside.class);
 
         {
@@ -79,7 +88,6 @@ public class TypeAnnotReflectionTest {
             // int[] @A @B []
             JArrayType t = (JArrayType) getFieldType(sym, "twoAnnotsOnOuterArrayDim");
             assertHasTypeAnnots(t, emptyList());
-            assertThat(t.getComponentType(), Matchers.isA(JArrayType.class));
             assertHasTypeAnnots(t.getComponentType(), aAndBAnnot);
             assertHasTypeAnnots(t.getElementType(), emptyList());
         }

@@ -30,18 +30,15 @@ abstract class AbstractAstExecSymbol<T extends ASTMethodOrConstructorDeclaration
 
     private final JClassSymbol owner;
     private final List<JFormalParamSymbol> formals;
-    private final PSet<SymAnnot> declaredAnnotations;
 
     protected AbstractAstExecSymbol(T node, AstSymFactory factory, JClassSymbol owner) {
         super(node, factory);
         this.owner = owner;
 
-        formals = CollectionUtil.map(
+        this.formals = CollectionUtil.map(
             node.getFormalParameters(),
             p -> new AstFormalParamSym(p.getVarId(), factory, this)
         );
-
-        this.declaredAnnotations = SymbolResolutionPass.getSymbolicAnnotations(node);
     }
 
     @Override
@@ -65,7 +62,7 @@ abstract class AbstractAstExecSymbol<T extends ASTMethodOrConstructorDeclaration
 
     @Override
     public PSet<SymAnnot> getDeclaredAnnotations() {
-        return declaredAnnotations;
+        return SymbolResolutionPass.getSymbolicAnnotations(node);
     }
 
 
