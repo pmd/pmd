@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.symbols.internal.ast;
 
 import static net.sourceforge.pmd.lang.java.types.TypeOps.subst;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -32,7 +31,7 @@ abstract class AbstractAstVariableSym
         super(node, factory);
         
         NodeStream<ASTAnnotation> annotStream = node.getDeclaredAnnotations();
-            declaredAnnotations = Collections.unmodifiableList(annotStream.toList(ASTSymbolicAnnot::new));
+        declaredAnnotations = Collections.unmodifiableList(annotStream.toList(AstSymbolicAnnot::new));
     }
 
     @Override

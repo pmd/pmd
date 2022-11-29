@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.LOCAL_VARIABLE})
+@Target(ElementType.LOCAL_VARIABLE)
 public @interface LocalVarAnnotation {
 
 }

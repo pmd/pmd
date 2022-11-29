@@ -74,7 +74,6 @@ final class AstClassSym
         final List<JFieldSymbol> myFields = new ArrayList<>();
         final List<JFieldSymbol> enumConstants;
         final List<JFieldSymbol> recordComponents;
-        final List<SymAnnot> myAnnotations;
         
         if (isRecord()) {
             ASTRecordComponentList components = Objects.requireNonNull(node.getRecordComponents(),
@@ -123,7 +122,7 @@ final class AstClassSym
         }
         
         final NodeStream<ASTAnnotation> annotStream = node.getDeclaredAnnotations();
-            this.declaredAnnotations = Collections.unmodifiableList(annotStream.toList(ASTSymbolicAnnot::new));
+        this.declaredAnnotations = Collections.unmodifiableList(annotStream.toList(AstSymbolicAnnot::new));
 
         if (!recordComponents.isEmpty()) {
             // then the recordsComponents contains all record components
@@ -148,7 +147,6 @@ final class AstClassSym
         this.declaredCtors = Collections.unmodifiableList(myCtors);
         this.declaredFields = Collections.unmodifiableList(myFields);
         this.enumConstants = CollectionUtil.makeUnmodifiableAndNonNull(enumConstants);
-        this.declaredAnnotations = Collections.unmodifiableList(myAnnotations);
     }
 
     private List<JFieldSymbol> mapComponentsToMutableList(AstSymFactory factory, ASTRecordComponentList components) {

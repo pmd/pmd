@@ -1,3 +1,7 @@
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.lang.java.symbols;
 
 import static net.sourceforge.pmd.util.OptionalBool.NO;
@@ -100,7 +104,7 @@ public abstract class AbstractSymbolTest {
     
     @Test
     public void testAnnotOnAnnot() {
-     // This only checks for Target.ANNOTATION_TYPE annotations
+        // This only checks for Target.ANNOTATION_TYPE annotations
         Class<AnnotWithDefaults> actualClass = AnnotWithDefaults.class;
         JClassSymbol sym = resolveSymbol(actualClass);
 
@@ -168,7 +172,7 @@ public abstract class AbstractSymbolTest {
     
     @Test
     public void testAnnotOnConstructor() {
-     // This only checks Target.CONSTRUCTOR annotations, do not confuse with TYPE_USE on return types
+        // This only checks Target.CONSTRUCTOR annotations, do not confuse with TYPE_USE on return types
         Class<SomeClass> actualClass = SomeClass.class;
         JClassSymbol sym = resolveSymbol(actualClass);
 

@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.ast;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,7 +42,7 @@ abstract class AbstractAstExecSymbol<T extends ASTMethodOrConstructorDeclaration
         );
         
         NodeStream<ASTAnnotation> annotStream = node.getDeclaredAnnotations();
-            declaredAnnotations = Collections.unmodifiableList(annotStream.toList(ASTSymbolicAnnot::new));
+        declaredAnnotations = Collections.unmodifiableList(annotStream.toList(AstSymbolicAnnot::new));
     }
 
     @Override
