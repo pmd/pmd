@@ -401,10 +401,8 @@ public interface SymbolicValue {
                 return false;
             }
             Enum<?> value = (Enum<?>) o;
-            if (!this.enumName.equals(value.name())) {
-                return false;
-            }
-            return enumBinaryName.equals(value.getDeclaringClass().getName());
+            return this.enumName.equals(value.name())
+                && enumBinaryName.equals(value.getDeclaringClass().getName());
         }
 
         @Override
