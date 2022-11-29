@@ -475,7 +475,6 @@ final class ExprCheckHelper {
         if (mayMutateExpr()) {
             lambda.setInferredType(groundTargetType);
             lambda.setFunctionalMethod(groundFun);
-            lambda.updateTypingContext(groundFun);
 
             // set the final type when done
             if (phase.isInvocation()) {
@@ -566,6 +565,10 @@ final class ExprCheckHelper {
                         }
                     }
                 });
+        }
+
+        if (mayMutateExpr()) { // we know that the lambda matches now
+            lambda.updateTypingContext(groundFun);
         }
         return true;
     }

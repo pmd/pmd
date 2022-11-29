@@ -47,7 +47,7 @@ class StandaloneTypesTest : ProcessorTestSpec({
         }
     }
 
-    parserTest("f:Test array length") {
+    parserTest("Test array length") {
 
         inContext(ExpressionParsingCtx) {
 

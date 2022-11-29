@@ -727,9 +727,9 @@ class NodeStream<T> {
     }
 
 
-    parserTest("f:inference of call within lambda fails") {
+    parserTest("inference of call within lambda fails") {
 
-        val (acu, spy) = parser.logTypeInferenceVerbose().parseWithTypeInferenceSpy("""
+        val (acu, spy) = parser.parseWithTypeInferenceSpy("""
 
 interface Iterator<Q> {}
 interface Function<U,V> { 
@@ -757,9 +757,9 @@ class NodeStream {
             lambda.expressionBody!!.shouldBeA<ASTMethodCall> {
                 it.methodType.shouldMatchMethod(
                     named = "apply",
-                    withFormals = listOf(t_Iterator[`?` extends tvar])
+                    withFormals = listOf(captureMatcher(`?` `super` t_Iterator[`?` extends tvar]))
                 )
-                it shouldHaveType t_Iterator[rvar]
+                it.overloadSelectionInfo::isFailed shouldBe false
             }
         }
     }

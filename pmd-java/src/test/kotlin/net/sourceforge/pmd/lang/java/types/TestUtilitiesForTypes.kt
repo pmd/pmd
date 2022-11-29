@@ -58,8 +58,8 @@ infix fun TypeNode.shouldHaveType(expected: JTypeMirror) {
         if (!isSameTypeWithSameAnnotations(actual, expected))
             errorCollector.collectOrThrow(
                 failure(
-                    Expected(actual.print()),
-                    Actual(expected.print()),
+                    Expected(expected.print()),
+                    Actual(actual.print()),
                 )
             )
 

@@ -100,6 +100,9 @@ public final class TypeOps {
 
         if (!inInference) {
             if (considerAnnotations) {
+                if (t instanceof CaptureMatcher || s instanceof CaptureMatcher) {
+                    return t.equals(s); // skip check for type annotations
+                }
                 if (!t.getTypeAnnotations().equals(s.getTypeAnnotations())) {
                     return false;
                 }
@@ -414,9 +417,11 @@ public final class TypeOps {
             ((InferenceVar) s).addBound(BoundKind.LOWER, t);
             return Convertibility.SUBTYPING;
         } else if (isTypeRange(s)) {
+            // If s is a type range L..U,
+            // then showing t <: s is the same thing as t <: L
             JTypeMirror lower = lowerBoundRec(s);
             if (!lower.isBottom()) {
-                return isConvertible(lower, t, capture);
+                return isConvertible(t, lower, capture);
             }
             // otherwise fallthrough
         } else if (isSpecialUnresolved(t)) {
