@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static net.sourceforge.pmd.lang.java.symbols.internal.ast.SymbolResolutionPass.getSymbolicAnnotations;
+
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,10 +13,13 @@ import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
+import net.sourceforge.pmd.lang.java.symbols.internal.ast.SymbolResolutionPass;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaResolvers;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
@@ -60,9 +65,13 @@ final class TypesFromAst {
 
             ASTWildcardType wild = (ASTWildcardType) node;
             @Nullable JTypeMirror bound = fromAst(ts, lexicalSubst, wild.getTypeBoundNode());
-            return bound == null
-                   ? ts.UNBOUNDED_WILD
-                   : ts.wildcard(wild.hasUpperBound(), bound);
+            boolean isUpperBound = true;
+            if (bound == null) {
+                bound = ts.OBJECT;
+            } else {
+                isUpperBound = wild.hasUpperBound();
+            }
+            return ts.wildcard(isUpperBound, bound).withAnnotations(getSymbolicAnnotations(node));
 
 
         } else if (node instanceof ASTIntersectionType) {
@@ -81,11 +90,11 @@ final class TypesFromAst {
 
             JTypeMirror eltType = fromAst(ts, lexicalSubst, ((ASTArrayType) node).getElementType());
 
-            return ts.arrayType(eltType, node.getArrayDepth());
+            return ts.arrayType(eltType, node.getArrayDepth()); //todo type annotations
 
         } else if (node instanceof ASTPrimitiveType) {
 
-            return ts.getPrimitive(((ASTPrimitiveType) node).getKind());
+            return ts.getPrimitive(((ASTPrimitiveType) node).getKind()).withAnnotations(getSymbolicAnnotations(node));
 
         } else if (node instanceof ASTAmbiguousName) {
 
@@ -117,8 +126,10 @@ final class TypesFromAst {
 
         JTypeDeclSymbol reference = getReferenceEnsureResolved(node);
 
+        PSet<SymAnnot> typeAnnots = getTypeAnnotations(node);
+
         if (reference instanceof JTypeParameterSymbol) {
-            return subst.apply(((JTypeParameterSymbol) reference).getTypeMirror());
+            return subst.apply(((JTypeParameterSymbol) reference).getTypeMirror()).withAnnotations(typeAnnots);
         }
 
         JClassType enclosing = getEnclosing(ts, node, subst, lhsType, reference);
@@ -138,9 +149,9 @@ final class TypesFromAst {
         }
 
         if (enclosing != null) {
-            return enclosing.selectInner((JClassSymbol) reference, boundGenerics);
+            return enclosing.selectInner((JClassSymbol) reference, boundGenerics, typeAnnots);
         } else {
-            return ts.parameterise((JClassSymbol) reference, boundGenerics);
+            return ts.parameterise((JClassSymbol) reference, boundGenerics).withAnnotations(typeAnnots);
         }
     }
 
@@ -223,5 +234,14 @@ final class TypesFromAst {
     // Note most checks have already been done in the disambiguation pass (including reporting)
     private static boolean shouldEnclose(JTypeDeclSymbol reference) {
         return !Modifier.isStatic(reference.getModifiers());
+    }
+
+    private static PSet<SymAnnot> getTypeAnnotations(ASTType type) {
+        PSet<SymAnnot> baseAnnots = getSymbolicAnnotations(type);
+        JavaNode parent = type.getParent();
+        if (!(parent instanceof ASTType) && parent instanceof Annotatable) {
+            return baseAnnots.plusAll(getSymbolicAnnotations((Annotatable) parent));
+        }
+        return baseAnnots;
     }
 }

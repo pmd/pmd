@@ -16,6 +16,8 @@ import java.util.stream.Stream;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.HashTreePSet;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
@@ -61,12 +63,12 @@ public final class JIntersectionType implements JTypeMirror {
     }
 
     @Override
-    public List<SymAnnot> getTypeAnnotations() {
-        return Collections.emptyList();
+    public PSet<SymAnnot> getTypeAnnotations() {
+        return HashTreePSet.empty();
     }
 
     @Override
-    public JTypeMirror withAnnotations(List<SymAnnot> newTypeAnnots) {
+    public JTypeMirror withAnnotations(PSet<SymAnnot> newTypeAnnots) {
         return new JIntersectionType(
             ts,
             primaryBound.withAnnotations(newTypeAnnots),

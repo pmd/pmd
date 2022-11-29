@@ -12,9 +12,11 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.TypePath;
 import org.pcollections.ConsPStack;
+import org.pcollections.HashTreePSet;
 import org.pcollections.IntTreePMap;
 import org.pcollections.PMap;
 import org.pcollections.PSequence;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
@@ -36,7 +38,7 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
     private final String descriptor;
     protected final LazyMethodType type;
     private List<JFormalParamSymbol> params;
-    private PMap<Integer, PSequence<SymAnnot>> parameterAnnotations = IntTreePMap.empty();
+    private PMap<Integer, PSet<SymAnnot>> parameterAnnotations = IntTreePMap.empty();
 
     protected ExecutableStub(ClassStub owner,
                              String simpleName,
@@ -84,8 +86,8 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
     }
 
     @Override
-    public List<SymAnnot> getFormalParameterAnnotations(int parameterIndex) {
-        return parameterAnnotations.getOrDefault(parameterIndex, ConsPStack.empty());
+    public PSet<SymAnnot> getFormalParameterAnnotations(int parameterIndex) {
+        return parameterAnnotations.getOrDefault(parameterIndex, HashTreePSet.empty());
     }
 
     @Override
@@ -117,7 +119,7 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
     }
 
     void addParameterAnnotation(int paramIndex, SymbolicValue.SymAnnot annot) {
-        PSequence<SymAnnot> newAnnots = parameterAnnotations.getOrDefault(paramIndex, ConsPStack.empty()).plus(annot);
+        PSet<SymAnnot> newAnnots = parameterAnnotations.getOrDefault(paramIndex, HashTreePSet.empty()).plus(annot);
         parameterAnnotations = parameterAnnotations.plus(paramIndex, newAnnots);
     }
 
@@ -162,7 +164,7 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
         }
 
         @Override
-        public List<SymAnnot> getDeclaredAnnotations() {
+        public PSet<SymAnnot> getDeclaredAnnotations() {
             return ExecutableStub.this.getFormalParameterAnnotations(index);
         }
     }

@@ -5,8 +5,9 @@
 package net.sourceforge.pmd.lang.java.symbols;
 
 import java.lang.annotation.Annotation;
-import java.util.Collections;
-import java.util.List;
+
+import org.pcollections.HashTreePSet;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 
@@ -15,8 +16,8 @@ import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
  */
 public interface AnnotableSymbol extends JElementSymbol {
 
-    default List<SymAnnot> getDeclaredAnnotations() {
-        return Collections.emptyList();
+    default PSet<SymAnnot> getDeclaredAnnotations() {
+        return HashTreePSet.empty();
     }
 
     default SymbolicValue.SymAnnot getDeclaredAnnotation(Class<? extends Annotation> type) {

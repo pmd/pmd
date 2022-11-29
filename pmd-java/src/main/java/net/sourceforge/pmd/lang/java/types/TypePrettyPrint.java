@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
@@ -142,7 +143,7 @@ public final class TypePrettyPrint {
             return result;
         }
 
-        private void printTypeAnnotations(List<SymAnnot> annots) {
+        private void printTypeAnnotations(PSet<SymAnnot> annots) {
             if (this.printTypeAnnotations) {
                 for (SymAnnot annot : annots) {
                     String name = this.qualifyAnnotations ? annot.getBinaryName()

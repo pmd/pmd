@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.types;
 
 import static java.util.Collections.emptyList;
 
-import java.util.List;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
@@ -25,13 +25,13 @@ final class BoxedPrimitive extends ClassTypeImpl {
     private final JPrimitiveType unboxed;
 
     // constructor called by JPrimitiveType, exactly once per type system and per primitive
-    BoxedPrimitive(TypeSystem factory, JClassSymbol boxType, JPrimitiveType unboxed, List<SymAnnot> typeAnnots) {
+    BoxedPrimitive(TypeSystem factory, JClassSymbol boxType, JPrimitiveType unboxed, PSet<SymAnnot> typeAnnots) {
         super(factory, boxType, emptyList(), true, typeAnnots); // not erased
         this.unboxed = unboxed;
     }
 
     @Override
-    public JClassType withAnnotations(List<SymAnnot> newTypeAnnots) {
+    public JClassType withAnnotations(PSet<SymAnnot> newTypeAnnots) {
         if (newTypeAnnots.equals(this.getTypeAnnotations())) {
             return this;
         }

@@ -71,11 +71,6 @@ class ClassStubBuilder extends ClassVisitor {
                 assert new TypeReference(typeRef).getSort() == TypeReference.FIELD : typeRef;
                 return new AnnotationBuilderVisitor.TypeAnnotBuilderImpl(resolver, field, typeRef, typePath, visible, descriptor);
             }
-
-            @Override
-            public void visitEnd() {
-                field.finalizeVisit();
-            }
         };
     }
 

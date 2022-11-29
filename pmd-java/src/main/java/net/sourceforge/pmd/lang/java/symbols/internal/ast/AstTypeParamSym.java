@@ -5,11 +5,13 @@
 package net.sourceforge.pmd.lang.java.symbols.internal.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
 
@@ -36,6 +38,11 @@ final class AstTypeParamSym
         ASTType bound = node.getTypeBoundNode();
         return bound == null ? node.getTypeSystem().OBJECT
                              : bound.getTypeMirror();
+    }
+
+    @Override
+    public PSet<SymAnnot> getDeclaredAnnotations() {
+        return SymbolResolutionPass.getSymbolicAnnotations(node);
     }
 
     @Override

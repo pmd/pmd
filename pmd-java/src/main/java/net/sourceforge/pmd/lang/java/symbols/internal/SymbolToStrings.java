@@ -14,6 +14,8 @@ import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolVisitor;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 public class SymbolToStrings {
 
@@ -30,6 +32,10 @@ public class SymbolToStrings {
 
     public String toString(JElementSymbol symbol) {
         return symbol.acceptVisitor(visitor, new StringBuilder()).toString();
+    }
+
+    public String toString(SymAnnot annot) {
+        return "@" + annot.getBinaryName() + CollectionUtil.associateWith(annot.getAttributeNames(), annot::getAttribute);
     }
 
     private static final class ToStringVisitor implements SymbolVisitor<StringBuilder, StringBuilder> {

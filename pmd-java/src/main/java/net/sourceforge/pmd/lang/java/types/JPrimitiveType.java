@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
-import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
@@ -12,10 +11,10 @@ import java.util.function.Function;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
-import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * Mirror a primitive types. Even though {@code void.class.isPrimitive()}
@@ -33,9 +32,9 @@ public final class JPrimitiveType implements JTypeMirror {
     private final JClassSymbol type;
     /** Boxed representation. */
     private final JClassType box;
-    private final List<SymAnnot> typeAnnots;
+    private final PSet<SymAnnot> typeAnnots;
 
-    JPrimitiveType(TypeSystem ts, PrimitiveTypeKind kind, JClassSymbol type, JClassSymbol boxType, List<SymAnnot> typeAnnots) {
+    JPrimitiveType(TypeSystem ts, PrimitiveTypeKind kind, JClassSymbol type, JClassSymbol boxType, PSet<SymAnnot> typeAnnots) {
         this.ts = ts;
         this.kind = kind;
         this.type = type;
@@ -44,16 +43,16 @@ public final class JPrimitiveType implements JTypeMirror {
     }
 
     @Override
-    public List<SymAnnot> getTypeAnnotations() {
+    public PSet<SymAnnot> getTypeAnnotations() {
         return typeAnnots;
     }
 
     @Override
-    public JTypeMirror withAnnotations(List<SymAnnot> newTypeAnnots) {
+    public JTypeMirror withAnnotations(PSet<SymAnnot> newTypeAnnots) {
         if (newTypeAnnots.isEmpty() && this.typeAnnots.isEmpty()) {
             return this;
         }
-        return new JPrimitiveType(ts, kind, type, box.getSymbol(), CollectionUtil.defensiveUnmodifiableCopy(newTypeAnnots));
+        return new JPrimitiveType(ts, kind, type, box.getSymbol(), newTypeAnnots);
     }
 
     @Override

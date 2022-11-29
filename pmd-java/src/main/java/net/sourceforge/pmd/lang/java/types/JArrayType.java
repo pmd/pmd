@@ -11,6 +11,8 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.pcollections.HashTreePSet;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
@@ -26,14 +28,14 @@ public final class JArrayType implements JTypeMirror {
 
     private final JTypeMirror component;
     private final TypeSystem ts;
-    private final List<SymAnnot> typeAnnots;
+    private final PSet<SymAnnot> typeAnnots;
     private JClassSymbol symbol;
 
     JArrayType(TypeSystem ts, JTypeMirror component) {
-        this(ts, component, null, CollectionUtil.emptyList());
+        this(ts, component, null, HashTreePSet.empty());
     }
 
-    JArrayType(TypeSystem ts, JTypeMirror component, JClassSymbol arraySymbol, List<SymAnnot> typeAnnots) {
+    JArrayType(TypeSystem ts, JTypeMirror component, JClassSymbol arraySymbol, PSet<SymAnnot> typeAnnots) {
         assert component != null : "Expected non-null component";
         assert typeAnnots != null : "Expected non-null annotations";
         this.component = component;
@@ -60,16 +62,16 @@ public final class JArrayType implements JTypeMirror {
     }
 
     @Override
-    public List<SymAnnot> getTypeAnnotations() {
+    public PSet<SymAnnot> getTypeAnnotations() {
         return typeAnnots;
     }
 
     @Override
-    public JArrayType withAnnotations(List<SymAnnot> newTypeAnnots) {
+    public JArrayType withAnnotations(PSet<SymAnnot> newTypeAnnots) {
         if (newTypeAnnots.isEmpty() && this.typeAnnots.isEmpty()) {
             return this;
         }
-        return new JArrayType(ts, component, symbol, CollectionUtil.defensiveUnmodifiableCopy(newTypeAnnots));
+        return new JArrayType(ts, component, symbol, newTypeAnnots);
     }
 
     @Override

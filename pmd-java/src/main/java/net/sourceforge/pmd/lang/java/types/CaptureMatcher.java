@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
@@ -38,7 +38,7 @@ final class CaptureMatcher implements JTypeVar {
     }
 
     @Override
-    public JTypeVar withAnnotations(List<SymAnnot> newTypeAnnots) {
+    public JTypeVar withAnnotations(PSet<SymAnnot> newTypeAnnots) {
         throw new UnsupportedOperationException("this is a test only object which should only be used for equals");
     }
 
@@ -48,7 +48,12 @@ final class CaptureMatcher implements JTypeVar {
     }
 
     @Override
-    public List<SymAnnot> getTypeAnnotations() {
+    public JTypeVar addAnnotation(@NonNull SymAnnot newAnnot) {
+        throw new UnsupportedOperationException("this is a test only object which should only be used for equals");
+    }
+
+    @Override
+    public PSet<SymAnnot> getTypeAnnotations() {
         throw new UnsupportedOperationException("this is a test only object which should only be used for equals");
     }
 

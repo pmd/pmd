@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolEquality;
+import net.sourceforge.pmd.lang.java.symbols.internal.SymbolToStrings;
 
 /**
  * An annotation parsed from a class file.
@@ -102,6 +103,6 @@ final class SymbolicAnnotationImpl implements SymAnnot {
 
     @Override
     public String toString() {
-        return "@" + typeStub.getCanonicalName() + explicitAttrs;
+        return SymbolToStrings.ASM.toString(this);
     }
 }

@@ -18,6 +18,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
+import org.pcollections.HashTreePSet;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
@@ -62,7 +64,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
     private List<JConstructorSymbol> ctors = new ArrayList<>();
     private List<JFieldSymbol> enumConstants = null;
 
-    private List<SymAnnot> annotations = new ArrayList<>();
+    private PSet<SymAnnot> annotations = HashTreePSet.empty();
 
     private Set<String> annotAttributes;
 
@@ -126,7 +128,6 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
                         names.finishOuterClass();
                     }
                 }
-                annotations = Collections.unmodifiableList(annotations);
                 annotAttributes = (accessFlags & Opcodes.ACC_ANNOTATION) != 0
                                   ? getDeclaredMethods().stream().map(JElementSymbol::getSimpleName).collect(Collectors.toSet())
                                   : Collections.emptySet();
@@ -250,7 +251,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
 
     @Override
     public void addAnnotation(SymAnnot annot) {
-        annotations.add(annot);
+        annotations = annotations.plus(annot);
     }
 
 
@@ -320,7 +321,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
     }
 
     @Override
-    public List<SymAnnot> getDeclaredAnnotations() {
+    public PSet<SymAnnot> getDeclaredAnnotations() {
         parseLock.ensureParsed();
         return annotations;
     }

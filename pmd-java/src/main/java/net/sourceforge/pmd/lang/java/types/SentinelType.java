@@ -5,11 +5,12 @@
 package net.sourceforge.pmd.lang.java.types;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.pcollections.HashTreePSet;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
@@ -31,13 +32,13 @@ final class SentinelType implements JTypeMirror {
     }
 
     @Override
-    public JTypeMirror withAnnotations(List<SymAnnot> newTypeAnnots) {
+    public JTypeMirror withAnnotations(PSet<SymAnnot> newTypeAnnots) {
         return this;
     }
 
     @Override
-    public List<SymAnnot> getTypeAnnotations() {
-        return Collections.emptyList();
+    public PSet<SymAnnot> getTypeAnnotations() {
+        return HashTreePSet.empty();
     }
 
     @Override

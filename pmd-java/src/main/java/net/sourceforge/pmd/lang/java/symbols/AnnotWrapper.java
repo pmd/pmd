@@ -16,6 +16,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolEquality;
+import net.sourceforge.pmd.lang.java.symbols.internal.SymbolToStrings;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
 /**
@@ -101,5 +102,8 @@ final class AnnotWrapper implements SymAnnot {
         return SymbolEquality.ANNOTATION.hash(this);
     }
 
-
+    @Override
+    public String toString() {
+        return SymbolToStrings.FAKE.toString(this);
+    }
 }

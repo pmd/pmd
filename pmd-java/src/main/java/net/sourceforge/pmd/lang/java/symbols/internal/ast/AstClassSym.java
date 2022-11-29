@@ -13,9 +13,8 @@ import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.PSet;
 
-import net.sourceforge.pmd.lang.ast.NodeStream;
-import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -57,7 +56,7 @@ final class AstClassSym
     private final List<JConstructorSymbol> declaredCtors;
     private final List<JFieldSymbol> declaredFields;
     private final List<JFieldSymbol> enumConstants; // subset of declaredFields
-    private final List<SymAnnot> declaredAnnotations;
+    private final PSet<SymAnnot> declaredAnnotations;
 
     AstClassSym(ASTAnyTypeDeclaration node,
                 AstSymFactory factory,
@@ -74,8 +73,7 @@ final class AstClassSym
         final List<JFieldSymbol> myFields = new ArrayList<>();
         final List<JFieldSymbol> enumConstants;
         final List<JFieldSymbol> recordComponents;
-        final List<SymAnnot> myAnnotations;
-        
+
         if (isRecord()) {
             ASTRecordComponentList components = Objects.requireNonNull(node.getRecordComponents(),
                                                                        "Null component list for " + node);
@@ -122,13 +120,6 @@ final class AstClassSym
             }
         }
         
-        final NodeStream<ASTAnnotation> annotStream = node.getDeclaredAnnotations();
-        if (annotStream.nonEmpty()) {
-            myAnnotations = new ArrayList<>();
-            annotStream.forEach(anode -> myAnnotations.add(new AstSymbolicAnnot(anode)));
-        } else {
-            myAnnotations = Collections.emptyList();
-        }
 
         if (!recordComponents.isEmpty()) {
             // then the recordsComponents contains all record components
@@ -153,7 +144,7 @@ final class AstClassSym
         this.declaredCtors = Collections.unmodifiableList(myCtors);
         this.declaredFields = Collections.unmodifiableList(myFields);
         this.enumConstants = CollectionUtil.makeUnmodifiableAndNonNull(enumConstants);
-        this.declaredAnnotations = Collections.unmodifiableList(myAnnotations);
+        this.declaredAnnotations = SymbolResolutionPass.getSymbolicAnnotations(node);
     }
 
     private List<JFieldSymbol> mapComponentsToMutableList(AstSymFactory factory, ASTRecordComponentList components) {
@@ -227,7 +218,7 @@ final class AstClassSym
     }
     
     @Override
-    public List<SymAnnot> getDeclaredAnnotations() {
+    public PSet<SymAnnot> getDeclaredAnnotations() {
         return declaredAnnotations;
     }
 

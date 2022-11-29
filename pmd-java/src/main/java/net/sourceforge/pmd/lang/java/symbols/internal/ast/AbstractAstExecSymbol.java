@@ -4,15 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.ast;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.PSet;
 
-import net.sourceforge.pmd.lang.ast.NodeStream;
-import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTReceiverParameter;
@@ -33,7 +30,7 @@ abstract class AbstractAstExecSymbol<T extends ASTMethodOrConstructorDeclaration
 
     private final JClassSymbol owner;
     private final List<JFormalParamSymbol> formals;
-    private final List<SymAnnot> declaredAnnotations;
+    private final PSet<SymAnnot> declaredAnnotations;
 
     protected AbstractAstExecSymbol(T node, AstSymFactory factory, JClassSymbol owner) {
         super(node, factory);
@@ -44,14 +41,7 @@ abstract class AbstractAstExecSymbol<T extends ASTMethodOrConstructorDeclaration
             p -> new AstFormalParamSym(p.getVarId(), factory, this)
         );
 
-        NodeStream<ASTAnnotation> annotStream = node.getDeclaredAnnotations();
-        if (annotStream.isEmpty()) {
-            declaredAnnotations = Collections.emptyList();
-        } else {
-            final List<SymAnnot> annotations = new ArrayList<>();
-            annotStream.forEach(n -> annotations.add(new AstSymbolicAnnot(n)));
-            declaredAnnotations = Collections.unmodifiableList(annotations);
-        }
+        this.declaredAnnotations = SymbolResolutionPass.getSymbolicAnnotations(node);
     }
 
     @Override
@@ -74,7 +64,7 @@ abstract class AbstractAstExecSymbol<T extends ASTMethodOrConstructorDeclaration
     }
 
     @Override
-    public List<SymAnnot> getDeclaredAnnotations() {
+    public PSet<SymAnnot> getDeclaredAnnotations() {
         return declaredAnnotations;
     }
 

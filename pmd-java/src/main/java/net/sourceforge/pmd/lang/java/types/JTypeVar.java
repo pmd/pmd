@@ -5,13 +5,13 @@
 package net.sourceforge.pmd.lang.java.types;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
@@ -125,7 +125,10 @@ public interface JTypeVar extends JTypeMirror, SubstVar {
     JTypeVar withUpperBound(@NonNull JTypeMirror newUB);
 
     @Override // refine return type
-    JTypeVar withAnnotations(List<SymAnnot> newTypeAnnots);
+    JTypeVar withAnnotations(PSet<SymAnnot> newTypeAnnots);
+
+    @Override
+    JTypeVar addAnnotation(@NonNull SymAnnot newAnnot);
 
     @Override
     default Stream<JMethodSig> streamMethods(Predicate<? super JMethodSymbol> prefilter) {

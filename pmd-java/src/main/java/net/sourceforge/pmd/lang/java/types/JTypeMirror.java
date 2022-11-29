@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
@@ -26,7 +27,6 @@ import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 import net.sourceforge.pmd.lang.java.types.TypeOps.Convertibility;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
-import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * Type mirrors represent Java types. They are created by a {@link TypeSystem}
@@ -100,7 +100,7 @@ public interface JTypeMirror extends JTypeVisitable {
      * In the formal parameter, the type var will have annotations {@code @B @A}.
      */
     // todo annotations do not participate in equality of types.
-    List<SymAnnot> getTypeAnnotations();
+    PSet<SymAnnot> getTypeAnnotations();
 
 
     /**
@@ -457,17 +457,17 @@ public interface JTypeMirror extends JTypeVisitable {
      *
      * @return A new type, maybe this one
      */
-    JTypeMirror withAnnotations(List<SymAnnot> newTypeAnnots);
+    JTypeMirror withAnnotations(PSet<SymAnnot> newTypeAnnots);
 
     /**
      * Returns a type mirror that is equal to this instance but has one
      * more type annotation.
      *
-     * @see #withAnnotations(List)
+     * @see #withAnnotations(PSet)
      */
     default JTypeMirror addAnnotation(@NonNull SymAnnot newAnnot) {
         AssertionUtil.requireParamNotNull("annot", newAnnot);
-        return withAnnotations(CollectionUtil.plus(getTypeAnnotations(), newAnnot));
+        return withAnnotations(getTypeAnnotations().plus(newAnnot));
     }
 
 

@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
-import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
@@ -78,7 +78,7 @@ public interface JWildcardType extends JTypeMirror {
     JWildcardType subst(Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst);
 
     @Override
-    JWildcardType withAnnotations(List<SymAnnot> newTypeAnnots);
+    JWildcardType withAnnotations(PSet<SymAnnot> newTypeAnnots);
 
     @Override
     default <T, P> T acceptVisitor(JTypeVisitor<T, P> visitor, P p) {

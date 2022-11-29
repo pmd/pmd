@@ -4,10 +4,17 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.ast;
 
+import java.util.stream.Collectors;
+
+import org.pcollections.PSet;
+
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.ast.SymbolDeclaratorNode;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 
 /**
@@ -33,5 +40,9 @@ public final class SymbolResolutionPass {
         AstSymbolMakerVisitor visitor = new AstSymbolMakerVisitor(root);
         root.acceptVisitor(visitor, new AstSymFactory(processor));
         return visitor.makeKnownSymbolResolver();
+    }
+
+    public static PSet<SymAnnot> getSymbolicAnnotations(Annotatable annotatable) {
+        return annotatable.getDeclaredAnnotations().collect(Collectors.mapping(AstSymbolicAnnot::new, CollectionUtil.toPersistentSet()));
     }
 }

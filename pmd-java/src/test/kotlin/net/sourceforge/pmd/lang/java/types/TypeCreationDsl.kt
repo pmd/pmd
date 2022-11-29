@@ -6,16 +6,10 @@
 
 package net.sourceforge.pmd.lang.java.types
 
-import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.java.JavaParsingHelper
-import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter
-import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters
 import net.sourceforge.pmd.lang.java.ast.JavaNode
-import net.sourceforge.pmd.lang.java.ast.ParserTestCtx
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.types.TypeOps.isSameType
 import kotlin.reflect.KClass
-import kotlin.streams.toList
 
 
 val JavaNode.typeDsl get() = TypeDslOf(this.typeSystem)

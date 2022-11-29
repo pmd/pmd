@@ -23,6 +23,7 @@ import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolEquality;
+import net.sourceforge.pmd.lang.java.symbols.internal.SymbolToStrings;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 
@@ -81,6 +82,11 @@ class AstSymbolicAnnot implements SymbolicValue.SymAnnot {
     @Override
     public int hashCode() {
         return SymbolEquality.ANNOTATION.hash(this);
+    }
+
+    @Override
+    public String toString() {
+        return SymbolToStrings.AST.toString(this);
     }
 
     static SymbolicValue ofNode(ASTMemberValue valueNode) {

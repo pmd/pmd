@@ -34,7 +34,6 @@ class MethodInfoVisitor extends MethodVisitor {
     @Override
     public void visitEnd() {
         execStub.setDefaultAnnotValue(defaultAnnotValue);
-        execStub.finalizeVisit();
         super.visitEnd();
     }
 

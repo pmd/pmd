@@ -4,15 +4,14 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
-import net.sourceforge.pmd.util.CollectionUtil;
 
 
 final class WildcardTypeImpl implements JWildcardType {
@@ -20,10 +19,10 @@ final class WildcardTypeImpl implements JWildcardType {
     private final JTypeMirror bound;
     private final boolean isUpperBound;
     private final TypeSystem ts;
-    private final List<SymAnnot> typeAnnots;
+    private final PSet<SymAnnot> typeAnnots;
 
 
-    WildcardTypeImpl(TypeSystem ts, boolean isUpperBound, @Nullable JTypeMirror bound, List<SymAnnot> typeAnnots) {
+    WildcardTypeImpl(TypeSystem ts, boolean isUpperBound, @Nullable JTypeMirror bound, PSet<SymAnnot> typeAnnots) {
         this.ts = ts;
         this.typeAnnots = typeAnnots;
         this.bound = bound != null ? bound
@@ -38,16 +37,16 @@ final class WildcardTypeImpl implements JWildcardType {
     }
 
     @Override
-    public List<SymAnnot> getTypeAnnotations() {
+    public PSet<SymAnnot> getTypeAnnotations() {
         return typeAnnots;
     }
 
     @Override
-    public JWildcardType withAnnotations(List<SymAnnot> newTypeAnnots) {
+    public JWildcardType withAnnotations(PSet<SymAnnot> newTypeAnnots) {
         if (newTypeAnnots.isEmpty() && !typeAnnots.isEmpty()) {
             return ts.wildcard(isUpperBound, bound);
         } else if (!newTypeAnnots.isEmpty()) {
-            return new WildcardTypeImpl(ts, isUpperBound(), bound, CollectionUtil.defensiveUnmodifiableCopy(newTypeAnnots));
+            return new WildcardTypeImpl(ts, isUpperBound(), bound, newTypeAnnots);
         }
         return this;
     }

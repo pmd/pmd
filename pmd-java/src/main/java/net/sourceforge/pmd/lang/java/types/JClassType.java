@@ -6,13 +6,14 @@ package net.sourceforge.pmd.lang.java.types;
 
 import static net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.HashTreePSet;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
@@ -56,7 +57,7 @@ public interface JClassType extends JTypeMirror {
 
 
     @Override
-    JClassType withAnnotations(List<SymAnnot> newTypeAnnots);
+    JClassType withAnnotations(PSet<SymAnnot> newTypeAnnots);
 
     @Override
     default JClassType subst(Function<? super SubstVar, ? extends @NonNull JTypeMirror> fun) {
@@ -201,7 +202,7 @@ public interface JClassType extends JTypeMirror {
      *                                  or this type is parameterized and the inner type is not
      */
     default JClassType selectInner(JClassSymbol symbol, List<? extends JTypeMirror> targs) {
-        return selectInner(symbol, targs, Collections.emptyList());
+        return selectInner(symbol, targs, HashTreePSet.empty());
     }
 
     /**
@@ -226,7 +227,7 @@ public interface JClassType extends JTypeMirror {
      * @throws IllegalArgumentException If this type is raw and the inner type is not,
      *                                  or this type is parameterized and the inner type is not
      */
-    JClassType selectInner(JClassSymbol symbol, List<? extends JTypeMirror> targs, List<SymAnnot> typeAnnotations);
+    JClassType selectInner(JClassSymbol symbol, List<? extends JTypeMirror> targs, PSet<SymAnnot> typeAnnotations);
 
 
     /**

@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -17,6 +16,8 @@ import java.util.function.Function;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.HashTreePSet;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
@@ -54,13 +55,13 @@ public final class InferenceVar implements JTypeMirror, SubstVar {
     }
 
     @Override
-    public JTypeMirror withAnnotations(List<SymAnnot> newTypeAnnots) {
+    public JTypeMirror withAnnotations(PSet<SymAnnot> newTypeAnnots) {
         return this;
     }
 
     @Override
-    public List<SymAnnot> getTypeAnnotations() {
-        return Collections.emptyList();
+    public PSet<SymAnnot> getTypeAnnotations() {
+        return HashTreePSet.empty();
     }
 
     public String getName() {

@@ -15,6 +15,8 @@ import java.util.stream.Stream;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.HashTreePSet;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
@@ -32,7 +34,7 @@ class ClassTypeImpl implements JClassType {
     private final JClassSymbol symbol;
     private final TypeSystem ts;
     private final List<JTypeMirror> typeArgs;
-    private final List<SymAnnot> typeAnnotations;
+    private final PSet<SymAnnot> typeAnnotations;
     private final boolean isDecl;
 
     private JClassType superClass;
@@ -59,11 +61,11 @@ class ClassTypeImpl implements JClassType {
      *                                  as the type's type parameters
      * @throws IllegalArgumentException if any type argument is of a primitive type.
      */
-    ClassTypeImpl(TypeSystem ts, JClassSymbol symbol, List<JTypeMirror> typeArgs, boolean isDecl, List<SymAnnot> typeAnnotations) {
+    ClassTypeImpl(TypeSystem ts, JClassSymbol symbol, List<JTypeMirror> typeArgs, boolean isDecl, PSet<SymAnnot> typeAnnotations) {
         this(ts, null, symbol, typeArgs, typeAnnotations, isDecl);
     }
 
-    private ClassTypeImpl(TypeSystem ts, JClassType enclosing, JClassSymbol symbol, List<JTypeMirror> typeArgs, List<SymAnnot> typeAnnotations, boolean isDecl) {
+    private ClassTypeImpl(TypeSystem ts, JClassType enclosing, JClassSymbol symbol, List<JTypeMirror> typeArgs, PSet<SymAnnot> typeAnnotations, boolean isDecl) {
         this.typeAnnotations = typeAnnotations;
         validateParams(enclosing, symbol, typeArgs);
 
@@ -99,16 +101,16 @@ class ClassTypeImpl implements JClassType {
     }
 
     @Override
-    public List<SymAnnot> getTypeAnnotations() {
+    public PSet<SymAnnot> getTypeAnnotations() {
         return typeAnnotations;
     }
 
     @Override
-    public JClassType withAnnotations(List<SymAnnot> newTypeAnnots) {
+    public JClassType withAnnotations(PSet<SymAnnot> newTypeAnnots) {
         if (newTypeAnnots.isEmpty() && this.typeAnnotations.isEmpty()) {
             return this;
         }
-        return new ClassTypeImpl(ts, enclosingType, symbol, typeArgs, CollectionUtil.defensiveUnmodifiableCopy(newTypeAnnots), isDecl);
+        return new ClassTypeImpl(ts, enclosingType, symbol, typeArgs, newTypeAnnots, isDecl);
     }
 
     @Override
@@ -149,12 +151,12 @@ class ClassTypeImpl implements JClassType {
     }
 
     @Override
-    public JClassType selectInner(JClassSymbol symbol, List<? extends JTypeMirror> targs, List<SymAnnot> typeAnnotations) {
+    public JClassType selectInner(JClassSymbol symbol, List<? extends JTypeMirror> targs, PSet<SymAnnot> typeAnnotations) {
         return new ClassTypeImpl(ts,
                                  this,
                                  symbol,
                                  CollectionUtil.defensiveUnmodifiableCopy(targs),
-                                 CollectionUtil.defensiveUnmodifiableCopy(typeAnnotations),
+                                 typeAnnotations,
                                  this.isDecl);
     }
 
@@ -278,7 +280,7 @@ class ClassTypeImpl implements JClassType {
         JClassSymbol declaredClass = symbol.getDeclaredClass(simpleName);
         if (declaredClass != null) {
             if (Modifier.isStatic(declaredClass.getModifiers())) {
-                return new ClassTypeImpl(ts, null, declaredClass, emptyList(), emptyList(), true);
+                return new ClassTypeImpl(ts, null, declaredClass, emptyList(), HashTreePSet.empty(), true);
             } else {
                 return selectInner(declaredClass, emptyList());
             }
