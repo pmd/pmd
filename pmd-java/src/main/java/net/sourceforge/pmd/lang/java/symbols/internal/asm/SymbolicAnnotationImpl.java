@@ -77,11 +77,6 @@ final class SymbolicAnnotationImpl implements SymAnnot {
     }
 
     @Override
-    public boolean isOfType(String binaryName) {
-        return typeStub.getBinaryName().equals(binaryName);
-    }
-
-    @Override
     public String getBinaryName() {
         return typeStub.getBinaryName();
     }

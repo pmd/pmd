@@ -168,7 +168,9 @@ public interface SymbolicValue {
          */
         RetentionPolicy getRetention();
 
-        boolean isOfType(String binaryName);
+        default boolean isOfType(String binaryName) {
+            return getBinaryName().equals(binaryName);
+        }
 
         /**
          * Whether the annotation has the given type. Note that only

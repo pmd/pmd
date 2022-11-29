@@ -60,11 +60,6 @@ class AstSymbolicAnnot implements SymbolicValue.SymAnnot {
     }
 
     @Override
-    public boolean isOfType(String binaryName) {
-        return getBinaryName().equals(binaryName);
-    }
-
-    @Override
     public @NonNull String getBinaryName() {
         return node.getTypeMirror().getSymbol().getBinaryName();
     }

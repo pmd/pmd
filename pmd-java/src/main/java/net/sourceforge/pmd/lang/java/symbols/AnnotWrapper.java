@@ -51,11 +51,6 @@ final class AnnotWrapper implements SymAnnot {
     }
 
     @Override
-    public boolean isOfType(String binaryName) {
-        return annotationClassSymbol.getBinaryName().equals(binaryName);
-    }
-
-    @Override
     public Set<String> getAttributeNames() {
         return annotationClassSymbol.getAnnotationAttributeNames();
     }

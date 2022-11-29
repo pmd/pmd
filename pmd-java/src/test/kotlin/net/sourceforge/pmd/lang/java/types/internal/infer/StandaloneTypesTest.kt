@@ -66,7 +66,7 @@ class StandaloneTypesTest : ProcessorTestSpec({
                     }
 
             "new int[0].length" should matchArrayLength { int }
-            "new $AnnotA int[0].length" should matchArrayLength { `@A`(int) }
+            "new $AnnotA int[0].length" should matchArrayLength { `@A` on int }
             "new String[0].length" should matchArrayLength { gen.t_String }
             "new String[0][].length" should matchArrayLength { gen.t_String.toArray() }
         }

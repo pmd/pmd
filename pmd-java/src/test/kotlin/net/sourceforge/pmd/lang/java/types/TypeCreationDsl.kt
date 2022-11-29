@@ -7,11 +7,11 @@
 package net.sourceforge.pmd.lang.java.types
 
 import net.sourceforge.pmd.lang.java.ast.JavaNode
-import net.sourceforge.pmd.lang.java.ast.NodeParsingCtx
 import net.sourceforge.pmd.lang.java.ast.ParserTestSpec
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot
+import net.sourceforge.pmd.lang.java.symbols.internal.FakeSymAnnot
 import net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil
 import net.sourceforge.pmd.lang.java.symbols.testdata.ClassWithTypeAnnotationsInside
 import net.sourceforge.pmd.lang.java.types.TypeOps.isSameType
@@ -61,12 +61,20 @@ interface TypeDslMixin {
     infix fun JTypeMirror.withAnnot(a: SymAnnot) = this.addAnnotation(a)
 
     val `@A`: SymAnnotDsl
-        get() = SymAnnotDsl(SymbolicValue.of(ts, TypeAnnotTestUtil.AnnotAImpl()) as SymAnnot)
+        get() = `@`(ts.getClassSymbol(ClassWithTypeAnnotationsInside.A::class.java)!!)
+
+    /**
+     * With this object you can write
+     * ```
+     *   `@`(symbol)
+     * ```
+     * and get an annotation
+     */
+    val `@`: (JClassSymbol) -> SymAnnotDsl get() = { SymAnnotDsl(FakeSymAnnot(it)) }
 
     class SymAnnotDsl(delegate: SymAnnot) : SymAnnot by delegate {
-
-        operator fun invoke(t: JTypeMirror): JTypeMirror = t.addAnnotation(this)
-        override fun toString(): String = "@$binaryName"
+        /** An infix fun to be able to write the annotation first. */
+        infix fun on(t: JTypeMirror): JTypeMirror = t.addAnnotation(this)
     }
 
 
@@ -125,7 +133,8 @@ interface TypeDslMixin {
 
 
 /** See [TypeDslMixin.@A]. */
-val ParserTestSpec.GroupTestCtx.VersionedTestCtx.ImplicitNodeParsingCtx<*>.AnnotA get() = "@" + ClassWithTypeAnnotationsInside.A::class.java.canonicalName
+val ParserTestSpec.GroupTestCtx.VersionedTestCtx.ImplicitNodeParsingCtx<*>.AnnotA
+    get() = "@" + ClassWithTypeAnnotationsInside.A::class.java.canonicalName
 
 class TypeDslOf(override val ts: TypeSystem) : TypeDslMixin
 
