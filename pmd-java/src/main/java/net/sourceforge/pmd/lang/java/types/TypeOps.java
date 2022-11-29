@@ -379,7 +379,7 @@ public final class TypeOps {
         } else if (isTypeRange(s)) {
             JTypeMirror lower = lowerBoundRec(s);
             if (!lower.isBottom()) {
-                return isConvertible(t, lower, capture);
+                return isConvertible(lower, t, capture);
             }
             // otherwise fallthrough
         } else if (isSpecialUnresolved(t)) {

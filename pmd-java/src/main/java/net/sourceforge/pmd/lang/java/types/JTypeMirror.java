@@ -15,6 +15,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
@@ -84,13 +85,21 @@ public interface JTypeMirror extends JTypeVisitable {
     TypeSystem getTypeSystem();
 
 
-    JTypeMirror withAnnotations(List<SymAnnot> newTypeAnnots);
-
-    default JTypeMirror addAnnotation(SymAnnot symAnnot) {
-        return withAnnotations(CollectionUtil.plus(getTypeAnnotations(), symAnnot));
-    }
-
-    /** Return a list of type annotations on this type. */
+    /**
+     * Return a list of annotations on this type. Annotations can be written
+     * on nearly any type (eg {@code @A Out.@B In<@C T>}, {@code @A ? extends @B Up}).
+     *
+     * <p>For {@link JTypeVar}, this includes both the annotations defined
+     * on the type var and those defined at use site. For instance
+     * <pre>{@code
+     *    <@A T> void accept(@B T t);
+     * }</pre>
+     * The T type var will have annotation {@code @A} in the symbol
+     * ({@link JTypeParameterSymbol#getDeclaredAnnotations()})
+     * and in the type var that is in the {@link JMethodSig#getTypeParameters()}.
+     * In the formal parameter, the type var will have annotations {@code @B @A}.
+     */
+    // todo annotations do not participate in equality of types.
     List<SymAnnot> getTypeAnnotations();
 
 
@@ -435,9 +444,30 @@ public interface JTypeMirror extends JTypeVisitable {
     }
 
 
-
     @Override
     JTypeMirror subst(Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst);
+
+
+    /**
+     * Returns a type mirror that is equal to this instance but has different
+     * type annotations.
+     *
+     * @param newTypeAnnots New type annotations (not null)
+     *
+     * @return A new type, maybe this one
+     */
+    JTypeMirror withAnnotations(List<SymAnnot> newTypeAnnots);
+
+    /**
+     * Returns a type mirror that is equal to this instance but has one
+     * more type annotation.
+     *
+     * @see #withAnnotations(List)
+     */
+    default JTypeMirror addAnnotation(@NonNull SymAnnot newAnnot) {
+        AssertionUtil.requireParamNotNull("annot", newAnnot);
+        return withAnnotations(CollectionUtil.plus(getTypeAnnotations(), newAnnot));
+    }
 
 
     /**

@@ -39,7 +39,7 @@ abstract class TypeVarImpl implements JTypeVar {
     }
 
     @Override
-    public abstract JTypeMirror addAnnotation(SymAnnot symAnnot);
+    public abstract JTypeMirror addAnnotation(SymAnnot newAnnot);
 
     @Override
     public TypeSystem getTypeSystem() {
@@ -121,8 +121,8 @@ abstract class TypeVarImpl implements JTypeVar {
         }
 
         @Override
-        public JTypeMirror addAnnotation(SymAnnot symAnnot) {
-            return new RegularTypeVar(this, CollectionUtil.plus(typeAnnots, symAnnot));
+        public JTypeMirror addAnnotation(SymAnnot newAnnot) {
+            return new RegularTypeVar(this, CollectionUtil.plus(typeAnnots, newAnnot));
         }
 
         @Override
@@ -268,8 +268,8 @@ abstract class TypeVarImpl implements JTypeVar {
         }
 
         @Override
-        public JTypeMirror addAnnotation(SymAnnot symAnnot) {
-            return new CapturedTypeVar(wildcard, lowerBound, upperBound, CollectionUtil.plus(typeAnnots, symAnnot));
+        public JTypeMirror addAnnotation(SymAnnot newAnnot) {
+            return new CapturedTypeVar(wildcard, lowerBound, upperBound, CollectionUtil.plus(typeAnnots, newAnnot));
         }
 
         @Override
