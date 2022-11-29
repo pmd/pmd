@@ -15,18 +15,12 @@ import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
 
-import net.sourceforge.pmd.lang.java.JavaParsingHelper;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.symbols.testdata.ClassWithTypeAnnotationsInside;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
-import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
 /**
  *
@@ -37,38 +31,6 @@ public class TypeAnnotTestUtil {
     static final List<Annotation> aAnnot = listOf(new AnnotAImpl());
     static final List<Annotation> bAnnot = listOf(new AnnotBImpl());
     static final List<Annotation> aAndBAnnot = listOf(new AnnotAImpl(), new AnnotBImpl());
-
-
-    /**
-     * Use with {@link ParameterizedTest} and {@link EnumSource}.
-     */
-    enum SymImplementation {
-        ASM {
-            @Override
-            JClassSymbol getSymbol(TypeSystem ts, Class<?> aClass) {
-                return ts.getClassSymbol(aClass);
-            }
-        },
-        AST {
-            @Override
-            JClassSymbol getSymbol(TypeSystem ts, Class<?> aClass) {
-                ASTCompilationUnit ast = JavaParsingHelper.DEFAULT.withTypeSystem(ts).parseClass(aClass);
-                return ast.getTypeDeclarations().first(it -> it.getSimpleName().equals(aClass.getSimpleName())).getSymbol();
-            }
-
-            @Override
-            JClassType getDeclaration(TypeSystem ts, Class<?> aClass) {
-                ASTCompilationUnit ast = JavaParsingHelper.DEFAULT.withTypeSystem(ts).parseClass(aClass);
-                return ast.getTypeDeclarations().first(it -> it.getSimpleName().equals(aClass.getSimpleName())).getTypeMirror();
-            }
-        };
-
-        abstract JClassSymbol getSymbol(TypeSystem ts, Class<?> aClass);
-
-        JClassType getDeclaration(TypeSystem ts, Class<?> aClass) {
-            return (JClassType) ts.declaration(getSymbol(ts, aClass));
-        }
-    }
 
 
     static JTypeMirror getFieldType(JClassType sym, String fieldName) {

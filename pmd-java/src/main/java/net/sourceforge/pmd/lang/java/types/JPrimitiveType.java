@@ -117,9 +117,18 @@ public final class JPrimitiveType implements JTypeMirror {
 
     @Override
     public String toString() {
-        return getSimpleName();
+        return TypePrettyPrint.prettyPrint(this);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof JPrimitiveType && ((JPrimitiveType) obj).kind == this.kind;
+    }
+
+    @Override
+    public int hashCode() {
+        return kind.hashCode();
+    }
 
     /**
      * Returns the token used to represent the type in source,

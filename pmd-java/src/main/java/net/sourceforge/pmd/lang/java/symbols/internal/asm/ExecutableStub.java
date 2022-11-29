@@ -11,11 +11,9 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.TypePath;
-import org.pcollections.ConsPStack;
 import org.pcollections.HashTreePSet;
 import org.pcollections.IntTreePMap;
 import org.pcollections.PMap;
-import org.pcollections.PSequence;
 import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
