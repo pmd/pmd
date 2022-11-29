@@ -5,8 +5,10 @@
 
 package net.sourceforge.pmd.lang.java.symbols;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.List;
@@ -17,6 +19,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymEnum;
 import net.sourceforge.pmd.lang.java.types.JArrayType;
 import net.sourceforge.pmd.lang.java.types.JClassType;
@@ -245,6 +248,22 @@ public interface JClassSymbol extends JTypeDeclSymbol,
                        .filter(value -> value instanceof SymEnum)
                        .map(value -> ((SymEnum) value).toEnum(RetentionPolicy.class))
                        .orElse(RetentionPolicy.CLASS);
+    }
+
+    /**
+     * Return whether annotations of this annotation type apply to the
+     * given construct, as per the {@link Target} annotation. Return
+     * false if this is not an annotation.
+     */
+    default boolean annotationAppliesTo(ElementType elementType) {
+        if (!isAnnotation()) {
+            return false;
+        }
+        SymAnnot target = getDeclaredAnnotation(Target.class);
+        if (target == null) {
+            return false;
+        }
+        return target.attributeContains("value", elementType).isTrue();
     }
 
     // todo isSealed + getPermittedSubclasses

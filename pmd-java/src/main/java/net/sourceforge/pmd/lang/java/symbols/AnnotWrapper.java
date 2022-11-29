@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.symbols;
 
 import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
@@ -85,6 +86,11 @@ final class AnnotWrapper implements SymAnnot {
     @Override
     public String getSimpleName() {
         return annotationClass.getSimpleName();
+    }
+
+    @Override
+    public boolean appliesToTypeUse() {
+        return annotationClassSymbol.annotationAppliesTo(ElementType.TYPE_USE);
     }
 
     @Override

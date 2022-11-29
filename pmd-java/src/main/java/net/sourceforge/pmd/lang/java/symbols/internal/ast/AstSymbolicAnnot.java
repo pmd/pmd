@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.ast;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +58,11 @@ class AstSymbolicAnnot implements SymbolicValue.SymAnnot {
             retention = RetentionPolicy.CLASS;
         }
         return retention;
+    }
+
+    @Override
+    public boolean appliesToTypeUse() {
+        return node.getTypeMirror().getSymbol().annotationAppliesTo(ElementType.TYPE_USE);
     }
 
     @Override

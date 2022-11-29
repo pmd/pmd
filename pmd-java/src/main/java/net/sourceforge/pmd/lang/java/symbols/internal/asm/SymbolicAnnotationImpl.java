@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Collections;
 import java.util.HashMap;
@@ -74,6 +75,11 @@ final class SymbolicAnnotationImpl implements SymAnnot {
     public RetentionPolicy getRetention() {
         return runtimeVisible ? RetentionPolicy.RUNTIME
                               : RetentionPolicy.CLASS;
+    }
+
+    @Override
+    public boolean appliesToTypeUse() {
+        return typeStub.annotationAppliesTo(ElementType.TYPE_USE);
     }
 
     @Override

@@ -261,16 +261,17 @@ final class TypesFromAst {
     }
 
     private static PSet<SymAnnot> getTypeAnnotations(ASTType type) {
-        PSet<SymAnnot> annotsOnTypes = getSymbolicAnnotations(type);
+        PSet<SymAnnot> annotsOnType = getSymbolicAnnotations(type);
         Annotatable parent = getEnclosingAnnotationGiver(type);
         if (parent != null) {
             // todo parent annots should be filtered by target TYPE_USE
             PSet<SymAnnot> parentAnnots = getSymbolicAnnotations(parent);
-            if (annotsOnTypes.isEmpty()) {
-                return parentAnnots;
+            for (SymAnnot parentAnnot : parentAnnots) {
+                if (parentAnnot.appliesToTypeUse()) {
+                    annotsOnType = annotsOnType.plus(parentAnnot);
+                }
             }
-            return annotsOnTypes.plusAll(parentAnnots);
         }
-        return annotsOnTypes;
+        return annotsOnType;
     }
 }

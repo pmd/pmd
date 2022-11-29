@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Collections;
 import java.util.Set;
@@ -54,6 +55,11 @@ public class FakeSymAnnot implements SymAnnot {
     @Override
     public RetentionPolicy getRetention() {
         return annotationClass.getAnnotationRetention();
+    }
+
+    @Override
+    public boolean appliesToTypeUse() {
+        return annotationClass.annotationAppliesTo(ElementType.TYPE_USE);
     }
 
     @Override

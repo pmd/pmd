@@ -200,6 +200,30 @@ public interface SymbolicValue {
             }
         }
 
+        /**
+         * Returns YES if the annotation has the attribute set to the
+         * given value. Returns NO if it is set to another value.
+         * Returns UNKNOWN if the attribute does not exist or is
+         * unresolved.
+         */
+        default OptionalBool attributeContains(String attrName, Object attrValue) {
+            SymbolicValue attr = getAttribute(attrName);
+            if (attr == null) {
+                return OptionalBool.UNKNOWN;
+            }
+            if (attr instanceof SymArray) {
+                // todo what if the value is an array itself
+                return OptionalBool.definitely(((SymArray) attr).elements.stream().anyMatch(it -> it.valueEquals(attrValue)));
+            }
+
+            if (attrValue instanceof SymbolicValue) {
+                return OptionalBool.definitely(attr.equals(attrValue));
+            } else {
+                return OptionalBool.definitely(attr.valueEquals(attrValue));
+            }
+        }
+
+        boolean appliesToTypeUse();
     }
 
     /**
@@ -276,6 +300,18 @@ public interface SymbolicValue {
 
         public int length() {
             return length;
+        }
+
+        public boolean containsValue(Object value) {
+            if (primArray != null) {
+                // todo I don't know how to code that
+            } else if (elements != null) {
+                if (value instanceof SymbolicValue) {
+                    return elements.stream().anyMatch(it -> it.equals(value));
+                }
+                return elements.stream().anyMatch(it -> it.valueEquals(value));
+            }
+            return false;
         }
 
         @Override
