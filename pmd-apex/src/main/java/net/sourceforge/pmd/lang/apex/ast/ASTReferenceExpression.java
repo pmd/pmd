@@ -56,7 +56,7 @@ public class ASTReferenceExpression extends AbstractApexNode.Many<Identifier> {
     }
 
     public boolean isSObjectType() {
-        return nodes.stream().anyMatch(id -> "sobjecttype".contentEquals(id.getString()));
+        return nodes.stream().anyMatch(id -> "sobjecttype".contentEquals(id.getString().toLowerCase()));
     }
 
     @Override
