@@ -12,6 +12,7 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 
@@ -100,5 +101,7 @@ public interface JExecutableSymbol extends JAccessibleElementSymbol, JTypeParame
 
     List<JTypeMirror> getThrownExceptionTypes(Substitution subst);
 
-
+    default List<SymAnnot> getFormalParameterAnnotations(int parameterIndex) {
+        return getFormalParameters().get(parameterIndex).getDeclaredAnnotations();
+    }
 }

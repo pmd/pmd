@@ -4,16 +4,30 @@
 
 package net.sourceforge.pmd.lang.java.symbols.testdata;
 
+@TypeAnnotation
 @AnnotWithDefaults(valueNoDefault = "ohio",
                    stringArrayDefault = {})
 public class SomeClass {
 
-
-    void m1(int a, final String foo) {
-
+    @FieldAnnotation
+    private int f1;
+    
+    @ConstructorAnnotation
+    public SomeClass() {
+        
     }
 
-    void m4(final int x) {
+    void withAnnotatedParam(int a, @ParameterAnnotation final String foo) {
+        
+    }
+
+    void withAnnotatedLocal() {
+        @LocalVarAnnotation
+        long local;
+    }
+    
+    @MethodAnnotation
+    void anotatedMethod(final int x) {
 
     }
 

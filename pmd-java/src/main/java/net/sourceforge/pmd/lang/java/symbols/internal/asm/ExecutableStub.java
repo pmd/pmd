@@ -4,14 +4,17 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
-import static net.sourceforge.pmd.util.CollectionUtil.map;
-
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.TypePath;
+import org.pcollections.ConsPStack;
+import org.pcollections.IntTreePMap;
+import org.pcollections.PMap;
+import org.pcollections.PSequence;
 
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
@@ -33,6 +36,7 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
     private final String descriptor;
     protected final LazyMethodType type;
     private List<JFormalParamSymbol> params;
+    private PMap<Integer, PSequence<SymAnnot>> parameterAnnotations = IntTreePMap.empty();
 
     protected ExecutableStub(ClassStub owner,
                              String simpleName,
@@ -59,8 +63,12 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
     @Override
     public List<JFormalParamSymbol> getFormalParameters() {
         if (params == null) {
-            this.params = Collections.unmodifiableList(map(type.getParameterTypes(),
-                                                           FormalParamStub::new));
+            List<JTypeMirror> ptypes = type.getParameterTypes();
+            List<JFormalParamSymbol> newParams = new ArrayList<>(ptypes.size());
+            for (int i = 0; i < ptypes.size(); i++) {
+                newParams.add(new FormalParamStub(ptypes.get(i), i));
+            }
+            params = Collections.unmodifiableList(newParams);
         }
         return params;
     }
@@ -73,6 +81,11 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
     @Override
     public int getArity() {
         return type.getParameterTypes().size();
+    }
+
+    @Override
+    public List<SymAnnot> getFormalParameterAnnotations(int parameterIndex) {
+        return parameterAnnotations.getOrDefault(parameterIndex, ConsPStack.empty());
     }
 
     @Override
@@ -103,6 +116,11 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
         type.acceptTypeAnnotation(typeRef, path, annot);
     }
 
+    void addParameterAnnotation(int paramIndex, SymbolicValue.SymAnnot annot) {
+        PSequence<SymAnnot> newAnnots = parameterAnnotations.getOrDefault(paramIndex, ConsPStack.empty()).plus(annot);
+        parameterAnnotations = parameterAnnotations.plus(paramIndex, newAnnots);
+    }
+
     /**
      * Formal parameter symbols obtained from the class have no info
      * about name or whether it's final. This info is missing from
@@ -111,9 +129,11 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
     class FormalParamStub implements JFormalParamSymbol {
 
         private final JTypeMirror type;
+        private final int index;
 
-        FormalParamStub(JTypeMirror type) {
+        FormalParamStub(JTypeMirror type, int index) {
             this.type = type;
+            this.index = index;
         }
 
         @Override
@@ -139,6 +159,11 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
         @Override
         public TypeSystem getTypeSystem() {
             return ExecutableStub.this.getTypeSystem();
+        }
+
+        @Override
+        public List<SymAnnot> getDeclaredAnnotations() {
+            return ExecutableStub.this.getFormalParameterAnnotations(index);
         }
     }
 

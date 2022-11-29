@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
-import static net.sourceforge.pmd.lang.java.symbols.internal.asm.ExecutableStub.CtorStub;
-import static net.sourceforge.pmd.lang.java.symbols.internal.asm.ExecutableStub.MethodStub;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -32,6 +29,8 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolEquality;
+import net.sourceforge.pmd.lang.java.symbols.internal.asm.ExecutableStub.CtorStub;
+import net.sourceforge.pmd.lang.java.symbols.internal.asm.ExecutableStub.MethodStub;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.GenericSigBase.LazyClassSignature;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
@@ -94,7 +93,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
                     if (instream != null) {
                         ClassReader classReader = new ClassReader(instream);
                         ClassStubBuilder builder = new ClassStubBuilder(ClassStub.this, resolver);
-                        classReader.accept(builder, ClassReader.SKIP_CODE);
+                        classReader.accept(builder, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
                         return true;
                     } else {
                         return false;
