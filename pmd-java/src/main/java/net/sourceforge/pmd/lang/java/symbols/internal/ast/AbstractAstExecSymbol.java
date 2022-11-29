@@ -43,13 +43,7 @@ abstract class AbstractAstExecSymbol<T extends ASTMethodOrConstructorDeclaration
         );
         
         NodeStream<ASTAnnotation> annotStream = node.getDeclaredAnnotations();
-        if (annotStream.isEmpty()) {
-            declaredAnnotations = Collections.emptyList();
-        } else {
-            final List<SymAnnot> annotations = new ArrayList<>();
-            annotStream.forEach(n -> annotations.add(new AstSymbolicAnnot(n)));
-            declaredAnnotations = Collections.unmodifiableList(annotations);
-        }
+            declaredAnnotations = Collections.unmodifiableList(annotStream.toList(ASTSymbolicAnnot::new));
     }
 
     @Override
