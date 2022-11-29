@@ -5,11 +5,8 @@
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -19,7 +16,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
-import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
@@ -195,7 +191,6 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
 
         private final @NonNull String signature;
 
-        private Map<Integer, List<SymAnnot>> parameterAnnotations = Collections.emptyMap();
         private List<JTypeMirror> parameterTypes;
         private List<JTypeMirror> exceptionTypes;
         private JTypeMirror returnType;
@@ -254,17 +249,6 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
         @Override
         public String toString() {
             return signature;
-        }
-
-        void addParameterAnnotation(int paramIndex, SymAnnot annot) {
-            if (parameterAnnotations.isEmpty()) {
-                parameterAnnotations = new HashMap<>(); // Make writable
-            }
-            parameterAnnotations.computeIfAbsent(paramIndex, ArrayList::new).add(annot);
-        }
-        
-        public List<SymAnnot> getParameterAnnotations(int paramIndex) {
-            return parameterAnnotations.getOrDefault(paramIndex, Collections.emptyList());
         }
     }
 }

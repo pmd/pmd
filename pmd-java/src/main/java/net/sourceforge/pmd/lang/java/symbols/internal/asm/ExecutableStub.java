@@ -6,8 +6,11 @@ package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
 import static net.sourceforge.pmd.util.CollectionUtil.map;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.objectweb.asm.Opcodes;
@@ -32,6 +35,7 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
     private final String descriptor;
     protected final LazyMethodType type;
     private List<JFormalParamSymbol> params;
+    private Map<Integer, List<SymAnnot>> parameterAnnotations = Collections.emptyMap();
 
     protected ExecutableStub(ClassStub owner,
                              String simpleName,
@@ -76,7 +80,7 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
     
     @Override
     public List<SymAnnot> getFormalParameterAnnotations(int parameterIndex) {
-        return type.getParameterAnnotations(parameterIndex);
+        return parameterAnnotations.getOrDefault(parameterIndex, Collections.emptyList());
     }
 
     @Override
@@ -94,7 +98,10 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
     }
 
     void addParameterAnnotation(int paramIndex, SymbolicValue.SymAnnot annot) {
-        type.addParameterAnnotation(paramIndex, annot);
+        if (parameterAnnotations.isEmpty()) {
+            parameterAnnotations = new HashMap<>(); // Make writable
+        }
+        parameterAnnotations.computeIfAbsent(paramIndex, ArrayList::new).add(annot);
     }
 
     /**
