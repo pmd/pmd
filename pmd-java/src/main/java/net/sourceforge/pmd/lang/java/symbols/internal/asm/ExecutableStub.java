@@ -76,6 +76,15 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
     }
 
     @Override
+    public @Nullable JTypeMirror getAnnotatedReceiverType(Substitution subst) {
+        if (!this.hasReceiver()) {
+            return null;
+        }
+        JTypeMirror receiver = getTypeSystem().declaration(getEnclosingClass()).subst(subst);
+        return type.applyReceiverAnnotations(receiver);
+    }
+
+    @Override
     public List<JTypeMirror> getFormalParameterTypes(Substitution subst) {
         return TypeOps.subst(type.getParameterTypes(), subst);
     }

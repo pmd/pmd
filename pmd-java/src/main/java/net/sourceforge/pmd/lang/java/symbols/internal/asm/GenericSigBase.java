@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.Validate;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -23,6 +22,7 @@ import org.objectweb.asm.TypeReference;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
+import net.sourceforge.pmd.lang.java.symbols.internal.asm.TypeAnnotationHelper.TypeAnnotationSet;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.TypeAnnotationHelper.TypeAnnotationSetWithReferences;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JIntersectionType;
@@ -200,10 +200,11 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
 
         private final @NonNull String signature;
 
+        private @Nullable TypeAnnotationSet receiverAnnotations;
         private List<JTypeMirror> parameterTypes;
         private List<JTypeMirror> exceptionTypes;
         private JTypeMirror returnType;
-        private TypeAnnotationSetWithReferences typeAnnots;
+        private @Nullable TypeAnnotationSetWithReferences typeAnnots;
         private @Nullable String[] rawExceptions;
 
         /** Used for constructors of inner non-static classes. */
@@ -249,6 +250,13 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
             // null this transient data out
             this.rawExceptions = null;
             this.typeAnnots = null;
+        }
+
+        public JTypeMirror applyReceiverAnnotations(JTypeMirror typeMirror) {
+            if (receiverAnnotations == null) {
+                return typeMirror;
+            }
+            return receiverAnnotations.decorate(typeMirror);
         }
 
         @Override
@@ -330,8 +338,8 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
             }
             case TypeReference.METHOD_TYPE_PARAMETER: {
                 assert typeParameters != null;
-                int idx = tyRef.getTypeParameterIndex();
                 assert path == null : "unexpected path " + path;
+                int idx = tyRef.getTypeParameterIndex();
                 JTypeVar tparam = typeParameters.get(idx);
                 tparam = tparam.withAnnotations(CollectionUtil.plus(tparam.getTypeAnnotations(), annot));
                 typeParameters.set(idx, tparam);
@@ -347,8 +355,13 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
                 typeParameters.set(tparamIdx, tparam.withUpperBound(newUb));
                 return;
             }
-            case TypeReference.METHOD_RECEIVER:
-                throw new NotImplementedException("Not yet implemented: type ref " + tyRef.getSort());
+            case TypeReference.METHOD_RECEIVER: {
+                if (receiverAnnotations == null) {
+                    receiverAnnotations = new TypeAnnotationSet();
+                }
+                receiverAnnotations.add(path, annot);
+                return;
+            }
             default:
                 throw new IllegalArgumentException(
                     "Invalid type reference for method or ctor type annotation: " + tyRef.getSort());

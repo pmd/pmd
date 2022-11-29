@@ -7,10 +7,12 @@ package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 import static net.sourceforge.pmd.lang.java.symbols.internal.asm.TypeAnnotReflectionTest.assertHasTypeAnnots;
 import static net.sourceforge.pmd.util.CollectionUtil.emptyList;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
 
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
@@ -147,6 +149,20 @@ public class TypeAnnotReflectionOnMethodsTest {
             assertHasTypeAnnots(ub, emptyList());
             assertHasTypeAnnots(ub.getComponents().get(0), bAnnot);
             assertHasTypeAnnots(ub.getComponents().get(1), aAnnot);
+        }
+    }
+
+    @Test
+    public void testTypeAnnotOnReceiver() {
+
+        /*
+            abstract void abOnReceiver(@A @B ClassWithTypeAnnotationsOnMethods this);
+         */
+
+        {
+            JMethodSig t = getMethodType(sym, "abOnReceiver");
+            assertThat(t.getFormalParameters(), Matchers.empty());
+            assertHasTypeAnnots(t.getAnnotatedReceiverType(), aAndBAnnot);
         }
     }
 

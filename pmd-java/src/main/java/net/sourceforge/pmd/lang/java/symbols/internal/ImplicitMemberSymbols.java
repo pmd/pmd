@@ -209,6 +209,14 @@ public final class ImplicitMemberSymbols {
         }
 
         @Override
+        public @Nullable JTypeMirror getAnnotatedReceiverType(Substitution subst) {
+            if (!this.hasReceiver()) {
+                return null;
+            }
+            return getTypeSystem().declaration(owner).subst(subst);
+        }
+
+        @Override
         public int getModifiers() {
             return modifiers;
         }

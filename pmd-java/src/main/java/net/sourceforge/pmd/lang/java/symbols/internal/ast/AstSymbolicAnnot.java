@@ -29,12 +29,12 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 /**
  *
  */
-public class AstSymbolicAnnot implements SymbolicValue.SymAnnot {
+class AstSymbolicAnnot implements SymbolicValue.SymAnnot {
 
     private final ASTAnnotation node;
     private final Set<String> attrNames;
 
-    public AstSymbolicAnnot(ASTAnnotation node) {
+    AstSymbolicAnnot(ASTAnnotation node) {
         this.node = node;
         attrNames = node.getMembers().collect(Collectors.mapping(ASTMemberValuePair::getName, Collectors.toSet()));
     }
