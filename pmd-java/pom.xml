@@ -62,18 +62,20 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <execution>                                           
-                    <id>default-testCompile</id>
-                    <phase>test-compile</phase>
-                    <goals>
-                        <goal>testCompile</goal>
-                    </goals>                   
+                <executions>
+                    <execution>                                           
+                        <id>default-testCompile</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>                   
 
-                    <!-- Have test-compile produce parameter metadata for reflection tests -->
-                    <configuration>
-                        <parameters>true</parameters>
-                    </configuration>
-                </execution>                
+                        <!-- Have test-compile produce parameter metadata for reflection tests -->
+                        <configuration>
+                            <parameters>true</parameters>
+                        </configuration>
+                    </execution>                
+                </executions>
             </plugin>
 
             <plugin>
