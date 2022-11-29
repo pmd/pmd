@@ -960,6 +960,11 @@
             </snapshots>
         </repository>
         <repository>
+            <id>sonatype-nexus-google</id>
+            <name>Sonatype Nexus - Google</name>
+            <url>https://google.oss.sonatype.org/content/repositories/releases</url>
+        </repository>
+        <repository>
             <id>sonatype-nexus-snapshots-google</id>
             <name>Sonatype Nexus Snapshots - Google</name>
             <url>https://google.oss.sonatype.org/content/repositories/snapshots</url>

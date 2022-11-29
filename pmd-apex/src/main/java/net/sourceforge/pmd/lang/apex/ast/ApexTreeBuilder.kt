@@ -302,7 +302,6 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             BinaryExpression.Operator.SUBTRACTION,
             BinaryExpression.Operator.MULTIPLICATION,
             BinaryExpression.Operator.DIVISION,
-            BinaryExpression.Operator.MODULO,
             BinaryExpression.Operator.LEFT_SHIFT,
             BinaryExpression.Operator.RIGHT_SHIFT_SIGNED,
             BinaryExpression.Operator.RIGHT_SHIFT_UNSIGNED,
