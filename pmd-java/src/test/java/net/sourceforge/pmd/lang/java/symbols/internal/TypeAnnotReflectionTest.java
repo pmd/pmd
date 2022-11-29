@@ -2,33 +2,29 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.symbols.internal.asm;
+package net.sourceforge.pmd.lang.java.symbols.internal;
 
-import static java.util.Collections.emptyList;
+import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.aAndBAnnot;
+import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.aAnnot;
+import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.assertHasTypeAnnots;
+import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.bAnnot;
+import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.getFieldType;
+import static net.sourceforge.pmd.util.CollectionUtil.emptyList;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.lang.annotation.Annotation;
-import java.util.List;
-import java.util.Objects;
-
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
-import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
-import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
+import net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.SymImplementation;
 import net.sourceforge.pmd.lang.java.symbols.testdata.ClassWithTypeAnnotationsInside;
 import net.sourceforge.pmd.lang.java.types.JArrayType;
 import net.sourceforge.pmd.lang.java.types.JClassType;
-import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JWildcardType;
-import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
 /**
@@ -39,14 +35,11 @@ public class TypeAnnotReflectionTest {
     private final TypeSystem ts = JavaParsingHelper.TEST_TYPE_SYSTEM;
 
 
-    private final JClassSymbol sym = Objects.requireNonNull(ts.getClassSymbol(ClassWithTypeAnnotationsInside.class.getName()));
-    private final List<Annotation> aAnnot = listOf(new AnnotAImpl());
-    private final List<Annotation> bAnnot = listOf(new AnnotBImpl());
-    private final List<Annotation> aAndBAnnot = listOf(new AnnotAImpl(), new AnnotBImpl());
+    @ParameterizedTest
+    @EnumSource
+    public void testTypeAnnotsOnFields(SymImplementation impl) {
 
-    @Test
-    public void testTypeAnnotsOnFields() {
-
+        JClassType sym = impl.getDeclaration(ts, ClassWithTypeAnnotationsInside.class);
 
         assertHasTypeAnnots(getFieldType(sym, "intField"), aAnnot);
         assertHasTypeAnnots(getFieldType(sym, "annotOnList"), aAnnot);
@@ -63,9 +56,12 @@ public class TypeAnnotReflectionTest {
         }
     }
 
-    @Test
-    public void testArrayTypeAnnotsOnFields() {
 
+    @ParameterizedTest
+    @EnumSource
+    public void testArrayTypeAnnotsOnFields(SymImplementation impl) {
+
+        JClassType sym = impl.getDeclaration(ts, ClassWithTypeAnnotationsInside.class);
 
         {
             JArrayType t = (JArrayType) getFieldType(sym, "annotOnArrayComponent");
@@ -90,15 +86,18 @@ public class TypeAnnotReflectionTest {
         {
             // int @A(1) [] @A(2) [] annotsOnBothArrayDims;
             JArrayType t = (JArrayType) getFieldType(sym, "annotsOnBothArrayDims");
-            assertHasTypeAnnots(t, listOf(new AnnotAImpl(1)));
-            assertHasTypeAnnots(t.getComponentType(), listOf(new AnnotAImpl(2)));
+            assertHasTypeAnnots(t, listOf(new TypeAnnotTestUtil.AnnotAImpl(1)));
+            assertHasTypeAnnots(t.getComponentType(), listOf(new TypeAnnotTestUtil.AnnotAImpl(2)));
             assertHasTypeAnnots(t.getElementType(), emptyList());
         }
     }
 
-    @Test
-    public void testInnerTypeAnnotsOnFields() {
 
+    @ParameterizedTest
+    @EnumSource
+    public void testInnerTypeAnnotsOnFields(SymImplementation impl) {
+
+        JClassType sym = impl.getDeclaration(ts, ClassWithTypeAnnotationsInside.class);
 
         /*
     Outer. @A Inner1                    inner1WithAnnot;
@@ -140,9 +139,12 @@ public class TypeAnnotReflectionTest {
         }
     }
 
-    @Test
-    public void testInnerTypeAnnotsWithGenerics() {
 
+    @ParameterizedTest
+    @EnumSource
+    public void testInnerTypeAnnotsWithGenerics(SymImplementation impl) {
+
+        JClassType sym = impl.getDeclaration(ts, ClassWithTypeAnnotationsInside.class);
 
         /*
 
@@ -190,9 +192,12 @@ public class TypeAnnotReflectionTest {
         }
     }
 
-    @Test
-    public void testTypeAnnotOnMultipleGenericsAndInner() {
 
+    @ParameterizedTest
+    @EnumSource
+    public void testTypeAnnotOnMultipleGenericsAndInner(SymImplementation impl) {
+
+        JClassType sym = impl.getDeclaration(ts, ClassWithTypeAnnotationsInside.class);
 
         /*
 
@@ -210,11 +215,13 @@ public class TypeAnnotReflectionTest {
         }
     }
 
-    @Test
-    public void testTypeAnnotOnWildcards() {
 
+    @ParameterizedTest
+    @EnumSource
+    public void testTypeAnnotOnWildcards(SymImplementation impl) {
 
-        List<Annotation> aAnnot = listOf(new AnnotAImpl());
+        JClassType sym = impl.getDeclaration(ts, ClassWithTypeAnnotationsInside.class);
+
         /*
 
     OuterG<@A @B ? extends @B String, ? super @A @B T>          severalWildcards;
@@ -247,72 +254,6 @@ public class TypeAnnotReflectionTest {
             assertHasTypeAnnots(arg1, aAnnot);
             assertHasTypeAnnots(arg1.getTypeArgs().get(0), aAndBAnnot);
         }
-    }
-
-    private static JTypeMirror getFieldType(JClassSymbol sym, String fieldName) {
-        return sym.getDeclaredField(fieldName).getTypeMirror(Substitution.EMPTY);
-    }
-
-
-    static void assertHasTypeAnnots(JTypeMirror t, List<Annotation> annots) {
-        Objects.requireNonNull(t);
-        Objects.requireNonNull(annots);
-        assertThat(t.getTypeAnnotations(), Matchers.hasItems(annots.stream().map(TypeAnnotReflectionTest::matchesAnnot).toArray(Matcher[]::new)));
-    }
-
-    static final class AnnotAImpl implements ClassWithTypeAnnotationsInside.A {
-
-        private final int val;
-
-        AnnotAImpl(int val) {
-            this.val = val;
-        }
-
-        AnnotAImpl() {
-            this.val = 1; // the default declared in interface
-        }
-
-        @Override
-        public int value() {
-            return val;
-        }
-
-        @Override
-        public Class<? extends Annotation> annotationType() {
-            return ClassWithTypeAnnotationsInside.A.class;
-        }
-
-        @Override
-        public String toString() {
-            return "@A(" + value() + ")";
-        }
-    }
-
-    static final class AnnotBImpl implements ClassWithTypeAnnotationsInside.B {
-
-        @Override
-        public Class<? extends Annotation> annotationType() {
-            return ClassWithTypeAnnotationsInside.B.class;
-        }
-
-        @Override
-        public String toString() {
-            return "@B";
-        }
-    }
-
-    private static Matcher<SymAnnot> matchesAnnot(Annotation o) {
-        return new BaseMatcher<SymAnnot>() {
-            @Override
-            public boolean matches(Object actual) {
-                return actual instanceof SymAnnot && ((SymAnnot) actual).valueEquals(o);
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("an annotation like " + o);
-            }
-        };
     }
 
 

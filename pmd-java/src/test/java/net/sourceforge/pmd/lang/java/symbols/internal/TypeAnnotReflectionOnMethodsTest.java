@@ -2,22 +2,22 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.symbols.internal.asm;
+package net.sourceforge.pmd.lang.java.symbols.internal;
 
-import static net.sourceforge.pmd.lang.java.symbols.internal.asm.TypeAnnotReflectionTest.assertHasTypeAnnots;
+import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.aAndBAnnot;
+import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.aAnnot;
+import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.assertHasTypeAnnots;
+import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.bAnnot;
+import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.getMethodType;
 import static net.sourceforge.pmd.util.CollectionUtil.emptyList;
-import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import java.lang.annotation.Annotation;
-import java.util.List;
-
 import org.hamcrest.Matchers;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
-import net.sourceforge.pmd.lang.java.symbols.internal.asm.TypeAnnotReflectionTest.AnnotAImpl;
-import net.sourceforge.pmd.lang.java.symbols.internal.asm.TypeAnnotReflectionTest.AnnotBImpl;
+import net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.SymImplementation;
 import net.sourceforge.pmd.lang.java.symbols.testdata.ClassWithTypeAnnotationsOnMethods;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JIntersectionType;
@@ -31,15 +31,11 @@ public class TypeAnnotReflectionOnMethodsTest {
 
     private final TypeSystem ts = JavaParsingHelper.TEST_TYPE_SYSTEM;
 
-    JClassType sym = (JClassType) ts.declaration(ts.getClassSymbol(ClassWithTypeAnnotationsOnMethods.class));
 
-    private final List<Annotation> aAnnot = listOf(new AnnotAImpl());
-    private final List<Annotation> bAnnot = listOf(new AnnotBImpl());
-    private final List<Annotation> aAndBAnnot = listOf(new AnnotAImpl(), new AnnotBImpl());
-
-
-    @Test
-    public void testTypeAnnotOnParameter() {
+    @ParameterizedTest
+    @EnumSource
+    public void testTypeAnnotOnParameter(SymImplementation impl) {
+        JClassType sym = impl.getDeclaration(ts, ClassWithTypeAnnotationsOnMethods.class);
 
         /*
             abstract void aOnIntParam(@A int i);
@@ -60,8 +56,10 @@ public class TypeAnnotReflectionOnMethodsTest {
     }
 
 
-    @Test
-    public void testTypeAnnotOnReturn() {
+    @ParameterizedTest
+    @EnumSource
+    public void testTypeAnnotOnReturn(SymImplementation impl) {
+        JClassType sym = impl.getDeclaration(ts, ClassWithTypeAnnotationsOnMethods.class);
 
         /*
             abstract @A @B String abOnReturn(@A String i);
@@ -74,8 +72,10 @@ public class TypeAnnotReflectionOnMethodsTest {
         }
     }
 
-    @Test
-    public void testTypeAnnotOnThrows() {
+    @ParameterizedTest
+    @EnumSource
+    public void testTypeAnnotOnThrows(SymImplementation impl) {
+        JClassType sym = impl.getDeclaration(ts, ClassWithTypeAnnotationsOnMethods.class);
 
         /*
             abstract void aOnThrows() throws @A RuntimeException;
@@ -88,8 +88,10 @@ public class TypeAnnotReflectionOnMethodsTest {
         }
     }
 
-    @Test
-    public void testTypeAnnotOnTParam() {
+    @ParameterizedTest
+    @EnumSource
+    public void testTypeAnnotOnTParam(SymImplementation impl) {
+        JClassType sym = impl.getDeclaration(ts, ClassWithTypeAnnotationsOnMethods.class);
 
         /*
 
@@ -115,8 +117,10 @@ public class TypeAnnotReflectionOnMethodsTest {
         }
     }
 
-    @Test
-    public void testTypeAnnotOnTParamBound() {
+    @ParameterizedTest
+    @EnumSource
+    public void testTypeAnnotOnTParamBound(SymImplementation impl) {
+        JClassType sym = impl.getDeclaration(ts, ClassWithTypeAnnotationsOnMethods.class);
 
         /*
             abstract <@A T, E extends @B T> void bOnTypeParmBound();
@@ -152,8 +156,10 @@ public class TypeAnnotReflectionOnMethodsTest {
         }
     }
 
-    @Test
-    public void testTypeAnnotOnReceiver() {
+    @ParameterizedTest
+    @EnumSource
+    public void testTypeAnnotOnReceiver(SymImplementation impl) {
+        JClassType sym = impl.getDeclaration(ts, ClassWithTypeAnnotationsOnMethods.class);
 
         /*
             abstract void abOnReceiver(@A @B ClassWithTypeAnnotationsOnMethods this);
@@ -166,8 +172,5 @@ public class TypeAnnotReflectionOnMethodsTest {
         }
     }
 
-    private static JMethodSig getMethodType(JClassType sym, String fieldName) {
-        return sym.streamMethods(it -> it.nameEquals(fieldName)).findFirst().get();
-    }
 
 }

@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.symbols.testdata;
 
 import java.io.Serializable;
 
-import net.sourceforge.pmd.lang.java.symbols.internal.asm.TypeAnnotReflectionOnMethodsTest;
 import net.sourceforge.pmd.lang.java.symbols.testdata.ClassWithTypeAnnotationsInside.A;
 import net.sourceforge.pmd.lang.java.symbols.testdata.ClassWithTypeAnnotationsInside.B;
 
