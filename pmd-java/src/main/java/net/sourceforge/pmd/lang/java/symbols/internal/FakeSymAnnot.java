@@ -60,4 +60,14 @@ public class FakeSymAnnot implements SymAnnot {
     public String toString() {
         return "@" + annotationClass.getCanonicalName();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return SymbolEquality.ANNOTATION.equals(this, o);
+    }
+
+    @Override
+    public int hashCode() {
+        return SymbolEquality.ANNOTATION.hash(this);
+    }
 }

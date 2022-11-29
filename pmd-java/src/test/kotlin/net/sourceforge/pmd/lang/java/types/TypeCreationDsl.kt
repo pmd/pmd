@@ -9,10 +9,8 @@ package net.sourceforge.pmd.lang.java.types
 import net.sourceforge.pmd.lang.java.ast.JavaNode
 import net.sourceforge.pmd.lang.java.ast.ParserTestSpec
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
-import net.sourceforge.pmd.lang.java.symbols.SymbolicValue
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot
 import net.sourceforge.pmd.lang.java.symbols.internal.FakeSymAnnot
-import net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil
 import net.sourceforge.pmd.lang.java.symbols.testdata.ClassWithTypeAnnotationsInside
 import net.sourceforge.pmd.lang.java.types.TypeOps.isSameType
 import kotlin.reflect.KClass
@@ -72,9 +70,9 @@ interface TypeDslMixin {
      */
     val `@`: (JClassSymbol) -> SymAnnotDsl get() = { SymAnnotDsl(FakeSymAnnot(it)) }
 
-    class SymAnnotDsl(delegate: SymAnnot) : SymAnnot by delegate {
+    class SymAnnotDsl(private val annot: SymAnnot) {
         /** An infix fun to be able to write the annotation first. */
-        infix fun on(t: JTypeMirror): JTypeMirror = t.addAnnotation(this)
+        infix fun on(t: JTypeMirror): JTypeMirror = t.addAnnotation(annot)
     }
 
 
