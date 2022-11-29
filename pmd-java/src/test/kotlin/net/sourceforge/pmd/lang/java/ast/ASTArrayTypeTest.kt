@@ -40,17 +40,13 @@ class ASTArrayTypeTest : ParserTestSpec({
                 arrayType {
                     it::getElementType shouldBe classType("ArrayTypes")
 
-                    it::declaredAnnotationsList shouldBe fromChild<ASTArrayDimensions, List<ASTAnnotation>> {
-
+                    it::declaredAnnotationsList shouldBe emptyList()
+                    arrayDimList {
                         arrayDim { }
                         arrayDim { }
-                        fromChild<ASTArrayTypeDim, List<ASTAnnotation>> {
-
+                        arrayDim {
                             val lst = listOf(annotation("A"))
-
                             it::declaredAnnotationsList shouldBe lst
-
-                            lst
                         }
                     }
                 }

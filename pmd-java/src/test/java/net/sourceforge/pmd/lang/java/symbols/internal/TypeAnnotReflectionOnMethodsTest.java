@@ -6,8 +6,8 @@ package net.sourceforge.pmd.lang.java.symbols.internal;
 
 import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.ANNOTS_A_B;
 import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.ANNOT_A;
-import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.assertHasTypeAnnots;
 import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.ANNOT_B;
+import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.assertHasTypeAnnots;
 import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.getMethodType;
 import static net.sourceforge.pmd.util.CollectionUtil.emptyList;
 import static org.hamcrest.MatcherAssert.assertThat;

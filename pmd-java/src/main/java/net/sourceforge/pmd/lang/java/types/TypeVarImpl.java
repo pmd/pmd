@@ -37,6 +37,7 @@ abstract class TypeVarImpl implements JTypeVar {
         return getAnnotationsOnDeclaration().plusAll(typeAnnots);
     }
 
+    @Override
     public abstract JTypeVar addAnnotation(@NonNull SymAnnot newAnnot);
 
     @Override
@@ -265,12 +266,14 @@ abstract class TypeVarImpl implements JTypeVar {
 
         @Override
         public JTypeVar withAnnotations(PSet<SymAnnot> newTypeAnnots) {
+            if (newTypeAnnots.isEmpty() && typeAnnots.isEmpty())
+                return this;
             return new CapturedTypeVar(wildcard, lowerBound, upperBound, newTypeAnnots);
         }
 
         @Override
         public JTypeVar addAnnotation(@NonNull SymAnnot newAnnot) {
-            return new CapturedTypeVar(wildcard, lowerBound, upperBound, typeAnnots.plus(newAnnot));
+            return withAnnotations(typeAnnots.plus(newAnnot));
         }
 
         @Override

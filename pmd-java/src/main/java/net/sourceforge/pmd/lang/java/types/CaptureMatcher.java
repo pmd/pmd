@@ -9,6 +9,7 @@ import java.util.function.Function;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
@@ -57,7 +58,7 @@ final class CaptureMatcher implements JTypeVar {
         if (captured != null) {
             return captured.getTypeAnnotations();
         }
-        throw new UnsupportedOperationException("not captured");
+        return HashTreePSet.empty();
     }
 
     @Override

@@ -224,6 +224,10 @@ public final class TypePrettyPrint {
 
         @Override
         public Void visitTypeVar(JTypeVar t, TypePrettyPrinter sb) {
+            if (t instanceof CaptureMatcher) {
+                sb.append(t.toString());
+                return null;
+            }
             if (!t.isCaptured() && sb.qualifyTvars) {
                 JTypeParameterSymbol sym = t.getSymbol();
                 if (sym != null) {
