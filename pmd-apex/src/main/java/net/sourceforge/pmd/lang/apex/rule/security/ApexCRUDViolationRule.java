@@ -94,6 +94,11 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     private static final Pattern WITH_SECURITY_ENFORCED = Pattern.compile("(?is).*[^']\\s*WITH\\s+SECURITY_ENFORCED\\s*[^']*");
 
+    //Added For USER MODE
+    private static final Pattern WITH_USER_MODE = Pattern.compile("(?is).*[^']\\s+USER_MODE\\s*[^']*");
+    //Added For SYSTEM MODE
+    private static final Pattern WITH_SYSTEM_MODE = Pattern.compile("(?is).*[^']\\s+SYSTEM_MODE\\s*[^']*");
+
     // <operation>AuthMethodPattern config properties; these are string properties instead of regex properties to help
     // ensure that the compiled patterns are case-insensitive vs. requiring the pattern author to use "(?i)"
     private static final PropertyDescriptor<String> CREATE_AUTH_METHOD_PATTERN_DESCRIPTOR = authMethodPatternProperty("create");
@@ -431,6 +436,22 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     private boolean isWithSecurityEnforced(final ApexNode<?> node) {
         if (node instanceof ASTSoqlExpression) {
             return WITH_SECURITY_ENFORCED.matcher(((ASTSoqlExpression) node).getQuery()).matches();
+        }
+        return false;
+    }
+
+    //For USER_MODE
+    private boolean isWithUserMode(final ApexNode<?> node) {
+        if (node instanceof ASTSoqlExpression) {
+            return WITH_USER_MODE.matcher(((ASTSoqlExpression) node).getQuery()).matches();
+        }
+        return false;
+    }
+
+    //For System Mode
+    private boolean isWithSystemMode(final ApexNode<?> node) {
+        if (node instanceof ASTSoqlExpression) {
+            return WITH_SYSTEM_MODE.matcher(((ASTSoqlExpression) node).getQuery()).matches();
         }
         return false;
     }
