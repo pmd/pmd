@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal;
 
-import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.aAndBAnnot;
-import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.aAnnot;
+import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.ANNOTS_A_B;
+import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.ANNOT_A;
 import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.assertHasTypeAnnots;
-import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.bAnnot;
+import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.ANNOT_B;
 import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.getMethodType;
 import static net.sourceforge.pmd.util.CollectionUtil.emptyList;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -44,12 +44,12 @@ public class TypeAnnotReflectionOnMethodsTest {
 
         {
             JMethodSig t = getMethodType(sym, "aOnIntParam");
-            assertHasTypeAnnots(t.getFormalParameters().get(0), aAnnot);
+            assertHasTypeAnnots(t.getFormalParameters().get(0), ANNOT_A);
             assertHasTypeAnnots(t.getReturnType(), emptyList());
         }
         {
             JMethodSig t = getMethodType(sym, "aOnStringParam");
-            assertHasTypeAnnots(t.getFormalParameters().get(0), aAnnot);
+            assertHasTypeAnnots(t.getFormalParameters().get(0), ANNOT_A);
             assertHasTypeAnnots(t.getReturnType(), emptyList());
         }
     }
@@ -66,8 +66,8 @@ public class TypeAnnotReflectionOnMethodsTest {
 
         {
             JMethodSig t = getMethodType(sym, "abOnReturn");
-            assertHasTypeAnnots(t.getFormalParameters().get(0), aAnnot);
-            assertHasTypeAnnots(t.getReturnType(), aAndBAnnot);
+            assertHasTypeAnnots(t.getFormalParameters().get(0), ANNOT_A);
+            assertHasTypeAnnots(t.getReturnType(), ANNOTS_A_B);
         }
     }
 
@@ -83,7 +83,7 @@ public class TypeAnnotReflectionOnMethodsTest {
         {
             JMethodSig t = getMethodType(sym, "aOnThrows");
             assertHasTypeAnnots(t.getReturnType(), emptyList());
-            assertHasTypeAnnots(t.getThrownExceptions().get(0), aAnnot);
+            assertHasTypeAnnots(t.getThrownExceptions().get(0), ANNOT_A);
         }
     }
 
@@ -104,12 +104,12 @@ public class TypeAnnotReflectionOnMethodsTest {
 
         {
             JMethodSig t = getMethodType(sym, "abOnTypeParm");
-            assertHasTypeAnnots(t.getTypeParameters().get(0), aAndBAnnot);
+            assertHasTypeAnnots(t.getTypeParameters().get(0), ANNOTS_A_B);
             assertHasTypeAnnots(t.getTypeParameters().get(1), emptyList());
         }
         {
             JMethodSig t = getMethodType(sym, "abOnTypeParm2");
-            assertHasTypeAnnots(t.getTypeParameters().get(0), aAndBAnnot);
+            assertHasTypeAnnots(t.getTypeParameters().get(0), ANNOTS_A_B);
             assertHasTypeAnnots(t.getTypeParameters().get(1), emptyList());
             assertHasTypeAnnots(t.getReturnType(), emptyList());
             assertHasTypeAnnots(t.getFormalParameters().get(0), emptyList());
@@ -129,29 +129,29 @@ public class TypeAnnotReflectionOnMethodsTest {
 
         {
             JMethodSig t = getMethodType(sym, "bOnTypeParmBound");
-            assertHasTypeAnnots(t.getTypeParameters().get(0), aAnnot);
+            assertHasTypeAnnots(t.getTypeParameters().get(0), ANNOT_A);
             assertHasTypeAnnots(t.getTypeParameters().get(1), emptyList());
-            assertHasTypeAnnots(t.getTypeParameters().get(1).getUpperBound(), bAnnot);
+            assertHasTypeAnnots(t.getTypeParameters().get(1).getUpperBound(), ANNOT_B);
         }
         {
             JMethodSig t = getMethodType(sym, "bOnTypeParmBound");
-            assertHasTypeAnnots(t.getTypeParameters().get(0), aAnnot);
+            assertHasTypeAnnots(t.getTypeParameters().get(0), ANNOT_A);
             assertHasTypeAnnots(t.getTypeParameters().get(1), emptyList());
-            assertHasTypeAnnots(t.getTypeParameters().get(1).getUpperBound(), bAnnot);
+            assertHasTypeAnnots(t.getTypeParameters().get(1).getUpperBound(), ANNOT_B);
 
             assertHasTypeAnnots(t.getReturnType(), emptyList());
-            assertHasTypeAnnots(t.getFormalParameters().get(0), aAnnot); // this is inherited from the declaration
+            assertHasTypeAnnots(t.getFormalParameters().get(0), ANNOT_A); // this is inherited from the declaration
         }
         {
             JMethodSig t = getMethodType(sym, "bOnTypeParmBoundIntersection");
-            assertHasTypeAnnots(t.getTypeParameters().get(0), aAnnot);
+            assertHasTypeAnnots(t.getTypeParameters().get(0), ANNOT_A);
             assertHasTypeAnnots(t.getTypeParameters().get(1), emptyList());
-            assertHasTypeAnnots(t.getFormalParameters().get(0), aAnnot); // this is inherited from the declaration
+            assertHasTypeAnnots(t.getFormalParameters().get(0), ANNOT_A); // this is inherited from the declaration
 
             JIntersectionType ub = (JIntersectionType) t.getTypeParameters().get(1).getUpperBound();
             assertHasTypeAnnots(ub, emptyList());
-            assertHasTypeAnnots(ub.getComponents().get(0), bAnnot);
-            assertHasTypeAnnots(ub.getComponents().get(1), aAnnot);
+            assertHasTypeAnnots(ub.getComponents().get(0), ANNOT_B);
+            assertHasTypeAnnots(ub.getComponents().get(1), ANNOT_A);
         }
     }
 
@@ -167,7 +167,7 @@ public class TypeAnnotReflectionOnMethodsTest {
         {
             JMethodSig t = getMethodType(sym, "abOnReceiver");
             assertThat(t.getFormalParameters(), Matchers.empty());
-            assertHasTypeAnnots(t.getAnnotatedReceiverType(), aAndBAnnot);
+            assertHasTypeAnnots(t.getAnnotatedReceiverType(), ANNOTS_A_B);
         }
     }
 

@@ -28,10 +28,13 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 public class TypeAnnotTestUtil {
 
 
-    static final List<Annotation> aAnnot = listOf(new AnnotAImpl());
-    static final List<Annotation> bAnnot = listOf(new AnnotBImpl());
-    static final List<Annotation> aAndBAnnot = listOf(new AnnotAImpl(), new AnnotBImpl());
+    static final List<Annotation> ANNOT_A = listOf(new AnnotAImpl());
+    static final List<Annotation> ANNOT_B = listOf(new AnnotBImpl());
+    static final List<Annotation> ANNOTS_A_B = listOf(new AnnotAImpl(), new AnnotBImpl());
 
+    private TypeAnnotTestUtil() {
+        // utility class
+    }
 
     static JTypeMirror getFieldType(JClassType sym, String fieldName) {
         return sym.getDeclaredField(fieldName).getTypeMirror();
