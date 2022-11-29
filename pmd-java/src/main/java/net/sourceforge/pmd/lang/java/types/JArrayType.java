@@ -80,8 +80,8 @@ public final class JArrayType implements JTypeMirror {
     @Override
     public JArrayType getErasure() {
         JTypeMirror erasedComp = component.getErasure();
-        return erasedComp == component ? this
-                                       : new JArrayType(ts, erasedComp, symbol, typeAnnots); // NOPMD CompareObjectsWithEquals
+        return erasedComp == component ? this  // NOPMD CompareObjectsWithEquals
+                                       : new JArrayType(ts, erasedComp, symbol, typeAnnots);
     }
 
 

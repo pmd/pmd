@@ -231,7 +231,7 @@ public class TypeAnnotReflectionTest {
             assertHasTypeAnnots(wild0.getBound(), bAnnot);
 
             JWildcardType wild1 = (JWildcardType) t.getTypeArgs().get(1);
-            assertHasTypeAnnots(wild1,emptyList());
+            assertHasTypeAnnots(wild1, emptyList());
             assertTrue(wild1.isLowerBound());
             assertHasTypeAnnots(wild1.getBound(), aAndBAnnot);
         }
@@ -244,7 +244,7 @@ public class TypeAnnotReflectionTest {
             assertHasTypeAnnots(wild0.getBound(), bAnnot);
 
             JClassType arg1 = (JClassType) t.getTypeArgs().get(1);
-            assertHasTypeAnnots(arg1,aAnnot);
+            assertHasTypeAnnots(arg1, aAnnot);
             assertHasTypeAnnots(arg1.getTypeArgs().get(0), aAndBAnnot);
         }
     }

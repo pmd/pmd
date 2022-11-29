@@ -24,7 +24,11 @@ import net.sourceforge.pmd.lang.java.types.JWildcardType;
 /**
  * @author Clément Fournier
  */
-class TypeAnnotationHelper {
+final class TypeAnnotationHelper {
+
+    private TypeAnnotationHelper() {
+        // utility class
+    }
 
 
     /** Accumulate type annotations to be applied on a single type. */

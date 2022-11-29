@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.java.symbols.internal.asm.TypeAnnotReflectionTes
  *
  * @author Clément Fournier
  */
+@SuppressWarnings("all")
 public class ClassWithTypeAnnotationsInside {
 
 
@@ -50,13 +51,13 @@ public class ClassWithTypeAnnotationsInside {
     @A OuterG<@A @B ? extends @B String, @A List<@A @B Object>> complicatedField;
 
 
-    @Target( { ElementType.TYPE_USE, ElementType.TYPE, ElementType.TYPE_PARAMETER })
+    @Target({ ElementType.TYPE_USE, ElementType.TYPE, ElementType.TYPE_PARAMETER })
     public @interface A {
 
         int value() default 1;
     }
 
-    @Target( { ElementType.TYPE_USE, ElementType.TYPE, ElementType.TYPE_PARAMETER })
+    @Target({ ElementType.TYPE_USE, ElementType.TYPE, ElementType.TYPE_PARAMETER })
     public @interface B { }
 
 

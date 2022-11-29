@@ -23,21 +23,25 @@ public abstract class ClassWithTypeAnnotationsOnMethods {
 
     abstract @A @B String abOnReturn(@A String i);
 
-    abstract void aOnThrows() throws @A RuntimeException;
+    abstract void aOnThrows() throws @A Exception;
 
     // tparams
     abstract <@A @B T, E extends T> void abOnTypeParm();
+
     abstract <@A @B T, E extends T> T abOnTypeParm2(T t);
 
     // tparam bounds
     abstract <@A T, E extends @B T> E bOnTypeParmBound(T t);
+
     abstract <@A T, E extends @B Cloneable & @A Serializable> E bOnTypeParmBoundIntersection(T t);
 
     static class CtorOwner {
 
         CtorOwner(@A @B int i) { }
+
         @A CtorOwner() { }
-        CtorOwner(String i) throws @A RuntimeException {}
+
+        CtorOwner(String i) throws @A Exception {}
     }
 
 }

@@ -200,7 +200,7 @@ class ClassMethodSigImpl implements JMethodSig, InternalMethodTypeItf {
 
     @Override
     public String toString() {
-        return "UOE";//TypePrettyPrint.prettyPrint(this);
+        return TypePrettyPrint.prettyPrint(this);
     }
 
 

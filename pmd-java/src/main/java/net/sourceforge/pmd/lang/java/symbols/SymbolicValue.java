@@ -120,9 +120,18 @@ public interface SymbolicValue {
         @Nullable SymbolicValue getAttribute(String attrName);
 
 
+        /**
+         * Return the simple names of all attributes that are explicitly set.
+         * Note that if the annotation is reflected from a class file,
+         * we can't know which annotations used their default value so it
+         * returns a set of all attribute names.
+         */
         Set<String> getAttributeNames();
 
+        /** Return the binary name of the annotation type. */
         String getBinaryName();
+
+        /** Return the simple name of the annotation type. */
         String getSimpleName();
 
         @Override
