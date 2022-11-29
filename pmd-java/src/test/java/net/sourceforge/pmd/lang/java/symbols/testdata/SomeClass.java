@@ -14,16 +14,20 @@ public class SomeClass {
     
     @ConstructorAnnotation
     public SomeClass() {
+        
+    }
+
+    void withAnnotatedParam(int a, @ParameterAnnotation final String foo) {
+        
+    }
+
+    void withAnnotatedLocal() {
         @LocalVarAnnotation
         long local;
     }
-
-    void m1(int a, @ParameterAnnotation final String foo) {
-
-    }
-
+    
     @MethodAnnotation
-    void m4(final int x) {
+    void anotatedMethod(final int x) {
 
     }
 
