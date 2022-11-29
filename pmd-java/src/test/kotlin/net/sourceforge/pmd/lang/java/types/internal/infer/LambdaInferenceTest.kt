@@ -726,4 +726,43 @@ class NodeStream<T> {
         }
     }
 
+
+    parserTest("f:inference of call within lambda fails") {
+
+        val (acu, spy) = parser.logTypeInferenceVerbose().parseWithTypeInferenceSpy("""
+
+interface Iterator<Q> {}
+interface Function<U,V> { 
+    V apply(U u);
+}
+interface Iterable<Q> {
+    Iterator<Q> iterator();
+}
+
+class NodeStream {
+    
+    public static <T, R> Iterable<R> mapIterator(Iterable<? extends T> iter, Function<? super Iterator<? extends T>, ? extends Iterator<R>> mapper) {
+        return () -> mapper.apply(iter.iterator());
+    }
+
+}
+            """)
+
+        val (t_Iterator, t_Function, t_Iterable) = acu.declaredTypeSignatures()
+        val (lambda) = acu.descendants(ASTLambdaExpression::class.java).crossFindBoundaries().toList()
+        val (_, _, _, _, tvar, rvar) = acu.typeVariables()
+
+        spy.shouldBeOk {
+            lambda shouldHaveType t_Iterable[rvar]
+            lambda.expressionBody!!.shouldBeA<ASTMethodCall> {
+                it.methodType.shouldMatchMethod(
+                    named = "apply",
+                    withFormals = listOf(t_Iterator[`?` extends tvar])
+                )
+                it shouldHaveType t_Iterator[rvar]
+            }
+        }
+    }
+
+
 })

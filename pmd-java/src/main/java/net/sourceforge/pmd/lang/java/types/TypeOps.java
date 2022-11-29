@@ -117,19 +117,23 @@ public final class TypeOps {
         }
     }
 
-    public static boolean areSameTypes(List<JTypeMirror> ts, List<JTypeMirror> ss, boolean inInference) {
-        return areSameTypes(ts, ss, EMPTY, inInference, false);
+    public static boolean areSameTypes(List<JTypeMirror> ts, List<JTypeMirror> ss) {
+        return areSameTypes(ts, ss, EMPTY, false, false);
     }
 
-    public static boolean areSameTypes(List<JTypeMirror> ts, List<JTypeMirror> ss, boolean inInference, boolean considerAnnotations) {
+    public static boolean areSameTypesInInference(List<JTypeMirror> ts, List<JTypeMirror> ss) {
+        return areSameTypes(ts, ss, EMPTY, true, false);
+    }
+
+    private static boolean areSameTypes(List<JTypeMirror> ts, List<JTypeMirror> ss, boolean inInference, boolean considerAnnotations) {
         return areSameTypes(ts, ss, EMPTY, inInference, considerAnnotations);
     }
 
-    public static boolean areSameTypes(List<JTypeMirror> ts, List<JTypeMirror> ss, Substitution subst) {
+    private static boolean areSameTypes(List<JTypeMirror> ts, List<JTypeMirror> ss, Substitution subst) {
         return areSameTypes(ts, ss, subst, false, false);
     }
 
-    public static boolean areSameTypes(List<JTypeMirror> ts, List<JTypeMirror> ss, Substitution subst, boolean inInference, boolean considerAnnotations) {
+    private static boolean areSameTypes(List<JTypeMirror> ts, List<JTypeMirror> ss, Substitution subst, boolean inInference, boolean considerAnnotations) {
         if (ts.size() != ss.size()) {
             return false;
         }

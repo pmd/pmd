@@ -62,6 +62,7 @@ class AstSymbolicAnnot implements SymbolicValue.SymAnnot {
 
     @Override
     public boolean appliesToTypeUse() {
+        // todo look into whether hardcoding Override is good for perf, as it's very frequent
         return node.getTypeMirror().getSymbol().annotationAppliesTo(ElementType.TYPE_USE);
     }
 
