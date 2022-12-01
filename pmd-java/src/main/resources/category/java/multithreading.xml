@@ -148,7 +148,7 @@ public class ThrDeux {
         <description>
 The J2EE specification explicitly forbids the use of threads. Threads are resources, that should be managed and monitored by the J2EE server.
 If the application creates threads on its own or uses own custom thread pools, then these threads are not managed, which could lead to resource exhaustion.
-Also EJB's might be moved between machines in a cluster and only managed resources can be moved along.
+Also, EJBs might be moved between machines in a cluster and only managed resources can be moved along.
         </description>
         <priority>3</priority>
         <properties>
@@ -157,6 +157,12 @@ Also EJB's might be moved between machines in a cluster and only managed resourc
                 <value>
 <![CDATA[
 //ClassOrInterfaceType[pmd-java:typeIs('java.lang.Thread') or pmd-java:typeIs('java.util.concurrent.ExecutorService')]
+    (: exclude types which have a initializer calling a constructor :)
+    [not(ancestor::FieldDeclaration|ancestor::LocalVariableDeclaration/VariableDeclarator/VariableInitializer//AllocationExpression)]
+    (: exclude constructor call chains :)
+    [not(parent::AllocationExpression)]
+|
+//AllocationExpression/ClassOrInterfaceType[pmd-java:typeIs('java.lang.Thread')]
 |
 //StatementExpression/PrimaryExpression/PrimaryPrefix/Name[pmd-java:typeIs('java.util.concurrent.Executors') or pmd-java:typeIs('java.util.concurrent.ExecutorService')]
 ]]>

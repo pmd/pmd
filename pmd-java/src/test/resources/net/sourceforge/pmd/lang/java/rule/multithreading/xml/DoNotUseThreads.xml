@@ -16,6 +16,7 @@ public class UsingThread  {
     <test-code>
         <description>extending threads is not allowed</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 // This is not allowed
 public class UsingThread extends Thread {
@@ -26,6 +27,7 @@ public class UsingThread extends Thread {
     <test-code>
         <description>Implementing ExecutorService is not allowed</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 import java.util.concurrent.ExecutorService;
 
@@ -36,6 +38,7 @@ public class PMDTestExecutorService implements ExecutorService {}
     <test-code>
         <description>Extending AbstractExecutorService is not allowed</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 import java.util.concurrent.*;
 
@@ -46,6 +49,7 @@ public class PMDTestExecutorService extends AbstractExecutorService {}
     <test-code>
         <description>Using ExecutorService is not allowed</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,7</expected-linenumbers>
         <code><![CDATA[
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
@@ -66,6 +70,7 @@ public class ExecutorServiceUsage {
     <test-code>
         <description>Using Executors directly is not allowed</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,10</expected-linenumbers>
         <code><![CDATA[
 import java.util.concurrent.Executors;
 
@@ -110,5 +115,20 @@ public class Violation {
     }
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] DoNotUseThreads report duplicate warnings #4210</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,4</expected-linenumbers>
+        <code><![CDATA[
+public final class Test {
+    public final Thread BAR = new Thread();  // reports two duplicate warnings in this line, but one is enough
+
+    public Thread getBAR() {  // report one warning in this line
+        return this.BAR;
+    }
+}
+]]></code>
     </test-code>
 </test-data>
