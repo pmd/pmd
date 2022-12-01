@@ -11,14 +11,17 @@ import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.a
 import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.getFieldType;
 import static net.sourceforge.pmd.util.CollectionUtil.emptyList;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+import static net.sourceforge.pmd.util.CollectionUtil.mapOf;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.symbols.testdata.ClassWithTypeAnnotationsInside;
+import net.sourceforge.pmd.lang.java.symbols.testdata.ClassWithTypeAnnotationsInside.A;
 import net.sourceforge.pmd.lang.java.types.JArrayType;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JWildcardType;
@@ -93,10 +96,14 @@ public class TypeAnnotReflectionTest {
         {
             // int @A(1) [] @A(2) [] annotsOnBothArrayDims;
             JArrayType t = (JArrayType) getFieldType(sym, "annotsOnBothArrayDims");
-            assertHasTypeAnnots(t, listOf(new TypeAnnotTestUtil.AnnotAImpl(1)));
-            assertHasTypeAnnots(t.getComponentType(), listOf(new TypeAnnotTestUtil.AnnotAImpl(2)));
+            assertHasTypeAnnots(t, listOf(makeAnA(1)));
+            assertHasTypeAnnots(t.getComponentType(), listOf(makeAnA(2)));
             assertHasTypeAnnots(t.getElementType(), emptyList());
         }
+    }
+
+    private static @NonNull A makeAnA(int v0) {
+        return TypeAnnotTestUtil.createAnnotationInstance(A.class, mapOf("value", v0));
     }
 
 

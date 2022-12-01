@@ -8,14 +8,20 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Proxy;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
+import org.apache.commons.lang3.AnnotationUtils;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.symbols.testdata.ClassWithTypeAnnotationsInside;
 import net.sourceforge.pmd.lang.java.types.JClassType;
@@ -28,69 +34,69 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 public class TypeAnnotTestUtil {
 
 
-    static final List<Annotation> ANNOT_A = listOf(new AnnotAImpl());
-    static final List<Annotation> ANNOT_B = listOf(new AnnotBImpl());
-    static final List<Annotation> ANNOTS_A_B = listOf(new AnnotAImpl(), new AnnotBImpl());
+    static final List<Annotation> ANNOT_A = listOf(createAnnotationInstance(ClassWithTypeAnnotationsInside.A.class));
+    static final List<Annotation> ANNOT_B = listOf(createAnnotationInstance(ClassWithTypeAnnotationsInside.B.class));
+    static final List<Annotation> ANNOTS_A_B = listOf(ANNOT_A.get(0), ANNOT_B.get(0));
 
     private TypeAnnotTestUtil() {
         // utility class
     }
 
-    static JTypeMirror getFieldType(JClassType sym, String fieldName) {
+    public static JTypeMirror getFieldType(JClassType sym, String fieldName) {
         return sym.getDeclaredField(fieldName).getTypeMirror();
     }
 
 
-    static JMethodSig getMethodType(JClassType sym, String fieldName) {
+    public static JMethodSig getMethodType(JClassType sym, String fieldName) {
         return sym.streamMethods(it -> it.nameEquals(fieldName)).findFirst().get();
     }
 
 
-    static void assertHasTypeAnnots(JTypeMirror t, List<Annotation> annots) {
+    public static JMethodSymbol getMethodSym(JClassSymbol sym, String fieldName) {
+        return sym.getDeclaredMethods().stream().filter(it -> it.nameEquals(fieldName)).findFirst().get();
+    }
+
+
+    public static void assertHasTypeAnnots(JTypeMirror t, List<Annotation> annots) {
         Objects.requireNonNull(t);
         Objects.requireNonNull(annots);
         assertThat(t.getTypeAnnotations(), Matchers.hasItems(annots.stream().map(TypeAnnotTestUtil::matchesAnnot).toArray(Matcher[]::new)));
     }
 
-    public static final class AnnotAImpl implements ClassWithTypeAnnotationsInside.A {
-
-        private final int val;
-
-        public AnnotAImpl(int val) {
-            this.val = val;
-        }
-
-        public AnnotAImpl() {
-            this.val = 1; // the default declared in interface
-        }
-
-        @Override
-        public int value() {
-            return val;
-        }
-
-        @Override
-        public Class<? extends Annotation> annotationType() {
-            return ClassWithTypeAnnotationsInside.A.class;
-        }
-
-        @Override
-        public String toString() {
-            return "@A(" + value() + ")";
-        }
+    public static <A extends Annotation> A createAnnotationInstance(Class<A> annotationClass) {
+        return createAnnotationInstance(annotationClass, Collections.emptyMap());
     }
 
-    public static final class AnnotBImpl implements ClassWithTypeAnnotationsInside.B {
+    /**
+     * Creates a fake instance of the annotation class using a {@link Proxy}.
+     * The proxy tries to be a faithful implementation of an annotation, albeit simple.
+     * It can use the provided map to get attribute values. If an attribute is
+     * not provided in the map, it will use the default value defined on the
+     * method declaration. If there is no defined default value, the invocation
+     * will fail.
+     */
+    @SuppressWarnings("unchecked")
+    public static <A extends Annotation> A createAnnotationInstance(Class<A> annotationClass, Map<String, Object> attributes) {
+        return (A) Proxy.newProxyInstance(annotationClass.getClassLoader(), new Class[] { annotationClass }, (proxy, method, args) -> {
+            if (method.getName().equals("annotationType") && args == null) {
+                return annotationClass;
+            } else if (method.getName().equals("toString") && args == null) {
+                return AnnotationUtils.toString((Annotation) proxy);
+            } else if (method.getName().equals("hashCode") && args == null) {
+                return AnnotationUtils.hashCode((Annotation) proxy);
+            } else if (method.getName().equals("equals") && args.length == 1) {
+                if (args[0] instanceof Annotation) {
+                    return AnnotationUtils.equals((Annotation) proxy, (Annotation) args[0]);
+                }
+                return false;
+            } else if (attributes.containsKey(method.getName()) && args == null) {
+                return attributes.get(method.getName());
+            } else if (method.getDefaultValue() != null && args == null) {
+                return method.getDefaultValue();
+            }
 
-        @Override
-        public Class<? extends Annotation> annotationType() {
-            return ClassWithTypeAnnotationsInside.B.class;
-        }
-
-        @Override
-        public String toString() {
-            return "@B";
-        }
+            throw new UnsupportedOperationException("Proxy does not implement " + method);
+        });
     }
 
     private static Matcher<SymAnnot> matchesAnnot(Annotation o) {

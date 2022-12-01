@@ -4,35 +4,40 @@
 
 package net.sourceforge.pmd.lang.java.symbols;
 
+import static java.util.Collections.emptySet;
+import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.createAnnotationInstance;
+import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.getMethodSym;
+import static net.sourceforge.pmd.util.CollectionUtil.mapOf;
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import static net.sourceforge.pmd.util.OptionalBool.NO;
 import static net.sourceforge.pmd.util.OptionalBool.UNKNOWN;
 import static net.sourceforge.pmd.util.OptionalBool.YES;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 
 import java.lang.annotation.Annotation;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.util.List;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
+import java.util.Objects;
+import java.util.Set;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymImplementation;
 import net.sourceforge.pmd.lang.java.symbols.testdata.AnnotWithDefaults;
+import net.sourceforge.pmd.lang.java.symbols.testdata.ConstructorAnnotation;
+import net.sourceforge.pmd.lang.java.symbols.testdata.FieldAnnotation;
 import net.sourceforge.pmd.lang.java.symbols.testdata.LocalVarAnnotation;
+import net.sourceforge.pmd.lang.java.symbols.testdata.MethodAnnotation;
+import net.sourceforge.pmd.lang.java.symbols.testdata.ParameterAnnotation;
 import net.sourceforge.pmd.lang.java.symbols.testdata.SomeClass;
-import net.sourceforge.pmd.lang.java.symbols.testdata.TypeAnnotation;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
 public class AnnotationReflectionTest {
@@ -95,22 +100,13 @@ public class AnnotationReflectionTest {
 
     @ParameterizedTest
     @EnumSource
-    public void testAnnotOnType(SymImplementation impl) {
-        // This only checks for Target.TYPE annotations
-        Class<AnnotWithDefaults> actualClass = AnnotWithDefaults.class;
-        JClassSymbol sym = impl.getSymbol(ts, actualClass);
-
-        assertEqualsAnnotations(actualClass, sym);
-    }
-
-    @ParameterizedTest
-    @EnumSource
     public void testAnnotOnAnnot(SymImplementation impl) {
         // This only checks for Target.ANNOTATION_TYPE annotations
         Class<AnnotWithDefaults> actualClass = AnnotWithDefaults.class;
         JClassSymbol sym = impl.getSymbol(ts, actualClass);
 
-        assertEqualsAnnotations(actualClass, sym);
+        Target targetAnnot = createAnnotationInstance(Target.class, mapOf("value", new ElementType[] { ElementType.TYPE, ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD }));
+        assertHasAnnotations(setOf(targetAnnot), sym);
     }
 
     @ParameterizedTest
@@ -120,23 +116,11 @@ public class AnnotationReflectionTest {
         Class<SomeClass> actualClass = SomeClass.class;
         JClassSymbol sym = impl.getSymbol(ts, actualClass);
 
-        List<JMethodSymbol> ms = sym.getDeclaredMethods();
-        Method[] actualMethods = actualClass.getDeclaredMethods();
-   
-        for (final Method m : actualMethods) {
-            JMethodSymbol mSym = ms.stream().filter(it -> it.getSimpleName().equals(m.getName()))
-                    .findFirst().orElseThrow(AssertionError::new);
-            
-            final Parameter[] parameters = m.getParameters();
-            List<JFormalParamSymbol> formals = mSym.getFormalParameters();
-            
-            for (int i = 0; i < m.getParameterCount(); i++) {
-                Parameter p = parameters[i];
-                JFormalParamSymbol pSym = formals.get(i);
-                
-                assertEqualsAnnotations(p, pSym);
-            }
-        }
+        ParameterAnnotation annot = createAnnotationInstance(ParameterAnnotation.class);
+
+        JMethodSymbol method = getMethodSym(sym, "withAnnotatedParam");
+        assertHasAnnotations(emptySet(), method.getFormalParameters().get(0));
+        assertHasAnnotations(setOf(annot), method.getFormalParameters().get(1));
     }
 
     @ParameterizedTest
@@ -145,16 +129,9 @@ public class AnnotationReflectionTest {
         // This only checks Target.FIELD annotations, do not confuse with TYPE_USE annotations
         Class<SomeClass> actualClass = SomeClass.class;
         JClassSymbol sym = impl.getSymbol(ts, actualClass);
-        
-        List<JFieldSymbol> fs = sym.getDeclaredFields();
-        Field[] actualFields = actualClass.getDeclaredFields();
-        
-        for (final Field f : actualFields) {
-            JFieldSymbol fSym = fs.stream().filter(it -> it.getSimpleName().equals(f.getName()))
-                    .findFirst().orElseThrow(AssertionError::new);
-            
-            assertEqualsAnnotations(f, fSym);
-        }
+
+        JFieldSymbol f1 = sym.getDeclaredField("f1");
+        assertHasAnnotations(setOf(createAnnotationInstance(FieldAnnotation.class)), f1);
     }
     
     @ParameterizedTest
@@ -164,15 +141,9 @@ public class AnnotationReflectionTest {
         Class<SomeClass> actualClass = SomeClass.class;
         JClassSymbol sym = impl.getSymbol(ts, actualClass);
 
-        List<JMethodSymbol> ms = sym.getDeclaredMethods();
-        Method[] actualMethods = actualClass.getDeclaredMethods();
-   
-        for (final Method m : actualMethods) {
-            JMethodSymbol mSym = ms.stream().filter(it -> it.getSimpleName().equals(m.getName()))
-                    .findFirst().orElseThrow(AssertionError::new);
-            
-            assertEqualsAnnotations(m, mSym);
-        }
+        JMethodSymbol method = getMethodSym(sym, "anotatedMethod");
+        assertHasAnnotations(emptySet(), method.getFormalParameters().get(0));
+        assertHasAnnotations(setOf(createAnnotationInstance(MethodAnnotation.class)), method);
     }
     
     @ParameterizedTest
@@ -182,16 +153,8 @@ public class AnnotationReflectionTest {
         Class<SomeClass> actualClass = SomeClass.class;
         JClassSymbol sym = impl.getSymbol(ts, actualClass);
 
-        List<JConstructorSymbol> cs = sym.getConstructors();
-        Constructor<?>[] actualConstructors = actualClass.getDeclaredConstructors();
-   
-        for (final Constructor<?> c : actualConstructors) {
-            // TODO : Arity alone is not unequivocal
-            JConstructorSymbol mSym = cs.stream().filter(it -> it.getArity() == c.getParameterCount())
-                    .findFirst().orElseThrow(AssertionError::new);
-            
-            assertEqualsAnnotations(c, mSym);
-        }
+        JConstructorSymbol ctor = sym.getConstructors().get(0);
+        assertHasAnnotations(setOf(createAnnotationInstance(ConstructorAnnotation.class)), ctor);
     }
 
     @Test
@@ -199,45 +162,34 @@ public class AnnotationReflectionTest {
         // This only checks Target.LOCAL_VAR annotations, do not confuse with TYPE_USE on return types
         JClassSymbol sym = SymImplementation.AST.getSymbol(ts, SomeClass.class);
 
-        JMethodSymbol method = sym.getDeclaredMethods().stream().filter(it -> it.getSimpleName().equals("withAnnotatedLocal"))
-                                  .findFirst().orElseThrow(AssertionError::new);
+        @NonNull JVariableSymbol localSym = Objects.requireNonNull(sym.tryGetNode())
+                                                   .descendants(ASTVariableDeclaratorId.class)
+                                                   .filter(it -> "local".equals(it.getName()))
+                                                   .firstOrThrow()
+                                                   .getSymbol();
 
-        ASTVariableDeclarator variableDeclarator = method.tryGetNode().descendants(ASTVariableDeclarator.class).first();
-        JVariableSymbol localSym = variableDeclarator.getSymbolTable().variables().resolveFirst("local").getSymbol();
-
-        PSet<SymAnnot> declaredAnnotations = localSym.getDeclaredAnnotations();
-
-        Assert.assertEquals(1, declaredAnnotations.size());
-        Assert.assertNotNull(localSym.getDeclaredAnnotation(LocalVarAnnotation.class));
+        assertHasAnnotations(setOf(createAnnotationInstance(LocalVarAnnotation.class)), localSym);
     }
-    
+
     protected SymbolicValue symValueOf(Object o) {
         return SymbolicValue.of(ts, o);
     }
 
-    private void assertEqualsAnnotations(AnnotatedElement e, AnnotableSymbol eSym) {
-        Assert.assertEquals(e.getDeclaredAnnotations().length, eSym.getDeclaredAnnotations().size());
-        for (Annotation annot : e.getDeclaredAnnotations()) {
+    private void assertHasAnnotations(Set<? extends Annotation> expected, AnnotableSymbol annotable) {
+        assertThat(annotable.getDeclaredAnnotations(), hasSize(expected.size()));
+
+        for (Annotation annot : expected) {
             Class<? extends Annotation> annotType = annot.annotationType();
-            SymAnnot symAnnot = eSym.getDeclaredAnnotation(annotType);
-            
+            SymAnnot symAnnot = annotable.getDeclaredAnnotation(annotType);
+
             Assert.assertEquals(symValueOf(annot), symAnnot);
-            
-            Assert.assertTrue(eSym.isAnnotationPresent(annotType));
+
+            Assert.assertTrue(annotable.isAnnotationPresent(annotType));
             Assert.assertTrue(symAnnot.isOfType(annotType));
+            Assert.assertTrue(symAnnot.valueEquals(annot));
             Assert.assertTrue(symAnnot.isOfType(annotType.getName()));
-            
-            // There is no way in Java's reflection API to know which attributes were set, so we trust our symbol…
-            for (String attribute : symAnnot.getAttributeNames()) {
-                Object value;
-                try {
-                    value = annotType.getMethod(attribute).invoke(annot);
-                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException ex) {
-                    throw new AssertionError("Failed to get annotation value.", ex);
-                }
-                Assert.assertEquals(YES, symAnnot.attributeMatches(attribute, value));
-            }
         }
     }
+
 
 }

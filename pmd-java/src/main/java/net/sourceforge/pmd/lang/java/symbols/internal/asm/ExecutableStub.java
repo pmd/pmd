@@ -83,8 +83,7 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
         return type.getParameterTypes().size();
     }
 
-    @Override
-    public PSet<SymAnnot> getFormalParameterAnnotations(int parameterIndex) {
+    PSet<SymAnnot> getFormalParameterAnnotations(int parameterIndex) {
         return parameterAnnotations.getOrDefault(parameterIndex, HashTreePSet.empty());
     }
 
