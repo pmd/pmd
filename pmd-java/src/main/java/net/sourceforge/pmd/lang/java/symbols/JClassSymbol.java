@@ -261,7 +261,7 @@ public interface JClassSymbol extends JTypeDeclSymbol,
         }
         SymAnnot target = getDeclaredAnnotation(Target.class);
         if (target == null) {
-            return false;
+            return elementType != ElementType.TYPE_PARAMETER;
         }
         return target.attributeContains("value", elementType).isTrue();
     }
