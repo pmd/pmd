@@ -665,11 +665,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                 addViolation(data, node);
                 return true;
             }
-            if (isImproperDMLCheck && userMode) {
-                addViolation(data, node);
-                return true;
-            }
-            if (isImproperDMLCheck && systemMode) {
+            if (isImproperDMLCheck && !userMode && !systemMode) {
                 addViolation(data, node);
                 return true;
             }
