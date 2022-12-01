@@ -14,6 +14,7 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.FileOutputStream;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -23,6 +24,8 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
@@ -229,6 +232,22 @@ public class CoreCliTest {
         StatusCode code = PMD.runPmd(args);
         assertEquals(StatusCode.ERROR, code);
         assertThatErrAndOut(not(containsStringIgnoringCase("Available report formats and")));
+    }
+
+    @Test
+    public void testZipFileAsSource() throws Exception {
+        Path zipArchive = tempRoot().resolve("sources.zip");
+        try (ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(zipArchive.toFile()))) {
+            ZipEntry zipEntry = new ZipEntry("someSource.dummy");
+            zipOutputStream.putNextEntry(zipEntry);
+            zipOutputStream.write("dummy text".getBytes(StandardCharsets.UTF_8));
+            zipOutputStream.closeEntry();
+        }
+
+        startCapturingErrAndOut();
+        runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", zipArchive, "--rulesets", "rulesets/dummy/basic.xml");
+        assertThatErrAndOut(not(containsStringIgnoringCase("Cannot open zip file")));
+        assertThat(outStreamCaptor.getLog(), containsString("/someSource.dummy:0:\tSampleXPathRule:\tTest Rule 2"));
     }
 
     private void assertThatErrAndOut(Matcher<String> matcher) {
