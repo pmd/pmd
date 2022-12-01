@@ -94,14 +94,14 @@ If you want to copy/move elements inside the _same_ array (e.g. shift the elemen
         [PrimaryExpression[count(PrimarySuffix) = 1]/PrimarySuffix[@ArrayDereference = true()]
         /Expression[PrimaryExpression or AdditiveExpression]
                    [count(.//PrimaryPrefix/Name) = 1 or
-                    (count(.//PrimaryPrefix/Name) = 2 and .//PrimaryPrefix/Name/@Image = //VariableDeclaratorId[@Final = true()]/@Name)
+                    (count(.//PrimaryPrefix/Name) = 2 and .//PrimaryPrefix/Name/@Image = (ancestor::MethodDeclaration|//FieldDeclaration)//VariableDeclarator[VariableInitializer//Literal]/VariableDeclaratorId[@Final = true()]/@Name)
                    ]
         //PrimaryPrefix/Name/@Image]
         (: RHS - right hand side :)
         [Expression/PrimaryExpression/PrimarySuffix[@ArrayDereference = true()][count(..//PrimarySuffix) = 1]
         /Expression[PrimaryExpression or AdditiveExpression]
                    [count(.//PrimaryPrefix/Name) = 1 or
-                    (count(.//PrimaryPrefix/Name) = 2 and .//PrimaryPrefix/Name/@Image = //VariableDeclaratorId[@Final = true()]/@Name)
+                    (count(.//PrimaryPrefix/Name) = 2 and .//PrimaryPrefix/Name/@Image = (ancestor::MethodDeclaration|//FieldDeclaration)//VariableDeclarator[VariableInitializer//Literal]/VariableDeclaratorId[@Final = true()]/@Name)
                    ]
         //PrimaryPrefix/Name/@Image]
   ]

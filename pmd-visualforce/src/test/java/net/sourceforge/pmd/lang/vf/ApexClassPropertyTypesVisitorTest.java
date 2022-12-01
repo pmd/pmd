@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.vf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -28,8 +29,6 @@ import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.ast.Node;
 
-import apex.jorje.semantic.symbol.type.BasicType;
-
 public class ApexClassPropertyTypesVisitorTest {
     @Test
     public void testApexClassIsProperlyParsed() throws IOException {
@@ -46,21 +45,21 @@ public class ApexClassPropertyTypesVisitorTest {
             visitor.visit((ApexNode<?>) node, null);
         }
 
-        List<Pair<String, BasicType>> variables = visitor.getVariables();
+        List<Pair<String, String>> variables = visitor.getVariables();
         assertEquals(7, variables.size());
-        Map<String, BasicType> variableNameToVariableType = new Hashtable<>();
-        for (Pair<String, BasicType> variable : variables) {
+        Map<String, String> variableNameToVariableType = new Hashtable<>();
+        for (Pair<String, String> variable : variables) {
             // Map the values and ensure there were no duplicates
-            BasicType previous = variableNameToVariableType.put(variable.getKey(), variable.getValue());
+            String previous = variableNameToVariableType.put(variable.getKey(), variable.getValue());
             assertNull(variable.getKey(), previous);
         }
 
-        assertEquals(BasicType.ID, variableNameToVariableType.get("ApexController.AccountIdProp"));
-        assertEquals(BasicType.ID, variableNameToVariableType.get("ApexController.AccountId"));
-        assertEquals(BasicType.STRING, variableNameToVariableType.get("ApexController.AccountName"));
-        assertEquals(BasicType.APEX_OBJECT, variableNameToVariableType.get("ApexController.InnerController"));
-        assertEquals(BasicType.ID, variableNameToVariableType.get("ApexController.InnerController.InnerAccountIdProp"));
-        assertEquals(BasicType.ID, variableNameToVariableType.get("ApexController.InnerController.InnerAccountId"));
-        assertEquals(BasicType.STRING, variableNameToVariableType.get("ApexController.InnerController.InnerAccountName"));
+        assertTrue("ID".equalsIgnoreCase(variableNameToVariableType.get("ApexController.AccountIdProp")));
+        assertTrue("ID".equalsIgnoreCase(variableNameToVariableType.get("ApexController.AccountId")));
+        assertTrue("String".equalsIgnoreCase(variableNameToVariableType.get("ApexController.AccountName")));
+        assertTrue("ApexController.InnerController".equalsIgnoreCase(variableNameToVariableType.get("ApexController.InnerController")));
+        assertTrue("ID".equalsIgnoreCase(variableNameToVariableType.get("ApexController.InnerController.InnerAccountIdProp")));
+        assertTrue("ID".equalsIgnoreCase(variableNameToVariableType.get("ApexController.InnerController.InnerAccountId")));
+        assertTrue("String".equalsIgnoreCase(variableNameToVariableType.get("ApexController.InnerController.InnerAccountName")));
     }
 }

@@ -99,7 +99,7 @@ a single rule reference." %}
 
 ### Filtering the processed files
 
-You can exclude some files from being processed by a ruleset using **exclude patterns**, with an optional overridding **include pattern**. A file will be excluded from processing *when there is a matching exclude pattern, but no matching include pattern*. This exclude/include technique works regardless of how PMD is used (e.g. command line, IDE, Ant), making it easier to keep application of your PMD rules consistent throughout your environment. Here is an example:
+You can exclude some files from being processed by a ruleset using **exclude patterns**, with an optional overriding **include pattern**. A file will be excluded from processing *when there is a matching exclude pattern, but no matching include pattern*. This exclude/include technique works regardless of how PMD is used (e.g. command line, IDE, Ant), making it easier to keep application of your PMD rules consistent throughout your environment. Here is an example:
 
 ```xml
 <?xml version="1.0"?>

@@ -31,7 +31,12 @@ protected constructor in order to prevent instantiation than make the class misl
     [@Abstract = true()]
     [not(./ClassOrInterfaceBody/*/ConstructorDeclaration)]
     [not(./ClassOrInterfaceBody/*/MethodDeclaration)]
-    [not(../Annotation/MarkerAnnotation/Name[pmd-java:typeIs('com.google.auto.value.AutoValue')])]
+    [not(../Annotation[pmd-java:typeIs('com.google.auto.value.AutoValue')
+                    or pmd-java:typeIs('lombok.AllArgsConstructor')
+                    or pmd-java:typeIs('lombok.NoArgsConstructor')
+                    or pmd-java:typeIs('lombok.RequiredArgsConstructor')
+                      ]
+    )]
 ]]>
                 </value>
             </property>
@@ -330,7 +335,7 @@ public void foo() throws RuntimeException {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#classwithonlyprivateconstructorsshouldbefinal">
         <description>
 A class with only private constructors should be final, unless the private constructor
-is invoked by a inner class.
+is invoked by an inner class.
         </description>
         <priority>1</priority>
         <properties>
@@ -339,6 +344,19 @@ is invoked by a inner class.
                 <value>
 <![CDATA[
 //TypeDeclaration
+  (: no lombok constructor annotations :)
+  [not(Annotation[pmd-java:typeIs('lombok.Value')])]
+  [not(Annotation[pmd-java:typeIs('lombok.NoArgsConstructor')
+               or pmd-java:typeIs('lombok.RequiredArgsConstructor')
+               or pmd-java:typeIs('lombok.AllArgsConstructor')]
+     [not(.//MemberValuePair[@MemberName='access'])
+       or .//MemberValuePair[@MemberName='access']
+                            [.//Name[@Image!='PRIVATE']
+                                    [@Image!='AccessLevel.PRIVATE']
+                                    [@Image!='lombok.AccessLevel.PRIVATE']
+                            ]
+     ]
+  )]
   /ClassOrInterfaceDeclaration
   [@Final = false()]
   (: at least one private constructor :)
@@ -347,7 +365,7 @@ is invoked by a inner class.
   [not(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[(@Public = true()) or (@Protected = true()) or (@PackagePrivate = true())])]
   (: not a base class in the same compilation unit :)
   [not(@SimpleName = ../../TypeDeclaration/ClassOrInterfaceDeclaration/ExtendsList/ClassOrInterfaceType/@Image)]
-  (: not a base class for a inner class in the same compilation unit :)
+  (: not a base class for an inner class in the same compilation unit :)
   [not(@SimpleName = .//ClassOrInterfaceDeclaration/ExtendsList/ClassOrInterfaceType/@Image)]
 ]]>
                 </value>
@@ -884,6 +902,12 @@ of the field or by a constructor. This helps in converting existing classes to b
 Note that this rule does not enforce referenced object to be immutable itself. A class can still be mutable, even
 if all its member fields are declared final. This is referred to as shallow immutability. For more information on
 mutability, see Effective Java, 3rd Edition, Item 17: Minimize mutability.
+
+Note: The property `ignoredAnnotations` is deprecated since PMD 6.52.0 and doesn't have any effect anymore.
+Since PMD 6.47.0, the rule only considers fields, that are initialized once and never changed. If the field is just
+declared but never explicitly initialized, it won't be reported. That's the typical case when a framework sets
+the field value by reflection. Therefore, the property is not needed anymore. If there is a special case where
+this rule misidentifies fields as immutable, then the rule should be suppressed for these fields explicitly.
         </description>
         <priority>3</priority>
         <example>
@@ -896,6 +920,44 @@ public class Foo {
   public void foo() {
      int a = x + 2;
   }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="InvalidJavaBean"
+          language="java"
+          since="6.52.0"
+          message="The bean ''{0}'' is missing a getter for property ''{1}''."
+          class="net.sourceforge.pmd.lang.java.rule.design.InvalidJavaBeanRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#invalidjavabean">
+        <description>
+Identifies beans, that don't follow the [JavaBeans API specification](https://download.oracle.com/otndocs/jcp/7224-javabeans-1.01-fr-spec-oth-JSpec/).
+
+Each non-static field should have both a getter and a setter method. If the field is just used internally and is not
+a bean property, then the field should be marked as `transient`.
+
+The rule verifies that the type of the field is the same as the result type of the getter. And that this type matches
+the type used in the setter.
+
+The rule also checks, that there is a no-arg or default constructor available.
+
+Optionally the rule also verifies, that the bean implements `java.io.Serializable`. While this is a requirement for the
+original JavaBeans specification, frameworks nowadays don't strictly require this anymore.
+
+In order to avoid many false positives in classes that are not beans, the rule needs to be explicitly
+enabled by configuring the property `packages`.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+package org.example.beans;
+public class MyBean {        // <-- bean is not serializable, missing "implements Serializable"
+    private String label;    // <-- missing setter for property "label"
+
+    public String getLabel() {
+        return label;
+    }
 }
 ]]>
         </example>
