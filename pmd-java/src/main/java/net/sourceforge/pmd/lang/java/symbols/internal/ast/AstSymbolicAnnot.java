@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.ast;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -13,6 +11,7 @@ import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
@@ -27,6 +26,7 @@ import net.sourceforge.pmd.lang.java.symbols.internal.SymbolEquality;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolToStrings;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  *
@@ -34,11 +34,11 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 class AstSymbolicAnnot implements SymbolicValue.SymAnnot {
 
     private final ASTAnnotation node;
-    private final Set<String> attrNames;
+    private final PSet<String> attrNames;
 
     AstSymbolicAnnot(ASTAnnotation node) {
         this.node = node;
-        attrNames = node.getMembers().collect(Collectors.mapping(ASTMemberValuePair::getName, Collectors.toSet()));
+        attrNames = node.getMembers().collect(Collectors.mapping(ASTMemberValuePair::getName, CollectionUtil.toPersistentSet()));
     }
 
     @Override
@@ -48,32 +48,17 @@ class AstSymbolicAnnot implements SymbolicValue.SymAnnot {
 
     @Override
     public Set<String> getAttributeNames() {
-        return attrNames;
+        return attrNames.plusAll(getAnnotationSymbol().getAnnotationAttributeNames());
     }
 
     @Override
-    public RetentionPolicy getRetention() {
-        RetentionPolicy retention = node.getTypeMirror().getSymbol().getAnnotationRetention();
-        if (retention == null) {
-            retention = RetentionPolicy.CLASS;
-        }
-        return retention;
-    }
-
-    @Override
-    public boolean appliesToTypeUse() {
-        // todo look into whether hardcoding Override is good for perf, as it's very frequent
-        return node.getTypeMirror().getSymbol().annotationAppliesTo(ElementType.TYPE_USE);
-    }
-
-    @Override
-    public @NonNull String getBinaryName() {
-        return node.getTypeMirror().getSymbol().getBinaryName();
+    public @NonNull JClassSymbol getAnnotationSymbol() {
+        return node.getTypeMirror().getSymbol();
     }
 
     @Override
     public String getSimpleName() {
-        return node.getTypeMirror().getSymbol().getSimpleName();
+        return node.getSimpleName();
     }
 
     @Override

@@ -4,11 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.RetentionPolicy;
-import java.util.Collections;
-import java.util.Set;
-
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
@@ -38,28 +34,8 @@ public class FakeSymAnnot implements SymAnnot {
     }
 
     @Override
-    public Set<String> getAttributeNames() {
-        return Collections.emptySet();
-    }
-
-    @Override
-    public String getBinaryName() {
-        return annotationClass.getBinaryName();
-    }
-
-    @Override
-    public String getSimpleName() {
-        return annotationClass.getSimpleName();
-    }
-
-    @Override
-    public RetentionPolicy getRetention() {
-        return annotationClass.getAnnotationRetention();
-    }
-
-    @Override
-    public boolean appliesToTypeUse() {
-        return annotationClass.annotationAppliesTo(ElementType.TYPE_USE);
+    public @NonNull JClassSymbol getAnnotationSymbol() {
+        return annotationClass;
     }
 
     @Override

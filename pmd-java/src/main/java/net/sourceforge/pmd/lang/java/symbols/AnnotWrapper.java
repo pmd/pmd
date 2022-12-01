@@ -5,12 +5,8 @@
 package net.sourceforge.pmd.lang.java.symbols;
 
 import java.lang.annotation.Annotation;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -45,15 +41,8 @@ final class AnnotWrapper implements SymAnnot {
     }
 
     @Override
-    public RetentionPolicy getRetention() {
-        Retention annot = annotationClass.getAnnotation(Retention.class);
-        return annot != null ? annot.value()
-                             : RetentionPolicy.CLASS;
-    }
-
-    @Override
-    public Set<String> getAttributeNames() {
-        return annotationClassSymbol.getAnnotationAttributeNames();
+    public @NonNull JClassSymbol getAnnotationSymbol() {
+        return annotationClassSymbol;
     }
 
     @Override
@@ -75,22 +64,6 @@ final class AnnotWrapper implements SymAnnot {
     @Override
     public boolean valueEquals(Object o) {
         return annotation.equals(o);
-    }
-
-
-    @Override
-    public String getBinaryName() {
-        return annotationClassSymbol.getBinaryName();
-    }
-
-    @Override
-    public String getSimpleName() {
-        return annotationClass.getSimpleName();
-    }
-
-    @Override
-    public boolean appliesToTypeUse() {
-        return annotationClassSymbol.annotationAppliesTo(ElementType.TYPE_USE);
     }
 
     @Override

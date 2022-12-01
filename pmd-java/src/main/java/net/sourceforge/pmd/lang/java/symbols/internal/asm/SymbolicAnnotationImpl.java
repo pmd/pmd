@@ -4,12 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
-import java.lang.annotation.ElementType;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -44,11 +42,6 @@ final class SymbolicAnnotationImpl implements SymAnnot {
     }
 
     @Override
-    public Set<String> getAttributeNames() {
-        return typeStub.getAnnotationAttributeNames();
-    }
-
-    @Override
     public @Nullable SymbolicValue getAttribute(String attrName) {
         SymbolicValue value = explicitAttrs.get(attrName);
         if (value != null) {
@@ -78,18 +71,8 @@ final class SymbolicAnnotationImpl implements SymAnnot {
     }
 
     @Override
-    public boolean appliesToTypeUse() {
-        return typeStub.annotationAppliesTo(ElementType.TYPE_USE);
-    }
-
-    @Override
-    public String getBinaryName() {
-        return typeStub.getBinaryName();
-    }
-
-    @Override
-    public String getSimpleName() {
-        return typeStub.getSimpleName();
+    public @NonNull JClassSymbol getAnnotationSymbol() {
+        return typeStub;
     }
 
     @Override

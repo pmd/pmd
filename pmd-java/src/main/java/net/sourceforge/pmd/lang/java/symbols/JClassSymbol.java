@@ -261,6 +261,9 @@ public interface JClassSymbol extends JTypeDeclSymbol,
         }
         SymAnnot target = getDeclaredAnnotation(Target.class);
         if (target == null) {
+            // If an @Target meta-annotation is not present on an annotation type T,
+            // then an annotation of type T may be written as a modifier
+            // for any declaration except a type parameter declaration.
             return elementType != ElementType.TYPE_PARAMETER;
         }
         return target.attributeContains("value", elementType).isTrue();
