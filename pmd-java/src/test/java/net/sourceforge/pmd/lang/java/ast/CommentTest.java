@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.java.BaseParserTest;
 
 class CommentTest extends BaseParserTest {
@@ -46,7 +45,7 @@ class CommentTest extends BaseParserTest {
                 + " */\n";
         String filtered = filter(comment);
         assertEquals(2, lineCount(filtered));
-        assertEquals("line 1" + PMD.EOL + "line 2", filtered);
+        assertEquals("line 1\nline 2", filtered);
     }
 
     @Test
@@ -58,7 +57,7 @@ class CommentTest extends BaseParserTest {
                 + " */\r\n";
         String filtered = filter(comment);
         assertEquals(2, lineCount(filtered));
-        assertEquals("line 1" + PMD.EOL + "line 2", filtered);
+        assertEquals("line 1\nline 2", filtered);
     }
 
     @Test
@@ -70,7 +69,7 @@ class CommentTest extends BaseParserTest {
                 + " */\n";
         String filtered = filter(comment);
         assertEquals(2, lineCount(filtered));
-        assertEquals("line 1" + PMD.EOL + "line 2", filtered);
+        assertEquals("line 1\nline 2", filtered);
     }
 
     @Test
@@ -82,7 +81,7 @@ class CommentTest extends BaseParserTest {
                 + " */\r\n";
         String filtered = filter(comment);
         assertEquals(2, lineCount(filtered));
-        assertEquals("line 1" + PMD.EOL + "line 2", filtered);
+        assertEquals("line 1\nline 2", filtered);
     }
 
     @Test
@@ -95,14 +94,15 @@ class CommentTest extends BaseParserTest {
                 + " */\n";
         String filtered = filter(comment);
         assertEquals(2, lineCount(filtered));
-        assertEquals("line 1" + PMD.EOL + "line 2", filtered);
+        assertEquals("line 1\nline 2", filtered);
     }
 
     private String filter(String comment) {
-        return java.parse(comment).getComments().get(0).getFilteredComment();
+        JavaComment firstComment = java.parse(comment).getComments().get(0);
+        return StringUtils.join(firstComment.getFilteredLines(), '\n');
     }
 
     private int lineCount(String filtered) {
-        return StringUtils.countMatches(filtered, PMD.EOL) + 1;
+        return StringUtils.countMatches(filtered, '\n') + 1;
     }
 }

@@ -188,6 +188,9 @@ conversions that may be made implicit.
 * {% rule "java/design/UseUtilityClass" %}: The property `ignoredAnnotations` has been removed.
 * {% rule "java/design/LawOfDemeter" %}: the rule has a new property `trustRadius`. This defines the maximum degree
   of trusted data. The default of 1 is the most restrictive.
+* {% rule "java/documentation/CommentContent" %}: The properties `caseSensitive` and `disallowedTerms` are removed. The
+  new property `fobiddenRegex` can be used now to define the disallowed terms with a single regular
+  expression.
 
 #### Deprecated Rules
 
