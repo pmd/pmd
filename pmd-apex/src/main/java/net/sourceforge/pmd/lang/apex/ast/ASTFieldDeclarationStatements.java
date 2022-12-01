@@ -58,9 +58,9 @@ public class ASTFieldDeclarationStatements extends AbstractApexNode.Single<Field
     // TODO(b/239648780)
 
     public List<String> getTypeArguments() {
+        /*
         List<String> result = new ArrayList<>();
 
-        /*
         if (node.getTypeName() != null) {
             List<TypeRef> typeArgs = node.getTypeName().getTypeArguments();
             for (TypeRef arg : typeArgs) {
@@ -77,6 +77,6 @@ public class ASTFieldDeclarationStatements extends AbstractApexNode.Single<Field
          */
         // TODO(b/239648780)
 
-        return result;
+        return new ArrayList<>();
     }
 }

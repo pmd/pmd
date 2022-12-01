@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.NavigableSet;
 import java.util.TreeSet;
 
 import net.sourceforge.pmd.annotation.InternalApi;
@@ -195,7 +196,7 @@ public abstract class AbstractApexNode extends AbstractApexNodeBase implements A
         return name.equalsIgnoreCase(floor) ? floor : name;
     }
 
-    private static TreeSet<String> CASE_NORMALIZED_TYPE_NAMES =
+    private static NavigableSet<String> CASE_NORMALIZED_TYPE_NAMES =
         new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
 
     static {

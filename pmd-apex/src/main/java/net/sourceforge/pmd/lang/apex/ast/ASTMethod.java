@@ -193,7 +193,7 @@ public class ASTMethod extends AbstractApexNode implements ApexQualifiableNode,
     }
 
     public boolean isConstructor() {
-        return name.equals(CONSTRUCTOR_ID);
+        return CONSTRUCTOR_ID.equals(name);
     }
 
     public ASTModifierNode getModifiers() {
