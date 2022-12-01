@@ -6,6 +6,7 @@ package net.sourceforge.pmd.util.datasource.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -34,33 +35,47 @@ public class PathDataSource extends AbstractDataSource {
 
     @Override
     public String getNiceFileName(boolean shortNames, String inputPaths) {
-        return glomName(shortNames, inputPaths, path);
+        return glomName(shortNames, inputPaths);
     }
 
-    private String glomName(boolean shortNames, String inputPaths, Path path) {
+    private String getAbsoluteFilePath() {
+        if ("jar".equals(path.toUri().getScheme())) {
+            return URI.create(path.toUri().getSchemeSpecificPart()).getPath();
+        }
+        try {
+            return path.toRealPath().toAbsolutePath().toString();
+        } catch (IOException e) {
+            return path.toAbsolutePath().toString();
+        }
+    }
+
+    private String getSimpleFilePath() {
+        if ("jar".equals(path.toUri().getScheme())) {
+            return URI.create(path.toUri().getSchemeSpecificPart()).getPath();
+        }
+        return path.getName(path.getNameCount() - 1).toString();
+    }
+
+    private String glomName(boolean shortNames, String inputPaths) {
         if (shortNames) {
             if (inputPaths != null) {
                 List<String> inputPathPrefixes = Arrays.asList(inputPaths.split(","));
-                final String absoluteFilePath = path.toAbsolutePath().toString();
+                final String absoluteFilePath = getAbsoluteFilePath();
                 return ShortFilenameUtil.determineFileName(inputPathPrefixes, absoluteFilePath);
             } else {
                 // if the 'master' file is not specified, just use the file name
-                return path.getName(path.getNameCount() - 1).toString();
+                return getSimpleFilePath();
             }
         }
 
-        try {
-            return path.toRealPath().toAbsolutePath().toString();
-        } catch (Exception e) {
-            return path.toAbsolutePath().toString();
-        }
+        return getAbsoluteFilePath();
     }
 
     @Override
     public String toString() {
         return new StringBuilder(this.getClass().getSimpleName())
                 .append('[')
-                .append(path)
+                .append(path.toUri())
                 .append(']')
                 .toString();
     }

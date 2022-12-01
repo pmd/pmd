@@ -247,7 +247,8 @@ public class CoreCliTest {
         startCapturingErrAndOut();
         runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", zipArchive, "--rulesets", "rulesets/dummy/basic.xml");
         assertThatErrAndOut(not(containsStringIgnoringCase("Cannot open zip file")));
-        assertThat(outStreamCaptor.getLog(), containsString("/someSource.dummy:0:\tSampleXPathRule:\tTest Rule 2"));
+        String reportPath = IOUtil.normalizePath(zipArchive.toString() + "!/someSource.dummy");
+        assertThat(outStreamCaptor.getLog(), containsString(reportPath + ":0:\tSampleXPathRule:\tTest Rule 2"));
     }
 
     private void assertThatErrAndOut(Matcher<String> matcher) {
