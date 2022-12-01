@@ -4,20 +4,69 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.TreeSet;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTAnnotation extends AbstractApexNode.Single<Node> {
+import com.google.common.collect.ImmutableSortedSet;
+import com.google.summit.ast.modifier.AnnotationModifier;
 
-    @Deprecated
-    @InternalApi
-    public ASTAnnotation(Node annotation) {
-        super(annotation);
+public class ASTAnnotation extends AbstractApexNode.Single<AnnotationModifier> {
+
+    /**
+     * Valid annotations in the Apex language.
+     * <p>
+     * Includes all annotations from the <a href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_classes_annotation.htm">official
+     * documentation</a>, plus
+     * <ul>
+     *     <li>{@code AllowCertifiedApex}</li>
+     *     <li>{@code HiddenFromDoc}</li>
+     *     <li>{@code NamespaceGuard}</li>
+     *     <li>{@code PermGuard}</li>
+     *     <li>{@code PrivateApi}</li>
+     *     <li>{@code SfdcOnly}</li>
+     *     <li>{@code UseConnectDeserializer}</li>
+     *     <li>{@code UseConnectSerializer}</li>
+     *     <li>{@code VisibleApiVersion}</li>
+     * </ul>
+     * for backward compatibility.
+     */
+    private static final ImmutableSortedSet<String> NORMALIZED_ANNOTATION_NAMES =
+        ImmutableSortedSet.orderedBy(String.CASE_INSENSITIVE_ORDER).add(
+            "AllowCertifiedApex",
+            "AuraEnabled",
+            "Deprecated",
+            "Future",
+            "HiddenFromDoc",
+            "HttpDelete",
+            "HttpGet",
+            "HttpPatch",
+            "HttpPost",
+            "HttpPut",
+            "InvocableMethod",
+            "InvocableVariable",
+            "IsTest",
+            "JsonAccess",
+            "NamespaceAccessible",
+            "NamespaceGuard",
+            "PermGuard",
+            "PrivateApi",
+            "ReadOnly",
+            "RemoteAction",
+            "RestResource",
+            "SfdcOnly",
+            "SuppressWarnings",
+            "TestSetup",
+            "TestSisible",
+            "UseConnectDeserializer",
+            "UseConnectSerializer",
+            "VisibleApiVersion"
+    ).build();
+
+    ASTAnnotation(AnnotationModifier annotationModifier) {
+        super(annotationModifier);
     }
 
     @Override
@@ -27,9 +76,12 @@ public class ASTAnnotation extends AbstractApexNode.Single<Node> {
 
     @Override
     public String getImage() {
-        // return node.getType().getApexName();
-        // TODO(b/239648780)
-        return null;
+        // If resolvable to a known name, return the case-normalized name.
+        String rawName = node.getName().getString();
+        if (NORMALIZED_ANNOTATION_NAMES.contains(rawName)) {
+            return NORMALIZED_ANNOTATION_NAMES.floor(rawName);
+        }
+        return rawName;
     }
 
     /**
@@ -57,8 +109,6 @@ public class ASTAnnotation extends AbstractApexNode.Single<Node> {
     }
 
     public boolean isResolved() {
-        // return node.getType().isResolved();
-        // TODO(b/239648780)
-        return false;
+        return NORMALIZED_ANNOTATION_NAMES.contains(node.getName().getString());
     }
 }

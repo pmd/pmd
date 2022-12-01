@@ -10,6 +10,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
 import com.google.summit.ast.Node;
+import com.google.summit.ast.expression.LiteralExpression;
 
 /**
  * @deprecated Use {@link ApexNode}
@@ -25,7 +26,7 @@ public abstract class AbstractApexNode extends AbstractApexNodeBase implements A
      */
     @Deprecated
     @InternalApi
-    public static abstract class Single<T extends Node> extends AbstractApexNode {
+    public abstract static class Single<T extends Node> extends AbstractApexNode {
 
         protected final T node;
 
@@ -61,7 +62,7 @@ public abstract class AbstractApexNode extends AbstractApexNodeBase implements A
      */
     @Deprecated
     @InternalApi
-    public static abstract class Many<T extends Node> extends AbstractApexNode {
+    public abstract static class Many<T extends Node> extends AbstractApexNode {
 
         protected final List<T> nodes;
 
@@ -95,7 +96,7 @@ public abstract class AbstractApexNode extends AbstractApexNodeBase implements A
      */
     @Deprecated
     @InternalApi
-    public static abstract class Empty extends AbstractApexNode {
+    public abstract static class Empty extends AbstractApexNode {
 
         protected Empty() {
             super(Void.class);
@@ -146,6 +147,7 @@ public abstract class AbstractApexNode extends AbstractApexNodeBase implements A
         // default implementation does nothing
     }
 
+    @Override
     public abstract boolean hasRealLoc();
 
     public abstract String getLocation();
@@ -176,5 +178,15 @@ public abstract class AbstractApexNode extends AbstractApexNodeBase implements A
         // }
         // TODO(b/239648780)
         return null;
+    }
+
+    /** Returns the string value of the {@link LiteralExpression}. */
+    protected static String literalToString(LiteralExpression expr) {
+        if (expr instanceof LiteralExpression.StringVal) {
+            return ((LiteralExpression.StringVal) expr).getValue();
+        } else if (expr instanceof LiteralExpression.NullVal) {
+            return "";
+        }
+        return expr.asCodeString();
     }
 }

@@ -4,16 +4,16 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
-import net.sourceforge.pmd.annotation.InternalApi;
+import com.google.summit.ast.expression.Expression;
+import com.google.summit.ast.expression.LiteralExpression;
+import com.google.summit.ast.modifier.ElementArgument;
+import com.google.summit.ast.modifier.ElementValue;
 
-public class ASTAnnotationParameter extends AbstractApexNode.Single<Node> {
+public class ASTAnnotationParameter extends AbstractApexNode.Single<ElementArgument> {
     public static final String SEE_ALL_DATA = "seeAllData";
 
-    @Deprecated
-    @InternalApi
-    public ASTAnnotationParameter(Node annotationParameter) {
-        super(annotationParameter);
+    ASTAnnotationParameter(ElementArgument elementArgument) {
+        super(elementArgument);
     }
 
     @Override
@@ -22,25 +22,28 @@ public class ASTAnnotationParameter extends AbstractApexNode.Single<Node> {
     }
 
     public String getName() {
-        // if (node.getProperty() != null) {
-        //     return node.getProperty().getName();
-        // }
-        // TODO(b/239648780)
-        return null;
+        return node.getName().getString();
     }
 
     public String getValue() {
-        // if (node.getValue() != null) {
-        //     return node.getValueAsString();
-        // }
-        // TODO(b/239648780)
+        if (node.getValue() instanceof ElementValue.ExpressionValue) {
+            Expression value = ((ElementValue.ExpressionValue) node.getValue()).getValue();
+            if (value instanceof LiteralExpression) {
+                return literalToString((LiteralExpression) value);
+            }
+        }
         return null;
     }
 
-    // public Boolean getBooleanValue() {
-    //     return node.getBooleanValue();
-    // }
-    // TODO(b/239648780)
+    public Boolean getBooleanValue() {
+        if (node.getValue() instanceof ElementValue.ExpressionValue) {
+            Expression value = ((ElementValue.ExpressionValue) node.getValue()).getValue();
+            if (value instanceof LiteralExpression.BooleanVal) {
+                return ((LiteralExpression.BooleanVal) value).getValue();
+            }
+        }
+        return false;
+    }
 
     @Override
     public String getImage() {

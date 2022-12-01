@@ -4,16 +4,30 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
+import java.util.Arrays;
+import java.util.Optional;
+
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTField extends AbstractApexNode.Single<Node> implements CanSuppressWarnings {
+import com.google.summit.ast.Identifier;
+import com.google.summit.ast.Node;
+import com.google.summit.ast.TypeRef;
+import com.google.summit.ast.expression.Expression;
+import com.google.summit.ast.expression.LiteralExpression;
 
-    @Deprecated
-    @InternalApi
-    public ASTField(Node field) {
-        super(field);
+public class ASTField extends AbstractApexNode.Many<Node> implements CanSuppressWarnings {
+
+    private final TypeRef type;
+    private final Identifier name;
+    private final Optional<Expression> value;
+
+    ASTField(TypeRef type, Identifier name, Optional<Expression> value) {
+        super(value.isPresent()
+              ? Arrays.asList(type, name, value.get())
+              : Arrays.asList(type, name));
+        this.type = type;
+        this.name = name;
+        this.value = value;
     }
 
     @Override
@@ -39,9 +53,7 @@ public class ASTField extends AbstractApexNode.Single<Node> implements CanSuppre
     }
 
     public String getType() {
-        // return node.getFieldInfo().getType().getApexName();
-        // TODO(b/239648780)
-        return null;
+        return type.asCodeString();
     }
 
     public ASTModifierNode getModifiers() {
@@ -49,18 +61,15 @@ public class ASTField extends AbstractApexNode.Single<Node> implements CanSuppre
     }
 
     public String getName() {
-        // return node.getFieldInfo().getName();
-        // TODO(b/239648780)
-        return null;
+        return name.getString();
     }
 
     public String getValue() {
-        /*
-        if (node.getFieldInfo().getValue() != null) {
-            return String.valueOf(node.getFieldInfo().getValue());
+        if (value.isPresent()) {
+            if (value.get() instanceof LiteralExpression) {
+                return literalToString((LiteralExpression) value.get());
+            }
         }
-         */
-        // TODO(b/239648780)
         return null;
     }
 }
