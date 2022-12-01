@@ -657,9 +657,19 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         boolean isImproperDMLCheck = !isProperESAPICheckForDML(typeCheck, crudMethod)
                 && !isProperAuthPatternBasedCheckForDML(typeCheck, crudMethod);
         boolean noSecurityEnforced = !isWithSecurityEnforced(node);
+        boolean userMode = isWithUserMode(node);
+        boolean systemMode = isWithSystemMode(node);
         if (missingKey) {
             //if condition returns true, add violation, otherwise return.
             if (isImproperDMLCheck && noSecurityEnforced) {
+                addViolation(data, node);
+                return true;
+            }
+            if (isImproperDMLCheck && userMode) {
+                addViolation(data, node);
+                return true;
+            }
+            if (isImproperDMLCheck && systemMode) {
                 addViolation(data, node);
                 return true;
             }

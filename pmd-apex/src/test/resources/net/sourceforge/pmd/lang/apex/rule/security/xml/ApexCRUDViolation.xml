@@ -378,7 +378,7 @@ public class Foo {
 
     <test-code>
         <description>Flagged as Critical With No Mode</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class User {
     public void coverAllCasesWithTest() {
@@ -404,7 +404,10 @@ public class User {
 
     <test-code>
         <description>System Mode, gives warning because it ignores CRUD but explicitly</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>This CRUD statement uses explicit system mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class User {
     public void coverAllCasesWithTest() {
