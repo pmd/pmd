@@ -43,7 +43,11 @@ class AstSymbolicAnnot implements SymbolicValue.SymAnnot {
 
     @Override
     public @Nullable SymbolicValue getAttribute(String attrName) {
-        return ofNode(node.getAttribute(attrName));
+        ASTMemberValue explicitAttr = node.getAttribute(attrName);
+        if (explicitAttr != null) {
+            return ofNode(explicitAttr);
+        }
+        return getAnnotationSymbol().getDefaultAnnotationAttributeValue(attrName);
     }
 
     @Override

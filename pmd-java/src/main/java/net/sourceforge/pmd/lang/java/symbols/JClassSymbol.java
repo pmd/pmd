@@ -235,6 +235,25 @@ public interface JClassSymbol extends JTypeDeclSymbol,
     }
 
     /**
+     * Return the default value of the attribute if this is an annotation type
+     * with a default. Return null if this is not an annotation type, if there
+     * is no such attribute, or the attribute has no default value. If the name
+     * is in the {@linkplain  #getAnnotationAttributeNames() attribute name set},
+     * then the null return value can only mean that the attribute exists but has
+     * no default value.
+     *
+     * @param attrName Attribute name
+     */
+    default @Nullable SymbolicValue getDefaultAnnotationAttributeValue(String attrName) {
+        return getDeclaredMethods()
+            .stream()
+            .filter(it -> it.nameEquals(attrName) && it.getArity() == 0)
+            .findFirst()
+            .map(JMethodSymbol::getDefaultAnnotationValue)
+            .orElse(null);
+    }
+
+    /**
      * Returns the retention policy of this annotation, if this is an
      * annotation symbol. Otherwise returns null.
      */

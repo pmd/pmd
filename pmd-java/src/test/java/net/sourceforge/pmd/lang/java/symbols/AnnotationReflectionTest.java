@@ -7,8 +7,10 @@ package net.sourceforge.pmd.lang.java.symbols;
 import static net.sourceforge.pmd.util.OptionalBool.NO;
 import static net.sourceforge.pmd.util.OptionalBool.UNKNOWN;
 import static net.sourceforge.pmd.util.OptionalBool.YES;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.lang.annotation.Annotation;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -30,6 +32,7 @@ import net.sourceforge.pmd.lang.java.symbols.internal.SymImplementation;
 import net.sourceforge.pmd.lang.java.symbols.testdata.AnnotWithDefaults;
 import net.sourceforge.pmd.lang.java.symbols.testdata.LocalVarAnnotation;
 import net.sourceforge.pmd.lang.java.symbols.testdata.SomeClass;
+import net.sourceforge.pmd.lang.java.symbols.testdata.TypeAnnotation;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
 public class AnnotationReflectionTest {
@@ -61,9 +64,10 @@ public class AnnotationReflectionTest {
         impl.assertAllMethodsMatch(actualClass, sym);
     }
 
+
     @ParameterizedTest
     @EnumSource
-    public void testRetentionClassAnnot(SymImplementation impl) {
+    public void testAnnotUseThatUsesDefaults(SymImplementation impl) {
         // note that as the annotation has retention class, we can't use reflection to check
 
         /*
@@ -78,17 +82,15 @@ public class AnnotationReflectionTest {
 
         // explicit values are known
         Assert.assertEquals(YES, target.attributeMatches("valueNoDefault", "ohio"));
-        Assert.assertEquals(YES, target.attributeMatches("stringArrayDefault", new String[] {}));
+        Assert.assertEquals(YES, target.attributeMatches("stringArrayDefault", new String[] { }));
         Assert.assertEquals(NO, target.attributeMatches("stringArrayDefault", "0"));
-        
-        // default values may be known only if parsing the class file…
-        if (target.getAttributeNames().contains("stringArrayEmptyDefault")) {
-            Assert.assertEquals(YES, target.attributeMatches("stringArrayEmptyDefault", new String[] {}));
-            Assert.assertEquals(NO, target.attributeMatches("stringArrayEmptyDefault", new String[] {"a"}));
-        }
-        
+
+        // default values are also known
+        Assert.assertEquals(YES, target.attributeMatches("stringArrayEmptyDefault", new String[] { }));
+        Assert.assertEquals(NO, target.attributeMatches("stringArrayEmptyDefault", new String[] { "a" }));
+
         // Non existing values are always considered unknown
-        Assert.assertEquals(UNKNOWN, target.attributeMatches("attributeDoesNotExist", new String[] {"a"}));
+        Assert.assertEquals(UNKNOWN, target.attributeMatches("attributeDoesNotExist", new String[] { "a" }));
     }
 
     @ParameterizedTest

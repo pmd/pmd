@@ -29,6 +29,7 @@ import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolEquality;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.ExecutableStub.CtorStub;
@@ -330,6 +331,16 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
     public Set<String> getAnnotationAttributeNames() {
         parseLock.ensureParsed();
         return annotAttributes;
+    }
+
+    @Override
+    public @Nullable SymbolicValue getDefaultAnnotationAttributeValue(String attrName) {
+        parseLock.ensureParsed();
+        if (!annotAttributes.contains(attrName)) {
+            // this is a shortcut, because the default impl checks each method
+            return null;
+        }
+        return JClassSymbol.super.getDefaultAnnotationAttributeValue(attrName);
     }
 
     @Override
