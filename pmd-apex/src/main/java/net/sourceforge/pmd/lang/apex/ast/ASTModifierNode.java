@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.apex.ast;
 
 import java.util.List;
+import java.util.Locale;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.summit.ast.modifier.AnnotationModifier;
@@ -103,7 +104,7 @@ public class ASTModifierNode extends AbstractApexNode.Many<Modifier> implements 
                 .stream()
                 .filter(mod -> mod instanceof AnnotationModifier)
                 .map(mod -> (AnnotationModifier) mod)
-                .anyMatch(mod -> mod.getName().getString().equalsIgnoreCase(name.toLowerCase()));
+                .anyMatch(mod -> mod.getName().getString().equalsIgnoreCase(name));
     }
 
     /**

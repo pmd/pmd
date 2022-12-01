@@ -147,6 +147,7 @@ public abstract class AbstractApexNode extends AbstractApexNodeBase implements A
         // default implementation does nothing
     }
 
+    @Override
     public abstract boolean hasRealLoc();
 
     public abstract String getLocation();
