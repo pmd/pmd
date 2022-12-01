@@ -131,4 +131,36 @@ public final class Test {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>False negatives with field declarations</description>
+        <expected-problems>10</expected-problems>
+        <expected-linenumbers>5,6,7,8,11,15,16,19,20,23</expected-linenumbers>
+        <code><![CDATA[
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ScheduledExecutorService;
+
+class DoNotUseThreadsTest {
+    private Thread background; // violation expected
+    private ScheduledExecutorService scheduledExecutor; // violation expected
+    private ForkJoinPool pool; // violation expected
+    private final Thread owner = Thread.currentThread(); // violation expected
+
+    DoNotUseThreadsTest() {
+        this.background = new Thread(); // violation expected
+    }
+
+    public void run() {
+        new Thread(() -> System.out.println("foo")).start(); // violation expected
+        Thread t2 = new Thread(); // one violation expected
+    }
+
+    public Thread getThread() { // violation expected
+        return new Thread(); // violation expected
+    }
+
+    private static class MyThread extends Thread { } // violation expected
+}
+]]></code>
+    </test-code>
 </test-data>

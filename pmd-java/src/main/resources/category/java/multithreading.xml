@@ -157,8 +157,8 @@ Also, EJBs might be moved between machines in a cluster and only managed resourc
                 <value>
 <![CDATA[
 //ClassOrInterfaceType[pmd-java:typeIs('java.lang.Thread') or pmd-java:typeIs('java.util.concurrent.ExecutorService')]
-    (: exclude types which have a initializer calling a constructor :)
-    [not(ancestor::FieldDeclaration|ancestor::LocalVariableDeclaration/VariableDeclarator/VariableInitializer//AllocationExpression)]
+    (: exclude types which have an initializer calling a constructor :)
+    [not((ancestor::FieldDeclaration|ancestor::LocalVariableDeclaration)/VariableDeclarator/VariableInitializer//AllocationExpression)]
     (: exclude constructor call chains :)
     [not(parent::AllocationExpression)]
 |
