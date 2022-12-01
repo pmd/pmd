@@ -10,12 +10,11 @@ import com.google.common.collect.ImmutableMap;
 import com.google.summit.ast.modifier.AnnotationModifier;
 import com.google.summit.ast.modifier.KeywordModifier;
 import com.google.summit.ast.modifier.KeywordModifier.Keyword;
-
 import com.google.summit.ast.modifier.Modifier;
 
 public class ASTModifierNode extends AbstractApexNode.Many<Modifier> implements AccessNode {
 
-    private static final ImmutableMap<Keyword, Integer> opcodes = ImmutableMap.<Keyword, Integer>builder()
+    private static final ImmutableMap<Keyword, Integer> OPCODES = ImmutableMap.<Keyword, Integer>builder()
             .put(Keyword.PUBLIC, AccessNode.PUBLIC)
             .put(Keyword.PRIVATE, AccessNode.PRIVATE)
             .put(Keyword.PROTECTED, AccessNode.PROTECTED)
@@ -40,8 +39,8 @@ public class ASTModifierNode extends AbstractApexNode.Many<Modifier> implements 
                 .stream()
                 .filter(mod -> mod instanceof KeywordModifier)
                 .map(mod -> (KeywordModifier) mod)
-                .filter(mod -> opcodes.containsKey(mod.getKeyword()))
-                .mapToInt(mod -> opcodes.get(mod.getKeyword()))
+                .filter(mod -> OPCODES.containsKey(mod.getKeyword()))
+                .mapToInt(mod -> OPCODES.get(mod.getKeyword()))
                 .reduce(0, (current, bit) -> current | bit);
 
         if ((modifiers & PUBLIC) > 0) {

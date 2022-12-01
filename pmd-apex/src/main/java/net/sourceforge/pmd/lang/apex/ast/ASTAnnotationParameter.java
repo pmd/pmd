@@ -28,22 +28,22 @@ public class ASTAnnotationParameter extends AbstractApexNode.Single<ElementArgum
     public String getValue() {
         if (node.getValue() instanceof ElementValue.ExpressionValue) {
             Expression value = ((ElementValue.ExpressionValue) node.getValue()).getValue();
-            if(value instanceof LiteralExpression) {
+            if (value instanceof LiteralExpression) {
                 return literalToString((LiteralExpression) value);
             }
         }
         return null;
     }
 
-     public Boolean getBooleanValue() {
-         if (node.getValue() instanceof ElementValue.ExpressionValue) {
-             Expression value = ((ElementValue.ExpressionValue) node.getValue()).getValue();
-             if (value instanceof LiteralExpression.BooleanVal) {
-                 return ((LiteralExpression.BooleanVal) value).getValue();
-             }
-         }
-         return false;
-     }
+    public Boolean getBooleanValue() {
+        if (node.getValue() instanceof ElementValue.ExpressionValue) {
+            Expression value = ((ElementValue.ExpressionValue) node.getValue()).getValue();
+            if (value instanceof LiteralExpression.BooleanVal) {
+                return ((LiteralExpression.BooleanVal) value).getValue();
+            }
+        }
+        return false;
+    }
 
     @Override
     public String getImage() {

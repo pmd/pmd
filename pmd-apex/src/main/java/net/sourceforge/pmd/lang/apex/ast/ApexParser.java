@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.Map;
 
-import com.google.summit.ast.declaration.TypeDeclaration;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.apex.ApexJorjeLogging;
 import net.sourceforge.pmd.lang.apex.ApexParserOptions;

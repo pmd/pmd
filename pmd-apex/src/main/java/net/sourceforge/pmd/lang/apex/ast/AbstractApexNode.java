@@ -10,7 +10,6 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
 import com.google.summit.ast.Node;
-import com.google.summit.ast.expression.Expression;
 import com.google.summit.ast.expression.LiteralExpression;
 
 /**
@@ -27,7 +26,7 @@ public abstract class AbstractApexNode extends AbstractApexNodeBase implements A
      */
     @Deprecated
     @InternalApi
-    public static abstract class Single<T extends Node> extends AbstractApexNode {
+    public abstract static class Single<T extends Node> extends AbstractApexNode {
 
         protected final T node;
 
@@ -63,7 +62,7 @@ public abstract class AbstractApexNode extends AbstractApexNodeBase implements A
      */
     @Deprecated
     @InternalApi
-    public static abstract class Many<T extends Node> extends AbstractApexNode {
+    public abstract static class Many<T extends Node> extends AbstractApexNode {
 
         protected final List<T> nodes;
 
@@ -97,7 +96,7 @@ public abstract class AbstractApexNode extends AbstractApexNodeBase implements A
      */
     @Deprecated
     @InternalApi
-    public static abstract class Empty extends AbstractApexNode {
+    public abstract static class Empty extends AbstractApexNode {
 
         protected Empty() {
             super(Void.class);

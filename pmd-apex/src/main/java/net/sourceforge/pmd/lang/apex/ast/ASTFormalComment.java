@@ -4,11 +4,10 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-
-import com.google.summit.ast.Node;
 import org.antlr.runtime.Token;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+import com.google.summit.ast.Node;
+
 
 public class ASTFormalComment extends AbstractApexNode.Single<Node> {
 

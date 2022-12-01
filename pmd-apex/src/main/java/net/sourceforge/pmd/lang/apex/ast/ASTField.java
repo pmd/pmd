@@ -6,11 +6,9 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.Rule;
 
-import com.beust.jcommander.internal.Nullable;
 import com.google.summit.ast.Identifier;
 import com.google.summit.ast.Node;
 import com.google.summit.ast.TypeRef;

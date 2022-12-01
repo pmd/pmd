@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.declaration.TriggerDeclaration.TriggerCase;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
+
+import com.google.summit.ast.declaration.TriggerDeclaration.TriggerCase;
 
 /**
  * This maps the apex enum {@link TriggerCase} to the PMD equivalent.
