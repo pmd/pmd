@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.ast.SourceCodePositioner
 import com.google.summit.ast.CompilationUnit
 import com.google.summit.ast.Identifier
 import com.google.summit.ast.Node
+import com.google.summit.ast.SourceLocation
 import com.google.summit.ast.TypeRef
 import com.google.summit.ast.declaration.ClassDeclaration
 import com.google.summit.ast.declaration.EnumDeclaration
@@ -222,7 +223,21 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             is TriggerDeclaration -> ASTUserTrigger(node)
         }.apply {
             buildModifiers(node.modifiers).also { it.setParent(this) }
-            buildChildren(node, parent = this, exclude = { it in node.modifiers })
+            if (node is TriggerDeclaration) {
+                // 1. Create a synthetic "invoke" ASTMethod for the trigger body
+                val invokeMethod = ASTMethod(
+                  /* name= */ "invoke",
+                  /* parameterTypes= */ emptyList(),
+                  /* returnType= */ "void",
+                 SourceLocation.UNKNOWN,
+                ).also{ it.setParent(this) }
+                // 2. Add the expected ASTModifier child node
+                buildModifiers(emptyList()).also { it.setParent(invokeMethod) }
+                // 3. Elide the body CompoundStatement->ASTBlockStatement
+                buildChildren(node.body, parent = invokeMethod as ApexNode<*>)
+            } else {
+                buildChildren(node, parent = this, exclude = { it in node.modifiers })
+            }
         }
 
     /** Builds an [ASTMethod] wrapper for the [MethodDeclaration] node. */
@@ -231,7 +246,7 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             node.isAnonymousInitializationCode() && !node.hasKeyword(Keyword.STATIC) ->
                 build(node.body, parent)
             else -> {
-                ASTMethod(node).apply {
+                ASTMethod.fromNode(node).apply {
                     buildModifiers(node.modifiers).also { it.setParent(this) }
                     buildChildren(node, parent = this, exclude = { it in node.modifiers })
                 }

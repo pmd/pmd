@@ -13,9 +13,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.lang.ast.QualifiedName;
 
-import com.google.summit.ast.TypeRef;
-import com.google.summit.ast.declaration.ParameterDeclaration;
-
 /**
  * Qualified name of an apex class or method.
  *
@@ -172,15 +169,14 @@ public final class ApexQualifiedName implements QualifiedName {
         StringBuilder sb = new StringBuilder();
         sb.append(node.getImage()).append('(');
 
-        List<TypeRef> paramTypes = node.node.getParameterDeclarations().stream()
-            .map(ParameterDeclaration::getType)
+        List<String> paramTypes = node.findChildrenOfType(ASTParameter.class).stream()
+            .map(ASTParameter::getType)
             .collect(Collectors.toList());
 
         if (!paramTypes.isEmpty()) {
             for (int i = 0; i < paramTypes.size(); i++) {
                 sb.append(i > 0 ? ", " : "");
-                sb.append(AbstractApexNode.caseNormalizedTypeIfPrimitive(
-                    paramTypes.get(i).asCodeString()));
+                sb.append(paramTypes.get(i));
             }
         }
 
