@@ -4,8 +4,10 @@
 
 package net.sourceforge.pmd.lang.apex;
 
+/*
 import java.util.logging.Level;
 import java.util.logging.Logger;
+*/
 
 // TODO(b/243903752)
 public final class ApexJorjeLogging {

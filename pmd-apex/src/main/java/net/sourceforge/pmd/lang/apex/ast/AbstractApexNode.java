@@ -192,15 +192,15 @@ public abstract class AbstractApexNode extends AbstractApexNodeBase implements A
       * See: https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/langCon_apex_primitives.htm
       */
     public static String caseNormalizedTypeIfPrimitive(String name) {
-        String floor = CASE_NORMALIZED_TYPE_NAMES.floor(name);
+        String floor = caseNormalizedTypeNames.floor(name);
         return name.equalsIgnoreCase(floor) ? floor : name;
     }
 
-    private static NavigableSet<String> CASE_NORMALIZED_TYPE_NAMES =
+    private static NavigableSet<String> caseNormalizedTypeNames =
         new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
 
     static {
-        CASE_NORMALIZED_TYPE_NAMES.addAll(Arrays.asList(
+        caseNormalizedTypeNames.addAll(Arrays.asList(
             "Blob",
             "Boolean",
             "Currency",

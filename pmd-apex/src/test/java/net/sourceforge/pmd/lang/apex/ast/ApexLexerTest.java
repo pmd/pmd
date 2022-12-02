@@ -4,11 +4,13 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+/*
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.Token;
 import org.junit.Assert;
+*/
 import org.junit.Test;
 
 public class ApexLexerTest {

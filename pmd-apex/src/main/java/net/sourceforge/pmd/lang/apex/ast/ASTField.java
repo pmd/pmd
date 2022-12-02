@@ -9,11 +9,10 @@ import java.util.Optional;
 
 import net.sourceforge.pmd.Rule;
 
-import com.beust.jcommander.internal.Nullable;
-import com.google.summit.ast.declaration.EnumDeclaration;
 import com.google.summit.ast.Identifier;
 import com.google.summit.ast.Node;
 import com.google.summit.ast.TypeRef;
+import com.google.summit.ast.declaration.EnumDeclaration;
 import com.google.summit.ast.expression.Expression;
 import com.google.summit.ast.expression.LiteralExpression;
 

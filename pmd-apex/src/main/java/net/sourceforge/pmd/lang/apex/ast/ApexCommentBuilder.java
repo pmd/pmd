@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import static java.util.stream.Collectors.toList;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,16 +13,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.RandomAccess;
-import java.util.Stack;
 
-import com.nawforce.apexparser.ApexLexer;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.Token;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.apex.ApexParserOptions;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
+
+import com.nawforce.apexparser.ApexLexer;
 
 @Deprecated
 @InternalApi
@@ -49,19 +46,21 @@ public final class ApexCommentBuilder {
         public static LineColumnPosition of(Token token) {
             return new LineColumnPosition(token.getLine(), token.getCharPositionInLine() + 1);
         }
+
         public static LineColumnPosition beginOf(ApexNode<?> node) {
             return new LineColumnPosition(node.getBeginLine(), node.getBeginColumn());
         }
+
         public static LineColumnPosition endOf(ApexNode<?> node) {
             return new LineColumnPosition(node.getEndLine(), node.getEndColumn());
         }
 
         @Override
         public int compareTo(LineColumnPosition other) {
-          if (this.line != other.line) {
-            return this.line - other.line;
-          }
-          return this.column - other.column;
+            if (this.line != other.line) {
+                return this.line - other.line;
+            }
+            return this.column - other.column;
         }
     }
 
@@ -84,8 +83,8 @@ public final class ApexCommentBuilder {
         // now check whether the next comment after the node is still inside the node
         if (index >= 0 && index < commentInfo.nonDocTokensByPosition.size()) {
             LineColumnPosition commentPosition = commentInfo.nonDocTokensByPosition.get(index);
-            return commentPosition.compareTo(nodeBeginPosition) >= 0 &&
-                    commentPosition.compareTo(LineColumnPosition.endOf(commentContainer)) <= 0;
+            return commentPosition.compareTo(nodeBeginPosition) >= 0
+                && commentPosition.compareTo(LineColumnPosition.endOf(commentContainer)) <= 0;
         }
         return false;
     }
@@ -132,9 +131,9 @@ public final class ApexCommentBuilder {
                 break;
             }
 
-            if (docToken.nearestNode == null ||
-                nodeBeginPosition.compareTo(LineColumnPosition.beginOf(docToken.nearestNode)) < 0)
-            {
+            if (docToken.nearestNode == null
+                || nodeBeginPosition.compareTo(LineColumnPosition.beginOf(docToken.nearestNode)) < 0) {
+
                 docToken.nearestNode = node;
             }
         }

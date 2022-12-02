@@ -4,13 +4,13 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.apex.metrics.signature.ApexOperationSignature;
 import net.sourceforge.pmd.lang.ast.SignedNode;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 import com.google.summit.ast.SourceLocation;
 import com.google.summit.ast.declaration.MethodDeclaration;
@@ -40,8 +40,8 @@ public class ASTMethod extends AbstractApexNode implements ApexQualifiableNode,
         String name,
         List<String> parameterTypes,
         String returnType,
-        SourceLocation sourceLocation)
-    {
+        SourceLocation sourceLocation) {
+
         this.name = name;
         this.parameterTypes = parameterTypes;
         this.returnType = returnType;

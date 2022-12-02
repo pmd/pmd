@@ -50,10 +50,10 @@ public class ApexUnitTestShouldNotUseSeeAllDataTrueRule extends AbstractApexUnit
         if (modifierNode != null) {
             List<ASTAnnotationParameter> annotationParameters = modifierNode.findDescendantsOfType(ASTAnnotationParameter.class);
             for (ASTAnnotationParameter parameter : annotationParameters) {
-                 if (ASTAnnotationParameter.SEE_ALL_DATA.equals(parameter.getName()) && parameter.getBooleanValue()) {
+                if (ASTAnnotationParameter.SEE_ALL_DATA.equals(parameter.getName()) && parameter.getBooleanValue()) {
                     addViolation(data, node);
                     return data;
-                 }
+                }
             }
         }
 
