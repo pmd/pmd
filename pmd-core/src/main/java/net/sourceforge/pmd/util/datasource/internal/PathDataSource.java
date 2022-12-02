@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.util.datasource.internal;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -42,18 +43,15 @@ public class PathDataSource extends AbstractDataSource {
         if ("jar".equals(path.toUri().getScheme())) {
             return URI.create(path.toUri().getSchemeSpecificPart()).getPath();
         }
-        try {
-            return path.toRealPath().toAbsolutePath().toString();
-        } catch (IOException e) {
-            return path.toAbsolutePath().toString();
-        }
+        return path.toFile().getAbsolutePath();
     }
 
     private String getSimpleFilePath() {
         if ("jar".equals(path.toUri().getScheme())) {
-            return URI.create(path.toUri().getSchemeSpecificPart()).getPath();
+            String[] zipAndFile = URI.create(path.toUri().getSchemeSpecificPart()).getPath().split("!");
+            return new File(zipAndFile[0]).getName() + "!" + new File(zipAndFile[1]).getName();
         }
-        return path.getName(path.getNameCount() - 1).toString();
+        return path.toFile().getName();
     }
 
     private String glomName(boolean shortNames, String inputPaths) {
@@ -67,8 +65,13 @@ public class PathDataSource extends AbstractDataSource {
                 return getSimpleFilePath();
             }
         }
-
-        return getAbsoluteFilePath();
+        try {
+            return path.toFile().getCanonicalFile().getAbsolutePath();
+        } catch (Exception e) {
+            // Exception might occur when symlinks can't be resolved (permission problem)
+            // or when path is inside a jar/zip file
+            return getAbsoluteFilePath();
+        }
     }
 
     @Override
