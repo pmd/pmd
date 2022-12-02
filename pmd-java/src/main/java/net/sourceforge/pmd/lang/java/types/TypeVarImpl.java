@@ -266,8 +266,9 @@ abstract class TypeVarImpl implements JTypeVar {
 
         @Override
         public JTypeVar withAnnotations(PSet<SymAnnot> newTypeAnnots) {
-            if (newTypeAnnots.isEmpty() && typeAnnots.isEmpty())
+            if (newTypeAnnots.isEmpty() && typeAnnots.isEmpty()) {
                 return this;
+            }
             return new CapturedTypeVar(wildcard, lowerBound, upperBound, newTypeAnnots);
         }
 
