@@ -19,29 +19,24 @@ import com.google.summit.ast.expression.LiteralExpression;
 
 public class ASTField extends AbstractApexNode.Many<Node> implements CanSuppressWarnings {
 
-    // One of the following two must be non-null
-    @Nullable private final TypeRef typeRef;
-    @Nullable private final EnumDeclaration enumType;
-
     private final Identifier name;
     private final Optional<Expression> value;
+    private final String typeName;
 
     ASTField(TypeRef typeRef, Identifier name, Optional<Expression> value) {
         super(value.isPresent()
               ? Arrays.asList(typeRef, name, value.get())
               : Arrays.asList(typeRef, name));
-        this.typeRef = typeRef;
-        this.enumType = null;
         this.name = name;
         this.value = value;
+        this.typeName = caseNormalizedTypeIfPrimitive(typeRef.asCodeString());
     }
 
     ASTField(EnumDeclaration enumType, Identifier name) {
         super(Arrays.asList(name));
-        this.typeRef = null;
-        this.enumType = enumType;
         this.name = name;
         this.value = Optional.empty();
+        this.typeName = enumType.getId().asCodeString();
     }
 
     @Override
@@ -73,9 +68,7 @@ public class ASTField extends AbstractApexNode.Many<Node> implements CanSuppress
      * If the type is a primitive, its case will be normalized.
      */
     public String getType() {
-        return typeRef != null
-            ? caseNormalizedTypeIfPrimitive(typeRef.asCodeString())
-            : enumType.getId().asCodeString();
+        return typeName;
     }
 
     public ASTModifierNode getModifiers() {
