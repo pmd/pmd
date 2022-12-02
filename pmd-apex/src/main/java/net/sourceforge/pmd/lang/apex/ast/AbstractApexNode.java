@@ -208,7 +208,7 @@ public abstract class AbstractApexNode extends AbstractApexNodeBase implements A
             "Datetime",
             "Decimal",
             "Double",
-            "ID",
+            "Id",
             "Integer",
             "Long",
             "Object",
