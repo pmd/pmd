@@ -240,18 +240,25 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             }
         }
 
-    /** Builds an [ASTMethod] wrapper for the [MethodDeclaration] node. */
-    private fun buildMethodDeclaration(node: MethodDeclaration, parent: ApexNode<*>?) =
+/** Builds an [ASTMethod] wrapper for the [MethodDeclaration] node. */
+private fun buildMethodDeclaration(node: MethodDeclaration, parent: ApexNode<*>?) =
         when {
             node.isAnonymousInitializationCode() && !node.hasKeyword(Keyword.STATIC) ->
-                build(node.body, parent)
+                    build(node.body, parent)
             else -> {
                 ASTMethod.fromNode(node).apply {
-                    buildModifiers(node.modifiers).also { it.setParent(this) }
+                    buildModifiers(
+                        // Getters and setters default to property visibility
+                        if (node.modifiers.isEmpty() && parent is ASTProperty) {
+                            parent.node.modifiers
+                        } else {
+                            node.modifiers
+                        }).also { it.setParent(this) }
                     buildChildren(node, parent = this, exclude = { it in node.modifiers })
                 }
             }
         }
+
 
     /** Builds an [ASTProperty] wrapper for the [PropertyDeclaration] node. */
     private fun buildPropertyDeclaration(node: PropertyDeclaration) =
