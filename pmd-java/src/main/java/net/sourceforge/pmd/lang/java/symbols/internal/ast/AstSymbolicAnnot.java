@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.symbols.internal.ast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -35,10 +36,12 @@ class AstSymbolicAnnot implements SymbolicValue.SymAnnot {
 
     private final ASTAnnotation node;
     private final PSet<String> attrNames;
+    private final JClassSymbol sym;
 
-    AstSymbolicAnnot(ASTAnnotation node) {
+    AstSymbolicAnnot(@NonNull ASTAnnotation node, @NonNull JClassSymbol sym) {
         this.node = node;
-        attrNames = node.getMembers().collect(Collectors.mapping(ASTMemberValuePair::getName, CollectionUtil.toPersistentSet()));
+        this.attrNames = node.getMembers().collect(Collectors.mapping(ASTMemberValuePair::getName, CollectionUtil.toPersistentSet()));
+        this.sym = Objects.requireNonNull(sym);
     }
 
     @Override
@@ -57,7 +60,8 @@ class AstSymbolicAnnot implements SymbolicValue.SymAnnot {
 
     @Override
     public @NonNull JClassSymbol getAnnotationSymbol() {
-        return node.getTypeMirror().getSymbol();
+        return sym;
+
     }
 
     @Override
@@ -72,7 +76,7 @@ class AstSymbolicAnnot implements SymbolicValue.SymAnnot {
 
     @Override
     public int hashCode() {
-        return SymbolEquality.ANNOTATION.hash(this);
+        return Objects.hash(node.getSimpleName(), attrNames);
     }
 
     @Override

@@ -13,6 +13,7 @@ import static net.sourceforge.pmd.util.OptionalBool.NO;
 import static net.sourceforge.pmd.util.OptionalBool.UNKNOWN;
 import static net.sourceforge.pmd.util.OptionalBool.YES;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 
 import java.lang.annotation.Annotation;
@@ -23,11 +24,13 @@ import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymImplementation;
@@ -169,6 +172,21 @@ public class AnnotationReflectionTest {
                                                    .getSymbol();
 
         assertHasAnnotations(setOf(createAnnotationInstance(LocalVarAnnotation.class)), localSym);
+    }
+
+    @Test
+    public void testAnnotWithInvalidType() {
+        @NonNull ASTVariableDeclaratorId field =
+            JavaParsingHelper.DEFAULT.parse(
+                "@interface A {}\n"
+                    + "class C<A> { @A int a; }\n"
+            ).descendants(ASTFieldDeclaration.class).firstOrThrow().getVarIds().firstOrThrow();
+
+        // The annotation actually refers to the type parameter A. Since
+        // this is invalid code, it is filtered out.
+        PSet<SymAnnot> annots = field.getSymbol().getDeclaredAnnotations();
+        assertThat(annots, empty());
+
     }
 
     protected SymbolicValue symValueOf(Object o) {
