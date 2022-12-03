@@ -7,19 +7,15 @@ package net.sourceforge.pmd.lang.java.symbols.internal.ast;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTClassLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberValue;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberValueArrayInitializer;
-import net.sourceforge.pmd.lang.java.ast.ASTMemberValuePair;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
@@ -27,7 +23,6 @@ import net.sourceforge.pmd.lang.java.symbols.internal.SymbolEquality;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolToStrings;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
-import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  *
@@ -35,12 +30,10 @@ import net.sourceforge.pmd.util.CollectionUtil;
 class AstSymbolicAnnot implements SymbolicValue.SymAnnot {
 
     private final ASTAnnotation node;
-    private final PSet<String> attrNames;
     private final JClassSymbol sym;
 
     AstSymbolicAnnot(@NonNull ASTAnnotation node, @NonNull JClassSymbol sym) {
         this.node = node;
-        this.attrNames = node.getMembers().collect(Collectors.mapping(ASTMemberValuePair::getName, CollectionUtil.toPersistentSet()));
         this.sym = Objects.requireNonNull(sym);
     }
 
@@ -51,11 +44,6 @@ class AstSymbolicAnnot implements SymbolicValue.SymAnnot {
             return ofNode(explicitAttr);
         }
         return getAnnotationSymbol().getDefaultAnnotationAttributeValue(attrName);
-    }
-
-    @Override
-    public Set<String> getAttributeNames() {
-        return attrNames.plusAll(getAnnotationSymbol().getAnnotationAttributeNames());
     }
 
     @Override
@@ -76,7 +64,7 @@ class AstSymbolicAnnot implements SymbolicValue.SymAnnot {
 
     @Override
     public int hashCode() {
-        return Objects.hash(node.getSimpleName(), attrNames);
+        return SymbolEquality.ANNOTATION.hash(this);
     }
 
     @Override

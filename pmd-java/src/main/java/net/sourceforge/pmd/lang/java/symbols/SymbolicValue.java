@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 import org.apache.commons.lang3.AnnotationUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -22,6 +21,7 @@ import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.ClassNamesUtil;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
@@ -127,12 +127,13 @@ public interface SymbolicValue {
         @NonNull JClassSymbol getAnnotationSymbol();
 
         /**
-         * Return the simple names of all attributes that are explicitly set.
+         * Return the simple names of all attributes, including those
+         * defined in the annotation type but not explicitly set in this annotation.
          * Note that if the annotation is reflected from a class file,
-         * we can't know which annotations used their default value so it
+         * we can't know which annotations used their default value, so it
          * returns a set of all attribute names.
          */
-        default Set<String> getAttributeNames() {
+        default PSet<String> getAttributeNames() {
             return getAnnotationSymbol().getAnnotationAttributeNames();
         }
 

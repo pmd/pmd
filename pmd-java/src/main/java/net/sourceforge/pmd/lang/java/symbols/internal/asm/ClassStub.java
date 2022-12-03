@@ -10,9 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -67,7 +65,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
 
     private PSet<SymAnnot> annotations = HashTreePSet.empty();
 
-    private Set<String> annotAttributes;
+    private PSet<String> annotAttributes;
 
     private final ParseLock parseLock;
 
@@ -130,8 +128,10 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
                     }
                 }
                 annotAttributes = (accessFlags & Opcodes.ACC_ANNOTATION) != 0
-                                  ? getDeclaredMethods().stream().map(JElementSymbol::getSimpleName).collect(Collectors.toSet())
-                                  : Collections.emptySet();
+                                  ? getDeclaredMethods().stream().filter(JMethodSymbol::isAnnotationAttribute)
+                                                        .map(JElementSymbol::getSimpleName)
+                                                        .collect(CollectionUtil.toPersistentSet())
+                                  : HashTreePSet.empty();
             }
 
             @Override
@@ -328,7 +328,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
     }
 
     @Override
-    public Set<String> getAnnotationAttributeNames() {
+    public PSet<String> getAnnotationAttributeNames() {
         parseLock.ensureParsed();
         return annotAttributes;
     }

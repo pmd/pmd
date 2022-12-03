@@ -8,7 +8,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 
@@ -28,9 +27,7 @@ public class FakeSymAnnot implements SymAnnot {
 
     @Override
     public @Nullable SymbolicValue getAttribute(String attrName) {
-        return annotationClass.getDeclaredMethods().stream().filter(it -> it.nameEquals(attrName))
-                              .findFirst()
-                              .map(JMethodSymbol::getDefaultAnnotationValue).orElse(null);
+        return annotationClass.getDefaultAnnotationAttributeValue(attrName);
     }
 
     @Override
@@ -40,7 +37,7 @@ public class FakeSymAnnot implements SymAnnot {
 
     @Override
     public String toString() {
-        return "@" + annotationClass.getCanonicalName();
+        return SymbolToStrings.FAKE.toString(this);
     }
 
     @Override

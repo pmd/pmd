@@ -13,10 +13,11 @@ import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.HashTreePSet;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
@@ -230,8 +231,8 @@ public interface JClassSymbol extends JTypeDeclSymbol,
      * Return the simple names of all annotation attributes. If this
      * is not an annotation type, return an empty set.
      */
-    default Set<String> getAnnotationAttributeNames() {
-        return Collections.emptySet();
+    default PSet<String> getAnnotationAttributeNames() {
+        return HashTreePSet.empty();
     }
 
     /**
@@ -245,12 +246,15 @@ public interface JClassSymbol extends JTypeDeclSymbol,
      * @param attrName Attribute name
      */
     default @Nullable SymbolicValue getDefaultAnnotationAttributeValue(String attrName) {
-        return getDeclaredMethods()
-            .stream()
-            .filter(it -> it.nameEquals(attrName) && it.getArity() == 0)
-            .findFirst()
-            .map(JMethodSymbol::getDefaultAnnotationValue)
-            .orElse(null);
+        if (!isAnnotation()) {
+            return null;
+        }
+        for (JMethodSymbol m : getDeclaredMethods()) {
+            if (m.nameEquals(attrName) && m.isAnnotationAttribute()) {
+                return m.getDefaultAnnotationValue(); // nullable
+            }
+        }
+        return null;
     }
 
     /**
@@ -261,8 +265,7 @@ public interface JClassSymbol extends JTypeDeclSymbol,
         if (!isAnnotation()) {
             return null;
         }
-        return Optional.of(this)
-                       .map(sym -> sym.getDeclaredAnnotation(Retention.class))
+        return Optional.of(getDeclaredAnnotation(Retention.class))
                        .map(annot -> annot.getAttribute("value"))
                        .filter(value -> value instanceof SymEnum)
                        .map(value -> ((SymEnum) value).toEnum(RetentionPolicy.class))

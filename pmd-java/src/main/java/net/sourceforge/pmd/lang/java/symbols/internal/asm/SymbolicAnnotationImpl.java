@@ -13,7 +13,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolEquality;
@@ -47,21 +46,7 @@ final class SymbolicAnnotationImpl implements SymAnnot {
         if (value != null) {
             return value;
         }
-        return getDefaultValue(attrName);
-    }
-
-    private @Nullable SymbolicValue getDefaultValue(String attrName) {
-        if (!typeStub.isAnnotation()) {
-            return null; // path taken for invalid stuff & unresolved classes
-        }
-        for (JMethodSymbol m : typeStub.getDeclaredMethods()) {
-            if (m.getSimpleName().equals(attrName)
-                && m.getArity() == 0
-                && !m.isStatic()) {
-                return m.getDefaultAnnotationValue(); // nullable
-            }
-        }
-        return null;
+        return typeStub.getDefaultAnnotationAttributeValue(attrName);
     }
 
     @Override

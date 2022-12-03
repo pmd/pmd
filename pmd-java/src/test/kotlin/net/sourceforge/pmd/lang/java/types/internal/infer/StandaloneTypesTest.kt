@@ -333,7 +333,7 @@ class StandaloneTypesTest : ProcessorTestSpec({
         inContext(StatementParsingCtx) {
             """
             {
-                List<Integer> l = java.util.Collections.emptyList();
+                java.util.List<Integer> l = java.util.Collections.emptyList();
                 for (int controller : list);
             }
         """ should parseAs {
