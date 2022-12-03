@@ -232,7 +232,7 @@
          |                             |     |  |        +- ClassOrInterfaceType[@TypeMirror = "R"]
          |                             |     |  +- VariableDeclarator[@TypeMirror = "void"]
          |                             |     |     +- VariableDeclaratorId[@Name = "next", @TypeMirror = "java.util.Iterator<? extends R>"]
-         |                             |     |     +- MethodCall[@Failed = true, @Function = "(*unknown*).(*unknown method*)() -> (*unknown*)", @MethodName = "apply", @TypeMirror = "(*unknown*)", @Unchecked = false, @VarargsCall = false]
+         |                             |     |     +- MethodCall[@Failed = false, @Function = "java.util.function.Function<capture#... of ? super T, capture#... of ? extends @Nullable java.util.Iterator<? extends R>>.apply(capture#... of ? super T) -> capture#... of ? extends @Nullable java.util.Iterator<? extends R>", @MethodName = "apply", @TypeMirror = "capture#... of ? extends @Nullable java.util.Iterator<? extends R>", @Unchecked = false, @VarargsCall = false]
          |                             |     |        +- VariableAccess[@Name = "f", @TypeMirror = "java.util.function.Function<capture#... of ? super T, capture#... of ? extends @Nullable java.util.Iterator<? extends R>>"]
          |                             |     |        +- ArgumentList[]
          |                             |     |           +- MethodCall[@Failed = false, @Function = "java.util.Iterator<capture#... of ? extends T>.next() -> capture#... of ? extends T", @MethodName = "next", @TypeMirror = "capture#... of ? extends T", @Unchecked = false, @VarargsCall = false]
