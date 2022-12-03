@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal;
 
+import java.util.stream.Collectors;
+
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
@@ -15,7 +17,6 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolVisitor;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
-import net.sourceforge.pmd.util.CollectionUtil;
 
 public class SymbolToStrings {
 
@@ -35,7 +36,16 @@ public class SymbolToStrings {
     }
 
     public String toString(SymAnnot annot) {
-        return "@" + annot.getBinaryName() + CollectionUtil.associateWith(annot.getAttributeNames(), annot::getAttribute);
+        String attrs;
+        if (annot.getAttributeNames().isEmpty()) {
+            attrs = "";
+        } else {
+            attrs = annot.getAttributeNames()
+                         .stream()
+                         .map(name -> name + "=" + annot.getAttribute(name))
+                         .collect(Collectors.joining(", ", "(", ")"));
+        }
+        return "@" + annot.getBinaryName() + attrs;
     }
 
     private static final class ToStringVisitor implements SymbolVisitor<StringBuilder, StringBuilder> {
