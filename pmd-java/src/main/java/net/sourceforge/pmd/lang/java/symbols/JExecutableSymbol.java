@@ -96,8 +96,18 @@ public interface JExecutableSymbol extends JAccessibleElementSymbol, JTypeParame
     }
 
 
+    /**
+     * Returns the types of the formal parameters, when viewed under the
+     * given substitution. The returned list has one item for each formal.
+     *
+     * @see #getFormalParameters()
+     */
     List<JTypeMirror> getFormalParameterTypes(Substitution subst);
 
+    /**
+     * Returns the types of the thrown exceptions, when viewed under the
+     * given substitution.
+     */
     List<JTypeMirror> getThrownExceptionTypes(Substitution subst);
 
 }
