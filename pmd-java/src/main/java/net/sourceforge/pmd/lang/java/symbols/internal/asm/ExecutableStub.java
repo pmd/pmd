@@ -4,9 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
+import static net.sourceforge.pmd.util.CollectionUtil.map;
+
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.objectweb.asm.Opcodes;
@@ -15,6 +19,8 @@ import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolEquality;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolToStrings;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.GenericSigBase.LazyMethodType;
@@ -29,6 +35,7 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
     private final String descriptor;
     protected final LazyMethodType type;
     private List<JFormalParamSymbol> params;
+    private Map<Integer, List<SymAnnot>> parameterAnnotations = Collections.emptyMap();
 
     protected ExecutableStub(ClassStub owner,
                              String simpleName,
@@ -55,12 +62,8 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
     @Override
     public List<JFormalParamSymbol> getFormalParameters() {
         if (params == null) {
-            List<JTypeMirror> ptypes = type.getParameterTypes();
-            params = new ArrayList<>(ptypes.size());
-            for (int i = 0; i < ptypes.size(); i++) {
-                params.add(new FormalParamStub(i, ptypes.get(i)));
-            }
-            this.params = Collections.unmodifiableList(params);
+            this.params = Collections.unmodifiableList(map(type.getParameterTypes(),
+                                                           FormalParamStub::new));
         }
         return params;
     }
@@ -74,6 +77,11 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
     public int getArity() {
         return type.getParameterTypes().size();
     }
+    
+    @Override
+    public List<SymAnnot> getFormalParameterAnnotations(int parameterIndex) {
+        return parameterAnnotations.getOrDefault(parameterIndex, Collections.emptyList());
+    }
 
     @Override
     public List<JTypeMirror> getFormalParameterTypes(Substitution subst) {
@@ -85,21 +93,27 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
         return TypeOps.subst(type.getExceptionTypes(), subst);
     }
 
+    void setDefaultAnnotValue(@Nullable SymbolicValue defaultAnnotValue) {
+        // overridden by MethodStub
+    }
+
+    void addParameterAnnotation(int paramIndex, SymbolicValue.SymAnnot annot) {
+        if (parameterAnnotations.isEmpty()) {
+            parameterAnnotations = new HashMap<>(); // Make writable
+        }
+        parameterAnnotations.computeIfAbsent(paramIndex, ArrayList::new).add(annot);
+    }
 
     /**
      * Formal parameter symbols obtained from the class have no info
-     * about name or whether it's final. This is because due to ASM's
-     * design, parsing this information would entail parsing a lot of
-     * other information we don't care about, and so this would be
-     * wasteful. It's unlikely anyone cares about this anyway.
+     * about name or whether it's final. This info is missing from
+     * classfiles when they're not compiled with debug symbols.
      */
     class FormalParamStub implements JFormalParamSymbol {
 
-        private final int index;
         private final JTypeMirror type;
 
-        FormalParamStub(int index, JTypeMirror type) {
-            this.index = index;
+        FormalParamStub(JTypeMirror type) {
             this.type = type;
         }
 
@@ -120,16 +134,34 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
 
         @Override
         public String getSimpleName() {
-            return "p" + index;
+            return "";
         }
 
         @Override
         public TypeSystem getTypeSystem() {
             return ExecutableStub.this.getTypeSystem();
         }
+        
+        @Override
+        public List<SymAnnot> getDeclaredAnnotations() {
+            int paramIndex = ExecutableStub.this.getFormalParameters().indexOf(this);
+            return ExecutableStub.this.getFormalParameterAnnotations(paramIndex);
+        }
     }
 
+    /**
+     * Formal parameter symbols obtained from the class have no info
+     * about name or whether it's final. This is because due to ASM's
+     * design, parsing this information would entail parsing a lot of
+     * other information we don't care about, and so this would be
+     * wasteful. It's unlikely anyone cares about this anyway.
+     *
+     * <p>If classes are compiled without debug symbols that info
+     * is NOT in the classfile anyway.
+     */
     static class MethodStub extends ExecutableStub implements JMethodSymbol {
+
+        private @Nullable SymbolicValue defaultAnnotValue;
 
         protected MethodStub(ClassStub owner,
                              String simpleName,
@@ -164,6 +196,16 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
         @Override
         public boolean equals(Object obj) {
             return SymbolEquality.METHOD.equals(this, obj);
+        }
+
+        @Override
+        public @Nullable SymbolicValue getDefaultAnnotationValue() {
+            return defaultAnnotValue;
+        }
+
+        @Override
+        void setDefaultAnnotValue(@Nullable SymbolicValue defaultAnnotValue) {
+            this.defaultAnnotValue = defaultAnnotValue;
         }
     }
 

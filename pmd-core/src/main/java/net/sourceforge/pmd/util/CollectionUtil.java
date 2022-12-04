@@ -694,4 +694,9 @@ public final class CollectionUtil {
             result.merge(otherKey, otherInfo, mergeFun);
         }
     }
+
+    public static @NonNull <T> List<T> makeUnmodifiableAndNonNull(@Nullable List<? extends T> list) {
+        return list == null || list.isEmpty() ? emptyList()
+                                              : Collections.unmodifiableList(list);
+    }
 }

@@ -64,10 +64,10 @@ author: Tom Copeland <tom@infoether.org>, David Dixon-Peugh <ddp@apache.org>
 
 ## High level reporting
 
-*   <a href="http://xradar.sourceforge.net">XRadar</a> - Agregates data from a lot of code quality tool to generate
+*   <a href="http://xradar.sourceforge.net">XRadar</a> - Aggregates data from a lot of code quality tool to generate
     a full quality dashboard.
 *   <a href="http://www.sonarsource.com/">Sonar</a> - Pretty much like XRadar, but younger project, fully integrated
     to maven 2 (but requires a database)
-*   <a href="http://mojo.codehaus.org/dashboard-maven-plugin/">Maven Dashboard</a> - Same kind of agregator but
+*   <a href="http://mojo.codehaus.org/dashboard-maven-plugin/">Maven Dashboard</a> - Same kind of aggregator but
     only for maven project.
 *   <a href="http://qalab.sourceforge.net/">QALab</a> - Yet another maven plugin...

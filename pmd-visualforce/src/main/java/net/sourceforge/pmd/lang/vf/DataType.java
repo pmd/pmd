@@ -24,10 +24,10 @@ import apex.jorje.semantic.symbol.type.BasicType;
  */
 public enum DataType {
     AutoNumber(false),
-    Checkbox(false, BasicType.BOOLEAN),
-    Currency(false, BasicType.CURRENCY),
-    Date(false, BasicType.DATE),
-    DateTime(false, BasicType.DATE_TIME),
+    Checkbox(false, "Boolean"),
+    Currency(false, "Currency"),
+    Date(false, "Date"),
+    DateTime(false, "Datetime"),
     Email(false),
     EncryptedText(true),
     ExternalLookup(true),
@@ -37,19 +37,19 @@ public enum DataType {
     IndirectLookup(false),
     Location(false),
     LongTextArea(true),
-    Lookup(false, BasicType.ID),
+    Lookup(false, "ID"),
     MasterDetail(false),
     MetadataRelationship(false),
     MultiselectPicklist(true),
     Note(true),
-    Number(false, BasicType.DECIMAL, BasicType.DOUBLE, BasicType.INTEGER, BasicType.LONG),
+    Number(false, "Decimal", "Double", "Integer", "Long"),
     Percent(false),
     Phone(false),
     Picklist(true),
     Summary(false),
-    Text(true, BasicType.STRING),
+    Text(true, "String"),
     TextArea(true),
-    Time(false, BasicType.TIME),
+    Time(false, "Time"),
     Url(false),
     /**
      * Indicates that Metatada was found, but it's type was not mappable. This could because it is a type which isn't
@@ -66,26 +66,27 @@ public enum DataType {
     public final boolean requiresEscaping;
 
     /**
-     * The set of {@link BasicType}s that map to this type. Multiple types can map to a single instance of this enum.
+     * The set of primitive type names that map to this type. Multiple types can map to a single instance of this enum.
+     * Note: these strings are not case-normalized.
      */
-    private final Set<BasicType> basicTypes;
+    private final Set<String> basicTypeNames;
 
     /**
-     * A case insensitive map of the enum name to its instance. The case metadata is not guaranteed to have the correct
+     * A map of the lower-case-normalized enum name to its instance. The case metadata is not guaranteed to have the correct
      * case.
      */
-    private static final Map<String, DataType> CASE_INSENSITIVE_MAP = new HashMap<>();
+    private static final Map<String, DataType> CASE_NORMALIZED_MAP = new HashMap<>();
 
     /**
-     * Map of BasicType to DataType. Multiple BasicTypes may map to one DataType.
+     * A map of the lower-case-normalized primitive type names to DataType. Multiple types may map to one DataType.
      */
-    private static final Map<BasicType, DataType> BASIC_TYPE_MAP = new HashMap<>();
+    private static final Map<String, DataType> BASIC_TYPE_MAP = new HashMap<>();
 
     static {
         for (DataType dataType : DataType.values()) {
-            CASE_INSENSITIVE_MAP.put(dataType.name().toLowerCase(Locale.ROOT), dataType);
-            for (BasicType basicType : dataType.basicTypes) {
-                BASIC_TYPE_MAP.put(basicType, dataType);
+            CASE_NORMALIZED_MAP.put(dataType.name().toLowerCase(Locale.ROOT), dataType);
+            for (String typeName : dataType.basicTypeNames) {
+                BASIC_TYPE_MAP.put(typeName.toLowerCase(Locale.ROOT), dataType);
             }
         }
     }
@@ -95,7 +96,7 @@ public enum DataType {
      */
     public static DataType fromString(String value) {
         value = value != null ? value : "";
-        DataType dataType = CASE_INSENSITIVE_MAP.get(value.toLowerCase(Locale.ROOT));
+        DataType dataType = CASE_NORMALIZED_MAP.get(value.toLowerCase(Locale.ROOT));
 
         if (dataType == null) {
             dataType = DataType.Unknown;
@@ -107,9 +108,46 @@ public enum DataType {
 
     /**
      * Map to correct instance, returns {@code Unknown} if the value can't be mapped.
+     *
+     * @deprecated Use {@link #fromTypeName(String)} instead.
      */
+    @Deprecated
     public static DataType fromBasicType(BasicType value) {
-        DataType dataType = value != null ? BASIC_TYPE_MAP.get(value) : null;
+        if (value != null) {
+            switch (value) {
+            case BOOLEAN:
+                return Checkbox;
+            case CURRENCY:
+                return Currency;
+            case DATE:
+                return Date;
+            case DATE_TIME:
+                return DateTime;
+            case ID:
+                return Lookup;
+            case DECIMAL:
+            case DOUBLE:
+            case INTEGER:
+            case LONG:
+                return Number;
+            case STRING:
+                return Text;
+            case TIME:
+                return Time;
+            default:
+                break;
+            }
+        }
+        LOG.debug("Unable to determine DataType of {}", value);
+        return Unknown;
+    }
+
+    /**
+     * Map to correct instance, returns {@code Unknown} if the value can't be mapped.
+     */
+    public static DataType fromTypeName(String value) {
+        value = value != null ? value : "";
+        DataType dataType = BASIC_TYPE_MAP.get(value.toLowerCase(Locale.ROOT));
 
         if (dataType == null) {
             dataType = DataType.Unknown;
@@ -123,11 +161,11 @@ public enum DataType {
         this(requiresEscaping, null);
     }
 
-    DataType(boolean requiresEscaping, BasicType... basicTypes) {
+    DataType(boolean requiresEscaping, String... basicTypeNames) {
         this.requiresEscaping = requiresEscaping;
-        this.basicTypes = new HashSet<>();
-        if (basicTypes != null) {
-            this.basicTypes.addAll(Arrays.asList(basicTypes));
+        this.basicTypeNames = new HashSet<>();
+        if (basicTypeNames != null) {
+            this.basicTypeNames.addAll(Arrays.asList(basicTypeNames));
         }
     }
 }

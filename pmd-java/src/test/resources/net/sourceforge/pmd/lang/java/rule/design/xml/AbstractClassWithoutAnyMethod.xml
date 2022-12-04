@@ -102,6 +102,7 @@ class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>Interfaces are ignored</description>
         <expected-problems>0</expected-problems>
@@ -110,5 +111,33 @@ class Foo {
                 // no abstract
             }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] AbstractClassWithoutAnyMethod should consider lombok's @AllArgsConstructor #4189</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+
+@AllArgsConstructor
+abstract class AllArgs {
+    private String field;
+    public int otherField;
+}
+
+@NoArgsConstructor
+abstract class NoArgs {
+    private String field;
+    public int otherField;
+}
+
+@RequiredArgsConstructor
+abstract class RequiredArgs {
+    private String field;
+    public int otherField;
+}
+]]></code>
     </test-code>
 </test-data>
