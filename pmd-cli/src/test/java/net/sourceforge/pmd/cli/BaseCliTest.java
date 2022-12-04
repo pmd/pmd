@@ -21,6 +21,7 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.function.ThrowingConsumer;
 import org.opentest4j.AssertionFailedError;
 
 import net.sourceforge.pmd.cli.internal.CliExitCode;
@@ -162,7 +163,7 @@ abstract class BaseCliTest {
         public CliExecutionResult verify(ThrowingConsumer<CliExecutionResult> actions) {
             try {
                 actions.accept(this);
-            } catch (Exception | AssertionError e) {
+            } catch (Throwable e) {
                 System.out.println("TEST FAILED");
                 System.out.println("> Return code: " + exitCode);
                 System.out.println("> Standard output -------------------------");
@@ -176,16 +177,9 @@ abstract class BaseCliTest {
                 if (e instanceof Exception) {
                     throw new AssertionFailedError("Expected no exception to be thrown", e);
                 }
-                throw (AssertionError) e;
+                throw (Error) e;
             }
             return this;
-        }
-
-
-        @FunctionalInterface
-        interface ThrowingConsumer<T> {
-
-            void accept(T t) throws Exception;
         }
     }
 

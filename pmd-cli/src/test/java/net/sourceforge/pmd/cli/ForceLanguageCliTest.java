@@ -10,7 +10,8 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
 
 public class ForceLanguageCliTest extends BaseCliTest {
 
