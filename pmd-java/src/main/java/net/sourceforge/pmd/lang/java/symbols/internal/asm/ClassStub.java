@@ -290,6 +290,12 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
     }
 
     @Override
+    public boolean isGeneric() {
+        parseLock.ensureParsed();
+        return signature.isGeneric();
+    }
+
+    @Override
     public LexicalScope getLexicalScope() {
         if (scope == null) {
             scope = JClassSymbol.super.getLexicalScope();

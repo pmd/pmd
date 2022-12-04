@@ -302,7 +302,7 @@ public interface JTypeMirror extends JTypeVisitable {
      * Returns true if this is {@link TypeSystem#OBJECT}.
      */
     default boolean isTop() {
-        return this == getTypeSystem().OBJECT; // NOPMD CompareObjectsWithEquals
+        return false; // overridden
     }
 
 

@@ -515,7 +515,7 @@ public final class TypeSystem {
      */
     // todo how does this behave with nested generic types
     public @NonNull JTypeMirror parameterise(@NonNull JClassSymbol klass, @NonNull List<? extends JTypeMirror> typeArgs) {
-        if (!klass.isGeneric() && typeArgs.isEmpty()) {
+        if (typeArgs.isEmpty()) {
             return rawType(klass); // note this ensures that OBJECT and such is preserved
         }
         // if the type arguments are mismatched, the constructor will throw
@@ -716,7 +716,7 @@ public final class TypeSystem {
     }
 
     // package-private
-    JClassType erasedType(JClassSymbol symbol) {
+    JClassType erasedType(@NonNull JClassSymbol symbol) {
         JTypeMirror t = specialCache(symbol);
         if (t != null) {
             return (JClassType) t.getErasure();

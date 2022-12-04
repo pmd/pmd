@@ -283,7 +283,7 @@ class ClassTypeImpl implements JClassType {
 
     @Override
     public @Nullable JClassType getSuperClass() {
-        if (superClass == null) {
+        if (superClass == null && !isTop()) {
             if (hasErasedSuperTypes()) {
                 superClass = ts.erasedType(symbol.getSuperclass());
             } else {
@@ -384,6 +384,10 @@ class ClassTypeImpl implements JClassType {
         return symbol;
     }
 
+    @Override
+    public final boolean isTop() {
+        return this == ts.OBJECT; // NOPMD CompareObjectsWithEquals
+    }
 
     @Override
     public boolean equals(Object o) {

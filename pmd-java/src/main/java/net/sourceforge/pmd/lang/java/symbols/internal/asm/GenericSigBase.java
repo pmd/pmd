@@ -81,6 +81,8 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
 
     protected abstract boolean postCondition();
 
+    protected abstract boolean isGeneric();
+
     public void setTypeParams(List<JTypeVar> tvars) {
         assert this.typeParameters == null : "Type params were already parsed for " + this;
         this.typeParameters = tvars;
@@ -152,6 +154,11 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
             } else {
                 ctx.sigParser().parseClassSignature(this, signature);
             }
+        }
+
+        @Override
+        protected boolean isGeneric() {
+            return signature != null && TypeParamsParser.hasTypeParams(signature);
         }
 
         @Override
@@ -277,6 +284,12 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
         @Override
         protected boolean postCondition() {
             return parameterTypes != null && exceptionTypes != null && returnType != null;
+        }
+
+
+        @Override
+        protected boolean isGeneric() {
+            return TypeParamsParser.hasTypeParams(signature);
         }
 
         void setParameterTypes(List<JTypeMirror> params) {
