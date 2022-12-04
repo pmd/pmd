@@ -140,6 +140,7 @@ class ClassTypeImpl implements JClassType {
     }
 
     static JTypeMirror eraseToRaw(JTypeMirror m, Substitution typeSubst) {
+        // todo pretty sure this can be written m.subst(typeSubst).let { if (it === m) it else it.erasure }
         if (TypeOps.mentionsAny(m, typeSubst.getMap().keySet())) {
             return m.getErasure();
         } else {
