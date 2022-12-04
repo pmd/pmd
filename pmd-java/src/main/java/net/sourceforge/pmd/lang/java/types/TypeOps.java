@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
@@ -56,6 +57,12 @@ public final class TypeOps {
 
     // <editor-fold  defaultstate="collapsed" desc="Type equality">
 
+    /**
+     * Return true if t and s are the same method type. This compares
+     * their declaring type, and then their signature.
+     *
+     * @see #haveSameSignature(JMethodSig, JMethodSig)
+     */
     public static boolean isSameType(JMethodSig t, JMethodSig s) {
         return t.getDeclaringType().equals(s.getDeclaringType()) && haveSameSignature(t, s);
     }
@@ -66,19 +73,29 @@ public final class TypeOps {
      * the smaller parts of a type.
      */
 
+
+    /**
+     * Return true if t and s are the same type, ignoring any type annotations
+     * appearing within them. This is the implementation of the equals method
+     * of {@link JTypeMirror}.
+     */
     public static boolean isSameType(JTypeMirror t, JTypeMirror s) {
         return isSameType(t, s, false, false);
     }
 
+    /**
+     * Return true if t and s are the same type, considering any type annotations
+     * appearing within them.
+     */
     public static boolean isSameTypeWithSameAnnotations(JTypeMirror t, JTypeMirror s) {
         return isSameType(t, s, false, true);
     }
 
     /**
-     * Returns true if t and s are the same type. If 'inInference' is
-     * true, then encountering inference variables produces side effects
-     * on them, adding bounds.
+     * Return true if t and s are the same type. This may perform side effects
+     * on inference variables. Annotations are ignored.
      */
+    @InternalApi
     public static boolean isSameTypeInInference(JTypeMirror t, JTypeMirror s) {
         return isSameType(t, s, true, false);
     }
