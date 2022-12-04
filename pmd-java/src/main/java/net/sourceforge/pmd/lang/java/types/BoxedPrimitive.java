@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
-import static java.util.Collections.emptyList;
-
 import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
@@ -26,7 +24,7 @@ final class BoxedPrimitive extends ClassTypeImpl {
 
     // constructor called by JPrimitiveType, exactly once per type system and per primitive
     BoxedPrimitive(TypeSystem factory, JClassSymbol boxType, JPrimitiveType unboxed, PSet<SymAnnot> typeAnnots) {
-        super(factory, boxType, emptyList(), true, typeAnnots); // not erased
+        super(factory, boxType, typeAnnots);
         this.unboxed = unboxed;
     }
 

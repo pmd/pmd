@@ -304,7 +304,7 @@ public final class TypeSystem {
 
     private JClassType addSpecial(Class<?> klass, Map<JClassSymbol, JTypeMirror> shared) {
         JClassSymbol sym = getBootStrapSymbol(klass);
-        JClassType nonErased = new ClassTypeImpl(this, sym, emptyList(), false, HashTreePSet.empty());
+        JClassType nonErased = new ClassTypeImpl(this, sym, HashTreePSet.empty());
         shared.put(sym, nonErased);
         return nonErased;
     }
@@ -455,7 +455,7 @@ public final class TypeSystem {
                 assert component != null : "the symbol necessarily has an array component symbol";
                 return arrayType(component, classSym);
             } else {
-                return new ClassTypeImpl(this, classSym, emptyList(), !isErased, HashTreePSet.empty());
+                return new ClassTypeImpl(this, classSym, emptyList(), isErased, HashTreePSet.empty());
             }
         } else if (symbol instanceof JTypeParameterSymbol) {
             return ((JTypeParameterSymbol) symbol).getTypeMirror();
@@ -519,7 +519,7 @@ public final class TypeSystem {
             return rawType(klass); // note this ensures that OBJECT and such is preserved
         }
         // if the type arguments are mismatched, the constructor will throw
-        return new ClassTypeImpl(this, klass, CollectionUtil.defensiveUnmodifiableCopy(typeArgs), false, HashTreePSet.empty());
+        return new ClassTypeImpl(this, klass, CollectionUtil.defensiveUnmodifiableCopy(typeArgs), true, HashTreePSet.empty());
     }
 
 

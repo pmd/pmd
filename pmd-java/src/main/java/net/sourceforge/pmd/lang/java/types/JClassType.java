@@ -255,6 +255,7 @@ public interface JClassType extends JTypeMirror {
     /**
      * Return the list of declared nested classes. They are substituted
      * with the actual type arguments of this type, if it is parameterized.
+     * They are raw if this type is raw.
      * Does not look into supertypes.
      */
     List<JClassType> getDeclaredClasses();
