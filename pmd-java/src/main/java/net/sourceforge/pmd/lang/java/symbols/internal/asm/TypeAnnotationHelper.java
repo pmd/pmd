@@ -65,8 +65,13 @@ final class TypeAnnotationHelper {
             pathAndAnnot.add(Triple.of(reference, path, annot));
         }
 
-        void forEach(TypeAnnotationConsumer consumer) {
-            pathAndAnnot.forEach(triple -> consumer.acceptAnnotation(triple.getLeft(), triple.getMiddle(), triple.getRight()));
+        /** Return true if the parameter returns true on any parameter. */
+        boolean forEach(TypeAnnotationConsumer consumer) {
+            boolean result = false;
+            for (Triple<TypeReference, TypePath, SymAnnot> triple : pathAndAnnot) {
+                result |= consumer.acceptAnnotation(triple.getLeft(), triple.getMiddle(), triple.getRight());
+            }
+            return result;
         }
 
         @Override
@@ -78,7 +83,7 @@ final class TypeAnnotationHelper {
         interface TypeAnnotationConsumer {
 
             /** Add an annotation at the given path and type ref. */
-            void acceptAnnotation(TypeReference tyRef, @Nullable TypePath path, SymAnnot annot);
+            boolean acceptAnnotation(TypeReference tyRef, @Nullable TypePath path, SymAnnot annot);
         }
     }
 

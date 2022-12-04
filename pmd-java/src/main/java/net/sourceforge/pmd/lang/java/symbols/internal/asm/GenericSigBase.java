@@ -245,7 +245,22 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
             }
             if (typeAnnots != null) {
                 // apply type annotations here
-                typeAnnots.forEach(this::acceptAnnotationAfterParse);
+                // this may change type parameters
+                boolean typeParamsWereMutated = typeAnnots.forEach(this::acceptAnnotationAfterParse);
+                if (typeParamsWereMutated) {
+                    // Some type parameters were mutated. We need to replace
+                    // the old tparams with the annotated ones in all other
+                    // types of this signature.
+
+                    // This substitution looks like the identity mapping.
+                    // It actually does work, because JTypeVar#equals considers only the symbol
+                    // and not the type annotations. So unannotated tvars in the type will be
+                    // matched with the annotated tvar that has the same symbol.
+                    Substitution subst = Substitution.mapping(typeParameters, typeParameters);
+                    this.returnType = this.returnType.subst(subst);
+                    this.parameterTypes = TypeOps.subst(parameterTypes, subst);
+                    this.exceptionTypes = TypeOps.subst(exceptionTypes, subst);
+                }
             }
             // null this transient data out
             this.rawExceptions = null;
@@ -313,28 +328,29 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
 
         /**
          * See {@link MethodVisitor#visitTypeAnnotation(int, TypePath, String, boolean)} for possible
-         * values of typeRefInt
+         * values of typeRef sort (they're each case of the switch).
+         * Returns true if type parameters have been mutated.
          */
-        void acceptAnnotationAfterParse(TypeReference tyRef, @Nullable TypePath path, SymAnnot annot) {
+        boolean acceptAnnotationAfterParse(TypeReference tyRef, @Nullable TypePath path, SymAnnot annot) {
             switch (tyRef.getSort()) {
             case TypeReference.METHOD_RETURN: {
                 assert returnType != null : "Return type is not set";
                 returnType = TypeAnnotationHelper.applySinglePath(returnType, path, annot);
-                return;
+                return false;
             }
             case TypeReference.METHOD_FORMAL_PARAMETER: {
                 assert parameterTypes != null : "Parameter types are not set";
                 int idx = tyRef.getFormalParameterIndex();
                 JTypeMirror annotatedFormal = TypeAnnotationHelper.applySinglePath(parameterTypes.get(idx), path, annot);
                 parameterTypes = TypeAnnotationHelper.replaceAtIndex(parameterTypes, idx, annotatedFormal);
-                return;
+                return false;
             }
             case TypeReference.THROWS: {
                 assert exceptionTypes != null : "Exception types are not set";
                 int idx = tyRef.getExceptionIndex();
                 JTypeMirror annotatedFormal = TypeAnnotationHelper.applySinglePath(exceptionTypes.get(idx), path, annot);
                 exceptionTypes = TypeAnnotationHelper.replaceAtIndex(exceptionTypes, idx, annotatedFormal);
-                return;
+                return false;
             }
             case TypeReference.METHOD_TYPE_PARAMETER: {
                 assert typeParameters != null;
@@ -342,7 +358,7 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
                 int idx = tyRef.getTypeParameterIndex();
                 JTypeVar tparam = typeParameters.get(idx).addAnnotation(annot);
                 typeParameters.set(idx, tparam);
-                return;
+                return true;
             }
             case TypeReference.METHOD_TYPE_PARAMETER_BOUND: {
                 assert typeParameters != null;
@@ -352,14 +368,14 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
                 JTypeVar tparam = typeParameters.get(tparamIdx);
                 final JTypeMirror newUb = computeNewUpperBound(path, annot, boundIdx, tparam.getUpperBound());
                 typeParameters.set(tparamIdx, tparam.withUpperBound(newUb));
-                return;
+                return true;
             }
             case TypeReference.METHOD_RECEIVER: {
                 if (receiverAnnotations == null) {
                     receiverAnnotations = new TypeAnnotationSet();
                 }
                 receiverAnnotations.add(path, annot);
-                return;
+                return false;
             }
             default:
                 throw new IllegalArgumentException(
