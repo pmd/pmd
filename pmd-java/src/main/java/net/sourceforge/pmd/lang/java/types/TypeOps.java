@@ -120,10 +120,8 @@ public final class TypeOps {
                 if (t instanceof CaptureMatcher || s instanceof CaptureMatcher) {
                     return t.equals(s); // skip check for type annotations
                 }
-                if (!t.getTypeAnnotations().equals(s.getTypeAnnotations())) {
-                    return false;
-                }
-                return t.acceptVisitor(SameTypeVisitor.PURE_WITH_ANNOTATIONS, s);
+                return t.getTypeAnnotations().equals(s.getTypeAnnotations())
+                    && t.acceptVisitor(SameTypeVisitor.PURE_WITH_ANNOTATIONS, s);
             } else {
                 return t.acceptVisitor(SameTypeVisitor.PURE, s);
             }
