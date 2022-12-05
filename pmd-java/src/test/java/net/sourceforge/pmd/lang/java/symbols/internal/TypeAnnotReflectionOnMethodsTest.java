@@ -62,12 +62,18 @@ public class TypeAnnotReflectionOnMethodsTest {
 
         /*
             abstract @A @B String abOnReturn(@A String i);
+            abstract List<@A String> abOnReturnInArg();
          */
 
         {
             JMethodSig t = getMethodType(sym, "abOnReturn");
             assertHasTypeAnnots(t.getFormalParameters().get(0), ANNOT_A);
             assertHasTypeAnnots(t.getReturnType(), ANNOTS_A_B);
+        }
+        {
+            JMethodSig t = getMethodType(sym, "abOnReturnInArg");
+            assertHasTypeAnnots(((JClassType) t.getReturnType()).getTypeArgs().get(0),
+                                ANNOT_A);
         }
     }
 

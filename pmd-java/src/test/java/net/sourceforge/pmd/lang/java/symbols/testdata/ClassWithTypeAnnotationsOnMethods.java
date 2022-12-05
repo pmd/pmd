@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.symbols.testdata;
 
 import java.io.Serializable;
+import java.util.List;
 
 import net.sourceforge.pmd.lang.java.symbols.testdata.ClassWithTypeAnnotationsInside.A;
 import net.sourceforge.pmd.lang.java.symbols.testdata.ClassWithTypeAnnotationsInside.B;
@@ -21,6 +22,8 @@ public abstract class ClassWithTypeAnnotationsOnMethods {
     abstract void aOnStringParam(@A String i);
 
     abstract @A @B String abOnReturn(@A String i);
+
+    abstract List<@A String> abOnReturnInArg();
 
     abstract void aOnThrows() throws @A Exception;
 

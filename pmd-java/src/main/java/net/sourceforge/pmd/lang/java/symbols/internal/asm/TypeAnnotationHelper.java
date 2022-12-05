@@ -103,7 +103,8 @@ final class TypeAnnotationHelper {
     }
 
     private static JTypeMirror resolvePathStepNoInner(JTypeMirror t, @Nullable TypePath path, int i, SymAnnot annot) {
-        assert path == null || path.getStep(i) != TypePath.INNER_TYPE;
+        assert path == null || path.getLength() == i
+            || path.getStep(i) != TypePath.INNER_TYPE;
 
         if (path == null || i == path.getLength()) {
             return t.addAnnotation(annot);
