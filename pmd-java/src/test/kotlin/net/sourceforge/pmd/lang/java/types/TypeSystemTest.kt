@@ -133,7 +133,7 @@ class TypeSystemTest : IntelliMarker, FunSpec({
         ts.INT::isTop shouldBe false
         ts.OBJECT::isTop shouldBe true
         ts.STRING::isTop shouldBe false
-        
+
         val otherTypeNamedObject = javaParser.parseSomeClass("class Object { }")
         otherTypeNamedObject::isTop shouldBe false
         val javaLangObjectDeclaration = javaParser.parseSomeClass("package java.lang; class Object { }")

@@ -369,9 +369,11 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
                 assert typeParameters != null;
                 assert path == null : "unexpected path " + path;
                 int idx = tyRef.getTypeParameterIndex();
-                JTypeVar tparam = typeParameters.get(idx).addAnnotation(annot);
-                typeParameters.set(idx, tparam);
-                return true;
+                // Here we add to the symbol, not the type var.
+                // This ensures that all occurrences of the type var
+                // share these annotations (symbol is unique, contrary to jtypevar)
+                ((TParamStub) typeParameters.get(idx).getSymbol()).addAnnotation(annot);
+                return false;
             }
             case TypeReference.METHOD_TYPE_PARAMETER_BOUND: {
                 assert typeParameters != null;

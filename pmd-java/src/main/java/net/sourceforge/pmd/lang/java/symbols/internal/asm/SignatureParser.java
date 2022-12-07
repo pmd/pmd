@@ -85,7 +85,6 @@ class SignatureParser {
             int tparamsEnd = TypeParamsParser.typeParams(b.start, b);
 
             List<JTypeVar> sigTypeParams = b.getOwnerTypeParams();
-            // todo at this point we need to add type annotations right?
             owner.setTypeParams(sigTypeParams);
 
             LexicalScope lexScope = owner.getEnclosingTypeParams().andThen(sigTypeParams);

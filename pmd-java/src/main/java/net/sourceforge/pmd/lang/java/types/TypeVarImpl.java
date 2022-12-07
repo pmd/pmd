@@ -21,6 +21,11 @@ abstract class TypeVarImpl implements JTypeVar {
 
     final TypeSystem ts;
     JTypeMirror upperBound;
+
+    /**
+     * These are only the type annotations on a usage of the variable.
+     * Annotations on the declaration of the tparam are added in {@link #getTypeAnnotations()}.
+     */
     final PSet<SymAnnot> typeAnnots;
 
     // constructor only for the captured version.
@@ -129,7 +134,7 @@ abstract class TypeVarImpl implements JTypeVar {
 
         @Override
         protected PSet<SymAnnot> getAnnotationsOnDeclaration() {
-            return symbol.getDeclaredAnnotations();
+            return symbol.getDeclaredAnnotations(); // todo should filter by type use
         }
 
         @Override

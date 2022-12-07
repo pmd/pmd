@@ -24,7 +24,7 @@ class TParamStub implements JTypeParameterSymbol {
     private final JTypeVar typeVar;
     private final String boundSignature;
     private final SignatureParser sigParser;
-    private PSet<SymAnnot> typeAnnots = HashTreePSet.empty();
+    private PSet<SymAnnot> annotations = HashTreePSet.empty();
 
     TParamStub(String name, GenericSigBase<?> sig, String bound) {
         this.name = name;
@@ -44,7 +44,9 @@ class TParamStub implements JTypeParameterSymbol {
 
     @Override
     public JTypeMirror computeUpperBound() {
-        // todo apply type annotations on bound here
+        // Note: type annotations on the bound are added when applying
+        // type annots collected on the enclosing symbol. See usages of
+        // this method.
         return sigParser.parseTypeVarBound(owner.getLexicalScope(), boundSignature);
     }
 
@@ -55,11 +57,11 @@ class TParamStub implements JTypeParameterSymbol {
 
     @Override
     public PSet<SymAnnot> getDeclaredAnnotations() {
-        return typeAnnots;
+        return annotations;
     }
 
     void addAnnotation(SymAnnot annot) {
-        typeAnnots = typeAnnots.plus(annot);
+        annotations = annotations.plus(annot);
     }
 
     @Override

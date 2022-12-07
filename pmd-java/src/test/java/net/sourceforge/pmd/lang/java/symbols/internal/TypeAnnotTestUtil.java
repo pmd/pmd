@@ -6,22 +6,24 @@ package net.sourceforge.pmd.lang.java.symbols.internal;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Proxy;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.AnnotationUtils;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
 
+import net.sourceforge.pmd.lang.java.symbols.AnnotableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.symbols.testdata.ClassWithTypeAnnotationsInside;
 import net.sourceforge.pmd.lang.java.types.JClassType;
@@ -58,9 +60,11 @@ public class TypeAnnotTestUtil {
 
 
     public static void assertHasTypeAnnots(JTypeMirror t, List<Annotation> annots) {
-        Objects.requireNonNull(t);
-        Objects.requireNonNull(annots);
-        assertThat(t.getTypeAnnotations(), Matchers.hasItems(annots.stream().map(TypeAnnotTestUtil::matchesAnnot).toArray(Matcher[]::new)));
+        assertThat(t.getTypeAnnotations(), equalTo(annots.stream().map(a -> SymbolicValue.of(t.getTypeSystem(), a)).collect(Collectors.toSet())));
+    }
+
+    public static void assertHasAnnots(AnnotableSymbol t, List<Annotation> annots) {
+        assertThat(t.getDeclaredAnnotations(), equalTo(annots.stream().map(a -> SymbolicValue.of(t.getTypeSystem(), a)).collect(Collectors.toSet())));
     }
 
     public static <A extends Annotation> A createAnnotationInstance(Class<A> annotationClass) {

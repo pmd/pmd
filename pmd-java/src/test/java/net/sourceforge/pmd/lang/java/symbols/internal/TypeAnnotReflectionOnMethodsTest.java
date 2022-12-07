@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.symbols.internal;
 import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.ANNOTS_A_B;
 import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.ANNOT_A;
 import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.ANNOT_B;
+import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.assertHasAnnots;
 import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.assertHasTypeAnnots;
 import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.getMethodType;
 import static net.sourceforge.pmd.util.CollectionUtil.emptyList;
@@ -102,8 +103,6 @@ public class TypeAnnotReflectionOnMethodsTest {
 
     abstract <@A @B T, E extends T> void abOnTypeParm();
     abstract <@A @B T, E extends T> T abOnTypeParm2(T t);
-    abstract <@A T, E extends @B T> void bOnTypeParmBound();
-    abstract <@A T, E extends @B T> E bOnTypeParmBound(T t);
 
 
          */
@@ -111,6 +110,7 @@ public class TypeAnnotReflectionOnMethodsTest {
         {
             JMethodSig t = getMethodType(sym, "abOnTypeParm");
             assertHasTypeAnnots(t.getTypeParameters().get(0), ANNOTS_A_B);
+            assertHasAnnots(t.getTypeParameters().get(0).getSymbol(), ANNOTS_A_B);
             assertHasTypeAnnots(t.getTypeParameters().get(1), emptyList());
         }
         {
@@ -128,17 +128,10 @@ public class TypeAnnotReflectionOnMethodsTest {
         JClassType sym = impl.getDeclaration(ts, ClassWithTypeAnnotationsOnMethods.class);
 
         /*
-            abstract <@A T, E extends @B T> void bOnTypeParmBound();
             abstract <@A T, E extends @B T> E bOnTypeParmBound(T t);
             abstract <@A T, E extends @B Cloneable & @A Serializable> E bOnTypeParmBoundIntersection(T t);
          */
 
-        {
-            JMethodSig t = getMethodType(sym, "bOnTypeParmBound");
-            assertHasTypeAnnots(t.getTypeParameters().get(0), ANNOT_A);
-            assertHasTypeAnnots(t.getTypeParameters().get(1), emptyList());
-            assertHasTypeAnnots(t.getTypeParameters().get(1).getUpperBound(), ANNOT_B);
-        }
         {
             JMethodSig t = getMethodType(sym, "bOnTypeParmBound");
             assertHasTypeAnnots(t.getTypeParameters().get(0), ANNOT_A);
