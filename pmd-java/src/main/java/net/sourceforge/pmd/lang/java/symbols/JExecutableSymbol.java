@@ -66,7 +66,7 @@ public interface JExecutableSymbol extends JAccessibleElementSymbol, JTypeParame
     /**
      * Return true if this method needs to be called on a receiver instance.
      * This is not the case if the method is static, or a constructor of an
-     * outer class.
+     * outer or static class.
      */
     default boolean hasReceiver() {
         if (isStatic()) {

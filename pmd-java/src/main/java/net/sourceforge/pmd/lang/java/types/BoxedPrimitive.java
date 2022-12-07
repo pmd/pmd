@@ -30,7 +30,7 @@ final class BoxedPrimitive extends ClassTypeImpl {
 
     @Override
     public JClassType withAnnotations(PSet<SymAnnot> newTypeAnnots) {
-        if (newTypeAnnots.equals(this.getTypeAnnotations())) {
+        if (newTypeAnnots.isEmpty() && this.getTypeAnnotations().isEmpty()) {
             return this;
         }
         return new BoxedPrimitive(

@@ -375,6 +375,7 @@ class ClassTypeImpl implements JClassType {
     }
 
 
+    @Override
     public final @NonNull JClassSymbol getSymbol() {
         return symbol;
     }
