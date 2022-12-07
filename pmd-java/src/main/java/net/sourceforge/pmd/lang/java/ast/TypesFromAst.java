@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import static net.sourceforge.pmd.lang.java.symbols.internal.ast.SymbolResolutionPass.getSymbolicAnnotations;
 
+import java.lang.annotation.ElementType;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -263,7 +264,8 @@ final class TypesFromAst {
         if (parent != null) {
             PSet<SymAnnot> parentAnnots = getSymbolicAnnotations(parent);
             for (SymAnnot parentAnnot : parentAnnots) {
-                if (parentAnnot.appliesToTypeUse()) {
+                // filter annotations by whether they apply to the type use.
+                if (parentAnnot.getAnnotationSymbol().annotationAppliesTo(ElementType.TYPE_USE)) {
                     annotsOnType = annotsOnType.plus(parentAnnot);
                 }
             }

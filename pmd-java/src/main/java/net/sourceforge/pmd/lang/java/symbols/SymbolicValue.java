@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.symbols;
 
 import java.lang.annotation.Annotation;
-import java.lang.annotation.ElementType;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
@@ -18,6 +17,7 @@ import org.apache.commons.lang3.AnnotationUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.EnumUtils;
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -184,10 +184,10 @@ public interface SymbolicValue {
             return getAnnotationSymbol().getAnnotationRetention();
         }
 
-        default boolean appliesToTypeUse() {
-            return getAnnotationSymbol().annotationAppliesTo(ElementType.TYPE_USE);
-        }
-
+        /**
+         * Return true if this annotation's binary name matches the given
+         * binary name.
+         */
         default boolean isOfType(String binaryName) {
             return getBinaryName().equals(binaryName);
         }
@@ -313,9 +313,16 @@ public interface SymbolicValue {
             return length;
         }
 
+
+        /**
+         * Return true if this array contains the given object. If the
+         * object is a {@link SymbolicValue}, it uses {@link #equals(Object)},
+         * otherwise it uses {@link #valueEquals(Object)} to compare elements.
+         */
         public boolean containsValue(Object value) {
             if (primArray != null) {
-                // todo I don't know how to code that
+                // todo I don't know how to code that without switching on the type
+                throw new NotImplementedException("not implemented: containsValue with a primitive array");
             } else if (elements != null) {
                 return elements.stream().anyMatch(it -> SymbolicValueHelper.equalsModuloWrapper(it, value));
             }

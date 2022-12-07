@@ -73,8 +73,8 @@ public interface JExecutableSymbol extends JAccessibleElementSymbol, JTypeParame
             return false;
         }
         if (this instanceof JConstructorSymbol) {
-            return getEnclosingClass().getEnclosingClass() != null
-                && !getEnclosingClass().isStatic();
+            return !getEnclosingClass().isStatic()
+                && getEnclosingClass().getEnclosingClass() != null;
         }
         return true;
     }
