@@ -117,7 +117,7 @@ public final class PrettyPrintingUtil {
             sb.append("?");
             ASTReferenceType bound = ((ASTWildcardType) t).getTypeBoundNode();
             if (bound != null) {
-                sb.append(((ASTWildcardType) t).hasLowerBound() ? " super " : " extends ");
+                sb.append(((ASTWildcardType) t).isLowerBound() ? " super " : " extends ");
                 prettyPrintTypeNode(sb, bound);
             }
         } else if (t instanceof ASTUnionType) {

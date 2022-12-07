@@ -64,13 +64,10 @@ final class TypesFromAst {
 
             ASTWildcardType wild = (ASTWildcardType) node;
             @Nullable JTypeMirror bound = fromAst(ts, lexicalSubst, wild.getTypeBoundNode());
-            boolean isUpperBound = true;
             if (bound == null) {
                 bound = ts.OBJECT;
-            } else {
-                isUpperBound = wild.hasUpperBound();
             }
-            return ts.wildcard(isUpperBound, bound).withAnnotations(getTypeAnnotations(node));
+            return ts.wildcard(wild.isUpperBound(), bound).withAnnotations(getTypeAnnotations(node));
 
 
         } else if (node instanceof ASTIntersectionType) {
@@ -264,7 +261,6 @@ final class TypesFromAst {
         PSet<SymAnnot> annotsOnType = getSymbolicAnnotations(type);
         Annotatable parent = getEnclosingAnnotationGiver(type);
         if (parent != null) {
-            // todo parent annots should be filtered by target TYPE_USE
             PSet<SymAnnot> parentAnnots = getSymbolicAnnotations(parent);
             for (SymAnnot parentAnnot : parentAnnots) {
                 if (parentAnnot.appliesToTypeUse()) {
