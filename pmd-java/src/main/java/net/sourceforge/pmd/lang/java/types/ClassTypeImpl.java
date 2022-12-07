@@ -375,18 +375,13 @@ class ClassTypeImpl implements JClassType {
     }
 
 
-    public int getModifiers() {
-        return symbol.getModifiers();
-    }
-
-    @Override
-    public @NonNull JClassSymbol getSymbol() {
+    public final @NonNull JClassSymbol getSymbol() {
         return symbol;
     }
 
     @Override
     public final boolean isTop() {
-        return this == ts.OBJECT; // NOPMD CompareObjectsWithEquals
+        return this.getSymbol().equals(ts.OBJECT.getSymbol()); // NOPMD CompareObjectsWithEquals
     }
 
     @Override
