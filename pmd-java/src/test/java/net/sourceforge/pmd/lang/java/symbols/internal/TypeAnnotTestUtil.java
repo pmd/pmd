@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.symbols.internal;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Proxy;
@@ -60,10 +61,12 @@ public class TypeAnnotTestUtil {
 
 
     public static void assertHasTypeAnnots(JTypeMirror t, List<Annotation> annots) {
+        assertNotNull(t);
         assertThat(t.getTypeAnnotations(), equalTo(annots.stream().map(a -> SymbolicValue.of(t.getTypeSystem(), a)).collect(Collectors.toSet())));
     }
 
     public static void assertHasAnnots(AnnotableSymbol t, List<Annotation> annots) {
+        assertNotNull(t);
         assertThat(t.getDeclaredAnnotations(), equalTo(annots.stream().map(a -> SymbolicValue.of(t.getTypeSystem(), a)).collect(Collectors.toSet())));
     }
 

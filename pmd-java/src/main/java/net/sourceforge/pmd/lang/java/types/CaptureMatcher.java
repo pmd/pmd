@@ -49,11 +49,6 @@ final class CaptureMatcher implements JTypeVar {
     }
 
     @Override
-    public JTypeVar addAnnotation(@NonNull SymAnnot newAnnot) {
-        throw new UnsupportedOperationException("this is a test only object which should only be used for equals");
-    }
-
-    @Override
     public PSet<SymAnnot> getTypeAnnotations() {
         if (captured != null) {
             return captured.getTypeAnnotations();

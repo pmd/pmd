@@ -24,7 +24,7 @@ abstract class TypeVarImpl implements JTypeVar {
 
     /**
      * These are only the type annotations on a usage of the variable.
-     * Annotations on the declaration of the tparam are added in {@link #getTypeAnnotations()}.
+     * Annotations on the declaration of the tparam are not considered.
      */
     final PSet<SymAnnot> typeAnnots;
 
@@ -34,16 +34,10 @@ abstract class TypeVarImpl implements JTypeVar {
         this.typeAnnots = Objects.requireNonNull(typeAnnots);
     }
 
-
-    protected abstract PSet<SymAnnot> getAnnotationsOnDeclaration();
-
     @Override
     public PSet<SymAnnot> getTypeAnnotations() {
-        return getAnnotationsOnDeclaration().plusAll(typeAnnots);
+        return typeAnnots;
     }
-
-    @Override
-    public abstract JTypeVar addAnnotation(@NonNull SymAnnot newAnnot);
 
     @Override
     public TypeSystem getTypeSystem() {
@@ -125,16 +119,6 @@ abstract class TypeVarImpl implements JTypeVar {
                 return this;
             }
             return new RegularTypeVar(this, newTypeAnnots);
-        }
-
-        @Override
-        public JTypeVar addAnnotation(@NonNull SymAnnot newAnnot) {
-            return withAnnotations(typeAnnots.plus(newAnnot));
-        }
-
-        @Override
-        protected PSet<SymAnnot> getAnnotationsOnDeclaration() {
-            return symbol.getDeclaredAnnotations(); // todo should filter by type use
         }
 
         @Override
@@ -223,11 +207,6 @@ abstract class TypeVarImpl implements JTypeVar {
         }
 
         @Override
-        protected PSet<SymAnnot> getAnnotationsOnDeclaration() {
-            return wildcard.getTypeAnnotations();
-        }
-
-        @Override
         public boolean equals(Object o) {
             return this == o || o instanceof CaptureMatcher && o.equals(this);
         }
@@ -275,11 +254,6 @@ abstract class TypeVarImpl implements JTypeVar {
                 return this;
             }
             return new CapturedTypeVar(wildcard, lowerBound, upperBound, newTypeAnnots);
-        }
-
-        @Override
-        public JTypeVar addAnnotation(@NonNull SymAnnot newAnnot) {
-            return withAnnotations(typeAnnots.plus(newAnnot));
         }
 
         @Override

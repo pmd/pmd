@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.types;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -128,7 +129,9 @@ public interface JTypeVar extends JTypeMirror, SubstVar {
     JTypeVar withAnnotations(PSet<SymAnnot> newTypeAnnots);
 
     @Override
-    JTypeVar addAnnotation(@NonNull SymAnnot newAnnot);
+    default JTypeVar addAnnotation(@NonNull SymAnnot newAnnot) {
+        return withAnnotations(getTypeAnnotations().plus(Objects.requireNonNull(newAnnot)));
+    }
 
     @Override
     default Stream<JMethodSig> streamMethods(Predicate<? super JMethodSymbol> prefilter) {
