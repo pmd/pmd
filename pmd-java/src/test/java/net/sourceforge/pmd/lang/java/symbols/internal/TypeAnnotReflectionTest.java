@@ -115,9 +115,9 @@ public class TypeAnnotReflectionTest {
 
         /*
     Outer. @A Inner1                    inner1WithAnnot;
-    @A Outer. @A Inner1                 inner1WithAnnotOnOuterToo;
-    @A Outer. @A Inner1.Inner2          inner2WithAnnotOnBothOuter;
-    @A Outer. @A @B Inner1. @A Inner2   inner2WithAnnotOnAll;
+    @A Outer. @B Inner1                 inner1WithAnnotOnOuterToo;
+    @A Outer. @B Inner1.Inner2          inner2WithAnnotOnBothOuter;
+    @A Outer. @A @B Inner1. @B Inner2   inner2WithAnnotOnAll;
     Outer. @A @B Inner1. @A Inner2      inner2WithAnnotOnAllExceptOuter;
 
          */
@@ -129,19 +129,19 @@ public class TypeAnnotReflectionTest {
         }
         {
             JClassType t = (JClassType) getFieldType(sym, "inner1WithAnnotOnOuterToo");
-            assertHasTypeAnnots(t, ANNOT_A);
+            assertHasTypeAnnots(t, ANNOT_B);
             assertHasTypeAnnots(t.getEnclosingType(), ANNOT_A);
             assertNull(t.getEnclosingType().getEnclosingType());
         }
         {
             JClassType t = (JClassType) getFieldType(sym, "inner2WithAnnotOnBothOuter");
             assertHasTypeAnnots(t, emptyList());
-            assertHasTypeAnnots(t.getEnclosingType(), ANNOT_A);
+            assertHasTypeAnnots(t.getEnclosingType(), ANNOT_B);
             assertHasTypeAnnots(t.getEnclosingType().getEnclosingType(), ANNOT_A);
         }
         {
             JClassType t = (JClassType) getFieldType(sym, "inner2WithAnnotOnAll");
-            assertHasTypeAnnots(t, ANNOT_A);
+            assertHasTypeAnnots(t, ANNOT_B);
             assertHasTypeAnnots(t.getEnclosingType(), ANNOTS_A_B);
             assertHasTypeAnnots(t.getEnclosingType().getEnclosingType(), ANNOT_A);
         }

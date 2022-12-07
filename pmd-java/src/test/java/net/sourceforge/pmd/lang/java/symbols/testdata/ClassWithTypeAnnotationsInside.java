@@ -34,9 +34,9 @@ public class ClassWithTypeAnnotationsInside {
 
 
     Outer.@A Inner1 inner1WithAnnot;
-    @A Outer.@A Inner1 inner1WithAnnotOnOuterToo;
-    @A Outer.@A Inner1.Inner2 inner2WithAnnotOnBothOuter;
-    @A Outer.@A @B Inner1.@A Inner2 inner2WithAnnotOnAll;
+    @A Outer.@B Inner1 inner1WithAnnotOnOuterToo;
+    @A Outer.@B Inner1.Inner2 inner2WithAnnotOnBothOuter;
+    @A Outer.@A @B Inner1.@B Inner2 inner2WithAnnotOnAll;
     Outer.@A @B Inner1.@A Inner2 inner2WithAnnotOnAllExceptOuter;
 
 

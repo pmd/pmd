@@ -118,25 +118,20 @@ final class TypesFromAst {
     }
 
     private static JTypeMirror makeFromClassType(TypeSystem ts, ASTClassOrInterfaceType node, Substitution subst) {
-
         if (node == null) {
             return null;
         }
 
         // TODO error handling, what if we're saying List<String, Int> in source: should be caught before
 
-        ASTClassOrInterfaceType lhsType = node.getQualifier();
-
-
-        JTypeDeclSymbol reference = getReferenceEnsureResolved(node);
-
         PSet<SymAnnot> typeAnnots = getTypeAnnotations(node);
+        JTypeDeclSymbol reference = getReferenceEnsureResolved(node);
 
         if (reference instanceof JTypeParameterSymbol) {
             return subst.apply(((JTypeParameterSymbol) reference).getTypeMirror()).withAnnotations(typeAnnots);
         }
 
-        JClassType enclosing = getEnclosing(ts, node, subst, lhsType, reference);
+        JClassType enclosing = getEnclosing(ts, node, subst, node.getQualifier(), reference);
 
         ASTTypeArguments typeArguments = node.getTypeArguments();
 
@@ -159,7 +154,7 @@ final class TypesFromAst {
         }
     }
 
-    private static @Nullable JClassType getEnclosing(TypeSystem ts, ASTClassOrInterfaceType node, Substitution subst, ASTClassOrInterfaceType lhsType, JTypeDeclSymbol reference) {
+    private static @Nullable JClassType getEnclosing(TypeSystem ts, ASTClassOrInterfaceType node, Substitution subst, @Nullable ASTClassOrInterfaceType lhsType, JTypeDeclSymbol reference) {
         @Nullable JTypeMirror enclosing = makeFromClassType(ts, lhsType, subst);
 
         if (enclosing != null && !shouldEnclose(reference)) {
@@ -252,6 +247,8 @@ final class TypesFromAst {
         } else if (node.getIndexInParent() == 0 && parent instanceof ASTArrayType) {
             // the element type of an array type
             return getEnclosingAnnotationGiver(parent);
+        } else if (!(parent instanceof ASTType) && parent instanceof ASTVariableDeclarator) {
+            return getEnclosingAnnotationGiver(parent);
         } else if (!(parent instanceof ASTType) && parent instanceof Annotatable) {
             return (Annotatable) parent;
         }
@@ -260,6 +257,9 @@ final class TypesFromAst {
 
     private static PSet<SymAnnot> getTypeAnnotations(ASTType type) {
         PSet<SymAnnot> annotsOnType = getSymbolicAnnotations(type);
+        if (type instanceof ASTClassOrInterfaceType && ((ASTClassOrInterfaceType) type).getQualifier() != null) {
+            return annotsOnType; // annots on the declaration only apply to the leftmost qualifier
+        }
         Annotatable parent = getEnclosingAnnotationGiver(type);
         if (parent != null) {
             PSet<SymAnnot> parentAnnots = getSymbolicAnnotations(parent);
