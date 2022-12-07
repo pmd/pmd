@@ -1715,10 +1715,13 @@
 it via the environment variable <code class="language-plaintext highlighter-rouge">PMD_JAVA_OPTS</code> and select the new language version, e.g. <code class="language-plaintext highlighter-rouge">19-preview</code>:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PMD_JAVA_OPTS=--enable-preview
-./run.sh pmd -language java -version 19-preview ...
+./run.sh pmd --use-version java-19-preview ...
 </code></pre></div></div>
 
 <p>Note: we only support preview language features for the latest two java versions.</p>
+
+<p>Note: <code class="language-plaintext highlighter-rouge">--use-version</code> is only supported since PMD 6.52.0. Older versions of PMD use two CLI options that have to be specified together: <code class="language-plaintext highlighter-rouge">-language java -version 19-preview</code>.</p>
+
 
 
     <div class="tags">
@@ -1750,7 +1753,7 @@ it via the environment variable <code class="language-plaintext highlighter-roug
         <div class="col-lg-12 footer">
             &copy;2022 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Dec 1, 2022 <br />
+             Site last generated: Dec 7, 2022 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>
