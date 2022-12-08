@@ -15,6 +15,8 @@ This is a {{ site.pmd.release_type }} release.
 ### New and noteworthy
 
 ### Fixed Issues
+* core
+    * [#4248](https://github.com/pmd/pmd/issues/4248): \[core] Can't analyze sources in zip files
 
 ### API Changes
 
