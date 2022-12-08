@@ -47,8 +47,8 @@ Unzip it into any directory, optionally add the `bin` subdirectory in your `PATH
 
 The PMD command (`pmd.bat` or `run.sh pmd`) requires two options:
 
-* `-d <path>`: path to the sources to analyse. This can be a file name, a directory, or a jar or zip file containing the
-sources.
+* `-d <path>`: Root directory for sources to be analyzed. This can be a single file name, a directory,
+or a jar or zip file containing the sources.
 * `-R <path>`: the ruleset file you want to use. PMD uses xml configuration files, called *rulesets*, which specify 
 which rules to execute on your sources. You can also run a single rule by referencing it using its *category* and
 name (more details [here](pmd_userdocs_making_rulesets.html#referencing-a-single-rule)). For example, you can check for unnecessary
