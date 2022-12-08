@@ -256,7 +256,7 @@ class CoreCliTest {
         });
         assertThat(log, not(containsStringIgnoringCase("Cannot open zip file")));
         String reportPath = IOUtil.normalizePath(zipArchive.toString() + "!/someSource.dummy");
-        assertThat(log, containsString(reportPath + ":0:\tSampleXPathRule:\tTest Rule 2"));
+        assertThat(log, containsString(reportPath + ":1:\tSampleXPathRule:\tTest Rule 2"));
     }
 
     @Test
@@ -268,7 +268,7 @@ class CoreCliTest {
         });
         assertThat(log, not(containsStringIgnoringCase("Cannot open zip file")));
         String reportPath = IOUtil.normalizePath(jarArchive.toString() + "!/someSource.dummy");
-        assertThat(log, containsString(reportPath + ":0:\tSampleXPathRule:\tTest Rule 2"));
+        assertThat(log, containsString(reportPath + ":1:\tSampleXPathRule:\tTest Rule 2"));
     }
 
     private Path createTemporaryZipArchive(String name) throws Exception {
