@@ -251,8 +251,7 @@ class CoreCliTest {
     void testZipFileAsSource() throws Exception {
         Path zipArchive = createTemporaryZipArchive("sources.zip");
         String log = SystemLambda.tapSystemErrAndOut(() -> {
-            StatusCode code = PMD.runPmd("--no-cache", "--dir", zipArchive.toString(), "--rulesets", "rulesets/dummy/basic.xml");
-            assertEquals(StatusCode.VIOLATIONS_FOUND, code);
+            runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--no-progress", "--dir", zipArchive, "--rulesets", "rulesets/dummy/basic.xml");
         });
         assertThat(log, not(containsStringIgnoringCase("Cannot open zip file")));
         String reportPath = IOUtil.normalizePath(zipArchive.toString() + "!/someSource.dummy");
@@ -263,8 +262,7 @@ class CoreCliTest {
     void testJarFileAsSource() throws Exception {
         Path jarArchive = createTemporaryZipArchive("sources.jar");
         String log = SystemLambda.tapSystemErrAndOut(() -> {
-            StatusCode code = PMD.runPmd("--no-cache", "--dir", jarArchive.toString(), "--rulesets", "rulesets/dummy/basic.xml");
-            assertEquals(StatusCode.VIOLATIONS_FOUND, code);
+            runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--no-progress", "--dir", jarArchive, "--rulesets", "rulesets/dummy/basic.xml");
         });
         assertThat(log, not(containsStringIgnoringCase("Cannot open zip file")));
         String reportPath = IOUtil.normalizePath(jarArchive.toString() + "!/someSource.dummy");
