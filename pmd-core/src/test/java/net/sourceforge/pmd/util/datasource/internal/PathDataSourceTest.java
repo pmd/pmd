@@ -20,6 +20,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import net.sourceforge.pmd.util.IOUtil;
+
 public class PathDataSourceTest {
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
@@ -36,9 +38,11 @@ public class PathDataSourceTest {
         try (FileSystem fileSystem = FileSystems.newFileSystem(URI.create("jar:" + zipArchive.toUri()), Collections.<String, Object>emptyMap())) {
             Path path = fileSystem.getPath("path/inside/someSource.dummy");
             PathDataSource ds = new PathDataSource(path);
-            assertEquals(zipArchive.toAbsolutePath() + "!/path/inside/someSource.dummy", ds.getNiceFileName(false, null));
+            assertEquals(zipArchive.toAbsolutePath() + "!" + IOUtil.normalizePath("/path/inside/someSource.dummy"),
+                    ds.getNiceFileName(false, null));
             assertEquals("sources.zip!someSource.dummy", ds.getNiceFileName(true, null));
-            assertEquals("sources.zip!/path/inside/someSource.dummy", ds.getNiceFileName(true, zipArchive.toAbsolutePath().getParent().toString()));
+            assertEquals("sources.zip!" + IOUtil.normalizePath("/path/inside/someSource.dummy"),
+                    ds.getNiceFileName(true, zipArchive.toAbsolutePath().getParent().toString()));
         }
     }
 }

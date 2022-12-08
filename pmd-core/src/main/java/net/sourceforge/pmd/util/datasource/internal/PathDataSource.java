@@ -10,7 +10,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,7 +41,7 @@ public class PathDataSource extends AbstractDataSource {
 
     private String getAbsoluteFilePath() {
         if ("jar".equals(path.toUri().getScheme())) {
-            return Paths.get(URI.create(path.toUri().getSchemeSpecificPart()).getPath()).toString();
+            return new File(URI.create(path.toUri().getSchemeSpecificPart()).getPath()).toString();
         }
         return path.toFile().getAbsolutePath();
     }
