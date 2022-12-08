@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.io.FileOutputStream;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -22,6 +23,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -233,7 +236,7 @@ class CoreCliTest {
 
     @Test
     void testWrongCliOptionsDoNotPrintUsage() throws Exception {
-        String[] args = { "-invalid" };
+        String[] args = {"-invalid"};
         PmdParametersParseResult params = PmdParametersParseResult.extractParameters(args);
         assertTrue(params.isError(), "Expected invalid args");
 
@@ -242,6 +245,41 @@ class CoreCliTest {
             assertEquals(StatusCode.ERROR, code);
         });
         assertThat(log, not(containsStringIgnoringCase("Available report formats and")));
+    }
+
+    @Test
+    void testZipFileAsSource() throws Exception {
+        Path zipArchive = createTemporaryZipArchive("sources.zip");
+        String log = SystemLambda.tapSystemErrAndOut(() -> {
+            StatusCode code = PMD.runPmd("--no-cache", "--dir", zipArchive.toString(), "--rulesets", "rulesets/dummy/basic.xml");
+            assertEquals(StatusCode.VIOLATIONS_FOUND, code);
+        });
+        assertThat(log, not(containsStringIgnoringCase("Cannot open zip file")));
+        String reportPath = IOUtil.normalizePath(zipArchive.toString() + "!/someSource.dummy");
+        assertThat(log, containsString(reportPath + ":0:\tSampleXPathRule:\tTest Rule 2"));
+    }
+
+    @Test
+    void testJarFileAsSource() throws Exception {
+        Path jarArchive = createTemporaryZipArchive("sources.jar");
+        String log = SystemLambda.tapSystemErrAndOut(() -> {
+            StatusCode code = PMD.runPmd("--no-cache", "--dir", jarArchive.toString(), "--rulesets", "rulesets/dummy/basic.xml");
+            assertEquals(StatusCode.VIOLATIONS_FOUND, code);
+        });
+        assertThat(log, not(containsStringIgnoringCase("Cannot open zip file")));
+        String reportPath = IOUtil.normalizePath(jarArchive.toString() + "!/someSource.dummy");
+        assertThat(log, containsString(reportPath + ":0:\tSampleXPathRule:\tTest Rule 2"));
+    }
+
+    private Path createTemporaryZipArchive(String name) throws Exception {
+        Path zipArchive = tempRoot().resolve(name);
+        try (ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(zipArchive.toFile()))) {
+            ZipEntry zipEntry = new ZipEntry("someSource.dummy");
+            zipOutputStream.putNextEntry(zipEntry);
+            zipOutputStream.write("dummy text".getBytes(StandardCharsets.UTF_8));
+            zipOutputStream.closeEntry();
+        }
+        return zipArchive;
     }
 
     // utilities
