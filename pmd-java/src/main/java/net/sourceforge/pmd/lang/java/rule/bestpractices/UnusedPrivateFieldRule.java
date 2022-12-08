@@ -7,11 +7,13 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 import static net.sourceforge.pmd.properties.PropertyFactory.stringListProperty;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.PMDVersion;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -28,6 +30,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -43,6 +46,7 @@ public class UnusedPrivateFieldRule extends AbstractJavaRule {
                 + "This property has been deprecated since PMD 6.50.0 and will be completely ignored.")
             .defaultValue(new ArrayList<String>())
             .build();
+
     private static boolean warnedAboutDeprecatedIgnoredAnnotationsProperty = false;
     private static final PropertyDescriptor<List<String>> IGNORED_FIELD_NAMES =
                 PropertyFactory.stringListProperty("ignoredFieldNames")
@@ -50,9 +54,18 @@ public class UnusedPrivateFieldRule extends AbstractJavaRule {
                     .desc("Field Names that are ignored from the unused check")
                     .build();
 
+    private static final PropertyDescriptor<List<String>> ANNOTATIONS_DESCRIPTOR
+            = stringListProperty("annotations")
+            .desc("Fully qualified names of the annotation types that should be reported anyway. If an unused field "
+                    + "has any of these annotations, then it is reported. If it has any other annotation, then "
+                    + "it is still considered to used and is not reported.")
+            .defaultValue(Arrays.asList("org.openqa.selenium.support.FindBy"))
+            .build();
+
     public UnusedPrivateFieldRule() {
         definePropertyDescriptor(IGNORED_ANNOTATIONS_DESCRIPTOR);
         definePropertyDescriptor(IGNORED_FIELD_NAMES);
+        definePropertyDescriptor(ANNOTATIONS_DESCRIPTOR);
     }
 
     @Override
@@ -93,6 +106,14 @@ public class UnusedPrivateFieldRule extends AbstractJavaRule {
     }
 
     private boolean hasAnyAnnotation(Annotatable node) {
+        List<ASTAnnotation> annotations = node.getDeclaredAnnotations();
+        for (String reportAnnotation : getProperty(ANNOTATIONS_DESCRIPTOR)) {
+            for (ASTAnnotation annotation : annotations) {
+                if (TypeTestUtil.isA(reportAnnotation, annotation)) {
+                    return false;
+                }
+            }
+        }
         return !node.getDeclaredAnnotations().isEmpty();
     }
 
