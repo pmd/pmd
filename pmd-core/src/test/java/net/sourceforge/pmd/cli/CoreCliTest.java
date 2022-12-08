@@ -236,19 +236,33 @@ public class CoreCliTest {
 
     @Test
     public void testZipFileAsSource() throws Exception {
-        Path zipArchive = tempRoot().resolve("sources.zip");
+        Path zipArchive = createTemporaryZipArchive("sources.zip");
+        startCapturingErrAndOut();
+        runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", zipArchive, "--rulesets", "rulesets/dummy/basic.xml");
+        assertThatErrAndOut(not(containsStringIgnoringCase("Cannot open zip file")));
+        String reportPath = IOUtil.normalizePath(zipArchive.toString() + "!/someSource.dummy");
+        assertThat(outStreamCaptor.getLog(), containsString(reportPath + ":0:\tSampleXPathRule:\tTest Rule 2"));
+    }
+
+    @Test
+    public void testJarFileAsSource() throws Exception {
+        Path jarArchive = createTemporaryZipArchive("sources.jar");
+        startCapturingErrAndOut();
+        runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", jarArchive, "--rulesets", "rulesets/dummy/basic.xml");
+        assertThatErrAndOut(not(containsStringIgnoringCase("Cannot open zip file")));
+        String reportPath = IOUtil.normalizePath(jarArchive.toString() + "!/someSource.dummy");
+        assertThat(outStreamCaptor.getLog(), containsString(reportPath + ":0:\tSampleXPathRule:\tTest Rule 2"));
+    }
+
+    private Path createTemporaryZipArchive(String name) throws Exception {
+        Path zipArchive = tempRoot().resolve(name);
         try (ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(zipArchive.toFile()))) {
             ZipEntry zipEntry = new ZipEntry("someSource.dummy");
             zipOutputStream.putNextEntry(zipEntry);
             zipOutputStream.write("dummy text".getBytes(StandardCharsets.UTF_8));
             zipOutputStream.closeEntry();
         }
-
-        startCapturingErrAndOut();
-        runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", zipArchive, "--rulesets", "rulesets/dummy/basic.xml");
-        assertThatErrAndOut(not(containsStringIgnoringCase("Cannot open zip file")));
-        String reportPath = IOUtil.normalizePath(zipArchive.toString() + "!/someSource.dummy");
-        assertThat(outStreamCaptor.getLog(), containsString(reportPath + ":0:\tSampleXPathRule:\tTest Rule 2"));
+        return zipArchive;
     }
 
     private void assertThatErrAndOut(Matcher<String> matcher) {
