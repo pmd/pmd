@@ -16,7 +16,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Assert;
@@ -118,7 +120,7 @@ public abstract class AbstractSymbolTest {
         JClassSymbol sym = resolveSymbol(actualClass);
 
         List<JMethodSymbol> ms = sym.getDeclaredMethods();
-        Method[] actualMethods = actualClass.getDeclaredMethods();
+        List<Method> actualMethods = Arrays.stream(actualClass.getDeclaredMethods()).filter(m -> !m.isSynthetic()).collect(Collectors.toList());
    
         for (final Method m : actualMethods) {
             JMethodSymbol mSym = ms.stream().filter(it -> it.getSimpleName().equals(m.getName()))
@@ -143,7 +145,7 @@ public abstract class AbstractSymbolTest {
         JClassSymbol sym = resolveSymbol(actualClass);
         
         List<JFieldSymbol> fs = sym.getDeclaredFields();
-        Field[] actualFields = actualClass.getDeclaredFields();
+        List<Field> actualFields = Arrays.stream(actualClass.getDeclaredFields()).filter(f -> !f.isSynthetic()).collect(Collectors.toList());
         
         for (final Field f : actualFields) {
             JFieldSymbol fSym = fs.stream().filter(it -> it.getSimpleName().equals(f.getName()))
@@ -160,7 +162,7 @@ public abstract class AbstractSymbolTest {
         JClassSymbol sym = resolveSymbol(actualClass);
 
         List<JMethodSymbol> ms = sym.getDeclaredMethods();
-        Method[] actualMethods = actualClass.getDeclaredMethods();
+        List<Method> actualMethods = Arrays.stream(actualClass.getDeclaredMethods()).filter(m -> !m.isSynthetic()).collect(Collectors.toList());
    
         for (final Method m : actualMethods) {
             JMethodSymbol mSym = ms.stream().filter(it -> it.getSimpleName().equals(m.getName()))
@@ -202,8 +204,8 @@ public abstract class AbstractSymbolTest {
 
     private void assertAllFieldsMatch(Class<?> actualClass, JClassSymbol sym) {
         List<JFieldSymbol> fs = sym.getDeclaredFields();
-        Field[] actualFields = actualClass.getDeclaredFields();
-        Assert.assertEquals(actualFields.length, fs.size());
+        List<Field> actualFields = Arrays.stream(actualClass.getDeclaredFields()).filter(f -> !f.isSynthetic()).collect(Collectors.toList());
+        Assert.assertEquals(actualFields.size(), fs.size());
    
         for (final Field f : actualFields) {
             JFieldSymbol fSym = fs.stream().filter(it -> it.getSimpleName().equals(f.getName()))
@@ -219,9 +221,9 @@ public abstract class AbstractSymbolTest {
     
     private void assertAllMethodsMatch(Class<?> actualClass, JClassSymbol sym) {
         List<JMethodSymbol> ms = sym.getDeclaredMethods();
-        Method[] actualMethods = actualClass.getDeclaredMethods();
-        Assert.assertEquals(actualMethods.length, ms.size());
-   
+        List<Method> actualMethods = Arrays.stream(actualClass.getDeclaredMethods()).filter(m -> !m.isSynthetic()).collect(Collectors.toList());
+        Assert.assertEquals(actualMethods.size(), ms.size());
+
         for (final Method m : actualMethods) {
             JMethodSymbol mSym = ms.stream().filter(it -> it.getSimpleName().equals(m.getName()))
                     .findFirst().orElseThrow(AssertionError::new);
