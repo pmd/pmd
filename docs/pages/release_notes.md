@@ -20,6 +20,11 @@ This is a {{ site.pmd.release_type }} release.
   have been deprecated. The rule {% rule java/design/NcssCount %} can be used instead.
   The deprecated rules will be removed with PMD 7.0.0.
 
+* The Java rule {% rule java/errorprone/EmptyStatementNotInLoop %} is deprecated.
+  Use the rule {% rule java/codestyle/UnnecessarySemicolon %} instead.
+  Note: Actually it was announced to be deprecated since 6.46.0 but the rule was not marked as deprecated yet.
+  This has been done now.
+
 ### Fixed Issues
 
 * java-design

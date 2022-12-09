@@ -684,7 +684,7 @@ Excessive class file lengths are usually indications that the class may be burde
 responsibilities that could be provided by external classes or functions. In breaking these methods
 apart the code becomes more manageable and ripe for reuse.
 
-This rule is deprecated since PMD 6.53.0 and will be removed with PMD 7.0.0.
+_Note:_ This rule is deprecated since PMD 6.53.0 and will be removed with PMD 7.0.0.
 
 The rule is based on the simple metric lines of code (LoC). The reasons for deprecation are:
 * LoC is a noisy metric, NCSS (non-commenting source statements) is a more solid metric
@@ -753,7 +753,7 @@ name/signature might suggest. They also become challenging for others to digest 
 scrolling causes readers to lose focus.
 Try to reduce the method length by creating helper methods and removing any copy/pasted code.
 
-This rule is deprecated since PMD 6.53.0 and will be removed with PMD 7.0.0.
+_Note:_ This rule is deprecated since PMD 6.53.0 and will be removed with PMD 7.0.0.
 
 The rule is based on the simple metric lines of code (LoC). The reasons for deprecation are:
 * LoC is a noisy metric, NCSS (non-commenting source statements) is a more solid metric
@@ -1164,7 +1164,7 @@ This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determin
 of code for a given constructor. NCSS ignores comments, and counts actual statements. Using this algorithm,
 lines of code that are split are counted as one.
 
-This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+_Note:_ This rule is deprecated since PMD 6.0.0 and will be removed with PMD 7.0.0. The rule is replaced
 by the rule {% rule java/design/NcssCount %}.
         </description>
         <priority>3</priority>
@@ -1242,7 +1242,7 @@ This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determin
 of code for a given method. NCSS ignores comments, and counts actual statements. Using this algorithm,
 lines of code that are split are counted as one.
 
-This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+_Note:_ This rule is deprecated since PMD 6.0.0 and will be removed with PMD 7.0.0. The rule is replaced
 by the rule {% rule java/design/NcssCount %}.
         </description>
         <priority>3</priority>
@@ -1277,7 +1277,7 @@ This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determin
 of code for a given type. NCSS ignores comments, and counts actual statements. Using this algorithm,
 lines of code that are split are counted as one.
 
-This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+_Note:_ This rule is deprecated since PMD 6.0.0 and will be removed with PMD 7.0.0. The rule is replaced
 by the rule {% rule java/design/NcssCount %}.
         </description>
         <priority>3</priority>
@@ -1455,7 +1455,8 @@ as:
 
     assertFalse(expr);
 
-Deprecated since PMD 6.37.0, use {% rule java/bestpractices/SimplifiableTestAssertion %} instead.
+_Note:_ This rule is deprecated since PMD 6.37.0 and will be removed with PMD 7.0.0.
+Use {% rule SimplifiableTestAssertion %} instead.
         </description>
         <priority>3</priority>
         <properties>
