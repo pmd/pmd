@@ -27,6 +27,15 @@ This is a {{ site.pmd.release_type }} release.
 
 ### API Changes
 
+#### Deprecated APIs
+
+##### Internal API
+
+Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0. You can identify
+them with the `@InternalApi` annotation. You'll also get a deprecation warning.
+
+* {% jdoc java::lang.java.rule.design.ExcessiveLengthRule %} (Java)
+
 ### External Contributions
 
 {% endtocmaker %}
