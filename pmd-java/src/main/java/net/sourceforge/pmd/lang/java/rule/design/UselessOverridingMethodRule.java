@@ -25,6 +25,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public class UselessOverridingMethodRule extends AbstractJavaRulechainRule {
@@ -58,7 +59,7 @@ public class UselessOverridingMethodRule extends AbstractJavaRulechainRule {
 
         // skip annotated methods
         if (!getProperty(IGNORE_ANNOTATIONS_DESCRIPTOR)
-            && node.getSymbolicAnnotations().stream().anyMatch(it -> it.isOfType(Override.class))) {
+            && node.getDeclaredAnnotations().any(it -> !TypeTestUtil.isA(Override.class, it))) {
             return null;
         }
 

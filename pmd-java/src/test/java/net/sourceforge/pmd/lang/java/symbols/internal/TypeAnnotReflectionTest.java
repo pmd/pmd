@@ -19,27 +19,23 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
-import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.symbols.testdata.ClassWithTypeAnnotationsInside;
 import net.sourceforge.pmd.lang.java.symbols.testdata.ClassWithTypeAnnotationsInside.A;
 import net.sourceforge.pmd.lang.java.types.JArrayType;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JWildcardType;
-import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
 /**
  *
  */
 public class TypeAnnotReflectionTest {
 
-    private final TypeSystem ts = JavaParsingHelper.TEST_TYPE_SYSTEM;
-
 
     @ParameterizedTest
     @EnumSource
     public void testTypeAnnotsOnFields(SymImplementation impl) {
 
-        JClassType sym = impl.getDeclaration(ts, ClassWithTypeAnnotationsInside.class);
+        JClassType sym = impl.getDeclaration(ClassWithTypeAnnotationsInside.class);
 
         assertHasTypeAnnots(getFieldType(sym, "intField"), ANNOT_A);
         assertHasTypeAnnots(getFieldType(sym, "annotOnList"), ANNOT_A);
@@ -72,7 +68,7 @@ public class TypeAnnotReflectionTest {
 
          */
 
-        JClassType sym = impl.getDeclaration(ts, ClassWithTypeAnnotationsInside.class);
+        JClassType sym = impl.getDeclaration(ClassWithTypeAnnotationsInside.class);
 
         {
             JArrayType t = (JArrayType) getFieldType(sym, "annotOnArrayComponent");
@@ -111,7 +107,7 @@ public class TypeAnnotReflectionTest {
     @EnumSource
     public void testInnerTypeAnnotsOnFields(SymImplementation impl) {
 
-        JClassType sym = impl.getDeclaration(ts, ClassWithTypeAnnotationsInside.class);
+        JClassType sym = impl.getDeclaration(ClassWithTypeAnnotationsInside.class);
 
         /*
     Outer. @A Inner1                    inner1WithAnnot;
@@ -158,7 +154,7 @@ public class TypeAnnotReflectionTest {
     @EnumSource
     public void testInnerTypeAnnotsWithGenerics(SymImplementation impl) {
 
-        JClassType sym = impl.getDeclaration(ts, ClassWithTypeAnnotationsInside.class);
+        JClassType sym = impl.getDeclaration(ClassWithTypeAnnotationsInside.class);
 
         /*
 
@@ -211,7 +207,7 @@ public class TypeAnnotReflectionTest {
     @EnumSource
     public void testTypeAnnotOnMultipleGenericsAndInner(SymImplementation impl) {
 
-        JClassType sym = impl.getDeclaration(ts, ClassWithTypeAnnotationsInside.class);
+        JClassType sym = impl.getDeclaration(ClassWithTypeAnnotationsInside.class);
 
         /*
 
@@ -234,7 +230,7 @@ public class TypeAnnotReflectionTest {
     @EnumSource
     public void testTypeAnnotOnWildcards(SymImplementation impl) {
 
-        JClassType sym = impl.getDeclaration(ts, ClassWithTypeAnnotationsInside.class);
+        JClassType sym = impl.getDeclaration(ClassWithTypeAnnotationsInside.class);
 
         /*
 

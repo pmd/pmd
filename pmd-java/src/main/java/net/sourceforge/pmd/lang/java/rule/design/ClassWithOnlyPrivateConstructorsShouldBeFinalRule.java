@@ -6,15 +6,12 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import static net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility.V_PRIVATE;
 
-import org.pcollections.PSet;
-
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
-import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymEnum;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 public class ClassWithOnlyPrivateConstructorsShouldBeFinalRule extends AbstractJavaRulechainRule {
@@ -37,13 +34,11 @@ public class ClassWithOnlyPrivateConstructorsShouldBeFinalRule extends AbstractJ
     }
 
     private boolean hasPublicLombokConstructors(ASTClassOrInterfaceDeclaration node) {
-        PSet<SymAnnot> annots = node.getSymbolicAnnotations();
-        SymEnum privateAccess = SymEnum.fromBinaryName(node.getTypeSystem(), "lombok.AccessLevel", "PRIVATE");
-        return annots.stream()
-                     .filter(it -> it.isOfType("lombok.NoArgsConstructor")
-                         || it.isOfType("lombok.RequiredArgsConstructor")
-                         || it.isOfType("lombok.AllArgsConstructor"))
-                     .anyMatch(it -> !it.attributeMatches("access", privateAccess).isTrue());
+        return node.getDeclaredAnnotations()
+                   .filter(it -> TypeTestUtil.isA("lombok.NoArgsConstructor", it)
+                       || TypeTestUtil.isA("lombok.RequiredArgsConstructor", it)
+                       || TypeTestUtil.isA("lombok.AllArgsConstructor", it))
+                   .any(it -> !it.getFlatValue("access").filterIs(ASTNamedReferenceExpr.class).any(ref -> ref.getName().equals("PRIVATE")));
     }
 
     private boolean hasNoSubclasses(ASTClassOrInterfaceDeclaration klass) {

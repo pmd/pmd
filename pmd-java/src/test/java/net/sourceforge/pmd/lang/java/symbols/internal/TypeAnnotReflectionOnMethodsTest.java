@@ -17,25 +17,21 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
-import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.symbols.testdata.ClassWithTypeAnnotationsOnMethods;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JIntersectionType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
-import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
 /**
  *
  */
 public class TypeAnnotReflectionOnMethodsTest {
 
-    private final TypeSystem ts = JavaParsingHelper.TEST_TYPE_SYSTEM;
-
 
     @ParameterizedTest
     @EnumSource
     public void testTypeAnnotOnParameter(SymImplementation impl) {
-        JClassType sym = impl.getDeclaration(ts, ClassWithTypeAnnotationsOnMethods.class);
+        JClassType sym = impl.getDeclaration(ClassWithTypeAnnotationsOnMethods.class);
 
         /*
             abstract void aOnIntParam(@A int i);
@@ -59,7 +55,7 @@ public class TypeAnnotReflectionOnMethodsTest {
     @ParameterizedTest
     @EnumSource
     public void testTypeAnnotOnReturn(SymImplementation impl) {
-        JClassType sym = impl.getDeclaration(ts, ClassWithTypeAnnotationsOnMethods.class);
+        JClassType sym = impl.getDeclaration(ClassWithTypeAnnotationsOnMethods.class);
 
         /*
             abstract @A @B String abOnReturn(@A String i);
@@ -81,7 +77,7 @@ public class TypeAnnotReflectionOnMethodsTest {
     @ParameterizedTest
     @EnumSource
     public void testTypeAnnotOnThrows(SymImplementation impl) {
-        JClassType sym = impl.getDeclaration(ts, ClassWithTypeAnnotationsOnMethods.class);
+        JClassType sym = impl.getDeclaration(ClassWithTypeAnnotationsOnMethods.class);
 
         /*
             abstract void aOnThrows() throws @A RuntimeException;
@@ -97,7 +93,7 @@ public class TypeAnnotReflectionOnMethodsTest {
     @ParameterizedTest
     @EnumSource
     public void testTypeAnnotOnTParam(SymImplementation impl) {
-        JClassType sym = impl.getDeclaration(ts, ClassWithTypeAnnotationsOnMethods.class);
+        JClassType sym = impl.getDeclaration(ClassWithTypeAnnotationsOnMethods.class);
 
         /*
 
@@ -126,7 +122,7 @@ public class TypeAnnotReflectionOnMethodsTest {
     @ParameterizedTest
     @EnumSource
     public void testTypeAnnotOnTParamBound(SymImplementation impl) {
-        JClassType sym = impl.getDeclaration(ts, ClassWithTypeAnnotationsOnMethods.class);
+        JClassType sym = impl.getDeclaration(ClassWithTypeAnnotationsOnMethods.class);
 
         /*
             abstract <@A T, E extends @B T> E bOnTypeParmBound(T t);
@@ -162,7 +158,7 @@ public class TypeAnnotReflectionOnMethodsTest {
     @ParameterizedTest
     @EnumSource
     public void testTypeAnnotOnReceiver(SymImplementation impl) {
-        JClassType sym = impl.getDeclaration(ts, ClassWithTypeAnnotationsOnMethods.class);
+        JClassType sym = impl.getDeclaration(ClassWithTypeAnnotationsOnMethods.class);
 
         /*
             abstract void abOnReceiver(@A @B ClassWithTypeAnnotationsOnMethods this);

@@ -9,7 +9,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.util.List;
+import java.util.Objects;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Assert;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -34,20 +36,21 @@ import net.sourceforge.pmd.lang.java.types.TypeSystem;
 public enum SymImplementation {
     ASM {
         @Override
-        public JClassSymbol getSymbol(TypeSystem ts, Class<?> aClass) {
-            return ts.getClassSymbol(aClass);
+        public @NonNull JClassSymbol getSymbol(Class<?> aClass) {
+            return Objects.requireNonNull(JavaParsingHelper.TEST_TYPE_SYSTEM.getClassSymbol(aClass), aClass.getName());
         }
     },
     AST {
         @Override
-        public JClassSymbol getSymbol(TypeSystem ts, Class<?> aClass) {
-            ASTCompilationUnit ast = JavaParsingHelper.DEFAULT.withTypeSystem(ts).parseClass(aClass);
-            return ast.getTypeDeclarations().first(it -> it.getSimpleName().equals(aClass.getSimpleName())).getSymbol();
+        public @NonNull JClassSymbol getSymbol(Class<?> aClass) {
+            ASTCompilationUnit ast = JavaParsingHelper.DEFAULT.parseClass(aClass);
+            JClassSymbol symbol = ast.getTypeDeclarations().first(it -> it.getSimpleName().equals(aClass.getSimpleName())).getSymbol();
+            return Objects.requireNonNull(symbol, aClass.getName());
         }
 
         @Override
-        public JClassType getDeclaration(TypeSystem ts, Class<?> aClass) {
-            ASTCompilationUnit ast = JavaParsingHelper.DEFAULT.withTypeSystem(ts).parseClass(aClass);
+        public JClassType getDeclaration(Class<?> aClass) {
+            ASTCompilationUnit ast = JavaParsingHelper.DEFAULT.parseClass(aClass);
             return ast.getTypeDeclarations().first(it -> it.getSimpleName().equals(aClass.getSimpleName())).getTypeMirror();
         }
 
@@ -61,10 +64,11 @@ public enum SymImplementation {
         return false;
     }
 
-    public abstract JClassSymbol getSymbol(TypeSystem ts, Class<?> aClass);
+    public abstract @NonNull JClassSymbol getSymbol(Class<?> aClass);
 
-    public JClassType getDeclaration(TypeSystem ts, Class<?> aClass) {
-        return (JClassType) ts.declaration(getSymbol(ts, aClass));
+    public JClassType getDeclaration(Class<?> aClass) {
+        JClassSymbol symbol = getSymbol(aClass);
+        return (JClassType) symbol.getTypeSystem().declaration(symbol);
     }
 
 
@@ -95,6 +99,9 @@ public enum SymImplementation {
         Assert.assertEquals(actualMethods.length, ms.size());
 
         for (final Method m : actualMethods) {
+            if (m.isSynthetic()) {
+                continue;
+            }
             JMethodSymbol mSym = ms.stream().filter(it -> it.getSimpleName().equals(m.getName()))
                                    .findFirst().orElseThrow(AssertionError::new);
 

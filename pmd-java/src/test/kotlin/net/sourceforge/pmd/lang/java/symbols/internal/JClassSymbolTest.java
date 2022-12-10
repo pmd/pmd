@@ -11,10 +11,8 @@ import java.lang.annotation.RetentionPolicy;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
-import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.testdata.TypeAnnotation;
-import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
 /**
  * Tests that test both AST and ASM symbols.
@@ -23,12 +21,10 @@ import net.sourceforge.pmd.lang.java.types.TypeSystem;
  */
 public class JClassSymbolTest {
 
-    private final TypeSystem ts = JavaParsingHelper.TEST_TYPE_SYSTEM;
-
     @EnumSource
     @ParameterizedTest
     void testAnnotationAttributes(SymImplementation impl) {
-        JClassSymbol sym = impl.getSymbol(ts, TypeAnnotation.class);
+        JClassSymbol sym = impl.getSymbol(TypeAnnotation.class);
 
         assertEquals(RetentionPolicy.RUNTIME, sym.getAnnotationRetention());
     }

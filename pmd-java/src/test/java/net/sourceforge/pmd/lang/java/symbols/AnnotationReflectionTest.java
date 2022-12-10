@@ -15,6 +15,9 @@ import static net.sourceforge.pmd.util.OptionalBool.YES;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
@@ -23,7 +26,6 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -41,11 +43,8 @@ import net.sourceforge.pmd.lang.java.symbols.testdata.LocalVarAnnotation;
 import net.sourceforge.pmd.lang.java.symbols.testdata.MethodAnnotation;
 import net.sourceforge.pmd.lang.java.symbols.testdata.ParameterAnnotation;
 import net.sourceforge.pmd.lang.java.symbols.testdata.SomeClass;
-import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
 public class AnnotationReflectionTest {
-
-    private final TypeSystem ts = JavaParsingHelper.TEST_TYPE_SYSTEM;
 
     public AnnotationReflectionTest() {
     }
@@ -55,9 +54,8 @@ public class AnnotationReflectionTest {
     @EnumSource
     public void testReflectionOfClassMethods(SymImplementation impl) {
         Class<SomeClass> actualClass = SomeClass.class;
-        JClassSymbol sym = impl.getSymbol(ts, actualClass);
+        JClassSymbol sym = impl.getSymbol(actualClass);
     
-        Assert.assertNotNull(sym);
         impl.assertAllMethodsMatch(actualClass, sym);
         impl.assertAllFieldsMatch(actualClass, sym);
     }
@@ -66,9 +64,8 @@ public class AnnotationReflectionTest {
     @EnumSource
     public void testReflectionOfAnnotDefaults(SymImplementation impl) {
         Class<AnnotWithDefaults> actualClass = AnnotWithDefaults.class;
-        JClassSymbol sym = impl.getSymbol(ts, actualClass);
+        JClassSymbol sym = impl.getSymbol(actualClass);
         
-        Assert.assertNotNull(sym);
         impl.assertAllMethodsMatch(actualClass, sym);
     }
 
@@ -82,23 +79,23 @@ public class AnnotationReflectionTest {
             @AnnotWithDefaults(valueNoDefault = "ohio",
                        stringArrayDefault = {})
          */
-        JClassSymbol sym = impl.getSymbol(ts, SomeClass.class);
+        JClassSymbol sym = impl.getSymbol(SomeClass.class);
 
-        Assert.assertTrue(sym.isAnnotationPresent(AnnotWithDefaults.class));
+        assertTrue(sym.isAnnotationPresent(AnnotWithDefaults.class));
 
         SymAnnot target = sym.getDeclaredAnnotation(AnnotWithDefaults.class);
 
         // explicit values are known
-        Assert.assertEquals(YES, target.attributeMatches("valueNoDefault", "ohio"));
-        Assert.assertEquals(YES, target.attributeMatches("stringArrayDefault", new String[] { }));
-        Assert.assertEquals(NO, target.attributeMatches("stringArrayDefault", "0"));
+        assertEquals(YES, target.attributeMatches("valueNoDefault", "ohio"));
+        assertEquals(YES, target.attributeMatches("stringArrayDefault", new String[] { }));
+        assertEquals(NO, target.attributeMatches("stringArrayDefault", "0"));
 
         // default values are also known
-        Assert.assertEquals(YES, target.attributeMatches("stringArrayEmptyDefault", new String[] { }));
-        Assert.assertEquals(NO, target.attributeMatches("stringArrayEmptyDefault", new String[] { "a" }));
+        assertEquals(YES, target.attributeMatches("stringArrayEmptyDefault", new String[] { }));
+        assertEquals(NO, target.attributeMatches("stringArrayEmptyDefault", new String[] { "a" }));
 
         // Non existing values are always considered unknown
-        Assert.assertEquals(UNKNOWN, target.attributeMatches("attributeDoesNotExist", new String[] { "a" }));
+        assertEquals(UNKNOWN, target.attributeMatches("attributeDoesNotExist", new String[] { "a" }));
     }
 
     @ParameterizedTest
@@ -106,7 +103,7 @@ public class AnnotationReflectionTest {
     public void testAnnotOnAnnot(SymImplementation impl) {
         // This only checks for Target.ANNOTATION_TYPE annotations
         Class<AnnotWithDefaults> actualClass = AnnotWithDefaults.class;
-        JClassSymbol sym = impl.getSymbol(ts, actualClass);
+        JClassSymbol sym = impl.getSymbol(actualClass);
 
         Target targetAnnot = createAnnotationInstance(Target.class, mapOf("value", new ElementType[] { ElementType.TYPE, ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD }));
         assertHasAnnotations(setOf(targetAnnot), sym);
@@ -117,7 +114,7 @@ public class AnnotationReflectionTest {
     public void testAnnotOnParameter(SymImplementation impl) {
         // This only checks Target.PARAMETER annotations, do not confuse with TYPE_PARAMETER / TYPE_USE
         Class<SomeClass> actualClass = SomeClass.class;
-        JClassSymbol sym = impl.getSymbol(ts, actualClass);
+        JClassSymbol sym = impl.getSymbol(actualClass);
 
         ParameterAnnotation annot = createAnnotationInstance(ParameterAnnotation.class);
 
@@ -131,7 +128,7 @@ public class AnnotationReflectionTest {
     public void testAnnotOnField(SymImplementation impl) {
         // This only checks Target.FIELD annotations, do not confuse with TYPE_USE annotations
         Class<SomeClass> actualClass = SomeClass.class;
-        JClassSymbol sym = impl.getSymbol(ts, actualClass);
+        JClassSymbol sym = impl.getSymbol(actualClass);
 
         JFieldSymbol f1 = sym.getDeclaredField("f1");
         assertHasAnnotations(setOf(createAnnotationInstance(FieldAnnotation.class)), f1);
@@ -142,7 +139,7 @@ public class AnnotationReflectionTest {
     public void testAnnotOnMethod(SymImplementation impl) {
         // This only checks Target.METHOD annotations, do not confuse with TYPE_USE on return types
         Class<SomeClass> actualClass = SomeClass.class;
-        JClassSymbol sym = impl.getSymbol(ts, actualClass);
+        JClassSymbol sym = impl.getSymbol(actualClass);
 
         JMethodSymbol method = getMethodSym(sym, "anotatedMethod");
         assertHasAnnotations(emptySet(), method.getFormalParameters().get(0));
@@ -154,7 +151,7 @@ public class AnnotationReflectionTest {
     public void testAnnotOnConstructor(SymImplementation impl) {
         // This only checks Target.CONSTRUCTOR annotations, do not confuse with TYPE_USE on return types
         Class<SomeClass> actualClass = SomeClass.class;
-        JClassSymbol sym = impl.getSymbol(ts, actualClass);
+        JClassSymbol sym = impl.getSymbol(actualClass);
 
         JConstructorSymbol ctor = sym.getConstructors().get(0);
         assertHasAnnotations(setOf(createAnnotationInstance(ConstructorAnnotation.class)), ctor);
@@ -163,7 +160,7 @@ public class AnnotationReflectionTest {
     @Test
     public void testAnnotOnLocalVar() {
         // This only checks Target.LOCAL_VAR annotations, do not confuse with TYPE_USE on return types
-        JClassSymbol sym = SymImplementation.AST.getSymbol(ts, SomeClass.class);
+        JClassSymbol sym = SymImplementation.AST.getSymbol(SomeClass.class);
 
         @NonNull JVariableSymbol localSym = Objects.requireNonNull(sym.tryGetNode())
                                                    .descendants(ASTVariableDeclaratorId.class)
@@ -189,23 +186,20 @@ public class AnnotationReflectionTest {
 
     }
 
-    protected SymbolicValue symValueOf(Object o) {
-        return SymbolicValue.of(ts, o);
-    }
-
     private void assertHasAnnotations(Set<? extends Annotation> expected, AnnotableSymbol annotable) {
+        assertNotNull(annotable);
         assertThat(annotable.getDeclaredAnnotations(), hasSize(expected.size()));
 
         for (Annotation annot : expected) {
             Class<? extends Annotation> annotType = annot.annotationType();
             SymAnnot symAnnot = annotable.getDeclaredAnnotation(annotType);
 
-            Assert.assertEquals(symValueOf(annot), symAnnot);
+            assertEquals(SymbolicValue.of(annotable.getTypeSystem(), annot), symAnnot);
 
-            Assert.assertTrue(annotable.isAnnotationPresent(annotType));
-            Assert.assertTrue(symAnnot.isOfType(annotType));
-            Assert.assertTrue(symAnnot.valueEquals(annot));
-            Assert.assertTrue(symAnnot.isOfType(annotType.getName()));
+            assertTrue(annotable.isAnnotationPresent(annotType));
+            assertTrue(symAnnot.isOfType(annotType));
+            assertTrue(symAnnot.valueEquals(annot));
+            assertTrue(symAnnot.isOfType(annotType.getName()));
         }
     }
 
