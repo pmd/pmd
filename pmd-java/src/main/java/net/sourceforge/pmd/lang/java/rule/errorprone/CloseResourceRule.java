@@ -199,7 +199,7 @@ public class CloseResourceRule extends AbstractJavaRule {
             .filterNot(ASTVariableDeclaratorId::isExceptionBlockParameter)
             .filter(this::isVariableNotSpecifiedInTryWithResource)
             .filter(var -> isResourceTypeOrSubtype(var) || isNodeInstanceOfResourceType(getTypeOfVariable(var)))
-            .filter(var -> var.getAnnotation("lombok.Cleanup") == null)
+            .filterNot(var -> var.isAnnotationPresent("lombok.Cleanup"))
             .toList();
 
         for (ASTVariableDeclaratorId var : vars) {

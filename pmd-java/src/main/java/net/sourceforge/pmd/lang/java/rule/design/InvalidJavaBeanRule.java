@@ -17,7 +17,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
-import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
@@ -34,10 +33,6 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.util.StringUtil;
 
 public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
-    private static final String LOMBOK_PACKAGE = "lombok";
-    private static final String LOMBOK_DATA = "Data";
-    private static final String LOMBOK_GETTER = "Getter";
-    private static final String LOMBOK_SETTER = "Setter";
 
     private static final PropertyDescriptor<Boolean> ENSURE_SERIALIZATION = PropertyFactory.booleanProperty("ensureSerialization")
             .desc("Require that beans implement java.io.Serializable.")
@@ -216,26 +211,16 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
         return constructorCount == 0;
     }
 
-    private static boolean hasLombokImport(Annotatable node) {
-        return node.getRoot().descendants(ASTImportDeclaration.class)
-                .filter(ASTImportDeclaration::isImportOnDemand)
-                .filterNot(ASTImportDeclaration::isStatic)
-                .any(i -> LOMBOK_PACKAGE.equals(i.getImportedName()));
-    }
-
     private static boolean hasLombokDataAnnotation(Annotatable node) {
-        return node.isAnnotationPresent(LOMBOK_PACKAGE + "." + LOMBOK_DATA)
-                || hasLombokImport(node) && node.isAnnotationPresent(LOMBOK_DATA);
+        return node.isAnnotationPresent("lombok.Data");
     }
 
     private static boolean hasLombokGetterAnnotation(Annotatable node) {
-        return node.isAnnotationPresent(LOMBOK_PACKAGE + "." + LOMBOK_GETTER)
-                || hasLombokImport(node) && node.isAnnotationPresent(LOMBOK_GETTER);
+        return node.isAnnotationPresent("lombok.Getter");
     }
 
     private static boolean hasLombokSetterAnnotation(Annotatable node) {
-        return node.isAnnotationPresent(LOMBOK_PACKAGE + "." + LOMBOK_SETTER)
-                || hasLombokImport(node) && node.isAnnotationPresent(LOMBOK_SETTER);
+        return node.isAnnotationPresent("lombok.Setter");
     }
 
     private static class PropertyInfo {

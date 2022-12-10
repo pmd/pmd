@@ -62,7 +62,7 @@ abstract class AbstractAstExecSymbol<T extends ASTMethodOrConstructorDeclaration
 
     @Override
     public PSet<SymAnnot> getDeclaredAnnotations() {
-        return SymbolResolutionPass.getSymbolicAnnotations(node);
+        return node.getSymbolicAnnotations();
     }
 
 

@@ -220,7 +220,7 @@ final class AstClassSym
     
     @Override
     public PSet<SymAnnot> getDeclaredAnnotations() {
-        return SymbolResolutionPass.getSymbolicAnnotations(node);
+        return node.getSymbolicAnnotations();
     }
 
     @Override

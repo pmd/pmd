@@ -6,24 +6,18 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import static net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility.V_PRIVATE;
 
-import java.util.List;
+import org.pcollections.PSet;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymEnum;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 public class ClassWithOnlyPrivateConstructorsShouldBeFinalRule extends AbstractJavaRulechainRule {
-
-    private static final String LOMBOK_VALUE = "lombok.Value";
-    public static final String LOMBOK_NO_ARGS_CONSTRUCTOR = "lombok.NoArgsConstructor";
-    public static final String LOMBOK_REQUIRED_ARGS_CONSTRUCTOR = "lombok.RequiredArgsConstructor";
-    public static final String LOMBOK_ALL_ARGS_CONSTRUCTOR = "lombok.AllArgsConstructor";
-    public static final String LOMBOK_PRIVATE_ACCESS = "PRIVATE";
 
     public ClassWithOnlyPrivateConstructorsShouldBeFinalRule() {
         super(ASTClassOrInterfaceDeclaration.class);
@@ -33,7 +27,7 @@ public class ClassWithOnlyPrivateConstructorsShouldBeFinalRule extends AbstractJ
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (node.isRegularClass()
             && !node.hasModifiers(JModifier.FINAL)
-            && !node.isAnnotationPresent(LOMBOK_VALUE)
+            && !node.isAnnotationPresent("lombok.Value")
             && !hasPublicLombokConstructors(node)
             && hasOnlyPrivateCtors(node)
             && hasNoSubclasses(node)) {
@@ -43,19 +37,13 @@ public class ClassWithOnlyPrivateConstructorsShouldBeFinalRule extends AbstractJ
     }
 
     private boolean hasPublicLombokConstructors(ASTClassOrInterfaceDeclaration node) {
-        List<ASTAnnotation> annotations = node.getDeclaredAnnotations()
-                .filter(t -> TypeTestUtil.isA(LOMBOK_NO_ARGS_CONSTRUCTOR, t)
-                        || TypeTestUtil.isA(LOMBOK_REQUIRED_ARGS_CONSTRUCTOR, t)
-                        || TypeTestUtil.isA(LOMBOK_ALL_ARGS_CONSTRUCTOR, t))
-                .toList();
-        return !annotations.isEmpty()
-                && annotations.stream().noneMatch(this::hasPrivateAccessModifierOption);
-    }
-
-    private boolean hasPrivateAccessModifierOption(ASTAnnotation annotation) {
-        return annotation.getFlatValue("access")
-                         .filterIs(ASTFieldAccess.class)
-                         .any(it -> LOMBOK_PRIVATE_ACCESS.equals(it.getName()));
+        PSet<SymAnnot> annots = node.getSymbolicAnnotations();
+        SymEnum privateAccess = SymEnum.fromBinaryName(node.getTypeSystem(), "lombok.AccessLevel", "PRIVATE");
+        return annots.stream()
+                     .filter(it -> it.isOfType("lombok.NoArgsConstructor")
+                         || it.isOfType("lombok.RequiredArgsConstructor")
+                         || it.isOfType("lombok.AllArgsConstructor"))
+                     .anyMatch(it -> !it.attributeMatches("access", privateAccess).isTrue());
     }
 
     private boolean hasNoSubclasses(ASTClassOrInterfaceDeclaration klass) {

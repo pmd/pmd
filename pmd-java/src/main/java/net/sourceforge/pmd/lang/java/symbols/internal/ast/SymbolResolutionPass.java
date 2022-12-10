@@ -9,9 +9,9 @@ import java.util.Objects;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.pcollections.PSet;
 
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.SymbolDeclaratorNode;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
@@ -48,12 +48,11 @@ public final class SymbolResolutionPass {
     }
 
     /**
-     * Return the annotations defined on the node. This converts between
-     * nodes to {@link SymAnnot}. Annotations that could not be converted,
+     * Converts between nodes to {@link SymAnnot}. Annotations that could not be converted,
      * eg because they are written with invalid code, are discarded.
      */
-    public static PSet<SymAnnot> getSymbolicAnnotations(Annotatable annotatable) {
-        return annotatable.getDeclaredAnnotations().toStream()
+    public static PSet<SymAnnot> buildSymbolicAnnotations(NodeStream<ASTAnnotation> annotations) {
+        return annotations.toStream()
                           .map(SymbolResolutionPass::toValidAnnotation)
                           .filter(Objects::nonNull)
                           .collect(CollectionUtil.toPersistentSet());

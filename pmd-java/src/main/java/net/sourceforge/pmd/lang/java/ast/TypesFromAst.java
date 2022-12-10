@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static net.sourceforge.pmd.lang.java.symbols.internal.ast.SymbolResolutionPass.getSymbolicAnnotations;
-
 import java.lang.annotation.ElementType;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -90,7 +88,7 @@ final class TypesFromAst {
             // we have to iterate in reverse
             for (int i = dimensions.size() - 1; i >= 0; i--) {
                 ASTArrayTypeDim dim = dimensions.get(i);
-                PSet<SymAnnot> annots = getSymbolicAnnotations(dim);
+                PSet<SymAnnot> annots = dim.getSymbolicAnnotations();
                 t = ts.arrayType(t).withAnnotations(annots);
             }
 
@@ -256,13 +254,13 @@ final class TypesFromAst {
     }
 
     private static PSet<SymAnnot> getTypeAnnotations(ASTType type) {
-        PSet<SymAnnot> annotsOnType = getSymbolicAnnotations(type);
+        PSet<SymAnnot> annotsOnType = type.getSymbolicAnnotations();
         if (type instanceof ASTClassOrInterfaceType && ((ASTClassOrInterfaceType) type).getQualifier() != null) {
             return annotsOnType; // annots on the declaration only apply to the leftmost qualifier
         }
         Annotatable parent = getEnclosingAnnotationGiver(type);
         if (parent != null) {
-            PSet<SymAnnot> parentAnnots = getSymbolicAnnotations(parent);
+            PSet<SymAnnot> parentAnnots = parent.getSymbolicAnnotations();
             for (SymAnnot parentAnnot : parentAnnots) {
                 // filter annotations by whether they apply to the type use.
                 if (parentAnnot.getAnnotationSymbol().annotationAppliesTo(ElementType.TYPE_USE)) {
