@@ -666,8 +666,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                 return true;
             }
             if (isImproperDMLCheck && !userMode && !systemMode) {
-                //addViolationWithMessage(data, node, "This CRUD statement uses explicit system mode");
-                addViolation(data, node);
+                addViolationWithMessage(data, node, "This CRUD statement uses explicit system mode");
                 return true;
             }
         } else {
