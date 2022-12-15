@@ -7,11 +7,8 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.util.Collection;
 
 import org.apache.commons.lang3.StringUtils;
-import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
-import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
-import net.sourceforge.pmd.lang.java.symbols.internal.ast.SymbolResolutionPass;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 /**
@@ -29,16 +26,6 @@ public interface Annotatable extends JavaNode {
      */
     default NodeStream<ASTAnnotation> getDeclaredAnnotations() {
         return children(ASTAnnotation.class);
-    }
-
-    /**
-     * Return the valid symbolic annotations defined on this node. This
-     * converts between nodes and {@link SymAnnot}. Annotations that
-     * could not be converted, eg because they are written with invalid
-     * code, are discarded.
-     */
-    default PSet<SymAnnot> getSymbolicAnnotations() {
-        return SymbolResolutionPass.buildSymbolicAnnotations(getDeclaredAnnotations());
     }
 
 

@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
+import net.sourceforge.pmd.lang.java.symbols.internal.ast.SymbolResolutionPass;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaResolvers;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
@@ -88,7 +89,7 @@ final class TypesFromAst {
             // we have to iterate in reverse
             for (int i = dimensions.size() - 1; i >= 0; i--) {
                 ASTArrayTypeDim dim = dimensions.get(i);
-                PSet<SymAnnot> annots = dim.getSymbolicAnnotations();
+                PSet<SymAnnot> annots = getSymbolicAnnotations(dim);
                 t = ts.arrayType(t).withAnnotations(annots);
             }
 
@@ -114,6 +115,12 @@ final class TypesFromAst {
 
         throw new IllegalStateException("Illegal type " + node.getClass() + " " + node);
     }
+
+
+    private static PSet<SymAnnot> getSymbolicAnnotations(Annotatable dim) {
+        return SymbolResolutionPass.buildSymbolicAnnotations(dim.getDeclaredAnnotations());
+    }
+
 
     private static JTypeMirror makeFromClassType(TypeSystem ts, ASTClassOrInterfaceType node, Substitution subst) {
         if (node == null) {
@@ -254,13 +261,13 @@ final class TypesFromAst {
     }
 
     private static PSet<SymAnnot> getTypeAnnotations(ASTType type) {
-        PSet<SymAnnot> annotsOnType = type.getSymbolicAnnotations();
+        PSet<SymAnnot> annotsOnType = getSymbolicAnnotations(type);
         if (type instanceof ASTClassOrInterfaceType && ((ASTClassOrInterfaceType) type).getQualifier() != null) {
             return annotsOnType; // annots on the declaration only apply to the leftmost qualifier
         }
         Annotatable parent = getEnclosingAnnotationGiver(type);
         if (parent != null) {
-            PSet<SymAnnot> parentAnnots = parent.getSymbolicAnnotations();
+            PSet<SymAnnot> parentAnnots = getSymbolicAnnotations(parent);
             for (SymAnnot parentAnnot : parentAnnots) {
                 // filter annotations by whether they apply to the type use.
                 if (parentAnnot.getAnnotationSymbol().annotationAppliesTo(ElementType.TYPE_USE)) {

@@ -265,7 +265,7 @@ public interface JClassSymbol extends JTypeDeclSymbol,
         if (!isAnnotation()) {
             return null;
         }
-        return Optional.of(getDeclaredAnnotation(Retention.class))
+        return Optional.ofNullable(getDeclaredAnnotation(Retention.class))
                        .map(annot -> annot.getAttribute("value"))
                        .filter(value -> value instanceof SymEnum)
                        .map(value -> ((SymEnum) value).toEnum(RetentionPolicy.class))

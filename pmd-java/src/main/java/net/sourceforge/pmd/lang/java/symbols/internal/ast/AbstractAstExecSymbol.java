@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
@@ -16,7 +15,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTReceiverParameter;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol;
-import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.util.CollectionUtil;
@@ -59,12 +57,6 @@ abstract class AbstractAstExecSymbol<T extends ASTMethodOrConstructorDeclaration
             t -> t.getTypeMirror().subst(subst)
         );
     }
-
-    @Override
-    public PSet<SymAnnot> getDeclaredAnnotations() {
-        return node.getSymbolicAnnotations();
-    }
-
 
     @Override
     public @Nullable JTypeMirror getAnnotatedReceiverType(Substitution subst) {

@@ -158,6 +158,7 @@ public final class ImplicitMemberSymbols {
         private final int modifiers;
         private final List<JFormalParamSymbol> formals;
 
+
         FakeExecutableSymBase(JClassSymbol owner,
                               String name,
                               int modifiers,

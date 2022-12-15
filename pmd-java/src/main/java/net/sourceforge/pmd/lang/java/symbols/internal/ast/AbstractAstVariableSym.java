@@ -6,12 +6,9 @@ package net.sourceforge.pmd.lang.java.symbols.internal.ast;
 
 import static net.sourceforge.pmd.lang.java.types.TypeOps.subst;
 
-import org.pcollections.PSet;
-
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
-import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 
@@ -34,11 +31,6 @@ abstract class AbstractAstVariableSym
     @Override
     public String getSimpleName() {
         return node.getVariableName();
-    }
-    
-    @Override
-    public PSet<SymAnnot> getDeclaredAnnotations() {
-        return node.getSymbolicAnnotations();
     }
 
     @Override

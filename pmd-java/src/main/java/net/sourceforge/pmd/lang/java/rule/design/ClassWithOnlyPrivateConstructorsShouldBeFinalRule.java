@@ -38,7 +38,7 @@ public class ClassWithOnlyPrivateConstructorsShouldBeFinalRule extends AbstractJ
                    .filter(it -> TypeTestUtil.isA("lombok.NoArgsConstructor", it)
                        || TypeTestUtil.isA("lombok.RequiredArgsConstructor", it)
                        || TypeTestUtil.isA("lombok.AllArgsConstructor", it))
-                   .any(it -> !it.getFlatValue("access").filterIs(ASTNamedReferenceExpr.class).any(ref -> ref.getName().equals("PRIVATE")));
+                   .any(it -> it.getFlatValue("access").filterIs(ASTNamedReferenceExpr.class).none(ref -> "PRIVATE".equals(ref.getName())));
     }
 
     private boolean hasNoSubclasses(ASTClassOrInterfaceDeclaration klass) {

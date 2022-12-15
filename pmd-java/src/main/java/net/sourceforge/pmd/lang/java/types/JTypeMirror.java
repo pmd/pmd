@@ -180,13 +180,16 @@ public interface JTypeMirror extends JTypeVisitable {
      * <ul>
      * <li>{@link JClassType}: a {@link JClassSymbol}, always (even if not reifiable)
      * <li>{@link JPrimitiveType}: a {@link JClassSymbol}, always
-     * <li>{@link JArrayType}: a {@link JClassSymbol}, if the element type does present a symbol
+     * <li>{@link JArrayType}: a {@link JClassSymbol}, if the element type does present a symbol.
      * <li>{@link JTypeVar}: a {@link JTypeParameterSymbol}, or null if this is a capture variable.
      * Note that the erasure yields a different symbol (eg Object for unbounded tvars).
      * <li>{@link JIntersectionType}: null, though their erasure always
      * presents a symbol.
      * <li>{@link JWildcardType}, {@link TypeSystem#NULL_TYPE the null type}: null, always
      * </ul>
+     *
+     * <p>Note that type annotations are not reflected on the
+     * symbol, but only on the type.
      */
     default @Nullable JTypeDeclSymbol getSymbol() {
         return null;

@@ -22,7 +22,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeVar;
  * @author Clément Fournier
  */
 abstract class AbstractAstTParamOwner<T extends TypeParamOwnerNode & AccessNode>
-    extends AbstractAstBackedSymbol<T> implements JTypeParameterOwnerSymbol {
+    extends AbstractAstAnnotableSym<T> implements JTypeParameterOwnerSymbol {
 
     private final List<JTypeVar> tparams;
     private final int modifiers;

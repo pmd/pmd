@@ -5,39 +5,28 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.pcollections.PSet;
 
-import net.sourceforge.pmd.lang.java.symbols.AnnotableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
-import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 
 
 /**
- * Abstract class for nodes that declare a symbol and can be annotated.
+ * Abstract class for type declarations nodes.
  */
-abstract class AbstractTypedSymbolDeclarator<T extends AnnotableSymbol>
+abstract class AbstractTypedSymbolDeclarator<T extends JElementSymbol>
     extends AbstractJavaTypeNode
-    implements SymbolDeclaratorNode, Annotatable {
+    implements SymbolDeclaratorNode {
 
     private T symbol;
-    private PSet<SymAnnot> annots;
 
     AbstractTypedSymbolDeclarator(int i) {
         super(i);
     }
 
+    @NonNull
     @Override
-    public @NonNull T getSymbol() {
+    public T getSymbol() {
         assertSymbolNotNull(symbol, this);
         return symbol;
-    }
-
-    @Override
-    public PSet<SymAnnot> getSymbolicAnnotations() {
-        if (annots == null) {
-            annots = Annotatable.super.getSymbolicAnnotations();
-        }
-        return annots;
     }
 
     static void assertSymbolNotNull(JElementSymbol symbol, SymbolDeclaratorNode node) {
