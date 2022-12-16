@@ -657,17 +657,17 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         boolean isImproperDMLCheck = !isProperESAPICheckForDML(typeCheck, crudMethod)
                 && !isProperAuthPatternBasedCheckForDML(typeCheck, crudMethod);
         boolean noSecurityEnforced = !isWithSecurityEnforced(node);
-        boolean userMode = isWithUserMode(node);
-        boolean systemMode = isWithSystemMode(node);
+        boolean noUserMode = !isWithUserMode(node);
+        boolean noSystemMode = !isWithSystemMode(node);
         if (missingKey) {
-            //if condition returns true, add violation, otherwise return.
-            if (isImproperDMLCheck && noSecurityEnforced) {
-                addViolation(data, node);
-                return true;
-            }
-            if (isImproperDMLCheck && !userMode && !systemMode) {
-                addViolationWithMessage(data, node, "This CRUD statement uses explicit system mode");
-                return true;
+            if (isImproperDMLCheck) {
+                if (noSecurityEnforced && noUserMode && noSystemMode) {
+                    addViolation(data, node);
+                    return true;
+                } else if (!noSystemMode) {
+                    addViolationWithMessage(data, node, "This CRUD statement uses explicit system mode without validating CRUD permissions");
+                    return true;
+                }
             }
         } else {
             boolean properChecksHappened = false;

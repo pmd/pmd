@@ -5,8 +5,7 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
-        <description>Scheduled classes don't need crud, run as system
-        </description>
+        <description>Scheduled classes don't need crud, run as system</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 class FooBatchJob implements Database.Batchable < sObject > , Database.Stateful {
@@ -79,8 +78,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Proper CRUD checks for Aggregate Result return
-        </description>
+        <description>Proper CRUD checks for Aggregate Result return</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -97,13 +95,16 @@ public class Foo {
     <test-code>
         <description>Not a getter</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public Contact getFoo(ID tempID) {
          Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
          return c;
     }
-
 }
         ]]></code>
     </test-code>
@@ -125,6 +126,11 @@ public class Foo {
     <test-code>
         <description>No CRUD check for inline upsert</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,3</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public void foo() {
@@ -151,6 +157,11 @@ public class Foo {
     <test-code>
         <description>No CRUD check for inline upsert with database class</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,3</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public void foo() {
@@ -163,6 +174,11 @@ public class Foo {
     <test-code>
         <description>VF built-in CRUD checks via getter, but cannot determine if is really VF</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,10</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public Contact getFoo() {
@@ -173,7 +189,7 @@ public class Foo {
 
     public Contact getBaz() {
         String tempID = 'someID';
-         return  [SELECT Name FROM Contact WHERE Id=:tempID];
+        return [SELECT Name FROM Contact WHERE Id=:tempID];
     }
 }
         ]]></code>
@@ -198,19 +214,23 @@ public class Foo {
     <test-code>
         <description>No CRUD,FLS via sObject property</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public Contact contactProperty { get; set; }
 
     public void foo(String tempID) {
-             contactProperty = [SELECT Name FROM Contact WHERE Id=:tempID];
+         contactProperty = [SELECT Name FROM Contact WHERE Id=:tempID];
     }
 }
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>Proper FLS check </description>
+        <description>Proper FLS check</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -227,7 +247,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Proper FLS fall-through check </description>
+        <description>Proper FLS fall-through check</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -243,8 +263,12 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Improper accessibility CRUD </description>
+        <description>Improper accessibility CRUD</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public Contact foo(String tempID) {
@@ -256,7 +280,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Accepts Closure SECURITY ENFORCED </description>
+        <description>Accepts Closure SECURITY ENFORCED</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -269,7 +293,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Accepts Closure SECURITY ENFORCED Line Break </description>
+        <description>Accepts Closure SECURITY ENFORCED Line Break</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -283,7 +307,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Accepts Closure SECURITY ENFORCED in a List </description>
+        <description>Accepts Closure SECURITY ENFORCED in a List</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -310,7 +334,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Accepts Closure SECURITY ENFORCED with Case Insensitivity </description>
+        <description>Accepts Closure SECURITY ENFORCED with Case Insensitivity</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -323,7 +347,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Accepts Closure SECURITY ENFORCED with Case Insensitivity Line Break </description>
+        <description>Accepts Closure SECURITY ENFORCED with Case Insensitivity Line Break</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -337,8 +361,12 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Accepts Closure SECURITY ENFORCED Not Secured </description>
+        <description>Accepts Closure SECURITY ENFORCED Not Secured</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public Contact foo() {
@@ -350,7 +378,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Accepts Closure SECURITY ENFORCED Secured </description>
+        <description>Accepts Closure SECURITY ENFORCED Secured</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -363,7 +391,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Accepts Closure SECURITY ENFORCED Secured Line Break </description>
+        <description>Accepts Closure SECURITY ENFORCED Secured Line Break</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -379,11 +407,15 @@ public class Foo {
     <test-code>
         <description>Flagged as Critical With No Mode</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class User {
     public void coverAllCasesWithTest() {
         Contact c;
-		c = [SELECT Name FROM Contact];
+        c = [SELECT Name FROM Contact];
     }
 }
         ]]></code>
@@ -396,7 +428,7 @@ public class User {
 public class User {
     public void coverAllCasesWithTest() {
         Contact c;
-		c = [SELECT Name FROM Contact WITH USER_MODE];
+        c = [SELECT Name FROM Contact WITH USER_MODE];
     }
 }
         ]]></code>
@@ -404,22 +436,38 @@ public class User {
 
     <test-code>
         <description>System Mode, gives warning because it ignores CRUD but explicitly</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <expected-messages>
-            <message>This CRUD statement uses explicit system mode</message>
+            <message>This CRUD statement uses explicit system mode without validating CRUD permissions</message>
         </expected-messages>
         <code><![CDATA[
 public class User {
     public void coverAllCasesWithTest() {
         Contact c;
-		c = [SELECT Name FROM Contact WITH SYSTEM_MODE];
+        c = [SELECT Name FROM Contact WITH SYSTEM_MODE];
     }
 }
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>Proper accessibility CRUD,FLS </description>
+        <description>Explicit system Mode, no warning, because CRUD permissions are checked</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class User {
+    public void coverAllCasesWithTest() {
+        if (Contact.sObjectType.getDescribe().isAccessible()) {
+            Contact c;
+            c = [SELECT Name FROM Contact WITH SYSTEM_MODE];
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper accessibility CRUD,FLS</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -447,15 +495,17 @@ public class Foo {
             insert MyWriteOnlyProp;
         }
     }
-
 }
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>No CRUD,FLS via sObject property, write is not protected
-        </description>
+        <description>No CRUD,FLS via sObject property, write is not protected</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public Contact MyWriteOnlyProp { get; set; }
@@ -469,8 +519,12 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>No CRUD,FLS for List insertion </description>
+        <description>No CRUD,FLS for List insertion</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public List<Contact> MyWriteOnlyProp { get; set; }
@@ -484,17 +538,17 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Proper CRUD,FLS for List insertion </description>
+        <description>Proper CRUD,FLS for List insertion</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     public List<Contact> MyWriteOnlyProp { get; set; }
 
     public void foo(String newName, String tempID) {
-            MyWriteOnlyProp.add(new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414'));
-            if(Contact.sObjectType.getDescribe().isCreateable()) {
-                insert MyWriteOnlyProp;
-            }
+        MyWriteOnlyProp.add(new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414'));
+        if(Contact.sObjectType.getDescribe().isCreateable()) {
+            insert MyWriteOnlyProp;
+        }
     }
 }
         ]]></code>
@@ -503,13 +557,17 @@ public class Foo {
     <test-code>
         <description>No CRUD,FLS via String property</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public String nameProperty { get; set; }
 
     public void foo(String tempID) {
-             Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
-            nameProperty = c.Name;
+        Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
+        nameProperty = c.Name;
     }
 }
         ]]></code>
@@ -533,6 +591,10 @@ public class Foo {
     <test-code>
         <description>Partial CRUD,FLS via upsert</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public void foo(String newName, String tempID) {
@@ -546,8 +608,13 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description> No CRUD,FLS via upsert</description>
+        <description>No CRUD,FLS via upsert</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,4</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public void foo(String newName, String tempID) {
@@ -561,6 +628,11 @@ public class Foo {
     <test-code>
         <description>Improper CRUD,FLS via ESAPI 1</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,9</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public void foo(String newName, String tempID) {
@@ -599,6 +671,11 @@ public class Foo {
     <test-code>
         <description>Improper CRUD,FLS via ESAPI 2</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,9</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public void foo(String newName, String tempID) {
@@ -637,6 +714,11 @@ public class Foo {
     <test-code>
         <description>No CRUD,FLS check for update</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,5</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public void foo(String newName, String tempID) {
@@ -671,6 +753,11 @@ public class Foo {
     <test-code>
         <description>No CRUD,FLS check for update with database class</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,5</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public void foo(String newName, String tempID) {
@@ -705,6 +792,10 @@ public class Foo {
     <test-code>
         <description>No CRUD check for insert</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public void foo() {
@@ -733,6 +824,10 @@ public class Foo {
     <test-code>
         <description>No CRUD check for insert with database class</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public void foo() {
@@ -761,11 +856,16 @@ public class Foo {
     <test-code>
         <description>No CRUD check for delete</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,4</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public void bar(String contactId) {
-            Contact toDelete = [SELECT Id FROM Contact WHERE Id=: contactId];
-            delete toDelete;
+        Contact toDelete = [SELECT Id FROM Contact WHERE Id=: contactId];
+        delete toDelete;
     }
 }
         ]]></code>
@@ -791,11 +891,16 @@ public class Foo {
     <test-code>
         <description>No CRUD check for delete with database class</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,4</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public void bar(String contactId) {
-            Contact toDelete = [SELECT Id FROM Contact WHERE Id=: contactId];
-            Database.delete(toDelete);
+        Contact toDelete = [SELECT Id FROM Contact WHERE Id=: contactId];
+        Database.delete(toDelete);
     }
 }
         ]]></code>
@@ -893,8 +998,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Control flow constructor based CRUD,FLS check
-        </description>
+        <description>Control flow constructor based CRUD,FLS check</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -957,11 +1061,15 @@ public class Foo {
     <test-code>
         <description>Forgot to call the CRUD check</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public Contact justGiveMeFoo() {
         String tempID = 'someID';
-         return [SELECT Name FROM Contact WHERE Id=:tempID];
+        return [SELECT Name FROM Contact WHERE Id=:tempID];
     }
 
     private void checkPerms() {
@@ -976,6 +1084,10 @@ public class Foo {
     <test-code>
         <description>Control flow substitute CRUD check should fail when check follows SOQL</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     private void bar() {
@@ -1018,19 +1130,26 @@ public class Foo {
     <test-code>
         <description>Count does expose data and CRUD checks are necessary</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public Integer getBaz() {
-         return  [SELECT count() FROM Contact];
+         return [SELECT count() FROM Contact];
     }
 }
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>Count does leak data and CRUD checks are necessary
-        </description>
+        <description>Count does leak data and CRUD checks are necessary</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public void getBaz() {
@@ -1043,6 +1162,10 @@ public class Foo {
     <test-code>
         <description>Field detection</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class MyProfilePageController {
     private User currentUser;
@@ -1080,11 +1203,15 @@ public class Foo {
     <test-code>
         <description>No CRUD check in SOQL for-loop</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     void bar() {
         for (Account a : [SELECT Id FROM Account]) {
-        
+            // loop body
         }
     }
 }
@@ -1094,6 +1221,10 @@ public class Foo {
     <test-code>
         <description>No CRUD check inside for-each loop</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     void bar() {
@@ -1130,7 +1261,7 @@ public class Foo {
 public class Foo {
     void bar() {
         for (Account a : [SELECT Id FROM Account WITH SECURITY_ENFORCED]) {
-            
+            // loop body
         }
     }
 }
@@ -1145,7 +1276,7 @@ public class Foo {
     void bar() {
         if (Account.sObjectType.getDescribe().isAccessible()) {
             for (Account a : [SELECT Id FROM Account]) {
-                
+                // loop body
             }
         }
     }
@@ -1156,6 +1287,10 @@ public class Foo {
     <test-code>
         <description>No CRUD,FLS for inline no-args object</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public void foo() {
@@ -1171,7 +1306,7 @@ public class Foo {
         <code><![CDATA[
 public class Foo {
     public void foo(String newName, String tempID) {
-        if(Account.sObjectType.getDescribe().isCreateable()) {
+        if (Account.sObjectType.getDescribe().isCreateable()) {
             insert new Account();
         }
     }
@@ -1182,6 +1317,10 @@ public class Foo {
     <test-code>
         <description>No CRUD,FLS for inline literal list</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public void foo() {
@@ -1197,7 +1336,7 @@ public class Foo {
         <code><![CDATA[
 public class Foo {
     public void foo(String newName, String tempID) {
-        if(Account.sObjectType.getDescribe().isCreateable()) {
+        if (Account.sObjectType.getDescribe().isCreateable()) {
             insert new Account[]{new Account(Name = 'X')};
         }
     }
@@ -1208,6 +1347,10 @@ public class Foo {
     <test-code>
         <description>No CRUD,FLS for inline initialized list</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public void foo() {
@@ -1223,7 +1366,7 @@ public class Foo {
         <code><![CDATA[
 public class Foo {
     public void foo(String newName, String tempID) {
-        if(Account.sObjectType.getDescribe().isCreateable()) {
+        if (Account.sObjectType.getDescribe().isCreateable()) {
             insert new List<Account>(new Account(Name = 'X'));
         }
     }
@@ -1237,6 +1380,10 @@ public class Foo {
         <description>#3576 - Verify use of createAuthMethodPattern, negative test</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>4,8</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public void foo() {
@@ -1273,6 +1420,10 @@ public class Foo {
         <description>#3576 - Verify use of readAuthMethodPattern, negative test</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>4,9</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public void foo() {
@@ -1311,6 +1462,10 @@ public class Foo {
         <description>#3576 - Verify use of updateAuthMethodPattern, negative test</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>4,8</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public void foo() {
@@ -1347,6 +1502,12 @@ public class Foo {
         <description>#3576 - Verify use of createAuthMethodPattern and updateAuthMethodPattern for upsert, negative test</description>
         <expected-problems>4</expected-problems>
         <expected-linenumbers>4,4,8,8</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public void foo() {
@@ -1384,6 +1545,10 @@ public class Foo {
         <description>#3576 - Verify use of deleteAuthMethodPattern, negative test</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>4,8</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public void foo() {
@@ -1420,6 +1585,10 @@ public class Foo {
         <description>#3576 - Verify use of undeleteAuthMethodPattern, negative test</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>4,8</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public void foo() {
@@ -1456,6 +1625,10 @@ public class Foo {
         <description>#3576 - Verify use of mergeAuthMethodPattern, negative test</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>7,11</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public void foo() {
