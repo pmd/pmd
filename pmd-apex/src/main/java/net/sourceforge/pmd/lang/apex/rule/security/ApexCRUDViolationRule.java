@@ -664,9 +664,6 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                 if (noSecurityEnforced && noUserMode && noSystemMode) {
                     addViolation(data, node);
                     return true;
-                } else if (!noSystemMode) {
-                    addViolationWithMessage(data, node, "This CRUD statement uses explicit system mode without validating CRUD permissions");
-                    return true;
                 }
             }
         } else {

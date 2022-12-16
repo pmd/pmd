@@ -435,12 +435,8 @@ public class User {
     </test-code>
 
     <test-code>
-        <description>System Mode, gives warning because it ignores CRUD but explicitly</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>4</expected-linenumbers>
-        <expected-messages>
-            <message>This CRUD statement uses explicit system mode without validating CRUD permissions</message>
-        </expected-messages>
+        <description>Explicit System Mode, gives no warning because it ignores CRUD but explicitly</description>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class User {
     public void coverAllCasesWithTest() {
