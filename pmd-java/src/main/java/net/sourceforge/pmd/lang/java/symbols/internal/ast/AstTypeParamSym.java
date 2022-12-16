@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
 
 final class AstTypeParamSym
-    extends AbstractAstBackedSymbol<ASTTypeParameter>
+    extends AbstractAstAnnotableSym<ASTTypeParameter>
     implements JTypeParameterSymbol {
 
     private final JTypeVar tvar;
