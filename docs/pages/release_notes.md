@@ -16,7 +16,7 @@ This is a {{ site.pmd.release_type }} release.
 
 #### Modified rules
 
-* The Java rule {% rule java/bestpractices/UnusedPrivateField %} has a new property `annotations`.
+* The Java rule {% rule java/bestpractices/UnusedPrivateField %} has a new property `reportForAnnotations`.
   This is a list of fully qualified names of the annotation types that should be reported anyway. If an unused field
   has any of these annotations, then it is reported. If it has any other annotation, then it is still considered 
   to be used and is not reported.

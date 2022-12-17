@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 import static net.sourceforge.pmd.properties.PropertyFactory.stringListProperty;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -54,18 +53,18 @@ public class UnusedPrivateFieldRule extends AbstractJavaRule {
                     .desc("Field Names that are ignored from the unused check")
                     .build();
 
-    private static final PropertyDescriptor<List<String>> ANNOTATIONS_DESCRIPTOR
-            = stringListProperty("annotations")
+    private static final PropertyDescriptor<List<String>> REPORT_FOR_ANNOTATIONS_DESCRIPTOR
+            = stringListProperty("reportForAnnotations")
             .desc("Fully qualified names of the annotation types that should be reported anyway. If an unused field "
                     + "has any of these annotations, then it is reported. If it has any other annotation, then "
                     + "it is still considered to used and is not reported.")
-            .defaultValue(Arrays.asList("org.openqa.selenium.support.FindBy"))
+            .defaultValue(new ArrayList<String>())
             .build();
 
     public UnusedPrivateFieldRule() {
         definePropertyDescriptor(IGNORED_ANNOTATIONS_DESCRIPTOR);
         definePropertyDescriptor(IGNORED_FIELD_NAMES);
-        definePropertyDescriptor(ANNOTATIONS_DESCRIPTOR);
+        definePropertyDescriptor(REPORT_FOR_ANNOTATIONS_DESCRIPTOR);
     }
 
     @Override
@@ -107,7 +106,7 @@ public class UnusedPrivateFieldRule extends AbstractJavaRule {
 
     private boolean hasAnyAnnotation(Annotatable node) {
         List<ASTAnnotation> annotations = node.getDeclaredAnnotations();
-        for (String reportAnnotation : getProperty(ANNOTATIONS_DESCRIPTOR)) {
+        for (String reportAnnotation : getProperty(REPORT_FOR_ANNOTATIONS_DESCRIPTOR)) {
             for (ASTAnnotation annotation : annotations) {
                 if (TypeTestUtil.isA(reportAnnotation, annotation)) {
                     return false;
