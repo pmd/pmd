@@ -34,10 +34,9 @@ This is a {{ site.pmd.release_type }} release.
 
 #### Deprecated APIs
 
-##### Internal API
+##### For removal
 
-Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0. You can identify
-them with the `@InternalApi` annotation. You'll also get a deprecation warning.
+These classes / APIs have been deprecated and will be removed with PMD 7.0.0.
 
 * {% jdoc java::lang.java.rule.design.ExcessiveLengthRule %} (Java)
 

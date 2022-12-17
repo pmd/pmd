@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractStatisticalJavaRule;
 import net.sourceforge.pmd.stat.DataPoint;
@@ -20,7 +19,6 @@ import net.sourceforge.pmd.stat.DataPoint;
  * @deprecated This base class is not needed anymore and will be removed with PMD 7.
  */
 @Deprecated
-@InternalApi
 public class ExcessiveLengthRule extends AbstractStatisticalJavaRule {
     private Class<?> nodeClass;
 
