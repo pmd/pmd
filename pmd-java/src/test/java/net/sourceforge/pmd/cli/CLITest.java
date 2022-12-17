@@ -6,6 +6,7 @@ package net.sourceforge.pmd.cli;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -80,6 +81,7 @@ public class CLITest extends BaseCLITest {
         String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_WITH_VIOLATION, "--no-progress", };
         String log = runTest(StatusCode.VIOLATIONS_FOUND, args);
         assertThat(log, containsString("Violation from test-rset-1.xml"));
+        assertThat(log, not(containsPattern("Adding file .*"))); // not in debug mode
     }
 
     @Test
