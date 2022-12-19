@@ -15,6 +15,8 @@ This is a {{ site.pmd.release_type }} release.
 ### New and noteworthy
 
 ### Fixed Issues
+* java-errorprone
+    * [#4164](https://github.com/pmd/pmd/issues/4164): \[java]\[doc] AvoidAssertAsIdentifier and AvoidEnumAsIdentifier - clarify use case
 
 ### API Changes
 
