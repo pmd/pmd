@@ -1666,8 +1666,12 @@ Hard-wiring these values greatly compromises the security of encrypted data.</p>
 <p><strong>Priority:</strong> Medium (3)</p>
 
 <p>The rule validates you are checking for access permissions before a SOQL/SOSL/DML operation.
-Since Apex runs in system mode not having proper permissions checks results in escalation of
+Since Apex runs by default in system mode not having proper permissions checks results in escalation of
 privilege and may produce runtime errors. This check forces you to handle such scenarios.</p>
+
+<p>Since Winter ‘23 (API Version 56) you can enforce user mode for database operations by using
+<code class="language-plaintext highlighter-rouge">WITH USER_MODE</code> in SOQL. This makes Apex to respect Field-level security (FLS) and object
+permissions of the running user. When using user mode, no violation is reported by this rule.</p>
 
 <p>By default, the rule allows access checks can be performed using system Apex provisions such as
 <code class="language-plaintext highlighter-rouge">DescribeSObjectResult.isAccessible/Createable/etc.</code>, the SOQL <code class="language-plaintext highlighter-rouge">WITH SECURITY_ENFORCED</code> clause,
@@ -2458,7 +2462,7 @@ to avoid XSS attacks.</p>
         <div class="col-lg-12 footer">
             &copy;2022 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Dec 15, 2022 <br />
+             Site last generated: Dec 19, 2022 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>
