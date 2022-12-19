@@ -330,4 +330,18 @@ public class Foo {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>False positives without literal booleans</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void func(int x, int y) {
+        do {
+            System.out.println("Testing");
+        } while (x==0 || y==2);
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

@@ -2209,16 +2209,18 @@ a block `{}` is sufficient.
 //DoStatement[Expression/(InclusiveOrExpression|ConditionalOrExpression|(PrimaryExpression/PrimaryPrefix/Expression/(InclusiveOrExpression|ConditionalOrExpression)))
     (: at least one true literal :)
     [count(PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral[@True = true()]) >= 1
-      (: or no var access - that means, we have only boolean literals here :)
-      or count(PrimaryExpression/PrimaryPrefix/Name) = 0
+      (: or only boolean literal and no no var access :)
+      or count(PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral) >= 1
+      and count(PrimaryExpression/PrimaryPrefix/Name) = 0
     ]]
 |
 (: do-while loops with conditional and'ed boolean literals, maybe parenthesized :)
 //DoStatement[Expression/(AndExpression|ConditionalAndExpression|(PrimaryExpression/PrimaryPrefix/Expression/(AndExpression|ConditionalAndExpression)))
     (: at least one false literal :)
     [count(PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral[@True = false()]) >= 1
-      (: or no var access - that means, we have only boolean literals here :)
-      or count(PrimaryExpression/PrimaryPrefix/Name) = 0
+      (: or only boolean literal and no no var access :)
+      or count(PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral) >= 1
+      and count(PrimaryExpression/PrimaryPrefix/Name) = 0
     ]]
 ]]>
                 </value>
