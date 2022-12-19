@@ -157,10 +157,12 @@ Also, EJBs might be moved between machines in a cluster and only managed resourc
                 <value>
 <![CDATA[
 //ClassOrInterfaceType[pmd-java:typeIs('java.lang.Thread') or pmd-java:typeIs('java.util.concurrent.ExecutorService')]
-    (: exclude types which have an initializer calling a constructor :)
-    [not((ancestor::FieldDeclaration|ancestor::LocalVariableDeclaration)/VariableDeclarator/VariableInitializer//AllocationExpression)]
+    (: exclude duplicated types on the same line :)
+    [not((../../../../FieldDeclaration|../../../../LocalVariableDeclaration)/VariableDeclarator/VariableInitializer//AllocationExpression/ClassOrInterfaceType[pmd-java:typeIs('java.lang.Thread')])
+     or
+      @BeginLine != (../../../../FieldDeclaration|../../../../LocalVariableDeclaration)/VariableDeclarator/VariableInitializer//AllocationExpression/ClassOrInterfaceType[pmd-java:typeIs('java.lang.Thread')]/@BeginLine]
     (: exclude constructor call chains :)
-    [not(parent::AllocationExpression)]
+    [not(parent::AllocationExpression/ClassOrInterfaceType[pmd-java:typeIs('java.lang.Thread')])]
 |
 //AllocationExpression/ClassOrInterfaceType[pmd-java:typeIs('java.lang.Thread')]
 |

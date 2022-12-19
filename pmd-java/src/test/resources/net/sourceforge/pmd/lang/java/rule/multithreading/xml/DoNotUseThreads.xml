@@ -134,32 +134,60 @@ public final class Test {
 
     <test-code>
         <description>False negatives with field declarations</description>
-        <expected-problems>10</expected-problems>
-        <expected-linenumbers>5,6,7,8,11,15,16,19,20,23</expected-linenumbers>
+        <expected-problems>19</expected-problems>
+        <expected-linenumbers>6,7,8,9,13,14,20,26,30,31,33,34,37,38,42,43,47,48,51</expected-linenumbers>
         <code><![CDATA[
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
 
 class DoNotUseThreadsTest {
-    private Thread background; // violation expected
-    private ScheduledExecutorService scheduledExecutor; // violation expected
-    private ForkJoinPool pool; // violation expected
-    private final Thread owner = Thread.currentThread(); // violation expected
+    private Thread background;                           // 6: violation expected
+    private ScheduledExecutorService scheduledExecutor;  // 7: violation expected
+    private ForkJoinPool pool;                           // 8: violation expected
+    private final Thread owner = Thread.currentThread(); // 9: violation expected
+
+    static final ThreadFactory threadFactory1 = new ThreadFactory() {
+        @Override
+        public Thread newThread(final Runnable r) {      // 13: violation expected
+            return new Thread(r);                        // 14: violation expected
+        }
+    };
+
+    static final ThreadFactory threadFactory2 = new ThreadFactory() {
+        @Override
+        public Thread newThread(final Runnable r) {      // 20: violation expected
+            return null;
+        }
+    };
 
     DoNotUseThreadsTest() {
-        this.background = new Thread(); // violation expected
+        this.background = new Thread();                  // 26: violation expected
     }
 
     public void run() {
-        new Thread(() -> System.out.println("foo")).start(); // violation expected
-        Thread t2 = new Thread(); // one violation expected
+        new Thread(() -> System.out.println("foo")).start(); // 30: violation expected
+        Thread t2 = new Thread();                            // 31: one violation expected
+        // report two violations, if on two separate lines
+        Thread t3 =                                          // 33: violation expected
+            new Thread();                                    // 34: violation expected
     }
 
-    public Thread getThread() { // violation expected
-        return new Thread(); // violation expected
+    public Thread getThread() {                         // 37: violation expected
+        return new Thread();                            // 38: violation expected
     }
 
-    private static class MyThread extends Thread { } // violation expected
+    @Override
+    public Thread getThread1() {                        // 42: violation expected
+        return new Thread();                            // 43: violation expected
+    }
+
+    @Override
+    public Thread getThread2(final Runnable r) {        // 47: violation expected
+        return new Thread(r);                           // 48: violation expected
+    }
+
+    private static class MyThread extends Thread { }    // 51: violation expected
 }
 ]]></code>
     </test-code>
