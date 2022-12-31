@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
@@ -25,9 +26,18 @@ public class UnusedPrivateFieldRule extends AbstractJavaRulechainRule {
                     .desc("Field Names that are ignored from the unused check")
                     .build();
 
+    private static final PropertyDescriptor<List<String>> REPORT_FOR_ANNOTATIONS_DESCRIPTOR
+            = PropertyFactory.stringListProperty("reportForAnnotations")
+            .desc("Fully qualified names of the annotation types that should be reported anyway. If an unused field "
+                    + "has any of these annotations, then it is reported. If it has any other annotation, then "
+                    + "it is still considered to used and is not reported.")
+            .defaultValue(new ArrayList<String>())
+            .build();
+
     public UnusedPrivateFieldRule() {
         super(ASTAnyTypeDeclaration.class);
         definePropertyDescriptor(IGNORED_FIELD_NAMES);
+        definePropertyDescriptor(REPORT_FOR_ANNOTATIONS_DESCRIPTOR);
     }
 
     @Override

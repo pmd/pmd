@@ -7042,6 +7042,25 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "Tarush-Singh35",
+      "name": "Tarush Singh",
+      "avatar_url": "https://avatars.githubusercontent.com/u/86368099?v=4",
+      "profile": "https://www.linkedin.com/in/tarush-singh-46763819b",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "kdebski85",
+      "name": "kdebski85",
+      "avatar_url": "https://avatars.githubusercontent.com/u/9674813?v=4",
+      "profile": "https://github.com/kdebski85",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
