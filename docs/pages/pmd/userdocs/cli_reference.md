@@ -27,7 +27,8 @@ The tool comes with a rather extensive help text, simply running with `--help`!
     %}
     {% include custom/cli_option_row.html options="--dir,-d"
                option_arg="path"
-               description="Root directory for the analyzed sources."
+               description="Root directory for sources to be analyzed. This can be a single file name, a directory,
+                            or a jar or zip file containing the sources."
                required="yes"
     %}
     {% include custom/cli_option_row.html options="--format,-f"
