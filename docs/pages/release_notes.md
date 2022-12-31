@@ -17,6 +17,8 @@ This is a {{ site.pmd.release_type }} release.
 ### Fixed Issues
 * apex-security
     * [#4146](https://github.com/pmd/pmd/issues/4146): \[apex] ApexCRUDViolation: Recognize User Mode in SOQL + DML
+* java-multithreading
+    * [#4210](https://github.com/pmd/pmd/issues/4210): \[java] DoNotUseThreads report duplicate warnings
 
 ### API Changes
 
