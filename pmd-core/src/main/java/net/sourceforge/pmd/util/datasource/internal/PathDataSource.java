@@ -19,6 +19,7 @@ import net.sourceforge.pmd.internal.util.ShortFilenameUtil;
  * DataSource implementation to read data from a {@link java.nio.file.Path}.
  * This can also be a Path inside a zip file.
  */
+//TODO This class (and all other DataSources) can be probably removed with PMD 7 in favor of TextFile
 public class PathDataSource extends AbstractDataSource {
     private final Path path;
 
