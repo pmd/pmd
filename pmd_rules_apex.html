@@ -1683,7 +1683,7 @@
   <li><a href="pmd_rules_apex_performance.html#avoiddebugstatements">AvoidDebugStatements</a>: Debug statements contribute to longer transactions and consume Apex CPU time even when debug logs…</li>
   <li><a href="pmd_rules_apex_performance.html#avoiddmlstatementsinloops">AvoidDmlStatementsInLoops</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Avoid DML statements inside loops to avoid hitting the DML governor limit. Instead, try to batch …</li>
   <li><a href="pmd_rules_apex_performance.html#avoidsoqlinloops">AvoidSoqlInLoops</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> New objects created within loops should be checked to see if they can created outside them and re…</li>
-  <li><a href="pmd_rules_apex_performance.html#avoidsoslinloops">AvoidSoslInLoops</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Sosl calls within loops can cause governor limit exceptions. This rule is deprecated and will be …</li>
+  <li><a href="pmd_rules_apex_performance.html#avoidsoslinloops">AvoidSoslInLoops</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Sosl calls within loops can cause governor limit exceptions. <em>Note:</em> This rule is deprecated sinc…</li>
   <li><a href="pmd_rules_apex_performance.html#eagerlyloadeddescribesobjectresult">EagerlyLoadedDescribeSObjectResult</a>: This rule finds ‘DescribeSObjectResult’s which could have been loaded eagerly via ‘SObjectType.ge…</li>
   <li><a href="pmd_rules_apex_performance.html#operationwithlimitsinloop">OperationWithLimitsInLoop</a>: Database class methods, DML operations, SOQL queries, SOSL queries, Approval class methods, Email…</li>
 </ul>
@@ -1829,7 +1829,7 @@
         <div class="col-lg-12 footer">
             &copy;2022 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Dec 19, 2022 <br />
+             Site last generated: Dec 31, 2022 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>

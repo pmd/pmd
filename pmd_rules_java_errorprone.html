@@ -1774,7 +1774,13 @@ suppression methods (e.g. by using <code class="language-plaintext highlighter-r
 
 <p><strong>Priority:</strong> Medium High (2)</p>
 
-<p>Use of the term ‘assert’ will conflict with newer versions of Java since it is a reserved word.</p>
+<p><strong>Maximum Language Version:</strong> Java 1.3</p>
+
+<p>Use of the term <code class="language-plaintext highlighter-rouge">assert</code> will conflict with newer versions of Java since it is a reserved word.</p>
+
+<p>Since Java 1.4, the token <code class="language-plaintext highlighter-rouge">assert</code> became a reserved word and using it as an identifier will
+result in a compilation failure for Java 1.4 and later. This rule is therefore only useful
+for old Java code before Java 1.4. It can be used to identify problematic code prior to a Java update.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">VariableDeclaratorId</span><span class="p">[</span><span class="na">@Name</span><span class="err">=</span><span class="s1">'assert'</span><span class="p">]</span><span class="w">
@@ -2085,7 +2091,13 @@ exactly equal to 0.1, as one would expect.  Therefore, it is generally recommend
 
 <p><strong>Priority:</strong> Medium High (2)</p>
 
-<p>Use of the term ‘enum’ will conflict with newer versions of Java since it is a reserved word.</p>
+<p><strong>Maximum Language Version:</strong> Java 1.4</p>
+
+<p>Use of the term <code class="language-plaintext highlighter-rouge">enum</code> will conflict with newer versions of Java since it is a reserved word.</p>
+
+<p>Since Java 1.5, the token <code class="language-plaintext highlighter-rouge">enum</code> became a reserved word and using it as an identifier will
+result in a compilation failure for Java 1.5 and later. This rule is therefore only useful
+for old Java code before Java 1.5. It can be used to identify problematic code prior to a Java update.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">VariableDeclaratorId</span><span class="p">[</span><span class="na">@Name</span><span class="err">=</span><span class="s1">'enum'</span><span class="p">]</span><span class="w">
@@ -2446,7 +2458,7 @@ value is the NaN value, one should instead use <code class="language-plaintext h
 Finally, comparisons like <code class="language-plaintext highlighter-rouge">someDouble &lt;= Double.NaN</code> are nonsensical
 and will always evaluate to false.</p>
 
-<p>This rule has been renamed from "BadComparison" with PMD 6.36.0.</p>
+<p>This rule has been renamed from "BadComparison" in PMD 6.36.0.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="o">//</span><span class="nt">EqualityExpression</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="o">//</span><span class="nt">RelationalExpression</span><span class="p">)</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="na">@Image</span><span class="err">=</span><span class="s1">'Double.NaN'</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="na">@Image</span><span class="err">=</span><span class="s1">'Float.NaN'</span><span class="p">]</span><span class="w">
@@ -2839,7 +2851,8 @@ of the clone method doesn’t need to cast the returned clone to the correct typ
 
 <p>The method clone() should throw a CloneNotSupportedException.</p>
 
-<p>This rule is deprecated since PMD 6.35.0 without replacement. The rule has no real value as
+<p><em>Note:</em> This rule is deprecated since PMD 6.35.0 and will be removed with PMD 7.0.0 without replacement.
+The rule has no real value as
 <code class="language-plaintext highlighter-rouge">CloneNotSupportedException</code> is a checked exception and therefore you need to deal with it while
 implementing the <code class="language-plaintext highlighter-rouge">clone()</code> method. You either need to declare the exception or catch it. If you catch it,
 then subclasses can’t throw it themselves explicitly. However, <code class="language-plaintext highlighter-rouge">Object.clone()</code> will still throw this
@@ -3071,7 +3084,7 @@ value is the NaN value, one should instead use <code class="language-plaintext h
 Finally, comparisons like <code class="language-plaintext highlighter-rouge">someDouble &lt;= Double.NaN</code> are nonsensical
 and will always evaluate to false.</p>
 
-<p>This rule has been renamed from "BadComparison" with PMD 6.36.0.</p>
+<p>This rule has been renamed from "BadComparison" in PMD 6.36.0.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="o">//</span><span class="nt">EqualityExpression</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="o">//</span><span class="nt">RelationalExpression</span><span class="p">)</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="na">@Image</span><span class="err">=</span><span class="s1">'Double.NaN'</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="na">@Image</span><span class="err">=</span><span class="s1">'Float.NaN'</span><span class="p">]</span><span class="w">
@@ -3144,7 +3157,8 @@ From those informations there can be found various problems.</p>
   <li>DD - Anomaly: A recently defined variable is redefined. This is ominous but don’t have to be a bug.</li>
 </ol>
 
-<p>This rule is deprecated. Use <a href="pmd_rules_java_bestpractices.html#unusedassignment"><code class="language-plaintext highlighter-rouge">UnusedAssignment</code></a> in category bestpractices instead.</p>
+<p><em>Note:</em> This rule is deprecated since PMD 6.27.0 and will be removed with PMD 7.0.0. The rule is replaced
+by the rule <a href="pmd_rules_java_bestpractices.html#unusedassignment"><code class="language-plaintext highlighter-rouge">UnusedAssignment</code></a>.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/DataflowAnomalyAnalysisRule.java">net.sourceforge.pmd.lang.java.rule.errorprone.DataflowAnomalyAnalysisRule</a></p>
 
@@ -3316,7 +3330,7 @@ running on the same application server.</p>
 
 <p>This rule also checks for the equivalent calls <code class="language-plaintext highlighter-rouge">Runtime.getRuntime().exit()</code> and <code class="language-plaintext highlighter-rouge">Runtime.getRuntime().halt()</code>.</p>
 
-<p>This rule was called <em>DoNotCallSystemExit</em> until PMD 6.29.0.</p>
+<p>This rule has been renamed from "DoNotCallSystemExit" in PMD 6.29.0.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">Name</span><span class="p">[</span><span class="w">
@@ -3401,7 +3415,7 @@ running on the same application server.</p>
 
 <p>This rule also checks for the equivalent calls <code class="language-plaintext highlighter-rouge">Runtime.getRuntime().exit()</code> and <code class="language-plaintext highlighter-rouge">Runtime.getRuntime().halt()</code>.</p>
 
-<p>This rule was called <em>DoNotCallSystemExit</em> until PMD 6.29.0.</p>
+<p>This rule has been renamed from "DoNotCallSystemExit" in PMD 6.29.0.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">Name</span><span class="p">[</span><span class="w">
@@ -3618,8 +3632,8 @@ or reported.</p>
 
 <p>Empty finally blocks serve no purpose and should be removed.</p>
 
-<p>This rule is deprecated since PMD 6.46.0. Use the rule <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a>
-from category codestyle instead.</p>
+<p><em>Note:</em> This rule is deprecated since PMD 6.46.0 and will be removed with PMD 7.0.0.
+Use the rule <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a> from category codestyle instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">FinallyStatement</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">Block</span><span class="o">/</span><span class="nt">BlockStatement</span><span class="p">)]</span><span class="w">
@@ -3652,8 +3666,8 @@ from category codestyle instead.</p>
 
 <p>Empty If Statement finds instances where a condition is checked but nothing is done about it.</p>
 
-<p>This rule is deprecated since PMD 6.46.0. Use the rule <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a>
-from category codestyle instead.</p>
+<p><em>Note:</em> This rule is deprecated since PMD 6.46.0 and will be removed with PMD 7.0.0.
+Use the rule <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a> from category codestyle instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">IfStatement</span><span class="o">/</span><span class="nt">Statement</span><span class="w">
@@ -3685,8 +3699,8 @@ from category codestyle instead.</p>
 
 <p>Empty initializers serve no purpose and should be removed.</p>
 
-<p>This rule is deprecated since PMD 6.46.0. Use the rule <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a>
-from category codestyle instead.</p>
+<p><em>Note:</em> This rule is deprecated since PMD 6.46.0 and will be removed with PMD 7.0.0.
+Use the rule <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a> from category codestyle instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">Initializer</span><span class="o">/</span><span class="nt">Block</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="err">*</span><span class="p">)]</span><span class="w">
@@ -3717,8 +3731,8 @@ from category codestyle instead.</p>
 
 <p>Empty block statements serve no purpose and should be removed.</p>
 
-<p>This rule is deprecated since PMD 6.46.0. Use the rule <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a>
-from category codestyle instead.</p>
+<p><em>Note:</em> This rule is deprecated since PMD 6.46.0 and will be removed with PMD 7.0.0.
+Use the rule <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a> from category codestyle instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">BlockStatement</span><span class="o">/</span><span class="nt">Statement</span><span class="o">/</span><span class="nt">Block</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="err">*</span><span class="p">)]</span><span class="w">
@@ -3744,6 +3758,8 @@ from category codestyle instead.</p>
 
 <h2 id="emptystatementnotinloop">EmptyStatementNotInLoop</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 1.5</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
@@ -3751,6 +3767,9 @@ from category codestyle instead.</p>
 <p>An empty statement (or a semicolon by itself) that is not used as the sole body of a ‘for’
 or ‘while’ loop is probably a bug.  It could also be a double semicolon, which has no purpose
 and should be removed.</p>
+
+<p><em>Note:</em> This rule is deprecated since PMD 6.53.0 and will be removed with PMD 7.0.0.
+Use the rule <a href="pmd_rules_java_codestyle.html#unnecessarysemicolon"><code class="language-plaintext highlighter-rouge">UnnecessarySemicolon</code></a> instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">EmptyStatement</span><span class="w">
@@ -3789,8 +3808,8 @@ and should be removed.</p>
 
 <p>Empty switch statements serve no purpose and should be removed.#</p>
 
-<p>This rule is deprecated since PMD 6.46.0. Use the rule <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a>
-from category codestyle instead.</p>
+<p><em>Note:</em> This rule is deprecated since PMD 6.46.0 and will be removed with PMD 7.0.0.
+Use the rule <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a> from category codestyle instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">SwitchStatement</span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="err">*</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">1</span><span class="p">]</span><span class="w">
@@ -3821,8 +3840,8 @@ from category codestyle instead.</p>
 
 <p>Empty synchronized blocks serve no purpose and should be removed.</p>
 
-<p>This rule is deprecated since PMD 6.46.0. Use the rule <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a>
-from category codestyle instead.</p>
+<p><em>Note:</em> This rule is deprecated since PMD 6.46.0 and will be removed with PMD 7.0.0.
+Use the rule <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a> from category codestyle instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">SynchronizedStatement</span><span class="o">/</span><span class="nt">Block</span><span class="p">[</span><span class="m">1</span><span class="p">][</span><span class="ow">not</span><span class="p">(</span><span class="err">*</span><span class="p">)]</span><span class="w">
@@ -3853,8 +3872,8 @@ from category codestyle instead.</p>
 
 <p>Avoid empty try blocks - what’s the point?</p>
 
-<p>This rule is deprecated since PMD 6.46.0. Use the rule <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a>
-from category codestyle instead.</p>
+<p><em>Note:</em> This rule is deprecated since PMD 6.46.0 and will be removed with PMD 7.0.0.
+Use the rule <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a> from category codestyle instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">TryStatement</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">ResourceSpecification</span><span class="p">)]</span><span class="o">/</span><span class="nt">Block</span><span class="p">[</span><span class="m">1</span><span class="p">][</span><span class="ow">not</span><span class="p">(</span><span class="err">*</span><span class="p">)]</span><span class="w">
@@ -3888,8 +3907,8 @@ from category codestyle instead.</p>
 If it is a timing loop, then you should use Thread.sleep() for it; if it is
 a while loop that does a lot in the exit expression, rewrite it to make it clearer.</p>
 
-<p>This rule is deprecated since PMD 6.46.0. Use the rule <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a>
-from category codestyle instead.</p>
+<p><em>Note:</em> This rule is deprecated since PMD 6.46.0 and will be removed with PMD 7.0.0.
+Use the rule <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a> from category codestyle instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">WhileStatement</span><span class="o">/</span><span class="nt">Statement</span><span class="p">[</span><span class="nt">Block</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="err">*</span><span class="p">)]</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nt">EmptyStatement</span><span class="p">]</span><span class="w">
@@ -4102,7 +4121,7 @@ other classes may invoke it at inappropriate times.</p>
 <p>Switch statements without break or return statements for each case option
 may indicate problematic behaviour. Empty cases are ignored as these indicate an intentional fall-through.</p>
 
-<p>This rule has been renamed from "MissingBreakInSwitch" with PMD 6.37.0.</p>
+<p>This rule has been renamed from "MissingBreakInSwitch" in PMD 6.37.0.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">SwitchStatement</span><span class="w">
@@ -4151,8 +4170,8 @@ may indicate problematic behaviour. Empty cases are ignored as these indicate an
 
 <p>There is no need to import a type that lives in the same package.</p>
 
-<p>This rule is deprecated since PMD 6.34.0. Use the rule <a href="pmd_rules_java_codestyle.html#unnecessaryimport"><code class="language-plaintext highlighter-rouge">UnnecessaryImport</code></a>
-from category codestyle instead.</p>
+<p><em>Note:</em> This rule is deprecated since PMD 6.34.0 and will be removed with PMD 7.0.0.
+Use the rule <a href="pmd_rules_java_codestyle.html#unnecessaryimport"><code class="language-plaintext highlighter-rouge">UnnecessaryImport</code></a> from category codestyle instead.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/ImportFromSamePackageRule.java">net.sourceforge.pmd.lang.java.rule.errorprone.ImportFromSamePackageRule</a></p>
 
@@ -4211,6 +4230,8 @@ from category codestyle instead.</p>
 <p>Since 6.32.0 in addition to parameterized message placeholders (<code class="language-plaintext highlighter-rouge">{}</code>) also format specifiers of string formatted
 messages are supported (<code class="language-plaintext highlighter-rouge">%s</code>).</p>
 
+<p>This rule has been renamed from "InvalidSlf4jMessageFormat" in PMD 6.19.0.</p>
+
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/InvalidLogMessageFormatRule.java">net.sourceforge.pmd.lang.java.rule.errorprone.InvalidLogMessageFormatRule</a></p>
 
 <p><strong>Example(s):</strong></p>
@@ -4241,6 +4262,8 @@ messages are supported (<code class="language-plaintext highlighter-rouge">%s</c
 
 <p>Since 6.32.0 in addition to parameterized message placeholders (<code class="language-plaintext highlighter-rouge">{}</code>) also format specifiers of string formatted
 messages are supported (<code class="language-plaintext highlighter-rouge">%s</code>).</p>
+
+<p>This rule has been renamed from "InvalidSlf4jMessageFormat" in PMD 6.19.0.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/InvalidLogMessageFormatRule.java">net.sourceforge.pmd.lang.java.rule.errorprone.InvalidLogMessageFormatRule</a></p>
 
@@ -4350,7 +4373,7 @@ You should not misspell method name if you want your test to set up and clean up
 
 <p>In most cases, the Logger reference can be declared as static and final.</p>
 
-<p>This rule is deprecated and will be removed with PMD 7.0.0.
+<p><em>Note:</em> This rule is deprecated since PMD 6.15.0 and will be removed with PMD 7.0.0.
 The rule is replaced by <a href="pmd_rules_java_errorprone.html#properlogger"><code class="language-plaintext highlighter-rouge">ProperLogger</code></a>.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
@@ -4473,7 +4496,7 @@ Either the check is useless (the variable will never be "null") or it is incorre
 <p>Switch statements without break or return statements for each case option
 may indicate problematic behaviour. Empty cases are ignored as these indicate an intentional fall-through.</p>
 
-<p>This rule has been renamed from "MissingBreakInSwitch" with PMD 6.37.0.</p>
+<p>This rule has been renamed from "MissingBreakInSwitch" in PMD 6.37.0.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">SwitchStatement</span><span class="w">
@@ -5027,7 +5050,8 @@ with the restriction that the logger needs to be passed into the constructor.</p
 null reference. This removes the need for null checking all results and avoids inadvertent
 NullPointerExceptions.</p>
 
-<p>Deprecated since PMD 6.37.0, use <a href="pmd_rules_java_errorprone.html#returnemptycollectionratherthannull"><code class="language-plaintext highlighter-rouge">ReturnEmptyCollectionRatherThanNull</code></a> instead.</p>
+<p><em>Note:</em> This rule is deprecated since PMD 6.37.0 and will be removed with PMD 7.0.0.
+Use <a href="pmd_rules_java_errorprone.html#returnemptycollectionratherthannull"><code class="language-plaintext highlighter-rouge">ReturnEmptyCollectionRatherThanNull</code></a> instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="w">
@@ -5884,7 +5908,7 @@ Thread.currentThread().getContextClassLoader() instead.</p>
         <div class="col-lg-12 footer">
             &copy;2022 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Dec 19, 2022 <br />
+             Site last generated: Dec 31, 2022 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>

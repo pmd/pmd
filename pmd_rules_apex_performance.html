@@ -1683,7 +1683,7 @@
 
 <p>Avoid DML statements inside loops to avoid hitting the DML governor limit. Instead, try to batch up the data into a list and invoke your DML once on that list of data outside the loop.</p>
 
-<p>This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+<p><em>Note:</em> This rule is deprecated since PMD 6.29.0 and will be removed with PMD 7.0.0. The rule is replaced
 by the more general rule <a href="pmd_rules_apex_performance.html#operationwithlimitsinloop"><code class="language-plaintext highlighter-rouge">OperationWithLimitsInLoop</code></a>.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/performance/AvoidDmlStatementsInLoopsRule.java">net.sourceforge.pmd.lang.apex.rule.performance.AvoidDmlStatementsInLoopsRule</a></p>
@@ -1748,7 +1748,7 @@ by the more general rule <a href="pmd_rules_apex_performance.html#operationwithl
 
 <p>New objects created within loops should be checked to see if they can created outside them and reused.</p>
 
-<p>This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+<p><em>Note:</em> This rule is deprecated since PMD 6.29.0 and will be removed with PMD 7.0.0. The rule is replaced
 by the more general rule <a href="pmd_rules_apex_performance.html#operationwithlimitsinloop"><code class="language-plaintext highlighter-rouge">OperationWithLimitsInLoop</code></a>.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/performance/AvoidSoqlInLoopsRule.java">net.sourceforge.pmd.lang.apex.rule.performance.AvoidSoqlInLoopsRule</a></p>
@@ -1811,7 +1811,7 @@ by the more general rule <a href="pmd_rules_apex_performance.html#operationwithl
 
 <p>Sosl calls within loops can cause governor limit exceptions.</p>
 
-<p>This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+<p><em>Note:</em> This rule is deprecated since PMD 6.29.0 and will be removed with PMD 7.0.0. The rule is replaced
 by the more general rule <a href="pmd_rules_apex_performance.html#operationwithlimitsinloop"><code class="language-plaintext highlighter-rouge">OperationWithLimitsInLoop</code></a>.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/performance/AvoidSoslInLoopsRule.java">net.sourceforge.pmd.lang.apex.rule.performance.AvoidSoslInLoopsRule</a></p>
@@ -2111,7 +2111,7 @@ to be consistent across different contexts and API versions.</p>
         <div class="col-lg-12 footer">
             &copy;2022 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Dec 19, 2022 <br />
+             Site last generated: Dec 31, 2022 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>

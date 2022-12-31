@@ -3017,7 +3017,8 @@ can lead to quite messy code. This rule looks for several declarations on the sa
 <p>Position literals first in comparisons, if the second argument is null then NullPointerExceptions
 can be avoided, they will just return false.</p>
 
-<p>This rule is replaced by the more general rule <a href="pmd_rules_java_bestpractices.html#literalsfirstincomparisons"><code class="language-plaintext highlighter-rouge">LiteralsFirstInComparisons</code></a>.</p>
+<p><em>Note:</em> This rule is deprecated since PMD 6.24.0 and will be removed with PMD 7.0.0. The rule is replaced
+by the more general rule <a href="pmd_rules_java_bestpractices.html#literalsfirstincomparisons"><code class="language-plaintext highlighter-rouge">LiteralsFirstInComparisons</code></a>.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/PositionLiteralsFirstInCaseInsensitiveComparisonsRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.PositionLiteralsFirstInCaseInsensitiveComparisonsRule</a></p>
 
@@ -3045,7 +3046,8 @@ can be avoided, they will just return false.</p>
 <p>Position literals first in comparisons, if the second argument is null then NullPointerExceptions
 can be avoided, they will just return false.</p>
 
-<p>This rule is replaced by the more general rule <a href="pmd_rules_java_bestpractices.html#literalsfirstincomparisons"><code class="language-plaintext highlighter-rouge">LiteralsFirstInComparisons</code></a>.</p>
+<p><em>Note:</em> This rule is deprecated since PMD 6.24.0 and will be removed with PMD 7.0.0. The rule is replaced
+by the more general rule <a href="pmd_rules_java_bestpractices.html#literalsfirstincomparisons"><code class="language-plaintext highlighter-rouge">LiteralsFirstInComparisons</code></a>.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/PositionLiteralsFirstInComparisonsRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.PositionLiteralsFirstInComparisonsRule</a></p>
 
@@ -3553,8 +3555,8 @@ Hence, by default, this rule only considers private methods. To include non-priv
 duplicate imports, and imports from the same package. The simplest fix is just
 to delete those imports.</p>
 
-<p>This rule is deprecated since PMD 6.34.0. Use the rule <a href="pmd_rules_java_codestyle.html#unnecessaryimport"><code class="language-plaintext highlighter-rouge">UnnecessaryImport</code></a>
-from category codestyle instead.</p>
+<p><em>Note:</em> This rule is deprecated since PMD 6.34.0 and will be removed with PMD 7.0.0.
+Use the rule <a href="pmd_rules_java_codestyle.html#unnecessaryimport"><code class="language-plaintext highlighter-rouge">UnnecessaryImport</code></a> from category codestyle instead.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/UnusedImportsRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedImportsRule</a></p>
 
@@ -3646,6 +3648,12 @@ Previously these frameworks where explicitly allowed by listing their annotation
       <td>Field Names that are ignored from the unused check</td>
       <td>yes. Delimiter is ‘|’.</td>
     </tr>
+    <tr>
+      <td>reportForAnnotations</td>
+      <td> </td>
+      <td>Fully qualified names of the annotation types that should be reported anyway. If an unused field has any of these annotations, then it is reported. If it has any other annotation, then it is still considered to used and is not reported.</td>
+      <td>yes. Delimiter is ‘|’.</td>
+    </tr>
   </tbody>
 </table>
 
@@ -3657,6 +3665,7 @@ Previously these frameworks where explicitly allowed by listing their annotation
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/UnusedPrivateField"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;properties&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"ignoredFieldNames"</span> <span class="na">value=</span><span class="s">"serialVersionUID|serialPersistentFields"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"reportForAnnotations"</span> <span class="na">value=</span><span class="s">""</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
@@ -3721,7 +3730,8 @@ Previously these frameworks where explicitly allowed by listing their annotation
 
 <p>This rule detects JUnit assertions in object equality. These assertions should be made by more specific methods, like assertEquals.</p>
 
-<p>Deprecated since PMD 6.37.0, use <a href="pmd_rules_java_bestpractices.html#simplifiabletestassertion"><code class="language-plaintext highlighter-rouge">SimplifiableTestAssertion</code></a> instead.</p>
+<p><em>Note:</em> This rule is deprecated since PMD 6.37.0 and will be removed with PMD 7.0.0.
+Use <a href="pmd_rules_java_bestpractices.html#simplifiabletestassertion"><code class="language-plaintext highlighter-rouge">SimplifiableTestAssertion</code></a> instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="w">
@@ -3769,7 +3779,8 @@ Previously these frameworks where explicitly allowed by listing their annotation
 <p>This rule detects JUnit assertions in object references equality. These assertions should be made by
 more specific methods, like assertNull, assertNotNull.</p>
 
-<p>Deprecated since PMD 6.37.0, use <a href="pmd_rules_java_bestpractices.html#simplifiabletestassertion"><code class="language-plaintext highlighter-rouge">SimplifiableTestAssertion</code></a> instead.</p>
+<p><em>Note:</em> This rule is deprecated since PMD 6.37.0 and will be removed with PMD 7.0.0.
+Use <a href="pmd_rules_java_bestpractices.html#simplifiabletestassertion"><code class="language-plaintext highlighter-rouge">SimplifiableTestAssertion</code></a> instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="w">
@@ -3820,7 +3831,8 @@ more specific methods, like assertNull, assertNotNull.</p>
 <p>This rule detects JUnit assertions in object references equality. These assertions should be made
 by more specific methods, like assertSame, assertNotSame.</p>
 
-<p>Deprecated since PMD 6.37.0, use <a href="pmd_rules_java_bestpractices.html#simplifiabletestassertion"><code class="language-plaintext highlighter-rouge">SimplifiableTestAssertion</code></a> instead.</p>
+<p><em>Note:</em> This rule is deprecated since PMD 6.37.0 and will be removed with PMD 7.0.0.
+Use <a href="pmd_rules_java_bestpractices.html#simplifiabletestassertion"><code class="language-plaintext highlighter-rouge">SimplifiableTestAssertion</code></a> instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="w">
@@ -3868,7 +3880,8 @@ by more specific methods, like assertSame, assertNotSame.</p>
 
 <p>When asserting a value is the same as a literal or Boxed boolean, use assertTrue/assertFalse, instead of assertEquals.</p>
 
-<p>Deprecated since PMD 6.37.0, use <a href="pmd_rules_java_bestpractices.html#simplifiabletestassertion"><code class="language-plaintext highlighter-rouge">SimplifiableTestAssertion</code></a> instead.</p>
+<p><em>Note:</em> This rule is deprecated since PMD 6.37.0 and will be removed with PMD 7.0.0.
+Use <a href="pmd_rules_java_bestpractices.html#simplifiabletestassertion"><code class="language-plaintext highlighter-rouge">SimplifiableTestAssertion</code></a> instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">PrimaryExpression</span><span class="p">[</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'assertEquals'</span><span class="p">]]</span><span class="w">
@@ -4120,15 +4133,16 @@ a block <code class="language-plaintext highlighter-rouge">{}</code> is sufficie
 <p><code class="language-plaintext highlighter-rouge">while (false) {}</code> will never execute the block and can be removed in its entirety.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">(: while loops with single boolean literal, maybe parenthesized :)</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">(: while loops with single boolean literal 'false', maybe parenthesized :)</span><span class="w">
 </span><span class="o">//</span><span class="nt">WhileStatement</span><span class="p">[</span><span class="nt">Expression</span><span class="err">/</span><span class="p">(.|(</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Expression</span><span class="p">))</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Literal</span><span class="o">/</span><span class="nt">BooleanLiteral</span><span class="p">[</span><span class="na">@True</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]]</span><span class="w">
 </span><span class="p">|</span><span class="w">
-</span><span class="c">(: do-while loops with single boolean literal, maybe parenthesized :)</span><span class="w">
+</span><span class="c">(: do-while loops with single boolean literal ('false' or 'true'), maybe parenthesized :)</span><span class="w">
 </span><span class="o">//</span><span class="nt">DoStatement</span><span class="p">[</span><span class="nt">Expression</span><span class="err">/</span><span class="p">(.|(</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Expression</span><span class="p">))</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Literal</span><span class="o">/</span><span class="nt">BooleanLiteral</span><span class="p">]</span><span class="w">
 </span><span class="p">|</span><span class="w">
 </span><span class="c">(: while loops with conditional or'ed boolean literals, maybe parenthesized :)</span><span class="w">
 </span><span class="o">//</span><span class="nt">WhileStatement</span><span class="p">[</span><span class="nt">Expression</span><span class="err">/</span><span class="p">(</span><span class="nt">InclusiveOrExpression</span><span class="p">|</span><span class="nt">ConditionalOrExpression</span><span class="p">|(</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Expression</span><span class="err">/</span><span class="p">(</span><span class="nt">InclusiveOrExpression</span><span class="p">|</span><span class="nt">ConditionalOrExpression</span><span class="p">)))</span><span class="w">
-    </span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Literal</span><span class="o">/</span><span class="nt">BooleanLiteral</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">2</span><span class="p">]</span><span class="w">
+    </span><span class="c">(: no var access :)</span><span class="w">
+    </span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">0</span><span class="p">]</span><span class="w">
     </span><span class="c">(: at least one false literal :)</span><span class="w">
     </span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Literal</span><span class="o">/</span><span class="nt">BooleanLiteral</span><span class="p">[</span><span class="na">@True</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()])</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="m">1</span><span class="p">]]</span><span class="w">
 </span><span class="p">|</span><span class="w">
@@ -4139,14 +4153,21 @@ a block <code class="language-plaintext highlighter-rouge">{}</code> is sufficie
 </span><span class="p">|</span><span class="w">
 </span><span class="c">(: do-while loops with conditional or'ed boolean literals, maybe parenthesized :)</span><span class="w">
 </span><span class="o">//</span><span class="nt">DoStatement</span><span class="p">[</span><span class="nt">Expression</span><span class="err">/</span><span class="p">(</span><span class="nt">InclusiveOrExpression</span><span class="p">|</span><span class="nt">ConditionalOrExpression</span><span class="p">|(</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Expression</span><span class="err">/</span><span class="p">(</span><span class="nt">InclusiveOrExpression</span><span class="p">|</span><span class="nt">ConditionalOrExpression</span><span class="p">)))</span><span class="w">
-    </span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Literal</span><span class="o">/</span><span class="nt">BooleanLiteral</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">2</span><span class="p">]]</span><span class="w">
+    </span><span class="c">(: at least one true literal :)</span><span class="w">
+    </span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Literal</span><span class="o">/</span><span class="nt">BooleanLiteral</span><span class="p">[</span><span class="na">@True</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()])</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="m">1</span><span class="w">
+      </span><span class="c">(: or only boolean literal and no no var access :)</span><span class="w">
+      </span><span class="ow">or</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Literal</span><span class="o">/</span><span class="nt">BooleanLiteral</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="m">1</span><span class="w">
+      </span><span class="ow">and</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">0</span><span class="w">
+    </span><span class="p">]]</span><span class="w">
 </span><span class="p">|</span><span class="w">
 </span><span class="c">(: do-while loops with conditional and'ed boolean literals, maybe parenthesized :)</span><span class="w">
 </span><span class="o">//</span><span class="nt">DoStatement</span><span class="p">[</span><span class="nt">Expression</span><span class="err">/</span><span class="p">(</span><span class="nt">AndExpression</span><span class="p">|</span><span class="nt">ConditionalAndExpression</span><span class="p">|(</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Expression</span><span class="err">/</span><span class="p">(</span><span class="nt">AndExpression</span><span class="p">|</span><span class="nt">ConditionalAndExpression</span><span class="p">)))</span><span class="w">
     </span><span class="c">(: at least one false literal :)</span><span class="w">
     </span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Literal</span><span class="o">/</span><span class="nt">BooleanLiteral</span><span class="p">[</span><span class="na">@True</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()])</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="m">1</span><span class="w">
-      </span><span class="c">(: or two true literals (e.g. true &amp; true) :)</span><span class="w">
-      </span><span class="ow">or</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Literal</span><span class="o">/</span><span class="nt">BooleanLiteral</span><span class="p">[</span><span class="na">@True</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()])</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">2</span><span class="p">]]</span><span class="w">
+      </span><span class="c">(: or only boolean literal and no no var access :)</span><span class="w">
+      </span><span class="ow">or</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Literal</span><span class="o">/</span><span class="nt">BooleanLiteral</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="m">1</span><span class="w">
+      </span><span class="ow">and</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">0</span><span class="w">
+    </span><span class="p">]]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -4198,7 +4219,7 @@ a block <code class="language-plaintext highlighter-rouge">{}</code> is sufficie
         <div class="col-lg-12 footer">
             &copy;2022 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Dec 19, 2022 <br />
+             Site last generated: Dec 31, 2022 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>

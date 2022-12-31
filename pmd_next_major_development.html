@@ -3513,91 +3513,131 @@ Please use <code class="language-plaintext highlighter-rouge">net.sourceforge.pm
 
 <h3 id="list-of-currently-deprecated-rules">List of currently deprecated rules</h3>
 
+<p>These rules will be removed with PMD 7.0.0.</p>
+
 <ul>
   <li>
-    <p>The Java rules <a href="pmd_rules_java_codestyle.html#variablenamingconventions"><code class="language-plaintext highlighter-rouge">VariableNamingConventions</code></a>, <a href="pmd_rules_java_codestyle.html#misleadingvariablename"><code class="language-plaintext highlighter-rouge">MIsLeadingVariableName</code></a>,
-  <a href="pmd_rules_java_codestyle.html#suspiciousconstantfieldname"><code class="language-plaintext highlighter-rouge">SuspiciousConstantFieldName</code></a>, and <a href="pmd_rules_java_codestyle.html#avoidprefixingmethodparameters"><code class="language-plaintext highlighter-rouge">AvoidPrefixingMethodParameters</code></a> are
-  now deprecated, and will be removed with version 7.0.0. They are replaced by the more general
-  <a href="pmd_rules_java_codestyle.html#fieldnamingconventions"><code class="language-plaintext highlighter-rouge">FieldNamingConventions</code></a>, <a href="pmd_rules_java_codestyle.html#formalparameternamingconventions"><code class="language-plaintext highlighter-rouge">FormalParameterNamingConventions</code></a>, and
-  <a href="pmd_rules_java_codestyle.html#localvariablenamingconventions"><code class="language-plaintext highlighter-rouge">LocalVariableNamingConventions</code></a>.</p>
+    <p>Since 6.0.0: The Java rules <a href="pmd_rules_java_design.html#ncssconstructorcount"><code class="language-plaintext highlighter-rouge">NcssConstructorCount</code></a>, <a href="pmd_rules_java_design.html#ncssmethodcount"><code class="language-plaintext highlighter-rouge">NcssMethodCount</code></a>,
+and <a href="pmd_rules_java_design.html#ncsstypecount"><code class="language-plaintext highlighter-rouge">NcssTypeCount</code></a> have been deprecated. They will be replaced by the new rule
+<a href="pmd_rules_java_design.html#ncsscount"><code class="language-plaintext highlighter-rouge">NcssCount</code></a>.</p>
   </li>
   <li>
-    <p>The Java rule <a href="pmd_rules_java_codestyle.html#abstractnaming"><code class="language-plaintext highlighter-rouge">AbstractNaming</code></a> is deprecated
-  in favour of <a href="pmd_rules_java_codestyle.html#classnamingconventions"><code class="language-plaintext highlighter-rouge">ClassNamingConventions</code></a>.</p>
+    <p>Since 6.0.0: The Java rule <code class="language-plaintext highlighter-rouge">LooseCoupling</code> in ruleset <code class="language-plaintext highlighter-rouge">java-typeresolution</code> is deprecated. Use the rule with the
+same name from category <code class="language-plaintext highlighter-rouge">bestpractices</code> instead: <a href="pmd_rules_java_bestpractices.html#loosecoupling"><code class="language-plaintext highlighter-rouge">LooseCoupling</code></a>.</p>
   </li>
   <li>
-    <p>The Java rules <a href="pmd_rules_java_codestyle.html#whileloopsmustusebraces"><code class="language-plaintext highlighter-rouge">WhileLoopsMustUseBraces</code></a>, <a href="pmd_rules_java_codestyle.html#forloopsmustusebraces"><code class="language-plaintext highlighter-rouge">ForLoopsMustUseBraces</code></a>, <a href="pmd_rules_java_codestyle.html#ifstmtsmustusebraces"><code class="language-plaintext highlighter-rouge">IfStmtsMustUseBraces</code></a>, and <a href="pmd_rules_java_codestyle.html#ifelsestmtsmustusebraces"><code class="language-plaintext highlighter-rouge">IfElseStmtsMustUseBraces</code></a>
-  are deprecated. They will be replaced by the new rule <a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code class="language-plaintext highlighter-rouge">ControlStatementBraces</code></a>.</p>
+    <p>Since 6.0.0: The Java rule <code class="language-plaintext highlighter-rouge">CloneMethodMustImplementCloneable</code> in ruleset <code class="language-plaintext highlighter-rouge">java-typeresolution</code> is deprecated.
+Use the rule with the same name from category <code class="language-plaintext highlighter-rouge">errorprone</code> instead:
+<a href="pmd_rules_java_errorprone.html#clonemethodmustimplementcloneable"><code class="language-plaintext highlighter-rouge">CloneMethodMustImplementCloneable</code></a>.</p>
   </li>
   <li>
-    <p>The Java rules <a href="pmd_rules_java_design.html#ncssconstructorcount"><code class="language-plaintext highlighter-rouge">NcssConstructorCount</code></a>, <a href="pmd_rules_java_design.html#ncssmethodcount"><code class="language-plaintext highlighter-rouge">NcssMethodCount</code></a>, and <a href="pmd_rules_java_design.html#ncsstypecount"><code class="language-plaintext highlighter-rouge">NcssTypeCount</code></a> have been
-  deprecated. They will be replaced by the new rule <a href="pmd_rules_java_design.html#ncsscount"><code class="language-plaintext highlighter-rouge">NcssCount</code></a> in the category <code class="language-plaintext highlighter-rouge">design</code>.</p>
+    <p>Since 6.0.0: The Java rule <code class="language-plaintext highlighter-rouge">UnusedImports</code> in ruleset <code class="language-plaintext highlighter-rouge">java-typeresolution</code> is deprecated. Use the rule with
+the same name from category <code class="language-plaintext highlighter-rouge">bestpractices</code> instead: <a href="pmd_rules_java_bestpractices.html#unusedimports"><code class="language-plaintext highlighter-rouge">UnusedImports</code></a>.</p>
   </li>
   <li>
-    <p>The Java rule <code class="language-plaintext highlighter-rouge">LooseCoupling</code> in ruleset <code class="language-plaintext highlighter-rouge">java-typeresolution</code> is deprecated. Use the rule with the same name from category <code class="language-plaintext highlighter-rouge">bestpractices</code> instead.</p>
+    <p>Since 6.0.0: The Java rule <code class="language-plaintext highlighter-rouge">SignatureDeclareThrowsException</code> in ruleset <code class="language-plaintext highlighter-rouge">java-typeresolution</code> is deprecated.
+Use the rule with the same name from category <code class="language-plaintext highlighter-rouge">design</code> instead:
+<a href="pmd_rules_java_design.html#signaturedeclarethrowsexception"><code class="language-plaintext highlighter-rouge">SignatureDeclareThrowsException</code></a>.</p>
   </li>
   <li>
-    <p>The Java rule <code class="language-plaintext highlighter-rouge">CloneMethodMustImplementCloneable</code> in ruleset <code class="language-plaintext highlighter-rouge">java-typeresolution</code> is deprecated. Use the rule with the same name from category <code class="language-plaintext highlighter-rouge">errorprone</code> instead.</p>
+    <p>Since 6.0.0: The Java rule <code class="language-plaintext highlighter-rouge">EmptyStaticInitializer</code> in ruleset <code class="language-plaintext highlighter-rouge">java-empty</code> is deprecated.
+Use the rule <a href="pmd_rules_java_errorprone.html#emptyinitializer"><code class="language-plaintext highlighter-rouge">EmptyInitializer</code></a> instead, which covers both static and non-static
+empty initializers.</p>
   </li>
   <li>
-    <p>The Java rule <code class="language-plaintext highlighter-rouge">UnusedImports</code> in ruleset <code class="language-plaintext highlighter-rouge">java-typeresolution</code> is deprecated. Use the rule with
-  the same name from category <code class="language-plaintext highlighter-rouge">bestpractices</code> instead.</p>
+    <p>Since 6.0.0: The Java rules <code class="language-plaintext highlighter-rouge">GuardDebugLogging</code> (ruleset <code class="language-plaintext highlighter-rouge">java-logging-jakarta-commons</code>) and
+<code class="language-plaintext highlighter-rouge">GuardLogStatementJavaUtil</code> (ruleset <code class="language-plaintext highlighter-rouge">java-logging-java</code>) have been deprecated. Use the rule
+<a href="pmd_rules_java_bestpractices.html#guardlogstatement"><code class="language-plaintext highlighter-rouge">GuardLogStatement</code></a> instead, which covers all cases regardless of the logging framework.</p>
   </li>
   <li>
-    <p>The Java rule <code class="language-plaintext highlighter-rouge">SignatureDeclareThrowsException</code> in ruleset <code class="language-plaintext highlighter-rouge">java-typeresolution</code> is deprecated. Use the rule with the same name from category <code class="language-plaintext highlighter-rouge">design</code> instead.</p>
+    <p>Since 6.2.0: The Java rules <a href="pmd_rules_java_codestyle.html#whileloopsmustusebraces"><code class="language-plaintext highlighter-rouge">WhileLoopsMustUseBraces</code></a>,
+<a href="pmd_rules_java_codestyle.html#forloopsmustusebraces"><code class="language-plaintext highlighter-rouge">ForLoopsMustUseBraces</code></a>, <a href="pmd_rules_java_codestyle.html#ifstmtsmustusebraces"><code class="language-plaintext highlighter-rouge">IfStmtsMustUseBraces</code></a>, and
+<a href="pmd_rules_java_codestyle.html#ifelsestmtsmustusebraces"><code class="language-plaintext highlighter-rouge">IfElseStmtsMustUseBraces</code></a> are deprecated. They will be replaced by the new rule
+<a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code class="language-plaintext highlighter-rouge">ControlStatementBraces</code></a>.</p>
   </li>
   <li>
-    <p>The Java rule <code class="language-plaintext highlighter-rouge">EmptyStaticInitializer</code> in ruleset <code class="language-plaintext highlighter-rouge">java-empty</code> is deprecated. Use the rule <a href="pmd_rules_java_errorprone.html#emptyinitializer"><code class="language-plaintext highlighter-rouge">EmptyInitializer</code></a>, which covers both static and non-static empty initializers.`</p>
+    <p>Since 6.3.0: The Java rule <a href="pmd_rules_java_codestyle.html#abstractnaming"><code class="language-plaintext highlighter-rouge">AbstractNaming</code></a> is deprecated
+in favour of <a href="pmd_rules_java_codestyle.html#classnamingconventions"><code class="language-plaintext highlighter-rouge">ClassNamingConventions</code></a>.</p>
   </li>
   <li>
-    <p>The Java rules <code class="language-plaintext highlighter-rouge">GuardDebugLogging</code> (ruleset <code class="language-plaintext highlighter-rouge">java-logging-jakarta-commons</code>) and <code class="language-plaintext highlighter-rouge">GuardLogStatementJavaUtil</code>
-  (ruleset <code class="language-plaintext highlighter-rouge">java-logging-java</code>) have been deprecated. Use the rule <a href="pmd_rules_java_bestpractices.html#guardlogstatement"><code class="language-plaintext highlighter-rouge">GuardLogStatement</code></a>, which covers all cases regardless of the logging framework.</p>
+    <p>Since 6.7.0: The Java rules <a href="pmd_rules_java_codestyle.html#variablenamingconventions"><code class="language-plaintext highlighter-rouge">VariableNamingConventions</code></a>,
+<a href="pmd_rules_java_codestyle.html#misleadingvariablename"><code class="language-plaintext highlighter-rouge">MIsLeadingVariableName</code></a>, <a href="pmd_rules_java_codestyle.html#suspiciousconstantfieldname"><code class="language-plaintext highlighter-rouge">SuspiciousConstantFieldName</code></a>, and
+<a href="pmd_rules_java_codestyle.html#avoidprefixingmethodparameters"><code class="language-plaintext highlighter-rouge">AvoidPrefixingMethodParameters</code></a> are now deprecated. They are replaced by the more general
+<a href="pmd_rules_java_codestyle.html#fieldnamingconventions"><code class="language-plaintext highlighter-rouge">FieldNamingConventions</code></a>, <a href="pmd_rules_java_codestyle.html#formalparameternamingconventions"><code class="language-plaintext highlighter-rouge">FormalParameterNamingConventions</code></a>, and
+<a href="pmd_rules_java_codestyle.html#localvariablenamingconventions"><code class="language-plaintext highlighter-rouge">LocalVariableNamingConventions</code></a>.</p>
   </li>
   <li>
-    <p>The Java rule <a href="pmd_rules_java_multithreading.html#unsynchronizedstaticdateformatter"><code class="language-plaintext highlighter-rouge">UnsynchronizedStaticDateFormatter</code></a> has been deprecated and
-  will be removed with PMD 7.0.0. The rule is replaced by the more general
-  <a href="pmd_rules_java_multithreading.html#unsynchronizedstaticformatter"><code class="language-plaintext highlighter-rouge">UnsynchronizedStaticFormatter</code></a>.</p>
+    <p>Since 6.11.0: The Java rule <a href="pmd_rules_java_multithreading.html#unsynchronizedstaticdateformatter"><code class="language-plaintext highlighter-rouge">UnsynchronizedStaticDateFormatter</code></a> has been deprecated.
+The rule is replaced by the more general <a href="pmd_rules_java_multithreading.html#unsynchronizedstaticformatter"><code class="language-plaintext highlighter-rouge">UnsynchronizedStaticFormatter</code></a>.</p>
   </li>
   <li>
-    <p>The two Java rules <a href="pmd_rules_java_bestpractices.html#positionliteralsfirstincomparisons"><code class="language-plaintext highlighter-rouge">PositionLiteralsFirstInComparisons</code></a>
-  and <a href="pmd_rules_java_bestpractices.html#positionliteralsfirstincaseinsensitivecomparisons"><code class="language-plaintext highlighter-rouge">PositionLiteralsFirstInCaseInsensitiveComparisons</code></a> (ruleset <code class="language-plaintext highlighter-rouge">java-bestpractices</code>)
-  have been deprecated in favor of the new rule <a href="pmd_rules_java_bestpractices.html#literalsfirstincomparisons"><code class="language-plaintext highlighter-rouge">LiteralsFirstInComparisons</code></a>.</p>
+    <p>Since 6.15.0: The Apex rule <a href="pmd_rules_apex_codestyle.html#variablenamingconventions"><code class="language-plaintext highlighter-rouge">VariableNamingConventions</code></a> has been deprecated. The rule is
+replaced by the more general rules <a href="pmd_rules_apex_codestyle.html#fieldnamingconventions"><code class="language-plaintext highlighter-rouge">FieldNamingConventions</code></a>,
+<a href="pmd_rules_apex_codestyle.html#formalparameternamingconventions"><code class="language-plaintext highlighter-rouge">FormalParameterNamingConventions</code></a>, <a href="pmd_rules_apex_codestyle.html#localvariablenamingconventions"><code class="language-plaintext highlighter-rouge">LocalVariableNamingConventions</code></a>,
+and <a href="pmd_rules_apex_codestyle.html#propertynamingconventions"><code class="language-plaintext highlighter-rouge">PropertyNamingConventions</code></a>.</p>
   </li>
   <li>
-    <p>The Java rule <a href="https://pmd.github.io/pmd-6.16.0/pmd_rules_java_codestyle.html#avoidfinallocalvariable"><code class="language-plaintext highlighter-rouge">AvoidFinalLocalVariable</code></a> (<code class="language-plaintext highlighter-rouge">java-codestyle</code>) has been deprecated
-  and will be removed with PMD 7.0.0. The rule is controversial and also contradicts other existing
-  rules such as <a href="https://pmd.github.io/pmd-6.16.0/pmd_rules_java_codestyle.html#localvariablecouldbefinal"><code class="language-plaintext highlighter-rouge">LocalVariableCouldBeFinal</code></a>. If the goal is to avoid defining
-  constants in a scope smaller than the class, then the rule <a href="https://pmd.github.io/pmd-6.16.0/pmd_rules_java_errorprone.html#avoidduplicateliterals"><code class="language-plaintext highlighter-rouge">AvoidDuplicateLiterals</code></a>
-  should be used instead.</p>
+    <p>Since 6.15.0: The Java rule <a href="pmd_rules_java_errorprone.html#loggerisnotstaticfinal"><code class="language-plaintext highlighter-rouge">LoggerIsNotStaticFinal</code></a> has been deprecated.
+The rule is replaced by <a href="pmd_rules_java_errorprone.html#properlogger"><code class="language-plaintext highlighter-rouge">ProperLogger</code></a>.</p>
   </li>
   <li>
-    <p>The Apex rule <a href="https://pmd.github.io/pmd-6.15.0/pmd_rules_apex_codestyle.html#variablenamingconventions"><code class="language-plaintext highlighter-rouge">VariableNamingConventions</code></a> (<code class="language-plaintext highlighter-rouge">apex-codestyle</code>) has been deprecated and
-  will be removed with PMD 7.0.0. The rule is replaced by the more general rules
-  <a href="https://pmd.github.io/pmd-6.15.0/pmd_rules_apex_codestyle.html#fieldnamingconventions"><code class="language-plaintext highlighter-rouge">FieldNamingConventions</code></a>,
-  <a href="https://pmd.github.io/pmd-6.15.0/pmd_rules_apex_codestyle.html#formalparameternamingconventions"><code class="language-plaintext highlighter-rouge">FormalParameterNamingConventions</code></a>,
-  <a href="https://pmd.github.io/pmd-6.15.0/pmd_rules_apex_codestyle.html#localvariablenamingconventions"><code class="language-plaintext highlighter-rouge">LocalVariableNamingConventions</code></a>, and
-  <a href="https://pmd.github.io/pmd-6.15.0/pmd_rules_apex_codestyle.html#propertynamingconventions"><code class="language-plaintext highlighter-rouge">PropertyNamingConventions</code></a>.</p>
+    <p>Since 6.16.0: The Java rule <a href="pmd_rules_java_codestyle.html#avoidfinallocalvariable"><code class="language-plaintext highlighter-rouge">AvoidFinalLocalVariable</code></a> has been deprecated.
+The rule is controversial and also contradicts other existing rules such as
+<a href="pmd_rules_java_codestyle.html#localvariablecouldbefinal"><code class="language-plaintext highlighter-rouge">LocalVariableCouldBeFinal</code></a>. If the goal is to avoid defining
+constants in a scope smaller than the class, then the rule <a href="pmd_rules_java_errorprone.html#avoidduplicateliterals"><code class="language-plaintext highlighter-rouge">AvoidDuplicateLiterals</code></a>
+should be used instead.</p>
   </li>
   <li>
-    <p>The Java rule <a href="https://pmd.github.io/pmd-6.15.0/pmd_rules_java_errorprone.html#loggerisnotstaticfinal"><code class="language-plaintext highlighter-rouge">LoggerIsNotStaticFinal</code></a> (<code class="language-plaintext highlighter-rouge">java-errorprone</code>) has been deprecated
-  and will be removed with PMD 7.0.0. The rule is replaced by <a href="https://pmd.github.io/pmd-6.15.0/pmd_rules_java_errorprone.html#properlogger"><code class="language-plaintext highlighter-rouge">ProperLogger</code></a>.</p>
+    <p>Since 6.19.0: The Java rule <a href="pmd_rules_java_errorprone.html#invalidslf4jmessageformat"><code class="language-plaintext highlighter-rouge">InvalidSlf4jMessageFormat</code></a> has been renamed to
+<a href="pmd_rules_java_errorprone.html#invalidlogmessageformat"><code class="language-plaintext highlighter-rouge">InvalidLogMessageFormat</code></a>.</p>
   </li>
   <li>
-    <p>The Java rule <a href="pmd_rules_java_errorprone.html#dataflowanomalyanalysis"><code class="language-plaintext highlighter-rouge">DataflowAnomalyAnalysis</code></a> (<code class="language-plaintext highlighter-rouge">java-errorprone</code>)
-  is deprecated in favour of <a href="pmd_rules_java_bestpractices.html#unusedassignment"><code class="language-plaintext highlighter-rouge">UnusedAssignment</code></a> (<code class="language-plaintext highlighter-rouge">java-bestpractices</code>),
-  which was introduced in PMD 6.26.0.</p>
+    <p>Since 6.24.0: The two Java rules <a href="pmd_rules_java_bestpractices.html#positionliteralsfirstincomparisons"><code class="language-plaintext highlighter-rouge">PositionLiteralsFirstInComparisons</code></a>
+and <a href="pmd_rules_java_bestpractices.html#positionliteralsfirstincaseinsensitivecomparisons"><code class="language-plaintext highlighter-rouge">PositionLiteralsFirstInCaseInsensitiveComparisons</code></a>
+have been deprecated in favor of the new rule <a href="pmd_rules_java_bestpractices.html#literalsfirstincomparisons"><code class="language-plaintext highlighter-rouge">LiteralsFirstInComparisons</code></a>.</p>
   </li>
   <li>
-    <p>The java rule <a href="pmd_rules_java_codestyle.html#defaultpackage"><code class="language-plaintext highlighter-rouge">DefaultPackage</code></a> has been deprecated in favor of
-  <a href="pmd_rules_java_codestyle.html#commentdefaultaccessmodifier"><code class="language-plaintext highlighter-rouge">CommentDefaultAccessModifier</code></a>.</p>
+    <p>Since 6.27.0: The Java rule <a href="pmd_rules_java_errorprone.html#dataflowanomalyanalysis"><code class="language-plaintext highlighter-rouge">DataflowAnomalyAnalysis</code></a>
+is deprecated in favour of <a href="pmd_rules_java_bestpractices.html#unusedassignment"><code class="language-plaintext highlighter-rouge">UnusedAssignment</code></a>,
+which was introduced in PMD 6.26.0.</p>
   </li>
   <li>
-    <p>The Java rule <a href="pmd_rules_java_errorprone.html#clonethrowsclonenotsupportedexception"><code class="language-plaintext highlighter-rouge">CloneThrowsCloneNotSupportedException</code></a> has been deprecated without
-  replacement.</p>
+    <p>Since 6.29.0: The Apex rules <a href="pmd_rules_apex_performance.html#avoiddmlstatementsinloops"><code class="language-plaintext highlighter-rouge">AvoidDmlStatementsInLoops</code></a>,
+<a href="pmd_rules_apex_performance.html#avoidsoqlinloops"><code class="language-plaintext highlighter-rouge">AvoidSoqlInLoops</code></a>, and <a href="pmd_rules_apex_performance.html#avoidsoslinloops"><code class="language-plaintext highlighter-rouge">AvoidSoslInLoops</code></a> are deprecated
+in favor of the new rule <a href="pmd_rules_apex_performance.html#operationwithlimitsinloop"><code class="language-plaintext highlighter-rouge">OperationWithLimitsInLoop</code></a>.</p>
   </li>
-  <li>The following Java rules are deprecated and removed from the quickstart ruleset,
-  as the new rule <a href="pmd_rules_java_bestpractices.html#simplifiabletestassertion"><code class="language-plaintext highlighter-rouge">SimplifiableTestAssertion</code></a> merges
-  their functionality:
+  <li>
+    <p>Since 6.29.0: The Java rule <a href="pmd_rules_java_errorprone.html#donotcallsystemexit"><code class="language-plaintext highlighter-rouge">DoNotCallSystemExit</code></a> has been renamed to
+<a href="pmd_rules_java_errorprone.html#donotterminatevm"><code class="language-plaintext highlighter-rouge">DoNotTerminateVM</code></a>.</p>
+  </li>
+  <li>
+    <p>Since 6.31:0: The Java rule <a href="pmd_rules_java_performance.html#avoidusingshorttype"><code class="language-plaintext highlighter-rouge">AvoidUsingShortType</code></a> is deprecated
+for removal without replacement.</p>
+  </li>
+  <li>
+    <p>Since 6.31.0: The Java rule <a href="pmd_rules_java_performance.html#simplifystartswith"><code class="language-plaintext highlighter-rouge">SimplifyStartsWith</code></a> is deprecated
+for removal without replacement.</p>
+  </li>
+  <li>
+    <p>Since 6.34.0: The Java rules <a href="pmd_rules_java_bestpractices.html#unusedimports"><code class="language-plaintext highlighter-rouge">UnusedImports</code></a>, <a href="pmd_rules_java_codestyle.html#duplicateimports"><code class="language-plaintext highlighter-rouge">DuplicateImports</code></a>,
+<a href="pmd_rules_java_codestyle.html#dontimportjavalang"><code class="language-plaintext highlighter-rouge">DontImportJavaLang</code></a>, and <a href="pmd_rules_java_errorprone.html#importfromsamepackage"><code class="language-plaintext highlighter-rouge">ImportFromSamePackage</code></a> are
+deprecated. These rules are replaced by <a href="pmd_rules_java_codestyle.html#unnecessaryimport"><code class="language-plaintext highlighter-rouge">UnnecessaryImport</code></a>.</p>
+  </li>
+  <li>
+    <p>Since 6.35.0: The Java rule <a href="pmd_rules_java_codestyle.html#defaultpackage"><code class="language-plaintext highlighter-rouge">DefaultPackage</code></a> has been deprecated in favor of
+<a href="pmd_rules_java_codestyle.html#commentdefaultaccessmodifier"><code class="language-plaintext highlighter-rouge">CommentDefaultAccessModifier</code></a>.</p>
+  </li>
+  <li>
+    <p>Since 6.35.0: The Java rule <a href="pmd_rules_java_errorprone.html#clonethrowsclonenotsupportedexception"><code class="language-plaintext highlighter-rouge">CloneThrowsCloneNotSupportedException</code></a> has been
+deprecated without replacement.</p>
+  </li>
+  <li>
+    <p>Since 6.36.0: The Java rule <a href="pmd_rules_java_errorprone.html#badcomparison"><code class="language-plaintext highlighter-rouge">BadComparison</code></a> has been renamed to
+<a href="pmd_rules_java_errorprone.html#comparisonwithnan"><code class="language-plaintext highlighter-rouge">ComparisonWithNaN</code></a>.</p>
+  </li>
+  <li>Since 6.37.0: The following Java rules are deprecated and removed from the quickstart ruleset,
+as the new rule <a href="pmd_rules_java_bestpractices.html#simplifiabletestassertion"><code class="language-plaintext highlighter-rouge">SimplifiableTestAssertion</code></a> merges
+their functionality:
     <ul>
       <li><a href="pmd_rules_java_bestpractices.html#useassertequalsinsteadofasserttrue"><code class="language-plaintext highlighter-rouge">UseAssertEqualsInsteadOfAssertTrue</code></a></li>
       <li><a href="pmd_rules_java_bestpractices.html#useassertnullinsteadofasserttrue"><code class="language-plaintext highlighter-rouge">UseAssertNullInsteadOfAssertTrue</code></a></li>
@@ -3607,13 +3647,13 @@ Please use <code class="language-plaintext highlighter-rouge">net.sourceforge.pm
     </ul>
   </li>
   <li>
-    <p>The Java rule <a href="pmd_rules_java_errorprone.html#returnemptyarrayratherthannull"><code class="language-plaintext highlighter-rouge">ReturnEmptyArrayRatherThanNull</code></a> is deprecated and removed from
-  the quickstart ruleset, as the new rule <a href="pmd_rules_java_errorprone.html#returnemptycollectionratherthannull"><code class="language-plaintext highlighter-rouge">ReturnEmptyCollectionRatherThanNull</code></a>
-  supersedes it.</p>
+    <p>Since 6.37.0: The Java rule <a href="pmd_rules_java_errorprone.html#returnemptyarrayratherthannull"><code class="language-plaintext highlighter-rouge">ReturnEmptyArrayRatherThanNull</code></a> is deprecated and removed from
+the quickstart ruleset, as the new rule <a href="pmd_rules_java_errorprone.html#returnemptycollectionratherthannull"><code class="language-plaintext highlighter-rouge">ReturnEmptyCollectionRatherThanNull</code></a>
+supersedes it.</p>
   </li>
-  <li>The following Java rules are deprecated and removed from the quickstart ruleset,
-  as the new rule <a href="pmd_rules_java_bestpractices.html#primitivewrapperinstantiation"><code class="language-plaintext highlighter-rouge">PrimitiveWrapperInstantiation</code></a> merges
-  their functionality:
+  <li>Since 6.37.0: The following Java rules are deprecated and removed from the quickstart ruleset,
+as the new rule <a href="pmd_rules_java_bestpractices.html#primitivewrapperinstantiation"><code class="language-plaintext highlighter-rouge">PrimitiveWrapperInstantiation</code></a> merges
+their functionality:
     <ul>
       <li><a href="pmd_rules_java_performance.html#booleaninstantiation"><code class="language-plaintext highlighter-rouge">BooleanInstantiation</code></a></li>
       <li><a href="pmd_rules_java_performance.html#byteinstantiation"><code class="language-plaintext highlighter-rouge">ByteInstantiation</code></a></li>
@@ -3623,11 +3663,15 @@ Please use <code class="language-plaintext highlighter-rouge">net.sourceforge.pm
     </ul>
   </li>
   <li>
-    <p>The Java rule <a href="pmd_rules_java_performance.html#unnecessarywrapperobjectcreation"><code class="language-plaintext highlighter-rouge">UnnecessaryWrapperObjectCreation</code></a> is deprecated
-  with no planned replacement before PMD 7. In it’s current state, the rule is not useful
-  as it finds only contrived cases of creating a primitive wrapper and unboxing it explicitly
-  in the same expression. In PMD 7 this and more cases will be covered by a
-  new rule <code class="language-plaintext highlighter-rouge">UnnecessaryBoxing</code>.</p>
+    <p>Since 6.37.0: The Java rule <a href="pmd_rules_java_performance.html#unnecessarywrapperobjectcreation"><code class="language-plaintext highlighter-rouge">UnnecessaryWrapperObjectCreation</code></a> is deprecated
+with no planned replacement before PMD 7. In its current state, the rule is not useful
+as it finds only contrived cases of creating a primitive wrapper and unboxing it explicitly
+in the same expression. In PMD 7 this and more cases will be covered by a
+new rule <code class="language-plaintext highlighter-rouge">UnnecessaryBoxing</code>.</p>
+  </li>
+  <li>
+    <p>Since 6.37.0: The Java rule <a href="pmd_rules_java_errorprone.html#missingbreakinswitch"><code class="language-plaintext highlighter-rouge">MissingBreakInSwitch</code></a> has been renamed to
+<a href="pmd_rules_java_errorprone.html#implicitswitchfallthrough"><code class="language-plaintext highlighter-rouge">ImplicitSwitchFallThrough</code></a>.</p>
   </li>
   <li>Since 6.46.0: The following Java rules are deprecated and removed from the quickstart ruleset, as the new rule
 <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a> merges their functionality:
@@ -3643,11 +3687,16 @@ Please use <code class="language-plaintext highlighter-rouge">net.sourceforge.pm
     </ul>
   </li>
   <li>
-    <p>Since 6.46.0: The Java rule <a href="pmd_rules_java_errorprone.html#emptystatementnotinloop"><code class="language-plaintext highlighter-rouge">EmptyStatementNotInLoop</code></a> is deprecated and removed from the quickstart
-ruleset. Use the new rule <a href="pmd_rules_java_codestyle.html#unnecessarysemicolon"><code class="language-plaintext highlighter-rouge">UnnecessarySemicolon</code></a> instead.</p>
+    <p>Since 6.52.0: The Java rule <a href="pmd_rules_java_errorprone.html#beanmembersshouldserialize"><code class="language-plaintext highlighter-rouge">BeanMembersShouldSerialize</code></a> has been renamed to
+<a href="pmd_rules_java_errorprone.html#nonserializableclass"><code class="language-plaintext highlighter-rouge">NonSerializableClass</code></a>.</p>
   </li>
-  <li>Since 6.52.0: The Java rule <a href="pmd_rules_java_errorprone.html#beanmembersshouldserialize"><code class="language-plaintext highlighter-rouge">BeanMembersShouldSerialize</code></a> has been renamed to
-<a href="pmd_rules_java_errorprone.html#nonserializableclass"><code class="language-plaintext highlighter-rouge">NonSerializableClass</code></a>.</li>
+  <li>
+    <p>Since 6.53.0: The Java rules <a href="pmd_rules_java_design.html#excessiveclasslength"><code class="language-plaintext highlighter-rouge">ExcessiveClassLength</code></a> and
+<a href="pmd_rules_java_design.html#excessivemethodlength"><code class="language-plaintext highlighter-rouge">ExcessiveMethodLength</code></a> have been deprecated. The rule
+<a href="pmd_rules_java_design.html#ncsscount"><code class="language-plaintext highlighter-rouge">NcssCount</code></a> can be used instead.</p>
+  </li>
+  <li>Since 6.53.0: The Java rule <a href="pmd_rules_java_errorprone.html#emptystatementnotinloop"><code class="language-plaintext highlighter-rouge">EmptyStatementNotInLoop</code></a> is deprecated.
+Use the rule <a href="pmd_rules_java_codestyle.html#unnecessarysemicolon"><code class="language-plaintext highlighter-rouge">UnnecessarySemicolon</code></a> instead.</li>
 </ul>
 
 
@@ -3680,7 +3729,7 @@ ruleset. Use the new rule <a href="pmd_rules_java_codestyle.html#unnecessarysemi
         <div class="col-lg-12 footer">
             &copy;2022 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Dec 19, 2022 <br />
+             Site last generated: Dec 31, 2022 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>

@@ -1611,7 +1611,7 @@
 
 <p>Abstract classes should be named ‘AbstractXXX’.</p>
 
-<p>This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+<p><em>Note:</em> This rule is deprecated since PMD 6.3.0 and will be removed with PMD 7.0.0. The rule is replaced
 by <a href="pmd_rules_java_codestyle.html#classnamingconventions"><code class="language-plaintext highlighter-rouge">ClassNamingConventions</code></a>.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
@@ -1754,7 +1754,7 @@ avoid local literals being declared in a scope smaller than the class.</p>
 <p>Also note, that this rule is the opposite of <a href="pmd_rules_java_codestyle.html#localvariablecouldbefinal"><code class="language-plaintext highlighter-rouge">LocalVariableCouldBeFinal</code></a>.
 Having both rules enabled results in contradictory violations being reported.</p>
 
-<p>This rule is deprecated and will be removed with PMD 7.0.0. There is no replacement planned.
+<p><em>Note:</em> This rule is deprecated since PMD 6.16.0 and will be removed with PMD 7.0.0. There is no replacement planned.
 If the goal is to avoid defining constants in a scope smaller than the class, then the rule
 <a href="pmd_rules_java_errorprone.html#avoidduplicateliterals"><code class="language-plaintext highlighter-rouge">AvoidDuplicateLiterals</code></a> should be used instead.</p>
 
@@ -1796,7 +1796,7 @@ If the goal is to avoid defining constants in a scope smaller than the class, th
 To indicate whether or not a parameter will be modify in a method, its better to document method
 behavior with Javadoc.</p>
 
-<p>This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+<p><em>Note:</em> This rule is deprecated since PMD 6.7.0 and will be removed with PMD 7.0.0. The rule is replaced
 by the more general rule <a href="pmd_rules_java_codestyle.html#formalparameternamingconventions"><code class="language-plaintext highlighter-rouge">FormalParameterNamingConventions</code></a>.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
@@ -2416,7 +2416,8 @@ and IfElseStmtMustUseBraces.</p>
 <p>Use explicit scoping instead of accidental usage of default package private level.
 The rule allows methods and fields annotated with Guava’s @VisibleForTesting and JUnit 5’s annotations.</p>
 
-<p>This rule is deprecated since PMD 6.35.0. It assumes that any usage of package-access is accidental,
+<p><em>Note:</em> This rule is deprecated since PMD 6.35.0 and will be removed with PMD 7.0.0.
+It assumes that any usage of package-access is accidental,
 and by doing so, prohibits using a really fundamental and useful feature of the language.</p>
 
 <p>To satisfy the rule, you have to make the member public even if it doesn’t need to, or make it protected,
@@ -2461,8 +2462,8 @@ the same thing, but has an escape hatch.</p>
 
 <p>Avoid importing anything from the package ‘java.lang’.  These classes are automatically imported (JLS 7.5.3).</p>
 
-<p>This rule is deprecated since PMD 6.34.0. Use the rule <a href="pmd_rules_java_codestyle.html#unnecessaryimport"><code class="language-plaintext highlighter-rouge">UnnecessaryImport</code></a>
-from category codestyle instead.</p>
+<p><em>Note:</em> This rule is deprecated since PMD 6.34.0 and will be removed with PMD 7.0.0.
+Use the rule <a href="pmd_rules_java_codestyle.html#unnecessaryimport"><code class="language-plaintext highlighter-rouge">UnnecessaryImport</code></a> from category codestyle instead.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/DontImportJavaLangRule.java">net.sourceforge.pmd.lang.java.rule.codestyle.DontImportJavaLangRule</a></p>
 
@@ -2493,8 +2494,8 @@ from category codestyle instead.</p>
 
 <p>Duplicate or overlapping import statements should be avoided.</p>
 
-<p>This rule is deprecated since PMD 6.34.0. Use the rule <a href="pmd_rules_java_codestyle.html#unnecessaryimport"><code class="language-plaintext highlighter-rouge">UnnecessaryImport</code></a>
-from category codestyle instead.</p>
+<p><em>Note:</em> This rule is deprecated since PMD 6.34.0 and will be removed with PMD 7.0.0.
+Use the rule <a href="pmd_rules_java_codestyle.html#unnecessaryimport"><code class="language-plaintext highlighter-rouge">UnnecessaryImport</code></a> from category codestyle instead.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/DuplicateImportsRule.java">net.sourceforge.pmd.lang.java.rule.codestyle.DuplicateImportsRule</a></p>
 
@@ -2872,7 +2873,7 @@ convention for constants and enum constants.</p>
 indentation is lost then it becomes difficult to separate the code being controlled
 from the rest.</p>
 
-<p>This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+<p><em>Note:</em> This rule is deprecated since PMD 6.2.0 and will be removed with PMD 7.0.0. The rule is replaced
 by the rule <a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code class="language-plaintext highlighter-rouge">ControlStatementBraces</code></a>.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
@@ -3067,7 +3068,7 @@ branch.</p>
 or indentation is lost then it becomes difficult to separate the code being controlled
 from the rest.</p>
 
-<p>This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+<p><em>Note:</em> This rule is deprecated since PMD 6.2.0 and will be removed with PMD 7.0.0. The rule is replaced
 by the rule <a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code class="language-plaintext highlighter-rouge">ControlStatementBraces</code></a>.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
@@ -3105,7 +3106,7 @@ by the rule <a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code
 formatting or indentation is lost then it becomes difficult to separate the code being
 controlled from the rest.</p>
 
-<p>This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+<p><em>Note:</em> This rule is deprecated since PMD 6.2.0 and will be removed with PMD 7.0.0. The rule is replaced
 by the rule <a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code class="language-plaintext highlighter-rouge">ControlStatementBraces</code></a>.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
@@ -3715,7 +3716,7 @@ configured through properties.</p>
 
 <p>Detects when a non-field has a name starting with ‘m_’.  This usually denotes a field and could be confusing.</p>
 
-<p>This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+<p><em>Note:</em> This rule is deprecated since PMD 6.7.0 and will be removed with PMD 7.0.0. The rule is replaced
 by the more general rule
 <a href="pmd_rules_java_codestyle.html#localvariablenamingconventions"><code class="language-plaintext highlighter-rouge">LocalVariableNamingConventions</code></a>.</p>
 
@@ -4100,7 +4101,7 @@ by the more general rule
 <p>Field names using all uppercase characters - Sun’s Java naming conventions indicating constants - should
 be declared as final.</p>
 
-<p>This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+<p><em>Note:</em> This rule is deprecated since PMD 6.7.0 and will be removed with PMD 7.0.0. The rule is replaced
 by the more general rule <a href="pmd_rules_java_codestyle.html#fieldnamingconventions"><code class="language-plaintext highlighter-rouge">FieldNamingConventions</code></a>.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
@@ -4849,7 +4850,7 @@ that are misplaced (not making groups of 3 digits) are reported.</p>
 checks for final variables that should be fully capitalized and non-final variables
 that should not include underscores.</p>
 
-<p>This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+<p><em>Note:</em> This rule is deprecated since PMD 6.7.0 and will be removed with PMD 7.0.0. The rule is replaced
 by the more general rules <a href="pmd_rules_java_codestyle.html#fieldnamingconventions"><code class="language-plaintext highlighter-rouge">FieldNamingConventions</code></a>,
 <a href="pmd_rules_java_codestyle.html#formalparameternamingconventions"><code class="language-plaintext highlighter-rouge">FormalParameterNamingConventions</code></a>, and
 <a href="pmd_rules_java_codestyle.html#localvariablenamingconventions"><code class="language-plaintext highlighter-rouge">LocalVariableNamingConventions</code></a>.</p>
@@ -4987,7 +4988,7 @@ by the more general rules <a href="pmd_rules_java_codestyle.html#fieldnamingconv
 formatting or indentation is lost then it becomes difficult to separate the code being
 controlled from the rest.</p>
 
-<p>This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+<p><em>Note:</em> This rule is deprecated since PMD 6.2.0 and will be removed with PMD 7.0.0. The rule is replaced
 by the rule <a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code class="language-plaintext highlighter-rouge">ControlStatementBraces</code></a>.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
@@ -5039,7 +5040,7 @@ by the rule <a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code
         <div class="col-lg-12 footer">
             &copy;2022 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Dec 19, 2022 <br />
+             Site last generated: Dec 31, 2022 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>
