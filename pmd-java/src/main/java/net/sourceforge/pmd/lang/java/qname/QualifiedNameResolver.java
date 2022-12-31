@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTCompactConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
@@ -287,7 +288,8 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
      *         was declared in. It can be:
      *         <ul>
      *             <li>{@code new}, if the lambda is declared in an
-     *             instance initializer, or a constructor, or in the
+     *             instance initializer, or a constructor, or a record
+     *             compact constructor, or in the
      *             initializer of an instance field of an outer or
      *             nested class</li>
      *             <li>{@code static}, if the lambda is declared in a
@@ -378,7 +380,8 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
                 && !(parent instanceof ASTFieldDeclaration)
                 && !(parent instanceof ASTEnumConstant)
                 && !(parent instanceof ASTInitializer)
-                && !(parent instanceof MethodLikeNode)) {
+                && !(parent instanceof MethodLikeNode)
+                && !(parent instanceof ASTCompactConstructorDeclaration)) {
             parent = parent.getParent();
         }
 
@@ -388,7 +391,7 @@ public class QualifiedNameResolver extends JavaParserVisitorReducedAdapter {
 
         if (parent instanceof ASTInitializer) {
             return ((ASTInitializer) parent).isStatic() ? "static" : "new";
-        } else if (parent instanceof ASTConstructorDeclaration) {
+        } else if (parent instanceof ASTConstructorDeclaration || parent instanceof ASTCompactConstructorDeclaration) {
             return "new";
         } else if (parent instanceof ASTLambdaExpression) {
             return "null";
