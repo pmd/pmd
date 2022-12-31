@@ -130,12 +130,17 @@ public class Violation {
 
     <rule name="AvoidAssertAsIdentifier"
           language="java"
+          maximumLanguageVersion="1.3"
           since="3.4"
           message="Avoid using assert as an identifier; it became a reserved word in JDK 1.4"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidassertasidentifier">
         <description>
-Use of the term 'assert' will conflict with newer versions of Java since it is a reserved word.
+Use of the term `assert` will conflict with newer versions of Java since it is a reserved word.
+
+Since Java 1.4, the token `assert` became a reserved word and using it as an identifier will
+result in a compilation failure for Java 1.4 and later. This rule is therefore only useful
+for old Java code before Java 1.4. It can be used to identify problematic code prior to a Java update.
         </description>
         <priority>2</priority>
         <properties>
@@ -341,12 +346,17 @@ private void buz(String x) {}
 
     <rule name="AvoidEnumAsIdentifier"
           language="java"
+          maximumLanguageVersion="1.4"
           since="3.4"
           message="Avoid using enum as an identifier; it's a reserved word in JDK 1.5"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidenumasidentifier">
         <description>
-Use of the term 'enum' will conflict with newer versions of Java since it is a reserved word.
+Use of the term `enum` will conflict with newer versions of Java since it is a reserved word.
+
+Since Java 1.5, the token `enum` became a reserved word and using it as an identifier will
+result in a compilation failure for Java 1.5 and later. This rule is therefore only useful
+for old Java code before Java 1.5. It can be used to identify problematic code prior to a Java update.
         </description>
         <priority>2</priority>
         <properties>

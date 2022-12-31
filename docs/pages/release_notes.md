@@ -33,7 +33,6 @@ This is a {{ site.pmd.release_type }} release.
   This has been done now.
 
 ### Fixed Issues
-<<<<<<< HEAD
 * core
     * [#4248](https://github.com/pmd/pmd/issues/4248): \[core] Can't analyze sources in zip files
 * apex-security
@@ -43,6 +42,8 @@ This is a {{ site.pmd.release_type }} release.
     * [#4250](https://github.com/pmd/pmd/issues/4250): \[java] WhileLoopWithLiteralBoolean - false negative with complex expressions still occurs in PMD 6.52.0
 * java-design
     * [#2127](https://github.com/pmd/pmd/issues/2127): \[java] Deprecate rules ExcessiveClassLength and ExcessiveMethodLength
+* java-errorprone
+    * [#4164](https://github.com/pmd/pmd/issues/4164): \[java]\[doc] AvoidAssertAsIdentifier and AvoidEnumAsIdentifier - clarify use case
 * java-multithreading
     * [#4210](https://github.com/pmd/pmd/issues/4210): \[java] DoNotUseThreads report duplicate warnings
 
