@@ -33,12 +33,14 @@ This is a {{ site.pmd.release_type }} release.
   This has been done now.
 
 ### Fixed Issues
+<<<<<<< HEAD
 * core
     * [#4248](https://github.com/pmd/pmd/issues/4248): \[core] Can't analyze sources in zip files
 * apex-security
     * [#4146](https://github.com/pmd/pmd/issues/4146): \[apex] ApexCRUDViolation: Recognize User Mode in SOQL + DML
 * java-bestpractices
     * [#4166](https://github.com/pmd/pmd/issues/4166): \[java] UnusedPrivateField doesn't find annotated unused private fields anymore
+    * [#4250](https://github.com/pmd/pmd/issues/4250): \[java] WhileLoopWithLiteralBoolean - false negative with complex expressions still occurs in PMD 6.52.0
 * java-design
     * [#2127](https://github.com/pmd/pmd/issues/2127): \[java] Deprecate rules ExcessiveClassLength and ExcessiveMethodLength
 * java-multithreading

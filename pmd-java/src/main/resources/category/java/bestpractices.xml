@@ -2193,15 +2193,16 @@ a block `{}` is sufficient.
             <property name="xpath">
                 <value>
 <![CDATA[
-(: while loops with single boolean literal, maybe parenthesized :)
+(: while loops with single boolean literal 'false', maybe parenthesized :)
 //WhileStatement[Expression/(.|(PrimaryExpression/PrimaryPrefix/Expression))/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral[@True = false()]]
 |
-(: do-while loops with single boolean literal, maybe parenthesized :)
+(: do-while loops with single boolean literal ('false' or 'true'), maybe parenthesized :)
 //DoStatement[Expression/(.|(PrimaryExpression/PrimaryPrefix/Expression))/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral]
 |
 (: while loops with conditional or'ed boolean literals, maybe parenthesized :)
 //WhileStatement[Expression/(InclusiveOrExpression|ConditionalOrExpression|(PrimaryExpression/PrimaryPrefix/Expression/(InclusiveOrExpression|ConditionalOrExpression)))
-    [count(PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral) = 2]
+    (: no var access :)
+    [count(PrimaryExpression/PrimaryPrefix/Name) = 0]
     (: at least one false literal :)
     [count(PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral[@True = false()]) >= 1]]
 |
@@ -2212,14 +2213,21 @@ a block `{}` is sufficient.
 |
 (: do-while loops with conditional or'ed boolean literals, maybe parenthesized :)
 //DoStatement[Expression/(InclusiveOrExpression|ConditionalOrExpression|(PrimaryExpression/PrimaryPrefix/Expression/(InclusiveOrExpression|ConditionalOrExpression)))
-    [count(PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral) = 2]]
+    (: at least one true literal :)
+    [count(PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral[@True = true()]) >= 1
+      (: or only boolean literal and no no var access :)
+      or count(PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral) >= 1
+      and count(PrimaryExpression/PrimaryPrefix/Name) = 0
+    ]]
 |
 (: do-while loops with conditional and'ed boolean literals, maybe parenthesized :)
 //DoStatement[Expression/(AndExpression|ConditionalAndExpression|(PrimaryExpression/PrimaryPrefix/Expression/(AndExpression|ConditionalAndExpression)))
     (: at least one false literal :)
     [count(PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral[@True = false()]) >= 1
-      (: or two true literals (e.g. true & true) :)
-      or count(PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral[@True = true()]) = 2]]
+      (: or only boolean literal and no no var access :)
+      or count(PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral) >= 1
+      and count(PrimaryExpression/PrimaryPrefix/Name) = 0
+    ]]
 ]]>
                 </value>
             </property>
