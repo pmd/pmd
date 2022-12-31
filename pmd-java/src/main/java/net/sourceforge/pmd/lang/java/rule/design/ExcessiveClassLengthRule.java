@@ -9,7 +9,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 /**
  * This rule detects when a class exceeds a certain threshold. i.e. if a class
  * has more than 1000 lines of code.
+ *
+ * @deprecated Use {@link NcssCountRule} instead.
  */
+@Deprecated
 public class ExcessiveClassLengthRule extends ExcessiveLengthRule {
     public ExcessiveClassLengthRule() {
         super(ASTAnyTypeDeclaration.class);

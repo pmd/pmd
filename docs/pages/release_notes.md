@@ -21,6 +21,17 @@ This is a {{ site.pmd.release_type }} release.
   has any of these annotations, then it is reported. If it has any other annotation, then it is still considered 
   to be used and is not reported.
 
+#### Deprecated rules
+
+* The Java rules {% rule java/design/ExcessiveClassLength %} and {% rule java/design/ExcessiveMethodLength %}
+  have been deprecated. The rule {% rule java/design/NcssCount %} can be used instead.
+  The deprecated rules will be removed with PMD 7.0.0.
+
+* The Java rule {% rule java/errorprone/EmptyStatementNotInLoop %} is deprecated.
+  Use the rule {% rule java/codestyle/UnnecessarySemicolon %} instead.
+  Note: Actually it was announced to be deprecated since 6.46.0 but the rule was not marked as deprecated yet.
+  This has been done now.
+
 ### Fixed Issues
 * core
     * [#4248](https://github.com/pmd/pmd/issues/4248): \[core] Can't analyze sources in zip files
@@ -28,13 +39,22 @@ This is a {{ site.pmd.release_type }} release.
     * [#4146](https://github.com/pmd/pmd/issues/4146): \[apex] ApexCRUDViolation: Recognize User Mode in SOQL + DML
 * java-bestpractices
     * [#4166](https://github.com/pmd/pmd/issues/4166): \[java] UnusedPrivateField doesn't find annotated unused private fields anymore
+* java-design
+    * [#2127](https://github.com/pmd/pmd/issues/2127): \[java] Deprecate rules ExcessiveClassLength and ExcessiveMethodLength
 * java-multithreading
     * [#4210](https://github.com/pmd/pmd/issues/4210): \[java] DoNotUseThreads report duplicate warnings
 
 ### API Changes
 
+#### Deprecated APIs
+
+##### For removal
+
+These classes / APIs have been deprecated and will be removed with PMD 7.0.0.
+
+* {% jdoc java::lang.java.rule.design.ExcessiveLengthRule %} (Java)
+
 ### External Contributions
 * [#4244](https://github.com/pmd/pmd/pull/4244): \[apex] ApexCRUDViolation: user mode and system mode with test cases added - [Tarush Singh](https://github.com/Tarush-Singh35) (@Tarush-Singh35)
 
 {% endtocmaker %}
-

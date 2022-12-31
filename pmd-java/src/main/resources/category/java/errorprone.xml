@@ -957,7 +957,8 @@ public class Foo implements Cloneable {
         <description>
 The method clone() should throw a CloneNotSupportedException.
 
-This rule is deprecated since PMD 6.35.0 without replacement. The rule has no real value as
+_Note:_ This rule is deprecated since PMD 6.35.0 and will be removed with PMD 7.0.0 without replacement.
+The rule has no real value as
 `CloneNotSupportedException` is a checked exception and therefore you need to deal with it while
 implementing the `clone()` method. You either need to declare the exception or catch it. If you catch it,
 then subclasses can't throw it themselves explicitly. However, `Object.clone()` will still throw this
@@ -1117,7 +1118,7 @@ class Foo {
             Finally, comparisons like `someDouble <= Double.NaN` are nonsensical
             and will always evaluate to false.
             
-            This rule has been renamed from "BadComparison" with PMD 6.36.0.
+            This rule has been renamed from "BadComparison" in PMD 6.36.0.
         ]]></description>
         <priority>3</priority>
         <properties>
@@ -1192,7 +1193,8 @@ From those informations there can be found various problems.
 1. DU - Anomaly: A recently defined variable is undefined. These anomalies may appear in normal source text.
 2. DD - Anomaly: A recently defined variable is redefined. This is ominous but don't have to be a bug.
 
-This rule is deprecated. Use {% rule "java/bestpractices/UnusedAssignment" %} in category bestpractices instead.
+_Note:_ This rule is deprecated since PMD 6.27.0 and will be removed with PMD 7.0.0. The rule is replaced
+by the rule {% rule "java/bestpractices/UnusedAssignment" %}.
         </description>
         <priority>5</priority>
         <example>
@@ -1391,7 +1393,7 @@ running on the same application server.
 
 This rule also checks for the equivalent calls `Runtime.getRuntime().exit()` and `Runtime.getRuntime().halt()`.
 
-This rule was called *DoNotCallSystemExit* until PMD 6.29.0.
+This rule has been renamed from "DoNotCallSystemExit" in PMD 6.29.0.
         </description>
         <priority>3</priority>
         <properties>
@@ -1597,8 +1599,8 @@ public class Foo {
         <description>
 Empty finally blocks serve no purpose and should be removed.
 
-This rule is deprecated since PMD 6.46.0. Use the rule {% rule "java/codestyle/EmptyControlStatement" %}
-from category codestyle instead.
+_Note:_ This rule is deprecated since PMD 6.46.0 and will be removed with PMD 7.0.0.
+Use the rule {% rule "java/codestyle/EmptyControlStatement" %} from category codestyle instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -1636,8 +1638,8 @@ public class Foo {
         <description>
 Empty If Statement finds instances where a condition is checked but nothing is done about it.
 
-This rule is deprecated since PMD 6.46.0. Use the rule {% rule "java/codestyle/EmptyControlStatement" %}
-from category codestyle instead.
+_Note:_ This rule is deprecated since PMD 6.46.0 and will be removed with PMD 7.0.0.
+Use the rule {% rule "java/codestyle/EmptyControlStatement" %} from category codestyle instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -1674,8 +1676,8 @@ public class Foo {
         <description>
 Empty initializers serve no purpose and should be removed.
 
-This rule is deprecated since PMD 6.46.0. Use the rule {% rule "java/codestyle/EmptyControlStatement" %}
-from category codestyle instead.
+_Note:_ This rule is deprecated since PMD 6.46.0 and will be removed with PMD 7.0.0.
+Use the rule {% rule "java/codestyle/EmptyControlStatement" %} from category codestyle instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -1707,8 +1709,8 @@ public class Foo {
         <description>
 Empty block statements serve no purpose and should be removed.
 
-This rule is deprecated since PMD 6.46.0. Use the rule {% rule "java/codestyle/EmptyControlStatement" %}
-from category codestyle instead.
+_Note:_ This rule is deprecated since PMD 6.46.0 and will be removed with PMD 7.0.0.
+Use the rule {% rule "java/codestyle/EmptyControlStatement" %} from category codestyle instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -1736,6 +1738,7 @@ public class Foo {
     <rule name="EmptyStatementNotInLoop"
           language="java"
           since="1.5"
+          deprecated="true"
           message="An empty statement (semicolon) not part of a loop"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#emptystatementnotinloop">
@@ -1743,6 +1746,9 @@ public class Foo {
 An empty statement (or a semicolon by itself) that is not used as the sole body of a 'for'
 or 'while' loop is probably a bug.  It could also be a double semicolon, which has no purpose
 and should be removed.
+
+_Note:_ This rule is deprecated since PMD 6.53.0 and will be removed with PMD 7.0.0.
+Use the rule {% rule java/codestyle/UnnecessarySemicolon %} instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -1786,8 +1792,8 @@ public void doit() {
         <description>
 Empty switch statements serve no purpose and should be removed.#
 
-This rule is deprecated since PMD 6.46.0. Use the rule {% rule "java/codestyle/EmptyControlStatement" %}
-from category codestyle instead.
+_Note:_ This rule is deprecated since PMD 6.46.0 and will be removed with PMD 7.0.0.
+Use the rule {% rule "java/codestyle/EmptyControlStatement" %} from category codestyle instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -1819,8 +1825,8 @@ public void bar() {
         <description>
 Empty synchronized blocks serve no purpose and should be removed.
 
-This rule is deprecated since PMD 6.46.0. Use the rule {% rule "java/codestyle/EmptyControlStatement" %}
-from category codestyle instead.
+_Note:_ This rule is deprecated since PMD 6.46.0 and will be removed with PMD 7.0.0.
+Use the rule {% rule "java/codestyle/EmptyControlStatement" %} from category codestyle instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -1852,8 +1858,8 @@ public class Foo {
         <description>
 Avoid empty try blocks - what's the point?
 
-This rule is deprecated since PMD 6.46.0. Use the rule {% rule "java/codestyle/EmptyControlStatement" %}
-from category codestyle instead.
+_Note:_ This rule is deprecated since PMD 6.46.0 and will be removed with PMD 7.0.0.
+Use the rule {% rule "java/codestyle/EmptyControlStatement" %} from category codestyle instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -1892,8 +1898,8 @@ Empty While Statement finds all instances where a while statement does nothing.
 If it is a timing loop, then you should use Thread.sleep() for it; if it is
 a while loop that does a lot in the exit expression, rewrite it to make it clearer.
 
-This rule is deprecated since PMD 6.46.0. Use the rule {% rule "java/codestyle/EmptyControlStatement" %}
-from category codestyle instead.
+_Note:_ This rule is deprecated since PMD 6.46.0 and will be removed with PMD 7.0.0.
+Use the rule {% rule "java/codestyle/EmptyControlStatement" %} from category codestyle instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -2142,7 +2148,7 @@ public class Foo {
 Switch statements without break or return statements for each case option
 may indicate problematic behaviour. Empty cases are ignored as these indicate an intentional fall-through.
 
-This rule has been renamed from "MissingBreakInSwitch" with PMD 6.37.0.
+This rule has been renamed from "MissingBreakInSwitch" in PMD 6.37.0.
         </description>
         <priority>3</priority>
         <properties>
@@ -2196,8 +2202,8 @@ public void bar(int status) {
         <description>
 There is no need to import a type that lives in the same package.
 
-This rule is deprecated since PMD 6.34.0. Use the rule {% rule "java/codestyle/UnnecessaryImport" %}
-from category codestyle instead.
+_Note:_ This rule is deprecated since PMD 6.34.0 and will be removed with PMD 7.0.0.
+Use the rule {% rule "java/codestyle/UnnecessaryImport" %} from category codestyle instead.
         </description>
         <priority>3</priority>
         <example>
@@ -2263,6 +2269,8 @@ Check for messages in slf4j and log4j2 (since 6.19.0) loggers with non matching 
 
 Since 6.32.0 in addition to parameterized message placeholders (`{}`) also format specifiers of string formatted
 messages are supported (`%s`).
+
+This rule has been renamed from "InvalidSlf4jMessageFormat" in PMD 6.19.0.
         </description>
         <priority>5</priority>
         <example>
@@ -2371,7 +2379,7 @@ public class Foo extends TestCase {
         <description>
 In most cases, the Logger reference can be declared as static and final.
 
-This rule is deprecated and will be removed with PMD 7.0.0.
+_Note:_ This rule is deprecated since PMD 6.15.0 and will be removed with PMD 7.0.0.
 The rule is replaced by {% rule java/errorprone/ProperLogger %}.
         </description>
         <priority>2</priority>
@@ -2929,7 +2937,8 @@ For any method that returns an array, it is a better to return an empty array ra
 null reference. This removes the need for null checking all results and avoids inadvertent
 NullPointerExceptions.
 
-Deprecated since PMD 6.37.0, use {% rule java/errorprone/ReturnEmptyCollectionRatherThanNull %} instead.
+_Note:_ This rule is deprecated since PMD 6.37.0 and will be removed with PMD 7.0.0.
+Use {% rule java/errorprone/ReturnEmptyCollectionRatherThanNull %} instead.
         </description>
         <priority>1</priority>
         <properties>
