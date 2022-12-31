@@ -63,4 +63,10 @@ These classes / APIs have been deprecated and will be removed with PMD 7.0.0.
 * [#4244](https://github.com/pmd/pmd/pull/4244): \[apex] ApexCRUDViolation: user mode and system mode with test cases added - [Tarush Singh](https://github.com/Tarush-Singh35) (@Tarush-Singh35)
 * [#4274](https://github.com/pmd/pmd/pull/4274): \[java] Fix finding lambda scope in record compact constructor - [kdebski85](https://github.com/kdebski85) (@kdebski85)
 
+### Stats
+* 43 commits
+* 17 closed tickets & PRs
+* Days since last release: 35
+
 {% endtocmaker %}
+
