@@ -480,18 +480,14 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     //For USER_MODE
     private boolean isWithUserMode(final ApexNode<?> node) {
-        if (node instanceof ASTSoqlExpression) {
-            return WITH_USER_MODE.matcher(((ASTSoqlExpression) node).getQuery()).matches();
-        }
-        return false;
+        return node instanceof ASTSoqlExpression
+            && WITH_USER_MODE.matcher(((ASTSoqlExpression) node).getQuery()).matches();
     }
 
     //For System Mode
     private boolean isWithSystemMode(final ApexNode<?> node) {
-        if (node instanceof ASTSoqlExpression) {
-            return WITH_SYSTEM_MODE.matcher(((ASTSoqlExpression) node).getQuery()).matches();
-        }
-        return false;
+        return node instanceof ASTSoqlExpression
+            && WITH_SYSTEM_MODE.matcher(((ASTSoqlExpression) node).getQuery()).matches();
     }
 
     private String getType(final ASTMethodCallExpression methodNode) {
