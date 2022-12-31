@@ -70,7 +70,7 @@ public class ExecutorServiceUsage {
     <test-code>
         <description>Using Executors directly is not allowed</description>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>5,10</expected-linenumbers>
+        <expected-linenumbers>6,11</expected-linenumbers>
         <code><![CDATA[
 import java.util.concurrent.Executors;
 import java.util.concurrent.Callable;
