@@ -1632,7 +1632,7 @@ These rules will be removed with PMD 7.0.0.
   {% rule java/errorprone/CloneMethodMustImplementCloneable %}.
 
 * Since 6.0.0: The Java rule `UnusedImports` in ruleset `java-typeresolution` is deprecated. Use the rule with
-  the same name from category `bestpractices` instead: {% rule java/bestpractices/UnusedImports %}.
+  the same name from category `bestpractices` instead: `UnusedImports` (bestpractices).
 
 * Since 6.0.0: The Java rule `SignatureDeclareThrowsException` in ruleset `java-typeresolution` is deprecated.
   Use the rule with the same name from category `design` instead:
@@ -1663,21 +1663,21 @@ These rules will be removed with PMD 7.0.0.
 * Since 6.11.0: The Java rule `UnsynchronizedStaticDateFormatter` (multithreading) has been deprecated.
   The rule is replaced by the more general {% rule java/multithreading/UnsynchronizedStaticFormatter %}.
 
-* Since 6.15.0: The Apex rule {% rule apex/codestyle/VariableNamingConventions %} has been deprecated. The rule is
+* Since 6.15.0: The Apex rule `VariableNamingConventions` (codestyle) has been deprecated. The rule is
   replaced by the more general rules {% rule apex/codestyle/FieldNamingConventions %},
   {% rule apex/codestyle/FormalParameterNamingConventions %}, {% rule apex/codestyle/LocalVariableNamingConventions %},
   and {% rule apex/codestyle/PropertyNamingConventions %}.
 
-* Since 6.15.0: The Java rule {% rule java/errorprone/LoggerIsNotStaticFinal %} has been deprecated.
+* Since 6.15.0: The Java rule `LoggerIsNotStaticFinal` (errorprone) has been deprecated.
   The rule is replaced by {% rule java/errorprone/ProperLogger %}.
 
-* Since 6.16.0: The Java rule {% rule java/codestyle/AvoidFinalLocalVariable %} has been deprecated.
+* Since 6.16.0: The Java rule `AvoidFinalLocalVariable` (codestyle) has been deprecated.
   The rule is controversial and also contradicts other existing rules such as
   {% rule java/codestyle/LocalVariableCouldBeFinal %}. If the goal is to avoid defining
   constants in a scope smaller than the class, then the rule {% rule java/errorprone/AvoidDuplicateLiterals %}
   should be used instead.
 
-* Since 6.19.0: The Java rule {% rule java/errorprone/InvalidSlf4jMessageFormat %} has been renamed to
+* Since 6.19.0: The Java rule `InvalidSlf4jMessageFormat` (errorprone) has been renamed to
   {% rule java/errorprone/InvalidLogMessageFormat %}.
 
 * Since 6.24.0: The two Java rules `PositionLiteralsFirstInComparisons` (bestpractices)
@@ -1692,17 +1692,17 @@ These rules will be removed with PMD 7.0.0.
   {% rule apex/performance/AvoidSoqlInLoops %}, and {% rule apex/performance/AvoidSoslInLoops %} are deprecated
   in favor of the new rule {% rule apex/performance/OperationWithLimitsInLoop %}.
 
-* Since 6.29.0: The Java rule {% rule java/errorprone/DoNotCallSystemExit %} has been renamed to
+* Since 6.29.0: The Java rule `DoNotCallSystemExit` (errorprone) has been renamed to
   {% rule/java/errorprone/DoNotTerminateVM %}.
 
-* Since 6.31:0: The Java rule {% rule java/performance/AvoidUsingShortType %} is deprecated
+* Since 6.31:0: The Java rule `AvoidUsingShortType` (performance) is deprecated
   for removal without replacement.
 
-* Since 6.31.0: The Java rule {% rule java/performance/SimplifyStartsWith %} is deprecated
+* Since 6.31.0: The Java rule `SimplifyStartsWith` (performance) is deprecated
   for removal without replacement.
 
-* Since 6.34.0: The Java rules {% rule java/bestpractices/UnusedImports %}, {% rule java/codestyle/DuplicateImports %},
-  {% rule java/codestyle/DontImportJavaLang %}, and {% rule java/errorprone/ImportFromSamePackage %} are
+* Since 6.34.0: The Java rules `UnusedImports` (bestpractices), `DuplicateImports` (codestyle),
+  `DontImportJavaLang` (codestyle), and `ImportFromSamePackage` (errorprone) are
   deprecated. These rules are replaced by {% rule java/codestyle/UnnecessaryImport %}.
 
 * Since 6.35.0: The Java rule `DefaultPackage` (codestyle) has been deprecated in favor of
@@ -1711,7 +1711,7 @@ These rules will be removed with PMD 7.0.0.
 * Since 6.35.0: The Java rule `CloneThrowsCloneNotSupportedException` (errorprone) has been
   deprecated without replacement.
 
-* Since 6.36.0: The Java rule {% rule java/errorprone/BadComparison %} has been renamed to
+* Since 6.36.0: The Java rule `BadComparison` (errorprone) has been renamed to
   {% rule java/errorprone/ComparisonWithNaN %}.
 
 * Since 6.37.0: The following Java rules are deprecated and removed from the quickstart ruleset,
@@ -1742,7 +1742,7 @@ These rules will be removed with PMD 7.0.0.
   in the same expression. In PMD 7 this and more cases will be covered by a
   new rule {% rule java/codestyle/UnnecessaryBoxing %}.
 
-* Since 6.37.0: The Java rule {% rule java/errorprone/MissingBreakInSwitch %} has been renamed to
+* Since 6.37.0: The Java rule `MissingBreakInSwitch` (errorprone) has been renamed to
   {% rule java/errorprone/ImplicitSwitchFallThrough %}.
 
 * Since 6.46.0: The following Java rules are deprecated and removed from the quickstart ruleset, as the new rule
