@@ -14,11 +14,20 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Modified rules
+
+* The Java rule {% rule java/bestpractices/UnusedPrivateField %} has a new property `reportForAnnotations`.
+  This is a list of fully qualified names of the annotation types that should be reported anyway. If an unused field
+  has any of these annotations, then it is reported. If it has any other annotation, then it is still considered 
+  to be used and is not reported.
+
 ### Fixed Issues
 * core
     * [#4248](https://github.com/pmd/pmd/issues/4248): \[core] Can't analyze sources in zip files
 * apex-security
     * [#4146](https://github.com/pmd/pmd/issues/4146): \[apex] ApexCRUDViolation: Recognize User Mode in SOQL + DML
+* java-bestpractices
+    * [#4166](https://github.com/pmd/pmd/issues/4166): \[java] UnusedPrivateField doesn't find annotated unused private fields anymore
 * java-multithreading
     * [#4210](https://github.com/pmd/pmd/issues/4210): \[java] DoNotUseThreads report duplicate warnings
 
