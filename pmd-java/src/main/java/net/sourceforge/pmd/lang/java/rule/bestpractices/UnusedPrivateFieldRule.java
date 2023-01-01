@@ -34,7 +34,7 @@ public class UnusedPrivateFieldRule extends AbstractJavaRulechainRule {
             .desc("Fully qualified names of the annotation types that should be reported anyway. If an unused field "
                     + "has any of these annotations, then it is reported. If it has any other annotation, then "
                     + "it is still considered to used and is not reported.")
-            .defaultValue(new ArrayList<String>())
+            .defaultValue(new ArrayList<>())
             .build();
 
     public UnusedPrivateFieldRule() {
