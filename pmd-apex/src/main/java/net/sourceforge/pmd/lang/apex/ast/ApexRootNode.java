@@ -47,6 +47,7 @@ public abstract class ApexRootNode<T extends Compilation> extends AbstractApexNo
      * {@code node.getApexVersion() >= Version.V176.getExternal()}
      * @return the apex version
      */
+    @Deprecated
     public double getApexVersion() {
         return node.getDefiningType().getCodeUnitDetails().getVersion().getExternal();
     }
