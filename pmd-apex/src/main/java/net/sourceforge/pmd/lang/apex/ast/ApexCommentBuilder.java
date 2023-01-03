@@ -23,9 +23,8 @@ import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
 import com.nawforce.apexparser.ApexLexer;
 
-@Deprecated
 @InternalApi
-public final class ApexCommentBuilder {
+final class ApexCommentBuilder {
     private final SourceCodePositioner sourceCodePositioner;
     private final CommentInformation commentInfo;
 
