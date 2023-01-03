@@ -41,7 +41,7 @@ public class ASTLiteralExpression extends AbstractApexNode.Single<LiteralExpress
             return LiteralType.DOUBLE;
         } else if (node instanceof LiteralExpression.LongVal) {
             return LiteralType.LONG;
-        /* TODO: the parser must distinguish decimal vs. double
+        /* TODO(b/239648780): the parser must distinguish decimal vs. double
         } else if (node instanceof LiteralExpression.DecimalVal) {
             return LiteralType.DECIMAL;
         */
