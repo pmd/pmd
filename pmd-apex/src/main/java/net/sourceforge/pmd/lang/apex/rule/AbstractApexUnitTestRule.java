@@ -9,8 +9,6 @@ import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 
-import apex.jorje.services.Version;
-
 /**
  * Do special checks for apex unit test classes and methods
  *

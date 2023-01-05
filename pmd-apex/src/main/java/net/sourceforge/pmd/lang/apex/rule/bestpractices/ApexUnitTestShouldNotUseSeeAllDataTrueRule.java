@@ -13,8 +13,6 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexUnitTestRule;
 
-import apex.jorje.services.Version;
-
 /**
  * <p>
  * It's a very bad practice to use @isTest(seeAllData=true) in Apex unit tests,
