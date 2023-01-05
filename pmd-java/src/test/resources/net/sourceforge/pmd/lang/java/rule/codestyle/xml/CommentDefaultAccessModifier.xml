@@ -343,6 +343,18 @@ public class CommentDefaultAccessModifier {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>Use property ignoredAnnotations (see #1343)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import co.elastic.clients.util.VisibleForTesting;
+
+public class Foo {
+    @VisibleForTesting void method() {}
+}
+        ]]></code>
+    </test-code>
+
     <code-fragment id="constructor-with-default-access-modifier-rule"><![CDATA[
 public class Foo {
    Foo() {} // should be reported
