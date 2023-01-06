@@ -739,6 +739,35 @@ private fun buildMethodDeclaration(node: MethodDeclaration, parent: ApexNode<*>?
         }
 
         findDescendants(root, nodeType = ASTProperty::class).forEach { node -> generateFields(node) }
+
+        // Sort resulting nodes
+        findDescendants(root, nodeType = ASTUserClass::class).forEach { node ->
+            sortUserClassChildren(node)
+        }
+    }
+
+    /**
+      * Sort children of [ASTUserClass] in historical order.
+      *
+      * This sorts [ASTField] nodes immediately after [ASTModifierNode] nodes at
+      * the start of the ordered children.
+      */
+    private fun sortUserClassChildren(node: ASTUserClass) {
+      val children = ArrayList<net.sourceforge.pmd.lang.ast.Node>(node.jjtGetNumChildren())
+      for(i in 0..node.jjtGetNumChildren()-1) {
+        children.add(node.jjtGetChild(i))
+      }
+
+      children.sortBy{ when (it) {
+          is ASTModifierNode -> 1
+          is ASTField -> 2
+          else -> 3
+        }
+      }
+
+      for(i in 0..node.jjtGetNumChildren()-1) {
+        node.jjtAddChild(children.get(i), i)
+      }
     }
 
     /** Returns all descendants of [root] of type [nodeType], including [root]. */
