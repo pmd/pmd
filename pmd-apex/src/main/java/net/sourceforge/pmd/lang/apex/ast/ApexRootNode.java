@@ -40,18 +40,6 @@ public abstract class ApexRootNode<T extends TypeDeclaration> extends AbstractAp
         }
     }
 
-    /**
-     * Gets the apex version this class has been compiled with.
-     * Use {@link Version} to compare, e.g.
-     * {@code node.getApexVersion() >= Version.V176.getExternal()}
-     * @return the apex version
-     */
-    public double getApexVersion() {
-        // return node.getDefiningType().getCodeUnitDetails().getVersion().getExternal();
-        // TODO(b/243906862)
-        return 0;
-    }
-
     @Override
     public boolean isFindBoundary() {
         return true;
