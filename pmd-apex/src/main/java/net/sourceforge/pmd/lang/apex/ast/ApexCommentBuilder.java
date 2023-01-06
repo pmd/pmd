@@ -28,7 +28,7 @@ final class ApexCommentBuilder {
     private final SourceCodePositioner sourceCodePositioner;
     private final CommentInformation commentInfo;
 
-    public ApexCommentBuilder(String sourceCode, ApexParserOptions parserOptions) {
+    ApexCommentBuilder(String sourceCode, ApexParserOptions parserOptions) {
         sourceCodePositioner = new SourceCodePositioner(sourceCode);
         commentInfo = extractInformationFromComments(sourceCode, parserOptions.getSuppressMarker());
     }
