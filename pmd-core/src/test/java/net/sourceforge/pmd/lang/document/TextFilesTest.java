@@ -37,7 +37,7 @@ class TextFilesTest {
     void testNioFile() throws IOException {
         Path file = makeTmpFile(StandardCharsets.UTF_8, "some content");
         try (TextFile tf = TextFile.forPath(file, StandardCharsets.UTF_8, dummyVersion())) {
-            assertEquals(file.toAbsolutePath().toString(), tf.getPathId());
+            assertEquals(file.toAbsolutePath().toUri().toString(), tf.getPathId());
             assertEquals(file.toString(), tf.getDisplayName());
             assertEquals(dummyVersion(), tf.getLanguageVersion());
             assertEquals(Chars.wrap("some content"), tf.readContents().getNormalizedText());
@@ -49,7 +49,7 @@ class TextFilesTest {
         Path file = makeTmpFile(StandardCharsets.UTF_8, "some content").toAbsolutePath();
         try (TextFile tf = TextFile.forPath(file, StandardCharsets.UTF_8, dummyVersion())) {
             try (TextFile tfPrime = TextFile.forPath(file, StandardCharsets.UTF_8, dummyVersion())) {
-                try (TextFile stringTf = TextFile.forCharSeq("some content", file.toString(), dummyVersion())) {
+                try (TextFile stringTf = TextFile.forCharSeq("some content", file.toUri().toString(), dummyVersion())) {
                     assertEquals(tf.getPathId(), stringTf.getPathId());
 
                     // despite same path id, they are different implementations
@@ -168,7 +168,7 @@ class TextFilesTest {
         try (TextFile tf = TextFile.builderForPath(file, StandardCharsets.UTF_8, dummyVersion())
                                    .withDisplayName("aname")
                                    .build()) {
-            assertEquals(file.toAbsolutePath().toString(), tf.getPathId());
+            assertEquals(file.toAbsolutePath().toUri().toString(), tf.getPathId());
             assertEquals("aname", tf.getDisplayName());
             assertEquals(dummyVersion(), tf.getLanguageVersion());
             assertEquals(Chars.wrap("some content"), tf.readContents().getNormalizedText());

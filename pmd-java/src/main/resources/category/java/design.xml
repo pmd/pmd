@@ -632,6 +632,7 @@ public void bar() {
     <rule name="ExcessiveClassLength"
           language="java"
           since="0.6"
+          deprecated="true"
           message="Avoid really long classes."
           class="net.sourceforge.pmd.lang.java.rule.design.ExcessiveClassLengthRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#excessiveclasslength">
@@ -639,6 +640,16 @@ public void bar() {
 Excessive class file lengths are usually indications that the class may be burdened with excessive
 responsibilities that could be provided by external classes or functions. In breaking these methods
 apart the code becomes more manageable and ripe for reuse.
+
+_Note:_ This rule is deprecated since PMD 6.53.0 and will be removed with PMD 7.0.0.
+
+The rule is based on the simple metric lines of code (LoC). The reasons for deprecation are:
+* LoC is a noisy metric, NCSS (non-commenting source statements) is a more solid metric
+(results are code-style independent, comment-insensitive)
+* LoC is easily circumvented by bad code style (e.g. stuffing several assignments into one, concatenating code lines)
+* Enforcing length limits with LoC is not very meaningful, could even be called a bad practice
+
+In order to find "big" classes, the rule {% rule NcssCount %} can be used instead.
         </description>
         <priority>3</priority>
         <example>
@@ -689,6 +700,7 @@ public class Foo {
     <rule name="ExcessiveMethodLength"
           language="java"
           since="0.6"
+          deprecated="true"
           message="Avoid really long methods."
           class="net.sourceforge.pmd.lang.java.rule.design.ExcessiveMethodLengthRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#excessivemethodlength">
@@ -697,6 +709,16 @@ When methods are excessively long this usually indicates that the method is doin
 name/signature might suggest. They also become challenging for others to digest since excessive
 scrolling causes readers to lose focus.
 Try to reduce the method length by creating helper methods and removing any copy/pasted code.
+
+_Note:_ This rule is deprecated since PMD 6.53.0 and will be removed with PMD 7.0.0.
+
+The rule is based on the simple metric lines of code (LoC). The reasons for deprecation are:
+* LoC is a noisy metric, NCSS (non-commenting source statements) is a more solid metric
+(results are code-style independent, comment-insensitive)
+* LoC is easily circumvented by bad code style (e.g. stuffing several assignments into one, concatenating code lines)
+* Enforcing length limits with LoC is not very meaningful, could even be called a bad practice
+
+In order to find "big" methods, the rule {% rule NcssCount %} can be used instead.
         </description>
         <priority>3</priority>
         <example>

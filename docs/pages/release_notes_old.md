@@ -5,6 +5,80 @@ permalink: pmd_release_notes_old.html
 
 Previous versions of PMD can be downloaded here: https://github.com/pmd/pmd/releases
 
+## 31-December-2022 - 6.53.0
+
+The PMD team is pleased to announce PMD 6.53.0.
+
+This is a minor release.
+
+### Table Of Contents
+
+* [New and noteworthy](#new-and-noteworthy)
+    * [Modified rules](#modified-rules)
+    * [Deprecated rules](#deprecated-rules)
+* [Fixed Issues](#fixed-issues)
+* [API Changes](#api-changes)
+    * [Deprecated APIs](#deprecated-apis)
+        * [For removal](#for-removal)
+* [External Contributions](#external-contributions)
+* [Stats](#stats)
+
+### New and noteworthy
+
+#### Modified rules
+
+* The Java rule [`UnusedPrivateField`](https://pmd.github.io/pmd-6.53.0/pmd_rules_java_bestpractices.html#unusedprivatefield) has a new property `reportForAnnotations`.
+  This is a list of fully qualified names of the annotation types that should be reported anyway. If an unused field
+  has any of these annotations, then it is reported. If it has any other annotation, then it is still considered 
+  to be used and is not reported.
+
+#### Deprecated rules
+
+* The Java rules [`ExcessiveClassLength`](https://pmd.github.io/pmd-6.53.0/pmd_rules_java_design.html#excessiveclasslength) and [`ExcessiveMethodLength`](https://pmd.github.io/pmd-6.53.0/pmd_rules_java_design.html#excessivemethodlength)
+  have been deprecated. The rule [`NcssCount`](https://pmd.github.io/pmd-6.53.0/pmd_rules_java_design.html#ncsscount) can be used instead.
+  The deprecated rules will be removed with PMD 7.0.0.
+
+* The Java rule [`EmptyStatementNotInLoop`](https://pmd.github.io/pmd-6.53.0/pmd_rules_java_errorprone.html#emptystatementnotinloop) is deprecated.
+  Use the rule [`UnnecessarySemicolon`](https://pmd.github.io/pmd-6.53.0/pmd_rules_java_codestyle.html#unnecessarysemicolon) instead.
+  Note: Actually it was announced to be deprecated since 6.46.0 but the rule was not marked as deprecated yet.
+  This has been done now.
+
+### Fixed Issues
+* core
+    * [#4248](https://github.com/pmd/pmd/issues/4248): \[core] Can't analyze sources in zip files
+* apex-security
+    * [#4146](https://github.com/pmd/pmd/issues/4146): \[apex] ApexCRUDViolation: Recognize User Mode in SOQL + DML
+* java
+    * [#4266](https://github.com/pmd/pmd/issues/4266): \[java] PMD fails to process a record with lambda in compact constructor
+* java-bestpractices
+    * [#4166](https://github.com/pmd/pmd/issues/4166): \[java] UnusedPrivateField doesn't find annotated unused private fields anymore
+    * [#4250](https://github.com/pmd/pmd/issues/4250): \[java] WhileLoopWithLiteralBoolean - false negative with complex expressions still occurs in PMD 6.52.0
+* java-design
+    * [#2127](https://github.com/pmd/pmd/issues/2127): \[java] Deprecate rules ExcessiveClassLength and ExcessiveMethodLength
+* java-errorprone
+    * [#4164](https://github.com/pmd/pmd/issues/4164): \[java]\[doc] AvoidAssertAsIdentifier and AvoidEnumAsIdentifier - clarify use case
+* java-multithreading
+    * [#4210](https://github.com/pmd/pmd/issues/4210): \[java] DoNotUseThreads report duplicate warnings
+
+### API Changes
+
+#### Deprecated APIs
+
+##### For removal
+
+These classes / APIs have been deprecated and will be removed with PMD 7.0.0.
+
+* <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.53.0/net/sourceforge/pmd/lang/java/rule/design/ExcessiveLengthRule.html#"><code>ExcessiveLengthRule</code></a> (Java)
+
+### External Contributions
+* [#4244](https://github.com/pmd/pmd/pull/4244): \[apex] ApexCRUDViolation: user mode and system mode with test cases added - [Tarush Singh](https://github.com/Tarush-Singh35) (@Tarush-Singh35)
+* [#4274](https://github.com/pmd/pmd/pull/4274): \[java] Fix finding lambda scope in record compact constructor - [kdebski85](https://github.com/kdebski85) (@kdebski85)
+
+### Stats
+* 43 commits
+* 17 closed tickets & PRs
+* Days since last release: 35
+
 ## 26-November-2022 - 6.52.0
 
 The PMD team is pleased to announce PMD 6.52.0.
