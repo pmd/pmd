@@ -10,14 +10,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
+import org.pcollections.HashTreePSet;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
@@ -27,6 +27,7 @@ import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolEquality;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.ExecutableStub.CtorStub;
@@ -62,9 +63,9 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
     private List<JConstructorSymbol> ctors = new ArrayList<>();
     private List<JFieldSymbol> enumConstants = null;
 
-    private List<SymAnnot> annotations = new ArrayList<>();
+    private PSet<SymAnnot> annotations = HashTreePSet.empty();
 
-    private Set<String> annotAttributes;
+    private PSet<String> annotAttributes;
 
     private final ParseLock parseLock;
 
@@ -126,10 +127,11 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
                         names.finishOuterClass();
                     }
                 }
-                annotations = Collections.unmodifiableList(annotations);
                 annotAttributes = (accessFlags & Opcodes.ACC_ANNOTATION) != 0
-                                  ? getDeclaredMethods().stream().map(JElementSymbol::getSimpleName).collect(Collectors.toSet())
-                                  : Collections.emptySet();
+                                  ? getDeclaredMethods().stream().filter(JMethodSymbol::isAnnotationAttribute)
+                                                        .map(JElementSymbol::getSimpleName)
+                                                        .collect(CollectionUtil.toPersistentSet())
+                                  : HashTreePSet.empty();
             }
 
             @Override
@@ -250,7 +252,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
 
     @Override
     public void addAnnotation(SymAnnot annot) {
-        annotations.add(annot);
+        annotations = annotations.plus(annot);
     }
 
 
@@ -288,6 +290,12 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
     }
 
     @Override
+    public boolean isGeneric() {
+        parseLock.ensureParsed();
+        return signature.isGeneric();
+    }
+
+    @Override
     public LexicalScope getLexicalScope() {
         if (scope == null) {
             scope = JClassSymbol.super.getLexicalScope();
@@ -320,15 +328,25 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
     }
 
     @Override
-    public List<SymAnnot> getDeclaredAnnotations() {
+    public PSet<SymAnnot> getDeclaredAnnotations() {
         parseLock.ensureParsed();
         return annotations;
     }
 
     @Override
-    public Set<String> getAnnotationAttributeNames() {
+    public PSet<String> getAnnotationAttributeNames() {
         parseLock.ensureParsed();
         return annotAttributes;
+    }
+
+    @Override
+    public @Nullable SymbolicValue getDefaultAnnotationAttributeValue(String attrName) {
+        parseLock.ensureParsed();
+        if (!annotAttributes.contains(attrName)) {
+            // this is a shortcut, because the default impl checks each method
+            return null;
+        }
+        return JClassSymbol.super.getDefaultAnnotationAttributeValue(attrName);
     }
 
     @Override

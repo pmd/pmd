@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.symbols.internal
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.property.checkAll
+import net.sourceforge.pmd.lang.ast.test.IntelliMarker
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.types.testTypeSystem
 
@@ -14,7 +15,7 @@ import net.sourceforge.pmd.lang.java.types.testTypeSystem
  * @author Clément Fournier
  * @since 7.0.0
  */
-class ReflectedClassSymbolTests : WordSpec({
+class ReflectedClassSymbolTests : IntelliMarker, WordSpec({
 
     "A class symbol" should {
 

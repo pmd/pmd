@@ -23,8 +23,8 @@ class ASTWildcardTypeTest : ParserTestSpec({
                 classType("List") {
                     typeArgList {
                         child<ASTWildcardType> {
-                            it::hasUpperBound shouldBe true
-                            it::hasLowerBound shouldBe false
+                            it::isUpperBound shouldBe true
+                            it::isLowerBound shouldBe false
 
                             it::getTypeBoundNode shouldBe classType("B")
                         }
@@ -37,8 +37,8 @@ class ASTWildcardTypeTest : ParserTestSpec({
                 classType("List") {
                     typeArgList {
                         child<ASTWildcardType> {
-                            it::hasUpperBound shouldBe false
-                            it::hasLowerBound shouldBe true
+                            it::isUpperBound shouldBe false
+                            it::isLowerBound shouldBe true
 
                             it::getTypeBoundNode shouldBe classType("B")
                         }
@@ -51,8 +51,8 @@ class ASTWildcardTypeTest : ParserTestSpec({
                 classType("List") {
                     typeArgList {
                         child<ASTWildcardType> {
-                            it::hasUpperBound shouldBe false
-                            it::hasLowerBound shouldBe false
+                            it::isUpperBound shouldBe true
+                            it::isLowerBound shouldBe false
 
                             it::getTypeBoundNode shouldBe null
                         }
@@ -76,8 +76,8 @@ class ASTWildcardTypeTest : ParserTestSpec({
                             annotation("A")
                             annotation("B")
 
-                            it::hasUpperBound shouldBe true
-                            it::hasLowerBound shouldBe false
+                            it::isUpperBound shouldBe true
+                            it::isLowerBound shouldBe false
 
                             it::getTypeBoundNode shouldBe classType("B") {
                                 annotation("C")

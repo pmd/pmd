@@ -58,6 +58,7 @@ abstract class ParseLock {
         return getFinalStatus() == ParseStatus.FAILED;
     }
 
+    // will be called in the critical section after parse is done
     protected void finishParse(boolean failed) {
         // by default do nothing
     }
@@ -65,6 +66,7 @@ abstract class ParseLock {
     /** Returns true if parse is successful. */
     protected abstract boolean doParse() throws Throwable; // SUPPRESS CHECKSTYLE IllegalThrows
 
+    /** Checked by an assert after parse. */
     protected boolean postCondition() {
         return true;
     }

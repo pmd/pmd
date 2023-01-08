@@ -3,8 +3,8 @@
  */
 
 
-package net.sourceforge.pmd.internal.util;
-
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,9 +30,12 @@ public final class IteratorUtilCopy {
     private static final int MATCH_ALL = 1;
     private static final int MATCH_NONE = 2;
 
-    private IteratorUtil() {
+    private IteratorUtilCopy() {
 
     }
+
+    @Target(ElementType.TYPE_USE)
+    @interface Nullable {}
 
     public static <T> Iterator<T> takeWhile(Iterator<T> iter, Predicate<? super T> predicate) {
         return new AbstractIterator<T>() {
@@ -246,8 +249,6 @@ public final class IteratorUtilCopy {
 
 
     public static void advance(Iterator<?> iterator, int n) {
-        AssertionUtil.requireNonNegative("n", n);
-
         while (n > 0 && iterator.hasNext()) {
             iterator.next();
             n--;
@@ -256,7 +257,6 @@ public final class IteratorUtilCopy {
 
 
     public static <T> Iterator<T> take(Iterator<? extends T> iterator, final int n) {
-        AssertionUtil.requireNonNegative("n", n);
         if (n == 0) {
             return Collections.emptyIterator();
         }
@@ -278,7 +278,6 @@ public final class IteratorUtilCopy {
 
 
     public static <T> Iterator<T> drop(Iterator<? extends T> source, final int n) {
-        AssertionUtil.requireNonNegative("n", n);
         if (n == 0) {
             return (Iterator<T>) source;
         }

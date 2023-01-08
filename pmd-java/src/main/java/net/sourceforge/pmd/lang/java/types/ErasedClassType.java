@@ -6,12 +6,15 @@ package net.sourceforge.pmd.lang.java.types;
 
 import java.util.Collections;
 
+import org.pcollections.PSet;
+
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 
 final class ErasedClassType extends ClassTypeImpl {
 
-    ErasedClassType(TypeSystem typeSystem, JClassSymbol symbol) {
-        super(typeSystem, symbol, Collections.emptyList(), false);
+    ErasedClassType(TypeSystem typeSystem, JClassSymbol symbol, PSet<SymAnnot> typeAnnots) {
+        super(typeSystem, symbol, Collections.emptyList(), true, typeAnnots);
     }
 
     @Override

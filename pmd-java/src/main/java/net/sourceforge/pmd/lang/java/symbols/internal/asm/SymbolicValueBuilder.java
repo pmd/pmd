@@ -15,12 +15,8 @@ import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymArray;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymEnum;
 
-/**
- *
- */
-class SymbolicValueBuilder extends AnnotationVisitor {
+abstract class SymbolicValueBuilder extends AnnotationVisitor {
 
-    SymbolicValue result;
     private final AsmSymbolResolver resolver;
 
     SymbolicValueBuilder(AsmSymbolResolver resolver) {
@@ -28,9 +24,11 @@ class SymbolicValueBuilder extends AnnotationVisitor {
         this.resolver = resolver;
     }
 
-    protected void acceptValue(String name, SymbolicValue v) {
-        result = v;
+    AsmSymbolResolver getResolver() {
+        return resolver;
     }
+
+    protected abstract void acceptValue(String name, SymbolicValue v);
 
 
     @Override

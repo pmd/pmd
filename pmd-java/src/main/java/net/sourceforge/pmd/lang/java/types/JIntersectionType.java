@@ -16,11 +16,15 @@ import java.util.stream.Stream;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.HashTreePSet;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * An intersection type. Intersections type act as the
@@ -58,6 +62,19 @@ public final class JIntersectionType implements JTypeMirror {
 
     }
 
+    @Override
+    public PSet<SymAnnot> getTypeAnnotations() {
+        return HashTreePSet.empty();
+    }
+
+    @Override
+    public JTypeMirror withAnnotations(PSet<SymAnnot> newTypeAnnots) {
+        return new JIntersectionType(
+            ts,
+            primaryBound.withAnnotations(newTypeAnnots),
+            CollectionUtil.map(components, c -> c.withAnnotations(newTypeAnnots))
+        );
+    }
 
     /**
      * Returns the list of components. Their erasure must be pairwise disjoint.

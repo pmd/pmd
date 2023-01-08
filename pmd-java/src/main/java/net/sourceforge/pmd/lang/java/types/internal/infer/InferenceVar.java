@@ -16,8 +16,11 @@ import java.util.function.Function;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.HashTreePSet;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.JTypeVisitor;
@@ -49,6 +52,16 @@ public final class InferenceVar implements JTypeMirror, SubstVar {
         this.ctx = ctx;
         this.tvar = tvar;
         this.id = id;
+    }
+
+    @Override
+    public JTypeMirror withAnnotations(PSet<SymAnnot> newTypeAnnots) {
+        return this;
+    }
+
+    @Override
+    public PSet<SymAnnot> getTypeAnnotations() {
+        return HashTreePSet.empty();
     }
 
     public String getName() {

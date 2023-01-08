@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.lang.annotation.ElementType;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,10 +12,13 @@ import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
+import net.sourceforge.pmd.lang.java.symbols.internal.ast.SymbolResolutionPass;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaResolvers;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
@@ -60,9 +64,10 @@ final class TypesFromAst {
 
             ASTWildcardType wild = (ASTWildcardType) node;
             @Nullable JTypeMirror bound = fromAst(ts, lexicalSubst, wild.getTypeBoundNode());
-            return bound == null
-                   ? ts.UNBOUNDED_WILD
-                   : ts.wildcard(wild.hasUpperBound(), bound);
+            if (bound == null) {
+                bound = ts.OBJECT;
+            }
+            return ts.wildcard(wild.isUpperBound(), bound).withAnnotations(getTypeAnnotations(node));
 
 
         } else if (node instanceof ASTIntersectionType) {
@@ -79,13 +84,20 @@ final class TypesFromAst {
             }
         } else if (node instanceof ASTArrayType) {
 
-            JTypeMirror eltType = fromAst(ts, lexicalSubst, ((ASTArrayType) node).getElementType());
+            JTypeMirror t = fromAst(ts, lexicalSubst, ((ASTArrayType) node).getElementType());
+            ASTArrayDimensions dimensions = ((ASTArrayType) node).getDimensions();
+            // we have to iterate in reverse
+            for (int i = dimensions.size() - 1; i >= 0; i--) {
+                ASTArrayTypeDim dim = dimensions.get(i);
+                PSet<SymAnnot> annots = getSymbolicAnnotations(dim);
+                t = ts.arrayType(t).withAnnotations(annots);
+            }
 
-            return ts.arrayType(eltType, node.getArrayDepth());
+            return t;
 
         } else if (node instanceof ASTPrimitiveType) {
 
-            return ts.getPrimitive(((ASTPrimitiveType) node).getKind());
+            return ts.getPrimitive(((ASTPrimitiveType) node).getKind()).withAnnotations(getTypeAnnotations(node));
 
         } else if (node instanceof ASTAmbiguousName) {
 
@@ -95,29 +107,36 @@ final class TypesFromAst {
 
             return ts.lub(CollectionUtil.map(((ASTUnionType) node).getComponents(), TypeNode::getTypeMirror));
 
+        } else if (node instanceof ASTVoidType) {
+
+            return ts.NO_TYPE;
+
         }
 
         throw new IllegalStateException("Illegal type " + node.getClass() + " " + node);
     }
 
-    private static JTypeMirror makeFromClassType(TypeSystem ts, ASTClassOrInterfaceType node, Substitution subst) {
 
+    private static PSet<SymAnnot> getSymbolicAnnotations(Annotatable dim) {
+        return SymbolResolutionPass.buildSymbolicAnnotations(dim.getDeclaredAnnotations());
+    }
+
+
+    private static JTypeMirror makeFromClassType(TypeSystem ts, ASTClassOrInterfaceType node, Substitution subst) {
         if (node == null) {
             return null;
         }
 
         // TODO error handling, what if we're saying List<String, Int> in source: should be caught before
 
-        ASTClassOrInterfaceType lhsType = node.getQualifier();
-
-
+        PSet<SymAnnot> typeAnnots = getTypeAnnotations(node);
         JTypeDeclSymbol reference = getReferenceEnsureResolved(node);
 
         if (reference instanceof JTypeParameterSymbol) {
-            return subst.apply(((JTypeParameterSymbol) reference).getTypeMirror());
+            return subst.apply(((JTypeParameterSymbol) reference).getTypeMirror()).withAnnotations(typeAnnots);
         }
 
-        JClassType enclosing = getEnclosing(ts, node, subst, lhsType, reference);
+        JClassType enclosing = getEnclosing(ts, node, subst, node.getQualifier(), reference);
 
         ASTTypeArguments typeArguments = node.getTypeArguments();
 
@@ -134,13 +153,13 @@ final class TypesFromAst {
         }
 
         if (enclosing != null) {
-            return enclosing.selectInner((JClassSymbol) reference, boundGenerics);
+            return enclosing.selectInner((JClassSymbol) reference, boundGenerics, typeAnnots);
         } else {
-            return ts.parameterise((JClassSymbol) reference, boundGenerics);
+            return ts.parameterise((JClassSymbol) reference, boundGenerics).withAnnotations(typeAnnots);
         }
     }
 
-    private static @Nullable JClassType getEnclosing(TypeSystem ts, ASTClassOrInterfaceType node, Substitution subst, ASTClassOrInterfaceType lhsType, JTypeDeclSymbol reference) {
+    private static @Nullable JClassType getEnclosing(TypeSystem ts, ASTClassOrInterfaceType node, Substitution subst, @Nullable ASTClassOrInterfaceType lhsType, JTypeDeclSymbol reference) {
         @Nullable JTypeMirror enclosing = makeFromClassType(ts, lhsType, subst);
 
         if (enclosing != null && !shouldEnclose(reference)) {
@@ -219,5 +238,43 @@ final class TypesFromAst {
     // Note most checks have already been done in the disambiguation pass (including reporting)
     private static boolean shouldEnclose(JTypeDeclSymbol reference) {
         return !Modifier.isStatic(reference.getModifiers());
+    }
+
+    /**
+     * Returns the variable declaration or field or formal, etc, that
+     * may give additional type annotations to the given type.
+     */
+    private static @Nullable Annotatable getEnclosingAnnotationGiver(JavaNode node) {
+        JavaNode parent = node.getParent();
+        if (node.getIndexInParent() == 0 && parent instanceof ASTClassOrInterfaceType) {
+            // this is an enclosing type
+            return getEnclosingAnnotationGiver(parent);
+        } else if (node.getIndexInParent() == 0 && parent instanceof ASTArrayType) {
+            // the element type of an array type
+            return getEnclosingAnnotationGiver(parent);
+        } else if (!(parent instanceof ASTType) && parent instanceof ASTVariableDeclarator) {
+            return getEnclosingAnnotationGiver(parent);
+        } else if (!(parent instanceof ASTType) && parent instanceof Annotatable) {
+            return (Annotatable) parent;
+        }
+        return null;
+    }
+
+    private static PSet<SymAnnot> getTypeAnnotations(ASTType type) {
+        PSet<SymAnnot> annotsOnType = getSymbolicAnnotations(type);
+        if (type instanceof ASTClassOrInterfaceType && ((ASTClassOrInterfaceType) type).getQualifier() != null) {
+            return annotsOnType; // annots on the declaration only apply to the leftmost qualifier
+        }
+        Annotatable parent = getEnclosingAnnotationGiver(type);
+        if (parent != null) {
+            PSet<SymAnnot> parentAnnots = getSymbolicAnnotations(parent);
+            for (SymAnnot parentAnnot : parentAnnots) {
+                // filter annotations by whether they apply to the type use.
+                if (parentAnnot.getAnnotationSymbol().annotationAppliesTo(ElementType.TYPE_USE)) {
+                    annotsOnType = annotsOnType.plus(parentAnnot);
+                }
+            }
+        }
+        return annotsOnType;
     }
 }
