@@ -45,7 +45,7 @@ fun haveVisibility(vis: AccessNode.Visibility): Matcher<AccessNode> = object : M
 }
 
 fun JavaNode.tokenList(): List<JavaccToken> =
-        IteratorUtil.toList(TokenUtils.tokenRange(this))
+        tokens().toList()
 
 fun String.addArticle() = when (this[0].toLowerCase()) {
     'a', 'e', 'i', 'o', 'u' -> "an $this"

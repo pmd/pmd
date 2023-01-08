@@ -130,12 +130,17 @@ public class Violation {
 
     <rule name="AvoidAssertAsIdentifier"
           language="java"
+          maximumLanguageVersion="1.3"
           since="3.4"
           message="Avoid using assert as an identifier; it became a reserved word in JDK 1.4"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidassertasidentifier">
         <description>
-Use of the term 'assert' will conflict with newer versions of Java since it is a reserved word.
+Use of the term `assert` will conflict with newer versions of Java since it is a reserved word.
+
+Since Java 1.4, the token `assert` became a reserved word and using it as an identifier will
+result in a compilation failure for Java 1.4 and later. This rule is therefore only useful
+for old Java code before Java 1.4. It can be used to identify problematic code prior to a Java update.
         </description>
         <priority>2</priority>
         <properties>
@@ -347,12 +352,17 @@ private void buz(String x) {}
 
     <rule name="AvoidEnumAsIdentifier"
           language="java"
+          maximumLanguageVersion="1.4"
           since="3.4"
           message="Avoid using enum as an identifier; it's a reserved word in JDK 1.5"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidenumasidentifier">
         <description>
-Use of the term 'enum' will conflict with newer versions of Java since it is a reserved word.
+Use of the term `enum` will conflict with newer versions of Java since it is a reserved word.
+
+Since Java 1.5, the token `enum` became a reserved word and using it as an identifier will
+result in a compilation failure for Java 1.5 and later. This rule is therefore only useful
+for old Java code before Java 1.5. It can be used to identify problematic code prior to a Java update.
         </description>
         <priority>2</priority>
         <properties>
@@ -1074,7 +1084,7 @@ class Foo {
             Finally, comparisons like `someDouble <= Double.NaN` are nonsensical
             and will always evaluate to false.
             
-            This rule has been renamed from "BadComparison" with PMD 6.36.0.
+            This rule has been renamed from "BadComparison" in PMD 6.36.0.
         ]]></description>
         <priority>3</priority>
         <properties>
@@ -1291,7 +1301,7 @@ running on the same application server.
 
 This rule also checks for the equivalent calls `Runtime.getRuntime().exit()` and `Runtime.getRuntime().halt()`.
 
-This rule was called *DoNotCallSystemExit* until PMD 6.29.0.
+This rule has been renamed from "DoNotCallSystemExit" in PMD 6.29.0.
         </description>
         <priority>3</priority>
         <properties>
@@ -1506,8 +1516,8 @@ public class Foo {
         <description>
 Empty finally blocks serve no purpose and should be removed.
 
-This rule is deprecated since PMD 6.46.0. Use the rule {% rule "java/codestyle/EmptyControlStatement" %}
-from category codestyle instead.
+_Note:_ This rule is deprecated since PMD 6.46.0 and will be removed with PMD 7.0.0.
+Use the rule {% rule "java/codestyle/EmptyControlStatement" %} from category codestyle instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -1544,8 +1554,8 @@ public class Foo {
         <description>
 Empty If Statement finds instances where a condition is checked but nothing is done about it.
 
-This rule is deprecated since PMD 6.46.0. Use the rule {% rule "java/codestyle/EmptyControlStatement" %}
-from category codestyle instead.
+_Note:_ This rule is deprecated since PMD 6.46.0 and will be removed with PMD 7.0.0.
+Use the rule {% rule "java/codestyle/EmptyControlStatement" %} from category codestyle instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -1580,8 +1590,8 @@ public class Foo {
         <description>
 Empty initializers serve no purpose and should be removed.
 
-This rule is deprecated since PMD 6.46.0. Use the rule {% rule "java/codestyle/EmptyControlStatement" %}
-from category codestyle instead.
+_Note:_ This rule is deprecated since PMD 6.46.0 and will be removed with PMD 7.0.0.
+Use the rule {% rule "java/codestyle/EmptyControlStatement" %} from category codestyle instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -1612,8 +1622,8 @@ public class Foo {
         <description>
 Empty block statements serve no purpose and should be removed.
 
-This rule is deprecated since PMD 6.46.0. Use the rule {% rule "java/codestyle/EmptyControlStatement" %}
-from category codestyle instead.
+_Note:_ This rule is deprecated since PMD 6.46.0 and will be removed with PMD 7.0.0.
+Use the rule {% rule "java/codestyle/EmptyControlStatement" %} from category codestyle instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -1640,6 +1650,7 @@ public class Foo {
     <rule name="EmptyStatementNotInLoop"
           language="java"
           since="1.5"
+          deprecated="true"
           message="An empty statement (semicolon) not part of a loop"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#emptystatementnotinloop">
@@ -1647,6 +1658,9 @@ public class Foo {
 An empty statement (or a semicolon by itself) that is not used as the sole body of a 'for'
 or 'while' loop is probably a bug.  It could also be a double semicolon, which has no purpose
 and should be removed.
+
+_Note:_ This rule is deprecated since PMD 6.53.0 and will be removed with PMD 7.0.0.
+Use the rule {% rule java/codestyle/UnnecessarySemicolon %} instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -1687,8 +1701,8 @@ public void doit() {
         <description>
 Empty switch statements serve no purpose and should be removed.#
 
-This rule is deprecated since PMD 6.46.0. Use the rule {% rule "java/codestyle/EmptyControlStatement" %}
-from category codestyle instead.
+_Note:_ This rule is deprecated since PMD 6.46.0 and will be removed with PMD 7.0.0.
+Use the rule {% rule "java/codestyle/EmptyControlStatement" %} from category codestyle instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -1719,8 +1733,8 @@ public void bar() {
         <description>
 Empty synchronized blocks serve no purpose and should be removed.
 
-This rule is deprecated since PMD 6.46.0. Use the rule {% rule "java/codestyle/EmptyControlStatement" %}
-from category codestyle instead.
+_Note:_ This rule is deprecated since PMD 6.46.0 and will be removed with PMD 7.0.0.
+Use the rule {% rule "java/codestyle/EmptyControlStatement" %} from category codestyle instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -1751,8 +1765,8 @@ public class Foo {
         <description>
 Avoid empty try blocks - what's the point?
 
-This rule is deprecated since PMD 6.46.0. Use the rule {% rule "java/codestyle/EmptyControlStatement" %}
-from category codestyle instead.
+_Note:_ This rule is deprecated since PMD 6.46.0 and will be removed with PMD 7.0.0.
+Use the rule {% rule "java/codestyle/EmptyControlStatement" %} from category codestyle instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -1790,8 +1804,8 @@ Empty While Statement finds all instances where a while statement does nothing.
 If it is a timing loop, then you should use Thread.sleep() for it; if it is
 a while loop that does a lot in the exit expression, rewrite it to make it clearer.
 
-This rule is deprecated since PMD 6.46.0. Use the rule {% rule "java/codestyle/EmptyControlStatement" %}
-from category codestyle instead.
+_Note:_ This rule is deprecated since PMD 6.46.0 and will be removed with PMD 7.0.0.
+Use the rule {% rule "java/codestyle/EmptyControlStatement" %} from category codestyle instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -2012,7 +2026,7 @@ an intentional fall-through.
 You can ignore a violation by commenting `// fallthrough` before the case label
 which is reached by fallthrough, or with `@SuppressWarnings("fallthrough")`.
 
-This rule has been renamed from "MissingBreakInSwitch" with PMD 6.37.0.
+This rule has been renamed from "MissingBreakInSwitch" in PMD 6.37.0.
         </description>
         <priority>3</priority>
         <example>
@@ -2082,6 +2096,8 @@ Check for messages in slf4j and log4j2 (since 6.19.0) loggers with non matching 
 
 Since 6.32.0 in addition to parameterized message placeholders (`{}`) also format specifiers of string formatted
 messages are supported (`%s`).
+
+This rule has been renamed from "InvalidSlf4jMessageFormat" in PMD 6.19.0.
         </description>
         <priority>5</priority>
         <example>

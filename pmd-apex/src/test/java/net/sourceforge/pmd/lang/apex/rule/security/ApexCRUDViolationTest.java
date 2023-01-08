@@ -9,5 +9,4 @@ import net.sourceforge.pmd.testframework.PmdRuleTst;
 
 class ApexCRUDViolationTest extends PmdRuleTst {
     // no additional unit tests
-
 }

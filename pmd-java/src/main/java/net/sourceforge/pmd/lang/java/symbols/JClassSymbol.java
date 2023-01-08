@@ -5,14 +5,19 @@
 
 package net.sourceforge.pmd.lang.java.symbols;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Modifier;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymEnum;
 import net.sourceforge.pmd.lang.java.types.JArrayType;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
@@ -163,12 +168,13 @@ public interface JClassSymbol extends JTypeDeclSymbol,
     }
 
     /**
-     * Returns a set with all enum constant names. If this symbol does
-     * not represent an enum, returns null.
+     * Returns a list with all enum constants. If this symbol does
+     * not represent an enum, returns an empty set. The returned list
+     * is a subset of {@link #getDeclaredFields()}. The order of fields
+     * denotes the normal order of enum constants.
      */
-    @SuppressWarnings("PMD.ReturnEmptyCollectionRatherThanNull")
-    default @Nullable Set<String> getEnumConstantNames() {
-        return null;
+    default @NonNull List<JFieldSymbol> getEnumConstants() {
+        return Collections.emptyList();
     }
 
 
@@ -217,10 +223,32 @@ public interface JClassSymbol extends JTypeDeclSymbol,
 
     boolean isAnonymousClass();
 
+    /**
+     * Return the simple names of all annotation attributes. If this
+     * is not an annotation type, return an empty set.
+     */
+    default Set<String> getAnnotationAttributeNames() {
+        return Collections.emptySet();
+    }
+
+    /**
+     * Returns the retention policy of this annotation, if this is an
+     * annotation symbol. Otherwise returns null.
+     */
+    default @Nullable RetentionPolicy getAnnotationRetention() {
+        if (!isAnnotation()) {
+            return null;
+        }
+        return Optional.of(this)
+                       .map(sym -> sym.getDeclaredAnnotation(Retention.class))
+                       .map(annot -> annot.getAttribute("value"))
+                       .filter(value -> value instanceof SymEnum)
+                       .map(value -> ((SymEnum) value).toEnum(RetentionPolicy.class))
+                       .orElse(RetentionPolicy.CLASS);
+    }
+
     // todo isSealed + getPermittedSubclasses
     //  (isNonSealed is not so useful I think)
-
-    // todo getEnumConstants
 
     /**
      * This returns true if this is not an interface, primitive or array.
@@ -234,8 +262,7 @@ public interface JClassSymbol extends JTypeDeclSymbol,
      * Returns the toplevel class containing this class. If this is a
      * toplevel class, returns this.
      */
-    @NonNull
-    default JClassSymbol getNestRoot() {
+    default @NonNull JClassSymbol getNestRoot() {
         JClassSymbol e = this;
         while (e.getEnclosingClass() != null) {
             e = e.getEnclosingClass();

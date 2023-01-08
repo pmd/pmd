@@ -253,7 +253,7 @@ final class AstDisambiguationPass {
          * and in the worst case, the original {@link ASTAmbiguousName}.
          */
         private static ASTExpression startResolve(ASTAmbiguousName name, ReferenceCtx ctx, boolean isPackageOrTypeOnly) {
-            Iterator<JavaccToken> tokens = TokenUtils.tokenRange(name);
+            Iterator<JavaccToken> tokens = name.tokens().iterator();
             JavaccToken firstIdent = tokens.next();
             TokenUtils.expectKind(firstIdent, JavaTokenKinds.IDENTIFIER);
 

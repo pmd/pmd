@@ -101,6 +101,20 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
     }
 
     @Test
+    void testPmdSampleWithZippedSources() throws Exception {
+        ExecutionResult result = PMDExecutor.runPMDRules(createTemporaryReportFile(), tempDir, srcDir + "/sample-source-java.zip",
+                "src/test/resources/rulesets/sample-ruleset.xml");
+        result.assertExecutionResult(4, "", "JumbledIncrementer.java:8:");
+    }
+
+    @Test
+    void testPmdSampleWithJarredSources() throws Exception {
+        ExecutionResult result = PMDExecutor.runPMDRules(createTemporaryReportFile(), tempDir, srcDir + "/sample-source-java.jar",
+                "src/test/resources/rulesets/sample-ruleset.xml");
+        result.assertExecutionResult(4, "", "JumbledIncrementer.java:8:");
+    }
+
+    @Test
     void testPmdHelp() throws Exception {
         ExecutionResult result = PMDExecutor.runPMD(tempDir, "-h");
         result.assertExecutionResult(0, SUPPORTED_LANGUAGES_PMD);
