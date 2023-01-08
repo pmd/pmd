@@ -24,6 +24,8 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +34,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import net.sourceforge.pmd.cli.internal.CliExitCode;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
+import net.sourceforge.pmd.util.IOUtil;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 
@@ -181,6 +184,7 @@ class PmdCliTest extends BaseCliTest {
     void defaultLogging() throws Exception {
         CliExecutionResult result = runCliSuccessfully("--dir", srcDir.toString(), "--rulesets", RSET_NO_VIOLATIONS);
         result.checkStdErr(containsString("[main] INFO net.sourceforge.pmd.cli.commands.internal.AbstractPmdSubcommand - Log level is at INFO"));
+        result.checkStdErr(not(containsPattern("Adding file .*"))); // not in debug mode
     }
 
     @Test
@@ -275,6 +279,35 @@ class PmdCliTest extends BaseCliTest {
             .verify(r -> r.checkStdOut(
                 containsString("Violation from ReportAllRootNodes")
             ));
+    }
+
+    @Test
+    void testZipFileAsSource() throws Exception {
+        Path zipArchive = createTemporaryZipArchive("sources.zip");
+        CliExecutionResult result = runCli(VIOLATIONS_FOUND, "--dir", zipArchive.toString(), "--rulesets", "rulesets/dummy/basic.xml");
+        result.checkStdErr(not(containsStringIgnoringCase("Cannot open zip file")));
+        String reportPath = IOUtil.normalizePath(zipArchive + "!/someSource.dummy");
+        result.checkStdOut(containsString(reportPath + ":1:\tSampleXPathRule:\tTest Rule 2"));
+    }
+
+    @Test
+    void testJarFileAsSource() throws Exception {
+        Path jarArchive = createTemporaryZipArchive("sources.jar");
+        CliExecutionResult result = runCli(VIOLATIONS_FOUND, "--dir", jarArchive.toString(), "--rulesets", "rulesets/dummy/basic.xml");
+        result.checkStdErr(not(containsStringIgnoringCase("Cannot open zip file")));
+        String reportPath = IOUtil.normalizePath(jarArchive + "!/someSource.dummy");
+        result.checkStdOut(containsString(reportPath + ":1:\tSampleXPathRule:\tTest Rule 2"));
+    }
+
+    private Path createTemporaryZipArchive(String name) throws Exception {
+        Path zipArchive = tempRoot().resolve(name);
+        try (ZipOutputStream zipOutputStream = new ZipOutputStream(Files.newOutputStream(zipArchive))) {
+            ZipEntry zipEntry = new ZipEntry("someSource.dummy");
+            zipOutputStream.putNextEntry(zipEntry);
+            zipOutputStream.write("dummy text".getBytes(StandardCharsets.UTF_8));
+            zipOutputStream.closeEntry();
+        }
+        return zipArchive;
     }
 
     // utilities

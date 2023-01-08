@@ -64,7 +64,7 @@ public class Foo {
         <description>
 Avoid DML statements inside loops to avoid hitting the DML governor limit. Instead, try to batch up the data into a list and invoke your DML once on that list of data outside the loop.
 
-This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+_Note:_ This rule is deprecated since PMD 6.29.0 and will be removed with PMD 7.0.0. The rule is replaced
 by the more general rule {% rule "apex/performance/OperationWithLimitsInLoop" %}.
         </description>
         <priority>3</priority>
@@ -93,7 +93,7 @@ public class Something {
         <description>
 New objects created within loops should be checked to see if they can created outside them and reused.
 
-This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+_Note:_ This rule is deprecated since PMD 6.29.0 and will be removed with PMD 7.0.0. The rule is replaced
 by the more general rule {% rule "apex/performance/OperationWithLimitsInLoop" %}.
         </description>
         <priority>3</priority>
@@ -120,7 +120,7 @@ public class Something {
         <description>
 Sosl calls within loops can cause governor limit exceptions.
 
-This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+_Note:_ This rule is deprecated since PMD 6.29.0 and will be removed with PMD 7.0.0. The rule is replaced
 by the more general rule {% rule "apex/performance/OperationWithLimitsInLoop" %}.
         </description>
         <priority>3</priority>

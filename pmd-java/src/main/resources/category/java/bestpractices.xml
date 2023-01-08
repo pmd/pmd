@@ -1839,31 +1839,41 @@ a block `{}` is sufficient.
         <properties>
             <property name="xpath">
                 <value><![CDATA[
-(: while loops with single boolean literal, maybe parenthesized :)
+(: while loops with single boolean literal 'false', maybe parenthesized :)
 //WhileStatement/BooleanLiteral[@True = false()]
 |
-(: do-while loops with single boolean literal, maybe parenthesized :)
+(: do-while loops with single boolean literal ('false' or 'true'), maybe parenthesized :)
 //DoStatement/BooleanLiteral
 |
-(: while loops with conditional or'ed or and'ed boolean literals, maybe parenthesized :)
-//WhileStatement[(.|InfixExpression)
-    [count(BooleanLiteral) = 2]
+(: while loops with conditional or'ed boolean literals, maybe parenthesized :)
+//WhileStatement[(InfixExpression[@Operator = ('|', '||')])
+    (: no var access :)
+    [count(VariableAccess) = 0]
     (: at least one false literal :)
     [count(BooleanLiteral[@True = false()]) >= 1]]
 |
 (: while loops with conditional and'ed boolean literals, maybe parenthesized :)
-//WhileStatement[(InfixExpression[@Operator=('&', '&&')])
+//WhileStatement[(InfixExpression[@Operator = ('&', '&&')])
     (: at least one false literal :)
     [count(BooleanLiteral[@True = false()]) >= 1]]
 |
-(: do-while loops with conditional or'ed or and'ed boolean literals, maybe parenthesized :)
-//DoStatement[(.|InfixExpression)
-    [count(BooleanLiteral) = 2]]
+(: do-while loops with conditional or'ed boolean literals, maybe parenthesized :)
+//DoStatement[(InfixExpression[@Operator = ('|', '||')])
+    (: at least one true literal :)
+    [count(BooleanLiteral[@True = true()]) >= 1
+      (: or only boolean literal and no no var access :)
+      or count(BooleanLiteral) >= 1
+      and count(VariableAccess) = 0
+    ]]
 |
 (: do-while loops with conditional and'ed boolean literals, maybe parenthesized :)
-//DoStatement[(InfixExpression[@Operator=('&', '&&')])
+//DoStatement[(InfixExpression[@Operator = ('&', '&&')])
     (: at least one false literal :)
-    [count(BooleanLiteral[@True = false()]) >= 1]]
+    [count(BooleanLiteral[@True = false()]) >= 1
+      (: or only boolean literal and no no var access :)
+      or count(BooleanLiteral) >= 1
+      and count(VariableAccess) = 0
+    ]]
                 ]]></value>
             </property>
             <property name="version" value="2.0" />
