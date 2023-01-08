@@ -17,8 +17,8 @@ import javasymbols.testdata.Enums
 import javasymbols.testdata.NestedClasses
 import javasymbols.testdata.Statics
 import javasymbols.testdata.deep.AClassWithLocals
-import javasymbols.testdata.deep.OuterWithoutDollar
 import javasymbols.testdata.deep.`Another$ClassWith$Dollar`
+import javasymbols.testdata.deep.OuterWithoutDollar
 import javasymbols.testdata.impls.GenericClass
 import net.sourceforge.pmd.lang.ast.test.IntelliMarker
 import net.sourceforge.pmd.lang.ast.test.shouldBe
@@ -226,12 +226,12 @@ class AsmLoaderTest : IntelliMarker, FunSpec({
         val outerName = Enums::class.java.name
 
         val emptyEnum = symLoader().resolveClassFromBinaryName("$outerName\$Empty")!!
-        emptyEnum::getEnumConstantNames shouldBe emptySet()
+        emptyEnum::getEnumConstants shouldBe emptyList()
 
         val withConstants = symLoader().resolveClassFromBinaryName("$outerName\$SomeConstants")!!
-        withConstants::getEnumConstantNames shouldBe setOf("A", "B")
+        withConstants.enumConstants.map { it.simpleName } shouldBe listOf("A", "B")
 
         val notAnEnum = symLoader().resolveClassFromBinaryName(outerName)!!
-        notAnEnum::getEnumConstantNames shouldBe null
+        notAnEnum::getEnumConstants shouldBe emptyList()
     }
 })

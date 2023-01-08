@@ -19,22 +19,23 @@ import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 
 final class CommentAssignmentPass {
 
-    private static final SimpleDataKey<FormalComment> FORMAL_COMMENT_KEY = DataMap.simpleDataKey("java.comment");
+    private static final SimpleDataKey<JavadocComment> FORMAL_COMMENT_KEY = DataMap.simpleDataKey("java.comment");
 
     private CommentAssignmentPass() {
         // utility class
     }
 
-    static @Nullable FormalComment getComment(JavadocCommentOwner commentOwner) {
+    static @Nullable JavadocComment getComment(JavadocCommentOwner commentOwner) {
         return commentOwner.getUserMap().get(CommentAssignmentPass.FORMAL_COMMENT_KEY);
     }
 
-    private static void setComment(JavadocCommentOwner commentableNode, FormalComment comment) {
+    private static void setComment(JavadocCommentOwner commentableNode, JavadocComment comment) {
         commentableNode.getUserMap().set(FORMAL_COMMENT_KEY, comment);
+        comment.setOwner(commentableNode);
     }
 
     public static void assignCommentsToDeclarations(ASTCompilationUnit root) {
-        final List<Comment> comments = root.getComments();
+        final List<JavaComment> comments = root.getComments();
         if (comments.isEmpty()) {
             return;
         }
@@ -45,11 +46,11 @@ final class CommentAssignmentPass {
 
             for (JavaccToken maybeComment : GenericToken.previousSpecials(firstToken)) {
                 if (maybeComment.kind == JavaTokenKinds.FORMAL_COMMENT) {
-                    FormalComment comment = new FormalComment(maybeComment);
+                    JavadocComment comment = new JavadocComment(maybeComment);
                     // deduplicate the comment
-                    int idx = Collections.binarySearch(comments, comment, Comparator.comparing(Comment::getReportLocation, FileLocation.COORDS_COMPARATOR));
+                    int idx = Collections.binarySearch(comments, comment, Comparator.comparing(JavaComment::getReportLocation, FileLocation.COORDS_COMPARATOR));
                     assert idx >= 0 : "Formal comment not found? " + comment;
-                    comment = (FormalComment) comments.get(idx);
+                    comment = (JavadocComment) comments.get(idx);
 
                     setComment(commentableNode, comment);
                     continue outer;

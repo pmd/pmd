@@ -8,7 +8,6 @@ import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -74,8 +73,8 @@ class FakeIntersectionSymbol implements JClassSymbol {
     }
 
     @Override
-    public @Nullable Set<String> getEnumConstantNames() {
-        return superClass.getSymbol().getEnumConstantNames();
+    public @NonNull List<JFieldSymbol> getEnumConstants() {
+        return superClass.getSymbol().getEnumConstants();
     }
 
     @Override

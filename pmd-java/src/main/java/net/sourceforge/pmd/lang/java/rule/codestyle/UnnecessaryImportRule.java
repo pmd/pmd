@@ -20,8 +20,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
-import net.sourceforge.pmd.lang.java.ast.Comment;
-import net.sourceforge.pmd.lang.java.ast.FormalComment;
+import net.sourceforge.pmd.lang.java.ast.JavaComment;
+import net.sourceforge.pmd.lang.java.ast.JavadocComment;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol;
@@ -170,8 +170,8 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
 
     private void visitComments(ASTCompilationUnit node) {
         // todo improve that when we have a javadoc parser
-        for (Comment comment : node.getComments()) {
-            if (!(comment instanceof FormalComment)) {
+        for (JavaComment comment : node.getComments()) {
+            if (!(comment instanceof JavadocComment)) {
                 continue;
             }
             for (Pattern p : PATTERNS) {
@@ -245,7 +245,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
         if (node.getQualifier() == null) {
             OverloadSelectionResult overload = node.getOverloadSelectionInfo();
             if (overload.isFailed()) {
-                return null; // todo we're erring towards FPs 
+                return null; // todo we're erring towards FPs
             }
 
             ShadowChainIterator<JMethodSig, ScopeInfo> scopeIter =
@@ -307,7 +307,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
                         if (!it.isStatic() && onlyStatic) {
                             return false;
                         }
-                        // This is the class that contains the symbol 
+                        // This is the class that contains the symbol
                         // we're looking for.
                         // We have to test whether this symbol is contained
                         // by the imported type or package.
