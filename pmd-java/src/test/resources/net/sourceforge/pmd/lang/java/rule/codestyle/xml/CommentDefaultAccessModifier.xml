@@ -344,7 +344,7 @@ public class CommentDefaultAccessModifier {
     </test-code>
 
     <test-code>
-        <description>Use property ignoredAnnotations (see #1343)</description>
+        <description>[java] CommentDefaultAccessModifier - add co.elastic.clients.util.VisibleForTesting to as default suppressed annotations #4285</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import co.elastic.clients.util.VisibleForTesting;
