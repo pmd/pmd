@@ -4,15 +4,16 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.java.BaseParserTest;
 
-public class ASTCompactConstructorDeclarationTest extends BaseParserTest {
+class ASTCompactConstructorDeclarationTest extends BaseParserTest {
 
     @Test
-    public void compactConstructorWithLambda() {
+    void compactConstructorWithLambda() {
         ASTCompactConstructorDeclaration compactConstructor = java.getNodes(ASTCompactConstructorDeclaration.class,
                 "import java.util.Objects;"
                     + "record RecordWithLambdaInCompactConstructor(String foo) {"
@@ -21,6 +22,6 @@ public class ASTCompactConstructorDeclarationTest extends BaseParserTest {
                     + "     }"
                     + "}")
                 .get(0);
-        Assert.assertEquals(1, compactConstructor.getBody().getNumChildren());
+        assertEquals(1, compactConstructor.getBody().getNumChildren());
     }
 }
