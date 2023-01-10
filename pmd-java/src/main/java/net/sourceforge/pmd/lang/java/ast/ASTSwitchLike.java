@@ -4,9 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
@@ -67,29 +65,13 @@ public interface ASTSwitchLike extends JavaNode, Iterable<ASTSwitchBranch> {
      * the tested expression could not be resolved.
      */
     default boolean isExhaustiveEnumSwitch() {
-        JTypeDeclSymbol type = getTestedExpression().getTypeMirror().getSymbol();
-
-        if (!(type instanceof JClassSymbol)) {
-            return false;
+        JTypeDeclSymbol symbol = getTestedExpression().getTypeMirror().getSymbol();
+        if (symbol instanceof JClassSymbol && ((JClassSymbol) symbol).isEnum()) {
+            long numConstants = ((JClassSymbol) symbol).getEnumConstants().size();
+            // we assume there's no duplicate labels
+            int numLabels = getBranches().sumByInt(it -> it.getLabel().getNumChildren());
+            return numLabels == numConstants;
         }
-
-        Set<String> enumConstantNames = ((JClassSymbol) type).getEnumConstantNames();
-        if (enumConstantNames != null) { // ie, it's an enum
-            enumConstantNames = new HashSet<>(enumConstantNames); // make modifiable
-
-            for (ASTSwitchBranch branch : this) {
-                // since this is an enum switch, the labels are necessarily
-                // the simple name of some enum constant.
-                for (ASTExpression expr : branch.getLabel().getExprList()) {
-                    if (expr instanceof ASTVariableAccess) {
-                        enumConstantNames.remove(((ASTVariableAccess) expr).getName());
-                    }
-                }
-            }
-
-            return enumConstantNames.isEmpty();
-        }
-
         return false;
     }
 

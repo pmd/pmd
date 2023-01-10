@@ -5,12 +5,17 @@
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
+import org.objectweb.asm.TypePath;
+import org.objectweb.asm.TypeReference;
 
+import net.sourceforge.pmd.lang.java.symbols.internal.asm.ExecutableStub.CtorStub;
+import net.sourceforge.pmd.lang.java.symbols.internal.asm.ExecutableStub.MethodStub;
 
 /**
  * Populates a {@link ClassStub} by reading a class file. Some info is
@@ -39,6 +44,11 @@ class ClassStubBuilder extends ClassVisitor {
     }
 
     @Override
+    public AnnotationBuilderVisitor visitAnnotation(String descriptor, boolean visible) {
+        return new AnnotationBuilderVisitor(myStub, resolver, visible, descriptor);
+    }
+
+    @Override
     public void visitOuterClass(String ownerInternalName, @Nullable String methodName, @Nullable String methodDescriptor) {
         isInnerNonStaticClass = true;
         // only for enclosing method
@@ -50,7 +60,18 @@ class ClassStubBuilder extends ClassVisitor {
     public FieldVisitor visitField(int access, String name, String descriptor, @Nullable String signature, @Nullable Object value) {
         FieldStub field = new FieldStub(myStub, name, access, descriptor, signature, value);
         myStub.addField(field);
-        return null;
+        return new FieldVisitor(AsmSymbolResolver.ASM_API_V) {
+            @Override
+            public AnnotationVisitor visitAnnotation(String descriptor, boolean visible) {
+                return new AnnotationBuilderVisitor(field, resolver, visible, descriptor);
+            }
+
+            @Override
+            public AnnotationVisitor visitTypeAnnotation(int typeRef, @Nullable TypePath typePath, String descriptor, boolean visible) {
+                assert new TypeReference(typeRef).getSort() == TypeReference.FIELD : typeRef;
+                return new AnnotationBuilderVisitor.TypeAnnotBuilderImpl(resolver, field, typeRef, typePath, visible, descriptor);
+            }
+        };
     }
 
     /**
@@ -94,11 +115,19 @@ class ClassStubBuilder extends ClassVisitor {
 
         if ("<clinit>".equals(name)) {
             return null;
-        } else if ("<init>".equals(name)) {
-            myStub.addCtor(new ExecutableStub.CtorStub(myStub, access, descriptor, signature, exceptions, isInnerNonStaticClass));
-        } else {
-            myStub.addMethod(new ExecutableStub.MethodStub(myStub, name, access, descriptor, signature, exceptions));
         }
-        return null;
+
+
+        ExecutableStub execStub;
+        if ("<init>".equals(name)) {
+            CtorStub ctor = new CtorStub(myStub, access, descriptor, signature, exceptions, isInnerNonStaticClass);
+            myStub.addCtor(ctor);
+            execStub = ctor;
+        } else {
+            MethodStub method = new MethodStub(myStub, name, access, descriptor, signature, exceptions);
+            myStub.addMethod(method);
+            execStub = method;
+        }
+        return new MethodInfoVisitor(execStub);
     }
 }

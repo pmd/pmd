@@ -119,6 +119,7 @@ public class Foo {
     </test-code>
 
     <code-fragment id="top-level-annotations-with-default-access-modifier"><![CDATA[
+import com.google.common.annotations.VisibleForTesting;
 @interface Bar {}
 
 public @interface Foo {}
@@ -142,7 +143,7 @@ public @interface Foo {}
         <description>Top-level annotations with default access modifier checks enabled with property</description>
         <rule-property name="checkTopLevelTypes">true</rule-property>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>1,6</expected-linenumbers>
+        <expected-linenumbers>2,7</expected-linenumbers>
         <code-ref id="top-level-annotations-with-default-access-modifier"/>
     </test-code>
 
@@ -290,7 +291,22 @@ public enum Bar {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    enum Bar {
+    /*package*/ enum Bar {
+        ONE, TWO;
+
+        Bar() {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Nested enum can trigger rule</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    enum Bar { // here
         ONE, TWO;
 
         Bar() {}
@@ -304,8 +320,46 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
+    /*package*/ @interface Bar {
+        String baz();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Nested annotation can trigger rule</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
     @interface Bar {
         String baz();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Nested interface can trigger rule</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    interface Bar {
+        String baz();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Nested record can trigger rule</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    record Bar(int i) {
     }
 }
         ]]></code>
@@ -329,7 +383,7 @@ public interface A {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <expected-messages>
-            <message>To avoid mistakes add a comment at the beginning of the method method() if you want a default access modifier</message>
+            <message>Missing commented default access modifier on method 'method()'</message>
         </expected-messages>
         <code><![CDATA[
 package net.sourceforge.pmd.lang.java.rule.codestyle.commentdefaultaccessmodifier;
@@ -359,9 +413,9 @@ public class Foo {
         <expected-problems>2</expected-problems>
         <expected-linenumbers>2,4</expected-linenumbers>
         <expected-messages>
-            <message>To avoid mistakes add a comment at the beginning of the constructor Foo() if you want a default access modifier</message>
-                <message>To avoid mistakes add a comment at the beginning of the constructor Foo(String) if you want a default access modifier</message>
-            </expected-messages>
+            <message>Missing commented default access modifier on constructor 'Foo()'</message>
+            <message>Missing commented default access modifier on constructor 'Foo(String)'</message>
+        </expected-messages>
         <code-ref id="constructor-with-default-access-modifier-rule"/>
     </test-code>
 
@@ -377,7 +431,8 @@ public interface MyInterface {
 
     <test-code>
         <description>Nested classes inside enum</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public enum MyEnum {
     FOO;
@@ -396,6 +451,32 @@ class SomeTest {
 
   @Test
   void test() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] CommentDefaultAccessModifier should consider lombok's @Value #4201</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+
+import lombok.Value;
+@Value
+public class Test {
+    int foo;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] CommentDefaultAccessModifier should consider lombok's @Value #4201, the value class should be reported</description>
+        <rule-property name="checkTopLevelTypes">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+import lombok.Value;
+@Value
+class Test { // missing
+    int foo;
 }
         ]]></code>
     </test-code>

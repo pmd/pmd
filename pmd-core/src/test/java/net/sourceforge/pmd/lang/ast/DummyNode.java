@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 
-public class DummyNode extends AbstractNode<DummyNode, DummyNode> implements GenericNode<DummyNode> {
+public class DummyNode extends AbstractNode<DummyNode, DummyNode> {
 
     private final boolean findBoundary;
     private String xpathName;
@@ -65,6 +65,7 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> implements Gen
         return super.getChild(index);
     }
 
+    @Override
     public void setParent(DummyNode node) {
         super.setParent(node);
     }
@@ -130,7 +131,7 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> implements Gen
         return attributes.iterator();
     }
 
-    public static class DummyRootNode extends DummyNode implements RootNode {
+    public static class DummyRootNode extends DummyNode implements RootNode, GenericNode<DummyNode> {
 
         private AstInfo<DummyRootNode> astInfo;
 

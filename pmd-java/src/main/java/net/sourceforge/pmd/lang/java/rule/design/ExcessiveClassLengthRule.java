@@ -10,7 +10,10 @@ import net.sourceforge.pmd.lang.java.rule.internal.AbstractJavaCounterCheckRule;
 /**
  * This rule detects when a class exceeds a certain threshold. i.e. if a class
  * has more than 1000 lines of code.
+ *
+ * @deprecated Use {@link NcssCountRule} instead.
  */
+@Deprecated
 public class ExcessiveClassLengthRule extends AbstractJavaCounterCheckRule.AbstractLineLengthCheckRule<ASTAnyTypeDeclaration> {
     public ExcessiveClassLengthRule() {
         super(ASTAnyTypeDeclaration.class);

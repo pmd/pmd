@@ -51,6 +51,10 @@
             <artifactId>pmd-test-schema</artifactId>
         </dependency>
         <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-ant</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apache.ant</groupId>
             <artifactId>ant</artifactId>
         </dependency>

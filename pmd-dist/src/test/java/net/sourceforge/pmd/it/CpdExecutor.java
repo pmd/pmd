@@ -7,7 +7,6 @@ package net.sourceforge.pmd.it;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.SystemUtils;
@@ -37,12 +36,11 @@ public class CpdExecutor {
         String cmd;
         List<String> args;
         if (SystemUtils.IS_OS_WINDOWS) {
-            cmd = "/bin/cpd.bat";
-            args = Arrays.asList(arguments);
+            cmd = "/bin/pmd.bat";
         } else {
-            cmd = "/bin/run.sh";
-            args = listOf("cpd", arguments);
+            cmd = "/bin/pmd";
         }
+        args = listOf("cpd", arguments);
         cmd = tempDir.resolve(PMD_BIN_PREFIX + PMDVersion.VERSION + cmd).toAbsolutePath().toString();
         return PMDExecutor.runCommand(cmd, args, null);
     }

@@ -6,6 +6,7 @@ package net.sourceforge.pmd.cli;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -44,23 +45,23 @@ public class CLITest extends BaseCLITest {
 
     @Test
     public void minimalArgs() {
-        runTest("-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_NO_VIOLATION);
+        runTest("--no-progress", "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_NO_VIOLATION);
     }
 
     @Test
     public void minimumPriority() {
-        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_WITH_VIOLATION, "-min", "1", };
+        String[] args = { "--no-progress", "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_WITH_VIOLATION, "-min", "1", };
         runTest(args);
     }
 
     @Test
     public void usingDebug() {
-        runTest("-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_NO_VIOLATION, "-debug");
+        runTest("--no-progress", "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_NO_VIOLATION, "-debug");
     }
 
     @Test
     public void usingDebugLongOption() {
-        runTest("-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_NO_VIOLATION, "--debug");
+        runTest("--no-progress", "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_NO_VIOLATION, "--debug");
     }
 
     @Test
@@ -72,7 +73,7 @@ public class CLITest extends BaseCLITest {
 
     @Test
     public void exitStatusNoViolations() {
-        runTest("-d", SOURCE_FOLDER, "-f", "text", "-R", "rulesets/testing/rset-without-violations.xml");
+        runTest("--no-progress", "-d", SOURCE_FOLDER, "-f", "text", "-R", "rulesets/testing/rset-without-violations.xml");
     }
 
     @Test
@@ -80,6 +81,7 @@ public class CLITest extends BaseCLITest {
         String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_WITH_VIOLATION, "--no-progress", };
         String log = runTest(StatusCode.VIOLATIONS_FOUND, args);
         assertThat(log, containsString("Violation from test-rset-1.xml"));
+        assertThat(log, not(containsPattern("Adding file .*"))); // not in debug mode
     }
 
     @Test
@@ -101,7 +103,7 @@ public class CLITest extends BaseCLITest {
      */
     @Test
     public void testWrongRuleset() {
-        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/designn.xml", };
+        String[] args = { "--no-progress", "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/designn.xml", };
         String log = runTest(StatusCode.ERROR, args);
         assertThat(log, containsString("Cannot resolve rule/ruleset reference "
                                        + "'category/java/designn.xml'"));
@@ -112,7 +114,7 @@ public class CLITest extends BaseCLITest {
      */
     @Test
     public void testWrongRulesetWithRulename() {
-        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/designn.xml/UseCollectionIsEmpty", };
+        String[] args = { "--no-progress", "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/designn.xml/UseCollectionIsEmpty", };
         String log = runTest(StatusCode.ERROR, args);
         assertThat(log, containsString("Cannot resolve rule/ruleset reference"
                                        + " 'category/java/designn.xml/UseCollectionIsEmpty'"));
@@ -123,7 +125,7 @@ public class CLITest extends BaseCLITest {
      */
     @Test
     public void testWrongRulename() {
-        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_WITH_VIOLATION + "/ThisRuleDoesNotExist", };
+        String[] args = { "--no-progress", "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_WITH_VIOLATION + "/ThisRuleDoesNotExist", };
         String log = runTest(StatusCode.OK, args);
         assertThat(log, containsString("No rules found. Maybe you misspelled a rule name?"
                                        + " (" + RSET_WITH_VIOLATION + "/ThisRuleDoesNotExist)"));

@@ -92,11 +92,29 @@ public final class ASTAnnotation extends AbstractJavaTypeNode implements TypeNod
      * - @SuppressWarning({"fallthrough", "rawtypes"}) -> returns ["fallthrough", "rawtypes"]
      * }</pre>
      */
-    public NodeStream<ASTMemberValue> getValuesForName(String attrName) {
+    public NodeStream<ASTMemberValue> getFlatValue(String attrName) {
+        return NodeStream.of(getAttribute(attrName))
+                         .flatMap(v -> v instanceof ASTMemberValueArrayInitializer ? v.children(ASTMemberValue.class)
+                                                                                   : NodeStream.of(v));
+    }
+
+    /**
+     * Returns the value of the attribute with the given name, returns
+     * null if no such attribute was mentioned. For example, for the attribute
+     * named "value":
+     * <pre>{@code
+     * - @SuppressWarnings -> returns null
+     * - @SuppressWarning("fallthrough") -> returns "fallthrough"
+     * - @SuppressWarning(value={"fallthrough"}) -> returns {"fallthrough"}
+     * - @SuppressWarning({"fallthrough", "rawtypes"}) -> returns {"fallthrough", "rawtypes"}
+     * }</pre>
+     *
+     * @param attrName Name of an attribute
+     */
+    public @Nullable ASTMemberValue getAttribute(String attrName) {
         return getMembers().filter(pair -> pair.getName().equals(attrName))
                            .map(ASTMemberValuePair::getValue)
-                           .flatMap(v -> v instanceof ASTMemberValueArrayInitializer ? v.children(ASTMemberValue.class)
-                                                                                     : NodeStream.of(v));
+                           .first();
     }
 
 

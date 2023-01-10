@@ -574,7 +574,7 @@ PARSER_END(JavaParserImpl)
 
 TOKEN_MGR_DECLS :
 {
-    protected List<Comment> comments = new ArrayList<Comment>();
+    protected List<JavaComment> comments = new ArrayList<JavaComment>();
 }
 
 /* WHITE SPACE */
@@ -600,7 +600,7 @@ SPECIAL_TOKEN :
         if (startOfNOPMD != -1) {
             suppressMap.put(matchedToken.getBeginLine(), matchedToken.getImage().substring(startOfNOPMD + suppressMarker.length()));
         }
-        comments.add(new SingleLineComment(matchedToken));
+        comments.add(new JavaComment(matchedToken));
     }
 }
 
@@ -615,13 +615,13 @@ MORE :
 <IN_FORMAL_COMMENT>
 SPECIAL_TOKEN :
 {
-  <FORMAL_COMMENT: "*/" > { comments.add(new FormalComment(matchedToken)); } : DEFAULT
+  <FORMAL_COMMENT: "*/" > { comments.add(new JavadocComment(matchedToken)); } : DEFAULT
 }
 
 <IN_MULTI_LINE_COMMENT>
 SPECIAL_TOKEN :
 {
-  <MULTI_LINE_COMMENT: "*/" > { comments.add(new MultiLineComment(matchedToken)); } : DEFAULT
+  <MULTI_LINE_COMMENT: "*/" > { comments.add(new JavaComment(matchedToken)); } : DEFAULT
 }
 
 <IN_FORMAL_COMMENT,IN_MULTI_LINE_COMMENT>
@@ -1343,7 +1343,7 @@ private void ConstructorBlock() #Block:
 }
 
 void ExplicitConstructorInvocation() :
-{inExplicitConstructorInvoc = true;}
+{boolean prev = inExplicitConstructorInvoc; inExplicitConstructorInvoc = true;}
 {
    // We may only lookahead one token here, because:
    // * "this" or "super" can't appear in the primary expression in case of
@@ -1358,7 +1358,7 @@ void ExplicitConstructorInvocation() :
   | PrimaryExpression() "." [ TypeArguments() ] "super"    {jjtThis.setIsSuper();}
   )
   // reset this before parsing the arguments list
-  {inExplicitConstructorInvoc = false;}
+  {inExplicitConstructorInvoc = prev;}
   ArgumentList() ";"
 }
 
@@ -1578,7 +1578,7 @@ void TypeArgument() #void:
 void WildcardType():
 {}
 {
-    "?" [  ("extends" {jjtThis.setUpperBound(true);}| "super") AnnotatedRefType() ]
+    "?" [  ("extends" | "super"  {jjtThis.setLowerBound(true);}) AnnotatedRefType() ]
 }
 
 
@@ -1719,7 +1719,7 @@ void EqualityExpression() #void:
 void Pattern() #void:
 {}
 {
-    LOOKAHEAD(ReferenceType() "(") RecordPattern()
+    LOOKAHEAD((Annotation())* ReferenceType() "(") RecordPattern()
     | LOOKAHEAD("(") ParenthesizedPattern()
     | TypePattern() [ LOOKAHEAD({getToken(1).kind == SC_AND && jdkVersion < 19}) GuardedPatternCondition() #GuardedPattern(2) ]
 }
@@ -1745,7 +1745,7 @@ void TypePattern():
 void RecordPattern():
 {}
 {
-  ReferenceType() RecordStructurePattern() [ VariableDeclaratorId() ]
+  (Annotation())* ReferenceType() RecordStructurePattern() [ VariableDeclaratorId() ]
 }
 
 void RecordStructurePattern() #ComponentPatternList:
@@ -1764,11 +1764,20 @@ void InstanceOfExpression() #void:
 {}
 {
   RelationalExpression() [
-    LOOKAHEAD(1)
     ("instanceof"
         (
               LOOKAHEAD(ReferenceType() "(") RecordPattern()
-            | AnnotatedRefType() [ VariableDeclaratorId() #TypePattern(2) ]
+            | AnnotatedRefType() [
+                  VariableDeclaratorId() #TypePattern(2)
+                | RecordStructurePattern() #RecordPattern(2)
+                  [ VariableDeclaratorId()
+                    {
+                        AbstractJavaNode id = jjtree.popNode();
+                        ASTRecordPattern pat = (ASTRecordPattern) jjtree.peekNode();
+                        pat.addChild(id, pat.getNumChildren());
+                    }
+                  ]
+            ]
             | Pattern()
         )
         {
@@ -1784,7 +1793,7 @@ void InstanceOfExpression() #void:
             }
             jjtree.pushNode(top);
         }
-        {} // seems to be important?
+        {} // manipulate node before it is closed.
     ) #InfixExpression(2)
   ]
 }
@@ -2185,7 +2194,6 @@ void QualifiedAllocationExpr() #ConstructorCall(jjtree.nodeArity() + 1):
    AnnotatedClassOrInterfaceType()
    ArgumentList()
    [ AnonymousClassDeclaration() ]
-
 }
 
 
@@ -2716,7 +2724,7 @@ void MemberValue() #void:
 void  MemberValueArrayInitializer():
 {}
 {
-  "{" (MemberValue() ( LOOKAHEAD(2) "," MemberValue() )* [ "," ])? "}"
+  "{" (MemberValue() ( LOOKAHEAD(2) "," MemberValue() )*)? [ "," ] "}"
 }
 
 /*

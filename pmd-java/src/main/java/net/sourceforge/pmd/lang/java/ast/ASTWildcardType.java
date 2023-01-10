@@ -18,14 +18,14 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 public final class ASTWildcardType extends AbstractJavaTypeNode implements ASTReferenceType {
 
-    private boolean isUpperBound;
+    private boolean isLowerBound;
 
     ASTWildcardType(int id) {
         super(id);
     }
 
-    void setUpperBound(boolean upperBound) {
-        isUpperBound = upperBound;
+    void setLowerBound(boolean lowerBound) {
+        isLowerBound = lowerBound;
     }
 
     @Override
@@ -34,11 +34,12 @@ public final class ASTWildcardType extends AbstractJavaTypeNode implements ASTRe
     }
 
     /**
-     * Returns true if this is an upper type bound, e.g.
-     * in {@code <? extends Integer>}.
+     * Return true if this is an upper type bound, e.g.
+     * {@code <? extends Integer>}, or the unbounded
+     * wildcard {@code <?>}.
      */
-    public boolean hasUpperBound() {
-        return isUpperBound && getNumChildren() > 0;
+    public boolean isUpperBound() {
+        return !isLowerBound;
     }
 
 
@@ -46,18 +47,18 @@ public final class ASTWildcardType extends AbstractJavaTypeNode implements ASTRe
      * Returns true if this is a lower type bound, e.g.
      * in {@code <? super Node>}.
      */
-    public boolean hasLowerBound() {
-        return !isUpperBound && getNumChildren() > 0;
+    public boolean isLowerBound() {
+        return isLowerBound;
     }
 
 
     /**
      * Returns the type node representing the bound, e.g.
-     * the {@code Node} in {@code <? super Node>}, or null.
+     * the {@code Node} in {@code <? super Node>}, or null in
+     * the unbounded wildcard {@code <?>}.
      */
-    @Nullable
-    public ASTReferenceType getTypeBoundNode() {
-        return getFirstChildOfType(ASTReferenceType.class);
+    public @Nullable ASTReferenceType getTypeBoundNode() {
+        return firstChild(ASTReferenceType.class);
     }
 
     @Override

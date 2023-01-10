@@ -9,8 +9,11 @@ import java.util.function.Function;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.HashTreePSet;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 
 /**
  * Test only. This binds to the first capture variable it tests equal
@@ -33,6 +36,24 @@ final class CaptureMatcher implements JTypeVar {
     @Override
     public boolean isCaptured() {
         return true;
+    }
+
+    @Override
+    public JTypeVar withAnnotations(PSet<SymAnnot> newTypeAnnots) {
+        throw new UnsupportedOperationException("this is a test only object which should only be used for equals");
+    }
+
+    @Override
+    public JTypeVar withUpperBound(@NonNull JTypeMirror newUB) {
+        throw new UnsupportedOperationException("this is a test only object which should only be used for equals");
+    }
+
+    @Override
+    public PSet<SymAnnot> getTypeAnnotations() {
+        if (captured != null) {
+            return captured.getTypeAnnotations();
+        }
+        return HashTreePSet.empty();
     }
 
     @Override

@@ -253,10 +253,10 @@ public class CodeFormatRule extends AbstractPLSQLRule {
                 }
             }
 
-            // closing paranthesis should be on a new line
+            // closing parenthesis should be on a new line
             Node primaryExpression = node.getNthParent(3);
             if (primaryExpression.getEndLine() != node.getEndLine() + 1) {
-                addViolationWithMessage(data, primaryExpression, "Closing paranthesis should be on a new line.");
+                addViolationWithMessage(data, primaryExpression, "Closing parenthesis should be on a new line.");
             }
         }
 

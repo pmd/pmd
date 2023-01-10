@@ -166,7 +166,7 @@ public final class PMDCommandLineInterface {
 
     private static String getReports() {
         StringBuilder buf = new StringBuilder();
-        for (String reportName : RendererFactory.REPORT_FORMAT_TO_RENDERER.keySet()) {
+        for (String reportName : RendererFactory.supportedRenderers()) {
             Renderer renderer = RendererFactory.createRenderer(reportName, new Properties());
             buf.append("   ").append(reportName).append(": ");
             if (!reportName.equals(renderer.getName())) {

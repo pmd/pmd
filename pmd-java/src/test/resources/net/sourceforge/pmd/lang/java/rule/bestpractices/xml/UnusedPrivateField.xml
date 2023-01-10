@@ -773,4 +773,48 @@ public class C {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] UnusedPrivateField doesn't find annotated unused private fields anymore #4166 (default)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.WebElement;
+
+class ClassWithUnusedField {
+    @FindBy(id = "myId")
+    private WebElement myElement;
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UnusedPrivateField doesn't find annotated unused private fields anymore #4166 (default, other annotation)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class ClassWithUnusedField {
+    @Deprecated
+    private String unusedField;
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UnusedPrivateField doesn't find annotated unused private fields anymore #4166 (configuration)</description>
+        <rule-property name="reportForAnnotations">java.lang.Deprecated|org.openqa.selenium.support.FindBy</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,9</expected-linenumbers>
+        <code><![CDATA[
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+
+class ClassWithUnusedField {
+    @Deprecated
+    private String unusedField;
+
+    @FindBy(id = "whatEverId")
+    private WebElement myElement;
+}
+]]></code>
+    </test-code>
 </test-data>

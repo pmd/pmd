@@ -6,10 +6,8 @@ package net.sourceforge.pmd.util;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyIterator;
-import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.emptySet;
-import static java.util.Collections.singletonList;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,8 +34,10 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.Validate;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.ConsPStack;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PMap;
+import org.pcollections.PSequence;
 import org.pcollections.PSet;
 
 import net.sourceforge.pmd.annotation.InternalApi;
@@ -159,9 +159,9 @@ public final class CollectionUtil {
      */
     public static <T> List<T> concatView(List<? extends T> head, List<? extends T> tail) {
         if (head.isEmpty()) {
-            return Collections.unmodifiableList(tail);
+            return makeUnmodifiableAndNonNull(tail);
         } else if (tail.isEmpty()) {
-            return Collections.unmodifiableList(head);
+            return makeUnmodifiableAndNonNull(head);
         } else {
             return new ConsList<>(head, tail);
         }
@@ -268,7 +268,7 @@ public final class CollectionUtil {
     @SafeVarargs
     public static <T> List<T> listOf(T first, T... rest) {
         if (rest.length == 0) {
-            return Collections.singletonList(first);
+            return ConsPStack.singleton(first);
         }
         List<T> union = new ArrayList<>();
         union.add(first);
@@ -321,6 +321,26 @@ public final class CollectionUtil {
         Map<K, V> newM = new HashMap<>(m);
         newM.put(k, v);
         return newM;
+    }
+
+    /**
+     * Produce a new list with the elements of the first, and one additional
+     * item. The returned list is immutable.
+     */
+    public static <V> List<V> plus(List<V> list, V v) {
+        if (list instanceof PSequence) {
+            return ((PSequence<V>) list).plus(v);
+        } else if (list.isEmpty()) {
+            return ConsPStack.singleton(v);
+        }
+        return ConsPStack.from(list).plus(v);
+    }
+
+    /** Returns the empty list. */
+    public static <V> List<V> emptyList() {
+        // We use this implementation so that it plays well with other
+        // operations that expect immutable data.
+        return ConsPStack.empty();
     }
 
     /**
@@ -461,7 +481,7 @@ public final class CollectionUtil {
         if (!from.hasNext()) {
             return emptyList();
         } else if (sizeHint == 1) {
-            return Collections.singletonList(f.apply(from.next()));
+            return ConsPStack.singleton(f.apply(from.next()));
         }
         List<R> res = sizeHint == UNKNOWN_SIZE ? new ArrayList<>() : new ArrayList<>(sizeHint);
         while (from.hasNext()) {
@@ -592,7 +612,7 @@ public final class CollectionUtil {
 
 
     public static <T> List<T> listOfNotNull(T t) {
-        return t == null ? emptyList() : singletonList(t);
+        return t == null ? emptyList() : ConsPStack.singleton(t);
     }
 
     /**
@@ -641,10 +661,15 @@ public final class CollectionUtil {
      * @param <T>  Type of items
      */
     public static <T> List<T> defensiveUnmodifiableCopy(List<? extends T> list) {
-        if (list.isEmpty()) {
-            return emptyList();
+        if (list instanceof PSequence) {
+            return (List<T>) list; // is already immutable
         }
-        return Collections.unmodifiableList(new ArrayList<>(list));
+        if (list.isEmpty()) {
+            return ConsPStack.empty();
+        } else if (list.size() == 1) {
+            return ConsPStack.singleton(list.get(0));
+        }
+        return ConsPStack.from(list);
     }
 
     public static <T> Set<T> defensiveUnmodifiableCopyToSet(Collection<? extends T> list) {
@@ -693,5 +718,13 @@ public final class CollectionUtil {
             V otherInfo = other.get(otherKey); // non-null
             result.merge(otherKey, otherInfo, mergeFun);
         }
+    }
+
+    public static @NonNull <T> List<T> makeUnmodifiableAndNonNull(@Nullable List<? extends T> list) {
+        if (list instanceof PSequence) {
+            return (List<T>) list;
+        }
+        return list == null || list.isEmpty() ? emptyList()
+                                              : Collections.unmodifiableList(list);
     }
 }

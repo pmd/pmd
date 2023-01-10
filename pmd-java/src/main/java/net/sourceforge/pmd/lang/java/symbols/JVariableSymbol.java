@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.java.types.Substitution;
  *
  * @since 7.0.0
  */
-public interface JVariableSymbol extends BoundToNode<ASTVariableDeclaratorId> {
+public interface JVariableSymbol extends BoundToNode<ASTVariableDeclaratorId>, AnnotableSymbol {
 
     /**
      * Returns true if this is a field symbol.

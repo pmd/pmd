@@ -47,7 +47,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTPatternExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
@@ -190,11 +189,6 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
     @Override
     public JTypeMirror visit(ASTVoidType node, TypingContext ctx) {
         return ts.NO_TYPE;
-    }
-
-    @Override
-    public JTypeMirror visit(ASTPrimitiveType node, TypingContext ctx) {
-        return ts.getPrimitive(node.getKind());
     }
 
     @Override

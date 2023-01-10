@@ -16,6 +16,7 @@ public class UsingThread  {
     <test-code>
         <description>extending threads is not allowed</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 // This is not allowed
 public class UsingThread extends Thread {
@@ -26,6 +27,7 @@ public class UsingThread extends Thread {
     <test-code>
         <description>Implementing ExecutorService is not allowed</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 import java.util.concurrent.ExecutorService;
 
@@ -36,6 +38,7 @@ public class PMDTestExecutorService implements ExecutorService {}
     <test-code>
         <description>Extending AbstractExecutorService is not allowed</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 import java.util.concurrent.*;
 
@@ -46,6 +49,7 @@ public class PMDTestExecutorService extends AbstractExecutorService {}
     <test-code>
         <description>Using ExecutorService is not allowed</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,7</expected-linenumbers>
         <code><![CDATA[
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
@@ -65,7 +69,8 @@ public class ExecutorServiceUsage {
 
     <test-code>
         <description>Using Executors directly is not allowed</description>
-        <expected-problems>4</expected-problems>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,11</expected-linenumbers>
         <code><![CDATA[
 import java.util.concurrent.Executors;
 import java.util.concurrent.Callable;
@@ -112,6 +117,7 @@ public class Violation {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>getContextClassLoader is ok</description>
         <expected-problems>0</expected-problems>
@@ -120,5 +126,98 @@ public class Ok {
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] DoNotUseThreads report duplicate warnings #4210</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,4</expected-linenumbers>
+        <code><![CDATA[
+public final class Test {
+    public final Thread BAR = new Thread();  // reports two duplicate warnings in this line, but one is enough
+
+    public Thread getBAR() {  // report one warning in this line
+        return this.BAR;
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False negatives with field declarations</description>
+        <expected-problems>19</expected-problems>
+        <expected-linenumbers>6,7,8,9,13,14,20,26,30,31,33,34,37,38,42,43,47,48,51</expected-linenumbers>
+        <code><![CDATA[
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
+
+class DoNotUseThreadsTest {
+    private Thread background;                           // 6: violation expected
+    private ScheduledExecutorService scheduledExecutor;  // 7: violation expected
+    private ForkJoinPool pool;                           // 8: violation expected
+    private final Thread owner = Thread.currentThread(); // 9: violation expected
+
+    static final ThreadFactory threadFactory1 = new ThreadFactory() {
+        @Override
+        public Thread newThread(final Runnable r) {      // 13: violation expected
+            return new Thread(r);                        // 14: violation expected
+        }
+    };
+
+    static final ThreadFactory threadFactory2 = new ThreadFactory() {
+        @Override
+        public Thread newThread(final Runnable r) {      // 20: violation expected
+            return null;
+        }
+    };
+
+    DoNotUseThreadsTest() {
+        this.background = new Thread();                  // 26: violation expected
+    }
+
+    public void run() {
+        new Thread(() -> System.out.println("foo")).start(); // 30: violation expected
+        Thread t2 = new Thread();                            // 31: one violation expected
+        // report two violations, if on two separate lines
+        Thread t3 =                                          // 33: violation expected
+            new Thread();                                    // 34: violation expected
+    }
+
+    public Thread getThread() {                         // 37: violation expected
+        return new Thread();                            // 38: violation expected
+    }
+
+    @Override
+    public Thread getThread1() {                        // 42: violation expected
+        return new Thread();                            // 43: violation expected
+    }
+
+    @Override
+    public Thread getThread2(final Runnable r) {        // 47: violation expected
+        return new Thread(r);                           // 48: violation expected
+    }
+
+    private static class MyThread extends Thread { }    // 51: violation expected
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>More false negatives</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,8</expected-linenumbers>
+        <code><![CDATA[
+import java.util.HashMap;
+import java.util.Map;
+
+class DoNotUseThreadsTest {
+    Map<Thread, String> m = new HashMap<>();
+
+    boolean isThread(Class<?> cl) {
+        return cl == Thread.class;
+    }
+}
+]]></code>
     </test-code>
 </test-data>

@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolVisitor;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 
 /**
  * Routines to share logic for equality, respecting the contract of
@@ -136,6 +137,23 @@ public final class SymbolEquality {
             JFieldSymbol f2 = (JFieldSymbol) o;
             return f1.nameEquals(f2.getSimpleName())
                 && f1.getEnclosingClass().equals(f2.getEnclosingClass());
+
+        }
+    };
+
+    public static final EqAndHash<SymAnnot> ANNOTATION = new EqAndHash<SymAnnot>() {
+        @Override
+        public int hash(SymAnnot t1) {
+            return Objects.hash(t1.getBinaryName());
+        }
+
+        @Override
+        public boolean equals(SymAnnot f1, Object o) {
+            if (!(o instanceof SymAnnot)) {
+                return false;
+            }
+            SymAnnot f2 = (SymAnnot) o;
+            return f1.getBinaryName().equals(f2.getBinaryName());
 
         }
     };

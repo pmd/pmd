@@ -89,6 +89,21 @@ class JDKVersionTest extends BaseJavaTreeDumpTest {
     }
 
     @Test
+    public void testGenericCtorCalls() {
+        java5.parseResource("java5/generic_ctors.java");
+    }
+
+    @Test
+    public void testGenericSuperCtorCalls() {
+        java5.parseResource("java5/generic_super_ctor.java");
+    }
+
+    @Test
+    public void testAnnotArrayInitializer() {
+        java5.parseResource("java5/annotation_array_init.java");
+    }
+
+    @Test
     void testVarargsShouldFailWith14() {
         assertThrows(ParseException.class, () -> java4.parseResource("jdk15_varargs.java"));
     }
@@ -219,6 +234,11 @@ class JDKVersionTest extends BaseJavaTreeDumpTest {
     @Test
     void testPrivateMethods() {
         java8.parse("public class Foo { private void bar() { } }");
+    }
+
+    @Test
+    public final void testTypeAnnotations() {
+        java8.parseResource("java8/type_annotations.java");
     }
 
     @Test
