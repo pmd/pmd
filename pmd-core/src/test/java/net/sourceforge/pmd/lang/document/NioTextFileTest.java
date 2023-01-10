@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.document;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.FileOutputStream;
 import java.net.URI;
