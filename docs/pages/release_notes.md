@@ -19,6 +19,7 @@ This is a {{ site.pmd.release_type }} release.
 ### API Changes
 
 ### External Contributions
+* [#4285](https://github.com/pmd/pmd/pull/4285): \[java] CommentDefaultAccessModifier - add co.elastic.clients.util.VisibleForTesting as default suppressed annotation - [Matthew Luckam](https://github.com/mluckam) (@mluckam)
 
 {% endtocmaker %}
 
