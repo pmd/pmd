@@ -8,8 +8,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Assert;
@@ -74,8 +77,8 @@ public enum SymImplementation {
 
     public void assertAllFieldsMatch(Class<?> actualClass, JClassSymbol sym) {
         List<JFieldSymbol> fs = sym.getDeclaredFields();
-        Field[] actualFields = actualClass.getDeclaredFields();
-        Assert.assertEquals(actualFields.length, fs.size());
+        Set<Field> actualFields = Arrays.stream(actualClass.getDeclaredFields()).filter(f -> !f.isSynthetic()).collect(Collectors.toSet());
+        Assert.assertEquals(actualFields.size(), fs.size());
 
         for (final Field f : actualFields) {
             JFieldSymbol fSym = fs.stream().filter(it -> it.getSimpleName().equals(f.getName()))
@@ -95,13 +98,10 @@ public enum SymImplementation {
 
     public void assertAllMethodsMatch(Class<?> actualClass, JClassSymbol sym) {
         List<JMethodSymbol> ms = sym.getDeclaredMethods();
-        Method[] actualMethods = actualClass.getDeclaredMethods();
-        Assert.assertEquals(actualMethods.length, ms.size());
+        Set<Method> actualMethods = Arrays.stream(actualClass.getDeclaredMethods()).filter(m -> !m.isSynthetic()).collect(Collectors.toSet());
+        Assert.assertEquals(actualMethods.size(), ms.size());
 
         for (final Method m : actualMethods) {
-            if (m.isSynthetic()) {
-                continue;
-            }
             JMethodSymbol mSym = ms.stream().filter(it -> it.getSimpleName().equals(m.getName()))
                                    .findFirst().orElseThrow(AssertionError::new);
 
