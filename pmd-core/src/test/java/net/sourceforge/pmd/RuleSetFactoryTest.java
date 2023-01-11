@@ -185,7 +185,7 @@ public class RuleSetFactoryTest {
     public void testProps() throws RuleSetNotFoundException {
         Rule r = loadFirstRule(PROPERTIES);
         assertEquals("bar", r.getProperty((PropertyDescriptor<String>) r.getPropertyDescriptor("fooString")));
-        assertEquals(new Integer(3), r.getProperty((PropertyDescriptor<Integer>) r.getPropertyDescriptor("fooInt")));
+        assertEquals(Integer.valueOf(3), r.getProperty((PropertyDescriptor<Integer>) r.getPropertyDescriptor("fooInt")));
         assertTrue(r.getProperty((PropertyDescriptor<Boolean>) r.getPropertyDescriptor("fooBoolean")));
         assertEquals(3.0d, r.getProperty((PropertyDescriptor<Double>) r.getPropertyDescriptor("fooDouble")), 0.05);
         assertNull(r.getPropertyDescriptor("BuggleFish"));
@@ -220,6 +220,28 @@ public class RuleSetFactoryTest {
         PropertyDescriptor<List<String>> prop = (PropertyDescriptor<List<String>>) r.getPropertyDescriptor("packageRegEx");
         List<String> values = r.getProperty(prop);
         assertEquals(Arrays.asList("com.aptsssss", "com.abc"), values);
+    }
+
+    /**
+     * Verifies that empty values for properties are possible. Empty values can be used to disable a property.
+     * However, the semantic depends on the concrete rule implementation.
+     *
+     * @see <a href="https://github.com/pmd/pmd/issues/4279">[java] TestClassWithoutTestCases - can not set test pattern to empty #4279</a>
+     */
+    @Test
+    public void testEmptyStringProperty() throws RuleSetNotFoundException {
+        Rule r = loadFirstRule("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + "<ruleset name=\"test\">\n "
+                + " <description>ruleset desc</description>\n     "
+                + "<rule name=\"myRule\" message=\"Do not place to this package. Move to \n{0} package/s"
+                + " instead.\" \n" + "class=\"net.sourceforge.pmd.RuleWithProperties\" language=\"dummy\">\n"
+                + "         <description>Please move your class to the right folder(rest \nfolder)</description>\n"
+                + "         <priority>2</priority>\n         <properties>\n             <property name=\"stringProperty\""
+                + " value=\"\" />\n"
+                + "         </properties></rule>" + "</ruleset>");
+        PropertyDescriptor<String> prop = (PropertyDescriptor<String>) r.getPropertyDescriptor("stringProperty");
+        String value = r.getProperty(prop);
+        assertEquals("", value);
     }
 
     @Test
