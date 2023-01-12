@@ -15,6 +15,8 @@ This is a {{ site.pmd.release_type }} release.
 ### New and noteworthy
 
 ### Fixed Issues
+* core
+  * [#4329](https://github.com/pmd/pmd/pull/4329): [core] Refactor usage of snakeyaml
 
 ### API Changes
 
