@@ -1610,8 +1610,20 @@
 
 <h3 id="api-changes">API Changes</h3>
 
+<h4 id="deprecated-apis">Deprecated APIs</h4>
+
+<h5 id="for-removal">For removal</h5>
+
+<ul>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.54.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ApexRootNode.html#getApexVersion()"><code>ApexRootNode#getApexVersion</code></a> has been deprecated for removal. The version returned is
+always <code class="language-plaintext highlighter-rouge">Version.CURRENT</code>, as the apex compiler integration doesn’t use additional information which Apex version
+actually is used. Therefore, this method can’t be used to determine the Apex version of the project
+that is being analyzed.</li>
+</ul>
+
 <h3 id="external-contributions">External Contributions</h3>
 <ul>
+  <li><a href="https://github.com/pmd/pmd/pull/4280">#4280</a>: [apex] Deprecate ApexRootNode.getApexVersion - <a href="https://github.com/aaronhurst-google">Aaron Hurst</a> (@aaronhurst-google)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4285">#4285</a>: [java] CommentDefaultAccessModifier - add co.elastic.clients.util.VisibleForTesting as default suppressed annotation - <a href="https://github.com/mluckam">Matthew Luckam</a> (@mluckam)</li>
 </ul>
 
@@ -1646,7 +1658,7 @@
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jan 10, 2023 <br />
+             Site last generated: Jan 14, 2023 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>
