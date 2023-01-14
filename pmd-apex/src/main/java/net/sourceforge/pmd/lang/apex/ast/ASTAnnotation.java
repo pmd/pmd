@@ -59,7 +59,7 @@ public class ASTAnnotation extends AbstractApexNode.Single<AnnotationModifier> {
             "SfdcOnly",
             "SuppressWarnings",
             "TestSetup",
-            "TestSisible",
+            "TestVisible",
             "UseConnectDeserializer",
             "UseConnectSerializer",
             "VisibleApiVersion"
