@@ -14,9 +14,11 @@ import net.sourceforge.pmd.lang.ast.SourceCodePositioner
 import com.google.summit.ast.CompilationUnit
 import com.google.summit.ast.Identifier
 import com.google.summit.ast.Node
+import com.google.summit.ast.SourceLocation
 import com.google.summit.ast.TypeRef
 import com.google.summit.ast.declaration.ClassDeclaration
 import com.google.summit.ast.declaration.EnumDeclaration
+import com.google.summit.ast.declaration.EnumValue
 import com.google.summit.ast.declaration.FieldDeclaration
 import com.google.summit.ast.declaration.FieldDeclarationGroup
 import com.google.summit.ast.declaration.InterfaceDeclaration
@@ -26,6 +28,7 @@ import com.google.summit.ast.declaration.PropertyDeclaration
 import com.google.summit.ast.declaration.TriggerDeclaration
 import com.google.summit.ast.declaration.TypeDeclaration
 import com.google.summit.ast.declaration.VariableDeclaration
+import com.google.summit.ast.declaration.VariableDeclarationGroup
 import com.google.summit.ast.expression.ArrayExpression
 import com.google.summit.ast.expression.AssignExpression
 import com.google.summit.ast.expression.BinaryExpression
@@ -35,6 +38,9 @@ import com.google.summit.ast.expression.Expression
 import com.google.summit.ast.expression.FieldExpression
 import com.google.summit.ast.expression.LiteralExpression
 import com.google.summit.ast.expression.NewExpression
+import com.google.summit.ast.expression.SoqlExpression
+import com.google.summit.ast.expression.SoslExpression
+import com.google.summit.ast.expression.SoqlOrSoslBinding
 import com.google.summit.ast.expression.SuperExpression
 import com.google.summit.ast.expression.TernaryExpression
 import com.google.summit.ast.expression.ThisExpression
@@ -76,6 +82,7 @@ import kotlin.reflect.KClass
 @Suppress("DEPRECATION")
 class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptions) {
     private val sourceCodePositioner = SourceCodePositioner(sourceCode)
+    private val commentBuilder = ApexCommentBuilder(sourceCode, parserOptions)
 
     /** Builds and returns an [ApexNode] AST corresponding to the given [root] node. */
     fun buildTree(root: CompilationUnit): ApexRootNode<TypeDeclaration> {
@@ -87,14 +94,15 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
         // Generate additional nodes
         generateAdditional(result)
 
-        // Call additional methods
-        callAdditional(result)
+        postProcessTree(result)
+
+        commentBuilder.addFormalComments()
 
         return result
     }
 
     /** Calls additional methods for each node in [root] using a post-order traversal. */
-    private fun callAdditional(root: ApexNode<*>) =
+    private fun postProcessTree(root: ApexNode<*>) =
         root.jjtAccept(
             object : ApexParserVisitorAdapter() {
                 override fun visit(node: ApexNode<*>?, data: Any?): Any? =
@@ -102,6 +110,15 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
                         if (node is AbstractApexNode) {
                             node.handleSourceCode(sourceCode)
                             node.calculateLineNumbers(sourceCodePositioner)
+                        }
+                        if (node is AbstractApexCommentContainerNode<*>) {
+                            node.setContainsComment(commentBuilder.containsComments(node));
+                        }
+                        when (node) {
+                          is ASTUserInterface,
+                          is ASTProperty,
+                          is ASTUserClass,
+                          is ASTMethod -> commentBuilder.buildFormalComment(node)
                         }
                     }
             },
@@ -114,6 +131,7 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             null -> null
             is CompilationUnit -> build(node.typeDeclaration, parent)
             is TypeDeclaration -> buildTypeDeclaration(node)
+            is EnumValue -> buildEnumValue(node)
             is MethodDeclaration -> buildMethodDeclaration(node, parent)
             is PropertyDeclaration -> buildPropertyDeclaration(node)
             is FieldDeclarationGroup -> buildFieldDeclarationGroup(node)
@@ -140,13 +158,16 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             is CallExpression -> buildCallExpression(node)
             is TernaryExpression -> buildTernaryExpression(node)
             is NewExpression -> build(node.initializer, parent)
+            is SoqlExpression -> ASTSoqlExpression(node).apply { buildChildren(node, parent = this) }
+            is SoslExpression -> ASTSoslExpression(node).apply { buildChildren(node, parent = this) }
+            is SoqlOrSoslBinding -> ASTBindExpressions(node).apply { buildChildren(node, parent = this) }
             is ConstructorInitializer -> buildConstructorInitializer(node)
             is ValuesInitializer -> buildValuesInitializer(node)
             is MapInitializer -> buildMapInitializer(node)
             is SizedArrayInitializer -> buildSizedArrayInitializer(node)
             is DmlStatement -> buildDmlStatement(node)
             is IfStatement -> buildIfStatement(node)
-            is VariableDeclarationStatement -> buildVariableDeclarations(node.variableDeclarations)
+            is VariableDeclarationStatement -> buildVariableDeclarationGroup(node.group)
             is VariableDeclaration -> buildVariableDeclaration(node)
             is EnhancedForLoopStatement -> buildEnhancedForLoopStatement(node)
             is DoWhileLoopStatement -> buildDoWhileLoopStatement(node)
@@ -158,8 +179,7 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             is RunAsStatement -> ASTRunAsBlockStatement(node).apply { buildChildren(node, parent = this) }
             is ThrowStatement -> ASTThrowStatement(node).apply { buildChildren(node, parent = this) }
             is TryStatement -> buildTryStatement(node)
-            is TryStatement.CatchBlock ->
-                ASTCatchBlockStatement(node).apply { buildChildren(node, parent = this) }
+            is TryStatement.CatchBlock -> buildCatchBlock(node)
             is BreakStatement -> ASTBreakStatement(node).apply { buildChildren(node, parent = this) }
             is ContinueStatement ->
                 ASTContinueStatement(node).apply { buildChildren(node, parent = this) }
@@ -203,21 +223,42 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             is TriggerDeclaration -> ASTUserTrigger(node)
         }.apply {
             buildModifiers(node.modifiers).also { it.setParent(this) }
-            buildChildren(node, parent = this, exclude = { it in node.modifiers })
+            if (node is TriggerDeclaration) {
+                // 1. Create a synthetic "invoke" ASTMethod for the trigger body
+                val invokeMethod = ASTMethod(
+                  /* name= */ "invoke",
+                  /* parameterTypes= */ emptyList(),
+                  /* returnType= */ "void",
+                 SourceLocation.UNKNOWN,
+                ).also{ it.setParent(this) }
+                // 2. Add the expected ASTModifier child node
+                buildModifiers(emptyList()).also { it.setParent(invokeMethod) }
+                // 3. Elide the body CompoundStatement->ASTBlockStatement
+                buildChildren(node.body, parent = invokeMethod as ApexNode<*>)
+            } else {
+                buildChildren(node, parent = this, exclude = { it in node.modifiers })
+            }
         }
 
-    /** Builds an [ASTMethod] wrapper for the [MethodDeclaration] node. */
-    private fun buildMethodDeclaration(node: MethodDeclaration, parent: ApexNode<*>?) =
+/** Builds an [ASTMethod] wrapper for the [MethodDeclaration] node. */
+private fun buildMethodDeclaration(node: MethodDeclaration, parent: ApexNode<*>?) =
         when {
             node.isAnonymousInitializationCode() && !node.hasKeyword(Keyword.STATIC) ->
-                build(node.body, parent)
+                    build(node.body, parent)
             else -> {
-                ASTMethod(node).apply {
-                    buildModifiers(node.modifiers).also { it.setParent(this) }
+                ASTMethod.fromNode(node).apply {
+                    buildModifiers(
+                        // Getters and setters default to property visibility
+                        if (node.modifiers.isEmpty() && parent is ASTProperty) {
+                            parent.node.modifiers
+                        } else {
+                            node.modifiers
+                        }).also { it.setParent(this) }
                     buildChildren(node, parent = this, exclude = { it in node.modifiers })
                 }
             }
         }
+
 
     /** Builds an [ASTProperty] wrapper for the [PropertyDeclaration] node. */
     private fun buildPropertyDeclaration(node: PropertyDeclaration) =
@@ -232,6 +273,10 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             buildModifiers(node.modifiers).also { it.setParent(this) }
             buildChildren(node, parent = this, exclude = { it in node.modifiers })
         }
+
+    /** Builds an [ASTField] wrapper for the [EnumValue] node. */
+    private fun buildEnumValue(node: EnumValue) =
+        ASTField(node.parent as EnumDeclaration, node.id)
 
     private fun buildFieldDeclaration(node: FieldDeclaration) =
         ASTFieldDeclaration(node).apply {
@@ -279,7 +324,6 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             BinaryExpression.Operator.SUBTRACTION,
             BinaryExpression.Operator.MULTIPLICATION,
             BinaryExpression.Operator.DIVISION,
-            BinaryExpression.Operator.MODULO,
             BinaryExpression.Operator.LEFT_SHIFT,
             BinaryExpression.Operator.RIGHT_SHIFT_SIGNED,
             BinaryExpression.Operator.RIGHT_SHIFT_UNSIGNED,
@@ -545,21 +589,17 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
                 FlatIfStatement(ifBlocks, elseBlock = node)
         }
 
-    /** Builds an [ASTVariableDeclarationStatements] for the [VariableDeclaration] list. */
-    private fun buildVariableDeclarations(declarations: List<VariableDeclaration>) =
-        ASTVariableDeclarationStatements(declarations).apply {
-            if (declarations.isNotEmpty()) {
-                // Modifiers are duplicated between all declarations - use any
-                buildModifiers(declarations.first().modifiers).also { it.setParent(this) }
-            }
-            declarations.forEach { buildAndSetParent(it, parent = this) }
+    /** Builds an [ASTVariableDeclarationStatements] for the [VariableDeclarationGroup]. */
+    private fun buildVariableDeclarationGroup(node: VariableDeclarationGroup) =
+        ASTVariableDeclarationStatements(node).apply {
+            buildModifiers(node.modifiers).also { it.setParent(this) }
+            buildChildren(node, parent = this, exclude = { it in node.modifiers })
         }
 
     /** Builds an [ASTVariableDeclaration] wrapper for the [VariableDeclaration]. */
     private fun buildVariableDeclaration(node: VariableDeclaration) =
         ASTVariableDeclaration(node).apply {
-            // Exclude modifiers - built in ASTVariableDeclarationStatements
-            buildChildren(node, parent = this, exclude = { it in node.modifiers })
+            buildChildren(node, parent = this)
 
             ASTVariableExpression(node.id)
                 .apply {
@@ -572,9 +612,12 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
     /** Builds an [ASTForEachStatement] wrapper for the [EnhancedForLoopStatement]. */
     private fun buildEnhancedForLoopStatement(node: EnhancedForLoopStatement) =
         ASTForEachStatement(node).apply {
-            buildVariableDeclarations(listOf(node.elementDeclaration)).also { it.setParent(this) }
+            buildVariableDeclarationGroup(node.element).also { it.setParent(this) }
 
-            ASTVariableExpression(node.elementDeclaration.id)
+            if (node.element.declarations.size != 1) {
+              throw ParseException("Expected enhanced-for to declare a single variable")
+            }
+            ASTVariableExpression(node.element.declarations.first().id)
                 .apply {
                     buildReferenceExpression(components = emptyList(), receiver = null, ReferenceType.NONE)
                         .also { it.setParent(this) }
@@ -586,7 +629,7 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             buildChildren(
                 node,
                 parent = this,
-                exclude = { it == node.elementDeclaration || it == node.body }
+                exclude = { it == node.element || it == node.body }
             )
         }
 
@@ -612,11 +655,11 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             fun buildInitialization(expr: Expression) =
                 ASTExpression(expr).apply { buildAndSetParent(expr, parent = this) }
 
-            if (node.declarations.isNotEmpty()) {
-                buildVariableDeclarations(node.declarations).also { it.setParent(this) }
+            node.declarationGroup?.let{ group ->
+                buildVariableDeclarationGroup(group).also { it.setParent(this) }
             }
-            if (node.condition != null) {
-                buildCondition(node.condition!!).also { it.setParent(this) }
+            node.condition?.let{ condition ->
+                buildCondition(condition).also { it.setParent(this) }
             }
             node.initializations.forEach { expr -> buildInitialization(expr).also { it.setParent(this) } }
 
@@ -626,7 +669,7 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
                 node,
                 parent = this,
                 exclude = {
-                    it in node.declarations ||
+                    it == node.declarationGroup ||
                         it == node.condition ||
                         it in node.initializations ||
                         it == node.body
@@ -667,6 +710,12 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
             buildChildren(node, parent = this, exclude = { it == node.body })
         }
 
+    /** Builds an [ASTCatchBlockStatement] wrapper for the [TryStatement.CatchBlock]. */
+    private fun buildCatchBlock(node: TryStatement.CatchBlock) =
+        ASTCatchBlockStatement(node).apply {
+            buildChildren(node, parent = this, exclude = { it == node.exception })
+        }
+
     /** Builds an [ASTParameter] wrapper for the [ParameterDeclaration]. */
     private fun buildParameterDeclaration(node: ParameterDeclaration) =
         ASTParameter(node).apply {
@@ -690,6 +739,35 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
         }
 
         findDescendants(root, nodeType = ASTProperty::class).forEach { node -> generateFields(node) }
+
+        // Sort resulting nodes
+        findDescendants(root, nodeType = ASTUserClass::class).forEach { node ->
+            sortUserClassChildren(node)
+        }
+    }
+
+    /**
+      * Sort children of [ASTUserClass] in historical order.
+      *
+      * This sorts [ASTField] nodes immediately after [ASTModifierNode] nodes at
+      * the start of the ordered children.
+      */
+    private fun sortUserClassChildren(node: ASTUserClass) {
+      val children = ArrayList<net.sourceforge.pmd.lang.ast.Node>(node.jjtGetNumChildren())
+      for(i in 0..node.jjtGetNumChildren()-1) {
+        children.add(node.jjtGetChild(i))
+      }
+
+      children.sortBy{ when (it) {
+          is ASTModifierNode -> 1
+          is ASTField -> 2
+          else -> 3
+        }
+      }
+
+      for(i in 0..node.jjtGetNumChildren()-1) {
+        node.jjtAddChild(children.get(i), i)
+      }
     }
 
     /** Returns all descendants of [root] of type [nodeType], including [root]. */
@@ -733,6 +811,5 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
     }
 
     val suppressMap
-        get() = emptyMap<Int, String>()
-    // TODO(b/239648780)
+        get() = commentBuilder.getSuppressMap()
 }

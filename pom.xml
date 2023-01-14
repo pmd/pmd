@@ -769,6 +769,12 @@
                 <version>2.8.9</version>
             </dependency>
             <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <!-- using 31.0.1-android flavor instead of 31.0.1-jre, so that we are compatible with java7 -->
+                <version>31.0.1-android</version>
+            </dependency>
+            <dependency>
                 <groupId>org.yaml</groupId>
                 <artifactId>snakeyaml</artifactId>
                 <version>1.33</version>
@@ -800,14 +806,6 @@
                 <groupId>com.github.oowekyala.treeutils</groupId>
                 <artifactId>tree-printers</artifactId>
                 <version>2.1.0</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <!-- using 31.0.1-android flavor instead of 31.0.1-jre, so that we are compatible with java7 -->
-                <version>31.0.1-android</version>
                 <scope>test</scope>
             </dependency>
 
@@ -952,17 +950,6 @@
             <id>sonatype-nexus-snapshots</id>
             <name>Sonatype Nexus Snapshots</name>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>sonatype-nexus-snapshots-google</id>
-            <name>Sonatype Nexus Snapshots - Google</name>
-            <url>https://google.oss.sonatype.org/content/repositories/snapshots</url>
             <releases>
                 <enabled>false</enabled>
             </releases>

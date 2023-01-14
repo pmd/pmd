@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.apex.rule;
 
 import static org.junit.Assert.assertEquals;
 
-import com.google.summit.ast.CompilationUnit;
 import java.util.Collections;
 
 import org.junit.Test;

@@ -10,8 +10,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import apex.jorje.semantic.symbol.type.BasicType;
-
 public class DataTypeTest {
     @Test
     public void testFromString() {
@@ -31,15 +29,6 @@ public class DataTypeTest {
         assertEquals(DataType.Text, DataType.fromTypeName("string"));
         assertEquals(DataType.Unknown, DataType.fromTypeName("Object"));
         assertEquals(DataType.Unknown, DataType.fromTypeName(null));
-    }
-
-    @Test
-    public void testDeprecatedFromBasicType() {
-        assertEquals(DataType.Checkbox, DataType.fromBasicType(BasicType.BOOLEAN));
-        assertEquals(DataType.Number, DataType.fromBasicType(BasicType.DECIMAL));
-        assertEquals(DataType.Number, DataType.fromBasicType(BasicType.DOUBLE));
-        assertEquals(DataType.Unknown, DataType.fromBasicType(BasicType.APEX_OBJECT));
-        assertEquals(DataType.Unknown, DataType.fromBasicType(null));
     }
 
     @Test

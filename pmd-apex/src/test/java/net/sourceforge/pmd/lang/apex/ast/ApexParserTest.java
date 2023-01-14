@@ -9,7 +9,6 @@ import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import com.google.summit.ast.CompilationUnit;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -36,7 +35,7 @@ public class ApexParserTest extends ApexParserTestBase {
 
         // Verify
         List<ASTMethod> methods = rootNode.findDescendantsOfType(ASTMethod.class);
-        assertEquals(4, methods.size());
+        assertEquals(1, methods.size());
     }
 
     @Test
@@ -70,21 +69,16 @@ public class ApexParserTest extends ApexParserTestBase {
     }
 
     private void assertLineNumbersForTestCode(ApexNode<?> rootNode) {
-        // whole source code, well from the beginning of the class
-        // name Modifier of the class - doesn't work. This node just
-        // sees the identifier ("SimpleClass")
-        // assertPosition(rootNode.getChild(0), 1, 1, 1, 6);
+        // Class location starts at the "class" keyword. (It excludes modifiers.)
+        assertPosition(rootNode, 1, 8, 6, 2);
+        // "public" modifier for class
+        assertPosition(rootNode.getChild(0), 1, 1, 1, 6);
 
-        // "public"
-        assertPosition(rootNode, 1, 14, 6, 2);
-
-        // "method1" - starts with identifier until end of its block statement
+        // "method1" - spans from return type to end of its block statement. (It excluded modifiers.)
         Node method1 = rootNode.getChild(1);
-        assertPosition(method1, 2, 17, 5, 5);
-        // Modifier of method1 - doesn't work. This node just sees the
-        // identifier ("method1")
-        // assertPosition(method1.getChild(0), 2, 17, 2, 20); // "public" for
-        // method1
+        assertPosition(method1, 2, 12, 5, 5);
+        // "public" modifier for "method1"
+        assertPosition(method1.getChild(0), 2, 5, 2, 10);
 
         // BlockStatement - the whole method body
         Node blockStatement = method1.getChild(1);
@@ -184,7 +178,7 @@ public class ApexParserTest extends ApexParserTestBase {
         Assert.assertNotNull(rootNode);
 
         int count = visitPosition(rootNode, 0);
-        Assert.assertEquals(487, count);
+        Assert.assertEquals(471, count);
     }
 
     @Test
@@ -198,28 +192,24 @@ public class ApexParserTest extends ApexParserTestBase {
         visitPosition(rootNode, 0);
 
         Assert.assertEquals("InnerClassLocations", rootNode.getImage());
-        // Note: Apex parser doesn't provide positions for "public class" keywords. The
-        // position of the UserClass node is just the identifier. So, the node starts
-        // with the identifier and not with the first keyword in the file...
-        assertPosition(rootNode, 1, 14, 16, 2);
+        // Class location starts at the "class" keyword. (It excludes any modifiers.)
+        assertPosition(rootNode, 1, 8, 16, 2);
 
         List<ASTUserClass> classes = rootNode.findDescendantsOfType(ASTUserClass.class);
         Assert.assertEquals(2, classes.size());
         Assert.assertEquals("bar1", classes.get(0).getImage());
         List<ASTMethod> methods = classes.get(0).findChildrenOfType(ASTMethod.class);
-        Assert.assertEquals(2, methods.size()); // m() and synthetic clone()
+        Assert.assertEquals(1, methods.size()); // m()
         Assert.assertEquals("m", methods.get(0).getImage());
-        assertPosition(methods.get(0), 4, 21, 7, 9);
-        Assert.assertEquals("clone", methods.get(1).getImage());
-        assertPosition(methods.get(1), 7, 9, 7, 9);
+        assertPosition(methods.get(0), 4, 16, 7, 9);
 
-        // Position of the first inner class: starts with the identifier "bar1" and ends with
+        // Position of the first inner class: starts with the identifier "class" and ends with
         // the last real method m(). The last bracket it actually on the next line 8, but we
         // don't see this in the AST.
-        assertPosition(classes.get(0), 3, 18, 7, 9);
+        assertPosition(classes.get(0), 3, 12, 7, 9);
 
         Assert.assertEquals("bar2", classes.get(1).getImage());
-        assertPosition(classes.get(1), 10, 18, 14, 9);
+        assertPosition(classes.get(1), 10, 12, 14, 9);
     }
 
     // TEST HELPER

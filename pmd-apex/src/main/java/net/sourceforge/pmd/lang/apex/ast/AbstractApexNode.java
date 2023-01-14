@@ -4,7 +4,10 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.NavigableSet;
+import java.util.TreeSet;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
@@ -152,15 +155,6 @@ public abstract class AbstractApexNode extends AbstractApexNodeBase implements A
 
     public abstract String getLocation();
 
-    // private TypeInfo getDefiningTypeOrNull() {
-    //     try {
-    //         return node.getDefiningType();
-    //     } catch (UnsupportedOperationException e) {
-    //         return null;
-    //     }
-    // }
-    // TODO(b/239648780)
-
     @Override
     public String getDefiningType() {
         ApexRootNode<?> rootNode = this instanceof ApexRootNode ? (ApexRootNode<?>) this : getFirstParentOfType(ApexRootNode.class);
@@ -176,7 +170,7 @@ public abstract class AbstractApexNode extends AbstractApexNodeBase implements A
         // if (definingType != null) {
         //     return definingType.getNamespace().toString();
         // }
-        // TODO(b/239648780)
+        // TODO(b/243905954)
         return null;
     }
 
@@ -188,5 +182,38 @@ public abstract class AbstractApexNode extends AbstractApexNodeBase implements A
             return "";
         }
         return expr.asCodeString();
+    }
+
+    /**
+      * Normalizes case of primitive type names.
+      *
+      * All other strings are returned unchanged.
+      *
+      * See: https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/langCon_apex_primitives.htm
+      */
+    public static String caseNormalizedTypeIfPrimitive(String name) {
+        String floor = caseNormalizedTypeNames.floor(name);
+        return name.equalsIgnoreCase(floor) ? floor : name;
+    }
+
+    private static NavigableSet<String> caseNormalizedTypeNames =
+        new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+
+    static {
+        caseNormalizedTypeNames.addAll(Arrays.asList(
+            "Blob",
+            "Boolean",
+            "Currency",
+            "Date",
+            "Datetime",
+            "Decimal",
+            "Double",
+            "Id",
+            "Integer",
+            "Long",
+            "Object",
+            "String",
+            "Time"
+        ));
     }
 }

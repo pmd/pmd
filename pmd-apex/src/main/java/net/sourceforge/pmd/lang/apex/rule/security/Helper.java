@@ -103,16 +103,6 @@ public final class Helper {
         return net.sourceforge.pmd.lang.apex.rule.internal.Helper.isSystemLevelClass(node);
     }
 
-    /*
-    @Deprecated
-    public static String getFQVariableName(Parameter p) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(p.getDefiningType()).append(":").append(p.getName().getValue());
-        return sb.toString();
-    }
-     */
-    // TODO(b/239648780)
-
     static String getFQVariableName(ASTParameter p) {
         return net.sourceforge.pmd.lang.apex.rule.internal.Helper.getFQVariableName(p);
     }

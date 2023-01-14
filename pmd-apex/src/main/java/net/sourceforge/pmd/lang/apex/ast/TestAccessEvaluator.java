@@ -22,15 +22,17 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+/*
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.SetMultimap;
+*/
+
+import net.sourceforge.pmd.annotation.InternalApi;
 
 /**
  * For now everything returns false.

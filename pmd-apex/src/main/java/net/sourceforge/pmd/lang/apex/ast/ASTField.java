@@ -12,22 +12,30 @@ import net.sourceforge.pmd.Rule;
 import com.google.summit.ast.Identifier;
 import com.google.summit.ast.Node;
 import com.google.summit.ast.TypeRef;
+import com.google.summit.ast.declaration.EnumDeclaration;
 import com.google.summit.ast.expression.Expression;
 import com.google.summit.ast.expression.LiteralExpression;
 
 public class ASTField extends AbstractApexNode.Many<Node> implements CanSuppressWarnings {
 
-    private final TypeRef type;
     private final Identifier name;
     private final Optional<Expression> value;
+    private final String typeName;
 
-    ASTField(TypeRef type, Identifier name, Optional<Expression> value) {
+    ASTField(TypeRef typeRef, Identifier name, Optional<Expression> value) {
         super(value.isPresent()
-              ? Arrays.asList(type, name, value.get())
-              : Arrays.asList(type, name));
-        this.type = type;
+              ? Arrays.asList(typeRef, name, value.get())
+              : Arrays.asList(typeRef, name));
         this.name = name;
         this.value = value;
+        this.typeName = caseNormalizedTypeIfPrimitive(typeRef.asCodeString());
+    }
+
+    ASTField(EnumDeclaration enumType, Identifier name) {
+        super(Arrays.asList(name));
+        this.name = name;
+        this.value = Optional.empty();
+        this.typeName = enumType.getId().asCodeString();
     }
 
     @Override
@@ -52,8 +60,14 @@ public class ASTField extends AbstractApexNode.Many<Node> implements CanSuppress
         return false;
     }
 
+    /**
+     * Returns the type name.
+     *
+     * This includes any type arguments. (This is tested.)
+     * If the type is a primitive, its case will be normalized.
+     */
     public String getType() {
-        return type.asCodeString();
+        return typeName;
     }
 
     public ASTModifierNode getModifiers() {

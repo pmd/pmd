@@ -4,15 +4,17 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+/*
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import com.google.common.collect.ImmutableList;
+*/
+
+import net.sourceforge.pmd.annotation.InternalApi;
 
 /**
  * Central point for interfacing with the compiler. Based on <a href=

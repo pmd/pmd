@@ -13,9 +13,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.lang.ast.QualifiedName;
 
-import com.google.summit.ast.TypeRef;
-import com.google.summit.ast.declaration.ParameterDeclaration;
-
 /**
  * Qualified name of an apex class or method.
  *
@@ -162,18 +159,24 @@ public final class ApexQualifiedName implements QualifiedName {
         return new ApexQualifiedName(parent.nameSpace, classes, null);
     }
 
-
+    /**
+     * Returns the method operation string.
+     *
+     * This includes type arguments for the parameter types.
+     * If the parameters are primitive types, their case will be normalized.
+     */
     private static String getOperationString(ASTMethod node) {
         StringBuilder sb = new StringBuilder();
         sb.append(node.getImage()).append('(');
 
-        List<TypeRef> paramTypes = node.node.getParameterDeclarations().stream().map(ParameterDeclaration::getType).collect(Collectors.toList());
+        List<String> paramTypes = node.findChildrenOfType(ASTParameter.class).stream()
+            .map(ASTParameter::getType)
+            .collect(Collectors.toList());
 
         if (!paramTypes.isEmpty()) {
-            sb.append(paramTypes.get(0).asCodeString());
-
-            for (int i = 1; i < paramTypes.size(); i++) {
-                sb.append(", ").append(paramTypes.get(i).asCodeString());
+            for (int i = 0; i < paramTypes.size(); i++) {
+                sb.append(i > 0 ? ", " : "");
+                sb.append(paramTypes.get(i));
             }
         }
 

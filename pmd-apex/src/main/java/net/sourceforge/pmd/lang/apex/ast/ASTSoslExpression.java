@@ -4,15 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+import com.google.summit.ast.expression.SoslExpression;
 
-import com.google.summit.ast.Node;
+public class ASTSoslExpression extends AbstractApexNode.Single<SoslExpression> {
 
-public class ASTSoslExpression extends AbstractApexNode.Single<Node> {
-
-    @Deprecated
-    @InternalApi
-    public ASTSoslExpression(Node soslExpression) {
+    ASTSoslExpression(SoslExpression soslExpression) {
         super(soslExpression);
     }
 

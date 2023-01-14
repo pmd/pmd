@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.apex.metrics;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
-import com.google.summit.ast.CompilationUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;

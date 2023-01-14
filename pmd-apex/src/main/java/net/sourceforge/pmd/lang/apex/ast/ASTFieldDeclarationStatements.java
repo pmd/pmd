@@ -40,8 +40,14 @@ public class ASTFieldDeclarationStatements extends AbstractApexNode.Single<Field
         return getFirstChildOfType(ASTModifierNode.class);
     }
 
+    /**
+     * Returns the type name.
+     *
+     * This includes any type arguments.
+     * If the type is a primitive, its case will be normalized.
+     */
     public String getTypeName() {
-        return node.getType().asCodeString();
+        return caseNormalizedTypeIfPrimitive(node.getType().asCodeString());
     }
 
     /*
@@ -52,9 +58,9 @@ public class ASTFieldDeclarationStatements extends AbstractApexNode.Single<Field
     // TODO(b/239648780)
 
     public List<String> getTypeArguments() {
+        /*
         List<String> result = new ArrayList<>();
 
-        /*
         if (node.getTypeName() != null) {
             List<TypeRef> typeArgs = node.getTypeName().getTypeArguments();
             for (TypeRef arg : typeArgs) {
@@ -71,6 +77,6 @@ public class ASTFieldDeclarationStatements extends AbstractApexNode.Single<Field
          */
         // TODO(b/239648780)
 
-        return result;
+        return new ArrayList<>();
     }
 }

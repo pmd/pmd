@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.apex.ast;
 
 import java.util.List;
-import java.util.Locale;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.summit.ast.modifier.AnnotationModifier;

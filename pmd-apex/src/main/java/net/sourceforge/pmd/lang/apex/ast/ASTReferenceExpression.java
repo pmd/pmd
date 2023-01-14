@@ -30,14 +30,12 @@ public class ASTReferenceExpression extends AbstractApexNode.Many<Identifier> {
         return node.getContext();
     }
      */
-    // TODO(b/239648780)
+    // TODO(b/243906211)
 
-    /*
-    public ReferenceType getReferenceType() {
+    /* TODO(b/239648780) this is not yet set to a meaningful value
+    public */ ReferenceType getReferenceType() {
         return referenceType;
     }
-     */
-    // TODO(b/239648780)
 
     @Override
     public String getImage() {
@@ -56,7 +54,7 @@ public class ASTReferenceExpression extends AbstractApexNode.Many<Identifier> {
     }
 
     public boolean isSObjectType() {
-        return nodes.stream().anyMatch(id -> "sobjecttype".contentEquals(id.getString()));
+        return nodes.stream().anyMatch(id -> "sobjecttype".equalsIgnoreCase(id.getString()));
     }
 
     @Override

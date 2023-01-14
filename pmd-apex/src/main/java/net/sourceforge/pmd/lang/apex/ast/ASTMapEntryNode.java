@@ -23,4 +23,9 @@ public class ASTMapEntryNode extends AbstractApexNode.Many<Expression> {
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+
+    @Override
+    public String getImage() {
+        return String.format("%s: %s", key, value);
+    }
 }

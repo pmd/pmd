@@ -27,8 +27,11 @@ public abstract class AbstractApexNodeBase extends AbstractNode {
         }
 
         this.beginLine = loc.getStartLine();
-        this.beginColumn = loc.getStartColumn();
+        // Add +1 because Summit columns are 0-based and PMD are 1-based
+        this.beginColumn = loc.getStartColumn() + 1;
         this.endLine = loc.getEndLine();
+        // Add net +0 because Summit columns are 0-based and PMD are 1-based
+        //   BUT Summit range is exclusive of end column while PMD is inclusive
         this.endColumn = loc.getEndColumn();
     }
 

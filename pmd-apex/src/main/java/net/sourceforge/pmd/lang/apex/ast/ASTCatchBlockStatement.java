@@ -18,11 +18,11 @@ public class ASTCatchBlockStatement extends AbstractApexCommentContainerNode<Try
     }
 
     public String getExceptionType() {
-        return node.getExceptionVariable().getType().asCodeString();
+        return node.getException().getType().asCodeString();
     }
 
     public String getVariableName() {
-        return node.getExceptionVariable().getId().getString();
+        return node.getException().getDeclarations().get(0).getId().getString();
     }
 
     public ASTBlockStatement getBody() {
