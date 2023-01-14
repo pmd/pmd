@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 
 /**
  * A resource of a {@linkplain ASTTryStatement try-with-resources}. This contains another
@@ -59,11 +60,11 @@ public final class ASTResource extends AbstractJavaNode {
                 expr = fa.getQualifier();
             }
             // the last one may be ambiguous, or a variable reference
-            // the only common interface we have to get their name is
-            // unfortunately Node::getImage
 
-            if (expr != null) {
-                builder.insert(0, expr.getImage());
+            if (expr instanceof ASTAmbiguousName) {
+                builder.insert(0, ((ASTAmbiguousName) expr).getImage());
+            } else if (expr instanceof ASTNamedReferenceExpr) {
+                builder.insert(0, ((ASTNamedReferenceExpr) expr).getName());
             }
             return builder.toString();
         } else {

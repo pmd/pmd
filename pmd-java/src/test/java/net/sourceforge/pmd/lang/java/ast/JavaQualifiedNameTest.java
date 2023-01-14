@@ -55,7 +55,7 @@ class JavaQualifiedNameTest {
         List<ASTClassOrInterfaceDeclaration> nodes = getNodes(ASTClassOrInterfaceDeclaration.class, TEST);
 
         for (ASTClassOrInterfaceDeclaration coid : nodes) {
-            if ("Foo".equals(coid.getImage())) {
+            if ("Foo".equals(coid.getSimpleName())) {
                 assertEquals("foo.bar.Bzaz$Bor$Foo", coid.getBinaryName());
             }
         }

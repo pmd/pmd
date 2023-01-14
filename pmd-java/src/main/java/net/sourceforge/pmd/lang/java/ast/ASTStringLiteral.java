@@ -29,9 +29,11 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
     }
 
 
-    // todo deprecate this
-    // it's ambiguous whether it returns getOriginalText or getTranslatedText
+    /**
+     * @deprecated use {{@link #getText()}}
+     */
     @Override
+    @Deprecated
     public String getImage() {
         return getText().toString();
     }
@@ -50,7 +52,7 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
         if (isTextBlock) {
             return getConstValue().isEmpty(); // could be a bunch of ignorable indents?
         } else {
-            return getImage().length() == 2; // ""
+            return getText().length() == 2; // ""
         }
     }
 

@@ -214,6 +214,14 @@ public final class Chars implements CharSequence {
         return NOT_FOUND;
     }
 
+
+    /**
+     * See {@link String#indexOf(int)}.
+     */
+    public int indexOf(int ch) {
+        return indexOf(ch, 0);
+    }
+
     /**
      * See {@link String#lastIndexOf(int, int)}.
      */
