@@ -28,11 +28,6 @@ public final class ASTWildcardType extends AbstractJavaTypeNode implements ASTRe
         isLowerBound = lowerBound;
     }
 
-    @Override
-    public ASTTypeArguments getParent() {
-        return (ASTTypeArguments) super.getParent();
-    }
-
     /**
      * Return true if this is an upper type bound, e.g.
      * {@code <? extends Integer>}, or the unbounded

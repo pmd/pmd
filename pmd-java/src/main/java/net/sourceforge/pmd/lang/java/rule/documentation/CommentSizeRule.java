@@ -67,12 +67,11 @@ public class CommentSizeRule extends AbstractJavaRulechainRule {
             int offset = comment.getBeginLine();
             for (int lineNum : lineNumbers) {
                 int lineNumWithOff = lineNum + offset;
-                addViolationWithMessage(
-                    data,
+                asCtx(data).addViolationWithPosition(
                     cUnit,
-                    this.getMessage() + ": Line too long",
                     lineNumWithOff,
-                    lineNum
+                    lineNumWithOff,
+                    this.getMessage() + ": Line too long"
                 );
             }
         }
