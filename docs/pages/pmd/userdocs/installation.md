@@ -15,7 +15,7 @@ sidebar: pmd_sidebar
     OpenJDK from [Azul](https://www.azul.com/downloads/zulu-community/)
     or [AdoptOpenJDK](https://adoptopenjdk.net/) 1.7 or higher.
     
-    **Note:** For analyzing Apex, JavaScript, Scala or VisualForce or running the [Designer](pmd_userdocs_extending_designer_reference.html)
+    **Note:** For analyzing Apex, HTML, JavaScript, Scala or VisualForce or running the [Designer](pmd_userdocs_extending_designer_reference.html)
     at least Java 8 is required.
     
 *   A zip archiver, e.g.:
@@ -23,7 +23,7 @@ sidebar: pmd_sidebar
     * For Windows: [Winzip](http://winzip.com) or the free [7-zip](http://www.7-zip.org/)
     * For Linux / Unix: [InfoZip](http://infozip.sourceforge.net/)
 
-{% include note.html content="For executing the Designer (./run.sh designer) using [OpenJDK](http://jdk.java.net) or Java 11, you need additionally [OpenJFX](http://jdk.java.net). Download it, extract it and set the environment variable JAVAFX_HOME." %}
+{% include note.html content="For executing the Designer (./run.sh designer) using [OpenJDK](http://jdk.java.net) or Java 11, you need additionally [JavaFX](https://gluonhq.com/products/javafx/). Download it, extract it and set the environment variable JAVAFX_HOME pointing at that directory." %}
 
 
 ### Installation
@@ -47,8 +47,8 @@ Unzip it into any directory, optionally add the `bin` subdirectory in your `PATH
 
 The PMD command (`pmd.bat` or `run.sh pmd`) requires two options:
 
-* `-d <path>`: path to the sources to analyse. This can be a file name, a directory, or a jar or zip file containing the
-sources.
+* `-d <path>`: Root directory for sources to be analyzed. This can be a single file name, a directory,
+or a jar or zip file containing the sources.
 * `-R <path>`: the ruleset file you want to use. PMD uses xml configuration files, called *rulesets*, which specify 
 which rules to execute on your sources. You can also run a single rule by referencing it using its *category* and
 name (more details [here](pmd_userdocs_making_rulesets.html#referencing-a-single-rule)). For example, you can check for unnecessary

@@ -46,7 +46,11 @@ public abstract class ApexRootNode<T extends Compilation> extends AbstractApexNo
      * Use {@link Version} to compare, e.g.
      * {@code node.getApexVersion() >= Version.V176.getExternal()}
      * @return the apex version
+     * @deprecated for removal. The version returned is always Version.CURRENT, as the apex compiler integration
+     *      doesn't use additional information which Apex version actually is used. Therefore, this method can't be
+     *      used to determine the Apex version of the project that is being analyzed.
      */
+    @Deprecated
     public double getApexVersion() {
         return node.getDefiningType().getCodeUnitDetails().getVersion().getExternal();
     }

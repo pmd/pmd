@@ -14,6 +14,7 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 
@@ -163,6 +164,9 @@ public class PMDParameters {
     @Parameter(names = { "--no-cache", "-no-cache" }, description = "Explicitly disable incremental analysis. The '-cache' option is ignored if this switch is present in the command line.")
     private boolean noCache = false;
 
+    @Parameter(names = "--use-version", description = "The language version PMD should use when parsing source code in the language-version format, ie: 'java-1.8'")
+    private List<String> languageVersions = new ArrayList<>();
+
     // this has to be a public static class, so that JCommander can use it!
     public static class PropertyConverter implements IStringConverter<Properties> {
 
@@ -258,6 +262,24 @@ public class PMDParameters {
             configuration.getLanguageVersionDiscoverer().setDefaultLanguageVersion(languageVersion);
         }
 
+        for (String langVerStr : this.getLanguageVersions()) {
+            int dashPos = langVerStr.indexOf('-');
+            if (dashPos == -1) {
+                throw new IllegalArgumentException("Invalid language version: " + langVerStr);
+            }
+            String langStr = langVerStr.substring(0, dashPos);
+            String verStr = langVerStr.substring(dashPos + 1);
+            Language lang = LanguageRegistry.findLanguageByTerseName(langStr);
+            LanguageVersion langVer = null;
+            if (lang != null) {
+                langVer = lang.getVersion(verStr);
+            }
+            if (lang == null || langVer == null) {
+                throw new IllegalArgumentException("Invalid language version: " + langVerStr);
+            }
+            configuration.getLanguageVersionDiscoverer().setDefaultLanguageVersion(langVer);
+        }
+
         try {
             configuration.prependAuxClasspath(this.getAuxclasspath());
         } catch (IllegalArgumentException e) {
@@ -346,6 +368,10 @@ public class PMDParameters {
 
     public String getLanguage() {
         return language != null ? language : LanguageRegistry.getDefaultLanguage().getTerseName();
+    }
+
+    public List<String> getLanguageVersions() {
+        return languageVersions;
     }
 
     public String getForceLanguage() {

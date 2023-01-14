@@ -15,7 +15,10 @@ import net.sourceforge.pmd.stat.DataPoint;
  *
  * <p>To implement an ExcessiveLength rule, you pass in the Class of node you want
  * to check, and this does the rest for you.</p>
+ *
+ * @deprecated This base class is not needed anymore and will be removed with PMD 7.
  */
+@Deprecated
 public class ExcessiveLengthRule extends AbstractStatisticalJavaRule {
     private Class<?> nodeClass;
 

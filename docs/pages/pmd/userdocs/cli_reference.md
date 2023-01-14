@@ -27,7 +27,8 @@ The tool comes with a rather extensive help text, simply running with `--help`!
     %}
     {% include custom/cli_option_row.html options="--dir,-d"
                option_arg="path"
-               description="Root directory for the analyzed sources."
+               description="Root directory for sources to be analyzed. This can be a single file name, a directory,
+                            or a jar or zip file containing the sources."
                required="yes"
     %}
     {% include custom/cli_option_row.html options="--format,-f"
@@ -87,6 +88,8 @@ The tool comes with a rather extensive help text, simply running with `--help`!
                             the given language `&lt;lang&gt;`. Parsing errors are ignored and unparsable files
                             are skipped.
                             
+                            <p>Use `--use-version` to specify the language version to use, if it is not the default.</p>
+
                             <p>This option allows to use the xml language for files, that don't
                             use xml as extension. See [example](#analyze-other-xml-formats) below.</p>"
     %}
@@ -98,6 +101,16 @@ The tool comes with a rather extensive help text, simply running with `--help`!
     %}
     {% include custom/cli_option_row.html options="--help,-h,-H"
                description="Display help on usage."
+    %}
+    {% include custom/cli_option_row.html options="--use-version"
+               option_arg="lang-version"
+               description="The specific language version PMD should use when parsing source code for a given language.
+                            <p>Values are in the format of *language-version*.</p>
+                            <p>This option can be repeated to configure several languages for the same run.</p>
+                            <p>Note that this option does not change how languages are assigned to files.
+                            It only changes something if the project you analyze contains some files that PMD detects as the given language.
+                            Language detection is only influenced by file extensions and the `--force-language` option.</p>
+                            <p>See also [Supported Languages](#supported-languages).</p>"
     %}
     {% include custom/cli_option_row.html options="-language,-l"
                option_arg="lang"
@@ -184,31 +197,33 @@ This behavior has been introduced to ease PMD integration into scripts or hooks,
 
 The language is determined automatically by PMD from the file extensions. Some languages such as "Java"
 however support multiple versions. The default version will be used, which is usually the latest supported
-version. If you want to use an older version, so that e.g. rules, that suggest usage of language features,
-that are not available yet, won't be executed, you need to specify a specific version via the `-language`
-and `-version` parameter.
+non-preview version. If you want to use an older version, so that e.g. rules that suggest usage of language features
+that are not available yet won't be executed, you need to specify a specific version via the `--use-version`
+parameter.
 
 These parameters are irrelevant for languages that don't support different versions.
 
 Example:
 
 ``` shell
-./run.sh pmd -d src/main/java -f text -R rulesets/java/quickstart.xml -language java -version 8
+./run.sh pmd -d src/main/java -f text -R rulesets/java/quickstart.xml --use-version java-1.8
 ```
 
 *   [apex](pmd_rules_apex.html) (Salesforce Apex)
+*   [ecmascript](pmd_rules_ecmascript.html) (JavaScript)
+*   [html](pmd_rules_html.html)
 *   [java](pmd_rules_java.html)
     *   [Supported Versions](pmd_languages_java.html)
-*   [ecmascript](pmd_rules_ecmascript.html) (JavaScript)
 *   [jsp](pmd_rules_jsp.html)
 *   [modelica](pmd_rules_modelica.html)
 *   [plsql](pmd_rules_plsql.html)
+*   [pom](pmd_rules_pom.html) (Maven POM)
 *   [scala](pmd_rules_scala.html)
     *   Supported Versions: 2.10, 2.11, 2.12, 2.13 (default)
 *   [vf](pmd_rules_vf.html) (Salesforce VisualForce)
 *   [vm](pmd_rules_vm.html) (Apache Velocity)
-*   [xml and xsl](pmd_rules_xml.html)
-
+*   [xml](pmd_rules_xml.html)
+*   [xsl](pmd_rules_xsl.html)
 
 ## Available Report Formats
 

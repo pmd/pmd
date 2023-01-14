@@ -4,10 +4,16 @@
 
 package net.sourceforge.pmd.typeresolution.testdata;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Objects;
 
 public class MethodCallExpressionTypes {
-    public void bar() {
+    public void objectsToString() {
         Objects.toString(null);
+    }
+
+    public void arraysAsList() {
+        Collection<String> l = Arrays.asList("a");
     }
 }

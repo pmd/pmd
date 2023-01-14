@@ -19,7 +19,7 @@ Rules which enforce generally accepted best practices.
 The abstract class does not contain any abstract methods. An abstract class suggests
 an incomplete implementation, which is to be completed by subclasses implementing the
 abstract methods. If the class is intended to be used as a base class only (not to be instantiated
-directly) a protected constructor can be provided prevent direct instantiation.
+directly) a protected constructor can be provided to prevent direct instantiation.
         </description>
         <priority>3</priority>
         <example>
@@ -42,11 +42,15 @@ public abstract class Foo {
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.AccessorClassGenerationRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#accessorclassgeneration">
         <description>
-Instantiation by way of private constructors from outside of the constructor's class often causes the
+Instantiation by way of private constructors from outside the constructor's class often causes the
 generation of an accessor. A factory method, or non-privatization of the constructor can eliminate this
 situation. The generated class file is actually an interface.  It gives the accessing class the ability
 to invoke a new hidden package scope constructor that takes the interface as a supplementary parameter.
 This turns a private constructor effectively into one with package scope, and is challenging to discern.
+
+_Note:_ This rule is only executed for Java 10 or lower.
+Since Java 11, [JEP 181: Nest-Based Access Control](https://openjdk.org/jeps/181) has been implemented. This
+means that in Java 11 and above accessor classes are not generated anymore.
         </description>
         <priority>3</priority>
         <example>
@@ -74,6 +78,11 @@ public class Outer {
 When accessing private fields / methods from another class, the Java compiler will generate accessor methods
 with package-private visibility. This adds overhead, and to the dex method count on Android. This situation can
 be avoided by changing the visibility of the field / method from private to package-private.
+
+
+_Note:_ This rule is only executed for Java 10 or lower.
+Since Java 11, [JEP 181: Nest-Based Access Control](https://openjdk.org/jeps/181) has been implemented. This
+means that in Java 11 and above accessor classes are not generated anymore.
         </description>
         <priority>3</priority>
         <example>
@@ -1196,7 +1205,8 @@ String name,
 Position literals first in comparisons, if the second argument is null then NullPointerExceptions
 can be avoided, they will just return false.
 
-This rule is replaced by the more general rule {% rule "LiteralsFirstInComparisons" %}.
+_Note:_ This rule is deprecated since PMD 6.24.0 and will be removed with PMD 7.0.0. The rule is replaced
+by the more general rule {% rule "LiteralsFirstInComparisons" %}.
         </description>
         <priority>3</priority>
         <example>
@@ -1221,7 +1231,8 @@ class Foo {
 Position literals first in comparisons, if the second argument is null then NullPointerExceptions
 can be avoided, they will just return false.
 
-This rule is replaced by the more general rule {% rule "LiteralsFirstInComparisons" %}.
+_Note:_ This rule is deprecated since PMD 6.24.0 and will be removed with PMD 7.0.0. The rule is replaced
+by the more general rule {% rule "LiteralsFirstInComparisons" %}.
         </description>
         <priority>3</priority>
         <example>
@@ -1678,8 +1689,8 @@ Reports import statements that are not used within the file. This also reports
 duplicate imports, and imports from the same package. The simplest fix is just
 to delete those imports.
 
-This rule is deprecated since PMD 6.34.0. Use the rule {% rule "java/codestyle/UnnecessaryImport" %}
-from category codestyle instead.
+_Note:_ This rule is deprecated since PMD 6.34.0 and will be removed with PMD 7.0.0.
+Use the rule {% rule "java/codestyle/UnnecessaryImport" %} from category codestyle instead.
         </description>
         <priority>4</priority>
         <example>
@@ -1722,6 +1733,12 @@ public class Foo {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unusedprivatefield">
         <description>
 Detects when a private field is declared and/or assigned a value, but not used.
+
+Since PMD 6.50.0 private fields are ignored, if the fields are annotated with any annotation or the
+enclosing class has any annotation. Annotations often enable a framework (such as dependency injection, mocking
+or e.g. Lombok) which use the fields by reflection or other means. This usage can't be detected by static code analysis.
+Previously these frameworks where explicitly allowed by listing their annotations in the property
+"ignoredAnnotations", but that turned out to be prone of false positive for any not explicitly considered framework.
         </description>
         <priority>3</priority>
         <example>
@@ -1768,7 +1785,8 @@ public class Something {
         <description>
 This rule detects JUnit assertions in object equality. These assertions should be made by more specific methods, like assertEquals.
 
-Deprecated since PMD 6.37.0, use {% rule SimplifiableTestAssertion %} instead.
+_Note:_ This rule is deprecated since PMD 6.37.0 and will be removed with PMD 7.0.0.
+Use {% rule SimplifiableTestAssertion %} instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -1822,7 +1840,8 @@ public class FooTest extends TestCase {
 This rule detects JUnit assertions in object references equality. These assertions should be made by
 more specific methods, like assertNull, assertNotNull.
 
-Deprecated since PMD 6.37.0, use {% rule SimplifiableTestAssertion %} instead.
+_Note:_ This rule is deprecated since PMD 6.37.0 and will be removed with PMD 7.0.0.
+Use {% rule SimplifiableTestAssertion %} instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -1879,7 +1898,8 @@ public class FooTest extends TestCase {
 This rule detects JUnit assertions in object references equality. These assertions should be made
 by more specific methods, like assertSame, assertNotSame.
 
-Deprecated since PMD 6.37.0, use {% rule SimplifiableTestAssertion %} instead.
+_Note:_ This rule is deprecated since PMD 6.37.0 and will be removed with PMD 7.0.0.
+Use {% rule SimplifiableTestAssertion %} instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -1932,7 +1952,8 @@ public class FooTest extends TestCase {
         <description>
 When asserting a value is the same as a literal or Boxed boolean, use assertTrue/assertFalse, instead of assertEquals.
 
-Deprecated since PMD 6.37.0, use {% rule SimplifiableTestAssertion %} instead.
+_Note:_ This rule is deprecated since PMD 6.37.0 and will be removed with PMD 7.0.0.
+Use {% rule SimplifiableTestAssertion %} instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -2172,15 +2193,16 @@ a block `{}` is sufficient.
             <property name="xpath">
                 <value>
 <![CDATA[
-(: while loops with single boolean literal, maybe parenthesized :)
+(: while loops with single boolean literal 'false', maybe parenthesized :)
 //WhileStatement[Expression/(.|(PrimaryExpression/PrimaryPrefix/Expression))/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral[@True = false()]]
 |
-(: do-while loops with single boolean literal, maybe parenthesized :)
+(: do-while loops with single boolean literal ('false' or 'true'), maybe parenthesized :)
 //DoStatement[Expression/(.|(PrimaryExpression/PrimaryPrefix/Expression))/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral]
 |
 (: while loops with conditional or'ed boolean literals, maybe parenthesized :)
 //WhileStatement[Expression/(InclusiveOrExpression|ConditionalOrExpression|(PrimaryExpression/PrimaryPrefix/Expression/(InclusiveOrExpression|ConditionalOrExpression)))
-    [count(PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral) = 2]
+    (: no var access :)
+    [count(PrimaryExpression/PrimaryPrefix/Name) = 0]
     (: at least one false literal :)
     [count(PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral[@True = false()]) >= 1]]
 |
@@ -2191,14 +2213,21 @@ a block `{}` is sufficient.
 |
 (: do-while loops with conditional or'ed boolean literals, maybe parenthesized :)
 //DoStatement[Expression/(InclusiveOrExpression|ConditionalOrExpression|(PrimaryExpression/PrimaryPrefix/Expression/(InclusiveOrExpression|ConditionalOrExpression)))
-    [count(PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral) = 2]]
+    (: at least one true literal :)
+    [count(PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral[@True = true()]) >= 1
+      (: or only boolean literal and no no var access :)
+      or count(PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral) >= 1
+      and count(PrimaryExpression/PrimaryPrefix/Name) = 0
+    ]]
 |
 (: do-while loops with conditional and'ed boolean literals, maybe parenthesized :)
 //DoStatement[Expression/(AndExpression|ConditionalAndExpression|(PrimaryExpression/PrimaryPrefix/Expression/(AndExpression|ConditionalAndExpression)))
     (: at least one false literal :)
     [count(PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral[@True = false()]) >= 1
-      (: or two true literals (e.g. true & true) :)
-      or count(PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral[@True = true()]) = 2]]
+      (: or only boolean literal and no no var access :)
+      or count(PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral) >= 1
+      and count(PrimaryExpression/PrimaryPrefix/Name) = 0
+    ]]
 ]]>
                 </value>
             </property>

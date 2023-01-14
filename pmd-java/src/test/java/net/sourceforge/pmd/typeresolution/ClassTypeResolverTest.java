@@ -19,6 +19,7 @@ import static org.junit.Assert.assertSame;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -47,6 +48,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
@@ -1873,9 +1875,29 @@ public class ClassTypeResolverTest {
     @Test
     public void testMethodCallExpressionTypes() throws Exception {
         ASTCompilationUnit cu = java11.parseClass(MethodCallExpressionTypes.class);
-        ASTPrimaryExpression expr = cu.getFirstDescendantOfType(ASTPrimaryExpression.class);
+        List<ASTMethodDeclaration> methods = cu.findDescendantsOfType(ASTMethodDeclaration.class);
+
+        // objectsToString
+        ASTPrimaryExpression expr = methods.get(0).getFirstDescendantOfType(ASTPrimaryExpression.class);
         assertEquals(forClass(String.class), expr.getTypeDefinition());
         assertEquals(forClass(Objects.class), expr.getFirstChildOfType(ASTPrimaryPrefix.class).getTypeDefinition());
+
+        // arraysAsList
+        expr = methods.get(1).getFirstDescendantOfType(ASTPrimaryExpression.class);
+        // note: the type parameter is not correct - it should be bound to String and not object
+        // but that's close enough - import is, that we correctly identified the method call
+        // and the result of the method call is a List.
+        assertEquals(forClass(List.class, forClass(Object.class)), expr.getTypeDefinition());
+        assertEquals(forClass(Arrays.class), expr.getFirstChildOfType(ASTPrimaryPrefix.class).getTypeDefinition());
+    }
+
+    @Test
+    public void testClassLiteral() {
+        ASTCompilationUnit unit = java11.parse("public class ClassLiteral { String s = ClassLiteral.class.getName(); }");
+        ASTPrimaryPrefix node = unit.getFirstDescendantOfType(ASTPrimaryPrefix.class);
+        assertEquals("class", node.jjtGetLastToken().getImage());
+        assertNotNull(node.getTypeDefinition());
+        assertSame(Class.class, node.getTypeDefinition().getType());
     }
 
     private JavaTypeDefinition getChildTypeDef(Node node, int childIndex) {

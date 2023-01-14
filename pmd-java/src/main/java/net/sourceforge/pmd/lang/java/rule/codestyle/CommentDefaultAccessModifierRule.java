@@ -57,6 +57,17 @@ public class CommentDefaultAccessModifierRule extends AbstractIgnoredAnnotationR
         Collection<String> ignoredStrings = new ArrayList<>();
         ignoredStrings.add("com.google.common.annotations.VisibleForTesting");
         ignoredStrings.add("android.support.annotation.VisibleForTesting");
+        ignoredStrings.add("co.elastic.clients.util.VisibleForTesting");
+        ignoredStrings.add("org.junit.jupiter.api.Test");
+        ignoredStrings.add("org.junit.jupiter.api.ParameterizedTest");
+        ignoredStrings.add("org.junit.jupiter.api.RepeatedTest");
+        ignoredStrings.add("org.junit.jupiter.api.TestFactory");
+        ignoredStrings.add("org.junit.jupiter.api.TestTemplate");
+        ignoredStrings.add("org.junit.jupiter.api.BeforeEach");
+        ignoredStrings.add("org.junit.jupiter.api.BeforeAll");
+        ignoredStrings.add("org.junit.jupiter.api.AfterEach");
+        ignoredStrings.add("org.junit.jupiter.api.AfterAll");
+        ignoredStrings.add("lombok.Value");
         return ignoredStrings;
     }
 
@@ -131,7 +142,7 @@ public class CommentDefaultAccessModifierRule extends AbstractIgnoredAnnotationR
         boolean isConcreteClass = parentClassOrInterface.getTypeKind() == ASTAnyTypeDeclaration.TypeKind.CLASS;
 
         // ignore if it's inside an interface / Annotation
-        return isConcreteClass && isMissingComment(decl);
+        return isConcreteClass && isMissingComment(decl) && !hasIgnoredAnnotation(parentClassOrInterface);
     }
 
     protected boolean hasIgnoredAnnotation(AccessNode node) {

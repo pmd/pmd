@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.xml.sax.InputSource;
 
 import net.sourceforge.pmd.PMDConfiguration;
@@ -102,6 +103,11 @@ public abstract class RuleTst {
                         Object value = propertyDescriptor.valueFrom((String) entry.getValue());
                         rule.setProperty(propertyDescriptor, value);
                     }
+                }
+
+                String dysfunctionReason = rule.dysfunctionReason();
+                if (StringUtils.isNotBlank(dysfunctionReason)) {
+                    throw new RuntimeException("Rule is not configured correctly: " + dysfunctionReason);
                 }
 
                 report = processUsingStringReader(test, rule);

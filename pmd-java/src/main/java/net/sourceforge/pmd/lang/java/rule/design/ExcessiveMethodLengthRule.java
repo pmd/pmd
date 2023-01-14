@@ -10,7 +10,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 /**
  * This rule detects when a method exceeds a certain threshold. i.e. if a method
  * has more than x lines of code.
+ *
+ * @deprecated Use {@link NcssCountRule} instead.
  */
+@Deprecated
 public class ExcessiveMethodLengthRule extends ExcessiveLengthRule {
     public ExcessiveMethodLengthRule() {
         super(ASTMethodOrConstructorDeclaration.class);

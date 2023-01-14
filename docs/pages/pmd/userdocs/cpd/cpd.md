@@ -62,7 +62,7 @@ Novice as much as advanced readers may want to [read on on Refactoring Guru](htt
                description="The minimum token length which should be reported as a duplicate."
                required="yes"
     %}
-    {% include custom/cli_option_row.html options="--files"
+    {% include custom/cli_option_row.html options="--files,--dir,-d"
                description="List of files and directories to process"
                required="yes"
     %}
@@ -73,10 +73,10 @@ Novice as much as advanced readers may want to [read on on Refactoring Guru](htt
                description="Sources code language."
                default="java"
     %}
-    {% include custom/cli_option_row.html options="--debug,--verbose"
+    {% include custom/cli_option_row.html options="--debug,--verbose,-v,-D"
                description="Debug mode. Prints more log output."
     %}
-    {% include custom/cli_option_row.html options="--encoding"
+    {% include custom/cli_option_row.html options="--encoding,-e"
                description="Character encoding to use when processing files. If not specified, CPD uses the system default encoding."
     %}
     {% include custom/cli_option_row.html options="--skip-duplicate-files"
@@ -122,7 +122,7 @@ Novice as much as advanced readers may want to [read on on Refactoring Guru](htt
     {% include custom/cli_option_row.html options="--ignore-literal-sequences"
                description="Ignore sequences of literals (common e.g. in list initializers)"
                default="false"
-               languages="C#, C++"
+               languages="C#, C++, Lua"
     %}
     {% include custom/cli_option_row.html options="--ignore-usings"
                description="Ignore `using` directives in C# when comparing text"
@@ -220,8 +220,10 @@ This behavior has been introduced to ease CPD integration into scripts or hooks,
 * Dart
 * EcmaScript (JavaScript)
 * Fortran
+* Gherkin (Cucumber)
 * Go
 * Groovy
+* Html
 * Java
 * Jsp
 * Kotlin
@@ -368,7 +370,7 @@ For Windows:
 
 For Linux:
 
-    ./run.sh cpdgui
+    ./run.sh cpd-gui
 
 Here's a screenshot of CPD after running on the JDK 8 java.lang package:
 

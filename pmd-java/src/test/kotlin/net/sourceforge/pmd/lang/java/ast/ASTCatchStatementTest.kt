@@ -57,7 +57,7 @@ class ASTCatchStatementTest : ParserTestSpec({
                     }
 
                     child<ASTVariableDeclaratorId> {
-                        it.image shouldBe "e"
+                        it.name shouldBe "e"
                     }
 
                     listOf(ioe, aerr)

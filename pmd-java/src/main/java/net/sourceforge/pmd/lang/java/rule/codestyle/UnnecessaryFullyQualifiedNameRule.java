@@ -17,7 +17,9 @@ import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTNameList;
@@ -185,10 +187,13 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         }
 
         if (matches.isEmpty()) {
-            if (isJavaLangImplicit(node)) {
-                addViolation(data, node, new Object[] { node.getImage(), "java.lang.*", "implicit "});
+            if (isJavaLangImplicit(node) && !existsSameTypeInCurrentPackage(node)) {
+                asCtx(data).addViolation(node,
+                        node.getImage(), "java.lang.*", "implicit ");
             } else if (isSamePackage(node, name)) {
-                addViolation(data, node, new Object[] { node.getImage(), currentPackage + ".*", "same package "});
+                if (!hasSameSimpleNameInScope(node)) {
+                    asCtx(data).addViolation(node, node.getImage(), currentPackage + ".*", "same package ");
+                }
             }
         } else {
             ASTImportDeclaration firstMatch = findFirstMatch(matches);
@@ -199,9 +204,33 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
                 String importStr = firstMatch.getImportedName() + (firstMatch.isImportOnDemand() ? ".*" : "");
                 String type = firstMatch.isStatic() ? "static " : "";
 
-                addViolation(data, node, new Object[] { node.getImage(), importStr, type });
+                asCtx(data).addViolation(node, node.getImage(), importStr, type);
             }
         }
+    }
+
+    private boolean existsSameTypeInCurrentPackage(TypeNode node) {
+        String simpleName = node.getTypeDefinition().getType().getSimpleName();
+        String fullyQualifiedName = currentPackage + "." + simpleName;
+        return node.getRoot().getClassTypeResolver().classNameExists(fullyQualifiedName);
+    }
+
+    private boolean hasSameSimpleNameInScope(TypeNode node) {
+        final ASTCompilationUnit root = node.getRoot();
+        final List<ASTClassOrInterfaceDeclaration> declarationDescendants = root.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class);
+        final Class<?> nodeType = node.getType();
+
+        if (nodeType == null) {
+            return false;
+        }
+
+        for (ASTClassOrInterfaceDeclaration declarationDescendant : declarationDescendants) {
+            if (nodeType.getSimpleName().equals(declarationDescendant.getSimpleName())
+                    && !nodeType.getName().equals(declarationDescendant.getQualifiedName().toString())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private ASTImportDeclaration findFirstMatch(List<ASTImportDeclaration> imports) {
@@ -404,7 +433,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
 
         // Is it a conflict with a class in the same file?
         final Set<String> qualifiedTypes = node.getScope().getEnclosingScope(SourceFileScope.class)
-                                               .getQualifiedTypeNames().keySet();
+                .getQualifiedTypeNames().keySet();
         for (final String qualified : qualifiedTypes) {
             int fullLength = qualified.length();
             if (qualified.endsWith(unqualifiedName)

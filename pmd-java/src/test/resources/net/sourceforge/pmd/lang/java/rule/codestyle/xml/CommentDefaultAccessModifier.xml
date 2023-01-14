@@ -343,6 +343,18 @@ public class CommentDefaultAccessModifier {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>[java] CommentDefaultAccessModifier - add co.elastic.clients.util.VisibleForTesting to as default suppressed annotations #4285</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import co.elastic.clients.util.VisibleForTesting;
+
+public class Foo {
+    @VisibleForTesting void method() {}
+}
+        ]]></code>
+    </test-code>
+
     <code-fragment id="constructor-with-default-access-modifier-rule"><![CDATA[
 public class Foo {
    Foo() {} // should be reported
@@ -381,6 +393,51 @@ public interface MyInterface {
 public enum MyEnum {
     FOO;
     class MyNestedClass {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3859 [java] CommentDefaultAccessModifier is triggered in JUnit5 method and it was conflicting with rule JUnit5TestShouldBePackagePrivate</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.ParameterizedTest;
+import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.provider.ValueSource;
+
+class SomeTest {
+
+  @Test
+  void test() {}
+
+  @ParameterizedTest
+  @ValueSource(strings = {"a", "b"})
+  void anotherTest(String param) { }
+
+  @BeforeEach
+  void setup() {}
+
+  @AfterEach
+  void cleanup() {}
+
+  @RepeatedTest(10)
+  void repeatedTest() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] CommentDefaultAccessModifier should consider lombok's @Value #4201</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+
+import lombok.Value;
+@Value
+public class Test {
+    int foo;
 }
         ]]></code>
     </test-code>

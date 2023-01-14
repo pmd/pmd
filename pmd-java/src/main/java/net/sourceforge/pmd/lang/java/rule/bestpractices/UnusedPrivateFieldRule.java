@@ -4,11 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
+import static net.sourceforge.pmd.properties.PropertyFactory.stringListProperty;
+
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
+import net.sourceforge.pmd.PMDVersion;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -22,48 +26,62 @@ import net.sourceforge.pmd.lang.java.ast.AbstractJavaNode;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.rule.AbstractLombokAwareRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
-public class UnusedPrivateFieldRule extends AbstractLombokAwareRule {
+public class UnusedPrivateFieldRule extends AbstractJavaRule {
 
+    private static final Logger LOG = Logger.getLogger(UnusedPrivateFieldRule.class.getName());
+
+    private static final PropertyDescriptor<List<String>> IGNORED_ANNOTATIONS_DESCRIPTOR
+            = stringListProperty("ignoredAnnotations")
+            .desc("deprecated! Fully qualified names of the annotation types that should be ignored by this rule. "
+                + "This property has been deprecated since PMD 6.50.0 and will be completely ignored.")
+            .defaultValue(new ArrayList<String>())
+            .build();
+
+    private static boolean warnedAboutDeprecatedIgnoredAnnotationsProperty = false;
     private static final PropertyDescriptor<List<String>> IGNORED_FIELD_NAMES =
                 PropertyFactory.stringListProperty("ignoredFieldNames")
                     .defaultValues("serialVersionUID", "serialPersistentFields")
                     .desc("Field Names that are ignored from the unused check")
                     .build();
 
+    private static final PropertyDescriptor<List<String>> REPORT_FOR_ANNOTATIONS_DESCRIPTOR
+            = stringListProperty("reportForAnnotations")
+            .desc("Fully qualified names of the annotation types that should be reported anyway. If an unused field "
+                    + "has any of these annotations, then it is reported. If it has any other annotation, then "
+                    + "it is still considered to used and is not reported.")
+            .defaultValue(new ArrayList<String>())
+            .build();
+
     public UnusedPrivateFieldRule() {
+        definePropertyDescriptor(IGNORED_ANNOTATIONS_DESCRIPTOR);
         definePropertyDescriptor(IGNORED_FIELD_NAMES);
+        definePropertyDescriptor(REPORT_FOR_ANNOTATIONS_DESCRIPTOR);
     }
 
     @Override
-    protected Collection<String> defaultSuppressionAnnotations() {
-        Collection<String> defaultValues = new ArrayList<>(super.defaultSuppressionAnnotations());
-        defaultValues.add("java.lang.Deprecated");
-        defaultValues.add("javafx.fxml.FXML");
-        defaultValues.add("lombok.experimental.Delegate");
-        defaultValues.add("lombok.EqualsAndHashCode");
-        defaultValues.add("javax.persistence.Id");
-        defaultValues.add("javax.persistence.EmbeddedId");
-        defaultValues.add("javax.persistence.Version");
-        defaultValues.add("jakarta.persistence.Id");
-        defaultValues.add("jakarta.persistence.EmbeddedId");
-        defaultValues.add("jakarta.persistence.Version");
-        defaultValues.add("org.mockito.Mock");
-        defaultValues.add("org.mockito.Spy");
-        defaultValues.add("org.springframework.boot.test.mock.mockito.MockBean");
-        return defaultValues;
+    public String dysfunctionReason() {
+        List<PropertyDescriptor<?>> overriddenPropertyDescriptors = getOverriddenPropertyDescriptors();
+        if (!warnedAboutDeprecatedIgnoredAnnotationsProperty && overriddenPropertyDescriptors.contains(IGNORED_ANNOTATIONS_DESCRIPTOR)) {
+            LOG.warning("The property '" + IGNORED_ANNOTATIONS_DESCRIPTOR.name() + "' for rule '"
+                    + this.getName() + "' is deprecated. The value is being ignored and the property will "
+                    + "be removed in PMD " + PMDVersion.getNextMajorRelease());
+            warnedAboutDeprecatedIgnoredAnnotationsProperty = true;
+        }
+        return super.dysfunctionReason();
     }
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        if (hasIgnoredAnnotation(node)) {
+        if (hasAnyAnnotation(node)) {
             return super.visit(node, data);
         }
 
@@ -74,7 +92,7 @@ public class UnusedPrivateFieldRule extends AbstractLombokAwareRule {
             AccessNode accessNodeParent = decl.getAccessNodeParent();
             if (!accessNodeParent.isPrivate()
                 || isOK(decl.getImage())
-                || hasIgnoredAnnotation((Annotatable) accessNodeParent)) {
+                || hasAnyAnnotation((Annotatable) accessNodeParent)) {
                 continue;
             }
             if (!actuallyUsed(entry.getValue())) {
@@ -84,6 +102,18 @@ public class UnusedPrivateFieldRule extends AbstractLombokAwareRule {
             }
         }
         return super.visit(node, data);
+    }
+
+    private boolean hasAnyAnnotation(Annotatable node) {
+        List<ASTAnnotation> annotations = node.getDeclaredAnnotations();
+        for (String reportAnnotation : getProperty(REPORT_FOR_ANNOTATIONS_DESCRIPTOR)) {
+            for (ASTAnnotation annotation : annotations) {
+                if (TypeTestUtil.isA(reportAnnotation, annotation)) {
+                    return false;
+                }
+            }
+        }
+        return !node.getDeclaredAnnotations().isEmpty();
     }
 
     private boolean usedInOuterEnum(ASTClassOrInterfaceDeclaration node, NameDeclaration decl) {

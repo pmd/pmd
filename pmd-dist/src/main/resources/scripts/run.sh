@@ -2,7 +2,7 @@
 
 usage() {
     echo "Usage:"
-    echo "    $(basename $0) <application-name> [-h|-v] ..."
+    echo "    $(basename "$0") <application-name> [-h|-v] ..."
     echo ""
     echo "application-name: valid options are: $(valid_app_options)"
     echo "-h print this help"
@@ -10,7 +10,7 @@ usage() {
 }
 
 valid_app_options () {
-    echo "pmd, cpd, cpdgui, designer, bgastviewer, designerold, ast-dump"
+    echo "pmd, cpd, cpd-gui, designer, bgastviewer, designerold, ast-dump"
 }
 
 is_cygwin() {
@@ -60,9 +60,9 @@ java_heapsize_settings() {
 
 
 set_lib_dir() {
-  if [ -z ${LIB_DIR} ]; then
+  if [ -z "${LIB_DIR}" ]; then
     # Allow for symlinks to this script
-    if [ -L $0 ]; then
+    if [ -L "$0" ]; then
       local script_real_loc=$(readlink "$0")
     else
       local script_real_loc=$0
@@ -83,23 +83,25 @@ check_lib_dir() {
 }
 
 function script_exit() {
-    echo $1 >&2
+    echo "$1" >&2
     exit 1
 }
 
 determine_java_version() {
     local full_ver=$(java -version 2>&1)
-    # java_ver is eg "18" for java 1.8, "90" for java 9.0, "100" for java 10.0.x
-    readonly java_ver=$(echo $full_ver | sed -n '{
+    # java_ver is eg "80" for java 1.8, "90" for java 9.0, "100" for java 10.0.x
+    readonly java_ver=$(echo "$full_ver" | sed -n '{
         # replace early access versions, e.g. 11-ea with 11.0.0
         s/-ea/.0.0/
         # replace versions such as 10 with 10.0.0
         s/version "\([0-9]\{1,\}\)"/version "\1.0.0"/
+        # replace old java versions 1.x.* (java 1.7, java 1.8) with x.*
+        s/version "1\.\(.*\)"/version "\1"/
         # extract the major and minor parts of the version
-        s/^.* version "\(.*\)\.\(.*\)\..*".*$/\1\2/p
+        s/^.* version "\([0-9]\{1,\}\)\.\([0-9]\{1,\}\).*".*$/\1\2/p
     }')
     # java_vendor is either java (oracle) or openjdk
-    readonly java_vendor=$(echo $full_ver | sed -n -e 's/^\(.*\) version .*$/\1/p')
+    readonly java_vendor=$(echo "$full_ver" | sed -n -e 's/^\(.*\) version .*$/\1/p')
 }
 
 jre_specific_vm_options() {
@@ -157,10 +159,12 @@ function add_openjfx_classpath() {
       then
         script_exit "The environment variable JAVAFX_HOME is missing."
       else
+        # The wildcard will include only jar files, but we need to access also
+        # property files such as javafx.properties that lay bare in the dir
         if [ -n "$classpath" ]; then
-          classpath="$classpath:${JAVAFX_HOME}/lib/*"
+          classpath="$classpath:${JAVAFX_HOME}/lib/*:${JAVAFX_HOME}/lib/"
         else
-          classpath="${JAVAFX_HOME}/lib/*"
+          classpath="${JAVAFX_HOME}/lib/*:${JAVAFX_HOME}/lib/"
         fi
       fi
     fi
@@ -185,19 +189,25 @@ case "${APPNAME}" in
     readonly CLASSNAME="net.sourceforge.pmd.util.fxdesigner.DesignerStarter"
     ;;
   "designerold")
+    echo "'designerold' is deprecated and will be removed in PMD 7.0.0, try the new 'designer' instead."
     readonly CLASSNAME="net.sourceforge.pmd.util.designer.Designer"
     ;;
   "bgastviewer")
+    echo "'bgastviewer' is deprecated and will be removed in PMD 7.0.0, try the new 'designer' instead."
     readonly CLASSNAME="net.sourceforge.pmd.util.viewer.Viewer"
     ;;
   "cpdgui")
+    echo "'cpdgui' is deprecated and will be removed in PMD 7.0.0, use 'cpd-gui' instead."
+    readonly CLASSNAME="net.sourceforge.pmd.cpd.GUI"
+    ;;
+  "cpd-gui")
     readonly CLASSNAME="net.sourceforge.pmd.cpd.GUI"
     ;;
   "ast-dump")
     readonly CLASSNAME="net.sourceforge.pmd.util.treeexport.TreeExportCli"
     ;;
   *)
-    echo "${APPNAME} is NOT a valid application name, valid options are:$(valid_app_options)"
+    echo "${APPNAME} is NOT a valid application name, valid options are: $(valid_app_options)"
     ;;
 esac
 

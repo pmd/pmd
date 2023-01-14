@@ -178,7 +178,7 @@ Here is, what happens:
     to <https://sourceforge.net/projects/pmd/files/pmd/>.
 *   Upload the documentation to <https://docs.pmd-code.org>, e.g. <https://docs.pmd-code.org/pmd-doc-6.34.0/> and
     create a symlink, so that <https://docs.pmd-code.org/latest/> points to the new version.
-*   Remove the old snapshot documention, e.g. so that <https://docs.pmd-code.org/pmd-doc-6.34.0-SNAPSHOT/> is gone.
+*   Remove the old snapshot documentation, e.g. so that <https://docs.pmd-code.org/pmd-doc-6.34.0-SNAPSHOT/> is gone.
     Also create a symlink from pmd-doc-6.34.0-SNAPSHOT to pmd-doc-6.34.0, so that old references still work, e.g.
     <https://docs.pmd-code.org/pmd-doc-6.34.0-SNAPSHOT/> points to the released version.
 *   Deploy javadoc to "https://docs.pmd-code.org/apidocs/*/RELEASE_VERSION/", e.g.
