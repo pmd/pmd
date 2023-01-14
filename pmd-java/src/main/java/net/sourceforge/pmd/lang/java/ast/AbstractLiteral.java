@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.lang.document.Chars;
+
 /**
  * @author Clément Fournier
  */
@@ -11,6 +13,12 @@ abstract class AbstractLiteral extends AbstractJavaExpr implements ASTLiteral {
 
     AbstractLiteral(int i) {
         super(i);
+    }
+
+    @Override
+    public final Chars getText() {
+        // literals are exactly one token
+        return getFirstToken().getImageCs();
     }
 
     @Override
