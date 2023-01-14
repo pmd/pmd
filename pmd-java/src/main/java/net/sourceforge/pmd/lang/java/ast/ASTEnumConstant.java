@@ -50,11 +50,6 @@ public final class ASTEnumConstant extends AbstractJavaTypeNode
     }
 
     @Override
-    public String getImage() {
-        return getVarId().getImage();
-    }
-
-    @Override
     @Nullable
     public ASTArgumentList getArguments() {
         return getFirstChildOfType(ASTArgumentList.class);

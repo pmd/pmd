@@ -78,16 +78,7 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionRule<AST
 
     @Override
     public Object visit(ASTEnumConstant node, Object data) {
-        // This inlines checkMatches because there's no variable declarator id
-
-        if (!getProperty(enumConstantRegex).matcher(node.getImage()).matches()) {
-            addViolation(data, node, new Object[]{
-                "enum constant",
-                node.getImage(),
-                getProperty(enumConstantRegex).toString(),
-            });
-        }
-
+        checkMatches(node.getVarId(), enumConstantRegex, data);
         return data;
     }
 
@@ -104,6 +95,10 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionRule<AST
 
     @Override
     String kindDisplayName(ASTVariableDeclaratorId node, PropertyDescriptor<Pattern> descriptor) {
+
+        if (node.isEnumConstant()) {
+            return "enum constant";
+        }
 
         boolean isFinal = node.hasModifiers(FINAL);
         boolean isStatic = node.hasModifiers(STATIC);

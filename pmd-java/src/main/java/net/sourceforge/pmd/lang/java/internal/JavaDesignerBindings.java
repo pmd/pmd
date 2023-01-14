@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompactConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
@@ -182,6 +183,11 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
 
         @Override
         public Attribute visit(ASTVariableAccess node, Void data) {
+            return new Attribute(node, "Name", node.getName());
+        }
+
+        @Override
+        public Attribute visit(ASTEnumConstant node, Void data) {
             return new Attribute(node, "Name", node.getName());
         }
 
