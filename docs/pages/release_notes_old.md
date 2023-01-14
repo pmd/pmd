@@ -5,6 +5,226 @@ permalink: pmd_release_notes_old.html
 
 Previous versions of PMD can be downloaded here: https://github.com/pmd/pmd/releases
 
+## 31-December-2022 - 6.53.0
+
+The PMD team is pleased to announce PMD 6.53.0.
+
+This is a minor release.
+
+### Table Of Contents
+
+* [New and noteworthy](#new-and-noteworthy)
+    * [Modified rules](#modified-rules)
+    * [Deprecated rules](#deprecated-rules)
+* [Fixed Issues](#fixed-issues)
+* [API Changes](#api-changes)
+    * [Deprecated APIs](#deprecated-apis)
+        * [For removal](#for-removal)
+* [External Contributions](#external-contributions)
+* [Stats](#stats)
+
+### New and noteworthy
+
+#### Modified rules
+
+* The Java rule [`UnusedPrivateField`](https://pmd.github.io/pmd-6.53.0/pmd_rules_java_bestpractices.html#unusedprivatefield) has a new property `reportForAnnotations`.
+  This is a list of fully qualified names of the annotation types that should be reported anyway. If an unused field
+  has any of these annotations, then it is reported. If it has any other annotation, then it is still considered 
+  to be used and is not reported.
+
+#### Deprecated rules
+
+* The Java rules [`ExcessiveClassLength`](https://pmd.github.io/pmd-6.53.0/pmd_rules_java_design.html#excessiveclasslength) and [`ExcessiveMethodLength`](https://pmd.github.io/pmd-6.53.0/pmd_rules_java_design.html#excessivemethodlength)
+  have been deprecated. The rule [`NcssCount`](https://pmd.github.io/pmd-6.53.0/pmd_rules_java_design.html#ncsscount) can be used instead.
+  The deprecated rules will be removed with PMD 7.0.0.
+
+* The Java rule [`EmptyStatementNotInLoop`](https://pmd.github.io/pmd-6.53.0/pmd_rules_java_errorprone.html#emptystatementnotinloop) is deprecated.
+  Use the rule [`UnnecessarySemicolon`](https://pmd.github.io/pmd-6.53.0/pmd_rules_java_codestyle.html#unnecessarysemicolon) instead.
+  Note: Actually it was announced to be deprecated since 6.46.0 but the rule was not marked as deprecated yet.
+  This has been done now.
+
+### Fixed Issues
+* core
+    * [#4248](https://github.com/pmd/pmd/issues/4248): \[core] Can't analyze sources in zip files
+* apex-security
+    * [#4146](https://github.com/pmd/pmd/issues/4146): \[apex] ApexCRUDViolation: Recognize User Mode in SOQL + DML
+* java
+    * [#4266](https://github.com/pmd/pmd/issues/4266): \[java] PMD fails to process a record with lambda in compact constructor
+* java-bestpractices
+    * [#4166](https://github.com/pmd/pmd/issues/4166): \[java] UnusedPrivateField doesn't find annotated unused private fields anymore
+    * [#4250](https://github.com/pmd/pmd/issues/4250): \[java] WhileLoopWithLiteralBoolean - false negative with complex expressions still occurs in PMD 6.52.0
+* java-design
+    * [#2127](https://github.com/pmd/pmd/issues/2127): \[java] Deprecate rules ExcessiveClassLength and ExcessiveMethodLength
+* java-errorprone
+    * [#4164](https://github.com/pmd/pmd/issues/4164): \[java]\[doc] AvoidAssertAsIdentifier and AvoidEnumAsIdentifier - clarify use case
+* java-multithreading
+    * [#4210](https://github.com/pmd/pmd/issues/4210): \[java] DoNotUseThreads report duplicate warnings
+
+### API Changes
+
+#### Deprecated APIs
+
+##### For removal
+
+These classes / APIs have been deprecated and will be removed with PMD 7.0.0.
+
+* <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.53.0/net/sourceforge/pmd/lang/java/rule/design/ExcessiveLengthRule.html#"><code>ExcessiveLengthRule</code></a> (Java)
+
+### External Contributions
+* [#4244](https://github.com/pmd/pmd/pull/4244): \[apex] ApexCRUDViolation: user mode and system mode with test cases added - [Tarush Singh](https://github.com/Tarush-Singh35) (@Tarush-Singh35)
+* [#4274](https://github.com/pmd/pmd/pull/4274): \[java] Fix finding lambda scope in record compact constructor - [kdebski85](https://github.com/kdebski85) (@kdebski85)
+
+### Stats
+* 43 commits
+* 17 closed tickets & PRs
+* Days since last release: 35
+
+## 26-November-2022 - 6.52.0
+
+The PMD team is pleased to announce PMD 6.52.0.
+
+This is a minor release.
+
+### Table Of Contents
+
+* [New and noteworthy](#new-and-noteworthy)
+    * [New rules](#new-rules)
+    * [Renamed rules](#renamed-rules)
+    * [Modified rules](#modified-rules)
+* [Fixed Issues](#fixed-issues)
+* [API Changes](#api-changes)
+    * [PMD CLI](#pmd-cli)
+    * [CPD CLI](#cpd-cli)
+    * [Linux run.sh parameters](#linux-run.sh-parameters)
+    * [Deprecated API](#deprecated-api)
+* [External Contributions](#external-contributions)
+* [Stats](#stats)
+
+### New and noteworthy
+
+#### New rules
+
+* The new Java rule [`InvalidJavaBean`](https://pmd.github.io/pmd-6.52.0/pmd_rules_java_design.html#invalidjavabean) identifies beans, that don't follow the [JavaBeans API specification](https://download.oracle.com/otndocs/jcp/7224-javabeans-1.01-fr-spec-oth-JSpec/),
+  like beans with missing getters or setters.
+
+```xml
+<rule ref="category/java/design.xml/InvalidJavaBean"/>
+```
+
+#### Renamed rules
+
+* The Java rule [`BeanMembersShouldSerialize`](https://pmd.github.io/pmd-6.52.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize) has been renamed to
+  [`NonSerializableClass`](https://pmd.github.io/pmd-6.52.0/pmd_rules_java_errorprone.html#nonserializableclass). It has been revamped to only check for classes that are marked with
+  `Serializable` and reports each field in it, that is not serializable.
+
+  The property `prefix` has been deprecated, since in a serializable class all fields have to be
+  serializable regardless of the name.
+
+#### Modified rules
+
+* The rule [`ClassNamingConventions`](https://pmd.github.io/pmd-6.52.0/pmd_rules_java_codestyle.html#classnamingconventions) has a new property `testClassPattern`, which is applied
+  to test classes. By default, test classes should end with the suffix "Test". Test classes are top-level classes, that
+  either inherit from JUnit 3 TestCase or have at least one method annotated with the Test annotations from
+  JUnit4/5 or TestNG.
+
+* The property `ignoredAnnotations` of rule [`ImmutableField`](https://pmd.github.io/pmd-6.52.0/pmd_rules_java_design.html#immutablefield) has been deprecated  and doesn't
+  have any effect anymore.
+  Since PMD 6.47.0, the rule only considers fields, that are initialized once and never changed. If the field is just
+  declared but never explicitly initialized, it won't be reported. That's the typical case when a framework sets
+  the field value by reflection. Therefore, the property is not needed anymore. If there is a special case where
+  this rule misidentifies fields as immutable, then the rule should be suppressed for these fields explicitly.
+
+### Fixed Issues
+* cli
+    * [#4215](https://github.com/pmd/pmd/discussions/4215): NullPointerException when trying to open designer
+* doc
+    * [#4207](https://github.com/pmd/pmd/pull/4207): \[doc] List all languages in rule doc
+* java
+    * [#3643](https://github.com/pmd/pmd/issues/3643): \[java] More parser edge cases
+    * [#4152](https://github.com/pmd/pmd/issues/4152): \[java] Parse error on array type annotations
+* java-codestyle
+    * [#2867](https://github.com/pmd/pmd/issues/2867): \[java] Separate pattern for test classes in ClassNamingConventions rule for Java
+    * [#4201](https://github.com/pmd/pmd/issues/4201): \[java] CommentDefaultAccessModifier should consider lombok's @<!-- -->Value
+* java-design
+    * [#4175](https://github.com/pmd/pmd/issues/4175): \[java] ImmutableField - deprecate property `ignoredAnnotations`
+    * [#4177](https://github.com/pmd/pmd/issues/4177): \[java] New Rule InvalidJavaBean
+    * [#4188](https://github.com/pmd/pmd/issues/4188): \[java] ClassWithOnlyPrivateConstructorsShouldBeFinal false positive with Lombok's @<!-- -->NoArgsConstructor
+    * [#4189](https://github.com/pmd/pmd/issues/4189): \[java] AbstractClassWithoutAnyMethod should consider lombok's @<!-- -->AllArgsConstructor
+    * [#4200](https://github.com/pmd/pmd/issues/4200): \[java] ClassWithOnlyPrivateConstructorsShouldBeFinal should consider lombok's @<!-- -->Value
+* java-errorprone
+    * [#1668](https://github.com/pmd/pmd/issues/1668): \[java] BeanMembersShouldSerialize is extremely noisy
+    * [#4172](https://github.com/pmd/pmd/issues/4172): \[java] InvalidLogMessageFormat false positive on externally formatted strings
+    * [#4174](https://github.com/pmd/pmd/issues/4174): \[java] MissingStaticMethodInNonInstantiatableClass does not consider nested builder class
+    * [#4176](https://github.com/pmd/pmd/issues/4176): \[java] Rename BeanMembersShouldSerialize to NonSerializableClass
+    * [#4185](https://github.com/pmd/pmd/issues/4185): \[java] InvalidLogMessageFormat rule produces a NPE
+    * [#4224](https://github.com/pmd/pmd/issues/4224): \[java] MissingStaticMethodInNonInstantiatableClass should consider Lombok's @<!-- -->UtilityClass
+    * [#4225](https://github.com/pmd/pmd/issues/4225): \[java] MissingStaticMethodInNonInstantiatableClass should consider Lombok's @<!-- -->NoArgsConstructor
+* java-performance
+    * [#4183](https://github.com/pmd/pmd/issues/4183): \[java] AvoidArrayLoops regression: from false negative to false positive with final variables
+
+### API Changes
+
+#### PMD CLI
+
+* PMD now supports a new `--use-version` flag, which receives a language-version pair (such as `java-8` or `apex-54`).
+This supersedes the usage of `-language` / `-l` and `-version` / `-v`, allowing for multiple versions to be set in a single run.
+PMD 7 will completely remove support for `-language` and `-version` in favor of this new flag.
+
+* Support for `-V` is being deprecated in favor of `--verbose` in preparation for PMD 7.
+In PMD 7, `-v` will enable verbose mode and `-V` will show the PMD version for consistency with most Unix/Linux tools.
+
+* Support for `-min` is being deprecated in favor of `--minimum-priority` for consistency with most Unix/Linux tools, where `-min` would be equivalent to `-m -i -n`.
+
+#### CPD CLI
+
+* CPD now supports using `-d` or `--dir` as an alias to `--files`, in favor of consistency with PMD.
+PMD 7 will remove support for `--files` in favor of these new flags.
+
+#### Linux run.sh parameters
+
+* Using `run.sh cpdgui` will now warn about it being deprecated. Use `run.sh cpd-gui` instead.
+
+* The old designer (`run.sh designerold`) is completely deprecated and will be removed in PMD 7. Switch to the new JavaFX designer: `run.sh designer`.
+
+* The old visual AST viewer (`run.sh bgastviewer`) is completely deprecated and will be removed in PMD 7. Switch to the new JavaFX designer: `run.sh designer` for a visual tool, or use `run.sh ast-dump` for a text-based alternative.
+
+#### Deprecated API
+
+* The following core APIs have been marked as deprecated for removal in PMD 7:
+  - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMD.html#"><code>PMD</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMD.StatusCode.html#"><code>PMD.StatusCode</code></a> - PMD 7 will ship with a revamped CLI split from pmd-core. To programmatically launch analysis you can use <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PmdAnalysis.html#"><code>PmdAnalysis</code></a>.
+  - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#getAllInputPaths()"><code>PMDConfiguration#getAllInputPaths</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#getInputPathList()"><code>PMDConfiguration#getInputPathList</code></a>
+  - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#setInputPaths(List)"><code>PMDConfiguration#setInputPaths</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#setInputPathList(List)"><code>PMDConfiguration#setInputPathList</code></a>
+  - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#addInputPath(String)"><code>PMDConfiguration#addInputPath</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#addInputPath(Path)"><code>PMDConfiguration#addInputPath</code></a>
+  - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#getInputFilePath()"><code>PMDConfiguration#getInputFilePath</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#getInputFile()"><code>PMDConfiguration#getInputFile</code></a>
+  - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#getIgnoreFilePath()"><code>PMDConfiguration#getIgnoreFilePath</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#getIgnoreFile()"><code>PMDConfiguration#getIgnoreFile</code></a>
+  - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#setInputFilePath(String)"><code>PMDConfiguration#setInputFilePath</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#setInputFilePath(Path)"><code>PMDConfiguration#setInputFilePath</code></a>
+  - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#setIgnoreFilePath(String)"><code>PMDConfiguration#setIgnoreFilePath</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#setIgnoreFilePath(Path)"><code>PMDConfiguration#setIgnoreFilePath</code></a>
+  - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#getInputUri()"><code>PMDConfiguration#getInputUri</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#getUri()"><code>PMDConfiguration#getUri</code></a>
+  - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#setInputUri(String)"><code>PMDConfiguration#setInputUri</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#setInputUri(URI)"><code>PMDConfiguration#setInputUri</code></a>
+  - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#getReportFile()"><code>PMDConfiguration#getReportFile</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#getReportFilePath()"><code>PMDConfiguration#getReportFilePath</code></a>
+  - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#setReportFile(String)"><code>PMDConfiguration#setReportFile</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#setReportFile(Path)"><code>PMDConfiguration#setReportFile</code></a>
+  - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#isStressTest()"><code>PMDConfiguration#isStressTest</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#setStressTest(boolean)"><code>PMDConfiguration#setStressTest</code></a> - Will be removed with no replacement.
+  - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#isBenchmark()"><code>PMDConfiguration#isBenchmark</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/PMDConfiguration.html#setBenchmark(boolean)"><code>PMDConfiguration#setBenchmark</code></a> - Will be removed with no replacement, the CLI will still support it.
+  - <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/cpd/CPD.html#"><code>CPD</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.52.0/net/sourceforge/pmd/cpd/CPD.StatusCode.html#"><code>CPD.StatusCode</code></a> - PMD 7 will ship with a revamped CLI split from pmd-core. An alterative to programatically launch CPD analysis will be added in due time.
+
+* In order to reduce the dependency on Apex Jorje classes, the method <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/6.52.0/net/sourceforge/pmd/lang/vf/DataType.html#fromBasicType(apex.jorje.semantic.symbol.type.BasicType)"><code>DataType#fromBasicType</code></a>
+  has been deprecated. The equivalent method <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/6.52.0/net/sourceforge/pmd/lang/vf/DataType.html#fromTypeName(java.lang.String)"><code>fromTypeName</code></a> should be used instead.
+
+### External Contributions
+* [#4184](https://github.com/pmd/pmd/pull/4184): \[java]\[doc] TestClassWithoutTestCases - fix small typo in description - [Valery Yatsynovich](https://github.com/valfirst) (@valfirst)
+* [#4198](https://github.com/pmd/pmd/pull/4198): \[doc] Add supported CPD languages - [Jeroen van Wilgenburg](https://github.com/jvwilge) (@jvwilge)
+* [#4202](https://github.com/pmd/pmd/pull/4202): \[java] Fix #4200 and #4201: ClassWithOnlyPrivateConstructorsShouldBeFinal, CommentDefaultAccessModifier: Exclude lombok @<!-- -->Value annotation - [Lynn](https://github.com/LynnBroe) (@LynnBroe)
+* [#4205](https://github.com/pmd/pmd/pull/4205): \[doc] Clarify Scala support (no built-in rules) - [Eldrick Wega](https://github.com/Eldrick19) (@Eldrick19)
+* [#4226](https://github.com/pmd/pmd/pull/4226): \[visualforce] Replace uses of Jorje types in pmd-visualforce - [Aaron Hurst](https://github.com/aaronhurst-google) (@aaronhurst-google)
+* [#4227](https://github.com/pmd/pmd/pull/4227): \[java] Fix #4225 MissingStaticMethodInNonInstantiatableClass: Exclude lombok's @<!-- -->NoArgsConstructor annotation - [Lynn](https://github.com/LynnBroe) (@LynnBroe)
+* [#4228](https://github.com/pmd/pmd/pull/4228): \[java] Fix #4224 MissingStaticMethodInNonInstantiatableClass: Exclude lombok's UtilityClass - [Lynn](https://github.com/LynnBroe) (@LynnBroe)
+* [#4232](https://github.com/pmd/pmd/pull/4232): \[doc] Fixing typos - [Andreas Deininger](https://github.com/deining) (@deining)
+
+### Stats
+* 96 commits
+* 40 closed tickets & PRs
+* Days since last release: 28
+
 ## 29-October-2022 - 6.51.0
 
 The PMD team is pleased to announce PMD 6.51.0.

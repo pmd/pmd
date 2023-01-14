@@ -351,7 +351,7 @@ A variable naming conventions rule - customize this to your liking.  Currently, 
 checks for final variables that should be fully capitalized and non-final variables
 that should not include underscores.
 
-This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+_Note:_ This rule is deprecated since PMD 6.15.0 and will be removed with PMD 7.0.0. The rule is replaced
 by the more general rules {% rule "apex/codestyle/FieldNamingConventions" %},
 {% rule "apex/codestyle/FormalParameterNamingConventions" %},
 {% rule "apex/codestyle/LocalVariableNamingConventions" %}, and
