@@ -7,6 +7,7 @@ package net.sourceforge.pmd;
 import java.util.Comparator;
 import java.util.Map;
 
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.lang.document.FileLocation;
 
 /**
@@ -144,6 +145,7 @@ public interface RuleViolation {
      * @deprecated Use {@link #PACKAGE_NAME}
      */
     @Deprecated
+    @DeprecatedUntil700
     default String getPackageName() {
         return getAdditionalInfo().get(PACKAGE_NAME);
     }
@@ -155,6 +157,7 @@ public interface RuleViolation {
      * @deprecated Use {@link #CLASS_NAME}
      */
     @Deprecated
+    @DeprecatedUntil700
     default String getClassName() {
         return getAdditionalInfo().get(CLASS_NAME);
     }
@@ -166,6 +169,7 @@ public interface RuleViolation {
      * @deprecated Use {@link #METHOD_NAME}
      */
     @Deprecated
+    @DeprecatedUntil700
     default String getMethodName() {
         return getAdditionalInfo().get(METHOD_NAME);
     }
@@ -177,6 +181,7 @@ public interface RuleViolation {
      * @deprecated Use {@link #VARIABLE_NAME}
      */
     @Deprecated
+    @DeprecatedUntil700
     default String getVariableName() {
         return getAdditionalInfo().get(VARIABLE_NAME);
     }

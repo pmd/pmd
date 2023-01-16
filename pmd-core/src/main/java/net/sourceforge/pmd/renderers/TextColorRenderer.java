@@ -259,7 +259,9 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
     }
 
     private static String keyFor(RuleViolation rv) {
-        return StringUtils.isNotBlank(rv.getPackageName()) ? rv.getPackageName() + '.' + rv.getClassName() : "";
+        String packageName = rv.getAdditionalInfo().getOrDefault(RuleViolation.PACKAGE_NAME, "");
+        String className = rv.getAdditionalInfo().getOrDefault(RuleViolation.CLASS_NAME, "");
+        return StringUtils.isNotBlank(packageName) ? packageName + '.' + className : "";
     }
 
 

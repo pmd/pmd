@@ -51,6 +51,7 @@ public class YAHTMLRenderer extends AbstractAccumulatingRenderer {
 
     private void addViolation(RuleViolation violation) {
         String packageName = violation.getAdditionalInfo().getOrDefault(RuleViolation.PACKAGE_NAME, "");
+        String className = violation.getAdditionalInfo().getOrDefault(RuleViolation.CLASS_NAME, "");
 
         // report each part of the package name: e.g. net.sf.pmd.test will create nodes for
         // net, net.sf, net.sf.pmd, and net.sf.pmd.test
@@ -72,10 +73,10 @@ public class YAHTMLRenderer extends AbstractAccumulatingRenderer {
         }
 
         // add one node per class collecting the actual violations
-        String fqClassName = packageName + "." + violation.getClassName();
+        String fqClassName = packageName + "." + className;
         ReportNode classNode = reportNodesByPackage.get(fqClassName);
         if (classNode == null) {
-            classNode = new ReportNode(packageName, violation.getClassName());
+            classNode = new ReportNode(packageName, className);
             reportNodesByPackage.put(fqClassName, classNode);
         }
         classNode.addRuleViolation(violation);
