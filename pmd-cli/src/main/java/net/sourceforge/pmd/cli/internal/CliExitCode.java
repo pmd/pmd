@@ -17,7 +17,10 @@ public enum CliExitCode {
      * This is exit code {@code 1}.
      */
     ERROR(1),
-    // Todo
+    /**
+     * Indicates a problem with the CLI parameters: either a required
+     * parameter is missing or an invalid parameter was provided.
+     */
     USAGE_ERROR(2),
     /**
      * No errors, but PMD found violations. This is exit code {@code 4}.

@@ -23,9 +23,8 @@ public class ForceLanguageCliTest extends BaseCliTest {
         return listOf(
             "check",
             "--no-cache",
-            "--no-progress",
             "-f", "text",
-            "-R", PmdCliTest.RSET_WITH_VIOLATION
+            "-R", PmdCliTest.RULESET_WITH_VIOLATION
         );
     }
 
