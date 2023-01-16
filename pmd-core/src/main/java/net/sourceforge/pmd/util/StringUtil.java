@@ -48,6 +48,10 @@ public final class StringUtil {
         return "'" + s + "'";
     }
 
+    public static @NonNull String inDoubleQuotes(String expected) {
+        return "\"" + expected + "\"";
+    }
+
 
     /**
      * Returns the (1-based) line number of the character at the given index.
@@ -551,8 +555,10 @@ public final class StringUtil {
         return str.replaceAll("'", "''");
     }
 
-    public static @NonNull String inDoubleQuotes(String expected) {
-        return "\"" + expected + "\"";
+
+    /** Return the empty string if the parameter is null. */
+    public static String nullToEmpty(final String value) {
+        return value == null ? "" : value;
     }
 
 
