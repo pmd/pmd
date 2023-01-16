@@ -27,6 +27,10 @@ This is a {{ site.pmd.release_type }} release.
   actually is used. Therefore, this method can't be used to determine the Apex version of the project
   that is being analyzed.
 
+##### Internal APIs
+
+* {% jdoc core::renderers.CSVWriter %}
+
 ### External Contributions
 * [#4280](https://github.com/pmd/pmd/pull/4280): \[apex] Deprecate ApexRootNode.getApexVersion - [Aaron Hurst](https://github.com/aaronhurst-google) (@aaronhurst-google)
 * [#4285](https://github.com/pmd/pmd/pull/4285): \[java] CommentDefaultAccessModifier - add co.elastic.clients.util.VisibleForTesting as default suppressed annotation - [Matthew Luckam](https://github.com/mluckam) (@mluckam)
