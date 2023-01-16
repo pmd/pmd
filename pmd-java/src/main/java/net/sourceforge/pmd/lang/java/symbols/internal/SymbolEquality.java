@@ -144,7 +144,7 @@ public final class SymbolEquality {
     public static final EqAndHash<SymAnnot> ANNOTATION = new EqAndHash<SymAnnot>() {
         @Override
         public int hash(SymAnnot t1) {
-            return Objects.hash(t1.getBinaryName(), t1.getAttributeNames());
+            return Objects.hash(t1.getBinaryName());
         }
 
         @Override
@@ -153,8 +153,7 @@ public final class SymbolEquality {
                 return false;
             }
             SymAnnot f2 = (SymAnnot) o;
-            return f1.getBinaryName().equals(f2.getBinaryName())
-                && f1.getAttributeNames().equals(f2.getAttributeNames());
+            return f1.getBinaryName().equals(f2.getBinaryName());
 
         }
     };

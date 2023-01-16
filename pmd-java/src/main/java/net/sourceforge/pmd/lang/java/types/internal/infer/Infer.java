@@ -129,8 +129,8 @@ public final class Infer {
      */
     public void inferFunctionalExprInUnambiguousContext(PolySite<FunctionalExprMirror> site) {
         FunctionalExprMirror expr = site.getExpr();
+        JTypeMirror expected = site.getExpectedType();
         try {
-            JTypeMirror expected = site.getExpectedType();
             if (expected == null) {
                 throw ResolutionFailedException.missingTargetTypeForFunctionalExpr(LOG, expr);
             }
@@ -138,7 +138,8 @@ public final class Infer {
         } catch (ResolutionFailedException rfe) {
             rfe.getFailure().addContext(null, site, null);
             LOG.logResolutionFail(rfe.getFailure());
-            expr.setInferredType(ts.UNKNOWN);
+            // here we set expected if not null, the lambda will have the target type
+            expr.setInferredType(expected == null ? ts.UNKNOWN : expected);
             if (expr instanceof MethodRefMirror) {
                 MethodRefMirror mref = (MethodRefMirror) expr;
                 mref.setFunctionalMethod(ts.UNRESOLVED_METHOD);

@@ -33,8 +33,7 @@ public interface Annotatable extends JavaNode {
      * Returns true if an annotation with the given qualified name is
      * applied to this node.
      *
-     * @param annotQualifiedName
-     *            Note: for now, canonical names are tolerated, this may be changed in PMD 7.
+     * @param annotQualifiedName Note: for now, canonical names are tolerated, this may be changed in PMD 7.
      */
     default boolean isAnnotationPresent(String annotQualifiedName) {
         return getDeclaredAnnotations().any(t -> TypeTestUtil.isA(StringUtils.deleteWhitespace(annotQualifiedName), t));

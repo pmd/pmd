@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
@@ -205,6 +206,10 @@ public final class InternalApiBridge {
 
     public static JTypeMirror buildTypeFromAstInternal(TypeSystem ts, Substitution lexicalSubst, ASTType node) {
         return TypesFromAst.fromAst(ts, lexicalSubst, node);
+    }
+
+    public static JTypeDeclSymbol getReferencedSym(ASTClassOrInterfaceType type) {
+        return type.getReferencedSym();
     }
 
     public static void setTypedSym(ASTFieldAccess expr, JVariableSig.FieldSig sym) {

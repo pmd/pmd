@@ -58,7 +58,7 @@ public final class JavaAstProcessor {
     static {
         Level level;
         try {
-            level = Level.valueOf(System.getenv("PMD_DEBUG_LEVEL").toLowerCase(Locale.ROOT));
+            level = Level.valueOf(System.getenv("PMD_DEBUG_LEVEL").toUpperCase(Locale.ROOT));
         } catch (IllegalArgumentException | NullPointerException ignored) {
             level = null;
         }

@@ -66,6 +66,7 @@ class StandaloneTypesTest : ProcessorTestSpec({
                     }
 
             "new int[0].length" should matchArrayLength { int }
+            "new $AnnotA int[0].length" should matchArrayLength { `@A` on int }
             "new String[0].length" should matchArrayLength { gen.t_String }
             "new String[0][].length" should matchArrayLength { gen.t_String.toArray() }
         }
@@ -332,7 +333,7 @@ class StandaloneTypesTest : ProcessorTestSpec({
         inContext(StatementParsingCtx) {
             """
             {
-                List<Integer> l = java.util.Collections.emptyList();
+                java.util.List<Integer> l = java.util.Collections.emptyList();
                 for (int controller : list);
             }
         """ should parseAs {

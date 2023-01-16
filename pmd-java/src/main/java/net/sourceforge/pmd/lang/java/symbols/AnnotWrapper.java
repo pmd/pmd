@@ -5,17 +5,15 @@
 package net.sourceforge.pmd.lang.java.symbols;
 
 import java.lang.annotation.Annotation;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolEquality;
+import net.sourceforge.pmd.lang.java.symbols.internal.SymbolToStrings;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
 /**
@@ -43,20 +41,8 @@ final class AnnotWrapper implements SymAnnot {
     }
 
     @Override
-    public RetentionPolicy getRetention() {
-        Retention annot = annotationClass.getAnnotation(Retention.class);
-        return annot != null ? annot.value()
-                             : RetentionPolicy.CLASS;
-    }
-
-    @Override
-    public boolean isOfType(String binaryName) {
-        return annotationClassSymbol.getBinaryName().equals(binaryName);
-    }
-
-    @Override
-    public Set<String> getAttributeNames() {
-        return annotationClassSymbol.getAnnotationAttributeNames();
+    public @NonNull JClassSymbol getAnnotationSymbol() {
+        return annotationClassSymbol;
     }
 
     @Override
@@ -80,12 +66,6 @@ final class AnnotWrapper implements SymAnnot {
         return annotation.equals(o);
     }
 
-
-    @Override
-    public String getBinaryName() {
-        return annotationClassSymbol.getBinaryName();
-    }
-
     @Override
     public boolean equals(Object o) {
         return SymbolEquality.ANNOTATION.equals(this, o);
@@ -96,5 +76,8 @@ final class AnnotWrapper implements SymAnnot {
         return SymbolEquality.ANNOTATION.hash(this);
     }
 
-
+    @Override
+    public String toString() {
+        return SymbolToStrings.FAKE.toString(this);
+    }
 }
