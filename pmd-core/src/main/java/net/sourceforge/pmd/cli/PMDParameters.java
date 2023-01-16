@@ -171,9 +171,6 @@ public class PMDParameters {
     @Parameter(names = "--use-version", description = "The language version PMD should use when parsing source code in the language-version format, ie: 'java-1.8'")
     private List<String> languageVersions = new ArrayList<>();
 
-    @Parameter(names = { "--no-progress", "-no-progress" }, description = "Disables progress bar indicator of live analysis progress.")
-    private boolean noProgressBar = false;
-
     // this has to be a public static class, so that JCommander can use it!
     public static class PropertyConverter implements IStringConverter<Properties> {
 
@@ -272,7 +269,6 @@ public class PMDParameters {
         configuration.setFailOnViolation(this.isFailOnViolation());
         configuration.setAnalysisCacheLocation(this.cacheLocation);
         configuration.setIgnoreIncrementalAnalysis(this.isIgnoreIncrementalAnalysis());
-        configuration.setProgressBar(this.isProgressBar());
 
         LanguageVersion forceLangVersion = getForceLangVersion(registry);
         if (forceLangVersion != null) {
@@ -436,10 +432,6 @@ public class PMDParameters {
 
     public boolean isFailOnViolation() {
         return failOnViolation;
-    }
-
-    public boolean isProgressBar() {
-        return !noProgressBar;
     }
 
 

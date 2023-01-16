@@ -120,7 +120,21 @@ public final class IOUtil {
                 return new OutputStreamWriter(new FilterOutputStream(System.out) {
                     @Override
                     public void close() {
-                        // do nothing, avoid closing stdout
+                        // avoid closing stdout, simply flush
+                        try {
+                            out.flush();
+                        } catch (IOException ignored) {
+                            // Nothing left to do
+                        }
+                    }
+                    
+                    @Override
+                    public void write(byte[] b, int off, int len) throws IOException {
+                        /*
+                         * FilterOutputStream iterates over each byte, asking subclasses to provide more efficient implementations
+                         * It therefore negates any such optimizations that the underlying stream actually may implement.
+                         */
+                        out.write(b, off, len);
                     }
                 }, charset);
             }

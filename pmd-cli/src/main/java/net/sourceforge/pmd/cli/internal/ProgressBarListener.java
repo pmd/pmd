@@ -5,15 +5,15 @@
 package net.sourceforge.pmd.cli.internal;
 
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.reporting.ListenerInitializer;
 
-import me.tongfei.progressbar.DelegatingProgressBarConsumer;
+import me.tongfei.progressbar.PmdProgressBarFriend;
 import me.tongfei.progressbar.ProgressBar;
 import me.tongfei.progressbar.ProgressBarBuilder;
 import me.tongfei.progressbar.ProgressBarStyle;
@@ -23,33 +23,35 @@ import me.tongfei.progressbar.ProgressBarStyle;
  * Toggled off through --no-progress command line argument.
  */
 public final class ProgressBarListener implements GlobalAnalysisListener {
-    private final ProgressBar progressBar;
+    private ProgressBar progressBar;
     private final AtomicInteger numErrors = new AtomicInteger(0);
     private final AtomicInteger numViolations = new AtomicInteger(0);
-    
-    public ProgressBarListener(int totalFiles, Consumer<String> loggingFunction) {
-        progressBar = new ProgressBarBuilder()
-                .setTaskName("Processing files")
-                .setInitialMax(totalFiles)
-                .setStyle(ProgressBarStyle.ASCII)
-                .continuousUpdate()
-                .setConsumer(new DelegatingProgressBarConsumer(loggingFunction))
-                .build();
-        progressBar.setExtraMessage(extraMessage() + "\r");
-    }
 
+    @Override
+    public ListenerInitializer initializer() {
+        return new ListenerInitializer() {
+            @Override
+            public void setNumberOfFilesToAnalyze(int totalFiles) {
+                // We need to delay initialization until we know how many files there are to avoid a first bogus render
+                progressBar = new ProgressBarBuilder()
+                        .setTaskName("Processing files")
+                        .setStyle(ProgressBarStyle.ASCII)
+                        .hideEta()
+                        .continuousUpdate()
+                        .setInitialMax(totalFiles)
+                        .setConsumer(PmdProgressBarFriend.createConsoleConsumer(System.out))
+                        .clearDisplayOnFinish()
+                        .build();
+                progressBar.setExtraMessage(extraMessage());
+            }
+        };
+    }
 
     /**
      * Updates progress bar string and forces it to be output regardless of its update interval.
      */
     private void refreshProgressBar() {
-        // Use trailing carriage return to interleave with other output
-        if (progressBar.getCurrent() != progressBar.getMax()) {
-            progressBar.setExtraMessage(extraMessage() + "\r");
-        } else {
-            // Don't include trailing carriage return on last draw
-            progressBar.setExtraMessage(extraMessage() + System.lineSeparator());
-        }
+        progressBar.setExtraMessage(extraMessage());
         progressBar.refresh();
     }
 
@@ -59,9 +61,6 @@ public final class ProgressBarListener implements GlobalAnalysisListener {
 
     @Override
     public FileAnalysisListener startFileAnalysis(TextFile file) {
-        // Refresh progress on file analysis start
-        refreshProgressBar();
-
         return new FileAnalysisListener() {
             @Override
             public void onRuleViolation(RuleViolation violation) {
@@ -89,6 +88,6 @@ public final class ProgressBarListener implements GlobalAnalysisListener {
 
     @Override
     public void close() throws Exception {
-        /*ProgressBar auto-closed*/
+        progressBar.close();
     }
 }
