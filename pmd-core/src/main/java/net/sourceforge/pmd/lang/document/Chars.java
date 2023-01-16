@@ -68,6 +68,7 @@ public final class Chars implements CharSequence {
 
 
     /** Whether this slice is the empty string. */
+    @SuppressWarnings("PMD.MissingOverride") // with Java 15, isEmpty() has been added to java.lang.CharSequence (#4291)
     public boolean isEmpty() {
         return len == 0;
     }

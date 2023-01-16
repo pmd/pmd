@@ -54,6 +54,11 @@ final class UnresolvedMethodSig implements JMethodSig, InternalMethodTypeItf {
     }
 
     @Override
+    public JTypeMirror getAnnotatedReceiverType() {
+        return ts.UNKNOWN;
+    }
+
+    @Override
     public List<JTypeMirror> getFormalParameters() {
         return Collections.emptyList();
     }
@@ -154,6 +159,11 @@ final class UnresolvedMethodSig implements JMethodSig, InternalMethodTypeItf {
         @Override
         public int getArity() {
             return 0;
+        }
+
+        @Override
+        public @Nullable JTypeMirror getAnnotatedReceiverType(Substitution subst) {
+            return ts.UNKNOWN;
         }
 
         @Override

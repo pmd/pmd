@@ -24,7 +24,6 @@ import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.cache.AnalysisCacheListener;
 import net.sourceforge.pmd.cache.NoopAnalysisCache;
-import net.sourceforge.pmd.cli.internal.ProgressBarListener;
 import net.sourceforge.pmd.internal.LogMessages;
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.FileCollectionUtil;
@@ -36,6 +35,7 @@ import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.processor.AbstractPMDProcessor;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.reporting.ListenerInitializer;
 import net.sourceforge.pmd.reporting.ReportStats;
 import net.sourceforge.pmd.reporting.ReportStatsListener;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
@@ -280,22 +280,23 @@ public final class PmdAnalysis implements AutoCloseable {
 
         GlobalAnalysisListener listener;
         try {
-            @SuppressWarnings("PMD.CloseResource") AnalysisCacheListener cacheListener = new AnalysisCacheListener(configuration.getAnalysisCache(), rulesets, configuration.getClassLoader());
-            if (configuration.isProgressBar()) {
-                @SuppressWarnings("PMD.CloseResource") ProgressBarListener progressBarListener = new ProgressBarListener(textFiles.size(), System.out::print);
-                addListener(progressBarListener);
-            }
+            @SuppressWarnings("PMD.CloseResource")
+            AnalysisCacheListener cacheListener = new AnalysisCacheListener(configuration.getAnalysisCache(), rulesets, configuration.getClassLoader());
             listener = GlobalAnalysisListener.tee(listOf(createComposedRendererListener(renderers),
                                                          GlobalAnalysisListener.tee(listeners),
                                                          GlobalAnalysisListener.tee(extraListeners),
                                                          cacheListener));
+            
+            // Initialize listeners
+            try (ListenerInitializer initializer = listener.initializer()) {
+                initializer.setNumberOfFilesToAnalyze(textFiles.size());
+            }
         } catch (Exception e) {
             reporter.errorEx("Exception while initializing analysis listeners", e);
             throw new RuntimeException("Exception while initializing analysis listeners", e);
         }
 
         try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING)) {
-
             for (final Rule rule : removeBrokenRules(rulesets)) {
                 // todo Just like we throw for invalid properties, "broken rules"
                 // shouldn't be a "config error". This is the only instance of

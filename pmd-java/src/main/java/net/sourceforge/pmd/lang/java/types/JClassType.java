@@ -12,10 +12,13 @@ import java.util.function.Predicate;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.HashTreePSet;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 
 /**
  * Represents class and interface types, including functional interface
@@ -54,7 +57,13 @@ public interface JClassType extends JTypeMirror {
 
 
     @Override
+    JClassType withAnnotations(PSet<SymAnnot> newTypeAnnots);
+
+    @Override
     default JClassType subst(Function<? super SubstVar, ? extends @NonNull JTypeMirror> fun) {
+        if (Substitution.isEmptySubst(fun)) {
+            return this;
+        }
         JClassType encl = getEnclosingType();
         if (encl != null) {
             encl = encl.subst(fun);
@@ -68,7 +77,7 @@ public interface JClassType extends JTypeMirror {
         if (newArgs == targs && encl == getEnclosingType()) { // NOPMD CompareObjectsWithEquals
             return this;
         }
-        return encl != null ? encl.selectInner(getSymbol(), newArgs)
+        return encl != null ? encl.selectInner(getSymbol(), newArgs, getTypeAnnotations())
                             : withTypeArguments(newArgs);
     }
 
@@ -172,7 +181,7 @@ public interface JClassType extends JTypeMirror {
 
 
     /**
-     * Select an enclosing type. This can only be called if the given
+     * Select an inner type. This can only be called if the given
      * symbol represents a non-static member type of this type declaration.
      *
      * @param symbol Symbol for the inner type
@@ -192,7 +201,33 @@ public interface JClassType extends JTypeMirror {
      * @throws IllegalArgumentException If this type is raw and the inner type is not,
      *                                  or this type is parameterized and the inner type is not
      */
-    JClassType selectInner(JClassSymbol symbol, List<? extends JTypeMirror> targs);
+    default JClassType selectInner(JClassSymbol symbol, List<? extends JTypeMirror> targs) {
+        return selectInner(symbol, targs, HashTreePSet.empty());
+    }
+
+    /**
+     * Select an inner type, with new type annotations. This can only be called if the given
+     * symbol represents a non-static member type of this type declaration.
+     *
+     * @param symbol          Symbol for the inner type
+     * @param targs           Type arguments of the inner type. If that is an empty
+     *                        list, and the given symbol is generic, then the inner
+     *                        type will be raw, or a generic type declaration,
+     *                        depending on whether this type is erased or not.
+     * @param typeAnnotations Type annotations on the inner type
+     *
+     * @return A type for the inner type
+     *
+     * @throws NullPointerException     If one of the parameter is null
+     * @throws IllegalArgumentException If the given symbol is static
+     * @throws IllegalArgumentException If the symbol is not a member type
+     *                                  of this type (local/anon classes don't work)
+     * @throws IllegalArgumentException If the type arguments don't match the
+     *                                  type parameters of the symbol (see {@link #withTypeArguments(List)})
+     * @throws IllegalArgumentException If this type is raw and the inner type is not,
+     *                                  or this type is parameterized and the inner type is not
+     */
+    JClassType selectInner(JClassSymbol symbol, List<? extends JTypeMirror> targs, PSet<SymAnnot> typeAnnotations);
 
 
     /**
@@ -220,6 +255,7 @@ public interface JClassType extends JTypeMirror {
     /**
      * Return the list of declared nested classes. They are substituted
      * with the actual type arguments of this type, if it is parameterized.
+     * They are raw if this type is raw.
      * Does not look into supertypes.
      */
     List<JClassType> getDeclaredClasses();

@@ -6,14 +6,17 @@ package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.TypePath;
+import org.objectweb.asm.TypeReference;
 
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolEquality;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolToStrings;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 
-class FieldStub extends MemberStubBase implements JFieldSymbol {
+class FieldStub extends MemberStubBase implements JFieldSymbol, TypeAnnotationReceiver {
 
     private final LazyTypeSig type;
     private final @Nullable Object constValue;
@@ -29,9 +32,14 @@ class FieldStub extends MemberStubBase implements JFieldSymbol {
         this.constValue = constValue;
     }
 
-    @Nullable
     @Override
-    public Object getConstValue() {
+    public void acceptTypeAnnotation(int typeRef, @Nullable TypePath path, SymAnnot annot) {
+        assert new TypeReference(typeRef).getSort() == TypeReference.FIELD : typeRef;
+        this.type.addTypeAnnotation(path, annot);
+    }
+
+    @Override
+    public @Nullable Object getConstValue() {
         return constValue;
     }
 

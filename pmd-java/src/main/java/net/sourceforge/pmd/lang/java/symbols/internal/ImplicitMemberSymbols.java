@@ -158,6 +158,7 @@ public final class ImplicitMemberSymbols {
         private final int modifiers;
         private final List<JFormalParamSymbol> formals;
 
+
         FakeExecutableSymBase(JClassSymbol owner,
                               String name,
                               int modifiers,
@@ -206,6 +207,14 @@ public final class ImplicitMemberSymbols {
         @Override
         public int getArity() {
             return formals.size();
+        }
+
+        @Override
+        public @Nullable JTypeMirror getAnnotatedReceiverType(Substitution subst) {
+            if (!this.hasReceiver()) {
+                return null;
+            }
+            return getTypeSystem().declaration(owner).subst(subst);
         }
 
         @Override

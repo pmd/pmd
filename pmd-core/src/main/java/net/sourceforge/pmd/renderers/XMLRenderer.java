@@ -166,10 +166,11 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
                 xmlWriter.writeAttribute("endcolumn", String.valueOf(rv.getEndColumn()));
                 xmlWriter.writeAttribute("rule", rv.getRule().getName());
                 xmlWriter.writeAttribute("ruleset", rv.getRule().getRuleSetName());
-                maybeAdd("package", rv.getPackageName());
-                maybeAdd("class", rv.getClassName());
-                maybeAdd("method", rv.getMethodName());
-                maybeAdd("variable", rv.getVariableName());
+                maybeAdd("package", rv.getAdditionalInfo().get(RuleViolation.PACKAGE_NAME));
+                maybeAdd("class", rv.getAdditionalInfo().get(RuleViolation.CLASS_NAME));
+                maybeAdd("method", rv.getAdditionalInfo().get(RuleViolation.METHOD_NAME));
+                maybeAdd("variable", rv.getAdditionalInfo().get(RuleViolation.VARIABLE_NAME));
+                // todo other additional info keys are not rendered
                 maybeAdd("externalInfoUrl", rv.getRule().getExternalInfoUrl());
                 xmlWriter.writeAttribute("priority", String.valueOf(rv.getRule().getPriority().getPriority()));
                 writeNewLine();

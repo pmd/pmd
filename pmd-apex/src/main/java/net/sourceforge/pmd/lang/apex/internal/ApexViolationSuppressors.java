@@ -2,10 +2,11 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.apex.rule.internal;
+package net.sourceforge.pmd.lang.apex.internal;
+
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -29,11 +30,9 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserEnum;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclarationStatements;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
 
-public final class ApexRuleViolationFactory extends DefaultRuleViolationFactory {
+public final class ApexViolationSuppressors {
 
-    public static final ApexRuleViolationFactory INSTANCE = new ApexRuleViolationFactory();
     private static final ViolationSuppressor APEX_ANNOT_SUPPRESSOR = new ViolationSuppressor() {
         @Override
         public String getId() {
@@ -49,12 +48,9 @@ public final class ApexRuleViolationFactory extends DefaultRuleViolationFactory 
         }
     };
 
-    private ApexRuleViolationFactory() {
-    }
+    static final List<ViolationSuppressor> ALL_APEX_SUPPRESSORS = listOf(APEX_ANNOT_SUPPRESSOR);
 
-    @Override
-    protected List<ViolationSuppressor> getSuppressors() {
-        return Collections.singletonList(APEX_ANNOT_SUPPRESSOR);
+    private ApexViolationSuppressors() {
     }
 
     /**

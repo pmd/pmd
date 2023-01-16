@@ -54,6 +54,11 @@ class ArrayMethodSigImpl implements JMethodSig, InternalMethodTypeItf {
     }
 
     @Override
+    public JTypeMirror getAnnotatedReceiverType() {
+        return owner;
+    }
+
+    @Override
     public JTypeMirror getReturnType() {
         return owner; // clone or cons
     }

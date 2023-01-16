@@ -716,6 +716,11 @@
                 <version>4.7.0</version>
             </dependency>
             <dependency>
+                <groupId>me.tongfei</groupId>
+                <artifactId>progressbar</artifactId>
+                <version>0.9.5</version>
+            </dependency>
+            <dependency>
                 <groupId>org.ow2.asm</groupId>
                 <artifactId>asm</artifactId>
                 <version>9.3</version>
@@ -890,7 +895,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>2.28.2</version>
+                <version>4.11.0</version>
                 <scope>test</scope>
             </dependency>
 

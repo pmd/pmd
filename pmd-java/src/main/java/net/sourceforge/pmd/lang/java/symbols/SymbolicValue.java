@@ -12,15 +12,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 import org.apache.commons.lang3.AnnotationUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.EnumUtils;
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.ClassNamesUtil;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
@@ -72,7 +73,8 @@ public interface SymbolicValue {
     /**
      * Returns a symbolic value for the given java object
      * Returns an annotation element for the given java value. Returns
-     * null if the value cannot be an annotation element.
+     * null if the value cannot be an annotation element or cannot be
+     * constructed.
      */
     static @Nullable SymbolicValue of(TypeSystem ts, Object value) {
         Objects.requireNonNull(ts);
@@ -119,10 +121,31 @@ public interface SymbolicValue {
          */
         @Nullable SymbolicValue getAttribute(String attrName);
 
+        /**
+         * Return the symbol for the declaring class of the annotation.
+         */
+        @NonNull JClassSymbol getAnnotationSymbol();
 
-        Set<String> getAttributeNames();
+        /**
+         * Return the simple names of all attributes, including those
+         * defined in the annotation type but not explicitly set in this annotation.
+         * Note that if the annotation is reflected from a class file,
+         * we can't know which annotations used their default value, so it
+         * returns a set of all attribute names.
+         */
+        default PSet<String> getAttributeNames() {
+            return getAnnotationSymbol().getAnnotationAttributeNames();
+        }
 
-        String getBinaryName();
+        /** Return the binary name of the annotation type. */
+        default String getBinaryName() {
+            return getAnnotationSymbol().getBinaryName();
+        }
+
+        /** Return the simple name of the annotation type. */
+        default String getSimpleName() {
+            return getAnnotationSymbol().getSimpleName();
+        }
 
         @Override
         default boolean valueEquals(Object o) {
@@ -145,7 +168,8 @@ public interface SymbolicValue {
                     continue;
                 }
 
-                if (!getAttribute(attrName).valueEquals(attr)) {
+                SymbolicValue myAttr = getAttribute(attrName);
+                if (myAttr == null || !myAttr.valueEquals(attr)) {
                     return false;
                 }
             }
@@ -156,9 +180,17 @@ public interface SymbolicValue {
          * The retention policy. Note that naturally, members accessed
          * from class files cannot reflect annotations with {@link RetentionPolicy#SOURCE}.
          */
-        RetentionPolicy getRetention();
+        default RetentionPolicy getRetention() {
+            return getAnnotationSymbol().getAnnotationRetention();
+        }
 
-        boolean isOfType(String binaryName);
+        /**
+         * Return true if this annotation's binary name matches the given
+         * binary name.
+         */
+        default boolean isOfType(String binaryName) {
+            return getBinaryName().equals(binaryName);
+        }
 
         /**
          * Whether the annotation has the given type. Note that only
@@ -181,11 +213,26 @@ public interface SymbolicValue {
                 return OptionalBool.UNKNOWN;
             }
 
-            if (attrValue instanceof SymbolicValue) {
-                return OptionalBool.definitely(attr.equals(attrValue));
-            } else {
-                return OptionalBool.definitely(attr.valueEquals(attrValue));
+            return OptionalBool.definitely(SymbolicValueHelper.equalsModuloWrapper(attr, attrValue));
+        }
+
+        /**
+         * Returns YES if the annotation has the attribute set to the
+         * given value, or to an array containing the given value. Returns
+         * NO if that's not the case. Returns UNKNOWN if the attribute
+         * does not exist or is unresolved.
+         */
+        default OptionalBool attributeContains(String attrName, Object attrValue) {
+            SymbolicValue attr = getAttribute(attrName);
+            if (attr == null) {
+                return OptionalBool.UNKNOWN;
             }
+            if (attr instanceof SymArray) {
+                // todo what if the value is an array itself
+                return OptionalBool.definitely(((SymArray) attr).containsValue(attrValue));
+            }
+
+            return OptionalBool.definitely(SymbolicValueHelper.equalsModuloWrapper(attr, attrValue));
         }
 
     }
@@ -266,6 +313,22 @@ public interface SymbolicValue {
             return length;
         }
 
+
+        /**
+         * Return true if this array contains the given object. If the
+         * object is a {@link SymbolicValue}, it uses {@link #equals(Object)},
+         * otherwise it uses {@link #valueEquals(Object)} to compare elements.
+         */
+        public boolean containsValue(Object value) {
+            if (primArray != null) {
+                // todo I don't know how to code that without switching on the type
+                throw new NotImplementedException("not implemented: containsValue with a primitive array");
+            } else if (elements != null) {
+                return elements.stream().anyMatch(it -> SymbolicValueHelper.equalsModuloWrapper(it, value));
+            }
+            return false;
+        }
+
         @Override
         public boolean valueEquals(Object o) {
             if (!o.getClass().isArray() || !isOkComponentType(o.getClass().getComponentType())) {
@@ -312,6 +375,7 @@ public interface SymbolicValue {
             if (elements != null) {
                 return elements.hashCode();
             } else {
+                assert primArray != null;
                 return primArray.hashCode();
             }
         }
@@ -500,7 +564,7 @@ public interface SymbolicValue {
 
         @Override
         public int hashCode() {
-            return Objects.hash(binaryName);
+            return binaryName.hashCode();
         }
     }
 }
