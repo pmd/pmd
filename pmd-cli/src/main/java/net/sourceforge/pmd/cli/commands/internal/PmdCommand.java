@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
@@ -46,6 +46,7 @@ import picocli.CommandLine.ParameterException;
 @Command(name = "check", showDefaultValues = true,
     description = "The PMD standard source code analyzer")
 public class PmdCommand extends AbstractAnalysisPmdSubcommand {
+    private static final Logger LOG = LoggerFactory.getLogger(PmdCommand.class);
 
     static {
         final Properties emptyProps = new Properties();
@@ -322,8 +323,8 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
                     return ExecutionResult.ERROR;
                 }
 
-                pmdReporter.log(Level.DEBUG, "Current classpath:\n{0}", System.getProperty("java.class.path"));
-                
+                LOG.debug("Current classpath:\n{}", System.getProperty("java.class.path"));
+
                 if (showProgressBar) {
                     if (reportFile == null) {
                         pmdReporter.warn("Progressbar rendering conflicts with reporting to STDOUT. "
