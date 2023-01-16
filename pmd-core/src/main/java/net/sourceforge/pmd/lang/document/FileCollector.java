@@ -11,7 +11,7 @@ import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
-import java.nio.file.FileSystemNotFoundException;
+import java.nio.file.FileSystemAlreadyExistsException;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -264,6 +264,9 @@ public final class FileCollector implements AutoCloseable {
      */
     static String getDisplayName(Path file, List<String> relativizeRoots) {
         String fileName = file.toString();
+        if ("jar".equals(file.toUri().getScheme())) {
+            fileName = new File(URI.create(file.toUri().getSchemeSpecificPart()).getPath()).toString();
+        }
         for (String root : relativizeRoots) {
             if (file.startsWith(root)) {
                 if (fileName.startsWith(File.separator, root.length())) {
@@ -330,12 +333,12 @@ public final class FileCollector implements AutoCloseable {
         if (!Files.isRegularFile(zipFile)) {
             throw new IllegalArgumentException("Not a regular file: " + zipFile);
         }
-        URI zipUri = URI.create("zip:" + zipFile.toUri());
+        URI zipUri = URI.create("jar:" + zipFile.toUri());
         try {
-            FileSystem fs = FileSystems.getFileSystem(zipUri);
+            FileSystem fs = FileSystems.newFileSystem(zipUri, Collections.<String, Object>emptyMap());
             resourcesToClose.add(fs);
             return fs;
-        } catch (FileSystemNotFoundException | ProviderNotFoundException e) {
+        } catch (FileSystemAlreadyExistsException | ProviderNotFoundException | IOException e) {
             reporter.errorEx("Cannot open zip file " + zipFile, e);
             return null;
         }

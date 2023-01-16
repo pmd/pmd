@@ -72,6 +72,12 @@ public interface JMethodSig extends JTypeVisitable {
      */
     JTypeMirror getDeclaringType();
 
+    /**
+     * Return the type of {@code this} in the body of the method. This
+     * is the declaring type with
+     */
+    JTypeMirror getAnnotatedReceiverType();
+
 
     /**
      * Return the result type of the method. If this is a constructor,

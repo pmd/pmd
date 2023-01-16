@@ -134,7 +134,7 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
     }
 
     @Override
-    public <R, A> R collect(Collector<? super T, A, R> collector) {
+    public final <R, A> R collect(Collector<? super T, A, R> collector) {
         A container = collector.supplier().get();
         BiConsumer<A, ? super T> accumulator = collector.accumulator();
         forEach(u -> accumulator.accept(container, u));

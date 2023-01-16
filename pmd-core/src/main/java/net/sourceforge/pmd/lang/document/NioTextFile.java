@@ -5,7 +5,9 @@
 package net.sourceforge.pmd.lang.document;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
@@ -44,7 +46,8 @@ class NioTextFile extends BaseCloseable implements TextFile {
         this.path = path;
         this.charset = charset;
         this.languageVersion = languageVersion;
-        this.pathId = path.toAbsolutePath().toString();
+        // using the URI here, that handles files inside zip archives automatically (schema "jar:file:...!/path/inside/zip")
+        this.pathId = path.toUri().toString();
     }
 
     @Override
@@ -54,7 +57,13 @@ class NioTextFile extends BaseCloseable implements TextFile {
 
     @Override
     public @NonNull String getDisplayName() {
-        return displayName == null ? path.toString() : displayName;
+        if (displayName != null) {
+            return displayName;
+        }
+        if ("jar".equals(path.toUri().getScheme())) {
+            return new File(URI.create(path.toUri().getSchemeSpecificPart()).getPath()).toString();
+        }
+        return path.toString();
     }
 
     @Override

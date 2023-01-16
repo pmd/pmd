@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.design;
 import static net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility.V_PRIVATE;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
@@ -24,12 +25,20 @@ public class ClassWithOnlyPrivateConstructorsShouldBeFinalRule extends AbstractJ
         if (node.isRegularClass()
             && !node.hasModifiers(JModifier.FINAL)
             && !node.isAnnotationPresent("lombok.Value")
+            && !hasPublicLombokConstructors(node)
             && hasOnlyPrivateCtors(node)
-            && hasNoSubclasses(node)
-            && !node.isAnnotationPresent("lombok.Value")) {
-            addViolation(data, node);
+            && hasNoSubclasses(node)) {
+            asCtx(data).addViolation(node);
         }
         return null;
+    }
+
+    private boolean hasPublicLombokConstructors(ASTClassOrInterfaceDeclaration node) {
+        return node.getDeclaredAnnotations()
+                   .filter(it -> TypeTestUtil.isA("lombok.NoArgsConstructor", it)
+                       || TypeTestUtil.isA("lombok.RequiredArgsConstructor", it)
+                       || TypeTestUtil.isA("lombok.AllArgsConstructor", it))
+                   .any(it -> it.getFlatValue("access").filterIs(ASTNamedReferenceExpr.class).none(ref -> "PRIVATE".equals(ref.getName())));
     }
 
     private boolean hasNoSubclasses(ASTClassOrInterfaceDeclaration klass) {

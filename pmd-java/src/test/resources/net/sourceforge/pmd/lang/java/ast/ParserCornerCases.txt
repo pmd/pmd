@@ -539,7 +539,7 @@
                |  +- ModifierList[@EffectiveModifiers = "{}", @ExplicitModifiers = "{}"]
                |  +- ClassOrInterfaceType[@FullyQualified = false, @SimpleName = "Class"]
                |  |  +- TypeArguments[@Diamond = false, @Empty = false, @Size = 1]
-               |  |     +- WildcardType[@LowerBound = false, @UpperBound = false]
+               |  |     +- WildcardType[@LowerBound = false, @UpperBound = true]
                |  +- VariableDeclarator[@Initializer = true, @Name = "c"]
                |     +- VariableDeclaratorId[@ArrayType = false, @EffectiveVisibility = Visibility.V_LOCAL, @EnumConstant = false, @ExceptionBlockParameter = false, @Field = false, @Final = false, @ForLoopVariable = false, @ForeachVariable = false, @FormalParameter = false, @LambdaParameter = false, @LocalVariable = true, @Name = "c", @PatternBinding = false, @RecordComponent = false, @ResourceDeclaration = false, @TypeInferred = false, @Visibility = Visibility.V_LOCAL]
                |     +- ClassLiteral[@CompileTimeConstant = false, @ParenthesisDepth = 0, @Parenthesized = false]

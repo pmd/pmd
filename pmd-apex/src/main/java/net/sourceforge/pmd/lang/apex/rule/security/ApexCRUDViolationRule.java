@@ -43,6 +43,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTNewKeyValueObjectExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTNewListInitExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTNewListLiteralExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTNewObjectExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTParameter;
 import net.sourceforge.pmd.lang.apex.ast.ASTProperty;
 import net.sourceforge.pmd.lang.apex.ast.ASTReferenceExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTReturnStatement;
@@ -79,6 +80,8 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     private static final String S_OBJECT_TYPE = "sObjectType";
     private static final String GET_DESCRIBE = "getDescribe";
 
+    private static final String ACCESS_LEVEL = "AccessLevel";
+
     // ESAPI.accessController().isAuthorizedToView(Lead.sObject, fields)
     private static final String[] ESAPI_ISAUTHORIZED_TO_VIEW = new String[] { "ESAPI", "accessController",
         "isAuthorizedToView", };
@@ -93,6 +96,11 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     private static final String[] RESERVED_KEYS_FLS = new String[] { "Schema", S_OBJECT_TYPE, };
 
     private static final Pattern WITH_SECURITY_ENFORCED = Pattern.compile("(?is).*[^']\\s*WITH\\s+SECURITY_ENFORCED\\s*[^']*");
+
+    //Added For USER MODE
+    private static final Pattern WITH_USER_MODE = Pattern.compile("(?is).*[^']\\s*WITH\\s+USER_MODE\\s*[^']*");
+    //Added For SYSTEM MODE
+    private static final Pattern WITH_SYSTEM_MODE = Pattern.compile("(?is).*[^']\\s*WITH\\s+SYSTEM_MODE\\s*[^']*");
 
     // <operation>AuthMethodPattern config properties; these are string properties instead of regex properties to help
     // ensure that the compiled patterns are case-insensitive vs. requiring the pattern author to use "(?i)"
@@ -188,14 +196,24 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     public Object visit(ASTMethodCallExpression node, Object data) {
         if (Helper.isAnyDatabaseMethodCall(node)) {
 
+            if (hasAccessLevelArgument(node)) {
+                return data;
+            }
+
             switch (node.getMethodName().toLowerCase(Locale.ROOT)) {
             case "insert":
+            case "insertasync":
+            case "insertimmediate":
                 checkForCRUD(node, data, IS_CREATEABLE);
                 break;
             case "update":
+            case "updateasync":
+            case "updateimmediate":
                 checkForCRUD(node, data, IS_UPDATEABLE);
                 break;
             case "delete":
+            case "deleteasync":
+            case "deleteimmediate":
                 checkForCRUD(node, data, IS_DELETABLE);
                 break;
             case "undelete":
@@ -217,6 +235,30 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         }
 
         return data;
+    }
+
+    /**
+     * Checks whether any parameter is of type "AccessLevel". It doesn't check
+     * whether it is "USER_MODE" or "SYSTEM_MODE", because this rule doesn't
+     * report a violation for neither.
+     *
+     * @param node the Database DML method call
+     */
+    private boolean hasAccessLevelArgument(ASTMethodCallExpression node) {
+        for (int i = 0; i < node.getNumChildren(); i++) {
+            ApexNode<?> argument = node.getChild(i);
+            if (argument instanceof ASTVariableExpression
+                    && argument.getFirstChildOfType(ASTReferenceExpression.class) != null) {
+                ASTReferenceExpression ref = argument.getFirstChildOfType(ASTReferenceExpression.class);
+                List<String> names = ref.getNames();
+                if (names.size() == 1 && ACCESS_LEVEL.equalsIgnoreCase(names.get(0))) {
+                    return true;
+                } else if (names.size() == 2 && "System".equalsIgnoreCase(names.get(0)) && ACCESS_LEVEL.equalsIgnoreCase(names.get(1))) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
@@ -278,6 +320,13 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
         return data;
 
+    }
+
+    @Override
+    public Object visit(ASTParameter node, Object data) {
+        String type = node.getType();
+        addVariableToMapping(Helper.getFQVariableName(node), type);
+        return data;
     }
 
     @Override
@@ -427,6 +476,18 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     private boolean isWithSecurityEnforced(final ApexNode<?> node) {
         return node instanceof ASTSoqlExpression
                 && WITH_SECURITY_ENFORCED.matcher(((ASTSoqlExpression) node).getQuery()).matches();
+    }
+
+    //For USER_MODE
+    private boolean isWithUserMode(final ApexNode<?> node) {
+        return node instanceof ASTSoqlExpression
+            && WITH_USER_MODE.matcher(((ASTSoqlExpression) node).getQuery()).matches();
+    }
+
+    //For System Mode
+    private boolean isWithSystemMode(final ApexNode<?> node) {
+        return node instanceof ASTSoqlExpression
+            && WITH_SYSTEM_MODE.matcher(((ASTSoqlExpression) node).getQuery()).matches();
     }
 
     private String getType(final ASTMethodCallExpression methodNode) {
@@ -630,11 +691,14 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         boolean isImproperDMLCheck = !isProperESAPICheckForDML(typeCheck, crudMethod)
                 && !isProperAuthPatternBasedCheckForDML(typeCheck, crudMethod);
         boolean noSecurityEnforced = !isWithSecurityEnforced(node);
+        boolean noUserMode = !isWithUserMode(node);
+        boolean noSystemMode = !isWithSystemMode(node);
         if (missingKey) {
-            //if condition returns true, add violation, otherwise return.
-            if (isImproperDMLCheck && noSecurityEnforced) {
-                addViolation(data, node);
-                return true;
+            if (isImproperDMLCheck) {
+                if (noSecurityEnforced && noUserMode && noSystemMode) {
+                    addViolation(data, node);
+                    return true;
+                }
             }
         } else {
             boolean properChecksHappened = false;

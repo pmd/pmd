@@ -11,7 +11,10 @@ import net.sourceforge.pmd.lang.java.rule.internal.AbstractJavaCounterCheckRule;
 /**
  * This rule detects when a method exceeds a certain threshold. i.e. if a method
  * has more than x lines of code.
+ *
+ * @deprecated Use {@link NcssCountRule} instead.
  */
+@Deprecated
 public class ExcessiveMethodLengthRule extends AbstractJavaCounterCheckRule.AbstractLineLengthCheckRule<ASTMethodOrConstructorDeclaration> {
     public ExcessiveMethodLengthRule() {
         super(ASTMethodOrConstructorDeclaration.class);

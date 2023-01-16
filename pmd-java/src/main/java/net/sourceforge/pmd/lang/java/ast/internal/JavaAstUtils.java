@@ -348,8 +348,8 @@ public final class JavaAstUtils {
         // Since type and variable names obscure one another,
         // it's ok to use a single renaming function.
 
-        Iterator<JavaccToken> thisIt = GenericToken.range(node.getFirstToken(), node.getLastToken());
-        Iterator<JavaccToken> thatIt = GenericToken.range(other.getFirstToken(), other.getLastToken());
+        Iterator<JavaccToken> thisIt = GenericToken.range(node.getFirstToken(), node.getLastToken()).iterator();
+        Iterator<JavaccToken> thatIt = GenericToken.range(other.getFirstToken(), other.getLastToken()).iterator();
         int lastKind = 0;
         while (thisIt.hasNext()) {
             if (!thatIt.hasNext()) {

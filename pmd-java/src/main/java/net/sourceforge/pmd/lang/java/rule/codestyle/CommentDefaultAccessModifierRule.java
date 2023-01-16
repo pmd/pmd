@@ -4,16 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -21,7 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
-import net.sourceforge.pmd.lang.java.ast.Comment;
+import net.sourceforge.pmd.lang.java.ast.JavaComment;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaPropertyUtil;
@@ -38,10 +35,23 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  */
 public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule {
 
+    private static final PropertyDescriptor<Pattern> REGEX_DESCRIPTOR =
+        PropertyFactory.regexProperty("regex")
+                       .desc("Regular expression")
+                       .defaultValue("\\/\\*\\s*(default|package)\\s*\\*\\/")
+                       .build();
+
+    private static final PropertyDescriptor<Boolean> TOP_LEVEL_TYPES =
+        PropertyFactory.booleanProperty("checkTopLevelTypes")
+                       .desc("Check for default access modifier in top-level classes, annotations, and enums")
+                       .defaultValue(false)
+                       .build();
+
     private static final PropertyDescriptor<List<String>> IGNORED_ANNOTS =
         JavaPropertyUtil.ignoredAnnotationsDescriptor(
             "com.google.common.annotations.VisibleForTesting",
             "android.support.annotation.VisibleForTesting",
+            "co.elastic.clients.util.VisibleForTesting",
             "org.junit.jupiter.api.Test",
             "org.junit.jupiter.api.ParameterizedTest",
             "org.junit.jupiter.api.RepeatedTest",
@@ -53,36 +63,15 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
             "org.junit.jupiter.api.AfterAll"
         );
 
-    private static final PropertyDescriptor<Pattern> REGEX_DESCRIPTOR =
-        PropertyFactory.regexProperty("regex")
-                       .desc("Regular expression")
-                       .defaultValue("\\/\\*\\s*(default|package)\\s*\\*\\/").build();
-    private static final PropertyDescriptor<Boolean> TOP_LEVEL_TYPES =
-        PropertyFactory.booleanProperty("checkTopLevelTypes")
-                       .desc("Check for default access modifier in top-level classes, annotations, and enums")
-                       .defaultValue(false).build();
-    private static final String MESSAGE = "To avoid mistakes add a comment at the beginning of the {0} {1} if you want a default access modifier";
-    private final Set<Integer> interestingLineNumberComments = new HashSet<>();
 
     public CommentDefaultAccessModifierRule() {
-        super(ASTCompilationUnit.class, ASTMethodDeclaration.class, ASTAnyTypeDeclaration.class,
-                ASTConstructorDeclaration.class, ASTFieldDeclaration.class);
+        super(ASTMethodDeclaration.class, ASTAnyTypeDeclaration.class,
+              ASTConstructorDeclaration.class, ASTFieldDeclaration.class);
         definePropertyDescriptor(IGNORED_ANNOTS);
         definePropertyDescriptor(REGEX_DESCRIPTOR);
         definePropertyDescriptor(TOP_LEVEL_TYPES);
     }
-
-    @Override
-    public Object visit(final ASTCompilationUnit node, final Object data) {
-        interestingLineNumberComments.clear();
-        for (final Comment comment : node.getComments()) {
-            if (getProperty(REGEX_DESCRIPTOR).matcher(comment.getText()).matches()) {
-                interestingLineNumberComments.add(comment.getBeginLine());
-            }
-        }
-        return data;
-    }
-
+    
     @Override
     public Object visit(final ASTMethodDeclaration decl, final Object data) {
         if (shouldReportNonTopLevel(decl)) {
@@ -141,7 +130,7 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
 
 
     private void report(RuleContext ctx, AccessNode decl, String kind, String signature) {
-        ctx.addViolationWithMessage(decl, MESSAGE, kind, signature);
+        ctx.addViolation(decl, kind, signature);
     }
 
     private boolean shouldReportNonTopLevel(final AccessNode decl) {
@@ -158,16 +147,22 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
         return decl.getVisibility() == Visibility.V_PACKAGE
             // if is a default access modifier check if there is a comment
             // in this line
-            && !interestingLineNumberComments.contains(decl.getBeginLine());
+            && !hasOkComment(decl);
     }
 
     private boolean isNotIgnored(AccessNode decl) {
         return getProperty(IGNORED_ANNOTS).stream().noneMatch(decl::isAnnotationPresent);
     }
 
+    private boolean hasOkComment(AccessNode node) {
+        Pattern regex = getProperty(REGEX_DESCRIPTOR);
+        return JavaComment.getLeadingComments(node)
+                          .anyMatch(it -> regex.matcher(it.getText()).matches());
+    }
+
     private boolean shouldReportTypeDeclaration(ASTAnyTypeDeclaration decl) {
         // don't report on interfaces
-        return !decl.isRegularInterface()
+        return !(decl.isRegularInterface() && !decl.isAnnotation())
             && isMissingComment(decl)
             && isNotIgnored(decl)
             // either nested or top level and we should check it

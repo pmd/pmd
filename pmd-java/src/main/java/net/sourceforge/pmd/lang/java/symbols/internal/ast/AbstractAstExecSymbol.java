@@ -7,9 +7,11 @@ package net.sourceforge.pmd.lang.java.symbols.internal.ast;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTReceiverParameter;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol;
@@ -25,13 +27,13 @@ abstract class AbstractAstExecSymbol<T extends ASTMethodOrConstructorDeclaration
     implements JExecutableSymbol {
 
     private final JClassSymbol owner;
-    private List<JFormalParamSymbol> formals;
+    private final List<JFormalParamSymbol> formals;
 
     protected AbstractAstExecSymbol(T node, AstSymFactory factory, JClassSymbol owner) {
         super(node, factory);
         this.owner = owner;
 
-        formals = CollectionUtil.map(
+        this.formals = CollectionUtil.map(
             node.getFormalParameters(),
             p -> new AstFormalParamSym(p.getVarId(), factory, this)
         );
@@ -56,6 +58,17 @@ abstract class AbstractAstExecSymbol<T extends ASTMethodOrConstructorDeclaration
         );
     }
 
+    @Override
+    public @Nullable JTypeMirror getAnnotatedReceiverType(Substitution subst) {
+        if (!this.hasReceiver()) {
+            return null;
+        }
+        ASTReceiverParameter receiver = node.getFormalParameters().getReceiverParameter();
+        if (receiver == null) {
+            return getTypeSystem().declaration(getEnclosingClass()).subst(subst);
+        }
+        return receiver.getReceiverType().getTypeMirror().subst(subst);
+    }
 
     @Override
     public @NonNull JClassSymbol getEnclosingClass() {
@@ -72,6 +85,5 @@ abstract class AbstractAstExecSymbol<T extends ASTMethodOrConstructorDeclaration
     public int getArity() {
         return formals.size();
     }
-
 
 }

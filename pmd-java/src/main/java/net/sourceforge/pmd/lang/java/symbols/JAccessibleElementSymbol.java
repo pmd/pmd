@@ -16,7 +16,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * @since 7.0.0
  */
-public interface JAccessibleElementSymbol extends JElementSymbol {
+public interface JAccessibleElementSymbol extends JElementSymbol, AnnotableSymbol {
 
     /**
      * Conventional return value of {@link #getPackageName()} for

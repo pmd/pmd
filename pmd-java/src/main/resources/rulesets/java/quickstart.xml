@@ -131,14 +131,17 @@
     <!-- <rule ref="category/java/design.xml/DataClass" /> -->
     <rule ref="category/java/design.xml/DoNotExtendJavaLangError" />
     <!-- <rule ref="category/java/design.xml/ExceptionAsFlowControl" /> -->
-    <!-- <rule ref="category/java/design.xml/ExcessiveClassLength" /> -->
     <!-- <rule ref="category/java/design.xml/ExcessiveImports" /> -->
-    <!-- <rule ref="category/java/design.xml/ExcessiveMethodLength" /> -->
     <!-- <rule ref="category/java/design.xml/ExcessiveParameterList" /> -->
     <!-- <rule ref="category/java/design.xml/ExcessivePublicCount" /> -->
     <rule ref="category/java/design.xml/FinalFieldCouldBeStatic"/>
     <!-- <rule ref="category/java/design.xml/GodClass" /> -->
     <!-- <rule ref="category/java/design.xml/ImmutableField" /> -->
+    <!-- <rule ref="category/java/design.xml/InvalidJavaBean">-->
+    <!--     <properties>-->
+    <!--         <property name="packages" value="org.example.beans" />-->
+    <!--     </properties>-->
+    <!-- </rule>-->
     <!-- <rule ref="category/java/design.xml/LawOfDemeter" /> -->
     <rule ref="category/java/design.xml/LogicInversion"/>
     <!-- <rule ref="category/java/design.xml/LoosePackageCoupling"> -->

@@ -5,6 +5,10 @@
 
 package net.sourceforge.pmd.lang.java.symbols;
 
+import java.lang.reflect.Modifier;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.Substitution;
@@ -22,9 +26,30 @@ public interface JMethodSymbol extends JExecutableSymbol, BoundToNode<ASTMethodD
     // symbols, and bridge methods are not reflected by the AST symbols
     boolean isBridge();
 
+    @Override
+    default boolean isStatic() {
+        return Modifier.isStatic(getModifiers());
+    }
+
 
     /** Returns the return type under the given substitution. */
     JTypeMirror getReturnType(Substitution subst);
+
+    /**
+     * Returns the default value, if this is a constant method. See
+     * {@link SymbolicValue} for current limitations
+     */
+    default @Nullable SymbolicValue getDefaultAnnotationValue() {
+        return null;
+    }
+
+    /**
+     * Return whether this method defines an attribute of the enclosing
+     * annotation type.
+     */
+    default boolean isAnnotationAttribute() {
+        return !isStatic() && getEnclosingClass().isAnnotation() && getArity() == 0;
+    }
 
 
     @Override
