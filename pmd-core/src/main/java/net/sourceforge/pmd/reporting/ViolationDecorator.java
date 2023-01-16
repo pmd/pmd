@@ -13,27 +13,27 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
- * Adds extra key/value pairs to a violation in a language-specific manner.
+ * Adds additional key/value pairs to a violation in a language-specific manner.
  * The keys are completely free. {@link RuleViolation} defines some of these keys.
  */
 @FunctionalInterface
 public interface ViolationDecorator {
 
     /**
-     * Compute extra key/value pairs about the violation that should be
-     * reflected in {@link RuleViolation#getAdditionalInfo()}. This extra
-     * info should be accumulated into the {@code extraData} parameter.
+     * Compute additional key/value pairs about the violation that should be
+     * reflected in {@link RuleViolation#getAdditionalInfo()}. This additional
+     * info should be accumulated into the {@code additionalInfo} parameter.
      *
-     * @param violationNode The node on which the violation was reported
-     * @param extraData     Accumulator
+     * @param violationNode  The node on which the violation was reported
+     * @param additionalInfo Accumulator
      */
-    void decorate(Node violationNode, Map<String, String> extraData);
+    void decorate(Node violationNode, Map<String, String> additionalInfo);
 
     static Map<String, String> apply(ViolationDecorator decorator, Node violationNode) {
-        Map<String, String> extraData = new HashMap<>();
-        decorator.decorate(violationNode, extraData);
-        if (!extraData.isEmpty()) {
-            return Collections.unmodifiableMap(extraData);
+        Map<String, String> additionalInfo = new HashMap<>();
+        decorator.decorate(violationNode, additionalInfo);
+        if (!additionalInfo.isEmpty()) {
+            return Collections.unmodifiableMap(additionalInfo);
         } else {
             return Collections.emptyMap();
         }

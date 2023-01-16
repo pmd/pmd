@@ -46,9 +46,9 @@ class YAHTMLRendererTest extends AbstractRendererTest {
 
     private RuleViolation newRuleViolation(int beginLine, int beginColumn, int endLine, int endColumn, final String packageNameArg, final String classNameArg) {
         FileLocation loc = createLocation(beginLine, beginColumn, endLine, endColumn);
-        Map<String, String> extraData = CollectionUtil.mapOf(RuleViolation.PACKAGE_NAME, packageNameArg,
-                                                             RuleViolation.CLASS_NAME, classNameArg);
-        return new ParametricRuleViolation(new FooRule(), loc, "blah", extraData);
+        Map<String, String> additionalInfo = CollectionUtil.mapOf(RuleViolation.PACKAGE_NAME, packageNameArg,
+                                                                  RuleViolation.CLASS_NAME, classNameArg);
+        return new ParametricRuleViolation(new FooRule(), loc, "blah", additionalInfo);
     }
 
     @Override

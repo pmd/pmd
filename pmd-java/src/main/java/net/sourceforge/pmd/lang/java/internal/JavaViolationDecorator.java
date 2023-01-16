@@ -32,13 +32,13 @@ final class JavaViolationDecorator implements ViolationDecorator {
     static final ViolationDecorator INSTANCE = new JavaViolationDecorator();
 
     @Override
-    public void decorate(Node violationNode, Map<String, String> extraData) {
+    public void decorate(Node violationNode, Map<String, String> additionalInfo) {
         JavaNode javaNode = (JavaNode) violationNode;
 
-        setIfNonNull(RuleViolation.VARIABLE_NAME, getVariableNameIfExists(javaNode), extraData);
-        setIfNonNull(RuleViolation.METHOD_NAME, getMethodName(javaNode), extraData);
-        setIfNonNull(RuleViolation.CLASS_NAME, getClassName(javaNode), extraData);
-        setIfNonNull(RuleViolation.PACKAGE_NAME, javaNode.getRoot().getPackageName(), extraData);
+        setIfNonNull(RuleViolation.VARIABLE_NAME, getVariableNameIfExists(javaNode), additionalInfo);
+        setIfNonNull(RuleViolation.METHOD_NAME, getMethodName(javaNode), additionalInfo);
+        setIfNonNull(RuleViolation.CLASS_NAME, getClassName(javaNode), additionalInfo);
+        setIfNonNull(RuleViolation.PACKAGE_NAME, javaNode.getRoot().getPackageName(), additionalInfo);
     }
 
     private @Nullable String getClassName(JavaNode javaNode) {
@@ -61,9 +61,9 @@ final class JavaViolationDecorator implements ViolationDecorator {
         return null;
     }
 
-    private void setIfNonNull(String key, String value, Map<String, String> extraData) {
+    private void setIfNonNull(String key, String value, Map<String, String> additionalInfo) {
         if (value != null) {
-            extraData.put(key, value);
+            additionalInfo.put(key, value);
         }
     }
 

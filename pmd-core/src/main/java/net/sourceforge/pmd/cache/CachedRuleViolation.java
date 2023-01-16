@@ -37,20 +37,20 @@ public final class CachedRuleViolation implements RuleViolation {
     private final String ruleClassName;
     private final String ruleName;
     private final String ruleTargetLanguage;
-    private final Map<String, String> extraData;
+    private final Map<String, String> additionalInfo;
 
     private CachedRuleViolation(final CachedRuleMapper mapper, final String description,
                                 final String fileName, final String ruleClassName, final String ruleName,
                                 final String ruleTargetLanguage, final int beginLine, final int beginColumn,
                                 final int endLine, final int endColumn,
-                                final Map<String, String> extraData) {
+                                final Map<String, String> additionalInfo) {
         this.mapper = mapper;
         this.description = description;
         this.location = FileLocation.range(fileName, TextRange2d.range2d(beginLine, beginColumn, endLine, endColumn));
         this.ruleClassName = ruleClassName;
         this.ruleName = ruleName;
         this.ruleTargetLanguage = ruleTargetLanguage;
-        this.extraData = extraData;
+        this.additionalInfo = additionalInfo;
     }
 
     @Override
@@ -71,7 +71,7 @@ public final class CachedRuleViolation implements RuleViolation {
 
     @Override
     public Map<String, String> getAdditionalInfo() {
-        return extraData;
+        return additionalInfo;
     }
 
     /**
@@ -93,24 +93,24 @@ public final class CachedRuleViolation implements RuleViolation {
         final int beginColumn = stream.readInt();
         final int endLine = stream.readInt();
         final int endColumn = stream.readInt();
-        Map<String, String> extraData = readExtraData(stream);
+        final Map<String, String> additionalInfo = readAdditionalInfo(stream);
         return new CachedRuleViolation(mapper, description, fileName, ruleClassName, ruleName, ruleTargetLanguage,
-                                       beginLine, beginColumn, endLine, endColumn, extraData);
+                                       beginLine, beginColumn, endLine, endColumn, additionalInfo);
     }
 
-    private static @NonNull Map<String, String> readExtraData(DataInputStream stream) throws IOException {
-        int numExtraKvps = stream.readInt();
-        if (numExtraKvps == 0) {
+    private static @NonNull Map<String, String> readAdditionalInfo(DataInputStream stream) throws IOException {
+        int numAdditionalInfoKeyValuePairs = stream.readInt();
+        if (numAdditionalInfoKeyValuePairs == 0) {
             return Collections.emptyMap();
         }
 
-        Map<String, String> extraData = new LinkedHashMap<>();
-        while (numExtraKvps-- > 0) {
+        Map<String, String> additionalInfo = new LinkedHashMap<>();
+        while (numAdditionalInfoKeyValuePairs-- > 0) {
             final String key = stream.readUTF();
             final String value = stream.readUTF();
-            extraData.put(key, value);
+            additionalInfo.put(key, value);
         }
-        return Collections.unmodifiableMap(extraData);
+        return Collections.unmodifiableMap(additionalInfo);
     }
 
     /**
@@ -131,9 +131,9 @@ public final class CachedRuleViolation implements RuleViolation {
         stream.writeInt(location.getStartPos().getColumn());
         stream.writeInt(location.getEndPos().getColumn());
         stream.writeInt(location.getEndPos().getColumn());
-        Map<String, String> extraData = violation.getAdditionalInfo();
-        stream.writeInt(extraData.size());
-        for (Entry<String, String> entry : extraData.entrySet()) {
+        Map<String, String> additionalInfo = violation.getAdditionalInfo();
+        stream.writeInt(additionalInfo.size());
+        for (Entry<String, String> entry : additionalInfo.entrySet()) {
             stream.writeUTF(entry.getKey());
             stream.writeUTF(StringUtil.nullToEmpty(entry.getValue()));
 

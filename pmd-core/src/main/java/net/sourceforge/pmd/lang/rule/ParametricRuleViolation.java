@@ -27,7 +27,7 @@ public class ParametricRuleViolation implements RuleViolation {
 
     private final FileLocation location;
 
-    private final Map<String, String> extraData;
+    private final Map<String, String> additionalInfo;
 
     // todo add factory methods on the interface and hide the class.
 
@@ -43,25 +43,25 @@ public class ParametricRuleViolation implements RuleViolation {
         this(theRule, location, message, Collections.emptyMap());
     }
 
-    public ParametricRuleViolation(Rule theRule, Reportable node, String message, Map<String, String> extraData) {
-        this(theRule, node.getReportLocation(), message, extraData);
+    public ParametricRuleViolation(Rule theRule, Reportable node, String message, Map<String, String> additionalInfo) {
+        this(theRule, node.getReportLocation(), message, additionalInfo);
     }
 
-    public ParametricRuleViolation(Rule theRule, FileLocation location, String message, Map<String, String> extraData) {
+    public ParametricRuleViolation(Rule theRule, FileLocation location, String message, Map<String, String> additionalInfo) {
         this.rule = AssertionUtil.requireParamNotNull("rule", theRule);
         this.description = AssertionUtil.requireParamNotNull("message", message);
         this.location = location;
 
-        if (!extraData.isEmpty()) {
-            this.extraData = Collections.unmodifiableMap(extraData);
+        if (!additionalInfo.isEmpty()) {
+            this.additionalInfo = Collections.unmodifiableMap(additionalInfo);
         } else {
-            this.extraData = Collections.emptyMap();
+            this.additionalInfo = Collections.emptyMap();
         }
     }
 
     @Override
     public Map<String, String> getAdditionalInfo() {
-        return extraData;
+        return additionalInfo;
     }
 
     @Override
