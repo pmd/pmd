@@ -7,6 +7,13 @@
     <test-code>
         <description>multiple declarations</description>
         <expected-problems>5</expected-problems>
+        <expected-messages>
+            <message>Avoid using redundant field initializer for 'a1'</message>
+            <message>Avoid using redundant field initializer for 'a2'</message>
+            <message>Avoid using redundant field initializer for 'a3'</message>
+            <message>Avoid using redundant field initializer for 'a6'</message>
+            <message>Avoid using redundant field initializer for 'a8'</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     char a1 = 0, a2 = 0; // 2 Bad
