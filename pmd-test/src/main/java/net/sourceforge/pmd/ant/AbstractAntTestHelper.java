@@ -180,7 +180,7 @@ public abstract class AbstractAntTestHelper {
         return result.replace(System.lineSeparator(), "\n");
     }
 
-    private class AntBuildListener extends DefaultLogger {
+    private final class AntBuildListener extends DefaultLogger {
         private AntBuildListener() {
             msgOutputLevel = Project.MSG_INFO;
         }
