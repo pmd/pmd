@@ -108,7 +108,7 @@
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding} ${extraArgLine}</argLine>
         <extraArgLine /> <!-- empty by default, profiles set it as needed -->
 
-        <pmd.build-tools.version>19</pmd.build-tools.version>
+        <pmd.build-tools.version>20-SNAPSHOT</pmd.build-tools.version>
 
         <pmd-designer.version>7.0.0-SNAPSHOT</pmd-designer.version>
         <javacc.jar>${settings.localRepository}/net/java/dev/javacc/javacc/${javacc.version}/javacc-${javacc.version}.jar</javacc.jar>
@@ -396,11 +396,27 @@
                     <version>${pmd.plugin.version}</version>
                     <executions>
                         <execution>
+                            <id>pmd-main</id>
                             <phase>verify</phase>
                             <goals>
                                 <goal>check</goal>
                                 <goal>cpd-check</goal>
                             </goals>
+                        </execution>
+                        <execution>
+                            <id>pmd-test</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>pmd</goal>
+                                <goal>check</goal>
+                            </goals>
+                            <configuration>
+                                <targetDirectory>${project.build.directory}/pmdTest/</targetDirectory>
+                                <includeTests>true</includeTests>
+                                <rulesets>
+                                    <ruleset>/net/sourceforge/pmd/pmd-test-dogfood-config.xml</ruleset>
+                                </rulesets>
+                            </configuration>
                         </execution>
                     </executions>
                     <configuration>
