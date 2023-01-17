@@ -31,6 +31,9 @@ This is a {{ site.pmd.release_type }} release.
   {% jdoc core::AbstractConfiguration#getSourceEncoding() %} and
   {% jdoc core::AbstractConfiguration#setSourceEncoding(java.lang.String) %} instead. Both are available
   for `CPDConfiguration` which extends `AbstractConfiguration`.
+* {% jdoc test::cli.BaseCLITest %} has been deprecated for removal without replacement. CLI tests should be done
+  in pmd-core only (and in PMD7 in pmd-cli). Individual language modules shouldn't need to test the CLI integration
+  logic again. Instead, the individual language modules should test their functionality as unit tests.
 
 ##### Internal APIs
 
