@@ -40,6 +40,7 @@ This is a {{ site.pmd.release_type }} release.
 
 * {% jdoc core::renderers.CSVWriter %}
 * {% jdoc core::cpd.CPDConfiguration.LanguageConverter %}
+* Some fields in {% jdoc test::ant.AbstractAntTestHelper %}
 
 ### External Contributions
 * [#4280](https://github.com/pmd/pmd/pull/4280): \[apex] Deprecate ApexRootNode.getApexVersion - [Aaron Hurst](https://github.com/aaronhurst-google) (@aaronhurst-google)
