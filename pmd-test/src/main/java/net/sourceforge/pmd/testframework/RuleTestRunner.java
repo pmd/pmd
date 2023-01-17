@@ -111,10 +111,16 @@ public class RuleTestRunner extends ParentRunner<TestDescriptor> {
      * @return a single statement which includes any rules, if present.
      */
     private Statement ruleTestBlock(final TestDescriptor testCase) {
+        RuleTestDescriptor newTestCase = new RuleTestDescriptor(testCase.getNumberInDocument(), testCase.getRule());
+        newTestCase.setLanguageVersion(testCase.getLanguageVersion());
+        newTestCase.setCode(testCase.getCode());
+        newTestCase.setDescription(testCase.getDescription());
+        newTestCase.setDisabled(!testCase.isRegressionTest());
+        newTestCase.recordExpectedViolations(testCase.getNumberOfProblemsExpected(), testCase.getExpectedLineNumbers(), testCase.getExpectedMessages());
         Statement statement = new Statement() {
             @Override
             public void evaluate() {
-                instance.runTest(testCase);
+                instance.runTest(newTestCase);
             }
         };
         statement = withBefores(statement);
