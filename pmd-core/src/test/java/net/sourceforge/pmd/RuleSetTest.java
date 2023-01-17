@@ -7,6 +7,7 @@ package net.sourceforge.pmd;
 import static net.sourceforge.pmd.PmdCoreTestUtils.dummyLanguage;
 import static net.sourceforge.pmd.PmdCoreTestUtils.dummyLanguage2;
 import static net.sourceforge.pmd.PmdCoreTestUtils.dummyVersion;
+import static net.sourceforge.pmd.ReportTestUtil.getReportForRuleSetApply;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -459,7 +460,7 @@ class RuleSetTest {
 
     private void verifyRuleSet(RuleSet ruleset, Set<RuleViolation> expected) throws Exception {
 
-        Report report = RuleContextTest.getReportForRuleSetApply(ruleset, makeCompilationUnits());
+        Report report = getReportForRuleSetApply(ruleset, makeCompilationUnits());
 
         assertEquals(expected.size(), report.getViolations().size(), "Invalid number of Violations Reported");
 
@@ -498,7 +499,7 @@ class RuleSetTest {
             })
             .build();
 
-        Report report = RuleContextTest.getReportForRuleSetApply(ruleset, makeCompilationUnits());
+        Report report = getReportForRuleSetApply(ruleset, makeCompilationUnits());
 
         List<ProcessingError> errors = report.getProcessingErrors();
         assertThat(errors, hasSize(1));
@@ -523,7 +524,7 @@ class RuleSetTest {
             }
         }).build();
 
-        Report report = RuleContextTest.getReportForRuleSetApply(ruleset, makeCompilationUnits("samplefile.dummy"));
+        Report report = getReportForRuleSetApply(ruleset, makeCompilationUnits("samplefile.dummy"));
 
         List<ProcessingError> errors = report.getProcessingErrors();
         assertThat(errors, hasSize(1));
@@ -562,7 +563,7 @@ class RuleSetTest {
             }
         }).build();
 
-        Report report = RuleContextTest.getReportForRuleSetApply(ruleset, makeCompilationUnits());
+        Report report = getReportForRuleSetApply(ruleset, makeCompilationUnits());
 
         List<ProcessingError> errors = report.getProcessingErrors();
         assertThat(errors, hasSize(1));

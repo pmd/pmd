@@ -731,7 +731,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
     }
 
     @Test
-    public void testDirectDeprecatedRule() {
+    void testDirectDeprecatedRule() {
         Rule r = loadFirstRule(rulesetXml(
             dummyRule(attrs -> attrs.put(DEPRECATED, "true"))
         ));
@@ -958,7 +958,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
     }
 
     @Test
-    public void testMissingRuleSetDescriptionIsWarning() {
+    void testMissingRuleSetDescriptionIsWarning() {
         loadRuleSetWithDeprecationWarnings(
                 "<?xml version=\"1.0\"?>\n" + "<ruleset name=\"then name\"\n"
                         + "    xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n"

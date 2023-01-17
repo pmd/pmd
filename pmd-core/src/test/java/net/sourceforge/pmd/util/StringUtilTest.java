@@ -85,7 +85,7 @@ class StringUtilTest {
     }
 
     @Test
-    public void testTrimIndent() {
+    void testTrimIndent() {
         assertTrimIndent(" \n b \n c",
                          "\nb\nc");
 
@@ -111,7 +111,7 @@ class StringUtilTest {
     }
 
     @Test
-    public void substringAfterLast() {
+    void substringAfterLast() {
         assertEquals("abc", StringUtil.substringAfterLast("a.abc", '.'));
         assertEquals("abc", StringUtil.substringAfterLast("abc", '.'));
     }

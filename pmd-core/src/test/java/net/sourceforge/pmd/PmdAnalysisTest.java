@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd;
 
+import static net.sourceforge.pmd.lang.DummyLanguageModule.getVersionWithParserThatThrowsSemanticError;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
@@ -26,14 +27,13 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.document.SimpleTestTextFile;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
-import net.sourceforge.pmd.processor.PmdRunnableTest;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.reporting.ReportStats;
 
 /**
  * @author Clément Fournier
  */
-public class PmdAnalysisTest {
+class PmdAnalysisTest {
 
     @Test
     void testPmdAnalysisWithEmptyConfig() {
@@ -86,7 +86,7 @@ public class PmdAnalysisTest {
     void testParseException() {
         PMDConfiguration config = new PMDConfiguration();
         config.setThreads(1);
-        config.setForceLanguageVersion(PmdRunnableTest.getVersionWithParserThatThrowsSemanticError());
+        config.setForceLanguageVersion(getVersionWithParserThatThrowsSemanticError());
         try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
             pmd.addRuleSet(RuleSet.forSingleRule(new MockRule()));
             pmd.files().addSourceFile("file", "some source");
@@ -135,8 +135,8 @@ public class PmdAnalysisTest {
         }
     }
 
-    public static class TestRule extends AbstractRule {
-        public TestRule() {
+    private static class TestRule extends AbstractRule {
+        TestRule() {
             setLanguage(Dummy2LanguageModule.getInstance());
             setMessage("dummy 2 test rule");
         }
