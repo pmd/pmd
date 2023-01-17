@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.java.symbols.testdata.TypeAnnotation;
  *
  * @author Clément Fournier
  */
-public class JClassSymbolTest {
+class JClassSymbolTest {
 
     @EnumSource
     @ParameterizedTest

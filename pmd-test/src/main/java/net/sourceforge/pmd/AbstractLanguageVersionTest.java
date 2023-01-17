@@ -39,7 +39,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
  * <p>For the parameters, see the constructor
  * {@link TestDescriptor#TestDescriptor(String, String, String, LanguageVersion)}.</p>
  */
-public class AbstractLanguageVersionTest {
+public abstract class AbstractLanguageVersionTest {
 
     public static class TestDescriptor {
         private final String name;
@@ -94,7 +94,7 @@ public class AbstractLanguageVersionTest {
      */
     @ParameterizedTest
     @MethodSource("data")
-    public void testFindVersionsForLanguageNameAndVersion(TestDescriptor testDescriptor) {
+    void testFindVersionsForLanguageNameAndVersion(TestDescriptor testDescriptor) {
         SourceLanguage sourceLanguage = new SourceLanguage();
         sourceLanguage.setName(testDescriptor.getName());
         sourceLanguage.setVersion(testDescriptor.getVersion());
@@ -116,7 +116,7 @@ public class AbstractLanguageVersionTest {
      */
     @ParameterizedTest
     @MethodSource("data")
-    public void testRegisteredRulesets(TestDescriptor testDescriptor) throws Exception {
+    void testRegisteredRulesets(TestDescriptor testDescriptor) throws Exception {
         if (testDescriptor.getExpected() == null) {
             return;
         }
@@ -140,7 +140,7 @@ public class AbstractLanguageVersionTest {
      */
     @ParameterizedTest
     @MethodSource("data")
-    public void testOldRegisteredRulesets(TestDescriptor testDescriptor) throws Exception {
+    void testOldRegisteredRulesets(TestDescriptor testDescriptor) throws Exception {
         // only check for languages, that support rules
         if (testDescriptor.getExpected() == null) {
             return;
@@ -160,7 +160,7 @@ public class AbstractLanguageVersionTest {
 
     @ParameterizedTest
     @MethodSource("data")
-    public void testVersionsAreDistinct(TestDescriptor testDescriptor) {
+    void testVersionsAreDistinct(TestDescriptor testDescriptor) {
         LanguageVersion expected = testDescriptor.getExpected();
         if (expected == null) {
             return;

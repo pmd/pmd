@@ -28,12 +28,12 @@ import net.sourceforge.pmd.lang.java.types.JWildcardType;
 /**
  *
  */
-public class TypeAnnotReflectionTest {
+class TypeAnnotReflectionTest {
 
 
     @ParameterizedTest
     @EnumSource
-    public void testTypeAnnotsOnFields(SymImplementation impl) {
+    void testTypeAnnotsOnFields(SymImplementation impl) {
 
         JClassType sym = impl.getDeclaration(ClassWithTypeAnnotationsInside.class);
 
@@ -55,7 +55,7 @@ public class TypeAnnotReflectionTest {
 
     @ParameterizedTest
     @EnumSource
-    public void testArrayTypeAnnotsOnFields(SymImplementation impl) {
+    void testArrayTypeAnnotsOnFields(SymImplementation impl) {
 
         /*
 
@@ -105,7 +105,7 @@ public class TypeAnnotReflectionTest {
 
     @ParameterizedTest
     @EnumSource
-    public void testInnerTypeAnnotsOnFields(SymImplementation impl) {
+    void testInnerTypeAnnotsOnFields(SymImplementation impl) {
 
         JClassType sym = impl.getDeclaration(ClassWithTypeAnnotationsInside.class);
 
@@ -152,7 +152,7 @@ public class TypeAnnotReflectionTest {
 
     @ParameterizedTest
     @EnumSource
-    public void testInnerTypeAnnotsWithGenerics(SymImplementation impl) {
+    void testInnerTypeAnnotsWithGenerics(SymImplementation impl) {
 
         JClassType sym = impl.getDeclaration(ClassWithTypeAnnotationsInside.class);
 
@@ -205,7 +205,7 @@ public class TypeAnnotReflectionTest {
 
     @ParameterizedTest
     @EnumSource
-    public void testTypeAnnotOnMultipleGenericsAndInner(SymImplementation impl) {
+    void testTypeAnnotOnMultipleGenericsAndInner(SymImplementation impl) {
 
         JClassType sym = impl.getDeclaration(ClassWithTypeAnnotationsInside.class);
 
@@ -228,7 +228,7 @@ public class TypeAnnotReflectionTest {
 
     @ParameterizedTest
     @EnumSource
-    public void testTypeAnnotOnWildcards(SymImplementation impl) {
+    void testTypeAnnotOnWildcards(SymImplementation impl) {
 
         JClassType sym = impl.getDeclaration(ClassWithTypeAnnotationsInside.class);
 

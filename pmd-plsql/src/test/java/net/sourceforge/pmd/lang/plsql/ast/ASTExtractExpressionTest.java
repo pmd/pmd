@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 
-public class ASTExtractExpressionTest extends AbstractPLSQLParserTst {
+class ASTExtractExpressionTest extends AbstractPLSQLParserTst {
 
     @Test
     void testXml() {
