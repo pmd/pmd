@@ -80,8 +80,6 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     private CPDReportRenderer cpdReportRenderer;
 
-    private String encoding;
-
     @Parameter(names = "--ignore-literals",
             description = "Ignore number values and string contents when comparing text", required = false)
     private boolean ignoreLiterals;
@@ -144,7 +142,11 @@ public class CPDConfiguration extends AbstractConfiguration {
     @Parameter(names = { "--debug", "--verbose", "-v", "-D" }, description = "Debug mode.")
     private boolean debug = false;
 
-    // this has to be a public static class, so that JCommander can use it!
+    /**
+     * @deprecated this is internal API. The class has to be public static, so that JCommander can use it.
+     */
+    @Deprecated
+    @InternalApi
     public static class LanguageConverter implements IStringConverter<Language> {
 
         @Override
@@ -156,10 +158,19 @@ public class CPDConfiguration extends AbstractConfiguration {
         }
     }
 
-    @Parameter(names = { "--encoding", "-e" }, description = "Character encoding to use when processing files", required = false)
+
+    /**
+     * @deprecated Use {@link #setSourceEncoding(String)} instead
+     */
+    @Deprecated
     public void setEncoding(String encoding) {
-        this.encoding = encoding;
         setSourceEncoding(encoding);
+    }
+
+    @Parameter(names = { "--encoding", "-e" }, description = "Character encoding to use when processing files", required = false)
+    @Override
+    public void setSourceEncoding(String sourceEncoding) {
+        super.setSourceEncoding(sourceEncoding);
     }
 
     public SourceCode sourceCodeFor(File file) {
@@ -178,7 +189,7 @@ public class CPDConfiguration extends AbstractConfiguration {
             setRendererName(DEFAULT_RENDERER);
         }
         if (getRenderer() == null && getCPDRenderer() == null) {
-            Object renderer = createRendererByName(getRendererName(), getEncoding());
+            Object renderer = createRendererByName(getRendererName(), getSourceEncoding().name());
             String className = getRendererName();
 
             if (renderer instanceof CPDReportRenderer) {
@@ -516,8 +527,13 @@ public class CPDConfiguration extends AbstractConfiguration {
         this.help = help;
     }
 
+    /**
+     * @deprecated use {@link #getSourceEncoding()} instead
+     * @return
+     */
+    @Deprecated
     public String getEncoding() {
-        return encoding;
+        return getSourceEncoding().name();
     }
 
     public boolean isNoSkipBlocks() {

@@ -26,10 +26,16 @@ This is a {{ site.pmd.release_type }} release.
   always `Version.CURRENT`, as the apex compiler integration doesn't use additional information which Apex version
   actually is used. Therefore, this method can't be used to determine the Apex version of the project
   that is being analyzed.
+* {% jdoc !!core::cpd.CPDConfiguration#setEncoding(java.lang.String) %} and
+  {% jdoc !!core::cpd.CPDConfiguration#getEncoding() %}. Use the methods
+  {% jdoc core::AbstractConfiguration#getSourceEncoding() %} and
+  {% jdoc core::AbstractConfiguration#setSourceEncoding(java.lang.String) %} instead. Both are available
+  for `CPDConfiguration` which extends `AbstractConfiguration`.
 
 ##### Internal APIs
 
 * {% jdoc core::renderers.CSVWriter %}
+* {% jdoc core::cpd.CPDConfiguration.LanguageConverter %}
 
 ### External Contributions
 * [#4280](https://github.com/pmd/pmd/pull/4280): \[apex] Deprecate ApexRootNode.getApexVersion - [Aaron Hurst](https://github.com/aaronhurst-google) (@aaronhurst-google)
