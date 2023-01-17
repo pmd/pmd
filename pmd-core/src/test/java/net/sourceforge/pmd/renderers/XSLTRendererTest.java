@@ -50,7 +50,8 @@ class XSLTRendererTest extends AbstractRendererTest {
     @Override
     String filter(String expected) {
         return expected.replaceAll("<h2>PMD unknown Report\\. Generated on .+</h2>",
-                "<h2>PMD unknown Report. Generated on ...</h2>");
+                                   "<h2>PMD unknown Report. Generated on ...</h2>")
+                       .replaceAll("\r\n", "\n"); // make the test run on Windows, too
     }
 
     @Test
