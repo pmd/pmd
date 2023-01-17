@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.testframework;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +21,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.xml.sax.InputSource;
@@ -81,14 +82,14 @@ public abstract class RuleTst {
             RuleSet parsedRset = new RuleSetLoader().warnDeprecated(false).loadFromResource(ruleSet);
             Rule rule = parsedRset.getRuleByName(ruleName);
             if (rule == null) {
-                Assertions.fail("Rule " + ruleName + " not found in ruleset " + ruleSet);
+                fail("Rule " + ruleName + " not found in ruleset " + ruleSet);
             } else {
                 rule.setRuleSetName(ruleSet);
             }
             return rule;
         } catch (RuleSetLoadException e) {
             e.printStackTrace();
-            Assertions.fail("Couldn't find ruleset " + ruleSet);
+            fail("Couldn't find ruleset " + ruleSet);
             return null;
         }
     }
@@ -140,8 +141,8 @@ public abstract class RuleTst {
             if (test.getNumberOfProblemsExpected() != res) {
                 printReport(test, report);
             }
-            Assertions.assertEquals(test.getNumberOfProblemsExpected(), res,
-                    '"' + test.getDescription() + "\" resulted in wrong number of failures,");
+            assertEquals(test.getNumberOfProblemsExpected(), res,
+                         '"' + test.getDescription() + "\" resulted in wrong number of failures,");
             assertMessages(report, test);
             assertLineNumbers(report, test);
         } finally {
@@ -182,8 +183,8 @@ public abstract class RuleTst {
             if (!expectedMessages.get(index).equals(actual)) {
                 printReport(test, report);
             }
-            Assertions.assertEquals(expectedMessages.get(index), actual,
-                    '"' + test.getDescription() + "\" produced wrong message on violation number " + (index + 1) + ".");
+            assertEquals(expectedMessages.get(index), actual,
+                         '"' + test.getDescription() + "\" produced wrong message on violation number " + (index + 1) + ".");
             index++;
         }
     }
@@ -206,9 +207,9 @@ public abstract class RuleTst {
             if (expected.get(index) != actual.intValue()) {
                 printReport(test, report);
             }
-            Assertions.assertEquals(expected.get(index), actual,
-                    '"' + test.getDescription() + "\" violation on wrong line number: violation number "
-                    + (index + 1) + ".");
+            assertEquals(expected.get(index), actual,
+                         '"' + test.getDescription() + "\" violation on wrong line number: violation number "
+                         + (index + 1) + ".");
             index++;
         }
     }
@@ -220,8 +221,6 @@ public abstract class RuleTst {
                 + " problem(s) found.");
         System.out.println(" -> Expected messages: " + test.getExpectedMessages());
         System.out.println(" -> Expected line numbers: " + test.getExpectedLineNumbers());
-        System.out.println("Test Method Name: " + test.getTestMethodName());
-        System.out.println("    @org.junit.Test public void " + test.getTestMethodName() + "() {}");
         System.out.println();
         TextRenderer renderer = new TextRenderer();
         renderer.setWriter(new StringWriter());

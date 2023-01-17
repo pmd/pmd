@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -20,7 +20,7 @@ import net.sourceforge.pmd.test.schema.RuleTestDescriptor;
  *
  * @deprecated Use {@link RuleTestDescriptor} instead
  */
-@Ignore("this is not a unit test")
+@Disabled("this is not a unit test")
 @Deprecated
 public class TestDescriptor {
     private Rule rule;
