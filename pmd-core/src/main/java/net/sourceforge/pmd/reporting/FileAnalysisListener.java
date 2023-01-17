@@ -90,10 +90,10 @@ public interface FileAnalysisListener extends AutoCloseable {
         List<FileAnalysisListener> list = new ArrayList<>(listeners);
         list.removeIf(it -> it == NoopFileListener.INSTANCE);
 
-        if (listeners.isEmpty()) {
+        if (list.isEmpty()) {
             return noop();
-        } else if (listeners.size() == 1) {
-            return listeners.iterator().next();
+        } else if (list.size() == 1) {
+            return list.iterator().next();
         }
 
         class TeeListener implements FileAnalysisListener {

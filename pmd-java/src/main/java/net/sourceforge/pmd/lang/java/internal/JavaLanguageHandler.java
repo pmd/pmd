@@ -6,15 +6,16 @@ package net.sourceforge.pmd.lang.java.internal;
 
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
+import java.util.List;
 import java.util.Set;
 
+import net.sourceforge.pmd.ViolationSuppressor;
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.java.ast.JavaParser;
 import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
 import net.sourceforge.pmd.lang.java.ast.internal.ReportingStrategy;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleViolationFactory;
 import net.sourceforge.pmd.lang.java.rule.xpath.internal.BaseContextNodeTestFun;
 import net.sourceforge.pmd.lang.java.rule.xpath.internal.GetCommentOnFunction;
 import net.sourceforge.pmd.lang.java.rule.xpath.internal.GetModifiersFun;
@@ -23,8 +24,8 @@ import net.sourceforge.pmd.lang.java.rule.xpath.internal.MetricFunction;
 import net.sourceforge.pmd.lang.java.rule.xpath.internal.NodeIsFunction;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.metrics.Metric;
-import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
+import net.sourceforge.pmd.reporting.ViolationDecorator;
 import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
 
 public class JavaLanguageHandler extends AbstractPmdLanguageVersionHandler {
@@ -77,10 +78,14 @@ public class JavaLanguageHandler extends AbstractPmdLanguageVersionHandler {
     }
 
     @Override
-    public RuleViolationFactory getRuleViolationFactory() {
-        return JavaRuleViolationFactory.INSTANCE;
+    public List<ViolationSuppressor> getExtraViolationSuppressors() {
+        return AnnotationSuppressionUtil.ALL_JAVA_SUPPRESSORS;
     }
 
+    @Override
+    public ViolationDecorator getViolationDecorator() {
+        return JavaViolationDecorator.INSTANCE;
+    }
 
     @Override
     public LanguageMetricsProvider getLanguageMetricsProvider() {

@@ -26,7 +26,6 @@ public class XmlCliTest extends BaseCLITest {
             "-f",
             "text",
             "--no-cache",
-            "--no-progress",
             "-R",
             BASE_DIR + "/ruleset.xml",
             "-d",
