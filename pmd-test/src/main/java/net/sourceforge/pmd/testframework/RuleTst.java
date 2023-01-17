@@ -33,7 +33,6 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetLoadException;
 import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.processor.AbstractPMDProcessor;
@@ -238,22 +237,13 @@ public abstract class RuleTst {
     /**
      * Run the rule on the given code and put the violations in the report.
      */
-    @InternalApi
-    @Deprecated
-    public Report runTestFromString(String code, Rule rule, LanguageVersion languageVersion) {
-        return runTestFromString(code, rule, languageVersion, true);
-    }
-
-    @InternalApi
-    @Deprecated
-    public Report runTestFromString(String code, Rule rule, LanguageVersion languageVersion,
-            boolean isUseAuxClasspath) {
+    Report runTestFromString(String code, Rule rule, LanguageVersion languageVersion) {
         try {
             PMDConfiguration configuration = new PMDConfiguration();
             configuration.setIgnoreIncrementalAnalysis(true);
             configuration.setDefaultLanguageVersion(languageVersion);
             configuration.setThreads(1);
-            // regardless of isUseAuxClasspath the auxclasspath is always used (#3976 / #3302)
+            // the auxclasspath is always used (#3976 / #3302)
             // configure the "auxclasspath" option for unit testing
             // we share a single classloader so that pmd-java doesn't create
             // a new TypeSystem for every test. This problem will go
