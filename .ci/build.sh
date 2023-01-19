@@ -265,7 +265,7 @@ function pmd_ci_dogfood() {
     sed -i 's/<version>[0-9]\{1,\}\.[0-9]\{1,\}\.[0-9]\{1,\}.*<\/version>\( *<!-- pmd.dogfood.version -->\)/<version>'"${PMD_CI_MAVEN_PROJECT_VERSION}"'<\/version>\1/' pom.xml
     if [ "${PMD_CI_MAVEN_PROJECT_VERSION}" = "7.0.0-SNAPSHOT" ]; then
         sed -i 's/pmd-dogfood-config\.xml/pmd-dogfood-config7.xml/' pom.xml
-        mpmdVersion=(-Denforcer.skip=true -Dpmd.plugin.version=3.18.0-pmd7-SNAPSHOT)
+        mpmdVersion=(-Denforcer.skip=true -Dpmd.plugin.version=3.20.1-pmd-7-SNAPSHOT)
     fi
     ./mvnw verify --show-version --errors --batch-mode --no-transfer-progress "${PMD_MAVEN_EXTRA_OPTS[@]}" \
         "${mpmdVersion[@]}" \
