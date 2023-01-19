@@ -11,9 +11,10 @@ import java.util.Iterator;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
+import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 import net.sourceforge.pmd.util.StringUtil;
 
-public class SimpleRenderer implements Renderer, CPDRenderer {
+public class SimpleRenderer implements Renderer, CPDRenderer, CPDReportRenderer {
 
     private String separator;
     private boolean trimLeadingWhitespace;
@@ -87,5 +88,10 @@ public class SimpleRenderer implements Renderer, CPDRenderer {
             renderOn(writer, match);
         }
         writer.flush();
+    }
+
+    @Override
+    public void render(CPDReport report, Writer writer) throws IOException {
+        render(report.getMatches().iterator(), writer);
     }
 }

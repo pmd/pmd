@@ -11,8 +11,9 @@ import java.util.Iterator;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
+import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 
-public class VSRenderer implements Renderer, CPDRenderer {
+public class VSRenderer implements Renderer, CPDRenderer, CPDReportRenderer {
 
     @Override
     public String render(Iterator<Match> matches) {
@@ -38,5 +39,10 @@ public class VSRenderer implements Renderer, CPDRenderer {
             }
         }
         writer.flush();
+    }
+
+    @Override
+    public void render(CPDReport report, Writer writer) throws IOException {
+        render(report.getMatches().iterator(), writer);
     }
 }
