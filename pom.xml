@@ -269,6 +269,21 @@
                         <systemPropertyVariables>
                             <mvn.project.src.test.resources>${project.build.testResources[0].directory}</mvn.project.src.test.resources>
                         </systemPropertyVariables>
+                        <statelessTestsetInfoReporter implementation="net.sourceforge.pmd.buildtools.surefire.PMDStatelessTestSetInfoConsoleReporter">
+                            <showFailedTests>true</showFailedTests>
+                            <showSuccessfulTests>false</showSuccessfulTests>
+                            <showSkippedTests>true</showSkippedTests>
+                            <usePhrasedFileName>true</usePhrasedFileName>
+                            <usePhrasedClassNameInRunning>true</usePhrasedClassNameInRunning>
+                            <usePhrasedClassNameInTestCaseSummary>true</usePhrasedClassNameInTestCaseSummary>
+                        </statelessTestsetInfoReporter>
+
+                        <statelessTestsetReporter implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5Xml30StatelessReporter">
+                            <usePhrasedFileName>true</usePhrasedFileName>
+                            <usePhrasedTestSuiteClassName>true</usePhrasedTestSuiteClassName>
+                            <usePhrasedTestCaseClassName>true</usePhrasedTestCaseClassName>
+                            <usePhrasedTestCaseMethodName>true</usePhrasedTestCaseMethodName>
+                        </statelessTestsetReporter>
                     </configuration>
                     <dependencies>
                         <!-- Junit5 Platform Engine for Junit 3 & 4 -->
@@ -282,6 +297,11 @@
                             <groupId>io.kotest</groupId>
                             <artifactId>kotest-runner-junit5-jvm</artifactId>
                             <version>${kotest.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>net.sourceforge.pmd</groupId>
+                            <artifactId>pmd-build-tools-config</artifactId>
+                            <version>${pmd.build-tools.version}</version>
                         </dependency>
                     </dependencies>
                 </plugin>
