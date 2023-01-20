@@ -92,7 +92,7 @@
 
 
         <javacc.version>5.0</javacc.version>
-        <surefire.version>3.0.0-M7</surefire.version>
+        <surefire.version>3.0.0-M8</surefire.version>
         <checkstyle.version>10.3.3</checkstyle.version>
         <checkstyle.plugin.version>3.2.0</checkstyle.plugin.version>
         <pmd.plugin.version>3.19.0</pmd.plugin.version>
@@ -265,7 +265,6 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${surefire.version}</version>
                     <configuration>
-                        <forkMode>once</forkMode>
                         <runOrder>alphabetical</runOrder>
                         <systemPropertyVariables>
                             <mvn.project.src.test.resources>${project.build.testResources[0].directory}</mvn.project.src.test.resources>
