@@ -931,6 +931,16 @@
                 <artifactId>protobuf-java</artifactId>
                 <version>3.16.3</version>
             </dependency>
+
+            <!-- Make sure to use the correct version the JUnit5 needs. E.g. 5.8.2 needs 1.8.2
+                 Kotest might bring a wrong version.
+                 see junit5.version -->
+            <dependency>
+                <groupId>org.junit.platform</groupId>
+                <artifactId>junit-platform-commons</artifactId>
+                <version>1.8.2</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
