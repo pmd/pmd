@@ -333,7 +333,7 @@ class PmdCliTest extends BaseCliTest {
     @Override
     protected List<String> cliStandardArgs() {
         return listOf(
-            "check", "--no-cache"
+            "check", "--no-cache", "--no-progress"
         );
     }
 }
