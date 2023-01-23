@@ -51,7 +51,7 @@ xmlns:scan="http://pmd.sourceforge.net/report/2.0.0">
               <th>File</th>
               <th>Line</th>
               <th>Priority</th>
-              <th>Rule</th>
+              <th>Category</th>
               <th>Problem</th>
             </tr>
           </thead>
@@ -117,7 +117,7 @@ xmlns:scan="http://pmd.sourceforge.net/report/2.0.0">
                 </xsl:choose>
                 <td><xsl:value-of select="@ruleset"/></td>
 
-                <td> <a href="{@externalInfoUrl}">Details</a></td>
+                <td> <a href="{@externalInfoUrl}"><xsl:value-of select="@rule"/></a></td>
               </tr>
             </xsl:for-each>
           </xsl:for-each>
@@ -169,20 +169,20 @@ const arcSpecRS ={
 
   "data": {
     "values": [
-      {"rule": "Best Practices", "count": bp},
-      {"rule": "Code Style", "count": codeStyle},
-      {"rule": "Design", "count": design},
-      {"rule": "Documentation", "count": doc},
-      {"rule": "Error Prone", "count": ep},
-      {"rule": "Performance", "count": perf},
-      {"rule": "Security", "count": security}
+      {"category": "Best Practices", "count": bp},
+      {"category": "Code Style", "count": codeStyle},
+      {"category": "Design", "count": design},
+      {"category": "Documentation", "count": doc},
+      {"category": "Error Prone", "count": ep},
+      {"category": "Performance", "count": perf},
+      {"category": "Security", "count": security}
     ]
   },
   "mark": {"type": "arc" , "innerRadius": 50, "tooltip": true},
 
   "encoding": {
     "theta": {"field": "count", "type": "quantitative"},
-    "color": {"field": "rule", "type": "nominal"}
+    "color": {"field": "category", "type": "nominal"}
   },
 
 }
