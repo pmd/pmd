@@ -138,8 +138,8 @@ public final class PMDCommandLineInterface {
         return "For example on *nix: " + PMD.EOL
                 + launchCmd + " -dir /home/workspace/src/main/java/code -f html -rulesets rulesets/java/quickstart.xml,category/java/codestyle.xml" + PMD.EOL
                 + launchCmd + " -d ./src/main/java/code -R rulesets/java/quickstart.xml -f xslt -property xsltFilename=my-own.xsl" + PMD.EOL
-                + launchCmd + " -d ./src/main/java/code -R rulesets/java/quickstart.xml -f xslt -property xsltFilename=pmd-report-v2.xslt" + PMD.EOL
-                + " - pmd-report-v2.xslt is at https://github.com/pmd/pmd/tree/master/pmd-core/etc/xslt/pmd-report-v2.xslt"
+                + launchCmd + " -d ./src/main/java/code -R rulesets/java/quickstart.xml -f xslt -property xsltFilename=html-report-v2.xslt" + PMD.EOL
+                + " - html-report-v2.xslt is at https://github.com/pmd/pmd/tree/master/pmd-core/etc/xslt/html-report-v2.xslt"
                 + launchCmd + " -d ./src/main/java/code -f html -R rulesets/java/quickstart.xml -auxclasspath commons-collections.jar:derby.jar" + PMD.EOL;
     }
 
