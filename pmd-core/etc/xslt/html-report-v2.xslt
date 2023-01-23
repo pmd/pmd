@@ -178,14 +178,12 @@ const arcSpecRS ={
   "data": {
     "values": [
       {"rule": "Best Practices", "count": bp},
-      {"rule": "Code Style", "count":codeStyle },
+      {"rule": "Code Style", "count": codeStyle},
       {"rule": "Design", "count": design},
       {"rule": "Documentation", "count": doc},
-
-      {"rule": "Documentation", "count": ep},
-      {"rule": "Error Prone", "count": perf},
+      {"rule": "Error Prone", "count": ep},
+      {"rule": "Performance", "count": perf},
       {"rule": "Security", "count": security}
-
     ]
   },
   "mark": {"type": "arc" , "innerRadius": 50, "tooltip": true},
