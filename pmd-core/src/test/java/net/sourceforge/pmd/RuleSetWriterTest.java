@@ -75,9 +75,9 @@ class RuleSetWriterTest {
     void testRuleReferenceOverriddenName() throws Exception {
         RuleSet rs = new RuleSetLoader().loadFromResource("rulesets/dummy/basic.xml");
 
-        RuleReference ruleRef = new RuleReference();
-        ruleRef.setRule(rs.getRuleByName("DummyBasicMockRule"));
-        ruleRef.setRuleSetReference(new RuleSetReference("rulesets/dummy/basic.xml"));
+        RuleReference ruleRef = new RuleReference(
+                rs.getRuleByName("DummyBasicMockRule"),
+                new RuleSetReference("rulesets/dummy/basic.xml"));
         ruleRef.setName("Foo"); // override the name
 
         RuleSet ruleSet = RuleSet.forSingleRule(ruleRef);

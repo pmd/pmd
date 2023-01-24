@@ -203,25 +203,6 @@ public class PMDParameters {
         }
     }
 
-    /** @deprecated Will be removed in 7.0.0 */
-    @Deprecated
-    public static class RulePriorityConverter implements IStringConverter<RulePriority> {
-
-        public int validate(String value) throws ParameterException {
-            int minPriorityValue = Integer.parseInt(value);
-            if (minPriorityValue < 1 || minPriorityValue > 5) {
-                throw new ParameterException(
-                        "Priority values can only be integer value, between 1 and 5," + value + " is not valid");
-            }
-            return minPriorityValue;
-        }
-
-        @Override
-        public RulePriority convert(String value) {
-            return RulePriority.valueOf(validate(value));
-        }
-    }
-
 
     /**
      * Converts these parameters into a configuration.
