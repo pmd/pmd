@@ -13,8 +13,9 @@ import org.apache.commons.lang3.StringEscapeUtils;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
+import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 
-public class CSVRenderer implements Renderer, CPDRenderer {
+public class CSVRenderer implements Renderer, CPDRenderer, CPDReportRenderer {
 
     private final char separator;
     private final boolean lineCountPerFile;
@@ -80,5 +81,10 @@ public class CSVRenderer implements Renderer, CPDRenderer {
             writer.append(PMD.EOL);
         }
         writer.flush();
+    }
+
+    @Override
+    public void render(CPDReport report, Writer writer) throws IOException {
+        render(report.getMatches().iterator(), writer);
     }
 }
