@@ -242,11 +242,16 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRule {
                 varName = name.getImage();
             }
         }
+        if (varName == null) {
+            return false;
+        }
+
         Scope scope = prefix == null ? null : prefix.getScope();
         while (scope != null) {
             // Try recursively to find the expected NameDeclaration
             for (NameDeclaration decl : scope.getDeclarations().keySet()) {
-                if (decl.getName().equals(varName)) {
+                // anonymous classes have no names, so decl.getName() can be null
+                if (varName.equals(decl.getName())) {
                     // If the last parameter is a lambda parameter, then we also ignore it - regardless of the type.
                     // This is actually a workaround, since type resolution doesn't resolve the types of lambda parameters.
                     return decl.getNode().getParent() instanceof ASTLambdaExpression;
@@ -262,13 +267,40 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRule {
                 + params.size();
     }
 
-    private boolean isStringFormatCall(ASTExpression node) {
-        if (node.getNumChildren() > 0 && node.getChild(0) instanceof ASTPrimaryExpression
-                && node.getChild(0).getNumChildren() > 0 && node.getChild(0).getChild(0) instanceof ASTPrimaryPrefix
-                && node.getChild(0).getChild(0).getNumChildren() > 0 && node.getChild(0).getChild(0).getChild(0) instanceof ASTName) {
-            String name = node.getChild(0).getChild(0).getChild(0).getImage();
+    /**
+     * Checks for {@code String.format("%s", x)} and {@code "%s".formatted(x)} calls.
+     */
+    private boolean isStringFormatCall(ASTExpression expression) {
+        ASTPrimaryExpression primaryExpression = null;
+        ASTPrimaryPrefix primaryPrefix = null;
+
+        // Check beginning of tree: Expression/PrimaryExpression
+        if (expression.getNumChildren() > 0 && expression.getChild(0) instanceof ASTPrimaryExpression) {
+            primaryExpression = (ASTPrimaryExpression) expression.getChild(0);
+        }
+
+        if (primaryExpression != null
+                && primaryExpression.getNumChildren() > 0 && primaryExpression.getChild(0) instanceof ASTPrimaryPrefix) {
+            primaryPrefix = (ASTPrimaryPrefix) primaryExpression.getChild(0);
+        }
+
+        // check for static String::format calls
+        // Tree: Expression/PrimaryExpression/PrimaryPrefix/Name
+        if (primaryPrefix != null && primaryPrefix.getNumChildren() > 0 && primaryPrefix.getChild(0) instanceof ASTName) {
+            String name = primaryPrefix.getChild(0).getImage();
 
             return "String.format".equals(name) || formatIsStringFormat && "format".equals(name);
+        }
+
+        // check for String::formatted calls - this method has been added with Java 15
+        // Tree: //Expression/PrimaryExpression[PrimaryPrefix/Literal[@StringLiteral = true()]]/PrimarySuffix[@Image = 'formatted']
+        if (primaryPrefix != null && primaryPrefix.getNumChildren() > 0 && primaryPrefix.getChild(0) instanceof ASTLiteral) {
+            ASTLiteral literal = (ASTLiteral) primaryPrefix.getChild(0);
+            if (literal.isStringLiteral()
+                && primaryExpression.getNumChildren() > 1 && primaryExpression.getChild(1) instanceof ASTPrimarySuffix) {
+                ASTPrimarySuffix primarySuffix = (ASTPrimarySuffix) primaryExpression.getChild(1);
+                return "formatted".equals(primarySuffix.getImage());
+            }
         }
         return false;
     }

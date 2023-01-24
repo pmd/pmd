@@ -1205,7 +1205,8 @@ String name,
 Position literals first in comparisons, if the second argument is null then NullPointerExceptions
 can be avoided, they will just return false.
 
-This rule is replaced by the more general rule {% rule "LiteralsFirstInComparisons" %}.
+_Note:_ This rule is deprecated since PMD 6.24.0 and will be removed with PMD 7.0.0. The rule is replaced
+by the more general rule {% rule "LiteralsFirstInComparisons" %}.
         </description>
         <priority>3</priority>
         <example>
@@ -1230,7 +1231,8 @@ class Foo {
 Position literals first in comparisons, if the second argument is null then NullPointerExceptions
 can be avoided, they will just return false.
 
-This rule is replaced by the more general rule {% rule "LiteralsFirstInComparisons" %}.
+_Note:_ This rule is deprecated since PMD 6.24.0 and will be removed with PMD 7.0.0. The rule is replaced
+by the more general rule {% rule "LiteralsFirstInComparisons" %}.
         </description>
         <priority>3</priority>
         <example>
@@ -1687,8 +1689,8 @@ Reports import statements that are not used within the file. This also reports
 duplicate imports, and imports from the same package. The simplest fix is just
 to delete those imports.
 
-This rule is deprecated since PMD 6.34.0. Use the rule {% rule "java/codestyle/UnnecessaryImport" %}
-from category codestyle instead.
+_Note:_ This rule is deprecated since PMD 6.34.0 and will be removed with PMD 7.0.0.
+Use the rule {% rule "java/codestyle/UnnecessaryImport" %} from category codestyle instead.
         </description>
         <priority>4</priority>
         <example>
@@ -1783,7 +1785,8 @@ public class Something {
         <description>
 This rule detects JUnit assertions in object equality. These assertions should be made by more specific methods, like assertEquals.
 
-Deprecated since PMD 6.37.0, use {% rule SimplifiableTestAssertion %} instead.
+_Note:_ This rule is deprecated since PMD 6.37.0 and will be removed with PMD 7.0.0.
+Use {% rule SimplifiableTestAssertion %} instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -1837,7 +1840,8 @@ public class FooTest extends TestCase {
 This rule detects JUnit assertions in object references equality. These assertions should be made by
 more specific methods, like assertNull, assertNotNull.
 
-Deprecated since PMD 6.37.0, use {% rule SimplifiableTestAssertion %} instead.
+_Note:_ This rule is deprecated since PMD 6.37.0 and will be removed with PMD 7.0.0.
+Use {% rule SimplifiableTestAssertion %} instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -1894,7 +1898,8 @@ public class FooTest extends TestCase {
 This rule detects JUnit assertions in object references equality. These assertions should be made
 by more specific methods, like assertSame, assertNotSame.
 
-Deprecated since PMD 6.37.0, use {% rule SimplifiableTestAssertion %} instead.
+_Note:_ This rule is deprecated since PMD 6.37.0 and will be removed with PMD 7.0.0.
+Use {% rule SimplifiableTestAssertion %} instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -1947,7 +1952,8 @@ public class FooTest extends TestCase {
         <description>
 When asserting a value is the same as a literal or Boxed boolean, use assertTrue/assertFalse, instead of assertEquals.
 
-Deprecated since PMD 6.37.0, use {% rule SimplifiableTestAssertion %} instead.
+_Note:_ This rule is deprecated since PMD 6.37.0 and will be removed with PMD 7.0.0.
+Use {% rule SimplifiableTestAssertion %} instead.
         </description>
         <priority>3</priority>
         <properties>
@@ -2187,15 +2193,16 @@ a block `{}` is sufficient.
             <property name="xpath">
                 <value>
 <![CDATA[
-(: while loops with single boolean literal, maybe parenthesized :)
+(: while loops with single boolean literal 'false', maybe parenthesized :)
 //WhileStatement[Expression/(.|(PrimaryExpression/PrimaryPrefix/Expression))/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral[@True = false()]]
 |
-(: do-while loops with single boolean literal, maybe parenthesized :)
+(: do-while loops with single boolean literal ('false' or 'true'), maybe parenthesized :)
 //DoStatement[Expression/(.|(PrimaryExpression/PrimaryPrefix/Expression))/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral]
 |
 (: while loops with conditional or'ed boolean literals, maybe parenthesized :)
 //WhileStatement[Expression/(InclusiveOrExpression|ConditionalOrExpression|(PrimaryExpression/PrimaryPrefix/Expression/(InclusiveOrExpression|ConditionalOrExpression)))
-    [count(PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral) = 2]
+    (: no var access :)
+    [count(PrimaryExpression/PrimaryPrefix/Name) = 0]
     (: at least one false literal :)
     [count(PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral[@True = false()]) >= 1]]
 |
@@ -2206,14 +2213,21 @@ a block `{}` is sufficient.
 |
 (: do-while loops with conditional or'ed boolean literals, maybe parenthesized :)
 //DoStatement[Expression/(InclusiveOrExpression|ConditionalOrExpression|(PrimaryExpression/PrimaryPrefix/Expression/(InclusiveOrExpression|ConditionalOrExpression)))
-    [count(PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral) = 2]]
+    (: at least one true literal :)
+    [count(PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral[@True = true()]) >= 1
+      (: or only boolean literal and no no var access :)
+      or count(PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral) >= 1
+      and count(PrimaryExpression/PrimaryPrefix/Name) = 0
+    ]]
 |
 (: do-while loops with conditional and'ed boolean literals, maybe parenthesized :)
 //DoStatement[Expression/(AndExpression|ConditionalAndExpression|(PrimaryExpression/PrimaryPrefix/Expression/(AndExpression|ConditionalAndExpression)))
     (: at least one false literal :)
     [count(PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral[@True = false()]) >= 1
-      (: or two true literals (e.g. true & true) :)
-      or count(PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral[@True = true()]) = 2]]
+      (: or only boolean literal and no no var access :)
+      or count(PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral) >= 1
+      and count(PrimaryExpression/PrimaryPrefix/Name) = 0
+    ]]
 ]]>
                 </value>
             </property>

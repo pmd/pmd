@@ -362,11 +362,11 @@ END;
     </test-code>
 
     <test-code>
-        <description>Calling a procedure / function - closing paranthesis should be on a new line</description>
+        <description>Calling a procedure / function - closing parenthesis should be on a new line</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>3</expected-linenumbers>
         <expected-messages>
-            <message>Closing paranthesis should be on a new line.</message>
+            <message>Closing parenthesis should be on a new line.</message>
         </expected-messages>
         <code><![CDATA[
 BEGIN

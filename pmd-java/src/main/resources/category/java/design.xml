@@ -31,7 +31,12 @@ protected constructor in order to prevent instantiation than make the class misl
     [@Abstract = true()]
     [not(./ClassOrInterfaceBody/*/ConstructorDeclaration)]
     [not(./ClassOrInterfaceBody/*/MethodDeclaration)]
-    [not(../Annotation/MarkerAnnotation/Name[pmd-java:typeIs('com.google.auto.value.AutoValue')])]
+    [not(../Annotation[pmd-java:typeIs('com.google.auto.value.AutoValue')
+                    or pmd-java:typeIs('lombok.AllArgsConstructor')
+                    or pmd-java:typeIs('lombok.NoArgsConstructor')
+                    or pmd-java:typeIs('lombok.RequiredArgsConstructor')
+                      ]
+    )]
 ]]>
                 </value>
             </property>
@@ -330,7 +335,7 @@ public void foo() throws RuntimeException {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#classwithonlyprivateconstructorsshouldbefinal">
         <description>
 A class with only private constructors should be final, unless the private constructor
-is invoked by a inner class.
+is invoked by an inner class.
         </description>
         <priority>1</priority>
         <properties>
@@ -339,8 +344,19 @@ is invoked by a inner class.
                 <value>
 <![CDATA[
 //TypeDeclaration
-(: no lombok constructor annotations :)
+  (: no lombok constructor annotations :)
   [not(Annotation[pmd-java:typeIs('lombok.Value')])]
+  [not(Annotation[pmd-java:typeIs('lombok.NoArgsConstructor')
+               or pmd-java:typeIs('lombok.RequiredArgsConstructor')
+               or pmd-java:typeIs('lombok.AllArgsConstructor')]
+     [not(.//MemberValuePair[@MemberName='access'])
+       or .//MemberValuePair[@MemberName='access']
+                            [.//Name[@Image!='PRIVATE']
+                                    [@Image!='AccessLevel.PRIVATE']
+                                    [@Image!='lombok.AccessLevel.PRIVATE']
+                            ]
+     ]
+  )]
   /ClassOrInterfaceDeclaration
   [@Final = false()]
   (: at least one private constructor :)
@@ -349,7 +365,7 @@ is invoked by a inner class.
   [not(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[(@Public = true()) or (@Protected = true()) or (@PackagePrivate = true())])]
   (: not a base class in the same compilation unit :)
   [not(@SimpleName = ../../TypeDeclaration/ClassOrInterfaceDeclaration/ExtendsList/ClassOrInterfaceType/@Image)]
-  (: not a base class for a inner class in the same compilation unit :)
+  (: not a base class for an inner class in the same compilation unit :)
   [not(@SimpleName = .//ClassOrInterfaceDeclaration/ExtendsList/ClassOrInterfaceType/@Image)]
 ]]>
                 </value>
@@ -659,6 +675,7 @@ public void bar() {
     <rule name="ExcessiveClassLength"
           language="java"
           since="0.6"
+          deprecated="true"
           message="Avoid really long classes."
           class="net.sourceforge.pmd.lang.java.rule.design.ExcessiveClassLengthRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#excessiveclasslength">
@@ -666,6 +683,16 @@ public void bar() {
 Excessive class file lengths are usually indications that the class may be burdened with excessive
 responsibilities that could be provided by external classes or functions. In breaking these methods
 apart the code becomes more manageable and ripe for reuse.
+
+_Note:_ This rule is deprecated since PMD 6.53.0 and will be removed with PMD 7.0.0.
+
+The rule is based on the simple metric lines of code (LoC). The reasons for deprecation are:
+* LoC is a noisy metric, NCSS (non-commenting source statements) is a more solid metric
+(results are code-style independent, comment-insensitive)
+* LoC is easily circumvented by bad code style (e.g. stuffing several assignments into one, concatenating code lines)
+* Enforcing length limits with LoC is not very meaningful, could even be called a bad practice
+
+In order to find "big" classes, the rule {% rule NcssCount %} can be used instead.
         </description>
         <priority>3</priority>
         <example>
@@ -716,6 +743,7 @@ public class Foo {
     <rule name="ExcessiveMethodLength"
           language="java"
           since="0.6"
+          deprecated="true"
           message="Avoid really long methods."
           class="net.sourceforge.pmd.lang.java.rule.design.ExcessiveMethodLengthRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#excessivemethodlength">
@@ -724,6 +752,16 @@ When methods are excessively long this usually indicates that the method is doin
 name/signature might suggest. They also become challenging for others to digest since excessive
 scrolling causes readers to lose focus.
 Try to reduce the method length by creating helper methods and removing any copy/pasted code.
+
+_Note:_ This rule is deprecated since PMD 6.53.0 and will be removed with PMD 7.0.0.
+
+The rule is based on the simple metric lines of code (LoC). The reasons for deprecation are:
+* LoC is a noisy metric, NCSS (non-commenting source statements) is a more solid metric
+(results are code-style independent, comment-insensitive)
+* LoC is easily circumvented by bad code style (e.g. stuffing several assignments into one, concatenating code lines)
+* Enforcing length limits with LoC is not very meaningful, could even be called a bad practice
+
+In order to find "big" methods, the rule {% rule NcssCount %} can be used instead.
         </description>
         <priority>3</priority>
         <example>
@@ -886,6 +924,12 @@ of the field or by a constructor. This helps in converting existing classes to b
 Note that this rule does not enforce referenced object to be immutable itself. A class can still be mutable, even
 if all its member fields are declared final. This is referred to as shallow immutability. For more information on
 mutability, see Effective Java, 3rd Edition, Item 17: Minimize mutability.
+
+Note: The property `ignoredAnnotations` is deprecated since PMD 6.52.0 and doesn't have any effect anymore.
+Since PMD 6.47.0, the rule only considers fields, that are initialized once and never changed. If the field is just
+declared but never explicitly initialized, it won't be reported. That's the typical case when a framework sets
+the field value by reflection. Therefore, the property is not needed anymore. If there is a special case where
+this rule misidentifies fields as immutable, then the rule should be suppressed for these fields explicitly.
         </description>
         <priority>3</priority>
         <example>
@@ -898,6 +942,44 @@ public class Foo {
   public void foo() {
      int a = x + 2;
   }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="InvalidJavaBean"
+          language="java"
+          since="6.52.0"
+          message="The bean ''{0}'' is missing a getter for property ''{1}''."
+          class="net.sourceforge.pmd.lang.java.rule.design.InvalidJavaBeanRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#invalidjavabean">
+        <description>
+Identifies beans, that don't follow the [JavaBeans API specification](https://download.oracle.com/otndocs/jcp/7224-javabeans-1.01-fr-spec-oth-JSpec/).
+
+Each non-static field should have both a getter and a setter method. If the field is just used internally and is not
+a bean property, then the field should be marked as `transient`.
+
+The rule verifies that the type of the field is the same as the result type of the getter. And that this type matches
+the type used in the setter.
+
+The rule also checks, that there is a no-arg or default constructor available.
+
+Optionally the rule also verifies, that the bean implements `java.io.Serializable`. While this is a requirement for the
+original JavaBeans specification, frameworks nowadays don't strictly require this anymore.
+
+In order to avoid many false positives in classes that are not beans, the rule needs to be explicitly
+enabled by configuring the property `packages`.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+package org.example.beans;
+public class MyBean {        // <-- bean is not serializable, missing "implements Serializable"
+    private String label;    // <-- missing setter for property "label"
+
+    public String getLabel() {
+        return label;
+    }
 }
 ]]>
         </example>
@@ -1082,7 +1164,7 @@ This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determin
 of code for a given constructor. NCSS ignores comments, and counts actual statements. Using this algorithm,
 lines of code that are split are counted as one.
 
-This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+_Note:_ This rule is deprecated since PMD 6.0.0 and will be removed with PMD 7.0.0. The rule is replaced
 by the rule {% rule java/design/NcssCount %}.
         </description>
         <priority>3</priority>
@@ -1160,7 +1242,7 @@ This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determin
 of code for a given method. NCSS ignores comments, and counts actual statements. Using this algorithm,
 lines of code that are split are counted as one.
 
-This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+_Note:_ This rule is deprecated since PMD 6.0.0 and will be removed with PMD 7.0.0. The rule is replaced
 by the rule {% rule java/design/NcssCount %}.
         </description>
         <priority>3</priority>
@@ -1195,7 +1277,7 @@ This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determin
 of code for a given type. NCSS ignores comments, and counts actual statements. Using this algorithm,
 lines of code that are split are counted as one.
 
-This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+_Note:_ This rule is deprecated since PMD 6.0.0 and will be removed with PMD 7.0.0. The rule is replaced
 by the rule {% rule java/design/NcssCount %}.
         </description>
         <priority>3</priority>
@@ -1373,7 +1455,8 @@ as:
 
     assertFalse(expr);
 
-Deprecated since PMD 6.37.0, use {% rule java/bestpractices/SimplifiableTestAssertion %} instead.
+_Note:_ This rule is deprecated since PMD 6.37.0 and will be removed with PMD 7.0.0.
+Use {% rule SimplifiableTestAssertion %} instead.
         </description>
         <priority>3</priority>
         <properties>

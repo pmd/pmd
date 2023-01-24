@@ -237,7 +237,7 @@ the Java framework but it's symmetrical in the Apex framework.
 * **Metrics should be stateless**. In any case, instances of the same metric class
   are considered `equals`. The same instance of your metric will be used to
   compute the metric on the AST of different nodes so it should really be
-  "functionnally pure". That rule also makes you keep it simple and understandable
+  "functionally pure". That rule also makes you keep it simple and understandable
   which is nice.
 * **Implementation patterns:** You can implement your `computeFor` method as you
   like it. But most metrics in our library are implemented following a few
@@ -251,7 +251,7 @@ the Java framework but it's symmetrical in the Apex framework.
   * *Signature matching metrics:* That's even more straightforward when you want
     to count the number of methods or fields that match a specific signature, e.g.
     public static final fields. Basically a signature is an object that describes
-    a field or method, with info about its modifers and other node-specific info.
+    a field or method, with info about its modifiers and other node-specific info.
      `AbstractJavaClassMetric` has a few methods that allow you to count signatures
       directly, see e.g. the metrics [NOPA](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/impl/NopaMetric.java)
       and [WOC](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/impl/WocMetric.java).

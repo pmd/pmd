@@ -57,6 +57,7 @@ public class CommentDefaultAccessModifierRule extends AbstractIgnoredAnnotationR
         Collection<String> ignoredStrings = new ArrayList<>();
         ignoredStrings.add("com.google.common.annotations.VisibleForTesting");
         ignoredStrings.add("android.support.annotation.VisibleForTesting");
+        ignoredStrings.add("co.elastic.clients.util.VisibleForTesting");
         ignoredStrings.add("org.junit.jupiter.api.Test");
         ignoredStrings.add("org.junit.jupiter.api.ParameterizedTest");
         ignoredStrings.add("org.junit.jupiter.api.RepeatedTest");

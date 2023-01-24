@@ -267,6 +267,9 @@ public final class FileCollector implements AutoCloseable {
      */
     static String getDisplayNameLegacy(Path file, List<String> relativizeRoots) {
         String fileName = file.toString();
+        if ("jar".equals(file.toUri().getScheme())) {
+            fileName = URI.create(file.toUri().getSchemeSpecificPart()).getPath();
+        }
         for (String root : relativizeRoots) {
             if (file.startsWith(root)) {
                 if (fileName.startsWith(File.separator, root.length())) {
