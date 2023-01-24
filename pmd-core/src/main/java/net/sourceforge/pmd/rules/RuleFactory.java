@@ -357,10 +357,8 @@ public class RuleFactory {
 
     /** Gets the string value from a property node. */
     private static String valueFrom(Element propertyNode) {
-        String strValue = propertyNode.getAttribute(DEFAULT_VALUE.attributeName());
-
-        if (StringUtils.isNotBlank(strValue)) {
-            return strValue;
+        if (propertyNode.hasAttribute(DEFAULT_VALUE.attributeName())) {
+            return propertyNode.getAttribute(DEFAULT_VALUE.attributeName());
         }
 
         final NodeList nodeList = propertyNode.getChildNodes();

@@ -16,6 +16,9 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+* core
+    * [#4279](https://github.com/pmd/pmd/issues/4279): \[core] Can not set ruleset property value to empty
+
 ### API Changes
 
 #### Deprecated APIs
