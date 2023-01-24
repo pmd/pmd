@@ -74,7 +74,7 @@ class TypeSystemTest : IntelliMarker, FunSpec({
     }
 
     test("Test typeOf type var") {
-        val (tvar) = ParserTestCtx().makeDummyTVars("T")
+        val (tvar) = ParserTestCtx(this).makeDummyTVars("T")
         val type = ts.typeOf(tvar.symbol, false)
         withClue("erased should be the same as not erased") {
             type shouldBe ts.typeOf(tvar.symbol, true)
@@ -83,7 +83,7 @@ class TypeSystemTest : IntelliMarker, FunSpec({
     }
 
     test("Test typeOf array of type var") {
-        val (tvar) = ParserTestCtx().makeDummyTVars("T")
+        val (tvar) = ParserTestCtx(this).makeDummyTVars("T")
         val type = ts.arrayType(ts.typeOf(tvar.symbol, false))
         type.shouldBeA<JArrayType> {
             it.componentType shouldBeSameInstanceAs tvar

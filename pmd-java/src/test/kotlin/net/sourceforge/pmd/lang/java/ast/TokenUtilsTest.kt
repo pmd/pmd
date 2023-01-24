@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.test.TestScope
 import net.sourceforge.pmd.lang.ast.GenericToken
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken
 import net.sourceforge.pmd.lang.ast.test.Assertions
@@ -16,13 +17,13 @@ import net.sourceforge.pmd.lang.ast.test.Assertions
  */
 class TokenUtilsTest : FunSpec({
 
-    fun setup1(assertions: Assertions<List<JavaccToken>>) {
+    fun TestScope.setup1(assertions: Assertions<List<JavaccToken>>) {
 
 
         val decl =
                 TopLevelTypeDeclarationParsingCtx.parseAndFind<ASTClassOrInterfaceDeclaration>(
                         "class Foo { /* wassup */ abstract void bar(); }",
-                        ParserTestCtx(JavaVersion.J11)
+                        ParserTestCtx(this@setup1, JavaVersion.J11)
                 )
 
         val fileTokens = generateSequence(decl.root.firstToken) { it.next }.toList()

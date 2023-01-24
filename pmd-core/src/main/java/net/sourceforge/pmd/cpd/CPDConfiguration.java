@@ -189,7 +189,7 @@ public class CPDConfiguration extends AbstractConfiguration {
                 setRenderer((Renderer) renderer);
             } else {
                 System.err.println("Class '" + className + "' is not a supported renderer, defaulting to SimpleRenderer.");
-                setRenderer(new SimpleRenderer());
+                setRenderer((CPDReportRenderer) new SimpleRenderer());
             }
         }
     }
