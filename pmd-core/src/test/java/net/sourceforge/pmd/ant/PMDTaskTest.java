@@ -80,7 +80,7 @@ public class PMDTaskTest {
             String actual = IOUtil.readToString(in, StandardCharsets.UTF_8);
             // remove any trailing newline
             actual = actual.replaceAll("\n|\r", "");
-            Assert.assertEquals("src/sample.dummy:0:\tSampleXPathRule:\tTest Rule 2", actual);
+            Assert.assertEquals(IOUtil.normalizePath("src/sample.dummy") + ":0:\tSampleXPathRule:\tTest Rule 2", actual);
         }
     }
 
@@ -92,7 +92,7 @@ public class PMDTaskTest {
             String actual = IOUtil.readToString(in, StandardCharsets.UTF_8);
             // remove any trailing newline
             actual = actual.replaceAll("\n|\r", "");
-            Assert.assertEquals("src/sample.dummy:0:\tSampleXPathRule:\tTest Rule 2", actual);
+            Assert.assertEquals(IOUtil.normalizePath("src/sample.dummy") + ":0:\tSampleXPathRule:\tTest Rule 2", actual);
         }
     }
 

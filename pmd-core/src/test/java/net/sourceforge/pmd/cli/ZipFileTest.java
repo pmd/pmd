@@ -17,6 +17,7 @@ import org.junit.Test;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.util.IOUtil;
 
 public class ZipFileTest {
 
@@ -30,9 +31,9 @@ public class ZipFileTest {
         try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
             List<TextFile> files = pmd.files().getCollectedFiles();
             assertThat(files, hasSize(3));
-            assertThat(files.get(0).getDisplayName(), equalTo(ZIP_PATH + "!/otherSrc/somefile.dummy"));
-            assertThat(files.get(1).getDisplayName(), equalTo(ZIP_PATH + "!/src/somefile.dummy"));
-            assertThat(files.get(2).getDisplayName(), equalTo(ZIP_PATH + "!/src/somefile1.dummy"));
+            assertThat(files.get(0).getDisplayName(), equalTo(IOUtil.normalizePath(ZIP_PATH) + "!/otherSrc/somefile.dummy"));
+            assertThat(files.get(1).getDisplayName(), equalTo(IOUtil.normalizePath(ZIP_PATH) + "!/src/somefile.dummy"));
+            assertThat(files.get(2).getDisplayName(), equalTo(IOUtil.normalizePath(ZIP_PATH) + "!/src/somefile1.dummy"));
         }
     }
 
@@ -44,9 +45,10 @@ public class ZipFileTest {
         try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
             List<TextFile> files = pmd.files().getCollectedFiles();
             assertThat(files, hasSize(3));
-            assertThat(files.get(0).getDisplayName(), equalTo("net/sourceforge/pmd/cli/zipWithSources.zip!/otherSrc/somefile.dummy"));
-            assertThat(files.get(1).getDisplayName(), equalTo("net/sourceforge/pmd/cli/zipWithSources.zip!/src/somefile.dummy"));
-            assertThat(files.get(2).getDisplayName(), equalTo("net/sourceforge/pmd/cli/zipWithSources.zip!/src/somefile1.dummy"));
+            String baseZipPath = IOUtil.normalizePath("net/sourceforge/pmd/cli/zipWithSources.zip");
+            assertThat(files.get(0).getDisplayName(), equalTo(baseZipPath + "!/otherSrc/somefile.dummy"));
+            assertThat(files.get(1).getDisplayName(), equalTo(baseZipPath + "!/src/somefile.dummy"));
+            assertThat(files.get(2).getDisplayName(), equalTo(baseZipPath + "!/src/somefile1.dummy"));
         }
     }
 
@@ -54,7 +56,7 @@ public class ZipFileTest {
     public void testZipFileRelativizeWithRoot() {
         PMDConfiguration conf = new PMDConfiguration();
         conf.addInputPath(zipPath);
-        conf.addRelativizeRoot(Paths.get("/"));
+        conf.addRelativizeRoot(zipPath.toAbsolutePath().getRoot());
         try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
             List<TextFile> files = pmd.files().getCollectedFiles();
             assertThat(files, hasSize(3));

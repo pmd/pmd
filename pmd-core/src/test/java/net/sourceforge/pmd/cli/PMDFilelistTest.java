@@ -26,6 +26,7 @@ import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
 public class PMDFilelistTest {
@@ -63,8 +64,8 @@ public class PMDFilelistTest {
         try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
             List<TextFile> files = pmd.files().getCollectedFiles();
             assertThat(files, hasSize(2));
-            assertThat(files.get(0).getDisplayName(), equalTo("net/sourceforge/pmd/cli/src/anotherfile.dummy"));
-            assertThat(files.get(1).getDisplayName(), equalTo("net/sourceforge/pmd/cli/src/somefile.dummy"));
+            assertThat(files.get(0).getDisplayName(), equalTo(IOUtil.normalizePath("net/sourceforge/pmd/cli/src/anotherfile.dummy")));
+            assertThat(files.get(1).getDisplayName(), equalTo(IOUtil.normalizePath("net/sourceforge/pmd/cli/src/somefile.dummy")));
         }
     }
 
@@ -76,7 +77,7 @@ public class PMDFilelistTest {
         try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
             List<TextFile> files = pmd.files().getCollectedFiles();
             assertThat(files, hasSize(3));
-            assertThat(files.get(0).getDisplayName(), equalTo("../otherSrc/somefile.dummy"));
+            assertThat(files.get(0).getDisplayName(), equalTo(".." + IOUtil.normalizePath("/otherSrc/somefile.dummy")));
             assertThat(files.get(1).getDisplayName(), equalTo("anotherfile.dummy"));
             assertThat(files.get(2).getDisplayName(), equalTo("somefile.dummy"));
         }
@@ -101,7 +102,7 @@ public class PMDFilelistTest {
     public void testUseAbsolutePaths() {
         PMDConfiguration conf = new PMDConfiguration();
         conf.setInputFilePath(Paths.get(RESOURCE_PREFIX + "filelist4.txt"));
-        conf.addRelativizeRoot(Paths.get("/"));
+        conf.addRelativizeRoot(Paths.get(RESOURCE_PREFIX).toAbsolutePath().getRoot());
         try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
             List<TextFile> files = pmd.files().getCollectedFiles();
             assertThat(files, hasSize(3));

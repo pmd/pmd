@@ -149,7 +149,7 @@ public class CoreCliTest {
         runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS, "-z", srcDir.getParent());
 
         assertThat(outStreamCaptor.getLog(), not(containsString(srcDir.resolve("someSource.dummy").toString())));
-        assertThat(outStreamCaptor.getLog(), containsString("src/someSource.dummy"));
+        assertThat(outStreamCaptor.getLog(), containsString(IOUtil.normalizePath("src/someSource.dummy")));
     }
 
     @Test
