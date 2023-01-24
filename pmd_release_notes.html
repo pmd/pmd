@@ -1612,6 +1612,7 @@
   <li>core
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/4279">#4279</a>: [core] Can not set ruleset property value to empty</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4340">#4340</a>: [core] Allow to filter found matches in CPDReport</li>
     </ul>
   </li>
 </ul>
@@ -1633,6 +1634,17 @@ that is being analyzed.</li>
 
 <ul>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0-SNAPSHOT/net/sourceforge/pmd/renderers/CSVWriter.html#"><code>CSVWriter</code></a></li>
+</ul>
+
+<h5 id="experimental-apis">Experimental APIs</h5>
+
+<ul>
+  <li>CPDReport has a new method which limited mutation of a given report:
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPDReport.html#filterMatches(net.sourceforge.pmd.util.Predicate)"><code>filterMatches</code></a> creates a new CPD report
+with some matches removed with a given predicate based filter.</li>
+    </ul>
+  </li>
 </ul>
 
 <h3 id="external-contributions">External Contributions</h3>
