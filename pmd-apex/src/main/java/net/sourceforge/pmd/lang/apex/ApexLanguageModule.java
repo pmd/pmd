@@ -9,6 +9,7 @@ import net.sourceforge.pmd.lang.LanguageModuleBase;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.apex.internal.ApexHandler;
 
 public class ApexLanguageModule extends LanguageModuleBase {
 

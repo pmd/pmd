@@ -79,7 +79,7 @@ class CoreCliTest {
 
         assertTrue(Files.exists(reportFile), "Report file should exist");
 
-        runPmdSuccessfully("--no-progress", "--no-cache", "-d", srcDir, "-R", DUMMY_RULESET, "-r", reportFile);
+        runPmdSuccessfully("--no-cache", "-d", srcDir, "-R", DUMMY_RULESET, "-r", reportFile);
 
         assertNotEquals(readString(reportFile), STRING_TO_REPLACE);
     }
@@ -93,7 +93,7 @@ class CoreCliTest {
 
         assertTrue(Files.exists(reportFile), "Report file should exist");
 
-        runPmdSuccessfully("--no-progress", "--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET, "--report-file", reportFile);
+        runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET, "--report-file", reportFile);
 
         assertNotEquals(readString(reportFile), STRING_TO_REPLACE, "Report file should have been overwritten");
     }
@@ -105,7 +105,7 @@ class CoreCliTest {
         assertFalse(Files.exists(reportFile), "Report file should not exist");
 
         try {
-            runPmdSuccessfully("--no-progress", "--no-cache", "-d", srcDir, "-R", DUMMY_RULESET, "-r", reportFile);
+            runPmdSuccessfully("--no-cache", "-d", srcDir, "-R", DUMMY_RULESET, "-r", reportFile);
             assertTrue(Files.exists(reportFile), "Report file should have been created");
         } finally {
             Files.deleteIfExists(reportFile);
@@ -118,7 +118,7 @@ class CoreCliTest {
 
         assertFalse(Files.exists(reportFile), "Report file should not exist");
 
-        runPmdSuccessfully("--no-progress", "--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET, "--report-file", reportFile);
+        runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET, "--report-file", reportFile);
 
         assertTrue(Files.exists(reportFile), "Report file should have been created");
     }
@@ -131,7 +131,7 @@ class CoreCliTest {
 
         // restoring system properties: --debug might change logging properties
         SystemLambda.restoreSystemProperties(() -> {
-            runPmdSuccessfully("--no-progress", "--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET, "--report-file", reportFile, "--debug");
+            runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET, "--report-file", reportFile, "--debug");
         });
 
         assertTrue(Files.exists(reportFile), "Report file should have been created");
@@ -145,7 +145,7 @@ class CoreCliTest {
 
         assertFalse(Files.exists(reportFile), "Report file should not exist");
 
-        String log = runPmdSuccessfully("--no-progress", "-no-cache", "-dir", srcDir, "-rulesets", DUMMY_RULESET, "-reportfile", reportFile);
+        String log = runPmdSuccessfully("-no-cache", "-dir", srcDir, "-rulesets", DUMMY_RULESET, "-reportfile", reportFile);
 
         assertTrue(Files.exists(reportFile), "Report file should have been created");
         assertTrue(log.contains("Some deprecated options were used on the command-line, including -rulesets"));
@@ -170,7 +170,7 @@ class CoreCliTest {
         assertFalse(Files.exists(absoluteReportFile), "Report file must not exist yet! " + absoluteReportFile);
 
         try {
-            runPmdSuccessfully("--no-progress", "--no-cache", "-d", srcDir, "-R", DUMMY_RULESET, "-r", reportFile);
+            runPmdSuccessfully("--no-cache", "-d", srcDir, "-R", DUMMY_RULESET, "-r", reportFile);
             assertTrue(Files.exists(absoluteReportFile), "Report file should have been created");
         } finally {
             Files.deleteIfExists(absoluteReportFile);
@@ -185,7 +185,7 @@ class CoreCliTest {
         assertFalse(Files.exists(absoluteReportFile), "Report file must not exist yet!");
 
         try {
-            runPmdSuccessfully("--no-progress", "--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET, "--report-file", reportFile);
+            runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET, "--report-file", reportFile);
             assertTrue(Files.exists(absoluteReportFile), "Report file should have been created");
         } finally {
             Files.deleteIfExists(absoluteReportFile);
@@ -196,21 +196,21 @@ class CoreCliTest {
     void debugLogging() throws Exception {
         // restoring system properties: --debug might change logging properties
         SystemLambda.restoreSystemProperties(() -> {
-            String log = runPmdSuccessfully("--no-progress", "--debug", "--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET);
-            assertThat(log, containsString("[main] INFO net.sourceforge.pmd - Log level is at TRACE"));
+            String log = runPmdSuccessfully("--debug", "--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET);
+            assertThat(log, containsString("[main] INFO net.sourceforge.pmd.PMD - Log level is at TRACE"));
         });
     }
 
     @Test
     void defaultLogging() throws Exception {
-        String log = runPmdSuccessfully("--no-progress", "--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET);
-        assertThat(log, containsString("[main] INFO net.sourceforge.pmd - Log level is at INFO"));
+        String log = runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET);
+        assertThat(log, containsString("[main] INFO net.sourceforge.pmd.PMD - Log level is at INFO"));
     }
 
     @Test
     void testDeprecatedRulesetSyntaxOnCommandLine() throws Exception {
         String log = SystemLambda.tapSystemErrAndOut(() -> {
-            runPmd(StatusCode.VIOLATIONS_FOUND, "--no-progress", "--no-cache", "--dir", srcDir, "--rulesets", "dummy-basic");
+            runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", srcDir, "--rulesets", "dummy-basic");
         });
         assertThat(log, containsString("Ruleset reference 'dummy-basic' uses a deprecated form, use 'rulesets/dummy/basic.xml' instead"));
     }
@@ -227,7 +227,7 @@ class CoreCliTest {
         try {
             System.setOut(out);
             SystemLambda.tapSystemErrAndOut(() -> {
-                runPmd(StatusCode.VIOLATIONS_FOUND, "--no-progress", "--no-cache", "--dir", srcDir, "--rulesets", "dummy-basic");
+                runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", srcDir, "--rulesets", "dummy-basic");
             });
         } finally {
             System.setOut(originalOut);
@@ -251,7 +251,7 @@ class CoreCliTest {
     void testZipFileAsSource() throws Exception {
         Path zipArchive = createTemporaryZipArchive("sources.zip");
         String log = SystemLambda.tapSystemErrAndOut(() -> {
-            runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--no-progress", "--dir", zipArchive, "--rulesets", "rulesets/dummy/basic.xml");
+            runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", zipArchive, "--rulesets", "rulesets/dummy/basic.xml");
         });
         assertThat(log, not(containsStringIgnoringCase("Cannot open zip file")));
         String reportPath = IOUtil.normalizePath(zipArchive.toString() + "!/someSource.dummy");
@@ -262,7 +262,7 @@ class CoreCliTest {
     void testJarFileAsSource() throws Exception {
         Path jarArchive = createTemporaryZipArchive("sources.jar");
         String log = SystemLambda.tapSystemErrAndOut(() -> {
-            runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--no-progress", "--dir", jarArchive, "--rulesets", "rulesets/dummy/basic.xml");
+            runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", jarArchive, "--rulesets", "rulesets/dummy/basic.xml");
         });
         assertThat(log, not(containsStringIgnoringCase("Cannot open zip file")));
         String reportPath = IOUtil.normalizePath(jarArchive.toString() + "!/someSource.dummy");

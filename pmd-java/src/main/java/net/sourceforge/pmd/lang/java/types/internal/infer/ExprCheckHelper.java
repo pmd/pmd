@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer;
 
 import static net.sourceforge.pmd.lang.java.types.TypeConversion.capture;
-import static net.sourceforge.pmd.lang.java.types.TypeOps.areSameTypes;
+import static net.sourceforge.pmd.lang.java.types.TypeOps.areSameTypesInInference;
 import static net.sourceforge.pmd.lang.java.types.TypeOps.asClassType;
 import static net.sourceforge.pmd.lang.java.types.TypeOps.findFunctionalInterfaceMethod;
 import static net.sourceforge.pmd.lang.java.types.TypeOps.mentionsAny;
@@ -475,7 +475,6 @@ final class ExprCheckHelper {
         if (mayMutateExpr()) {
             lambda.setInferredType(groundTargetType);
             lambda.setFunctionalMethod(groundFun);
-            lambda.updateTypingContext(groundFun);
 
             // set the final type when done
             if (phase.isInvocation()) {
@@ -539,7 +538,7 @@ final class ExprCheckHelper {
         // and the function type has parameter types G1, ..., Gn, then
         // i) for all i (1 ≤ i ≤ n), ‹Fi = Gi›
         if (lambda.isExplicitlyTyped()
-            && !areSameTypes(groundFun.getFormalParameters(), lambda.getExplicitParameterTypes(), true)) {
+            && !areSameTypesInInference(groundFun.getFormalParameters(), lambda.getExplicitParameterTypes())) {
             throw ResolutionFailedException.mismatchedLambdaParameters(infer.LOG, groundFun, lambda.getExplicitParameterTypes(), lambda);
         }
 
@@ -566,6 +565,10 @@ final class ExprCheckHelper {
                         }
                     }
                 });
+        }
+
+        if (mayMutateExpr()) { // we know that the lambda matches now
+            lambda.updateTypingContext(groundFun);
         }
         return true;
     }

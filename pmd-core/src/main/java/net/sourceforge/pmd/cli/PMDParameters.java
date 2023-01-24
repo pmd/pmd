@@ -171,9 +171,6 @@ public class PMDParameters {
     @Parameter(names = "--use-version", description = "The language version PMD should use when parsing source code in the language-version format, ie: 'java-1.8'")
     private List<String> languageVersions = new ArrayList<>();
 
-    @Parameter(names = { "--no-progress", "-no-progress" }, description = "Disables progress bar indicator of live analysis progress.")
-    private boolean noProgressBar = false;
-
     // this has to be a public static class, so that JCommander can use it!
     public static class PropertyConverter implements IStringConverter<Properties> {
 
@@ -203,25 +200,6 @@ public class PMDParameters {
             if (value < 1 || value > 5) {
                 throw new ParameterException("Priority values can only be integer value, between 1 and 5," + value + " is not valid");
             }
-        }
-    }
-
-    /** @deprecated Will be removed in 7.0.0 */
-    @Deprecated
-    public static class RulePriorityConverter implements IStringConverter<RulePriority> {
-
-        public int validate(String value) throws ParameterException {
-            int minPriorityValue = Integer.parseInt(value);
-            if (minPriorityValue < 1 || minPriorityValue > 5) {
-                throw new ParameterException(
-                        "Priority values can only be integer value, between 1 and 5," + value + " is not valid");
-            }
-            return minPriorityValue;
-        }
-
-        @Override
-        public RulePriority convert(String value) {
-            return RulePriority.valueOf(validate(value));
         }
     }
 
@@ -272,7 +250,6 @@ public class PMDParameters {
         configuration.setFailOnViolation(this.isFailOnViolation());
         configuration.setAnalysisCacheLocation(this.cacheLocation);
         configuration.setIgnoreIncrementalAnalysis(this.isIgnoreIncrementalAnalysis());
-        configuration.setProgressBar(this.isProgressBar());
 
         LanguageVersion forceLangVersion = getForceLangVersion(registry);
         if (forceLangVersion != null) {
@@ -436,10 +413,6 @@ public class PMDParameters {
 
     public boolean isFailOnViolation() {
         return failOnViolation;
-    }
-
-    public boolean isProgressBar() {
-        return !noProgressBar;
     }
 
 

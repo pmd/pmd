@@ -11,7 +11,11 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 public class FooRule extends AbstractJavaRule {
 
     public FooRule() {
-        setMessage("No Foo allowed");
+        this("No Foo allowed");
+    }
+
+    public FooRule(String message) {
+        setMessage(message);
     }
 
     @Override

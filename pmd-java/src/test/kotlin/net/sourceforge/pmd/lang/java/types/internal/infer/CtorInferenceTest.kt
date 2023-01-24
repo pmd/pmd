@@ -333,4 +333,30 @@ class CtorInferenceTest : ProcessorTestSpec({
         }
     }
 
+    parserTest("Mapping of type params doesn't fail") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+
+    class Gen<A,B> {
+      <E> Gen(Class<E> c, E inst) {}
+      static Gen<Integer, String> field;
+      static {
+        // This used to fail because the adapted ctor has type params <E,A,B>
+        // and we were calling for a substitution mapping <E> to <E,A,B>.
+        field = new Gen<>(int.class, 2);
+      }
+    }
+            """
+        )
+
+        val (t_Gen) = acu.declaredTypeSignatures()
+        val ctorCall = acu.firstCtorCall()
+        val ctorSymbol = t_Gen.constructors.first().symbol
+
+        ctorCall.withTypeDsl { // for the enclosing method call
+            ctorCall.methodType.symbol shouldBe ctorSymbol
+        }
+    }
+
 })

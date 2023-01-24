@@ -6,23 +6,17 @@ package net.sourceforge.pmd.lang;
 
 import java.util.Objects;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.document.Chars;
-import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
-import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
-import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
+import net.sourceforge.pmd.reporting.ViolationDecorator;
 
 /**
  * Dummy language used for testing PMD.
@@ -58,11 +52,6 @@ public class DummyLanguageModule extends SimpleLanguageModuleBase {
     public static class Handler extends AbstractPmdLanguageVersionHandler {
 
         @Override
-        public RuleViolationFactory getRuleViolationFactory() {
-            return new RuleViolationFactory();
-        }
-
-        @Override
         public Parser getParser() {
             return task -> {
                 if (task.getLanguageVersion().getVersion().equals(PARSER_THROWS)) {
@@ -70,6 +59,11 @@ public class DummyLanguageModule extends SimpleLanguageModuleBase {
                 }
                 return readLispNode(task);
             };
+        }
+
+        @Override
+        public ViolationDecorator getViolationDecorator() {
+            return (node, data) -> data.put(RuleViolation.PACKAGE_NAME, "foo");
         }
     }
 
@@ -133,15 +127,4 @@ public class DummyLanguageModule extends SimpleLanguageModuleBase {
         return root;
     }
 
-    public static class RuleViolationFactory extends DefaultRuleViolationFactory {
-
-        @Override
-        public RuleViolation createViolation(Rule rule, @NonNull Node node, FileLocation location, @NonNull String formattedMessage) {
-            return new ParametricRuleViolation(rule, location, formattedMessage) {
-                {
-                    this.packageName = "foo"; // just for testing variable expansion
-                }
-            };
-        }
-    }
 }

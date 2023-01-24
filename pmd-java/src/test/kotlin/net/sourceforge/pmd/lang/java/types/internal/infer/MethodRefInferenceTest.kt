@@ -722,7 +722,7 @@ class Scratch {
     parserTest("Missing compile-time decl") {
 
         val acu = parser.parse("""
-import java.util.function.IntConsumer;
+interface IntConsumer { void accept(int i); }
 
 class Scratch {
 
@@ -732,11 +732,12 @@ class Scratch {
 }
         """.trimIndent())
 
+        val (t_IntConsumer) = acu.declaredTypeSignatures()
         val (fooRef) = acu.descendants(ASTMethodReference::class.java).toList()
 
         fooRef.shouldMatchN {
             methodRef("foo") {
-                it shouldHaveType it.typeSystem.UNKNOWN
+                it shouldHaveType t_IntConsumer
                 it.referencedMethod shouldBe it.typeSystem.UNRESOLVED_METHOD
 
                 unspecifiedChild()

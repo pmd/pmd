@@ -4,11 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.pcollections.HashTreePSet;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
@@ -20,7 +18,7 @@ abstract class MemberStubBase implements JAccessibleElementSymbol, AsmStub, Anno
     private final String simpleName;
     private final int accessFlags;
 
-    private List<SymAnnot> annotations = Collections.emptyList();
+    private PSet<SymAnnot> annotations = HashTreePSet.empty();
 
 
     protected MemberStubBase(ClassStub classStub, String simpleName, int accessFlags) {
@@ -56,20 +54,11 @@ abstract class MemberStubBase implements JAccessibleElementSymbol, AsmStub, Anno
 
     @Override
     public void addAnnotation(SymAnnot annot) {
-        if (annotations.isEmpty()) {
-            annotations = new ArrayList<>(1); // make writable
-        }
-        annotations.add(annot);
-    }
-
-    protected void finalizeVisit() {
-        if (!annotations.isEmpty()) {
-            annotations = Collections.unmodifiableList(annotations);
-        }
+        annotations = annotations.plus(annot);
     }
 
     @Override
-    public List<SymAnnot> getDeclaredAnnotations() {
+    public PSet<SymAnnot> getDeclaredAnnotations() {
         return annotations;
     }
 }

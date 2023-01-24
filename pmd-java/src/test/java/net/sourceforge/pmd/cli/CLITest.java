@@ -31,40 +31,40 @@ public class CLITest extends BaseCLITest {
 
     @Test
     public void minimalArgs() {
-        runTest("--no-progress", "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_NO_VIOLATION);
+        runTest("-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_NO_VIOLATION);
     }
 
     @Test
     public void minimumPriority() {
-        String[] args = { "--no-progress", "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_WITH_VIOLATION, "-min", "1", };
+        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_WITH_VIOLATION, "-min", "1", };
         runTest(args);
     }
 
     @Test
     public void usingDebug() {
-        runTest("--no-progress", "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_NO_VIOLATION, "-debug");
+        runTest("-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_NO_VIOLATION, "-debug");
     }
 
     @Test
     public void usingDebugLongOption() {
-        runTest("--no-progress", "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_NO_VIOLATION, "--debug");
+        runTest("-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_NO_VIOLATION, "--debug");
     }
 
     @Test
     public void changeJavaVersion() {
-        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_NO_VIOLATION, "-version", "1.5", "-language", "java", "--debug", "--no-progress", };
+        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_NO_VIOLATION, "-version", "1.5", "-language", "java", "--debug", };
         String log = runTest(args);
         assertThat(log, containsPattern("Adding file .*\\.java \\(lang: java 1\\.5\\)"));
     }
 
     @Test
     public void exitStatusNoViolations() {
-        runTest("--no-progress", "-d", SOURCE_FOLDER, "-f", "text", "-R", "rulesets/testing/rset-without-violations.xml");
+        runTest("-d", SOURCE_FOLDER, "-f", "text", "-R", "rulesets/testing/rset-without-violations.xml");
     }
 
     @Test
     public void exitStatusWithViolations() {
-        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_WITH_VIOLATION, "--no-progress", };
+        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_WITH_VIOLATION, };
         String log = runTest(StatusCode.VIOLATIONS_FOUND, args);
         assertThat(log, containsString("Violation from test-rset-1.xml"));
         assertThat(log, not(containsPattern("Adding file .*"))); // not in debug mode
@@ -72,14 +72,14 @@ public class CLITest extends BaseCLITest {
 
     @Test
     public void exitStatusWithViolationsAndWithoutFailOnViolations() {
-        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_WITH_VIOLATION, "-failOnViolation", "false", "--no-progress", };
+        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_WITH_VIOLATION, "-failOnViolation", "false", };
         String log = runTest(StatusCode.OK, args);
         assertThat(log, containsString("Violation from test-rset-1.xml"));
     }
 
     @Test
     public void exitStatusWithViolationsAndWithoutFailOnViolationsLongOption() {
-        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_WITH_VIOLATION, "--fail-on-violation", "false", "--no-progress", };
+        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_WITH_VIOLATION, "--fail-on-violation", "false", };
         String log = runTest(StatusCode.OK, args);
         assertThat(log, containsString("Violation from test-rset-1.xml"));
     }
@@ -89,7 +89,7 @@ public class CLITest extends BaseCLITest {
      */
     @Test
     public void testWrongRuleset() {
-        String[] args = { "--no-progress", "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/designn.xml", };
+        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/designn.xml", };
         String log = runTest(StatusCode.ERROR, args);
         assertThat(log, containsString("Cannot resolve rule/ruleset reference "
                                        + "'category/java/designn.xml'"));
@@ -100,7 +100,7 @@ public class CLITest extends BaseCLITest {
      */
     @Test
     public void testWrongRulesetWithRulename() {
-        String[] args = { "--no-progress", "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/designn.xml/UseCollectionIsEmpty", };
+        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", "category/java/designn.xml/UseCollectionIsEmpty", };
         String log = runTest(StatusCode.ERROR, args);
         assertThat(log, containsString("Cannot resolve rule/ruleset reference"
                                        + " 'category/java/designn.xml/UseCollectionIsEmpty'"));
@@ -111,7 +111,7 @@ public class CLITest extends BaseCLITest {
      */
     @Test
     public void testWrongRulename() {
-        String[] args = { "--no-progress", "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_WITH_VIOLATION + "/ThisRuleDoesNotExist", };
+        String[] args = { "-d", SOURCE_FOLDER, "-f", "text", "-R", RSET_WITH_VIOLATION + "/ThisRuleDoesNotExist", };
         String log = runTest(StatusCode.OK, args);
         assertThat(log, containsString("No rules found. Maybe you misspelled a rule name?"
                                        + " (" + RSET_WITH_VIOLATION + "/ThisRuleDoesNotExist)"));

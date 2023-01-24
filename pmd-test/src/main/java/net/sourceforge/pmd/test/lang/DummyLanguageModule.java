@@ -13,7 +13,6 @@ import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
-import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
 import net.sourceforge.pmd.test.lang.ast.DummyNode;
 
 /**
@@ -49,11 +48,6 @@ public class DummyLanguageModule extends SimpleLanguageModuleBase {
     public static class Handler extends AbstractPmdLanguageVersionHandler {
 
         @Override
-        public RuleViolationFactory getRuleViolationFactory() {
-            return new RuleViolationFactory();
-        }
-
-        @Override
         public Parser getParser() {
             return DummyRootNode::new;
         }
@@ -83,8 +77,4 @@ public class DummyLanguageModule extends SimpleLanguageModuleBase {
         }
     }
 
-
-    public static class RuleViolationFactory extends DefaultRuleViolationFactory {
-
-    }
 }

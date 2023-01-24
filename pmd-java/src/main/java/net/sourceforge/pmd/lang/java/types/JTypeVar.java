@@ -5,15 +5,18 @@
 package net.sourceforge.pmd.lang.java.types;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 
 /**
  * The type of a type variable. There are two sorts of those:
@@ -112,6 +115,23 @@ public interface JTypeVar extends JTypeMirror, SubstVar {
      */
     JTypeVar cloneWithBounds(JTypeMirror lower, JTypeMirror upper);
 
+    /**
+     * Return a new type variable with the same underlying symbol or
+     * capture variable, but the upper bound is now the given type.
+     *
+     * @param newUB New upper bound
+     *
+     * @return a new tvar
+     */
+    JTypeVar withUpperBound(@NonNull JTypeMirror newUB);
+
+    @Override // refine return type
+    JTypeVar withAnnotations(PSet<SymAnnot> newTypeAnnots);
+
+    @Override
+    default JTypeVar addAnnotation(@NonNull SymAnnot newAnnot) {
+        return withAnnotations(getTypeAnnotations().plus(Objects.requireNonNull(newAnnot)));
+    }
 
     @Override
     default Stream<JMethodSig> streamMethods(Predicate<? super JMethodSymbol> prefilter) {

@@ -12,7 +12,7 @@ import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.text.MessageFormat;
 import java.util.Map;
@@ -43,7 +43,7 @@ class RulesetFactoryTestBase {
     }
 
     protected void verifyNoWarnings() {
-        verifyZeroInteractions(mockReporter);
+        verifyNoMoreInteractions(mockReporter);
     }
 
     protected static Predicate<String> containing(String part) {

@@ -7,17 +7,23 @@ package net.sourceforge.pmd.lang.java.types
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.collections.beEmpty
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNot
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.shouldBeSameInstanceAs
+import io.kotest.matchers.types.shouldNotBeSameInstanceAs
+import net.sourceforge.pmd.lang.ast.test.IntelliMarker
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
+import net.sourceforge.pmd.lang.java.symbols.internal.FakeSymAnnot
+import net.sourceforge.pmd.lang.java.symbols.testdata.ClassWithTypeAnnotationsInside
 
 /**
  */
-class TypeSystemTest : FunSpec({
+class TypeSystemTest : IntelliMarker, FunSpec({
 
     val ts = testTypeSystem
 
@@ -68,7 +74,7 @@ class TypeSystemTest : FunSpec({
     }
 
     test("Test typeOf type var") {
-        val (tvar) = ParserTestCtx().makeDummyTVars("T")
+        val (tvar) = ParserTestCtx(this).makeDummyTVars("T")
         val type = ts.typeOf(tvar.symbol, false)
         withClue("erased should be the same as not erased") {
             type shouldBe ts.typeOf(tvar.symbol, true)
@@ -77,7 +83,7 @@ class TypeSystemTest : FunSpec({
     }
 
     test("Test typeOf array of type var") {
-        val (tvar) = ParserTestCtx().makeDummyTVars("T")
+        val (tvar) = ParserTestCtx(this).makeDummyTVars("T")
         val type = ts.arrayType(ts.typeOf(tvar.symbol, false))
         type.shouldBeA<JArrayType> {
             it.componentType shouldBeSameInstanceAs tvar
@@ -121,6 +127,30 @@ class TypeSystemTest : FunSpec({
         }
 
         ts.parameterise(ts.OBJECT.symbol, emptyList()) shouldBeSameInstanceAs ts.OBJECT
+    }
+
+    test("Test isTop") {
+        ts.INT::isTop shouldBe false
+        ts.OBJECT::isTop shouldBe true
+        ts.STRING::isTop shouldBe false
+
+        val otherTypeNamedObject = javaParser.parseSomeClass("class Object { }")
+        otherTypeNamedObject::isTop shouldBe false
+        val javaLangObjectDeclaration = javaParser.parseSomeClass("package java.lang; class Object { }")
+        javaLangObjectDeclaration::isTop shouldBe true
+    }
+
+    test("Test isTop on annotated Object") {
+        val annotated =
+            ts.OBJECT.addAnnotation(FakeSymAnnot(ts.getClassSymbol(ClassWithTypeAnnotationsInside.A::class.java)))
+        ts.OBJECT shouldNotBeSameInstanceAs annotated
+        annotated.typeAnnotations shouldNot beEmpty()
+        annotated::isTop shouldBe true
+    }
+
+    test("Test isTop on Object source declaration") {
+        val javaLangObjectDeclaration = javaParser.parseSomeClass("package java.lang; class Object { }")
+        javaLangObjectDeclaration::isTop shouldBe true
     }
 
     test("Test parameterize generic class") {

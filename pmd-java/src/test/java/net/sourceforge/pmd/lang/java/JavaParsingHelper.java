@@ -99,6 +99,10 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
         return new JavaParsingHelper(this.getParams(), this.semanticLogger, this.ts, logger);
     }
 
+    public JavaParsingHelper logTypeInferenceVerbose() {
+        return logTypeInference(true, System.out);
+    }
+
     @Override
     protected @NonNull JavaParsingHelper clone(@NonNull Params params) {
         return new JavaParsingHelper(params, semanticLogger, ts, typeInfLogger);

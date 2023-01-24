@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.function.Consumer;
 
 import org.junit.jupiter.api.Test;
@@ -104,7 +105,7 @@ abstract class AbstractRendererTest {
 
     protected RuleViolation newRuleViolation(int beginLine, int beginColumn, int endLine, int endColumn, Rule rule) {
         FileLocation loc = createLocation(beginLine, beginColumn, endLine, endColumn);
-        return new ParametricRuleViolation(rule, loc, "blah");
+        return new ParametricRuleViolation(rule, loc, "blah", Collections.emptyMap());
     }
 
     /**

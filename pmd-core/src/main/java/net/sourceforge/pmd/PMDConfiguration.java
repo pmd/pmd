@@ -138,7 +138,6 @@ public class PMDConfiguration extends AbstractConfiguration {
     private AnalysisCache analysisCache = new NoopAnalysisCache();
     private boolean ignoreIncrementalAnalysis;
     private final LanguageRegistry langRegistry;
-    private boolean progressBar = false;
     private final Map<Language, LanguagePropertyBundle> langProperties = new HashMap<>();
 
     public PMDConfiguration() {
@@ -584,7 +583,6 @@ public class PMDConfiguration extends AbstractConfiguration {
      * Get the input URI to process for source code objects.
      *
      * @return URI
-     * @deprecated Use {@link #getUri}
      */
     public URI getUri() {
         return inputUri;
@@ -918,26 +916,6 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     public boolean isIgnoreIncrementalAnalysis() {
         return ignoreIncrementalAnalysis;
-    }
-
-    /**
-     * Sets whether to indicate analysis progress in command line output.
-     *
-     * @param progressBar Whether to enable progress bar indicator in CLI
-     */
-    public void setProgressBar(boolean progressBar) {
-        this.progressBar = progressBar;
-    }
-
-
-    /**
-     * Returns whether progress bar indicator should be used. The default
-     * is false.
-     *
-     * @return {@code true} if progress bar indicator is enabled
-     */
-    public boolean isProgressBar() {
-        return progressBar;
     }
 
     /**

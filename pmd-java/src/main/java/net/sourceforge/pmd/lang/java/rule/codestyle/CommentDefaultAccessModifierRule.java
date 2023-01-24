@@ -51,6 +51,7 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
         JavaPropertyUtil.ignoredAnnotationsDescriptor(
             "com.google.common.annotations.VisibleForTesting",
             "android.support.annotation.VisibleForTesting",
+            "co.elastic.clients.util.VisibleForTesting",
             "org.junit.jupiter.api.Test",
             "org.junit.jupiter.api.ParameterizedTest",
             "org.junit.jupiter.api.RepeatedTest",
@@ -70,8 +71,7 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
         definePropertyDescriptor(REGEX_DESCRIPTOR);
         definePropertyDescriptor(TOP_LEVEL_TYPES);
     }
-
-
+    
     @Override
     public Object visit(final ASTMethodDeclaration decl, final Object data) {
         if (shouldReportNonTopLevel(decl)) {
