@@ -36,6 +36,10 @@ This is a {{ site.pmd.release_type }} release.
   actually is used. Therefore, this method can't be used to determine the Apex version of the project
   that is being analyzed.
 
+* {% jdoc !!core::lang.document.FileCollector#addZipFile(java.nio.file.Path) %} has been deprecated. It is replaced
+  by {% jdoc !!core::lang.document.FileCollector#addZipFileWithContent(java.nio.file.Path) %} which directly adds the
+  content of the zip file for analysis.
+
 ##### Internal APIs
 
 * {% jdoc core::renderers.CSVWriter %}

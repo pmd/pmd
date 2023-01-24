@@ -142,7 +142,7 @@ public final class FileCollectionUtil {
         if (Files.isDirectory(path)) {
             collector.addDirectory(path);
         } else if (path.toString().endsWith(".zip") || path.toString().endsWith(".jar")) {
-            collector.addZipFile(path);
+            collector.addZipFileWithContent(path);
         } else if (Files.isRegularFile(path)) {
             collector.addFile(path);
         } else {

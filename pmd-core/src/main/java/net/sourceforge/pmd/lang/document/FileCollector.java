@@ -11,6 +11,7 @@ import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
+import java.nio.file.FileSystemAlreadyExistsException;
 import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
@@ -366,9 +367,35 @@ public final class FileCollector implements AutoCloseable {
      * it can be explored with the {@link Path} API. You can then call
      * {@link #addFile(Path)} and such. The zip file is registered as
      * a resource to close at the end of analysis.
+     *
+     * @deprecated Use {@link #addZipFileWithContent(Path)} instead.
+     */
+    @Deprecated
+    public FileSystem addZipFile(Path zipFile) {
+        if (!Files.isRegularFile(zipFile)) {
+            throw new IllegalArgumentException("Not a regular file: " + zipFile);
+        }
+        URI zipUri = URI.create("jar:" + zipFile.toUri());
+        try {
+            FileSystem fs = FileSystems.newFileSystem(zipUri, Collections.<String, Object>emptyMap());
+            resourcesToClose.add(fs);
+            return fs;
+        } catch (FileSystemAlreadyExistsException | ProviderNotFoundException | IOException e) {
+            reporter.errorEx("Cannot open zip file " + zipFile, e);
+            return null;
+        }
+    }
+
+    /**
+     * Opens a zip file and adds all files of the zip file to the list
+     * of files to be processed.
+     *
+     * <p>The zip file is registered as a resource to close at the end of analysis.</p>
+     *
+     * @return True if the zip file including its content has been added without errors
      */
     @Experimental
-    public void addZipFile(Path zipFile) throws IOException {
+    public boolean addZipFileWithContent(Path zipFile) throws IOException {
         if (!Files.isRegularFile(zipFile)) {
             throw new IllegalArgumentException("Not a regular file: " + zipFile);
         }
@@ -385,7 +412,7 @@ public final class FileCollector implements AutoCloseable {
                 isNewFileSystem = true;
             } catch (ProviderNotFoundException | IOException e) {
                 reporter.errorEx("Cannot open zip file " + zipFile, e);
-                return;
+                return false;
             }
         }
         try (FileCollector zipCollector = newZipCollector(zipFile)) {
@@ -400,7 +427,9 @@ public final class FileCollector implements AutoCloseable {
         } catch (IOException ioe) {
             reporter.errorEx("Error reading zip file " + zipFile + ", will be skipped", ioe);
             fs.close();
+            return false;
         }
+        return true;
     }
 
 
