@@ -80,16 +80,31 @@ xmlns:scan="http://pmd.sourceforge.net/report/2.0.0">
               'Error Prone': 0,
               'Multithreading': 0,
               'Performance': 0,
-              'Security': 0
+              'Security': 0,
+              'Other': 0
             };
+            function mapCategory(rulesetName) {
+              switch (rulesetName.toLowerCase()) {
+                case 'best practices': return 'Best Practices';
+                case 'code style': return 'Code Style';
+                case 'design': return 'Design';
+                case 'documentation': return 'Documentation';
+                case 'error prone': return 'Error Prone';
+                case 'multithreading': return 'Multithreading';
+                case 'performance': return 'Performance';
+                case 'security': return 'Security';
+              }
+              return 'Other';
+            }
+
             let rows = $('#pmdTable tbody tr');
             let total = rows.length;
             rows.each(function() {
               let priority = $("td", this).slice(4, 5).text();
               priorityCounter[priority]++;
 
-              let category = $("td", this).slice(5, 6).text();
-              categoryCounter[category]++;
+              let rulesetName = $("td", this).slice(5, 6).text();
+              categoryCounter[mapCategory(rulesetName)]++;
             });
 
             const summaryEle = document.getElementById('summary');
@@ -151,7 +166,8 @@ xmlns:scan="http://pmd.sourceforge.net/report/2.0.0">
                   {"category": "Error Prone", "count": categoryCounter['Error Prone']},
                   {"category": "Multithreading", "count": categoryCounter['Multithreading']},
                   {"category": "Performance", "count": categoryCounter['Performance']},
-                  {"category": "Security", "count": categoryCounter['Security']}
+                  {"category": "Security", "count": categoryCounter['Security']},
+                  {"category": "Other", "count": categoryCounter['Other']}
                 ]
               },
               "mark": {"type": "arc" , "innerRadius": 50, "tooltip": true},
