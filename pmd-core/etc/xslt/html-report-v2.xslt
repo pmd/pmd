@@ -10,17 +10,26 @@ xmlns:scan="http://pmd.sourceforge.net/report/2.0.0">
   <html>
     <head>
     <title>PMD Report </title>
-      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous"/>
-      <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.12.1/b-2.2.3/b-colvis-2.2.3/b-html5-2.2.3/b-print-2.2.3/datatables.min.css"/>
 
-      <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"/>
+      <!-- Dependencies:
+        https://getbootstrap.com/docs/5.3/getting-started/download/
+        https://datatables.net/download/ (DataTables + Buttons + Column Visibility + HTML5 Export + JSZip + pdfmake + Print view
+        https://releases.jquery.com/
+        https://www.jsdelivr.com/package/npm/vega
+        https://www.jsdelivr.com/package/npm/vega-lite
+      -->
+
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous"/>
+      <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.13.1/b-2.3.3/b-colvis-2.3.3/b-html5-2.3.3/b-print-2.3.3/datatables.min.css"/>
+
+      <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous" />
       <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"/>
       <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"/>
-      <script type="text/javascript" src="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.12.1/b-2.2.3/b-colvis-2.2.3/b-html5-2.2.3/b-print-2.2.3/datatables.min.js"/>
+      <script type="text/javascript" src="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.13.1/b-2.3.3/b-colvis-2.3.3/b-html5-2.3.3/b-print-2.3.3/datatables.min.js"/>
 
-      <script src="https://cdn.jsdelivr.net/npm/vega@5.21.0"/>
-      <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.2.0"/>
-      <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.20.2"/>
+      <script src="https://cdn.jsdelivr.net/npm/vega@5.22.1/build/vega.min.js" integrity="sha256-cx8BtoEWvBhaGWMiCWyjQnN0JMSZXEimZ09X68ln6cE=" crossorigin="anonymous"/>
+      <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.6.0/build/vega-lite.min.js" integrity="sha256-6NKNS22U5kO0J2/tMld/SvW/eyY6wbOW6w+9mB2Z2p4=" crossorigin="anonymous"/>
+      <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.21.0/build/vega-embed.min.js" integrity="sha256-/XLqtIcBhAjhlmMOaz23UAXzBgQymz60D73+PfrK24w=" crossorigin="anonymous"/>
 
     </head>
     <body>
