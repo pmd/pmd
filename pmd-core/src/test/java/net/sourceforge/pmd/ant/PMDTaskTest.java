@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.ant;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.fail;
 
 import java.io.FileInputStream;
@@ -82,6 +84,8 @@ public class PMDTaskTest {
             actual = actual.replaceAll("\n|\r", "");
             Assert.assertEquals(IOUtil.normalizePath("src/sample.dummy") + ":0:\tSampleXPathRule:\tTest Rule 2", actual);
         }
+
+        assertThat(buildRule.getLog(), containsString("DEPRECATED - Use of shortFilenames is deprecated. Use a nested relativePathsWith element instead."));
     }
 
     @Test

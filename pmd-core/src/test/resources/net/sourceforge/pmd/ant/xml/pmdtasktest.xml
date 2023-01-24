@@ -36,12 +36,15 @@
     </target>
 
     <target name="testRelativizeWith">
-        <pmd noCache="true" relativizePathsWith="${pmd.home}/src/test/resources/net/sourceforge/pmd/ant/">
+        <pmd noCache="true">
             <ruleset>${pmd.home}/src/test/resources/rulesets/dummy/basic.xml</ruleset>
             <formatter type="text" toFile="${pmd.home}/target/pmd-ant-test.txt" />
             <fileset dir="${pmd.home}/src/test/resources/net/sourceforge/pmd/ant/">
                 <include name="**/*dummy"/>
             </fileset>
+            <relativizePathsWith>
+                <pathelement location="${pmd.home}/src/test/resources/net/sourceforge/pmd/ant"/>
+            </relativizePathsWith>
         </pmd>
     </target>
 
