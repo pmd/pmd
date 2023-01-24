@@ -15,8 +15,17 @@ This is a {{ site.pmd.release_type }} release.
 ### New and noteworthy
 
 ### Fixed Issues
+* core
+  * [#4026](https://github.com/pmd/pmd/issues/4026): \[cli] Filenames printed as absolute paths in the report despite parameter `--short-names`
 
 ### API Changes
+
+#### PMD CLI
+
+* PMD now supports a new `--relativize-paths-with` flag (or short `-z`), which replaces `--short-names`.
+  It serves the same purpose: Shortening the pathnames in the reports. However, with the new flag it's possible
+  to explicitly define one or more pathnames that should be used as the base when creating relative paths.
+  The old flag `--short-names` is deprecated.
 
 #### Deprecated APIs
 

@@ -130,9 +130,8 @@ public class PMDParameters {
                description = "Path relative to which directories are rendered in the report."
                              + "This option allows shortening directories in the report; "
                              + "without it, paths are rendered as absolute paths. "
-                             + "The option can be repeated, in which case the shortest relative path."
-                             + "If / is mentioned (root path), then the paths will be rendered as absolute."
-                             + "This option replaces --short-names since PMD 6.52.0.",
+                             + "The option can be repeated, in which case the shortest relative path will be used."
+                             + "This option replaces --short-names since PMD 6.54.0.",
                validateValueWith = PathToRelativizeRootValidator.class,
                converter = StringToPathConverter.class)
     private List<Path> relativizePathRoot = new ArrayList<>();
