@@ -7,16 +7,13 @@ package net.sourceforge.pmd.cli;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
-import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.startsWith;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilterOutputStream;
 import java.io.IOException;
@@ -26,7 +23,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -37,10 +33,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMD.StatusCode;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.util.IOUtil;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
@@ -54,7 +47,6 @@ class CoreCliTest {
     private Path tempDir;
 
     private static final String DUMMY_RULESET = "net/sourceforge/pmd/cli/FakeRuleset.xml";
-    private static final String DUMMY_RULESET_WITH_VIOLATIONS = "net/sourceforge/pmd/cli/FakeRuleset2.xml";
     private static final String STRING_TO_REPLACE = "__should_be_replaced__";
 
     private Path srcDir;
@@ -125,134 +117,6 @@ class CoreCliTest {
         runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET, "--report-file", reportFile);
 
         assertTrue(Files.exists(reportFile), "Report file should have been created");
-    }
-
-    @Test
-    void testNoRelativizeWithAbsoluteSrcDir() throws Exception {
-        assertTrue(srcDir.isAbsolute(), "srcDir should be absolute");
-        String log = SystemLambda.tapSystemErrAndOut(() -> {
-            runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS);
-        });
-
-        assertThat(log, containsString(srcDir.resolve("someSource.dummy").toString()));
-    }
-
-    @Test
-    void testNoRelativizeWithRelativeSrcDir() throws Exception {
-        // Note, that we can't reliably change the current working directory for the current java process
-        // therefore we use the current directory and make sure, we are at the correct place - in pmd-core
-        Path cwd = Paths.get(".").toRealPath();
-        assertThat(cwd.toString(), endsWith("pmd-core"));
-        String relativeSrcDir = "src/test/resources/net/sourceforge/pmd/cli/src";
-        assertTrue(Files.isDirectory(cwd.resolve(relativeSrcDir)));
-
-        String log = SystemLambda.tapSystemErrAndOut(() -> {
-            runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", relativeSrcDir, "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS);
-        });
-
-        assertThat(log, containsString("\n" + IOUtil.normalizePath(relativeSrcDir + "/somefile.dummy")));
-    }
-
-    @Test
-    void testNoRelativizeWithRelativeSrcDirParent() throws Exception {
-        // Note, that we can't reliably change the current working directory for the current java process
-        // therefore we use the current directory and make sure, we are at the correct place - in pmd-core
-        Path cwd = Paths.get(".").toRealPath();
-        assertThat(cwd.toString(), endsWith("pmd-core"));
-        String relativeSrcDir = IOUtil.normalizePath("src/test/resources/net/sourceforge/pmd/cli/src");
-        assertTrue(Files.isDirectory(cwd.resolve(relativeSrcDir)));
-
-        // use the parent directory
-        String relativeSrcDirWithParent = relativeSrcDir + File.separator + "..";
-
-        String log = SystemLambda.tapSystemErrAndOut(() -> {
-            runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", relativeSrcDirWithParent, "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS);
-        });
-
-        assertThat(log, containsString("\n" + relativeSrcDirWithParent + IOUtil.normalizePath("/src/somefile.dummy")));
-    }
-
-    @Test
-    void testRelativizeWithRootRelativeSrcDir() throws Exception {
-        // Note, that we can't reliably change the current working directory for the current java process
-        // therefore we use the current directory and make sure, we are at the correct place - in pmd-core
-        Path cwd = Paths.get(".").toRealPath();
-        assertThat(cwd.toString(), endsWith("pmd-core"));
-        String relativeSrcDir = "src/test/resources/net/sourceforge/pmd/cli/src";
-        assertTrue(Files.isDirectory(cwd.resolve(relativeSrcDir)));
-
-        String root = cwd.getRoot().toString();
-
-        String log = SystemLambda.tapSystemErrAndOut(() -> {
-            runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", relativeSrcDir, "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS, "--relativize-paths-with", root);
-        });
-
-        String absoluteSrcPath = cwd.resolve(relativeSrcDir).resolve("somefile.dummy").toString();
-        assertThat(log, containsString("\n" + absoluteSrcPath));
-    }
-
-    @Test
-    void testRelativizeWith() throws Exception {
-        String log = SystemLambda.tapSystemOut(() -> {
-            runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS, "-z", srcDir.getParent());
-        });
-
-        assertThat(log, not(containsString(srcDir.resolve("someSource.dummy").toString())));
-        assertThat(log, startsWith(IOUtil.normalizePath("src/someSource.dummy")));
-    }
-
-    @Test
-    void testRelativizeWithSymLink() throws Exception {
-        // srcDir = /tmp/junit123/src
-        // symlinkedSrcDir = /tmp/junit123/sources -> /tmp/junit123/src
-        Path symlinkedSrcDir = Files.createSymbolicLink(tempRoot().resolve("sources"), srcDir);
-        String log = SystemLambda.tapSystemOut(() -> {
-            runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", symlinkedSrcDir, "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS, "-z", symlinkedSrcDir);
-        });
-
-        assertThat(log, not(containsString(srcDir.resolve("someSource.dummy").toString())));
-        assertThat(log, not(containsString(symlinkedSrcDir.resolve("someSource.dummy").toString())));
-        assertThat(log, startsWith("someSource.dummy"));
-    }
-
-    @Test
-    void testRelativizeWithSymLinkParent() throws Exception {
-        // srcDir = /tmp/junit123/src
-        // symlinkedSrcDir = /tmp/junit-relativize-with-123 -> /tmp/junit123/src
-        Path tempPath = Files.createTempDirectory("junit-relativize-with-");
-        Files.delete(tempPath);
-        Path symlinkedSrcDir = Files.createSymbolicLink(tempPath, srcDir);
-        // relativizing against parent of symlinkedSrcDir: /tmp
-        String log = SystemLambda.tapSystemOut(() -> {
-            runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", symlinkedSrcDir, "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS, "-z", symlinkedSrcDir.getParent());
-        });
-
-        assertThat(log, not(containsString(srcDir.resolve("someSource.dummy").toString())));
-        assertThat(log, not(containsString(symlinkedSrcDir.resolve("someSource.dummy").toString())));
-        // base path is symlinkedSrcDir without /tmp: e.g. junit-relativize-with-123
-        String basePath = symlinkedSrcDir.getParent().relativize(symlinkedSrcDir).toString();
-        assertThat(log, startsWith(basePath + File.separator + "someSource.dummy"));
-    }
-
-    @Test
-    void testRelativizeWithMultiple() throws Exception {
-        String log = SystemLambda.tapSystemOut(() -> {
-            runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS, "-z", srcDir.getParent(), srcDir);
-        });
-
-        assertThat(log, not(containsString(srcDir.resolve("someSource.dummy").toString())));
-        assertThat(log, startsWith("someSource.dummy"));
-    }
-
-    @Test
-    void testRelativizeWithFileIsError() throws Exception {
-        String log = SystemLambda.tapSystemErr(() -> {
-            runPmd(StatusCode.ERROR, "--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS, "-z", srcDir.resolve("someSource.dummy"));
-        });
-
-        assertThat(log, containsString(
-            "Expected a directory path for option --relativize-paths-with, found a file: "
-            + srcDir.resolve("someSource.dummy")));
     }
 
     @Test
@@ -449,12 +313,5 @@ class CoreCliTest {
     private static void runPmd(StatusCode expectedExitCode, Object... args) {
         StatusCode actualExitCode = PMD.runPmd(argsToString(args));
         assertEquals(expectedExitCode, actualExitCode, "Exit code");
-    }
-
-    public static class FooRule extends MockRule {
-        @Override
-        public void apply(Node node, RuleContext ctx) {
-            ctx.addViolation(node);
-        }
     }
 }

@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -325,7 +326,15 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
             TimeTracker.startGlobalTracking();
         }
 
-        final PMDConfiguration configuration = toConfiguration();
+        PMDConfiguration configuration = null;
+        try {
+            configuration = toConfiguration();
+        } catch (IllegalArgumentException e) {
+            System.err.println("Cannot start analysis: " + e);
+            LOG.debug(ExceptionUtils.getStackTrace(e));
+            return ExecutionResult.USAGE_ERROR;
+        }
+
         final MessageReporter pmdReporter = configuration.getReporter();
 
         try {
