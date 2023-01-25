@@ -32,10 +32,21 @@ This is a {{ site.pmd.release_type }} release.
   always `Version.CURRENT`, as the apex compiler integration doesn't use additional information which Apex version
   actually is used. Therefore, this method can't be used to determine the Apex version of the project
   that is being analyzed.
+* {% jdoc !!core::cpd.CPDConfiguration#setEncoding(java.lang.String) %} and
+  {% jdoc !!core::cpd.CPDConfiguration#getEncoding() %}. Use the methods
+  {% jdoc core::AbstractConfiguration#getSourceEncoding() %} and
+  {% jdoc core::AbstractConfiguration#setSourceEncoding(java.lang.String) %} instead. Both are available
+  for `CPDConfiguration` which extends `AbstractConfiguration`.
+* {% jdoc test::cli.BaseCLITest %} and {% jdoc test::cli.BaseCPDCLITest %} have been deprecated for removal without
+  replacement. CLI tests should be done in pmd-core only (and in PMD7 in pmd-cli). Individual language modules
+  shouldn't need to test the CLI integration logic again. Instead, the individual language modules should test their
+  functionality as unit tests.
+* {% jdoc core::cpd.CPDConfiguration.LanguageConverter %}
 
 ##### Internal APIs
 
 * {% jdoc core::renderers.CSVWriter %}
+* Some fields in {% jdoc test::ant.AbstractAntTestHelper %}
 
 ##### Experimental APIs
 
