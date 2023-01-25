@@ -211,19 +211,12 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
 
     @Override
     public FileAnalysisListener startFileAnalysis(TextDocument file) {
-        String fileName = file.getPathId();
-        AnalysisResult analysisResult = updatedResultsCache.get(fileName);
-        if (analysisResult == null) {
-            analysisResult = new AnalysisResult(file.getCheckSum());
-        }
-        final AnalysisResult nonNullAnalysisResult = analysisResult;
+        final String fileName = file.getPathId();
 
         return new FileAnalysisListener() {
             @Override
             public void onRuleViolation(RuleViolation violation) {
-                synchronized (nonNullAnalysisResult) {
-                    nonNullAnalysisResult.addViolation(violation);
-                }
+                updatedResultsCache.get(fileName).addViolation(violation);
             }
 
             @Override
