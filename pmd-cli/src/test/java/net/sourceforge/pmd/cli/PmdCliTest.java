@@ -26,8 +26,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.cli.internal.ExecutionResult;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.MockRule;
+import net.sourceforge.pmd.util.IOUtil;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 
@@ -37,6 +41,7 @@ class PmdCliTest extends BaseCliTest {
     private Path tempDir;
 
     private static final String DUMMY_RULESET = "net/sourceforge/pmd/cli/FakeRuleset.xml";
+    private static final String DUMMY_RULESET_WITH_VIOLATIONS = "net/sourceforge/pmd/cli/FakeRuleset2.xml";
     private static final String STRING_TO_REPLACE = "__should_be_replaced__";
 
     private Path srcDir;
@@ -206,6 +211,14 @@ class PmdCliTest extends BaseCliTest {
         assertThat(log, containsString("Usage: pmd check"));
     }
 
+    @Test
+    void testRelativizeWith() throws Exception {
+        final String log = runCli(ExecutionResult.VIOLATIONS_FOUND, "--dir", srcDir.toString(), "--rulesets",
+                DUMMY_RULESET_WITH_VIOLATIONS, "-z", srcDir.getParent().toString());
+        assertThat(log, not(containsString(srcDir.resolve("someSource.dummy").toString())));
+        assertThat(log, containsString("\n" + IOUtil.normalizePath("src/someSource.dummy")));
+    }
+
     // utilities
     private Path tempRoot() {
         return tempDir;
@@ -238,5 +251,12 @@ class PmdCliTest extends BaseCliTest {
         argList.add("--no-progress");
         
         return argList;
+    }
+
+    public static class FooRule extends MockRule {
+        @Override
+        public void apply(Node node, RuleContext ctx) {
+            ctx.addViolation(node);
+        }
     }
 }
