@@ -133,16 +133,8 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
         MethodCallSite fakeCallSite = infer.newCallSite(mirror, targetType);
         infer.inferInvocationRecursively(fakeCallSite);
 
-        try {
-            return mirror.isEquivalentToUnderlyingAst()
-                && topmostContext.acceptsType(mirror.getInferredType());
-        } catch (IllegalStateException e) {
-            /*
-             * overload resolution may complaint it's incomplete if there are missing types.
-             * The missing type info may be relevant to the user, but this exception is not, swallow it
-             */
-            return false;
-        }
+        return mirror.isEquivalentToUnderlyingAst()
+            && topmostContext.acceptsType(mirror.getInferredType());
     }
 
 
