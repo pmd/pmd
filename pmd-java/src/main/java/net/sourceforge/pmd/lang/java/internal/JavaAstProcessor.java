@@ -165,7 +165,7 @@ public final class JavaAstProcessor {
      */
     public void process(ASTCompilationUnit acu) {
 
-        SymbolResolver knownSyms = TimeTracker.bench("1. Symbol resolution", () -> SymbolResolutionPass.traverse(this, acu));
+        SymbolResolver knownSyms = TimeTracker.bench("Symbol resolution", () -> SymbolResolutionPass.traverse(this, acu));
 
         // Now symbols are on the relevant nodes
         this.symResolver = SymbolResolver.layer(knownSyms, this.symResolver);
@@ -174,12 +174,12 @@ public final class JavaAstProcessor {
         // as scopes depend on type resolution in some cases.
         InternalApiBridge.initTypeResolver(acu, this, typeInferenceLogger);
 
-        TimeTracker.bench("2. Symbol table resolution", () -> SymbolTableResolver.traverse(this, acu));
-        TimeTracker.bench("3. AST disambiguation", () -> InternalApiBridge.disambigWithCtx(NodeStream.of(acu), ReferenceCtx.root(this, acu)));
-        TimeTracker.bench("4. Force type resolution", () -> InternalApiBridge.forceTypeResolutionPhase(this, acu));
-        TimeTracker.bench("5. Comment assignment", () -> InternalApiBridge.assignComments(acu));
-        TimeTracker.bench("6. Usage resolution", () -> InternalApiBridge.usageResolution(this, acu));
-        TimeTracker.bench("7. Override resolution", () -> InternalApiBridge.overrideResolution(this, acu));
+        TimeTracker.bench("Symbol table resolution", () -> SymbolTableResolver.traverse(this, acu));
+        TimeTracker.bench("AST disambiguation", () -> InternalApiBridge.disambigWithCtx(NodeStream.of(acu), ReferenceCtx.root(this, acu)));
+        TimeTracker.bench("Force type resolution", () -> InternalApiBridge.forceTypeResolutionPhase(this, acu));
+        TimeTracker.bench("Comment assignment", () -> InternalApiBridge.assignComments(acu));
+        TimeTracker.bench("Usage resolution", () -> InternalApiBridge.usageResolution(this, acu));
+        TimeTracker.bench("Override resolution", () -> InternalApiBridge.overrideResolution(this, acu));
     }
 
     public TypeSystem getTypeSystem() {
