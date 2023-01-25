@@ -84,7 +84,6 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
 
     private boolean benchmark;
 
-    private boolean shortnames;
 
     private boolean showSuppressed;
 
@@ -140,10 +139,6 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
         this.benchmark = benchmark;
     }
 
-    @Option(names = "--short-names", description = "Prints shortened filenames in the report.")
-    public void setShortnames(final boolean shortnames) {
-        this.shortnames = shortnames;
-    }
 
     @Option(names = "--show-suppressed", description = "Report should show suppressed rule violations.")
     public void setShowSuppressed(final boolean showSuppressed) {
@@ -272,7 +267,6 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
         configuration.setMinimumPriority(minimumPriority);
         configuration.setReportFile(reportFile);
         configuration.setReportProperties(properties);
-        configuration.setReportShortNames(shortnames);
         configuration.setRuleSets(rulesets);
         configuration.setRuleSetFactoryCompatibilityEnabled(!this.noRuleSetCompatibility);
         configuration.setShowSuppressedViolations(showSuppressed);

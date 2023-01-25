@@ -42,23 +42,7 @@ public final class FileCollectionUtil {
         }
 
 
-        // This is to be removed when --short-names is removed.
-        // If the new --relativize-paths-with option is specified (!= null), it takes precedence.
-        boolean legacyShortNamesBehavior =
-                configuration.getRelativizeRoots().isEmpty() && configuration.isReportShortNames();
-
-        for (Path path : configuration.getInputPathList()) {
-            try {
-                if (legacyShortNamesBehavior) {
-                    collector.relativizeWith(path.toString());
-                }
-                addRoot(collector, path);
-            } catch (IOException e) {
-                collector.getReporter().errorEx("Error collecting " + path, e);
-            }
-        }
-        // use that, once --short-names is removed
-        //collectFiles(collector, configuration.getInputPathList());
+        collectFiles(collector, configuration.getInputPathList());
 
         if (configuration.getUri() != null) {
             collectDB(collector, configuration.getUri());

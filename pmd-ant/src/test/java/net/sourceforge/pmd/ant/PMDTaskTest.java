@@ -70,20 +70,6 @@ class PMDTaskTest extends AbstractAntTest {
     }
 
     @Test
-    void testWithShortFilenames() throws IOException {
-        executeTarget("testWithShortFilenames");
-
-        try (InputStream in = Files.newInputStream(Paths.get("target/pmd-ant-test.txt"))) {
-            String actual = IOUtil.readToString(in, StandardCharsets.UTF_8);
-            // remove any trailing newline
-            actual = actual.trim();
-            assertThat(actual, containsString("sample.dummy:1:\tSampleXPathRule:\tTest Rule 2"));
-        }
-
-        assertThat(log.toString(), containsString("DEPRECATED - Use of shortFilenames is deprecated. Use a nested relativePathsWith element instead."));
-    }
-
-    @Test
     void testRelativizeWith() throws IOException {
         executeTarget("testRelativizeWith");
 

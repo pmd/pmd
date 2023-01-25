@@ -79,8 +79,8 @@ import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
  * <ul>
  * <li>The renderer format to use for Reports. {@link #getReportFormat()}</li>
  * <li>The file to which the Report should render. {@link #getReportFile()}</li>
- * <li>An indicator of whether to use File short names in Reports, defaults to
- * <code>false</code>. {@link #isReportShortNames()}</li>
+ * <li>Configure the root paths that are used to relativize file names in reports via {@link #addRelativizeRoot(Path)}.
+ * This enables to get short names in reports.</li>
  * <li>The initialization properties to use when creating a Renderer instance.
  * {@link #getReportProperties()}</li>
  * <li>An indicator of whether to show suppressed Rule violations in Reports.
@@ -123,7 +123,6 @@ public class PMDConfiguration extends AbstractConfiguration {
     // Reporting options
     private String reportFormat;
     private Path reportFile;
-    private boolean reportShortNames = false;
     private Properties reportProperties = new Properties();
     private boolean showSuppressedViolations = false;
     private boolean failOnViolation = true;
@@ -485,7 +484,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      * @param inputPaths The comma separated list.
      *
      * @throws NullPointerException If the parameter is null
-     * @deprecated Use {@link #setInputPaths(List)} or {@link #addInputPath(String)}
+     * @deprecated Use {@link #setInputPathList(List)} or {@link #addInputPath(Path)}
      */
     @Deprecated
     public void setInputPaths(String inputPaths) {
@@ -600,25 +599,6 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     public void setInputUri(URI inputUri) {
         this.inputUri = inputUri;
-    }
-
-    /**
-     * Get whether to use File short names in Reports.
-     *
-     * @return <code>true</code> when using short names in reports.
-     */
-    public boolean isReportShortNames() {
-        return reportShortNames;
-    }
-
-    /**
-     * Set whether to use File short names in Reports.
-     *
-     * @param reportShortNames
-     *            <code>true</code> when using short names in reports.
-     */
-    public void setReportShortNames(boolean reportShortNames) {
-        this.reportShortNames = reportShortNames;
     }
 
     /**
@@ -955,7 +935,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     /**
      * Returns the paths used to shorten paths output in the report.
      * <ul>
-     * <li>If the list is empty, then paths are not touched (unless {@link #isReportShortNames()} is true)
+     * <li>If the list is empty, then paths are not touched
      * <li>If the list is non-empty, then source file paths are relativized with all the items in the list.
      * The shortest of these relative paths is taken as the display name of the file.
      * </ul>

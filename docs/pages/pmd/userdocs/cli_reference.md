@@ -153,16 +153,11 @@ The tool comes with a rather extensive help text, simply running with `--help`!
                description="Path relative to which directories are rendered in the report. This option allows
                     shortening directories in the report; without it, paths are rendered as mentioned in the source directory (option \"--dir\").
                     The option can be repeated, in which case the shortest relative path will be used.
-                    If the root path is mentioned (e.g. \"/\" or \"C:\\\"), then the paths will be rendered as absolute.
-                    This option replaces `--short-names` since PMD 6.54.0."
+                    If the root path is mentioned (e.g. \"/\" or \"C:\\\"), then the paths will be rendered as absolute."
     %}
     {% include custom/cli_option_row.html options="--report-file,-r"
                option_arg="path"
                description="Path to a file to which report output is written. The file is created if it does not exist. If this option is not specified, the report is rendered to standard output."
-    %}
-    {% include custom/cli_option_row.html options="--short-names"
-               description="Prints shortened filenames in the report.
-                    <p><span class=\"label label-default\">Deprecated</span> since PMD 6.54.0. Use `--relativize-paths-with` instead.</p>"
     %}
     {% include custom/cli_option_row.html options="--show-suppressed"
                description="Causes the suppressed rule violations to be added to the report."

@@ -11,7 +11,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
@@ -34,8 +33,6 @@ public class PMDTask extends Task {
     private final List<FileSet> filesets = new ArrayList<>();
     private boolean failOnError;
     private boolean failOnRuleViolation;
-    @Deprecated
-    private boolean shortFilenames;
     private final List<Path> relativizePathsWith = new ArrayList<>();
     private String suppressMarker;
     private String rulesetFiles;
@@ -86,11 +83,6 @@ public class PMDTask extends Task {
             }
             rulesetFiles = getNestedRuleSetFiles();
         }
-
-        if (shortFilenames) {
-            log("DEPRECATED - Use of shortFilenames is deprecated. Use a nested relativePathsWith element instead.",
-                   Project.MSG_WARN);
-        }
     }
 
     private String getNestedRuleSetFiles() {
@@ -103,14 +95,6 @@ public class PMDTask extends Task {
             }
         }
         return sb.toString();
-    }
-
-    /**
-     * @deprecated Use {@link #addRelativizePathsWith(Path)}
-     */
-    @Deprecated
-    public void setShortFilenames(boolean reportShortNames) {
-        this.shortFilenames = reportShortNames;
     }
 
     public void setSuppressMarker(String suppressMarker) {
@@ -220,10 +204,6 @@ public class PMDTask extends Task {
 
     public boolean isFailOnRuleViolation() {
         return failOnRuleViolation;
-    }
-
-    public boolean isShortFilenames() {
-        return shortFilenames;
     }
 
     public String getSuppressMarker() {

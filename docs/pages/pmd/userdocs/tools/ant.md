@@ -78,15 +78,6 @@ The examples below won't repeat this taskdef element, as this is always required
       <td>No</td>
     </tr>
     <tr>
-      <td>shortFilenames</td>
-      <td>
-          <span class="label label-default">Deprecated</span> Use <code>relativizePathsWith</code>
-          as nested element instead.
-          Places truncated filenames in the report.  This can reduce your report file size by 15%-20%.
-      </td>
-      <td>No</td>
-    </tr>
-    <tr>
       <td>failuresPropertyName</td>
       <td>A property name to plug the number of rule violations into when the task finishes</td>
       <td>No</td>
@@ -207,7 +198,6 @@ fileset elements. See [FileSet](https://ant.apache.org/manual/Types/fileset.html
 This option allows shortening directories in the report; without it, paths are rendered as absolute paths.
 The option can be repeated, in which case the shortest relative path will be used.
 It is a [path-like structure](https://ant.apache.org/manual/using.html#path).
-This option replaces `shortFilenames` since PMD 6.54.0.
 
 ### Language version selection
 

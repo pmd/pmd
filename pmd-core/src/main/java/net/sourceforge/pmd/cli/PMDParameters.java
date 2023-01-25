@@ -103,9 +103,6 @@ public class PMDParameters {
     @Parameter(names = { "--stress", "-stress", "-S" }, description = "Performs a stress test.")
     private boolean stress = false;
 
-    @Parameter(names = { "--short-names", "-shortnames" }, description = "Prints shortened filenames in the report.")
-    private boolean shortnames = false;
-
     @Parameter(names = { "--show-suppressed", "-showsuppressed" }, description = "Report should show suppressed rule violations.")
     private boolean showsuppressed = false;
 
@@ -272,7 +269,6 @@ public class PMDParameters {
         configuration.setMinimumPriority(this.getMinimumPriority());
         configuration.setReportFile(this.getReportfile());
         configuration.setReportProperties(this.getProperties());
-        configuration.setReportShortNames(this.isShortnames());
         configuration.setRuleSets(Arrays.asList(this.getRulesets().split(",")));
         configuration.setRuleSetFactoryCompatibilityEnabled(!this.noRuleSetCompatibility);
         configuration.setShowSuppressedViolations(this.isShowsuppressed());
@@ -352,10 +348,6 @@ public class PMDParameters {
 
     public boolean isStress() {
         return stress;
-    }
-
-    public boolean isShortnames() {
-        return shortnames;
     }
 
     public boolean isShowsuppressed() {

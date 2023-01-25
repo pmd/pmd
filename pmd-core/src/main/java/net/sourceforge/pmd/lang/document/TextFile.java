@@ -283,7 +283,7 @@ public interface TextFile extends Closeable {
 
             @Override
             public @NonNull String getDisplayName() {
-                return ds.getNiceFileName(config.isReportShortNames(), shortPaths);
+                return ds.getNiceFileName(false, shortPaths);
             }
 
             @Override

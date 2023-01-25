@@ -256,14 +256,6 @@ class CoreCliTest {
     }
 
     @Test
-    void testDeprecationWarningForShortNames() throws Exception {
-        String log = runPmdSuccessfully("--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET, "--short-names");
-
-        assertThat(log, containsString("Some deprecated options were used on the command-line, including --short-names"));
-        assertThat(log, containsString("Consider replacing it with --relativize-paths-with"));
-    }
-
-    @Test
     void testFileCollectionWithUnknownFiles() throws Exception {
         Path reportFile = tempRoot().resolve("out/reportFile.txt");
         Files.createFile(srcDir.resolve("foo.not_analysable"));
