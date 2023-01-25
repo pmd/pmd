@@ -40,6 +40,7 @@ class NioTextFile extends BaseCloseable implements TextFile {
         AssertionUtil.requireParamNotNull("path", path);
         AssertionUtil.requireParamNotNull("charset", charset);
         AssertionUtil.requireParamNotNull("language version", languageVersion);
+        AssertionUtil.requireParamNotNull("display name", displayName);
 
         this.displayName = displayName;
         this.readOnly = readOnly;

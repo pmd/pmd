@@ -21,13 +21,23 @@ import net.sourceforge.pmd.internal.util.ShortFilenameUtil;
  */
 //TODO This class (and all other DataSources) can be probably removed with PMD 7 in favor of TextFile
 public class PathDataSource extends AbstractDataSource {
+    private final String displayName;
+
     private final Path path;
 
     /**
      * @param path the file to read
      */
     public PathDataSource(Path path) {
+        this(path, null);
+    }
+
+    /**
+     * @param path the file to read
+     */
+    public PathDataSource(Path path, String displayName) {
         this.path = path;
+        this.displayName = displayName;
     }
 
     @Override
@@ -56,6 +66,9 @@ public class PathDataSource extends AbstractDataSource {
     }
 
     private String glomName(boolean shortNames, String inputPaths) {
+        if (displayName != null) {
+            return displayName;
+        }
         if (shortNames) {
             if (inputPaths != null) {
                 List<String> inputPathPrefixes = Arrays.asList(inputPaths.split(","));

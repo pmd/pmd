@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import org.apache.tools.ant.BuildException;
+import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -77,6 +78,20 @@ class PMDTaskTest extends AbstractAntTest {
             // remove any trailing newline
             actual = actual.trim();
             assertThat(actual, containsString("sample.dummy:1:\tSampleXPathRule:\tTest Rule 2"));
+        }
+
+        assertThat(log.toString(), containsString("DEPRECATED - Use of shortFilenames is deprecated. Use a nested relativePathsWith element instead."));
+    }
+
+    @Test
+    void testRelativizeWith() throws IOException {
+        executeTarget("testRelativizeWith");
+
+        try (InputStream in = Files.newInputStream(Paths.get("target/pmd-ant-test.txt"))) {
+            String actual = IOUtil.readToString(in, StandardCharsets.UTF_8);
+            // remove any trailing newline
+            actual = actual.replaceAll("\n|\r", "");
+            Assert.assertEquals(IOUtil.normalizePath("src/sample.dummy") + ":0:\tSampleXPathRule:\tTest Rule 2", actual);
         }
     }
 

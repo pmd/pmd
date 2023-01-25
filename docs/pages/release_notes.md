@@ -20,12 +20,21 @@ This is a {{ site.pmd.release_type }} release.
 ### New and noteworthy
 
 ### Fixed Issues
+* core
+  * [#4026](https://github.com/pmd/pmd/issues/4026): \[cli] Filenames printed as absolute paths in the report despite parameter `--short-names`
 
 * core
   * [#4279](https://github.com/pmd/pmd/issues/4279): \[core] Can not set ruleset property value to empty
   * [#4340](https://github.com/pmd/pmd/issues/4340): \[core] Allow to filter found matches in CPDReport
 
 ### API Changes
+
+#### PMD CLI
+
+* PMD now supports a new `--relativize-paths-with` flag (or short `-z`), which replaces `--short-names`.
+  It serves the same purpose: Shortening the pathnames in the reports. However, with the new flag it's possible
+  to explicitly define one or more pathnames that should be used as the base when creating relative paths.
+  The old flag `--short-names` is deprecated.
 
 #### Deprecated APIs
 
@@ -35,6 +44,10 @@ This is a {{ site.pmd.release_type }} release.
   always `Version.CURRENT`, as the apex compiler integration doesn't use additional information which Apex version
   actually is used. Therefore, this method can't be used to determine the Apex version of the project
   that is being analyzed.
+
+* {% jdoc !!core::lang.document.FileCollector#addZipFile(java.nio.file.Path) %} has been deprecated. It is replaced
+  by {% jdoc !!core::lang.document.FileCollector#addZipFileWithContent(java.nio.file.Path) %} which directly adds the
+  content of the zip file for analysis.
 
 ##### Internal APIs
 

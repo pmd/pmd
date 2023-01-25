@@ -54,6 +54,7 @@ public class PMDTaskImpl {
 
     public PMDTaskImpl(PMDTask task) {
         configuration.setReportShortNames(task.isShortFilenames());
+        configuration.addRelativizeRoots(task.getRelativizeRoots());
         if (task.getSuppressMarker() != null) {
             configuration.setSuppressMarker(task.getSuppressMarker());
         }
@@ -104,6 +105,8 @@ public class PMDTaskImpl {
         }
 
 
+        @SuppressWarnings("PMD.CloseResource") final List<String> reportShortNamesPaths = new ArrayList<>();
+
         List<String> ruleSetPaths = expandRuleSetPaths(configuration.getRuleSetPaths());
         // don't let PmdAnalysis.create create rulesets itself.
         configuration.setRuleSets(Collections.emptyList());
@@ -121,6 +124,11 @@ public class PMDTaskImpl {
                 }
                 for (String srcFile : ds.getIncludedFiles()) {
                     pmd.files().addFile(ds.getBasedir().toPath().resolve(srcFile));
+                }
+
+                final String commonInputPath = ds.getBasedir().getPath();
+                if (configuration.isReportShortNames()) {
+                    reportShortNamesPaths.add(commonInputPath);
                 }
             }
 

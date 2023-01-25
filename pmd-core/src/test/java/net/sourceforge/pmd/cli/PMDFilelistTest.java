@@ -6,6 +6,7 @@ package net.sourceforge.pmd.cli;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 
 import java.nio.file.Paths;
@@ -15,14 +16,17 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.PMDConfiguration;
+import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.internal.util.FileCollectionUtil;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.document.FileCollector;
 import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.log.internal.NoopReporter;
 
 class PMDFilelistTest {
+    private static final String RESOURCE_PREFIX = "src/test/resources/net/sourceforge/pmd/cli/";
 
     private @NonNull FileCollector newCollector() {
         return FileCollector.newCollector(new LanguageVersionDiscoverer(LanguageRegistry.PMD), new NoopReporter());
@@ -36,7 +40,7 @@ class PMDFilelistTest {
     void testGetApplicableFiles() {
         FileCollector collector = newCollector();
 
-        collectFileList(collector, "src/test/resources/net/sourceforge/pmd/cli/filelist.txt");
+        collectFileList(collector, RESOURCE_PREFIX + "filelist.txt");
 
         List<TextFile> applicableFiles = collector.getCollectedFiles();
         assertThat(applicableFiles, hasSize(2));
@@ -48,7 +52,7 @@ class PMDFilelistTest {
     void testGetApplicableFilesMultipleLines() {
         FileCollector collector = newCollector();
 
-        collectFileList(collector, "src/test/resources/net/sourceforge/pmd/cli/filelist2.txt");
+        collectFileList(collector, RESOURCE_PREFIX + "filelist2.txt");
 
         List<TextFile> applicableFiles = collector.getCollectedFiles();
         assertThat(applicableFiles, hasSize(3));
@@ -62,8 +66,8 @@ class PMDFilelistTest {
         FileCollector collector = newCollector();
 
         PMDConfiguration configuration = new PMDConfiguration();
-        configuration.setInputFilePath("src/test/resources/net/sourceforge/pmd/cli/filelist3.txt");
-        configuration.setIgnoreFilePath("src/test/resources/net/sourceforge/pmd/cli/ignorelist.txt");
+        configuration.setInputFilePath(RESOURCE_PREFIX + "filelist3.txt");
+        configuration.setIgnoreFilePath(RESOURCE_PREFIX + "ignorelist.txt");
         FileCollectionUtil.collectFiles(configuration, collector);
 
         List<TextFile> applicableFiles = collector.getCollectedFiles();
@@ -73,11 +77,67 @@ class PMDFilelistTest {
     }
 
     @Test
-    void testGetApplicableFilesWithDirAndIgnores() {
+    void testRelativizeWith() {
+        PMDConfiguration conf = new PMDConfiguration();
+        conf.setInputFilePath(Paths.get(RESOURCE_PREFIX + "filelist2.txt"));
+        conf.addRelativizeRoot(Paths.get("src/test/resources"));
+        try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
+            List<TextFile> files = pmd.files().getCollectedFiles();
+            assertThat(files, hasSize(2));
+            assertThat(files.get(0).getDisplayName(), equalTo(IOUtil.normalizePath("net/sourceforge/pmd/cli/src/anotherfile.dummy")));
+            assertThat(files.get(1).getDisplayName(), equalTo(IOUtil.normalizePath("net/sourceforge/pmd/cli/src/somefile.dummy")));
+        }
+    }
 
+    @Test
+    void testRelativizeWithOtherDir() {
+        PMDConfiguration conf = new PMDConfiguration();
+        conf.setInputFilePath(Paths.get(RESOURCE_PREFIX + "filelist4.txt"));
+        conf.addRelativizeRoot(Paths.get(RESOURCE_PREFIX + "src"));
+        try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
+            List<TextFile> files = pmd.files().getCollectedFiles();
+            assertThat(files, hasSize(3));
+            assertThat(files.get(0).getDisplayName(), equalTo(".." + IOUtil.normalizePath("/otherSrc/somefile.dummy")));
+            assertThat(files.get(1).getDisplayName(), equalTo("anotherfile.dummy"));
+            assertThat(files.get(2).getDisplayName(), equalTo("somefile.dummy"));
+        }
+    }
+
+    @Test
+    void testRelativizeWithSeveralDirs() {
+        PMDConfiguration conf = new PMDConfiguration();
+        conf.setInputFilePath(Paths.get(RESOURCE_PREFIX + "filelist4.txt"));
+        conf.addRelativizeRoot(Paths.get(RESOURCE_PREFIX + "src"));
+        conf.addRelativizeRoot(Paths.get(RESOURCE_PREFIX + "otherSrc"));
+        try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
+            List<TextFile> files = pmd.files().getCollectedFiles();
+            assertThat(files, hasSize(3));
+            assertThat(files.get(0).getDisplayName(), equalTo("somefile.dummy"));
+            assertThat(files.get(1).getDisplayName(), equalTo("anotherfile.dummy"));
+            assertThat(files.get(2).getDisplayName(), equalTo("somefile.dummy"));
+        }
+    }
+
+    @Test
+    void testUseAbsolutePaths() {
+        PMDConfiguration conf = new PMDConfiguration();
+        conf.setInputFilePath(Paths.get(RESOURCE_PREFIX + "filelist4.txt"));
+        conf.addRelativizeRoot(Paths.get(RESOURCE_PREFIX).toAbsolutePath().getRoot());
+        try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
+            List<TextFile> files = pmd.files().getCollectedFiles();
+            assertThat(files, hasSize(3));
+            assertThat(files.get(0).getDisplayName(), equalTo(Paths.get(RESOURCE_PREFIX, "otherSrc", "somefile.dummy").toAbsolutePath().toString()));
+            assertThat(files.get(1).getDisplayName(), equalTo(Paths.get(RESOURCE_PREFIX, "src", "anotherfile.dummy").toAbsolutePath().toString()));
+            assertThat(files.get(2).getDisplayName(), equalTo(Paths.get(RESOURCE_PREFIX, "src", "somefile.dummy").toAbsolutePath().toString()));
+        }
+    }
+
+
+    @Test
+    void testGetApplicableFilesWithDirAndIgnores() {
         PMDConfiguration configuration = new PMDConfiguration();
-        configuration.setInputPaths("src/test/resources/net/sourceforge/pmd/cli/src");
-        configuration.setIgnoreFilePath("src/test/resources/net/sourceforge/pmd/cli/ignorelist.txt");
+        configuration.setInputPaths(RESOURCE_PREFIX + "src");
+        configuration.setIgnoreFilePath(RESOURCE_PREFIX + "ignorelist.txt");
 
         FileCollector collector = newCollector();
         FileCollectionUtil.collectFiles(configuration, collector);
