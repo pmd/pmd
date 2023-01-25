@@ -43,6 +43,7 @@ import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.document.TextFileContent;
 import net.sourceforge.pmd.lang.document.TextRange2d;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
 
 class FileAnalysisCacheTest {
 
@@ -111,6 +112,8 @@ class FileAnalysisCacheTest {
     void testStorePersistsFilesWithViolations() throws IOException {
         final FileAnalysisCache cache = new FileAnalysisCache(newCacheFile);
         cache.checkValidity(mock(RuleSets.class), mock(ClassLoader.class));
+        final FileAnalysisListener cacheListener = cache.startFileAnalysis(sourceFile);
+        
         cache.isUpToDate(sourceFile);
 
         final RuleViolation rv = mock(RuleViolation.class);
@@ -120,7 +123,7 @@ class FileAnalysisCacheTest {
         when(rule.getLanguage()).thenReturn(mock(Language.class));
         when(rv.getRule()).thenReturn(rule);
 
-        cache.startFileAnalysis(sourceFile).onRuleViolation(rv);
+        cacheListener.onRuleViolation(rv);
         cache.persist();
 
         final FileAnalysisCache reloadedCache = new FileAnalysisCache(newCacheFile);
