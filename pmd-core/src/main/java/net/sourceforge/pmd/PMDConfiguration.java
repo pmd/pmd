@@ -74,8 +74,8 @@ import net.sourceforge.pmd.util.ClasspathClassLoader;
  * <ul>
  * <li>The renderer format to use for Reports. {@link #getReportFormat()}</li>
  * <li>The file to which the Report should render. {@link #getReportFile()}</li>
- * <li>An indicator of whether to use File short names in Reports, defaults to
- * <code>false</code>. {@link #isReportShortNames()}</li>
+ * <li>Configure the root paths that are used to relativize file names in reports via {@link #addRelativizeRoot(Path)}.
+ * This enables to get short names in reports.</li>
  * <li>The initialization properties to use when creating a Renderer instance.
  * {@link #getReportProperties()}</li>
  * <li>An indicator of whether to show suppressed Rule violations in Reports.
@@ -116,6 +116,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     // Reporting options
     private String reportFormat;
     private Path reportFile;
+    @Deprecated
     private boolean reportShortNames = false;
     private Properties reportProperties = new Properties();
     private boolean showSuppressedViolations = false;
@@ -635,6 +636,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @return <code>true</code> when using short names in reports.
      */
+    @Deprecated
     public boolean isReportShortNames() {
         return reportShortNames;
     }
@@ -644,7 +646,9 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @param reportShortNames
      *            <code>true</code> when using short names in reports.
+     * @deprecated for removal. Use {@link #addRelativizeRoot(Path)} instead.
      */
+    @Deprecated
     public void setReportShortNames(boolean reportShortNames) {
         this.reportShortNames = reportShortNames;
     }
