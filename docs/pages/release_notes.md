@@ -19,6 +19,8 @@ This is a {{ site.pmd.release_type }} release.
 * core
   * [#4279](https://github.com/pmd/pmd/issues/4279): \[core] Can not set ruleset property value to empty
   * [#4340](https://github.com/pmd/pmd/issues/4340): \[core] Allow to filter found matches in CPDReport
+* testing
+  * [#4236](https://github.com/pmd/pmd/issues/4236): \[test] kotest logs look broken
 
 ### API Changes
 
