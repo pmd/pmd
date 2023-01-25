@@ -2,6 +2,9 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
+package net.sourceforge.pmd.lang.java.ast
+
+import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.*

@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
-import java.util.EnumSet;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
@@ -12,8 +11,10 @@ import java.util.function.Function;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 
 /**
  * Mirror a primitive types. Even though {@code void.class.isPrimitive()}
@@ -31,12 +32,27 @@ public final class JPrimitiveType implements JTypeMirror {
     private final JClassSymbol type;
     /** Boxed representation. */
     private final JClassType box;
+    private final PSet<SymAnnot> typeAnnots;
 
-    JPrimitiveType(TypeSystem ts, PrimitiveTypeKind kind, JClassSymbol type, JClassSymbol boxType) {
+    JPrimitiveType(TypeSystem ts, PrimitiveTypeKind kind, JClassSymbol type, JClassSymbol boxType, PSet<SymAnnot> typeAnnots) {
         this.ts = ts;
         this.kind = kind;
         this.type = type;
-        this.box = new BoxedPrimitive(ts, boxType, this); // not erased
+        this.typeAnnots = typeAnnots;
+        this.box = new BoxedPrimitive(ts, boxType, this, typeAnnots); // not erased
+    }
+
+    @Override
+    public PSet<SymAnnot> getTypeAnnotations() {
+        return typeAnnots;
+    }
+
+    @Override
+    public JTypeMirror withAnnotations(PSet<SymAnnot> newTypeAnnots) {
+        if (newTypeAnnots.isEmpty() && this.typeAnnots.isEmpty()) {
+            return this;
+        }
+        return new JPrimitiveType(ts, kind, type, box.getSymbol(), newTypeAnnots);
     }
 
     @Override
@@ -81,7 +97,7 @@ public final class JPrimitiveType implements JTypeMirror {
 
     @Override
     public boolean isFloatingPoint() {
-        return PrimitiveTypeKind.FLOATING_POINT_TYPES.contains(this.kind);
+        return kind == PrimitiveTypeKind.DOUBLE || kind == PrimitiveTypeKind.FLOAT;
     }
 
     @Override
@@ -101,9 +117,18 @@ public final class JPrimitiveType implements JTypeMirror {
 
     @Override
     public String toString() {
-        return getSimpleName();
+        return TypePrettyPrint.prettyPrint(this);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof JPrimitiveType && ((JPrimitiveType) obj).kind == this.kind;
+    }
+
+    @Override
+    public int hashCode() {
+        return kind.hashCode();
+    }
 
     /**
      * Returns the token used to represent the type in source,
@@ -136,8 +161,6 @@ public final class JPrimitiveType implements JTypeMirror {
         LONG(long.class),
         FLOAT(float.class),
         DOUBLE(double.class);
-
-        static final Set<PrimitiveTypeKind> FLOATING_POINT_TYPES = EnumSet.of(FLOAT, DOUBLE);
 
         final String name = name().toLowerCase(Locale.ROOT);
         private final Class<?> jvm;

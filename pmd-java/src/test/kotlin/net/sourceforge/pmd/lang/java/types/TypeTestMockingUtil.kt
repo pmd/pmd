@@ -4,19 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.types
 
-import io.kotest.matchers.should
-import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.NodeStream
-import net.sourceforge.pmd.lang.ast.NodeStream.*
 import net.sourceforge.pmd.lang.java.JavaParsingHelper
-import net.sourceforge.pmd.lang.java.ast.*
-import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.FunctionalExprMirror
-import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror
-import net.sourceforge.pmd.lang.java.types.internal.infer.ResolutionFailure
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit
+import net.sourceforge.pmd.lang.java.ast.FunctionalExpression
+import net.sourceforge.pmd.lang.java.ast.InvocationNode
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger
-import org.mockito.ArgumentCaptor
-import org.mockito.Mockito.*
 import org.mockito.Mockito
+import org.mockito.Mockito.*
 
 
 // kept out of TypeTestUtil so as not to import Mockito there

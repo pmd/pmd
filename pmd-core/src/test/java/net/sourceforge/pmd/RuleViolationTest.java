@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd;
 
+import static net.sourceforge.pmd.ReportTest.violation;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -76,8 +77,8 @@ class RuleViolationTest {
 
 
         FileLocation loc = FileLocation.range(filename, TextRange2d.range2d(10, 1, 15, 10));
-        RuleViolation r1 = new ParametricRuleViolation(rule, loc, "description");
-        RuleViolation r2 = new ParametricRuleViolation(rule, loc, "description");
+        RuleViolation r1 = violation(rule, loc, "description");
+        RuleViolation r2 = violation(rule, loc, "description");
 
         assertEquals(0, comp.compare(r1, r2));
         assertEquals(0, comp.compare(r2, r1));

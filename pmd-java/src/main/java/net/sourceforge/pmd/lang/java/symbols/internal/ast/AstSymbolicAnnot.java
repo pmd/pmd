@@ -4,11 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.ast;
 
-import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -18,54 +16,45 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr
 import net.sourceforge.pmd.lang.java.ast.ASTClassLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberValue;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberValueArrayInitializer;
-import net.sourceforge.pmd.lang.java.ast.ASTMemberValuePair;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolEquality;
+import net.sourceforge.pmd.lang.java.symbols.internal.SymbolToStrings;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 
 /**
  *
  */
-public class AstSymbolicAnnot implements SymbolicValue.SymAnnot {
+class AstSymbolicAnnot implements SymbolicValue.SymAnnot {
 
     private final ASTAnnotation node;
-    private final Set<String> attrNames;
+    private final JClassSymbol sym;
 
-    public AstSymbolicAnnot(ASTAnnotation node) {
+    AstSymbolicAnnot(@NonNull ASTAnnotation node, @NonNull JClassSymbol sym) {
         this.node = node;
-        attrNames = node.getMembers().collect(Collectors.mapping(ASTMemberValuePair::getName, Collectors.toSet()));
+        this.sym = Objects.requireNonNull(sym);
     }
 
     @Override
     public @Nullable SymbolicValue getAttribute(String attrName) {
-        return ofNode(node.getAttribute(attrName));
-    }
-
-    @Override
-    public Set<String> getAttributeNames() {
-        return attrNames;
-    }
-
-    @Override
-    public RetentionPolicy getRetention() {
-        RetentionPolicy retention = node.getTypeMirror().getSymbol().getAnnotationRetention();
-        if (retention == null) {
-            retention = RetentionPolicy.CLASS;
+        ASTMemberValue explicitAttr = node.getAttribute(attrName);
+        if (explicitAttr != null) {
+            return ofNode(explicitAttr);
         }
-        return retention;
+        return getAnnotationSymbol().getDefaultAnnotationAttributeValue(attrName);
     }
 
     @Override
-    public boolean isOfType(String binaryName) {
-        return getBinaryName().equals(binaryName);
+    public @NonNull JClassSymbol getAnnotationSymbol() {
+        return sym;
+
     }
 
     @Override
-    public @NonNull String getBinaryName() {
-        return node.getTypeMirror().getSymbol().getBinaryName();
+    public String getSimpleName() {
+        return node.getSimpleName();
     }
 
     @Override
@@ -76,6 +65,11 @@ public class AstSymbolicAnnot implements SymbolicValue.SymAnnot {
     @Override
     public int hashCode() {
         return SymbolEquality.ANNOTATION.hash(this);
+    }
+
+    @Override
+    public String toString() {
+        return SymbolToStrings.AST.toString(this);
     }
 
     static SymbolicValue ofNode(ASTMemberValue valueNode) {

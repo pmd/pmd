@@ -43,6 +43,14 @@ public interface JMethodSymbol extends JExecutableSymbol, BoundToNode<ASTMethodD
         return null;
     }
 
+    /**
+     * Return whether this method defines an attribute of the enclosing
+     * annotation type.
+     */
+    default boolean isAnnotationAttribute() {
+        return !isStatic() && getEnclosingClass().isAnnotation() && getArity() == 0;
+    }
+
 
     @Override
     default <R, P> R acceptVisitor(SymbolVisitor<R, P> visitor, P param) {

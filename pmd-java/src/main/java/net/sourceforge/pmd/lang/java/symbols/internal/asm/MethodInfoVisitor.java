@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.TypePath;
 
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
 
@@ -22,18 +23,34 @@ class MethodInfoVisitor extends MethodVisitor {
     
     @Override
     public AnnotationVisitor visitAnnotationDefault() {
-        return new DefaultAnnotValueVisitor(execStub.getResolver());
+        return new SymbolicValueBuilder(execStub.getResolver()) {
+            @Override
+            protected void acceptValue(String name, SymbolicValue v) {
+                defaultAnnotValue = v;
+            }
+        };
     }
 
     @Override
     public AnnotationVisitor visitParameterAnnotation(int parameter, String descriptor, boolean visible) {
-        return new ParameterAnnotVisitor(execStub.getResolver(), parameter, visible, descriptor);
+        return new SymbolicValueBuilder(execStub.getResolver()) {
+            private final SymbolicAnnotationImpl annot = new SymbolicAnnotationImpl(getResolver(), visible, descriptor);
+
+            @Override
+            protected void acceptValue(String name, SymbolicValue v) {
+                annot.addAttribute(name, v);
+            }
+
+            @Override
+            public void visitEnd() {
+                execStub.addParameterAnnotation(parameter, annot);
+            }
+        };
     }
 
     @Override
     public void visitEnd() {
         execStub.setDefaultAnnotValue(defaultAnnotValue);
-        execStub.finalizeVisit();
         super.visitEnd();
     }
 
@@ -42,39 +59,9 @@ class MethodInfoVisitor extends MethodVisitor {
         return new AnnotationBuilderVisitor(execStub, execStub.getResolver(), visible, descriptor);
     }
 
-    private class DefaultAnnotValueVisitor extends SymbolicValueBuilder {
-
-        DefaultAnnotValueVisitor(AsmSymbolResolver resolver) {
-            super(resolver);
-        }
-
-        @Override
-        public void visitEnd() {
-            assert this.result != null;
-            defaultAnnotValue = this.result;
-        }
+    @Override
+    public AnnotationVisitor visitTypeAnnotation(int typeRef, TypePath typePath, String descriptor, boolean visible) {
+        return new AnnotationBuilderVisitor.TypeAnnotBuilderImpl(execStub.getResolver(), execStub, typeRef, typePath, visible, descriptor);
     }
 
-    private class ParameterAnnotVisitor extends SymbolicValueBuilder {
-
-        private final SymbolicAnnotationImpl annot;
-        private final int paramIndex;
-        
-        ParameterAnnotVisitor(AsmSymbolResolver resolver, int paramIndex, boolean visible, String descriptor) {
-            super(resolver);
-            this.annot = new SymbolicAnnotationImpl(resolver, visible, descriptor);
-            this.paramIndex = paramIndex;
-        }
-        
-        @Override
-        protected void acceptValue(String name, SymbolicValue v) {
-            annot.addAttribute(name, v);
-        }
-
-        
-        @Override
-        public void visitEnd() {
-            execStub.addParameterAnnotation(paramIndex, annot);
-        }
-    }
 }

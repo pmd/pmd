@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
+import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.*
@@ -415,10 +416,45 @@ class CompletableFuture<T> {
             arrType shouldBe t_CompletableFuture[captureMatcher]
 
             acu.firstMethodCall().methodType.shouldMatchMethod(
-                    named = "uniCopyStage",
-                    withFormals = listOf(t_CompletableFuture[captureMatcher]),
-                    returning = t_CompletableFuture[ts.OBJECT]
+                named = "uniCopyStage",
+                withFormals = listOf(t_CompletableFuture[captureMatcher]),
+                returning = t_CompletableFuture[ts.OBJECT]
             )
+        }
+    }
+
+
+    parserTest("Capture with type annotation") {
+
+        val (acu, spy) = parser.logTypeInferenceVerbose().parseWithTypeInferenceSpy(
+            """
+import java.lang.annotation.*;
+interface Iterator<Q> { Q next(); }
+interface Function<U,V> { 
+    V apply(U u);
+}
+@Target(ElementType.TYPE_USE)
+@interface Nullable {}
+class Foo {
+    public static <T, R> void flatMap(Iterator<? extends T> iter, Function<? super T, ? extends @Nullable Iterator<? extends R>> f) {
+        Iterator<? extends R> next = f.apply(iter.next());
+    }
+}
+
+                """.trimIndent()
+        )
+
+        val (t_Iterator, _, t_Nullable) = acu.declaredTypeSignatures()
+        val rvar = acu.typeVar("R")
+        val tvar = acu.typeVar("T")
+
+        spy.shouldBeOk {
+            acu.firstMethodCall().methodType.shouldMatchMethod(
+                named = "apply",
+                withFormals = listOf(captureMatcher(`?` `super` tvar)),
+                returning = captureMatcher(`?` extends (`@`(t_Nullable.symbol) on t_Iterator[`?` extends rvar]))
+            )
+            acu.firstMethodCall().overloadSelectionInfo::isFailed shouldBe false
         }
     }
 

@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest;
 import net.sourceforge.pmd.lang.ast.test.RelevantAttributePrinter;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
@@ -70,6 +71,9 @@ class TypesTreeDumpTest extends BaseTreeDumpTest {
             }
             if (node instanceof ASTVariableDeclaratorId) {
                 result.add(new AttributeInfo("Name", ((ASTVariableDeclaratorId) node).getName()));
+            }
+            if (node instanceof ASTMethodDeclaration) {
+                result.add(new AttributeInfo("Name", ((ASTMethodDeclaration) node).getName()));
             }
         }
 

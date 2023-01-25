@@ -72,6 +72,11 @@ class ClassMethodSigImpl implements JMethodSig, InternalMethodTypeItf {
     }
 
     @Override
+    public JTypeMirror getAnnotatedReceiverType() {
+        return symbol.getAnnotatedReceiverType(getTypeParamSubst());
+    }
+
+    @Override
     public JMethodSig getErasure() {
         return new ClassMethodSigImpl(
             owner.getErasure(),

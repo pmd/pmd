@@ -5,9 +5,12 @@
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.pcollections.HashTreePSet;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolEquality;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolToStrings;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
@@ -21,6 +24,7 @@ class TParamStub implements JTypeParameterSymbol {
     private final JTypeVar typeVar;
     private final String boundSignature;
     private final SignatureParser sigParser;
+    private PSet<SymAnnot> annotations = HashTreePSet.empty();
 
     TParamStub(String name, GenericSigBase<?> sig, String bound) {
         this.name = name;
@@ -32,6 +36,7 @@ class TParamStub implements JTypeParameterSymbol {
         this.typeVar = ts.newTypeVar(this);
     }
 
+
     @Override
     public @NonNull String getSimpleName() {
         return name;
@@ -39,12 +44,24 @@ class TParamStub implements JTypeParameterSymbol {
 
     @Override
     public JTypeMirror computeUpperBound() {
+        // Note: type annotations on the bound are added when applying
+        // type annots collected on the enclosing symbol. See usages of
+        // this method.
         return sigParser.parseTypeVarBound(owner.getLexicalScope(), boundSignature);
     }
 
     @Override
     public JTypeParameterOwnerSymbol getDeclaringSymbol() {
         return owner;
+    }
+
+    @Override
+    public PSet<SymAnnot> getDeclaredAnnotations() {
+        return annotations;
+    }
+
+    void addAnnotation(SymAnnot annot) {
+        annotations = annotations.plus(annot);
     }
 
     @Override

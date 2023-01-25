@@ -2,15 +2,23 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.rule.internal;
+package net.sourceforge.pmd.lang.java.internal;
+
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.ViolationSuppressor;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
@@ -48,9 +56,26 @@ final class AnnotationSuppressionUtil {
 
     private static final Set<String> UNUSED_RULES
         = new HashSet<>(Arrays.asList("UnusedPrivateField", "UnusedLocalVariable", "UnusedPrivateMethod",
-                "UnusedFormalParameter", "UnusedAssignment", "SingularField"));
+                                      "UnusedFormalParameter", "UnusedAssignment", "SingularField"));
     private static final Set<String> SERIAL_RULES =
         new HashSet<>(Arrays.asList("BeanMembersShouldSerialize", "NonSerializableClass", "MissingSerialVersionUID"));
+
+    static final ViolationSuppressor JAVA_ANNOT_SUPPRESSOR = new ViolationSuppressor() {
+        @Override
+        public String getId() {
+            return "@SuppressWarnings";
+        }
+
+        @Override
+        public Report.SuppressedViolation suppressOrNull(RuleViolation rv, @NonNull Node node) {
+            if (contextSuppresses(node, rv.getRule())) {
+                return new SuppressedViolation(rv, this, null);
+            }
+            return null;
+        }
+    };
+
+    static final List<ViolationSuppressor> ALL_JAVA_SUPPRESSORS = listOf(JAVA_ANNOT_SUPPRESSOR);
 
     private AnnotationSuppressionUtil() {
 

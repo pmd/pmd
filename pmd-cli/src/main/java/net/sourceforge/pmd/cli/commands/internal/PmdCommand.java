@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
@@ -27,6 +27,7 @@ import net.sourceforge.pmd.benchmark.TimingReportRenderer;
 import net.sourceforge.pmd.cli.commands.typesupport.internal.PmdLanguageTypeSupport;
 import net.sourceforge.pmd.cli.commands.typesupport.internal.PmdLanguageVersionTypeSupport;
 import net.sourceforge.pmd.cli.internal.CliExitCode;
+import net.sourceforge.pmd.cli.internal.ProgressBarListener;
 import net.sourceforge.pmd.internal.LogMessages;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -45,6 +46,7 @@ import picocli.CommandLine.ParameterException;
 @Command(name = "check", showDefaultValues = true,
     description = "The PMD standard source code analyzer")
 public class PmdCommand extends AbstractAnalysisPmdSubcommand {
+    private static final Logger LOG = LoggerFactory.getLogger(PmdCommand.class);
 
     static {
         final Properties emptyProps = new Properties();
@@ -279,7 +281,6 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
         configuration.setFailOnViolation(failOnViolation);
         configuration.setAnalysisCacheLocation(cacheLocation != null ? cacheLocation.toString() : null);
         configuration.setIgnoreIncrementalAnalysis(noCache);
-        configuration.setProgressBar(showProgressBar);
 
         if (languageVersion != null) {
             configuration.setDefaultLanguageVersions(languageVersion);
@@ -322,7 +323,17 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
                     return CliExitCode.ERROR;
                 }
 
-                pmdReporter.log(Level.DEBUG, "Current classpath:\n{0}", System.getProperty("java.class.path"));
+                LOG.debug("Current classpath:\n{}", System.getProperty("java.class.path"));
+
+                if (showProgressBar) {
+                    if (reportFile == null) {
+                        pmdReporter.warn("Progressbar rendering conflicts with reporting to STDOUT. "
+                                + "No progressbar will be shown. Try running with argument '-r <file>' to output the report to a file instead.");
+                    } else {
+                        pmd.addListener(new ProgressBarListener());
+                    }
+                }
+
                 final ReportStats stats = pmd.runAndReturnStats();
                 if (pmdReporter.numErrors() > 0) {
                     // processing errors are ignored

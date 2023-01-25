@@ -9,8 +9,10 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 
 /**
  * Represents a wildcard type. Such types are converted to {@link JTypeVar}
@@ -26,6 +28,7 @@ public interface JWildcardType extends JTypeMirror {
     /** Returns the bound. Interpretation is given by {@link #isUpperBound()}. */
     @NonNull
     JTypeMirror getBound();
+
 
 
     /** Returns true if this is an "extends" wildcard, with no bound ("?"). */
@@ -45,13 +48,13 @@ public interface JWildcardType extends JTypeMirror {
 
 
     /** Returns the lower bound, or the bottom type if this is an "extends" wildcard. */
-    default JTypeMirror asLowerBound() {
+    default @NonNull JTypeMirror asLowerBound() {
         return isUpperBound() ? getTypeSystem().NULL_TYPE : getBound();
     }
 
 
     /** Returns the upper bound, or Object if this is a "super" wildcard. */
-    default JTypeMirror asUpperBound() {
+    default @NonNull JTypeMirror asUpperBound() {
         return isUpperBound() ? getBound() : getTypeSystem().OBJECT;
     }
 
@@ -73,6 +76,9 @@ public interface JWildcardType extends JTypeMirror {
 
     @Override
     JWildcardType subst(Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst);
+
+    @Override
+    JWildcardType withAnnotations(PSet<SymAnnot> newTypeAnnots);
 
     @Override
     default <T, P> T acceptVisitor(JTypeVisitor<T, P> visitor, P p) {

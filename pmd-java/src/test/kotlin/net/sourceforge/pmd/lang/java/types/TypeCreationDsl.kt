@@ -6,16 +6,14 @@
 
 package net.sourceforge.pmd.lang.java.types
 
-import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.java.JavaParsingHelper
-import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter
-import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters
 import net.sourceforge.pmd.lang.java.ast.JavaNode
-import net.sourceforge.pmd.lang.java.ast.ParserTestCtx
+import net.sourceforge.pmd.lang.java.ast.ParserTestSpec
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot
+import net.sourceforge.pmd.lang.java.symbols.internal.FakeSymAnnot
+import net.sourceforge.pmd.lang.java.symbols.testdata.ClassWithTypeAnnotationsInside
 import net.sourceforge.pmd.lang.java.types.TypeOps.isSameType
 import kotlin.reflect.KClass
-import kotlin.streams.toList
 
 
 val JavaNode.typeDsl get() = TypeDslOf(this.typeSystem)
@@ -58,14 +56,34 @@ interface TypeDslMixin {
     val void get() = ts.NO_TYPE
 
 
+    infix fun JTypeMirror.withAnnot(a: SymAnnot) = this.addAnnotation(a)
+
+    val `@A`: SymAnnotDsl
+        get() = `@`(ts.getClassSymbol(ClassWithTypeAnnotationsInside.A::class.java)!!)
+
+    /**
+     * With this object you can write
+     * ```
+     *   `@`(symbol)
+     * ```
+     * and get an annotation
+     */
+    val `@`: (JClassSymbol) -> SymAnnotDsl get() = { SymAnnotDsl(FakeSymAnnot(it)) }
+
+    class SymAnnotDsl(private val annot: SymAnnot) {
+        /** An infix fun to be able to write the annotation first. */
+        infix fun on(t: JTypeMirror): JTypeMirror = t.addAnnotation(annot)
+    }
+
+
     /** intersection */
     operator fun JTypeMirror.times(t: JTypeMirror): JTypeMirror =
-            ts.glb(listOf(this, t))
+        ts.glb(listOf(this, t))
 
     // for some tests we assert whether the intersection is flattened, which doesn't work if we use `a * b * c`
     fun glb(t1: JTypeMirror, t2: JTypeMirror, vararg tail: JTypeMirror): JTypeMirror =
-            // flatten
-            ts.glb(listOf(t1, t2, *tail))
+        // flatten
+        ts.glb(listOf(t1, t2, *tail))
 
     // for some tests we assert whether the intersection is flattened, which doesn't work if we use `a * b * c`
     fun lub(vararg tail: JTypeMirror): JTypeMirror =
@@ -112,6 +130,9 @@ interface TypeDslMixin {
 }
 
 
+/** See [TypeDslMixin.@A]. */
+val ParserTestSpec.GroupTestCtx.VersionedTestCtx.ImplicitNodeParsingCtx<*>.AnnotA
+    get() = "@" + ClassWithTypeAnnotationsInside.A::class.java.canonicalName
 
 class TypeDslOf(override val ts: TypeSystem) : TypeDslMixin
 
