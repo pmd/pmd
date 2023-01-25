@@ -404,4 +404,19 @@ public class Generic<T> {
             }
             ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>IllegalStateException overload resolution not complete</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import non.existing.ForOverloadResolution;
+            import java.util.HashMap;
+            
+            class OverloadFailure {
+                public void foo() {
+                    ForOverloadResolution.method(new HashMap<String, Object>());
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>
