@@ -143,10 +143,9 @@ public class CPDConfiguration extends AbstractConfiguration {
     private boolean debug = false;
 
     /**
-     * @deprecated this is internal API. The class has to be public static, so that JCommander can use it.
+     * @deprecated Don't use this. This class will be removed with PMD 7. The class has to be public static, so that JCommander can use it.
      */
     @Deprecated
-    @InternalApi
     public static class LanguageConverter implements IStringConverter<Language> {
 
         @Override
@@ -162,15 +161,10 @@ public class CPDConfiguration extends AbstractConfiguration {
     /**
      * @deprecated Use {@link #setSourceEncoding(String)} instead
      */
+    @Parameter(names = { "--encoding", "-e" }, description = "Character encoding to use when processing files", required = false)
     @Deprecated
     public void setEncoding(String encoding) {
         setSourceEncoding(encoding);
-    }
-
-    @Parameter(names = { "--encoding", "-e" }, description = "Character encoding to use when processing files", required = false)
-    @Override
-    public void setSourceEncoding(String sourceEncoding) {
-        super.setSourceEncoding(sourceEncoding);
     }
 
     public SourceCode sourceCodeFor(File file) {

@@ -35,11 +35,11 @@ This is a {{ site.pmd.release_type }} release.
   replacement. CLI tests should be done in pmd-core only (and in PMD7 in pmd-cli). Individual language modules
   shouldn't need to test the CLI integration logic again. Instead, the individual language modules should test their
   functionality as unit tests.
+* {% jdoc core::cpd.CPDConfiguration.LanguageConverter %}
 
 ##### Internal APIs
 
 * {% jdoc core::renderers.CSVWriter %}
-* {% jdoc core::cpd.CPDConfiguration.LanguageConverter %}
 * Some fields in {% jdoc test::ant.AbstractAntTestHelper %}
 
 ### External Contributions
