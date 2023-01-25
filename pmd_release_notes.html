@@ -1633,12 +1633,23 @@
 always <code class="language-plaintext highlighter-rouge">Version.CURRENT</code>, as the apex compiler integration doesn’t use additional information which Apex version
 actually is used. Therefore, this method can’t be used to determine the Apex version of the project
 that is being analyzed.</li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPDConfiguration.html#setEncoding(java.lang.String)"><code>CPDConfiguration#setEncoding</code></a> and
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPDConfiguration.html#getEncoding()"><code>CPDConfiguration#getEncoding</code></a>. Use the methods
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0-SNAPSHOT/net/sourceforge/pmd/AbstractConfiguration.html#getSourceEncoding()"><code>getSourceEncoding</code></a> and
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0-SNAPSHOT/net/sourceforge/pmd/AbstractConfiguration.html#setSourceEncoding(java.lang.String)"><code>setSourceEncoding</code></a> instead. Both are available
+for <code class="language-plaintext highlighter-rouge">CPDConfiguration</code> which extends <code class="language-plaintext highlighter-rouge">AbstractConfiguration</code>.</li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-test/6.54.0-SNAPSHOT/net/sourceforge/pmd/cli/BaseCLITest.html#"><code>BaseCLITest</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-test/6.54.0-SNAPSHOT/net/sourceforge/pmd/cli/BaseCPDCLITest.html#"><code>BaseCPDCLITest</code></a> have been deprecated for removal without
+replacement. CLI tests should be done in pmd-core only (and in PMD7 in pmd-cli). Individual language modules
+shouldn’t need to test the CLI integration logic again. Instead, the individual language modules should test their
+functionality as unit tests.</li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPDConfiguration.LanguageConverter.html#"><code>CPDConfiguration.LanguageConverter</code></a></li>
 </ul>
 
 <h5 id="internal-apis">Internal APIs</h5>
 
 <ul>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0-SNAPSHOT/net/sourceforge/pmd/renderers/CSVWriter.html#"><code>CSVWriter</code></a></li>
+  <li>Some fields in <a href="https://docs.pmd-code.org/apidocs/pmd-test/6.54.0-SNAPSHOT/net/sourceforge/pmd/ant/AbstractAntTestHelper.html#"><code>AbstractAntTestHelper</code></a></li>
 </ul>
 
 <h5 id="experimental-apis">Experimental APIs</h5>
