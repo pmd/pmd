@@ -2,4 +2,11 @@ source 'https://rubygems.org'
 
 gem 'jekyll'
 gem 'github-pages'
+
+# Adding webrick explicitly - it was part of ruby 2.x, but removed with ruby 3
 gem "webrick"
+
+# Note: manually overridden dependency for jekyll (3.9.2):
+# instead of i18n (~> 0.7) using now i18n (>= 0.7)
+
+# Note: manually updated to activesupport (6.1.7.2)
