@@ -28,12 +28,14 @@ public class ZipFileTest {
     public void testZipFile() {
         PMDConfiguration conf = new PMDConfiguration();
         conf.addInputPath(zipPath);
+        // no relativizeRoot paths configured -> we use the relative path
+        String reportPath = zipPath.toString();
         try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
             List<TextFile> files = pmd.files().getCollectedFiles();
             assertThat(files, hasSize(3));
-            assertThat(files.get(0).getDisplayName(), equalTo(IOUtil.normalizePath(ZIP_PATH) + "!/otherSrc/somefile.dummy"));
-            assertThat(files.get(1).getDisplayName(), equalTo(IOUtil.normalizePath(ZIP_PATH) + "!/src/somefile.dummy"));
-            assertThat(files.get(2).getDisplayName(), equalTo(IOUtil.normalizePath(ZIP_PATH) + "!/src/somefile1.dummy"));
+            assertThat(files.get(0).getDisplayName(), equalTo(reportPath + "!/otherSrc/somefile.dummy"));
+            assertThat(files.get(1).getDisplayName(), equalTo(reportPath + "!/src/somefile.dummy"));
+            assertThat(files.get(2).getDisplayName(), equalTo(reportPath + "!/src/somefile1.dummy"));
         }
     }
 
@@ -56,13 +58,15 @@ public class ZipFileTest {
     public void testZipFileRelativizeWithRoot() {
         PMDConfiguration conf = new PMDConfiguration();
         conf.addInputPath(zipPath);
+        // this configures "/" as the relativizeRoot -> result are absolute paths
         conf.addRelativizeRoot(zipPath.toAbsolutePath().getRoot());
+        String reportPath = zipPath.toAbsolutePath().toString();
         try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
             List<TextFile> files = pmd.files().getCollectedFiles();
             assertThat(files, hasSize(3));
-            assertThat(files.get(0).getDisplayName(), equalTo(zipPath.toAbsolutePath() + "!/otherSrc/somefile.dummy"));
-            assertThat(files.get(1).getDisplayName(), equalTo(zipPath.toAbsolutePath() + "!/src/somefile.dummy"));
-            assertThat(files.get(2).getDisplayName(), equalTo(zipPath.toAbsolutePath() + "!/src/somefile1.dummy"));
+            assertThat(files.get(0).getDisplayName(), equalTo(reportPath + "!/otherSrc/somefile.dummy"));
+            assertThat(files.get(1).getDisplayName(), equalTo(reportPath + "!/src/somefile.dummy"));
+            assertThat(files.get(2).getDisplayName(), equalTo(reportPath + "!/src/somefile1.dummy"));
         }
     }
 

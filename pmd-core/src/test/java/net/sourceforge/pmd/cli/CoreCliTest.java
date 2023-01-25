@@ -7,13 +7,16 @@ package net.sourceforge.pmd.cli;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
+import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilterOutputStream;
 import java.io.IOException;
@@ -23,6 +26,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -70,12 +74,8 @@ public class CoreCliTest {
 
     @Before
     public void setup() throws IOException {
-        // set current directory to wd
-        Path root = tempRoot();
-        System.setProperty("user.dir", root.toString());
-
         // create a few files
-        srcDir = Files.createDirectories(root.resolve("src"));
+        srcDir = Files.createDirectories(tempRoot().resolve("src"));
         writeString(srcDir.resolve("someSource.dummy"), "dummy text");
         // reset logger?
         Logger.getLogger("net.sourceforge.pmd");
@@ -136,11 +136,63 @@ public class CoreCliTest {
     }
 
     @Test
-    public void testNoRelativizeWith() {
+    public void testNoRelativizeWithAbsoluteSrcDir() {
+        assertTrue("srcDir should be absolute", srcDir.isAbsolute());
         startCapturingErrAndOut();
         runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS);
 
         assertThat(outStreamCaptor.getLog(), containsString(srcDir.resolve("someSource.dummy").toString()));
+    }
+
+    @Test
+    public void testNoRelativizeWithRelativeSrcDir() throws IOException {
+        // Note, that we can't reliably change the current working directory for the current java process
+        // therefore we use the current directory and make sure, we are at the correct place - in pmd-core
+        Path cwd = Paths.get(".").toRealPath();
+        assertThat(cwd.toString(), endsWith("pmd-core"));
+        String relativeSrcDir = "src/test/resources/net/sourceforge/pmd/cli/src";
+        assertTrue(Files.isDirectory(cwd.resolve(relativeSrcDir)));
+
+        startCapturingErrAndOut();
+        runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", relativeSrcDir, "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS);
+
+        assertThat(outStreamCaptor.getLog(), containsString("\n" + IOUtil.normalizePath(relativeSrcDir + "/somefile.dummy")));
+    }
+
+    @Test
+    public void testNoRelativizeWithRelativeSrcDirParent() throws IOException {
+        // Note, that we can't reliably change the current working directory for the current java process
+        // therefore we use the current directory and make sure, we are at the correct place - in pmd-core
+        Path cwd = Paths.get(".").toRealPath();
+        assertThat(cwd.toString(), endsWith("pmd-core"));
+        String relativeSrcDir = IOUtil.normalizePath("src/test/resources/net/sourceforge/pmd/cli/src");
+        assertTrue(Files.isDirectory(cwd.resolve(relativeSrcDir)));
+
+        // use the parent directory
+        relativeSrcDir = relativeSrcDir + File.separator + "..";
+
+        startCapturingErrAndOut();
+        runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", relativeSrcDir, "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS);
+
+        assertThat(outStreamCaptor.getLog(), containsString("\n" + relativeSrcDir + IOUtil.normalizePath("/src/somefile.dummy")));
+    }
+
+    @Test
+    public void testRelativizeWithRootRelativeSrcDir() throws IOException {
+        // Note, that we can't reliably change the current working directory for the current java process
+        // therefore we use the current directory and make sure, we are at the correct place - in pmd-core
+        Path cwd = Paths.get(".").toRealPath();
+        assertThat(cwd.toString(), endsWith("pmd-core"));
+        String relativeSrcDir = "src/test/resources/net/sourceforge/pmd/cli/src";
+        assertTrue(Files.isDirectory(cwd.resolve(relativeSrcDir)));
+
+        String root = cwd.getRoot().toString();
+
+        startCapturingErrAndOut();
+        runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", relativeSrcDir, "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS, "--relativize-paths-with", root);
+
+        String absoluteSrcPath = cwd.resolve(relativeSrcDir).resolve("somefile.dummy").toString();
+        assertThat(outStreamCaptor.getLog(), containsString("\n" + absoluteSrcPath));
     }
 
     @Test
@@ -149,7 +201,7 @@ public class CoreCliTest {
         runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS, "-z", srcDir.getParent());
 
         assertThat(outStreamCaptor.getLog(), not(containsString(srcDir.resolve("someSource.dummy").toString())));
-        assertThat(outStreamCaptor.getLog(), containsString(IOUtil.normalizePath("src/someSource.dummy")));
+        assertThat(outStreamCaptor.getLog(), startsWith(IOUtil.normalizePath("src/someSource.dummy")));
     }
 
     @Test
@@ -158,7 +210,7 @@ public class CoreCliTest {
         runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS, "-z", srcDir.getParent(), srcDir);
 
         assertThat(outStreamCaptor.getLog(), not(containsString(srcDir.resolve("someSource.dummy").toString())));
-        assertThat(outStreamCaptor.getLog(), containsString("someSource.dummy"));
+        assertThat(outStreamCaptor.getLog(), startsWith("someSource.dummy"));
     }
 
     @Test
