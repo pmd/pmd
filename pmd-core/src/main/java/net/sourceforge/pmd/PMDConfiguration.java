@@ -958,7 +958,8 @@ public class PMDConfiguration extends AbstractConfiguration {
      * @throws NullPointerException If the path is null
      */
     public void addRelativizeRoot(Path path) {
-        // TODO symlinks?
+        // Note: the given path is not further modified or resolved. E.g. there is no special handling for symlinks.
+        // The goal is, that if the user inputs a path, PMD should output in terms of that path, not it's resolution.
         this.relativizeRoots.add(Objects.requireNonNull(path));
 
         if (Files.isRegularFile(path)) {

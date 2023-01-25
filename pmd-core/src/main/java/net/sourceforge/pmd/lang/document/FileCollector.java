@@ -14,6 +14,7 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystemAlreadyExistsException;
 import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.FileSystems;
+import java.nio.file.FileVisitOption;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,6 +24,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -264,6 +266,8 @@ public final class FileCollector implements AutoCloseable {
 
     /**
      * Return the textfile's display name.
+     *
+     * <p>package private for test only</p>
      */
     static String getDisplayNameLegacy(Path file, List<String> relativizeRoots) {
         String fileName = file.toString();
@@ -282,9 +286,8 @@ public final class FileCollector implements AutoCloseable {
     /**
      * Return the textfile's display name. Takes the shortest path we
      * can construct from the relativize roots.
-     * test only
      */
-    static String getDisplayName(Path file, List<Path> relativizeRoots) {
+    private static String getDisplayName(Path file, List<Path> relativizeRoots) {
         Path best = file;
         for (Path root : relativizeRoots) {
             Path candidate;
@@ -332,7 +335,7 @@ public final class FileCollector implements AutoCloseable {
             reporter.error("Not a directory {0}", dir);
             return false;
         }
-        Files.walkFileTree(dir, new SimpleFileVisitor<Path>() {
+        Files.walkFileTree(dir, EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE, new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                 if (attrs.isRegularFile()) {

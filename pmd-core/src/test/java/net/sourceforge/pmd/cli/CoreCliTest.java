@@ -205,6 +205,37 @@ public class CoreCliTest {
     }
 
     @Test
+    public void testRelativizeWithSymLink() throws IOException {
+        // srcDir = /tmp/junit123/src
+        // symlinkedSrcDir = /tmp/junit123/sources -> /tmp/junit123/src
+        Path symlinkedSrcDir = Files.createSymbolicLink(tempRoot().resolve("sources"), srcDir);
+        startCapturingErrAndOut();
+        runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", symlinkedSrcDir, "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS, "-z", symlinkedSrcDir);
+
+        assertThat(outStreamCaptor.getLog(), not(containsString(srcDir.resolve("someSource.dummy").toString())));
+        assertThat(outStreamCaptor.getLog(), not(containsString(symlinkedSrcDir.resolve("someSource.dummy").toString())));
+        assertThat(outStreamCaptor.getLog(), startsWith("someSource.dummy"));
+    }
+
+    @Test
+    public void testRelativizeWithSymLinkParent() throws IOException {
+        // srcDir = /tmp/junit123/src
+        // symlinkedSrcDir = /tmp/junit-relativize-with-123 -> /tmp/junit123/src
+        Path tempPath = Files.createTempDirectory("junit-relativize-with-");
+        Files.delete(tempPath);
+        Path symlinkedSrcDir = Files.createSymbolicLink(tempPath, srcDir);
+        startCapturingErrAndOut();
+        // relativizing against parent of symlinkedSrcDir: /tmp
+        runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", symlinkedSrcDir, "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS, "-z", symlinkedSrcDir.getParent());
+
+        assertThat(outStreamCaptor.getLog(), not(containsString(srcDir.resolve("someSource.dummy").toString())));
+        assertThat(outStreamCaptor.getLog(), not(containsString(symlinkedSrcDir.resolve("someSource.dummy").toString())));
+        // base path is symlinkedSrcDir without /tmp: e.g. junit-relativize-with-123
+        String basePath = symlinkedSrcDir.getParent().relativize(symlinkedSrcDir).toString();
+        assertThat(outStreamCaptor.getLog(), startsWith(basePath + File.separator + "someSource.dummy"));
+    }
+
+    @Test
     public void testRelativizeWithMultiple() {
         startCapturingErrAndOut();
         runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS, "-z", srcDir.getParent(), srcDir);
