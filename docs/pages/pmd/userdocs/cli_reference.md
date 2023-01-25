@@ -137,8 +137,9 @@ The tool comes with a rather extensive help text, simply running with `--help`!
     {% include custom/cli_option_row.html options="--relativize-paths-with,-z"
                option_arg="path"
                description="Path relative to which directories are rendered in the report. This option allows
-                    shortening directories in the report; without it, paths are rendered as absolute paths.
+                    shortening directories in the report; without it, paths are rendered as mentioned in the source directory (option \"--dir\").
                     The option can be repeated, in which case the shortest relative path will be used.
+                    If the root path is mentioned (e.g. \"/\" or \"C:\\\"), then the paths will be rendered as absolute.
                     This option replaces `--short-names` since PMD 6.54.0."
     %}
     {% include custom/cli_option_row.html options="--report-file,-r"
