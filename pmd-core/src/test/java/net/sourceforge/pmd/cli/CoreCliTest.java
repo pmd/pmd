@@ -193,7 +193,7 @@ class CoreCliTest {
 
     @Test
     void testRelativizeWith() throws Exception {
-        String log = SystemLambda.tapSystemErrAndOut(() -> {
+        String log = SystemLambda.tapSystemOut(() -> {
             runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS, "-z", srcDir.getParent());
         });
 
@@ -206,7 +206,7 @@ class CoreCliTest {
         // srcDir = /tmp/junit123/src
         // symlinkedSrcDir = /tmp/junit123/sources -> /tmp/junit123/src
         Path symlinkedSrcDir = Files.createSymbolicLink(tempRoot().resolve("sources"), srcDir);
-        String log = SystemLambda.tapSystemErrAndOut(() -> {
+        String log = SystemLambda.tapSystemOut(() -> {
             runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", symlinkedSrcDir, "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS, "-z", symlinkedSrcDir);
         });
 
@@ -223,7 +223,7 @@ class CoreCliTest {
         Files.delete(tempPath);
         Path symlinkedSrcDir = Files.createSymbolicLink(tempPath, srcDir);
         // relativizing against parent of symlinkedSrcDir: /tmp
-        String log = SystemLambda.tapSystemErrAndOut(() -> {
+        String log = SystemLambda.tapSystemOut(() -> {
             runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", symlinkedSrcDir, "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS, "-z", symlinkedSrcDir.getParent());
         });
 
@@ -236,7 +236,7 @@ class CoreCliTest {
 
     @Test
     void testRelativizeWithMultiple() throws Exception {
-        String log = SystemLambda.tapSystemErrAndOut(() -> {
+        String log = SystemLambda.tapSystemOut(() -> {
             runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", srcDir, "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS, "-z", srcDir.getParent(), srcDir);
         });
 

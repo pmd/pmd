@@ -55,10 +55,10 @@ class PMDFilelistTest {
         collectFileList(collector, RESOURCE_PREFIX + "filelist2.txt");
 
         List<TextFile> applicableFiles = collector.getCollectedFiles();
-        assertThat(applicableFiles, hasSize(3));
+        // note: the file has 3 entries, but one is duplicated, resulting in 2 individual files
+        assertThat(applicableFiles, hasSize(2));
         assertThat(applicableFiles.get(0).getPathId(), endsWith("anotherfile.dummy"));
         assertThat(applicableFiles.get(1).getPathId(), endsWith("somefile.dummy"));
-        assertThat(applicableFiles.get(2).getPathId(), endsWith("somefile.dummy"));
     }
 
     @Test

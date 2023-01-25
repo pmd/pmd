@@ -211,7 +211,9 @@ public final class FileCollector implements AutoCloseable {
 
         LanguageVersion version = discoverLanguage(pathId);
         if (version != null) {
-            return addFileImpl(TextFile.builderForCharSeq(sourceContents, pathId, version).build());
+            return addFileImpl(TextFile.builderForCharSeq(sourceContents, pathId, version)
+                                .withDisplayName(pathId)
+                                .build());
         }
 
         return false;
