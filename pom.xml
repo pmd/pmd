@@ -97,7 +97,7 @@
         <checkstyle.plugin.version>3.2.1</checkstyle.plugin.version>
         <pmd.plugin.version>3.20.0</pmd.plugin.version>
         <ant.version>1.10.12</ant.version>
-        <javadoc.plugin.version>3.2.0</javadoc.plugin.version>
+        <javadoc.plugin.version>3.4.1</javadoc.plugin.version>
         <antlr.version>4.7.2</antlr.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
