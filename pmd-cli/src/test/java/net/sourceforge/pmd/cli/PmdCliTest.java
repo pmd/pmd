@@ -446,7 +446,7 @@ class PmdCliTest extends BaseCliTest {
     @Test
     void testRelativizeWithMultiple() throws Exception {
         runCli(CliExitCode.VIOLATIONS_FOUND, "--dir", srcDir.toString(), "--rulesets",
-                DUMMY_RULESET_WITH_VIOLATIONS, "-z", srcDir.getParent().toString(), "-z", srcDir.toString())
+                DUMMY_RULESET_WITH_VIOLATIONS, "-z", srcDir.getParent().toString() + "," + srcDir.toString())
                 .verify(result -> {
                     result.checkStdOut(not(containsString(srcDir.resolve("someSource.dummy").toString())));
                     result.checkStdOut(startsWith("someSource.dummy"));

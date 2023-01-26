@@ -9,14 +9,12 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -147,9 +145,10 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
             + "This option allows shortening directories in the report; "
             + "without it, paths are rendered as mentioned in the source directory (option \"--dir\"). "
             + "The option can be repeated, in which case the shortest relative path will be used. "
-            + "If the root path is mentioned (e.g. \"/\" or \"C:\\\"), then the paths will be rendered as absolute.")
-    public void setRelativizePathsWith(List<String> rootPaths) {
-        this.relativizeRootPaths = rootPaths.stream().map(Paths::get).collect(Collectors.toList());
+            + "If the root path is mentioned (e.g. \"/\" or \"C:\\\"), then the paths will be rendered as absolute.",
+        arity = "1..*", split = ",")
+    public void setRelativizePathsWith(List<Path> rootPaths) {
+        this.relativizeRootPaths = rootPaths;
 
         for (Path path : this.relativizeRootPaths) {
             if (Files.isRegularFile(path)) {
@@ -326,15 +325,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
             TimeTracker.startGlobalTracking();
         }
 
-        PMDConfiguration configuration = null;
-        try {
-            configuration = toConfiguration();
-        } catch (IllegalArgumentException e) {
-            System.err.println("Cannot start analysis: " + e);
-            LOG.debug(ExceptionUtils.getStackTrace(e));
-            return CliExitCode.USAGE_ERROR;
-        }
-
+        final PMDConfiguration configuration = toConfiguration();
         final MessageReporter pmdReporter = configuration.getReporter();
 
         try {
