@@ -30,6 +30,8 @@ public class ParserCornersTest {
     private final JavaParsingHelper java4 = java.withDefaultVersion("1.4");
     private final JavaParsingHelper java5 = java.withDefaultVersion("1.5");
     private final JavaParsingHelper java7 = java.withDefaultVersion("1.7");
+    private final JavaParsingHelper java15 = java.withDefaultVersion("15");
+    
     @Rule
     public ExpectedException expect = ExpectedException.none();
 
@@ -118,6 +120,16 @@ public class ParserCornersTest {
                         + "}");
     }
 
+    @Test
+    public final void testTextBlockWithQuotes() {
+        // https://github.com/pmd/pmd/issues/4364
+        java15.parse("public class Foo {\n"
+                + "  private String content = \"\"\"\n"
+                + "    <div class=\"invalid-class></div>\n"
+                + "  \"\"\";\n"
+                + "}");
+    }
+    
     /**
      * Tests a specific generic notation for calling methods. See:
      * https://jira.codehaus.org/browse/MPMD-139
