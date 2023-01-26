@@ -953,7 +953,7 @@ TOKEN :
 <IN_TEXT_BLOCK_LITERAL>
 MORE :
 {
-  < ~["\\"] | <STRING_ESCAPE> | <LINE_TERMINATOR> >
+  < ~["\\"] | <STRING_ESCAPE> | ("\\")? <LINE_TERMINATOR> >
 }
 
 /* IDENTIFIERS */
