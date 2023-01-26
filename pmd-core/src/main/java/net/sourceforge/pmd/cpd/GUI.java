@@ -65,16 +65,15 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
 import net.sourceforge.pmd.PMDVersion;
-import net.sourceforge.pmd.cpd.renderer.CPDRendererAdapter;
 import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 
 public class GUI implements CPDListener {
 
-    private static final Object[][] RENDERER_SETS = new Object[][] {
-            { "Text", new CPDRendererAdapter(new SimpleRenderer()), },
-            { "XML", new XMLRenderer(), },
-            { "CSV (comma)", new CPDRendererAdapter(new CSVRenderer(',')), },
-            { "CSV (tab)", new CPDRendererAdapter(new CSVRenderer('\t')), }, };
+    private static final Object[][] RENDERER_SETS = {
+        { "Text", new SimpleRenderer(), },
+        { "XML", new XMLRenderer(), },
+        { "CSV (comma)", new CSVRenderer(','), },
+        { "CSV (tab)", new CSVRenderer('\t'), }, };
 
     private abstract static class LanguageConfig {
         public abstract Language languageFor(Properties p);
@@ -543,10 +542,11 @@ public class GUI implements CPDListener {
         int[] selectionIndices = resultsTable.getSelectedRows();
         TableModel model = resultsTable.getModel();
         List<Match> selections = new ArrayList<>(selectionIndices.length);
-        for (int i = 0; i < selectionIndices.length; i++) {
-            selections.add((Match) model.getValueAt(selectionIndices[i], 99));
+        for (int selectionIndex : selectionIndices) {
+            selections.add((Match) model.getValueAt(selectionIndex, 99));
         }
-        String report = new SimpleRenderer(trimLeadingWhitespace).render(selections.iterator());
+        CPDReport toRender = new CPDReport(selections, Collections.emptyMap());
+        String report = new SimpleRenderer(trimLeadingWhitespace).renderToString(toRender);
         resultsTextArea.setText(report);
         resultsTextArea.setCaretPosition(0); // move to the top
     }
@@ -676,7 +676,7 @@ public class GUI implements CPDListener {
             Properties p = new Properties();
             CPDConfiguration config = new CPDConfiguration();
             config.setMinimumTileSize(Integer.parseInt(minimumLengthField.getText()));
-            config.setEncoding(encodingField.getText());
+            config.setSourceEncoding(encodingField.getText());
             config.setIgnoreIdentifiers(ignoreIdentifiersCheckbox.isSelected());
             config.setIgnoreLiterals(ignoreLiteralsCheckbox.isSelected());
             config.setIgnoreAnnotations(ignoreAnnotationsCheckbox.isSelected());
@@ -710,16 +710,16 @@ public class GUI implements CPDListener {
             cpd.go();
             t.stop();
 
-            numberOfTokensPerFile = cpd.toReport().getNumberOfTokensPerFile();
+            CPDReport cpdReport = cpd.toReport();
+            numberOfTokensPerFile = cpdReport.getNumberOfTokensPerFile();
             matches = new ArrayList<>();
-            for (Iterator<Match> i = cpd.getMatches(); i.hasNext();) {
-                Match match = i.next();
+            for (Match match : cpdReport.getMatches()) {
                 setLabelFor(match);
                 matches.add(match);
             }
 
             setListDataFrom(matches);
-            String report = new SimpleRenderer().render(cpd.getMatches());
+            String report = new SimpleRenderer().renderToString(cpdReport);
             if (report.length() == 0) {
                 JOptionPane.showMessageDialog(frame,
                         "Done. Couldn't find any duplicates longer than " + minimumLengthField.getText() + " tokens");
@@ -744,7 +744,7 @@ public class GUI implements CPDListener {
                 long elapsedMillis = now - start;
                 long elapsedSeconds = elapsedMillis / 1000;
                 long minutes = (long) Math.floor(elapsedSeconds / 60);
-                long seconds = elapsedSeconds - (minutes * 60);
+                long seconds = elapsedSeconds - minutes * 60;
                 timeField.setText(formatTime(minutes, seconds));
             }
         });

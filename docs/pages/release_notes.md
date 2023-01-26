@@ -32,7 +32,7 @@ See [the example report](report-examples/html-report-v2.html).
 * core
   * [#4026](https://github.com/pmd/pmd/issues/4026): \[cli] Filenames printed as absolute paths in the report despite parameter `--short-names`
   * [#4279](https://github.com/pmd/pmd/issues/4279): \[core] Can not set ruleset property value to empty
-  * [#4329](https://github.com/pmd/pmd/pull/4329): [core] Refactor usage of snakeyaml
+  * [#4329](https://github.com/pmd/pmd/pull/4329): \[core] Refactor usage of snakeyaml
   * [#4340](https://github.com/pmd/pmd/issues/4340): \[core] Allow to filter found matches in CPDReport
 * testing
   * [#4236](https://github.com/pmd/pmd/issues/4236): \[test] kotest logs look broken
