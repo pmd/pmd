@@ -936,12 +936,24 @@ TOKEN :
       )*
       "\""
   >
-|
-  < TEXT_BLOCK_LITERAL:
-     "\"\"\"" (<HORIZONTAL_WHITESPACE>)* <LINE_TERMINATOR>
-        ( ~["\\"] | <STRING_ESCAPE> | <LINE_TERMINATOR> )*
-     "\"\"\""
-  >
+}
+
+/* TEXT BLOCKS */
+MORE :
+{
+  < "\"\"\"" (<HORIZONTAL_WHITESPACE>)* <LINE_TERMINATOR> > : IN_TEXT_BLOCK_LITERAL
+}
+
+<IN_TEXT_BLOCK_LITERAL>
+TOKEN :
+{
+  <TEXT_BLOCK_LITERAL: "\"\"\"" > : DEFAULT
+}
+
+<IN_TEXT_BLOCK_LITERAL>
+MORE :
+{
+  < ~["\\"] | <STRING_ESCAPE> | <LINE_TERMINATOR> >
 }
 
 /* IDENTIFIERS */
