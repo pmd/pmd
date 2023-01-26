@@ -11,13 +11,16 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
+import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.io.File;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -26,23 +29,28 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.cli.internal.CliExitCode;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.util.IOUtil;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 
 class PmdCliTest extends BaseCliTest {
 
+    private static final String DUMMY_RULESET_WITH_VIOLATIONS = "net/sourceforge/pmd/cli/FakeRuleset2.xml";
     static final String RULESET_WITH_VIOLATION = "net/sourceforge/pmd/cli/RuleSetWithViolations.xml";
     private static final String RULESET_NO_VIOLATIONS = "net/sourceforge/pmd/cli/FakeRuleset.xml";
     private static final String NOT_A_RULESET = "ThisRuleSetDoesNotExist.xml";
@@ -52,8 +60,8 @@ class PmdCliTest extends BaseCliTest {
     private Path tempDir;
     private Path srcDir;
 
-    @AfterAll
-    static void resetLogging() {
+    @AfterEach
+    void resetLogging() {
         // reset logging in case "--debug" changed the logging properties
         // See also Slf4jSimpleConfigurationForAnt
         Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(null);
@@ -61,12 +69,8 @@ class PmdCliTest extends BaseCliTest {
 
     @BeforeEach
     void setup() throws IOException {
-        // set current directory to wd
-        Path root = tempRoot();
-        System.setProperty("user.dir", root.toString());
-
         // create a few files
-        srcDir = Files.createDirectories(root.resolve("src"));
+        srcDir = Files.createDirectories(tempRoot().resolve("src"));
         writeString(srcDir.resolve("someSource.dummy"), "dummy text");
     }
 
@@ -311,7 +315,7 @@ class PmdCliTest extends BaseCliTest {
         Path zipArchive = createTemporaryZipArchive("sources.zip");
         CliExecutionResult result = runCli(VIOLATIONS_FOUND, "--dir", zipArchive.toString(), "--rulesets", "rulesets/dummy/basic.xml");
         result.checkStdErr(not(containsStringIgnoringCase("Cannot open zip file")));
-        String reportPath = IOUtil.normalizePath(zipArchive + "!/someSource.dummy");
+        String reportPath = IOUtil.normalizePath(zipArchive.toString()) + "!/someSource.dummy";
         result.checkStdOut(containsString(reportPath + ":1:\tSampleXPathRule:\tTest Rule 2"));
     }
 
@@ -320,7 +324,7 @@ class PmdCliTest extends BaseCliTest {
         Path jarArchive = createTemporaryZipArchive("sources.jar");
         CliExecutionResult result = runCli(VIOLATIONS_FOUND, "--dir", jarArchive.toString(), "--rulesets", "rulesets/dummy/basic.xml");
         result.checkStdErr(not(containsStringIgnoringCase("Cannot open zip file")));
-        String reportPath = IOUtil.normalizePath(jarArchive + "!/someSource.dummy");
+        String reportPath = IOUtil.normalizePath(jarArchive.toString()) + "!/someSource.dummy";
         result.checkStdOut(containsString(reportPath + ":1:\tSampleXPathRule:\tTest Rule 2"));
     }
 
@@ -333,6 +337,131 @@ class PmdCliTest extends BaseCliTest {
             zipOutputStream.closeEntry();
         }
         return zipArchive;
+    }
+
+    @Test
+    void testNoRelativizeWithAbsoluteSrcDir() throws Exception {
+        assertTrue(srcDir.isAbsolute(), "srcDir should be absolute");
+        runCli(CliExitCode.VIOLATIONS_FOUND, "--dir", srcDir.toString(), "--rulesets",
+                DUMMY_RULESET_WITH_VIOLATIONS)
+                .verify(result -> result.checkStdOut(
+                        containsString(srcDir.resolve("someSource.dummy").toString())));
+    }
+
+    @Test
+    void testNoRelativizeWithRelativeSrcDir() throws Exception {
+        // Note, that we can't reliably change the current working directory for the current java process
+        // therefore we use the current directory and make sure, we are at the correct place - in pmd-core
+        Path cwd = Paths.get(".").toRealPath();
+        assertThat(cwd.toString(), endsWith("pmd-cli"));
+        String relativeSrcDir = "src/test/resources/net/sourceforge/pmd/cli/src";
+        assertTrue(Files.isDirectory(cwd.resolve(relativeSrcDir)));
+
+        runCli(CliExitCode.VIOLATIONS_FOUND, "--dir", relativeSrcDir, "--rulesets",
+                DUMMY_RULESET_WITH_VIOLATIONS)
+                .verify(result -> result.checkStdOut(
+                        containsString("\n" + IOUtil.normalizePath(relativeSrcDir + "/somefile.dummy"))));
+    }
+
+    @Test
+    void testNoRelativizeWithRelativeSrcDirParent() throws Exception {
+        // Note, that we can't reliably change the current working directory for the current java process
+        // therefore we use the current directory and make sure, we are at the correct place - in pmd-core
+        Path cwd = Paths.get(".").toRealPath();
+        assertThat(cwd.toString(), endsWith("pmd-cli"));
+        String relativeSrcDir = IOUtil.normalizePath("src/test/resources/net/sourceforge/pmd/cli/src");
+        assertTrue(Files.isDirectory(cwd.resolve(relativeSrcDir)));
+
+        // use the parent directory
+        String relativeSrcDirWithParent = relativeSrcDir + File.separator + "..";
+
+        runCli(CliExitCode.VIOLATIONS_FOUND, "--dir", relativeSrcDirWithParent, "--rulesets",
+                DUMMY_RULESET_WITH_VIOLATIONS)
+                .verify(result -> result.checkStdOut(
+                        containsString("\n" + relativeSrcDirWithParent + IOUtil.normalizePath("/src/somefile.dummy"))));
+    }
+
+    @Test
+    void testRelativizeWithRootRelativeSrcDir() throws Exception {
+        // Note, that we can't reliably change the current working directory for the current java process
+        // therefore we use the current directory and make sure, we are at the correct place - in pmd-core
+        Path cwd = Paths.get(".").toRealPath();
+        assertThat(cwd.toString(), endsWith("pmd-cli"));
+        String relativeSrcDir = "src/test/resources/net/sourceforge/pmd/cli/src";
+        assertTrue(Files.isDirectory(cwd.resolve(relativeSrcDir)));
+
+        String root = cwd.getRoot().toString();
+        String absoluteSrcPath = cwd.resolve(relativeSrcDir).resolve("somefile.dummy").toString();
+
+        runCli(CliExitCode.VIOLATIONS_FOUND, "--dir", relativeSrcDir, "--rulesets",
+                DUMMY_RULESET_WITH_VIOLATIONS, "--relativize-paths-with", root)
+                .verify(result -> result.checkStdOut(
+                        containsString("\n" + absoluteSrcPath))
+            );
+    }
+
+    @Test
+    void testRelativizeWith() throws Exception {
+        runCli(CliExitCode.VIOLATIONS_FOUND, "--dir", srcDir.toString(), "--rulesets",
+                DUMMY_RULESET_WITH_VIOLATIONS, "-z", srcDir.getParent().toString())
+                .verify(result -> {
+                    result.checkStdOut(not(containsString(srcDir.resolve("someSource.dummy").toString())));
+                    result.checkStdOut(startsWith(IOUtil.normalizePath("src/someSource.dummy")));
+                });
+    }
+
+    @Test
+    void testRelativizeWithSymLink() throws Exception {
+        // srcDir = /tmp/junit123/src
+        // symlinkedSrcDir = /tmp/junit123/sources -> /tmp/junit123/src
+        Path symlinkedSrcDir = Files.createSymbolicLink(tempRoot().resolve("sources"), srcDir);
+        runCli(CliExitCode.VIOLATIONS_FOUND, "--dir", symlinkedSrcDir.toString(), "--rulesets",
+                DUMMY_RULESET_WITH_VIOLATIONS, "-z", symlinkedSrcDir.toString())
+                .verify(result -> {
+                    result.checkStdOut(not(containsString(srcDir.resolve("someSource.dummy").toString())));
+                    result.checkStdOut(not(containsString(symlinkedSrcDir.resolve("someSource.dummy").toString())));
+                    result.checkStdOut(startsWith("someSource.dummy"));
+                });
+    }
+
+    @Test
+    void testRelativizeWithSymLinkParent() throws Exception {
+        // srcDir = /tmp/junit123/src
+        // symlinkedSrcDir = /tmp/junit-relativize-with-123 -> /tmp/junit123/src
+        Path tempPath = Files.createTempDirectory("junit-relativize-with-");
+        Files.delete(tempPath);
+        Path symlinkedSrcDir = Files.createSymbolicLink(tempPath, srcDir);
+        // relativizing against parent of symlinkedSrcDir: /tmp
+        runCli(CliExitCode.VIOLATIONS_FOUND, "--dir", symlinkedSrcDir.toString(), "--rulesets",
+                DUMMY_RULESET_WITH_VIOLATIONS, "-z", symlinkedSrcDir.getParent().toString())
+                .verify(result -> {
+                    result.checkStdOut(not(containsString(srcDir.resolve("someSource.dummy").toString())));
+                    result.checkStdOut(not(containsString(symlinkedSrcDir.resolve("someSource.dummy").toString())));
+                    // base path is symlinkedSrcDir without /tmp: e.g. junit-relativize-with-123
+                    String basePath = symlinkedSrcDir.getParent().relativize(symlinkedSrcDir).toString();
+                    result.checkStdOut(startsWith(basePath + File.separator + "someSource.dummy"));
+                });
+    }
+
+    @Test
+    void testRelativizeWithMultiple() throws Exception {
+        runCli(CliExitCode.VIOLATIONS_FOUND, "--dir", srcDir.toString(), "--rulesets",
+                DUMMY_RULESET_WITH_VIOLATIONS, "-z", srcDir.getParent().toString() + "," + srcDir.toString())
+                .verify(result -> {
+                    result.checkStdOut(not(containsString(srcDir.resolve("someSource.dummy").toString())));
+                    result.checkStdOut(startsWith("someSource.dummy"));
+                });
+    }
+
+    @Test
+    void testRelativizeWithFileIsError() throws Exception {
+        runCli(CliExitCode.USAGE_ERROR, "--dir", srcDir.toString(), "--rulesets",
+                DUMMY_RULESET_WITH_VIOLATIONS, "-z", srcDir.resolve("someSource.dummy").toString())
+                .verify(result -> result.checkStdErr(
+                        containsString(
+                                "Expected a directory path for option '--relativize-paths-with', found a file: "
+                                        + srcDir.resolve("someSource.dummy"))
+                ));
     }
 
     // utilities
@@ -360,5 +489,12 @@ class PmdCliTest extends BaseCliTest {
         return listOf(
             "check", "--no-cache", "--no-progress"
         );
+    }
+
+    public static class FooRule extends MockRule {
+        @Override
+        public void apply(Node node, RuleContext ctx) {
+            ctx.addViolation(node);
+        }
     }
 }
