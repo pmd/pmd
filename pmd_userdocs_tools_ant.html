@@ -1671,7 +1671,11 @@ then you can make use of the PMD Task like this:</p>
     </tr>
     <tr>
       <td>shortFilenames</td>
-      <td>Places truncated filenames in the report.  This can reduce your report file size by 15%-20%.</td>
+      <td>
+          <span class="label label-default">Deprecated</span> Use <code>relativizePathsWith</code>
+          as nested element instead.
+          Places truncated filenames in the report.  This can reduce your report file size by 15%-20%.
+      </td>
       <td>No</td>
     </tr>
     <tr>
@@ -1777,7 +1781,7 @@ automatically and the latest language version is used.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;target name="pmd"&gt;
     &lt;taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/&gt;
-    &lt;pmd shortFilenames="true"&gt;
+    &lt;pmd&gt;
         &lt;ruleset&gt;rulesets/java/quickstart.xml&lt;/ruleset&gt;
         &lt;ruleset&gt;config/my-ruleset.xml&lt;/ruleset&gt;
         &lt;fileset dir="/usr/local/j2sdk1.4.1_01/src/"&gt;
@@ -1789,6 +1793,12 @@ automatically and the latest language version is used.</p>
 
 <p><code class="language-plaintext highlighter-rouge">fileset</code> nested element - specify the actual java source files, that PMD should analyze. You can use multiple
 fileset elements. See <a href="https://ant.apache.org/manual/Types/fileset.html">FileSet</a> for the syntax and usage.</p>
+
+<p><code class="language-plaintext highlighter-rouge">relativizePathsWith</code> nested element - configures the paths relative to which directories are rendered in the report.
+This option allows shortening directories in the report; without it, paths are rendered as absolute paths.
+The option can be repeated, in which case the shortest relative path will be used.
+It is a <a href="https://ant.apache.org/manual/using.html#path">path-like structure</a>.
+This option replaces <code class="language-plaintext highlighter-rouge">shortFilenames</code> since PMD 6.54.0.</p>
 
 <h3 id="language-version-selection">Language version selection</h3>
 
@@ -2009,7 +2019,7 @@ Total time: 2 seconds
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;target name="pmd"&gt;
     &lt;taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/&gt;
-    &lt;pmd rulesetfiles="rulesets/java/quickstart.xml" shortFilenames="true"&gt;
+    &lt;pmd rulesetfiles="rulesets/java/quickstart.xml"&gt;
         &lt;formatter type="html" toFile="pmd_report.html"&gt;
             &lt;param name="linkPrefix" value="https://maven.apache.org/plugins/maven-pmd-plugin/xref/"/&gt;
             &lt;param name="linePrefix" value="L"/&gt;
@@ -2017,6 +2027,9 @@ Total time: 2 seconds
         &lt;fileset dir="/usr/local/j2sdk1.4.1_01/src/"&gt;
             &lt;include name="java/lang/*.java"/&gt;
         &lt;/fileset&gt;
+        &lt;relativizePathsWith&gt;
+            &lt;pathelement location="/usr/local/j2sdk1.4.1_01/src/"/&gt;
+        &lt;/relativizePathsWith&gt;
     &lt;/pmd&gt;
 &lt;/target&gt;
 </code></pre></div></div>

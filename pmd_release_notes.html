@@ -1622,6 +1622,7 @@ with charting functions. It uses an XSLT stylesheet to convert PMD’s XML forma
   </li>
   <li>core
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4026">#4026</a>: [cli] Filenames printed as absolute paths in the report despite parameter <code class="language-plaintext highlighter-rouge">--short-names</code></li>
       <li><a href="https://github.com/pmd/pmd/issues/4279">#4279</a>: [core] Can not set ruleset property value to empty</li>
       <li><a href="https://github.com/pmd/pmd/pull/4329">#4329</a>: [core] Refactor usage of snakeyaml</li>
       <li><a href="https://github.com/pmd/pmd/issues/4340">#4340</a>: [core] Allow to filter found matches in CPDReport</li>
@@ -1635,6 +1636,15 @@ with charting functions. It uses an XSLT stylesheet to convert PMD’s XML forma
 </ul>
 
 <h3 id="api-changes">API Changes</h3>
+
+<h4 id="pmd-cli">PMD CLI</h4>
+
+<ul>
+  <li>PMD now supports a new <code class="language-plaintext highlighter-rouge">--relativize-paths-with</code> flag (or short <code class="language-plaintext highlighter-rouge">-z</code>), which replaces <code class="language-plaintext highlighter-rouge">--short-names</code>.
+It serves the same purpose: Shortening the pathnames in the reports. However, with the new flag it’s possible
+to explicitly define one or more pathnames that should be used as the base when creating relative paths.
+The old flag <code class="language-plaintext highlighter-rouge">--short-names</code> is deprecated.</li>
+</ul>
 
 <h4 id="deprecated-apis">Deprecated APIs</h4>
 
@@ -1654,7 +1664,17 @@ for <code class="language-plaintext highlighter-rouge">CPDConfiguration</code> w
 replacement. CLI tests should be done in pmd-core only (and in PMD7 in pmd-cli). Individual language modules
 shouldn’t need to test the CLI integration logic again. Instead, the individual language modules should test their
 functionality as unit tests.</li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPDConfiguration.LanguageConverter.html#"><code>CPDConfiguration.LanguageConverter</code></a></li>
+  <li>
+    <p><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPDConfiguration.LanguageConverter.html#"><code>CPDConfiguration.LanguageConverter</code></a></p>
+  </li>
+  <li>
+    <p><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0-SNAPSHOT/net/sourceforge/pmd/lang/document/FileCollector.html#addZipFile(java.nio.file.Path)"><code>FileCollector#addZipFile</code></a> has been deprecated. It is replaced
+by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0-SNAPSHOT/net/sourceforge/pmd/lang/document/FileCollector.html#addZipFileWithContent(java.nio.file.Path)"><code>FileCollector#addZipFileWithContent</code></a> which directly adds the
+content of the zip file for analysis.</p>
+  </li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setReportShortNames(boolean)"><code>PMDConfiguration#setReportShortNames</code></a> and
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#isReportShortNames()"><code>PMDConfiguration#isReportShortNames</code></a> have been deprecated for removal.
+Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#addRelativizeRoot(java.nio.file.Path)"><code>PMDConfiguration#addRelativizeRoot</code></a> instead.</li>
 </ul>
 
 <h5 id="internal-apis">Internal APIs</h5>

@@ -1970,7 +1970,8 @@
 
 <tr>
     <td><a style="pointer-events: none; cursor: default;" name="language"><code>-language&nbsp;&lt;lang&gt;</code><br /><code>-l&nbsp;&lt;lang&gt;</code></a></td>
-    <td>Specify the language PMD should use. Used together with <code>-version</code>. See also <a href="#supported-languages">Supported Languages</a>.</td>
+    <td>Specify the language PMD should use. Used together with <code>-version</code>. See also <a href="#supported-languages">Supported Languages</a>.
+                    <p><span class="label label-default">Deprecated</span> since PMD 6.52.0. Use <code>--use-version</code> instead.</p></td>
     <td><code></code></td>
     <td></td>
 </tr>
@@ -2080,6 +2081,32 @@
 
 
 <tr>
+    <td><a style="pointer-events: none; cursor: default;" name="-relativize-paths-with"><code>--relativize-paths-with&nbsp;&lt;path&gt;</code><br /><code>-z&nbsp;&lt;path&gt;</code></a></td>
+    <td>Path relative to which directories are rendered in the report. This option allows
+                    shortening directories in the report; without it, paths are rendered as mentioned in the source directory (option "--dir").
+                    The option can be repeated, in which case the shortest relative path will be used.
+                    If the root path is mentioned (e.g. "/" or "C:\\"), then the paths will be rendered as absolute.
+                    This option replaces <code>--short-names</code> since PMD 6.54.0.</td>
+    <td><code></code></td>
+    <td></td>
+</tr>
+
+    <!-- Row of the CLI reference table, describing an option -->
+<!-- Rows can be linked to the name of the option (without leading dash) -->
+<!-- Argument summary: -->
+<!-- options: comma separated list of aliases for the option.-->
+<!-- option_arg: optional name for the argument of the option, eg 'arg', will be formatted eg to '<arg>'-->
+<!-- description: description, you can use "some" inline markdown -->
+<!-- required: whether the option is required, if specified, whatever the value, it's considered required -->
+<!-- languages: languages to which the option applies -->
+<!-- default: default value -->
+
+
+
+<!-- fragment id in the page -->
+
+
+<tr>
     <td><a style="pointer-events: none; cursor: default;" name="-report-file"><code>--report-file&nbsp;&lt;path&gt;</code><br /><code>-r&nbsp;&lt;path&gt;</code></a></td>
     <td>Path to a file to which report output is written. The file is created if it does not exist. If this option is not specified, the report is rendered to standard output.</td>
     <td><code></code></td>
@@ -2103,7 +2130,8 @@
 
 <tr>
     <td><a style="pointer-events: none; cursor: default;" name="-short-names"><code>--short-names</code></a></td>
-    <td>Prints shortened filenames in the report.</td>
+    <td>Prints shortened filenames in the report.
+                    <p><span class="label label-default">Deprecated</span> since PMD 6.54.0. Use <code>--relativize-paths-with</code> instead.</p></td>
     <td><code></code></td>
     <td></td>
 </tr>
@@ -2258,7 +2286,8 @@
 
 <tr>
     <td><a style="pointer-events: none; cursor: default;" name="version"><code>-version&nbsp;&lt;version&gt;</code><br /><code>-v&nbsp;&lt;version&gt;</code></a></td>
-    <td>Specify the version of a language PMD should use. Used together with <code>-language</code>. See also <a href="#supported-languages">Supported Languages</a>.</td>
+    <td>Specify the version of a language PMD should use. Used together with <code>-language</code>. See also <a href="#supported-languages">Supported Languages</a>.
+                    <p><span class="label label-default">Deprecated</span> since PMD 6.52.0. Use <code>--use-version</code> instead.</p></td>
     <td><code></code></td>
     <td></td>
 </tr>
