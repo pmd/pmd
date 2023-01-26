@@ -64,7 +64,7 @@ abstract class PmdRunnable implements Runnable {
     public void run() throws FileAnalysisException {
         TimeTracker.initThread();
 
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING);
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING);
             FileAnalysisListener listener = globalListener.startFileAnalysis(textFile)) {
 
             RuleSets ruleSets = getRulesets();
