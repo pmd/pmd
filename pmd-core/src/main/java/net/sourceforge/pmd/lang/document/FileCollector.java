@@ -153,12 +153,10 @@ public final class FileCollector implements AutoCloseable {
             return false;
         }
         LanguageVersion languageVersion = discoverLanguage(file.toString());
-        if (languageVersion != null) {
-            return addFileImpl(TextFile.builderForPath(file, charset, languageVersion)
-                                .withDisplayName(getDisplayName(file))
-                                .build());
-        }
-        return false;
+        return languageVersion != null
+                && addFileImpl(TextFile.builderForPath(file, charset, languageVersion)
+                    .withDisplayName(getDisplayName(file))
+                    .build());
     }
 
     /**
@@ -193,10 +191,7 @@ public final class FileCollector implements AutoCloseable {
      */
     public boolean addFile(TextFile textFile) {
         AssertionUtil.requireParamNotNull("textFile", textFile);
-        if (checkContextualVersion(textFile)) {
-            return addFileImpl(textFile);
-        }
-        return false;
+        return checkContextualVersion(textFile) && addFileImpl(textFile);
     }
 
     /**
@@ -210,13 +205,10 @@ public final class FileCollector implements AutoCloseable {
         AssertionUtil.requireParamNotNull("pathId", pathId);
 
         LanguageVersion version = discoverLanguage(pathId);
-        if (version != null) {
-            return addFileImpl(TextFile.builderForCharSeq(sourceContents, pathId, version)
-                                .withDisplayName(pathId)
-                                .build());
-        }
-
-        return false;
+        return version != null
+                && addFileImpl(TextFile.builderForCharSeq(sourceContents, pathId, version)
+                    .withDisplayName(pathId)
+                    .build());
     }
 
     private boolean addFileImpl(TextFile textFile) {
