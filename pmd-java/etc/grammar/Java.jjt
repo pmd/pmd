@@ -939,7 +939,7 @@ TOKEN :
 |
   < TEXT_BLOCK_LITERAL:
      "\"\"\"" (<HORIZONTAL_WHITESPACE>)* <LINE_TERMINATOR>
-        ( ~["\"", "\\"] | "\"" ~["\""] | "\"\"" ~["\""] | <STRING_ESCAPE> | "\\" <LINE_TERMINATOR> )*
+        ( ~["\\"] | <STRING_ESCAPE> | <LINE_TERMINATOR> )*
      "\"\"\""
   >
 }
