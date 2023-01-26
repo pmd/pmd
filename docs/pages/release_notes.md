@@ -49,6 +49,10 @@ This is a {{ site.pmd.release_type }} release.
   by {% jdoc !!core::lang.document.FileCollector#addZipFileWithContent(java.nio.file.Path) %} which directly adds the
   content of the zip file for analysis.
 
+* {% jdoc !!core::PMDConfiguration#setReportShortNames(boolean) %} and
+  {% jdoc !!core::PMDConfiguration#isReportShortNames() %} have been deprecated for removal.
+  Use {% jdoc !!core::PMDConfiguration#addRelativizeRoot(java.nio.file.Path) %} instead.
+
 ##### Internal APIs
 
 * {% jdoc core::renderers.CSVWriter %}

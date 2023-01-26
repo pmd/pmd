@@ -128,10 +128,10 @@ public class PMDParameters {
 
     @Parameter(names = { RELATIVIZE_PATHS_WITH, "-z" },
                variableArity = true,
-               description = "Path relative to which directories are rendered in the report."
+               description = "Path relative to which directories are rendered in the report. "
                              + "This option allows shortening directories in the report; "
                              + "without it, paths are rendered as mentioned in the source directory (option \"--dir\"). "
-                             + "The option can be repeated, in which case the shortest relative path will be used."
+                             + "The option can be repeated, in which case the shortest relative path will be used. "
                              + "If the root path is mentioned (e.g. \"/\" or \"C:\\\"), then the paths will be rendered as absolute.",
                validateValueWith = PathToRelativizeRootValidator.class,
                converter = StringToPathConverter.class)
