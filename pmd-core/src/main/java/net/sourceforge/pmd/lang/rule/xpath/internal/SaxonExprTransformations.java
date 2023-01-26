@@ -10,6 +10,7 @@ import java.util.Collections;
 import net.sf.saxon.expr.AxisExpression;
 import net.sf.saxon.expr.Expression;
 import net.sf.saxon.expr.FilterExpression;
+import net.sf.saxon.expr.LetExpression;
 import net.sf.saxon.expr.RootExpression;
 import net.sf.saxon.expr.SlashExpression;
 import net.sf.saxon.om.AxisInfo;
@@ -99,9 +100,42 @@ final class SaxonExprTransformations {
         unions.visit(expr);
         if (unions.getExpressions().isEmpty()) {
             return Collections.singletonList(expr);
-        } else {
-            return unions.getExpressions();
         }
+        return unions.getExpressions();
     }
 
+    static Expression copyTopLevelLets(Expression modified, Expression original) {
+        // Does it need them?
+        if (modified instanceof LetExpression) {
+            return modified;
+        }
+        
+        final SaxonExprVisitor topLevelLetCopier = new SaxonExprVisitor() {
+            
+            @Override
+            public Expression visit(LetExpression e) {
+                // keep copying
+                if (e.getAction() instanceof LetExpression) {
+                    return super.visit(e);
+                }
+                
+                // Manually craft the inner-most LetExpression
+                Expression action = visit(modified);
+                Expression sequence = visit(e.getSequence());
+                LetExpression result = new LetExpression();
+                result.setAction(action);
+                result.setSequence(sequence);
+                result.setVariableQName(e.getVariableQName());
+                result.setRequiredType(e.getRequiredType());
+                result.setSlotNumber(e.getLocalSlotNumber());
+                return result;
+            }
+        };
+        
+        if (original instanceof LetExpression) {
+            return topLevelLetCopier.visit(original);
+        }
+        
+        return modified;
+    }
 }

@@ -226,6 +226,7 @@ public class SaxonXPathRuleQuery {
             Expression modified = subexpression;
             modified = SaxonExprTransformations.hoistFilters(modified);
             modified = SaxonExprTransformations.reduceRoot(modified);
+            modified = SaxonExprTransformations.copyTopLevelLets(modified, expr);
             RuleChainAnalyzer rca = new RuleChainAnalyzer(xpathEvaluator.getConfiguration());
             final Expression finalExpr = rca.visit(modified); // final because of lambda
 
