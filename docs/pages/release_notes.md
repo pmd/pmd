@@ -25,6 +25,7 @@ See [the example report](report-examples/html-report-v2.html).
 * apex-bestpractices
   * [#2669](https://github.com/pmd/pmd/issues/2669): \[apex] UnusedLocalVariable false positive in dynamic SOQL
 * core
+  * [#4026](https://github.com/pmd/pmd/issues/4026): \[cli] Filenames printed as absolute paths in the report despite parameter `--short-names`
   * [#4279](https://github.com/pmd/pmd/issues/4279): \[core] Can not set ruleset property value to empty
   * [#4329](https://github.com/pmd/pmd/pull/4329): \[core] Refactor usage of snakeyaml
   * [#4340](https://github.com/pmd/pmd/issues/4340): \[core] Allow to filter found matches in CPDReport
@@ -32,6 +33,13 @@ See [the example report](report-examples/html-report-v2.html).
   * [#4236](https://github.com/pmd/pmd/issues/4236): \[test] kotest logs look broken
 
 ### API Changes
+
+#### PMD CLI
+
+* PMD now supports a new `--relativize-paths-with` flag (or short `-z`), which replaces `--short-names`.
+  It serves the same purpose: Shortening the pathnames in the reports. However, with the new flag it's possible
+  to explicitly define one or more pathnames that should be used as the base when creating relative paths.
+  The old flag `--short-names` is deprecated.
 
 #### Deprecated APIs
 
@@ -51,6 +59,14 @@ See [the example report](report-examples/html-report-v2.html).
   shouldn't need to test the CLI integration logic again. Instead, the individual language modules should test their
   functionality as unit tests.
 * {% jdoc core::cpd.CPDConfiguration.LanguageConverter %}
+
+* {% jdoc !!core::lang.document.FileCollector#addZipFile(java.nio.file.Path) %} has been deprecated. It is replaced
+  by {% jdoc !!core::lang.document.FileCollector#addZipFileWithContent(java.nio.file.Path) %} which directly adds the
+  content of the zip file for analysis.
+
+* {% jdoc !!core::PMDConfiguration#setReportShortNames(boolean) %} and
+  {% jdoc !!core::PMDConfiguration#isReportShortNames() %} have been deprecated for removal.
+  Use {% jdoc !!core::PMDConfiguration#addRelativizeRoot(java.nio.file.Path) %} instead.
 
 ##### Internal APIs
 
