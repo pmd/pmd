@@ -109,6 +109,53 @@ class Foo {
         return bar;
     }
 }
-        ]]></code>
+        ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>[apex] UnusedLocalVariable - false positive on string query #2669</description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+class Foo {
+    public Database.QueryLocator start1(Database.BatchableContext BC) {
+        String customValue = 'Test';
+        String query = 'SELECT Id FROM Case ';
+        query += 'WHERE CustomField__c = :customValue ';
+        return Database.getQueryLocator(query);
+    }
+
+    public Database.QueryLocator start2(Database.BatchableContext BC) {
+        String customValue = 'Test';
+        return Database.getQueryLocator('SELECT Id From Case WHERE CustomField__c = :customValue');
+    }
+
+    public void doQuery1() {
+        String customValue = 'Test';
+        String query = 'SELECT Id FROM Case ';
+        query += 'WHERE CustomField__c = :customValue ';
+        Database.query(query);
+    }
+
+    public void doQuery2() {
+        String customValue = 'Test';
+        Database.query('SELECT Id From Case WHERE CustomField__c = :customValue');
+    }
+
+    public void doCount1() {
+        String customValue = 'Test';
+        String query = 'SELECT Id FROM Case ';
+        query += 'WHERE CustomField__c = :customValue ';
+        Database.countQuery(query);
+    }
+
+    public void doCount2() {
+        String customValue = 'Test';
+        Database.countQuery('SELECT Id From Case WHERE CustomField__c = :customValue');
+    }
+}
+        ]]>
+        </code>
     </test-code>
 </test-data>

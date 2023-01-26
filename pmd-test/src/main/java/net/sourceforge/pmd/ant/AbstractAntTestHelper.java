@@ -19,6 +19,8 @@ import org.junit.Rule;
 import org.junit.contrib.java.lang.system.SystemErrRule;
 import org.junit.rules.TemporaryFolder;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 
 /**
  * Quite an ugly classe, arguably useful for just 2 units test - nevertheless as
@@ -31,16 +33,24 @@ import org.junit.rules.TemporaryFolder;
 public abstract class AbstractAntTestHelper {
 
     @Rule
+    @InternalApi
+    @Deprecated
     public final TemporaryFolder tempFolder = new TemporaryFolder();
 
     @Rule
+    @InternalApi
+    @Deprecated
     public final BuildFileRule buildRule = new BuildFileRule();
 
     @Rule
+    @InternalApi
+    @Deprecated
     public final SystemErrRule systemErrRule = new SystemErrRule().muteForSuccessfulTests();
 
     protected String pathToTestScript;
     protected String antTestScriptFilename;
+    @InternalApi
+    @Deprecated
     public String mvnWorkaround;
 
     public AbstractAntTestHelper() {

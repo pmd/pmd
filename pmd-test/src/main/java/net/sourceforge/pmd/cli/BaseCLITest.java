@@ -31,7 +31,9 @@ import net.sourceforge.pmd.internal.util.AssertionUtil;
 /**
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
  *
- * @deprecated Only pmd-cli module should use / test the CLI.
+ * @deprecated This is deprecated for removal without replacement. CLI tests should be done in pmd-cli only.
+ * Individual language modules shouldn't need to test the CLI integration logic again.
+ * Instead, the individual language modules should test their functionality as unit tests.
  */
 @Deprecated
 public abstract class BaseCLITest {
