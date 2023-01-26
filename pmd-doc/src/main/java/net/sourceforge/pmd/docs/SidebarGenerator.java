@@ -20,7 +20,10 @@ import org.apache.commons.lang3.SystemUtils;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.DumperOptions.FlowStyle;
 import org.yaml.snakeyaml.DumperOptions.LineBreak;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.SafeConstructor;
+import org.yaml.snakeyaml.representer.Representer;
 
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.lang.Language;
@@ -87,20 +90,18 @@ public class SidebarGenerator {
 
     public Map<String, Object> loadSidebar() throws IOException {
         try (Reader reader = Files.newBufferedReader(sidebarPath, StandardCharsets.UTF_8)) {
-            Yaml yaml = new Yaml();
-            @SuppressWarnings("unchecked")
-            Map<String, Object> sidebar = (Map<String, Object>) yaml.load(reader);
-            return sidebar;
+            Yaml yaml = new Yaml(new SafeConstructor(new LoaderOptions()));
+            return yaml.load(reader);
         }
     }
 
     public void writeSidebar(Map<String, Object> sidebar) throws IOException {
-        DumperOptions options = new DumperOptions();
-        options.setDefaultFlowStyle(FlowStyle.BLOCK);
+        DumperOptions dumperOptions = new DumperOptions();
+        dumperOptions.setDefaultFlowStyle(FlowStyle.BLOCK);
         if (SystemUtils.IS_OS_WINDOWS) {
-            options.setLineBreak(LineBreak.WIN);
+            dumperOptions.setLineBreak(LineBreak.WIN);
         }
-        Yaml yaml = new Yaml(options);
+        Yaml yaml = new Yaml(new SafeConstructor(new LoaderOptions()), new Representer(dumperOptions), dumperOptions);
         writer.write(sidebarPath, Arrays.asList(yaml.dump(sidebar)));
         System.out.println("Generated " + sidebarPath);
     }

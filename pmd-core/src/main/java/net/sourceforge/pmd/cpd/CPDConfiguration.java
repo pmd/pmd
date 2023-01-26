@@ -55,7 +55,6 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     private CPDReportRenderer cpdReportRenderer;
 
-
     private boolean ignoreLiterals;
 
     private boolean ignoreIdentifiers;
@@ -87,10 +86,6 @@ public class CPDConfiguration extends AbstractConfiguration {
     private boolean failOnViolation = true;
 
     private boolean debug = false;
-
-    public void setEncoding(String encoding) {
-        setSourceEncoding(encoding);
-    }
 
     public SourceCode sourceCodeFor(File file) {
         return new SourceCode(new SourceCode.FileCodeLoader(file, getSourceEncoding().name()));
