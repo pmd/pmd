@@ -16,8 +16,11 @@ import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
+import java.io.FilterOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
@@ -194,6 +197,23 @@ class PmdCliTest extends BaseCliTest {
     }
 
     @Test
+    void testReportToStdoutNotClosing() throws Exception {
+        PrintStream originalOut = System.out;
+        PrintStream out = new PrintStream(new FilterOutputStream(originalOut) {
+            @Override
+            public void close() {
+                fail("Stream must not be closed");
+            }
+        });
+        try {
+            System.setOut(out);
+            runCli(VIOLATIONS_FOUND, "--dir", srcDir.toString(), "--rulesets", "rulesets/dummy/basic.xml");
+        } finally {
+            System.setOut(originalOut);
+        }
+    }
+
+    @Test
     void testMissingRuleset() throws Exception {
         CliExecutionResult result = runCli(CliExitCode.USAGE_ERROR);
         result.checkStdErr(containsString("Missing required option: '--rulesets=<rulesets>'"));
@@ -205,12 +225,17 @@ class PmdCliTest extends BaseCliTest {
         result.checkStdErr(containsString("Please provide a parameter for source root directory"));
     }
 
+    /**
+     * @see <a href="https://github.com/pmd/pmd/issues/3427">[core] Stop printing CLI usage text when exiting due to invalid parameters #3427</a>
+     */
     @Test
     void testWrongCliOptionsDoPrintUsage() throws Exception {
-        CliExecutionResult result = runCli(CliExitCode.USAGE_ERROR, "--invalid", "--rulesets", RULESET_NO_VIOLATIONS, "-d", srcDir.toString());
-        result.checkStdErr(containsString("Unknown option: '--invalid'"));
-        result.checkStdErr(containsString("Usage: pmd check"));
-        result.checkStdErr(not(containsStringIgnoringCase("Available report formats and")));
+        runCli(CliExitCode.USAGE_ERROR, "--invalid", "--rulesets", RULESET_NO_VIOLATIONS, "-d", srcDir.toString())
+                .verify(result -> {
+                    result.checkStdErr(containsString("Unknown option: '--invalid'"));
+                    result.checkStdErr(containsString("Usage: pmd check"));
+                    result.checkStdErr(not(containsStringIgnoringCase("Available report formats and")));
+                });
     }
 
     /**
@@ -250,7 +275,7 @@ class PmdCliTest extends BaseCliTest {
     }
 
     @Test
-    public void changeSourceVersion() throws Exception {
+    void changeSourceVersion() throws Exception {
         runCli(OK, "-d", srcDir.toString(), "-f", "text", "-R", RULESET_NO_VIOLATIONS, "--debug",
                "--use-version", "dummy-1.2")
             .verify(result -> result.checkStdErr(
@@ -260,7 +285,7 @@ class PmdCliTest extends BaseCliTest {
 
 
     @Test
-    public void exitStatusWithViolationsAndWithoutFailOnViolations() throws Exception {
+    void exitStatusWithViolationsAndWithoutFailOnViolations() throws Exception {
         runCli(OK, "-d", srcDir.toString(), "-f", "text", "-R", RULESET_WITH_VIOLATION, "--no-fail-on-violation")
             .verify(r -> r.checkStdOut(
                 containsString("Violation from ReportAllRootNodes")
@@ -268,13 +293,13 @@ class PmdCliTest extends BaseCliTest {
     }
 
     @Test
-    public void exitStatusWithNoViolations() throws Exception {
+    void exitStatusWithNoViolations() throws Exception {
         runCli(OK, "-d", srcDir.toString(), "-f", "text", "-R", RULESET_NO_VIOLATIONS)
             .verify(r -> r.checkStdOut(equalTo("")));
     }
 
     @Test
-    public void exitStatusWithViolations() throws Exception {
+    void exitStatusWithViolations() throws Exception {
         runCli(VIOLATIONS_FOUND, "-d", srcDir.toString(), "-f", "text", "-R", RULESET_WITH_VIOLATION)
             .verify(r -> r.checkStdOut(
                 containsString("Violation from ReportAllRootNodes")

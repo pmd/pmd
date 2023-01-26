@@ -11,11 +11,13 @@ import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
@@ -25,12 +27,19 @@ import net.sourceforge.pmd.cli.internal.CliExitCode;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
+import com.google.common.collect.ImmutableMap;
 
 class CpdCliTest extends BaseCliTest {
 
     private static final String BASE_RES_PATH = "src/test/resources/net/sourceforge/pmd/cli/cpd/";
     private static final String SRC_DIR = BASE_RES_PATH + "files/";
 
+    private static final Map<String, Integer> NUMBER_OF_TOKENS = ImmutableMap.of(
+            new File(SRC_DIR, "dup1.java").getAbsolutePath(), 89,
+            new File(SRC_DIR, "dup2.java").getAbsolutePath(), 89,
+            new File(SRC_DIR, "file_with_ISO-8859-1_encoding.java").getAbsolutePath(), 8,
+            new File(SRC_DIR, "file_with_utf8_bom.java").getAbsolutePath(), 9
+    );
     @TempDir
     private Path tempDir;
 
@@ -44,6 +53,30 @@ class CpdCliTest extends BaseCliTest {
         // reset logging in case "--debug" changed the logging properties
         // See also Slf4jSimpleConfigurationForAnt
         Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(null);
+    }
+
+    @Test
+    void testEmptyResultRendering() throws Exception {
+        final String expectedFilesXml = getExpectedFileEntriesXml(NUMBER_OF_TOKENS.keySet());
+        runCliSuccessfully("--minimum-tokens", "340", "--language", "java", "--dir", SRC_DIR, "--format", "xml")
+                .verify(result -> result.checkStdOut(equalTo(
+                        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" + "<pmd-cpd>\n" + expectedFilesXml + "</pmd-cpd>\n"
+                )));
+    }
+
+    private String getExpectedFileEntryXml(final String filename) {
+        final int numberOfTokens = NUMBER_OF_TOKENS.get(filename);
+        return String.format("   <file path=\"%s\"\n         totalNumberOfTokens=\"%d\"/>\n",
+                new File(filename).getAbsolutePath(),
+                numberOfTokens);
+    }
+
+    private String getExpectedFileEntriesXml(final Collection<String> filenames) {
+        final StringBuilder expectedFilesXmlBuilder = new StringBuilder();
+        for (final String filename : filenames) {
+            expectedFilesXmlBuilder.append(getExpectedFileEntryXml(filename));
+        }
+        return expectedFilesXmlBuilder.toString();
     }
 
     @Test
@@ -85,6 +118,17 @@ class CpdCliTest extends BaseCliTest {
             )));
     }
 
+    /**
+     * Test ignore identifiers argument.
+     */
+    @Test
+    void testIgnoreIdentifiers() throws Exception {
+        runCli(VIOLATIONS_FOUND, "--minimum-tokens", "34", "--dir", SRC_DIR, "--ignore-identifiers")
+            .verify(result -> result.checkStdOut(containsString(
+                    "Found a 14 line (89 tokens) duplication"
+        )));
+    }
+
     @Test
     void testNoFailOnViolation() throws Exception {
         runCli(CliExitCode.OK, "--minimum-tokens", "7", "--dir", SRC_DIR, "--no-fail-on-violation")
@@ -103,30 +147,22 @@ class CpdCliTest extends BaseCliTest {
 
     @Test
     void testNoDuplicatesResultRendering() throws Exception {
-        final String stdout = SystemLambda.tapSystemOut(() -> {
-            SystemLambda.tapSystemErr(() -> {
-                final int statusCode = SystemLambda.catchSystemExit(() -> {
-                    PmdCli.main(new String[] {
-                        "cpd", "--minimum-tokens", "340", "--language", "java", "--dir",
-                        SRC_DIR, "--format", "xml",
-                        });
-                });
-                assertEquals(CliExitCode.OK.getExitCode(), statusCode);
-            });
-        });
         final Path absoluteSrcDir = Paths.get(SRC_DIR).toAbsolutePath();
-        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                         + "<pmd-cpd>\n"
-                         + "   <file path=\"" + absoluteSrcDir.resolve("dup1.java").toString() + "\"\n"
-                         + "         totalNumberOfTokens=\"89\"/>\n"
-                         + "   <file path=\"" + absoluteSrcDir.resolve("dup2.java").toString() + "\"\n"
-                         + "         totalNumberOfTokens=\"89\"/>\n"
-                         + "   <file path=\"" + absoluteSrcDir.resolve("file_with_ISO-8859-1_encoding.java").toString()
-                         + "\"\n"
-                         + "         totalNumberOfTokens=\"8\"/>\n"
-                         + "   <file path=\"" + absoluteSrcDir.resolve("file_with_utf8_bom.java").toString() + "\"\n"
-                         + "         totalNumberOfTokens=\"9\"/>\n"
-                         + "</pmd-cpd>", stdout.trim());
+        String expectedReport = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + "<pmd-cpd>\n"
+                + "   <file path=\"" + absoluteSrcDir.resolve("dup1.java") + "\"\n"
+                + "         totalNumberOfTokens=\"89\"/>\n"
+                + "   <file path=\"" + absoluteSrcDir.resolve("dup2.java") + "\"\n"
+                + "         totalNumberOfTokens=\"89\"/>\n"
+                + "   <file path=\"" + absoluteSrcDir.resolve("file_with_ISO-8859-1_encoding.java")
+                + "\"\n"
+                + "         totalNumberOfTokens=\"8\"/>\n"
+                + "   <file path=\"" + absoluteSrcDir.resolve("file_with_utf8_bom.java") + "\"\n"
+                + "         totalNumberOfTokens=\"9\"/>\n"
+                + "</pmd-cpd>\n";
+
+        runCliSuccessfully("--minimum-tokens", "340", "--language", "java", "--dir", SRC_DIR, "--format", "xml")
+                .verify(result -> result.checkStdOut(equalTo(expectedReport)));
     }
 
     /**
