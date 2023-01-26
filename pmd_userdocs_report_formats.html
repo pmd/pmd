@@ -1947,9 +1947,18 @@ Was expecting one of:
 <p>XML with a XSL transformation applied.</p>
 
 <p>PMD provides one built-in stylesheet, that is used by default, if no other
-stylesheet with the property “xsltFilename” is specified. It is called <a href="https://github.com/pmd/pmd/blob/master/pmd-core/src/main/resources/pmd-nicerhtml.xsl">pmd-nicerhtml.xsl</a> and can be used for customization.</p>
+stylesheet with the property “xsltFilename” is specified. It is called
+<a href="https://github.com/pmd/pmd/blob/master/pmd-core/src/main/resources/pmd-nicerhtml.xsl">pmd-nicerhtml.xsl</a>
+and can be used for customization.</p>
 
-<p><a href="report-examples/pmd-report-pmd-nicerhtml.html">Example with pmd-nicerhtml.xsl</a></p>
+<p>There are many other stylesheets available online: <a href="https://github.com/pmd/pmd/tree/master/pmd-core/etc/xslt">https://github.com/pmd/pmd/tree/master/pmd-core/etc/xslt</a>.</p>
+
+<p>Examples:</p>
+<ul>
+  <li><a href="report-examples/pmd-report-pmd-nicerhtml.html">Example with pmd-nicerhtml.xsl</a></li>
+  <li><a href="report-examples/html-report-v2.html">Example with html-report-v2.xslt</a> - includes charts. It requires javascript enabled and uses
+<a href="https://jquery.com/">jQuery</a>, <a href="https://datatables.net/">DataTables</a>, and <a href="https://vega.github.io/vega/">Vega</a> for charting.</li>
+</ul>
 
 <p><strong>Properties:</strong></p>
 
@@ -2013,7 +2022,7 @@ The output directory must exist. If not specified, the html files are created in
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jan 25, 2023 <br />
+             Site last generated: Jan 26, 2023 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>

@@ -1606,12 +1606,24 @@
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
-<h3 id="fixed-issues">Fixed Issues</h3>
+<h4 id="new-report-format-html-report-v2xslt">New report format html-report-v2.xslt</h4>
 
+<p>Thanks to @mohan-chinnappan-n a new PMD report format has been added which features a data table
+with charting functions. It uses an XSLT stylesheet to convert PMD’s XML format into HTML.</p>
+
+<p>See <a href="report-examples/html-report-v2.html">the example report</a>.</p>
+
+<h3 id="fixed-issues">Fixed Issues</h3>
 <ul>
+  <li>apex-bestpractices
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2669">#2669</a>: [apex] UnusedLocalVariable false positive in dynamic SOQL</li>
+    </ul>
+  </li>
   <li>core
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/4279">#4279</a>: [core] Can not set ruleset property value to empty</li>
+      <li><a href="https://github.com/pmd/pmd/pull/4329">#4329</a>: [core] Refactor usage of snakeyaml</li>
       <li><a href="https://github.com/pmd/pmd/issues/4340">#4340</a>: [core] Allow to filter found matches in CPDReport</li>
     </ul>
   </li>
@@ -1665,6 +1677,8 @@ with some matches removed with a given predicate based filter.</li>
 
 <h3 id="external-contributions">External Contributions</h3>
 <ul>
+  <li><a href="https://github.com/pmd/pmd/pull/4110">#4110</a>: [apex] Feature/unused variable bind false positive with dynamic SOQL - <a href="https://github.com/tprouvot">Thomas Prouvot</a> (@tprouvot)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4125">#4125</a>: [core] New report format html-report-v2.xslt to provide html with datatable and chart features - <a href="https://github.com/mohan-chinnappan-n">Mohan Chinnappan</a> - (@mohan-chinnappan-n)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4280">#4280</a>: [apex] Deprecate ApexRootNode.getApexVersion - <a href="https://github.com/aaronhurst-google">Aaron Hurst</a> (@aaronhurst-google)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4285">#4285</a>: [java] CommentDefaultAccessModifier - add co.elastic.clients.util.VisibleForTesting as default suppressed annotation - <a href="https://github.com/mluckam">Matthew Luckam</a> (@mluckam)</li>
 </ul>
@@ -1700,7 +1714,7 @@ with some matches removed with a given predicate based filter.</li>
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jan 25, 2023 <br />
+             Site last generated: Jan 26, 2023 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>
