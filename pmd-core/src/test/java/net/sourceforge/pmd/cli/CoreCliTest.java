@@ -250,7 +250,7 @@ class CoreCliTest {
             runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", zipArchive, "--rulesets", "rulesets/dummy/basic.xml");
         });
         assertThat(log, not(containsStringIgnoringCase("Cannot open zip file")));
-        String reportPath = IOUtil.normalizePath(zipArchive.toString() + "!/someSource.dummy");
+        String reportPath = IOUtil.normalizePath(zipArchive.toString()) + "!/someSource.dummy";
         assertThat(log, containsString(reportPath + ":1:\tSampleXPathRule:\tTest Rule 2"));
     }
 
@@ -261,7 +261,7 @@ class CoreCliTest {
             runPmd(StatusCode.VIOLATIONS_FOUND, "--no-cache", "--dir", jarArchive, "--rulesets", "rulesets/dummy/basic.xml");
         });
         assertThat(log, not(containsStringIgnoringCase("Cannot open zip file")));
-        String reportPath = IOUtil.normalizePath(jarArchive.toString() + "!/someSource.dummy");
+        String reportPath = IOUtil.normalizePath(jarArchive.toString()) + "!/someSource.dummy";
         assertThat(log, containsString(reportPath + ":1:\tSampleXPathRule:\tTest Rule 2"));
     }
 

@@ -18,7 +18,6 @@ import org.junit.jupiter.api.io.TempDir;
 
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
-import net.sourceforge.pmd.util.IOUtil;
 
 class NioTextFileTest {
 
@@ -41,7 +40,7 @@ class NioTextFileTest {
             List<TextFile> collectedFiles = collector.getCollectedFiles();
             assertEquals(1, collectedFiles.size());
             TextFile textFile = collectedFiles.get(0);
-            assertEquals(zipArchive.toAbsolutePath() + "!" + IOUtil.normalizePath("/path/inside/someSource.dummy"),
+            assertEquals(zipArchive.toAbsolutePath() + "!/path/inside/someSource.dummy",
                     textFile.getDisplayName());
         }
     }
