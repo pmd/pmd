@@ -34,6 +34,8 @@ See [the example report](report-examples/html-report-v2.html).
   * [#4279](https://github.com/pmd/pmd/issues/4279): \[core] Can not set ruleset property value to empty
   * [#4329](https://github.com/pmd/pmd/pull/4329): \[core] Refactor usage of snakeyaml
   * [#4340](https://github.com/pmd/pmd/issues/4340): \[core] Allow to filter found matches in CPDReport
+* java
+  * [#4364](https://github.com/pmd/pmd/issues/4364): \[java] Parsing error with textblock containing quote followed by two backslashes
 * testing
   * [#4236](https://github.com/pmd/pmd/issues/4236): \[test] kotest logs look broken
 
