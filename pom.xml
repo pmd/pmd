@@ -297,24 +297,6 @@
                         </statelessTestsetReporter>
                     </configuration>
                     <dependencies>
-                        <!-- Junit5 Platform Engine for Junit 3 & 4 -->
-                        <dependency>
-                            <groupId>org.junit.vintage</groupId>
-                            <artifactId>junit-vintage-engine</artifactId>
-                            <version>${junit5.version}</version>
-                        </dependency>
-                        <!-- JUnit5 Platform Engine for Junit 5 -->
-                        <dependency>
-                            <groupId>org.junit.jupiter</groupId>
-                            <artifactId>junit-jupiter-engine</artifactId>
-                            <version>${junit5.version}</version>
-                        </dependency>
-                        <!-- Junit5 Platform Engine for Kotlin Tests -->
-                        <dependency>
-                            <groupId>io.kotest</groupId>
-                            <artifactId>kotest-runner-junit5-jvm</artifactId>
-                            <version>${kotest.version}</version>
-                        </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-build-tools-config</artifactId>
