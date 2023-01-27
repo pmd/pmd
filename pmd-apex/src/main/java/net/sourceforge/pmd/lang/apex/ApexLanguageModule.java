@@ -10,13 +10,16 @@ import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 
+import apex.jorje.services.Version;
+
 public class ApexLanguageModule extends LanguageModuleBase {
 
     public static final String NAME = "Apex";
     public static final String TERSE_NAME = "apex";
 
     public ApexLanguageModule() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("cls", "trigger"));
+        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("cls", "trigger")
+                  .addDefaultVersion(String.valueOf((int) Version.CURRENT.getExternal())));
     }
 
     @Override
