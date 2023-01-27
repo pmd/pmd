@@ -7,6 +7,7 @@ package net.sourceforge.pmd.cli.commands.internal;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -26,7 +27,7 @@ import net.sourceforge.pmd.benchmark.TimingReport;
 import net.sourceforge.pmd.benchmark.TimingReportRenderer;
 import net.sourceforge.pmd.cli.commands.typesupport.internal.PmdLanguageTypeSupport;
 import net.sourceforge.pmd.cli.commands.typesupport.internal.PmdLanguageVersionTypeSupport;
-import net.sourceforge.pmd.cli.internal.ExecutionResult;
+import net.sourceforge.pmd.cli.internal.CliExitCode;
 import net.sourceforge.pmd.cli.internal.ProgressBarListener;
 import net.sourceforge.pmd.internal.LogMessages;
 import net.sourceforge.pmd.lang.Language;
@@ -84,7 +85,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
 
     private boolean benchmark;
 
-    private boolean shortnames;
+    private List<Path> relativizeRootPaths;
 
     private boolean showSuppressed;
 
@@ -140,9 +141,21 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
         this.benchmark = benchmark;
     }
 
-    @Option(names = "--short-names", description = "Prints shortened filenames in the report.")
-    public void setShortnames(final boolean shortnames) {
-        this.shortnames = shortnames;
+    @Option(names = { "--relativize-paths-with", "-z"}, description = "Path relative to which directories are rendered in the report. "
+            + "This option allows shortening directories in the report; "
+            + "without it, paths are rendered as mentioned in the source directory (option \"--dir\"). "
+            + "The option can be repeated, in which case the shortest relative path will be used. "
+            + "If the root path is mentioned (e.g. \"/\" or \"C:\\\"), then the paths will be rendered as absolute.",
+        arity = "1..*", split = ",")
+    public void setRelativizePathsWith(List<Path> rootPaths) {
+        this.relativizeRootPaths = rootPaths;
+
+        for (Path path : this.relativizeRootPaths) {
+            if (Files.isRegularFile(path)) {
+                throw new ParameterException(spec.commandLine(),
+                        "Expected a directory path for option '--relativize-paths-with', found a file: " + path);
+            }
+        }
     }
 
     @Option(names = "--show-suppressed", description = "Report should show suppressed rule violations.")
@@ -272,7 +285,9 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
         configuration.setMinimumPriority(minimumPriority);
         configuration.setReportFile(reportFile);
         configuration.setReportProperties(properties);
-        configuration.setReportShortNames(shortnames);
+        if (relativizeRootPaths != null) {
+            configuration.addRelativizeRoots(relativizeRootPaths);
+        }
         configuration.setRuleSets(rulesets);
         configuration.setRuleSetFactoryCompatibilityEnabled(!this.noRuleSetCompatibility);
         configuration.setShowSuppressedViolations(showSuppressed);
@@ -305,7 +320,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
     }
 
     @Override
-    protected ExecutionResult execute() {
+    protected CliExitCode execute() {
         if (benchmark) {
             TimeTracker.startGlobalTracking();
         }
@@ -320,7 +335,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
                     pmd = PmdAnalysis.create(configuration);
                 } catch (final Exception e) {
                     pmdReporter.errorEx("Could not initialize analysis", e);
-                    return ExecutionResult.ERROR;
+                    return CliExitCode.ERROR;
                 }
 
                 LOG.debug("Current classpath:\n{}", System.getProperty("java.class.path"));
@@ -333,15 +348,15 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
                         pmd.addListener(new ProgressBarListener());
                     }
                 }
-                
+
                 final ReportStats stats = pmd.runAndReturnStats();
                 if (pmdReporter.numErrors() > 0) {
                     // processing errors are ignored
-                    return ExecutionResult.ERROR;
+                    return CliExitCode.ERROR;
                 } else if (stats.getNumViolations() > 0 && configuration.isFailOnViolation()) {
-                    return ExecutionResult.VIOLATIONS_FOUND;
+                    return CliExitCode.VIOLATIONS_FOUND;
                 } else {
-                    return ExecutionResult.OK;
+                    return CliExitCode.OK;
                 }
             } finally {
                 if (pmd != null) {
@@ -352,7 +367,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
         } catch (final Exception e) {
             pmdReporter.errorEx("Exception while running PMD.", e);
             printErrorDetected(pmdReporter, 1);
-            return ExecutionResult.ERROR;
+            return CliExitCode.ERROR;
         } finally {
             finishBenchmarker(pmdReporter);
         }

@@ -122,7 +122,8 @@ The tool comes with a rather extensive help text, simply running with `--help`!
     %}
     {% include custom/cli_option_row.html options="-language,-l"
                option_arg="lang"
-               description="Specify the language PMD should use. Used together with `-version`. See also [Supported Languages](#supported-languages)."
+               description="Specify the language PMD should use. Used together with `-version`. See also [Supported Languages](#supported-languages).
+                    <p><span class=\"label label-default\">Deprecated</span> since PMD 6.52.0. Use `--use-version` instead.</p>"
     %}
     {% include custom/cli_option_row.html options="--minimum-priority"
                option_arg="priority"
@@ -147,12 +148,16 @@ The tool comes with a rather extensive help text, simply running with `--help`!
                description="Specifies a property for the report renderer. The option can be specified several times.
                            <p>Using `--help` will provide a complete list of supported properties for each report format</p>"
     %}
+    {% include custom/cli_option_row.html options="--relativize-paths-with,-z"
+               option_arg="path"
+               description="Path relative to which directories are rendered in the report. This option allows
+                    shortening directories in the report; without it, paths are rendered as mentioned in the source directory (option \"--dir\").
+                    The option can be repeated, in which case the shortest relative path will be used.
+                    If the root path is mentioned (e.g. \"/\" or \"C:\\\"), then the paths will be rendered as absolute."
+    %}
     {% include custom/cli_option_row.html options="--report-file,-r"
                option_arg="path"
                description="Path to a file to which report output is written. The file is created if it does not exist. If this option is not specified, the report is rendered to standard output."
-    %}
-    {% include custom/cli_option_row.html options="--short-names"
-               description="Prints shortened filenames in the report."
     %}
     {% include custom/cli_option_row.html options="--show-suppressed"
                description="Causes the suppressed rule violations to be added to the report."

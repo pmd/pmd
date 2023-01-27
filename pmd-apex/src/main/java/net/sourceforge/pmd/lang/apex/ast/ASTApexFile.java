@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import java.net.URI;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -61,6 +63,11 @@ public final class ASTApexFile extends AbstractApexNode<AstNode> implements Root
     }
 
     public List<Issue> getGlobalIssues() {
-        return multifileAnalysis.getFileIssues(getAstInfo().getTextDocument().getPathId());
+        String filename = getAstInfo().getTextDocument().getPathId();
+        if (filename.length() > 7 && "file://".equalsIgnoreCase(filename.substring(0, 7))) {
+            URI uri = URI.create(filename);
+            filename = Paths.get(uri).toString();
+        }
+        return multifileAnalysis.getFileIssues(filename);
     }
 }

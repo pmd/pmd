@@ -144,6 +144,7 @@ class TextFilesTest {
     void testNioFileExplicitReadOnly() throws IOException {
         Path file = makeTmpFile(StandardCharsets.UTF_8, "some content");
         try (TextFile tf = TextFile.builderForPath(file, StandardCharsets.UTF_8, dummyVersion())
+                                   .withDisplayName(file.toString())
                                    .asReadOnly().build()) {
             assertTrue(tf.isReadOnly(), "readonly");
 

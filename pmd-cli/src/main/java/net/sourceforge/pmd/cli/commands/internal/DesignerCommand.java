@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.cli.commands.internal;
 
-import net.sourceforge.pmd.cli.internal.ExecutionResult;
+import net.sourceforge.pmd.cli.internal.CliExitCode;
 import net.sourceforge.pmd.util.fxdesigner.DesignerStarter;
 import net.sourceforge.pmd.util.fxdesigner.DesignerStarter.ExitStatus;
 import net.sourceforge.pmd.util.fxdesigner.DesignerVersion;
@@ -23,11 +23,11 @@ public class DesignerCommand extends AbstractPmdSubcommand {
     private boolean versionRequested;
 
     @Override
-    protected ExecutionResult execute() {
+    protected CliExitCode execute() {
         final String[] rawArgs = spec.commandLine().getParseResult().expandedArgs().toArray(new String[0]);
         final ExitStatus status = DesignerStarter.launchGui(rawArgs);
 
-        return status == ExitStatus.OK ? ExecutionResult.OK : ExecutionResult.ERROR;
+        return status == ExitStatus.OK ? CliExitCode.OK : CliExitCode.ERROR;
     }
 }
 

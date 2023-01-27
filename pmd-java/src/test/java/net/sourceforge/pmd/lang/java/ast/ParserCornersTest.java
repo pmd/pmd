@@ -34,6 +34,7 @@ class ParserCornersTest extends BaseJavaTreeDumpTest {
     private final JavaParsingHelper java7 = java.withDefaultVersion("1.7");
     private final JavaParsingHelper java8 = java.withDefaultVersion("1.8");
     private final JavaParsingHelper java9 = java.withDefaultVersion("9");
+    private final JavaParsingHelper java15 = java.withDefaultVersion("15");
 
     @Override
     public @NonNull BaseParsingHelper<?, ?> getParser() {
@@ -168,6 +169,16 @@ class ParserCornersTest extends BaseJavaTreeDumpTest {
                         + "}");
     }
 
+    @Test
+    void testTextBlockWithQuotes() {
+        // https://github.com/pmd/pmd/issues/4364
+        java15.parse("public class Foo {\n"
+                + "  private String content = \"\"\"\n"
+                + "    <div class=\"invalid-class></div>\n"
+                + "  \"\"\";\n"
+                + "}");
+    }
+    
     /**
      * Tests a specific generic notation for calling methods. See:
      * https://jira.codehaus.org/browse/MPMD-139
