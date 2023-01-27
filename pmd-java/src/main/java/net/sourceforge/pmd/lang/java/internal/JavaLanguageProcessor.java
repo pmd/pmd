@@ -4,16 +4,17 @@
 
 package net.sourceforge.pmd.lang.java.internal;
 
+import java.util.List;
 import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.ViolationSuppressor;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.impl.BatchLanguageProcessor;
 import net.sourceforge.pmd.lang.java.ast.JavaParser;
 import net.sourceforge.pmd.lang.java.internal.JavaLanguageProperties.InferenceLoggingVerbosity;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleViolationFactory;
 import net.sourceforge.pmd.lang.java.rule.xpath.internal.BaseContextNodeTestFun;
 import net.sourceforge.pmd.lang.java.rule.xpath.internal.GetCommentOnFunction;
 import net.sourceforge.pmd.lang.java.rule.xpath.internal.GetModifiersFun;
@@ -25,8 +26,8 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.SimpleLogger;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.VerboseLogger;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
-import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
+import net.sourceforge.pmd.reporting.ViolationDecorator;
 import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
 
 /**
@@ -93,10 +94,14 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
     }
 
     @Override
-    public RuleViolationFactory getRuleViolationFactory() {
-        return JavaRuleViolationFactory.INSTANCE;
+    public List<ViolationSuppressor> getExtraViolationSuppressors() {
+        return AnnotationSuppressionUtil.ALL_JAVA_SUPPRESSORS;
     }
 
+    @Override
+    public ViolationDecorator getViolationDecorator() {
+        return JavaViolationDecorator.INSTANCE;
+    }
 
     @Override
     public LanguageMetricsProvider getLanguageMetricsProvider() {
