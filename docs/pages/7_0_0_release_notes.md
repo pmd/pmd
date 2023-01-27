@@ -247,6 +247,8 @@ The following previously deprecated rules have been finally removed:
     * [#4080](https://github.com/pmd/pmd/issues/4080): \[ant] Split off Ant integration into a new submodule 
 * core
     * [#2234](https://github.com/pmd/pmd/issues/2234): \[core] Consolidate PMD CLI into a single command
+    * [#3203](https://github.com/pmd/pmd/issues/3203): \[core] Replace RuleViolationFactory implementations with ViolationDecorator
+    * [#3902](https://github.com/pmd/pmd/issues/3902): \[core] Violation decorators
     * [#4035](https://github.com/pmd/pmd/issues/4035): \[core] ConcurrentModificationException in DefaultRuleViolationFactory
 * cli
     *   [#3828](https://github.com/pmd/pmd/issues/3828): \[core] Progress reporting

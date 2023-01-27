@@ -16,6 +16,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -155,9 +156,17 @@ public final class PMD {
             return StatusCode.ERROR;
         }
 
-        PMDConfiguration configuration = Objects.requireNonNull(
-            parseResult.toConfiguration()
-        );
+        PMDConfiguration configuration = null;
+        try {
+            configuration = Objects.requireNonNull(
+                    parseResult.toConfiguration()
+            );
+        } catch (IllegalArgumentException e) {
+            System.err.println("Cannot start analysis: " + e);
+            log.debug(ExceptionUtils.getStackTrace(e));
+            return StatusCode.ERROR;
+        }
+
         MessageReporter pmdReporter = setupMessageReporter(configuration);
         configuration.setReporter(pmdReporter);
 

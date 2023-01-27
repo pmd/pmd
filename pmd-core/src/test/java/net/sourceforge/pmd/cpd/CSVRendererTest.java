@@ -9,17 +9,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
+import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 
 class CSVRendererTest {
     @Test
     void testLineCountPerFile() throws IOException {
-        CPDRenderer renderer = new CSVRenderer(true);
+        CPDReportRenderer renderer = new CSVRenderer(true);
         List<Match> list = new ArrayList<>();
         String codeFragment = "code\nfragment";
         Mark mark1 = createMark("public", "/var/Foo.java", 48, 10, codeFragment);
@@ -28,7 +29,7 @@ class CSVRendererTest {
 
         list.add(match);
         StringWriter sw = new StringWriter();
-        renderer.render(list.iterator(), sw);
+        renderer.render(new CPDReport(list, Collections.emptyMap()), sw);
         String report = sw.toString();
         String expectedReport = "tokens,occurrences" + PMD.EOL + "75,2,48,10,/var/Foo.java,73,20,/var/Bar.java"
                 + PMD.EOL;
@@ -38,7 +39,7 @@ class CSVRendererTest {
 
     @Test
     void testFilenameEscapes() throws IOException {
-        CPDRenderer renderer = new CSVRenderer();
+        CPDReportRenderer renderer = new CSVRenderer();
         List<Match> list = new ArrayList<>();
         String codeFragment = "code\nfragment";
         Mark mark1 = createMark("public", "/var,with,commas/Foo.java", 48, 10, codeFragment);
@@ -47,7 +48,7 @@ class CSVRendererTest {
         list.add(match);
 
         StringWriter sw = new StringWriter();
-        renderer.render(list.iterator(), sw);
+        renderer.render(new CPDReport(list, Collections.emptyMap()), sw);
         String report = sw.toString();
         String expectedReport = "lines,tokens,occurrences" + PMD.EOL
                 + "10,75,2,48,\"/var,with,commas/Foo.java\",73,\"/var,with,commas/Bar.java\"" + PMD.EOL;

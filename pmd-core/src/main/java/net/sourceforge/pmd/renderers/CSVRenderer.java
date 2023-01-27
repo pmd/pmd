@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RuleViolation;
@@ -28,8 +29,8 @@ import net.sourceforge.pmd.renderers.ColumnDescriptor.Accessor;
  */
 public class CSVRenderer extends AbstractIncrementingRenderer {
 
-    private String separator;
-    private String cr;
+    private final String separator;
+    private final String cr;
 
     private CSVWriter<RuleViolation> csvWriter;
 
@@ -41,47 +42,19 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
 
     @SuppressWarnings("unchecked")
     private final ColumnDescriptor<RuleViolation>[] allColumns = new ColumnDescriptor[] {
-        new ColumnDescriptor<>("problem", "Problem", new Accessor<RuleViolation>() {
-            @Override
-            public String get(int idx, RuleViolation rv, String cr) {
-                return Integer.toString(idx);
-            }
-        }), new ColumnDescriptor<>("package", "Package", new Accessor<RuleViolation>() {
-            @Override
-            public String get(int idx, RuleViolation rv, String cr) {
-                return rv.getPackageName();
-            }
-        }), new ColumnDescriptor<>("file", "File", new Accessor<RuleViolation>() {
-            @Override
-            public String get(int idx, RuleViolation rv, String cr) {
-                return CSVRenderer.this.determineFileName(rv.getFilename());
-            }
-        }), new ColumnDescriptor<>("priority", "Priority", new Accessor<RuleViolation>() {
-            @Override
-            public String get(int idx, RuleViolation rv, String cr) {
-                return Integer.toString(rv.getRule().getPriority().getPriority());
-            }
-        }), new ColumnDescriptor<>("line", "Line", new Accessor<RuleViolation>() {
-            @Override
-            public String get(int idx, RuleViolation rv, String cr) {
-                return Integer.toString(rv.getBeginLine());
-            }
-        }), new ColumnDescriptor<>("desc", "Description", new Accessor<RuleViolation>() {
-            @Override
-            public String get(int idx, RuleViolation rv, String cr) {
-                return StringUtils.replaceChars(rv.getDescription(), '\"', '\'');
-            }
-        }), new ColumnDescriptor<>("ruleSet", "Rule set", new Accessor<RuleViolation>() {
-            @Override
-            public String get(int idx, RuleViolation rv, String cr) {
-                return rv.getRule().getRuleSetName();
-            }
-        }), new ColumnDescriptor<>("rule", "Rule", new Accessor<RuleViolation>() {
-            @Override
-            public String get(int idx, RuleViolation rv, String cr) {
-                return rv.getRule().getName();
-            }
-        }), };
+        newColDescriptor("problem", "Problem", (idx, rv, cr) -> Integer.toString(idx)),
+        newColDescriptor("package", "Package", (idx, rv, cr) -> rv.getAdditionalInfo().getOrDefault(RuleViolation.PACKAGE_NAME, "")),
+        newColDescriptor("file", "File", (idx, rv, cr) -> determineFileName(rv.getFilename())),
+        newColDescriptor("priority", "Priority", (idx, rv, cr) -> Integer.toString(rv.getRule().getPriority().getPriority())),
+        newColDescriptor("line", "Line", (idx, rv, cr) -> Integer.toString(rv.getBeginLine())),
+        newColDescriptor("desc", "Description", (idx, rv, cr) -> StringUtils.replaceChars(rv.getDescription(), '\"', '\'')),
+        newColDescriptor("ruleSet", "Rule set", (idx, rv, cr) -> rv.getRule().getRuleSetName()),
+        newColDescriptor("rule", "Rule", (idx, rv, cr) -> rv.getRule().getName()),
+    };
+
+    private static @NonNull ColumnDescriptor<RuleViolation> newColDescriptor(String id, String title, Accessor<RuleViolation> accessor) {
+        return new ColumnDescriptor<>(id, title, accessor);
+    }
 
     public CSVRenderer(ColumnDescriptor<RuleViolation>[] columns, String theSeparator, String theCR) {
         super(NAME, "Comma-separated values tabular format.");
