@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.apex.internal;
+package net.sourceforge.pmd.lang.apex;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
@@ -31,7 +31,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclarationStatements;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.ast.Node;
 
-public final class ApexViolationSuppressors {
+final class ApexViolationSuppressors {
 
     private static final ViolationSuppressor APEX_ANNOT_SUPPRESSOR = new ViolationSuppressor() {
         @Override
