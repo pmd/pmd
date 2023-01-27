@@ -213,7 +213,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
      * @see <a href="https://github.com/pmd/pmd/issues/4279">[java] TestClassWithoutTestCases - can not set test pattern to empty #4279</a>
      */
     @Test
-    public void testEmptyStringProperty() {
+    void testEmptyStringProperty() {
         Rule r = loadFirstRule("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                 + "<ruleset name=\"test\">\n "
                 + " <description>ruleset desc</description>\n     "
