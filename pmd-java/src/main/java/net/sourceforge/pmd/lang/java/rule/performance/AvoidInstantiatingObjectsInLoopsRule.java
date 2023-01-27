@@ -78,10 +78,7 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractJavaRulechainR
 
     private boolean notBreakFollowing(JavaNode node) {
         JavaNode statement = node.ancestors().filter(n -> n.getParent() instanceof ASTBlock).first();
-        if (statement != null) {
-            return !(statement.getNextSibling() instanceof ASTBreakStatement);
-        }
-        return true;
+        return statement == null || !(statement.getNextSibling() instanceof ASTBreakStatement);
     }
 
     /**
