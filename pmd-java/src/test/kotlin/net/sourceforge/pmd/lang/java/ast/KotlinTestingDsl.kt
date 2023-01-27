@@ -7,10 +7,11 @@ package net.sourceforge.pmd.lang.java.ast
 import com.github.oowekyala.treeutils.matchers.baseShouldMatchSubtree
 import com.github.oowekyala.treeutils.printers.KotlintestBeanTreePrinter
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.style.scopes.AbstractContainerScope
+import io.kotest.core.test.TestScope
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.collections.shouldContainAll
-import net.sourceforge.pmd.lang.LanguageRegistry
 import net.sourceforge.pmd.lang.ast.*
 import net.sourceforge.pmd.lang.ast.test.*
 import net.sourceforge.pmd.lang.java.JavaLanguageModule
@@ -184,11 +185,12 @@ inline fun <reified N : Node> JavaNode?.shouldMatchNode(ignoreChildren: Boolean 
  * @property otherImports Other imports, without the `import` and semicolon
  * @property genClassHeader Header of the enclosing class used in parsing contexts like parseExpression, etc. E.g. "class Foo"
  */
-open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
+open class ParserTestCtx(testScope: TestScope,
+                         val javaVersion: JavaVersion = JavaVersion.Latest,
                          val importedTypes: MutableList<Class<*>> = mutableListOf(),
                          val otherImports: MutableList<String> = mutableListOf(),
                          var packageName: String = "",
-                         var genClassHeader: String = "class Foo") {
+                         var genClassHeader: String = "class Foo"): AbstractContainerScope(testScope) {
 
     var parser: JavaParsingHelper = javaVersion.parser.withProcessing(false)
         private set

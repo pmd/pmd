@@ -168,14 +168,6 @@ class PmdConfigurationTest {
     }
 
     @Test
-    void testReportShortNames() {
-        PMDConfiguration configuration = new PMDConfiguration();
-        assertEquals(false, configuration.isReportShortNames(), "Default report short names");
-        configuration.setReportShortNames(true);
-        assertEquals(true, configuration.isReportShortNames(), "Changed report short names");
-    }
-
-    @Test
     void testReportFormat() {
         PMDConfiguration configuration = new PMDConfiguration();
         assertEquals(null, configuration.getReportFormat(), "Default report format");

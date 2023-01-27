@@ -30,7 +30,6 @@ import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 import com.github.stefanbirkner.systemlambda.Statement;
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 
-
 /**
  * Base test class for ant tests.
  *

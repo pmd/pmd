@@ -5,16 +5,15 @@
 package net.sourceforge.pmd.cpd;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Iterator;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
+import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 
-public class CSVRenderer implements Renderer, CPDRenderer {
+public class CSVRenderer implements CPDReportRenderer {
 
     private final char separator;
     private final boolean lineCountPerFile;
@@ -40,18 +39,8 @@ public class CSVRenderer implements Renderer, CPDRenderer {
     }
 
     @Override
-    public String render(Iterator<Match> matches) {
-        StringWriter writer = new StringWriter(1000);
-        try {
-            render(matches, writer);
-        } catch (IOException ignored) {
-            // Not really possible with a StringWriter
-        }
-        return writer.toString();
-    }
-
-    @Override
-    public void render(Iterator<Match> matches, Writer writer) throws IOException {
+    public void render(CPDReport report, Writer writer) throws IOException {
+        Iterator<Match> matches = report.getMatches().iterator();
         if (!lineCountPerFile) {
             writer.append("lines").append(separator);
         }
