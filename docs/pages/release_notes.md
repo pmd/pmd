@@ -87,5 +87,10 @@ See [the example report](report-examples/html-report-v2.html).
 * [#4280](https://github.com/pmd/pmd/pull/4280): \[apex] Deprecate ApexRootNode.getApexVersion - [Aaron Hurst](https://github.com/aaronhurst-google) (@aaronhurst-google)
 * [#4285](https://github.com/pmd/pmd/pull/4285): \[java] CommentDefaultAccessModifier - add co.elastic.clients.util.VisibleForTesting as default suppressed annotation - [Matthew Luckam](https://github.com/mluckam) (@mluckam)
 
+### Stats
+* 107 commits
+* 19 closed tickets & PRs
+* Days since last release: 27
+
 {% endtocmaker %}
 
