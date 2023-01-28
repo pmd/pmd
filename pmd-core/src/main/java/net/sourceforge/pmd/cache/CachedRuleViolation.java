@@ -129,7 +129,7 @@ public final class CachedRuleViolation implements RuleViolation {
         FileLocation location = violation.getLocation();
         stream.writeInt(location.getStartPos().getLine());
         stream.writeInt(location.getStartPos().getColumn());
-        stream.writeInt(location.getEndPos().getColumn());
+        stream.writeInt(location.getEndPos().getLine());
         stream.writeInt(location.getEndPos().getColumn());
         Map<String, String> additionalInfo = violation.getAdditionalInfo();
         stream.writeInt(additionalInfo.size());
