@@ -79,6 +79,13 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
 
             if (result) {
                 LOG.debug("Incremental Analysis cache HIT");
+                
+                /*
+                 * Update cached violation "filename" to match the appropriate text document,
+                 * so we can honor relativized paths for the current run
+                 */
+                final String displayName = document.getDisplayName();
+                analysisResult.getViolations().forEach(v -> ((CachedRuleViolation) v).setFileDisplayName(displayName));
             } else {
                 LOG.debug("Incremental Analysis cache MISS - {}",
                           analysisResult != null ? "file changed" : "no previous result found");

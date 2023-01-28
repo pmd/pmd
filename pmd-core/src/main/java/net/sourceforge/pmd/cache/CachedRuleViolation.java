@@ -33,11 +33,12 @@ public final class CachedRuleViolation implements RuleViolation {
     private final CachedRuleMapper mapper;
 
     private final String description;
-    private final FileLocation location;
     private final String ruleClassName;
     private final String ruleName;
     private final String ruleTargetLanguage;
     private final Map<String, String> additionalInfo;
+
+    private FileLocation location;
 
     private CachedRuleViolation(final CachedRuleMapper mapper, final String description,
                                 final String fileName, final String ruleClassName, final String ruleName,
@@ -51,6 +52,11 @@ public final class CachedRuleViolation implements RuleViolation {
         this.ruleName = ruleName;
         this.ruleTargetLanguage = ruleTargetLanguage;
         this.additionalInfo = additionalInfo;
+    }
+    
+    public void setFileDisplayName(String displayName) {
+        this.location = FileLocation.range(displayName,
+                TextRange2d.range2d(getBeginLine(), getBeginColumn(), getEndLine(), getEndColumn()));
     }
 
     @Override

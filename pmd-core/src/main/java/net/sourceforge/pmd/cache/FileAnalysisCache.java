@@ -132,7 +132,7 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
                 for (final Map.Entry<String, AnalysisResult> resultEntry : updatedResultsCache.entrySet()) {
                     final List<RuleViolation> violations = resultEntry.getValue().getViolations();
 
-                    outputStream.writeUTF(resultEntry.getKey()); // the full filename
+                    outputStream.writeUTF(resultEntry.getKey()); // the path id
                     outputStream.writeLong(resultEntry.getValue().getFileChecksum());
 
                     outputStream.writeInt(violations.size());
