@@ -11,7 +11,7 @@
     <parent>
         <artifactId>pmd</artifactId>
         <groupId>net.sourceforge.pmd</groupId>
-        <version>6.54.0</version>
+        <version>6.55.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
