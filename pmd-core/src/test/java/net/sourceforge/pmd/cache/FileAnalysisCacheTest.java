@@ -118,7 +118,8 @@ class FileAnalysisCacheTest {
 
         final RuleViolation rv = mock(RuleViolation.class);
         when(rv.getFilename()).thenReturn(sourceFile.getDisplayName());
-        when(rv.getLocation()).thenReturn(FileLocation.range(sourceFile.getDisplayName(), TextRange2d.range2d(1, 2, 3, 4)));
+        final TextRange2d textLocation = TextRange2d.range2d(1, 2, 3, 4);
+        when(rv.getLocation()).thenReturn(FileLocation.range(sourceFile.getDisplayName(), textLocation));
         final net.sourceforge.pmd.Rule rule = mock(net.sourceforge.pmd.Rule.class, Mockito.RETURNS_SMART_NULLS);
         when(rule.getLanguage()).thenReturn(mock(Language.class));
         when(rv.getRule()).thenReturn(rule);
@@ -133,6 +134,12 @@ class FileAnalysisCacheTest {
 
         final List<RuleViolation> cachedViolations = reloadedCache.getCachedViolations(sourceFile);
         assertEquals(1, cachedViolations.size(), "Cached rule violations count mismatch");
+        final RuleViolation cachedViolation = cachedViolations.get(0);
+        assertEquals(sourceFile.getDisplayName(), cachedViolation.getFilename());
+        assertEquals(textLocation.getStartLine(), cachedViolation.getBeginLine());
+        assertEquals(textLocation.getStartColumn(), cachedViolation.getBeginColumn());
+        assertEquals(textLocation.getEndLine(), cachedViolation.getEndLine());
+        assertEquals(textLocation.getEndColumn(), cachedViolation.getEndColumn());
     }
 
     @Test
