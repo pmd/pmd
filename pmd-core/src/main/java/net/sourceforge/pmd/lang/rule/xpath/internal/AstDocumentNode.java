@@ -79,6 +79,11 @@ class AstDocumentNode extends BaseNodeInfo implements AstNodeOwner {
     }
 
     @Override
+    public boolean hasChildNodes() {
+        return true;
+    }
+
+    @Override
     public String getLocalPart() {
         return "";
     }

@@ -26,8 +26,8 @@ public abstract class AstVisitorBase<P, R> implements AstVisitor<P, R> {
      */
     // kept separate from super.visit for clarity
     protected R visitChildren(Node node, P data) {
-        for (Node child : node.children()) {
-            child.acceptVisitor(this, data);
+        for (int i = 0, numChildren = node.getNumChildren(); i < numChildren; i++) {
+            node.getChild(i).acceptVisitor(this, data);
         }
         return null;
     }

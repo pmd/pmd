@@ -27,7 +27,15 @@ public final class AstTreeInfo extends GenericTreeInfo {
     private final Map<Node, AstElementNode> wrapperCache = new LinkedHashMap<Node, AstElementNode>() {
         @Override
         protected boolean removeEldestEntry(Entry eldest) {
-            return size() > 128;
+            /*
+            hit ratio depending on cache size:
+            128: 42%
+            256: 55%
+            512: 66%
+            1024: 72%
+            2048: 75%
+             */
+            return size() > 1024;
         }
     };
 
