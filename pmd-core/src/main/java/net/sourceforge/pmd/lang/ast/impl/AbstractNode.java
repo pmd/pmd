@@ -24,7 +24,9 @@ import net.sourceforge.pmd.util.DataMap.DataKey;
  * @param <N> Public interface for nodes of this language (eg JavaNode
  *            in the java module).
  */
-public abstract class AbstractNode<B extends AbstractNode<B, N>, N extends GenericNode<N>> implements GenericNode<N> {
+public abstract class AbstractNode<B extends AbstractNode<B, N>,
+    // node the Node as first bound here is to make casts from Node to N noops at runtime.
+    N extends Node & GenericNode<N>> implements GenericNode<N> {
 
     private static final Node[] EMPTY_ARRAY = new Node[0];
 
@@ -41,22 +43,22 @@ public abstract class AbstractNode<B extends AbstractNode<B, N>, N extends Gener
     }
 
     @Override
-    public N getParent() {
+    public final N getParent() {
         return (N) parent;
     }
 
     @Override
-    public int getIndexInParent() {
+    public final int getIndexInParent() {
         return childIndex;
     }
 
     @Override
-    public N getChild(final int index) {
+    public final N getChild(final int index) {
         return (N) children[index];
     }
 
     @Override
-    public int getNumChildren() {
+    public final int getNumChildren() {
         return children.length;
     }
 
