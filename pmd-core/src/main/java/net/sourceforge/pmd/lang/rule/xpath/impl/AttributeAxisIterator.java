@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.lang.rule.xpath.impl;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodHandles.Lookup;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -14,6 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
@@ -72,7 +77,13 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
     private List<MethodWrapper> getWrappersForClass(Class<?> nodeClass) {
         return Arrays.stream(nodeClass.getMethods())
                      .filter(m -> isAttributeAccessor(nodeClass, m))
-                     .map(MethodWrapper::new)
+                     .map(m -> {
+                         try {
+                             return new MethodWrapper(m);
+                         } catch (IllegalAccessException e) {
+                             throw AssertionUtil.shouldNotReachHere("Method should be accessible " + e);
+                         }
+                     })
                      .collect(Collectors.toList());
     }
 
@@ -138,7 +149,7 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
     @Override
     public Attribute next() {
         MethodWrapper m = iterator.next();
-        return new Attribute(node, m.name, m.method);
+        return new Attribute(node, m.name, m.methodHandle, m.method);
     }
 
 
@@ -155,12 +166,16 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
      * once and put inside the {@link #METHOD_CACHE}).
      */
     private static class MethodWrapper {
+        static final Lookup LOOKUP = MethodHandles.publicLookup();
+        private static final MethodType GETTER_TYPE = MethodType.methodType(Object.class, Node.class);
+        public MethodHandle methodHandle;
         public Method method;
         public String name;
 
 
-        MethodWrapper(Method m) {
+        MethodWrapper(Method m) throws IllegalAccessException {
             this.method = m;
+            this.methodHandle = LOOKUP.unreflect(m).asType(GETTER_TYPE);
             this.name = truncateMethodName(m.getName());
         }
 

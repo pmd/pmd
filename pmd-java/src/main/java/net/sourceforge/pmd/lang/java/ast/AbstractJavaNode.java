@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.java.types.TypeSystem;
 abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, JavaNode> implements JavaNode {
 
     protected JSymbolTable symbolTable;
-    private ASTCompilationUnit root;
+    ASTCompilationUnit root;
 
     AbstractJavaNode(int id) {
         super(id);
@@ -100,7 +100,7 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, Jav
 
 
     @Override
-    public @NonNull ASTCompilationUnit getRoot() {
+    public final @NonNull ASTCompilationUnit getRoot() {
         // storing a reference on each node ensures that each path is roamed
         // at most once.
         if (root == null) {

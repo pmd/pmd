@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.rule.xpath;
 
-import java.lang.reflect.InvocationTargetException;
+import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Collections;
@@ -29,14 +29,16 @@ public class Attribute {
 
     private final Node parent;
     private final String name;
-    private Method method;
+    private final MethodHandle handle;
+    private final Method method;
     private List<?> value;
     private String stringValue;
 
     /** Creates a new attribute belonging to the given node using its accessor. */
-    public Attribute(Node parent, String name, Method m) {
+    public Attribute(Node parent, String name, MethodHandle handle, Method m) {
         this.parent = parent;
         this.name = name;
+        this.handle = handle;
         this.method = m;
     }
 
@@ -45,6 +47,8 @@ public class Attribute {
         this.parent = parent;
         this.name = name;
         this.value = Collections.singletonList(value);
+        this.handle = null;
+        this.method = null;
         this.stringValue = value;
     }
 
@@ -104,9 +108,9 @@ public class Attribute {
 
         // this lazy loading reduces calls to Method.invoke() by about 90%
         try {
-            value = Collections.singletonList(method.invoke(parent, EMPTY_OBJ_ARRAY));
+            value = Collections.singletonList(handle.invokeExact(parent));
             return value.get(0);
-        } catch (IllegalAccessException | InvocationTargetException iae) {
+        } catch (Throwable iae) {
             iae.printStackTrace();
         }
         return null;

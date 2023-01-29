@@ -45,6 +45,7 @@ public final class ASTCompilationUnit extends AbstractJavaNode implements JavaNo
 
     ASTCompilationUnit(int id) {
         super(id);
+        root = this;
     }
 
     public List<JavaComment> getComments() {
@@ -77,10 +78,6 @@ public final class ASTCompilationUnit extends AbstractJavaNode implements JavaNo
         return AstImplUtil.getChildAs(this, 0, ASTPackageDeclaration.class);
     }
 
-    @Override
-    public @NonNull ASTCompilationUnit getRoot() {
-        return this;
-    }
 
     /**
      * Returns the package name of this compilation unit. If there is no
