@@ -16,11 +16,11 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.util.CollectionUtil;
+import net.sourceforge.pmd.util.IteratorUtil;
 
 import net.sf.saxon.Configuration;
 import net.sf.saxon.om.NodeInfo;
