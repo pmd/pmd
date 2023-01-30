@@ -40,6 +40,7 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.RuleSet.RuleSetBuilder;
+import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -47,7 +48,6 @@ import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
-import net.sourceforge.pmd.util.IOUtil;
 
 class RuleSetTest {
 

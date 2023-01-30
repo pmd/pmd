@@ -15,7 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.DeprecatedUntil700;
-import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * This class can discover the LanguageVersion of a source file. Further, every

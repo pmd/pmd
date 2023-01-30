@@ -18,11 +18,11 @@ import org.junit.jupiter.api.Test;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.internal.util.FileCollectionUtil;
+import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.document.FileCollector;
 import net.sourceforge.pmd.lang.document.TextFile;
-import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.log.internal.NoopReporter;
 
 class PMDFilelistTest {

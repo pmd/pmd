@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.types.internal.infer.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
@@ -25,6 +24,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.FunctionalE
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.Infer;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ast.CtorInvocMirror.EnumCtorInvocMirror;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 /** Façade that creates {@link ExprMirror} instances. */
 public final class JavaExprMirrors {

@@ -7,8 +7,8 @@ package net.sourceforge.pmd.lang.java.types.ast;
 
 
 import static java.util.Arrays.asList;
-import static net.sourceforge.pmd.internal.util.AssertionUtil.shouldNotReachHere;
 import static net.sourceforge.pmd.lang.java.types.TypeConversion.isConvertibleUsingBoxing;
+import static net.sourceforge.pmd.util.AssertionUtil.shouldNotReachHere;
 import static net.sourceforge.pmd.util.CollectionUtil.all;
 import static net.sourceforge.pmd.util.CollectionUtil.map;
 
@@ -17,7 +17,6 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
@@ -71,6 +70,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.Infer;
 import net.sourceforge.pmd.lang.java.types.internal.infer.MethodCallSite;
 import net.sourceforge.pmd.lang.java.types.internal.infer.PolySite;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * Routines to handle context around poly expressions.

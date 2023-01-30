@@ -20,9 +20,9 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.document.FileLocation;
-import net.sourceforge.pmd.util.IOUtil;
 
 class ApexParserTest extends ApexParserTestBase {
 
@@ -182,7 +182,7 @@ class ApexParserTest extends ApexParserTestBase {
     @Test
     void stackOverflowDuringClassParsing() throws Exception {
         String source = IOUtil.readToString(ApexParserTest.class.getResourceAsStream("StackOverflowClass.cls"),
-                StandardCharsets.UTF_8);
+                                            StandardCharsets.UTF_8);
         ASTUserClassOrInterface<?> rootNode = parse(source);
         assertNotNull(rootNode);
 

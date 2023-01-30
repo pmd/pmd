@@ -26,10 +26,10 @@ import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.util.CollectionUtil;
-import net.sourceforge.pmd.util.IOUtil;
 
 class YAHTMLRendererTest extends AbstractRendererTest {
 

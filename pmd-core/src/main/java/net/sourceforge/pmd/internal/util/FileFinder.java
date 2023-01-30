@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.util;
+package net.sourceforge.pmd.internal.util;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -11,14 +11,9 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /**
  * A utility class for finding files within a directory.
- * @deprecated Is internal API
  */
-@Deprecated
-@InternalApi
 public class FileFinder {
 
     private FilenameFilter filter;

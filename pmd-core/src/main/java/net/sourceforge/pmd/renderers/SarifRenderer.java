@@ -10,9 +10,9 @@ import java.util.Iterator;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.renderers.internal.sarif.SarifLog;
 import net.sourceforge.pmd.renderers.internal.sarif.SarifLogBuilder;
-import net.sourceforge.pmd.util.IOUtil;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

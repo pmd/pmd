@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -40,66 +39,19 @@ import org.pcollections.PMap;
 import org.pcollections.PSequence;
 import org.pcollections.PSet;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.internal.util.AssertionUtil;
-import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.document.Chars;
 
 /**
- * Generic collection and array-related utility functions for java.util types.
- * See ClassUtil for comparable facilities for short name lookup.
+ * Generic collection-related utility functions for java.util types.
  *
  * @author Brian Remedios
- * @version $Revision$
- * @deprecated Is internal API
+ * @author Clément Fournier
  */
-@Deprecated
-@InternalApi
 public final class CollectionUtil {
 
     private static final int UNKNOWN_SIZE = -1;
 
-    @SuppressWarnings("PMD.UnnecessaryFullyQualifiedName")
-    public static final Set<String> COLLECTION_INTERFACES_BY_NAMES = collectionTypes(List.class, Collection.class, Map.class, Set.class);
-
-    @SuppressWarnings({"PMD.LooseCoupling", "PMD.UnnecessaryFullyQualifiedName"})
-    public static final Set<String> COLLECTION_CLASSES_BY_NAMES
-        = collectionTypes(ArrayList.class, java.util.LinkedList.class, java.util.Vector.class, HashMap.class,
-                          java.util.LinkedHashMap.class, java.util.TreeMap.class, java.util.TreeSet.class,
-                          HashSet.class, java.util.LinkedHashSet.class, java.util.Hashtable.class);
-
-
     private CollectionUtil() {
-    }
-
-    private static Set<String> collectionTypes(Class<?>... types) {
-        Set<String> set = new HashSet<>();
-
-        for (Class<?> type : types) {
-            if (!set.add(type.getSimpleName()) || !set.add(type.getName())) {
-                throw new IllegalArgumentException("Duplicate or name collision for " + type);
-            }
-        }
-
-        return set;
-    }
-
-    /**
-     * Return whether we can identify the typeName as a java.util collection
-     * class or interface as specified.
-     *
-     * @param typeName
-     *            String
-     * @param includeInterfaces
-     *            boolean
-     * @return boolean
-     *
-     * @deprecated Will be replaced with type resolution
-     */
-    @Deprecated
-    public static boolean isCollectionType(String typeName, boolean includeInterfaces) {
-        return COLLECTION_CLASSES_BY_NAMES.contains(typeName)
-                || includeInterfaces && COLLECTION_INTERFACES_BY_NAMES.contains(typeName);
     }
 
     /**

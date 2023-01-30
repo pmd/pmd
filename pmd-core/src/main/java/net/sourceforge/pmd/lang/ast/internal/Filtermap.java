@@ -13,8 +13,8 @@ import java.util.function.Predicate;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.util.IteratorUtil;
 
 /**
  * Combined filter/map predicate. Cannot accept null values.
