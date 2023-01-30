@@ -47,12 +47,6 @@ public class RuleSetWriter {
 
     public static final String RULESET_2_0_0_NS_URI = "http://pmd.sourceforge.net/ruleset/2.0.0";
 
-    /**
-     * @deprecated use {@link #RULESET_2_0_0_NS_URI} instead
-     */
-    @Deprecated // To be removed in PMD 7.0.0
-    public static final String RULESET_NS_URI = RULESET_2_0_0_NS_URI;
-
     private final OutputStream outputStream;
     private Document document;
     private Set<String> ruleSetFileNames;

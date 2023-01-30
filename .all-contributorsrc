@@ -7061,6 +7061,33 @@
         "bug",
         "code"
       ]
+    },
+    {
+      "login": "mluckam",
+      "name": "mluckam",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26581168?v=4",
+      "profile": "https://github.com/mluckam",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "liamsharp",
+      "name": "Liam Sharp",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6429288?v=4",
+      "profile": "https://github.com/liamsharp",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "hassanalamibmx",
+      "name": "Hassan ALAMI",
+      "avatar_url": "https://avatars.githubusercontent.com/u/67870478?v=4",
+      "profile": "https://github.com/hassanalamibmx",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,

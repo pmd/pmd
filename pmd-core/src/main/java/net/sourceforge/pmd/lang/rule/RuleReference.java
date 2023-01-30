@@ -41,16 +41,6 @@ public class RuleReference extends AbstractDelegateRule {
     private RulePriority priority;
     private RuleSetReference ruleSetReference;
 
-
-    /**
-     * @deprecated to be removed with PMD 7.0.0. when creating a rule reference, always
-     * provide the rule and the ruleset, see the constructor RuleReference(Rule, RuleSetReference)
-     */
-    @Deprecated
-    public RuleReference() {
-        // default constructor
-    }
-
     /**
      * Create a new reference to the given rule.
      *

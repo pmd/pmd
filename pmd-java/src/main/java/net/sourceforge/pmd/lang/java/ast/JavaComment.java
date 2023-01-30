@@ -116,7 +116,7 @@ public class JavaComment implements Reportable {
      * Trim the start of the provided line to remove a comment
      * markup opener ({@code //, /*, /**, *}) or closer {@code * /}.
      */
-    private static Chars removeCommentMarkup(Chars line) {
+    public static Chars removeCommentMarkup(Chars line) {
         line = line.trim().removeSuffix("*/");
         int subseqFrom = 0;
         if (line.startsWith('/', 0)) {

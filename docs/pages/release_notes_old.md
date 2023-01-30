@@ -5,6 +5,106 @@ permalink: pmd_release_notes_old.html
 
 Previous versions of PMD can be downloaded here: https://github.com/pmd/pmd/releases
 
+## 28-January-2023 - 6.54.0
+
+The PMD team is pleased to announce PMD 6.54.0.
+
+This is a minor release.
+
+### Table Of Contents
+
+* [New and noteworthy](#new-and-noteworthy)
+    * [New report format html-report-v2.xslt](#new-report-format-html-report-v2.xslt)
+* [Fixed Issues](#fixed-issues)
+* [API Changes](#api-changes)
+    * [PMD CLI](#pmd-cli)
+    * [Deprecated APIs](#deprecated-apis)
+        * [For removal](#for-removal)
+        * [Internal APIs](#internal-apis)
+        * [Experimental APIs](#experimental-apis)
+* [External Contributions](#external-contributions)
+* [Stats](#stats)
+
+### New and noteworthy
+
+#### New report format html-report-v2.xslt
+
+Thanks to @mohan-chinnappan-n a new PMD report format has been added which features a data table
+with charting functions. It uses an XSLT stylesheet to convert PMD's XML format into HTML.
+
+See [the example report](report-examples/html-report-v2.html).
+
+### Fixed Issues
+* apex-bestpractices
+  * [#2669](https://github.com/pmd/pmd/issues/2669): \[apex] UnusedLocalVariable false positive in dynamic SOQL
+* core
+  * [#4026](https://github.com/pmd/pmd/issues/4026): \[cli] Filenames printed as absolute paths in the report despite parameter `--short-names`
+  * [#4279](https://github.com/pmd/pmd/issues/4279): \[core] Can not set ruleset property value to empty
+  * [#4329](https://github.com/pmd/pmd/pull/4329): \[core] Refactor usage of snakeyaml
+  * [#4340](https://github.com/pmd/pmd/issues/4340): \[core] Allow to filter found matches in CPDReport
+* java
+  * [#4364](https://github.com/pmd/pmd/issues/4364): \[java] Parsing error with textblock containing quote followed by two backslashes
+* testing
+  * [#4236](https://github.com/pmd/pmd/issues/4236): \[test] kotest logs look broken
+
+### API Changes
+
+#### PMD CLI
+
+* PMD now supports a new `--relativize-paths-with` flag (or short `-z`), which replaces `--short-names`.
+  It serves the same purpose: Shortening the pathnames in the reports. However, with the new flag it's possible
+  to explicitly define one or more pathnames that should be used as the base when creating relative paths.
+  The old flag `--short-names` is deprecated.
+
+#### Deprecated APIs
+
+##### For removal
+
+* <a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.54.0/net/sourceforge/pmd/lang/apex/ast/ApexRootNode.html#getApexVersion()"><code>ApexRootNode#getApexVersion</code></a> has been deprecated for removal. The version returned is
+  always `Version.CURRENT`, as the apex compiler integration doesn't use additional information which Apex version
+  actually is used. Therefore, this method can't be used to determine the Apex version of the project
+  that is being analyzed.
+* <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0/net/sourceforge/pmd/cpd/CPDConfiguration.html#setEncoding(java.lang.String)"><code>CPDConfiguration#setEncoding</code></a> and
+  <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0/net/sourceforge/pmd/cpd/CPDConfiguration.html#getEncoding()"><code>CPDConfiguration#getEncoding</code></a>. Use the methods
+  <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0/net/sourceforge/pmd/AbstractConfiguration.html#getSourceEncoding()"><code>getSourceEncoding</code></a> and
+  <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0/net/sourceforge/pmd/AbstractConfiguration.html#setSourceEncoding(java.lang.String)"><code>setSourceEncoding</code></a> instead. Both are available
+  for `CPDConfiguration` which extends `AbstractConfiguration`.
+* <a href="https://docs.pmd-code.org/apidocs/pmd-test/6.54.0/net/sourceforge/pmd/cli/BaseCLITest.html#"><code>BaseCLITest</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-test/6.54.0/net/sourceforge/pmd/cli/BaseCPDCLITest.html#"><code>BaseCPDCLITest</code></a> have been deprecated for removal without
+  replacement. CLI tests should be done in pmd-core only (and in PMD7 in pmd-cli). Individual language modules
+  shouldn't need to test the CLI integration logic again. Instead, the individual language modules should test their
+  functionality as unit tests.
+* <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0/net/sourceforge/pmd/cpd/CPDConfiguration.LanguageConverter.html#"><code>CPDConfiguration.LanguageConverter</code></a>
+
+* <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0/net/sourceforge/pmd/lang/document/FileCollector.html#addZipFile(java.nio.file.Path)"><code>FileCollector#addZipFile</code></a> has been deprecated. It is replaced
+  by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0/net/sourceforge/pmd/lang/document/FileCollector.html#addZipFileWithContent(java.nio.file.Path)"><code>FileCollector#addZipFileWithContent</code></a> which directly adds the
+  content of the zip file for analysis.
+
+* <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0/net/sourceforge/pmd/PMDConfiguration.html#setReportShortNames(boolean)"><code>PMDConfiguration#setReportShortNames</code></a> and
+  <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0/net/sourceforge/pmd/PMDConfiguration.html#isReportShortNames()"><code>PMDConfiguration#isReportShortNames</code></a> have been deprecated for removal.
+  Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0/net/sourceforge/pmd/PMDConfiguration.html#addRelativizeRoot(java.nio.file.Path)"><code>PMDConfiguration#addRelativizeRoot</code></a> instead.
+
+##### Internal APIs
+
+* <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0/net/sourceforge/pmd/renderers/CSVWriter.html#"><code>CSVWriter</code></a>
+* Some fields in <a href="https://docs.pmd-code.org/apidocs/pmd-test/6.54.0/net/sourceforge/pmd/ant/AbstractAntTestHelper.html#"><code>AbstractAntTestHelper</code></a>
+
+##### Experimental APIs
+
+* CPDReport has a new method which limited mutation of a given report:
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0/net/sourceforge/pmd/cpd/CPDReport.html#filterMatches(net.sourceforge.pmd.util.Predicate)"><code>filterMatches</code></a> creates a new CPD report
+    with some matches removed with a given predicate based filter.
+
+### External Contributions
+* [#4110](https://github.com/pmd/pmd/pull/4110): \[apex] Feature/unused variable bind false positive with dynamic SOQL - [Thomas Prouvot](https://github.com/tprouvot) (@tprouvot)
+* [#4125](https://github.com/pmd/pmd/pull/4125): \[core] New report format html-report-v2.xslt to provide html with datatable and chart features - [Mohan Chinnappan](https://github.com/mohan-chinnappan-n) - (@mohan-chinnappan-n)
+* [#4280](https://github.com/pmd/pmd/pull/4280): \[apex] Deprecate ApexRootNode.getApexVersion - [Aaron Hurst](https://github.com/aaronhurst-google) (@aaronhurst-google)
+* [#4285](https://github.com/pmd/pmd/pull/4285): \[java] CommentDefaultAccessModifier - add co.elastic.clients.util.VisibleForTesting as default suppressed annotation - [Matthew Luckam](https://github.com/mluckam) (@mluckam)
+
+### Stats
+* 107 commits
+* 19 closed tickets & PRs
+* Days since last release: 27
+
 ## 31-December-2022 - 6.53.0
 
 The PMD team is pleased to announce PMD 6.53.0.

@@ -15,14 +15,15 @@ import java.util.List;
  *
  * @author Brian Remedios
  * @param <T>
+ * @deprecated This is internal API and an implementation detail for {@link CSVRenderer}.
  */
-public class CSVWriter<T extends Object> {
+class CSVWriter<T> {
 
     private final String separator; // e.g., the comma
     private final String lineSeparator; // cr
     private final List<ColumnDescriptor<T>> columns;
 
-    public CSVWriter(List<ColumnDescriptor<T>> theColumns, String theSeparator, String theLineSeparator) {
+    CSVWriter(List<ColumnDescriptor<T>> theColumns, String theSeparator, String theLineSeparator) {
         columns = theColumns;
         separator = theSeparator;
         lineSeparator = theLineSeparator;
@@ -67,7 +68,7 @@ public class CSVWriter<T extends Object> {
 
     private void quote(StringBuilder buffer, String s) {
         if (s == null) {
-            return;
+            s = "";
         }
         buffer.append('"').append(s).append('"');
     }

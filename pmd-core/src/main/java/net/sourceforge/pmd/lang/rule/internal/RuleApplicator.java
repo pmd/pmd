@@ -56,8 +56,9 @@ public class RuleApplicator {
         for (Rule rule : rules) {
             RuleContext ctx = RuleContext.create(listener, rule);
             rule.start(ctx);
-            try {
+            try (TimedOperation rcto = TimeTracker.startOperation(TimedOperationCategory.RULE, rule.getName())) {
 
+                int nodeCounter = 0;
                 Iterator<? extends Node> targets = rule.getTargetSelector().getVisitedNodes(idx);
                 while (targets.hasNext()) {
                     Node node = targets.next();
@@ -65,9 +66,9 @@ public class RuleApplicator {
                         continue;
                     }
 
-                    try (TimedOperation rcto = TimeTracker.startOperation(TimedOperationCategory.RULE, rule.getName())) {
+                    try {
+                        nodeCounter++;
                         rule.apply(node, ctx);
-                        rcto.close(1);
                     } catch (RuntimeException e) {
                         reportOrRethrow(listener, rule, node, AssertionUtil.contexted(e), true);
                     } catch (StackOverflowError e) {
@@ -76,6 +77,8 @@ public class RuleApplicator {
                         reportOrRethrow(listener, rule, node, AssertionUtil.contexted(e), SystemProps.isErrorRecoveryMode());
                     }
                 }
+                
+                rcto.close(nodeCounter);
             } finally {
                 rule.end(ctx);
             }

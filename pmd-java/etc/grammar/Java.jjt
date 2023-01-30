@@ -746,12 +746,6 @@ TOKEN :
 
 | < CHARACTER_LITERAL: "'"  ( ~["'", "\\","\n","\r"] | <STRING_ESCAPE> )  "'"  >
 | < STRING_LITERAL:    "\"" ( ~["\"","\\","\n","\r"] | <STRING_ESCAPE> )* "\"" >
-|
-  < TEXT_BLOCK_LITERAL:
-     "\"\"\"" (<HORIZONTAL_WHITESPACE>)* <LINE_TERMINATOR>
-        ( ~["\"", "\\"] | "\"" ~["\""] | "\"\"" ~["\""] | <STRING_ESCAPE> | "\\" <LINE_TERMINATOR> )*
-     "\"\"\""
-  >
 | < #STRING_ESCAPE:
         "\\"
         ( ["n","t","b","r","f","s","\\","'","\""]
@@ -760,6 +754,24 @@ TOKEN :
         | ["0"-"3"] ["0"-"7"] ["0"-"7"]
         )
   >
+}
+
+/* TEXT BLOCKS */
+MORE :
+{
+  < "\"\"\"" (<HORIZONTAL_WHITESPACE>)* <LINE_TERMINATOR> > : IN_TEXT_BLOCK_LITERAL
+}
+
+<IN_TEXT_BLOCK_LITERAL>
+TOKEN :
+{
+  <TEXT_BLOCK_LITERAL: "\"\"\"" > : DEFAULT
+}
+
+<IN_TEXT_BLOCK_LITERAL>
+MORE :
+{
+  < ~["\\"] | <STRING_ESCAPE> | ("\\")? <LINE_TERMINATOR> >
 }
 
 /* IDENTIFIERS */
