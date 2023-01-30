@@ -175,6 +175,13 @@ use cases.
 
 * {% rule "java/codestyle/UnnecessaryBoxing" %} reports boxing and unboxing conversions that may be made implicit.
 
+##### Swift
+
+* {% rule swift/bestpractices/ProhibitedInterfaceBuilder %}
+* {% rule swift/bestpractices/UnavailableFunction %}
+* {% rule swift/errorprone/ForceCast %}
+* {% rule swift/errorprone/ForceTry %}
+
 #### Changed Rules
 
 ##### Java
@@ -250,26 +257,82 @@ The following previously deprecated rules have been finally removed:
 ### Fixed Issues
 
 * miscellaneous
+  * [#881](https://github.com/pmd/pmd/issues/881):   \[all] Breaking API changes for 7.0.0
   * [#896](https://github.com/pmd/pmd/issues/896):   \[all] Use slf4j
+  * [#1431](https://github.com/pmd/pmd/pull/1431):   \[ui] Remove old GUI applications (designerold, bgastviewer)
   * [#1451](https://github.com/pmd/pmd/issues/1451): \[core] RulesetFactoryCompatibility stores the whole ruleset file in memory as a string
+  * [#2496](https://github.com/pmd/pmd/issues/2496): Update PMD 7 Logo on landing page
+  * [#2497](https://github.com/pmd/pmd/issues/2497): PMD 7 Logo page
+  * [#2498](https://github.com/pmd/pmd/issues/2498): Update PMD 7 Logo in documentation
   * [#3797](https://github.com/pmd/pmd/issues/3797): \[all] Use JUnit5
 * ant
   * [#4080](https://github.com/pmd/pmd/issues/4080): \[ant] Split off Ant integration into a new submodule 
 * core
+  * [#880](https://github.com/pmd/pmd/issues/880):   \[core] Make visitors generic
+  * [#1622](https://github.com/pmd/pmd/pull/1622):   \[core] NodeStream API
+  * [#1687](https://github.com/pmd/pmd/issues/1687): \[core] Deprecate and Remove XPath 1.0 support
+  * [#1785](https://github.com/pmd/pmd/issues/1785): \[core] Allow abstract node types to be valid rulechain visits
+  * [#1825](https://github.com/pmd/pmd/pull/1825):   \[core] Support NoAttribute for XPath
+  * [#2038](https://github.com/pmd/pmd/issues/2038): \[core] Remove DCD
+  * [#2218](https://github.com/pmd/pmd/issues/2218): \[core] `isFindBoundary` should not be an attribute
   * [#2234](https://github.com/pmd/pmd/issues/2234): \[core] Consolidate PMD CLI into a single command
+  * [#2239](https://github.com/pmd/pmd/issues/2239): \[core] Merging Javacc build scripts
   * [#2518](https://github.com/pmd/pmd/issues/2518): \[core] Language properties
+  * [#2602](https://github.com/pmd/pmd/issues/2602): \[core] Remove ParserOptions
+  * [#2614](https://github.com/pmd/pmd/pull/2614):   \[core] Upgrade Saxon, add XPath 3.1, remove Jaxen
+  * [#2696](https://github.com/pmd/pmd/pull/2696):   \[core] Remove DFA
+  * [#2821](https://github.com/pmd/pmd/issues/2821): \[core] Rule processing error filenames are missing paths
   * [#2873](https://github.com/pmd/pmd/issues/2873): \[core] Utility classes in pmd 7
+  * [#2885](https://github.com/pmd/pmd/issues/2885): \[core] Error recovery mode
   * [#3203](https://github.com/pmd/pmd/issues/3203): \[core] Replace RuleViolationFactory implementations with ViolationDecorator
+  * [#3692](https://github.com/pmd/pmd/pull/3692):   \[core] Analysis listeners
   * [#3782](https://github.com/pmd/pmd/issues/3782): \[core] Language lifecycle
+  * [#3815](https://github.com/pmd/pmd/issues/3815): \[core] Update Saxon HE to 10.7
+  * [#3893](https://github.com/pmd/pmd/pull/3893):   \[core] Text documents
   * [#3902](https://github.com/pmd/pmd/issues/3902): \[core] Violation decorators
+  * [#3918](https://github.com/pmd/pmd/issues/3918): \[core] Make LanguageRegistry non static
+  * [#3922](https://github.com/pmd/pmd/pull/3922):   \[core] Better error reporting for the ruleset parser
   * [#4035](https://github.com/pmd/pmd/issues/4035): \[core] ConcurrentModificationException in DefaultRuleViolationFactory
   * [#4120](https://github.com/pmd/pmd/issues/4120): \[core] Explicitly name all language versions
+  * [#4353](https://github.com/pmd/pmd/pull/4353):   \[core] Micro optimizations for Node API
+  * [#4365](https://github.com/pmd/pmd/pull/4365):   \[core] Improve benchmarking
 * cli
+  * [#2234](https://github.com/pmd/pmd/issues/2234): \[core] Consolidate PMD CLI into a single command
   * [#3828](https://github.com/pmd/pmd/issues/3828): \[core] Progress reporting
   * [#4079](https://github.com/pmd/pmd/issues/4079): \[cli] Split off CLI implementation into a pmd-cli submodule
+* testing
+  * [#4234](https://github.com/pmd/pmd/issues/4234): \[test] Tests that change the logging level do not work
+
+Language specific fixes:
+
+* apex
+  * [#1937](https://github.com/pmd/pmd/issues/1937): \[apex] Apex should only have a single RootNode
+  * [#1648](https://github.com/pmd/pmd/issues/1648): \[apex,vf] Remove CodeClimate dependency
+  * [#1750](https://github.com/pmd/pmd/pull/1750):   \[apex] Remove apex statistical rules
+  * [#2836](https://github.com/pmd/pmd/pull/2836):   \[apex] Remove Apex ProjectMirror
 * apex-design
   * [#2667](https://github.com/pmd/pmd/issues/2667): \[apex] Integrate nawforce/ApexLink to build robust Unused rule
 * java
+  * [#520](https://github.com/pmd/pmd/issues/520):   \[java] Allow `@SuppressWarnings` with constants instead of literals
+  * [#864](https://github.com/pmd/pmd/issues/864):   \[java] Similar/duplicated implementations for determining FQCN
+  * [#905](https://github.com/pmd/pmd/issues/905):   \[java] Add new node for anonymous class declaration
+  * [#910](https://github.com/pmd/pmd/issues/910):   \[java] AST inconsistency between primitive and reference type arrays
+  * [#997](https://github.com/pmd/pmd/issues/997):   \[java] Java8 parsing corner case with annotated array types
+  * [#998](https://github.com/pmd/pmd/issues/998):   \[java] AST inconsistencies around FormalParameter
+  * [#1019](https://github.com/pmd/pmd/issues/1019): \[java] Breaking Java Grammar changes for PMD 7.0.0
+  * [#1124](https://github.com/pmd/pmd/issues/1124): \[java] ImmutableList implementation in the qname codebase
+  * [#1128](https://github.com/pmd/pmd/issues/1128): \[java] Improve ASTLocalVariableDeclaration
+  * [#1150](https://github.com/pmd/pmd/issues/1150): \[java] ClassOrInterfaceType AST improvements
+  * [#1207](https://github.com/pmd/pmd/issues/1207): \[java] Resolve explicit types using FQCNs, without hitting the classloader
+  * [#1367](https://github.com/pmd/pmd/issues/1367): \[java] Parsing error on annotated inner class
+  * [#1661](https://github.com/pmd/pmd/issues/1661): \[java] About operator nodes
+  * [#2366](https://github.com/pmd/pmd/pull/2366):   \[java] Remove qualified names
+  * [#2819](https://github.com/pmd/pmd/issues/2819): \[java] GLB bugs in pmd 7
+  * [#3763](https://github.com/pmd/pmd/issues/3763): \[java] Ambiguous reference error in valid code
+  * [#3749](https://github.com/pmd/pmd/issues/3749): \[java] Improve `isOverridden` in ASTMethodDeclaration
+  * [#3750](https://github.com/pmd/pmd/issues/3750): \[java] Make symbol table support instanceof pattern bindings
+  * [#3752](https://github.com/pmd/pmd/issues/3752): \[java] Expose annotations in symbol API
+  * [#4237](https://github.com/pmd/pmd/pull/4237):   \[java] Cleanup handling of Java comments
   * [#4317](https://github.com/pmd/pmd/issues/4317): \[java] Some AST nodes should not be TypeNodes
   * [#4359](https://github.com/pmd/pmd/issues/4359): \[java] Type resolution fails with NPE when the scope is not a type declaration
   * [#4367](https://github.com/pmd/pmd/issues/4367): \[java] Move testrule TypeResTest into internal
@@ -314,6 +377,7 @@ The following previously deprecated rules have been finally removed:
   * [#2528](https://github.com/pmd/pmd/issues/2528): \[java] MethodNamingConventions - JUnit 5 method naming not support ParameterizedTest
   * [#2739](https://github.com/pmd/pmd/issues/2739): \[java] UselessParentheses false positive for string concatenation
   * [#2748](https://github.com/pmd/pmd/issues/2748): \[java] UnnecessaryCast false positive with unchecked cast
+  * [#2973](https://github.com/pmd/pmd/issues/2973): \[java] New rule: UnnecessaryBoxing
   * [#3195](https://github.com/pmd/pmd/pull/3195):   \[java] Improve rule UnnecessaryReturn to detect more cases
   * [#3218](https://github.com/pmd/pmd/pull/3218):   \[java] Generalize UnnecessaryCast to flag all unnecessary casts
   * [#3221](https://github.com/pmd/pmd/issues/3221): \[java] PrematureDeclaration false positive for unused variables
@@ -332,6 +396,7 @@ The following previously deprecated rules have been finally removed:
   * [#3668](https://github.com/pmd/pmd/pull/3668):   \[java] ClassWithOnlyPrivateConstructorsShouldBeFinal - fix FP with inner private classes
   * [#3754](https://github.com/pmd/pmd/issues/3754): \[java] SingularField false positive with read in while condition
   * [#3786](https://github.com/pmd/pmd/issues/3786): \[java] SimplifyBooleanReturns should consider operator precedence
+  * [#4238](https://github.com/pmd/pmd/pull/4238):   \[java] Make LawOfDemeter not use the rulechain
 * java-documentation
   * [#4369](https://github.com/pmd/pmd/pull/4369):   \[java] Improve CommentSize
 * java-errorprone
@@ -362,11 +427,16 @@ The following previously deprecated rules have been finally removed:
   * [#2712](https://github.com/pmd/pmd/issues/2712): \[java] SimplifyStartsWith false-positive with AssertJ
   * [#3486](https://github.com/pmd/pmd/pull/3486):   \[java] InsufficientStringBufferDeclaration: Fix NPE
 * kotlin
-  * [#419](https://github.com/pmd/pmd/issues/419): \[kotlin] Add support for Kotlin
+  * [#419](https://github.com/pmd/pmd/issues/419):   \[kotlin] Add support for Kotlin
+* swift
+  * [#1877](https://github.com/pmd/pmd/pull/1877):   \[swift] Feature/swift rules
+  * [#1882](https://github.com/pmd/pmd/pull/1882):   \[swift] UnavailableFunction Swift rule
+* xml
+  * [#1800](https://github.com/pmd/pmd/pull/1800):   \[xml] Unimplement org.w3c.dom.Node from the XmlNodeWrapper
 
 ### API Changes
 
-* [#1648](https://github.com/pmd/pmd/pull/1702): \[apex,vf] Remove CodeClimate dependency - [Robert Sösemann](https://github.com/rsoesemann)
+* [#1648](https://github.com/pmd/pmd/issues/1648): \[apex,vf] Remove CodeClimate dependency - [Robert Sösemann](https://github.com/rsoesemann)
   Properties "cc_categories", "cc_remediation_points_multiplier", "cc_block_highlighting" can no longer be overridden in rulesets.
   They were deprecated without replacement.
 
