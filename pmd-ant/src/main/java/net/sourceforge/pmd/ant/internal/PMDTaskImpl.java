@@ -53,7 +53,7 @@ public class PMDTaskImpl {
     private Project project;
 
     public PMDTaskImpl(PMDTask task) {
-        configuration.setReportShortNames(task.isShortFilenames());
+        configuration.addRelativizeRoots(task.getRelativizeRoots());
         if (task.getSuppressMarker() != null) {
             configuration.setSuppressMarker(task.getSuppressMarker());
         }
@@ -103,7 +103,6 @@ public class PMDTaskImpl {
             project.log("Setting suppress marker to be " + configuration.getSuppressMarker(), Project.MSG_VERBOSE);
         }
 
-
         List<String> ruleSetPaths = expandRuleSetPaths(configuration.getRuleSetPaths());
         // don't let PmdAnalysis.create create rulesets itself.
         configuration.setRuleSets(Collections.emptyList());
@@ -116,9 +115,6 @@ public class PMDTaskImpl {
 
             for (FileSet fileset : filesets) {
                 DirectoryScanner ds = fileset.getDirectoryScanner(project);
-                if (configuration.isReportShortNames()) {
-                    pmd.files().relativizeWith(ds.getBasedir().getPath());
-                }
                 for (String srcFile : ds.getIncludedFiles()) {
                     pmd.files().addFile(ds.getBasedir().toPath().resolve(srcFile));
                 }

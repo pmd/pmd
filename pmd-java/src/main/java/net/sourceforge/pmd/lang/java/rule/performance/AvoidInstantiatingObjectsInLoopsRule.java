@@ -19,7 +19,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLoopStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
@@ -79,14 +78,7 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractJavaRulechainR
 
     private boolean notBreakFollowing(JavaNode node) {
         JavaNode statement = node.ancestors().filter(n -> n.getParent() instanceof ASTBlock).first();
-        if (statement != null) {
-            ASTBlock block = (ASTBlock) statement.getParent();
-            if (block.getNumChildren() > statement.getIndexInParent() + 1) {
-                ASTStatement next = block.getChild(statement.getIndexInParent() + 1);
-                return !(next instanceof ASTBreakStatement);
-            }
-        }
-        return true;
+        return statement == null || !(statement.getNextSibling() instanceof ASTBreakStatement);
     }
 
     /**

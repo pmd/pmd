@@ -25,25 +25,31 @@
         <pmd />
     </target>
 
-    <target name="testWithShortFilenames">
-        <pmd noCache="true" shortFilenames="true">
+    <target name="testRelativizeWith">
+        <pmd noCache="true">
             <!-- note: this ruleset is in pmd-core/src/test/resources -->
             <ruleset>rulesets/dummy/basic.xml</ruleset>
             <formatter type="text" toFile="${pmd.home}/target/pmd-ant-test.txt" />
-            <fileset dir="${pmd.home}/src/test/resources/net/sourceforge/pmd/ant/src">
+            <fileset dir="${pmd.home}/src/test/resources/net/sourceforge/pmd/ant/">
                 <include name="**/*dummy"/>
             </fileset>
+            <relativizePathsWith>
+                <pathelement location="${pmd.home}/src/test/resources/net/sourceforge/pmd/ant"/>
+            </relativizePathsWith>
         </pmd>
     </target>
 
     <target name="testXmlFormatter">
-        <pmd noCache="true" shortFilenames="true">
+        <pmd noCache="true">
             <!-- note: this ruleset is in pmd-core/src/test/resources -->
             <ruleset>rulesets/dummy/basic.xml</ruleset>
             <formatter type="xml" toFile="${pmd.home}/target/pmd-ant-xml.xml" />
             <fileset dir="${pmd.home}/src/test/resources/net/sourceforge/pmd/ant/src">
                 <include name="**/*dummy"/>
             </fileset>
+            <relativizePathsWith>
+                <pathelement location="${pmd.home}/src/test/resources/net/sourceforge/pmd/ant/src"/>
+            </relativizePathsWith>
         </pmd>
     </target>
 </project>

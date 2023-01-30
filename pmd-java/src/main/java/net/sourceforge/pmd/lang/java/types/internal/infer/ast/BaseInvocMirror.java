@@ -40,6 +40,9 @@ abstract class BaseInvocMirror<T extends InvocationNode> extends BasePolyMirror<
     public boolean isEquivalentToUnderlyingAst() {
         MethodCtDecl ctDecl = getCtDecl();
         AssertionUtil.validateState(ctDecl != null, "overload resolution is not complete");
+        if (ctDecl.isFailed()) {
+            return false; // be conservative
+        }
         if (!myNode.getMethodType().getSymbol().equals(ctDecl.getMethodType().getSymbol())) {
             return false;
         } else if (myNode instanceof ASTConstructorCall && ((ASTConstructorCall) myNode).isAnonymousClass()

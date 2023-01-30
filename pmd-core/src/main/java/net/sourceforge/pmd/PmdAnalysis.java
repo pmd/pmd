@@ -6,6 +6,7 @@ package net.sourceforge.pmd;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -99,6 +100,10 @@ public final class PmdAnalysis implements AutoCloseable {
             config.getLanguageVersionDiscoverer(),
             reporter
         );
+
+        for (Path path : config.getRelativizeRoots()) {
+            this.collector.relativizeWith(path);
+        }
     }
 
     /**

@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.cli.commands.typesupport.internal.CpdLanguageTypeSupport;
-import net.sourceforge.pmd.cli.internal.ExecutionResult;
+import net.sourceforge.pmd.cli.internal.CliExitCode;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.cpd.CPDConfiguration;
 import net.sourceforge.pmd.cpd.CPDReport;
@@ -127,7 +127,7 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand {
     }
 
     @Override
-    protected ExecutionResult execute() {
+    protected CliExitCode execute() {
         final Logger logger = LoggerFactory.getLogger(CpdCommand.class);
         
         // TODO : Create a new CpdAnalysis to match PmdAnalysis
@@ -141,15 +141,15 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand {
             configuration.getCPDReportRenderer().render(report, IOUtil.createWriter(Charset.defaultCharset(), null));
 
             if (cpd.getMatches().hasNext() && configuration.isFailOnViolation()) {
-                return ExecutionResult.VIOLATIONS_FOUND;
+                return CliExitCode.VIOLATIONS_FOUND;
             }
         } catch (IOException | RuntimeException e) {
             logger.debug(e.toString(), e);
             logger.error(LogMessages.errorDetectedMessage(1, "cpd"));
-            return ExecutionResult.ERROR;
+            return CliExitCode.ERROR;
         }
 
-        return ExecutionResult.OK;
+        return CliExitCode.OK;
     }
 
     /**

@@ -160,7 +160,9 @@ public interface TextFile extends Closeable {
      * @throws NullPointerException If any parameter is null
      */
     static TextFile forPath(Path path, Charset charset, LanguageVersion languageVersion) {
-        return builderForPath(path, charset, languageVersion).build();
+        return builderForPath(path, charset, languageVersion)
+                .withDisplayName(path.toString())
+                .build();
     }
 
     /**
@@ -194,7 +196,9 @@ public interface TextFile extends Closeable {
      * @throws NullPointerException If any parameter is null
      */
     static TextFile forCharSeq(CharSequence charseq, String pathId, LanguageVersion languageVersion) {
-        return builderForCharSeq(charseq, pathId, languageVersion).build();
+        return builderForCharSeq(charseq, pathId, languageVersion)
+                .withDisplayName(pathId)
+                .build();
     }
 
     /**
@@ -226,7 +230,9 @@ public interface TextFile extends Closeable {
      * @throws NullPointerException If any parameter is null
      */
     static TextFile forReader(Reader reader, String pathId, LanguageVersion languageVersion) {
-        return builderForReader(reader, pathId, languageVersion).build();
+        return builderForReader(reader, pathId, languageVersion)
+                .withDisplayName(pathId)
+                .build();
     }
 
     /**
@@ -277,7 +283,7 @@ public interface TextFile extends Closeable {
 
             @Override
             public @NonNull String getDisplayName() {
-                return ds.getNiceFileName(config.isReportShortNames(), shortPaths);
+                return ds.getNiceFileName(false, shortPaths);
             }
 
             @Override
