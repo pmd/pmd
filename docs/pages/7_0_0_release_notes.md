@@ -94,7 +94,8 @@ We expect this to enable both our dev team and external contributors to largely 
 
 #### Swift support
 
-Given the full Antlr support, PMD now fully supports Swift. We are pleased to announce we are shipping a number of rules starting with PMD 7.
+Given the full Antlr support, PMD now fully supports Swift. We are pleased to announce we are shipping a number of rules
+starting with PMD 7.
 
 * {% rule "swift/errorprone/ForceCast" %} (`swift-errorprone`) flags all force casts, making sure you are defensively considering all types.
   Having the application crash shouldn't be an option.
@@ -127,10 +128,14 @@ Contributors: [@jborgers](https://github.com/jborgers), [@stokpop](https://githu
 
 #### XPath 3.1 support
 
-Support for XPath versions 1.0, 1.0-compatibility was removed, support for XPath 2.0 is deprecated. The default (and only) supported XPath version is now XPath 3.1. This version of the XPath language is mostly identical to XPath 2.0. Notable changes:
- * The deprecated support for sequence-valued attributes is removed. Sequence-valued properties are still supported.
- * Refer to [the Saxonica documentation](https://www.saxonica.com/html/documentation/expressions/xpath31new.html) for an introduction to new features in XPath 3.1.
+Support for XPath versions 1.0, 1.0-compatibility was removed, support for XPath 2.0 is deprecated. The default
+(and only) supported XPath version is now XPath 3.1. This version of the XPath language is mostly identical to
+XPath 2.0.
 
+Notable changes:
+* The deprecated support for sequence-valued attributes is removed. Sequence-valued properties are still supported.
+* Refer to [the Saxonica documentation](https://www.saxonica.com/html/documentation/expressions/xpath31new.html) for
+  an introduction to new features in XPath 3.1.
 
 #### Node stream API
 
@@ -143,9 +148,12 @@ node.descendants(ASTMethodCall.class)
     .foreach(System.out::println);
 ```
 
-A pipeline like shown here traverses the tree lazily, which is more efficient than traversing eagerly to put all descendants in a list. It is also much easier to change than the old imperative way.
+A pipeline like shown here traverses the tree lazily, which is more efficient than traversing eagerly to put all
+descendants in a list. It is also much easier to change than the old imperative way.
 
-To make this API as accessible as possible, the {% jdoc core::lang.ast.Node %} interface has been fitted with new methods producing node streams. Those methods replace previous tree traversal methods like `Node#findDescendantsOfType`. In all cases, they should be more efficient and more convenient.
+To make this API as accessible as possible, the {% jdoc core::lang.ast.Node %} interface has been fitted with new
+methods producing node streams. Those methods replace previous tree traversal methods like `Node#findDescendantsOfType`.
+In all cases, they should be more efficient and more convenient.
 
 See {% jdoc core::lang.ast.NodeStream %} for more details.
 
@@ -161,12 +169,11 @@ use cases.
 
 ##### Apex
 
-*   The Apex rule {% rule "apex/design/UnusedMethod" %} finds unused methods in your code.
+* The Apex rule {% rule "apex/design/UnusedMethod" %} finds unused methods in your code.
 
 ##### Java
 
-*   {% rule "java/codestyle/UnnecessaryBoxing" %} reports boxing and unboxing
-conversions that may be made implicit.
+* {% rule "java/codestyle/UnnecessaryBoxing" %} reports boxing and unboxing conversions that may be made implicit.
 
 #### Changed Rules
 
@@ -180,11 +187,13 @@ conversions that may be made implicit.
   The other property `ignoreBalancing` (default: true) is similar, in that it allows parentheses that help
   reading and understanding the expressions.
 * {% rule "java/bestpractices/LooseCoupling" %}: the rule has a new property to allow some types to be coupled to (`allowedTypes`).
-* {% rule "java/errorprone/EmptyCatchBlock" %}: `CloneNotSupportedException` and `InterruptedException` are not special-cased anymore. Rename the exception parameter to `ignored` to ignore them.
+* {% rule "java/errorprone/EmptyCatchBlock" %}: `CloneNotSupportedException` and `InterruptedException` are not
+  special-cased anymore. Rename the exception parameter to `ignored` to ignore them.
 * {% rule "java/errorprone/DontImportSun" %}: `sun.misc.Signal` is not special-cased anymore.
 * {% rule "java/codestyle/UseDiamondOperator" %}: the property `java7Compatibility` is removed. The rule now handles Java 7
   properly without a property.
-* {% rule "java/design/SingularField" %}: Properties `checkInnerClasses` and `disallowNotAssignment` are removed. The rule is now more precise and will check these cases properly.
+* {% rule "java/design/SingularField" %}: Properties `checkInnerClasses` and `disallowNotAssignment` are removed. 
+  The rule is now more precise and will check these cases properly.
 * {% rule "java/design/UseUtilityClass" %}: The property `ignoredAnnotations` has been removed.
 * {% rule "java/design/LawOfDemeter" %}: the rule has a new property `trustRadius`. This defines the maximum degree
   of trusted data. The default of 1 is the most restrictive.
@@ -199,71 +208,71 @@ conversions that may be made implicit.
 
 The following previously deprecated rules have been finally removed:
 
-*   AbstractNaming (java-codestyle) -> use {% rule "java/codestyle/ClassNamingConventions" %}
-*   AvoidFinalLocalVariable (java-codestyle) -> not replaced
-*   AvoidPrefixingMethodParameters (java-codestyle) -> use {% rule "java/codestyle/FormalParameterNamingConventions" %}
-*   AvoidUsingShortType (java-performance) -> not replaced
-*   BadComparison (java-errorprone) -> use {% rule "java/errorprone/ComparisonWithNaN" %}
-*   BooleanInstantiation (java-performance) -> use {% rule "java/codestyle/UnnecessaryBoxing" %} and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
-*   ByteInstantiation (java-performance) -> use {% rule "java/codestyle/UnnecessaryBoxing" %} and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
-*   CloneThrowsCloneNotSupportedException (java-errorprone) -> not replaced
-*   DataflowAnomalyAnalysis (java-errorprone) -> not replaced
-*   DefaultPackage (java-codestyle) -> use {% rule "java/codestyle/CommentDefaultAccessModifier" %}
-*   DoNotCallSystemExit (java-errorprone) -> use {% rule "java/errorprone/DoNotTerminateVM" %}
-*   ForLoopsMustUseBraces (java-codestyle) -> use {% rule "java/codestyle/ControlStatementBraces" %}
-*   IfElseStmtsMustUseBraces (java-codestyle) -> use {% rule "java/codestyle/ControlStatementBraces" %}
-*   IfStmtsMustUseBraces (java-codestyle) -> use {% rule "java/codestyle/ControlStatementBraces" %}
-*   IntegerInstantiation (java-performance) -> use {% rule "java/codestyle/UnnecessaryBoxing" %} and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
-*   InvalidSlf4jMessageFormat (java-errorprone) ->  use {% rule "java/errorprone/InvalidLogMessageFormat" %}
-*   LoggerIsNotStaticFinal (java-errorprone)
-*   LongInstantiation (java-performance) -> use {% rule "java/codestyle/UnnecessaryBoxing" %} and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
-*   MIsLeadingVariableName (java-codestyle) -> use {% rule "java/codestyle/FieldNamingConventions" %}
-*   MissingBreakInSwitch (java-errorprone) ->  use {% rule "java/errorprone/ImplicitSwitchFallThrough" %}
-*   ModifiedCyclomaticComplexity (java-design) -> use {% rule "java/design/CyclomaticComplexity" %}
-*   PositionLiteralsFirstInCaseInsensitiveComparisons (java-bestpractices) -> use {% rule "java/bestpractices/LiteralsFirstInComparisons" %}
-*   PositionLiteralsFirstInComparisons (java-bestpractices) -> use {% rule "java/bestpractices/LiteralsFirstInComparisons" %}
-*   ReturnEmptyArrayRatherThanNull (java-errorprone) ->  use {% rule "java/errorprone/ReturnEmptyCollectionRatherThanNull" %}
-*   ShortInstantiation (java-performance) -> use {% rule "java/codestyle/UnnecessaryBoxing" %} and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
-*   SimplifyBooleanAssertion (java-design) -> use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
-*   SimplifyStartsWith (java-performance) -> not replaced
-*   StdCyclomaticComplexity (java-design) -> use {% rule "java/design/CyclomaticComplexity" %}
-*   SuspiciousConstantFieldName (java-codestyle)
-*   UnnecessaryWrapperObjectCreation (java-performance) -> use the new rule {% rule "java/codestyle/UnnecessaryBoxing" %}
-*   UnsynchronizedStaticDateFormatter (java-multithreading)
-*   UseAssertEqualsInsteadOfAssertTrue (java-bestpractices) -> use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
-*   UseAssertNullInsteadOfAssertEquals (java-bestpractices) -> use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
-*   UseAssertSameInsteadOfAssertEquals (java-bestpractices) -> use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
-*   UseAssertTrueInsteadOfAssertEquals (java-bestpractices) -> use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
-*   VariableNamingConventions (apex-codestyle)
-*   VariableNamingConventions (java-codestyle) -> use {% rule "java/codestyle/FieldNamingConventions" %} and such
-*   WhileLoopsMustUseBraces (java-codestyle) -> use {% rule "java/codestyle/ControlStatementBraces" %}
+* AbstractNaming (java-codestyle) -> use {% rule "java/codestyle/ClassNamingConventions" %}
+* AvoidFinalLocalVariable (java-codestyle) -> not replaced
+* AvoidPrefixingMethodParameters (java-codestyle) -> use {% rule "java/codestyle/FormalParameterNamingConventions" %}
+* AvoidUsingShortType (java-performance) -> not replaced
+* BadComparison (java-errorprone) -> use {% rule "java/errorprone/ComparisonWithNaN" %}
+* BooleanInstantiation (java-performance) -> use {% rule "java/codestyle/UnnecessaryBoxing" %} and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
+* ByteInstantiation (java-performance) -> use {% rule "java/codestyle/UnnecessaryBoxing" %} and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
+* CloneThrowsCloneNotSupportedException (java-errorprone) -> not replaced
+* DataflowAnomalyAnalysis (java-errorprone) -> not replaced
+* DefaultPackage (java-codestyle) -> use {% rule "java/codestyle/CommentDefaultAccessModifier" %}
+* DoNotCallSystemExit (java-errorprone) -> use {% rule "java/errorprone/DoNotTerminateVM" %}
+* ForLoopsMustUseBraces (java-codestyle) -> use {% rule "java/codestyle/ControlStatementBraces" %}
+* IfElseStmtsMustUseBraces (java-codestyle) -> use {% rule "java/codestyle/ControlStatementBraces" %}
+* IfStmtsMustUseBraces (java-codestyle) -> use {% rule "java/codestyle/ControlStatementBraces" %}
+* IntegerInstantiation (java-performance) -> use {% rule "java/codestyle/UnnecessaryBoxing" %} and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
+* InvalidSlf4jMessageFormat (java-errorprone) ->  use {% rule "java/errorprone/InvalidLogMessageFormat" %}
+* LoggerIsNotStaticFinal (java-errorprone)
+* LongInstantiation (java-performance) -> use {% rule "java/codestyle/UnnecessaryBoxing" %} and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
+* MIsLeadingVariableName (java-codestyle) -> use {% rule "java/codestyle/FieldNamingConventions" %}
+* MissingBreakInSwitch (java-errorprone) ->  use {% rule "java/errorprone/ImplicitSwitchFallThrough" %}
+* ModifiedCyclomaticComplexity (java-design) -> use {% rule "java/design/CyclomaticComplexity" %}
+* PositionLiteralsFirstInCaseInsensitiveComparisons (java-bestpractices) -> use {% rule "java/bestpractices/LiteralsFirstInComparisons" %}
+* PositionLiteralsFirstInComparisons (java-bestpractices) -> use {% rule "java/bestpractices/LiteralsFirstInComparisons" %}
+* ReturnEmptyArrayRatherThanNull (java-errorprone) ->  use {% rule "java/errorprone/ReturnEmptyCollectionRatherThanNull" %}
+* ShortInstantiation (java-performance) -> use {% rule "java/codestyle/UnnecessaryBoxing" %} and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
+* SimplifyBooleanAssertion (java-design) -> use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
+* SimplifyStartsWith (java-performance) -> not replaced
+* StdCyclomaticComplexity (java-design) -> use {% rule "java/design/CyclomaticComplexity" %}
+* SuspiciousConstantFieldName (java-codestyle)
+* UnnecessaryWrapperObjectCreation (java-performance) -> use the new rule {% rule "java/codestyle/UnnecessaryBoxing" %}
+* UnsynchronizedStaticDateFormatter (java-multithreading)
+* UseAssertEqualsInsteadOfAssertTrue (java-bestpractices) -> use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
+* UseAssertNullInsteadOfAssertEquals (java-bestpractices) -> use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
+* UseAssertSameInsteadOfAssertEquals (java-bestpractices) -> use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
+* UseAssertTrueInsteadOfAssertEquals (java-bestpractices) -> use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
+* VariableNamingConventions (apex-codestyle)
+* VariableNamingConventions (java-codestyle) -> use {% rule "java/codestyle/FieldNamingConventions" %} and such
+* WhileLoopsMustUseBraces (java-codestyle) -> use {% rule "java/codestyle/ControlStatementBraces" %}
 
 ### Fixed Issues
 
 * miscellaneous
-    *   [#896](https://github.com/pmd/pmd/issues/896): \[all] Use slf4j
-    *   [#3797](https://github.com/pmd/pmd/issues/3797): \[all] Use JUnit5
-    *   [#1451](https://github.com/pmd/pmd/issues/1451): \[core] RulesetFactoryCompatibility stores the whole ruleset file in memory as a string
+  * [#896](https://github.com/pmd/pmd/issues/896):   \[all] Use slf4j
+  * [#1451](https://github.com/pmd/pmd/issues/1451): \[core] RulesetFactoryCompatibility stores the whole ruleset file in memory as a string
+  * [#3797](https://github.com/pmd/pmd/issues/3797): \[all] Use JUnit5
 * ant
-    * [#4080](https://github.com/pmd/pmd/issues/4080): \[ant] Split off Ant integration into a new submodule 
+  * [#4080](https://github.com/pmd/pmd/issues/4080): \[ant] Split off Ant integration into a new submodule 
 * core
-    * [#2234](https://github.com/pmd/pmd/issues/2234): \[core] Consolidate PMD CLI into a single command
-    * [#2518](https://github.com/pmd/pmd/issues/2518): \[core] Language properties
-    * [#2873](https://github.com/pmd/pmd/issues/2873): \[core] Utility classes in pmd 7
-    * [#3203](https://github.com/pmd/pmd/issues/3203): \[core] Replace RuleViolationFactory implementations with ViolationDecorator
-    * [#3782](https://github.com/pmd/pmd/issues/3782): \[core] Language lifecycle
-    * [#3902](https://github.com/pmd/pmd/issues/3902): \[core] Violation decorators
-    * [#4035](https://github.com/pmd/pmd/issues/4035): \[core] ConcurrentModificationException in DefaultRuleViolationFactory
-    * [#4120](https://github.com/pmd/pmd/issues/4120): \[core] Explicitly name all language versions
+  * [#2234](https://github.com/pmd/pmd/issues/2234): \[core] Consolidate PMD CLI into a single command
+  * [#2518](https://github.com/pmd/pmd/issues/2518): \[core] Language properties
+  * [#2873](https://github.com/pmd/pmd/issues/2873): \[core] Utility classes in pmd 7
+  * [#3203](https://github.com/pmd/pmd/issues/3203): \[core] Replace RuleViolationFactory implementations with ViolationDecorator
+  * [#3782](https://github.com/pmd/pmd/issues/3782): \[core] Language lifecycle
+  * [#3902](https://github.com/pmd/pmd/issues/3902): \[core] Violation decorators
+  * [#4035](https://github.com/pmd/pmd/issues/4035): \[core] ConcurrentModificationException in DefaultRuleViolationFactory
+  * [#4120](https://github.com/pmd/pmd/issues/4120): \[core] Explicitly name all language versions
 * cli
-    *   [#3828](https://github.com/pmd/pmd/issues/3828): \[core] Progress reporting
-    *   [#4079](https://github.com/pmd/pmd/issues/4079): \[cli] Split off CLI implementation into a pmd-cli submodule
+  * [#3828](https://github.com/pmd/pmd/issues/3828): \[core] Progress reporting
+  * [#4079](https://github.com/pmd/pmd/issues/4079): \[cli] Split off CLI implementation into a pmd-cli submodule
 * apex-design
-    *   [#2667](https://github.com/pmd/pmd/issues/2667): \[apex] Integrate nawforce/ApexLink to build robust Unused rule
+  * [#2667](https://github.com/pmd/pmd/issues/2667): \[apex] Integrate nawforce/ApexLink to build robust Unused rule
 * java
-    * [#4317](https://github.com/pmd/pmd/issues/4317): \[java] Some AST nodes should not be TypeNodes
-    * [#4367](https://github.com/pmd/pmd/issues/4367): \[java] Move testrule TypeResTest into internal
-    * [#4359](https://github.com/pmd/pmd/issues/4359): \[java] Type resolution fails with NPE when the scope is not a type declaration
+  * [#4317](https://github.com/pmd/pmd/issues/4317): \[java] Some AST nodes should not be TypeNodes
+  * [#4359](https://github.com/pmd/pmd/issues/4359): \[java] Type resolution fails with NPE when the scope is not a type declaration
+  * [#4367](https://github.com/pmd/pmd/issues/4367): \[java] Move testrule TypeResTest into internal
 * java-bestpractices
   * [#342](https://github.com/pmd/pmd/issues/342):   \[java] AccessorMethodGeneration: Name clash with another public field not properly handled
   * [#755](https://github.com/pmd/pmd/issues/755):   \[java] AccessorClassGeneration false positive for private constructors
@@ -353,7 +362,7 @@ The following previously deprecated rules have been finally removed:
   * [#2712](https://github.com/pmd/pmd/issues/2712): \[java] SimplifyStartsWith false-positive with AssertJ
   * [#3486](https://github.com/pmd/pmd/pull/3486):   \[java] InsufficientStringBufferDeclaration: Fix NPE
 * kotlin
-    * [#419](https://github.com/pmd/pmd/issues/419): \[kotlin] Add support for Kotlin
+  * [#419](https://github.com/pmd/pmd/issues/419): \[kotlin] Add support for Kotlin
 
 ### API Changes
 
@@ -437,14 +446,14 @@ in this area:
 
 ### External Contributions
 
-*   [#1658](https://github.com/pmd/pmd/pull/1658): \[core] Node support for Antlr-based languages - [Matías Fraga](https://github.com/matifraga)
-*   [#1698](https://github.com/pmd/pmd/pull/1698): \[core] [swift] Antlr Base Parser adapter and Swift Implementation - [Lucas Soncini](https://github.com/lsoncini)
-*   [#1774](https://github.com/pmd/pmd/pull/1774): \[core] Antlr visitor rules - [Lucas Soncini](https://github.com/lsoncini)
-*   [#1877](https://github.com/pmd/pmd/pull/1877): \[swift] Feature/swift rules - [Matías Fraga](https://github.com/matifraga)
-*   [#1881](https://github.com/pmd/pmd/pull/1881): \[doc] Add ANTLR documentation - [Matías Fraga](https://github.com/matifraga)
-*   [#1882](https://github.com/pmd/pmd/pull/1882): \[swift] UnavailableFunction Swift rule - [Tomás de Lucca](https://github.com/tomidelucca)
-*   [#2830](https://github.com/pmd/pmd/pull/2830): \[apex] Apexlink POC - [Kevin Jones](https://github.com/nawforce)
-*   [#3866](https://github.com/pmd/pmd/pull/3866): \[core] Add CLI Progress Bar - [@JerritEic](https://github.com/JerritEic)
+* [#1658](https://github.com/pmd/pmd/pull/1658): \[core] Node support for Antlr-based languages - [Matías Fraga](https://github.com/matifraga) (@matifraga)
+* [#1698](https://github.com/pmd/pmd/pull/1698): \[core] [swift] Antlr Base Parser adapter and Swift Implementation - [Lucas Soncini](https://github.com/lsoncini) (@lsoncini)
+* [#1774](https://github.com/pmd/pmd/pull/1774): \[core] Antlr visitor rules - [Lucas Soncini](https://github.com/lsoncini) (@lsoncini)
+* [#1877](https://github.com/pmd/pmd/pull/1877): \[swift] Feature/swift rules - [Matías Fraga](https://github.com/matifraga) (@matifraga)
+* [#1881](https://github.com/pmd/pmd/pull/1881): \[doc] Add ANTLR documentation - [Matías Fraga](https://github.com/matifraga) (@matifraga)
+* [#1882](https://github.com/pmd/pmd/pull/1882): \[swift] UnavailableFunction Swift rule - [Tomás de Lucca](https://github.com/tomidelucca) (@tomidelucca)
+* [#2830](https://github.com/pmd/pmd/pull/2830): \[apex] Apexlink POC - [Kevin Jones](https://github.com/nawforce) (@nawforce)
+* [#3866](https://github.com/pmd/pmd/pull/3866): \[core] Add CLI Progress Bar - [@JerritEic](https://github.com/JerritEic) (@JerritEic)
 
 {% endtocmaker %}
 
