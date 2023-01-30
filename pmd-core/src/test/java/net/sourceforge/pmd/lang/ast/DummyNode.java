@@ -51,18 +51,8 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> {
     }
 
     @Override
-    public DummyNode getParent() {
-        return super.getParent();
-    }
-
-    @Override
     public void addChild(DummyNode child, int index) {
         super.addChild(child, index);
-    }
-
-    @Override
-    public DummyNode getChild(int index) {
-        return super.getChild(index);
     }
 
     @Override

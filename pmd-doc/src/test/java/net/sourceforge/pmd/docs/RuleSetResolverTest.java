@@ -15,7 +15,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.RuleSetLoader;
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.internal.util.IOUtil;
 
 class RuleSetResolverTest {
 

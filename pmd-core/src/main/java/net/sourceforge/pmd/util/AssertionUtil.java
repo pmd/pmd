@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.internal.util;
+package net.sourceforge.pmd.util;
 
 
 import java.util.Collection;
@@ -24,7 +24,7 @@ public final class AssertionUtil {
     }
 
 
-    /** @throws NullPointerException if $name */
+    /** @throws NullPointerException if any item is null */
     public static void requireContainsNoNullValue(String name, Collection<?> c) {
         int i = 0;
         for (Object o : c) {
@@ -65,7 +65,7 @@ public final class AssertionUtil {
         }
     }
 
-    public static boolean isJavaBinaryName(CharSequence name) {
+    private static boolean isJavaBinaryName(CharSequence name) {
         return name.length() > 0 && BINARY_NAME_PATTERN.matcher(name).matches();
     }
 
@@ -78,6 +78,7 @@ public final class AssertionUtil {
     }
 
 
+    /** Throws {@link IllegalStateException} if the condition is false. */
     public static void validateState(boolean condition, String failed) {
         if (!condition) {
             throw new IllegalStateException(failed);

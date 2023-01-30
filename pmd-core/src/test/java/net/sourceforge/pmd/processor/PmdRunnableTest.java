@@ -37,7 +37,6 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.internal.SystemProps;
-import net.sourceforge.pmd.internal.util.ContextedAssertionError;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -45,6 +44,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.processor.MonoThreadProcessor.MonothreadRunnable;
+import net.sourceforge.pmd.util.ContextedAssertionError;
 import net.sourceforge.pmd.util.log.MessageReporter;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;

@@ -40,12 +40,6 @@ public final class ASTIntersectionType extends AbstractJavaTypeNode
         return children(ASTClassOrInterfaceType.class);
     }
 
-
-    @Override
-    public ASTType getChild(int index) {
-        return (ASTType) super.getChild(index);
-    }
-
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);

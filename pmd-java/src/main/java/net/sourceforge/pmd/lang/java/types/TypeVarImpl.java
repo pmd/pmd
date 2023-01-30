@@ -11,9 +11,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.pcollections.PSet;
 
-import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 @SuppressWarnings("PMD.CompareObjectsWithEquals")
 abstract class TypeVarImpl implements JTypeVar {

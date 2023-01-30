@@ -10,8 +10,8 @@ import java.io.Writer;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.cli.PMDParameters;
+import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.properties.AbstractPropertySource;
-import net.sourceforge.pmd.util.IOUtil;
 
 /**
  * Abstract base class for {@link Renderer} implementations.

@@ -14,7 +14,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.internal.util.IOUtil;
 
 public class SourceCode {
 

@@ -11,8 +11,8 @@ import java.util.Map;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * A mapping of variables to types.

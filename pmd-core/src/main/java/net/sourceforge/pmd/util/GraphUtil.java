@@ -3,7 +3,7 @@
  */
 
 
-package net.sourceforge.pmd.internal;
+package net.sourceforge.pmd.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,9 +16,9 @@ import java.util.function.Function;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public final class GraphUtils {
+public final class GraphUtil {
 
-    private GraphUtils() {
+    private GraphUtil() {
 
     }
 

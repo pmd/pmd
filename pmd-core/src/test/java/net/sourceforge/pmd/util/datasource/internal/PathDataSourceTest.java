@@ -19,7 +19,7 @@ import java.util.zip.ZipOutputStream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.internal.util.IOUtil;
 
 class PathDataSourceTest {
     @TempDir

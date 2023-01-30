@@ -76,7 +76,7 @@
     </issueManagement>
 
     <properties>
-        <project.build.outputTimestamp>2022-12-31T17:22:09Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2023-01-28T09:31:52Z</project.build.outputTimestamp>
 
         <java.version>8</java.version>
 
@@ -443,22 +443,22 @@
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>6.53.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.54.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>6.53.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.54.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-jsp</artifactId>
-                            <version>6.53.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.54.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-javascript</artifactId>
-                            <version>6.53.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.54.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
                         <dependency>

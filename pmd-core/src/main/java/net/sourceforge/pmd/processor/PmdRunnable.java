@@ -64,10 +64,11 @@ abstract class PmdRunnable implements Runnable {
     public void run() throws FileAnalysisException {
         TimeTracker.initThread();
 
-        RuleSets ruleSets = getRulesets();
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING);
+            FileAnalysisListener listener = globalListener.startFileAnalysis(textFile)) {
 
-        try (FileAnalysisListener listener = globalListener.startFileAnalysis(textFile)) {
-
+            RuleSets ruleSets = getRulesets();
+            
             // Coarse check to see if any RuleSet applies to file, will need to do a finer RuleSet specific check later
             if (ruleSets.applies(textFile)) {
                 try (TextDocument textDocument = TextDocument.create(textFile);

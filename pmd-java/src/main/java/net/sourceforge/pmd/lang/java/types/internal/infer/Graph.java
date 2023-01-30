@@ -18,8 +18,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import net.sourceforge.pmd.internal.GraphUtils;
-import net.sourceforge.pmd.internal.GraphUtils.DotColor;
+import net.sourceforge.pmd.util.GraphUtil;
+import net.sourceforge.pmd.util.GraphUtil.DotColor;
 
 /**
  * A graph to walk over ivar dependencies in an efficient way.
@@ -157,7 +157,7 @@ class Graph<T> {
 
     @Override
     public String toString() {
-        return GraphUtils.toDot(
+        return GraphUtil.toDot(
             vertices,
             this::successorsOf,
             v -> DotColor.BLACK,

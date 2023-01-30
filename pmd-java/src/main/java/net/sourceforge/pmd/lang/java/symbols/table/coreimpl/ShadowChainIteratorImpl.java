@@ -10,7 +10,7 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.internal.util.IteratorUtil;
+import net.sourceforge.pmd.util.IteratorUtil;
 import net.sourceforge.pmd.util.OptionalBool;
 
 class ShadowChainIteratorImpl<S, I>

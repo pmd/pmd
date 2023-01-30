@@ -2,7 +2,7 @@ repository: pmd/pmd
 
 pmd:
     version: 7.0.0-SNAPSHOT
-    previous_version: 6.53.0
+    previous_version: 6.54.0
     date: ??-?????-2023
     release_type: major
 
