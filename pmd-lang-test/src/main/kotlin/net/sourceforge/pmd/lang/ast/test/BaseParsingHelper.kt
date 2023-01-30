@@ -4,15 +4,17 @@
 package net.sourceforge.pmd.lang.ast.test
 
 import net.sourceforge.pmd.*
+import net.sourceforge.pmd.internal.util.IOUtil
 import net.sourceforge.pmd.lang.*
-import net.sourceforge.pmd.lang.ast.*
+import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask
+import net.sourceforge.pmd.lang.ast.RootNode
+import net.sourceforge.pmd.lang.ast.SemanticErrorReporter
 import net.sourceforge.pmd.lang.document.TextDocument
 import net.sourceforge.pmd.lang.document.TextFile
 import net.sourceforge.pmd.lang.rule.XPathRule
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener
-import net.sourceforge.pmd.util.IOUtil
 import java.io.InputStream
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files

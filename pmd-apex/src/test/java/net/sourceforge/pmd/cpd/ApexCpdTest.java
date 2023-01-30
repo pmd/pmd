@@ -14,8 +14,8 @@ import java.util.Iterator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
-import net.sourceforge.pmd.util.IOUtil;
 
 class ApexCpdTest {
     private File testdir;

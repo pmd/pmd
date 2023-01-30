@@ -13,9 +13,9 @@ import java.nio.file.Path;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.BaseCloseable;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * A {@link TextFile} backed by a file in some {@link FileSystem}.

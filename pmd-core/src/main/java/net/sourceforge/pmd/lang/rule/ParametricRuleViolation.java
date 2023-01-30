@@ -10,9 +10,9 @@ import java.util.Map;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.reporting.Reportable;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * @deprecated This is internal. Clients should exclusively use {@link RuleViolation}.

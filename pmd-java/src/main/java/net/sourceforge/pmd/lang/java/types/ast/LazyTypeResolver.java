@@ -29,7 +29,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCharLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTClassLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
@@ -147,18 +146,6 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
     public JTypeMirror visitJavaNode(JavaNode node, TypingContext ctx) {
         throw new IllegalArgumentException("Not a type node:" + node);
     }
-
-
-    @Override
-    public JTypeMirror visit(ASTVariableDeclarator node, TypingContext ctx) {
-        return ts.NO_TYPE; // TODO shouldn't be a typenode (do you mean type of variable, or type of initializer?)
-    }
-
-    @Override
-    public JTypeMirror visit(ASTCompilationUnit node, TypingContext ctx) {
-        return ts.NO_TYPE; // TODO shouldn't be a typenode
-    }
-
 
     @Override
     public JTypeMirror visit(ASTFormalParameter node, TypingContext ctx) {

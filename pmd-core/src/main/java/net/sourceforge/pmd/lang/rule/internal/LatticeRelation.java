@@ -5,11 +5,11 @@
 package net.sourceforge.pmd.lang.rule.internal;
 
 import static java.util.stream.Collectors.toSet;
-import static net.sourceforge.pmd.internal.GraphUtils.DotColor;
 import static net.sourceforge.pmd.util.CollectionUtil.any;
 import static net.sourceforge.pmd.util.CollectionUtil.finish;
 import static net.sourceforge.pmd.util.CollectionUtil.map;
 import static net.sourceforge.pmd.util.CollectionUtil.toMutableList;
+import static net.sourceforge.pmd.util.GraphUtil.DotColor;
 
 import java.util.ArrayDeque;
 import java.util.Collections;
@@ -26,8 +26,8 @@ import java.util.stream.Collector;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.internal.GraphUtils;
-import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.util.AssertionUtil;
+import net.sourceforge.pmd.util.GraphUtil;
 
 /**
  * Indexes data of type {@code <V>} with keys of type {@code <K>}, where
@@ -218,7 +218,7 @@ class LatticeRelation<K, @NonNull V, C> {
     public String toString() {
         // generates a DOT representation of the lattice
         // Visualize eg at http://webgraphviz.com/
-        return GraphUtils.toDot(
+        return GraphUtil.toDot(
             nodes.values(),
             n -> n.transitiveSuccs,
             n -> n.getClass() == QueryNode.class ? DotColor.GREEN : DotColor.BLACK,

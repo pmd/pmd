@@ -20,7 +20,7 @@ import org.junit.rules.ExternalResource;
 import org.junit.rules.TestRule;
 
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.internal.util.IOUtil;
 
 public class PMDTaskTest extends AbstractAntTestHelper {
 

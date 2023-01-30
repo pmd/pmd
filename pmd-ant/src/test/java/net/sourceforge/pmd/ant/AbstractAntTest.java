@@ -19,7 +19,7 @@ import org.apache.tools.ant.ProjectHelper;
 import org.junit.jupiter.api.AfterAll;
 
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.internal.util.IOUtil;
 
 class AbstractAntTest {
     protected Project project;

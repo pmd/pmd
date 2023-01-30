@@ -10,11 +10,11 @@ import java.util.Map;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * The output of {@link Parser#parse(ParserTask)}.

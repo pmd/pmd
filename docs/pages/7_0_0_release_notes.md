@@ -247,6 +247,7 @@ The following previously deprecated rules have been finally removed:
     * [#4080](https://github.com/pmd/pmd/issues/4080): \[ant] Split off Ant integration into a new submodule 
 * core
     * [#2234](https://github.com/pmd/pmd/issues/2234): \[core] Consolidate PMD CLI into a single command
+    * [#2873](https://github.com/pmd/pmd/issues/2873): \[core] Utility classes in pmd 7
     * [#3203](https://github.com/pmd/pmd/issues/3203): \[core] Replace RuleViolationFactory implementations with ViolationDecorator
     * [#3902](https://github.com/pmd/pmd/issues/3902): \[core] Violation decorators
     * [#4035](https://github.com/pmd/pmd/issues/4035): \[core] ConcurrentModificationException in DefaultRuleViolationFactory
@@ -255,6 +256,9 @@ The following previously deprecated rules have been finally removed:
     *   [#4079](https://github.com/pmd/pmd/issues/4079): \[cli] Split off CLI implementation into a pmd-cli submodule
 * apex-design
     *   [#2667](https://github.com/pmd/pmd/issues/2667): \[apex] Integrate nawforce/ApexLink to build robust Unused rule
+* java
+    * [#4317](https://github.com/pmd/pmd/issues/4317): \[java] Some AST nodes should not be TypeNodes
+    * [#4367](https://github.com/pmd/pmd/issues/4367): \[java] Move testrule TypeResTest into internal
 * java-bestpractices
     * [#342](https://github.com/pmd/pmd/issues/342): \[java] AccessorMethodGeneration: Name clash with another public field not properly handled
     * [#755](https://github.com/pmd/pmd/issues/755): \[java] AccessorClassGeneration false positive for private constructors
@@ -351,6 +355,19 @@ The following previously deprecated rules have been finally removed:
   This involves classes in package {% jdoc_package ant::ant %}. The ant CPDTask class `net.sourceforge.pmd.cpd.CPDTask`
   has been moved into the same package {% jdoc_package ant::ant %}. You'll need to update your taskdef entries in your
   build.xml files with the FQCN {% jdoc !!ant::ant.CPDTask %} if you use it anywhere.
+
+* Utility classes in {% jdoc_package core::util %}, that have previously marked as `@InternalApi` have been finally
+  moved to {% jdoc_package core::internal.util %}. This includes ClasspathClassLoader, FileFinder, FileUtil, and
+  IOUtil.
+
+* The following utility classes in {% jdoc_package core::util %} are now considered public API:
+  * {% jdoc core::util.AssertionUtil %}
+  * {% jdoc core::util.CollectionUtil %}
+  * {% jdoc core::util.ContextedAssertionError %}
+  * {% jdoc core::util.ContextedStackOverflowError %}
+  * {% jdoc core::util.GraphUtil %}
+  * {% jdoc core::util.IteratorUtil %}
+  * {% jdoc core::util.StringUtil %}
 
 #### Metrics framework
 

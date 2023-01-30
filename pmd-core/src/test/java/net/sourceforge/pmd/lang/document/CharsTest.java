@@ -24,8 +24,8 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
+import net.sourceforge.pmd.util.IteratorUtil;
 
 /**
  *
