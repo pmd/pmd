@@ -277,6 +277,7 @@ The following previously deprecated rules have been finally removed:
 * AvoidPrefixingMethodParameters (java-codestyle) -> use {% rule "java/codestyle/FormalParameterNamingConventions" %}
 * AvoidUsingShortType (java-performance) -> not replaced
 * BadComparison (java-errorprone) -> use {% rule "java/errorprone/ComparisonWithNaN" %}
+* BeanMembersShouldSerialize (java-errorprone) -> use {% rule java/errorprone/NonSerializableClass %}
 * BooleanInstantiation (java-performance) -> use {% rule "java/codestyle/UnnecessaryBoxing" %} and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
 * ByteInstantiation (java-performance) -> use {% rule "java/codestyle/UnnecessaryBoxing" %} and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
 * CloneThrowsCloneNotSupportedException (java-errorprone) -> not replaced
@@ -285,6 +286,17 @@ The following previously deprecated rules have been finally removed:
 * DoNotCallSystemExit (java-errorprone) -> use {% rule "java/errorprone/DoNotTerminateVM" %}
 * DontImportJavaLang (java-codestyle) -> use {% rule java/codestyle/UnnecessaryImport %}
 * DuplicateImports (java-codestyle) -> use {% rule java/codestyle/UnnecessaryImport %}
+* EmptyFinallyBlock (java-errorprone) -> use {% rule java/codestyle/EmptyControlStatement %}
+* EmptyIfStmt (java-errorprone) -> use {% rule java/codestyle/EmptyControlStatement %}
+* EmptyInitializer (java-errorprone) -> use {% rule java/codestyle/EmptyControlStatement %}
+* EmptyStatementBlock (java-errorprone) -> use {% rule java/codestyle/EmptyControlStatement %}
+* EmptyStatementNotInLoop (java-errorprone) -> use {% rule java/codestyle/UnnecessarySemicolon %}
+* EmptySwitchStatements (java-errorprone) -> use {% rule java/codestyle/EmptyControlStatement %}
+* EmptySynchronizedBlock (java-errorprone) -> use {% rule java/codestyle/EmptyControlStatement %}
+* EmptyTryBlock (java-errorprone) -> use {% rule java/codestyle/EmptyControlStatement %}
+* EmptyWhileStmt (java-errorprone) -> use {% rule java/codestyle/EmptyControlStatement %}
+* ExcessiveClassLength (java-design) -> use {% rule java/design/NcssCount %}
+* ExcessiveMethodLength (java-design) -> use {% rule java/design/NcssCount %}
 * ForLoopsMustUseBraces (java-codestyle) -> use {% rule "java/codestyle/ControlStatementBraces" %}
 * IfElseStmtsMustUseBraces (java-codestyle) -> use {% rule "java/codestyle/ControlStatementBraces" %}
 * IfStmtsMustUseBraces (java-codestyle) -> use {% rule "java/codestyle/ControlStatementBraces" %}
