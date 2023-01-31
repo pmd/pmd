@@ -19,6 +19,42 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Release Candidates
+
+PMD 7.0.0 is finally almost ready. In order to ease the upgrade from PMD 6 to 7, we are going to ship a couple of
+release candidates. These are official pre-release versions available on GitHub and Maven Central and can be used
+as usual (e.g. as a dependency).
+
+Using the release candidate is also a good opportunity to provide feedback via our
+[issue tracker](https://github.com/pmd/pmd/issues/new/choose).
+
+#### New official logo
+
+Many of you probably have already seen the new logo, but now it's time to actually ship it. The new logo
+was long ago decided (see [#1663](https://github.com/pmd/pmd/issues/1663)).
+We decided it's time to have a modernized logo and get rid of the gun. This allows to include
+the logo anywhere without offense.
+
+
+![New PMD Logo](images/logo/pmd-logo-300px.png)
+
+#### Revamped Java module
+
+The Java grammar has been refactored substantially in order to make it easier to maintain and more correct
+regarding the Java Language Specification. Changing the grammar entails a changed AST and therefore changed
+rules. The PMD built-in rules have all been upgraded and many bugs have been fixed on the way.
+
+The type resolution framework has been rewritten from scratch and is now more accurate.
+
+Some first results of the Java AST changes are for now documented in the Wiki:
+[Java clean changes](https://github.com/pmd/pmd/wiki/Java_clean_changes).
+
+TODO: Take infos from <http://docs.pmd-code.org/pmd-doc-7.0.0-SNAPSHOT/pmd_next_major_development.html#java>
+
+Contributors: [Clément Fournier](https://github.com/oowekyala) (@oowekyala),
+  [Andreas Dangel](https://github.com/adangel) (@adangel),
+  [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
+
 #### Revamped Command Line Interface
 
 PMD now ships with a unified Command Line Interface for both Linux/Unix and Windows. Instead of having a collection of scripts 
@@ -58,7 +94,7 @@ or even better, omit using `-d` / `--dir` and simply pass the sources at the end
 pmd check -R ruleset.xml src
 ```
 
-Multiple source directories can passed, such as:
+Multiple source directories can be passed, such as:
 ```shell
 pmd check -R ruleset.xml src/main/java src/test/java
 ```
@@ -71,10 +107,10 @@ pmd cpd --minimum-tokens 100 src/main/java
 Additionally, the CLI for the `check` command has been enhanced with a progress bar, which interactively displays the
 current progress of the analysis.
 
+![Demo](docs/images/userdocs/pmd-demo.gif)
 TODO screenshot (take it right before releasing, because other changes to the CLI will occur until then)
 
 This can be disabled with the `--no-progress` flag.
-
 
 Finally, we now provide a completion script for Bash/Zsh to further help daily usage.
 This script can be found under `shell/pmd-completion.sh` in the binary distribution.
@@ -84,11 +120,14 @@ To use it, edit your `~/.bashrc` / `~/.zshrc` file and add the following line:
 source *path_to_pmd*/shell/pmd-completion.sh
 ```
 
+Contributors: [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
+
 #### Full Antlr support
 
-Languages backed by an Antlr grammar are now fully supported. This means, it's now possible not only to use Antlr grammars for CPD,
-but we can actually build full-fledged PMD rules for them as well. Both the traditional Java visitor rules, and the simpler
-XPath rules are available to users.
+Languages backed by an [Antlr](https://www.antlr.org/) grammar are now fully supported. This means, it's now
+possible not only to use Antlr grammars for CPD, but we can actually build full-fledged PMD rules for them as well.
+Both the traditional Java visitor rules, and the simpler XPath rules are available to users. This allows
+to leverage existing grammars.
 
 We expect this to enable both our dev team and external contributors to largely extend PMD usage for more languages.
 
@@ -106,7 +145,9 @@ starting with PMD 7.
 * {% rule "swift/bestpractices/UnavailableFunction" %} (`swift-bestpractices`) flags any function throwing a `fatalError` not marked as
   `@available(*, unavailable)` to ensure no calls are actually performed in the codebase.
 
-Contributors: [@lsoncini](https://github.com/lsoncini), [@matifraga](https://github.com/matifraga), [@tomidelucca](https://github.com/tomidelucca)
+Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
+  [Mati Fraga](https://github.com/matifraga) (@matifraga),
+  [Tomi De Lucca](https://github.com/tomidelucca) (@tomidelucca)
 
 #### Kotlin support (experimental)
 
@@ -124,7 +165,8 @@ We are shipping the following rules:
   or `hashCode` overridden, but not both. This leads to unexpected behavior once instances of such classes
   are used in collections (Lists, HashMaps, ...).
 
-Contributors: [@jborgers](https://github.com/jborgers), [@stokpop](https://github.com/stokpop)
+Contributors: [Jeroen Borgers](https://github.com/jborgers) (@jborgers),
+  [Peter Paul Bakker](https://github.com/stokpop) (@stokpop)
 
 #### XPath 3.1 support
 
@@ -137,7 +179,7 @@ Notable changes:
 * Refer to [the Saxonica documentation](https://www.saxonica.com/html/documentation/expressions/xpath31new.html) for
   an introduction to new features in XPath 3.1.
 
-#### Node stream API
+#### Node stream API for AST traversal
 
 This version includes a powerful API to navigate trees, similar in usage to the Java 8 Stream API:
 ```java
@@ -157,6 +199,7 @@ In all cases, they should be more efficient and more convenient.
 
 See {% jdoc core::lang.ast.NodeStream %} for more details.
 
+Contributors: [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
 
 #### JavaScript support
 
@@ -165,18 +208,29 @@ The language module registers a couple of different versions. The latest version
 new constructs (see [Rhino](https://github.com/mozilla/rhino)]), is the default. This should be fine for most
 use cases.
 
+#### API
+
+The API of PMD has been growing over the years and needed some cleanup. The goal is, to
+have a clear separation between a well-defined API and the implementation, which is internal.
+This should help us in future development.
+
+#### Compatibility and migration notes
+
+TODO - what to look out for. Hints and known problems.
+
 #### New Rules
 
 ##### Apex
-
-* The Apex rule {% rule "apex/design/UnusedMethod" %} finds unused methods in your code.
+* {% rule "apex/design/UnusedMethod" %} finds unused methods in your code.
 
 ##### Java
-
 * {% rule "java/codestyle/UnnecessaryBoxing" %} reports boxing and unboxing conversions that may be made implicit.
 
-##### Swift
+##### Kotlin
+* {% rule kotlin/bestpractices/FunctionNameTooShort %}
+* {% rule kotlin/errorprone/OverrideBothEqualsAndHashcode %}
 
+##### Swift
 * {% rule swift/bestpractices/ProhibitedInterfaceBuilder %}
 * {% rule swift/bestpractices/UnavailableFunction %}
 * {% rule swift/errorprone/ForceCast %}
