@@ -86,7 +86,7 @@ class AbruptCompletionTests extends BaseParserTest {
 
 
     @Test
-    public void testWhileStmt() {
+    void testWhileStmt() {
         assertAll(
             canCompleteNormally("while(foo) { return; }"),
             canCompleteNormally("while(foo) { break; }"),

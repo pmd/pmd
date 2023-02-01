@@ -14,7 +14,7 @@ Rules which enforce generally accepted best practices.
           language="kotlin"
           message="Function names should have non-cryptic and clear names."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_bestpractices.html#functionametooshort">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_bestpractices.html#functionnametooshort">
         <description>
             Function names should be easy to understand and describe the intention. Makes developers happy.
         </description>

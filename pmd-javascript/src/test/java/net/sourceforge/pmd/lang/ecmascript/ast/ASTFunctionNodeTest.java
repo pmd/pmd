@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 class ASTFunctionNodeTest extends EcmascriptParserTestBase {
 
     @Test
-    public void testGetBody() {
+    void testGetBody() {
         ASTAstRoot node = js.parse("function foo() { var a = 'a'; }");
         ASTFunctionNode fn = node.getFirstDescendantOfType(ASTFunctionNode.class);
         assertFalse(fn.isClosure());

@@ -191,7 +191,7 @@ class CpdCliTest extends BaseCliTest {
      * See: https://sourceforge.net/p/pmd/bugs/1178/
      */
     @Test
-    public void testSkipLexicalErrors() throws Exception {
+    void testSkipLexicalErrors() throws Exception {
         runCli(VIOLATIONS_FOUND,
                "--minimum-tokens", "10",
                "-d", BASE_RES_PATH + "badandgood/",
@@ -205,21 +205,21 @@ class CpdCliTest extends BaseCliTest {
 
 
     @Test
-    public void jsShouldFindDuplicatesWithDifferentFileExtensions() throws Exception {
+    void jsShouldFindDuplicatesWithDifferentFileExtensions() throws Exception {
         runCli(VIOLATIONS_FOUND, "--minimum-tokens", "5", "--language", "js",
                "-d", BASE_RES_PATH + "tsFiles/File1.ts", BASE_RES_PATH + "tsFiles/File2.ts")
             .checkStdOut(containsString("Found a 9 line (32 tokens) duplication in the following files"));
     }
 
     @Test
-    public void jsShouldFindNoDuplicatesWithDifferentFileExtensions() throws Exception {
+    void jsShouldFindNoDuplicatesWithDifferentFileExtensions() throws Exception {
         runCli(OK, "--minimum-tokens", "5", "--language", "js",
                "-d", BASE_RES_PATH + "tsFiles/")
             .checkStdOut(emptyString());
     }
 
     @Test
-    public void renderEmptyReportXml() throws Exception {
+    void renderEmptyReportXml() throws Exception {
         runCli(OK, "--minimum-tokens", "5", "--language", "js",
                "-f", "xml",
                "-d", BASE_RES_PATH + "tsFiles/")

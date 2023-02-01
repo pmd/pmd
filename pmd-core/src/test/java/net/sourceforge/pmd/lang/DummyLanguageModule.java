@@ -12,12 +12,12 @@ import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
+import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.document.TextRegion;
-import net.sourceforge.pmd.processor.PmdRunnableTest;
 import net.sourceforge.pmd.reporting.ViolationDecorator;
 
 /**
@@ -27,6 +27,11 @@ public class DummyLanguageModule extends BaseLanguageModule {
 
     public static final String NAME = "Dummy";
     public static final String TERSE_NAME = "dummy";
+
+    public static final String TEST_MESSAGE_SEMANTIC_ERROR = "An error occurred!";
+    private static final String PARSER_REPORTS_SEMANTIC_ERROR = "1.9-semantic_error";
+    private static final String THROWS_SEMANTIC_ERROR = "1.9-throws_semantic_error";
+    private static final String THROWS_ASSERTION_ERROR = "1.9-throws";
 
     public DummyLanguageModule() {
         super(NAME, null, TERSE_NAME, "dummy");
@@ -39,11 +44,26 @@ public class DummyLanguageModule extends BaseLanguageModule {
         addVersion("1.6", new Handler(), "6");
         addDefaultVersion("1.7", new Handler(), "7");
         addVersion("1.8", new Handler(), "8");
-        PmdRunnableTest.registerCustomVersions(this::addVersion);
+
+        addVersion(THROWS_ASSERTION_ERROR, new HandlerWithParserThatThrows());
+        addVersion(PARSER_REPORTS_SEMANTIC_ERROR, new HandlerWithParserThatReportsSemanticError());
+        addVersion(THROWS_SEMANTIC_ERROR, new HandlerWithParserThatThrowsSemanticError());
     }
 
     public static DummyLanguageModule getInstance() {
         return (DummyLanguageModule) Objects.requireNonNull(LanguageRegistry.PMD.getLanguageByFullName(NAME));
+    }
+
+    public static LanguageVersion versionWithParserThatThrowsAssertionError() {
+        return DummyLanguageModule.getInstance().getVersion(THROWS_ASSERTION_ERROR);
+    }
+
+    public static LanguageVersion getVersionWithParserThatThrowsSemanticError() {
+        return DummyLanguageModule.getInstance().getVersion(THROWS_SEMANTIC_ERROR);
+    }
+
+    public static LanguageVersion versionWithParserThatReportsSemanticError() {
+        return DummyLanguageModule.getInstance().getVersion(PARSER_REPORTS_SEMANTIC_ERROR);
     }
 
     public static DummyRootNode parse(String code) {
@@ -132,4 +152,36 @@ public class DummyLanguageModule extends BaseLanguageModule {
         return root;
     }
 
+    private static class HandlerWithParserThatThrowsSemanticError extends Handler {
+
+        @Override
+        public Parser getParser() {
+            return task -> {
+                RootNode root = super.getParser().parse(task);
+                throw task.getReporter().error(root, TEST_MESSAGE_SEMANTIC_ERROR);
+            };
+        }
+    }
+
+    private static class HandlerWithParserThatThrows extends Handler {
+
+        @Override
+        public Parser getParser() {
+            return task -> {
+                throw new AssertionError("test error while parsing");
+            };
+        }
+    }
+
+    private static class HandlerWithParserThatReportsSemanticError extends Handler {
+
+        @Override
+        public Parser getParser() {
+            return task -> {
+                RootNode root = super.getParser().parse(task);
+                task.getReporter().error(root, TEST_MESSAGE_SEMANTIC_ERROR);
+                return root;
+            };
+        }
+    }
 }

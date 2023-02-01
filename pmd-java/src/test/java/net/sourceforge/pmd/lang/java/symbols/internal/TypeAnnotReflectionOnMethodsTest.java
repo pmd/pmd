@@ -25,12 +25,12 @@ import net.sourceforge.pmd.lang.java.types.JMethodSig;
 /**
  *
  */
-public class TypeAnnotReflectionOnMethodsTest {
+class TypeAnnotReflectionOnMethodsTest {
 
 
     @ParameterizedTest
     @EnumSource
-    public void testTypeAnnotOnParameter(SymImplementation impl) {
+    void testTypeAnnotOnParameter(SymImplementation impl) {
         JClassType sym = impl.getDeclaration(ClassWithTypeAnnotationsOnMethods.class);
 
         /*
@@ -54,7 +54,7 @@ public class TypeAnnotReflectionOnMethodsTest {
 
     @ParameterizedTest
     @EnumSource
-    public void testTypeAnnotOnReturn(SymImplementation impl) {
+    void testTypeAnnotOnReturn(SymImplementation impl) {
         JClassType sym = impl.getDeclaration(ClassWithTypeAnnotationsOnMethods.class);
 
         /*
@@ -76,7 +76,7 @@ public class TypeAnnotReflectionOnMethodsTest {
 
     @ParameterizedTest
     @EnumSource
-    public void testTypeAnnotOnThrows(SymImplementation impl) {
+    void testTypeAnnotOnThrows(SymImplementation impl) {
         JClassType sym = impl.getDeclaration(ClassWithTypeAnnotationsOnMethods.class);
 
         /*
@@ -92,7 +92,7 @@ public class TypeAnnotReflectionOnMethodsTest {
 
     @ParameterizedTest
     @EnumSource
-    public void testTypeAnnotOnTParam(SymImplementation impl) {
+    void testTypeAnnotOnTParam(SymImplementation impl) {
         JClassType sym = impl.getDeclaration(ClassWithTypeAnnotationsOnMethods.class);
 
         /*
@@ -121,7 +121,7 @@ public class TypeAnnotReflectionOnMethodsTest {
 
     @ParameterizedTest
     @EnumSource
-    public void testTypeAnnotOnTParamBound(SymImplementation impl) {
+    void testTypeAnnotOnTParamBound(SymImplementation impl) {
         JClassType sym = impl.getDeclaration(ClassWithTypeAnnotationsOnMethods.class);
 
         /*
@@ -157,7 +157,7 @@ public class TypeAnnotReflectionOnMethodsTest {
 
     @ParameterizedTest
     @EnumSource
-    public void testTypeAnnotOnReceiver(SymImplementation impl) {
+    void testTypeAnnotOnReceiver(SymImplementation impl) {
         JClassType sym = impl.getDeclaration(ClassWithTypeAnnotationsOnMethods.class);
 
         /*

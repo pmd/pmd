@@ -5,12 +5,12 @@
 package net.sourceforge.pmd.lang.java.types;
 
 import static net.sourceforge.pmd.lang.java.types.InvocationMatcher.parse;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.java.BaseParserTest;
@@ -81,10 +81,9 @@ class InvocationMatcherTest extends BaseParserTest {
 
         parse("_#_(int,int)"); // does not fail
         IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> parse("_#_(int, int)"));
-        MatcherAssert.assertThat(e.getMessage(), equalTo("Expected type at index 8:\n"
-                                                             + "    \"_#_(int, int)\"\n"
-                                                             + "             ^\n"));
-
+        assertThat(e.getMessage(), equalTo("Expected type at index 8:\n"
+                                                 + "    \"_#_(int, int)\"\n"
+                                                 + "             ^\n"));
     }
 
     private void assertMatch(InvocationNode call, String sig) {

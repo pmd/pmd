@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.cpd;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -14,14 +14,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.util.Predicate;
 
-public class CPDReportTest {
+class CPDReportTest {
 
     @Test
-    public void testFilterMatches() {
+    void testFilterMatches() {
         List<Match> originalMatches = Arrays.asList(
                 createMatch("file1.java", "file2.java", 1),
                 createMatch("file1.java", "file3.java", 2),
