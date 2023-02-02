@@ -248,8 +248,10 @@ The following previously deprecated rules have been finally removed:
     * [#4080](https://github.com/pmd/pmd/issues/4080): \[ant] Split off Ant integration into a new submodule 
 * core
     * [#2234](https://github.com/pmd/pmd/issues/2234): \[core] Consolidate PMD CLI into a single command
+    * [#2518](https://github.com/pmd/pmd/issues/2518): \[core] Language properties
     * [#2873](https://github.com/pmd/pmd/issues/2873): \[core] Utility classes in pmd 7
     * [#3203](https://github.com/pmd/pmd/issues/3203): \[core] Replace RuleViolationFactory implementations with ViolationDecorator
+    * [#3782](https://github.com/pmd/pmd/issues/3782): \[core] Language lifecycle
     * [#3902](https://github.com/pmd/pmd/issues/3902): \[core] Violation decorators
     * [#4035](https://github.com/pmd/pmd/issues/4035): \[core] ConcurrentModificationException in DefaultRuleViolationFactory
 * cli
@@ -398,6 +400,23 @@ The metrics framework has been made simpler and more general.
   * `net.sourceforge.pmd.testframework.TestDescriptor`
 * Rule tests, that use {% jdoc test::testframework.SimpleAggregatorTst %} or {% jdoc test::testframework.PmdRuleTst %} work as before without change, but use
   now JUnit5 under the hood. If you added additional JUnit4 tests to your rule test classes, then you'll need to upgrade them to use JUnit5.
+
+#### Language Modules
+
+In order to support language properties and provide a proper lifecycle for languages, there were some changes needed
+in this area:
+
+* The class `BaseLanguageModule` has been removed.
+* Individual language modules should now extend {% jdoc core::lang.impl.SimpleLanguageModuleBase %}. Like before
+  this class is registered via the service loader mechanism via `META-INF/services/net.sourceforge.pmd.lang.Language`.
+* The implementation of a language version handler has been simplified by providing default implementations for
+  most aspects. The minimum requirement is now to provide an own parser for the language version handler.
+* Language modules can define [custom language properties](pmd_languages_configuration.html)
+  which can be set via environment variables. This allows
+  to add and use language specific configuration options without the need to change pmd-core.
+* For each PMD analysis run a new `LanguageProcessor` instance is created and destroyed afterwards.  This allows
+  to store global information without using static fields. This enables the implementation of multifile analysis.
+* Rules have access to this language processor instance during initialization.
 
 ### External Contributions
 
