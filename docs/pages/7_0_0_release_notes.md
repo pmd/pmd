@@ -242,6 +242,7 @@ The following previously deprecated rules have been finally removed:
 
 * miscellaneous
     *   [#896](https://github.com/pmd/pmd/issues/896): \[all] Use slf4j
+    *   [#3797](https://github.com/pmd/pmd/issues/3797): \[all] Use JUnit5
     *   [#1451](https://github.com/pmd/pmd/issues/1451): \[core] RulesetFactoryCompatibility stores the whole ruleset file in memory as a string
 * ant
     * [#4080](https://github.com/pmd/pmd/issues/4080): \[ant] Split off Ant integration into a new submodule 
@@ -388,6 +389,15 @@ The metrics framework has been made simpler and more general.
 * This makes it so, that {% jdoc core::lang.metrics.LanguageMetricsProvider %} does not need type parameters. It can just return a `Set<Metric<?, ?>>` to list available metrics.
 
 * {% jdoc_old core::lang.metrics.Signature %}s, their implementations, and the interface `SignedNode` have been removed. Node streams allow replacing their usages very easily.
+
+#### Testing framework
+
+* PMD 7 has been upgraded to use JUnit 5 only. That means, that JUnit4 related classes have been removed, namely
+  * `net.sourceforge.pmd.testframework.PMDTestRunner`
+  * `net.sourceforge.pmd.testframework.RuleTestRunner`
+  * `net.sourceforge.pmd.testframework.TestDescriptor`
+* Rule tests, that use {% jdoc test::testframework.SimpleAggregatorTst %} or {% jdoc test::testframework.PmdRuleTst %} work as before without change, but use
+  now JUnit5 under the hood. If you added additional JUnit4 tests to your rule test classes, then you'll need to upgrade them to use JUnit5.
 
 ### External Contributions
 

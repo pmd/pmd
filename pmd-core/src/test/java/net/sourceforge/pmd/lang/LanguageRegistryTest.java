@@ -16,7 +16,7 @@ class LanguageRegistryTest {
     private final LanguageRegistry languageRegistry = LanguageRegistry.PMD;
 
     @Test
-    public void getDefaultVersionLanguageTest() {
+    void getDefaultVersionLanguageTest() {
         Language dummy = languageRegistry.getLanguageById("dummy");
         LanguageVersion dummy12 = dummy.getVersion("1.2");
         assertNotNull(dummy12);
@@ -28,7 +28,7 @@ class LanguageRegistryTest {
     }
 
     @Test
-    public void getLanguageVersionByAliasTest() {
+    void getLanguageVersionByAliasTest() {
         Language dummy = languageRegistry.getLanguageById("dummy");
 
         LanguageVersion dummy17 = dummy.getVersion("1.7");

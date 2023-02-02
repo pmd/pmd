@@ -297,24 +297,6 @@
                         </statelessTestsetReporter>
                     </configuration>
                     <dependencies>
-                        <!-- Junit5 Platform Engine for Junit 3 & 4 -->
-                        <dependency>
-                            <groupId>org.junit.vintage</groupId>
-                            <artifactId>junit-vintage-engine</artifactId>
-                            <version>${junit5.version}</version>
-                        </dependency>
-                        <!-- JUnit5 Platform Engine for Junit 5 -->
-                        <dependency>
-                            <groupId>org.junit.jupiter</groupId>
-                            <artifactId>junit-jupiter-engine</artifactId>
-                            <version>${junit5.version}</version>
-                        </dependency>
-                        <!-- Junit5 Platform Engine for Kotlin Tests -->
-                        <dependency>
-                            <groupId>io.kotest</groupId>
-                            <artifactId>kotest-runner-junit5-jvm</artifactId>
-                            <version>${kotest.version}</version>
-                        </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-build-tools-config</artifactId>
@@ -415,11 +397,27 @@
                     <version>${pmd.plugin.version}</version>
                     <executions>
                         <execution>
+                            <id>pmd-main</id>
                             <phase>verify</phase>
                             <goals>
                                 <goal>check</goal>
                                 <goal>cpd-check</goal>
                             </goals>
+                        </execution>
+                        <execution>
+                            <id>pmd-test</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>pmd</goal>
+                                <goal>check</goal>
+                            </goals>
+                            <configuration>
+                                <targetDirectory>${project.build.directory}/pmdTest/</targetDirectory>
+                                <includeTests>true</includeTests>
+                                <rulesets>
+                                    <ruleset>/net/sourceforge/pmd/pmd-test-dogfood-config.xml</ruleset>
+                                </rulesets>
+                            </configuration>
                         </execution>
                     </executions>
                     <configuration>
@@ -720,11 +718,6 @@
                 <version>${ant.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.ant</groupId>
-                <artifactId>ant-testutil</artifactId>
-                <version>${ant.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>com.beust</groupId>
                 <artifactId>jcommander</artifactId>
                 <version>1.48</version> <!-- 1.48 is the latest version compatible with java7 -->
@@ -904,12 +897,6 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-            <dependency>
-                <groupId>pl.pragmatists</groupId>
-                <artifactId>JUnitParams</artifactId>
-                <version>1.1.1</version>
-                <scope>test</scope>
-            </dependency>
 
             <dependency>
                 <groupId>org.mockito</groupId>
@@ -962,12 +949,24 @@
                 <artifactId>kotlin-test-junit</artifactId>
                 <version>${kotlin.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>junit</groupId>
+                        <artifactId>junit</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>io.kotest</groupId>
                 <artifactId>kotest-runner-junit5-jvm</artifactId>
                 <version>${kotest.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>junit</groupId>
+                        <artifactId>junit</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>io.kotest</groupId>

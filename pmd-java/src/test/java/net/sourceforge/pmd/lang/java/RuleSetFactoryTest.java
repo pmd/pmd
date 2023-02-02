@@ -2,19 +2,24 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.lang.java;
 
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import net.sourceforge.pmd.AbstractRuleSetFactoryTest;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSetLoader;
 
 /**
  * Test java's rulesets
  */
-public class RuleSetFactoryTest extends AbstractRuleSetFactoryTest {
+class RuleSetFactoryTest extends AbstractRuleSetFactoryTest {
 
     @Test
-    public void testExclusionOfUselessParantheses() {
+    void testExclusionOfUselessParantheses() {
         RuleSet ruleset = new RuleSetLoader().loadFromString("",
                                                              "<?xml version=\"1.0\"?>\n" + "<ruleset name=\"Custom ruleset for tests\"\n"
                         + "    xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n"

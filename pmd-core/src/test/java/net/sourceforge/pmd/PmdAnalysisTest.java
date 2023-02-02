@@ -38,7 +38,7 @@ import net.sourceforge.pmd.util.log.internal.NoopReporter;
 /**
  * @author Clément Fournier
  */
-public class PmdAnalysisTest {
+class PmdAnalysisTest {
 
     @Test
     void testPmdAnalysisWithEmptyConfig() {
@@ -167,8 +167,8 @@ public class PmdAnalysisTest {
         }
     }
 
-    public static class TestRule extends AbstractRule {
-        public TestRule() {
+    private static class TestRule extends AbstractRule {
+        TestRule() {
             setLanguage(Dummy2LanguageModule.getInstance());
             setMessage("dummy 2 test rule");
         }

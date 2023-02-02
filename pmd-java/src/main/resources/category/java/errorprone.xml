@@ -3033,6 +3033,7 @@ public class Foo {
 The method name and return type are suspiciously close to hashCode(), which may denote an intention
 to override the hashCode() method.
         </description>
+        <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
@@ -3047,7 +3048,6 @@ to override the hashCode() method.
                 </value>
             </property>
         </properties>
-        <priority>3</priority>
         <example>
 <![CDATA[
 public class Foo {

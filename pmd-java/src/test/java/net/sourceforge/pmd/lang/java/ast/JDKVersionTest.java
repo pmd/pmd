@@ -33,7 +33,7 @@ class JDKVersionTest extends BaseJavaTreeDumpTest {
 
     // enum keyword/identifier
     @Test
-    public void testEnumAsKeywordShouldFailWith14() {
+    void testEnumAsKeywordShouldFailWith14() {
         assertThrows(ParseException.class, () -> java5.parseResource("jdk14_enum.java"));
     }
 
@@ -89,17 +89,17 @@ class JDKVersionTest extends BaseJavaTreeDumpTest {
     }
 
     @Test
-    public void testGenericCtorCalls() {
+    void testGenericCtorCalls() {
         java5.parseResource("java5/generic_ctors.java");
     }
 
     @Test
-    public void testGenericSuperCtorCalls() {
+    void testGenericSuperCtorCalls() {
         java5.parseResource("java5/generic_super_ctor.java");
     }
 
     @Test
-    public void testAnnotArrayInitializer() {
+    void testAnnotArrayInitializer() {
         java5.parseResource("java5/annotation_array_init.java");
     }
 
@@ -237,7 +237,7 @@ class JDKVersionTest extends BaseJavaTreeDumpTest {
     }
 
     @Test
-    public final void testTypeAnnotations() {
+    void testTypeAnnotations() {
         java8.parseResource("java8/type_annotations.java");
     }
 

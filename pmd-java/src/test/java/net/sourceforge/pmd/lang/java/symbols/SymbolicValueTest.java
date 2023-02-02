@@ -4,51 +4,54 @@
 
 package net.sourceforge.pmd.lang.java.symbols;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Arrays;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymArray;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
-public class SymbolicValueTest {
+class SymbolicValueTest {
 
     static final TypeSystem TS = JavaParsingHelper.TEST_TYPE_SYSTEM;
-    
+
     @Test
-    public void testSymValueEquality() {
-        Assert.assertEquals("Array of strings",
-                            symValueOf(new String[] {"ddd", "eee"}),
-                            ofArray(symValueOf("ddd"), symValueOf("eee")));
+    void testSymValueEquality() {
+        assertEquals(symValueOf(new String[] {"ddd", "eee"}),
+                     ofArray(symValueOf("ddd"), symValueOf("eee")),
+                     "Array of strings");
 
-        Assert.assertEquals("Array of booleans",
-                            symValueOf(new boolean[] {true}),
-                            symValueOf(new boolean[] {true}));
+        assertEquals(symValueOf(new boolean[] {true}),
+                     symValueOf(new boolean[] {true}),
+                     "Array of booleans");
 
-        Assert.assertNotEquals("Array of booleans",
-                               symValueOf(new boolean[] {true}),
-                               symValueOf(new boolean[] {false}));
+        assertNotEquals(symValueOf(new boolean[] {true}),
+                        symValueOf(new boolean[] {false}),
+                        "Array of booleans");
 
-        Assert.assertTrue("valueEquals for int[]",
-                          symValueOf(new int[] {10, 11}).valueEquals(new int[] {10, 11}));
+        assertTrue(symValueOf(new int[] {10, 11}).valueEquals(new int[] {10, 11}),
+                   "valueEquals for int[]");
 
-        Assert.assertTrue("valueEquals for boolean[]",
-                          symValueOf(new boolean[] {false}).valueEquals(new boolean[] {false}));
+        assertTrue(symValueOf(new boolean[] {false}).valueEquals(new boolean[] {false}),
+                   "valueEquals for boolean[]");
 
-        Assert.assertFalse("valueEquals for int[]",
-                           symValueOf(new int[] {10, 11}).valueEquals(new int[] {10}));
+        assertFalse(symValueOf(new int[] {10, 11}).valueEquals(new int[] {10}),
+                    "valueEquals for int[]");
 
-        Assert.assertFalse("valueEquals for double[] 2",
-                           symValueOf(new int[] {10, 11}).valueEquals(new double[] {10, 11}));
+        assertFalse(symValueOf(new int[] {10, 11}).valueEquals(new double[] {10, 11}),
+                    "valueEquals for double[] 2");
 
-        Assert.assertFalse("valueEquals for empty arrays",
-                           symValueOf(new int[] {}).valueEquals(new double[] {}));
+        assertFalse(symValueOf(new int[] {}).valueEquals(new double[] {}),
+                    "valueEquals for empty arrays");
 
-        Assert.assertTrue("valueEquals for empty arrays",
-                          symValueOf(new double[] {}).valueEquals(new double[] {}));
-
+        assertTrue(symValueOf(new double[] {}).valueEquals(new double[] {}),
+                   "valueEquals for empty arrays");
     }
 
     // test only

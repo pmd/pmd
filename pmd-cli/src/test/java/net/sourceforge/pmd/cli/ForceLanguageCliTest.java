@@ -13,7 +13,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 
-public class ForceLanguageCliTest extends BaseCliTest {
+class ForceLanguageCliTest extends BaseCliTest {
 
     private static final String BASE_DIR = "src/test/resources/net/sourceforge/pmd/cli/forceLanguage/";
     private static final String RULE_MESSAGE = "Violation from ReportAllRootNodes";
@@ -29,19 +29,19 @@ public class ForceLanguageCliTest extends BaseCliTest {
     }
 
     @Test
-    public void analyzeSingleXmlWithoutForceLanguage() throws Exception {
+    void analyzeSingleXmlWithoutForceLanguage() throws Exception {
         runCli(OK, "-d", BASE_DIR + "src/file1.ext")
             .verify(r -> r.checkStdOut(containsStringNTimes(0, RULE_MESSAGE)));
     }
 
     @Test
-    public void analyzeSingleXmlWithForceLanguage() throws Exception {
+    void analyzeSingleXmlWithForceLanguage() throws Exception {
         runCli(VIOLATIONS_FOUND, "-d", BASE_DIR + "src/file1.ext", "--force-language", "dummy")
             .verify(r -> r.checkStdOut(containsStringNTimes(1, RULE_MESSAGE)));
     }
 
     @Test
-    public void analyzeDirectoryWithForceLanguage() throws Exception {
+    void analyzeDirectoryWithForceLanguage() throws Exception {
         runCli(VIOLATIONS_FOUND, "-d", BASE_DIR + "src/", "--force-language", "dummy")
             .verify(r -> r.checkStdOut(containsStringNTimes(3, RULE_MESSAGE)));
     }

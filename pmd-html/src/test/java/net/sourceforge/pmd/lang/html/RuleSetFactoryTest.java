@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.html;
 
 import net.sourceforge.pmd.AbstractRuleSetFactoryTest;
 
-public class RuleSetFactoryTest extends AbstractRuleSetFactoryTest {
+class RuleSetFactoryTest extends AbstractRuleSetFactoryTest {
     // no additional tests yet
 }
