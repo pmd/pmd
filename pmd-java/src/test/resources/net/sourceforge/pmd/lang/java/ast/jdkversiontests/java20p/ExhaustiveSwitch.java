@@ -3,7 +3,7 @@
  */
 
 /**
- * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a>
+ * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a>
  */
 public class ExhaustiveSwitch {
 
@@ -12,14 +12,6 @@ public class ExhaustiveSwitch {
             case String s  -> s.length();
             case Integer i -> i;
             default -> 0;
-        };
-    }
-
-    static int coverageDefaultCase(Object o) {
-        return switch (o) {
-            case String s  -> s.length();
-            case Integer i -> i;
-            case default -> 0;
         };
     }
 

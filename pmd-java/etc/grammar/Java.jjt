@@ -558,8 +558,14 @@ public class JavaParser {
   }
 
   private void checkForDefaultCaseLabel() {
+    if (!((jdkVersion == 19) && preview)) {
+        throwParseException("Default case labels in switch are only supported with JDK 19 Preview.");
+    }
+  }
+
+  private void checkForNullWithDefaultCaseLabel() {
     if (!isJEP406Supported()) {
-        throwParseException("Default case labels in switch are only supported with JDK 19 Preview or JDK 20 Preview.");
+        throwParseException("Null case labels with default in switch are only supported with JDK 19 Preview or JDK 20 Preview.");
     }
   }
 
@@ -2327,14 +2333,14 @@ void SwitchLabel() :
 void CaseLabelElement(ASTSwitchLabel label) #void:
 {}
 {
-    "default" {label.setDefault(); checkForDefaultCaseLabel();}
+    "default" {label.setDefault(); checkForDefaultCaseLabel();} // only valid in java-19-preview
     |
     NullLiteral() {checkForNullCaseLabel();}
         [
             // this lookahead is only required to allow parsing java-19-preview code
             // since java-20-preview, combining null is only allowed with default
             LOOKAHEAD(2)
-            "," "default" {label.setDefault(); checkForDefaultCaseLabel();}
+            "," "default" {label.setDefault(); checkForNullWithDefaultCaseLabel();}
         ]
     |
     LOOKAHEAD(Pattern()) Pattern() {checkForPatternMatchingInSwitch();} ( LOOKAHEAD({isKeyword("when")}) Guard() )*
