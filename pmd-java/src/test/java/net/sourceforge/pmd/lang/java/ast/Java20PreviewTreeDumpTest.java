@@ -118,4 +118,21 @@ public class Java20PreviewTreeDumpTest extends BaseTreeDumpTest {
         assertTrue("Unexpected message: " + thrown.getMessage(),
                 thrown.getMessage().contains("Record Patterns are only supported with JDK 19 Preview or JDK 20 Preview."));
     }
+
+    @Test
+    public void recordPatternsInEnhancedFor() {
+        doTest("RecordPatternsInEnhancedFor");
+    }
+
+    @Test
+    public void recordPatternsInEnhancedForBeforeJava20Preview() {
+        ParseException thrown = assertThrows(ParseException.class, new ThrowingRunnable() {
+            @Override
+            public void run() throws Throwable {
+                java20.parseResource("RecordPatternsInEnhancedFor.java");
+            }
+        });
+        assertTrue("Unexpected message: " + thrown.getMessage(),
+                thrown.getMessage().contains("Record Patterns in enhanced for statements are only supported with JDK 20 Preview."));
+    }
 }

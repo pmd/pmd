@@ -3,7 +3,7 @@
  */
 
 /**
- * @see <a href="https://openjdk.org/jeps/405">JEP 405: Record Patterns (Preview)</a>
+ * @see <a href="https://openjdk.org/jeps/432">JEP 432: Record Patterns (Second Preview)</a>
  */
 public class RecordPatterns {
 
@@ -41,6 +41,12 @@ public class RecordPatterns {
         }
     }
 
+    Rectangle createRectangle(int x1, int y1, Color c1, int x2, int y2, Color c2) {
+        Rectangle r = new Rectangle(new ColoredPoint(new Point(x1, y1), c1),
+                new ColoredPoint(new Point(x2, y2), c2));
+        return r;
+    }
+
     // fully nested record pattern, also using "var"
     void printXCoordOfUpperLeftPointWithPatterns(Rectangle r) {
         if (r instanceof Rectangle(ColoredPoint(Point(var x, var y), var c),
@@ -49,15 +55,45 @@ public class RecordPatterns {
         }
     }
 
+    record Pair(Object x, Object y) {}
+    void nestedPatternsCanFailToMatch() {
+        Pair p = new Pair(42, 42);
+        if (p instanceof Pair(String s, String t)) {
+            System.out.println(s + ", " + t);
+        } else {
+            System.out.println("Not a pair of strings");
+        }
+    }
+
     // record patterns with generic types
     record Box<T>(T t) {}
-    void test1(Box<Object> bo) {
+    void test1a(Box<Object> bo) {
         if (bo instanceof Box<Object>(String s)) {
             System.out.println("String " + s);
         }
     }
-    void test2(Box<String> bo) {
+    void test1(Box<String> bo) {
         if (bo instanceof Box<String>(var s)) {
+            System.out.println("String " + s);
+        }
+    }
+
+    // type argument is inferred
+    void test2(Box<String> bo) {
+        if (bo instanceof Box(var s)) {    // Inferred to be Box<String>(var s)
+            System.out.println("String " + s);
+        }
+    }
+
+    // nested record patterns
+    void test3(Box<Box<String>> bo) {
+        if (bo instanceof Box<Box<String>>(Box(var s))) {
+            System.out.println("String " + s);
+        }
+    }
+
+    void test4(Box<Box<String>> bo) {
+        if (bo instanceof Box(Box(var s))) {
             System.out.println("String " + s);
         }
     }

@@ -23,7 +23,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * <p>Note: case null and the case patterns are a Java 19 Preview and Java 20 Preview language feature</p>
  *
  * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a>
- * @see <a href="https://openjdk.org/jeps/405">JEP 405: Record Patterns (Preview)</a>
+ * @see <a href="https://openjdk.org/jeps/432">JEP 432: Record Patterns (Second Preview)</a>
  */
 public class ASTSwitchLabel extends AbstractJavaNode {
 

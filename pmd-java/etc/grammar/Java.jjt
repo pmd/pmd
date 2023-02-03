@@ -1,4 +1,12 @@
 /**
+ * Support "JEP 433: Pattern Matching for switch (Fourth Preview)" for Java 20 Preview
+ *    SwitchLabel simplified
+ * Support "JEP 432: Record Patterns (Second Preview)" for Java 20 Preview
+ *    ForStatement allows record patterns
+ * Remove support for Java 18 preview language features
+ *    GuardedPattern is removed
+ * Andreas Dangel 02/2023
+ *====================================================================
  * Support "JEP 427: Pattern Matching for switch (Third Preview)" for Java 19 Preview
  * Note: GuardedPattern is deprecated and only valid for 17-preview and 18-preview
    * New AST node: ASTSwitchGuard (production "Guard") - used within switch case labels for refining a pattern
@@ -584,6 +592,12 @@ public class JavaParser {
   private void checkForRecordPatterns() {
     if (!((jdkVersion == 19 || jdkVersion == 20) && preview)) {
       throwParseException("Record Patterns are only supported with JDK 19 Preview or JDK 20 Preview.");
+    }
+  }
+
+  private void checkForRecordPatternsEnhancedFor() {
+    if (!((jdkVersion == 20) && preview)) {
+      throwParseException("Record Patterns in enhanced for statements are only supported with JDK 20 Preview.");
     }
   }
 
@@ -2397,15 +2411,21 @@ void ForStatement() :
 {
   "for" "("
 (
-      LOOKAHEAD(LocalVariableDeclaration() ":")
-      {checkForBadJDK15ForLoopSyntaxArgumentsUsage();}
-      LocalVariableDeclaration() ":" Expression()
+      LOOKAHEAD(EnhancedForDeclaration() ":")
+      EnhancedForDeclaration() ":" Expression()
 |
   [ ForInit() ] ";"
   [ Expression() ] ";"
   [ ForUpdate() ]
 )
   ")" Statement()
+}
+
+void EnhancedForDeclaration() #void:
+{checkForBadJDK15ForLoopSyntaxArgumentsUsage();}
+{
+      LOOKAHEAD(LocalVariableDeclaration()) LocalVariableDeclaration()
+    | {checkForRecordPatternsEnhancedFor();} RecordPattern()
 }
 
 void ForInit() :
