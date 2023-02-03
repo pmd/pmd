@@ -2329,14 +2329,17 @@ void CaseLabelElement(ASTSwitchLabel label) #void:
 {
     "default" {label.setDefault(); checkForDefaultCaseLabel();}
     |
+    NullLiteral() {checkForNullCaseLabel();}
+        [
+            // this lookahead is only required to allow parsing java-19-preview code
+            // since java-20-preview, combining null is only allowed with default
+            LOOKAHEAD(2)
+            "," "default" {label.setDefault(); checkForDefaultCaseLabel();}
+        ]
+    |
     LOOKAHEAD(Pattern()) Pattern() {checkForPatternMatchingInSwitch();} ( LOOKAHEAD({isKeyword("when")}) Guard() )*
     |
     ConditionalExpression() #Expression
-        {
-            if ("null".equals(((ASTExpression) jjtree.peekNode()).jjtGetFirstToken().getImage())) {
-                checkForNullCaseLabel();
-            }
-        }
 }
 
 void Guard() #SwitchGuard:
