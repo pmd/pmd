@@ -3,6 +3,7 @@
  *    SwitchLabel simplified
  * Support "JEP 432: Record Patterns (Second Preview)" for Java 20 Preview
  *    ForStatement allows record patterns
+ *    Removed named record patterns (optional VariableDeclaratorId following the pattern)
  * Remove support for Java 18 preview language features
  *    GuardedPattern is removed
  * Andreas Dangel 02/2023
@@ -1838,7 +1839,7 @@ void TypePattern():
 void RecordPattern():
 { checkForRecordPatterns(); }
 {
-  (Annotation())* ReferenceType() RecordStructurePattern() [ VariableDeclaratorId() ]
+  (Annotation())* ReferenceType() RecordStructurePattern()
 }
 
 void RecordStructurePattern() #ComponentPatternList:
