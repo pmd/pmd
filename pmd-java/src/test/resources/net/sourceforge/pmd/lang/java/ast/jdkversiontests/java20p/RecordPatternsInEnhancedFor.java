@@ -24,4 +24,20 @@ public class RecordPatternsInEnhancedFor {
             System.out.println(c);
         }
     }
+
+    record Pair(Object fst, Object snd){}
+    static void exceptionTest() {
+        Pair[] ps = new Pair[]{
+                new Pair(1,2),
+                null,
+                new Pair("hello","world")
+        };
+        for (Pair(var f, var s): ps) {  // Run-time MatchException
+            System.out.println(f + " -> " + s);
+        }
+    }
+
+    public static void main(String[] args) {
+        exceptionTest();
+    }
 }
