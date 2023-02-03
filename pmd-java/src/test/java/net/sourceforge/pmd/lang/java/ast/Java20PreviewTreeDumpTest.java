@@ -16,27 +16,27 @@ import net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest;
 import net.sourceforge.pmd.lang.ast.test.RelevantAttributePrinter;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 
-public class Java19PreviewTreeDumpTest extends BaseTreeDumpTest {
-    private final JavaParsingHelper java19p =
-            JavaParsingHelper.WITH_PROCESSING.withDefaultVersion("19-preview")
-                    .withResourceContext(Java19PreviewTreeDumpTest.class, "jdkversiontests/java19p/");
-    private final JavaParsingHelper java19 = java19p.withDefaultVersion("19");
+public class Java20PreviewTreeDumpTest extends BaseTreeDumpTest {
+    private final JavaParsingHelper java20p =
+            JavaParsingHelper.WITH_PROCESSING.withDefaultVersion("20-preview")
+                    .withResourceContext(Java20PreviewTreeDumpTest.class, "jdkversiontests/java20p/");
+    private final JavaParsingHelper java20 = java20p.withDefaultVersion("19");
 
-    public Java19PreviewTreeDumpTest() {
+    public Java20PreviewTreeDumpTest() {
         super(new RelevantAttributePrinter(), ".java");
     }
 
     @Override
     public BaseParsingHelper<?, ?> getParser() {
-        return java19p;
+        return java20p;
     }
 
     @Test
-    public void dealingWithNullBeforeJava19Preview() {
+    public void dealingWithNullBeforeJava20Preview() {
         ParseException thrown = assertThrows(ParseException.class, new ThrowingRunnable() {
             @Override
             public void run() throws Throwable {
-                java19.parseResource("DealingWithNull.java");
+                java20.parseResource("DealingWithNull.java");
             }
         });
         assertTrue("Unexpected message: " + thrown.getMessage(),
@@ -63,7 +63,7 @@ public class Java19PreviewTreeDumpTest extends BaseTreeDumpTest {
         ParseException thrown = assertThrows(ParseException.class, new ThrowingRunnable() {
             @Override
             public void run() throws Throwable {
-                java19.parseResource("GuardedAndParenthesizedPatterns.java");
+                java20.parseResource("GuardedAndParenthesizedPatterns.java");
             }
         });
         assertTrue("Unexpected message: " + thrown.getMessage(),
@@ -80,7 +80,7 @@ public class Java19PreviewTreeDumpTest extends BaseTreeDumpTest {
         ParseException thrown = assertThrows(ParseException.class, new ThrowingRunnable() {
             @Override
             public void run() throws Throwable {
-                java19.parseResource("PatternsInSwitchLabels.java");
+                java20.parseResource("PatternsInSwitchLabels.java");
             }
         });
         assertTrue("Unexpected message: " + thrown.getMessage(),
@@ -112,7 +112,7 @@ public class Java19PreviewTreeDumpTest extends BaseTreeDumpTest {
         ParseException thrown = assertThrows(ParseException.class, new ThrowingRunnable() {
             @Override
             public void run() throws Throwable {
-                java19.parseResource("RecordPatterns.java");
+                java20.parseResource("RecordPatterns.java");
             }
         });
         assertTrue("Unexpected message: " + thrown.getMessage(),

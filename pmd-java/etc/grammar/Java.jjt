@@ -542,24 +542,24 @@ public class JavaParser {
   }
 
   private boolean isJEP406Supported() {
-    return (jdkVersion == 18 || jdkVersion == 19) && preview;
+    return (jdkVersion == 18 || jdkVersion == 19 || jdkVersion == 20) && preview;
   }
 
   private void checkForPatternMatchingInSwitch() {
     if (!isJEP406Supported()) {
-        throwParseException("Pattern Matching in Switch is only supported with JDK 18 Preview or JDK 19 Preview.");
+        throwParseException("Pattern Matching in Switch is only supported with JDK 18 Preview or JDK 19 Preview or JDK 20 Preview.");
     }
   }
 
   private void checkForNullCaseLabel() {
     if (!isJEP406Supported()) {
-        throwParseException("Null case labels in switch are only supported with JDK 18 Preview or JDK 19 Preview.");
+        throwParseException("Null case labels in switch are only supported with JDK 18 Preview or JDK 19 Preview or JDK 20 Preview.");
     }
   }
 
   private void checkForDefaultCaseLabel() {
     if (!isJEP406Supported()) {
-        throwParseException("Default case labels in switch are only supported with JDK 18 Preview or JDK 19 Preview.");
+        throwParseException("Default case labels in switch are only supported with JDK 18 Preview or JDK 19 Preview or JDK 20 Preview.");
     }
   }
 
@@ -576,14 +576,14 @@ public class JavaParser {
   }
 
   private void checkForGuard() {
-    if (!((jdkVersion == 19) && preview)) {
-      throwParseException("Guards are only supported with JDK 19 Preview.");
+    if (!((jdkVersion == 19 || jdkVersion == 20) && preview)) {
+      throwParseException("Guards are only supported with JDK 19 Preview or JDK 20 Preview.");
     }
   }
 
   private void checkForRecordPatterns() {
-    if (!((jdkVersion == 19) && preview)) {
-      throwParseException("Record Patterns are only supported with JDK 19 Preview.");
+    if (!((jdkVersion == 19 || jdkVersion == 20) && preview)) {
+      throwParseException("Record Patterns are only supported with JDK 19 Preview or JDK 20 Preview.");
     }
   }
 
