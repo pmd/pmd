@@ -3,12 +3,22 @@
  */
 
 /**
- * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a>
+ * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a>
  */
 public class ScopeOfPatternVariableDeclarations {
 
+    static void testSwitchBlock(Object obj) {
+        switch (obj) {
+            case Character c
+                    when c.charValue() == 7:
+                System.out.println("Ding!");
+                break;
+            default:
+                break;
+        }
+    }
 
-    static void test(Object o) {
+    static void testSwitchRule(Object o) {
         switch (o) {
             case Character c -> {
                 if (c.charValue() == 7) {
@@ -36,13 +46,19 @@ public class ScopeOfPatternVariableDeclarations {
                 }
                 System.out.println("character");
             default:
-                System.out.println();
+                System.out.println("fall-through");
         }
     }
 
 
     public static void main(String[] args) {
-        test('A');
+        testSwitchBlock('\u0007');
+        testSwitchRule('A');
+        try {
+            testSwitchRule(42); // throws
+        } catch (IllegalStateException e) {
+            System.out.println(e);
+        }
         test2('\t');
     }
 }

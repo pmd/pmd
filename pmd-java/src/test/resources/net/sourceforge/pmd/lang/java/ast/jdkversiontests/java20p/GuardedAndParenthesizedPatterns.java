@@ -3,28 +3,28 @@
  */
 
 /**
- * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a>
+ * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a>
  */
 public class GuardedAndParenthesizedPatterns {
 
 
     static void test(Object o) {
         switch (o) {
-            case String s when s.length() == 1    -> System.out.println("single char string");
-            case String s                         -> System.out.println("string");
-            case Integer i when i.intValue() == 1 -> System.out.println("integer 1");
+            case String s when s.length() == 1     -> System.out.println("single char string");
+            case String s                          -> System.out.println("string");
+            case Integer i when i.intValue() == 1  -> System.out.println("integer 1");
             case (Long l) when l.longValue() == 1L -> System.out.println("long 1 with parens");
-            case (((Double d)))                   -> System.out.println("double with parens");
-            default                               -> System.out.println("default case");
+            case (((Double d)))                    -> System.out.println("double with parens");
+            default                                -> System.out.println("default case");
         }
     }
 
-    // verify that "when" can still be used as an identifier
+    // verify that "when" can still be used as an identifier -> formal parameter
     void testIdentifierWhen(String when) {
         System.out.println(when);
     }
 
-    // verify that "when" can still be used as an identifier
+    // verify that "when" can still be used as an identifier -> local variable
     void testIdentifierWhen() {
         int when = 1;
         System.out.println(when);
@@ -35,13 +35,13 @@ public class GuardedAndParenthesizedPatterns {
 
     static void testWithNull(Object o) {
         switch (o) {
-            case String s when (s.length() == 1)    -> System.out.println("single char string");
-            case String s                           -> System.out.println("string");
-            case (Integer i) when i.intValue() == 1 -> System.out.println("integer 1");
+            case String s when (s.length() == 1)         -> System.out.println("single char string");
+            case String s                                -> System.out.println("string");
+            case (Integer i) when i.intValue() == 1      -> System.out.println("integer 1");
             case ((Long l)) when ((l.longValue() == 1L)) -> System.out.println("long 1 with parens");
-            case (((Double d)))                   -> System.out.println("double with parens");
-            case null   -> System.out.println("null!");
-            default                               -> System.out.println("default case");
+            case (((Double d)))                          -> System.out.println("double with parens");
+            case null                                    -> System.out.println("null!");
+            default                                      -> System.out.println("default case");
         }
     }
 
@@ -64,6 +64,14 @@ public class GuardedAndParenthesizedPatterns {
         }
     }
 
+    static void testScopeOfPatternVariableDeclarations(Object obj) {
+        if ((obj instanceof String s) && s.length() > 3) {
+            System.out.println(s);
+        } else {
+            System.out.println("Not a string");
+        }
+    }
+
     public static void main(String[] args) {
         test("a");
         test("fooo");
@@ -76,5 +84,7 @@ public class GuardedAndParenthesizedPatterns {
             e.printStackTrace();
         }
         testWithNull(null);
+        testScopeOfPatternVariableDeclarations("a");
+        testScopeOfPatternVariableDeclarations("long enough");
     }
 }
