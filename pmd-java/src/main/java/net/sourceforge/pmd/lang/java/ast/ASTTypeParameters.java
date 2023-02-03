@@ -15,7 +15,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
  *
  * <pre>
  *
- * TypeParameters ::= "<" {@linkplain ASTTypeParameter TypeParameter} ( "," {@linkplain ASTTypeParameter TypeParameter} )* ">"
+ * TypeParameters ::= "&lt;" {@linkplain ASTTypeParameter TypeParameter} ( "," {@linkplain ASTTypeParameter TypeParameter} )* ">"
  *
  * </pre>
  */

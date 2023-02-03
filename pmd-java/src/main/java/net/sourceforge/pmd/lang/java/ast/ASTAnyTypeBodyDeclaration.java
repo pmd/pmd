@@ -61,7 +61,7 @@ public interface ASTAnyTypeBodyDeclaration extends JavaNode {
         EMPTY,
         /** See {@link ASTRecordDeclaration}. */
         RECORD,
-        /** See {@link ASTRecordConstructorDeclaration}. */
+        /** See {@link ASTCompactConstructorDeclaration}. */
         RECORD_CONSTRUCTOR
     }
 

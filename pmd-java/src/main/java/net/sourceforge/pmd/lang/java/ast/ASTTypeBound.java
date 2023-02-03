@@ -18,7 +18,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
  *
  * <pre>
  *
- * TypeBound ::= "extends" {@linkplain ASTAnnotation Annotation}* {@linkplain ASTClassOrInterfaceType ClassOrInterfaceType} ( "&" {@linkplain ASTAnnotation Annotation}* {@linkplain ASTClassOrInterfaceType ClassOrInterfaceType} )*
+ * TypeBound ::= "extends" {@linkplain ASTAnnotation Annotation}* {@linkplain ASTClassOrInterfaceType ClassOrInterfaceType} ( "&amp;" {@linkplain ASTAnnotation Annotation}* {@linkplain ASTClassOrInterfaceType ClassOrInterfaceType} )*
  *
  * </pre>
  */

@@ -9,11 +9,11 @@ import net.sourceforge.pmd.annotation.InternalApi;
 /**
  * Represents an assignment operator in an {@linkplain ASTExpression assignment expression}.
  *
- * <pre>
+ * <pre>{@code
  *
  *  AssignmentOperator ::= "=" | "*=" | "/=" | "%=" | "+=" | "-=" | "<<=" | ">>=" | ">>>=" | "&=" | "^=" | "|="
  *
- * </pre>
+ * }</pre>
  */
 public class ASTAssignmentOperator extends AbstractJavaNode {
 
