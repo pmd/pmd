@@ -20,7 +20,7 @@ public class Java20PreviewTreeDumpTest extends BaseTreeDumpTest {
     private final JavaParsingHelper java20p =
             JavaParsingHelper.WITH_PROCESSING.withDefaultVersion("20-preview")
                     .withResourceContext(Java20PreviewTreeDumpTest.class, "jdkversiontests/java20p/");
-    private final JavaParsingHelper java20 = java20p.withDefaultVersion("19");
+    private final JavaParsingHelper java20 = java20p.withDefaultVersion("20");
 
     public Java20PreviewTreeDumpTest() {
         super(new RelevantAttributePrinter(), ".java");
@@ -40,7 +40,7 @@ public class Java20PreviewTreeDumpTest extends BaseTreeDumpTest {
             }
         });
         assertTrue("Unexpected message: " + thrown.getMessage(),
-                thrown.getMessage().contains("Null case labels in switch are only supported with JDK 18 Preview or JDK 19 Preview or JDK 20 Preview."));
+                thrown.getMessage().contains("Null case labels in switch are only supported with JDK 19 Preview or JDK 20 Preview."));
     }
 
     @Test
@@ -59,7 +59,7 @@ public class Java20PreviewTreeDumpTest extends BaseTreeDumpTest {
     }
 
     @Test
-    public void guardedAndParenthesizedPatternsBeforeJava19Preview() {
+    public void guardedAndParenthesizedPatternsBeforeJava20Preview() {
         ParseException thrown = assertThrows(ParseException.class, new ThrowingRunnable() {
             @Override
             public void run() throws Throwable {
@@ -67,7 +67,7 @@ public class Java20PreviewTreeDumpTest extends BaseTreeDumpTest {
             }
         });
         assertTrue("Unexpected message: " + thrown.getMessage(),
-                thrown.getMessage().contains("Pattern Matching in Switch is only supported with JDK 18 Preview or JDK 19 Preview or JDK 20 Preview."));
+                thrown.getMessage().contains("Pattern Matching in Switch is only supported with JDK 19 Preview or JDK 20 Preview."));
     }
 
     @Test
@@ -76,7 +76,7 @@ public class Java20PreviewTreeDumpTest extends BaseTreeDumpTest {
     }
 
     @Test
-    public void patternsInSwitchLabelsBeforeJava19Preview() {
+    public void patternsInSwitchLabelsBeforeJava20Preview() {
         ParseException thrown = assertThrows(ParseException.class, new ThrowingRunnable() {
             @Override
             public void run() throws Throwable {
@@ -84,7 +84,7 @@ public class Java20PreviewTreeDumpTest extends BaseTreeDumpTest {
             }
         });
         assertTrue("Unexpected message: " + thrown.getMessage(),
-                thrown.getMessage().contains("Pattern Matching in Switch is only supported with JDK 18 Preview or JDK 19 Preview or JDK 20 Preview."));
+                thrown.getMessage().contains("Pattern Matching in Switch is only supported with JDK 19 Preview or JDK 20 Preview."));
     }
 
     @Test
@@ -108,7 +108,7 @@ public class Java20PreviewTreeDumpTest extends BaseTreeDumpTest {
     }
 
     @Test
-    public void recordPatternsBeforeJava19Preview() {
+    public void recordPatternsBeforeJava20Preview() {
         ParseException thrown = assertThrows(ParseException.class, new ThrowingRunnable() {
             @Override
             public void run() throws Throwable {

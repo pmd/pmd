@@ -18,6 +18,10 @@ This is a {{ site.pmd.release_type }} release.
 
 ### API Changes
 
+#### Java
+* Support for Java 18 preview language features have been removed. The version "18-preview" is no longer available.
+* The experimental class `net.sourceforge.pmd.lang.java.ast.ASTGuardedPattern` has been removed.
+
 ### External Contributions
 
 {% endtocmaker %}

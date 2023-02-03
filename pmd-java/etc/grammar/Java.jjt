@@ -542,36 +542,30 @@ public class JavaParser {
   }
 
   private boolean isJEP406Supported() {
-    return (jdkVersion == 18 || jdkVersion == 19 || jdkVersion == 20) && preview;
+    return (jdkVersion == 19 || jdkVersion == 20) && preview;
   }
 
   private void checkForPatternMatchingInSwitch() {
     if (!isJEP406Supported()) {
-        throwParseException("Pattern Matching in Switch is only supported with JDK 18 Preview or JDK 19 Preview or JDK 20 Preview.");
+        throwParseException("Pattern Matching in Switch is only supported with JDK 19 Preview or JDK 20 Preview.");
     }
   }
 
   private void checkForNullCaseLabel() {
     if (!isJEP406Supported()) {
-        throwParseException("Null case labels in switch are only supported with JDK 18 Preview or JDK 19 Preview or JDK 20 Preview.");
+        throwParseException("Null case labels in switch are only supported with JDK 19 Preview or JDK 20 Preview.");
     }
   }
 
   private void checkForDefaultCaseLabel() {
     if (!isJEP406Supported()) {
-        throwParseException("Default case labels in switch are only supported with JDK 18 Preview or JDK 19 Preview or JDK 20 Preview.");
+        throwParseException("Default case labels in switch are only supported with JDK 19 Preview or JDK 20 Preview.");
     }
   }
 
-  private void checkForGuardedPatterns() {
-    if (!((jdkVersion == 18) && preview)) {
-        throwParseException("Guarded patterns are only supported with JDK 18 Preview.");
-    }
-  }
-
-  private void checkForParenthesizedInstanceOfPattern() {
-    if (!((jdkVersion == 18) && preview)) {
-        throwParseException("Parenthesized InstanceOf patterns are only supported with JDK 18 Preview.");
+  private void checkForParenthesizedPattern() {
+    if (!((jdkVersion == 19 || jdkVersion == 20) && preview)) {
+        throwParseException("Parenthesized patterns are only supported with JDK 19 Preview or JDK 20 Preview.");
     }
   }
 
@@ -1804,23 +1798,17 @@ void Pattern() #void:
 {
     LOOKAHEAD((Annotation())* ReferenceType() "(") RecordPattern()
     | LOOKAHEAD("(") ParenthesizedPattern()
-    | TypePattern() [ GuardedPatternCondition() #GuardedPattern(2) {checkForGuardedPatterns();} ]
-}
-
-void GuardedPatternCondition() #void:
-{}
-{
-    "&&" ConditionalAndExpression()
+    | TypePattern()
 }
 
 void ParenthesizedPattern() #void:
-{}
+{checkForParenthesizedPattern();}
 {
     "(" Pattern() ")" { AstImplUtil.bumpParenDepth((ASTPattern) jjtree.peekNode()); }
 }
 
 void TypePattern():
-{}
+{checkforBadInstanceOfPattern();}
 {
   ( "final" {jjtThis.setFinal(true);} | Annotation() )*
   Type()
@@ -1851,13 +1839,8 @@ void InstanceOfExpression() #InstanceOfExpression(>1):
   RelationalExpression()
   [ "instanceof"
       (
-      // Note: this can be simplified when support for java 18 preview is removed.
-      // Here the production Pattern is inlined to avoid that a following conditional &&
-      // be parsed as a pattern guard.
-        LOOKAHEAD("final" | (Annotation())* Type() <IDENTIFIER>) {checkforBadInstanceOfPattern();} TypePattern()
-      | LOOKAHEAD((Annotation())* ReferenceType() "(")  {checkForRecordPatterns();} RecordPattern()
-      | LOOKAHEAD("(") {checkForParenthesizedInstanceOfPattern();} ParenthesizedPattern()
-      | (Annotation())* Type()
+        LOOKAHEAD(Pattern()) Pattern()
+        | (Annotation())* Type()
       )
   ]
 }
