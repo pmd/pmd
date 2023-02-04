@@ -55,7 +55,7 @@ public class JavaParser extends JjtreeParserAdapter<ASTCompilationUnit> {
         parser.setPreview(preview);
 
         ASTCompilationUnit root = parser.CompilationUnit();
-        root.setAstInfo(new AstInfo<>(task, root, parser.getSuppressMap()));
+        root.setAstInfo(new AstInfo<>(task, root).withSuppressMap(parser.getSuppressMap()));
 
         LanguageLevelChecker<?> levelChecker =
             new LanguageLevelChecker<>(jdkVersion,

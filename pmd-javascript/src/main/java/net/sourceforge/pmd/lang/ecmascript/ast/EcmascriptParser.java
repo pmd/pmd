@@ -70,7 +70,7 @@ public final class EcmascriptParser implements net.sourceforge.pmd.lang.ast.Pars
                 }
             }
         }
-        tree.setAstInfo(new AstInfo<>(task, tree, suppressMap));
+        tree.setAstInfo(new AstInfo<>(task, tree).withSuppressMap(suppressMap));
         return tree;
     }
 

@@ -32,7 +32,7 @@ public final class ASTApexFile extends AbstractApexNode<AstNode> implements Root
                 Map<Integer, String> suppressMap,
                 @NonNull ApexLanguageProcessor apexLang) {
         super(jorjeNode);
-        this.astInfo = new AstInfo<>(task, this, suppressMap);
+        this.astInfo = new AstInfo<>(task, this).withSuppressMap(suppressMap);
         this.multifileAnalysis = apexLang.getMultiFileState();
         this.setRegion(TextRegion.fromOffsetLength(0, task.getTextDocument().getLength()));
     }

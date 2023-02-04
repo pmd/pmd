@@ -30,11 +30,7 @@ public final class AstInfo<T extends RootNode> {
 
 
     public AstInfo(ParserTask task, T rootNode) {
-        this(task, rootNode, Collections.emptyMap());
-    }
-
-    public AstInfo(ParserTask task, T rootNode, Map<Integer, String> suppressionComments) {
-        this(task.getTextDocument(), rootNode, task.getLpRegistry(), suppressionComments);
+        this(task.getTextDocument(), rootNode, task.getLpRegistry(), Collections.emptyMap());
     }
 
     private AstInfo(TextDocument textDocument,

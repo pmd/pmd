@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -68,18 +69,29 @@ public final class LanguageRegistry implements Iterable<Language> {
     }
 
     /**
-     * Creates a language registry containing the given languages and
-     * their dependencies, fetched from this language registry or the
+     * Creates a language registry containing the given language and
+     * its dependencies, fetched from this language registry or the
      * parameter.
+     *
+     * @throws IllegalStateException If dependencies cannot be fulfilled.
      */
     public LanguageRegistry getDependenciesOf(Language lang) {
-        Set<Language> dependencies =
-            lang.getDependencies().stream()
-                .map(this::getLanguageById)
-                .collect(CollectionUtil.toMutableSet());
-        dependencies.add(lang);
+        Set<Language> result = new HashSet<>();
+        addDepsOrThrow(lang, result);
+        return new LanguageRegistry(result);
+    }
 
-        return new LanguageRegistry(dependencies);
+    private void addDepsOrThrow(Language l, Set<Language> languages) {
+        for (String depId : l.getDependencies()) {
+            Language dep = getLanguageById(depId);
+            if (dep == null) {
+                throw new IllegalStateException(
+                    "Cannot find language " + depId + " in " + this);
+            }
+            if (languages.add(dep)) {
+                addDepsOrThrow(dep, languages);
+            }
+        }
     }
 
     @Override
