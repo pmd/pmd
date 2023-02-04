@@ -193,17 +193,19 @@ public final class LanguageProcessorRegistry implements AutoCloseable {
                     // Env vars are a default, they don't override other ways to set properties.
                     // If the property has already been set, don't set it.
                     LOG.debug(
-                        "Property {} for lang {} is already set, ignoring value of {}",
+                        "Property {} for lang {} is already set, ignoring environment variable {}={}",
                         propertyDescriptor.name(),
                         props.getLanguage().getId(),
-                        envVarName
+                        envVarName,
+                        propertyValue
                     );
                 } else {
                     LOG.debug(
-                        "Using env var {} to set property {} for lang {}",
-                        envVarName,
+                        "Property {} for lang {} is not yet set, using environment variable {}={}",
                         propertyDescriptor.name(),
-                        props.getLanguage().getId()
+                        props.getLanguage().getId(),
+                        envVarName,
+                        propertyValue
                     );
                     trySetPropertyCapture(props, propertyDescriptor, propertyValue, reporter);
                 }
