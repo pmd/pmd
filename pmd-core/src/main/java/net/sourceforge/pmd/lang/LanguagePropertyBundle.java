@@ -21,9 +21,12 @@ import net.sourceforge.pmd.util.CollectionUtil;
  */
 public class LanguagePropertyBundle extends AbstractPropertySource {
 
+    // todo for now i think an empty value might interpret every comment
+    //  as a suppression. I think it should disable suppression comments.
     public static final PropertyDescriptor<String> SUPPRESS_MARKER
         = PropertyFactory.stringProperty("suppressMarker")
-                         .desc("Suppress marker to use in comments")
+                         .desc("Marker to identify suppression comments. "
+                                   + "Eg a value of NOPMD will make `// NOPMD` a suppression comment in Java or JavaScript.")
                          .defaultValue(PMDConfiguration.DEFAULT_SUPPRESS_MARKER)
                          .build();
     public static final String LANGUAGE_VERSION = "version";
@@ -44,7 +47,7 @@ public class LanguagePropertyBundle extends AbstractPropertySource {
                                LANGUAGE_VERSION,
                                CollectionUtil.associateBy(language.getVersions(), LanguageVersion::getVersion)
                            )
-                           .desc("Language version to use")
+                           .desc("Language version to use for this language. See the --use-version CLI switch as well.")
 
                            .defaultValue(language.getDefaultVersion())
                            .build();
