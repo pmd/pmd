@@ -11,12 +11,13 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * <pre class="grammar">
  *
- * RecordPattern ::= {@linkplain ASTReferenceType ReferenceType} {@linkplain ASTComponentPatternList ComponentPatternList} [ {@linkplain ASTVariableDeclaratorId VariableDeclaratorId} ]
+ * RecordPattern ::= {@linkplain ASTReferenceType ReferenceType} {@linkplain ASTComponentPatternList ComponentPatternList}
  *
  * </pre>
  *
  * @see ASTRecordDeclaration
- * @see <a href="https://openjdk.org/jeps/432">JEP 432: Record Patterns (Second Preview)</a>
+ * @see <a href="https://openjdk.org/jeps/405">JEP 405: Record Patterns (Preview)</a> (Java 19)
+ * @see <a href="https://openjdk.org/jeps/432">JEP 432: Record Patterns (Second Preview)</a> (Java 20)
 */
 @Experimental
 public final class ASTRecordPattern extends AbstractJavaNode implements ASTPattern {
