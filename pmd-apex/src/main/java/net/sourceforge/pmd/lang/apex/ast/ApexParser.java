@@ -16,10 +16,7 @@ import apex.jorje.semantic.ast.compilation.Compilation;
 @InternalApi
 public final class ApexParser implements Parser {
 
-    private final ApexLanguageProcessor proc;
-
-    public ApexParser(ApexLanguageProcessor proc) {
-        this.proc = proc;
+    public ApexParser() {
         ApexJorjeLogging.disableLogging();
         Locations.useIndexFactory();
     }
@@ -32,7 +29,7 @@ public final class ApexParser implements Parser {
 
             assert astRoot != null : "Normally replaced by Compilation.INVALID";
 
-            final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(task, proc);
+            final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(task, (ApexLanguageProcessor) task.getLanguageProcessor());
             return treeBuilder.buildTree(astRoot);
         } catch (apex.jorje.services.exception.ParseException e) {
             throw new ParseException(e).setFileName(task.getFileDisplayName());

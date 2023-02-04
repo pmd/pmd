@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.ast;
 
 import java.util.Objects;
 
+import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.document.TextDocument;
@@ -84,6 +85,10 @@ public interface Parser {
 
         public LanguageProcessorRegistry getLpRegistry() {
             return lpRegistry;
+        }
+
+        public LanguageProcessor getLanguageProcessor() {
+            return lpRegistry.getProcessor(getLanguageVersion().getLanguage());
         }
 
         public ParserTask withTextDocument(TextDocument textDocument) {

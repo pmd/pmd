@@ -38,11 +38,6 @@ public final class ApexMultifileAnalysis {
     // test only
     static final Logger LOG = LoggerFactory.getLogger(ApexMultifileAnalysis.class);
 
-    /**
-     * Instances of the apexlink index and data structures ({@link Org})
-     * are stored statically for now. TODO make that language-wide (#2518).
-     */
-
     // An arbitrary large number of errors to report
     private static final int MAX_ERRORS_PER_FILE = 100;
 
