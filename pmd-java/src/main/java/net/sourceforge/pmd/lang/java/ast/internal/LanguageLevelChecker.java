@@ -19,10 +19,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
-import net.sourceforge.pmd.lang.java.ast.ASTGuardedPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTIntersectionType;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
@@ -31,7 +29,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTModuleDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTPatternExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTReceiverParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordPattern;
@@ -125,19 +123,9 @@ public class LanguageLevelChecker<T> {
          * @see <a href="https://openjdk.org/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a> (Java 17)
          * @see <a href="https://openjdk.org/jeps/420">JEP 420: Pattern Matching for switch (Second Preview)</a> (Java 18)
          * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a> (Java 19)
+         * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a> (Java 20)
          */
-        PATTERN_MATCHING_FOR_SWITCH(17, 19, false),
-
-        /**
-         * Part of pattern matching for switch
-         * @see #PATTERN_MATCHING_FOR_SWITCH
-         * @see <a href="https://openjdk.java.net/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a> (Java 17)
-         * @see <a href="https://openjdk.java.net/jeps/420">JEP 420: Pattern Matching for switch (Second Preview)</a> (Java 18)
-         * @deprecated This solution has been discontinued in favor of an explicit guard using "when" keyword
-         * in Java 19, see {@link #CASE_REFINEMENT}.</p>
-         */
-        @Deprecated
-        GUARDED_PATTERNS(17, 18, false),
+        PATTERN_MATCHING_FOR_SWITCH(17, 20, false),
 
         /**
          * Part of pattern matching for switch
@@ -145,21 +133,30 @@ public class LanguageLevelChecker<T> {
          * @see <a href="https://openjdk.org/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a> (Java 17)
          * @see <a href="https://openjdk.org/jeps/420">JEP 420: Pattern Matching for switch (Second Preview)</a> (Java 18)
          * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a> (Java 19)
+         * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a> (Java 20)
          */
-        NULL_CASE_LABELS(17, 19, false),
+        NULL_CASE_LABELS(17, 20, false),
 
         /**
          * Part of pattern matching for switch: Case refinement using "when"
          * @see #PATTERN_MATCHING_FOR_SWITCH
          * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a> (Java 19)
+         * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a> (Java 20)
          */
-        CASE_REFINEMENT(19, 19, false),
+        CASE_REFINEMENT(19, 20, false),
 
         /**
          * Record patterns
-         * @see <a href="https://openjdk.org/jeps/405">JEP 405: Record Patterns (Preview)</a>
+         * @see <a href="https://openjdk.org/jeps/405">JEP 405: Record Patterns (Preview)</a> (Java 19)
+         * @see <a href="https://openjdk.org/jeps/432">JEP 432: Record Patterns (Second Preview)</a> (Java 20)
          */
-        RECORD_PATTERNS(19, 19, false),
+        RECORD_PATTERNS(19, 20, false),
+
+        /**
+         * Record destructuring patterns in for-each loops
+         * @see <a href="https://openjdk.org/jeps/432">JEP 432: Record Patterns (Second Preview)</a> (Java 20)
+         */
+        RECORD_PATTERNS_IN_ENHANCED_FOR_STATEMENT(20, 20, false),
 
         ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
@@ -479,6 +476,9 @@ public class LanguageLevelChecker<T> {
         @Override
         public Void visit(ASTForeachStatement node, T data) {
             check(node, RegularLanguageFeature.FOREACH_LOOPS, data);
+            if (node.getFirstChild() instanceof ASTRecordPattern) {
+                check(node, PreviewFeature.RECORD_PATTERNS_IN_ENHANCED_FOR_STATEMENT, data);
+            }
             return null;
         }
 
@@ -547,12 +547,6 @@ public class LanguageLevelChecker<T> {
         }
 
         @Override
-        public Void visit(ASTGuardedPattern node, T data) {
-            check(node, PreviewFeature.GUARDED_PATTERNS, data);
-            return null;
-        }
-
-        @Override
         public Void visit(ASTSwitchGuard node, T data) {
             check(node, PreviewFeature.CASE_REFINEMENT, data);
             return null;
@@ -599,15 +593,11 @@ public class LanguageLevelChecker<T> {
             if (node.isDefault() && JavaTokenKinds.CASE == node.getFirstToken().getKind()) {
                 check(node, PreviewFeature.PATTERN_MATCHING_FOR_SWITCH, data);
             }
-            for (ASTExpression expr : node.getExprList()) {
-                if (expr instanceof ASTPatternExpression) {
-                    check(expr, PreviewFeature.PATTERN_MATCHING_FOR_SWITCH, data);
-                    if (((ASTPatternExpression) expr).getPattern() instanceof ASTGuardedPattern) {
-                        check(expr, PreviewFeature.GUARDED_PATTERNS, data);
-                    }
-                } else if (expr instanceof ASTNullLiteral) {
-                    check(expr, PreviewFeature.NULL_CASE_LABELS, data);
-                }
+            if (node.getFirstChild() instanceof ASTNullLiteral) {
+                check(node, PreviewFeature.NULL_CASE_LABELS, data);
+            }
+            if (node.getFirstChild() instanceof ASTPattern) {
+                check(node, PreviewFeature.PATTERN_MATCHING_FOR_SWITCH, data);
             }
             return null;
         }
