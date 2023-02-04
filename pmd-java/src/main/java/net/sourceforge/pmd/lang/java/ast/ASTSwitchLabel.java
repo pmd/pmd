@@ -12,14 +12,21 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
 /**
  * Represents either a {@code case} or {@code default} label inside
  * a {@linkplain ASTSwitchStatement switch statement} or {@linkplain ASTSwitchExpression expression}.
- * Since Java 12, labels may have several expressions.
+ * Since Java 14, labels may have several expressions.
  *
  * <pre class="grammar">
  *
  * SwitchLabel ::=  "case" {@linkplain ASTExpression Expression} ("," {@linkplain ASTExpression Expression} )*
+ *                | "case" "null [ "," "default" ]
+ *                | "case" ( {@linkplain ASTTypePattern TypePattern} | {@linkplain ASTRecordPattern RecordPattern} )
  *                | "default"
  *
  * </pre>
+ *
+ * <p>Note: case null and the case patterns are a Java 19 Preview and Java 20 Preview language feature</p>
+ *
+ * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a>
+ * @see <a href="https://openjdk.org/jeps/432">JEP 432: Record Patterns (Second Preview)</a>
  */
 public final class ASTSwitchLabel extends AbstractJavaNode implements Iterable<ASTExpression> {
 

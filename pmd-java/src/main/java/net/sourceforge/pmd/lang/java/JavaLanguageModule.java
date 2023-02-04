@@ -35,9 +35,10 @@ public class JavaLanguageModule extends BaseLanguageModule {
         addVersion("16", new JavaLanguageHandler(16));
         addVersion("17", new JavaLanguageHandler(17));
         addVersion("18", new JavaLanguageHandler(18));
-        addVersion("18-preview", new JavaLanguageHandler(18, true));
-        addDefaultVersion("19", new JavaLanguageHandler(19)); // 19 is the default
+        addVersion("19", new JavaLanguageHandler(19));
         addVersion("19-preview", new JavaLanguageHandler(19, true));
+        addDefaultVersion("20", new JavaLanguageHandler(20)); // 20 is the default
+        addVersion("20-preview", new JavaLanguageHandler(20, true));
     }
 
     public static Language getInstance() {
