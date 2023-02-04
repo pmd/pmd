@@ -46,7 +46,7 @@ import net.sourceforge.pmd.util.log.MessageReporter;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 
-public class PmdRunnableTest {
+class PmdRunnableTest {
 
     public static final String TEST_MESSAGE_SEMANTIC_ERROR = "An error occurred!";
     private static final String PARSER_REPORTS_SEMANTIC_ERROR = "1.9-semantic_error";
@@ -59,7 +59,7 @@ public class PmdRunnableTest {
 
 
     @BeforeEach
-    public void prepare() {
+    void prepare() {
         // reset data
         rule = spy(new RuleThatThrows());
         configuration = new PMDConfiguration(LanguageRegistry.singleton(ThrowingLanguageModule.INSTANCE));
@@ -82,7 +82,7 @@ public class PmdRunnableTest {
     }
 
     @Test
-    public void inErrorRecoveryModeErrorsShouldBeLoggedByParser() throws Exception {
+    void inErrorRecoveryModeErrorsShouldBeLoggedByParser() throws Exception {
         SystemLambda.restoreSystemProperties(() -> {
             System.setProperty(SystemProps.PMD_ERROR_RECOVERY, "");
 
@@ -93,7 +93,7 @@ public class PmdRunnableTest {
     }
 
     @Test
-    public void inErrorRecoveryModeErrorsShouldBeLoggedByRule() throws Exception {
+    void inErrorRecoveryModeErrorsShouldBeLoggedByRule() throws Exception {
         SystemLambda.restoreSystemProperties(() -> {
             System.setProperty(SystemProps.PMD_ERROR_RECOVERY, "");
 
@@ -107,7 +107,7 @@ public class PmdRunnableTest {
     }
 
     @Test
-    public void withoutErrorRecoveryModeProcessingShouldBeAbortedByParser() throws Exception {
+    void withoutErrorRecoveryModeProcessingShouldBeAbortedByParser() throws Exception {
         SystemLambda.restoreSystemProperties(() -> {
             System.clearProperty(SystemProps.PMD_ERROR_RECOVERY);
             assertThrows(AssertionError.class, () -> process(versionWithParserThatThrowsAssertionError()));
@@ -115,7 +115,7 @@ public class PmdRunnableTest {
     }
 
     @Test
-    public void withoutErrorRecoveryModeProcessingShouldBeAbortedByRule() throws Exception {
+    void withoutErrorRecoveryModeProcessingShouldBeAbortedByRule() throws Exception {
         SystemLambda.restoreSystemProperties(() -> {
             System.clearProperty(SystemProps.PMD_ERROR_RECOVERY);
             assertThrows(AssertionError.class, () -> process(ThrowingLanguageModule.INSTANCE.getDefaultVersion()));
@@ -124,7 +124,7 @@ public class PmdRunnableTest {
 
 
     @Test
-    public void semanticErrorShouldAbortTheRun() {
+    void semanticErrorShouldAbortTheRun() {
         Report report = process(versionWithParserThatReportsSemanticError());
 
         verify(reporter, times(1))
@@ -135,7 +135,7 @@ public class PmdRunnableTest {
     }
 
     @Test
-    public void semanticErrorThrownShouldAbortTheRun() {
+    void semanticErrorThrownShouldAbortTheRun() {
         Report report = process(getVersionWithParserThatThrowsSemanticError());
 
         verify(reporter, times(1)).log(eq(Level.ERROR), contains(TEST_MESSAGE_SEMANTIC_ERROR));
@@ -144,23 +144,23 @@ public class PmdRunnableTest {
         assertEquals(1, report.getProcessingErrors().size());
     }
 
-    public static LanguageVersion versionWithParserThatThrowsAssertionError() {
+    private static LanguageVersion versionWithParserThatThrowsAssertionError() {
         return ThrowingLanguageModule.INSTANCE.getVersion(THROWS_ASSERTION_ERROR);
     }
 
-    public static LanguageVersion getVersionWithParserThatThrowsSemanticError() {
+    private static LanguageVersion getVersionWithParserThatThrowsSemanticError() {
         return ThrowingLanguageModule.INSTANCE.getVersion(THROWS_SEMANTIC_ERROR);
     }
 
-    public static LanguageVersion versionWithParserThatReportsSemanticError() {
+    private static LanguageVersion versionWithParserThatReportsSemanticError() {
         return ThrowingLanguageModule.INSTANCE.getVersion(PARSER_REPORTS_SEMANTIC_ERROR);
     }
 
-    public static class ThrowingLanguageModule extends SimpleLanguageModuleBase {
+    private static class ThrowingLanguageModule extends SimpleLanguageModuleBase {
 
-        public static final ThrowingLanguageModule INSTANCE = new ThrowingLanguageModule();
+        static final ThrowingLanguageModule INSTANCE = new ThrowingLanguageModule();
 
-        public ThrowingLanguageModule() {
+        ThrowingLanguageModule() {
             super(LanguageMetadata.withId("foo").name("Foo").extensions("foo")
                                   .addVersion(THROWS_ASSERTION_ERROR)
                                   .addVersion(THROWS_SEMANTIC_ERROR)
