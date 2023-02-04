@@ -20,7 +20,7 @@ completely in uppercase:
 
 LanguageId is the short name of the language, which is being configured. This is e.g. "JAVA" or "APEX".
 
-PropertyName is the uppercase name of the property, that is set to a specific value, e.g. "SUPPRESSMARKER".
+PropertyName is the name of the property converted to SCREAMING_SNAKE_CASE, that is set to a specific value, e.g. "SUPPRESS_MARKER" for "suppressMarker".
 
 As a convention, properties whose name start with an *x* are internal and may be removed or changed without notice.
 
@@ -56,11 +56,11 @@ The Java language can be configured with the following properties:
 
   This property can also be set via the CLI option `--aux-classpath`.
 
-  Environment variable: `PMD_JAVA_AUXCLASSPATH`
+  Environment variable: `PMD_JAVA_AUX_CLASSPATH`
 
 - `xTypeInferenceLogging`: Verbosity of type inference logging, possible values `DISABLED`, `SIMPLE`, `VERBOSE`.
 
-  Environment variable: `PMD_JAVA_XTYPEINFERENCELOGGING`
+  Environment variable: `PMD_JAVA_X_TYPE_INFERENCE_LOGGING`
 
 ## Apex language properties
 
@@ -70,7 +70,7 @@ The Java language can be configured with the following properties:
 
   This property is needed for {% rule apex/design/UnusedMethod %}.
 
-  Environment variable: `PMD_APEX_ROOTDIRECTORY`
+  Environment variable: `PMD_APEX_ROOT_DIRECTORY`
 
 ## VisualForce language properties
 
@@ -78,10 +78,10 @@ The Java language can be configured with the following properties:
   or relative to the Visualforce directory. Default is `../classes`. Specifying an
   empty string will disable data type resolution for Apex Controller properties.
 
-  Environment variable: `PMD_VF_APEXDIRECTORIES`
+  Environment variable: `PMD_VF_APEX_DIRECTORIES`
 
 - `objectsDirectories`: Comma separated list of directories for Custom Objects.
   Absolute or relative to the Visualforce directory. Default is `../objects`.
   Specifying an empty string will disable data type resolution for Custom Object fields.
 
-  Environment variable: `PMD_VF_OBJECTSDIRECTORIES`
+  Environment variable: `PMD_VF_OBJECTS_DIRECTORIES`

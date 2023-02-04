@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang;
 
+import static net.sourceforge.pmd.util.StringUtil.CaseConvention.SCREAMING_SNAKE_CASE;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,6 +22,7 @@ import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.util.CollectionUtil;
+import net.sourceforge.pmd.util.StringUtil.CaseConvention;
 import net.sourceforge.pmd.util.log.MessageReporter;
 
 /**
@@ -213,7 +216,7 @@ public final class LanguageProcessorRegistry implements AutoCloseable {
      */
     private static String getEnvironmentVariableName(Language lang, PropertyDescriptor<?> propertyDescriptor) {
         return "PMD_" + lang.getId().toUpperCase(Locale.ROOT) + "_"
-            + propertyDescriptor.name().toUpperCase(Locale.ROOT);
+            + CaseConvention.CAMEL_CASE.convertTo(SCREAMING_SNAKE_CASE, propertyDescriptor.name());
     }
 
 
