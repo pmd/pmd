@@ -144,6 +144,12 @@ public final class JavaAstProcessor {
 
     public static void process(JavaLanguageProcessor globalProcessor,
                                           SemanticErrorReporter semanticErrorReporter,
+                                           ASTCompilationUnit ast) {
+        process(globalProcessor, semanticErrorReporter, globalProcessor.newTypeInfLogger(), ast);
+    }
+
+    public static void process(JavaLanguageProcessor globalProcessor,
+                                          SemanticErrorReporter semanticErrorReporter,
                                           TypeInferenceLogger typeInfLogger,
                                            ASTCompilationUnit ast) {
 

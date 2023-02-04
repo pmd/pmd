@@ -72,7 +72,7 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
         return typeSystem;
     }
 
-    public TypeInferenceLogger newTypeInfLogger() {
+    TypeInferenceLogger newTypeInfLogger() {
         InferenceLoggingVerbosity verbosity = getProperties().getProperty(JavaLanguageProperties.INTERNAL_INFERENCE_LOGGING_VERBOSITY);
         if (verbosity == InferenceLoggingVerbosity.VERBOSE) {
             return new VerboseLogger(System.err);

@@ -66,7 +66,7 @@ public class JavaParser extends JjtreeParserAdapter<ASTCompilationUnit> {
         levelChecker.check(root);
 
         if (postProcess) {
-            JavaAstProcessor.process(javaProcessor, task.getReporter(), javaProcessor.newTypeInfLogger(), root);
+            JavaAstProcessor.process(javaProcessor, task.getReporter(), root);
         }
 
         return root;
