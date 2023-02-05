@@ -12,7 +12,6 @@ import java.util.Iterator;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
@@ -56,7 +55,7 @@ final class AstDisambiguationPass {
      */
     public static void disambigWithCtx(NodeStream<? extends JavaNode> nodes, ReferenceCtx ctx) {
         assert ctx != null : "Null context";
-        TimeTracker.bench("AST disambiguation", () -> nodes.forEach(it -> it.acceptVisitor(DisambigVisitor.INSTANCE, ctx)));
+        nodes.forEach(it -> it.acceptVisitor(DisambigVisitor.INSTANCE, ctx));
     }
 
 
@@ -253,7 +252,7 @@ final class AstDisambiguationPass {
          * and in the worst case, the original {@link ASTAmbiguousName}.
          */
         private static ASTExpression startResolve(ASTAmbiguousName name, ReferenceCtx ctx, boolean isPackageOrTypeOnly) {
-            Iterator<JavaccToken> tokens = TokenUtils.tokenRange(name);
+            Iterator<JavaccToken> tokens = name.tokens().iterator();
             JavaccToken firstIdent = tokens.next();
             TokenUtils.expectKind(firstIdent, JavaTokenKinds.IDENTIFIER);
 

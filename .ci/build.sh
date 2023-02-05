@@ -28,15 +28,6 @@ function build() {
     pmd_ci_utils_determine_build_env pmd/pmd
     echo
 
-    if ! pmd_ci_utils_is_fork_or_pull_request; then
-      if [ "${PMD_CI_BRANCH}" = "experimental-apex-parser" ]; then
-        pmd_ci_log_group_start "Build with mvnw"
-            ./mvnw clean install --show-version --errors --batch-mode --no-transfer-progress "${PMD_MAVEN_EXTRA_OPTS[@]}"
-        pmd_ci_log_group_end
-        exit 0
-      fi
-    fi
-
     if pmd_ci_utils_is_fork_or_pull_request; then
         pmd_ci_log_group_start "Build with mvnw"
             ./mvnw clean install --show-version --errors --batch-mode --no-transfer-progress "${PMD_MAVEN_EXTRA_OPTS[@]}"
@@ -80,6 +71,18 @@ function build() {
         pmd_ci_setup_secrets_ssh
         pmd_ci_maven_setup_settings
     pmd_ci_log_group_end
+
+    if [ "${PMD_CI_BRANCH}" = "experimental-apex-parser" ]; then
+        pmd_ci_log_group_start "Build with mvnw"
+            ./mvnw clean install --show-version --errors --batch-mode --no-transfer-progress "${PMD_MAVEN_EXTRA_OPTS[@]}"
+        pmd_ci_log_group_end
+
+        pmd_ci_log_group_start "Creating new baseline for regression tester"
+            regression_tester_setup_ci
+            regression_tester_uploadBaseline
+        pmd_ci_log_group_end
+        exit 0
+    fi
 
     pmd_ci_log_group_start "Build and Deploy"
         pmd_ci_build_run
@@ -262,7 +265,7 @@ function pmd_ci_dogfood() {
     sed -i 's/<version>[0-9]\{1,\}\.[0-9]\{1,\}\.[0-9]\{1,\}.*<\/version>\( *<!-- pmd.dogfood.version -->\)/<version>'"${PMD_CI_MAVEN_PROJECT_VERSION}"'<\/version>\1/' pom.xml
     if [ "${PMD_CI_MAVEN_PROJECT_VERSION}" = "7.0.0-SNAPSHOT" ]; then
         sed -i 's/pmd-dogfood-config\.xml/pmd-dogfood-config7.xml/' pom.xml
-        mpmdVersion=(-Denforcer.skip=true -Dpmd.plugin.version=3.18.0-pmd7-SNAPSHOT)
+        mpmdVersion=(-Denforcer.skip=true -Dpmd.plugin.version=3.20.1-pmd-7-SNAPSHOT)
     fi
     ./mvnw verify --show-version --errors --batch-mode --no-transfer-progress "${PMD_MAVEN_EXTRA_OPTS[@]}" \
         "${mpmdVersion[@]}" \

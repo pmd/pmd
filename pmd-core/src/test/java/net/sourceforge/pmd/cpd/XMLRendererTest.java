@@ -12,6 +12,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +26,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
 import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 
 /**
@@ -42,10 +42,9 @@ class XMLRendererTest {
 
     @Test
     void testWithNoDuplication() throws IOException, ParserConfigurationException, SAXException {
-        CPDRenderer renderer = new XMLRenderer();
-        List<Match> list = new ArrayList<>();
+        CPDReportRenderer renderer = new XMLRenderer();
         StringWriter sw = new StringWriter();
-        renderer.render(list.iterator(), sw);
+        renderer.render(new CPDReport(Collections.emptyList(), Collections.emptyMap()), sw);
         String report = sw.toString();
 
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
@@ -58,7 +57,7 @@ class XMLRendererTest {
 
     @Test
     void testWithOneDuplication() throws Exception {
-        CPDRenderer renderer = new XMLRenderer();
+        CPDReportRenderer renderer = new XMLRenderer();
         List<Match> list = new ArrayList<>();
         int lineCount = 6;
         String codeFragment = "code\nfragment";
@@ -68,7 +67,7 @@ class XMLRendererTest {
 
         list.add(match);
         StringWriter sw = new StringWriter();
-        renderer.render(list.iterator(), sw);
+        renderer.render(new CPDReport(list, Collections.emptyMap()), sw);
         String report = sw.toString();
 
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
@@ -102,7 +101,7 @@ class XMLRendererTest {
 
     @Test
     void testRenderWithMultipleMatch() throws Exception {
-        CPDRenderer renderer = new XMLRenderer();
+        CPDReportRenderer renderer = new XMLRenderer();
         List<Match> list = new ArrayList<>();
         int lineCount1 = 6;
         String codeFragment1 = "code fragment";
@@ -119,7 +118,7 @@ class XMLRendererTest {
         list.add(match1);
         list.add(match2);
         StringWriter sw = new StringWriter();
-        renderer.render(list.iterator(), sw);
+        renderer.render(new CPDReport(list, Collections.emptyMap()), sw);
         String report = sw.toString();
 
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
@@ -130,7 +129,7 @@ class XMLRendererTest {
 
     @Test
     void testWithOneDuplicationWithColumns() throws Exception {
-        CPDRenderer renderer = new XMLRenderer();
+        CPDReportRenderer renderer = new XMLRenderer();
         List<Match> list = new ArrayList<>();
         int lineCount = 6;
         String codeFragment = "code\nfragment";
@@ -140,7 +139,7 @@ class XMLRendererTest {
 
         list.add(match);
         StringWriter sw = new StringWriter();
-        renderer.render(list.iterator(), sw);
+        renderer.render(new CPDReport(list, Collections.emptyMap()), sw);
         String report = sw.toString();
 
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
@@ -174,7 +173,7 @@ class XMLRendererTest {
 
     @Test
     void testRendererEncodedPath() throws IOException {
-        CPDRenderer renderer = new XMLRenderer();
+        CPDReportRenderer renderer = new XMLRenderer();
         List<Match> list = new ArrayList<>();
         final String espaceChar = "&lt;";
         Mark mark1 = createMark("public", "/var/A<oo.java" + FORM_FEED, 48, 6, "code fragment");
@@ -183,7 +182,7 @@ class XMLRendererTest {
         list.add(match1);
 
         StringWriter sw = new StringWriter();
-        renderer.render(list.iterator(), sw);
+        renderer.render(new CPDReport(list, Collections.emptyMap()), sw);
         String report = sw.toString();
         assertTrue(report.contains(espaceChar));
         assertFalse(report.contains(FORM_FEED));
@@ -217,7 +216,7 @@ class XMLRendererTest {
     }
 
     @Test
-    public void testGetDuplicationStartEnd() throws IOException, ParserConfigurationException, SAXException {
+    void testGetDuplicationStartEnd() throws IOException, ParserConfigurationException, SAXException {
         TokenEntry.clearImages();
         final CPDReportRenderer renderer = new XMLRenderer();
         final List<Match> matches = new ArrayList<>();
@@ -251,7 +250,7 @@ class XMLRendererTest {
     @Test
     void testRendererXMLEscaping() throws IOException {
         String codefragment = "code fragment" + FORM_FEED + "\nline2\nline3\nno & escaping necessary in CDATA\nx=\"]]>\";";
-        CPDRenderer renderer = new XMLRenderer();
+        CPDReportRenderer renderer = new XMLRenderer();
         List<Match> list = new ArrayList<>();
         Mark mark1 = createMark("public", "file1", 1, 5, codefragment);
         Mark mark2 = createMark("public", "file2", 5, 5, codefragment);
@@ -259,7 +258,7 @@ class XMLRendererTest {
         list.add(match1);
 
         StringWriter sw = new StringWriter();
-        renderer.render(list.iterator(), sw);
+        renderer.render(new CPDReport(list, Collections.emptyMap()), sw);
         String report = sw.toString();
         assertFalse(report.contains(FORM_FEED));
         assertFalse(report.contains(FORM_FEED_ENTITY));

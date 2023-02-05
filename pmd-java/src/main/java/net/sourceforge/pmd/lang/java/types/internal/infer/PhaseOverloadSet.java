@@ -235,7 +235,7 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
             if (TypeOps.mentionsAny(x, sfun.getTypeParameters()) && !ctx.isGround(y)) {
                 return false;
             } else {
-                TypeOps.isSameType(x, y.subst(tToS), true); // adds an equality constraint
+                TypeOps.isSameTypeInInference(x, y.subst(tToS)); // adds an equality constraint
             }
         }
 

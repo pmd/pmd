@@ -4,29 +4,33 @@
 
 package net.sourceforge.pmd;
 
+import static net.sourceforge.pmd.ReportTestUtil.getReportForRuleApply;
 import static net.sourceforge.pmd.properties.NumericConstraints.inRange;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
-import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
 
 
-public class AbstractRuleTest {
+class AbstractRuleTest {
 
-    public static class MyRule extends AbstractRule {
+    private static class MyRule extends AbstractRule {
         private static final PropertyDescriptor<String> FOO_PROPERTY = PropertyFactory.stringProperty("foo").desc("foo property").defaultValue("x").build();
         private static final PropertyDescriptor<String> FOO_DEFAULT_PROPERTY = PropertyFactory.stringProperty("fooDefault")
                 .defaultValue("bar")
@@ -35,7 +39,7 @@ public class AbstractRuleTest {
 
         private static final PropertyDescriptor<String> XPATH_PROPERTY = PropertyFactory.stringProperty("xpath").desc("xpath property").defaultValue("").build();
 
-        public MyRule() {
+        MyRule() {
             definePropertyDescriptor(FOO_PROPERTY);
             definePropertyDescriptor(XPATH_PROPERTY);
             definePropertyDescriptor(FOO_DEFAULT_PROPERTY);
@@ -104,18 +108,21 @@ public class AbstractRuleTest {
 
         DummyRootNode s = DummyLanguageModule.parse("abc()", "filename");
 
-        RuleViolation rv = RuleContextTest.getReportForRuleApply(r, s).getViolations().get(0);
-        assertEquals("Message foo    10 ${noSuchProperty}", rv.getDescription());
+        RuleViolation rv = getReportForRuleApply(r, s).getViolations().get(0);
+        assertEquals("Message foo ${className} ${methodName} ${variableName} 10 ${noSuchProperty}", rv.getDescription());
     }
 
     @Test
     void testRuleSuppress() {
         DummyRootNode n = DummyLanguageModule.parse("abc()", "filename")
             .withNoPmdComments(Collections.singletonMap(1, "ohio"));
-        RuleViolation violation = DefaultRuleViolationFactory.defaultInstance().createViolation(new MyRule(), n, n.getReportLocation(), "specificdescription");
-        SuppressedViolation suppressed = DefaultRuleViolationFactory.defaultInstance().suppressOrNull(n, violation);
 
-        assertNotNull(suppressed);
+        FileAnalysisListener listener = mock(FileAnalysisListener.class);
+        RuleContext ctx = RuleContext.create(listener, new MyRule());
+        ctx.addViolationWithMessage(n, "message");
+
+        verify(listener, never()).onRuleViolation(any());
+        verify(listener, times(1)).onSuppressedRuleViolation(any());
     }
 
     @Test

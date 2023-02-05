@@ -4,7 +4,9 @@
 
 package net.sourceforge.pmd.internal;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Map;
 
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
@@ -16,6 +18,7 @@ import org.slf4j.event.Level;
 public final class Slf4jSimpleConfiguration {
     private static final String SIMPLE_LOGGER_FACTORY_CLASS = "org.slf4j.impl.SimpleLoggerFactory";
     private static final String SIMPLE_LOGGER_CLASS = "org.slf4j.impl.SimpleLogger";
+    private static final String PMD_ROOT_LOGGER = "net.sourceforge.pmd";
 
     private Slf4jSimpleConfiguration() { }
 
@@ -41,10 +44,24 @@ public final class Slf4jSimpleConfiguration {
             initMethod.setAccessible(true);
             initMethod.invoke(null);
 
-            // Call SimpleLoggerFactory.reset() by reflection.
-            Method resetMethod = loggerFactoryClass.getDeclaredMethod("reset");
-            resetMethod.setAccessible(true);
-            resetMethod.invoke(loggerFactory);
+            int newLogLevel = getDefaultLogLevelInt(simpleLoggerClass);
+
+            Field currentLogLevelField = simpleLoggerClass.getDeclaredField("currentLogLevel");
+            currentLogLevelField.setAccessible(true);
+
+            // Change the logging level of loggers that were already created.
+            // For this we fetch the map of name to logger that is stored in the logger factory,
+            // then set the log level field of each logger via reflection.
+            Field loggerMapField = loggerFactoryClass.getDeclaredField("loggerMap");
+            loggerMapField.setAccessible(true);
+            @SuppressWarnings("unchecked")
+            Map<String, Logger> loggerMap = (Map<String, Logger>) loggerMapField.get(loggerFactory);
+            for (Logger logger : loggerMap.values()) {
+                if (logger.getName().startsWith(PMD_ROOT_LOGGER)
+                    && SIMPLE_LOGGER_CLASS.equals(logger.getClass().getName())) {
+                    currentLogLevelField.set(logger, newLogLevel);
+                }
+            }
         } catch (ReflectiveOperationException ex) {
             System.err.println("Error while initializing logging: " + ex);
         }
@@ -52,8 +69,17 @@ public final class Slf4jSimpleConfiguration {
         PmdLoggerFactoryFriend.reset();
     }
 
+    private static int getDefaultLogLevelInt(Class<?> simpleLoggerClass) throws ReflectiveOperationException {
+        Field configParamsField = simpleLoggerClass.getDeclaredField("CONFIG_PARAMS");
+        configParamsField.setAccessible(true);
+        Object configParams = configParamsField.get(null);
+        Field defaultLogLevelField = configParams.getClass().getDeclaredField("defaultLogLevel");
+        defaultLogLevelField.setAccessible(true);
+        return (int) defaultLogLevelField.get(configParams);
+    }
+
     public static Level getDefaultLogLevel() {
-        Logger rootLogger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+        Logger rootLogger = LoggerFactory.getLogger(PMD_ROOT_LOGGER);
 
         // check the lowest log level first
         if (rootLogger.isTraceEnabled()) {

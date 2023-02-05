@@ -8,7 +8,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.Comment;
+import net.sourceforge.pmd.lang.java.ast.JavaComment;
 import net.sourceforge.pmd.lang.rule.xpath.internal.AstElementNode;
 
 import net.sf.saxon.expr.XPathContext;
@@ -63,10 +63,10 @@ public class GetCommentOnFunction extends BaseJavaXPathFunction {
                 int codeBeginLine = contextNode.getBeginLine();
                 int codeEndLine = contextNode.getEndLine();
 
-                List<Comment> commentList = contextNode.getFirstParentOfType(ASTCompilationUnit.class).getComments();
-                for (Comment comment : commentList) {
+                List<JavaComment> commentList = contextNode.getFirstParentOfType(ASTCompilationUnit.class).getComments();
+                for (JavaComment comment : commentList) {
                     if (comment.getBeginLine() == codeBeginLine || comment.getEndLine() == codeEndLine) {
-                        return new StringValue(comment.getImage());
+                        return new StringValue(comment.getText());
                     }
                 }
                 return EmptyAtomicSequence.INSTANCE;

@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
@@ -21,9 +22,11 @@ import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 import net.sourceforge.pmd.lang.java.types.TypeOps.Convertibility;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * Type mirrors represent Java types. They are created by a {@link TypeSystem}
@@ -80,6 +83,24 @@ public interface JTypeMirror extends JTypeVisitable {
      * Returns the type system that built this type.
      */
     TypeSystem getTypeSystem();
+
+
+    /**
+     * Return a list of annotations on this type. Annotations can be written
+     * on nearly any type (eg {@code @A Out.@B In<@C T>}, {@code @A ? extends @B Up}).
+     *
+     * <p>For {@link JTypeVar}, this includes both the annotations defined
+     * on the type var and those defined at use site. For instance
+     * <pre>{@code
+     *    <@A T> void accept(@B T t);
+     * }</pre>
+     * The T type var will have annotation {@code @A} in the symbol
+     * ({@link JTypeParameterSymbol#getDeclaredAnnotations()})
+     * and in the type var that is in the {@link JMethodSig#getTypeParameters()}.
+     * In the formal parameter, the type var will have annotations {@code @B @A}.
+     */
+    // todo annotations do not participate in equality of types.
+    PSet<SymAnnot> getTypeAnnotations();
 
 
     /**
@@ -159,13 +180,16 @@ public interface JTypeMirror extends JTypeVisitable {
      * <ul>
      * <li>{@link JClassType}: a {@link JClassSymbol}, always (even if not reifiable)
      * <li>{@link JPrimitiveType}: a {@link JClassSymbol}, always
-     * <li>{@link JArrayType}: a {@link JClassSymbol}, if the element type does present a symbol
-     * <li>{@link JTypeVar}: a {@link JTypeParameterSymbol}, always. Note that the
-     * erasure yields a different symbol (eg Object for unbounded tvars).
+     * <li>{@link JArrayType}: a {@link JClassSymbol}, if the element type does present a symbol.
+     * <li>{@link JTypeVar}: a {@link JTypeParameterSymbol}, or null if this is a capture variable.
+     * Note that the erasure yields a different symbol (eg Object for unbounded tvars).
      * <li>{@link JIntersectionType}: null, though their erasure always
      * presents a symbol.
      * <li>{@link JWildcardType}, {@link TypeSystem#NULL_TYPE the null type}: null, always
      * </ul>
+     *
+     * <p>Note that type annotations are not reflected on the
+     * symbol, but only on the type.
      */
     default @Nullable JTypeDeclSymbol getSymbol() {
         return null;
@@ -281,7 +305,7 @@ public interface JTypeMirror extends JTypeVisitable {
      * Returns true if this is {@link TypeSystem#OBJECT}.
      */
     default boolean isTop() {
-        return this == getTypeSystem().OBJECT; // NOPMD CompareObjectsWithEquals
+        return false; // overridden
     }
 
 
@@ -423,9 +447,31 @@ public interface JTypeMirror extends JTypeVisitable {
     }
 
 
-
     @Override
     JTypeMirror subst(Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst);
+
+
+    /**
+     * Returns a type mirror that is equal to this instance but has different
+     * type annotations. Note that some types ignore this method and return
+     * themselves without changing. Eg the null type cannot be annotated.
+     *
+     * @param newTypeAnnots New type annotations (not null)
+     *
+     * @return A new type, maybe this one
+     */
+    JTypeMirror withAnnotations(PSet<SymAnnot> newTypeAnnots);
+
+    /**
+     * Returns a type mirror that is equal to this instance but has one
+     * more type annotation.
+     *
+     * @see #withAnnotations(PSet)
+     */
+    default JTypeMirror addAnnotation(@NonNull SymAnnot newAnnot) {
+        AssertionUtil.requireParamNotNull("annot", newAnnot);
+        return withAnnotations(getTypeAnnotations().plus(newAnnot));
+    }
 
 
     /**

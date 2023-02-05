@@ -11,8 +11,8 @@ import java.util.List;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.internal.util.AssertionUtil;
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.internal.util.IOUtil;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * A handler for events occuring during analysis of a single file. Instances
@@ -90,10 +90,10 @@ public interface FileAnalysisListener extends AutoCloseable {
         List<FileAnalysisListener> list = new ArrayList<>(listeners);
         list.removeIf(it -> it == NoopFileListener.INSTANCE);
 
-        if (listeners.isEmpty()) {
+        if (list.isEmpty()) {
             return noop();
-        } else if (listeners.size() == 1) {
-            return listeners.iterator().next();
+        } else if (list.size() == 1) {
+            return list.iterator().next();
         }
 
         class TeeListener implements FileAnalysisListener {

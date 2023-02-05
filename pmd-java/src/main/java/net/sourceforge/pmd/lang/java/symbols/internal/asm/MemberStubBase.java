@@ -5,15 +5,21 @@
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.pcollections.HashTreePSet;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
-abstract class MemberStubBase implements JAccessibleElementSymbol, AsmStub {
+abstract class MemberStubBase implements JAccessibleElementSymbol, AsmStub, AnnotationOwner {
 
     private final ClassStub classStub;
     private final String simpleName;
     private final int accessFlags;
+
+    private PSet<SymAnnot> annotations = HashTreePSet.empty();
+
 
     protected MemberStubBase(ClassStub classStub, String simpleName, int accessFlags) {
         this.classStub = classStub;
@@ -44,5 +50,15 @@ abstract class MemberStubBase implements JAccessibleElementSymbol, AsmStub {
     @Override
     public @NonNull ClassStub getEnclosingClass() {
         return classStub;
+    }
+
+    @Override
+    public void addAnnotation(SymAnnot annot) {
+        annotations = annotations.plus(annot);
+    }
+
+    @Override
+    public PSet<SymAnnot> getDeclaredAnnotations() {
+        return annotations;
     }
 }

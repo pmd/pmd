@@ -24,9 +24,14 @@ public final class ASTAnnotationMemberList extends ASTMaybeEmptyListOf<ASTMember
         super(id, ASTMemberValuePair.class);
     }
 
-    @Override
-    public ASTAnnotation getParent() {
-        return (ASTAnnotation) super.getParent();
+    /**
+     * Returns the value of the attribute with the given name, returns
+     * null if no such attribute was mentioned.
+     *
+     * @param attrName Name of an attribute
+     */
+    public ASTMemberValue getAttribute(String attrName) {
+        return toStream().filter(it -> it.getName().equals(attrName)).map(ASTMemberValuePair::getValue).first();
     }
 
     @Override

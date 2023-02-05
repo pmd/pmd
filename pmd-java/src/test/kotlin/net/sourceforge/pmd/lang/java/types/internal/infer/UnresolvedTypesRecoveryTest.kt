@@ -649,7 +649,7 @@ class C {
         acu.withTypeDsl {
             ok shouldHaveType t_Lambda
             wrong shouldHaveType t_Lambda
-            wrong.parameters[0] shouldHaveType ts.ERROR
+            wrong.parameters[0] shouldHaveType ts.UNKNOWN
         }
     }
 

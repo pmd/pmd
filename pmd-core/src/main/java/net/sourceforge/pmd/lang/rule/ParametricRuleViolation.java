@@ -4,13 +4,15 @@
 
 package net.sourceforge.pmd.lang.rule;
 
+import java.util.Collections;
+import java.util.Map;
+
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.document.FileLocation;
-import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.reporting.Reportable;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * @deprecated This is internal. Clients should exclusively use {@link RuleViolation}.
@@ -25,58 +27,41 @@ public class ParametricRuleViolation implements RuleViolation {
 
     private final FileLocation location;
 
-    protected String packageName = "";
-    protected String className = "";
-    protected String methodName = "";
-    protected String variableName = "";
+    private final Map<String, String> additionalInfo;
 
+    // todo add factory methods on the interface and hide the class.
 
+    /**
+     * @deprecated Update tests that use this not to call the ctor directly.
+     */
+    @Deprecated
     public ParametricRuleViolation(Rule theRule, Reportable node, String message) {
-        this(theRule, node.getReportLocation(), message);
+        this(theRule, node.getReportLocation(), message, Collections.emptyMap());
     }
 
     public ParametricRuleViolation(Rule theRule, FileLocation location, String message) {
+        this(theRule, location, message, Collections.emptyMap());
+    }
+
+    public ParametricRuleViolation(Rule theRule, Reportable node, String message, Map<String, String> additionalInfo) {
+        this(theRule, node.getReportLocation(), message, additionalInfo);
+    }
+
+    public ParametricRuleViolation(Rule theRule, FileLocation location, String message, Map<String, String> additionalInfo) {
         this.rule = AssertionUtil.requireParamNotNull("rule", theRule);
         this.description = AssertionUtil.requireParamNotNull("message", message);
-
         this.location = location;
-    }
 
-    protected String expandVariables(String message) {
-        // TODO move that to RuleContext with the rest of the formatting logic
-
-        if (!message.contains("${")) {
-            return message;
-        }
-
-        StringBuilder buf = new StringBuilder(message);
-        int startIndex = -1;
-        while ((startIndex = buf.indexOf("${", startIndex + 1)) >= 0) {
-            final int endIndex = buf.indexOf("}", startIndex);
-            if (endIndex >= 0) {
-                final String name = buf.substring(startIndex + 2, endIndex);
-                String variableValue = getVariableValue(name);
-                if (variableValue != null) {
-                    buf.replace(startIndex, endIndex + 1, variableValue);
-                }
-            }
-        }
-        return buf.toString();
-    }
-
-    protected String getVariableValue(String name) {
-        if ("variableName".equals(name)) {
-            return variableName;
-        } else if ("methodName".equals(name)) {
-            return methodName;
-        } else if ("className".equals(name)) {
-            return className;
-        } else if ("packageName".equals(name)) {
-            return packageName;
+        if (!additionalInfo.isEmpty()) {
+            this.additionalInfo = Collections.unmodifiableMap(additionalInfo);
         } else {
-            final PropertyDescriptor<?> propertyDescriptor = rule.getPropertyDescriptor(name);
-            return propertyDescriptor == null ? null : String.valueOf(rule.getProperty(propertyDescriptor));
+            this.additionalInfo = Collections.emptyMap();
         }
+    }
+
+    @Override
+    public Map<String, String> getAdditionalInfo() {
+        return additionalInfo;
     }
 
     @Override
@@ -86,32 +71,12 @@ public class ParametricRuleViolation implements RuleViolation {
 
     @Override
     public String getDescription() {
-        return expandVariables(description);
+        return description;
     }
 
     @Override
     public FileLocation getLocation() {
         return location;
-    }
-
-    @Override
-    public String getPackageName() {
-        return packageName;
-    }
-
-    @Override
-    public String getClassName() {
-        return className;
-    }
-
-    @Override
-    public String getMethodName() {
-        return methodName;
-    }
-
-    @Override
-    public String getVariableName() {
-        return variableName;
     }
 
     @Override

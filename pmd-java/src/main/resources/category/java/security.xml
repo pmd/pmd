@@ -63,18 +63,4 @@ public class Foo {
 ]]>
         </example>
     </rule>
-
-    <rule name="TypeResTest"
-          language="java"
-          since="7.0.0"
-          message="Type Resolution Test"
-          class="net.sourceforge.pmd.lang.java.rule.security.TypeResTestRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_security.html#typerestest">
-        <description>
-This is just a toy rule that counts the proportion of resolved types in a codebase, not meant as a real rule.
-
-It is used to test the capability of PMD's own type resolution.
-        </description>
-        <priority>3</priority>
-    </rule>
 </ruleset>

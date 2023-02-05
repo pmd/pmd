@@ -9,6 +9,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -19,7 +20,7 @@ import org.apache.tools.ant.BuildException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.internal.util.IOUtil;
 
 class PMDTaskTest extends AbstractAntTest {
 
@@ -69,14 +70,14 @@ class PMDTaskTest extends AbstractAntTest {
     }
 
     @Test
-    void testWithShortFilenames() throws IOException {
-        executeTarget("testWithShortFilenames");
+    void testRelativizeWith() throws IOException {
+        executeTarget("testRelativizeWith");
 
         try (InputStream in = Files.newInputStream(Paths.get("target/pmd-ant-test.txt"))) {
             String actual = IOUtil.readToString(in, StandardCharsets.UTF_8);
             // remove any trailing newline
-            actual = actual.trim();
-            assertThat(actual, containsString("sample.dummy:1:\tSampleXPathRule:\tTest Rule 2"));
+            actual = actual.replaceAll("\n|\r", "");
+            assertThat(actual, containsString("src" + File.separator + "sample.dummy:1:\tSampleXPathRule:\tTest Rule 2"));
         }
     }
 

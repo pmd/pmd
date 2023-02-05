@@ -199,7 +199,7 @@ public class CloseResourceRule extends AbstractJavaRule {
             .filterNot(ASTVariableDeclaratorId::isExceptionBlockParameter)
             .filter(this::isVariableNotSpecifiedInTryWithResource)
             .filter(var -> isResourceTypeOrSubtype(var) || isNodeInstanceOfResourceType(getTypeOfVariable(var)))
-            .filter(var -> var.getAnnotation("lombok.Cleanup") == null)
+            .filterNot(var -> var.isAnnotationPresent("lombok.Cleanup"))
             .toList();
 
         for (ASTVariableDeclaratorId var : vars) {
@@ -216,7 +216,7 @@ public class CloseResourceRule extends AbstractJavaRule {
 
     private TypeNode getRuntimeTypeOfVariable(ASTVariableDeclaratorId var) {
         ASTExpression initExpr = var.getInitializer();
-        return isRuntimeType(initExpr) ? initExpr : null;
+        return var.isTypeInferred() || isRuntimeType(initExpr) ? initExpr : null;
     }
 
     private boolean isRuntimeType(ASTExpression expr) {

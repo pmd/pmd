@@ -626,7 +626,7 @@ public class RuleSet implements ChecksumAware {
      *     <code>false</code> otherwise
      */
     boolean applies(TextFile file) {
-        return applies(file.getPathId());
+        return applies(file.getDisplayName());
     }
 
     /**
@@ -650,7 +650,7 @@ public class RuleSet implements ChecksumAware {
     public static boolean applies(Rule rule, LanguageVersion languageVersion) {
         final LanguageVersion min = rule.getMinimumLanguageVersion();
         final LanguageVersion max = rule.getMaximumLanguageVersion();
-        Objects.requireNonNull(rule.getLanguage(), "Rule has no language " + rule);
+        assert rule.getLanguage() != null : "Rule has no language " + rule;
         return rule.getLanguage().equals(languageVersion.getLanguage())
                 && (min == null || min.compareTo(languageVersion) <= 0)
                 && (max == null || max.compareTo(languageVersion) >= 0);

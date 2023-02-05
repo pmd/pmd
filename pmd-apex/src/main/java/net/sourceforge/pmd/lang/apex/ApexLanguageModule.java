@@ -9,6 +9,7 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import net.sourceforge.pmd.lang.BaseLanguageModule;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.apex.internal.ApexHandler;
 
 import apex.jorje.services.Version;
 

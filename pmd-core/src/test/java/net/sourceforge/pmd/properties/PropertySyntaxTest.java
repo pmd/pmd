@@ -14,7 +14,7 @@ import net.sourceforge.pmd.RulesetFactoryTestBase;
 /**
  * @author Clément Fournier
  */
-public class PropertySyntaxTest extends RulesetFactoryTestBase {
+class PropertySyntaxTest extends RulesetFactoryTestBase {
 
     @Test
     void testStringProp() {

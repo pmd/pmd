@@ -143,6 +143,7 @@ public final class PmdParametersParseResult {
     /** Map of deprecated option to suggested replacement. */
     private static final Map<String, String> SUGGESTED_REPLACEMENT;
 
+
     static {
         Map<String, String> m = new LinkedHashMap<>();
 
@@ -159,7 +160,8 @@ public final class PmdParametersParseResult {
         m.put("-threads", "--threads");
         m.put("-benchmark", "--benchmark");
         m.put("-stress", "--stress");
-        m.put("-shortnames", "--short-names");
+        m.put("-shortnames", PMDParameters.RELATIVIZE_PATHS_WITH);
+        m.put("--short-names", PMDParameters.RELATIVIZE_PATHS_WITH);
         m.put("-showsuppressed", "--show-suppressed");
         m.put("-suppressmarker", "--suppress-marker");
         m.put("-minimumpriority", "--minimum-priority");

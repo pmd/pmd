@@ -4,30 +4,16 @@
 
 package net.sourceforge.pmd;
 
+import static net.sourceforge.pmd.ReportTestUtil.getReport;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.function.BiConsumer;
 
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil;
 
-public class RuleContextTest {
+class RuleContextTest {
 
-    static Report getReport(Rule rule, BiConsumer<Rule, RuleContext> sideEffects) {
-        return Report.buildReport(listener -> sideEffects.accept(rule, RuleContext.create(listener, rule)));
-    }
-
-    public static Report getReportForRuleApply(Rule rule, Node node) {
-        return getReport(rule, (r, ctx) -> r.apply(node, ctx));
-    }
-
-    static Report getReportForRuleSetApply(RuleSet ruleset, RootNode node) {
-        return Report.buildReport(listener -> new RuleSets(ruleset).apply(node, listener));
-    }
 
     @Test
     void testMessage() throws Exception {

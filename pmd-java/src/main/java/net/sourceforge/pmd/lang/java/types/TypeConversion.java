@@ -5,6 +5,12 @@
 package net.sourceforge.pmd.lang.java.types;
 
 import static java.util.Arrays.asList;
+import static net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.BYTE;
+import static net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.CHAR;
+import static net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.DOUBLE;
+import static net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.FLOAT;
+import static net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.LONG;
+import static net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.SHORT;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +52,7 @@ public final class TypeConversion {
 
         TypeSystem ts = t.getTypeSystem();
 
-        if (t == ts.BYTE || t == ts.SHORT || t == ts.CHAR) {
+        if (t.isPrimitive(BYTE) || t.isPrimitive(SHORT) || t.isPrimitive(CHAR)) {
             return ts.INT;
         }
 
@@ -75,11 +81,11 @@ public final class TypeConversion {
 
         TypeSystem ts = t.getTypeSystem();
 
-        if (t1 == ts.DOUBLE || s1 == ts.DOUBLE) {
+        if (t1.isPrimitive(DOUBLE) || s1.isPrimitive(DOUBLE)) {
             return ts.DOUBLE;
-        } else if (t1 == ts.FLOAT || s1 == ts.FLOAT) {
+        } else if (t1.isPrimitive(FLOAT) || s1.isPrimitive(FLOAT)) {
             return ts.FLOAT;
-        } else if (t1 == ts.LONG || s1 == ts.LONG) {
+        } else if (t1.isPrimitive(LONG) || s1.isPrimitive(LONG)) {
             return ts.LONG;
         } else if (t1.isNumeric() && s1.isNumeric()) {
             return ts.INT;

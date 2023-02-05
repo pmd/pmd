@@ -30,6 +30,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
+import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.RuleReference;
@@ -37,7 +38,6 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySerializer;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.properties.PropertyTypeId;
-import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.internal.xml.SchemaConstants;
 
 /**
@@ -48,12 +48,6 @@ public class RuleSetWriter {
     private static final Logger LOG = LoggerFactory.getLogger(RuleSetWriter.class);
 
     public static final String RULESET_2_0_0_NS_URI = "http://pmd.sourceforge.net/ruleset/2.0.0";
-
-    /**
-     * @deprecated use {@link #RULESET_2_0_0_NS_URI} instead
-     */
-    @Deprecated // To be removed in PMD 7.0.0
-    public static final String RULESET_NS_URI = RULESET_2_0_0_NS_URI;
 
     private final OutputStream outputStream;
     private Document document;

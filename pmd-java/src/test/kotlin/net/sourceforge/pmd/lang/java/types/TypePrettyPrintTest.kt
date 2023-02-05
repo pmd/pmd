@@ -40,7 +40,7 @@ class TypePrettyPrintTest : FunSpec({
 
     test("pretty print with simple names") {
 
-        fun JTypeMirror.pp() = TypePrettyPrint.prettyPrint(this, TypePrettyPrinter().useSimpleNames(true))
+        fun JTypeMirror.pp() = TypePrettyPrint.prettyPrintWithSimpleNames(this)
 
         with(TypeDslOf(ts)) {
             ts.OBJECT.pp() shouldBe "Object"
@@ -51,7 +51,7 @@ class TypePrettyPrintTest : FunSpec({
 
     test("pretty print with tvar qualifiers") {
 
-        val acu = ParserTestCtx().parser.withProcessing(true).parse("""
+        val acu = ParserTestCtx(this).parser.withProcessing(true).parse("""
             package p;
             class Foo<A,B> {
                 <T> T method(A a, B b) {}
@@ -68,7 +68,7 @@ class TypePrettyPrintTest : FunSpec({
 
     test("pretty print with no method header") {
 
-        val acu = ParserTestCtx().parser.withProcessing(true).parse("""
+        val acu = ParserTestCtx(this).parser.withProcessing(true).parse("""
             package p;
             class Foo<A,B> {
                 <T> T method(A a, B b) {}

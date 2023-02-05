@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.function.Consumer;
 
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.RuleWithProperties;
+import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.document.FileLocation;
@@ -34,7 +36,6 @@ import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
-import net.sourceforge.pmd.util.IOUtil;
 
 abstract class AbstractRendererTest {
 
@@ -99,7 +100,7 @@ abstract class AbstractRendererTest {
 
     protected RuleViolation newRuleViolation(int beginLine, int beginColumn, int endLine, int endColumn, Rule rule) {
         FileLocation loc = createLocation(beginLine, beginColumn, endLine, endColumn);
-        return new ParametricRuleViolation(rule, loc, "blah");
+        return new ParametricRuleViolation(rule, loc, "blah", Collections.emptyMap());
     }
 
     /**

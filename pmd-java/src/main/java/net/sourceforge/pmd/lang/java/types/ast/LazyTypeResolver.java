@@ -29,7 +29,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCharLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTClassLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
@@ -47,7 +46,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTPatternExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
@@ -149,18 +147,6 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
         throw new IllegalArgumentException("Not a type node:" + node);
     }
 
-
-    @Override
-    public JTypeMirror visit(ASTVariableDeclarator node, TypingContext ctx) {
-        return ts.NO_TYPE; // TODO shouldn't be a typenode (do you mean type of variable, or type of initializer?)
-    }
-
-    @Override
-    public JTypeMirror visit(ASTCompilationUnit node, TypingContext ctx) {
-        return ts.NO_TYPE; // TODO shouldn't be a typenode
-    }
-
-
     @Override
     public JTypeMirror visit(ASTFormalParameter node, TypingContext ctx) {
         return node.getVarId().getTypeMirror(ctx);
@@ -190,11 +176,6 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
     @Override
     public JTypeMirror visit(ASTVoidType node, TypingContext ctx) {
         return ts.NO_TYPE;
-    }
-
-    @Override
-    public JTypeMirror visit(ASTPrimitiveType node, TypingContext ctx) {
-        return ts.getPrimitive(node.getKind());
     }
 
     @Override

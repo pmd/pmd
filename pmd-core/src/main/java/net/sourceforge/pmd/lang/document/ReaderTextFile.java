@@ -9,8 +9,8 @@ import java.io.Reader;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * Read-only view on a string.

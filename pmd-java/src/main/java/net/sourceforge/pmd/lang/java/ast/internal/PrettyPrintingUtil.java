@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast.internal;
 
-import static net.sourceforge.pmd.internal.util.AssertionUtil.shouldNotReachHere;
+import static net.sourceforge.pmd.util.AssertionUtil.shouldNotReachHere;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -117,7 +117,7 @@ public final class PrettyPrintingUtil {
             sb.append("?");
             ASTReferenceType bound = ((ASTWildcardType) t).getTypeBoundNode();
             if (bound != null) {
-                sb.append(((ASTWildcardType) t).hasLowerBound() ? " super " : " extends ");
+                sb.append(((ASTWildcardType) t).isLowerBound() ? " super " : " extends ");
                 prettyPrintTypeNode(sb, bound);
             }
         } else if (t instanceof ASTUnionType) {
@@ -233,7 +233,7 @@ public final class PrettyPrintingUtil {
     }
 
     private static TypePrettyPrinter overloadPrinter() {
-        return new TypePrettyPrinter().useSimpleNames(true).printMethodResult(false);
+        return new TypePrettyPrinter().qualifyNames(false).printMethodResult(false);
     }
 
 

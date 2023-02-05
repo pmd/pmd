@@ -7,8 +7,9 @@
 
 package net.sourceforge.pmd.lang.java.types
 
-import io.kotest.assertions.fail
-import io.kotest.assertions.withClue
+import io.kotest.assertions.*
+import io.kotest.assertions.print.Printed
+import io.kotest.assertions.print.print
 import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
@@ -52,7 +53,16 @@ fun JTypeMirror.shouldBeUnresolvedClass(canonicalName: String) =
 
 infix fun TypeNode.shouldHaveType(expected: JTypeMirror) {
     withClue(this) {
-        this.typeMirror shouldBe expected
+        val actual = this.typeMirror
+        // test considering annotations
+        if (!isSameTypeWithSameAnnotations(actual, expected))
+            errorCollector.collectOrThrow(
+                failure(
+                    Expected(expected.print()),
+                    Actual(actual.print()),
+                )
+            )
+
     }
 }
 

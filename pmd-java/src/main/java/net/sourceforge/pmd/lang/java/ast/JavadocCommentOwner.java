@@ -16,7 +16,7 @@ public interface JavadocCommentOwner extends JavaNode {
      * Returns the javadoc comment that applies to this declaration. If
      * there is none, returns null.
      */
-    default @Nullable FormalComment getJavadocComment() {
+    default @Nullable JavadocComment getJavadocComment() {
         return CommentAssignmentPass.getComment(this);
     }
 

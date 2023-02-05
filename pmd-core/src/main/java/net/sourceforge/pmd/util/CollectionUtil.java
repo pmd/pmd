@@ -6,17 +6,14 @@ package net.sourceforge.pmd.util;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyIterator;
-import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.emptySet;
-import static java.util.Collections.singletonList;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -38,70 +35,25 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.Validate;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.ConsPStack;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PMap;
+import org.pcollections.PSequence;
 import org.pcollections.PSet;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.internal.util.AssertionUtil;
-import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.document.Chars;
 
 /**
- * Generic collection and array-related utility functions for java.util types.
- * See ClassUtil for comparable facilities for short name lookup.
+ * Generic collection-related utility functions for java.util types.
  *
  * @author Brian Remedios
- * @version $Revision$
- * @deprecated Is internal API
+ * @author Clément Fournier
  */
-@Deprecated
-@InternalApi
 public final class CollectionUtil {
 
     private static final int UNKNOWN_SIZE = -1;
 
-    @SuppressWarnings("PMD.UnnecessaryFullyQualifiedName")
-    public static final Set<String> COLLECTION_INTERFACES_BY_NAMES = collectionTypes(List.class, Collection.class, Map.class, Set.class);
-
-    @SuppressWarnings({"PMD.LooseCoupling", "PMD.UnnecessaryFullyQualifiedName"})
-    public static final Set<String> COLLECTION_CLASSES_BY_NAMES
-        = collectionTypes(ArrayList.class, java.util.LinkedList.class, java.util.Vector.class, HashMap.class,
-                          java.util.LinkedHashMap.class, java.util.TreeMap.class, java.util.TreeSet.class,
-                          HashSet.class, java.util.LinkedHashSet.class, java.util.Hashtable.class);
-
-
     private CollectionUtil() {
-    }
-
-    private static Set<String> collectionTypes(Class<?>... types) {
-        Set<String> set = new HashSet<>();
-
-        for (Class<?> type : types) {
-            if (!set.add(type.getSimpleName()) || !set.add(type.getName())) {
-                throw new IllegalArgumentException("Duplicate or name collision for " + type);
-            }
-        }
-
-        return set;
-    }
-
-    /**
-     * Return whether we can identify the typeName as a java.util collection
-     * class or interface as specified.
-     *
-     * @param typeName
-     *            String
-     * @param includeInterfaces
-     *            boolean
-     * @return boolean
-     *
-     * @deprecated Will be replaced with type resolution
-     */
-    @Deprecated
-    public static boolean isCollectionType(String typeName, boolean includeInterfaces) {
-        return COLLECTION_CLASSES_BY_NAMES.contains(typeName)
-                || includeInterfaces && COLLECTION_INTERFACES_BY_NAMES.contains(typeName);
     }
 
     /**
@@ -161,9 +113,9 @@ public final class CollectionUtil {
      */
     public static <T> List<T> concatView(List<? extends T> head, List<? extends T> tail) {
         if (head.isEmpty()) {
-            return Collections.unmodifiableList(tail);
+            return makeUnmodifiableAndNonNull(tail);
         } else if (tail.isEmpty()) {
-            return Collections.unmodifiableList(head);
+            return makeUnmodifiableAndNonNull(head);
         } else {
             return new ConsList<>(head, tail);
         }
@@ -270,7 +222,7 @@ public final class CollectionUtil {
     @SafeVarargs
     public static <T> List<T> listOf(T first, T... rest) {
         if (rest.length == 0) {
-            return Collections.singletonList(first);
+            return ConsPStack.singleton(first);
         }
         List<T> union = new ArrayList<>();
         union.add(first);
@@ -280,6 +232,13 @@ public final class CollectionUtil {
 
     public static <K, V> Map<K, V> mapOf(K k0, V v0) {
         return Collections.singletonMap(k0, v0);
+    }
+
+    public static <K, V> Map<K, V> mapOf(K k1, V v1, K k2, V v2) {
+        Map<K, V> map = new LinkedHashMap<>();
+        map.put(k1, v1);
+        map.put(k2, v2);
+        return Collections.unmodifiableMap(map);
     }
 
     public static <K, V> Map<K, V> buildMap(Consumer<Map<K, V>> effect) {
@@ -310,22 +269,6 @@ public final class CollectionUtil {
     }
 
     /**
-     * Produce a new list with the elements of the first, and one additional
-     * element. The returned list may be unmodifiable.
-     */
-    public static <V> List<V> plus(List<? extends V> list, V v) {
-        AssertionUtil.requireParamNotNull("list", list);
-        if (list.isEmpty()) {
-            return Collections.singletonList(v);
-        }
-
-        List<V> vs = new ArrayList<>(list.size() + 1);
-        vs.addAll(list);
-        vs.add(v);
-        return vs;
-    }
-
-    /**
      * Produce a new map with the mappings of the first, and one additional
      * mapping. The returned map may be unmodifiable.
      */
@@ -340,6 +283,26 @@ public final class CollectionUtil {
         Map<K, V> newM = new HashMap<>(m);
         newM.put(k, v);
         return newM;
+    }
+
+    /**
+     * Produce a new list with the elements of the first, and one additional
+     * item. The returned list is immutable.
+     */
+    public static <V> List<V> plus(List<V> list, V v) {
+        if (list instanceof PSequence) {
+            return ((PSequence<V>) list).plus(v);
+        } else if (list.isEmpty()) {
+            return ConsPStack.singleton(v);
+        }
+        return ConsPStack.from(list).plus(v);
+    }
+
+    /** Returns the empty list. */
+    public static <V> List<V> emptyList() {
+        // We use this implementation so that it plays well with other
+        // operations that expect immutable data.
+        return ConsPStack.empty();
     }
 
     /**
@@ -503,7 +466,7 @@ public final class CollectionUtil {
         if (!from.hasNext()) {
             return emptyList();
         } else if (sizeHint == 1) {
-            return Collections.singletonList(f.apply(from.next()));
+            return ConsPStack.singleton(f.apply(from.next()));
         }
         List<R> res = sizeHint == UNKNOWN_SIZE ? new ArrayList<>() : new ArrayList<>(sizeHint);
         while (from.hasNext()) {
@@ -634,7 +597,7 @@ public final class CollectionUtil {
 
 
     public static <T> List<T> listOfNotNull(T t) {
-        return t == null ? emptyList() : singletonList(t);
+        return t == null ? emptyList() : ConsPStack.singleton(t);
     }
 
     /**
@@ -683,10 +646,15 @@ public final class CollectionUtil {
      * @param <T>  Type of items
      */
     public static <T> List<T> defensiveUnmodifiableCopy(List<? extends T> list) {
-        if (list.isEmpty()) {
-            return emptyList();
+        if (list instanceof PSequence) {
+            return (List<T>) list; // is already immutable
         }
-        return Collections.unmodifiableList(new ArrayList<>(list));
+        if (list.isEmpty()) {
+            return ConsPStack.empty();
+        } else if (list.size() == 1) {
+            return ConsPStack.singleton(list.get(0));
+        }
+        return ConsPStack.from(list);
     }
 
     public static <T> Set<T> defensiveUnmodifiableCopyToSet(Collection<? extends T> list) {
@@ -735,5 +703,13 @@ public final class CollectionUtil {
             V otherInfo = other.get(otherKey); // non-null
             result.merge(otherKey, otherInfo, mergeFun);
         }
+    }
+
+    public static @NonNull <T> List<T> makeUnmodifiableAndNonNull(@Nullable List<? extends T> list) {
+        if (list instanceof PSequence) {
+            return (List<T>) list;
+        }
+        return list == null || list.isEmpty() ? emptyList()
+                                              : Collections.unmodifiableList(list);
     }
 }

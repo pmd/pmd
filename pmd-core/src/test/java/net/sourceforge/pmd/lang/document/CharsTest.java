@@ -16,12 +16,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.util.CollectionUtil;
+import net.sourceforge.pmd.util.IteratorUtil;
 
 /**
  *
@@ -305,6 +309,39 @@ class CharsTest {
         assertFalse(chars.contentEquals(Chars.wrap("a_b-c")));
 
         assertTrue(chars.contentEquals(Chars.wrap("A_B_C"), true));
+    }
+
+    @Test
+    void testSplits() {
+        Chars chars = Chars.wrap("a_a_b_c_s").slice(2, 5);
+        assertEquals("a_b_c", chars.toString());
+
+        testSplits(chars, "_");
+        testSplits(chars, "a");
+        testSplits(chars, "b");
+        testSplits(chars, "c");
+        assertEquals(listOf("", "_b_c"), listSplits(chars, "a"));
+
+        chars = chars.subSequence(1, 5);
+        assertEquals("_b_c", chars.toString());
+
+        assertEquals(listOf("", "b", "c"), listSplits(chars, "_"));
+
+
+        testSplits(Chars.wrap("abc"), "");
+        testSplits(Chars.wrap(""), "");
+    }
+
+    private List<String> listSplits(Chars chars, String regex) {
+        Pattern pattern = Pattern.compile(regex);
+        Iterator<Chars> splits = chars.splits(pattern).iterator();
+        return IteratorUtil.toList(IteratorUtil.map(splits, Chars::toString));
+    }
+
+    private void testSplits(Chars chars, String regex) {
+        List<String> splitList = listSplits(chars, regex);
+        List<String> expected = Arrays.asList(chars.toString().split(regex));
+        assertEquals(expected, splitList, "Split should behave like String#split");
     }
 
     @Test

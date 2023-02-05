@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 class ApexCommentTest extends ApexParserTestBase {
 
     @Test
-    public void testContainsComment1() {
+    void testContainsComment1() {
         ASTApexFile file = apex.parse("class Foo {void foo(){try {\n"
                                           + "} catch (Exception e) {\n"
                                           + "  /* OK: block comment inside of empty catch block; should not be reported */\n"

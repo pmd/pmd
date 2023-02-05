@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-import net.sourceforge.pmd.internal.util.IteratorUtil;
+import net.sourceforge.pmd.util.IteratorUtil;
 import net.sourceforge.pmd.util.internal.xml.XmlUtil;
 
 /**

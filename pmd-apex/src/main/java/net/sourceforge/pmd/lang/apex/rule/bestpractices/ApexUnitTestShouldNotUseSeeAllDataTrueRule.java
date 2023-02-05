@@ -13,8 +13,6 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexUnitTestRule;
 
-import apex.jorje.services.Version;
-
 /**
  * <p>
  * It's a very bad practice to use @isTest(seeAllData=true) in Apex unit tests,
@@ -29,7 +27,7 @@ public class ApexUnitTestShouldNotUseSeeAllDataTrueRule extends AbstractApexUnit
     @Override
     public Object visit(final ASTUserClass node, final Object data) {
         // @isTest(seeAllData) was introduced in v24, and was set to false by default
-        if (!isTestMethodOrClass(node) && node.getApexVersion() >= Version.V176.getExternal()) {
+        if (!isTestMethodOrClass(node)) {
             return data;
         }
 

@@ -246,6 +246,111 @@ the breaking API changes will be performed in 7.0.0.
 an API is tagged as `@Deprecated` or not in the latest minor release. During the development of 7.0.0,
 we may decide to remove some APIs that were not tagged as deprecated, though we'll try to avoid it." %}
 
+#### 6.54.0
+
+##### PMD CLI
+
+* PMD now supports a new `--relativize-paths-with` flag (or short `-z`), which replaces `--short-names`.
+  It serves the same purpose: Shortening the pathnames in the reports. However, with the new flag it's possible
+  to explicitly define one or more pathnames that should be used as the base when creating relative paths.
+  The old flag `--short-names` is deprecated.
+
+##### Deprecated APIs
+
+###### For removal
+
+* {% jdoc !!apex::lang.apex.ast.ApexRootNode#getApexVersion() %} has been deprecated for removal. The version returned is
+  always `Version.CURRENT`, as the apex compiler integration doesn't use additional information which Apex version
+  actually is used. Therefore, this method can't be used to determine the Apex version of the project
+  that is being analyzed.
+* {% jdoc !!core::cpd.CPDConfiguration#setEncoding(java.lang.String) %} and
+  {% jdoc !!core::cpd.CPDConfiguration#getEncoding() %}. Use the methods
+  {% jdoc core::AbstractConfiguration#getSourceEncoding() %} and
+  {% jdoc core::AbstractConfiguration#setSourceEncoding(java.lang.String) %} instead. Both are available
+  for `CPDConfiguration` which extends `AbstractConfiguration`.
+* {% jdoc test::cli.BaseCLITest %} and {% jdoc test::cli.BaseCPDCLITest %} have been deprecated for removal without
+  replacement. CLI tests should be done in pmd-core only (and in PMD7 in pmd-cli). Individual language modules
+  shouldn't need to test the CLI integration logic again. Instead, the individual language modules should test their
+  functionality as unit tests.
+* {% jdoc core::cpd.CPDConfiguration.LanguageConverter %}
+
+* {% jdoc !!core::lang.document.FileCollector#addZipFile(java.nio.file.Path) %} has been deprecated. It is replaced
+  by {% jdoc !!core::lang.document.FileCollector#addZipFileWithContent(java.nio.file.Path) %} which directly adds the
+  content of the zip file for analysis.
+
+* {% jdoc !!core::PMDConfiguration#setReportShortNames(boolean) %} and
+  {% jdoc !!core::PMDConfiguration#isReportShortNames() %} have been deprecated for removal.
+  Use {% jdoc !!core::PMDConfiguration#addRelativizeRoot(java.nio.file.Path) %} instead.
+
+###### Internal APIs
+
+* {% jdoc core::renderers.CSVWriter %}
+* Some fields in {% jdoc test::ant.AbstractAntTestHelper %}
+
+###### Experimental APIs
+
+* CPDReport has a new method which limited mutation of a given report:
+    * {%jdoc core::cpd.CPDReport#filterMatches(net.sourceforge.pmd.util.Predicate) %} creates a new CPD report
+      with some matches removed with a given predicate based filter.
+
+#### 6.53.0
+
+##### Deprecated APIs
+
+###### For removal
+
+These classes / APIs have been deprecated and will be removed with PMD 7.0.0.
+
+* {% jdoc java::lang.java.rule.design.ExcessiveLengthRule %} (Java)
+
+#### 6.52.0
+
+##### PMD CLI
+
+* PMD now supports a new `--use-version` flag, which receives a language-version pair (such as `java-8` or `apex-54`).
+  This supersedes the usage of `-language` / `-l` and `-version` / `-v`, allowing for multiple versions to be set in a single run.
+  PMD 7 will completely remove support for `-language` and `-version` in favor of this new flag.
+
+* Support for `-V` is being deprecated in favor of `--verbose` in preparation for PMD 7.
+  In PMD 7, `-v` will enable verbose mode and `-V` will show the PMD version for consistency with most Unix/Linux tools.
+
+* Support for `-min` is being deprecated in favor of `--minimum-priority` for consistency with most Unix/Linux tools, where `-min` would be equivalent to `-m -i -n`.
+
+##### CPD CLI
+
+* CPD now supports using `-d` or `--dir` as an alias to `--files`, in favor of consistency with PMD.
+  PMD 7 will remove support for `--files` in favor of these new flags.
+
+##### Linux run.sh parameters
+
+* Using `run.sh cpdgui` will now warn about it being deprecated. Use `run.sh cpd-gui` instead.
+
+* The old designer (`run.sh designerold`) is completely deprecated and will be removed in PMD 7. Switch to the new JavaFX designer: `run.sh designer`.
+
+* The old visual AST viewer (`run.sh bgastviewer`) is completely deprecated and will be removed in PMD 7. Switch to the new JavaFX designer: `run.sh designer` for a visual tool, or use `run.sh ast-dump` for a text-based alternative.
+
+##### Deprecated API
+
+* The following core APIs have been marked as deprecated for removal in PMD 7:
+    - {% jdoc core::PMD %} and {% jdoc core::PMD.StatusCode %} - PMD 7 will ship with a revamped CLI split from pmd-core. To programmatically launch analysis you can use {% jdoc core::PmdAnalysis %}.
+    - {% jdoc !!core::PMDConfiguration#getAllInputPaths() %} - It is now superseded by {% jdoc !!core::PMDConfiguration#getInputPathList() %}
+    - {% jdoc !!core::PMDConfiguration#setInputPaths(List) %} - It is now superseded by {% jdoc !!core::PMDConfiguration#setInputPathList(List) %}
+    - {% jdoc !!core::PMDConfiguration#addInputPath(String) %} - It is now superseded by {% jdoc !!core::PMDConfiguration#addInputPath(Path) %}
+    - {% jdoc !!core::PMDConfiguration#getInputFilePath() %} - It is now superseded by {% jdoc !!core::PMDConfiguration#getInputFile() %}
+    - {% jdoc !!core::PMDConfiguration#getIgnoreFilePath() %} - It is now superseded by {% jdoc !!core::PMDConfiguration#getIgnoreFile() %}
+    - {% jdoc !!core::PMDConfiguration#setInputFilePath(String) %} - It is now superseded by {% jdoc !!core::PMDConfiguration#setInputFilePath(Path) %}
+    - {% jdoc !!core::PMDConfiguration#setIgnoreFilePath(String) %} - It is now superseded by {% jdoc !!core::PMDConfiguration#setIgnoreFilePath(Path) %}
+    - {% jdoc !!core::PMDConfiguration#getInputUri() %} - It is now superseded by {% jdoc !!core::PMDConfiguration#getUri() %}
+    - {% jdoc !!core::PMDConfiguration#setInputUri(String) %} - It is now superseded by {% jdoc !!core::PMDConfiguration#setInputUri(URI) %}
+    - {% jdoc !!core::PMDConfiguration#getReportFile() %} - It is now superseded by {% jdoc !!core::PMDConfiguration#getReportFilePath() %}
+    - {% jdoc !!core::PMDConfiguration#setReportFile(String) %} - It is now superseded by {% jdoc !!core::PMDConfiguration#setReportFile(Path) %}
+    - {% jdoc !!core::PMDConfiguration#isStressTest() %} and {% jdoc !!core::PMDConfiguration#setStressTest(boolean) %} - Will be removed with no replacement.
+    - {% jdoc !!core::PMDConfiguration#isBenchmark() %} and {% jdoc !!core::PMDConfiguration#setBenchmark(boolean) %} - Will be removed with no replacement, the CLI will still support it.
+    - {% jdoc core::cpd.CPD %} and {% jdoc core::cpd.CPD.StatusCode %} - PMD 7 will ship with a revamped CLI split from pmd-core. An alterative to programatically launch CPD analysis will be added in due time.
+
+* In order to reduce the dependency on Apex Jorje classes, the method {% jdoc !!visualforce::lang.vf.DataType#fromBasicType(apex.jorje.semantic.symbol.type.BasicType) %}
+  has been deprecated. The equivalent method {% jdoc visualforce::lang.vf.DataType#fromTypeName(java.lang.String) %} should be used instead.
+
 #### 6.51.0
 
 No changes.
@@ -1570,96 +1675,132 @@ large projects, with many duplications, it was causing `OutOfMemoryError`s (see 
 
 ### List of currently deprecated rules
 
-*   The Java rules `VariableNamingConventions` (java-codestyle), `MIsLeadingVariableName` (java-codestyle),
-    `SuspiciousConstantFieldName` (java-codestyle), and `AvoidPrefixingMethodParameters` (java-codestyle) are
-    now deprecated, and will be removed with version 7.0.0. They are replaced by the more general
-    {% rule java/codestyle/FieldNamingConventions %}, {% rule java/codestyle/FormalParameterNamingConventions %}, and
-    {% rule java/codestyle/LocalVariableNamingConventions %}.
+These rules will be removed with PMD 7.0.0.
 
-*   The Java rule `AbstractNaming` (java-codestyle) is deprecated
-    in favour of {% rule java/codestyle/ClassNamingConventions %}.
+* Since 6.0.0: The Java rules `NcssConstructorCount` (design), `NcssMethodCount` (design),
+  and `NcssTypeCount` (design) have been deprecated. They will be replaced by the new rule
+  {% rule java/design/NcssCount %}.
 
-*   The Java rules `WhileLoopsMustUseBraces` (java-codestyle), `ForLoopsMustUseBraces` (java-codestyle), `IfStmtsMustUseBraces` (java-codestyle), and `IfElseStmtsMustUseBraces` (java-codestyle)
-    are deprecated. They will be replaced by the new rule {% rule java/codestyle/ControlStatementBraces %}.
+* Since 6.0.0: The Java rule `LooseCoupling` in ruleset `java-typeresolution` is deprecated. Use the rule with the
+  same name from category `bestpractices` instead: {% rule java/bestpractices/LooseCoupling %}.
 
-*   The Java rules NcssConstructorCount (java-design), NcssMethodCount (java-design), and NcssTypeCount (java-design) have been
-    deprecated. They will be replaced by the new rule {% rule java/design/NcssCount %} in the category `design`.
+* Since 6.0.0: The Java rule `CloneMethodMustImplementCloneable` in ruleset `java-typeresolution` is deprecated.
+  Use the rule with the same name from category `errorprone` instead:
+  {% rule java/errorprone/CloneMethodMustImplementCloneable %}.
 
-* The Java rule `LooseCoupling` in ruleset `java-typeresolution` is deprecated. Use the rule with the same name from category `bestpractices` instead.
+* Since 6.0.0: The Java rule `UnusedImports` in ruleset `java-typeresolution` is deprecated. Use the rule with
+  the same name from category `bestpractices` instead: `UnusedImports` (bestpractices).
 
-* The Java rule `CloneMethodMustImplementCloneable` in ruleset `java-typeresolution` is deprecated. Use the rule with the same name from category `errorprone` instead.
+* Since 6.0.0: The Java rule `SignatureDeclareThrowsException` in ruleset `java-typeresolution` is deprecated.
+  Use the rule with the same name from category `design` instead:
+  {% rule java/design/SignatureDeclareThrowsException %}.
 
-* The Java rule `UnusedImports` in ruleset `java-typeresolution` is deprecated. Use the rule with
-    the same name from category `bestpractices` instead.
+* Since 6.0.0: The Java rule `EmptyStaticInitializer` in ruleset `java-empty` is deprecated.
+  Use the rule {% rule java/errorprone/EmptyInitializer %} instead, which covers both static and non-static
+  empty initializers.
 
-* The Java rule `SignatureDeclareThrowsException` in ruleset `java-typeresolution` is deprecated. Use the rule with the same name from category `design` instead.
+* Since 6.0.0: The Java rules `GuardDebugLogging` (ruleset `java-logging-jakarta-commons`) and
+  `GuardLogStatementJavaUtil` (ruleset `java-logging-java`) have been deprecated. Use the rule
+  {% rule java/bestpractices/GuardLogStatement %} instead, which covers all cases regardless of the logging framework.
 
-* The Java rule `EmptyStaticInitializer` in ruleset `java-empty` is deprecated. Use the rule {% rule java/errorprone/EmptyInitializer %}, which covers both static and non-static empty initializers.`
+* Since 6.2.0: The Java rules `WhileLoopsMustUseBraces` (codestyle),
+  `ForLoopsMustUseBraces` (codestyle), `IfStmtsMustUseBraces` (codestyle), and
+  `IfElseStmtsMustUseBraces` (codestyle) are deprecated. They will be replaced by the new rule
+  {% rule java/codestyle/ControlStatementBraces %}.
 
-* The Java rules `GuardDebugLogging` (ruleset `java-logging-jakarta-commons`) and `GuardLogStatementJavaUtil`
-    (ruleset `java-logging-java`) have been deprecated. Use the rule {% rule java/bestpractices/GuardLogStatement %}, which covers all cases regardless of the logging framework.
+* Since 6.3.0: The Java rule `AbstractNaming` (codestyle) is deprecated
+  in favour of {% rule java/codestyle/ClassNamingConventions %}.
 
-*   The Java rule "java/multithreading/UnsynchronizedStaticDateFormatter" has been deprecated and
-    will be removed with PMD 7.0.0. The rule is replaced by the more general
-    {% rule "java/multithreading/UnsynchronizedStaticFormatter" %}.
+* Since 6.7.0: The Java rules `VariableNamingConventions` (codestyle),
+  `MIsLeadingVariableName` (codestyle), `SuspiciousConstantFieldName` (codestyle), and
+  `AvoidPrefixingMethodParameters` (codestyle) are now deprecated. They are replaced by the more general
+  {% rule java/codestyle/FieldNamingConventions %}, {% rule java/codestyle/FormalParameterNamingConventions %}, and
+  {% rule java/codestyle/LocalVariableNamingConventions %}.
 
-*   The two Java rules [`PositionLiteralsFirstInComparisons`](https://pmd.github.io/pmd-6.29.0/pmd_rules_java_bestpractices.html#positionliteralsfirstincomparisons)
-    and [`PositionLiteralsFirstInCaseInsensitiveComparisons`](https://pmd.github.io/pmd-6.29.0/pmd_rules_java_bestpractices.html#positionliteralsfirstincaseinsensitivecomparisons) (ruleset `java-bestpractices`)
-    have been deprecated in favor of the new rule {% rule "java/bestpractices/LiteralsFirstInComparisons" %}.
+* Since 6.11.0: The Java rule `UnsynchronizedStaticDateFormatter` (multithreading) has been deprecated.
+  The rule is replaced by the more general {% rule java/multithreading/UnsynchronizedStaticFormatter %}.
 
-* The Java rule [`AvoidFinalLocalVariable`](https://pmd.github.io/pmd-6.16.0/pmd_rules_java_codestyle.html#avoidfinallocalvariable) (`java-codestyle`) has been deprecated
-    and will be removed with PMD 7.0.0. The rule is controversial and also contradicts other existing
-    rules such as [`LocalVariableCouldBeFinal`](https://pmd.github.io/pmd-6.16.0/pmd_rules_java_codestyle.html#localvariablecouldbefinal). If the goal is to avoid defining
-    constants in a scope smaller than the class, then the rule [`AvoidDuplicateLiterals`](https://pmd.github.io/pmd-6.16.0/pmd_rules_java_errorprone.html#avoidduplicateliterals)
-    should be used instead.
+* Since 6.15.0: The Apex rule `VariableNamingConventions` (codestyle) has been deprecated. The rule is
+  replaced by the more general rules {% rule apex/codestyle/FieldNamingConventions %},
+  {% rule apex/codestyle/FormalParameterNamingConventions %}, {% rule apex/codestyle/LocalVariableNamingConventions %},
+  and {% rule apex/codestyle/PropertyNamingConventions %}.
 
-* The Apex rule [`VariableNamingConventions`](https://pmd.github.io/pmd-6.15.0/pmd_rules_apex_codestyle.html#variablenamingconventions) (`apex-codestyle`) has been deprecated and
-    will be removed with PMD 7.0.0. The rule is replaced by the more general rules
-    [`FieldNamingConventions`](https://pmd.github.io/pmd-6.15.0/pmd_rules_apex_codestyle.html#fieldnamingconventions),
-    [`FormalParameterNamingConventions`](https://pmd.github.io/pmd-6.15.0/pmd_rules_apex_codestyle.html#formalparameternamingconventions),
-    [`LocalVariableNamingConventions`](https://pmd.github.io/pmd-6.15.0/pmd_rules_apex_codestyle.html#localvariablenamingconventions), and
-    [`PropertyNamingConventions`](https://pmd.github.io/pmd-6.15.0/pmd_rules_apex_codestyle.html#propertynamingconventions).
+* Since 6.15.0: The Java rule `LoggerIsNotStaticFinal` (errorprone) has been deprecated.
+  The rule is replaced by {% rule java/errorprone/ProperLogger %}.
 
-* The Java rule [`LoggerIsNotStaticFinal`](https://pmd.github.io/pmd-6.15.0/pmd_rules_java_errorprone.html#loggerisnotstaticfinal) (`java-errorprone`) has been deprecated
-    and will be removed with PMD 7.0.0. The rule is replaced by [`ProperLogger`](https://pmd.github.io/pmd-6.15.0/pmd_rules_java_errorprone.html#properlogger).
+* Since 6.16.0: The Java rule `AvoidFinalLocalVariable` (codestyle) has been deprecated.
+  The rule is controversial and also contradicts other existing rules such as
+  {% rule java/codestyle/LocalVariableCouldBeFinal %}. If the goal is to avoid defining
+  constants in a scope smaller than the class, then the rule {% rule java/errorprone/AvoidDuplicateLiterals %}
+  should be used instead.
 
-*   The Java rule [`DataflowAnomalyAnalysis`](https://pmd.github.io/pmd-6.27.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis) (`java-errorprone`)
-    is deprecated in favour of {% rule "java/bestpractices/UnusedAssignment" %} (`java-bestpractices`),
-    which was introduced in PMD 6.26.0.
+* Since 6.19.0: The Java rule `InvalidSlf4jMessageFormat` (errorprone) has been renamed to
+  {% rule java/errorprone/InvalidLogMessageFormat %}.
 
-*   The java rule `DefaultPackage` (java-codestyle) has been deprecated in favor of
-    {% rule "java/codestyle/CommentDefaultAccessModifier" %}.
+* Since 6.24.0: The two Java rules `PositionLiteralsFirstInComparisons` (bestpractices)
+  and `PositionLiteralsFirstInCaseInsensitiveComparisons` (bestpractices)
+  have been deprecated in favor of the new rule {% rule java/bestpractices/LiteralsFirstInComparisons %}.
 
-*   The Java rule `CloneThrowsCloneNotSupportedException` (java-errorprone) has been deprecated without
-    replacement.
+* Since 6.27.0: The Java rule `DataflowAnomalyAnalysis` (errorprone)
+  is deprecated in favour of {% rule java/bestpractices/UnusedAssignment %},
+  which was introduced in PMD 6.26.0.
 
-* The following Java rules are deprecated and removed from the quickstart ruleset,
-    as the new rule {% rule java/bestpractices/SimplifiableTestAssertion %} merges
-    their functionality:
-    * `UseAssertEqualsInsteadOfAssertTrue` (java-bestpractices)
-    * `UseAssertNullInsteadOfAssertTrue` (java-bestpractices)
-    * `UseAssertSameInsteadOfAssertTrue` (java-bestpractices)
-    * `UseAssertTrueInsteadOfAssertEquals` (java-bestpractices)
-    * `SimplifyBooleanAssertion` (java-design)
+* Since 6.29.0: The Apex rules {% rule apex/performance/AvoidDmlStatementsInLoops %},
+  {% rule apex/performance/AvoidSoqlInLoops %}, and {% rule apex/performance/AvoidSoslInLoops %} are deprecated
+  in favor of the new rule {% rule apex/performance/OperationWithLimitsInLoop %}.
 
-*   The Java rule `ReturnEmptyArrayRatherThanNull` (java-errorprone) is deprecated and removed from
-    the quickstart ruleset, as the new rule {% rule java/errorprone/ReturnEmptyCollectionRatherThanNull %}
-    supersedes it.
+* Since 6.29.0: The Java rule `DoNotCallSystemExit` (errorprone) has been renamed to
+  {% rule/java/errorprone/DoNotTerminateVM %}.
 
-* The following Java rules are deprecated and removed from the quickstart ruleset,
-    as the new rule {% rule java/bestpractices/PrimitiveWrapperInstantiation %} merges
-    their functionality:
-    * java/performance/BooleanInstantiation
-    * java/performance/ByteInstantiation
-    * java/performance/IntegerInstantiation
-    * java/performance/LongInstantiation
-    * java/performance/ShortInstantiation
+* Since 6.31:0: The Java rule `AvoidUsingShortType` (performance) is deprecated
+  for removal without replacement.
 
-*   The Java rule java/performance/UnnecessaryWrapperObjectCreation is deprecated
-    with no planned replacement before PMD 7. In it's current state, the rule is not useful
-    as it finds only contrived cases of creating a primitive wrapper and unboxing it explicitly
-    in the same expression. In PMD 7 this and more cases will be covered by a
-    new rule `UnnecessaryBoxing`.
+* Since 6.31.0: The Java rule `SimplifyStartsWith` (performance) is deprecated
+  for removal without replacement.
+
+* Since 6.34.0: The Java rules `UnusedImports` (bestpractices), `DuplicateImports` (codestyle),
+  `DontImportJavaLang` (codestyle), and `ImportFromSamePackage` (errorprone) are
+  deprecated. These rules are replaced by {% rule java/codestyle/UnnecessaryImport %}.
+
+* Since 6.35.0: The Java rule `DefaultPackage` (codestyle) has been deprecated in favor of
+  {% rule java/codestyle/CommentDefaultAccessModifier %}.
+
+* Since 6.35.0: The Java rule `CloneThrowsCloneNotSupportedException` (errorprone) has been
+  deprecated without replacement.
+
+* Since 6.36.0: The Java rule `BadComparison` (errorprone) has been renamed to
+  {% rule java/errorprone/ComparisonWithNaN %}.
+
+* Since 6.37.0: The following Java rules are deprecated and removed from the quickstart ruleset,
+  as the new rule {% rule java/bestpractices/SimplifiableTestAssertion %} merges
+  their functionality:
+  * `UseAssertEqualsInsteadOfAssertTrue` (bestpractices)
+  * `UseAssertNullInsteadOfAssertTrue` (bestpractices)
+  * `UseAssertSameInsteadOfAssertTrue` (bestpractices)
+  * `UseAssertTrueInsteadOfAssertEquals` (bestpractices)
+  * `SimplifyBooleanAssertion` (design)
+
+* Since 6.37.0: The Java rule `ReturnEmptyArrayRatherThanNull` (errorprone) is deprecated and removed from
+  the quickstart ruleset, as the new rule {% rule java/errorprone/ReturnEmptyCollectionRatherThanNull %}
+  supersedes it.
+
+* Since 6.37.0: The following Java rules are deprecated and removed from the quickstart ruleset,
+  as the new rule {% rule java/bestpractices/PrimitiveWrapperInstantiation %} merges
+  their functionality:
+  * `BooleanInstantiation` (performance)
+  * `ByteInstantiation` (performance)
+  * `IntegerInstantiation` (performance)
+  * `LongInstantiation` (performance)
+  * `ShortInstantiation` (performance)
+
+* Since 6.37.0: The Java rule `UnnecessaryWrapperObjectCreation` (performance) is deprecated
+  with no planned replacement before PMD 7. In its current state, the rule is not useful
+  as it finds only contrived cases of creating a primitive wrapper and unboxing it explicitly
+  in the same expression. In PMD 7 this and more cases will be covered by a
+  new rule {% rule java/codestyle/UnnecessaryBoxing %}.
+
+* Since 6.37.0: The Java rule `MissingBreakInSwitch` (errorprone) has been renamed to
+  {% rule java/errorprone/ImplicitSwitchFallThrough %}.
 
 * Since 6.46.0: The following Java rules are deprecated and removed from the quickstart ruleset, as the new rule
   {% rule java/codestyle/EmptyControlStatement %} merges their functionality:
@@ -1672,5 +1813,12 @@ large projects, with many duplications, it was causing `OutOfMemoryError`s (see 
     * {% rule java/errorprone/EmptyTryBlock %}
     * {% rule java/errorprone/EmptyWhileStmt %}
 
-* Since 6.46.0: The Java rule {% rule java/errorprone/EmptyStatementNotInLoop %} is deprecated and removed from the quickstart
-  ruleset. Use the new rule {% rule java/codestyle/UnnecessarySemicolon %} instead.
+* Since 6.52.0: The Java rule {% rule java/errorprone/BeanMembersShouldSerialize %} has been renamed to
+  {% rule java/errorprone/NonSerializableClass %}.
+
+* Since 6.53.0: The Java rules {% rule java/design/ExcessiveClassLength %} and
+  {% rule java/design/ExcessiveMethodLength %} have been deprecated. The rule
+  {% rule java/design/NcssCount %} can be used instead.
+
+* Since 6.53.0: The Java rule {% rule java/errorprone/EmptyStatementNotInLoop %} is deprecated.
+  Use the rule {% rule java/codestyle/UnnecessarySemicolon %} instead.

@@ -6,7 +6,7 @@
 
     <test-code>
         <description>Includes bad words</description>
-        <rule-property name="disallowedTerms">idiot|jerk</rule-property>
+        <rule-property name="forbiddenRegex">idiot|jerk</rule-property>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 /**

@@ -28,6 +28,8 @@ import net.sourceforge.pmd.ant.Formatter;
 import net.sourceforge.pmd.ant.PMDTask;
 import net.sourceforge.pmd.ant.SourceLanguage;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
+import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
+import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -36,8 +38,6 @@ import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.reporting.ReportStats;
 import net.sourceforge.pmd.reporting.ReportStatsListener;
-import net.sourceforge.pmd.util.ClasspathClassLoader;
-import net.sourceforge.pmd.util.IOUtil;
 
 public class PMDTaskImpl {
 
@@ -53,7 +53,7 @@ public class PMDTaskImpl {
     private Project project;
 
     public PMDTaskImpl(PMDTask task) {
-        configuration.setReportShortNames(task.isShortFilenames());
+        configuration.addRelativizeRoots(task.getRelativizeRoots());
         if (task.getSuppressMarker() != null) {
             configuration.setSuppressMarker(task.getSuppressMarker());
         }
@@ -103,7 +103,6 @@ public class PMDTaskImpl {
             project.log("Setting suppress marker to be " + configuration.getSuppressMarker(), Project.MSG_VERBOSE);
         }
 
-
         List<String> ruleSetPaths = expandRuleSetPaths(configuration.getRuleSetPaths());
         // don't let PmdAnalysis.create create rulesets itself.
         configuration.setRuleSets(Collections.emptyList());
@@ -116,9 +115,6 @@ public class PMDTaskImpl {
 
             for (FileSet fileset : filesets) {
                 DirectoryScanner ds = fileset.getDirectoryScanner(project);
-                if (configuration.isReportShortNames()) {
-                    pmd.files().relativizeWith(ds.getBasedir().getPath());
-                }
                 for (String srcFile : ds.getIncludedFiles()) {
                     pmd.files().addFile(ds.getBasedir().toPath().resolve(srcFile));
                 }

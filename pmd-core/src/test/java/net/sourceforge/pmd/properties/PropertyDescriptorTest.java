@@ -179,7 +179,7 @@ class PropertyDescriptorTest {
     }
 
     @Test
-    public void testStringListProperty() {
+    void testStringListProperty() {
         PropertyDescriptor<List<String>> listDescriptor = PropertyFactory.stringListProperty("stringListProp")
                 .desc("hello")
                 .defaultValues("v1", "v2")

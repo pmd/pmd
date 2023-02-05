@@ -32,9 +32,9 @@ import org.junit.jupiter.api.io.TempDir;
 
 import net.sourceforge.pmd.cache.FileAnalysisCache;
 import net.sourceforge.pmd.cache.NoopAnalysisCache;
+import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
 import net.sourceforge.pmd.renderers.CSVRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.util.ClasspathClassLoader;
 
 class PmdConfigurationTest {
 
@@ -165,14 +165,6 @@ class PmdConfigurationTest {
             Paths.get("a"), Paths.get("b"), Paths.get("c")
         );
         assertEquals(expected, configuration.getInputPathList(), "Changed input paths");
-    }
-
-    @Test
-    void testReportShortNames() {
-        PMDConfiguration configuration = new PMDConfiguration();
-        assertEquals(false, configuration.isReportShortNames(), "Default report short names");
-        configuration.setReportShortNames(true);
-        assertEquals(true, configuration.isReportShortNames(), "Changed report short names");
     }
 
     @Test

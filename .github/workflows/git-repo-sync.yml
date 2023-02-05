@@ -25,7 +25,7 @@ jobs:
       shell: bash
       run: |
         echo "LANG=en_US.UTF-8" >> $GITHUB_ENV
-        echo "PMD_CI_SCRIPTS_URL=https://raw.githubusercontent.com/pmd/build-tools/18/scripts" >> $GITHUB_ENV
+        echo "PMD_CI_SCRIPTS_URL=https://raw.githubusercontent.com/pmd/build-tools/20/scripts" >> $GITHUB_ENV
     - name: Sync
       run: .ci/git-repo-sync.sh
       shell: bash

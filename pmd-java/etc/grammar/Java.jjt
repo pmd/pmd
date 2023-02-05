@@ -574,7 +574,7 @@ PARSER_END(JavaParserImpl)
 
 TOKEN_MGR_DECLS :
 {
-    protected List<Comment> comments = new ArrayList<Comment>();
+    protected List<JavaComment> comments = new ArrayList<JavaComment>();
 }
 
 /* WHITE SPACE */
@@ -600,7 +600,7 @@ SPECIAL_TOKEN :
         if (startOfNOPMD != -1) {
             suppressMap.put(matchedToken.getBeginLine(), matchedToken.getImage().substring(startOfNOPMD + suppressMarker.length()));
         }
-        comments.add(new SingleLineComment(matchedToken));
+        comments.add(new JavaComment(matchedToken));
     }
 }
 
@@ -615,13 +615,13 @@ MORE :
 <IN_FORMAL_COMMENT>
 SPECIAL_TOKEN :
 {
-  <FORMAL_COMMENT: "*/" > { comments.add(new FormalComment(matchedToken)); } : DEFAULT
+  <FORMAL_COMMENT: "*/" > { comments.add(new JavadocComment(matchedToken)); } : DEFAULT
 }
 
 <IN_MULTI_LINE_COMMENT>
 SPECIAL_TOKEN :
 {
-  <MULTI_LINE_COMMENT: "*/" > { comments.add(new MultiLineComment(matchedToken)); } : DEFAULT
+  <MULTI_LINE_COMMENT: "*/" > { comments.add(new JavaComment(matchedToken)); } : DEFAULT
 }
 
 <IN_FORMAL_COMMENT,IN_MULTI_LINE_COMMENT>
@@ -746,12 +746,6 @@ TOKEN :
 
 | < CHARACTER_LITERAL: "'"  ( ~["'", "\\","\n","\r"] | <STRING_ESCAPE> )  "'"  >
 | < STRING_LITERAL:    "\"" ( ~["\"","\\","\n","\r"] | <STRING_ESCAPE> )* "\"" >
-|
-  < TEXT_BLOCK_LITERAL:
-     "\"\"\"" (<HORIZONTAL_WHITESPACE>)* <LINE_TERMINATOR>
-        ( ~["\"", "\\"] | "\"" ~["\""] | "\"\"" ~["\""] | <STRING_ESCAPE> | "\\" <LINE_TERMINATOR> )*
-     "\"\"\""
-  >
 | < #STRING_ESCAPE:
         "\\"
         ( ["n","t","b","r","f","s","\\","'","\""]
@@ -760,6 +754,24 @@ TOKEN :
         | ["0"-"3"] ["0"-"7"] ["0"-"7"]
         )
   >
+}
+
+/* TEXT BLOCKS */
+MORE :
+{
+  < "\"\"\"" (<HORIZONTAL_WHITESPACE>)* <LINE_TERMINATOR> > : IN_TEXT_BLOCK_LITERAL
+}
+
+<IN_TEXT_BLOCK_LITERAL>
+TOKEN :
+{
+  <TEXT_BLOCK_LITERAL: "\"\"\"" > : DEFAULT
+}
+
+<IN_TEXT_BLOCK_LITERAL>
+MORE :
+{
+  < ~["\\"] | <STRING_ESCAPE> | ("\\")? <LINE_TERMINATOR> >
 }
 
 /* IDENTIFIERS */
@@ -1578,7 +1590,7 @@ void TypeArgument() #void:
 void WildcardType():
 {}
 {
-    "?" [  ("extends" {jjtThis.setUpperBound(true);}| "super") AnnotatedRefType() ]
+    "?" [  ("extends" | "super"  {jjtThis.setLowerBound(true);}) AnnotatedRefType() ]
 }
 
 

@@ -138,7 +138,7 @@ class MultiThreadProcessorTest {
     private static class SimpleReportListener implements GlobalAnalysisListener {
 
         public AtomicInteger violations = new AtomicInteger(0);
-
+        
         @Override
         public FileAnalysisListener startFileAnalysis(TextFile file) {
             return new FileAnalysisListener() {

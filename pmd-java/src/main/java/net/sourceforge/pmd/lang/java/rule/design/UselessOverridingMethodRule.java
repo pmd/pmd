@@ -12,6 +12,7 @@ import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 import java.lang.reflect.Modifier;
 
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
@@ -97,7 +98,7 @@ public class UselessOverridingMethodRule extends AbstractJavaRulechainRule {
         ASTArgumentList arg = methodCall.getArguments();
         int i = 0;
         for (ASTFormalParameter formal : node.getFormalParameters()) {
-            if (!JavaAstUtils.isReferenceToVar(arg.getChild(i), formal.getVarId().getSymbol())) {
+            if (!JavaAstUtils.isReferenceToVar((ASTExpression) arg.getChild(i), formal.getVarId().getSymbol())) {
                 return false;
             }
             i++;

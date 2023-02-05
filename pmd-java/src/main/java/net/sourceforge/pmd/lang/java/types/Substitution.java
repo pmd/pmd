@@ -17,7 +17,7 @@ import java.util.function.Function;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
@@ -36,7 +36,7 @@ public final class Substitution extends MapFunction<@NonNull SubstVar, @NonNull 
     }
 
     public static boolean isEmptySubst(Function<?, ?> m) {
-        return m instanceof MapFunction && ((MapFunction<?, ?>) m).isEmpty();
+        return m == EMPTY || m instanceof MapFunction && ((MapFunction<?, ?>) m).isEmpty();
     }
 
     /** Returns the type with which the given variable should be replaced. */

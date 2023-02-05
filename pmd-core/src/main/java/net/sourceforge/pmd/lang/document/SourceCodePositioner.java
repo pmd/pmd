@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.document;
 
 import java.util.Arrays;
 
-import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * Wraps a piece of text, and converts absolute offsets to line/column

@@ -33,7 +33,6 @@ import net.sourceforge.pmd.cpd.ReportException;
 import net.sourceforge.pmd.cpd.SimpleRenderer;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.cpd.XMLRenderer;
-import net.sourceforge.pmd.cpd.renderer.CPDRendererAdapter;
 import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 
 /**
@@ -94,7 +93,7 @@ public class CPDTask extends Task {
             CPDConfiguration config = new CPDConfiguration();
             config.setMinimumTileSize(minimumTokenCount);
             config.setLanguage(createLanguage());
-            config.setEncoding(encoding);
+            config.setSourceEncoding(encoding);
             config.setSkipDuplicates(skipDuplicateFiles);
             config.setSkipLexicalErrors(skipLexicalErrors);
 
@@ -190,9 +189,9 @@ public class CPDTask extends Task {
 
     private CPDReportRenderer createRenderer() {
         if (TEXT_FORMAT.equals(format)) {
-            return new CPDRendererAdapter(new SimpleRenderer());
+            return new SimpleRenderer();
         } else if (CSV_FORMAT.equals(format)) {
-            return new CPDRendererAdapter(new CSVRenderer());
+            return new CSVRenderer();
         }
         return new XMLRenderer();
     }

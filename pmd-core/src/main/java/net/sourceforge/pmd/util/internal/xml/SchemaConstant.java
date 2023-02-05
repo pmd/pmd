@@ -58,8 +58,10 @@ public class SchemaConstant {
     }
 
     public @Nullable String getAttributeOrNull(Element element) {
-        String attr = element.getAttribute(name);
-        return attr.isEmpty() ? null : attr;
+        if (element.hasAttribute(name)) {
+            return element.getAttribute(name);
+        }
+        return null;
     }
 
     public Optional<String> getAttributeOpt(Element element) {

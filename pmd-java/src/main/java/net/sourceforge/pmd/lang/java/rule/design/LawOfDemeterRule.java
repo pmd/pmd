@@ -22,9 +22,11 @@ import java.util.stream.Stream;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
@@ -39,7 +41,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.QualifiableExpression;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.AssignmentEntry;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.DataflowResult;
@@ -73,7 +75,7 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  * @since 5.0
  *
  */
-public class LawOfDemeterRule extends AbstractJavaRulechainRule {
+public class LawOfDemeterRule extends AbstractJavaRule {
 
 
     private static final PropertyDescriptor<Integer> TRUST_RADIUS =
@@ -86,7 +88,6 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
     private static final String METHOD_CALL_ON_FOREIGN_VALUE = "Call to `{0}` on foreign value `{1}` (degree {2})";
 
     public LawOfDemeterRule() {
-        super(ASTMethodCall.class, ASTFieldAccess.class);
         definePropertyDescriptor(TRUST_RADIUS);
     }
 
@@ -100,7 +101,19 @@ public class LawOfDemeterRule extends AbstractJavaRulechainRule {
     private final Map<ASTExpression, Integer> degreeCache = new LinkedHashMap<>();
 
     @Override
-    public void end(RuleContext ctx) {
+    public void apply(Node target, RuleContext ctx) {
+        degreeCache.clear();
+        // reimplement our own traversal instead of using the rulechain,
+        // so that we have a stable traversal order.
+        ((ASTCompilationUnit) target)
+            .descendants().crossFindBoundaries()
+            .forEach(it -> {
+                if (it instanceof ASTMethodCall) {
+                    this.visit((ASTMethodCall) it, ctx);
+                } else if (it instanceof ASTFieldAccess) {
+                    this.visit((ASTFieldAccess) it, ctx);
+                }
+            });
         degreeCache.clear(); // avoid memory leak
     }
 

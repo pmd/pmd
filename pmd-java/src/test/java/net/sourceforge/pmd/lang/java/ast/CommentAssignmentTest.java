@@ -7,11 +7,14 @@ package net.sourceforge.pmd.lang.java.ast;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.java.BaseParserTest;
@@ -28,14 +31,17 @@ class CommentAssignmentTest extends BaseParserTest {
                                                  + "        /** a formal comment with blank lines\n\n\n */"
                                                  + "}");
 
-        Comment comment = node.getComments().get(0);
+        JavaComment comment = node.getComments().get(0);
 
-        assertThat(comment, instanceOf(MultiLineComment.class));
-        assertEquals("multi line comment with blank lines", comment.getFilteredComment());
+        assertFalse(comment.isSingleLine());
+        assertFalse(comment.hasJavadocContent());
+        assertEquals("multi line comment with blank lines", StringUtils.join(comment.getFilteredLines(), ' '));
 
         comment = node.getComments().get(1);
-        assertThat(comment, instanceOf(FormalComment.class));
-        assertEquals("a formal comment with blank lines", comment.getFilteredComment());
+        assertFalse(comment.isSingleLine());
+        assertTrue(comment.hasJavadocContent());
+        assertThat(comment, instanceOf(JavadocComment.class));
+        assertEquals("a formal comment with blank lines", StringUtils.join(comment.getFilteredLines(), ' '));
     }
 
 
@@ -51,7 +57,7 @@ class CommentAssignmentTest extends BaseParserTest {
                                                  + "        /** Comment 3 */\n"
                                                  + "        public void method2() {}" + "}");
 
-        List<ASTMethodDeclaration> methods = node.findDescendantsOfType(ASTMethodDeclaration.class);
+        List<ASTMethodDeclaration> methods = node.descendants(ASTMethodDeclaration.class).toList();
         assertCommentEquals(methods.get(0), "/** Comment 1 */");
         assertCommentEquals(methods.get(1), "/** Comment 3 */");
     }

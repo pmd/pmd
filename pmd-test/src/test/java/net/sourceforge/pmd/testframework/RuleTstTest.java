@@ -10,6 +10,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -23,8 +24,9 @@ import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.test.lang.DummyLanguageModule;
 import net.sourceforge.pmd.test.lang.DummyLanguageModule.DummyRootNode;
+import net.sourceforge.pmd.test.schema.RuleTestDescriptor;
 
-public class RuleTstTest {
+class RuleTstTest {
     private LanguageVersion dummyLanguage = DummyLanguageModule.getInstance().getDefaultVersion();
 
     private Rule rule = spy(AbstractRule.class);
@@ -37,20 +39,20 @@ public class RuleTstTest {
     };
 
     @Test
-    public void shouldCallStartAndEnd() {
+    void shouldCallStartAndEnd() {
         when(rule.getLanguage()).thenReturn(dummyLanguage.getLanguage());
         when(rule.getName()).thenReturn("test rule");
         when(rule.getTargetSelector()).thenReturn(RuleTargetSelector.forRootOnly());
         when(rule.deepCopy()).thenReturn(rule);
 
-        ruleTester.runTestFromString("the code", rule, dummyLanguage, false);
+        ruleTester.runTestFromString("the code", rule, dummyLanguage);
 
         verify(rule).start(any(RuleContext.class));
         verify(rule).end(any(RuleContext.class));
     }
 
     @Test
-    public void shouldAssertLinenumbersSorted() {
+    void shouldAssertLinenumbersSorted() {
         when(rule.getLanguage()).thenReturn(dummyLanguage.getLanguage());
         when(rule.getName()).thenReturn("test rule");
         when(rule.getMessage()).thenReturn("test rule");
@@ -70,9 +72,11 @@ public class RuleTstTest {
             return null;
         }).when(rule).apply(any(Node.class), Mockito.any(RuleContext.class));
 
-        TestDescriptor testDescriptor = new TestDescriptor(code, "sample test", 2, rule, dummyLanguage);
-        testDescriptor.setReinitializeRule(false);
-        testDescriptor.setExpectedLineNumbers(Arrays.asList(1, 2));
+        RuleTestDescriptor testDescriptor = new RuleTestDescriptor(0, rule);
+        testDescriptor.setLanguageVersion(dummyLanguage);
+        testDescriptor.setCode(code);
+        testDescriptor.setDescription("sample test");
+        testDescriptor.recordExpectedViolations(2, Arrays.asList(1, 2), Collections.emptyList());
 
         ruleTester.runTest(testDescriptor);
     }
