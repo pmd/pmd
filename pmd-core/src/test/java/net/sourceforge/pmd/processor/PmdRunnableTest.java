@@ -40,7 +40,6 @@ import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
-import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.ContextedAssertionError;
 import net.sourceforge.pmd.util.log.MessageReporter;
 
@@ -165,7 +164,7 @@ class PmdRunnableTest {
                                   .addVersion(THROWS_ASSERTION_ERROR)
                                   .addVersion(THROWS_SEMANTIC_ERROR)
                                   .addVersion(PARSER_REPORTS_SEMANTIC_ERROR)
-                                  .addDefaultVersion(""),
+                                  .addDefaultVersion("defalt"),
                   ThrowingLanguageModule::makeParser);
         }
 
@@ -183,10 +182,8 @@ class PmdRunnableTest {
                     RootNode root = DummyLanguageModule.readLispNode(task);
                     throw task.getReporter().error(root, TEST_MESSAGE_SEMANTIC_ERROR);
                 }
-                case "":
-                    return DummyLanguageModule.readLispNode(task);
                 default:
-                    throw AssertionUtil.shouldNotReachHere("");
+                    return DummyLanguageModule.readLispNode(task);
                 }
             };
         }
