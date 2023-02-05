@@ -83,12 +83,13 @@ import net.sourceforge.pmd.util.CollectionUtil;
 public final class PropertyFactory {
 
 
-    /** Default delimiter for all properties. */
-    public static final char DEFAULT_DELIMITER = '|';
-
-
-    /** Default delimiter for numeric properties. */
-    public static final char DEFAULT_NUMERIC_DELIMITER = ',';
+    /**
+     * Default delimiter for all properties. Note that in PMD 6 this was
+     * the pipe character {@code |}, while now it is {@value}. In PMD 6,
+     * numeric properties had a different delimiter, whereas in PMD 7, all
+     * properties have the same delimiter.
+     */
+    public static final char DEFAULT_DELIMITER = ',';
 
 
     private PropertyFactory() {
@@ -127,7 +128,7 @@ public final class PropertyFactory {
      * @return A new builder
      */
     public static GenericCollectionPropertyBuilder<Integer, List<Integer>> intListProperty(String name) {
-        return intProperty(name).toList().delim(DEFAULT_NUMERIC_DELIMITER);
+        return intProperty(name).toList();
     }
 
 
@@ -164,7 +165,7 @@ public final class PropertyFactory {
      * @return A new builder
      */
     public static GenericCollectionPropertyBuilder<Long, List<Long>> longIntListProperty(String name) {
-        return longIntProperty(name).toList().delim(DEFAULT_NUMERIC_DELIMITER);
+        return longIntProperty(name).toList();
     }
 
 
@@ -196,7 +197,7 @@ public final class PropertyFactory {
      * @return A new builder
      */
     public static GenericCollectionPropertyBuilder<Double, List<Double>> doubleListProperty(String name) {
-        return doubleProperty(name).toList().delim(DEFAULT_NUMERIC_DELIMITER);
+        return doubleProperty(name).toList();
     }
 
 

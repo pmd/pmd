@@ -47,7 +47,6 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
     private static final PropertyDescriptor<List<String>> PACKAGES_DESCRIPTOR = stringListProperty("packages")
             .desc("Consider classes in only these package to be beans. Set to an empty value to check all classes.")
             .defaultValues("org.example.beans")
-            .delim(',')
             .build();
 
     private Map<String, PropertyInfo> properties;

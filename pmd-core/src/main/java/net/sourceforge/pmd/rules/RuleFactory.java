@@ -36,7 +36,6 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.properties.ConstraintViolatedException;
 import net.sourceforge.pmd.properties.PropertyBuilder;
-import net.sourceforge.pmd.properties.PropertyBuilder.GenericCollectionPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySerializer;
 import net.sourceforge.pmd.properties.PropertyTypeId;
@@ -373,28 +372,16 @@ public class RuleFactory {
             PropertyBuilder<?, T> builder = factory.newBuilder(name)
                                                    .desc(description)
                                                    .defaultValue(parsePropertyValue(propertyElement, err, factory.getXmlMapper()));
-            setPropDelimiter(propertyElement, err, builder);
+            if (SchemaConstants.DELIMITER.hasAttribute(propertyElement)) {
+                err.at(SchemaConstants.DELIMITER.getAttributeNode(propertyElement))
+                    .warn(XmlErrorMessages.WARN__DELIMITER_DEPRECATED);
+            }
 
             return builder.build();
 
         } catch (IllegalArgumentException e) {
             // builder threw, rethrow with XML location
             throw err.at(propertyElement).error(e);
-        }
-    }
-
-    private static void setPropDelimiter(Element propertyElement, PmdXmlReporter err, PropertyBuilder<?, ?> builder) {
-        if (builder instanceof PropertyBuilder.GenericCollectionPropertyBuilder<?, ?>) {
-            String customDelimiter = SchemaConstants.DELIMITER.getAttributeOrNull(propertyElement);
-            if (customDelimiter != null) {
-                if (customDelimiter.length() == 1) {
-                    ((GenericCollectionPropertyBuilder<?, ?>) builder).delim(customDelimiter.charAt(0));
-                } else {
-                    err.at(SchemaConstants.DELIMITER.getAttributeNode(propertyElement))
-                        .error("Delimiter is not a single character, it will be defaulted to ''{0}''",
-                               ((GenericCollectionPropertyBuilder<?, ?>) builder).getMultiValueDelimiter());
-                }
-            }
         }
     }
 

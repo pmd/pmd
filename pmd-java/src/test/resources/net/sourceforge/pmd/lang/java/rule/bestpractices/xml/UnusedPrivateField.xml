@@ -801,7 +801,7 @@ class ClassWithUnusedField {
 
     <test-code>
         <description>[java] UnusedPrivateField doesn't find annotated unused private fields anymore #4166 (configuration)</description>
-        <rule-property name="reportForAnnotations">java.lang.Deprecated|org.openqa.selenium.support.FindBy</rule-property>
+        <rule-property name="reportForAnnotations">java.lang.Deprecated,org.openqa.selenium.support.FindBy</rule-property>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>6,9</expected-linenumbers>
         <code><![CDATA[

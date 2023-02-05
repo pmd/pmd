@@ -24,7 +24,7 @@ class PropertySyntaxTest extends RulesetFactoryTestBase {
 
     @Test
     void testStringListProp() {
-        assertValueRoundTrip(PropertyParsingUtil.STRING_LIST, "ad|j", listOf("ad", "j"));
+        assertValueRoundTrip(PropertyParsingUtil.STRING_LIST, "ad,j", listOf("ad", "j"));
     }
 
 

@@ -29,7 +29,6 @@ public class VfHandler extends AbstractPmdLanguageVersionHandler {
         PropertyFactory.stringListProperty("apexDirectories")
                        .desc("Location of Apex Class directories. Absolute or relative to the Visualforce directory.")
                        .defaultValue(DEFAULT_APEX_DIRECTORIES)
-                       .delim(',')
                        .build();
 
     /**
@@ -41,7 +40,6 @@ public class VfHandler extends AbstractPmdLanguageVersionHandler {
         PropertyFactory.stringListProperty("objectsDirectories")
                        .desc("Location of Custom Object directories. Absolute or relative to the Visualforce directory.")
                        .defaultValue(DEFAULT_OBJECT_DIRECTORIES)
-                       .delim(',')
                        .build();
 
     @Override

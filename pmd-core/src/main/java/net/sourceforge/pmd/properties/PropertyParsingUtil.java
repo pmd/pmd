@@ -53,11 +53,11 @@ final class PropertyParsingUtil {
 
 
     private static <T extends Number> PropertySerializer<List<T>> numberList(ValueSyntax<T> valueSyntax) {
-        return delimitedString(valueSyntax, Collectors.toList(), PropertyFactory.DEFAULT_NUMERIC_DELIMITER);
+        return delimitedString(valueSyntax, Collectors.toList());
     }
 
     private static <T> PropertySerializer<List<T>> otherList(ValueSyntax<T> valueSyntax) {
-        return delimitedString(valueSyntax, Collectors.toList(), /* prefer old syntax for now */  PropertyFactory.DEFAULT_DELIMITER);
+        return delimitedString(valueSyntax, Collectors.toList() /* prefer old syntax for now */);
     }
 
     private static <T> Function<String, ? extends T> preTrim(Function<? super String, ? extends T> parser) {
@@ -113,21 +113,19 @@ final class PropertyParsingUtil {
      * Builds an XML syntax that understands a {@code <seq>} syntax and
      * a delimited {@code <value>} syntax.
      *
-     * @param itemSyntax      Serializer for the items, must support string mapping
-     * @param collector       Collector to create the collection from strings
-     * @param delimiter       Delimiter for the {@code <value>} syntax
-     * @param <T>             Type of items
-     * @param <C>             Type of collection to handle
+     * @param <T>        Type of items
+     * @param <C>        Type of collection to handle
+     * @param itemSyntax Serializer for the items, must support string mapping
+     * @param collector  Collector to create the collection from strings
      *
      * @throws IllegalArgumentException If the item syntax doesn't support string mapping
      */
     public static <T, C extends Iterable<T>> PropertySerializer<C> delimitedString(PropertySerializer<T> itemSyntax,
-                                                                                   Collector<? super T, ?, ? extends C> collector,
-                                                                                   char delimiter) {
-        String delim = "" + delimiter;
+                                                                                   Collector<? super T, ?, ? extends C> collector) {
+        String delim = "" + PropertyFactory.DEFAULT_DELIMITER;
         return ValueSyntax.create(
             coll -> IteratorUtil.toStream(coll.iterator()).map(itemSyntax::toString).collect(Collectors.joining(delim)),
-            string -> parseListWithEscapes(string, delimiter, itemSyntax::fromString).stream().collect(collector)
+            string -> parseListWithEscapes(string, PropertyFactory.DEFAULT_DELIMITER, itemSyntax::fromString).stream().collect(collector)
         );
     }
 

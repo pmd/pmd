@@ -39,6 +39,7 @@ public final class XmlErrorMessages {
     public static final String WARN__DEPRECATED_USE_OF_ATTRIBUTE = "The use of the ''{0}'' attribute is deprecated. Use a nested element, e.g. {1}";
     public static final String ERR__INVALID_PRIORITY_VALUE = "Not a valid priority: ''{0}'', expected a number in [1,5]";
     public static final String ERR__UNSUPPORTED_PROPERTY_TYPE = "Unsupported property type ''{0}''";
+    public static final String WARN__DELIMITER_DEPRECATED = "Delimiter attribute is not supported anymore, values are always comma-separated.";
 
     private XmlErrorMessages() {
         // utility class

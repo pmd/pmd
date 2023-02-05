@@ -18,7 +18,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.IteratorUtil;
@@ -423,7 +422,6 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
         private PropertySerializer<V> itemParser;
         private final Collector<? super V, ?, ? extends C> collector;
         private final List<PropertyConstraint<? super C>> collectionConstraints = new ArrayList<>();
-        private char multiValueDelimiter = PropertyFactory.DEFAULT_DELIMITER;
 
 
         /**
@@ -459,27 +457,6 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
         public GenericCollectionPropertyBuilder<V, C> defaultValue(Iterable<? extends V> val) {
             super.defaultValue(getDefaultValue(val));
             return this;
-        }
-
-        /**
-         * Specify a delimiter character. By default it's {@value PropertyFactory#DEFAULT_DELIMITER}.
-         * This is only used for properties that are parsed from a value attribute.
-         * If the item type is not parsable from a string, then the delimiter
-         * is ignored as the property can only be parsed using the {@code <seq>} syntax.
-         *
-         * @param delim Delimiter
-         *
-         * @return The same builder
-         */
-        public GenericCollectionPropertyBuilder<V, C> delim(char delim) {
-            this.multiValueDelimiter = delim;
-            return this;
-        }
-
-
-        @InternalApi
-        public char getMultiValueDelimiter() {
-            return multiValueDelimiter;
         }
 
 
@@ -524,7 +501,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
 
         @Override
         public PropertyDescriptor<C> build() {
-            PropertySerializer<C> syntax = PropertyParsingUtil.delimitedString(itemParser, collector, multiValueDelimiter);
+            PropertySerializer<C> syntax = PropertyParsingUtil.delimitedString(itemParser, collector);
             syntax = PropertyParsingUtil.withAllConstraints(syntax, CollectionUtil.map(itemParser.getConstraints(), PropertyConstraint::toCollectionConstraint));
             syntax = PropertyParsingUtil.withAllConstraints(syntax, collectionConstraints);
 

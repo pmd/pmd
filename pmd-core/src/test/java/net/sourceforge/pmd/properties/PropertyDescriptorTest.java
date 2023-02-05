@@ -187,23 +187,23 @@ class PropertyDescriptorTest {
         assertEquals("stringListProp", listDescriptor.name());
         assertEquals("hello", listDescriptor.description());
         assertEquals(Arrays.asList("v1", "v2"), listDescriptor.defaultValue());
-        assertEquals(Arrays.asList("foo", "bar"), listDescriptor.valueFrom("foo|bar"));
-        assertEquals(Arrays.asList("foo", "bar"), listDescriptor.valueFrom("  foo |  bar  "));
+        assertEquals(Arrays.asList("foo", "bar"), listDescriptor.valueFrom("foo,bar"));
+        assertEquals(Arrays.asList("foo", "bar"), listDescriptor.valueFrom("  foo ,  bar  "));
     }
 
     private enum SampleEnum { A, B, C }
 
-    private static Map<String, SampleEnum> nameMap = new LinkedHashMap<>();
+    private static final Map<String, SampleEnum> NAME_MAP = new LinkedHashMap<>();
 
     static {
-        nameMap.put("TEST_A", SampleEnum.A);
-        nameMap.put("TEST_B", SampleEnum.B);
-        nameMap.put("TEST_C", SampleEnum.C);
+        NAME_MAP.put("TEST_A", SampleEnum.A);
+        NAME_MAP.put("TEST_B", SampleEnum.B);
+        NAME_MAP.put("TEST_C", SampleEnum.C);
     }
 
     @Test
     void testEnumProperty() {
-        PropertyDescriptor<SampleEnum> descriptor = PropertyFactory.enumProperty("enumProp", nameMap)
+        PropertyDescriptor<SampleEnum> descriptor = PropertyFactory.enumProperty("enumProp", NAME_MAP)
                 .desc("hello")
                 .defaultValue(SampleEnum.B)
                 .build();
@@ -212,20 +212,20 @@ class PropertyDescriptorTest {
         assertEquals(SampleEnum.B, descriptor.defaultValue());
         assertEquals(SampleEnum.C, descriptor.valueFrom("TEST_C"));
 
-        PropertyDescriptor<List<SampleEnum>> listDescriptor = PropertyFactory.enumListProperty("enumListProp", nameMap)
+        PropertyDescriptor<List<SampleEnum>> listDescriptor = PropertyFactory.enumListProperty("enumListProp", NAME_MAP)
                 .desc("hello")
                 .defaultValues(SampleEnum.A, SampleEnum.B)
                 .build();
         assertEquals("enumListProp", listDescriptor.name());
         assertEquals("hello", listDescriptor.description());
         assertEquals(Arrays.asList(SampleEnum.A, SampleEnum.B), listDescriptor.defaultValue());
-        assertEquals(Arrays.asList(SampleEnum.B, SampleEnum.C), listDescriptor.valueFrom("TEST_B|TEST_C"));
+        assertEquals(Arrays.asList(SampleEnum.B, SampleEnum.C), listDescriptor.valueFrom("TEST_B,TEST_C"));
     }
 
 
     @Test
     void testEnumPropertyNullValueFailsBuild() {
-        Map<String, SampleEnum> map = new HashMap<>(nameMap);
+        Map<String, SampleEnum> map = new HashMap<>(NAME_MAP);
         map.put("TEST_NULL", null);
 
         IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () ->
@@ -236,7 +236,7 @@ class PropertyDescriptorTest {
 
     @Test
     void testEnumListPropertyNullValueFailsBuild() {
-        Map<String, SampleEnum> map = new HashMap<>(nameMap);
+        Map<String, SampleEnum> map = new HashMap<>(NAME_MAP);
         map.put("TEST_NULL", null);
 
         IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () ->
@@ -247,7 +247,7 @@ class PropertyDescriptorTest {
 
     @Test
     void testEnumPropertyInvalidValue() {
-        PropertyDescriptor<SampleEnum> descriptor = PropertyFactory.enumProperty("enumProp", nameMap)
+        PropertyDescriptor<SampleEnum> descriptor = PropertyFactory.enumProperty("enumProp", NAME_MAP)
                 .desc("hello")
                 .defaultValue(SampleEnum.B)
                 .build();

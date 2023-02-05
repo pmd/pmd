@@ -5,6 +5,7 @@
 package net.sourceforge.pmd;
 
 import static net.sourceforge.pmd.PmdCoreTestUtils.dummyLanguage;
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.DEPRECATED;
 import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.NAME;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -18,7 +19,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,6 +30,7 @@ import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.internal.xml.SchemaConstants;
+import net.sourceforge.pmd.util.internal.xml.XmlErrorMessages;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 
@@ -177,33 +178,37 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
     @Test
     void testStringMultiPropertyDefaultDelimiter() {
         Rule r = loadFirstRule(
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<ruleset name=\"the ruleset\">\n  <description>Desc</description>\n"
-                + "     <rule name=\"myRule\" message=\"Do not place to this package. Move to \n{0} package/s instead.\" \n"
-                + "class=\"net.sourceforge.pmd.lang.rule.XPathRule\" language=\"dummy\">\n"
-                + "         <description>Please move your class to the right folder(rest \nfolder)</description>\n"
-                + "         <priority>2</priority>\n         <properties>\n             <property name=\"packageRegEx\""
-                + " value=\"com.aptsssss|com.abc\" \ntype=\"List[String]\" "
-                + "description=\"valid packages\"/>\n         </properties></rule></ruleset>");
+            rulesetXml(
+                dummyRule(
+                    priority("3"),
+                    properties(
+                        "<property name=\"packageRegEx\" value=\"com.aptsssss,com.abc\" \ntype=\"List[String]\" description=\"valid packages\"/>"
+                    )
+                )
+            ));
         Object propValue = r.getProperty(r.getPropertyDescriptor("packageRegEx"));
 
-        assertEquals(Arrays.asList("com.aptsssss", "com.abc"), propValue);
+        assertEquals(listOf("com.aptsssss", "com.abc"), propValue);
     }
 
     @Test
     void testStringMultiPropertyDelimiter() {
-        Rule r = loadFirstRule("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n "
-                + " <description>ruleset desc</description>\n     "
-                + "<rule name=\"myRule\" message=\"Do not place to this package. Move to \n{0} package/s"
-                + " instead.\" \n"
-                + "class=\"net.sourceforge.pmd.lang.rule.XPathRule\" language=\"dummy\">\n"
-                + "         <description>Please move your class to the right folder(rest \nfolder)</description>\n"
-                + "         <priority>2</priority>\n         <properties>\n             <property name=\"packageRegEx\""
-                + " value=\"com.aptsssss,com.abc\" \ntype=\"List[String]\" delimiter=\",\" "
-                + "description=\"valid packages\"/>\n"
-                + "         </properties></rule>" + "</ruleset>");
-
+        Rule r = loadFirstRule(
+            rulesetXml(
+                dummyRule(
+                    priority("3"),
+                    properties(
+                        "<property name=\"packageRegEx\" value=\"com.aptsssss|com.abc\" delimiter=\"|\" type=\"List[String]\" description=\"valid packages\"/>"
+                    )
+                )
+            ));
         Object propValue = r.getProperty(r.getPropertyDescriptor("packageRegEx"));
-        assertEquals(Arrays.asList("com.aptsssss", "com.abc"), propValue);
+
+        assertEquals(listOf("com.aptsssss|com.abc"), propValue);
+
+        verifyFoundAWarningWithMessage(
+            containing(XmlErrorMessages.WARN__DELIMITER_DEPRECATED)
+        );
     }
 
     /**
