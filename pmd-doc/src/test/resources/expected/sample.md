@@ -93,33 +93,15 @@ Avoid jumbled loop incrementers - its usually a mistake, and is confusing even i
 ``` xml
 <rule ref="category/java/sample.xml/JumbledIncrementer">
     <properties>
-        <property name="sampleAdditionalProperty">
-            <value>the value</value>
-        </property>
-        <property name="sampleMultiStringProperty">
-            <value>Value1,Value2</value>
-        </property>
-        <property name="sampleRegexProperty1">
-            <value>\/\*\s+(default|package)\s+\*\/</value>
-        </property>
-        <property name="sampleRegexProperty2">
-            <value>[a-z]*</value>
-        </property>
-        <property name="sampleRegexProperty3">
-            <value>\s+</value>
-        </property>
-        <property name="sampleRegexProperty4">
-            <value>_dd_</value>
-        </property>
-        <property name="sampleRegexProperty5">
-            <value>[0-9]{1,3}</value>
-        </property>
-        <property name="sampleRegexProperty6">
-            <value>\b</value>
-        </property>
-        <property name="sampleRegexProperty7">
-            <value>\n</value>
-        </property>
+        <property name="sampleAdditionalProperty" value="the value" />
+        <property name="sampleMultiStringProperty" value="Value1,Value2" />
+        <property name="sampleRegexProperty1" value="\/\*\s+(default|package)\s+\*\/" />
+        <property name="sampleRegexProperty2" value="[a-z]*" />
+        <property name="sampleRegexProperty3" value="\s+" />
+        <property name="sampleRegexProperty4" value="_dd_" />
+        <property name="sampleRegexProperty5" value="[0-9]{1,3}" />
+        <property name="sampleRegexProperty6" value="\b" />
+        <property name="sampleRegexProperty7" value="\n" />
     </properties>
 </rule>
 ```
@@ -284,33 +266,15 @@ Avoid jumbled loop incrementers - its usually a mistake, and is confusing even i
 ``` xml
 <rule ref="category/java/sample.xml/RenamedRule1">
     <properties>
-        <property name="sampleAdditionalProperty">
-            <value>the value</value>
-        </property>
-        <property name="sampleMultiStringProperty">
-            <value>Value1,Value2</value>
-        </property>
-        <property name="sampleRegexProperty1">
-            <value>\/\*\s+(default|package)\s+\*\/</value>
-        </property>
-        <property name="sampleRegexProperty2">
-            <value>[a-z]*</value>
-        </property>
-        <property name="sampleRegexProperty3">
-            <value>\s+</value>
-        </property>
-        <property name="sampleRegexProperty4">
-            <value>_dd_</value>
-        </property>
-        <property name="sampleRegexProperty5">
-            <value>[0-9]{1,3}</value>
-        </property>
-        <property name="sampleRegexProperty6">
-            <value>\b</value>
-        </property>
-        <property name="sampleRegexProperty7">
-            <value>\n</value>
-        </property>
+        <property name="sampleAdditionalProperty" value="the value" />
+        <property name="sampleMultiStringProperty" value="Value1,Value2" />
+        <property name="sampleRegexProperty1" value="\/\*\s+(default|package)\s+\*\/" />
+        <property name="sampleRegexProperty2" value="[a-z]*" />
+        <property name="sampleRegexProperty3" value="\s+" />
+        <property name="sampleRegexProperty4" value="_dd_" />
+        <property name="sampleRegexProperty5" value="[0-9]{1,3}" />
+        <property name="sampleRegexProperty6" value="\b" />
+        <property name="sampleRegexProperty7" value="\n" />
     </properties>
 </rule>
 ```
@@ -375,33 +339,15 @@ Avoid jumbled loop incrementers - its usually a mistake, and is confusing even i
 ``` xml
 <rule ref="category/java/sample.xml/RenamedRule2">
     <properties>
-        <property name="sampleAdditionalProperty">
-            <value>the value</value>
-        </property>
-        <property name="sampleMultiStringProperty">
-            <value>Value1,Value2</value>
-        </property>
-        <property name="sampleRegexProperty1">
-            <value>\/\*\s+(default|package)\s+\*\/</value>
-        </property>
-        <property name="sampleRegexProperty2">
-            <value>[a-z]*</value>
-        </property>
-        <property name="sampleRegexProperty3">
-            <value>\s+</value>
-        </property>
-        <property name="sampleRegexProperty4">
-            <value>_dd_</value>
-        </property>
-        <property name="sampleRegexProperty5">
-            <value>[0-9]{1,3}</value>
-        </property>
-        <property name="sampleRegexProperty6">
-            <value>\b</value>
-        </property>
-        <property name="sampleRegexProperty7">
-            <value>\n</value>
-        </property>
+        <property name="sampleAdditionalProperty" value="the value" />
+        <property name="sampleMultiStringProperty" value="Value1,Value2" />
+        <property name="sampleRegexProperty1" value="\/\*\s+(default|package)\s+\*\/" />
+        <property name="sampleRegexProperty2" value="[a-z]*" />
+        <property name="sampleRegexProperty3" value="\s+" />
+        <property name="sampleRegexProperty4" value="_dd_" />
+        <property name="sampleRegexProperty5" value="[0-9]{1,3}" />
+        <property name="sampleRegexProperty6" value="\b" />
+        <property name="sampleRegexProperty7" value="\n" />
     </properties>
 </rule>
 ```
@@ -468,33 +414,15 @@ Avoid jumbled loop incrementers - its usually a mistake, and is confusing even i
 ``` xml
 <rule ref="category/java/sample.xml/RenamedRule3">
     <properties>
-        <property name="sampleAdditionalProperty">
-            <value>the value</value>
-        </property>
-        <property name="sampleMultiStringProperty">
-            <value>Value1,Value2</value>
-        </property>
-        <property name="sampleRegexProperty1">
-            <value>\/\*\s+(default|package)\s+\*\/</value>
-        </property>
-        <property name="sampleRegexProperty2">
-            <value>[a-z]*</value>
-        </property>
-        <property name="sampleRegexProperty3">
-            <value>\s+</value>
-        </property>
-        <property name="sampleRegexProperty4">
-            <value>_dd_</value>
-        </property>
-        <property name="sampleRegexProperty5">
-            <value>[0-9]{1,3}</value>
-        </property>
-        <property name="sampleRegexProperty6">
-            <value>\b</value>
-        </property>
-        <property name="sampleRegexProperty7">
-            <value>\n</value>
-        </property>
+        <property name="sampleAdditionalProperty" value="the value" />
+        <property name="sampleMultiStringProperty" value="Value1,Value2" />
+        <property name="sampleRegexProperty1" value="\/\*\s+(default|package)\s+\*\/" />
+        <property name="sampleRegexProperty2" value="[a-z]*" />
+        <property name="sampleRegexProperty3" value="\s+" />
+        <property name="sampleRegexProperty4" value="_dd_" />
+        <property name="sampleRegexProperty5" value="[0-9]{1,3}" />
+        <property name="sampleRegexProperty6" value="\b" />
+        <property name="sampleRegexProperty7" value="\n" />
     </properties>
 </rule>
 ```
@@ -561,33 +489,15 @@ Avoid jumbled loop incrementers - its usually a mistake, and is confusing even i
 ``` xml
 <rule ref="category/java/sample.xml/RenamedRule4">
     <properties>
-        <property name="sampleAdditionalProperty">
-            <value>the value</value>
-        </property>
-        <property name="sampleMultiStringProperty">
-            <value>Value1,Value2</value>
-        </property>
-        <property name="sampleRegexProperty1">
-            <value>\/\*\s+(default|package)\s+\*\/</value>
-        </property>
-        <property name="sampleRegexProperty2">
-            <value>[a-z]*</value>
-        </property>
-        <property name="sampleRegexProperty3">
-            <value>\s+</value>
-        </property>
-        <property name="sampleRegexProperty4">
-            <value>_dd_</value>
-        </property>
-        <property name="sampleRegexProperty5">
-            <value>[0-9]{1,3}</value>
-        </property>
-        <property name="sampleRegexProperty6">
-            <value>\b</value>
-        </property>
-        <property name="sampleRegexProperty7">
-            <value>\n</value>
-        </property>
+        <property name="sampleAdditionalProperty" value="the value" />
+        <property name="sampleMultiStringProperty" value="Value1,Value2" />
+        <property name="sampleRegexProperty1" value="\/\*\s+(default|package)\s+\*\/" />
+        <property name="sampleRegexProperty2" value="[a-z]*" />
+        <property name="sampleRegexProperty3" value="\s+" />
+        <property name="sampleRegexProperty4" value="_dd_" />
+        <property name="sampleRegexProperty5" value="[0-9]{1,3}" />
+        <property name="sampleRegexProperty6" value="\b" />
+        <property name="sampleRegexProperty7" value="\n" />
     </properties>
 </rule>
 ```
@@ -669,15 +579,9 @@ if (0 > 1 && 0 < 1) {
 ``` xml
 <rule ref="category/java/sample.xml/XSSInDocumentation">
     <properties>
-        <property name="sampleRegexProperty">
-            <value>\/\*\s+(default|package)\s+\*\/</value>
-        </property>
-        <property name="XSSpropertyTest">
-            <value>&lt;script&gt;alert('XSS');&lt;/script&gt;</value>
-        </property>
-        <property name="escapingNeeded">
-            <value>this is escaped: |</value>
-        </property>
+        <property name="sampleRegexProperty" value="\/\*\s+(default|package)\s+\*\/" />
+        <property name="XSSpropertyTest" value="&lt;script&gt;alert('XSS');&lt;/script&gt;" />
+        <property name="escapingNeeded" value="this is escaped: |" />
     </properties>
 </rule>
 ```
