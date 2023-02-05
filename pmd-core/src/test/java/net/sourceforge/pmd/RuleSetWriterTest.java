@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd;
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
@@ -87,4 +91,19 @@ class RuleSetWriterTest {
         String written = out.toString("UTF-8");
         assertTrue(written.contains("ref=\"rulesets/dummy/basic.xml/DummyBasicMockRule\""));
     }
+
+    @Test
+    void testXmlPropertyWithDelimiter() throws Exception {
+        RuleSet rs = new RuleSetLoader().loadFromResource("net/sourceforge/pmd/TestRulesetProperties.xml");
+
+        Rule rule = rs.getRuleByName("MockRule4");
+        assertEquals(listOf("bar", "foo"), rule.getProperty(rule.getPropertyDescriptor("stringList")));
+        assertEquals(listOf("bar", "foo"), rule.getProperty(rule.getPropertyDescriptor("stringListWithDelim")));
+
+        writer.write(rs);
+
+        String written = out.toString("UTF-8");
+        assertThat(written,  containsString("delimiter="));
+    }
+
 }

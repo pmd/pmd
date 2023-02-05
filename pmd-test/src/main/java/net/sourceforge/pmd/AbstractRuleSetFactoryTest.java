@@ -503,7 +503,8 @@ public abstract class AbstractRuleSetFactoryTest {
                     value1 = ((Pattern) value1).pattern();
                     value2 = ((Pattern) value2).pattern();
                 }
-                assertEquals(value1, value2, message + ", Rule property value " + j);
+                assertEquals(value1, value2, message + ", Rule " + rule1.getName() + " property "
+                    + propertyDescriptors1.get(j).name());
             }
             assertEquals(propertyDescriptors1.size(), propertyDescriptors2.size(),
                     message + ", Rule property descriptor count");
