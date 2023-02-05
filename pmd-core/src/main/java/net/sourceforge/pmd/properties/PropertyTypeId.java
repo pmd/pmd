@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 
 /**
  * Enumerates the properties that can be built from the XML. Defining a property in
@@ -25,6 +27,7 @@ import java.util.function.Function;
  * @author Clément Fournier
  * @since 6.0.0
  */
+@InternalApi
 public enum PropertyTypeId {
     // These are exclusively used for XPath rules. It would make more sense to model the supported
     // property types around XML Schema Datatypes (XSD) 1.0 or 1.1 instead of Java datatypes (save for

@@ -351,10 +351,7 @@ public class RuleFactory {
         PropertyTypeId factory = PropertyTypeId.lookupMnemonic(typeId);
         if (factory == null) {
             throw err.at(PROPERTY_TYPE.getAttributeNode(propertyElement))
-                     .error(
-                         "Unsupported property type ''{0}''",
-                         typeId
-                     );
+                     .error(XmlErrorMessages.ERR__UNSUPPORTED_PROPERTY_TYPE, typeId);
         }
 
         return propertyDefCapture(propertyElement, err, factory.getBuilderUtils());
