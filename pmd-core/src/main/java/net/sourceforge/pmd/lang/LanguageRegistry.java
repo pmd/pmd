@@ -77,6 +77,7 @@ public final class LanguageRegistry implements Iterable<Language> {
      */
     public LanguageRegistry getDependenciesOf(Language lang) {
         Set<Language> result = new HashSet<>();
+        result.add(lang);
         addDepsOrThrow(lang, result);
         return new LanguageRegistry(result);
     }
