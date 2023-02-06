@@ -125,21 +125,21 @@ public class LanguageLevelChecker<T> {
          * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a> (Java 19)
          * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a> (Java 20)
          */
-        PATTERN_MATCHING_FOR_SWITCH(17, 20, false),
+        PATTERNS_IN_SWITCH_STATEMENTS(17, 20, false),
 
         /**
          * Part of pattern matching for switch
-         * @see #PATTERN_MATCHING_FOR_SWITCH
+         * @see #PATTERNS_IN_SWITCH_STATEMENTS
          * @see <a href="https://openjdk.org/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a> (Java 17)
          * @see <a href="https://openjdk.org/jeps/420">JEP 420: Pattern Matching for switch (Second Preview)</a> (Java 18)
          * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a> (Java 19)
          * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a> (Java 20)
          */
-        NULL_CASE_LABELS(17, 20, false),
+        NULL_IN_SWITCH_CASES(17, 20, false),
 
         /**
          * Part of pattern matching for switch: Case refinement using "when"
-         * @see #PATTERN_MATCHING_FOR_SWITCH
+         * @see #PATTERNS_IN_SWITCH_STATEMENTS
          * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a> (Java 19)
          * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a> (Java 20)
          */
@@ -150,13 +150,13 @@ public class LanguageLevelChecker<T> {
          * @see <a href="https://openjdk.org/jeps/405">JEP 405: Record Patterns (Preview)</a> (Java 19)
          * @see <a href="https://openjdk.org/jeps/432">JEP 432: Record Patterns (Second Preview)</a> (Java 20)
          */
-        RECORD_PATTERNS(19, 20, false),
+        DECONSTRUCTION_PATTERNS(19, 20, false),
 
         /**
-         * Record destructuring patterns in for-each loops
+         * Record deconstruction patterns in for-each loops
          * @see <a href="https://openjdk.org/jeps/432">JEP 432: Record Patterns (Second Preview)</a> (Java 20)
          */
-        RECORD_PATTERNS_IN_ENHANCED_FOR_STATEMENT(20, 20, false),
+        DECONSTRUCTION_PATTERNS_IN_ENHANCED_FOR_STATEMENT(20, 20, false),
 
         ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
@@ -293,60 +293,60 @@ public class LanguageLevelChecker<T> {
         CONCISE_RESOURCE_SYNTAX(9),
 
         /**
-         * @see <a href="https://openjdk.java.net/jeps/361">JEP 361: Switch Expressions</a>
+         * @see <a href="https://openjdk.org/jeps/361">JEP 361: Switch Expressions</a>
          */
         COMPOSITE_CASE_LABEL(14),
         /**
-         * @see <a href="https://openjdk.java.net/jeps/361">JEP 361: Switch Expressions</a>
+         * @see <a href="https://openjdk.org/jeps/361">JEP 361: Switch Expressions</a>
          */
         SWITCH_EXPRESSIONS(14),
         /**
-         * @see <a href="https://openjdk.java.net/jeps/361">JEP 361: Switch Expressions</a>
+         * @see <a href="https://openjdk.org/jeps/361">JEP 361: Switch Expressions</a>
          */
         SWITCH_RULES(14),
         /**
          * @see #SWITCH_EXPRESSIONS
-         * @see <a href="https://openjdk.java.net/jeps/361">JEP 361: Switch Expressions</a>
+         * @see <a href="https://openjdk.org/jeps/361">JEP 361: Switch Expressions</a>
          */
         YIELD_STATEMENTS(14),
 
         /**
-         * @see <a href="https://openjdk.java.net/jeps/378">JEP 378: Text Blocks</a>
+         * @see <a href="https://openjdk.org/jeps/378">JEP 378: Text Blocks</a>
          */
         TEXT_BLOCK_LITERALS(15),
         /**
          * The new escape sequence {@code \s} simply translates to a single space {@code \u0020}.
          *
          * @see #TEXT_BLOCK_LITERALS
-         * @see <a href="https://openjdk.java.net/jeps/378">JEP 378: Text Blocks</a>
+         * @see <a href="https://openjdk.org/jeps/378">JEP 378: Text Blocks</a>
          */
         SPACE_STRING_ESCAPES(15),
 
         /**
-         * @see <a href="https://openjdk.java.net/jeps/359">JEP 359: Records (Preview)</a> (Java 14)
-         * @see <a href="https://openjdk.java.net/jeps/384">JEP 384: Records (Second Preview)</a> (Java 15)
-         * @see <a href="https://openjdk.java.net/jeps/395">JEP 395: Records</a> (Java 16)
+         * @see <a href="https://openjdk.org/jeps/359">JEP 359: Records (Preview)</a> (Java 14)
+         * @see <a href="https://openjdk.org/jeps/384">JEP 384: Records (Second Preview)</a> (Java 15)
+         * @see <a href="https://openjdk.org/jeps/395">JEP 395: Records</a> (Java 16)
          */
         RECORD_DECLARATIONS(16),
 
         /**
-         * @see <a href="https://openjdk.java.net/jeps/305">JEP 305: Pattern Matching for instanceof (Preview)</a> (Java 14)
-         * @see <a href="https://openjdk.java.net/jeps/375">JEP 375: Pattern Matching for instanceof (Second Preview)</a> (Java 15)
-         * @see <a href="https://openjdk.java.net/jeps/394">JEP 394: Pattern Matching for instanceof</a> (Java 16)
+         * @see <a href="https://openjdk.org/jeps/305">JEP 305: Pattern Matching for instanceof (Preview)</a> (Java 14)
+         * @see <a href="https://openjdk.org/jeps/375">JEP 375: Pattern Matching for instanceof (Second Preview)</a> (Java 15)
+         * @see <a href="https://openjdk.org/jeps/394">JEP 394: Pattern Matching for instanceof</a> (Java 16)
          */
         TYPE_PATTERNS_IN_INSTANCEOF(16),
 
         /**
          * Part of the records JEP 394.
          * @see #RECORD_DECLARATIONS
-         * @see <a href="https://bugs.openjdk.java.net/browse/JDK-8253374">JLS changes for Static Members of Inner Classes</a> (Java 16)
+         * @see <a href="https://bugs.openjdk.org/browse/JDK-8253374">JLS changes for Static Members of Inner Classes</a> (Java 16)
          */
         STATIC_LOCAL_TYPE_DECLARATIONS(16),
 
         /**
-         * @see <a href="https://openjdk.java.net/jeps/360">JEP 360: Sealed Classes (Preview)</a> (Java 15)
-         * @see <a href="https://openjdk.java.net/jeps/397">JEP 397: Sealed Classes (Second Preview)</a> (Java 16)
-         * @see <a href="https://openjdk.java.net/jeps/409">JEP 409: Sealed Classes</a> (Java 17)
+         * @see <a href="https://openjdk.org/jeps/360">JEP 360: Sealed Classes (Preview)</a> (Java 15)
+         * @see <a href="https://openjdk.org/jeps/397">JEP 397: Sealed Classes (Second Preview)</a> (Java 16)
+         * @see <a href="https://openjdk.org/jeps/409">JEP 409: Sealed Classes</a> (Java 17)
          */
         SEALED_CLASSES(17),
 
@@ -477,7 +477,7 @@ public class LanguageLevelChecker<T> {
         public Void visit(ASTForeachStatement node, T data) {
             check(node, RegularLanguageFeature.FOREACH_LOOPS, data);
             if (node.getFirstChild() instanceof ASTRecordPattern) {
-                check(node, PreviewFeature.RECORD_PATTERNS_IN_ENHANCED_FOR_STATEMENT, data);
+                check(node, PreviewFeature.DECONSTRUCTION_PATTERNS_IN_ENHANCED_FOR_STATEMENT, data);
             }
             return null;
         }
@@ -542,7 +542,7 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public Void visit(ASTRecordPattern node, T data) {
-            check(node, PreviewFeature.RECORD_PATTERNS, data);
+            check(node, PreviewFeature.DECONSTRUCTION_PATTERNS, data);
             return null;
         }
 
@@ -591,13 +591,13 @@ public class LanguageLevelChecker<T> {
                 check(node, RegularLanguageFeature.COMPOSITE_CASE_LABEL, data);
             }
             if (node.isDefault() && JavaTokenKinds.CASE == node.getFirstToken().getKind()) {
-                check(node, PreviewFeature.PATTERN_MATCHING_FOR_SWITCH, data);
+                check(node, PreviewFeature.PATTERNS_IN_SWITCH_STATEMENTS, data);
             }
             if (node.getFirstChild() instanceof ASTNullLiteral) {
-                check(node, PreviewFeature.NULL_CASE_LABELS, data);
+                check(node, PreviewFeature.NULL_IN_SWITCH_CASES, data);
             }
             if (node.getFirstChild() instanceof ASTPattern) {
-                check(node, PreviewFeature.PATTERN_MATCHING_FOR_SWITCH, data);
+                check(node, PreviewFeature.PATTERNS_IN_SWITCH_STATEMENTS, data);
             }
             return null;
         }
