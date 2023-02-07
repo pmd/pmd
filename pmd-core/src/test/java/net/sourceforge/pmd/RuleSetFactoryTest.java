@@ -206,6 +206,28 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
         assertEquals(Arrays.asList("com.aptsssss", "com.abc"), propValue);
     }
 
+    /**
+     * Verifies that empty values for properties are possible. Empty values can be used to disable a property.
+     * However, the semantic depends on the concrete rule implementation.
+     *
+     * @see <a href="https://github.com/pmd/pmd/issues/4279">[java] TestClassWithoutTestCases - can not set test pattern to empty #4279</a>
+     */
+    @Test
+    void testEmptyStringProperty() {
+        Rule r = loadFirstRule("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + "<ruleset name=\"test\">\n "
+                + " <description>ruleset desc</description>\n     "
+                + "<rule name=\"myRule\" message=\"Do not place to this package. Move to \n{0} package/s"
+                + " instead.\" \n" + "class=\"net.sourceforge.pmd.RuleWithProperties\" language=\"dummy\">\n"
+                + "         <description>Please move your class to the right folder(rest \nfolder)</description>\n"
+                + "         <priority>2</priority>\n         <properties>\n             <property name=\"stringProperty\""
+                + " value=\"\" />\n"
+                + "         </properties></rule>" + "</ruleset>");
+        PropertyDescriptor<String> prop = (PropertyDescriptor<String>) r.getPropertyDescriptor("stringProperty");
+        String value = r.getProperty(prop);
+        assertEquals("", value);
+    }
+
     @Test
     void testRuleSetWithDeprecatedRule() {
         RuleSet rs = loadRuleSet("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"ruleset\">\n"
@@ -731,7 +753,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
     }
 
     @Test
-    public void testDirectDeprecatedRule() {
+    void testDirectDeprecatedRule() {
         Rule r = loadFirstRule(rulesetXml(
             dummyRule(attrs -> attrs.put(DEPRECATED, "true"))
         ));
@@ -958,7 +980,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
     }
 
     @Test
-    public void testMissingRuleSetDescriptionIsWarning() {
+    void testMissingRuleSetDescriptionIsWarning() {
         loadRuleSetWithDeprecationWarnings(
                 "<?xml version=\"1.0\"?>\n" + "<ruleset name=\"then name\"\n"
                         + "    xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n"

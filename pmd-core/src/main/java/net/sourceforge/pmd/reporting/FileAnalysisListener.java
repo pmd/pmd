@@ -11,8 +11,8 @@ import java.util.List;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.internal.util.AssertionUtil;
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.internal.util.IOUtil;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * A handler for events occuring during analysis of a single file. Instances

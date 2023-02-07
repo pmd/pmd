@@ -11,10 +11,10 @@ import org.junit.jupiter.api.Test;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 
-public class RuleSetFactoryMessagesTest extends RulesetFactoryTestBase {
+class RuleSetFactoryMessagesTest extends RulesetFactoryTestBase {
 
     @Test
-    public void testFullMessage() throws Exception {
+    void testFullMessage() throws Exception {
         String log = SystemLambda.tapSystemErr(() -> assertCannotParse(
             rulesetXml(
                 dummyRule(
@@ -31,6 +31,4 @@ public class RuleSetFactoryMessagesTest extends RulesetFactoryTestBase {
                 + "    ^^^^^^^^^ Not a valid priority: 'not a priority', expected a number in [1,5]"
         ));
     }
-
-
 }

@@ -21,12 +21,15 @@ import org.junit.jupiter.api.Test;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.DumperOptions.FlowStyle;
 import org.yaml.snakeyaml.DumperOptions.LineBreak;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.SafeConstructor;
+import org.yaml.snakeyaml.representer.Representer;
 
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.util.IOUtil;
 
 class SidebarGeneratorTest {
     private MockedFileWriter writer = new MockedFileWriter();
@@ -48,12 +51,12 @@ class SidebarGeneratorTest {
         SidebarGenerator generator = new SidebarGenerator(writer, FileSystems.getDefault().getPath(".."));
         List<Map<String, Object>> result = generator.generateRuleReferenceSection(rulesets);
 
-        DumperOptions options = new DumperOptions();
-        options.setDefaultFlowStyle(FlowStyle.BLOCK);
+        DumperOptions dumperOptions = new DumperOptions();
+        dumperOptions.setDefaultFlowStyle(FlowStyle.BLOCK);
         if (SystemUtils.IS_OS_WINDOWS) {
-            options.setLineBreak(LineBreak.WIN);
+            dumperOptions.setLineBreak(LineBreak.WIN);
         }
-        String yaml = new Yaml(options).dump(result);
+        String yaml = new Yaml(new SafeConstructor(new LoaderOptions()), new Representer(dumperOptions), dumperOptions).dump(result);
 
         String expected = MockedFileWriter.normalizeLineSeparators(
                 IOUtil.readToString(SidebarGeneratorTest.class.getResourceAsStream("sidebar.yml"), StandardCharsets.UTF_8));

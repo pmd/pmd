@@ -242,11 +242,13 @@ The following previously deprecated rules have been finally removed:
 
 * miscellaneous
     *   [#896](https://github.com/pmd/pmd/issues/896): \[all] Use slf4j
+    *   [#3797](https://github.com/pmd/pmd/issues/3797): \[all] Use JUnit5
     *   [#1451](https://github.com/pmd/pmd/issues/1451): \[core] RulesetFactoryCompatibility stores the whole ruleset file in memory as a string
 * ant
     * [#4080](https://github.com/pmd/pmd/issues/4080): \[ant] Split off Ant integration into a new submodule 
 * core
     * [#2234](https://github.com/pmd/pmd/issues/2234): \[core] Consolidate PMD CLI into a single command
+    * [#2873](https://github.com/pmd/pmd/issues/2873): \[core] Utility classes in pmd 7
     * [#3203](https://github.com/pmd/pmd/issues/3203): \[core] Replace RuleViolationFactory implementations with ViolationDecorator
     * [#3902](https://github.com/pmd/pmd/issues/3902): \[core] Violation decorators
     * [#4035](https://github.com/pmd/pmd/issues/4035): \[core] ConcurrentModificationException in DefaultRuleViolationFactory
@@ -255,6 +257,9 @@ The following previously deprecated rules have been finally removed:
     *   [#4079](https://github.com/pmd/pmd/issues/4079): \[cli] Split off CLI implementation into a pmd-cli submodule
 * apex-design
     *   [#2667](https://github.com/pmd/pmd/issues/2667): \[apex] Integrate nawforce/ApexLink to build robust Unused rule
+* java
+    * [#4317](https://github.com/pmd/pmd/issues/4317): \[java] Some AST nodes should not be TypeNodes
+    * [#4367](https://github.com/pmd/pmd/issues/4367): \[java] Move testrule TypeResTest into internal
 * java-bestpractices
     * [#342](https://github.com/pmd/pmd/issues/342): \[java] AccessorMethodGeneration: Name clash with another public field not properly handled
     * [#755](https://github.com/pmd/pmd/issues/755): \[java] AccessorClassGeneration false positive for private constructors
@@ -352,6 +357,19 @@ The following previously deprecated rules have been finally removed:
   has been moved into the same package {% jdoc_package ant::ant %}. You'll need to update your taskdef entries in your
   build.xml files with the FQCN {% jdoc !!ant::ant.CPDTask %} if you use it anywhere.
 
+* Utility classes in {% jdoc_package core::util %}, that have previously marked as `@InternalApi` have been finally
+  moved to {% jdoc_package core::internal.util %}. This includes ClasspathClassLoader, FileFinder, FileUtil, and
+  IOUtil.
+
+* The following utility classes in {% jdoc_package core::util %} are now considered public API:
+  * {% jdoc core::util.AssertionUtil %}
+  * {% jdoc core::util.CollectionUtil %}
+  * {% jdoc core::util.ContextedAssertionError %}
+  * {% jdoc core::util.ContextedStackOverflowError %}
+  * {% jdoc core::util.GraphUtil %}
+  * {% jdoc core::util.IteratorUtil %}
+  * {% jdoc core::util.StringUtil %}
+
 #### Metrics framework
 
 The metrics framework has been made simpler and more general.
@@ -371,6 +389,15 @@ The metrics framework has been made simpler and more general.
 * This makes it so, that {% jdoc core::lang.metrics.LanguageMetricsProvider %} does not need type parameters. It can just return a `Set<Metric<?, ?>>` to list available metrics.
 
 * {% jdoc_old core::lang.metrics.Signature %}s, their implementations, and the interface `SignedNode` have been removed. Node streams allow replacing their usages very easily.
+
+#### Testing framework
+
+* PMD 7 has been upgraded to use JUnit 5 only. That means, that JUnit4 related classes have been removed, namely
+  * `net.sourceforge.pmd.testframework.PMDTestRunner`
+  * `net.sourceforge.pmd.testframework.RuleTestRunner`
+  * `net.sourceforge.pmd.testframework.TestDescriptor`
+* Rule tests, that use {% jdoc test::testframework.SimpleAggregatorTst %} or {% jdoc test::testframework.PmdRuleTst %} work as before without change, but use
+  now JUnit5 under the hood. If you added additional JUnit4 tests to your rule test classes, then you'll need to upgrade them to use JUnit5.
 
 ### External Contributions
 

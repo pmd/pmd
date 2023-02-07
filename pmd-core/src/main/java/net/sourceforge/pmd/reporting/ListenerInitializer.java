@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import net.sourceforge.pmd.internal.util.AssertionUtil;
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.internal.util.IOUtil;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * An initializer for {@link GlobalAnalysisListener} that gets notified of

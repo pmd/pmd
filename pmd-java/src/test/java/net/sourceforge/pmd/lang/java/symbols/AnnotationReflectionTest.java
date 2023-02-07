@@ -44,15 +44,11 @@ import net.sourceforge.pmd.lang.java.symbols.testdata.MethodAnnotation;
 import net.sourceforge.pmd.lang.java.symbols.testdata.ParameterAnnotation;
 import net.sourceforge.pmd.lang.java.symbols.testdata.SomeClass;
 
-public class AnnotationReflectionTest {
-
-    public AnnotationReflectionTest() {
-    }
-
+class AnnotationReflectionTest {
 
     @ParameterizedTest
     @EnumSource
-    public void testReflectionOfClassMethods(SymImplementation impl) {
+    void testReflectionOfClassMethods(SymImplementation impl) {
         Class<SomeClass> actualClass = SomeClass.class;
         JClassSymbol sym = impl.getSymbol(actualClass);
     
@@ -62,7 +58,7 @@ public class AnnotationReflectionTest {
 
     @ParameterizedTest
     @EnumSource
-    public void testReflectionOfAnnotDefaults(SymImplementation impl) {
+    void testReflectionOfAnnotDefaults(SymImplementation impl) {
         Class<AnnotWithDefaults> actualClass = AnnotWithDefaults.class;
         JClassSymbol sym = impl.getSymbol(actualClass);
         
@@ -72,7 +68,7 @@ public class AnnotationReflectionTest {
 
     @ParameterizedTest
     @EnumSource
-    public void testAnnotUseThatUsesDefaults(SymImplementation impl) {
+    void testAnnotUseThatUsesDefaults(SymImplementation impl) {
         // note that as the annotation has retention class, we can't use reflection to check
 
         /*
@@ -100,7 +96,7 @@ public class AnnotationReflectionTest {
 
     @ParameterizedTest
     @EnumSource
-    public void testAnnotOnAnnot(SymImplementation impl) {
+    void testAnnotOnAnnot(SymImplementation impl) {
         // This only checks for Target.ANNOTATION_TYPE annotations
         Class<AnnotWithDefaults> actualClass = AnnotWithDefaults.class;
         JClassSymbol sym = impl.getSymbol(actualClass);
@@ -111,7 +107,7 @@ public class AnnotationReflectionTest {
 
     @ParameterizedTest
     @EnumSource
-    public void testAnnotOnParameter(SymImplementation impl) {
+    void testAnnotOnParameter(SymImplementation impl) {
         // This only checks Target.PARAMETER annotations, do not confuse with TYPE_PARAMETER / TYPE_USE
         Class<SomeClass> actualClass = SomeClass.class;
         JClassSymbol sym = impl.getSymbol(actualClass);
@@ -125,7 +121,7 @@ public class AnnotationReflectionTest {
 
     @ParameterizedTest
     @EnumSource
-    public void testAnnotOnField(SymImplementation impl) {
+    void testAnnotOnField(SymImplementation impl) {
         // This only checks Target.FIELD annotations, do not confuse with TYPE_USE annotations
         Class<SomeClass> actualClass = SomeClass.class;
         JClassSymbol sym = impl.getSymbol(actualClass);
@@ -136,7 +132,7 @@ public class AnnotationReflectionTest {
     
     @ParameterizedTest
     @EnumSource
-    public void testAnnotOnMethod(SymImplementation impl) {
+    void testAnnotOnMethod(SymImplementation impl) {
         // This only checks Target.METHOD annotations, do not confuse with TYPE_USE on return types
         Class<SomeClass> actualClass = SomeClass.class;
         JClassSymbol sym = impl.getSymbol(actualClass);
@@ -148,7 +144,7 @@ public class AnnotationReflectionTest {
     
     @ParameterizedTest
     @EnumSource
-    public void testAnnotOnConstructor(SymImplementation impl) {
+    void testAnnotOnConstructor(SymImplementation impl) {
         // This only checks Target.CONSTRUCTOR annotations, do not confuse with TYPE_USE on return types
         Class<SomeClass> actualClass = SomeClass.class;
         JClassSymbol sym = impl.getSymbol(actualClass);
@@ -158,7 +154,7 @@ public class AnnotationReflectionTest {
     }
 
     @Test
-    public void testAnnotOnLocalVar() {
+    void testAnnotOnLocalVar() {
         // This only checks Target.LOCAL_VAR annotations, do not confuse with TYPE_USE on return types
         JClassSymbol sym = SymImplementation.AST.getSymbol(SomeClass.class);
 
@@ -172,7 +168,7 @@ public class AnnotationReflectionTest {
     }
 
     @Test
-    public void testAnnotWithInvalidType() {
+    void testAnnotWithInvalidType() {
         @NonNull ASTVariableDeclaratorId field =
             JavaParsingHelper.DEFAULT.parse(
                 "@interface A {}\n"

@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.rule;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -396,7 +397,9 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     public Rule deepCopy() {
         Rule result;
         try {
-            result = getClass().getConstructor().newInstance();
+            Constructor<? extends AbstractRule> declaredConstructor = getClass().getDeclaredConstructor();
+            declaredConstructor.setAccessible(true);
+            result = declaredConstructor.newInstance();
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException ignored) {
             // Can't happen... we already have an instance
             throw new RuntimeException(ignored); // in case it happens anyway, something is really wrong...

@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * Base class to scan a type signature.

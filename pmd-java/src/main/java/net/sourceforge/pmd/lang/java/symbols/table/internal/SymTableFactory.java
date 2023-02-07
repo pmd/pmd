@@ -5,9 +5,9 @@
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 
-import static net.sourceforge.pmd.internal.util.AssertionUtil.isValidJavaPackageName;
 import static net.sourceforge.pmd.lang.java.symbols.table.ScopeInfo.FORMAL_PARAM;
 import static net.sourceforge.pmd.lang.java.symbols.table.ScopeInfo.SAME_FILE;
+import static net.sourceforge.pmd.util.AssertionUtil.isValidJavaPackageName;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;

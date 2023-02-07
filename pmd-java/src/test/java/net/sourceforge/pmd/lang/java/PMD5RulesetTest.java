@@ -15,7 +15,7 @@ import net.sourceforge.pmd.RuleSetLoader;
 class PMD5RulesetTest {
 
     @Test
-    public void loadRuleset() {
+    void loadRuleset() {
         RuleSet ruleset = new RuleSetLoader().loadFromResource("net/sourceforge/pmd/lang/java/pmd5ruleset.xml");
         assertNotNull(ruleset);
         assertNull(ruleset.getRuleByName("GuardLogStatementJavaUtil"));

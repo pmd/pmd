@@ -7,7 +7,6 @@ package net.sourceforge.pmd.internal.util;
 import java.io.IOException;
 import java.io.Reader;
 import java.net.URI;
-import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.SQLException;
@@ -18,8 +17,6 @@ import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.lang.document.FileCollector;
-import net.sourceforge.pmd.util.FileUtil;
-import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.database.DBMSMetadata;
 import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
@@ -42,11 +39,13 @@ public final class FileCollectionUtil {
             collector.setCharset(configuration.getSourceEncoding());
         }
 
+
         collectFiles(collector, configuration.getInputPathList());
 
         if (configuration.getUri() != null) {
             collectDB(collector, configuration.getUri());
         }
+
 
         if (configuration.getInputFile() != null) {
             collectFileList(collector, configuration.getInputFile());
@@ -104,15 +103,7 @@ public final class FileCollectionUtil {
             LOG.debug("Adding directory {}.", path);
             collector.addDirectory(path);
         } else if (pathStr.endsWith(".zip") || pathStr.endsWith(".jar")) {
-            LOG.debug("Adding zip file {}.", path);
-            @SuppressWarnings("PMD.CloseResource")
-            FileSystem fs = collector.addZipFile(path);
-            if (fs == null) {
-                return;
-            }
-            for (Path zipRoot : fs.getRootDirectories()) {
-                collector.addFileOrDirectory(zipRoot);
-            }
+            collector.addZipFileWithContent(path);
         } else if (Files.isRegularFile(path)) {
             LOG.debug("Adding regular file {}.", path);
             collector.addFile(path);

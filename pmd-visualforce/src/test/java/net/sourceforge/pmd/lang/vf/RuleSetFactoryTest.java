@@ -7,8 +7,10 @@ package net.sourceforge.pmd.lang.vf;
 import net.sourceforge.pmd.AbstractRuleSetFactoryTest;
 import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
 
-public class RuleSetFactoryTest extends AbstractRuleSetFactoryTest {
-    public RuleSetFactoryTest() {
+class RuleSetFactoryTest extends AbstractRuleSetFactoryTest {
+    RuleSetFactoryTest() {
         super(ApexLanguageModule.TERSE_NAME);
     }
+
+    // no additional tests yet
 }

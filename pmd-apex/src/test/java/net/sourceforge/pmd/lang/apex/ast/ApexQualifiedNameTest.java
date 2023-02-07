@@ -94,7 +94,7 @@ class ApexQualifiedNameTest extends ApexParserTestBase {
 
 
     @Test
-    public void testUnqualifiedEnum() {
+    void testUnqualifiedEnum() {
         ASTUserEnum root = (ASTUserEnum) parse("public enum primaryColor { RED, YELLOW, BLUE }");
 
         ApexQualifiedName enumQName = root.getQualifiedName();
@@ -107,7 +107,7 @@ class ApexQualifiedNameTest extends ApexParserTestBase {
     }
 
     @Test
-    public void testQualifiedEnum() {
+    void testQualifiedEnum() {
         ASTUserClass root = (ASTUserClass) parse("public class Outer { public enum Inner { OK } }");
 
         ASTUserEnum enumNode = root.descendants(ASTUserEnum.class).firstOrThrow();

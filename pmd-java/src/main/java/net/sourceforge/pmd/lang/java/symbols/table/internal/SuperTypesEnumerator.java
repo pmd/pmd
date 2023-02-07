@@ -18,9 +18,9 @@ import java.util.stream.StreamSupport;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.internal.util.IteratorUtil;
-import net.sourceforge.pmd.internal.util.IteratorUtil.AbstractIterator;
 import net.sourceforge.pmd.lang.java.types.JClassType;
+import net.sourceforge.pmd.util.IteratorUtil;
+import net.sourceforge.pmd.util.IteratorUtil.AbstractIterator;
 
 /**
  * Strategies to enumerate a type hierarchy.

@@ -33,6 +33,8 @@ import java.nio.file.Path;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.internal.util.IOUtil;
+
 class IOUtilTest {
 
     @Test

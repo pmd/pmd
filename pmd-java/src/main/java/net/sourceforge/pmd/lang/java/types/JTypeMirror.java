@@ -16,7 +16,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.pcollections.PSet;
 
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
@@ -27,6 +26,7 @@ import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 import net.sourceforge.pmd.lang.java.types.TypeOps.Convertibility;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * Type mirrors represent Java types. They are created by a {@link TypeSystem}

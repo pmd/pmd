@@ -104,11 +104,15 @@
         <artifactId>slf4j-api</artifactId>
         <!-- apex jorje actually depends on 1.7.20 (https://github.com/forcedotcom/salesforcedx-vscode/commit/631b8cfb85cff5e989bfea13bca681b6cedcb003) -->
     </dependency>
-    <dependency>
+    <!-- apex jorje actually depends on 1.17 (https://github.com/forcedotcom/salesforcedx-vscode/commit/631b8cfb85cff5e989bfea13bca681b6cedcb003)
+      however, it is not really needed, so we don't add it here as a dependency,
+      so that it doesn't end up in pmd-dist
+     -->
+    <!--<dependency>
         <groupId>org.yaml</groupId>
         <artifactId>snakeyaml</artifactId>
-        <!-- apex jorje actually depends on 1.17 (https://github.com/forcedotcom/salesforcedx-vscode/commit/631b8cfb85cff5e989bfea13bca681b6cedcb003) -->
     </dependency>
+    -->
     <dependency>
         <groupId>aopalliance</groupId>
         <artifactId>aopalliance</artifactId>

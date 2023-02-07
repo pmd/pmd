@@ -10,8 +10,6 @@ import java.util.List;
 
 import org.apache.commons.lang3.Validate;
 
-import net.sourceforge.pmd.internal.util.IteratorUtil;
-
 final class ConsList<T> extends AbstractList<T> {
 
     private final List<? extends T> head;
