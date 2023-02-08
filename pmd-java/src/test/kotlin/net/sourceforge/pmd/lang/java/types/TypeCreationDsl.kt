@@ -70,7 +70,7 @@ interface TypeDslMixin {
      */
     val `@`: (JClassSymbol) -> SymAnnotDsl get() = { SymAnnotDsl(FakeSymAnnot(it)) }
 
-    class SymAnnotDsl(private val annot: SymAnnot) {
+    class SymAnnotDsl(val annot: SymAnnot) {
         /** An infix fun to be able to write the annotation first. */
         infix fun on(t: JTypeMirror): JTypeMirror = t.addAnnotation(annot)
     }

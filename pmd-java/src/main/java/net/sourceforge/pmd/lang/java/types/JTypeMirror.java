@@ -140,6 +140,12 @@ public interface JTypeMirror extends JTypeVisitable {
      * <p>Note that this set contains {@link TypeSystem#OBJECT}
      * for interfaces too.
      *
+     * <p>Note that for types having type annotations, the supertypes
+     * do not bear the same annotations. Eg the supertypes of {@code @A String}
+     * contain {@code Object} but not {@code @A Object}. The supertypes
+     * may be annotated though, eg if a class declares {@code extends @A Foo},
+     * the supertypes contain {@code @A Foo}.
+     *
      * @throws UnsupportedOperationException If this is the null type
      */
     default Set<JTypeMirror> getSuperTypeSet() {
