@@ -11,11 +11,13 @@ import io.kotest.matchers.shouldNotBe
 import io.kotest.property.arbitrary.filterNot
 import io.kotest.property.checkAll
 import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.ast.BinaryOp.*
 import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.*
+import net.sourceforge.pmd.lang.java.types.testdata.AnnotationWithEnum
 
 class StandaloneTypesTest : ProcessorTestSpec({
 
@@ -285,6 +287,39 @@ class StandaloneTypesTest : ProcessorTestSpec({
             doTest("Class literals") {
                 "String.class" should haveType { Class::class[gen.t_String] }
                 "void.class" should haveType { Class::class[ts.BOXED_VOID] }
+            }
+        }
+    }
+
+    parserTest("Test annotations in package-info") {
+
+        val acu = parser.parse(
+            """
+            // in a package-info.java
+        @net.sourceforge.pmd.lang.java.types.testdata.AnnotationWithEnum(
+            value = net.sourceforge.pmd.lang.java.types.testdata.AnnotationWithEnum.Foo.A
+        )
+        package foo;
+
+        """.trimIndent()
+        )
+
+        val annot = acu.descendants(ASTAnnotation::class.java).firstOrThrow()
+
+        annot.withTypeDsl {
+            annot shouldHaveType AnnotationWithEnum::class.decl
+            val value = annot.members.firstOrThrow()
+            value.value.shouldMatchN {
+                fieldAccess("A") {
+                    typeExpr {
+                        classType("Foo") {
+                            classType("AnnotationWithEnum") {
+                                it::isFullyQualified shouldBe true
+                            }
+                        }
+                    }
+                    it shouldHaveType AnnotationWithEnum.Foo::class.decl
+                }
             }
         }
     }
