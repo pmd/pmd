@@ -6,13 +6,15 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.Properties;
 
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
+
 public class JavaLanguage extends AbstractLanguage {
     public JavaLanguage() {
         this(System.getProperties());
     }
 
     public JavaLanguage(Properties properties) {
-        super("Java", "java", new JavaTokenizer(), ".java");
+        super(JavaLanguageModule.NAME, JavaLanguageModule.TERSE_NAME, new JavaTokenizer(), JavaLanguageModule.EXTENSIONS);
         setProperties(properties);
     }
 

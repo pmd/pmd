@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.lang.scala;
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+
+import java.util.List;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.annotation.InternalApi;
@@ -24,11 +28,14 @@ public class ScalaLanguageModule extends SimpleLanguageModuleBase {
     /** The terse name. */
     public static final String TERSE_NAME = "scala";
 
+    @InternalApi
+    public static final List<String> EXTENSIONS = listOf("scala");
+
     /**
      * Create a new instance of Scala Language Module.
      */
     public ScalaLanguageModule() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("scala")
+        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions(EXTENSIONS.get(0))
                               .addVersion("2.10")
                               .addVersion("2.11")
                               .addVersion("2.12")

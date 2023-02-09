@@ -4,7 +4,12 @@
 
 package net.sourceforge.pmd.lang.kotlin;
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+
+import java.util.List;
+
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
 
 /**
@@ -20,11 +25,14 @@ public class KotlinLanguageModule extends SimpleLanguageModuleBase {
     /** The terse name. */
     public static final String TERSE_NAME = "kotlin";
 
+    @InternalApi
+    public static final List<String> EXTENSIONS = listOf("kt", "ktm");
+
     /**
      * Create a new instance of Kotlin Language Module.
      */
     public KotlinLanguageModule() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("kt", "ktm")
+        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions(EXTENSIONS.get(0), EXTENSIONS.toArray(new String[0]))
                               .addVersion("1.6")
                               .addDefaultVersion("1.7"),
               new KotlinHandler());

@@ -18,15 +18,6 @@ entries:
     - title: null
       output: web, pdf
       subfolders:
-      - title: Ecmascript Rules
-        output: web, pdf
-        subfolderitems:
-        - title: Index
-          output: web, pdf
-          url: /pmd_rules_ecmascript.html
-    - title: null
-      output: web, pdf
-      subfolders:
       - title: HTML Rules
         output: web, pdf
         subfolderitems:
@@ -54,6 +45,15 @@ entries:
         - title: Index
           output: web, pdf
           url: /pmd_rules_jsp.html
+    - title: null
+      output: web, pdf
+      subfolders:
+      - title: JavaScript Rules
+        output: web, pdf
+        subfolderitems:
+        - title: Index
+          output: web, pdf
+          url: /pmd_rules_ecmascript.html
     - title: null
       output: web, pdf
       subfolders:
