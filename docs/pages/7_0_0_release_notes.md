@@ -153,9 +153,9 @@ See {% jdoc core::lang.ast.NodeStream %} for more details.
 #### JavaScript support
 
 The JS specific parser options have been removed. The parser now always retains comments and uses version ES6.
-The language module registers only one version (as before), now correctly with version "ES6" instead of "3".
-Since there is only one version available for JavaScript there is actually no need to selected a specific version.
-The default version is always ES6.
+The language module registers a couple of different versions. The latest version, which supports ES6 and also some
+new constructs (see [Rhino](https://github.com/mozilla/rhino)]), is the default. This should be fine for most
+use cases.
 
 #### New Rules
 
