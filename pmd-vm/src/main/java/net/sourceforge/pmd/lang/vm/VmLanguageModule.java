@@ -15,7 +15,13 @@ public class VmLanguageModule extends SimpleLanguageModuleBase {
     public static final String TERSE_NAME = "vm";
 
     public VmLanguageModule() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("vm"), new VmHandler());
+        super(LanguageMetadata.withId(TERSE_NAME).name(NAME)
+                              .extensions("vm")
+                              .addVersion("2.0")
+                              .addVersion("2.1")
+                              .addVersion("2.2")
+                              .addDefaultVersion("2.3"),
+                new VmHandler());
     }
 
 }

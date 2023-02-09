@@ -20,6 +20,17 @@ public class SwiftLanguageModule extends SimpleLanguageModuleBase {
      * Create a new instance of Swift Language Module.
      */
     public SwiftLanguageModule() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("swift"), new SwiftHandler());
+        super(LanguageMetadata.withId(TERSE_NAME).name(NAME)
+                              .extensions("swift")
+                              .addVersion("4.2")
+                              .addVersion("5.0")
+                              .addVersion("5.1")
+                              .addVersion("5.2")
+                              .addVersion("5.3")
+                              .addVersion("5.4")
+                              .addVersion("5.5")
+                              .addVersion("5.6")
+                              .addDefaultVersion("5.7"),
+                new SwiftHandler());
     }
 }

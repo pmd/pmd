@@ -27,7 +27,13 @@ public class PLSQLLanguageModule extends SimpleLanguageModuleBase {
                                 "pck", "pks", "pkh", "pkb", // Packages
                                 "typ", "tyb", // Object Types
                                 "tps", "tpb" // Object Types
-                            ),
+                            )
+                           .addVersion("11g")
+                           .addVersion("12c_Release_1", "12.1")
+                           .addVersion("12c_Release_2", "12.2")
+                           .addVersion("18c")
+                           .addVersion("19c")
+                           .addDefaultVersion("21c"),
             new PLSQLHandler()
         );
     }

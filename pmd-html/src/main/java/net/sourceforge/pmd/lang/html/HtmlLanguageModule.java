@@ -15,7 +15,9 @@ public final class HtmlLanguageModule extends SimpleLanguageModuleBase {
 
     public HtmlLanguageModule() {
         super(LanguageMetadata.withId(TERSE_NAME).name(NAME)
-                              .extensions("html", "htm", "xhtml", "xht", "shtml"),
+                              .extensions("html", "htm", "xhtml", "xht", "shtml")
+                              .addVersion("4")
+                              .addDefaultVersion("5"),
               new HtmlHandler());
     }
 

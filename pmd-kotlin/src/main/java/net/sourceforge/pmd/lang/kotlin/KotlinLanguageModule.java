@@ -25,8 +25,8 @@ public class KotlinLanguageModule extends SimpleLanguageModuleBase {
      */
     public KotlinLanguageModule() {
         super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("kt", "ktm")
-                              .addDefaultVersion("1.6-rfc+0.1", "1.6"),
+                              .addVersion("1.6")
+                              .addDefaultVersion("1.7"),
               new KotlinHandler());
-
     }
 }

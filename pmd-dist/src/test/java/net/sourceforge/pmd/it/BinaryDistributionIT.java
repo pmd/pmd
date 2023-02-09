@@ -30,16 +30,29 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
                 + "                               kotlin, lua, matlab, modelica, objectivec, perl," + System.lineSeparator()
                 + "                               php, plsql, python, ruby, scala, swift, tsql," + System.lineSeparator()
                 + "                               vf, xml";
-        SUPPORTED_LANGUAGES_PMD = "Valid values: apex-54, ecmascript-ES6, html-," + System.lineSeparator()
-                + "                              java-1.10, java-1.3, java-1.4, java-1.5, java-1." + System.lineSeparator()
-                + "                              6, java-1.7, java-1.8, java-1.9, java-10," + System.lineSeparator()
+        SUPPORTED_LANGUAGES_PMD = "Valid values: apex-52, apex-53, apex-54, apex-55," + System.lineSeparator()
+                + "                              apex-56, apex-57, ecmascript-3, ecmascript-5," + System.lineSeparator()
+                + "                              ecmascript-6, ecmascript-7, ecmascript-8," + System.lineSeparator()
+                + "                              ecmascript-9, ecmascript-ES2015," + System.lineSeparator()
+                + "                              ecmascript-ES2016, ecmascript-ES2017," + System.lineSeparator()
+                + "                              ecmascript-ES2018, ecmascript-ES6, html-4," + System.lineSeparator()
+                + "                              html-5, java-1.10, java-1.3, java-1.4, java-1.5," + System.lineSeparator()
+                + "                              java-1.6, java-1.7, java-1.8, java-1.9, java-10," + System.lineSeparator()
                 + "                              java-11, java-12, java-13, java-14, java-15," + System.lineSeparator()
                 + "                              java-16, java-17, java-18, java-18-preview," + System.lineSeparator()
                 + "                              java-19, java-19-preview, java-5, java-6, java-7," + System.lineSeparator()
-                + "                              java-8, java-9, jsp-, kotlin-1.6, kotlin-1." + System.lineSeparator()
-                + "                              6-rfc+0.1, modelica-, plsql-, pom-, scala-2.10," + System.lineSeparator()
-                + "                              scala-2.11, scala-2.12, scala-2.13, swift-, vf-," + System.lineSeparator()
-                + "                              vm-, wsdl-, xml-, xsl-";
+                + "                              java-8, java-9, jsp-2, jsp-3, kotlin-1.6," + System.lineSeparator()
+                + "                              kotlin-1.7, modelica-3.4, modelica-3.5," + System.lineSeparator()
+                + "                              plsql-11g, plsql-12.1, plsql-12.2," + System.lineSeparator()
+                + "                              plsql-12c_Release_1, plsql-12c_Release_2," + System.lineSeparator()
+                + "                              plsql-18c, plsql-19c, plsql-21c, pom-4.0.0," + System.lineSeparator()
+                + "                              scala-2.10, scala-2.11, scala-2.12, scala-2.13," + System.lineSeparator()
+                + "                              swift-4.2, swift-5.0, swift-5.1, swift-5.2," + System.lineSeparator()
+                + "                              swift-5.3, swift-5.4, swift-5.5, swift-5.6," + System.lineSeparator()
+                + "                              swift-5.7, vf-52, vf-53, vf-54, vf-55, vf-56," + System.lineSeparator()
+                + "                              vf-57, vm-2.0, vm-2.1, vm-2.2, vm-2.3, wsdl-1.1," + System.lineSeparator()
+                + "                              wsdl-2.0, xml-1.0, xml-1.1, xsl-1.0, xsl-2.0," + System.lineSeparator()
+                + "                              xsl-3.0";
     }
 
     private final String srcDir = new File(".", "src/test/resources/sample-source/java/").getAbsolutePath();

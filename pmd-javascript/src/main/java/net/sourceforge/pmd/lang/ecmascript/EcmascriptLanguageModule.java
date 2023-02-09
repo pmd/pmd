@@ -19,7 +19,12 @@ public class EcmascriptLanguageModule extends SimpleLanguageModuleBase {
 
     public EcmascriptLanguageModule() {
         super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("js")
-                              .addDefaultVersion("ES6"),
+                              .addVersion("3")
+                              .addVersion("5")
+                              .addVersion("6", "ES6", "ES2015")
+                              .addVersion("7", "ES2016")
+                              .addVersion("8", "ES2017")
+                              .addDefaultVersion("9", "ES2018"),
               properties -> () -> new EcmascriptParser(properties));
     }
 

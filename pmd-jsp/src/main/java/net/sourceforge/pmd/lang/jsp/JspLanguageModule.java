@@ -16,7 +16,9 @@ public class JspLanguageModule extends SimpleLanguageModuleBase {
 
     public JspLanguageModule() {
         super(LanguageMetadata.withId(TERSE_NAME).name(NAME).shortName("JSP")
-                              .extensions("jsp", "jspx", "jspf", "tag"),
+                              .extensions("jsp", "jspx", "jspf", "tag")
+                              .addVersion("2")
+                              .addDefaultVersion("3"),
               new JspHandler());
     }
 

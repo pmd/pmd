@@ -11,7 +11,10 @@ public class ModelicaLanguageModule extends SimpleLanguageModuleBase {
     public static final String TERSE_NAME = "modelica";
 
     public ModelicaLanguageModule() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("mo"),
+        super(LanguageMetadata.withId(TERSE_NAME).name(NAME)
+                              .extensions("mo")
+                              .addVersion("3.4")
+                              .addDefaultVersion("3.5"),
               new ModelicaHandler());
     }
 

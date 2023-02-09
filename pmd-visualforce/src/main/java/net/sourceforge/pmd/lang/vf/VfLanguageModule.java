@@ -20,10 +20,19 @@ public class VfLanguageModule extends SimpleLanguageModuleBase {
     public static final String TERSE_NAME = "vf";
 
     public VfLanguageModule() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME)
-                              .extensions("page", "component")
-                              .dependsOnLanguage(ApexLanguageModule.TERSE_NAME),
+        super(createMetdata(),
               p -> new VfHandler((VfLanguageProperties) p));
+    }
+
+    private static LanguageMetadata createMetdata() {
+        LanguageMetadata languageMetadata = LanguageMetadata.withId(TERSE_NAME).name(NAME)
+                .extensions("page", "component")
+                .dependsOnLanguage(ApexLanguageModule.TERSE_NAME);
+        // use the same versions as in Apex
+        int lastVersion = ApexLanguageModule.VERSIONS.size() - 1;
+        ApexLanguageModule.VERSIONS.subList(0, lastVersion).forEach(languageMetadata::addVersion);
+        languageMetadata.addDefaultVersion(ApexLanguageModule.VERSIONS.get(lastVersion));
+        return languageMetadata;
     }
 
     @Override
