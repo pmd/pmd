@@ -88,6 +88,7 @@ AS_SAFE: 'as?';
 EQEQ: '==';
 EQEQEQ: '===';
 SINGLE_QUOTE: '\'';
+AMP: '&';
 
 // SECTION: keywords
 
@@ -441,6 +442,7 @@ Inside_AS_SAFE: AS_SAFE  -> type(AS_SAFE);
 Inside_EQEQ: EQEQ  -> type(EQEQ);
 Inside_EQEQEQ: EQEQEQ  -> type(EQEQEQ);
 Inside_SINGLE_QUOTE: SINGLE_QUOTE  -> type(SINGLE_QUOTE);
+Inside_AMP: AMP  -> type(AMP);
 Inside_QUOTE_OPEN: QUOTE_OPEN -> pushMode(LineString), type(QUOTE_OPEN);
 Inside_TRIPLE_QUOTE_OPEN: TRIPLE_QUOTE_OPEN -> pushMode(MultiLineString), type(TRIPLE_QUOTE_OPEN);
 

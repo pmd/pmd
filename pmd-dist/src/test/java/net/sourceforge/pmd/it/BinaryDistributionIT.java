@@ -49,7 +49,7 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         "java-19-preview", "java-20", "java-20-preview",
         "java-5", "java-6", "java-7",
         "java-8", "java-9", "jsp-2", "jsp-3", "kotlin-1.6",
-        "kotlin-1.7", "modelica-3.4", "modelica-3.5",
+        "kotlin-1.7", "kotlin-1.8", "modelica-3.4", "modelica-3.5",
         "plsql-11g", "plsql-12.1", "plsql-12.2",
         "plsql-12c_Release_1", "plsql-12c_Release_2",
         "plsql-18c", "plsql-19c", "plsql-21c", "pom-4.0.0",
@@ -61,7 +61,6 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         "wsdl-2.0", "xml-1.0", "xml-1.1", "xsl-1.0", "xsl-2.0",
         "xsl-3.0"
     );
-
 
     private final String srcDir = new File(".", "src/test/resources/sample-source/java/").getAbsolutePath();
 
