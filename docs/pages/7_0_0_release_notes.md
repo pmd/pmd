@@ -254,6 +254,7 @@ The following previously deprecated rules have been finally removed:
     * [#3782](https://github.com/pmd/pmd/issues/3782): \[core] Language lifecycle
     * [#3902](https://github.com/pmd/pmd/issues/3902): \[core] Violation decorators
     * [#4035](https://github.com/pmd/pmd/issues/4035): \[core] ConcurrentModificationException in DefaultRuleViolationFactory
+    * [#4120](https://github.com/pmd/pmd/issues/4120): \[core] Explicitly name all language versions
 * cli
     *   [#3828](https://github.com/pmd/pmd/issues/3828): \[core] Progress reporting
     *   [#4079](https://github.com/pmd/pmd/issues/4079): \[cli] Split off CLI implementation into a pmd-cli submodule
