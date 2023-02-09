@@ -1,4 +1,4 @@
-// file for supporting swift 5.2 changes : https://github.com/apple/swift/blob/master/CHANGELOG.md#swift-55
+// file for supporting swift 5.5 changes : https://github.com/apple/swift/blob/master/CHANGELOG.md#swift-55
 
 // https://github.com/apple/swift-evolution/blob/main/proposals/0313-actor-isolation-control.md
 actor MyActor {
