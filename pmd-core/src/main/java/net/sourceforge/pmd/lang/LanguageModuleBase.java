@@ -290,7 +290,7 @@ public abstract class LanguageModuleBase implements Language {
          * @param aliases Additional names that are mapped to this version. Must contain no spaces.
          *
          * @throws NullPointerException     If any parameter is null
-         * @throws IllegalArgumentException If the name or aliases contain spaces
+         * @throws IllegalArgumentException If the name or aliases are empty or contain spaces
          */
 
         public LanguageMetadata addVersion(String name, String... aliases) {
@@ -305,7 +305,7 @@ public abstract class LanguageModuleBase implements Language {
          * @param aliases Additional names that are mapped to this version. Must contain no spaces.
          *
          * @throws NullPointerException     If any parameter is null
-         * @throws IllegalArgumentException If the name or aliases contain spaces
+         * @throws IllegalArgumentException If the name or aliases are empty or contain spaces
          */
         public LanguageMetadata addDefaultVersion(String name, String... aliases) {
             versionMetadata.add(new LangVersionMetadata(name, Arrays.asList(aliases), true));
@@ -351,7 +351,7 @@ public abstract class LanguageModuleBase implements Language {
             }
 
             private static void checkVersionName(String name) {
-                if (SPACE_PAT.matcher(name).find()) { // TODO #4120 also check that the name is non-empty
+                if (StringUtils.isBlank(name) || SPACE_PAT.matcher(name).find()) {
                     throw new IllegalArgumentException("Invalid version name: " + StringUtil.inSingleQuotes(name));
                 }
             }
