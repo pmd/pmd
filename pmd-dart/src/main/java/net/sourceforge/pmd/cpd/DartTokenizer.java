@@ -9,8 +9,9 @@ import org.antlr.v4.runtime.Lexer;
 
 import net.sourceforge.pmd.cpd.internal.AntlrTokenizer;
 import net.sourceforge.pmd.cpd.token.AntlrTokenFilter;
+import net.sourceforge.pmd.cpd.token.internal.BaseTokenFilter;
+import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrToken;
-import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrTokenManager;
 import net.sourceforge.pmd.lang.dart.ast.DartLexer;
 
 /**
@@ -24,7 +25,7 @@ public class DartTokenizer extends AntlrTokenizer {
     }
 
     @Override
-    protected AntlrTokenFilter getTokenFilter(final AntlrTokenManager tokenManager) {
+    protected TokenManager<AntlrToken> filterTokenStream(TokenManager<AntlrToken> tokenManager) {
         return new DartTokenFilter(tokenManager);
     }
 
@@ -36,12 +37,12 @@ public class DartTokenizer extends AntlrTokenizer {
      * enables comment-based CPD suppression.
      * </p>
      */
-    private static class DartTokenFilter extends AntlrTokenFilter {
+    private static class DartTokenFilter extends BaseTokenFilter<AntlrToken> {
         private boolean discardingLibraryAndImport = false;
         private boolean discardingNL = false;
         private boolean discardingSemicolon = false;
 
-        /* default */ DartTokenFilter(final AntlrTokenManager tokenManager) {
+        /* default */ DartTokenFilter(final TokenManager<AntlrToken> tokenManager) {
             super(tokenManager);
         }
 

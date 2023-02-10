@@ -4,15 +4,15 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.util.Properties;
-
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Lexer;
 
 import net.sourceforge.pmd.cpd.internal.AntlrTokenizer;
 import net.sourceforge.pmd.cpd.token.AntlrTokenFilter;
+import net.sourceforge.pmd.cpd.token.internal.BaseTokenFilter;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrToken;
-import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrTokenManager;
 import net.sourceforge.pmd.lang.cs.ast.CSharpLexer;
 
 /**
@@ -20,26 +20,14 @@ import net.sourceforge.pmd.lang.cs.ast.CSharpLexer;
  */
 public class CsTokenizer extends AntlrTokenizer {
 
-    private boolean ignoreUsings = false;
-    private boolean ignoreLiteralSequences = false;
-    private boolean ignoreAttributes = false;
+    private final boolean ignoreUsings;
+    private final boolean ignoreLiteralSequences;
+    private final boolean ignoreAttributes;
 
-    /**
-     * Sets the possible options for the C# tokenizer.
-     *
-     * @param properties the properties
-     * @see #IGNORE_USINGS
-     * @see #OPTION_IGNORE_LITERAL_SEQUENCES
-     * @see #IGNORE_ANNOTATIONS
-     */
-    public void setProperties(Properties properties) {
-        ignoreUsings = getBooleanProperty(properties, IGNORE_USINGS);
-        ignoreLiteralSequences = getBooleanProperty(properties, OPTION_IGNORE_LITERAL_SEQUENCES);
-        ignoreAttributes = getBooleanProperty(properties, IGNORE_ANNOTATIONS);
-    }
-
-    private boolean getBooleanProperty(final Properties properties, final String property) {
-        return Boolean.parseBoolean(properties.getProperty(property, Boolean.FALSE.toString()));
+    public CsTokenizer(LanguagePropertyBundle properties) {
+        ignoreUsings = properties.getProperty(Tokenizer.CPD_IGNORE_IMPORTS);
+        ignoreLiteralSequences = properties.getProperty(Tokenizer.CPD_IGNORE_LITERAL_SEQUENCES);
+        ignoreAttributes = properties.getProperty(Tokenizer.CPD_IGNORE_METADATA);
     }
 
     @Override
@@ -48,7 +36,7 @@ public class CsTokenizer extends AntlrTokenizer {
     }
 
     @Override
-    protected AntlrTokenFilter getTokenFilter(final AntlrTokenManager tokenManager) {
+    protected TokenManager<AntlrToken> filterTokenStream(TokenManager<AntlrToken> tokenManager) {
         return new CsTokenFilter(tokenManager, ignoreUsings, ignoreLiteralSequences, ignoreAttributes);
     }
 
@@ -60,7 +48,7 @@ public class CsTokenizer extends AntlrTokenizer {
      * If the --ignoreUsings flag is provided, using directives are filtered out.
      * </p>
      */
-    private static class CsTokenFilter extends AntlrTokenFilter {
+    private static class CsTokenFilter extends BaseTokenFilter<AntlrToken> {
         private enum UsingState {
             KEYWORD, // just encountered the using keyword
             IDENTIFIER, // just encountered an identifier or var keyword
@@ -75,7 +63,7 @@ public class CsTokenizer extends AntlrTokenizer {
         private AntlrToken discardingLiteralsUntil = null;
         private boolean discardCurrent = false;
 
-        CsTokenFilter(final AntlrTokenManager tokenManager, boolean ignoreUsings, boolean ignoreLiteralSequences, boolean ignoreAttributes) {
+        CsTokenFilter(final TokenManager<AntlrToken> tokenManager, boolean ignoreUsings, boolean ignoreLiteralSequences, boolean ignoreAttributes) {
             super(tokenManager);
             this.ignoreUsings = ignoreUsings;
             this.ignoreLiteralSequences = ignoreLiteralSequences;

@@ -62,7 +62,7 @@ public class ScalaTokenizer implements Tokenizer {
     }
 
     @Override
-    public void tokenize(SourceCode sourceCode, Tokens tokenEntries) throws IOException {
+    public void tokenize(TextDocument sourceCode, Tokens tokenEntries) throws IOException {
 
 
         try (TextDocument textDoc = TextDocument.create(CpdCompat.cpdCompat(sourceCode))) {

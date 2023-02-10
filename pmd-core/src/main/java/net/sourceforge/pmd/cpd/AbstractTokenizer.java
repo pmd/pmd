@@ -7,6 +7,8 @@ package net.sourceforge.pmd.cpd;
 import java.util.List;
 import java.util.Locale;
 
+import net.sourceforge.pmd.lang.document.TextDocument;
+
 /**
  *
  * @author Zev Blut zb@ubit.com
@@ -48,7 +50,7 @@ public abstract class AbstractTokenizer implements Tokenizer {
     private boolean downcaseString = true;
 
     @Override
-    public void tokenize(SourceCode tokens, Tokens tokenEntries) {
+    public void tokenize(TextDocument tokens, Tokens tokenEntries) {
         code = tokens.getCode();
 
         for (lineNumber = 0; lineNumber < code.size(); lineNumber++) {

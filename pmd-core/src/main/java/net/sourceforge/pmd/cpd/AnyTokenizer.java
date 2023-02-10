@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -60,7 +61,7 @@ public class AnyTokenizer implements Tokenizer {
     }
 
     @Override
-    public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
+    public void tokenize(TextDocument sourceCode, Tokens tokenEntries) {
         CharSequence text = sourceCode.getCodeBuffer();
         Matcher matcher = pattern.matcher(text);
         int lineNo = 1;

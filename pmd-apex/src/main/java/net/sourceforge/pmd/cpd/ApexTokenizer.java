@@ -13,6 +13,7 @@ import org.antlr.runtime.Token;
 
 import net.sourceforge.pmd.lang.apex.ApexJorjeLogging;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
+import net.sourceforge.pmd.lang.document.TextDocument;
 
 import apex.jorje.parser.impl.ApexLexer;
 
@@ -35,7 +36,7 @@ public class ApexTokenizer implements Tokenizer {
     }
 
     @Override
-    public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
+    public void tokenize(TextDocument sourceCode, Tokens tokenEntries) {
         StringBuilder code = sourceCode.getCodeBuffer();
 
         ANTLRStringStream ass = new ANTLRStringStream(code.toString());

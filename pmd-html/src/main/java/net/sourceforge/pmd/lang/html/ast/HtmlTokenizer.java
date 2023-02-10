@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.html.ast;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 
-import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.cpd.TokenEntry;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.cpd.Tokens;
@@ -22,7 +21,7 @@ import net.sourceforge.pmd.lang.html.HtmlLanguageModule;
 public class HtmlTokenizer implements Tokenizer {
 
     @Override
-    public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
+    public void tokenize(TextDocument sourceCode, Tokens tokenEntries) {
         HtmlLanguageModule html = HtmlLanguageModule.getInstance();
 
         try (LanguageProcessor processor = html.createProcessor(html.newPropertyBundle());

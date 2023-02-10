@@ -4,16 +4,18 @@
 
 package net.sourceforge.pmd.cpd.token;
 
+import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 
 /**
  * Defines filter to be applied to the token stream during CPD analysis
  */
-public interface TokenFilter<T extends GenericToken<T>> {
+public interface TokenFilter<T extends GenericToken<T>> extends TokenManager<T> {
 
     /**
      * Retrieves the next token to pass the filter
      * @return The next token to pass the filter, or null if the end of the stream was reached
      */
+    @Override
     T getNextToken();
 }

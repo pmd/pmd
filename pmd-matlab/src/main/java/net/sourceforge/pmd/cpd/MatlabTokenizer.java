@@ -6,8 +6,8 @@ package net.sourceforge.pmd.cpd;
 
 import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.matlab.ast.MatlabTokenKinds;
 
 /**
@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.matlab.ast.MatlabTokenKinds;
 public class MatlabTokenizer extends JavaCCTokenizer {
 
     @Override
-    protected TokenManager<JavaccToken> makeLexerImpl(CharStream sourceCode) {
-        return MatlabTokenKinds.newTokenManager(sourceCode);
+    protected TokenManager<JavaccToken> makeLexerImpl(TextDocument doc) {
+        return MatlabTokenKinds.newTokenManager(doc);
     }
 }

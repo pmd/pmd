@@ -10,8 +10,8 @@ import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
-import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument.TokenDocumentBehavior;
+import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.python.ast.PythonTokenKinds;
 
 /**
@@ -24,13 +24,8 @@ public class PythonTokenizer extends JavaCCTokenizer {
     private static final TokenDocumentBehavior TOKEN_BEHAVIOR = new TokenDocumentBehavior(PythonTokenKinds.TOKEN_NAMES);
 
     @Override
-    protected TokenManager<JavaccToken> makeLexerImpl(CharStream sourceCode) {
-        return PythonTokenKinds.newTokenManager(sourceCode);
-    }
-
-    @Override
-    protected JavaccTokenDocument.TokenDocumentBehavior tokenBehavior() {
-        return TOKEN_BEHAVIOR;
+    protected TokenManager<JavaccToken> makeLexerImpl(TextDocument doc) {
+        return PythonTokenKinds.newTokenManager(CharStream.create(doc, TOKEN_BEHAVIOR));
     }
 
     @Override

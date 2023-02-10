@@ -11,11 +11,10 @@ import java.util.Properties;
 
 import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.cpd.token.JavaCCTokenFilter;
-import net.sourceforge.pmd.cpd.token.TokenFilter;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
-import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
+import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaTokenKinds;
 
@@ -37,23 +36,18 @@ public class JavaTokenizer extends JavaCCTokenizer {
     }
 
     @Override
-    public void tokenize(SourceCode sourceCode, Tokens tokenEntries) throws IOException {
+    public void tokenize(TextDocument sourceCode, Tokens tokenEntries) throws IOException {
         constructorDetector = new ConstructorDetector(ignoreIdentifiers);
         super.tokenize(sourceCode, tokenEntries);
     }
 
     @Override
-    protected JavaccTokenDocument.TokenDocumentBehavior tokenBehavior() {
-        return InternalApiBridge.javaTokenDoc();
+    protected TokenManager<JavaccToken> makeLexerImpl(TextDocument doc) {
+        return JavaTokenKinds.newTokenManager(CharStream.create(doc, InternalApiBridge.javaTokenDoc()));
     }
 
     @Override
-    protected TokenManager<JavaccToken> makeLexerImpl(CharStream sourceCode) {
-        return JavaTokenKinds.newTokenManager(sourceCode);
-    }
-
-    @Override
-    protected TokenFilter<JavaccToken> getTokenFilter(TokenManager<JavaccToken> tokenManager) {
+    protected TokenManager<JavaccToken> filterTokenStream(TokenManager<JavaccToken> tokenManager) {
         return new JavaTokenFilter(tokenManager, ignoreAnnotations);
     }
 

@@ -6,13 +6,15 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.List;
 
+import net.sourceforge.pmd.lang.document.TextDocument;
+
 /**
  * Simple tokenizer for PHP.
  */
 public class PHPTokenizer implements Tokenizer {
 
     @Override
-    public void tokenize(SourceCode tokens, Tokens tokenEntries) {
+    public void tokenize(TextDocument tokens, Tokens tokenEntries) {
         List<String> code = tokens.getCode();
         for (int i = 0; i < code.size(); i++) {
             String currentLine = code.get(i);

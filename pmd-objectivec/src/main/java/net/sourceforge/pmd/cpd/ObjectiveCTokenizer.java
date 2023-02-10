@@ -6,8 +6,8 @@ package net.sourceforge.pmd.cpd;
 
 import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.objectivec.ast.ObjectiveCTokenKinds;
 
 /**
@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.objectivec.ast.ObjectiveCTokenKinds;
 public class ObjectiveCTokenizer extends JavaCCTokenizer {
 
     @Override
-    protected TokenManager<JavaccToken> makeLexerImpl(CharStream sourceCode) {
-        return ObjectiveCTokenKinds.newTokenManager(sourceCode);
+    protected TokenManager<JavaccToken> makeLexerImpl(TextDocument doc) {
+        return ObjectiveCTokenKinds.newTokenManager(doc);
     }
 }

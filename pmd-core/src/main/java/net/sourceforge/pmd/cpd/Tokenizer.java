@@ -6,7 +6,43 @@ package net.sourceforge.pmd.cpd;
 
 import java.io.IOException;
 
+import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
+
 public interface Tokenizer {
+
+    PropertyDescriptor<Boolean> CPD_IGNORE_LITERAL_SEQUENCES =
+        PropertyFactory.booleanProperty("cpdIgnoreLiteralSequences")
+                       .defaultValue(false)
+                       .desc("Ignore sequences of literals, eg `0, 0, 0, 0`")
+                       .build();
+
+    PropertyDescriptor<Boolean> CPD_ANONYMiZE_LITERALS =
+        PropertyFactory.booleanProperty("cpdAnonymizeLiterals")
+                       .defaultValue(false)
+                       .desc("Anonymize literals. They are still part of the token stream but all literals appear to have the same value.")
+                       .build();
+    PropertyDescriptor<Boolean> CPD_ANONYMIZE_IDENTIFIERS =
+        PropertyFactory.booleanProperty("cpdAnonymizeIdentifiers")
+                       .defaultValue(false)
+                       .desc("Anonymize identifiers. They are still part of the token stream but all literals appear to have the same value.")
+                       .build();
+
+
+    PropertyDescriptor<Boolean> CPD_IGNORE_IMPORTS =
+        PropertyFactory.booleanProperty("cpdIgnoreImports")
+                       .defaultValue(true)
+                       .desc("Ignore import statements and equivalent (eg using statements in C#).")
+                       .build();
+
+    PropertyDescriptor<Boolean> CPD_IGNORE_METADATA =
+        PropertyFactory.booleanProperty("cpdIgnoreMetadata")
+                       .defaultValue(false)
+                       .desc("Ignore metadata such as Java annotations or C# attributes.")
+                       .build();
+
+
     String IGNORE_LITERALS = "ignore_literals";
     String IGNORE_IDENTIFIERS = "ignore_identifiers";
     String IGNORE_ANNOTATIONS = "ignore_annotations";
@@ -39,5 +75,5 @@ public interface Tokenizer {
 
     String DEFAULT_SKIP_BLOCKS_PATTERN = "#if 0|#endif";
 
-    void tokenize(SourceCode sourceCode, Tokens tokenEntries) throws IOException;
+    void tokenize(TextDocument sourceCode, Tokens tokenEntries) throws IOException;
 }

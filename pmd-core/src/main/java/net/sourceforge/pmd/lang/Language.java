@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.ServiceLoader;
 import java.util.Set;
 
+import net.sourceforge.pmd.cpd.Tokenizer;
+
 /**
  * Represents a language module, and provides access to language-specific
  * functionality. You can get a language instance from a {@link LanguageRegistry}.
@@ -156,6 +158,14 @@ public interface Language extends Comparable<Language> {
         return new LanguagePropertyBundle(this);
     }
 
+    /**
+     * Return true if this language supports parsing files into an AST.
+     * In that case {@link #createProcessor(LanguagePropertyBundle)} should
+     * also be implemented.
+     */
+    default boolean supportsParsing() {
+        return false;
+    }
 
     /**
      * Create a new {@link LanguageProcessor} for this language, given
@@ -167,8 +177,30 @@ public interface Language extends Comparable<Language> {
      * @param bundle A bundle of properties created by this instance.
      *
      * @return A new language processor
+     *
+     * @throws UnsupportedOperationException if this language does not support PMD
      */
-    LanguageProcessor createProcessor(LanguagePropertyBundle bundle);
+    default LanguageProcessor createProcessor(LanguagePropertyBundle bundle) {
+        throw new UnsupportedOperationException(this + " does not support running a PMD analysis.");
+    }
+
+
+    /**
+     * Create a new {@link Tokenizer} for this language, given
+     * a property bundle with configuration. The bundle was created by
+     * this instance using {@link #newPropertyBundle()}. It can be assumed
+     * that the bundle will never be mutated anymore, and this method
+     * takes ownership of it.
+     *
+     * @param bundle A bundle of properties created by this instance.
+     *
+     * @return A new language processor
+     *
+     * @throws UnsupportedOperationException if this language does not support CPD
+     */
+    default Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
+        throw new UnsupportedOperationException(this + " does not support running a CPD analysis.");
+    }
 
 
     /**

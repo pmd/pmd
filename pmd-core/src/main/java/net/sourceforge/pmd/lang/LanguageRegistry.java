@@ -41,6 +41,7 @@ public final class LanguageRegistry implements Iterable<Language> {
      * of the classloader of this class. This can be used as a "default" registry.
      */
     public static final LanguageRegistry PMD = loadLanguages(LanguageRegistry.class.getClassLoader());
+    public static final LanguageRegistry CPD = loadLanguages(LanguageRegistry.class.getClassLoader()); // todo
 
     private final Set<Language> languages;
 

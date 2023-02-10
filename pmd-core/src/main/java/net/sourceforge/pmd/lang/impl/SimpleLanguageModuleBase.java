@@ -20,7 +20,7 @@ import net.sourceforge.pmd.lang.LanguageVersionHandler;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public class SimpleLanguageModuleBase extends LanguageModuleBase {
+public abstract class SimpleLanguageModuleBase extends LanguageModuleBase {
 
     private final Function<LanguagePropertyBundle, LanguageVersionHandler> handler;
 
@@ -31,6 +31,11 @@ public class SimpleLanguageModuleBase extends LanguageModuleBase {
     public SimpleLanguageModuleBase(LanguageMetadata metadata, Function<LanguagePropertyBundle, LanguageVersionHandler> makeHandler) {
         super(metadata);
         this.handler = makeHandler;
+    }
+
+    @Override
+    public boolean supportsParsing() {
+        return true;
     }
 
     @Override

@@ -43,6 +43,15 @@ public final class CharStream {
     }
 
     /**
+     * Create a new char stream for the given document with the default token
+     * document behavior. This may create a new {@link TextDocument} view
+     * over the original, which reflects its character escapes.
+     */
+    public static CharStream create(TextDocument doc) throws MalformedSourceException {
+        return create(doc, TokenDocumentBehavior.DEFAULT);
+    }
+
+    /**
      * Returns the next character from the input. After a {@link #backup(int)},
      * some of the already read chars must be spit out again.
      *

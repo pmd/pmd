@@ -4,46 +4,37 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.util.Properties;
 import java.util.regex.Pattern;
 
-import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
+import org.apache.commons.lang3.StringUtils;
+
+import net.sourceforge.pmd.cpd.internal.TokenizerBase;
 import net.sourceforge.pmd.cpd.token.JavaCCTokenFilter;
-import net.sourceforge.pmd.cpd.token.TokenFilter;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument.TokenDocumentBehavior;
 import net.sourceforge.pmd.lang.ast.impl.javacc.MalformedSourceException;
+import net.sourceforge.pmd.lang.cpp.CppLanguageModule;
 import net.sourceforge.pmd.lang.cpp.ast.CppTokenKinds;
 import net.sourceforge.pmd.lang.document.TextDocument;
 
 /**
  * The C++ tokenizer.
  */
-public class CPPTokenizer extends JavaCCTokenizer {
+public class CPPTokenizer extends TokenizerBase<JavaccToken> {
 
     private boolean skipBlocks;
     private Pattern skipBlocksStart;
     private Pattern skipBlocksEnd;
-    private boolean ignoreLiteralSequences = false;
+    private final boolean ignoreLiteralSequences;
 
-    public CPPTokenizer() {
-        setProperties(new Properties()); // set the defaults
-    }
-
-    /**
-     * Sets the possible options for the C++ tokenizer.
-     *
-     * @param properties the properties
-     * @see #OPTION_SKIP_BLOCKS
-     * @see #OPTION_SKIP_BLOCKS_PATTERN
-     * @see #OPTION_IGNORE_LITERAL_SEQUENCES
-     */
-    public void setProperties(Properties properties) {
-        skipBlocks = Boolean.parseBoolean(properties.getProperty(OPTION_SKIP_BLOCKS, Boolean.TRUE.toString()));
-        if (skipBlocks) {
-            String skipBlocksPattern = properties.getProperty(OPTION_SKIP_BLOCKS_PATTERN, DEFAULT_SKIP_BLOCKS_PATTERN);
+    public CPPTokenizer(LanguagePropertyBundle cppProperties) {
+        ignoreLiteralSequences = cppProperties.getProperty(Tokenizer.CPD_IGNORE_LITERAL_SEQUENCES);
+        String skipBlocksPattern = cppProperties.getProperty(CppLanguageModule.CPD_SKIP_BLOCKS);
+        if (StringUtils.isNotBlank(skipBlocksPattern)) {
+            skipBlocks = true;
             String[] split = skipBlocksPattern.split("\\|", 2);
             skipBlocksStart = CppBlockSkipper.compileSkipMarker(split[0]);
             if (split.length == 1) {
@@ -52,14 +43,15 @@ public class CPPTokenizer extends JavaCCTokenizer {
                 skipBlocksEnd = CppBlockSkipper.compileSkipMarker(split[1]);
             }
         }
-        ignoreLiteralSequences = Boolean.parseBoolean(properties.getProperty(OPTION_IGNORE_LITERAL_SEQUENCES,
-                Boolean.FALSE.toString()));
     }
 
-
     @Override
-    protected TokenDocumentBehavior tokenBehavior() {
-        return new TokenDocumentBehavior(CppTokenKinds.TOKEN_NAMES) {
+    protected TokenManager<JavaccToken> makeLexerImpl(TextDocument doc) {
+        return CppTokenKinds.newTokenManager(newCharStream(doc));
+    }
+
+    CharStream newCharStream(TextDocument doc) {
+        return CharStream.create(doc, new TokenDocumentBehavior(CppTokenKinds.TOKEN_NAMES) {
 
             @Override
             public TextDocument translate(TextDocument text) throws MalformedSourceException {
@@ -68,20 +60,16 @@ public class CPPTokenizer extends JavaCCTokenizer {
                 }
                 return new CppEscapeTranslator(text).translateDocument();
             }
-        };
+        });
     }
 
     @Override
-    protected TokenManager<JavaccToken> makeLexerImpl(CharStream sourceCode) {
-        return CppTokenKinds.newTokenManager(sourceCode);
-    }
-
-    @Override
-    protected TokenFilter<JavaccToken> getTokenFilter(final TokenManager<JavaccToken> tokenManager) {
+    protected TokenManager<JavaccToken> filterTokenStream(final TokenManager<JavaccToken> tokenManager) {
         return new CppTokenFilter(tokenManager, ignoreLiteralSequences);
     }
 
     private static class CppTokenFilter extends JavaCCTokenFilter {
+
         private final boolean ignoreLiteralSequences;
         private JavaccToken discardingLiteralsUntil = null;
         private boolean discardCurrent = false;
@@ -106,8 +94,7 @@ public class CPPTokenizer extends JavaCCTokenizer {
                         discardCurrent = true;
                     }
                 } else if (kind == CppTokenKinds.LCURLYBRACE) {
-                    final JavaccToken finalToken = findEndOfSequenceOfLiterals(remainingTokens);
-                    discardingLiteralsUntil = finalToken;
+                    discardingLiteralsUntil = findEndOfSequenceOfLiterals(remainingTokens);
                 }
             }
         }

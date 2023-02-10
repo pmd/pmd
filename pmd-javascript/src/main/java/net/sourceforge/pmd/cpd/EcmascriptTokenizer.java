@@ -8,6 +8,7 @@ import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.ecmascript5.ast.Ecmascript5TokenKinds;
 
 /**
@@ -16,8 +17,8 @@ import net.sourceforge.pmd.lang.ecmascript5.ast.Ecmascript5TokenKinds;
 public class EcmascriptTokenizer extends JavaCCTokenizer {
 
     @Override
-    protected TokenManager<JavaccToken> makeLexerImpl(CharStream sourceCode) {
-        return Ecmascript5TokenKinds.newTokenManager(sourceCode);
+    protected TokenManager<JavaccToken> makeLexerImpl(TextDocument doc) {
+        return Ecmascript5TokenKinds.newTokenManager(CharStream.create(doc));
     }
 
     @Override

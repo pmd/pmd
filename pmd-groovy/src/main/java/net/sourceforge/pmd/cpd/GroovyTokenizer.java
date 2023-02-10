@@ -10,6 +10,7 @@ import org.codehaus.groovy.antlr.SourceInfo;
 import org.codehaus.groovy.antlr.parser.GroovyLexer;
 
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
+import net.sourceforge.pmd.lang.document.TextDocument;
 
 import groovyjarjarantlr.Token;
 import groovyjarjarantlr.TokenStream;
@@ -21,7 +22,7 @@ import groovyjarjarantlr.TokenStreamException;
 public class GroovyTokenizer implements Tokenizer {
 
     @Override
-    public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
+    public void tokenize(TextDocument sourceCode, Tokens tokenEntries) {
         StringBuilder buffer = sourceCode.getCodeBuffer();
 
         GroovyLexer lexer = new GroovyLexer(new StringReader(buffer.toString()));
