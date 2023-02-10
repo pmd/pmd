@@ -15,7 +15,6 @@ import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.lang.document.CpdCompat;
 import net.sourceforge.pmd.lang.document.TextDocument;
-import net.sourceforge.pmd.lang.scala.ScalaLanguageHandler;
 import net.sourceforge.pmd.lang.scala.ScalaLanguageModule;
 
 import scala.collection.Iterator;
@@ -59,7 +58,7 @@ public class ScalaTokenizer implements Tokenizer {
         } else {
             langVer = ScalaLanguageModule.getInstance().getVersion(scalaVersion);
         }
-        dialect = ((ScalaLanguageHandler) langVer.getLanguageVersionHandler()).getDialect();
+        dialect = ScalaLanguageModule.dialectOf(langVer);
     }
 
     @Override

@@ -4,27 +4,31 @@
 
 package net.sourceforge.pmd.lang.plsql;
 
-import net.sourceforge.pmd.lang.BaseLanguageModule;
+import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
 
 /**
  * Created by christoferdutz on 20.09.14.
  */
-public class PLSQLLanguageModule extends BaseLanguageModule {
+public class PLSQLLanguageModule extends SimpleLanguageModuleBase {
 
     public static final String NAME = "PLSQL";
     public static final String TERSE_NAME = "plsql";
 
     public PLSQLLanguageModule() {
-        super(NAME, null, TERSE_NAME,
-                "sql",
-                "trg",  // Triggers
-                "prc", "fnc", // Standalone Procedures and Functions
-                "pld", // Oracle*Forms
-                "pls", "plh", "plb", // Packages
-                "pck", "pks", "pkh", "pkb", // Packages
-                "typ", "tyb", // Object Types
-                "tps", "tpb" // Object Types
+        super(
+            LanguageMetadata.withId(TERSE_NAME)
+                            .name(NAME)
+                            .extensions(
+                                "sql",
+                                "trg",  // Triggers
+                                "prc", "fnc", // Standalone Procedures and Functions
+                                "pld", // Oracle*Forms
+                                "pls", "plh", "plb", // Packages
+                                "pck", "pks", "pkh", "pkb", // Packages
+                                "typ", "tyb", // Object Types
+                                "tps", "tpb" // Object Types
+                            ),
+            new PLSQLHandler()
         );
-        addVersion("", new PLSQLHandler(), true);
     }
 }

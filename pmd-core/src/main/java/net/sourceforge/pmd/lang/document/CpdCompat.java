@@ -5,9 +5,8 @@
 package net.sourceforge.pmd.lang.document;
 
 import net.sourceforge.pmd.cpd.SourceCode;
-import net.sourceforge.pmd.lang.BaseLanguageModule;
-import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.PlainTextLanguage;
 
 /**
  * Compatibility APIs, to be removed before PMD 7 is out.
@@ -19,21 +18,9 @@ public final class CpdCompat {
         // utility class
     }
 
-
-    /** The language version must be non-null. */
-    @Deprecated
-    private static final Language DUMMY_LANG = new BaseLanguageModule("dummy", "dummy", "dummy", "dummy") {
-        {
-            addDefaultVersion("", () -> task -> {
-                throw new UnsupportedOperationException();
-            });
-        }
-
-    };
-
     @Deprecated
     public static LanguageVersion dummyVersion() {
-        return DUMMY_LANG.getDefaultVersion();
+        return PlainTextLanguage.getInstance().getDefaultVersion();
     }
 
     /**

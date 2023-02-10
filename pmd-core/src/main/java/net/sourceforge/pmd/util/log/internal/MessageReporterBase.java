@@ -65,6 +65,11 @@ abstract class MessageReporterBase implements MessageReporter {
                 String stackTrace = quoteMessageFormat(ExceptionUtils.getStackTrace(error));
                 log(Level.DEBUG, stackTrace);
             }
+        } else {
+            // should be incremented even if not logged
+            if (level == Level.ERROR) {
+                this.numErrors++;
+            }
         }
     }
 

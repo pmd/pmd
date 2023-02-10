@@ -35,10 +35,10 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
                 + "                              java-11, java-12, java-13, java-14, java-15," + System.lineSeparator()
                 + "                              java-16, java-17, java-18, java-18-preview," + System.lineSeparator()
                 + "                              java-19, java-19-preview, java-5, java-6, java-7," + System.lineSeparator()
-                + "                              java-8, java-9, jsp-, kotlin-, kotlin-1.6," + System.lineSeparator()
-                + "                              kotlin-1.6-rfc+0.1, modelica-, plsql-, pom-," + System.lineSeparator()
-                + "                              scala-2.10, scala-2.11, scala-2.12, scala-2.13," + System.lineSeparator()
-                + "                              swift-, vf-, vm-, wsdl-, xml-, xsl-";
+                + "                              java-8, java-9, jsp-, kotlin-1.6, kotlin-1." + System.lineSeparator()
+                + "                              6-rfc+0.1, modelica-, plsql-, pom-, scala-2.10," + System.lineSeparator()
+                + "                              scala-2.11, scala-2.12, scala-2.13, swift-, vf-," + System.lineSeparator()
+                + "                              vm-, wsdl-, xml-, xsl-";
     }
 
     private final String srcDir = new File(".", "src/test/resources/sample-source/java/").getAbsolutePath();

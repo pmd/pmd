@@ -50,12 +50,10 @@ class NodeIsFunctionTest extends BaseXPathFunctionTest {
     void testNonExistentNodeName() {
         // note that this would fail with a type error (boolean > integer)
         // if nodeIs fails to fail
-        testWithExpectedException(
+        testWithExpectedStaticException(
             "//MethodDeclaration[pmd-java:nodeIs('ohio') > 1]",
-            "class Moo { void foo() {if(true){}} }",
             e -> {
                 assertThat(e.getMessage(), containsString("ASTohio"));
-                assertThat(e.getPhase(), equalTo(Phase.INITIALIZATION));
             });
 
     }

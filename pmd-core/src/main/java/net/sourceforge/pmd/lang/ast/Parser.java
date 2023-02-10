@@ -6,15 +6,11 @@ package net.sourceforge.pmd.lang.ast;
 
 import java.util.Objects;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
-import net.sourceforge.pmd.PMDConfiguration;
+import net.sourceforge.pmd.lang.LanguageProcessor;
+import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.document.TextDocument;
-import net.sourceforge.pmd.properties.AbstractPropertySource;
-import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.properties.PropertyFactory;
-import net.sourceforge.pmd.properties.PropertySource;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * Produces an AST from a source file. Instances of this interface must
@@ -44,45 +40,15 @@ public interface Parser {
 
         private final TextDocument textDoc;
         private final SemanticErrorReporter reporter;
-        private final ClassLoader auxclasspathClassLoader;
+        private final LanguageProcessorRegistry lpRegistry;
 
-        private final ParserTaskProperties propertySource;
-
-        public ParserTask(TextDocument textDoc, SemanticErrorReporter reporter, ClassLoader auxclasspathClassLoader) {
-            this(textDoc, reporter, new ParserTaskProperties(), auxclasspathClassLoader);
+        public ParserTask(TextDocument textDoc, SemanticErrorReporter reporter, LanguageProcessorRegistry lpRegistry) {
+            this.textDoc = AssertionUtil.requireParamNotNull("Text document", textDoc);
+            this.reporter = AssertionUtil.requireParamNotNull("reporter", reporter);
+            this.lpRegistry = AssertionUtil.requireParamNotNull("lpRegistry", lpRegistry);
+            Objects.requireNonNull(lpRegistry.getProcessor(textDoc.getLanguageVersion().getLanguage()));
         }
 
-        public ParserTask(TextDocument textDoc, SemanticErrorReporter reporter) {
-            this(textDoc, reporter, Parser.class.getClassLoader());
-        }
-
-        private ParserTask(TextDocument textDoc,
-                           SemanticErrorReporter reporter,
-                           ParserTaskProperties source,
-                           ClassLoader auxclasspathClassLoader) {
-            this.textDoc = Objects.requireNonNull(textDoc, "Text document was null");
-            this.reporter = Objects.requireNonNull(reporter, "reporter was null");
-            this.auxclasspathClassLoader = Objects.requireNonNull(auxclasspathClassLoader, "auxclasspathClassLoader was null");
-
-            this.propertySource = new ParserTaskProperties(source);
-        }
-
-
-        public static final PropertyDescriptor<String> COMMENT_MARKER =
-            PropertyFactory.stringProperty("suppressionCommentMarker")
-                           .desc("deprecated! NOPMD")
-                           .defaultValue(PMDConfiguration.DEFAULT_SUPPRESS_MARKER)
-                           .build();
-
-        @Deprecated // transitional until language properties are implemented
-        public PropertySource getProperties() {
-            return propertySource;
-        }
-
-        @Deprecated // transitional until language properties are implemented
-        public ClassLoader getAuxclasspathClassLoader() {
-            return auxclasspathClassLoader;
-        }
 
         public LanguageVersion getLanguageVersion() {
             return textDoc.getLanguageVersion();
@@ -117,67 +83,20 @@ public interface Parser {
             return reporter;
         }
 
-        /**
-         * The suppression marker for comments.
-         */
-        public @NonNull String getCommentMarker() {
-            return getProperties().getProperty(COMMENT_MARKER);
+        public LanguageProcessorRegistry getLpRegistry() {
+            return lpRegistry;
         }
 
-        /**
-         * Replace the text document with another.
-         */
-        public ParserTask withTextDocument(TextDocument doc) {
-            return new ParserTask(doc, this.reporter, this.propertySource, this.auxclasspathClassLoader);
+        public LanguageProcessor getLanguageProcessor() {
+            return lpRegistry.getProcessor(getLanguageVersion().getLanguage());
         }
 
-
-        private static final class ParserTaskProperties extends AbstractPropertySource {
-
-            ParserTaskProperties() {
-                definePropertyDescriptor(COMMENT_MARKER);
-            }
-
-            ParserTaskProperties(ParserTaskProperties toCopy) {
-                for (PropertyDescriptor<?> prop : toCopy.getPropertyDescriptors()) {
-                    definePropertyDescriptor(prop);
-                }
-                toCopy.getOverriddenPropertyDescriptors().forEach(
-                    prop -> copyProperty(prop, toCopy, this)
-                );
-            }
-
-            static <T> void copyProperty(PropertyDescriptor<T> prop, PropertySource source, PropertySource target) {
-                target.setProperty(prop, source.getProperty(prop));
-            }
-
-            @Override
-            protected String getPropertySourceType() {
-                return "ParserOptions";
-            }
-
-            @Override
-            public String getName() {
-                return "n/a";
-            }
-
-            @Override
-            public boolean equals(Object obj) {
-                if (this == obj) {
-                    return true;
-                }
-                if (!(obj instanceof ParserTaskProperties)) {
-                    return false;
-                }
-                final ParserTaskProperties that = (ParserTaskProperties) obj;
-                return Objects.equals(getPropertiesByPropertyDescriptor(),
-                                      that.getPropertiesByPropertyDescriptor());
-            }
-
-            @Override
-            public int hashCode() {
-                return getPropertiesByPropertyDescriptor().hashCode();
-            }
+        public ParserTask withTextDocument(TextDocument textDocument) {
+            return new ParserTask(
+                textDocument,
+                this.reporter,
+                this.lpRegistry
+            );
         }
     }
 

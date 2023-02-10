@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException;
 import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException.Phase;
 
@@ -59,11 +60,14 @@ class MatchesSignatureXPathTest extends BaseXPathFunctionTest {
     }
 
     @Test
-    void testMatchInvalidSig() {
+    void testMatchInvalidSig() throws Exception {
         Rule rule = makeXpathRuleFromXPath("//*[pmd-java:matchesSig('_#')]");
 
-        PmdXPathException e = assertThrows(PmdXPathException.class, rule::getTargetSelector);
-        assertEquals(Phase.INITIALIZATION, e.getPhase());
+        try (LanguageProcessor lp = java.newProcessor()) {
+            PmdXPathException e = assertThrows(PmdXPathException.class, () -> rule.initialize(lp));
+            assertEquals(Phase.INITIALIZATION, e.getPhase());
+        }
+
     }
 
 

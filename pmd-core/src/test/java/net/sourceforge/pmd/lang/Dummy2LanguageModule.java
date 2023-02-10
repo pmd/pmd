@@ -6,17 +6,20 @@ package net.sourceforge.pmd.lang;
 
 import java.util.Objects;
 
+import net.sourceforge.pmd.lang.DummyLanguageModule.Handler;
+import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
+
 /**
  * A second dummy language used for testing PMD.
  */
-public class Dummy2LanguageModule extends BaseLanguageModule {
+public class Dummy2LanguageModule extends SimpleLanguageModuleBase {
 
     public static final String NAME = "Dummy2";
     public static final String TERSE_NAME = "dummy2";
 
     public Dummy2LanguageModule() {
-        super(NAME, null, TERSE_NAME, "dummy2");
-        addVersion("1.0", new DummyLanguageModule.Handler(), true);
+        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("dummy2")
+                              .addDefaultVersion("1.0"), new Handler());
     }
 
     public static Dummy2LanguageModule getInstance() {
