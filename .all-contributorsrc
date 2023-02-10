@@ -7088,6 +7088,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "pguyot",
+      "name": "Paul Guyot",
+      "avatar_url": "https://avatars.githubusercontent.com/u/168407?v=4",
+      "profile": "http://paul-guyot.com/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
