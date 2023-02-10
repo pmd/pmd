@@ -6,8 +6,10 @@ package net.sourceforge.pmd;
 
 import java.util.function.BiConsumer;
 
+import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.document.TestMessageReporter;
 
 public final class ReportTestUtil {
     private ReportTestUtil() {
@@ -19,11 +21,19 @@ public final class ReportTestUtil {
     }
 
     public static Report getReportForRuleApply(Rule rule, Node node) {
-        return getReport(rule, (r, ctx) -> r.apply(node, ctx));
+        return getReport(rule, (r, ctx) -> {
+            r.initialize(node.getAstInfo().getLanguageProcessor());
+            r.apply(node, ctx);
+        });
     }
 
     public static Report getReportForRuleSetApply(RuleSet ruleset, RootNode node) {
-        return Report.buildReport(listener -> new RuleSets(ruleset).apply(node, listener));
+        return Report.buildReport(listener -> {
+            RuleSets ruleSets = new RuleSets(ruleset);
+            LanguageProcessorRegistry registry = LanguageProcessorRegistry.singleton(node.getAstInfo().getLanguageProcessor());
+            ruleSets.initializeRules(registry, new TestMessageReporter());
+            ruleSets.apply(node, listener);
+        });
     }
 
 }

@@ -23,7 +23,6 @@ import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
-import net.sourceforge.pmd.processor.AbstractPMDProcessor;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.ViolationDecorator;
@@ -138,7 +137,7 @@ public final class RuleContext {
         Objects.requireNonNull(message, "Message was null");
         Objects.requireNonNull(formatArgs, "Format arguments were null, use an empty array");
 
-        LanguageVersionHandler handler = node.getTextDocument().getLanguageVersion().getLanguageVersionHandler();
+        LanguageVersionHandler handler = node.getAstInfo().getLanguageProcessor().services();
 
         FileLocation location = node.getReportLocation();
         if (beginLine != -1 && endLine != -1) {
@@ -218,8 +217,7 @@ public final class RuleContext {
 
 
     /**
-     * Create a new RuleContext. This is internal API owned by {@link AbstractPMDProcessor}
-     * (can likely be hidden when everything relevant is moved into rule package).
+     * Create a new RuleContext.
      *
      * The listener must be closed by its creator.
      */

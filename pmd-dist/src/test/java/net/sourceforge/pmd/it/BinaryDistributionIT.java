@@ -36,7 +36,7 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
                 + "                              java-16, java-17, java-18, java-19," + System.lineSeparator()
                 + "                              java-19-preview, java-20, java-20-preview," + System.lineSeparator()
                 + "                              java-5, java-6, java-7, java-8, java-9, jsp-," + System.lineSeparator()
-                + "                              kotlin-, kotlin-1.6, kotlin-1.6-rfc+0.1," + System.lineSeparator()
+                + "                              kotlin-1.6, kotlin-1.6-rfc+0.1," + System.lineSeparator()
                 + "                              modelica-, plsql-, pom-, scala-2.10, scala-2.11," + System.lineSeparator()
                 + "                              scala-2.12, scala-2.13, swift-, vf-, vm-, wsdl-," + System.lineSeparator()
                 + "                              xml-, xsl-";

@@ -11,8 +11,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-import net.sourceforge.pmd.lang.DummyLanguageModule;
+import net.sourceforge.pmd.DummyParsingHelper;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.properties.PropertySource;
 
@@ -20,6 +21,9 @@ import net.sourceforge.pmd.properties.PropertySource;
  *
  */
 class TreeRenderersTest {
+
+    @RegisterExtension
+    private final DummyParsingHelper helper = new DummyParsingHelper();
 
     @Test
     void testStandardRenderersAreRegistered() {
@@ -55,7 +59,7 @@ class TreeRenderersTest {
 
         StringBuilder out = new StringBuilder();
 
-        renderer.renderSubtree(dummyTree1(), out);
+        renderer.renderSubtree(dummyTree1(helper), out);
         assertEquals("<dummyNode foo=\"bar\" ohio=\"4\">\n"
                                 + "    <dummyNode o=\"ha\" />\n"
                                 + "    <dummyNode />\n"
@@ -64,8 +68,8 @@ class TreeRenderersTest {
     }
 
 
-    static DummyNode dummyTree1() {
-        DummyNode dummy = DummyLanguageModule.parse("(parent(child1)(child2))").getChild(0);
+    static DummyNode dummyTree1(DummyParsingHelper helper) {
+        DummyNode dummy = helper.parse("(parent(child1)(child2))").getChild(0);
         dummy.clearXPathAttributes();
         dummy.setXPathAttribute("foo", "bar");
         dummy.setXPathAttribute("ohio", "4");

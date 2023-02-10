@@ -18,6 +18,7 @@ import org.mockito.Mockito;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.document.TextRegion;
@@ -47,12 +48,13 @@ class RuleTstTest {
 
         ruleTester.runTestFromString("the code", rule, dummyLanguage);
 
+        verify(rule).initialize(any(LanguageProcessor.class));
         verify(rule).start(any(RuleContext.class));
         verify(rule).end(any(RuleContext.class));
         verify(rule, atLeastOnce()).getLanguage();
         verify(rule, atLeastOnce()).getTargetSelector();
-        verify(rule).getMinimumLanguageVersion();
-        verify(rule).getMaximumLanguageVersion();
+        verify(rule, atLeastOnce()).getMinimumLanguageVersion();
+        verify(rule, atLeastOnce()).getMaximumLanguageVersion();
         verify(rule).apply(any(Node.class), any(RuleContext.class));
         verify(rule, atLeastOnce()).getName();
         verify(rule).getPropertiesByPropertyDescriptor();

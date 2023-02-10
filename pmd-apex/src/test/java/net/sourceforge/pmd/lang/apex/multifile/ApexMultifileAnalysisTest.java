@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import net.sourceforge.pmd.internal.util.IOUtil;
+import net.sourceforge.pmd.lang.apex.ApexLanguageProperties;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 
@@ -66,7 +67,9 @@ class ApexMultifileAnalysisTest {
     }
 
     private @NonNull ApexMultifileAnalysis getAnalysisForTempFolder() {
-        return ApexMultifileAnalysis.getAnalysisInstance(tempFolder.toAbsolutePath().toString());
+        ApexLanguageProperties props = new ApexLanguageProperties();
+        props.setProperty(ApexLanguageProperties.MULTIFILE_DIRECTORY, tempFolder.toAbsolutePath().toString());
+        return new ApexMultifileAnalysis(props);
     }
 
     private void copyResource(String resourcePath, String relativePathInTempDir) throws IOException {

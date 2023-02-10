@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.testframework;
 
-import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -26,8 +25,8 @@ import org.junit.jupiter.api.TestFactory;
 import org.xml.sax.InputSource;
 
 import net.sourceforge.pmd.PMDConfiguration;
+import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetLoadException;
@@ -35,7 +34,6 @@ import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.document.TextFile;
-import net.sourceforge.pmd.processor.AbstractPMDProcessor;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
@@ -47,21 +45,6 @@ import net.sourceforge.pmd.test.schema.TestSchemaParser;
  * Advanced methods for test cases
  */
 public abstract class RuleTst {
-    /** Use a single classloader for all tests. */
-    private final ClassLoader classpathClassLoader;
-
-    public RuleTst() {
-        classpathClassLoader = makeClassPathClassLoader();
-    }
-
-    private ClassLoader makeClassPathClassLoader() {
-        final ClassLoader classpathClassLoader;
-        PMDConfiguration config = new PMDConfiguration();
-        config.prependAuxClasspath(".");
-        classpathClassLoader = config.getClassLoader();
-        return classpathClassLoader;
-    }
-
 
     protected void setUp() {
         // This method is intended to be overridden by subclasses.
@@ -137,7 +120,7 @@ public abstract class RuleTst {
                 printReport(test, report);
             }
             assertEquals(test.getExpectedProblems(), res,
-                    '"' + test.getDescription() + "\" resulted in wrong number of failures,");
+                         '"' + test.getDescription() + "\" resulted in wrong number of failures,");
             assertMessages(report, test);
             assertLineNumbers(report, test);
         } finally {
@@ -169,7 +152,7 @@ public abstract class RuleTst {
         List<String> expectedMessages = test.getExpectedMessages();
         if (report.getViolations().size() != expectedMessages.size()) {
             throw new RuntimeException("Test setup error: number of expected messages doesn't match "
-                    + "number of violations for test case '" + test.getDescription() + "'");
+                                           + "number of violations for test case '" + test.getDescription() + "'");
         }
 
         int index = 0;
@@ -179,7 +162,8 @@ public abstract class RuleTst {
                 printReport(test, report);
             }
             assertEquals(expectedMessages.get(index), actual,
-                         '"' + test.getDescription() + "\" produced wrong message on violation number " + (index + 1) + ".");
+                         '"' + test.getDescription() + "\" produced wrong message on violation number " + (index + 1)
+                             + ".");
             index++;
         }
     }
@@ -192,8 +176,9 @@ public abstract class RuleTst {
         List<Integer> expected = test.getExpectedLineNumbers();
         if (report.getViolations().size() != expected.size()) {
             throw new RuntimeException("Test setup error: number of expected line numbers " + expected.size()
-                    + " doesn't match number of violations " + report.getViolations().size() + " for test case '"
-                    + test.getDescription() + "'");
+                                           + " doesn't match number of violations " + report.getViolations().size()
+                                           + " for test case '"
+                                           + test.getDescription() + "'");
         }
 
         int index = 0;
@@ -204,7 +189,7 @@ public abstract class RuleTst {
             }
             assertEquals(expected.get(index), actual,
                          '"' + test.getDescription() + "\" violation on wrong line number: violation number "
-                         + (index + 1) + ".");
+                             + (index + 1) + ".");
             index++;
         }
     }
@@ -212,7 +197,8 @@ public abstract class RuleTst {
     private void printReport(RuleTestDescriptor test, Report report) {
         System.out.println("--------------------------------------------------------------");
         System.out.println("Test Failure: " + test.getDescription());
-        System.out.println(" -> Expected " + test.getExpectedProblems() + " problem(s), " + report.getViolations().size()
+        System.out.println(
+            " -> Expected " + test.getExpectedProblems() + " problem(s), " + report.getViolations().size()
                 + " problem(s) found.");
         System.out.println(" -> Expected messages: " + test.getExpectedMessages());
         System.out.println(" -> Expected line numbers: " + test.getExpectedLineNumbers());
@@ -238,37 +224,17 @@ public abstract class RuleTst {
      * Run the rule on the given code and put the violations in the report.
      */
     Report runTestFromString(String code, Rule rule, LanguageVersion languageVersion) {
-        try {
-            PMDConfiguration configuration = new PMDConfiguration();
-            configuration.setIgnoreIncrementalAnalysis(true);
-            configuration.setDefaultLanguageVersion(languageVersion);
-            configuration.setThreads(1);
-            // the auxclasspath is always used (#3976 / #3302)
-            // configure the "auxclasspath" option for unit testing
-            // we share a single classloader so that pmd-java doesn't create
-            // a new TypeSystem for every test. This problem will go
-            // away when languages have a lifecycle.
-            configuration.setClassLoader(classpathClassLoader);
+        PMDConfiguration configuration = new PMDConfiguration();
+        configuration.setIgnoreIncrementalAnalysis(true);
+        configuration.setDefaultLanguageVersion(languageVersion);
+        configuration.setThreads(1);
+        configuration.prependAuxClasspath(".");
 
-            try (GlobalReportBuilderListener reportBuilder = new GlobalReportBuilderListener();
-                 // Add a listener that throws when an error occurs:
-                 //  this replaces ruleContext.setIgnoreExceptions(false)
-                 GlobalAnalysisListener listener = GlobalAnalysisListener.tee(listOf(GlobalAnalysisListener.exceptionThrower(), reportBuilder))) {
-
-                AbstractPMDProcessor.runSingleFile(
-                    listOf(RuleSet.forSingleRule(rule)),
-                    TextFile.forCharSeq(code, "testFile", languageVersion),
-                    listener,
-                    configuration
-                );
-
-                listener.close();
-                return reportBuilder.getResult();
-            }
-        } catch (RuntimeException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
+            pmd.files().addFile(TextFile.forCharSeq(code, "testFile", languageVersion));
+            pmd.addRuleSet(RuleSet.forSingleRule(rule));
+            pmd.addListener(GlobalAnalysisListener.exceptionThrower());
+            return pmd.performAnalysisAndCollectReport();
         }
     }
 
@@ -374,14 +340,15 @@ public abstract class RuleTst {
     }
 
     private DynamicTest toDynamicTest(RuleTestCollection collection, RuleTestDescriptor testDescriptor) {
-        URI testSourceUri = URI.create(collection.getAbsoluteUriToTestXmlFile() + "?line=" + testDescriptor.getLineNumber());
+        URI testSourceUri = URI.create(
+            collection.getAbsoluteUriToTestXmlFile() + "?line=" + testDescriptor.getLineNumber());
         if (testDescriptor.isDisabled()) {
             return DynamicTest.dynamicTest("[IGNORED] " + testDescriptor.getDescription(),
-                    testSourceUri,
-                    () -> {});
+                                           testSourceUri,
+                                           () -> { });
         }
         return DynamicTest.dynamicTest(testDescriptor.getDescription(),
-                testSourceUri,
-                () -> runTest(testDescriptor));
+                                       testSourceUri,
+                                       () -> runTest(testDescriptor));
     }
 }

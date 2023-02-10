@@ -1,42 +1,48 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.processor;
+package net.sourceforge.pmd.lang.impl;
 
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.lang.LanguageProcessor.AnalysisTask;
 import net.sourceforge.pmd.lang.document.TextFile;
-import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.util.log.internal.NoopReporter;
 
 
 /**
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
  */
 final class MultiThreadProcessor extends AbstractPMDProcessor {
+
     private final ExecutorService executor;
 
-    MultiThreadProcessor(final PMDConfiguration configuration) {
-        super(configuration);
+    MultiThreadProcessor(final AnalysisTask task) {
+        super(task);
 
-        executor = Executors.newFixedThreadPool(configuration.getThreads(), new PmdThreadFactory());
+        executor = Executors.newFixedThreadPool(task.getThreadCount(), new PmdThreadFactory());
     }
 
     @Override
     @SuppressWarnings("PMD.CloseResource") // closed by the PMDRunnable
-    public void processFiles(RuleSets rulesets, List<TextFile> files, GlobalAnalysisListener listener) {
+    public void processFiles() {
         // The thread-local is not static, but analysis-global
         // This means we don't have to reset it manually, every analysis is isolated.
         // The initial value makes a copy of the rulesets
-        final ThreadLocal<RuleSets> ruleSetCopy = ThreadLocal.withInitial(() -> new RuleSets(rulesets));
+        final ThreadLocal<RuleSets> ruleSetCopy = ThreadLocal.withInitial(() -> {
+            RuleSets copy = new RuleSets(task.getRulesets());
+            // use a noop reporter because the copy should only contain rules that
+            // initialized properly
+            copy.initializeRules(task.getLpRegistry(), new NoopReporter());
+            return copy;
+        });
 
-        for (final TextFile dataSource : files) {
-            executor.submit(new PmdRunnable(dataSource, listener, configuration) {
+        for (final TextFile textFile : task.getFiles()) {
+            executor.submit(new PmdRunnable(textFile, task) {
                 @Override
                 protected RuleSets getRulesets() {
                     return ruleSetCopy.get();

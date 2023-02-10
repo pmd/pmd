@@ -176,7 +176,7 @@ whereExpression: expression ;
 
 // GRAMMAR OF AN AVAILABILITY CONDITION
 
-availabilityCondition: '#available' '(' availabilityArguments ')' ;
+availabilityCondition: '#available' | '#unavailable' '(' availabilityArguments ')' ;
 availabilityArguments: availabilityArgument (',' availabilityArguments)* ;
 availabilityArgument: platformName platformVersion | '*' ;
 platformName: 'iOS' | 'iOSApplicationExtension' | 'OSX' | 'OSXApplicationExtension' | 'watchOS'
@@ -954,7 +954,7 @@ keyword :
  // Keywords used in patterns
  | '_'
  // Keywords that begin with a number sign (#)
- | '#available' | '#colorLiteral' | '#column' | '#else' | '#elseif' | '#endif' | '#file' | 'fileLiteral' | '#function'
+ | '#available' | '#unavailable' | '#colorLiteral' | '#column' | '#else' | '#elseif' | '#endif' | '#file' | 'fileLiteral' | '#function'
  | '#if' | 'imageLiteral' | '#line' | '#selector'
  ;
 

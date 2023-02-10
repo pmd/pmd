@@ -16,14 +16,12 @@ import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.slf4j.Logger;
 import org.slf4j.event.Level;
 import org.slf4j.helpers.NOPLogger;
 
-import net.sourceforge.pmd.lang.DummyLanguageModule;
-import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
-import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.DummyParsingHelper;
 import net.sourceforge.pmd.util.log.MessageReporter;
 
 /**
@@ -32,9 +30,11 @@ import net.sourceforge.pmd.util.log.MessageReporter;
  */
 class SemanticErrorReporterTest {
 
-    private static final String MOCK_FILENAME = "dummy/file.txt";
     MessageReporter mockReporter;
     Logger mockLogger;
+
+    @RegisterExtension
+    private final DummyParsingHelper helper = new DummyParsingHelper();
 
     @BeforeEach
     void setup() {
@@ -46,7 +46,7 @@ class SemanticErrorReporterTest {
     @Test
     void testErrorLogging() {
         SemanticErrorReporter reporter = SemanticErrorReporter.reportToLogger(mockReporter);
-        RootNode node = parseMockNode(reporter);
+        RootNode node = parseMockNode();
 
         assertNull(reporter.getFirstError());
 
@@ -62,7 +62,7 @@ class SemanticErrorReporterTest {
     @Test
     void testEscaping() {
         SemanticErrorReporter reporter = SemanticErrorReporter.reportToLogger(mockReporter);
-        RootNode node = parseMockNode(reporter);
+        RootNode node = parseMockNode();
 
         // this is a MessageFormat string
         // what ends up being logged is just '
@@ -74,14 +74,8 @@ class SemanticErrorReporterTest {
         verifyNoMoreInteractions(mockLogger);
     }
 
-    private RootNode parseMockNode(SemanticErrorReporter reporter) {
-        Language language = DummyLanguageModule.getInstance();
-        Parser parser = language.getDefaultVersion().getLanguageVersionHandler().getParser();
-        TextDocument doc = TextDocument.readOnlyString("(mock (node))", MOCK_FILENAME, language.getDefaultVersion());
-        return parser.parse(new ParserTask(
-            doc,
-            reporter
-        ));
+    private RootNode parseMockNode() {
+        return helper.parse("(mock (node))", "dummy/file.txt");
     }
 
 }

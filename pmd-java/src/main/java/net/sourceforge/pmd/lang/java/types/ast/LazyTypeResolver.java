@@ -560,7 +560,11 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
             return polyResolution.getContextTypeForStandaloneFallback(node);
         }
 
-        NameResolver<FieldSig> fieldResolver = TypeOps.getMemberFieldResolver(qualifierT, node.getRoot().getPackageName(), node.getEnclosingType().getSymbol(), node.getName());
+        @Nullable ASTAnyTypeDeclaration enclosingType = node.getEnclosingType();
+        @Nullable JClassSymbol enclosingSymbol =
+            enclosingType == null ? null : enclosingType.getSymbol();
+        NameResolver<FieldSig> fieldResolver =
+            TypeOps.getMemberFieldResolver(qualifierT, node.getRoot().getPackageName(), enclosingSymbol, node.getName());
 
         FieldSig sig = fieldResolver.resolveFirst(node.getName()); // could be an ambiguity error
         InternalApiBridge.setTypedSym(node, sig);

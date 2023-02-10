@@ -6,16 +6,10 @@ package net.sourceforge.pmd.lang.java.internal;
 
 import static net.sourceforge.pmd.lang.java.symbols.table.internal.JavaSemanticErrors.CANNOT_RESOLVE_SYMBOL;
 
-import java.util.IdentityHashMap;
-import java.util.Locale;
-import java.util.Map;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.benchmark.TimeTracker;
-import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -30,8 +24,6 @@ import net.sourceforge.pmd.lang.java.symbols.table.internal.ReferenceCtx;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SymbolTableResolver;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
-import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.SimpleLogger;
-import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.VerboseLogger;
 
 /**
  * Processes the output of the parser before rules get access to the AST.
@@ -45,64 +37,31 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.Ve
  * using {@link InternalApiBridge#getProcessor(JavaNode)}.
  */
 public final class JavaAstProcessor {
-
-    /**
-     * FIXME get rid of that, this prevents both ClassLoader and TypeSystem
-     *  to be garbage-collected, which is an important memory leak. Will be
-     *  fixed by https://github.com/pmd/pmd/issues/3782 (Language Lifecycle)
-     */
-    private static final Map<ClassLoader, TypeSystem> TYPE_SYSTEMS = new IdentityHashMap<>();
-    private static final Level INFERENCE_LOG_LEVEL;
-
-
-    static {
-        Level level;
-        try {
-            level = Level.valueOf(System.getenv("PMD_DEBUG_LEVEL").toUpperCase(Locale.ROOT));
-        } catch (IllegalArgumentException | NullPointerException ignored) {
-            level = null;
-        }
-        INFERENCE_LOG_LEVEL = level;
-    }
-
-
     private final TypeInferenceLogger typeInferenceLogger;
+    private final JavaLanguageProcessor globalProc;
     private final SemanticErrorReporter logger;
-    private final LanguageVersion languageVersion;
-    private final TypeSystem typeSystem;
 
     private SymbolResolver symResolver;
 
     private final UnresolvedClassStore unresolvedTypes;
+    private final ASTCompilationUnit acu;
 
 
-    private JavaAstProcessor(TypeSystem typeSystem,
-                             SymbolResolver symResolver,
+    private JavaAstProcessor(JavaLanguageProcessor globalProc,
                              SemanticErrorReporter logger,
                              TypeInferenceLogger typeInfLogger,
-                             LanguageVersion languageVersion) {
+                             ASTCompilationUnit acu) {
 
-        this.symResolver = symResolver;
+        this.symResolver = globalProc.getTypeSystem().bootstrapResolver();
+        this.globalProc = globalProc;
         this.logger = logger;
         this.typeInferenceLogger = typeInfLogger;
-        this.languageVersion = languageVersion;
-
-        this.typeSystem = typeSystem;
-        unresolvedTypes = new UnresolvedClassStore(typeSystem);
+        this.unresolvedTypes = new UnresolvedClassStore(globalProc.getTypeSystem());
+        this.acu = acu;
     }
 
     public UnresolvedClassStore getUnresolvedStore() {
         return unresolvedTypes;
-    }
-
-    static TypeInferenceLogger defaultTypeInfLogger() {
-        if (INFERENCE_LOG_LEVEL == Level.TRACE) {
-            return new VerboseLogger(System.err);
-        } else if (INFERENCE_LOG_LEVEL == Level.DEBUG) {
-            return new SimpleLogger(System.err);
-        } else {
-            return TypeInferenceLogger.noop();
-        }
     }
 
 
@@ -152,18 +111,14 @@ public final class JavaAstProcessor {
         return logger;
     }
 
-    public LanguageVersion getLanguageVersion() {
-        return languageVersion;
-    }
-
     public int getJdkVersion() {
-        return ((JavaLanguageHandler) languageVersion.getLanguageVersionHandler()).getJdkVersion();
+        return JavaLanguageProperties.getInternalJdkVersion(acu.getLanguageVersion());
     }
 
     /**
      * Performs semantic analysis on the given source file.
      */
-    public void process(ASTCompilationUnit acu) {
+    public void process() {
 
         SymbolResolver knownSyms = TimeTracker.bench("Symbol resolution", () -> SymbolResolutionPass.traverse(this, acu));
 
@@ -183,56 +138,29 @@ public final class JavaAstProcessor {
     }
 
     public TypeSystem getTypeSystem() {
-        return typeSystem;
+        return globalProc.getTypeSystem();
     }
 
-    public static JavaAstProcessor create(SymbolResolver symResolver,
-                                          TypeSystem typeSystem,
-                                          LanguageVersion languageVersion,
-                                          SemanticErrorReporter logger) {
 
-        return new JavaAstProcessor(
-            typeSystem,
-            symResolver,
-            logger,
-            defaultTypeInfLogger(),
-            languageVersion
-        );
+    public static void process(JavaLanguageProcessor globalProcessor,
+                                          SemanticErrorReporter semanticErrorReporter,
+                                           ASTCompilationUnit ast) {
+        process(globalProcessor, semanticErrorReporter, globalProcessor.newTypeInfLogger(), ast);
     }
 
-    public static JavaAstProcessor create(ClassLoader classLoader,
-                                          LanguageVersion languageVersion,
-                                          SemanticErrorReporter logger,
-                                          TypeInferenceLogger typeInfLogger) {
+    public static void process(JavaLanguageProcessor globalProcessor,
+                                          SemanticErrorReporter semanticErrorReporter,
+                                          TypeInferenceLogger typeInfLogger,
+                                           ASTCompilationUnit ast) {
 
-        TypeSystem typeSystem = TYPE_SYSTEMS.computeIfAbsent(classLoader, TypeSystem::usingClassLoaderClasspath);
-        return new JavaAstProcessor(
-            typeSystem,
-            typeSystem.bootstrapResolver(),
-            logger,
+
+        JavaAstProcessor astProc = new JavaAstProcessor(
+            globalProcessor,
+            semanticErrorReporter,
             typeInfLogger,
-            languageVersion
+            ast
         );
+
+        astProc.process();
     }
-
-
-    public static JavaAstProcessor create(ClassLoader classLoader,
-                                          LanguageVersion languageVersion,
-                                          SemanticErrorReporter logger) {
-        return create(classLoader, languageVersion, logger, defaultTypeInfLogger());
-    }
-
-    public static JavaAstProcessor create(TypeSystem typeSystem,
-                                          LanguageVersion languageVersion,
-                                          SemanticErrorReporter semanticLogger,
-                                          TypeInferenceLogger typeInfLogger) {
-        return new JavaAstProcessor(
-            typeSystem,
-            typeSystem.bootstrapResolver(),
-            semanticLogger,
-            typeInfLogger,
-            languageVersion
-        );
-    }
-
 }

@@ -7,19 +7,18 @@ package net.sourceforge.pmd.lang.java.symbols.internal
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.haveSize
 import io.kotest.matchers.should
+import net.sourceforge.pmd.lang.ast.test.IntelliMarker
 import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.java.symbols.table.internal.testProcessor
+import net.sourceforge.pmd.lang.java.types.testTypeSystem
 
 /**
  * @author Clément Fournier
  */
-class UnresolvedClassTest : FunSpec({
+class UnresolvedClassTest : IntelliMarker, FunSpec({
 
     test("Test simple unresolved class") {
-
-        val processor = testProcessor()
-        val ts = processor.typeSystem
-        val sym = processor.makeUnresolvedReference("some.pack.Class", 0)
+        val ts = testTypeSystem
+        val sym = UnresolvedClassStore(ts).makeUnresolvedReference("some.pack.Class", 0)
 
         sym::isUnresolved shouldBe true
         sym::getSimpleName shouldBe "Class"
@@ -42,7 +41,7 @@ class UnresolvedClassTest : FunSpec({
 
     test("Test arity change") {
 
-        val sym = testProcessor().makeUnresolvedReference("some.pack.Class", 0) as UnresolvedClassImpl
+        val sym = UnresolvedClassStore(testTypeSystem).makeUnresolvedReference("some.pack.Class", 0) as UnresolvedClassImpl
 
         sym::getTypeParameterCount shouldBe 0
         sym::getTypeParameters shouldBe emptyList()

@@ -58,7 +58,7 @@ final class SentinelType implements JTypeMirror {
 
     @Override
     public Set<JTypeMirror> getSuperTypeSet() {
-        return Collections.emptySet();
+        return Collections.singleton(this);
     }
 
     @Override

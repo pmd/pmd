@@ -7,16 +7,15 @@ package net.sourceforge.pmd.lang.apex.multifile;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.lang.apex.ast.ApexParser;
+import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.apex.ApexLanguageProcessor;
+import net.sourceforge.pmd.lang.apex.ApexLanguageProperties;
 
 import com.nawforce.common.api.FileIssueOptions;
 import com.nawforce.common.api.Org;
@@ -39,38 +38,45 @@ public final class ApexMultifileAnalysis {
     // test only
     static final Logger LOG = LoggerFactory.getLogger(ApexMultifileAnalysis.class);
 
-    /**
-     * Instances of the apexlink index and data structures ({@link Org})
-     * are stored statically for now. TODO make that language-wide (#2518).
-     */
-    private static final Map<String, ApexMultifileAnalysis> INSTANCE_MAP = new ConcurrentHashMap<>();
-
     // An arbitrary large number of errors to report
-    private static final Integer MAX_ERRORS_PER_FILE = 100;
+    private static final int MAX_ERRORS_PER_FILE = 100;
 
     // Create a new org for each analysis
     // Null if failed.
     private final @Nullable Org org;
     private final FileIssueOptions options = makeOptions();
 
-    private static final ApexMultifileAnalysis FAILED_INSTANCE = new ApexMultifileAnalysis();
 
-    /** Ctor for the failed instance. */
-    private ApexMultifileAnalysis() {
-        org = null;
+    static {
+        // Default some library wide settings
+        ServerOps.setAutoFlush(false);
+        ServerOps.setLogger(new AnalysisLogger());
+        ServerOps.setDebugLogging(new String[] { "ALL" });
     }
 
-    private ApexMultifileAnalysis(String multiFileAnalysisDirectory) {
-        LOG.debug("MultiFile Analysis created for {}", multiFileAnalysisDirectory);
-        org = Org.newOrg();
-        if (multiFileAnalysisDirectory != null && !multiFileAnalysisDirectory.isEmpty()) {
-            // Load the package into the org, this can take some time!
-            org.newSFDXPackage(multiFileAnalysisDirectory); // this may fail if the config is wrong
-            org.flush();
 
-            // FIXME: Syntax & Semantic errors found during Org loading are not currently being reported. These
-            // should be routed to the new SemanticErrorReporter but that is not available for use just yet.
+    @InternalApi
+    public ApexMultifileAnalysis(ApexLanguageProperties properties) {
+        String rootDir = properties.getProperty(ApexLanguageProperties.MULTIFILE_DIRECTORY);
+        LOG.debug("MultiFile Analysis created for {}", rootDir);
+
+        Org org;
+        try {
+            org = Org.newOrg();
+            if (rootDir != null && !rootDir.isEmpty()) {
+                // Load the package into the org, this can take some time!
+                org.newSFDXPackage(rootDir); // this may fail if the config is wrong
+                org.flush();
+
+                // FIXME: Syntax & Semantic errors found during Org loading are not currently being reported. These
+                // should be routed to the new SemanticErrorReporter but that is not available for use just yet.
+            }
+        } catch (Exception e) {
+            LOG.error("Exception while initializing Apexlink ({})", e.getMessage(), e);
+            LOG.error("PMD will not attempt to initialize Apexlink further, this can cause rules like UnusedMethod to be dysfunctional");
+            org = null;
         }
+        this.org = org;
     }
 
     private static FileIssueOptions makeOptions() {
@@ -84,8 +90,8 @@ public final class ApexMultifileAnalysis {
     /**
      * Returns true if this is analysis index is in a failed state.
      * This object is then useless. The failed instance is returned
-     * from {@link #getAnalysisInstance(String)} if loading the org
-     * failed, maybe because of malformed configuration.
+     * from {@link ApexLanguageProcessor#getMultiFileState()} if
+     * loading the org failed, maybe because of malformed configuration.
      */
     public boolean isFailed() {
         return org == null;
@@ -95,33 +101,6 @@ public final class ApexMultifileAnalysis {
         // Extract issues for a specific metadata file from the org
         return org == null ? Collections.emptyList()
                            : Collections.unmodifiableList(Arrays.asList(org.getFileIssues(filename, options)));
-    }
-
-    /**
-     * Returns the analysis instance. Returns a {@linkplain #isFailed() failed instance}
-     * if this fails.
-     *
-     * @param multiFileAnalysisDirectory Root directory of the configuration (see {@link ApexParser#MULTIFILE_DIRECTORY}).
-     */
-    public static @NonNull ApexMultifileAnalysis getAnalysisInstance(String multiFileAnalysisDirectory) {
-        if (INSTANCE_MAP.isEmpty()) {
-            // Default some library wide settings
-            ServerOps.setAutoFlush(false);
-            ServerOps.setLogger(new AnalysisLogger());
-            ServerOps.setDebugLogging(new String[] { "ALL" });
-        }
-
-        return INSTANCE_MAP.computeIfAbsent(
-            multiFileAnalysisDirectory,
-            dir -> {
-                try {
-                    return new ApexMultifileAnalysis(dir);
-                } catch (Exception e) {
-                    LOG.error("Exception while initializing Apexlink ({})", e.getMessage(), e);
-                    LOG.error("PMD will not attempt to initialize Apexlink further, this can cause rules like UnusedMethod to be dysfunctional");
-                    return FAILED_INSTANCE;
-                }
-            });
     }
 
     /*
