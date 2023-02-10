@@ -29,7 +29,7 @@ public class SwiftLanguageModule extends SimpleLanguageModuleBase {
      */
     public SwiftLanguageModule() {
         super(LanguageMetadata.withId(TERSE_NAME).name(NAME)
-                              .extensions(EXTENSIONS.get(0))
+                              .extensions(EXTENSIONS)
                               .addVersion("4.2")
                               .addVersion("5.0")
                               .addVersion("5.1")

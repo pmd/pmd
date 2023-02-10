@@ -21,7 +21,7 @@ public final class HtmlLanguageModule extends SimpleLanguageModuleBase {
 
     public HtmlLanguageModule() {
         super(LanguageMetadata.withId(TERSE_NAME).name(NAME)
-                              .extensions(EXTENSIONS.get(0), EXTENSIONS.subList(0, EXTENSIONS.size()).toArray(new String[0]))
+                              .extensions(EXTENSIONS)
                               .addVersion("4")
                               .addDefaultVersion("5"),
               new HtmlHandler());

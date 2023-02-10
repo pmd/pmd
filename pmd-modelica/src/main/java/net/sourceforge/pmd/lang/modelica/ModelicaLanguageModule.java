@@ -19,7 +19,7 @@ public class ModelicaLanguageModule extends SimpleLanguageModuleBase {
 
     public ModelicaLanguageModule() {
         super(LanguageMetadata.withId(TERSE_NAME).name(NAME)
-                              .extensions(EXTENSIONS.get(0))
+                              .extensions(EXTENSIONS)
                               .addVersion("3.4")
                               .addDefaultVersion("3.5"),
               new ModelicaHandler());

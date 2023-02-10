@@ -8,6 +8,7 @@ import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -269,7 +270,7 @@ public abstract class LanguageModuleBase implements Language {
 
         /**
          * Record the {@linkplain Language#getExtensions() extensions}
-         * assigned to the language. Parameters should not start with a period
+         * assigned to the language. Extensions should not start with a period
          * {@code .}.
          *
          * @param e1     First extensions
@@ -280,6 +281,25 @@ public abstract class LanguageModuleBase implements Language {
         public LanguageMetadata extensions(String e1, String... others) {
             this.extensions = new ArrayList<>(setOf(e1, others));
             AssertionUtil.requireContainsNoNullValue("extensions", this.extensions);
+            return this;
+        }
+
+        /**
+         * Record the {@linkplain Language#getExtensions() extensions}
+         * assigned to the language. Extensions should not start with a period
+         * {@code .}. At least one extension must be provided.
+         *
+         * @param extensions the extensions
+         *
+         * @throws NullPointerException If any extension is null
+         * @throws IllegalArgumentException If no extensions are provided
+         */
+        public LanguageMetadata extensions(Collection<String> extensions) {
+            this.extensions = new ArrayList<>(new HashSet<>(extensions));
+            AssertionUtil.requireContainsNoNullValue("extensions", this.extensions);
+            if (this.extensions.isEmpty()) {
+                throw new IllegalArgumentException("At least one extension is required.");
+            }
             return this;
         }
 

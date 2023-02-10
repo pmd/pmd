@@ -34,7 +34,7 @@ public class PLSQLLanguageModule extends SimpleLanguageModuleBase {
         super(
             LanguageMetadata.withId(TERSE_NAME)
                             .name(NAME)
-                            .extensions(EXTENSIONS.get(0), EXTENSIONS.toArray(new String[0]))
+                            .extensions(EXTENSIONS)
                             .addVersion("11g")
                             .addVersion("12c_Release_1", "12.1")
                             .addVersion("12c_Release_2", "12.2")

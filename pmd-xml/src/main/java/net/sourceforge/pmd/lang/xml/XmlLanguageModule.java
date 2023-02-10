@@ -23,7 +23,7 @@ public class XmlLanguageModule extends SimpleLanguageModuleBase {
 
     public XmlLanguageModule() {
         super(LanguageMetadata.withId(TERSE_NAME).name(NAME)
-                              .extensions(EXTENSIONS.get(0))
+                              .extensions(EXTENSIONS)
                               .addVersion("1.0")
                               .addDefaultVersion("1.1"),
                 new XmlHandler());

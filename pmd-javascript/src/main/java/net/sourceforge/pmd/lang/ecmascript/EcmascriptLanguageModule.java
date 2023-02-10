@@ -25,7 +25,7 @@ public class EcmascriptLanguageModule extends SimpleLanguageModuleBase {
     public static final List<String> EXTENSIONS = listOf("js");
 
     public EcmascriptLanguageModule() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions(EXTENSIONS.get(0))
+        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions(EXTENSIONS)
                               .addVersion("3")
                               .addVersion("5")
                               .addVersion("6", "ES6", "ES2015")

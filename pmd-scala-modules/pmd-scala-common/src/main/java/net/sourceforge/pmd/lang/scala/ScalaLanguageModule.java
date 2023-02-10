@@ -35,7 +35,8 @@ public class ScalaLanguageModule extends SimpleLanguageModuleBase {
      * Create a new instance of Scala Language Module.
      */
     public ScalaLanguageModule() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions(EXTENSIONS.get(0))
+        super(LanguageMetadata.withId(TERSE_NAME).name(NAME)
+                              .extensions(EXTENSIONS)
                               .addVersion("2.10")
                               .addVersion("2.11")
                               .addVersion("2.12")

@@ -32,7 +32,8 @@ public class KotlinLanguageModule extends SimpleLanguageModuleBase {
      * Create a new instance of Kotlin Language Module.
      */
     public KotlinLanguageModule() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions(EXTENSIONS.get(0), EXTENSIONS.toArray(new String[0]))
+        super(LanguageMetadata.withId(TERSE_NAME).name(NAME)
+                              .extensions(EXTENSIONS)
                               .addVersion("1.6")
                               .addDefaultVersion("1.7"),
               new KotlinHandler());

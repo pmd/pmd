@@ -31,9 +31,10 @@ public class VfLanguageModule extends SimpleLanguageModuleBase {
     }
 
     private static LanguageMetadata createMetdata() {
-        LanguageMetadata languageMetadata = LanguageMetadata.withId(TERSE_NAME).name(NAME)
-                .extensions(EXTENSIONS.get(0), EXTENSIONS.toArray(new String[0]))
-                .dependsOnLanguage(ApexLanguageModule.TERSE_NAME);
+        LanguageMetadata languageMetadata =
+                LanguageMetadata.withId(TERSE_NAME).name(NAME)
+                                .extensions(EXTENSIONS)
+                                .dependsOnLanguage(ApexLanguageModule.TERSE_NAME);
         // use the same versions as in Apex
         int lastVersion = ApexLanguageModule.VERSIONS.size() - 1;
         ApexLanguageModule.VERSIONS.subList(0, lastVersion).forEach(languageMetadata::addVersion);
