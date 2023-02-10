@@ -23,7 +23,13 @@ This is a {{ site.pmd.release_type }} release.
 
 ### API Changes
 
+* The LanguageModule of Go, that only supports CPD execution, has been deprecated. This language
+  is not fully supported by PMD, so having a language module does not make sense. The functionality of CPD is
+  not affected by this change. The following class has been deprecated and will be removed with PMD 7.0.0:
+  * {% jdoc go::lang.go.GoLanguageModule %}
+
 ### External Contributions
+* [#4384](https://github.com/pmd/pmd/pull/4384): \[swift] Add more swift 5.x support (#unavailable mainly) - [Richard B.](https://github.com/kenji21) (@kenji21)
 
 {% endtocmaker %}
 
