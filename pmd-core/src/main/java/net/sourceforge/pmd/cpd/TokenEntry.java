@@ -25,19 +25,6 @@ public class TokenEntry implements Comparable<TokenEntry> {
     private int identifier;
     private int hashCode;
 
-    private static final ThreadLocal<Map<String, Integer>> TOKENS = new ThreadLocal<Map<String, Integer>>() {
-        @Override
-        protected Map<String, Integer> initialValue() {
-            return new HashMap<>();
-        }
-    };
-    private static final ThreadLocal<AtomicInteger> TOKEN_COUNT = new ThreadLocal<AtomicInteger>() {
-        @Override
-        protected AtomicInteger initialValue() {
-            return new AtomicInteger(0);
-        }
-    };
-
     private TokenEntry() {
         this.identifier = 0;
         this.tokenSrcID = "EOFMarker";
@@ -59,14 +46,6 @@ public class TokenEntry implements Comparable<TokenEntry> {
         this(image, tokenSrcID, beginLine, -1, -1);
     }
 
-    /**
-     * Creates a new token entry with the given informations.
-     * @param image
-     * @param tokenSrcID
-     * @param beginLine the linenumber, 1-based.
-     * @param beginColumn the column number, 1-based
-     * @param endColumn the column number, 1-based
-     */
     public TokenEntry(String image, String tokenSrcID, int beginLine, int beginColumn, int endColumn) {
         assert isOk(beginLine) && isOk(beginColumn) && isOk(endColumn) : "Coordinates are 1-based";
         setImage(image);
@@ -74,7 +53,6 @@ public class TokenEntry implements Comparable<TokenEntry> {
         this.beginLine = beginLine;
         this.beginColumn = beginColumn;
         this.endColumn = endColumn;
-        this.index = TOKEN_COUNT.get().getAndIncrement();
     }
 
     public TokenEntry(String image, FileLocation location) {

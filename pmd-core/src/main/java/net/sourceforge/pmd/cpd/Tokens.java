@@ -5,15 +5,45 @@
 package net.sourceforge.pmd.cpd;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import net.sourceforge.pmd.lang.document.FileLocation;
 
 public class Tokens {
 
-    private List<TokenEntry> tokens = new ArrayList<>();
+    private final List<TokenEntry> tokens = new ArrayList<>();
+
+    private static final ThreadLocal<Map<String, Integer>> TOKENS = new ThreadLocal<Map<String, Integer>>() {
+        @Override
+        protected Map<String, Integer> initialValue() {
+            return new HashMap<>();
+        }
+    };
+    private static final ThreadLocal<AtomicInteger> TOKEN_COUNT = new ThreadLocal<AtomicInteger>() {
+        @Override
+        protected AtomicInteger initialValue() {
+            return new AtomicInteger(0);
+        }
+    };
 
     public void add(TokenEntry tokenEntry) {
         this.tokens.add(tokenEntry);
+    }
+
+    public void addToken(String image, FileLocation location) {
+        this.tokens.add(new TokenEntry(image, location));
+    }
+
+    public void setImage(TokenEntry entry, String newImage) {
+        entry.setImage(newImage);
+    }
+
+    public TokenEntry peekLastToken() {
+        return get(size() - 1);
     }
 
     public Iterator<TokenEntry> iterator() {
@@ -42,5 +72,9 @@ public class Tokens {
 
     public List<TokenEntry> getTokens() {
         return tokens;
+    }
+
+     void addToken(String image, String fileName, int startLine, int startCol, int endLine, int endCol) {
+
     }
 }

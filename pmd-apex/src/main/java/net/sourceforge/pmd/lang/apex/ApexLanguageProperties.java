@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex;
 
+import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
@@ -23,6 +24,7 @@ public class ApexLanguageProperties extends LanguagePropertyBundle {
     public ApexLanguageProperties() {
         super(ApexLanguageModule.getInstance());
         definePropertyDescriptor(MULTIFILE_DIRECTORY);
+        definePropertyDescriptor(Tokenizer.CPD_CASE_SENSITIVE);
     }
 
 

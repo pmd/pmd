@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.lang.document.Chars;
 
 public class Match implements Comparable<Match>, Iterable<Mark> {
 
@@ -74,7 +75,7 @@ public class Match implements Comparable<Match>, Iterable<Mark> {
     }
 
     /** Newlines are normalized to \n. */
-    public String getSourceCodeSlice() {
+    public Chars getSourceCodeSlice() {
         return this.getMark(0).getSourceCodeSlice();
     }
 

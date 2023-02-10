@@ -4,46 +4,28 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.util.Properties;
-
 import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.TokenManager;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLTokenKinds;
 
 public class PLSQLTokenizer extends JavaCCTokenizer {
-    // This is actually useless, the comments are special tokens, never taken into account by CPD
-    @Deprecated
-    public static final String IGNORE_COMMENTS = "ignore_comments";
-    public static final String IGNORE_IDENTIFIERS = "ignore_identifiers";
-    public static final String IGNORE_LITERALS = "ignore_literals";
 
-    private boolean ignoreIdentifiers;
-    private boolean ignoreLiterals;
+    private final boolean ignoreIdentifiers;
+    private final boolean ignoreLiterals;
 
-    public void setProperties(Properties properties) {
+    public PLSQLTokenizer(LanguagePropertyBundle properties) {
         /*
          * The Tokenizer is derived from PLDoc, in which comments are very
          * important When looking for duplication, we are probably not
          * interested in comment variation, so we shall default ignoreComments
          * to true
          */
-        ignoreIdentifiers = Boolean.parseBoolean(properties.getProperty(IGNORE_IDENTIFIERS, "false"));
-        ignoreLiterals = Boolean.parseBoolean(properties.getProperty(IGNORE_LITERALS, "false"));
-    }
-
-    @Deprecated
-    public void setIgnoreComments(boolean ignore) {
-        // This is actually useless, the comments are special tokens, never taken into account by CPD
-    }
-
-    public void setIgnoreLiterals(boolean ignore) {
-        this.ignoreLiterals = ignore;
-    }
-
-    public void setIgnoreIdentifiers(boolean ignore) {
-        this.ignoreIdentifiers = ignore;
+        ignoreIdentifiers = properties.getProperty(Tokenizer.CPD_ANONYMIZE_IDENTIFIERS);
+        ignoreLiterals = properties.getProperty(Tokenizer.CPD_ANONYMiZE_LITERALS);
     }
 
     @Override
@@ -67,6 +49,6 @@ public class PLSQLTokenizer extends JavaCCTokenizer {
 
     @Override
     protected TokenManager<JavaccToken> makeLexerImpl(TextDocument doc) {
-        return PLSQLTokenKinds.newTokenManager(doc);
+        return PLSQLTokenKinds.newTokenManager(CharStream.create(doc));
     }
 }

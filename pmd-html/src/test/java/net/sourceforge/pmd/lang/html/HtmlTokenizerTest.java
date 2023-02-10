@@ -5,23 +5,14 @@
 
 package net.sourceforge.pmd.lang.html;
 
-import java.util.Properties;
-
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
-import net.sourceforge.pmd.lang.html.ast.HtmlTokenizer;
 
 class HtmlTokenizerTest extends CpdTextComparisonTest {
 
     HtmlTokenizerTest() {
         super(".html");
-    }
-
-    @Override
-    public Tokenizer newTokenizer(Properties properties) {
-        return new HtmlTokenizer();
     }
 
     @Override

@@ -4,12 +4,9 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.util.Properties;
-
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
-import net.sourceforge.pmd.lang.gherkin.cpd.GherkinTokenizer;
 
 class GherkinTokenizerTest extends CpdTextComparisonTest {
     GherkinTokenizerTest() {
@@ -19,12 +16,6 @@ class GherkinTokenizerTest extends CpdTextComparisonTest {
     @Override
     protected String getResourcePrefix() {
         return "../lang/gherkin/cpd/testdata";
-    }
-
-    @Override
-    public Tokenizer newTokenizer(Properties properties) {
-        GherkinTokenizer tok = new GherkinTokenizer();
-        return tok;
     }
 
     @Test

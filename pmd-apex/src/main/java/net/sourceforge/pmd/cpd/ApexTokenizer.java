@@ -5,67 +5,30 @@
 package net.sourceforge.pmd.cpd;
 
 import java.util.Locale;
-import java.util.Properties;
 
-import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.Lexer;
-import org.antlr.runtime.Token;
+import org.antlr.v4.runtime.CharStream;
 
-import net.sourceforge.pmd.lang.apex.ApexJorjeLogging;
-import net.sourceforge.pmd.lang.ast.TokenMgrError;
-import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.cpd.internal.AntlrTokenizer;
+import net.sourceforge.pmd.lang.apex.ApexLanguageProperties;
+import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrToken;
 
-import apex.jorje.parser.impl.ApexLexer;
+public class ApexTokenizer extends AntlrTokenizer {
+    private final boolean caseSensitive;
 
-public class ApexTokenizer implements Tokenizer {
-
-    public ApexTokenizer() {
-        ApexJorjeLogging.disableLogging();
-    }
-
-    /**
-     * If the properties is <code>false</code> (default), then the case of any token
-     * is ignored.
-     */
-    public static final String CASE_SENSITIVE = "net.sourceforge.pmd.cpd.ApexTokenizer.caseSensitive";
-
-    private boolean caseSensitive;
-
-    public void setProperties(Properties properties) {
-        caseSensitive = Boolean.parseBoolean(properties.getProperty(CASE_SENSITIVE, "false"));
+    public ApexTokenizer(ApexLanguageProperties properties) {
+        this.caseSensitive = properties.getProperty(Tokenizer.CPD_CASE_SENSITIVE);
     }
 
     @Override
-    public void tokenize(TextDocument sourceCode, Tokens tokenEntries) {
-        StringBuilder code = sourceCode.getCodeBuffer();
-
-        ANTLRStringStream ass = new ANTLRStringStream(code.toString());
-        ApexLexer lexer = new ApexLexer(ass) {
-            @Override
-            public void emitErrorMessage(String msg) {
-                throw new TokenMgrError(getLine(), getCharPositionInLine(), getSourceName(), msg, null);
-            }
-        };
-
-        try {
-            Token token = lexer.nextToken();
-
-            while (token.getType() != Token.EOF) {
-                if (token.getChannel() != Lexer.HIDDEN) {
-                    String tokenText = token.getText();
-                    if (!caseSensitive) {
-                        tokenText = tokenText.toLowerCase(Locale.ROOT);
-                    }
-                    TokenEntry tokenEntry = new TokenEntry(tokenText, sourceCode.getFileName(),
-                                                           token.getLine(),
-                                                           token.getCharPositionInLine() + 1,
-                                                           token.getCharPositionInLine() + tokenText.length() + 1);
-                    tokenEntries.add(tokenEntry);
-                }
-                token = lexer.nextToken();
-            }
-        } finally {
-            tokenEntries.add(TokenEntry.getEOF());
+    protected String getImage(AntlrToken token) {
+        if (caseSensitive) {
+            return token.getImage();
         }
+        return token.getImage().toLowerCase(Locale.ROOT);
+    }
+
+    @Override
+    protected org.antlr.v4.runtime.Lexer getLexerForSource(CharStream charStream) {
+        return new com.nawforce.runtime.parsers.ApexLexer(charStream);
     }
 }

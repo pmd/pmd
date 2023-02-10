@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.util.Properties;
-
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
@@ -21,12 +19,7 @@ class PythonTokenizerTest extends CpdTextComparisonTest {
         return "../lang/python/cpd/testdata";
     }
 
-    @Override
-    public Tokenizer newTokenizer(Properties properties) {
-        return new PythonTokenizer();
-    }
-    
-    
+
     @Test
     void sampleTest() {
         doTest("sample_python");

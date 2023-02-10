@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
@@ -13,7 +12,6 @@ import net.sourceforge.pmd.cpd.token.internal.BaseTokenFilter;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
-import net.sourceforge.pmd.lang.document.CpdCompat;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.scala.ScalaLanguageModule;
 
@@ -62,20 +60,20 @@ public class ScalaTokenizer implements Tokenizer {
     }
 
     @Override
-    public void tokenize(TextDocument sourceCode, Tokens tokenEntries) throws IOException {
+    public void tokenize(TextDocument sourceCode, TokenFactory tokenEntries) {
 
 
-        try (TextDocument textDoc = TextDocument.create(CpdCompat.cpdCompat(sourceCode))) {
-            String fullCode = textDoc.getText().toString();
+        try {
+            String fullCode = sourceCode.getText().toString();
 
             // create the input file for scala
-            Input.VirtualFile vf = new Input.VirtualFile(sourceCode.getFileName(), fullCode);
+            Input.VirtualFile vf = new Input.VirtualFile(sourceCode.getDisplayName(), fullCode);
             ScalametaTokenizer tokenizer = new ScalametaTokenizer(vf, dialect);
 
             // tokenize with a filter
             scala.meta.tokens.Tokens tokens = tokenizer.tokenize();
             // use extensions to the standard PMD TokenManager and Filter
-            ScalaTokenManager scalaTokenManager = new ScalaTokenManager(tokens.iterator(), textDoc);
+            ScalaTokenManager scalaTokenManager = new ScalaTokenManager(tokens.iterator(), sourceCode);
             ScalaTokenFilter filter = new ScalaTokenFilter(scalaTokenManager);
 
             ScalaTokenAdapter token;
@@ -83,21 +81,19 @@ public class ScalaTokenizer implements Tokenizer {
                 if (StringUtils.isEmpty(token.getImage())) {
                     continue;
                 }
-                TokenEntry cpdToken = new TokenEntry(token.getImage(),
-                                                     token.getReportLocation());
-                tokenEntries.add(cpdToken);
+                tokenEntries.recordToken(token.getImage(),
+                                         token.getReportLocation());
             }
         } catch (Exception e) {
             if (e instanceof TokenizeException) { // NOPMD
                 // cannot catch it as it's a checked exception and Scala sneaky throws
                 TokenizeException tokE = (TokenizeException) e;
                 Position pos = tokE.pos();
-                throw new TokenMgrError(pos.startLine() + 1, pos.startColumn() + 1, sourceCode.getFileName(), "Scalameta threw", tokE);
+                throw new TokenMgrError(
+                    pos.startLine() + 1, pos.startColumn() + 1, sourceCode.getDisplayName(), "Scalameta threw", tokE);
             } else {
                 throw e;
             }
-        } finally {
-            tokenEntries.add(TokenEntry.getEOF());
         }
 
     }

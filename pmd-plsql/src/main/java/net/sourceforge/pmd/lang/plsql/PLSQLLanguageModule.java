@@ -4,6 +4,11 @@
 
 package net.sourceforge.pmd.lang.plsql;
 
+import net.sourceforge.pmd.cpd.PLSQLTokenizer;
+import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
 
 /**
@@ -30,5 +35,22 @@ public class PLSQLLanguageModule extends SimpleLanguageModuleBase {
                             ),
             new PLSQLHandler()
         );
+    }
+
+    @Override
+    public LanguagePropertyBundle newPropertyBundle() {
+        LanguagePropertyBundle bundle = super.newPropertyBundle();
+        bundle.definePropertyDescriptor(Tokenizer.CPD_ANONYMiZE_LITERALS);
+        bundle.definePropertyDescriptor(Tokenizer.CPD_ANONYMIZE_IDENTIFIERS);
+        return bundle;
+    }
+
+    @Override
+    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
+        return new PLSQLTokenizer(bundle);
+    }
+
+    public static Language getInstance() {
+        return LanguageRegistry.PMD.getLanguageById("plsql");
     }
 }

@@ -20,13 +20,6 @@ class JavaTokenizerTest extends CpdTextComparisonTest {
     }
 
     @Override
-    public Tokenizer newTokenizer(Properties properties) {
-        JavaTokenizer javaTokenizer = new JavaTokenizer();
-        javaTokenizer.setProperties(properties);
-        return javaTokenizer;
-    }
-
-    @Override
     protected String getResourcePrefix() {
         return "../lang/java/cpd/testdata";
     }

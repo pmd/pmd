@@ -146,10 +146,10 @@ class CPDTest {
         }
 
         @Override
-        public void addedFile(int fileCount, File file) {
+        public void addedFile(int fileCount) {
             files++;
             if (files > expectedFilesCount) {
-                fail("File was added! - " + file);
+                fail("File was added!");
             }
         }
 

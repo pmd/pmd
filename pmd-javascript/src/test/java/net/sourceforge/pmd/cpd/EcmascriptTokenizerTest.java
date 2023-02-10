@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.util.Properties;
-
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
@@ -14,11 +12,6 @@ class EcmascriptTokenizerTest extends CpdTextComparisonTest {
 
     EcmascriptTokenizerTest() {
         super(".js");
-    }
-
-    @Override
-    public Tokenizer newTokenizer(Properties properties) {
-        return new EcmascriptTokenizer();
     }
 
     @Override

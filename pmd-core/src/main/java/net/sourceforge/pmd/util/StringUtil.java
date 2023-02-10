@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.util;
 
 import java.text.MessageFormat;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -291,9 +290,8 @@ public final class StringUtil {
     /**
      * Returns a list of
      */
-    public static List<Chars> linesWithTrimIndent(String source) {
-        List<String> lines = Arrays.asList(source.split("\n"));
-        List<Chars> result = lines.stream().map(Chars::wrap).collect(CollectionUtil.toMutableList());
+    public static List<Chars> linesWithTrimIndent(Chars source) {
+        List<Chars> result = source.lineStream().collect(CollectionUtil.toMutableList());
         trimIndentInPlace(result);
         return result;
     }

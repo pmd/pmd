@@ -6,9 +6,8 @@ package net.sourceforge.pmd.cpd.internal;
 
 import java.io.IOException;
 
-import net.sourceforge.pmd.cpd.TokenEntry;
+import net.sourceforge.pmd.cpd.TokenFactory;
 import net.sourceforge.pmd.cpd.Tokenizer;
-import net.sourceforge.pmd.cpd.Tokens;
 import net.sourceforge.pmd.cpd.token.internal.BaseTokenFilter;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.GenericToken;
@@ -22,8 +21,8 @@ public abstract class TokenizerBase<T extends GenericToken<T>> implements Tokeni
         return new BaseTokenFilter<>(tokenManager);
     }
 
-    protected TokenEntry processToken(Tokens tokenEntries, T currentToken) {
-        return new TokenEntry(getImage(currentToken), currentToken.getReportLocation());
+    protected void processToken(TokenFactory tokenEntries, T currentToken) {
+       tokenEntries.recordToken(getImage(currentToken), currentToken.getReportLocation());
     }
 
     protected String getImage(T token) {
@@ -31,11 +30,11 @@ public abstract class TokenizerBase<T extends GenericToken<T>> implements Tokeni
     }
 
     @Override
-    public void tokenize(TextDocument document, Tokens tokenEntries) throws IOException {
+    public void tokenize(TextDocument document, TokenFactory tokenEntries) throws IOException {
         TokenManager<T> tokenManager = filterTokenStream(makeLexerImpl(document));
         T currentToken = tokenManager.getNextToken();
         while (currentToken != null) {
-            tokenEntries.add(processToken(tokenEntries, currentToken));
+            processToken(tokenEntries, currentToken);
             currentToken = tokenManager.getNextToken();
         }
     }

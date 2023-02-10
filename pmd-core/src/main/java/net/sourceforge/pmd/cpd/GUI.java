@@ -911,7 +911,7 @@ public class GUI implements CPDListener {
     }
 
     @Override
-    public void addedFile(int fileCount, File file) {
+    public void addedFile(int fileCount) {
         tokenizingFilesBar.setMaximum(fileCount);
         tokenizingFilesBar.setValue(tokenizingFilesBar.getValue() + 1);
     }

@@ -4,10 +4,8 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.io.IOException;
 import java.util.Deque;
 import java.util.LinkedList;
-import java.util.Properties;
 
 import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.cpd.token.JavaCCTokenFilter;
@@ -17,6 +15,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaTokenKinds;
+import net.sourceforge.pmd.lang.java.internal.JavaLanguageProperties;
 
 public class JavaTokenizer extends JavaCCTokenizer {
 
@@ -29,16 +28,11 @@ public class JavaTokenizer extends JavaCCTokenizer {
 
     private ConstructorDetector constructorDetector;
 
-    public void setProperties(Properties properties) {
-        ignoreAnnotations = Boolean.parseBoolean(properties.getProperty(IGNORE_ANNOTATIONS, "false"));
-        ignoreLiterals = Boolean.parseBoolean(properties.getProperty(IGNORE_LITERALS, "false"));
-        ignoreIdentifiers = Boolean.parseBoolean(properties.getProperty(IGNORE_IDENTIFIERS, "false"));
-    }
-
-    @Override
-    public void tokenize(TextDocument sourceCode, Tokens tokenEntries) throws IOException {
+    public JavaTokenizer(JavaLanguageProperties properties) {
+        ignoreAnnotations = properties.getProperty(Tokenizer.CPD_IGNORE_METADATA);
+        ignoreLiterals = properties.getProperty(Tokenizer.CPD_ANONYMiZE_LITERALS);
+        ignoreIdentifiers = properties.getProperty(Tokenizer.CPD_ANONYMIZE_IDENTIFIERS);
         constructorDetector = new ConstructorDetector(ignoreIdentifiers);
-        super.tokenize(sourceCode, tokenEntries);
     }
 
     @Override
@@ -52,7 +46,7 @@ public class JavaTokenizer extends JavaCCTokenizer {
     }
 
     @Override
-    protected TokenEntry processToken(Tokens tokenEntries, JavaccToken javaToken) {
+    protected void processToken(TokenFactory tokenEntries, JavaccToken javaToken) {
         String image = javaToken.getImage();
 
         constructorDetector.restoreConstructorToken(tokenEntries, javaToken);
@@ -69,7 +63,7 @@ public class JavaTokenizer extends JavaCCTokenizer {
 
         constructorDetector.processToken(javaToken);
 
-        return new TokenEntry(image, javaToken.getReportLocation());
+        tokenEntries.recordToken(image, javaToken.getReportLocation());
     }
 
     public void setIgnoreLiterals(boolean ignore) {
@@ -268,7 +262,7 @@ public class JavaTokenizer extends JavaCCTokenizer {
             storeNextIdentifier = true;
         }
 
-        public void restoreConstructorToken(Tokens tokenEntries, JavaccToken currentToken) {
+        public void restoreConstructorToken(TokenFactory tokenEntries, JavaccToken currentToken) {
             if (!ignoreIdentifiers) {
                 return;
             }
@@ -278,9 +272,8 @@ public class JavaTokenizer extends JavaCCTokenizer {
                 // identifier
                 if (!classMembersIndentations.isEmpty()
                         && classMembersIndentations.peek().name.equals(prevIdentifier)) {
-                    int lastTokenIndex = tokenEntries.size() - 1;
-                    TokenEntry lastToken = tokenEntries.getTokens().get(lastTokenIndex);
-                    lastToken.setImage(prevIdentifier);
+                    TokenEntry lastToken = tokenEntries.peekLastToken();
+                    tokenEntries.setImage(lastToken, prevIdentifier);
                 }
             }
         }

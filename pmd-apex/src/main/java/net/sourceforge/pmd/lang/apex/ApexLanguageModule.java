@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex;
 
+import net.sourceforge.pmd.cpd.ApexTokenizer;
+import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageModuleBase;
 import net.sourceforge.pmd.lang.LanguageProcessor;
@@ -30,6 +32,11 @@ public class ApexLanguageModule extends LanguageModuleBase {
     @Override
     public LanguageProcessor createProcessor(LanguagePropertyBundle bundle) {
         return new ApexLanguageProcessor((ApexLanguageProperties) bundle);
+    }
+
+    @Override
+    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
+        return new ApexTokenizer((ApexLanguageProperties) bundle);
     }
 
     public static Language getInstance() {

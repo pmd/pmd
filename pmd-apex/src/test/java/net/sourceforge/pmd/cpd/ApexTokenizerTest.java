@@ -4,28 +4,21 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.util.Properties;
-
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
+import net.sourceforge.pmd.cpd.test.LanguagePropertyConfig;
+import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
 
 class ApexTokenizerTest extends CpdTextComparisonTest {
 
     ApexTokenizerTest() {
-        super(".cls");
+        super(ApexLanguageModule.getInstance(), ".cls");
     }
 
     @Override
     protected String getResourcePrefix() {
         return "../lang/apex/cpd/testdata";
-    }
-
-    @Override
-    public Tokenizer newTokenizer(Properties properties) {
-        ApexTokenizer tokenizer = new ApexTokenizer();
-        tokenizer.setProperties(properties);
-        return tokenizer;
     }
 
 
@@ -52,14 +45,12 @@ class ApexTokenizerTest extends CpdTextComparisonTest {
         doTest("tabWidth");
     }
 
-    private Properties caseSensitive() {
+    private LanguagePropertyConfig caseSensitive() {
         return properties(true);
     }
 
-    private Properties properties(boolean caseSensitive) {
-        Properties properties = new Properties();
-        properties.setProperty(ApexTokenizer.CASE_SENSITIVE, Boolean.toString(caseSensitive));
-        return properties;
+    private LanguagePropertyConfig properties(boolean caseSensitive) {
+        return properties -> properties.setProperty(Tokenizer.CPD_CASE_SENSITIVE, caseSensitive);
     }
 
 }

@@ -6,8 +6,6 @@ package net.sourceforge.pmd.cpd;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.Properties;
-
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
@@ -22,11 +20,6 @@ class ScalaTokenizerTest extends CpdTextComparisonTest {
     @Override
     protected String getResourcePrefix() {
         return "../lang/scala/cpd/testdata";
-    }
-
-    @Override
-    public Tokenizer newTokenizer(Properties properties) {
-        return new ScalaTokenizer();
     }
 
     @Test

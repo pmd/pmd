@@ -343,11 +343,16 @@ public final class FileCollector implements AutoCloseable {
      * @return True if the directory has been added
      */
     public boolean addDirectory(Path dir) throws IOException {
+        return addDirectory(dir, true);
+    }
+
+    public boolean addDirectory(Path dir, boolean recurse) throws IOException {
         if (!Files.isDirectory(dir)) {
             reporter.error("Not a directory {0}", dir);
             return false;
         }
-        Files.walkFileTree(dir, EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE, new SimpleFileVisitor<Path>() {
+        int maxDepth = recurse ? Integer.MAX_VALUE : 1;
+        Files.walkFileTree(dir, EnumSet.of(FileVisitOption.FOLLOW_LINKS), maxDepth, new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                 if (attrs.isRegularFile()) {
@@ -367,8 +372,18 @@ public final class FileCollector implements AutoCloseable {
      * @return True if the file or directory has been added
      */
     public boolean addFileOrDirectory(Path file) throws IOException {
+        return addFileOrDirectory(file, true);
+    }
+
+    /**
+     * Add a file or directory recursively. Language is determined automatically
+     * from the extension/file patterns.
+     *
+     * @return True if the file or directory has been added
+     */
+    public boolean addFileOrDirectory(Path file, boolean recurseIfDirectory) throws IOException {
         if (Files.isDirectory(file)) {
-            return addDirectory(file);
+            return addDirectory(file, recurseIfDirectory);
         } else if (Files.isRegularFile(file)) {
             return addFile(file);
         } else {

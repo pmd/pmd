@@ -60,7 +60,7 @@ public class SimpleRenderer implements CPDReportRenderer {
 
         writer.append(PMD.EOL); // add a line to separate the source from the desc above
 
-        String source = match.getSourceCodeSlice();
+        Chars source = match.getSourceCodeSlice();
 
         if (trimLeadingWhitespace) {
             for (Chars line : StringUtil.linesWithTrimIndent(source)) {
@@ -70,7 +70,8 @@ public class SimpleRenderer implements CPDReportRenderer {
             return;
         }
 
-        writer.append(source).append(PMD.EOL);
+        source.writeFully(writer);
+        writer.append(PMD.EOL);
     }
 
 }

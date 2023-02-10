@@ -6,16 +6,17 @@ package net.sourceforge.pmd.cpd;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Properties;
-
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
+import net.sourceforge.pmd.cpd.test.LanguagePropertyConfig;
+import net.sourceforge.pmd.lang.cpp.CppLanguageModule;
 
 class CPPTokenizerTest extends CpdTextComparisonTest {
 
     CPPTokenizerTest() {
-        super(".cpp");
+        super(CppLanguageModule.getInstance(), ".cpp");
     }
 
     @Override
@@ -24,14 +25,7 @@ class CPPTokenizerTest extends CpdTextComparisonTest {
     }
 
     @Override
-    public Tokenizer newTokenizer(Properties props) {
-        CPPTokenizer tok = new CPPTokenizer();
-        tok.setProperties(props);
-        return tok;
-    }
-
-    @Override
-    public Properties defaultProperties() {
+    public @NonNull LanguagePropertyConfig defaultProperties() {
         return dontSkipBlocks();
     }
 
@@ -139,29 +133,30 @@ class CPPTokenizerTest extends CpdTextComparisonTest {
         doTest("listOfNumbers", "_ignored", skipLiteralSequences());
     }
 
-    private static Properties skipBlocks(String skipPattern) {
+    private static LanguagePropertyConfig skipBlocks(String skipPattern) {
         return properties(true, skipPattern, false);
     }
 
-    private static Properties skipBlocks() {
+    private static LanguagePropertyConfig skipBlocks() {
         return skipBlocks(null);
     }
 
-    private static Properties dontSkipBlocks() {
+    private static LanguagePropertyConfig dontSkipBlocks() {
         return properties(false, null, false);
     }
 
-    private static Properties skipLiteralSequences() {
+    private static LanguagePropertyConfig skipLiteralSequences() {
         return properties(false, null, true);
     }
 
-    private static Properties properties(boolean skipBlocks, String skipPattern, boolean skipLiteralSequences) {
-        Properties properties = new Properties();
-        properties.setProperty(Tokenizer.OPTION_SKIP_BLOCKS, Boolean.toString(skipBlocks));
-        if (skipPattern != null) {
-            properties.setProperty(Tokenizer.OPTION_SKIP_BLOCKS_PATTERN, skipPattern);
-        }
-        properties.setProperty(Tokenizer.OPTION_IGNORE_LITERAL_SEQUENCES, Boolean.toString(skipLiteralSequences));
-        return properties;
+    private static LanguagePropertyConfig properties(boolean skipBlocks, String skipPattern, boolean skipLiteralSequences) {
+        return properties -> {
+            if (!skipBlocks) {
+                properties.setProperty(CppLanguageModule.CPD_SKIP_BLOCKS, "");
+            } else if (skipPattern != null) {
+                properties.setProperty(CppLanguageModule.CPD_SKIP_BLOCKS, skipPattern);
+            }
+            properties.setProperty(Tokenizer.CPD_IGNORE_LITERAL_SEQUENCES, skipLiteralSequences);
+        };
     }
 }

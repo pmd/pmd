@@ -8,9 +8,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Properties;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
 class CsTokenizerTest extends CpdTextComparisonTest {
@@ -22,13 +24,6 @@ class CsTokenizerTest extends CpdTextComparisonTest {
     @Override
     protected String getResourcePrefix() {
         return "../lang/cs/cpd/testdata";
-    }
-
-    @Override
-    public Tokenizer newTokenizer(Properties properties) {
-        CsTokenizer tok = new CsTokenizer();
-        tok.setProperties(properties);
-        return tok;
     }
 
     @Test

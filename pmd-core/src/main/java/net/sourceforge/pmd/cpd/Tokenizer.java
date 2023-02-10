@@ -43,6 +43,13 @@ public interface Tokenizer {
                        .build();
 
 
+    PropertyDescriptor<Boolean> CPD_CASE_SENSITIVE =
+        PropertyFactory.booleanProperty("cpdCaseSensitive")
+                       .defaultValue(true)
+                       .desc("Whether CPD should ignore the case of tokens. Affects all tokens.")
+                       .build();
+
+
     String IGNORE_LITERALS = "ignore_literals";
     String IGNORE_IDENTIFIERS = "ignore_identifiers";
     String IGNORE_ANNOTATIONS = "ignore_annotations";
@@ -75,5 +82,5 @@ public interface Tokenizer {
 
     String DEFAULT_SKIP_BLOCKS_PATTERN = "#if 0|#endif";
 
-    void tokenize(TextDocument sourceCode, Tokens tokenEntries) throws IOException;
+    void tokenize(TextDocument sourceCode, TokenFactory tokenEntries) throws IOException;
 }

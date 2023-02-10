@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -61,36 +62,32 @@ public class AnyTokenizer implements Tokenizer {
     }
 
     @Override
-    public void tokenize(TextDocument sourceCode, Tokens tokenEntries) {
-        CharSequence text = sourceCode.getCodeBuffer();
+    public void tokenize(TextDocument sourceCode, TokenFactory tokenEntries) {
+        Chars text = sourceCode.getText();
         Matcher matcher = pattern.matcher(text);
         int lineNo = 1;
         int lastLineStart = 0;
-        try {
-            while (matcher.find()) {
-                String image = matcher.group();
-                if (isComment(image)) {
-                    continue;
-                } else if (StringUtils.isWhitespace(image)) {
-                    lineNo++;
-                    lastLineStart = matcher.end();
-                    continue;
-                }
-
-                int bline = lineNo;
-                int bcol = 1 + matcher.start() - lastLineStart; // + 1 because columns are 1 based
-                int ecol = StringUtil.columnNumberAt(image, image.length()); // this already outputs a 1-based column
-                if (ecol == image.length() + 1) {
-                    ecol = bcol + image.length(); // single-line token
-                } else {
-                    // multiline, need to update the line count
-                    lineNo += StringUtil.lineNumberAt(image, image.length()) - 1;
-                    lastLineStart = matcher.start() + image.length() - ecol + 1;
-                }
-                tokenEntries.add(new TokenEntry(image, sourceCode.getFileName(), bline, bcol, ecol));
+        while (matcher.find()) {
+            String image = matcher.group();
+            if (isComment(image)) {
+                continue;
+            } else if (StringUtils.isWhitespace(image)) {
+                lineNo++;
+                lastLineStart = matcher.end();
+                continue;
             }
-        } finally {
-            tokenEntries.add(TokenEntry.getEOF());
+
+            int bline = lineNo;
+            int bcol = 1 + matcher.start() - lastLineStart; // + 1 because columns are 1 based
+            int ecol = StringUtil.columnNumberAt(image, image.length()); // this already outputs a 1-based column
+            if (ecol == image.length() + 1) {
+                ecol = bcol + image.length(); // single-line token
+            } else {
+                // multiline, need to update the line count
+                lineNo += StringUtil.lineNumberAt(image, image.length()) - 1;
+                lastLineStart = matcher.start() + image.length() - ecol + 1;
+            }
+            tokenEntries.recordToken(image, bline, bcol, lineNo, ecol);
         }
     }
 

@@ -116,7 +116,7 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand {
         configuration.setSkipDuplicates(skipDuplicates);
         configuration.setSkipLexicalErrors(skipLexicalErrors);
         configuration.setSourceEncoding(encoding.getEncoding().name());
-        configuration.setURI(uri == null ? null : uri.toString());
+        configuration.setURI(uri);
 
         configuration.postContruct();
         // Pass extra parameters as System properties to allow language

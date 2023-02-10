@@ -27,6 +27,9 @@ import net.sourceforge.pmd.internal.util.FileFinder;
 import net.sourceforge.pmd.internal.util.FileUtil;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
+import net.sourceforge.pmd.lang.document.SourceCode;
+import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.util.database.DBMSMetadata;
 import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
@@ -41,7 +44,7 @@ public class CPD {
 
     private CPDConfiguration configuration;
 
-    private Map<String, SourceCode> source = new TreeMap<>();
+    private final SourceManager sourceManager = new SourceManager();
     private CPDListener listener = new CPDNullListener();
     private Tokens tokens = new Tokens();
     private MatchAlgorithm matchAlgorithm;
@@ -128,8 +131,8 @@ public class CPD {
     }
 
     public void go() {
-        log.debug("Running match algorithm on {} files...", source.size());
-        matchAlgorithm = new MatchAlgorithm(source, tokens, configuration.getMinimumTileSize(), listener);
+        log.debug("Running match algorithm on {} files...", sourceManager.size());
+        matchAlgorithm = new MatchAlgorithm(sourceManager, tokens, configuration.getMinimumTileSize(), listener);
         matchAlgorithm.findMatches();
         log.debug("Finished: {} duplicates found", matchAlgorithm.getMatches().size());
     }
@@ -216,8 +219,7 @@ public class CPD {
         }
     }
 
-    @Experimental
-    public void add(SourceCode sourceCode) throws IOException {
+    private void add(SourceCode sourceCode) throws IOException {
         if (configuration.isSkipLexicalErrors()) {
             addAndSkipLexicalErrors(sourceCode);
         } else {
@@ -226,11 +228,13 @@ public class CPD {
     }
 
     private void addAndThrowLexicalError(SourceCode sourceCode) throws IOException {
-        log.debug("Tokenizing {}", sourceCode.getFileName());
-        configuration.tokenizer().tokenize(sourceCode, tokens);
-        listener.addedFile(1, new File(sourceCode.getFileName()));
-        source.put(sourceCode.getFileName(), sourceCode);
-        numberOfTokensPerFile.put(sourceCode.getFileName(), tokens.size() - lastTokenSize - 1 /*EOF*/);
+        log.debug("Tokenizing {}", sourceCode.getPathId());
+        try (TextDocument doc = sourceCode.load()) {
+            configuration.tokenizer().tokenize(doc, tokens);
+        }
+        listener.addedFile(1);
+        source.put(sourceCode.getPathId(), sourceCode);
+        numberOfTokensPerFile.put(sourceCode.getPathId(), tokens.size() - lastTokenSize - 1 /*EOF*/);
         lastTokenSize = tokens.size();
     }
 
@@ -239,7 +243,7 @@ public class CPD {
         try {
             addAndThrowLexicalError(sourceCode);
         } catch (TokenMgrError e) {
-            System.err.println("Skipping " + sourceCode.getFileName() + ". Reason: " + e.getMessage());
+            System.err.println("Skipping " + sourceCode.getDisplayName() + ". Reason: " + e.getMessage());
             savedState.restore(tokens);
         }
     }
@@ -251,15 +255,6 @@ public class CPD {
      */
     public List<String> getSourcePaths() {
         return new ArrayList<>(source.keySet());
-    }
-
-    /**
-     * Get each Source to be processed.
-     *
-     * @return all Sources to be processed
-     */
-    public List<SourceCode> getSources() {
-        return new ArrayList<>(source.values());
     }
 
     /**

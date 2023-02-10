@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.util.Properties;
-
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
@@ -19,11 +17,6 @@ class RubyTokenizerTest extends CpdTextComparisonTest {
     @Override
     protected String getResourcePrefix() {
         return "../lang/ruby/cpd/testdata";
-    }
-
-    @Override
-    public Tokenizer newTokenizer(Properties properties) {
-        return new RubyLanguage().getTokenizer();
     }
 
 

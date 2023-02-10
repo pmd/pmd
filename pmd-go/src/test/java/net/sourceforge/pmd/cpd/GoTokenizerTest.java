@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.util.Properties;
-
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
@@ -14,11 +12,6 @@ class GoTokenizerTest extends CpdTextComparisonTest {
 
     GoTokenizerTest() {
         super(".go");
-    }
-
-    @Override
-    public Tokenizer newTokenizer(Properties properties) {
-        return new GoTokenizer();
     }
 
     @Override

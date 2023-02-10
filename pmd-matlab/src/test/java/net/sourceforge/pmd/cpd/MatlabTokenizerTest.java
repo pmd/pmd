@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.util.Properties;
-
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
@@ -21,11 +19,6 @@ class MatlabTokenizerTest extends CpdTextComparisonTest {
         return "../lang/matlab/cpd/testdata";
     }
 
-    @Override
-    public Tokenizer newTokenizer(Properties properties) {
-        return new MatlabTokenizer();
-    }
-    
     @Test
     void testLongSample() {
         doTest("sample-matlab");

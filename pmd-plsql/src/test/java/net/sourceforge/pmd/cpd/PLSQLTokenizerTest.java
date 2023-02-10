@@ -4,16 +4,15 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.util.Properties;
-
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
+import net.sourceforge.pmd.lang.plsql.PLSQLLanguageModule;
 
 class PLSQLTokenizerTest extends CpdTextComparisonTest {
 
     PLSQLTokenizerTest() {
-        super(".sql");
+        super(PLSQLLanguageModule.getInstance(), ".sql");
     }
 
     @Override
@@ -21,12 +20,7 @@ class PLSQLTokenizerTest extends CpdTextComparisonTest {
         return "../lang/plsql/cpd/testdata";
     }
 
-    @Override
-    public Tokenizer newTokenizer(Properties properties) {
-        return new PLSQLTokenizer();
-    }
 
-    
     @Test
     void testSimple() {
         doTest("sample-plsql");

@@ -11,6 +11,7 @@ import java.io.FilenameFilter;
 import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,6 +25,8 @@ import net.sourceforge.pmd.AbstractConfiguration;
 import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 import net.sourceforge.pmd.internal.util.FileFinder;
 import net.sourceforge.pmd.internal.util.FileUtil;
+import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextFile;
 
 /**
  *
@@ -79,7 +82,7 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     private boolean nonRecursive;
 
-    private String uri;
+    private URI uri;
 
     private boolean help;
 
@@ -87,7 +90,7 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     private boolean debug = false;
 
-    public SourceCode sourceCodeFor(File file) {
+    public TextFile sourceCodeFor(File file) {
         return new SourceCode(new SourceCode.FileCodeLoader(file, getSourceEncoding().name()));
     }
 
@@ -340,11 +343,11 @@ public class CPDConfiguration extends AbstractConfiguration {
         this.fileListPath = fileListPath;
     }
 
-    public String getURI() {
+    public URI getURI() {
         return uri;
     }
 
-    public void setURI(String uri) {
+    public void setURI(URI uri) {
         this.uri = uri;
     }
 

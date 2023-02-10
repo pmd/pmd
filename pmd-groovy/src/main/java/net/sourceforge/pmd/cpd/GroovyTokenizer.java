@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.io.StringReader;
-
 import org.codehaus.groovy.antlr.SourceInfo;
 import org.codehaus.groovy.antlr.parser.GroovyLexer;
 
@@ -22,10 +20,8 @@ import groovyjarjarantlr.TokenStreamException;
 public class GroovyTokenizer implements Tokenizer {
 
     @Override
-    public void tokenize(TextDocument sourceCode, Tokens tokenEntries) {
-        StringBuilder buffer = sourceCode.getCodeBuffer();
-
-        GroovyLexer lexer = new GroovyLexer(new StringReader(buffer.toString()));
+    public void tokenize(TextDocument sourceCode, TokenFactory tokenEntries) {
+        GroovyLexer lexer = new GroovyLexer(sourceCode.newReader());
         TokenStream tokenStream = lexer.plumb();
 
         try {
@@ -36,15 +32,17 @@ public class GroovyTokenizer implements Tokenizer {
 
 
                 int lastCol;
+                int lastLine;
                 if (token instanceof SourceInfo) {
                     lastCol = ((SourceInfo) token).getColumnLast();
+                    lastLine = ((SourceInfo) token).getLineLast();
                 } else {
                     // fallback
                     lastCol = token.getColumn() + tokenText.length();
+                    lastLine = token.getLine(); // todo inaccurate
                 }
-                TokenEntry tokenEntry = new TokenEntry(tokenText, sourceCode.getFileName(), token.getLine(), token.getColumn(), lastCol);
 
-                tokenEntries.add(tokenEntry);
+                tokenEntries.recordToken(tokenText, token.getLine(), token.getColumn(), lastLine, lastCol);
                 token = tokenStream.nextToken();
             }
         } catch (TokenStreamException err) {
@@ -53,8 +51,6 @@ public class GroovyTokenizer implements Tokenizer {
             // when CPD is executed with the '--skipLexicalErrors' command line
             // option
             throw new TokenMgrError(lexer.getLine(), lexer.getColumn(), lexer.getFilename(), err.getMessage(), err);
-        } finally {
-            tokenEntries.add(TokenEntry.getEOF());
         }
     }
 }
