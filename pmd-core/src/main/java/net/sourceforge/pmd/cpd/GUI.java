@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -55,8 +54,6 @@ import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
@@ -65,7 +62,12 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
 import net.sourceforge.pmd.PMDVersion;
+import net.sourceforge.pmd.lang.CpdOnlyLanguageModuleBase;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
+import net.sourceforge.pmd.lang.LanguageModuleBase.LanguageMetadata;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 
 public class GUI implements CPDListener {
 
@@ -76,116 +78,80 @@ public class GUI implements CPDListener {
         { "CSV (tab)", new CSVRenderer('\t'), }, };
 
     private abstract static class LanguageConfig {
-        public abstract Language languageFor(Properties p);
+
+        public abstract String getLabel();
+
+        public abstract Language getLanguage();
 
         public boolean canIgnoreIdentifiers() {
-            return false;
+            return getLanguage().newPropertyBundle().hasDescriptor(Tokenizer.CPD_ANONYMIZE_IDENTIFIERS);
         }
 
         public boolean canIgnoreLiterals() {
-            return false;
+            return getLanguage().newPropertyBundle().hasDescriptor(Tokenizer.CPD_ANONYMiZE_LITERALS);
         }
 
         public boolean canIgnoreAnnotations() {
-            return false;
+            return getLanguage().newPropertyBundle().hasDescriptor(Tokenizer.CPD_IGNORE_METADATA);
         }
 
         public boolean canIgnoreUsings() {
-            return false;
+            return getLanguage().newPropertyBundle().hasDescriptor(Tokenizer.CPD_IGNORE_IMPORTS);
         }
 
         public boolean canIgnoreLiteralSequences() {
-            return false;
+            return getLanguage().newPropertyBundle().hasDescriptor(Tokenizer.CPD_IGNORE_LITERAL_SEQUENCES);
         }
 
-        public abstract String[] extensions();
     }
 
-    private static final Object[][] LANGUAGE_SETS;
+    private static final List<LanguageConfig> LANGUAGE_SETS;
+
+
+    public static final String CUSTOM_EXTENSION_SENTINEL = "custom";
+
 
     static {
-        LANGUAGE_SETS = new Object[LanguageFactory.supportedLanguages.length + 1][2];
+        LANGUAGE_SETS = new ArrayList<>();
 
-        int index;
-        for (index = 0; index < LanguageFactory.supportedLanguages.length; index++) {
-            final String terseName = LanguageFactory.supportedLanguages[index];
-            final Language lang = LanguageFactory.createLanguage(terseName);
-            LANGUAGE_SETS[index][0] = lang.getName();
-            LANGUAGE_SETS[index][1] = new LanguageConfig() {
+        for (Language lang : LanguageRegistry.CPD) {
+            LanguageConfig config = new LanguageConfig() {
                 @Override
-                public Language languageFor(Properties p) {
-                    lang.setProperties(p);
+                public String getLabel() {
+                    return lang.getName();
+                }
+
+                @Override
+                public Language getLanguage() {
                     return lang;
                 }
-
-                @Override
-                public String[] extensions() {
-                    List<String> exts = lang.getExtensions();
-                    return exts.toArray(new String[0]);
-                }
-
-                @Override
-                public boolean canIgnoreAnnotations() {
-                    if (terseName == null) {
-                        return false;
-                    }
-                    switch (terseName) {
-                        case "cs":
-                        case "java":
-                            return true;
-                        default:
-                            return false;
-                    }
-                }
-
-                @Override
-                public boolean canIgnoreIdentifiers() {
-                    return "java".equals(terseName);
-                }
-
-                @Override
-                public boolean canIgnoreLiterals() {
-                    return "java".equals(terseName);
-                }
-
-                @Override
-                public boolean canIgnoreUsings() {
-                    return "cs".equals(terseName);
-                }
-
-                @Override
-                public boolean canIgnoreLiteralSequences() {
-                    if (terseName == null) {
-                        return false;
-                    }
-                    switch (terseName) {
-                        case "cpp":
-                        case "cs":
-                            return true;
-                        default:
-                            return false;
-                    }
-                }
             };
+            LANGUAGE_SETS.add(config);
         }
-        LANGUAGE_SETS[index][0] = "by extension...";
-        LANGUAGE_SETS[index][1] = new LanguageConfig() {
+        LanguageConfig last = new LanguageConfig() {
             @Override
-            public Language languageFor(Properties p) {
-                return LanguageFactory.createLanguage(LanguageFactory.BY_EXTENSION, p);
+            public String getLabel() {
+                return "By extension...";
             }
 
             @Override
-            public String[] extensions() {
-                return new String[] { "" };
+            public Language getLanguage() {
+                return new CpdOnlyLanguageModuleBase(LanguageMetadata.withId("custom_extension").extensions(CUSTOM_EXTENSION_SENTINEL).name("By extension...")) {
+                    @Override
+                    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
+                        return new AnyTokenizer();
+                    }
+                };
             }
         };
+        LANGUAGE_SETS.add(last);
     }
 
+
     private static final int DEFAULT_CPD_MINIMUM_LENGTH = 75;
-    private static final Map<String, LanguageConfig> LANGUAGE_CONFIGS_BY_LABEL = new HashMap<>(LANGUAGE_SETS.length);
+    private static final Map<String, LanguageConfig> LANGUAGE_CONFIGS_BY_LABEL = new HashMap<>(LANGUAGE_SETS.size());
     private static final KeyStroke COPY_KEY_STROKE = KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK,
-            false);
+                                                                            false);
     private static final KeyStroke DELETE_KEY_STROKE = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0);
 
     private class ColumnSpec {
@@ -224,8 +190,8 @@ public class GUI implements CPDListener {
         new ColumnSpec("Lines", SwingConstants.RIGHT, 45, Match.LINES_COMPARATOR), };
 
     static {
-        for (Object[] languageSet : LANGUAGE_SETS) {
-            LANGUAGE_CONFIGS_BY_LABEL.put((String) languageSet[0], (LanguageConfig) languageSet[1]);
+        for (LanguageConfig lconf : LANGUAGE_SETS) {
+            LANGUAGE_CONFIGS_BY_LABEL.put(lconf.getLabel(), lconf);
         }
     }
 
@@ -243,16 +209,13 @@ public class GUI implements CPDListener {
     private final class GoListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    tokenizingFilesBar.setValue(0);
-                    tokenizingFilesBar.setString("");
-                    resultsTextArea.setText("");
-                    phaseLabel.setText("");
-                    timeField.setText("");
-                    go();
-                }
+            new Thread(() -> {
+                tokenizingFilesBar.setValue(0);
+                tokenizingFilesBar.setString("");
+                resultsTextArea.setText("");
+                phaseLabel.setText("");
+                timeField.setText("");
+                go();
             }).start();
         }
     }
@@ -275,7 +238,7 @@ public class GUI implements CPDListener {
             }
 
             if (!f.canWrite()) {
-                final CPDReport report = new CPDReport(matches, numberOfTokensPerFile);
+                final CPDReport report = new CPDReport(new SourceManager(Collections.emptyList()), matches, numberOfTokensPerFile);
                 try (PrintWriter pw = new PrintWriter(Files.newOutputStream(f.toPath()))) {
                     renderer.render(report, pw);
                     pw.flush();
@@ -409,7 +372,7 @@ public class GUI implements CPDListener {
         progressPanel = makeProgressPanel();
         JPanel resultsPanel = makeResultsPanel();
 
-        adjustLanguageControlsFor((LanguageConfig) LANGUAGE_SETS[0][1]);
+        adjustLanguageControlsFor(LANGUAGE_SETS.get(0));
 
         frame.getContentPane().setLayout(new BorderLayout());
         JPanel topPanel = new JPanel();
@@ -430,8 +393,13 @@ public class GUI implements CPDListener {
         ignoreAnnotationsCheckbox.setEnabled(current.canIgnoreAnnotations());
         ignoreUsingsCheckbox.setEnabled(current.canIgnoreUsings());
         ignoreLiteralSequencesCheckbox.setEnabled(current.canIgnoreLiteralSequences());
-        extensionField.setText(current.extensions()[0]);
-        boolean enableExtension = current.extensions()[0].isEmpty();
+        String firstExt = current.getLanguage().getExtensions().get(0);
+        boolean enableExtension = CUSTOM_EXTENSION_SENTINEL.equals(firstExt);
+        if (enableExtension) {
+            extensionField.setText("");
+        } else {
+            extensionField.setText(firstExt);
+        }
         extensionField.setEnabled(enableExtension);
         extensionLabel.setEnabled(enableExtension);
     }
@@ -447,15 +415,10 @@ public class GUI implements CPDListener {
         minimumLengthField.setColumns(4);
         helper.add(minimumLengthField);
         helper.addLabel("Language:");
-        for (int i = 0; i < LANGUAGE_SETS.length; i++) {
-            languageBox.addItem(String.valueOf(LANGUAGE_SETS[i][0]));
+        for (LanguageConfig lconf : LANGUAGE_SETS) {
+            languageBox.addItem(lconf.getLabel());
         }
-        languageBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                adjustLanguageControlsFor(languageConfigFor((String) languageBox.getSelectedItem()));
-            }
-        });
+        languageBox.addActionListener(e -> adjustLanguageControlsFor(languageConfigFor((String) languageBox.getSelectedItem())));
         helper.add(languageBox);
         helper.nextRow();
         helper.addLabel("Also scan subdirectories?");
@@ -545,7 +508,7 @@ public class GUI implements CPDListener {
         for (int selectionIndex : selectionIndices) {
             selections.add((Match) model.getValueAt(selectionIndex, 99));
         }
-        CPDReport toRender = new CPDReport(selections, Collections.emptyMap());
+        CPDReport toRender = new CPDReport(new SourceManager(Collections.emptyList()), selections, Collections.emptyMap());
         String report = new SimpleRenderer(trimLeadingWhitespace).renderToString(toRender);
         resultsTextArea.setText(report);
         resultsTextArea.setCaretPosition(0); // move to the top
@@ -587,26 +550,11 @@ public class GUI implements CPDListener {
 
     private JComponent makeMatchList() {
 
-        resultsTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                populateResultArea();
-            }
-        });
+        resultsTable.getSelectionModel().addListSelectionListener(e -> populateResultArea());
 
-        resultsTable.registerKeyboardAction(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                copyMatchListSelectionsToClipboard();
-            }
-        }, "Copy", COPY_KEY_STROKE, JComponent.WHEN_FOCUSED);
+        resultsTable.registerKeyboardAction(e -> copyMatchListSelectionsToClipboard(), "Copy", COPY_KEY_STROKE, JComponent.WHEN_FOCUSED);
 
-        resultsTable.registerKeyboardAction(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                deleteMatchlistSelections();
-            }
-        }, "Del", DELETE_KEY_STROKE, JComponent.WHEN_FOCUSED);
+        resultsTable.registerKeyboardAction(e -> deleteMatchlistSelections(), "Del", DELETE_KEY_STROKE, JComponent.WHEN_FOCUSED);
 
         int[] alignments = new int[matchColumns.length];
         for (int i = 0; i < alignments.length; i++) {
@@ -627,9 +575,8 @@ public class GUI implements CPDListener {
     }
 
     private boolean isLegalPath(String path, LanguageConfig config) {
-        String[] extensions = config.extensions();
-        for (int i = 0; i < extensions.length; i++) {
-            if (path.endsWith(extensions[i]) && !extensions[i].isEmpty()) {
+        for (String extension : config.getLanguage().getExtensions()) {
+            if (path.endsWith(extension) && !extension.isEmpty()) {
                 return true;
             }
         }
@@ -639,8 +586,8 @@ public class GUI implements CPDListener {
     private String setLabelFor(Match match) {
 
         Set<String> sourceIDs = new HashSet<>(match.getMarkCount());
-        for (Iterator<Mark> occurrences = match.iterator(); occurrences.hasNext();) {
-            sourceIDs.add(occurrences.next().getFilename());
+        for (Mark mark : match) {
+            sourceIDs.add(mark.getFilename());
         }
         String label;
 
@@ -673,7 +620,6 @@ public class GUI implements CPDListener {
 
             setProgressControls(true);
 
-            Properties p = new Properties();
             CPDConfiguration config = new CPDConfiguration();
             config.setMinimumTileSize(Integer.parseInt(minimumLengthField.getText()));
             config.setSourceEncoding(encodingField.getText());
@@ -682,49 +628,44 @@ public class GUI implements CPDListener {
             config.setIgnoreAnnotations(ignoreAnnotationsCheckbox.isSelected());
             config.setIgnoreUsings(ignoreUsingsCheckbox.isSelected());
             config.setIgnoreLiteralSequences(ignoreLiteralSequencesCheckbox.isSelected());
-            p.setProperty(LanguageFactory.EXTENSION, extensionField.getText());
+            // p.setProperty(LanguageFactory.EXTENSION, extensionField.getText()); //FIXME
 
             LanguageConfig conf = languageConfigFor((String) languageBox.getSelectedItem());
-            Language language = conf.languageFor(p);
+            Language language = conf.getLanguage();
             config.setLanguage(language);
 
             CPDConfiguration.setSystemProperties(config);
 
-            CPD cpd = new CPD(config);
-            cpd.setCpdListener(this);
-            tokenizingFilesBar.setMinimum(0);
-            phaseLabel.setText("");
-            if (isLegalPath(dirPath.getPath(), conf)) { // should use the
-                // language file filter
-                // instead?
-                cpd.add(dirPath);
-            } else {
-                if (recurseCheckbox.isSelected()) {
-                    cpd.addRecursively(dirPath);
+            try (CpdAnalysis cpd = new CpdAnalysis(config)) {
+                cpd.setCpdListener(this);
+
+                tokenizingFilesBar.setMinimum(0);
+                phaseLabel.setText("");
+                if (isLegalPath(dirPath.getPath(), conf)) {
+                    // should use the
+                    // language file filter
+                    // instead?
+                    // fixme wth
+                    cpd.files().addFileOrDirectory(dirPath.toPath());
                 } else {
-                    cpd.addAllInDirectory(dirPath);
+                    cpd.files().addFileOrDirectory(dirPath.toPath(), recurseCheckbox.isSelected());
                 }
-            }
-            Timer t = createTimer();
-            t.start();
-            cpd.go();
-            t.stop();
-
-            CPDReport cpdReport = cpd.toReport();
-            numberOfTokensPerFile = cpdReport.getNumberOfTokensPerFile();
-            matches = new ArrayList<>();
-            for (Match match : cpdReport.getMatches()) {
-                setLabelFor(match);
-                matches.add(match);
-            }
-
-            setListDataFrom(matches);
-            String report = new SimpleRenderer().renderToString(cpdReport);
-            if (report.length() == 0) {
-                JOptionPane.showMessageDialog(frame,
-                        "Done. Couldn't find any duplicates longer than " + minimumLengthField.getText() + " tokens");
-            } else {
-                resultsTextArea.setText(report);
+                Timer t = createTimer();
+                t.start();
+                cpd.performAnalysis(report -> {
+                    t.stop();
+                    numberOfTokensPerFile = report.getNumberOfTokensPerFile();
+                    matches = new ArrayList<>(report.getMatches());
+                    matches.forEach(this::setLabelFor);
+                    setListDataFrom(matches);
+                    String reportString = new SimpleRenderer().renderToString(report);
+                    if (reportString.isEmpty()) {
+                        JOptionPane.showMessageDialog(frame,
+                                                      "Done. Couldn't find any duplicates longer than " + minimumLengthField.getText() + " tokens");
+                    } else {
+                        resultsTextArea.setText(reportString);
+                    }
+                });
             }
         } catch (IOException | RuntimeException t) {
             t.printStackTrace();

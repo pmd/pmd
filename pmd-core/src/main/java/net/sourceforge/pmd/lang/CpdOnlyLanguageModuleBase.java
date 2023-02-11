@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang;
 
+import net.sourceforge.pmd.cpd.Tokenizer;
+
 /**
  * Base class for language modules that only support CPD and not PMD.
  *
@@ -25,4 +27,7 @@ public abstract class CpdOnlyLanguageModuleBase extends LanguageModuleBase {
     public boolean supportsParsing() {
         return false;
     }
+
+    @Override
+    public abstract Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle);
 }

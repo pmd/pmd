@@ -184,7 +184,7 @@ public abstract class LanguageModuleBase implements Language {
      * </ul>
      *
      */
-    protected static final class LanguageMetadata {
+    public static final class LanguageMetadata {
 
         /** Language IDs should be conventional Java package names. */
         private static final Pattern VALID_LANG_ID = Pattern.compile("[a-z][_a-z0-9]*");
