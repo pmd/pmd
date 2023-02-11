@@ -5,10 +5,7 @@
 package net.sourceforge.pmd.cpd.test
 
 import io.kotest.assertions.throwables.shouldThrow
-import net.sourceforge.pmd.cpd.SourceCode
-import net.sourceforge.pmd.cpd.TokenEntry
-import net.sourceforge.pmd.cpd.Tokenizer
-import net.sourceforge.pmd.cpd.Tokens
+import net.sourceforge.pmd.cpd.*
 import net.sourceforge.pmd.lang.Language
 import net.sourceforge.pmd.lang.LanguagePropertyBundle
 import net.sourceforge.pmd.lang.ast.TokenMgrError
@@ -63,13 +60,8 @@ abstract class CpdTextComparisonTest(
         expectedSuffix: String = "",
         config: LanguagePropertyConfig = defaultProperties()
     ) {
-        super.doTest(fileBaseName, expectedSuffix) { fileData ->
-            val sourceCode = TextDocument.readOnlyString(fileBaseName, fileBaseName, language.defaultVersion)
-            val tokens = Tokens().also {
-                val tokenizer = newTokenizer(config)
-                tokenizer.tokenize(sourceCode, it)
-            }
-
+        super.doTest(fileBaseName, expectedSuffix) { fdata ->
+            val tokens = tokenize(newTokenizer(config), fdata)
             buildString { format(tokens) }
         }
     }
@@ -77,7 +69,7 @@ abstract class CpdTextComparisonTest(
     @JvmOverloads
     fun expectTokenMgrError(
         source: String,
-        fileName: String = SourceCode.StringCodeLoader.DEFAULT_NAME,
+        fileName: String = TextFile.UNKNOWN_FILENAME,
         properties: LanguagePropertyConfig = defaultProperties()
     ): TokenMgrError =
         expectTokenMgrError(FileData(fileName, source), properties)
@@ -88,8 +80,7 @@ abstract class CpdTextComparisonTest(
         config: LanguagePropertyConfig = defaultProperties()
     ): TokenMgrError =
         shouldThrow {
-            val tokenizer = newTokenizer(config)
-            tokenizer.tokenize(sourceCodeOf(fileData), Tokens())
+            tokenize(newTokenizer(config), fileData)
         }
 
 
@@ -168,15 +159,14 @@ abstract class CpdTextComparisonTest(
     }
 
 
-    fun sourceCodeOf(str: String): TextDocument =
-        sourceCodeOf(FileData(fileName = TextFile.UNKNOWN_FILENAME, fileText = str))
-
-    fun sourceCodeOf(fileData: FileData): TextDocument =
+    private fun sourceCodeOf(fileData: FileData): TextDocument =
         TextDocument.readOnlyString(fileData.fileText, fileData.fileName, language.defaultVersion)
 
-    fun tokenize(tokenizer: Tokenizer, str: String): Tokens =
+    fun tokenize(tokenizer: Tokenizer, fileData: FileData): Tokens =
         Tokens().also {
-            tokenizer.tokenize(sourceCodeOf(str), it)
+            val tokens = Tokens()
+            val source = sourceCodeOf(fileData)
+            tokenizer.tokenize(source, TokenFactory.forFile(source, tokens))
         }
 
     private companion object {

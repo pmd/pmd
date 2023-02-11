@@ -22,11 +22,11 @@ class MatchAlgorithm {
     private CPDListener cpdListener;
     private final int min;
 
-    public MatchAlgorithm(Tokens tokens, int min) {
-        this(tokens, min, new CPDNullListener());
-    }
+    MatchAlgorithm(Tokens tokens, int min) {
+         this(tokens, min, new CPDNullListener());
+     }
 
-    public MatchAlgorithm(Tokens tokens, int min, CPDListener listener) {
+    MatchAlgorithm(Tokens tokens, int min, CPDListener listener) {
         this.tokens = tokens;
         this.code = tokens.getTokens();
         this.min = min;

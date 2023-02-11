@@ -10,7 +10,6 @@ import java.io.Reader;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
@@ -20,7 +19,7 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  * to a {@link TextFile}. It reflects some in-memory snapshot of the file,
  * though the file may still be edited externally.
  *
- * <p>TextDocument is meant to replace CPD's {@link SourceCode} and PMD's
+ * <p>TextDocument is meant to replace CPD's SourceCode and PMD's
  * {@link DataSource}, though the abstraction level of {@link DataSource}
  * is the {@link TextFile}.
  *
@@ -168,7 +167,6 @@ public interface TextDocument extends Closeable {
 
     /**
      * Returns a region that spans the text of all the given lines.
-     * This is intended to provide a replacement for {@link SourceCode#getSlice(int, int)}.
      *
      * <p>Note that, as line numbers may only be obtained from {@link #toLocation(TextRegion)},
      * and hence are line numbers of the original source, both parameters

@@ -12,6 +12,9 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.lang.DummyLanguageModule;
+import net.sourceforge.pmd.lang.document.TextDocument;
+
 class AnyTokenizerTest {
 
     @Test
@@ -49,9 +52,9 @@ class AnyTokenizerTest {
     @Test
     void testTokenPosition() {
         AnyTokenizer tokenizer = new AnyTokenizer();
-        SourceCode code = new SourceCode(new SourceCode.StringCodeLoader("a;\nbbbb\n;"));
+        TextDocument code = TextDocument.readOnlyString("a;\nbbbb\n;", "Foo.dummy", DummyLanguageModule.getInstance().getDefaultVersion());
         Tokens tokens = new Tokens();
-        tokenizer.tokenize(code, tokens);
+        tokenizer.tokenize(code, TokenFactory.forFile(code, tokens));
         TokenEntry bbbbToken = tokens.getTokens().get(2);
         assertEquals(2, bbbbToken.getBeginLine());
         assertEquals(1, bbbbToken.getBeginColumn());
@@ -60,9 +63,9 @@ class AnyTokenizerTest {
 
 
     private Tokens compareResult(AnyTokenizer tokenizer, String source, List<String> expectedImages) {
-        SourceCode code = new SourceCode(new SourceCode.StringCodeLoader(source));
+        TextDocument code = TextDocument.readOnlyString(source, "Foo.dummy", DummyLanguageModule.getInstance().getDefaultVersion());
         Tokens tokens = new Tokens();
-        tokenizer.tokenize(code, tokens);
+        tokenizer.tokenize(code, TokenFactory.forFile(code, tokens));
 
         List<String> tokenStrings = new ArrayList<>();
         for (TokenEntry token : tokens.getTokens()) {

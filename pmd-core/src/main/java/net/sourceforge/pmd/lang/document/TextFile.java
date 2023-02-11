@@ -19,7 +19,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.annotation.DeprecatedUntil700;
-import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.internal.util.BaseCloseable;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -38,7 +37,7 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  * This interface only provides block IO operations, while {@link TextDocument} adds logic
  * about incremental edition (eg replacing a single region of text).
  *
- * <p>This interface is meant to replace {@link DataSource} and {@link SourceCode.CodeLoader}.
+ * <p>This interface is meant to replace {@link DataSource} and SourceCode.
  * "DataSource" is not an appropriate name for a file which can be written
  * to, also, the "data" it provides is text, not bytes.
  */
