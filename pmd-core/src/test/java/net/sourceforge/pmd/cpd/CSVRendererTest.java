@@ -18,6 +18,7 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 
 class CSVRendererTest {
+    private final Tokens tokens = new Tokens();
     @Test
     void testLineCountPerFile() throws IOException {
         CPDReportRenderer renderer = new CSVRenderer(true);
@@ -56,12 +57,8 @@ class CSVRendererTest {
     }
 
     private Mark createMark(String image, String tokenSrcID, int beginLine, int lineCount, String code) {
-        Tokens tokens = new Tokens();
         tokens.addToken(image, tokenSrcID, beginLine, beginLine, beginLine, beginLine);
-        Mark result = new Mark(tokens.peekLastToken());
 
-        result.setLineCount(lineCount);
-        result.setSourceCode(new SourceCode(new SourceCode.StringCodeLoader(code)));
-        return result;
+        return new Mark(tokens.peekLastToken());
     }
 }

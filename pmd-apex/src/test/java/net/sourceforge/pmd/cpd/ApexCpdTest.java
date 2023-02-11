@@ -30,7 +30,7 @@ class ApexCpdTest {
     void testIssue427() throws Exception {
         CPDConfiguration configuration = new CPDConfiguration();
         configuration.setMinimumTileSize(10);
-        configuration.setLanguage(LanguageFactory.createLanguage(ApexLanguageModule.TERSE_NAME));
+        configuration.setLanguage(ApexLanguageModule.getInstance());
         try (CpdAnalysis cpd = new CpdAnalysis(configuration)) {
             cpd.files().addFile(testdir.resolve("SFDCEncoder.cls"));
             cpd.files().addFile(testdir.resolve("SFDCEncoderConstants.cls"));
@@ -38,7 +38,7 @@ class ApexCpdTest {
             cpd.performAnalysis(matches -> {
                 assertEquals(1, matches.getMatches().size());
                 Match firstDuplication = matches.getMatches().get(0);
-                assertTrue(firstDuplication.getSourceCodeSlice().startsWith("global with sharing class SFDCEncoder"));
+                assertTrue(matches.getSourceCodeSlice(firstDuplication).startsWith("global with sharing class SFDCEncoder"));
             });
         }
     }

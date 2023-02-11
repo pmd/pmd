@@ -4,20 +4,11 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.document.FileLocation;
-
 public class TokenEntry implements Comparable<TokenEntry> {
 
     public static final TokenEntry EOF = new TokenEntry();
 
-    private String tokenSrcID;
+    private final String tokenSrcID;
     private final int beginLine;
     private final int beginColumn;
     private final int endColumn;
@@ -33,73 +24,23 @@ public class TokenEntry implements Comparable<TokenEntry> {
         this.endColumn = -1;
     }
 
-    /**
-     * Creates a new token entry with the given informations.
-     * @param image
-     * @param tokenSrcID
-     * @param beginLine the linenumber, 1-based.
-     *
-     * @deprecated Use {@link #TokenEntry(String, String, int, int, int)}, don't be lazy
-     */
-    @Deprecated
-    public TokenEntry(String image, String tokenSrcID, int beginLine) {
-        this(image, tokenSrcID, beginLine, -1, -1);
-    }
-
-    public TokenEntry(String image, String tokenSrcID, int beginLine, int beginColumn, int endLine, int endColumn) {
-        assert isOk(beginLine) && isOk(beginColumn) && isOk(endColumn) : "Coordinates are 1-based";
-        setImage(image);
+    TokenEntry(int imageId, String tokenSrcID, int beginLine, int beginColumn, int endLine, int endColumn, int index) {
+        assert isOk(beginLine) && isOk(beginColumn) && isOk(endLine) && isOk(endColumn) : "Coordinates are 1-based";
         this.tokenSrcID = tokenSrcID;
         this.beginLine = beginLine;
         this.beginColumn = beginColumn;
         this.endColumn = endColumn;
+        this.identifier = imageId;
+        this.index = index;
     }
 
-    public TokenEntry(String image, FileLocation location) {
-        this(image, location.getFileName(), location.getStartLine(), location.getStartColumn(), location.getEndColumn());
-    }
 
     private boolean isOk(int coord) {
         return coord >= 1 || coord == -1;
     }
 
-    public static void clearImages() {
-        TOKENS.get().clear();
-        TOKENS.remove();
-        TOKEN_COUNT.remove();
-    }
 
-    /**
-     * Helper class to preserve and restore the current state of the token
-     * entries.
-     * 
-     * @deprecated This is internal API.
-     */
-    @InternalApi
-    @Deprecated
-    public static class State {
-        private final int tokenCount;
-        private final int tokensMapSize;
-
-        public State() {
-            this.tokenCount = TokenEntry.TOKEN_COUNT.get().intValue();
-            this.tokensMapSize = TokenEntry.TOKENS.get().size();
-        }
-
-        public void restore(Tokens tokens) {
-            final List<TokenEntry> entries = tokens.getTokens();
-            TokenEntry.TOKEN_COUNT.get().set(tokenCount);
-            final Iterator<Map.Entry<String, Integer>> it = TOKENS.get().entrySet().iterator();
-            while (it.hasNext()) {
-                if (it.next().getValue() > tokensMapSize) {
-                    it.remove();
-                }
-            }
-            entries.subList(tokenCount, entries.size()).clear();
-        }
-    }
-
-     String getTokenSrcID() {
+    String getTokenSrcID() {
         return tokenSrcID;
     }
 
@@ -146,11 +87,10 @@ public class TokenEntry implements Comparable<TokenEntry> {
     @Override
     public boolean equals(Object o) {
         // make sure to recognize EOF regardless of hashCode (hashCode is irrelevant for EOF)
-        if (this == EOF) {
-            return o == EOF;
-        }
-        if (o == EOF) {
-            return this == EOF;
+        if (this == o) {
+            return true;
+        } else if (o == EOF || this == EOF) {
+            return false;
         }
         // any token except EOF
         if (!(o instanceof TokenEntry)) {
@@ -170,12 +110,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
         if (EOF.equals(this)) {
             return "EOF";
         }
-        for (Map.Entry<String, Integer> e : TOKENS.get().entrySet()) {
-            if (e.getValue().intValue() == identifier) {
-                return e.getKey();
-            }
-        }
-        return "--unknown--";
+        return Integer.toString(identifier);
     }
 
     final void setImageIdentifier(int identifier) {

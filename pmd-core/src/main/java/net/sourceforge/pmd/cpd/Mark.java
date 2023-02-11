@@ -4,13 +4,11 @@
 
 package net.sourceforge.pmd.cpd;
 
-import net.sourceforge.pmd.lang.document.Chars;
-import net.sourceforge.pmd.lang.document.TextDocument;
+import java.util.Objects;
 
 public class Mark implements Comparable<Mark> {
-    private TokenEntry token;
+    private final TokenEntry token;
     private TokenEntry endToken;
-    private int lineCount;
 
     public Mark(TokenEntry token) {
         this.token = token;
@@ -59,27 +57,13 @@ public class Mark implements Comparable<Mark> {
     }
 
     public int getLineCount() {
-        return this.lineCount;
+        return this.endToken == null ? 1 : this.endToken.getBeginLine();
     }
 
-    public void setLineCount(int lineCount) {
-        this.lineCount = lineCount;
-    }
-
-    public void setEndToken(TokenEntry endToken) {
+    void setEndToken(TokenEntry endToken) {
         this.endToken = endToken;
     }
 
-    /** Newlines are normalized to \n. */
-    public Chars getSourceCodeSlice() {
-        return this.code.sliceOriginalText(
-            this.code.createLineRange(getBeginLine(), getEndLine())
-        );
-    }
-
-    public void setSourceCode(TextDocument code) {
-        this.code = code;
-    }
 
     @Override
     public int hashCode() {
@@ -101,14 +85,7 @@ public class Mark implements Comparable<Mark> {
             return false;
         }
         Mark other = (Mark) obj;
-        if (token == null) {
-            if (other.token != null) {
-                return false;
-            }
-        } else if (!token.equals(other.token)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(token, other.token);
     }
 
     @Override

@@ -7,24 +7,21 @@ package net.sourceforge.pmd.cpd;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
+
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.AbstractConfiguration;
 import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
-import net.sourceforge.pmd.internal.util.FileFinder;
-import net.sourceforge.pmd.internal.util.FileUtil;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 /**
  *
@@ -47,8 +44,6 @@ public class CPDConfiguration extends AbstractConfiguration {
         RENDERERS.put("vs", VSRenderer.class);
     }
 
-
-    private Language language = CPDConfiguration.getLanguageFromString(DEFAULT_LANGUAGE);
 
     private int minimumTileSize;
 
@@ -88,14 +83,13 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     private boolean failOnViolation = true;
 
-    private boolean debug = false;
 
     public CPDConfiguration() {
-        super(LanguageRegistry.CPD);
+        this(LanguageRegistry.CPD);
     }
 
     public CPDConfiguration(LanguageRegistry languageRegistry) {
-        super(languageRegistry);
+        super(languageRegistry, new SimpleMessageReporter(LoggerFactory.getLogger(CpdAnalysis.class)));
     }
 
     public void postContruct() {
@@ -159,49 +153,15 @@ public class CPDConfiguration extends AbstractConfiguration {
         return result;
     }
 
-    public static Language getLanguageFromString(String languageString) {
-        return LanguageFactory.createLanguage(languageString);
-    }
 
 
     public static void setSystemProperties(CPDConfiguration configuration) {
-        Properties properties = new Properties();
-        if (configuration.isIgnoreLiterals()) {
-            properties.setProperty(Tokenizer.IGNORE_LITERALS, "true");
-        } else {
-            properties.remove(Tokenizer.IGNORE_LITERALS);
-        }
-        if (configuration.isIgnoreIdentifiers()) {
-            properties.setProperty(Tokenizer.IGNORE_IDENTIFIERS, "true");
-        } else {
-            properties.remove(Tokenizer.IGNORE_IDENTIFIERS);
-        }
-        if (configuration.isIgnoreAnnotations()) {
-            properties.setProperty(Tokenizer.IGNORE_ANNOTATIONS, "true");
-        } else {
-            properties.remove(Tokenizer.IGNORE_ANNOTATIONS);
-        }
-        if (configuration.isIgnoreUsings()) {
-            properties.setProperty(Tokenizer.IGNORE_USINGS, "true");
-        } else {
-            properties.remove(Tokenizer.IGNORE_USINGS);
-        }
-        if (configuration.isIgnoreLiteralSequences()) {
-            properties.setProperty(Tokenizer.OPTION_IGNORE_LITERAL_SEQUENCES, "true");
-        } else {
-            properties.remove(Tokenizer.OPTION_IGNORE_LITERAL_SEQUENCES);
-        }
-        properties.setProperty(Tokenizer.OPTION_SKIP_BLOCKS, Boolean.toString(!configuration.isNoSkipBlocks()));
-        properties.setProperty(Tokenizer.OPTION_SKIP_BLOCKS_PATTERN, configuration.getSkipBlocksPattern());
-        configuration.getLanguage().setProperties(properties);
+
     }
 
-    public Language getLanguage() {
-        return language;
-    }
 
-    public void setLanguage(Language language) {
-        this.language = language;
+    public void setLanguage(net.sourceforge.pmd.lang.Language language) {
+        setForceLanguageVersion(language.getDefaultVersion());
     }
 
     public int getMinimumTileSize() {
@@ -232,46 +192,6 @@ public class CPDConfiguration extends AbstractConfiguration {
     public CPDReportRenderer getCPDReportRenderer() {
         return cpdReportRenderer;
     }
-
-    public Tokenizer tokenizer() {
-        if (language == null) {
-            throw new IllegalStateException("Language is null.");
-        }
-        return language.getTokenizer();
-    }
-
-    public FilenameFilter filenameFilter() {
-        if (language == null) {
-            throw new IllegalStateException("Language is null.");
-        }
-
-        final FilenameFilter languageFilter = language.getFileFilter();
-        final Set<String> exclusions = new HashSet<>();
-
-        if (excludes != null) {
-            FileFinder finder = new FileFinder();
-            for (File excludedFile : excludes) {
-                if (excludedFile.isDirectory()) {
-                    List<File> files = finder.findFilesFrom(excludedFile, languageFilter, true);
-                    for (File f : files) {
-                        exclusions.add(FileUtil.normalizeFilename(f.getAbsolutePath()));
-                    }
-                } else {
-                    exclusions.add(FileUtil.normalizeFilename(excludedFile.getAbsolutePath()));
-                }
-            }
-        }
-
-        return (dir, name) -> {
-            File f = new File(dir, name);
-            if (exclusions.contains(FileUtil.normalizeFilename(f.getAbsolutePath()))) {
-                System.err.println("Excluding " + f.getAbsolutePath());
-                return false;
-            }
-            return languageFilter.accept(dir, name);
-        };
-    }
-
 
     void setRenderer(CPDReportRenderer renderer) {
         this.cpdReportRenderer = renderer;
@@ -397,13 +317,4 @@ public class CPDConfiguration extends AbstractConfiguration {
         this.failOnViolation = failOnViolation;
     }
 
-    @Override
-    public boolean isDebug() {
-        return debug;
-    }
-
-    @Override
-    public void setDebug(boolean debug) {
-        this.debug = debug;
-    }
 }

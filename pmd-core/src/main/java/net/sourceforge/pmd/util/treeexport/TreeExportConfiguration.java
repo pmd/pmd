@@ -17,6 +17,7 @@ import net.sourceforge.pmd.util.log.MessageReporter;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 public class TreeExportConfiguration extends AbstractConfiguration {
+
     private static final Logger LOG = LoggerFactory.getLogger(TreeExportConfiguration.class);
 
     private String format = "xml";
@@ -27,15 +28,22 @@ public class TreeExportConfiguration extends AbstractConfiguration {
     private boolean readStdin;
     private MessageReporter messageReporter = new SimpleMessageReporter(LOG);
 
-    
+    public TreeExportConfiguration(LanguageRegistry registry) {
+        super(registry, new SimpleMessageReporter(LoggerFactory.getLogger(TreeExporter.class)));
+    }
+
+    public TreeExportConfiguration() {
+        this(LanguageRegistry.PMD);
+    }
+
     public String getFormat() {
         return format;
     }
-    
+
     public Language getLanguage() {
         return language;
     }
-    
+
     public Properties getProperties() {
         return properties;
     }

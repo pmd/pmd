@@ -11,6 +11,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,13 +24,12 @@ import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.EnumeratedAttribute;
 import org.apache.tools.ant.types.FileSet;
 
-import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.cpd.CPDConfiguration;
 import net.sourceforge.pmd.cpd.CPDReport;
 import net.sourceforge.pmd.cpd.CSVRenderer;
+import net.sourceforge.pmd.cpd.CpdAnalysis;
 import net.sourceforge.pmd.cpd.Language;
 import net.sourceforge.pmd.cpd.LanguageFactory;
-import net.sourceforge.pmd.cpd.ReportException;
 import net.sourceforge.pmd.cpd.SimpleRenderer;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.cpd.XMLRenderer;
@@ -97,15 +97,16 @@ public class CPDTask extends Task {
             config.setSkipDuplicates(skipDuplicateFiles);
             config.setSkipLexicalErrors(skipLexicalErrors);
 
-            CPD cpd = new CPD(config);
-            tokenizeFiles(cpd);
+            try (CpdAnalysis cpd = new CpdAnalysis(config)) {
+                addFiles(cpd);
 
-            log("Starting to analyze code", Project.MSG_INFO);
-            long timeTaken = analyzeCode(cpd);
-            log("Done analyzing code; that took " + timeTaken + " milliseconds");
+                log("Starting to analyze code", Project.MSG_INFO);
+                long start = System.currentTimeMillis();
+                cpd.performAnalysis(this::report);
+                long timeTaken = System.currentTimeMillis() - start;
+                log("Done analyzing code; that took " + timeTaken + " milliseconds");
 
-            log("Generating report", Project.MSG_INFO);
-            report(cpd);
+            }
         } catch (IOException ioe) {
             log(ioe.toString(), Project.MSG_ERR);
             throw new BuildException("IOException during task execution", ioe);
@@ -137,12 +138,12 @@ public class CPDTask extends Task {
         return LanguageFactory.createLanguage(language, p);
     }
 
-    private void report(CPD cpd) throws ReportException {
-        if (!cpd.getMatches().hasNext()) {
+    private void report(CPDReport report) throws ReportException {
+        if (report.getMatches().isEmpty()) {
             log("No duplicates over " + minimumTokenCount + " tokens found", Project.MSG_INFO);
         }
+        log("Generating report", Project.MSG_INFO);
         CPDReportRenderer renderer = createRenderer();
-        CPDReport report = cpd.toReport();
 
         try {
             // will be closed via BufferedWriter/OutputStreamWriter chain down below
@@ -167,24 +168,15 @@ public class CPDTask extends Task {
         }
     }
 
-    private void tokenizeFiles(CPD cpd) throws IOException {
+    private void addFiles(CpdAnalysis cpd) throws IOException {
         for (FileSet fileSet : filesets) {
             DirectoryScanner directoryScanner = fileSet.getDirectoryScanner(getProject());
             String[] includedFiles = directoryScanner.getIncludedFiles();
-            for (int i = 0; i < includedFiles.length; i++) {
-                File file = new File(
-                        directoryScanner.getBasedir() + System.getProperty("file.separator") + includedFiles[i]);
-                log("Tokenizing " + file.getAbsolutePath(), Project.MSG_VERBOSE);
-                cpd.add(file);
+            for (String includedFile : includedFiles) {
+                Path file = directoryScanner.getBasedir().toPath().resolve(includedFile);
+                cpd.files().addFile(file);
             }
         }
-    }
-
-    private long analyzeCode(CPD cpd) {
-        long start = System.currentTimeMillis();
-        cpd.go();
-        long stop = System.currentTimeMillis();
-        return stop - start;
     }
 
     private CPDReportRenderer createRenderer() {

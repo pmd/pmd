@@ -9,24 +9,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class Tokens {
 
     private final List<TokenEntry> tokens = new ArrayList<>();
-
-    private static final ThreadLocal<Map<String, Integer>> TOKENS = new ThreadLocal<Map<String, Integer>>() {
-        @Override
-        protected Map<String, Integer> initialValue() {
-            return new HashMap<>();
-        }
-    };
-    private static final ThreadLocal<AtomicInteger> TOKEN_COUNT = new ThreadLocal<AtomicInteger>() {
-        @Override
-        protected AtomicInteger initialValue() {
-            return new AtomicInteger(0);
-        }
-    };
+    private final Map<String, Integer> images = new HashMap<>();
 
     private void add(TokenEntry tokenEntry) {
         this.tokens.add(tokenEntry);
@@ -37,12 +24,12 @@ public class Tokens {
     }
 
     void setImage(TokenEntry entry, String newImage) {
-        Integer i = TOKENS.get().get(newImage);
-        if (i == null) {
-            i = TOKENS.get().size() + 1;
-            TOKENS.get().put(newImage, i);
-        }
+        int i = getImageId(newImage);
         entry.setImageIdentifier(i);
+    }
+
+    private int getImageId(String newImage) {
+        return images.computeIfAbsent(newImage, k -> images.size() + 1);
     }
 
     public TokenEntry peekLastToken() {
@@ -77,7 +64,39 @@ public class Tokens {
         return tokens;
     }
 
-     void addToken(String image, String fileName, int startLine, int startCol, int endLine, int endCol) {
-
+    TokenEntry addToken(String image, String fileName, int startLine, int startCol, int endLine, int endCol) {
+        TokenEntry newToken = new TokenEntry(getImageId(image), fileName,
+                                        startLine, startCol,
+                                        endLine, endCol,
+                                        tokens.size());
+        add(newToken);
+        return newToken;
     }
+
+    public State savePoint() {
+        return new State(this);
+    }
+
+    /**
+     * Helper class to preserve and restore the current state of the token
+     * entries.
+     */
+    static final class State {
+
+        private final int tokenCount;
+        private final int tokensMapSize;
+
+        State(Tokens tokens) {
+            this.tokenCount = tokens.tokens.size();
+            this.tokensMapSize = tokens.images.size();
+        }
+
+        public void restore(Tokens tokens) {
+            tokens.images.entrySet().removeIf(e -> e.getValue() > tokensMapSize);
+
+            final List<TokenEntry> entries = tokens.getTokens();
+            entries.subList(tokenCount, entries.size()).clear();
+        }
+    }
+
 }

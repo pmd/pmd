@@ -37,21 +37,21 @@ public class SimpleRenderer implements CPDReportRenderer {
     public void render(CPDReport report, Writer writer) throws IOException {
         Iterator<Match> matches = report.getMatches().iterator();
         if (matches.hasNext()) {
-            renderOn(writer, matches.next());
+            renderOn(report, writer, matches.next());
         }
 
         while (matches.hasNext()) {
             Match match = matches.next();
             writer.append(separator).append(PMD.EOL);
-            renderOn(writer, match);
+            renderOn(report, writer, match);
         }
         writer.flush();
     }
 
-    private void renderOn(Writer writer, Match match) throws IOException {
+    private void renderOn(CPDReport report, Writer writer, Match match) throws IOException {
 
         writer.append("Found a ").append(String.valueOf(match.getLineCount())).append(" line (").append(String.valueOf(match.getTokenCount()))
-                .append(" tokens) duplication in the following files: ").append(PMD.EOL);
+              .append(" tokens) duplication in the following files: ").append(PMD.EOL);
 
         for (Mark mark : match) {
             writer.append("Starting at line ").append(String.valueOf(mark.getBeginLine())).append(" of ").append(mark.getFilename())
@@ -60,7 +60,7 @@ public class SimpleRenderer implements CPDReportRenderer {
 
         writer.append(PMD.EOL); // add a line to separate the source from the desc above
 
-        Chars source = match.getSourceCodeSlice();
+        Chars source = report.getSourceCodeSlice(match);
 
         if (trimLeadingWhitespace) {
             for (Chars line : StringUtil.linesWithTrimIndent(source)) {

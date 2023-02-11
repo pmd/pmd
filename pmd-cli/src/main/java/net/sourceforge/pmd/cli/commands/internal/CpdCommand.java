@@ -13,18 +13,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.cli.commands.typesupport.internal.CpdLanguageTypeSupport;
 import net.sourceforge.pmd.cli.internal.CliExitCode;
-import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.cpd.CPDConfiguration;
-import net.sourceforge.pmd.cpd.CPDReport;
-import net.sourceforge.pmd.cpd.Language;
+import net.sourceforge.pmd.cpd.CpdAnalysis;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.internal.LogMessages;
 import net.sourceforge.pmd.internal.util.IOUtil;
+import net.sourceforge.pmd.lang.Language;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -130,17 +130,22 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand {
     protected CliExitCode execute() {
         final Logger logger = LoggerFactory.getLogger(CpdCommand.class);
         
-        // TODO : Create a new CpdAnalysis to match PmdAnalysis
         final CPDConfiguration configuration = toConfiguration();
-        final CPD cpd = new CPD(configuration);
 
-        try {
-            cpd.go();
+        try (CpdAnalysis cpd = new CpdAnalysis(configuration)){
 
-            final CPDReport report = cpd.toReport();
-            configuration.getCPDReportRenderer().render(report, IOUtil.createWriter(Charset.defaultCharset(), null));
+            MutableBoolean hasViolations = new MutableBoolean();
+            cpd.performAnalysis(report -> {
+                try {
+                    configuration.getCPDReportRenderer().render(report, IOUtil.createWriter(Charset.defaultCharset(), null));
+                    hasViolations.setValue(!report.getMatches().isEmpty());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
 
-            if (cpd.getMatches().hasNext() && configuration.isFailOnViolation()) {
+
+            if (hasViolations.booleanValue() && configuration.isFailOnViolation()) {
                 return CliExitCode.VIOLATIONS_FOUND;
             }
         } catch (IOException | RuntimeException e) {

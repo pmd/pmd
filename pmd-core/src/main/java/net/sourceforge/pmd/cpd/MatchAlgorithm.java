@@ -11,26 +11,22 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.document.TextDocument;
-
 class MatchAlgorithm {
 
     private static final int MOD = 37;
     private int lastMod = 1;
 
     private List<Match> matches;
-    private Map<String, TextDocument> source;
-    private Tokens tokens;
-    private List<TokenEntry> code;
+    private final Tokens tokens;
+    private final List<TokenEntry> code;
     private CPDListener cpdListener;
-    private int min;
+    private final int min;
 
-    public MatchAlgorithm(Map<String, TextDocument> sourceCode, Tokens tokens, int min) {
-        this(sourceCode, tokens, min, new CPDNullListener());
+    public MatchAlgorithm(Tokens tokens, int min) {
+        this(tokens, min, new CPDNullListener());
     }
 
-    public MatchAlgorithm(SourceManager sourceCode, Tokens tokens, int min, CPDListener listener) {
-        this.source = sourceCode;
+    public MatchAlgorithm(Tokens tokens, int min, CPDListener listener) {
         this.tokens = tokens;
         this.code = tokens.getTokens();
         this.min = min;
@@ -82,14 +78,9 @@ class MatchAlgorithm {
         for (Match match : matches) {
             for (Mark mark : match) {
                 TokenEntry token = mark.getToken();
-                int lineCount = tokens.getLineCount(token, match);
                 TokenEntry endToken = tokens.getEndToken(token, match);
 
-                mark.setLineCount(lineCount);
                 mark.setEndToken(endToken);
-                TextDocument sourceCode = source.get(token.getTokenSrcID());
-                assert sourceCode != null : token.getTokenSrcID() + " is not registered in " + source.keySet();
-                mark.setSourceCode(sourceCode);
             }
         }
         cpdListener.phaseUpdate(CPDListener.DONE);

@@ -39,6 +39,7 @@ class XMLRendererTest {
     private static final String FORM_FEED = "\u000C"; // this character is invalid in XML 1.0 documents
     private static final String FORM_FEED_ENTITY = "&#12;"; // this is also not allowed in XML 1.0 documents
 
+    Tokens tokens = new Tokens();
 
     @Test
     void testWithNoDuplication() throws IOException, ParserConfigurationException, SAXException {
@@ -61,8 +62,8 @@ class XMLRendererTest {
         List<Match> list = new ArrayList<>();
         int lineCount = 6;
         String codeFragment = "code\nfragment";
-        Mark mark1 = createMark("public", "/var/Foo.java", 1, lineCount, codeFragment);
-        Mark mark2 = createMark("stuff", "/var/Foo.java", 73, lineCount, codeFragment);
+        Mark mark1 = createMark("public", "/var/Foo.java", 1, lineCount);
+        Mark mark2 = createMark("stuff", "/var/Foo.java", 73, lineCount);
         Match match = new Match(75, mark1, mark2);
 
         list.add(match);
@@ -104,15 +105,13 @@ class XMLRendererTest {
         CPDReportRenderer renderer = new XMLRenderer();
         List<Match> list = new ArrayList<>();
         int lineCount1 = 6;
-        String codeFragment1 = "code fragment";
-        Mark mark1 = createMark("public", "/var/Foo.java", 48, lineCount1, codeFragment1);
-        Mark mark2 = createMark("void", "/var/Foo.java", 73, lineCount1, codeFragment1);
+        Mark mark1 = createMark("public", "/var/Foo.java", 48, lineCount1);
+        Mark mark2 = createMark("void", "/var/Foo.java", 73, lineCount1);
         Match match1 = new Match(75, mark1, mark2);
 
         int lineCount2 = 7;
-        String codeFragment2 = "code fragment 2";
-        Mark mark3 = createMark("void", "/var/Foo2.java", 49, lineCount2, codeFragment2);
-        Mark mark4 = createMark("stuff", "/var/Foo2.java", 74, lineCount2, codeFragment2);
+        Mark mark3 = createMark("void", "/var/Foo2.java", 49, lineCount2);
+        Mark mark4 = createMark("stuff", "/var/Foo2.java", 74, lineCount2);
         Match match2 = new Match(76, mark3, mark4);
 
         list.add(match1);
@@ -176,8 +175,8 @@ class XMLRendererTest {
         CPDReportRenderer renderer = new XMLRenderer();
         List<Match> list = new ArrayList<>();
         final String espaceChar = "&lt;";
-        Mark mark1 = createMark("public", "/var/A<oo.java" + FORM_FEED, 48, 6, "code fragment");
-        Mark mark2 = createMark("void", "/var/B<oo.java", 73, 6, "code fragment");
+        Mark mark1 = createMark("public", "/var/A<oo.java" + FORM_FEED, 48, 6);
+        Mark mark2 = createMark("void", "/var/B<oo.java", 73, 6);
         Match match1 = new Match(75, mark1, mark2);
         list.add(match1);
 
@@ -248,11 +247,10 @@ class XMLRendererTest {
 
     @Test
     void testRendererXMLEscaping() throws IOException {
-        String codefragment = "code fragment" + FORM_FEED + "\nline2\nline3\nno & escaping necessary in CDATA\nx=\"]]>\";";
         CPDReportRenderer renderer = new XMLRenderer();
         List<Match> list = new ArrayList<>();
-        Mark mark1 = createMark("public", "file1", 1, 5, codefragment);
-        Mark mark2 = createMark("public", "file2", 5, 5, codefragment);
+        Mark mark1 = createMark("public", "file1", 1, 5);
+        Mark mark2 = createMark("public", "file2", 5, 5);
         Match match1 = new Match(75, mark1, mark2);
         list.add(match1);
 
@@ -266,22 +264,19 @@ class XMLRendererTest {
         assertTrue(report.contains("x=\"]]]]><![CDATA[>\";"));
     }
 
-    private Mark createMark(String image, String tokenSrcID, int beginLine, int lineCount, String code) {
-        Mark result = new Mark(new TokenEntry(image, tokenSrcID, beginLine));
-
-        result.setLineCount(lineCount);
-        result.setSourceCode(new SourceCode(new SourceCode.StringCodeLoader(code)));
-        return result;
+    private Mark createMark(String image, String tokenSrcID, int beginLine, int lineCount) {
+        return new Mark(tokens.addToken(image, tokenSrcID, beginLine, 1, beginLine + lineCount, 1));
     }
 
     private Mark createMark(String image, String tokenSrcID, int beginLine, int lineCount, String code, int beginColumn, int endColumn) {
-        final TokenEntry beginToken = new TokenEntry(image, tokenSrcID, beginLine, beginColumn, beginColumn + 1);
-        final TokenEntry endToken = new TokenEntry(image, tokenSrcID, beginLine + lineCount, endColumn - 1, endColumn);
+        final TokenEntry beginToken = tokens.addToken(image, tokenSrcID, beginLine, beginColumn, beginLine,
+                                                      beginColumn + image.length());
+        final TokenEntry endToken = tokens.addToken(image, tokenSrcID,
+                                                    beginLine + lineCount, beginColumn,
+                                                    beginLine + lineCount, endColumn);
         final Mark result = new Mark(beginToken);
 
-        result.setLineCount(lineCount);
         result.setEndToken(endToken);
-        result.setSourceCode(new SourceCode(new SourceCode.StringCodeLoader(code)));
         return result;
     }
 }

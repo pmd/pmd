@@ -21,6 +21,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.cpd.Tokens.State;
 import net.sourceforge.pmd.internal.util.FileFinder;
 import net.sourceforge.pmd.internal.util.FileUtil;
 import net.sourceforge.pmd.internal.util.IOUtil;
@@ -40,7 +41,6 @@ public class CPD {
 
     private CPDConfiguration configuration;
 
-    private final SourceManager sourceManager = new SourceManager();
     private CPDListener listener = new CPDNullListener();
     private Tokens tokens = new Tokens();
     private MatchAlgorithm matchAlgorithm;
@@ -125,7 +125,7 @@ public class CPD {
 
     public void go() {
         log.debug("Running match algorithm on {} files...", sourceManager.size());
-        matchAlgorithm = new MatchAlgorithm(sourceManager, tokens, configuration.getMinimumTileSize(), listener);
+        matchAlgorithm = new MatchAlgorithm(tokens, configuration.getMinimumTileSize(), listener);
         matchAlgorithm.findMatches();
         log.debug("Finished: {} duplicates found", matchAlgorithm.getMatches().size());
     }
@@ -232,7 +232,7 @@ public class CPD {
     }
 
     private void addAndSkipLexicalErrors(SourceCode sourceCode) throws IOException {
-        final TokenEntry.State savedState = new TokenEntry.State();
+        final Tokens.State savedState = new State();
         try {
             addAndThrowLexicalError(sourceCode);
         } catch (TokenMgrError e) {

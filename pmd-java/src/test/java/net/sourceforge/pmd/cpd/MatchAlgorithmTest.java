@@ -4,19 +4,20 @@
 
 package net.sourceforge.pmd.cpd;
 
-import static net.sourceforge.pmd.util.CollectionUtil.mapOf;
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 
 class MatchAlgorithmTest {
@@ -39,13 +40,15 @@ class MatchAlgorithmTest {
     void testSimple() throws IOException {
         Language java = JavaLanguageModule.getInstance();
         Tokenizer tokenizer = java.createCpdTokenizer(java.newPropertyBundle());
-        TextDocument sourceCode = TextDocument.readOnlyString(getSampleCode(), "Foo.java", java.getDefaultVersion());
+        String fileName = "Foo.java";
+        TextFile textFile = TextFile.forCharSeq(getSampleCode(), fileName, java.getDefaultVersion());
+        SourceManager sourceManager = new SourceManager(listOf(textFile));
         Tokens tokens = new Tokens();
+        TextDocument sourceCode = sourceManager.get(textFile);
         tokenizer.tokenize(sourceCode, TokenFactory.forFile(sourceCode, tokens));
         assertEquals(41, tokens.size());
 
-        Map<String, TextDocument> codeMap = mapOf(sourceCode.getPathId(), sourceCode);
-        MatchAlgorithm matchAlgorithm = new MatchAlgorithm(codeMap, tokens, 5);
+        MatchAlgorithm matchAlgorithm = new MatchAlgorithm(tokens, 5);
         matchAlgorithm.findMatches();
         Iterator<Match> matches = matchAlgorithm.matches();
         Match match = matches.next();
@@ -57,12 +60,12 @@ class MatchAlgorithmTest {
         assertFalse(marks.hasNext());
 
         assertEquals(3, mark1.getBeginLine());
-        assertEquals("Foo.java", mark1.getFilename());
-        assertEquals(LINE_3, mark1.getSourceCodeSlice());
+        assertEquals(fileName, mark1.getFilename());
+        assertEquals(Chars.wrap(LINE_3), sourceManager.getSlice(mark1));
 
         assertEquals(4, mark2.getBeginLine());
-        assertEquals("Foo.java", mark2.getFilename());
-        assertEquals(LINE_4, mark2.getSourceCodeSlice());
+        assertEquals(fileName, mark2.getFilename());
+        assertEquals(Chars.wrap(LINE_4), sourceManager.getSlice(mark2));
     }
 
     @Test
@@ -74,11 +77,9 @@ class MatchAlgorithmTest {
         Tokenizer tokenizer = java.createCpdTokenizer(bundle);
         TextDocument sourceCode = TextDocument.readOnlyString(getSampleCode(), "Foo.java", java.getDefaultVersion());
         Tokens tokens = new Tokens();
-        TokenEntry.clearImages();
         tokenizer.tokenize(sourceCode, TokenFactory.forFile(sourceCode, tokens));
 
-        Map<String, TextDocument> codeMap = mapOf(sourceCode.getPathId(), sourceCode);
-        MatchAlgorithm matchAlgorithm = new MatchAlgorithm(codeMap, tokens, 5);
+        MatchAlgorithm matchAlgorithm = new MatchAlgorithm(tokens, 5);
         matchAlgorithm.findMatches();
         Iterator<Match> matches = matchAlgorithm.matches();
         Match match = matches.next();

@@ -108,7 +108,7 @@ public final class XMLRenderer implements CPDReportRenderer {
 
         for (Match match : report.getMatches()) {
             root.appendChild(addCodeSnippet(doc,
-                    addFilesToDuplicationElement(doc, createDuplicationElement(doc, match), match), match));
+                    addFilesToDuplicationElement(doc, createDuplicationElement(doc, match), match), match, report));
         }
         dumpDocToWriter(doc, writer);
         writer.flush();
@@ -141,8 +141,8 @@ public final class XMLRenderer implements CPDReportRenderer {
         return duplication;
     }
 
-    private Element addCodeSnippet(Document doc, Element duplication, Match match) {
-        Chars codeSnippet = match.getSourceCodeSlice();
+    private Element addCodeSnippet(Document doc, Element duplication, Match match, CPDReport report) {
+        Chars codeSnippet = report.getSourceCodeSlice(match);
         if (codeSnippet != null) {
             // the code snippet has normalized line endings
             String platformSpecific = codeSnippet.toString().replace("\n", System.lineSeparator());
