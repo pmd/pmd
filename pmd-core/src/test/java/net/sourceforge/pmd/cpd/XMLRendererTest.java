@@ -45,11 +45,11 @@ class XMLRendererTest {
     void testWithNoDuplication() throws IOException, ParserConfigurationException, SAXException {
         CPDReportRenderer renderer = new XMLRenderer();
         StringWriter sw = new StringWriter();
-        renderer.render(new CPDReport(Collections.emptyList(), Collections.emptyMap()), sw);
+        renderer.render(CPDReportTest.makeReport(Collections.emptyList()), sw);
         String report = sw.toString();
 
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-                .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
+                                             .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
         NodeList nodes = doc.getChildNodes();
         Node n = nodes.item(0);
         assertEquals("pmd-cpd", n.getNodeName());
@@ -68,7 +68,7 @@ class XMLRendererTest {
 
         list.add(match);
         StringWriter sw = new StringWriter();
-        renderer.render(new CPDReport(list, Collections.emptyMap()), sw);
+        renderer.render(CPDReportTest.makeReport(list), sw);
         String report = sw.toString();
 
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
@@ -117,7 +117,7 @@ class XMLRendererTest {
         list.add(match1);
         list.add(match2);
         StringWriter sw = new StringWriter();
-        renderer.render(new CPDReport(list, Collections.emptyMap()), sw);
+        renderer.render(CPDReportTest.makeReport(list), sw);
         String report = sw.toString();
 
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
@@ -138,7 +138,7 @@ class XMLRendererTest {
 
         list.add(match);
         StringWriter sw = new StringWriter();
-        renderer.render(new CPDReport(list, Collections.emptyMap()), sw);
+        renderer.render(CPDReportTest.makeReport(list), sw);
         String report = sw.toString();
 
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
@@ -181,7 +181,7 @@ class XMLRendererTest {
         list.add(match1);
 
         StringWriter sw = new StringWriter();
-        renderer.render(new CPDReport(list, Collections.emptyMap()), sw);
+        renderer.render(CPDReportTest.makeReport(list), sw);
         String report = sw.toString();
         assertTrue(report.contains(espaceChar));
         assertFalse(report.contains(FORM_FEED));
@@ -201,7 +201,7 @@ class XMLRendererTest {
         matches.add(match);
         final Map<String, Integer> numberOfTokensPerFile = new HashMap<>();
         numberOfTokensPerFile.put(filename, 888);
-        final CPDReport report = new CPDReport(matches, numberOfTokensPerFile);
+        final CPDReport report = CPDReportTest.makeReport(matches, numberOfTokensPerFile);
         final StringWriter writer = new StringWriter();
         renderer.render(report, writer);
         final String xmlOutput = writer.toString();
@@ -227,7 +227,7 @@ class XMLRendererTest {
         matches.add(match);
         final Map<String, Integer> numberOfTokensPerFile = new HashMap<>();
         numberOfTokensPerFile.put(filename, 888);
-        final CPDReport report = new CPDReport(matches, numberOfTokensPerFile);
+        final CPDReport report = CPDReportTest.makeReport(matches, numberOfTokensPerFile);
         final StringWriter writer = new StringWriter();
         renderer.render(report, writer);
         final String xmlOutput = writer.toString();
@@ -255,7 +255,7 @@ class XMLRendererTest {
         list.add(match1);
 
         StringWriter sw = new StringWriter();
-        renderer.render(new CPDReport(list, Collections.emptyMap()), sw);
+        renderer.render(CPDReportTest.makeReport(list), sw);
         String report = sw.toString();
         assertFalse(report.contains(FORM_FEED));
         assertFalse(report.contains(FORM_FEED_ENTITY));
