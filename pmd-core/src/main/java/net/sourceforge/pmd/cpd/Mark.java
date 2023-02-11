@@ -11,7 +11,6 @@ public class Mark implements Comparable<Mark> {
     private TokenEntry token;
     private TokenEntry endToken;
     private int lineCount;
-    private TextDocument code;
 
     public Mark(TokenEntry token) {
         this.token = token;

@@ -4,15 +4,20 @@
 
 package net.sourceforge.pmd.cpd;
 
+import static net.sourceforge.pmd.util.CollectionUtil.mapOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 
 class MatchAlgorithmTest {
 
@@ -32,15 +37,14 @@ class MatchAlgorithmTest {
 
     @Test
     void testSimple() throws IOException {
-        JavaTokenizer tokenizer = new JavaTokenizer();
-        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader(getSampleCode(), "Foo.java"));
+        Language java = JavaLanguageModule.getInstance();
+        Tokenizer tokenizer = java.createCpdTokenizer(java.newPropertyBundle());
+        TextDocument sourceCode = TextDocument.readOnlyString(getSampleCode(), "Foo.java", java.getDefaultVersion());
         Tokens tokens = new Tokens();
-        TokenEntry.clearImages();
-        tokenizer.tokenize(sourceCode, tokens);
+        tokenizer.tokenize(sourceCode, TokenFactory.forFile(sourceCode, tokens));
         assertEquals(41, tokens.size());
-        Map<String, SourceCode> codeMap = new HashMap<>();
-        codeMap.put("Foo.java", sourceCode);
 
+        Map<String, TextDocument> codeMap = mapOf(sourceCode.getPathId(), sourceCode);
         MatchAlgorithm matchAlgorithm = new MatchAlgorithm(codeMap, tokens, 5);
         matchAlgorithm.findMatches();
         Iterator<Match> matches = matchAlgorithm.matches();
@@ -63,16 +67,17 @@ class MatchAlgorithmTest {
 
     @Test
     void testIgnore() throws IOException {
-        JavaTokenizer tokenizer = new JavaTokenizer();
-        tokenizer.setIgnoreLiterals(true);
-        tokenizer.setIgnoreIdentifiers(true);
-        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader(getSampleCode(), "Foo.java"));
+        Language java = JavaLanguageModule.getInstance();
+        LanguagePropertyBundle bundle = java.newPropertyBundle();
+        bundle.setProperty(Tokenizer.CPD_ANONYMIZE_IDENTIFIERS, true);
+        bundle.setProperty(Tokenizer.CPD_ANONYMiZE_LITERALS, true);
+        Tokenizer tokenizer = java.createCpdTokenizer(bundle);
+        TextDocument sourceCode = TextDocument.readOnlyString(getSampleCode(), "Foo.java", java.getDefaultVersion());
         Tokens tokens = new Tokens();
         TokenEntry.clearImages();
-        tokenizer.tokenize(sourceCode, tokens);
-        Map<String, SourceCode> codeMap = new HashMap<>();
-        codeMap.put("Foo.java", sourceCode);
+        tokenizer.tokenize(sourceCode, TokenFactory.forFile(sourceCode, tokens));
 
+        Map<String, TextDocument> codeMap = mapOf(sourceCode.getPathId(), sourceCode);
         MatchAlgorithm matchAlgorithm = new MatchAlgorithm(codeMap, tokens, 5);
         matchAlgorithm.findMatches();
         Iterator<Match> matches = matchAlgorithm.matches();

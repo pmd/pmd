@@ -18,39 +18,20 @@ public class Match implements Comparable<Match>, Iterable<Mark> {
     private Set<Mark> markSet = new TreeSet<>();
     private String label;
 
-    public static final Comparator<Match> MATCHES_COMPARATOR = new Comparator<Match>() {
-        @Override
-        public int compare(Match ma, Match mb) {
-            return mb.getMarkCount() - ma.getMarkCount();
+    public static final Comparator<Match> MATCHES_COMPARATOR = (ma, mb) -> mb.getMarkCount() - ma.getMarkCount();
+
+    public static final Comparator<Match> LINES_COMPARATOR = (ma, mb) -> mb.getLineCount() - ma.getLineCount();
+
+    public static final Comparator<Match> LABEL_COMPARATOR = (ma, mb) -> {
+        if (ma.getLabel() == null) {
+            return 1;
         }
+        if (mb.getLabel() == null) {
+            return -1;
+        }
+        return mb.getLabel().compareTo(ma.getLabel());
     };
 
-    public static final Comparator<Match> LINES_COMPARATOR = new Comparator<Match>() {
-        @Override
-        public int compare(Match ma, Match mb) {
-            return mb.getLineCount() - ma.getLineCount();
-        }
-    };
-
-    public static final Comparator<Match> LABEL_COMPARATOR = new Comparator<Match>() {
-        @Override
-        public int compare(Match ma, Match mb) {
-            if (ma.getLabel() == null) {
-                return 1;
-            }
-            if (mb.getLabel() == null) {
-                return -1;
-            }
-            return mb.getLabel().compareTo(ma.getLabel());
-        }
-    };
-
-    public static final Comparator<Match> LENGTH_COMPARATOR = new Comparator<Match>() {
-        @Override
-        public int compare(Match ma, Match mb) {
-            return mb.getLineCount() - ma.getLineCount();
-        }
-    };
 
     public Match(int tokenCount, Mark first, Mark second) {
         markSet.add(first);

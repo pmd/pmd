@@ -137,7 +137,6 @@ public class PMDConfiguration extends AbstractConfiguration {
     private boolean benchmark;
     private AnalysisCache analysisCache = new NoopAnalysisCache();
     private boolean ignoreIncrementalAnalysis;
-    private final LanguageRegistry langRegistry;
     private final List<Path> relativizeRoots = new ArrayList<>();
     private final Map<Language, LanguagePropertyBundle> langProperties = new HashMap<>();
 
@@ -146,7 +145,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     }
 
     public PMDConfiguration(@NonNull LanguageRegistry languageRegistry) {
-        this.langRegistry = Objects.requireNonNull(languageRegistry);
+        super(languageRegistry);
         this.languageVersionDiscoverer = new LanguageVersionDiscoverer(languageRegistry);
     }
 
@@ -952,21 +951,4 @@ public class PMDConfiguration extends AbstractConfiguration {
         return Collections.unmodifiableList(relativizeRoots);
     }
 
-    /**
-     * Returns a mutable bundle of language properties that are associated
-     * to the given language (always the same for a given language).
-     *
-     * @param language A language, which must be registered
-     */
-    public @NonNull LanguagePropertyBundle getLanguageProperties(Language language) {
-        checkLanguageIsRegistered(language);
-        return langProperties.computeIfAbsent(language, Language::newPropertyBundle);
-    }
-
-    void checkLanguageIsRegistered(Language language) {
-        if (!langRegistry.getLanguages().contains(language)) {
-            throw new IllegalArgumentException(
-                "Language '" + language.getId() + "' is not registered in " + getLanguageRegistry());
-        }
-    }
 }

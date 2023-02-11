@@ -22,11 +22,11 @@ public class JavaTokenizer extends JavaCCTokenizer {
     public static final String CPD_START = "\"CPD-START\"";
     public static final String CPD_END = "\"CPD-END\"";
 
-    private boolean ignoreAnnotations;
-    private boolean ignoreLiterals;
-    private boolean ignoreIdentifiers;
+    private final boolean ignoreAnnotations;
+    private final boolean ignoreLiterals;
+    private final boolean ignoreIdentifiers;
 
-    private ConstructorDetector constructorDetector;
+    private final ConstructorDetector constructorDetector;
 
     public JavaTokenizer(JavaLanguageProperties properties) {
         ignoreAnnotations = properties.getProperty(Tokenizer.CPD_IGNORE_METADATA);
@@ -64,18 +64,6 @@ public class JavaTokenizer extends JavaCCTokenizer {
         constructorDetector.processToken(javaToken);
 
         tokenEntries.recordToken(image, javaToken.getReportLocation());
-    }
-
-    public void setIgnoreLiterals(boolean ignore) {
-        this.ignoreLiterals = ignore;
-    }
-
-    public void setIgnoreIdentifiers(boolean ignore) {
-        this.ignoreIdentifiers = ignore;
-    }
-
-    public void setIgnoreAnnotations(boolean ignoreAnnotations) {
-        this.ignoreAnnotations = ignoreAnnotations;
     }
 
     /**
@@ -188,9 +176,9 @@ public class JavaTokenizer extends JavaCCTokenizer {
      * ignoreIdentifiers.
      */
     private static class ConstructorDetector {
-        private boolean ignoreIdentifiers;
+        private final boolean ignoreIdentifiers;
 
-        private Deque<TypeDeclaration> classMembersIndentations;
+        private final Deque<TypeDeclaration> classMembersIndentations;
         private int currentNestingLevel;
         private boolean storeNextIdentifier;
         private String prevIdentifier;

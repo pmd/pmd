@@ -5,56 +5,39 @@
 package net.sourceforge.pmd.cpd;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.internal.util.FileCollectionUtil;
-import net.sourceforge.pmd.internal.util.FileFinder;
 import net.sourceforge.pmd.internal.util.FileUtil;
-import net.sourceforge.pmd.internal.util.IOUtil;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.lang.document.FileCollector;
 import net.sourceforge.pmd.lang.document.TextDocument;
-import net.sourceforge.pmd.util.database.DBMSMetadata;
-import net.sourceforge.pmd.util.database.DBURI;
-import net.sourceforge.pmd.util.database.SourceObject;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.util.log.MessageReporter;
 
-/**
- * @deprecated Use the module pmd-cli for CLI support.
- */
-@Deprecated
-public class CpdAnalysis {
+public final class CpdAnalysis implements AutoCloseable {
 
+    private static Logger log = LoggerFactory.getLogger(CpdAnalysis.class);
     private CPDConfiguration configuration;
     private FileCollector files;
     private MessageReporter reporter;
     private CPDListener listener;
 
 
-    public CpdAnalysis(CPDConfiguration theConfiguration) {
+    public CpdAnalysis(CPDConfiguration theConfiguration) throws IOException {
         configuration = theConfiguration;
 
         // Add all sources
-        try {
-            extractAllSources();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        extractAllSources();
     }
 
     public FileCollector files() {
@@ -87,21 +70,41 @@ public class CpdAnalysis {
         this.listener = cpdListener;
     }
 
-    private void addAndThrowLexicalError(SourceCode sourceCode) throws IOException {
-        log.debug("Tokenizing {}", sourceCode.getPathId());
-        try (TextDocument doc = sourceCode.load()) {
-            configuration.tokenizer().tokenize(doc, tokens);
+    private int doTokenize(TextDocument document, Tokenizer tokenizer, Tokens tokens) throws IOException {
+        log.trace("Tokenizing {}", document.getPathId());
+        int lastTokenSize = tokens.size();
+        try {
+            tokenizer.tokenize(document, TokenFactory.forFile(document, tokens));
+        } catch (IOException ioe) {
+            reporter.errorEx("Error while lexing.", ioe);
+        } catch (TokenMgrError e) {
+            e.setFileName(document.getDisplayName());
+            reporter.errorEx("Error while lexing.", e);
+        } finally {
+            tokens.addEof();
         }
-        listener.addedFile(1);
-        source.put(sourceCode.getPathId(), sourceCode);
-        numberOfTokensPerFile.put(sourceCode.getPathId(), tokens.size() - lastTokenSize - 1 /*EOF*/);
-        lastTokenSize = tokens.size();
+        return tokens.size() - lastTokenSize - 1; /* EOF */
     }
 
-    public CPDReport performAnalysis() {
+    public void performAnalysis(Consumer<CPDReport> consumer) {
 
         try (SourceManager sourceManager = new SourceManager(files.getCollectedFiles())) {
+            Map<Language, Tokenizer> tokenizers =
+                sourceManager.getTextFiles().stream()
+                             .map(it -> it.getLanguageVersion().getLanguage())
+                             .collect(Collectors.toMap(lang -> lang, lang -> lang.createCpdTokenizer(configuration.getLanguageProperties(lang))));
+
+            Map<String, Integer> numberOfTokensPerFile = new HashMap<>();
+
             Tokens tokens = new Tokens();
+            for (TextFile textFile : sourceManager.getTextFiles()) {
+
+                TextDocument textDocument = sourceManager.get(textFile);
+
+                int newTokens = doTokenize(textDocument, tokenizers.get(textFile.getLanguageVersion().getLanguage()), tokens);
+                numberOfTokensPerFile.put(textDocument.getPathId(), newTokens);
+                listener.addedFile(1);
+            }
 
 
             log.debug("Running match algorithm on {} files...", sourceManager.size());
@@ -109,39 +112,16 @@ public class CpdAnalysis {
             matchAlgorithm.findMatches();
             log.debug("Finished: {} duplicates found", matchAlgorithm.getMatches().size());
 
-
+            new CPDReport(matchAlgorithm.getMatches(), matchAlgorithm.to)
 
         } catch (Exception e) {
             reporter.errorEx("Exception while running CPD", e);
         }
     }
 
-    public void add(File file) throws IOException {
 
-        if (configuration.isSkipDuplicates()) {
-            // TODO refactor this thing into a separate class
-            String signature = file.getName() + '_' + file.length();
-            if (current.contains(signature)) {
-                System.err.println("Skipping " + file.getAbsolutePath()
-                                       + " since it appears to be a duplicate file and --skip-duplicate-files is set");
-                return;
-            }
-            current.add(signature);
-        }
-
-        if (!IOUtil.equalsNormalizedPaths(file.getAbsoluteFile().getCanonicalPath(), file.getAbsolutePath())) {
-            System.err.println("Skipping " + file + " since it appears to be a symlink");
-            return;
-        }
-
-        if (!file.exists()) {
-            System.err.println("Skipping " + file + " since it doesn't exist (broken symlink?)");
-            return;
-        }
-
-        SourceCode sourceCode = configuration.sourceCodeFor(file);
-        add(sourceCode);
+    @Override
+    public void close() throws IOException {
+        // nothing for now
     }
-
-
 }

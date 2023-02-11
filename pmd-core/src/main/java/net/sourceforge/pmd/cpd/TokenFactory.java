@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.cpd;
 
 import net.sourceforge.pmd.lang.document.FileLocation;
-import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.lang.document.TextDocument;
 
 public interface TokenFactory {
 
@@ -19,7 +19,7 @@ public interface TokenFactory {
 
     TokenEntry peekLastToken();
 
-    static TokenFactory forFile(TextFile file, Tokens sink) {
+    static TokenFactory forFile(TextDocument file, Tokens sink) {
         return new TokenFactory() {
             final String name = file.getPathId();
 

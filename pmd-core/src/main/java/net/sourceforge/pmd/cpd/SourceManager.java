@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.cpd;
 
+import java.io.IOException;
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +25,20 @@ public class SourceManager implements AutoCloseable {
     }
 
 
-    TextDocument get(String pathId) {
+    List<TextFile> getTextFiles() {
+        return textFiles;
+    }
 
+    TextDocument get(TextFile file) {
+        return files.computeIfAbsent(file, f -> {
+            TextDocument doc;
+            try {
+                doc = TextDocument.create(f);
+                return new SoftReference<>(doc);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }).get();
     }
 
     public int size() {

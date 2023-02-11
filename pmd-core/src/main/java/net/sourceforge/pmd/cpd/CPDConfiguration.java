@@ -8,7 +8,6 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.io.FilenameFilter;
-import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
@@ -25,8 +24,7 @@ import net.sourceforge.pmd.AbstractConfiguration;
 import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 import net.sourceforge.pmd.internal.util.FileFinder;
 import net.sourceforge.pmd.internal.util.FileUtil;
-import net.sourceforge.pmd.lang.document.TextDocument;
-import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 
 /**
  *
@@ -40,6 +38,7 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     private static final Map<String, Class<? extends CPDReportRenderer>> RENDERERS = new HashMap<>();
 
+
     static {
         RENDERERS.put(DEFAULT_RENDERER, SimpleRenderer.class);
         RENDERERS.put("xml", XMLRenderer.class);
@@ -48,7 +47,8 @@ public class CPDConfiguration extends AbstractConfiguration {
         RENDERERS.put("vs", VSRenderer.class);
     }
 
-    private Language language;
+
+    private Language language = CPDConfiguration.getLanguageFromString(DEFAULT_LANGUAGE);
 
     private int minimumTileSize;
 
@@ -90,18 +90,15 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     private boolean debug = false;
 
-    public TextFile sourceCodeFor(File file) {
-        return new SourceCode(new SourceCode.FileCodeLoader(file, getSourceEncoding().name()));
+    public CPDConfiguration() {
+        super(LanguageRegistry.CPD);
     }
 
-    public SourceCode sourceCodeFor(Reader reader, String sourceCodeName) {
-        return new SourceCode(new SourceCode.ReaderCodeLoader(reader, sourceCodeName));
+    public CPDConfiguration(LanguageRegistry languageRegistry) {
+        super(languageRegistry);
     }
 
     public void postContruct() {
-        if (getLanguage() == null) {
-            setLanguage(CPDConfiguration.getLanguageFromString(DEFAULT_LANGUAGE));
-        }
         if (getRendererName() == null) {
             setRendererName(DEFAULT_RENDERER);
         }
@@ -165,6 +162,7 @@ public class CPDConfiguration extends AbstractConfiguration {
     public static Language getLanguageFromString(String languageString) {
         return LanguageFactory.createLanguage(languageString);
     }
+
 
     public static void setSystemProperties(CPDConfiguration configuration) {
         Properties properties = new Properties();

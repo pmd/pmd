@@ -46,7 +46,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
         this(image, tokenSrcID, beginLine, -1, -1);
     }
 
-    public TokenEntry(String image, String tokenSrcID, int beginLine, int beginColumn, int endColumn) {
+    public TokenEntry(String image, String tokenSrcID, int beginLine, int beginColumn, int endLine, int endColumn) {
         assert isOk(beginLine) && isOk(beginColumn) && isOk(endColumn) : "Coordinates are 1-based";
         setImage(image);
         this.tokenSrcID = tokenSrcID;
@@ -61,11 +61,6 @@ public class TokenEntry implements Comparable<TokenEntry> {
 
     private boolean isOk(int coord) {
         return coord >= 1 || coord == -1;
-    }
-
-    public static TokenEntry getEOF() {
-        TOKEN_COUNT.get().getAndIncrement();
-        return EOF;
     }
 
     public static void clearImages() {
@@ -104,7 +99,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
         }
     }
 
-    public String getTokenSrcID() {
+     String getTokenSrcID() {
         return tokenSrcID;
     }
 
@@ -130,11 +125,11 @@ public class TokenEntry implements Comparable<TokenEntry> {
         return endColumn; // TODO Java 1.8 make optional
     }
 
-    public int getIdentifier() {
+     int getIdentifier() {
         return this.identifier;
     }
 
-    public int getIndex() {
+     int getIndex() {
         return this.index;
     }
 
@@ -143,7 +138,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
         return hashCode;
     }
 
-    public void setHashCode(int hashCode) {
+     void setHashCode(int hashCode) {
         this.hashCode = hashCode;
     }
 
@@ -183,12 +178,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
         return "--unknown--";
     }
 
-    final void setImage(String image) {
-        Integer i = TOKENS.get().get(image);
-        if (i == null) {
-            i = TOKENS.get().size() + 1;
-            TOKENS.get().put(image, i);
-        }
-        this.identifier = i.intValue();
+    final void setImageIdentifier(int identifier) {
+        this.identifier = identifier;
     }
 }

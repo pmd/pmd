@@ -47,14 +47,15 @@ class MatchTest {
 
     @Test
     void testCompareTo() {
-        Match m1 = new Match(1, new TokenEntry("public", "/var/Foo.java", 1),
-                new TokenEntry("class", "/var/Foo.java", 1));
-        Match m2 = new Match(2, new TokenEntry("Foo", "/var/Foo.java", 1), new TokenEntry("{", "/var/Foo.java", 1));
+        Match m1 = new Match(1, new TokenEntry("public", "/var/Foo.java", 1, 2, 3, 4),
+                             new TokenEntry("class", "/var/Foo.java", 1, 2, 3, 4));
+        Match m2 = new Match(2, new TokenEntry("Foo", "/var/Foo.java", 1, 2, 3, 4),
+                             new TokenEntry("{", "/var/Foo.java", 1, 2, 3, 4));
         assertTrue(m2.compareTo(m1) < 0);
     }
 
     private Mark createMark(String image, String tokenSrcID, int beginLine, int lineCount, String code) {
-        Mark result = new Mark(new TokenEntry(image, tokenSrcID, beginLine));
+        Mark result = new Mark(new TokenEntry(image, tokenSrcID, beginLine, 1, beginLine, 1 + image.length()));
 
         result.setLineCount(lineCount);
         result.setSourceCode(new SourceCode(new SourceCode.StringCodeLoader(code)));

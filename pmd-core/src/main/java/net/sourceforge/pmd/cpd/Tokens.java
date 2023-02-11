@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import net.sourceforge.pmd.lang.document.FileLocation;
-
 public class Tokens {
 
     private final List<TokenEntry> tokens = new ArrayList<>();
@@ -30,16 +28,21 @@ public class Tokens {
         }
     };
 
-    public void add(TokenEntry tokenEntry) {
+    private void add(TokenEntry tokenEntry) {
         this.tokens.add(tokenEntry);
     }
 
-    public void addToken(String image, FileLocation location) {
-        this.tokens.add(new TokenEntry(image, location));
+    void addEof() {
+        add(TokenEntry.EOF);
     }
 
-    public void setImage(TokenEntry entry, String newImage) {
-        entry.setImage(newImage);
+    void setImage(TokenEntry entry, String newImage) {
+        Integer i = TOKENS.get().get(newImage);
+        if (i == null) {
+            i = TOKENS.get().size() + 1;
+            TOKENS.get().put(newImage, i);
+        }
+        entry.setImageIdentifier(i);
     }
 
     public TokenEntry peekLastToken() {

@@ -16,7 +16,7 @@ class MarkTest {
     void testSimple() {
         String filename = "/var/Foo.java";
         int beginLine = 1;
-        TokenEntry token = new TokenEntry("public", "/var/Foo.java", 1);
+        TokenEntry token = new TokenEntry("public", "/var/Foo.java", 1, 2, 3, 4);
 
         Mark mark = new Mark(token);
         int lineCount = 10;
@@ -40,8 +40,8 @@ class MarkTest {
         final int beginLine = 1;
         final int beginColumn = 2;
         final int endColumn = 3;
-        final TokenEntry token = new TokenEntry("public", "/var/Foo.java", 1, beginColumn, beginColumn + "public".length());
-        final TokenEntry endToken = new TokenEntry("}", "/var/Foo.java", 5, endColumn - 1, endColumn);
+        final TokenEntry token = new TokenEntry("public", "/var/Foo.java", 1, beginColumn, 1, beginColumn + "public".length());
+        final TokenEntry endToken = new TokenEntry("}", "/var/Foo.java", 5, 1, endColumn - 1, endColumn);
 
         final Mark mark = new Mark(token);
         final int lineCount = 10;

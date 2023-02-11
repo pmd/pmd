@@ -217,7 +217,6 @@ class XMLRendererTest {
 
     @Test
     void testGetDuplicationStartEnd() throws IOException, ParserConfigurationException, SAXException {
-        TokenEntry.clearImages();
         final CPDReportRenderer renderer = new XMLRenderer();
         final List<Match> matches = new ArrayList<>();
         final String filename = "/var/Foo.java";

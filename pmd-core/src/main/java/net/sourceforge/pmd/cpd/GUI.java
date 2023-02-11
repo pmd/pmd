@@ -224,8 +224,8 @@ public class GUI implements CPDListener {
         new ColumnSpec("Lines", SwingConstants.RIGHT, 45, Match.LINES_COMPARATOR), };
 
     static {
-        for (int i = 0; i < LANGUAGE_SETS.length; i++) {
-            LANGUAGE_CONFIGS_BY_LABEL.put((String) LANGUAGE_SETS[i][0], (LanguageConfig) LANGUAGE_SETS[i][1]);
+        for (Object[] languageSet : LANGUAGE_SETS) {
+            LANGUAGE_CONFIGS_BY_LABEL.put((String) languageSet[0], (LanguageConfig) languageSet[1]);
         }
     }
 

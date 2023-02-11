@@ -23,6 +23,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
+import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -141,10 +142,10 @@ public final class XMLRenderer implements CPDReportRenderer {
     }
 
     private Element addCodeSnippet(Document doc, Element duplication, Match match) {
-        String codeSnippet = match.getSourceCodeSlice();
+        Chars codeSnippet = match.getSourceCodeSlice();
         if (codeSnippet != null) {
             // the code snippet has normalized line endings
-            String platformSpecific = codeSnippet.replace("\n", System.lineSeparator());
+            String platformSpecific = codeSnippet.toString().replace("\n", System.lineSeparator());
             Element codefragment = doc.createElement("codefragment");
             // only remove invalid characters, escaping is not necessary in CDATA.
             // if the string contains the end marker of a CDATA section, then the DOM impl will
