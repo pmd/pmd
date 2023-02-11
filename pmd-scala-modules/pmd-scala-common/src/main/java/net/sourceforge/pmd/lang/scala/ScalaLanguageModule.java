@@ -7,6 +7,9 @@ package net.sourceforge.pmd.lang.scala;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.cpd.ScalaTokenizer;
+import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
@@ -46,6 +49,11 @@ public class ScalaLanguageModule extends SimpleLanguageModuleBase {
         default:
             throw new IllegalArgumentException(v.getVersion());
         }
+    }
+
+    @Override
+    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
+        return new ScalaTokenizer(bundle);
     }
 
     public static ScalaLanguageModule getInstance() {

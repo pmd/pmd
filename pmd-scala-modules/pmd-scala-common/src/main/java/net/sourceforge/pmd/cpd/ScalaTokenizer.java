@@ -4,11 +4,10 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.util.Properties;
-
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.cpd.token.internal.BaseTokenFilter;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
@@ -28,34 +27,13 @@ import scala.meta.tokens.Token;
  */
 public class ScalaTokenizer implements Tokenizer {
 
-    /**
-     * Denotes the version of the scala dialect to use. Based on the values in
-     * {@linkplain ScalaLanguageModule#getVersions()}
-     */
-    public static final String SCALA_VERSION_PROPERTY = "net.sourceforge.pmd.scala.version";
     private final Dialect dialect;
 
     /**
      * Create the Tokenizer using properties from the system environment.
      */
-    public ScalaTokenizer() {
-        this(System.getProperties());
-    }
-
-    /**
-     * Create the Tokenizer given a set of properties.
-     *
-     * @param properties
-     *            the {@linkplain Properties} object to use
-     */
-    public ScalaTokenizer(Properties properties) {
-        String scalaVersion = properties.getProperty(SCALA_VERSION_PROPERTY);
-        LanguageVersion langVer;
-        if (scalaVersion == null) {
-            langVer = ScalaLanguageModule.getInstance().getDefaultVersion();
-        } else {
-            langVer = ScalaLanguageModule.getInstance().getVersion(scalaVersion);
-        }
+    public ScalaTokenizer(LanguagePropertyBundle bundle) {
+        LanguageVersion langVer = bundle.getLanguageVersion();
         dialect = ScalaLanguageModule.dialectOf(langVer);
     }
 

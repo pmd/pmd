@@ -10,11 +10,12 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
+import net.sourceforge.pmd.lang.scala.ScalaLanguageModule;
 
 class ScalaTokenizerTest extends CpdTextComparisonTest {
 
     ScalaTokenizerTest() {
-        super(".scala");
+        super(ScalaLanguageModule.getInstance(), ".scala");
     }
 
     @Override
