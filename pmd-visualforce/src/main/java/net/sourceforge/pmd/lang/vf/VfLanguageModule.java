@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.vf;
 
+import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.cpd.VfTokenizer;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -24,6 +26,11 @@ public class VfLanguageModule extends SimpleLanguageModuleBase {
                               .extensions("page", "component")
                               .dependsOnLanguage(ApexLanguageModule.TERSE_NAME),
               p -> new VfHandler((VfLanguageProperties) p));
+    }
+
+    @Override
+    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
+        return new VfTokenizer();
     }
 
     @Override

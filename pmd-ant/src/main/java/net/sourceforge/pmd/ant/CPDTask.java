@@ -15,7 +15,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Properties;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
@@ -28,7 +27,6 @@ import net.sourceforge.pmd.cpd.CPDConfiguration;
 import net.sourceforge.pmd.cpd.CPDReport;
 import net.sourceforge.pmd.cpd.CSVRenderer;
 import net.sourceforge.pmd.cpd.CpdAnalysis;
-import net.sourceforge.pmd.cpd.Language;
 import net.sourceforge.pmd.cpd.LanguageFactory;
 import net.sourceforge.pmd.cpd.SimpleRenderer;
 import net.sourceforge.pmd.cpd.Tokenizer;
@@ -92,10 +90,18 @@ public class CPDTask extends Task {
             log("Tokenizing files", Project.MSG_INFO);
             CPDConfiguration config = new CPDConfiguration();
             config.setMinimumTileSize(minimumTokenCount);
-            config.setLanguage(createLanguage());
+            config.setLanguage(config.getLanguageRegistry().getLanguageById(language));
             config.setSourceEncoding(encoding);
             config.setSkipDuplicates(skipDuplicateFiles);
             config.setSkipLexicalErrors(skipLexicalErrors);
+
+            config.setIgnoreAnnotations(ignoreAnnotations);
+            config.setIgnoreLiterals(ignoreLiterals);
+            config.setIgnoreIdentifiers(ignoreIdentifiers);
+            config.setIgnoreUsings(ignoreUsings);
+            if (skipBlocks) {
+                config.setSkipBlocksPattern(skipBlocksPattern);
+            }
 
             try (CpdAnalysis cpd = new CpdAnalysis(config)) {
                 addFiles(cpd);
@@ -117,25 +123,6 @@ public class CPDTask extends Task {
         } finally {
             Thread.currentThread().setContextClassLoader(oldClassloader);
         }
-    }
-
-    private Language createLanguage() {
-        Properties p = new Properties();
-        if (ignoreLiterals) {
-            p.setProperty(Tokenizer.IGNORE_LITERALS, "true");
-        }
-        if (ignoreIdentifiers) {
-            p.setProperty(Tokenizer.IGNORE_IDENTIFIERS, "true");
-        }
-        if (ignoreAnnotations) {
-            p.setProperty(Tokenizer.IGNORE_ANNOTATIONS, "true");
-        }
-        if (ignoreUsings) {
-            p.setProperty(Tokenizer.IGNORE_USINGS, "true");
-        }
-        p.setProperty(Tokenizer.OPTION_SKIP_BLOCKS, Boolean.toString(skipBlocks));
-        p.setProperty(Tokenizer.OPTION_SKIP_BLOCKS_PATTERN, skipBlocksPattern);
-        return LanguageFactory.createLanguage(language, p);
     }
 
     private void report(CPDReport report) throws ReportException {

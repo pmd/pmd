@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.cpd;
+package net.sourceforge.pmd.lang.objectivec.cpd;
 
 import org.junit.jupiter.api.Test;
 
@@ -12,12 +12,12 @@ class ObjectiveCTokenizerTest extends CpdTextComparisonTest {
 
 
     ObjectiveCTokenizerTest() {
-        super(".m");
+        super("objectivec", ".m");
     }
 
     @Override
     protected String getResourcePrefix() {
-        return "../lang/objc/cpd/testdata";
+        return "../lang/objectivec/cpd/testdata";
     }
 
     @Test

@@ -8,6 +8,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import net.sourceforge.pmd.cpd.*
 import net.sourceforge.pmd.lang.Language
 import net.sourceforge.pmd.lang.LanguagePropertyBundle
+import net.sourceforge.pmd.lang.LanguageRegistry
 import net.sourceforge.pmd.lang.ast.TokenMgrError
 import net.sourceforge.pmd.lang.document.TextDocument
 import net.sourceforge.pmd.lang.document.TextFile
@@ -27,6 +28,10 @@ abstract class CpdTextComparisonTest(
     override val extensionIncludingDot: String
 ) : BaseTextComparisonTest() {
 
+    constructor(langId: String, extensionIncludingDot: String) : this(
+        LanguageRegistry.CPD.getLanguageById(langId)!!,
+        extensionIncludingDot
+    )
 
     fun newTokenizer(config: LanguagePropertyConfig): Tokenizer {
         val properties = language.newPropertyBundle().also { config.setProperties(it) }

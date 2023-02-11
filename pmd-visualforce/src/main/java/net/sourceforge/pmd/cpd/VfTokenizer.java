@@ -6,6 +6,7 @@ package net.sourceforge.pmd.cpd;
 
 import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.lang.TokenManager;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaEscapeTranslator;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
@@ -21,11 +22,10 @@ public class VfTokenizer extends JavaCCTokenizer {
 
     @Override
     protected TokenManager<JavaccToken> makeLexerImpl(TextDocument doc) {
-        return VfTokenKinds.newTokenManager(doc);
+        return VfTokenKinds.newTokenManager(CharStream.create(doc, tokenBehavior()));
     }
 
-    @Override
-    protected TokenDocumentBehavior tokenBehavior() {
+    private TokenDocumentBehavior tokenBehavior() {
         return new JavaccTokenDocument.TokenDocumentBehavior(VfTokenKinds.TOKEN_NAMES) {
             @Override
             public TextDocument translate(TextDocument text) throws MalformedSourceException {

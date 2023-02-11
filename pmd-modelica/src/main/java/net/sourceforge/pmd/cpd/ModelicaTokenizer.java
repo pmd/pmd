@@ -7,6 +7,7 @@ package net.sourceforge.pmd.cpd;
 import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.cpd.token.JavaCCTokenFilter;
 import net.sourceforge.pmd.lang.TokenManager;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.modelica.ast.ModelicaTokenKinds;
@@ -16,7 +17,7 @@ public class ModelicaTokenizer extends JavaCCTokenizer {
 
     @Override
     protected TokenManager<JavaccToken> makeLexerImpl(TextDocument doc) {
-        return ModelicaTokenKinds.newTokenManager(doc);
+        return ModelicaTokenKinds.newTokenManager(CharStream.create(doc));
     }
 
     @Override
