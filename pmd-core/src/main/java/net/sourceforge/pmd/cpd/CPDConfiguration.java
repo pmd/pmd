@@ -51,7 +51,7 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     private String rendererName;
 
-    private CPDReportRenderer cpdReportRenderer;
+    CPDReportRenderer cpdReportRenderer;
 
     private boolean ignoreLiterals;
 

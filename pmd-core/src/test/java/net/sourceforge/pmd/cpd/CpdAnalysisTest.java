@@ -10,33 +10,34 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.File;
-import java.util.Iterator;
+import java.nio.file.Paths;
+import java.util.List;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.lang.PlainTextLanguage;
+
 /**
- * Unit test for {@link CPD}
+ * Unit test for {@link CpdAnalysis}
  */
-class CPDTest {
+class CpdAnalysisTest {
 
     private static final String BASE_TEST_RESOURCE_PATH = "src/test/resources/net/sourceforge/pmd/cpd/files/";
     private static final String TARGET_TEST_RESOURCE_PATH = "target/classes/net/sourceforge/pmd/cpd/files/";
 
-    private CPD cpd;
 
     // Symlinks are not well supported under Windows - so the tests are
     // simply executed only on linux.
     private boolean canTestSymLinks = SystemUtils.IS_OS_UNIX;
+    CPDConfiguration config = new CPDConfiguration();
 
     @BeforeEach
     void setup() throws Exception {
-        CPDConfiguration theConfiguration = new CPDConfiguration();
-        theConfiguration.setLanguage(new AnyLanguage("any"));
-        theConfiguration.setMinimumTileSize(10);
-        theConfiguration.postContruct();
-        cpd = new CPD(theConfiguration);
+        config.setLanguage(PlainTextLanguage.getInstance());
+        config.setMinimumTileSize(10);
+        config.postContruct();
     }
 
     /**
@@ -72,9 +73,12 @@ class CPDTest {
         prepareSymLinks();
 
         NoFileAssertListener listener = new NoFileAssertListener(0);
-        cpd.setCpdListener(listener);
+        try (CpdAnalysis cpd = new CpdAnalysis(config)) {
+            cpd.setCpdListener(listener);
+            cpd.files().addFile(Paths.get(BASE_TEST_RESOURCE_PATH, "this-is-a-broken-sym-link-for-test"));
+            cpd.performAnalysis();
+        }
 
-        cpd.add(new File(BASE_TEST_RESOURCE_PATH, "this-is-a-broken-sym-link-for-test"));
         listener.verify();
     }
 
@@ -90,10 +94,13 @@ class CPDTest {
         prepareSymLinks();
 
         NoFileAssertListener listener = new NoFileAssertListener(1);
-        cpd.setCpdListener(listener);
+        try (CpdAnalysis cpd = new CpdAnalysis(config)) {
+            cpd.setCpdListener(listener);
+            cpd.files().addFile(Paths.get(BASE_TEST_RESOURCE_PATH, "real-file.txt"));
+            cpd.files().addFile(Paths.get(BASE_TEST_RESOURCE_PATH, "symlink-for-real-file.txt"));
+            cpd.performAnalysis();
+        }
 
-        cpd.add(new File(BASE_TEST_RESOURCE_PATH, "real-file.txt"));
-        cpd.add(new File(BASE_TEST_RESOURCE_PATH, "symlink-for-real-file.txt"));
         listener.verify();
     }
 
@@ -107,9 +114,12 @@ class CPDTest {
     @Test
     void testFileAddedWithRelativePath() throws Exception {
         NoFileAssertListener listener = new NoFileAssertListener(1);
-        cpd.setCpdListener(listener);
+        try (CpdAnalysis cpd = new CpdAnalysis(config)) {
+            cpd.setCpdListener(listener);
+            cpd.files().addFile(Paths.get("./" + BASE_TEST_RESOURCE_PATH, "real-file.txt"));
+            cpd.performAnalysis();
+        }
 
-        cpd.add(new File("./" + BASE_TEST_RESOURCE_PATH, "real-file.txt"));
         listener.verify();
     }
 
@@ -120,17 +130,21 @@ class CPDTest {
      */
     @Test
     void testFileOrderRelevance() throws Exception {
-        cpd.add(new File("./" + BASE_TEST_RESOURCE_PATH, "dup2.java"));
-        cpd.add(new File("./" + BASE_TEST_RESOURCE_PATH, "dup1.java"));
-        cpd.go();
+        try (CpdAnalysis cpd = new CpdAnalysis(config)) {
+            cpd.files().addFile(Paths.get("./" + BASE_TEST_RESOURCE_PATH, "dup2.java"));
+            cpd.files().addFile(Paths.get("./" + BASE_TEST_RESOURCE_PATH, "dup1.java"));
+            cpd.performAnalysis(report -> {
 
-        Iterator<Match> matches = cpd.getMatches();
-        while (matches.hasNext()) {
-            Match match = matches.next();
-            // the file added first was dup2.
-            assertTrue(match.getFirstMark().getFilename().endsWith("dup2.java"));
-            assertTrue(match.getSecondMark().getFilename().endsWith("dup1.java"));
+
+                List<Match> matches = report.getMatches();
+                for (Match match : matches) {
+                    // the file added first was dup2.
+                    assertTrue(match.getFirstMark().getFilename().endsWith("dup2.java"));
+                    assertTrue(match.getSecondMark().getFilename().endsWith("dup1.java"));
+                }
+            });
         }
+
     }
 
     /**

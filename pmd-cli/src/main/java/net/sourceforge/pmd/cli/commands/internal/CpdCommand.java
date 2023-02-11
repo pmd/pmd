@@ -6,7 +6,6 @@ package net.sourceforge.pmd.cli.commands.internal;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -23,7 +22,6 @@ import net.sourceforge.pmd.cpd.CPDConfiguration;
 import net.sourceforge.pmd.cpd.CpdAnalysis;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.internal.LogMessages;
-import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.Language;
 
 import picocli.CommandLine.Command;
@@ -135,15 +133,7 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand {
         try (CpdAnalysis cpd = new CpdAnalysis(configuration)){
 
             MutableBoolean hasViolations = new MutableBoolean();
-            cpd.performAnalysis(report -> {
-                try {
-                    configuration.getCPDReportRenderer().render(report, IOUtil.createWriter(Charset.defaultCharset(), null));
-                    hasViolations.setValue(!report.getMatches().isEmpty());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-
+            cpd.performAnalysis(report -> hasViolations.setValue(!report.getMatches().isEmpty()));
 
             if (hasViolations.booleanValue() && configuration.isFailOnViolation()) {
                 return CliExitCode.VIOLATIONS_FOUND;

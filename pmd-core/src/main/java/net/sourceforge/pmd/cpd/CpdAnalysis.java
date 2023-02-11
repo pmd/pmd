@@ -6,6 +6,7 @@ package net.sourceforge.pmd.cpd;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,8 +16,10 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 import net.sourceforge.pmd.internal.util.FileCollectionUtil;
 import net.sourceforge.pmd.internal.util.FileUtil;
+import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
@@ -43,6 +46,14 @@ public final class CpdAnalysis implements AutoCloseable {
             reporter
         );
 
+        if (config.getRendererName() == null) {
+            config.setRendererName(CPDConfiguration.DEFAULT_RENDERER);
+        }
+        if (config.cpdReportRenderer == null) {
+            //may throw
+            CPDReportRenderer renderer = CPDConfiguration.createRendererByName(config.getRendererName(), config.getSourceEncoding().name());
+            config.setRenderer(renderer);
+        }
         // Add all sources
         extractAllSources();
 
@@ -118,6 +129,10 @@ public final class CpdAnalysis implements AutoCloseable {
         return tokens.size() - lastTokenSize - 1; /* EOF */
     }
 
+    public void performAnalysis() {
+        performAnalysis(r -> { });
+    }
+
     public void performAnalysis(Consumer<CPDReport> consumer) {
 
         try (SourceManager sourceManager = new SourceManager(files.getCollectedFiles())) {
@@ -149,8 +164,12 @@ public final class CpdAnalysis implements AutoCloseable {
             LOGGER.debug("Finished: {} duplicates found", matchAlgorithm.getMatches().size());
 
             CPDReport cpdReport = new CPDReport(sourceManager, matchAlgorithm.getMatches(), numberOfTokensPerFile);
-            consumer.accept(cpdReport);
 
+            if (configuration.getCPDReportRenderer() != null) {
+                configuration.getCPDReportRenderer().render(cpdReport, IOUtil.createWriter(Charset.defaultCharset(), null));
+            }
+
+            consumer.accept(cpdReport);
         } catch (Exception e) {
             reporter.errorEx("Exception while running CPD", e);
         }
