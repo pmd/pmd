@@ -13,8 +13,7 @@ class TokenEntryTest {
     @Test
     void testSimple() {
         Tokens tokens = new Tokens();
-        tokens.addToken("public", "/var/Foo.java", 1, 2, 3, 4);
-        TokenEntry mark = tokens.peekLastToken();
+        TokenEntry mark = tokens.addToken("public", "/var/Foo.java", 1, 2, 3, 4);
         assertEquals(1, mark.getBeginLine());
         assertEquals("/var/Foo.java", mark.getFileName());
         assertEquals(0, mark.getIndex());

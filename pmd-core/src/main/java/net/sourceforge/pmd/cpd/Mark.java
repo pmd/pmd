@@ -40,7 +40,7 @@ public class Mark implements Comparable<Mark> {
     }
 
     public int getEndLine() {
-        return getBeginLine() + getLineCount() - 1;
+        return endToken == null ? getBeginLine() : endToken.getEndLine();
     }
 
     /**
@@ -57,7 +57,7 @@ public class Mark implements Comparable<Mark> {
     }
 
     public int getLineCount() {
-        return this.endToken == null ? 1 : this.endToken.getBeginLine();
+        return this.getEndLine() - this.getBeginLine() + 1;
     }
 
     void setEndToken(TokenEntry endToken) {

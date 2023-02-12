@@ -15,13 +15,21 @@ public class Tokens {
 
     private final List<TokenEntry> tokens = new ArrayList<>();
     private final Map<String, Integer> images = new HashMap<>();
+    // the first ID is 1, 0 is the ID of the EOF token.
+    private int curImageId = 1;
 
     private void add(TokenEntry tokenEntry) {
         this.tokens.add(tokenEntry);
     }
 
-    void addEof() {
-        add(TokenEntry.EOF);
+    void addEof(String fileName) {
+        if (tokens.isEmpty()) {
+            add(new TokenEntry(fileName, 1, 1));
+            return;
+        }
+
+        TokenEntry tok = peekLastToken();
+        add(new TokenEntry(fileName, tok.getEndLine(), tok.getEndColumn()));
     }
 
     void setImage(TokenEntry entry, String newImage) {
@@ -30,7 +38,7 @@ public class Tokens {
     }
 
     private int getImageId(String newImage) {
-        return images.computeIfAbsent(newImage, k -> images.size() + 1);
+        return images.computeIfAbsent(newImage, k -> curImageId++);
     }
 
     String imageFromId(int i) {
@@ -55,14 +63,6 @@ public class Tokens {
 
     public TokenEntry getEndToken(TokenEntry mark, Match match) {
         return get(mark.getIndex() + match.getTokenCount() - 1);
-    }
-
-    public int getLineCount(TokenEntry mark, Match match) {
-        TokenEntry endTok = getEndToken(mark, match);
-        if (TokenEntry.EOF.equals(endTok)) {
-            endTok = get(mark.getIndex() + match.getTokenCount() - 2);
-        }
-        return endTok.getBeginLine() - mark.getBeginLine() + 1;
     }
 
     public List<TokenEntry> getTokens() {

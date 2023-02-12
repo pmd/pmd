@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +37,7 @@ public final class CpdAnalysis implements AutoCloseable {
     private final CPDConfiguration configuration;
     private final FileCollector files;
     private final MessageReporter reporter;
-    private CPDListener listener;
+    private @NonNull CPDListener listener = new CPDNullListener();
 
 
     public CpdAnalysis(CPDConfiguration config) throws IOException {
@@ -63,7 +65,7 @@ public final class CpdAnalysis implements AutoCloseable {
     }
 
     private static <T> void setPropertyIfMissing(PropertyDescriptor<T> prop, LanguagePropertyBundle sink, T value) {
-        if (!sink.isPropertyOverridden(prop)) {
+        if (sink.hasDescriptor(prop) && !sink.isPropertyOverridden(prop)) {
             sink.setProperty(prop, value);
         }
     }
@@ -108,7 +110,10 @@ public final class CpdAnalysis implements AutoCloseable {
         }
     }
 
-    public void setCpdListener(CPDListener cpdListener) {
+    public void setCpdListener(@Nullable CPDListener cpdListener) {
+        if (cpdListener == null) {
+            cpdListener = new CPDNullListener();
+        }
         this.listener = cpdListener;
     }
 
@@ -129,6 +134,7 @@ public final class CpdAnalysis implements AutoCloseable {
             Map<Language, Tokenizer> tokenizers =
                 sourceManager.getTextFiles().stream()
                              .map(it -> it.getLanguageVersion().getLanguage())
+                             .distinct()
                              .collect(Collectors.toMap(lang -> lang, lang -> lang.createCpdTokenizer(configuration.getLanguageProperties(lang))));
 
             Map<String, Integer> numberOfTokensPerFile = new HashMap<>();
@@ -165,6 +171,7 @@ public final class CpdAnalysis implements AutoCloseable {
 
             consumer.accept(cpdReport);
         } catch (Exception e) {
+            e.printStackTrace();
             reporter.errorEx("Exception while running CPD", e);
         }
         // source manager is closed and closes all text files now.

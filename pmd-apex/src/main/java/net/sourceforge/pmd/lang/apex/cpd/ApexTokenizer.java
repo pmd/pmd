@@ -1,13 +1,14 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.cpd;
+package net.sourceforge.pmd.lang.apex.cpd;
 
 import java.util.Locale;
 
 import org.antlr.v4.runtime.CharStream;
 
+import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.cpd.internal.AntlrTokenizer;
 import net.sourceforge.pmd.lang.apex.ApexLanguageProperties;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrToken;

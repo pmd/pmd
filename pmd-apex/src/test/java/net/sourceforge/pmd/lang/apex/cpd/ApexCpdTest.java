@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.cpd;
+package net.sourceforge.pmd.lang.apex.cpd;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -13,6 +13,9 @@ import java.nio.file.Paths;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.cpd.CPDConfiguration;
+import net.sourceforge.pmd.cpd.CpdAnalysis;
+import net.sourceforge.pmd.cpd.Match;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
 
@@ -22,7 +25,7 @@ class ApexCpdTest {
 
     @BeforeEach
     void setUp() {
-        String path = IOUtil.normalizePath("src/test/resources/net/sourceforge/pmd/cpd/issue427");
+        String path = IOUtil.normalizePath("src/test/resources/net/sourceforge/pmd/lang/apex/cpd/issue427");
         testdir = Paths.get(path);
     }
 

@@ -11,6 +11,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 class MatchAlgorithm {
 
     private static final int MOD = 37;
@@ -19,14 +21,14 @@ class MatchAlgorithm {
     private List<Match> matches;
     private final Tokens tokens;
     private final List<TokenEntry> code;
-    private CPDListener cpdListener;
+    private @NonNull CPDListener cpdListener;
     private final int min;
 
     MatchAlgorithm(Tokens tokens, int min) {
          this(tokens, min, new CPDNullListener());
      }
 
-    MatchAlgorithm(Tokens tokens, int min, CPDListener listener) {
+    MatchAlgorithm(Tokens tokens, int min, @NonNull CPDListener listener) {
         this.tokens = tokens;
         this.code = tokens.getTokens();
         this.min = min;
@@ -92,7 +94,7 @@ class MatchAlgorithm {
         Map<TokenEntry, Object> markGroups = new HashMap<>(tokens.size());
         for (int i = code.size() - 1; i >= 0; i--) {
             TokenEntry token = code.get(i);
-            if (!TokenEntry.EOF.equals(token)) {
+            if (!token.isEof()) {
                 int last = tokenAt(min, token).getIdentifier();
                 lastHash = MOD * lastHash + token.getIdentifier() - lastMod * last;
                 token.setHashCode(lastHash);
@@ -118,7 +120,7 @@ class MatchAlgorithm {
                 for (int end = Math.max(0, i - min + 1); i > end; i--) {
                     token = code.get(i - 1);
                     lastHash = MOD * lastHash + token.getIdentifier();
-                    if (TokenEntry.EOF.equals(token)) {
+                    if (token.isEof()) {
                         break;
                     }
                 }

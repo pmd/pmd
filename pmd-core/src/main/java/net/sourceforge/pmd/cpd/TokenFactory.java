@@ -43,7 +43,7 @@ public interface TokenFactory extends AutoCloseable {
 
             @Override
             public void close() {
-                sink.addEof();
+                sink.addEof(name);
             }
         };
     }

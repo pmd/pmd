@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex;
 
-import net.sourceforge.pmd.cpd.ApexTokenizer;
+import net.sourceforge.pmd.lang.apex.cpd.ApexTokenizer;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageModuleBase;

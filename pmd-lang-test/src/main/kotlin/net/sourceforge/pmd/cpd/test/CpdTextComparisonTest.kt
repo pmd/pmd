@@ -96,7 +96,7 @@ abstract class CpdTextComparisonTest(
 
         for (token in tokens.iterator()) {
 
-            if (token === TokenEntry.EOF) {
+            if (token.isEof) {
                 append("EOF").appendLine()
                 continue
             }

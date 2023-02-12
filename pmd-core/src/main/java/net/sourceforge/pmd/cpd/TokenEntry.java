@@ -6,37 +6,46 @@ package net.sourceforge.pmd.cpd;
 
 public class TokenEntry implements Comparable<TokenEntry> {
 
-    public static final TokenEntry EOF = new TokenEntry();
+    private static final int EOF = 0;
 
     private final String fileName;
     private final int beginLine;
     private final int beginColumn;
     private final int endColumn;
+    private final int endLine;
     private int index;
     private int identifier;
     private int hashCode;
 
-    private TokenEntry() {
-        this.identifier = 0;
-        this.fileName = "EOFMarker";
-        this.beginLine = -1;
-        this.beginColumn = -1;
-        this.endColumn = -1;
+    /** constructor for EOF entries. */
+    TokenEntry(String fileName, int line, int column) {
+        assert isOk(line) && isOk(column) : "Coordinates are 1-based";
+        this.identifier = EOF;
+        this.fileName = fileName;
+        this.beginLine = line;
+        this.beginColumn = column;
+        this.endLine = line;
+        this.endColumn = column;
     }
 
     TokenEntry(int imageId, String fileName, int beginLine, int beginColumn, int endLine, int endColumn, int index) {
         assert isOk(beginLine) && isOk(beginColumn) && isOk(endLine) && isOk(endColumn) : "Coordinates are 1-based";
+        assert imageId != EOF;
         this.fileName = fileName;
         this.beginLine = beginLine;
         this.beginColumn = beginColumn;
+        this.endLine = endLine;
         this.endColumn = endColumn;
         this.identifier = imageId;
         this.index = index;
     }
 
+    public boolean isEof() {
+        return this.identifier == EOF;
+    }
 
     private boolean isOk(int coord) {
-        return coord >= 1 || coord == -1;
+        return coord >= 1;
     }
 
 
@@ -44,28 +53,25 @@ public class TokenEntry implements Comparable<TokenEntry> {
         return fileName;
     }
 
+
+    /** The line number where this token starts. */
     public int getBeginLine() {
         return beginLine;
     }
 
-    /**
-     * The column number where this token begins.
-     * returns -1 if not available
-     *
-     * @return the begin column number
-     */
-    public int getBeginColumn() {
-        return beginColumn; // TODO Java 1.8 make optional
+    /** The line number where this token ends. */
+    public int getEndLine() {
+        return endLine;
     }
 
-    /**
-     * The column number where this token ends.
-     * returns -1 if not available
-     *
-     * @return the end column number
-     */
+    /** The column number where this token starts, inclusive. */
+    public int getBeginColumn() {
+        return beginColumn;
+    }
+
+    /** The column number where this token ends, exclusive. */
     public int getEndColumn() {
-        return endColumn; // TODO Java 1.8 make optional
+        return endColumn;
     }
 
     int getIdentifier() {
@@ -88,17 +94,17 @@ public class TokenEntry implements Comparable<TokenEntry> {
     @SuppressWarnings("PMD.CompareObjectsWithEquals")
     @Override
     public boolean equals(Object o) {
-        // make sure to recognize EOF regardless of hashCode (hashCode is irrelevant for EOF)
         if (this == o) {
             return true;
-        } else if (o == EOF || this == EOF) {
-            return false;
-        }
-        // any token except EOF
-        if (!(o instanceof TokenEntry)) {
+        } else if (!(o instanceof TokenEntry)) {
             return false;
         }
         TokenEntry other = (TokenEntry) o;
+        if (other.isEof() != this.isEof()) {
+            return false;
+        } else if (this.isEof()) {
+            return other.getFileName().equals(this.getFileName());
+        }
         return other.hashCode == hashCode;
     }
 
@@ -112,7 +118,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
     }
 
     public String getImage(Tokens tokens) {
-        if (EOF.equals(this)) {
+        if (this.isEof()) {
             return "EOF";
         }
         String image = tokens.imageFromId(this.identifier);
@@ -121,7 +127,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
 
     @Override
     public String toString() {
-        if (EOF.equals(this)) {
+        if (this.isEof()) {
             return "EOF";
         }
         return Integer.toString(identifier);
