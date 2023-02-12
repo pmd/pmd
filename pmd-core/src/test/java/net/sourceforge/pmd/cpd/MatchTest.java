@@ -34,8 +34,8 @@ class MatchTest {
         assertEquals(1, match.getTokenCount());
         // Returns the line count of the first mark
         assertEquals(1, match.getLineCount());
-        // Returns the source code of the first mark
-        assertEquals(Chars.wrap("123456"), sourceManager.getSlice(match.getFirstMark()));
+        // Returns the source code of the first mark (the entire line)
+        assertEquals(Chars.wrap("1234567890"), sourceManager.getSlice(match.getFirstMark()));
         Iterator<Mark> i = match.iterator();
         Mark occurrence1 = i.next();
         Mark occurrence2 = i.next();
@@ -44,11 +44,11 @@ class MatchTest {
 
         assertEquals(mark1, occurrence1);
         assertEquals(1, occurrence1.getLineCount());
-        assertEquals(Chars.wrap("123456"), sourceManager.getSlice(mark1));
+        assertEquals(Chars.wrap("1234567890"), sourceManager.getSlice(mark1));
 
         assertEquals(mark2, occurrence2);
         assertEquals(1, occurrence2.getLineCount());
-        assertEquals(Chars.wrap("123456"), sourceManager.getSlice(mark2));
+        assertEquals(Chars.wrap("1234567890"), sourceManager.getSlice(mark2));
     }
 
     @Test

@@ -28,11 +28,9 @@ public class Mark implements Comparable<Mark> {
 
     /**
      * The column number where this duplication begins.
-     * returns -1 if not available
-     * @return the begin column number
      */
     public int getBeginColumn() {
-        return this.token.getBeginColumn(); // TODO Java 1.8 make optional
+        return this.token.getBeginColumn();
     }
 
     public int getBeginTokenIndex() {
@@ -40,7 +38,7 @@ public class Mark implements Comparable<Mark> {
     }
 
     public int getEndLine() {
-        return endToken == null ? getBeginLine() : endToken.getEndLine();
+        return endToken == null ? token.getEndLine() : endToken.getEndLine();
     }
 
     /**
@@ -49,11 +47,11 @@ public class Mark implements Comparable<Mark> {
      * @return the end column number
      */
     public int getEndColumn() {
-        return this.endToken == null ? -1 : this.endToken.getEndColumn(); // TODO Java 1.8 make optional
+        return this.endToken == null ? token.getEndColumn() : this.endToken.getEndColumn();
     }
 
     public int getEndTokenIndex() {
-        return this.endToken == null ? -1 : this.endToken.getIndex();
+        return this.endToken == null ? this.token.getIndex() : this.endToken.getIndex();
     }
 
     public int getLineCount() {

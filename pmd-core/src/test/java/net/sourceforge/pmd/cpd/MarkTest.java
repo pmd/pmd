@@ -14,16 +14,15 @@ class MarkTest {
     void testSimple() {
         String filename = "/var/Foo.java";
         Tokens tokens = new Tokens();
-        int beginLine = 1;
-        TokenEntry token = tokens.addToken("public", filename, beginLine, 2, 3, 4);
+        TokenEntry token = tokens.addToken("public", filename, 1, 2, 3, 4);
 
         Mark mark = new Mark(token);
 
         assertEquals(token, mark.getToken());
         assertEquals(filename, mark.getFilename());
-        assertEquals(beginLine, mark.getBeginLine());
-        assertEquals(1, mark.getLineCount());
-        assertEquals(beginLine, mark.getEndLine());
+        assertEquals(1, mark.getBeginLine());
+        assertEquals(3, mark.getLineCount());
+        assertEquals(3, mark.getEndLine());
         assertEquals(2, mark.getBeginColumn());
         assertEquals(4, mark.getEndColumn());
     }
@@ -39,7 +38,7 @@ class MarkTest {
         TokenEntry token = tokens.addToken("public", filename, beginLine, beginColumn, beginLine,
                                            beginColumn + "public".length());
         TokenEntry endToken = tokens.addToken("}", filename,
-                                              beginLine + lineCount, 1, beginLine + lineCount, endColumn);
+                                              beginLine + lineCount, 1, beginLine + lineCount - 1, endColumn);
 
         final Mark mark = new Mark(token);
         mark.setEndToken(endToken);

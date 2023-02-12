@@ -35,13 +35,13 @@ class AnyTokenizerTest {
         AnyTokenizer tokenizer = new AnyTokenizer("//");
         Tokens tokens = compareResult(tokenizer, "a = \"oo\n\";", listOf("a", "=", "\"oo\n\"", ";", "EOF"));
         TokenEntry string = tokens.getTokens().get(2);
-        assertEquals("\"oo\n\"", getTokenImage(string));
+        assertEquals("\"oo\n\"", string.getImage(tokens));
         assertEquals(1, string.getBeginLine());
         assertEquals(5, string.getBeginColumn());
         assertEquals(2, string.getEndColumn()); // ends on line 2
 
         TokenEntry semi = tokens.getTokens().get(3);
-        assertEquals(";", getTokenImage(semi));
+        assertEquals(";", semi.getImage(tokens));
         assertEquals(2, semi.getBeginLine());
         assertEquals(2, semi.getBeginColumn());
         assertEquals(3, semi.getEndColumn());
@@ -70,7 +70,7 @@ class AnyTokenizerTest {
 
         List<String> tokenStrings = new ArrayList<>();
         for (TokenEntry token : tokens.getTokens()) {
-            tokenStrings.add(getTokenImage(token));
+            tokenStrings.add(token.getImage(tokens));
         }
 
         assertEquals(expectedImages, tokenStrings);

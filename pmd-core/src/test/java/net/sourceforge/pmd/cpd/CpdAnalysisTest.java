@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.cpd;
 
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -17,6 +18,7 @@ import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.PlainTextLanguage;
 
 /**
@@ -31,7 +33,7 @@ class CpdAnalysisTest {
     // Symlinks are not well supported under Windows - so the tests are
     // simply executed only on linux.
     private boolean canTestSymLinks = SystemUtils.IS_OS_UNIX;
-    CPDConfiguration config = new CPDConfiguration();
+    CPDConfiguration config = new CPDConfiguration(new LanguageRegistry(setOf(PlainTextLanguage.getInstance())));
 
     @BeforeEach
     void setup() throws Exception {
