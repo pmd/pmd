@@ -16,6 +16,7 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -36,12 +37,20 @@ public final class LanguageRegistry implements Iterable<Language> {
 
     private static final Logger LOG = LoggerFactory.getLogger(LanguageRegistry.class);
 
+    private static final LanguageRegistry ALL_LANGUAGES =
+        loadLanguages(LanguageRegistry.class.getClassLoader());
+
     /**
      * Contains the languages that support PMD and are found on the classpath
      * of the classloader of this class. This can be used as a "default" registry.
      */
-    public static final LanguageRegistry PMD = loadLanguages(LanguageRegistry.class.getClassLoader());
-    public static final LanguageRegistry CPD = loadLanguages(LanguageRegistry.class.getClassLoader()); // todo
+    public static final LanguageRegistry PMD = ALL_LANGUAGES.filter(Language::supportsParsing);
+
+    /**
+     * Contains the languages that support CPD and are found on the classpath
+     * of the classloader of this class.
+     */
+    public static final LanguageRegistry CPD = ALL_LANGUAGES;
 
     private final Set<Language> languages;
 
@@ -58,6 +67,14 @@ public final class LanguageRegistry implements Iterable<Language> {
                                   .collect(CollectionUtil.toUnmodifiableSet());
         this.languagesById = CollectionUtil.associateBy(languages, Language::getTerseName);
         this.languagesByFullName = CollectionUtil.associateBy(languages, Language::getName);
+    }
+
+    /**
+     * Create a new registry with the languages that satisfy the predicate.
+     */
+    public LanguageRegistry filter(Predicate<Language> filterFun) {
+        return new LanguageRegistry(languages.stream().filter(filterFun)
+                                             .collect(Collectors.toSet()));
     }
 
     /**

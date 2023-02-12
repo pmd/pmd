@@ -2,96 +2,101 @@
 title: How to add a new CPD language
 short_title: Add a new CPD language
 tags: [devdocs, extending]
-summary: How to add a new CPD language
-last_updated: March 18, 2019 (6.13.0)
+summary: How to add a new language module with CPD support.
+last_updated: 2023-02-13 (7.0.0)
 permalink: pmd_devdocs_major_adding_new_cpd_language.html
-author: Matías Fraga <fragamati@gmail.com>
+author: Matías Fraga, Clément Fournier
 ---
 
-First of all, thanks for the contribution!
+## Adding support for a CPD language
 
-Happily for you, to add CPD support for a new language is now easier than ever!
+CPD works generically on the tokens produced by a {% jdoc core::cpd.Tokenizer %}.
+To add support for a new language, the crucial piece is writing a tokenizer that
+splits the source file into the tokens specific to your language. Thankfully you
+can use a stock [Antlr grammar](https://github.com/antlr/grammars-v4) or JavaCC
+grammar to generate a lexer for you. If you cannot use a lexer generator, for
+instance because you are wrapping a lexer for another library, it is still relatively
+easy to implement the Tokenizer interface.
 
-{% include callout.html content="**Pro Tip**: If you wish to add a new language, there are more than 50 languages you could easily add with just an [Antlr grammar](https://github.com/antlr/grammars-v4)." type="primary" %}
+Use the following guide to set up a new language module that supports CPD.
 
-All you need to do is follow this few steps:
+1. Create a new Maven module for your language. You can take [the Golang module](https://github.com/pmd/pmd/tree/master/pmd-go/pom.xml) as an example.
 
-1. Create a new module for your language, you can take [the Golang module](https://github.com/pmd/pmd/tree/master/pmd-go) as an example
-2. Create a Tokenizer
-    
-    - For Antlr grammars you can take the grammar from [here](https://github.com/antlr/grammars-v4)  and extend [AntlrTokenizer](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/internal/AntlrTokenizer.java)  taking Go as an example
-    
-    
-    ```java 
-      public class GoTokenizer extends AntlrTokenizer {    
-        
-          @Override protected AntlrTokenManager getLexerForSource(SourceCode sourceCode) {   
-              CharStream charStream = AntlrTokenizer.getCharStreamFromSourceCode(sourceCode);   
-              return new AntlrTokenManager(new GolangLexer(charStream), sourceCode.getFileName());   
-          }
-      }
+2. Implement a {% jdoc core::cpd.Tokenizer %}.
+    - For Antlr grammars you can take the grammar from [antlr/grammars-v4](https://github.com/antlr/grammars-v4) and place it in `src/main/antlr4` followed by the package name of the language. You then need to call the appropriate ant wrapper to generate
+    the lexer from the grammar. To do so, edit `pom.xml` (eg like [the Golang module](https://github.com/pmd/pmd/tree/master/pmd-go/pom.xml)).
+      Once that is done, `mvn generate-sources` should generate the lexer sources for you.
+
+      You can now implement a tokenizer, for instance by extending {% jdoc core::cpd.impl.AntlrTokenizer %}. The following reproduces the Go implementation:
+    ```java
+    // mind the package convention if you are going to make a PR
+    package net.sourceforge.pmd.lang.go.cpd;
+
+    public class GoTokenizer extends AntlrTokenizer {
+
+        @Override
+        protected Lexer getLexerForSource(CharStream charStream) {
+            return new GolangLexer(charStream);
+        }
+    }
     ```
     
-    - For JavaCC grammars you should subclass [JavaCCTokenizer](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/internal/JavaCCTokenizer.java) which has many examples you could follow, you should also take the [Python implementation](https://github.com/pmd/pmd/blob/master/pmd-python/src/main/java/net/sourceforge/pmd/cpd/PythonTokenizer.java) as reference
-    - For any other scenario you can use [AnyTokenizer](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/AnyTokenizer.java)
+    - For JavaCC grammars, place your grammar in `etc/grammar` and edit the `pom.xml` like the [Python implementation](https://github.com/pmd/pmd/blob/master/pmd-python/pom.xml) does.
+      You can then subclass {% jdoc core::cpd.impl.JavaCCTokenizer %} instead of AntlrTokenizer.
+    - For any other scenario just implement the interface however you can. Look at the Scala or Apex module for existing implementations.
 
- If you're using Antlr or JavaCC, update the pom.xml of your submodule to use the appropriate ant wrapper. See `pmd-go/pom.xml` and `pmd-python/pom.xml` for examples.
-
-3. Create your [Language](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/AbstractLanguage.java) class
+3. Create a {% jdoc core::lang.Language %} implementation and override `createCpdTokenizer`.
+If your language only supports CPD, then you can subclass  {% jdoc core::lang.impl.CpdOnlyLanguageModuleBase %}:
     
-    ```java 
-    public class GoLanguage extends AbstractLanguage {    
+    ```java
+    // mind the package convention if you are going to make a PR
+    package net.sourceforge.pmd.lang.go;
+
+    public class GoLanguageModule extends CpdOnlyLanguageModuleBase {
         
-        public GoLanguage() {   
-            super("Go", "go", new GoTokenizer(), ".go");   
-        }  
+        public GoLanguageModule() {
+            super(LanguageMetadata.withId("go").name("Go").extensions("go"));
+        }
+
+        @Override
+        public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
+            return new GoTokenizer();
+        }
     } 
-    ``` 
-    
-    {% include callout.html content="**Pro Tip**: Yes, keep looking at Go!" type="primary" %}
-    
-    **You are almost there!**
-    
-4. Update the list of supported languages
+    ```
 
-   - Write the fully-qualified name of your Language class to the file `src/main/resources/META-INF/services/net.sourceforge.pmd.cpd.Language`
+   To make PMD find the language module at run time, write the fully-qualified name of your language class into the file `src/main/resources/META-INF/services/net.sourceforge.pmd.lang.Language`.
 
-   - Update the test that asserts the list of supported languages by updating the `SUPPORTED_LANGUAGES` constant in [BinaryDistributionIT](https://github.com/pmd/pmd/blob/master/pmd-dist/src/test/java/net/sourceforge/pmd/it/BinaryDistributionIT.java)
+4. Update the test that asserts the list of supported languages by updating the `SUPPORTED_LANGUAGES` constant in [BinaryDistributionIT](https://github.com/pmd/pmd/blob/master/pmd-dist/src/test/java/net/sourceforge/pmd/it/BinaryDistributionIT.java).
 
-5. Please don't forget to add some test, you can again.. look at Go implementation ;)
-    
-    If you read this far, I'm keen to think you would also love to support some extra CPD configuration (ignore imports or crazy things like that)    
-    If that's your case , you came to the right place! 
-    
-6. You can add your custom properties using a Token filter
-    
-    -   For Antlr grammars all you need to do is implement your own [AntlrTokenFilter](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/token/AntlrTokenFilter.java)
-        
-        And by now, I know where you are going to look...
-        
-        **WRONG**  
-        
-        Why do you want GO to solve all your problems?
-        
-        You should take a look to [Kotlin token filter implementation](https://github.com/pmd/pmd/blob/master/pmd-kotlin/src/main/java/net/sourceforge/pmd/cpd/KotlinTokenizer.java)
-    
-    - For non-Antlr grammars you can use [BaseTokenFilter](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/token/internal/BaseTokenFilter.java) directly or take a peek to [Java's token filter](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/cpd/JavaTokenizer.java)  
+5. Add some tests for your tokenizer by following the [section below](#testing-your-implementation).
+
+### Declaring tokenizer options
+
+To make the tokenizer configurable, first define some property descriptors using
+{% jdoc core::properties.PropertyFactory %}. Look at {% jdoc core::cpd.Tokenizer %}
+for some predefined ones which you can reuse. You need to override {% jdoc core::Language#newPropertyBundle() %}
+and call `definePropertyDescriptor` to register your descriptors.
+After that you can access the values of the properties from the parameter
+of {% jdoc core::lang.Language#createCpdTokenizer(core::properties.LanguagePropertyBundle) %}.
+
+To implement simple token filtering, you can use {% jdoc core::cpd.impl.BaseTokenFilter %}
+as a base class, or eg {% jdoc core::cpd.impl.AntlrTokenFilter %} if you have an Antlr grammar. Take a look at the [Kotlin token filter implementation](https://github.com/pmd/pmd/blob/master/pmd-kotlin/src/main/java/net/sourceforge/pmd/lang/kotlin/cpd/KotlinTokenizer.java), or the [Java one](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/cpd/JavaTokenizer.java).
 
 
 ### Testing your implementation
 
 Add a Maven dependency on `pmd-lang-test` (scope `test`) in your `pom.xml`.
-This contains utilities to test your Tokenizer.
+This contains utilities to test your tokenizer.
 
-For simple tests, create a test class extending from `CpdTextComparisonTest`.
-That class is written in Kotlin, but you can extend it in Java as well.
-
+Create a test class extending from {% lang-test::cpd.test.CpdTextComparisonTest %}.
 To add tests, you need to write regular JUnit `@Test`-annotated methods, and
 call the method `doTest` with the name of the test file.
 
 For example, for the Dart language:
 
 ```java
+package net.sourceforge.pmd.lang.dart.cpd;
 
 public class DartTokenizerTest extends CpdTextComparisonTest {
 
@@ -101,20 +106,15 @@ public class DartTokenizerTest extends CpdTextComparisonTest {
 
 
     public DartTokenizerTest() {
-        super(".dart"); // the file extension for the dart language
+        super("dart", ".dart"); // the ID of the language, then the file extension used by test files
     }
 
     @Override
     protected String getResourcePrefix() {
-        // If your class is in                  src/test/java     /some/package
-        // you need to place the test files in  src/test/resources/some/package/cpdData
-        return "cpdData";
-    }
-
-    @Override
-    public Tokenizer newTokenizer() {
-        // Override this abstract method to return the correct tokenizer
-        return new DartTokenizer();
+        // "testdata" is the default value, you don't need to override.
+        // This specifies that you should place the test files in
+        // src/test/resources/net/sourceforge/pmd/lang/dart/cpd/testdata
+        return "testdata";
     }
 
     /**************
