@@ -4,7 +4,10 @@
 
 package net.sourceforge.pmd.lang.swift;
 
+import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
+import net.sourceforge.pmd.lang.swift.cpd.SwiftTokenizer;
 
 /**
  * Language Module for Swift
@@ -21,5 +24,10 @@ public class SwiftLanguageModule extends SimpleLanguageModuleBase {
      */
     public SwiftLanguageModule() {
         super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("swift"), new SwiftHandler());
+    }
+
+    @Override
+    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
+        return new SwiftTokenizer();
     }
 }

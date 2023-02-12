@@ -272,13 +272,13 @@ public abstract class LanguageModuleBase implements Language {
          * assigned to the language. Parameters should not start with a period
          * {@code .}.
          *
-         * @param e1     First extensions
+         * @param extensionWithoutPeriod     First extensions
          * @param others Other extensions (optional)
          *
          * @throws NullPointerException If any extension is null
          */
-        public LanguageMetadata extensions(String e1, String... others) {
-            this.extensions = new ArrayList<>(setOf(e1, others));
+        public LanguageMetadata extensions(String extensionWithoutPeriod, String... others) {
+            this.extensions = new ArrayList<>(setOf(extensionWithoutPeriod, others));
             AssertionUtil.requireContainsNoNullValue("extensions", this.extensions);
             return this;
         }

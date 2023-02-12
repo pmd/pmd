@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.ServiceLoader;
 import java.util.Set;
 
+import net.sourceforge.pmd.cpd.AnyTokenizer;
 import net.sourceforge.pmd.cpd.Tokenizer;
 
 /**
@@ -199,7 +200,7 @@ public interface Language extends Comparable<Language> {
      * @throws UnsupportedOperationException if this language does not support CPD
      */
     default Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
-        throw new UnsupportedOperationException(this + " does not support running a CPD analysis.");
+        return new AnyTokenizer();
     }
 
 

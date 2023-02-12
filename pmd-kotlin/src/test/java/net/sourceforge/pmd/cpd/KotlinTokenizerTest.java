@@ -11,7 +11,7 @@ import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 class KotlinTokenizerTest extends CpdTextComparisonTest {
 
     KotlinTokenizerTest() {
-        super(".kt");
+        super("kotlin", ".kt");
     }
 
     @Override

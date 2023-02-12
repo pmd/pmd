@@ -8,7 +8,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.AstVisitor;
-import net.sourceforge.pmd.lang.swift.AbstractSwiftRule;
+import net.sourceforge.pmd.lang.swift.rule.AbstractSwiftRule;
 import net.sourceforge.pmd.lang.swift.ast.SwiftParser.SwAttribute;
 import net.sourceforge.pmd.lang.swift.ast.SwiftParser.SwAttributes;
 import net.sourceforge.pmd.lang.swift.ast.SwiftParser.SwCodeBlock;

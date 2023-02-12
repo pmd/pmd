@@ -14,7 +14,7 @@ import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 class PerlTokenizerTest extends CpdTextComparisonTest {
 
     PerlTokenizerTest() {
-        super(".pl");
+        super("perl", ".pl");
     }
 
     @Test

@@ -5,6 +5,9 @@
 package net.sourceforge.pmd.lang.kotlin;
 
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.cpd.KotlinTokenizer;
+import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
 
 /**
@@ -28,5 +31,10 @@ public class KotlinLanguageModule extends SimpleLanguageModuleBase {
                               .addDefaultVersion("1.6-rfc+0.1", "1.6"),
               new KotlinHandler());
 
+    }
+
+    @Override
+    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
+        return new KotlinTokenizer();
     }
 }
