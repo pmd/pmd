@@ -4,11 +4,13 @@
 
 package net.sourceforge.pmd.lang.java;
 
+import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageModuleBase;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.java.cpd.JavaTokenizer;
 import net.sourceforge.pmd.lang.java.internal.JavaLanguageProcessor;
 import net.sourceforge.pmd.lang.java.internal.JavaLanguageProperties;
 
@@ -52,6 +54,11 @@ public class JavaLanguageModule extends LanguageModuleBase {
     @Override
     public LanguageProcessor createProcessor(LanguagePropertyBundle bundle) {
         return new JavaLanguageProcessor((JavaLanguageProperties) bundle);
+    }
+
+    @Override
+    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
+        return new JavaTokenizer((JavaLanguageProperties) bundle);
     }
 
     public static Language getInstance() {

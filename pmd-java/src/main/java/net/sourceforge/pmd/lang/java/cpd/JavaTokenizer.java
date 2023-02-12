@@ -22,8 +22,8 @@ import net.sourceforge.pmd.lang.java.internal.JavaLanguageProperties;
 
 public class JavaTokenizer extends JavaCCTokenizer {
 
-    public static final String CPD_START = "\"CPD-START\"";
-    public static final String CPD_END = "\"CPD-END\"";
+    private static final String CPD_START = "\"CPD-START\"";
+    private static final String CPD_END = "\"CPD-END\"";
 
     private final boolean ignoreAnnotations;
     private final boolean ignoreLiterals;
