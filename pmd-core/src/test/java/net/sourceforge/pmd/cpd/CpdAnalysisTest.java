@@ -39,7 +39,6 @@ class CpdAnalysisTest {
     void setup() throws Exception {
         config.setLanguage(PlainTextLanguage.getInstance());
         config.setMinimumTileSize(10);
-        config.postContruct();
     }
 
     /**

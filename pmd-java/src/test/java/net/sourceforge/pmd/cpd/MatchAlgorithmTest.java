@@ -73,7 +73,7 @@ class MatchAlgorithmTest {
         Language java = JavaLanguageModule.getInstance();
         LanguagePropertyBundle bundle = java.newPropertyBundle();
         bundle.setProperty(Tokenizer.CPD_ANONYMIZE_IDENTIFIERS, true);
-        bundle.setProperty(Tokenizer.CPD_ANONYMiZE_LITERALS, true);
+        bundle.setProperty(Tokenizer.CPD_ANONYMIZE_LITERALS, true);
         Tokenizer tokenizer = java.createCpdTokenizer(bundle);
         TextDocument sourceCode = TextDocument.readOnlyString(getSampleCode(), "Foo.java", java.getDefaultVersion());
         Tokens tokens = new Tokens();

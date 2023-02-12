@@ -87,7 +87,7 @@ public class GUI implements CPDListener {
         }
 
         public boolean canIgnoreLiterals() {
-            return getLanguage().newPropertyBundle().hasDescriptor(Tokenizer.CPD_ANONYMiZE_LITERALS);
+            return getLanguage().newPropertyBundle().hasDescriptor(Tokenizer.CPD_ANONYMIZE_LITERALS);
         }
 
         public boolean canIgnoreAnnotations() {
@@ -632,8 +632,6 @@ public class GUI implements CPDListener {
             LanguageConfig conf = languageConfigFor((String) languageBox.getSelectedItem());
             Language language = conf.getLanguage();
             config.setLanguage(language);
-
-            CPDConfiguration.setSystemProperties(config);
 
             try (CpdAnalysis cpd = new CpdAnalysis(config)) {
                 cpd.setCpdListener(this);

@@ -73,7 +73,7 @@ public final class CpdAnalysis implements AutoCloseable {
     private void setLanguageProperties(Language language, CPDConfiguration configuration) {
         LanguagePropertyBundle props = configuration.getLanguageProperties(language);
 
-        setPropertyIfMissing(Tokenizer.CPD_ANONYMiZE_LITERALS, props, configuration.isIgnoreLiterals());
+        setPropertyIfMissing(Tokenizer.CPD_ANONYMIZE_LITERALS, props, configuration.isIgnoreLiterals());
         setPropertyIfMissing(Tokenizer.CPD_ANONYMIZE_IDENTIFIERS, props, configuration.isIgnoreIdentifiers());
         setPropertyIfMissing(Tokenizer.CPD_IGNORE_METADATA, props, configuration.isIgnoreAnnotations());
         setPropertyIfMissing(Tokenizer.CPD_IGNORE_IMPORTS, props, configuration.isIgnoreUsings());
@@ -128,6 +128,7 @@ public final class CpdAnalysis implements AutoCloseable {
         performAnalysis(r -> { });
     }
 
+    @SuppressWarnings("PMD.CloseResource")
     public void performAnalysis(Consumer<CPDReport> consumer) {
 
         try (SourceManager sourceManager = new SourceManager(files.getCollectedFiles())) {
@@ -148,7 +149,7 @@ public final class CpdAnalysis implements AutoCloseable {
                     numberOfTokensPerFile.put(textDocument.getPathId(), newTokens);
                     listener.addedFile(1);
                 } catch (TokenMgrError | IOException e) {
-                    if (e instanceof TokenMgrError) {
+                    if (e instanceof TokenMgrError) { // NOPMD
                         ((TokenMgrError) e).setFileName(textFile.getDisplayName());
                     }
                     reporter.errorEx("Error while lexing.", e);

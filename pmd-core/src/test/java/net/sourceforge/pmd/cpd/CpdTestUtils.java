@@ -15,7 +15,11 @@ import java.util.Set;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.document.TextFile;
 
-class CpdTestUtils {
+final class CpdTestUtils {
+
+    private CpdTestUtils() {
+        // utility class
+    }
 
     static CPDReport makeReport(List<Match> matches) {
         return makeReport(matches, Collections.emptyMap());

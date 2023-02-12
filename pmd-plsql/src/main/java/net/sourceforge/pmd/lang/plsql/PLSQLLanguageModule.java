@@ -40,7 +40,7 @@ public class PLSQLLanguageModule extends SimpleLanguageModuleBase {
     @Override
     public LanguagePropertyBundle newPropertyBundle() {
         LanguagePropertyBundle bundle = super.newPropertyBundle();
-        bundle.definePropertyDescriptor(Tokenizer.CPD_ANONYMiZE_LITERALS);
+        bundle.definePropertyDescriptor(Tokenizer.CPD_ANONYMIZE_LITERALS);
         bundle.definePropertyDescriptor(Tokenizer.CPD_ANONYMIZE_IDENTIFIERS);
         return bundle;
     }

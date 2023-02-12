@@ -24,7 +24,7 @@ class SourceManager implements AutoCloseable {
     private final Map<String, TextFile> fileByName = new HashMap<>();
     private final List<TextFile> textFiles;
 
-    public SourceManager(List<? extends TextFile> files) {
+    SourceManager(List<? extends TextFile> files) {
         textFiles = new ArrayList<>(files);
         files.forEach(f -> fileByName.put(f.getPathId(), f));
     }
@@ -59,6 +59,7 @@ class SourceManager implements AutoCloseable {
         }
     }
 
+    @SuppressWarnings("PMD.CloseResource")
     public Chars getSlice(Mark mark) {
         TextFile textFile = fileByName.get(mark.getFilename());
         assert textFile != null;

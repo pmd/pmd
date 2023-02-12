@@ -22,7 +22,7 @@ public abstract class TokenizerBase<T extends GenericToken<T>> implements Tokeni
     }
 
     protected void processToken(TokenFactory tokenEntries, T currentToken) {
-       tokenEntries.recordToken(getImage(currentToken), currentToken.getReportLocation());
+        tokenEntries.recordToken(getImage(currentToken), currentToken.getReportLocation());
     }
 
     protected String getImage(T token) {
@@ -30,7 +30,7 @@ public abstract class TokenizerBase<T extends GenericToken<T>> implements Tokeni
     }
 
     @Override
-    public void tokenize(TextDocument document, TokenFactory tokens) throws IOException {
+    public final void tokenize(TextDocument document, TokenFactory tokens) throws IOException {
         TokenManager<T> tokenManager = filterTokenStream(makeLexerImpl(document));
         T currentToken = tokenManager.getNextToken();
         while (currentToken != null) {

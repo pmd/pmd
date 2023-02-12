@@ -25,8 +25,8 @@ class MatchAlgorithm {
     private final int min;
 
     MatchAlgorithm(Tokens tokens, int min) {
-         this(tokens, min, new CPDNullListener());
-     }
+        this(tokens, min, new CPDNullListener());
+    }
 
     MatchAlgorithm(Tokens tokens, int min, @NonNull CPDListener listener) {
         this.tokens = tokens;

@@ -25,7 +25,7 @@ public class PLSQLTokenizer extends JavaCCTokenizer {
          * to true
          */
         ignoreIdentifiers = properties.getProperty(Tokenizer.CPD_ANONYMIZE_IDENTIFIERS);
-        ignoreLiterals = properties.getProperty(Tokenizer.CPD_ANONYMiZE_LITERALS);
+        ignoreLiterals = properties.getProperty(Tokenizer.CPD_ANONYMIZE_LITERALS);
     }
 
     @Override

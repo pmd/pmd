@@ -30,7 +30,6 @@ import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 /**
  * @author Philippe T'Seyen
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
- *
  */
 class XMLRendererTest {
 
@@ -184,8 +183,8 @@ class XMLRendererTest {
         CpdReportBuilder builder = new CpdReportBuilder();
         final String filename = "/var/Foo.java";
         final int lineCount = 2;
-        final Mark mark1 =builder. createMark("public", filename, 1, lineCount, 2, 3);
-        final Mark mark2 =builder. createMark("stuff", filename, 3, lineCount, 4, 5);
+        final Mark mark1 = builder.createMark("public", filename, 1, lineCount, 2, 3);
+        final Mark mark2 = builder.createMark("stuff", filename, 3, lineCount, 4, 5);
         builder.addMatch(new Match(75, mark1, mark2));
         builder.recordNumTokens(filename, 888);
 
@@ -195,7 +194,7 @@ class XMLRendererTest {
         renderer.render(report, writer);
         final String xmlOutput = writer.toString();
         final Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-                .parse(new ByteArrayInputStream(xmlOutput.getBytes(ENCODING)));
+                                                   .parse(new ByteArrayInputStream(xmlOutput.getBytes(ENCODING)));
         final NodeList files = doc.getElementsByTagName("file");
         final Node file = files.item(0);
         final NamedNodeMap attributes = file.getAttributes();
@@ -209,8 +208,8 @@ class XMLRendererTest {
         CpdReportBuilder builder = new CpdReportBuilder();
         final String filename = "/var/Foo.java";
         final int lineCount = 6;
-        final Mark mark1 =builder. createMark("public", filename, 1, lineCount, 2, 3);
-        final Mark mark2 =builder. createMark("stuff", filename, 73, lineCount, 4, 5);
+        final Mark mark1 = builder.createMark("public", filename, 1, lineCount, 2, 3);
+        final Mark mark2 = builder.createMark("stuff", filename, 73, lineCount, 4, 5);
         builder.addMatch(new Match(75, mark1, mark2));
         builder.recordNumTokens(filename, 888);
 

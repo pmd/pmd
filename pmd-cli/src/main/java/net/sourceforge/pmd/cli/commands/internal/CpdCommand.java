@@ -7,7 +7,6 @@ package net.sourceforge.pmd.cli.commands.internal;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -116,11 +115,6 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand {
         configuration.setSourceEncoding(encoding.getEncoding().name());
         configuration.setURI(uri);
 
-        configuration.postContruct();
-        // Pass extra parameters as System properties to allow language
-        // implementation to retrieve their associate values...
-        CPDConfiguration.setSystemProperties(configuration);
-
         return configuration;
     }
 
@@ -154,7 +148,7 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand {
 
         @Override
         public Iterator<String> iterator() {
-            return Arrays.stream(CPDConfiguration.getRenderers()).iterator();
+            return CPDConfiguration.getRenderers().stream().sorted().iterator();
         }
     }
 }

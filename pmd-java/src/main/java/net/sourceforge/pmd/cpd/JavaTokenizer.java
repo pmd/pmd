@@ -30,7 +30,7 @@ public class JavaTokenizer extends JavaCCTokenizer {
 
     public JavaTokenizer(JavaLanguageProperties properties) {
         ignoreAnnotations = properties.getProperty(Tokenizer.CPD_IGNORE_METADATA);
-        ignoreLiterals = properties.getProperty(Tokenizer.CPD_ANONYMiZE_LITERALS);
+        ignoreLiterals = properties.getProperty(Tokenizer.CPD_ANONYMIZE_LITERALS);
         ignoreIdentifiers = properties.getProperty(Tokenizer.CPD_ANONYMIZE_IDENTIFIERS);
         constructorDetector = new ConstructorDetector(ignoreIdentifiers);
     }

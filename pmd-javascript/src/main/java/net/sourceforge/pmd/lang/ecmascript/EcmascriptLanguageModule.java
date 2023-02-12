@@ -4,7 +4,10 @@
 
 package net.sourceforge.pmd.lang.ecmascript;
 
+import net.sourceforge.pmd.lang.ecmascript.cpd.EcmascriptTokenizer;
+import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptParser;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
@@ -25,5 +28,10 @@ public class EcmascriptLanguageModule extends SimpleLanguageModuleBase {
 
     public static Language getInstance() {
         return LanguageRegistry.PMD.getLanguageByFullName(NAME);
+    }
+
+    @Override
+    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
+        return new EcmascriptTokenizer();
     }
 }

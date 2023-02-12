@@ -13,7 +13,6 @@ import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.tools.ant.BuildException;
@@ -27,11 +26,12 @@ import net.sourceforge.pmd.cpd.CPDConfiguration;
 import net.sourceforge.pmd.cpd.CPDReport;
 import net.sourceforge.pmd.cpd.CSVRenderer;
 import net.sourceforge.pmd.cpd.CpdAnalysis;
-import net.sourceforge.pmd.cpd.LanguageFactory;
 import net.sourceforge.pmd.cpd.SimpleRenderer;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.cpd.XMLRenderer;
 import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 
 /**
  * CPD Ant task. Setters of this class are interpreted by Ant as properties
@@ -184,9 +184,9 @@ public class CPDTask extends Task {
             throw new BuildException("Must include at least one FileSet");
         }
 
-        if (!Arrays.asList(LanguageFactory.supportedLanguages).contains(language)) {
+        if (LanguageRegistry.CPD.getLanguageById(language) == null) {
             throw new BuildException("Language " + language + " is not supported. Available languages: "
-                    + Arrays.toString(LanguageFactory.supportedLanguages));
+                    + LanguageRegistry.CPD.commaSeparatedList(Language::getId));
         }
     }
 

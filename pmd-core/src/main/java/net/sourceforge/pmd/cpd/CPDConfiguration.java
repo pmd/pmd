@@ -10,11 +10,12 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.LoggerFactory;
 
@@ -92,17 +93,6 @@ public class CPDConfiguration extends AbstractConfiguration {
         super(languageRegistry, new SimpleMessageReporter(LoggerFactory.getLogger(CpdAnalysis.class)));
     }
 
-    public void postContruct() {
-        if (getRendererName() == null) {
-            setRendererName(DEFAULT_RENDERER);
-        }
-        if (this.cpdReportRenderer == null) {
-            //may throw
-            CPDReportRenderer renderer = createRendererByName(getRendererName(), getSourceEncoding().name());
-            setRenderer(renderer);
-        }
-    }
-
     static CPDReportRenderer createRendererByName(String name, String encoding) {
         if (name == null || "".equals(name)) {
             name = DEFAULT_RENDERER;
@@ -147,18 +137,9 @@ public class CPDConfiguration extends AbstractConfiguration {
         }
     }
 
-    public static String[] getRenderers() {
-        String[] result = RENDERERS.keySet().toArray(new String[0]);
-        Arrays.sort(result);
-        return result;
+    public static Set<String> getRenderers() {
+        return Collections.unmodifiableSet(RENDERERS.keySet());
     }
-
-
-
-    public static void setSystemProperties(CPDConfiguration configuration) {
-
-    }
-
 
     public void setLanguage(net.sourceforge.pmd.lang.Language language) {
         setForceLanguageVersion(language.getDefaultVersion());

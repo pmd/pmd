@@ -18,7 +18,7 @@ public interface Tokenizer {
                        .desc("Ignore sequences of literals, eg `0, 0, 0, 0`")
                        .build();
 
-    PropertyDescriptor<Boolean> CPD_ANONYMiZE_LITERALS =
+    PropertyDescriptor<Boolean> CPD_ANONYMIZE_LITERALS =
         PropertyFactory.booleanProperty("cpdAnonymizeLiterals")
                        .defaultValue(false)
                        .desc("Anonymize literals. They are still part of the token stream but all literals appear to have the same value.")
