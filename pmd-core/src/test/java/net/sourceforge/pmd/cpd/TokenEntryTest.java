@@ -16,7 +16,7 @@ class TokenEntryTest {
         tokens.addToken("public", "/var/Foo.java", 1, 2, 3, 4);
         TokenEntry mark = tokens.peekLastToken();
         assertEquals(1, mark.getBeginLine());
-        assertEquals("/var/Foo.java", mark.getTokenSrcID());
+        assertEquals("/var/Foo.java", mark.getFileName());
         assertEquals(0, mark.getIndex());
         assertEquals(2, mark.getBeginColumn());
         assertEquals(4, mark.getEndColumn());

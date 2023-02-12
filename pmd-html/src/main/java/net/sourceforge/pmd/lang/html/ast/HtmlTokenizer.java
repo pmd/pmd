@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.html.HtmlLanguageModule;
 public class HtmlTokenizer implements Tokenizer {
 
     @Override
-    public void tokenize(TextDocument sourceCode, TokenFactory tokenEntries) {
+    public void tokenize(TextDocument sourceCode, TokenFactory tokens) {
         HtmlLanguageModule html = HtmlLanguageModule.getInstance();
 
         try (LanguageProcessor processor = html.createProcessor(html.newPropertyBundle())) {
@@ -33,7 +33,7 @@ public class HtmlTokenizer implements Tokenizer {
             HtmlParser parser = new HtmlParser();
             ASTHtmlDocument root = parser.parse(task);
 
-            traverse(root, tokenEntries);
+            traverse(root, tokens);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         } catch (Exception e) {

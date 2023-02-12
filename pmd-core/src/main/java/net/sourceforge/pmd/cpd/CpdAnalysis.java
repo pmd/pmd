@@ -112,20 +112,10 @@ public final class CpdAnalysis implements AutoCloseable {
         this.listener = cpdListener;
     }
 
-    private int doTokenize(TextDocument document, Tokenizer tokenizer, Tokens tokens) {
+    private int doTokenize(TextDocument document, Tokenizer tokenizer, Tokens tokens) throws IOException, TokenMgrError {
         LOGGER.trace("Tokenizing {}", document.getPathId());
         int lastTokenSize = tokens.size();
-        try {
-            tokenizer.tokenize(document, TokenFactory.forFile(document, tokens));
-        } catch (IOException ioe) {
-            reporter.errorEx("Error while lexing.", ioe);
-        } catch (TokenMgrError e) {
-            e.setFileName(document.getDisplayName());
-            reporter.errorEx("Error while lexing.", e);
-            throw e;
-        } finally {
-            tokens.addEof();
-        }
+        Tokenizer.tokenize(tokenizer, document, tokens);
         return tokens.size() - lastTokenSize - 1; /* EOF */
     }
 
@@ -151,7 +141,11 @@ public final class CpdAnalysis implements AutoCloseable {
                     int newTokens = doTokenize(textDocument, tokenizers.get(textFile.getLanguageVersion().getLanguage()), tokens);
                     numberOfTokensPerFile.put(textDocument.getPathId(), newTokens);
                     listener.addedFile(1);
-                } catch (TokenMgrError e) {
+                } catch (TokenMgrError | IOException e) {
+                    if (e instanceof TokenMgrError) {
+                        ((TokenMgrError) e).setFileName(textFile.getDisplayName());
+                    }
+                    reporter.errorEx("Error while lexing.", e);
                     // already reported
                     savedState.restore(tokens);
                 }

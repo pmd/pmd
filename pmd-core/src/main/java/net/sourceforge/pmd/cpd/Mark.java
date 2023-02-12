@@ -19,7 +19,7 @@ public class Mark implements Comparable<Mark> {
     }
 
     public String getFilename() {
-        return this.token.getTokenSrcID();
+        return this.token.getFileName();
     }
 
     public int getBeginLine() {

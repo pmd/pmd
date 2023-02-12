@@ -7,6 +7,7 @@ package net.sourceforge.pmd.cpd;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,19 +19,19 @@ import net.sourceforge.pmd.lang.document.TextDocument;
 class AnyTokenizerTest {
 
     @Test
-    void testMultiLineMacros() {
+    void testMultiLineMacros() throws IOException {
         AnyTokenizer tokenizer = new AnyTokenizer("//");
         compareResult(tokenizer, TEST1, EXPECTED);
     }
 
     @Test
-    void testStringEscape() {
+    void testStringEscape() throws IOException {
         AnyTokenizer tokenizer = new AnyTokenizer("//");
         compareResult(tokenizer, "a = \"oo\\n\"", listOf("a", "=", "\"oo\\n\"", "EOF"));
     }
 
     @Test
-    void testMultilineString() {
+    void testMultilineString() throws IOException {
         AnyTokenizer tokenizer = new AnyTokenizer("//");
         Tokens tokens = compareResult(tokenizer, "a = \"oo\n\";", listOf("a", "=", "\"oo\n\"", ";", "EOF"));
         TokenEntry string = tokens.getTokens().get(2);
@@ -50,11 +51,11 @@ class AnyTokenizerTest {
      * Tests that [core][cpd] AnyTokenizer doesn't count columns correctly #2760 is actually fixed.
      */
     @Test
-    void testTokenPosition() {
+    void testTokenPosition() throws IOException {
         AnyTokenizer tokenizer = new AnyTokenizer();
         TextDocument code = TextDocument.readOnlyString("a;\nbbbb\n;", "Foo.dummy", DummyLanguageModule.getInstance().getDefaultVersion());
         Tokens tokens = new Tokens();
-        tokenizer.tokenize(code, TokenFactory.forFile(code, tokens));
+        Tokenizer.tokenize(tokenizer, code, tokens);
         TokenEntry bbbbToken = tokens.getTokens().get(2);
         assertEquals(2, bbbbToken.getBeginLine());
         assertEquals(1, bbbbToken.getBeginColumn());
@@ -62,10 +63,10 @@ class AnyTokenizerTest {
     }
 
 
-    private Tokens compareResult(AnyTokenizer tokenizer, String source, List<String> expectedImages) {
+    private Tokens compareResult(AnyTokenizer tokenizer, String source, List<String> expectedImages) throws IOException {
         TextDocument code = TextDocument.readOnlyString(source, "Foo.dummy", DummyLanguageModule.getInstance().getDefaultVersion());
         Tokens tokens = new Tokens();
-        tokenizer.tokenize(code, TokenFactory.forFile(code, tokens));
+        Tokenizer.tokenize(tokenizer, code, tokens);
 
         List<String> tokenStrings = new ArrayList<>();
         for (TokenEntry token : tokens.getTokens()) {

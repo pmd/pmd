@@ -62,7 +62,7 @@ public class AnyTokenizer implements Tokenizer {
     }
 
     @Override
-    public void tokenize(TextDocument sourceCode, TokenFactory tokenEntries) {
+    public void tokenize(TextDocument sourceCode, TokenFactory tokens) {
         Chars text = sourceCode.getText();
         Matcher matcher = pattern.matcher(text);
         int lineNo = 1;
@@ -87,7 +87,7 @@ public class AnyTokenizer implements Tokenizer {
                 lineNo += StringUtil.lineNumberAt(image, image.length()) - 1;
                 lastLineStart = matcher.start() + image.length() - ecol + 1;
             }
-            tokenEntries.recordToken(image, bline, bcol, lineNo, ecol);
+            tokens.recordToken(image, bline, bcol, lineNo, ecol);
         }
     }
 

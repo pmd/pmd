@@ -82,5 +82,11 @@ public interface Tokenizer {
 
     String DEFAULT_SKIP_BLOCKS_PATTERN = "#if 0|#endif";
 
-    void tokenize(TextDocument sourceCode, TokenFactory tokenEntries) throws IOException;
+    void tokenize(TextDocument sourceCode, TokenFactory tokens) throws IOException;
+
+    static void tokenize(Tokenizer tokenizer, TextDocument textDocument, Tokens tokens) throws IOException {
+        try (TokenFactory tf = TokenFactory.forFile(textDocument, tokens)) {
+            tokenizer.tokenize(textDocument, tf);
+        }
+    }
 }

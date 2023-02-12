@@ -7,7 +7,7 @@ package net.sourceforge.pmd.cpd;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
 
-public interface TokenFactory {
+public interface TokenFactory extends AutoCloseable {
 
     void recordToken(String image, int startLine, int startCol, int endLine, int endCol);
 
@@ -18,6 +18,9 @@ public interface TokenFactory {
     void setImage(TokenEntry entry, String newImage);
 
     TokenEntry peekLastToken();
+
+    @Override
+    void close();
 
     static TokenFactory forFile(TextDocument file, Tokens sink) {
         return new TokenFactory() {
@@ -36,6 +39,11 @@ public interface TokenFactory {
             @Override
             public TokenEntry peekLastToken() {
                 return sink.peekLastToken();
+            }
+
+            @Override
+            public void close() {
+                sink.addEof();
             }
         };
     }

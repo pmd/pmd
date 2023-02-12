@@ -8,7 +8,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
 
     public static final TokenEntry EOF = new TokenEntry();
 
-    private final String tokenSrcID;
+    private final String fileName;
     private final int beginLine;
     private final int beginColumn;
     private final int endColumn;
@@ -18,15 +18,15 @@ public class TokenEntry implements Comparable<TokenEntry> {
 
     private TokenEntry() {
         this.identifier = 0;
-        this.tokenSrcID = "EOFMarker";
+        this.fileName = "EOFMarker";
         this.beginLine = -1;
         this.beginColumn = -1;
         this.endColumn = -1;
     }
 
-    TokenEntry(int imageId, String tokenSrcID, int beginLine, int beginColumn, int endLine, int endColumn, int index) {
+    TokenEntry(int imageId, String fileName, int beginLine, int beginColumn, int endLine, int endColumn, int index) {
         assert isOk(beginLine) && isOk(beginColumn) && isOk(endLine) && isOk(endColumn) : "Coordinates are 1-based";
-        this.tokenSrcID = tokenSrcID;
+        this.fileName = fileName;
         this.beginLine = beginLine;
         this.beginColumn = beginColumn;
         this.endColumn = endColumn;
@@ -40,8 +40,8 @@ public class TokenEntry implements Comparable<TokenEntry> {
     }
 
 
-    String getTokenSrcID() {
-        return tokenSrcID;
+    String getFileName() {
+        return fileName;
     }
 
     public int getBeginLine() {
@@ -51,6 +51,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
     /**
      * The column number where this token begins.
      * returns -1 if not available
+     *
      * @return the begin column number
      */
     public int getBeginColumn() {
@@ -60,17 +61,18 @@ public class TokenEntry implements Comparable<TokenEntry> {
     /**
      * The column number where this token ends.
      * returns -1 if not available
+     *
      * @return the end column number
      */
     public int getEndColumn() {
         return endColumn; // TODO Java 1.8 make optional
     }
 
-     int getIdentifier() {
+    int getIdentifier() {
         return this.identifier;
     }
 
-     int getIndex() {
+    int getIndex() {
         return this.index;
     }
 
@@ -79,7 +81,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
         return hashCode;
     }
 
-     void setHashCode(int hashCode) {
+    void setHashCode(int hashCode) {
         this.hashCode = hashCode;
     }
 
@@ -105,6 +107,18 @@ public class TokenEntry implements Comparable<TokenEntry> {
         return getIndex() - other.getIndex();
     }
 
+    final void setImageIdentifier(int identifier) {
+        this.identifier = identifier;
+    }
+
+    public String getImage(Tokens tokens) {
+        if (EOF.equals(this)) {
+            return "EOF";
+        }
+        String image = tokens.imageFromId(this.identifier);
+        return image == null ? "--unknown--" : image;
+    }
+
     @Override
     public String toString() {
         if (EOF.equals(this)) {
@@ -113,7 +127,4 @@ public class TokenEntry implements Comparable<TokenEntry> {
         return Integer.toString(identifier);
     }
 
-    final void setImageIdentifier(int identifier) {
-        this.identifier = identifier;
-    }
 }

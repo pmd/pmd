@@ -30,11 +30,11 @@ public abstract class TokenizerBase<T extends GenericToken<T>> implements Tokeni
     }
 
     @Override
-    public void tokenize(TextDocument document, TokenFactory tokenEntries) throws IOException {
+    public void tokenize(TextDocument document, TokenFactory tokens) throws IOException {
         TokenManager<T> tokenManager = filterTokenStream(makeLexerImpl(document));
         T currentToken = tokenManager.getNextToken();
         while (currentToken != null) {
-            processToken(tokenEntries, currentToken);
+            processToken(tokens, currentToken);
             currentToken = tokenManager.getNextToken();
         }
     }

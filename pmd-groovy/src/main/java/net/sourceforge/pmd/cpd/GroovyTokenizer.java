@@ -20,7 +20,7 @@ import groovyjarjarantlr.TokenStreamException;
 public class GroovyTokenizer implements Tokenizer {
 
     @Override
-    public void tokenize(TextDocument sourceCode, TokenFactory tokenEntries) {
+    public void tokenize(TextDocument sourceCode, TokenFactory tokens) {
         GroovyLexer lexer = new GroovyLexer(sourceCode.newReader());
         TokenStream tokenStream = lexer.plumb();
 
@@ -42,7 +42,7 @@ public class GroovyTokenizer implements Tokenizer {
                     lastLine = token.getLine(); // todo inaccurate
                 }
 
-                tokenEntries.recordToken(tokenText, token.getLine(), token.getColumn(), lastLine, lastCol);
+                tokens.recordToken(tokenText, token.getLine(), token.getColumn(), lastLine, lastCol);
                 token = tokenStream.nextToken();
             }
         } catch (TokenStreamException err) {

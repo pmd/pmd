@@ -106,7 +106,7 @@ abstract class CpdTextComparisonTest(
                 append('L').append(curLine).appendLine()
             }
 
-            formatLine(token).appendLine()
+            formatLine(token, tokens).appendLine()
         }
     }
 
@@ -119,9 +119,9 @@ abstract class CpdTextComparisonTest(
             )
 
 
-    private fun StringBuilder.formatLine(token: TokenEntry) =
+    private fun StringBuilder.formatLine(token: TokenEntry, tokens: Tokens) =
             formatLine(
-                    escapedImage = escapeImage(token.toString()),
+                    escapedImage = escapeImage(token.getImage(tokens)),
                     bcol = token.beginColumn,
                     ecol = token.endColumn
             )
@@ -167,11 +167,14 @@ abstract class CpdTextComparisonTest(
     private fun sourceCodeOf(fileData: FileData): TextDocument =
         TextDocument.readOnlyString(fileData.fileText, fileData.fileName, language.defaultVersion)
 
+    @JvmOverloads
+    fun sourceCodeOf(text: String, fileName: String = TextFile.UNKNOWN_FILENAME): FileData =
+        FileData(fileName = fileName, fileText = text)
+
     fun tokenize(tokenizer: Tokenizer, fileData: FileData): Tokens =
-        Tokens().also {
-            val tokens = Tokens()
+        Tokens().also { tokens ->
             val source = sourceCodeOf(fileData)
-            tokenizer.tokenize(source, TokenFactory.forFile(source, tokens))
+            Tokenizer.tokenize(tokenizer, source, tokens)
         }
 
     private companion object {

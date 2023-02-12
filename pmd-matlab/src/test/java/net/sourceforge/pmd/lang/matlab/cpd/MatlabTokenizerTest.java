@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.cpd;
+package net.sourceforge.pmd.lang.matlab.cpd;
 
 import org.junit.jupiter.api.Test;
 
@@ -11,12 +11,7 @@ import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 class MatlabTokenizerTest extends CpdTextComparisonTest {
 
     MatlabTokenizerTest() {
-        super(".m");
-    }
-
-    @Override
-    protected String getResourcePrefix() {
-        return "../lang/matlab/cpd/testdata";
+        super("matlab", ".m");
     }
 
     @Test

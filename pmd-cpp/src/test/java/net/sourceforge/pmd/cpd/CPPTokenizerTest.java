@@ -32,7 +32,7 @@ class CPPTokenizerTest extends CpdTextComparisonTest {
     @Test
     void testUTFwithBOM() {
         Tokenizer tokenizer = newTokenizer(dontSkipBlocks());
-        Tokens tokens = tokenize(tokenizer, "\ufeffint start()\n{ int ret = 1;\nreturn ret;\n}\n");
+        Tokens tokens = tokenize(tokenizer, sourceCodeOf("\ufeffint start()\n{ int ret = 1;\nreturn ret;\n}\n"));
         assertEquals(15, tokens.size());
     }
 

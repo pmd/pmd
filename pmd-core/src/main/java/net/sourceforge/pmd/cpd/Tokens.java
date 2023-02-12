@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class Tokens {
 
@@ -30,6 +31,10 @@ public class Tokens {
 
     private int getImageId(String newImage) {
         return images.computeIfAbsent(newImage, k -> images.size() + 1);
+    }
+
+    String imageFromId(int i) {
+        return images.entrySet().stream().filter(it -> it.getValue() == i).findFirst().map(Entry::getKey).orElse(null);
     }
 
     public TokenEntry peekLastToken() {

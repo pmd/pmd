@@ -45,7 +45,7 @@ class MatchAlgorithmTest {
         SourceManager sourceManager = new SourceManager(listOf(textFile));
         Tokens tokens = new Tokens();
         TextDocument sourceCode = sourceManager.get(textFile);
-        tokenizer.tokenize(sourceCode, TokenFactory.forFile(sourceCode, tokens));
+        Tokenizer.tokenize(tokenizer, sourceCode, tokens);
         assertEquals(41, tokens.size());
 
         MatchAlgorithm matchAlgorithm = new MatchAlgorithm(tokens, 5);
@@ -77,7 +77,7 @@ class MatchAlgorithmTest {
         Tokenizer tokenizer = java.createCpdTokenizer(bundle);
         TextDocument sourceCode = TextDocument.readOnlyString(getSampleCode(), "Foo.java", java.getDefaultVersion());
         Tokens tokens = new Tokens();
-        tokenizer.tokenize(sourceCode, TokenFactory.forFile(sourceCode, tokens));
+        Tokenizer.tokenize(tokenizer, sourceCode, tokens);
 
         MatchAlgorithm matchAlgorithm = new MatchAlgorithm(tokens, 5);
         matchAlgorithm.findMatches();
