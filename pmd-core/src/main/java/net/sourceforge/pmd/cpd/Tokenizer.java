@@ -41,16 +41,24 @@ public interface Tokenizer {
                        .build();
     PropertyDescriptor<Boolean> CPD_CASE_SENSITIVE =
         PropertyFactory.booleanProperty("cpdCaseSensitive")
-                       .defaultValue(false)
-                       .desc("Whether CPD should ignore the case of tokens. Affects all tokens.")
+                       .defaultValue(true)
+                       .desc("Whether CPD should respect the case of tokens. Affects all tokens.")
                        .build();
 
 
     @Deprecated // TODO what to do with this?
     String DEFAULT_SKIP_BLOCKS_PATTERN = "#if 0|#endif";
 
+    /**
+     * Tokenize the source code and record tokens using the provided token factory.
+     * Implementations should not add an EOF token at the end.
+     */
     void tokenize(TextDocument document, TokenFactory tokens) throws IOException;
 
+    /**
+     * Wraps a call to {@link #tokenize(TextDocument, TokenFactory)} to properly
+     * create and close the token factory.
+     */
     static void tokenize(Tokenizer tokenizer, TextDocument textDocument, Tokens tokens) throws IOException {
         try (TokenFactory tf = TokenFactory.forFile(textDocument, tokens)) {
             tokenizer.tokenize(textDocument, tf);

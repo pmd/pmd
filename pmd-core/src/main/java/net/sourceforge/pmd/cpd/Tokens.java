@@ -6,7 +6,6 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -45,15 +44,11 @@ public class Tokens {
         return images.entrySet().stream().filter(it -> it.getValue() == i).findFirst().map(Entry::getKey).orElse(null);
     }
 
-    public TokenEntry peekLastToken() {
-        return get(size() - 1);
+    TokenEntry peekLastToken() {
+        return getToken(size() - 1);
     }
 
-    public Iterator<TokenEntry> iterator() {
-        return tokens.iterator();
-    }
-
-    private TokenEntry get(int index) {
+    private TokenEntry getToken(int index) {
         return tokens.get(index);
     }
 
@@ -61,8 +56,8 @@ public class Tokens {
         return tokens.size();
     }
 
-    public TokenEntry getEndToken(TokenEntry mark, Match match) {
-        return get(mark.getIndex() + match.getTokenCount() - 1);
+    TokenEntry getEndToken(TokenEntry mark, Match match) {
+        return getToken(mark.getIndex() + match.getTokenCount() - 1);
     }
 
     public List<TokenEntry> getTokens() {
@@ -70,15 +65,12 @@ public class Tokens {
     }
 
     TokenEntry addToken(String image, String fileName, int startLine, int startCol, int endLine, int endCol) {
-        TokenEntry newToken = new TokenEntry(getImageId(image), fileName,
-                                        startLine, startCol,
-                                        endLine, endCol,
-                                        tokens.size());
+        TokenEntry newToken = new TokenEntry(getImageId(image), fileName, startLine, startCol, endLine, endCol, tokens.size());
         add(newToken);
         return newToken;
     }
 
-    public State savePoint() {
+    State savePoint() {
         return new State(this);
     }
 
@@ -89,15 +81,16 @@ public class Tokens {
     static final class State {
 
         private final int tokenCount;
-        private final int tokensMapSize;
+        private final int curImageId;
 
         State(Tokens tokens) {
             this.tokenCount = tokens.tokens.size();
-            this.tokensMapSize = tokens.images.size();
+            this.curImageId = tokens.curImageId;
         }
 
         public void restore(Tokens tokens) {
-            tokens.images.entrySet().removeIf(e -> e.getValue() > tokensMapSize);
+            tokens.images.entrySet().removeIf(e -> e.getValue() >= curImageId);
+            tokens.curImageId = this.curImageId;
 
             final List<TokenEntry> entries = tokens.getTokens();
             entries.subList(tokenCount, entries.size()).clear();

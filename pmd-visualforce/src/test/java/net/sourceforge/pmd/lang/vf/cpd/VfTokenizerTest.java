@@ -12,7 +12,7 @@ import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 class VfTokenizerTest extends CpdTextComparisonTest {
 
     VfTokenizerTest() {
-        super(".page");
+        super("vf", ".page");
     }
 
     @Test

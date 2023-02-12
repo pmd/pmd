@@ -94,7 +94,7 @@ abstract class CpdTextComparisonTest(
 
         var curLine = -1
 
-        for (token in tokens.iterator()) {
+        for (token in tokens.tokens) {
 
             if (token.isEof) {
                 append("EOF").appendLine()

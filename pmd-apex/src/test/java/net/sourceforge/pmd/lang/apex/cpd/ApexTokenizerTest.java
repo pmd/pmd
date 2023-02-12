@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.cpd;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.Tokenizer;
@@ -42,6 +43,11 @@ class ApexTokenizerTest extends CpdTextComparisonTest {
 
     private LanguagePropertyConfig caseSensitive() {
         return properties(true);
+    }
+
+    @Override
+    public @NonNull LanguagePropertyConfig defaultProperties() {
+        return properties(false);
     }
 
     private LanguagePropertyConfig properties(boolean caseSensitive) {
