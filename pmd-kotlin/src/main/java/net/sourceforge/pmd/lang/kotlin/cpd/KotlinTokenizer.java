@@ -1,16 +1,16 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.cpd;
+package net.sourceforge.pmd.lang.kotlin.cpd;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Lexer;
 
 import net.sourceforge.pmd.cpd.internal.AntlrTokenizer;
 import net.sourceforge.pmd.cpd.token.AntlrTokenFilter;
+import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrToken;
-import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrTokenManager;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinLexer;
 
 /**
@@ -24,7 +24,7 @@ public class KotlinTokenizer extends AntlrTokenizer {
     }
 
     @Override
-    protected AntlrTokenFilter getTokenFilter(final AntlrTokenManager tokenManager) {
+    protected TokenManager<AntlrToken> filterTokenStream(TokenManager<AntlrToken> tokenManager) {
         return new KotlinTokenFilter(tokenManager);
     }
 
@@ -40,7 +40,7 @@ public class KotlinTokenizer extends AntlrTokenizer {
         private boolean discardingPackageAndImport = false;
         private boolean discardingNL = false;
 
-        /* default */ KotlinTokenFilter(final AntlrTokenManager tokenManager) {
+        /* default */ KotlinTokenFilter(final TokenManager<AntlrToken> tokenManager) {
             super(tokenManager);
         }
 

@@ -26,10 +26,8 @@ public interface Tokenizer {
     PropertyDescriptor<Boolean> CPD_ANONYMIZE_IDENTIFIERS =
         PropertyFactory.booleanProperty("cpdAnonymizeIdentifiers")
                        .defaultValue(false)
-                       .desc("Anonymize identifiers. They are still part of the token stream but all literals appear to have the same value.")
+                       .desc("Anonymize identifiers. They are still part of the token stream but all identifiers appear to have the same value.")
                        .build();
-
-
     PropertyDescriptor<Boolean> CPD_IGNORE_IMPORTS =
         PropertyFactory.booleanProperty("cpdIgnoreImports")
                        .defaultValue(true)
@@ -41,48 +39,17 @@ public interface Tokenizer {
                        .defaultValue(false)
                        .desc("Ignore metadata such as Java annotations or C# attributes.")
                        .build();
-
-
     PropertyDescriptor<Boolean> CPD_CASE_SENSITIVE =
         PropertyFactory.booleanProperty("cpdCaseSensitive")
-                       .defaultValue(true)
+                       .defaultValue(false)
                        .desc("Whether CPD should ignore the case of tokens. Affects all tokens.")
                        .build();
 
 
-    String IGNORE_LITERALS = "ignore_literals";
-    String IGNORE_IDENTIFIERS = "ignore_identifiers";
-    String IGNORE_ANNOTATIONS = "ignore_annotations";
-
-    /**
-     * Ignore sequences of literals (e.g, <code>0,0,0,0...</code>).
-     */
-    String OPTION_IGNORE_LITERAL_SEQUENCES = "net.sourceforge.pmd.cpd.Tokenizer.skipLiteralSequences";
-    /**
-     * Ignore using directives in C#. The default value is <code>false</code>.
-     */
-    String IGNORE_USINGS = "ignore_usings";
-
-    /**
-     * Enables or disabled skipping of blocks like a pre-processor. It is a
-     * boolean property. The default value is <code>true</code>.
-     *
-     * @see #OPTION_SKIP_BLOCKS_PATTERN
-     */
-    String OPTION_SKIP_BLOCKS = "net.sourceforge.pmd.cpd.Tokenizer.skipBlocks";
-    /**
-     * Configures the pattern, to find the blocks to skip. It is a string
-     * property and contains of two parts, separated by {@code |}. The first
-     * part is the start pattern, the second part is the ending pattern. Default
-     * value is "{@code #if 0|#endif}".
-     *
-     * @see #DEFAULT_SKIP_BLOCKS_PATTERN
-     */
-    String OPTION_SKIP_BLOCKS_PATTERN = "net.sourceforge.pmd.cpd.Tokenizer.skipBlocksPattern";
-
+    @Deprecated // TODO what to do with this?
     String DEFAULT_SKIP_BLOCKS_PATTERN = "#if 0|#endif";
 
-    void tokenize(TextDocument sourceCode, TokenFactory tokens) throws IOException;
+    void tokenize(TextDocument document, TokenFactory tokens) throws IOException;
 
     static void tokenize(Tokenizer tokenizer, TextDocument textDocument, Tokens tokens) throws IOException {
         try (TokenFactory tf = TokenFactory.forFile(textDocument, tokens)) {

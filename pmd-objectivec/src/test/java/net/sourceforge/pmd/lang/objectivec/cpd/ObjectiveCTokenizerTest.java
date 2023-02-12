@@ -15,11 +15,6 @@ class ObjectiveCTokenizerTest extends CpdTextComparisonTest {
         super("objectivec", ".m");
     }
 
-    @Override
-    protected String getResourcePrefix() {
-        return "../lang/objectivec/cpd/testdata";
-    }
-
     @Test
     void testLongSample() {
         doTest("big_sample");

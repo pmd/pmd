@@ -22,8 +22,8 @@ import groovyjarjarantlr.TokenStreamException;
 public class GroovyTokenizer implements Tokenizer {
 
     @Override
-    public void tokenize(TextDocument sourceCode, TokenFactory tokens) {
-        GroovyLexer lexer = new GroovyLexer(sourceCode.newReader());
+    public void tokenize(TextDocument document, TokenFactory tokens) {
+        GroovyLexer lexer = new GroovyLexer(document.newReader());
         TokenStream tokenStream = lexer.plumb();
 
         try {

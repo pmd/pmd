@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.ecmascript;
 
-import net.sourceforge.pmd.lang.ecmascript.cpd.EcmascriptTokenizer;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptParser;
+import net.sourceforge.pmd.lang.ecmascript.cpd.EcmascriptTokenizer;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
 
 /**

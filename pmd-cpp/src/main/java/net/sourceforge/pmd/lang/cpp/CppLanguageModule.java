@@ -6,9 +6,9 @@ package net.sourceforge.pmd.lang.cpp;
 
 import net.sourceforge.pmd.cpd.CPPTokenizer;
 import net.sourceforge.pmd.cpd.Tokenizer;
-import net.sourceforge.pmd.lang.CpdOnlyLanguageModuleBase;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.impl.CpdOnlyLanguageModuleBase;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
@@ -19,7 +19,7 @@ public class CppLanguageModule extends CpdOnlyLanguageModuleBase {
 
 
     public static final PropertyDescriptor<String> CPD_SKIP_BLOCKS =
-    PropertyFactory.stringProperty("cpdSkipBlocksPattern")
+        PropertyFactory.stringProperty("cpdSkipBlocksPattern")
                        .defaultValue("#if 0|#endif")
                        .desc("Specifies a start and end delimiter for CPD to completely ignore. "
                                  + "The delimiters are separated by a pipe |. The default skips code "

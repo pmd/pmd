@@ -62,8 +62,8 @@ public class AnyTokenizer implements Tokenizer {
     }
 
     @Override
-    public void tokenize(TextDocument sourceCode, TokenFactory tokens) {
-        Chars text = sourceCode.getText();
+    public void tokenize(TextDocument document, TokenFactory tokens) {
+        Chars text = document.getText();
         Matcher matcher = pattern.matcher(text);
         int lineNo = 1;
         int lastLineStart = 0;

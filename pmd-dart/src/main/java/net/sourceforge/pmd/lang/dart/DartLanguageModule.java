@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.dart;
 
-import net.sourceforge.pmd.lang.dart.cpd.DartTokenizer;
 import net.sourceforge.pmd.cpd.Tokenizer;
-import net.sourceforge.pmd.lang.CpdOnlyLanguageModuleBase;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.dart.cpd.DartTokenizer;
+import net.sourceforge.pmd.lang.impl.CpdOnlyLanguageModuleBase;
 
 /**
  * Language implementation for Dart

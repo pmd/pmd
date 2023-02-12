@@ -2,28 +2,22 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.cpd;
+package net.sourceforge.pmd.lang.cs.cpd;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.Properties;
-
-import org.jetbrains.annotations.NotNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
-import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.cpd.test.LanguagePropertyConfig;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
 class CsTokenizerTest extends CpdTextComparisonTest {
 
     CsTokenizerTest() {
-        super(".cs");
-    }
-
-    @Override
-    protected String getResourcePrefix() {
-        return "../lang/cs/cpd/testdata";
+        super("cs", ".cs");
     }
 
     @Test
@@ -107,23 +101,28 @@ class CsTokenizerTest extends CpdTextComparisonTest {
         doTest("attributes", "_ignored", skipAttributes());
     }
 
-    private Properties ignoreUsings() {
+    private LanguagePropertyConfig ignoreUsings() {
         return properties(true, false, false);
     }
 
-    private Properties skipLiteralSequences() {
+    private LanguagePropertyConfig skipLiteralSequences() {
         return properties(false, true, false);
     }
 
-    private Properties skipAttributes() {
+    private LanguagePropertyConfig skipAttributes() {
         return properties(false, false, true);
     }
 
-    private Properties properties(boolean ignoreUsings, boolean ignoreLiteralSequences, boolean ignoreAttributes) {
-        Properties properties = new Properties();
-        properties.setProperty(Tokenizer.IGNORE_USINGS, Boolean.toString(ignoreUsings));
-        properties.setProperty(Tokenizer.OPTION_IGNORE_LITERAL_SEQUENCES, Boolean.toString(ignoreLiteralSequences));
-        properties.setProperty(Tokenizer.IGNORE_ANNOTATIONS, Boolean.toString(ignoreAttributes));
-        return properties;
+    @Override
+    public @NonNull LanguagePropertyConfig defaultProperties() {
+        return properties(false, false, false);
+    }
+
+    private LanguagePropertyConfig properties(boolean ignoreUsings, boolean ignoreLiteralSequences, boolean ignoreAttributes) {
+        return properties -> {
+            properties.setProperty(Tokenizer.CPD_IGNORE_IMPORTS, ignoreUsings);
+            properties.setProperty(Tokenizer.CPD_IGNORE_LITERAL_SEQUENCES, ignoreLiteralSequences);
+            properties.setProperty(Tokenizer.CPD_IGNORE_METADATA, ignoreAttributes);
+        };
     }
 }

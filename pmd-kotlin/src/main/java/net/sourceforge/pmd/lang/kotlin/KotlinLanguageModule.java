@@ -5,10 +5,10 @@
 package net.sourceforge.pmd.lang.kotlin;
 
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.cpd.KotlinTokenizer;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
+import net.sourceforge.pmd.lang.kotlin.cpd.KotlinTokenizer;
 
 /**
  * Language Module for Kotlin

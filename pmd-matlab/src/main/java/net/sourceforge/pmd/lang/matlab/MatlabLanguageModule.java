@@ -5,8 +5,8 @@
 package net.sourceforge.pmd.lang.matlab;
 
 import net.sourceforge.pmd.cpd.Tokenizer;
-import net.sourceforge.pmd.lang.CpdOnlyLanguageModuleBase;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.impl.CpdOnlyLanguageModuleBase;
 import net.sourceforge.pmd.lang.matlab.cpd.MatlabTokenizer;
 
 /**

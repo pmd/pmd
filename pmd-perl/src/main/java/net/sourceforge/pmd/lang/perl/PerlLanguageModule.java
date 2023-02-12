@@ -6,8 +6,8 @@ package net.sourceforge.pmd.lang.perl;
 
 import net.sourceforge.pmd.cpd.AnyTokenizer;
 import net.sourceforge.pmd.cpd.Tokenizer;
-import net.sourceforge.pmd.lang.CpdOnlyLanguageModuleBase;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.impl.CpdOnlyLanguageModuleBase;
 
 public class PerlLanguageModule extends CpdOnlyLanguageModuleBase {
 

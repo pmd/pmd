@@ -2,9 +2,11 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang;
+package net.sourceforge.pmd.lang.impl;
 
 import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.lang.LanguageModuleBase;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 
 /**
  * Base class for language modules that only support CPD and not PMD.

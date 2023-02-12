@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.groovy;
 
-import net.sourceforge.pmd.lang.groovy.cpd.GroovyTokenizer;
 import net.sourceforge.pmd.cpd.Tokenizer;
-import net.sourceforge.pmd.lang.CpdOnlyLanguageModuleBase;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.groovy.cpd.GroovyTokenizer;
+import net.sourceforge.pmd.lang.impl.CpdOnlyLanguageModuleBase;
 
 /**
  * Language implementation for Groovy

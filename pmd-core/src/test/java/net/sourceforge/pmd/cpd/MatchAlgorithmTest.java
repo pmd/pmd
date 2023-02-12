@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -13,12 +13,10 @@ import java.util.Iterator;
 
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguagePropertyBundle;
-import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
-import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 
 class MatchAlgorithmTest {
 
@@ -38,15 +36,15 @@ class MatchAlgorithmTest {
 
     @Test
     void testSimple() throws IOException {
-        Language java = JavaLanguageModule.getInstance();
-        Tokenizer tokenizer = java.createCpdTokenizer(java.newPropertyBundle());
-        String fileName = "Foo.java";
-        TextFile textFile = TextFile.forCharSeq(getSampleCode(), fileName, java.getDefaultVersion());
+        Language dummy = DummyLanguageModule.getInstance();
+        Tokenizer tokenizer = dummy.createCpdTokenizer(dummy.newPropertyBundle());
+        String fileName = "Foo.dummy";
+        TextFile textFile = TextFile.forCharSeq(getSampleCode(), fileName, dummy.getDefaultVersion());
         SourceManager sourceManager = new SourceManager(listOf(textFile));
         Tokens tokens = new Tokens();
         TextDocument sourceCode = sourceManager.get(textFile);
         Tokenizer.tokenize(tokenizer, sourceCode, tokens);
-        assertEquals(41, tokens.size());
+        assertEquals(44, tokens.size());
 
         MatchAlgorithm matchAlgorithm = new MatchAlgorithm(tokens, 5);
         matchAlgorithm.findMatches();
@@ -61,34 +59,10 @@ class MatchAlgorithmTest {
 
         assertEquals(3, mark1.getBeginLine());
         assertEquals(fileName, mark1.getFilename());
-        assertEquals(Chars.wrap(LINE_3), sourceManager.getSlice(mark1));
+        assertEquals(LINE_3 + "\n", sourceManager.getSlice(mark1).toString());
 
         assertEquals(4, mark2.getBeginLine());
         assertEquals(fileName, mark2.getFilename());
-        assertEquals(Chars.wrap(LINE_4), sourceManager.getSlice(mark2));
-    }
-
-    @Test
-    void testIgnore() throws IOException {
-        Language java = JavaLanguageModule.getInstance();
-        LanguagePropertyBundle bundle = java.newPropertyBundle();
-        bundle.setProperty(Tokenizer.CPD_ANONYMIZE_IDENTIFIERS, true);
-        bundle.setProperty(Tokenizer.CPD_ANONYMIZE_LITERALS, true);
-        Tokenizer tokenizer = java.createCpdTokenizer(bundle);
-        TextDocument sourceCode = TextDocument.readOnlyString(getSampleCode(), "Foo.java", java.getDefaultVersion());
-        Tokens tokens = new Tokens();
-        Tokenizer.tokenize(tokenizer, sourceCode, tokens);
-
-        MatchAlgorithm matchAlgorithm = new MatchAlgorithm(tokens, 5);
-        matchAlgorithm.findMatches();
-        Iterator<Match> matches = matchAlgorithm.matches();
-        Match match = matches.next();
-        assertFalse(matches.hasNext());
-
-        Iterator<Mark> marks = match.iterator();
-        marks.next();
-        marks.next();
-        marks.next();
-        assertFalse(marks.hasNext());
+        assertEquals(LINE_4 + "\n", sourceManager.getSlice(mark2).toString());
     }
 }

@@ -5,9 +5,9 @@
 package net.sourceforge.pmd.lang.gherkin;
 
 import net.sourceforge.pmd.cpd.Tokenizer;
-import net.sourceforge.pmd.lang.CpdOnlyLanguageModuleBase;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.gherkin.cpd.GherkinTokenizer;
+import net.sourceforge.pmd.lang.impl.CpdOnlyLanguageModuleBase;
 
 /**
  * Language implementation for Gherkin.

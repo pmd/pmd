@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang;
 import java.util.Objects;
 
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.ParseException;
@@ -43,6 +44,14 @@ public class DummyLanguageModule extends SimpleLanguageModuleBase {
 
     public static DummyLanguageModule getInstance() {
         return (DummyLanguageModule) Objects.requireNonNull(LanguageRegistry.PMD.getLanguageByFullName(NAME));
+    }
+
+    @Override
+    public LanguagePropertyBundle newPropertyBundle() {
+        LanguagePropertyBundle bundle = super.newPropertyBundle();
+        bundle.definePropertyDescriptor(Tokenizer.CPD_ANONYMIZE_LITERALS);
+        bundle.definePropertyDescriptor(Tokenizer.CPD_ANONYMIZE_IDENTIFIERS);
+        return bundle;
     }
 
     public LanguageVersion getVersionWhereParserThrows() {

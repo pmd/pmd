@@ -19,13 +19,13 @@ import net.sourceforge.pmd.lang.html.HtmlLanguageModule;
 public class HtmlTokenizer implements Tokenizer {
 
     @Override
-    public void tokenize(TextDocument sourceCode, TokenFactory tokens) {
+    public void tokenize(TextDocument document, TokenFactory tokens) {
         HtmlLanguageModule html = HtmlLanguageModule.getInstance();
 
         try (LanguageProcessor processor = html.createProcessor(html.newPropertyBundle())) {
 
             ParserTask task = new ParserTask(
-                sourceCode,
+                document,
                 SemanticErrorReporter.noop(),
                 LanguageProcessorRegistry.singleton(processor)
             );

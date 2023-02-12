@@ -38,20 +38,20 @@ public class ScalaTokenizer implements Tokenizer {
     }
 
     @Override
-    public void tokenize(TextDocument sourceCode, TokenFactory tokenEntries) {
+    public void tokenize(TextDocument document, TokenFactory tokenEntries) {
 
 
         try {
-            String fullCode = sourceCode.getText().toString();
+            String fullCode = document.getText().toString();
 
             // create the input file for scala
-            Input.VirtualFile vf = new Input.VirtualFile(sourceCode.getDisplayName(), fullCode);
+            Input.VirtualFile vf = new Input.VirtualFile(document.getDisplayName(), fullCode);
             ScalametaTokenizer tokenizer = new ScalametaTokenizer(vf, dialect);
 
             // tokenize with a filter
             scala.meta.tokens.Tokens tokens = tokenizer.tokenize();
             // use extensions to the standard PMD TokenManager and Filter
-            ScalaTokenManager scalaTokenManager = new ScalaTokenManager(tokens.iterator(), sourceCode);
+            ScalaTokenManager scalaTokenManager = new ScalaTokenManager(tokens.iterator(), document);
             ScalaTokenFilter filter = new ScalaTokenFilter(scalaTokenManager);
 
             ScalaTokenAdapter token;
@@ -68,7 +68,7 @@ public class ScalaTokenizer implements Tokenizer {
                 TokenizeException tokE = (TokenizeException) e;
                 Position pos = tokE.pos();
                 throw new TokenMgrError(
-                    pos.startLine() + 1, pos.startColumn() + 1, sourceCode.getDisplayName(), "Scalameta threw", tokE);
+                    pos.startLine() + 1, pos.startColumn() + 1, document.getDisplayName(), "Scalameta threw", tokE);
             } else {
                 throw e;
             }

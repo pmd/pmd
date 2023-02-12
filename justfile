@@ -20,6 +20,9 @@ alias i := install
 cleanInstallEverything *FLAGS:
    mvnd clean install -Dmaven.javadoc.skip -Dkotlin.compiler.incremental -fae {{FLAGS}}
 
+installEverything *FLAGS:
+   mvnd install -Dmaven.javadoc.skip -Dkotlin.compiler.incremental -fae {{FLAGS}}
+
 testCore *FLAGS:
    mvnd test checkstyle:check pmd:check -Dmaven.javadoc.skip -Dkotlin.compiler.incremental -pl pmd-core {{FLAGS}}
 
@@ -46,6 +49,6 @@ lintChanged DIFF="master" *FLAGS="":
 lint projects="pmd-java":
   mvnd checkstyle:check pmd:check -pl {{projects}} -fae
 
-lintAll:
-  mvnd checkstyle:check pmd:check -fae
+lintAll *FLAGS:
+  mvnd checkstyle:check pmd:check -fae {{FLAGS}}
 

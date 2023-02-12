@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.cpd;
+package net.sourceforge.pmd.lang.kotlin.cpd;
 
 import org.junit.jupiter.api.Test;
 
@@ -12,11 +12,6 @@ class KotlinTokenizerTest extends CpdTextComparisonTest {
 
     KotlinTokenizerTest() {
         super("kotlin", ".kt");
-    }
-
-    @Override
-    protected String getResourcePrefix() {
-        return "../lang/kotlin/cpd/testdata";
     }
 
     @Test

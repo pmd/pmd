@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.python;
 
-import net.sourceforge.pmd.lang.python.cpd.PythonTokenizer;
 import net.sourceforge.pmd.cpd.Tokenizer;
-import net.sourceforge.pmd.lang.CpdOnlyLanguageModuleBase;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.impl.CpdOnlyLanguageModuleBase;
+import net.sourceforge.pmd.lang.python.cpd.PythonTokenizer;
 
 /**
  * Defines the Language module for Python

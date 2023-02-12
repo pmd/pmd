@@ -8,7 +8,6 @@ import java.util.List;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.AstVisitor;
-import net.sourceforge.pmd.lang.swift.rule.AbstractSwiftRule;
 import net.sourceforge.pmd.lang.swift.ast.SwiftParser.SwAttribute;
 import net.sourceforge.pmd.lang.swift.ast.SwiftParser.SwAttributes;
 import net.sourceforge.pmd.lang.swift.ast.SwiftParser.SwCodeBlock;
@@ -16,6 +15,7 @@ import net.sourceforge.pmd.lang.swift.ast.SwiftParser.SwFunctionDeclaration;
 import net.sourceforge.pmd.lang.swift.ast.SwiftParser.SwInitializerDeclaration;
 import net.sourceforge.pmd.lang.swift.ast.SwiftParser.SwStatement;
 import net.sourceforge.pmd.lang.swift.ast.SwiftVisitorBase;
+import net.sourceforge.pmd.lang.swift.rule.AbstractSwiftRule;
 
 public class UnavailableFunctionRule extends AbstractSwiftRule {
 

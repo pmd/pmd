@@ -124,7 +124,7 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand {
         
         final CPDConfiguration configuration = toConfiguration();
 
-        try (CpdAnalysis cpd = new CpdAnalysis(configuration)){
+        try (CpdAnalysis cpd = new CpdAnalysis(configuration)) {
 
             MutableBoolean hasViolations = new MutableBoolean();
             cpd.performAnalysis(report -> hasViolations.setValue(!report.getMatches().isEmpty()));

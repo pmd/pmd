@@ -5,8 +5,8 @@
 package net.sourceforge.pmd.lang.lua;
 
 import net.sourceforge.pmd.cpd.Tokenizer;
-import net.sourceforge.pmd.lang.CpdOnlyLanguageModuleBase;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.impl.CpdOnlyLanguageModuleBase;
 import net.sourceforge.pmd.lang.lua.cpd.LuaTokenizer;
 
 /**
@@ -19,7 +19,14 @@ public class LuaLanguageModule extends CpdOnlyLanguageModuleBase {
     }
 
     @Override
+    public LanguagePropertyBundle newPropertyBundle() {
+        LanguagePropertyBundle bundle = super.newPropertyBundle();
+        bundle.definePropertyDescriptor(Tokenizer.CPD_IGNORE_LITERAL_SEQUENCES);
+        return bundle;
+    }
+
+    @Override
     public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
-        return new LuaTokenizer();
+        return new LuaTokenizer(bundle);
     }
 }

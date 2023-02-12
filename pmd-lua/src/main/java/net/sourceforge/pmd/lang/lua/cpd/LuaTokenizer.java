@@ -4,13 +4,13 @@
 
 package net.sourceforge.pmd.lang.lua.cpd;
 
-import java.util.Properties;
-
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Lexer;
 
+import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.cpd.internal.AntlrTokenizer;
 import net.sourceforge.pmd.cpd.token.AntlrTokenFilter;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrToken;
 import net.sourceforge.pmd.lang.lua.ast.LuaLexer;
@@ -20,20 +20,10 @@ import net.sourceforge.pmd.lang.lua.ast.LuaLexer;
  */
 public class LuaTokenizer extends AntlrTokenizer {
 
-    private boolean ignoreLiteralSequences = false;
+    private final boolean ignoreLiteralSequences;
 
-    /**
-     * Sets the possible options for the Lua tokenizer.
-     *
-     * @param properties the properties
-     * @see #OPTION_IGNORE_LITERAL_SEQUENCES
-     */
-    public void setProperties(Properties properties) {
-        ignoreLiteralSequences = getBooleanProperty(properties, OPTION_IGNORE_LITERAL_SEQUENCES);
-    }
-
-    private boolean getBooleanProperty(final Properties properties, final String property) {
-        return Boolean.parseBoolean(properties.getProperty(property, Boolean.FALSE.toString()));
+    public LuaTokenizer(LanguagePropertyBundle bundle) {
+        ignoreLiteralSequences = bundle.getProperty(Tokenizer.CPD_IGNORE_LITERAL_SEQUENCES);
     }
 
     @Override

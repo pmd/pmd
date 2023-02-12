@@ -1,27 +1,20 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.cpd;
+package net.sourceforge.pmd.lang.java.cpd;
 
-import java.util.Properties;
-
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
+import net.sourceforge.pmd.cpd.test.LanguagePropertyConfig;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 
-// TODO - enable test
-@Disabled("Needs to be enabled after java-grammar changes are finalized")
 class JavaTokenizerTest extends CpdTextComparisonTest {
 
     JavaTokenizerTest() {
-        super(".java");
-    }
-
-    @Override
-    protected String getResourcePrefix() {
-        return "../lang/java/cpd/testdata";
+        super(JavaLanguageModule.getInstance(), ".java");
     }
 
     @Test
@@ -85,32 +78,32 @@ class JavaTokenizerTest extends CpdTextComparisonTest {
     }
 
 
-    private static Properties ignoreAnnotations() {
+    private static LanguagePropertyConfig ignoreAnnotations() {
         return properties(true, false, false);
     }
 
-    private static Properties ignoreIdents() {
+    private static LanguagePropertyConfig ignoreIdents() {
         return properties(false, false, true);
     }
 
-    private static Properties ignoreLiterals() {
+    private static LanguagePropertyConfig ignoreLiterals() {
         return properties(false, true, false);
     }
 
 
     @Override
-    public Properties defaultProperties() {
+    public LanguagePropertyConfig defaultProperties() {
         return properties(false, false, false);
     }
 
-    private static Properties properties(boolean ignoreAnnotations,
-                                         boolean ignoreLiterals,
-                                         boolean ignoreIdents) {
-        Properties properties = new Properties();
-        properties.setProperty(Tokenizer.IGNORE_ANNOTATIONS, Boolean.toString(ignoreAnnotations));
-        properties.setProperty(Tokenizer.IGNORE_IDENTIFIERS, Boolean.toString(ignoreIdents));
-        properties.setProperty(Tokenizer.IGNORE_LITERALS, Boolean.toString(ignoreLiterals));
-        return properties;
+    private static LanguagePropertyConfig properties(boolean ignoreAnnotations,
+                                                     boolean ignoreLiterals,
+                                                     boolean ignoreIdents) {
+        return properties -> {
+            properties.setProperty(Tokenizer.CPD_IGNORE_METADATA, ignoreAnnotations);
+            properties.setProperty(Tokenizer.CPD_ANONYMIZE_IDENTIFIERS, ignoreIdents);
+            properties.setProperty(Tokenizer.CPD_ANONYMIZE_LITERALS, ignoreLiterals);
+        };
     }
 
 

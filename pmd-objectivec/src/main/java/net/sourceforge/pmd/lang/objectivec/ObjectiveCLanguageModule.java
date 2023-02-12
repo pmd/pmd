@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.objectivec;
 
-import net.sourceforge.pmd.lang.objectivec.cpd.ObjectiveCTokenizer;
 import net.sourceforge.pmd.cpd.Tokenizer;
-import net.sourceforge.pmd.lang.CpdOnlyLanguageModuleBase;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.impl.CpdOnlyLanguageModuleBase;
+import net.sourceforge.pmd.lang.objectivec.cpd.ObjectiveCTokenizer;
 
 /**
  * Defines the Language module for Objective-C
