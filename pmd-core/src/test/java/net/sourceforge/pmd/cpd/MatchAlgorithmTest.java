@@ -14,7 +14,6 @@ import java.util.Iterator;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.DummyLanguageModule;
-import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
 
@@ -36,7 +35,7 @@ class MatchAlgorithmTest {
 
     @Test
     void testSimple() throws IOException {
-        Language dummy = DummyLanguageModule.getInstance();
+        DummyLanguageModule dummy = DummyLanguageModule.getInstance();
         Tokenizer tokenizer = dummy.createCpdTokenizer(dummy.newPropertyBundle());
         String fileName = "Foo.dummy";
         TextFile textFile = TextFile.forCharSeq(getSampleCode(), fileName, dummy.getDefaultVersion());

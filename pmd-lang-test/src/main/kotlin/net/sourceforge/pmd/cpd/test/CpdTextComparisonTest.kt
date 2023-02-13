@@ -24,12 +24,12 @@ import java.util.*
  *                              Baseline files are saved in txt files.
  */
 abstract class CpdTextComparisonTest(
-    val language: Language,
+    val language: CpdCapableLanguage,
     override val extensionIncludingDot: String
 ) : BaseTextComparisonTest() {
 
     constructor(langId: String, extensionIncludingDot: String) : this(
-        LanguageRegistry.CPD.getLanguageById(langId)!!,
+        LanguageRegistry.CPD.getLanguageById(langId) as CpdCapableLanguage,
         extensionIncludingDot
     )
 

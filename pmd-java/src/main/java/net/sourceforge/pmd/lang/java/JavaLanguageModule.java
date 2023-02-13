@@ -4,8 +4,9 @@
 
 package net.sourceforge.pmd.lang.java;
 
+import net.sourceforge.pmd.cpd.CpdCapableLanguage;
+import net.sourceforge.pmd.cpd.PmdCapableLanguage;
 import net.sourceforge.pmd.cpd.Tokenizer;
-import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageModuleBase;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
@@ -17,7 +18,7 @@ import net.sourceforge.pmd.lang.java.internal.JavaLanguageProperties;
 /**
  * Created by christoferdutz on 20.09.14.
  */
-public class JavaLanguageModule extends LanguageModuleBase {
+public class JavaLanguageModule extends LanguageModuleBase implements PmdCapableLanguage, CpdCapableLanguage {
 
     public static final String NAME = "Java";
     public static final String TERSE_NAME = "java";
@@ -61,7 +62,7 @@ public class JavaLanguageModule extends LanguageModuleBase {
         return new JavaTokenizer((JavaLanguageProperties) bundle);
     }
 
-    public static Language getInstance() {
-        return LanguageRegistry.PMD.getLanguageByFullName(NAME);
+    public static JavaLanguageModule getInstance() {
+        return (JavaLanguageModule) LanguageRegistry.PMD.getLanguageByFullName(NAME);
     }
 }

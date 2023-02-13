@@ -25,6 +25,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.annotation.DeprecatedUntil700;
+import net.sourceforge.pmd.cpd.CpdCapableLanguage;
+import net.sourceforge.pmd.cpd.PmdCapableLanguage;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
@@ -44,13 +46,13 @@ public final class LanguageRegistry implements Iterable<Language> {
      * Contains the languages that support PMD and are found on the classpath
      * of the classloader of this class. This can be used as a "default" registry.
      */
-    public static final LanguageRegistry PMD = ALL_LANGUAGES.filter(Language::supportsParsing);
+    public static final LanguageRegistry PMD = ALL_LANGUAGES.filter(it -> it instanceof PmdCapableLanguage);
 
     /**
      * Contains the languages that support CPD and are found on the classpath
      * of the classloader of this class.
      */
-    public static final LanguageRegistry CPD = ALL_LANGUAGES;
+    public static final LanguageRegistry CPD = ALL_LANGUAGES.filter(it -> it instanceof CpdCapableLanguage);
 
     private final Set<Language> languages;
 

@@ -18,6 +18,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.cpd.PmdCapableLanguage;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
@@ -119,6 +120,10 @@ public final class LanguageProcessorRegistry implements AutoCloseable {
                                                    MessageReporter messageReporter) {
         Set<LanguageProcessor> processors = new HashSet<>();
         for (Language language : registry) {
+            if (!(language instanceof PmdCapableLanguage)) {
+                LOG.trace("Not instantiating language {} because it does not support PMD", language);
+                continue;
+            }
             LanguagePropertyBundle properties = languageProperties.getOrDefault(language, language.newPropertyBundle());
             if (!properties.getLanguage().equals(language)) {
                 throw new IllegalArgumentException("Mismatched language");
@@ -128,7 +133,7 @@ public final class LanguageProcessorRegistry implements AutoCloseable {
                 //
                 readLanguagePropertiesFromEnv(properties, messageReporter);
 
-                processors.add(language.createProcessor(properties));
+                processors.add(((PmdCapableLanguage) language).createProcessor(properties));
             } catch (IllegalArgumentException e) {
                 messageReporter.error(e); // todo
             }

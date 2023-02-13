@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.jsp;
 
+import net.sourceforge.pmd.cpd.CpdCapableLanguage;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
@@ -12,7 +13,7 @@ import net.sourceforge.pmd.lang.jsp.cpd.JSPTokenizer;
 /**
  * Created by christoferdutz on 20.09.14.
  */
-public class JspLanguageModule extends SimpleLanguageModuleBase {
+public class JspLanguageModule extends SimpleLanguageModuleBase implements CpdCapableLanguage {
 
     public static final String NAME = "Java Server Pages";
     public static final String TERSE_NAME = "jsp";

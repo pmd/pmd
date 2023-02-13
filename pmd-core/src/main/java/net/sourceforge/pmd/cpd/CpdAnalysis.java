@@ -136,7 +136,8 @@ public final class CpdAnalysis implements AutoCloseable {
                 sourceManager.getTextFiles().stream()
                              .map(it -> it.getLanguageVersion().getLanguage())
                              .distinct()
-                             .collect(Collectors.toMap(lang -> lang, lang -> lang.createCpdTokenizer(configuration.getLanguageProperties(lang))));
+                             .filter(it -> it instanceof CpdCapableLanguage)
+                             .collect(Collectors.toMap(lang -> lang, lang -> ((CpdCapableLanguage) lang).createCpdTokenizer(configuration.getLanguageProperties(lang))));
 
             Map<String, Integer> numberOfTokensPerFile = new HashMap<>();
 

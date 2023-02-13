@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.impl;
 
+import net.sourceforge.pmd.cpd.CpdCapableLanguage;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.lang.LanguageModuleBase;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
@@ -13,7 +14,7 @@ import net.sourceforge.pmd.lang.LanguagePropertyBundle;
  *
  * @author Clément Fournier
  */
-public abstract class CpdOnlyLanguageModuleBase extends LanguageModuleBase {
+public abstract class CpdOnlyLanguageModuleBase extends LanguageModuleBase implements CpdCapableLanguage {
 
     /**
      * Construct a module instance using the given metadata. The metadata must
@@ -23,11 +24,6 @@ public abstract class CpdOnlyLanguageModuleBase extends LanguageModuleBase {
      */
     protected CpdOnlyLanguageModuleBase(LanguageMetadata metadata) {
         super(metadata);
-    }
-
-    @Override
-    public boolean supportsParsing() {
-        return false;
     }
 
     @Override

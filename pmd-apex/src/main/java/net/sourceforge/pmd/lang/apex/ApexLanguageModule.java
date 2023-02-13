@@ -4,8 +4,9 @@
 
 package net.sourceforge.pmd.lang.apex;
 
+import net.sourceforge.pmd.cpd.CpdCapableLanguage;
+import net.sourceforge.pmd.cpd.PmdCapableLanguage;
 import net.sourceforge.pmd.cpd.Tokenizer;
-import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageModuleBase;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
@@ -14,7 +15,7 @@ import net.sourceforge.pmd.lang.apex.cpd.ApexTokenizer;
 
 import apex.jorje.services.Version;
 
-public class ApexLanguageModule extends LanguageModuleBase {
+public class ApexLanguageModule extends LanguageModuleBase implements PmdCapableLanguage, CpdCapableLanguage {
 
     public static final String NAME = "Apex";
     public static final String TERSE_NAME = "apex";
@@ -39,7 +40,7 @@ public class ApexLanguageModule extends LanguageModuleBase {
         return new ApexTokenizer((ApexLanguageProperties) bundle);
     }
 
-    public static Language getInstance() {
-        return LanguageRegistry.PMD.getLanguageByFullName(NAME);
+    public static ApexLanguageModule getInstance() {
+        return (ApexLanguageModule) LanguageRegistry.PMD.getLanguageById(TERSE_NAME);
     }
 }

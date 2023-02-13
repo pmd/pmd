@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.cpd.AnyTokenizer;
+import net.sourceforge.pmd.cpd.CpdCapableLanguage;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.Parser;
@@ -26,7 +27,7 @@ import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
  * @since 6.48.0
  */
 @Experimental
-public final class PlainTextLanguage extends SimpleLanguageModuleBase {
+public final class PlainTextLanguage extends SimpleLanguageModuleBase implements CpdCapableLanguage {
 
     private static final Language INSTANCE = new PlainTextLanguage();
 

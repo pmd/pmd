@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang;
 import java.util.Objects;
 
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.cpd.CpdCapableLanguage;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
@@ -22,7 +23,7 @@ import net.sourceforge.pmd.reporting.ViolationDecorator;
 /**
  * Dummy language used for testing PMD.
  */
-public class DummyLanguageModule extends SimpleLanguageModuleBase {
+public class DummyLanguageModule extends SimpleLanguageModuleBase implements CpdCapableLanguage {
 
     public static final String NAME = "Dummy";
     public static final String TERSE_NAME = "dummy";
