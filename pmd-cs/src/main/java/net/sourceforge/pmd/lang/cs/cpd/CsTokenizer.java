@@ -8,7 +8,7 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Lexer;
 
 import net.sourceforge.pmd.cpd.Tokenizer;
-import net.sourceforge.pmd.cpd.internal.AntlrTokenizer;
+import net.sourceforge.pmd.cpd.impl.AntlrTokenizer;
 import net.sourceforge.pmd.cpd.token.AntlrTokenFilter;
 import net.sourceforge.pmd.cpd.token.internal.BaseTokenFilter;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;

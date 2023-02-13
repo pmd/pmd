@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import net.sourceforge.pmd.cpd.TokenEntry;
 import net.sourceforge.pmd.cpd.TokenFactory;
 import net.sourceforge.pmd.cpd.Tokenizer;
-import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
+import net.sourceforge.pmd.cpd.impl.JavaCCTokenizer;
 import net.sourceforge.pmd.cpd.token.JavaCCTokenFilter;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
