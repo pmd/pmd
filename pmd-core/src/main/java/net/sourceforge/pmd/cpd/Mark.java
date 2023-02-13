@@ -6,59 +6,56 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.Objects;
 
-public class Mark implements Comparable<Mark> {
-    private final TokenEntry token;
-    private TokenEntry endToken;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-    public Mark(TokenEntry token) {
+import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextRange2d;
+
+/**
+ * A range of tokens in a source file, identified by a start and end
+ * token (both included in the range). The start and end token may be
+ * the same token.
+ */
+public final class Mark implements Comparable<Mark> {
+
+    private final @NonNull TokenEntry token;
+    private @Nullable TokenEntry endToken;
+
+    Mark(@NonNull TokenEntry token) {
         this.token = token;
     }
 
-    public TokenEntry getToken() {
+    @NonNull TokenEntry getToken() {
         return this.token;
     }
 
-    public String getFilename() {
-        return this.token.getFileName();
-    }
-
-    public int getBeginLine() {
-        return this.token.getBeginLine();
+    @NonNull TokenEntry getEndToken() {
+        return endToken == null ? token : endToken;
     }
 
     /**
-     * The column number where this duplication begins.
+     * Return the location of this source range in the source file.
      */
-    public int getBeginColumn() {
-        return this.token.getBeginColumn();
+    public FileLocation getLocation() {
+        TokenEntry endToken = getEndToken();
+        return FileLocation.range(
+            this.token.getFilePathId(),
+            TextRange2d.range2d(token.getBeginLine(), token.getBeginColumn(),
+                                endToken.getEndLine(), endToken.getEndColumn()));
     }
 
     public int getBeginTokenIndex() {
         return this.token.getIndex();
     }
 
-    public int getEndLine() {
-        return endToken == null ? token.getEndLine() : endToken.getEndLine();
-    }
-
-    /**
-     * The column number where this duplication ends.
-     * returns -1 if not available
-     * @return the end column number
-     */
-    public int getEndColumn() {
-        return this.endToken == null ? token.getEndColumn() : this.endToken.getEndColumn();
-    }
-
     public int getEndTokenIndex() {
-        return this.endToken == null ? this.token.getIndex() : this.endToken.getIndex();
+        return getEndToken().getIndex();
     }
 
-    public int getLineCount() {
-        return this.getEndLine() - this.getBeginLine() + 1;
-    }
-
-    void setEndToken(TokenEntry endToken) {
+    void setEndToken(@NonNull TokenEntry endToken) {
+        assert endToken.getFilePathId().equals(token.getFilePathId())
+            : "Tokens are not from the same file";
         this.endToken = endToken;
     }
 
@@ -67,7 +64,7 @@ public class Mark implements Comparable<Mark> {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((token == null) ? 0 : token.hashCode());
+        result = prime * result + token.hashCode();
         return result;
     }
 
@@ -83,7 +80,8 @@ public class Mark implements Comparable<Mark> {
             return false;
         }
         Mark other = (Mark) obj;
-        return Objects.equals(token, other.token);
+        return Objects.equals(token, other.token)
+            && Objects.equals(endToken, other.endToken);
     }
 
     @Override

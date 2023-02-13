@@ -29,7 +29,10 @@ final class CpdTestUtils {
         Set<TextFile> textFiles = new HashSet<>();
         for (Match match : matches) {
             match.iterator().forEachRemaining(
-                mark -> textFiles.add(TextFile.forCharSeq(DUMMY_FILE_CONTENT, mark.getFilename(), DummyLanguageModule.getInstance().getDefaultVersion())));
+                mark -> textFiles.add(
+                    TextFile.forCharSeq(DUMMY_FILE_CONTENT,
+                                        mark.getLocation().getFileName(),
+                                        DummyLanguageModule.getInstance().getDefaultVersion())));
         }
         return new CPDReport(
             new SourceManager(new ArrayList<>(textFiles)),
@@ -77,7 +80,7 @@ final class CpdTestUtils {
         }
 
         CpdReportBuilder addMatch(Match match) {
-            fileContents.putIfAbsent(match.getFirstMark().getFilename(), DUMMY_FILE_CONTENT);
+            fileContents.putIfAbsent(match.getFirstMark().getLocation().getFileName(), DUMMY_FILE_CONTENT);
             matches.add(match);
             return this;
         }

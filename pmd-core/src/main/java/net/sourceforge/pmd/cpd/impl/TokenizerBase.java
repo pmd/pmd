@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.document.TextDocument;
 
 public abstract class TokenizerBase<T extends GenericToken<T>> implements Tokenizer {
 
-    protected abstract TokenManager<T> makeLexerImpl(TextDocument doc);
+    protected abstract TokenManager<T> makeLexerImpl(TextDocument doc) throws IOException;
 
     protected TokenManager<T> filterTokenStream(TokenManager<T> tokenManager) {
         return new BaseTokenFilter<>(tokenManager);

@@ -12,6 +12,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.cache.AnalysisCache;
+import net.sourceforge.pmd.cpd.PmdCapableLanguage;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.util.log.MessageReporter;
@@ -46,7 +47,7 @@ public interface LanguageProcessor extends AutoCloseable {
     /**
      * The language of this processor.
      */
-    @NonNull Language getLanguage();
+    @NonNull PmdCapableLanguage getLanguage();
 
     /**
      * The language version that was configured when creating this processor.

@@ -14,6 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.document.TextRegion;
@@ -61,10 +62,11 @@ class SourceManager implements AutoCloseable {
 
     @SuppressWarnings("PMD.CloseResource")
     public Chars getSlice(Mark mark) {
-        TextFile textFile = fileByName.get(mark.getFilename());
+        FileLocation loc = mark.getLocation();
+        TextFile textFile = fileByName.get(loc.getFileName());
         assert textFile != null;
         TextDocument doc = get(textFile);
-        TextRegion lineRange = doc.createLineRange(mark.getBeginLine(), mark.getEndLine());
+        TextRegion lineRange = doc.createLineRange(loc.getStartLine(), loc.getEndLine());
         return doc.sliceOriginalText(lineRange);
     }
 }

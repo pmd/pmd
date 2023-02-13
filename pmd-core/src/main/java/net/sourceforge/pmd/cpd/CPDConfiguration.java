@@ -50,7 +50,7 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     private boolean skipDuplicates;
 
-    private String rendererName;
+    private String rendererName = DEFAULT_RENDERER;
 
     CPDReportRenderer cpdReportRenderer;
 
@@ -167,6 +167,10 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     public void setRendererName(String rendererName) {
         this.rendererName = rendererName;
+        if (rendererName == null) {
+            this.cpdReportRenderer = null;
+        }
+        this.cpdReportRenderer = createRendererByName(rendererName, getSourceEncoding().name());
     }
 
 

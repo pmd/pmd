@@ -8,7 +8,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
 
     private static final int EOF = 0;
 
-    private final String fileName;
+    private final String filePathId;
     private final int beginLine;
     private final int beginColumn;
     private final int endColumn;
@@ -18,20 +18,20 @@ public class TokenEntry implements Comparable<TokenEntry> {
     private int hashCode;
 
     /** constructor for EOF entries. */
-    TokenEntry(String fileName, int line, int column) {
+    TokenEntry(String filePathId, int line, int column) {
         assert isOk(line) && isOk(column) : "Coordinates are 1-based";
         this.identifier = EOF;
-        this.fileName = fileName;
+        this.filePathId = filePathId;
         this.beginLine = line;
         this.beginColumn = column;
         this.endLine = line;
         this.endColumn = column;
     }
 
-    TokenEntry(int imageId, String fileName, int beginLine, int beginColumn, int endLine, int endColumn, int index) {
+    TokenEntry(int imageId, String filePathId, int beginLine, int beginColumn, int endLine, int endColumn, int index) {
         assert isOk(beginLine) && isOk(beginColumn) && isOk(endLine) && isOk(endColumn) : "Coordinates are 1-based";
         assert imageId != EOF;
-        this.fileName = fileName;
+        this.filePathId = filePathId;
         this.beginLine = beginLine;
         this.beginColumn = beginColumn;
         this.endLine = endLine;
@@ -49,8 +49,8 @@ public class TokenEntry implements Comparable<TokenEntry> {
     }
 
 
-    String getFileName() {
-        return fileName;
+    String getFilePathId() {
+        return filePathId;
     }
 
 
@@ -103,7 +103,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
         if (other.isEof() != this.isEof()) {
             return false;
         } else if (this.isEof()) {
-            return other.getFileName().equals(this.getFileName());
+            return other.getFilePathId().equals(this.getFilePathId());
         }
         return other.hashCode == hashCode;
     }

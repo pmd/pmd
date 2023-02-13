@@ -33,7 +33,7 @@ class CPDReportTest {
             match -> {
                 // only keep file1.java
                 for (Mark mark : match.getMarkSet()) {
-                    if (mark.getFilename().equals("file1.java")) {
+                    if (mark.getLocation().getFileName().equals("file1.java")) {
                         return true;
                     }
                 }
@@ -43,7 +43,7 @@ class CPDReportTest {
         for (Match match : filtered.getMatches()) {
             Set<String> filenames = new HashSet<>();
             for (Mark mark : match.getMarkSet()) {
-                filenames.add(mark.getFilename());
+                filenames.add(mark.getLocation().getFileName());
             }
             assertTrue(filenames.contains("file1.java"));
         }

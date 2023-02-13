@@ -43,11 +43,11 @@ class MatchTest {
         assertFalse(i.hasNext());
 
         assertEquals(mark1, occurrence1);
-        assertEquals(1, occurrence1.getLineCount());
+        assertEquals(1, occurrence1.getLocation().getLineCount());
         assertEquals(Chars.wrap("1234567890"), sourceManager.getSlice(mark1));
 
         assertEquals(mark2, occurrence2);
-        assertEquals(1, occurrence2.getLineCount());
+        assertEquals(1, occurrence2.getLocation().getLineCount());
         assertEquals(Chars.wrap("1234567890"), sourceManager.getSlice(mark2));
     }
 

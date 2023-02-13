@@ -4,12 +4,13 @@
 
 package net.sourceforge.pmd.cpd;
 
+import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 
 /**
- * A language that also supports {@link CpdAnalysis CPD}.
+ * A language that supports {@link PmdAnalysis PMD}.
  *
  * @author Clément Fournier
  */

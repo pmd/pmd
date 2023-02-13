@@ -8,6 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.lang.document.FileLocation;
+
 class MarkTest {
 
     @Test
@@ -17,14 +19,14 @@ class MarkTest {
         TokenEntry token = tokens.addToken("public", filename, 1, 2, 3, 4);
 
         Mark mark = new Mark(token);
-
+        FileLocation loc = mark.getLocation();
         assertEquals(token, mark.getToken());
-        assertEquals(filename, mark.getFilename());
-        assertEquals(1, mark.getBeginLine());
-        assertEquals(3, mark.getLineCount());
-        assertEquals(3, mark.getEndLine());
-        assertEquals(2, mark.getBeginColumn());
-        assertEquals(4, mark.getEndColumn());
+        assertEquals(filename, loc.getFileName());
+        assertEquals(1, loc.getStartLine());
+        assertEquals(3, loc.getLineCount());
+        assertEquals(3, loc.getEndLine());
+        assertEquals(2, loc.getStartColumn());
+        assertEquals(4, loc.getEndColumn());
     }
 
     @Test
@@ -42,13 +44,14 @@ class MarkTest {
 
         final Mark mark = new Mark(token);
         mark.setEndToken(endToken);
+        FileLocation loc = mark.getLocation();
 
         assertEquals(token, mark.getToken());
-        assertEquals(filename, mark.getFilename());
-        assertEquals(beginLine, mark.getBeginLine());
-        assertEquals(lineCount, mark.getLineCount());
-        assertEquals(beginLine + lineCount - 1, mark.getEndLine());
-        assertEquals(beginColumn, mark.getBeginColumn());
-        assertEquals(endColumn, mark.getEndColumn());
+        assertEquals(filename, loc.getFileName());
+        assertEquals(beginLine, loc.getStartLine());
+        assertEquals(lineCount, loc.getLineCount());
+        assertEquals(beginLine + lineCount - 1, loc.getEndLine());
+        assertEquals(beginColumn, loc.getStartColumn());
+        assertEquals(endColumn, loc.getEndColumn());
     }
 }

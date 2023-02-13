@@ -37,6 +37,7 @@ public final class CpdAnalysis implements AutoCloseable {
     private final CPDConfiguration configuration;
     private final FileCollector files;
     private final MessageReporter reporter;
+    private final @Nullable CPDReportRenderer renderer;
     private @NonNull CPDListener listener = new CPDNullListener();
 
 
@@ -48,16 +49,9 @@ public final class CpdAnalysis implements AutoCloseable {
             reporter
         );
 
-        if (config.getRendererName() == null) {
-            config.setRendererName(CPDConfiguration.DEFAULT_RENDERER);
-        }
-        if (config.cpdReportRenderer == null) {
-            //may throw
-            CPDReportRenderer renderer = CPDConfiguration.createRendererByName(config.getRendererName(), config.getSourceEncoding().name());
-            config.setRenderer(renderer);
-        }
+        this.renderer = config.getCPDReportRenderer();
         // Add all sources
-        extractAllSources();
+        extractAllSources(config);
 
         for (Language language : config.getLanguageRegistry()) {
             setLanguageProperties(language, config);
@@ -88,7 +82,7 @@ public final class CpdAnalysis implements AutoCloseable {
         return files;
     }
 
-    private void extractAllSources() throws IOException {
+    private void extractAllSources(CPDConfiguration configuration) throws IOException {
         // Add files
         if (null != configuration.getFiles() && !configuration.getFiles().isEmpty()) {
             addSourcesFilesToCPD(configuration.getFiles());
@@ -167,8 +161,8 @@ public final class CpdAnalysis implements AutoCloseable {
 
             CPDReport cpdReport = new CPDReport(sourceManager, matchAlgorithm.getMatches(), numberOfTokensPerFile);
 
-            if (configuration.getCPDReportRenderer() != null) {
-                configuration.getCPDReportRenderer().render(cpdReport, IOUtil.createWriter(Charset.defaultCharset(), null));
+            if (renderer != null) {
+                renderer.render(cpdReport, IOUtil.createWriter(Charset.defaultCharset(), null));
             }
 
             consumer.accept(cpdReport);

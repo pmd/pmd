@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
+import net.sourceforge.pmd.lang.document.FileLocation;
 
 public class CSVRenderer implements CPDReportRenderer {
 
@@ -56,12 +57,13 @@ public class CSVRenderer implements CPDReportRenderer {
                 .append(String.valueOf(match.getMarkCount())).append(separator);
             for (Iterator<Mark> marks = match.iterator(); marks.hasNext();) {
                 Mark mark = marks.next();
+                FileLocation loc = mark.getLocation();
 
-                writer.append(String.valueOf(mark.getBeginLine())).append(separator);
+                writer.append(String.valueOf(loc.getStartLine())).append(separator);
                 if (lineCountPerFile) {
-                    writer.append(String.valueOf(mark.getLineCount())).append(separator);
+                    writer.append(String.valueOf(loc.getLineCount())).append(separator);
                 }
-                writer.append(StringEscapeUtils.escapeCsv(mark.getFilename()));
+                writer.append(StringEscapeUtils.escapeCsv(loc.getFileName()));
                 if (marks.hasNext()) {
                     writer.append(separator);
                 }

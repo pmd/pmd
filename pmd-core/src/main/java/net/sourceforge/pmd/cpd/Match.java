@@ -47,7 +47,7 @@ public class Match implements Comparable<Match>, Iterable<Mark> {
     }
 
     public int getLineCount() {
-        return getMark(0).getLineCount();
+        return getMark(0).getLocation().getLineCount();
     }
 
     public int getTokenCount() {

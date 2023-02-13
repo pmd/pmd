@@ -103,7 +103,7 @@ public abstract class LanguageModuleBase implements Language {
     }
 
     @Override
-    public LanguageVersion getDefaultVersion() {
+    public @NonNull LanguageVersion getDefaultVersion() {
         return defaultVersion;
     }
 

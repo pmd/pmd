@@ -10,6 +10,9 @@ import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
+/**
+ * Tokenizes a source file into tokens consumable by CPD.
+ */
 public interface Tokenizer {
 
     PropertyDescriptor<Boolean> CPD_IGNORE_LITERAL_SEQUENCES =
@@ -51,7 +54,6 @@ public interface Tokenizer {
 
     /**
      * Tokenize the source code and record tokens using the provided token factory.
-     * Implementations should not add an EOF token at the end.
      */
     void tokenize(TextDocument document, TokenFactory tokens) throws IOException;
 
@@ -60,7 +62,7 @@ public interface Tokenizer {
      * create and close the token factory.
      */
     static void tokenize(Tokenizer tokenizer, TextDocument textDocument, Tokens tokens) throws IOException {
-        try (TokenFactory tf = TokenFactory.forFile(textDocument, tokens)) {
+        try (TokenFactory tf = Tokens.factoryForFile(textDocument, tokens)) {
             tokenizer.tokenize(textDocument, tf);
         }
     }

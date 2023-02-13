@@ -36,7 +36,7 @@ public final class LanguageProcessorRegistry implements AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(LanguageProcessorRegistry.class);
 
 
-    private final Map<Language, LanguageProcessor> processors;
+    private final Map<PmdCapableLanguage, LanguageProcessor> processors;
     private final LanguageRegistry languages;
 
 

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.cpd.impl;
 
+import java.io.IOException;
+
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.Lexer;
@@ -19,8 +21,8 @@ import net.sourceforge.pmd.lang.document.TextDocument;
  */
 public abstract class AntlrTokenizer extends TokenizerBase<AntlrToken> {
     @Override
-    protected final TokenManager<AntlrToken> makeLexerImpl(TextDocument doc) {
-        CharStream charStream = CharStreams.fromString(doc.getText().toString(), doc.getDisplayName());
+    protected final TokenManager<AntlrToken> makeLexerImpl(TextDocument doc) throws IOException {
+        CharStream charStream = CharStreams.fromReader(doc.newReader(), doc.getDisplayName());
         return new AntlrTokenManager(getLexerForSource(charStream), doc);
     }
 

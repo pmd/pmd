@@ -6,8 +6,6 @@ package net.sourceforge.pmd.cpd;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -24,6 +22,7 @@ import org.w3c.dom.Element;
 
 import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -98,8 +97,7 @@ public final class XMLRenderer implements CPDReportRenderer {
         final Map<String, Integer> numberOfTokensPerFile = report.getNumberOfTokensPerFile();
         doc.appendChild(root);
 
-        final List<Map.Entry<String, Integer>> entries = new ArrayList<>(numberOfTokensPerFile.entrySet());
-        for (final Map.Entry<String, Integer> pair : entries) {
+        for (final Map.Entry<String, Integer> pair : numberOfTokensPerFile.entrySet()) {
             final Element fileElement = doc.createElement("file");
             fileElement.setAttribute("path", pair.getKey());
             fileElement.setAttribute("totalNumberOfTokens", String.valueOf(pair.getValue()));
@@ -117,32 +115,23 @@ public final class XMLRenderer implements CPDReportRenderer {
     private Element addFilesToDuplicationElement(Document doc, Element duplication, Match match) {
         for (Mark mark : match) {
             final Element file = doc.createElement("file");
-            file.setAttribute("line", String.valueOf(mark.getBeginLine()));
+            FileLocation loc = mark.getLocation();
+            file.setAttribute("line", String.valueOf(loc.getStartLine()));
             // only remove invalid characters, escaping is done by the DOM impl.
-            String filenameXml10 = StringUtil.removedInvalidXml10Characters(mark.getFilename());
+            String filenameXml10 = StringUtil.removedInvalidXml10Characters(loc.getFileName());
             file.setAttribute("path", filenameXml10);
-            file.setAttribute("endline", String.valueOf(mark.getEndLine()));
-            final int beginCol = mark.getBeginColumn();
-            final int endCol = mark.getEndColumn();
-            if (beginCol != -1) {
-                file.setAttribute("column", String.valueOf(beginCol));
-            }
-            if (endCol != -1) {
-                file.setAttribute("endcolumn", String.valueOf(endCol));
-            }
-            final int beginIndex = mark.getBeginTokenIndex();
-            final int endIndex = mark.getEndTokenIndex();
-            file.setAttribute("begintoken", String.valueOf(beginIndex));
-            if (endIndex != -1) {
-                file.setAttribute("endtoken", String.valueOf(endIndex));
-            }
+            file.setAttribute("endline", String.valueOf(loc.getEndLine()));
+            file.setAttribute("column", String.valueOf(loc.getStartColumn()));
+            file.setAttribute("endcolumn", String.valueOf(loc.getEndColumn()));
+            file.setAttribute("begintoken", String.valueOf(mark.getBeginTokenIndex()));
+            file.setAttribute("endtoken", String.valueOf(mark.getEndTokenIndex()));
             duplication.appendChild(file);
         }
         return duplication;
     }
 
     private Element addCodeSnippet(Document doc, Element duplication, Match match, CPDReport report) {
-        Chars codeSnippet = report.getSourceCodeSlice(match);
+        Chars codeSnippet = report.getSourceCodeSlice(match.getFirstMark());
         if (codeSnippet != null) {
             // the code snippet has normalized line endings
             String platformSpecific = codeSnippet.toString().replace("\n", System.lineSeparator());

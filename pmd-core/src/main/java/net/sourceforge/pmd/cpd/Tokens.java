@@ -10,8 +10,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.document.TextDocument;
+
+/**
+ * Global token collector for CPD. This is populated by lexing all files,
+ * after which the match algorithm proceeds.
+ */
+@InternalApi
 public class Tokens {
 
+    // This stores all the token entries recorded during the run.
     private final List<TokenEntry> tokens = new ArrayList<>();
     private final Map<String, Integer> images = new HashMap<>();
     // the first ID is 1, 0 is the ID of the EOF token.
@@ -21,14 +33,8 @@ public class Tokens {
         this.tokens.add(tokenEntry);
     }
 
-    void addEof(String fileName) {
-        if (tokens.isEmpty()) {
-            add(new TokenEntry(fileName, 1, 1));
-            return;
-        }
-
-        TokenEntry tok = peekLastToken();
-        add(new TokenEntry(fileName, tok.getEndLine(), tok.getEndColumn()));
+    void addEof(String fileName, int line, int column) {
+        add(new TokenEntry(fileName, line, column));
     }
 
     void setImage(TokenEntry entry, String newImage) {
@@ -45,7 +51,7 @@ public class Tokens {
     }
 
     TokenEntry peekLastToken() {
-        return getToken(size() - 1);
+        return tokens.isEmpty() ? null : getToken(size() - 1);
     }
 
     private TokenEntry getToken(int index) {
@@ -72,6 +78,51 @@ public class Tokens {
 
     State savePoint() {
         return new State(this);
+    }
+
+    /**
+     * Creates a token factory to process the given file with
+     * {@link Tokenizer#tokenize(TextDocument, TokenFactory)}.
+     * Tokens are accumulated in the {@link Tokens} parameter.
+     *
+     * @param file   Document for the file to process
+     * @param tokens Token sink
+     *
+     * @return A new token factory
+     */
+    static TokenFactory factoryForFile(TextDocument file, Tokens tokens) {
+        return new TokenFactory() {
+            final String fileName = file.getPathId();
+            final int firstToken = tokens.size();
+
+            @Override
+            public void recordToken(@NonNull String image, int startLine, int startCol, int endLine, int endCol) {
+                tokens.addToken(image, fileName, startLine, startCol, endLine, endCol);
+            }
+
+            @Override
+            public void setImage(TokenEntry entry, @NonNull String newImage) {
+                tokens.setImage(entry, newImage);
+            }
+
+            @Override
+            public @Nullable TokenEntry peekLastToken() {
+                if (tokens.size() <= firstToken) {
+                    return null; // no token has been added yet in this file
+                }
+                return tokens.peekLastToken();
+            }
+
+            @Override
+            public void close() {
+                TokenEntry tok = peekLastToken();
+                if (tok == null) {
+                    tokens.addEof(fileName, 1, 1);
+                } else {
+                    tokens.addEof(fileName, tok.getEndLine(), tok.getEndColumn());
+                }
+            }
+        };
     }
 
     /**

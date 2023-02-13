@@ -58,10 +58,10 @@ public class JavaTokenizer extends JavaCCTokenizer {
                 || javaToken.kind == JavaTokenKinds.CHARACTER_LITERAL
                 || javaToken.kind == JavaTokenKinds.INTEGER_LITERAL
                 || javaToken.kind == JavaTokenKinds.FLOATING_POINT_LITERAL)) {
-            image = String.valueOf(javaToken.kind);
+            image = JavaTokenKinds.describe(javaToken.kind);
         }
         if (ignoreIdentifiers && javaToken.kind == JavaTokenKinds.IDENTIFIER) {
-            image = String.valueOf(javaToken.kind);
+            image = JavaTokenKinds.describe(javaToken.kind);
         }
 
         constructorDetector.processToken(javaToken);

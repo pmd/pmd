@@ -56,12 +56,12 @@ class MatchAlgorithmTest {
         Mark mark2 = marks.next();
         assertFalse(marks.hasNext());
 
-        assertEquals(3, mark1.getBeginLine());
-        assertEquals(fileName, mark1.getFilename());
+        assertEquals(3, mark1.getLocation().getStartLine());
+        assertEquals(fileName, mark1.getLocation().getFileName());
         assertEquals(LINE_3 + "\n", sourceManager.getSlice(mark1).toString());
 
-        assertEquals(4, mark2.getBeginLine());
-        assertEquals(fileName, mark2.getFilename());
+        assertEquals(4, mark2.getLocation().getStartLine());
+        assertEquals(fileName, mark2.getLocation().getFileName());
         assertEquals(LINE_4 + "\n", sourceManager.getSlice(mark2).toString());
     }
 }

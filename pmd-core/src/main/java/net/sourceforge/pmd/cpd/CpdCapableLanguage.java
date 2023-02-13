@@ -8,7 +8,7 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 
 /**
- * A language that also supports {@link CpdAnalysis CPD}.
+ * A language that supports {@link CpdAnalysis CPD}.
  *
  * @author Clément Fournier
  */

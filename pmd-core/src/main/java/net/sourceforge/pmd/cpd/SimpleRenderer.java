@@ -11,6 +11,7 @@ import java.util.Iterator;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.util.StringUtil;
 
 public class SimpleRenderer implements CPDReportRenderer {
@@ -54,13 +55,16 @@ public class SimpleRenderer implements CPDReportRenderer {
               .append(" tokens) duplication in the following files: ").append(PMD.EOL);
 
         for (Mark mark : match) {
-            writer.append("Starting at line ").append(String.valueOf(mark.getBeginLine())).append(" of ").append(mark.getFilename())
+            FileLocation loc = mark.getLocation();
+            writer.append("Starting at line ")
+                  .append(String.valueOf(loc.getStartLine()))
+                  .append(" of ").append(loc.getFileName())
                   .append(PMD.EOL);
         }
 
         writer.append(PMD.EOL); // add a line to separate the source from the desc above
 
-        Chars source = report.getSourceCodeSlice(match);
+        Chars source = report.getSourceCodeSlice(match.getFirstMark());
 
         if (trimLeadingWhitespace) {
             for (Chars line : StringUtil.linesWithTrimIndent(source)) {

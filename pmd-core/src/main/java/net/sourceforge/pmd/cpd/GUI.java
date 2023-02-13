@@ -24,7 +24,6 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -67,6 +66,7 @@ import net.sourceforge.pmd.lang.LanguageModuleBase.LanguageMetadata;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.impl.CpdOnlyLanguageModuleBase;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 public class GUI implements CPDListener {
 
@@ -78,9 +78,15 @@ public class GUI implements CPDListener {
 
     private abstract static class LanguageConfig {
 
-        public abstract String getLabel();
-
         public abstract Language getLanguage();
+
+        boolean canUseCustomExtension() {
+            return false;
+        }
+
+        void setExtension(String extension) {
+            // by default do nothing
+        }
 
         public boolean canIgnoreIdentifiers() {
             return getLanguage().newPropertyBundle().hasDescriptor(Tokenizer.CPD_ANONYMIZE_IDENTIFIERS);
@@ -107,57 +113,60 @@ public class GUI implements CPDListener {
     private static final List<LanguageConfig> LANGUAGE_SETS;
 
 
-    public static final String CUSTOM_EXTENSION_SENTINEL = "custom";
+    private static final LanguageConfig CUSTOM_EXTENSION_LANG = new LanguageConfig() {
+        private String extension = "custom_ext";
+
+        @Override
+        void setExtension(String extension) {
+            this.extension = extension;
+        }
+
+        @Override
+        boolean canUseCustomExtension() {
+            return true;
+        }
+
+        @Override
+        public Language getLanguage() {
+            return new CpdOnlyLanguageModuleBase(
+                LanguageMetadata.withId("custom_extension")
+                                .extensions(extension)
+                                .name("By extension...")) {
+                @Override
+                public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
+                    return new AnyTokenizer();
+                }
+            };
+        }
+    };
 
 
     static {
-        LANGUAGE_SETS = new ArrayList<>();
-
-        for (Language lang : LanguageRegistry.CPD) {
-            LanguageConfig config = new LanguageConfig() {
-                @Override
-                public String getLabel() {
-                    return lang.getName();
-                }
-
-                @Override
-                public Language getLanguage() {
-                    return lang;
-                }
-            };
-            LANGUAGE_SETS.add(config);
-        }
-        LanguageConfig last = new LanguageConfig() {
-            @Override
-            public String getLabel() {
-                return "By extension...";
-            }
-
+        List<LanguageConfig> languages = new ArrayList<>();
+        LanguageRegistry.CPD.getLanguages().stream().map(l -> new LanguageConfig() {
             @Override
             public Language getLanguage() {
-                return new CpdOnlyLanguageModuleBase(LanguageMetadata.withId("custom_extension").extensions(CUSTOM_EXTENSION_SENTINEL).name("By extension...")) {
-                    @Override
-                    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
-                        return new AnyTokenizer();
-                    }
-                };
+                return l;
             }
-        };
-        LANGUAGE_SETS.add(last);
+        }).forEach(languages::add);
+        languages.add(CUSTOM_EXTENSION_LANG);
+        LANGUAGE_SETS = languages;
     }
 
 
     private static final int DEFAULT_CPD_MINIMUM_LENGTH = 75;
-    private static final Map<String, LanguageConfig> LANGUAGE_CONFIGS_BY_LABEL = new HashMap<>(LANGUAGE_SETS.size());
+    private static final Map<String, LanguageConfig> LANGUAGE_CONFIGS_BY_LABEL =
+        CollectionUtil.associateBy(LANGUAGE_SETS, l -> l.getLanguage().getName());
     private static final KeyStroke COPY_KEY_STROKE = KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK,
                                                                             false);
     private static final KeyStroke DELETE_KEY_STROKE = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0);
 
-    private class ColumnSpec {
-        private String label;
-        private int alignment;
-        private int width;
-        private Comparator<Match> sorter;
+    private static class ColumnSpec {
+
+        private final String label;
+        private final int alignment;
+        private final int width;
+        private final Comparator<Match> sorter;
 
         ColumnSpec(String aLabel, int anAlignment, int aWidth, Comparator<Match> aSorter) {
             label = aLabel;
@@ -183,16 +192,10 @@ public class GUI implements CPDListener {
         }
     }
 
-    private final ColumnSpec[] matchColumns = new ColumnSpec[] {
+    private final ColumnSpec[] matchColumns = {
         new ColumnSpec("Source", SwingConstants.LEFT, -1, Match.LABEL_COMPARATOR),
         new ColumnSpec("Matches", SwingConstants.RIGHT, 60, Match.MATCHES_COMPARATOR),
         new ColumnSpec("Lines", SwingConstants.RIGHT, 45, Match.LINES_COMPARATOR), };
-
-    static {
-        for (LanguageConfig lconf : LANGUAGE_SETS) {
-            LANGUAGE_CONFIGS_BY_LABEL.put(lconf.getLabel(), lconf);
-        }
-    }
 
     private static LanguageConfig languageConfigFor(String label) {
         return LANGUAGE_CONFIGS_BY_LABEL.get(label);
@@ -271,9 +274,9 @@ public class GUI implements CPDListener {
         }
     }
 
-    private class AlignmentRenderer extends DefaultTableCellRenderer {
+    private static class AlignmentRenderer extends DefaultTableCellRenderer {
         private static final long serialVersionUID = -2190382865483285032L;
-        private int[] alignments;
+        private final int[] alignments;
 
         AlignmentRenderer(int[] theAlignments) {
             alignments = theAlignments;
@@ -290,27 +293,27 @@ public class GUI implements CPDListener {
         }
     }
 
-    private JTextField rootDirectoryField = new JTextField(System.getProperty("user.home"));
-    private JTextField minimumLengthField = new JTextField(Integer.toString(DEFAULT_CPD_MINIMUM_LENGTH));
-    private JTextField encodingField = new JTextField(System.getProperty("file.encoding"));
-    private JTextField timeField = new JTextField(6);
-    private JLabel phaseLabel = new JLabel();
-    private JProgressBar tokenizingFilesBar = new JProgressBar();
-    private JTextArea resultsTextArea = new JTextArea();
-    private JCheckBox recurseCheckbox = new JCheckBox("", true);
-    private JCheckBox ignoreIdentifiersCheckbox = new JCheckBox("", false);
-    private JCheckBox ignoreLiteralsCheckbox = new JCheckBox("", false);
-    private JCheckBox ignoreAnnotationsCheckbox = new JCheckBox("", false);
-    private JCheckBox ignoreUsingsCheckbox = new JCheckBox("", false);
-    private JCheckBox ignoreLiteralSequencesCheckbox = new JCheckBox("", false);
-    private JComboBox<String> languageBox = new JComboBox<>();
-    private JTextField extensionField = new JTextField();
-    private JLabel extensionLabel = new JLabel("Extension:", SwingConstants.RIGHT);
-    private JTable resultsTable = new JTable();
-    private JButton goButton;
-    private JButton cancelButton;
-    private JPanel progressPanel;
-    private JFrame frame;
+    private final JTextField rootDirectoryField = new JTextField(System.getProperty("user.home"));
+    private final JTextField minimumLengthField = new JTextField(Integer.toString(DEFAULT_CPD_MINIMUM_LENGTH));
+    private final JTextField encodingField = new JTextField(System.getProperty("file.encoding"));
+    private final JTextField timeField = new JTextField(6);
+    private final JLabel phaseLabel = new JLabel();
+    private final JProgressBar tokenizingFilesBar = new JProgressBar();
+    private final JTextArea resultsTextArea = new JTextArea();
+    private final JCheckBox recurseCheckbox = new JCheckBox("", true);
+    private final JCheckBox ignoreIdentifiersCheckbox = new JCheckBox("", false);
+    private final JCheckBox ignoreLiteralsCheckbox = new JCheckBox("", false);
+    private final JCheckBox ignoreAnnotationsCheckbox = new JCheckBox("", false);
+    private final JCheckBox ignoreUsingsCheckbox = new JCheckBox("", false);
+    private final JCheckBox ignoreLiteralSequencesCheckbox = new JCheckBox("", false);
+    private final JComboBox<String> languageBox = new JComboBox<>();
+    private final JTextField extensionField = new JTextField();
+    private final JLabel extensionLabel = new JLabel("Extension:", SwingConstants.RIGHT);
+    private final JTable resultsTable = new JTable();
+    private final JButton goButton;
+    private final JButton cancelButton;
+    private final JPanel progressPanel;
+    private final JFrame frame;
     private boolean trimLeadingWhitespace;
 
     private List<Match> matches = new ArrayList<>();
@@ -392,11 +395,11 @@ public class GUI implements CPDListener {
         ignoreAnnotationsCheckbox.setEnabled(current.canIgnoreAnnotations());
         ignoreUsingsCheckbox.setEnabled(current.canIgnoreUsings());
         ignoreLiteralSequencesCheckbox.setEnabled(current.canIgnoreLiteralSequences());
-        String firstExt = current.getLanguage().getExtensions().get(0);
-        boolean enableExtension = CUSTOM_EXTENSION_SENTINEL.equals(firstExt);
+        boolean enableExtension = current.canUseCustomExtension();
         if (enableExtension) {
             extensionField.setText("");
         } else {
+            String firstExt = current.getLanguage().getExtensions().get(0);
             extensionField.setText(firstExt);
         }
         extensionField.setEnabled(enableExtension);
@@ -415,7 +418,7 @@ public class GUI implements CPDListener {
         helper.add(minimumLengthField);
         helper.addLabel("Language:");
         for (LanguageConfig lconf : LANGUAGE_SETS) {
-            languageBox.addItem(lconf.getLabel());
+            languageBox.addItem(lconf.getLanguage().getName());
         }
         languageBox.addActionListener(e -> adjustLanguageControlsFor(languageConfigFor((String) languageBox.getSelectedItem())));
         helper.add(languageBox);
@@ -573,20 +576,11 @@ public class GUI implements CPDListener {
         return new JScrollPane(resultsTable);
     }
 
-    private boolean isLegalPath(String path, LanguageConfig config) {
-        for (String extension : config.getLanguage().getExtensions()) {
-            if (path.endsWith(extension) && !extension.isEmpty()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private String setLabelFor(Match match) {
+    private void setLabelFor(Match match) {
 
         Set<String> sourceIDs = new HashSet<>(match.getMarkCount());
         for (Mark mark : match) {
-            sourceIDs.add(mark.getFilename());
+            sourceIDs.add(mark.getLocation().getFileName());
         }
         String label;
 
@@ -599,7 +593,6 @@ public class GUI implements CPDListener {
         }
 
         match.setLabel(label);
-        return label;
     }
 
     private void setProgressControls(boolean isRunning) {
@@ -627,7 +620,9 @@ public class GUI implements CPDListener {
             config.setIgnoreAnnotations(ignoreAnnotationsCheckbox.isSelected());
             config.setIgnoreUsings(ignoreUsingsCheckbox.isSelected());
             config.setIgnoreLiteralSequences(ignoreLiteralSequencesCheckbox.isSelected());
-            // p.setProperty(LanguageFactory.EXTENSION, extensionField.getText()); //FIXME
+            if (extensionField.isEnabled()) {
+                CUSTOM_EXTENSION_LANG.setExtension(extensionField.getText());
+            }
 
             LanguageConfig conf = languageConfigFor((String) languageBox.getSelectedItem());
             Language language = conf.getLanguage();
@@ -638,15 +633,7 @@ public class GUI implements CPDListener {
 
                 tokenizingFilesBar.setMinimum(0);
                 phaseLabel.setText("");
-                if (isLegalPath(dirPath.getPath(), conf)) {
-                    // should use the
-                    // language file filter
-                    // instead?
-                    // fixme wth
-                    cpd.files().addFileOrDirectory(dirPath.toPath());
-                } else {
-                    cpd.files().addFileOrDirectory(dirPath.toPath(), recurseCheckbox.isSelected());
-                }
+                cpd.files().addFileOrDirectory(dirPath.toPath(), recurseCheckbox.isSelected());
                 Timer t = createTimer();
                 t.start();
                 cpd.performAnalysis(report -> {
@@ -675,16 +662,13 @@ public class GUI implements CPDListener {
 
         final long start = System.currentTimeMillis();
 
-        return new Timer(1000, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                long now = System.currentTimeMillis();
-                long elapsedMillis = now - start;
-                long elapsedSeconds = elapsedMillis / 1000;
-                long minutes = (long) Math.floor(elapsedSeconds / 60);
-                long seconds = elapsedSeconds - minutes * 60;
-                timeField.setText(formatTime(minutes, seconds));
-            }
+        return new Timer(1000, e -> {
+            long now = System.currentTimeMillis();
+            long elapsedMillis = now - start;
+            long elapsedSeconds = elapsedMillis / 1000;
+            long minutes = elapsedSeconds / 60;
+            long seconds = elapsedSeconds - minutes * 60;
+            timeField.setText(formatTime(minutes, seconds));
         });
     }
 
@@ -702,7 +686,7 @@ public class GUI implements CPDListener {
         return sb.toString();
     }
 
-    private abstract class SortingTableModel<E> extends AbstractTableModel {
+    private abstract static class SortingTableModel<E> extends AbstractTableModel {
         abstract int sortColumn();
 
         abstract void sortColumn(int column);
@@ -785,10 +769,10 @@ public class GUI implements CPDListener {
 
             @Override
             public void sort(Comparator<Match> comparator) {
-                Collections.sort(items, comparator);
                 if (sortDescending) {
-                    Collections.reverse(items);
+                    comparator = comparator.reversed();
                 }
+                items.sort(comparator);
             }
         };
     }

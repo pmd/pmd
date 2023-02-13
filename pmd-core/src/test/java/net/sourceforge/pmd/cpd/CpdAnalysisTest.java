@@ -140,8 +140,8 @@ class CpdAnalysisTest {
                 List<Match> matches = report.getMatches();
                 for (Match match : matches) {
                     // the file added first was dup2.
-                    assertTrue(match.getFirstMark().getFilename().endsWith("dup2.java"));
-                    assertTrue(match.getSecondMark().getFilename().endsWith("dup1.java"));
+                    assertTrue(match.getFirstMark().getLocation().getFileName().endsWith("dup2.java"));
+                    assertTrue(match.getSecondMark().getLocation().getFileName().endsWith("dup1.java"));
                 }
             });
         }
