@@ -15,7 +15,7 @@ To add support for a new language, the crucial piece is writing a tokenizer that
 splits the source file into the tokens specific to your language. Thankfully you
 can use a stock [Antlr grammar](https://github.com/antlr/grammars-v4) or JavaCC
 grammar to generate a lexer for you. If you cannot use a lexer generator, for
-instance because you are wrapping a lexer for another library, it is still relatively
+instance because you are wrapping a lexer from another library, it is still relatively
 easy to implement the Tokenizer interface.
 
 Use the following guide to set up a new language module that supports CPD.
@@ -45,8 +45,8 @@ Use the following guide to set up a new language module that supports CPD.
       You can then subclass {% jdoc core::cpd.impl.JavaCCTokenizer %} instead of AntlrTokenizer.
     - For any other scenario just implement the interface however you can. Look at the Scala or Apex module for existing implementations.
 
-3. Create a {% jdoc core::lang.Language %} implementation and override `createCpdTokenizer`.
-If your language only supports CPD, then you can subclass  {% jdoc core::lang.impl.CpdOnlyLanguageModuleBase %}:
+3. Create a {% jdoc core::lang.Language %} implementation, and make it implement {% core::cpd.CpdCapableLanguage %}.
+If your language only supports CPD, then you can subclass {% jdoc core::lang.impl.CpdOnlyLanguageModuleBase %} to get going:
     
     ```java
     // mind the package convention if you are going to make a PR
@@ -54,18 +54,22 @@ If your language only supports CPD, then you can subclass  {% jdoc core::lang.im
 
     public class GoLanguageModule extends CpdOnlyLanguageModuleBase {
         
+        // A public noarg constructor is required.
         public GoLanguageModule() {
             super(LanguageMetadata.withId("go").name("Go").extensions("go"));
         }
 
         @Override
         public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
+            // This method should return an instance of the tokenizer you created.
             return new GoTokenizer();
         }
     } 
     ```
 
-   To make PMD find the language module at run time, write the fully-qualified name of your language class into the file `src/main/resources/META-INF/services/net.sourceforge.pmd.lang.Language`.
+   To make PMD find the language module at runtime, write the fully-qualified name of your language class into the file `src/main/resources/META-INF/services/net.sourceforge.pmd.lang.Language`.
+
+   At this point the new language module should be available in {% jdoc core::lang.LanguageRegistry#CPD %} and usable by CPD like any other language.
 
 4. Update the test that asserts the list of supported languages by updating the `SUPPORTED_LANGUAGES` constant in [BinaryDistributionIT](https://github.com/pmd/pmd/blob/master/pmd-dist/src/test/java/net/sourceforge/pmd/it/BinaryDistributionIT.java).
 
@@ -75,13 +79,15 @@ If your language only supports CPD, then you can subclass  {% jdoc core::lang.im
 
 To make the tokenizer configurable, first define some property descriptors using
 {% jdoc core::properties.PropertyFactory %}. Look at {% jdoc core::cpd.Tokenizer %}
-for some predefined ones which you can reuse. You need to override {% jdoc core::Language#newPropertyBundle() %}
-and call `definePropertyDescriptor` to register your descriptors.
+for some predefined ones which you can reuse (prefer reusing property descriptors if you can).
+You need to override {% jdoc core::Language#newPropertyBundle() %}
+and call `definePropertyDescriptor` to register the descriptors.
 After that you can access the values of the properties from the parameter
-of {% jdoc core::lang.Language#createCpdTokenizer(core::properties.LanguagePropertyBundle) %}.
+of {% jdoc core::cpd.CpdCapableLanguage#createCpdTokenizer(core::lang.LanguagePropertyBundle) %}.
 
 To implement simple token filtering, you can use {% jdoc core::cpd.impl.BaseTokenFilter %}
-as a base class, or eg {% jdoc core::cpd.impl.AntlrTokenFilter %} if you have an Antlr grammar. Take a look at the [Kotlin token filter implementation](https://github.com/pmd/pmd/blob/master/pmd-kotlin/src/main/java/net/sourceforge/pmd/lang/kotlin/cpd/KotlinTokenizer.java), or the [Java one](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/cpd/JavaTokenizer.java).
+as a base class, or another base class in {% jdoc_package core::cpd.impl %}.
+Take a look at the [Kotlin token filter implementation](https://github.com/pmd/pmd/blob/master/pmd-kotlin/src/main/java/net/sourceforge/pmd/lang/kotlin/cpd/KotlinTokenizer.java), or the [Java one](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/cpd/JavaTokenizer.java).
 
 
 ### Testing your implementation
