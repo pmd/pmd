@@ -2,12 +2,14 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.cpd;
+package net.sourceforge.pmd.lang.tsql.cpd;
 
 import org.antlr.v4.runtime.CharStream;
 
+import net.sourceforge.pmd.cpd.AntlrTokenizer;
+import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.lang.antlr.AntlrTokenManager;
-import net.sourceforge.pmd.lang.tsql.antlr4.TSqlLexer;
+import net.sourceforge.pmd.lang.tsql.ast.TSqlLexer;
 
 public class TSqlTokenizer extends AntlrTokenizer {
 

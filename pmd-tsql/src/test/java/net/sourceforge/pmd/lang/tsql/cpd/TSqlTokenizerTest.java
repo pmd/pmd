@@ -2,12 +2,13 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.cpd;
+package net.sourceforge.pmd.lang.tsql.cpd;
 
 import java.util.Properties;
 
 import org.junit.Test;
 
+import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
 public class TSqlTokenizerTest extends CpdTextComparisonTest {
@@ -23,7 +24,7 @@ public class TSqlTokenizerTest extends CpdTextComparisonTest {
 
     @Override
     protected String getResourcePrefix() {
-        return "../lang/tsql/cpd/testdata";
+        return "../cpd/testdata";
     }
 
     @Test
