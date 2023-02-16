@@ -16,6 +16,7 @@ public class TSqlTokenizer extends AntlrTokenizer {
     @Override
     protected AntlrTokenManager getLexerForSource(SourceCode sourceCode) {
         CharStream charStream = AntlrTokenizer.getCharStreamFromSourceCode(sourceCode);
+        charStream = new CaseChangingCharStream(charStream, true);
         return new AntlrTokenManager(new TSqlLexer(charStream), sourceCode.getFileName());
     }
 }
