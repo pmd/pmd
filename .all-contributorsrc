@@ -7097,6 +7097,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "dawiddc",
+      "name": "Dawid Ciok",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26235980?v=4",
+      "profile": "https://github.com/dawiddc",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
