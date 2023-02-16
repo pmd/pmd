@@ -1606,6 +1606,17 @@
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="t-sql-support">T-SQL support</h4>
+<p>Thanks to the contribution from <a href="https://github.com/pguyot">Paul Guyot</a> PMD now has CPD support
+for T-SQL (Transact-SQL).</p>
+
+<p>Being based on a proper Antlr grammar, CPD can:</p>
+
+<ul>
+  <li>ignore comments</li>
+  <li>honor <a href="pmd_userdocs_cpd.html#suppression">comment-based suppressions</a></li>
+</ul>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 <ul>
   <li>java-errorprone
@@ -1630,6 +1641,7 @@ not affected by this change. The following class has been deprecated and will be
 <h3 id="external-contributions">External Contributions</h3>
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/4384">#4384</a>: [swift] Add more swift 5.x support (#unavailable mainly) - <a href="https://github.com/kenji21">Richard B.</a> (@kenji21)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4390">#4390</a>: Add support for T-SQL using Antlr4 lexer - <a href="https://github.com/pguyot">Paul Guyot</a> (@pguyot)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4392">#4392</a>: [java] Fix #4393 MissingStaticMethodInNonInstantiatableClass: Fix false-positive for field-only class - <a href="https://github.com/dawiddc">Dawid Ciok</a> (@dawiddc)</li>
 </ul>
 
