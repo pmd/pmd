@@ -6,14 +6,14 @@ package net.sourceforge.pmd.lang.tsql.cpd;
 
 import java.util.Properties;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
-public class TSqlTokenizerTest extends CpdTextComparisonTest {
+class TSqlTokenizerTest extends CpdTextComparisonTest {
 
-    public TSqlTokenizerTest() {
+    TSqlTokenizerTest() {
         super(".sql");
     }
 
@@ -28,12 +28,12 @@ public class TSqlTokenizerTest extends CpdTextComparisonTest {
     }
 
     @Test
-    public void simpleTest() {
+    void simpleTest() {
         doTest("simple");
     }
 
     @Test
-    public void mailJobTimeLineTest() {
+    void mailJobTimeLineTest() {
         doTest("MailJobTimeLine");
     }
 }
