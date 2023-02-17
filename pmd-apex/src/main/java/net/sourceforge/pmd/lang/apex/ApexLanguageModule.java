@@ -21,21 +21,16 @@ public class ApexLanguageModule extends LanguageModuleBase {
     public static final String TERSE_NAME = "apex";
 
     @InternalApi
-    public static final List<String> VERSIONS = listOf("52", "53", "54", "55", "56", "57");
-    @InternalApi
     public static final List<String> EXTENSIONS = listOf("cls", "trigger");
 
     public ApexLanguageModule() {
-        super(createMetadata());
-    }
-
-    private static LanguageMetadata createMetadata() {
-        LanguageMetadata languageMetadata = LanguageMetadata.withId(TERSE_NAME).name(NAME);
-        languageMetadata.extensions(EXTENSIONS.get(0), EXTENSIONS.subList(0, EXTENSIONS.size()).toArray(new String[0]));
-        int lastVersion = VERSIONS.size() - 1;
-        VERSIONS.subList(0, lastVersion).forEach(languageMetadata::addVersion);
-        languageMetadata.addDefaultVersion(VERSIONS.get(lastVersion));
-        return languageMetadata;
+        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions(EXTENSIONS)
+                              .addVersion("52")
+                              .addVersion("53")
+                              .addVersion("54")
+                              .addVersion("55")
+                              .addVersion("56")
+                              .addDefaultVersion("57"));
     }
 
     @Override

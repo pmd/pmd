@@ -12,6 +12,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
 
@@ -36,9 +37,15 @@ public class VfLanguageModule extends SimpleLanguageModuleBase {
                                 .extensions(EXTENSIONS)
                                 .dependsOnLanguage(ApexLanguageModule.TERSE_NAME);
         // use the same versions as in Apex
-        int lastVersion = ApexLanguageModule.VERSIONS.size() - 1;
-        ApexLanguageModule.VERSIONS.subList(0, lastVersion).forEach(languageMetadata::addVersion);
-        languageMetadata.addDefaultVersion(ApexLanguageModule.VERSIONS.get(lastVersion));
+        // need to create a temporary apex module, since the global language registry is not initialized yet
+        ApexLanguageModule temporaryApexModule = new ApexLanguageModule();
+        LanguageVersion defaultApexVersion = temporaryApexModule.getDefaultVersion();
+        for (LanguageVersion languageVersion : temporaryApexModule.getVersions()) {
+            if (!defaultApexVersion.equals(languageVersion)) {
+                languageMetadata.addVersion(languageVersion.getVersion());
+            }
+        }
+        languageMetadata.addDefaultVersion(defaultApexVersion.getVersion());
         return languageMetadata;
     }
 
