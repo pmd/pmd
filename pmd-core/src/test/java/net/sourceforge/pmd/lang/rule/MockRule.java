@@ -19,7 +19,7 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  * editable surrogate used by IDE plugins. The Language of this Rule defaults to
  * Java.
  */
-public class MockRule extends AbstractRule {
+public class MockRule extends MockRuleWithNoProperties {
 
     public static final PropertyDescriptor<Integer> PROP =
         PropertyFactory.intProperty("testIntProperty")
@@ -32,16 +32,12 @@ public class MockRule extends AbstractRule {
     }
 
     public MockRule(String name, String description, String message, String ruleSetName, RulePriority priority) {
-        this(name, description, message, ruleSetName);
-        setPriority(priority);
+        super(name, description, message, ruleSetName, priority);
+        definePropertyDescriptor(PROP);
     }
 
     public MockRule(String name, String description, String message, String ruleSetName) {
-        this();
-        setName(name);
-        setDescription(description);
-        setMessage(message);
-        setRuleSetName(ruleSetName);
+        this(name, description, message, ruleSetName, RulePriority.MEDIUM);
     }
 
     @Override

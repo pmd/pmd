@@ -156,7 +156,7 @@ public class RulesetFactoryTestBase {
             map -> {
                 map.put(SchemaConstants.NAME, "MockRuleName");
                 map.put(SchemaConstants.LANGUAGE, DummyLanguageModule.TERSE_NAME);
-                map.put(SchemaConstants.CLASS, net.sourceforge.pmd.lang.rule.MockRule.class.getName());
+                map.put(SchemaConstants.CLASS, net.sourceforge.pmd.lang.rule.MockRuleWithNoProperties.class.getName());
                 map.put(SchemaConstants.MESSAGE, "avoid the mock rule");
             }
         );

@@ -28,10 +28,39 @@ public final class NumericConstraints {
      *
      * @return A range constraint
      */
-    public static <N extends Number & Comparable<N>> PropertyConstraint<N> inRange(final N minInclusive, final N maxInclusive) {
+    public static <N extends Comparable<N>> PropertyConstraint<N> inRange(final N minInclusive, final N maxInclusive) {
         return PropertyConstraint.fromPredicate(
             t -> minInclusive.compareTo(t) <= 0 && maxInclusive.compareTo(t) >= 0,
-                "Should be between " + minInclusive + " and " + maxInclusive
+            "Should be between " + minInclusive + " and " + maxInclusive
+        );
+
+    }
+
+    /**
+     * Requires the number to be greater than a lower bound.
+     *
+     * @param <N> Type of number
+     *
+     * @return A range constraint
+     */
+    public static <N extends Comparable<N>> PropertyConstraint<N> above(final N minInclusive) {
+        return PropertyConstraint.fromPredicate(
+            t -> minInclusive.compareTo(t) <= 0,
+            "Should be greater or equal to " + minInclusive
+        );
+    }
+
+    /**
+     * Requires the number to be lower than an upper bound.
+     *
+     * @param <N> Type of number
+     *
+     * @return A range constraint
+     */
+    public static <N extends Comparable<N>> PropertyConstraint<N> below(final N maxInclusive) {
+        return PropertyConstraint.fromPredicate(
+            t -> maxInclusive.compareTo(t) >= 0,
+            "Should be smaller or equal to " + maxInclusive
         );
 
     }

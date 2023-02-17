@@ -7,6 +7,7 @@ package net.sourceforge.pmd.util.internal.xml;
 // CHECKSTYLE:OFF
 public final class XmlErrorMessages {
 
+    public static final String ERR__INVALID_VALUE_RANGE = "Minimum value should be lower than maximum value";
     private static final String THIS_WILL_BE_IGNORED = ", this will be ignored";
 
     /** {0}: unexpected element name; {1}: parent node name; {2}: list of allowed elements in this context */
