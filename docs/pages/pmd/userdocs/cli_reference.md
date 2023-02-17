@@ -224,7 +224,14 @@ non-preview version. If you want to use an older version, so that e.g. rules tha
 that are not available yet won't be executed, you need to specify a specific version via the `--use-version`
 parameter.
 
-These parameters are irrelevant for languages that don't support different versions.
+The selected language version can also influence which rules are applied. Some rules might be relevant for
+just a specific version of the language. Such rules are marked with either `minimumLanguageVersion` or
+`maximumLanguageVersion` or both. Most rules apply for all language versions.
+
+These parameters are most of the time irrelevant, if the rules apply for all versions.
+
+The available versions depend on the language. You can get a list of the currently supported language versions
+via the CLI option `--help`.
 
 Example:
 
@@ -245,7 +252,6 @@ Example:
 *   [plsql](pmd_rules_plsql.html)
 *   [pom](pmd_rules_pom.html) (Maven POM)
 *   [scala](pmd_rules_scala.html)
-    *   Supported Versions: 2.10, 2.11, 2.12, 2.13 (default)
 *   [swift](pmd_rules_swift.html)
 *   [vf](pmd_rules_vf.html) (Salesforce VisualForce)
 *   [vm](pmd_rules_vm.html) (Apache Velocity)
