@@ -42,6 +42,11 @@ public final class JPrimitiveType implements JTypeMirror {
         this.box = new BoxedPrimitive(ts, boxType, this, typeAnnots); // not erased
     }
 
+    private JPrimitiveType(JPrimitiveType pType, PSet<SymAnnot> typeAnnots) {
+        this(pType.ts, pType.kind, pType.type, pType.box.getSymbol(), typeAnnots);
+        this.superTypes = pType.superTypes; // Shared instance
+    }
+
     @Override
     public PSet<SymAnnot> getTypeAnnotations() {
         return typeAnnots;
@@ -52,7 +57,7 @@ public final class JPrimitiveType implements JTypeMirror {
         if (newTypeAnnots.isEmpty() && this.typeAnnots.isEmpty()) {
             return this;
         }
-        return new JPrimitiveType(ts, kind, type, box.getSymbol(), newTypeAnnots);
+        return new JPrimitiveType(this, newTypeAnnots);
     }
 
     @Override

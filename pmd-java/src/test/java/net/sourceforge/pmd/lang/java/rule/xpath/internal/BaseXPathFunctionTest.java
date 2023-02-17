@@ -15,12 +15,14 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.test.TestUtilsKt;
 import net.sourceforge.pmd.lang.java.BaseParserTest;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException;
+import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException.Phase;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 
 /**
@@ -64,6 +66,22 @@ class BaseXPathFunctionTest extends BaseParserTest {
         PmdXPathException cause = (PmdXPathException) thrown.getCause();
         exceptionSpec.accept(cause);
         assertThat(cause.getRuleName(), equalTo(RULE_NAME_PLACEHOLDER));
+    }
+
+
+    protected void testWithExpectedStaticException(String xpath,
+                                                   Consumer<? super PmdXPathException> exceptionSpec) {
+
+        Rule rule = makeXpathRuleFromXPath(xpath);
+        try (LanguageProcessor proc = java.newProcessor()) {
+            PmdXPathException thrown = assertThrows(PmdXPathException.class, () -> rule.initialize(proc));
+            exceptionSpec.accept(thrown);
+            assertThat(thrown.getPhase(), equalTo(Phase.INITIALIZATION));
+            assertThat(thrown.getRuleName(), equalTo(RULE_NAME_PLACEHOLDER));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
 

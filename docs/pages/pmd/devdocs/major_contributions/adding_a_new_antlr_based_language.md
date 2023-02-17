@@ -3,7 +3,7 @@ title: Adding PMD support for a new ANTLR grammar based language
 short_title: Adding a new language with ANTLR
 tags: [devdocs, extending]
 summary: "How to add a new language to PMD using ANTLR grammar."
-last_updated: October 2021
+last_updated: February 2023 (7.0.0)
 sidebar: pmd_sidebar
 permalink: pmd_devdocs_major_adding_new_language_antlr.html
 folder: pmd/devdocs
@@ -21,7 +21,7 @@ folder: pmd/devdocs
 This is really a big contribution and can't be done with a drive by contribution. It requires dedicated passion
 and long commitment to implement support for a new language.<br><br>
 
-This step by step guide is just a small intro to get the basics started and it's also not necessarily up-to-date
+This step-by-step guide is just a small intro to get the basics started and it's also not necessarily up-to-date
 or complete and you have to be able to fill in the blanks.<br><br>
 
 Currently the Antlr integration has some basic limitations compared to JavaCC: The output of the
@@ -86,7 +86,7 @@ definitely don't come for free. It is much effort and requires perseverance to i
 *   You can add additional methods in your "InnerNode" (e.g. `SwiftInnerNode`) that are available on all nodes.
     But on most cases you won't need to do anything.
 
-## 4.  Generate your parser
+## 4.  Generate your parser (using ANTLR)
 *   Make sure, you have the property `<antlr4.visitor>true</antlr4.visitor>` in your `pom.xml` file.
 *   This is just a matter of building the language module. ANTLR is called via ant, and this step is added
     to the phase `generate-sources`. So you can just call e.g. `./mvnw generate-sources -pl pmd-swift` to
@@ -116,23 +116,17 @@ definitely don't come for free. It is much effort and requires perseverance to i
     implementation that you need to extend to create your own adapter as we do with
     [`PmdSwiftParser`](https://github.com/pmd/pmd/blob/pmd/7.0.x/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/ast/PmdSwiftParser.java).
 
-## 7.  Create a rule violation factory
-*   This is an optional step. Most like, the default implementation will do what you need.
-    The default implementation is [`DefaultRuleViolationFactory`](https://github.com/pmd/pmd/blob/pmd/7.0.x/pmd-core/src/main/java/net/sourceforge/pmd/lang/rule/impl/DefaultRuleViolationFactory.java).
-*   The purpose of a rule violation factory is to create a rule violation instance for your handler (spoiler).
-    In case you want to provide additional data in your rule violation, you can create a custom one. However,
-    adding additional date here is discouraged, as you would need a custom renderer to actually use this
-    additional data. Such extensions are not language agnostic.
-
-## 8.  Create a version handler
+## 7.  Create a language version handler
 *   Now you need to create your version handler, as we did with [`SwiftHandler`](https://github.com/pmd/pmd/blob/pmd/7.0.x/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/SwiftHandler.java).
-*   This class is sort of a gateway between PMD and all parsing logic specific to your language. It has 2 purposes:
-    *   `getRuleViolationFactory` method returns an instance of your rule violation factory *(see step #7)*.
-        By default, this returns the default rule violation factory.
-    *   `getParser` returns an instance of your parser adapter *(see step #6)*.
-        That's the only method, that needs to be implemented here.
+*   This class is sort of a gateway between PMD and all parsing logic specific to your language.
+*   For a minimal implementation, it just needs to return a parser *(see step #6)*.
+*   It can be used to provide other features for your language like
+    *   violation suppression logic
+    *   violation decorators, to add additional language specific information to the created violations
+    *   metrics
+    *   custom XPath functions
 
-## 9.  Create a parser visitor adapter
+## 8.  Create a base visitor
 *   A parser visitor adapter is not needed anymore with PMD 7. The visitor interface now provides a default
     implementation.
 *   The visitor for ANTLR based AST is generated along the parser from the ANTLR grammar file. The
@@ -142,21 +136,16 @@ definitely don't come for free. It is much effort and requires perseverance to i
     See [`SwiftVisitorBase`](https://github.com/pmd/pmd/blob/pmd/7.0.x/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/ast/SwiftVisitorBase.java)
     as an example.
 
-## 10. Create a rule chain visitor
-*   This step is not needed anymore. For using rule chain, there is no additional adjustment necessary anymore
-    in the languages.
-*   This feature has been merged into AbstractRule via the overridable method
-    {% jdoc !!core::lang.rule.AbstractRule#buildTargetSelector() %}. Individual rules can make use of this optimization
-    by overriding this method and return an appropriate RuleTargetSelector.
-
-## 11. Make PMD recognize your language
-*   Create your own subclass of `net.sourceforge.pmd.lang.BaseLanguageModule`, see Swift as an example:
+## 9. Make PMD recognize your language
+* Create your own subclass of `net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase`, see Swift as an example:
     [`SwiftLanguageModule`](https://github.com/pmd/pmd/blob/pmd/7.0.x/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/SwiftLanguageModule.java).
-*   Add your default version with `addDefaultVersion` in your language module's constructor.
-*   Add for each additional version of your language a call to `addVersion` as well.
-*   Create the service registration via the text file `src/main/resources/META-INF/services/net.sourceforge.pmd.lang.Language`. Add your fully qualified class name as a single line into it.
+*   Add for each version of your language a call to `addVersion` in your language module’s constructor.
+    Use `addDefaultVersion` for defining the default version.
+*   You’ll need to refer the language version handler created in step #7.
+*   Create the service registration via the text file `src/main/resources/META-INF/services/net.sourceforge.pmd.lang.Language`.
+    Add your fully qualified class name as a single line into it.
 
-## 12. Create an abstract rule class for the language
+## 10. Create an abstract rule class for the language
 *   You need to create your own `AbstractRule` in order to interface your language with PMD's generic rule
     execution.
 *   See [`AbstractSwiftRule`](https://github.com/pmd/pmd/blob/pmd/7.0.x/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/AbstractSwiftRule.java) as an example.
@@ -167,7 +156,7 @@ definitely don't come for free. It is much effort and requires perseverance to i
     via the method `buildVisitor()` for analyzing the AST. The provided visitor only implements the visit methods
     for specific AST nodes. The other node types use the default behavior and you don't need to care about them.
 
-## 13. Create rules
+## 11. Create rules
 *   Creating rules is already pretty well documented in PMD - and it’s no different for a new language, except you
     may have different AST nodes.
 *   PMD supports 2 types of rules, through visitors or XPath.
@@ -179,15 +168,19 @@ definitely don't come for free. It is much effort and requires perseverance to i
 *   To add an XPath rule you can follow our guide [Writing XPath Rules](pmd_userdocs_extending_writing_xpath_rules.html).
 
 ## 14. Test the rules
-*   See UnavailableFunctionRuleTest for example. Each rule has it's own test class.
-*   You have to create the category rule set for your language *(see pmd-swift/src/main/resources/bestpractices.xml for example)*
-*   When executing the test class
-    *   this triggers the unit test to read the corresponding XML file with the rule test data
-        *(see `UnavailableFunctionRule.xml` for example)*
-    *   This test XML file contains sample pieces of code which should trigger a specified number of
-        violations of this rule. The unit test will execute the rule on this piece of code, and verify
-        that the number of violations matches.
-*   To verify the validity of all the created rulesets, create a subclass of `AbstractRuleSetFactoryTest` (*see `RuleSetFactoryTest` in pmd-swift for example)*.
+*   Testing rules is described in depth in [Testing your rules](pmd_userdocs_extending_testing.html).
+    *   Each rule has its own test class: Create a test class for your rule extending `PmdRuleTst`
+        *(see UnavailableFunctionTest for example)*
+    *   Create a category rule set for your language *(see pmd-swift/src/main/resources/bestpractices.xml for example)*
+    *   Place the test XML file with the test cases in the correct location
+    *   When executing the test class
+        *   this triggers the unit test to read the corresponding XML file with the rule test data
+            *(see `UnavailableFunction.xml` for example)*
+        *   This test XML file contains sample pieces of code which should trigger a specified number of
+            violations of this rule. The unit test will execute the rule on this piece of code, and verify
+            that the number of violations matches.
+*   To verify the validity of all the created rulesets, create a subclass of `AbstractRuleSetFactoryTest`
+    (*see `RuleSetFactoryTest` in pmd-swift for example)*.
     This will load all rulesets and verify, that all required attributes are provided.
 
     *Note:* You'll need to add your ruleset to `categories.properties`, so that it can be found.

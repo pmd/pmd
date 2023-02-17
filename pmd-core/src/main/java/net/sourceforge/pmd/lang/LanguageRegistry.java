@@ -5,7 +5,9 @@
 package net.sourceforge.pmd.lang;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +57,42 @@ public final class LanguageRegistry implements Iterable<Language> {
                                   .collect(CollectionUtil.toUnmodifiableSet());
         this.languagesById = CollectionUtil.associateBy(languages, Language::getTerseName);
         this.languagesByFullName = CollectionUtil.associateBy(languages, Language::getName);
+    }
+
+    /**
+     * Creates a language registry containing a single language. Note
+     * that this may be inconvertible to a {@link LanguageProcessorRegistry}
+     * if the language depends on other languages.
+     */
+    public static LanguageRegistry singleton(Language l) {
+        return new LanguageRegistry(Collections.singleton(l));
+    }
+
+    /**
+     * Creates a language registry containing the given language and
+     * its dependencies, fetched from this language registry or the
+     * parameter.
+     *
+     * @throws IllegalStateException If dependencies cannot be fulfilled.
+     */
+    public LanguageRegistry getDependenciesOf(Language lang) {
+        Set<Language> result = new HashSet<>();
+        result.add(lang);
+        addDepsOrThrow(lang, result);
+        return new LanguageRegistry(result);
+    }
+
+    private void addDepsOrThrow(Language l, Set<Language> languages) {
+        for (String depId : l.getDependencies()) {
+            Language dep = getLanguageById(depId);
+            if (dep == null) {
+                throw new IllegalStateException(
+                    "Cannot find language " + depId + " in " + this);
+            }
+            if (languages.add(dep)) {
+                addDepsOrThrow(dep, languages);
+            }
+        }
     }
 
     @Override
@@ -202,5 +240,8 @@ public final class LanguageRegistry implements Iterable<Language> {
         return getLanguages().stream().map(languageToString).sorted().collect(Collectors.joining(", "));
     }
 
-
+    @Override
+    public String toString() {
+        return "LanguageRegistry(" + commaSeparatedList(Language::getId) + ")";
+    }
 }

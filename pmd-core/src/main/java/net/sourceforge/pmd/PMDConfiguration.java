@@ -13,7 +13,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 
@@ -27,6 +29,8 @@ import net.sourceforge.pmd.cache.FileAnalysisCache;
 import net.sourceforge.pmd.cache.NoopAnalysisCache;
 import net.sourceforge.pmd.cli.PmdParametersParseResult;
 import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
@@ -135,6 +139,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     private boolean ignoreIncrementalAnalysis;
     private final LanguageRegistry langRegistry;
     private final List<Path> relativizeRoots = new ArrayList<>();
+    private final Map<Language, LanguagePropertyBundle> langProperties = new HashMap<>();
 
     public PMDConfiguration() {
         this(DEFAULT_REGISTRY);
@@ -322,7 +327,10 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @param forceLanguageVersion the language version
      */
-    public void setForceLanguageVersion(LanguageVersion forceLanguageVersion) {
+    public void setForceLanguageVersion(@Nullable LanguageVersion forceLanguageVersion) {
+        if (forceLanguageVersion != null) {
+            checkLanguageIsRegistered(forceLanguageVersion.getLanguage());
+        }
         this.forceLanguageVersion = forceLanguageVersion;
         languageVersionDiscoverer.setForcedVersion(forceLanguageVersion);
     }
@@ -335,7 +343,8 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     public void setDefaultLanguageVersion(LanguageVersion languageVersion) {
         Objects.requireNonNull(languageVersion);
-        setDefaultLanguageVersions(Arrays.asList(languageVersion));
+        languageVersionDiscoverer.setDefaultLanguageVersion(languageVersion);
+        getLanguageProperties(languageVersion.getLanguage()).setLanguageVersion(languageVersion.getVersion());
     }
 
     /**
@@ -347,8 +356,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     public void setDefaultLanguageVersions(List<LanguageVersion> languageVersions) {
         for (LanguageVersion languageVersion : languageVersions) {
-            Objects.requireNonNull(languageVersion);
-            languageVersionDiscoverer.setDefaultLanguageVersion(languageVersion);
+            setDefaultLanguageVersion(languageVersion);
         }
     }
 
@@ -378,7 +386,7 @@ public class PMDConfiguration extends AbstractConfiguration {
         return languageVersionDiscoverer.getDefaultLanguageVersionForFile(fileName);
     }
 
-    LanguageRegistry languages() {
+    LanguageRegistry getLanguageRegistry() {
         return langRegistry;
     }
 
@@ -942,5 +950,23 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     public List<Path> getRelativizeRoots() {
         return Collections.unmodifiableList(relativizeRoots);
+    }
+
+    /**
+     * Returns a mutable bundle of language properties that are associated
+     * to the given language (always the same for a given language).
+     *
+     * @param language A language, which must be registered
+     */
+    public @NonNull LanguagePropertyBundle getLanguageProperties(Language language) {
+        checkLanguageIsRegistered(language);
+        return langProperties.computeIfAbsent(language, Language::newPropertyBundle);
+    }
+
+    void checkLanguageIsRegistered(Language language) {
+        if (!langRegistry.getLanguages().contains(language)) {
+            throw new IllegalArgumentException(
+                "Language '" + language.getId() + "' is not registered in " + getLanguageRegistry());
+        }
     }
 }

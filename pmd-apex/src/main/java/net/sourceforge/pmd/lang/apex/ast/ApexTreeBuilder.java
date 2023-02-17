@@ -17,7 +17,7 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.sourceforge.pmd.lang.apex.multifile.ApexMultifileAnalysis;
+import net.sourceforge.pmd.lang.apex.ApexLanguageProcessor;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.TextDocument;
@@ -252,12 +252,14 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
     private final TextDocument sourceCode;
     private final ParserTask task;
+    private final ApexLanguageProcessor proc;
     private final CommentInformation commentInfo;
 
-    ApexTreeBuilder(ParserTask task) {
+    ApexTreeBuilder(ParserTask task, ApexLanguageProcessor proc) {
         this.sourceCode = task.getTextDocument();
         this.task = task;
-        commentInfo = extractInformationFromComments(sourceCode, task.getCommentMarker());
+        this.proc = proc;
+        commentInfo = extractInformationFromComments(sourceCode, proc.getProperties().getSuppressMarker());
     }
 
     static <T extends AstNode> AbstractApexNode<T> createNodeAdapter(T node) {
@@ -273,9 +275,9 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         return constructor.apply(node);
     }
 
-    ASTApexFile buildTree(Compilation astNode, ApexMultifileAnalysis analysisHandler) {
+    ASTApexFile buildTree(Compilation astNode) {
         assert nodes.isEmpty() : "stack should be empty";
-        ASTApexFile root = new ASTApexFile(task, astNode, commentInfo.suppressMap, analysisHandler);
+        ASTApexFile root = new ASTApexFile(task, astNode, commentInfo.suppressMap, proc);
         nodes.push(root);
         parents.push(astNode);
 

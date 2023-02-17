@@ -48,9 +48,8 @@ class GetModifiersFunctionsTest extends BaseXPathFunctionTest {
 
     @Test
     void testStaticTypeError() {
-        testWithExpectedException(
+        testWithExpectedStaticException(
             "//MethodDeclaration[(., .) is pmd-java:modifiers()]",
-            "class Moo { void foo() {if(true){}} }",
             e -> {
                 assertThat(e.getMessage(), containsString("Type error"));
                 assertThat(e.getPhase(), equalTo(Phase.INITIALIZATION));

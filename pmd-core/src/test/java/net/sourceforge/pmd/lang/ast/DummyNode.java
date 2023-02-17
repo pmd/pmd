@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Objects;
 
 import net.sourceforge.pmd.lang.DummyLanguageModule;
+import net.sourceforge.pmd.lang.LanguageProcessor;
+import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
@@ -123,6 +125,9 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> {
 
     public static class DummyRootNode extends DummyNode implements RootNode, GenericNode<DummyNode> {
 
+        // FIXME remove this
+        private static final LanguageProcessor STATIC_PROCESSOR =
+            DummyLanguageModule.getInstance().createProcessor(DummyLanguageModule.getInstance().newPropertyBundle());
         private AstInfo<DummyRootNode> astInfo;
 
         public DummyRootNode() {
@@ -134,8 +139,8 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> {
             astInfo = new AstInfo<>(
                 new ParserTask(
                     document,
-                    SemanticErrorReporter.noop()
-                ),
+                    SemanticErrorReporter.noop(),
+                    LanguageProcessorRegistry.singleton(STATIC_PROCESSOR)),
                 this);
         }
 
@@ -145,11 +150,7 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> {
         }
 
         public DummyRootNode withNoPmdComments(Map<Integer, String> suppressMap) {
-            this.astInfo = new AstInfo<>(
-                astInfo.getTextDocument(),
-                this,
-                suppressMap
-            );
+            this.astInfo = astInfo.withSuppressMap(suppressMap);
             return this;
         }
 

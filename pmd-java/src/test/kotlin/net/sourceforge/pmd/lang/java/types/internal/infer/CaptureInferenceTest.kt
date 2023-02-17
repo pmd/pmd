@@ -426,7 +426,7 @@ class CompletableFuture<T> {
 
     parserTest("Capture with type annotation") {
 
-        val (acu, spy) = parser.logTypeInferenceVerbose().parseWithTypeInferenceSpy(
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
             """
 import java.lang.annotation.*;
 interface Iterator<Q> { Q next(); }

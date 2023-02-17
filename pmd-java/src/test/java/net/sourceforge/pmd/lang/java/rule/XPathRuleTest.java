@@ -16,6 +16,7 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -108,7 +109,12 @@ class XPathRuleTest {
 
     private void assertIsRuleChain(String xpath) {
         XPathRule rule = makeXPath(xpath);
-        assertTrue(rule.getTargetSelector().isRuleChain(), "Not recognized as a rulechain query: " + xpath);
+        try (LanguageProcessor proc = JavaParsingHelper.DEFAULT.newProcessor()) {
+            rule.initialize(proc);
+            assertTrue(rule.getTargetSelector().isRuleChain(), "Not recognized as a rulechain query: " + xpath);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 

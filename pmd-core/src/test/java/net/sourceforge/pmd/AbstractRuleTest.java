@@ -17,8 +17,8 @@ import static org.mockito.Mockito.verify;
 import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
@@ -70,11 +70,14 @@ class AbstractRuleTest {
         }
     }
 
+    @RegisterExtension
+    private final DummyParsingHelper helper = new DummyParsingHelper();
+
     @Test
     void testCreateRV() {
         MyRule r = new MyRule();
         r.setRuleSetName("foo");
-        DummyRootNode s = DummyLanguageModule.parse("abc()", "filename");
+        DummyRootNode s = helper.parse("abc()", "filename");
 
         RuleViolation rv = new ParametricRuleViolation(r, s, r.getMessage());
         assertEquals(1, rv.getBeginLine(), "Line number mismatch!");
@@ -87,7 +90,7 @@ class AbstractRuleTest {
     @Test
     void testCreateRV2() {
         MyRule r = new MyRule();
-        DummyRootNode s = DummyLanguageModule.parse("abc()", "filename");
+        DummyRootNode s = helper.parse("abc()", "filename");
         RuleViolation rv = new ParametricRuleViolation(r, s, "specificdescription");
         assertEquals(1, rv.getBeginLine(), "Line number mismatch!");
         assertEquals("filename", rv.getFilename(), "Filename mismatch!");
@@ -106,7 +109,7 @@ class AbstractRuleTest {
         r.definePropertyDescriptor(PropertyFactory.intProperty("testInt").desc("description").require(inRange(0, 100)).defaultValue(10).build());
         r.setMessage("Message ${packageName} ${className} ${methodName} ${variableName} ${testInt} ${noSuchProperty}");
 
-        DummyRootNode s = DummyLanguageModule.parse("abc()", "filename");
+        DummyRootNode s = helper.parse("abc()", "filename");
 
         RuleViolation rv = getReportForRuleApply(r, s).getViolations().get(0);
         assertEquals("Message foo ${className} ${methodName} ${variableName} 10 ${noSuchProperty}", rv.getDescription());
@@ -114,8 +117,8 @@ class AbstractRuleTest {
 
     @Test
     void testRuleSuppress() {
-        DummyRootNode n = DummyLanguageModule.parse("abc()", "filename")
-            .withNoPmdComments(Collections.singletonMap(1, "ohio"));
+        DummyRootNode n = helper.parse("abc()", "filename")
+                                .withNoPmdComments(Collections.singletonMap(1, "ohio"));
 
         FileAnalysisListener listener = mock(FileAnalysisListener.class);
         RuleContext ctx = RuleContext.create(listener, new MyRule());

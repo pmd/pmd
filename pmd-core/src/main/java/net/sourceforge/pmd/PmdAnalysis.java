@@ -10,8 +10,10 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -29,12 +31,17 @@ import net.sourceforge.pmd.internal.LogMessages;
 import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
 import net.sourceforge.pmd.internal.util.FileCollectionUtil;
 import net.sourceforge.pmd.internal.util.IOUtil;
+import net.sourceforge.pmd.lang.JvmLanguagePropertyBundle;
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageProcessor.AnalysisTask;
+import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
+import net.sourceforge.pmd.lang.LanguageProcessorRegistry.LanguageTerminationException;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.document.FileCollector;
 import net.sourceforge.pmd.lang.document.TextFile;
-import net.sourceforge.pmd.processor.AbstractPMDProcessor;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.reporting.ListenerInitializer;
@@ -85,6 +92,7 @@ public final class PmdAnalysis implements AutoCloseable {
     private final PMDConfiguration configuration;
     private final MessageReporter reporter;
 
+    private final Map<Language, LanguagePropertyBundle> langProperties = new HashMap<>();
     private boolean closed;
 
     /**
@@ -138,6 +146,25 @@ public final class PmdAnalysis implements AutoCloseable {
             final List<RuleSet> ruleSets = ruleSetLoader.loadRuleSetsWithoutException(config.getRuleSetPaths());
             pmd.addRuleSets(ruleSets);
         }
+
+        for (Language language : config.getLanguageRegistry()) {
+            LanguagePropertyBundle props = config.getLanguageProperties(language);
+            assert props.getLanguage().equals(language);
+            pmd.langProperties.put(language, props);
+
+            LanguageVersion forcedVersion = config.getForceLanguageVersion();
+            if (forcedVersion != null && forcedVersion.getLanguage().equals(language)) {
+                props.setLanguageVersion(forcedVersion.getVersion());
+            }
+
+            // TODO replace those with actual language properties when the
+            //  CLI syntax is implemented.
+            props.setProperty(LanguagePropertyBundle.SUPPRESS_MARKER, config.getSuppressMarker());
+            if (props instanceof JvmLanguagePropertyBundle) {
+                ((JvmLanguagePropertyBundle) props).setClassLoader(config.getClassLoader());
+            }
+        }
+
         return pmd;
     }
 
@@ -246,6 +273,17 @@ public final class PmdAnalysis implements AutoCloseable {
 
 
     /**
+     * Returns a mutable bundle of language properties that are associated
+     * to the given language (always the same for a given language).
+     *
+     * @param language A language, which must be registered
+     */
+    public LanguagePropertyBundle getLanguageProperties(Language language) {
+        configuration.checkLanguageIsRegistered(language);
+        return langProperties.computeIfAbsent(language, Language::newPropertyBundle);
+    }
+
+    /**
      * Run PMD with the current state of this instance. This will start
      * and finish the registered renderers, and close all
      * {@linkplain #addListener(GlobalAnalysisListener) registered listeners}.
@@ -275,7 +313,7 @@ public final class PmdAnalysis implements AutoCloseable {
 
     void performAnalysisImpl(List<? extends GlobalReportBuilderListener> extraListeners) {
         try (FileCollector files = collector) {
-            files.filterLanguages(getApplicableLanguages());
+            files.filterLanguages(getApplicableLanguages(false));
             performAnalysisImpl(extraListeners, files.getCollectedFiles());
         }
     }
@@ -310,16 +348,48 @@ public final class PmdAnalysis implements AutoCloseable {
             }
 
             encourageToUseIncrementalAnalysis(configuration);
-            try (AbstractPMDProcessor processor = AbstractPMDProcessor.newFileProcessor(configuration)) {
-                processor.processFiles(rulesets, textFiles, listener);
+
+            try (LanguageProcessorRegistry lpRegistry = LanguageProcessorRegistry.create(
+                // only start the applicable languages (and dependencies)
+                new LanguageRegistry(getApplicableLanguages(true)),
+                langProperties,
+                reporter
+            )) {
+                // Note the analysis task is shared: all processors see
+                // the same file list, which may contain files for other
+                // languages.
+                AnalysisTask analysisTask = new AnalysisTask(
+                    rulesets,
+                    textFiles,
+                    listener,
+                    configuration.getThreads(),
+                    configuration.getAnalysisCache(),
+                    reporter,
+                    lpRegistry
+                );
+
+                List<AutoCloseable> analyses = new ArrayList<>();
+                try {
+                    for (Language lang : lpRegistry.getLanguages()) {
+                        analyses.add(lpRegistry.getProcessor(lang).launchAnalysis(analysisTask));
+                    }
+                } finally {
+                    Exception e = IOUtil.closeAll(analyses);
+                    if (e != null) {
+                        reporter.errorEx("Error while joining analysis", e);
+                    }
+                }
+
+            } catch (LanguageTerminationException e) {
+                reporter.errorEx("Error while closing language processors", e);
             }
         } finally {
             try {
                 listener.close();
             } catch (Exception e) {
-                reporter.errorEx("Exception while initializing analysis listeners", e);
+                reporter.errorEx("Exception while closing analysis listeners", e);
                 // todo better exception
-                throw new RuntimeException("Exception while initializing analysis listeners", e);
+                throw new RuntimeException("Exception while closing analysis listeners", e);
             }
         }
     }
@@ -346,23 +416,46 @@ public final class PmdAnalysis implements AutoCloseable {
         return GlobalAnalysisListener.tee(rendererListeners);
     }
 
-    private Set<Language> getApplicableLanguages() {
-        final Set<Language> languages = new HashSet<>();
-        final LanguageVersionDiscoverer discoverer = configuration.getLanguageVersionDiscoverer();
+    private Set<Language> getApplicableLanguages(boolean quiet) {
+        Set<Language> languages = new HashSet<>();
+        LanguageVersionDiscoverer discoverer = configuration.getLanguageVersionDiscoverer();
 
         for (RuleSet ruleSet : ruleSets) {
-            for (final Rule rule : ruleSet.getRules()) {
-                final Language ruleLanguage = rule.getLanguage();
+            for (Rule rule : ruleSet.getRules()) {
+                Language ruleLanguage = rule.getLanguage();
                 Objects.requireNonNull(ruleLanguage, "Rule has no language " + rule);
                 if (!languages.contains(ruleLanguage)) {
-                    final LanguageVersion version = discoverer.getDefaultLanguageVersion(ruleLanguage);
+                    LanguageVersion version = discoverer.getDefaultLanguageVersion(ruleLanguage);
                     if (RuleSet.applies(rule, version)) {
+                        configuration.checkLanguageIsRegistered(ruleLanguage);
                         languages.add(ruleLanguage);
-                        LOG.trace("Using {} version ''{}''", version.getLanguage().getName(), version.getTerseName());
+                        if (!quiet) {
+                            LOG.trace("Using {} version ''{}''", version.getLanguage().getName(), version.getTerseName());
+                        }
                     }
                 }
             }
         }
+
+        // collect all dependencies, they shouldn't be filtered out
+        LanguageRegistry reg = configuration.getLanguageRegistry();
+        boolean changed;
+        do {
+            changed = false;
+            for (Language lang : new HashSet<>(languages)) {
+                for (String depId : lang.getDependencies()) {
+                    Language depLang = reg.getLanguageById(depId);
+                    if (depLang == null) {
+                        // todo maybe report all then throw
+                        throw new IllegalStateException(
+                            "Language " + lang.getId() + " has unsatisfied dependencies: "
+                                + depId + " is not found in " + reg
+                        );
+                    }
+                    changed |= languages.add(depLang);
+                }
+            }
+        } while (changed);
         return languages;
     }
 

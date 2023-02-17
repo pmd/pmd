@@ -6,16 +6,13 @@ package net.sourceforge.pmd.test.lang;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
-import net.sourceforge.pmd.lang.BaseLanguageModule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
-import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
-import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextRegion;
+import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
 import net.sourceforge.pmd.test.lang.ast.DummyNode;
 
 /**
@@ -26,35 +23,26 @@ import net.sourceforge.pmd.test.lang.ast.DummyNode;
  */
 @Deprecated
 @InternalApi
-public class DummyLanguageModule extends BaseLanguageModule {
+public class DummyLanguageModule extends SimpleLanguageModuleBase {
 
     public static final String NAME = "Dummy";
     public static final String TERSE_NAME = "dummy";
 
     public DummyLanguageModule() {
-        super(NAME, null, TERSE_NAME, "dummy");
-        addVersion("1.0", new Handler(), false);
-        addVersion("1.1", new Handler(), false);
-        addVersion("1.2", new Handler(), false);
-        addVersion("1.3", new Handler(), false);
-        addVersion("1.4", new Handler(), false);
-        addVersion("1.5", new Handler(), false);
-        addVersion("1.6", new Handler(), false);
-        addVersion("1.7", new Handler(), true);
-        addVersion("1.8", new Handler(), false);
+        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("dummy")
+                              .addVersion("1.0")
+                              .addVersion("1.1")
+                              .addVersion("1.2")
+                              .addVersion("1.3")
+                              .addVersion("1.4")
+                              .addVersion("1.5", "5")
+                              .addVersion("1.6", "6")
+                              .addDefaultVersion("1.7", "7")
+                              .addVersion("1.8", "8"), new Handler());
     }
 
     public static DummyLanguageModule getInstance() {
         return (DummyLanguageModule) LanguageRegistry.PMD.getLanguageByFullName(NAME);
-    }
-
-    public static DummyRootNode parse(String code, String filename) {
-        LanguageVersion version = DummyLanguageModule.getInstance().getDefaultVersion();
-        ParserTask task = new ParserTask(
-            TextDocument.readOnlyString(code, filename, version),
-            SemanticErrorReporter.noop()
-        );
-        return (DummyRootNode) version.getLanguageVersionHandler().getParser().parse(task);
     }
 
     public static class Handler extends AbstractPmdLanguageVersionHandler {

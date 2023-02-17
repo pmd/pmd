@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.cli.commands.typesupport.internal;
 
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
@@ -36,7 +37,7 @@ public class PmdLanguageVersionTypeSupport implements ITypeConverter<LanguageVer
         return LanguageRegistry.PMD.getLanguages().stream()
             .filter(l -> value.startsWith(l.getTerseName() + "-"))
             .map(l -> l.getVersion(value.substring(l.getTerseName().length() + 1)))
-            .filter(lv -> lv != null)
+            .filter(Objects::nonNull)
             .findFirst()
             .orElseThrow(() -> new TypeConversionException("Unknown language version: " + value));
     }

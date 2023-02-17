@@ -12,18 +12,23 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
+import net.sourceforge.pmd.DummyParsingHelper;
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.DummyNodeWithDeprecatedAttribute;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 
 class XPathRuleTest {
+
+    @RegisterExtension
+    private final DummyParsingHelper helper = new DummyParsingHelper();
 
     @Test
     void testAttributeDeprecation10() throws Exception {
@@ -140,7 +145,7 @@ class XPathRuleTest {
 
 
     DummyRootNode newNode() {
-        DummyRootNode root = new DummyRootNode();
+        DummyRootNode root = newRoot(TextFile.UNKNOWN_FILENAME);
         DummyNode dummy = new DummyNodeWithDeprecatedAttribute();
         root.addChild(dummy, 0);
         dummy.setRegion(TextRegion.fromOffsetLength(0, 1));
@@ -148,7 +153,7 @@ class XPathRuleTest {
     }
 
     public DummyRootNode newRoot(String fileName) {
-        return DummyLanguageModule.parse("dummy code", fileName);
+        return helper.parse("dummy code", fileName);
     }
 
 

@@ -8,12 +8,17 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Collections;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
+import net.sourceforge.pmd.lang.LanguageProcessor;
+import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
@@ -45,17 +50,24 @@ public class TreeExporter {
             throw this.bail("Unknown format '" + configuration.getFormat() + "'");
         }
 
-        PropertySource bundle = parseProperties(descriptor);
+        PropertySource bundle = parseProperties(descriptor.newPropertyBundle(), configuration.getProperties());
+        LanguagePropertyBundle langProperties = parseProperties(configuration.getLanguage().newPropertyBundle(), configuration.getLanguageProperties());
 
-        run(descriptor.produceRenderer(bundle));
+        LanguageRegistry lang = LanguageRegistry.PMD.getDependenciesOf(configuration.getLanguage());
+        try (LanguageProcessorRegistry lpRegistry = LanguageProcessorRegistry.create(lang,
+                                                                                     Collections.singletonMap(configuration.getLanguage(), langProperties),
+                                                                                     configuration.getMessageReporter())) {
+            run(lpRegistry, descriptor.produceRenderer(bundle));
+        }
     }
     
-    private void run(final TreeRenderer renderer) throws IOException {
+    private void run(LanguageProcessorRegistry langRegistry, final TreeRenderer renderer) throws IOException {
         printWarning();
 
         LanguageVersion langVersion = configuration.getLanguage().getDefaultVersion();
-        LanguageVersionHandler languageHandler = langVersion.getLanguageVersionHandler();
-        Parser parser = languageHandler.getParser();
+        @SuppressWarnings("PMD.CloseResource")
+        LanguageProcessor processor = langRegistry.getProcessor(configuration.getLanguage());
+        Parser parser = processor.services().getParser();
 
         @SuppressWarnings("PMD.CloseResource")
         TextFile textFile;
@@ -71,7 +83,7 @@ public class TreeExporter {
 
         try (TextDocument textDocument = TextDocument.create(textFile)) {
 
-            ParserTask task = new ParserTask(textDocument, SemanticErrorReporter.noop(), TreeExportCli.class.getClassLoader());
+            ParserTask task = new ParserTask(textDocument, SemanticErrorReporter.noop(), langRegistry);
             RootNode root = parser.parse(task);
 
             renderer.renderSubtree(root, io.stdout);
@@ -89,10 +101,9 @@ public class TreeExporter {
         io.stderr.println("-------------------------------------------------------------------------------");
     }
 
-    private PropertySource parseProperties(TreeRendererDescriptor descriptor) {
-        PropertySource bundle = descriptor.newPropertyBundle();
+    private <T extends PropertySource> T parseProperties(T bundle, Properties properties) {
 
-        for (Entry<Object, Object> prop : configuration.getProperties().entrySet()) {
+        for (Entry<Object, Object> prop : properties.entrySet()) {
             PropertyDescriptor<?> d = bundle.getPropertyDescriptor(prop.getKey().toString());
             if (d == null) {
                 throw bail("Unknown property '" + prop.getKey() + "'");

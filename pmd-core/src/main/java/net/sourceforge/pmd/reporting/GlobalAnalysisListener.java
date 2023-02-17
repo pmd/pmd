@@ -206,7 +206,7 @@ public interface GlobalAnalysisListener extends AutoCloseable {
 
                     @Override
                     public void onError(ProcessingError error) throws FileAnalysisException {
-                        throw FileAnalysisException.wrap(filename, "Unknown error", error.getError());
+                        throw FileAnalysisException.wrap(filename, error.getError().getMessage(), error.getError());
                     }
 
                     @Override

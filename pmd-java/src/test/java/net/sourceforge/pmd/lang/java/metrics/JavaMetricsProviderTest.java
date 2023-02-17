@@ -27,12 +27,12 @@ class JavaMetricsProviderTest {
     @Test
     void testComputeAllMetrics() {
 
-        LanguageMetricsProvider provider = java8.getHandler("1.8").getLanguageMetricsProvider();
 
         ASTCompilationUnit acu = java8.parse("class Foo { void bar() { System.out.println(1); } }");
 
         ASTAnyTypeDeclaration type = acu.getTypeDeclarations().firstOrThrow();
 
+        LanguageMetricsProvider provider = acu.getAstInfo().getLanguageProcessor().services().getLanguageMetricsProvider();
         Map<Metric<?, ?>, Number> results = provider.computeAllMetricsFor(type);
 
         assertEquals(9, results.size());
@@ -42,11 +42,11 @@ class JavaMetricsProviderTest {
     @Test
     void testThereIsNoMemoisation() {
 
-        LanguageMetricsProvider provider = java8.getHandler("1.8").getLanguageMetricsProvider();
 
         ASTAnyTypeDeclaration tdecl1 = java8.parse("class Foo { void bar() { System.out.println(1); } }")
                                             .getTypeDeclarations().firstOrThrow();
 
+        LanguageMetricsProvider provider = tdecl1.getAstInfo().getLanguageProcessor().services().getLanguageMetricsProvider();
         Map<Metric<?, ?>, Number> reference = provider.computeAllMetricsFor(tdecl1);
 
         // same name, different characteristics

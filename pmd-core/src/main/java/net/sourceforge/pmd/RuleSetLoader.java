@@ -279,7 +279,7 @@ public final class RuleSetLoader {
     public static RuleSetLoader fromPmdConfig(PMDConfiguration configuration) {
         return new RuleSetLoader().filterAbovePriority(configuration.getMinimumPriority())
                                   .enableCompatibility(configuration.isRuleSetFactoryCompatibilityEnabled())
-                                  .withLanguages(configuration.languages())
+                                  .withLanguages(configuration.getLanguageRegistry())
                                   .withReporter(configuration.getReporter());
     }
 
