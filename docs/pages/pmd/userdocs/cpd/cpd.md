@@ -63,11 +63,12 @@ Novice as much as advanced readers may want to [read on on Refactoring Guru](htt
                required="yes"
     %}
     {% include custom/cli_option_row.html options="--files,--dir,-d"
-               description="List of files and directories to process"
+               description="List of files and directories to process.
+                            <p>Note: `--files` is <span class=\"label label-default\">deprecated</span> since PMD 6.52.0. Usage of `--dir` is preferred.</p>"
                required="yes"
     %}
     {% include custom/cli_option_row.html options="--file-list"
-               description="Path to file containing a comma delimited list of files to analyze. If this is given, then you don't need to provide `--files`."
+               description="Path to file containing a comma delimited list of files to analyze. If this is given, then you don't need to provide `--dir`."
     %}
     {% include custom/cli_option_row.html options="--language"
                description="Sources code language."
@@ -157,49 +158,49 @@ _Note:_ The following example use the Linux start script. For Windows, just repl
 
 Minimum required options: Just give it the minimum duplicate size and the source directory:
 
-    $ ./run.sh cpd --minimum-tokens 100 --files /usr/local/java/src/java
+    $ ./run.sh cpd --minimum-tokens 100 --dir /usr/local/java/src/java
 
 You can also specify the language:
 
-    $ ./run.sh cpd --minimum-tokens 100 --files /path/to/c/source --language cpp
+    $ ./run.sh cpd --minimum-tokens 100 --dir /path/to/c/source --language cpp
 
 You may wish to check sources that are stored in different directories:
 
-    $ ./run.sh cpd --minimum-tokens 100 --files /path/to/other/source  --files /path/to/other/source --files /path/to/other/source --language fortran
+    $ ./run.sh cpd --minimum-tokens 100 --dir /path/to/other/source  --dir /path/to/other/source --dir /path/to/other/source --language fortran
 
-<em>There should be no limit to the number of '--files', you may add... But if you stumble one, please tell us !</em>
+<em>There should be no limit to the number of `--dir`, you may add... But if you stumble one, please tell us !</em>
 
 And if you're checking a C source tree with duplicate files in different architecture directories
 you can skip those using --skip-duplicate-files:
 
-    $ ./run.sh cpd --minimum-tokens 100 --files /path/to/c/source --language cpp --skip-duplicate-files
+    $ ./run.sh cpd --minimum-tokens 100 --dir /path/to/c/source --language cpp --skip-duplicate-files
 
 You can also specify the encoding to use when parsing files:
 
-    $ ./run.sh cpd --minimum-tokens 100 --files /usr/local/java/src/java --encoding utf-16le
+    $ ./run.sh cpd --minimum-tokens 100 --dir /usr/local/java/src/java --encoding utf-16le
 
 You can also specify a report format - here we're using the XML report:
 
-    $ ./run.sh cpd --minimum-tokens 100 --files /usr/local/java/src/java --format xml
+    $ ./run.sh cpd --minimum-tokens 100 --dir /usr/local/java/src/java --format xml
 
 The default format is a text report, and there's also a `csv` report.
 
 Note that CPD is pretty memory-hungry; you may need to give Java more memory to run it, like this:
 
     $ export PMD_JAVA_OPTS=-Xmx512m
-    $ ./run.sh cpd --minimum-tokens 100 --files /usr/local/java/src/java
+    $ ./run.sh cpd --minimum-tokens 100 --dir /usr/local/java/src/java
 
 In order to change the heap size under Windows, you'll need to edit the batch file `cpd.bat` or
 set the environment variable `PMD_JAVA_OPTS` prior to starting CPD:
 
     C:\ > cd C:\pmd-bin-{{site.pmd.version}}\bin
     C:\...\bin > set PMD_JAVA_OPTS=-Xmx512m
-    C:\...\bin > .\cpd.bat --minimum-tokens 100 --files c:\temp\src
+    C:\...\bin > .\cpd.bat --minimum-tokens 100 --dir c:\temp\src
 
 
 If you specify a source directory but don't want to scan the sub-directories, you can use the non-recursive option:
 
-    $ ./run.sh cpd --minimum-tokens 100 --non-recursive --files /usr/local/java/src/java
+    $ ./run.sh cpd --minimum-tokens 100 --non-recursive --dir /usr/local/java/src/java
 
 ### Exit status
 
@@ -209,7 +210,7 @@ This behavior has been introduced to ease CPD integration into scripts or hooks,
 <table>
 <tr><td>0</td><td>Everything is fine, no code duplications found</td></tr>
 <tr><td>1</td><td>Couldn't understand command line parameters or CPD exited with an exception</td></tr>
-<tr><td>4</td><td>At least one code duplication has been detected unless '--fail-on-violation false' is used.</td></tr>
+<tr><td>4</td><td>At least one code duplication has been detected unless `--fail-on-violation false` is used.</td></tr>
 </table>
 
 

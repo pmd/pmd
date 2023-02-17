@@ -214,12 +214,12 @@ public final class CPDCommandLineInterface {
         String helpText = " For example on Windows:" + PMD.EOL;
 
         helpText += " C:\\>" + "pmd-bin-" + PMDVersion.VERSION + "\\bin\\cpd.bat"
-                + " --minimum-tokens 100 --files c:\\jdk18\\src\\java" + PMD.EOL;
+                + " --minimum-tokens 100 --dir c:\\jdk18\\src\\java" + PMD.EOL;
         helpText += PMD.EOL;
 
         helpText += " For example on *nix:" + PMD.EOL;
         helpText += " $ " + "pmd-bin-" + PMDVersion.VERSION + "/bin/run.sh cpd"
-                + " --minimum-tokens 100 --files /path/to/java/code" + PMD.EOL;
+                + " --minimum-tokens 100 --dir /path/to/java/code" + PMD.EOL;
         helpText += PMD.EOL;
 
         helpText += " Supported languages: " + Arrays.toString(LanguageFactory.supportedLanguages) + PMD.EOL;

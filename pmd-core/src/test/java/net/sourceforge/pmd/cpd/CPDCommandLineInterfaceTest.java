@@ -70,7 +70,7 @@ public class CPDCommandLineInterfaceTest {
 
     @Test
     public void testEmptyResultRendering() {
-        CPD.StatusCode statusCode = CPD.runCpd("--minimum-tokens", "340", "--language", "java", "--files",
+        CPD.StatusCode statusCode = CPD.runCpd("--minimum-tokens", "340", "--language", "java", "--dir",
                 SRC_DIR, "--format", "xml");
         final String expectedFilesXml = getExpectedFileEntriesXml(NUMBER_OF_TOKENS.keySet());
         assertEquals(CPD.StatusCode.OK, statusCode);
@@ -99,7 +99,7 @@ public class CPDCommandLineInterfaceTest {
 
     @Test
     public void testDebugLogging() {
-        CPD.StatusCode statusCode = CPD.runCpd("--minimum-tokens", "340", "--language", "java", "--files",
+        CPD.StatusCode statusCode = CPD.runCpd("--minimum-tokens", "340", "--language", "java", "--dir",
                 SRC_DIR, "--debug");
         assertEquals(CPD.StatusCode.OK, statusCode);
         assertThat(errLog.getLog(), containsString("Tokenizing ")); // this is a debug logging
@@ -108,7 +108,7 @@ public class CPDCommandLineInterfaceTest {
     @Test
     public void testNormalLogging() {
         loggingRule.clear();
-        CPD.StatusCode statusCode = CPD.runCpd("--minimum-tokens", "340", "--language", "java", "--files",
+        CPD.StatusCode statusCode = CPD.runCpd("--minimum-tokens", "340", "--language", "java", "--dir",
                 SRC_DIR);
         assertEquals(CPD.StatusCode.OK, statusCode);
         assertThat(errLog.getLog(), not(containsString("Tokenizing "))); // this is a debug logging
