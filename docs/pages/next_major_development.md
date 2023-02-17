@@ -7,7 +7,7 @@ keywords: changelog, release notes, deprecation, api changes
 We're excited to bring you the next major version of PMD!
 Here is a summary of what is planned for PMD 7.
 
-To give us feedback or to suggest a new feature, drop us a line on [Gitter](https://gitter.im/pmd/pmd)!
+To give us feedback or to suggest a new feature, drop us a line in our [Gitter room](https://app.gitter.im/#/room/#pmd_pmd:gitter.im)!
 
 ## Summary
 

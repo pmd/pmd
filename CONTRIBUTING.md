@@ -47,7 +47,7 @@ There are various channels, on which you can ask questions:
 
 *   Create a new discussion for your question at <https://github.com/pmd/pmd/discussions>.
 
-*   Ask your question on Gitter <https://gitter.im/pmd/pmd>.
+*   Ask your question in our [Gitter room](https://app.gitter.im/#/room/#pmd_pmd:gitter.im).
 
 ## Code Style
 
