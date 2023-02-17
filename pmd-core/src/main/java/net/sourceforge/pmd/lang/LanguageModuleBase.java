@@ -22,7 +22,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.LanguageModuleBase.LanguageMetadata.LangVersionMetadata;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -45,7 +44,7 @@ public abstract class LanguageModuleBase implements Language {
      * Construct a module instance using the given metadata. The metadata must
      * be properly constructed.
      *
-     * @throws IllegalStateException If the metadata is invalid (eg missing extensions or name)
+     * @throws IllegalStateException If the metadata is invalid (eg missing extensions or name or no versions)
      */
     protected LanguageModuleBase(LanguageMetadata metadata) {
         this.meta = metadata;
@@ -56,10 +55,7 @@ public abstract class LanguageModuleBase implements Language {
         LanguageVersion defaultVersion = null;
 
         if (metadata.versionMetadata.isEmpty()) {
-            // Many languages have just one version, which is implicitly
-            // created here.
-            // TODO #4120 remove this branch, before 7.0.0
-            metadata.versionMetadata.add(new LangVersionMetadata("", Collections.emptyList(), true));
+            throw new IllegalStateException("No versions for '" + getId() + "'");
         }
 
         int i = 0;
