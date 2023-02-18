@@ -23,13 +23,13 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.document.FileCollector;
 import net.sourceforge.pmd.lang.document.TextFile;
-import net.sourceforge.pmd.util.log.internal.NoopReporter;
+import net.sourceforge.pmd.util.log.MessageReporter;
 
 class PMDFilelistTest {
     private static final String RESOURCE_PREFIX = "src/test/resources/net/sourceforge/pmd/cli/";
 
     private @NonNull FileCollector newCollector() {
-        return FileCollector.newCollector(new LanguageVersionDiscoverer(LanguageRegistry.PMD), new NoopReporter());
+        return FileCollector.newCollector(new LanguageVersionDiscoverer(LanguageRegistry.PMD), MessageReporter.noop());
     }
 
     private static void collectFileList(FileCollector collector, String x) {
