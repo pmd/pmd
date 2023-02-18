@@ -28,7 +28,8 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         SUPPORTED_LANGUAGES_CPD = "Valid values: apex, cpp, cs, dart, ecmascript," + System.lineSeparator()
                 + "                               fortran, gherkin, go, groovy, html, java, jsp," + System.lineSeparator()
                 + "                               kotlin, lua, matlab, modelica, objectivec, perl," + System.lineSeparator()
-                + "                               php, plsql, python, ruby, scala, swift, vf, xml";
+                + "                               php, plsql, python, ruby, scala, swift, tsql," + System.lineSeparator()
+                + "                               vf, xml";
         SUPPORTED_LANGUAGES_PMD = "Valid values: apex-54, ecmascript-ES6, html-," + System.lineSeparator()
                 + "                              java-1.10, java-1.3, java-1.4, java-1.5, java-1." + System.lineSeparator()
                 + "                              6, java-1.7, java-1.8, java-1.9, java-10," + System.lineSeparator()
