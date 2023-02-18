@@ -72,37 +72,36 @@ class RuleSetSchemaTest {
         builder.setErrorHandler(errorHandler);
         builder.setEntityResolver(new PMDRuleSetEntityResolver());
 
-        Document doc = builder.parse(new ByteArrayInputStream(ruleset.getBytes(StandardCharsets.UTF_8)));
-        return doc;
+        return builder.parse(new ByteArrayInputStream(ruleset.getBytes(StandardCharsets.UTF_8)));
     }
 
     private String generateRuleSet(String version) {
         String versionUnderscore = version.replaceAll("\\.", "_");
-        String ruleset = "<?xml version=\"1.0\"?>" + PMD.EOL
-                + "<ruleset " + PMD.EOL
-                + "    xmlns=\"http://pmd.sourceforge.net/ruleset/" + version + "\"" + PMD.EOL
-                + "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + PMD.EOL
-                + "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/" + version + " https://pmd.sourceforge.io/ruleset_" + versionUnderscore + ".xsd\""
-                + "    name=\"Custom ruleset\" >" + PMD.EOL
-                + "  <description>" + PMD.EOL
-                + "  This ruleset checks my code for bad stuff" + PMD.EOL
-                + "  </description>" + PMD.EOL
-                + "  <rule name=\"DummyBasicMockRule\" language=\"dummy\" since=\"1.0\" message=\"Test Rule 1\"" + PMD.EOL
-                + "        class=\"net.sourceforge.pmd.lang.rule.MockRule\"" + PMD.EOL
-                + "        externalInfoUrl=\"${pmd.website.baseurl}/rules/dummy/basic.xml#DummyBasicMockRule\"" + PMD.EOL
-                + "  >" + PMD.EOL
-                + "        <description>" + PMD.EOL
-                + "           Just for test" + PMD.EOL
-                + "     </description>" + PMD.EOL
-                + "        <priority>3</priority>" + PMD.EOL
-                + "        <example>" + PMD.EOL
-                + " <![CDATA[" + PMD.EOL
-                + " ]]>" + PMD.EOL
-                + "     </example>" + PMD.EOL
-                + "    </rule>" + PMD.EOL
-                + "  <rule ref=\"rulesets/dummy/basic.xml#DummyBasicMockRule\"/>" + PMD.EOL
-                + "</ruleset>" + PMD.EOL;
-        return ruleset;
+        return "<?xml version=\"1.0\"?>\n"
+            + "<ruleset \n"
+            + "    xmlns=\"http://pmd.sourceforge.net/ruleset/?\"\n"
+            + "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+            + "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/" + version
+            + " https://pmd.sourceforge.io/ruleset_" + versionUnderscore + ".xsd\"\n"
+            + "    name=\"Custom ruleset\" >\n"
+            + "  <description>\n"
+            + "  This ruleset checks my code for bad stuff\n"
+            + "  </description>\n"
+            + "  <rule name=\"DummyBasicMockRule\" language=\"dummy\" since=\"1.0\" message=\"Test Rule 1\"\n"
+            + "        class=\"net.sourceforge.pmd.lang.rule.MockRule\"\n"
+            + "        externalInfoUrl=\"${pmd.website.baseurl}/rules/dummy/basic.xml#DummyBasicMockRule\"\n"
+            + "  >\n"
+            + "        <description>\n"
+            + "           Just for test\n"
+            + "     </description>\n"
+            + "        <priority>3</priority>\n"
+            + "        <example>\n"
+            + " <![CDATA[\n"
+            + " ]]>\n"
+            + "     </example>\n"
+            + "    </rule>\n"
+            + "  <rule ref=\"rulesets/dummy/basic.xml#DummyBasicMockRule\"/>\n"
+            + "</ruleset>\n";
     }
 
     public static class PMDRuleSetEntityResolver implements EntityResolver {

@@ -21,7 +21,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import net.sourceforge.pmd.FooRule;
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.Rule;
@@ -84,8 +83,7 @@ class YAHTMLRendererTest extends AbstractRendererTest {
     }
 
     private static String normalizeLineSeparators(String s) {
-        return s.replaceAll(Pattern.quote("\r\n"), "\n")
-                .replaceAll(Pattern.quote("\n"), PMD.EOL);
+        return s.replaceAll(Pattern.quote("\\R"), System.lineSeparator());
     }
 
     @Override
@@ -97,7 +95,7 @@ class YAHTMLRendererTest extends AbstractRendererTest {
 
     @Override
     String getExpected() {
-        return "<h3 align=\"center\">The HTML files are located in '" + outputDir + "'.</h3>" + PMD.EOL;
+        return "<h3 align=\"center\">The HTML files are located in '" + outputDir + "'.</h3>" + System.lineSeparator();
     }
 
     @Override

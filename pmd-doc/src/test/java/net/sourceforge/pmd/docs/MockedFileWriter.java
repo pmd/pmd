@@ -12,8 +12,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.PMD;
-
 public class MockedFileWriter implements FileWriter {
 
     public static class FileEntry {
@@ -48,7 +46,6 @@ public class MockedFileWriter implements FileWriter {
     }
 
     public static String normalizeLineSeparators(String s) {
-        return s.replaceAll(Pattern.quote("\r\n"), "\n")
-                .replaceAll(Pattern.quote("\n"), PMD.EOL);
+        return s.replaceAll(Pattern.quote("\\R"), System.lineSeparator());
     }
 }

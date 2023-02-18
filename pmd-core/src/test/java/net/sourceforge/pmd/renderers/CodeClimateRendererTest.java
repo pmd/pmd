@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.XPathRule;
@@ -33,7 +32,7 @@ class CodeClimateRendererTest extends AbstractRendererTest {
                 + "violationSuppressRegex | | Suppress violations with messages matching a regular expression\\n"
                 + "violationSuppressXPath | | Suppress violations on nodes which match a given relative XPath expression.\\n"
                 + "\"},\"categories\":[\"Style\"],\"location\":{\"path\":\"" + getSourceCodeFilename() + "\",\"lines\":{\"begin\":1,\"end\":1}},\"severity\":\"info\",\"remediation_points\":50000}"
-                + "\u0000" + PMD.EOL;
+                + "\u0000" + EOL;
     }
 
     @Override
@@ -50,7 +49,7 @@ class CodeClimateRendererTest extends AbstractRendererTest {
                 + "stringProperty | the string value\\nsecond line with 'quotes' | simple string property\\n"
                 + "multiString | default1,default2 | multi string property\\n"
                 + "\"},\"categories\":[\"Style\"],\"location\":{\"path\":\"" + getSourceCodeFilename() + "\",\"lines\":{\"begin\":1,\"end\":1}},\"severity\":\"info\",\"remediation_points\":50000}"
-                + "\u0000" + PMD.EOL;
+                + "\u0000" + EOL;
     }
 
     @Override
@@ -70,7 +69,7 @@ class CodeClimateRendererTest extends AbstractRendererTest {
                 + "violationSuppressRegex | | Suppress violations with messages matching a regular expression\\n"
                 + "violationSuppressXPath | | Suppress violations on nodes which match a given relative XPath expression.\\n"
                 + "\"},\"categories\":[\"Style\"],\"location\":{\"path\":\"" + getSourceCodeFilename() + "\",\"lines\":{\"begin\":1,\"end\":1}},\"severity\":\"info\",\"remediation_points\":50000}"
-                + "\u0000" + PMD.EOL + "{\"type\":\"issue\",\"check_name\":\"Boo\",\"description\":\"blah\","
+                + "\u0000" + EOL + "{\"type\":\"issue\",\"check_name\":\"Boo\",\"description\":\"blah\","
                 + "\"content\":{\"body\":\"## Boo\\n\\nSince: PMD null\\n\\nPriority: High\\n\\n"
                 + "[Categories](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#categories): Style\\n\\n"
                 + "[Remediation Points](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#remediation-points): 50000\\n\\n"
@@ -80,7 +79,7 @@ class CodeClimateRendererTest extends AbstractRendererTest {
                 + "violationSuppressRegex | | Suppress violations with messages matching a regular expression\\n"
                 + "violationSuppressXPath | | Suppress violations on nodes which match a given relative XPath expression.\\n"
                 + "\"},\"categories\":[\"Style\"],\"location\":{\"path\":\"" + getSourceCodeFilename() + "\",\"lines\":{\"begin\":1,\"end\":1}},\"severity\":\"blocker\",\"remediation_points\":50000}"
-                + "\u0000" + PMD.EOL;
+                + "\u0000" + EOL;
     }
 
     @Test

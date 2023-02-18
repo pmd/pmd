@@ -16,7 +16,6 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
@@ -122,7 +121,7 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
     @Override
     public void outputReport(Report report) throws IOException {
         StringBuilder buf = new StringBuilder(500);
-        buf.append(PMD.EOL);
+        buf.append(System.lineSeparator());
         initializeColorsIfSupported();
         String lastFile = null;
         int numberOfErrors = 0;
@@ -141,7 +140,7 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
                         .append(this.whiteBold)
                         .append(this.getRelativePath(lastFile))
                         .append(this.colorReset)
-                        .append(PMD.EOL);
+                        .append(System.lineSeparator());
             }
             buf.append(this.green)
                     .append("    src:  ")
@@ -152,32 +151,34 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
                     .append(rv.getBeginLine())
                     .append(rv.getEndLine() == -1 ? "" : ":" + rv.getEndLine())
                     .append(this.colorReset)
-                    .append(PMD.EOL);
+                    .append(System.lineSeparator());
             buf.append(this.green)
                     .append("    rule: ")
                     .append(this.colorReset)
                     .append(rv.getRule().getName())
-                    .append(PMD.EOL);
+                    .append(System.lineSeparator());
             buf.append(this.green)
                     .append("    msg:  ")
                     .append(this.colorReset)
                     .append(rv.getDescription())
-                    .append(PMD.EOL);
+                    .append(System.lineSeparator());
             buf.append(this.green)
                     .append("    code: ")
                     .append(this.colorReset)
                     .append(this.getLine(lastFile, rv.getBeginLine()))
-                    .append(PMD.EOL)
-                    .append(PMD.EOL);
+                    .append(System.lineSeparator())
+                    .append(System.lineSeparator());
             writer.write(buf.toString());
         }
-        writer.write(PMD.EOL + PMD.EOL);
-        writer.write("Summary:" + PMD.EOL + PMD.EOL);
+        writer.println();
+        writer.println();
+        writer.println("Summary:");
+        writer.println();
         for (Map.Entry<String, Integer> entry : getCountSummary(report).entrySet()) {
             buf.setLength(0);
             String key = entry.getKey();
-            buf.append(key).append(" : ").append(entry.getValue()).append(PMD.EOL);
-            writer.write(buf.toString());
+            buf.append(key).append(" : ").append(entry.getValue());
+            writer.println(buf);
         }
 
         for (ProcessingError error : report.getProcessingErrors()) {
@@ -193,20 +194,19 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
                         .append(this.whiteBold)
                         .append(this.getRelativePath(lastFile))
                         .append(this.colorReset)
-                        .append(PMD.EOL);
+                        .append(System.lineSeparator());
             }
             buf.append(this.green)
                     .append("    err:  ")
                     .append(this.cyan)
                     .append(error.getMsg())
                     .append(this.colorReset)
-                    .append(PMD.EOL)
+                    .append(System.lineSeparator())
                     .append(this.red)
                     .append(error.getDetail())
                     .append(colorReset)
-                    .append(PMD.EOL)
-                    .append(PMD.EOL);
-            writer.write(buf.toString());
+                    .append(System.lineSeparator());
+            writer.println(buf);
         }
 
         for (ConfigurationError error : report.getConfigurationErrors()) {
@@ -219,24 +219,23 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
                     .append(this.whiteBold)
                     .append(error.rule().getName())
                     .append(this.colorReset)
-                    .append(PMD.EOL);
+                    .append(System.lineSeparator());
             buf.append(this.green)
                     .append("    err:  ")
                     .append(this.cyan)
                     .append(error.issue())
                     .append(this.colorReset)
-                    .append(PMD.EOL)
-                    .append(PMD.EOL);
-            writer.write(buf.toString());
+                    .append(System.lineSeparator());
+            writer.println(buf);
         }
 
         // adding error message count, if any
         if (numberOfErrors > 0) {
-            writer.write(this.redBold + "*" + this.colorReset + " errors:   " + this.whiteBold + numberOfErrors
-                    + this.colorReset + PMD.EOL);
+            writer.println(this.redBold + "*" + this.colorReset + " errors:   " + this.whiteBold + numberOfErrors
+                    + this.colorReset);
         }
-        writer.write(this.yellowBold + "*" + this.colorReset + " warnings: " + this.whiteBold + numberOfWarnings
-                + this.colorReset + PMD.EOL);
+        writer.println(this.yellowBold + "*" + this.colorReset + " warnings: " + this.whiteBold + numberOfWarnings
+                + this.colorReset);
     }
 
 

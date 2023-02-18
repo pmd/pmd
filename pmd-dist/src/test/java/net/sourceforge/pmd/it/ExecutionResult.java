@@ -10,8 +10,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import net.sourceforge.pmd.PMD;
-
 /**
  * Collects the result of a command execution in order to verify it.
  *
@@ -32,14 +30,11 @@ public class ExecutionResult {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("ExecutionResult:")
-            .append(PMD.EOL)
-            .append(" exit code: ").append(exitCode).append(PMD.EOL)
-            .append(" output:").append(PMD.EOL).append(output).append(PMD.EOL)
-            .append(" errorOutput:").append(PMD.EOL).append(errorOutput).append(PMD.EOL)
-            .append(" report:").append(PMD.EOL).append(report).append(PMD.EOL);
-        return sb.toString();
+        return "ExecutionResult:\n"
+            + " exit code: " + exitCode + "\n"
+            + " output:\n" + output + "\n"
+            + " errorOutput:\n" + errorOutput + "\n"
+            + " report:\n" + report + "\n";
     }
 
     /**
