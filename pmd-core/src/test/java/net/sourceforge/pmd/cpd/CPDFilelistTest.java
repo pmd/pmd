@@ -8,11 +8,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.io.FilenameUtils;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.DummyLanguageModule;
@@ -34,7 +34,7 @@ class CPDFilelistTest {
         assertEquals(2, paths.size());
         Set<String> simpleNames = new HashSet<>();
         for (String path : paths) {
-            simpleNames.add(Paths.get(path).getFileName().toString());
+            simpleNames.add(FilenameUtils.getName(path));
         }
         assertTrue(simpleNames.contains("anotherfile.dummy"));
         assertTrue(simpleNames.contains("somefile.dummy"));
@@ -53,7 +53,7 @@ class CPDFilelistTest {
         assertEquals(2, paths.size());
         Set<String> simpleNames = new HashSet<>();
         for (String path : paths) {
-            simpleNames.add(Paths.get(path).getFileName().toString());
+            simpleNames.add(FilenameUtils.getName(path));
         }
         assertTrue(simpleNames.contains("anotherfile.dummy"));
         assertTrue(simpleNames.contains("somefile.dummy"));
