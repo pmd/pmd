@@ -47,7 +47,8 @@ class NioTextFile extends BaseCloseable implements TextFile {
         this.charset = charset;
         this.languageVersion = languageVersion;
         // using the URI here, that handles files inside zip archives automatically (schema "jar:file:...!/path/inside/zip")
-        this.pathId = path.toUri().toString();
+        // normalization ensures cannonical paths
+        this.pathId = path.normalize().toUri().toString();
     }
 
     @Override
