@@ -116,13 +116,13 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
 
     @Test
     void testPmdHelp() throws Exception {
-        ExecutionResult result = PMDExecutor.runPMD(tempDir, "-h");
+        ExecutionResult result = PMDExecutor.runPMD(null, tempDir, "-h");
         result.assertExecutionResult(0, SUPPORTED_LANGUAGES_PMD);
     }
 
     @Test
     void testPmdNoArgs() throws Exception {
-        ExecutionResult result = PMDExecutor.runPMD(tempDir); // without any argument, display usage help and error
+        ExecutionResult result = PMDExecutor.runPMD(null, tempDir); // without any argument, display usage help and error
         result.assertExecutionResultErrOutput(2, "Usage: pmd check ");
     }
 
@@ -132,15 +132,13 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
 
         ExecutionResult result;
 
-        result = PMDExecutor.runPMD(tempDir, "-d", srcDir, "-R", "src/test/resources/rulesets/sample-ruleset.xml",
-                "-r", createTemporaryReportFile().toString());
+        result = PMDExecutor.runPMD(createTemporaryReportFile(), tempDir, "-d", srcDir, "-R", "src/test/resources/rulesets/sample-ruleset.xml");
         result.assertExecutionResult(4);
         result.assertErrorOutputContains("[main] INFO net.sourceforge.pmd.cli.commands.internal.AbstractPmdSubcommand - Log level is at INFO");
 
 
         // now with debug
-        result = PMDExecutor.runPMD(tempDir, "-d", srcDir, "-R", "src/test/resources/rulesets/sample-ruleset.xml",
-                "-r", createTemporaryReportFile().toString(), "--debug");
+        result = PMDExecutor.runPMD(createTemporaryReportFile(), tempDir, "-d", srcDir, "-R", "src/test/resources/rulesets/sample-ruleset.xml", "--debug");
         result.assertExecutionResult(4);
         result.assertErrorOutputContains("[main] INFO net.sourceforge.pmd.cli.commands.internal.AbstractPmdSubcommand - Log level is at TRACE");
     }

@@ -54,6 +54,12 @@ public class PMDExecutor {
 
     static ExecutionResult runCommand(String cmd, List<String> arguments, Path reportFile) throws Exception {
         ProcessBuilder pb = new ProcessBuilder(cmd);
+        
+        if (reportFile != null) {
+        	arguments.add(REPORTFILE_FLAG);
+        	arguments.add(reportFile.toString());
+        }
+        
         pb.command().addAll(arguments);
         pb.redirectErrorStream(false);
         
@@ -118,27 +124,23 @@ public class PMDExecutor {
     }
 
     public static ExecutionResult runPMDRules(Path reportFile, Path tempDir, String sourceDirectory, String ruleset, String formatter) throws Exception {
-        if (SystemUtils.IS_OS_WINDOWS) {
-            return runPMDWindows(tempDir, reportFile, SOURCE_DIRECTORY_FLAG, sourceDirectory, RULESET_FLAG, ruleset,
+    	return runPMD(tempDir, reportFile, SOURCE_DIRECTORY_FLAG, sourceDirectory, RULESET_FLAG, ruleset,
                     FORMAT_FLAG, formatter, REPORTFILE_FLAG, reportFile.toAbsolutePath().toString(), NO_PROGRESSBAR_FLAG);
-        } else {
-            return runPMDUnix(tempDir, reportFile, SOURCE_DIRECTORY_FLAG, sourceDirectory, RULESET_FLAG, ruleset,
-                    FORMAT_FLAG, formatter, REPORTFILE_FLAG, reportFile.toAbsolutePath().toString(), NO_PROGRESSBAR_FLAG);
-        }
     }
 
     /**
      * Executes PMD found in tempDir with the given command line arguments.
+     * @param reportFile The location where to store the result. If null, the report will be discarded.
      * @param tempDir the directory, to which the binary distribution has been extracted
      * @param arguments the arguments to execute PMD with
      * @return collected result of the execution
      * @throws Exception if the execution fails for any reason (executable not found, ...)
      */
-    public static ExecutionResult runPMD(Path tempDir, String... arguments) throws Exception {
+    public static ExecutionResult runPMD(Path reportFile, Path tempDir, String... arguments) throws Exception {
         if (SystemUtils.IS_OS_WINDOWS) {
-            return runPMDWindows(tempDir, null, arguments);
+            return runPMDWindows(tempDir, reportFile, arguments);
         } else {
-            return runPMDUnix(tempDir, null, arguments);
+            return runPMDUnix(tempDir, reportFile, arguments);
         }
     }
 }
