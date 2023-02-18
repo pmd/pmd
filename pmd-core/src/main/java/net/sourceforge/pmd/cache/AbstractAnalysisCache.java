@@ -66,18 +66,14 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
     @Override
     public boolean isUpToDate(final TextDocument document) {
         try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "up-to-date check")) {
-            // There is a new file being analyzed, prepare entry in updated cache
-            final AnalysisResult updatedResult = new AnalysisResult(document.getCheckSum(), new ArrayList<>());
-            updatedResultsCache.put(document.getPathId(), updatedResult);
-
-            // Now check the old cache
-            final AnalysisResult analysisResult = fileResultsCache.get(document.getPathId());
+            final AnalysisResult cachedResult = fileResultsCache.get(document.getPathId());
+            final AnalysisResult updatedResult;
 
             // is this a known file? has it changed?
-            final boolean result = analysisResult != null
-                && analysisResult.getFileChecksum() == updatedResult.getFileChecksum();
+            final boolean upToDate = cachedResult != null
+                && cachedResult.getFileChecksum() == document.getCheckSum();
 
-            if (result) {
+            if (upToDate) {
                 LOG.debug("Incremental Analysis cache HIT");
                 
                 /*
@@ -85,13 +81,21 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
                  * so we can honor relativized paths for the current run
                  */
                 final String displayName = document.getDisplayName();
-                analysisResult.getViolations().forEach(v -> ((CachedRuleViolation) v).setFileDisplayName(displayName));
+                cachedResult.getViolations().forEach(v -> ((CachedRuleViolation) v).setFileDisplayName(displayName));
+                
+                // copy results over
+                updatedResult = cachedResult;
             } else {
                 LOG.debug("Incremental Analysis cache MISS - {}",
-                          analysisResult != null ? "file changed" : "no previous result found");
+                          cachedResult != null ? "file changed" : "no previous result found");
+                
+                // New file being analyzed, create new empty entry
+                updatedResult = new AnalysisResult(document.getCheckSum(), new ArrayList<>());
             }
 
-            return result;
+            updatedResultsCache.put(document.getPathId(), updatedResult);
+            
+            return upToDate;
         }
     }
 
