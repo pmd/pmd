@@ -138,10 +138,10 @@ public class ExecutionResult {
     }
     
     public void assertIdenticalResults(ExecutionResult other) {
-    	// Notice we don't check for error output, as log messages may differ due to cache
-    	assertEquals(exitCode, other.exitCode, "Exit codes differ");
-    	assertEquals(output, other.output, "Outputs differ");
-    	assertEquals(report, other.report, "Reports differ");
+        // Notice we don't check for error output, as log messages may differ due to cache
+        assertEquals(exitCode, other.exitCode, "Exit codes differ");
+        assertEquals(output, other.output, "Outputs differ");
+        assertEquals(report, other.report, "Reports differ");
     }
 
     static class Builder {

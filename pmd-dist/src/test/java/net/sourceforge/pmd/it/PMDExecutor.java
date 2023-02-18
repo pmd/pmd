@@ -56,8 +56,8 @@ public class PMDExecutor {
         ProcessBuilder pb = new ProcessBuilder(cmd);
         
         if (reportFile != null) {
-        	arguments.add(REPORTFILE_FLAG);
-        	arguments.add(reportFile.toString());
+            arguments.add(REPORTFILE_FLAG);
+            arguments.add(reportFile.toString());
         }
         
         pb.command().addAll(arguments);
@@ -124,7 +124,7 @@ public class PMDExecutor {
     }
 
     public static ExecutionResult runPMDRules(Path reportFile, Path tempDir, String sourceDirectory, String ruleset, String formatter) throws Exception {
-    	return runPMD(tempDir, reportFile, SOURCE_DIRECTORY_FLAG, sourceDirectory, RULESET_FLAG, ruleset,
+        return runPMD(tempDir, reportFile, SOURCE_DIRECTORY_FLAG, sourceDirectory, RULESET_FLAG, ruleset,
                     FORMAT_FLAG, formatter, REPORTFILE_FLAG, reportFile.toAbsolutePath().toString(), NO_PROGRESSBAR_FLAG);
     }
 
