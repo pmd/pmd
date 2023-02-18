@@ -120,7 +120,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
         assertEquals(1, rs.size());
         Rule r = rs.getRules().iterator().next();
         assertEquals("MockRuleName", r.getName());
-        assertEquals("net.sourceforge.pmd.lang.rule.MockRule", r.getRuleClass());
+        assertEquals("net.sourceforge.pmd.lang.rule.MockRuleWithNoProperties", r.getRuleClass());
         assertEquals("avoid the mock rule", r.getMessage());
     }
 

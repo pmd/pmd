@@ -10,6 +10,7 @@ import static org.hamcrest.Matchers.containsString;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.rule.MockRule;
+import net.sourceforge.pmd.util.internal.xml.SchemaConstants;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 
@@ -28,7 +29,7 @@ class RuleSetFactoryMessagesTest extends RulesetFactoryTestBase {
         assertThat(log, containsString(
             "Error at dummyRuleset.xml:9:1\n"
                 + " 7| \n"
-                + " 8| <rule name=\"MockRuleName\" language=\"dummy\" class=\"net.sourceforge.pmd.lang.rule.MockRule\" message=\"avoid the mock rule\">\n"
+                + " 8| <rule name=\"MockRuleName\" language=\"dummy\" class=\"net.sourceforge.pmd.lang.rule.MockRuleWithNoProperties\" message=\"avoid the mock rule\">\n"
                 + " 9| <priority>not a priority</priority></rule></ruleset>\n"
                 + "    ^^^^^^^^^ Not a valid priority: 'not a priority', expected a number in [1,5]"
         ));
@@ -40,6 +41,7 @@ class RuleSetFactoryMessagesTest extends RulesetFactoryTestBase {
         String log = SystemLambda.tapSystemErr(() -> assertCannotParse(
             rulesetXml(
                 dummyRule(
+                    attrs -> attrs.put(SchemaConstants.CLASS, MockRule.class.getName()),
                     properties(
                         propertyWithValueAttr(MockRule.PROP.name(), "-4")
                     )
