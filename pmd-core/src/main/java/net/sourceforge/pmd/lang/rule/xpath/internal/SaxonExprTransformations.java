@@ -118,9 +118,18 @@ final class SaxonExprTransformations {
      * @return The subexpression, wrapped in a copy of all top-level let expression from the original.
      */
     static Expression copyTopLevelLets(Expression subexpr, Expression original) {
-        // Does it need them?
-        if (subexpr.equals(original)) {
+        if (!(original instanceof LetExpression)) {
             return subexpr;
+        }
+
+        // Does it need them? Or is it already the same variable under the same assignment?
+        if (subexpr instanceof LetExpression) {
+            final LetExpression letSubexpr = (LetExpression) subexpr;
+            final LetExpression letOriginal = (LetExpression) original;
+            if (letOriginal.getVariableQName().equals(letSubexpr.getVariableQName())
+                    && letSubexpr.getSequence().toString().equals(letOriginal.getSequence().toString())) {
+                return subexpr;
+            }
         }
         
         final SaxonExprVisitor topLevelLetCopier = new SaxonExprVisitor() {
