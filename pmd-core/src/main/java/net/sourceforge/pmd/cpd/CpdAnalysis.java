@@ -39,8 +39,8 @@ public final class CpdAnalysis implements AutoCloseable {
     private @NonNull CPDListener listener = new CPDNullListener();
 
 
-    public CpdAnalysis(CPDConfiguration config) {
-        configuration = config;
+    private CpdAnalysis(CPDConfiguration config) {
+        this.configuration = config;
         this.reporter = config.getReporter();
         this.files = FileCollector.newCollector(
             config.getLanguageVersionDiscoverer(),
@@ -54,6 +54,18 @@ public final class CpdAnalysis implements AutoCloseable {
         for (Language language : config.getLanguageRegistry()) {
             setLanguageProperties(language, config);
         }
+    }
+
+    /**
+     * Create a new instance from the given configuration. The configuration
+     * should not be modified after this.
+     *
+     * @param config Configuration
+     *
+     * @return A new analysis instance
+     */
+    public static CpdAnalysis create(CPDConfiguration config) {
+        return new CpdAnalysis(config);
     }
 
     private static <T> void setPropertyIfMissing(PropertyDescriptor<T> prop, LanguagePropertyBundle sink, T value) {
@@ -111,6 +123,7 @@ public final class CpdAnalysis implements AutoCloseable {
 
             Map<String, Integer> numberOfTokensPerFile = new HashMap<>();
 
+            boolean hasErrors = false;
             Tokens tokens = new Tokens();
             for (TextFile textFile : sourceManager.getTextFiles()) {
                 TextDocument textDocument = sourceManager.get(textFile);
@@ -123,16 +136,21 @@ public final class CpdAnalysis implements AutoCloseable {
                     if (e instanceof TokenMgrError) { // NOPMD
                         ((TokenMgrError) e).setFileName(textFile.getDisplayName());
                     }
-                    reporter.errorEx("Error while lexing.", e);
-                    // already reported
+                    String message = configuration.isSkipLexicalErrors() ? "Skipping file" : "Error while tokenizing";
+                    reporter.errorEx(message, e);
+                    hasErrors = true;
                     savedState.restore(tokens);
                 }
             }
-
+            if (hasErrors && !configuration.isSkipLexicalErrors()) {
+                // will be caught by CPD command
+                throw new IllegalStateException("Errors were detected while lexing source, exiting because --skip-lexical-errors is unset.");
+            }
 
             LOGGER.debug("Running match algorithm on {} files...", sourceManager.size());
             MatchAlgorithm matchAlgorithm = new MatchAlgorithm(tokens, configuration.getMinimumTileSize());
             List<Match> matches = matchAlgorithm.findMatches(listener, sourceManager);
+            tokens = null; // NOPMD null it out before rendering
             LOGGER.debug("Finished: {} duplicates found", matches.size());
 
             CPDReport cpdReport = new CPDReport(sourceManager, matches, numberOfTokensPerFile);
@@ -154,4 +172,5 @@ public final class CpdAnalysis implements AutoCloseable {
     public void close() throws IOException {
         // nothing for now
     }
+
 }

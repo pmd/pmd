@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +31,7 @@ import net.sourceforge.pmd.cli.commands.typesupport.internal.PmdLanguageVersionT
 import net.sourceforge.pmd.cli.internal.CliExitCode;
 import net.sourceforge.pmd.cli.internal.ProgressBarListener;
 import net.sourceforge.pmd.internal.LogMessages;
+import net.sourceforge.pmd.internal.PmdRootLogger;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -321,11 +323,15 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
 
     @Override
     protected CliExitCode execute() {
+        final PMDConfiguration configuration = toConfiguration();
+        return PmdRootLogger.executeInLoggingContext(configuration, this::doExecute);
+    }
+
+    private @NonNull CliExitCode doExecute(PMDConfiguration configuration) {
         if (benchmark) {
             TimeTracker.startGlobalTracking();
         }
 
-        final PMDConfiguration configuration = toConfiguration();
         final MessageReporter pmdReporter = configuration.getReporter();
 
         try {

@@ -588,7 +588,7 @@ public class GUI implements CPDListener {
         if (sourceIDs.size() == 1) {
             String sourceId = sourceIDs.iterator().next();
             int separatorPos = sourceId.lastIndexOf(File.separatorChar);
-            return  "..." + sourceId.substring(separatorPos);
+            return "..." + sourceId.substring(separatorPos);
         } else {
             return String.format("(%d separate files)", sourceIDs.size());
         }
@@ -628,9 +628,9 @@ public class GUI implements CPDListener {
 
             LanguageConfig conf = languageConfigFor((String) languageBox.getSelectedItem());
             Language language = conf.getLanguage();
-            config.setLanguage(language);
+            config.setOnlyRecognizeLanguage(language);
 
-            try (CpdAnalysis cpd = new CpdAnalysis(config)) {
+            try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
                 cpd.setCpdListener(this);
 
                 tokenizingFilesBar.setMinimum(0);

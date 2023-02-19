@@ -36,7 +36,6 @@ public abstract class AbstractConfiguration {
 
     private final List<Path> relativizeRoots = new ArrayList<>();
     protected URI inputUri;
-    protected Path reportFile;
     private Charset sourceEncoding = Charset.forName(System.getProperty("file.encoding"));
     private boolean debug;
     private final Map<Language, LanguagePropertyBundle> langProperties = new HashMap<>();
@@ -47,8 +46,8 @@ public abstract class AbstractConfiguration {
     private @NonNull List<Path> inputPaths = new ArrayList<>();
     private Path inputFilePath;
     private Path ignoreFilePath;
-    private List<Path> excludes;
-    private boolean nonRecursive;
+    private List<Path> excludes = new ArrayList<>();
+    private boolean collectRecursive;
 
 
     protected AbstractConfiguration(LanguageRegistry languageRegistry, MessageReporter messageReporter) {
@@ -192,7 +191,7 @@ public abstract class AbstractConfiguration {
      *
      * @param lang A language
      */
-    protected void setOnlyRecognizeLanguage(Language lang) {
+    public void setOnlyRecognizeLanguage(Language lang) {
         this.languageVersionDiscoverer.onlyRecognizeLanguages(LanguageRegistry.singleton(lang));
     }
 
@@ -364,11 +363,12 @@ public abstract class AbstractConfiguration {
         this.inputPaths.add(inputPath);
     }
 
-    /** Returns the path to the file list text file. */
+    /** Returns the path to the file list include file. */
     public @Nullable Path getInputFile() {
         return inputFilePath;
     }
 
+    /** Returns the path to the file list exclude file. */
     public @Nullable Path getIgnoreFile() {
         return ignoreFilePath;
     }
@@ -428,59 +428,19 @@ public abstract class AbstractConfiguration {
         this.inputUri = inputUri == null ? null : URI.create(inputUri);
     }
 
-    /**
-     * Get the file to which the report should render.
-     *
-     * @return The file to which to render.
-     * @deprecated Use {@link #getReportFilePath()}
-     */
-    @Deprecated
-    public String getReportFile() {
-        return reportFile == null ? null : reportFile.toString();
-    }
-
-    /**
-     * Get the file to which the report should render.
-     *
-     * @return The file to which to render.
-     */
-    public Path getReportFilePath() {
-        return reportFile;
-    }
-
-    /**
-     * Set the file to which the report should render.
-     *
-     * @param reportFile the file to set
-     * @deprecated Use {@link #setReportFile(Path)}
-     */
-    @Deprecated
-    public void setReportFile(String reportFile) {
-        this.reportFile = reportFile == null ? null : Paths.get(reportFile);
-    }
-
-    /**
-     * Set the file to which the report should render.
-     *
-     * @param reportFile the file to set
-     */
-    public void setReportFile(Path reportFile) {
-        this.reportFile = reportFile;
-    }
-
     public List<Path> getExcludes() {
         return excludes;
     }
 
     public void setExcludes(List<Path> excludes) {
-        this.excludes = excludes;
+        this.excludes = Objects.requireNonNull(excludes);
     }
 
-    public boolean isNonRecursive() {
-        return nonRecursive;
+    public boolean collectFilesRecursively() {
+        return collectRecursive;
     }
 
-    public void setNonRecursive(boolean nonRecursive) {
-        this.nonRecursive = nonRecursive;
+    public void collectFilesRecursively(boolean collectRecursive) {
+        this.collectRecursive = collectRecursive;
     }
 }

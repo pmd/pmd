@@ -136,8 +136,8 @@ class PMDFilelistTest {
     @Test
     void testGetApplicableFilesWithDirAndIgnores() {
         PMDConfiguration configuration = new PMDConfiguration();
-        configuration.setInputPaths(RESOURCE_PREFIX + "src");
-        configuration.setIgnoreFilePath(RESOURCE_PREFIX + "ignorelist.txt");
+        configuration.addInputPath(Paths.get(RESOURCE_PREFIX + "src"));
+        configuration.setIgnoreFilePath(Paths.get(RESOURCE_PREFIX + "ignorelist.txt"));
 
         FileCollector collector = newCollector();
         FileCollectionUtil.collectFiles(configuration, collector);

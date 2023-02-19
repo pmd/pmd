@@ -91,7 +91,7 @@ public class CPDTask extends Task {
             log("Tokenizing files", Project.MSG_INFO);
             CPDConfiguration config = new CPDConfiguration();
             config.setMinimumTileSize(minimumTokenCount);
-            config.setLanguage(config.getLanguageRegistry().getLanguageById(language));
+            config.setOnlyRecognizeLanguage(config.getLanguageRegistry().getLanguageById(language));
             config.setSourceEncoding(Charset.forName(encoding));
             config.setSkipDuplicates(skipDuplicateFiles);
             config.setSkipLexicalErrors(skipLexicalErrors);
@@ -104,7 +104,7 @@ public class CPDTask extends Task {
                 config.setSkipBlocksPattern(skipBlocksPattern);
             }
 
-            try (CpdAnalysis cpd = new CpdAnalysis(config)) {
+            try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
                 addFiles(cpd);
 
                 log("Starting to analyze code", Project.MSG_INFO);

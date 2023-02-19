@@ -81,13 +81,13 @@ class CpdCliTest extends BaseCliTest {
     @Test
     void debugLogging() throws Exception {
         CliExecutionResult result = runCliSuccessfully("--debug", "--minimum-tokens", "340", "--dir", SRC_DIR);
-        result.checkStdErr(containsString("[main] INFO net.sourceforge.pmd.cli.commands.internal.AbstractPmdSubcommand - Log level is at TRACE"));
+        result.checkStdErr(containsString("[main] INFO net.sourceforge.pmd - Log level is at TRACE"));
     }
 
     @Test
     void defaultLogging() throws Exception {
         CliExecutionResult result = runCliSuccessfully("--minimum-tokens", "340", "--dir", SRC_DIR);
-        result.checkStdErr(containsString("[main] INFO net.sourceforge.pmd.cli.commands.internal.AbstractPmdSubcommand - Log level is at INFO"));
+        result.checkStdErr(containsString("[main] INFO net.sourceforge.pmd - Log level is at INFO"));
     }
 
     @Test
@@ -146,17 +146,17 @@ class CpdCliTest extends BaseCliTest {
 
     @Test
     void testNoDuplicatesResultRendering() throws Exception {
-        final Path absoluteSrcDir = Paths.get(SRC_DIR).toAbsolutePath();
+        final Path srcDir = Paths.get(SRC_DIR);
         String expectedReport = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                 + "<pmd-cpd>\n"
-                + "   <file path=\"" + absoluteSrcDir.resolve("dup1.java") + "\"\n"
+                + "   <file path=\"" + srcDir.resolve("dup1.java") + "\"\n"
                 + "         totalNumberOfTokens=\"89\"/>\n"
-                + "   <file path=\"" + absoluteSrcDir.resolve("dup2.java") + "\"\n"
+                + "   <file path=\"" + srcDir.resolve("dup2.java") + "\"\n"
                 + "         totalNumberOfTokens=\"89\"/>\n"
-                + "   <file path=\"" + absoluteSrcDir.resolve("file_with_ISO-8859-1_encoding.java")
+                + "   <file path=\"" + srcDir.resolve("file_with_ISO-8859-1_encoding.java")
                 + "\"\n"
                 + "         totalNumberOfTokens=\"8\"/>\n"
-                + "   <file path=\"" + absoluteSrcDir.resolve("file_with_utf8_bom.java") + "\"\n"
+                + "   <file path=\"" + srcDir.resolve("file_with_utf8_bom.java") + "\"\n"
                 + "         totalNumberOfTokens=\"9\"/>\n"
                 + "</pmd-cpd>\n";
 
@@ -178,7 +178,8 @@ class CpdCliTest extends BaseCliTest {
                    "-d", BASE_RES_PATH + "encodingTest/",
                    "--ignore-identifiers", "--format", "xml",
                    // request UTF-8 for CPD
-                   "--encoding", "UTF-8")
+                   "--encoding", "UTF-8",
+                   "--debug")
                 .verify(r -> {
                     r.checkStdOut(startsWith("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
                     r.checkStdOut(containsPattern("System\\.out\\.println\\([ij] \\+ \"ä\"\\);"));
@@ -197,7 +198,7 @@ class CpdCliTest extends BaseCliTest {
                "--format", "text",
                "--skip-lexical-errors")
             .verify(r -> {
-                r.checkStdErr(containsPattern("Skipping .*?BadFile\\.java\\. Reason: Lexical error in file"));
+                r.checkStdErr(containsPattern("Skipping file: Lexical error in file .*?BadFile\\.java"));
                 r.checkStdOut(containsString("Found a 5 line (13 tokens) duplication"));
             });
     }
@@ -205,21 +206,21 @@ class CpdCliTest extends BaseCliTest {
 
     @Test
     void jsShouldFindDuplicatesWithDifferentFileExtensions() throws Exception {
-        runCli(VIOLATIONS_FOUND, "--minimum-tokens", "5", "--language", "js",
+        runCli(VIOLATIONS_FOUND, "--minimum-tokens", "5", "--language", "ecmascript",
                "-d", BASE_RES_PATH + "tsFiles/File1.ts", BASE_RES_PATH + "tsFiles/File2.ts")
             .checkStdOut(containsString("Found a 9 line (32 tokens) duplication in the following files"));
     }
 
     @Test
     void jsShouldFindNoDuplicatesWithDifferentFileExtensions() throws Exception {
-        runCli(OK, "--minimum-tokens", "5", "--language", "js",
+        runCli(OK, "--minimum-tokens", "5", "--language", "ecmascript",
                "-d", BASE_RES_PATH + "tsFiles/")
             .checkStdOut(emptyString());
     }
 
     @Test
     void renderEmptyReportXml() throws Exception {
-        runCli(OK, "--minimum-tokens", "5", "--language", "js",
+        runCli(OK, "--minimum-tokens", "5", "--language", "ecmascript",
                "-f", "xml",
                "-d", BASE_RES_PATH + "tsFiles/")
             .checkStdOut(equalTo(

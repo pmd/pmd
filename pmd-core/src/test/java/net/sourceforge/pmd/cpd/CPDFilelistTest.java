@@ -25,10 +25,10 @@ class CPDFilelistTest {
     @Test
     void testFilelist() throws IOException {
         CPDConfiguration arguments = new CPDConfiguration();
-        arguments.setLanguage(DummyLanguageModule.getInstance());
-        arguments.setFileListPath(Paths.get("src/test/resources/net/sourceforge/pmd/cpd/cli/filelist.txt"));
+        arguments.setOnlyRecognizeLanguage(DummyLanguageModule.getInstance());
+        arguments.setInputFilePath(Paths.get("src/test/resources/net/sourceforge/pmd/cpd/cli/filelist.txt"));
         List<String> paths;
-        try (CpdAnalysis cpd = new CpdAnalysis(arguments)) {
+        try (CpdAnalysis cpd = CpdAnalysis.create(arguments)) {
             paths = CollectionUtil.map(cpd.files().getCollectedFiles(), TextFile::getPathId);
         }
 
@@ -44,10 +44,10 @@ class CPDFilelistTest {
     @Test
     void testFilelistMultipleLines() throws IOException {
         CPDConfiguration arguments = new CPDConfiguration();
-        arguments.setLanguage(DummyLanguageModule.getInstance());
-        arguments.setFileListPath(Paths.get("src/test/resources/net/sourceforge/pmd/cpd/cli/filelist2.txt"));
+        arguments.setOnlyRecognizeLanguage(DummyLanguageModule.getInstance());
+        arguments.setInputFilePath(Paths.get("src/test/resources/net/sourceforge/pmd/cpd/cli/filelist2.txt"));
         List<String> paths;
-        try (CpdAnalysis cpd = new CpdAnalysis(arguments)) {
+        try (CpdAnalysis cpd = CpdAnalysis.create(arguments)) {
             paths = CollectionUtil.map(cpd.files().getCollectedFiles(), TextFile::getPathId);
         }
 

@@ -17,10 +17,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
 import net.sourceforge.pmd.benchmark.TextTimingReportRenderer;
@@ -30,13 +26,12 @@ import net.sourceforge.pmd.benchmark.TimingReportRenderer;
 import net.sourceforge.pmd.cli.PMDCommandLineInterface;
 import net.sourceforge.pmd.cli.PmdParametersParseResult;
 import net.sourceforge.pmd.internal.LogMessages;
-import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
+import net.sourceforge.pmd.internal.PmdRootLogger;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.reporting.ReportStats;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.log.MessageReporter;
-import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 /**
  * Entry point for PMD's CLI. Use {@link #runPmd(PMDConfiguration)}
@@ -51,10 +46,6 @@ import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
  */
 @Deprecated
 public final class PMD {
-
-    private static final String PMD_PACKAGE = "net.sourceforge.pmd";
-    // not final, in order to re-initialize logging
-    private static Logger log = LoggerFactory.getLogger(PMD_PACKAGE);
 
     /**
      * The line delimiter used by PMD in outputs. Usually the platform specific
@@ -140,8 +131,8 @@ public final class PMD {
         // todo these warnings/errors should be output on a PmdRenderer
         if (!parseResult.getDeprecatedOptionsUsed().isEmpty()) {
             Entry<String, String> first = parseResult.getDeprecatedOptionsUsed().entrySet().iterator().next();
-            log.warn("Some deprecated options were used on the command-line, including {}", first.getKey());
-            log.warn("Consider replacing it with {}", first.getValue());
+            PmdRootLogger.log.warn("Some deprecated options were used on the command-line, including {}", first.getKey());
+            PmdRootLogger.log.warn("Consider replacing it with {}", first.getValue());
         }
 
         if (parseResult.isVersion()) {
@@ -157,41 +148,19 @@ public final class PMD {
             return StatusCode.ERROR;
         }
 
-        PMDConfiguration configuration = null;
+        PMDConfiguration configuration;
         try {
             configuration = Objects.requireNonNull(
-                    parseResult.toConfiguration()
+                parseResult.toConfiguration()
             );
         } catch (IllegalArgumentException e) {
             System.err.println("Cannot start analysis: " + e);
-            log.debug(ExceptionUtils.getStackTrace(e));
+            PmdRootLogger.log.debug(ExceptionUtils.getStackTrace(e));
             return StatusCode.ERROR;
         }
 
 
-        Level curLogLevel = Slf4jSimpleConfiguration.getDefaultLogLevel();
-        boolean resetLogLevel = false;
-        try {
-            // only reconfigure logging, if debug flag was used on command line
-            // otherwise just use whatever is in conf/simplelogger.properties which happens automatically
-            if (configuration.isDebug()) {
-                Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(Level.TRACE);
-                // need to reload the logger with the new configuration
-                log = LoggerFactory.getLogger(PMD_PACKAGE);
-                resetLogLevel = true;
-            }
-
-            MessageReporter pmdReporter = setupMessageReporter();
-            configuration.setReporter(pmdReporter);
-
-            return runPmd(configuration);
-        } finally {
-            if (resetLogLevel) {
-                // reset to the previous value
-                Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(curLogLevel);
-                log = LoggerFactory.getLogger(PMD_PACKAGE);
-            }
-        }
+        return PmdRootLogger.executeInLoggingContext(configuration, PMD::runPmd);
     }
 
     /**
@@ -220,7 +189,7 @@ public final class PMD {
                 return StatusCode.ERROR;
             }
             try {
-                log.debug("Current classpath:\n{}", System.getProperty("java.class.path"));
+                PmdRootLogger.log.debug("Current classpath:\n{}", System.getProperty("java.class.path"));
                 ReportStats stats = pmd.runAndReturnStats();
                 if (pmdReporter.numErrors() > 0) {
                     // processing errors are ignored
@@ -241,21 +210,6 @@ public final class PMD {
         } finally {
             finishBenchmarker(configuration);
         }
-    }
-
-    private static @NonNull MessageReporter setupMessageReporter() {
-
-        // create a top-level reporter
-        // TODO CLI errors should also be reported through this
-        // TODO this should not use the logger as backend, otherwise without
-        //  slf4j implementation binding, errors are entirely ignored.
-        MessageReporter pmdReporter = new SimpleMessageReporter(log);
-        // always install java.util.logging to slf4j bridge
-        Slf4jSimpleConfiguration.installJulBridge();
-        // logging, mostly for testing purposes
-        Level defaultLogLevel = Slf4jSimpleConfiguration.getDefaultLogLevel();
-        log.info("Log level is at {}", defaultLogLevel);
-        return pmdReporter;
     }
 
     private static void finishBenchmarker(PMDConfiguration configuration) {

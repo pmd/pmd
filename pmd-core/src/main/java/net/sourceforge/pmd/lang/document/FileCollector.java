@@ -64,6 +64,7 @@ public final class FileCollector implements AutoCloseable {
     private final String outerFsDisplayName;
     private final List<Path> relativizeRootPaths = new ArrayList<>();
     private boolean closed;
+    private boolean recursive = true;
 
     // construction
 
@@ -71,6 +72,10 @@ public final class FileCollector implements AutoCloseable {
         this.discoverer = discoverer;
         this.reporter = reporter;
         this.outerFsDisplayName = outerFsDisplayName;
+    }
+
+    public void setRecursive(boolean collectFilesRecursively) {
+        this.recursive = collectFilesRecursively;
     }
 
     /**
@@ -337,7 +342,7 @@ public final class FileCollector implements AutoCloseable {
      * @return True if the directory has been added
      */
     public boolean addDirectory(Path dir) throws IOException {
-        return addDirectory(dir, true);
+        return addDirectory(dir, recursive);
     }
 
     public boolean addDirectory(Path dir, boolean recurse) throws IOException {

@@ -7,6 +7,7 @@ package net.sourceforge.pmd;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -95,6 +96,7 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     /** The default suppress marker string. */
     public static final String DEFAULT_SUPPRESS_MARKER = "NOPMD";
+    protected Path reportFile;
 
     // General behavior options
     private String suppressMarker = DEFAULT_SUPPRESS_MARKER;
@@ -590,4 +592,43 @@ public class PMDConfiguration extends AbstractConfiguration {
     }
 
 
+    /**
+     * Get the file to which the report should render.
+     *
+     * @return The file to which to render.
+     * @deprecated Use {@link #getReportFilePath()}
+     */
+    @Deprecated
+    public String getReportFile() {
+        return reportFile == null ? null : reportFile.toString();
+    }
+
+    /**
+     * Get the file to which the report should render.
+     *
+     * @return The file to which to render.
+     */
+    public Path getReportFilePath() {
+        return reportFile;
+    }
+
+    /**
+     * Set the file to which the report should render.
+     *
+     * @param reportFile the file to set
+     * @deprecated Use {@link #setReportFile(Path)}
+     */
+    @Deprecated
+    public void setReportFile(String reportFile) {
+        this.reportFile = reportFile == null ? null : Paths.get(reportFile);
+    }
+
+    /**
+     * Set the file to which the report should render.
+     *
+     * @param reportFile the file to set
+     */
+    public void setReportFile(Path reportFile) {
+        this.reportFile = reportFile;
+    }
 }

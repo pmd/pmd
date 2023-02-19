@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.cpd;
 
-import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -18,8 +17,7 @@ import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.PlainTextLanguage;
+import net.sourceforge.pmd.lang.DummyLanguageModule;
 
 /**
  * Unit test for {@link CpdAnalysis}
@@ -33,11 +31,11 @@ class CpdAnalysisTest {
     // Symlinks are not well supported under Windows - so the tests are
     // simply executed only on linux.
     private boolean canTestSymLinks = SystemUtils.IS_OS_UNIX;
-    CPDConfiguration config = new CPDConfiguration(new LanguageRegistry(setOf(PlainTextLanguage.getInstance())));
+    CPDConfiguration config = new CPDConfiguration();
 
     @BeforeEach
     void setup() throws Exception {
-        config.setLanguage(PlainTextLanguage.getInstance());
+        config.setOnlyRecognizeLanguage(DummyLanguageModule.getInstance());
         config.setMinimumTileSize(10);
     }
 
@@ -74,7 +72,7 @@ class CpdAnalysisTest {
         prepareSymLinks();
 
         NoFileAssertListener listener = new NoFileAssertListener(0);
-        try (CpdAnalysis cpd = new CpdAnalysis(config)) {
+        try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
             cpd.setCpdListener(listener);
             cpd.files().addFile(Paths.get(BASE_TEST_RESOURCE_PATH, "this-is-a-broken-sym-link-for-test"));
             cpd.performAnalysis();
@@ -95,7 +93,7 @@ class CpdAnalysisTest {
         prepareSymLinks();
 
         NoFileAssertListener listener = new NoFileAssertListener(1);
-        try (CpdAnalysis cpd = new CpdAnalysis(config)) {
+        try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
             cpd.setCpdListener(listener);
             cpd.files().addFile(Paths.get(BASE_TEST_RESOURCE_PATH, "real-file.txt"));
             cpd.files().addFile(Paths.get(BASE_TEST_RESOURCE_PATH, "symlink-for-real-file.txt"));
@@ -115,7 +113,7 @@ class CpdAnalysisTest {
     @Test
     void testFileAddedWithRelativePath() throws Exception {
         NoFileAssertListener listener = new NoFileAssertListener(1);
-        try (CpdAnalysis cpd = new CpdAnalysis(config)) {
+        try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
             cpd.setCpdListener(listener);
             cpd.files().addFile(Paths.get("./" + BASE_TEST_RESOURCE_PATH, "real-file.txt"));
             cpd.performAnalysis();
@@ -131,7 +129,7 @@ class CpdAnalysisTest {
      */
     @Test
     void testFileOrderRelevance() throws Exception {
-        try (CpdAnalysis cpd = new CpdAnalysis(config)) {
+        try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
             cpd.files().addFile(Paths.get("./" + BASE_TEST_RESOURCE_PATH, "dup2.java"));
             cpd.files().addFile(Paths.get("./" + BASE_TEST_RESOURCE_PATH, "dup1.java"));
             cpd.performAnalysis(report -> {

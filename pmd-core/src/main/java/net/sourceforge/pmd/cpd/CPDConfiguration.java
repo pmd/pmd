@@ -8,6 +8,7 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
@@ -20,7 +21,6 @@ import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.AbstractConfiguration;
 import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
-import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
@@ -35,6 +35,7 @@ public class CPDConfiguration extends AbstractConfiguration {
     public static final String DEFAULT_RENDERER = "text";
 
     private static final Map<String, Class<? extends CPDReportRenderer>> RENDERERS = new HashMap<>();
+    protected Path reportFile;
 
 
     static {
@@ -140,10 +141,6 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     public static Set<String> getRenderers() {
         return Collections.unmodifiableSet(RENDERERS.keySet());
-    }
-
-    public void setLanguage(Language language) {
-        setOnlyRecognizeLanguage(language);
     }
 
     public int getMinimumTileSize() {

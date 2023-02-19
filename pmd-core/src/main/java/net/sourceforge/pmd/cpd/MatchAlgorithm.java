@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -42,21 +41,24 @@ class MatchAlgorithm {
     }
 
     public List<Match> findMatches(@NonNull CPDListener cpdListener, SourceManager sourceManager) {
-        cpdListener.phaseUpdate(CPDListener.HASH);
-        Map<TokenEntry, Object> markGroups = hash();
-
-        cpdListener.phaseUpdate(CPDListener.MATCH);
         MatchCollector matchCollector = new MatchCollector(this);
-        for (Iterator<Object> i = markGroups.values().iterator(); i.hasNext(); ) {
-            Object o = i.next();
-            if (o instanceof List) {
-                @SuppressWarnings("unchecked")
-                List<TokenEntry> l = (List<TokenEntry>) o;
-                Collections.reverse(l);
-                matchCollector.collect(l);
-            }
-            i.remove();
+        {
+            cpdListener.phaseUpdate(CPDListener.HASH);
+            Map<TokenEntry, Object> markGroups = hash();
+
+            cpdListener.phaseUpdate(CPDListener.MATCH);
+            markGroups.values()
+                      .stream()
+                      .filter(it -> it instanceof List)
+                      .forEach(it -> {
+                          @SuppressWarnings("unchecked")
+                          List<TokenEntry> l = (List<TokenEntry>) it;
+                          Collections.reverse(l);
+                          matchCollector.collect(l);
+                      });
+            // put markGroups out of scope
         }
+
         cpdListener.phaseUpdate(CPDListener.GROUPING);
         List<Match> matches = matchCollector.getMatches();
         matches.sort(Comparator.naturalOrder());

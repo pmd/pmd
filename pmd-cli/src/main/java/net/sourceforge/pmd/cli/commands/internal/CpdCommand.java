@@ -7,12 +7,12 @@ package net.sourceforge.pmd.cli.commands.internal;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang3.mutable.MutableBoolean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.cli.commands.typesupport.internal.CpdLanguageTypeSupport;
 import net.sourceforge.pmd.cli.internal.CliExitCode;
@@ -20,7 +20,9 @@ import net.sourceforge.pmd.cpd.CPDConfiguration;
 import net.sourceforge.pmd.cpd.CpdAnalysis;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.internal.LogMessages;
+import net.sourceforge.pmd.internal.PmdRootLogger;
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.util.StringUtil;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -79,7 +81,7 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand {
     private String skipBlocksPattern;
 
     @Option(names = "--exclude", arity = "1..*", description = "Files to be excluded from the analysis")
-    private List<Path> excludes;
+    private List<Path> excludes = new ArrayList<>();
 
     @Option(names = "--non-recursive", description = "Don't scan subdirectiories.")
     private boolean nonRecursive;
@@ -125,9 +127,9 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand {
         configuration.setIgnoreLiterals(ignoreLiterals);
         configuration.setIgnoreLiteralSequences(ignoreLiteralSequences);
         configuration.setIgnoreUsings(ignoreUsings);
-        configuration.setLanguage(language);
+        configuration.setOnlyRecognizeLanguage(language);
         configuration.setMinimumTileSize(minimumTokens);
-        configuration.setNonRecursive(nonRecursive);
+        configuration.collectFilesRecursively(!nonRecursive);
         configuration.setNoSkipBlocks(noSkipBlocks);
         configuration.setRendererName(rendererName);
         configuration.setSkipBlocksPattern(skipBlocksPattern);
@@ -141,11 +143,13 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand {
 
     @Override
     protected CliExitCode execute() {
-        final Logger logger = LoggerFactory.getLogger(CpdCommand.class);
-        
         final CPDConfiguration configuration = toConfiguration();
 
-        try (CpdAnalysis cpd = new CpdAnalysis(configuration)) {
+        return PmdRootLogger.executeInLoggingContext(configuration, CpdCommand::doExecute);
+    }
+
+    private static @NonNull CliExitCode doExecute(CPDConfiguration configuration) {
+        try (CpdAnalysis cpd = CpdAnalysis.create(configuration)) {
 
             MutableBoolean hasViolations = new MutableBoolean();
             cpd.performAnalysis(report -> hasViolations.setValue(!report.getMatches().isEmpty()));
@@ -154,8 +158,8 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand {
                 return CliExitCode.VIOLATIONS_FOUND;
             }
         } catch (IOException | RuntimeException e) {
-            logger.debug(e.toString(), e);
-            logger.error(LogMessages.errorDetectedMessage(1, "cpd"));
+            configuration.getReporter().errorEx("Exception while running CPD.", e);
+            configuration.getReporter().info(StringUtil.quoteMessageFormat(LogMessages.errorDetectedMessage(1, "cpd")));
             return CliExitCode.ERROR;
         }
 

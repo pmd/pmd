@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -57,29 +56,30 @@ public class PMDParameters {
 
     @Parameter(names = { "--dir", "-dir", "-d" },
                description = "Path to a source file, or directory containing source files to analyze. "
-                             // About the following line:
-                             // In PMD 6, this is only the case for files found in directories. If you
-                             // specify a file directly, and it is unknown, then the Java parser is used.
-                             + "Note that a file is only effectively added if it matches a language known by PMD. "
-                             + "Zip and Jar files are also supported, if they are specified directly "
-                             + "(archive files found while exploring a directory are not recursively expanded). "
-                             + "This option can be repeated, and multiple arguments can be provided to a single occurrence of the option. "
-                             + "One of --dir, --file-list or --uri must be provided. ",
-               variableArity = true)
-    private List<String> inputPaths = new ArrayList<>();
+                   // About the following line:
+                   // In PMD 6, this is only the case for files found in directories. If you
+                   // specify a file directly, and it is unknown, then the Java parser is used.
+                   + "Note that a file is only effectively added if it matches a language known by PMD. "
+                   + "Zip and Jar files are also supported, if they are specified directly "
+                   + "(archive files found while exploring a directory are not recursively expanded). "
+                   + "This option can be repeated, and multiple arguments can be provided to a single occurrence of the option. "
+                   + "One of --dir, --file-list or --uri must be provided. ",
+               variableArity = true,
+               converter = StringToPathConverter.class)
+    private List<Path> inputPaths = new ArrayList<>();
 
     @Parameter(names = { "--file-list", "-filelist" },
                description =
                    "Path to a file containing a list of files to analyze, one path per line. "
-                   + "One of --dir, --file-list or --uri must be provided. "
-    )
-    private String fileListPath;
+                   + "One of --dir, --file-list or --uri must be provided. ",
+               converter = StringToPathConverter.class)
+    private Path fileListPath;
 
     @Parameter(names = { "--ignore-list", "-ignorelist" },
                description = "Path to a file containing a list of files to exclude from the analysis, one path per line. "
-                             + "This option can be combined with --dir and --file-list. "
-    )
-    private String ignoreListPath;
+                       + "This option can be combined with --dir and --file-list. ",
+               converter = StringToPathConverter.class)
+    private Path ignoreListPath;
 
     @Parameter(names = { "--format", "-format", "-f" }, description = "Report format type.")
     private String format = "text"; // Enhance to support other usage
@@ -260,7 +260,7 @@ public class PMDParameters {
                     "Please provide a parameter for source root directory (-dir or -d), database URI (-uri or -u), or file list path (-filelist).");
         }
         PMDConfiguration configuration = new PMDConfiguration();
-        configuration.setInputPaths(this.getInputPaths().stream().collect(Collectors.joining(",")));
+        configuration.setInputPathList(this.getInputPaths());
         configuration.setInputFilePath(this.getFileListPath());
         configuration.setIgnoreFilePath(this.getIgnoreListPath());
         configuration.setInputUri(this.getUri());
@@ -417,7 +417,7 @@ public class PMDParameters {
         return rulesets;
     }
 
-    public List<String> getInputPaths() {
+    public List<Path> getInputPaths() {
         return inputPaths;
     }
 
@@ -426,11 +426,11 @@ public class PMDParameters {
         return StringUtils.join(inputPaths, ",");
     }
 
-    public String getFileListPath() {
+    public Path getFileListPath() {
         return fileListPath;
     }
 
-    public String getIgnoreListPath() {
+    public Path getIgnoreListPath() {
         return ignoreListPath;
     }
 

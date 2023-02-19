@@ -33,8 +33,8 @@ class ApexCpdTest {
     void testIssue427() throws Exception {
         CPDConfiguration configuration = new CPDConfiguration();
         configuration.setMinimumTileSize(10);
-        configuration.setLanguage(ApexLanguageModule.getInstance());
-        try (CpdAnalysis cpd = new CpdAnalysis(configuration)) {
+        configuration.setOnlyRecognizeLanguage(ApexLanguageModule.getInstance());
+        try (CpdAnalysis cpd = CpdAnalysis.create(configuration)) {
             cpd.files().addFile(testdir.resolve("SFDCEncoder.cls"));
             cpd.files().addFile(testdir.resolve("SFDCEncoderConstants.cls"));
 

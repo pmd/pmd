@@ -30,7 +30,7 @@ public class DummyLanguageModule extends SimpleLanguageModuleBase implements Cpd
     private static final String PARSER_THROWS = "parserThrows";
 
     public DummyLanguageModule() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("dummy")
+        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("dummy", "txt")
                               .addVersion("1.0")
                               .addVersion("1.1")
                               .addVersion("1.2")

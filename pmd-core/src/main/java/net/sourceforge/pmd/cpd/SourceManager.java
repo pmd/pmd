@@ -63,7 +63,7 @@ class SourceManager implements AutoCloseable {
     @SuppressWarnings("PMD.CloseResource")
     public Chars getSlice(Mark mark) {
         TextFile textFile = fileByPathId.get(mark.getToken().getFilePathId());
-        assert textFile != null: "No such file " + mark.getToken().getFilePathId();
+        assert textFile != null : "No such file " + mark.getToken().getFilePathId();
         TextDocument doc = get(textFile);
         assert doc != null;
         FileLocation loc = mark.getLocation();
