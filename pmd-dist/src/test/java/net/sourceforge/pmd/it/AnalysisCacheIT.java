@@ -25,7 +25,7 @@ class AnalysisCacheIT extends AbstractBinaryDistributionTest {
         
         // Ensure we have violations and a non-empty cache file
         assertTrue(cacheFile.toFile().length() > 0, "cache file is empty after run");
-        result.assertExecutionResult(4, "", srcDir + File.pathSeparator + "JumbledIncrementer.java:8:\tJumbledIncrementer:\t");
+        result.assertExecutionResult(4, "", srcDir + File.separator + "JumbledIncrementer.java:8:\tJumbledIncrementer:\t");
         
         // rerun from cache
         ExecutionResult resultFromCache = PMDExecutor.runPMD(createTemporaryReportFile(), tempDir, "-d", srcDir, "-R", "src/test/resources/rulesets/sample-ruleset.xml",
@@ -45,7 +45,7 @@ class AnalysisCacheIT extends AbstractBinaryDistributionTest {
         
         // Ensure we have violations and a non-empty cache file
         assertTrue(cacheFile.toFile().length() > 0, "cache file is empty after run");
-        result.assertExecutionResult(4, "", srcDir + File.pathSeparator + "JumbledIncrementer.java:8:\tJumbledIncrementer:\t");
+        result.assertExecutionResult(4, "", srcDir + File.separator + "JumbledIncrementer.java:8:\tJumbledIncrementer:\t");
         
         // rerun from cache with relativized paths
         ExecutionResult resultFromCache = PMDExecutor.runPMD(createTemporaryReportFile(), tempDir, "-d", Paths.get(".").toAbsolutePath().relativize(Paths.get(srcDir)).toString(), "-R", "src/test/resources/rulesets/sample-ruleset.xml",
@@ -54,7 +54,7 @@ class AnalysisCacheIT extends AbstractBinaryDistributionTest {
         resultFromCache.assertErrorOutputContains("Incremental Analysis cache HIT");
 
         // An error with the relative path should exist, but no with the absolute one
-        resultFromCache.assertExecutionResult(4, "", "src/test/resources/sample-source/java/JumbledIncrementer.java:8:\tJumbledIncrementer:\t".replace('/', File.pathSeparatorChar));
-        resultFromCache.assertNoErrorInReport(srcDir + File.pathSeparator + "JumbledIncrementer.java:8:\tJumbledIncrementer:\t");
+        resultFromCache.assertExecutionResult(4, "", "src/test/resources/sample-source/java/JumbledIncrementer.java:8:\tJumbledIncrementer:\t".replace('/', File.separatorChar));
+        resultFromCache.assertNoErrorInReport(srcDir + File.separator + "JumbledIncrementer.java:8:\tJumbledIncrementer:\t");
     }
 }
