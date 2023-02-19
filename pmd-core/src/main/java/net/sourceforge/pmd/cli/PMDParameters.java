@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.cli;
 
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -334,8 +335,8 @@ public class PMDParameters {
         return currentVersion;
     }
 
-    public String getEncoding() {
-        return encoding;
+    public Charset getEncoding() {
+        return Charset.forName(encoding);
     }
 
     public Integer getThreads() {

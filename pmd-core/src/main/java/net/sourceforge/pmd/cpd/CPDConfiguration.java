@@ -6,14 +6,16 @@ package net.sourceforge.pmd.cpd;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
-import java.io.File;
 import java.lang.reflect.Method;
 import java.net.URI;
+import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -71,11 +73,11 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     private String skipBlocksPattern = Tokenizer.DEFAULT_SKIP_BLOCKS_PATTERN;
 
-    private List<File> files;
+    private List<Path> files = Collections.emptyList();
 
-    private String fileListPath;
+    private Path fileListPath;
 
-    private List<File> excludes;
+    private List<Path> excludes;
 
     private boolean nonRecursive;
 
@@ -95,14 +97,14 @@ public class CPDConfiguration extends AbstractConfiguration {
     }
 
     @Override
-    public void setSourceEncoding(String sourceEncoding) {
+    public void setSourceEncoding(Charset sourceEncoding) {
         super.setSourceEncoding(sourceEncoding);
         if (cpdReportRenderer != null) {
             setRendererEncoding(cpdReportRenderer, sourceEncoding);
         }
     }
 
-    static CPDReportRenderer createRendererByName(String name, String encoding) {
+    static CPDReportRenderer createRendererByName(String name, Charset encoding) {
         if (name == null || "".equals(name)) {
             name = DEFAULT_RENDERER;
         }
@@ -132,12 +134,17 @@ public class CPDConfiguration extends AbstractConfiguration {
         return renderer;
     }
 
-    private static void setRendererEncoding(@NonNull Object renderer, String encoding) {
+    private static void setRendererEncoding(@NonNull Object renderer, Charset encoding) {
         try {
             PropertyDescriptor encodingProperty = new PropertyDescriptor("encoding", renderer.getClass());
             Method method = encodingProperty.getWriteMethod();
-            if (method != null) {
+            if (method == null) {
+                return;
+            }
+            if (method.getParameterTypes()[0] == Charset.class) {
                 method.invoke(renderer, encoding);
+            } else if (method.getParameterTypes()[0] == String.class) {
+                method.invoke(renderer, encoding.name());
             }
         } catch (IntrospectionException | ReflectiveOperationException ignored) {
             // ignored - maybe this renderer doesn't have a encoding property
@@ -177,7 +184,7 @@ public class CPDConfiguration extends AbstractConfiguration {
         if (rendererName == null) {
             this.cpdReportRenderer = null;
         }
-        this.cpdReportRenderer = createRendererByName(rendererName, getSourceEncoding().name());
+        this.cpdReportRenderer = createRendererByName(rendererName, getSourceEncoding());
     }
 
 
@@ -237,19 +244,19 @@ public class CPDConfiguration extends AbstractConfiguration {
         this.skipLexicalErrors = skipLexicalErrors;
     }
 
-    public List<File> getFiles() {
+    public @NonNull List<Path> getFiles() {
         return files;
     }
 
-    public void setFiles(List<File> files) {
-        this.files = files;
+    public void setFiles(List<Path> files) {
+        this.files = Objects.requireNonNull(files);
     }
 
-    public String getFileListPath() {
+    public Path getFileListPath() {
         return fileListPath;
     }
 
-    public void setFileListPath(String fileListPath) {
+    public void setFileListPath(Path fileListPath) {
         this.fileListPath = fileListPath;
     }
 
@@ -261,11 +268,11 @@ public class CPDConfiguration extends AbstractConfiguration {
         this.uri = uri;
     }
 
-    public List<File> getExcludes() {
+    public List<Path> getExcludes() {
         return excludes;
     }
 
-    public void setExcludes(List<File> excludes) {
+    public void setExcludes(List<Path> excludes) {
         this.excludes = excludes;
     }
 

@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.ant.internal;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -69,7 +70,7 @@ public class PMDTaskImpl {
 
         configuration.setRuleSetFactoryCompatibilityEnabled(!task.isNoRuleSetCompatibility());
         if (task.getEncoding() != null) {
-            configuration.setSourceEncoding(task.getEncoding());
+            configuration.setSourceEncoding(Charset.forName(task.getEncoding()));
         }
         configuration.setThreads(task.getThreads());
         this.failuresPropertyName = task.getFailuresPropertyName();

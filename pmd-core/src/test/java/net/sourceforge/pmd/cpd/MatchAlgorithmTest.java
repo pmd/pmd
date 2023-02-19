@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -46,10 +47,9 @@ class MatchAlgorithmTest {
         assertEquals(44, tokens.size());
 
         MatchAlgorithm matchAlgorithm = new MatchAlgorithm(tokens, 5);
-        matchAlgorithm.findMatches();
-        Iterator<Match> matches = matchAlgorithm.matches();
-        Match match = matches.next();
-        assertFalse(matches.hasNext());
+        List<Match> matches = matchAlgorithm.findMatches(new CPDNullListener(), sourceManager);
+        assertEquals(1, matches.size());
+        Match match = matches.get(0);
 
         Iterator<Mark> marks = match.iterator();
         Mark mark1 = marks.next();

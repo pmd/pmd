@@ -33,6 +33,10 @@ public class Match implements Comparable<Match>, Iterable<Mark> {
         this(tokenCount, new Mark(first), new Mark(second));
     }
 
+    void addMark(TokenEntry entry) {
+        markSet.add(new Mark(entry));
+    }
+
     public int getMarkCount() {
         return markSet.size();
     }
@@ -75,10 +79,6 @@ public class Match implements Comparable<Match>, Iterable<Mark> {
 
     public int getEndIndex() {
         return getMark(0).getToken().getIndex() + getTokenCount() - 1;
-    }
-
-    public void addTokenEntry(TokenEntry entry) {
-        markSet.add(new Mark(entry));
     }
 
     private Mark getMark(int index) {

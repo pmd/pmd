@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -91,7 +92,7 @@ public class CPDTask extends Task {
             CPDConfiguration config = new CPDConfiguration();
             config.setMinimumTileSize(minimumTokenCount);
             config.setLanguage(config.getLanguageRegistry().getLanguageById(language));
-            config.setSourceEncoding(encoding);
+            config.setSourceEncoding(Charset.forName(encoding));
             config.setSkipDuplicates(skipDuplicateFiles);
             config.setSkipLexicalErrors(skipLexicalErrors);
 

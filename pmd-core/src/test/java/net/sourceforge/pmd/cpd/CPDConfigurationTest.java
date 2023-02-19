@@ -30,7 +30,7 @@ class CPDConfigurationTest {
         renderersToTest.put("text", SimpleRenderer.class);
 
         for (Map.Entry<String, Class<? extends CPDReportRenderer>> entry : renderersToTest.entrySet()) {
-            CPDReportRenderer r = CPDConfiguration.createRendererByName(entry.getKey(), "UTF-8");
+            CPDReportRenderer r = CPDConfiguration.createRendererByName(entry.getKey(), StandardCharsets.UTF_8);
             assertNotNull(r);
             assertSame(entry.getValue(), r.getClass());
         }
@@ -40,7 +40,7 @@ class CPDConfigurationTest {
     void testRendererEncoding() {
         CPDConfiguration conf = new CPDConfiguration();
         conf.setRendererName("xml");
-        conf.setSourceEncoding(StandardCharsets.UTF_16.name());
+        conf.setSourceEncoding(StandardCharsets.UTF_16);
 
         CPDReportRenderer renderer = conf.getCPDReportRenderer();
         assertNotNull(renderer);
@@ -52,7 +52,7 @@ class CPDConfigurationTest {
     void testRendererEncoding2() {
         CPDConfiguration conf = new CPDConfiguration();
         // here the order of these statements are reversed
-        conf.setSourceEncoding(StandardCharsets.UTF_16.name());
+        conf.setSourceEncoding(StandardCharsets.UTF_16);
         conf.setRendererName("xml");
 
         CPDReportRenderer renderer = conf.getCPDReportRenderer();

@@ -4,12 +4,10 @@
 
 package net.sourceforge.pmd.cli.commands.internal;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.slf4j.Logger;
@@ -80,7 +78,7 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand {
     private String skipBlocksPattern;
 
     @Option(names = "--exclude", arity = "1..*", description = "Files to be excluded from the analysis")
-    private List<File> excludes;
+    private List<Path> excludes;
 
     @Option(names = "--non-recursive", description = "Don't scan subdirectiories.")
     private boolean nonRecursive;
@@ -97,8 +95,8 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand {
         configuration.setDebug(debug);
         configuration.setExcludes(excludes);
         configuration.setFailOnViolation(failOnViolation);
-        configuration.setFileListPath(fileListPath == null ? null : fileListPath.toString());
-        configuration.setFiles(inputPaths == null ? null : inputPaths.stream().map(Path::toFile).collect(Collectors.toList()));
+        configuration.setFileListPath(fileListPath);
+        configuration.setFiles(inputPaths);
         configuration.setIgnoreAnnotations(ignoreAnnotations);
         configuration.setIgnoreIdentifiers(ignoreIdentifiers);
         configuration.setIgnoreLiterals(ignoreLiterals);
@@ -112,7 +110,7 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand {
         configuration.setSkipBlocksPattern(skipBlocksPattern);
         configuration.setSkipDuplicates(skipDuplicates);
         configuration.setSkipLexicalErrors(skipLexicalErrors);
-        configuration.setSourceEncoding(encoding.getEncoding().name());
+        configuration.setSourceEncoding(encoding.getEncoding());
         configuration.setURI(uri);
 
         return configuration;

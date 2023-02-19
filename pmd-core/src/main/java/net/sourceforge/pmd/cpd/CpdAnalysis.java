@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
@@ -20,7 +19,6 @@ import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 import net.sourceforge.pmd.internal.util.FileCollectionUtil;
-import net.sourceforge.pmd.internal.util.FileUtil;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
@@ -41,7 +39,7 @@ public final class CpdAnalysis implements AutoCloseable {
     private @NonNull CPDListener listener = new CPDNullListener();
 
 
-    public CpdAnalysis(CPDConfiguration config) throws IOException {
+    public CpdAnalysis(CPDConfiguration config) {
         configuration = config;
         this.reporter = config.getReporter();
         this.files = FileCollector.newCollector(
@@ -82,25 +80,15 @@ public final class CpdAnalysis implements AutoCloseable {
         return files;
     }
 
-    private void extractAllSources(CPDConfiguration configuration) throws IOException {
-        // Add files
-        if (null != configuration.getFiles() && !configuration.getFiles().isEmpty()) {
-            addSourcesFilesToCPD(configuration.getFiles());
-        }
+    private void extractAllSources(CPDConfiguration configuration) {
+        FileCollectionUtil.collectFiles(files(), configuration.getFiles());
 
-        // Add Database URIS
-        if (null != configuration.getURI()) {
+        if (configuration.getURI() != null) {
             FileCollectionUtil.collectDB(files(), configuration.getURI());
         }
 
-        if (null != configuration.getFileListPath()) {
-            FileCollectionUtil.collectFileList(files(), FileUtil.toExistingPath(configuration.getFileListPath()));
-        }
-    }
-
-    private void addSourcesFilesToCPD(List<File> files) throws IOException {
-        for (File file : files) {
-            files().addFileOrDirectory(file.toPath());
+        if (configuration.getFileListPath() != null) {
+            FileCollectionUtil.collectFileList(files(), configuration.getFileListPath());
         }
     }
 
@@ -141,7 +129,7 @@ public final class CpdAnalysis implements AutoCloseable {
                 Tokens.State savedState = tokens.savePoint();
                 try {
                     int newTokens = doTokenize(textDocument, tokenizers.get(textFile.getLanguageVersion().getLanguage()), tokens);
-                    numberOfTokensPerFile.put(textDocument.getPathId(), newTokens);
+                    numberOfTokensPerFile.put(textDocument.getDisplayName(), newTokens);
                     listener.addedFile(1);
                 } catch (TokenMgrError | IOException e) {
                     if (e instanceof TokenMgrError) { // NOPMD
@@ -155,11 +143,11 @@ public final class CpdAnalysis implements AutoCloseable {
 
 
             LOGGER.debug("Running match algorithm on {} files...", sourceManager.size());
-            MatchAlgorithm matchAlgorithm = new MatchAlgorithm(tokens, configuration.getMinimumTileSize(), listener);
-            matchAlgorithm.findMatches();
-            LOGGER.debug("Finished: {} duplicates found", matchAlgorithm.getMatches().size());
+            MatchAlgorithm matchAlgorithm = new MatchAlgorithm(tokens, configuration.getMinimumTileSize());
+            List<Match> matches = matchAlgorithm.findMatches(listener, sourceManager);
+            LOGGER.debug("Finished: {} duplicates found", matches.size());
 
-            CPDReport cpdReport = new CPDReport(sourceManager, matchAlgorithm.getMatches(), numberOfTokensPerFile);
+            CPDReport cpdReport = new CPDReport(sourceManager, matches, numberOfTokensPerFile);
 
             if (renderer != null) {
                 renderer.render(cpdReport, IOUtil.createWriter(Charset.defaultCharset(), null));

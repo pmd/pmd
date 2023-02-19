@@ -58,8 +58,8 @@ public abstract class AbstractConfiguration {
      * @param sourceEncoding
      *            The character encoding.
      */
-    public void setSourceEncoding(String sourceEncoding) {
-        this.sourceEncoding = Charset.forName(sourceEncoding);
+    public void setSourceEncoding(Charset sourceEncoding) {
+        this.sourceEncoding = Objects.requireNonNull(sourceEncoding);
     }
 
     /**

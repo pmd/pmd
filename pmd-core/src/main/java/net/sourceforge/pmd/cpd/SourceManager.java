@@ -22,12 +22,12 @@ import net.sourceforge.pmd.lang.document.TextRegion;
 class SourceManager implements AutoCloseable {
 
     private final Map<TextFile, SoftReference<TextDocument>> files = new ConcurrentHashMap<>();
-    private final Map<String, TextFile> fileByName = new HashMap<>();
+    private final Map<String, TextFile> fileByPathId = new HashMap<>();
     private final List<TextFile> textFiles;
 
     SourceManager(List<? extends TextFile> files) {
         textFiles = new ArrayList<>(files);
-        files.forEach(f -> fileByName.put(f.getPathId(), f));
+        files.forEach(f -> fileByPathId.put(f.getPathId(), f));
     }
 
 
@@ -62,11 +62,16 @@ class SourceManager implements AutoCloseable {
 
     @SuppressWarnings("PMD.CloseResource")
     public Chars getSlice(Mark mark) {
-        FileLocation loc = mark.getLocation();
-        TextFile textFile = fileByName.get(loc.getFileName());
-        assert textFile != null;
+        TextFile textFile = fileByPathId.get(mark.getToken().getFilePathId());
+        assert textFile != null: "No such file " + mark.getToken().getFilePathId();
         TextDocument doc = get(textFile);
+        assert doc != null;
+        FileLocation loc = mark.getLocation();
         TextRegion lineRange = doc.createLineRange(loc.getStartLine(), loc.getEndLine());
         return doc.sliceOriginalText(lineRange);
+    }
+
+    public String getFileDisplayName(String filePathId) {
+        return fileByPathId.get(filePathId).getDisplayName();
     }
 }

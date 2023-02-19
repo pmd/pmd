@@ -102,13 +102,13 @@ class TextFilesTest {
         DataSource ds = new FileDataSource(file.toFile());
         PMDConfiguration config = new PMDConfiguration();
         config.setForceLanguageVersion(DummyLanguageModule.getInstance().getDefaultVersion());
-        config.setSourceEncoding(StandardCharsets.UTF_16BE.name());
+        config.setSourceEncoding(StandardCharsets.UTF_16BE);
         try (TextFile tf = TextFile.dataSourceCompat(ds, config)) {
             assertEquals(Chars.wrap("some content"), tf.readContents().getNormalizedText());
         }
 
         // different encoding to produce garbage, to make sure encoding is used
-        config.setSourceEncoding(StandardCharsets.UTF_16LE.name());
+        config.setSourceEncoding(StandardCharsets.UTF_16LE);
         try (TextFile tf = TextFile.dataSourceCompat(ds, config)) {
             assertNotEquals(Chars.wrap("some content"), tf.readContents().getNormalizedText());
         }

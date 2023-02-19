@@ -91,7 +91,7 @@ public class TreeExportCommand extends AbstractPmdSubcommand {
         configuration.setLanguage(language);
         configuration.setProperties(properties);
         configuration.setReadStdin(readStdin);
-        configuration.setSourceEncoding(encoding.getEncoding().name());
+        configuration.setSourceEncoding(encoding.getEncoding());
         
         return configuration;
     }

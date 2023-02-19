@@ -21,6 +21,7 @@ public final class Mark implements Comparable<Mark> {
 
     private final @NonNull TokenEntry token;
     private @Nullable TokenEntry endToken;
+    private String fileDisplayName;
 
     Mark(@NonNull TokenEntry token) {
         this.token = token;
@@ -40,9 +41,16 @@ public final class Mark implements Comparable<Mark> {
     public FileLocation getLocation() {
         TokenEntry endToken = getEndToken();
         return FileLocation.range(
-            this.token.getFilePathId(),
+            getFileName(),
             TextRange2d.range2d(token.getBeginLine(), token.getBeginColumn(),
                                 endToken.getEndLine(), endToken.getEndColumn()));
+    }
+
+    String getFileName() {
+        if (fileDisplayName == null) {
+            return token.getFilePathId();
+        }
+        return fileDisplayName;
     }
 
     public int getBeginTokenIndex() {
@@ -87,5 +95,9 @@ public final class Mark implements Comparable<Mark> {
     @Override
     public int compareTo(Mark other) {
         return getToken().compareTo(other.getToken());
+    }
+
+    public void setFileDisplayName(String fileDisplayName) {
+        this.fileDisplayName = fileDisplayName;
     }
 }

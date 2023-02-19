@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,7 +26,7 @@ class CPDFilelistTest {
     void testFilelist() throws IOException {
         CPDConfiguration arguments = new CPDConfiguration();
         arguments.setLanguage(DummyLanguageModule.getInstance());
-        arguments.setFileListPath("src/test/resources/net/sourceforge/pmd/cpd/cli/filelist.txt");
+        arguments.setFileListPath(Paths.get("src/test/resources/net/sourceforge/pmd/cpd/cli/filelist.txt"));
         List<String> paths;
         try (CpdAnalysis cpd = new CpdAnalysis(arguments)) {
             paths = CollectionUtil.map(cpd.files().getCollectedFiles(), TextFile::getPathId);
@@ -44,7 +45,7 @@ class CPDFilelistTest {
     void testFilelistMultipleLines() throws IOException {
         CPDConfiguration arguments = new CPDConfiguration();
         arguments.setLanguage(DummyLanguageModule.getInstance());
-        arguments.setFileListPath("src/test/resources/net/sourceforge/pmd/cpd/cli/filelist2.txt");
+        arguments.setFileListPath(Paths.get("src/test/resources/net/sourceforge/pmd/cpd/cli/filelist2.txt"));
         List<String> paths;
         try (CpdAnalysis cpd = new CpdAnalysis(arguments)) {
             paths = CollectionUtil.map(cpd.files().getCollectedFiles(), TextFile::getPathId);

@@ -152,7 +152,7 @@ class PmdConfigurationTest {
     void testSourceEncoding() {
         PMDConfiguration configuration = new PMDConfiguration();
         assertEquals(System.getProperty("file.encoding"), configuration.getSourceEncoding().name(), "Default source encoding");
-        configuration.setSourceEncoding(StandardCharsets.UTF_16LE.name());
+        configuration.setSourceEncoding(StandardCharsets.UTF_16LE);
         assertEquals(StandardCharsets.UTF_16LE, configuration.getSourceEncoding(), "Changed source encoding");
     }
 

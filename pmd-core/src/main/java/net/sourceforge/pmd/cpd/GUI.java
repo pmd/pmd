@@ -20,6 +20,7 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -604,7 +605,7 @@ public class GUI implements CPDListener {
             File dirPath = new File(rootDirectoryField.getText());
             if (!dirPath.exists()) {
                 JOptionPane.showMessageDialog(frame, "Can't read from that root source directory", "Error",
-                        JOptionPane.ERROR_MESSAGE);
+                                              JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -612,7 +613,10 @@ public class GUI implements CPDListener {
 
             CPDConfiguration config = new CPDConfiguration();
             config.setMinimumTileSize(Integer.parseInt(minimumLengthField.getText()));
-            config.setSourceEncoding(encodingField.getText());
+            try {
+                config.setSourceEncoding(Charset.forName(encodingField.getText()));
+            } catch (IllegalArgumentException ignored) {
+            }
             config.setIgnoreIdentifiers(ignoreIdentifiersCheckbox.isSelected());
             config.setIgnoreLiterals(ignoreLiteralsCheckbox.isSelected());
             config.setIgnoreAnnotations(ignoreAnnotationsCheckbox.isSelected());
