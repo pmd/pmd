@@ -54,7 +54,7 @@ class AnalysisCacheIT extends AbstractBinaryDistributionTest {
         resultFromCache.assertErrorOutputContains("Incremental Analysis cache HIT");
 
         // An error with the relative path should exist, but no with the absolute one
-        resultFromCache.assertExecutionResult(4, "", "src/test/resources/sample-source/java/JumbledIncrementer.java:8:\tJumbledIncrementer:\t".replace('/',  File.pathSeparatorChar));
+        resultFromCache.assertExecutionResult(4, "", "src/test/resources/sample-source/java/JumbledIncrementer.java:8:\tJumbledIncrementer:\t".replace('/', File.pathSeparatorChar));
         resultFromCache.assertNoErrorInReport(srcDir + File.pathSeparator + "JumbledIncrementer.java:8:\tJumbledIncrementer:\t");
     }
 }
