@@ -7,7 +7,6 @@ package net.sourceforge.pmd.cpd;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.Collections;
@@ -17,6 +16,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.AbstractConfiguration;
@@ -52,7 +53,7 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     private String rendererName = DEFAULT_RENDERER;
 
-    CPDReportRenderer cpdReportRenderer;
+    private @Nullable CPDReportRenderer cpdReportRenderer;
 
     private boolean ignoreLiterals;
 
@@ -93,6 +94,14 @@ public class CPDConfiguration extends AbstractConfiguration {
         super(languageRegistry, new SimpleMessageReporter(LoggerFactory.getLogger(CpdAnalysis.class)));
     }
 
+    @Override
+    public void setSourceEncoding(String sourceEncoding) {
+        super.setSourceEncoding(sourceEncoding);
+        if (cpdReportRenderer != null) {
+            setRendererEncoding(cpdReportRenderer, sourceEncoding);
+        }
+    }
+
     static CPDReportRenderer createRendererByName(String name, String encoding) {
         if (name == null || "".equals(name)) {
             name = DEFAULT_RENDERER;
@@ -112,7 +121,7 @@ public class CPDConfiguration extends AbstractConfiguration {
             }
         }
 
-        CPDReportRenderer renderer = null;
+        CPDReportRenderer renderer;
         try {
             renderer = rendererClass.getDeclaredConstructor().newInstance();
             setRendererEncoding(renderer, encoding);
@@ -123,16 +132,14 @@ public class CPDConfiguration extends AbstractConfiguration {
         return renderer;
     }
 
-
-    private static void setRendererEncoding(Object renderer, String encoding)
-            throws IllegalAccessException, InvocationTargetException {
+    private static void setRendererEncoding(@NonNull Object renderer, String encoding) {
         try {
             PropertyDescriptor encodingProperty = new PropertyDescriptor("encoding", renderer.getClass());
             Method method = encodingProperty.getWriteMethod();
             if (method != null) {
                 method.invoke(renderer, encoding);
             }
-        } catch (IntrospectionException ignored) {
+        } catch (IntrospectionException | ReflectiveOperationException ignored) {
             // ignored - maybe this renderer doesn't have a encoding property
         }
     }
