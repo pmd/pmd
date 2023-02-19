@@ -94,6 +94,11 @@ final class SaxonExprTransformations {
      * Splits a venn expression with the union operator into single expressions.
      *
      * <p>E.g. "//A | //B | //C" will result in 3 expressions "//A", "//B", and "//C".
+     * 
+     * This split will skip into any top-level lets. So, for "let $a := e1 in (e2 | e3)"
+     * this will return the subexpression e2 and e3. To ensure the splits are actually equivalent
+     * you will have to call {@link #copyTopLevelLets(Expression, Expression)} on each subexpression
+     * to turn them back into "let $a := e1 in e2" and "let $a := e1 in e3" respectively.
      */
     static Iterable<Expression> splitUnions(Expression expr) {
         SplitUnions unions = new SplitUnions();
@@ -104,10 +109,18 @@ final class SaxonExprTransformations {
         return unions.getExpressions();
     }
 
-    static Expression copyTopLevelLets(Expression modified, Expression original) {
+    /**
+     * Wraps a given subexpression in all top-level lets from the original.
+     * If the subexpression matches the original, then nothing is done.
+     * 
+     * @param subexpr The subexpression that has been manipulated.
+     * @param original The original expression from which it was obtained by calling {@link #splitUnions(Expression)}.
+     * @return The subexpression, wrapped in a copy of all top-level let expression from the original.
+     */
+    static Expression copyTopLevelLets(Expression subexpr, Expression original) {
         // Does it need them?
-        if (modified instanceof LetExpression) {
-            return modified;
+        if (subexpr.equals(original)) {
+            return subexpr;
         }
         
         final SaxonExprVisitor topLevelLetCopier = new SaxonExprVisitor() {
@@ -120,10 +133,9 @@ final class SaxonExprTransformations {
                 }
                 
                 // Manually craft the inner-most LetExpression
-                Expression action = visit(modified);
                 Expression sequence = visit(e.getSequence());
                 LetExpression result = new LetExpression();
-                result.setAction(action);
+                result.setAction(subexpr);
                 result.setSequence(sequence);
                 result.setVariableQName(e.getVariableQName());
                 result.setRequiredType(e.getRequiredType());
@@ -136,6 +148,6 @@ final class SaxonExprTransformations {
             return topLevelLetCopier.visit(original);
         }
         
-        return modified;
+        return subexpr;
     }
 }
