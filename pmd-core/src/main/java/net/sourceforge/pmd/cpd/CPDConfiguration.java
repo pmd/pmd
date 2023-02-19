@@ -7,15 +7,11 @@ package net.sourceforge.pmd.cpd;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
-import java.net.URI;
 import java.nio.charset.Charset;
-import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -24,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.AbstractConfiguration;
 import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
@@ -72,16 +69,6 @@ public class CPDConfiguration extends AbstractConfiguration {
     private boolean noSkipBlocks = false;
 
     private String skipBlocksPattern = Tokenizer.DEFAULT_SKIP_BLOCKS_PATTERN;
-
-    private List<Path> files = Collections.emptyList();
-
-    private Path fileListPath;
-
-    private List<Path> excludes;
-
-    private boolean nonRecursive;
-
-    private URI uri;
 
     private boolean help;
 
@@ -155,8 +142,8 @@ public class CPDConfiguration extends AbstractConfiguration {
         return Collections.unmodifiableSet(RENDERERS.keySet());
     }
 
-    public void setLanguage(net.sourceforge.pmd.lang.Language language) {
-        setForceLanguageVersion(language.getDefaultVersion());
+    public void setLanguage(Language language) {
+        setOnlyRecognizeLanguage(language);
     }
 
     public int getMinimumTileSize() {
@@ -242,46 +229,6 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     public void setSkipLexicalErrors(boolean skipLexicalErrors) {
         this.skipLexicalErrors = skipLexicalErrors;
-    }
-
-    public @NonNull List<Path> getFiles() {
-        return files;
-    }
-
-    public void setFiles(List<Path> files) {
-        this.files = Objects.requireNonNull(files);
-    }
-
-    public Path getFileListPath() {
-        return fileListPath;
-    }
-
-    public void setFileListPath(Path fileListPath) {
-        this.fileListPath = fileListPath;
-    }
-
-    public URI getURI() {
-        return uri;
-    }
-
-    public void setURI(URI uri) {
-        this.uri = uri;
-    }
-
-    public List<Path> getExcludes() {
-        return excludes;
-    }
-
-    public void setExcludes(List<Path> excludes) {
-        this.excludes = excludes;
-    }
-
-    public boolean isNonRecursive() {
-        return nonRecursive;
-    }
-
-    public void setNonRecursive(boolean nonRecursive) {
-        this.nonRecursive = nonRecursive;
     }
 
     public boolean isHelp() {

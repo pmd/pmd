@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.cli.commands.internal;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.List;
@@ -83,6 +84,25 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand {
     @Option(names = "--non-recursive", description = "Don't scan subdirectiories.")
     private boolean nonRecursive;
 
+
+    private List<Path> relativizeRootPaths;
+    @Option(names = { "--relativize-paths-with", "-z"}, description = "Path relative to which directories are rendered in the report. "
+        + "This option allows shortening directories in the report; "
+        + "without it, paths are rendered as mentioned in the source directory (option \"--dir\"). "
+        + "The option can be repeated, in which case the shortest relative path will be used. "
+        + "If the root path is mentioned (e.g. \"/\" or \"C:\\\"), then the paths will be rendered as absolute.",
+            arity = "1..*", split = ",")
+    public void setRelativizePathsWith(List<Path> rootPaths) {
+        this.relativizeRootPaths = rootPaths;
+
+        for (Path path : this.relativizeRootPaths) {
+            if (Files.isRegularFile(path)) {
+                throw new ParameterException(spec.commandLine(),
+                                             "Expected a directory path for option '--relativize-paths-with', found a file: " + path);
+            }
+        }
+    }
+
     /**
      * Converts these parameters into a configuration.
      *
@@ -94,9 +114,12 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand {
         final CPDConfiguration configuration = new CPDConfiguration();
         configuration.setDebug(debug);
         configuration.setExcludes(excludes);
+        if (relativizeRootPaths != null) {
+            configuration.addRelativizeRoots(relativizeRootPaths);
+        }
         configuration.setFailOnViolation(failOnViolation);
-        configuration.setFileListPath(fileListPath);
-        configuration.setFiles(inputPaths);
+        configuration.setInputFilePath(fileListPath);
+        configuration.setInputPathList(inputPaths);
         configuration.setIgnoreAnnotations(ignoreAnnotations);
         configuration.setIgnoreIdentifiers(ignoreIdentifiers);
         configuration.setIgnoreLiterals(ignoreLiterals);
@@ -111,7 +134,7 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand {
         configuration.setSkipDuplicates(skipDuplicates);
         configuration.setSkipLexicalErrors(skipLexicalErrors);
         configuration.setSourceEncoding(encoding.getEncoding());
-        configuration.setURI(uri);
+        configuration.setInputUri(uri);
 
         return configuration;
     }

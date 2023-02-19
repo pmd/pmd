@@ -62,8 +62,6 @@ public final class FileCollector implements AutoCloseable {
     private final LanguageVersionDiscoverer discoverer;
     private final MessageReporter reporter;
     private final String outerFsDisplayName;
-    @Deprecated
-    private final List<String> legacyRelativizeRoots = new ArrayList<>();
     private final List<Path> relativizeRootPaths = new ArrayList<>();
     private boolean closed;
 
@@ -267,11 +265,7 @@ public final class FileCollector implements AutoCloseable {
     }
 
     private String getLocalDisplayName(Path file) {
-        if (!relativizeRootPaths.isEmpty()) {
-            // takes precedence over legacy behavior
-            return getDisplayName(file, relativizeRootPaths);
-        }
-        return getDisplayNameLegacy(file, legacyRelativizeRoots);
+        return getDisplayName(file, relativizeRootPaths);
     }
 
     /**
@@ -482,23 +476,6 @@ public final class FileCollector implements AutoCloseable {
         this.charset = Objects.requireNonNull(charset);
     }
 
-    /**
-     * Add a prefix that is used to relativize file paths as their display name.
-     * For instance, when adding a file {@code /tmp/src/main/java/org/foo.java},
-     * and relativizing with {@code /tmp/src/}, the registered {@link  TextFile}
-     * will have a path id of {@code /tmp/src/main/java/org/foo.java}, and a
-     * display name of {@code main/java/org/foo.java}.
-     *
-     * <p>This only matters for files added from a {@link Path} object.
-     *
-     * @param prefix Prefix to relativize (if a directory, include a trailing slash)
-     *
-     * @deprecated Use {@link #relativizeWith(Path)}
-     */
-    @Deprecated
-    public void relativizeWith(String prefix) {
-        this.legacyRelativizeRoots.add(Objects.requireNonNull(prefix));
-    }
 
     /**
      * Add a prefix that is used to relativize file paths as their display name.
@@ -513,13 +490,7 @@ public final class FileCollector implements AutoCloseable {
      */
     public void relativizeWith(Path path) {
         this.relativizeRootPaths.add(Objects.requireNonNull(path));
-        Collections.sort(relativizeRootPaths, new Comparator<Path>() {
-            @Override
-            public int compare(Path o1, Path o2) {
-                int lengthCmp = Integer.compare(o1.getNameCount(), o2.getNameCount());
-                return lengthCmp == 0 ? o1.compareTo(o2) : lengthCmp;
-            }
-        });
+        relativizeRootPaths.sort(Comparator.comparingInt(Path::getNameCount).thenComparing(o -> o));
     }
 
     // filtering

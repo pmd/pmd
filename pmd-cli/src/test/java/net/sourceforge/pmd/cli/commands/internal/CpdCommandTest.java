@@ -56,7 +56,7 @@ class CpdCommandTest extends BaseCommandTest<CpdCommand> {
 
     private void assertMultipleDirs(final CpdCommand result) {
         final CPDConfiguration config = result.toConfiguration();
-        assertEquals(listOf("a", "b"), CollectionUtil.map(config.getFiles(), Path::toString));
+        assertEquals(listOf("a", "b"), CollectionUtil.map(config.getInputPathList(), Path::toString));
     }
 
     @Override

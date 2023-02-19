@@ -48,8 +48,8 @@ public final class CpdAnalysis implements AutoCloseable {
         );
 
         this.renderer = config.getCPDReportRenderer();
-        // Add all sources
-        extractAllSources(config);
+
+        FileCollectionUtil.collectFiles(config, files());
 
         for (Language language : config.getLanguageRegistry()) {
             setLanguageProperties(language, config);
@@ -78,18 +78,6 @@ public final class CpdAnalysis implements AutoCloseable {
 
     public FileCollector files() {
         return files;
-    }
-
-    private void extractAllSources(CPDConfiguration configuration) {
-        FileCollectionUtil.collectFiles(files(), configuration.getFiles());
-
-        if (configuration.getURI() != null) {
-            FileCollectionUtil.collectDB(files(), configuration.getURI());
-        }
-
-        if (configuration.getFileListPath() != null) {
-            FileCollectionUtil.collectFileList(files(), configuration.getFileListPath());
-        }
     }
 
     public void setCpdListener(@Nullable CPDListener cpdListener) {

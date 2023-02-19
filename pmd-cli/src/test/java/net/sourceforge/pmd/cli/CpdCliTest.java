@@ -12,7 +12,6 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.equalTo;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -35,10 +34,10 @@ class CpdCliTest extends BaseCliTest {
     private static final String SRC_DIR = BASE_RES_PATH + "files/";
 
     private static final Map<String, Integer> NUMBER_OF_TOKENS = ImmutableMap.of(
-            new File(SRC_DIR, "dup1.java").getAbsolutePath(), 89,
-            new File(SRC_DIR, "dup2.java").getAbsolutePath(), 89,
-            new File(SRC_DIR, "file_with_ISO-8859-1_encoding.java").getAbsolutePath(), 8,
-            new File(SRC_DIR, "file_with_utf8_bom.java").getAbsolutePath(), 9
+            Paths.get(SRC_DIR, "dup1.java").toString(), 89,
+            Paths.get(SRC_DIR, "dup2.java").toString(), 89,
+            Paths.get(SRC_DIR, "file_with_ISO-8859-1_encoding.java").toString(), 8,
+            Paths.get(SRC_DIR, "file_with_utf8_bom.java").toString(), 9
     );
     @TempDir
     private Path tempDir;
@@ -67,7 +66,7 @@ class CpdCliTest extends BaseCliTest {
     private String getExpectedFileEntryXml(final String filename) {
         final int numberOfTokens = NUMBER_OF_TOKENS.get(filename);
         return String.format("   <file path=\"%s\"\n         totalNumberOfTokens=\"%d\"/>\n",
-                new File(filename).getAbsolutePath(),
+                filename,
                 numberOfTokens);
     }
 

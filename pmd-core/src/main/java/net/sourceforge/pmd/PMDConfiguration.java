@@ -6,13 +6,9 @@ package net.sourceforge.pmd;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
@@ -108,15 +104,10 @@ public class PMDConfiguration extends AbstractConfiguration {
     // Rule and source file options
     private List<String> ruleSets = new ArrayList<>();
     private RulePriority minimumPriority = RulePriority.LOW;
-    private @NonNull List<Path> inputPaths = new ArrayList<>();
-    private URI inputUri;
-    private Path inputFilePath;
-    private Path ignoreFilePath;
     private boolean ruleSetFactoryCompatibilityEnabled = true;
 
     // Reporting options
     private String reportFormat;
-    private Path reportFile;
     private Properties reportProperties = new Properties();
     private boolean showSuppressedViolations = false;
     private boolean failOnViolation = true;
@@ -127,7 +118,6 @@ public class PMDConfiguration extends AbstractConfiguration {
     private boolean benchmark;
     private AnalysisCache analysisCache = new NoopAnalysisCache();
     private boolean ignoreIncrementalAnalysis;
-    private final List<Path> relativizeRoots = new ArrayList<>();
 
     public PMDConfiguration() {
         this(DEFAULT_REGISTRY);
@@ -349,137 +339,6 @@ public class PMDConfiguration extends AbstractConfiguration {
 
 
     /**
-     * Returns the list of input paths to explore. This is an
-     * unmodifiable list.
-     */
-    public @NonNull List<Path> getInputPathList() {
-        return Collections.unmodifiableList(inputPaths);
-    }
-
-    /**
-     * Set the comma separated list of input paths to process for source files.
-     *
-     * @param inputPaths The comma separated list.
-     *
-     * @throws NullPointerException If the parameter is null
-     * @deprecated Use {@link #setInputPathList(List)} or {@link #addInputPath(Path)}
-     */
-    @Deprecated
-    public void setInputPaths(String inputPaths) {
-        if (inputPaths.isEmpty()) {
-            return;
-        }
-        List<Path> paths = new ArrayList<>();
-        for (String s : inputPaths.split(",")) {
-            paths.add(Paths.get(s));
-        }
-        this.inputPaths = paths;
-    }
-
-    /**
-     * Set the input paths to the given list of paths.
-     *
-     * @throws NullPointerException If the parameter is null or contains a null value
-     */
-    public void setInputPathList(final List<Path> inputPaths) {
-        AssertionUtil.requireContainsNoNullValue("input paths", inputPaths);
-        this.inputPaths = new ArrayList<>(inputPaths);
-    }
-
-
-    /**
-     * Add an input path. It is not split on commas.
-     *
-     * @throws NullPointerException If the parameter is null
-     */
-    public void addInputPath(@NonNull Path inputPath) {
-        Objects.requireNonNull(inputPath);
-        this.inputPaths.add(inputPath);
-    }
-
-    /** Returns the path to the file list text file. */
-    public @Nullable Path getInputFile() {
-        return inputFilePath;
-    }
-
-    public @Nullable Path getIgnoreFile() {
-        return ignoreFilePath;
-    }
-
-    /**
-     * The input file path points to a single file, which contains a
-     * comma-separated list of source file names to process.
-     *
-     * @param inputFilePath path to the file
-     * @deprecated Use {@link #setInputFilePath(Path)}
-     */
-    @Deprecated
-    public void setInputFilePath(String inputFilePath) {
-        this.inputFilePath = inputFilePath == null ? null : Paths.get(inputFilePath);
-    }
-
-    /**
-     * The input file path points to a single file, which contains a
-     * comma-separated list of source file names to process.
-     *
-     * @param inputFilePath path to the file
-     */
-    public void setInputFilePath(Path inputFilePath) {
-        this.inputFilePath = inputFilePath;
-    }
-
-    /**
-     * The input file path points to a single file, which contains a
-     * comma-separated list of source file names to ignore.
-     *
-     * @param ignoreFilePath path to the file
-     * @deprecated Use {@link #setIgnoreFilePath(Path)}
-     */
-    @Deprecated
-    public void setIgnoreFilePath(String ignoreFilePath) {
-        this.ignoreFilePath = ignoreFilePath == null ? null : Paths.get(ignoreFilePath);
-    }
-
-    /**
-     * The input file path points to a single file, which contains a
-     * comma-separated list of source file names to ignore.
-     *
-     * @param ignoreFilePath  path to the file
-     */
-    public void setIgnoreFilePath(Path ignoreFilePath) {
-        this.ignoreFilePath = ignoreFilePath;
-    }
-
-    /**
-     * Get the input URI to process for source code objects.
-     *
-     * @return URI
-     */
-    public URI getUri() {
-        return inputUri;
-    }
-
-    /**
-     * Set the input URI to process for source code objects.
-     *
-     * @param inputUri a single URI
-     * @deprecated Use {@link PMDConfiguration#setInputUri(URI)}
-     */
-    @Deprecated
-    public void setInputUri(String inputUri) {
-        this.inputUri = inputUri == null ? null : URI.create(inputUri);
-    }
-
-    /**
-     * Set the input URI to process for source code objects.
-     *
-     * @param inputUri a single URI
-     */
-    public void setInputUri(URI inputUri) {
-        this.inputUri = inputUri;
-    }
-
-    /**
      * Create a Renderer instance based upon the configured reporting options.
      * No writer is created.
      *
@@ -502,7 +361,7 @@ public class PMDConfiguration extends AbstractConfiguration {
         Renderer renderer = RendererFactory.createRenderer(reportFormat, reportProperties);
         renderer.setShowSuppressedViolations(showSuppressedViolations);
         if (withReportWriter) {
-            renderer.setReportFile(reportFile == null ? null : reportFile.toString());
+            renderer.setReportFile(getReportFile());
         }
         return renderer;
     }
@@ -526,46 +385,6 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     public void setReportFormat(String reportFormat) {
         this.reportFormat = reportFormat;
-    }
-
-    /**
-     * Get the file to which the report should render.
-     *
-     * @return The file to which to render.
-     * @deprecated Use {@link #getReportFilePath()}
-     */
-    @Deprecated
-    public String getReportFile() {
-        return reportFile == null ? null : reportFile.toString();
-    }
-
-    /**
-     * Get the file to which the report should render.
-     *
-     * @return The file to which to render.
-     */
-    public Path getReportFilePath() {
-        return reportFile;
-    }
-
-    /**
-     * Set the file to which the report should render.
-     *
-     * @param reportFile the file to set
-     * @deprecated Use {@link #setReportFile(Path)}
-     */
-    @Deprecated
-    public void setReportFile(String reportFile) {
-        this.reportFile = reportFile == null ? null : Paths.get(reportFile);
-    }
-
-    /**
-     * Set the file to which the report should render.
-     *
-     * @param reportFile the file to set
-     */
-    public void setReportFile(Path reportFile) {
-        this.reportFile = reportFile;
     }
 
     /**
@@ -770,56 +589,5 @@ public class PMDConfiguration extends AbstractConfiguration {
         return ignoreIncrementalAnalysis;
     }
 
-    /**
-     * Set the path used to shorten paths output in the report.
-     * The path does not need to exist. If it exists, it must point
-     * to a directory and not a file. See {@link #getRelativizeRoots()}
-     * for the interpretation.
-     *
-     * <p>If several paths are added, the shortest paths possible are
-     * built.
-     *
-     * @param path A path
-     *
-     * @throws IllegalArgumentException If the path points to a file, and not a directory
-     * @throws NullPointerException If the path is null
-     */
-    public void addRelativizeRoot(Path path) {
-        // Note: the given path is not further modified or resolved. E.g. there is no special handling for symlinks.
-        // The goal is, that if the user inputs a path, PMD should output in terms of that path, not it's resolution.
-        this.relativizeRoots.add(Objects.requireNonNull(path));
-
-        if (Files.isRegularFile(path)) {
-            throw new IllegalArgumentException("Relativize root should be a directory: " + path);
-        }
-    }
-
-
-    /**
-     * Add several paths to shorten paths that are output in the report.
-     * See {@link #addRelativizeRoot(Path)}.
-     *
-     * @param paths A list of non-null paths
-     *
-     * @throws IllegalArgumentException If any path points to a file, and not a directory
-     * @throws NullPointerException     If the list, or any path in the list is null
-     */
-    public void addRelativizeRoots(List<Path> paths) {
-        for (Path path : paths) {
-            addRelativizeRoot(path);
-        }
-    }
-
-    /**
-     * Returns the paths used to shorten paths output in the report.
-     * <ul>
-     * <li>If the list is empty, then paths are not touched
-     * <li>If the list is non-empty, then source file paths are relativized with all the items in the list.
-     * The shortest of these relative paths is taken as the display name of the file.
-     * </ul>
-     */
-    public List<Path> getRelativizeRoots() {
-        return Collections.unmodifiableList(relativizeRoots);
-    }
 
 }

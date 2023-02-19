@@ -139,7 +139,7 @@ class FileCollectorTest {
     private FileCollector newCollector(LanguageVersion forcedVersion) {
         LanguageVersionDiscoverer discoverer = new LanguageVersionDiscoverer(LanguageRegistry.PMD, forcedVersion);
         FileCollector collector = FileCollector.newCollector(discoverer, new TestMessageReporter());
-        collector.relativizeWith(tempFolder.toAbsolutePath().toString());
+        collector.relativizeWith(tempFolder.toAbsolutePath());
         return collector;
     }
 }

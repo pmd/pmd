@@ -174,12 +174,25 @@ class PmdCliTest extends BaseCliTest {
         assertFalse(Files.exists(absoluteReportFile), "Report file must not exist yet!");
 
         try {
-            runCliSuccessfully("--dir", srcDir.toString(), "--rulesets", RULESET_NO_VIOLATIONS, "--report-file", reportFile.toString());
+            runCliSuccessfully("--dir", srcDir.toString(), "--rulesets", RULESET_NO_VIOLATIONS, "--report-file", reportFile);
             assertTrue(Files.exists(absoluteReportFile), "Report file should have been created");
         } finally {
             Files.deleteIfExists(absoluteReportFile);
         }
     }
+
+
+    @Test
+    void testRelativeFileInputs() throws Exception {
+        SystemLambda.restoreSystemProperties(() -> {
+            // change working directory
+            System.setProperty("user.dir", srcDir.toString());
+            runCliSuccessfully("--dir", ".", "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS)
+                .verify(res -> res.checkStdOut(containsString("./src/test/resources/net/sourceforge/pmd/cli/src/anotherfile.dummy")));
+
+        });
+    }
+
 
     @Test
     void debugLogging() throws Exception {

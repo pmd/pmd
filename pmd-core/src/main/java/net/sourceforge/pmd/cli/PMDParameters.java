@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.cli;
 
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -445,8 +446,8 @@ public class PMDParameters {
     /**
      * @return the uri alternative to source directory.
      */
-    public String getUri() {
-        return uri;
+    public URI getUri() {
+        return uri == null ? null : URI.create(uri);
     }
 
     /**

@@ -15,7 +15,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.PMDConfiguration;
+import net.sourceforge.pmd.AbstractConfiguration;
 import net.sourceforge.pmd.lang.document.FileCollector;
 import net.sourceforge.pmd.util.database.DBMSMetadata;
 import net.sourceforge.pmd.util.database.DBURI;
@@ -34,7 +34,7 @@ public final class FileCollectionUtil {
 
     }
 
-    public static void collectFiles(PMDConfiguration configuration, FileCollector collector) {
+    public static void collectFiles(AbstractConfiguration configuration, FileCollector collector) {
         if (configuration.getSourceEncoding() != null) {
             collector.setCharset(configuration.getSourceEncoding());
         }
