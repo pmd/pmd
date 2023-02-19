@@ -33,8 +33,8 @@ public class Tokens {
         this.tokens.add(tokenEntry);
     }
 
-    void addEof(String fileName, int line, int column) {
-        add(new TokenEntry(fileName, line, column));
+    void addEof(String filePathId, int line, int column) {
+        add(new TokenEntry(filePathId, line, column));
     }
 
     void setImage(TokenEntry entry, String newImage) {
@@ -92,12 +92,12 @@ public class Tokens {
      */
     static TokenFactory factoryForFile(TextDocument file, Tokens tokens) {
         return new TokenFactory() {
-            final String fileName = file.getPathId();
+            final String filePathId = file.getPathId();
             final int firstToken = tokens.size();
 
             @Override
             public void recordToken(@NonNull String image, int startLine, int startCol, int endLine, int endCol) {
-                tokens.addToken(image, fileName, startLine, startCol, endLine, endCol);
+                tokens.addToken(image, filePathId, startLine, startCol, endLine, endCol);
             }
 
             @Override
@@ -117,9 +117,9 @@ public class Tokens {
             public void close() {
                 TokenEntry tok = peekLastToken();
                 if (tok == null) {
-                    tokens.addEof(fileName, 1, 1);
+                    tokens.addEof(filePathId, 1, 1);
                 } else {
-                    tokens.addEof(fileName, tok.getEndLine(), tok.getEndColumn());
+                    tokens.addEof(filePathId, tok.getEndLine(), tok.getEndColumn());
                 }
             }
         };

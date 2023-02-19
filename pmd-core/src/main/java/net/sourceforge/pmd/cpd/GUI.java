@@ -192,8 +192,9 @@ public class GUI implements CPDListener {
         }
     }
 
+    public static final Comparator<Match> LABEL_COMPARATOR = Comparator.comparing(GUI::getLabel);
     private final ColumnSpec[] matchColumns = {
-        new ColumnSpec("Source", SwingConstants.LEFT, -1, Match.LABEL_COMPARATOR),
+        new ColumnSpec("Source", SwingConstants.LEFT, -1, LABEL_COMPARATOR),
         new ColumnSpec("Matches", SwingConstants.RIGHT, 60, Match.MATCHES_COMPARATOR),
         new ColumnSpec("Lines", SwingConstants.RIGHT, 45, Match.LINES_COMPARATOR), };
 
@@ -576,23 +577,20 @@ public class GUI implements CPDListener {
         return new JScrollPane(resultsTable);
     }
 
-    private void setLabelFor(Match match) {
+    private static String getLabel(Match match) {
 
         Set<String> sourceIDs = new HashSet<>(match.getMarkCount());
         for (Mark mark : match) {
             sourceIDs.add(mark.getLocation().getFileName());
         }
-        String label;
 
         if (sourceIDs.size() == 1) {
             String sourceId = sourceIDs.iterator().next();
             int separatorPos = sourceId.lastIndexOf(File.separatorChar);
-            label = "..." + sourceId.substring(separatorPos);
+            return  "..." + sourceId.substring(separatorPos);
         } else {
-            label = String.format("(%d separate files)", sourceIDs.size());
+            return String.format("(%d separate files)", sourceIDs.size());
         }
-
-        match.setLabel(label);
     }
 
     private void setProgressControls(boolean isRunning) {
@@ -640,7 +638,6 @@ public class GUI implements CPDListener {
                     t.stop();
                     numberOfTokensPerFile = report.getNumberOfTokensPerFile();
                     matches = new ArrayList<>(report.getMatches());
-                    matches.forEach(this::setLabelFor);
                     setListDataFrom(matches);
                     String reportString = new SimpleRenderer().renderToString(report);
                     if (reportString.isEmpty()) {
@@ -710,7 +707,7 @@ public class GUI implements CPDListener {
                 Match match = items.get(rowIndex);
                 switch (columnIndex) {
                 case 0:
-                    return match.getLabel();
+                    return getLabel(match);
                 case 2:
                     return Integer.toString(match.getLineCount());
                 case 1:
