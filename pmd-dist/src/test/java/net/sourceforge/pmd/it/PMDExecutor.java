@@ -124,8 +124,8 @@ public class PMDExecutor {
     }
 
     public static ExecutionResult runPMDRules(Path reportFile, Path tempDir, String sourceDirectory, String ruleset, String formatter) throws Exception {
-        return runPMD(tempDir, reportFile, SOURCE_DIRECTORY_FLAG, sourceDirectory, RULESET_FLAG, ruleset,
-                    FORMAT_FLAG, formatter, REPORTFILE_FLAG, reportFile.toAbsolutePath().toString(), NO_PROGRESSBAR_FLAG);
+        return runPMD(reportFile, tempDir, SOURCE_DIRECTORY_FLAG, sourceDirectory, RULESET_FLAG, ruleset,
+                    FORMAT_FLAG, formatter, NO_PROGRESSBAR_FLAG);
     }
 
     /**
