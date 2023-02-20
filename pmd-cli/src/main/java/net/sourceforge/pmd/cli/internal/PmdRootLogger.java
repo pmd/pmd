@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.internal;
+package net.sourceforge.pmd.cli.internal;
 
 import java.util.function.Function;
 
@@ -12,17 +12,22 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.AbstractConfiguration;
+import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 import net.sourceforge.pmd.util.log.MessageReporter;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 /**
+ * Interacts with slf4j-simple to reconfigure logging levels based on
+ * the debug flag.
+ *
  * @author Clément Fournier
  */
 public final class PmdRootLogger {
 
-    private static final String PMD_PACKAGE = "net.sourceforge.pmd";
+    private static final String PMD_CLI_LOGGER = "net.sourceforge.pmd.cli";
     // not final, in order to re-initialize logging
-    public static Logger log = LoggerFactory.getLogger(PMD_PACKAGE);
+    // This logger is used as backend for the MessageReporter currently.
+    private static Logger log = LoggerFactory.getLogger(PMD_CLI_LOGGER);
 
     private PmdRootLogger() {
         // utility class
@@ -37,7 +42,7 @@ public final class PmdRootLogger {
             if (conf.isDebug()) {
                 Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(Level.TRACE);
                 // need to reload the logger with the new configuration
-                log = LoggerFactory.getLogger(PMD_PACKAGE);
+                log = LoggerFactory.getLogger(PMD_CLI_LOGGER);
                 resetLogLevel = true;
             }
 
@@ -48,7 +53,7 @@ public final class PmdRootLogger {
             if (resetLogLevel) {
                 // reset to the previous value
                 Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(curLogLevel);
-                log = LoggerFactory.getLogger(PMD_PACKAGE);
+                log = LoggerFactory.getLogger(PMD_CLI_LOGGER);
             }
         }
     }

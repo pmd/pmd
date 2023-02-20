@@ -81,13 +81,13 @@ class CpdCliTest extends BaseCliTest {
     @Test
     void debugLogging() throws Exception {
         CliExecutionResult result = runCliSuccessfully("--debug", "--minimum-tokens", "340", "--dir", SRC_DIR);
-        result.checkStdErr(containsString("[main] INFO net.sourceforge.pmd - Log level is at TRACE"));
+        result.checkStdErr(containsString("[main] INFO net.sourceforge.pmd.cli - Log level is at TRACE"));
     }
 
     @Test
     void defaultLogging() throws Exception {
         CliExecutionResult result = runCliSuccessfully("--minimum-tokens", "340", "--dir", SRC_DIR);
-        result.checkStdErr(containsString("[main] INFO net.sourceforge.pmd - Log level is at INFO"));
+        result.checkStdErr(containsString("[main] INFO net.sourceforge.pmd.cli - Log level is at INFO"));
     }
 
     @Test

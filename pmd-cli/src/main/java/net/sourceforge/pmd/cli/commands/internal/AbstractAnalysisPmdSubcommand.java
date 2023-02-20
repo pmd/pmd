@@ -9,24 +9,27 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sourceforge.pmd.AbstractConfiguration;
 import net.sourceforge.pmd.cli.commands.mixins.internal.EncodingMixin;
+import net.sourceforge.pmd.cli.internal.CliExitCode;
+import net.sourceforge.pmd.cli.internal.PmdRootLogger;
 
 import picocli.CommandLine.Mixin;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParameterException;
 import picocli.CommandLine.Parameters;
 
-public abstract class AbstractAnalysisPmdSubcommand extends AbstractPmdSubcommand {
+public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfiguration> extends AbstractPmdSubcommand {
 
     @Mixin
     protected EncodingMixin encoding;
-    
+
     @Option(names = { "--dir", "-d" },
             description = "Path to a source file, or directory containing source files to analyze. "
-                          + "Zip and Jar files are also supported, if they are specified directly "
-                          + "(archive files found while exploring a directory are not recursively expanded). "
-                          + "This option can be repeated, and multiple arguments can be provided to a single occurrence of the option. "
-                          + "One of --dir, --file-list or --uri must be provided.",
+                + "Zip and Jar files are also supported, if they are specified directly "
+                + "(archive files found while exploring a directory are not recursively expanded). "
+                + "This option can be repeated, and multiple arguments can be provided to a single occurrence of the option. "
+                + "One of --dir, --file-list or --uri must be provided.",
             arity = "1..*", split = ",")
     protected List<Path> inputPaths;
 
@@ -63,8 +66,22 @@ public abstract class AbstractAnalysisPmdSubcommand extends AbstractPmdSubcomman
 
         if ((inputPaths == null || inputPaths.isEmpty()) && uri == null && fileListPath == null) {
             throw new ParameterException(spec.commandLine(),
-                    "Please provide a parameter for source root directory (--dir or -d), "
-                            + "database URI (--uri or -u), or file list path (--file-list)");
+                                         "Please provide a parameter for source root directory (--dir or -d), "
+                                             + "database URI (--uri or -u), or file list path (--file-list)");
         }
     }
+
+
+    protected abstract C toConfiguration();
+
+    protected abstract CliExitCode doExecute(C conf);
+
+
+    @Override
+    protected CliExitCode execute() {
+        final C configuration = toConfiguration();
+        return PmdRootLogger.executeInLoggingContext(configuration,
+                                                     this::doExecute);
+    }
+
 }

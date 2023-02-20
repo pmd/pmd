@@ -31,7 +31,6 @@ import net.sourceforge.pmd.cli.commands.typesupport.internal.PmdLanguageVersionT
 import net.sourceforge.pmd.cli.internal.CliExitCode;
 import net.sourceforge.pmd.cli.internal.ProgressBarListener;
 import net.sourceforge.pmd.internal.LogMessages;
-import net.sourceforge.pmd.internal.PmdRootLogger;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -48,7 +47,7 @@ import picocli.CommandLine.ParameterException;
 
 @Command(name = "check", showDefaultValues = true,
     description = "The PMD standard source code analyzer")
-public class PmdCommand extends AbstractAnalysisPmdSubcommand {
+public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> {
     private static final Logger LOG = LoggerFactory.getLogger(PmdCommand.class);
 
     static {
@@ -275,7 +274,8 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
      *
      * @throws ParameterException if the parameters are inconsistent or incomplete
      */
-    public PMDConfiguration toConfiguration() {
+    @Override
+    protected PMDConfiguration toConfiguration() {
         final PMDConfiguration configuration = new PMDConfiguration();
         configuration.setInputPathList(inputPaths);
         configuration.setInputFilePath(fileListPath);
@@ -322,12 +322,8 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
     }
 
     @Override
-    protected CliExitCode execute() {
-        final PMDConfiguration configuration = toConfiguration();
-        return PmdRootLogger.executeInLoggingContext(configuration, this::doExecute);
-    }
-
-    private @NonNull CliExitCode doExecute(PMDConfiguration configuration) {
+    @NonNull
+    protected CliExitCode doExecute(PMDConfiguration configuration) {
         if (benchmark) {
             TimeTracker.startGlobalTracking();
         }

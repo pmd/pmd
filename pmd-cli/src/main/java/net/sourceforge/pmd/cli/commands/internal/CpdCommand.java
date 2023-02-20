@@ -20,7 +20,6 @@ import net.sourceforge.pmd.cpd.CPDConfiguration;
 import net.sourceforge.pmd.cpd.CpdAnalysis;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.internal.LogMessages;
-import net.sourceforge.pmd.internal.PmdRootLogger;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -30,7 +29,7 @@ import picocli.CommandLine.ParameterException;
 
 @Command(name = "cpd", showDefaultValues = true,
     description = "Copy/Paste Detector - find duplicate code")
-public class CpdCommand extends AbstractAnalysisPmdSubcommand {
+public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> {
 
     @Option(names = { "--language", "-l" }, description = "The source code language.%nValid values: ${COMPLETION-CANDIDATES}",
             defaultValue = CPDConfiguration.DEFAULT_LANGUAGE, converter = CpdLanguageTypeSupport.class, completionCandidates = CpdLanguageTypeSupport.class)
@@ -112,7 +111,8 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand {
      *
      * @throws ParameterException if the parameters are inconsistent or incomplete
      */
-    public CPDConfiguration toConfiguration() {
+    @Override
+    protected CPDConfiguration toConfiguration() {
         final CPDConfiguration configuration = new CPDConfiguration();
         configuration.setDebug(debug);
         configuration.setExcludes(excludes);
@@ -142,13 +142,8 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand {
     }
 
     @Override
-    protected CliExitCode execute() {
-        final CPDConfiguration configuration = toConfiguration();
-
-        return PmdRootLogger.executeInLoggingContext(configuration, CpdCommand::doExecute);
-    }
-
-    private static @NonNull CliExitCode doExecute(CPDConfiguration configuration) {
+    @NonNull
+    protected CliExitCode doExecute(CPDConfiguration configuration) {
         try (CpdAnalysis cpd = CpdAnalysis.create(configuration)) {
 
             MutableBoolean hasViolations = new MutableBoolean();

@@ -47,7 +47,7 @@ public abstract class AbstractConfiguration {
     private Path inputFilePath;
     private Path ignoreFilePath;
     private List<Path> excludes = new ArrayList<>();
-    private boolean collectRecursive;
+    private boolean collectRecursive = true;
 
 
     protected AbstractConfiguration(LanguageRegistry languageRegistry, MessageReporter messageReporter) {

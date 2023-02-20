@@ -187,7 +187,7 @@ class PmdCliTest extends BaseCliTest {
         SystemLambda.restoreSystemProperties(() -> {
             // change working directory
             System.setProperty("user.dir", srcDir.toString());
-            runCliSuccessfully("--dir", ".", "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS)
+            runCli(VIOLATIONS_FOUND, "--dir", ".", "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS)
                 .verify(res -> res.checkStdOut(containsString("./src/test/resources/net/sourceforge/pmd/cli/src/anotherfile.dummy")));
 
         });
@@ -197,13 +197,13 @@ class PmdCliTest extends BaseCliTest {
     @Test
     void debugLogging() throws Exception {
         CliExecutionResult result = runCliSuccessfully("--debug", "--dir", srcDir.toString(), "--rulesets", RULESET_NO_VIOLATIONS);
-        result.checkStdErr(containsString("[main] INFO net.sourceforge.pmd.cli.commands.internal.AbstractPmdSubcommand - Log level is at TRACE"));
+        result.checkStdErr(containsString("[main] INFO net.sourceforge.pmd.cli - Log level is at TRACE"));
     }
 
     @Test
     void defaultLogging() throws Exception {
         CliExecutionResult result = runCliSuccessfully("--dir", srcDir.toString(), "--rulesets", RULESET_NO_VIOLATIONS);
-        result.checkStdErr(containsString("[main] INFO net.sourceforge.pmd.cli.commands.internal.AbstractPmdSubcommand - Log level is at INFO"));
+        result.checkStdErr(containsString("[main] INFO net.sourceforge.pmd.cli - Log level is at INFO"));
         result.checkStdErr(not(containsPattern("Adding file .*"))); // not in debug mode
     }
 
@@ -382,16 +382,16 @@ class PmdCliTest extends BaseCliTest {
         // therefore we use the current directory and make sure, we are at the correct place - in pmd-core
         Path cwd = Paths.get(".").toRealPath();
         assertThat(cwd.toString(), endsWith("pmd-cli"));
-        String relativeSrcDir = IOUtil.normalizePath("src/test/resources/net/sourceforge/pmd/cli/src");
+        String relativeSrcDir = "src/test/resources/net/sourceforge/pmd/cli/src";
         assertTrue(Files.isDirectory(cwd.resolve(relativeSrcDir)));
 
         // use the parent directory
-        String relativeSrcDirWithParent = relativeSrcDir + File.separator + "..";
+        Path relativeSrcDirWithParent = Paths.get(relativeSrcDir, "..");
 
-        runCli(CliExitCode.VIOLATIONS_FOUND, "--dir", relativeSrcDirWithParent, "--rulesets",
+        runCli(CliExitCode.VIOLATIONS_FOUND, "--dir", relativeSrcDirWithParent.toString(), "--rulesets",
                 DUMMY_RULESET_WITH_VIOLATIONS)
                 .verify(result -> result.checkStdOut(
-                        containsString("\n" + relativeSrcDirWithParent + IOUtil.normalizePath("/src/somefile.dummy"))));
+                        containsString("\n" + relativeSrcDirWithParent + "/src/somefile.dummy")));
     }
 
     @Test
