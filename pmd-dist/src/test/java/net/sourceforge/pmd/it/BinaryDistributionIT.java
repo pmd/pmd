@@ -28,8 +28,8 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         SUPPORTED_LANGUAGES_CPD = "Valid values: apex, cpp, cs, dart, ecmascript," + System.lineSeparator()
                 + "                               fortran, gherkin, go, groovy, html, java, jsp," + System.lineSeparator()
                 + "                               kotlin, lua, matlab, modelica, objectivec, perl," + System.lineSeparator()
-                + "                               php, plsql, python, ruby, scala, swift, tsql," + System.lineSeparator()
-                + "                               vf, xml";
+                + "                               php, plsql, pom, python, ruby, scala, swift, ts," + System.lineSeparator()
+                + "                               tsql, vf, vm, wsdl, xml, xsl";
         SUPPORTED_LANGUAGES_PMD = "Valid values: apex-54, ecmascript-ES6, html-," + System.lineSeparator()
                 + "                              java-1.10, java-1.3, java-1.4, java-1.5, java-1." + System.lineSeparator()
                 + "                              6, java-1.7, java-1.8, java-1.9, java-10," + System.lineSeparator()
@@ -136,14 +136,14 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         result = PMDExecutor.runPMD(tempDir, "-d", srcDir, "-R", "src/test/resources/rulesets/sample-ruleset.xml",
                 "-r", createTemporaryReportFile().toString());
         result.assertExecutionResult(4);
-        result.assertErrorOutputContains("[main] INFO net.sourceforge.pmd.cli.commands.internal.AbstractPmdSubcommand - Log level is at INFO");
+        result.assertErrorOutputContains("[main] INFO net.sourceforge.pmd.cli - Log level is at INFO");
 
 
         // now with debug
         result = PMDExecutor.runPMD(tempDir, "-d", srcDir, "-R", "src/test/resources/rulesets/sample-ruleset.xml",
                 "-r", createTemporaryReportFile().toString(), "--debug");
         result.assertExecutionResult(4);
-        result.assertErrorOutputContains("[main] INFO net.sourceforge.pmd.cli.commands.internal.AbstractPmdSubcommand - Log level is at TRACE");
+        result.assertErrorOutputContains("[main] INFO net.sourceforge.pmd.cli - Log level is at TRACE");
     }
 
     @Test
