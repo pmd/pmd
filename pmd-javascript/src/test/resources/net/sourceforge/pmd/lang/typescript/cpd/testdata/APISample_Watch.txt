@@ -1,0 +1,330 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L9
+    [{]                                     1         1
+L10
+    ["name"]                                5         10
+    [:]                                     11        11
+    ["typescript"]                          13        24
+    [,]                                     25        25
+L11
+    ["types"]                               5         11
+    [:]                                     12        12
+    ["/.ts/typescript.d.ts"]                14        35
+L12
+    [}]                                     1         1
+L21
+    [declare]                               1         7
+    [var]                                   9         11
+    [process]                               13        19
+    [:]                                     20        20
+    [any]                                   22        24
+    [;]                                     25        25
+L22
+    [declare]                               1         7
+    [var]                                   9         11
+    [console]                               13        19
+    [:]                                     20        20
+    [any]                                   22        24
+    [;]                                     25        25
+L23
+    [declare]                               1         7
+    [var]                                   9         11
+    [os]                                    13        14
+    [:]                                     15        15
+    [any]                                   17        19
+    [;]                                     20        20
+L25
+    [import]                                1         6
+    [ts]                                    8         9
+    [=]                                     11        11
+    [require]                               13        19
+    [(]                                     20        20
+    ["typescript"]                          21        32
+    [)]                                     33        33
+    [;]                                     34        34
+L27
+    [const]                                 1         5
+    [formatHost]                            7         16
+    [:]                                     17        17
+    [ts]                                    19        20
+    [.]                                     21        21
+    [FormatDiagnosticsHost]                 22        42
+    [=]                                     44        44
+    [{]                                     46        46
+L28
+    [getCanonicalFileName]                  5         24
+    [:]                                     25        25
+    [path]                                  27        30
+    [=>]                                    32        33
+    [path]                                  35        38
+    [,]                                     39        39
+L29
+    [getCurrentDirectory]                   5         23
+    [:]                                     24        24
+    [ts]                                    26        27
+    [.]                                     28        28
+    [sys]                                   29        31
+    [.]                                     32        32
+    [getCurrentDirectory]                   33        51
+    [,]                                     52        52
+L30
+    [getNewLine]                            5         14
+    [:]                                     15        15
+    [(]                                     17        17
+    [)]                                     18        18
+    [=>]                                    20        21
+    [ts]                                    23        24
+    [.]                                     25        25
+    [sys]                                   26        28
+    [.]                                     29        29
+    [newLine]                               30        36
+    [,]                                     37        37
+L31
+    [}]                                     1         1
+L33
+    [function]                              1         8
+    [watchMain]                             10        18
+    [(]                                     19        19
+    [)]                                     20        20
+    [{]                                     22        22
+L34
+    [const]                                 5         9
+    [configPath]                            11        20
+    [=]                                     22        22
+    [ts]                                    24        25
+    [.]                                     26        26
+    [findConfigFile]                        27        40
+    [(]                                     41        41
+    ["./"]                                  57        60
+    [,]                                     61        61
+    [ts]                                    63        64
+    [.]                                     65        65
+    [sys]                                   66        68
+    [.]                                     69        69
+    [fileExists]                            70        79
+    [,]                                     80        80
+    ["tsconfig.json"]                       82        96
+    [)]                                     97        97
+    [;]                                     98        98
+L35
+    [if]                                    5         6
+    [(]                                     8         8
+    [!]                                     9         9
+    [configPath]                            10        19
+    [)]                                     20        20
+    [{]                                     22        22
+L36
+    [throw]                                 9         13
+    [new]                                   15        17
+    [Error]                                 19        23
+    [(]                                     24        24
+    ["Could not find a valid 'tsconfig.[    25        65
+    [)]                                     66        66
+    [;]                                     67        67
+L37
+    [}]                                     5         5
+L50
+    [const]                                 5         9
+    [host]                                  11        14
+    [=]                                     16        16
+    [ts]                                    18        19
+    [.]                                     20        20
+    [createWatchCompilerHost]               21        43
+    [(]                                     44        44
+    [configPath]                            45        54
+    [,]                                     55        55
+    [{]                                     57        57
+    [}]                                     58        58
+    [,]                                     59        59
+    [ts]                                    61        62
+    [.]                                     63        63
+    [sys]                                   64        66
+    [,]                                     67        67
+L51
+    [ts]                                    9         10
+    [.]                                     11        11
+    [createSemanticDiagnosticsBuilderPr[    12        50
+    [,]                                     51        51
+L52
+    [reportDiagnostic]                      9         24
+    [,]                                     25        25
+L53
+    [reportWatchStatusChanged]              9         32
+    [,]                                     33        33
+L54
+    [)]                                     5         5
+    [;]                                     6         6
+L58
+    [const]                                 5         9
+    [origCreateProgram]                     11        27
+    [=]                                     29        29
+    [host]                                  31        34
+    [.]                                     35        35
+    [createProgram]                         36        48
+    [;]                                     49        49
+L59
+    [host]                                  5         8
+    [.]                                     9         9
+    [createProgram]                         10        22
+    [=]                                     24        24
+    [(]                                     26        26
+    [rootNames]                             27        35
+    [:]                                     36        36
+    [ReadonlyArray]                         38        50
+    [<]                                     51        51
+    [string]                                52        57
+    [>]                                     58        58
+    [,]                                     59        59
+    [options]                               61        67
+    [,]                                     68        68
+    [host]                                  70        73
+    [,]                                     74        74
+    [oldProgram]                            76        85
+    [)]                                     86        86
+    [=>]                                    88        89
+    [{]                                     91        91
+L60
+    [console]                               9         15
+    [.]                                     16        16
+    [log]                                   17        19
+    [(]                                     20        20
+    ["** We're about to create the prog[    21        62
+    [)]                                     63        63
+    [;]                                     64        64
+L61
+    [return]                                9         14
+    [origCreateProgram]                     16        32
+    [(]                                     33        33
+    [rootNames]                             34        42
+    [,]                                     43        43
+    [options]                               45        51
+    [,]                                     52        52
+    [host]                                  54        57
+    [,]                                     58        58
+    [oldProgram]                            60        69
+    [)]                                     70        70
+    [;]                                     71        71
+L62
+    [}]                                     5         5
+L63
+    [const]                                 5         9
+    [origPostProgramCreate]                 11        31
+    [=]                                     33        33
+    [host]                                  35        38
+    [.]                                     39        39
+    [afterProgramCreate]                    40        57
+    [;]                                     58        58
+L65
+    [host]                                  5         8
+    [.]                                     9         9
+    [afterProgramCreate]                    10        27
+    [=]                                     29        29
+    [program]                               31        37
+    [=>]                                    39        40
+    [{]                                     42        42
+L66
+    [console]                               9         15
+    [.]                                     16        16
+    [log]                                   17        19
+    [(]                                     20        20
+    ["** We finished making the program[    21        59
+    [)]                                     60        60
+    [;]                                     61        61
+L67
+    [origPostProgramCreate]                 9         29
+    [!]                                     30        30
+    [(]                                     31        31
+    [program]                               32        38
+    [)]                                     39        39
+    [;]                                     40        40
+L68
+    [}]                                     5         5
+    [;]                                     6         6
+L71
+    [ts]                                    5         6
+    [.]                                     7         7
+    [createWatchProgram]                    8         25
+    [(]                                     26        26
+    [host]                                  27        30
+    [)]                                     31        31
+    [;]                                     32        32
+L72
+    [}]                                     1         1
+L74
+    [function]                              1         8
+    [reportDiagnostic]                      10        25
+    [(]                                     26        26
+    [diagnostic]                            27        36
+    [:]                                     37        37
+    [ts]                                    39        40
+    [.]                                     41        41
+    [Diagnostic]                            42        51
+    [)]                                     52        52
+    [{]                                     54        54
+L75
+    [console]                               5         11
+    [.]                                     12        12
+    [error]                                 13        17
+    [(]                                     18        18
+    ["Error"]                               19        25
+    [,]                                     26        26
+    [diagnostic]                            28        37
+    [.]                                     38        38
+    [code]                                  39        42
+    [,]                                     43        43
+    [":"]                                   45        47
+    [,]                                     48        48
+L76
+    [ts]                                    9         10
+    [.]                                     11        11
+    [flattenDiagnosticMessageText]          12        39
+    [(]                                     40        40
+    [diagnostic]                            41        50
+    [.]                                     51        51
+    [messageText]                           52        62
+    [,]                                     63        63
+    [formatHost]                            65        74
+    [.]                                     75        75
+    [getNewLine]                            76        85
+    [(]                                     86        86
+    [)]                                     87        87
+    [)]                                     88        88
+L77
+    [)]                                     5         5
+    [;]                                     6         6
+L78
+    [}]                                     1         1
+L84
+    [function]                              1         8
+    [reportWatchStatusChanged]              10        33
+    [(]                                     34        34
+    [diagnostic]                            35        44
+    [:]                                     45        45
+    [ts]                                    47        48
+    [.]                                     49        49
+    [Diagnostic]                            50        59
+    [)]                                     60        60
+    [{]                                     62        62
+L85
+    [console]                               5         11
+    [.]                                     12        12
+    [info]                                  13        16
+    [(]                                     17        17
+    [ts]                                    18        19
+    [.]                                     20        20
+    [formatDiagnostic]                      21        36
+    [(]                                     37        37
+    [diagnostic]                            38        47
+    [,]                                     48        48
+    [formatHost]                            50        59
+    [)]                                     60        60
+    [)]                                     61        61
+    [;]                                     62        62
+L86
+    [}]                                     1         1
+L88
+    [watchMain]                             1         9
+    [(]                                     10        10
+    [)]                                     11        11
+    [;]                                     12        12
+EOF

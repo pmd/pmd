@@ -28,10 +28,10 @@ public class BinaryDistributionIT extends AbstractBinaryDistributionTest {
     static {
         // note: apex, javascript, visualforce, and scala require java8
         if (PMDExecutor.isJava7Test()) {
-            SUPPORTED_LANGUAGES_CPD = "Supported languages: [cpp, cs, dart, fortran, gherkin, go, groovy, java, jsp, kotlin, lua, matlab, modelica, objectivec, perl, php, plsql, python, ruby, swift, tsql, xml]";
+            SUPPORTED_LANGUAGES_CPD = "Supported languages: [cpp, cs, dart, fortran, gherkin, go, groovy, java, jsp, kotlin, lua, matlab, modelica, objectivec, perl, php, plsql, python, ruby, swift, tsql, typescript, xml]";
             SUPPORTED_LANGUAGES_PMD = "java, jsp, modelica, plsql, pom, vm, wsdl, xml, xsl";
         } else {
-            SUPPORTED_LANGUAGES_CPD = "Supported languages: [apex, cpp, cs, dart, ecmascript, fortran, gherkin, go, groovy, html, java, jsp, kotlin, lua, matlab, modelica, objectivec, perl, php, plsql, python, ruby, scala, swift, tsql, vf, xml]";
+            SUPPORTED_LANGUAGES_CPD = "Supported languages: [apex, cpp, cs, dart, ecmascript, fortran, gherkin, go, groovy, html, java, jsp, kotlin, lua, matlab, modelica, objectivec, perl, php, plsql, python, ruby, scala, swift, tsql, typescript, vf, xml]";
             SUPPORTED_LANGUAGES_PMD = "apex, ecmascript, html, java, jsp, modelica, plsql, pom, scala, vf, vm, wsdl, xml, xsl";
         }
     }
