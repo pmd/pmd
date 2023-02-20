@@ -87,6 +87,7 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
 
 
     private List<Path> relativizeRootPaths;
+
     @Option(names = { "--relativize-paths-with", "-z"}, description = "Path relative to which directories are rendered in the report. "
         + "This option allows shortening directories in the report; "
         + "without it, paths are rendered as mentioned in the source directory (option \"--dir\"). "
@@ -142,8 +143,7 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
     }
 
     @Override
-    @NonNull
-    protected CliExitCode doExecute(CPDConfiguration configuration) {
+    protected @NonNull CliExitCode doExecute(CPDConfiguration configuration) {
         try (CpdAnalysis cpd = CpdAnalysis.create(configuration)) {
 
             MutableBoolean hasViolations = new MutableBoolean();
