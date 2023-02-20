@@ -206,7 +206,7 @@ class CpdCliTest extends BaseCliTest {
 
     @Test
     void jsShouldFindDuplicatesWithDifferentFileExtensions() throws Exception {
-        runCli(VIOLATIONS_FOUND, "--minimum-tokens", "5", "--language", "ecmascript",
+        runCli(VIOLATIONS_FOUND, "--minimum-tokens", "5", "--language", "ts",
                "-d", BASE_RES_PATH + "tsFiles/File1.ts", BASE_RES_PATH + "tsFiles/File2.ts")
             .checkStdOut(containsString("Found a 9 line (32 tokens) duplication in the following files"));
     }
