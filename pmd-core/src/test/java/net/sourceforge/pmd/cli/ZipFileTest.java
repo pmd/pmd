@@ -12,20 +12,20 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
+import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.document.TextFile;
-import net.sourceforge.pmd.util.IOUtil;
 
-public class ZipFileTest {
+class ZipFileTest {
 
     private static final String ZIP_PATH = "src/test/resources/net/sourceforge/pmd/cli/zipWithSources.zip";
     private final Path zipPath = Paths.get(ZIP_PATH);
 
     @Test
-    public void testZipFile() {
+    void testZipFile() {
         PMDConfiguration conf = new PMDConfiguration();
         conf.addInputPath(zipPath);
         // no relativizeRoot paths configured -> we use the relative path
@@ -40,7 +40,7 @@ public class ZipFileTest {
     }
 
     @Test
-    public void testZipFileRelativizeWith() {
+    void testZipFileRelativizeWith() {
         PMDConfiguration conf = new PMDConfiguration();
         conf.addInputPath(zipPath);
         conf.addRelativizeRoot(Paths.get("src/test/resources"));
@@ -55,7 +55,7 @@ public class ZipFileTest {
     }
 
     @Test
-    public void testZipFileRelativizeWithRoot() {
+    void testZipFileRelativizeWithRoot() {
         PMDConfiguration conf = new PMDConfiguration();
         conf.addInputPath(zipPath);
         // this configures "/" as the relativizeRoot -> result are absolute paths

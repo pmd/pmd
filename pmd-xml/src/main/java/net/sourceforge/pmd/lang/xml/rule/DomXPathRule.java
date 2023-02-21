@@ -4,7 +4,10 @@
 
 package net.sourceforge.pmd.lang.xml.rule;
 
+import java.util.Objects;
+
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.XPathRule;
@@ -149,14 +152,17 @@ public class DomXPathRule extends AbstractRule {
         }
     }
 
+    @Override
+    public void initialize(LanguageProcessor languageProcessor) {
+        query = new SaxonDomXPathQuery(getProperty(XPATH_EXPR),
+                                       getProperty(DEFAULT_NS_URI),
+                                       getPropertyDescriptors(),
+                                       languageProcessor.services().getXPathHandler());
+
+    }
+
     private SaxonDomXPathQuery getXPathQuery() {
-        if (query == null) {
-            query = new SaxonDomXPathQuery(getProperty(XPATH_EXPR),
-                                           getProperty(DEFAULT_NS_URI),
-                                           getPropertyDescriptors(),
-                                           getLanguage().getDefaultVersion().getLanguageVersionHandler().getXPathHandler());
-        }
-        return query;
+        return Objects.requireNonNull(query, "rule not initialized");
     }
 
 }

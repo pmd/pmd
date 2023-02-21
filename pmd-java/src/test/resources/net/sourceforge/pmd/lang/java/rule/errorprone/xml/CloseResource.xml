@@ -2013,4 +2013,20 @@ public record MyRecord(boolean a) {
 }
         ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>NullPointerException with type inference</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+
+public class LocalVariableTypeInference {
+
+    public void aMethod() {
+        var list = new ArrayList<String>();  // infers ArrayList<String>
+        var stream = list.stream();          // infers Stream<String>, is never closed
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

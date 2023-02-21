@@ -1527,7 +1527,7 @@ public class Foo {
           minimumLanguageVersion="1.5"
           message="Unnecessary {0}"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryBoxingRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unnecessaryboxing">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessaryboxing">
         <description>
             Reports explicit boxing and unboxing conversions that may safely be removed,
             either because they would be inserted by the compiler automatically,

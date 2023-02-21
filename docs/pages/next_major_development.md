@@ -7,7 +7,7 @@ keywords: changelog, release notes, deprecation, api changes
 We're excited to bring you the next major version of PMD!
 Here is a summary of what is planned for PMD 7.
 
-To give us feedback or to suggest a new feature, drop us a line on [Gitter](https://gitter.im/pmd/pmd)!
+To give us feedback or to suggest a new feature, drop us a line in our [Gitter room](https://app.gitter.im/#/room/#pmd_pmd:gitter.im)!
 
 ## Summary
 
@@ -245,6 +245,53 @@ the breaking API changes will be performed in 7.0.0.
 {% include warning.html content="This list is not exhaustive. The ultimate reference is whether
 an API is tagged as `@Deprecated` or not in the latest minor release. During the development of 7.0.0,
 we may decide to remove some APIs that were not tagged as deprecated, though we'll try to avoid it." %}
+
+#### 6.54.0
+
+##### PMD CLI
+
+* PMD now supports a new `--relativize-paths-with` flag (or short `-z`), which replaces `--short-names`.
+  It serves the same purpose: Shortening the pathnames in the reports. However, with the new flag it's possible
+  to explicitly define one or more pathnames that should be used as the base when creating relative paths.
+  The old flag `--short-names` is deprecated.
+
+##### Deprecated APIs
+
+###### For removal
+
+* {% jdoc !!apex::lang.apex.ast.ApexRootNode#getApexVersion() %} has been deprecated for removal. The version returned is
+  always `Version.CURRENT`, as the apex compiler integration doesn't use additional information which Apex version
+  actually is used. Therefore, this method can't be used to determine the Apex version of the project
+  that is being analyzed.
+* {% jdoc !!core::cpd.CPDConfiguration#setEncoding(java.lang.String) %} and
+  {% jdoc !!core::cpd.CPDConfiguration#getEncoding() %}. Use the methods
+  {% jdoc core::AbstractConfiguration#getSourceEncoding() %} and
+  {% jdoc core::AbstractConfiguration#setSourceEncoding(java.lang.String) %} instead. Both are available
+  for `CPDConfiguration` which extends `AbstractConfiguration`.
+* {% jdoc test::cli.BaseCLITest %} and {% jdoc test::cli.BaseCPDCLITest %} have been deprecated for removal without
+  replacement. CLI tests should be done in pmd-core only (and in PMD7 in pmd-cli). Individual language modules
+  shouldn't need to test the CLI integration logic again. Instead, the individual language modules should test their
+  functionality as unit tests.
+* {% jdoc core::cpd.CPDConfiguration.LanguageConverter %}
+
+* {% jdoc !!core::lang.document.FileCollector#addZipFile(java.nio.file.Path) %} has been deprecated. It is replaced
+  by {% jdoc !!core::lang.document.FileCollector#addZipFileWithContent(java.nio.file.Path) %} which directly adds the
+  content of the zip file for analysis.
+
+* {% jdoc !!core::PMDConfiguration#setReportShortNames(boolean) %} and
+  {% jdoc !!core::PMDConfiguration#isReportShortNames() %} have been deprecated for removal.
+  Use {% jdoc !!core::PMDConfiguration#addRelativizeRoot(java.nio.file.Path) %} instead.
+
+###### Internal APIs
+
+* {% jdoc core::renderers.CSVWriter %}
+* Some fields in {% jdoc test::ant.AbstractAntTestHelper %}
+
+###### Experimental APIs
+
+* CPDReport has a new method which limited mutation of a given report:
+    * {%jdoc core::cpd.CPDReport#filterMatches(net.sourceforge.pmd.util.Predicate) %} creates a new CPD report
+      with some matches removed with a given predicate based filter.
 
 #### 6.53.0
 

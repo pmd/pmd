@@ -27,7 +27,7 @@ import net.sourceforge.pmd.renderers.XMLRenderer;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 
-public class ReportTest {
+class ReportTest {
 
     // Files are grouped together now.
     @Test

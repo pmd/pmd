@@ -18,7 +18,7 @@ import java.util.List;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
 
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.internal.util.IOUtil;
 
 /**
  * Extracts a zip file with preserving the unix file permissions.

@@ -19,11 +19,11 @@ import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.internal.SystemProps;
-import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
+import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
 /** Applies a set of rules to a set of ASTs. */
@@ -63,15 +63,16 @@ public class RuleApplicator {
             
             RuleContext ctx = RuleContext.create(listener, rule);
             rule.start(ctx);
-            try {
+            try (TimedOperation rcto = TimeTracker.startOperation(TimedOperationCategory.RULE, rule.getName())) {
 
+                int nodeCounter = 0;
                 Iterator<? extends Node> targets = rule.getTargetSelector().getVisitedNodes(idx);
                 while (targets.hasNext()) {
                     Node node = targets.next();
 
-                    try (TimedOperation rcto = TimeTracker.startOperation(TimedOperationCategory.RULE, rule.getName())) {
+                    try {
+                        nodeCounter++;
                         rule.apply(node, ctx);
-                        rcto.close(1);
                     } catch (RuntimeException e) {
                         reportOrRethrow(listener, rule, node, AssertionUtil.contexted(e), true);
                     } catch (StackOverflowError e) {
@@ -80,6 +81,8 @@ public class RuleApplicator {
                         reportOrRethrow(listener, rule, node, AssertionUtil.contexted(e), SystemProps.isErrorRecoveryMode());
                     }
                 }
+                
+                rcto.close(nodeCounter);
             } finally {
                 rule.end(ctx);
             }

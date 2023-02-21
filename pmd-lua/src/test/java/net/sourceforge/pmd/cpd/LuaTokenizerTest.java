@@ -41,12 +41,12 @@ class LuaTokenizerTest extends CpdTextComparisonTest {
     }
 
     @Test
-    public void testLuauTypes() {
+    void testLuauTypes() {
         doTest("luauTypes");
     }
 
     @Test
-    public void testComment() {
+    void testComment() {
         doTest("comment");
     }
 }

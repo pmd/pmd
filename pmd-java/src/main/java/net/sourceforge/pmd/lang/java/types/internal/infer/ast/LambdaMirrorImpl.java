@@ -9,7 +9,6 @@ import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
@@ -29,6 +28,7 @@ import net.sourceforge.pmd.lang.java.types.TypingContext;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.LambdaExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors.MirrorMaker;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 class LambdaMirrorImpl extends BaseFunctionalMirror<ASTLambdaExpression> implements LambdaExprMirror {
 

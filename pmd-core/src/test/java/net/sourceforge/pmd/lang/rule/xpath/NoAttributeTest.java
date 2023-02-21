@@ -12,10 +12,10 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.xpath.NoAttribute.NoAttrScope;
+import net.sourceforge.pmd.util.IteratorUtil;
 
 /**
  * @author Clément Fournier

@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.lang.apex.ApexLanguageProcessor;
 import net.sourceforge.pmd.lang.apex.multifile.ApexMultifileAnalysis;
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
@@ -29,10 +30,10 @@ public final class ASTApexFile extends AbstractApexNode<AstNode> implements Root
     ASTApexFile(ParserTask task,
                 Compilation jorjeNode,
                 Map<Integer, String> suppressMap,
-                @NonNull ApexMultifileAnalysis multifileAnalysis) {
+                @NonNull ApexLanguageProcessor apexLang) {
         super(jorjeNode);
-        this.astInfo = new AstInfo<>(task, this, suppressMap);
-        this.multifileAnalysis = multifileAnalysis;
+        this.astInfo = new AstInfo<>(task, this).withSuppressMap(suppressMap);
+        this.multifileAnalysis = apexLang.getMultiFileState();
         this.setRegion(TextRegion.fromOffsetLength(0, task.getTextDocument().getLength()));
     }
 

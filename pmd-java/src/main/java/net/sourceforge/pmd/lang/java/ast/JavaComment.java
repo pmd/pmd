@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.stream.Stream;
 
-import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeNode;
@@ -14,6 +13,7 @@ import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.reporting.Reportable;
+import net.sourceforge.pmd.util.IteratorUtil;
 
 /**
  * Wraps a comment token to provide some utilities.

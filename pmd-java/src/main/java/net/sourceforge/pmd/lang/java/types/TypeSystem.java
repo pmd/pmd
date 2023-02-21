@@ -23,7 +23,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 
-import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
@@ -40,6 +39,7 @@ import net.sourceforge.pmd.lang.java.symbols.internal.asm.Classpath;
 import net.sourceforge.pmd.lang.java.types.BasePrimitiveSymbol.RealPrimitiveSymbol;
 import net.sourceforge.pmd.lang.java.types.BasePrimitiveSymbol.VoidSymbol;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
+import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**

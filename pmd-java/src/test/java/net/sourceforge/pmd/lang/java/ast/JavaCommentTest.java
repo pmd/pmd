@@ -21,10 +21,10 @@ import net.sourceforge.pmd.lang.java.BaseParserTest;
 /**
  * @author Clément Fournier
  */
-public class JavaCommentTest extends BaseParserTest {
+class JavaCommentTest extends BaseParserTest {
 
     @Test
-    public void testFilteredLines() {
+    void testFilteredLines() {
         JavaComment comment = parseComment(
             "/**\n"
                 + " * @author Clément Fournier\n"
@@ -37,7 +37,7 @@ public class JavaCommentTest extends BaseParserTest {
     }
 
     @Test
-    public void testFilteredLinesKeepBlankLines() {
+    void testFilteredLinesKeepBlankLines() {
         JavaComment comment = parseComment(
             "/**\n"
                 + " * @author Clément Fournier\n"
@@ -56,7 +56,7 @@ public class JavaCommentTest extends BaseParserTest {
 
 
     @Test
-    public void getLeadingComments() {
+    void getLeadingComments() {
         ASTCompilationUnit parsed = java.parse("/** a */ class Fooo { /** b */ int field; }");
         List<JavadocCommentOwner> docCommentOwners = parsed.descendants(JavadocCommentOwner.class).toList();
 

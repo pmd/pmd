@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.kotlin;
 
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.lang.BaseLanguageModule;
+import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
 
 /**
  * Language Module for Kotlin
@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.BaseLanguageModule;
  * <p>Note: Kotlin support is considered an experimental feature. The AST structure might change.</p>
  */
 @Experimental
-public class KotlinLanguageModule extends BaseLanguageModule {
+public class KotlinLanguageModule extends SimpleLanguageModuleBase {
 
     /** The name. */
     public static final String NAME = "Kotlin";
@@ -24,7 +24,9 @@ public class KotlinLanguageModule extends BaseLanguageModule {
      * Create a new instance of Kotlin Language Module.
      */
     public KotlinLanguageModule() {
-        super(NAME, null, TERSE_NAME, "kt", "ktm");
-        addDefaultVersion("1.6-rfc+0.1", new KotlinHandler(), "1.6");
+        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("kt", "ktm")
+                              .addDefaultVersion("1.6-rfc+0.1", "1.6"),
+              new KotlinHandler());
+
     }
 }

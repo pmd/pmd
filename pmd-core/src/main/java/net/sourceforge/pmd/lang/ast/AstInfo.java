@@ -10,9 +10,11 @@ import java.util.Map;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.lang.LanguageProcessor;
+import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * The output of {@link Parser#parse(ParserTask)}.
@@ -23,22 +25,21 @@ public final class AstInfo<T extends RootNode> {
 
     private final TextDocument textDocument;
     private final T rootNode;
+    private final LanguageProcessorRegistry lpReg;
     private final Map<Integer, String> suppressionComments;
 
 
     public AstInfo(ParserTask task, T rootNode) {
-        this(task, rootNode, Collections.emptyMap());
+        this(task.getTextDocument(), rootNode, task.getLpRegistry(), Collections.emptyMap());
     }
 
-    public AstInfo(ParserTask task, T rootNode, Map<Integer, String> suppressionComments) {
-        this(task.getTextDocument(), rootNode, suppressionComments);
-    }
-
-    public AstInfo(TextDocument textDocument,
-                   T rootNode,
-                   Map<Integer, String> suppressionComments) {
+    private AstInfo(TextDocument textDocument,
+                    T rootNode,
+                    LanguageProcessorRegistry lpReg,
+                    Map<Integer, String> suppressionComments) {
         this.textDocument = AssertionUtil.requireParamNotNull("text document", textDocument);
         this.rootNode = AssertionUtil.requireParamNotNull("root node", rootNode);
+        this.lpReg = lpReg;
         this.suppressionComments = AssertionUtil.requireParamNotNull("suppress map", suppressionComments);
     }
 
@@ -56,6 +57,13 @@ public final class AstInfo<T extends RootNode> {
     }
 
     /**
+     * Returns the language processor that parsed the tree.
+     */
+    public LanguageProcessor getLanguageProcessor() {
+        return lpReg.getProcessor(textDocument.getLanguageVersion().getLanguage());
+    }
+
+    /**
      * Returns the map of line numbers to suppression / review comments.
      * Only single line comments are considered, that start with the configured
      * "suppressMarker", which by default is "PMD". The text after the
@@ -70,6 +78,17 @@ public final class AstInfo<T extends RootNode> {
     @Experimental
     public Map<Integer, String> getSuppressionComments() {
         return suppressionComments;
+    }
+
+
+    @Experimental
+    public AstInfo<T> withSuppressMap(Map<Integer, String> map) {
+        return new AstInfo<>(
+            textDocument,
+            rootNode,
+            lpReg,
+            map
+        );
     }
 
 }

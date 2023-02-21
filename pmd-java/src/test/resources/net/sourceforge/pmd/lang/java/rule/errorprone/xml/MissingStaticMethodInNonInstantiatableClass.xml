@@ -465,6 +465,45 @@ public final class Test {
     </test-code>
 
     <test-code>
+        <description>#4393 [java] MissingStaticMethodInNonInstantiatableClass should consider lombok's UtilityClass</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
+public final class Test {
+   int x;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4393 [java] MissingStaticMethodInNonInstantiatableClass should consider lombok's UtilityClass</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
+public final class Test {
+   public static final String CONSTANT = "Constant";
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4393 [java] MissingStaticMethodInNonInstantiatableClass should consider lombok's UtilityClass</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
+public final class Test {
+   private static final String CONSTANT = "Constant";
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>#4225 [java] MissingStaticMethodInNonInstantiatableClass should consider Lombok's @NoArgsConstructor</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[

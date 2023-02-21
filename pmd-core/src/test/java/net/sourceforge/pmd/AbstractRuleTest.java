@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd;
 
+import static net.sourceforge.pmd.ReportTestUtil.getReportForRuleApply;
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.inRange;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -16,8 +17,8 @@ import static org.mockito.Mockito.verify;
 import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
@@ -27,9 +28,9 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 
 
-public class AbstractRuleTest {
+class AbstractRuleTest {
 
-    public static class MyRule extends AbstractRule {
+    private static class MyRule extends AbstractRule {
         private static final PropertyDescriptor<String> FOO_PROPERTY = PropertyFactory.stringProperty("foo").desc("foo property").defaultValue("x").build();
         private static final PropertyDescriptor<String> FOO_DEFAULT_PROPERTY = PropertyFactory.stringProperty("fooDefault")
                 .defaultValue("bar")
@@ -38,7 +39,7 @@ public class AbstractRuleTest {
 
         private static final PropertyDescriptor<String> XPATH_PROPERTY = PropertyFactory.stringProperty("xpath").desc("xpath property").defaultValue("").build();
 
-        public MyRule() {
+        MyRule() {
             definePropertyDescriptor(FOO_PROPERTY);
             definePropertyDescriptor(XPATH_PROPERTY);
             definePropertyDescriptor(FOO_DEFAULT_PROPERTY);
@@ -69,11 +70,14 @@ public class AbstractRuleTest {
         }
     }
 
+    @RegisterExtension
+    private final DummyParsingHelper helper = new DummyParsingHelper();
+
     @Test
     void testCreateRV() {
         MyRule r = new MyRule();
         r.setRuleSetName("foo");
-        DummyRootNode s = DummyLanguageModule.parse("abc()", "filename");
+        DummyRootNode s = helper.parse("abc()", "filename");
 
         RuleViolation rv = new ParametricRuleViolation(r, s, r.getMessage());
         assertEquals(1, rv.getBeginLine(), "Line number mismatch!");
@@ -86,7 +90,7 @@ public class AbstractRuleTest {
     @Test
     void testCreateRV2() {
         MyRule r = new MyRule();
-        DummyRootNode s = DummyLanguageModule.parse("abc()", "filename");
+        DummyRootNode s = helper.parse("abc()", "filename");
         RuleViolation rv = new ParametricRuleViolation(r, s, "specificdescription");
         assertEquals(1, rv.getBeginLine(), "Line number mismatch!");
         assertEquals("filename", rv.getFilename(), "Filename mismatch!");
@@ -105,16 +109,16 @@ public class AbstractRuleTest {
         r.definePropertyDescriptor(PropertyFactory.intProperty("testInt").desc("description").require(inRange(0, 100)).defaultValue(10).build());
         r.setMessage("Message ${packageName} ${className} ${methodName} ${variableName} ${testInt} ${noSuchProperty}");
 
-        DummyRootNode s = DummyLanguageModule.parse("abc()", "filename");
+        DummyRootNode s = helper.parse("abc()", "filename");
 
-        RuleViolation rv = RuleContextTest.getReportForRuleApply(r, s).getViolations().get(0);
+        RuleViolation rv = getReportForRuleApply(r, s).getViolations().get(0);
         assertEquals("Message foo ${className} ${methodName} ${variableName} 10 ${noSuchProperty}", rv.getDescription());
     }
 
     @Test
     void testRuleSuppress() {
-        DummyRootNode n = DummyLanguageModule.parse("abc()", "filename")
-            .withNoPmdComments(Collections.singletonMap(1, "ohio"));
+        DummyRootNode n = helper.parse("abc()", "filename")
+                                .withNoPmdComments(Collections.singletonMap(1, "ohio"));
 
         FileAnalysisListener listener = mock(FileAnalysisListener.class);
         RuleContext ctx = RuleContext.create(listener, new MyRule());

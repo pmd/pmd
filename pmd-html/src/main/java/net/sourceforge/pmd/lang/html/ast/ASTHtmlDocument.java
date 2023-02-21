@@ -21,7 +21,7 @@ public final class ASTHtmlDocument extends ASTHtmlElement implements RootNode {
                     Parser.ParserTask task,
                     Map<Integer, String> suppressMap) {
         super(document);
-        this.astInfo = new AstInfo<>(task, this, suppressMap);
+        this.astInfo = new AstInfo<>(task, this).withSuppressMap(suppressMap);
     }
 
     @Override

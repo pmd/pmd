@@ -8,10 +8,8 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 import java.util.List;
 
-import net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotReflectionTest;
-
 /**
- * See {@link TypeAnnotReflectionTest}.
+ * See {@link net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotReflectionTest}.
  *
  * @author Clément Fournier
  */

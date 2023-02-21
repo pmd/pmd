@@ -23,10 +23,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.internal.util.FileFinder;
+import net.sourceforge.pmd.internal.util.FileUtil;
+import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
-import net.sourceforge.pmd.util.FileFinder;
-import net.sourceforge.pmd.util.FileUtil;
-import net.sourceforge.pmd.util.IOUtil;
 import net.sourceforge.pmd.util.database.DBMSMetadata;
 import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
