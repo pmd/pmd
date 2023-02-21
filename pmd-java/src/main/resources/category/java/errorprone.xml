@@ -2364,7 +2364,7 @@ $topLevelClass[
             (: or has non-default constructors … :)
             ClassOrInterfaceBody/ConstructorDeclaration and
                 (: … but only private … :)
-                not(ClassOrInterfaceBody/ConstructorDeclaration[pmd-java:modifiers() != "private"]) and
+                not(ClassOrInterfaceBody/ConstructorDeclaration[@Visibility != "private"]) and
                 (: … and none annotated … :)
                 (every $x in $annotations satisfies
                       not(ClassOrInterfaceBody/ConstructorDeclaration/ModifierList/Annotation[pmd-java:typeIs($x)]))
@@ -2379,10 +2379,10 @@ $topLevelClass[
         not(ClassOrInterfaceBody/ClassOrInterfaceDeclaration
             [pmd-java:modifiers() = "static" and @Visibility != "private"]
             (: … with a default or non-private constructor … :)
-            [not(ClassOrInterfaceBody/ConstructorDeclaration) or ClassOrInterfaceBody/ConstructorDeclaration[pmd-java:modifiers() != "private"]]
+            [not(ClassOrInterfaceBody/ConstructorDeclaration) or ClassOrInterfaceBody/ConstructorDeclaration[@Visibility != "private"]]
             (: … and a non-private method returning the outer class type … :)
             [(ClassOrInterfaceBody/MethodDeclaration
-                [pmd-java:modifiers() != "private"]
+                [@Visibility != "private"]
                 [descendant::ReturnStatement/*[1][pmd-java:typeIs(ancestor::ClassOrInterfaceDeclaration[@Nested = false()]/@BinaryName)]]
             ) or (
                 (: … or the inner class extends the outer class :)
