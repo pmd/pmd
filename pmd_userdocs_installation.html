@@ -1711,7 +1711,7 @@ require it to function properly.</li>
 
 <p>There are two required parameters:</p>
 <ul>
-  <li><code class="language-plaintext highlighter-rouge">--files &lt;path&gt;</code>: path to the sources to analyse. This can be a file name, a
+  <li><code class="language-plaintext highlighter-rouge">--dir &lt;path&gt;</code>: path to the sources to analyse. This can be a file name, a
 directory or a jar or zip file containing the sources.</li>
   <li><code class="language-plaintext highlighter-rouge">--minimum-tokens &lt;number&gt;</code>: the minimum token length which should be reported as a duplicate.</li>
 </ul>
@@ -1732,7 +1732,7 @@ directory or a jar or zip file containing the sources.</li>
   <div class="tab-content">
     <div role="tabpanel" class="tab-pane active" id="cpd-linux">
 <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">~ $ </span><span class="s2">cd</span> ~/bin/pmd-bin-6.55.0-SNAPSHOT/bin
-<span class="gp">~/.../bin $ </span><span class="s2">./run.sh</span> cpd --minimum-tokens 100 --files /home/me/src
+<span class="gp">~/.../bin $ </span><span class="s2">./run.sh</span> cpd --minimum-tokens 100 --dir /home/me/src
 
   Found a 7 line (110 tokens) duplication in the following files:
   Starting at line 579 of /home/me/src/test/java/foo/FooTypeTest.java
@@ -1748,7 +1748,7 @@ directory or a jar or zip file containing the sources.</li>
     </div>
     <div role="tabpanel" class="tab-pane" id="cpd-windows">
 <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">C:\ &gt; </span><span class="s2">cd</span> C:\pmd-bin-6.55.0-SNAPSHOT\bin
-<span class="gp">C:\...\bin &gt; </span><span class="s2">.\cpd.bat</span> --minimum-tokens 100 --files c:\temp\src
+<span class="gp">C:\...\bin &gt; </span><span class="s2">.\cpd.bat</span> --minimum-tokens 100 --dir c:\temp\src
 
   Found a 7 line (110 tokens) duplication in the following files:
   Starting at line 579 of c:\temp\src\test\java\foo\FooTypeTest.java
@@ -1807,7 +1807,7 @@ directory or a jar or zip file containing the sources.</li>
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Feb 17, 2023 <br />
+             Site last generated: Feb 21, 2023 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>

@@ -1700,7 +1700,8 @@ See how to add it <a href="pmd_devdocs_major_adding_new_cpd_language.html">here<
 
 <tr>
     <td><a style="pointer-events: none; cursor: default;" name="-files"><code>--files</code><br /><code>--dir</code><br /><code>-d</code></a></td>
-    <td><span class="label label-primary">Required</span>  List of files and directories to process</td>
+    <td><span class="label label-primary">Required</span>  List of files and directories to process.
+                            <p>Note: <code>--files</code> is <span class="label label-default">deprecated</span> since PMD 6.52.0. Usage of <code>--dir</code> is preferred.</p></td>
     <td><code></code></td>
     <td></td>
 </tr>
@@ -1722,7 +1723,7 @@ See how to add it <a href="pmd_devdocs_major_adding_new_cpd_language.html">here<
 
 <tr>
     <td><a style="pointer-events: none; cursor: default;" name="-file-list"><code>--file-list</code></a></td>
-    <td>Path to file containing a comma delimited list of files to analyze. If this is given, then you don't need to provide <code>--files</code>.</td>
+    <td>Path to file containing a comma delimited list of files to analyze. If this is given, then you don't need to provide <code>--dir</code>.</td>
     <td><code></code></td>
     <td></td>
 </tr>
@@ -2133,35 +2134,35 @@ See how to add it <a href="pmd_devdocs_major_adding_new_cpd_language.html">here<
 
 <p>Minimum required options: Just give it the minimum duplicate size and the source directory:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./run.sh cpd --minimum-tokens 100 --files /usr/local/java/src/java
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./run.sh cpd --minimum-tokens 100 --dir /usr/local/java/src/java
 </code></pre></div></div>
 
 <p>You can also specify the language:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./run.sh cpd --minimum-tokens 100 --files /path/to/c/source --language cpp
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./run.sh cpd --minimum-tokens 100 --dir /path/to/c/source --language cpp
 </code></pre></div></div>
 
 <p>You may wish to check sources that are stored in different directories:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./run.sh cpd --minimum-tokens 100 --files /path/to/other/source  --files /path/to/other/source --files /path/to/other/source --language fortran
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./run.sh cpd --minimum-tokens 100 --dir /path/to/other/source  --dir /path/to/other/source --dir /path/to/other/source --language fortran
 </code></pre></div></div>
 
-<p><em>There should be no limit to the number of ‘–files’, you may add… But if you stumble one, please tell us !</em></p>
+<p><em>There should be no limit to the number of <code class="language-plaintext highlighter-rouge">--dir</code>, you may add… But if you stumble one, please tell us !</em></p>
 
 <p>And if you’re checking a C source tree with duplicate files in different architecture directories
 you can skip those using –skip-duplicate-files:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./run.sh cpd --minimum-tokens 100 --files /path/to/c/source --language cpp --skip-duplicate-files
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./run.sh cpd --minimum-tokens 100 --dir /path/to/c/source --language cpp --skip-duplicate-files
 </code></pre></div></div>
 
 <p>You can also specify the encoding to use when parsing files:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./run.sh cpd --minimum-tokens 100 --files /usr/local/java/src/java --encoding utf-16le
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./run.sh cpd --minimum-tokens 100 --dir /usr/local/java/src/java --encoding utf-16le
 </code></pre></div></div>
 
 <p>You can also specify a report format - here we’re using the XML report:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./run.sh cpd --minimum-tokens 100 --files /usr/local/java/src/java --format xml
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./run.sh cpd --minimum-tokens 100 --dir /usr/local/java/src/java --format xml
 </code></pre></div></div>
 
 <p>The default format is a text report, and there’s also a <code class="language-plaintext highlighter-rouge">csv</code> report.</p>
@@ -2169,7 +2170,7 @@ you can skip those using –skip-duplicate-files:</p>
 <p>Note that CPD is pretty memory-hungry; you may need to give Java more memory to run it, like this:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ export PMD_JAVA_OPTS=-Xmx512m
-$ ./run.sh cpd --minimum-tokens 100 --files /usr/local/java/src/java
+$ ./run.sh cpd --minimum-tokens 100 --dir /usr/local/java/src/java
 </code></pre></div></div>
 
 <p>In order to change the heap size under Windows, you’ll need to edit the batch file <code class="language-plaintext highlighter-rouge">cpd.bat</code> or
@@ -2177,12 +2178,12 @@ set the environment variable <code class="language-plaintext highlighter-rouge">
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>C:\ &gt; cd C:\pmd-bin-6.55.0-SNAPSHOT\bin
 C:\...\bin &gt; set PMD_JAVA_OPTS=-Xmx512m
-C:\...\bin &gt; .\cpd.bat --minimum-tokens 100 --files c:\temp\src
+C:\...\bin &gt; .\cpd.bat --minimum-tokens 100 --dir c:\temp\src
 </code></pre></div></div>
 
 <p>If you specify a source directory but don’t want to scan the sub-directories, you can use the non-recursive option:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./run.sh cpd --minimum-tokens 100 --non-recursive --files /usr/local/java/src/java
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./run.sh cpd --minimum-tokens 100 --non-recursive --dir /usr/local/java/src/java
 </code></pre></div></div>
 
 <h3 id="exit-status">Exit status</h3>
@@ -2193,7 +2194,7 @@ This behavior has been introduced to ease CPD integration into scripts or hooks,
 <table>
 <tr><td>0</td><td>Everything is fine, no code duplications found</td></tr>
 <tr><td>1</td><td>Couldn't understand command line parameters or CPD exited with an exception</td></tr>
-<tr><td>4</td><td>At least one code duplication has been detected unless '--fail-on-violation false' is used.</td></tr>
+<tr><td>4</td><td>At least one code duplication has been detected unless `--fail-on-violation false` is used.</td></tr>
 </table>
 
 <h2 id="supported-languages">Supported Languages</h2>
@@ -2696,7 +2697,7 @@ the comment based approach will be extended to those of them that can support it
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Feb 17, 2023 <br />
+             Site last generated: Feb 21, 2023 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>
