@@ -141,17 +141,17 @@ public class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         result = CpdExecutor.runCpd(tempDir, "-h");
         result.assertExecutionResult(0, SUPPORTED_LANGUAGES_CPD);
 
-        result = CpdExecutor.runCpd(tempDir, "--minimum-tokens", "10", "--format", "text", "--files", srcDir);
+        result = CpdExecutor.runCpd(tempDir, "--minimum-tokens", "10", "--format", "text", "--dir", srcDir);
         result.assertExecutionResult(4, "Found a 10 line (55 tokens) duplication in the following files:");
         result.assertExecutionResult(4, "Class1.java");
         result.assertExecutionResult(4, "Class2.java");
 
-        result = CpdExecutor.runCpd(tempDir, "--minimum-tokens", "10", "--format", "xml", "--files", srcDir);
+        result = CpdExecutor.runCpd(tempDir, "--minimum-tokens", "10", "--format", "xml", "--dir", srcDir);
         result.assertExecutionResult(4, "<duplication lines=\"10\" tokens=\"55\">");
         result.assertExecutionResult(4, "Class1.java\"/>");
         result.assertExecutionResult(4, "Class2.java\"/>");
 
-        result = CpdExecutor.runCpd(tempDir, "--minimum-tokens", "1000", "--format", "text", "--files", srcDir);
+        result = CpdExecutor.runCpd(tempDir, "--minimum-tokens", "1000", "--format", "text", "--dir", srcDir);
         result.assertExecutionResult(0);
     }
 }

@@ -116,7 +116,7 @@ Additionally, the following options, are specified most of the time even though 
 Like for PMD, CPD is started on Unix by `run.sh cpd` and on Windows by `cpd.bat`.
 
 There are two required parameters:
-* `--files <path>`: path to the sources to analyse. This can be a file name, a
+* `--dir <path>`: path to the sources to analyse. This can be a file name, a
   directory or a jar or zip file containing the sources.
 * `--minimum-tokens <number>`: the minimum token length which should be reported as a duplicate.
 
@@ -138,7 +138,7 @@ There are two required parameters:
   <div class="tab-content">
     <div role="tabpanel" class="tab-pane active" id="cpd-linux">
 <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">~ $ </span><span class="s2">cd</span> ~/bin/pmd-bin-{{site.pmd.version}}/bin
-<span class="gp">~/.../bin $ </span><span class="s2">./run.sh</span> cpd --minimum-tokens 100 --files /home/me/src
+<span class="gp">~/.../bin $ </span><span class="s2">./run.sh</span> cpd --minimum-tokens 100 --dir /home/me/src
 
   Found a 7 line (110 tokens) duplication in the following files:
   Starting at line 579 of /home/me/src/test/java/foo/FooTypeTest.java
@@ -154,7 +154,7 @@ There are two required parameters:
     </div>
     <div role="tabpanel" class="tab-pane" id="cpd-windows">
 <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">C:\ &gt; </span><span class="s2">cd</span> C:\pmd-bin-{{site.pmd.version}}\bin
-<span class="gp">C:\...\bin > </span><span class="s2">.\cpd.bat</span> --minimum-tokens 100 --files c:\temp\src
+<span class="gp">C:\...\bin > </span><span class="s2">.\cpd.bat</span> --minimum-tokens 100 --dir c:\temp\src
 
   Found a 7 line (110 tokens) duplication in the following files:
   Starting at line 579 of c:\temp\src\test\java\foo\FooTypeTest.java
