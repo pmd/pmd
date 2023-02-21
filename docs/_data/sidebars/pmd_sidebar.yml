@@ -406,6 +406,9 @@ entries:
     - title: Gherkin
       url: /pmd_languages_gherkin.html
       output: web, pdf
+    - title: Julia
+      url: /pmd_languages_julia.html
+      output: web, pdf
   - title: Developer Documentation
     output: web, pdf
     folderitems:
