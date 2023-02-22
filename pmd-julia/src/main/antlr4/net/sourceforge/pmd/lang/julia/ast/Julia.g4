@@ -2,6 +2,12 @@ grammar Julia;
 
 // Parser
 
+// TODO
+
+// Calculate cyclomatic complexity
+// Create tokenizer for CPD
+// Publish first version 0.1 in Github and remain public for all increments
+
 main
     : functionBody (functionDefinition functionBody)* END? EOF
     ;
@@ -120,6 +126,18 @@ anyToken
 
 // Lexer
 
+
+fragment
+Digit
+    : [0-9]
+    ;
+
+INT
+    : Digit+
+    ;
+
+FLOAT : Digit+ '.' Digit* ;
+
 COMMENTS : '#' (~[=\r\n]~[\r\n]*)? -> skip; // skip #= because otherwise multiline comments are not recognized, see next line
 MULTILINECOMMENTS1 : '#=' .*? '=#' -> skip;
 MULTILINECOMMENTS2 : '```' .*? '```' -> skip;
@@ -147,11 +165,8 @@ TRY : 'try' ;
 TYPE : 'type' ;
 WHERE : 'where' ;
 WHILE : 'while' ;
+INSTANCE_OF : '::';
 
 IDENTIFIER : [$a-zA-Z_] [a-zA-Z_0-9]* ;
 
 ANY : . ;
-
-
-
-
