@@ -2,12 +2,6 @@ grammar Julia;
 
 // Parser
 
-// TODO
-
-// Calculate cyclomatic complexity
-// Create tokenizer for CPD
-// Publish first version 0.1 in Github and remain public for all increments
-
 main
     : functionBody (functionDefinition functionBody)* END? EOF
     ;
