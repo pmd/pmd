@@ -3,33 +3,32 @@
  */
 
 /**
- * @see <a href="https://openjdk.java.net/jeps/420">JEP 420: Pattern Matching for switch (Second Preview)</a>
+ * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a>
  */
 public class DealingWithNull {
 
     static void testFooBar(String s) {
         switch (s) {
             case null         -> System.out.println("Oops");
-            case "Foo", "Bar" -> System.out.println("Great");
+            case "Foo", "Bar" -> System.out.println("Great"); // CaseConstant
             default           -> System.out.println("Ok");
         }
     }
 
     static void testStringOrNull(Object o) {
         switch (o) {
-            case null, String s -> System.out.println("String: " + s);
-            case default -> System.out.print("default case");
+            case String s       -> System.out.println("String: " + s); // CasePattern
+            case null           -> System.out.println("null");
+            default             -> System.out.println("default case");
         }
     }
 
-    static void test(Object o) {
+    static void testStringOrDefaultNull(Object o) {
         switch (o) {
-            case null     -> System.out.println("null!");
-            case String s -> System.out.println("String");
-            default       -> System.out.println("Something else");
+            case String s       -> System.out.println("String: " + s);
+            case null, default  -> System.out.println("null or default case");
         }
     }
-
 
     static void test2(Object o) {
         switch (o) {
@@ -43,8 +42,11 @@ public class DealingWithNull {
 
     static void test3(Object o) {
         switch(o) {
-            case null: case String s: 
-                System.out.println("String, including null");
+            case null:
+                System.out.println("null");
+                break; // note: fall-through to a CasePattern is not allowed, as the pattern variable is not initialized
+            case String s:
+                System.out.println("String");
                 break;
             default:
                 System.out.println("default case");
@@ -52,7 +54,8 @@ public class DealingWithNull {
         }
 
         switch(o) {
-            case null, String s -> System.out.println("String, including null");
+            case null -> System.out.println("null");
+            case String s -> System.out.println("String");
             default -> System.out.println("default case");
         }
 
@@ -68,7 +71,7 @@ public class DealingWithNull {
     }
 
     public static void main(String[] args) {
-        test("test");
+        testStringOrDefaultNull("test");
         test2(2);
         try {
             test2(null);

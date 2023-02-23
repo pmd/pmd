@@ -408,10 +408,6 @@ fun TreeNodeWrapper<Node, *>.typePattern(contents: NodeSpec<ASTTypePattern>) =
         child<ASTTypePattern>(ignoreChildren = contents == EmptyAssertions) {
             contents()
         }
-fun TreeNodeWrapper<Node, *>.guardedPattern(contents: NodeSpec<ASTGuardedPattern>) =
-        child<ASTGuardedPattern>(ignoreChildren = contents == EmptyAssertions) {
-            contents()
-        }
 
 
 fun TreeNodeWrapper<Node, *>.arrayType(contents: NodeSpec<ASTArrayType> = EmptyAssertions) =
