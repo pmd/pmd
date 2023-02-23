@@ -1,4 +1,13 @@
 /**
+ * Support "JEP 433: Pattern Matching for switch (Fourth Preview)" for Java 20 Preview
+ *    SwitchLabel simplified
+ * Support "JEP 432: Record Patterns (Second Preview)" for Java 20 Preview
+ *    ForStatement allows record patterns
+ *    Removed named record patterns (optional VariableDeclaratorId following the pattern)
+ * Remove support for Java 18 preview language features
+ *    GuardedPattern is removed
+ * Andreas Dangel 02/2023
+ *====================================================================
  * Support "JEP 427: Pattern Matching for switch (Third Preview)" for Java 19 Preview
  * Note: GuardedPattern is deprecated and only valid for 17-preview and 18-preview
    * New AST node: ASTSwitchGuard (production "Guard") - used within switch case labels for refining a pattern
@@ -542,48 +551,54 @@ public class JavaParser {
   }
 
   private boolean isJEP406Supported() {
-    return (jdkVersion == 18 || jdkVersion == 19) && preview;
+    return (jdkVersion == 19 || jdkVersion == 20) && preview;
   }
 
   private void checkForPatternMatchingInSwitch() {
     if (!isJEP406Supported()) {
-        throwParseException("Pattern Matching in Switch is only supported with JDK 18 Preview or JDK 19 Preview.");
+        throwParseException("Pattern Matching in Switch is only supported with JDK 19 Preview or JDK 20 Preview.");
     }
   }
 
   private void checkForNullCaseLabel() {
     if (!isJEP406Supported()) {
-        throwParseException("Null case labels in switch are only supported with JDK 18 Preview or JDK 19 Preview.");
+        throwParseException("Null case labels in switch are only supported with JDK 19 Preview or JDK 20 Preview.");
     }
   }
 
   private void checkForDefaultCaseLabel() {
+    if (!((jdkVersion == 19) && preview)) {
+        throwParseException("Default case labels in switch are only supported with JDK 19 Preview.");
+    }
+  }
+
+  private void checkForNullWithDefaultCaseLabel() {
     if (!isJEP406Supported()) {
-        throwParseException("Default case labels in switch are only supported with JDK 18 Preview or JDK 19 Preview.");
+        throwParseException("Null case labels with default in switch are only supported with JDK 19 Preview or JDK 20 Preview.");
     }
   }
 
-  private void checkForGuardedPatterns() {
-    if (!((jdkVersion == 18) && preview)) {
-        throwParseException("Guarded patterns are only supported with JDK 18 Preview.");
-    }
-  }
-
-  private void checkForParenthesizedInstanceOfPattern() {
-    if (!((jdkVersion == 18) && preview)) {
-        throwParseException("Parenthesized InstanceOf patterns are only supported with JDK 18 Preview.");
+  private void checkForParenthesizedPattern() {
+    if (!((jdkVersion == 19 || jdkVersion == 20) && preview)) {
+        throwParseException("Parenthesized patterns are only supported with JDK 19 Preview or JDK 20 Preview.");
     }
   }
 
   private void checkForGuard() {
-    if (!((jdkVersion == 19) && preview)) {
-      throwParseException("Guards are only supported with JDK 19 Preview.");
+    if (!((jdkVersion == 19 || jdkVersion == 20) && preview)) {
+      throwParseException("Guards are only supported with JDK 19 Preview or JDK 20 Preview.");
     }
   }
 
   private void checkForRecordPatterns() {
-    if (!((jdkVersion == 19) && preview)) {
-      throwParseException("Record Patterns are only supported with JDK 19 Preview.");
+    if (!((jdkVersion == 19 || jdkVersion == 20) && preview)) {
+      throwParseException("Record Patterns are only supported with JDK 19 Preview or JDK 20 Preview.");
+    }
+  }
+
+  private void checkForRecordPatternsEnhancedFor() {
+    if (!((jdkVersion == 20) && preview)) {
+      throwParseException("Record Patterns in enhanced for statements are only supported with JDK 20 Preview.");
     }
   }
 
@@ -1804,23 +1819,17 @@ void Pattern() #void:
 {
     LOOKAHEAD((Annotation())* ReferenceType() "(") RecordPattern()
     | LOOKAHEAD("(") ParenthesizedPattern()
-    | TypePattern() [ GuardedPatternCondition() #GuardedPattern(2) {checkForGuardedPatterns();} ]
-}
-
-void GuardedPatternCondition() #void:
-{}
-{
-    "&&" ConditionalAndExpression()
+    | TypePattern()
 }
 
 void ParenthesizedPattern() #void:
-{}
+{checkForParenthesizedPattern();}
 {
     "(" Pattern() ")" { AstImplUtil.bumpParenDepth((ASTPattern) jjtree.peekNode()); }
 }
 
 void TypePattern():
-{}
+{checkforBadInstanceOfPattern();}
 {
   ( "final" {jjtThis.setFinal(true);} | Annotation() )*
   Type()
@@ -1830,7 +1839,7 @@ void TypePattern():
 void RecordPattern():
 { checkForRecordPatterns(); }
 {
-  (Annotation())* ReferenceType() RecordStructurePattern() [ VariableDeclaratorId() ]
+  (Annotation())* ReferenceType() RecordStructurePattern()
 }
 
 void RecordStructurePattern() #ComponentPatternList:
@@ -1851,13 +1860,8 @@ void InstanceOfExpression() #InstanceOfExpression(>1):
   RelationalExpression()
   [ "instanceof"
       (
-      // Note: this can be simplified when support for java 18 preview is removed.
-      // Here the production Pattern is inlined to avoid that a following conditional &&
-      // be parsed as a pattern guard.
-        LOOKAHEAD("final" | (Annotation())* Type() <IDENTIFIER>) {checkforBadInstanceOfPattern();} TypePattern()
-      | LOOKAHEAD((Annotation())* ReferenceType() "(")  {checkForRecordPatterns();} RecordPattern()
-      | LOOKAHEAD("(") {checkForParenthesizedInstanceOfPattern();} ParenthesizedPattern()
-      | (Annotation())* Type()
+        LOOKAHEAD(Pattern()) Pattern()
+        | (Annotation())* Type()
       )
   ]
 }
@@ -2344,16 +2348,19 @@ void SwitchLabel() :
 void CaseLabelElement(ASTSwitchLabel label) #void:
 {}
 {
-    "default" {label.setDefault(); checkForDefaultCaseLabel();}
+    "default" {label.setDefault(); checkForDefaultCaseLabel();} // only valid in java-19-preview
+    |
+    NullLiteral() {checkForNullCaseLabel();}
+        [
+            // this lookahead is only required to allow parsing java-19-preview code
+            // since java-20-preview, combining null is only allowed with default
+            LOOKAHEAD(2)
+            "," "default" {label.setDefault(); checkForNullWithDefaultCaseLabel();}
+        ]
     |
     LOOKAHEAD(Pattern()) Pattern() {checkForPatternMatchingInSwitch();} ( LOOKAHEAD({isKeyword("when")}) Guard() )*
     |
     ConditionalExpression() #Expression
-        {
-            if ("null".equals(((ASTExpression) jjtree.peekNode()).jjtGetFirstToken().getImage())) {
-                checkForNullCaseLabel();
-            }
-        }
 }
 
 void Guard() #SwitchGuard:
@@ -2405,15 +2412,21 @@ void ForStatement() :
 {
   "for" "("
 (
-      LOOKAHEAD(LocalVariableDeclaration() ":")
-      {checkForBadJDK15ForLoopSyntaxArgumentsUsage();}
-      LocalVariableDeclaration() ":" Expression()
+      LOOKAHEAD(EnhancedForDeclaration() ":")
+      EnhancedForDeclaration() ":" Expression()
 |
   [ ForInit() ] ";"
   [ Expression() ] ";"
   [ ForUpdate() ]
 )
   ")" Statement()
+}
+
+void EnhancedForDeclaration() #void:
+{checkForBadJDK15ForLoopSyntaxArgumentsUsage();}
+{
+      LOOKAHEAD(LocalVariableDeclaration()) LocalVariableDeclaration()
+    | {checkForRecordPatternsEnhancedFor();} RecordPattern()
 }
 
 void ForInit() :

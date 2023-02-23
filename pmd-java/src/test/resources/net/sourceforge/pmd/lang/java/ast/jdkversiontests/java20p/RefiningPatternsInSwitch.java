@@ -3,7 +3,7 @@
  */
 
 /**
- * @see <a href="https://openjdk.java.net/jeps/420">JEP 420: Pattern Matching for switch (Second Preview)</a>
+ * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a>
  */
 public class RefiningPatternsInSwitch {
 
@@ -33,7 +33,10 @@ public class RefiningPatternsInSwitch {
     
     static void testTriangleRefined(Shape s) {
         switch (s) {
-            case Triangle t && (t.calculateArea() > 100) ->
+            case null ->
+                { break; }
+            case Triangle t
+            when t.calculateArea() > 100 ->
                 System.out.println("Large triangle");
             default ->
                 System.out.println("A shape, possibly a small triangle");
@@ -42,7 +45,10 @@ public class RefiningPatternsInSwitch {
 
     static void testTriangleRefined2(Shape s) {
         switch (s) {
-            case Triangle t && (t.calculateArea() > 100) ->
+            case null ->
+                { break; }
+            case Triangle t
+            when t.calculateArea() > 100 ->
                 System.out.println("Large triangle");
             case Triangle t ->
                 System.out.println("Small triangle");

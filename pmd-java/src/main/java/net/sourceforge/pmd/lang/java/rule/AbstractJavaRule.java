@@ -61,7 +61,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForUpdate;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
-import net.sourceforge.pmd.lang.java.ast.ASTGuardedPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTImplementsList;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
@@ -877,13 +876,6 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
         return visit((JavaNode) node, data);
     }
 
-
-    @Experimental
-    @Deprecated
-    @Override
-    public Object visit(ASTGuardedPattern node, Object data) {
-        return visit((JavaNode) node, data);
-    }
 
     @Experimental
     @Override

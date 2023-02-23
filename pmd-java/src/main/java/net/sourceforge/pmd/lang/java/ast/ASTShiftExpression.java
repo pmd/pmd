@@ -17,7 +17,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
  *
  * <pre>
  *
- * ShiftExpression ::=  {@linkplain ASTAdditiveExpression AdditiveExpression} ( ( "<<"  | {@linkplain ASTRSIGNEDSHIFT RSIGNEDSHIFT} | {@linkplain ASTRUNSIGNEDSHIFT RUNSIGNEDSHIFT} ) {@linkplain ASTAdditiveExpression AdditiveExpression} )+
+ * ShiftExpression ::=  {@linkplain ASTAdditiveExpression AdditiveExpression} ( ( "&lt;&lt;"  | {@linkplain ASTRSIGNEDSHIFT RSIGNEDSHIFT} | {@linkplain ASTRUNSIGNEDSHIFT RUNSIGNEDSHIFT} ) {@linkplain ASTAdditiveExpression AdditiveExpression} )+
  *
  * </pre>
  */
@@ -43,7 +43,7 @@ public class ASTShiftExpression extends AbstractJavaTypeNode {
 
 
     /**
-     * Returns the image of the operator, i.e. "<<", ">>", or ">>>".
+     * Returns the image of the operator, i.e. "&lt;&lt;", ">>", or ">>>".
      */
     public String getOperator() {
         return getImage();
