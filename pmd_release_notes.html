@@ -1606,6 +1606,21 @@
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="java-20-support">Java 20 Support</h4>
+
+<p>This release of PMD brings support for Java 20. There are no new standard language features.</p>
+
+<p>PMD supports <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a> and
+<a href="https://openjdk.org/jeps/432">JEP 432: Record Patterns (Second Preview)</a> as preview language features.</p>
+
+<p>In order to analyze a project with PMD that uses these language features,
+you’ll need to enable it via the environment variable <code class="language-plaintext highlighter-rouge">PMD_JAVA_OPTS</code> and select the new language
+version <code class="language-plaintext highlighter-rouge">20-preview</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PMD_JAVA_OPTS=--enable-preview
+./run.sh pmd --use-version java-20-preview ...
+</code></pre></div></div>
+
 <h4 id="t-sql-support">T-SQL support</h4>
 <p>Thanks to the contribution from <a href="https://github.com/pguyot">Paul Guyot</a> PMD now has CPD support
 for T-SQL (Transact-SQL).</p>
@@ -1619,6 +1634,16 @@ for T-SQL (Transact-SQL).</p>
 
 <h3 id="fixed-issues">Fixed Issues</h3>
 <ul>
+  <li>core
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4395">#4395</a>: [core] Support environment variable CLASSPATH with pmd.bat under Windows</li>
+    </ul>
+  </li>
+  <li>java
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4333">#4333</a>: [java] Support JDK 20</li>
+    </ul>
+  </li>
   <li>java-errorprone
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/4393">#4393</a>: [java] MissingStaticMethodInNonInstantiatableClass false-positive for Lombok’s @UtilityClass for classes with non-private fields</li>
@@ -1628,6 +1653,7 @@ for T-SQL (Transact-SQL).</p>
 
 <h3 id="api-changes">API Changes</h3>
 
+<h4 id="go">Go</h4>
 <ul>
   <li>The LanguageModule of Go, that only supports CPD execution, has been deprecated. This language
 is not fully supported by PMD, so having a language module does not make sense. The functionality of CPD is
@@ -1636,6 +1662,12 @@ not affected by this change. The following class has been deprecated and will be
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-go/6.55.0-SNAPSHOT/net/sourceforge/pmd/lang/go/GoLanguageModule.html#"><code>GoLanguageModule</code></a></li>
     </ul>
   </li>
+</ul>
+
+<h4 id="java">Java</h4>
+<ul>
+  <li>Support for Java 18 preview language features have been removed. The version “18-preview” is no longer available.</li>
+  <li>The experimental class <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.java.ast.ASTGuardedPattern</code> has been removed.</li>
 </ul>
 
 <h3 id="external-contributions">External Contributions</h3>
@@ -1676,7 +1708,7 @@ not affected by this change. The following class has been deprecated and will be
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Feb 21, 2023 <br />
+             Site last generated: Feb 23, 2023 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>

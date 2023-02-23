@@ -2301,8 +2301,19 @@ if you want to analyze a project, that uses one of OpenJDK’s <a href="http://o
 
 <p>Just set the environment variable <code class="language-plaintext highlighter-rouge">PMD_JAVA_OPTS</code> before executing PMD, e.g.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PMD_JAVA_OPTS="--enable-preview"
-./run.sh pmd -d ../../../src/main/java/ -f text -R rulesets/java/quickstart.xml
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">PMD_JAVA_OPTS</span><span class="o">=</span><span class="s2">"--enable-preview"</span>
+./run.sh pmd <span class="nt">-d</span> ../../../src/main/java/ <span class="nt">-f</span> text <span class="nt">-R</span> rulesets/java/quickstart.xml
+</code></pre></div></div>
+
+<h2 id="additional-runtime-classpath">Additional runtime classpath</h2>
+
+<p>If you develop custom rules and package them as a jar file, you need to add it to PMD’s runtime classpath.
+You can either copy the jar file into the <code class="language-plaintext highlighter-rouge">lib/</code> subfolder alongside the other jar files, that are in PMD’s
+standard distribution.</p>
+
+<p>Or you can set the environment variable <code class="language-plaintext highlighter-rouge">CLASSPATH</code> before starting PMD, e.g.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">CLASSPATH</span><span class="o">=</span>custom-rule-example.jar ./run.sh pmd <span class="nt">-d</span> ../../../src/main/java/ <span class="nt">-f</span> text <span class="nt">-R</span> myrule.xml
 </code></pre></div></div>
 
 <h2 id="exit-status">Exit Status</h2>
@@ -2419,7 +2430,7 @@ $ ./run.sh pmd --file-list /home/me/src/filelist.txt -f text -R ruleset.xml --fo
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Feb 21, 2023 <br />
+             Site last generated: Feb 23, 2023 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>

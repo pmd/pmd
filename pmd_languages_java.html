@@ -1612,19 +1612,24 @@
   </thead>
   <tbody>
     <tr>
+      <td>20-preview</td>
+      <td> </td>
+      <td>6.55.0</td>
+    </tr>
+    <tr>
+      <td>20 (default)</td>
+      <td> </td>
+      <td>6.55.0</td>
+    </tr>
+    <tr>
       <td>19-preview</td>
       <td> </td>
       <td>6.48.0</td>
     </tr>
     <tr>
-      <td>19 (default)</td>
+      <td>19</td>
       <td> </td>
       <td>6.48.0</td>
-    </tr>
-    <tr>
-      <td>18-preview</td>
-      <td> </td>
-      <td>6.44.0</td>
     </tr>
     <tr>
       <td>18</td>
@@ -1712,15 +1717,16 @@
 <h2 id="using-java-preview-features">Using Java preview features</h2>
 
 <p>In order to analyze a project with PMD that uses preview language features, you’ll need to enable
-it via the environment variable <code class="language-plaintext highlighter-rouge">PMD_JAVA_OPTS</code> and select the new language version, e.g. <code class="language-plaintext highlighter-rouge">19-preview</code>:</p>
+it via the environment variable <code class="language-plaintext highlighter-rouge">PMD_JAVA_OPTS</code> and select the new language version, e.g. <code class="language-plaintext highlighter-rouge">20-preview</code>:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PMD_JAVA_OPTS=--enable-preview
-./run.sh pmd --use-version java-19-preview ...
+./run.sh pmd --use-version java-20-preview ...
 </code></pre></div></div>
 
 <p>Note: we only support preview language features for the latest two java versions.</p>
 
-<p>Note: <code class="language-plaintext highlighter-rouge">--use-version</code> is only supported since PMD 6.52.0. Older versions of PMD use two CLI options that have to be specified together: <code class="language-plaintext highlighter-rouge">-language java -version 19-preview</code>.</p>
+<p>Note: <code class="language-plaintext highlighter-rouge">--use-version</code> is only supported since PMD 6.52.0. Older versions of PMD use two CLI options that have to
+be specified together: <code class="language-plaintext highlighter-rouge">-language java -version 20-preview</code>.</p>
 
 
 
@@ -1753,7 +1759,7 @@ it via the environment variable <code class="language-plaintext highlighter-roug
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Feb 21, 2023 <br />
+             Site last generated: Feb 23, 2023 <br />
             <p>
                 <img src="images/pmd-logo-small.png" alt="Company
                 logo"/>
