@@ -14,6 +14,18 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### PMD 7 Development
+
+This release is the last planned release of PMD 6. The first version 6.0.0 was released in December 2017.
+Over the course of more than 5 years we published almost every month a new minor version of PMD 6
+with new features and improvements.
+
+Already in November 2018 we started in parallel the development of the next major version 7.0.0,
+and we are now in the process of finalizing the scope of the major version. We want to release a couple of
+release candidates before publishing the final version 7.0.0.
+
+We plan to release 7.0.0-rc1 soon. You can see the progress in [PMD 7 Tracking Issue #3898](https://github.com/pmd/pmd/issues/3898).
+
 #### T-SQL support
 Thanks to the contribution from [Paul Guyot](https://github.com/pguyot) PMD now has CPD support
 for T-SQL (Transact-SQL).
