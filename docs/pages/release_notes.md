@@ -33,9 +33,22 @@ version `20-preview`:
     export PMD_JAVA_OPTS=--enable-preview
     ./run.sh pmd --use-version java-20-preview ...
 
+#### T-SQL support
+Thanks to the contribution from [Paul Guyot](https://github.com/pguyot) PMD now has CPD support
+for T-SQL (Transact-SQL).
+
+Being based on a proper Antlr grammar, CPD can:
+
+* ignore comments
+* honor [comment-based suppressions](pmd_userdocs_cpd.html#suppression)
+
 ### Fixed Issues
+* core
+  * [#4395](https://github.com/pmd/pmd/issues/4395): \[core] Support environment variable CLASSPATH with pmd.bat under Windows
 * java
-    * [#4333](https://github.com/pmd/pmd/issues/4333): \[java] Support JDK 20
+  * [#4333](https://github.com/pmd/pmd/issues/4333): \[java] Support JDK 20
+* java-errorprone
+  * [#4393](https://github.com/pmd/pmd/issues/4393): \[java] MissingStaticMethodInNonInstantiatableClass false-positive for Lombok's @UtilityClass for classes with non-private fields
 
 ### API Changes
 
@@ -51,6 +64,8 @@ version `20-preview`:
 
 ### External Contributions
 * [#4384](https://github.com/pmd/pmd/pull/4384): \[swift] Add more swift 5.x support (#unavailable mainly) - [Richard B.](https://github.com/kenji21) (@kenji21)
+* [#4390](https://github.com/pmd/pmd/pull/4390): Add support for T-SQL using Antlr4 lexer - [Paul Guyot](https://github.com/pguyot) (@pguyot)
+* [#4392](https://github.com/pmd/pmd/pull/4392): \[java] Fix #4393 MissingStaticMethodInNonInstantiatableClass: Fix false-positive for field-only class - [Dawid Ciok](https://github.com/dawiddc) (@dawiddc)
 
 {% endtocmaker %}
 

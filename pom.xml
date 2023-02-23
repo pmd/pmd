@@ -9,12 +9,17 @@
 
     <description>
         PMD is a source code analyzer. It finds common programming flaws like unused variables, empty catch blocks,
-        unnecessary object creation, and so forth. It supports Java, JavaScript, Salesforce.com Apex and Visualforce,
-        Modelica, PLSQL, Apache Velocity, HTML, XML, XSL, Scala.
+        unnecessary object creation, and so forth. It supports many languages. It can be extended with custom rules.
+        It uses JavaCC and Antlr to parse source files into abstract syntax trees (AST) and runs rules against them to find violations.
+        Rules can be written in Java or using a XPath query.
 
-        Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code in
+        It supports Java, JavaScript, Salesforce.com Apex and Visualforce,
+        Modelica, PLSQL, Apache Velocity, HTML, XML and XSL.
+        Scala is supported, but there are currently no Scala rules available.
+
+        Additionally, it includes CPD, the copy-paste-detector. CPD finds duplicated code in
         C/C++, C#, Dart, Fortran, Gherkin, Go, Groovy, HTML, Java, JavaScript, JSP, Kotlin, Lua, Matlab, Modelica,
-        Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex, Scala, Swift and Visualforce.
+        Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex and Visualforce, Scala, Swift, T-SQL and XML.
     </description>
 
     <url>https://pmd.github.io/</url>
@@ -155,6 +160,13 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-antrun-plugin</artifactId>
                     <version>3.1.0</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>net.java.dev.javacc</groupId>
+                            <artifactId>javacc</artifactId>
+                            <version>${javacc.version}</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -686,12 +698,6 @@
                 <version>${saxon.version}</version>
             </dependency>
             <dependency>
-                <groupId>net.java.dev.javacc</groupId>
-                <artifactId>javacc</artifactId>
-                <version>${javacc.version}</version>
-                <scope>provided</scope> <!-- only needed for generating the parser via ant -->
-            </dependency>
-            <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>3.8.1</version>
@@ -1171,6 +1177,7 @@
         <module>pmd-swift</module>
         <module>pmd-test</module>
         <module>pmd-test-schema</module>
+        <module>pmd-tsql</module>
         <module>pmd-visualforce</module>
         <module>pmd-vm</module>
         <module>pmd-xml</module>
