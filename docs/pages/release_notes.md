@@ -14,8 +14,18 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
-#### Java 20 Support
+#### PMD 7 Development
+This release is the last planned release of PMD 6. The first version 6.0.0 was released in December 2017.
+Over the course of more than 5 years we published almost every month a new minor version of PMD 6
+with new features and improvements.
 
+Already in November 2018 we started in parallel the development of the next major version 7.0.0,
+and we are now in the process of finalizing the scope of the major version. We want to release a couple of
+release candidates before publishing the final version 7.0.0.
+
+We plan to release 7.0.0-rc1 soon. You can see the progress in [PMD 7 Tracking Issue #3898](https://github.com/pmd/pmd/issues/3898).
+
+#### Java 20 Support
 This release of PMD brings support for Java 20. There are no new standard language features.
 
 PMD supports [JEP 433: Pattern Matching for switch (Fourth Preview)](https://openjdk.org/jeps/433) and
