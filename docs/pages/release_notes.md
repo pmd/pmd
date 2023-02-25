@@ -72,5 +72,10 @@ Being based on a proper Antlr grammar, CPD can:
 * [#4390](https://github.com/pmd/pmd/pull/4390): Add support for T-SQL using Antlr4 lexer - [Paul Guyot](https://github.com/pguyot) (@pguyot)
 * [#4392](https://github.com/pmd/pmd/pull/4392): \[java] Fix #4393 MissingStaticMethodInNonInstantiatableClass: Fix false-positive for field-only class - [Dawid Ciok](https://github.com/dawiddc) (@dawiddc)
 
+### Stats
+* 40 commits
+* 11 closed tickets & PRs
+* Days since last release: 28
+
 {% endtocmaker %}
 
