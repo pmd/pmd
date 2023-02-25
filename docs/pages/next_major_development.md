@@ -246,6 +246,18 @@ the breaking API changes will be performed in 7.0.0.
 an API is tagged as `@Deprecated` or not in the latest minor release. During the development of 7.0.0,
 we may decide to remove some APIs that were not tagged as deprecated, though we'll try to avoid it." %}
 
+#### 6.55.0
+
+##### Go
+* The LanguageModule of Go, that only supports CPD execution, has been deprecated. This language
+  is not fully supported by PMD, so having a language module does not make sense. The functionality of CPD is
+  not affected by this change. The following class has been deprecated and will be removed with PMD 7.0.0:
+    * {% jdoc go::lang.go.GoLanguageModule %}
+
+##### Java
+* Support for Java 18 preview language features have been removed. The version "18-preview" is no longer available.
+* The experimental class `net.sourceforge.pmd.lang.java.ast.ASTGuardedPattern` has been removed.
+
 #### 6.54.0
 
 ##### PMD CLI
