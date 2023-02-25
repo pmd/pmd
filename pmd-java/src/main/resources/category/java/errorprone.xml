@@ -2351,7 +2351,7 @@ See the property `annotations`.
             <property name="xpath">
                 <value>
 <![CDATA[
-let $topLevelClass := //ClassOrInterfaceDeclaration[@Nested= false() and @Local= false()] return
+let $topLevelClass := /*/ClassOrInterfaceDeclaration return
 let $isLombokUtility := exists($topLevelClass[pmd-java:hasAnnotation('lombok.experimental.UtilityClass')]) return
 $topLevelClass[
         (: non-instantiable :)
