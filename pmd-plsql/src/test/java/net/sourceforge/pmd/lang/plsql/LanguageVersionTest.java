@@ -12,7 +12,7 @@ import net.sourceforge.pmd.AbstractLanguageVersionTest;
 class LanguageVersionTest extends AbstractLanguageVersionTest {
 
     static Collection<TestDescriptor> data() {
-        return Arrays.asList(new TestDescriptor(PLSQLLanguageModule.NAME, PLSQLLanguageModule.TERSE_NAME, "",
+        return Arrays.asList(new TestDescriptor(PLSQLLanguageModule.NAME, PLSQLLanguageModule.TERSE_NAME, "21c",
             getLanguage(PLSQLLanguageModule.NAME).getDefaultVersion()));
     }
 }

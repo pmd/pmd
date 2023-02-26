@@ -13,7 +13,7 @@ class LanguageVersionTest extends AbstractLanguageVersionTest {
 
     static Collection<TestDescriptor> data() {
         return Arrays.asList(
-                new TestDescriptor(EcmascriptLanguageModule.NAME, EcmascriptLanguageModule.TERSE_NAME, "ES6",
+                new TestDescriptor(EcmascriptLanguageModule.NAME, EcmascriptLanguageModule.TERSE_NAME, "9",
                     getLanguage(EcmascriptLanguageModule.NAME).getDefaultVersion()));
     }
 }

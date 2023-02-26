@@ -18,6 +18,7 @@ import org.mozilla.javascript.ast.ErrorCollector;
 import org.mozilla.javascript.ast.ParseProblem;
 
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.ParseException;
@@ -30,11 +31,11 @@ public final class EcmascriptParser implements net.sourceforge.pmd.lang.ast.Pars
         this.properties = properties;
     }
 
-    private AstRoot parseEcmascript(final String sourceCode, final List<ParseProblem> parseProblems) throws ParseException {
+    private AstRoot parseEcmascript(final String sourceCode, final LanguageVersion version, final List<ParseProblem> parseProblems) throws ParseException {
         final CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
         compilerEnvirons.setRecordingComments(true);
         compilerEnvirons.setRecordingLocalJsDocComments(true);
-        compilerEnvirons.setLanguageVersion(Context.VERSION_ES6);
+        compilerEnvirons.setLanguageVersion(determineRhinoLanguageVersion(version));
         // Scope's don't appear to get set right without this
         compilerEnvirons.setIdeMode(true);
         compilerEnvirons.setWarnTrailingComma(true);
@@ -52,10 +53,19 @@ public final class EcmascriptParser implements net.sourceforge.pmd.lang.ast.Pars
         return astRoot;
     }
 
+    private static int determineRhinoLanguageVersion(LanguageVersion version) {
+        switch (version.getVersion()) {
+        case "3": return Context.VERSION_1_5;
+        case "5": return Context.VERSION_1_8;
+        default: return Context.VERSION_ES6;
+        }
+    }
+
     @Override
     public RootNode parse(ParserTask task) throws FileAnalysisException {
+        final LanguageVersion version = task.getLanguageVersion();
         final List<ParseProblem> parseProblems = new ArrayList<>();
-        final AstRoot astRoot = parseEcmascript(task.getSourceText(), parseProblems);
+        final AstRoot astRoot = parseEcmascript(task.getSourceText(), version, parseProblems);
         final EcmascriptTreeBuilder treeBuilder = new EcmascriptTreeBuilder(parseProblems);
         ASTAstRoot tree = (ASTAstRoot) treeBuilder.build(astRoot);
 

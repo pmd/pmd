@@ -4,22 +4,33 @@
 
 package net.sourceforge.pmd.lang.apex;
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+
+import java.util.List;
+
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageModuleBase;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 
-import apex.jorje.services.Version;
-
 public class ApexLanguageModule extends LanguageModuleBase {
 
     public static final String NAME = "Apex";
     public static final String TERSE_NAME = "apex";
 
+    @InternalApi
+    public static final List<String> EXTENSIONS = listOf("cls", "trigger");
+
     public ApexLanguageModule() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("cls", "trigger")
-                  .addDefaultVersion(String.valueOf((int) Version.CURRENT.getExternal())));
+        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions(EXTENSIONS)
+                              .addVersion("52")
+                              .addVersion("53")
+                              .addVersion("54")
+                              .addVersion("55")
+                              .addVersion("56")
+                              .addDefaultVersion("57"));
     }
 
     @Override
