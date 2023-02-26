@@ -66,25 +66,36 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
     @Override
     public boolean isUpToDate(final TextDocument document) {
         try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "up-to-date check")) {
-            // There is a new file being analyzed, prepare entry in updated cache
-            final AnalysisResult updatedResult = new AnalysisResult(document.getCheckSum(), new ArrayList<>());
-            updatedResultsCache.put(document.getPathId(), updatedResult);
-
-            // Now check the old cache
-            final AnalysisResult analysisResult = fileResultsCache.get(document.getPathId());
+            final AnalysisResult cachedResult = fileResultsCache.get(document.getPathId());
+            final AnalysisResult updatedResult;
 
             // is this a known file? has it changed?
-            final boolean result = analysisResult != null
-                && analysisResult.getFileChecksum() == updatedResult.getFileChecksum();
+            final boolean upToDate = cachedResult != null
+                && cachedResult.getFileChecksum() == document.getCheckSum();
 
-            if (result) {
-                LOG.debug("Incremental Analysis cache HIT");
+            if (upToDate) {
+                LOG.trace("Incremental Analysis cache HIT");
+                
+                /*
+                 * Update cached violation "filename" to match the appropriate text document,
+                 * so we can honor relativized paths for the current run
+                 */
+                final String displayName = document.getDisplayName();
+                cachedResult.getViolations().forEach(v -> ((CachedRuleViolation) v).setFileDisplayName(displayName));
+                
+                // copy results over
+                updatedResult = cachedResult;
             } else {
-                LOG.debug("Incremental Analysis cache MISS - {}",
-                          analysisResult != null ? "file changed" : "no previous result found");
+                LOG.trace("Incremental Analysis cache MISS - {}",
+                          cachedResult != null ? "file changed" : "no previous result found");
+                
+                // New file being analyzed, create new empty entry
+                updatedResult = new AnalysisResult(document.getCheckSum(), new ArrayList<>());
             }
 
-            return result;
+            updatedResultsCache.put(document.getPathId(), updatedResult);
+            
+            return upToDate;
         }
     }
 
@@ -119,7 +130,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
             boolean cacheIsValid = cacheExists();
 
             if (cacheIsValid && ruleSets.getChecksum() != rulesetChecksum) {
-                LOG.info("Analysis cache invalidated, rulesets changed.");
+                LOG.debug("Analysis cache invalidated, rulesets changed.");
                 cacheIsValid = false;
             }
 
@@ -131,7 +142,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
 
                 if (cacheIsValid && currentAuxClassPathChecksum != auxClassPathChecksum) {
                     // TODO some rules don't need that (in fact, some languages)
-                    LOG.info("Analysis cache invalidated, auxclasspath changed.");
+                    LOG.debug("Analysis cache invalidated, auxclasspath changed.");
                     cacheIsValid = false;
                 }
             } else {
@@ -140,7 +151,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
 
             final long currentExecutionClassPathChecksum = FINGERPRINTER.fingerprint(getClassPathEntries());
             if (cacheIsValid && currentExecutionClassPathChecksum != executionClassPathChecksum) {
-                LOG.info("Analysis cache invalidated, execution classpath changed.");
+                LOG.debug("Analysis cache invalidated, execution classpath changed.");
                 cacheIsValid = false;
             }
 
@@ -211,19 +222,12 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
 
     @Override
     public FileAnalysisListener startFileAnalysis(TextDocument file) {
-        String fileName = file.getPathId();
-        AnalysisResult analysisResult = updatedResultsCache.get(fileName);
-        if (analysisResult == null) {
-            analysisResult = new AnalysisResult(file.getCheckSum());
-        }
-        final AnalysisResult nonNullAnalysisResult = analysisResult;
+        final String fileName = file.getPathId();
 
         return new FileAnalysisListener() {
             @Override
             public void onRuleViolation(RuleViolation violation) {
-                synchronized (nonNullAnalysisResult) {
-                    nonNullAnalysisResult.addViolation(violation);
-                }
+                updatedResultsCache.get(fileName).addViolation(violation);
             }
 
             @Override
