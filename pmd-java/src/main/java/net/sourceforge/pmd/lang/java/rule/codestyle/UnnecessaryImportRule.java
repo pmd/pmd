@@ -58,10 +58,8 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
     private static final String IMPORT_FROM_SAME_PACKAGE_MESSAGE = "Unnecessary import from the current package ''{0}''";
     private static final String IMPORT_FROM_JAVA_LANG_MESSAGE = "Unnecessary import from the java.lang package ''{0}''";
 
-    private final Set<ImportWrapper> staticImports = new HashSet<>();
     private final Set<ImportWrapper> allSingleNameImports = new HashSet<>();
     private final Set<ImportWrapper> allImportsOnDemand = new HashSet<>();
-    private final Set<ImportWrapper> staticImportsOnDemand = new HashSet<>();
     private final Set<ImportWrapper> unnecessaryJavaLangImports = new HashSet<>();
     private final Set<ImportWrapper> unnecessaryImportsFromSamePackage = new HashSet<>();
 
@@ -101,8 +99,6 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
         this.allSingleNameImports.clear();
-        this.staticImports.clear();
-        this.staticImportsOnDemand.clear();
         this.allImportsOnDemand.clear();
         this.unnecessaryJavaLangImports.clear();
         this.unnecessaryImportsFromSamePackage.clear();
@@ -213,12 +209,6 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
         if (!container.add(new ImportWrapper(node))) {
             // duplicate
             reportWithMessage(node, data, DUPLICATE_IMPORT_MESSAGE);
-        }
-
-        if (node.isStatic()) {
-            container = node.isImportOnDemand() ? staticImportsOnDemand
-                                                : staticImports;
-            container.add(new ImportWrapper(node));
         }
     }
 
