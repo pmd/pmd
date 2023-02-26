@@ -23,7 +23,7 @@ public final class PMDVersion {
      */
     public static final String VERSION;
 
-    private static final String UNKNOWN_VERSION = "unknown";
+    private static final String UNKNOWN_VERSION = "7.0.0-SNAPSHOT";
 
     /**
      * Determines the version from maven's generated pom.properties file.
