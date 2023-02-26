@@ -83,7 +83,7 @@
                     <configuration>
                         <offlineLinks>
                             <offlineLink>
-                                <location>${project.basedir}/../../pmd-lang-test/target/dokka/pmd-lang-test</location>
+                                <location>${project.basedir}/../../pmd-lang-test/target/dokkaJavadocJar</location>
                                 <url>../../pmd-lang-test/${project.version}</url>
                             </offlineLink>
                             <offlineLink>
@@ -147,11 +147,6 @@
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-test-junit</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

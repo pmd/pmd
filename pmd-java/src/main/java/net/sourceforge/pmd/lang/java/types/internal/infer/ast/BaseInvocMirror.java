@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
@@ -25,6 +24,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.MethodCallSite;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors.MirrorMaker;
+import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 abstract class BaseInvocMirror<T extends InvocationNode> extends BasePolyMirror<T> implements InvocationMirror {
@@ -40,6 +40,9 @@ abstract class BaseInvocMirror<T extends InvocationNode> extends BasePolyMirror<
     public boolean isEquivalentToUnderlyingAst() {
         MethodCtDecl ctDecl = getCtDecl();
         AssertionUtil.validateState(ctDecl != null, "overload resolution is not complete");
+        if (ctDecl.isFailed()) {
+            return false; // be conservative
+        }
         if (!myNode.getMethodType().getSymbol().equals(ctDecl.getMethodType().getSymbol())) {
             return false;
         } else if (myNode instanceof ASTConstructorCall && ((ASTConstructorCall) myNode).isAnonymousClass()

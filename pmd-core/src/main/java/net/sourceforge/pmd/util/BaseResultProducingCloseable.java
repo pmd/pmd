@@ -18,9 +18,7 @@ public abstract class BaseResultProducingCloseable<T> implements AutoCloseable {
     private boolean closed;
 
     protected final void ensureOpen() {
-        if (closed) {
-            throw new IllegalStateException("Listener closed");
-        }
+        AssertionUtil.validateState(!closed, "Listener has been closed");
     }
 
     /**
@@ -29,9 +27,7 @@ public abstract class BaseResultProducingCloseable<T> implements AutoCloseable {
      * @throws IllegalStateException If this instance has not been closed yet
      */
     public final T getResult() {
-        if (!closed) {
-            throw new IllegalStateException("Cannot get result before listener is closed");
-        }
+        AssertionUtil.validateState(closed, "Cannot get result before listener is closed");
 
         return getResultImpl();
     }

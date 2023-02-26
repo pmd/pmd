@@ -10,7 +10,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
+import net.sourceforge.pmd.DummyParsingHelper;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
@@ -20,10 +22,17 @@ import net.sourceforge.pmd.util.treeexport.XmlTreeRenderer.XmlRenderingConfig;
  */
 class XmlTreeRendererTest {
 
+    @RegisterExtension
+    private final DummyParsingHelper helper = new DummyParsingHelper();
+
+    DummyNode dummyTree1() {
+        return TreeRenderersTest.dummyTree1(helper);
+    }
+
     @Test
     void testRenderWithAttributes() throws IOException {
 
-        DummyNode dummy = TreeRenderersTest.dummyTree1();
+        DummyNode dummy = dummyTree1();
 
         XmlRenderingConfig strat = new XmlRenderingConfig();
         strat.lineSeparator("\n");
@@ -45,7 +54,7 @@ class XmlTreeRendererTest {
     @Test
     void testRenderWithCustomLineSep() throws IOException {
 
-        DummyNode dummy = TreeRenderersTest.dummyTree1();
+        DummyNode dummy = dummyTree1();
 
         XmlRenderingConfig strat = new XmlRenderingConfig();
         strat.lineSeparator("\r\n");
@@ -67,7 +76,7 @@ class XmlTreeRendererTest {
     @Test
     void testRenderWithCustomIndent() throws IOException {
 
-        DummyNode dummy = TreeRenderersTest.dummyTree1();
+        DummyNode dummy = dummyTree1();
 
         XmlRenderingConfig strat = new XmlRenderingConfig().lineSeparator("").indentWith("");
 
@@ -89,7 +98,7 @@ class XmlTreeRendererTest {
     @Test
     void testRenderWithNoAttributes() throws IOException {
 
-        DummyNode dummy = TreeRenderersTest.dummyTree1();
+        DummyNode dummy = dummyTree1();
 
         XmlRenderingConfig strat = new XmlRenderingConfig() {
             @Override
@@ -116,7 +125,7 @@ class XmlTreeRendererTest {
     @Test
     void testRenderFilterAttributes() throws IOException {
 
-        DummyNode dummy = TreeRenderersTest.dummyTree1();
+        DummyNode dummy = dummyTree1();
 
         XmlRenderingConfig strategy = new XmlRenderingConfig() {
             @Override
@@ -142,7 +151,7 @@ class XmlTreeRendererTest {
     @Test
     void testInvalidAttributeName() throws IOException {
 
-        DummyNode dummy = TreeRenderersTest.dummyTree1();
+        DummyNode dummy = dummyTree1();
 
         dummy.setXPathAttribute("&notAName", "foo");
 
@@ -161,7 +170,7 @@ class XmlTreeRendererTest {
     @Test
     void testEscapeAttributes() throws IOException {
 
-        DummyNode dummy = TreeRenderersTest.dummyTree1();
+        DummyNode dummy = dummyTree1();
 
         dummy.setXPathAttribute("eh", " 'a &> b\" ");
 
@@ -184,7 +193,7 @@ class XmlTreeRendererTest {
     @Test
     void testEscapeDoubleAttributes() throws IOException {
 
-        DummyNode dummy = TreeRenderersTest.dummyTree1();
+        DummyNode dummy = dummyTree1();
 
         dummy.setXPathAttribute("eh", " 'a &> b\" ");
 
@@ -207,7 +216,7 @@ class XmlTreeRendererTest {
     @Test
     void testNoProlog() throws IOException {
 
-        DummyNode dummy = TreeRenderersTest.dummyTree1();
+        DummyNode dummy = dummyTree1();
 
 
         XmlRenderingConfig strat = new XmlRenderingConfig().lineSeparator("\n").renderProlog(false);
@@ -229,7 +238,7 @@ class XmlTreeRendererTest {
     @Test
     void testDefaultLineSep() throws IOException {
 
-        DummyNode dummy = TreeRenderersTest.dummyTree1();
+        DummyNode dummy = dummyTree1();
 
         XmlTreeRenderer renderer = new XmlTreeRenderer();
 

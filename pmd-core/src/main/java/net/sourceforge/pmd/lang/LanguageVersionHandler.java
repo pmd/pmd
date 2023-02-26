@@ -4,13 +4,15 @@
 
 package net.sourceforge.pmd.lang;
 
+import java.util.Collections;
+import java.util.List;
+
+import net.sourceforge.pmd.ViolationSuppressor;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
-import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
-import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
-import net.sourceforge.pmd.properties.PropertySource;
+import net.sourceforge.pmd.reporting.ViolationDecorator;
 import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
 import net.sourceforge.pmd.util.designerbindings.DesignerBindings.DefaultDesignerBindings;
 
@@ -33,28 +35,24 @@ public interface LanguageVersionHandler {
 
 
     /**
-     * @deprecated This is transitional
-     */
-    @Deprecated
-    default void declareParserTaskProperties(PropertySource source) {
-        // do nothing
-    }
-
-
-    /**
-     * Get the Parser.
-     *
-     * @return Parser
+     * Returns the parser instance.
      */
     Parser getParser();
 
-
+    /**
+     * Returns the language-specific violation decorator.
+     */
+    default ViolationDecorator getViolationDecorator() {
+        return ViolationDecorator.noop();
+    }
 
     /**
-     * Get the RuleViolationFactory.
+     * Returns additional language-specific violation suppressors.
+     * These take precedence over the default suppressors (eg nopmd comment),
+     * but do not replace them.
      */
-    default RuleViolationFactory getRuleViolationFactory() {
-        return DefaultRuleViolationFactory.defaultInstance();
+    default List<ViolationSuppressor> getExtraViolationSuppressors() {
+        return Collections.emptyList();
     }
 
 

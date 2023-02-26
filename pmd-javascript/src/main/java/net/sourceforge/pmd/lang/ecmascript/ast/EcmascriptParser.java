@@ -10,29 +10,31 @@ import java.util.List;
 import java.util.Map;
 
 import org.mozilla.javascript.CompilerEnvirons;
+import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Parser;
 import org.mozilla.javascript.ast.AstRoot;
 import org.mozilla.javascript.ast.Comment;
 import org.mozilla.javascript.ast.ErrorCollector;
 import org.mozilla.javascript.ast.ParseProblem;
 
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.RootNode;
 
 public final class EcmascriptParser implements net.sourceforge.pmd.lang.ast.Parser {
-    private final int esVersion;
+    private final LanguagePropertyBundle properties;
 
-    public EcmascriptParser(int version) {
-        this.esVersion = version;
+    public EcmascriptParser(LanguagePropertyBundle properties) {
+        this.properties = properties;
     }
 
     private AstRoot parseEcmascript(final String sourceCode, final List<ParseProblem> parseProblems) throws ParseException {
         final CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
         compilerEnvirons.setRecordingComments(true);
         compilerEnvirons.setRecordingLocalJsDocComments(true);
-        compilerEnvirons.setLanguageVersion(esVersion);
+        compilerEnvirons.setLanguageVersion(Context.VERSION_ES6);
         // Scope's don't appear to get set right without this
         compilerEnvirons.setIdeMode(true);
         compilerEnvirons.setWarnTrailingComma(true);
@@ -57,7 +59,7 @@ public final class EcmascriptParser implements net.sourceforge.pmd.lang.ast.Pars
         final EcmascriptTreeBuilder treeBuilder = new EcmascriptTreeBuilder(parseProblems);
         ASTAstRoot tree = (ASTAstRoot) treeBuilder.build(astRoot);
 
-        String suppressMarker = task.getCommentMarker();
+        String suppressMarker = properties.getSuppressMarker();
         Map<Integer, String> suppressMap = new HashMap<>();
         if (astRoot.getComments() != null) {
             for (Comment comment : astRoot.getComments()) {
@@ -68,7 +70,7 @@ public final class EcmascriptParser implements net.sourceforge.pmd.lang.ast.Pars
                 }
             }
         }
-        tree.setAstInfo(new AstInfo<>(task, tree, suppressMap));
+        tree.setAstInfo(new AstInfo<>(task, tree).withSuppressMap(suppressMap));
         return tree;
     }
 

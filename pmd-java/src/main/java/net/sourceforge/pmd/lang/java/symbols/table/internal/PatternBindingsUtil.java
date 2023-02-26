@@ -7,9 +7,7 @@ package net.sourceforge.pmd.lang.java.symbols.table.internal;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 
-import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTGuardedPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTPatternExpression;
@@ -19,6 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.UnaryOp;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * Utilities to resolve scope of pattern binding variables.
@@ -98,10 +97,6 @@ final class PatternBindingsUtil {
                 return BindSet.whenTrue(BindSet.noBindings());
             }
             return BindSet.whenTrue(HashTreePSet.singleton(varId));
-        } else if (pattern instanceof ASTGuardedPattern) {
-            BindSet patternBindings = bindersOfPattern(((ASTGuardedPattern) pattern).getPattern());
-            BindSet guardBindings = bindersOfExpr(((ASTGuardedPattern) pattern).getGuard());
-            return patternBindings.union(guardBindings);
         } else {
             throw AssertionUtil.shouldNotReachHere("no other instances of pattern should exist: " + pattern);
         }

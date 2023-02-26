@@ -9,7 +9,7 @@ import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.java.JavaParsingHelper
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import org.apache.commons.lang3.reflect.TypeLiteral
-import org.junit.Assert
+import org.junit.jupiter.api.Assertions.*
 import java.lang.NullPointerException
 
 class TypesFromReflectionTest : FunSpec({
@@ -71,21 +71,21 @@ class TypesFromReflectionTest : FunSpec({
 
         fun assertReflects(expected: Class<*>?, actual: JClassSymbol?) {
             if (expected == null) {
-                Assert.assertNull(actual)
+                assertNull(actual)
                 return
             }
-            Assert.assertNotNull("Expected $expected", actual)
-            Assert.assertEquals("Annot", expected.isAnnotation, actual!!.isAnnotation)
-            Assert.assertEquals("Array", expected.isArray, actual.isArray)
-            Assert.assertEquals("Modifiers", expected.modifiers.toLong(), actual.modifiers.toLong())
+            assertNotNull(actual, "Expected $expected")
+            assertEquals(expected.isAnnotation, actual!!.isAnnotation, "Annot")
+            assertEquals(expected.isArray, actual.isArray, "Array")
+            assertEquals(expected.modifiers.toLong(), actual.modifiers.toLong(), "Modifiers")
             if (actual.isArray) {
                 assertReflects(expected.componentType, actual.arrayComponent as JClassSymbol?)
                 // don't test names, the spec of Class::getName and JClassSymbol::getBinaryName
                 // differ for arrays
                 return
             }
-            Assert.assertEquals("Binary name", expected.name, actual.binaryName)
-            Assert.assertEquals("Canonical name", expected.canonicalName, actual.canonicalName)
+            assertEquals(expected.name, actual.binaryName, "Binary name")
+            assertEquals(expected.canonicalName, actual.canonicalName, "Canonical name")
             assertReflects(expected.enclosingClass, actual.enclosingClass)
         }
 

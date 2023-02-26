@@ -4,16 +4,16 @@
 
 package net.sourceforge.pmd.ant;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class PMDTaskTest extends AbstractAntTestHelper {
+class PMDTaskTest extends AbstractAntTestHelper {
 
-    public PMDTaskTest() {
+    PMDTaskTest() {
         super.antTestScriptFilename = "pmdtasktest.xml";
     }
 
     @Test
-    public void testXML() {
+    void testXML() {
         executeTarget("testXML");
         assertOutputContaining("Potentially mistyped CDATA section with extra [ at beginning or ] at the end.");
     }

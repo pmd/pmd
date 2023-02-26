@@ -7,16 +7,14 @@ package net.sourceforge.pmd.processor;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.PMDConfiguration;
+import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSetLoader;
-import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -28,28 +26,25 @@ import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 
 class MultiThreadProcessorTest {
 
-    private GlobalAnalysisListener listener;
-
-    private List<TextFile> files;
     private SimpleReportListener reportListener;
-    private PMDConfiguration configuration;
 
-    RuleSets setUpForTest(final String ruleset) {
-        configuration = new PMDConfiguration();
+    PmdAnalysis setupForTest(final String ruleset) {
+        PMDConfiguration configuration = new PMDConfiguration();
         configuration.setThreads(2);
+        PmdAnalysis pmd = PmdAnalysis.create(configuration);
         LanguageVersion lv = DummyLanguageModule.getInstance().getDefaultVersion();
-        files = listOf(
-            TextFile.forCharSeq("abc", "file1-violation.dummy", lv),
-            TextFile.forCharSeq("DEF", "file2-foo.dummy", lv)
-        );
+        pmd.files().addFile(TextFile.forCharSeq("abc", "file1-violation.dummy", lv));
+        pmd.files().addFile(TextFile.forCharSeq("DEF", "file2-foo.dummy", lv));
 
         reportListener = new SimpleReportListener();
-        listener = GlobalAnalysisListener.tee(listOf(
+        GlobalAnalysisListener listener = GlobalAnalysisListener.tee(listOf(
             new GlobalReportBuilderListener(),
             reportListener
         ));
 
-        return new RuleSets(new RuleSetLoader().loadFromResource(ruleset));
+        pmd.addListener(listener);
+        pmd.addRuleSet(pmd.newRuleSetLoader().loadFromResource(ruleset));
+        return pmd;
     }
 
     // Dysfunctional rules are pruned upstream of the processor.
@@ -74,11 +69,9 @@ class MultiThreadProcessorTest {
 
     @Test
     void testRulesThreadSafety() throws Exception {
-        RuleSets ruleSets = setUpForTest("rulesets/MultiThreadProcessorTest/basic.xml");
-        try (AbstractPMDProcessor processor = AbstractPMDProcessor.newFileProcessor(configuration)) {
-            processor.processFiles(ruleSets, files, listener);
+        try (PmdAnalysis pmd = setupForTest("rulesets/MultiThreadProcessorTest/basic.xml")) {
+            pmd.performAnalysis();
         }
-        listener.close();
 
         // if the rule is not executed, then maybe a
         // ConcurrentModificationException happened
@@ -138,7 +131,7 @@ class MultiThreadProcessorTest {
     private static class SimpleReportListener implements GlobalAnalysisListener {
 
         public AtomicInteger violations = new AtomicInteger(0);
-
+        
         @Override
         public FileAnalysisListener startFileAnalysis(TextFile file) {
             return new FileAnalysisListener() {

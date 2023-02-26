@@ -4,8 +4,16 @@
 
 package net.sourceforge.pmd.lang.vf;
 
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
+
+import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
+import net.sourceforge.pmd.util.log.internal.NoopReporter;
 
 public final class VFTestUtils {
     private VFTestUtils() {
@@ -40,6 +48,11 @@ public final class VFTestUtils {
         MetadataType(String directoryName) {
             this.directoryName = directoryName;
         }
+    }
+
+    public static LanguageProcessorRegistry fakeLpRegistry() {
+        LanguageRegistry registry = new LanguageRegistry(setOf(ApexLanguageModule.getInstance(), VfLanguageModule.getInstance()));
+        return LanguageProcessorRegistry.create(registry, Collections.emptyMap(), new NoopReporter());
     }
 
     /**

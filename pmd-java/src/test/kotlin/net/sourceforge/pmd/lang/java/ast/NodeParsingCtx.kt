@@ -117,7 +117,7 @@ object StatementParsingCtx : NodeParsingCtx<ASTStatement>("statement") {
     override fun retrieveNode(acu: ASTCompilationUnit): ASTStatement =
             TypeBodyParsingCtx.retrieveNode(acu)
                     .descendants(ASTBlock::class.java)
-                    .firstOrThrow().getChild(0)
+                    .firstOrThrow().firstChild as ASTStatement
 }
 
 object TypeBodyParsingCtx : NodeParsingCtx<ASTBodyDeclaration>("body declaration") {

@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd;
 
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -13,14 +14,13 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.lang.rule.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.rule.xpath.internal.SaxonXPathRuleQuery;
 
 /**
  * An object that suppresses rule violations. Suppressors are used by
- * {@link RuleViolationFactory} to filter out violations. In PMD 6.0.x,
+ * {@link RuleContext} to filter out violations. In PMD 6.0.x,
  * the {@link Report} object filtered violations itself - but it has
  * no knowledge of language-specific suppressors.
  */
@@ -72,8 +72,7 @@ public interface ViolationSuppressor {
                 xpath,
                 XPathVersion.DEFAULT,
                 rule.getPropertiesByPropertyDescriptor(),
-                // todo version should be carried around by the node
-                rule.getLanguage().getDefaultVersion().getLanguageVersionHandler().getXPathHandler(),
+                node.getAstInfo().getLanguageProcessor().services().getXPathHandler(),
                 DeprecatedAttrLogger.createForSuppression(rv.getRule())
             );
             if (!rq.evaluate(node).isEmpty()) {
@@ -121,4 +120,20 @@ public interface ViolationSuppressor {
     SuppressedViolation suppressOrNull(RuleViolation rv, @NonNull Node node);
 
 
+    /**
+     * Apply a list of suppressors on the violation. Returns the violation
+     * of the first suppressor that matches the input violation. If no
+     * suppressor matches, then returns null.
+     */
+    static @Nullable SuppressedViolation suppressOrNull(List<ViolationSuppressor> suppressorList,
+                                                        RuleViolation rv,
+                                                        Node node) {
+        for (ViolationSuppressor suppressor : suppressorList) {
+            SuppressedViolation suppressed = suppressor.suppressOrNull(rv, node);
+            if (suppressed != null) {
+                return suppressed;
+            }
+        }
+        return null;
+    }
 }

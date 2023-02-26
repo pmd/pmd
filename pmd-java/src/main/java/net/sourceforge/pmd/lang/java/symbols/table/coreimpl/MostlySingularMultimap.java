@@ -17,7 +17,7 @@ import org.apache.commons.lang3.Validate;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * An unmodifiable multimap type, efficient if the single-value case is the

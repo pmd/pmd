@@ -400,6 +400,9 @@ entries:
   - title: Language-Specific Documentation
     output: web, pdf
     folderitems:
+    - title: Language configuration
+      url: /pmd_languages_configuration.html
+      output: web, pdf
     - title: Apex
       url: /pmd_languages_apex.html
       output: web, pdf

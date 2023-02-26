@@ -2351,52 +2351,44 @@ See the property `annotations`.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration
-    [pmd-java:hasAnnotation('lombok.experimental.UtilityClass')]
-    [ClassOrInterfaceBody
-        [
-            (: no methods :)
-            not(MethodDeclaration)
-            or
-            (: only private methods :)
-            count(MethodDeclaration) = count(MethodDeclaration[@Private=true()])
-        ]
-    ]
-|
-//ClassOrInterfaceDeclaration[@Nested= false() and @Local= false()]
-(: no lombok constructor annotations :)
-[not(pmd-java:hasAnnotation('lombok.NoArgsConstructor') or
-     pmd-java:hasAnnotation('lombok.RequiredArgsConstructor') or
-     pmd-java:hasAnnotation('lombok.AllArgsConstructor'))]
-[
-    (: at least one constructor :) ./ClassOrInterfaceBody/ConstructorDeclaration
-    and
-    (: only private constructors :) count(./ClassOrInterfaceBody/ConstructorDeclaration) = count(./ClassOrInterfaceBody/ConstructorDeclaration[pmd-java:modifiers() = "private"])
-    and
-    (: all constructors must not be annotated :)
-        (every $x in $annotations satisfies
-          not(./ClassOrInterfaceBody/ConstructorDeclaration/ModifierList/Annotation[pmd-java:typeIs($x)]))
-]
-(: no static methods :)
-[not(.//MethodDeclaration[pmd-java:modifiers() = "static"])]
-(: no (public, package-private, protected) static fields :)
-[not(.//FieldDeclaration[not(pmd-java:modifiers() = "private")][pmd-java:modifiers() = "static"])]
-(: no nested classes, that are public and static, and have no constructors at all or a public constructor :)
-(: and have a method returning the outer class type :)
-(: or the inner class extends the outer class :)
-[not(.//ClassOrInterfaceDeclaration[@Nested = true()]
-           [pmd-java:modifiers() = ("public", "static")]
-           [not(./ClassOrInterfaceBody/ConstructorDeclaration) or ./ClassOrInterfaceBody/ConstructorDeclaration[pmd-java:modifiers() = "public"]]
-           [(./ClassOrInterfaceBody/MethodDeclaration
-                [pmd-java:modifiers() = "public"]
-                [.//ClassOrInterfaceType
-                    [@SimpleName = //ClassOrInterfaceDeclaration[@Nested = false()]/@SimpleName]
-                ]
-            ) or (
-                ./ExtendsList/ClassOrInterfaceType[@SimpleName = //ClassOrInterfaceDeclaration[@Nested = false()]/@SimpleName]
-            )]
+let $topLevelClass := /*/ClassOrInterfaceDeclaration return
+let $isLombokUtility := exists($topLevelClass[pmd-java:hasAnnotation('lombok.experimental.UtilityClass')]) return
+$topLevelClass[
+        (: non-instantiable :)
+        $isLombokUtility or
+        (
+            (: no lombok produced constructors :)
+            not(pmd-java:hasAnnotation('lombok.NoArgsConstructor') or
+                pmd-java:hasAnnotation('lombok.RequiredArgsConstructor') or
+                pmd-java:hasAnnotation('lombok.AllArgsConstructor')) and
+            (: or has non-default constructors … :)
+            ClassOrInterfaceBody/ConstructorDeclaration and
+                (: … but only private … :)
+                not(ClassOrInterfaceBody/ConstructorDeclaration[@Visibility != "private"]) and
+                (: … and none annotated … :)
+                (every $x in $annotations satisfies
+                      not(ClassOrInterfaceBody/ConstructorDeclaration/ModifierList/Annotation[pmd-java:typeIs($x)]))
         )
-]
+    ]
+    [
+        (: With no visible static methods … :)
+        not(ClassOrInterfaceBody/MethodDeclaration[($isLombokUtility or pmd-java:modifiers() = "static") and @Visibility != "private"]) and
+        (: … nor fields … :)
+        not(ClassOrInterfaceBody/FieldDeclaration[($isLombokUtility or pmd-java:modifiers() = "static") and @Visibility != "private"]) and
+        (: … no nested classes, that are non-private and static … :)
+        not(ClassOrInterfaceBody/ClassOrInterfaceDeclaration
+            [pmd-java:modifiers() = "static" and @Visibility != "private"]
+            (: … with a default or non-private constructor … :)
+            [not(ClassOrInterfaceBody/ConstructorDeclaration) or ClassOrInterfaceBody/ConstructorDeclaration[@Visibility != "private"]]
+            (: … and a non-private method returning the outer class type … :)
+            [(ClassOrInterfaceBody/MethodDeclaration
+                [@Visibility != "private"]
+                [descendant::ReturnStatement/*[1][pmd-java:typeIs(ancestor::ClassOrInterfaceDeclaration[@Nested = false()]/@BinaryName)]]
+            ) or (
+                (: … or the inner class extends the outer class :)
+                ExtendsList/ClassOrInterfaceType[@SimpleName = ancestor::ClassOrInterfaceDeclaration[@Nested = false()]/@SimpleName]
+            )]
+    )]
 ]]>
                 </value>
             </property>
@@ -3033,6 +3025,7 @@ public class Foo {
 The method name and return type are suspiciously close to hashCode(), which may denote an intention
 to override the hashCode() method.
         </description>
+        <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
@@ -3047,7 +3040,6 @@ to override the hashCode() method.
                 </value>
             </property>
         </properties>
-        <priority>3</priority>
         <example>
 <![CDATA[
 public class Foo {

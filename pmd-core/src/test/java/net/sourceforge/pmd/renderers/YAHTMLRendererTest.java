@@ -9,11 +9,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -26,9 +26,10 @@ import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 class YAHTMLRendererTest extends AbstractRendererTest {
 
@@ -38,19 +39,16 @@ class YAHTMLRendererTest extends AbstractRendererTest {
     private Path folder;
 
     @BeforeEach
-    void setUp() throws IOException {
+    void setUp() {
         outputDir = folder.resolve("pmdtest").toFile();
         assertTrue(outputDir.mkdir());
     }
 
     private RuleViolation newRuleViolation(int beginLine, int beginColumn, int endLine, int endColumn, final String packageNameArg, final String classNameArg) {
         FileLocation loc = createLocation(beginLine, beginColumn, endLine, endColumn);
-        return new ParametricRuleViolation(new FooRule(), loc, "blah") {
-            {
-                packageName = packageNameArg;
-                className = classNameArg;
-            }
-        };
+        Map<String, String> additionalInfo = CollectionUtil.mapOf(RuleViolation.PACKAGE_NAME, packageNameArg,
+                                                                  RuleViolation.CLASS_NAME, classNameArg);
+        return new ParametricRuleViolation(new FooRule(), loc, "blah", additionalInfo);
     }
 
     @Override

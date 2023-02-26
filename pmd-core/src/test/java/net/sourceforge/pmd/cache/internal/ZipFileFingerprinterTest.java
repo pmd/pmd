@@ -40,6 +40,32 @@ class ZipFileFingerprinterTest extends AbstractClasspathEntryFingerprinterTest {
         assertEquals(baselineFingerprint, updateFingerprint(file));
         assertNotEquals(originalFileSize, file.length());
     }
+    
+    @Test
+    void zipEntryOrderDoesNotAffectFingerprint() throws IOException {
+        final File zipFile = tempDir.resolve("foo.jar").toFile();
+        final ZipEntry fooEntry = new ZipEntry("lib/Foo.class");
+        final ZipEntry barEntry = new ZipEntry("lib/Bar.class");
+        overwriteZipFileContents(zipFile, fooEntry, barEntry);
+        final long baselineFingerprint = getBaseLineFingerprint(zipFile);
+        
+        // swap order
+        overwriteZipFileContents(zipFile, barEntry, fooEntry);
+        assertEquals(baselineFingerprint, updateFingerprint(zipFile));
+    }
+    
+    @Test
+    void nonClassZipEntryDoesNotAffectFingerprint() throws IOException {
+        final File zipFile = tempDir.resolve("foo.jar").toFile();
+        final ZipEntry fooEntry = new ZipEntry("lib/Foo.class");
+        final ZipEntry barEntry = new ZipEntry("bar.properties");
+        overwriteZipFileContents(zipFile, fooEntry);
+        final long baselineFingerprint = getBaseLineFingerprint(zipFile);
+        
+        // add a properties file to the jar
+        overwriteZipFileContents(zipFile, fooEntry, barEntry);
+        assertEquals(baselineFingerprint, updateFingerprint(zipFile));
+    }
 
     @Override
     protected ClasspathEntryFingerprinter newFingerPrinter() {

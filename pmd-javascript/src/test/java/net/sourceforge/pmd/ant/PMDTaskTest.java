@@ -4,16 +4,16 @@
 
 package net.sourceforge.pmd.ant;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class PMDTaskTest extends AbstractAntTestHelper {
+class PMDTaskTest extends AbstractAntTestHelper {
 
-    public PMDTaskTest() {
+    PMDTaskTest() {
         super.antTestScriptFilename = "pmdtasktest.xml";
     }
 
     @Test
-    public void testEcmascript() {
+    void testEcmascript() {
         executeTarget("testEcmascript");
         assertOutputContaining("A 'return', 'break', 'continue', or 'throw' statement should be the last in a block.");
         assertOutputContaining("Avoid using global variables");

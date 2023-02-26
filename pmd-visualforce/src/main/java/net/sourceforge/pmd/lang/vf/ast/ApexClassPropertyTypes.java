@@ -15,8 +15,10 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
+import net.sourceforge.pmd.lang.apex.ApexLanguageProcessor;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
@@ -30,8 +32,16 @@ import net.sourceforge.pmd.lang.vf.DataType;
  * property.
  */
 class ApexClassPropertyTypes extends SalesforceFieldTypes {
+
     private static final Logger LOG = LoggerFactory.getLogger(ApexClassPropertyTypes.class);
     private static final String APEX_CLASS_FILE_SUFFIX = ".cls";
+    private final ApexLanguageProcessor apexProcessor;
+    private final LanguageProcessorRegistry lpReg;
+
+    ApexClassPropertyTypes(LanguageProcessorRegistry lpReg) {
+        this.apexProcessor = (ApexLanguageProcessor) lpReg.getProcessor(ApexLanguageModule.getInstance());
+        this.lpReg = lpReg;
+    }
 
     /**
      * Looks in {@code apexDirectories} for an Apex property identified by {@code expression}.
@@ -63,14 +73,13 @@ class ApexClassPropertyTypes extends SalesforceFieldTypes {
         }
     }
 
-    static Node parseApex(Path apexFilePath) {
-        LanguageVersion languageVersion = ApexLanguageModule.getInstance().getDefaultVersion();
+    Node parseApex(Path apexFilePath) {
+        LanguageVersion languageVersion = apexProcessor.getLanguageVersion();
         try (TextFile file = TextFile.forPath(apexFilePath, StandardCharsets.UTF_8, languageVersion);
              TextDocument textDocument = TextDocument.create(file)) {
 
-            Parser parser = languageVersion.getLanguageVersionHandler().getParser();
-            ParserTask task = new ParserTask(textDocument, SemanticErrorReporter.noop(), ApexClassPropertyTypes.class.getClassLoader());
-            languageVersion.getLanguageVersionHandler().declareParserTaskProperties(task.getProperties());
+            Parser parser = apexProcessor.services().getParser();
+            ParserTask task = new ParserTask(textDocument, SemanticErrorReporter.noop(), lpReg);
 
             return parser.parse(task);
         } catch (IOException e) {
@@ -78,7 +87,7 @@ class ApexClassPropertyTypes extends SalesforceFieldTypes {
         }
     }
 
-    static Node parseApex(String contextExpr, Path apexFilePath) {
+    private Node parseApex(String contextExpr, Path apexFilePath) {
         try {
             return parseApex(apexFilePath);
         } catch (ContextedRuntimeException e) {

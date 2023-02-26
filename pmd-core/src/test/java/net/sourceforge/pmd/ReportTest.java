@@ -27,7 +27,7 @@ import net.sourceforge.pmd.renderers.XMLRenderer;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 
-public class ReportTest {
+class ReportTest {
 
     // Files are grouped together now.
     @Test
@@ -103,11 +103,11 @@ public class ReportTest {
         assertEquals(2, union.getViolations().size());
     }
 
-    private @NonNull RuleViolation violation(Rule rule, FileLocation loc2) {
+    public static @NonNull RuleViolation violation(Rule rule, FileLocation loc2) {
         return violation(rule, loc2, rule.getMessage());
     }
 
-    private @NonNull RuleViolation violation(Rule rule, FileLocation loc1, String rule1) {
+    public static @NonNull RuleViolation violation(Rule rule, FileLocation loc1, String rule1) {
         return new ParametricRuleViolation(rule, loc1, rule1);
     }
 

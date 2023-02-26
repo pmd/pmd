@@ -24,9 +24,8 @@ class RuleReferenceTest {
 
     @Test
     void testRuleSetReference() {
-        RuleReference ruleReference = new RuleReference();
         RuleSetReference ruleSetReference = new RuleSetReference("somename");
-        ruleReference.setRuleSetReference(ruleSetReference);
+        RuleReference ruleReference = new RuleReference(null, ruleSetReference);
         assertEquals(ruleSetReference, ruleReference.getRuleSetReference(), "Not same rule set reference");
     }
 
@@ -46,8 +45,7 @@ class RuleReferenceTest {
         rule.setPriority(RulePriority.HIGH);
 
         final PropertyDescriptor<String> PROPERTY2_DESCRIPTOR = PropertyFactory.stringProperty("property2").desc("Test property").defaultValue("").build();
-        RuleReference ruleReference = new RuleReference();
-        ruleReference.setRule(rule);
+        RuleReference ruleReference = new RuleReference(rule, null);
         ruleReference.definePropertyDescriptor(PROPERTY2_DESCRIPTOR);
         ruleReference.setMinimumLanguageVersion(dummyLang.getVersion("1.3"));
         ruleReference.setMaximumLanguageVersion(dummyLang.getVersion("1.7"));
@@ -70,8 +68,7 @@ class RuleReferenceTest {
         Language dummyLang = dummyLanguage();
         rule.setLanguage(dummyLang);
 
-        RuleReference ruleReference = new RuleReference();
-        ruleReference.setRule(rule);
+        RuleReference ruleReference = new RuleReference(rule, null);
 
         assertThrows(UnsupportedOperationException.class, () -> ruleReference.setLanguage(Dummy2LanguageModule.getInstance()));
         assertEquals(dummyLang, ruleReference.getLanguage());
@@ -97,8 +94,7 @@ class RuleReferenceTest {
         rule.setPriority(RulePriority.HIGH);
 
         final PropertyDescriptor<String> PROPERTY2_DESCRIPTOR = PropertyFactory.stringProperty("property2").desc("Test property").defaultValue("").build();
-        RuleReference ruleReference = new RuleReference();
-        ruleReference.setRule(rule);
+        RuleReference ruleReference = new RuleReference(rule, null);
         ruleReference.definePropertyDescriptor(PROPERTY2_DESCRIPTOR);
         ruleReference.setLanguage(dummyLang);
         ruleReference.setMinimumLanguageVersion(dummyLang.getVersion("1.3"));
@@ -187,8 +183,7 @@ class RuleReferenceTest {
         rule.setExternalInfoUrl("externalInfoUrl1");
         rule.setPriority(RulePriority.HIGH);
 
-        RuleReference ruleReference = new RuleReference();
-        ruleReference.setRule(rule);
+        RuleReference ruleReference = new RuleReference(rule, null);
         ruleReference
             .setMinimumLanguageVersion(dummyLanguage().getVersion("1.3"));
         ruleReference

@@ -27,4 +27,25 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>Line too long</description>
+        <rule-property name="maxLineLength">5</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+//
+
+
+/* 4
+ * 5 way too long
+ */
+public class Foo {
+    public Foo() {
+    }
+
+    public void doNothing() {
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

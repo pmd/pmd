@@ -6,75 +6,64 @@ package net.sourceforge.pmd.lang;
 
 import java.util.Objects;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
-import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.document.Chars;
-import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
-import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.document.TextRegion;
-import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
-import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
-import net.sourceforge.pmd.processor.PmdRunnableTest;
+import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
+import net.sourceforge.pmd.reporting.ViolationDecorator;
 
 /**
  * Dummy language used for testing PMD.
  */
-public class DummyLanguageModule extends BaseLanguageModule {
+public class DummyLanguageModule extends SimpleLanguageModuleBase {
 
     public static final String NAME = "Dummy";
     public static final String TERSE_NAME = "dummy";
+    private static final String PARSER_THROWS = "parserThrows";
 
     public DummyLanguageModule() {
-        super(NAME, null, TERSE_NAME, "dummy");
-        addVersion("1.0", new Handler());
-        addVersion("1.1", new Handler());
-        addVersion("1.2", new Handler());
-        addVersion("1.3", new Handler());
-        addVersion("1.4", new Handler());
-        addVersion("1.5", new Handler(), "5");
-        addVersion("1.6", new Handler(), "6");
-        addDefaultVersion("1.7", new Handler(), "7");
-        addVersion("1.8", new Handler(), "8");
-        PmdRunnableTest.registerCustomVersions(this::addVersion);
+        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("dummy")
+                              .addVersion("1.0")
+                              .addVersion("1.1")
+                              .addVersion("1.2")
+                              .addVersion("1.3")
+                              .addVersion("1.4")
+                              .addVersion("1.5", "5")
+                              .addVersion("1.6", "6")
+                              .addDefaultVersion("1.7", "7")
+                              .addVersion(PARSER_THROWS)
+                              .addVersion("1.8", "8"), new Handler());
     }
 
     public static DummyLanguageModule getInstance() {
         return (DummyLanguageModule) Objects.requireNonNull(LanguageRegistry.PMD.getLanguageByFullName(NAME));
     }
 
-    public static DummyRootNode parse(String code) {
-        return parse(code, TextFile.UNKNOWN_FILENAME);
-    }
-
-    public static DummyRootNode parse(String code, String filename) {
-        LanguageVersion version = DummyLanguageModule.getInstance().getDefaultVersion();
-        ParserTask task = new ParserTask(
-            TextDocument.readOnlyString(code, filename, version),
-            SemanticErrorReporter.noop()
-        );
-        return (DummyRootNode) version.getLanguageVersionHandler().getParser().parse(task);
+    public LanguageVersion getVersionWhereParserThrows() {
+        return getVersion(PARSER_THROWS);
     }
 
     public static class Handler extends AbstractPmdLanguageVersionHandler {
 
         @Override
-        public RuleViolationFactory getRuleViolationFactory() {
-            return new RuleViolationFactory();
+        public Parser getParser() {
+            return task -> {
+                if (task.getLanguageVersion().getVersion().equals(PARSER_THROWS)) {
+                    throw new ParseException("ohio");
+                }
+                return readLispNode(task);
+            };
         }
 
         @Override
-        public Parser getParser() {
-            return DummyLanguageModule::readLispNode;
+        public ViolationDecorator getViolationDecorator() {
+            return (node, data) -> data.put(RuleViolation.PACKAGE_NAME, "foo");
         }
     }
 
@@ -88,7 +77,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
      * children "b" and "c". "x" is ignored. The node "a" is not the root
      * node, it has a {@link DummyRootNode} as parent, whose image is "".
      */
-    private static DummyRootNode readLispNode(ParserTask task) {
+    public static DummyRootNode readLispNode(ParserTask task) {
         TextDocument document = task.getTextDocument();
         final DummyRootNode root = new DummyRootNode().withTaskInfo(task);
         root.setRegion(document.getEntireRegion());
@@ -138,15 +127,4 @@ public class DummyLanguageModule extends BaseLanguageModule {
         return root;
     }
 
-    public static class RuleViolationFactory extends DefaultRuleViolationFactory {
-
-        @Override
-        public RuleViolation createViolation(Rule rule, @NonNull Node node, FileLocation location, @NonNull String formattedMessage) {
-            return new ParametricRuleViolation(rule, location, formattedMessage) {
-                {
-                    this.packageName = "foo"; // just for testing variable expansion
-                }
-            };
-        }
-    }
 }

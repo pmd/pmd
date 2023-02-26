@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNot
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J16
 import java.io.IOException
 

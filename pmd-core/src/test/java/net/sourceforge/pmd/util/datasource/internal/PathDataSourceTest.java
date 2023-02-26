@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.util.datasource.internal;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.FileOutputStream;
 import java.net.URI;
@@ -19,7 +19,7 @@ import java.util.zip.ZipOutputStream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.internal.util.IOUtil;
 
 class PathDataSourceTest {
     @TempDir

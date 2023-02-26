@@ -33,8 +33,13 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.stefanbirkner</groupId>
+            <artifactId>system-lambda</artifactId>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -54,12 +59,8 @@
             <artifactId>ant</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.ant</groupId>
-            <artifactId>ant-testutil</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.github.stefanbirkner</groupId>
-            <artifactId>system-rules</artifactId>
+            <artifactId>system-lambda</artifactId>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -71,5 +72,16 @@
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <!-- Test classes of pmd-core, which contain dummy language modules. -->
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-core</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+            <classifier>tests</classifier>
+            <type>test-jar</type>
+        </dependency>
+
     </dependencies>
 </project>

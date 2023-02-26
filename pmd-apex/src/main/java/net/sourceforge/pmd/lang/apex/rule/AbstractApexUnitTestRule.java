@@ -9,8 +9,6 @@ import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 
-import apex.jorje.services.Version;
-
 /**
  * Do special checks for apex unit test classes and methods
  *
@@ -27,7 +25,7 @@ public abstract class AbstractApexUnitTestRule extends AbstractApexRule {
      */
     @Override
     public Object visit(final ASTUserClass node, final Object data) {
-        if (!isTestMethodOrClass(node) && node.getApexVersion() >= Version.V176.getExternal()) {
+        if (!isTestMethodOrClass(node)) {
             return data;
         }
         return super.visit(node, data);

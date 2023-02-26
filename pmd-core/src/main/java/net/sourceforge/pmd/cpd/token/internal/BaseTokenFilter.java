@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.cpd.token.internal;
 
-import static net.sourceforge.pmd.internal.util.IteratorUtil.AbstractIterator;
+import static net.sourceforge.pmd.util.IteratorUtil.AbstractIterator;
 
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;

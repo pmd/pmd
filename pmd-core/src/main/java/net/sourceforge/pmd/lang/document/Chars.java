@@ -21,7 +21,7 @@ import java.util.stream.StreamSupport;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.internal.util.IteratorUtil.AbstractIterator;
+import net.sourceforge.pmd.util.IteratorUtil.AbstractIterator;
 
 /**
  * View on a string which doesn't copy the array for subsequence operations.

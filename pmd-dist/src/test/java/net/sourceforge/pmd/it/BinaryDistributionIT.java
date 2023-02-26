@@ -28,17 +28,18 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         SUPPORTED_LANGUAGES_CPD = "Valid values: apex, cpp, cs, dart, ecmascript," + System.lineSeparator()
                 + "                               fortran, gherkin, go, groovy, html, java, jsp," + System.lineSeparator()
                 + "                               kotlin, lua, matlab, modelica, objectivec, perl," + System.lineSeparator()
-                + "                               php, plsql, python, ruby, scala, swift, vf, xml";
+                + "                               php, plsql, python, ruby, scala, swift, tsql," + System.lineSeparator()
+                + "                               vf, xml";
         SUPPORTED_LANGUAGES_PMD = "Valid values: apex-54, ecmascript-ES6, html-," + System.lineSeparator()
                 + "                              java-1.10, java-1.3, java-1.4, java-1.5, java-1." + System.lineSeparator()
                 + "                              6, java-1.7, java-1.8, java-1.9, java-10," + System.lineSeparator()
                 + "                              java-11, java-12, java-13, java-14, java-15," + System.lineSeparator()
-                + "                              java-16, java-17, java-18, java-18-preview," + System.lineSeparator()
-                + "                              java-19, java-19-preview, java-5, java-6, java-7," + System.lineSeparator()
-                + "                              java-8, java-9, jsp-, kotlin-1.6, kotlin-1." + System.lineSeparator()
-                + "                              6-rfc+0.1, modelica-, plsql-, pom-, scala-2.10," + System.lineSeparator()
-                + "                              scala-2.11, scala-2.12, scala-2.13, swift-, vf-," + System.lineSeparator()
-                + "                              vm-, wsdl-, xml-, xsl-";
+                + "                              java-16, java-17, java-18, java-19," + System.lineSeparator()
+                + "                              java-19-preview, java-20, java-20-preview," + System.lineSeparator()
+                + "                              java-5, java-6, java-7, java-8, java-9, jsp-," + System.lineSeparator()
+                + "                              kotlin-1.6, kotlin-1.6-rfc+0.1, modelica-," + System.lineSeparator()
+                + "                              plsql-, pom-, scala-2.10, scala-2.11, scala-2.12," + System.lineSeparator()
+                + "                              scala-2.13, swift-, vf-, vm-, wsdl-, xml-, xsl-";
     }
 
     private final String srcDir = new File(".", "src/test/resources/sample-source/java/").getAbsolutePath();
@@ -116,13 +117,13 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
 
     @Test
     void testPmdHelp() throws Exception {
-        ExecutionResult result = PMDExecutor.runPMD(tempDir, "-h");
+        ExecutionResult result = PMDExecutor.runPMD(null, tempDir, "-h");
         result.assertExecutionResult(0, SUPPORTED_LANGUAGES_PMD);
     }
 
     @Test
     void testPmdNoArgs() throws Exception {
-        ExecutionResult result = PMDExecutor.runPMD(tempDir); // without any argument, display usage help and error
+        ExecutionResult result = PMDExecutor.runPMD(null, tempDir); // without any argument, display usage help and error
         result.assertExecutionResultErrOutput(2, "Usage: pmd check ");
     }
 
@@ -132,15 +133,13 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
 
         ExecutionResult result;
 
-        result = PMDExecutor.runPMD(tempDir, "-d", srcDir, "-R", "src/test/resources/rulesets/sample-ruleset.xml",
-                "-r", createTemporaryReportFile().toString());
+        result = PMDExecutor.runPMD(createTemporaryReportFile(), tempDir, "-d", srcDir, "-R", "src/test/resources/rulesets/sample-ruleset.xml");
         result.assertExecutionResult(4);
         result.assertErrorOutputContains("[main] INFO net.sourceforge.pmd.cli.commands.internal.AbstractPmdSubcommand - Log level is at INFO");
 
 
         // now with debug
-        result = PMDExecutor.runPMD(tempDir, "-d", srcDir, "-R", "src/test/resources/rulesets/sample-ruleset.xml",
-                "-r", createTemporaryReportFile().toString(), "--debug");
+        result = PMDExecutor.runPMD(createTemporaryReportFile(), tempDir, "-d", srcDir, "-R", "src/test/resources/rulesets/sample-ruleset.xml", "--debug");
         result.assertExecutionResult(4);
         result.assertErrorOutputContains("[main] INFO net.sourceforge.pmd.cli.commands.internal.AbstractPmdSubcommand - Log level is at TRACE");
     }

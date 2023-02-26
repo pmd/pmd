@@ -59,6 +59,17 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    
+  	<test-code>
+        <description>package constructor is ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    /* default */ Foo(){}
+    public void bar() {}
+}
+        ]]></code>
+    </test-code>
 
     <test-code>
         <description>ok, one static method</description>
@@ -449,6 +460,45 @@ public final class Test {
         return 0;
     }
    private int x;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4393 [java] MissingStaticMethodInNonInstantiatableClass should consider lombok's UtilityClass</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
+public final class Test {
+   int x;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4393 [java] MissingStaticMethodInNonInstantiatableClass should consider lombok's UtilityClass</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
+public final class Test {
+   public static final String CONSTANT = "Constant";
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4393 [java] MissingStaticMethodInNonInstantiatableClass should consider lombok's UtilityClass</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
+public final class Test {
+   private static final String CONSTANT = "Constant";
 }
         ]]></code>
     </test-code>

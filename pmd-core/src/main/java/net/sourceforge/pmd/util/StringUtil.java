@@ -15,22 +15,16 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.document.Chars;
 
 /**
- * A number of String-specific utility methods for use by PMD or its IDE
- * plugins.
+ * String-related utility functions. See also {@link StringUtils}.
  *
  * @author BrianRemedios
- * @deprecated Is internal API
+ * @author Clément Fournier
  */
-@Deprecated
-@InternalApi
 public final class StringUtil {
 
-    private static final String[] EMPTY_STRINGS = new String[0];
 
     private static final Pattern XML_10_INVALID_CHARS = Pattern.compile(
             "\\x00|\\x01|\\x02|\\x03|\\x04|\\x05|\\x06|\\x07|\\x08|"
@@ -46,6 +40,10 @@ public final class StringUtil {
             s = "";
         }
         return "'" + s + "'";
+    }
+
+    public static @NonNull String inDoubleQuotes(String expected) {
+        return "\"" + expected + "\"";
     }
 
 
@@ -219,47 +217,6 @@ public final class StringUtil {
         }
 
         return text;
-    }
-
-
-    /**
-     * @param supportUTF8 override the default setting, whether special characters should be replaced with entities (
-     *                    <code>false</code>) or should be included as is ( <code>true</code>).
-     * @deprecated for removal. Use Java's XML implementations, that do the escaping,
-     *             use {@link #removedInvalidXml10Characters(String)} for fixing invalid characters in XML 1.0
-     *             documents or use {@code StringEscapeUtils#escapeXml10(String)} from apache commons-text instead.
-     */
-    @Deprecated
-    public static void appendXmlEscaped(StringBuilder buf, String src, boolean supportUTF8) {
-        char c;
-        int i = 0;
-        while (i < src.length()) {
-            c = src.charAt(i++);
-            if (c > '~') {
-                // 126
-                if (!supportUTF8) {
-                    int codepoint = c;
-                    // surrogate characters are not allowed in XML
-                    if (Character.isHighSurrogate(c)) {
-                        char low = src.charAt(i++);
-                        codepoint = Character.toCodePoint(c, low);
-                    }
-                    buf.append("&#x").append(Integer.toHexString(codepoint)).append(';');
-                } else {
-                    buf.append(c);
-                }
-            } else if (c == '&') {
-                buf.append("&amp;");
-            } else if (c == '"') {
-                buf.append("&quot;");
-            } else if (c == '<') {
-                buf.append("&lt;");
-            } else if (c == '>') {
-                buf.append("&gt;");
-            } else {
-                buf.append(c);
-            }
-        }
     }
 
     /**
@@ -485,15 +442,6 @@ public final class StringUtil {
         return truncated + ellipsis;
     }
 
-    /**
-     * Returns an empty array of string
-     *
-     * @return String
-     */
-    public static String[] getEmptyStrings() {
-        return EMPTY_STRINGS;
-    }
-
 
     /**
      * Replaces unprintable characters by their escaped (or unicode escaped)
@@ -551,8 +499,10 @@ public final class StringUtil {
         return str.replaceAll("'", "''");
     }
 
-    public static @NonNull String inDoubleQuotes(String expected) {
-        return "\"" + expected + "\"";
+
+    /** Return the empty string if the parameter is null. */
+    public static String nullToEmpty(final String value) {
+        return value == null ? "" : value;
     }
 
 

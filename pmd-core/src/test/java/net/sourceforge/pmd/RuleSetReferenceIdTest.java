@@ -25,7 +25,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.util.ResourceLoader;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;

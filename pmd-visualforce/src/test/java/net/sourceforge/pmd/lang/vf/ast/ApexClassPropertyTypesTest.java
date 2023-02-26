@@ -15,9 +15,10 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
 import net.sourceforge.pmd.lang.vf.DataType;
 import net.sourceforge.pmd.lang.vf.VFTestUtils;
-import net.sourceforge.pmd.lang.vf.VfHandler;
+import net.sourceforge.pmd.lang.vf.VfLanguageProperties;
 
 class ApexClassPropertyTypesTest {
     private static final Map<String, DataType> EXPECTED_DATA_TYPES;
@@ -55,10 +56,12 @@ class ApexClassPropertyTypesTest {
     void testApexClassIsProperlyParsed() {
         Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf)
                                      .resolve("SomePage.page");
-        ApexClassPropertyTypes apexClassPropertyTypes = new ApexClassPropertyTypes();
+        try (LanguageProcessorRegistry lpReg = VFTestUtils.fakeLpRegistry()) {
+            ApexClassPropertyTypes apexClassPropertyTypes = new ApexClassPropertyTypes(lpReg);
+            ObjectFieldTypesTest.validateDataTypes(EXPECTED_DATA_TYPES, apexClassPropertyTypes, vfPagePath,
+                                                   VfLanguageProperties.APEX_DIRECTORIES_DESCRIPTOR.defaultValue());
+        }
 
-        ObjectFieldTypesTest.validateDataTypes(EXPECTED_DATA_TYPES, apexClassPropertyTypes, vfPagePath,
-                                               VfHandler.APEX_DIRECTORIES_DESCRIPTOR.defaultValue());
     }
 
     @Test
@@ -68,7 +71,9 @@ class ApexClassPropertyTypesTest {
         String vfFileName = vfPagePath.toString();
 
         List<String> paths = Arrays.asList(Paths.get("..", "classes-does-not-exist").toString());
-        ApexClassPropertyTypes apexClassPropertyTypes = new ApexClassPropertyTypes();
-        assertNull(apexClassPropertyTypes.getDataType("ApexController.accOuntIdProp", vfFileName, paths));
+        try (LanguageProcessorRegistry lpReg = VFTestUtils.fakeLpRegistry()) {
+            ApexClassPropertyTypes apexClassPropertyTypes = new ApexClassPropertyTypes(lpReg);
+            assertNull(apexClassPropertyTypes.getDataType("ApexController.accOuntIdProp", vfFileName, paths));
+        }
     }
 }
