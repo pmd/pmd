@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.swift.SwiftLanguageModule;
 class SwiftTokenizerTest extends CpdTextComparisonTest {
 
     SwiftTokenizerTest() {
-        super(SwiftLanguageModule.TERSE_NAME, ".swift");
+        super(SwiftLanguageModule.getInstance(), ".swift");
     }
 
     @Test

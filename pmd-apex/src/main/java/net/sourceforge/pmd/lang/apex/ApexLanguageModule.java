@@ -7,22 +7,25 @@ package net.sourceforge.pmd.lang.apex;
 import net.sourceforge.pmd.cpd.CpdCapableLanguage;
 import net.sourceforge.pmd.cpd.PmdCapableLanguage;
 import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageModuleBase;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.apex.cpd.ApexTokenizer;
-
-import apex.jorje.services.Version;
 
 public class ApexLanguageModule extends LanguageModuleBase implements PmdCapableLanguage, CpdCapableLanguage {
 
-    public static final String NAME = "Apex";
-    public static final String TERSE_NAME = "apex";
+    private static final ApexLanguageModule INSTANCE = new ApexLanguageModule();
 
     public ApexLanguageModule() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("cls", "trigger")
-                  .addDefaultVersion(String.valueOf((int) Version.CURRENT.getExternal())));
+        super(LanguageMetadata.withId("apex").name("Apex")
+                              .extensions("cls", "trigger")
+                              .addVersion("52")
+                              .addVersion("53")
+                              .addVersion("54")
+                              .addVersion("55")
+                              .addVersion("56")
+                              .addDefaultVersion("57"));
     }
 
     @Override
@@ -40,7 +43,7 @@ public class ApexLanguageModule extends LanguageModuleBase implements PmdCapable
         return new ApexTokenizer((ApexLanguageProperties) bundle);
     }
 
-    public static ApexLanguageModule getInstance() {
-        return (ApexLanguageModule) LanguageRegistry.PMD.getLanguageById(TERSE_NAME);
+    public static Language getInstance() {
+        return INSTANCE;
     }
 }

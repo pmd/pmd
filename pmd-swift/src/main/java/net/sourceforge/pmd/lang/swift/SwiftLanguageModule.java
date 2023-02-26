@@ -14,20 +14,32 @@ import net.sourceforge.pmd.lang.swift.cpd.SwiftTokenizer;
  */
 public class SwiftLanguageModule extends SimpleLanguageModuleBase {
 
-    /** The name. */
-    public static final String NAME = "Swift";
-    /** The terse name. */
-    public static final String TERSE_NAME = "swift";
+    private static final SwiftLanguageModule INSTANCE = new SwiftLanguageModule();
 
     /**
      * Create a new instance of Swift Language Module.
      */
     public SwiftLanguageModule() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("swift"), new SwiftHandler());
+        super(LanguageMetadata.withId("swift").name("Swift")
+                              .extensions("swift")
+                              .addVersion("4.2")
+                              .addVersion("5.0")
+                              .addVersion("5.1")
+                              .addVersion("5.2")
+                              .addVersion("5.3")
+                              .addVersion("5.4")
+                              .addVersion("5.5")
+                              .addVersion("5.6")
+                              .addDefaultVersion("5.7"),
+              new SwiftHandler());
     }
 
     @Override
     public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
         return new SwiftTokenizer();
+    }
+
+    public static SwiftLanguageModule getInstance() {
+        return INSTANCE;
     }
 }

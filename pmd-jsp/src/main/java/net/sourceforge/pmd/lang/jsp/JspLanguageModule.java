@@ -15,17 +15,22 @@ import net.sourceforge.pmd.lang.jsp.cpd.JSPTokenizer;
  */
 public class JspLanguageModule extends SimpleLanguageModuleBase implements CpdCapableLanguage {
 
-    public static final String NAME = "Java Server Pages";
-    public static final String TERSE_NAME = "jsp";
+    private static final JspLanguageModule INSTANCE = new JspLanguageModule();
 
     public JspLanguageModule() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).shortName("JSP")
-                              .extensions("jsp", "jspx", "jspf", "tag"),
+        super(LanguageMetadata.withId("jsp").name("Java Server Pages").shortName("JSP")
+                              .extensions("jsp", "jspx", "jspf", "tag")
+                              .addVersion("2")
+                              .addDefaultVersion("3"),
               new JspHandler());
     }
 
     @Override
     public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
         return new JSPTokenizer();
+    }
+
+    public static JspLanguageModule getInstance() {
+        return INSTANCE;
     }
 }

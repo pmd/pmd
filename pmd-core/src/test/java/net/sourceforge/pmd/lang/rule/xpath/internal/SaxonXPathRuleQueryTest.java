@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 import net.sourceforge.pmd.DummyParsingHelper;
+import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.DummyNodeWithListAndEnum;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -422,7 +423,7 @@ class SaxonXPathRuleQueryTest {
 
     @NonNull
     private static AbstractXPathFunctionDef imageIsFunction() {
-        return new AbstractXPathFunctionDef("imageIs", "dummy") {
+        return new AbstractXPathFunctionDef("imageIs", DummyLanguageModule.getInstance()) {
             @Override
             public SequenceType[] getArgumentTypes() {
                 return new SequenceType[] {SequenceType.SINGLE_STRING};

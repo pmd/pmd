@@ -18,17 +18,13 @@ import net.sourceforge.pmd.lang.kotlin.cpd.KotlinTokenizer;
 @Experimental
 public class KotlinLanguageModule extends SimpleLanguageModuleBase {
 
-    /** The name. */
-    public static final String NAME = "Kotlin";
-    /** The terse name. */
-    public static final String TERSE_NAME = "kotlin";
+    private static final KotlinLanguageModule INSTANCE = new KotlinLanguageModule();
 
-    /**
-     * Create a new instance of Kotlin Language Module.
-     */
     public KotlinLanguageModule() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("kt", "ktm")
-                              .addDefaultVersion("1.6-rfc+0.1", "1.6"),
+        super(LanguageMetadata.withId("kotlin").name("Kotlin")
+                              .extensions("kt", "ktm")
+                              .addVersion("1.6")
+                              .addDefaultVersion("1.7"),
               new KotlinHandler());
 
     }
@@ -36,5 +32,9 @@ public class KotlinLanguageModule extends SimpleLanguageModuleBase {
     @Override
     public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
         return new KotlinTokenizer();
+    }
+
+    public static KotlinLanguageModule getInstance() {
+        return INSTANCE;
     }
 }

@@ -29,12 +29,29 @@ class LanguageModuleBaseTest {
         assertInvalidId("C");
         assertInvalidId("ab-c");
         assertThrows(NullPointerException.class, () -> LanguageMetadata.withId(null));
+
+        Exception e = assertThrows(IllegalArgumentException.class, () -> LanguageMetadata.withId("dummy").addVersion(""),
+                "Empty versions should not be allowed.");
+        assertEquals("Invalid version name: ''", e.getMessage());
+        assertThrows(IllegalArgumentException.class, () -> LanguageMetadata.withId("dummy").addVersion(" "),
+                "Empty versions should not be allowed.");
+        assertThrows(IllegalArgumentException.class, () -> LanguageMetadata.withId("dummy").addVersion(null),
+                "Empty versions should not be allowed.");
+        assertThrows(IllegalArgumentException.class, () -> LanguageMetadata.withId("dummy").addVersion("1.0", ""),
+                "Empty versions should not be allowed.");
     }
 
     @Test
     void testVersions() {
         LanguageModuleBase lang = makeLanguage(LanguageMetadata.withId("dumdum").name("Name").extensions("o").addDefaultVersion("abc"));
         assertThat(lang.getDefaultVersion(), equalTo(lang.getVersion("abc")));
+    }
+
+    @Test
+    void testMissingVersions() {
+        Exception e = assertThrows(IllegalStateException.class, () -> makeLanguage(LanguageMetadata.withId("dumdum").name("Name").extensions("o")),
+                "Languages without versions should not be allowed.");
+        assertEquals("No versions for 'dumdum'", e.getMessage());
     }
 
     @Test

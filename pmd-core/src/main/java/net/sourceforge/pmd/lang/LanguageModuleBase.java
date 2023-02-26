@@ -8,6 +8,7 @@ import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,7 +22,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.LanguageModuleBase.LanguageMetadata.LangVersionMetadata;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -44,7 +44,7 @@ public abstract class LanguageModuleBase implements Language {
      * Construct a module instance using the given metadata. The metadata must
      * be properly constructed.
      *
-     * @throws IllegalStateException If the metadata is invalid (eg missing extensions or name)
+     * @throws IllegalStateException If the metadata is invalid (eg missing extensions or name or no versions)
      */
     protected LanguageModuleBase(LanguageMetadata metadata) {
         this.meta = metadata;
@@ -55,16 +55,13 @@ public abstract class LanguageModuleBase implements Language {
         LanguageVersion defaultVersion = null;
 
         if (metadata.versionMetadata.isEmpty()) {
-            // Many languages have just one version, which is implicitly
-            // created here.
-            // TODO #4120 remove this branch, before 7.0.0
-            metadata.versionMetadata.add(new LangVersionMetadata("", Collections.emptyList(), true));
+            throw new IllegalStateException("No versions for '" + getId() + "'");
         }
 
         int i = 0;
         for (LanguageMetadata.LangVersionMetadata versionId : metadata.versionMetadata) {
             String versionStr = versionId.name;
-            LanguageVersion languageVersion = new LanguageVersion(this, versionStr, i++);
+            LanguageVersion languageVersion = new LanguageVersion(this, versionStr, i++, versionId.aliases);
 
             versions.add(languageVersion);
 
@@ -154,7 +151,7 @@ public abstract class LanguageModuleBase implements Language {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId());
+        return getId().hashCode();
     }
 
     @Override
@@ -269,11 +266,11 @@ public abstract class LanguageModuleBase implements Language {
 
         /**
          * Record the {@linkplain Language#getExtensions() extensions}
-         * assigned to the language. Parameters should not start with a period
+         * assigned to the language. Extensions should not start with a period
          * {@code .}.
          *
-         * @param extensionWithoutPeriod     First extensions
-         * @param others Other extensions (optional)
+         * @param extensionWithoutPeriod First extensions
+         * @param others                 Other extensions (optional)
          *
          * @throws NullPointerException If any extension is null
          */
@@ -284,13 +281,32 @@ public abstract class LanguageModuleBase implements Language {
         }
 
         /**
+         * Record the {@linkplain Language#getExtensions() extensions}
+         * assigned to the language. Extensions should not start with a period
+         * {@code .}. At least one extension must be provided.
+         *
+         * @param extensions the extensions
+         *
+         * @throws NullPointerException     If any extension is null
+         * @throws IllegalArgumentException If no extensions are provided
+         */
+        public LanguageMetadata extensions(Collection<String> extensions) {
+            this.extensions = new ArrayList<>(new HashSet<>(extensions));
+            AssertionUtil.requireContainsNoNullValue("extensions", this.extensions);
+            if (this.extensions.isEmpty()) {
+                throw new IllegalArgumentException("At least one extension is required.");
+            }
+            return this;
+        }
+
+        /**
          * Add a new version by its name.
          *
          * @param name    Version name. Must contain no spaces.
          * @param aliases Additional names that are mapped to this version. Must contain no spaces.
          *
          * @throws NullPointerException     If any parameter is null
-         * @throws IllegalArgumentException If the name or aliases contain spaces
+         * @throws IllegalArgumentException If the name or aliases are empty or contain spaces
          */
 
         public LanguageMetadata addVersion(String name, String... aliases) {
@@ -305,10 +321,29 @@ public abstract class LanguageModuleBase implements Language {
          * @param aliases Additional names that are mapped to this version. Must contain no spaces.
          *
          * @throws NullPointerException     If any parameter is null
-         * @throws IllegalArgumentException If the name or aliases contain spaces
+         * @throws IllegalArgumentException If the name or aliases are empty or contain spaces
          */
         public LanguageMetadata addDefaultVersion(String name, String... aliases) {
             versionMetadata.add(new LangVersionMetadata(name, Arrays.asList(aliases), true));
+            return this;
+        }
+
+
+        /**
+         * Add all the versions of the given language, including the
+         * default version.
+         *
+         * @param language Other language
+         *
+         * @throws NullPointerException     If any parameter is null
+         * @throws IllegalArgumentException If the name or aliases are empty or contain spaces
+         */
+        public LanguageMetadata addAllVersionsOf(Language language) {
+            for (LanguageVersion version : language.getVersions()) {
+                versionMetadata.add(new LangVersionMetadata(version.getName(),
+                                                            version.getAliases(),
+                                                            version.equals(language.getDefaultVersion())));
+            }
             return this;
         }
 
@@ -351,7 +386,7 @@ public abstract class LanguageModuleBase implements Language {
             }
 
             private static void checkVersionName(String name) {
-                if (SPACE_PAT.matcher(name).find()) { // TODO #4120 also check that the name is non-empty
+                if (StringUtils.isBlank(name) || SPACE_PAT.matcher(name).find()) {
                     throw new IllegalArgumentException("Invalid version name: " + StringUtil.inSingleQuotes(name));
                 }
             }

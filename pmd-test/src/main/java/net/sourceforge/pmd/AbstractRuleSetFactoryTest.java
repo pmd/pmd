@@ -73,6 +73,11 @@ public abstract class AbstractRuleSetFactoryTest {
         validXPathClassNames.add(XPathRule.class.getName());
     }
 
+    public AbstractRuleSetFactoryTest(Language... languagesToSkip) {
+        this(Arrays.stream(languagesToSkip).map(Language::getId).toArray(String[]::new));
+    }
+
+
     /**
      * Setups the XML parser with validation.
      *

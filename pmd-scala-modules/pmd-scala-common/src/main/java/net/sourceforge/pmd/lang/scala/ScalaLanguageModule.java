@@ -10,7 +10,6 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.cpd.ScalaTokenizer;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
 
@@ -21,17 +20,14 @@ import scala.meta.Dialect;
  */
 public class ScalaLanguageModule extends SimpleLanguageModuleBase {
 
-    /** The name. */
-    public static final String NAME = "Scala";
-
-    /** The terse name. */
-    public static final String TERSE_NAME = "scala";
+    private static final ScalaLanguageModule INSTANCE = new ScalaLanguageModule();
 
     /**
      * Create a new instance of Scala Language Module.
      */
     public ScalaLanguageModule() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("scala")
+        super(LanguageMetadata.withId("scala").name("Scala")
+                              .extensions("scala")
                               .addVersion("2.10")
                               .addVersion("2.11")
                               .addVersion("2.12")
@@ -57,6 +53,6 @@ public class ScalaLanguageModule extends SimpleLanguageModuleBase {
     }
 
     public static ScalaLanguageModule getInstance() {
-        return (ScalaLanguageModule) LanguageRegistry.PMD.getLanguageByFullName(NAME);
+        return INSTANCE;
     }
 }

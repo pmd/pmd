@@ -11,11 +11,17 @@ import net.sourceforge.pmd.lang.xml.XmlHandler;
  * Created by bernardo-macedo on 24.06.15.
  */
 public class WsdlLanguageModule extends SimpleLanguageModuleBase {
-    public static final String NAME = "WSDL";
-    public static final String TERSE_NAME = "wsdl";
+    private static final WsdlLanguageModule INSTANCE = new WsdlLanguageModule();
 
     public WsdlLanguageModule() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("wsdl"), new XmlHandler());
+        super(LanguageMetadata.withId("wsdl").name("WSDL")
+                              .extensions("wsdl")
+                              .addVersion("1.1")
+                              .addDefaultVersion("2.0"),
+                new XmlHandler());
     }
 
+    public static WsdlLanguageModule getInstance() {
+        return INSTANCE;
+    }
 }

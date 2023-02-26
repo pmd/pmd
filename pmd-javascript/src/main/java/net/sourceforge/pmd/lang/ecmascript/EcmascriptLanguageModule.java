@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.ecmascript;
 
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptParser;
 import net.sourceforge.pmd.lang.ecmascript.cpd.EcmascriptTokenizer;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
@@ -16,17 +15,23 @@ import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
  */
 public class EcmascriptLanguageModule extends SimpleLanguageModuleBase {
 
-    public static final String NAME = "Ecmascript";
-    public static final String TERSE_NAME = "ecmascript";
+    static final String NAME = "JavaScript";
+    static final String TERSE_NAME = "ecmascript";
+    private static final EcmascriptLanguageModule INSTANCE = new EcmascriptLanguageModule();
 
     public EcmascriptLanguageModule() {
         super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("js")
-                              .addDefaultVersion("ES6"),
+                              .addVersion("3")
+                              .addVersion("5")
+                              .addVersion("6", "ES6", "ES2015")
+                              .addVersion("7", "ES2016")
+                              .addVersion("8", "ES2017")
+                              .addDefaultVersion("9", "ES2018"),
               properties -> () -> new EcmascriptParser(properties));
     }
 
     public static EcmascriptLanguageModule getInstance() {
-        return (EcmascriptLanguageModule) LanguageRegistry.PMD.getLanguageByFullName(NAME);
+        return INSTANCE;
     }
 
     @Override

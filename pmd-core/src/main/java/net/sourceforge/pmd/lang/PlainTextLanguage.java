@@ -34,7 +34,9 @@ public final class PlainTextLanguage extends SimpleLanguageModuleBase implements
     static final String TERSE_NAME = "text";
 
     private PlainTextLanguage() {
-        super(LanguageMetadata.withId(TERSE_NAME).name("Plain text").extensions("plain-text-file-goo-extension"),
+        super(LanguageMetadata.withId(TERSE_NAME).name("Plain text")
+                              .extensions("plain-text-file-goo-extension")
+                              .addDefaultVersion("default"),
               new TextLvh());
     }
 

@@ -12,7 +12,8 @@ import net.sourceforge.pmd.AbstractLanguageVersionTest;
 class LanguageVersionTest extends AbstractLanguageVersionTest {
 
     static Collection<TestDescriptor> data() {
-        return Arrays.asList(new TestDescriptor(SwiftLanguageModule.NAME, SwiftLanguageModule.TERSE_NAME, "",
-                getLanguage(SwiftLanguageModule.NAME).getDefaultVersion()));
+        return Arrays.asList(
+            new TestDescriptor(SwiftLanguageModule.getInstance(), "5.7")
+        );
     }
 }

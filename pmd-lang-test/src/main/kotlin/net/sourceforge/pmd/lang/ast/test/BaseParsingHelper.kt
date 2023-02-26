@@ -31,6 +31,9 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         protected val params: Params
 ) {
 
+    constructor(lang: PmdCapableLanguage, rootClass: Class<T>, params: Params)
+            : this(lang.name, rootClass, params)
+
     data class Params(
         val doProcess: Boolean,
         val defaultVerString: String?,

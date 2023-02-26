@@ -8,24 +8,24 @@ import net.sourceforge.pmd.cpd.CpdCapableLanguage;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
-import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
 import net.sourceforge.pmd.lang.vf.cpd.VfTokenizer;
-
 
 /**
  * @author sergey.gorbaty
  */
 public class VfLanguageModule extends SimpleLanguageModuleBase implements CpdCapableLanguage {
 
-    public static final String NAME = "Salesforce VisualForce";
-    public static final String TERSE_NAME = "vf";
+    static final String NAME = "Salesforce VisualForce";
+    static final String TERSE_NAME = "vf";
+    private static final VfLanguageModule INSTANCE = new VfLanguageModule();
 
     public VfLanguageModule() {
         super(LanguageMetadata.withId(TERSE_NAME).name(NAME)
                               .extensions("page", "component")
-                              .dependsOnLanguage(ApexLanguageModule.TERSE_NAME),
+                              .dependsOnLanguage(ApexLanguageModule.getInstance().getId())
+                              .addAllVersionsOf(ApexLanguageModule.getInstance()),
               p -> new VfHandler((VfLanguageProperties) p));
     }
 
@@ -40,6 +40,6 @@ public class VfLanguageModule extends SimpleLanguageModuleBase implements CpdCap
     }
 
     public static Language getInstance() {
-        return LanguageRegistry.PMD.getLanguageByFullName(NAME);
+        return INSTANCE;
     }
 }

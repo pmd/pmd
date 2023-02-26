@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.it;
 
+import static org.hamcrest.Matchers.containsString;
+
 import java.io.File;
 import java.util.Arrays;
 
@@ -30,7 +32,8 @@ class AllRulesIT extends AbstractBinaryDistributionTest {
     }
 
     private static void assertDefaultExecutionResult(ExecutionResult result) {
-        result.assertExecutionResult(4, "");
+        result.assertExitCode(4)
+              .assertStdOut(containsString(""));
 
         result.assertNoError("Exception applying rule");
         result.assertNoError("Ruleset not found");

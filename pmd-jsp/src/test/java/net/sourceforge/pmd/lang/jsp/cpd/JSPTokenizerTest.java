@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.jsp.JspLanguageModule;
 class JSPTokenizerTest extends CpdTextComparisonTest {
 
     JSPTokenizerTest() {
-        super(JspLanguageModule.TERSE_NAME, ".jsp");
+        super(JspLanguageModule.getInstance(), ".jsp");
     }
 
     @Test
