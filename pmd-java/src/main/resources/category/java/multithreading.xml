@@ -159,14 +159,9 @@ Also, EJBs might be moved between machines in a cluster and only managed resourc
                            ]
 )]
 (: exclude duplicated types on the same line :)
-[not((parent::FieldDeclaration|parent::LocalVariableDeclaration)/VariableDeclarator/*[2][pmd-java:typeIs('java.lang.Thread') or pmd-java:typeIs('java.util.concurrent.ExecutorService')])
+ [not((parent::FieldDeclaration|parent::LocalVariableDeclaration)/VariableDeclarator/*[2][pmd-java:typeIs('java.lang.Thread') or pmd-java:typeIs('java.util.concurrent.ExecutorService')])
  or
-  @BeginLine != (parent::FieldDeclaration|parent::LocalVariableDeclaration)/VariableDeclarator/ConstructorCall/ClassOrInterfaceType[pmd-java:typeIs('java.lang.Thread') or pmd-java:typeIs('java.util.concurrent.ExecutorService')]/@BeginLine]
-
-(: exclude constructor call chains :)
-[not(parent::ConstructorCall)]
-|
-//ConstructorCall/ClassOrInterfaceType[pmd-java:typeIs('java.lang.Thread')]
+  @BeginLine != (parent::FieldDeclaration|parent::LocalVariableDeclaration)/VariableDeclarator/ConstructorCall/ClassOrInterfaceType/@BeginLine]
 |
 //MethodCall[*[1][not(pmd-java:nodeIs('MethodCall'))][pmd-java:nodeIs('Expression') and (pmd-java:typeIs('java.util.concurrent.Executors')
    or pmd-java:typeIs('java.util.concurrent.ExecutorService'))]]
