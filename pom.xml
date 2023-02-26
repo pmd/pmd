@@ -81,7 +81,7 @@
     </issueManagement>
 
     <properties>
-        <project.build.outputTimestamp>2023-01-28T09:31:52Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2023-02-25T10:50:54Z</project.build.outputTimestamp>
 
         <java.version>8</java.version>
 
@@ -160,6 +160,13 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-antrun-plugin</artifactId>
                     <version>3.1.0</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>net.java.dev.javacc</groupId>
+                            <artifactId>javacc</artifactId>
+                            <version>${javacc.version}</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -448,22 +455,22 @@
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>6.54.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.55.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>6.54.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.55.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-jsp</artifactId>
-                            <version>6.54.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.55.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-javascript</artifactId>
-                            <version>6.54.0</version> <!-- pmd.dogfood.version -->
+                            <version>6.55.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
                         <dependency>
@@ -653,7 +660,7 @@
             <dependency>
                 <groupId>org.ow2.asm</groupId>
                 <artifactId>asm</artifactId>
-                <version>9.3</version>
+                <version>9.4</version>
             </dependency>
             <dependency>
                 <groupId>org.pcollections</groupId>
@@ -689,12 +696,6 @@
                 <groupId>net.sf.saxon</groupId>
                 <artifactId>Saxon-HE</artifactId>
                 <version>${saxon.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>net.java.dev.javacc</groupId>
-                <artifactId>javacc</artifactId>
-                <version>${javacc.version}</version>
-                <scope>provided</scope> <!-- only needed for generating the parser via ant -->
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
