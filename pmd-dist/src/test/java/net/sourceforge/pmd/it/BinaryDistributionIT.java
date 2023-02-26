@@ -39,8 +39,9 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
                 + "                              html-5, java-1.10, java-1.3, java-1.4, java-1.5," + System.lineSeparator()
                 + "                              java-1.6, java-1.7, java-1.8, java-1.9, java-10," + System.lineSeparator()
                 + "                              java-11, java-12, java-13, java-14, java-15," + System.lineSeparator()
-                + "                              java-16, java-17, java-18, java-18-preview," + System.lineSeparator()
-                + "                              java-19, java-19-preview, java-5, java-6, java-7," + System.lineSeparator()
+                + "                              java-16, java-17, java-18, java-19," + System.lineSeparator()
+                + "                              java-19-preview, java-20, java-20-preview,"  + System.lineSeparator()
+                + "                              java-5, java-6, java-7,"
                 + "                              java-8, java-9, jsp-2, jsp-3, kotlin-1.6," + System.lineSeparator()
                 + "                              kotlin-1.7, modelica-3.4, modelica-3.5," + System.lineSeparator()
                 + "                              plsql-11g, plsql-12.1, plsql-12.2," + System.lineSeparator()

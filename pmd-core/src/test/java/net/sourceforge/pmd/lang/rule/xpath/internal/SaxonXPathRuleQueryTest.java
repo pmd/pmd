@@ -374,6 +374,16 @@ class SaxonXPathRuleQueryTest {
         assertExpression(expectedSubexpression, query.nodeNameToXPaths.get("DoStatement").get(0));
     }
 
+    @Test
+    void ruleChainVisitsWithUnionsAndLets() {
+        PropertyDescriptor<Boolean> boolProperty = PropertyFactory.booleanProperty("checkAll").desc("test").defaultValue(true).build();
+        SaxonXPathRuleQuery query = createQuery("//dummyNode[$checkAll and ClassOrInterfaceType] | //ForStatement[not($checkAll)]", boolProperty);
+        List<String> ruleChainVisits = query.getRuleChainVisits();
+        assertEquals(2, ruleChainVisits.size());
+        assertTrue(ruleChainVisits.contains("dummyNode"));
+        assertTrue(ruleChainVisits.contains("ForStatement"));
+    }
+
     private static void assertExpression(String expected, Expression actual) {
         assertEquals(normalizeExprDump(expected),
                      normalizeExprDump(actual.toString()));

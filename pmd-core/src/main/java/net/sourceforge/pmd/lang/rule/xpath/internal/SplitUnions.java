@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sf.saxon.expr.Expression;
+import net.sf.saxon.expr.LetExpression;
 import net.sf.saxon.expr.VennExpression;
 import net.sf.saxon.expr.parser.Token;
 import net.sf.saxon.expr.sort.DocumentSorter;
@@ -40,8 +41,8 @@ class SplitUnions extends SaxonExprVisitor {
 
     @Override
     public Expression visit(Expression e) {
-        // only flatten toplevel unions
-        if (e instanceof VennExpression || e instanceof DocumentSorter) {
+        // only flatten top level unions - skip sorters and let around it
+        if (e instanceof VennExpression || e instanceof DocumentSorter || e instanceof LetExpression) {
             return super.visit(e);
         } else {
             return e;
