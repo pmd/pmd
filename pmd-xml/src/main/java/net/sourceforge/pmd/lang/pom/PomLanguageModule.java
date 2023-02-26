@@ -4,15 +4,15 @@
 
 package net.sourceforge.pmd.lang.pom;
 
-import net.sourceforge.pmd.lang.BaseLanguageModule;
+import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
 import net.sourceforge.pmd.lang.xml.XmlHandler;
 
-public class PomLanguageModule extends BaseLanguageModule {
+public class PomLanguageModule extends SimpleLanguageModuleBase {
     public static final String NAME = "Maven POM";
     public static final String TERSE_NAME = "pom";
 
     public PomLanguageModule() {
-        super(NAME, null, TERSE_NAME, "pom");
-        addVersion("", new XmlHandler(), true);
+        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("pom"), new XmlHandler());
     }
+
 }

@@ -1,4 +1,13 @@
 /**
+ * Support "JEP 433: Pattern Matching for switch (Fourth Preview)" for Java 20 Preview
+ *    SwitchLabel simplified
+ * Support "JEP 432: Record Patterns (Second Preview)" for Java 20 Preview
+ *    ForStatement allows record patterns
+ *    Removed named record patterns (optional VariableDeclaratorId following the pattern)
+ * Remove support for Java 18 preview language features
+ *    GuardedPattern is removed
+ * Andreas Dangel 02/2023
+ *====================================================================
  * Support "JEP 427: Pattern Matching for switch (Third Preview)" for Java 19 Preview
  * Note: GuardedPattern is deprecated and only valid for 17-preview and 18-preview
    * New AST node: ASTSwitchGuard (production "Guard") - used within switch case labels for refining a pattern
@@ -746,12 +755,6 @@ TOKEN :
 
 | < CHARACTER_LITERAL: "'"  ( ~["'", "\\","\n","\r"] | <STRING_ESCAPE> )  "'"  >
 | < STRING_LITERAL:    "\"" ( ~["\"","\\","\n","\r"] | <STRING_ESCAPE> )* "\"" >
-|
-  < TEXT_BLOCK_LITERAL:
-     "\"\"\"" (<HORIZONTAL_WHITESPACE>)* <LINE_TERMINATOR>
-        ( ~["\"", "\\"] | "\"" ~["\""] | "\"\"" ~["\""] | <STRING_ESCAPE> | "\\" <LINE_TERMINATOR> )*
-     "\"\"\""
-  >
 | < #STRING_ESCAPE:
         "\\"
         ( ["n","t","b","r","f","s","\\","'","\""]
@@ -760,6 +763,24 @@ TOKEN :
         | ["0"-"3"] ["0"-"7"] ["0"-"7"]
         )
   >
+}
+
+/* TEXT BLOCKS */
+MORE :
+{
+  < "\"\"\"" (<HORIZONTAL_WHITESPACE>)* <LINE_TERMINATOR> > : IN_TEXT_BLOCK_LITERAL
+}
+
+<IN_TEXT_BLOCK_LITERAL>
+TOKEN :
+{
+  <TEXT_BLOCK_LITERAL: "\"\"\"" > : DEFAULT
+}
+
+<IN_TEXT_BLOCK_LITERAL>
+MORE :
+{
+  < ~["\\"] | <STRING_ESCAPE> | ("\\")? <LINE_TERMINATOR> >
 }
 
 /* IDENTIFIERS */
@@ -1721,13 +1742,7 @@ void Pattern() #void:
 {
     LOOKAHEAD((Annotation())* ReferenceType() "(") RecordPattern()
     | LOOKAHEAD("(") ParenthesizedPattern()
-    | TypePattern() [ LOOKAHEAD({getToken(1).kind == SC_AND && jdkVersion < 19}) GuardedPatternCondition() #GuardedPattern(2) ]
-}
-
-void GuardedPatternCondition() #void:
-{}
-{
-    "&&" ConditionalAndExpression()
+    | TypePattern()
 }
 
 void ParenthesizedPattern() #void:
@@ -1745,7 +1760,7 @@ void TypePattern():
 void RecordPattern():
 {}
 {
-  (Annotation())* ReferenceType() RecordStructurePattern() [ VariableDeclaratorId() ]
+  (Annotation())* ReferenceType() RecordStructurePattern()
 }
 
 void RecordStructurePattern() #ComponentPatternList:
@@ -1770,13 +1785,6 @@ void InstanceOfExpression() #void:
             | AnnotatedRefType() [
                   VariableDeclaratorId() #TypePattern(2)
                 | RecordStructurePattern() #RecordPattern(2)
-                  [ VariableDeclaratorId()
-                    {
-                        AbstractJavaNode id = jjtree.popNode();
-                        ASTRecordPattern pat = (ASTRecordPattern) jjtree.peekNode();
-                        pat.addChild(id, pat.getNumChildren());
-                    }
-                  ]
             ]
             | Pattern()
         )
@@ -2469,13 +2477,17 @@ void SwitchLabel() :
 void CaseLabelElement(ASTSwitchLabel label) #void:
 {}
 {
-    "default" {label.setDefault();}
+    "default" {label.setDefault();} // only valid in java-19-preview
     |
-    LOOKAHEAD(Pattern()) Pattern() {
-        AbstractJavaNode top = jjtree.popNode();
-        top = new ASTPatternExpression((ASTPattern) top);
-        jjtree.pushNode(top);
-    } ( LOOKAHEAD({isKeyword("when")}) Guard() )*
+    "null" #NullLiteral
+        [
+            // this lookahead is only required to allow parsing java-19-preview code
+            // since java-20-preview, combining null is only allowed with default
+            LOOKAHEAD(2)
+            "," "default" {label.setDefault();}
+        ]
+    |
+    LOOKAHEAD(Pattern()) Pattern() [ LOOKAHEAD({isKeyword("when")}) Guard() ]
     |
     ConditionalExpression()
 }
@@ -2528,8 +2540,8 @@ void ForStatement() #void:
 {
   t="for" "("
 (
-      LOOKAHEAD(LocalVariableDeclaration() ":")
-      (LocalVariableDeclaration() ":" Expression() ")" Statement() { jjtThis.setFirstToken(t); }) #ForeachStatement
+      LOOKAHEAD(EnhancedForDeclaration() ":")
+      (EnhancedForDeclaration() ":" Expression() ")" Statement() { jjtThis.setFirstToken(t); }) #ForeachStatement
 | (
   [ ForInit() ] ";"
   [ Expression() ] ";"
@@ -2538,6 +2550,13 @@ void ForStatement() #void:
    { jjtThis.setFirstToken(t); }
   ) #ForStatement
 )
+}
+
+void EnhancedForDeclaration() #void:
+{}
+{
+      LOOKAHEAD(LocalVariableDeclaration()) LocalVariableDeclaration()
+    | RecordPattern()
 }
 
 void ForInit() :

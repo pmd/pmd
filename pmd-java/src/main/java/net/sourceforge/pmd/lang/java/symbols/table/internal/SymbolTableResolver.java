@@ -38,7 +38,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTGuardedPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
@@ -510,15 +509,6 @@ public final class SymbolTableResolver {
 
             // not a special case, finish visiting right operand
             return node.getRightOperand().acceptVisitor(this, ctx);
-        }
-
-        @Override
-        public Void visit(ASTGuardedPattern node, @NonNull ReferenceCtx ctx) {
-            BindSet bindSet = PatternBindingsUtil.bindersOfPattern(node.getPattern());
-            int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), bindSet.getTrueBindings()));
-            setTopSymbolTableAndVisit(node.getGuard(), ctx);
-            popStack(pushed);
-            return null;
         }
 
         @Override

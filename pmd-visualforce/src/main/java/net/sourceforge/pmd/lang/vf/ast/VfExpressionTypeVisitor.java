@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.vf.DataType;
-import net.sourceforge.pmd.lang.vf.VfHandler;
+import net.sourceforge.pmd.lang.vf.VfLanguageProperties;
 
 /**
  * Visits {@link ASTExpression} nodes and stores type information for
@@ -45,12 +45,12 @@ class VfExpressionTypeVisitor extends VfParserVisitorAdapter {
     private final List<String> apexDirectories;
     private final List<String> objectsDirectories;
 
-    VfExpressionTypeVisitor(ParserTask task) {
+    VfExpressionTypeVisitor(ParserTask task, VfLanguageProperties vfProperties) {
         this.fileName = task.getFileDisplayName();
-        this.apexDirectories = task.getProperties().getProperty(VfHandler.APEX_DIRECTORIES_DESCRIPTOR);
-        this.objectsDirectories = task.getProperties().getProperty(VfHandler.OBJECTS_DIRECTORIES_DESCRIPTOR);
+        this.apexDirectories = vfProperties.getProperty(VfLanguageProperties.APEX_DIRECTORIES_DESCRIPTOR);
+        this.objectsDirectories = vfProperties.getProperty(VfLanguageProperties.OBJECTS_DIRECTORIES_DESCRIPTOR);
         this.apexClassNames = new ArrayList<>();
-        this.apexClassPropertyTypes = new ApexClassPropertyTypes();
+        this.apexClassPropertyTypes = new ApexClassPropertyTypes(task.getLpRegistry());
         this.objectFieldTypes = new ObjectFieldTypes();
     }
 

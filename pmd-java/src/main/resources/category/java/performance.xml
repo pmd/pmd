@@ -13,28 +13,13 @@ Rules that flag suboptimal code.
           language="java"
           since="4.0"
           message="Do not add empty strings"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.java.rule.performance.AddEmptyStringRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#addemptystring">
         <description>
 The conversion of literals to strings by concatenating them with empty strings is inefficient.
 It is much better to use one of the type-specific `toString()` methods instead or `String.valueOf()`.
         </description>
         <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//InfixExpression[@Operator='+']/StringLiteral[@Empty=true()][not(ancestor::Annotation)]
-|
-//InfixExpression[@Operator='+']/VariableAccess
-  [@Name = (//FieldDeclaration[pmd-java:modifiers() = 'final']|ancestor::MethodDeclaration//LocalVariableDeclaration[pmd-java:modifiers() = 'final'])
-                /VariableDeclarator[@Initializer = true()]
-                    [StringLiteral[@Empty=true()]]
-                    /VariableDeclaratorId/@Name]
-]]>
-                </value>
-            </property>
-        </properties>
         <example>
 <![CDATA[
 String s = "" + 123;                // inefficient

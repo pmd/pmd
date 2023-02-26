@@ -20,7 +20,7 @@ import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.condition.OS;
 
 import net.sourceforge.pmd.PMDVersion;
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.internal.util.IOUtil;
 
 /**
  * This test calls ant in a fake terminal to make sure we have a {@link java.io.Console} connected.

@@ -5,14 +5,16 @@
 package net.sourceforge.pmd.internal.util;
 
 
-import static net.sourceforge.pmd.internal.util.AssertionUtil.requireOver1;
-import static net.sourceforge.pmd.internal.util.AssertionUtil.requireParamNotNull;
+import static net.sourceforge.pmd.util.AssertionUtil.requireOver1;
+import static net.sourceforge.pmd.util.AssertionUtil.requireParamNotNull;
 
 import java.util.Collection;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * Utility class for working with {@link Predicate}.

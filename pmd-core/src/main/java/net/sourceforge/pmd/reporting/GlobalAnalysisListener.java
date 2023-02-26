@@ -15,13 +15,13 @@ import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.BaseResultProducingCloseable;
 import net.sourceforge.pmd.util.CollectionUtil;
-import net.sourceforge.pmd.util.IOUtil;
 
 /**
  * Listens to an analysis. This object produces new {@link FileAnalysisListener}
@@ -206,7 +206,7 @@ public interface GlobalAnalysisListener extends AutoCloseable {
 
                     @Override
                     public void onError(ProcessingError error) throws FileAnalysisException {
-                        throw FileAnalysisException.wrap(filename, "Unknown error", error.getError());
+                        throw FileAnalysisException.wrap(filename, error.getError().getMessage(), error.getError());
                     }
 
                     @Override

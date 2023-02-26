@@ -4,7 +4,10 @@
 
 package net.sourceforge.pmd.lang.rule.xpath.internal;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
@@ -21,6 +24,12 @@ import net.sf.saxon.om.GenericTreeInfo;
 public final class AstTreeInfo extends GenericTreeInfo {
 
     private DeprecatedAttrLogger logger;
+    private final Map<Node, AstElementNode> wrapperCache = new LinkedHashMap<Node, AstElementNode>() {
+        @Override
+        protected boolean removeEldestEntry(Entry eldest) {
+            return size() > 128;
+        }
+    };
 
     /**
      * Builds an AstDocument, with the given node as the root.
@@ -37,6 +46,10 @@ public final class AstTreeInfo extends GenericTreeInfo {
     }
 
     public AstElementNode findWrapperFor(Node node) {
+        return wrapperCache.computeIfAbsent(node, this::findWrapperImpl);
+    }
+
+    private AstElementNode findWrapperImpl(Node node) {
         // for the RootNode, this returns the document node
         List<Integer> indices = node.ancestorsOrSelf().toList(Node::getIndexInParent);
         AstElementNode cur = getRootNode().getRootElement();

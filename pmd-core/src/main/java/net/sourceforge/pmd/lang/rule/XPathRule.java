@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.annotation.DeprecatedUntil700;
+import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
@@ -123,11 +124,11 @@ public final class XPathRule extends AbstractRule {
 
     @Override
     public void apply(Node target, RuleContext ctx) {
-        getQueryMaybeInitialize();
+        SaxonXPathRuleQuery query = getQueryMaybeInitialize();
 
         List<Node> nodesWithViolation;
         try {
-            nodesWithViolation = xpathRuleQuery.evaluate(target);
+            nodesWithViolation = query.evaluate(target);
         } catch (PmdXPathException e) {
             throw addExceptionContext(e);
         }
@@ -141,24 +142,29 @@ public final class XPathRule extends AbstractRule {
         return e.addRuleName(getName());
     }
 
+    @Override
+    public void initialize(LanguageProcessor languageProcessor) {
+        String xpath = getXPathExpression();
+        XPathVersion version = getVersion();
+
+        if (version == null) {
+            throw new IllegalStateException("Invalid XPath version, should have been caught by Rule::dysfunctionReason");
+        }
+
+        try {
+            xpathRuleQuery = new SaxonXPathRuleQuery(xpath,
+                                                     version,
+                                                     getPropertiesByPropertyDescriptor(),
+                                                     languageProcessor.services().getXPathHandler(),
+                                                     attrLogger);
+        } catch (PmdXPathException e) {
+            throw addExceptionContext(e);
+        }
+    }
+
     private SaxonXPathRuleQuery getQueryMaybeInitialize() throws PmdXPathException {
         if (xpathRuleQuery == null) {
-            String xpath = getXPathExpression();
-            XPathVersion version = getVersion();
-
-            if (version == null) {
-                throw new IllegalStateException("Invalid XPath version, should have been caught by Rule::dysfunctionReason");
-            }
-
-            try {
-                xpathRuleQuery = new SaxonXPathRuleQuery(xpath,
-                                                         version,
-                                                         getPropertiesByPropertyDescriptor(),
-                                                         getLanguage().getDefaultVersion().getLanguageVersionHandler().getXPathHandler(),
-                                                         attrLogger);
-            } catch (PmdXPathException e) {
-                throw addExceptionContext(e);
-            }
+            throw new IllegalStateException("Not initialized");
         }
         return xpathRuleQuery;
     }

@@ -22,7 +22,7 @@ import org.junit.jupiter.api.io.TempDir;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.docs.MockedFileWriter.FileEntry;
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.internal.util.IOUtil;
 
 class RuleDocGeneratorTest {
 

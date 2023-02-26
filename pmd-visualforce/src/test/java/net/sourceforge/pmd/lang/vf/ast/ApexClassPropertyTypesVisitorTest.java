@@ -16,6 +16,7 @@ import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
 import net.sourceforge.pmd.lang.vf.VFTestUtils;
 
 class ApexClassPropertyTypesVisitorTest {
@@ -28,7 +29,9 @@ class ApexClassPropertyTypesVisitorTest {
                                    .toAbsolutePath();
 
         ApexClassPropertyTypesVisitor visitor = new ApexClassPropertyTypesVisitor();
-        ApexClassPropertyTypes.parseApex(apexPath).acceptVisitor(visitor, null);
+        try (LanguageProcessorRegistry lpReg = VFTestUtils.fakeLpRegistry()) {
+            new ApexClassPropertyTypes(lpReg).parseApex(apexPath).acceptVisitor(visitor, null);
+        }
 
         List<Pair<String, String>> variables = visitor.getVariables();
         assertEquals(7, variables.size());

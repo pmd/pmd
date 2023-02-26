@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.ant;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -14,8 +15,10 @@ import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
+import org.apache.tools.ant.types.Resource;
 
 import net.sourceforge.pmd.RulePriority;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.ant.internal.PMDTaskImpl;
 
 /**
@@ -30,7 +33,7 @@ public class PMDTask extends Task {
     private final List<FileSet> filesets = new ArrayList<>();
     private boolean failOnError;
     private boolean failOnRuleViolation;
-    private boolean shortFilenames;
+    private final List<Path> relativizePathsWith = new ArrayList<>();
     private String suppressMarker;
     private String rulesetFiles;
     private boolean noRuleSetCompatibility;
@@ -92,10 +95,6 @@ public class PMDTask extends Task {
             }
         }
         return sb.toString();
-    }
-
-    public void setShortFilenames(boolean reportShortNames) {
-        this.shortFilenames = reportShortNames;
     }
 
     public void setSuppressMarker(String suppressMarker) {
@@ -207,10 +206,6 @@ public class PMDTask extends Task {
         return failOnRuleViolation;
     }
 
-    public boolean isShortFilenames() {
-        return shortFilenames;
-    }
-
     public String getSuppressMarker() {
         return suppressMarker;
     }
@@ -270,5 +265,24 @@ public class PMDTask extends Task {
 
     public void setNoCache(boolean noCache) {
         this.noCache = noCache;
+    }
+
+    public void addRelativizePathsWith(Path relativizePathsWith) {
+        this.relativizePathsWith.add(relativizePathsWith);
+    }
+
+    public List<Path> getRelativizePathsWith() {
+        return relativizePathsWith;
+    }
+
+    @InternalApi
+    public List<java.nio.file.Path> getRelativizeRoots() {
+        List<java.nio.file.Path> paths = new ArrayList<>();
+        for (Path path : getRelativizePathsWith()) {
+            for (Resource resource : path) {
+                paths.add(Paths.get(resource.toString()));
+            }
+        }
+        return paths;
     }
 }

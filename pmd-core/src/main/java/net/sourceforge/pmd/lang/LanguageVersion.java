@@ -4,10 +4,7 @@
 
 package net.sourceforge.pmd.lang;
 
-import java.util.List;
-
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.annotation.InternalApi;
 
 /**
  * Represents a version of a {@link Language}. Language instances provide
@@ -21,32 +18,17 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * and {@link Rule#getMaximumLanguageVersion()}. These should be set in the
  * ruleset XML (they're attributes of the {@code <rule>} element), and not
  * overridden.
- *
- * <p>Example usage:
- * <pre>
- * Language javaLanguage = LanguageRegistry.PMD.{@link LanguageRegistry#getLanguageById(String) getLanguageById}("java");
- * LanguageVersion java11 = javaLanguage.{@link Language#getVersion(String) getVersion}("11");
- * LanguageVersionHandler handler = java11.getLanguageVersionHandler();
- * Parser parser = handler.getParser(handler.getDefaultParserOptions());
- * // use parser
- * </pre>
  */
-public class LanguageVersion implements Comparable<LanguageVersion> {
+public final class LanguageVersion implements Comparable<LanguageVersion> {
 
     private final Language language;
     private final String version;
-    private final LanguageVersionHandler languageVersionHandler; // note: this is null if this is a cpd-only language...
+    private final int index;
 
-    /**
-     * @deprecated Use {@link Language#getVersion(String)}. This is only
-     *     supposed to be used when initializing a {@link Language} instance.
-     */
-    @Deprecated
-    @InternalApi
-    public LanguageVersion(Language language, String version, LanguageVersionHandler languageVersionHandler) {
+    LanguageVersion(Language language, String version, int index) {
         this.language = language;
         this.version = version;
-        this.languageVersionHandler = languageVersionHandler;
+        this.index = index;
     }
 
     /**
@@ -64,13 +46,6 @@ public class LanguageVersion implements Comparable<LanguageVersion> {
         return version;
     }
 
-    /**
-     * Returns the {@link LanguageVersionHandler}, which provides access
-     * to version-specific services, like the parser.
-     */
-    public LanguageVersionHandler getLanguageVersionHandler() {
-        return languageVersionHandler;
-    }
 
     /**
      * Returns the name of this language version. This is the version string
@@ -122,10 +97,11 @@ public class LanguageVersion implements Comparable<LanguageVersion> {
 
     @Override
     public int compareTo(LanguageVersion o) {
-        List<LanguageVersion> versions = language.getVersions();
-        int thisPosition = versions.indexOf(this);
-        int otherPosition = versions.indexOf(o);
-        return Integer.compare(thisPosition, otherPosition);
+        int cmp = language.compareTo(o.getLanguage());
+        if (cmp != 0) {
+            return cmp;
+        }
+        return Integer.compare(this.index, o.index);
     }
 
     @Override

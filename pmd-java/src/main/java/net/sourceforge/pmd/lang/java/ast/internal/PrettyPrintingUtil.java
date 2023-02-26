@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast.internal;
 
-import static net.sourceforge.pmd.internal.util.AssertionUtil.shouldNotReachHere;
+import static net.sourceforge.pmd.util.AssertionUtil.shouldNotReachHere;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 

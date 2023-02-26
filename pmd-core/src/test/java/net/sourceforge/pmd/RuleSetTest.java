@@ -7,6 +7,7 @@ package net.sourceforge.pmd;
 import static net.sourceforge.pmd.PmdCoreTestUtils.dummyLanguage;
 import static net.sourceforge.pmd.PmdCoreTestUtils.dummyLanguage2;
 import static net.sourceforge.pmd.PmdCoreTestUtils.dummyVersion;
+import static net.sourceforge.pmd.ReportTestUtil.getReportForRuleSetApply;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -37,9 +38,11 @@ import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.RuleSet.RuleSetBuilder;
+import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -47,9 +50,11 @@ import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
-import net.sourceforge.pmd.util.IOUtil;
 
 class RuleSetTest {
+
+    @RegisterExtension
+    private final DummyParsingHelper helper = new DummyParsingHelper();
 
     @Test
     void testRuleSetRequiresName() {
@@ -459,7 +464,7 @@ class RuleSetTest {
 
     private void verifyRuleSet(RuleSet ruleset, Set<RuleViolation> expected) throws Exception {
 
-        Report report = RuleContextTest.getReportForRuleSetApply(ruleset, makeCompilationUnits());
+        Report report = getReportForRuleSetApply(ruleset, makeCompilationUnits());
 
         assertEquals(expected.size(), report.getViolations().size(), "Invalid number of Violations Reported");
 
@@ -477,14 +482,9 @@ class RuleSetTest {
     }
 
     private RootNode makeCompilationUnits(String filename) {
-        DummyRootNode node = DummyLanguageModule.parse("dummyCode", filename);
+        DummyRootNode node = helper.parse("dummyCode", filename);
         node.setImage("Foo");
         return node;
-        //        DummyRootNode node = new DummyRootNode();
-        //        node.setCoordsReplaceText(1, 1, 2, 1);
-        //        node.setImage("Foo");
-        //        node.withFileName(filename);
-        //        return node;
     }
 
     @Test
@@ -498,7 +498,7 @@ class RuleSetTest {
             })
             .build();
 
-        Report report = RuleContextTest.getReportForRuleSetApply(ruleset, makeCompilationUnits());
+        Report report = getReportForRuleSetApply(ruleset, makeCompilationUnits());
 
         List<ProcessingError> errors = report.getProcessingErrors();
         assertThat(errors, hasSize(1));
@@ -523,7 +523,7 @@ class RuleSetTest {
             }
         }).build();
 
-        Report report = RuleContextTest.getReportForRuleSetApply(ruleset, makeCompilationUnits("samplefile.dummy"));
+        Report report = getReportForRuleSetApply(ruleset, makeCompilationUnits("samplefile.dummy"));
 
         List<ProcessingError> errors = report.getProcessingErrors();
         assertThat(errors, hasSize(1));
@@ -562,7 +562,7 @@ class RuleSetTest {
             }
         }).build();
 
-        Report report = RuleContextTest.getReportForRuleSetApply(ruleset, makeCompilationUnits());
+        Report report = getReportForRuleSetApply(ruleset, makeCompilationUnits());
 
         List<ProcessingError> errors = report.getProcessingErrors();
         assertThat(errors, hasSize(1));

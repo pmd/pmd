@@ -104,6 +104,13 @@ public interface TypeInferenceLogger {
         return false;
     }
 
+    /**
+     * Return an instance for concurrent use in another thread.
+     * If this is Noop, then return the same instance because it's
+     * thread-safe.
+     */
+    TypeInferenceLogger newInstance();
+
     static TypeInferenceLogger noop() {
         return SimpleLogger.NOOP;
     }
@@ -116,10 +123,15 @@ public interface TypeInferenceLogger {
             public boolean isNoop() {
                 return true;
             }
+
+            @Override
+            public TypeInferenceLogger newInstance() {
+                return this;
+            }
         };
 
 
-        private final PrintStream out;
+        protected final PrintStream out;
         protected static final int LEVEL_INCREMENT = 4;
         private int level;
         private String indent;
@@ -307,6 +319,10 @@ public interface TypeInferenceLogger {
             return ivar + kind.getSym() + colorIvars(colorPunct(bound));
         }
 
+        @Override
+        public TypeInferenceLogger newInstance() {
+            return new SimpleLogger(out);
+        }
     }
 
     /**
@@ -435,6 +451,11 @@ public interface TypeInferenceLogger {
         public void logResolutionFail(ResolutionFailure exception) {
             super.logResolutionFail(exception);
             println("Failed: " + exception.getReason());
+        }
+
+        @Override
+        public TypeInferenceLogger newInstance() {
+            return new VerboseLogger(out);
         }
 
     }

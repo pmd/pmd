@@ -7,6 +7,7 @@ package net.sourceforge.pmd;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
@@ -255,9 +256,17 @@ public interface Rule extends PropertySource {
      */
     RuleTargetSelector getTargetSelector();
 
+    /**
+     * Initialize the rule using the language processor if needed.
+     *
+     * @param languageProcessor The processor for the rule's language
+     */
+    default void initialize(LanguageProcessor languageProcessor) {
+         // by default do nothing
+    }
 
     /**
-     * Start processing. Called once, before apply() is first called.
+     * Start processing. Called once per file, before apply() is first called.
      *
      * @param ctx the rule context
      */
@@ -274,7 +283,7 @@ public interface Rule extends PropertySource {
     void apply(Node target, RuleContext ctx);
 
     /**
-     * End processing. Called once, after apply() is last called.
+     * End processing. Called once per file, after apply() is last called.
      *
      * @param ctx
      *            the rule context

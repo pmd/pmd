@@ -21,7 +21,9 @@ import java.util.Map;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
+import net.sourceforge.pmd.DummyParsingHelper;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.DummyNodeWithListAndEnum;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -43,6 +45,9 @@ import net.sf.saxon.value.SequenceType;
 
 class SaxonXPathRuleQueryTest {
 
+    @RegisterExtension
+    private final DummyParsingHelper helper = new DummyParsingHelper();
+
     //    Unsupported: https://github.com/pmd/pmd/issues/2451
     //    @Test
     //    void testListAttribute() {
@@ -61,18 +66,14 @@ class SaxonXPathRuleQueryTest {
 
     @Test
     void testHigherOrderFuns() { // XPath 3.1
-        DummyRootNode tree = tree(() -> root(
-            node()
-        ));
-
-        tree.setImage("[oha]");
+        DummyRootNode tree = helper.parse("(oha)");
 
         assertQuery(1, "//dummyRootNode["
             + "(@Image => substring-after('[') => substring-before(']')) "
-            //                --------------------    ---------------------
-            //                       Those are higher order functions,
+            //            --------------------    ---------------------
+            //                Those are higher order functions,
             //                the arrow operator applies it to the left expression
-            + "! . = 'oha']", tree);
+            + "! . = '']", tree);
         //     ^ This is the mapping operator, it applies a function on
         //     the right to every element of the sequence on the left
 
@@ -82,7 +83,7 @@ class SaxonXPathRuleQueryTest {
         //    tmp = atomize(r/@Image)
         //    tmp = substring-after('[', tmp)
         //    tmp = substring-before(']', tmp)
-        //    if tmp == 'oha':
+        //    if tmp == '':
         //      yield r
 
     }
@@ -112,7 +113,7 @@ class SaxonXPathRuleQueryTest {
 
     @Test
     void testRootExpression() {
-        DummyRootNode dummy = new DummyRootNode();
+        DummyRootNode dummy = helper.parse("(oha)");
 
         List<Node> result = assertQuery(1, "/", dummy);
         assertEquals(dummy, result.get(0));
@@ -120,7 +121,7 @@ class SaxonXPathRuleQueryTest {
 
     @Test
     void testRootExpressionIsADocumentNode() {
-        DummyRootNode dummy = new DummyRootNode();
+        DummyRootNode dummy = helper.parse("(oha)");
 
         List<Node> result = assertQuery(1, "(/)[self::document-node()]", dummy);
         assertEquals(dummy, result.get(0));
@@ -128,7 +129,7 @@ class SaxonXPathRuleQueryTest {
 
     @Test
     void testRootExpressionWithName() {
-        DummyRootNode dummy = new DummyRootNode();
+        DummyRootNode dummy = helper.parse("(oha)");
         String xpathName = dummy.getXPathNodeName();
 
         List<Node> result = assertQuery(1, "(/)[self::document-node(element(" + xpathName + "))]", dummy);
@@ -371,6 +372,16 @@ class SaxonXPathRuleQueryTest {
         assertExpression(expectedSubexpression, query.nodeNameToXPaths.get("ForStatement").get(0));
         assertExpression(expectedSubexpression, query.nodeNameToXPaths.get("WhileStatement").get(0));
         assertExpression(expectedSubexpression, query.nodeNameToXPaths.get("DoStatement").get(0));
+    }
+
+    @Test
+    void ruleChainVisitsWithUnionsAndLets() {
+        PropertyDescriptor<Boolean> boolProperty = PropertyFactory.booleanProperty("checkAll").desc("test").defaultValue(true).build();
+        SaxonXPathRuleQuery query = createQuery("//dummyNode[$checkAll and ClassOrInterfaceType] | //ForStatement[not($checkAll)]", boolProperty);
+        List<String> ruleChainVisits = query.getRuleChainVisits();
+        assertEquals(2, ruleChainVisits.size());
+        assertTrue(ruleChainVisits.contains("dummyNode"));
+        assertTrue(ruleChainVisits.contains("ForStatement"));
     }
 
     private static void assertExpression(String expected, Expression actual) {

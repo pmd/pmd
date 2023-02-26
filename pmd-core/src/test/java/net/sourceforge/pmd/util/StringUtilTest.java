@@ -52,31 +52,6 @@ class StringUtilTest {
     }
 
     @Test
-    void testUTF8NotSupported() {
-        StringBuilder sb = new StringBuilder();
-        String test = "é";
-        StringUtil.appendXmlEscaped(sb, test, false);
-        assertEquals("&#xe9;", sb.toString());
-    }
-
-    @Test
-    void testUTF8NotSupportedSurrogates() {
-        // D8 34 DD 1E -> U+1D11E
-        StringBuilder sb = new StringBuilder();
-        String test = new String(new char[] {0xd834, 0xdd1e});
-        StringUtil.appendXmlEscaped(sb, test, false);
-        assertEquals("&#x1d11e;", sb.toString());
-    }
-
-    @Test
-    void testUTF8Supported() {
-        StringBuilder sb = new StringBuilder();
-        String test = "é";
-        StringUtil.appendXmlEscaped(sb, test, true);
-        assertEquals("é", sb.toString());
-    }
-
-    @Test
     void testRemoveSurrounding() {
         assertThat(StringUtil.removeSurrounding("", 'q'), equalTo(""));
         assertThat(StringUtil.removeSurrounding("q", 'q'), equalTo("q"));
@@ -85,7 +60,7 @@ class StringUtilTest {
     }
 
     @Test
-    public void testTrimIndent() {
+    void testTrimIndent() {
         assertTrimIndent(" \n b \n c",
                          "\nb\nc");
 
@@ -111,7 +86,7 @@ class StringUtilTest {
     }
 
     @Test
-    public void substringAfterLast() {
+    void substringAfterLast() {
         assertEquals("abc", StringUtil.substringAfterLast("a.abc", '.'));
         assertEquals("abc", StringUtil.substringAfterLast("abc", '.'));
     }

@@ -10,10 +10,10 @@ import java.util.Objects;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.reporting.Reportable;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * Represents the coordinates of a text region, used for reporting. This provides access

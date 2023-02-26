@@ -4,18 +4,17 @@
 package net.sourceforge.pmd.lang.ast.test
 
 import net.sourceforge.pmd.*
-import net.sourceforge.pmd.lang.Language
-import net.sourceforge.pmd.lang.LanguageRegistry
-import net.sourceforge.pmd.lang.LanguageVersion
-import net.sourceforge.pmd.lang.LanguageVersionHandler
-import net.sourceforge.pmd.lang.ast.*
+import net.sourceforge.pmd.internal.util.IOUtil
+import net.sourceforge.pmd.lang.*
+import net.sourceforge.pmd.lang.ast.Node
+import net.sourceforge.pmd.lang.ast.Parser.ParserTask
+import net.sourceforge.pmd.lang.ast.RootNode
+import net.sourceforge.pmd.lang.ast.SemanticErrorReporter
 import net.sourceforge.pmd.lang.document.TextDocument
 import net.sourceforge.pmd.lang.document.TextFile
 import net.sourceforge.pmd.lang.rule.XPathRule
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion
-import net.sourceforge.pmd.processor.AbstractPMDProcessor
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener
-import net.sourceforge.pmd.util.IOUtil
 import java.io.InputStream
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
@@ -102,19 +101,8 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
             clone(params.copy(resourceLoader = contextClass, resourcePrefix = resourcePrefix))
 
 
-    fun withLanguageRegistry(languageRegistry: LanguageRegistry): Self =
-            clone(params.copy(languageRegistry = languageRegistry))
-
-
     fun withSuppressMarker(marker: String): Self =
             clone(params.copy(suppressMarker = marker))
-
-    fun getHandler(version: String): LanguageVersionHandler {
-        return getVersion(version).languageVersionHandler
-    }
-
-    val defaultHandler: LanguageVersionHandler
-        get() = defaultVersion.languageVersionHandler
 
 
     @JvmOverloads
@@ -127,26 +115,42 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
      * so.
      */
     @JvmOverloads
-    open fun parse(
+    fun parse(
         sourceCode: String,
         version: String? = null,
         fileName: String = TextFile.UNKNOWN_FILENAME
     ): T {
         val lversion = if (version == null) defaultVersion else getVersion(version)
-        val handler = lversion.languageVersionHandler
+        val params = params.copy(defaultVerString = lversion.version)
         val textDoc = TextDocument.readOnlyString(sourceCode, fileName, lversion)
-        val task = Parser.ParserTask(textDoc, SemanticErrorReporter.noop())
-        task.properties.also {
-            handler.declareParserTaskProperties(it)
-            it.setProperty(Parser.ParserTask.COMMENT_MARKER, params.suppressMarker)
+        return loadLanguages(params).use { reg ->
+            val task = ParserTask(textDoc, SemanticErrorReporter.noop(), reg)
+            doParse(reg.getProcessor(language), params, task)
         }
-        return doParse(params, task)
     }
 
-    protected open fun doParse(params: Params, task: Parser.ParserTask): T {
-        val parser = task.languageVersion.languageVersionHandler.parser
-        return rootClass.cast(parser.parse(task))
+    // override if lang has dependencies
+    // todo maybe do that automatically
+    protected open fun loadLanguages(params: Params): LanguageProcessorRegistry =
+        LanguageProcessorRegistry.singleton(newProcessor(params))
+
+
+    protected open fun doParse(processor: LanguageProcessor, params: Params, task: ParserTask): T {
+        val root = parseImpl(params, processor, task)
+        return rootClass.cast(root)
     }
+
+    @JvmOverloads
+    fun newProcessor(params: Params = this.params): LanguageProcessor {
+        val props = language.newPropertyBundle().apply {
+            setLanguageVersion(params.defaultVerString ?: defaultVersion.version)
+            setProperty(LanguagePropertyBundle.SUPPRESS_MARKER, params.suppressMarker)
+        }
+        return language.createProcessor(props)
+    }
+
+    protected open fun parseImpl(params: Params, processor: LanguageProcessor, task: ParserTask): RootNode =
+        processor.services().parser.parse(task)
 
     /**
      * Fetches and [parse]s the [resource] using the context defined for this
@@ -224,24 +228,20 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     ): Report {
         if (rule.language == null)
             rule.language = language
+
         val config = PMDConfiguration().apply {
             suppressMarker = params.suppressMarker
-            setDefaultLanguageVersion(defaultVersion)
+            forceLanguageVersion = defaultVersion
+            isIgnoreIncrementalAnalysis = true
+            threads = 1
         }
 
-        val reportBuilder = Report.GlobalReportBuilderListener()
-        val fullListener = GlobalAnalysisListener.tee(listOf(GlobalAnalysisListener.exceptionThrower(), reportBuilder))
-
-
-        AbstractPMDProcessor.runSingleFile(
-            listOf(RuleSet.forSingleRule(rule)),
-            TextFile.forCharSeq(code, fileName, defaultVersion),
-            fullListener,
-            config
-        )
-
-        fullListener.close()
-        return reportBuilder.result
+        return PmdAnalysis.create(config).use { pmd ->
+            pmd.addListener(GlobalAnalysisListener.exceptionThrower())
+            pmd.addRuleSet(RuleSet.forSingleRule(rule))
+            pmd.files().addSourceFile(fileName, code)
+            pmd.performAnalysisAndCollectReport()
+        }
     }
 
     fun executeRuleOnResource(rule: Rule, resourcePath: String): Report =

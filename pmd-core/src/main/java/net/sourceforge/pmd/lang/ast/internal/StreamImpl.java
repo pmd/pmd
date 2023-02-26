@@ -16,7 +16,6 @@ import java.util.function.Function;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.NodeStream.DescendantNodeStream;
@@ -28,6 +27,7 @@ import net.sourceforge.pmd.lang.ast.internal.AxisStream.FilteredAncestorOrSelfSt
 import net.sourceforge.pmd.lang.ast.internal.AxisStream.FilteredChildrenStream;
 import net.sourceforge.pmd.lang.ast.internal.AxisStream.FilteredDescendantStream;
 import net.sourceforge.pmd.lang.ast.internal.GreedyNStream.GreedyKnownNStream;
+import net.sourceforge.pmd.util.IteratorUtil;
 
 public final class StreamImpl {
 

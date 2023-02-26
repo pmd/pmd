@@ -16,6 +16,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,8 +52,9 @@ import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 @Deprecated
 public final class PMD {
 
+    private static final String PMD_PACKAGE = "net.sourceforge.pmd";
     // not final, in order to re-initialize logging
-    private static Logger log = LoggerFactory.getLogger(PMD.class);
+    private static Logger log = LoggerFactory.getLogger(PMD_PACKAGE);
 
     /**
      * The line delimiter used by PMD in outputs. Usually the platform specific
@@ -155,13 +157,41 @@ public final class PMD {
             return StatusCode.ERROR;
         }
 
-        PMDConfiguration configuration = Objects.requireNonNull(
-            parseResult.toConfiguration()
-        );
-        MessageReporter pmdReporter = setupMessageReporter(configuration);
-        configuration.setReporter(pmdReporter);
+        PMDConfiguration configuration = null;
+        try {
+            configuration = Objects.requireNonNull(
+                    parseResult.toConfiguration()
+            );
+        } catch (IllegalArgumentException e) {
+            System.err.println("Cannot start analysis: " + e);
+            log.debug(ExceptionUtils.getStackTrace(e));
+            return StatusCode.ERROR;
+        }
 
-        return runPmd(configuration);
+
+        Level curLogLevel = Slf4jSimpleConfiguration.getDefaultLogLevel();
+        boolean resetLogLevel = false;
+        try {
+            // only reconfigure logging, if debug flag was used on command line
+            // otherwise just use whatever is in conf/simplelogger.properties which happens automatically
+            if (configuration.isDebug()) {
+                Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(Level.TRACE);
+                // need to reload the logger with the new configuration
+                log = LoggerFactory.getLogger(PMD_PACKAGE);
+                resetLogLevel = true;
+            }
+
+            MessageReporter pmdReporter = setupMessageReporter();
+            configuration.setReporter(pmdReporter);
+
+            return runPmd(configuration);
+        } finally {
+            if (resetLogLevel) {
+                // reset to the previous value
+                Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(curLogLevel);
+                log = LoggerFactory.getLogger(PMD_PACKAGE);
+            }
+        }
     }
 
     /**
@@ -213,14 +243,8 @@ public final class PMD {
         }
     }
 
-    private static @NonNull MessageReporter setupMessageReporter(PMDConfiguration configuration) {
-        // only reconfigure logging, if debug flag was used on command line
-        // otherwise just use whatever is in conf/simplelogger.properties which happens automatically
-        if (configuration.isDebug()) {
-            Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(Level.TRACE);
-            // need to reload the logger with the new configuration
-            log = LoggerFactory.getLogger(PMD.class);
-        }
+    private static @NonNull MessageReporter setupMessageReporter() {
+
         // create a top-level reporter
         // TODO CLI errors should also be reported through this
         // TODO this should not use the logger as backend, otherwise without

@@ -4,8 +4,7 @@
 
 package net.sourceforge.pmd.cli;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -29,27 +28,27 @@ class TreeExportCliTest extends BaseCliTest {
     @Test
     void testReadStandardInput() throws Exception {
         SystemLambda.withTextFromSystemIn("(a(b))").execute(() -> {
-            final String output = runCliSuccessfully("-i", "-f", "xml", "-PlineSeparator=LF");
-            
-            assertThat(output, containsString("<?xml version='1.0' encoding='UTF-8' ?>\n"
-                                                + "<dummyRootNode Image=''>\n"
-                                                + "    <dummyNode Image='a'>\n"
-                                                + "        <dummyNode Image='b' />\n"
-                                                + "    </dummyNode>\n"
-                                                + "</dummyRootNode>"));
+            final CliExecutionResult output = runCliSuccessfully("-i", "-f", "xml", "-PlineSeparator=LF");
+
+            output.checkStdOut(equalTo("<?xml version='1.0' encoding='UTF-8' ?>\n"
+                                           + "<dummyRootNode Image=''>\n"
+                                           + "    <dummyNode Image='a'>\n"
+                                           + "        <dummyNode Image='b' />\n"
+                                           + "    </dummyNode>\n"
+                                           + "</dummyRootNode>\n"));
         });
     }
 
     @Test
     void testReadFile() throws Exception {
         File file = newFileWithContents("(a(b))");
-        final String output = runCliSuccessfully("--file", file.getAbsolutePath(), "-f", "xml", "-PlineSeparator=LF");
-        assertThat(output, containsString("<?xml version='1.0' encoding='UTF-8' ?>\n"
-                                            + "<dummyRootNode Image=''>\n"
-                                            + "    <dummyNode Image='a'>\n"
-                                            + "        <dummyNode Image='b' />\n"
-                                            + "    </dummyNode>\n"
-                                            + "</dummyRootNode>"));
+        final CliExecutionResult result = runCliSuccessfully("--file", file.getAbsolutePath(), "-f", "xml", "-PlineSeparator=LF");
+        result.checkStdOut(equalTo("<?xml version='1.0' encoding='UTF-8' ?>\n"
+                                       + "<dummyRootNode Image=''>\n"
+                                       + "    <dummyNode Image='a'>\n"
+                                       + "        <dummyNode Image='b' />\n"
+                                       + "    </dummyNode>\n"
+                                       + "</dummyRootNode>\n"));
     }
 
     private File newFileWithContents(String data) throws IOException {

@@ -9,7 +9,7 @@ import java.util.concurrent.Callable;
 import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
 
-import net.sourceforge.pmd.cli.internal.ExecutionResult;
+import net.sourceforge.pmd.cli.internal.CliExitCode;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 
 import picocli.CommandLine.Model.CommandSpec;
@@ -46,7 +46,7 @@ public abstract class AbstractPmdSubcommand implements Callable<Integer> {
         // no-op, children may override
     }
 
-    protected abstract ExecutionResult execute();
+    protected abstract CliExitCode execute();
 
     private void setupCliLogger() {
         // only reconfigure logging, if debug flag was used on command line

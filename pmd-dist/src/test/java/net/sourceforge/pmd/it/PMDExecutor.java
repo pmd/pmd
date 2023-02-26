@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.SystemUtils;
 
 import net.sourceforge.pmd.PMDVersion;
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.internal.util.IOUtil;
 
 /**
  * Executes PMD from command line. Deals with the differences, when PMD is run on Windows or on Linux.

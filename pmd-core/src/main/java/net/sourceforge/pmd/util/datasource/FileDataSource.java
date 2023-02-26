@@ -15,10 +15,9 @@ import net.sourceforge.pmd.util.datasource.internal.PathDataSource;
 public class FileDataSource extends PathDataSource {
 
     /**
-     * @param file
-     *            the file to read
+     * @param file the file to read
      */
     public FileDataSource(File file) {
-        super(file.toPath());
+        super(file.toPath(), null);
     }
 }
