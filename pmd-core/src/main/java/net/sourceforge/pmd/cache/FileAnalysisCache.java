@@ -86,9 +86,9 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
                             fileResultsCache.put(filePathId, new AnalysisResult(checksum, violations));
                         }
 
-                        LOG.info("Analysis cache loaded");
+                        LOG.debug("Analysis cache loaded from {}", cacheFile);
                     } else {
-                        LOG.info("Analysis cache invalidated, PMD version changed.");
+                        LOG.debug("Analysis cache invalidated, PMD version changed.");
                     }
                 } catch (final EOFException e) {
                     LOG.warn("Cache file {} is malformed, will not be used for current analysis", cacheFile.getPath());
@@ -141,9 +141,9 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
                     }
                 }
                 if (cacheFileShouldBeCreated) {
-                    LOG.info("Analysis cache created");
+                    LOG.debug("Analysis cache created");
                 } else {
-                    LOG.info("Analysis cache updated");
+                    LOG.debug("Analysis cache updated");
                 }
             } catch (final IOException e) {
                 LOG.error("Could not persist analysis cache to file: {}", e.getMessage());

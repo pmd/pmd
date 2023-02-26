@@ -74,7 +74,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
                 && cachedResult.getFileChecksum() == document.getCheckSum();
 
             if (upToDate) {
-                LOG.debug("Incremental Analysis cache HIT");
+                LOG.trace("Incremental Analysis cache HIT");
                 
                 /*
                  * Update cached violation "filename" to match the appropriate text document,
@@ -86,7 +86,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
                 // copy results over
                 updatedResult = cachedResult;
             } else {
-                LOG.debug("Incremental Analysis cache MISS - {}",
+                LOG.trace("Incremental Analysis cache MISS - {}",
                           cachedResult != null ? "file changed" : "no previous result found");
                 
                 // New file being analyzed, create new empty entry
@@ -130,7 +130,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
             boolean cacheIsValid = cacheExists();
 
             if (cacheIsValid && ruleSets.getChecksum() != rulesetChecksum) {
-                LOG.info("Analysis cache invalidated, rulesets changed.");
+                LOG.debug("Analysis cache invalidated, rulesets changed.");
                 cacheIsValid = false;
             }
 
@@ -142,7 +142,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
 
                 if (cacheIsValid && currentAuxClassPathChecksum != auxClassPathChecksum) {
                     // TODO some rules don't need that (in fact, some languages)
-                    LOG.info("Analysis cache invalidated, auxclasspath changed.");
+                    LOG.debug("Analysis cache invalidated, auxclasspath changed.");
                     cacheIsValid = false;
                 }
             } else {
@@ -151,7 +151,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
 
             final long currentExecutionClassPathChecksum = FINGERPRINTER.fingerprint(getClassPathEntries());
             if (cacheIsValid && currentExecutionClassPathChecksum != executionClassPathChecksum) {
-                LOG.info("Analysis cache invalidated, execution classpath changed.");
+                LOG.debug("Analysis cache invalidated, execution classpath changed.");
                 cacheIsValid = false;
             }
 
