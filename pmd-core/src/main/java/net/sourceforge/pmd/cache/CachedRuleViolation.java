@@ -41,20 +41,20 @@ public final class CachedRuleViolation implements RuleViolation {
     private FileLocation location;
 
     private CachedRuleViolation(final CachedRuleMapper mapper, final String description,
-                                final String fileName, final String ruleClassName, final String ruleName,
+                                final String filePathId, final String ruleClassName, final String ruleName,
                                 final String ruleTargetLanguage, final int beginLine, final int beginColumn,
                                 final int endLine, final int endColumn,
                                 final Map<String, String> additionalInfo) {
         this.mapper = mapper;
         this.description = description;
-        this.location = FileLocation.range(fileName, TextRange2d.range2d(beginLine, beginColumn, endLine, endColumn));
+        this.location = FileLocation.range(filePathId, TextRange2d.range2d(beginLine, beginColumn, endLine, endColumn));
         this.ruleClassName = ruleClassName;
         this.ruleName = ruleName;
         this.ruleTargetLanguage = ruleTargetLanguage;
         this.additionalInfo = additionalInfo;
     }
     
-    public void setFileDisplayName(String displayName) {
+    void setFileDisplayName(String displayName) {
         this.location = FileLocation.range(displayName,
                 TextRange2d.range2d(getBeginLine(), getBeginColumn(), getEndLine(), getEndColumn()));
     }
@@ -84,13 +84,13 @@ public final class CachedRuleViolation implements RuleViolation {
      * Helper method to load a {@link CachedRuleViolation} from an input stream.
      *
      * @param stream The stream from which to load the violation.
-     * @param fileName The name of the file on which this rule was reported.
+     * @param filePathId The name of the file on which this rule was reported.
      * @param mapper The mapper to be used to obtain rule instances from the active rulesets.
      * @return The loaded rule violation.
      * @throws IOException
      */
     /* package */ static CachedRuleViolation loadFromStream(final DataInputStream stream,
-            final String fileName, final CachedRuleMapper mapper) throws IOException {
+            final String filePathId, final CachedRuleMapper mapper) throws IOException {
         final String description = stream.readUTF();
         final String ruleClassName = stream.readUTF();
         final String ruleName = stream.readUTF();
@@ -100,7 +100,7 @@ public final class CachedRuleViolation implements RuleViolation {
         final int endLine = stream.readInt();
         final int endColumn = stream.readInt();
         final Map<String, String> additionalInfo = readAdditionalInfo(stream);
-        return new CachedRuleViolation(mapper, description, fileName, ruleClassName, ruleName, ruleTargetLanguage,
+        return new CachedRuleViolation(mapper, description, filePathId, ruleClassName, ruleName, ruleTargetLanguage,
                                        beginLine, beginColumn, endLine, endColumn, additionalInfo);
     }
 

@@ -74,16 +74,16 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
 
                         // Cached results
                         while (inputStream.available() > 0) {
-                            final String fileName = inputStream.readUTF();
+                            final String filePathId = inputStream.readUTF();
                             final long checksum = inputStream.readLong();
 
                             final int countViolations = inputStream.readInt();
                             final List<RuleViolation> violations = new ArrayList<>(countViolations);
                             for (int i = 0; i < countViolations; i++) {
-                                violations.add(CachedRuleViolation.loadFromStream(inputStream, fileName, ruleMapper));
+                                violations.add(CachedRuleViolation.loadFromStream(inputStream, filePathId, ruleMapper));
                             }
 
-                            fileResultsCache.put(fileName, new AnalysisResult(checksum, violations));
+                            fileResultsCache.put(filePathId, new AnalysisResult(checksum, violations));
                         }
 
                         LOG.info("Analysis cache loaded");
