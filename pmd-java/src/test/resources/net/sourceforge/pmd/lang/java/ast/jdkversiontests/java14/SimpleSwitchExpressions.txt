@@ -114,7 +114,7 @@
          |           |  +- TypeExpression[@CompileTimeConstant = false, @ParenthesisDepth = 0, @Parenthesized = false]
          |           |     +- ClassOrInterfaceType[@FullyQualified = false, @SimpleName = "System"]
          |           +- ArgumentList[@Empty = false, @Size = 2]
-         |              +- StringLiteral[@CompileTimeConstant = true, @ConstValue = "NumLetters: %d%n", @Empty = false, @Image = "\"NumLetters: %d%n\"", @Length = 16, @ParenthesisDepth = 0, @Parenthesized = false, @TextBlock = false]
+         |              +- StringLiteral[@CompileTimeConstant = true, @ConstValue = "NumLetters: %d%n", @Empty = false, @Length = 16, @ParenthesisDepth = 0, @Parenthesized = false, @TextBlock = false]
          |              +- VariableAccess[@AccessType = AccessType.READ, @CompileTimeConstant = false, @Image = "numLetters", @Name = "numLetters", @ParenthesisDepth = 0, @Parenthesized = false]
          +- MethodDeclaration[@Abstract = false, @Arity = 1, @EffectiveVisibility = Visibility.V_PRIVATE, @Image = "f", @Name = "f", @Overridden = false, @Varargs = false, @Visibility = Visibility.V_PRIVATE, @Void = false]
             +- ModifierList[@EffectiveModifiers = "{private, static}", @ExplicitModifiers = "{private, static}"]

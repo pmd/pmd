@@ -282,6 +282,12 @@ $delim
                 }
             }
 
+            "1234_5678_9012_3456L" should parseAs {
+                number(LONG) {
+                    it::getValueAsLong shouldBe 1234_5678_9012_3456L
+                }
+            }
+
             "-0X0000_000f" should parseAs { // this is not a float, it's hex
                 unaryExpr(UNARY_MINUS) {
                     number(INT) {

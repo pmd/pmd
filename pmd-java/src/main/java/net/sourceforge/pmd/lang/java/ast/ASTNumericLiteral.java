@@ -208,7 +208,7 @@ public final class ASTNumericLiteral extends AbstractLiteral implements ASTLiter
             }
             try {
                 result = Math.addExact(result, Math.multiplyExact(power, (long) digit));
-                if (idx > 0) { // otherwise might cause overflow for nothing
+                if (idx >= 0) { // otherwise might cause overflow for nothing
                     power = Math.multiplyExact(power, (long) base);
                 }
             } catch (ArithmeticException overflow) {

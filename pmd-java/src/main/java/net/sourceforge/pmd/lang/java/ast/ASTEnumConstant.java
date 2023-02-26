@@ -46,20 +46,20 @@ public final class ASTEnumConstant extends AbstractJavaTypeNode
 
     @Override
     public ASTVariableDeclaratorId getVarId() {
-        return getFirstChildOfType(ASTVariableDeclaratorId.class);
+        return firstChild(ASTVariableDeclaratorId.class);
     }
 
     @Override
     @Nullable
     public ASTArgumentList getArguments() {
-        return getFirstChildOfType(ASTArgumentList.class);
+        return firstChild(ASTArgumentList.class);
     }
 
     /**
      * Returns the name of the enum constant.
      */
     public String getName() {
-        return getImage();
+        return getVarId().getName();
     }
 
     /**
