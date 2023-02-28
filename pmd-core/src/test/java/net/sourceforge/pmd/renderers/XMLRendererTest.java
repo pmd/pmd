@@ -49,7 +49,7 @@ public class XMLRendererTest extends AbstractRendererTest {
     @Override
     public String getExpected() {
         return getHeader() + "<file name=\"" + getSourceCodeFilename() + "\">" + PMD.EOL
-                + "<violation beginline=\"1\" endline=\"1\" begincolumn=\"1\" endcolumn=\"1\" rule=\"Foo\" ruleset=\"RuleSet\" priority=\"5\">"
+                + "<violation beginline=\"1\" endline=\"1\" begincolumn=\"1\" endcolumn=\"1\" rule=\"Foo\" ruleset=\"RuleSet\" priority=\"3\">"
                 + PMD.EOL + "blah" + PMD.EOL + "</violation>" + PMD.EOL + "</file>" + PMD.EOL + "</pmd>" + PMD.EOL;
     }
 
@@ -61,7 +61,7 @@ public class XMLRendererTest extends AbstractRendererTest {
     @Override
     public String getExpectedMultiple() {
         return getHeader() + "<file name=\"" + getSourceCodeFilename() + "\">" + PMD.EOL
-                + "<violation beginline=\"1\" endline=\"1\" begincolumn=\"1\" endcolumn=\"1\" rule=\"Foo\" ruleset=\"RuleSet\" priority=\"5\">"
+                + "<violation beginline=\"1\" endline=\"1\" begincolumn=\"1\" endcolumn=\"1\" rule=\"Foo\" ruleset=\"RuleSet\" priority=\"3\">"
                 + PMD.EOL + "blah" + PMD.EOL + "</violation>" + PMD.EOL
                 + "<violation beginline=\"1\" endline=\"1\" begincolumn=\"1\" endcolumn=\"2\" rule=\"Boo\" ruleset=\"RuleSet\" priority=\"1\">"
                 + PMD.EOL + "blah" + PMD.EOL + "</violation>" + PMD.EOL + "</file>" + PMD.EOL + "</pmd>" + PMD.EOL;

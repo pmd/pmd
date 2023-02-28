@@ -15,7 +15,7 @@
           "description": "blah",
           "rule": "Foo",
           "ruleset": "RuleSet",
-          "priority": 5,
+          "priority": 3,
           "suppressiontype": "nopmd",
           "usermsg": "test"
         }

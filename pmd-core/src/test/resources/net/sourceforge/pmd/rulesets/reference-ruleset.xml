@@ -28,7 +28,7 @@
   <!-- Now we'll customize a rule's property value -->
   <rule ref="net/sourceforge/pmd/TestRuleset1.xml/MockRule1">
     <properties>
-        <property name="testIntProperty" value="5"/>
+        <property name="testIntProperty" value="3"/>
     </properties>
   </rule>
 
@@ -39,7 +39,7 @@
 
   <!-- override the priority before the group priority - this should be used -->
   <rule ref="net/sourceforge/pmd/TestRuleset4.xml/Ruleset4Rule1">
-    <priority>5</priority>
+    <priority>3</priority>
   </rule>
 
   <!-- we want to override the priority for all (remaining) rules in TestRuleset4.xml -->

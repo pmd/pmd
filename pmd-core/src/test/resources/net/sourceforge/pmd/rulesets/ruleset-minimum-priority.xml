@@ -11,7 +11,7 @@
 
     <!-- Override the priority of a specific rule -->
     <rule ref="rulesets/dummy/basic.xml/DummyBasicMockRule">
-        <priority>5</priority> <!-- original priority: 3 -->
+        <priority>3</priority> <!-- original priority: 5 -->
     </rule>
 
 </ruleset>

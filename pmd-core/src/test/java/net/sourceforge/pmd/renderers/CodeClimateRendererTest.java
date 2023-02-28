@@ -30,7 +30,7 @@ public class CodeClimateRendererTest extends AbstractRendererTest {
                 + "Name | Value | Description\\n" + "--- | --- | ---\\n"
                 + "violationSuppressRegex | | Suppress violations with messages matching a regular expression\\n"
                 + "violationSuppressXPath | | Suppress violations on nodes which match a given relative XPath expression.\\n"
-                + "\"},\"categories\":[\"Style\"],\"location\":{\"path\":\"" + getSourceCodeFilename() + "\",\"lines\":{\"begin\":1,\"end\":1}},\"severity\":\"info\",\"remediation_points\":50000}"
+                + "\"},\"categories\":[\"Style\"],\"location\":{\"path\":\"" + getSourceCodeFilename() + "\",\"lines\":{\"begin\":1,\"end\":1}},\"severity\":\"minor\",\"remediation_points\":50000}"
                 + "\u0000" + PMD.EOL;
     }
 
@@ -47,7 +47,7 @@ public class CodeClimateRendererTest extends AbstractRendererTest {
                 + "violationSuppressXPath | | Suppress violations on nodes which match a given relative XPath expression.\\n"
                 + "multiString | default1,default2 | multi string property\\n"
                 + "stringProperty | the string value\\nsecond line with 'quotes' | simple string property\\n"
-                + "\"},\"categories\":[\"Style\"],\"location\":{\"path\":\"" + getSourceCodeFilename() + "\",\"lines\":{\"begin\":1,\"end\":1}},\"severity\":\"info\",\"remediation_points\":50000}"
+                + "\"},\"categories\":[\"Style\"],\"location\":{\"path\":\"" + getSourceCodeFilename() + "\",\"lines\":{\"begin\":1,\"end\":1}},\"severity\":\"minor\",\"remediation_points\":50000}"
                 + "\u0000" + PMD.EOL;
     }
 
@@ -67,7 +67,7 @@ public class CodeClimateRendererTest extends AbstractRendererTest {
                 + "Name | Value | Description\\n" + "--- | --- | ---\\n"
                 + "violationSuppressRegex | | Suppress violations with messages matching a regular expression\\n"
                 + "violationSuppressXPath | | Suppress violations on nodes which match a given relative XPath expression.\\n"
-                + "\"},\"categories\":[\"Style\"],\"location\":{\"path\":\"" + getSourceCodeFilename() + "\",\"lines\":{\"begin\":1,\"end\":1}},\"severity\":\"info\",\"remediation_points\":50000}"
+                + "\"},\"categories\":[\"Style\"],\"location\":{\"path\":\"" + getSourceCodeFilename() + "\",\"lines\":{\"begin\":1,\"end\":1}},\"severity\":\"minor\",\"remediation_points\":50000}"
                 + "\u0000" + PMD.EOL + "{\"type\":\"issue\",\"check_name\":\"Boo\",\"description\":\"blah\","
                 + "\"content\":{\"body\":\"## Boo\\n\\nSince: PMD null\\n\\nPriority: High\\n\\n"
                 + "[Categories](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#categories): Style\\n\\n"

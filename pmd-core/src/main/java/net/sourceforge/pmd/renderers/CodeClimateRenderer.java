@@ -89,12 +89,9 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
         case MEDIUM:
             issue.severity = "major";
             break;
-        case MEDIUM_LOW:
-            issue.severity = "minor";
-            break;
         case LOW:
         default:
-            issue.severity = "info";
+            issue.severity = "minor";
             break;
         }
 

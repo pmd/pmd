@@ -25,15 +25,10 @@ public enum RulePriority {
      */
     MEDIUM(2, "Medium"),
     /**
-     * Medium to low: Change optional. Behavior is not likely to be buggy, but
-     * more just flies in the face of standards/style/good taste.
-     */
-    MEDIUM_LOW(4, "Medium Low"),
-    /**
      * Low: Change highly optional. Nice to have, such as a consistent naming
      * policy for package/class/fields...
      */
-    LOW(5, "Low");
+    LOW(3, "Low");
 
     private final int priority;
     private final String name;
