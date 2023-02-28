@@ -67,7 +67,7 @@ public class RuleSetFactoryDuplicatedRuleLoggingTest {
         assertEquals(2, ruleset.getRules().size());
         Rule mockRule = ruleset.getRuleByName("DummyBasicMockRule");
         assertNotNull(mockRule);
-        assertEquals(RulePriority.MEDIUM_HIGH, mockRule.getPriority());
+        assertEquals(RulePriority.MEDIUM, mockRule.getPriority());
         assertNotNull(ruleset.getRuleByName("SampleXPathRule"));
         assertTrue(logging.getLog().contains("The rule DummyBasicMockRule is referenced multiple times in \"Custom Rules\". "
                 + "Only the last rule configuration is used."));

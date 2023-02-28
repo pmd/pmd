@@ -77,7 +77,7 @@ public class CodeClimateRendererTest extends AbstractRendererTest {
                 + "Name | Value | Description\\n" + "--- | --- | ---\\n"
                 + "violationSuppressRegex | | Suppress violations with messages matching a regular expression\\n"
                 + "violationSuppressXPath | | Suppress violations on nodes which match a given relative XPath expression.\\n"
-                + "\"},\"categories\":[\"Style\"],\"location\":{\"path\":\"" + getSourceCodeFilename() + "\",\"lines\":{\"begin\":1,\"end\":1}},\"severity\":\"blocker\",\"remediation_points\":50000}"
+                + "\"},\"categories\":[\"Style\"],\"location\":{\"path\":\"" + getSourceCodeFilename() + "\",\"lines\":{\"begin\":1,\"end\":1}},\"severity\":\"critical\",\"remediation_points\":50000}"
                 + "\u0000" + PMD.EOL;
     }
 

@@ -20,15 +20,10 @@ public enum RulePriority {
     /** High: Change absolutely required. Behavior is critically broken/buggy */
     HIGH(1, "High"),
     /**
-     * Medium to high: Change highly recommended. Behavior is quite likely to be
-     * broken/buggy.
-     */
-    MEDIUM_HIGH(2, "Medium High"),
-    /**
      * Medium: Change recommended. Behavior is confusing, perhaps buggy, and/or
      * against standards/best practices.
      */
-    MEDIUM(3, "Medium"),
+    MEDIUM(2, "Medium"),
     /**
      * Medium to low: Change optional. Behavior is not likely to be buggy, but
      * more just flies in the face of standards/style/good taste.

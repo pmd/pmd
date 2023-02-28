@@ -59,7 +59,7 @@ public class RuleReferenceTest {
         ruleReference.setDescription("description2");
         ruleReference.addExample("example2");
         ruleReference.setExternalInfoUrl("externalInfoUrl2");
-        ruleReference.setPriority(RulePriority.MEDIUM_HIGH);
+        ruleReference.setPriority(RulePriority.MEDIUM);
 
         validateOverriddenValues(PROPERTY1_DESCRIPTOR, PROPERTY2_DESCRIPTOR, ruleReference);
     }
@@ -95,7 +95,7 @@ public class RuleReferenceTest {
         ruleReference.setDescription("description2");
         ruleReference.addExample("example2");
         ruleReference.setExternalInfoUrl("externalInfoUrl2");
-        ruleReference.setPriority(RulePriority.MEDIUM_HIGH);
+        ruleReference.setPriority(RulePriority.MEDIUM);
 
         validateOverriddenValues(PROPERTY1_DESCRIPTOR, PROPERTY2_DESCRIPTOR, (RuleReference) ruleReference.deepCopy());
     }
@@ -153,8 +153,8 @@ public class RuleReferenceTest {
         assertEquals("Override failed", "externalInfoUrl2", ruleReference.getExternalInfoUrl());
         assertEquals("Override failed", "externalInfoUrl2", ruleReference.getOverriddenExternalInfoUrl());
 
-        assertEquals("Override failed", RulePriority.MEDIUM_HIGH, ruleReference.getPriority());
-        assertEquals("Override failed", RulePriority.MEDIUM_HIGH, ruleReference.getOverriddenPriority());
+        assertEquals("Override failed", RulePriority.MEDIUM, ruleReference.getPriority());
+        assertEquals("Override failed", RulePriority.MEDIUM, ruleReference.getOverriddenPriority());
     }
 
     @Test

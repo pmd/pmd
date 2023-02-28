@@ -84,9 +84,6 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
 
         switch (rule.getPriority()) {
         case HIGH:
-            issue.severity = "blocker";
-            break;
-        case MEDIUM_HIGH:
             issue.severity = "critical";
             break;
         case MEDIUM:

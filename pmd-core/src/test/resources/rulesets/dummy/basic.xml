@@ -11,7 +11,7 @@
         <description>
 Just for test
      </description>
-        <priority>3</priority>
+        <priority>2</priority>
         <example>
  <![CDATA[
  ]]>
@@ -26,7 +26,7 @@ Just for test
     <rule name="SampleXPathRule" language="dummy" since="1.1" message="Test Rule 2" class="net.sourceforge.pmd.lang.rule.XPathRule"
         externalInfoUrl="${pmd.website.baseurl}/rules/dummy/basic.xml#SampleXPathRule">
         <description>Test</description>
-        <priority>3</priority>
+        <priority>2</priority>
         <example> </example>
         <properties>
             <property name="version" value="2.0"/>
@@ -41,7 +41,7 @@ Just for test
     <rule name="DeprecatedRule" deprecated="true" language="dummy" since="1.0" message="Test Rule 3" class="net.sourceforge.pmd.lang.rule.XPathRule"
         externalInfoUrl="${pmd.website.baseurl}/rules/dummy/basic.xml#deprecatedrule">
         <description>Test Deprecated rule</description>
-        <priority>3</priority>
+        <priority>2</priority>
         <example> </example>
         <properties>
             <property name="version" value="2.0"/>
