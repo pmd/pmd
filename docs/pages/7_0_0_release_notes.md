@@ -43,12 +43,23 @@ the logo anywhere without offense.
 The Java grammar has been refactored substantially in order to make it easier to maintain and more correct
 regarding the Java Language Specification. Changing the grammar entails a changed AST and therefore changed
 rules. The PMD built-in rules have all been upgraded and many bugs have been fixed on the way.
+Unfortunately, if you are using custom rules, you will most probably need to accommodate these changes yourself.
 
-The type resolution framework has been rewritten from scratch and is now more accurate.
+The type resolution framework has been rewritten from scratch and should now cover the entire Java spec correctly.
+PMD 6 on the other hand has always had problems with advanced type inference, eg with lambdas and call chains. 
+Since it was built on the core reflection API, it also was prone to linkage errors and classloader leaks for instance.
+PMD 7 does not need to load classes, and does not have these problems.
+
+The AST exposes much more semantic information now. For instance, you can jump from a method call to 
+the declaration of the method being called, or from a field access to the field declaration. These
+improvements allow interesting rules to be written that need precise knowledge of the types
+in the program, for instance to detect unnecessary boxing or unnecessary explicit type arguments (TODO link those rules).
+These are just a small preview of the new rules we will be adding in the PMD 7 release cycle.
 
 Some first results of the Java AST changes are for now documented in the Wiki:
 [Java clean changes](https://github.com/pmd/pmd/wiki/Java_clean_changes).
 
+Overall, the changes to the parser, AST, type resolution and symbol table code has made PMD for Java **significantly faster**. On average, we have seen ~2-3X faster analysis, but as usual, this may change depending on your workload, configuration and ruleset.
 TODO: Take infos from <http://docs.pmd-code.org/pmd-doc-7.0.0-SNAPSHOT/pmd_next_major_development.html#java>
 
 Contributors: [Clément Fournier](https://github.com/oowekyala) (@oowekyala),
@@ -131,6 +142,9 @@ to leverage existing grammars.
 
 We expect this to enable both our dev team and external contributors to largely extend PMD usage for more languages.
 
+Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
+  [Matías Fraga](https://github.com/matifraga) (@matifraga),
+  [Tomás De Lucca](https://github.com/tomidelucca) (@tomidelucca)
 #### Swift support
 
 Given the full Antlr support, PMD now fully supports Swift. We are pleased to announce we are shipping a number of rules
@@ -146,8 +160,8 @@ starting with PMD 7.
   `@available(*, unavailable)` to ensure no calls are actually performed in the codebase.
 
 Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
-  [Mati Fraga](https://github.com/matifraga) (@matifraga),
-  [Tomi De Lucca](https://github.com/tomidelucca) (@tomidelucca)
+  [Matías Fraga](https://github.com/matifraga) (@matifraga),
+  [Tomás De Lucca](https://github.com/tomidelucca) (@tomidelucca)
 
 #### Kotlin support (experimental)
 
