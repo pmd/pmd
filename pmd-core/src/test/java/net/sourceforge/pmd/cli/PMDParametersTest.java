@@ -78,6 +78,34 @@ public class PMDParametersTest {
         assertError("-R", "-d", "something");
     }
 
+    @Test
+    public void testHighMinimumPriorityLevel() {
+        PmdParametersParseResult result = PmdParametersParseResult.extractParameters(
+            "-d", "a", "-R", "x.xml", "--minimum-priority", "1"
+        );
+        PMDConfiguration config = result.toConfiguration();
+        assertEquals(config.getMinimumPriority().toString(), "High");
+    }
+
+    @Test
+    public void testMediumMinimumPriorityLevel() {
+        PmdParametersParseResult result = PmdParametersParseResult.extractParameters(
+            "-d", "a", "-R", "x.xml", "--minimum-priority", "2"
+        );
+        PMDConfiguration config = result.toConfiguration();
+        assertEquals(config.getMinimumPriority().toString(), "Medium");
+    }
+
+    @Test
+    public void testMinimumPriorityLevelTooLow() {
+        assertError("-d", "a", "-R", "x.xml", "--minimum-priority", "0");
+    }
+
+    @Test
+    public void testMinimumPriorityLevelTooHigh() {
+        assertError("-d", "a", "-R", "x.xml", "--minimum-priority", "4");
+    }
+
     private void assertError(String... params) {
         PmdParametersParseResult result = PmdParametersParseResult.extractParameters(params);
         assertTrue(result.isError());
