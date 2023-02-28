@@ -111,7 +111,7 @@ public class PMDParameters {
 
     @Parameter(names = { "--minimum-priority", "-minimumpriority", "-min" },
             description = "Rule priority threshold; rules with lower priority than configured here won't be used. "
-                    + "Valid values are integers between 1 and 5 (inclusive), with 5 being the lowest priority.",
+                    + "Valid values are integers between 1 and 3 (inclusive), with 3 being the lowest priority.",
             validateValueWith = RulePriorityValidator.class)
     private int minimumPriority = RulePriority.LOW.getPriority();
 
@@ -208,8 +208,8 @@ public class PMDParameters {
 
         @Override
         public void validate(String name, Integer value) throws ParameterException {
-            if (value < 1 || value > 5) {
-                throw new ParameterException("Priority values can only be integer value, between 1 and 5," + value + " is not valid");
+            if (value < 1 || value > 3) {
+                throw new ParameterException("Priority values can only be integer value, between 1 and 3," + value + " is not valid");
             }
         }
     }
@@ -220,9 +220,9 @@ public class PMDParameters {
 
         public int validate(String value) throws ParameterException {
             int minPriorityValue = Integer.parseInt(value);
-            if (minPriorityValue < 1 || minPriorityValue > 5) {
+            if (minPriorityValue < 1 || minPriorityValue > 3) {
                 throw new ParameterException(
-                        "Priority values can only be integer value, between 1 and 5," + value + " is not valid");
+                        "Priority values can only be integer value, between 1 and 3," + value + " is not valid");
             }
             return minPriorityValue;
         }
