@@ -23,12 +23,12 @@ public enum RulePriority {
      * Medium: Change recommended. Behavior is confusing, perhaps buggy, and/or
      * against standards/best practices.
      */
-    MEDIUM(2, "Medium"),
+    MEDIUM(3, "Medium"),
     /**
      * Low: Change highly optional. Nice to have, such as a consistent naming
      * policy for package/class/fields...
      */
-    LOW(3, "Low");
+    LOW(5, "Low");
 
     private final int priority;
     private final String name;
@@ -78,9 +78,11 @@ public enum RulePriority {
      * @return The priority.
      */
     public static RulePriority valueOf(int priority) {
-        try {
-            return RulePriority.values()[priority - 1];
-        } catch (ArrayIndexOutOfBoundsException e) {
+        if (priority == 1) {
+            return HIGH;
+        } else if (priority == 2 || priority == 3) {
+            return MEDIUM;
+        } else {
             return LOW;
         }
     }

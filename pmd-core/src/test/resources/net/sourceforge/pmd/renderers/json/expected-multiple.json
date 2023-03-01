@@ -14,7 +14,7 @@
           "description": "blah",
           "rule": "Foo",
           "ruleset": "RuleSet",
-          "priority": 3
+          "priority": 5
         },
         {
           "beginline": 1,

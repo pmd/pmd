@@ -86,7 +86,7 @@ public class RuleSetFactoryTest {
 
         Rule mockRule3 = rs.getRuleByName("MockRule3");
         assertEquals("Overridden message", mockRule3.getMessage());
-        assertEquals(2, mockRule3.getPriority().getPriority());
+        assertEquals(3, mockRule3.getPriority().getPriority());
 
         Rule mockRule2 = rs.getRuleByName("MockRule2");
         assertEquals("Just combine them!", mockRule2.getMessage());
@@ -114,7 +114,7 @@ public class RuleSetFactoryTest {
         // priority overridden for whole TestRuleset4 group
         Rule ruleset4Rule2 = rs.getRuleByName("Ruleset4Rule2");
         assertNotNull(ruleset4Rule2);
-        assertEquals(2, ruleset4Rule2.getPriority().getPriority());
+        assertEquals(3, ruleset4Rule2.getPriority().getPriority());
     }
 
     private int countRule(RuleSets rs, String ruleName) {
@@ -571,7 +571,7 @@ public class RuleSetFactoryTest {
 
         rsf = config.filterAbovePriority(RulePriority.MEDIUM).toFactory();
         ruleSet = rsf.createRuleSet(createRuleSetReferenceId(REF_INTERNAL_TO_EXTERNAL_CHAIN));
-        assertEquals("Number of Rules", 2, ruleSet.getRules().size());
+        assertEquals("Number of Rules", 3, ruleSet.getRules().size());
         assertNotNull(ruleSet.getRuleByName("ExternalRefRuleNameRef"));
         assertNotNull(ruleSet.getRuleByName("ExternalRefRuleNameRefRef"));
 

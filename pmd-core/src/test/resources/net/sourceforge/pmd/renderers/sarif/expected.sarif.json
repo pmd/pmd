@@ -22,7 +22,7 @@
               },
               "properties": {
                 "ruleset": "RuleSet",
-                "priority": 3,
+                "priority": 5,
                 "tags": [
                   "RuleSet"
                 ]

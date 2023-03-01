@@ -18,7 +18,7 @@ public class CSVRendererTest extends AbstractRendererTest {
     @Override
     public String getExpected() {
         return getHeader()
-                + "\"1\",\"\",\"" + getSourceCodeFilename() + "\",\"3\",\"1\",\"blah\",\"RuleSet\",\"Foo\"" + PMD.EOL;
+                + "\"1\",\"\",\"" + getSourceCodeFilename() + "\",\"5\",\"1\",\"blah\",\"RuleSet\",\"Foo\"" + PMD.EOL;
     }
 
     @Override
@@ -29,7 +29,7 @@ public class CSVRendererTest extends AbstractRendererTest {
     @Override
     public String getExpectedMultiple() {
         return getHeader()
-                + "\"1\",\"\",\"" + getSourceCodeFilename() + "\",\"3\",\"1\",\"blah\",\"RuleSet\",\"Foo\"" + PMD.EOL
+                + "\"1\",\"\",\"" + getSourceCodeFilename() + "\",\"5\",\"1\",\"blah\",\"RuleSet\",\"Foo\"" + PMD.EOL
                 + "\"2\",\"\",\"" + getSourceCodeFilename() + "\",\"1\",\"1\",\"blah\",\"RuleSet\",\"Boo\"" + PMD.EOL;
     }
 
