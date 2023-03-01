@@ -120,7 +120,7 @@ The tool comes with a rather extensive help text, simply running with `--help`!
     {% include custom/cli_option_row.html options="--minimum-priority,-min"
                option_arg="num"
                description="Rule priority threshold; rules with lower priority than configured here won't be used."
-               default="5"
+               default="3"
     %}
     {% include custom/cli_option_row.html options="--no-ruleset-compatibility"
                description='Disable automatic fixing of invalid rule references. Without the switch, PMD tries to automatically replace rule references that point to moved or renamed rules with the newer location if possible. Disabling it is not recommended.'
