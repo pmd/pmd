@@ -15,7 +15,7 @@ language: Java
 
 **Since:** PMD 1.0
 
-**Priority:** Medium (3)
+**Priority:** Low (3)
 
 Just some description of a deprecated rule.
 
@@ -41,7 +41,7 @@ RuleTag with full category and without quotes: Use {% rule java/sample/RenamedRu
 
 **Since:** PMD 1.0
 
-**Priority:** Medium (3)
+**Priority:** Low (3)
 
 Avoid jumbled loop incrementers - its usually a mistake, and is confusing even if intentional.
 
@@ -114,7 +114,7 @@ The rule has been moved to another ruleset. Use instead: [JumbledIncrementer](pm
 
 **Since:** PMD 1.0
 
-**Priority:** Medium (3)
+**Priority:** Low (3)
 
 Avoid jumbled loop incrementers - its usually a mistake, and is confusing even if intentional.
 
@@ -151,7 +151,7 @@ Avoid jumbled loop incrementers - its usually a mistake, and is confusing even i
 
 **Since:** PMD 0.4
 
-**Priority:** Medium (3)
+**Priority:** Low (3)
 
 **Minimum Language Version:** Java 1.5
 
@@ -214,7 +214,7 @@ This rule has been renamed. Use instead: [JumbledIncrementer](#jumbledincremente
 
 **Since:** PMD 1.0
 
-**Priority:** Medium (3)
+**Priority:** Low (3)
 
 Avoid jumbled loop incrementers - its usually a mistake, and is confusing even if intentional.
 
@@ -287,7 +287,7 @@ This rule has been renamed. Use instead: [JumbledIncrementer](#jumbledincremente
 
 **Since:** PMD 1.0
 
-**Priority:** Medium (3)
+**Priority:** Low (3)
 
 Avoid jumbled loop incrementers - its usually a mistake, and is confusing even if intentional.
 
@@ -362,7 +362,7 @@ This rule has been renamed. Use instead: [JumbledIncrementer](#jumbledincremente
 
 **Since:** PMD 1.0
 
-**Priority:** Medium (3)
+**Priority:** Low (3)
 
 Avoid jumbled loop incrementers - its usually a mistake, and is confusing even if intentional.
 
@@ -437,7 +437,7 @@ This rule has been renamed. Use instead: [JumbledIncrementer](#jumbledincremente
 
 **Since:** PMD 1.0
 
-**Priority:** Medium (3)
+**Priority:** Low (3)
 
 Avoid jumbled loop incrementers - its usually a mistake, and is confusing even if intentional.
 
@@ -506,7 +506,7 @@ Avoid jumbled loop incrementers - its usually a mistake, and is confusing even i
 
 **Since:** PMD 0.1
 
-**Priority:** Medium (3)
+**Priority:** Low (3)
 
 &lt;script&gt;alert('XSS at the beginning');&lt;/script&gt; HTML tags might appear at various places.
 Sometimes they should be escaped, sometimes not:
