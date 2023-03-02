@@ -223,7 +223,7 @@ function pmd_ci_build_and_upload_doc() {
         pmd_code_createSymlink "${PMD_CI_MAVEN_PROJECT_VERSION}" "latest"
         # remove old doc and point to the new version
         pmd_code_removeDocumentation "${PMD_CI_MAVEN_PROJECT_VERSION}-SNAPSHOT"
-        pmd_code_createSymlink "${PMD_CI_MAVEN_PROJECT_VERSION}" "${PMD_CI_MAVEN_PROJECT_VERSION}-SNAPSHOT"
+        pmd_code_createSymlink "${PMD_CI_MAVEN_PROJECT_VERSION}" "pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}-SNAPSHOT"
         # remove old javadoc
         pmd_code_removeJavadoc "${PMD_CI_MAVEN_PROJECT_VERSION}-SNAPSHOT"
 
@@ -264,7 +264,7 @@ function pmd_ci_dogfood() {
     sed -i 's/<version>[0-9]\{1,\}\.[0-9]\{1,\}\.[0-9]\{1,\}.*<\/version>\( *<!-- pmd.dogfood.version -->\)/<version>'"${PMD_CI_MAVEN_PROJECT_VERSION}"'<\/version>\1/' pom.xml
     if [ "${PMD_CI_MAVEN_PROJECT_VERSION}" = "7.0.0-SNAPSHOT" ]; then
         sed -i 's/pmd-dogfood-config\.xml/pmd-dogfood-config7.xml/' pom.xml
-        mpmdVersion=(-Denforcer.skip=true -Dpmd.plugin.version=3.18.0-pmd7-SNAPSHOT)
+        mpmdVersion=(-Denforcer.skip=true -Dpmd.plugin.version=3.20.1-pmd-7-SNAPSHOT)
     fi
     ./mvnw verify --show-version --errors --batch-mode --no-transfer-progress "${PMD_MAVEN_EXTRA_OPTS[@]}" \
         "${mpmdVersion[@]}" \
