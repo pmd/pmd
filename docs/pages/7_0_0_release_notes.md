@@ -17,7 +17,7 @@ This is a {{ site.pmd.release_type }} release.
 
 {% tocmaker is_release_notes_processor %}
 
-### New and noteworthy
+### 🚀 New and noteworthy
 
 #### Release Candidates
 
@@ -328,7 +328,7 @@ The following previously deprecated rules have been finally removed:
   {% rule java/codestyle/FormalParameterNamingConventions %}, or {% rule java/codestyle/LocalVariableNamingConventions %}
 * WhileLoopsMustUseBraces (java-codestyle) -> use {% rule "java/codestyle/ControlStatementBraces" %}
 
-### Fixed Issues
+### 🐛 Fixed Issues
 
 * miscellaneous
   * [#881](https://github.com/pmd/pmd/issues/881):   \[all] Breaking API changes for 7.0.0
@@ -508,7 +508,7 @@ Language specific fixes:
 * xml
   * [#1800](https://github.com/pmd/pmd/pull/1800):   \[xml] Unimplement org.w3c.dom.Node from the XmlNodeWrapper
 
-### API Changes
+### 🚨 API Changes
 
 * [#1648](https://github.com/pmd/pmd/issues/1648): \[apex,vf] Remove CodeClimate dependency - [Robert Sösemann](https://github.com/rsoesemann)
   Properties "cc_categories", "cc_remediation_points_multiplier", "cc_block_highlighting" can no longer be overridden in rulesets.
@@ -610,7 +610,7 @@ in this area:
   to store global information without using static fields. This enables the implementation of multifile analysis.
 * Rules have access to this language processor instance during initialization.
 
-### External Contributions
+###  ✨ External Contributions
 
 * [#1658](https://github.com/pmd/pmd/pull/1658): \[core] Node support for Antlr-based languages - [Matías Fraga](https://github.com/matifraga) (@matifraga)
 * [#1698](https://github.com/pmd/pmd/pull/1698): \[core] [swift] Antlr Base Parser adapter and Swift Implementation - [Lucas Soncini](https://github.com/lsoncini) (@lsoncini)
