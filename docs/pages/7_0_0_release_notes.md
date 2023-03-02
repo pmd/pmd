@@ -46,7 +46,8 @@ rules. The PMD built-in rules have all been upgraded and many bugs have been fix
 Unfortunately, if you are using custom rules, you will most probably need to accommodate these changes yourself.
 
 The type resolution framework has been rewritten from scratch and should now cover the entire Java spec correctly.
-PMD 6 on the other hand has always had problems with advanced type inference, eg with lambdas and call chains. 
+The same is true for the symbol table.
+PMD 6 on the other hand has always had problems with advanced type inference, e.g. with lambdas and call chains. 
 Since it was built on the core reflection API, it also was prone to linkage errors and classloader leaks for instance.
 PMD 7 does not need to load classes, and does not have these problems.
 
