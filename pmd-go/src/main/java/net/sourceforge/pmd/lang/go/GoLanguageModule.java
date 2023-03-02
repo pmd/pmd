@@ -8,7 +8,9 @@ import net.sourceforge.pmd.lang.BaseLanguageModule;
 
 /**
  * Language Module for Go.
+ * @deprecated There is no full PMD support for go.
  */
+@Deprecated
 public class GoLanguageModule extends BaseLanguageModule {
 
     /** The name. */

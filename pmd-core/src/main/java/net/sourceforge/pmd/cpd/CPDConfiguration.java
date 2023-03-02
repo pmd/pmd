@@ -80,8 +80,6 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     private CPDReportRenderer cpdReportRenderer;
 
-    private String encoding;
-
     @Parameter(names = "--ignore-literals",
             description = "Ignore number values and string contents when comparing text", required = false)
     private boolean ignoreLiterals;
@@ -144,7 +142,10 @@ public class CPDConfiguration extends AbstractConfiguration {
     @Parameter(names = { "--debug", "--verbose", "-v", "-D" }, description = "Debug mode.")
     private boolean debug = false;
 
-    // this has to be a public static class, so that JCommander can use it!
+    /**
+     * @deprecated Don't use this. This class will be removed with PMD 7. The class has to be public static, so that JCommander can use it.
+     */
+    @Deprecated
     public static class LanguageConverter implements IStringConverter<Language> {
 
         @Override
@@ -156,9 +157,13 @@ public class CPDConfiguration extends AbstractConfiguration {
         }
     }
 
+
+    /**
+     * @deprecated Use {@link #setSourceEncoding(String)} instead
+     */
     @Parameter(names = { "--encoding", "-e" }, description = "Character encoding to use when processing files", required = false)
+    @Deprecated
     public void setEncoding(String encoding) {
-        this.encoding = encoding;
         setSourceEncoding(encoding);
     }
 
@@ -178,7 +183,7 @@ public class CPDConfiguration extends AbstractConfiguration {
             setRendererName(DEFAULT_RENDERER);
         }
         if (getRenderer() == null && getCPDRenderer() == null) {
-            Object renderer = createRendererByName(getRendererName(), getEncoding());
+            Object renderer = createRendererByName(getRendererName(), getSourceEncoding().name());
             String className = getRendererName();
 
             if (renderer instanceof CPDReportRenderer) {
@@ -189,7 +194,7 @@ public class CPDConfiguration extends AbstractConfiguration {
                 setRenderer((Renderer) renderer);
             } else {
                 System.err.println("Class '" + className + "' is not a supported renderer, defaulting to SimpleRenderer.");
-                setRenderer(new SimpleRenderer());
+                setRenderer((CPDReportRenderer) new SimpleRenderer());
             }
         }
     }
@@ -516,8 +521,13 @@ public class CPDConfiguration extends AbstractConfiguration {
         this.help = help;
     }
 
+    /**
+     * @deprecated use {@link #getSourceEncoding()} instead
+     * @return
+     */
+    @Deprecated
     public String getEncoding() {
-        return encoding;
+        return getSourceEncoding().name();
     }
 
     public boolean isNoSkipBlocks() {

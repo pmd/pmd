@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.style.scopes.AbstractContainerScope
+import io.kotest.core.test.TestScope
 import io.kotest.matchers.string.shouldContain
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.test.Assertions
@@ -24,8 +26,9 @@ enum class JavaVersion : Comparable<JavaVersion> {
     J15,
     J16,
     J17,
-    J18, J18__PREVIEW,
-    J19, J19__PREVIEW;
+    J18,
+    J19, J19__PREVIEW,
+    J20, J20__PREVIEW;
 
     /** Name suitable for use with e.g. [JavaParsingHelper.parse] */
     val pmdName: String = name.removePrefix("J").replaceFirst("__", "-").replace('_', '.').lowercase()
@@ -96,10 +99,12 @@ enum class JavaVersion : Comparable<JavaVersion> {
  * @property otherImports Other imports, without the `import` and semicolon
  * @property genClassHeader Header of the enclosing class used in parsing contexts like parseExpression, etc. E.g. "class Foo"
  */
-open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
-                         val importedTypes: MutableList<Class<*>> = mutableListOf(),
-                         val otherImports: MutableList<String> = mutableListOf(),
-                         var genClassHeader: String = "class Foo") {
+open class ParserTestCtx(
+    testScope : TestScope,
+    val javaVersion: JavaVersion = JavaVersion.Latest,
+    val importedTypes: MutableList<Class<*>> = mutableListOf(),
+    val otherImports: MutableList<String> = mutableListOf(),
+    var genClassHeader: String = "class Foo") : AbstractContainerScope(testScope) {
 
     /** Imports to add to the top of the parsing contexts. */
     internal val imports: List<String>

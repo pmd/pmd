@@ -8,6 +8,7 @@ import net.sourceforge.pmd.annotation.Experimental;
 
 /**
  * A guard for refining a switch case in {@link ASTSwitchLabel}s.
+ * This is a Java 19 Preview and Java 20 Preview language feature.
  *
  * <pre class="grammar">
  *
@@ -16,7 +17,7 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * </pre>
  *
- * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a>
+ * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a>
 */
 @Experimental
 public final class ASTSwitchGuard extends AbstractJavaNode {

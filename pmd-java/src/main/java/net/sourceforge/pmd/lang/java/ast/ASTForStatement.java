@@ -11,10 +11,14 @@ import net.sourceforge.pmd.annotation.InternalApi;
  *
  * <pre>
  *
- * ForStatement ::= "for" "(" {@linkplain ASTLocalVariableDeclaration LocalVariableDeclaration} ":" {@linkplain ASTExpression Expression} ")" {@linkplain ASTStatement Statement}
+ * ForStatement ::= "for" "(" ( {@linkplain ASTLocalVariableDeclaration LocalVariableDeclaration} | {@linkplain ASTRecordPattern RecordPattern} ) ":" {@linkplain ASTExpression Expression} ")" {@linkplain ASTStatement Statement}
  *                | "for" "(" {@linkplain ASTForInit ForInit}? ";" {@linkplain ASTExpression Expression}? ";" {@linkplain ASTForUpdate ForUpdate}? ")" {@linkplain ASTStatement Statement}
  *
  * </pre>
+ *
+ * <p>Note: Using a {@linkplain ASTRecordPattern RecordPattern} in an enhanced for statement is a Java 20 Preview feature</p>
+ *
+ * @see <a href="https://openjdk.org/jeps/432">JEP 432: Record Patterns (Second Preview)</a>
  */
 // TODO this should be split into two different nodes, otherwise
 // we can't enrich the API without returning null half the time

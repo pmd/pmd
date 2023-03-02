@@ -101,7 +101,7 @@ public class FileCollectorTest {
 
     @Test
     public void testRelativize() throws IOException {
-        String displayName = FileCollector.getDisplayName(Paths.get("a", "b", "c"), listOf(Paths.get("a").toString()));
+        String displayName = FileCollector.getDisplayNameLegacy(Paths.get("a", "b", "c"), listOf(Paths.get("a").toString()));
         assertEquals(displayName, Paths.get("b", "c").toString());
     }
 

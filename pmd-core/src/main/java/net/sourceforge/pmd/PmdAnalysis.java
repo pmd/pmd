@@ -5,6 +5,7 @@
 package net.sourceforge.pmd;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -86,8 +87,12 @@ public final class PmdAnalysis implements AutoCloseable {
             config.getLanguageVersionDiscoverer(),
             reporter
         );
+        for (Path path : config.getRelativizeRoots()) {
+            this.collector.relativizeWith(path);
+        }
         final Level logLevel = configuration.isDebug() ? Level.TRACE : Level.INFO;
         this.reporter.setLevel(logLevel);
+
     }
 
     /**

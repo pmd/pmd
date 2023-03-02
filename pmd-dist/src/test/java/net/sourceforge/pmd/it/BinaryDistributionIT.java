@@ -28,10 +28,10 @@ public class BinaryDistributionIT extends AbstractBinaryDistributionTest {
     static {
         // note: apex, javascript, visualforce, and scala require java8
         if (PMDExecutor.isJava7Test()) {
-            SUPPORTED_LANGUAGES_CPD = "Supported languages: [cpp, cs, dart, fortran, gherkin, go, groovy, java, jsp, kotlin, lua, matlab, modelica, objectivec, perl, php, plsql, python, ruby, swift, xml]";
+            SUPPORTED_LANGUAGES_CPD = "Supported languages: [cpp, cs, dart, fortran, gherkin, go, groovy, java, jsp, kotlin, lua, matlab, modelica, objectivec, perl, php, plsql, python, ruby, swift, tsql, xml]";
             SUPPORTED_LANGUAGES_PMD = "java, jsp, modelica, plsql, pom, vm, wsdl, xml, xsl";
         } else {
-            SUPPORTED_LANGUAGES_CPD = "Supported languages: [apex, cpp, cs, dart, ecmascript, fortran, gherkin, go, groovy, html, java, jsp, kotlin, lua, matlab, modelica, objectivec, perl, php, plsql, python, ruby, scala, swift, vf, xml]";
+            SUPPORTED_LANGUAGES_CPD = "Supported languages: [apex, cpp, cs, dart, ecmascript, fortran, gherkin, go, groovy, html, java, jsp, kotlin, lua, matlab, modelica, objectivec, perl, php, plsql, python, ruby, scala, swift, tsql, vf, xml]";
             SUPPORTED_LANGUAGES_PMD = "apex, ecmascript, html, java, jsp, modelica, plsql, pom, scala, vf, vm, wsdl, xml, xsl";
         }
     }
@@ -141,17 +141,17 @@ public class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         result = CpdExecutor.runCpd(tempDir, "-h");
         result.assertExecutionResult(0, SUPPORTED_LANGUAGES_CPD);
 
-        result = CpdExecutor.runCpd(tempDir, "--minimum-tokens", "10", "--format", "text", "--files", srcDir);
+        result = CpdExecutor.runCpd(tempDir, "--minimum-tokens", "10", "--format", "text", "--dir", srcDir);
         result.assertExecutionResult(4, "Found a 10 line (55 tokens) duplication in the following files:");
         result.assertExecutionResult(4, "Class1.java");
         result.assertExecutionResult(4, "Class2.java");
 
-        result = CpdExecutor.runCpd(tempDir, "--minimum-tokens", "10", "--format", "xml", "--files", srcDir);
+        result = CpdExecutor.runCpd(tempDir, "--minimum-tokens", "10", "--format", "xml", "--dir", srcDir);
         result.assertExecutionResult(4, "<duplication lines=\"10\" tokens=\"55\">");
         result.assertExecutionResult(4, "Class1.java\"/>");
         result.assertExecutionResult(4, "Class2.java\"/>");
 
-        result = CpdExecutor.runCpd(tempDir, "--minimum-tokens", "1000", "--format", "text", "--files", srcDir);
+        result = CpdExecutor.runCpd(tempDir, "--minimum-tokens", "1000", "--format", "text", "--dir", srcDir);
         result.assertExecutionResult(0);
     }
 }

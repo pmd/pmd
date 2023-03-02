@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
@@ -48,6 +47,7 @@ public class PMDTaskImpl {
 
     public PMDTaskImpl(PMDTask task) {
         configuration.setReportShortNames(task.isShortFilenames());
+        configuration.addRelativizeRoots(task.getRelativizeRoots());
         configuration.setSuppressMarker(task.getSuppressMarker());
         this.failOnError = task.isFailOnError();
         this.failOnRuleViolation = task.isFailOnRuleViolation();
@@ -94,7 +94,6 @@ public class PMDTaskImpl {
 
 
         @SuppressWarnings("PMD.CloseResource") final List<String> reportShortNamesPaths = new ArrayList<>();
-        List<String> fullInputPath = new ArrayList<>();
 
         List<String> ruleSetPaths = expandRuleSetPaths();
         // don't let PmdAnalysis.create create rulesets itself.
@@ -113,7 +112,6 @@ public class PMDTaskImpl {
                 }
 
                 final String commonInputPath = ds.getBasedir().getPath();
-                fullInputPath.add(commonInputPath);
                 if (configuration.isReportShortNames()) {
                     reportShortNamesPaths.add(commonInputPath);
                 }
@@ -124,7 +122,7 @@ public class PMDTaskImpl {
                 pmd.addRenderer(formatter.toRenderer(project, reportShortNamesPaths));
             }
 
-            pmd.addRenderer(getLogRenderer(StringUtils.join(fullInputPath, ",")));
+            pmd.addRenderer(getLogRenderer());
 
             report = pmd.performAnalysisAndCollectReport();
             if (failOnError && pmd.getReporter().numErrors() > 0) {
@@ -154,7 +152,7 @@ public class PMDTaskImpl {
         return paths;
     }
 
-    private AbstractRenderer getLogRenderer(final String commonInputPath) {
+    private AbstractRenderer getLogRenderer() {
         return new AbstractRenderer("log", "Logging renderer") {
             @Override
             public void start() {
@@ -163,7 +161,7 @@ public class PMDTaskImpl {
 
             @Override
             public void startFileAnalysis(DataSource dataSource) {
-                project.log("Processing file " + dataSource.getNiceFileName(false, commonInputPath),
+                project.log("Processing file " + dataSource.getNiceFileName(false, null),
                             Project.MSG_VERBOSE);
             }
 

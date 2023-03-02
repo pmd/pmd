@@ -2572,12 +2572,23 @@ See the property `annotations`.
     [Annotation[pmd-java:typeIs('lombok.experimental.UtilityClass')]]
     [ClassOrInterfaceDeclaration/ClassOrInterfaceBody
         [
-            (: no methods :)
-            not(ClassOrInterfaceBodyDeclaration/MethodDeclaration)
-            or
-            (: only private methods :)
-            count(ClassOrInterfaceBodyDeclaration/MethodDeclaration) = count(ClassOrInterfaceBodyDeclaration/MethodDeclaration[@Private=true()])
-        ]
+            (
+                (: no methods :)
+                not(ClassOrInterfaceBodyDeclaration/MethodDeclaration)
+                or
+                (: only private methods :)
+                count(ClassOrInterfaceBodyDeclaration/MethodDeclaration) = count(ClassOrInterfaceBodyDeclaration/MethodDeclaration[@Private=true()])
+            )
+            and
+            (
+                (: no fields :)
+                not(ClassOrInterfaceBodyDeclaration/FieldDeclaration)
+                or
+                (: only private fields :)
+                count(ClassOrInterfaceBodyDeclaration/FieldDeclaration) = count(ClassOrInterfaceBodyDeclaration/FieldDeclaration[@Private=true()])
+
+            )
+       ]
     ]
 |
 //TypeDeclaration

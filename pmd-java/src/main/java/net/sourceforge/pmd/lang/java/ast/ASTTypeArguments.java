@@ -14,8 +14,8 @@ import net.sourceforge.pmd.annotation.InternalApi;
  *
  * <pre>
  *
- *  TypeArguments ::= "<" {@linkplain ASTTypeArgument TypeArgument} ( "," {@linkplain ASTTypeArgument TypeArgument} )* ">"
- *                  | "<" ">"
+ *  TypeArguments ::= "&lt;" {@linkplain ASTTypeArgument TypeArgument} ( "," {@linkplain ASTTypeArgument TypeArgument} )* ">"
+ *                  | "&lt;" ">"
  * </pre>
  */
 public class ASTTypeArguments extends AbstractJavaNode implements Iterable<ASTTypeArgument> {

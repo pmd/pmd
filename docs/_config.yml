@@ -1,9 +1,9 @@
 repository: pmd/pmd
 
 pmd:
-    version: 6.54.0-SNAPSHOT
-    previous_version: 6.53.0
-    date: 28-January-2023
+    version: 6.56.0-SNAPSHOT
+    previous_version: 6.55.0
+    date: 25-March-2023
     release_type: minor
 
 # release types: major, minor, bugfix

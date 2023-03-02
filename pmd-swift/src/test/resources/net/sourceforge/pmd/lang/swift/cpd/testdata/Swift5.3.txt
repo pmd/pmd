@@ -1,0 +1,59 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L4
+    [struct]                                1         6
+    [Container]                             8         16
+    [{]                                     18        18
+L5
+    [static]                                3         8
+    [let]                                   10        12
+    [defaultKey]                            14        23
+    [=]                                     25        25
+    [0]                                     27        27
+L7
+    [var]                                   3         5
+    [dictionary]                            7         16
+    [=]                                     18        18
+    [\[]                                    20        20
+    [defaultKey]                            21        30
+    [:]                                     31        31
+    [0]                                     32        32
+    [\]]                                    33        33
+L9
+    [mutating]                              3         10
+    [func]                                  12        15
+    [incrementValue]                        17        30
+    [(]                                     31        31
+    [at]                                    32        33
+    [key]                                   35        37
+    [:]                                     38        38
+    [Int]                                   40        42
+    [)]                                     43        43
+    [{]                                     45        45
+L10
+    [let]                                   5         7
+    [defaultValue]                          9         20
+    [=]                                     22        22
+    [dictionary]                            24        33
+    [\[]                                    34        34
+    [Container]                             35        43
+    [.]                                     44        44
+    [defaultKey]                            45        54
+    [\]]                                    55        55
+    [!]                                     56        56
+L11
+    [dictionary]                            5         14
+    [\[]                                    15        15
+    [key]                                   16        18
+    [,]                                     19        19
+    [default]                               21        27
+    [:]                                     28        28
+    [defaultValue]                          30        41
+    [\]]                                    42        42
+    [+]                                     44        44
+    [=]                                     45        45
+    [1]                                     47        47
+L12
+    [}]                                     3         3
+L13
+    [}]                                     1         1
+EOF

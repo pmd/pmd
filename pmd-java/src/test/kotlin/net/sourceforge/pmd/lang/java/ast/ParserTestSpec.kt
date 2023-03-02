@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast
 import io.kotest.core.names.TestName
 import io.kotest.core.source.sourceRef
 import io.kotest.core.spec.DslDrivenSpec
+import io.kotest.core.spec.style.scopes.AbstractContainerScope
 import io.kotest.core.spec.style.scopes.RootScope
 import io.kotest.core.spec.style.scopes.addContainer
 import io.kotest.core.spec.style.scopes.addTest
@@ -112,43 +113,43 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : DslDrivenSpec()
             }
 
     private suspend fun containedParserTestImpl(
-            scope: TestScope,
-            name: String,
-            javaVersion: JavaVersion,
-            assertions: ParserTestCtx.() -> Unit) {
+        testScope: GroupTestCtx.VersionedTestCtx,
+        name: String,
+        javaVersion: JavaVersion,
+        assertions: ParserTestCtx.() -> Unit) {
 
         val nested = NestedTest(
             name = TestName(name),
-            test = { ParserTestCtx(javaVersion).assertions() },
+            test = { ParserTestCtx(testScope, javaVersion).assertions() },
             config = null,
             type = TestType.Test,
             disabled = false,
             source = sourceRef()
         )
-        scope.registerTestCase(nested)
+        testScope.registerTestCase(nested)
     }
 
-    inner class GroupTestCtx(private val scope: TestScope) {
+    inner class GroupTestCtx(testScope: TestScope) : AbstractContainerScope(testScope) {
 
         suspend fun onVersions(javaVersions: List<JavaVersion>, spec: suspend VersionedTestCtx.() -> Unit) {
             javaVersions.forEach { javaVersion ->
 
                 val nested = NestedTest(
                     name = TestName("Java ${javaVersion.pmdName}"),
-                    test = { VersionedTestCtx(this, javaVersion).spec() },
+                    test = { this@GroupTestCtx.VersionedTestCtx(this, javaVersion).spec() },
                     config = null,
                     type = TestType.Container,
                     disabled = false,
                     source = sourceRef()
                 )
-                scope.registerTestCase(nested)
+                this.registerTestCase(nested)
             }
         }
 
-        inner class VersionedTestCtx(private val scope: TestScope, javaVersion: JavaVersion) : ParserTestCtx(javaVersion) {
+        inner class VersionedTestCtx(testScope: TestScope, javaVersion: JavaVersion) : ParserTestCtx(testScope, javaVersion) {
 
             suspend infix fun String.should(matcher: Assertions<String>) {
-                containedParserTestImpl(scope, "'$this'", javaVersion = javaVersion) {
+                containedParserTestImpl(this@VersionedTestCtx, "'$this'", javaVersion = javaVersion) {
                     this@should kotlintestShould matcher
                 }
             }

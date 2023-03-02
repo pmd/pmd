@@ -17,7 +17,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
  *
  * <pre>
  *
- * AndExpression ::=  {@linkplain ASTEqualityExpression EqualityExpression} ( "&" {@linkplain ASTEqualityExpression EqualityExpression} )+
+ * AndExpression ::=  {@linkplain ASTEqualityExpression EqualityExpression} ( "&amp;" {@linkplain ASTEqualityExpression EqualityExpression} )+
  *
  * </pre>
  */

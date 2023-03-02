@@ -79,7 +79,11 @@ The examples below won't repeat this taskdef element, as this is always required
     </tr>
     <tr>
       <td>shortFilenames</td>
-      <td>Places truncated filenames in the report.  This can reduce your report file size by 15%-20%.</td>
+      <td>
+          <span class="label label-default">Deprecated</span> Use <code>relativizePathsWith</code>
+          as nested element instead.
+          Places truncated filenames in the report.  This can reduce your report file size by 15%-20%.
+      </td>
       <td>No</td>
     </tr>
     <tr>
@@ -187,7 +191,7 @@ automatically and the latest language version is used.
 
     <target name="pmd">
         <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-        <pmd shortFilenames="true">
+        <pmd>
             <ruleset>rulesets/java/quickstart.xml</ruleset>
             <ruleset>config/my-ruleset.xml</ruleset>
             <fileset dir="/usr/local/j2sdk1.4.1_01/src/">
@@ -198,6 +202,12 @@ automatically and the latest language version is used.
 
 `fileset` nested element - specify the actual java source files, that PMD should analyze. You can use multiple
 fileset elements. See [FileSet](https://ant.apache.org/manual/Types/fileset.html) for the syntax and usage.
+
+`relativizePathsWith` nested element - configures the paths relative to which directories are rendered in the report.
+This option allows shortening directories in the report; without it, paths are rendered as absolute paths.
+The option can be repeated, in which case the shortest relative path will be used.
+It is a [path-like structure](https://ant.apache.org/manual/using.html#path).
+This option replaces `shortFilenames` since PMD 6.54.0.
 
 ### Language version selection
 
@@ -237,9 +247,10 @@ nested element. Possible values are:
     <sourceLanguage name="java" version="16"/>
     <sourceLanguage name="java" version="17"/>
     <sourceLanguage name="java" version="18"/>
-    <sourceLanguage name="java" version="18-preview"/>
-    <sourceLanguage name="java" version="19"/> <!-- this is the default -->
+    <sourceLanguage name="java" version="19"/>
     <sourceLanguage name="java" version="19-preview"/>
+    <sourceLanguage name="java" version="20"/> <!-- this is the default -->
+    <sourceLanguage name="java" version="20-preview"/>
     <sourceLanguage name="jsp" version=""/>
     <sourceLanguage name="modelica" version=""/>
     <sourceLanguage name="pom" version=""/>
@@ -410,7 +421,7 @@ An HTML report with the "linkPrefix" and "linePrefix" properties:
 
     <target name="pmd">
         <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-        <pmd rulesetfiles="rulesets/java/quickstart.xml" shortFilenames="true">
+        <pmd rulesetfiles="rulesets/java/quickstart.xml">
             <formatter type="html" toFile="pmd_report.html">
                 <param name="linkPrefix" value="https://maven.apache.org/plugins/maven-pmd-plugin/xref/"/>
                 <param name="linePrefix" value="L"/>
@@ -418,6 +429,9 @@ An HTML report with the "linkPrefix" and "linePrefix" properties:
             <fileset dir="/usr/local/j2sdk1.4.1_01/src/">
                 <include name="java/lang/*.java"/>
             </fileset>
+            <relativizePathsWith>
+                <pathelement location="/usr/local/j2sdk1.4.1_01/src/"/>
+            </relativizePathsWith>
         </pmd>
     </target>
 

@@ -19,7 +19,8 @@ import net.sourceforge.pmd.annotation.Experimental;
  * </pre>
  * 
  * @see <a href="https://openjdk.org/jeps/394">JEP 394: Pattern Matching for instanceof</a>
- * @see <a href="https://openjdk.org/jeps/405">JEP 405: Record Patterns (Preview)</a>
+ * @see <a href="https://openjdk.org/jeps/405">JEP 405: Record Patterns (Preview)</a> (Java 19)
+ * @see <a href="https://openjdk.org/jeps/432">JEP 432: Record Patterns (Second Preview)</a> (Java 20)
  */
 public interface ASTPattern extends JavaNode {
 

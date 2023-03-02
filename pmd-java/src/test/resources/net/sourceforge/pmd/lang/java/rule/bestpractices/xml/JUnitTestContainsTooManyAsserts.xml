@@ -62,9 +62,12 @@ public class MyTestCase extends TestCase {
         ]]></code>
     </test-code>
 
-   <test-code>
+    <test-code>
         <description>JUnit 3 Test contains more than one assert</description>
         <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Unit tests should not contain more than 1 assert(s).</message>
+        </expected-messages>
         <code><![CDATA[
 public class MyTestCase extends TestCase {
     //positive on rule

@@ -22,6 +22,8 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
+
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.benchmark.TextTimingReportRenderer;
 import net.sourceforge.pmd.benchmark.TimeTracker;
@@ -472,7 +474,16 @@ public class PMD {
             System.err.println(CliMessages.runWithHelpFlagMessage());
             return StatusCode.ERROR;
         }
-        return runPmd(parseResult.toConfiguration());
+
+        PMDConfiguration conf;
+        try {
+            conf = parseResult.toConfiguration();
+            return runPmd(conf);
+        } catch (IllegalArgumentException e) {
+            System.err.println("Cannot start analysis: " + e);
+            LOG.fine(ExceptionUtils.getStackTrace(e));
+            return StatusCode.ERROR;
+        }
     }
 
     private static void printErrorDetected(int errors) {

@@ -5,6 +5,190 @@ permalink: pmd_release_notes_old.html
 
 Previous versions of PMD can be downloaded here: https://github.com/pmd/pmd/releases
 
+## 25-February-2023 - 6.55.0
+
+The PMD team is pleased to announce PMD 6.55.0.
+
+This is a minor release.
+
+### Table Of Contents
+
+* [New and noteworthy](#new-and-noteworthy)
+    * [PMD 7 Development](#pmd-7-development)
+    * [Java 20 Support](#java-20-support)
+    * [T-SQL support](#t-sql-support)
+* [Fixed Issues](#fixed-issues)
+* [API Changes](#api-changes)
+    * [Go](#go)
+    * [Java](#java)
+* [External Contributions](#external-contributions)
+* [Stats](#stats)
+
+### New and noteworthy
+
+#### PMD 7 Development
+This release is the last planned release of PMD 6. The first version 6.0.0 was released in December 2017.
+Over the course of more than 5 years we published almost every month a new minor version of PMD 6
+with new features and improvements.
+
+Already in November 2018 we started in parallel the development of the next major version 7.0.0,
+and we are now in the process of finalizing the scope of the major version. We want to release a couple of
+release candidates before publishing the final version 7.0.0.
+
+We plan to release 7.0.0-rc1 soon. You can see the progress in [PMD 7 Tracking Issue #3898](https://github.com/pmd/pmd/issues/3898).
+
+#### Java 20 Support
+This release of PMD brings support for Java 20. There are no new standard language features.
+
+PMD supports [JEP 433: Pattern Matching for switch (Fourth Preview)](https://openjdk.org/jeps/433) and
+[JEP 432: Record Patterns (Second Preview)](https://openjdk.org/jeps/432) as preview language features.
+
+In order to analyze a project with PMD that uses these language features,
+you'll need to enable it via the environment variable `PMD_JAVA_OPTS` and select the new language
+version `20-preview`:
+
+    export PMD_JAVA_OPTS=--enable-preview
+    ./run.sh pmd --use-version java-20-preview ...
+
+#### T-SQL support
+Thanks to the contribution from [Paul Guyot](https://github.com/pguyot) PMD now has CPD support
+for T-SQL (Transact-SQL).
+
+Being based on a proper Antlr grammar, CPD can:
+
+* ignore comments
+* honor [comment-based suppressions](pmd_userdocs_cpd.html#suppression)
+
+### Fixed Issues
+* core
+  * [#4395](https://github.com/pmd/pmd/issues/4395): \[core] Support environment variable CLASSPATH with pmd.bat under Windows
+* java
+  * [#4333](https://github.com/pmd/pmd/issues/4333): \[java] Support JDK 20
+* java-errorprone
+  * [#4393](https://github.com/pmd/pmd/issues/4393): \[java] MissingStaticMethodInNonInstantiatableClass false-positive for Lombok's @UtilityClass for classes with non-private fields
+
+### API Changes
+
+#### Go
+* The LanguageModule of Go, that only supports CPD execution, has been deprecated. This language
+  is not fully supported by PMD, so having a language module does not make sense. The functionality of CPD is
+  not affected by this change. The following class has been deprecated and will be removed with PMD 7.0.0:
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-go/6.55.0/net/sourceforge/pmd/lang/go/GoLanguageModule.html#"><code>GoLanguageModule</code></a>
+
+#### Java
+* Support for Java 18 preview language features have been removed. The version "18-preview" is no longer available.
+* The experimental class `net.sourceforge.pmd.lang.java.ast.ASTGuardedPattern` has been removed.
+
+### External Contributions
+* [#4384](https://github.com/pmd/pmd/pull/4384): \[swift] Add more swift 5.x support (#unavailable mainly) - [Richard B.](https://github.com/kenji21) (@kenji21)
+* [#4390](https://github.com/pmd/pmd/pull/4390): Add support for T-SQL using Antlr4 lexer - [Paul Guyot](https://github.com/pguyot) (@pguyot)
+* [#4392](https://github.com/pmd/pmd/pull/4392): \[java] Fix #4393 MissingStaticMethodInNonInstantiatableClass: Fix false-positive for field-only class - [Dawid Ciok](https://github.com/dawiddc) (@dawiddc)
+
+### Stats
+* 40 commits
+* 11 closed tickets & PRs
+* Days since last release: 28
+
+## 28-January-2023 - 6.54.0
+
+The PMD team is pleased to announce PMD 6.54.0.
+
+This is a minor release.
+
+### Table Of Contents
+
+* [New and noteworthy](#new-and-noteworthy)
+    * [New report format html-report-v2.xslt](#new-report-format-html-report-v2.xslt)
+* [Fixed Issues](#fixed-issues)
+* [API Changes](#api-changes)
+    * [PMD CLI](#pmd-cli)
+    * [Deprecated APIs](#deprecated-apis)
+        * [For removal](#for-removal)
+        * [Internal APIs](#internal-apis)
+        * [Experimental APIs](#experimental-apis)
+* [External Contributions](#external-contributions)
+* [Stats](#stats)
+
+### New and noteworthy
+
+#### New report format html-report-v2.xslt
+
+Thanks to @mohan-chinnappan-n a new PMD report format has been added which features a data table
+with charting functions. It uses an XSLT stylesheet to convert PMD's XML format into HTML.
+
+See [the example report](report-examples/html-report-v2.html).
+
+### Fixed Issues
+* apex-bestpractices
+  * [#2669](https://github.com/pmd/pmd/issues/2669): \[apex] UnusedLocalVariable false positive in dynamic SOQL
+* core
+  * [#4026](https://github.com/pmd/pmd/issues/4026): \[cli] Filenames printed as absolute paths in the report despite parameter `--short-names`
+  * [#4279](https://github.com/pmd/pmd/issues/4279): \[core] Can not set ruleset property value to empty
+  * [#4329](https://github.com/pmd/pmd/pull/4329): \[core] Refactor usage of snakeyaml
+  * [#4340](https://github.com/pmd/pmd/issues/4340): \[core] Allow to filter found matches in CPDReport
+* java
+  * [#4364](https://github.com/pmd/pmd/issues/4364): \[java] Parsing error with textblock containing quote followed by two backslashes
+* testing
+  * [#4236](https://github.com/pmd/pmd/issues/4236): \[test] kotest logs look broken
+
+### API Changes
+
+#### PMD CLI
+
+* PMD now supports a new `--relativize-paths-with` flag (or short `-z`), which replaces `--short-names`.
+  It serves the same purpose: Shortening the pathnames in the reports. However, with the new flag it's possible
+  to explicitly define one or more pathnames that should be used as the base when creating relative paths.
+  The old flag `--short-names` is deprecated.
+
+#### Deprecated APIs
+
+##### For removal
+
+* <a href="https://docs.pmd-code.org/apidocs/pmd-apex/6.54.0/net/sourceforge/pmd/lang/apex/ast/ApexRootNode.html#getApexVersion()"><code>ApexRootNode#getApexVersion</code></a> has been deprecated for removal. The version returned is
+  always `Version.CURRENT`, as the apex compiler integration doesn't use additional information which Apex version
+  actually is used. Therefore, this method can't be used to determine the Apex version of the project
+  that is being analyzed.
+* <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0/net/sourceforge/pmd/cpd/CPDConfiguration.html#setEncoding(java.lang.String)"><code>CPDConfiguration#setEncoding</code></a> and
+  <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0/net/sourceforge/pmd/cpd/CPDConfiguration.html#getEncoding()"><code>CPDConfiguration#getEncoding</code></a>. Use the methods
+  <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0/net/sourceforge/pmd/AbstractConfiguration.html#getSourceEncoding()"><code>getSourceEncoding</code></a> and
+  <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0/net/sourceforge/pmd/AbstractConfiguration.html#setSourceEncoding(java.lang.String)"><code>setSourceEncoding</code></a> instead. Both are available
+  for `CPDConfiguration` which extends `AbstractConfiguration`.
+* <a href="https://docs.pmd-code.org/apidocs/pmd-test/6.54.0/net/sourceforge/pmd/cli/BaseCLITest.html#"><code>BaseCLITest</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-test/6.54.0/net/sourceforge/pmd/cli/BaseCPDCLITest.html#"><code>BaseCPDCLITest</code></a> have been deprecated for removal without
+  replacement. CLI tests should be done in pmd-core only (and in PMD7 in pmd-cli). Individual language modules
+  shouldn't need to test the CLI integration logic again. Instead, the individual language modules should test their
+  functionality as unit tests.
+* <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0/net/sourceforge/pmd/cpd/CPDConfiguration.LanguageConverter.html#"><code>CPDConfiguration.LanguageConverter</code></a>
+
+* <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0/net/sourceforge/pmd/lang/document/FileCollector.html#addZipFile(java.nio.file.Path)"><code>FileCollector#addZipFile</code></a> has been deprecated. It is replaced
+  by <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0/net/sourceforge/pmd/lang/document/FileCollector.html#addZipFileWithContent(java.nio.file.Path)"><code>FileCollector#addZipFileWithContent</code></a> which directly adds the
+  content of the zip file for analysis.
+
+* <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0/net/sourceforge/pmd/PMDConfiguration.html#setReportShortNames(boolean)"><code>PMDConfiguration#setReportShortNames</code></a> and
+  <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0/net/sourceforge/pmd/PMDConfiguration.html#isReportShortNames()"><code>PMDConfiguration#isReportShortNames</code></a> have been deprecated for removal.
+  Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0/net/sourceforge/pmd/PMDConfiguration.html#addRelativizeRoot(java.nio.file.Path)"><code>PMDConfiguration#addRelativizeRoot</code></a> instead.
+
+##### Internal APIs
+
+* <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0/net/sourceforge/pmd/renderers/CSVWriter.html#"><code>CSVWriter</code></a>
+* Some fields in <a href="https://docs.pmd-code.org/apidocs/pmd-test/6.54.0/net/sourceforge/pmd/ant/AbstractAntTestHelper.html#"><code>AbstractAntTestHelper</code></a>
+
+##### Experimental APIs
+
+* CPDReport has a new method which limited mutation of a given report:
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.54.0/net/sourceforge/pmd/cpd/CPDReport.html#filterMatches(net.sourceforge.pmd.util.Predicate)"><code>filterMatches</code></a> creates a new CPD report
+    with some matches removed with a given predicate based filter.
+
+### External Contributions
+* [#4110](https://github.com/pmd/pmd/pull/4110): \[apex] Feature/unused variable bind false positive with dynamic SOQL - [Thomas Prouvot](https://github.com/tprouvot) (@tprouvot)
+* [#4125](https://github.com/pmd/pmd/pull/4125): \[core] New report format html-report-v2.xslt to provide html with datatable and chart features - [Mohan Chinnappan](https://github.com/mohan-chinnappan-n) - (@mohan-chinnappan-n)
+* [#4280](https://github.com/pmd/pmd/pull/4280): \[apex] Deprecate ApexRootNode.getApexVersion - [Aaron Hurst](https://github.com/aaronhurst-google) (@aaronhurst-google)
+* [#4285](https://github.com/pmd/pmd/pull/4285): \[java] CommentDefaultAccessModifier - add co.elastic.clients.util.VisibleForTesting as default suppressed annotation - [Matthew Luckam](https://github.com/mluckam) (@mluckam)
+
+### Stats
+* 107 commits
+* 19 closed tickets & PRs
+* Days since last release: 27
+
 ## 31-December-2022 - 6.53.0
 
 The PMD team is pleased to announce PMD 6.53.0.

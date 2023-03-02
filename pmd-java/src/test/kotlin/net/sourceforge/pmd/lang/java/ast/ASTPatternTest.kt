@@ -15,10 +15,11 @@ class ASTPatternTest : ParserTestSpec({
     parserTest("Test patterns only available on JDK16 or higher (including preview)",
         javaVersions = JavaVersion.except(typePatternsVersions)) {
 
-        expectParseException("Pattern Matching for instanceof is only supported with JDK >= 16") {
-            parseAstExpression("obj instanceof Class c")
+        "obj instanceof Class c" should {
+            expectParseException("Pattern Matching for instanceof is only supported with JDK >= 16") {
+                parseAstExpression(it)
+            }
         }
-
     }
 
     parserTest("Test simple patterns", javaVersions = typePatternsVersions) {

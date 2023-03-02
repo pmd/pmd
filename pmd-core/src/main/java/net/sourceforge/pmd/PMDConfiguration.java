@@ -7,6 +7,7 @@ package net.sourceforge.pmd;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -73,8 +74,8 @@ import net.sourceforge.pmd.util.ClasspathClassLoader;
  * <ul>
  * <li>The renderer format to use for Reports. {@link #getReportFormat()}</li>
  * <li>The file to which the Report should render. {@link #getReportFile()}</li>
- * <li>An indicator of whether to use File short names in Reports, defaults to
- * <code>false</code>. {@link #isReportShortNames()}</li>
+ * <li>Configure the root paths that are used to relativize file names in reports via {@link #addRelativizeRoot(Path)}.
+ * This enables to get short names in reports.</li>
  * <li>The initialization properties to use when creating a Renderer instance.
  * {@link #getReportProperties()}</li>
  * <li>An indicator of whether to show suppressed Rule violations in Reports.
@@ -115,6 +116,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     // Reporting options
     private String reportFormat;
     private Path reportFile;
+    @Deprecated
     private boolean reportShortNames = false;
     private Properties reportProperties = new Properties();
     private boolean showSuppressedViolations = false;
@@ -126,6 +128,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     private boolean benchmark;
     private AnalysisCache analysisCache = new NoopAnalysisCache();
     private boolean ignoreIncrementalAnalysis;
+    private final List<Path> relativizeRoots = new ArrayList<>();
 
     /**
      * Get the suppress marker. This is the source level marker used to indicate
@@ -633,6 +636,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @return <code>true</code> when using short names in reports.
      */
+    @Deprecated
     public boolean isReportShortNames() {
         return reportShortNames;
     }
@@ -642,7 +646,9 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @param reportShortNames
      *            <code>true</code> when using short names in reports.
+     * @deprecated for removal. Use {@link #addRelativizeRoot(Path)} instead.
      */
+    @Deprecated
     public void setReportShortNames(boolean reportShortNames) {
         this.reportShortNames = reportShortNames;
     }
@@ -913,8 +919,8 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     public void setAnalysisCacheLocation(final String cacheLocation) {
         setAnalysisCache(cacheLocation == null
-                                 ? new NoopAnalysisCache()
-                                 : new FileAnalysisCache(new File(cacheLocation)));
+                         ? new NoopAnalysisCache()
+                         : new FileAnalysisCache(new File(cacheLocation)));
     }
 
 
@@ -939,5 +945,57 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     public boolean isIgnoreIncrementalAnalysis() {
         return ignoreIncrementalAnalysis;
+    }
+
+    /**
+     * Set the path used to shorten paths output in the report.
+     * The path does not need to exist. If it exists, it must point
+     * to a directory and not a file. See {@link #getRelativizeRoots()}
+     * for the interpretation.
+     *
+     * <p>If several paths are added, the shortest paths possible are
+     * built.
+     *
+     * @param path A path
+     *
+     * @throws IllegalArgumentException If the path points to a file, and not a directory
+     * @throws NullPointerException If the path is null
+     */
+    public void addRelativizeRoot(Path path) {
+        // Note: the given path is not further modified or resolved. E.g. there is no special handling for symlinks.
+        // The goal is, that if the user inputs a path, PMD should output in terms of that path, not it's resolution.
+        this.relativizeRoots.add(Objects.requireNonNull(path));
+
+        if (Files.isRegularFile(path)) {
+            throw new IllegalArgumentException("Relativize root should be a directory: " + path);
+        }
+    }
+
+
+    /**
+     * Add several paths to shorten paths that are output in the report.
+     * See {@link #addRelativizeRoot(Path)}.
+     *
+     * @param paths A list of non-null paths
+     *
+     * @throws IllegalArgumentException If any path points to a file, and not a directory
+     * @throws NullPointerException     If the list, or any path in the list is null
+     */
+    public void addRelativizeRoots(List<Path> paths) {
+        for (Path path : paths) {
+            addRelativizeRoot(path);
+        }
+    }
+
+    /**
+     * Returns the paths used to shorten paths output in the report.
+     * <ul>
+     * <li>If the list is empty, then paths are not touched (unless {@link #isReportShortNames()} is true)
+     * <li>If the list is non-empty, then source file paths are relativized with all the items in the list.
+     * The shortest of these relative paths is taken as the display name of the file.
+     * </ul>
+     */
+    public List<Path> getRelativizeRoots() {
+        return Collections.unmodifiableList(relativizeRoots);
     }
 }

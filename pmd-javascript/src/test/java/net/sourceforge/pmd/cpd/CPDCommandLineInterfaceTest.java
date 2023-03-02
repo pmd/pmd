@@ -15,7 +15,7 @@ import net.sourceforge.pmd.cli.BaseCPDCLITest;
 public class CPDCommandLineInterfaceTest extends BaseCPDCLITest {
     @Test
     public void shouldFindDuplicatesWithDifferentFileExtensions() {
-        String out = runTest(CPD.StatusCode.DUPLICATE_CODE_FOUND, "--minimum-tokens", "5", "--language", "js", "--files",
+        String out = runTest(CPD.StatusCode.DUPLICATE_CODE_FOUND, "--minimum-tokens", "5", "--language", "js", "--dir",
                 "src/test/resources/net/sourceforge/pmd/cpd/ts/File1.ts",
                 "src/test/resources/net/sourceforge/pmd/cpd/ts/File2.ts");
 
@@ -24,7 +24,7 @@ public class CPDCommandLineInterfaceTest extends BaseCPDCLITest {
 
     @Test
     public void shouldFindNoDuplicatesWithDifferentFileExtensions() {
-        String out = runTest(CPD.StatusCode.OK, "--minimum-tokens", "5", "--language", "js", "--files",
+        String out = runTest(CPD.StatusCode.OK, "--minimum-tokens", "5", "--language", "js", "--dir",
                 "src/test/resources/net/sourceforge/pmd/cpd/ts/");
 
         assertThat(out.trim(), emptyString());

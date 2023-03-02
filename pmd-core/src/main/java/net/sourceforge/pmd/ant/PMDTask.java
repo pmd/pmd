@@ -4,17 +4,21 @@
 
 package net.sourceforge.pmd.ant;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
+import org.apache.tools.ant.types.Resource;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.ant.internal.PMDTaskImpl;
 
 public class PMDTask extends Task {
@@ -25,7 +29,9 @@ public class PMDTask extends Task {
     private final List<FileSet> filesets = new ArrayList<>();
     private boolean failOnError;
     private boolean failOnRuleViolation;
+    @Deprecated
     private boolean shortFilenames;
+    private final List<Path> relativizePathsWith = new ArrayList<>();
     private String suppressMarker;
     private String rulesetFiles;
     private boolean noRuleSetCompatibility;
@@ -73,6 +79,11 @@ public class PMDTask extends Task {
             }
             rulesetFiles = getNestedRuleSetFiles();
         }
+
+        if (shortFilenames) {
+            log("DEPRECATED - Use of shortFilenames is deprecated. Use a nested relativePathsWith element instead.",
+                   Project.MSG_WARN);
+        }
     }
 
     private String getNestedRuleSetFiles() {
@@ -87,6 +98,10 @@ public class PMDTask extends Task {
         return sb.toString();
     }
 
+    /**
+     * @deprecated Use {@link #addRelativizePathsWith(Path)}
+     */
+    @Deprecated
     public void setShortFilenames(boolean reportShortNames) {
         this.shortFilenames = reportShortNames;
     }
@@ -263,5 +278,24 @@ public class PMDTask extends Task {
 
     public void setNoCache(boolean noCache) {
         this.noCache = noCache;
+    }
+
+    public void addRelativizePathsWith(Path relativizePathsWith) {
+        this.relativizePathsWith.add(relativizePathsWith);
+    }
+
+    public List<Path> getRelativizePathsWith() {
+        return relativizePathsWith;
+    }
+
+    @InternalApi
+    public List<java.nio.file.Path> getRelativizeRoots() {
+        List<java.nio.file.Path> paths = new ArrayList<>();
+        for (Path path : getRelativizePathsWith()) {
+            for (Resource resource : path) {
+                paths.add(Paths.get(resource.toString()));
+            }
+        }
+        return paths;
     }
 }
