@@ -201,6 +201,19 @@ The language module registers a couple of different versions. The latest version
 new constructs (see [Rhino](https://github.com/mozilla/rhino)]), is the default. This should be fine for most
 use cases.
 
+#### Language versions
+
+We revisited the versions that were defined by each language module. Now many more versions are defined for each
+language. In general, you can expect that PMD can parse all these different versions. There might be situations
+where this fails and this can be considered a bug. Usually the latest version is selected as the default
+language version.
+
+The language versions can be used to mark rules to be useful only for a specific language version via
+the `minimumLanguageVersion` and `maximumLanguageVersion` attributes. While this feature is currently only used by
+the Java module, listing all possible versions enables other languages as well to use this feature.
+
+Related issue: [[core] Explicitly name all language versions (#4120)](https://github.com/pmd/pmd/issues/4120)
+
 #### API
 
 The API of PMD has been growing over the years and needed some cleanup. The goal is, to
