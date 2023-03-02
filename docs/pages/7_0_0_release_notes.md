@@ -120,7 +120,6 @@ Additionally, the CLI for the `check` command has been enhanced with a progress 
 current progress of the analysis.
 
 ![Demo](docs/images/userdocs/pmd-demo.gif)
-TODO screenshot (take it right before releasing, because other changes to the CLI will occur until then)
 
 This can be disabled with the `--no-progress` flag.
 
