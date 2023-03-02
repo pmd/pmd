@@ -377,6 +377,7 @@ The following previously deprecated rules have been finally removed:
   * [#3828](https://github.com/pmd/pmd/issues/3828): \[core] Progress reporting
   * [#4079](https://github.com/pmd/pmd/issues/4079): \[cli] Split off CLI implementation into a pmd-cli submodule
 * testing
+  * [#2435](https://github.com/pmd/pmd/issues/2435): \[test] Remove duplicated Dummy language module
   * [#4234](https://github.com/pmd/pmd/issues/4234): \[test] Tests that change the logging level do not work
 
 Language specific fixes:
