@@ -210,6 +210,8 @@ This should help us in future development.
 
 #### Compatibility and migration notes
 
+PMD 7 requires Java 8 or above to execute.
+
 TODO - what to look out for. Hints and known problems.
 
 #### New Rules
