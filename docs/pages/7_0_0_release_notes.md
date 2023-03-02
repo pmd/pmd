@@ -608,22 +608,17 @@ The metrics framework has been made simpler and more general.
 * Rule tests, that use {% jdoc test::testframework.SimpleAggregatorTst %} or {% jdoc test::testframework.PmdRuleTst %} work as before without change, but use
   now JUnit5 under the hood. If you added additional JUnit4 tests to your rule test classes, then you'll need to upgrade them to use JUnit5.
 
-#### Language Modules
+#### Language Lifecycle and Language Properties
 
-In order to support language properties and provide a proper lifecycle for languages, there were some changes needed
-in this area:
+* Language modules now provide a proper lifecycle and can store global information. This enables the implementation
+  of multifile analysis.
+* Language modules can define [custom language properties](pmd_languages_configuration.html) which can be set via
+  environment variables. This allows to add and use language specific configuration options without the need to change pmd-core.
 
-* The class `BaseLanguageModule` has been removed.
-* Individual language modules should now extend {% jdoc core::lang.impl.SimpleLanguageModuleBase %}. Like before
-  this class is registered via the service loader mechanism via `META-INF/services/net.sourceforge.pmd.lang.Language`.
-* The implementation of a language version handler has been simplified by providing default implementations for
-  most aspects. The minimum requirement is now to provide an own parser for the language version handler.
-* Language modules can define [custom language properties](pmd_languages_configuration.html)
-  which can be set via environment variables. This allows
-  to add and use language specific configuration options without the need to change pmd-core.
-* For each PMD analysis run a new `LanguageProcessor` instance is created and destroyed afterwards.  This allows
-  to store global information without using static fields. This enables the implementation of multifile analysis.
-* Rules have access to this language processor instance during initialization.
+The documentation page has been updated: [Adding a new language with JavaCC](pmd_devdocs_major_adding_new_language_javacc.html)
+and [Adding a new language with ANTLR](pmd_devdocs_major_adding_new_language_antlr.html)
+
+Related issue: [[core] Language lifecycle (#3782)](https://github.com/pmd/pmd/issues/3782)
 
 ###  ✨ External Contributions
 
