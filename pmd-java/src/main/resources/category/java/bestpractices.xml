@@ -421,12 +421,13 @@ if (rst.next()) {    // result is properly examined and used
     <rule name="ConstantsInInterface"
           language="java"
           since="5.5"
-          message="Avoid constants in interfaces. Interfaces define types, constants are implementation details better placed in classes or enums. See Effective Java, item 19."
+          message="Avoid constants in interfaces. Interfaces define types, constants are implementation details better placed in classes or enums. If the constants are best viewed as members of an enumerated type, you should export them with an enum type.
+            For other scenarios, consider using a utility class. See Effective Java, item 17 (1st edition), item 19 (2nd edition), or item 22 (3rd edition)."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#constantsininterface">
         <description>
-Avoid constants in interfaces. Interfaces should define types, constants are implementation details
-better placed in classes or enums. See Effective Java, item 19.
+Avoid constants in interfaces. Interfaces define types, constants are implementation details better placed in classes or enums. If the constants are best viewed as members of an enumerated type, you should export them with an enum type.
+For other scenarios, consider using a utility class. See Effective Java, item 17 (1st edition), item 19 (2nd edition), or item 22 (3rd edition).
         </description>
         <priority>3</priority>
         <properties>
