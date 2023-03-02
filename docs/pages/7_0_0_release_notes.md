@@ -146,6 +146,7 @@ We expect this to enable both our dev team and external contributors to largely 
 Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
   [Matías Fraga](https://github.com/matifraga) (@matifraga),
   [Tomás De Lucca](https://github.com/tomidelucca) (@tomidelucca)
+
 #### Swift support
 
 Given the full Antlr support, PMD now fully supports Swift. We are pleased to announce we are shipping a number of rules
@@ -193,28 +194,6 @@ Notable changes:
 * The deprecated support for sequence-valued attributes is removed. Sequence-valued properties are still supported.
 * Refer to [the Saxonica documentation](https://www.saxonica.com/html/documentation/expressions/xpath31new.html) for
   an introduction to new features in XPath 3.1.
-
-#### Node stream API for AST traversal
-
-This version includes a powerful API to navigate trees, similar in usage to the Java 8 Stream API:
-```java
-node.descendants(ASTMethodCall.class)
-    .filter(m -> "toString".equals(m.getMethodName()))
-    .map(m -> m.getQualifier())
-    .filter(q -> TypeTestUtil.isA(String.class, q))
-    .foreach(System.out::println);
-```
-
-A pipeline like shown here traverses the tree lazily, which is more efficient than traversing eagerly to put all
-descendants in a list. It is also much easier to change than the old imperative way.
-
-To make this API as accessible as possible, the {% jdoc core::lang.ast.Node %} interface has been fitted with new
-methods producing node streams. Those methods replace previous tree traversal methods like `Node#findDescendantsOfType`.
-In all cases, they should be more efficient and more convenient.
-
-See {% jdoc core::lang.ast.NodeStream %} for more details.
-
-Contributors: [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
 
 #### JavaScript support
 
@@ -562,6 +541,28 @@ Language specific fixes:
   * {% jdoc core::util.GraphUtil %}
   * {% jdoc core::util.IteratorUtil %}
   * {% jdoc core::util.StringUtil %}
+
+#### Node stream API for AST traversal
+
+This version includes a powerful API to navigate trees, similar in usage to the Java 8 Stream API:
+```java
+node.descendants(ASTMethodCall.class)
+    .filter(m -> "toString".equals(m.getMethodName()))
+    .map(m -> m.getQualifier())
+    .filter(q -> TypeTestUtil.isA(String.class, q))
+    .foreach(System.out::println);
+```
+
+A pipeline like shown here traverses the tree lazily, which is more efficient than traversing eagerly to put all
+descendants in a list. It is also much easier to change than the old imperative way.
+
+To make this API as accessible as possible, the {% jdoc core::lang.ast.Node %} interface has been fitted with new
+methods producing node streams. Those methods replace previous tree traversal methods like `Node#findDescendantsOfType`.
+In all cases, they should be more efficient and more convenient.
+
+See {% jdoc core::lang.ast.NodeStream %} for more details.
+
+Contributors: [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
 
 #### Metrics framework
 
