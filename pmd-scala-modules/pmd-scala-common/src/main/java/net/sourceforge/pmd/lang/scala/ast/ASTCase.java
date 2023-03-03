@@ -4,23 +4,19 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import scala.meta.Case;
 
 /**
  * The ASTCase node implementation.
  */
-public class ASTCase extends AbstractScalaNode<Case> {
+public final class ASTCase extends AbstractScalaNode<Case> {
 
-    @Deprecated
-    @InternalApi
-    public ASTCase(Case scalaNode) {
+    ASTCase(Case scalaNode) {
         super(scalaNode);
     }
 
     @Override
-    public <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data) {
+    protected <P, R> R acceptVisitor(ScalaParserVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

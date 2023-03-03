@@ -247,18 +247,6 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>#780 [java] BeanMembersShouldSerializeRule does not recognize lombok accessors - 7</description>
-        <rule-property name="packages"></rule-property>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-@Data
-public class Foo {
-    private String bar;
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
         <description>#1796 BeanMembersShouldSerialize should still report with @Delegate</description>
         <rule-property name="packages"></rule-property>
         <expected-problems>1</expected-problems>

@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -8,15 +8,16 @@ import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.ast.ASTName;
-import net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode;
+import net.sourceforge.pmd.lang.plsql.ast.InternalApiBridge;
+import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 public class MethodScope extends MethodOrLocalScope {
 
-    private Node node;
+    private final PLSQLNode node;
 
-    public MethodScope(Node node) {
+    public MethodScope(PLSQLNode node) {
         this.node = node;
     }
 
@@ -33,7 +34,7 @@ public class MethodScope extends MethodOrLocalScope {
                 getVariableDeclarations().get(decl).add(occurrence);
                 Node n = occurrence.getLocation();
                 if (n instanceof ASTName) {
-                    ((ASTName) n).setNameDeclaration(decl);
+                    InternalApiBridge.setNameDeclaration((ASTName) n, decl);
                 } // TODO what to do with PrimarySuffix case?
             }
         }
@@ -41,7 +42,7 @@ public class MethodScope extends MethodOrLocalScope {
     }
 
     public String getName() {
-        return ((AbstractPLSQLNode) node.getChild(1)).getCanonicalImage();
+        return node.getChild(1).getCanonicalImage();
     }
 
     @Override

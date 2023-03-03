@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.html.rule.bestpractices;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class UseAltAttributeForImagesTest extends PmdRuleTst {
+class UseAltAttributeForImagesTest extends PmdRuleTst {
     // no additional unit tests
 }

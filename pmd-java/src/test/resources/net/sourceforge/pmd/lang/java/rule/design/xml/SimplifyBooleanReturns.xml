@@ -74,6 +74,7 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class SimplifyBooleanReturns {
+    java.util.List<Object> myObjectList;
     public boolean exists(Object obj) {
         if (myObjectList.contains(obj)) {
             return true;
@@ -89,6 +90,7 @@ public class SimplifyBooleanReturns {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class SimplifyBooleanReturns {
+    java.util.List<Object> myObjectList;
     public boolean exists(Object obj) {
         if (myObjectList.contains(obj))
             return true;
@@ -96,5 +98,171 @@ public class SimplifyBooleanReturns {
     }
 }
         ]]></code>
+    </test-code>
+    <test-code>
+        <description>Check for negated expr</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class SimplifyBooleanReturns {
+    java.util.List<Object> myObjectList;
+    public boolean exists(Object obj) {
+        if (myObjectList.contains(obj))
+            return obj != null;
+        return obj == null;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Check for negated expr 2</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class SimplifyBooleanReturns {
+    java.util.List<Object> myObjectList;
+    public boolean exists(Object obj) {
+        if (myObjectList.contains(obj))
+            return obj.getClass().equals(String.class);
+        return !obj.getClass().equals(String.class);
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Check for boolean literal somewhere</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class SimplifyBooleanReturns {
+    public boolean exists(Object obj) {
+        if (obj instanceof String)
+            return true;
+        return !obj.getClass().equals(String.class);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>don't report if expr would need paren</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>13</expected-linenumbers>
+        <expected-messages>
+            <message>This if statement can be replaced by `return {condition} &amp;&amp; {thenBranch};`</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+                public boolean foo(Object foo, boolean a, boolean b) {
+                    if (foo instanceof Foo) { // foo instanceof Foo && (a || b)
+                        return a || b;
+                    } else {
+                        return false;
+                    }
+                    if (foo instanceof Foo) { // !(foo instanceof Foo) || a
+                        return a;
+                    } else {
+                        return true;
+                    }
+                    if (foo instanceof Foo) { // foo instanceof Foo && a
+                        return a;
+                    } else {
+                        return false;
+                    }
+                    if (a || b) { // (a || b) && a
+                        return a;
+                    } else {
+                        return false;
+                    }
+                    if (foo instanceof Foo) { // !(foo instanceof Foo) && a;
+                        return a;
+                    } else {
+                        return true;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>some ops can be negated ok</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,8</expected-linenumbers>
+        <expected-messages>
+            <message>This if statement can be replaced by `return !{condition} &amp;&amp; {thenBranch};`</message>
+            <message>This if statement can be replaced by `return !{condition} &amp;&amp; {thenBranch};`</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+                public boolean foo(Object foo, boolean a, boolean b) {
+                    if (foo == null) { // foo != null || a
+                        return a;
+                    } else {
+                        return true;
+                    }
+                    if (!(foo instanceof String)) { // foo instanceof String || a
+                        return a;
+                    } else {
+                        return true;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>expr already has parens</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>This if statement can be replaced by `return {condition} &amp;&amp; {thenBranch};`</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+                public boolean foo(Object foo, boolean a, boolean b) {
+                    if (foo instanceof Foo) { // foo instanceof Foo && (a || b)
+                        return (a || b);
+                    } else {
+                        return false;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>both booleans</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>This if statement can be replaced by `return {condition};`</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+                public boolean foo(Object entry, boolean a, boolean b) {
+                    if ((entry != null) && (entry instanceof String)) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>De Morgan</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>This if statement can be replaced by `return !{condition} &amp;&amp; {thenBranch};`</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+
+                public boolean foo(Object entry, boolean a, boolean b) {
+                    // !(entry != null && entry != b) || a
+                    // -> entry == null || entry == b || a
+                    if (entry != null && entry != b) {
+                        return a;
+                    } else {
+                        return true;
+                    }
+                }
+            }
+            ]]></code>
     </test-code>
 </test-data>

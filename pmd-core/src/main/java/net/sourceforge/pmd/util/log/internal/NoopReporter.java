@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.util.log.internal;
 
+import org.slf4j.event.Level;
+
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.util.log.MessageReporter;
 
@@ -13,9 +15,10 @@ import net.sourceforge.pmd.util.log.MessageReporter;
  * @author Clément Fournier
  */
 @InternalApi
-public final class NoopReporter extends MessageReporterBase implements MessageReporter {
+public class NoopReporter extends MessageReporterBase implements MessageReporter {
 
     // note: not singleton because PmdLogger accumulates error count.
+    // note: not final because used as mock in tests.
 
     @Override
     protected boolean isLoggableImpl(Level level) {
@@ -23,7 +26,7 @@ public final class NoopReporter extends MessageReporterBase implements MessageRe
     }
 
     @Override
-    protected void logImpl(Level level, String message, Object[] formatArgs) {
+    protected void logImpl(Level level, String message) {
         // noop
     }
 }

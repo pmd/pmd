@@ -6,17 +6,13 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.Comment;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTComment extends AbstractEcmascriptNode<Comment> {
-    @Deprecated
-    @InternalApi
-    public ASTComment(Comment comment) {
+public final class ASTComment extends AbstractEcmascriptNode<Comment> {
+    ASTComment(Comment comment) {
         super(comment);
     }
 
     @Override
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+    protected <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

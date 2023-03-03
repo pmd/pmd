@@ -5,14 +5,14 @@
 
 package net.sourceforge.pmd.lang.html.ast;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest;
 import net.sourceforge.pmd.lang.ast.test.RelevantAttributePrinter;
 
-public class HtmlTreeDumpTest extends BaseTreeDumpTest {
-    public HtmlTreeDumpTest() {
+class HtmlTreeDumpTest extends BaseTreeDumpTest {
+    HtmlTreeDumpTest() {
         super(new RelevantAttributePrinter(), ".html");
     }
 
@@ -22,17 +22,17 @@ public class HtmlTreeDumpTest extends BaseTreeDumpTest {
     }
 
     @Test
-    public void simpleHtmlFile() {
+    void simpleHtmlFile() {
         doTest("SimpleHtmlFile");
     }
 
     @Test
-    public void templateFragment() {
+    void templateFragment() {
         doTest("TemplateFragment");
     }
 
     @Test
-    public void simpleXmlFile() {
+    void simpleXmlFile() {
         doTest("SimpleXmlFile");
     }
 }

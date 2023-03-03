@@ -7,9 +7,9 @@ package net.sourceforge.pmd.lang.rule.xpath.internal;
 import net.sf.saxon.expr.AxisExpression;
 import net.sf.saxon.expr.Expression;
 import net.sf.saxon.expr.RootExpression;
-import net.sf.saxon.expr.Token;
 import net.sf.saxon.expr.VennExpression;
-import net.sf.saxon.om.Axis;
+import net.sf.saxon.expr.parser.Token;
+import net.sf.saxon.om.AxisInfo;
 
 /**
  * Simple printer for saxon expressions. Might be useful for debugging / during development.
@@ -32,7 +32,7 @@ public class ExpressionPrinter extends SaxonExprVisitor {
 
     @Override
     public Expression visit(AxisExpression e) {
-        print("axis=" + Axis.axisName[e.getAxis()] + "(test=" + e.getNodeTest() + ")");
+        print("axis=" + AxisInfo.axisName[e.getAxis()] + "(test=" + e.getNodeTest() + ")");
         return super.visit(e);
     }
 

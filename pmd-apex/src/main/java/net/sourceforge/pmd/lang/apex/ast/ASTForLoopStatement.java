@@ -4,20 +4,17 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.statement.ForLoopStatement;
 
-public class ASTForLoopStatement extends AbstractApexNode<ForLoopStatement> {
+public final class ASTForLoopStatement extends AbstractApexNode<ForLoopStatement> {
 
-    @Deprecated
-    @InternalApi
-    public ASTForLoopStatement(ForLoopStatement forLoopStatement) {
+    ASTForLoopStatement(ForLoopStatement forLoopStatement) {
         super(forLoopStatement);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

@@ -11,13 +11,18 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.Report.ConfigurationError;
+import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.properties.StringProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 
 /**
  * <p>
@@ -55,8 +60,12 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
     public static final String NAME = "textcolor";
 
     // What? TODO 7.0.0 Use a boolean property
-    public static final StringProperty COLOR = new StringProperty("color",
-            "Enables colors with anything other than 'false' or '0'.", "yes", 0);
+    // TODO should the "textcolor" renderer really support "optional" colors?
+    //   either use text or textcolor...
+    //   This property is really weird, the standard boolean properties
+    //   are false unless value is exactly "true", this one is true unless
+    //   "false" or "0"...
+    public static final PropertyDescriptor<String> COLOR = PropertyFactory.stringProperty("color").desc("Enables colors with anything other than 'false' or '0'.").defaultValue("yes").build();
     private static final String SYSTEM_PROPERTY_PMD_COLOR = "pmd.color";
 
     /**
@@ -109,8 +118,9 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
         return property != null && !("0".equals(property) || "false".equalsIgnoreCase(property));
     }
 
+
     @Override
-    public void end() throws IOException {
+    public void outputReport(Report report) throws IOException {
         StringBuilder buf = new StringBuilder(500);
         buf.append(PMD.EOL);
         initializeColorsIfSupported();
@@ -118,10 +128,9 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
         int numberOfErrors = 0;
         int numberOfWarnings = 0;
 
-        for (Iterator<RuleViolation> i = report.iterator(); i.hasNext();) {
+        for (RuleViolation rv : report.getViolations()) {
             buf.setLength(0);
             numberOfWarnings++;
-            RuleViolation rv = i.next();
             String nextFile = determineFileName(rv.getFilename());
             if (!nextFile.equals(lastFile)) {
                 lastFile = nextFile;
@@ -164,18 +173,16 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
         }
         writer.write(PMD.EOL + PMD.EOL);
         writer.write("Summary:" + PMD.EOL + PMD.EOL);
-        Map<String, Integer> summary = report.getCountSummary();
-        for (Map.Entry<String, Integer> entry : summary.entrySet()) {
+        for (Map.Entry<String, Integer> entry : getCountSummary(report).entrySet()) {
             buf.setLength(0);
             String key = entry.getKey();
             buf.append(key).append(" : ").append(entry.getValue()).append(PMD.EOL);
             writer.write(buf.toString());
         }
 
-        for (Iterator<Report.ProcessingError> i = report.errors(); i.hasNext();) {
+        for (ProcessingError error : report.getProcessingErrors()) {
             buf.setLength(0);
             numberOfErrors++;
-            Report.ProcessingError error = i.next();
             String nextFile = determineFileName(error.getFile());
             if (!nextFile.equals(lastFile)) {
                 lastFile = nextFile;
@@ -202,10 +209,9 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
             writer.write(buf.toString());
         }
 
-        for (Iterator<Report.ConfigurationError> i = report.configErrors(); i.hasNext();) {
+        for (ConfigurationError error : report.getConfigurationErrors()) {
             buf.setLength(0);
             numberOfErrors++;
-            Report.ConfigurationError error = i.next();
             buf.append(this.redBold)
                     .append("*")
                     .append(this.colorReset)
@@ -233,6 +239,32 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
                 + this.colorReset + PMD.EOL);
     }
 
+
+    /**
+     * Calculate a summary of violation counts per fully classified class name.
+     *
+     * @return violations per class name
+     */
+    private static Map<String, Integer> getCountSummary(Report report) {
+        Map<String, Integer> summary = new HashMap<>();
+        for (RuleViolation rv : report.getViolations()) {
+            String key = keyFor(rv);
+            if (key.isEmpty()) {
+                continue;
+            }
+            Integer o = summary.get(key);
+            summary.put(key, o == null ? 1 : o + 1);
+        }
+        return summary;
+    }
+
+    private static String keyFor(RuleViolation rv) {
+        String packageName = rv.getAdditionalInfo().getOrDefault(RuleViolation.PACKAGE_NAME, "");
+        String className = rv.getAdditionalInfo().getOrDefault(RuleViolation.CLASS_NAME, "");
+        return StringUtils.isNotBlank(packageName) ? packageName + '.' + className : "";
+    }
+
+
     /**
      * Retrieves the requested line from the specified file.
      *
@@ -240,6 +272,7 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
      *            the java or cpp source file
      * @param line
      *            line number to extract
+     *
      * @return a trimmed line of source code
      */
     private String getLine(String sourceFile, int line) {

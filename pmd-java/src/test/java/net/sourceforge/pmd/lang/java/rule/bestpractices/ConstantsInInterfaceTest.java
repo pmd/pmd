@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class ConstantsInInterfaceTest extends PmdRuleTst {
+class ConstantsInInterfaceTest extends PmdRuleTst {
     // no additional unit tests
 }

@@ -4,23 +4,19 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import scala.meta.Lit;
 
 /**
  * The ASTLitSymbol node implementation.
  */
-public class ASTLitSymbol extends AbstractScalaNode<Lit.Symbol> {
+public final class ASTLitSymbol extends AbstractScalaNode<Lit.Symbol> {
 
-    @Deprecated
-    @InternalApi
-    public ASTLitSymbol(Lit.Symbol scalaNode) {
+    ASTLitSymbol(Lit.Symbol scalaNode) {
         super(scalaNode);
     }
 
     @Override
-    public <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data) {
+    protected <P, R> R acceptVisitor(ScalaParserVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

@@ -4,23 +4,19 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import scala.meta.Pat;
 
 /**
  * The ASTPatSeqWildcard node implementation.
  */
-public class ASTPatSeqWildcard extends AbstractScalaNode<Pat.SeqWildcard> {
+public final class ASTPatSeqWildcard extends AbstractScalaNode<Pat.SeqWildcard> {
 
-    @Deprecated
-    @InternalApi
-    public ASTPatSeqWildcard(Pat.SeqWildcard scalaNode) {
+    ASTPatSeqWildcard(Pat.SeqWildcard scalaNode) {
         super(scalaNode);
     }
 
     @Override
-    public <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data) {
+    protected <P, R> R acceptVisitor(ScalaParserVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

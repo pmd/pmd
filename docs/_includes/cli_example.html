@@ -1,0 +1,54 @@
+{% assign linux_cmd_blob = '' %}
+{% assign linux_split_cmds = include.linux | newline_to_br | strip_newlines | split: '<br />' %}
+{% assign raw_output = false %}
+{% for linux_raw_cmd in linux_split_cmds %}
+  {% assign linux_cmd = linux_raw_cmd | strip | split: ' ' | first %}
+  {% assign linux_tail = linux_raw_cmd | strip | remove_first: linux_cmd %}
+  {% if linux_cmd == nil %}
+    {% assign raw_output = true %}
+  {% endif %}
+  {% if raw_output %}
+    {% capture linux_cmd_blob %}{{linux_cmd_blob}}{{linux_cmd}}{{linux_tail}}
+{% endcapture %}
+  {% else %}
+    {% capture linux_cmd_blob %}{{linux_cmd_blob}}<span class="gp">~ $ </span><span class="s2">{{linux_cmd}}</span>{{linux_tail}}
+{% endcapture %}
+  {% endif %}
+{% endfor %}
+
+{% assign windows_cmd_blob = '' %}
+{% assign windows_split_cmds = include.windows | newline_to_br | strip_newlines | split: '<br />' %}
+{% assign raw_output = false %}
+{% for windows_raw_cmd in windows_split_cmds %}
+  {% assign windows_cmd = windows_raw_cmd | strip | split: ' ' | first %}
+  {% assign windows_tail = windows_raw_cmd | strip | remove_first: windows_cmd %}
+  {% if windows_cmd == nil %}
+    {% assign raw_output = true %}
+  {% endif %}
+  {% if raw_output == true %}
+    {% capture windows_cmd_blob %}{{windows_cmd_blob}}{{windows_cmd}}{{windows_tail}}
+{% endcapture %}
+  {% else %}
+    {% capture windows_cmd_blob %}{{windows_cmd_blob}}<span class="gp">C:\&gt; </span><span class="s2">{{windows_cmd}}</span>{{windows_tail}}
+{% endcapture %}
+  {% endif %}
+{% endfor %}
+<div class="text-left">
+  <ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <a class="nav-link active" id="linux-tab-{{include.id}}" data-toggle="tab" href="#linux-{{include.id}}" role="tab" aria-controls="linux" aria-selected="true">Linux / macOS</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="windows-tab-{{include.id}}" data-toggle="tab" href="#windows-{{include.id}}" role="tab" aria-controls="windows" aria-selected="false">Windows</a>
+    </li>
+  </ul>
+
+  <div class="tab-content border">
+    <div class="tab-pane fade show active" id="linux-{{include.id}}" role="tabpanel" aria-labelledby="linux-tab">
+      <figure class="highlight"><pre><code class="language-bash" data-lang="bash">{{linux_cmd_blob}}</code></pre></figure>
+    </div>
+    <div class="tab-pane fade" id="windows-{{include.id}}" role="tabpanel" aria-labelledby="windows-tab">
+      <figure class="highlight"><pre><code class="language-bash" data-lang="bash">{{windows_cmd_blob}}</code></pre></figure>
+    </div>
+  </div>
+</div>

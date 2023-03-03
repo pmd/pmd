@@ -20,13 +20,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class RuleTagChecker {
-    private static final Logger LOG = Logger.getLogger(DeadLinksChecker.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(DeadLinksChecker.class);
 
     private static final String QUOTE = "\"";
     private static final Pattern RULE_TAG = Pattern.compile("\\{%\\s*rule\\s+(\"?[^\"%\\}\\s]+\"?)\\s*");
@@ -41,7 +42,7 @@ public class RuleTagChecker {
         final Path pagesDirectory = rootDirectory.resolve("docs/pages");
 
         if (!Files.isDirectory(pagesDirectory)) {
-            LOG.severe("can't check rule tags, didn't find \"docs/pages\" directory at: " + pagesDirectory);
+            LOG.error("can't check rule tags, didn't find \"docs/pages\" directory at: {}", pagesDirectory);
             System.exit(1);
         }
 
@@ -64,7 +65,7 @@ public class RuleTagChecker {
             return;
         }
 
-        LOG.finer("Checking " + file);
+        LOG.debug("Checking {}", file);
         int lineNo = 0;
         for (String line : Files.readAllLines(file, StandardCharsets.UTF_8)) {
             lineNo++;
@@ -115,9 +116,9 @@ public class RuleTagChecker {
                     rulesCache.put(ruleDocPage, result);
                 }
             } catch (NoSuchFileException e) {
-                LOG.warning("File " + ruleDocPage + " not found.");
+                LOG.warn("File {} not found.", ruleDocPage);
             } catch (IOException e) {
-                LOG.log(Level.SEVERE, "Unable to read rules from " + ruleDocPage, e);
+                LOG.error("Unable to read rules from {}", ruleDocPage, e);
             }
         }
 

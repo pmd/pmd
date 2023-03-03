@@ -11,20 +11,20 @@ This ruleset contains links to rules that are new in PMD v4.1
   <rule ref="rulesets/java/basic.xml/AvoidUsingHardCodedIP"/>
   <rule ref="rulesets/java/basic.xml/CheckResultSet"/>
   <rule ref="rulesets/java/controversial.xml/AvoidAccessibilityAlteration"/>
-  <rule ref="rulesets/java/controversial.xml/AvoidFinalLocalVariable"/>
+  <!-- Removed with 7.0.0 <rule ref="rulesets/java/controversial.xml/AvoidFinalLocalVariable"/>-->
   <rule ref="rulesets/java/controversial.xml/AvoidUsingNativeCode"/>
-  <rule ref="rulesets/java/controversial.xml/AvoidUsingShortType"/>
+<!--  <rule ref="rulesets/java/controversial.xml/AvoidUsingShortType"/>-->
   <rule ref="rulesets/java/controversial.xml/AvoidUsingVolatile"/>
   <rule ref="rulesets/java/design.xml/ClassWithOnlyPrivateConstructorsShouldBeFinal"/>
   <rule ref="rulesets/java/design.xml/EmptyMethodInAbstractClassShouldBeAbstract"/>
   <!-- Although the rule below is not new, it works quite differently now and merits (re-)consideration -->
   <rule ref="rulesets/java/design.xml/SingularField"/>
-  
+
   <rule ref="rulesets/java/imports.xml/TooManyStaticImports"/>
-  <rule ref="rulesets/java/j2ee.xml/DoNotCallSystemExit"/>
+  <rule ref="category/java/errorprone.xml/DoNotTerminateVM"/>
   <rule ref="rulesets/java/j2ee.xml/DoNotUseThreads"/>
   <rule ref="rulesets/java/j2ee.xml/StaticEJBFieldShouldBeFinal"/>
   <rule ref="rulesets/java/strings.xml/UseEqualsToCompareStrings"/>
 
 </ruleset>
-  
+

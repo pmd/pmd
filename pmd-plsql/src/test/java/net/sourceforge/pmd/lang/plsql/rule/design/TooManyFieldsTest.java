@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.plsql.rule.design;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class TooManyFieldsTest extends PmdRuleTst {
+class TooManyFieldsTest extends PmdRuleTst {
     // no additional unit tests
 }

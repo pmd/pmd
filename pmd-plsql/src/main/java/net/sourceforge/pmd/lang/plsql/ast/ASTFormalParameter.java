@@ -4,23 +4,14 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+public final class ASTFormalParameter extends AbstractPLSQLNode {
 
-public class ASTFormalParameter extends net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode {
     private boolean in;
     private boolean out;
     private boolean nocopy;
 
-    @Deprecated
-    @InternalApi
-    public ASTFormalParameter(int id) {
+    ASTFormalParameter(int id) {
         super(id);
-    }
-
-    @Deprecated
-    @InternalApi
-    public ASTFormalParameter(PLSQLParser p, int id) {
-        super(p, id);
     }
 
     public boolean isIn() {
@@ -48,7 +39,7 @@ public class ASTFormalParameter extends net.sourceforge.pmd.lang.plsql.ast.Abstr
     }
 
     @Override
-    public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {
+    protected <P, R> R acceptPlsqlVisitor(PlsqlVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

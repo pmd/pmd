@@ -6,17 +6,13 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.XmlExpression;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTXmlExpression extends AbstractEcmascriptNode<XmlExpression> {
-    @Deprecated
-    @InternalApi
-    public ASTXmlExpression(XmlExpression xmlExpression) {
+public final class ASTXmlExpression extends AbstractEcmascriptNode<XmlExpression> {
+    ASTXmlExpression(XmlExpression xmlExpression) {
         super(xmlExpression);
     }
 
     @Override
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+    protected <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

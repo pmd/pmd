@@ -6,5 +6,6 @@ package net.sourceforge.pmd.lang.apex.rule.design;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class CognitiveComplexityTest extends PmdRuleTst {
+class CognitiveComplexityTest extends PmdRuleTst {
+    // no additional unit tests
 }

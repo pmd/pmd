@@ -5,16 +5,15 @@
 package net.sourceforge.pmd.cpd;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Iterator;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
 import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
+import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.util.StringUtil;
 
-public class SimpleRenderer implements Renderer, CPDRenderer, CPDReportRenderer {
+public class SimpleRenderer implements CPDReportRenderer {
 
     private String separator;
     private boolean trimLeadingWhitespace;
@@ -34,15 +33,29 @@ public class SimpleRenderer implements Renderer, CPDRenderer, CPDReportRenderer 
         separator = theSeparator;
     }
 
+    @Override
+    public void render(CPDReport report, Writer writer) throws IOException {
+        Iterator<Match> matches = report.getMatches().iterator();
+        if (matches.hasNext()) {
+            renderOn(writer, matches.next());
+        }
+
+        while (matches.hasNext()) {
+            Match match = matches.next();
+            writer.append(separator).append(PMD.EOL);
+            renderOn(writer, match);
+        }
+        writer.flush();
+    }
+
     private void renderOn(Writer writer, Match match) throws IOException {
 
         writer.append("Found a ").append(String.valueOf(match.getLineCount())).append(" line (").append(String.valueOf(match.getTokenCount()))
                 .append(" tokens) duplication in the following files: ").append(PMD.EOL);
 
-        for (Iterator<Mark> occurrences = match.iterator(); occurrences.hasNext();) {
-            Mark mark = occurrences.next();
+        for (Mark mark : match) {
             writer.append("Starting at line ").append(String.valueOf(mark.getBeginLine())).append(" of ").append(mark.getFilename())
-                    .append(PMD.EOL);
+                  .append(PMD.EOL);
         }
 
         writer.append(PMD.EOL); // add a line to separate the source from the desc above
@@ -50,13 +63,9 @@ public class SimpleRenderer implements Renderer, CPDRenderer, CPDReportRenderer 
         String source = match.getSourceCodeSlice();
 
         if (trimLeadingWhitespace) {
-            String[] lines = source.split("\n");
-            int trimDepth = StringUtil.maxCommonLeadingWhitespaceForAll(lines);
-            if (trimDepth > 0) {
-                lines = StringUtil.trimStartOn(lines, trimDepth);
-            }
-            for (String line : lines) {
-                writer.append(line).append(PMD.EOL);
+            for (Chars line : StringUtil.linesWithTrimIndent(source)) {
+                line.writeFully(writer);
+                writer.append(PMD.EOL);
             }
             return;
         }
@@ -64,34 +73,4 @@ public class SimpleRenderer implements Renderer, CPDRenderer, CPDReportRenderer 
         writer.append(source).append(PMD.EOL);
     }
 
-    @Override
-    public String render(Iterator<Match> matches) {
-        StringWriter writer = new StringWriter(300);
-        try {
-            render(matches, writer);
-        } catch (IOException ignored) {
-            // Not really possible with a StringWriter
-        }
-        return writer.toString();
-    }
-
-    @Override
-    public void render(Iterator<Match> matches, Writer writer) throws IOException {
-        if (matches.hasNext()) {
-            renderOn(writer, matches.next());
-        }
-
-        Match match;
-        while (matches.hasNext()) {
-            match = matches.next();
-            writer.append(separator).append(PMD.EOL);
-            renderOn(writer, match);
-        }
-        writer.flush();
-    }
-
-    @Override
-    public void render(CPDReport report, Writer writer) throws IOException {
-        render(report.getMatches().iterator(), writer);
-    }
 }

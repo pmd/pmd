@@ -8,10 +8,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
@@ -98,9 +102,6 @@ public class PMDParameters {
 
     @Parameter(names = { "--stress", "-stress", "-S" }, description = "Performs a stress test.")
     private boolean stress = false;
-
-    @Parameter(names = { "--short-names", "-shortnames" }, description = "Prints shortened filenames in the report.")
-    private boolean shortnames = false;
 
     @Parameter(names = { "--show-suppressed", "-showsuppressed" }, description = "Report should show suppressed rule violations.")
     private boolean showsuppressed = false;
@@ -214,27 +215,7 @@ public class PMDParameters {
         }
     }
 
-    /** @deprecated Will be removed in 7.0.0 */
-    @Deprecated
-    public static class RulePriorityConverter implements IStringConverter<RulePriority> {
-
-        public int validate(String value) throws ParameterException {
-            int minPriorityValue = Integer.parseInt(value);
-            if (minPriorityValue < 1 || minPriorityValue > 5) {
-                throw new ParameterException(
-                        "Priority values can only be integer value, between 1 and 5," + value + " is not valid");
-            }
-            return minPriorityValue;
-        }
-
-        @Override
-        public RulePriority convert(String value) {
-            return RulePriority.valueOf(validate(value));
-        }
-    }
-
     public static class PathToRelativizeRootValidator implements IValueValidator<List<Path>> {
-
         @Override
         public void validate(String name, List<Path> value) throws ParameterException {
             for (Path p : value) {
@@ -245,15 +226,12 @@ public class PMDParameters {
         }
     }
 
-
     public static class StringToPathConverter implements IStringConverter<Path> {
-
         @Override
         public Path convert(String value) {
             return Paths.get(value);
         }
     }
-
 
     /**
      * Converts these parameters into a configuration.
@@ -263,8 +241,24 @@ public class PMDParameters {
      * @throws IllegalArgumentException if the parameters are inconsistent or incomplete
      */
     public PMDConfiguration toConfiguration() {
+        return toConfiguration(LanguageRegistry.PMD);
+    }
+
+    /**
+     * Converts these parameters into a configuration. The given language
+     * registry is used to resolve references to languages in the parameters.
+     *
+     * @return A new PMDConfiguration corresponding to these parameters
+     *
+     * @throws IllegalArgumentException if the parameters are inconsistent or incomplete
+     */
+    public @NonNull PMDConfiguration toConfiguration(LanguageRegistry registry) {
+        if (null == this.getSourceDir() && null == this.getUri() && null == this.getFileListPath()) {
+            throw new IllegalArgumentException(
+                    "Please provide a parameter for source root directory (-dir or -d), database URI (-uri or -u), or file list path (-filelist).");
+        }
         PMDConfiguration configuration = new PMDConfiguration();
-        configuration.setInputPaths(this.getInputPaths());
+        configuration.setInputPaths(this.getInputPaths().stream().collect(Collectors.joining(",")));
         configuration.setInputFilePath(this.getFileListPath());
         configuration.setIgnoreFilePath(this.getIgnoreListPath());
         configuration.setInputUri(this.getUri());
@@ -275,8 +269,7 @@ public class PMDParameters {
         configuration.setMinimumPriority(this.getMinimumPriority());
         configuration.setReportFile(this.getReportfile());
         configuration.setReportProperties(this.getProperties());
-        configuration.setReportShortNames(this.isShortnames());
-        configuration.setRuleSets(this.getRulesets());
+        configuration.setRuleSets(Arrays.asList(this.getRulesets().split(",")));
         configuration.setRuleSetFactoryCompatibilityEnabled(!this.noRuleSetCompatibility);
         configuration.setShowSuppressedViolations(this.isShowsuppressed());
         configuration.setSourceEncoding(this.getEncoding());
@@ -287,14 +280,12 @@ public class PMDParameters {
         configuration.setAnalysisCacheLocation(this.cacheLocation);
         configuration.setIgnoreIncrementalAnalysis(this.isIgnoreIncrementalAnalysis());
 
-        LanguageVersion forceLangVersion = LanguageRegistry
-                .findLanguageVersionByTerseName(this.getForceLanguage());
+        LanguageVersion forceLangVersion = getForceLangVersion(registry);
         if (forceLangVersion != null) {
             configuration.setForceLanguageVersion(forceLangVersion);
         }
 
-        LanguageVersion languageVersion = LanguageRegistry
-                .findLanguageVersionByTerseName(this.getLanguage() + ' ' + this.getVersion());
+        LanguageVersion languageVersion = getLangVersion(registry);
         if (languageVersion != null) {
             configuration.getLanguageVersionDiscoverer().setDefaultLanguageVersion(languageVersion);
         }
@@ -331,15 +322,6 @@ public class PMDParameters {
     }
 
 
-    /**
-     * {@link #toConfiguration()}.
-     * @deprecated To be removed in 7.0.0. Use the instance method {@link #toConfiguration()}.
-     */
-    @Deprecated
-    public static PMDConfiguration transformParametersIntoConfiguration(PMDParameters params) {
-        return params.toConfiguration();
-    }
-
     public boolean isDebug() {
         return debug;
     }
@@ -368,10 +350,6 @@ public class PMDParameters {
         return stress;
     }
 
-    public boolean isShortnames() {
-        return shortnames;
-    }
-
     public boolean isShowsuppressed() {
         return showsuppressed;
     }
@@ -396,15 +374,24 @@ public class PMDParameters {
         return reportfile;
     }
 
-    public String getVersion() {
-        if (version != null) {
-            return version;
+    private @Nullable LanguageVersion getLangVersion(LanguageRegistry registry) {
+        if (language != null) {
+            Language lang = registry.getLanguageById(language);
+            if (lang != null) {
+                return version != null ? lang.getVersion(version)
+                                       : lang.getDefaultVersion();
+            }
         }
-        return LanguageRegistry.findLanguageByTerseName(getLanguage()).getDefaultVersion().getVersion();
+        return null;
     }
 
-    public String getLanguage() {
-        return language != null ? language : LanguageRegistry.getDefaultLanguage().getTerseName();
+    public @Nullable String getLanguage() {
+        return language;
+    }
+
+    private @Nullable LanguageVersion getForceLangVersion(LanguageRegistry registry) {
+        Language lang = forceLanguage != null ? registry.getLanguageById(forceLanguage) : null;
+        return lang != null ? lang.getDefaultVersion() : null;
     }
 
     public List<String> getLanguageVersions() {
@@ -452,6 +439,7 @@ public class PMDParameters {
     public boolean isFailOnViolation() {
         return failOnViolation;
     }
+
 
     /**
      * @return the uri alternative to source directory.

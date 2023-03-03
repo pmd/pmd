@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.document.FileLocation;
 
 public class TokenEntry implements Comparable<TokenEntry> {
 
@@ -74,6 +75,10 @@ public class TokenEntry implements Comparable<TokenEntry> {
         this.beginColumn = beginColumn;
         this.endColumn = endColumn;
         this.index = TOKEN_COUNT.get().getAndIncrement();
+    }
+
+    public TokenEntry(String image, FileLocation location) {
+        this(image, location.getFileName(), location.getStartLine(), location.getStartColumn(), location.getEndColumn());
     }
 
     private boolean isOk(int coord) {

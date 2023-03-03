@@ -27,6 +27,7 @@ your rule as you add test cases.
 In this page we'll talk about rules for the Java language, but the process is
 very similar for other languages.
 
+{% include note.html content="[Please find an index of language-specific documentation here](tag_languages.html)" %}
 
 ## Basics
 
@@ -132,8 +133,6 @@ independent way is to override the method `start` of the rule.
 The start method is called exactly once per file.
 
 <!-- We don't support language-independent rules anyway... -->
-
-
 
 ## Rule lifecycle reference
 

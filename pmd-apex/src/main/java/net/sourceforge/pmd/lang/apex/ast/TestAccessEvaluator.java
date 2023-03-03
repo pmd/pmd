@@ -26,8 +26,6 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.compiler.Namespace;
 import apex.jorje.semantic.compiler.StructuredVersion;
 import apex.jorje.semantic.compiler.sfdc.AccessEvaluator;
@@ -47,9 +45,7 @@ import com.google.common.collect.SetMultimap;
  *
  * @author jspagnola
  */
-@Deprecated
-@InternalApi
-public class TestAccessEvaluator implements AccessEvaluator {
+class TestAccessEvaluator implements AccessEvaluator {
 
     private final SetMultimap<Namespace, StructuredVersion> validPageVersions;
     private final SetMultimap<SObjectTypeInfo, TypeInfo> visibleSetupEntitiesToTypes;
@@ -71,7 +67,7 @@ public class TestAccessEvaluator implements AccessEvaluator {
     private boolean hasRemoteActionPerm;
     private boolean hasPersonAccountApiAvailable;
 
-    public TestAccessEvaluator() {
+    TestAccessEvaluator() {
         validPageVersions = HashMultimap.create();
         visibleSetupEntitiesToTypes = HashMultimap.create();
         managedPackagesNotInstalled = new HashSet<>();

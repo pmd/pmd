@@ -4,65 +4,35 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-
 /**
- * Represents a {@code while} statement.
+ * Represents a {@code while} loop.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * WhileStatement ::= "while" "(" {@linkplain ASTExpression Expression} ")" {@linkplain ASTStatement Statement}
  *
  * </pre>
  */
-public class ASTWhileStatement extends AbstractJavaNode {
+public final class ASTWhileStatement extends AbstractStatement implements ASTLoopStatement {
 
-    @InternalApi
-    @Deprecated
-    public ASTWhileStatement(int id) {
+    ASTWhileStatement(int id) {
         super(id);
     }
 
 
-    @InternalApi
-    @Deprecated
-    public ASTWhileStatement(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
-    /**
-     * Returns the node that represents the guard of this loop.
-     * This may be any expression of type boolean.
-     *
-     * @deprecated Use {@link #getCondition()}
-     */
-    @Deprecated
-    public ASTExpression getGuardExpressionNode() {
-        return (ASTExpression) getChild(0);
-    }
-
     /**
      * Returns the node that represents the guard of this loop.
      * This may be any expression of type boolean.
      */
+    @Override
     public ASTExpression getCondition() {
         return (ASTExpression) getChild(0);
     }
 
 
-    /**
-     * Returns the statement that will be run while the guard
-     * evaluates to true.
-     */
-    public ASTStatement getBody() {
-        return (ASTStatement) getChild(1);
-    }
-
 
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

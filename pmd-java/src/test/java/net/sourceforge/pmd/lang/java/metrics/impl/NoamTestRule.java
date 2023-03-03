@@ -4,23 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.metrics.impl;
 
-import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
-import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
+import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 
 /**
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class NoamTestRule extends AbstractMetricTestRule {
+public class NoamTestRule extends JavaIntMetricTestRule {
 
-    @Override
-    protected JavaClassMetricKey getClassKey() {
-        return JavaClassMetricKey.NOAM;
-    }
-
-
-    @Override
-    protected JavaOperationMetricKey getOpKey() {
-        return null;
+    public NoamTestRule() {
+        super(JavaMetrics.NUMBER_OF_ACCESSORS);
     }
 }

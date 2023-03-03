@@ -6,23 +6,20 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.AstNode;
 
-import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
+import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 
-public interface EcmascriptNode<T extends AstNode> extends Node {
+public interface EcmascriptNode<T extends AstNode> extends GenericNode<EcmascriptNode<?>> {
 
-    /**
-     * Accept the visitor. *
-     */
-    Object jjtAccept(EcmascriptParserVisitor visitor, Object data);
 
     /**
-     * Accept the visitor. *
-     *
-     * @deprecated This method is not useful, the logic for combining
-     *     children values should be present on the visitor, not the node
+     * @deprecated See {@link EcmascriptParserVisitor}
      */
     @Deprecated
-    Object childrenAccept(EcmascriptParserVisitor visitor, Object data);
+    @DeprecatedUntil700
+    default Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+        return acceptVisitor(visitor, data);
+    }
 
     /**
      * Get the underlying Rhino AST node.

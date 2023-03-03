@@ -129,63 +129,50 @@ public class AnonClassExample {
         <code><![CDATA[
 package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.metrics.Metric;
-import net.sourceforge.pmd.lang.metrics.MetricKey;
-
-public enum EnumWithInterfaces implements MetricKey<ASTAnyTypeDeclaration> {
+public enum EnumWithInterfaces implements InterfaceWithBound<int[]> {
     Foo {
         @Override
-        public Metric<ASTAnyTypeDeclaration> getCalculator() {
-            return null;
+        public void handle(int[] ints) {
+            super.handle(ints);
         }
     };
 
     @Override
-    public Metric<ASTAnyTypeDeclaration> getCalculator() {
-        return null;
-    }
+    public void handle(int[] ints) {
 
-
-    @Override
-    public boolean supports(ASTAnyTypeDeclaration node) {
-        return false;
     }
 }
+
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>Consider enum methods</description>
+        <description>Consider enum methods 2</description>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>9,15</expected-linenumbers>
+        <expected-linenumbers>5,10</expected-linenumbers>
         <code><![CDATA[
 package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.metrics.Metric;
-import net.sourceforge.pmd.lang.metrics.MetricKey;
-
-public enum EnumWithInterfaces implements MetricKey<ASTAnyTypeDeclaration> {
+public enum EnumWithInterfaces implements InterfaceWithBound<int[]> {
     Foo {
-        public Metric<ASTAnyTypeDeclaration> getCalculator() {
-            return null;
+        public void handle(int[] ints) {
+            super.handle(ints);
         }
     };
 
+    public void handle(int[] ints) {
 
-    public Metric<ASTAnyTypeDeclaration> getCalculator() {
-        return null;
     }
 }
+
         ]]></code>
     </test-code>
 
     <test-code>
         <description>Consider methods with array parameters</description>
         <expected-problems>1</expected-problems>
-        <expected-messages> <!--FIXME should be arrayParams(String, int[], StringBuilder[]) - caused by #910 -->
-            <message>The method 'arrayParams(String, int, StringBuilder)' is missing an @Override annotation.</message>
+        <expected-messages>
+            <message>The method 'arrayParams(String, int[], StringBuilder[])' is missing an @Override annotation.</message>
         </expected-messages>
         <code><![CDATA[
 package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
@@ -233,24 +220,19 @@ public enum EnumWithAnonClass {
         <description>Consider method inherited from generic supertype</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The method 'supports(ASTAnyTypeDeclaration)' is missing an @Override annotation.</message>
+            <message>The method 'handle(int[])' is missing an @Override annotation.</message>
         </expected-messages>
         <code><![CDATA[
 package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.metrics.Metric;
-import net.sourceforge.pmd.lang.metrics.MetricKey;
-
-public enum EnumWithInterfaces implements MetricKey<ASTAnyTypeDeclaration> {
-    Foo;
-
-    // missing
-    // this is determined from the bridge method, but only works if there are no overloads
-    public boolean supports(ASTAnyTypeDeclaration node) {
-        return false;
+public enum EnumWithInterfaces implements InterfaceWithBound<int[]> {
+    Foo {
+        public void handle(int[] ints) {
+            super.handle(ints);
+        }
     }
 }
+
         ]]></code>
     </test-code>
 
@@ -312,7 +294,7 @@ public class SubclassWithGenericMethod extends AbstractClass {
         <description>Consider varargs parameter</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The method 'setProperty(MultiValuePropertyDescriptor, V...)' is missing an @Override annotation.</message>
+            <message>The method 'setProperty(MultiValuePropertyDescriptor&lt;V&gt;, V[])' is missing an @Override annotation.</message>
         </expected-messages>
         <code><![CDATA[
 package net.sourceforge.pmd.lang.rule;
@@ -327,7 +309,7 @@ public abstract class AbstractDelegateRule implements Rule {
 
     // missing
     public <V> void setProperty(MultiValuePropertyDescriptor<V> propertyDescriptor, V... values) {
-        rule.setProperty(propertyDescriptor, values);
+        Rule.super.setProperty(propertyDescriptor, values);
     }
 
 }
@@ -371,8 +353,13 @@ public class CovariantReturnType extends AbstractClass {
     </test-code>
 
     <test-code>
-        <description>Avoid false positives when in ambiguous situation - AmbiguousOverload</description>
-        <expected-problems>0</expected-problems>
+        <!-- Note: in a former implementation of the rule, which counted bridge methods, this was an unhandled edge case -->
+        <description>Override of generic method with some other overload</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>12</expected-linenumbers>
+        <expected-messages>
+            <message>The method 'compare(StringBuilder, StringBuilder)' is missing an @Override annotation.</message>
+        </expected-messages>
         <code><![CDATA[
 package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
 
@@ -397,8 +384,13 @@ public class AmbiguousOverload implements Comparator<StringBuilder> {
     </test-code>
 
     <test-code>
-        <description>Avoid false positives when in ambiguous situation - HierarchyWithSeveralBridges</description>
-        <expected-problems>0</expected-problems>
+        <!-- Note: in a former implementation of the rule, which counted bridge methods, this was an unhandled edge case -->
+        <description>Hierarchy with several bridges</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>30</expected-linenumbers>
+        <expected-messages>
+            <message>The method 'foo(ASTType)' is missing an @Override annotation.</message>
+        </expected-messages>
         <code><![CDATA[
 package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
 
@@ -445,7 +437,7 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
 
 interface CloneableInterface extends Cloneable {
     // nothing to report
-    Foo clone() throws CloneNotSupportedException;
+    CloneableInterface clone() throws CloneNotSupportedException;
 }
         ]]></code>
     </test-code>
@@ -546,18 +538,52 @@ public enum EmptyEnum {
     </test-code>
 
     <test-code>
-        <description>EmptyStackException with record top level</description>
-        <expected-problems>0</expected-problems>
+        <description>Record override</description>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public record Point(int x, int y) {
 
-    public static void main(String[] args) {
-        Point p = new Point(1, 2);
-        System.out.println("p = " + p);
-    }
+    // @Override
+    public String toString() {return null;}
 }
         ]]></code>
         <source-type>java 16</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Package private method cannot be overridden outside of its package #1969 (1)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+
+            package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride.a;
+
+            public class PackagePrivateMethodRealExtend extends PackagePrivateMethod {
+
+                // package private, does override
+                // @Override
+                void printMessage() {
+                    System.out.println("Click");
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Package private method cannot be overridden outside of its package #1969 (2)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+
+            package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride.b;
+            import net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride.a.PackagePrivateMethod;
+
+            public class PackagePrivateMethodExtend extends PackagePrivateMethod {
+
+                // does not override
+                void printMessage() {
+                    System.out.println("Click");
+                }
+            }
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -597,7 +623,7 @@ public enum EnumToString {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>23</expected-linenumbers>
         <code><![CDATA[
-package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
+package test;
 
 import java.util.Collection;
 

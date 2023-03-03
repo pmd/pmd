@@ -11,6 +11,7 @@ import net.sourceforge.pmd.util.datasource.internal.PathDataSource;
 /**
  * DataSource implementation to read data from a file.
  */
+@Deprecated
 public class FileDataSource extends PathDataSource {
 
     /**

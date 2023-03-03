@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.html.rule.bestpractices;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class AvoidInlineStylesTest extends PmdRuleTst {
+class AvoidInlineStylesTest extends PmdRuleTst {
     // no additional unit tests
 }

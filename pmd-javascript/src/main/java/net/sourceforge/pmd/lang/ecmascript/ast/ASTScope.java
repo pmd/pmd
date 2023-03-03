@@ -6,17 +6,13 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.Scope;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTScope extends AbstractEcmascriptNode<Scope> {
-    @Deprecated
-    @InternalApi
-    public ASTScope(Scope scope) {
+public final class ASTScope extends AbstractEcmascriptNode<Scope> {
+    ASTScope(Scope scope) {
         super(scope);
     }
 
     @Override
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+    protected <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

@@ -5,6 +5,7 @@
 import java.io.IOException;
 import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
+import java.util.Objects;
 
 /**
  * @see <a href="https://openjdk.java.net/jeps/395">JEP 395: Records</a>
@@ -41,6 +42,12 @@ public class Records {
         }
 
         public void foo() { }
+    }
+
+    public record RecordWithLambdaInCompactConstructor(String foo) {
+        public RecordWithLambdaInCompactConstructor {
+            Objects.requireNonNull(foo, () -> "foo");
+        }
     }
 
     public record VarRec(@Nullable @Deprecated String @Nullable... x) {}

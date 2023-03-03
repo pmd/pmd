@@ -4,26 +4,14 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+public final class ASTIfStatement extends AbstractPLSQLNode {
+    private boolean hasElse;
 
-public class ASTIfStatement extends net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode {
-    @Deprecated
-    @InternalApi
-    public ASTIfStatement(int id) {
+    ASTIfStatement(int id) {
         super(id);
     }
 
-    @Deprecated
-    @InternalApi
-    public ASTIfStatement(PLSQLParser p, int id) {
-        super(p, id);
-    }
-
-    private boolean hasElse;
-
-    @Deprecated
-    @InternalApi
-    public void setHasElse() {
+    void setHasElse() {
         this.hasElse = true;
     }
 
@@ -32,7 +20,7 @@ public class ASTIfStatement extends net.sourceforge.pmd.lang.plsql.ast.AbstractP
     }
 
     @Override
-    public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {
+    protected <P, R> R acceptPlsqlVisitor(PlsqlVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

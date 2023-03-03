@@ -4,20 +4,17 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.expression.SoqlExpression;
 
-public class ASTSoqlExpression extends AbstractApexNode<SoqlExpression> {
+public final class ASTSoqlExpression extends AbstractApexNode<SoqlExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTSoqlExpression(SoqlExpression soqlExpression) {
+    ASTSoqlExpression(SoqlExpression soqlExpression) {
         super(soqlExpression);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

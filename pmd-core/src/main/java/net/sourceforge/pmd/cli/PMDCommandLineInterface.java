@@ -10,6 +10,7 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMD.StatusCode;
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.renderers.Renderer;
@@ -145,7 +146,7 @@ public final class PMDCommandLineInterface {
 
     private static String supportedVersions() {
         return "Languages and version supported:" + PMD.EOL
-                + LanguageRegistry.commaSeparatedTerseNamesForLanguage(LanguageRegistry.findWithRuleSupport())
+                + LanguageRegistry.PMD.commaSeparatedList(Language::getId)
                 + PMD.EOL;
     }
 
@@ -167,7 +168,7 @@ public final class PMDCommandLineInterface {
 
     private static String getReports() {
         StringBuilder buf = new StringBuilder();
-        for (String reportName : RendererFactory.REPORT_FORMAT_TO_RENDERER.keySet()) {
+        for (String reportName : RendererFactory.supportedRenderers()) {
             Renderer renderer = RendererFactory.createRenderer(reportName, new Properties());
             buf.append("   ").append(reportName).append(": ");
             if (!reportName.equals(renderer.getName())) {
@@ -190,15 +191,6 @@ public final class PMDCommandLineInterface {
         return buf.toString();
     }
 
-    /**
-     * @deprecated Use {@link PMD#runPmd(String...)}
-     */
-    @Deprecated
-    public static void run(String[] args) {
-        setStatusCodeOrExit(PMD.run(args));
-    }
-
-    @Deprecated
     public static void setStatusCodeOrExit(int status) {
         if (isExitAfterRunSet()) {
             System.exit(status);

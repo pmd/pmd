@@ -36,11 +36,7 @@ public class GroovyTokenizer implements Tokenizer {
 
                 int lastCol;
                 if (token instanceof SourceInfo) {
-                    lastCol = ((SourceInfo) token).getColumnLast() - 1;
-                    if (lastCol == 0) {
-                        // newline
-                        lastCol = token.getColumn() + 1;
-                    }
+                    lastCol = ((SourceInfo) token).getColumnLast();
                 } else {
                     // fallback
                     lastCol = token.getColumn() + tokenText.length();
@@ -55,7 +51,7 @@ public class GroovyTokenizer implements Tokenizer {
             // they are correctly handled
             // when CPD is executed with the '--skipLexicalErrors' command line
             // option
-            throw new TokenMgrError(lexer.getLine(), lexer.getColumn(), sourceCode.getFileName(), err.getMessage(), err);
+            throw new TokenMgrError(lexer.getLine(), lexer.getColumn(), lexer.getFilename(), err.getMessage(), err);
         } finally {
             tokenEntries.add(TokenEntry.getEOF());
         }

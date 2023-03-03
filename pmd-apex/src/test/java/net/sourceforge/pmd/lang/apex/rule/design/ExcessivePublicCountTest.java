@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.apex.rule.design;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class ExcessivePublicCountTest extends PmdRuleTst {
+class ExcessivePublicCountTest extends PmdRuleTst {
     // no additional unit tests
 }

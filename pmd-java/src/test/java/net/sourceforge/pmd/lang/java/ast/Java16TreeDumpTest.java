@@ -4,26 +4,32 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static net.sourceforge.pmd.lang.java.types.TestUtilitiesForTypesKt.hasType;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.not;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
-import net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest;
-import net.sourceforge.pmd.lang.ast.test.RelevantAttributePrinter;
+import net.sourceforge.pmd.lang.java.BaseJavaTreeDumpTest;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
+import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 
-public class Java16TreeDumpTest extends BaseTreeDumpTest {
+class Java16TreeDumpTest extends BaseJavaTreeDumpTest {
     private final JavaParsingHelper java16 =
-            JavaParsingHelper.WITH_PROCESSING.withDefaultVersion("16")
-                    .withResourceContext(Java16TreeDumpTest.class, "jdkversiontests/java16/");
+            JavaParsingHelper.DEFAULT.withDefaultVersion("16")
+                                     .withResourceContext(Java16TreeDumpTest.class, "jdkversiontests/java16/");
     private final JavaParsingHelper java15 = java16.withDefaultVersion("15");
 
-    public Java16TreeDumpTest() {
-        super(new RelevantAttributePrinter(), ".java");
-    }
 
     @Override
     public BaseParsingHelper<?, ?> getParser() {
@@ -31,89 +37,90 @@ public class Java16TreeDumpTest extends BaseTreeDumpTest {
     }
 
     @Test
-    public void patternMatchingInstanceof() {
+    void patternMatchingInstanceof() {
         doTest("PatternMatchingInstanceof");
 
         // extended tests for type resolution etc.
-        ASTCompilationUnit compilationUnit = java16.parseResource("PatternMatchingInstanceof.java");
-        List<ASTInstanceOfExpression> instanceOfExpressions = compilationUnit.findDescendantsOfType(ASTInstanceOfExpression.class);
-        for (ASTInstanceOfExpression expr : instanceOfExpressions) {
-            ASTVariableDeclaratorId variable = expr.getChild(1).getFirstChildOfType(ASTVariableDeclaratorId.class);
-            Assert.assertEquals(String.class, variable.getType());
-            // Note: these variables are not part of the symbol table
-            // See ScopeAndDeclarationFinder#visit(ASTVariableDeclaratorId, Object)
-            Assert.assertNull(variable.getNameDeclaration());
+        ASTCompilationUnit ast = java16.parseResource("PatternMatchingInstanceof.java");
+        NodeStream<ASTTypePattern> patterns = ast.descendants(ASTTypePattern.class);
+
+        assertThat(patterns.toList(), not(empty()));
+
+        for (ASTTypePattern expr : patterns) {
+            assertThat(expr.getVarId(), hasType(String.class));
         }
     }
 
-    @Test(expected = ParseException.class)
-    public void patternMatchingInstanceofBeforeJava16ShouldFail() {
-        java15.parseResource("PatternMatchingInstanceof.java");
+    @Test
+    void patternMatchingInstanceofBeforeJava16ShouldFail() {
+        assertThrows(ParseException.class, () -> java15.parseResource("PatternMatchingInstanceof.java"));
     }
 
     @Test
-    public void localClassAndInterfaceDeclarations() {
+    void localClassAndInterfaceDeclarations() {
         doTest("LocalClassAndInterfaceDeclarations");
     }
 
-    @Test(expected = ParseException.class)
-    public void localClassAndInterfaceDeclarationsBeforeJava16ShouldFail() {
-        java15.parseResource("LocalClassAndInterfaceDeclarations.java");
-    }
-
-    @Test(expected = ParseException.class)
-    public void localAnnotationsAreNotAllowed() {
-        java16.parse("public class Foo { { @interface MyLocalAnnotation {} } }");
+    @Test
+    void localClassAndInterfaceDeclarationsBeforeJava16ShouldFail() {
+        assertThrows(ParseException.class, () -> java15.parseResource("LocalClassAndInterfaceDeclarations.java"));
     }
 
     @Test
-    public void localRecords() {
+    void localAnnotationsAreNotAllowed() {
+        assertThrows(ParseException.class, () -> java16.parse("public class Foo { { @interface MyLocalAnnotation {} } }"));
+    }
+
+    @Test
+    void localRecords() {
         doTest("LocalRecords");
     }
 
     @Test
-    public void recordPoint() {
+    void recordPoint() {
         doTest("Point");
 
         // extended tests for type resolution etc.
         ASTCompilationUnit compilationUnit = java16.parseResource("Point.java");
-        ASTRecordDeclaration recordDecl = compilationUnit.getFirstDescendantOfType(ASTRecordDeclaration.class);
-        List<ASTRecordComponent> components = recordDecl.getFirstChildOfType(ASTRecordComponentList.class)
-                .findChildrenOfType(ASTRecordComponent.class);
-        Assert.assertNull(components.get(0).getVarId().getNameDeclaration().getAccessNodeParent());
-        Assert.assertEquals(Integer.TYPE, components.get(0).getVarId().getNameDeclaration().getType());
-        Assert.assertEquals("int", components.get(0).getVarId().getNameDeclaration().getTypeImage());
-    }
+        ASTRecordDeclaration recordDecl = compilationUnit.descendants(ASTRecordDeclaration.class).first();
+        List<ASTRecordComponent> components = recordDecl.descendants(ASTRecordComponentList.class)
+                .children(ASTRecordComponent.class).toList();
 
-    @Test(expected = ParseException.class)
-    public void recordPointBeforeJava16ShouldFail() {
-        java15.parseResource("Point.java");
-    }
-
-    @Test(expected = ParseException.class)
-    public void recordCtorWithThrowsShouldFail() {
-        java16.parse("  record R {"
-                + "   R throws IOException {}"
-                + "  }");
-    }
-
-    @Test(expected = ParseException.class)
-    public void recordMustNotExtend() {
-        java16.parse("record RecordEx(int x) extends Number { }");
+        ASTVariableDeclaratorId varId = components.get(0).getVarId();
+        JElementSymbol symbol = varId.getSymbol();
+        assertEquals("x", symbol.getSimpleName());
+        assertTrue(varId.getTypeMirror().isPrimitive(JPrimitiveType.PrimitiveTypeKind.INT));
     }
 
     @Test
-    public void innerRecords() {
+    void recordPointBeforeJava16ShouldFail() {
+        assertThrows(ParseException.class, () -> java15.parseResource("Point.java"));
+    }
+
+    @Test
+    void recordCtorWithThrowsShouldFail() {
+        assertThrows(ParseException.class, () -> java16.parse("  record R {"
+                + "   R throws IOException {}"
+                + "  }"));
+    }
+
+    @Test
+    void recordMustNotExtend() {
+        assertThrows(ParseException.class, () -> java16.parse("record RecordEx(int x) extends Number { }"));
+    }
+
+    @Test
+    void innerRecords() {
         doTest("Records");
     }
 
-    @Test(expected = ParseException.class)
-    public void recordIsARestrictedIdentifier() {
-        java16.parse("public class record {}");
+    @Test
+    void recordIsARestrictedIdentifier() {
+        assertThrows(ParseException.class, () -> java16.parse("public class record {}"));
     }
 
     @Test
-    public void sealedAndNonSealedIdentifiers() {
+    void sealedAndNonSealedIdentifiers() {
         doTest("NonSealedIdentifier");
     }
 }

@@ -9,37 +9,50 @@ permalink: pmd_devdocs_experimental_ast_dump.html
 ## Command line usage
 
 ```shell
-$ run.sh ast-dump --help
-Usage: ast-dump [options]
-  Options:
-    --encoding, -e
-      Encoding of the source file.
-      Default: UTF-8
-    --file
-      The file to dump
-    --format, -f
-      The output format.
-      Default: xml
-    --help, -h
-      Display usage.
-    --language, -l
-      Specify the language to use.
-      Default: java
-    --read-stdin, -i
-      Read source from standard input
-      Default: false
-    -P
-      Properties for the renderer.
-      Syntax: -Pkey=value
-      Default: {}
-
-Available languages: apex ecmascript java jsp modelica plsql pom scala text vf vm wsdl xml xsl 
-Available formats: xml                           XML format with the same structure as the one used in XPath
-+ Properties                  
-  + singleQuoteAttributes         Use single quotes to delimit attribute values (default true)
-  + lineSeparator                 Line separator to use. The default is platform-specific. (default \n)
-  + renderProlog                  True to output a prolog (default true)
-  + renderCommonAttributes        True to render attributes like BeginLine, EndLine, etc. (default false)
+$ pmd ast-dump --help
+Usage: pmd ast-dump [-Dhi] [-e=<encoding>] [-f=<format>] [--file=<file>]
+                    [-l=<language>] [-P=<String=String>]...
+Experimental: dumps the AST of parsing source code
+  -D, -v, --debug, --verbose
+                          Debug mode.
+  -e, --encoding=<encoding>
+                          Specifies the character set encoding of the source
+                            code files
+  -f, --format=<format>   The output format.
+                          Valid values: xml, text
+      --file=<file>       The file to parse and dump.
+  -h, --help              Show this help message and exit.
+  -i, --read-stdin        Read source from standard input.
+  -l, --language=<language>
+                          The source code language.
+                          Valid values: apex, ecmascript, html, java, jsp,
+                            kotlin, modelica, plsql, pom, scala, swift, vf, vm,
+                            wsdl, xml, xsl
+  -P=<String=String>      Key-value pair defining a property for the report
+                            format.
+                          Supported values for each report format:
+                          xml:
+                            singleQuoteAttributes - Use single quotes to
+                            delimit attribute values
+                              Default: true
+                            lineSeparator - Line separator to use. The default
+                            is platform-specific. The values 'CR', 'CRLF',
+                            'LF', '\r', '\r\n' and '\n' can be used to
+                            represent a carriage return, line feed and their
+                            combination more easily.
+                              Default: \n
+                            renderProlog - True to output a prolog
+                              Default: true
+                            renderCommonAttributes - True to render attributes
+                            like BeginLine, EndLine, etc.
+                              Default: false
+                          text:
+                            onlyAsciiChars - Use only ASCII characters in the
+                            structure
+                              Default: false
+                            maxLevel - Max level on which to recurse. Negative
+                            means unbounded
+                              Default: -1
 ```
 
 ## Example
@@ -50,12 +63,7 @@ public class Foo {
   int a;
 }
 
-$ run.sh ast-dump --format xml --language java --file Foo.java > Foo.xml
--------------------------------------------------------------------------------
-This command line utility is experimental. It might change at any time without
-prior notice.
--------------------------------------------------------------------------------
-
+$ pmd ast-dump --format xml --language java --file Foo.java > Foo.xml
 $ cat Foo.xml
 <?xml version='1.0' encoding='UTF-8' ?>
 <CompilationUnit Image='' PackageName='' declarationsAreInDefaultPackage='true'>

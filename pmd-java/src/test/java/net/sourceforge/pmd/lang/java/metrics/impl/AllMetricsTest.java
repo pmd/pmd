@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.metrics.impl;
 
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 /**
@@ -11,7 +15,7 @@ import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
  *
  * @author Clément Fournier
  */
-public class AllMetricsTest extends SimpleAggregatorTst {
+class AllMetricsTest extends SimpleAggregatorTst {
 
 
     private static final String RULESET = "rulesets/java/metrics_test.xml";
@@ -30,6 +34,22 @@ public class AllMetricsTest extends SimpleAggregatorTst {
         addRule(RULESET, "TccTest");
         addRule(RULESET, "AtfdTest");
         addRule(RULESET, "CfoTest");
+    }
+
+
+    static String formatJavaMessage(Node node, Object result, String defaultMessage) {
+        String qname = null;
+        if (node instanceof ASTAnyTypeDeclaration) {
+            qname = ((ASTAnyTypeDeclaration) node).getBinaryName();
+        } else if (node instanceof ASTMethodOrConstructorDeclaration) {
+            String enclosing = ((ASTMethodOrConstructorDeclaration) node).getEnclosingType().getBinaryName();
+            qname = enclosing + "#" + PrettyPrintingUtil.displaySignature((ASTMethodOrConstructorDeclaration) node);
+        }
+
+        if (qname != null) {
+            return "''" + qname + "'' has value " + result + ".";
+        }
+        return defaultMessage;
     }
 
 }

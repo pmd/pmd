@@ -6,20 +6,16 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.ObjectLiteral;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTObjectLiteral extends AbstractEcmascriptNode<ObjectLiteral>
+public final class ASTObjectLiteral extends AbstractEcmascriptNode<ObjectLiteral>
         implements DestructuringNode, TrailingCommaNode {
     private boolean trailingComma;
 
-    @Deprecated
-    @InternalApi
-    public ASTObjectLiteral(ObjectLiteral objectLiteral) {
+    ASTObjectLiteral(ObjectLiteral objectLiteral) {
         super(objectLiteral);
     }
 
     @Override
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+    protected <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
@@ -35,13 +31,6 @@ public class ASTObjectLiteral extends AbstractEcmascriptNode<ObjectLiteral>
     @Override
     public boolean isTrailingComma() {
         return trailingComma;
-    }
-
-    @Override
-    @Deprecated
-    @InternalApi
-    public void setTrailingComma(boolean trailingComma) {
-        setTrailingCommaExists(trailingComma);
     }
 
     @Override

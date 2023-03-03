@@ -4,23 +4,19 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import scala.meta.Template;
 
 /**
  * The ASTTemplate node implementation.
  */
-public class ASTTemplate extends AbstractScalaNode<Template> {
+public final class ASTTemplate extends AbstractScalaNode<Template> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTemplate(Template scalaNode) {
+    ASTTemplate(Template scalaNode) {
         super(scalaNode);
     }
 
     @Override
-    public <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data) {
+    protected <P, R> R acceptVisitor(ScalaParserVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

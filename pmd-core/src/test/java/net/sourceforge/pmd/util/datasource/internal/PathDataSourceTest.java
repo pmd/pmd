@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.util.datasource.internal;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.FileOutputStream;
 import java.net.URI;
@@ -16,19 +16,18 @@ import java.util.Collections;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.internal.util.IOUtil;
 
-public class PathDataSourceTest {
-    @Rule
-    public TemporaryFolder tempFolder = new TemporaryFolder();
+class PathDataSourceTest {
+    @TempDir
+    private Path tempDir;
 
     @Test
-    public void testZipFileNiceName() throws Exception {
-        Path zipArchive = tempFolder.getRoot().toPath().resolve("sources.zip");
+    void testZipFileNiceName() throws Exception {
+        Path zipArchive = tempDir.resolve("sources.zip");
         try (ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(zipArchive.toFile()))) {
             ZipEntry zipEntry = new ZipEntry("path/inside/someSource.dummy");
             zipOutputStream.putNextEntry(zipEntry);

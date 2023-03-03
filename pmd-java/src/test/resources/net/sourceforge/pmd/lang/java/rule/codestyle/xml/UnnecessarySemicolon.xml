@@ -51,7 +51,7 @@
         <expected-problems>2</expected-problems>
         <expected-linenumbers>1,3</expected-linenumbers>
         <code><![CDATA[
-            import f;;
+            import java.util.List;;
 
             class Foo {};
             ]]></code>

@@ -4,123 +4,64 @@
 
 package net.sourceforge.pmd.lang.rule;
 
-import java.io.File;
-import java.util.regex.Pattern;
+import java.util.Collections;
+import java.util.Map;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.util.StringUtil;
+import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.reporting.Reportable;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * @deprecated This is internal. Clients should exclusively use {@link RuleViolation}.
  */
 @Deprecated
 @InternalApi
-public class ParametricRuleViolation<T extends Node> implements RuleViolation {
+public class ParametricRuleViolation implements RuleViolation {
+    // todo move to package reporting
 
     protected final Rule rule;
     protected final String description;
-    protected boolean suppressed;
-    protected String filename;
 
-    protected int beginLine;
-    protected int beginColumn;
+    private final FileLocation location;
 
-    protected int endLine;
-    protected int endColumn;
+    private final Map<String, String> additionalInfo;
 
-    protected String packageName = "";
-    protected String className = "";
-    protected String methodName = "";
-    protected String variableName = "";
+    // todo add factory methods on the interface and hide the class.
 
-    // FUTURE Fix to understand when a violation _must_ have a Node, and when it
-    // must not (to prevent erroneous Rules silently logging w/o a Node). Modify
-    // RuleViolationFactory to support identifying without a Node, and update
-    // Rule base classes too.
-    public ParametricRuleViolation(Rule theRule, RuleContext ctx, T node, String message) {
-        rule = theRule;
-        description = message;
+    /**
+     * @deprecated Update tests that use this not to call the ctor directly.
+     */
+    @Deprecated
+    public ParametricRuleViolation(Rule theRule, Reportable node, String message) {
+        this(theRule, node.getReportLocation(), message, Collections.emptyMap());
+    }
 
-        File file = ctx.getSourceCodeFile();
-        if (file != null) {
-            filename = file.getPath();
+    public ParametricRuleViolation(Rule theRule, FileLocation location, String message) {
+        this(theRule, location, message, Collections.emptyMap());
+    }
+
+    public ParametricRuleViolation(Rule theRule, Reportable node, String message, Map<String, String> additionalInfo) {
+        this(theRule, node.getReportLocation(), message, additionalInfo);
+    }
+
+    public ParametricRuleViolation(Rule theRule, FileLocation location, String message, Map<String, String> additionalInfo) {
+        this.rule = AssertionUtil.requireParamNotNull("rule", theRule);
+        this.description = AssertionUtil.requireParamNotNull("message", message);
+        this.location = location;
+
+        if (!additionalInfo.isEmpty()) {
+            this.additionalInfo = Collections.unmodifiableMap(additionalInfo);
         } else {
-            filename = "";
-        }
-        if (node != null) {
-            beginLine = node.getBeginLine();
-            beginColumn = node.getBeginColumn();
-            endLine = node.getEndLine();
-            endColumn = node.getEndColumn();
-        }
-
-        // Apply Rule specific suppressions
-        if (node != null && rule != null) {
-            setSuppression(rule, node);
-        }
-
-    }
-
-    private void setSuppression(Rule rule, T node) {
-
-        String regex = rule.getProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR); // Regex
-        if (regex != null && description != null) {
-            if (Pattern.matches(regex, description)) {
-                suppressed = true;
-            }
-        }
-
-        if (!suppressed) { // XPath
-            String xpath = rule.getProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR);
-            if (xpath != null) {
-                suppressed = node.hasDescendantMatchingXPath(xpath);
-            }
+            this.additionalInfo = Collections.emptyMap();
         }
     }
 
-    protected String expandVariables(String message) {
-
-        if (!message.contains("${")) {
-            return message;
-        }
-
-        StringBuilder buf = new StringBuilder(message);
-        int startIndex = -1;
-        while ((startIndex = buf.indexOf("${", startIndex + 1)) >= 0) {
-            final int endIndex = buf.indexOf("}", startIndex);
-            if (endIndex >= 0) {
-                final String name = buf.substring(startIndex + 2, endIndex);
-                if (isVariable(name)) {
-                    buf.replace(startIndex, endIndex + 1, getVariableValue(name));
-                }
-            }
-        }
-        return buf.toString();
-    }
-
-    protected boolean isVariable(String name) {
-        return StringUtil.isAnyOf(name, "variableName", "methodName", "className", "packageName")
-                || rule.getPropertyDescriptor(name) != null;
-    }
-
-    protected String getVariableValue(String name) {
-        if ("variableName".equals(name)) {
-            return variableName;
-        } else if ("methodName".equals(name)) {
-            return methodName;
-        } else if ("className".equals(name)) {
-            return className;
-        } else if ("packageName".equals(name)) {
-            return packageName;
-        } else {
-            final PropertyDescriptor<?> propertyDescriptor = rule.getPropertyDescriptor(name);
-            return String.valueOf(rule.getProperty(propertyDescriptor));
-        }
+    @Override
+    public Map<String, String> getAdditionalInfo() {
+        return additionalInfo;
     }
 
     @Override
@@ -130,66 +71,16 @@ public class ParametricRuleViolation<T extends Node> implements RuleViolation {
 
     @Override
     public String getDescription() {
-        return expandVariables(description);
+        return description;
     }
 
     @Override
-    public boolean isSuppressed() {
-        return suppressed;
-    }
-
-    @Override
-    public String getFilename() {
-        return filename;
-    }
-
-    @Override
-    public int getBeginLine() {
-        return beginLine;
-    }
-
-    @Override
-    public int getBeginColumn() {
-        return beginColumn;
-    }
-
-    @Override
-    public int getEndLine() {
-        return endLine;
-    }
-
-    @Override
-    public int getEndColumn() {
-        return endColumn;
-    }
-
-    @Override
-    public String getPackageName() {
-        return packageName;
-    }
-
-    @Override
-    public String getClassName() {
-        return className;
-    }
-
-    @Override
-    public String getMethodName() {
-        return methodName;
-    }
-
-    @Override
-    public String getVariableName() {
-        return variableName;
-    }
-
-    public void setLines(int theBeginLine, int theEndLine) {
-        beginLine = theBeginLine;
-        endLine = theEndLine;
+    public FileLocation getLocation() {
+        return location;
     }
 
     @Override
     public String toString() {
-        return getFilename() + ':' + getRule() + ':' + getDescription() + ':' + beginLine;
+        return getFilename() + ':' + getRule() + ':' + getDescription() + ':' + getLocation().startPosToString();
     }
 }

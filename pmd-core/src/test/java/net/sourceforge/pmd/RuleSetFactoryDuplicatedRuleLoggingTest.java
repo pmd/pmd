@@ -4,78 +4,75 @@
 
 package net.sourceforge.pmd;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.junit.JavaUtilLoggingRule;
-import net.sourceforge.pmd.junit.LocaleRule;
+import com.github.stefanbirkner.systemlambda.SystemLambda;
 
-public class RuleSetFactoryDuplicatedRuleLoggingTest {
-    @org.junit.Rule
-    public ExpectedException ex = ExpectedException.none();
+class RuleSetFactoryDuplicatedRuleLoggingTest extends RulesetFactoryTestBase {
 
-    @org.junit.Rule
-    public LocaleRule localeRule = LocaleRule.en();
-
-    @org.junit.Rule
-    public JavaUtilLoggingRule logging = new JavaUtilLoggingRule(RuleSetFactory.class.getName());
+    private static final String DIR = "net/sourceforge/pmd/rulesets/duplicatedRuleLoggingTest";
 
     @Test
-    public void duplicatedRuleReferenceShouldWarn() throws RuleSetNotFoundException {
-        RuleSet ruleset = loadRuleSet("duplicatedRuleReference.xml");
+    void duplicatedRuleReferenceShouldWarn() throws Exception {
+        String log = SystemLambda.tapSystemErr(() -> {
+            RuleSet ruleset = loadRuleSetInDir(DIR, "duplicatedRuleReference.xml");
 
-        assertEquals(1, ruleset.getRules().size());
-        Rule mockRule = ruleset.getRuleByName("DummyBasicMockRule");
-        assertNotNull(mockRule);
-        assertEquals(RulePriority.MEDIUM, mockRule.getPriority());
-        assertTrue(logging.getLog().contains("The rule DummyBasicMockRule is referenced multiple times in \"Custom Rules\". "
-                + "Only the last rule configuration is used."));
+            assertEquals(1, ruleset.getRules().size());
+            Rule mockRule = ruleset.getRuleByName("DummyBasicMockRule");
+            assertNotNull(mockRule);
+            assertEquals(RulePriority.MEDIUM, mockRule.getPriority());
+        });
+        assertThat(log, containsString(
+            "The rule DummyBasicMockRule is referenced multiple times in ruleset 'Custom Rules'. "
+                + "Only the last rule configuration is used"));
     }
 
     @Test
-    public void duplicatedRuleReferenceWithOverrideShouldNotWarn() throws RuleSetNotFoundException {
-        RuleSet ruleset = loadRuleSet("duplicatedRuleReferenceWithOverride.xml");
+    void duplicatedRuleReferenceWithOverrideShouldNotWarn() throws Exception {
+        String log = SystemLambda.tapSystemErr(() -> {
+            RuleSet ruleset = loadRuleSetInDir(DIR, "duplicatedRuleReferenceWithOverride.xml");
 
-        assertEquals(2, ruleset.getRules().size());
-        Rule mockRule = ruleset.getRuleByName("DummyBasicMockRule");
-        assertNotNull(mockRule);
-        assertEquals(RulePriority.HIGH, mockRule.getPriority());
-        assertNotNull(ruleset.getRuleByName("SampleXPathRule"));
-        assertTrue(logging.getLog().isEmpty());
+            assertEquals(2, ruleset.getRules().size());
+            Rule mockRule = ruleset.getRuleByName("DummyBasicMockRule");
+            assertNotNull(mockRule);
+            assertEquals(RulePriority.HIGH, mockRule.getPriority());
+            assertNotNull(ruleset.getRuleByName("SampleXPathRule"));
+        });
+        assertTrue(log.isEmpty());
     }
 
     @Test
-    public void duplicatedRuleReferenceWithOverrideBeforeShouldNotWarn() throws RuleSetNotFoundException {
-        RuleSet ruleset = loadRuleSet("duplicatedRuleReferenceWithOverrideBefore.xml");
-
-        assertEquals(2, ruleset.getRules().size());
-        Rule mockRule = ruleset.getRuleByName("DummyBasicMockRule");
-        assertNotNull(mockRule);
-        assertEquals(RulePriority.HIGH, mockRule.getPriority());
-        assertNotNull(ruleset.getRuleByName("SampleXPathRule"));
-        assertTrue(logging.getLog().isEmpty());
+    void duplicatedRuleReferenceWithOverrideBeforeShouldNotWarn() throws Exception {
+        String log = SystemLambda.tapSystemErr(() -> {
+            RuleSet ruleset = loadRuleSetInDir(DIR, "duplicatedRuleReferenceWithOverrideBefore.xml");
+            assertEquals(2, ruleset.getRules().size());
+            Rule mockRule = ruleset.getRuleByName("DummyBasicMockRule");
+            assertNotNull(mockRule);
+            assertEquals(RulePriority.HIGH, mockRule.getPriority());
+            assertNotNull(ruleset.getRuleByName("SampleXPathRule"));
+        });
+        assertTrue(log.isEmpty());
     }
 
     @Test
-    public void multipleDuplicates() throws RuleSetNotFoundException {
-        RuleSet ruleset = loadRuleSet("multipleDuplicates.xml");
+    void multipleDuplicates() throws Exception {
+        String log = SystemLambda.tapSystemErr(() -> {
+            RuleSet ruleset = loadRuleSetInDir(DIR, "multipleDuplicates.xml");
 
-        assertEquals(2, ruleset.getRules().size());
-        Rule mockRule = ruleset.getRuleByName("DummyBasicMockRule");
-        assertNotNull(mockRule);
-        assertEquals(RulePriority.MEDIUM_HIGH, mockRule.getPriority());
-        assertNotNull(ruleset.getRuleByName("SampleXPathRule"));
-        assertTrue(logging.getLog().contains("The rule DummyBasicMockRule is referenced multiple times in \"Custom Rules\". "
-                + "Only the last rule configuration is used."));
-        assertTrue(logging.getLog().contains("The ruleset rulesets/dummy/basic.xml is referenced multiple times in \"Custom Rules\"."));
+            assertEquals(2, ruleset.getRules().size());
+            Rule mockRule = ruleset.getRuleByName("DummyBasicMockRule");
+            assertNotNull(mockRule);
+            assertEquals(RulePriority.MEDIUM_HIGH, mockRule.getPriority());
+            assertNotNull(ruleset.getRuleByName("SampleXPathRule"));
+        });
+        assertThat(log, containsString("The rule DummyBasicMockRule is referenced multiple times in ruleset 'Custom Rules'. Only the last rule configuration is used."));
+        assertThat(log, containsString("The ruleset rulesets/dummy/basic.xml is referenced multiple times in ruleset 'Custom Rules'"));
     }
 
-    private RuleSet loadRuleSet(String ruleSetFilename) throws RuleSetNotFoundException {
-        RuleSetFactory rsf = RulesetsFactoryUtils.defaultFactory();
-        return rsf.createRuleSet("net/sourceforge/pmd/rulesets/duplicatedRuleLoggingTest/" + ruleSetFilename);
-    }
 }

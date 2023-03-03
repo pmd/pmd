@@ -4,23 +4,9 @@
 
 package net.sourceforge.pmd.lang.plsql;
 
-import java.io.Writer;
-
-import net.sourceforge.pmd.lang.AbstractLanguageVersionHandler;
-import net.sourceforge.pmd.lang.DataFlowHandler;
-import net.sourceforge.pmd.lang.Parser;
-import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.VisitorStarter;
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
-import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
-import net.sourceforge.pmd.lang.plsql.ast.DumpFacade;
-import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
-import net.sourceforge.pmd.lang.plsql.dfa.DFAPLSQLGraphRule;
-import net.sourceforge.pmd.lang.plsql.dfa.DataFlowFacade;
-import net.sourceforge.pmd.lang.plsql.rule.PLSQLRuleViolationFactory;
-import net.sourceforge.pmd.lang.plsql.symboltable.SymbolFacade;
-import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
+import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
+import net.sourceforge.pmd.lang.ast.Parser;
+import net.sourceforge.pmd.lang.plsql.ast.PLSQLParser;
 
 /**
  * Implementation of LanguageVersionHandler for the PLSQL AST. It uses anonymous
@@ -28,57 +14,11 @@ import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
  *
  * @author sturton - PLDoc - pldoc.sourceforge.net
  */
-public class PLSQLHandler extends AbstractLanguageVersionHandler {
+public class PLSQLHandler extends AbstractPmdLanguageVersionHandler {
 
     @Override
-    public Parser getParser(ParserOptions parserOptions) {
-        return new PLSQLParser(parserOptions);
-    }
-
-    @Override
-    public RuleViolationFactory getRuleViolationFactory() {
-        return PLSQLRuleViolationFactory.INSTANCE;
-    }
-
-    @Override
-    public DFAGraphRule getDFAGraphRule() {
-        return new DFAPLSQLGraphRule();
-    }
-
-    @Override
-    public DataFlowHandler getDataFlowHandler() {
-        return new PLSQLDataFlowHandler();
-    }
-
-    @Override
-    public VisitorStarter getDataFlowFacade() {
-        return new VisitorStarter() {
-            @Override
-            public void start(Node rootNode) {
-                new DataFlowFacade().initializeWith(getDataFlowHandler(), (ASTInput) rootNode);
-            }
-        };
-    }
-
-    @Override
-    public VisitorStarter getSymbolFacade() {
-        return new VisitorStarter() {
-            @Override
-            public void start(Node rootNode) {
-                new SymbolFacade().initializeWith((ASTInput) rootNode);
-            }
-        };
-    }
-
-    @Deprecated
-    @Override
-    public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
-        return new VisitorStarter() {
-            @Override
-            public void start(Node rootNode) {
-                new DumpFacade().initializeWith(writer, prefix, recurse, (PLSQLNode) rootNode);
-            }
-        };
+    public Parser getParser() {
+        return new PLSQLParser();
     }
 
 }

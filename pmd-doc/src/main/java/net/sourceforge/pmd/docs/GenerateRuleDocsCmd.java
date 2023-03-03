@@ -19,9 +19,10 @@ import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetLoader;
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.internal.util.IOUtil;
 
 public final class GenerateRuleDocsCmd {
+
     private GenerateRuleDocsCmd() {
         // Utility class
     }

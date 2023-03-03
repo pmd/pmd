@@ -4,23 +4,19 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import scala.meta.Term;
 
 /**
  * The ASTTermMatch node implementation.
  */
-public class ASTTermMatch extends AbstractScalaNode<Term.Match> {
+public final class ASTTermMatch extends AbstractScalaNode<Term.Match> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTermMatch(Term.Match scalaNode) {
+    ASTTermMatch(Term.Match scalaNode) {
         super(scalaNode);
     }
 
     @Override
-    public <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data) {
+    protected <P, R> R acceptVisitor(ScalaParserVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

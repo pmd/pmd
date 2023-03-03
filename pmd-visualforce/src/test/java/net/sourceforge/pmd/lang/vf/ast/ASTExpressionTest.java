@@ -4,144 +4,142 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.SimpleCharStream;
-import net.sourceforge.pmd.lang.vf.VFTestUtils;
 import net.sourceforge.pmd.util.treeexport.XmlTreeRenderer;
 
-public class ASTExpressionTest {
+class ASTExpressionTest {
+
     /**
      * Slightly different scenarios which cause different AST, but should return the same results.
      */
     private static final String[] SNIPPET_TEMPLATES = new String[] {
         "{!%s}",
         "<apex:outputText value=\"{!%s}\" escape=\"false\"/>",
-        "<script>function someFunc() {var foo = \"{!%s}\";}</script>" };
+        "<script>function someFunc() {var foo = \"{!%s}\";}</script>"};
 
     @Test
-    public void testExpressionWithApexGetter() throws ASTExpression.DataNodeStateException {
+    void testExpressionWithApexGetter() throws ASTExpression.DataNodeStateException {
         for (String template : SNIPPET_TEMPLATES) {
             ASTCompilationUnit compilationUnit = compile(String.format(template, "MyValue"));
 
-            List<Node> nodes = VFTestUtils.findNodes(compilationUnit, "//Expression");
-            assertEquals(template, 1, nodes.size());
+            List<Node> nodes = getExpressions(compilationUnit);
+            assertEquals(1, nodes.size(), template);
 
             ASTExpression expression = (ASTExpression) nodes.get(0);
             Map<VfTypedNode, String> identifiers = expression.getDataNodes();
-            assertEquals(template, 1, identifiers.size());
+            assertEquals(1, identifiers.size(), template);
 
             Map<String, Node> map = invertMap(identifiers);
-            assertTrue(template, map.containsKey("MyValue"));
-            assertTrue(template, map.get("MyValue") instanceof ASTIdentifier);
+            assertTrue(map.containsKey("MyValue"), template);
+            assertTrue(map.get("MyValue") instanceof ASTIdentifier, template);
         }
     }
 
     @Test
-    public void testExpressionWithStandardController() throws ASTExpression.DataNodeStateException {
+    void testExpressionWithStandardController() throws ASTExpression.DataNodeStateException {
         for (String template : SNIPPET_TEMPLATES) {
             ASTCompilationUnit compilationUnit = compile(String.format(template, "MyObject__c.Text__c"));
 
-            List<Node> nodes = VFTestUtils.findNodes(compilationUnit, "//Expression");
-            assertEquals(template, 1, nodes.size());
+            List<Node> nodes = getExpressions(compilationUnit);
+            assertEquals(1, nodes.size(), template);
 
             ASTExpression expression = (ASTExpression) nodes.get(0);
             Map<VfTypedNode, String> identifiers = expression.getDataNodes();
-            assertEquals(template, 1, identifiers.size());
+            assertEquals(1, identifiers.size(), template);
 
             Map<String, Node> map = invertMap(identifiers);
-            assertTrue(template, map.containsKey("MyObject__c.Text__c"));
-            assertTrue(template, map.get("MyObject__c.Text__c") instanceof ASTIdentifier);
+            assertTrue(map.containsKey("MyObject__c.Text__c"), template);
+            assertTrue(map.get("MyObject__c.Text__c") instanceof ASTIdentifier, template);
         }
     }
 
     @Test
-    public void testSelectOptions() throws ASTExpression.DataNodeStateException {
+    void testSelectOptions() throws ASTExpression.DataNodeStateException {
         for (String template : SNIPPET_TEMPLATES) {
             ASTCompilationUnit compilationUnit = compile(String.format(template, "userOptions.0"));
 
-            List<Node> nodes = VFTestUtils.findNodes(compilationUnit, "//Expression");
-            assertEquals(template, 1, nodes.size());
+            List<Node> nodes = getExpressions(compilationUnit);
+            assertEquals(1, nodes.size(), template);
 
             ASTExpression expression = (ASTExpression) nodes.get(0);
             Map<VfTypedNode, String> identifiers = expression.getDataNodes();
-            assertEquals(template, 1, identifiers.size());
+            assertEquals(1, identifiers.size(), template);
 
             Map<String, Node> map = invertMap(identifiers);
-            assertTrue(template, map.containsKey("userOptions.0"));
-            assertTrue(template, map.get("userOptions.0") instanceof ASTLiteral);
+            assertTrue(map.containsKey("userOptions.0"), template);
+            assertTrue(map.get("userOptions.0") instanceof ASTLiteral, template);
         }
     }
 
     @Test
-    public void testMultipleIdentifiers() throws ASTExpression.DataNodeStateException {
+    void testMultipleIdentifiers() throws ASTExpression.DataNodeStateException {
         for (String template : SNIPPET_TEMPLATES) {
             ASTCompilationUnit compilationUnit = compile(String.format(template, "MyObject__c.Text__c + ' this is a string' + MyObject__c.Text2__c"));
 
-            List<Node> nodes = VFTestUtils.findNodes(compilationUnit, "//Expression");
-            assertEquals(template, 1, nodes.size());
+            List<Node> nodes = getExpressions(compilationUnit);
+            assertEquals(1, nodes.size(), template);
 
             ASTExpression expression = (ASTExpression) nodes.get(0);
             Map<VfTypedNode, String> identifiers = expression.getDataNodes();
-            assertEquals(template, 2, identifiers.size());
+            assertEquals(2, identifiers.size(), template);
 
             Map<String, Node> map = invertMap(identifiers);
-            assertEquals(template, 2, map.size());
-            assertTrue(template, map.containsKey("MyObject__c.Text__c"));
-            assertTrue(template, map.get("MyObject__c.Text__c") instanceof ASTIdentifier);
-            assertTrue(template, map.containsKey("MyObject__c.Text2__c"));
-            assertTrue(template, map.get("MyObject__c.Text2__c") instanceof ASTIdentifier);
+            assertEquals(2, map.size(), template);
+            assertTrue(map.containsKey("MyObject__c.Text__c"), template);
+            assertTrue(map.get("MyObject__c.Text__c") instanceof ASTIdentifier, template);
+            assertTrue(map.containsKey("MyObject__c.Text2__c"), template);
+            assertTrue(map.get("MyObject__c.Text2__c") instanceof ASTIdentifier, template);
         }
     }
 
     @Test
-    public void testIdentifierWithRelation() throws ASTExpression.DataNodeStateException {
+    void testIdentifierWithRelation() throws ASTExpression.DataNodeStateException {
         for (String template : SNIPPET_TEMPLATES) {
             ASTCompilationUnit compilationUnit = compile(String.format(template, "MyObject1__c.MyObject2__r.Text__c"));
 
-            List<Node> nodes = VFTestUtils.findNodes(compilationUnit, "//Expression");
-            assertEquals(template, 1, nodes.size());
+            List<Node> nodes = getExpressions(compilationUnit);
+            assertEquals(1, nodes.size(), template);
 
             ASTExpression expression = (ASTExpression) nodes.get(0);
             Map<VfTypedNode, String> identifiers = expression.getDataNodes();
-            assertEquals(template, 1, identifiers.size());
+            assertEquals(1, identifiers.size(), template);
 
             Map<String, Node> map = invertMap(identifiers);
-            assertEquals(template, 1, map.size());
-            assertTrue(template, map.containsKey("MyObject1__c.MyObject2__r.Text__c"));
-            assertTrue(template, map.get("MyObject1__c.MyObject2__r.Text__c") instanceof ASTIdentifier);
+            assertEquals(1, map.size(), template);
+            assertTrue(map.containsKey("MyObject1__c.MyObject2__r.Text__c"), template);
+            assertTrue(map.get("MyObject1__c.MyObject2__r.Text__c") instanceof ASTIdentifier, template);
         }
     }
 
     @Test
-    public void testMultipleIdentifiersWithRelation() throws ASTExpression.DataNodeStateException {
+    void testMultipleIdentifiersWithRelation() throws ASTExpression.DataNodeStateException {
         for (String template : SNIPPET_TEMPLATES) {
             ASTCompilationUnit compilationUnit = compile(String.format(template, "MyObject1__c.MyObject2__r.Text__c + ' this is a string' + MyObject1__c.MyObject2__r.Text2__c"));
 
-            List<Node> nodes = VFTestUtils.findNodes(compilationUnit, "//Expression");
-            assertEquals(template, 1, nodes.size());
+            List<Node> nodes = getExpressions(compilationUnit);
+            assertEquals(1, nodes.size(), template);
 
             ASTExpression expression = (ASTExpression) nodes.get(0);
             Map<VfTypedNode, String> identifiers = expression.getDataNodes();
-            assertEquals(template, 2, identifiers.size());
+            assertEquals(2, identifiers.size(), template);
 
             Map<String, Node> map = invertMap(identifiers);
-            assertEquals(template, 2, map.size());
-            assertTrue(template, map.containsKey("MyObject1__c.MyObject2__r.Text__c"));
-            assertTrue(template, map.get("MyObject1__c.MyObject2__r.Text__c") instanceof ASTIdentifier);
-            assertTrue(template, map.containsKey("MyObject1__c.MyObject2__r.Text2__c"));
-            assertTrue(template, map.get("MyObject1__c.MyObject2__r.Text2__c") instanceof ASTIdentifier);
+            assertEquals(2, map.size(), template);
+            assertTrue(map.containsKey("MyObject1__c.MyObject2__r.Text__c"), template);
+            assertTrue(map.get("MyObject1__c.MyObject2__r.Text__c") instanceof ASTIdentifier, template);
+            assertTrue(map.containsKey("MyObject1__c.MyObject2__r.Text2__c"), template);
+            assertTrue(map.get("MyObject1__c.MyObject2__r.Text2__c") instanceof ASTIdentifier, template);
         }
     }
 
@@ -150,12 +148,12 @@ public class ASTExpressionTest {
      * complexities that may be addressed in a future release.
      */
     @Test
-    public void testExpressionWithArrayIndexingNotSupported() {
+    void testExpressionWithArrayIndexingNotSupported() {
         for (String template : SNIPPET_TEMPLATES) {
             ASTCompilationUnit compilationUnit = compile(String.format(template, "MyObject__c['Name']"));
 
-            List<Node> nodes = VFTestUtils.findNodes(compilationUnit, "//Expression");
-            assertEquals(template, 2, nodes.size());
+            List<Node> nodes = getExpressions(compilationUnit);
+            assertEquals(2, nodes.size(), template);
 
             ASTExpression expression = (ASTExpression) nodes.get(0);
             try {
@@ -168,12 +166,12 @@ public class ASTExpressionTest {
     }
 
     @Test
-    public void testIdentifierWithRelationIndexedAsArrayNotSupported() {
+    void testIdentifierWithRelationIndexedAsArrayNotSupported() {
         for (String template : SNIPPET_TEMPLATES) {
             ASTCompilationUnit compilationUnit = compile(String.format(template, "MyObject1__c['MyObject2__r'].Text__c"));
 
-            List<Node> nodes = VFTestUtils.findNodes(compilationUnit, "//Expression");
-            assertEquals(template, 2, nodes.size());
+            List<Node> nodes = getExpressions(compilationUnit);
+            assertEquals(2, nodes.size(), template);
 
             ASTExpression expression = (ASTExpression) nodes.get(0);
             try {
@@ -186,12 +184,12 @@ public class ASTExpressionTest {
     }
 
     @Test
-    public void testIdentifierWithComplexIndexedArrayNotSupported() {
+    void testIdentifierWithComplexIndexedArrayNotSupported() {
         for (String template : SNIPPET_TEMPLATES) {
             ASTCompilationUnit compilationUnit = compile(String.format(template, "theLineItems[item.Id].UnitPrice"));
 
-            List<Node> nodes = VFTestUtils.findNodes(compilationUnit, "//Expression");
-            assertEquals(template, 2, nodes.size());
+            List<Node> nodes = getExpressions(compilationUnit);
+            assertEquals(2, nodes.size(), template);
 
             ASTExpression expression = (ASTExpression) nodes.get(0);
             try {
@@ -201,6 +199,10 @@ public class ASTExpressionTest {
                 // Intentionally left blank
             }
         }
+    }
+
+    private static List<Node> getExpressions(ASTCompilationUnit compilationUnit) {
+        return compilationUnit.descendants(ASTExpression.class).toList(it -> it);
     }
 
     /**
@@ -208,7 +210,7 @@ public class ASTExpressionTest {
      */
     private Map<String, Node> invertMap(Map<VfTypedNode, String> map) {
         Map<String, Node> result = map.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
+                                      .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
         // Ensure no values have been lost
         assertEquals(map.size(), result.size());
         return result;
@@ -219,10 +221,11 @@ public class ASTExpressionTest {
     }
 
     private ASTCompilationUnit compile(String snippet, boolean renderAST) {
-        ASTCompilationUnit node = new net.sourceforge.pmd.lang.vf.ast.VfParser(
-                new SimpleCharStream(new StringReader("<apex:page>"
-                        + snippet
-                        + "</apex:page>"))).CompilationUnit();
+        ASTCompilationUnit node = VfParsingHelper.DEFAULT.parse(
+            "<apex:page>"
+                + snippet
+                + "</apex:page>"
+        );
 
         if (renderAST) {
             try {

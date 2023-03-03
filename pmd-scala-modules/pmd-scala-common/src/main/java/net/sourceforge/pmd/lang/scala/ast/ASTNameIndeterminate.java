@@ -4,23 +4,19 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import scala.meta.Name;
 
 /**
  * The ASTNameIndeterminate node implementation.
  */
-public class ASTNameIndeterminate extends AbstractScalaNode<Name.Indeterminate> {
+public final class ASTNameIndeterminate extends AbstractScalaNode<Name.Indeterminate> {
 
-    @Deprecated
-    @InternalApi
-    public ASTNameIndeterminate(Name.Indeterminate scalaNode) {
+    ASTNameIndeterminate(Name.Indeterminate scalaNode) {
         super(scalaNode);
     }
 
     @Override
-    public <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data) {
+    protected <P, R> R acceptVisitor(ScalaParserVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

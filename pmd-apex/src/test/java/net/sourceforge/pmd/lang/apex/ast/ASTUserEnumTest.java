@@ -4,17 +4,16 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ASTUserEnumTest extends ApexParserTestBase {
+import org.junit.jupiter.api.Test;
+
+class ASTUserEnumTest extends ApexParserTestBase {
 
     @Test
-    public void testEnumName() {
-        ApexNode<?> node = parse("class Foo { enum Bar { } }");
-        Assert.assertSame(ASTUserClass.class, node.getClass());
-        ASTUserEnum enumNode = node.getFirstDescendantOfType(ASTUserEnum.class);
-        Assert.assertNotNull(enumNode);
-        Assert.assertEquals("Bar", enumNode.getImage());
+    void testEnumName() {
+        ASTUserClass node = (ASTUserClass) parse("class Foo { enum Bar { } }");
+        ASTUserEnum enumNode = node.descendants(ASTUserEnum.class).firstOrThrow();
+        assertEquals("Bar", enumNode.getSimpleName());
     }
 }

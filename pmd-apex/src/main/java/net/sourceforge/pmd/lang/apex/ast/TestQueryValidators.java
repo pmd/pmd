@@ -22,8 +22,6 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.expression.SoqlExpression;
 import apex.jorje.semantic.ast.expression.SoslExpression;
 import apex.jorje.semantic.ast.visitor.ValidationScope;
@@ -37,9 +35,7 @@ import apex.jorje.semantic.symbol.resolver.SymbolResolver;
  * @author jspagnola
  */
 @SuppressWarnings("PMD.MissingStaticMethodInNonInstantiatableClass") // this class provides utility classes
-@Deprecated
-@InternalApi
-public final class TestQueryValidators {
+final class TestQueryValidators {
 
     private TestQueryValidators() {
     }

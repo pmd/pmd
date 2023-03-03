@@ -31,21 +31,24 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
 
     public static final String NAME = "html";
 
-    // TODO 7.0.0 use PropertyDescriptor<String>
+    // TODO use PropertyDescriptor<Optional<String>> : we need a "blank" default value
     public static final StringProperty LINE_PREFIX = new StringProperty("linePrefix",
-            "Prefix for line number anchor in the source file.", null, 1);
-    public static final StringProperty LINK_PREFIX = new StringProperty("linkPrefix", "Path to HTML source.", null, 0);
-    public static final PropertyDescriptor<Boolean> HTML_EXTENSION = PropertyFactory.booleanProperty("htmlExtension")
-            .desc("Replace file extension with .html for the links (default: false)")
-            // default value is false - to have the old (pre 6.23.0) behavior, this needs to be set to true.
-            .defaultValue(false)
-            .build();
+                                                                        "Prefix for line number anchor in the source file.", null, 1);
+
+    public static final PropertyDescriptor<String> LINK_PREFIX =
+        PropertyFactory.stringProperty("linkPrefix").desc("Path to HTML source.").defaultValue("").build();
+
+    public static final PropertyDescriptor<Boolean> HTML_EXTENSION =
+        PropertyFactory.booleanProperty("htmlExtension")
+                       .desc("Replace file extension with .html for the links.")
+                       // default value is false - to have the old (pre 6.23.0) behavior, this needs to be set to true.
+                       .defaultValue(false)
+                       .build();
 
     private String linkPrefix;
     private String linePrefix;
     private boolean replaceHtmlExtension;
 
-    private int violationCount = 1;
     boolean colorize = true;
 
     public HTMLRenderer() {
@@ -117,6 +120,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
     }
 
     private void glomRuleViolations(Writer writer, Iterator<RuleViolation> violations) throws IOException {
+        int violationCount = 1;
 
         StringBuilder buf = new StringBuilder(500);
 
@@ -131,9 +135,9 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
             buf.append("> ").append(PMD.EOL);
             buf.append("<td align=\"center\">").append(violationCount).append("</td>").append(PMD.EOL);
             buf.append("<td width=\"*%\">")
-                    .append(renderFileName(rv.getFilename(), rv.getBeginLine()))
-                    .append("</td>")
-                    .append(PMD.EOL);
+                .append(renderFileName(rv.getFilename(), rv.getBeginLine()))
+                .append("</td>")
+                .append(PMD.EOL);
             buf.append("<td align=\"center\" width=\"5%\">").append(rv.getBeginLine()).append("</td>").append(PMD.EOL);
 
             String d = StringEscapeUtils.escapeHtml4(rv.getDescription());
@@ -142,8 +146,11 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
             if (StringUtils.isNotBlank(infoUrl)) {
                 d = "<a href=\"" + infoUrl + "\">" + d + "</a>";
             }
-            buf.append("<td width=\"*\">").append(d).append("</td>").append(PMD.EOL);
-            buf.append("</tr>").append(PMD.EOL);
+            buf.append("<td width=\"*\">")
+               .append(d)
+               .append("</td>")
+               .append(PMD.EOL)
+               .append("</tr>").append(PMD.EOL);
             writer.write(buf.toString());
             violationCount++;
         }
@@ -216,7 +223,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
             buf.append("<td align=\"left\">").append(renderFileName(rv.getFilename(), rv.getBeginLine())).append("</td>").append(PMD.EOL);
             buf.append("<td align=\"center\">").append(rv.getBeginLine()).append("</td>").append(PMD.EOL);
             buf.append("<td align=\"center\">").append(renderRuleName(rv.getRule())).append("</td>").append(PMD.EOL);
-            buf.append("<td align=\"center\">").append(sv.suppressedByNOPMD() ? "NOPMD" : "Annotation").append("</td>").append(PMD.EOL);
+            buf.append("<td align=\"center\">").append(sv.getSuppressor().getId()).append("</td>").append(PMD.EOL);
             buf.append("<td align=\"center\">").append(sv.getUserMessage() == null ? "" : sv.getUserMessage()).append("</td>").append(PMD.EOL);
             buf.append("</tr>").append(PMD.EOL);
             writer.write(buf.toString());

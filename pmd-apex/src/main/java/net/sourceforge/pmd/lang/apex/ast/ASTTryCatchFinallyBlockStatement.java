@@ -6,20 +6,17 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import java.util.List;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.statement.TryCatchFinallyBlockStatement;
 
-public class ASTTryCatchFinallyBlockStatement extends AbstractApexNode<TryCatchFinallyBlockStatement> {
+public final class ASTTryCatchFinallyBlockStatement extends AbstractApexNode<TryCatchFinallyBlockStatement> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTryCatchFinallyBlockStatement(TryCatchFinallyBlockStatement tryCatchFinallyBlockStatement) {
+    ASTTryCatchFinallyBlockStatement(TryCatchFinallyBlockStatement tryCatchFinallyBlockStatement) {
         super(tryCatchFinallyBlockStatement);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

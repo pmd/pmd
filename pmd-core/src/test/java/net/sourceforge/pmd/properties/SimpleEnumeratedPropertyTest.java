@@ -4,16 +4,17 @@
 
 package net.sourceforge.pmd.properties;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Assume;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.properties.SimpleEnumeratedPropertyTest.Foo;
 
@@ -25,7 +26,7 @@ import net.sourceforge.pmd.properties.SimpleEnumeratedPropertyTest.Foo;
  * @author Brian Remedios
  */
 @Deprecated
-public class SimpleEnumeratedPropertyTest extends AbstractPropertyDescriptorTester<Foo> {
+class SimpleEnumeratedPropertyTest extends AbstractPropertyDescriptorTester<Foo> {
 
     private static final String[] KEYS = {"bar", "na", "bee", "coo"};
     private static final Foo[] VALUES = {Foo.BAR, Foo.NA, Foo.BEE, Foo.COO};
@@ -42,13 +43,13 @@ public class SimpleEnumeratedPropertyTest extends AbstractPropertyDescriptorTest
     }
 
 
-    public SimpleEnumeratedPropertyTest() {
+    SimpleEnumeratedPropertyTest() {
         super("Enum");
     }
 
 
     @Test
-    public void testMappings() {
+    void testMappings() {
         EnumeratedPropertyDescriptor<Foo, Foo> prop
             = (EnumeratedPropertyDescriptor<Foo, Foo>) createProperty();
         EnumeratedPropertyDescriptor<Foo, List<Foo>> multi
@@ -79,23 +80,24 @@ public class SimpleEnumeratedPropertyTest extends AbstractPropertyDescriptorTest
     }
 
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testDefaultIndexOutOfBounds() {
-        new EnumeratedMultiProperty<>("testEnumerations", "Test enumerations with simple type",
-                                                KEYS, VALUES, new int[] {99}, Foo.class, 1.0f);
-    }
-
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testNoMappingForDefault() {
-        new EnumeratedMultiProperty<>("testEnumerations", "Test enumerations with simple type",
-                                      MAPPINGS, Collections.singletonList(Foo.IGNORED), Foo.class, 1.0f);
-
+    @Test
+    void testDefaultIndexOutOfBounds() {
+        assertThrows(IllegalArgumentException.class, () ->
+            new EnumeratedMultiProperty<>("testEnumerations", "Test enumerations with simple type",
+                                                    KEYS, VALUES, new int[] {99}, Foo.class, 1.0f));
     }
 
 
     @Test
-    public void creationTest() {
+    void testNoMappingForDefault() {
+        assertThrows(IllegalArgumentException.class, () ->
+            new EnumeratedMultiProperty<>("testEnumerations", "Test enumerations with simple type",
+                                          MAPPINGS, Collections.singletonList(Foo.IGNORED), Foo.class, 1.0f));
+    }
+
+
+    @Test
+    void creationTest() {
         PropertyDescriptor<Foo> prop = createProperty();
         PropertyDescriptor<List<Foo>> multi = createMultiProperty();
 
@@ -134,22 +136,22 @@ public class SimpleEnumeratedPropertyTest extends AbstractPropertyDescriptorTest
 
     @Override
     @Test
-    public void testFactorySingleValue() {
-        Assume.assumeTrue("The EnumeratedProperty factory is not implemented yet", false);
+    @Disabled("The EnumeratedProperty factory is not implemented yet")
+    void testFactorySingleValue() {
     }
 
 
     @Override
     @Test
-    public void testFactoryMultiValueCustomDelimiter() {
-        Assume.assumeTrue("The EnumeratedProperty factory is not implemented yet", false);
+    @Disabled("The EnumeratedProperty factory is not implemented yet")
+    void testFactoryMultiValueCustomDelimiter() {
     }
 
 
     @Override
     @Test
-    public void testFactoryMultiValueDefaultDelimiter() {
-        Assume.assumeTrue("The EnumeratedProperty factory is not implemented yet", false);
+    @Disabled("The EnumeratedProperty factory is not implemented yet")
+    void testFactoryMultiValueDefaultDelimiter() {
     }
 
 

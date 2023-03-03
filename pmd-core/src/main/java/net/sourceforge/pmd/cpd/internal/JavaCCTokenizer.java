@@ -13,35 +13,50 @@ import net.sourceforge.pmd.cpd.Tokens;
 import net.sourceforge.pmd.cpd.token.JavaCCTokenFilter;
 import net.sourceforge.pmd.cpd.token.TokenFilter;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.GenericToken;
-import net.sourceforge.pmd.lang.ast.TokenMgrError;
+import net.sourceforge.pmd.lang.ast.FileAnalysisException;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument.TokenDocumentBehavior;
+import net.sourceforge.pmd.lang.document.CpdCompat;
+import net.sourceforge.pmd.lang.document.TextDocument;
 
 public abstract class JavaCCTokenizer implements Tokenizer {
 
-    protected abstract TokenManager getLexerForSource(SourceCode sourceCode);
+    @SuppressWarnings("PMD.CloseResource")
+    protected TokenManager<JavaccToken> getLexerForSource(TextDocument sourceCode) throws IOException {
+        return makeLexerImpl(CharStream.create(sourceCode, tokenBehavior()));
+    }
 
-    protected TokenFilter getTokenFilter(TokenManager tokenManager) {
+    protected TokenDocumentBehavior tokenBehavior() {
+        return TokenDocumentBehavior.DEFAULT;
+    }
+
+    protected abstract TokenManager<JavaccToken> makeLexerImpl(CharStream sourceCode);
+
+    protected TokenFilter<JavaccToken> getTokenFilter(TokenManager<JavaccToken> tokenManager) {
         return new JavaCCTokenFilter(tokenManager);
     }
 
-    protected TokenEntry processToken(Tokens tokenEntries, GenericToken currentToken, String filename) {
-        return new TokenEntry(currentToken.getImage(), filename, currentToken.getBeginLine(), currentToken.getBeginColumn(), currentToken.getEndColumn());
+    protected TokenEntry processToken(Tokens tokenEntries, JavaccToken currentToken) {
+        return new TokenEntry(getImage(currentToken), currentToken.getReportLocation());
+    }
+
+    protected String getImage(JavaccToken token) {
+        return token.getImage();
     }
 
     @Override
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) throws IOException {
-        TokenManager tokenManager = getLexerForSource(sourceCode);
-        tokenManager.setFileName(sourceCode.getFileName());
-        try {
-            final TokenFilter tokenFilter = getTokenFilter(tokenManager);
-
-            GenericToken currentToken = tokenFilter.getNextToken();
+        try (TextDocument textDoc = TextDocument.create(CpdCompat.cpdCompat(sourceCode))) {
+            TokenManager<JavaccToken> tokenManager = getLexerForSource(textDoc);
+            final TokenFilter<JavaccToken> tokenFilter = getTokenFilter(tokenManager);
+            JavaccToken currentToken = tokenFilter.getNextToken();
             while (currentToken != null) {
-                tokenEntries.add(processToken(tokenEntries, currentToken, sourceCode.getFileName()));
+                tokenEntries.add(processToken(tokenEntries, currentToken));
                 currentToken = tokenFilter.getNextToken();
             }
-        } catch (TokenMgrError e) {
-            throw e.withFileName(sourceCode.getFileName());
+        } catch (FileAnalysisException e) {
+            throw e.setFileName(sourceCode.getFileName());
         } finally {
             tokenEntries.add(TokenEntry.getEOF());
         }

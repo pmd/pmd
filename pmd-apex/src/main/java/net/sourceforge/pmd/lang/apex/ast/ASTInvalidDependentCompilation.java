@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import apex.jorje.semantic.ast.compilation.InvalidDependentCompilation;
 
-public final class ASTInvalidDependentCompilation extends ApexRootNode<InvalidDependentCompilation> {
+public final class ASTInvalidDependentCompilation extends AbstractApexNode<InvalidDependentCompilation> {
 
     ASTInvalidDependentCompilation(InvalidDependentCompilation userClass) {
         super(userClass);
@@ -14,7 +14,7 @@ public final class ASTInvalidDependentCompilation extends ApexRootNode<InvalidDe
 
 
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

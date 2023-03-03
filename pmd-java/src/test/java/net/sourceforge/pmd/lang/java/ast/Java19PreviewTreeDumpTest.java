@@ -4,11 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
-import org.junit.function.ThrowingRunnable;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
@@ -16,13 +15,13 @@ import net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest;
 import net.sourceforge.pmd.lang.ast.test.RelevantAttributePrinter;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 
-public class Java19PreviewTreeDumpTest extends BaseTreeDumpTest {
+class Java19PreviewTreeDumpTest extends BaseTreeDumpTest {
     private final JavaParsingHelper java19p =
-            JavaParsingHelper.WITH_PROCESSING.withDefaultVersion("19-preview")
+            JavaParsingHelper.DEFAULT.withDefaultVersion("19-preview")
                     .withResourceContext(Java19PreviewTreeDumpTest.class, "jdkversiontests/java19p/");
     private final JavaParsingHelper java19 = java19p.withDefaultVersion("19");
 
-    public Java19PreviewTreeDumpTest() {
+    Java19PreviewTreeDumpTest() {
         super(new RelevantAttributePrinter(), ".java");
     }
 
@@ -32,90 +31,70 @@ public class Java19PreviewTreeDumpTest extends BaseTreeDumpTest {
     }
 
     @Test
-    public void dealingWithNullBeforeJava19Preview() {
-        ParseException thrown = assertThrows(ParseException.class, new ThrowingRunnable() {
-            @Override
-            public void run() throws Throwable {
-                java19.parseResource("DealingWithNull.java");
-            }
-        });
-        assertTrue("Unexpected message: " + thrown.getMessage(),
-                thrown.getMessage().contains("Null case labels in switch are only supported with JDK 19 Preview or JDK 20 Preview."));
+    void dealingWithNullBeforeJava19Preview() {
+        ParseException thrown = assertThrows(ParseException.class, () -> java19.parseResource("DealingWithNull.java"));
+        assertTrue(thrown.getMessage().contains("Null in switch cases is a preview feature of JDK 19, you should select your language version accordingly"),
+                "Unexpected message: " + thrown.getMessage());
     }
 
     @Test
-    public void dealingWithNull() {
+    void dealingWithNull() {
         doTest("DealingWithNull");
     }
 
     @Test
-    public void enhancedTypeCheckingSwitch() {
+    void enhancedTypeCheckingSwitch() {
         doTest("EnhancedTypeCheckingSwitch");
     }
 
     @Test
-    public void exhaustiveSwitch() {
+    void exhaustiveSwitch() {
         doTest("ExhaustiveSwitch");
     }
 
     @Test
-    public void guardedAndParenthesizedPatternsBeforeJava19Preview() {
-        ParseException thrown = assertThrows(ParseException.class, new ThrowingRunnable() {
-            @Override
-            public void run() throws Throwable {
-                java19.parseResource("GuardedAndParenthesizedPatterns.java");
-            }
-        });
-        assertTrue("Unexpected message: " + thrown.getMessage(),
-                thrown.getMessage().contains("Pattern Matching in Switch is only supported with JDK 19 Preview or JDK 20 Preview."));
+    void guardedAndParenthesizedPatternsBeforeJava19Preview() {
+        ParseException thrown = assertThrows(ParseException.class, () -> java19.parseResource("GuardedAndParenthesizedPatterns.java"));
+        assertTrue(thrown.getMessage().contains("Patterns in switch statements is a preview feature of JDK 19, you should select your language version accordingly"),
+                "Unexpected message: " + thrown.getMessage());
     }
 
     @Test
-    public void guardedAndParenthesizedPatterns() {
+    void guardedAndParenthesizedPatterns() {
         doTest("GuardedAndParenthesizedPatterns");
     }
 
     @Test
-    public void patternsInSwitchLabelsBeforeJava19Preview() {
-        ParseException thrown = assertThrows(ParseException.class, new ThrowingRunnable() {
-            @Override
-            public void run() throws Throwable {
-                java19.parseResource("PatternsInSwitchLabels.java");
-            }
-        });
-        assertTrue("Unexpected message: " + thrown.getMessage(),
-                thrown.getMessage().contains("Pattern Matching in Switch is only supported with JDK 19 Preview or JDK 20 Preview."));
+    void patternsInSwitchLabelsBeforeJava19Preview() {
+        ParseException thrown = assertThrows(ParseException.class, () -> java19.parseResource("PatternsInSwitchLabels.java"));
+        assertTrue(thrown.getMessage().contains("Patterns in switch statements is a preview feature of JDK 19, you should select your language version accordingly"),
+                "Unexpected message: " + thrown.getMessage());
     }
 
     @Test
-    public void patternsInSwitchLabels() {
+    void patternsInSwitchLabels() {
         doTest("PatternsInSwitchLabels");
     }
 
     @Test
-    public void refiningPatternsInSwitch() {
+    void refiningPatternsInSwitch() {
         doTest("RefiningPatternsInSwitch");
     }
 
     @Test
-    public void scopeOfPatternVariableDeclarations() {
+    void scopeOfPatternVariableDeclarations() {
         doTest("ScopeOfPatternVariableDeclarations");
     }
 
     @Test
-    public void recordPatterns() {
+    void recordPatterns() {
         doTest("RecordPatterns");
     }
 
     @Test
-    public void recordPatternsBeforeJava19Preview() {
-        ParseException thrown = assertThrows(ParseException.class, new ThrowingRunnable() {
-            @Override
-            public void run() throws Throwable {
-                java19.parseResource("RecordPatterns.java");
-            }
-        });
-        assertTrue("Unexpected message: " + thrown.getMessage(),
-                thrown.getMessage().contains("Record Patterns are only supported with JDK 19 Preview or JDK 20 Preview."));
+    void recordPatternsBeforeJava19Preview() {
+        ParseException thrown = assertThrows(ParseException.class, () -> java19.parseResource("RecordPatterns.java"));
+        assertTrue(thrown.getMessage().contains("Deconstruction patterns is a preview feature of JDK 19, you should select your language version accordingly"),
+                "Unexpected message: " + thrown.getMessage());
     }
 }

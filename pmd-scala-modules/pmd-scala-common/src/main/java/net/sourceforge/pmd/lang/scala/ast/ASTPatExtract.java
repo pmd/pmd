@@ -4,23 +4,19 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import scala.meta.Pat;
 
 /**
  * The ASTPatExtract node implementation.
  */
-public class ASTPatExtract extends AbstractScalaNode<Pat.Extract> {
+public final class ASTPatExtract extends AbstractScalaNode<Pat.Extract> {
 
-    @Deprecated
-    @InternalApi
-    public ASTPatExtract(Pat.Extract scalaNode) {
+    ASTPatExtract(Pat.Extract scalaNode) {
         super(scalaNode);
     }
 
     @Override
-    public <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data) {
+    protected <P, R> R acceptVisitor(ScalaParserVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

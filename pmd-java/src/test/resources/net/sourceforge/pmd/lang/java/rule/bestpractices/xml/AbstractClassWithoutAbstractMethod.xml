@@ -44,7 +44,7 @@ public abstract class Foo {
         <description>abstract class implements interface</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public abstract class Foo implements Foo {
+public abstract class Foo implements SomeItf {
 }
         ]]></code>
     </test-code>

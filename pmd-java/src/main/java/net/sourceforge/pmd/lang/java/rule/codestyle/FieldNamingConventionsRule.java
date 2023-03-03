@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
+import static net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility.V_PUBLIC;
+import static net.sourceforge.pmd.lang.java.ast.JModifier.FINAL;
+import static net.sourceforge.pmd.lang.java.ast.JModifier.STATIC;
+
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -39,6 +43,7 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionRule<AST
 
 
     public FieldNamingConventionsRule() {
+        super(ASTFieldDeclaration.class, ASTEnumConstant.class);
         definePropertyDescriptor(publicConstantFieldRegex);
         definePropertyDescriptor(constantFieldRegex);
         definePropertyDescriptor(enumConstantRegex);
@@ -46,11 +51,7 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionRule<AST
         definePropertyDescriptor(staticFieldRegex);
         definePropertyDescriptor(defaultFieldRegex);
         definePropertyDescriptor(EXCLUDED_NAMES);
-
-        addRuleChainVisit(ASTFieldDeclaration.class);
-        addRuleChainVisit(ASTEnumConstant.class);
     }
-
 
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
@@ -59,11 +60,13 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionRule<AST
                 continue;
             }
 
-            if (node.isFinal() && node.isStatic()) {
-                checkMatches(id, node.isPublic() ? publicConstantFieldRegex : constantFieldRegex, data);
-            } else if (node.isFinal()) {
+            boolean isFinal = node.hasModifiers(FINAL);
+            boolean isStatic = node.hasModifiers(STATIC);
+            if (isFinal && isStatic) {
+                checkMatches(id, node.getVisibility() == V_PUBLIC ? publicConstantFieldRegex : constantFieldRegex, data);
+            } else if (isFinal) {
                 checkMatches(id, finalFieldRegex, data);
-            } else if (node.isStatic()) {
+            } else if (isStatic) {
                 checkMatches(id, staticFieldRegex, data);
             } else {
                 checkMatches(id, defaultFieldRegex, data);
@@ -94,16 +97,22 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionRule<AST
         return CAMEL_CASE;
     }
 
+    @Override
+    String nameExtractor(ASTVariableDeclaratorId node) {
+        return node.getName();
+    }
 
     @Override
     String kindDisplayName(ASTVariableDeclaratorId node, PropertyDescriptor<Pattern> descriptor) {
-        ASTFieldDeclaration field = (ASTFieldDeclaration) node.getNthParent(2);
 
-        if (field.isFinal() && field.isStatic()) {
-            return field.isPublic() ? "public constant" : "constant";
-        } else if (field.isFinal()) {
+        boolean isFinal = node.hasModifiers(FINAL);
+        boolean isStatic = node.hasModifiers(STATIC);
+
+        if (isFinal && isStatic) {
+            return node.getVisibility() == V_PUBLIC ? "public constant" : "constant";
+        } else if (isFinal) {
             return "final field";
-        } else if (field.isStatic()) {
+        } else if (isStatic) {
             return "static field";
         } else {
             return "field";

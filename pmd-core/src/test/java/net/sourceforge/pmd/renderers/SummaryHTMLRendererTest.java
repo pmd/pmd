@@ -4,26 +4,25 @@
 
 package net.sourceforge.pmd.renderers;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collections;
+import java.util.function.Consumer;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
+import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
 
-public class SummaryHTMLRendererTest extends AbstractRendererTest {
+class SummaryHTMLRendererTest extends AbstractRendererTest {
 
     @Override
-    public Renderer getRenderer() {
+    Renderer getRenderer() {
         Renderer result = new SummaryHTMLRenderer();
         result.setProperty(HTMLRenderer.LINK_PREFIX, "link_prefix");
         result.setProperty(HTMLRenderer.LINE_PREFIX, "line_prefix");
@@ -37,7 +36,7 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
     }
 
     @Override
-    public String getExpected() {
+    String getExpected() {
         return "<html><head><title>PMD</title></head><body>" + PMD.EOL + "<center><h2>Summary</h2></center>" + PMD.EOL
                 + "<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\">" + PMD.EOL
                 + "<tr><th>Rule name</th><th>Number of violations</th></tr>" + PMD.EOL
@@ -54,7 +53,7 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
     }
 
     @Override
-    public String getExpectedEmpty() {
+    String getExpectedEmpty() {
         return "<html><head><title>PMD</title></head><body>" + PMD.EOL + "<center><h2>Summary</h2></center>" + PMD.EOL
                 + "<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\">" + PMD.EOL
                 + "<tr><th>Rule name</th><th>Number of violations</th></tr>" + PMD.EOL + "</table>" + PMD.EOL
@@ -66,7 +65,7 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
     }
 
     @Override
-    public String getExpectedMultiple() {
+    String getExpectedMultiple() {
         return "<html><head><title>PMD</title></head><body>" + PMD.EOL + "<center><h2>Summary</h2></center>" + PMD.EOL
                 + "<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\">" + PMD.EOL
                 + "<tr><th>Rule name</th><th>Number of violations</th></tr>" + PMD.EOL
@@ -86,7 +85,7 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
     }
 
     @Override
-    public String getExpectedError(ProcessingError error) {
+    String getExpectedError(ProcessingError error) {
         return "<html><head><title>PMD</title></head><body>" + PMD.EOL + "<center><h2>Summary</h2></center>" + PMD.EOL
                 + "<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\">" + PMD.EOL
                 + "<tr><th>Rule name</th><th>Number of violations</th></tr>" + PMD.EOL + "</table>" + PMD.EOL
@@ -101,7 +100,7 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
     }
 
     @Override
-    public String getExpectedError(ConfigurationError error) {
+    String getExpectedError(ConfigurationError error) {
         return "<html><head><title>PMD</title></head><body>" + PMD.EOL + "<center><h2>Summary</h2></center>" + PMD.EOL
                 + "<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\">" + PMD.EOL
                 + "<tr><th>Rule name</th><th>Number of violations</th></tr>" + PMD.EOL + "</table>" + PMD.EOL
@@ -116,11 +115,10 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
     }
 
     @Test
-    public void testShowSuppressions() throws Exception {
-        Report rep = createEmptyReportWithSuppression();
+    void testShowSuppressions() throws Exception {
         Renderer renderer = getRenderer();
         renderer.setShowSuppressedViolations(true);
-        String actual = renderReport(renderer, rep);
+        String actual = renderReport(renderer, createEmptyReportWithSuppression());
         assertEquals("<html><head><title>PMD</title></head><body>" + PMD.EOL + "<center><h2>Summary</h2></center>"
                 + PMD.EOL + "<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\">" + PMD.EOL
                 + "<tr><th>Rule name</th><th>Number of violations</th></tr>" + PMD.EOL + "</table>" + PMD.EOL
@@ -130,31 +128,28 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
                 + PMD.EOL + "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + PMD.EOL
                 + "</table><hr/><center><h3>Suppressed warnings</h3></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>"
                 + PMD.EOL + "<th>File</th><th>Line</th><th>Rule</th><th>NOPMD or Annotation</th><th>Reason</th></tr>"
-                + PMD.EOL + "<tr bgcolor=\"lightgrey\"> " + PMD.EOL + "<td align=\"left\"><a href=\"link_prefix.html#line_prefix1\"></a></td>" + PMD.EOL
+                         + PMD.EOL + "<tr bgcolor=\"lightgrey\"> " + PMD.EOL + "<td align=\"left\"><a href=\"link_prefix" + getSourceCodeFilename() + ".html#line_prefix1\">" + getSourceCodeFilename() + "</a></td>" + PMD.EOL
                 + "<td align=\"center\">1</td>" + PMD.EOL + "<td align=\"center\">Foo</td>" + PMD.EOL
-                + "<td align=\"center\">NOPMD</td>" + PMD.EOL + "<td align=\"center\">test</td>" + PMD.EOL + "</tr>"
+                         + "<td align=\"center\">//NOPMD</td>" + PMD.EOL + "<td align=\"center\">test</td>" + PMD.EOL
+                         + "</tr>"
                 + PMD.EOL + "</table></tr></table></body></html>" + PMD.EOL, actual);
     }
 
     @Test
-    public void testHideSuppressions() throws Exception {
-        Report rep = createEmptyReportWithSuppression();
+    void testHideSuppressions() throws Exception {
         Renderer renderer = getRenderer();
         renderer.setShowSuppressedViolations(false);
-        String actual = renderReport(renderer, rep);
+        String actual = renderReport(renderer, createEmptyReportWithSuppression());
         assertEquals(getExpectedEmpty(), actual);
     }
 
-    private Report createEmptyReportWithSuppression() {
-        Report rep = new Report();
-        Map<Integer, String> suppressions = new HashMap<>();
-        suppressions.put(1, "test");
-        rep.suppress(suppressions);
-        RuleContext ctx = new RuleContext();
-        ParametricRuleViolation<Node> violation = new ParametricRuleViolation<>(new FooRule(), ctx, null,
-                "suppress test");
-        violation.setLines(1, 1);
-        rep.addRuleViolation(violation);
-        return rep;
+    private Consumer<FileAnalysisListener> createEmptyReportWithSuppression() {
+        return listener -> {
+            DummyRootNode root = helper.parse("dummy code", getSourceCodeFilename())
+                                       .withNoPmdComments(Collections.singletonMap(1, "test"));
+
+            RuleContext ruleContext = RuleContext.create(listener, new FooRule());
+            ruleContext.addViolationWithPosition(root, 1, 1, "suppress test");
+        };
     }
 }

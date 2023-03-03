@@ -4,20 +4,17 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.expression.TernaryExpression;
 
-public class ASTTernaryExpression extends AbstractApexNode<TernaryExpression> {
+public final class ASTTernaryExpression extends AbstractApexNode<TernaryExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTernaryExpression(TernaryExpression ternaryExpression) {
+    ASTTernaryExpression(TernaryExpression ternaryExpression) {
         super(ternaryExpression);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

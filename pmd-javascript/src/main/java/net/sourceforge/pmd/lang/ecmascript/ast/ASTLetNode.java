@@ -6,17 +6,13 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.LetNode;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTLetNode extends AbstractEcmascriptNode<LetNode> {
-    @Deprecated
-    @InternalApi
-    public ASTLetNode(LetNode letNode) {
+public final class ASTLetNode extends AbstractEcmascriptNode<LetNode> {
+    ASTLetNode(LetNode letNode) {
         super(letNode);
     }
 
     @Override
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+    protected <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

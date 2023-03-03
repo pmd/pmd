@@ -5,6 +5,7 @@
    <test-code>
       <description>Returning null array</description>
       <expected-problems>1</expected-problems>
+      <expected-linenumbers>6</expected-linenumbers>
       <code><![CDATA[
 public class Foo {
     // Not a good idea...
@@ -134,6 +135,10 @@ public class Foo {
         return new int[0];
     }
 }
+
+interface SomeInterface {
+    Object run();
+}
     ]]></code>
   </test-code>
 
@@ -178,13 +183,15 @@ public class Foo {
   <test-code>
     <description>[java] ReturnEmptyCollectionRatherThanNull - false positive with stream and lambda #3721</description>
     <expected-problems>1</expected-problems>
-    <expected-linenumbers>37</expected-linenumbers>
+    <expected-linenumbers>39</expected-linenumbers>
     <code><![CDATA[
 import java.util.*;
-import java.util.concurrent.Callable;
+import java.util.stream.*;
+import java.util.concurrent.*;
+import java.nio.file.Path;
 
 public class Foo {
-    private Map<Path, List<String>> joinFutures(Map<String, List<Future<String>>> map) {
+    private Map<String, List<String>> joinFutures(Map<String, List<Future<String>>> map) {
         Map<String, List<String>> joined = new HashMap<>();
 
         for (String p : map.keySet()) {
@@ -207,7 +214,7 @@ public class Foo {
         }
 
         // checking basic lambdas and anonymous classes as well
-        Callable<Object> c = a -> { return null; }; // <----- false positive here
+        Callable<Object> c = () -> { return null; }; // <----- false positive here
         Callable<Object> c2 = new Callable<Object>() {
             public Object call() {
                 return null; // <----- false positive here

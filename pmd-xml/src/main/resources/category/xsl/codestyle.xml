@@ -21,7 +21,6 @@ The XPath concat() functions accepts as many arguments as required so you can ha
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
 <!-- the use of node() allow to target any node with an select attribute
      but also workaround the ambiguity of having the xsl namespace in the

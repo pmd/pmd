@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class SignatureDeclareThrowsExceptionTest extends PmdRuleTst {
+class SignatureDeclareThrowsExceptionTest extends PmdRuleTst {
     // no additional unit tests
 }

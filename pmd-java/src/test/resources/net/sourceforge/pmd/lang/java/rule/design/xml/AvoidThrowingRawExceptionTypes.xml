@@ -7,6 +7,7 @@
     <test-code>
         <description>throwing various types</description>
         <expected-problems>4</expected-problems>
+        <expected-linenumbers>3,4,5,6</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     void bar() {
@@ -57,6 +58,7 @@ public class PmdTest {
     <test-code>
         <description>False negative when importing another exception</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
 import java.io.IOException;
 

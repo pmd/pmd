@@ -11,6 +11,6 @@ import net.sourceforge.pmd.lang.html.ast.HtmlTokenizer;
 public final class HtmlCpdLanguage extends AbstractLanguage {
 
     public HtmlCpdLanguage() {
-        super("HTML", "html", new HtmlTokenizer(), ".html");
+        super(HtmlLanguageModule.NAME, HtmlLanguageModule.TERSE_NAME, new HtmlTokenizer(), HtmlLanguageModule.EXTENSIONS);
     }
 }

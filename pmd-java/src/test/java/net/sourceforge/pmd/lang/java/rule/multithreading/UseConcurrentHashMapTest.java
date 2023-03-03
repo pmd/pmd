@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.multithreading;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class UseConcurrentHashMapTest extends PmdRuleTst {
+class UseConcurrentHashMapTest extends PmdRuleTst {
     // no additional unit tests
 }

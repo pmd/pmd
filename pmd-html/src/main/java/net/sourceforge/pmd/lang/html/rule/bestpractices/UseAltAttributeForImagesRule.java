@@ -4,14 +4,20 @@
 
 package net.sourceforge.pmd.lang.html.rule.bestpractices;
 
+import java.util.Arrays;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.html.ast.ASTHtmlElement;
 import net.sourceforge.pmd.lang.html.rule.AbstractHtmlRule;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 public class UseAltAttributeForImagesRule extends AbstractHtmlRule {
 
-    public UseAltAttributeForImagesRule() {
-        addRuleChainVisit("img");
+    @Override
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forXPathNames(Arrays.asList("img"));
     }
 
     @Override

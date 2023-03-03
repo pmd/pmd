@@ -11,12 +11,16 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 public class FooRule extends AbstractJavaRule {
 
     public FooRule() {
-        setMessage("No Foo allowed");
+        this("No Foo allowed");
+    }
+
+    public FooRule(String message) {
+        setMessage(message);
     }
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration c, Object ctx) {
-        if (c.getImage().equalsIgnoreCase("Foo")) {
+        if (c.getSimpleName().equalsIgnoreCase("Foo")) {
             addViolation(ctx, c);
         }
         return super.visit(c, ctx);
@@ -24,7 +28,7 @@ public class FooRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTVariableDeclaratorId c, Object ctx) {
-        if (c.getImage().equalsIgnoreCase("Foo")) {
+        if (c.getName().equalsIgnoreCase("Foo")) {
             addViolation(ctx, c);
         }
         return super.visit(c, ctx);

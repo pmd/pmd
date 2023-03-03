@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.SortedMap;
@@ -18,8 +17,11 @@ import java.util.TreeMap;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.properties.StringProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Renderer to another HTML format.
@@ -28,7 +30,11 @@ public class YAHTMLRenderer extends AbstractAccumulatingRenderer {
 
     public static final String NAME = "yahtml";
     // TODO 7.0.0 use PropertyDescriptor<Optional<File>> with a constraint that the file is an existing directory
-    public static final StringProperty OUTPUT_DIR = new StringProperty("outputDir", "Output directory.", null, 0);
+    public static final PropertyDescriptor<String> OUTPUT_DIR =
+        PropertyFactory.stringProperty("outputDir")
+                       .desc("Output directory.")
+                       .defaultValue(".")
+                       .build();
 
     private SortedMap<String, ReportNode> reportNodesByPackage = new TreeMap<>();
 
@@ -44,7 +50,8 @@ public class YAHTMLRenderer extends AbstractAccumulatingRenderer {
     }
 
     private void addViolation(RuleViolation violation) {
-        String packageName = violation.getPackageName();
+        String packageName = violation.getAdditionalInfo().getOrDefault(RuleViolation.PACKAGE_NAME, "");
+        String className = violation.getAdditionalInfo().getOrDefault(RuleViolation.CLASS_NAME, "");
 
         // report each part of the package name: e.g. net.sf.pmd.test will create nodes for
         // net, net.sf, net.sf.pmd, and net.sf.pmd.test
@@ -66,10 +73,10 @@ public class YAHTMLRenderer extends AbstractAccumulatingRenderer {
         }
 
         // add one node per class collecting the actual violations
-        String fqClassName = packageName + "." + violation.getClassName();
+        String fqClassName = packageName + "." + className;
         ReportNode classNode = reportNodesByPackage.get(fqClassName);
         if (classNode == null) {
-            classNode = new ReportNode(packageName, violation.getClassName());
+            classNode = new ReportNode(packageName, className);
             reportNodesByPackage.put(fqClassName, classNode);
         }
         classNode.addRuleViolation(violation);
@@ -84,12 +91,11 @@ public class YAHTMLRenderer extends AbstractAccumulatingRenderer {
     }
 
     @Override
-    public void end() throws IOException {
+    public void outputReport(Report report) throws IOException {
         String outputDir = getProperty(OUTPUT_DIR);
 
-        Iterator<RuleViolation> violations = report.iterator();
-        while (violations.hasNext()) {
-            addViolation(violations.next());
+        for (RuleViolation ruleViolation : report.getViolations()) {
+            addViolation(ruleViolation);
         }
 
         renderIndex(outputDir);
@@ -159,15 +165,17 @@ public class YAHTMLRenderer extends AbstractAccumulatingRenderer {
                     out.println("        <tr><th>Method</th><th>Violation</th></tr>");
                     for (RuleViolation violation : node.getViolations()) {
                         out.print("        <tr><td>");
-                        out.print(violation.getMethodName());
+                        String methodName = violation.getAdditionalInfo().get(RuleViolation.METHOD_NAME);
+                        out.print(StringUtil.nullToEmpty(methodName));
                         out.print("</td><td>");
                         out.print("<table border=\"0\">");
 
                         out.print(renderViolationRow("Rule:", violation.getRule().getName()));
                         out.print(renderViolationRow("Description:", violation.getDescription()));
 
-                        if (StringUtils.isNotBlank(violation.getVariableName())) {
-                            out.print(renderViolationRow("Variable:", violation.getVariableName()));
+                        String variableName = violation.getAdditionalInfo().get(RuleViolation.VARIABLE_NAME);
+                        if (StringUtils.isNotBlank(variableName)) {
+                            out.print(renderViolationRow("Variable:", variableName));
                         }
 
                         out.print(renderViolationRow("Line:", violation.getEndLine() > 0

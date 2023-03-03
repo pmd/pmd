@@ -18,6 +18,7 @@ import java.util.Objects;
 public class RuleTestCollection {
 
     private final List<RuleTestDescriptor> tests = new ArrayList<>();
+    private String absoluteUriToTestXmlFile;
 
     public void addTest(RuleTestDescriptor descriptor) {
         tests.add(Objects.requireNonNull(descriptor));
@@ -41,4 +42,11 @@ public class RuleTestCollection {
         return focused;
     }
 
+    public String getAbsoluteUriToTestXmlFile() {
+        return absoluteUriToTestXmlFile;
+    }
+
+    public void setAbsoluteUriToTestXmlFile(String absoluteUriToTestXmlFile) {
+        this.absoluteUriToTestXmlFile = absoluteUriToTestXmlFile;
+    }
 }

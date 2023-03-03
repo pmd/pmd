@@ -32,14 +32,17 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.log.MessageReporter;
 
 /**
@@ -50,6 +53,8 @@ import net.sourceforge.pmd.util.log.MessageReporter;
  */
 @SuppressWarnings("PMD.CloseResource")
 public final class FileCollector implements AutoCloseable {
+
+    private static final Logger LOG = LoggerFactory.getLogger(FileCollector.class);
 
     private final Set<TextFile> allFilesToProcess = new LinkedHashSet<>();
     private final List<Closeable> resourcesToClose = new ArrayList<>();
@@ -79,6 +84,17 @@ public final class FileCollector implements AutoCloseable {
         return new FileCollector(discoverer, reporter, null);
     }
 
+    /**
+     * Returns a new collector using the configuration except for the logger.
+     */
+    @InternalApi
+    public FileCollector newCollector(MessageReporter logger) {
+        FileCollector fileCollector = new FileCollector(discoverer, logger, null);
+        fileCollector.charset = this.charset;
+        fileCollector.relativizeRootPaths.addAll(this.relativizeRootPaths);
+        return fileCollector;
+    }
+
     // public behaviour
 
     /**
@@ -92,12 +108,7 @@ public final class FileCollector implements AutoCloseable {
             throw new IllegalStateException("Collector was closed!");
         }
         List<TextFile> allFilesToProcess = new ArrayList<>(this.allFilesToProcess);
-        Collections.sort(allFilesToProcess, new Comparator<TextFile>() {
-            @Override
-            public int compare(TextFile o1, TextFile o2) {
-                return o1.getPathId().compareTo(o2.getPathId());
-            }
-        });
+        allFilesToProcess.sort(Comparator.comparing(TextFile::getPathId));
         return Collections.unmodifiableList(allFilesToProcess);
     }
 
@@ -119,7 +130,7 @@ public final class FileCollector implements AutoCloseable {
             return;
         }
         closed = true;
-        IOException exception = IOUtil.closeAll(resourcesToClose);
+        Exception exception = IOUtil.closeAll(resourcesToClose);
         if (exception != null) {
             reporter.errorEx("Error while closing resources", exception);
         }
@@ -138,14 +149,14 @@ public final class FileCollector implements AutoCloseable {
      */
     public boolean addFile(Path file) {
         if (!Files.isRegularFile(file)) {
-            reporter.error("Not a regular file {0}", file);
+            reporter.error("Not a regular file: {0}", file);
             return false;
         }
         LanguageVersion languageVersion = discoverLanguage(file.toString());
-        if (languageVersion != null) {
-            return addFileImpl(new NioTextFile(file, charset, languageVersion, getDisplayName(file)));
-        }
-        return false;
+        return languageVersion != null
+                && addFileImpl(TextFile.builderForPath(file, charset, languageVersion)
+                    .withDisplayName(getDisplayName(file))
+                    .build());
     }
 
     /**
@@ -161,11 +172,14 @@ public final class FileCollector implements AutoCloseable {
     public boolean addFile(Path file, Language language) {
         AssertionUtil.requireParamNotNull("language", language);
         if (!Files.isRegularFile(file)) {
-            reporter.error("Not a regular file {0}", file);
+            reporter.error("Not a regular file: {0}", file);
             return false;
         }
-        NioTextFile nioTextFile = new NioTextFile(file, charset, discoverer.getDefaultLanguageVersion(language), getDisplayName(file));
-        return addFileImpl(nioTextFile);
+        LanguageVersion lv = discoverer.getDefaultLanguageVersion(language);
+        Objects.requireNonNull(lv);
+        return addFileImpl(TextFile.builderForPath(file, charset, lv)
+                            .withDisplayName(getDisplayName(file))
+                            .build());
     }
 
     /**
@@ -177,10 +191,7 @@ public final class FileCollector implements AutoCloseable {
      */
     public boolean addFile(TextFile textFile) {
         AssertionUtil.requireParamNotNull("textFile", textFile);
-        if (checkContextualVersion(textFile)) {
-            return addFileImpl(textFile);
-        }
-        return false;
+        return checkContextualVersion(textFile) && addFileImpl(textFile);
     }
 
     /**
@@ -189,24 +200,23 @@ public final class FileCollector implements AutoCloseable {
      *
      * @return True if the file has been added
      */
-    public boolean addSourceFile(String sourceContents, String pathId) {
+    public boolean addSourceFile(String pathId, String sourceContents) {
         AssertionUtil.requireParamNotNull("sourceContents", sourceContents);
         AssertionUtil.requireParamNotNull("pathId", pathId);
 
         LanguageVersion version = discoverLanguage(pathId);
-        if (version != null) {
-            return addFileImpl(new StringTextFile(sourceContents, pathId, pathId, version));
-        }
-
-        return false;
+        return version != null
+                && addFileImpl(TextFile.builderForCharSeq(sourceContents, pathId, version)
+                    .withDisplayName(pathId)
+                    .build());
     }
 
     private boolean addFileImpl(TextFile textFile) {
-        reporter.trace("Adding file {0} (lang: {1}) ", textFile.getPathId(), textFile.getLanguageVersion().getTerseName());
+        LOG.trace("Adding file {} (lang: {}) ", textFile.getPathId(), textFile.getLanguageVersion().getTerseName());
         if (allFilesToProcess.add(textFile)) {
             return true;
         }
-        reporter.trace("File was already collected, skipping");
+        LOG.trace("File was already collected, skipping");
         return false;
     }
 
@@ -217,12 +227,12 @@ public final class FileCollector implements AutoCloseable {
         List<Language> languages = discoverer.getLanguagesForFile(file);
 
         if (languages.isEmpty()) {
-            reporter.trace("File {0} matches no known language, ignoring", file);
+            LOG.trace("File {} matches no known language, ignoring", file);
             return null;
         }
         Language lang = languages.get(0);
         if (languages.size() > 1) {
-            reporter.trace("File {0} matches multiple languages ({1}), selecting {2}", file, languages, lang);
+            LOG.trace("File {} matches multiple languages ({}), selecting {}", file, languages, lang);
         }
         return discoverer.getDefaultLanguageVersion(lang);
     }
@@ -238,10 +248,10 @@ public final class FileCollector implements AutoCloseable {
         LanguageVersion contextVersion = discoverer.getDefaultLanguageVersion(language);
         if (!fileVersion.equals(contextVersion)) {
             reporter.error(
-                "Cannot add file {0}: version ''{2}'' does not match ''{1}''",
+                "Cannot add file {0}: version ''{1}'' does not match ''{2}''",
                 textFile.getPathId(),
-                contextVersion,
-                fileVersion
+                fileVersion,
+                contextVersion
             );
             return false;
         }
@@ -286,8 +296,10 @@ public final class FileCollector implements AutoCloseable {
     /**
      * Return the textfile's display name. Takes the shortest path we
      * can construct from the relativize roots.
+     *
+     * <p>package private for test only</p>
      */
-    private static String getDisplayName(Path file, List<Path> relativizeRoots) {
+    static String getDisplayName(Path file, List<Path> relativizeRoots) {
         Path best = file;
         for (Path root : relativizeRoots) {
             Path candidate;
@@ -501,11 +513,11 @@ public final class FileCollector implements AutoCloseable {
      * Remove all files collected by the given collector from this one.
      */
     public void exclude(FileCollector excludeCollector) {
-        HashSet<TextFile> toExclude = new HashSet<>(excludeCollector.allFilesToProcess);
+        Set<TextFile> toExclude = new HashSet<>(excludeCollector.allFilesToProcess);
         for (Iterator<TextFile> iterator = allFilesToProcess.iterator(); iterator.hasNext();) {
             TextFile file = iterator.next();
             if (toExclude.contains(file)) {
-                reporter.trace("Excluding file {0}", file.getPathId());
+                LOG.trace("Excluding file {}", file.getPathId());
                 iterator.remove();
             }
         }
@@ -531,7 +543,7 @@ public final class FileCollector implements AutoCloseable {
             TextFile file = iterator.next();
             Language lang = file.getLanguageVersion().getLanguage();
             if (!languages.contains(lang)) {
-                reporter.trace("Filtering out {0}, no rules for language {1}", file.getPathId(), lang);
+                LOG.trace("Filtering out {}, no rules for language {}", file.getPathId(), lang);
                 iterator.remove();
             }
         }

@@ -1,10 +1,11 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.rule.internal.AbstractJavaCounterCheckRule;
 
 
 /**
@@ -14,9 +15,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
  * @deprecated Use {@link NcssCountRule} instead.
  */
 @Deprecated
-public class ExcessiveMethodLengthRule extends ExcessiveLengthRule {
+public class ExcessiveMethodLengthRule extends AbstractJavaCounterCheckRule.AbstractLineLengthCheckRule<ASTMethodOrConstructorDeclaration> {
     public ExcessiveMethodLengthRule() {
         super(ASTMethodOrConstructorDeclaration.class);
-        setProperty(MINIMUM_DESCRIPTOR, 100d);
+    }
+
+    @Override
+    protected int defaultReportLevel() {
+        return 100;
     }
 }

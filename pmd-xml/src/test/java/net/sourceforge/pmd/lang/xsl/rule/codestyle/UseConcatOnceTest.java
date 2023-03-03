@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.xsl.rule.codestyle;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class UseConcatOnceTest extends PmdRuleTst {
+class UseConcatOnceTest extends PmdRuleTst {
     // no additional unit tests
 }

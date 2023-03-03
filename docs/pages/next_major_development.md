@@ -18,6 +18,8 @@ the logo in anywhere without offense.
 
 The current tasks are listed here: [Integrate new PMD logo #1931](https://github.com/pmd/pmd/issues/1931)
 
+The new logo is available from the [Logo Project Page](pmd_projectdocs_logo.html).
+
 ### API
 
 The API of PMD has been growing over the years and needs to be cleaned up. The goal is, to
@@ -62,12 +64,131 @@ API change.
 Some first results of the Java AST changes are for now documented in the Wiki:
 [Java clean changes](https://github.com/pmd/pmd/wiki/Java_clean_changes).
 
+{% jdoc_nspace :jast java::lang.java.ast %}
+
+* {% jdoc jast::ASTType %} and {% jdoc jast::ASTReferenceType %} have been turned into
+interfaces, implemented by {% jdoc jast::ASTPrimitiveType %}, {% jdoc jast::ASTClassOrInterfaceType %},
+and the new node {% jdoc jast::ASTArrayType %}. This reduces the depth of the relevant
+subtrees, and allows to explore them more easily and consistently.
+
+* {% jdoc jast::ASTClassOrInterfaceType %} appears to be left recursive now.
+TODO document that when we're done discussing the semantic rewrite phase.
+
+* **Migrating**:
+  * There is currently no way to match abstract types (or interfaces) with XPath, so `Type`
+  and `ReferenceType` name tests won't match anything anymore.
+  * `Type/ReferenceType/ClassOrInterfaceType` -> `ClassOrInterfaceType`
+  * `Type/PrimitiveType` -> `PrimitiveType`.
+  * `Type/ReferenceType[@ArrayDepth>1]/ClassOrInterfaceType` -> `ArrayType/ClassOrInterfaceType`.
+  * `Type/ReferenceType/PrimitiveType` -> `ArrayType/PrimitiveType`.
+  * Note that in most cases you should check the type of a variable with e.g.
+  `VariableDeclaratorId[pmd-java:typeIs("java.lang.String[]")]` because it
+  considers the additional dimensions on declarations like `String foo[];`.
+  The Java equivalent is `TypeHelper.isA(id, String[].class);`
+
+
+#### Expression grammar changes
+
+* {% jdoc jast::ASTExpression %} and {% jdoc jast::ASTPrimaryExpression %} have
+been turned into interfaces. These added no information to the AST and increased
+its depth unnecessarily. All expressions implement the first interface. Both of
+those nodes can no more be found in ASTs.
+
+* **Migrating**:
+  * Basically, `Expression/X` or `Expression/PrimaryExpression/X`, just becomes `X`
+  * There is currently no way to match abstract or interface types with XPath, so `Expression` or `PrimaryExpression`  name tests won't match anything anymore. However, the axis step *[@Expression=true()] matches any expression.
+
+* {% jdoc jast::ASTLiteral %} has been turned into an interface. The fact that {% jdoc jast::ASTNullLiteral %}
+and {% jdoc jast::ASTBooleanLiteral %} were nested within it but other literals types were all directly represented
+by it was inconsistent, and ultimately that level of nesting was unnecessary.
+  * {% jdoc jast::ASTNumericLiteral %}, {% jdoc jast::ASTCharLiteral %}, {% jdoc jast::ASTStringLiteral %},
+  and {% jdoc jast::ASTClassLiteral %} are new nodes that implement that interface.
+  * ASTLiteral implements {% jdoc jast::ASTPrimaryExpression %}
+
+* **Migrating**:
+  * Remove all `/Literal/` segments from your XPath expressions
+  * If you tested several types of literals, you can e.g. do it like `/*[self::StringLiteral or self::CharLiteral]/`
+  * As is usual, use the designer to explore the new AST structure
+
+* The nodes {% jdoc_old jast::ASTPrimaryPrefix %} and {% jdoc_old jast::ASTPrimarySuffix %} are removed from the grammar.
+Subtrees for primary expressions appear to be left-recursive now. For example,
+
+```java
+new Foo().bar.foo(1)
+```
+used to be parsed as
+```
+Expression
++ PrimaryExpression
+  + PrimaryPrefix
+    + AllocationExpression
+      + ClassOrInterfaceType[@Image="Foo"]
+  + PrimarySuffix
+    + Arguments
+  + PrimarySuffix
+    + Name[@Image="bar.foo"]
+  + PrimarySuffix
+    + Arguments
+      + ArgumentsList
+        + Expression
+          + PrimaryExpression
+            + Literal[@ValueAsInt=1]
+```
+It's now parsed as
+```
+MethodCall[@MethodName="foo"]
++ FieldAccess[@FieldName="bar"]
+  + ConstructorCall
+    + ClassOrInterfaceType[@TypeImage="Foo"]
+    + ArgumentsList
++ ArgumentsList
+  + NumericLiteral[@ValueAsInt=1]
+```
+Instead of being flat, the subexpressions are now nested within one another.
+The nesting follows the naturally recursive structure of expressions:
+
+```java
+new Foo().bar.foo(1)
+---------            ConstructorCall
+-------------        FieldAccess
+-------------------- MethodCall
+```
+This makes the AST more regular and easier to navigate. Each node contains 
+the other nodes that are relevant to it (e.g. arguments) instead of them 
+being spread out over several siblings. The API of all nodes has been 
+enriched with high-level accessors to query the AST in a semantic way,
+without bothering with the placement details.
+
+The amount of changes in the grammar that this change entails is enormous, 
+but hopefully firing up the designer to inspect the new structure should 
+give you the information you need quickly.
+
+TODO write a summary of changes in the javadoc of the package, will be more
+accessible.
+
+Note: this doesn't affect binary expressions like {% jdoc jast::ASTAdditiveExpression %}.
+E.g. `a+b+c` is not parsed as
+```
+AdditiveExpression
++ AdditiveExpression
+  + (a)
+  + (b)
++ (c)  
+``` 
+It's still
+```
+AdditiveExpression
++ (a)
++ (b)
++ (c)  
+``` 
+which is easier to navigate, especially from XPath.
+
 ### Miscellaneous
 
 There are also some small improvements, refactoring and internal tasks that are planned for PMD 7.
 
 The current tasks are listed here: [PMD 7 Miscellaneous Tasks #2524](https://github.com/pmd/pmd/issues/2524)
-
 
 ## New API support guidelines
 
@@ -1568,8 +1689,8 @@ large projects, with many duplications, it was causing `OutOfMemoryError`s (see 
 
 These rules will be removed with PMD 7.0.0.
 
-* Since 6.0.0: The Java rules {% rule java/design/NcssConstructorCount %}, {% rule java/design/NcssMethodCount %},
-  and {% rule java/design/NcssTypeCount %} have been deprecated. They will be replaced by the new rule
+* Since 6.0.0: The Java rules `NcssConstructorCount` (design), `NcssMethodCount` (design),
+  and `NcssTypeCount` (design) have been deprecated. They will be replaced by the new rule
   {% rule java/design/NcssCount %}.
 
 * Since 6.0.0: The Java rule `LooseCoupling` in ruleset `java-typeresolution` is deprecated. Use the rule with the
@@ -1580,7 +1701,7 @@ These rules will be removed with PMD 7.0.0.
   {% rule java/errorprone/CloneMethodMustImplementCloneable %}.
 
 * Since 6.0.0: The Java rule `UnusedImports` in ruleset `java-typeresolution` is deprecated. Use the rule with
-  the same name from category `bestpractices` instead: {% rule java/bestpractices/UnusedImports %}.
+  the same name from category `bestpractices` instead: `UnusedImports` (bestpractices).
 
 * Since 6.0.0: The Java rule `SignatureDeclareThrowsException` in ruleset `java-typeresolution` is deprecated.
   Use the rule with the same name from category `design` instead:
@@ -1594,45 +1715,45 @@ These rules will be removed with PMD 7.0.0.
   `GuardLogStatementJavaUtil` (ruleset `java-logging-java`) have been deprecated. Use the rule
   {% rule java/bestpractices/GuardLogStatement %} instead, which covers all cases regardless of the logging framework.
 
-* Since 6.2.0: The Java rules {% rule java/codestyle/WhileLoopsMustUseBraces %},
-  {% rule java/codestyle/ForLoopsMustUseBraces %}, {% rule java/codestyle/IfStmtsMustUseBraces %}, and
-  {% rule java/codestyle/IfElseStmtsMustUseBraces %} are deprecated. They will be replaced by the new rule
+* Since 6.2.0: The Java rules `WhileLoopsMustUseBraces` (codestyle),
+  `ForLoopsMustUseBraces` (codestyle), `IfStmtsMustUseBraces` (codestyle), and
+  `IfElseStmtsMustUseBraces` (codestyle) are deprecated. They will be replaced by the new rule
   {% rule java/codestyle/ControlStatementBraces %}.
 
-* Since 6.3.0: The Java rule {% rule java/codestyle/AbstractNaming %} is deprecated
+* Since 6.3.0: The Java rule `AbstractNaming` (codestyle) is deprecated
   in favour of {% rule java/codestyle/ClassNamingConventions %}.
 
-* Since 6.7.0: The Java rules {% rule java/codestyle/VariableNamingConventions %},
-  {% rule java/codestyle/MIsLeadingVariableName %}, {% rule java/codestyle/SuspiciousConstantFieldName %}, and
-  {% rule java/codestyle/AvoidPrefixingMethodParameters %} are now deprecated. They are replaced by the more general
+* Since 6.7.0: The Java rules `VariableNamingConventions` (codestyle),
+  `MIsLeadingVariableName` (codestyle), `SuspiciousConstantFieldName` (codestyle), and
+  `AvoidPrefixingMethodParameters` (codestyle) are now deprecated. They are replaced by the more general
   {% rule java/codestyle/FieldNamingConventions %}, {% rule java/codestyle/FormalParameterNamingConventions %}, and
   {% rule java/codestyle/LocalVariableNamingConventions %}.
 
-* Since 6.11.0: The Java rule {% rule java/multithreading/UnsynchronizedStaticDateFormatter %} has been deprecated.
+* Since 6.11.0: The Java rule `UnsynchronizedStaticDateFormatter` (multithreading) has been deprecated.
   The rule is replaced by the more general {% rule java/multithreading/UnsynchronizedStaticFormatter %}.
 
-* Since 6.15.0: The Apex rule {% rule apex/codestyle/VariableNamingConventions %} has been deprecated. The rule is
+* Since 6.15.0: The Apex rule `VariableNamingConventions` (codestyle) has been deprecated. The rule is
   replaced by the more general rules {% rule apex/codestyle/FieldNamingConventions %},
   {% rule apex/codestyle/FormalParameterNamingConventions %}, {% rule apex/codestyle/LocalVariableNamingConventions %},
   and {% rule apex/codestyle/PropertyNamingConventions %}.
 
-* Since 6.15.0: The Java rule {% rule java/errorprone/LoggerIsNotStaticFinal %} has been deprecated.
+* Since 6.15.0: The Java rule `LoggerIsNotStaticFinal` (errorprone) has been deprecated.
   The rule is replaced by {% rule java/errorprone/ProperLogger %}.
 
-* Since 6.16.0: The Java rule {% rule java/codestyle/AvoidFinalLocalVariable %} has been deprecated.
+* Since 6.16.0: The Java rule `AvoidFinalLocalVariable` (codestyle) has been deprecated.
   The rule is controversial and also contradicts other existing rules such as
   {% rule java/codestyle/LocalVariableCouldBeFinal %}. If the goal is to avoid defining
   constants in a scope smaller than the class, then the rule {% rule java/errorprone/AvoidDuplicateLiterals %}
   should be used instead.
 
-* Since 6.19.0: The Java rule {% rule java/errorprone/InvalidSlf4jMessageFormat %} has been renamed to
+* Since 6.19.0: The Java rule `InvalidSlf4jMessageFormat` (errorprone) has been renamed to
   {% rule java/errorprone/InvalidLogMessageFormat %}.
 
-* Since 6.24.0: The two Java rules {% rule java/bestpractices/PositionLiteralsFirstInComparisons %}
-  and {% rule java/bestpractices/PositionLiteralsFirstInCaseInsensitiveComparisons %}
+* Since 6.24.0: The two Java rules `PositionLiteralsFirstInComparisons` (bestpractices)
+  and `PositionLiteralsFirstInCaseInsensitiveComparisons` (bestpractices)
   have been deprecated in favor of the new rule {% rule java/bestpractices/LiteralsFirstInComparisons %}.
 
-* Since 6.27.0: The Java rule {% rule java/errorprone/DataflowAnomalyAnalysis %}
+* Since 6.27.0: The Java rule `DataflowAnomalyAnalysis` (errorprone)
   is deprecated in favour of {% rule java/bestpractices/UnusedAssignment %},
   which was introduced in PMD 6.26.0.
 
@@ -1640,57 +1761,57 @@ These rules will be removed with PMD 7.0.0.
   {% rule apex/performance/AvoidSoqlInLoops %}, and {% rule apex/performance/AvoidSoslInLoops %} are deprecated
   in favor of the new rule {% rule apex/performance/OperationWithLimitsInLoop %}.
 
-* Since 6.29.0: The Java rule {% rule java/errorprone/DoNotCallSystemExit %} has been renamed to
+* Since 6.29.0: The Java rule `DoNotCallSystemExit` (errorprone) has been renamed to
   {% rule/java/errorprone/DoNotTerminateVM %}.
 
-* Since 6.31:0: The Java rule {% rule java/performance/AvoidUsingShortType %} is deprecated
+* Since 6.31:0: The Java rule `AvoidUsingShortType` (performance) is deprecated
   for removal without replacement.
 
-* Since 6.31.0: The Java rule {% rule java/performance/SimplifyStartsWith %} is deprecated
+* Since 6.31.0: The Java rule `SimplifyStartsWith` (performance) is deprecated
   for removal without replacement.
 
-* Since 6.34.0: The Java rules {% rule java/bestpractices/UnusedImports %}, {% rule java/codestyle/DuplicateImports %},
-  {% rule java/codestyle/DontImportJavaLang %}, and {% rule java/errorprone/ImportFromSamePackage %} are
+* Since 6.34.0: The Java rules `UnusedImports` (bestpractices), `DuplicateImports` (codestyle),
+  `DontImportJavaLang` (codestyle), and `ImportFromSamePackage` (errorprone) are
   deprecated. These rules are replaced by {% rule java/codestyle/UnnecessaryImport %}.
 
-* Since 6.35.0: The Java rule {% rule java/codestyle/DefaultPackage %} has been deprecated in favor of
+* Since 6.35.0: The Java rule `DefaultPackage` (codestyle) has been deprecated in favor of
   {% rule java/codestyle/CommentDefaultAccessModifier %}.
 
-* Since 6.35.0: The Java rule {% rule java/errorprone/CloneThrowsCloneNotSupportedException %} has been
+* Since 6.35.0: The Java rule `CloneThrowsCloneNotSupportedException` (errorprone) has been
   deprecated without replacement.
 
-* Since 6.36.0: The Java rule {% rule java/errorprone/BadComparison %} has been renamed to
+* Since 6.36.0: The Java rule `BadComparison` (errorprone) has been renamed to
   {% rule java/errorprone/ComparisonWithNaN %}.
 
 * Since 6.37.0: The following Java rules are deprecated and removed from the quickstart ruleset,
   as the new rule {% rule java/bestpractices/SimplifiableTestAssertion %} merges
   their functionality:
-  * {% rule java/bestpractices/UseAssertEqualsInsteadOfAssertTrue %}
-  * {% rule java/bestpractices/UseAssertNullInsteadOfAssertTrue %}
-  * {% rule java/bestpractices/UseAssertSameInsteadOfAssertTrue %}
-  * {% rule java/bestpractices/UseAssertTrueInsteadOfAssertEquals %}
-  * {% rule java/design/SimplifyBooleanAssertion %}
+  * `UseAssertEqualsInsteadOfAssertTrue` (bestpractices)
+  * `UseAssertNullInsteadOfAssertTrue` (bestpractices)
+  * `UseAssertSameInsteadOfAssertTrue` (bestpractices)
+  * `UseAssertTrueInsteadOfAssertEquals` (bestpractices)
+  * `SimplifyBooleanAssertion` (design)
 
-* Since 6.37.0: The Java rule {% rule java/errorprone/ReturnEmptyArrayRatherThanNull %} is deprecated and removed from
+* Since 6.37.0: The Java rule `ReturnEmptyArrayRatherThanNull` (errorprone) is deprecated and removed from
   the quickstart ruleset, as the new rule {% rule java/errorprone/ReturnEmptyCollectionRatherThanNull %}
   supersedes it.
 
 * Since 6.37.0: The following Java rules are deprecated and removed from the quickstart ruleset,
   as the new rule {% rule java/bestpractices/PrimitiveWrapperInstantiation %} merges
   their functionality:
-  * {% rule java/performance/BooleanInstantiation %}
-  * {% rule java/performance/ByteInstantiation %}
-  * {% rule java/performance/IntegerInstantiation %}
-  * {% rule java/performance/LongInstantiation %}
-  * {% rule java/performance/ShortInstantiation %}
+  * `BooleanInstantiation` (performance)
+  * `ByteInstantiation` (performance)
+  * `IntegerInstantiation` (performance)
+  * `LongInstantiation` (performance)
+  * `ShortInstantiation` (performance)
 
-* Since 6.37.0: The Java rule {% rule java/performance/UnnecessaryWrapperObjectCreation %} is deprecated
+* Since 6.37.0: The Java rule `UnnecessaryWrapperObjectCreation` (performance) is deprecated
   with no planned replacement before PMD 7. In its current state, the rule is not useful
   as it finds only contrived cases of creating a primitive wrapper and unboxing it explicitly
   in the same expression. In PMD 7 this and more cases will be covered by a
-  new rule `UnnecessaryBoxing`.
+  new rule {% rule java/codestyle/UnnecessaryBoxing %}.
 
-* Since 6.37.0: The Java rule {% rule java/errorprone/MissingBreakInSwitch %} has been renamed to
+* Since 6.37.0: The Java rule `MissingBreakInSwitch` (errorprone) has been renamed to
   {% rule java/errorprone/ImplicitSwitchFallThrough %}.
 
 * Since 6.46.0: The following Java rules are deprecated and removed from the quickstart ruleset, as the new rule

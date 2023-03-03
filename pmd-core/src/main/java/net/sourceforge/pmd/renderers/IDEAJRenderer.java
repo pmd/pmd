@@ -13,7 +13,8 @@ import java.util.StringTokenizer;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.properties.StringProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 
 /**
  * Renderer for IntelliJ IDEA integration.
@@ -26,10 +27,12 @@ public class IDEAJRenderer extends AbstractIncrementingRenderer {
     public static final String NAME = "ideaj";
 
     // TODO 7.0.0 use PropertyDescriptor<String>
-    public static final StringProperty FILE_NAME = new StringProperty("fileName", "File name.", "", 0);
-    public static final StringProperty SOURCE_PATH = new StringProperty("sourcePath", "Source path.", "", 1);
-    public static final StringProperty CLASS_AND_METHOD_NAME = new StringProperty("classAndMethodName",
-            "Class and Method name, pass '.method' when processing a directory.", "", 2);
+    public static final PropertyDescriptor<String> FILE_NAME =
+        PropertyFactory.stringProperty("fileName").desc("File name.").defaultValue("").build();
+    public static final PropertyDescriptor<String> SOURCE_PATH =
+        PropertyFactory.stringProperty("sourcePath").desc("Source path.").defaultValue("").build();
+    public static final PropertyDescriptor<String> CLASS_AND_METHOD_NAME =
+        PropertyFactory.stringProperty("classAndMethodName").desc("Class and Method name, pass '.method' when processing a directory.").defaultValue("").build();
 
     private static final String FILE_SEPARATOR = System.getProperty("file.separator");
     private static final String PATH_SEPARATOR = System.getProperty("path.separator");
