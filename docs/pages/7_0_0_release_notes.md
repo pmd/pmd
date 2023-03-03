@@ -2,6 +2,7 @@
 title: PMD Release Notes
 permalink: pmd_release_notes7.html
 keywords: changelog, release notes
+baseurl: https://docs.pmd-code.org/pmd-doc-7.0.0-SNAPSHOT/
 ---
 
 <!-- NOTE: THESE RELEASE NOTES ARE THOSE FOR 7.0.0 -->
@@ -36,7 +37,7 @@ We decided it's time to have a modernized logo and get rid of the gun. This allo
 the logo anywhere without offense.
 
 
-![New PMD Logo](images/logo/pmd-logo-300px.png)
+![New PMD Logo]({{ page.baseurl }}images/logo/pmd-logo-300px.png)
 
 #### Revamped Java module
 
@@ -61,7 +62,7 @@ Some first results of the Java AST changes are for now documented in the Wiki:
 [Java clean changes](https://github.com/pmd/pmd/wiki/Java_clean_changes).
 
 Overall, the changes to the parser, AST, type resolution and symbol table code has made PMD for Java **significantly faster**. On average, we have seen ~2-3X faster analysis, but as usual, this may change depending on your workload, configuration and ruleset.
-TODO: Take infos from <http://docs.pmd-code.org/pmd-doc-7.0.0-SNAPSHOT/pmd_next_major_development.html#java>
+TODO: Take infos from <{{ page.baseurl }}pmd_next_major_development.html#java>
 
 Contributors: [Clément Fournier](https://github.com/oowekyala) (@oowekyala),
   [Andreas Dangel](https://github.com/adangel) (@adangel),
@@ -119,7 +120,7 @@ pmd cpd --minimum-tokens 100 src/main/java
 Additionally, the CLI for the `check` command has been enhanced with a progress bar, which interactively displays the
 current progress of the analysis.
 
-![Demo](docs/images/userdocs/pmd-demo.gif)
+![Demo]({{ page.baseurl }}images/userdocs/pmd-demo.gif)
 
 This can be disabled with the `--no-progress` flag.
 
@@ -617,11 +618,11 @@ The metrics framework has been made simpler and more general.
 
 * Language modules now provide a proper lifecycle and can store global information. This enables the implementation
   of multifile analysis.
-* Language modules can define [custom language properties](pmd_languages_configuration.html) which can be set via
+* Language modules can define [custom language properties]({{ page.baseurl }}pmd_languages_configuration.html) which can be set via
   environment variables. This allows to add and use language specific configuration options without the need to change pmd-core.
 
-The documentation page has been updated: [Adding a new language with JavaCC](pmd_devdocs_major_adding_new_language_javacc.html)
-and [Adding a new language with ANTLR](pmd_devdocs_major_adding_new_language_antlr.html)
+The documentation page has been updated: [Adding a new language with JavaCC]({{ page.baseurl }}pmd_devdocs_major_adding_new_language_javacc.html)
+and [Adding a new language with ANTLR]({{ page.baseurl }}pmd_devdocs_major_adding_new_language_antlr.html)
 
 Related issue: [[core] Language lifecycle (#3782)](https://github.com/pmd/pmd/issues/3782)
 

@@ -32,6 +32,7 @@ travis_dir = File.expand_path File.dirname(__FILE__)
 liquid_env = {
     # wrap the config under a "site." namespace because that's how jekyll does it
     'site' => YAML.load_file(travis_dir + "/../docs/_config.yml"),
+    'page' => YAML.load_file(release_notes_file),
     # This signals the links in {% rule %} tags that they should be rendered as absolute
     'is_release_notes_processor' => true
 }
