@@ -50,7 +50,8 @@ PMD 7 does not need to load classes, and does not have these problems.
 The AST exposes much more semantic information now. For instance, you can jump from a method call to
 the declaration of the method being called, or from a field access to the field declaration. These
 improvements allow interesting rules to be written that need precise knowledge of the types
-in the program, for instance to detect unnecessary boxing or unnecessary explicit type arguments (TODO link those rules).
+in the program, for instance to detect {% rule java/codestyle/UnnecessaryBoxing %}
+or {% rule java/codestyle/UseDiamondOperator %}.
 These are just a small preview of the new rules we will be adding in the PMD 7 release cycle.
 
 Some first results of the Java AST changes are for now documented in the Wiki:
