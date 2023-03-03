@@ -66,10 +66,11 @@ Contributors: [Clément Fournier](https://github.com/oowekyala) (@oowekyala),
 
 #### Revamped Command Line Interface
 
-PMD now ships with a unified Command Line Interface for both Linux/Unix and Windows. Instead of having a collection of scripts
-for the different utilities shipped with PMD, a single script `pmd` (`pmd.bat` for Windows) can now launch all
-utilities using subcommands, e.g. `pmd check`, `pmd designer`. All commands and options are thoroughly documented in the help,
-with full color support where available. Moreover, efforts were made to provide consistency in the usage of all PMD utilities.
+PMD now ships with a unified Command Line Interface for both Linux/Unix and Windows. Instead of having a collection
+of scripts for the different utilities shipped with PMD, a single script `pmd` (`pmd.bat` for Windows) can now
+launch all utilities using subcommands, e.g. `pmd check`, `pmd designer`. All commands and options are thoroughly
+documented in the help, with full color support where available. Moreover, efforts were made to provide consistency
+in the usage of all PMD utilities.
 
 ```shell
 $ Usage: pmd [-hV] [COMMAND]
@@ -145,17 +146,19 @@ Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 
 #### Swift support
 
-Given the full Antlr support, PMD now fully supports Swift. We are pleased to announce we are shipping a number of rules
-starting with PMD 7.
+Given the full Antlr support, PMD now fully supports Swift. We are pleased to announce we are shipping a number of
+rules starting with PMD 7.
 
-* {% rule "swift/errorprone/ForceCast" %} (`swift-errorprone`) flags all force casts, making sure you are defensively considering all types.
-  Having the application crash shouldn't be an option.
-* {% rule "swift/errorprone/ForceTry" %} (`swift-errorprone`) flags all force tries, making sure you are defensively handling exceptions.
-  Having the application crash shouldn't be an option.
-* {% rule "swift/bestpractices/ProhibitedInterfaceBuilder" %} (`swift-bestpractices`) flags any usage of interface builder. Interface builder
-  files are prone to merge conflicts, and are impossible to code review, so larger teams usually try to avoid it or reduce it's usage.
-* {% rule "swift/bestpractices/UnavailableFunction" %} (`swift-bestpractices`) flags any function throwing a `fatalError` not marked as
-  `@available(*, unavailable)` to ensure no calls are actually performed in the codebase.
+* {% rule "swift/errorprone/ForceCast" %} (`swift-errorprone`) flags all force casts, making sure you are
+  defensively considering all types. Having the application crash shouldn't be an option.
+* {% rule "swift/errorprone/ForceTry" %} (`swift-errorprone`) flags all force tries, making sure you are
+  defensively handling exceptions. Having the application crash shouldn't be an option.
+* {% rule "swift/bestpractices/ProhibitedInterfaceBuilder" %} (`swift-bestpractices`) flags any usage of interface
+  builder. Interface builder files are prone to merge conflicts, and are impossible to code review, so larger
+  teams usually try to avoid it or reduce its usage.
+* {% rule "swift/bestpractices/UnavailableFunction" %} (`swift-bestpractices`) flags any function throwing
+  a `fatalError` not marked as `@available(*, unavailable)` to ensure no calls are actually performed in
+  the codebase.
 
 Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 [Matías Fraga](https://github.com/matifraga) (@matifraga),
@@ -172,10 +175,11 @@ warning.
 
 We are shipping the following rules:
 
-* {% rule kotlin/bestpractices/FunctionNameTooShort %} (`kotlin-bestpractices`) finds functions with a too short name.
-* {% rule kotlin/errorprone/OverrideBothEqualsAndHashcode %} (`kotlin-errorprone`) finds classes with only either `equals`
-  or `hashCode` overridden, but not both. This leads to unexpected behavior once instances of such classes
-  are used in collections (Lists, HashMaps, ...).
+* {% rule kotlin/bestpractices/FunctionNameTooShort %} (`kotlin-bestpractices`) finds functions with a too
+  short name.
+* {% rule kotlin/errorprone/OverrideBothEqualsAndHashcode %} (`kotlin-errorprone`) finds classes with only
+  either `equals` or `hashCode` overridden, but not both. This leads to unexpected behavior once instances
+  of such classes are used in collections (Lists, HashMaps, ...).
 
 Contributors: [Jeroen Borgers](https://github.com/jborgers) (@jborgers),
 [Peter Paul Bakker](https://github.com/stokpop) (@stokpop)
@@ -231,10 +235,10 @@ This should help us in future development.
 #### New Rules
 
 ##### Apex
-* {% rule "apex/design/UnusedMethod" %} finds unused methods in your code.
+* {% rule apex/design/UnusedMethod %} finds unused methods in your code.
 
 ##### Java
-* {% rule "java/codestyle/UnnecessaryBoxing" %} reports boxing and unboxing conversions that may be made implicit.
+* {% rule java/codestyle/UnnecessaryBoxing %} reports boxing and unboxing conversions that may be made implicit.
 
 ##### Kotlin
 * {% rule kotlin/bestpractices/FunctionNameTooShort %}
@@ -251,18 +255,20 @@ This should help us in future development.
 ##### Java
 
 * {% rule "java/codestyle/UnnecessaryFullyQualifiedName" %}: the rule has two new properties,
-  to selectively disable reporting on static field and method qualifiers. The rule also has been improved to be more precise.
+  to selectively disable reporting on static field and method qualifiers. The rule also has been improved
+  to be more precise.
 * {% rule "java/codestyle/UselessParentheses" %}: the rule has two new properties which control how strict
   the rule should be applied. With `ignoreClarifying` (default: true) parentheses that are strictly speaking
   not necessary are allowed, if they separate expressions of different precedence.
   The other property `ignoreBalancing` (default: true) is similar, in that it allows parentheses that help
   reading and understanding the expressions.
-* {% rule "java/bestpractices/LooseCoupling" %}: the rule has a new property to allow some types to be coupled to (`allowedTypes`).
+* {% rule "java/bestpractices/LooseCoupling" %}: the rule has a new property to allow some types to be coupled
+  to (`allowedTypes`).
 * {% rule "java/errorprone/EmptyCatchBlock" %}: `CloneNotSupportedException` and `InterruptedException` are not
   special-cased anymore. Rename the exception parameter to `ignored` to ignore them.
 * {% rule "java/errorprone/DontImportSun" %}: `sun.misc.Signal` is not special-cased anymore.
-* {% rule "java/codestyle/UseDiamondOperator" %}: the property `java7Compatibility` is removed. The rule now handles Java 7
-  properly without a property.
+* {% rule "java/codestyle/UseDiamondOperator" %}: the property `java7Compatibility` is removed. The rule now
+  handles Java 7 properly without a property.
 * {% rule "java/design/SingularField" %}: Properties `checkInnerClasses` and `disallowNotAssignment` are removed.
   The rule is now more precise and will check these cases properly.
 * {% rule "java/design/UseUtilityClass" %}: The property `ignoredAnnotations` has been removed.
@@ -288,8 +294,10 @@ The following previously deprecated rules have been finally removed:
 * AvoidUsingShortType (java-performance) -> not replaced
 * BadComparison (java-errorprone) -> use {% rule "java/errorprone/ComparisonWithNaN" %}
 * BeanMembersShouldSerialize (java-errorprone) -> use {% rule java/errorprone/NonSerializableClass %}
-* BooleanInstantiation (java-performance) -> use {% rule "java/codestyle/UnnecessaryBoxing" %} and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
-* ByteInstantiation (java-performance) -> use {% rule "java/codestyle/UnnecessaryBoxing" %} and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
+* BooleanInstantiation (java-performance) -> use {% rule "java/codestyle/UnnecessaryBoxing" %}
+  and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
+* ByteInstantiation (java-performance) -> use {% rule "java/codestyle/UnnecessaryBoxing" %}
+  and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
 * CloneThrowsCloneNotSupportedException (java-errorprone) -> not replaced
 * DataflowAnomalyAnalysis (java-errorprone) -> use {% rule java/bestpractices/UnusedAssignment %}
 * DefaultPackage (java-codestyle) -> use {% rule "java/codestyle/CommentDefaultAccessModifier" %}
@@ -311,37 +319,50 @@ The following previously deprecated rules have been finally removed:
 * IfElseStmtsMustUseBraces (java-codestyle) -> use {% rule "java/codestyle/ControlStatementBraces" %}
 * IfStmtsMustUseBraces (java-codestyle) -> use {% rule "java/codestyle/ControlStatementBraces" %}
 * ImportFromSamePackage (java-errorprone) -> use {% rule java/codestyle/UnnecessaryImport %}
-* IntegerInstantiation (java-performance) -> use {% rule "java/codestyle/UnnecessaryBoxing" %} and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
+* IntegerInstantiation (java-performance) -> use {% rule "java/codestyle/UnnecessaryBoxing" %}
+  and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
 * InvalidSlf4jMessageFormat (java-errorprone) ->  use {% rule "java/errorprone/InvalidLogMessageFormat" %}
 * LoggerIsNotStaticFinal (java-errorprone) -> use {% rule java/errorprone/ProperLogger %}
-* LongInstantiation (java-performance) -> use {% rule "java/codestyle/UnnecessaryBoxing" %} and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
+* LongInstantiation (java-performance) -> use {% rule "java/codestyle/UnnecessaryBoxing" %}
+  and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
 * MIsLeadingVariableName (java-codestyle) -> use {% rule java/codestyle/FieldNamingConventions %},
-  {% rule java/codestyle/FormalParameterNamingConventions %}, or {% rule java/codestyle/LocalVariableNamingConventions %}
+  {% rule java/codestyle/FormalParameterNamingConventions %},
+  or {% rule java/codestyle/LocalVariableNamingConventions %}
 * MissingBreakInSwitch (java-errorprone) ->  use {% rule "java/errorprone/ImplicitSwitchFallThrough" %}
 * ModifiedCyclomaticComplexity (java-design) -> use {% rule "java/design/CyclomaticComplexity" %}
 * NcssConstructorCount (java-design) -> use {% rule java/design/NcssCount %}
 * NcssMethodCount (java-design) -> use {% rule java/design/NcssCount %}
 * NcssTypeCount (java-design) -> use {% rule java/design/NcssCount %}
-* PositionLiteralsFirstInCaseInsensitiveComparisons (java-bestpractices) -> use {% rule "java/bestpractices/LiteralsFirstInComparisons" %}
-* PositionLiteralsFirstInComparisons (java-bestpractices) -> use {% rule "java/bestpractices/LiteralsFirstInComparisons" %}
-* ReturnEmptyArrayRatherThanNull (java-errorprone) ->  use {% rule "java/errorprone/ReturnEmptyCollectionRatherThanNull" %}
-* ShortInstantiation (java-performance) -> use {% rule "java/codestyle/UnnecessaryBoxing" %} and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
+* PositionLiteralsFirstInCaseInsensitiveComparisons (java-bestpractices) ->
+  use {% rule "java/bestpractices/LiteralsFirstInComparisons" %}
+* PositionLiteralsFirstInComparisons (java-bestpractices) ->
+  use {% rule "java/bestpractices/LiteralsFirstInComparisons" %}
+* ReturnEmptyArrayRatherThanNull (java-errorprone) ->
+  use {% rule "java/errorprone/ReturnEmptyCollectionRatherThanNull" %}
+* ShortInstantiation (java-performance) -> use {% rule "java/codestyle/UnnecessaryBoxing" %}
+  and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
 * SimplifyBooleanAssertion (java-design) -> use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
 * SimplifyStartsWith (java-performance) -> not replaced
 * StdCyclomaticComplexity (java-design) -> use {% rule "java/design/CyclomaticComplexity" %}
 * SuspiciousConstantFieldName (java-codestyle) -> use {% rule java/codestyle/FieldNamingConventions %}
 * UnnecessaryWrapperObjectCreation (java-performance) -> use the new rule {% rule "java/codestyle/UnnecessaryBoxing" %}
-* UnsynchronizedStaticDateFormatter (java-multithreading) -> use {% rule java/multithreading/UnsynchronizedStaticFormatter %}
+* UnsynchronizedStaticDateFormatter (java-multithreading) ->
+  use {% rule java/multithreading/UnsynchronizedStaticFormatter %}
 * UnusedImports (java-bestpractices) -> use {% rule java/codestyle/UnnecessaryImport %}
-* UseAssertEqualsInsteadOfAssertTrue (java-bestpractices) -> use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
-* UseAssertNullInsteadOfAssertEquals (java-bestpractices) -> use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
-* UseAssertSameInsteadOfAssertEquals (java-bestpractices) -> use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
-* UseAssertTrueInsteadOfAssertEquals (java-bestpractices) -> use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
+* UseAssertEqualsInsteadOfAssertTrue (java-bestpractices) ->
+  use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
+* UseAssertNullInsteadOfAssertEquals (java-bestpractices) ->
+  use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
+* UseAssertSameInsteadOfAssertEquals (java-bestpractices) ->
+  use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
+* UseAssertTrueInsteadOfAssertEquals (java-bestpractices) ->
+  use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
 * VariableNamingConventions (apex-codestyle) -> use {% rule apex/codestyle/FieldNamingConventions %},
   {% rule apex/codestyle/FormalParameterNamingConventions %}, {% rule apex/codestyle/LocalVariableNamingConventions %},
   or {% rule apex/codestyle/PropertyNamingConventions %}
 * VariableNamingConventions (java-codestyle) -> use {% rule java/codestyle/FieldNamingConventions %},
-  {% rule java/codestyle/FormalParameterNamingConventions %}, or {% rule java/codestyle/LocalVariableNamingConventions %}
+  {% rule java/codestyle/FormalParameterNamingConventions %},
+  or {% rule java/codestyle/LocalVariableNamingConventions %}
 * WhileLoopsMustUseBraces (java-codestyle) -> use {% rule "java/codestyle/ControlStatementBraces" %}
 
 ### 🐛 Fixed Issues
@@ -586,21 +607,37 @@ Contributors: [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
 
 The metrics framework has been made simpler and more general.
 
-* The metric interface takes an additional type parameter, representing the result type of the metric. This is usually `Integer` or `Double`. It avoids widening the result to a `double` just to narrow it down.
+* The metric interface takes an additional type parameter, representing the result type of the metric. This is
+  usually `Integer` or `Double`. It avoids widening the result to a `double` just to narrow it down.
 
-  This makes it so, that `Double.NaN` is not an appropriate sentinel value to represent "not supported" anymore. Instead, `computeFor` may return `null` in that case (or a garbage value). The value `null` may have caused problems with the narrowing casts, which through unboxing, might have thrown an NPE. But when we deprecated the language-specific metrics façades to replace them with the generic `MetricsUtil`, we took care of making the new methods throw an exception if the metric cannot be computed on the parameter. This forces you to guard calls to `MetricsUtil::computeMetric` with something like `if (metric.supports(node))`. If you're following this pattern, then you won't observe the undefined behavior.
+  This makes it so, that `Double.NaN` is not an appropriate sentinel value to represent "not supported" anymore.
+  Instead, `computeFor` may return `null` in that case (or a garbage value). The value `null` may have caused
+  problems with the narrowing casts, which through unboxing, might have thrown an NPE. But when we deprecated
+  the language-specific metrics façades to replace them with the generic `MetricsUtil`, we took care of making
+  the new methods throw an exception if the metric cannot be computed on the parameter. This forces you to guard
+  calls to `MetricsUtil::computeMetric` with something like `if (metric.supports(node))`. If you're following
+  this pattern, then you won't observe the undefined behavior.
 
-* The `MetricKey` interface is not so useful and has been merged into the `Metric` interface and removed. So the `Metric` interface has the new method `String name()`.
+* The `MetricKey` interface is not so useful and has been merged into the `Metric` interface and removed. So
+  the `Metric` interface has the new method `String name()`.
 
-* The framework is not tied to at most 2 node types per language anymore. Previously those were nodes for classes and for methods/constructors. Instead, many metrics support more node types. For example, NCSS can be computed on any code block.
+* The framework is not tied to at most 2 node types per language anymore. Previously those were nodes for
+  classes and for methods/constructors. Instead, many metrics support more node types. For example, NCSS can
+  be computed on any code block.
 
-  For that reason, keeping around a hard distinction between "class metrics" and "operation metrics" is not useful. So in the Java framework for example, we removed the interfaces `JavaClassMetric`, `JavaOperationMetric`,  abstract classes for those, `JavaClassMetricKey`, and `JavaOperationMetricKey`. Metric constants are now all inside the `JavaMetrics` utility class. The same was done in the Apex framework.
+  For that reason, keeping around a hard distinction between "class metrics" and "operation metrics" is not
+  useful. So in the Java framework for example, we removed the interfaces `JavaClassMetric`, `JavaOperationMetric`,
+  abstract classes for those, `JavaClassMetricKey`, and `JavaOperationMetricKey`. Metric constants are now all
+  inside the `JavaMetrics` utility class. The same was done in the Apex framework.
 
-  We don't really need abstract classes for metrics now. So `AbstractMetric` is also removed from pmd-core. There is a factory method on the `Metric` interface to create a metric easily.
+  We don't really need abstract classes for metrics now. So `AbstractMetric` is also removed from pmd-core.
+  There is a factory method on the `Metric` interface to create a metric easily.
 
-* This makes it so, that {% jdoc core::lang.metrics.LanguageMetricsProvider %} does not need type parameters. It can just return a `Set<Metric<?, ?>>` to list available metrics.
+* This makes it so, that {% jdoc core::lang.metrics.LanguageMetricsProvider %} does not need type parameters.
+  It can just return a `Set<Metric<?, ?>>` to list available metrics.
 
-* {% jdoc_old core::lang.metrics.Signature %}s, their implementations, and the interface `SignedNode` have been removed. Node streams allow replacing their usages very easily.
+* {% jdoc_old core::lang.metrics.Signature %}s, their implementations, and the interface `SignedNode` have been
+  removed. Node streams allow replacing their usages very easily.
 
 #### Testing framework
 
@@ -608,17 +645,21 @@ The metrics framework has been made simpler and more general.
     * `net.sourceforge.pmd.testframework.PMDTestRunner`
     * `net.sourceforge.pmd.testframework.RuleTestRunner`
     * `net.sourceforge.pmd.testframework.TestDescriptor`
-* Rule tests, that use {% jdoc test::testframework.SimpleAggregatorTst %} or {% jdoc test::testframework.PmdRuleTst %} work as before without change, but use
-  now JUnit5 under the hood. If you added additional JUnit4 tests to your rule test classes, then you'll need to upgrade them to use JUnit5.
+* Rule tests, that use {% jdoc test::testframework.SimpleAggregatorTst %} or
+  {% jdoc test::testframework.PmdRuleTst %} work as before without change, but use
+  now JUnit5 under the hood. If you added additional JUnit4 tests to your rule test classes, then you'll
+  need to upgrade them to use JUnit5.
 
 #### Language Lifecycle and Language Properties
 
 * Language modules now provide a proper lifecycle and can store global information. This enables the implementation
   of multifile analysis.
-* Language modules can define [custom language properties]({{ page.baseurl }}pmd_languages_configuration.html) which can be set via
-  environment variables. This allows to add and use language specific configuration options without the need to change pmd-core.
+* Language modules can define [custom language properties]({{ page.baseurl }}pmd_languages_configuration.html)
+  which can be set via environment variables. This allows to add and use language specific configuration options
+  without the need to change pmd-core.
 
-The documentation page has been updated: [Adding a new language with JavaCC]({{ page.baseurl }}pmd_devdocs_major_adding_new_language_javacc.html)
+The documentation page has been updated:
+[Adding a new language with JavaCC]({{ page.baseurl }}pmd_devdocs_major_adding_new_language_javacc.html)
 and [Adding a new language with ANTLR]({{ page.baseurl }}pmd_devdocs_major_adding_new_language_antlr.html)
 
 Related issue: [[core] Language lifecycle (#3782)](https://github.com/pmd/pmd/issues/3782)
