@@ -222,9 +222,14 @@ This should help us in future development.
 
 #### Compatibility and migration notes
 
-PMD 7 requires Java 8 or above to execute.
-
-TODO - what to look out for. Hints and known problems.
+* PMD 7 requires Java 8 or above to execute.
+* CLI changed: Custom scripts need to be updated.
+* Java module revamped: Custom rules need to be updated.
+* Removed rules: Custom rulesets need to be reviewed. See below for a list of new and removed rules.
+* XPath 1.0 support is removed, `violationSuppressXPath` now requires XPath 2.0 or 3.1: Custom rulesets need
+  to be reviewed.
+* Custom rules using rulechains: Need to override {% jdoc core::lang.rule.AbstractRule#buildTargetSelector() %}
+  using {% jdoc core::lang.rule.RuleTargetSelector#forTypes(java.lang.Class,java.lang.Class...) %}.
 
 #### New Rules
 
