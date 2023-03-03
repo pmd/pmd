@@ -23,7 +23,7 @@ entries:
       output: web, pdf
       type: homepage
     - title: Release notes
-      url: /pmd_release_notes7.html
+      url: /pmd_release_notes.html
       output: web, pdf
     - title: PMD 7.0.0 development
       url: /pmd_next_major_development.html
