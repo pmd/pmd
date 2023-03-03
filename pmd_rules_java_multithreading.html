@@ -5,90 +5,23 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules that flag issues when dealing with multiple threads of execution.">
-<meta name="keywords" content=" Multithreading, AvoidSynchronizedAtMethodLevel, AvoidThreadGroup, AvoidUsingVolatile, DoNotUseThreads, DontCallThreadRun, DoubleCheckedLocking, NonThreadSafeSingleton, UnsynchronizedStaticDateFormatter, UnsynchronizedStaticFormatter, UseConcurrentHashMap, UseNotifyAllInsteadOfNotify">
+<meta name="keywords" content=" Multithreading, AvoidSynchronizedAtMethodLevel, AvoidThreadGroup, AvoidUsingVolatile, DoNotUseThreads, DontCallThreadRun, DoubleCheckedLocking, NonThreadSafeSingleton, UnsynchronizedStaticFormatter, UseConcurrentHashMap, UseNotifyAllInsteadOfNotify">
 <title>Multithreading | PMD Source Code Analyzer</title>
-<link rel="stylesheet" href="css/syntax.css">
 
 
-<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-<!--<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">-->
-<link rel="stylesheet" href="css/modern-business.css">
-<link rel="stylesheet" href="css/lavish-bootstrap.css">
-<link rel="stylesheet" href="css/customstyles.css">
-<link rel="stylesheet" href="css/theme-blue.css">
-<link rel="stylesheet" href="css/pmd-customstyles.css">
+<link rel="stylesheet" type="text/css" href="assets/fontawesome-free-5.14.0-web/css/all.min.css">
+<link rel="stylesheet" type="text/css" href="assets/bootstrap-4.5.2-dist/css/bootstrap.min.css">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
-<script src="js/jquery.navgoco.min.js"></script>
-
-
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/2.0.0/anchor.min.js"></script>
-<script src="js/toc.js"></script>
-<script src="js/customscripts.js"></script>
+<link rel="stylesheet" type="text/css" href="css/syntax.css">
+<link rel="stylesheet" type="text/css" href="css/modern-business.css">
+<link rel="stylesheet" type="text/css" href="css/customstyles.css">
+<link rel="stylesheet" type="text/css" href="css/theme-green.css">
+<link rel="stylesheet" type="text/css" href="css/pmd-customstyles.css">
 
 <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
 <link rel="icon" href="images/favicon.ico" type="image/x-icon">
 
-<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-<!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]-->
-
-<link rel="alternate" type="application/rss+xml" title="" href="https://pmd.github.io/pmd/feed.xml">
-
-    <script>
-        $(document).ready(function() {
-            // Initialize navgoco with default options
-            $("#mysidebar").navgoco({
-                caretHtml: '',
-                accordion: true,
-                openClass: 'active', // open
-                save: false, // leave false or nav highlighting doesn't work right
-                cookie: {
-                    name: 'navgoco',
-                    expires: false,
-                    path: '/'
-                },
-                slide: {
-                    duration: 400,
-                    easing: 'swing'
-                }
-            });
-
-            $("#collapseAll").click(function(e) {
-                e.preventDefault();
-                $("#mysidebar").navgoco('toggle', false);
-            });
-
-            $("#expandAll").click(function(e) {
-                e.preventDefault();
-                $("#mysidebar").navgoco('toggle', true);
-            });
-
-        });
-
-    </script>
-    <script>
-        $(function () {
-            $('[data-toggle="tooltip"]').tooltip()
-        })
-    </script>
-    <script>
-        $(document).ready(function() {
-            $("#tg-sb-link").click(function() {
-                $("#tg-sb-sidebar").toggle();
-                $("#tg-sb-content").toggleClass('col-md-9');
-                $("#tg-sb-content").toggleClass('col-md-12');
-                $("#tg-sb-icon").toggleClass('fa-toggle-on');
-                $("#tg-sb-icon").toggleClass('fa-toggle-off');
-            });
-        });
-    </script>
-    
+<link rel="alternate" type="application/rss+xml" title="" href="feed.xml">
 
 </head>
 <body>
@@ -96,62 +29,40 @@
 <!-- There's already a padding-top rule in modern-business.css, but it apparently doesn't work on Firefox 60 and Chrome 67 -->
 <div id="topbar-content-offset">
 <!-- Navigation -->
-<nav class="navbar navbar-inverse navbar-fixed-top">
+<nav class="navbar navbar-expand-lg fixed-top navbar-dark">
     <div class="container topnavlinks">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="fa fa-home fa-lg navbar-brand" href="index.html">&nbsp;<span class="projectTitle"> PMD Source Code Analyzer Project</span></a>
-        </div>
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav navbar-right">
+        <a class="navbar-brand fas fa-home fa-lg" href="index.html">&nbsp;<span class="projectTitle"> PMD Source Code Analyzer Project</span></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0"></ul>
+            <ul class="navbar-nav">
                 <!-- toggle sidebar button -->
-                <li><a id="tg-sb-link" href="#"><i id="tg-sb-icon" class="fa fa-toggle-on"></i> Nav</a></li>
+                <li class="nav-item"><a id="tg-sb-link" class="nav-link" href="#"><i id="tg-sb-icon" class="fas fa-toggle-on"></i> Nav</a></li>
                 <!-- entries without drop-downs appear here -->
                 
-                
-                
-                <li><a href="https://github.com/pmd/pmd/releases/latest" target="_blank">Download</a></li>
-                
-                
-                
-                <li><a href="https://github.com/pmd/pmd" target="_blank">Fork us on github</a></li>
-                
-                
+                    
+                        
+                            <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd/releases/latest" target="_blank">Download</a></li>
+                        
+                    
+                        
+                            <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd" target="_blank">Fork us on github</a></li>
+                        
+                    
                 
                 <!-- entries with drop-downs appear here -->
                 <!-- conditional logic to control which topnav appears for the audience defined in the configuration file.-->
                 
-                
-                <!--comment out this block if you want to hide search-->
-                <li>
-                    <!--start search-->
-                    <div id="search-demo-container">
-                        <input type="text" id="search-input" placeholder="search...">
-                        <ul id="results-container"></ul>
-                    </div>
-                    <script src="js/jekyll-search.js" type="text/javascript"></script>
-                    <script type="text/javascript">
-                            SimpleJekyllSearch.init({
-                                searchInput: document.getElementById('search-input'),
-                                resultsContainer: document.getElementById('results-container'),
-                                dataSource: 'search.json',
-                                searchResultTemplate: '<li><a href="{url}" title="Multithreading">{title}</a></li>',
-                    noResultsText: 'No results found.',
-                            limit: 10,
-                            fuzzy: true,
-                    })
-                    </script>
-                    <!--end search-->
-                </li>
             </ul>
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" placeholder="search..." id="search-input">
+                <ul id="results-container"></ul>
+            </form>
         </div>
-        </div>
-        <!-- /.container -->
+    </div>
 </nav>
 
 <!-- Page Content -->
@@ -174,8 +85,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.56.0-SNAPSHOT</li>
-    <div class="sidebarTitleDate">Release date: 25-March-2023</div>
+    <li class="sidebarTitle">PMD 7.0.0-SNAPSHOT</li>
+    <div class="sidebarTitleDate">Release date: ??-?????-2023</div>
     
     
     
@@ -204,7 +115,7 @@
             
 
                 
-                <li><a href="pmd_release_notes.html">Release notes</a></li>
+                <li><a href="pmd_release_notes7.html">Release notes</a></li>
                 
 
             
@@ -433,12 +344,6 @@
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_metrics_howto.html">Using and defining code metrics</a></li>
-                        
-                        
-                        
-                        
-                        
                         <li><a href="pmd_userdocs_extending_rule_guidelines.html">Rule guidelines</a></li>
                         
                         
@@ -598,49 +503,6 @@
                 
                 
                 <li class="subfolders">
-                    <a href="#">Ecmascript Rules</a>
-                    <ul>
-                        
-                        
-                        
-                        <li><a href="pmd_rules_ecmascript.html">Index</a></li>
-                        
-                        
-                        
-                        
-                        
-                        <li><a href="pmd_rules_ecmascript_bestpractices.html">Best Practices</a></li>
-                        
-                        
-                        
-                        
-                        
-                        <li><a href="pmd_rules_ecmascript_codestyle.html">Code Style</a></li>
-                        
-                        
-                        
-                        
-                        
-                        <li><a href="pmd_rules_ecmascript_errorprone.html">Error Prone</a></li>
-                        
-                        
-                        
-                    </ul>
-                </li>
-                
-                
-
-            
-
-            
-            
-            
-
-            
-
-                
-                
-                <li class="subfolders">
                     <a href="#">HTML Rules</a>
                     <ul>
                         
@@ -781,6 +643,86 @@
                         
                         
                         <li><a href="pmd_rules_jsp_security.html">Security</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">JavaScript Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript_codestyle.html">Code Style</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Kotlin Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_kotlin.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_kotlin_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_kotlin_errorprone.html">Error Prone</a></li>
                         
                         
                         
@@ -967,6 +909,43 @@
                 
                 
                 <li class="subfolders">
+                    <a href="#">Swift Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_swift.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_swift_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_swift_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
                     <a href="#">VM Rules</a>
                     <ul>
                         
@@ -1103,7 +1082,7 @@
     
     <li>
         
-        <a href="#">Language Specific Documentation</a>
+        <a href="#">Language-Specific Documentation</a>
         
         <ul>
             
@@ -1112,7 +1091,7 @@
             
 
                 
-                <li><a href="pmd_languages_jsp.html">JSP Support</a></li>
+                <li><a href="pmd_languages_configuration.html">Language configuration</a></li>
                 
 
             
@@ -1124,26 +1103,7 @@
             
 
                 
-                
-                <li class="subfolders">
-                    <a href="#">Java Support</a>
-                    <ul>
-                        
-                        
-                        
-                        <li><a href="pmd_languages_java.html">Java Versions</a></li>
-                        
-                        
-                        
-                        
-                        
-                        <li><a href="pmd_java_metrics_index.html">Java Code Metrics</a></li>
-                        
-                        
-                        
-                    </ul>
-                </li>
-                
+                <li><a href="pmd_languages_apex.html">Apex</a></li>
                 
 
             
@@ -1155,7 +1115,31 @@
             
 
                 
-                <li><a href="pmd_apex_metrics_index.html">Apex code metrics</a></li>
+                <li><a href="pmd_languages_java.html">Java</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_languages_jsp.html">JSP</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_languages_kotlin.html">Kotlin</a></li>
                 
 
             
@@ -1347,19 +1331,19 @@
                         
                         
                         
-                        <li><a href="pmd_devdocs_major_adding_new_language.html">Adding a new language</a></li>
+                        <li><a href="pmd_devdocs_major_adding_new_language_javacc.html">Adding a new language (JavaCC)</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_major_adding_new_language_antlr.html">Adding a new language (Antlr)</a></li>
                         
                         
                         
                         
                         
                         <li><a href="pmd_devdocs_major_adding_new_cpd_language.html">Adding a new CPD language</a></li>
-                        
-                        
-                        
-                        
-                        
-                        <li><a href="pmd_devdocs_major_adding_new_metrics_framework.html">Adding metrics support to a language</a></li>
                         
                         
                         
@@ -1435,6 +1419,18 @@
                     </ul>
                 </li>
                 
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_projectdocs_logo.html">Logo</a></li>
                 
 
             
@@ -1549,15 +1545,7 @@
        
         
         
-        <!-- if you aren't using the accordion, uncomment this block:
-           <p class="external">
-               <a href="#" id="collapseAll">Collapse All</a> | <a href="#" id="expandAll">Expand All</a>
-           </p>
-           -->
 </ul>
-
-<!-- this highlights the active parent class in the navgoco sidebar. this is critical so that the parent expands when you're viewing a page. This must appear below the sidebar code above. Otherwise, if placed inside customscripts.js, the script runs before the sidebar code runs and the class never gets inserted.-->
-<script>$("li.active").parents('li').toggleClass("active");</script>
 
             </div>
             
@@ -1575,7 +1563,7 @@
             <a
                 target="_blank"
                 href="https://github.com/pmd/pmd/blob/master/docs/../pmd-java/src/main/resources/category/java/multithreading.xml"
-                class="pull-right"
+                class="float-right"
                 role="button"
                 ><i class="fa fa-github fa-lg"></i> Edit on GitHub</a
             >
@@ -1591,15 +1579,13 @@
    <h1 class="post-title-main">Multithreading</h1>
 </div>
 
-
-
 <div class="post-content" data-github-edit-url="https://github.com/pmd/pmd/blob/master/docs/../pmd-java/src/main/resources/category/java/multithreading.xml">
 
    
     <div class="summary">Rules that flag issues when dealing with multiple threads of execution.</div>
    
     <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
-    
+
   <!-- DO NOT EDIT THIS FILE. This file is generated from file ../pmd-java/src/main/resources/category/java/multithreading.xml. -->
 <h2 id="avoidsynchronizedatmethodlevel">AvoidSynchronizedAtMethodLevel</h2>
 
@@ -1612,7 +1598,7 @@ Block-level synchronization helps to ensure that only the code that needs synchr
 gets it.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="na">@Synchronized</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="ow">mod</span><span class="kr">if</span><span class="nf">iers</span><span class="p">()</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"synchronized"</span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -1673,8 +1659,8 @@ gets it.</p>
 it contains methods that are not thread-safe.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">AllocationExpression</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.ThreadGroup'</span><span class="p">)]|</span><span class="w">
-</span><span class="o">//</span><span class="nt">PrimarySuffix</span><span class="p">[</span><span class="nf">contains</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="s1">'getThreadGroup'</span><span class="p">)]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ConstructorCall</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.ThreadGroup'</span><span class="p">)]</span><span class="w">
+</span><span class="p">|</span><span class="w"> </span><span class="o">//</span><span class="nt">MethodCall</span><span class="p">[</span><span class="na">@MethodName</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'getThreadGroup'</span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -1704,7 +1690,7 @@ a good expertise of the Java Memory Model. Moreover, its range of action is some
 the volatile keyword should not be used for maintenance purpose and portability.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">FieldDeclaration</span><span class="p">[</span><span class="na">@Volatile</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">FieldDeclaration</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="ow">mod</span><span class="kr">if</span><span class="nf">iers</span><span class="p">()</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"volatile"</span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -1730,17 +1716,21 @@ If the application creates threads on its own or uses own custom thread pools, t
 Also, EJBs might be moved between machines in a cluster and only managed resources can be moved along.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Thread'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.concurrent.ExecutorService'</span><span class="p">)]</span><span class="w">
-    </span><span class="c">(: exclude duplicated types on the same line :)</span><span class="w">
-    </span><span class="p">[</span><span class="ow">not</span><span class="p">((..</span><span class="err">/</span><span class="p">..</span><span class="err">/</span><span class="p">..</span><span class="err">/</span><span class="p">..</span><span class="o">/</span><span class="nt">FieldDeclaration</span><span class="p">|..</span><span class="err">/</span><span class="p">..</span><span class="err">/</span><span class="p">..</span><span class="err">/</span><span class="p">..</span><span class="o">/</span><span class="nt">LocalVariableDeclaration</span><span class="p">)</span><span class="o">/</span><span class="nt">VariableDeclarator</span><span class="o">/</span><span class="nt">VariableInitializer</span><span class="o">//</span><span class="nt">AllocationExpression</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Thread'</span><span class="p">)])</span><span class="w">
-     </span><span class="ow">or</span><span class="w">
-      </span><span class="na">@BeginLine</span><span class="w"> </span><span class="p">!</span><span class="err">=</span><span class="w"> </span><span class="p">(..</span><span class="err">/</span><span class="p">..</span><span class="err">/</span><span class="p">..</span><span class="err">/</span><span class="p">..</span><span class="o">/</span><span class="nt">FieldDeclaration</span><span class="p">|..</span><span class="err">/</span><span class="p">..</span><span class="err">/</span><span class="p">..</span><span class="err">/</span><span class="p">..</span><span class="o">/</span><span class="nt">LocalVariableDeclaration</span><span class="p">)</span><span class="o">/</span><span class="nt">VariableDeclarator</span><span class="o">/</span><span class="nt">VariableInitializer</span><span class="o">//</span><span class="nt">AllocationExpression</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Thread'</span><span class="p">)]</span><span class="err">/</span><span class="na">@BeginLine</span><span class="p">]</span><span class="w">
-    </span><span class="c">(: exclude constructor call chains :)</span><span class="w">
-    </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="kn">parent::</span><span class="nt">AllocationExpression</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Thread'</span><span class="p">)])]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceType</span><span class="w">
+</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Thread'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.concurrent.ExecutorService'</span><span class="p">)]</span><span class="w">
+</span><span class="c">(: allow Thread.currentThread().getContextClassLoader() :)</span><span class="w">
+</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="kn">parent::</span><span class="nt">TypeExpression</span><span class="p">[</span><span class="kn">parent::</span><span class="nt">MethodCall</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">matchesSig</span><span class="p">(</span><span class="s1">'_#currentThread()'</span><span class="p">)</span><span class="w">
+                                               </span><span class="ow">and</span><span class="w"> </span><span class="kn">parent::</span><span class="nt">MethodCall</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">matchesSig</span><span class="p">(</span><span class="s1">'_#getContextClassLoader()'</span><span class="p">)]</span><span class="w">
+                                              </span><span class="p">]</span><span class="w">
+                           </span><span class="p">]</span><span class="w">
+</span><span class="p">)]</span><span class="w">
+</span><span class="c">(: exclude duplicated types on the same line :)</span><span class="w">
+ </span><span class="p">[</span><span class="ow">not</span><span class="p">((</span><span class="kn">parent::</span><span class="nt">FieldDeclaration</span><span class="p">|</span><span class="kn">parent::</span><span class="nt">LocalVariableDeclaration</span><span class="p">)</span><span class="o">/</span><span class="nt">VariableDeclarator</span><span class="err">/</span><span class="o">*</span><span class="p">[</span><span class="m">2</span><span class="p">][</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Thread'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.concurrent.ExecutorService'</span><span class="p">)])</span><span class="w">
+ </span><span class="ow">or</span><span class="w">
+  </span><span class="na">@BeginLine</span><span class="w"> </span><span class="p">!</span><span class="err">=</span><span class="w"> </span><span class="p">(</span><span class="kn">parent::</span><span class="nt">FieldDeclaration</span><span class="p">|</span><span class="kn">parent::</span><span class="nt">LocalVariableDeclaration</span><span class="p">)</span><span class="o">/</span><span class="nt">VariableDeclarator</span><span class="o">/</span><span class="nt">ConstructorCall</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="err">/</span><span class="na">@BeginLine</span><span class="p">]</span><span class="w">
 </span><span class="p">|</span><span class="w">
-</span><span class="o">//</span><span class="nt">AllocationExpression</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Thread'</span><span class="p">)]</span><span class="w">
-</span><span class="p">|</span><span class="w">
-</span><span class="o">//</span><span class="nt">StatementExpression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.concurrent.Executors'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.concurrent.ExecutorService'</span><span class="p">)]</span><span class="w">
+</span><span class="o">//</span><span class="nt">MethodCall</span><span class="p">[</span><span class="o">*</span><span class="p">[</span><span class="m">1</span><span class="p">][</span><span class="ow">not</span><span class="p">(</span><span class="nn">pmd-java:</span><span class="nf">nodeIs</span><span class="p">(</span><span class="s1">'MethodCall'</span><span class="p">))][</span><span class="nn">pmd-java:</span><span class="nf">nodeIs</span><span class="p">(</span><span class="s1">'Expression'</span><span class="p">)</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="p">(</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.concurrent.Executors'</span><span class="p">)</span><span class="w">
+   </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.concurrent.ExecutorService'</span><span class="p">))]]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -1790,17 +1780,7 @@ Also, EJBs might be moved between machines in a cluster and only managed resourc
 <p>Explicitly calling Thread.run() method will execute in the caller’s thread of control.  Instead, call Thread.start() for the intended behavior.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">StatementExpression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="w">
-</span><span class="p">[</span><span class="w">
-    </span><span class="nt">PrimaryPrefix</span><span class="w">
-    </span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Thread'</span><span class="p">)]</span><span class="w">
-    </span><span class="p">[</span><span class="w">
-            </span><span class="p">.</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="s1">'.run'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'run'</span><span class="p">]</span><span class="w">
-        </span><span class="ow">or</span><span class="w">
-            </span><span class="p">.</span><span class="o">/</span><span class="nt">AllocationExpression</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Thread'</span><span class="p">)]</span><span class="w">
-            </span><span class="ow">and</span><span class="w"> </span><span class="p">..</span><span class="o">/</span><span class="nt">PrimarySuffix</span><span class="p">[</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'run'</span><span class="p">]</span><span class="w">
-    </span><span class="p">]</span><span class="w">
-</span><span class="p">]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodCall</span><span class="p">[</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">matchesSig</span><span class="p">(</span><span class="s2">"java.lang.Thread#run()"</span><span class="p">)</span><span class="w"> </span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -1925,71 +1905,6 @@ performance penalty. <a href="http://www.cs.umd.edu/~pugh/java/memoryModel/Doubl
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
-<h2 id="unsynchronizedstaticdateformatter">UnsynchronizedStaticDateFormatter</h2>
-
-<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
-
-<p><strong>Since:</strong> PMD 3.6</p>
-
-<p><strong>Priority:</strong> Medium (3)</p>
-
-<p>SimpleDateFormat instances are not synchronized. Sun recommends using separate format instances
-for each thread. If multiple threads must access a static formatter, the formatter must be
-synchronized on block level.</p>
-
-<p><em>Note:</em> This rule has been deprecated since PMD 6.11.0 and will be removed with PMD 7.0.0. The rule is replaced
-by the more general rule <a href="pmd_rules_java_multithreading.html#unsynchronizedstaticformatter"><code class="language-plaintext highlighter-rouge">UnsynchronizedStaticFormatter</code></a>.</p>
-
-<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/multithreading/UnsynchronizedStaticDateFormatterRule.java">net.sourceforge.pmd.lang.java.rule.multithreading.UnsynchronizedStaticDateFormatterRule</a></p>
-
-<p><strong>Example(s):</strong></p>
-
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="nc">SimpleDateFormat</span> <span class="n">sdf</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">SimpleDateFormat</span><span class="o">();</span>
-    <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
-        <span class="n">sdf</span><span class="o">.</span><span class="na">format</span><span class="o">();</span> <span class="c1">// poor, no thread-safety</span>
-    <span class="o">}</span>
-    <span class="kt">void</span> <span class="nf">foo</span><span class="o">()</span> <span class="o">{</span>
-        <span class="kd">synchronized</span> <span class="o">(</span><span class="n">sdf</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// preferred</span>
-            <span class="n">sdf</span><span class="o">.</span><span class="na">format</span><span class="o">();</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></div></div>
-
-<p><strong>This rule has the following properties:</strong></p>
-
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Default Value</th>
-      <th>Description</th>
-      <th>Multivalued</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>allowMethodLevelSynchronization</td>
-      <td>false</td>
-      <td>If true, method level synchronization is allowed as well as synchronized block. Otherwise only synchronized blocks are allowed.</td>
-      <td>no</td>
-    </tr>
-  </tbody>
-</table>
-
-<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/multithreading.xml/UnsynchronizedStaticDateFormatter"</span> <span class="nt">/&gt;</span>
-</code></pre></div></div>
-
-<p><strong>Use this rule and customize it:</strong></p>
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/multithreading.xml/UnsynchronizedStaticDateFormatter"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;properties&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"allowMethodLevelSynchronization"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
-    <span class="nt">&lt;/properties&gt;</span>
-<span class="nt">&lt;/rule&gt;</span>
-</code></pre></div></div>
-
 <h2 id="unsynchronizedstaticformatter">UnsynchronizedStaticFormatter</h2>
 
 <p><strong>Since:</strong> PMD 6.11.0</p>
@@ -2063,8 +1978,7 @@ synchronized on block level.</p>
 perform efficient map reads without blocking other threads.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">Type</span><span class="p">[..</span><span class="o">/</span><span class="nt">VariableDeclarator</span><span class="o">/</span><span class="nt">VariableInitializer</span><span class="o">//</span><span class="nt">AllocationExpression</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="na">@Image</span><span class="w"> </span><span class="p">!</span><span class="err">=</span><span class="w"> </span><span class="s1">'ConcurrentHashMap'</span><span class="p">]]</span><span class="w">
-</span><span class="o">/</span><span class="nt">ReferenceType</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'Map'</span><span class="p">]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">VariableDeclarator</span><span class="p">[</span><span class="nt">VariableDeclaratorId</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIsExactly</span><span class="p">(</span><span class="s1">'java.util.Map'</span><span class="p">)]</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="o">*</span><span class="p">[</span><span class="m">2</span><span class="p">][</span><span class="kn">self::</span><span class="nt">ConstructorCall</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="ow">not</span><span class="p">(</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.concurrent.ConcurrentHashMap'</span><span class="p">))]]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -2094,15 +2008,7 @@ perform efficient map reads without blocking other threads.</p>
 one is chosen.  The thread chosen is arbitrary; thus its usually safer to call notifyAll() instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">StatementExpression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="w">
-</span><span class="p">[</span><span class="nt">PrimarySuffix</span><span class="o">/</span><span class="nt">Arguments</span><span class="p">[</span><span class="na">@Size</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">0</span><span class="p">]]</span><span class="w">
-</span><span class="p">[</span><span class="w">
-    </span><span class="nt">PrimaryPrefix</span><span class="p">[</span><span class="w">
-        </span><span class="p">.</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="na">@Image</span><span class="err">=</span><span class="s1">'notify'</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="s1">'.notify'</span><span class="p">)]</span><span class="w">
-        </span><span class="ow">or</span><span class="w"> </span><span class="p">..</span><span class="o">/</span><span class="nt">PrimarySuffix</span><span class="err">/</span><span class="na">@Image</span><span class="err">=</span><span class="s1">'notify'</span><span class="w">
-        </span><span class="ow">or</span><span class="w"> </span><span class="p">(.</span><span class="o">/</span><span class="nt">AllocationExpression</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="p">..</span><span class="o">/</span><span class="nt">PrimarySuffix</span><span class="p">[</span><span class="na">@Image</span><span class="err">=</span><span class="s1">'notify'</span><span class="p">])</span><span class="w">
-    </span><span class="p">]</span><span class="w">
-</span><span class="p">]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodCall</span><span class="p">[</span><span class="na">@MethodName</span><span class="err">=</span><span class="s2">"notify"</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="nt">ArgumentList</span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="err">*</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">0</span><span class="p">]]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -2124,8 +2030,6 @@ one is chosen.  The thread chosen is arbitrary; thus its usually safer to call n
     <div class="tags">
         
     </div>
-
-
 
 </div>
 
@@ -2150,9 +2054,9 @@ one is chosen.  The thread chosen is arbitrary; thus its usually safer to call n
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Mar 1, 2023 <br />
+             Site last generated: Mar 3, 2023 <br />
             <p>
-                <img src="images/pmd-logo-small.png" alt="Company
+                <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
             </p>
         </div>
@@ -2176,6 +2080,17 @@ one is chosen.  The thread chosen is arbitrary; thus its usually safer to call n
     <!-- /.toc-container-wrapper -->
 </div>
 </div>
-</body>
 
+<script type="application/javascript" src="assets/jquery-3.5.1/jquery-3.5.1.min.js"></script>
+<script type="application/javascript" src="assets/anchorjs-4.2.2/anchor.min.js"></script>
+<script type="application/javascript" src="assets/navgoco-0.2.1/src/jquery.navgoco.min.js"></script>
+<script type="application/javascript" src="assets/bootstrap-4.5.2-dist/js/bootstrap.bundle.min.js"></script>
+<script type="application/javascript" src="assets/Simple-Jekyll-Search-1.0.8/dest/jekyll-search.js"></script>
+<script type="application/javascript" src="assets/jekyll-table-of-contents/toc.js"></script>
+<script type="application/javascript" src="js/tabstate.js"></script>
+<script type="application/javascript" src="js/customscripts.js"></script>
+
+
+
+</body>
 </html>

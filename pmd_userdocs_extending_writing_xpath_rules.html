@@ -7,88 +7,21 @@
 <meta name="description" content="This page describes XPath rule support in more details">
 <meta name="keywords" content="extendinguserdocs,  ">
 <title>Writing XPath rules | PMD Source Code Analyzer</title>
-<link rel="stylesheet" href="css/syntax.css">
 
 
-<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-<!--<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">-->
-<link rel="stylesheet" href="css/modern-business.css">
-<link rel="stylesheet" href="css/lavish-bootstrap.css">
-<link rel="stylesheet" href="css/customstyles.css">
-<link rel="stylesheet" href="css/theme-blue.css">
-<link rel="stylesheet" href="css/pmd-customstyles.css">
+<link rel="stylesheet" type="text/css" href="assets/fontawesome-free-5.14.0-web/css/all.min.css">
+<link rel="stylesheet" type="text/css" href="assets/bootstrap-4.5.2-dist/css/bootstrap.min.css">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
-<script src="js/jquery.navgoco.min.js"></script>
-
-
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/2.0.0/anchor.min.js"></script>
-<script src="js/toc.js"></script>
-<script src="js/customscripts.js"></script>
+<link rel="stylesheet" type="text/css" href="css/syntax.css">
+<link rel="stylesheet" type="text/css" href="css/modern-business.css">
+<link rel="stylesheet" type="text/css" href="css/customstyles.css">
+<link rel="stylesheet" type="text/css" href="css/theme-green.css">
+<link rel="stylesheet" type="text/css" href="css/pmd-customstyles.css">
 
 <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
 <link rel="icon" href="images/favicon.ico" type="image/x-icon">
 
-<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-<!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]-->
-
-<link rel="alternate" type="application/rss+xml" title="" href="https://pmd.github.io/pmd/feed.xml">
-
-    <script>
-        $(document).ready(function() {
-            // Initialize navgoco with default options
-            $("#mysidebar").navgoco({
-                caretHtml: '',
-                accordion: true,
-                openClass: 'active', // open
-                save: false, // leave false or nav highlighting doesn't work right
-                cookie: {
-                    name: 'navgoco',
-                    expires: false,
-                    path: '/'
-                },
-                slide: {
-                    duration: 400,
-                    easing: 'swing'
-                }
-            });
-
-            $("#collapseAll").click(function(e) {
-                e.preventDefault();
-                $("#mysidebar").navgoco('toggle', false);
-            });
-
-            $("#expandAll").click(function(e) {
-                e.preventDefault();
-                $("#mysidebar").navgoco('toggle', true);
-            });
-
-        });
-
-    </script>
-    <script>
-        $(function () {
-            $('[data-toggle="tooltip"]').tooltip()
-        })
-    </script>
-    <script>
-        $(document).ready(function() {
-            $("#tg-sb-link").click(function() {
-                $("#tg-sb-sidebar").toggle();
-                $("#tg-sb-content").toggleClass('col-md-9');
-                $("#tg-sb-content").toggleClass('col-md-12');
-                $("#tg-sb-icon").toggleClass('fa-toggle-on');
-                $("#tg-sb-icon").toggleClass('fa-toggle-off');
-            });
-        });
-    </script>
-    
+<link rel="alternate" type="application/rss+xml" title="" href="feed.xml">
 
 </head>
 <body>
@@ -96,62 +29,40 @@
 <!-- There's already a padding-top rule in modern-business.css, but it apparently doesn't work on Firefox 60 and Chrome 67 -->
 <div id="topbar-content-offset">
 <!-- Navigation -->
-<nav class="navbar navbar-inverse navbar-fixed-top">
+<nav class="navbar navbar-expand-lg fixed-top navbar-dark">
     <div class="container topnavlinks">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="fa fa-home fa-lg navbar-brand" href="index.html">&nbsp;<span class="projectTitle"> PMD Source Code Analyzer Project</span></a>
-        </div>
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav navbar-right">
+        <a class="navbar-brand fas fa-home fa-lg" href="index.html">&nbsp;<span class="projectTitle"> PMD Source Code Analyzer Project</span></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0"></ul>
+            <ul class="navbar-nav">
                 <!-- toggle sidebar button -->
-                <li><a id="tg-sb-link" href="#"><i id="tg-sb-icon" class="fa fa-toggle-on"></i> Nav</a></li>
+                <li class="nav-item"><a id="tg-sb-link" class="nav-link" href="#"><i id="tg-sb-icon" class="fas fa-toggle-on"></i> Nav</a></li>
                 <!-- entries without drop-downs appear here -->
                 
-                
-                
-                <li><a href="https://github.com/pmd/pmd/releases/latest" target="_blank">Download</a></li>
-                
-                
-                
-                <li><a href="https://github.com/pmd/pmd" target="_blank">Fork us on github</a></li>
-                
-                
+                    
+                        
+                            <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd/releases/latest" target="_blank">Download</a></li>
+                        
+                    
+                        
+                            <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd" target="_blank">Fork us on github</a></li>
+                        
+                    
                 
                 <!-- entries with drop-downs appear here -->
                 <!-- conditional logic to control which topnav appears for the audience defined in the configuration file.-->
                 
-                
-                <!--comment out this block if you want to hide search-->
-                <li>
-                    <!--start search-->
-                    <div id="search-demo-container">
-                        <input type="text" id="search-input" placeholder="search...">
-                        <ul id="results-container"></ul>
-                    </div>
-                    <script src="js/jekyll-search.js" type="text/javascript"></script>
-                    <script type="text/javascript">
-                            SimpleJekyllSearch.init({
-                                searchInput: document.getElementById('search-input'),
-                                resultsContainer: document.getElementById('results-container'),
-                                dataSource: 'search.json',
-                                searchResultTemplate: '<li><a href="{url}" title="Writing XPath rules">{title}</a></li>',
-                    noResultsText: 'No results found.',
-                            limit: 10,
-                            fuzzy: true,
-                    })
-                    </script>
-                    <!--end search-->
-                </li>
             </ul>
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" placeholder="search..." id="search-input">
+                <ul id="results-container"></ul>
+            </form>
         </div>
-        </div>
-        <!-- /.container -->
+    </div>
 </nav>
 
 <!-- Page Content -->
@@ -174,8 +85,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.56.0-SNAPSHOT</li>
-    <div class="sidebarTitleDate">Release date: 25-March-2023</div>
+    <li class="sidebarTitle">PMD 7.0.0-SNAPSHOT</li>
+    <div class="sidebarTitleDate">Release date: ??-?????-2023</div>
     
     
     
@@ -204,7 +115,7 @@
             
 
                 
-                <li><a href="pmd_release_notes.html">Release notes</a></li>
+                <li><a href="pmd_release_notes7.html">Release notes</a></li>
                 
 
             
@@ -433,12 +344,6 @@
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_metrics_howto.html">Using and defining code metrics</a></li>
-                        
-                        
-                        
-                        
-                        
                         <li><a href="pmd_userdocs_extending_rule_guidelines.html">Rule guidelines</a></li>
                         
                         
@@ -598,49 +503,6 @@
                 
                 
                 <li class="subfolders">
-                    <a href="#">Ecmascript Rules</a>
-                    <ul>
-                        
-                        
-                        
-                        <li><a href="pmd_rules_ecmascript.html">Index</a></li>
-                        
-                        
-                        
-                        
-                        
-                        <li><a href="pmd_rules_ecmascript_bestpractices.html">Best Practices</a></li>
-                        
-                        
-                        
-                        
-                        
-                        <li><a href="pmd_rules_ecmascript_codestyle.html">Code Style</a></li>
-                        
-                        
-                        
-                        
-                        
-                        <li><a href="pmd_rules_ecmascript_errorprone.html">Error Prone</a></li>
-                        
-                        
-                        
-                    </ul>
-                </li>
-                
-                
-
-            
-
-            
-            
-            
-
-            
-
-                
-                
-                <li class="subfolders">
                     <a href="#">HTML Rules</a>
                     <ul>
                         
@@ -781,6 +643,86 @@
                         
                         
                         <li><a href="pmd_rules_jsp_security.html">Security</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">JavaScript Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript_codestyle.html">Code Style</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Kotlin Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_kotlin.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_kotlin_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_kotlin_errorprone.html">Error Prone</a></li>
                         
                         
                         
@@ -967,6 +909,43 @@
                 
                 
                 <li class="subfolders">
+                    <a href="#">Swift Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_swift.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_swift_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_swift_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
                     <a href="#">VM Rules</a>
                     <ul>
                         
@@ -1103,7 +1082,7 @@
     
     <li>
         
-        <a href="#">Language Specific Documentation</a>
+        <a href="#">Language-Specific Documentation</a>
         
         <ul>
             
@@ -1112,7 +1091,7 @@
             
 
                 
-                <li><a href="pmd_languages_jsp.html">JSP Support</a></li>
+                <li><a href="pmd_languages_configuration.html">Language configuration</a></li>
                 
 
             
@@ -1124,26 +1103,7 @@
             
 
                 
-                
-                <li class="subfolders">
-                    <a href="#">Java Support</a>
-                    <ul>
-                        
-                        
-                        
-                        <li><a href="pmd_languages_java.html">Java Versions</a></li>
-                        
-                        
-                        
-                        
-                        
-                        <li><a href="pmd_java_metrics_index.html">Java Code Metrics</a></li>
-                        
-                        
-                        
-                    </ul>
-                </li>
-                
+                <li><a href="pmd_languages_apex.html">Apex</a></li>
                 
 
             
@@ -1155,7 +1115,31 @@
             
 
                 
-                <li><a href="pmd_apex_metrics_index.html">Apex code metrics</a></li>
+                <li><a href="pmd_languages_java.html">Java</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_languages_jsp.html">JSP</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_languages_kotlin.html">Kotlin</a></li>
                 
 
             
@@ -1347,19 +1331,19 @@
                         
                         
                         
-                        <li><a href="pmd_devdocs_major_adding_new_language.html">Adding a new language</a></li>
+                        <li><a href="pmd_devdocs_major_adding_new_language_javacc.html">Adding a new language (JavaCC)</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_major_adding_new_language_antlr.html">Adding a new language (Antlr)</a></li>
                         
                         
                         
                         
                         
                         <li><a href="pmd_devdocs_major_adding_new_cpd_language.html">Adding a new CPD language</a></li>
-                        
-                        
-                        
-                        
-                        
-                        <li><a href="pmd_devdocs_major_adding_new_metrics_framework.html">Adding metrics support to a language</a></li>
                         
                         
                         
@@ -1435,6 +1419,18 @@
                     </ul>
                 </li>
                 
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_projectdocs_logo.html">Logo</a></li>
                 
 
             
@@ -1549,15 +1545,7 @@
        
         
         
-        <!-- if you aren't using the accordion, uncomment this block:
-           <p class="external">
-               <a href="#" id="collapseAll">Collapse All</a> | <a href="#" id="expandAll">Expand All</a>
-           </p>
-           -->
 </ul>
-
-<!-- this highlights the active parent class in the navgoco sidebar. this is critical so that the parent expands when you're viewing a page. This must appear below the sidebar code above. Otherwise, if placed inside customscripts.js, the script runs before the sidebar code runs and the class never gets inserted.-->
-<script>$("li.active").parents('li').toggleClass("active");</script>
 
             </div>
             
@@ -1575,7 +1563,7 @@
             <a
                 target="_blank"
                 href="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/userdocs/extending/writing_xpath_rules.md"
-                class="pull-right"
+                class="float-right"
                 role="button"
                 ><i class="fa fa-github fa-lg"></i> Edit on GitHub</a
             >
@@ -1591,15 +1579,13 @@
    <h1 class="post-title-main">Writing XPath rules</h1>
 </div>
 
-
-
 <div class="post-content" data-github-edit-url="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/userdocs/extending/writing_xpath_rules.md">
 
    
     <div class="summary">This page describes XPath rule support in more details</div>
    
     <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
-    
+
   
 <p>This page describes some points of XPath rule support in more details. See
 also <a href="pmd_userdocs_extending_your_first_rule.html">the tutorial about how to write an XPath rule</a>.</p>
@@ -1608,22 +1594,11 @@ also <a href="pmd_userdocs_extending_your_first_rule.html">the tutorial about ho
 
 <h2 id="xpath-version">XPath version</h2>
 
-<p>PMD supports three XPath versions for now: 1.0, 2.0, and 1.0 compatibility mode.
-The version can be specified with the <code class="language-plaintext highlighter-rouge">version</code> property in the rule definition, like so:</p>
+<p>PMD uses XPath 3.1 for its XPath rules since PMD 7. Before then, the default version was XPath 1.0, with opt-in support for XPath 2.0.</p>
 
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;property</span> <span class="na">version=</span><span class="s">"2.0"</span> <span class="nt">/&gt;</span> <span class="c">&lt;!-- or "1.0", or "1.0 compatibility" --&gt;</span>
-</code></pre></div></div>
+<p>See <a href="https://www.saxonica.com/html/documentation/expressions/xpath31new.html">the Saxonica documentation</a> for an introduction to new features in XPath 3.1.</p>
 
-<p>The default has always been version 1.0.</p>
-
-<p><strong>As of PMD version 6.22.0, XPath versions 1.0 and the 1.0 compatibility mode are
-deprecated</strong>. XPath 2.0 is superior in many ways, for example for its support for
-type checking, sequence values, or quantified expressions. For a detailed
-but approachable review of the features of XPath 2.0 and above, see <a href="https://www.saxonica.com/documentation/index.html#!expressions">the Saxon documentation</a>.</p>
-
-<p>It is recommended that you migrate to 2.0 before 7.0.0, but we expect
-to be able to provide an automatic migration tool when releasing 7.0.0.
-See <a href="#migrating-from-10-to-20">the migration guide</a> below.</p>
+<p>The property <code class="language-plaintext highlighter-rouge">version</code> of XPathRule is deprecated and will be removed.</p>
 
 <h2 id="dom-representation-of-asts">DOM representation of ASTs</h2>
 
@@ -1632,7 +1607,7 @@ defined on. Concretely, this means:</p>
 <ul>
   <li>Every AST node is viewed as an XML element
     <ul>
-      <li>The element has for local name the value of <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.56.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getXPathNodeName()"><code>getXPathNodeName</code></a>
+      <li>The element has for local name the value of <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getXPathNodeName()"><code>getXPathNodeName</code></a>
 for the given node</li>
     </ul>
   </li>
@@ -1640,28 +1615,14 @@ for the given node</li>
     <ul>
       <li>This means, that documentation for attributes can be found in our Javadocs. For
 example, the attribute <code class="language-plaintext highlighter-rouge">@SimpleName</code> of the Java node <code class="language-plaintext highlighter-rouge">EnumDeclaration</code> is backed
-by the Java getter <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.56.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#getSimpleName()"><code>getSimpleName</code></a>.</li>
+by the Java getter <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#getSimpleName()"><code>getSimpleName</code></a>.</li>
     </ul>
   </li>
 </ul>
 
 <h3 id="value-conversion">Value conversion</h3>
 
-<p>To represent attributes, we must map Java values to <a href="https://www.w3.org/TR/xpath-datamodel/">XPath Data Model (XDM)</a> values. The conversion
-depends on the XPath version used.</p>
-
-<h4 id="xpath-10">XPath 1.0</h4>
-
-<p>On XPath 1.0 we map every Java value to an <code class="language-plaintext highlighter-rouge">xs:string</code> value by using the <code class="language-plaintext highlighter-rouge">toString</code>
-of the object. Since XPath 1.0 allows many implicit conversions this works, but it
-causes some incompatibilities with XPath 2.0 (see the section about migration further
- down).</p>
-
-<h4 id="xpath-20">XPath 2.0</h4>
-
-<p>XPath 2.0 is a strongly typed language, and so we use more precise type annotations.
-In the following table we refer to the type conversion function as <code class="language-plaintext highlighter-rouge">conv</code>, a
-function from Java types to XDM types.</p>
+<p>To represent attributes, we must map Java values to <a href="https://www.w3.org/TR/xpath-datamodel/">XPath Data Model (XDM)</a> values. In the following table we refer to the type conversion function as <code class="language-plaintext highlighter-rouge">conv</code>, a function from Java types to XDM types.</p>
 
 <table>
   <thead>
@@ -1705,22 +1666,18 @@ function from Java types to XDM types.</p>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">List&lt;E&gt;</code></td>
-      <td><code class="language-plaintext highlighter-rouge">conv(E)*</code> (a sequence type) <br /> ⚠️ List support is deprecated with 6.25.0. See below.</td>
+      <td><code class="language-plaintext highlighter-rouge">conv(E)*</code> (a sequence type)</td>
     </tr>
   </tbody>
 </table>
 
 <p>The same <code class="language-plaintext highlighter-rouge">conv</code> function is used to translate rule property values to XDM values.</p>
 
-<div class="alert alert-danger" role="alert"><i class="fa fa-exclamation-circle"></i> <b>Warning:</b> Support for attributes of type <code class="language-plaintext highlighter-rouge">List&lt;E&gt;</code> has been deprecated
-with PMD 6.25.0 and will be removed completely with PMD 7. The reason is that newer Saxon
-versions don’t support sequences as attributes anymore. Lists are still possible in Java-based
-rules but not with XPath.
-
-<a href="pmd_userdocs_extending_defining_properties.html#multivalued-properties">Multivalued rule properties</a>
-are still supported.</div>
+<div class="alert alert-danger" role="alert"><i class="fas fa-exclamation-circle"></i> <b>Warning:</b> Lists are only supported for rule properties, not attributes.</div>
 
 <h2 id="migrating-from-10-to-20">Migrating from 1.0 to 2.0</h2>
+
+<!-- TODO should this still be there in PMD 7? We could just link to an older version of the doc, as this is not so relevant. -->
 
 <p>XPath 1.0 and 2.0 have some incompatibilities. The <a href="https://www.w3.org/TR/xpath20/#id-incompat-in-false-mode">XPath 2.0 specification</a>
 describes them precisely. Those are however mostly corner cases and XPath
@@ -1814,7 +1771,7 @@ information from the AST.</p>
             <td>fileName</td>
             <td>Returns the simple name of the current file</td>
             <td>
-                <button type="button" class="btn btn-link"><i class="fa fa-ellipsis-h"></i></button>
+                <button type="button" class="btn btn-link"><i class="fas fa-ellipsis-h"></i></button>
             </td>
         </tr>
 
@@ -1875,7 +1832,7 @@ This can be used to write rules that check file naming conventions.
             <td>startLine</td>
             <td>Returns the start line of the given node</td>
             <td>
-                <button type="button" class="btn btn-link"><i class="fa fa-ellipsis-h"></i></button>
+                <button type="button" class="btn btn-link"><i class="fas fa-ellipsis-h"></i></button>
             </td>
         </tr>
 
@@ -1903,7 +1860,6 @@ Line numbers are 1-based.
                                 
                                 <dt>Remarks</dt>
                                 <dd>The function is not context-dependent, but takes a node as its first parameter.
-The function is only available in XPath 2.0.
 </dd>
 
                                 
@@ -1954,7 +1910,7 @@ The function is only available in XPath 2.0.
             <td>endLine</td>
             <td>Returns the end line of the given node</td>
             <td>
-                <button type="button" class="btn btn-link"><i class="fa fa-ellipsis-h"></i></button>
+                <button type="button" class="btn btn-link"><i class="fas fa-ellipsis-h"></i></button>
             </td>
         </tr>
 
@@ -1982,7 +1938,6 @@ Line numbers are 1-based.
                                 
                                 <dt>Remarks</dt>
                                 <dd>The function is not context-dependent, but takes a node as its first parameter.
-The function is only available in XPath 2.0.
 </dd>
 
                                 
@@ -2033,7 +1988,7 @@ The function is only available in XPath 2.0.
             <td>startColumn</td>
             <td>Returns the start column of the given node (inclusive)</td>
             <td>
-                <button type="button" class="btn btn-link"><i class="fa fa-ellipsis-h"></i></button>
+                <button type="button" class="btn btn-link"><i class="fas fa-ellipsis-h"></i></button>
             </td>
         </tr>
 
@@ -2061,7 +2016,6 @@ Column numbers are 1-based. The start column is inclusive.
                                 
                                 <dt>Remarks</dt>
                                 <dd>The function is not context-dependent, but takes a node as its first parameter.
-The function is only available in XPath 2.0.
 </dd>
 
                                 
@@ -2112,7 +2066,7 @@ The function is only available in XPath 2.0.
             <td>endColumn</td>
             <td>Returns the end column of the given node (exclusive)</td>
             <td>
-                <button type="button" class="btn btn-link"><i class="fa fa-ellipsis-h"></i></button>
+                <button type="button" class="btn btn-link"><i class="fas fa-ellipsis-h"></i></button>
             </td>
         </tr>
 
@@ -2140,7 +2094,6 @@ Column numbers are 1-based. The end column is exclusive.
                                 
                                 <dt>Remarks</dt>
                                 <dd>The function is not context-dependent, but takes a node as its first parameter.
-The function is only available in XPath 2.0.
 </dd>
 
                                 
@@ -2210,12 +2163,90 @@ The function is only available in XPath 2.0.
 
         
 
+        <tr data-toggle="collapse" id="pmd-java-nodeIs" data-target="#pmd-java-nodeIs-expand" class="accordion-toggle">
+
+            <td>nodeIs</td>
+            <td>Tests the runtime type of the node instance</td>
+            <td>
+                <button type="button" class="btn btn-link"><i class="fas fa-ellipsis-h"></i></button>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4" class="hiddenRow">
+                <div class="accordion-body collapse" id="pmd-java-nodeIs-expand">
+
+                    <div style="margin-left: 15px" class="xpath-fun-doc">
+
+                        <!-- Yeah the ID is duplicated but it's ok on my browser and makes -->
+                        <!--links somehow work when details are collapsed -->
+                        <h4 class="fun-details-header" id="pmd-java-nodeIs">
+                            <span class="fun-ns">pmd-java:</span><span class="fun-name">nodeIs</span><span class="fun-ns">(xs:string) as xs:boolean</span>
+                        </h4>
+
+                        <div style="margin-left: 30px">
+
+                            <dl>
+                                <dd>Returns true if the runtime type of the AST node is a subtype of the given class. Contrary to typeIs, this tests the type of the AST node. For example, the AST node for a literal (e.g. <code>5d</code>) has type ASTNumericLiteral, and this function will ignore the static type of the expression (double)</dd>
+                                
+                                <dt>Remarks</dt>
+                                <dd></dd>
+
+                                
+
+                                <dt>Parameters</dt>
+
+                                <dd>
+                                    <dl>
+                                        
+                                        <dt>
+                                            <span class="param-name">nodeClassName</span>
+                                            <span class="param-type"> as xs:string</span>
+                                        </dt>
+                                        <dd>Simple name of a class or interface in package <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/package-summary.html#"><code>net.sourceforge.pmd.lang.java.ast</code></a>, without the 'AST' prefix</dd>
+                                        
+                                    </dl>
+                                </dd>
+
+                                
+
+                                
+
+                                <dt>Examples</dt>
+
+                                <dd>
+                                    <dl class="code-examples">
+                                        
+                                        <dt><code>//*[pmd-java:nodeIs("Expression")]</code></dt>
+                                        <dd>Matches all nodes that implement <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTExpression.html#"><code>ASTExpression</code></a></dd>
+                                        
+                                        <dt><code>//*[pmd-java:nodeIs("AnyTypeDeclaration")]</code></dt>
+                                        <dd>Matches all nodes that implement <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#"><code>ASTAnyTypeDeclaration</code></a></dd>
+                                        
+                                        <dt><code>//*[pmd-java:nodeIs("Foo")]</code></dt>
+                                        <dd>Runtime error, there's no class ASTFoo in the package</dd>
+                                        
+                                    </dl>
+                                </dd>
+                                
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+
+        
+
+        
+
         <tr data-toggle="collapse" id="pmd-java-typeIs" data-target="#pmd-java-typeIs-expand" class="accordion-toggle">
 
             <td>typeIs</td>
             <td>Tests a node's static type</td>
             <td>
-                <button type="button" class="btn btn-link"><i class="fa fa-ellipsis-h"></i></button>
+                <button type="button" class="btn btn-link"><i class="fas fa-ellipsis-h"></i></button>
             </td>
         </tr>
 
@@ -2234,10 +2265,10 @@ The function is only available in XPath 2.0.
                         <div style="margin-left: 30px">
 
                             <dl>
-                                <dd>Returns true if the context node's static Java type is a subtype of the given type. This tests for the resolved type of the Java construct, not the type of the AST node. For example, the AST node for a literal (e.g. <code>5d</code>) has type ASTLiteral, however this function will compare the type of the literal (eg here, <code>double</code>) against the argument.</dd>
+                                <dd>Returns true if the context node's static Java type is a subtype of the given type. This tests for the resolved type of the Java construct, not the type of the AST node. For example, the AST node for a literal (e.g. <code>5d</code>) has type ASTNumericLiteral, however this function will compare the type of the literal (eg here, <code>double</code>) against the argument.</dd>
                                 
                                 <dt>Remarks</dt>
-                                <dd>The context node must be a <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.56.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"><code>TypeNode</code></a></dd>
+                                <dd>The context node must be a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"><code>TypeNode</code></a></dd>
 
                                 
 
@@ -2290,7 +2321,7 @@ The function is only available in XPath 2.0.
             <td>typeIsExactly</td>
             <td>Tests a node's static type, ignoring subtypes</td>
             <td>
-                <button type="button" class="btn btn-link"><i class="fa fa-ellipsis-h"></i></button>
+                <button type="button" class="btn btn-link"><i class="fas fa-ellipsis-h"></i></button>
             </td>
         </tr>
 
@@ -2312,7 +2343,7 @@ The function is only available in XPath 2.0.
                                 <dd>Returns true if the context node's static type is exactly the given type. In particular, returns false if the context node's type is a subtype of the given type.</dd>
                                 
                                 <dt>Remarks</dt>
-                                <dd>The context node must be a <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.56.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"><code>TypeNode</code></a></dd>
+                                <dd>The context node must be a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"><code>TypeNode</code></a></dd>
 
                                 
 
@@ -2362,7 +2393,7 @@ The function is only available in XPath 2.0.
             <td>metric</td>
             <td>Computes and returns the value of a metric</td>
             <td>
-                <button type="button" class="btn btn-link"><i class="fa fa-ellipsis-h"></i></button>
+                <button type="button" class="btn btn-link"><i class="fas fa-ellipsis-h"></i></button>
             </td>
         </tr>
 
@@ -2381,10 +2412,10 @@ The function is only available in XPath 2.0.
                         <div style="margin-left: 30px">
 
                             <dl>
-                                <dd>Returns the value of the metric as evaluated on the context node</dd>
+                                <dd>Returns the value of the metric as evaluated on the context node. If the metric cannot be computed on that node, returns an empty sequence (which is falsy).</dd>
                                 
                                 <dt>Remarks</dt>
-                                <dd>The context node must be a <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.56.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#"><code>ASTAnyTypeDeclaration</code></a> or a <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.56.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/MethodLikeNode.html#"><code>MethodLikeNode</code></a></dd>
+                                <dd></dd>
 
                                 
 
@@ -2397,13 +2428,305 @@ The function is only available in XPath 2.0.
                                             <span class="param-name">metricKey</span>
                                             <span class="param-type"> as xs:string</span>
                                         </dt>
-                                        <dd>The name of an enum constant in <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.56.0-SNAPSHOT/net/sourceforge/pmd/lang/java/metrics/api/JavaOperationMetricKey.html#"><code>JavaOperationMetricKey</code></a> or <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.56.0-SNAPSHOT/net/sourceforge/pmd/lang/java/metrics/api/JavaClassMetricKey.html#"><code>JavaClassMetricKey</code></a></dd>
+                                        <dd>The name of a metric in <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/metrics/JavaMetrics.html#"><code>JavaMetrics</code></a> (or an alias thereof).</dd>
                                         
                                     </dl>
                                 </dd>
 
                                 
 
+                                
+
+                                <dt>Examples</dt>
+
+                                <dd>
+                                    <dl class="code-examples">
+                                        
+                                        <dt><code>//ClassOrInterfaceDeclaration[metric('NCSS') &gt; 200]</code></dt>
+                                        <dd></dd>
+                                        
+                                        <dt><code>//MethodDeclaration[metric('CYCLO') &gt; 10 and metric('NCSS') &gt; 20]</code></dt>
+                                        <dd></dd>
+                                        
+                                        <dt><code>//TypeParameter[metric('idontexist') &gt; 50]</code></dt>
+                                        <dd>Error: no such metric</dd>
+                                        
+                                    </dl>
+                                </dd>
+                                
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+
+        
+
+        
+
+        <tr data-toggle="collapse" id="pmd-java-hasAnnotation" data-target="#pmd-java-hasAnnotation-expand" class="accordion-toggle">
+
+            <td>hasAnnotation</td>
+            <td>Tests whether an annotation is present on the node</td>
+            <td>
+                <button type="button" class="btn btn-link"><i class="fas fa-ellipsis-h"></i></button>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4" class="hiddenRow">
+                <div class="accordion-body collapse" id="pmd-java-hasAnnotation-expand">
+
+                    <div style="margin-left: 15px" class="xpath-fun-doc">
+
+                        <!-- Yeah the ID is duplicated but it's ok on my browser and makes -->
+                        <!--links somehow work when details are collapsed -->
+                        <h4 class="fun-details-header" id="pmd-java-hasAnnotation">
+                            <span class="fun-ns">pmd-java:</span><span class="fun-name">hasAnnotation</span><span class="fun-ns">(xs:string) as xs:boolean</span>
+                        </h4>
+
+                        <div style="margin-left: 30px">
+
+                            <dl>
+                                <dd>Returns true if the node has an annotation with the given qualified name</dd>
+                                
+                                <dt>Remarks</dt>
+                                <dd>The context node must be an <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/Annotatable.html#"><code>Annotatable</code></a>, otherwise this returns false</dd>
+
+                                
+
+                                <dt>Parameters</dt>
+
+                                <dd>
+                                    <dl>
+                                        
+                                        <dt>
+                                            <span class="param-name">annotationClassName</span>
+                                            <span class="param-type"> as xs:string</span>
+                                        </dt>
+                                        <dd>Canonical name of an annotation type</dd>
+                                        
+                                    </dl>
+                                </dd>
+
+                                
+
+                                
+
+                                <dt>Examples</dt>
+
+                                <dd>
+                                    <dl class="code-examples">
+                                        
+                                        <dt><code>//MethodDeclaration[pmd-java:hasAnnotation("java.lang.Override")]</code></dt>
+                                        <dd>Matches all method declarations that are annotated with @Override</dd>
+                                        
+                                    </dl>
+                                </dd>
+                                
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+
+        
+
+        
+
+        <tr data-toggle="collapse" id="pmd-java-modifiers" data-target="#pmd-java-modifiers-expand" class="accordion-toggle">
+
+            <td>modifiers</td>
+            <td>Produce the effective modifiers of a node</td>
+            <td>
+                <button type="button" class="btn btn-link"><i class="fas fa-ellipsis-h"></i></button>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4" class="hiddenRow">
+                <div class="accordion-body collapse" id="pmd-java-modifiers-expand">
+
+                    <div style="margin-left: 15px" class="xpath-fun-doc">
+
+                        <!-- Yeah the ID is duplicated but it's ok on my browser and makes -->
+                        <!--links somehow work when details are collapsed -->
+                        <h4 class="fun-details-header" id="pmd-java-modifiers">
+                            <span class="fun-ns">pmd-java:</span><span class="fun-name">modifiers</span><span class="fun-ns">() as xs:string*</span>
+                        </h4>
+
+                        <div style="margin-left: 30px">
+
+                            <dl>
+                                <dd>Returns a sequence of the effective modifiers of a node as strings. This is documented on <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTModifierList.html#getEffectiveModifiers()"><code>getEffectiveModifiers</code></a>.</dd>
+                                
+                                <dt>Remarks</dt>
+                                <dd>The context node must be an <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/AccessNode.html#"><code>AccessNode</code></a>, otherwise this returns an empty sequence</dd>
+
+                                
+
+                                
+
+                                <dt>Examples</dt>
+
+                                <dd>
+                                    <dl class="code-examples">
+                                        
+                                        <dt><code>//MethodDeclaration[pmd-java:modifiers() = "native"]</code></dt>
+                                        <dd>Matches native method declarations</dd>
+                                        
+                                        <dt><code>//MethodDeclaration[pmd-java:modifiers() = ("native", "static")]</code></dt>
+                                        <dd>Matches method declarations that have a 'native' OR a 'static' modifier. This may be counter-intuitive.</dd>
+                                        
+                                        <dt><code>//MethodDeclaration[pmd-java:modifiers() = "public"]</code></dt>
+                                        <dd>Matches method declarations that have a 'public' modifier, explicit or implicit. For example, this would match methods in interfaces, which implicitly have the modifier. Use the <code>explicitModifiers</code> function if you don't want the implicit part. Also note that <code>@Visibility = 'public'</code> is a better use of the API, in this particular instance.</dd>
+                                        
+                                    </dl>
+                                </dd>
+                                
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+
+        
+
+        
+
+        <tr data-toggle="collapse" id="pmd-java-explicitModifiers" data-target="#pmd-java-explicitModifiers-expand" class="accordion-toggle">
+
+            <td>explicitModifiers</td>
+            <td>Produce the explicit modifiers of a node</td>
+            <td>
+                <button type="button" class="btn btn-link"><i class="fas fa-ellipsis-h"></i></button>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4" class="hiddenRow">
+                <div class="accordion-body collapse" id="pmd-java-explicitModifiers-expand">
+
+                    <div style="margin-left: 15px" class="xpath-fun-doc">
+
+                        <!-- Yeah the ID is duplicated but it's ok on my browser and makes -->
+                        <!--links somehow work when details are collapsed -->
+                        <h4 class="fun-details-header" id="pmd-java-explicitModifiers">
+                            <span class="fun-ns">pmd-java:</span><span class="fun-name">explicitModifiers</span><span class="fun-ns">() as xs:string*</span>
+                        </h4>
+
+                        <div style="margin-left: 30px">
+
+                            <dl>
+                                <dd>Returns a sequence of the explicit modifiers of a node as strings. This is documented on <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTModifierList.html#getExplicitModifiers()"><code>getExplicitModifiers</code></a>.</dd>
+                                
+                                <dt>Remarks</dt>
+                                <dd>The context node must be an <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/AccessNode.html#"><code>AccessNode</code></a>, otherwise this returns an empty sequence</dd>
+
+                                
+
+                                
+
+                                <dt>Examples</dt>
+
+                                <dd>
+                                    <dl class="code-examples">
+                                        
+                                        <dt><code>//MethodDeclaration[pmd-java:explicitModifiers() = "public"]</code></dt>
+                                        <dd>Matches method declarations that have an explicit 'public' modifier.</dd>
+                                        
+                                    </dl>
+                                </dd>
+                                
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+
+        
+
+        
+
+        <tr data-toggle="collapse" id="pmd-java-matchesSig" data-target="#pmd-java-matchesSig-expand" class="accordion-toggle">
+
+            <td>matchesSig</td>
+            <td>Matches the signature called by a method or constructor call</td>
+            <td>
+                <button type="button" class="btn btn-link"><i class="fas fa-ellipsis-h"></i></button>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4" class="hiddenRow">
+                <div class="accordion-body collapse" id="pmd-java-matchesSig-expand">
+
+                    <div style="margin-left: 15px" class="xpath-fun-doc">
+
+                        <!-- Yeah the ID is duplicated but it's ok on my browser and makes -->
+                        <!--links somehow work when details are collapsed -->
+                        <h4 class="fun-details-header" id="pmd-java-matchesSig">
+                            <span class="fun-ns">pmd-java:</span><span class="fun-name">matchesSig</span><span class="fun-ns">(xs:string) as xs:boolean</span>
+                        </h4>
+
+                        <div style="margin-left: 30px">
+
+                            <dl>
+                                <dd>Uses an <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/types/TypeTestUtil.InvocationMatcher.html#"><code>TypeTestUtil.InvocationMatcher</code></a> to test the method signature called by the context node. The format of the parameter is described on that class.</dd>
+                                
+                                <dt>Remarks</dt>
+                                <dd>The context node must be an <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/InvocationNode.html#"><code>InvocationNode</code></a>, otherwise this returns false</dd>
+
+                                
+
+                                <dt>Parameters</dt>
+
+                                <dd>
+                                    <dl>
+                                        
+                                        <dt>
+                                            <span class="param-name">sig</span>
+                                            <span class="param-type"> as xs:string</span>
+                                        </dt>
+                                        <dd>A signature, in the format described on <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/types/TypeTestUtil.InvocationMatcher.html#"><code>TypeTestUtil.InvocationMatcher</code></a></dd>
+                                        
+                                    </dl>
+                                </dd>
+
+                                
+
+                                
+
+                                <dt>Examples</dt>
+
+                                <dd>
+                                    <dl class="code-examples">
+                                        
+                                        <dt><code>//MethodCall[pmd-java:matchesSig("_#equals(java.lang.Object)")]</code></dt>
+                                        <dd>Matches calls to the method <code>equals</code> on any receiver type</dd>
+                                        
+                                        <dt><code>//MethodCall[pmd-java:matchesSig("java.lang.Enum#equals(java.lang.Object)")]</code></dt>
+                                        <dd>Matches calls to the method <code>equals</code> on receiver that is a subtype of Enum</dd>
+                                        
+                                        <dt><code>//MethodCall[pmd-java:matchesSig("java.lang.String#toString()")]</code></dt>
+                                        <dd>Matches calls to the method <code>toString</code> on String receivers</dd>
+                                        
+                                        <dt><code>//MethodCall[pmd-java:matchesSig("_#_(int,int)")]</code></dt>
+                                        <dd>Matches calls to any method with 2 <code>int</code> parameters (!= argument)</dd>
+                                        
+                                        <dt><code>//ConstructorCall[pmd-java:matchesSig("java.util.ArrayList#new(int)")]</code></dt>
+                                        <dd>Matches constructors calls of ArrayList with a single int parameter</dd>
+                                        
+                                    </dl>
+                                </dd>
                                 
                             </dl>
                         </div>
@@ -2419,7 +2742,7 @@ The function is only available in XPath 2.0.
 
 </div>
 
-<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> There is also a <code class="language-plaintext highlighter-rouge">typeOf</code> function which is
+<div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b> There is also a <code class="language-plaintext highlighter-rouge">typeOf</code> function which is
 deprecated and whose usages should be replaced with uses of <code class="language-plaintext highlighter-rouge">typeIs</code> or
 <code class="language-plaintext highlighter-rouge">typeIsExactly</code>. That one will be removed with PMD 7.0.0.</div>
 
@@ -2431,17 +2754,15 @@ deprecated and whose usages should be replaced with uses of <code class="languag
         
         
         
-        <a href="tag_extending.html" class="btn btn-default navbar-btn cursorNorm" role="button">extending</a>
+        <a href="tag_extending.html" class="btn btn-outline-secondary navbar-btn cursorNorm" role="button">extending</a>
         
         
         
-        <a href="tag_userdocs.html" class="btn btn-default navbar-btn cursorNorm" role="button">userdocs</a>
+        <a href="tag_userdocs.html" class="btn btn-outline-secondary navbar-btn cursorNorm" role="button">userdocs</a>
         
         
         
     </div>
-
-
 
 </div>
 
@@ -2467,9 +2788,9 @@ deprecated and whose usages should be replaced with uses of <code class="languag
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            February 2020 (6.22.0)<br /> Site last generated: Mar 1, 2023 <br />
+            February 2020 (6.22.0)<br /> Site last generated: Mar 3, 2023 <br />
             <p>
-                <img src="images/pmd-logo-small.png" alt="Company
+                <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
             </p>
         </div>
@@ -2493,6 +2814,17 @@ deprecated and whose usages should be replaced with uses of <code class="languag
     <!-- /.toc-container-wrapper -->
 </div>
 </div>
-</body>
 
+<script type="application/javascript" src="assets/jquery-3.5.1/jquery-3.5.1.min.js"></script>
+<script type="application/javascript" src="assets/anchorjs-4.2.2/anchor.min.js"></script>
+<script type="application/javascript" src="assets/navgoco-0.2.1/src/jquery.navgoco.min.js"></script>
+<script type="application/javascript" src="assets/bootstrap-4.5.2-dist/js/bootstrap.bundle.min.js"></script>
+<script type="application/javascript" src="assets/Simple-Jekyll-Search-1.0.8/dest/jekyll-search.js"></script>
+<script type="application/javascript" src="assets/jekyll-table-of-contents/toc.js"></script>
+<script type="application/javascript" src="js/tabstate.js"></script>
+<script type="application/javascript" src="js/customscripts.js"></script>
+
+
+
+</body>
 </html>

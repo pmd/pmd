@@ -290,17 +290,17 @@ p.post-meta {
 }
 
 /* search area */
-#search-demo-container ul#results-container {
+ul#results-container {
     list-style: none;
     font-size: 12px;
     background-color: white;
     position: absolute;
-    top: 40px; /* if you change anything about the nav, you'll prob. need to reset the top and left values here.*/
-    left: 20px;
+    top: 50px; /* if you change anything about the nav, you'll prob. need to reset the top and left values here.*/
     z-index: -1;
     width: 223px;
     border-left: 1px solid #dedede;
     box-shadow: 2px 3px 2px #dedede;
+    padding: 0px;
 }
 
 ul#results-container a {
@@ -311,20 +311,11 @@ ul#results-container a:hover {
     color: black;
 }
 
-#search-demo-container a:hover {
-    color: black;
+ul#results-container li a {
+    border-top:1px solid whitesmoke;
+    margin:10px;
 }
-#search-input {
-    padding: 0.5em;
-    margin-left: 20px;
-    width: 20em;
-    font-size: 0.8em;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    float: right;
-    margin-top: 10px;
-}
+
 /* end search */
 
 .filter-options {
@@ -474,6 +465,7 @@ a.accordion-collapsed {
 }
 
 ul#mysidebar {
+    display: block;
     border-radius: 0px;
 }
 
@@ -574,6 +566,7 @@ figcaption {
 table.dataTable thead {
     background-color: #444;
 }
+
 table td {
     hyphens: auto;
 }
@@ -950,9 +943,6 @@ dd {
     margin: 0px;
     margin-bottom: 6px;
 }
-.panel-heading {
-    font-weight: bold;
-}
 
 .note code,
 .alert code,
@@ -1105,10 +1095,6 @@ a.no_icon:after {
     padding-left: 0;
 }
 
-.btn-default {
-    margin-bottom: 10px;
-}
-
 /* algolia search */
 
 .search {
@@ -1219,27 +1205,6 @@ table thead th code.highlighter-rouge {
     background-color: #f0f0f0;
 }
 
-#userMap {
-    overflow-x: auto;
-    overflow-y: auto;
-    padding: 20px;
-    min-width: 770px;
-}
-
-#userMap .active {
-    background-color: #d6f5d6;
-    border: 1px solid #555;
-    font-weight: bold;
-}
-
-h2.userMapTitle {
-    font-family: Arial;
-}
-
-#userMap a:hover {
-    text-decoration: none;
-}
-
 div.arrow {
     max-width: 50px;
     margin-left: 15px;
@@ -1251,53 +1216,17 @@ div.content {
     max-width: 110px;
 }
 
-#userMap div.arrow,
-#userMap div.content {
-    float: left;
-}
-
 .clearfix {
     clear: both;
 }
 
-#userMap div.arrow {
-    position: relative;
-    top: 30px;
-}
 
 .box1 {
     margin-left: 0px;
 }
 
-button.btn.btn-default.btn-lg.modalButton1 {
-    margin-left: -20px;
-}
-
 div.box.box1 {
     margin-left: -20px;
-}
-
-#userMap .btn-lg {
-    width: 100px;
-    height: 80px;
-}
-
-#userMap .complexArrow {
-    font-size: 22px;
-    margin: 0px 10px;
-}
-
-#userMap .btn-lg .active {
-    background-color: #d6f5d6;
-}
-
-#userMap .btn-lg {
-    white-space: pre-wrap; /* css-3 */
-    white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
-    white-space: -pre-wrap; /* Opera 4-6 */
-    white-space: -o-pre-wrap; /* Opera 7 */
-    word-wrap: break-word; /* Internet Explorer 5.5+ */
-    font-size: 14px;
 }
 
 /*

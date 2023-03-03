@@ -14,19 +14,25 @@
   
   
   <url>
+    <loc>https://pmd.github.io/pmd/pmd_release_notes7.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_devdocs_major_adding_new_language_antlr.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_devdocs_major_adding_new_language_javacc.html</loc>
+  </url>
+  
+  
+  
+  <url>
     <loc>https://pmd.github.io/pmd/pmd_devdocs_major_adding_new_cpd_language.html</loc>
-  </url>
-  
-  
-  
-  <url>
-    <loc>https://pmd.github.io/pmd/pmd_devdocs_major_adding_new_language.html</loc>
-  </url>
-  
-  
-  
-  <url>
-    <loc>https://pmd.github.io/pmd/pmd_devdocs_major_adding_new_metrics_framework.html</loc>
   </url>
   
   
@@ -62,7 +68,7 @@
   
   
   <url>
-    <loc>https://pmd.github.io/pmd/pmd_apex_metrics_index.html</loc>
+    <loc>https://pmd.github.io/pmd/pmd_languages_apex.html</loc>
   </url>
   
   
@@ -75,6 +81,12 @@
   
   <url>
     <loc>https://pmd.github.io/pmd/pmd_userdocs_best_practices.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_kotlin_bestpractices.html</loc>
   </url>
   
   
@@ -111,6 +123,12 @@
   
   <url>
     <loc>https://pmd.github.io/pmd/pmd_rules_vm_bestpractices.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_swift_bestpractices.html</loc>
   </url>
   
   
@@ -278,6 +296,12 @@
   
   
   <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_kotlin_errorprone.html</loc>
+  </url>
+  
+  
+  
+  <url>
     <loc>https://pmd.github.io/pmd/pmd_rules_apex_errorprone.html</loc>
   </url>
   
@@ -309,6 +333,12 @@
   
   <url>
     <loc>https://pmd.github.io/pmd/pmd_rules_vm_errorprone.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_swift_errorprone.html</loc>
   </url>
   
   
@@ -412,12 +442,6 @@
   
   
   <url>
-    <loc>https://pmd.github.io/pmd/pmd_java_metrics_index.html</loc>
-  </url>
-  
-  
-  
-  <url>
     <loc>https://pmd.github.io/pmd/pmd_rules_jsp.html</loc>
   </url>
   
@@ -430,7 +454,37 @@
   
   
   <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_kotlin.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_languages_kotlin.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_languages_configuration.html</loc>
+  </url>
+  
+  
+  
+  <url>
     <loc>https://pmd.github.io/pmd/license.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_devdocs_logging.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_projectdocs_logo.html</loc>
   </url>
   
   
@@ -466,12 +520,6 @@
   
   
   <url>
-    <loc>https://pmd.github.io/pmd/pmd_userdocs_extending_metrics_howto.html</loc>
-  </url>
-  
-  
-  
-  <url>
     <loc>https://pmd.github.io/pmd/pmd_rules_modelica.html</loc>
   </url>
   
@@ -479,12 +527,6 @@
   
   <url>
     <loc>https://pmd.github.io/pmd/pmd_rules_java_multithreading.html</loc>
-  </url>
-  
-  
-  
-  <url>
-    <loc>https://pmd.github.io/pmd/js/mydoc_scroll.html</loc>
   </url>
   
   
@@ -655,6 +697,12 @@
   
   
   
+  <url>
+    <loc>https://pmd.github.io/pmd/pmd_rules_swift.html</loc>
+  </url>
+  
+  
+  
   
   
   
@@ -684,10 +732,6 @@
   <url>
     <loc>https://pmd.github.io/pmd/pmd_userdocs_tools.html</loc>
   </url>
-  
-  
-  
-  
   
   
   

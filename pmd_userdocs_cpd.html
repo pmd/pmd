@@ -7,88 +7,21 @@
 <meta name="description" content="Learn how to use CPD, the copy-paste detector shipped with PMD.">
 <meta name="keywords" content="cpduserdocs,  ">
 <title>Finding duplicated code with CPD | PMD Source Code Analyzer</title>
-<link rel="stylesheet" href="css/syntax.css">
 
 
-<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-<!--<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">-->
-<link rel="stylesheet" href="css/modern-business.css">
-<link rel="stylesheet" href="css/lavish-bootstrap.css">
-<link rel="stylesheet" href="css/customstyles.css">
-<link rel="stylesheet" href="css/theme-blue.css">
-<link rel="stylesheet" href="css/pmd-customstyles.css">
+<link rel="stylesheet" type="text/css" href="assets/fontawesome-free-5.14.0-web/css/all.min.css">
+<link rel="stylesheet" type="text/css" href="assets/bootstrap-4.5.2-dist/css/bootstrap.min.css">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
-<script src="js/jquery.navgoco.min.js"></script>
-
-
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/2.0.0/anchor.min.js"></script>
-<script src="js/toc.js"></script>
-<script src="js/customscripts.js"></script>
+<link rel="stylesheet" type="text/css" href="css/syntax.css">
+<link rel="stylesheet" type="text/css" href="css/modern-business.css">
+<link rel="stylesheet" type="text/css" href="css/customstyles.css">
+<link rel="stylesheet" type="text/css" href="css/theme-green.css">
+<link rel="stylesheet" type="text/css" href="css/pmd-customstyles.css">
 
 <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
 <link rel="icon" href="images/favicon.ico" type="image/x-icon">
 
-<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-<!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]-->
-
-<link rel="alternate" type="application/rss+xml" title="" href="https://pmd.github.io/pmd/feed.xml">
-
-    <script>
-        $(document).ready(function() {
-            // Initialize navgoco with default options
-            $("#mysidebar").navgoco({
-                caretHtml: '',
-                accordion: true,
-                openClass: 'active', // open
-                save: false, // leave false or nav highlighting doesn't work right
-                cookie: {
-                    name: 'navgoco',
-                    expires: false,
-                    path: '/'
-                },
-                slide: {
-                    duration: 400,
-                    easing: 'swing'
-                }
-            });
-
-            $("#collapseAll").click(function(e) {
-                e.preventDefault();
-                $("#mysidebar").navgoco('toggle', false);
-            });
-
-            $("#expandAll").click(function(e) {
-                e.preventDefault();
-                $("#mysidebar").navgoco('toggle', true);
-            });
-
-        });
-
-    </script>
-    <script>
-        $(function () {
-            $('[data-toggle="tooltip"]').tooltip()
-        })
-    </script>
-    <script>
-        $(document).ready(function() {
-            $("#tg-sb-link").click(function() {
-                $("#tg-sb-sidebar").toggle();
-                $("#tg-sb-content").toggleClass('col-md-9');
-                $("#tg-sb-content").toggleClass('col-md-12');
-                $("#tg-sb-icon").toggleClass('fa-toggle-on');
-                $("#tg-sb-icon").toggleClass('fa-toggle-off');
-            });
-        });
-    </script>
-    
+<link rel="alternate" type="application/rss+xml" title="" href="feed.xml">
 
 </head>
 <body>
@@ -96,62 +29,40 @@
 <!-- There's already a padding-top rule in modern-business.css, but it apparently doesn't work on Firefox 60 and Chrome 67 -->
 <div id="topbar-content-offset">
 <!-- Navigation -->
-<nav class="navbar navbar-inverse navbar-fixed-top">
+<nav class="navbar navbar-expand-lg fixed-top navbar-dark">
     <div class="container topnavlinks">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="fa fa-home fa-lg navbar-brand" href="index.html">&nbsp;<span class="projectTitle"> PMD Source Code Analyzer Project</span></a>
-        </div>
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav navbar-right">
+        <a class="navbar-brand fas fa-home fa-lg" href="index.html">&nbsp;<span class="projectTitle"> PMD Source Code Analyzer Project</span></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0"></ul>
+            <ul class="navbar-nav">
                 <!-- toggle sidebar button -->
-                <li><a id="tg-sb-link" href="#"><i id="tg-sb-icon" class="fa fa-toggle-on"></i> Nav</a></li>
+                <li class="nav-item"><a id="tg-sb-link" class="nav-link" href="#"><i id="tg-sb-icon" class="fas fa-toggle-on"></i> Nav</a></li>
                 <!-- entries without drop-downs appear here -->
                 
-                
-                
-                <li><a href="https://github.com/pmd/pmd/releases/latest" target="_blank">Download</a></li>
-                
-                
-                
-                <li><a href="https://github.com/pmd/pmd" target="_blank">Fork us on github</a></li>
-                
-                
+                    
+                        
+                            <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd/releases/latest" target="_blank">Download</a></li>
+                        
+                    
+                        
+                            <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd" target="_blank">Fork us on github</a></li>
+                        
+                    
                 
                 <!-- entries with drop-downs appear here -->
                 <!-- conditional logic to control which topnav appears for the audience defined in the configuration file.-->
                 
-                
-                <!--comment out this block if you want to hide search-->
-                <li>
-                    <!--start search-->
-                    <div id="search-demo-container">
-                        <input type="text" id="search-input" placeholder="search...">
-                        <ul id="results-container"></ul>
-                    </div>
-                    <script src="js/jekyll-search.js" type="text/javascript"></script>
-                    <script type="text/javascript">
-                            SimpleJekyllSearch.init({
-                                searchInput: document.getElementById('search-input'),
-                                resultsContainer: document.getElementById('results-container'),
-                                dataSource: 'search.json',
-                                searchResultTemplate: '<li><a href="{url}" title="Finding duplicated code with CPD">{title}</a></li>',
-                    noResultsText: 'No results found.',
-                            limit: 10,
-                            fuzzy: true,
-                    })
-                    </script>
-                    <!--end search-->
-                </li>
             </ul>
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" placeholder="search..." id="search-input">
+                <ul id="results-container"></ul>
+            </form>
         </div>
-        </div>
-        <!-- /.container -->
+    </div>
 </nav>
 
 <!-- Page Content -->
@@ -174,8 +85,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.56.0-SNAPSHOT</li>
-    <div class="sidebarTitleDate">Release date: 25-March-2023</div>
+    <li class="sidebarTitle">PMD 7.0.0-SNAPSHOT</li>
+    <div class="sidebarTitleDate">Release date: ??-?????-2023</div>
     
     
     
@@ -204,7 +115,7 @@
             
 
                 
-                <li><a href="pmd_release_notes.html">Release notes</a></li>
+                <li><a href="pmd_release_notes7.html">Release notes</a></li>
                 
 
             
@@ -433,12 +344,6 @@
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_metrics_howto.html">Using and defining code metrics</a></li>
-                        
-                        
-                        
-                        
-                        
                         <li><a href="pmd_userdocs_extending_rule_guidelines.html">Rule guidelines</a></li>
                         
                         
@@ -598,49 +503,6 @@
                 
                 
                 <li class="subfolders">
-                    <a href="#">Ecmascript Rules</a>
-                    <ul>
-                        
-                        
-                        
-                        <li><a href="pmd_rules_ecmascript.html">Index</a></li>
-                        
-                        
-                        
-                        
-                        
-                        <li><a href="pmd_rules_ecmascript_bestpractices.html">Best Practices</a></li>
-                        
-                        
-                        
-                        
-                        
-                        <li><a href="pmd_rules_ecmascript_codestyle.html">Code Style</a></li>
-                        
-                        
-                        
-                        
-                        
-                        <li><a href="pmd_rules_ecmascript_errorprone.html">Error Prone</a></li>
-                        
-                        
-                        
-                    </ul>
-                </li>
-                
-                
-
-            
-
-            
-            
-            
-
-            
-
-                
-                
-                <li class="subfolders">
                     <a href="#">HTML Rules</a>
                     <ul>
                         
@@ -781,6 +643,86 @@
                         
                         
                         <li><a href="pmd_rules_jsp_security.html">Security</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">JavaScript Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript_codestyle.html">Code Style</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Kotlin Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_kotlin.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_kotlin_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_kotlin_errorprone.html">Error Prone</a></li>
                         
                         
                         
@@ -967,6 +909,43 @@
                 
                 
                 <li class="subfolders">
+                    <a href="#">Swift Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_swift.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_swift_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_swift_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
                     <a href="#">VM Rules</a>
                     <ul>
                         
@@ -1103,7 +1082,7 @@
     
     <li>
         
-        <a href="#">Language Specific Documentation</a>
+        <a href="#">Language-Specific Documentation</a>
         
         <ul>
             
@@ -1112,7 +1091,7 @@
             
 
                 
-                <li><a href="pmd_languages_jsp.html">JSP Support</a></li>
+                <li><a href="pmd_languages_configuration.html">Language configuration</a></li>
                 
 
             
@@ -1124,26 +1103,7 @@
             
 
                 
-                
-                <li class="subfolders">
-                    <a href="#">Java Support</a>
-                    <ul>
-                        
-                        
-                        
-                        <li><a href="pmd_languages_java.html">Java Versions</a></li>
-                        
-                        
-                        
-                        
-                        
-                        <li><a href="pmd_java_metrics_index.html">Java Code Metrics</a></li>
-                        
-                        
-                        
-                    </ul>
-                </li>
-                
+                <li><a href="pmd_languages_apex.html">Apex</a></li>
                 
 
             
@@ -1155,7 +1115,31 @@
             
 
                 
-                <li><a href="pmd_apex_metrics_index.html">Apex code metrics</a></li>
+                <li><a href="pmd_languages_java.html">Java</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_languages_jsp.html">JSP</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_languages_kotlin.html">Kotlin</a></li>
                 
 
             
@@ -1347,19 +1331,19 @@
                         
                         
                         
-                        <li><a href="pmd_devdocs_major_adding_new_language.html">Adding a new language</a></li>
+                        <li><a href="pmd_devdocs_major_adding_new_language_javacc.html">Adding a new language (JavaCC)</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_major_adding_new_language_antlr.html">Adding a new language (Antlr)</a></li>
                         
                         
                         
                         
                         
                         <li><a href="pmd_devdocs_major_adding_new_cpd_language.html">Adding a new CPD language</a></li>
-                        
-                        
-                        
-                        
-                        
-                        <li><a href="pmd_devdocs_major_adding_new_metrics_framework.html">Adding metrics support to a language</a></li>
                         
                         
                         
@@ -1435,6 +1419,18 @@
                     </ul>
                 </li>
                 
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_projectdocs_logo.html">Logo</a></li>
                 
 
             
@@ -1549,15 +1545,7 @@
        
         
         
-        <!-- if you aren't using the accordion, uncomment this block:
-           <p class="external">
-               <a href="#" id="collapseAll">Collapse All</a> | <a href="#" id="expandAll">Expand All</a>
-           </p>
-           -->
 </ul>
-
-<!-- this highlights the active parent class in the navgoco sidebar. this is critical so that the parent expands when you're viewing a page. This must appear below the sidebar code above. Otherwise, if placed inside customscripts.js, the script runs before the sidebar code runs and the class never gets inserted.-->
-<script>$("li.active").parents('li').toggleClass("active");</script>
 
             </div>
             
@@ -1575,7 +1563,7 @@
             <a
                 target="_blank"
                 href="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/userdocs/cpd/cpd.md"
-                class="pull-right"
+                class="float-right"
                 role="button"
                 ><i class="fa fa-github fa-lg"></i> Edit on GitHub</a
             >
@@ -1591,15 +1579,13 @@
    <h1 class="post-title-main">Finding duplicated code with CPD</h1>
 </div>
 
-
-
 <div class="post-content" data-github-edit-url="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/userdocs/cpd/cpd.md">
 
    
     <div class="summary">Learn how to use CPD, the copy-paste detector shipped with PMD.</div>
    
     <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
-    
+
   <h2 id="overview">Overview</h2>
 
 <p>Duplicate code can be hard to find, especially in a large project.
@@ -1677,7 +1663,7 @@ See how to add it <a href="pmd_devdocs_major_adding_new_cpd_language.html">here<
 
 
 <tr>
-    <td><a style="pointer-events: none; cursor: default;" name="-minimum-tokens"><code>--minimum-tokens</code></a></td>
+    <td><a style="pointer-events: none; cursor: default;" name="-minimum-tokens"><code>--minimum-tokens&nbsp;&lt;count&gt;</code></a></td>
     <td><span class="label label-primary">Required</span>  The minimum token length which should be reported as a duplicate.</td>
     <td><code></code></td>
     <td></td>
@@ -1699,9 +1685,16 @@ See how to add it <a href="pmd_devdocs_major_adding_new_cpd_language.html">here<
 
 
 <tr>
-    <td><a style="pointer-events: none; cursor: default;" name="-files"><code>--files</code><br /><code>--dir</code><br /><code>-d</code></a></td>
-    <td><span class="label label-primary">Required</span>  List of files and directories to process.
-                            <p>Note: <code>--files</code> is <span class="label label-default">deprecated</span> since PMD 6.52.0. Usage of <code>--dir</code> is preferred.</p></td>
+    <td><a style="pointer-events: none; cursor: default;" name="-dir"><code>--dir&nbsp;&lt;path&gt;</code><br /><code>-d&nbsp;&lt;path&gt;</code></a></td>
+    <td>Path to a source file, or directory containing
+                               source files to analyze. Zip and Jar files are
+                               also supported, if they are specified directly
+                               (archive files found while exploring a directory
+                               are not recursively expanded). This option can
+                               be repeated, and multiple arguments can be
+                               provided to a single occurrence of the option.
+                               One of <code>--dir</code>, <code>--file-list</code> or <code>--uri</code> must be
+                               provided.</td>
     <td><code></code></td>
     <td></td>
 </tr>
@@ -1722,8 +1715,10 @@ See how to add it <a href="pmd_devdocs_major_adding_new_cpd_language.html">here<
 
 
 <tr>
-    <td><a style="pointer-events: none; cursor: default;" name="-file-list"><code>--file-list</code></a></td>
-    <td>Path to file containing a comma delimited list of files to analyze. If this is given, then you don't need to provide <code>--dir</code>.</td>
+    <td><a style="pointer-events: none; cursor: default;" name="-file-list"><code>--file-list&nbsp;&lt;filepath&gt;</code></a></td>
+    <td>Path to a file containing a list of files to
+                               analyze, one path per line. One of <code>--dir</code>,
+                               <code>--file-list</code> or <code>--uri</code> must be provided.</td>
     <td><code></code></td>
     <td></td>
 </tr>
@@ -1744,8 +1739,10 @@ See how to add it <a href="pmd_devdocs_major_adding_new_cpd_language.html">here<
 
 
 <tr>
-    <td><a style="pointer-events: none; cursor: default;" name="-language"><code>--language</code></a></td>
-    <td>Sources code language.</td>
+    <td><a style="pointer-events: none; cursor: default;" name="-language"><code>--language&nbsp;&lt;lang&gt;</code><br /><code>-l&nbsp;&lt;lang&gt;</code></a></td>
+    <td>The source code language.
+                            <p>See also <a href="#supported-languages">Supported Languages</a>.
+                            Using <code>--help</code> will display a full list of supported languages.</p></td>
     <td><code>java</code></td>
     <td></td>
 </tr>
@@ -1766,8 +1763,8 @@ See how to add it <a href="pmd_devdocs_major_adding_new_cpd_language.html">here<
 
 
 <tr>
-    <td><a style="pointer-events: none; cursor: default;" name="-debug"><code>--debug</code><br /><code>--verbose</code><br /><code>-v</code><br /><code>-D</code></a></td>
-    <td>Debug mode. Prints more log output.</td>
+    <td><a style="pointer-events: none; cursor: default;" name="-debug"><code>--debug</code><br /><code>--verbose</code><br /><code>-D</code><br /><code>-v</code></a></td>
+    <td>Debug mode. Prints more log output. See also <a href="#logging">Logging</a>.</td>
     <td><code></code></td>
     <td></td>
 </tr>
@@ -1788,9 +1785,10 @@ See how to add it <a href="pmd_devdocs_major_adding_new_cpd_language.html">here<
 
 
 <tr>
-    <td><a style="pointer-events: none; cursor: default;" name="-encoding"><code>--encoding</code><br /><code>-e</code></a></td>
-    <td>Character encoding to use when processing files. If not specified, CPD uses the system default encoding.</td>
-    <td><code></code></td>
+    <td><a style="pointer-events: none; cursor: default;" name="-encoding"><code>--encoding&nbsp;&lt;charset&gt;</code><br /><code>-e&nbsp;&lt;charset&gt;</code></a></td>
+    <td>Specifies the character set encoding of the source code files PMD is reading.
+                            The valid values are the standard character sets of <code>java.nio.charset.Charset</code>.</td>
+    <td><code>UTF-8</code></td>
     <td></td>
 </tr>
 
@@ -1832,8 +1830,8 @@ See how to add it <a href="pmd_devdocs_major_adding_new_cpd_language.html">here<
 
 
 <tr>
-    <td><a style="pointer-events: none; cursor: default;" name="-exclude"><code>--exclude</code></a></td>
-    <td>Files to be excluded from CPD check</td>
+    <td><a style="pointer-events: none; cursor: default;" name="-exclude"><code>--exclude&nbsp;&lt;path&gt;</code></a></td>
+    <td>Files to be excluded from the analysis</td>
     <td><code></code></td>
     <td></td>
 </tr>
@@ -1898,8 +1896,9 @@ See how to add it <a href="pmd_devdocs_major_adding_new_cpd_language.html">here<
 
 
 <tr>
-    <td><a style="pointer-events: none; cursor: default;" name="-format"><code>--format</code></a></td>
-    <td>Report format.</td>
+    <td><a style="pointer-events: none; cursor: default;" name="-format"><code>--format&nbsp;&lt;format&gt;</code><br /><code>-f&nbsp;&lt;format&gt;</code></a></td>
+    <td>Output format of the analysis report. The available formats
+                            are described <a href="#available-report-formats">here</a>.</td>
     <td><code>text</code></td>
     <td></td>
 </tr>
@@ -1920,10 +1919,11 @@ See how to add it <a href="pmd_devdocs_major_adding_new_cpd_language.html">here<
 
 
 <tr>
-    <td><a style="pointer-events: none; cursor: default;" name="-fail-on-violation"><code>--fail-on-violation&nbsp;&lt;bool&gt;</code></a></td>
-    <td>By default CPD exits with status 4 if code duplications are found.
-                            Disable this option with <code>--fail-on-violation false</code> to exit with 0 instead and just write the report.</td>
-    <td><code>true</code></td>
+    <td><a style="pointer-events: none; cursor: default;" name="-%5Bno-%5Dfail-on-violation"><code>--[no-]fail-on-violation</code></a></td>
+    <td>Specifies whether CPD exits with non-zero status if violations are found.
+                            By default CPD exits with status 4 if violations are found.
+                            Disable this feature with <code>--no-fail-on-violation</code> to exit with 0 instead and just output the report.</td>
+    <td><code></code></td>
     <td></td>
 </tr>
 
@@ -2098,8 +2098,9 @@ See how to add it <a href="pmd_devdocs_major_adding_new_cpd_language.html">here<
 
 
 <tr>
-    <td><a style="pointer-events: none; cursor: default;" name="-uri"><code>--uri</code></a></td>
-    <td>URI to process</td>
+    <td><a style="pointer-events: none; cursor: default;" name="-uri"><code>--uri&nbsp;&lt;uri&gt;</code><br /><code>-u&nbsp;&lt;uri&gt;</code></a></td>
+    <td>Database URI for sources. One of <code>--dir</code>,
+                               <code>--file-list</code> or <code>--uri</code> must be provided.</td>
     <td><code></code></td>
     <td>PLSQL</td>
 </tr>
@@ -2122,7 +2123,7 @@ See how to add it <a href="pmd_devdocs_major_adding_new_cpd_language.html">here<
 <tr>
     <td><a style="pointer-events: none; cursor: default;" name="-help"><code>--help</code><br /><code>-h</code></a></td>
     <td>Print help text</td>
-    <td><code>false</code></td>
+    <td><code></code></td>
     <td></td>
 </tr>
 
@@ -2130,61 +2131,204 @@ See how to add it <a href="pmd_devdocs_major_adding_new_cpd_language.html">here<
 
 <h3 id="examples">Examples</h3>
 
-<p><em>Note:</em> The following example use the Linux start script. For Windows, just replace “./run.sh cpd” by “cpd.bat”.</p>
-
 <p>Minimum required options: Just give it the minimum duplicate size and the source directory:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./run.sh cpd --minimum-tokens 100 --dir /usr/local/java/src/java
-</code></pre></div></div>
+<div class="text-left">
+  <ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <a class="nav-link active" id="linux-tab-basic" data-toggle="tab" href="#linux-basic" role="tab" aria-controls="linux" aria-selected="true">Linux / macOS</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="windows-tab-basic" data-toggle="tab" href="#windows-basic" role="tab" aria-controls="windows" aria-selected="false">Windows</a>
+    </li>
+  </ul>
+
+  <div class="tab-content border">
+    <div class="tab-pane fade show active" id="linux-basic" role="tabpanel" aria-labelledby="linux-tab">
+      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">~ $ </span><span class="s2">pmd</span> cpd --minimum-tokens 100 --dir src/main/java
+</code></pre></figure>
+    </div>
+    <div class="tab-pane fade" id="windows-basic" role="tabpanel" aria-labelledby="windows-tab">
+      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">C:\&gt; </span><span class="s2">pmd.bat</span> cpd --minimum-tokens 100 --dir src\main\java
+</code></pre></figure>
+    </div>
+  </div>
+</div>
 
 <p>You can also specify the language:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./run.sh cpd --minimum-tokens 100 --dir /path/to/c/source --language cpp
-</code></pre></div></div>
+<div class="text-left">
+  <ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <a class="nav-link active" id="linux-tab-lang" data-toggle="tab" href="#linux-lang" role="tab" aria-controls="linux" aria-selected="true">Linux / macOS</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="windows-tab-lang" data-toggle="tab" href="#windows-lang" role="tab" aria-controls="windows" aria-selected="false">Windows</a>
+    </li>
+  </ul>
+
+  <div class="tab-content border">
+    <div class="tab-pane fade show active" id="linux-lang" role="tabpanel" aria-labelledby="linux-tab">
+      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">~ $ </span><span class="s2">pmd</span> cpd --minimum-tokens 100 --dir src/main/cpp --language cpp
+</code></pre></figure>
+    </div>
+    <div class="tab-pane fade" id="windows-lang" role="tabpanel" aria-labelledby="windows-tab">
+      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">C:\&gt; </span><span class="s2">pmd.bat</span> cpd --minimum-tokens 100 --dir src\main\cpp --language cpp
+</code></pre></figure>
+    </div>
+  </div>
+</div>
 
 <p>You may wish to check sources that are stored in different directories:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./run.sh cpd --minimum-tokens 100 --dir /path/to/other/source  --dir /path/to/other/source --dir /path/to/other/source --language fortran
-</code></pre></div></div>
+<div class="text-left">
+  <ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <a class="nav-link active" id="linux-tab-multiple" data-toggle="tab" href="#linux-multiple" role="tab" aria-controls="linux" aria-selected="true">Linux / macOS</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="windows-tab-multiple" data-toggle="tab" href="#windows-multiple" role="tab" aria-controls="windows" aria-selected="false">Windows</a>
+    </li>
+  </ul>
 
-<p><em>There should be no limit to the number of <code class="language-plaintext highlighter-rouge">--dir</code>, you may add… But if you stumble one, please tell us !</em></p>
+  <div class="tab-content border">
+    <div class="tab-pane fade show active" id="linux-multiple" role="tabpanel" aria-labelledby="linux-tab">
+      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">~ $ </span><span class="s2">pmd</span> cpd --minimum-tokens 100 --dir src/main/java --dir src/test/java
+</code></pre></figure>
+    </div>
+    <div class="tab-pane fade" id="windows-multiple" role="tabpanel" aria-labelledby="windows-tab">
+      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">C:\&gt; </span><span class="s2">pmd.bat</span> cpd --minimum-tokens 100 --dir src\main\java --dir src\test\java
+</code></pre></figure>
+    </div>
+  </div>
+</div>
+
+<p><em>There is no limit to the number of <code class="language-plaintext highlighter-rouge">--dir</code>, you may add.</em></p>
 
 <p>And if you’re checking a C source tree with duplicate files in different architecture directories
-you can skip those using –skip-duplicate-files:</p>
+you can skip those using <code class="language-plaintext highlighter-rouge">--skip-duplicate-files</code>:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./run.sh cpd --minimum-tokens 100 --dir /path/to/c/source --language cpp --skip-duplicate-files
-</code></pre></div></div>
+<div class="text-left">
+  <ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <a class="nav-link active" id="linux-tab-duplicates" data-toggle="tab" href="#linux-duplicates" role="tab" aria-controls="linux" aria-selected="true">Linux / macOS</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="windows-tab-duplicates" data-toggle="tab" href="#windows-duplicates" role="tab" aria-controls="windows" aria-selected="false">Windows</a>
+    </li>
+  </ul>
+
+  <div class="tab-content border">
+    <div class="tab-pane fade show active" id="linux-duplicates" role="tabpanel" aria-labelledby="linux-tab">
+      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">~ $ </span><span class="s2">pmd</span> cpd --minimum-tokens 100 --dir src/main/cpp --language cpp --skip-duplicate-files
+</code></pre></figure>
+    </div>
+    <div class="tab-pane fade" id="windows-duplicates" role="tabpanel" aria-labelledby="windows-tab">
+      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">C:\&gt; </span><span class="s2">pmd.bat</span> cpd --minimum-tokens 100 --dir src\main\cpp --language cpp --skip-duplicate-files
+</code></pre></figure>
+    </div>
+  </div>
+</div>
 
 <p>You can also specify the encoding to use when parsing files:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./run.sh cpd --minimum-tokens 100 --dir /usr/local/java/src/java --encoding utf-16le
-</code></pre></div></div>
+<div class="text-left">
+  <ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <a class="nav-link active" id="linux-tab-encoding" data-toggle="tab" href="#linux-encoding" role="tab" aria-controls="linux" aria-selected="true">Linux / macOS</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="windows-tab-encoding" data-toggle="tab" href="#windows-encoding" role="tab" aria-controls="windows" aria-selected="false">Windows</a>
+    </li>
+  </ul>
+
+  <div class="tab-content border">
+    <div class="tab-pane fade show active" id="linux-encoding" role="tabpanel" aria-labelledby="linux-tab">
+      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">~ $ </span><span class="s2">pmd</span> cpd --minimum-tokens 100 --dir src/main/java --encoding utf-16le
+</code></pre></figure>
+    </div>
+    <div class="tab-pane fade" id="windows-encoding" role="tabpanel" aria-labelledby="windows-tab">
+      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">C:\&gt; </span><span class="s2">pmd.bat</span> cpd --minimum-tokens 100 --dir src\main\java --encoding utf-16le
+</code></pre></figure>
+    </div>
+  </div>
+</div>
 
 <p>You can also specify a report format - here we’re using the XML report:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./run.sh cpd --minimum-tokens 100 --dir /usr/local/java/src/java --format xml
-</code></pre></div></div>
+<div class="text-left">
+  <ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <a class="nav-link active" id="linux-tab-report" data-toggle="tab" href="#linux-report" role="tab" aria-controls="linux" aria-selected="true">Linux / macOS</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="windows-tab-report" data-toggle="tab" href="#windows-report" role="tab" aria-controls="windows" aria-selected="false">Windows</a>
+    </li>
+  </ul>
 
-<p>The default format is a text report, and there’s also a <code class="language-plaintext highlighter-rouge">csv</code> report.</p>
+  <div class="tab-content border">
+    <div class="tab-pane fade show active" id="linux-report" role="tabpanel" aria-labelledby="linux-tab">
+      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">~ $ </span><span class="s2">pmd</span> cpd --minimum-tokens 100 --dir src/main/java --format xml
+</code></pre></figure>
+    </div>
+    <div class="tab-pane fade" id="windows-report" role="tabpanel" aria-labelledby="windows-tab">
+      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">C:\&gt; </span><span class="s2">pmd.bat</span> cpd --minimum-tokens 100 --dir src\main\java --format xml
+</code></pre></figure>
+    </div>
+  </div>
+</div>
 
-<p>Note that CPD is pretty memory-hungry; you may need to give Java more memory to run it, like this:</p>
+<p>The default format is a text report, but there are <a href="#available-report-formats">other supported formats</a></p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ export PMD_JAVA_OPTS=-Xmx512m
-$ ./run.sh cpd --minimum-tokens 100 --dir /usr/local/java/src/java
-</code></pre></div></div>
+<p>Note that CPD’s memory usage increases linearly with the size of the analyzed source code; you may need to give Java more memory to run it, like this:</p>
 
-<p>In order to change the heap size under Windows, you’ll need to edit the batch file <code class="language-plaintext highlighter-rouge">cpd.bat</code> or
-set the environment variable <code class="language-plaintext highlighter-rouge">PMD_JAVA_OPTS</code> prior to starting CPD:</p>
+<div class="text-left">
+  <ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <a class="nav-link active" id="linux-tab-memchange" data-toggle="tab" href="#linux-memchange" role="tab" aria-controls="linux" aria-selected="true">Linux / macOS</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="windows-tab-memchange" data-toggle="tab" href="#windows-memchange" role="tab" aria-controls="windows" aria-selected="false">Windows</a>
+    </li>
+  </ul>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>C:\ &gt; cd C:\pmd-bin-6.56.0-SNAPSHOT\bin
-C:\...\bin &gt; set PMD_JAVA_OPTS=-Xmx512m
-C:\...\bin &gt; .\cpd.bat --minimum-tokens 100 --dir c:\temp\src
-</code></pre></div></div>
+  <div class="tab-content border">
+    <div class="tab-pane fade show active" id="linux-memchange" role="tabpanel" aria-labelledby="linux-tab">
+      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">~ $ </span><span class="s2">export</span> PMD_JAVA_OPTS=-Xmx512m
+<span class="gp">~ $ </span><span class="s2">pmd</span> cpd --minimum-tokens 100 --dir src/main/java
+</code></pre></figure>
+    </div>
+    <div class="tab-pane fade" id="windows-memchange" role="tabpanel" aria-labelledby="windows-tab">
+      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">C:\&gt; </span><span class="s2">set</span> PMD_JAVA_OPTS=-Xmx512m
+<span class="gp">C:\&gt; </span><span class="s2">pmd.bat</span> cpd --minimum-tokens 100 --dir src\main\java
+</code></pre></figure>
+    </div>
+  </div>
+</div>
 
 <p>If you specify a source directory but don’t want to scan the sub-directories, you can use the non-recursive option:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./run.sh cpd --minimum-tokens 100 --non-recursive --dir /usr/local/java/src/java
-</code></pre></div></div>
+<div class="text-left">
+  <ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <a class="nav-link active" id="linux-tab-nonrecursive" data-toggle="tab" href="#linux-nonrecursive" role="tab" aria-controls="linux" aria-selected="true">Linux / macOS</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="windows-tab-nonrecursive" data-toggle="tab" href="#windows-nonrecursive" role="tab" aria-controls="windows" aria-selected="false">Windows</a>
+    </li>
+  </ul>
+
+  <div class="tab-content border">
+    <div class="tab-pane fade show active" id="linux-nonrecursive" role="tabpanel" aria-labelledby="linux-tab">
+      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">~ $ </span><span class="s2">pmd</span> cpd --minimum-tokens 100 --dir src/main/java --non-recursive
+</code></pre></figure>
+    </div>
+    <div class="tab-pane fade" id="windows-nonrecursive" role="tabpanel" aria-labelledby="windows-tab">
+      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">C:\&gt; </span><span class="s2">pmd.bat</span> cpd --minimum-tokens 100 --dir src\main\java --non-recursive
+</code></pre></figure>
+    </div>
+  </div>
+</div>
 
 <h3 id="exit-status">Exit status</h3>
 
@@ -2192,10 +2336,20 @@ C:\...\bin &gt; .\cpd.bat --minimum-tokens 100 --dir c:\temp\src
 This behavior has been introduced to ease CPD integration into scripts or hooks, such as SVN hooks.</p>
 
 <table>
-<tr><td>0</td><td>Everything is fine, no code duplications found</td></tr>
-<tr><td>1</td><td>Couldn't understand command line parameters or CPD exited with an exception</td></tr>
-<tr><td>4</td><td>At least one code duplication has been detected unless `--fail-on-violation false` is used.</td></tr>
+<tr><td>0</td><td>Everything is fine, no code duplications found.</td></tr>
+<tr><td>1</td><td>CPD exited with an exception.</td></tr>
+<tr><td>2</td><td>Usage error. Command-line parameters are invalid or missing.</td></tr>
+<tr><td>4</td><td>At least one code duplication has been detected unless <code>--no-fail-on-violation</code> is set.</td></tr>
 </table>
+
+<h2 id="logging">Logging</h2>
+
+<p>PMD internally uses <a href="https://www.slf4j.org/">slf4j</a> and ships with slf4j-simple as the logging implementation.
+Logging messages are printed to System.err.</p>
+
+<p>The configuration for slf4j-simple is in the file <code class="language-plaintext highlighter-rouge">conf/simplelogger.properties</code>. There you can enable
+logging of specific classes if needed. The <code class="language-plaintext highlighter-rouge">--debug</code> command line option configures the default log level
+to be “debug”.</p>
 
 <h2 id="supported-languages">Supported Languages</h2>
 
@@ -2245,7 +2399,7 @@ This behavior has been introduced to ease CPD integration into scripts or hooks,
 <p>Andy Glover wrote an Ant task for CPD; here’s how to use it:</p>
 
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;target</span> <span class="na">name=</span><span class="s">"cpd"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;taskdef</span> <span class="na">name=</span><span class="s">"cpd"</span> <span class="na">classname=</span><span class="s">"net.sourceforge.pmd.cpd.CPDTask"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;taskdef</span> <span class="na">name=</span><span class="s">"cpd"</span> <span class="na">classname=</span><span class="s">"net.sourceforge.pmd.ant.CPDTask"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;cpd</span> <span class="na">minimumTokenCount=</span><span class="s">"100"</span> <span class="na">outputFile=</span><span class="s">"/home/tom/cpd.txt"</span><span class="nt">&gt;</span>
         <span class="nt">&lt;fileset</span> <span class="na">dir=</span><span class="s">"/home/tom/tmp/ant"</span><span class="nt">&gt;</span>
             <span class="nt">&lt;include</span> <span class="na">name=</span><span class="s">"**/*.java"</span><span class="nt">/&gt;</span>
@@ -2578,17 +2732,29 @@ the CPD task as usual and right after it invoke the Ant XSLT script like this:</
 
 <h2 id="gui">GUI</h2>
 
-<p>CPD also comes with a simple GUI. You can start it via some scripts in the <code class="language-plaintext highlighter-rouge">bin</code> folder:</p>
+<p>CPD also comes with a simple GUI. You can start it through the unified CLI interface provided in the <code class="language-plaintext highlighter-rouge">bin</code> folder:</p>
 
-<p>For Windows:</p>
+<div class="text-left">
+  <ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <a class="nav-link active" id="linux-tab-gui" data-toggle="tab" href="#linux-gui" role="tab" aria-controls="linux" aria-selected="true">Linux / macOS</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="windows-tab-gui" data-toggle="tab" href="#windows-gui" role="tab" aria-controls="windows" aria-selected="false">Windows</a>
+    </li>
+  </ul>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cpdgui.bat
-</code></pre></div></div>
-
-<p>For Linux:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./run.sh cpd-gui
-</code></pre></div></div>
+  <div class="tab-content border">
+    <div class="tab-pane fade show active" id="linux-gui" role="tabpanel" aria-labelledby="linux-tab">
+      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">~ $ </span><span class="s2">pmd</span> cpd-gui
+</code></pre></figure>
+    </div>
+    <div class="tab-pane fade" id="windows-gui" role="tabpanel" aria-labelledby="windows-tab">
+      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">C:\&gt; </span><span class="s2">pmd.bat</span> cpd-gui
+</code></pre></figure>
+    </div>
+  </div>
+</div>
 
 <p>Here’s a screenshot of CPD after running on the JDK 8 java.lang package:</p>
 
@@ -2623,7 +2789,7 @@ the CPD task as usual and right after it invoke the Ant XSLT script like this:</
 all code within will be ignored by CPD.</p>
 
 <p>This approach however, is limited to the locations were <code class="language-plaintext highlighter-rouge">@SuppressWarnings</code> is accepted.
-It’s legacy and the new comment’s based approach should be favored.</p>
+It is legacy and the new comment based approach should be favored.</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//enable suppression</span>
 <span class="nd">@SuppressWarnings</span><span class="o">(</span><span class="s">"CPD-START"</span><span class="o">)</span>
@@ -2666,13 +2832,11 @@ the comment based approach will be extended to those of them that can support it
         
         
         
-        <a href="tag_userdocs.html" class="btn btn-default navbar-btn cursorNorm" role="button">userdocs</a>
+        <a href="tag_userdocs.html" class="btn btn-outline-secondary navbar-btn cursorNorm" role="button">userdocs</a>
         
         
         
     </div>
-
-
 
 </div>
 
@@ -2697,9 +2861,9 @@ the comment based approach will be extended to those of them that can support it
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Mar 1, 2023 <br />
+             Site last generated: Mar 3, 2023 <br />
             <p>
-                <img src="images/pmd-logo-small.png" alt="Company
+                <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
             </p>
         </div>
@@ -2723,6 +2887,17 @@ the comment based approach will be extended to those of them that can support it
     <!-- /.toc-container-wrapper -->
 </div>
 </div>
-</body>
 
+<script type="application/javascript" src="assets/jquery-3.5.1/jquery-3.5.1.min.js"></script>
+<script type="application/javascript" src="assets/anchorjs-4.2.2/anchor.min.js"></script>
+<script type="application/javascript" src="assets/navgoco-0.2.1/src/jquery.navgoco.min.js"></script>
+<script type="application/javascript" src="assets/bootstrap-4.5.2-dist/js/bootstrap.bundle.min.js"></script>
+<script type="application/javascript" src="assets/Simple-Jekyll-Search-1.0.8/dest/jekyll-search.js"></script>
+<script type="application/javascript" src="assets/jekyll-table-of-contents/toc.js"></script>
+<script type="application/javascript" src="js/tabstate.js"></script>
+<script type="application/javascript" src="js/customscripts.js"></script>
+
+
+
+</body>
 </html>

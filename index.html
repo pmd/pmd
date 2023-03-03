@@ -7,88 +7,21 @@
 <meta name="description" content="Welcome to the documentation site for PMD and CPD! ">
 <meta name="keywords" content=" java">
 <title>Documentation Index | PMD Source Code Analyzer</title>
-<link rel="stylesheet" href="css/syntax.css">
 
 
-<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-<!--<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">-->
-<link rel="stylesheet" href="css/modern-business.css">
-<link rel="stylesheet" href="css/lavish-bootstrap.css">
-<link rel="stylesheet" href="css/customstyles.css">
-<link rel="stylesheet" href="css/theme-blue.css">
-<link rel="stylesheet" href="css/pmd-customstyles.css">
+<link rel="stylesheet" type="text/css" href="assets/fontawesome-free-5.14.0-web/css/all.min.css">
+<link rel="stylesheet" type="text/css" href="assets/bootstrap-4.5.2-dist/css/bootstrap.min.css">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
-<script src="js/jquery.navgoco.min.js"></script>
-
-
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/2.0.0/anchor.min.js"></script>
-<script src="js/toc.js"></script>
-<script src="js/customscripts.js"></script>
+<link rel="stylesheet" type="text/css" href="css/syntax.css">
+<link rel="stylesheet" type="text/css" href="css/modern-business.css">
+<link rel="stylesheet" type="text/css" href="css/customstyles.css">
+<link rel="stylesheet" type="text/css" href="css/theme-green.css">
+<link rel="stylesheet" type="text/css" href="css/pmd-customstyles.css">
 
 <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
 <link rel="icon" href="images/favicon.ico" type="image/x-icon">
 
-<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-<!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]-->
-
-<link rel="alternate" type="application/rss+xml" title="" href="https://pmd.github.io/pmd/feed.xml">
-
-    <script>
-        $(document).ready(function() {
-            // Initialize navgoco with default options
-            $("#mysidebar").navgoco({
-                caretHtml: '',
-                accordion: true,
-                openClass: 'active', // open
-                save: false, // leave false or nav highlighting doesn't work right
-                cookie: {
-                    name: 'navgoco',
-                    expires: false,
-                    path: '/'
-                },
-                slide: {
-                    duration: 400,
-                    easing: 'swing'
-                }
-            });
-
-            $("#collapseAll").click(function(e) {
-                e.preventDefault();
-                $("#mysidebar").navgoco('toggle', false);
-            });
-
-            $("#expandAll").click(function(e) {
-                e.preventDefault();
-                $("#mysidebar").navgoco('toggle', true);
-            });
-
-        });
-
-    </script>
-    <script>
-        $(function () {
-            $('[data-toggle="tooltip"]').tooltip()
-        })
-    </script>
-    <script>
-        $(document).ready(function() {
-            $("#tg-sb-link").click(function() {
-                $("#tg-sb-sidebar").toggle();
-                $("#tg-sb-content").toggleClass('col-md-9');
-                $("#tg-sb-content").toggleClass('col-md-12');
-                $("#tg-sb-icon").toggleClass('fa-toggle-on');
-                $("#tg-sb-icon").toggleClass('fa-toggle-off');
-            });
-        });
-    </script>
-    
+<link rel="alternate" type="application/rss+xml" title="" href="feed.xml">
 
 </head>
 <body>
@@ -96,62 +29,40 @@
 <!-- There's already a padding-top rule in modern-business.css, but it apparently doesn't work on Firefox 60 and Chrome 67 -->
 <div id="topbar-content-offset">
 <!-- Navigation -->
-<nav class="navbar navbar-inverse navbar-fixed-top">
+<nav class="navbar navbar-expand-lg fixed-top navbar-dark">
     <div class="container topnavlinks">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="fa fa-home fa-lg navbar-brand" href="index.html">&nbsp;<span class="projectTitle"> PMD Source Code Analyzer Project</span></a>
-        </div>
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav navbar-right">
+        <a class="navbar-brand fas fa-home fa-lg" href="index.html">&nbsp;<span class="projectTitle"> PMD Source Code Analyzer Project</span></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0"></ul>
+            <ul class="navbar-nav">
                 <!-- toggle sidebar button -->
-                <li><a id="tg-sb-link" href="#"><i id="tg-sb-icon" class="fa fa-toggle-on"></i> Nav</a></li>
+                <li class="nav-item"><a id="tg-sb-link" class="nav-link" href="#"><i id="tg-sb-icon" class="fas fa-toggle-on"></i> Nav</a></li>
                 <!-- entries without drop-downs appear here -->
                 
-                
-                
-                <li><a href="https://github.com/pmd/pmd/releases/latest" target="_blank">Download</a></li>
-                
-                
-                
-                <li><a href="https://github.com/pmd/pmd" target="_blank">Fork us on github</a></li>
-                
-                
+                    
+                        
+                            <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd/releases/latest" target="_blank">Download</a></li>
+                        
+                    
+                        
+                            <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd" target="_blank">Fork us on github</a></li>
+                        
+                    
                 
                 <!-- entries with drop-downs appear here -->
                 <!-- conditional logic to control which topnav appears for the audience defined in the configuration file.-->
                 
-                
-                <!--comment out this block if you want to hide search-->
-                <li>
-                    <!--start search-->
-                    <div id="search-demo-container">
-                        <input type="text" id="search-input" placeholder="search...">
-                        <ul id="results-container"></ul>
-                    </div>
-                    <script src="js/jekyll-search.js" type="text/javascript"></script>
-                    <script type="text/javascript">
-                            SimpleJekyllSearch.init({
-                                searchInput: document.getElementById('search-input'),
-                                resultsContainer: document.getElementById('results-container'),
-                                dataSource: 'search.json',
-                                searchResultTemplate: '<li><a href="{url}" title="Documentation Index">{title}</a></li>',
-                    noResultsText: 'No results found.',
-                            limit: 10,
-                            fuzzy: true,
-                    })
-                    </script>
-                    <!--end search-->
-                </li>
             </ul>
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" placeholder="search..." id="search-input">
+                <ul id="results-container"></ul>
+            </form>
         </div>
-        </div>
-        <!-- /.container -->
+    </div>
 </nav>
 
 <!-- Page Content -->
@@ -174,8 +85,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.56.0-SNAPSHOT</li>
-    <div class="sidebarTitleDate">Release date: 25-March-2023</div>
+    <li class="sidebarTitle">PMD 7.0.0-SNAPSHOT</li>
+    <div class="sidebarTitleDate">Release date: ??-?????-2023</div>
     
     
     
@@ -204,7 +115,7 @@
             
 
                 
-                <li><a href="pmd_release_notes.html">Release notes</a></li>
+                <li><a href="pmd_release_notes7.html">Release notes</a></li>
                 
 
             
@@ -433,12 +344,6 @@
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_metrics_howto.html">Using and defining code metrics</a></li>
-                        
-                        
-                        
-                        
-                        
                         <li><a href="pmd_userdocs_extending_rule_guidelines.html">Rule guidelines</a></li>
                         
                         
@@ -598,49 +503,6 @@
                 
                 
                 <li class="subfolders">
-                    <a href="#">Ecmascript Rules</a>
-                    <ul>
-                        
-                        
-                        
-                        <li><a href="pmd_rules_ecmascript.html">Index</a></li>
-                        
-                        
-                        
-                        
-                        
-                        <li><a href="pmd_rules_ecmascript_bestpractices.html">Best Practices</a></li>
-                        
-                        
-                        
-                        
-                        
-                        <li><a href="pmd_rules_ecmascript_codestyle.html">Code Style</a></li>
-                        
-                        
-                        
-                        
-                        
-                        <li><a href="pmd_rules_ecmascript_errorprone.html">Error Prone</a></li>
-                        
-                        
-                        
-                    </ul>
-                </li>
-                
-                
-
-            
-
-            
-            
-            
-
-            
-
-                
-                
-                <li class="subfolders">
                     <a href="#">HTML Rules</a>
                     <ul>
                         
@@ -781,6 +643,86 @@
                         
                         
                         <li><a href="pmd_rules_jsp_security.html">Security</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">JavaScript Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript_codestyle.html">Code Style</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Kotlin Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_kotlin.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_kotlin_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_kotlin_errorprone.html">Error Prone</a></li>
                         
                         
                         
@@ -967,6 +909,43 @@
                 
                 
                 <li class="subfolders">
+                    <a href="#">Swift Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_swift.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_swift_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_swift_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
                     <a href="#">VM Rules</a>
                     <ul>
                         
@@ -1103,7 +1082,7 @@
     
     <li>
         
-        <a href="#">Language Specific Documentation</a>
+        <a href="#">Language-Specific Documentation</a>
         
         <ul>
             
@@ -1112,7 +1091,7 @@
             
 
                 
-                <li><a href="pmd_languages_jsp.html">JSP Support</a></li>
+                <li><a href="pmd_languages_configuration.html">Language configuration</a></li>
                 
 
             
@@ -1124,26 +1103,7 @@
             
 
                 
-                
-                <li class="subfolders">
-                    <a href="#">Java Support</a>
-                    <ul>
-                        
-                        
-                        
-                        <li><a href="pmd_languages_java.html">Java Versions</a></li>
-                        
-                        
-                        
-                        
-                        
-                        <li><a href="pmd_java_metrics_index.html">Java Code Metrics</a></li>
-                        
-                        
-                        
-                    </ul>
-                </li>
-                
+                <li><a href="pmd_languages_apex.html">Apex</a></li>
                 
 
             
@@ -1155,7 +1115,31 @@
             
 
                 
-                <li><a href="pmd_apex_metrics_index.html">Apex code metrics</a></li>
+                <li><a href="pmd_languages_java.html">Java</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_languages_jsp.html">JSP</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_languages_kotlin.html">Kotlin</a></li>
                 
 
             
@@ -1347,19 +1331,19 @@
                         
                         
                         
-                        <li><a href="pmd_devdocs_major_adding_new_language.html">Adding a new language</a></li>
+                        <li><a href="pmd_devdocs_major_adding_new_language_javacc.html">Adding a new language (JavaCC)</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_major_adding_new_language_antlr.html">Adding a new language (Antlr)</a></li>
                         
                         
                         
                         
                         
                         <li><a href="pmd_devdocs_major_adding_new_cpd_language.html">Adding a new CPD language</a></li>
-                        
-                        
-                        
-                        
-                        
-                        <li><a href="pmd_devdocs_major_adding_new_metrics_framework.html">Adding metrics support to a language</a></li>
                         
                         
                         
@@ -1435,6 +1419,18 @@
                     </ul>
                 </li>
                 
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_projectdocs_logo.html">Logo</a></li>
                 
 
             
@@ -1549,15 +1545,7 @@
        
         
         
-        <!-- if you aren't using the accordion, uncomment this block:
-           <p class="external">
-               <a href="#" id="collapseAll">Collapse All</a> | <a href="#" id="expandAll">Expand All</a>
-           </p>
-           -->
 </ul>
-
-<!-- this highlights the active parent class in the navgoco sidebar. this is critical so that the parent expands when you're viewing a page. This must appear below the sidebar code above. Otherwise, if placed inside customscripts.js, the script runs before the sidebar code runs and the class never gets inserted.-->
-<script>$("li.active").parents('li').toggleClass("active");</script>
 
             </div>
             
@@ -1575,7 +1563,7 @@
             <a
                 target="_blank"
                 href="https://github.com/pmd/pmd/blob/master/docs/index.md"
-                class="pull-right"
+                class="float-right"
                 role="button"
                 ><i class="fa fa-github fa-lg"></i> Edit on GitHub</a
             >
@@ -1591,8 +1579,6 @@
    <h1 class="post-title-main">Documentation Index</h1>
 </div>
 
-
-
 <div class="post-content" data-github-edit-url="https://github.com/pmd/pmd/blob/master/docs/index.md">
 
    
@@ -1600,48 +1586,15 @@
 </div>
    
     <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
-    
-  
-<script src="js/jquery.shuffle.min.js"></script>
 
-<script src="js/jquery.ba-throttle-debounce.min.js"></script>
-
-<script src="../../js/jquery-ui.min.js"></script>
-
-<script type="text/javascript">
-// Adds a pretty animation to links to shuffle panels
-$(function () {
-    $('a[href^=#shuffle-panel]').click(function () {
-        if (location.pathname.replace(/^\//, '') === this.pathname.replace(/^\//, '')
-            && location.hostname === this.hostname) {
-            var target = $(this.hash);
-
-            target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
-            if (target.length) {
-                $('#topbar-content-offset').animate({
-                    scrollTop: $('#grid-rule').position().top
-                }, {
-                    duration: 500,
-                    complete: function () {
-                        target.effect("highlight", {}, 1000);
-                    }
-                });
-
-                return false;
-            }
-        }
-    });
-});
-</script>
-
-<h2 id="-overview">💡 Overview</h2>
+  <h2 id="-overview">💡 Overview</h2>
 
 <!--  You can link to an individual panel, the id is determined from the title of the panel -->
 <!--  See custom/shuffle_panel.html for the details -->
 
 <p><strong>PMD</strong> is a static source code analyzer. It finds common programming flaws like
 unused variables, empty catch blocks, unnecessary object creation, and
-so forth. It’s mainly concerned with <strong>Java and Apex</strong>, but <strong>supports 12 other
+so forth. It’s mainly concerned with <strong>Java and Apex</strong>, but <strong>supports 14 other
 languages</strong>.</p>
 
 <p>PMD features many <strong>built-in checks</strong> (in PMD lingo, <em>rules</em>), which are documented
@@ -1666,6 +1619,8 @@ in a variety of ways, which are <a href="pmd_userdocs_cpd.html">documented here<
 
 <p>The latest release of PMD can be downloaded from our <a href="https://github.com/pmd/pmd/releases/latest">Github releases page</a>.</p>
 
+<p>The Logo is available from the <a href="pmd_projectdocs_logo.html">Logo Project Page</a>.</p>
+
 <h2 id="-documentation">📖 Documentation</h2>
 
 <p>The rest of this page exposes the contents of the documentation site thematically,
@@ -1689,25 +1644,10 @@ Contributions of any kind welcome!</p>
       <button class="btn btn-primary" data-group="contributing">Contributing</button>
 </div>
 
-<div class="container-fluid">
 <div id="grid" class="row">
 
 <!--  TODO the "getting started" panel is not that useful. It would be better to make a page series. -->
-    <!-- Argument summary: -->
-
-<!-- tags: comma-separated tags determining the pages included in the panel -->
-<!-- except_tags: comma-separated tags to filter out some pages -->
-
-<!-- A page is included if it has all the include tags and none of the exclude tags -->
-
-
-<!-- title: Display title of the panel -->
-<!-- description: Description of the panel -->
-<!-- datagroups: json array containing the data groups for the shuffle logic -->
-
-<!-- image (optional) : Name of the image to use, as a css class, eg "fa-list" -->
-<!-- titlemaker (optional) : name of a variable that's evaluated to determine the displayed title of the page. Default is page.title -->
-
+    
 
 
 
@@ -1717,14 +1657,13 @@ Contributions of any kind welcome!</p>
 
 
 <div class="col-xs-6 col-sm-4 col-md-4" data-groups="[&quot;getting_started&quot;]" id="shuffle-panel-getting-started">
-    <div class="panel panel-default">
-
-
+    <div class="card">
         
+        <div class="card-header text-center">
+            Getting started
+        </div>
 
-        <div class="panel-heading text-center">Getting started</div>
-        <div class="panel-body">
-
+        <div class="card-body">
             <p class="landing-page cat-description">
                 These pages summarize the gist of PMD usage to get you started quickly.
             </p>
@@ -2423,6 +2362,36 @@ Contributions of any kind welcome!</p>
 
                     
                 
+                    
+                    
+
+                    
+                
+                    
+                    
+
+                    
+                
+                    
+                    
+
+                    
+                
+                    
+                    
+
+                    
+                
+                    
+                    
+
+                    
+                
+                    
+                    
+
+                    
+                
             </ul>
         </div>
     </div>
@@ -2430,21 +2399,7 @@ Contributions of any kind welcome!</p>
 
 
 
-    <!-- Argument summary: -->
-
-<!-- tags: comma-separated tags determining the pages included in the panel -->
-<!-- except_tags: comma-separated tags to filter out some pages -->
-
-<!-- A page is included if it has all the include tags and none of the exclude tags -->
-
-
-<!-- title: Display title of the panel -->
-<!-- description: Description of the panel -->
-<!-- datagroups: json array containing the data groups for the shuffle logic -->
-
-<!-- image (optional) : Name of the image to use, as a css class, eg "fa-list" -->
-<!-- titlemaker (optional) : name of a variable that's evaluated to determine the displayed title of the page. Default is page.title -->
-
+    
 
 
 
@@ -2454,21 +2409,20 @@ Contributions of any kind welcome!</p>
 
 
 <div class="col-xs-6 col-sm-4 col-md-4" data-groups="[&quot;userdocs&quot;]" id="shuffle-panel-rule-references">
-    <div class="panel panel-default">
-
-
+    <div class="card">
         
-            <div class="panel-heading text-center">
-                     <span class="fa-stack fa-5x">
-                       <i class="fa fa-circle fa-stack-2x text-secondary"></i>
-                       <i class="fa fa-database fa-stack-1x fa-inverse"></i>
-                     </span>
+            <div class="card-header text-center">
+                <p class="fa-stack fa-5x">
+                    <i class="fas fa-circle fa-stack-2x text-secondary"></i>
+                    <i class="fas fa-database fa-stack-1x fa-inverse"></i>
+                </p>
             </div>
         
+        <div class="card-header text-center">
+            Rule references
+        </div>
 
-        <div class="panel-heading text-center">Rule references</div>
-        <div class="panel-body">
-
+        <div class="card-body">
             <p class="landing-page cat-description">
                 Pick your language to find out about the rule it supports.
             </p>
@@ -2625,11 +2579,6 @@ Contributions of any kind welcome!</p>
                     
 
                     
-                
-                    
-                    
-
-                    
                         <li><a href="pmd_rules_apex.html">Apex</a></li>
                     
                 
@@ -2651,28 +2600,6 @@ Contributions of any kind welcome!</p>
                     
                     
 
-                    
-                
-                    
-                    
-
-                    
-                
-                    
-                    
-
-                    
-                
-                    
-                    
-
-                    
-                
-                    
-                    
-
-                    
-                        <li><a href="pmd_rules_ecmascript.html">Ecmascript</a></li>
                     
                 
                     
@@ -2785,6 +2712,45 @@ Contributions of any kind welcome!</p>
                     
 
                     
+                        <li><a href="pmd_rules_ecmascript.html">JavaScript</a></li>
+                    
+                
+                    
+                    
+
+                    
+                
+                    
+                    
+
+                    
+                
+                    
+                    
+
+                    
+                
+                    
+                    
+
+                    
+                        <li><a href="pmd_rules_kotlin.html">Kotlin</a></li>
+                    
+                
+                    
+                    
+
+                    
+                
+                    
+                    
+
+                    
+                
+                    
+                    
+
+                    
                         <li><a href="pmd_rules_pom.html">Maven POM</a></li>
                     
                 
@@ -2849,6 +2815,23 @@ Contributions of any kind welcome!</p>
 
                     
                         <li><a href="pmd_rules_scala.html">Scala</a></li>
+                    
+                
+                    
+                    
+
+                    
+                        <li><a href="pmd_rules_swift.html">Swift</a></li>
+                    
+                
+                    
+                    
+
+                    
+                
+                    
+                    
+
                     
                 
                     
@@ -3187,27 +3170,18 @@ Contributions of any kind welcome!</p>
 
                     
                 
+                    
+                    
+
+                    
+                
             </ul>
         </div>
     </div>
 </div>
 
 
-    <!-- Argument summary: -->
-
-<!-- tags: comma-separated tags determining the pages included in the panel -->
-<!-- except_tags: comma-separated tags to filter out some pages -->
-
-<!-- A page is included if it has all the include tags and none of the exclude tags -->
-
-
-<!-- title: Display title of the panel -->
-<!-- description: Description of the panel -->
-<!-- datagroups: json array containing the data groups for the shuffle logic -->
-
-<!-- image (optional) : Name of the image to use, as a css class, eg "fa-list" -->
-<!-- titlemaker (optional) : name of a variable that's evaluated to determine the displayed title of the page. Default is page.title -->
-
+    
 
 
 
@@ -3217,14 +3191,13 @@ Contributions of any kind welcome!</p>
 
 
 <div class="col-xs-6 col-sm-4 col-md-4" data-groups="[&quot;userdocs&quot;, &quot;extending&quot;, &quot;contributing&quot;]" id="shuffle-panel-writing-rules">
-    <div class="panel panel-default">
-
-
+    <div class="card">
         
+        <div class="card-header text-center">
+            Writing rules
+        </div>
 
-        <div class="panel-heading text-center">Writing rules</div>
-        <div class="panel-body">
-
+        <div class="card-body">
             <p class="landing-page cat-description">
                 These pages document the process of writing and testing custom rules and metrics for PMD.
             </p>
@@ -3345,13 +3318,6 @@ Contributions of any kind welcome!</p>
 
                     
                         <li><a href="pmd_userdocs_extending_defining_properties.html">Defining rule properties</a></li>
-                    
-                
-                    
-                    
-
-                    
-                        <li><a href="pmd_userdocs_extending_metrics_howto.html">Using and defining code metrics for custom rules</a></li>
                     
                 
                     
@@ -3932,6 +3898,41 @@ Contributions of any kind welcome!</p>
                     
 
                     
+                
+                    
+                    
+
+                    
+                
+                    
+                    
+
+                    
+                
+                    
+                    
+
+                    
+                
+                    
+                    
+
+                    
+                
+                    
+                    
+
+                    
+                
+                    
+                    
+
+                    
+                
+                    
+                    
+
+                    
                         <li><a href="pmd_userdocs_extending_writing_pmd_rules.html">Writing a custom rule</a></li>
                     
                 
@@ -3941,21 +3942,7 @@ Contributions of any kind welcome!</p>
 </div>
 
 
-    <!-- Argument summary: -->
-
-<!-- tags: comma-separated tags determining the pages included in the panel -->
-<!-- except_tags: comma-separated tags to filter out some pages -->
-
-<!-- A page is included if it has all the include tags and none of the exclude tags -->
-
-
-<!-- title: Display title of the panel -->
-<!-- description: Description of the panel -->
-<!-- datagroups: json array containing the data groups for the shuffle logic -->
-
-<!-- image (optional) : Name of the image to use, as a css class, eg "fa-list" -->
-<!-- titlemaker (optional) : name of a variable that's evaluated to determine the displayed title of the page. Default is page.title -->
-
+    
 
 
 
@@ -3965,21 +3952,20 @@ Contributions of any kind welcome!</p>
 
 
 <div class="col-xs-6 col-sm-4 col-md-4" data-groups="[&quot;userdocs&quot;]" id="shuffle-panel-usage-and-configuration">
-    <div class="panel panel-default">
-
-
+    <div class="card">
         
-            <div class="panel-heading text-center">
-                     <span class="fa-stack fa-5x">
-                       <i class="fa fa-circle fa-stack-2x text-secondary"></i>
-                       <i class="fa fa-cog fa-stack-1x fa-inverse"></i>
-                     </span>
+            <div class="card-header text-center">
+                <p class="fa-stack fa-5x">
+                    <i class="fas fa-circle fa-stack-2x text-secondary"></i>
+                    <i class="fas fa-cog fa-stack-1x fa-inverse"></i>
+                </p>
             </div>
         
+        <div class="card-header text-center">
+            Usage and configuration
+        </div>
 
-        <div class="panel-heading text-center">Usage and configuration</div>
-        <div class="panel-body">
-
+        <div class="card-body">
             <p class="landing-page cat-description">
                 Learn how to build effective and versatile rulesets.
             </p>
@@ -4692,6 +4678,36 @@ Contributions of any kind welcome!</p>
 
                     
                 
+                    
+                    
+
+                    
+                
+                    
+                    
+
+                    
+                
+                    
+                    
+
+                    
+                
+                    
+                    
+
+                    
+                
+                    
+                    
+
+                    
+                
+                    
+                    
+
+                    
+                
             </ul>
         </div>
     </div>
@@ -4699,21 +4715,7 @@ Contributions of any kind welcome!</p>
 
 
 
-    <!-- Argument summary: -->
-
-<!-- tags: comma-separated tags determining the pages included in the panel -->
-<!-- except_tags: comma-separated tags to filter out some pages -->
-
-<!-- A page is included if it has all the include tags and none of the exclude tags -->
-
-
-<!-- title: Display title of the panel -->
-<!-- description: Description of the panel -->
-<!-- datagroups: json array containing the data groups for the shuffle logic -->
-
-<!-- image (optional) : Name of the image to use, as a css class, eg "fa-list" -->
-<!-- titlemaker (optional) : name of a variable that's evaluated to determine the displayed title of the page. Default is page.title -->
-
+    
 
 
 
@@ -4723,25 +4725,54 @@ Contributions of any kind welcome!</p>
 
 
 <div class="col-xs-6 col-sm-4 col-md-4" data-groups="[&quot;contributing&quot;]" id="shuffle-panel-contributing">
-    <div class="panel panel-default">
-
-
+    <div class="card">
         
-            <div class="panel-heading text-center">
-                     <span class="fa-stack fa-5x">
-                       <i class="fa fa-circle fa-stack-2x text-secondary"></i>
-                       <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-                     </span>
+            <div class="card-header text-center">
+                <p class="fa-stack fa-5x">
+                    <i class="fas fa-circle fa-stack-2x text-secondary"></i>
+                    <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                </p>
             </div>
         
+        <div class="card-header text-center">
+            Contributing
+        </div>
 
-        <div class="panel-heading text-center">Contributing</div>
-        <div class="panel-body">
-
+        <div class="card-body">
             <p class="landing-page cat-description">
                 If you'd like to help us build PMD, these topics may interest you. See you around!
             </p>
             <ul>
+                
+                    
+                    
+
+                    
+                
+                    
+                    
+
+                    
+                
+                    
+                    
+
+                    
+                
+                    
+                    
+
+                    
+                
+                    
+                    
+
+                    
+                
+                    
+                    
+
+                    
                 
                     
                     
@@ -5363,6 +5394,8 @@ Contributions of any kind welcome!</p>
                     
 
                     
+                        <li><a href="pmd_devdocs_logging.html">Logging</a></li>
+                    
                 
                     
                     
@@ -5452,21 +5485,7 @@ Contributions of any kind welcome!</p>
 
 
 
-    <!-- Argument summary: -->
-
-<!-- tags: comma-separated tags determining the pages included in the panel -->
-<!-- except_tags: comma-separated tags to filter out some pages -->
-
-<!-- A page is included if it has all the include tags and none of the exclude tags -->
-
-
-<!-- title: Display title of the panel -->
-<!-- description: Description of the panel -->
-<!-- datagroups: json array containing the data groups for the shuffle logic -->
-
-<!-- image (optional) : Name of the image to use, as a css class, eg "fa-list" -->
-<!-- titlemaker (optional) : name of a variable that's evaluated to determine the displayed title of the page. Default is page.title -->
-
+    
 
 
 
@@ -5476,23 +5495,17 @@ Contributions of any kind welcome!</p>
 
 
 <div class="col-xs-6 col-sm-4 col-md-4" data-groups="[&quot;userdocs&quot;]" id="shuffle-panel-tools-and-integrations">
-    <div class="panel panel-default">
-
-
+    <div class="card">
         
+        <div class="card-header text-center">
+            Tools and integrations
+        </div>
 
-        <div class="panel-heading text-center">Tools and integrations</div>
-        <div class="panel-body">
-
+        <div class="card-body">
             <p class="landing-page cat-description">
                 These pages describe solutions that integrate PMD within your build process.
             </p>
             <ul>
-                
-                    
-                    
-
-                    
                 
                     
                     
@@ -6186,27 +6199,48 @@ Contributions of any kind welcome!</p>
 
                     
                 
+                    
+                    
+
+                    
+                
+                    
+                    
+
+                    
+                
+                    
+                    
+
+                    
+                
+                    
+                    
+
+                    
+                
+                    
+                    
+
+                    
+                
+                    
+                    
+
+                    
+                
+                    
+                    
+
+                    
+                
             </ul>
         </div>
     </div>
 </div>
 
 
-    <!-- Argument summary: -->
-
-<!-- tags: comma-separated tags determining the pages included in the panel -->
-<!-- except_tags: comma-separated tags to filter out some pages -->
-
-<!-- A page is included if it has all the include tags and none of the exclude tags -->
-
-
-<!-- title: Display title of the panel -->
-<!-- description: Description of the panel -->
-<!-- datagroups: json array containing the data groups for the shuffle logic -->
-
-<!-- image (optional) : Name of the image to use, as a css class, eg "fa-list" -->
-<!-- titlemaker (optional) : name of a variable that's evaluated to determine the displayed title of the page. Default is page.title -->
-
+    
 
 
 
@@ -6216,18 +6250,47 @@ Contributions of any kind welcome!</p>
 
 
 <div class="col-xs-6 col-sm-4 col-md-4" data-groups="[&quot;contributing&quot;,&quot;extending&quot;]" id="shuffle-panel-major-contributions">
-    <div class="panel panel-default">
-
-
+    <div class="card">
         
+        <div class="card-header text-center">
+            Major contributions
+        </div>
 
-        <div class="panel-heading text-center">Major contributions</div>
-        <div class="panel-body">
-
+        <div class="card-body">
             <p class="landing-page cat-description">
                 
             </p>
             <ul>
+                
+                    
+                    
+
+                    
+                
+                    
+                    
+
+                    
+                
+                    
+                    
+
+                    
+                
+                    
+                    
+
+                    
+                
+                    
+                    
+
+                    
+                
+                    
+                    
+
+                    
                 
                     
                     
@@ -6720,7 +6783,14 @@ Contributions of any kind welcome!</p>
                     
 
                     
-                        <li><a href="pmd_devdocs_major_adding_new_language.html">Adding PMD support for a new language</a></li>
+                        <li><a href="pmd_devdocs_major_adding_new_language_javacc.html">Adding PMD support for a new JavaCC grammar based language</a></li>
+                    
+                
+                    
+                    
+
+                    
+                        <li><a href="pmd_devdocs_major_adding_new_language_antlr.html">Adding PMD support for a new ANTLR grammar based language</a></li>
                     
                 
                     
@@ -6728,13 +6798,6 @@ Contributions of any kind welcome!</p>
 
                     
                         <li><a href="pmd_devdocs_major_adding_new_cpd_language.html">How to add a new CPD language</a></li>
-                    
-                
-                    
-                    
-
-                    
-                        <li><a href="pmd_devdocs_major_adding_new_metrics_framework.html">Adding support for metrics to a language</a></li>
                     
                 
                     
@@ -6928,162 +6991,18 @@ Contributions of any kind welcome!</p>
 </div>
 
 
-
-<!-- sizer -->
-<div class="col-xs-6 col-sm-4 col-md-1 shuffle_sizer"></div>
-
-</div>
+    <!-- sizer -->
+    <div class="col-xs-6 col-sm-4 col-md-1 shuffle_sizer"></div>
 </div>
 
 <!-- <figure><img class="docimage" src="images/pmd-logo-big.png" alt="PMD Logo"  /></figure>
  -->
-
-<script type="text/javascript">
-$(document).ready(function() {
-    $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3,h4' });
-});
-
-</script>
-
-<!-- shuffle -->
-<script>
-var shuffleme = (function( $ ) {
-  'use strict';
-
-  var $grid = $('#grid'),
-      $filterOptions = $('.filter-options'),
-      $sizer = $grid.find('.shuffle_sizer'),
-
-  init = function() {
-
-    // None of these need to be executed synchronously
-    setTimeout(function() {
-      listen();
-      setupFilters();
-    }, 100);
-
-    // instantiate the plugin
-    $grid.shuffle({
-      itemSelector: '[class*="col-"]',
-      sizer: $sizer    
-    });
-  },
-
-  // Set up button clicks
-  setupFilters = function() {
-    var $btns = $filterOptions.children().add('.topical-filter');
-    $btns.on('click', function() {
-      var $this = $(this),
-          isActive = $this.hasClass( 'active' ),
-          isMainTopicButton = $this.hasClass('topical-filter'),
-          group = isActive ? 'all' : $this.data('group');
-
-      // Hide current label, show current label in title
-      if ( !isActive ) {
-        $('.filter-options .active').add('.topical-filter.active').removeClass('active');
-      }
-
-      $this.toggleClass('active');
-
-      // Filter elements
-      $grid.shuffle( 'shuffle', group );
-
-      // scroll to the grid
-      if ( isMainTopicButton && !isActive ) {
-          $('html, body').animate({
-              scrollTop: $("#grid-rule").offset().top
-          }, 500);
-      }
-
-    });
-
-    $btns = null;
-  },
-
-  // Re layout shuffle when images load. This is only needed
-  // below 768 pixels because the .picture-item height is auto and therefore
-  // the height of the picture-item is dependent on the image
-  // I recommend using imagesloaded to determine when an image is loaded
-  // but that doesn't support IE7
-  listen = function() {
-    var debouncedLayout = $.throttle( 300, function() {
-      $grid.shuffle('update');
-    });
-
-    // Get all images inside shuffle
-    $grid.find('img').each(function() {
-      var proxyImage;
-
-      // Image already loaded
-      if ( this.complete && this.naturalWidth !== undefined ) {
-        return;
-      }
-
-      // If none of the checks above matched, simulate loading on detached element.
-      proxyImage = new Image();
-      $( proxyImage ).on('load', function() {
-        $(this).off('load');
-        debouncedLayout();
-      });
-
-      proxyImage.src = this.src;
-    });
-
-    // Because this method doesn't seem to be perfect.
-    setTimeout(function() {
-      debouncedLayout();
-    }, 500);
-  };      
-
-  return {
-    init: init
-  };
-}( jQuery ));
-
-
-
-$(document).ready(function() {
-  shuffleme.init();
-});
-
-    </script>
-
-<!-- new attempt-->
-
-<script>
-    $(document).ready(function() {
-     
-    /* initialize shuffle plugin */
-    var $grid = $('#grid');
-         
-    $grid.shuffle({
-        itemSelector: '.item' // the selector for the items in the grid
-    });
- 
-});</script>
-
-<script>
-$('#filter a').click(function (e) {
-    e.preventDefault();
-         
-    // set active class
-    $('#filter a').removeClass('active');
-    $(this).addClass('active');
-         
-    // get group name from clicked item
-    var groupName = $(this).attr('data-group');
-         
-    // reshuffle grid
-    $grid.shuffle('shuffle', groupName );
-});</script>
 
 
 
     <div class="tags">
         
     </div>
-
-
 
 </div>
 
@@ -7109,9 +7028,9 @@ $('#filter a').click(function (e) {
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            October 2022<br /> Site last generated: Mar 1, 2023 <br />
+            October 2022<br /> Site last generated: Mar 3, 2023 <br />
             <p>
-                <img src="images/pmd-logo-small.png" alt="Company
+                <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
             </p>
         </div>
@@ -7130,6 +7049,25 @@ $('#filter a').click(function (e) {
     <!-- /.toc-container-wrapper -->
 </div>
 </div>
-</body>
 
+<script type="application/javascript" src="assets/jquery-3.5.1/jquery-3.5.1.min.js"></script>
+<script type="application/javascript" src="assets/anchorjs-4.2.2/anchor.min.js"></script>
+<script type="application/javascript" src="assets/navgoco-0.2.1/src/jquery.navgoco.min.js"></script>
+<script type="application/javascript" src="assets/bootstrap-4.5.2-dist/js/bootstrap.bundle.min.js"></script>
+<script type="application/javascript" src="assets/Simple-Jekyll-Search-1.0.8/dest/jekyll-search.js"></script>
+<script type="application/javascript" src="assets/jekyll-table-of-contents/toc.js"></script>
+<script type="application/javascript" src="js/tabstate.js"></script>
+<script type="application/javascript" src="js/customscripts.js"></script>
+
+
+
+<script type="application/javascript" src="assets/Shuffle-5.2.3/dist/shuffle.min.js"></script>
+
+<script type="application/javascript" src="assets/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+
+<script type="application/javascript" src="js/shuffle.js"></script>
+
+
+
+</body>
 </html>

@@ -22,43 +22,59 @@
 
 
 {
+"title": "PMD Release Notes",
+"tags": "",
+"keywords": "changelog, release notes",
+"url": "pmd_release_notes7.html",
+"summary": ""
+}
+
+
+
+,
+
+
+
+
+
+{
+"title": "Adding PMD support for a new ANTLR grammar based language",
+"tags": "devdocsextending",
+"keywords": "",
+"url": "pmd_devdocs_major_adding_new_language_antlr.html",
+"summary": "How to add a new language to PMD using ANTLR grammar."
+}
+
+
+
+,
+
+
+
+
+
+{
+"title": "Adding PMD support for a new JavaCC grammar based language",
+"tags": "devdocsextending",
+"keywords": "",
+"url": "pmd_devdocs_major_adding_new_language_javacc.html",
+"summary": "How to add a new language to PMD using JavaCC grammar."
+}
+
+
+
+,
+
+
+
+
+
+{
 "title": "How to add a new CPD language",
 "tags": "devdocsextending",
 "keywords": "",
 "url": "pmd_devdocs_major_adding_new_cpd_language.html",
 "summary": "How to add a new CPD language"
-}
-
-
-
-,
-
-
-
-
-
-{
-"title": "Adding PMD support for a new language",
-"tags": "devdocsextending",
-"keywords": "",
-"url": "pmd_devdocs_major_adding_new_language.html",
-"summary": "How to add a new language to PMD."
-}
-
-
-
-,
-
-
-
-
-
-{
-"title": "Adding support for metrics to a language",
-"tags": "devdocsextendingmetrics",
-"keywords": "",
-"url": "pmd_devdocs_major_adding_new_metrics_framework.html",
-"summary": "PMD's Java module has an extensive framework for the calculation of metrics, which allows rule developers to implement and use new code metrics very simply. Most of the functionality of this framework is abstracted in such a way that any PMD supported language can implement such a framework without too much trouble. Here's how."
 }
 
 
@@ -150,11 +166,11 @@
 
 
 {
-"title": "Index of Apex code metrics",
-"tags": "extendingmetrics",
+"title": "Apex support",
+"tags": "languages",
 "keywords": "",
-"url": "pmd_apex_metrics_index.html",
-"summary": "Index of the code metrics available out of the box to Apex rule developers."
+"url": "pmd_languages_apex.html",
+"summary": "Apex-specific features and guidance"
 }
 
 
@@ -188,6 +204,35 @@
 "url": "pmd_userdocs_best_practices.html",
 "summary": ""
 }
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Best Practices (Kotlin, Best Practices)",
+"tags": "",
+"keywords": "Best Practices",
+"url": "pmd_rules_kotlin_bestpractices.html#best practices",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "FunctionNameTooShort (Kotlin, Best Practices)",
+"tags": "",
+"keywords": "FunctionNameTooShort",
+"url": "pmd_rules_kotlin_bestpractices.html#functionnametooshort",
+"summary": "Rules which enforce generally accepted best practices."
+}
+
+
 
 
 
@@ -404,7 +449,7 @@
 
 
 {
-"title": "Best Practices (Ecmascript, Best Practices)",
+"title": "Best Practices (JavaScript, Best Practices)",
 "tags": "",
 "keywords": "Best Practices",
 "url": "pmd_rules_ecmascript_bestpractices.html#best practices",
@@ -413,7 +458,7 @@
 ,
 
 {
-"title": "AvoidWithStatement (Ecmascript, Best Practices)",
+"title": "AvoidWithStatement (JavaScript, Best Practices)",
 "tags": "",
 "keywords": "AvoidWithStatement",
 "url": "pmd_rules_ecmascript_bestpractices.html#avoidwithstatement",
@@ -422,7 +467,7 @@
 ,
 
 {
-"title": "ConsistentReturn (Ecmascript, Best Practices)",
+"title": "ConsistentReturn (JavaScript, Best Practices)",
 "tags": "",
 "keywords": "ConsistentReturn",
 "url": "pmd_rules_ecmascript_bestpractices.html#consistentreturn",
@@ -431,7 +476,7 @@
 ,
 
 {
-"title": "GlobalVariable (Ecmascript, Best Practices)",
+"title": "GlobalVariable (JavaScript, Best Practices)",
 "tags": "",
 "keywords": "GlobalVariable",
 "url": "pmd_rules_ecmascript_bestpractices.html#globalvariable",
@@ -440,7 +485,7 @@
 ,
 
 {
-"title": "ScopeForInVariable (Ecmascript, Best Practices)",
+"title": "ScopeForInVariable (JavaScript, Best Practices)",
 "tags": "",
 "keywords": "ScopeForInVariable",
 "url": "pmd_rules_ecmascript_bestpractices.html#scopeforinvariable",
@@ -449,7 +494,7 @@
 ,
 
 {
-"title": "UseBaseWithParseInt (Ecmascript, Best Practices)",
+"title": "UseBaseWithParseInt (JavaScript, Best Practices)",
 "tags": "",
 "keywords": "UseBaseWithParseInt",
 "url": "pmd_rules_ecmascript_bestpractices.html#usebasewithparseint",
@@ -538,6 +583,44 @@
 "tags": "",
 "keywords": "UnusedMacroParameter",
 "url": "pmd_rules_vm_bestpractices.html#unusedmacroparameter",
+"summary": "Rules which enforce generally accepted best practices."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Best Practices (Swift, Best Practices)",
+"tags": "",
+"keywords": "Best Practices",
+"url": "pmd_rules_swift_bestpractices.html#best practices",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "ProhibitedInterfaceBuilder (Swift, Best Practices)",
+"tags": "",
+"keywords": "ProhibitedInterfaceBuilder",
+"url": "pmd_rules_swift_bestpractices.html#prohibitedinterfacebuilder",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "UnavailableFunction (Swift, Best Practices)",
+"tags": "",
+"keywords": "UnavailableFunction",
+"url": "pmd_rules_swift_bestpractices.html#unavailablefunction",
 "summary": "Rules which enforce generally accepted best practices."
 }
 
@@ -880,24 +963,6 @@
 ,
 
 {
-"title": "PositionLiteralsFirstInCaseInsensitiveComparisons (Java, Best Practices)",
-"tags": "",
-"keywords": "PositionLiteralsFirstInCaseInsensitiveComparisons",
-"url": "pmd_rules_java_bestpractices.html#positionliteralsfirstincaseinsensitivecomparisons",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "PositionLiteralsFirstInComparisons (Java, Best Practices)",
-"tags": "",
-"keywords": "PositionLiteralsFirstInComparisons",
-"url": "pmd_rules_java_bestpractices.html#positionliteralsfirstincomparisons",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
 "title": "PreserveStackTrace (Java, Best Practices)",
 "tags": "",
 "keywords": "PreserveStackTrace",
@@ -988,15 +1053,6 @@
 ,
 
 {
-"title": "UnusedImports (Java, Best Practices)",
-"tags": "",
-"keywords": "UnusedImports",
-"url": "pmd_rules_java_bestpractices.html#unusedimports",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
 "title": "UnusedLocalVariable (Java, Best Practices)",
 "tags": "",
 "keywords": "UnusedLocalVariable",
@@ -1019,42 +1075,6 @@
 "tags": "",
 "keywords": "UnusedPrivateMethod",
 "url": "pmd_rules_java_bestpractices.html#unusedprivatemethod",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "UseAssertEqualsInsteadOfAssertTrue (Java, Best Practices)",
-"tags": "",
-"keywords": "UseAssertEqualsInsteadOfAssertTrue",
-"url": "pmd_rules_java_bestpractices.html#useassertequalsinsteadofasserttrue",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "UseAssertNullInsteadOfAssertTrue (Java, Best Practices)",
-"tags": "",
-"keywords": "UseAssertNullInsteadOfAssertTrue",
-"url": "pmd_rules_java_bestpractices.html#useassertnullinsteadofasserttrue",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "UseAssertSameInsteadOfAssertTrue (Java, Best Practices)",
-"tags": "",
-"keywords": "UseAssertSameInsteadOfAssertTrue",
-"url": "pmd_rules_java_bestpractices.html#useassertsameinsteadofasserttrue",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "UseAssertTrueInsteadOfAssertEquals (Java, Best Practices)",
-"tags": "",
-"keywords": "UseAssertTrueInsteadOfAssertEquals",
-"url": "pmd_rules_java_bestpractices.html#useasserttrueinsteadofassertequals",
 "summary": "Rules which enforce generally accepted best practices."
 }
 ,
@@ -1272,15 +1292,6 @@
 ,
 
 {
-"title": "VariableNamingConventions (Apex, Code Style)",
-"tags": "",
-"keywords": "VariableNamingConventions",
-"url": "pmd_rules_apex_codestyle.html#variablenamingconventions",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
 "title": "WhileLoopsMustUseBraces (Apex, Code Style)",
 "tags": "",
 "keywords": "WhileLoopsMustUseBraces",
@@ -1330,7 +1341,7 @@
 
 
 {
-"title": "Code Style (Ecmascript, Code Style)",
+"title": "Code Style (JavaScript, Code Style)",
 "tags": "",
 "keywords": "Code Style",
 "url": "pmd_rules_ecmascript_codestyle.html#code style",
@@ -1339,7 +1350,7 @@
 ,
 
 {
-"title": "AssignmentInOperand (Ecmascript, Code Style)",
+"title": "AssignmentInOperand (JavaScript, Code Style)",
 "tags": "",
 "keywords": "AssignmentInOperand",
 "url": "pmd_rules_ecmascript_codestyle.html#assignmentinoperand",
@@ -1348,7 +1359,7 @@
 ,
 
 {
-"title": "ForLoopsMustUseBraces (Ecmascript, Code Style)",
+"title": "ForLoopsMustUseBraces (JavaScript, Code Style)",
 "tags": "",
 "keywords": "ForLoopsMustUseBraces",
 "url": "pmd_rules_ecmascript_codestyle.html#forloopsmustusebraces",
@@ -1357,7 +1368,7 @@
 ,
 
 {
-"title": "IfElseStmtsMustUseBraces (Ecmascript, Code Style)",
+"title": "IfElseStmtsMustUseBraces (JavaScript, Code Style)",
 "tags": "",
 "keywords": "IfElseStmtsMustUseBraces",
 "url": "pmd_rules_ecmascript_codestyle.html#ifelsestmtsmustusebraces",
@@ -1366,7 +1377,7 @@
 ,
 
 {
-"title": "IfStmtsMustUseBraces (Ecmascript, Code Style)",
+"title": "IfStmtsMustUseBraces (JavaScript, Code Style)",
 "tags": "",
 "keywords": "IfStmtsMustUseBraces",
 "url": "pmd_rules_ecmascript_codestyle.html#ifstmtsmustusebraces",
@@ -1375,7 +1386,7 @@
 ,
 
 {
-"title": "NoElseReturn (Ecmascript, Code Style)",
+"title": "NoElseReturn (JavaScript, Code Style)",
 "tags": "",
 "keywords": "NoElseReturn",
 "url": "pmd_rules_ecmascript_codestyle.html#noelsereturn",
@@ -1384,7 +1395,7 @@
 ,
 
 {
-"title": "UnnecessaryBlock (Ecmascript, Code Style)",
+"title": "UnnecessaryBlock (JavaScript, Code Style)",
 "tags": "",
 "keywords": "UnnecessaryBlock",
 "url": "pmd_rules_ecmascript_codestyle.html#unnecessaryblock",
@@ -1393,7 +1404,7 @@
 ,
 
 {
-"title": "UnnecessaryParentheses (Ecmascript, Code Style)",
+"title": "UnnecessaryParentheses (JavaScript, Code Style)",
 "tags": "",
 "keywords": "UnnecessaryParentheses",
 "url": "pmd_rules_ecmascript_codestyle.html#unnecessaryparentheses",
@@ -1402,7 +1413,7 @@
 ,
 
 {
-"title": "UnreachableCode (Ecmascript, Code Style)",
+"title": "UnreachableCode (JavaScript, Code Style)",
 "tags": "",
 "keywords": "UnreachableCode",
 "url": "pmd_rules_ecmascript_codestyle.html#unreachablecode",
@@ -1411,7 +1422,7 @@
 ,
 
 {
-"title": "WhileLoopsMustUseBraces (Ecmascript, Code Style)",
+"title": "WhileLoopsMustUseBraces (JavaScript, Code Style)",
 "tags": "",
 "keywords": "WhileLoopsMustUseBraces",
 "url": "pmd_rules_ecmascript_codestyle.html#whileloopsmustusebraces",
@@ -1534,15 +1545,6 @@
 ,
 
 {
-"title": "AbstractNaming (Java, Code Style)",
-"tags": "",
-"keywords": "AbstractNaming",
-"url": "pmd_rules_java_codestyle.html#abstractnaming",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
 "title": "AtLeastOneConstructor (Java, Code Style)",
 "tags": "",
 "keywords": "AtLeastOneConstructor",
@@ -1556,24 +1558,6 @@
 "tags": "",
 "keywords": "AvoidDollarSigns",
 "url": "pmd_rules_java_codestyle.html#avoiddollarsigns",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "AvoidFinalLocalVariable (Java, Code Style)",
-"tags": "",
-"keywords": "AvoidFinalLocalVariable",
-"url": "pmd_rules_java_codestyle.html#avoidfinallocalvariable",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "AvoidPrefixingMethodParameters (Java, Code Style)",
-"tags": "",
-"keywords": "AvoidPrefixingMethodParameters",
-"url": "pmd_rules_java_codestyle.html#avoidprefixingmethodparameters",
 "summary": "Rules which enforce a specific coding style."
 }
 ,
@@ -1660,33 +1644,6 @@
 ,
 
 {
-"title": "DefaultPackage (Java, Code Style)",
-"tags": "",
-"keywords": "DefaultPackage",
-"url": "pmd_rules_java_codestyle.html#defaultpackage",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "DontImportJavaLang (Java, Code Style)",
-"tags": "",
-"keywords": "DontImportJavaLang",
-"url": "pmd_rules_java_codestyle.html#dontimportjavalang",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "DuplicateImports (Java, Code Style)",
-"tags": "",
-"keywords": "DuplicateImports",
-"url": "pmd_rules_java_codestyle.html#duplicateimports",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
 "title": "EmptyMethodInAbstractClassShouldBeAbstract (Java, Code Style)",
 "tags": "",
 "keywords": "EmptyMethodInAbstractClassShouldBeAbstract",
@@ -1750,15 +1707,6 @@
 ,
 
 {
-"title": "ForLoopsMustUseBraces (Java, Code Style)",
-"tags": "",
-"keywords": "ForLoopsMustUseBraces",
-"url": "pmd_rules_java_codestyle.html#forloopsmustusebraces",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
 "title": "FormalParameterNamingConventions (Java, Code Style)",
 "tags": "",
 "keywords": "FormalParameterNamingConventions",
@@ -1781,24 +1729,6 @@
 "tags": "",
 "keywords": "IdenticalCatchBranches",
 "url": "pmd_rules_java_codestyle.html#identicalcatchbranches",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "IfElseStmtsMustUseBraces (Java, Code Style)",
-"tags": "",
-"keywords": "IfElseStmtsMustUseBraces",
-"url": "pmd_rules_java_codestyle.html#ifelsestmtsmustusebraces",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "IfStmtsMustUseBraces (Java, Code Style)",
-"tags": "",
-"keywords": "IfStmtsMustUseBraces",
-"url": "pmd_rules_java_codestyle.html#ifstmtsmustusebraces",
 "summary": "Rules which enforce a specific coding style."
 }
 ,
@@ -1880,15 +1810,6 @@
 "tags": "",
 "keywords": "MethodNamingConventions",
 "url": "pmd_rules_java_codestyle.html#methodnamingconventions",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "MIsLeadingVariableName (Java, Code Style)",
-"tags": "",
-"keywords": "MIsLeadingVariableName",
-"url": "pmd_rules_java_codestyle.html#misleadingvariablename",
 "summary": "Rules which enforce a specific coding style."
 }
 ,
@@ -1984,15 +1905,6 @@
 ,
 
 {
-"title": "SuspiciousConstantFieldName (Java, Code Style)",
-"tags": "",
-"keywords": "SuspiciousConstantFieldName",
-"url": "pmd_rules_java_codestyle.html#suspiciousconstantfieldname",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
 "title": "TooManyStaticImports (Java, Code Style)",
 "tags": "",
 "keywords": "TooManyStaticImports",
@@ -2006,6 +1918,15 @@
 "tags": "",
 "keywords": "UnnecessaryAnnotationValueElement",
 "url": "pmd_rules_java_codestyle.html#unnecessaryannotationvalueelement",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "UnnecessaryBoxing (Java, Code Style)",
+"tags": "",
+"keywords": "UnnecessaryBoxing",
+"url": "pmd_rules_java_codestyle.html#unnecessaryboxing",
 "summary": "Rules which enforce a specific coding style."
 }
 ,
@@ -2114,24 +2035,6 @@
 "tags": "",
 "keywords": "UseShortArrayInitializer",
 "url": "pmd_rules_java_codestyle.html#useshortarrayinitializer",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "VariableNamingConventions (Java, Code Style)",
-"tags": "",
-"keywords": "VariableNamingConventions",
-"url": "pmd_rules_java_codestyle.html#variablenamingconventions",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "WhileLoopsMustUseBraces (Java, Code Style)",
-"tags": "",
-"keywords": "WhileLoopsMustUseBraces",
-"url": "pmd_rules_java_codestyle.html#whileloopsmustusebraces",
 "summary": "Rules which enforce a specific coding style."
 }
 
@@ -2257,6 +2160,15 @@
 "tags": "",
 "keywords": "AvoidDeeplyNestedIfStmts",
 "url": "pmd_rules_apex_design.html#avoiddeeplynestedifstmts",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "UnusedMethod (Apex, Design)",
+"tags": "",
+"keywords": "UnusedMethod",
+"url": "pmd_rules_apex_design.html#unusedmethod",
 "summary": "Rules that help you discover design issues."
 }
 ,
@@ -2873,46 +2785,10 @@
 ,
 
 {
-"title": "ModifiedCyclomaticComplexity (Java, Design)",
-"tags": "",
-"keywords": "ModifiedCyclomaticComplexity",
-"url": "pmd_rules_java_design.html#modifiedcyclomaticcomplexity",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "NcssConstructorCount (Java, Design)",
-"tags": "",
-"keywords": "NcssConstructorCount",
-"url": "pmd_rules_java_design.html#ncssconstructorcount",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
 "title": "NcssCount (Java, Design)",
 "tags": "",
 "keywords": "NcssCount",
 "url": "pmd_rules_java_design.html#ncsscount",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "NcssMethodCount (Java, Design)",
-"tags": "",
-"keywords": "NcssMethodCount",
-"url": "pmd_rules_java_design.html#ncssmethodcount",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "NcssTypeCount (Java, Design)",
-"tags": "",
-"keywords": "NcssTypeCount",
-"url": "pmd_rules_java_design.html#ncsstypecount",
 "summary": "Rules that help you discover design issues."
 }
 ,
@@ -2940,15 +2816,6 @@
 "tags": "",
 "keywords": "SimplifiedTernary",
 "url": "pmd_rules_java_design.html#simplifiedternary",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "SimplifyBooleanAssertion (Java, Design)",
-"tags": "",
-"keywords": "SimplifyBooleanAssertion",
-"url": "pmd_rules_java_design.html#simplifybooleanassertion",
 "summary": "Rules that help you discover design issues."
 }
 ,
@@ -2985,15 +2852,6 @@
 "tags": "",
 "keywords": "SingularField",
 "url": "pmd_rules_java_design.html#singularfield",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "StdCyclomaticComplexity (Java, Design)",
-"tags": "",
-"keywords": "StdCyclomaticComplexity",
-"url": "pmd_rules_java_design.html#stdcyclomaticcomplexity",
 "summary": "Rules that help you discover design issues."
 }
 ,
@@ -3197,12 +3055,41 @@
 
 
 {
-"title": "Ecmascript Rules",
+"title": "JavaScript Rules",
 "tags": "rule_referencesecmascript",
 "keywords": "",
 "url": "pmd_rules_ecmascript.html",
-"summary": "Index of all built-in rules available for Ecmascript"
+"summary": "Index of all built-in rules available for JavaScript"
 }
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Error Prone (Kotlin, Error Prone)",
+"tags": "",
+"keywords": "Error Prone",
+"url": "pmd_rules_kotlin_errorprone.html#error prone",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "OverrideBothEqualsAndHashcode (Kotlin, Error Prone)",
+"tags": "",
+"keywords": "OverrideBothEqualsAndHashcode",
+"url": "pmd_rules_kotlin_errorprone.html#overridebothequalsandhashcode",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+
+
 
 
 
@@ -3410,7 +3297,7 @@
 
 
 {
-"title": "Error Prone (Ecmascript, Error Prone)",
+"title": "Error Prone (JavaScript, Error Prone)",
 "tags": "",
 "keywords": "Error Prone",
 "url": "pmd_rules_ecmascript_errorprone.html#error prone",
@@ -3419,7 +3306,7 @@
 ,
 
 {
-"title": "AvoidTrailingComma (Ecmascript, Error Prone)",
+"title": "AvoidTrailingComma (JavaScript, Error Prone)",
 "tags": "",
 "keywords": "AvoidTrailingComma",
 "url": "pmd_rules_ecmascript_errorprone.html#avoidtrailingcomma",
@@ -3428,7 +3315,7 @@
 ,
 
 {
-"title": "EqualComparison (Ecmascript, Error Prone)",
+"title": "EqualComparison (JavaScript, Error Prone)",
 "tags": "",
 "keywords": "EqualComparison",
 "url": "pmd_rules_ecmascript_errorprone.html#equalcomparison",
@@ -3437,7 +3324,7 @@
 ,
 
 {
-"title": "InnaccurateNumericLiteral (Ecmascript, Error Prone)",
+"title": "InnaccurateNumericLiteral (JavaScript, Error Prone)",
 "tags": "",
 "keywords": "InnaccurateNumericLiteral",
 "url": "pmd_rules_ecmascript_errorprone.html#innaccuratenumericliteral",
@@ -3517,6 +3404,44 @@
 "tags": "",
 "keywords": "EmptyIfStmt",
 "url": "pmd_rules_vm_errorprone.html#emptyifstmt",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Error Prone (Swift, Error Prone)",
+"tags": "",
+"keywords": "Error Prone",
+"url": "pmd_rules_swift_errorprone.html#error prone",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "ForceCast (Swift, Error Prone)",
+"tags": "",
+"keywords": "ForceCast",
+"url": "pmd_rules_swift_errorprone.html#forcecast",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "ForceTry (Swift, Error Prone)",
+"tags": "",
+"keywords": "ForceTry",
+"url": "pmd_rules_swift_errorprone.html#forcetry",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 
@@ -3751,15 +3676,6 @@
 ,
 
 {
-"title": "BadComparison (Java, Error Prone)",
-"tags": "",
-"keywords": "BadComparison",
-"url": "pmd_rules_java_errorprone.html#badcomparison",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
 "title": "BeanMembersShouldSerialize (Java, Error Prone)",
 "tags": "",
 "keywords": "BeanMembersShouldSerialize",
@@ -3841,15 +3757,6 @@
 ,
 
 {
-"title": "CloneThrowsCloneNotSupportedException (Java, Error Prone)",
-"tags": "",
-"keywords": "CloneThrowsCloneNotSupportedException",
-"url": "pmd_rules_java_errorprone.html#clonethrowsclonenotsupportedexception",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
 "title": "CloseResource (Java, Error Prone)",
 "tags": "",
 "keywords": "CloseResource",
@@ -3886,15 +3793,6 @@
 ,
 
 {
-"title": "DataflowAnomalyAnalysis (Java, Error Prone)",
-"tags": "",
-"keywords": "DataflowAnomalyAnalysis",
-"url": "pmd_rules_java_errorprone.html#dataflowanomalyanalysis",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
 "title": "DetachedTestCase (Java, Error Prone)",
 "tags": "",
 "keywords": "DetachedTestCase",
@@ -3908,15 +3806,6 @@
 "tags": "",
 "keywords": "DoNotCallGarbageCollectionExplicitly",
 "url": "pmd_rules_java_errorprone.html#donotcallgarbagecollectionexplicitly",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "DoNotCallSystemExit (Java, Error Prone)",
-"tags": "",
-"keywords": "DoNotCallSystemExit",
-"url": "pmd_rules_java_errorprone.html#donotcallsystemexit",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 ,
@@ -4138,28 +4027,10 @@
 ,
 
 {
-"title": "ImportFromSamePackage (Java, Error Prone)",
-"tags": "",
-"keywords": "ImportFromSamePackage",
-"url": "pmd_rules_java_errorprone.html#importfromsamepackage",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
 "title": "InstantiationToGetClass (Java, Error Prone)",
 "tags": "",
 "keywords": "InstantiationToGetClass",
 "url": "pmd_rules_java_errorprone.html#instantiationtogetclass",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "InvalidSlf4jMessageFormat (Java, Error Prone)",
-"tags": "",
-"keywords": "InvalidSlf4jMessageFormat",
-"url": "pmd_rules_java_errorprone.html#invalidslf4jmessageformat",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 ,
@@ -4201,15 +4072,6 @@
 ,
 
 {
-"title": "LoggerIsNotStaticFinal (Java, Error Prone)",
-"tags": "",
-"keywords": "LoggerIsNotStaticFinal",
-"url": "pmd_rules_java_errorprone.html#loggerisnotstaticfinal",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
 "title": "MethodWithSameNameAsEnclosingClass (Java, Error Prone)",
 "tags": "",
 "keywords": "MethodWithSameNameAsEnclosingClass",
@@ -4223,15 +4085,6 @@
 "tags": "",
 "keywords": "MisplacedNullCheck",
 "url": "pmd_rules_java_errorprone.html#misplacednullcheck",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "MissingBreakInSwitch (Java, Error Prone)",
-"tags": "",
-"keywords": "MissingBreakInSwitch",
-"url": "pmd_rules_java_errorprone.html#missingbreakinswitch",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 ,
@@ -4322,15 +4175,6 @@
 "tags": "",
 "keywords": "ProperLogger",
 "url": "pmd_rules_java_errorprone.html#properlogger",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "ReturnEmptyArrayRatherThanNull (Java, Error Prone)",
-"tags": "",
-"keywords": "ReturnEmptyArrayRatherThanNull",
-"url": "pmd_rules_java_errorprone.html#returnemptyarrayratherthannull",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 ,
@@ -4744,27 +4588,11 @@
 
 
 {
-"title": "Supported Java Versions",
-"tags": "",
+"title": "Java support",
+"tags": "languages",
 "keywords": "",
 "url": "pmd_languages_java.html",
-"summary": ""
-}
-
-
-
-,
-
-
-
-
-
-{
-"title": "Index of Java code metrics",
-"tags": "extendingmetrics",
-"keywords": "",
-"url": "pmd_java_metrics_index.html",
-"summary": "Index of the code metrics available out of the box to Java rule developers."
+"summary": "Java-specific features and guidance"
 }
 
 
@@ -4793,10 +4621,58 @@
 
 {
 "title": "JSP Support",
-"tags": "",
+"tags": "languages",
 "keywords": "",
 "url": "pmd_languages_jsp.html",
-"summary": ""
+"summary": "JSP-specific features and guidance"
+}
+
+
+
+,
+
+
+
+
+
+{
+"title": "Kotlin Rules",
+"tags": "rule_referenceskotlin",
+"keywords": "",
+"url": "pmd_rules_kotlin.html",
+"summary": "Index of all built-in rules available for Kotlin"
+}
+
+
+
+,
+
+
+
+
+
+{
+"title": "Kotlin Support",
+"tags": "languages",
+"keywords": "",
+"url": "pmd_languages_kotlin.html",
+"summary": "Kotlin-specific features and guidance"
+}
+
+
+
+,
+
+
+
+
+
+{
+"title": "Language configuration",
+"tags": "languages",
+"keywords": "pmdcpdoptionscommandauxclasspathlanguageproperties",
+"url": "pmd_languages_configuration.html",
+"summary": "Summary of language configuration options and properties"
 }
 
 
@@ -4812,6 +4688,38 @@
 "tags": "",
 "keywords": "",
 "url": "license.html",
+"summary": ""
+}
+
+
+
+,
+
+
+
+
+
+{
+"title": "Logging",
+"tags": "devdocs",
+"keywords": "",
+"url": "pmd_devdocs_logging.html",
+"summary": ""
+}
+
+
+
+,
+
+
+
+
+
+{
+"title": "Logo",
+"tags": "",
+"keywords": "",
+"url": "pmd_projectdocs_logo.html",
 "summary": ""
 }
 
@@ -4893,22 +4801,6 @@
 "keywords": "",
 "url": "pmd_projectdocs_committers_merging_pull_requests.html",
 "summary": ""
-}
-
-
-
-,
-
-
-
-
-
-{
-"title": "Using and defining code metrics for custom rules",
-"tags": "extendinguserdocsmetrics",
-"keywords": "",
-"url": "pmd_userdocs_extending_metrics_howto.html",
-"summary": "Since version 6.0.0, PMD is enhanced with the ability to compute code metrics on Java and Apex source (the so-called Metrics Framework). This framework provides developers with a straightforward interface to use code metrics in their rules, and to extend the framework with their own custom metrics."
 }
 
 
@@ -5010,15 +4902,6 @@
 ,
 
 {
-"title": "UnsynchronizedStaticDateFormatter (Java, Multithreading)",
-"tags": "",
-"keywords": "UnsynchronizedStaticDateFormatter",
-"url": "pmd_rules_java_multithreading.html#unsynchronizedstaticdateformatter",
-"summary": "Rules that flag issues when dealing with multiple threads of execution."
-}
-,
-
-{
 "title": "UnsynchronizedStaticFormatter (Java, Multithreading)",
 "tags": "",
 "keywords": "UnsynchronizedStaticFormatter",
@@ -5045,22 +4928,6 @@
 }
 
 
-
-
-
-,
-
-
-
-
-
-{
-"title": "Scroll layout",
-"tags": "special_layouts",
-"keywords": "json, scrolling, scrollto, jquery plugin",
-"url": "jsmydoc_scroll.html",
-"summary": "This page demonstrates how you the integration of a script called ScrollTo, which is used here to link definitions of a JSON code sample to a list of definitions for that particular term. The scenario here is that the JSON blocks are really long, with extensive nesting and subnesting, which makes it difficult for tables below the JSON to adequately explain the term in a usable way."
-}
 
 
 
@@ -5303,37 +5170,10 @@
 ,
 
 {
-"title": "AvoidUsingShortType (Java, Performance)",
-"tags": "",
-"keywords": "AvoidUsingShortType",
-"url": "pmd_rules_java_performance.html#avoidusingshorttype",
-"summary": "Rules that flag suboptimal code."
-}
-,
-
-{
 "title": "BigIntegerInstantiation (Java, Performance)",
 "tags": "",
 "keywords": "BigIntegerInstantiation",
 "url": "pmd_rules_java_performance.html#bigintegerinstantiation",
-"summary": "Rules that flag suboptimal code."
-}
-,
-
-{
-"title": "BooleanInstantiation (Java, Performance)",
-"tags": "",
-"keywords": "BooleanInstantiation",
-"url": "pmd_rules_java_performance.html#booleaninstantiation",
-"summary": "Rules that flag suboptimal code."
-}
-,
-
-{
-"title": "ByteInstantiation (Java, Performance)",
-"tags": "",
-"keywords": "ByteInstantiation",
-"url": "pmd_rules_java_performance.html#byteinstantiation",
 "summary": "Rules that flag suboptimal code."
 }
 ,
@@ -5384,24 +5224,6 @@
 ,
 
 {
-"title": "IntegerInstantiation (Java, Performance)",
-"tags": "",
-"keywords": "IntegerInstantiation",
-"url": "pmd_rules_java_performance.html#integerinstantiation",
-"summary": "Rules that flag suboptimal code."
-}
-,
-
-{
-"title": "LongInstantiation (Java, Performance)",
-"tags": "",
-"keywords": "LongInstantiation",
-"url": "pmd_rules_java_performance.html#longinstantiation",
-"summary": "Rules that flag suboptimal code."
-}
-,
-
-{
 "title": "OptimizableToArrayCall (Java, Performance)",
 "tags": "",
 "keywords": "OptimizableToArrayCall",
@@ -5415,24 +5237,6 @@
 "tags": "",
 "keywords": "RedundantFieldInitializer",
 "url": "pmd_rules_java_performance.html#redundantfieldinitializer",
-"summary": "Rules that flag suboptimal code."
-}
-,
-
-{
-"title": "SimplifyStartsWith (Java, Performance)",
-"tags": "",
-"keywords": "SimplifyStartsWith",
-"url": "pmd_rules_java_performance.html#simplifystartswith",
-"summary": "Rules that flag suboptimal code."
-}
-,
-
-{
-"title": "ShortInstantiation (Java, Performance)",
-"tags": "",
-"keywords": "ShortInstantiation",
-"url": "pmd_rules_java_performance.html#shortinstantiation",
 "summary": "Rules that flag suboptimal code."
 }
 ,
@@ -5460,15 +5264,6 @@
 "tags": "",
 "keywords": "TooFewBranchesForASwitchStatement",
 "url": "pmd_rules_java_performance.html#toofewbranchesforaswitchstatement",
-"summary": "Rules that flag suboptimal code."
-}
-,
-
-{
-"title": "UnnecessaryWrapperObjectCreation (Java, Performance)",
-"tags": "",
-"keywords": "UnnecessaryWrapperObjectCreation",
-"url": "pmd_rules_java_performance.html#unnecessarywrapperobjectcreation",
 "summary": "Rules that flag suboptimal code."
 }
 ,
@@ -5562,11 +5357,11 @@
 
 
 {
-"title": "PLSQL",
-"tags": "",
+"title": "PLSQL Support",
+"tags": "languages",
 "keywords": "",
 "url": "pmd_languages_plsql.html",
-"summary": ""
+"summary": "PLSQL-specific features and guidance"
 }
 
 
@@ -6047,6 +5842,22 @@
 
 
 
+{
+"title": "Swift Rules",
+"tags": "rule_referencesswift",
+"keywords": "",
+"url": "pmd_rules_swift.html",
+"summary": "Index of all built-in rules available for Swift"
+}
+
+
+
+,
+
+
+
+
+
 
 
 
@@ -6094,10 +5905,6 @@
 
 
 ,
-
-
-
-
 
 
 

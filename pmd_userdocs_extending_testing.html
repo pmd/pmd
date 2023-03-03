@@ -7,88 +7,21 @@
 <meta name="description" content="Learn how to use PMD's simple test framework for unit testing rules.">
 <meta name="keywords" content="extendinguserdocs,  ">
 <title>Testing your rules | PMD Source Code Analyzer</title>
-<link rel="stylesheet" href="css/syntax.css">
 
 
-<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-<!--<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">-->
-<link rel="stylesheet" href="css/modern-business.css">
-<link rel="stylesheet" href="css/lavish-bootstrap.css">
-<link rel="stylesheet" href="css/customstyles.css">
-<link rel="stylesheet" href="css/theme-blue.css">
-<link rel="stylesheet" href="css/pmd-customstyles.css">
+<link rel="stylesheet" type="text/css" href="assets/fontawesome-free-5.14.0-web/css/all.min.css">
+<link rel="stylesheet" type="text/css" href="assets/bootstrap-4.5.2-dist/css/bootstrap.min.css">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
-<script src="js/jquery.navgoco.min.js"></script>
-
-
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/2.0.0/anchor.min.js"></script>
-<script src="js/toc.js"></script>
-<script src="js/customscripts.js"></script>
+<link rel="stylesheet" type="text/css" href="css/syntax.css">
+<link rel="stylesheet" type="text/css" href="css/modern-business.css">
+<link rel="stylesheet" type="text/css" href="css/customstyles.css">
+<link rel="stylesheet" type="text/css" href="css/theme-green.css">
+<link rel="stylesheet" type="text/css" href="css/pmd-customstyles.css">
 
 <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
 <link rel="icon" href="images/favicon.ico" type="image/x-icon">
 
-<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-<!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]-->
-
-<link rel="alternate" type="application/rss+xml" title="" href="https://pmd.github.io/pmd/feed.xml">
-
-    <script>
-        $(document).ready(function() {
-            // Initialize navgoco with default options
-            $("#mysidebar").navgoco({
-                caretHtml: '',
-                accordion: true,
-                openClass: 'active', // open
-                save: false, // leave false or nav highlighting doesn't work right
-                cookie: {
-                    name: 'navgoco',
-                    expires: false,
-                    path: '/'
-                },
-                slide: {
-                    duration: 400,
-                    easing: 'swing'
-                }
-            });
-
-            $("#collapseAll").click(function(e) {
-                e.preventDefault();
-                $("#mysidebar").navgoco('toggle', false);
-            });
-
-            $("#expandAll").click(function(e) {
-                e.preventDefault();
-                $("#mysidebar").navgoco('toggle', true);
-            });
-
-        });
-
-    </script>
-    <script>
-        $(function () {
-            $('[data-toggle="tooltip"]').tooltip()
-        })
-    </script>
-    <script>
-        $(document).ready(function() {
-            $("#tg-sb-link").click(function() {
-                $("#tg-sb-sidebar").toggle();
-                $("#tg-sb-content").toggleClass('col-md-9');
-                $("#tg-sb-content").toggleClass('col-md-12');
-                $("#tg-sb-icon").toggleClass('fa-toggle-on');
-                $("#tg-sb-icon").toggleClass('fa-toggle-off');
-            });
-        });
-    </script>
-    
+<link rel="alternate" type="application/rss+xml" title="" href="feed.xml">
 
 </head>
 <body>
@@ -96,62 +29,40 @@
 <!-- There's already a padding-top rule in modern-business.css, but it apparently doesn't work on Firefox 60 and Chrome 67 -->
 <div id="topbar-content-offset">
 <!-- Navigation -->
-<nav class="navbar navbar-inverse navbar-fixed-top">
+<nav class="navbar navbar-expand-lg fixed-top navbar-dark">
     <div class="container topnavlinks">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="fa fa-home fa-lg navbar-brand" href="index.html">&nbsp;<span class="projectTitle"> PMD Source Code Analyzer Project</span></a>
-        </div>
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav navbar-right">
+        <a class="navbar-brand fas fa-home fa-lg" href="index.html">&nbsp;<span class="projectTitle"> PMD Source Code Analyzer Project</span></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0"></ul>
+            <ul class="navbar-nav">
                 <!-- toggle sidebar button -->
-                <li><a id="tg-sb-link" href="#"><i id="tg-sb-icon" class="fa fa-toggle-on"></i> Nav</a></li>
+                <li class="nav-item"><a id="tg-sb-link" class="nav-link" href="#"><i id="tg-sb-icon" class="fas fa-toggle-on"></i> Nav</a></li>
                 <!-- entries without drop-downs appear here -->
                 
-                
-                
-                <li><a href="https://github.com/pmd/pmd/releases/latest" target="_blank">Download</a></li>
-                
-                
-                
-                <li><a href="https://github.com/pmd/pmd" target="_blank">Fork us on github</a></li>
-                
-                
+                    
+                        
+                            <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd/releases/latest" target="_blank">Download</a></li>
+                        
+                    
+                        
+                            <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd" target="_blank">Fork us on github</a></li>
+                        
+                    
                 
                 <!-- entries with drop-downs appear here -->
                 <!-- conditional logic to control which topnav appears for the audience defined in the configuration file.-->
                 
-                
-                <!--comment out this block if you want to hide search-->
-                <li>
-                    <!--start search-->
-                    <div id="search-demo-container">
-                        <input type="text" id="search-input" placeholder="search...">
-                        <ul id="results-container"></ul>
-                    </div>
-                    <script src="js/jekyll-search.js" type="text/javascript"></script>
-                    <script type="text/javascript">
-                            SimpleJekyllSearch.init({
-                                searchInput: document.getElementById('search-input'),
-                                resultsContainer: document.getElementById('results-container'),
-                                dataSource: 'search.json',
-                                searchResultTemplate: '<li><a href="{url}" title="Testing your rules">{title}</a></li>',
-                    noResultsText: 'No results found.',
-                            limit: 10,
-                            fuzzy: true,
-                    })
-                    </script>
-                    <!--end search-->
-                </li>
             </ul>
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" placeholder="search..." id="search-input">
+                <ul id="results-container"></ul>
+            </form>
         </div>
-        </div>
-        <!-- /.container -->
+    </div>
 </nav>
 
 <!-- Page Content -->
@@ -174,8 +85,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.56.0-SNAPSHOT</li>
-    <div class="sidebarTitleDate">Release date: 25-March-2023</div>
+    <li class="sidebarTitle">PMD 7.0.0-SNAPSHOT</li>
+    <div class="sidebarTitleDate">Release date: ??-?????-2023</div>
     
     
     
@@ -204,7 +115,7 @@
             
 
                 
-                <li><a href="pmd_release_notes.html">Release notes</a></li>
+                <li><a href="pmd_release_notes7.html">Release notes</a></li>
                 
 
             
@@ -433,12 +344,6 @@
                         
                         
                         
-                        <li><a href="pmd_userdocs_extending_metrics_howto.html">Using and defining code metrics</a></li>
-                        
-                        
-                        
-                        
-                        
                         <li><a href="pmd_userdocs_extending_rule_guidelines.html">Rule guidelines</a></li>
                         
                         
@@ -598,49 +503,6 @@
                 
                 
                 <li class="subfolders">
-                    <a href="#">Ecmascript Rules</a>
-                    <ul>
-                        
-                        
-                        
-                        <li><a href="pmd_rules_ecmascript.html">Index</a></li>
-                        
-                        
-                        
-                        
-                        
-                        <li><a href="pmd_rules_ecmascript_bestpractices.html">Best Practices</a></li>
-                        
-                        
-                        
-                        
-                        
-                        <li><a href="pmd_rules_ecmascript_codestyle.html">Code Style</a></li>
-                        
-                        
-                        
-                        
-                        
-                        <li><a href="pmd_rules_ecmascript_errorprone.html">Error Prone</a></li>
-                        
-                        
-                        
-                    </ul>
-                </li>
-                
-                
-
-            
-
-            
-            
-            
-
-            
-
-                
-                
-                <li class="subfolders">
                     <a href="#">HTML Rules</a>
                     <ul>
                         
@@ -781,6 +643,86 @@
                         
                         
                         <li><a href="pmd_rules_jsp_security.html">Security</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">JavaScript Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript_codestyle.html">Code Style</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_ecmascript_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
+                    <a href="#">Kotlin Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_kotlin.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_kotlin_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_kotlin_errorprone.html">Error Prone</a></li>
                         
                         
                         
@@ -967,6 +909,43 @@
                 
                 
                 <li class="subfolders">
+                    <a href="#">Swift Rules</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_rules_swift.html">Index</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_swift_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_swift_errorprone.html">Error Prone</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                
+                <li class="subfolders">
                     <a href="#">VM Rules</a>
                     <ul>
                         
@@ -1103,7 +1082,7 @@
     
     <li>
         
-        <a href="#">Language Specific Documentation</a>
+        <a href="#">Language-Specific Documentation</a>
         
         <ul>
             
@@ -1112,7 +1091,7 @@
             
 
                 
-                <li><a href="pmd_languages_jsp.html">JSP Support</a></li>
+                <li><a href="pmd_languages_configuration.html">Language configuration</a></li>
                 
 
             
@@ -1124,26 +1103,7 @@
             
 
                 
-                
-                <li class="subfolders">
-                    <a href="#">Java Support</a>
-                    <ul>
-                        
-                        
-                        
-                        <li><a href="pmd_languages_java.html">Java Versions</a></li>
-                        
-                        
-                        
-                        
-                        
-                        <li><a href="pmd_java_metrics_index.html">Java Code Metrics</a></li>
-                        
-                        
-                        
-                    </ul>
-                </li>
-                
+                <li><a href="pmd_languages_apex.html">Apex</a></li>
                 
 
             
@@ -1155,7 +1115,31 @@
             
 
                 
-                <li><a href="pmd_apex_metrics_index.html">Apex code metrics</a></li>
+                <li><a href="pmd_languages_java.html">Java</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_languages_jsp.html">JSP</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_languages_kotlin.html">Kotlin</a></li>
                 
 
             
@@ -1347,19 +1331,19 @@
                         
                         
                         
-                        <li><a href="pmd_devdocs_major_adding_new_language.html">Adding a new language</a></li>
+                        <li><a href="pmd_devdocs_major_adding_new_language_javacc.html">Adding a new language (JavaCC)</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_devdocs_major_adding_new_language_antlr.html">Adding a new language (Antlr)</a></li>
                         
                         
                         
                         
                         
                         <li><a href="pmd_devdocs_major_adding_new_cpd_language.html">Adding a new CPD language</a></li>
-                        
-                        
-                        
-                        
-                        
-                        <li><a href="pmd_devdocs_major_adding_new_metrics_framework.html">Adding metrics support to a language</a></li>
                         
                         
                         
@@ -1435,6 +1419,18 @@
                     </ul>
                 </li>
                 
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
+                <li><a href="pmd_projectdocs_logo.html">Logo</a></li>
                 
 
             
@@ -1549,15 +1545,7 @@
        
         
         
-        <!-- if you aren't using the accordion, uncomment this block:
-           <p class="external">
-               <a href="#" id="collapseAll">Collapse All</a> | <a href="#" id="expandAll">Expand All</a>
-           </p>
-           -->
 </ul>
-
-<!-- this highlights the active parent class in the navgoco sidebar. this is critical so that the parent expands when you're viewing a page. This must appear below the sidebar code above. Otherwise, if placed inside customscripts.js, the script runs before the sidebar code runs and the class never gets inserted.-->
-<script>$("li.active").parents('li').toggleClass("active");</script>
 
             </div>
             
@@ -1575,7 +1563,7 @@
             <a
                 target="_blank"
                 href="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/userdocs/extending/testing.md"
-                class="pull-right"
+                class="float-right"
                 role="button"
                 ><i class="fa fa-github fa-lg"></i> Edit on GitHub</a
             >
@@ -1591,15 +1579,13 @@
    <h1 class="post-title-main">Testing your rules</h1>
 </div>
 
-
-
 <div class="post-content" data-github-edit-url="https://github.com/pmd/pmd/blob/master/docs/pages/pmd/userdocs/extending/testing.md">
 
    
     <div class="summary">Learn how to use PMD's simple test framework for unit testing rules.</div>
    
     <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
-    
+
   <h2 id="introduction">Introduction</h2>
 
 <p>Good rules have tests. At least a positive test case - a code example, that triggers the rule and reports
@@ -1608,7 +1594,7 @@ Of course, the more tests, the better the rule is verified. If the rule is more 
 with which the behavior can be modified, then these different cases can also be tested.</p>
 
 <p>And if there is a bug fix for a rule, be it a false positive or a false negative case, it should be accompanied
-with an additional test case, so that the bug is not accidentally reintroduced later on.</p>
+by an additional test case, so that the bug is not accidentally reintroduced later on.</p>
 
 <h2 id="how-it-works">How it works</h2>
 
@@ -1619,7 +1605,7 @@ We have one test class per rule, which executes all test cases for a single rule
 stored in separate XML files, for each rule a separate file is used.</p>
 
 <p>All the test classes inherit from <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.testframework.PmdRuleTst</code>,
-which provides the seamless integration with JUnit. This base class determines the language, the category name
+which provides the seamless integration with JUnit5. This base class determines the language, the category name
 and the rule name from the concrete test class. It then searches the test code on its own.
 E.g. the individual rule test class
 <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.java.rule.bestpractices.AbstractClassWithoutAbstractMethodTest</code> tests the
@@ -1657,12 +1643,12 @@ which is under test.</p>
 src/test/resources/net/sourceforge/pmd/lang/&lt;Language Terse Name&gt;/rule/&lt;Category Name&gt;/xml/&lt;Rule Name&gt;.xml
 </code></pre></div></div>
 
-<div class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> This convention allows you to quickly find the test cases for a given rule:
-Just search in the project for a file <code class="language-plaintext highlighter-rouge">&lt;RuleName&gt;.xml</code>. Search for a class <code class="language-plaintext highlighter-rouge">&lt;Rule Name&gt;Test</code> to find the
+<div class="alert alert-success" role="alert"><i class="fas fa-check-square-o"></i> <b>Tip:</b> This convention allows you to quickly find the test cases for a given rule:
+Just search in the project for a file <code class="language-plaintext highlighter-rouge">&lt;Rule Name&gt;.xml</code>. Search for a class <code class="language-plaintext highlighter-rouge">&lt;Rule Name&gt;Test</code> to find the
 unit test class for the given rule. And if the rule is a Java-based rule, the search for <code class="language-plaintext highlighter-rouge">&lt;Rule Name&gt;Rule</code>
 finds the rule implementation class.</div>
 
-<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> If you want to use the test framework with a different package structure,
+<div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b> If you want to use the test framework with a different package structure,
 see <a href="#using-the-test-framework-externally">Using the test framework externally</a>.</div>
 
 <h2 id="simple-example">Simple example</h2>
@@ -1676,12 +1662,12 @@ belongs to the category “Best Practices”:</p>
 
 <span class="kn">import</span> <span class="nn">net.sourceforge.pmd.testframework.PmdRuleTst</span><span class="o">;</span>
 
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">AbstractClassWithoutAbstractMethodTest</span> <span class="kd">extends</span> <span class="nc">PmdRuleTst</span> <span class="o">{</span>
+<span class="kd">class</span> <span class="nc">AbstractClassWithoutAbstractMethodTest</span> <span class="kd">extends</span> <span class="nc">PmdRuleTst</span> <span class="o">{</span>
     <span class="c1">// no additional unit tests</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
-<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> You can also add additionally standard JUnit test methods annotated with <code class="language-plaintext highlighter-rouge">@Test</code> to
+<div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b> You can also add additionally standard JUnit test methods annotated with <code class="language-plaintext highlighter-rouge">@Test</code> to
 this test class.</div>
 
 <h3 id="test-data-avoidbranchingstatementaslastinloopxml">Test Data: AvoidBranchingStatementAsLastInLoop.xml</h3>
@@ -1723,7 +1709,7 @@ you can verify the line number, too.</p>
 Each <code class="language-plaintext highlighter-rouge">&lt;test-code&gt;</code> element defines a single test case. <code class="language-plaintext highlighter-rouge">&lt;code-fragment&gt;</code> elements are used to share code snippets
 between different test cases.</p>
 
-<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> The XML schema is available at <a href="https://github.com/pmd/pmd/blob/master/pmd-test/src/main/resources/rule-tests_1_0_0.xsd">rule-tests.xsd</a>.</div>
+<div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b> The XML schema is available at <a href="https://github.com/pmd/pmd/blob/master/pmd-test-schema/src/main/resources/net/sourceforge/pmd/test/schema/rule-tests_1_0_0.xsd">rule-tests.xsd</a>.</div>
 
 <h3 id="test-code-attributes"><code class="language-plaintext highlighter-rouge">&lt;test-code&gt;</code> attributes</h3>
 
@@ -1735,20 +1721,6 @@ between different test cases.</p>
   </li>
   <li>
     <p><strong>focused</strong>: By default, it’s <code class="language-plaintext highlighter-rouge">false</code>. Set it to <code class="language-plaintext highlighter-rouge">true</code>, to ignore all other test cases.</p>
-  </li>
-  <li>
-    <p><strong>useAuxClasspath</strong>: <em>deprecated since PMD 6.48.0: assumed true, has no effect anymore.</em>
-  By default, it’s <code class="language-plaintext highlighter-rouge">true</code>. Set it to <code class="language-plaintext highlighter-rouge">false</code> to reproduce issues which only
-  appear without type resolution.</p>
-  </li>
-  <li>
-    <p><strong>reinitializeRule</strong>: <em>deprecated since PMD 6.48.0: assumed true, has no effect anymore.</em>
-  By default, it’s <code class="language-plaintext highlighter-rouge">true</code>, so each test case starts with a fresh instantiated rule. Set it
-  to <code class="language-plaintext highlighter-rouge">false</code> to reproduce cases, where the previous run has influences.</p>
-  </li>
-  <li>
-    <p><strong>regressionTest</strong>: <em>deprecated since PMD 6.48.0: Use <code class="language-plaintext highlighter-rouge">disabled</code> instead. Note: It has the opposite boolean
-semantic.</em> By default, it’s <code class="language-plaintext highlighter-rouge">true</code>. Set it to <code class="language-plaintext highlighter-rouge">false</code>, to ignore and skip a test case.</p>
   </li>
 </ul>
 
@@ -1808,7 +1780,7 @@ in a “CDATA” section, so that no further XML escapes (entity references such
     <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
     <span class="na">xsi:schemaLocation=</span><span class="s">"http://pmd.sourceforge.net/rule-tests https://pmd.sourceforge.io/rule-tests_1_0_0.xsd"</span><span class="nt">&gt;</span>
 
-    <span class="nt">&lt;test-code</span> <span class="na">reinitializeRule=</span><span class="s">"true"</span> <span class="na">disabled=</span><span class="s">"false"</span> <span class="na">useAuxClasspath=</span><span class="s">"true"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;test-code</span> <span class="na">disabled=</span><span class="s">"false"</span><span class="nt">&gt;</span>
         <span class="nt">&lt;description&gt;</span>Just a description, will be used as the test name for JUnit in the reports<span class="nt">&lt;/description&gt;</span>
         <span class="nt">&lt;rule-property</span> <span class="na">name=</span><span class="s">"somePropName"</span><span class="nt">&gt;</span>propValue<span class="nt">&lt;/rule-property&gt;</span>    <span class="c">&lt;!-- optional --&gt;</span>
         <span class="nt">&lt;expected-problems&gt;</span>2<span class="nt">&lt;/expected-problems&gt;</span>
@@ -1841,7 +1813,7 @@ public class ConsistentReturn {
 <span class="nt">&lt;/test-data&gt;</span>
 </code></pre></div></div>
 
-<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> For better readability, the indentation should be 4 for spaces and no tabs.
+<div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b> For better readability, the indentation should be 4 for spaces and no tabs.
 Each test-code should be separated by a blank line. CDATA
 sections are only required for the code snippets which should be formatted with indentation for
 better readability. The description can be written directly without a CDATA section.</div>
@@ -1849,14 +1821,14 @@ better readability. The description can be written directly without a CDATA sect
 <h2 id="using-the-test-framework-externally">Using the test framework externally</h2>
 
 <p>It is also possible to use the test framework for custom rules developed outside the PMD source base.
-Therefore you just need to reference the dependency <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd:pmd-test</code>.</p>
+In order to use the test framework you just need to reference the dependency <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd:pmd-test</code>.</p>
 
 <p>For maven, you can use this snippet:</p>
 
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;dependency&gt;</span>
     <span class="nt">&lt;groupId&gt;</span>net.sourceforge.pmd<span class="nt">&lt;/groupId&gt;</span>
     <span class="nt">&lt;artifactId&gt;</span>pmd-test<span class="nt">&lt;/artifactId&gt;</span>
-    <span class="nt">&lt;version&gt;</span>6.56.0-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;version&gt;</span>7.0.0-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
     <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 </code></pre></div></div>
@@ -1870,9 +1842,9 @@ the rule test manually, as SimpleAggregatorTst will fail to determine it correct
 
 <span class="kn">import</span> <span class="nn">net.sourceforge.pmd.testframework.SimpleAggregatorTst</span><span class="o">;</span>
 
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">CustomRuleTest</span> <span class="kd">extends</span> <span class="nc">SimpleAggregatorTst</span> <span class="o">{</span>
+<span class="kd">class</span> <span class="nc">CustomRuleTest</span> <span class="kd">extends</span> <span class="nc">SimpleAggregatorTst</span> <span class="o">{</span>
     <span class="nd">@Override</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setUp</span><span class="o">()</span> <span class="o">{</span>
+    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">setUp</span><span class="o">()</span> <span class="o">{</span>
         <span class="n">addRule</span><span class="o">(</span><span class="s">"com/example/pmd/ruleset.xml"</span><span class="o">,</span> <span class="s">"CustomRule"</span><span class="o">);</span>
     <span class="o">}</span>
 <span class="o">}</span>
@@ -1886,17 +1858,18 @@ the path “com/example/pmd/ruleset.xml”.</p>
 
 <h2 id="how-the-test-framework-is-implemented">How the test framework is implemented</h2>
 
-<p>The framework uses a custom JUnit test runner under the hood, among a couple of utility classes:</p>
+<p>The framework uses the <a href="https://junit.org/junit5/docs/current/user-guide/#writing-tests-dynamic-tests">dynamic test feature</a>
+of JUnit5 under the hood, among a couple of utility classes:</p>
 
 <ul>
   <li>
     <p><code class="language-plaintext highlighter-rouge">PmdRuleTst</code>: This is the base class for tests in PMD’s code base. It is a subclass of <code class="language-plaintext highlighter-rouge">RuleTst</code> and just
-  contains the logic to determine the test resources based on the test class name.</p>
+contains the logic to determine the test resources based on the test class name.</p>
   </li>
   <li>
-    <p><code class="language-plaintext highlighter-rouge">SimpleAggregatorTst</code>: This is a more generic base class for the test classes and defines
-  the custom JUnit test runner. It doesn’t register any test cases on its own.
-  It itself is a subclass of <code class="language-plaintext highlighter-rouge">RuleTst</code>.</p>
+    <p><code class="language-plaintext highlighter-rouge">SimpleAggregatorTst</code>: This is a more generic base class for the test classes.
+It doesn’t register any test cases on its own. You can register your own rule tests.
+It itself is a subclass of <code class="language-plaintext highlighter-rouge">RuleTst</code>.</p>
   </li>
   <li>
     <p>The maven module “pmd-test-schema” contains the logic to parse the XML files and provide a <code class="language-plaintext highlighter-rouge">RuleTestCollection</code>. This
@@ -1904,19 +1877,8 @@ in turn contains a list of <code class="language-plaintext highlighter-rouge">Ru
   </li>
   <li>
     <p><code class="language-plaintext highlighter-rouge">RuleTst</code>: uses the <code class="language-plaintext highlighter-rouge">TestSchemaParser</code> from module “pmd-test-schema” to parse the test cases, executes each
-rule test descriptor and asserts the results.</p>
-  </li>
-  <li>
-    <p><code class="language-plaintext highlighter-rouge">PMDTestRunner</code>: A custom JUnit test runner, that combines two separate test runners: The custom <code class="language-plaintext highlighter-rouge">RuleTestRunner</code>
-  and the standard <code class="language-plaintext highlighter-rouge">JUnit4</code> test runner. This combination allows you to add additional standard unit test methods
-  annotated with <code class="language-plaintext highlighter-rouge">@Test</code> to your test class.</p>
-
-    <p><em>Note:</em> Since the test class is executed through two test runners, it is actually instantiated twice. Be aware
-  of this, if you do any initialization in the constructor. Also, the static hooks <code class="language-plaintext highlighter-rouge">@BeforeClass</code> and <code class="language-plaintext highlighter-rouge">@AfterClass</code>
-  will be executed twice.</p>
-  </li>
-  <li>
-    <p><code class="language-plaintext highlighter-rouge">RuleTestRunner</code>: This test runner executes the test descriptors with the help of <code class="language-plaintext highlighter-rouge">RuleTst</code>.</p>
+rule test descriptor and asserts the results. It defines a test method <code class="language-plaintext highlighter-rouge">ruleTests()</code> which is a test factory
+and returns one dynamic test per rule test.</p>
   </li>
 </ul>
 
@@ -1927,17 +1889,15 @@ rule test descriptor and asserts the results.</p>
         
         
         
-        <a href="tag_extending.html" class="btn btn-default navbar-btn cursorNorm" role="button">extending</a>
+        <a href="tag_extending.html" class="btn btn-outline-secondary navbar-btn cursorNorm" role="button">extending</a>
         
         
         
-        <a href="tag_userdocs.html" class="btn btn-default navbar-btn cursorNorm" role="button">userdocs</a>
+        <a href="tag_userdocs.html" class="btn btn-outline-secondary navbar-btn cursorNorm" role="button">userdocs</a>
         
         
         
     </div>
-
-
 
 </div>
 
@@ -1963,9 +1923,9 @@ rule test descriptor and asserts the results.</p>
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            July 2022<br /> Site last generated: Mar 1, 2023 <br />
+            January 2023<br /> Site last generated: Mar 3, 2023 <br />
             <p>
-                <img src="images/pmd-logo-small.png" alt="Company
+                <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
             </p>
         </div>
@@ -1989,6 +1949,17 @@ rule test descriptor and asserts the results.</p>
     <!-- /.toc-container-wrapper -->
 </div>
 </div>
-</body>
 
+<script type="application/javascript" src="assets/jquery-3.5.1/jquery-3.5.1.min.js"></script>
+<script type="application/javascript" src="assets/anchorjs-4.2.2/anchor.min.js"></script>
+<script type="application/javascript" src="assets/navgoco-0.2.1/src/jquery.navgoco.min.js"></script>
+<script type="application/javascript" src="assets/bootstrap-4.5.2-dist/js/bootstrap.bundle.min.js"></script>
+<script type="application/javascript" src="assets/Simple-Jekyll-Search-1.0.8/dest/jekyll-search.js"></script>
+<script type="application/javascript" src="assets/jekyll-table-of-contents/toc.js"></script>
+<script type="application/javascript" src="js/tabstate.js"></script>
+<script type="application/javascript" src="js/customscripts.js"></script>
+
+
+
+</body>
 </html>
