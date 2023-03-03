@@ -2098,8 +2098,8 @@ If the value return is ‘false’, it should be handled properly.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Avoid constants in interfaces. Interfaces should define types, constants are implementation details
-better placed in classes or enums. See Effective Java, item 19.</p>
+<p>Using constants in interfaces is a bad practice. Interfaces define types, constants are implementation details better placed in classes or enums. If the constants are best viewed as members of an enumerated type, you should export them with an enum type.
+For other scenarios, consider using a utility class. See Effective Java’s ‘Use interfaces only to define types’.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="na">@Interface</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()][</span><span class="nv">$ignoreIfHasMethods</span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="ow">not</span><span class="p">(</span><span class="nt">ClassOrInterfaceBody</span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="p">)]</span><span class="o">/</span><span class="nt">ClassOrInterfaceBody</span><span class="o">/</span><span class="nt">FieldDeclaration</span><span class="w">
