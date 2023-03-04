@@ -69,9 +69,9 @@ public class PrimitiveWrapperInstantiationRule extends AbstractJavaRulechainRule
         ASTStringLiteral stringLiteral = getFirstArgStringLiteralOrNull(arguments);
         ASTBooleanLiteral boolLiteral = getFirstArgBooleanLiteralOrNull(arguments);
         if (stringLiteral != null) {
-            if (stringLiteral.getText().contentEquals("\"true\"")) {
+            if (stringLiteral.getLiteralText().contentEquals("\"true\"")) {
                 addViolationWithMessage(data, node, messagePart + "(\"true\")`, prefer `Boolean.TRUE`");
-            } else if (stringLiteral.getText().contentEquals("\"false\"")) {
+            } else if (stringLiteral.getLiteralText().contentEquals("\"false\"")) {
                 addViolationWithMessage(data, node, messagePart + "(\"false\")`, prefer `Boolean.FALSE`");
             } else {
                 addViolationWithMessage(data, node, messagePart + "(\"...\")`, prefer `Boolean.valueOf`");

@@ -8,6 +8,7 @@ import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.test.NodeSpec
 import net.sourceforge.pmd.lang.ast.test.ValuedNodeSpec
 import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.ast.test.textStr
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
@@ -42,6 +43,14 @@ class ASTLiteralTest : ParserTestSpec({
             "\"foo\\t\"" should parseAs {
                 stringLit("\"foo\\t\"") {
                     it::getConstValue shouldBe "foo\t"
+                }
+            }
+
+            "(\"foo\\t\")" should parseAs {
+                stringLit("\"foo\\t\"") {
+                    it::getConstValue shouldBe "foo\t"
+                    it::textStr shouldBe "(\"foo\\t\")"
+                    it::getParenthesisDepth shouldBe 1
                 }
             }
         }

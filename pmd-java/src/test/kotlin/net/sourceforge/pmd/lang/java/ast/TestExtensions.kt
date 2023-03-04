@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken
 import net.sourceforge.pmd.lang.ast.test.NodeSpec
 import net.sourceforge.pmd.lang.ast.test.ValuedNodeSpec
 import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.document.Chars
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.*
 import net.sourceforge.pmd.util.IteratorUtil
@@ -431,7 +432,7 @@ fun TreeNodeWrapper<Node, *>.castExpr(contents: NodeSpec<ASTCastExpression>) =
 
 fun TreeNodeWrapper<Node, *>.stringLit(image: String, contents: NodeSpec<ASTStringLiteral> = EmptyAssertions) =
         child<ASTStringLiteral> {
-            it::getImage shouldBe image
+            it::getLiteralText shouldBe Chars.wrap(image)
             it::isTextBlock shouldBe false
             it::isEmpty shouldBe it.constValue.isEmpty()
             contents()

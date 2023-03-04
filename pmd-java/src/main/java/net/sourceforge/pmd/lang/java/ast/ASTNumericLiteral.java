@@ -74,7 +74,9 @@ public final class ASTNumericLiteral extends AbstractLiteral implements ASTLiter
 
     @Override
     public void jjtClose() {
-        Chars image = getText();
+        super.jjtClose();
+
+        Chars image = getLiteralText();
         char lastChar = image.charAt(image.length() - 1);
         if (isIntegral) {
             is64bits = lastChar == 'l' || lastChar == 'L';
@@ -125,7 +127,7 @@ public final class ASTNumericLiteral extends AbstractLiteral implements ASTLiter
      * for the literal {@code 0} (which can really be any base).
      */
     public int getBase() {
-        return getBase(getText());
+        return getBase(getLiteralText());
     }
 
     static int getBase(Chars image) {

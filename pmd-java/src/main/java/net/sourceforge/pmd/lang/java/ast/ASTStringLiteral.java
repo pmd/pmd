@@ -15,7 +15,7 @@ import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Represents a string literal. The image of this node is the literal as it appeared
- * in the source ({@link #getText()}). {@link #getConstValue()} allows to recover
+ * in the source ({@link #getLiteralText()}). {@link #getConstValue()} allows to recover
  * the actual runtime value, by processing escapes.
  */
 public final class ASTStringLiteral extends AbstractLiteral implements ASTLiteral {
@@ -26,16 +26,6 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
 
     ASTStringLiteral(int id) {
         super(id);
-    }
-
-
-    /**
-     * @deprecated use {{@link #getText()}}
-     */
-    @Override
-    @Deprecated
-    public String getImage() {
-        return getText().toString();
     }
 
     void setTextBlock() {
@@ -52,7 +42,7 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
         if (isTextBlock) {
             return getConstValue().isEmpty(); // could be a bunch of ignorable indents?
         } else {
-            return getText().length() == 2; // ""
+            return getLiteralText().length() == 2; // ""
         }
     }
 
@@ -87,9 +77,9 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
     @Override
     protected @NonNull String buildConstValue() {
         if (isTextBlock()) {
-            return determineTextBlockContent(getText());
+            return determineTextBlockContent(getLiteralText());
         } else {
-            return determineStringContent(getText());
+            return determineStringContent(getLiteralText());
         }
     }
 
