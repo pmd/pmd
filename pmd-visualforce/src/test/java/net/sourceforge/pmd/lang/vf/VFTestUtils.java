@@ -52,7 +52,7 @@ public final class VFTestUtils {
 
     public static LanguageProcessorRegistry fakeLpRegistry() {
         LanguageRegistry registry = new LanguageRegistry(setOf(ApexLanguageModule.getInstance(), VfLanguageModule.getInstance()));
-        return LanguageProcessorRegistry.create(registry, Collections.emptyMap(), MessageReporter.noop());
+        return LanguageProcessorRegistry.create(registry, Collections.emptyMap(), MessageReporter.quiet());
     }
 
     /**

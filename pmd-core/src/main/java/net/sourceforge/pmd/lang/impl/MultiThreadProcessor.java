@@ -37,7 +37,7 @@ final class MultiThreadProcessor extends AbstractPMDProcessor {
             RuleSets copy = new RuleSets(task.getRulesets());
             // use a noop reporter because the copy should only contain rules that
             // initialized properly
-            copy.initializeRules(task.getLpRegistry(), MessageReporter.noop());
+            copy.initializeRules(task.getLpRegistry(), MessageReporter.quiet());
             return copy;
         });
 

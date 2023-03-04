@@ -15,7 +15,7 @@ import net.sourceforge.pmd.util.log.MessageReporter;
  * @author Clément Fournier
  */
 @InternalApi
-public class NoopReporter extends MessageReporterBase implements MessageReporter {
+public class QuietReporter extends MessageReporterBase implements MessageReporter {
 
     // note: not singleton because PmdLogger accumulates error count.
     // note: not final because used as mock in tests.

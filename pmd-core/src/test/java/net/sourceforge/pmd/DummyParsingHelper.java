@@ -57,7 +57,7 @@ public class DummyParsingHelper implements Extension, BeforeEachCallback, AfterE
         LanguageProcessorRegistry registry = LanguageProcessorRegistry.create(
             LanguageRegistry.PMD,
             Collections.emptyMap(),
-            MessageReporter.noop()
+            MessageReporter.quiet()
         );
         dummyProcessor = registry.getProcessor(DummyLanguageModule.getInstance());
     }

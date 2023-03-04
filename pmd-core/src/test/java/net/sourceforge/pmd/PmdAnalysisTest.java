@@ -105,7 +105,7 @@ class PmdAnalysisTest {
     void testRuleFailureDuringInitialization() {
         PMDConfiguration config = new PMDConfiguration();
         config.setThreads(1);
-        MessageReporter mockReporter = spy(MessageReporter.noop());
+        MessageReporter mockReporter = spy(MessageReporter.quiet());
         config.setReporter(mockReporter);
 
         try (PmdAnalysis pmd = PmdAnalysis.create(config)) {

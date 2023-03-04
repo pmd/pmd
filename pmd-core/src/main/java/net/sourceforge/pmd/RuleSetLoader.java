@@ -43,7 +43,7 @@ public final class RuleSetLoader {
     private boolean warnDeprecated = true;
     private @NonNull RuleSetFactoryCompatibility compatFilter = RuleSetFactoryCompatibility.DEFAULT;
     private boolean includeDeprecatedRuleReferences = false;
-    private @NonNull MessageReporter reporter = MessageReporter.noop();
+    private @NonNull MessageReporter reporter = MessageReporter.quiet();
 
     /**
      * Create a new RuleSetLoader with a default configuration.

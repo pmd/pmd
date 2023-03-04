@@ -447,7 +447,7 @@ final class RuleSetFactory {
             return null; // deleted rule
         }
         // only emit a warning if we check for deprecated syntax
-        MessageReporter subReporter = warnDeprecated ? err.at(xmlPlace) : MessageReporter.noop();
+        MessageReporter subReporter = warnDeprecated ? err.at(xmlPlace) : MessageReporter.quiet();
 
         List<RuleSetReferenceId> references = RuleSetReferenceId.parse(ref, subReporter);
         if (references.size() > 1 && warnDeprecated) {

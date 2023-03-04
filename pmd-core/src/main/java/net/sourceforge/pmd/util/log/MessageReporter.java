@@ -10,7 +10,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.util.log.internal.NoopReporter;
+import net.sourceforge.pmd.util.log.internal.QuietReporter;
 
 /**
  * Façade to report user-facing messages (info, warning and error).
@@ -98,11 +98,11 @@ public interface MessageReporter {
 
 
     /**
-     * Returns a dummy instance that does not output anything, but still
-     * counts errors.
+     * Returns a reporter instance that does not output anything, but
+     * still counts errors.
      */
-    static MessageReporter noop() {
-        return new NoopReporter();
+    static MessageReporter quiet() {
+        return new QuietReporter();
     }
 
 }

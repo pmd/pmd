@@ -29,7 +29,7 @@ class PMDFilelistTest {
     private static final String RESOURCE_PREFIX = "src/test/resources/net/sourceforge/pmd/cli/";
 
     private @NonNull FileCollector newCollector() {
-        return FileCollector.newCollector(new LanguageVersionDiscoverer(LanguageRegistry.PMD), MessageReporter.noop());
+        return FileCollector.newCollector(new LanguageVersionDiscoverer(LanguageRegistry.PMD), MessageReporter.quiet());
     }
 
     private static void collectFileList(FileCollector collector, String x) {
