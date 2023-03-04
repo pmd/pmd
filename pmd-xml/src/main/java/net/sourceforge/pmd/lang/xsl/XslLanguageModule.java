@@ -16,7 +16,12 @@ public class XslLanguageModule extends SimpleLanguageModuleBase {
     public static final String TERSE_NAME = "xsl";
 
     public XslLanguageModule() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("xsl", "xslt"), new XmlHandler());
+        super(LanguageMetadata.withId(TERSE_NAME).name(NAME)
+                              .extensions("xsl", "xslt")
+                              .addVersion("1.0")
+                              .addVersion("2.0")
+                              .addDefaultVersion("3.0"),
+                new XmlHandler());
     }
 
 }

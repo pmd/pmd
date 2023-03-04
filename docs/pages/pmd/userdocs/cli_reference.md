@@ -194,6 +194,21 @@ Just set the environment variable `PMD_JAVA_OPTS` before executing PMD, e.g.
    windows="set \"PMD_JAVA_OPTS=--enable-preview\"
     pmd.bat check -d src\main\java\ -f text -R rulesets/java/quickstart.xml" %}
 
+## Additional runtime classpath
+
+If you develop custom rules and package them as a jar file, you need to add it to PMD's runtime classpath.
+You can either copy the jar file into the `lib/` subfolder alongside the other jar files, that are in PMD's
+standard distribution.
+
+Or you can set the environment variable `CLASSPATH` before starting PMD, e.g.
+
+{% include cli_example.html
+   id="preview_classpath"
+   linux="export CLASSPATH=custom-rule-example.jar
+    pmd check -d ../../../src/main/java/ -f text -R myrule.xml"
+   windows="set CLASSPATH=custom-rule-example.jar
+    pmd.bat check -d ..\..\..\src\main\java\ -f text -R myrule.xml" %}
+
 ## Exit Status
 
 Please note that if PMD detects any violations, it will exit with status 4 (since 5.3).
@@ -224,7 +239,14 @@ non-preview version. If you want to use an older version, so that e.g. rules tha
 that are not available yet won't be executed, you need to specify a specific version via the `--use-version`
 parameter.
 
-These parameters are irrelevant for languages that don't support different versions.
+The selected language version can also influence which rules are applied. Some rules might be relevant for
+just a specific version of the language. Such rules are marked with either `minimumLanguageVersion` or
+`maximumLanguageVersion` or both. Most rules apply for all language versions.
+
+These parameters are most of the time irrelevant, if the rules apply for all versions.
+
+The available versions depend on the language. You can get a list of the currently supported language versions
+via the CLI option `--help`.
 
 Example:
 
@@ -245,7 +267,6 @@ Example:
 *   [plsql](pmd_rules_plsql.html)
 *   [pom](pmd_rules_pom.html) (Maven POM)
 *   [scala](pmd_rules_scala.html)
-    *   Supported Versions: 2.10, 2.11, 2.12, 2.13 (default)
 *   [swift](pmd_rules_swift.html)
 *   [vf](pmd_rules_vf.html) (Salesforce VisualForce)
 *   [vm](pmd_rules_vm.html) (Apache Velocity)

@@ -19,7 +19,7 @@ import net.sourceforge.pmd.Rule;
  */
 public abstract class SimpleAggregatorTst extends RuleTst {
 
-    private List<Rule> rules = new ArrayList<>();
+    private final List<Rule> rules = new ArrayList<>();
 
     /**
      * Configure the rule tests to be executed. Override this method in

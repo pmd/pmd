@@ -55,11 +55,9 @@ public abstract class RuleTst {
     }
 
     /**
-     * Find a rule in a certain ruleset by name
-     *
-     * todo make this static
+     * Find a rule in a certain ruleset by name.
      */
-    public Rule findRule(String ruleSet, String ruleName) {
+    public static Rule findRule(String ruleSet, String ruleName) {
         try {
             RuleSet parsedRset = new RuleSetLoader().warnDeprecated(false).loadFromResource(ruleSet);
             Rule rule = parsedRset.getRuleByName(ruleName);
@@ -139,8 +137,8 @@ public abstract class RuleTst {
      *
      * @return The rule once it has been reinitialised
      */
-    protected Rule reinitializeRule(Rule rule) {
-        return findRule(rule.getRuleSetName(), rule.getName());
+    private Rule reinitializeRule(Rule rule) {
+        return rule.deepCopy();
     }
 
 

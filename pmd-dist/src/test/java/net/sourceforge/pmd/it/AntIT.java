@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.it;
 
+import static org.hamcrest.Matchers.containsString;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,8 +40,11 @@ class AntIT extends AbstractBinaryDistributionTest {
         File antTestProjectFolder = prepareAntTestProjectFolder();
 
         ExecutionResult result = runAnt(antBasepath, pmdHome, antTestProjectFolder);
-        result.assertExecutionResult(0, "BUILD SUCCESSFUL");
-        result.assertExecutionResult(0, "NoPackage"); // the no package rule
+        result.assertExitCode(0)
+              .assertStdOut(containsString("BUILD SUCCESSFUL"));
+        // the no package rule
+        result.assertExitCode(0)
+              .assertStdOut(containsString("NoPackage"));
     }
 
 

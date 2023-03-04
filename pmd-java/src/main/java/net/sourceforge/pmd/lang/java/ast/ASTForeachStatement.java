@@ -11,9 +11,13 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * <pre class="grammar">
  *
- * ForeachStatement ::= "for" "(" {@linkplain ASTLocalVariableDeclaration LocalVariableDeclaration} ":" {@linkplain ASTExpression Expression} ")" {@linkplain ASTStatement Statement}
+ * ForeachStatement ::= "for" "(" ( {@linkplain ASTLocalVariableDeclaration LocalVariableDeclaration} | {@linkplain ASTRecordPattern RecordPattern} ) ":" {@linkplain ASTExpression Expression} ")" {@linkplain ASTStatement Statement}
  *
  * </pre>
+ *
+ * <p>Note: Using a {@linkplain ASTRecordPattern RecordPattern} in an enhanced for statement is a Java 20 Preview feature</p>
+ *
+ * @see <a href="https://openjdk.org/jeps/432">JEP 432: Record Patterns (Second Preview)</a>
  */
 public final class ASTForeachStatement extends AbstractStatement implements InternalInterfaces.VariableIdOwner, ASTLoopStatement {
 
@@ -31,7 +35,8 @@ public final class ASTForeachStatement extends AbstractStatement implements Inte
     @Override
     @NonNull
     public ASTVariableDeclaratorId getVarId() {
-        return getFirstChildOfType(ASTLocalVariableDeclaration.class).iterator().next();
+        // in case of destructuring record patterns, there might be multiple vars
+        return getFirstChild().descendants(ASTVariableDeclaratorId.class).first();
     }
 
     /**

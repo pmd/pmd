@@ -33,7 +33,7 @@ class Java19PreviewTreeDumpTest extends BaseTreeDumpTest {
     @Test
     void dealingWithNullBeforeJava19Preview() {
         ParseException thrown = assertThrows(ParseException.class, () -> java19.parseResource("DealingWithNull.java"));
-        assertTrue(thrown.getMessage().contains("Null case labels is a preview feature of JDK 19, you should select your language version accordingly"),
+        assertTrue(thrown.getMessage().contains("Null in switch cases is a preview feature of JDK 19, you should select your language version accordingly"),
                 "Unexpected message: " + thrown.getMessage());
     }
 
@@ -55,7 +55,7 @@ class Java19PreviewTreeDumpTest extends BaseTreeDumpTest {
     @Test
     void guardedAndParenthesizedPatternsBeforeJava19Preview() {
         ParseException thrown = assertThrows(ParseException.class, () -> java19.parseResource("GuardedAndParenthesizedPatterns.java"));
-        assertTrue(thrown.getMessage().contains("Pattern matching for switch is a preview feature of JDK 19, you should select your language version accordingly"),
+        assertTrue(thrown.getMessage().contains("Patterns in switch statements is a preview feature of JDK 19, you should select your language version accordingly"),
                 "Unexpected message: " + thrown.getMessage());
     }
 
@@ -67,7 +67,7 @@ class Java19PreviewTreeDumpTest extends BaseTreeDumpTest {
     @Test
     void patternsInSwitchLabelsBeforeJava19Preview() {
         ParseException thrown = assertThrows(ParseException.class, () -> java19.parseResource("PatternsInSwitchLabels.java"));
-        assertTrue(thrown.getMessage().contains("Pattern matching for switch is a preview feature of JDK 19, you should select your language version accordingly"),
+        assertTrue(thrown.getMessage().contains("Patterns in switch statements is a preview feature of JDK 19, you should select your language version accordingly"),
                 "Unexpected message: " + thrown.getMessage());
     }
 
@@ -94,7 +94,7 @@ class Java19PreviewTreeDumpTest extends BaseTreeDumpTest {
     @Test
     void recordPatternsBeforeJava19Preview() {
         ParseException thrown = assertThrows(ParseException.class, () -> java19.parseResource("RecordPatterns.java"));
-        assertTrue(thrown.getMessage().contains("Record patterns is a preview feature of JDK 19, you should select your language version accordingly"),
+        assertTrue(thrown.getMessage().contains("Deconstruction patterns is a preview feature of JDK 19, you should select your language version accordingly"),
                 "Unexpected message: " + thrown.getMessage());
     }
 }
