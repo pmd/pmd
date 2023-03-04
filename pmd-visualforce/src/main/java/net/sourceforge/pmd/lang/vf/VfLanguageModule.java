@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.vf;
 
 import net.sourceforge.pmd.cpd.CpdCapableLanguage;
 import net.sourceforge.pmd.cpd.Tokenizer;
-import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
@@ -39,7 +38,7 @@ public class VfLanguageModule extends SimpleLanguageModuleBase implements CpdCap
         return new VfLanguageProperties();
     }
 
-    public static Language getInstance() {
+    public static VfLanguageModule getInstance() {
         return INSTANCE;
     }
 }

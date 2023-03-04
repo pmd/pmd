@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.plsql;
 
 import net.sourceforge.pmd.cpd.PLSQLTokenizer;
 import net.sourceforge.pmd.cpd.Tokenizer;
-import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
 
@@ -56,7 +55,7 @@ public class PLSQLLanguageModule extends SimpleLanguageModuleBase {
         return new PLSQLTokenizer(bundle);
     }
 
-    public static Language getInstance() {
+    public static PLSQLLanguageModule getInstance() {
         return INSTANCE;
     }
 }

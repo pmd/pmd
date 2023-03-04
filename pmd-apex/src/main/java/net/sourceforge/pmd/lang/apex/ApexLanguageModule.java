@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.apex;
 import net.sourceforge.pmd.cpd.CpdCapableLanguage;
 import net.sourceforge.pmd.cpd.PmdCapableLanguage;
 import net.sourceforge.pmd.cpd.Tokenizer;
-import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageModuleBase;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
@@ -43,7 +42,7 @@ public class ApexLanguageModule extends LanguageModuleBase implements PmdCapable
         return new ApexTokenizer((ApexLanguageProperties) bundle);
     }
 
-    public static Language getInstance() {
+    public static ApexLanguageModule getInstance() {
         return INSTANCE;
     }
 }
