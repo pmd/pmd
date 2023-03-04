@@ -62,7 +62,7 @@ public final class ASTResource extends AbstractJavaNode {
             // the last one may be ambiguous, or a variable reference
 
             if (expr instanceof ASTAmbiguousName) {
-                builder.insert(0, ((ASTAmbiguousName) expr).getImage());
+                builder.insert(0, ((ASTAmbiguousName) expr).getName());
             } else if (expr instanceof ASTNamedReferenceExpr) {
                 builder.insert(0, ((ASTNamedReferenceExpr) expr).getName());
             }
