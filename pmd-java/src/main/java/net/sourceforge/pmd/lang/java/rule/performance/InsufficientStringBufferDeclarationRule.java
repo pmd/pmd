@@ -9,8 +9,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang3.mutable.MutableInt;
-
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
@@ -241,18 +239,53 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
         return new State(variable, constructorCall, DEFAULT_BUFFER_SIZE, state.anticipatedLength);
     }
 
+    private static final class IntCounter {
+
+        public static final int UNKNOWN = -1;
+        private int value = UNKNOWN;
+
+        void setValue(int i) {
+            value = i;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public void clearValue() {
+            value = UNKNOWN;
+        }
+
+        public void add(int value) {
+            if (value == UNKNOWN || this.value == UNKNOWN) {
+                this.value = UNKNOWN;
+                return;
+            }
+            this.value += value;
+        }
+
+        public void max(int value) {
+            if (value == UNKNOWN || this.value == UNKNOWN) {
+                this.value = UNKNOWN;
+                return;
+            }
+            this.value = Math.max(value, this.value);
+        }
+    }
+
 
     private int calculateMaxLengthOfString(ASTExpression expression) {
 
         class ExpressionVisitor extends BaseIntAdderVisitor {
+
             @Override
-            public Void visit(ASTStringLiteral node, MutableInt data) {
+            public Void visit(ASTStringLiteral node, IntCounter data) {
                 data.setValue(node.length());
                 return null;
             }
         }
 
-        MutableInt result = new MutableInt(-1);
+        IntCounter result = new IntCounter();
         expression.acceptVisitor(new ExpressionVisitor(), result);
         return result.getValue();
     }
@@ -262,38 +295,43 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
         class ExpressionVisitor extends BaseIntAdderVisitor {
 
             @Override
-            public Void visit(ASTNumericLiteral node, MutableInt data) {
+            public Void visit(ASTNumericLiteral node, IntCounter data) {
                 data.setValue(node.getValueAsInt());
                 return null;
             }
-            public Void visit(ASTCharLiteral node, MutableInt data) {
+
+            public Void visit(ASTCharLiteral node, IntCounter data) {
                 data.setValue(node.getConstValue());
                 return null;
             }
 
+            @Override
+            public Void visitExpression(ASTExpression node, IntCounter data) {
+                data.clearValue();
+                return null;
+            }
         }
 
-        MutableInt result = new MutableInt();
+        IntCounter result = new IntCounter();
         expression.acceptVisitor(new ExpressionVisitor(), result);
         return result.getValue();
     }
 
-    abstract static class BaseIntAdderVisitor extends JavaVisitorBase<MutableInt, Void> {
+    abstract static class BaseIntAdderVisitor extends JavaVisitorBase<IntCounter, Void> {
 
         @Override
-        public Void visit(ASTConditionalExpression node, MutableInt data) {
+        public Void visit(ASTConditionalExpression node, IntCounter data) {
             node.getThenBranch().acceptVisitor(this, data);
-            int left = data.intValue();
+            int left = data.getValue();
             node.getElseBranch().acceptVisitor(this, data);
-            int right = data.intValue();
 
-            data.setValue(Math.max(left, right));
+            data.max(left);
             return null;
         }
 
         @Override
-        public Void visit(ASTInfixExpression node, MutableInt data) {
-            MutableInt temp = new MutableInt(-1);
+        public Void visit(ASTInfixExpression node, IntCounter data) {
+            IntCounter temp = new IntCounter();
 
 
             if (BinaryOp.ADD.equals(node.getOperator())) {
