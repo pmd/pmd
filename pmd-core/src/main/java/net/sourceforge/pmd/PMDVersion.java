@@ -25,11 +25,11 @@ public final class PMDVersion {
 
     private static final String UNKNOWN_VERSION = "unknown";
 
-    /**
+    /*
      * Determines the version from maven's generated pom.properties file.
      */
     static {
-        String pmdVersion = "7.0.0-SNAPSHOT";
+        String pmdVersion = UNKNOWN_VERSION;
         try (InputStream stream = PMDVersion.class.getResourceAsStream("/META-INF/maven/net.sourceforge.pmd/pmd-core/pom.properties")) {
             if (stream != null) {
                 final Properties properties = new Properties();
