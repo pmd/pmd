@@ -55,7 +55,6 @@ import net.sourceforge.pmd.util.internal.xml.PmdXmlReporter;
 import net.sourceforge.pmd.util.internal.xml.XmlErrorMessages;
 import net.sourceforge.pmd.util.internal.xml.XmlUtil;
 import net.sourceforge.pmd.util.log.MessageReporter;
-import net.sourceforge.pmd.util.log.internal.NoopReporter;
 
 import com.github.oowekyala.ooxml.DomUtils;
 import com.github.oowekyala.ooxml.messages.NiceXmlMessageSpec;
@@ -448,7 +447,7 @@ final class RuleSetFactory {
             return null; // deleted rule
         }
         // only emit a warning if we check for deprecated syntax
-        MessageReporter subReporter = warnDeprecated ? err.at(xmlPlace) : new NoopReporter();
+        MessageReporter subReporter = warnDeprecated ? err.at(xmlPlace) : MessageReporter.quiet();
 
         List<RuleSetReferenceId> references = RuleSetReferenceId.parse(ref, subReporter);
         if (references.size() > 1 && warnDeprecated) {
