@@ -44,7 +44,7 @@ abstract class BaseTextComparisonTest {
 
         val actual = transformTextContent(sourceText(fileBaseName))
 
-        if (!expectedFile.exists()||true) {
+        if (!expectedFile.exists()) {
             expectedFile.writeText(actual.normalize())
             throw AssertionError(
             """
