@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.cpd;
 
+import net.sourceforge.pmd.lang.swift.SwiftLanguageModule;
+
 /**
  * Language implementation for Swift
  */
@@ -13,6 +15,6 @@ public class SwiftLanguage extends AbstractLanguage {
      * Creates a new Swift Language instance.
      */
     public SwiftLanguage() {
-        super("Swift", "swift", new SwiftTokenizer(), ".swift");
+        super(SwiftLanguageModule.NAME, SwiftLanguageModule.TERSE_NAME, new SwiftTokenizer(), SwiftLanguageModule.EXTENSIONS);
     }
 }

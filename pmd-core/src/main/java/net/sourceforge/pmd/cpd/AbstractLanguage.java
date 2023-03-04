@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.internal.util.PredicateUtil;
 
@@ -22,11 +23,23 @@ public abstract class AbstractLanguage implements Language {
     private final List<String> extensions;
 
     public AbstractLanguage(String name, String terseName, Tokenizer tokenizer, String... extensions) {
+        this(name, terseName, tokenizer, Arrays.asList(extensions));
+    }
+
+    protected AbstractLanguage(String name, String terseName, Tokenizer tokenizer, List<String> extensions) {
         this.name = name;
         this.terseName = terseName;
         this.tokenizer = tokenizer;
-        this.fileFilter = PredicateUtil.toNormalizedFileFilter(PredicateUtil.getFileExtensionFilter(extensions).or(it -> Files.isDirectory(Paths.get(it))));
-        this.extensions = Arrays.asList(extensions);
+        List<String> extensionsWithDot = extensions.stream().map(e -> {
+            if (e.length() > 0 && e.charAt(0) != '.') {
+                return "." + e;
+            }
+            return e;
+        }).collect(Collectors.toList());
+        this.fileFilter = PredicateUtil.toNormalizedFileFilter(
+                PredicateUtil.getFileExtensionFilter(extensionsWithDot.toArray(new String[0]))
+                        .or(it -> Files.isDirectory(Paths.get(it))));
+        this.extensions = extensionsWithDot;
     }
 
     @Override

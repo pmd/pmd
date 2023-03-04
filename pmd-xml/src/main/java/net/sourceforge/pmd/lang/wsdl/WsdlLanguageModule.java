@@ -15,7 +15,11 @@ public class WsdlLanguageModule extends SimpleLanguageModuleBase {
     public static final String TERSE_NAME = "wsdl";
 
     public WsdlLanguageModule() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("wsdl"), new XmlHandler());
+        super(LanguageMetadata.withId(TERSE_NAME).name(NAME)
+                              .extensions("wsdl")
+                              .addVersion("1.1")
+                              .addDefaultVersion("2.0"),
+                new XmlHandler());
     }
 
 }
