@@ -28,6 +28,7 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
         super(id);
     }
 
+
     void setTextBlock() {
         this.isTextBlock = true;
     }

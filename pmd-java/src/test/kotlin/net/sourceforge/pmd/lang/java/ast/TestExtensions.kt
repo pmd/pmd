@@ -441,7 +441,7 @@ fun TreeNodeWrapper<Node, *>.stringLit(image: String, contents: NodeSpec<ASTStri
 
 fun TreeNodeWrapper<Node, *>.charLit(image: String, contents: NodeSpec<ASTCharLiteral> = EmptyAssertions) =
         child<ASTCharLiteral> {
-            it::getImage shouldBe image
+            it::getLiteralText shouldBe Chars.wrap(image)
             contents()
         }
 

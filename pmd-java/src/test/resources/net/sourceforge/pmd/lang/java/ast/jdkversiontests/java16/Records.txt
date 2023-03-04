@@ -63,7 +63,7 @@
          |     |     +- IfStatement[@Else = false]
          |     |     |  +- InfixExpression[@CompileTimeConstant = false, @Operator = BinaryOp.GT, @ParenthesisDepth = 0, @Parenthesized = false]
          |     |     |  |  +- VariableAccess[@AccessType = AccessType.READ, @CompileTimeConstant = false, @Image = "real", @Name = "real", @ParenthesisDepth = 0, @Parenthesized = false]
-         |     |     |  |  +- NumericLiteral[@Base = 10, @CompileTimeConstant = true, @DoubleLiteral = false, @FloatLiteral = false, @Image = "100", @IntLiteral = true, @Integral = true, @LongLiteral = false, @ParenthesisDepth = 0, @Parenthesized = false, @ValueAsDouble = 100.0, @ValueAsFloat = 100.0, @ValueAsInt = 100, @ValueAsLong = 100]
+         |     |     |  |  +- NumericLiteral[@Base = 10, @CompileTimeConstant = true, @DoubleLiteral = false, @FloatLiteral = false, @IntLiteral = true, @Integral = true, @LongLiteral = false, @ParenthesisDepth = 0, @Parenthesized = false, @ValueAsDouble = 100.0, @ValueAsFloat = 100.0, @ValueAsInt = 100, @ValueAsLong = 100]
          |     |     |  +- ThrowStatement[]
          |     |     |     +- ConstructorCall[@AnonymousClass = false, @CompileTimeConstant = false, @DiamondTypeArgs = false, @MethodName = "new", @ParenthesisDepth = 0, @Parenthesized = false, @QualifiedInstanceCreation = false]
          |     |     |        +- ClassOrInterfaceType[@FullyQualified = false, @SimpleName = "IllegalArgumentException"]
