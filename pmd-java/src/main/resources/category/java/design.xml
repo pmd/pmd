@@ -812,7 +812,7 @@ in each object at runtime.
     /VariableDeclarator[*[pmd-java:nodeIs('Literal')]
          or VariableAccess[@Name = //FieldDeclaration[pmd-java:modifiers() = 'static']/VariableDeclarator/VariableDeclaratorId/@Name]
          or FieldAccess
-         or ArrayAllocation/ArrayType/ArrayDimensions/ArrayDimExpr/NumericLiteral[@IntLiteral = true()][@Image = "0"]]
+         or ArrayAllocation/ArrayType/ArrayDimensions/ArrayDimExpr/NumericLiteral[@IntLiteral = true()][@ValueAsInt = 0]]
     /VariableDeclaratorId
         [not(@Name = //MethodDeclaration[not(pmd-java:modifiers() = 'static')]
             //SynchronizedStatement/(VariableAccess|FieldAccess[ThisExpression])/@Name)]

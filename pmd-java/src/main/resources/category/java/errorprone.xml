@@ -519,19 +519,19 @@ the property ignoreMagicNumbers is not taken into account, if there are multiple
 //IfStatement/*[1]/*[pmd-java:nodeIs('Literal')]
     [not(pmd-java:nodeIs('NullLiteral'))]
     [not(pmd-java:nodeIs('BooleanLiteral'))]
-    [empty(index-of(tokenize($ignoreMagicNumbers, '\s*,\s*'), @Image))]
+    [empty(index-of(tokenize($ignoreMagicNumbers, '\s*,\s*'), @LiteralText))]
 |
 (: consider also deeper expressions :)
 //IfStatement[$ignoreExpressions = false()]/*[1]//*[not(self::UnaryExpression[@Operator = '-'])]/*[pmd-java:nodeIs('Literal')]
     [not(pmd-java:nodeIs('NullLiteral'))]
     [not(pmd-java:nodeIs('BooleanLiteral'))]
-    [empty(index-of(tokenize($ignoreMagicNumbers, '\s*,\s*'), @Image))]
+    [empty(index-of(tokenize($ignoreMagicNumbers, '\s*,\s*'), @LiteralText))]
 |
 (: consider negative literals :)
 //IfStatement[$ignoreExpressions = false()]/*[1]//UnaryExpression[@Operator = '-']/*[pmd-java:nodeIs('Literal')]
     [not(pmd-java:nodeIs('NullLiteral'))]
     [not(pmd-java:nodeIs('BooleanLiteral'))]
-    [empty(index-of(tokenize($ignoreMagicNumbers, '\s*,\s*'), concat('-', @Image)))]
+    [empty(index-of(tokenize($ignoreMagicNumbers, '\s*,\s*'), concat('-', @LiteralText)))]
 |
 (: consider multiple literals in expressions :)
 //IfStatement[$ignoreExpressions = false()]/*[1][count(*[pmd-java:nodeIs('Literal')]
@@ -1272,7 +1272,7 @@ Use Environment.getExternalStorageDirectory() instead of "/sdcard"
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>//StringLiteral[starts-with(@Image,'"/sdcard')]</value>
+                <value>//StringLiteral[starts-with(@LiteralText,'"/sdcard')]</value>
             </property>
         </properties>
         <example>

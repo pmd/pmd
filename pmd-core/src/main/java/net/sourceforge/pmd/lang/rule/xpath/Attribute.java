@@ -31,7 +31,7 @@ public class Attribute {
     private final String name;
     private Method method;
     private List<?> value;
-    private String stringValue;
+    private CharSequence stringValue;
 
     /** Creates a new attribute belonging to the given node using its accessor. */
     public Attribute(Node parent, String name, Method m) {
@@ -112,13 +112,19 @@ public class Attribute {
         return null;
     }
 
-    public String getStringValue() {
+    public CharSequence getStringValue() {
         if (stringValue != null) {
             return stringValue;
         }
         Object v = getValue();
 
-        stringValue = v == null ? "" : String.valueOf(v);
+        if (v == null) {
+            stringValue = "";
+        } else if (v instanceof CharSequence) {
+            stringValue = (CharSequence) v;
+        } else {
+            stringValue = v.toString();
+        }
         return stringValue;
     }
 

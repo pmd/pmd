@@ -4,9 +4,10 @@
 
 package net.sourceforge.pmd.lang.rule.xpath.impl;
 
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
+
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
+import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 import net.sourceforge.pmd.lang.rule.xpath.NoAttribute.NoAttrScope;
@@ -34,25 +36,25 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
 
     /* Constants used to determine which methods are accessors */
     private static final Set<Class<?>> CONSIDERED_RETURN_TYPES
-            = new HashSet<>(Arrays.<Class<?>>asList(Integer.TYPE, Boolean.TYPE, Double.TYPE, String.class,
-                    Long.TYPE, Character.TYPE, Float.TYPE));
+        = setOf(Integer.TYPE, Boolean.TYPE, Double.TYPE, String.class,
+                Long.TYPE, Character.TYPE, Float.TYPE, Chars.class);
 
     private static final Set<String> FILTERED_OUT_NAMES
-        = new HashSet<>(Arrays.asList("toString",
-                                      "getNumChildren",
-                                      "getIndexInParent",
-                                      "getParent",
-                                      "getClass",
-                                      "getSourceCodeFile",
-                                      "isFindBoundary",
-                                      "getRuleIndex",
-                                      "getXPathNodeName",
-                                      "altNumber",
-                                      "toStringTree",
-                                      "getTypeNameNode",
-                                      "hashCode",
-                                      "getImportedNameNode",
-                                      "getScope"));
+        = setOf("toString",
+                "getNumChildren",
+                "getIndexInParent",
+                "getParent",
+                "getClass",
+                "getSourceCodeFile",
+                "isFindBoundary",
+                "getRuleIndex",
+                "getXPathNodeName",
+                "altNumber",
+                "toStringTree",
+                "getTypeNameNode",
+                "hashCode",
+                "getImportedNameNode",
+                "getScope");
 
     /* Iteration variables */
     private final Iterator<MethodWrapper> iterator;
