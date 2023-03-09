@@ -58,6 +58,10 @@ public class ExecutionResult {
         return this;
     }
 
+    public String getOutput() {
+        return output;
+    }
+
     /**
      * Asserts that the given error message is not in the error output.
      *
