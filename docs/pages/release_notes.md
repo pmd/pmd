@@ -224,13 +224,22 @@ This should help us in future development.
 #### Compatibility and migration notes
 
 * PMD 7 requires Java 8 or above to execute.
-* CLI changed: Custom scripts need to be updated.
+* CLI changed: Custom scripts need to be updated (`run.sh pmd ...` -> `pmd check ...`, `run.sh cpd ...`, `pmd cpd ...`).
 * Java module revamped: Custom rules need to be updated.
 * Removed rules: Custom rulesets need to be reviewed. See below for a list of new and removed rules.
 * XPath 1.0 support is removed, `violationSuppressXPath` now requires XPath 2.0 or 3.1: Custom rulesets need
   to be reviewed.
 * Custom rules using rulechains: Need to override {% jdoc core::lang.rule.AbstractRule#buildTargetSelector() %}
   using {% jdoc core::lang.rule.RuleTargetSelector#forTypes(java.lang.Class,java.lang.Class...) %}.
+
+#### Notes for integrators
+
+* PMD 7 is a major release where many things have been moved or rewritten. 
+* All integrators will require some level of change to adapt to the change in the API.
+* For more details look at the deprecations notes of the past PMD 6 releases.
+* The PMD Ant tasks, which were previously in the module `pmd-core` has been moved into its own module `pmd-ant`
+* The CLI classes have also been moved out of `pmd-core` into its own module `pmd-cli`. The old entry point, the
+  main class `PMD` is gone.
 
 #### New Rules
 
