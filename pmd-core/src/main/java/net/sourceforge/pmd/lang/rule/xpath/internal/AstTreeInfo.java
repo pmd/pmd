@@ -35,7 +35,7 @@ public final class AstTreeInfo extends GenericTreeInfo {
             2048: 82%
             unbounded: 85%
              */
-            return size() > 2048;
+            return size() > 1024;
         }
     };
 
