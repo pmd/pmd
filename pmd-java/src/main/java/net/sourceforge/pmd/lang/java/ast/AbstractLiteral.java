@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 
 /**
  * @author Clément Fournier
@@ -38,6 +39,7 @@ abstract class AbstractLiteral extends AbstractJavaExpr implements ASTLiteral {
     }
 
     @Override
+    @NoAttribute
     public final Chars getText() {
         JavaccToken firstToken = getFirstToken();
         // this literal has parentheses, the text includes them
@@ -48,7 +50,8 @@ abstract class AbstractLiteral extends AbstractJavaExpr implements ASTLiteral {
     }
 
     @Override
-    public Chars getLiteralText() {
+    public final Chars getLiteralText() {
+        assert literalToken.getImageCs() != null;
         return literalToken.getImageCs();
     }
 

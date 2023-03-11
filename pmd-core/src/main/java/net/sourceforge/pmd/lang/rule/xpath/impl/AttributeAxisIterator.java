@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.rule.xpath.impl;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -95,6 +96,8 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
             // filter out methods declared in supertypes like the
             // Antlr ones, unless they're opted-in
             && Node.class.isAssignableFrom(method.getDeclaringClass())
+            // Methods of package-private classes are not accessible.
+            && Modifier.isPublic(method.getDeclaringClass().getModifiers())
             && !isIgnored(nodeClass, method);
     }
 
