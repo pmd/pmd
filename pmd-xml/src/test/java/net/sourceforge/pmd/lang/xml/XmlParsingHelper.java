@@ -4,10 +4,7 @@
 
 package net.sourceforge.pmd.lang.xml;
 
-import java.sql.ParameterMetaData;
-
 import net.sourceforge.pmd.cpd.PmdCapableLanguage;
-import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.xml.ast.internal.XmlParserImpl.RootXmlNode;
 

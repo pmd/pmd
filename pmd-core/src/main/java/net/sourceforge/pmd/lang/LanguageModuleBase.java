@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang;
 
+import static net.sourceforge.pmd.util.CollectionUtil.emptyList;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.util.ArrayList;
@@ -22,6 +23,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.cpd.PmdCapableLanguage;
+import net.sourceforge.pmd.lang.LanguageModuleBase.LanguageMetadata.LangVersionMetadata;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -55,7 +58,13 @@ public abstract class LanguageModuleBase implements Language {
         LanguageVersion defaultVersion = null;
 
         if (metadata.versionMetadata.isEmpty()) {
-            throw new IllegalStateException("No versions for '" + getId() + "'");
+            if (this instanceof PmdCapableLanguage) {
+                // pmd languages need to have versions
+                throw new IllegalStateException("No versions for '" + getId() + "'");
+            } else {
+                // for others, a version is declared implicitly
+                metadata.versionMetadata.add(new LangVersionMetadata());
+            }
         }
 
         int i = 0;
@@ -373,6 +382,12 @@ public abstract class LanguageModuleBase implements Language {
             final String name;
             final List<String> aliases;
             final boolean isDefault;
+
+            private LangVersionMetadata() {
+                this.name = "";
+                this.aliases = emptyList();
+                this.isDefault = true;
+            }
 
             private LangVersionMetadata(String name, List<String> aliases, boolean isDefault) {
                 checkVersionName(name);

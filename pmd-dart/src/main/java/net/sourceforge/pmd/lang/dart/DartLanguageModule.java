@@ -14,11 +14,9 @@ import net.sourceforge.pmd.lang.impl.CpdOnlyLanguageModuleBase;
  */
 public class DartLanguageModule extends CpdOnlyLanguageModuleBase {
 
-    /**
-     * Creates a new Dart Language instance.
-     */
     public DartLanguageModule() {
-        super(LanguageMetadata.withId("dart").name("Dart").extensions("dart"));
+        super(LanguageMetadata.withId("dart").name("Dart").extensions("dart")
+                              .addDefaultVersion("2"));
     }
 
     @Override
