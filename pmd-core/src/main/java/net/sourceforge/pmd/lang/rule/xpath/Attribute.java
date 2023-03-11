@@ -25,13 +25,15 @@ import net.sourceforge.pmd.lang.ast.Node;
  * @author daniels
  */
 public class Attribute {
-    private static final Object[] EMPTY_OBJ_ARRAY = new Object[0];
 
     private final Node parent;
     private final String name;
+
     private final MethodHandle handle;
     private final Method method;
-    private List<?> value;
+    private boolean invoked;
+
+    private Object value;
     private String stringValue;
 
     /** Creates a new attribute belonging to the given node using its accessor. */
@@ -59,10 +61,6 @@ public class Attribute {
      */
     public Type getType() {
         return method == null ? String.class : method.getGenericReturnType();
-    }
-
-    public Class<?> getErasedType() {
-        return method == null ? String.class : method.getReturnType();
     }
 
     public String getName() {
@@ -102,14 +100,15 @@ public class Attribute {
     }
 
     public Object getValue() {
-        if (value != null) {
-            return value.get(0);
+        if (invoked) {
+            return value;
         }
 
         // this lazy loading reduces calls to Method.invoke() by about 90%
         try {
-            value = Collections.singletonList(handle.invokeExact(parent));
-            return value.get(0);
+            invoked = true;
+            value = handle.invokeExact(parent);
+            return value;
         } catch (Throwable iae) {
             iae.printStackTrace();
         }
