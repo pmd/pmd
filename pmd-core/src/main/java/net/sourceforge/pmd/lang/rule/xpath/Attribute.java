@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.rule.xpath;
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -48,10 +47,11 @@ public class Attribute {
     public Attribute(Node parent, String name, String value) {
         this.parent = parent;
         this.name = name;
-        this.value = Collections.singletonList(value);
+        this.value = value;
         this.handle = null;
         this.method = null;
         this.stringValue = value;
+        this.invoked = true;
     }
 
 
