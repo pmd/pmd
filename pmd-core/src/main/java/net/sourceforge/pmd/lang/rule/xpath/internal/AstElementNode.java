@@ -11,7 +11,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -20,7 +19,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.util.CollectionUtil;
-import net.sourceforge.pmd.util.IteratorUtil;
 
 import net.sf.saxon.Configuration;
 import net.sf.saxon.om.NodeInfo;
@@ -103,8 +101,9 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
 
     public Map<String, Attribute> getLightAttributes() {
         if (lightAttributes == null) {
-            lightAttributes = IteratorUtil.toStream(getUnderlyingNode().getXPathAttributesIterator())
-                                          .collect(Collectors.toMap(Attribute::getName, it -> it));
+            lightAttributes = new HashMap<>();
+            getUnderlyingNode().getXPathAttributesIterator()
+                               .forEachRemaining(it -> lightAttributes.put(it.getName(), it));
         }
         return lightAttributes;
     }
@@ -177,7 +176,11 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
     @Override
     public String getAttributeValue(String uri, String local) {
         Attribute attribute = getLightAttributes().get(local);
-        return attribute == null ? null : attribute.getStringValue();
+        if (attribute != null) {
+            getTreeInfo().getLogger().recordUsageOf(attribute);
+            return attribute.getStringValue();
+        }
+        return null;
     }
 
 

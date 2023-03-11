@@ -45,7 +45,7 @@ public final class ASTCompilationUnit extends AbstractJavaNode implements JavaNo
 
     ASTCompilationUnit(int id) {
         super(id);
-        root = this;
+        setRoot(this);
     }
 
     public List<JavaComment> getComments() {

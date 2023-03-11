@@ -135,8 +135,11 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
 
         if (localAnnot == null) {
             return false;
-        } else if (!declaration.equals(nodeClass)) {
-            // then the node suppressed the attributes of its parent
+        } else if (!declaration.equals(nodeClass) || method.isBridge()) {
+            // Bridge methods appear declared in the subclass but represent
+            // an inherited method.
+
+            // Then the node suppressed the attributes of its parent
             return localAnnot.scope() == NoAttrScope.INHERITED;
         } else {
             // then declaration == nodeClass so we need the scope to be ALL

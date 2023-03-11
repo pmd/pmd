@@ -109,7 +109,7 @@ public class Attribute {
             invoked = true;
             value = handle.invokeExact(parent);
             return value;
-        } catch (Throwable iae) {
+        } catch (Throwable iae) { // NOPMD
             iae.printStackTrace();
         }
         return null;
