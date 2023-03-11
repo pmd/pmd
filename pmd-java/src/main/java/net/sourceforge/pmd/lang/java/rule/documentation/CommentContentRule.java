@@ -6,10 +6,10 @@ package net.sourceforge.pmd.lang.java.rule.documentation;
 
 import static net.sourceforge.pmd.properties.PropertyFactory.regexProperty;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Pattern;
 
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaComment;
@@ -35,43 +35,32 @@ public class CommentContentRule extends AbstractJavaRulechainRule {
 
 
     @Override
-    public Object visit(ASTCompilationUnit cUnit, Object data) {
+    public Object visit(ASTCompilationUnit node, Object data) {
 
         Pattern pattern = getProperty(DISSALLOWED_TERMS_DESCRIPTOR);
 
-        for (JavaComment comment : cUnit.getComments()) {
-            List<Integer> lineNumbers = illegalTermsIn(comment, pattern);
-            if (lineNumbers.isEmpty()) {
-                continue;
-            }
-
-            int offset = comment.getBeginLine();
-            for (int lineNum : lineNumbers) {
-                int lineNumWithOff = lineNum + offset;
-                addViolationWithMessage(
-                    data,
-                    cUnit,
-                    "Line matches forbidden content regex (" + pattern.pattern() + ")",
-                    lineNumWithOff,
-                    lineNumWithOff
-                );
-            }
+        for (JavaComment comment : node.getComments()) {
+            reportIllegalTerms(asCtx(data), comment, pattern, node);
         }
 
         return null;
     }
 
-    private List<Integer> illegalTermsIn(JavaComment comment, Pattern violationRegex) {
+    private void reportIllegalTerms(RuleContext ctx, JavaComment comment, Pattern violationRegex, Node acu) {
 
-        List<Integer> lines = new ArrayList<>();
-        int i = 0;
+        int i = comment.getReportLocation().getStartLine();
         for (Chars line : comment.getFilteredLines(true)) {
             if (violationRegex.matcher(line).find()) {
-                lines.add(i);
+                ctx.addViolationWithPosition(
+                    acu,
+                    i,
+                    i,
+                    "Line matches forbidden content regex ({0})",
+                    violationRegex.pattern()
+                );
             }
+            i++;
         }
-
-        return lines;
     }
 
 }
