@@ -349,7 +349,7 @@ public abstract class LanguageModuleBase implements Language {
          */
         public LanguageMetadata addAllVersionsOf(Language language) {
             for (LanguageVersion version : language.getVersions()) {
-                versionMetadata.add(new LangVersionMetadata(version.getName(),
+                versionMetadata.add(new LangVersionMetadata(version.getVersion(),
                                                             version.getAliases(),
                                                             version.equals(language.getDefaultVersion())));
             }
