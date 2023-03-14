@@ -105,6 +105,8 @@ public class CloseResourceRule extends AbstractJavaRule {
             booleanProperty("closeNotInFinally")
                 .desc("Detect if 'close' (or other closeTargets) is called outside of a finally-block").defaultValue(false).build();
 
+    private static final InvocationMatcher OBJECTS_NON_NULL = InvocationMatcher.parse("java.util.Objects#nonNull(_)");
+
     private final Set<String> types = new HashSet<>();
     private final Set<String> simpleTypes = new HashSet<>();
     private final Set<String> closeTargets = new HashSet<>();
@@ -573,8 +575,7 @@ public class CloseResourceRule extends AbstractJavaRule {
     }
 
     private boolean isObjectsNonNull(ASTExpression expression, ASTVariableDeclaratorId var) {
-        InvocationMatcher matcher = InvocationMatcher.parse("java.util.Objects#nonNull(_)");
-        if (matcher.matchesCall(expression)) {
+        if (OBJECTS_NON_NULL.matchesCall(expression)) {
             ASTMethodCall methodCall = (ASTMethodCall) expression;
             return JavaAstUtils.isReferenceToVar(methodCall.getArguments().get(0), var.getSymbol());
         }

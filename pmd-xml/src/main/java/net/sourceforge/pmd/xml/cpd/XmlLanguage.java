@@ -5,10 +5,11 @@
 package net.sourceforge.pmd.xml.cpd;
 
 import net.sourceforge.pmd.cpd.AbstractLanguage;
+import net.sourceforge.pmd.lang.xml.XmlLanguageModule;
 
 public class XmlLanguage extends AbstractLanguage {
 
     public XmlLanguage() {
-        super("Xml", "xml", new XmlTokenizer(), ".xml");
+        super(XmlLanguageModule.NAME, XmlLanguageModule.TERSE_NAME, new XmlTokenizer(), XmlLanguageModule.EXTENSIONS);
     }
 }

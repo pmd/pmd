@@ -19,6 +19,7 @@ import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.internal.SystemProps;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
@@ -37,6 +38,7 @@ public class RuleApplicator {
     // to eg type resolution.
 
     private final TreeIndex idx;
+    private LanguageVersion currentLangVer;
 
     public RuleApplicator(TreeIndex index) {
         this.idx = index;
@@ -46,6 +48,7 @@ public class RuleApplicator {
     public void index(RootNode root) {
         idx.reset();
         indexTree(root, idx);
+        currentLangVer = root.getLanguageVersion();
     }
 
     public void apply(Collection<? extends Rule> rules, FileAnalysisListener listener) {
@@ -54,6 +57,10 @@ public class RuleApplicator {
 
     private void applyOnIndex(TreeIndex idx, Collection<? extends Rule> rules, FileAnalysisListener listener) {
         for (Rule rule : rules) {
+            if (!RuleSet.applies(rule, currentLangVer)) {
+                continue; // No point in even trying to apply the rule
+            }
+            
             RuleContext ctx = RuleContext.create(listener, rule);
             rule.start(ctx);
             try (TimedOperation rcto = TimeTracker.startOperation(TimedOperationCategory.RULE, rule.getName())) {
@@ -62,9 +69,6 @@ public class RuleApplicator {
                 Iterator<? extends Node> targets = rule.getTargetSelector().getVisitedNodes(idx);
                 while (targets.hasNext()) {
                     Node node = targets.next();
-                    if (!RuleSet.applies(rule, node.getTextDocument().getLanguageVersion())) {
-                        continue;
-                    }
 
                     try {
                         nodeCounter++;

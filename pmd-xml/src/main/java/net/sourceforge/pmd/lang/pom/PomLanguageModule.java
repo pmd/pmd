@@ -12,7 +12,10 @@ public class PomLanguageModule extends SimpleLanguageModuleBase {
     public static final String TERSE_NAME = "pom";
 
     public PomLanguageModule() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("pom"), new XmlHandler());
+        super(LanguageMetadata.withId(TERSE_NAME).name(NAME)
+                              .extensions("pom")
+                              .addDefaultVersion("4.0.0"),
+                new XmlHandler());
     }
 
 }

@@ -4,6 +4,11 @@
 
 package net.sourceforge.pmd.lang.java;
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+
+import java.util.List;
+
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageModuleBase;
 import net.sourceforge.pmd.lang.LanguageProcessor;
@@ -19,9 +24,11 @@ public class JavaLanguageModule extends LanguageModuleBase {
 
     public static final String NAME = "Java";
     public static final String TERSE_NAME = "java";
+    @InternalApi
+    public static final List<String> EXTENSIONS = listOf("java");
 
     public JavaLanguageModule() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("java")
+        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions(EXTENSIONS.get(0))
                               .addVersion("1.3")
                               .addVersion("1.4")
                               .addVersion("1.5", "5")
@@ -38,9 +45,10 @@ public class JavaLanguageModule extends LanguageModuleBase {
                               .addVersion("16")
                               .addVersion("17")
                               .addVersion("18")
-                              .addVersion("18-preview")
-                              .addDefaultVersion("19") // 19 is the default
-                              .addVersion("19-preview"));
+                              .addVersion("19")
+                              .addVersion("19-preview")
+                              .addDefaultVersion("20") // 20 is the default
+                              .addVersion("20-preview"));
     }
 
 

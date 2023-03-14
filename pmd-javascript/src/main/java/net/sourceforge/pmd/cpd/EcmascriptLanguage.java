@@ -4,12 +4,15 @@
 
 package net.sourceforge.pmd.cpd;
 
+import net.sourceforge.pmd.lang.ecmascript.EcmascriptLanguageModule;
+
 /**
  *
  * @author Zev Blut zb@ubit.com
  */
 public class EcmascriptLanguage extends AbstractLanguage {
     public EcmascriptLanguage() {
-        super("JavaScript", "ecmascript", new EcmascriptTokenizer(), ".js");
+        super(EcmascriptLanguageModule.NAME, EcmascriptLanguageModule.TERSE_NAME, new EcmascriptTokenizer(),
+                EcmascriptLanguageModule.EXTENSIONS);
     }
 }
