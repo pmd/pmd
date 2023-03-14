@@ -3,10 +3,10 @@
  */
 
 /**
- * @see <a href="https://openjdk.java.net/jeps/420">JEP 420: Pattern Matching for switch (Second Preview)</a>
+ * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a>
  */
 public class ExhaustiveSwitch {
-    
+
     static int coverage(Object o) {
         return switch (o) {
             case String s  -> s.length();

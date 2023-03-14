@@ -153,9 +153,9 @@ See {% jdoc core::lang.ast.NodeStream %} for more details.
 #### JavaScript support
 
 The JS specific parser options have been removed. The parser now always retains comments and uses version ES6.
-The language module registers only one version (as before), now correctly with version "ES6" instead of "3".
-Since there is only one version available for JavaScript there is actually no need to selected a specific version.
-The default version is always ES6.
+The language module registers a couple of different versions. The latest version, which supports ES6 and also some
+new constructs (see [Rhino](https://github.com/mozilla/rhino)]), is the default. This should be fine for most
+use cases.
 
 #### New Rules
 
@@ -254,6 +254,7 @@ The following previously deprecated rules have been finally removed:
     * [#3782](https://github.com/pmd/pmd/issues/3782): \[core] Language lifecycle
     * [#3902](https://github.com/pmd/pmd/issues/3902): \[core] Violation decorators
     * [#4035](https://github.com/pmd/pmd/issues/4035): \[core] ConcurrentModificationException in DefaultRuleViolationFactory
+    * [#4120](https://github.com/pmd/pmd/issues/4120): \[core] Explicitly name all language versions
 * cli
     *   [#3828](https://github.com/pmd/pmd/issues/3828): \[core] Progress reporting
     *   [#4079](https://github.com/pmd/pmd/issues/4079): \[cli] Split off CLI implementation into a pmd-cli submodule

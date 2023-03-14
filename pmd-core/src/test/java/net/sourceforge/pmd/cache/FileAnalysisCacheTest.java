@@ -43,6 +43,8 @@ import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.document.TextFileContent;
 import net.sourceforge.pmd.lang.document.TextRange2d;
+import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
 
 class FileAnalysisCacheTest {
 
@@ -111,16 +113,19 @@ class FileAnalysisCacheTest {
     void testStorePersistsFilesWithViolations() throws IOException {
         final FileAnalysisCache cache = new FileAnalysisCache(newCacheFile);
         cache.checkValidity(mock(RuleSets.class), mock(ClassLoader.class));
+        final FileAnalysisListener cacheListener = cache.startFileAnalysis(sourceFile);
+        
         cache.isUpToDate(sourceFile);
 
         final RuleViolation rv = mock(RuleViolation.class);
         when(rv.getFilename()).thenReturn(sourceFile.getDisplayName());
-        when(rv.getLocation()).thenReturn(FileLocation.range(sourceFile.getDisplayName(), TextRange2d.range2d(1, 2, 3, 4)));
+        final TextRange2d textLocation = TextRange2d.range2d(1, 2, 3, 4);
+        when(rv.getLocation()).thenReturn(FileLocation.range(sourceFile.getDisplayName(), textLocation));
         final net.sourceforge.pmd.Rule rule = mock(net.sourceforge.pmd.Rule.class, Mockito.RETURNS_SMART_NULLS);
         when(rule.getLanguage()).thenReturn(mock(Language.class));
         when(rv.getRule()).thenReturn(rule);
 
-        cache.startFileAnalysis(sourceFile).onRuleViolation(rv);
+        cacheListener.onRuleViolation(rv);
         cache.persist();
 
         final FileAnalysisCache reloadedCache = new FileAnalysisCache(newCacheFile);
@@ -130,7 +135,64 @@ class FileAnalysisCacheTest {
 
         final List<RuleViolation> cachedViolations = reloadedCache.getCachedViolations(sourceFile);
         assertEquals(1, cachedViolations.size(), "Cached rule violations count mismatch");
+        final RuleViolation cachedViolation = cachedViolations.get(0);
+        assertEquals(sourceFile.getDisplayName(), cachedViolation.getFilename());
+        assertEquals(textLocation.getStartLine(), cachedViolation.getBeginLine());
+        assertEquals(textLocation.getStartColumn(), cachedViolation.getBeginColumn());
+        assertEquals(textLocation.getEndLine(), cachedViolation.getEndLine());
+        assertEquals(textLocation.getEndColumn(), cachedViolation.getEndColumn());
     }
+
+
+    @Test
+    void testDisplayNameIsRespected() throws Exception {
+        // This checks that the display name of the file is respected even if
+        // the file is assigned a different display name across runs. The path
+        // id is saved into the cache file, and the cache implementation updates the
+        // display name of the violations to match their current display name.
+
+        final net.sourceforge.pmd.Rule rule = mock(net.sourceforge.pmd.Rule.class, Mockito.RETURNS_SMART_NULLS);
+        when(rule.getLanguage()).thenReturn(mock(Language.class));
+
+        final TextRange2d textLocation = TextRange2d.range2d(1, 2, 3, 4);
+
+        TextFile mockFile = mock(TextFile.class);
+        when(mockFile.getDisplayName()).thenReturn("display0");
+        when(mockFile.getPathId()).thenReturn("pathId");
+        when(mockFile.getLanguageVersion()).thenReturn(dummyVersion);
+        when(mockFile.readContents()).thenReturn(TextFileContent.fromCharSeq("abc"));
+
+        final FileAnalysisCache cache = new FileAnalysisCache(newCacheFile);
+        cache.checkValidity(mock(RuleSets.class), mock(ClassLoader.class));
+
+        try (TextDocument doc0 = TextDocument.create(mockFile)) {
+            cache.isUpToDate(doc0);
+            try (FileAnalysisListener listener = cache.startFileAnalysis(doc0)) {
+                listener.onRuleViolation(new ParametricRuleViolation(rule, FileLocation.range(doc0.getDisplayName(), textLocation), "message"));
+            }
+        } finally {
+            cache.persist();
+        }
+
+        reloadWithOneViolation(mockFile);
+        // now try with another display name
+        when(mockFile.getDisplayName()).thenReturn("display2");
+        reloadWithOneViolation(mockFile);
+    }
+
+    private void reloadWithOneViolation(TextFile mockFile) throws IOException {
+        final FileAnalysisCache reloadedCache = new FileAnalysisCache(newCacheFile);
+        reloadedCache.checkValidity(mock(RuleSets.class), mock(ClassLoader.class));
+        try (TextDocument doc1 = TextDocument.create(mockFile)) {
+            assertTrue(reloadedCache.isUpToDate(doc1),
+                       "Cache believes unmodified file with violations is not up to date");
+            List<RuleViolation> cachedViolations = reloadedCache.getCachedViolations(doc1);
+            assertEquals(1, cachedViolations.size(), "Cached rule violations count mismatch");
+            final RuleViolation cachedViolation = cachedViolations.get(0);
+            assertEquals(mockFile.getDisplayName(), cachedViolation.getFilename());
+        }
+    }
+
 
     @Test
     void testCacheValidityWithNoChanges() throws IOException {

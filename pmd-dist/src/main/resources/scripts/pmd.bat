@@ -63,10 +63,15 @@ if %_needjfxlib% EQU 1 (
     )
     :: The wildcard will include only jar files, but we need to access also
     :: property files such as javafx.properties that lay bare in the dir
-    set classpath=%TOPDIR%\conf;%TOPDIR%\lib\*;%JAVAFX_HOME%\lib\*;%JAVAFX_HOME%\lib\
+    set pmd_classpath=%TOPDIR%\conf;%TOPDIR%\lib\*;%JAVAFX_HOME%\lib\*;%JAVAFX_HOME%\lib\
 ) else (
-    set classpath=%TOPDIR%\conf;%TOPDIR%\lib\*
+    set pmd_classpath=%TOPDIR%\conf;%TOPDIR%\lib\*
 )
 
+if [%CLASSPATH%] NEQ [] (
+    set classpath=%CLASSPATH%;%pmd_classpath%
+) else (
+    set classpath=%pmd_classpath%
+)
 
-java %PMD_JAVA_OPTS% %jreopts% -classpath %classpath% %OPTS% %MAIN_CLASS% %*
+java %PMD_JAVA_OPTS% %jreopts% -classpath %pmd_classpath% %OPTS% %MAIN_CLASS% %*
