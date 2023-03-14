@@ -133,7 +133,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
             buf.append("<td width=\"*%\">")
                .append(renderFileName(rv.getFilename(), rv.getBeginLine()))
                .append("</td>")
-               .append(System.lineSeparator());
+                .append(System.lineSeparator());
             buf.append("<td align=\"center\" width=\"5%\">").append(rv.getBeginLine()).append("</td>").append(System.lineSeparator());
 
             String d = StringEscapeUtils.escapeHtml4(rv.getDescription());
@@ -147,7 +147,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
                .append("</td>")
                .append(System.lineSeparator())
                .append("</tr>")
-               .append(System.lineSeparator());
+                .append(System.lineSeparator());
             writer.write(buf.toString());
             violationCount++;
         }

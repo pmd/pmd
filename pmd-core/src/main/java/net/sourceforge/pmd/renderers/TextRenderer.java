@@ -62,7 +62,7 @@ public class TextRenderer extends AbstractIncrementingRenderer {
                .append(" rule violation suppressed by ")
                .append(excluded.getSuppressor().getId())
                .append(" in ")
-               .append(determineFileName(excluded.getRuleViolation().getFilename()));
+                .append(determineFileName(excluded.getRuleViolation().getFilename()));
             writer.println(buf);
         }
 

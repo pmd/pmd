@@ -6,14 +6,12 @@ package net.sourceforge.pmd;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -26,22 +24,22 @@ import javax.xml.validation.Validator;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 class RuleSetSchemaTest {
 
-    private CollectingErrorHandler errorHandler;
+    private ErrorHandler errorHandler;
 
     @BeforeEach
     void setUp() {
         Locale.setDefault(Locale.ROOT);
-        errorHandler = new CollectingErrorHandler();
+        errorHandler = mock(ErrorHandler.class);
     }
 
     @Test
@@ -50,7 +48,7 @@ class RuleSetSchemaTest {
         Document doc = parseWithVersion2(ruleset);
         assertNotNull(doc);
 
-        assertTrue(errorHandler.isValid());
+        Mockito.verifyNoInteractions(errorHandler);
 
         assertEquals("Custom ruleset", ((Attr) doc.getElementsByTagName("ruleset").item(0).getAttributes().getNamedItem("name")).getValue());
     }
@@ -60,8 +58,7 @@ class RuleSetSchemaTest {
         Validator validator = PMDRuleSetEntityResolver.getSchemaVersion2().newValidator();
         validator.setErrorHandler(errorHandler);
         validator.validate(new StreamSource(new ByteArrayInputStream(generateRuleSet("2.0.0").getBytes(StandardCharsets.UTF_8))));
-        assertTrue(errorHandler.isValid());
-        errorHandler.reset();
+        Mockito.verifyNoInteractions(errorHandler);
     }
 
     private Document parseWithVersion2(String ruleset) throws SAXException, ParserConfigurationException, IOException {
@@ -79,7 +76,7 @@ class RuleSetSchemaTest {
         String versionUnderscore = version.replaceAll("\\.", "_");
         return "<?xml version=\"1.0\"?>\n"
             + "<ruleset \n"
-            + "    xmlns=\"http://pmd.sourceforge.net/ruleset/?\"\n"
+            + "    xmlns=\"http://pmd.sourceforge.net/ruleset/" + version + "\"\n"
             + "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
             + "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/" + version
             + " https://pmd.sourceforge.io/ruleset_" + versionUnderscore + ".xsd\"\n"
@@ -121,51 +118,4 @@ class RuleSetSchemaTest {
         }
     }
 
-    public static class CollectingErrorHandler implements ErrorHandler {
-        private List<SAXParseException> warnings = new ArrayList<>();
-        private List<SAXParseException> errors = new ArrayList<>();
-        private List<SAXParseException> fatalErrors = new ArrayList<>();
-
-        public boolean isValid() {
-            return warnings.isEmpty() && errors.isEmpty() && fatalErrors.isEmpty();
-        }
-
-        public List<SAXParseException> getWarnings() {
-            return warnings;
-        }
-
-        public List<SAXParseException> getErrors() {
-            return errors;
-        }
-
-        public List<SAXParseException> getFatalErrors() {
-            return fatalErrors;
-        }
-
-        @Override
-        public void warning(SAXParseException exception) throws SAXException {
-            warnings.add(exception);
-        }
-
-        @Override
-        public void error(SAXParseException exception) throws SAXException {
-            errors.add(exception);
-        }
-
-        @Override
-        public void fatalError(SAXParseException exception) throws SAXException {
-            fatalErrors.add(exception);
-        }
-
-        @Override
-        public String toString() {
-            return "Warnings: " + warnings + "; Errors: " + errors + "; Fatal Errors: " + fatalErrors;
-        }
-
-        public void reset() {
-            warnings.clear();
-            errors.clear();
-            fatalErrors.clear();
-        }
-    }
 }

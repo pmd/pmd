@@ -92,18 +92,17 @@ public final class PMDCommandLineInterface {
     }
 
     public static String buildUsageText() {
-        return
-            "\n" +
-                "Mandatory arguments:\n" +
-                "1) A java source code filename or directory\n" +
-                "2) A report format \n" +
-                "3) A ruleset filename or a comma-delimited string of ruleset filenames\n" +
-                "\n" +
-                "For example: \n"
-                + getWindowsLaunchCmd() + " -d c:\\my\\source\\code -f html -R java-unusedcode\n\n"
-                + supportedVersions() + "\n"
-                + "Available report formats and their configuration properties are:" + "\n" + getReports()
-                + "\n" + getExamples() + "\n" + "\n" + "\n";
+        return "\n"
+            + "Mandatory arguments:\n"
+            + "1) A java source code filename or directory\n"
+            + "2) A report format \n"
+            + "3) A ruleset filename or a comma-delimited string of ruleset filenames\n"
+            + "\n"
+            + "For example: \n"
+            + getWindowsLaunchCmd() + " -d c:\\my\\source\\code -f html -R java-unusedcode\n\n"
+            + supportedVersions() + "\n"
+            + "Available report formats and their configuration properties are:" + "\n" + getReports()
+            + "\n" + getExamples() + "\n" + "\n" + "\n";
 
     }
 
