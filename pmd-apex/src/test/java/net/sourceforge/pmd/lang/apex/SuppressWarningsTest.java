@@ -77,12 +77,12 @@ class SuppressWarningsTest extends ApexParserTestBase {
 
     @Test
     void testMethodLevelSuppression() {
-        assertWarningsWithFoo(1, "public class Foo {\n" +
-            " @SuppressWarnings('PMD')\n" +
-            " void bar() {\n" +
-            "  Integer foo;\n" +
-            " }\n" +
-            "}");
+        assertWarningsWithFoo(1, "public class Foo {\n"
+            + " @SuppressWarnings('PMD')\n"
+            + " void bar() {\n"
+            + "  Integer foo;\n"
+            + " }\n"
+            + "}");
     }
 
     @Test
