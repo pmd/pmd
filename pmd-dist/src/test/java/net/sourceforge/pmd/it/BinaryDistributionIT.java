@@ -48,18 +48,19 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         "java-11", "java-12", "java-13", "java-14", "java-15",
         "java-16", "java-17", "java-18", "java-19",
         "java-19-preview", "java-20", "java-20-preview",
-        "java-5", "java-6", "java-7", "java-8", "java-9", "jsp-2",
-        "jsp-3", "kotlin-1.6", "kotlin-1.7", "kotlin-1.8",
-        "modelica-3.4", "modelica-3.5", "plsql-11g", "plsql-12.1",
-        "plsql-12.2", "plsql-12c_Release_1",
-        "plsql-12c_Release_2", "plsql-18c", "plsql-19c",
-        "plsql-21c", "pom-4.0.0", "scala-2.10", "scala-2.11",
-        "scala-2.12", "scala-2.13", "swift-4.2", "swift-5.0",
-        "swift-5.1", "swift-5.2", "swift-5.3", "swift-5.4",
-        "swift-5.5", "swift-5.6", "swift-5.7", "vf-52", "vf-53",
-        "vf-54", "vf-55", "vf-56", "vf-57", "vm-2.0", "vm-2.1", "vm-2.2",
-        "vm-2.3", "wsdl-1.1", "wsdl-2.0", "xml-1.0", "xml-1.1",
-        "xsl-1.0", "xsl-2.0", "xsl-3.0"
+        "java-5", "java-6", "java-7",
+        "java-8", "java-9", "jsp-2", "jsp-3", "kotlin-1.6",
+        "kotlin-1.7", "kotlin-1.8", "modelica-3.4", "modelica-3.5",
+        "plsql-11g", "plsql-12.1", "plsql-12.2",
+        "plsql-12c_Release_1", "plsql-12c_Release_2",
+        "plsql-18c", "plsql-19c", "plsql-21c", "pom-4.0.0",
+        "scala-2.10", "scala-2.11", "scala-2.12", "scala-2.13",
+        "swift-4.2", "swift-5.0", "swift-5.1", "swift-5.2",
+        "swift-5.3", "swift-5.4", "swift-5.5", "swift-5.6",
+        "swift-5.7", "vf-52", "vf-53", "vf-54", "vf-55", "vf-56",
+        "vf-57", "vm-2.0", "vm-2.1", "vm-2.2", "vm-2.3", "wsdl-1.1",
+        "wsdl-2.0", "xml-1.0", "xml-1.1", "xsl-1.0", "xsl-2.0",
+        "xsl-3.0"
     );
 
     private final String srcDir = new File(".", "src/test/resources/sample-source/java/").getAbsolutePath();
