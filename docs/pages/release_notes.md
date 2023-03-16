@@ -2,8 +2,13 @@
 title: PMD Release Notes
 permalink: pmd_release_notes.html
 keywords: changelog, release notes
-baseurl: https://docs.pmd-code.org/pmd-doc-7.0.0-SNAPSHOT/
 ---
+
+{% if is_release_notes_processor %}
+{% capture baseurl %}https://pmd.github.io/pmd-{{ site.pmd.version }}/{% endcapture %}
+{% else %}
+{% assign baseurl = "" %}
+{% endif %}
 
 ## {{ site.pmd.date }} - {{ site.pmd.version }}
 
@@ -19,10 +24,15 @@ This is a {{ site.pmd.release_type }} release.
 
 PMD 7.0.0 is finally almost ready. In order to ease the upgrade from PMD 6 to 7, we are going to ship a couple of
 release candidates. These are official pre-release versions available on GitHub and Maven Central and can be used
-as usual (e.g. as a dependency).
+as usual (e.g. as a dependency). Despite the name "release candidate", these releases are intended to be fully
+functional. So, don't be afraid to try out the new PMD 7.
 
-Using the release candidate is also a good opportunity to provide feedback via our
-[issue tracker](https://github.com/pmd/pmd/issues/new/choose).
+We have still some tasks planned for the next release candidates.
+You can see the progress in [PMD 7 Tracking Issue #3898](https://github.com/pmd/pmd/issues/3898).
+
+If you find any problem or difficulty while updating from PMD 6, please provide feedback via our
+[issue tracker](https://github.com/pmd/pmd/issues/new/choose). That way we can improve the experience
+for all.
 
 #### New official logo
 
@@ -31,8 +41,7 @@ was long ago decided (see [#1663](https://github.com/pmd/pmd/issues/1663)).
 We decided it's time to have a modernized logo and get rid of the gun. This allows to include
 the logo anywhere without offense.
 
-
-![New PMD Logo]({{ page.baseurl }}images/logo/pmd-logo-300px.png)
+![New PMD Logo]({{ baseurl }}images/logo/pmd-logo-300px.png)
 
 #### Revamped Java module
 
@@ -58,7 +67,7 @@ Some first results of the Java AST changes are for now documented in the Wiki:
 [Java clean changes](https://github.com/pmd/pmd/wiki/Java_clean_changes).
 
 Overall, the changes to the parser, AST, type resolution and symbol table code has made PMD for Java **significantly faster**. On average, we have seen ~2-3X faster analysis, but as usual, this may change depending on your workload, configuration and ruleset.
-TODO: Take infos from <{{ page.baseurl }}pmd_next_major_development.html#java>
+TODO: Take infos from <{{ baseurl }}pmd_next_major_development.html#java>
 
 Contributors: [Clément Fournier](https://github.com/oowekyala) (@oowekyala),
 [Andreas Dangel](https://github.com/adangel) (@adangel),
@@ -117,7 +126,7 @@ pmd cpd --minimum-tokens 100 src/main/java
 Additionally, the CLI for the `check` command has been enhanced with a progress bar, which interactively displays the
 current progress of the analysis.
 
-![Demo]({{ page.baseurl }}images/userdocs/pmd-demo.gif)
+![Demo]({{ baseurl }}images/userdocs/pmd-demo.gif)
 
 This can be disabled with the `--no-progress` flag.
 
@@ -562,10 +571,10 @@ Language specific fixes:
   Properties "cc_categories", "cc_remediation_points_multiplier", "cc_block_highlighting" can no longer be overridden in rulesets.
   They were deprecated without replacement.
 
-* The old GUI applications accessible through `run.sh designerold` and `run.sh bgastviewer` (and corresponding Batch scripts)
-  have been removed from the PMD distribution. Please use the newer rule designer with `run.sh designer`.
-  The corresponding classes in packages `java.net.sourceforge.pmd.util.viewer` and `java.net.sourceforge.pmd.util.designer` have
-  all been removed.
+* The old GUI applications accessible through `run.sh designerold` and `run.sh bgastviewer`
+  (and corresponding Batch scripts) have been removed from the PMD distribution. Please use the newer rule designer
+  with `pmd designer`. The corresponding classes in packages `java.net.sourceforge.pmd.util.viewer` and
+  `java.net.sourceforge.pmd.util.designer` have all been removed.
 
 * All API related to XPath support has been moved to the package {% jdoc_package core::lang.rule.xpath %}.
   This includes API that was previously dispersed over `net.sourceforge.pmd.lang`, `net.sourceforge.pmd.lang.ast.xpath`,
@@ -663,13 +672,13 @@ The metrics framework has been made simpler and more general.
 
 * Language modules now provide a proper lifecycle and can store global information. This enables the implementation
   of multifile analysis.
-* Language modules can define [custom language properties]({{ page.baseurl }}pmd_languages_configuration.html)
+* Language modules can define [custom language properties]({{ baseurl }}pmd_languages_configuration.html)
   which can be set via environment variables. This allows to add and use language specific configuration options
   without the need to change pmd-core.
 
 The documentation page has been updated:
-[Adding a new language with JavaCC]({{ page.baseurl }}pmd_devdocs_major_adding_new_language_javacc.html)
-and [Adding a new language with ANTLR]({{ page.baseurl }}pmd_devdocs_major_adding_new_language_antlr.html)
+[Adding a new language with JavaCC]({{ baseurl }}pmd_devdocs_major_adding_new_language_javacc.html)
+and [Adding a new language with ANTLR]({{ baseurl }}pmd_devdocs_major_adding_new_language_antlr.html)
 
 Related issue: [[core] Language lifecycle (#3782)](https://github.com/pmd/pmd/issues/3782)
 
