@@ -12,19 +12,18 @@ keywords: changelog, release notes
 
 ## {{ site.pmd.date }} - {{ site.pmd.version }}
 
-The PMD team is pleased to announce PMD {{ site.pmd.version }}.
+We're excited to bring you the next major version of PMD!
 
-This is a {{ site.pmd.release_type }} release.
+Since this is a big release, we provide here only a concise version of the release notes. We prepared a separate
+page with the full [Detailed Release Notes for PMD 7.0.0]({{ baseurl }}/pmd_release_notes_pmd7.html).
 
-{% tocmaker is_release_notes_processor %}
+{% include note.html content="
 
-### 🚀 New and noteworthy
-
-#### Release Candidates
+**Release Candidates**
 
 PMD 7.0.0 is finally almost ready. In order to ease the upgrade from PMD 6 to 7, we are going to ship a couple of
 release candidates. These are official pre-release versions available on GitHub and Maven Central and can be used
-as usual (e.g. as a dependency). Despite the name "release candidate", these releases are intended to be fully
+as usual (e.g. as a dependency). Despite the name \"release candidate\", these releases are intended to be fully
 functional. So, don't be afraid to try out the new PMD 7.
 
 We have still some tasks planned for the next release candidates.
@@ -34,40 +33,27 @@ If you find any problem or difficulty while updating from PMD 6, please provide 
 [issue tracker](https://github.com/pmd/pmd/issues/new/choose). That way we can improve the experience
 for all.
 
+" %}
+
+
+{% tocmaker is_release_notes_processor %}
+
+### 🚀 Major Features and Enhancements
+
 #### New official logo
 
-Many of you probably have already seen the new logo, but now it's time to actually ship it. The new logo
-was long ago decided (see [#1663](https://github.com/pmd/pmd/issues/1663)).
-We decided it's time to have a modernized logo and get rid of the gun. This allows to include
-the logo anywhere without offense.
+The new official logo of PMD:
 
 ![New PMD Logo]({{ baseurl }}images/logo/pmd-logo-300px.png)
 
 #### Revamped Java module
 
-The Java grammar has been refactored substantially in order to make it easier to maintain and more correct
-regarding the Java Language Specification. Changing the grammar entails a changed AST and therefore changed
-rules. The PMD built-in rules have all been upgraded and many bugs have been fixed on the way.
-Unfortunately, if you are using custom rules, you will most probably need to accommodate these changes yourself.
+* Java grammar substantially refactored - more correct regarding the Java Language Specification (JLS)
+* Built-in rules have been upgraded for the changed AST
+* Rewritten type resolution framework and symbol table correctly implements the JLS
+* AST exposes more semantic information (method calls, field accesses)
 
-The type resolution framework has been rewritten from scratch and should now cover the entire Java spec correctly.
-The same is true for the symbol table.
-PMD 6 on the other hand has always had problems with advanced type inference, e.g. with lambdas and call chains.
-Since it was built on the core reflection API, it also was prone to linkage errors and classloader leaks for instance.
-PMD 7 does not need to load classes, and does not have these problems.
-
-The AST exposes much more semantic information now. For instance, you can jump from a method call to
-the declaration of the method being called, or from a field access to the field declaration. These
-improvements allow interesting rules to be written that need precise knowledge of the types
-in the program, for instance to detect {% rule java/codestyle/UnnecessaryBoxing %}
-or {% rule java/codestyle/UseDiamondOperator %}.
-These are just a small preview of the new rules we will be adding in the PMD 7 release cycle.
-
-Some first results of the Java AST changes are for now documented in the Wiki:
-[Java clean changes](https://github.com/pmd/pmd/wiki/Java_clean_changes).
-
-Overall, the changes to the parser, AST, type resolution and symbol table code has made PMD for Java **significantly faster**. On average, we have seen ~2-3X faster analysis, but as usual, this may change depending on your workload, configuration and ruleset.
-TODO: Take infos from <{{ baseurl }}pmd_next_major_development.html#java>
+For more information, see the [Detailed Release Notes for PMD 7](pmd_release_notes_pmd7.html).
 
 Contributors: [Clément Fournier](https://github.com/oowekyala) (@oowekyala),
 [Andreas Dangel](https://github.com/adangel) (@adangel),
@@ -75,194 +61,77 @@ Contributors: [Clément Fournier](https://github.com/oowekyala) (@oowekyala),
 
 #### Revamped Command Line Interface
 
-PMD now ships with a unified Command Line Interface for both Linux/Unix and Windows. Instead of having a collection
-of scripts for the different utilities shipped with PMD, a single script `pmd` (`pmd.bat` for Windows) can now
-launch all utilities using subcommands, e.g. `pmd check`, `pmd designer`. All commands and options are thoroughly
-documented in the help, with full color support where available. Moreover, efforts were made to provide consistency
-in the usage of all PMD utilities.
-
-```shell
-$ Usage: pmd [-hV] [COMMAND]
-  -h, --help      Show this help message and exit.
-  -V, --version   Print version information and exit.
-Commands:
-  check     The PMD standard source code analyzer
-  cpd       Copy/Paste Detector - find duplicate code
-  designer  The PMD visual rule designer
-  cpd-gui   GUI for the Copy/Paste Detector
-              Warning: May not support the full CPD feature set
-  ast-dump  Experimental: dumps the AST of parsing source code
-Exit Codes:
-  0   Succesful analysis, no violations found
-  1   An unexpected error occurred during execution
-  2   Usage error, please refer to the command help
-  4   Successful analysis, at least 1 violation found
-```
-
-For instance, where you previously would have run
-```shell
-run.sh pmd -d src -R ruleset.xml
-```
-you should now use
-```shell
-pmd check -d src -R ruleset.xml
-```
-or even better, omit using `-d` / `--dir` and simply pass the sources at the end of the parameter list
-
-```shell
-pmd check -R ruleset.xml src
-```
-
-Multiple source directories can be passed, such as:
-```shell
-pmd check -R ruleset.xml src/main/java src/test/java
-```
-
-And the exact same applies to CPD:
-```shell
-pmd cpd --minimum-tokens 100 src/main/java
-```
-
-Additionally, the CLI for the `check` command has been enhanced with a progress bar, which interactively displays the
-current progress of the analysis.
+* unified and consistent Command Line Interface for both Linux/Unix and Windows across our different utilities
+* single script `pmd` (`pmd.bat` for Windows) to launch the different utilities:
+  * `pmd check` to run PMD rules and analyze a project
+  * `pmd cpd` to run CPD (copy paste detector)
+  * `pmd designer` to run the PMD Rule Designer
+* progress bar support for `pmd check`
+* shell completion
 
 ![Demo]({{ baseurl }}images/userdocs/pmd-demo.gif)
 
-This can be disabled with the `--no-progress` flag.
-
-Finally, we now provide a completion script for Bash/Zsh to further help daily usage.
-This script can be found under `shell/pmd-completion.sh` in the binary distribution.
-To use it, edit your `~/.bashrc` / `~/.zshrc` file and add the following line:
-
-```
-source *path_to_pmd*/shell/pmd-completion.sh
-```
+For more information, see the [Detailed Release Notes for PMD 7](pmd_release_notes_pmd7.html).
 
 Contributors: [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
 
 #### Full Antlr support
 
-Languages backed by an [Antlr](https://www.antlr.org/) grammar are now fully supported. This means, it's now
-possible not only to use Antlr grammars for CPD, but we can actually build full-fledged PMD rules for them as well.
-Both the traditional Java visitor rules, and the simpler XPath rules are available to users. This allows
-to leverage existing grammars.
+* [Antlr](https://www.antlr.org/) based grammars can now be used to build full-fledged PMD rules.
+* Previously, Antlr grammar could only be used for CPD
+* New supported languages: Swift and Kotlin
 
-We expect this to enable both our dev team and external contributors to largely extend PMD usage for more languages.
-
-Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
-[Matías Fraga](https://github.com/matifraga) (@matifraga),
-[Tomás De Lucca](https://github.com/tomidelucca) (@tomidelucca)
-
-#### Swift support
-
-Given the full Antlr support, PMD now fully supports Swift. We are pleased to announce we are shipping a number of
-rules starting with PMD 7.
-
-* {% rule "swift/errorprone/ForceCast" %} (`swift-errorprone`) flags all force casts, making sure you are
-  defensively considering all types. Having the application crash shouldn't be an option.
-* {% rule "swift/errorprone/ForceTry" %} (`swift-errorprone`) flags all force tries, making sure you are
-  defensively handling exceptions. Having the application crash shouldn't be an option.
-* {% rule "swift/bestpractices/ProhibitedInterfaceBuilder" %} (`swift-bestpractices`) flags any usage of interface
-  builder. Interface builder files are prone to merge conflicts, and are impossible to code review, so larger
-  teams usually try to avoid it or reduce its usage.
-* {% rule "swift/bestpractices/UnavailableFunction" %} (`swift-bestpractices`) flags any function throwing
-  a `fatalError` not marked as `@available(*, unavailable)` to ensure no calls are actually performed in
-  the codebase.
+For more information, see the [Detailed Release Notes for PMD 7](pmd_release_notes_pmd7.html).
 
 Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 [Matías Fraga](https://github.com/matifraga) (@matifraga),
 [Tomás De Lucca](https://github.com/tomidelucca) (@tomidelucca)
 
-#### Kotlin support (experimental)
+### 🎉 Language Related Changes
 
-PMD now supports Kotlin as an additional language for analyzing source code. It is based on
-the official kotlin Antlr grammar. Java-based rules and XPath-based rules are supported.
+Note that this is just a concise listing of the highlight.
+For more information on the languages, see the [Detailed Release Notes for PMD 7](pmd_release_notes_pmd7.html).
 
-Kotlin support has **experimental** stability level, meaning no compatibility should
-be expected between even incremental releases. Any functionality can be added, removed or changed without
-warning.
+#### New: Swift support
 
-We are shipping the following rules:
+* use PMD to analyze Swift code with PMD rules
+* initially 4 built-in rules
 
-* {% rule kotlin/bestpractices/FunctionNameTooShort %} (`kotlin-bestpractices`) finds functions with a too
-  short name.
-* {% rule kotlin/errorprone/OverrideBothEqualsAndHashcode %} (`kotlin-errorprone`) finds classes with only
-  either `equals` or `hashCode` overridden, but not both. This leads to unexpected behavior once instances
-  of such classes are used in collections (Lists, HashMaps, ...).
+Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
+[Matías Fraga](https://github.com/matifraga) (@matifraga),
+[Tomás De Lucca](https://github.com/tomidelucca) (@tomidelucca)
 
-Contributors: [Jeroen Borgers](https://github.com/jborgers) (@jborgers),
-[Peter Paul Bakker](https://github.com/stokpop) (@stokpop)
+#### New: Kotlin support (experimental)
 
-#### XPath 3.1 support
+* use PMD to analyze Kotlin code with PMD rules
+* initially 2 built-in rules
 
-Support for XPath versions 1.0, 1.0-compatibility was removed, support for XPath 2.0 is deprecated. The default
-(and only) supported XPath version is now XPath 3.1. This version of the XPath language is mostly identical to
-XPath 2.0.
+#### Changed: JavaScript support
 
-Notable changes:
-* The deprecated support for sequence-valued attributes is removed. Sequence-valued properties are still supported.
-* Refer to [the Saxonica documentation](https://www.saxonica.com/html/documentation/expressions/xpath31new.html) for
-  an introduction to new features in XPath 3.1.
+* latest version supports ES6 and also some new constructs (see [Rhino](https://github.com/mozilla/rhino)])
+* comments are retained
 
-#### JavaScript support
+#### Changed: Language versions
 
-The JS specific parser options have been removed. The parser now always retains comments and uses version ES6.
-The language module registers a couple of different versions. The latest version, which supports ES6 and also some
-new constructs (see [Rhino](https://github.com/mozilla/rhino)]), is the default. This should be fine for most
-use cases.
+* more predefined language versions for each supported language
+* can be used to limit rule execution for specific versions only with `minimumLanguageVersion` and
+  `maximumLanguageVersion` attributes.
 
-#### Language versions
-
-We revisited the versions that were defined by each language module. Now many more versions are defined for each
-language. In general, you can expect that PMD can parse all these different versions. There might be situations
-where this fails and this can be considered a bug. Usually the latest version is selected as the default
-language version.
-
-The language versions can be used to mark rules to be useful only for a specific language version via
-the `minimumLanguageVersion` and `maximumLanguageVersion` attributes. While this feature is currently only used by
-the Java module, listing all possible versions enables other languages as well to use this feature.
-
-Related issue: [[core] Explicitly name all language versions (#4120)](https://github.com/pmd/pmd/issues/4120)
-
-#### API
-
-The API of PMD has been growing over the years and needed some cleanup. The goal is, to
-have a clear separation between a well-defined API and the implementation, which is internal.
-This should help us in future development.
-
-#### Compatibility and migration notes
-
-* PMD 7 requires Java 8 or above to execute.
-* CLI changed: Custom scripts need to be updated (`run.sh pmd ...` -> `pmd check ...`, `run.sh cpd ...`, `pmd cpd ...`).
-* Java module revamped: Custom rules need to be updated.
-* Removed rules: Custom rulesets need to be reviewed. See below for a list of new and removed rules.
-* XPath 1.0 support is removed, `violationSuppressXPath` now requires XPath 2.0 or 3.1: Custom rulesets need
-  to be reviewed.
-* Custom rules using rulechains: Need to override {% jdoc core::lang.rule.AbstractRule#buildTargetSelector() %}
-  using {% jdoc core::lang.rule.RuleTargetSelector#forTypes(java.lang.Class,java.lang.Class...) %}.
-
-#### Notes for integrators
-
-* PMD 7 is a major release where many things have been moved or rewritten. 
-* All integrators will require some level of change to adapt to the change in the API.
-* For more details look at the deprecations notes of the past PMD 6 releases.
-* The PMD Ant tasks, which were previously in the module `pmd-core` has been moved into its own module `pmd-ant`
-* The CLI classes have also been moved out of `pmd-core` into its own module `pmd-cli`. The old entry point, the
-  main class `PMD` is gone.
+### 🌟 New and changed rules
 
 #### New Rules
 
-##### Apex
+**Apex**
 * {% rule apex/design/UnusedMethod %} finds unused methods in your code.
 
-##### Java
+**Java**
 * {% rule java/codestyle/UnnecessaryBoxing %} reports boxing and unboxing conversions that may be made implicit.
 
-##### Kotlin
+**Kotlin**
 * {% rule kotlin/bestpractices/FunctionNameTooShort %}
 * {% rule kotlin/errorprone/OverrideBothEqualsAndHashcode %}
 
-##### Swift
+**Swift**
 * {% rule swift/bestpractices/ProhibitedInterfaceBuilder %}
 * {% rule swift/bestpractices/UnavailableFunction %}
 * {% rule swift/errorprone/ForceCast %}
@@ -270,7 +139,7 @@ This should help us in future development.
 
 #### Changed Rules
 
-##### Java
+**Java**
 
 * {% rule "java/codestyle/UnnecessaryFullyQualifiedName" %}: the rule has two new properties,
   to selectively disable reporting on static field and method qualifiers. The rule also has been improved
@@ -296,92 +165,29 @@ This should help us in future development.
   new property `fobiddenRegex` can be used now to define the disallowed terms with a single regular
   expression.
 
-#### Deprecated Rules
-
-
 #### Removed Rules
 
-The following previously deprecated rules have been finally removed:
+Many rules, that were previously deprecated have been finally removed.
+See [Detailed Release Notes for PMD 7](pmd_release_notes_pmd7.html) for the complete list.
 
-* AbstractNaming (java-codestyle) -> use {% rule "java/codestyle/ClassNamingConventions" %}
-* AvoidDmlStatementsInLoops (apex-performance) -> use {% rule apex/performance/OperationWithLimitsInLoop %}
-* AvoidSoqlInLoops (apex-performance) -> use {% rule apex/performance/OperationWithLimitsInLoop %}
-* AvoidSoslInLoops (apex-performance) -> use {% rule apex/performance/OperationWithLimitsInLoop %}
-* AvoidFinalLocalVariable (java-codestyle) -> not replaced
-* AvoidPrefixingMethodParameters (java-codestyle) -> use {% rule "java/codestyle/FormalParameterNamingConventions" %}
-* AvoidUsingShortType (java-performance) -> not replaced
-* BadComparison (java-errorprone) -> use {% rule "java/errorprone/ComparisonWithNaN" %}
-* BeanMembersShouldSerialize (java-errorprone) -> use {% rule java/errorprone/NonSerializableClass %}
-* BooleanInstantiation (java-performance) -> use {% rule "java/codestyle/UnnecessaryBoxing" %}
-  and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
-* ByteInstantiation (java-performance) -> use {% rule "java/codestyle/UnnecessaryBoxing" %}
-  and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
-* CloneThrowsCloneNotSupportedException (java-errorprone) -> not replaced
-* DataflowAnomalyAnalysis (java-errorprone) -> use {% rule java/bestpractices/UnusedAssignment %}
-* DefaultPackage (java-codestyle) -> use {% rule "java/codestyle/CommentDefaultAccessModifier" %}
-* DoNotCallSystemExit (java-errorprone) -> use {% rule "java/errorprone/DoNotTerminateVM" %}
-* DontImportJavaLang (java-codestyle) -> use {% rule java/codestyle/UnnecessaryImport %}
-* DuplicateImports (java-codestyle) -> use {% rule java/codestyle/UnnecessaryImport %}
-* EmptyFinallyBlock (java-errorprone) -> use {% rule java/codestyle/EmptyControlStatement %}
-* EmptyIfStmt (java-errorprone) -> use {% rule java/codestyle/EmptyControlStatement %}
-* EmptyInitializer (java-errorprone) -> use {% rule java/codestyle/EmptyControlStatement %}
-* EmptyStatementBlock (java-errorprone) -> use {% rule java/codestyle/EmptyControlStatement %}
-* EmptyStatementNotInLoop (java-errorprone) -> use {% rule java/codestyle/UnnecessarySemicolon %}
-* EmptySwitchStatements (java-errorprone) -> use {% rule java/codestyle/EmptyControlStatement %}
-* EmptySynchronizedBlock (java-errorprone) -> use {% rule java/codestyle/EmptyControlStatement %}
-* EmptyTryBlock (java-errorprone) -> use {% rule java/codestyle/EmptyControlStatement %}
-* EmptyWhileStmt (java-errorprone) -> use {% rule java/codestyle/EmptyControlStatement %}
-* ExcessiveClassLength (java-design) -> use {% rule java/design/NcssCount %}
-* ExcessiveMethodLength (java-design) -> use {% rule java/design/NcssCount %}
-* ForLoopsMustUseBraces (java-codestyle) -> use {% rule "java/codestyle/ControlStatementBraces" %}
-* IfElseStmtsMustUseBraces (java-codestyle) -> use {% rule "java/codestyle/ControlStatementBraces" %}
-* IfStmtsMustUseBraces (java-codestyle) -> use {% rule "java/codestyle/ControlStatementBraces" %}
-* ImportFromSamePackage (java-errorprone) -> use {% rule java/codestyle/UnnecessaryImport %}
-* IntegerInstantiation (java-performance) -> use {% rule "java/codestyle/UnnecessaryBoxing" %}
-  and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
-* InvalidSlf4jMessageFormat (java-errorprone) ->  use {% rule "java/errorprone/InvalidLogMessageFormat" %}
-* LoggerIsNotStaticFinal (java-errorprone) -> use {% rule java/errorprone/ProperLogger %}
-* LongInstantiation (java-performance) -> use {% rule "java/codestyle/UnnecessaryBoxing" %}
-  and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
-* MIsLeadingVariableName (java-codestyle) -> use {% rule java/codestyle/FieldNamingConventions %},
-  {% rule java/codestyle/FormalParameterNamingConventions %},
-  or {% rule java/codestyle/LocalVariableNamingConventions %}
-* MissingBreakInSwitch (java-errorprone) ->  use {% rule "java/errorprone/ImplicitSwitchFallThrough" %}
-* ModifiedCyclomaticComplexity (java-design) -> use {% rule "java/design/CyclomaticComplexity" %}
-* NcssConstructorCount (java-design) -> use {% rule java/design/NcssCount %}
-* NcssMethodCount (java-design) -> use {% rule java/design/NcssCount %}
-* NcssTypeCount (java-design) -> use {% rule java/design/NcssCount %}
-* PositionLiteralsFirstInCaseInsensitiveComparisons (java-bestpractices) ->
-  use {% rule "java/bestpractices/LiteralsFirstInComparisons" %}
-* PositionLiteralsFirstInComparisons (java-bestpractices) ->
-  use {% rule "java/bestpractices/LiteralsFirstInComparisons" %}
-* ReturnEmptyArrayRatherThanNull (java-errorprone) ->
-  use {% rule "java/errorprone/ReturnEmptyCollectionRatherThanNull" %}
-* ShortInstantiation (java-performance) -> use {% rule "java/codestyle/UnnecessaryBoxing" %}
-  and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
-* SimplifyBooleanAssertion (java-design) -> use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
-* SimplifyStartsWith (java-performance) -> not replaced
-* StdCyclomaticComplexity (java-design) -> use {% rule "java/design/CyclomaticComplexity" %}
-* SuspiciousConstantFieldName (java-codestyle) -> use {% rule java/codestyle/FieldNamingConventions %}
-* UnnecessaryWrapperObjectCreation (java-performance) -> use the new rule {% rule "java/codestyle/UnnecessaryBoxing" %}
-* UnsynchronizedStaticDateFormatter (java-multithreading) ->
-  use {% rule java/multithreading/UnsynchronizedStaticFormatter %}
-* UnusedImports (java-bestpractices) -> use {% rule java/codestyle/UnnecessaryImport %}
-* UseAssertEqualsInsteadOfAssertTrue (java-bestpractices) ->
-  use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
-* UseAssertNullInsteadOfAssertEquals (java-bestpractices) ->
-  use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
-* UseAssertSameInsteadOfAssertEquals (java-bestpractices) ->
-  use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
-* UseAssertTrueInsteadOfAssertEquals (java-bestpractices) ->
-  use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
-* VariableNamingConventions (apex-codestyle) -> use {% rule apex/codestyle/FieldNamingConventions %},
-  {% rule apex/codestyle/FormalParameterNamingConventions %}, {% rule apex/codestyle/LocalVariableNamingConventions %},
-  or {% rule apex/codestyle/PropertyNamingConventions %}
-* VariableNamingConventions (java-codestyle) -> use {% rule java/codestyle/FieldNamingConventions %},
-  {% rule java/codestyle/FormalParameterNamingConventions %},
-  or {% rule java/codestyle/LocalVariableNamingConventions %}
-* WhileLoopsMustUseBraces (java-codestyle) -> use {% rule "java/codestyle/ControlStatementBraces" %}
+### 🚨 API
+
+The API of PMD has been growing over the years and needed some cleanup. The goal is, to
+have a clear separation between a well-defined API and the implementation, which is internal.
+This should help us in future development.
+
+Also, there are some improvement and changes in different areas. For the detailed description
+of the changes listed here, see [Detailed Release Notes for PMD 7](pmd_release_notes_pmd7.html).
+
+* Miscellaneous smaller changes and cleanups
+* XPath 3.1 support for XPath-based rules
+* Node stream API for AST traversal
+* Metrics framework
+* Testing framework
+* Language Lifecycle and Language Properties
+
+### 💥 Compatibility and migration notes
+See [Detailed Release Notes for PMD 7](pmd_release_notes_pmd7.html).
 
 ### 🐛 Fixed Issues
 
@@ -564,123 +370,6 @@ Language specific fixes:
     * [#1882](https://github.com/pmd/pmd/pull/1882):   \[swift] UnavailableFunction Swift rule
 * xml
     * [#1800](https://github.com/pmd/pmd/pull/1800):   \[xml] Unimplement org.w3c.dom.Node from the XmlNodeWrapper
-
-### 🚨 API Changes
-
-* [#1648](https://github.com/pmd/pmd/issues/1648): \[apex,vf] Remove CodeClimate dependency - [Robert Sösemann](https://github.com/rsoesemann)
-  Properties "cc_categories", "cc_remediation_points_multiplier", "cc_block_highlighting" can no longer be overridden in rulesets.
-  They were deprecated without replacement.
-
-* The old GUI applications accessible through `run.sh designerold` and `run.sh bgastviewer`
-  (and corresponding Batch scripts) have been removed from the PMD distribution. Please use the newer rule designer
-  with `pmd designer`. The corresponding classes in packages `java.net.sourceforge.pmd.util.viewer` and
-  `java.net.sourceforge.pmd.util.designer` have all been removed.
-
-* All API related to XPath support has been moved to the package {% jdoc_package core::lang.rule.xpath %}.
-  This includes API that was previously dispersed over `net.sourceforge.pmd.lang`, `net.sourceforge.pmd.lang.ast.xpath`,
-  `net.sourceforge.pmd.lang.rule.xpath`, `net.sourceforge.pmd.lang.rule`, and various language-specific packages
-  (which were made internal).
-
-* The implementation of the Ant integration has been moved from the module `pmd-core` to a new module `pmd-ant`.
-  This involves classes in package {% jdoc_package ant::ant %}. The ant CPDTask class `net.sourceforge.pmd.cpd.CPDTask`
-  has been moved into the same package {% jdoc_package ant::ant %}. You'll need to update your taskdef entries in your
-  build.xml files with the FQCN {% jdoc !!ant::ant.CPDTask %} if you use it anywhere.
-
-* Utility classes in {% jdoc_package core::util %}, that have previously marked as `@InternalApi` have been finally
-  moved to {% jdoc_package core::internal.util %}. This includes ClasspathClassLoader, FileFinder, FileUtil, and
-  IOUtil.
-
-* The following utility classes in {% jdoc_package core::util %} are now considered public API:
-    * {% jdoc core::util.AssertionUtil %}
-    * {% jdoc core::util.CollectionUtil %}
-    * {% jdoc core::util.ContextedAssertionError %}
-    * {% jdoc core::util.ContextedStackOverflowError %}
-    * {% jdoc core::util.GraphUtil %}
-    * {% jdoc core::util.IteratorUtil %}
-    * {% jdoc core::util.StringUtil %}
-
-#### Node stream API for AST traversal
-
-This version includes a powerful API to navigate trees, similar in usage to the Java 8 Stream API:
-```java
-node.descendants(ASTMethodCall.class)
-    .filter(m -> "toString".equals(m.getMethodName()))
-    .map(m -> m.getQualifier())
-    .filter(q -> TypeTestUtil.isA(String.class, q))
-    .foreach(System.out::println);
-```
-
-A pipeline like shown here traverses the tree lazily, which is more efficient than traversing eagerly to put all
-descendants in a list. It is also much easier to change than the old imperative way.
-
-To make this API as accessible as possible, the {% jdoc core::lang.ast.Node %} interface has been fitted with new
-methods producing node streams. Those methods replace previous tree traversal methods like `Node#findDescendantsOfType`.
-In all cases, they should be more efficient and more convenient.
-
-See {% jdoc core::lang.ast.NodeStream %} for more details.
-
-Contributors: [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
-
-#### Metrics framework
-
-The metrics framework has been made simpler and more general.
-
-* The metric interface takes an additional type parameter, representing the result type of the metric. This is
-  usually `Integer` or `Double`. It avoids widening the result to a `double` just to narrow it down.
-
-  This makes it so, that `Double.NaN` is not an appropriate sentinel value to represent "not supported" anymore.
-  Instead, `computeFor` may return `null` in that case (or a garbage value). The value `null` may have caused
-  problems with the narrowing casts, which through unboxing, might have thrown an NPE. But when we deprecated
-  the language-specific metrics façades to replace them with the generic `MetricsUtil`, we took care of making
-  the new methods throw an exception if the metric cannot be computed on the parameter. This forces you to guard
-  calls to `MetricsUtil::computeMetric` with something like `if (metric.supports(node))`. If you're following
-  this pattern, then you won't observe the undefined behavior.
-
-* The `MetricKey` interface is not so useful and has been merged into the `Metric` interface and removed. So
-  the `Metric` interface has the new method `String name()`.
-
-* The framework is not tied to at most 2 node types per language anymore. Previously those were nodes for
-  classes and for methods/constructors. Instead, many metrics support more node types. For example, NCSS can
-  be computed on any code block.
-
-  For that reason, keeping around a hard distinction between "class metrics" and "operation metrics" is not
-  useful. So in the Java framework for example, we removed the interfaces `JavaClassMetric`, `JavaOperationMetric`,
-  abstract classes for those, `JavaClassMetricKey`, and `JavaOperationMetricKey`. Metric constants are now all
-  inside the `JavaMetrics` utility class. The same was done in the Apex framework.
-
-  We don't really need abstract classes for metrics now. So `AbstractMetric` is also removed from pmd-core.
-  There is a factory method on the `Metric` interface to create a metric easily.
-
-* This makes it so, that {% jdoc core::lang.metrics.LanguageMetricsProvider %} does not need type parameters.
-  It can just return a `Set<Metric<?, ?>>` to list available metrics.
-
-* {% jdoc_old core::lang.metrics.Signature %}s, their implementations, and the interface `SignedNode` have been
-  removed. Node streams allow replacing their usages very easily.
-
-#### Testing framework
-
-* PMD 7 has been upgraded to use JUnit 5 only. That means, that JUnit4 related classes have been removed, namely
-    * `net.sourceforge.pmd.testframework.PMDTestRunner`
-    * `net.sourceforge.pmd.testframework.RuleTestRunner`
-    * `net.sourceforge.pmd.testframework.TestDescriptor`
-* Rule tests, that use {% jdoc test::testframework.SimpleAggregatorTst %} or
-  {% jdoc test::testframework.PmdRuleTst %} work as before without change, but use
-  now JUnit5 under the hood. If you added additional JUnit4 tests to your rule test classes, then you'll
-  need to upgrade them to use JUnit5.
-
-#### Language Lifecycle and Language Properties
-
-* Language modules now provide a proper lifecycle and can store global information. This enables the implementation
-  of multifile analysis.
-* Language modules can define [custom language properties]({{ baseurl }}pmd_languages_configuration.html)
-  which can be set via environment variables. This allows to add and use language specific configuration options
-  without the need to change pmd-core.
-
-The documentation page has been updated:
-[Adding a new language with JavaCC]({{ baseurl }}pmd_devdocs_major_adding_new_language_javacc.html)
-and [Adding a new language with ANTLR]({{ baseurl }}pmd_devdocs_major_adding_new_language_antlr.html)
-
-Related issue: [[core] Language lifecycle (#3782)](https://github.com/pmd/pmd/issues/3782)
 
 ###  ✨ External Contributions
 
