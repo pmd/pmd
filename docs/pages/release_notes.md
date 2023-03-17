@@ -20,6 +20,8 @@ This is a {{ site.pmd.release_type }} release.
 ### New and noteworthy
 
 ### Fixed Issues
+* core
+  * [#4420](https://github.com/pmd/pmd/pull/4420): \[core] Remove PMD.EOL
 
 ### API Changes
 
