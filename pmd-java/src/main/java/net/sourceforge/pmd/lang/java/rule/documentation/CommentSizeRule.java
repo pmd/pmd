@@ -61,19 +61,19 @@ public class CommentSizeRule extends AbstractJavaRulechainRule {
 
         int firstLineWithText = -1;
         int lastLineWithText;
-        int i = 0;
+        int lineNumberWithinComment = 0;
         int maxLines = getProperty(MAX_LINES);
         for (Chars line : comment.getText().lines()) {
             if (hasRealText(line)) {
-                lastLineWithText = i;
+                lastLineWithText = lineNumberWithinComment;
                 if (firstLineWithText == -1) {
-                    firstLineWithText = i;
+                    firstLineWithText = lineNumberWithinComment;
                 }
                 if (lastLineWithText - firstLineWithText + 1 > maxLines) {
                     return true;
                 }
             }
-            i++;
+            lineNumberWithinComment++;
         }
         return false;
     }
@@ -82,16 +82,15 @@ public class CommentSizeRule extends AbstractJavaRulechainRule {
 
         int maxLength = getProperty(MAX_LINE_LENGTH);
 
-        int offset = comment.getReportLocation().getStartLine();
-        int i = 0;
+        int lineNumber = comment.getReportLocation().getStartLine();
         for (Chars line : comment.getFilteredLines(true)) {
             if (line.length() > maxLength) {
                 ctx.addViolationWithPosition(acu,
-                                             i + offset,
-                                             i + offset,
+                                             lineNumber,
+                                             lineNumber,
                                              getMessage() + ": Line too long");
             }
-            i++;
+            lineNumber++;
         }
     }
 

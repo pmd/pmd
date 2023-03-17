@@ -11,7 +11,6 @@ import java.io.StringWriter;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.CpdTestUtils.CpdReportBuilder;
 import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 
@@ -27,8 +26,8 @@ class CSVRendererTest {
         StringWriter sw = new StringWriter();
         renderer.render(builder.build(), sw);
         String report = sw.toString();
-        String expectedReport = "tokens,occurrences" + PMD.EOL
-            + "75,2,48,10,/var/Foo.java,73,20,/var/Bar.java" + PMD.EOL;
+        String expectedReport = "tokens,occurrences" + System.lineSeparator()
+            + "75,2,48,10,/var/Foo.java,73,20,/var/Bar.java" + System.lineSeparator();
 
         assertEquals(expectedReport, report);
     }
@@ -44,8 +43,8 @@ class CSVRendererTest {
         StringWriter sw = new StringWriter();
         renderer.render(builder.build(), sw);
         String report = sw.toString();
-        String expectedReport = "lines,tokens,occurrences" + PMD.EOL
-            + "10,75,2,48,\"/var,with,commas/Foo.java\",73,\"/var,with,commas/Bar.java\"" + PMD.EOL;
+        String expectedReport = "lines,tokens,occurrences" + System.lineSeparator()
+            + "10,75,2,48,\"/var,with,commas/Foo.java\",73,\"/var,with,commas/Bar.java\"" + System.lineSeparator();
         assertEquals(expectedReport, report);
     }
 

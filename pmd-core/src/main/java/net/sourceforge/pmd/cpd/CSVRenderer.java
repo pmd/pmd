@@ -10,7 +10,6 @@ import java.util.Iterator;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 import net.sourceforge.pmd.lang.document.FileLocation;
 
@@ -45,7 +44,7 @@ public class CSVRenderer implements CPDReportRenderer {
         if (!lineCountPerFile) {
             writer.append("lines").append(separator);
         }
-        writer.append("tokens").append(separator).append("occurrences").append(PMD.EOL);
+        writer.append("tokens").append(separator).append("occurrences").append(System.lineSeparator());
 
         while (matches.hasNext()) {
             Match match = matches.next();
@@ -68,7 +67,7 @@ public class CSVRenderer implements CPDReportRenderer {
                     writer.append(separator);
                 }
             }
-            writer.append(PMD.EOL);
+            writer.append(System.lineSeparator());
         }
         writer.flush();
     }

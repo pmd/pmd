@@ -10,7 +10,6 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.TreeSet;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.util.IteratorUtil;
 
 public class Match implements Comparable<Match>, Iterable<Mark> {
@@ -74,7 +73,7 @@ public class Match implements Comparable<Match>, Iterable<Mark> {
 
     @Override
     public String toString() {
-        return "Match: " + PMD.EOL + "tokenCount = " + tokenCount + PMD.EOL + "marks = " + markSet.size();
+        return "Match: \ntokenCount = " + tokenCount + "\nmarks = " + markSet.size();
     }
 
     public int getEndIndex() {

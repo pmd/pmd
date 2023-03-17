@@ -4,17 +4,11 @@
 
 package net.sourceforge.pmd;
 
-import static net.sourceforge.pmd.util.CollectionUtil.listOf;
-
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -22,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
 
-import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
 import net.sourceforge.pmd.benchmark.TextTimingReportRenderer;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimingReport;
@@ -31,10 +24,7 @@ import net.sourceforge.pmd.cli.PMDCommandLineInterface;
 import net.sourceforge.pmd.cli.PmdParametersParseResult;
 import net.sourceforge.pmd.internal.LogMessages;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
-import net.sourceforge.pmd.lang.document.TextFile;
-import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.reporting.ReportStats;
-import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.log.MessageReporter;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
@@ -56,59 +46,7 @@ public final class PMD {
     // not final, in order to re-initialize logging
     private static Logger log = LoggerFactory.getLogger(PMD_PACKAGE);
 
-    /**
-     * The line delimiter used by PMD in outputs. Usually the platform specific
-     * line separator.
-     *
-     * @deprecated Use {@link System#lineSeparator()}
-     */
-    @Deprecated
-    public static final String EOL = System.lineSeparator();
-
-    /**
-     * The default suppress marker string.
-     *
-     * @deprecated Use {@link PMDConfiguration#DEFAULT_SUPPRESS_MARKER}
-     */
-    @Deprecated
-    public static final String SUPPRESS_MARKER = PMDConfiguration.DEFAULT_SUPPRESS_MARKER;
-
     private PMD() {
-    }
-
-    /**
-     * Run PMD using the given configuration. This replaces the other overload.
-     *
-     * @param configuration Configuration for the run. Note that the files,
-     *                      and rulesets, are ignored, as they are supplied
-     *                      as parameters
-     * @param ruleSets      Parsed rulesets
-     * @param files         Files to process, will be closed by this method.
-     * @param renderers     Renderers that render the report (may be empty)
-     *
-     * @return Report in which violations are accumulated
-     *
-     * @throws Exception If there was a problem when opening or closing the renderers
-     * @deprecated Use {@link PmdAnalysis}
-     */
-    @Deprecated
-    public static Report processFiles(PMDConfiguration configuration,
-                                      List<RuleSet> ruleSets,
-                                      Collection<? extends DataSource> files,
-                                      List<Renderer> renderers) throws Exception {
-
-        try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
-            pmd.addRuleSets(ruleSets);
-            pmd.addRenderers(renderers);
-            @SuppressWarnings("PMD.CloseResource")
-            GlobalReportBuilderListener reportBuilder = new GlobalReportBuilderListener();
-            List<TextFile> sortedFiles = files.stream()
-                                              .map(ds -> TextFile.dataSourceCompat(ds, configuration))
-                                              .sorted(Comparator.comparing(TextFile::getPathId))
-                                              .collect(Collectors.toList());
-            pmd.performAnalysisImpl(listOf(reportBuilder), sortedFiles);
-            return reportBuilder.getResult();
-        }
     }
 
     /**

@@ -11,7 +11,6 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
@@ -57,7 +56,7 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
             rule = rv.getRule();
             String json = gson.toJson(asIssue(rv));
             json = json.replace(BODY_PLACEHOLDER, getBody());
-            writer.write(json + NULL_CHARACTER + PMD.EOL);
+            writer.println(json + NULL_CHARACTER);
         }
     }
 
