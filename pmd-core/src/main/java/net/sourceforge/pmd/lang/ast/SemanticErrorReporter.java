@@ -92,7 +92,7 @@ public interface SemanticErrorReporter {
             private SemanticException exception = null;
 
             private String locPrefix(Node loc) {
-                return "at " + loc.getReportLocation()
+                return "at " + loc.getReportLocation().startPosToStringWithFile()
                     + ": ";
             }
 
