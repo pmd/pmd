@@ -20,6 +20,8 @@ This is a {{ site.pmd.release_type }} release.
 ### New and noteworthy
 
 ### Fixed Issues
+* java-documentation
+  * [#4416](https://github.com/pmd/pmd/pull/4416): \[java] Fix reported line number in CommentContentRule
 
 ### API Changes
 
