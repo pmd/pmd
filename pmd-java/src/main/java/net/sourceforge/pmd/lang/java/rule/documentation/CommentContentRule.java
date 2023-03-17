@@ -48,18 +48,18 @@ public class CommentContentRule extends AbstractJavaRulechainRule {
 
     private void reportIllegalTerms(RuleContext ctx, JavaComment comment, Pattern violationRegex, Node acu) {
 
-        int i = comment.getReportLocation().getStartLine();
+        int lineNumber = comment.getReportLocation().getStartLine();
         for (Chars line : comment.getFilteredLines(true)) {
             if (violationRegex.matcher(line).find()) {
                 ctx.addViolationWithPosition(
                     acu,
-                    i,
-                    i,
+                    lineNumber,
+                    lineNumber,
                     "Line matches forbidden content regex ({0})",
                     violationRegex.pattern()
                 );
             }
-            i++;
+            lineNumber++;
         }
     }
 
