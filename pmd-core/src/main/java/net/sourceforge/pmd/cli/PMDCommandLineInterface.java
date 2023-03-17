@@ -92,20 +92,18 @@ public final class PMDCommandLineInterface {
     }
 
     public static String buildUsageText() {
-        // TODO: Externalize that to a file available within the classpath ? -
-        // with a poor's man templating ?
-        String fullText = PMD.EOL + "Mandatory arguments:" + PMD.EOL + "1) A java source code filename or directory"
-                + PMD.EOL + "2) A report format " + PMD.EOL
-                + "3) A ruleset filename or a comma-delimited string of ruleset filenames" + PMD.EOL + PMD.EOL
-                + "For example: " + PMD.EOL + getWindowsLaunchCmd()
-                + " -d c:\\my\\source\\code -f html -R java-unusedcode" + PMD.EOL + PMD.EOL;
+        return "\n"
+            + "Mandatory arguments:\n"
+            + "1) A java source code filename or directory\n"
+            + "2) A report format \n"
+            + "3) A ruleset filename or a comma-delimited string of ruleset filenames\n"
+            + "\n"
+            + "For example: \n"
+            + getWindowsLaunchCmd() + " -d c:\\my\\source\\code -f html -R java-unusedcode\n\n"
+            + supportedVersions() + "\n"
+            + "Available report formats and their configuration properties are:" + "\n" + getReports()
+            + "\n" + getExamples() + "\n" + "\n" + "\n";
 
-        fullText += supportedVersions() + PMD.EOL;
-
-        fullText += "Available report formats and their configuration properties are:" + PMD.EOL + getReports()
-                + PMD.EOL + getExamples() + PMD.EOL + PMD.EOL + PMD.EOL;
-
-        return fullText;
     }
 
     @Deprecated
@@ -127,27 +125,40 @@ public final class PMDCommandLineInterface {
         final String launchCmd = getWindowsLaunchCmd();
         final String WINDOWS_PATH_TO_CODE = "c:\\my\\source\\code ";
 
-        return "For example on windows: " + PMD.EOL
-                + launchCmd + " --dir " + WINDOWS_PATH_TO_CODE + "--format text -R rulesets/java/quickstart.xml --use-version java-1.5 --debug" + PMD.EOL
-                + launchCmd + " -dir " + WINDOWS_PATH_TO_CODE + "-f xml --rulesets rulesets/java/quickstart.xml,category/java/codestyle.xml --encoding UTF-8" + PMD.EOL
-                + launchCmd + " --d " + WINDOWS_PATH_TO_CODE + "--rulesets rulesets/java/quickstart.xml --aux-classpath lib\\commons-collections.jar;lib\\derby.jar" + PMD.EOL
-                + launchCmd + " -d " + WINDOWS_PATH_TO_CODE + "-f html -R rulesets/java/quickstart.xml --aux-classpath file:///C:/my/classpathfile" + PMD.EOL + PMD.EOL;
+        return "For example on windows: " + "\n"
+            + launchCmd + " --dir " + WINDOWS_PATH_TO_CODE
+            + "--format text -R rulesets/java/quickstart.xml --use-version java-1.5 --debug" + "\n"
+            + launchCmd + " -dir " + WINDOWS_PATH_TO_CODE
+            + "-f xml --rulesets rulesets/java/quickstart.xml,category/java/codestyle.xml --encoding UTF-8" + "\n"
+            + launchCmd + " --d " + WINDOWS_PATH_TO_CODE
+            + "--rulesets rulesets/java/quickstart.xml --aux-classpath lib\\commons-collections.jar;lib\\derby.jar"
+            + "\n"
+            + launchCmd + " -d " + WINDOWS_PATH_TO_CODE
+            + "-f html -R rulesets/java/quickstart.xml --aux-classpath file:///C:/my/classpathfile" + "\n" + "\n";
     }
 
     private static String getUnixExample() {
         final String launchCmd = "$ pmd-bin-" + PMDVersion.VERSION + "/bin/run.sh pmd";
-        return "For example on *nix: " + PMD.EOL
-                + launchCmd + " --dir /home/workspace/src/main/java/code -f html --rulesets rulesets/java/quickstart.xml,category/java/codestyle.xml" + PMD.EOL
-                + launchCmd + " -d ./src/main/java/code -R rulesets/java/quickstart.xml -f xslt --property xsltFilename=my-own.xsl" + PMD.EOL
-                + launchCmd + " -d ./src/main/java/code -R rulesets/java/quickstart.xml -f xslt --property xsltFilename=html-report-v2.xslt" + PMD.EOL
-                + " - html-report-v2.xslt is at https://github.com/pmd/pmd/tree/master/pmd-core/etc/xslt/html-report-v2.xslt"
-                + launchCmd + " -d ./src/main/java/code -f html -R rulesets/java/quickstart.xml --aux-classpath commons-collections.jar:derby.jar" + PMD.EOL;
+        return "For example on *nix: " + "\n"
+            + launchCmd
+            + " --dir /home/workspace/src/main/java/code -f html --rulesets rulesets/java/quickstart.xml,category/java/codestyle.xml"
+            + "\n"
+            + launchCmd
+            + " -d ./src/main/java/code -R rulesets/java/quickstart.xml -f xslt --property xsltFilename=my-own.xsl"
+            + "\n"
+            + launchCmd
+            + " -d ./src/main/java/code -R rulesets/java/quickstart.xml -f xslt --property xsltFilename=html-report-v2.xslt"
+            + "\n"
+            + " - html-report-v2.xslt is at https://github.com/pmd/pmd/tree/master/pmd-core/etc/xslt/html-report-v2.xslt"
+            + launchCmd
+            + " -d ./src/main/java/code -f html -R rulesets/java/quickstart.xml --aux-classpath commons-collections.jar:derby.jar"
+            + "\n";
     }
 
     private static String supportedVersions() {
-        return "Languages and version supported:" + PMD.EOL
-                + LanguageRegistry.PMD.commaSeparatedList(Language::getId)
-                + PMD.EOL;
+        return "Languages and version supported:" + "\n"
+            + LanguageRegistry.PMD.commaSeparatedList(Language::getId)
+            + "\n";
     }
 
     /**
@@ -172,10 +183,10 @@ public final class PMDCommandLineInterface {
             Renderer renderer = RendererFactory.createRenderer(reportName, new Properties());
             buf.append("   ").append(reportName).append(": ");
             if (!reportName.equals(renderer.getName())) {
-                buf.append(" Deprecated alias for '").append(renderer.getName()).append(PMD.EOL);
+                buf.append(" Deprecated alias for '").append(renderer.getName()).append("\n");
                 continue;
             }
-            buf.append(renderer.getDescription()).append(PMD.EOL);
+            buf.append(renderer.getDescription()).append("\n");
 
             for (PropertyDescriptor<?> property : renderer.getPropertyDescriptors()) {
                 buf.append("        ").append(property.name()).append(" - ");
@@ -184,7 +195,7 @@ public final class PMDCommandLineInterface {
                 if (deflt != null) {
                     buf.append("   default: ").append(deflt);
                 }
-                buf.append(PMD.EOL);
+                buf.append("\n");
             }
 
         }

@@ -36,7 +36,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         val resourceLoader: Class<*>?,
         val resourcePrefix: String,
         val languageRegistry: LanguageRegistry = LanguageRegistry.PMD,
-        val suppressMarker: String = PMD.SUPPRESS_MARKER,
+        val suppressMarker: String = PMDConfiguration.DEFAULT_SUPPRESS_MARKER,
     ) {
         companion object {
 

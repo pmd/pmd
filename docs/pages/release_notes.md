@@ -20,6 +20,8 @@ This is a {{ site.pmd.release_type }} release.
 ### New and noteworthy
 
 ### Fixed Issues
+* core
+  * [#4420](https://github.com/pmd/pmd/pull/4420): \[core] Remove PMD.EOL
 * java-bestpractices
   * [#1205](https://github.com/pmd/pmd/issues/1205): \[java] Improve ConstantsInInterface message to mention alternatives
 * java-documentation

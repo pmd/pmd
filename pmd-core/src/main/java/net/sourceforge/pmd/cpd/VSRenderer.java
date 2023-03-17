@@ -7,7 +7,6 @@ package net.sourceforge.pmd.cpd;
 import java.io.IOException;
 import java.io.Writer;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 
 public class VSRenderer implements CPDReportRenderer {
@@ -20,7 +19,7 @@ public class VSRenderer implements CPDReportRenderer {
                       .append('(').append(String.valueOf(mark.getBeginLine())).append("):")
                       .append(" Between lines ").append(String.valueOf(mark.getBeginLine()))
                       .append(" and ").append(String.valueOf(mark.getBeginLine() + match.getLineCount()))
-                      .append(PMD.EOL);
+                      .append(System.lineSeparator());
             }
         }
         writer.flush();

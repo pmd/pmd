@@ -95,8 +95,6 @@ public final class PmdParametersParseResult {
 
     /**
      * Parse an array of CLI parameters and returns a result (which may be failed).
-     * Use this instead of {@link PMDCommandLineInterface#extractParameters(PMDParameters, String[], String)},
-     * because that one may terminate the VM.
      *
      * @param args Array of parameters
      *
