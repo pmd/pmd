@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -46,6 +45,6 @@ public class MockedFileWriter implements FileWriter {
     }
 
     public static String normalizeLineSeparators(String s) {
-        return s.replaceAll(Pattern.quote("\\R"), System.lineSeparator());
+        return s.replaceAll("\\R", System.lineSeparator());
     }
 }

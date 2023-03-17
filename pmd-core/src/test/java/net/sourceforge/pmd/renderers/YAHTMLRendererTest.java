@@ -14,7 +14,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -83,7 +82,7 @@ class YAHTMLRendererTest extends AbstractRendererTest {
     }
 
     private static String normalizeLineSeparators(String s) {
-        return s.replaceAll(Pattern.quote("\\R"), System.lineSeparator());
+        return s.replaceAll("\\R", System.lineSeparator());
     }
 
     @Override
