@@ -22,6 +22,8 @@ This is a {{ site.pmd.release_type }} release.
 ### Fixed Issues
 * java-bestpractices
   * [#1205](https://github.com/pmd/pmd/issues/1205): \[java] Improve ConstantsInInterface message to mention alternatives
+* java-documentation
+  * [#4416](https://github.com/pmd/pmd/pull/4416): \[java] Fix reported line number in CommentContentRule
 
 ### API Changes
 
