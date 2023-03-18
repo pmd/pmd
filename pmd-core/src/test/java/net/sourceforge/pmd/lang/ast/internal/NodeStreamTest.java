@@ -11,6 +11,8 @@ import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.pathsOf;
 import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.root;
 import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.tree;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -100,7 +102,7 @@ class NodeStreamTest {
     @Test
     void testChildrenEagerEvaluation() {
         NodeStream<? extends Node> children = tree1.children();
-        assertEquals(AxisStream.ChildrenStream.class, children.getClass());
+        assertThat(children, is(instanceOf(AxisStream.ChildrenStream.class)));
         NodeStream<Node> children1 = children.children();
         assertEquals(GreedyNStream.GreedyKnownNStream.class, children1.getClass());
         assertEquals(SingletonNodeStream.class, children1.filter(it -> it.getImage().endsWith("1")).getClass());

@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.ast.internal;
 
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -19,6 +20,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.NodeStream.DescendantNodeStream;
+import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import net.sourceforge.pmd.lang.ast.internal.AxisStream.AncestorOrSelfStream;
 import net.sourceforge.pmd.lang.ast.internal.AxisStream.ChildrenStream;
 import net.sourceforge.pmd.lang.ast.internal.AxisStream.DescendantOrSelfStream;
@@ -76,6 +78,16 @@ public final class StreamImpl {
 
     public static NodeStream<Node> children(@NonNull Node node) {
         return sliceChildren(node, Filtermap.NODE_IDENTITY, 0, node.getNumChildren());
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public static <N extends GenericNode<N>> NodeStream<N> children(GenericNode<N> parent, Node @NonNull [] array) {
+        return (NodeStream) new ChildrenStream(parent, 0, parent.getNumChildren()) {
+            @Override
+            protected Iterator<Node> baseIterator() {
+                return Arrays.asList(array).iterator();
+            }
+        };
     }
 
     public static DescendantNodeStream<Node> descendants(@NonNull Node node) {
