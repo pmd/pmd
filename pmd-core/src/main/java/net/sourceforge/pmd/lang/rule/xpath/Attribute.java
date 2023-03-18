@@ -10,6 +10,9 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Objects;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 
@@ -24,6 +27,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  * @author daniels
  */
 public class Attribute {
+    private static final Logger LOG = LoggerFactory.getLogger(Attribute.class);
 
     private final Node parent;
     private final String name;
@@ -100,19 +104,21 @@ public class Attribute {
     }
 
     public Object getValue() {
-        if (invoked) {
-            return value;
+        if (this.invoked) {
+            return this.value;
         }
 
+        Object value;
         // this lazy loading reduces calls to Method.invoke() by about 90%
         try {
-            invoked = true;
             value = handle.invokeExact(parent);
-            return value;
         } catch (Throwable iae) { // NOPMD
-            iae.printStackTrace();
+            LOG.debug("Exception while fetching attribute value", iae);
+            value = null;
         }
-        return null;
+        this.value = value;
+        this.invoked = true;
+        return value;
     }
 
     public String getStringValue() {
