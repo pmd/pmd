@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
@@ -26,7 +27,6 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.log.MessageReporter;
-import net.sourceforge.pmd.util.log.internal.NoopReporter;
 
 /**
  * Configurable object to load rulesets from XML resources.
@@ -43,7 +43,7 @@ public final class RuleSetLoader {
     private boolean warnDeprecated = true;
     private @NonNull RuleSetFactoryCompatibility compatFilter = RuleSetFactoryCompatibility.DEFAULT;
     private boolean includeDeprecatedRuleReferences = false;
-    private MessageReporter reporter = new NoopReporter(); // non-null
+    private @NonNull MessageReporter reporter = MessageReporter.quiet();
 
     /**
      * Create a new RuleSetLoader with a default configuration.
@@ -53,8 +53,8 @@ public final class RuleSetLoader {
         // default
     }
 
-    RuleSetLoader withReporter(MessageReporter reporter) {
-        this.reporter = reporter;
+    RuleSetLoader withReporter(@NonNull MessageReporter reporter) {
+        this.reporter = Objects.requireNonNull(reporter);
         return this;
     }
 

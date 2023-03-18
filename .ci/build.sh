@@ -224,7 +224,7 @@ function pmd_ci_build_and_upload_doc() {
         pmd_code_createSymlink "${PMD_CI_MAVEN_PROJECT_VERSION}" "latest"
         # remove old doc and point to the new version
         pmd_code_removeDocumentation "${PMD_CI_MAVEN_PROJECT_VERSION}-SNAPSHOT"
-        pmd_code_createSymlink "${PMD_CI_MAVEN_PROJECT_VERSION}" "${PMD_CI_MAVEN_PROJECT_VERSION}-SNAPSHOT"
+        pmd_code_createSymlink "${PMD_CI_MAVEN_PROJECT_VERSION}" "pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}-SNAPSHOT"
         # remove old javadoc
         pmd_code_removeJavadoc "${PMD_CI_MAVEN_PROJECT_VERSION}-SNAPSHOT"
 

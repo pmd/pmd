@@ -14,7 +14,6 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
@@ -71,7 +70,7 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
         super(NAME, "Comma-separated values tabular format.");
 
         separator = DEFAULT_SEPARATOR;
-        cr = PMD.EOL;
+        cr = System.lineSeparator();
 
         for (ColumnDescriptor<RuleViolation> desc : allColumns) {
             definePropertyDescriptor(booleanPropertyFor(desc.id, desc.title));

@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.ast.impl.javacc;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.lang.TokenManager;
 
 /**
@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.TokenManager;
 public abstract class AbstractTokenManager implements TokenManager<JavaccToken> {
 
     protected Map<Integer, String> suppressMap = new HashMap<>();
-    protected String suppressMarker = PMD.SUPPRESS_MARKER;
+    protected String suppressMarker = PMDConfiguration.DEFAULT_SUPPRESS_MARKER;
 
     public void setSuppressMarker(String marker) {
         this.suppressMarker = marker;

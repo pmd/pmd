@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.renderers;
 
-import net.sourceforge.pmd.PMD;
-
 class IDEAJRendererTest extends AbstractRendererTest {
 
     @Override
@@ -19,7 +17,7 @@ class IDEAJRendererTest extends AbstractRendererTest {
 
     @Override
     String getExpected() {
-        return "blah" + PMD.EOL + " at Foo <init>(Foo.java:1)" + PMD.EOL;
+        return "blah" + EOL + " at Foo <init>(Foo.java:1)" + EOL;
     }
 
     @Override
@@ -29,7 +27,7 @@ class IDEAJRendererTest extends AbstractRendererTest {
 
     @Override
     String getExpectedMultiple() {
-        return "blah" + PMD.EOL + " at Foo <init>(Foo.java:1)" + PMD.EOL + "blah" + PMD.EOL
-                + " at Foo <init>(Foo.java:1)" + PMD.EOL;
+        return "blah" + EOL + " at Foo <init>(Foo.java:1)" + EOL + "blah" + EOL
+                + " at Foo <init>(Foo.java:1)" + EOL;
     }
 }

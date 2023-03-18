@@ -9,8 +9,6 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
-import net.sourceforge.pmd.PMD;
-
 public class Match implements Comparable<Match>, Iterable<Mark> {
 
     private int tokenCount;
@@ -102,7 +100,7 @@ public class Match implements Comparable<Match>, Iterable<Mark> {
 
     @Override
     public String toString() {
-        return "Match: " + PMD.EOL + "tokenCount = " + tokenCount + PMD.EOL + "marks = " + markSet.size();
+        return "Match: \ntokenCount = " + tokenCount + "\nmarks = " + markSet.size();
     }
 
     public Set<Mark> getMarkSet() {

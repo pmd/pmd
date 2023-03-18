@@ -12,7 +12,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
@@ -147,12 +146,18 @@ class XPathRuleTest {
     }
 
 
-    private static final String TEST1 = "public class Foo {" + PMD.EOL + " int a;" + PMD.EOL + "}";
+    private static final String TEST1 = "public class Foo {\n"
+        + " int a;\n"
+        + "}";
 
-    private static final String TEST2 = "public class Foo {" + PMD.EOL + " int faddle;" + PMD.EOL + " int fiddle;"
-            + PMD.EOL + "}";
+    private static final String TEST2 = "public class Foo {\n"
+        + " int faddle;\n"
+        + " int fiddle;\n"
+        + "}";
 
 
-    private static final String TEST3 = "public class Foo {" + PMD.EOL + " int forbid1; int forbid2; int forbid1$forbid2;" + PMD.EOL + "}";
+    private static final String TEST3 = "public class Foo {\n"
+        + " int forbid1; int forbid2; int forbid1$forbid2;\n"
+        + "}";
 
 }
