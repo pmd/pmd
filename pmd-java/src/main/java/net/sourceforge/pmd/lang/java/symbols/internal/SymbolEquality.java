@@ -36,7 +36,7 @@ public final class SymbolEquality {
     public static final EqAndHash<JTypeParameterSymbol> TYPE_PARAM = new EqAndHash<JTypeParameterSymbol>() {
         @Override
         public int hash(JTypeParameterSymbol t1) {
-            return 139 * t1.getDeclaringSymbol().hashCode() + t1.getSimpleName().hashCode();
+            return 31 * t1.getDeclaringSymbol().hashCode() + t1.getSimpleName().hashCode();
         }
 
         @Override
@@ -126,7 +126,7 @@ public final class SymbolEquality {
     public static final EqAndHash<JFieldSymbol> FIELD = new EqAndHash<JFieldSymbol>() {
         @Override
         public int hash(JFieldSymbol t1) {
-            return 139 * t1.getEnclosingClass().hashCode() + t1.getSimpleName().hashCode();
+            return 31 * t1.getEnclosingClass().hashCode() + t1.getSimpleName().hashCode();
         }
 
         @Override
@@ -161,7 +161,7 @@ public final class SymbolEquality {
     public static final EqAndHash<JFormalParamSymbol> FORMAL_PARAM = new EqAndHash<JFormalParamSymbol>() {
         @Override
         public int hash(JFormalParamSymbol t1) {
-            return 139 * t1.getDeclaringSymbol().hashCode() + t1.getSimpleName().hashCode();
+            return 31 * t1.getDeclaringSymbol().hashCode() + t1.getSimpleName().hashCode();
         }
 
         @Override
