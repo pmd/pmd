@@ -79,6 +79,7 @@ public interface TextFile extends Closeable {
      * to a directory or so, it may also not be normalized. Use
      * {@link #getPathId()} when you want an identifier.
      */
+    @Deprecated
     default @NonNull String getDisplayName() {
         return getPathId().getNiceFileName();
     }

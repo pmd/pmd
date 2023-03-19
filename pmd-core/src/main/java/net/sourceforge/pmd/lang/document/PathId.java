@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.document;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * A virtual path for a {@link TextFile}.
@@ -24,6 +25,8 @@ public interface PathId extends Comparable<PathId> {
     String getFileName();
     String getNiceFileName();
 
+    String toAbsolutePath();
+
 
     @Override
     boolean equals(Object o);
@@ -35,6 +38,11 @@ public interface PathId extends Comparable<PathId> {
     }
 
     PathId STDIN = new PathId() {
+        @Override
+        public String toAbsolutePath() {
+            return "stdin";
+        }
+
         @Override
         public String toUriString() {
             return "stdin";
@@ -58,6 +66,11 @@ public interface PathId extends Comparable<PathId> {
         }
         String fname = segments[segments.length - 1];
         return new PathId() {
+            @Override
+            public String toAbsolutePath() {
+                return Paths.get(str).toAbsolutePath().toString();
+            }
+
             @Override
             public String toUriString() {
                 return str;
@@ -83,6 +96,11 @@ public interface PathId extends Comparable<PathId> {
 
     static PathId fromPath(Path path) {
         return new PathId() {
+            @Override
+            public String toAbsolutePath() {
+                return path.normalize().toAbsolutePath().toString();
+            }
+
             @Override
             public String toUriString() {
                 return path.normalize().toUri().toString();

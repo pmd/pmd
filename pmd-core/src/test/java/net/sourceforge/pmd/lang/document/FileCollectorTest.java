@@ -94,15 +94,10 @@ class FileCollectorTest {
         assertCollected(collector, listOf("src/foo.dummy", "src/x/bar.dummy"));
     }
 
-    @Test
-    void testRelativizeLegacy() {
-        String displayName = FileCollector.getDisplayNameLegacy(Paths.get("a", "b", "c"), listOf(Paths.get("a").toString()));
-        assertEquals(displayName, Paths.get("b", "c").toString());
-    }
 
     @Test
     void testRelativize() {
-        String displayName = FileCollector.getDisplayName(Paths.get("a", "b", "c"), listOf(Paths.get("a")));
+        String displayName = FileCollector.getDisplayName(PathId.fromPath(Paths.get("a", "b", "c")), listOf(Paths.get("a")));
         assertEquals(displayName, Paths.get("b", "c").toString());
     }
 
@@ -139,7 +134,7 @@ class FileCollectorTest {
     private FileCollector newCollector(LanguageVersion forcedVersion) {
         LanguageVersionDiscoverer discoverer = new LanguageVersionDiscoverer(LanguageRegistry.PMD, forcedVersion);
         FileCollector collector = FileCollector.newCollector(discoverer, new TestMessageReporter());
-        collector.relativizeWith(tempFolder.toAbsolutePath().toString());
+        collector.relativizeWith(tempFolder.toAbsolutePath());
         return collector;
     }
 }
