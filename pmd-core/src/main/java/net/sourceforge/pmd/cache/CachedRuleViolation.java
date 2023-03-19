@@ -17,8 +17,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
-import net.sourceforge.pmd.lang.document.PathId;
 import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -42,13 +42,13 @@ public final class CachedRuleViolation implements RuleViolation {
     private final FileLocation location;
 
     private CachedRuleViolation(final CachedRuleMapper mapper, final String description,
-                                final PathId filePathId, final String ruleClassName, final String ruleName,
+                                final FileId fileFileId, final String ruleClassName, final String ruleName,
                                 final String ruleTargetLanguage, final int beginLine, final int beginColumn,
                                 final int endLine, final int endColumn,
                                 final Map<String, String> additionalInfo) {
         this.mapper = mapper;
         this.description = description;
-        this.location = FileLocation.range(filePathId, TextRange2d.range2d(beginLine, beginColumn, endLine, endColumn));
+        this.location = FileLocation.range(fileFileId, TextRange2d.range2d(beginLine, beginColumn, endLine, endColumn));
         this.ruleClassName = ruleClassName;
         this.ruleName = ruleName;
         this.ruleTargetLanguage = ruleTargetLanguage;
@@ -80,7 +80,7 @@ public final class CachedRuleViolation implements RuleViolation {
      * Helper method to load a {@link CachedRuleViolation} from an input stream.
      *
      * @param stream     The stream from which to load the violation.
-     * @param filePathId The name of the file on which this rule was reported.
+     * @param fileFileId The name of the file on which this rule was reported.
      * @param mapper     The mapper to be used to obtain rule instances from the active rulesets.
      *
      * @return The loaded rule violation.
@@ -88,7 +88,7 @@ public final class CachedRuleViolation implements RuleViolation {
     /* package */
     static CachedRuleViolation loadFromStream(
         DataInputStream stream,
-        PathId filePathId, CachedRuleMapper mapper) throws IOException {
+        FileId fileFileId, CachedRuleMapper mapper) throws IOException {
 
         String description = stream.readUTF();
         String ruleClassName = stream.readUTF();
@@ -99,7 +99,7 @@ public final class CachedRuleViolation implements RuleViolation {
         int endLine = stream.readInt();
         int endColumn = stream.readInt();
         Map<String, String> additionalInfo = readAdditionalInfo(stream);
-        return new CachedRuleViolation(mapper, description, filePathId, ruleClassName, ruleName, ruleTargetLanguage,
+        return new CachedRuleViolation(mapper, description, fileFileId, ruleClassName, ruleName, ruleTargetLanguage,
                                        beginLine, beginColumn, endLine, endColumn, additionalInfo);
     }
 

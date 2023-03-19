@@ -26,7 +26,7 @@ import net.sourceforge.pmd.cache.AnalysisCache;
 import net.sourceforge.pmd.cache.NoopAnalysisCache;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.document.PathId;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener.ViolationCounterListener;
 
@@ -132,9 +132,9 @@ class GlobalListenerTest {
     private void runPmd(PMDConfiguration config, GlobalAnalysisListener listener, Rule rule) {
         try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
             pmd.addRuleSet(RuleSet.forSingleRule(rule));
-            pmd.files().addSourceFile(PathId.fromPathLikeString("fname1.dummy"), "abc");
-            pmd.files().addSourceFile(PathId.fromPathLikeString("fname2.dummy"), "abcd");
-            pmd.files().addSourceFile(PathId.fromPathLikeString("fname21.dummy"), "abcd");
+            pmd.files().addSourceFile(FileId.fromPathLikeString("fname1.dummy"), "abc");
+            pmd.files().addSourceFile(FileId.fromPathLikeString("fname2.dummy"), "abcd");
+            pmd.files().addSourceFile(FileId.fromPathLikeString("fname21.dummy"), "abcd");
             pmd.addListener(listener);
             pmd.performAnalysis();
         }

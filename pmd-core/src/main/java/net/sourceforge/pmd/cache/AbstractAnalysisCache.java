@@ -35,7 +35,7 @@ import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.cache.internal.ClasspathFingerprinter;
 import net.sourceforge.pmd.internal.util.IOUtil;
-import net.sourceforge.pmd.lang.document.PathId;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
@@ -52,8 +52,8 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
     protected static final Logger LOG = LoggerFactory.getLogger(AbstractAnalysisCache.class);
     protected static final ClasspathFingerprinter FINGERPRINTER = new ClasspathFingerprinter();
     protected final String pmdVersion;
-    protected final ConcurrentMap<PathId, AnalysisResult> fileResultsCache = new ConcurrentHashMap<>();
-    protected final ConcurrentMap<PathId, AnalysisResult> updatedResultsCache = new ConcurrentHashMap<>();
+    protected final ConcurrentMap<FileId, AnalysisResult> fileResultsCache = new ConcurrentHashMap<>();
+    protected final ConcurrentMap<FileId, AnalysisResult> updatedResultsCache = new ConcurrentHashMap<>();
     protected final CachedRuleMapper ruleMapper = new CachedRuleMapper();
     protected long rulesetChecksum;
     protected long auxClassPathChecksum;
@@ -218,7 +218,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
 
     @Override
     public FileAnalysisListener startFileAnalysis(TextDocument file) {
-        final PathId fileName = file.getPathId();
+        final FileId fileName = file.getPathId();
 
         return new FileAnalysisListener() {
             @Override

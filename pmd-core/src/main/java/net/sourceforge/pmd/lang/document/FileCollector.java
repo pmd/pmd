@@ -64,13 +64,13 @@ public final class FileCollector implements AutoCloseable {
     private Charset charset = StandardCharsets.UTF_8;
     private final LanguageVersionDiscoverer discoverer;
     private final MessageReporter reporter;
-    private final PathId outerFsPath;
+    private final FileId outerFsPath;
     private final List<Path> relativizeRootPaths = new ArrayList<>();
     private boolean closed;
 
     // construction
 
-    private FileCollector(LanguageVersionDiscoverer discoverer, MessageReporter reporter, PathId outerFsPath) {
+    private FileCollector(LanguageVersionDiscoverer discoverer, MessageReporter reporter, FileId outerFsPath) {
         this.discoverer = discoverer;
         this.reporter = reporter;
         this.outerFsPath = outerFsPath;
@@ -201,13 +201,13 @@ public final class FileCollector implements AutoCloseable {
      *
      * @return True if the file has been added
      */
-    public boolean addSourceFile(PathId pathId, String sourceContents) {
+    public boolean addSourceFile(FileId fileId, String sourceContents) {
         AssertionUtil.requireParamNotNull("sourceContents", sourceContents);
-        AssertionUtil.requireParamNotNull("pathId", pathId);
+        AssertionUtil.requireParamNotNull("pathId", fileId);
 
-        LanguageVersion version = discoverLanguage(pathId.getFileName());
+        LanguageVersion version = discoverLanguage(fileId.getFileName());
         return version != null
-            && addFileImpl(TextFile.builderForCharSeq(sourceContents, pathId, version)
+            && addFileImpl(TextFile.builderForCharSeq(sourceContents, fileId, version)
                                    .setParentFsPath(outerFsPath)
                                    .build());
     }
@@ -265,7 +265,7 @@ public final class FileCollector implements AutoCloseable {
      *
      * <p>package private for test only</p>
      */
-    static String getDisplayName(PathId file, List<Path> relativizeRoots) {
+    static String getDisplayName(FileId file, List<Path> relativizeRoots) {
         String best = file.toAbsolutePath();
         for (Path root : relativizeRoots) {
             if (isFileSystemRoot(root)) {
@@ -432,7 +432,7 @@ public final class FileCollector implements AutoCloseable {
     /** A collector that prefixes the display name of the files it will contain with the path of the zip. */
     @Experimental
     private FileCollector newZipCollector(Path zipFilePath) {
-        return new FileCollector(discoverer, reporter, PathId.forPath(zipFilePath));
+        return new FileCollector(discoverer, reporter, FileId.forPath(zipFilePath));
     }
 
     // configuration
@@ -469,15 +469,15 @@ public final class FileCollector implements AutoCloseable {
             private final List<Path> relativizeRootPaths = new ArrayList<>(FileCollector.this.relativizeRootPaths);
 
             @Override
-            public String getDisplayName(PathId pathId) {
-                String localDisplayName = getLocalDisplayName(pathId);
-                if (pathId.getParentFsPath() != null) {
-                    return getDisplayName(pathId.getParentFsPath()) + "!" + localDisplayName;
+            public String getDisplayName(FileId fileId) {
+                String localDisplayName = getLocalDisplayName(fileId);
+                if (fileId.getParentFsPath() != null) {
+                    return getDisplayName(fileId.getParentFsPath()) + "!" + localDisplayName;
                 }
                 return localDisplayName;
             }
 
-            private String getLocalDisplayName(PathId file) {
+            private String getLocalDisplayName(FileId file) {
                 if (!relativizeRootPaths.isEmpty()) {
                     return FileCollector.getDisplayName(file, relativizeRootPaths);
                 }

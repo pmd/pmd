@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
-import net.sourceforge.pmd.lang.document.PathId;
 import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 
@@ -58,7 +58,7 @@ class XSLTRendererTest extends AbstractRendererTest {
     @Test
     void testDefaultStylesheet() throws Exception {
         XSLTRenderer renderer = new XSLTRenderer();
-        FileLocation loc = FileLocation.range(PathId.UNKNOWN, TextRange2d.range2d(1, 1, 1, 2));
+        FileLocation loc = FileLocation.range(FileId.UNKNOWN, TextRange2d.range2d(1, 1, 1, 2));
         RuleViolation rv = new ParametricRuleViolation(new FooRule(), loc, "violation message");
         String result = renderReport(renderer, it -> it.onRuleViolation(rv));
         assertTrue(result.contains("violation message"));

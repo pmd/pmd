@@ -41,14 +41,14 @@ public final class FileLocation {
     private final int endLine;
     private final int beginColumn;
     private final int endColumn;
-    private final PathId fileName;
+    private final FileId fileName;
     private final @Nullable TextRegion region;
 
-    FileLocation(PathId fileName, int beginLine, int beginColumn, int endLine, int endColumn) {
+    FileLocation(FileId fileName, int beginLine, int beginColumn, int endLine, int endColumn) {
         this(fileName, beginLine, beginColumn, endLine, endColumn, null);
     }
 
-    FileLocation(PathId fileName, int beginLine, int beginColumn, int endLine, int endColumn, @Nullable TextRegion region) {
+    FileLocation(FileId fileName, int beginLine, int beginColumn, int endLine, int endColumn, @Nullable TextRegion region) {
         this.fileName = Objects.requireNonNull(fileName);
         this.beginLine = AssertionUtil.requireOver1("Begin line", beginLine);
         this.endLine = AssertionUtil.requireOver1("End line", endLine);
@@ -70,7 +70,7 @@ public final class FileLocation {
     /**
      * File name of this position.
      */
-    public PathId getFileId() {
+    public FileId getFileId() {
         return fileName;
     }
 
@@ -144,7 +144,7 @@ public final class FileLocation {
      * @throws IllegalArgumentException If the line and column are not correctly ordered
      * @throws IllegalArgumentException If the start offset or length are negative
      */
-    public static FileLocation range(PathId fileName, TextRange2d range2d) {
+    public static FileLocation range(FileId fileName, TextRange2d range2d) {
         TextPos2d start = range2d.getStartPos();
         TextPos2d end = range2d.getEndPos();
         return new FileLocation(fileName,
@@ -163,9 +163,9 @@ public final class FileLocation {
      *
      * @return A new location
      *
-     * @throws IllegalArgumentException See {@link #range(PathId, TextRange2d)}
+     * @throws IllegalArgumentException See {@link #range(FileId, TextRange2d)}
      */
-    public static FileLocation caret(PathId fileName, int line, int column) {
+    public static FileLocation caret(FileId fileName, int line, int column) {
         return new FileLocation(fileName, line, column, line, column);
     }
 

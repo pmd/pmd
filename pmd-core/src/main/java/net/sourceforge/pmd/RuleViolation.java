@@ -9,7 +9,7 @@ import java.util.Map;
 
 import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.lang.document.FileLocation;
-import net.sourceforge.pmd.lang.document.PathId;
+import net.sourceforge.pmd.lang.document.FileId;
 
 /**
  * A RuleViolation is created by a Rule when it identifies a violation of the
@@ -83,7 +83,7 @@ public interface RuleViolation {
     /**
      * Return the ID of the file where the violation was found.
      */
-    default PathId getFileId() {
+    default FileId getFileId() {
         return getLocation().getFileId();
     }
 

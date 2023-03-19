@@ -70,7 +70,7 @@ public interface TextFile extends Closeable {
      * <p>Basically this may be implemented as a URL, or a file path. It
      * is used to index violation caches.
      */
-    PathId getPathId();
+    FileId getPathId();
 
 
     /**
@@ -185,13 +185,13 @@ public interface TextFile extends Closeable {
      * may not produce exactly the same char sequence.
      *
      * @param charseq         Text of the file
-     * @param pathId          File name to use as path id
+     * @param fileId          File name to use as path id
      * @param languageVersion Language version
      *
      * @throws NullPointerException If any parameter is null
      */
-    static TextFile forCharSeq(CharSequence charseq, PathId pathId, LanguageVersion languageVersion) {
-        return builderForCharSeq(charseq, pathId, languageVersion)
+    static TextFile forCharSeq(CharSequence charseq, FileId fileId, LanguageVersion languageVersion) {
+        return builderForCharSeq(charseq, fileId, languageVersion)
                 .build();
     }
 
@@ -201,13 +201,13 @@ public interface TextFile extends Closeable {
      * may not produce exactly the same char sequence.
      *
      * @param charseq         Text of the file
-     * @param pathId          File name to use as path id
+     * @param fileId          File name to use as path id
      * @param languageVersion Language version
      *
      * @throws NullPointerException If any parameter is null
      */
-    static TextFileBuilder builderForCharSeq(CharSequence charseq, PathId pathId, LanguageVersion languageVersion) {
-        return new ForCharSeq(charseq, pathId, languageVersion);
+    static TextFileBuilder builderForCharSeq(CharSequence charseq, FileId fileId, LanguageVersion languageVersion) {
+        return new ForCharSeq(charseq, fileId, languageVersion);
     }
 
     /**
@@ -218,13 +218,13 @@ public interface TextFile extends Closeable {
      * throw an {@link IOException}.
      *
      * @param reader          Text of the file
-     * @param pathId          File name to use as path id
+     * @param fileId          File name to use as path id
      * @param languageVersion Language version
      *
      * @throws NullPointerException If any parameter is null
      */
-    static TextFile forReader(Reader reader, PathId pathId, LanguageVersion languageVersion) {
-        return builderForReader(reader, pathId, languageVersion)
+    static TextFile forReader(Reader reader, FileId fileId, LanguageVersion languageVersion) {
+        return builderForReader(reader, fileId, languageVersion)
                 .build();
     }
 
@@ -236,13 +236,13 @@ public interface TextFile extends Closeable {
      * throw an {@link IOException}.
      *
      * @param reader          Text of the file
-     * @param pathId          File name to use as path id
+     * @param fileId          File name to use as path id
      * @param languageVersion Language version
      *
      * @throws NullPointerException If any parameter is null
      */
-    static TextFileBuilder builderForReader(Reader reader, PathId pathId, LanguageVersion languageVersion) {
-        return new ForReader(languageVersion, reader, pathId);
+    static TextFileBuilder builderForReader(Reader reader, FileId fileId, LanguageVersion languageVersion) {
+        return new ForReader(languageVersion, reader, fileId);
     }
 
     /**
@@ -257,7 +257,7 @@ public interface TextFile extends Closeable {
     @DeprecatedUntil700
     static TextFile dataSourceCompat(DataSource ds, PMDConfiguration config) {
         String pathId = ds.getNiceFileName(false, null);
-        PathId pathId2 = PathId.fromPathLikeString(pathId);
+        FileId fileId2 = FileId.fromPathLikeString(pathId);
         LanguageVersion languageVersion = config.getLanguageVersionOfFile(pathId);
         if (languageVersion == null) {
             throw new NullPointerException("no language version detected for " + pathId);
@@ -271,8 +271,8 @@ public interface TextFile extends Closeable {
             }
 
             @Override
-            public PathId getPathId() {
-                return pathId2;
+            public FileId getPathId() {
+                return fileId2;
             }
 
             @Override

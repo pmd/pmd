@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
  */
 class FileLocationTest {
 
-    public static final PathId FNAME = PathId.fromPathLikeString("fname");
+    public static final FileId FNAME = FileId.fromPathLikeString("fname");
 
     @Test
     void testSimple() {

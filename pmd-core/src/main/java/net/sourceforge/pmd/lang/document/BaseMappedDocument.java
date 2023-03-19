@@ -26,7 +26,7 @@ abstract class BaseMappedDocument implements TextDocument {
     }
 
     @Override
-    public PathId getPathId() {
+    public FileId getPathId() {
         return base.getPathId();
     }
 

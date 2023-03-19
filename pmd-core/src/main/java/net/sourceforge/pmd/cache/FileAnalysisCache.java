@@ -25,7 +25,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
-import net.sourceforge.pmd.lang.document.PathId;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextFile;
 
 /**
@@ -61,9 +61,9 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
      * @param cacheFile The file which backs the file analysis cache.
      */
     private void loadFromFile(final File cacheFile, Set<TextFile> files) {
-        Map<String, PathId> idMap =
+        Map<String, FileId> idMap =
             files.stream().map(TextFile::getPathId)
-                 .collect(Collectors.toMap(PathId::toUriString, id -> id));
+                 .collect(Collectors.toMap(FileId::toUriString, id -> id));
 
         try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "load")) {
             if (cacheExists()) {
@@ -84,21 +84,21 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
                         // Cached results
                         while (inputStream.available() > 0) {
                             final String filePathId = inputStream.readUTF();
-                            PathId pathId = idMap.get(filePathId);
-                            if (pathId == null) {
+                            FileId fileId = idMap.get(filePathId);
+                            if (fileId == null) {
                                 LOG.debug("File {} is in the cache but is not part of the analysis",
                                           filePathId);
-                                pathId = PathId.fromPathLikeString(filePathId);
+                                fileId = FileId.fromPathLikeString(filePathId);
                             }
                             final long checksum = inputStream.readLong();
 
                             final int countViolations = inputStream.readInt();
                             final List<RuleViolation> violations = new ArrayList<>(countViolations);
                             for (int i = 0; i < countViolations; i++) {
-                                violations.add(CachedRuleViolation.loadFromStream(inputStream, pathId, ruleMapper));
+                                violations.add(CachedRuleViolation.loadFromStream(inputStream, fileId, ruleMapper));
                             }
 
-                            fileResultsCache.put(pathId, new AnalysisResult(checksum, violations));
+                            fileResultsCache.put(fileId, new AnalysisResult(checksum, violations));
                         }
 
                         LOG.debug("Analysis cache loaded from {}", cacheFile);
@@ -144,7 +144,7 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
                 outputStream.writeLong(auxClassPathChecksum);
                 outputStream.writeLong(executionClassPathChecksum);
 
-                for (final Map.Entry<PathId, AnalysisResult> resultEntry : updatedResultsCache.entrySet()) {
+                for (final Map.Entry<FileId, AnalysisResult> resultEntry : updatedResultsCache.entrySet()) {
                     final List<RuleViolation> violations = resultEntry.getValue().getViolations();
 
                     outputStream.writeUTF(resultEntry.getKey().toUriString()); // the path id

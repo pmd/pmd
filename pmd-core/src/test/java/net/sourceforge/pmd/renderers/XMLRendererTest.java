@@ -30,8 +30,8 @@ import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.internal.util.IOUtil;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
-import net.sourceforge.pmd.lang.document.PathId;
 import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 
@@ -92,7 +92,7 @@ class XMLRendererTest extends AbstractRendererTest {
     }
 
     private RuleViolation createRuleViolation(String description) {
-        FileLocation loc = FileLocation.range(PathId.fromPathLikeString(getSourceCodeFilename()),
+        FileLocation loc = FileLocation.range(FileId.fromPathLikeString(getSourceCodeFilename()),
                                               TextRange2d.range2d(1, 1, 1, 1));
         return new ParametricRuleViolation(new FooRule(), loc, description);
     }

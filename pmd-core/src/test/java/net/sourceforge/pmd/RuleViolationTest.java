@@ -16,8 +16,8 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
-import net.sourceforge.pmd.lang.document.PathId;
 import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
@@ -26,7 +26,7 @@ class RuleViolationTest {
 
     @RegisterExtension
     private final DummyParsingHelper helper = new DummyParsingHelper();
-    private PathId filename = PathId.fromPathLikeString("filename");
+    private FileId filename = FileId.fromPathLikeString("filename");
 
     @Test
     void testConstructor1() {
@@ -53,8 +53,8 @@ class RuleViolationTest {
     void testComparatorWithDifferentFilenames() {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
         Comparator<RuleViolation> comp = RuleViolation.DEFAULT_COMPARATOR;
-        DummyNode s = helper.parse("(abc)", PathId.fromPathLikeString("f1")).getFirstChild();
-        DummyNode s1 = helper.parse("(abc)", PathId.fromPathLikeString("f2")).getFirstChild();
+        DummyNode s = helper.parse("(abc)", FileId.fromPathLikeString("f1")).getFirstChild();
+        DummyNode s1 = helper.parse("(abc)", FileId.fromPathLikeString("f2")).getFirstChild();
         RuleViolation r1 = new ParametricRuleViolation(rule, s, "description");
         RuleViolation r2 = new ParametricRuleViolation(rule, s1, "description");
         assertEquals(-1, comp.compare(r1, r2));

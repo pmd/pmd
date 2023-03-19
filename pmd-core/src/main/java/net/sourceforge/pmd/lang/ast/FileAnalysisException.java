@@ -10,8 +10,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
-import net.sourceforge.pmd.lang.document.PathId;
 
 /**
  * An exception that occurs while processing a file. Subtypes include
@@ -24,7 +24,7 @@ import net.sourceforge.pmd.lang.document.PathId;
  */
 public class FileAnalysisException extends RuntimeException {
 
-    private PathId fileId = PathId.UNKNOWN;
+    private FileId fileId = FileId.UNKNOWN;
 
     public FileAnalysisException() {
         super();
@@ -42,19 +42,19 @@ public class FileAnalysisException extends RuntimeException {
         super(message, cause);
     }
 
-    public FileAnalysisException setFileId(PathId fileId) {
+    public FileAnalysisException setFileId(FileId fileId) {
         this.fileId = Objects.requireNonNull(fileId);
         return this;
     }
 
     protected boolean hasFileName() {
-        return !PathId.UNKNOWN.equals(fileId);
+        return !FileId.UNKNOWN.equals(fileId);
     }
 
     /**
      * The name of the file in which the error occurred.
      */
-    public @NonNull PathId getFileId() {
+    public @NonNull FileId getFileId() {
         return fileId;
     }
 
@@ -94,7 +94,7 @@ public class FileAnalysisException extends RuntimeException {
      *
      * @return An exception
      */
-    public static FileAnalysisException wrap(@NonNull PathId filename, @NonNull String message, @NonNull Throwable cause) {
+    public static FileAnalysisException wrap(@NonNull FileId filename, @NonNull String message, @NonNull Throwable cause) {
         if (cause instanceof FileAnalysisException) {
             return ((FileAnalysisException) cause).setFileId(filename);
         }

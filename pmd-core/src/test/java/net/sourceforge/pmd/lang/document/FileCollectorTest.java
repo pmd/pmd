@@ -43,7 +43,7 @@ class FileCollectorTest {
         assertTrue(collector.addFile(foo), "should be dummy language");
         assertFalse(collector.addFile(bar), "should be unknown language");
 
-        assertCollected(collector, listOf(PathId.forPath(foo)));
+        assertCollected(collector, listOf(FileId.forPath(foo)));
     }
 
     @Test
@@ -55,7 +55,7 @@ class FileCollectorTest {
         FileCollector collector = newCollector(dummy.getDefaultVersion());
 
         assertTrue(collector.addFile(bar, dummy), "should be unknown language");
-        assertCollected(collector, listOf(PathId.forPath(bar)));
+        assertCollected(collector, listOf(FileId.forPath(bar)));
         assertNoErrors(collector);
     }
 
@@ -88,13 +88,13 @@ class FileCollectorTest {
 
         collector.addDirectory(root.resolve("src"));
 
-        assertCollected(collector, listOf(PathId.forPath(foo), PathId.forPath(bar)));
+        assertCollected(collector, listOf(FileId.forPath(foo), FileId.forPath(bar)));
     }
 
 
     @Test
     void testRelativize() {
-        String displayName = FileCollector.getDisplayName(PathId.forPath(Paths.get("a", "b", "c")), listOf(Paths.get("a")));
+        String displayName = FileCollector.getDisplayName(FileId.forPath(Paths.get("a", "b", "c")), listOf(Paths.get("a")));
         assertEquals(displayName, Paths.get("b", "c").toString());
     }
 
@@ -105,8 +105,8 @@ class FileCollectorTest {
         return resolved;
     }
 
-    private void assertCollected(FileCollector collector, List<PathId> expected) {
-        List<PathId> actual = CollectionUtil.map(collector.getCollectedFiles(), TextFile::getPathId);
+    private void assertCollected(FileCollector collector, List<FileId> expected) {
+        List<FileId> actual = CollectionUtil.map(collector.getCollectedFiles(), TextFile::getPathId);
         assertEquals(expected, actual);
     }
 

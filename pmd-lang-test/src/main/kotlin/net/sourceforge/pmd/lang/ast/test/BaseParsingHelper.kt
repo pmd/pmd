@@ -10,7 +10,7 @@ import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask
 import net.sourceforge.pmd.lang.ast.RootNode
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter
-import net.sourceforge.pmd.lang.document.PathId
+import net.sourceforge.pmd.lang.document.FileId
 import net.sourceforge.pmd.lang.document.TextDocument
 import net.sourceforge.pmd.lang.rule.XPathRule
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion
@@ -118,7 +118,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     fun parse(
         sourceCode: String,
         version: String? = null,
-        fileName: PathId = PathId.UNKNOWN
+        fileName: FileId = FileId.UNKNOWN
     ): T {
         val lversion = if (version == null) defaultVersion else getVersion(version)
         val params = params.copy(defaultVerString = lversion.version)
@@ -162,7 +162,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         parse(
             readResource(resource),
             version,
-            fileName = PathId.fromPathLikeString(params.resourcePrefix + resource)
+            fileName = FileId.fromPathLikeString(params.resourcePrefix + resource)
         )
 
     /**
@@ -170,7 +170,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
      */
     @JvmOverloads
     open fun parseFile(path: Path, version: String? = null): T =
-        parse(IOUtil.readToString(Files.newBufferedReader(path)), version, fileName = PathId.forPath(path))
+        parse(IOUtil.readToString(Files.newBufferedReader(path)), version, fileName = FileId.forPath(path))
 
     /**
      * Fetches the source of the given [clazz].
@@ -228,7 +228,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     fun executeRule(
         rule: Rule,
         code: String,
-        fileName: PathId = PathId.fromPathLikeString("testfile.${language.extensions[0]}")
+        fileName: FileId = FileId.fromPathLikeString("testfile.${language.extensions[0]}")
     ): Report {
         if (rule.language == null)
             rule.language = language
@@ -255,6 +255,6 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         executeRule(
             rule,
             code = Files.newBufferedReader(path).readText(),
-            fileName = PathId.forPath(path)
+            fileName = FileId.forPath(path)
         )
 }

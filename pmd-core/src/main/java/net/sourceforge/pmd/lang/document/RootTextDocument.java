@@ -27,16 +27,16 @@ final class RootTextDocument extends BaseCloseable implements TextDocument {
 
     private final LanguageVersion langVersion;
 
-    private final PathId pathId;
+    private final FileId fileId;
 
     RootTextDocument(TextFile backend) throws IOException {
         this.backend = backend;
         this.content = backend.readContents();
         this.langVersion = backend.getLanguageVersion();
-        this.pathId = backend.getPathId();
+        this.fileId = backend.getPathId();
 
         Objects.requireNonNull(langVersion, "Null language version for file " + backend);
-        Objects.requireNonNull(pathId, "Null path id for file " + backend);
+        Objects.requireNonNull(fileId, "Null path id for file " + backend);
     }
 
     @Override
@@ -45,8 +45,8 @@ final class RootTextDocument extends BaseCloseable implements TextDocument {
     }
 
     @Override
-    public PathId getPathId() {
-        return pathId;
+    public FileId getPathId() {
+        return fileId;
     }
 
     @Override
@@ -71,7 +71,7 @@ final class RootTextDocument extends BaseCloseable implements TextDocument {
                                           : positioner.lineColFromOffset(region.getEndOffset(), false);
 
         return new FileLocation(
-            pathId,
+            fileId,
             bpos.getLine(),
             bpos.getColumn(),
             epos.getLine(),

@@ -14,15 +14,15 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * @author Clément Fournier
  */
-public interface PathId extends Comparable<PathId> {
+public interface FileId extends Comparable<FileId> {
 
     /**
      * The name used for a file that has no name. This is mostly only
      * relevant for unit tests.
      */
-    PathId UNKNOWN = fromPathLikeString("(unknown file)");
+    FileId UNKNOWN = fromPathLikeString("(unknown file)");
 
-    @Nullable PathId getParentFsPath();
+    @Nullable FileId getParentFsPath();
 
     String toUriString();
 
@@ -38,11 +38,11 @@ public interface PathId extends Comparable<PathId> {
 
 
     @Override
-    default int compareTo(PathId o) {
+    default int compareTo(FileId o) {
         return this.toUriString().compareTo(o.toUriString());
     }
 
-    PathId STDIN = new PathId() {
+    FileId STDIN = new FileId() {
         @Override
         public String toAbsolutePath() {
             return "stdin";
@@ -64,18 +64,18 @@ public interface PathId extends Comparable<PathId> {
         }
 
         @Override
-        public @Nullable PathId getParentFsPath() {
+        public @Nullable FileId getParentFsPath() {
             return null;
         }
     };
 
-    static PathId fromPathLikeString(String str) {
+    static FileId fromPathLikeString(String str) {
         String[] segments = str.split("[/\\\\]");
         if (segments.length == 0) {
             throw new IllegalArgumentException("Invalid path id: '" + str + "'");
         }
         String fname = segments[segments.length - 1];
-        return new PathId() {
+        return new FileId() {
             @Override
             public String toAbsolutePath() {
                 return Paths.get(str).toAbsolutePath().toString();
@@ -100,8 +100,8 @@ public interface PathId extends Comparable<PathId> {
 
             @Override
             public boolean equals(Object obj) {
-                return obj instanceof PathId
-                    && ((PathId) obj).toUriString().equals(this.toUriString());
+                return obj instanceof FileId
+                    && ((FileId) obj).toUriString().equals(this.toUriString());
             }
 
             @Override
@@ -110,14 +110,14 @@ public interface PathId extends Comparable<PathId> {
             }
 
             @Override
-            public @Nullable PathId getParentFsPath() {
+            public @Nullable FileId getParentFsPath() {
                 return null;
             }
         };
     }
 
-    static PathId forPath(Path path, @Nullable PathId fsPath) {
-        return new PathId() {
+    static FileId forPath(Path path, @Nullable FileId fsPath) {
+        return new FileId() {
             @Override
             public String toAbsolutePath() {
                 return path.normalize().toAbsolutePath().toString();
@@ -139,14 +139,14 @@ public interface PathId extends Comparable<PathId> {
             }
 
             @Override
-            public @Nullable PathId getParentFsPath() {
+            public @Nullable FileId getParentFsPath() {
                 return fsPath;
             }
 
             @Override
             public boolean equals(Object obj) {
-                return obj instanceof PathId
-                    && ((PathId) obj).toUriString().equals(this.toUriString());
+                return obj instanceof FileId
+                    && ((FileId) obj).toUriString().equals(this.toUriString());
             }
 
             @Override
@@ -161,14 +161,14 @@ public interface PathId extends Comparable<PathId> {
         };
     }
 
-    static PathId forPath(Path path) {
+    static FileId forPath(Path path) {
         return forPath(path, null);
     }
 
-    static PathId asChildOf(PathId self, PathId parentFsPath) {
-        return new PathId() {
+    static FileId asChildOf(FileId self, FileId parentFsPath) {
+        return new FileId() {
             @Override
-            public @Nullable PathId getParentFsPath() {
+            public @Nullable FileId getParentFsPath() {
                 return parentFsPath;
             }
 

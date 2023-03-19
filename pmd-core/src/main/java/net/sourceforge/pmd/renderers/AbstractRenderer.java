@@ -9,7 +9,7 @@ import java.io.Writer;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.internal.util.IOUtil;
-import net.sourceforge.pmd.lang.document.PathId;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.properties.AbstractPropertySource;
 
 /**
@@ -21,7 +21,7 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
 
     protected boolean showSuppressedViolations = true;
     protected PrintWriter writer;
-    private FileNameRenderer fileNameRenderer = PathId::getOriginalPath;
+    private FileNameRenderer fileNameRenderer = FileId::getOriginalPath;
 
     public AbstractRenderer(String name, String description) {
         this.name = name;
@@ -74,7 +74,7 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
      * is without the directory prefix of the directories, that have been analyzed.
      * If the option "shortnames" is not enabled, then the fileId is returned as-is.
      */
-    protected String determineFileName(PathId fileId) {
+    protected String determineFileName(FileId fileId) {
         return fileNameRenderer.getDisplayName(fileId);
     }
 

@@ -24,7 +24,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.cache.ChecksumAware;
 import net.sourceforge.pmd.internal.util.PredicateUtil;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.document.PathId;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
@@ -610,7 +610,7 @@ public class RuleSet implements ChecksumAware {
      */
     // TODO get rid of this overload
     @InternalApi
-    public boolean applies(PathId qualFileName) {
+    public boolean applies(FileId qualFileName) {
         return filter.test(qualFileName.toAbsolutePath());
     }
 

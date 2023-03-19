@@ -88,7 +88,7 @@ public interface TextDocument extends Closeable {
     /**
      * Returns {@link TextFile#getPathId()} for the text file backing this document.
      */
-    PathId getPathId();
+    FileId getPathId();
 
     /**
      * Returns {@link TextFile#getDisplayName()} for the text file backing this document.
@@ -263,10 +263,10 @@ public interface TextDocument extends Closeable {
     /**
      * Returns a read-only document for the given text.
      *
-     * @see TextFile#forCharSeq(CharSequence, PathId, LanguageVersion)
+     * @see TextFile#forCharSeq(CharSequence, FileId, LanguageVersion)
      */
     static TextDocument readOnlyString(final CharSequence source, LanguageVersion lv) {
-        return readOnlyString(source, PathId.UNKNOWN, lv);
+        return readOnlyString(source, FileId.UNKNOWN, lv);
     }
 
     /**
@@ -276,10 +276,10 @@ public interface TextDocument extends Closeable {
      * but doesn't throw {@link IOException}, as such text files will
      * not throw.
      *
-     * @see TextFile#forCharSeq(CharSequence, PathId, LanguageVersion)
+     * @see TextFile#forCharSeq(CharSequence, FileId, LanguageVersion)
      */
     @SuppressWarnings("PMD.CloseResource")
-    static TextDocument readOnlyString(@NonNull CharSequence source, @NonNull PathId filename, @NonNull LanguageVersion lv) {
+    static TextDocument readOnlyString(@NonNull CharSequence source, @NonNull FileId filename, @NonNull LanguageVersion lv) {
         TextFile textFile = TextFile.forCharSeq(source, filename, lv);
         try {
             return create(textFile);

@@ -26,11 +26,11 @@ class NioTextFile extends BaseCloseable implements TextFile {
     private final Path path;
     private final Charset charset;
     private final LanguageVersion languageVersion;
-    private final PathId pathId;
+    private final FileId fileId;
     private boolean readOnly;
 
     NioTextFile(Path path,
-                @Nullable PathId parentFsPath,
+                @Nullable FileId parentFsPath,
                 Charset charset,
                 LanguageVersion languageVersion,
                 boolean readOnly) {
@@ -44,7 +44,7 @@ class NioTextFile extends BaseCloseable implements TextFile {
         this.languageVersion = languageVersion;
         // using the URI here, that handles files inside zip archives automatically (schema "jar:file:...!/path/inside/zip")
         // normalization ensures cannonical paths
-        this.pathId = PathId.forPath(path, parentFsPath);
+        this.fileId = FileId.forPath(path, parentFsPath);
     }
 
     @Override
@@ -53,8 +53,8 @@ class NioTextFile extends BaseCloseable implements TextFile {
     }
 
     @Override
-    public PathId getPathId() {
-        return pathId;
+    public FileId getPathId() {
+        return fileId;
     }
 
     @Override

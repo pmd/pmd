@@ -10,7 +10,7 @@ import net.sourceforge.pmd.cpd.TokenEntry
 import net.sourceforge.pmd.cpd.Tokenizer
 import net.sourceforge.pmd.cpd.Tokens
 import net.sourceforge.pmd.lang.ast.TokenMgrError
-import net.sourceforge.pmd.lang.document.PathId
+import net.sourceforge.pmd.lang.document.FileId
 import net.sourceforge.pmd.lang.document.TextFile
 import net.sourceforge.pmd.test.BaseTextComparisonTest
 import org.apache.commons.lang3.StringUtils
@@ -62,7 +62,7 @@ abstract class CpdTextComparisonTest(
     @JvmOverloads
     fun expectTokenMgrError(
         source: String,
-        fileName: PathId = PathId.UNKNOWN,
+        fileName: FileId = FileId.UNKNOWN,
         properties: Properties = defaultProperties()
     ): TokenMgrError =
         expectTokenMgrError(FileData(fileName, source), properties)

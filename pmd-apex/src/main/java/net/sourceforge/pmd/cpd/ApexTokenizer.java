@@ -13,7 +13,7 @@ import org.antlr.runtime.Token;
 
 import net.sourceforge.pmd.lang.apex.ApexJorjeLogging;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
-import net.sourceforge.pmd.lang.document.PathId;
+import net.sourceforge.pmd.lang.document.FileId;
 
 import apex.jorje.parser.impl.ApexLexer;
 
@@ -43,7 +43,7 @@ public class ApexTokenizer implements Tokenizer {
         ApexLexer lexer = new ApexLexer(ass) {
             @Override
             public void emitErrorMessage(String msg) {
-                throw new TokenMgrError(getLine(), getCharPositionInLine(), PathId.fromPathLikeString(getSourceName()), msg, null);
+                throw new TokenMgrError(getLine(), getCharPositionInLine(), FileId.fromPathLikeString(getSourceName()), msg, null);
             }
         };
 

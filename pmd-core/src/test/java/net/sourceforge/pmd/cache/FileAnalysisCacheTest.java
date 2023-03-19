@@ -40,8 +40,8 @@ import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
-import net.sourceforge.pmd.lang.document.PathId;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.document.TextFileContent;
@@ -159,7 +159,7 @@ class FileAnalysisCacheTest {
         final TextRange2d textLocation = TextRange2d.range2d(1, 2, 3, 4);
 
         TextFile mockFile = mock(TextFile.class);
-        when(mockFile.getPathId()).thenReturn(PathId.fromPathLikeString("a/bc"));
+        when(mockFile.getPathId()).thenReturn(FileId.fromPathLikeString("a/bc"));
         when(mockFile.getLanguageVersion()).thenReturn(dummyVersion);
         when(mockFile.readContents()).thenReturn(TextFileContent.fromCharSeq("abc"));
 

@@ -17,7 +17,7 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.document.PathId;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.StringProperty;
@@ -154,7 +154,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
         }
     }
 
-    private String renderFileName(PathId fileId, int beginLine) {
+    private String renderFileName(FileId fileId, int beginLine) {
         return maybeWrap(StringEscapeUtils.escapeHtml4(determineFileName(fileId)),
                 linePrefix == null || beginLine < 0 ? "" : linePrefix + beginLine);
     }

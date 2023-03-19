@@ -16,17 +16,17 @@ import net.sourceforge.pmd.util.StringUtil;
 class StringTextFile implements TextFile {
 
     private final TextFileContent content;
-    private final PathId pathId;
+    private final FileId fileId;
     private final LanguageVersion languageVersion;
 
-    StringTextFile(CharSequence source, PathId pathId, LanguageVersion languageVersion) {
+    StringTextFile(CharSequence source, FileId fileId, LanguageVersion languageVersion) {
         AssertionUtil.requireParamNotNull("source text", source);
-        AssertionUtil.requireParamNotNull("file name", pathId);
+        AssertionUtil.requireParamNotNull("file name", fileId);
         AssertionUtil.requireParamNotNull("language version", languageVersion);
 
         this.languageVersion = languageVersion;
         this.content = TextFileContent.fromCharSeq(source);
-        this.pathId = pathId;
+        this.fileId = fileId;
     }
 
     @Override
@@ -36,12 +36,12 @@ class StringTextFile implements TextFile {
 
     @Override
     public @NonNull String getDisplayName() {
-        return pathId.toUriString();
+        return fileId.toUriString();
     }
 
     @Override
-    public PathId getPathId() {
-        return pathId;
+    public FileId getPathId() {
+        return fileId;
     }
 
     @Override
