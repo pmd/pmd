@@ -112,7 +112,7 @@ class GlobalListenerTest {
             runPmd(config, listener, rule);
         });
 
-        assertEquals("fname1.dummy", exception.getFileName().getOriginalPath());
+        assertEquals("fname1.dummy", exception.getFileId().getOriginalPath());
 
         // cache methods are called regardless
         verify(mockCache).checkValidity(any(), any(), any());

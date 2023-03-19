@@ -28,7 +28,6 @@ import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.internal.util.IOUtil;
-import net.sourceforge.pmd.lang.document.PathId;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.util.StringUtil;
@@ -186,11 +185,6 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
         } catch (XMLStreamException e) {
             throw new IOException(e);
         }
-    }
-
-    @Override
-    protected String determineFileName(PathId fileId) {
-        return super.determineFileName(fileId);
     }
 
     @Override

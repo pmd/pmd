@@ -35,7 +35,7 @@ public abstract class JjtreeParserAdapter<R extends RootNode> implements Parser 
             // Finally, do the parsing
             return parseImpl(charStream, task);
         } catch (FileAnalysisException tme) {
-            throw tme.setFileName(task.getTextDocument().getPathId());
+            throw tme.setFileId(task.getTextDocument().getPathId());
         }
     }
 

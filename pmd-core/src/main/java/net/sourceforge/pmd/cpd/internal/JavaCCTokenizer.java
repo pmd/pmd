@@ -58,7 +58,7 @@ public abstract class JavaCCTokenizer implements Tokenizer {
                 currentToken = tokenFilter.getNextToken();
             }
         } catch (FileAnalysisException e) {
-            throw e.setFileName(textFile.getPathId());
+            throw e.setFileId(textFile.getPathId());
         } finally {
             tokenEntries.add(TokenEntry.getEOF());
         }

@@ -33,7 +33,7 @@ public final class CpdCompat {
     public static TextFile cpdCompat(SourceCode sourceCode) {
         return TextFile.forCharSeq(
             sourceCode.getCodeBuffer(),
-            PathId.fromPathLikeString("fname1.dummy"),
+            PathId.fromPathLikeString(sourceCode.getFileName()),
             dummyVersion()
         );
     }

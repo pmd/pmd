@@ -8,7 +8,9 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.PathId;
 
 /**
@@ -22,7 +24,7 @@ import net.sourceforge.pmd.lang.document.PathId;
  */
 public class FileAnalysisException extends RuntimeException {
 
-    private PathId filename = PathId.UNKNOWN;
+    private PathId fileId = PathId.UNKNOWN;
 
     public FileAnalysisException() {
         super();
@@ -40,24 +42,24 @@ public class FileAnalysisException extends RuntimeException {
         super(message, cause);
     }
 
-    public FileAnalysisException setFileName(PathId filename) {
-        this.filename = Objects.requireNonNull(filename);
+    public FileAnalysisException setFileId(PathId fileId) {
+        this.fileId = Objects.requireNonNull(fileId);
         return this;
     }
 
     protected boolean hasFileName() {
-        return !PathId.UNKNOWN.equals(filename);
+        return !PathId.UNKNOWN.equals(fileId);
     }
 
     /**
      * The name of the file in which the error occurred.
      */
-    public @NonNull PathId getFileName() {
-        return filename;
+    public @NonNull PathId getFileId() {
+        return fileId;
     }
 
     @Override
-    public String getMessage() {
+    public final String getMessage() {
         return errorKind() + StringUtils.uncapitalize(positionToString()) + ": " + super.getMessage();
     }
 
@@ -65,11 +67,20 @@ public class FileAnalysisException extends RuntimeException {
         return "Error";
     }
 
-    protected String positionToString() {
+    protected @Nullable FileLocation location() {
+        return null;
+    }
+
+    private String positionToString() {
+        String result = "";
         if (hasFileName()) {
-            return " in file '" + getFileName() + "'";
+            result += " in file '" + getFileId().getOriginalPath() + "'";
         }
-        return "";
+        FileLocation loc = location();
+        if (loc != null) {
+            result += loc.startPosToString();
+        }
+        return result;
     }
 
 
@@ -85,11 +96,11 @@ public class FileAnalysisException extends RuntimeException {
      */
     public static FileAnalysisException wrap(@NonNull PathId filename, @NonNull String message, @NonNull Throwable cause) {
         if (cause instanceof FileAnalysisException) {
-            return ((FileAnalysisException) cause).setFileName(filename);
+            return ((FileAnalysisException) cause).setFileId(filename);
         }
 
         String fullMessage = "In file '" + filename + "': " + message;
 
-        return new FileAnalysisException(fullMessage, cause).setFileName(filename);
+        return new FileAnalysisException(fullMessage, cause).setFileId(filename);
     }
 }
