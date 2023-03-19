@@ -33,9 +33,9 @@ class ZipFileTest {
         try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
             List<TextFile> files = pmd.files().getCollectedFiles();
             assertThat(files, hasSize(3));
-            assertHasName(files.get(0), reportPath + "!/otherSrc/somefile.dummy", pmd.files());
-            assertHasName(files.get(1), reportPath + "!/src/somefile.dummy", pmd.files());
-            assertHasName(files.get(2), reportPath + "!/src/somefile1.dummy", pmd.files());
+            assertHasName(files.get(0), reportPath + "!/otherSrc/somefile.dummy", pmd);
+            assertHasName(files.get(1), reportPath + "!/src/somefile.dummy", pmd);
+            assertHasName(files.get(2), reportPath + "!/src/somefile1.dummy", pmd);
         }
     }
 
@@ -48,9 +48,9 @@ class ZipFileTest {
             List<TextFile> files = pmd.files().getCollectedFiles();
             assertThat(files, hasSize(3));
             String baseZipPath = IOUtil.normalizePath("net/sourceforge/pmd/cli/zipWithSources.zip");
-            assertHasName(files.get(0), baseZipPath + "!/otherSrc/somefile.dummy", pmd.files());
-            assertHasName(files.get(1), baseZipPath + "!/src/somefile.dummy", pmd.files());
-            assertHasName(files.get(2), baseZipPath + "!/src/somefile1.dummy", pmd.files());
+            assertHasName(files.get(0), baseZipPath + "!/otherSrc/somefile.dummy", pmd);
+            assertHasName(files.get(1), baseZipPath + "!/src/somefile.dummy", pmd);
+            assertHasName(files.get(2), baseZipPath + "!/src/somefile1.dummy", pmd);
         }
     }
 
@@ -64,9 +64,9 @@ class ZipFileTest {
         try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
             List<TextFile> files = pmd.files().getCollectedFiles();
             assertThat(files, hasSize(3));
-            assertHasName(files.get(0), reportPath + "!/otherSrc/somefile.dummy", pmd.files());
-            assertHasName(files.get(1), reportPath + "!/src/somefile.dummy", pmd.files());
-            assertHasName(files.get(2), reportPath + "!/src/somefile1.dummy", pmd.files());
+            assertHasName(files.get(0), reportPath + "!/otherSrc/somefile.dummy", pmd);
+            assertHasName(files.get(1), reportPath + "!/src/somefile.dummy", pmd);
+            assertHasName(files.get(2), reportPath + "!/src/somefile1.dummy", pmd);
         }
     }
 

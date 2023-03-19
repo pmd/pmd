@@ -18,6 +18,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -94,7 +95,7 @@ class FileCollectorTest {
 
     @Test
     void testRelativize() {
-        String displayName = FileCollector.getDisplayName(FileId.forPath(Paths.get("a", "b", "c")), listOf(Paths.get("a")));
+        String displayName = PmdAnalysis.getDisplayName(FileId.forPath(Paths.get("a", "b", "c")), listOf(Paths.get("a")));
         assertEquals(displayName, Paths.get("b", "c").toString());
     }
 
@@ -120,8 +121,6 @@ class FileCollectorTest {
 
     private FileCollector newCollector(LanguageVersion forcedVersion) {
         LanguageVersionDiscoverer discoverer = new LanguageVersionDiscoverer(LanguageRegistry.PMD, forcedVersion);
-        FileCollector collector = FileCollector.newCollector(discoverer, new TestMessageReporter());
-        collector.relativizeWith(tempFolder.toAbsolutePath());
-        return collector;
+        return FileCollector.newCollector(discoverer, new TestMessageReporter());
     }
 }

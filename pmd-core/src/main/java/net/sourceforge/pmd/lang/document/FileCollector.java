@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.document;
 
 import java.io.Closeable;
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.Charset;
@@ -22,7 +21,6 @@ import java.nio.file.ProviderNotFoundException;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumSet;
@@ -33,7 +31,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +41,6 @@ import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
-import net.sourceforge.pmd.renderers.FileNameRenderer;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.log.MessageReporter;
 
@@ -65,7 +61,6 @@ public final class FileCollector implements AutoCloseable {
     private final LanguageVersionDiscoverer discoverer;
     private final MessageReporter reporter;
     private final FileId outerFsPath;
-    private final List<Path> relativizeRootPaths = new ArrayList<>();
     private boolean closed;
 
     // construction
@@ -92,7 +87,6 @@ public final class FileCollector implements AutoCloseable {
     public FileCollector newCollector(MessageReporter logger) {
         FileCollector fileCollector = new FileCollector(discoverer, logger, null);
         fileCollector.charset = this.charset;
-        fileCollector.relativizeRootPaths.addAll(this.relativizeRootPaths);
         return fileCollector;
     }
 
@@ -259,61 +253,6 @@ public final class FileCollector implements AutoCloseable {
         return true;
     }
 
-    /**
-     * Return the textfile's display name. Takes the shortest path we
-     * can construct from the relativize roots.
-     *
-     * <p>package private for test only</p>
-     */
-    static String getDisplayName(FileId file, List<Path> relativizeRoots) {
-        String best = file.toAbsolutePath();
-        for (Path root : relativizeRoots) {
-            if (isFileSystemRoot(root)) {
-                // Absolutize the path. Since the relativize roots are
-                // sorted by ascending length, this should be the first in the list
-                // (so another root can override it).
-                best = file.toAbsolutePath();
-                continue;
-            }
-
-            String relative = relativizePath(root.toAbsolutePath().toString(), file.toAbsolutePath());
-            if (countSegments(relative) < countSegments(best)) {
-                best = relative;
-            }
-        }
-        return best;
-    }
-
-    private static int countSegments(String best) {
-        return StringUtils.countMatches(best, File.separatorChar);
-    }
-
-    private static String relativizePath(String base, String other) {
-        String[] baseSegments = base.split("[/\\\\]");
-        String[] otherSegments = other.split("[/\\\\]");
-        int prefixLength = 0;
-        int maxi = Math.min(baseSegments.length, otherSegments.length);
-        while (prefixLength < maxi && baseSegments[prefixLength].equals(otherSegments[prefixLength])) {
-            prefixLength++;
-        }
-
-        if (prefixLength == 0) {
-            return other;
-        }
-
-        List<String> relative = new ArrayList<>();
-        for (int i = prefixLength; i < baseSegments.length; i++) {
-            relative.add("..");
-        }
-        relative.addAll(Arrays.asList(otherSegments).subList(prefixLength, otherSegments.length));
-        return String.join(File.separator, relative);
-    }
-
-    /** Return whether the path is the root path (/). */
-    private static boolean isFileSystemRoot(Path root) {
-        return root.isAbsolute() && root.getNameCount() == 0;
-    }
-
 
     /**
      * Add a directory recursively using {@link #addFile(Path)} on
@@ -445,45 +384,6 @@ public final class FileCollector implements AutoCloseable {
      */
     public void setCharset(Charset charset) {
         this.charset = Objects.requireNonNull(charset);
-    }
-
-    /**
-     * Add a prefix that is used to relativize file paths as their display name.
-     * For instance, when adding a file {@code /tmp/src/main/java/org/foo.java},
-     * and relativizing with {@code /tmp/src/}, the registered {@link TextFile}
-     * will have a path id of {@code /tmp/src/main/java/org/foo.java}, and a
-     * display name of {@code main/java/org/foo.java}.
-     *
-     * <p>This only matters for files added from a {@link Path} object.
-     *
-     * @param path Path with which to relativize
-     */
-    public void relativizeWith(Path path) {
-        this.relativizeRootPaths.add(Objects.requireNonNull(path));
-        this.relativizeRootPaths.sort(Comparator.comparingInt(Path::getNameCount).thenComparing(o -> o));
-    }
-
-    // todo doc
-    public FileNameRenderer getFileNameRenderer() {
-        return new FileNameRenderer() {
-            private final List<Path> relativizeRootPaths = new ArrayList<>(FileCollector.this.relativizeRootPaths);
-
-            @Override
-            public String getDisplayName(FileId fileId) {
-                String localDisplayName = getLocalDisplayName(fileId);
-                if (fileId.getParentFsPath() != null) {
-                    return getDisplayName(fileId.getParentFsPath()) + "!" + localDisplayName;
-                }
-                return localDisplayName;
-            }
-
-            private String getLocalDisplayName(FileId file) {
-                if (!relativizeRootPaths.isEmpty()) {
-                    return FileCollector.getDisplayName(file, relativizeRootPaths);
-                }
-                return file.getOriginalPath();
-            }
-        };
     }
 
 

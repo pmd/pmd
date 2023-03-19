@@ -87,13 +87,13 @@ class PMDFilelistTest {
         try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
             List<TextFile> files = pmd.files().getCollectedFiles();
             assertThat(files, hasSize(2));
-            assertHasName(files.get(0), IOUtil.normalizePath("net/sourceforge/pmd/cli/src/anotherfile.dummy"), pmd.files());
-            assertHasName(files.get(1), IOUtil.normalizePath("net/sourceforge/pmd/cli/src/somefile.dummy"), pmd.files());
+            assertHasName(files.get(0), IOUtil.normalizePath("net/sourceforge/pmd/cli/src/anotherfile.dummy"), pmd);
+            assertHasName(files.get(1), IOUtil.normalizePath("net/sourceforge/pmd/cli/src/somefile.dummy"), pmd);
         }
     }
 
-    public static void assertHasName(TextFile textFile, String expected, FileCollector files) {
-        assertThat(files.getFileNameRenderer().getDisplayName(textFile), equalTo(expected));
+    public static void assertHasName(TextFile textFile, String expected, PmdAnalysis pmd) {
+        assertThat(pmd.getFileNameRenderer().getDisplayName(textFile), equalTo(expected));
     }
 
     @Test
@@ -104,9 +104,9 @@ class PMDFilelistTest {
         try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
             List<TextFile> files = pmd.files().getCollectedFiles();
             assertThat(files, hasSize(3));
-            assertHasName(files.get(0), ".." + IOUtil.normalizePath("/otherSrc/somefile.dummy"), pmd.files());
-            assertHasName(files.get(1), "anotherfile.dummy", pmd.files());
-            assertHasName(files.get(2), "somefile.dummy", pmd.files());
+            assertHasName(files.get(0), ".." + IOUtil.normalizePath("/otherSrc/somefile.dummy"), pmd);
+            assertHasName(files.get(1), "anotherfile.dummy", pmd);
+            assertHasName(files.get(2), "somefile.dummy", pmd);
         }
     }
 
@@ -119,9 +119,9 @@ class PMDFilelistTest {
         try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
             List<TextFile> files = pmd.files().getCollectedFiles();
             assertThat(files, hasSize(3));
-            assertHasName(files.get(0), "somefile.dummy", pmd.files());
-            assertHasName(files.get(1), "anotherfile.dummy", pmd.files());
-            assertHasName(files.get(2), "somefile.dummy", pmd.files());
+            assertHasName(files.get(0), "somefile.dummy", pmd);
+            assertHasName(files.get(1), "anotherfile.dummy", pmd);
+            assertHasName(files.get(2), "somefile.dummy", pmd);
         }
     }
 
@@ -133,9 +133,9 @@ class PMDFilelistTest {
         try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
             List<TextFile> files = pmd.files().getCollectedFiles();
             assertThat(files, hasSize(3));
-            assertHasName(files.get(0), RESOURCES.resolve("otherSrc/somefile.dummy").toAbsolutePath().toString(), pmd.files());
-            assertHasName(files.get(1), RESOURCES.resolve("src/anotherfile.dummy").toAbsolutePath().toString(), pmd.files());
-            assertHasName(files.get(2), RESOURCES.resolve("src/somefile.dummy").toAbsolutePath().toString(), pmd.files());
+            assertHasName(files.get(0), RESOURCES.resolve("otherSrc/somefile.dummy").toAbsolutePath().toString(), pmd);
+            assertHasName(files.get(1), RESOURCES.resolve("src/anotherfile.dummy").toAbsolutePath().toString(), pmd);
+            assertHasName(files.get(2), RESOURCES.resolve("src/somefile.dummy").toAbsolutePath().toString(), pmd);
         }
     }
 

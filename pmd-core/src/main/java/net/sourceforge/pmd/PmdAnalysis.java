@@ -6,10 +6,13 @@ package net.sourceforge.pmd;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -17,6 +20,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
@@ -41,7 +45,9 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.document.FileCollector;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.renderers.FileNameRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.reporting.ListenerInitializer;
@@ -110,7 +116,7 @@ public final class PmdAnalysis implements AutoCloseable {
         );
 
         for (Path path : config.getRelativizeRoots()) {
-            this.collector.relativizeWith(path);
+            this.relativizeWith(path);
         }
     }
 
@@ -283,6 +289,45 @@ public final class PmdAnalysis implements AutoCloseable {
         return langProperties.computeIfAbsent(language, Language::newPropertyBundle);
     }
 
+    private final List<Path> relativizeRootPaths = new ArrayList<>();
+    /**
+     * Add a prefix that is used to relativize file paths as their display name.
+     * For instance, when adding a file {@code /tmp/src/main/java/org/foo.java},
+     * and relativizing with {@code /tmp/src/}, the registered {@link TextFile}
+     * will have a path id of {@code /tmp/src/main/java/org/foo.java}, and a
+     * display name of {@code main/java/org/foo.java}.
+     *
+     * <p>This only matters for files added from a {@link Path} object.
+     *
+     * @param path Path with which to relativize
+     */
+    public void relativizeWith(Path path) {
+        this.relativizeRootPaths.add(Objects.requireNonNull(path));
+        this.relativizeRootPaths.sort(Comparator.naturalOrder());
+    }
+
+    public FileNameRenderer getFileNameRenderer() {
+        return new FileNameRenderer() {
+            private final List<Path> relativizeRootPaths = new ArrayList<>(PmdAnalysis.this.relativizeRootPaths);
+
+            @Override
+            public String getDisplayName(FileId fileId) {
+                String localDisplayName = getLocalDisplayName(fileId);
+                if (fileId.getParentFsPath() != null) {
+                    return getDisplayName(fileId.getParentFsPath()) + "!" + localDisplayName;
+                }
+                return localDisplayName;
+            }
+
+            private String getLocalDisplayName(FileId file) {
+                if (!relativizeRootPaths.isEmpty()) {
+                    return PmdAnalysis.getDisplayName(file, relativizeRootPaths);
+                }
+                return file.getOriginalPath();
+            }
+        };
+    }
+
     /**
      * Run PMD with the current state of this instance. This will start
      * and finish the registered renderers, and close all
@@ -333,7 +378,7 @@ public final class PmdAnalysis implements AutoCloseable {
             // Initialize listeners
             try (ListenerInitializer initializer = listener.initializer()) {
                 initializer.setNumberOfFilesToAnalyze(textFiles.size());
-                initializer.setFileNameRenderer(files().getFileNameRenderer());
+                initializer.setFileNameRenderer(getFileNameRenderer());
             }
         } catch (Exception e) {
             reporter.errorEx("Exception while initializing analysis listeners", e);
@@ -404,7 +449,7 @@ public final class PmdAnalysis implements AutoCloseable {
         List<GlobalAnalysisListener> rendererListeners = new ArrayList<>(renderers.size());
         for (Renderer renderer : renderers) {
             try {
-                renderer.setFileNameRenderer(files().getFileNameRenderer());
+                renderer.setFileNameRenderer(getFileNameRenderer());
                 @SuppressWarnings("PMD.CloseResource")
                 GlobalAnalysisListener listener =
                     Objects.requireNonNull(renderer.newListener(), "Renderer should provide non-null listener");
@@ -552,5 +597,60 @@ public final class PmdAnalysis implements AutoCloseable {
             reporter.warn("This analysis could be faster, please consider using Incremental Analysis: "
                             + "https://pmd.github.io/{0}/pmd_userdocs_incremental_analysis.html", version);
         }
+    }
+
+    /**
+     * Return the textfile's display name. Takes the shortest path we
+     * can construct from the relativize roots.
+     *
+     * <p>package private for test only</p>
+     */
+    public static String getDisplayName(FileId file, List<Path> relativizeRoots) {
+        String best = file.toAbsolutePath();
+        for (Path root : relativizeRoots) {
+            if (isFileSystemRoot(root)) {
+                // Absolutize the path. Since the relativize roots are
+                // sorted by ascending length, this should be the first in the list
+                // (so another root can override it).
+                best = file.toAbsolutePath();
+                continue;
+            }
+
+            String relative = relativizePath(root.toAbsolutePath().toString(), file.toAbsolutePath());
+            if (countSegments(relative) < countSegments(best)) {
+                best = relative;
+            }
+        }
+        return best;
+    }
+
+    private static int countSegments(String best) {
+        return StringUtils.countMatches(best, File.separatorChar);
+    }
+
+    private static String relativizePath(String base, String other) {
+        String[] baseSegments = base.split("[/\\\\]");
+        String[] otherSegments = other.split("[/\\\\]");
+        int prefixLength = 0;
+        int maxi = Math.min(baseSegments.length, otherSegments.length);
+        while (prefixLength < maxi && baseSegments[prefixLength].equals(otherSegments[prefixLength])) {
+            prefixLength++;
+        }
+
+        if (prefixLength == 0) {
+            return other;
+        }
+
+        List<String> relative = new ArrayList<>();
+        for (int i = prefixLength; i < baseSegments.length; i++) {
+            relative.add("..");
+        }
+        relative.addAll(Arrays.asList(otherSegments).subList(prefixLength, otherSegments.length));
+        return String.join(File.separator, relative);
+    }
+
+    /** Return whether the path is the root path (/). */
+    private static boolean isFileSystemRoot(Path root) {
+        return root.isAbsolute() && root.getNameCount() == 0;
     }
 }
