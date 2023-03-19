@@ -94,10 +94,6 @@ public class IDEAJRenderer extends AbstractIncrementingRenderer {
         return className.substring(0, className.length() - 5);
     }
 
-    private String getSimpleFileName(String fileName) {
-        return fileName.substring(fileName.lastIndexOf(FILE_SEPARATOR) + 1);
-    }
-
     private static class SourcePath {
 
         private Set<String> paths = new HashSet<>();
