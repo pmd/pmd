@@ -176,7 +176,7 @@ function pmd_ci_build_run() {
 # Deploys the binary distribution
 #
 function pmd_ci_deploy_build_artifacts() {
-    # Deploy to sourceforge files
+    # Deploy to sourceforge files https://sourceforge.net/projects/pmd/files/pmd/
     pmd_ci_sourceforge_uploadFile "pmd/${PMD_CI_MAVEN_PROJECT_VERSION}" "pmd-dist/target/pmd-bin-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
     pmd_ci_sourceforge_uploadFile "pmd/${PMD_CI_MAVEN_PROJECT_VERSION}" "pmd-dist/target/pmd-src-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
 
@@ -193,6 +193,7 @@ function pmd_ci_deploy_build_artifacts() {
 
 #
 # Builds and uploads the documentation site
+# Renders release notes and uploads them as ReadMe.md to sourceforge
 #
 function pmd_ci_build_and_upload_doc() {
     pmd_doc_generate_jekyll_site
@@ -207,6 +208,20 @@ function pmd_ci_build_and_upload_doc() {
     pmd_code_uploadDocumentation "${PMD_CI_MAVEN_PROJECT_VERSION}" "docs/pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
     # Deploy javadoc to https://docs.pmd-code.org/apidocs/*/${PMD_CI_MAVEN_PROJECT_VERSION}/
     pmd_code_uploadJavadoc "${PMD_CI_MAVEN_PROJECT_VERSION}" "$(pwd)"
+
+    # render release notes
+    # updating github release text
+    rm -f .bundle/config
+    bundle config set --local path vendor/bundle
+    bundle config set --local with release_notes_preprocessing
+    bundle install
+    # renders, and skips the first 6 lines - the Jekyll front-matter
+    local rendered_release_notes
+    rendered_release_notes=$(bundle exec docs/render_release_notes.rb docs/pages/release_notes.md | tail -n +6)
+    local release_name
+    release_name="PMD ${PMD_CI_MAVEN_PROJECT_VERSION} ($(date -u +%d-%B-%Y))"
+    # Upload to https://sourceforge.net/projects/pmd/files/pmd/${PMD_CI_MAVEN_PROJECT_VERSION}/ReadMe.md
+    pmd_ci_sourceforge_uploadReleaseNotes "pmd/${PMD_CI_MAVEN_PROJECT_VERSION}" "${rendered_release_notes}"
 
     if pmd_ci_maven_isSnapshotBuild && [ "${PMD_CI_BRANCH}" = "master" ]; then
         # only for snapshot builds from branch master
@@ -228,18 +243,8 @@ function pmd_ci_build_and_upload_doc() {
         # remove old javadoc
         pmd_code_removeJavadoc "${PMD_CI_MAVEN_PROJECT_VERSION}-SNAPSHOT"
 
-        # updating github release text
-        rm -f .bundle/config
-        bundle config set --local path vendor/bundle
-        bundle config set --local with release_notes_preprocessing
-        bundle install
-        # renders, and skips the first 6 lines - the Jekyll front-matter
-        local rendered_release_notes
-        rendered_release_notes=$(bundle exec docs/render_release_notes.rb docs/pages/release_notes.md | tail -n +6)
-        local release_name
-        release_name="PMD ${PMD_CI_MAVEN_PROJECT_VERSION} ($(date -u +%d-%B-%Y))"
+        # github release only for releases
         pmd_ci_gh_releases_updateRelease "$GH_RELEASE" "$release_name" "${rendered_release_notes}"
-        pmd_ci_sourceforge_uploadReleaseNotes "pmd/${PMD_CI_MAVEN_PROJECT_VERSION}" "${rendered_release_notes}"
 
         local rendered_release_notes_with_links
         rendered_release_notes_with_links="
@@ -252,6 +257,7 @@ ${rendered_release_notes}"
 
         # updates https://pmd.github.io/latest/ and https://pmd.github.io/pmd-${PMD_CI_MAVEN_PROJECT_VERSION}
         publish_release_documentation_github
+        # rsync site to https://pmd.sourceforge.io/pmd-${PMD_CI_MAVEN_PROJECT_VERSION}
         pmd_ci_sourceforge_rsyncSnapshotDocumentation "${PMD_CI_MAVEN_PROJECT_VERSION}" "pmd-${PMD_CI_MAVEN_PROJECT_VERSION}"
     fi
 }
