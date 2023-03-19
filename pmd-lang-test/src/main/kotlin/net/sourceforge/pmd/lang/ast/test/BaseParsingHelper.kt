@@ -118,7 +118,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     fun parse(
         sourceCode: String,
         version: String? = null,
-        fileName: String = PathId.UNKNOWN
+        fileName: PathId = PathId.UNKNOWN
     ): T {
         val lversion = if (version == null) defaultVersion else getVersion(version)
         val params = params.copy(defaultVerString = lversion.version)
@@ -159,14 +159,18 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
      */
     @JvmOverloads
     open fun parseResource(resource: String, version: String? = null): T =
-        parse(readResource(resource), version, fileName = resource)
+        parse(
+            readResource(resource),
+            version,
+            fileName = PathId.fromPathLikeString(params.resourcePrefix + resource)
+        )
 
     /**
      * Fetches and [parse]s the [path].
      */
     @JvmOverloads
     open fun parseFile(path: Path, version: String? = null): T =
-            parse(IOUtil.readToString(Files.newBufferedReader(path)), version, fileName = path.toAbsolutePath().toString())
+        parse(IOUtil.readToString(Files.newBufferedReader(path)), version, fileName = PathId.forPath(path))
 
     /**
      * Fetches the source of the given [clazz].
@@ -224,7 +228,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     fun executeRule(
         rule: Rule,
         code: String,
-        fileName: String = "testfile.${language.extensions[0]}"
+        fileName: PathId = PathId.fromPathLikeString("testfile.${language.extensions[0]}")
     ): Report {
         if (rule.language == null)
             rule.language = language
@@ -251,6 +255,6 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         executeRule(
             rule,
             code = Files.newBufferedReader(path).readText(),
-            fileName = path.toString()
+            fileName = PathId.forPath(path)
         )
 }

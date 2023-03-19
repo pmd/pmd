@@ -145,7 +145,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
             // rule violations
             while (violations.hasNext()) {
                 RuleViolation rv = violations.next();
-                String nextFilename = determineFileName(rv.getFilename());
+                String nextFilename = determineFileName(rv.getFileId());
                 if (!nextFilename.equals(filename)) {
                     // New File
                     if (filename != null) {
@@ -194,7 +194,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
             for (Report.ProcessingError pe : errors) {
                 writeNewLine();
                 xmlWriter.writeStartElement("error");
-                xmlWriter.writeAttribute("filename", determineFileName(pe.getFile()));
+                xmlWriter.writeAttribute("filename", determineFileName(pe.getFileId()));
                 xmlWriter.writeAttribute("msg", pe.getMsg());
                 writeNewLine();
                 xmlWriter.writeCData(pe.getDetail());
@@ -207,7 +207,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
                 for (Report.SuppressedViolation s : suppressed) {
                     writeNewLine();
                     xmlWriter.writeStartElement("suppressedviolation");
-                    xmlWriter.writeAttribute("filename", determineFileName(s.getRuleViolation().getFilename()));
+                    xmlWriter.writeAttribute("filename", determineFileName(s.getRuleViolation().getFileId()));
                     xmlWriter.writeAttribute("suppressiontype", s.getSuppressor().getId().toLowerCase(Locale.ROOT));
                     xmlWriter.writeAttribute("msg", s.getRuleViolation().getDescription());
                     xmlWriter.writeAttribute("usermsg", s.getUserMessage() == null ? "" : s.getUserMessage());

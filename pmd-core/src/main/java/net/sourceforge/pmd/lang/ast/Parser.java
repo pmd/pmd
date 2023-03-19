@@ -59,7 +59,7 @@ public interface Parser {
          * not be interpreted, it may not be a file-system path.
          */
         public String getFileDisplayName() {
-            return textDoc.getPathId().getOriginalFileName();
+            return textDoc.getPathId().getOriginalPath();
         }
 
         /**

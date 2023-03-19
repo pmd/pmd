@@ -121,7 +121,6 @@ class FileAnalysisCacheTest {
         cache.isUpToDate(sourceFile);
 
         final RuleViolation rv = mock(RuleViolation.class);
-        when(rv.getFilename()).thenReturn(sourceFile.getPathId().toUriString());
         final TextRange2d textLocation = TextRange2d.range2d(1, 2, 3, 4);
         when(rv.getLocation()).thenReturn(FileLocation.range(sourceFile.getPathId(), textLocation));
         final net.sourceforge.pmd.Rule rule = mock(net.sourceforge.pmd.Rule.class, Mockito.RETURNS_SMART_NULLS);

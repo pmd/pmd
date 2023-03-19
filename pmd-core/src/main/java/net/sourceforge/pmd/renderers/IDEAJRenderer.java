@@ -69,8 +69,9 @@ public class IDEAJRenderer extends AbstractIncrementingRenderer {
             buf.setLength(0);
             RuleViolation rv = violations.next();
             buf.append(rv.getDescription()).append(System.lineSeparator());
-            buf.append(" at ").append(getFullyQualifiedClassName(rv.getFilename(), sourcePath)).append(".method(");
-            buf.append(getSimpleFileName(rv.getFilename())).append(':').append(rv.getBeginLine()).append(')');
+            // todo is this the right thing?                                   vvvvvvvvvvvvvvvvvvvvvv
+            buf.append(" at ").append(getFullyQualifiedClassName(rv.getFileId().getOriginalPath(), sourcePath)).append(".method(");
+            buf.append(rv.getFileId().getFileName()).append(':').append(rv.getBeginLine()).append(')');
             writer.println(buf);
         }
     }

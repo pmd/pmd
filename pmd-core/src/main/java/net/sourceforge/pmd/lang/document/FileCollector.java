@@ -481,7 +481,7 @@ public final class FileCollector implements AutoCloseable {
                 if (!relativizeRootPaths.isEmpty()) {
                     return FileCollector.getDisplayName(file, relativizeRootPaths);
                 }
-                return file.getOriginalFileName();
+                return file.getOriginalPath();
             }
         };
     }

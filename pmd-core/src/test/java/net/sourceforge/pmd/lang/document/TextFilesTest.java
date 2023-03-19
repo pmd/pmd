@@ -38,7 +38,7 @@ class TextFilesTest {
         Path file = makeTmpFile(StandardCharsets.UTF_8, "some content");
         try (TextFile tf = TextFile.forPath(file, StandardCharsets.UTF_8, dummyVersion())) {
             assertEquals(file.toAbsolutePath().toUri().toString(), tf.getPathId().toUriString());
-            assertEquals(file.toString(), tf.getPathId().getOriginalFileName());
+            assertEquals(file.toString(), tf.getPathId().getOriginalPath());
             assertEquals(file.getFileName().toString(), tf.getPathId().getFileName());
             assertEquals(dummyVersion(), tf.getLanguageVersion());
             assertEquals(Chars.wrap("some content"), tf.readContents().getNormalizedText());
@@ -89,7 +89,7 @@ class TextFilesTest {
         PMDConfiguration config = new PMDConfiguration();
         config.setForceLanguageVersion(DummyLanguageModule.getInstance().getDefaultVersion());
         try (TextFile tf = TextFile.dataSourceCompat(ds, config)) {
-            assertEquals(ds.getNiceFileName(false, null), tf.getPathId().getOriginalFileName());
+            assertEquals(ds.getNiceFileName(false, null), tf.getPathId().getOriginalPath());
             assertEquals(Chars.wrap("some content"), tf.readContents().getNormalizedText());
         }
     }

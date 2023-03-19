@@ -7,10 +7,9 @@ package net.sourceforge.pmd.renderers;
 import java.io.PrintWriter;
 import java.io.Writer;
 
-import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.cli.PMDParameters;
 import net.sourceforge.pmd.internal.util.IOUtil;
+import net.sourceforge.pmd.lang.document.PathId;
 import net.sourceforge.pmd.properties.AbstractPropertySource;
 
 /**
@@ -22,6 +21,7 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
 
     protected boolean showSuppressedViolations = true;
     protected PrintWriter writer;
+    private FileNameRenderer fileNameRenderer = PathId::getOriginalPath;
 
     public AbstractRenderer(String name, String description) {
         this.name = name;
@@ -63,20 +63,19 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
         this.showSuppressedViolations = showSuppressedViolations;
     }
 
+    @Override
+    public void setFileNameRenderer(FileNameRenderer fileNameRenderer) {
+        this.fileNameRenderer = fileNameRenderer;
+    }
+
     /**
      * Determines the filename that should be used in the report depending on the
      * option "shortnames". If the option is enabled, then the filename in the report
      * is without the directory prefix of the directories, that have been analyzed.
-     * If the option "shortnames" is not enabled, then the inputFileName is returned as-is.
-     *
-     * @param inputFileName
-     * @return
-     *
-     * @see PMDConfiguration#isReportShortNames()
-     * @see PMDParameters#isShortnames()
+     * If the option "shortnames" is not enabled, then the fileId is returned as-is.
      */
-    protected String determineFileName(String inputFileName) {
-        return inputFileName; // now the TextFile always has a short display name if it was created so.
+    protected String determineFileName(PathId fileId) {
+        return fileNameRenderer.getDisplayName(fileId);
     }
 
     @Override

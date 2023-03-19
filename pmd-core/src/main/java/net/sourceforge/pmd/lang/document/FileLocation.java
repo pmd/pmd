@@ -133,7 +133,7 @@ public final class FileLocation {
      * Formats the start position as e.g. {@code "/path/to/file:1:2"}.
      */
     public String startPosToStringWithFile() {
-        return getFileId().getOriginalFileName() + ":" + getStartPos().toDisplayStringWithColon();
+        return getFileId().getOriginalPath() + ":" + getStartPos().toDisplayStringWithColon();
     }
 
     /**

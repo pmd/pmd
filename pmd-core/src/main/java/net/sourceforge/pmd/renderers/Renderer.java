@@ -108,6 +108,8 @@ public interface Renderer extends PropertySource {
      */
     Writer getWriter();
 
+    void setFileNameRenderer(FileNameRenderer fileNameRenderer);
+
     /**
      * Set the Writer for the Renderer.
      *

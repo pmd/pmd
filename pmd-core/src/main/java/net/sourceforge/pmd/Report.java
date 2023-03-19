@@ -133,8 +133,8 @@ public final class Report {
             }
         }
 
-        public String getFile() {
-            return file.toUriString();
+        public PathId getFileId() {
+            return file;
         }
 
         public Throwable getError() {

@@ -58,7 +58,7 @@ public class SarifLogBuilder {
 
     public SarifLogBuilder addRunTimeError(Report.ProcessingError error) {
         ArtifactLocation artifactLocation = ArtifactLocation.builder()
-                .uri(error.getFile())
+                .uri(error.getFileId().toUriString())
                 .build();
 
         PhysicalLocation physicalLocation = PhysicalLocation.builder()
@@ -147,7 +147,7 @@ public class SarifLogBuilder {
 
     private Location getRuleViolationLocation(RuleViolation rv) {
         ArtifactLocation artifactLocation = ArtifactLocation.builder()
-                .uri(rv.getFilename())
+                .uri(rv.getFileId().toUriString())
                 .build();
 
         Region region = Region.builder()

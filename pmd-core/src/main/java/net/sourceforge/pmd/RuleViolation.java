@@ -30,7 +30,7 @@ public interface RuleViolation {
      * in an unspecified order.
      */
     Comparator<RuleViolation> DEFAULT_COMPARATOR =
-        Comparator.comparing(RuleViolation::getFilename)
+        Comparator.comparing(RuleViolation::getFileId)
                   .thenComparingInt(RuleViolation::getBeginLine)
                   .thenComparingInt(RuleViolation::getBeginColumn)
                   .thenComparing(RuleViolation::getDescription, Comparator.nullsLast(Comparator.naturalOrder()))
@@ -81,17 +81,8 @@ public interface RuleViolation {
     FileLocation getLocation();
 
     /**
-     * Get the source file name in which this violation was identified.
-     *
-     * @return The source file name.
-     *
-     * @deprecated Use {@link FileLocation#getFileId()}
+     * Return the ID of the file where the violation was found.
      */
-    @Deprecated
-    default String getFilename() {
-        return getLocation().getFileId().toUriString();
-    }
-
     default PathId getFileId() {
         return getLocation().getFileId();
     }

@@ -82,7 +82,7 @@ class AbstractRuleTest {
 
         RuleViolation rv = new ParametricRuleViolation(r, s, r.getMessage());
         assertEquals(1, rv.getBeginLine(), "Line number mismatch!");
-        assertEquals("abc", rv.getFilename(), "Filename mismatch!");
+        assertEquals("abc", rv.getFileId().getOriginalPath(), "Filename mismatch!");
         assertEquals(r, rv.getRule(), "Rule object mismatch!");
         assertEquals("my rule msg", rv.getDescription(), "Rule msg mismatch!");
         assertEquals("foo", rv.getRule().getRuleSetName(), "RuleSet name mismatch!");
@@ -94,7 +94,7 @@ class AbstractRuleTest {
         DummyRootNode s = helper.parse("abc()", PathId.fromPathLikeString("filename"));
         RuleViolation rv = new ParametricRuleViolation(r, s, "specificdescription");
         assertEquals(1, rv.getBeginLine(), "Line number mismatch!");
-        assertEquals("filename", rv.getFilename(), "Filename mismatch!");
+        assertEquals("filename", rv.getFileId().getOriginalPath(), "Filename mismatch!");
         assertEquals(r, rv.getRule(), "Rule object mismatch!");
         assertEquals("specificdescription", rv.getDescription(), "Rule description mismatch!");
     }

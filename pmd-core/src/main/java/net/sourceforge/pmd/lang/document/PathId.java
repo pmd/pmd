@@ -28,7 +28,7 @@ public interface PathId extends Comparable<PathId> {
 
     String getFileName();
 
-    String getOriginalFileName();
+    String getOriginalPath();
 
     String toAbsolutePath();
 
@@ -59,7 +59,7 @@ public interface PathId extends Comparable<PathId> {
         }
 
         @Override
-        public String getOriginalFileName() {
+        public String getOriginalPath() {
             return "stdin";
         }
 
@@ -83,7 +83,9 @@ public interface PathId extends Comparable<PathId> {
 
             @Override
             public String toUriString() {
-                return str;
+                // this is mostly just to make sure that renderers do
+                // not use that by default.
+                return "unknown://" + str;
             }
 
             @Override
@@ -92,7 +94,7 @@ public interface PathId extends Comparable<PathId> {
             }
 
             @Override
-            public String getOriginalFileName() {
+            public String getOriginalPath() {
                 return str;
             }
 
@@ -132,7 +134,7 @@ public interface PathId extends Comparable<PathId> {
             }
 
             @Override
-            public String getOriginalFileName() {
+            public String getOriginalPath() {
                 return path.toString();
             }
 
@@ -181,8 +183,8 @@ public interface PathId extends Comparable<PathId> {
             }
 
             @Override
-            public String getOriginalFileName() {
-                return self.getOriginalFileName();
+            public String getOriginalPath() {
+                return self.getOriginalPath();
             }
 
             @Override

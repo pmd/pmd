@@ -94,7 +94,7 @@ public interface TextDocument extends Closeable {
      * Returns {@link TextFile#getDisplayName()} for the text file backing this document.
      */
     default String getDisplayName() {
-        return getPathId().getOriginalFileName();
+        return getPathId().getOriginalPath();
     }
 
 

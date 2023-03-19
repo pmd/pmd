@@ -6,6 +6,7 @@ package net.sourceforge.pmd;
 
 import static net.sourceforge.pmd.ReportTest.violation;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Comparator;
@@ -34,7 +35,7 @@ class RuleViolationTest {
         RuleViolation r = new ParametricRuleViolation(rule, s, rule.getMessage());
         assertEquals(rule, r.getRule(), "object mismatch");
         assertEquals(1, r.getBeginLine(), "line number is wrong");
-        assertEquals("filename", r.getFilename(), "filename is wrong");
+        assertSame(filename, r.getFileId(), "filename is wrong");
     }
 
     @Test
@@ -44,7 +45,7 @@ class RuleViolationTest {
         RuleViolation r = new ParametricRuleViolation(rule, s, "description");
         assertEquals(rule, r.getRule(), "object mismatch");
         assertEquals(1, r.getBeginLine(), "line number is wrong");
-        assertEquals("filename", r.getFilename(), "filename is wrong");
+        assertSame(filename, r.getFileId(), "filename is wrong");
         assertEquals("description", r.getDescription(), "description is wrong");
     }
 
