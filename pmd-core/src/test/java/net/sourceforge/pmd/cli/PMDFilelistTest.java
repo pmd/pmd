@@ -93,7 +93,7 @@ class PMDFilelistTest {
     }
 
     public static void assertHasName(TextFile textFile, String expected, PmdAnalysis pmd) {
-        assertThat(pmd.getFileNameRenderer().getDisplayName(textFile), equalTo(expected));
+        assertThat(pmd.fileNameRenderer().getDisplayName(textFile), equalTo(expected));
     }
 
     @Test

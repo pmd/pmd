@@ -42,7 +42,7 @@ class NioTextFileTest {
             assertEquals(1, collectedFiles.size());
             TextFile textFile = collectedFiles.get(0);
             assertEquals(zipArchive.toAbsolutePath() + "!/path/inside/someSource.dummy",
-                    pmd.getFileNameRenderer().getDisplayName(textFile));
+                    pmd.fileNameRenderer().getDisplayName(textFile));
         }
     }
 }

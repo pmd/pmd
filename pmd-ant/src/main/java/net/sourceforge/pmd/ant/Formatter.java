@@ -29,7 +29,7 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.document.TextFile;
-import net.sourceforge.pmd.renderers.FileNameRenderer;
+import net.sourceforge.pmd.reporting.FileNameRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;

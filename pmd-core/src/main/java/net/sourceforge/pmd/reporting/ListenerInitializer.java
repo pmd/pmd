@@ -9,7 +9,6 @@ import java.util.Collection;
 import java.util.List;
 
 import net.sourceforge.pmd.internal.util.IOUtil;
-import net.sourceforge.pmd.renderers.FileNameRenderer;
 import net.sourceforge.pmd.util.AssertionUtil;
 
 /**

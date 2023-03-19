@@ -11,6 +11,7 @@ import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.properties.AbstractPropertySource;
+import net.sourceforge.pmd.reporting.FileNameRenderer;
 
 /**
  * Abstract base class for {@link Renderer} implementations.

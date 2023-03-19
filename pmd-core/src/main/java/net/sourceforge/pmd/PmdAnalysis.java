@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -47,8 +46,8 @@ import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.document.FileCollector;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextFile;
-import net.sourceforge.pmd.renderers.FileNameRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.reporting.ConfigurableFileNameRenderer;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.reporting.ListenerInitializer;
 import net.sourceforge.pmd.reporting.ReportStats;
@@ -100,6 +99,7 @@ public final class PmdAnalysis implements AutoCloseable {
 
     private final Map<Language, LanguagePropertyBundle> langProperties = new HashMap<>();
     private boolean closed;
+    private final ConfigurableFileNameRenderer fileNameRenderer = new ConfigurableFileNameRenderer();
 
     /**
      * Constructs a new instance. The files paths (input files, filelist,
@@ -115,9 +115,6 @@ public final class PmdAnalysis implements AutoCloseable {
             reporter
         );
 
-        for (Path path : config.getRelativizeRoots()) {
-            this.relativizeWith(path);
-        }
     }
 
     /**
@@ -169,6 +166,10 @@ public final class PmdAnalysis implements AutoCloseable {
             if (props instanceof JvmLanguagePropertyBundle) {
                 ((JvmLanguagePropertyBundle) props).setClassLoader(config.getClassLoader());
             }
+        }
+
+        for (Path path : config.getRelativizeRoots()) {
+            pmd.fileNameRenderer.relativizeWith(path);
         }
 
         return pmd;
@@ -289,43 +290,9 @@ public final class PmdAnalysis implements AutoCloseable {
         return langProperties.computeIfAbsent(language, Language::newPropertyBundle);
     }
 
-    private final List<Path> relativizeRootPaths = new ArrayList<>();
-    /**
-     * Add a prefix that is used to relativize file paths as their display name.
-     * For instance, when adding a file {@code /tmp/src/main/java/org/foo.java},
-     * and relativizing with {@code /tmp/src/}, the registered {@link TextFile}
-     * will have a path id of {@code /tmp/src/main/java/org/foo.java}, and a
-     * display name of {@code main/java/org/foo.java}.
-     *
-     * <p>This only matters for files added from a {@link Path} object.
-     *
-     * @param path Path with which to relativize
-     */
-    public void relativizeWith(Path path) {
-        this.relativizeRootPaths.add(Objects.requireNonNull(path));
-        this.relativizeRootPaths.sort(Comparator.naturalOrder());
-    }
 
-    public FileNameRenderer getFileNameRenderer() {
-        return new FileNameRenderer() {
-            private final List<Path> relativizeRootPaths = new ArrayList<>(PmdAnalysis.this.relativizeRootPaths);
-
-            @Override
-            public String getDisplayName(FileId fileId) {
-                String localDisplayName = getLocalDisplayName(fileId);
-                if (fileId.getParentFsPath() != null) {
-                    return getDisplayName(fileId.getParentFsPath()) + "!" + localDisplayName;
-                }
-                return localDisplayName;
-            }
-
-            private String getLocalDisplayName(FileId file) {
-                if (!relativizeRootPaths.isEmpty()) {
-                    return PmdAnalysis.getDisplayName(file, relativizeRootPaths);
-                }
-                return file.getOriginalPath();
-            }
-        };
+    public ConfigurableFileNameRenderer fileNameRenderer() {
+        return fileNameRenderer;
     }
 
     /**
@@ -378,7 +345,7 @@ public final class PmdAnalysis implements AutoCloseable {
             // Initialize listeners
             try (ListenerInitializer initializer = listener.initializer()) {
                 initializer.setNumberOfFilesToAnalyze(textFiles.size());
-                initializer.setFileNameRenderer(getFileNameRenderer());
+                initializer.setFileNameRenderer(fileNameRenderer());
             }
         } catch (Exception e) {
             reporter.errorEx("Exception while initializing analysis listeners", e);
@@ -449,7 +416,7 @@ public final class PmdAnalysis implements AutoCloseable {
         List<GlobalAnalysisListener> rendererListeners = new ArrayList<>(renderers.size());
         for (Renderer renderer : renderers) {
             try {
-                renderer.setFileNameRenderer(getFileNameRenderer());
+                renderer.setFileNameRenderer(fileNameRenderer());
                 @SuppressWarnings("PMD.CloseResource")
                 GlobalAnalysisListener listener =
                     Objects.requireNonNull(renderer.newListener(), "Renderer should provide non-null listener");
