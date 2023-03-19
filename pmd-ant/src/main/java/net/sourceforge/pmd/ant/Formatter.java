@@ -29,10 +29,12 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.renderers.FileNameRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.reporting.ListenerInitializer;
 
 @InternalApi
 public class Formatter {
@@ -252,6 +254,16 @@ public class Formatter {
 
         return new GlobalAnalysisListener() {
             final GlobalAnalysisListener listener = renderer.newListener();
+
+            @Override
+            public ListenerInitializer initializer() {
+                return new ListenerInitializer() {
+                    @Override
+                    public void setFileNameRenderer(FileNameRenderer fileNameRenderer) {
+                        renderer.setFileNameRenderer(fileNameRenderer);
+                    }
+                };
+            }
 
             @Override
             public FileAnalysisListener startFileAnalysis(TextFile file) {

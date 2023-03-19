@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Timeout;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.impl.javacc.MalformedSourceException;
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
+import net.sourceforge.pmd.lang.document.PathId;
 import net.sourceforge.pmd.lang.java.BaseJavaTreeDumpTest;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
@@ -44,7 +45,7 @@ class ParserCornersTest extends BaseJavaTreeDumpTest {
     @Test
     void testInvalidUnicodeEscape() {
         MalformedSourceException thrown = assertThrows(MalformedSourceException.class, // previously Error
-                () -> java.parse("\\u00k0", null, "x/filename.java"));
+                () -> java.parse("\\u00k0", null, PathId.fromPathLikeString("x/filename.java")));
         assertThat(thrown.getMessage(), startsWith("Source format error in file 'x/filename.java' at line 1, column 1: Invalid unicode escape"));
     }
 

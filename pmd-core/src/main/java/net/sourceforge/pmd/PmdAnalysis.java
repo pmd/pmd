@@ -333,6 +333,7 @@ public final class PmdAnalysis implements AutoCloseable {
             // Initialize listeners
             try (ListenerInitializer initializer = listener.initializer()) {
                 initializer.setNumberOfFilesToAnalyze(textFiles.size());
+                initializer.setFileNameRenderer(files().getFileNameRenderer());
             }
         } catch (Exception e) {
             reporter.errorEx("Exception while initializing analysis listeners", e);
@@ -395,7 +396,7 @@ public final class PmdAnalysis implements AutoCloseable {
     }
 
 
-    private static GlobalAnalysisListener createComposedRendererListener(List<Renderer> renderers) throws Exception {
+    private GlobalAnalysisListener createComposedRendererListener(List<Renderer> renderers) throws Exception {
         if (renderers.isEmpty()) {
             return GlobalAnalysisListener.noop();
         }
@@ -403,6 +404,7 @@ public final class PmdAnalysis implements AutoCloseable {
         List<GlobalAnalysisListener> rendererListeners = new ArrayList<>(renderers.size());
         for (Renderer renderer : renderers) {
             try {
+                renderer.setFileNameRenderer(files().getFileNameRenderer());
                 @SuppressWarnings("PMD.CloseResource")
                 GlobalAnalysisListener listener =
                     Objects.requireNonNull(renderer.newListener(), "Renderer should provide non-null listener");

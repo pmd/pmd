@@ -10,6 +10,8 @@ import net.sourceforge.pmd.cpd.TokenEntry
 import net.sourceforge.pmd.cpd.Tokenizer
 import net.sourceforge.pmd.cpd.Tokens
 import net.sourceforge.pmd.lang.ast.TokenMgrError
+import net.sourceforge.pmd.lang.document.PathId
+import net.sourceforge.pmd.lang.document.TextFile
 import net.sourceforge.pmd.test.BaseTextComparisonTest
 import org.apache.commons.lang3.StringUtils
 import java.util.*
@@ -47,7 +49,7 @@ abstract class CpdTextComparisonTest(
     @JvmOverloads
     fun doTest(fileBaseName: String, expectedSuffix: String = "", properties: Properties = defaultProperties()) {
         super.doTest(fileBaseName, expectedSuffix) { fileData ->
-            val sourceCode = SourceCode(SourceCode.StringCodeLoader(fileData.fileText, fileData.fileName))
+            val sourceCode = sourceCodeOf(fileData)
             val tokens = Tokens().also {
                 val tokenizer = newTokenizer(properties)
                 tokenizer.tokenize(sourceCode, it)
@@ -60,7 +62,7 @@ abstract class CpdTextComparisonTest(
     @JvmOverloads
     fun expectTokenMgrError(
         source: String,
-        fileName: String = SourceCode.StringCodeLoader.DEFAULT_NAME,
+        fileName: PathId = PathId.UNKNOWN,
         properties: Properties = defaultProperties()
     ): TokenMgrError =
         expectTokenMgrError(FileData(fileName, source), properties)
@@ -149,7 +151,7 @@ abstract class CpdTextComparisonTest(
 
     fun sourceCodeOf(str: String): SourceCode = SourceCode(SourceCode.StringCodeLoader(str))
     fun sourceCodeOf(fileData: FileData): SourceCode =
-        SourceCode(SourceCode.StringCodeLoader(fileData.fileText, fileData.fileName))
+        SourceCode(SourceCode.StringCodeLoader(fileData.fileText, fileData.fileName.toAbsolutePath()))
 
     fun tokenize(tokenizer: Tokenizer, str: String): Tokens =
         Tokens().also {

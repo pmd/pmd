@@ -69,8 +69,8 @@ public class IDEAJRenderer extends AbstractIncrementingRenderer {
             buf.setLength(0);
             RuleViolation rv = violations.next();
             buf.append(rv.getDescription()).append(System.lineSeparator());
-            // todo is this the right thing?                                   vvvvvvvvvvvvvvvvvvvvvv
-            buf.append(" at ").append(getFullyQualifiedClassName(rv.getFileId().getOriginalPath(), sourcePath)).append(".method(");
+            // todo is this the right thing?                                    vvvvvvvvvvvvvvvv
+            buf.append(" at ").append(getFullyQualifiedClassName(rv.getFileId().toAbsolutePath(), sourcePath)).append(".method(");
             buf.append(rv.getFileId().getFileName()).append(':').append(rv.getBeginLine()).append(')');
             writer.println(buf);
         }
@@ -91,7 +91,7 @@ public class IDEAJRenderer extends AbstractIncrementingRenderer {
     private String getFullyQualifiedClassName(String fileName, SourcePath sourcePath) {
         String classNameWithSlashes = sourcePath.clipPath(fileName);
         String className = classNameWithSlashes.replace(FILE_SEPARATOR.charAt(0), '.');
-        return className.substring(0, className.length() - 5);
+        return className.substring(0, className.length() - ".java".length());
     }
 
     private static class SourcePath {
