@@ -41,6 +41,7 @@ public class DummyParsingHelper implements Extension, BeforeEachCallback, AfterE
     public DummyRootNode parse(String code, String filename) {
         return parse(code, PathId.fromPathLikeString(filename));
     }
+
     public DummyRootNode parse(String code, PathId filename) {
         LanguageVersion version = DummyLanguageModule.getInstance().getDefaultVersion();
         ParserTask task = new ParserTask(

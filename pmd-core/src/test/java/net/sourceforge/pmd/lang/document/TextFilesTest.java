@@ -37,8 +37,9 @@ class TextFilesTest {
     void testNioFile() throws IOException {
         Path file = makeTmpFile(StandardCharsets.UTF_8, "some content");
         try (TextFile tf = TextFile.forPath(file, StandardCharsets.UTF_8, dummyVersion())) {
-            assertEquals(file.toAbsolutePath().toUri().toString(), tf.getPathId());
-            assertEquals(file.toString(), tf.getDisplayName());
+            assertEquals(file.toAbsolutePath().toUri().toString(), tf.getPathId().toUriString());
+            assertEquals(file.toString(), tf.getPathId().getOriginalFileName());
+            assertEquals(file.getFileName().toString(), tf.getPathId().getFileName());
             assertEquals(dummyVersion(), tf.getLanguageVersion());
             assertEquals(Chars.wrap("some content"), tf.readContents().getNormalizedText());
         }
@@ -49,7 +50,7 @@ class TextFilesTest {
         Path file = makeTmpFile(StandardCharsets.UTF_8, "some content").toAbsolutePath();
         try (TextFile tf = TextFile.forPath(file, StandardCharsets.UTF_8, dummyVersion())) {
             try (TextFile tfPrime = TextFile.forPath(file, StandardCharsets.UTF_8, dummyVersion())) {
-                try (TextFile stringTf = TextFile.forCharSeq("some content", PathId.fromPath(file), dummyVersion())) {
+                try (TextFile stringTf = TextFile.forCharSeq("some content", PathId.forPath(file), dummyVersion())) {
                     assertEquals(tf.getPathId(), stringTf.getPathId());
 
                     // despite same path id, they are different implementations
@@ -57,7 +58,7 @@ class TextFilesTest {
                     assertNotEquals(stringTf, tf);
 
                     // identical, but string text files use identity
-                    assertNotEquals(stringTf, TextFile.forCharSeq("some content", PathId.fromPath(file), dummyVersion()));
+                    assertNotEquals(stringTf, TextFile.forCharSeq("some content", PathId.forPath(file), dummyVersion()));
 
                     // those are identical so are equals
                     assertNotSame(tf, tfPrime);
@@ -74,8 +75,7 @@ class TextFilesTest {
         DataSource ds = DataSource.forString("text", "filename.dummy");
         PMDConfiguration config = new PMDConfiguration();
         try (TextFile tf = TextFile.dataSourceCompat(ds, config)) {
-            assertEquals("filename.dummy", tf.getPathId());
-            assertEquals("filename.dummy", tf.getDisplayName());
+            assertEquals("filename.dummy", tf.getPathId().getFileName());
             assertEquals(DummyLanguageModule.getInstance().getDefaultVersion(), tf.getLanguageVersion());
             assertEquals(Chars.wrap("text"), tf.readContents().getNormalizedText());
         }
@@ -89,8 +89,7 @@ class TextFilesTest {
         PMDConfiguration config = new PMDConfiguration();
         config.setForceLanguageVersion(DummyLanguageModule.getInstance().getDefaultVersion());
         try (TextFile tf = TextFile.dataSourceCompat(ds, config)) {
-            assertEquals(ds.getNiceFileName(false, null), tf.getPathId());
-            assertEquals(ds.getNiceFileName(false, null), tf.getDisplayName());
+            assertEquals(ds.getNiceFileName(false, null), tf.getPathId().getOriginalFileName());
             assertEquals(Chars.wrap("some content"), tf.readContents().getNormalizedText());
         }
     }
@@ -167,7 +166,7 @@ class TextFilesTest {
         Path file = makeTmpFile(StandardCharsets.UTF_8, "some content");
         try (TextFile tf = TextFile.builderForPath(file, StandardCharsets.UTF_8, dummyVersion())
                                    .build()) {
-            assertEquals(file.toAbsolutePath().toUri().toString(), tf.getPathId());
+            assertEquals(file.toAbsolutePath().toUri().toString(), tf.getPathId().toUriString());
             assertEquals(dummyVersion(), tf.getLanguageVersion());
             assertEquals(Chars.wrap("some content"), tf.readContents().getNormalizedText());
         }
@@ -185,8 +184,7 @@ class TextFilesTest {
     void testReaderFile() throws IOException {
         Path file = makeTmpFile(StandardCharsets.UTF_8, "some\r\ncontent");
         try (TextFile tf = TextFile.forReader(Files.newBufferedReader(file, StandardCharsets.UTF_8), PathId.UNKNOWN, dummyVersion())) {
-            assertEquals("filename", tf.getPathId());
-            assertEquals("filename", tf.getDisplayName());
+            assertEquals(PathId.UNKNOWN, tf.getPathId());
             assertEquals(dummyVersion(), tf.getLanguageVersion());
             assertEquals(Chars.wrap("some\ncontent"), tf.readContents().getNormalizedText());
         }
@@ -206,8 +204,7 @@ class TextFilesTest {
     @Test
     void testStringFileEscape() throws IOException {
         try (TextFile tf = TextFile.forCharSeq("cont\r\nents", PathId.UNKNOWN, dummyVersion())) {
-            assertEquals("filename", tf.getPathId());
-            assertEquals("filename", tf.getDisplayName());
+            assertEquals(PathId.UNKNOWN, tf.getPathId());
             assertEquals(dummyVersion(), tf.getLanguageVersion());
             assertEquals(Chars.wrap("cont\nents"), tf.readContents().getNormalizedText());
             assertThrows(ReadOnlyFileException.class, () -> tf.writeContents(

@@ -6,9 +6,11 @@ package net.sourceforge.pmd.cache;
 
 import static com.github.stefanbirkner.systemlambda.SystemLambda.restoreSystemProperties;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
@@ -113,7 +115,7 @@ class FileAnalysisCacheTest {
     @Test
     void testStorePersistsFilesWithViolations() throws IOException {
         final FileAnalysisCache cache = new FileAnalysisCache(newCacheFile);
-        cache.checkValidity(mock(RuleSets.class), mock(ClassLoader.class), Collections.emptySet());
+        cache.checkValidity(mock(RuleSets.class), mock(ClassLoader.class), setOf(sourceFileBackend));
         final FileAnalysisListener cacheListener = cache.startFileAnalysis(sourceFile);
         
         cache.isUpToDate(sourceFile);
@@ -130,14 +132,14 @@ class FileAnalysisCacheTest {
         cache.persist();
 
         final FileAnalysisCache reloadedCache = new FileAnalysisCache(newCacheFile);
-        reloadedCache.checkValidity(mock(RuleSets.class), mock(ClassLoader.class), Collections.emptySet());
+        reloadedCache.checkValidity(mock(RuleSets.class), mock(ClassLoader.class), setOf(sourceFileBackend));
         assertTrue(reloadedCache.isUpToDate(sourceFile),
                 "Cache believes unmodified file with violations is not up to date");
 
         final List<RuleViolation> cachedViolations = reloadedCache.getCachedViolations(sourceFile);
         assertEquals(1, cachedViolations.size(), "Cached rule violations count mismatch");
         final RuleViolation cachedViolation = cachedViolations.get(0);
-        assertEquals(sourceFile.getDisplayName(), cachedViolation.getFilename());
+        assertSame(sourceFile.getPathId(), cachedViolation.getFileId());
         assertEquals(textLocation.getStartLine(), cachedViolation.getBeginLine());
         assertEquals(textLocation.getStartColumn(), cachedViolation.getBeginColumn());
         assertEquals(textLocation.getEndLine(), cachedViolation.getEndLine());
@@ -186,7 +188,7 @@ class FileAnalysisCacheTest {
             List<RuleViolation> cachedViolations = reloadedCache.getCachedViolations(doc1);
             assertEquals(1, cachedViolations.size(), "Cached rule violations count mismatch");
             final RuleViolation cachedViolation = cachedViolations.get(0);
-            assertEquals(mockFile.getDisplayName(), cachedViolation.getFilename());
+            assertEquals(mockFile.getPathId(), cachedViolation.getLocation().getFileId());
         }
     }
 

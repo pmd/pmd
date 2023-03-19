@@ -81,7 +81,7 @@ public interface TextFile extends Closeable {
      */
     @Deprecated
     default @NonNull String getDisplayName() {
-        return getPathId().getNiceFileName();
+        return getPathId().getOriginalFileName();
     }
 
 

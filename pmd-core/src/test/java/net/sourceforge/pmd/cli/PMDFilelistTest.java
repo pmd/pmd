@@ -92,7 +92,7 @@ class PMDFilelistTest {
         }
     }
 
-    private static void assertHasName(TextFile textFile, String expected, FileCollector files) {
+    public static void assertHasName(TextFile textFile, String expected, FileCollector files) {
         assertThat(files.getFileNameRenderer().getDisplayName(textFile), equalTo(expected));
     }
 

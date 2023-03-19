@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.internal.util.BaseCloseable;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -29,6 +30,7 @@ class NioTextFile extends BaseCloseable implements TextFile {
     private boolean readOnly;
 
     NioTextFile(Path path,
+                @Nullable PathId parentFsPath,
                 Charset charset,
                 LanguageVersion languageVersion,
                 boolean readOnly) {
@@ -42,7 +44,7 @@ class NioTextFile extends BaseCloseable implements TextFile {
         this.languageVersion = languageVersion;
         // using the URI here, that handles files inside zip archives automatically (schema "jar:file:...!/path/inside/zip")
         // normalization ensures cannonical paths
-        this.pathId = PathId.fromPath(path);
+        this.pathId = PathId.forPath(path, parentFsPath);
     }
 
     @Override

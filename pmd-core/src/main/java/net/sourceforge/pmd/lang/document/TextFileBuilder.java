@@ -8,6 +8,8 @@ import java.io.Reader;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.AssertionUtil;
 
@@ -19,6 +21,7 @@ import net.sourceforge.pmd.util.AssertionUtil;
 public abstract class TextFileBuilder {
 
     protected final LanguageVersion languageVersion;
+    protected PathId parentFsId;
 
     TextFileBuilder(LanguageVersion languageVersion) {
         this.languageVersion = AssertionUtil.requireParamNotNull("language version", languageVersion);
@@ -32,6 +35,11 @@ public abstract class TextFileBuilder {
      */
     public TextFileBuilder asReadOnly() {
         // default is appropriate if the file type is always read-only
+        return this;
+    }
+
+    public TextFileBuilder setParentFsPath(@Nullable PathId pathId) {
+        parentFsId = pathId;
         return this;
     }
 
@@ -61,19 +69,25 @@ public abstract class TextFileBuilder {
 
         @Override
         public TextFile build() {
-            return new NioTextFile(path, charset, languageVersion, readOnly);
+            return new NioTextFile(path, parentFsId, charset, languageVersion, readOnly);
         }
     }
 
     static class ForCharSeq extends TextFileBuilder {
 
         private final CharSequence charSequence;
-        private final PathId pathId;
+        private PathId pathId;
 
         ForCharSeq(CharSequence charSequence, PathId pathId, LanguageVersion languageVersion) {
             super(languageVersion);
             this.charSequence = AssertionUtil.requireParamNotNull("charseq", charSequence);
             this.pathId = AssertionUtil.requireParamNotNull("path ID", pathId);
+        }
+
+        @Override
+        public TextFileBuilder setParentFsPath(@Nullable PathId pathId) {
+            this.pathId = PathId.asChildOf(this.pathId, pathId);
+            return super.setParentFsPath(pathId);
         }
 
         @Override
@@ -85,13 +99,20 @@ public abstract class TextFileBuilder {
     static class ForReader extends TextFileBuilder {
 
         private final Reader reader;
-        private final PathId pathId;
+        private PathId pathId;
 
         ForReader(LanguageVersion languageVersion, Reader reader, PathId pathId) {
             super(languageVersion);
             this.reader = AssertionUtil.requireParamNotNull("reader", reader);
             this.pathId = AssertionUtil.requireParamNotNull("path ID", pathId);
         }
+
+        @Override
+        public TextFileBuilder setParentFsPath(@Nullable PathId pathId) {
+            this.pathId = PathId.asChildOf(this.pathId, pathId);
+            return super.setParentFsPath(pathId);
+        }
+
 
         @Override
         public TextFile build() {

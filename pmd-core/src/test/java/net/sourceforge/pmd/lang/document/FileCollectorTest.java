@@ -9,15 +9,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -27,6 +23,7 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * @author Clément Fournier
@@ -46,7 +43,7 @@ class FileCollectorTest {
         assertTrue(collector.addFile(foo), "should be dummy language");
         assertFalse(collector.addFile(bar), "should be unknown language");
 
-        assertCollected(collector, listOf("foo.dummy"));
+        assertCollected(collector, listOf(PathId.forPath(foo)));
     }
 
     @Test
@@ -58,7 +55,7 @@ class FileCollectorTest {
         FileCollector collector = newCollector(dummy.getDefaultVersion());
 
         assertTrue(collector.addFile(bar, dummy), "should be unknown language");
-        assertCollected(collector, listOf("bar.unknown"));
+        assertCollected(collector, listOf(PathId.forPath(bar)));
         assertNoErrors(collector);
     }
 
@@ -83,21 +80,21 @@ class FileCollectorTest {
     @Test
     void testAddDirectory() throws IOException {
         Path root = tempFolder;
-        newFile(root, "src/foo.dummy");
+        Path foo = newFile(root, "src/foo.dummy");
         newFile(root, "src/bar.unknown");
-        newFile(root, "src/x/bar.dummy");
+        Path bar = newFile(root, "src/x/bar.dummy");
 
         FileCollector collector = newCollector();
 
         collector.addDirectory(root.resolve("src"));
 
-        assertCollected(collector, listOf("src/foo.dummy", "src/x/bar.dummy"));
+        assertCollected(collector, listOf(PathId.forPath(foo), PathId.forPath(bar)));
     }
 
 
     @Test
     void testRelativize() {
-        String displayName = FileCollector.getDisplayName(PathId.fromPath(Paths.get("a", "b", "c")), listOf(Paths.get("a")));
+        String displayName = FileCollector.getDisplayName(PathId.forPath(Paths.get("a", "b", "c")), listOf(Paths.get("a")));
         assertEquals(displayName, Paths.get("b", "c").toString());
     }
 
@@ -108,19 +105,9 @@ class FileCollectorTest {
         return resolved;
     }
 
-    private void assertCollected(FileCollector collector, List<String> relPaths) {
-        Map<String, String> actual = new LinkedHashMap<>();
-        for (TextFile file : collector.getCollectedFiles()) {
-            actual.put(file.getDisplayName(), file.getLanguageVersion().getTerseName());
-        }
-
-        relPaths = new ArrayList<>(relPaths);
-        for (int i = 0; i < relPaths.size(); i++) {
-            // normalize, we want display names to be platform-specific
-            relPaths.set(i, relPaths.get(i).replace('/', File.separatorChar));
-        }
-
-        assertEquals(relPaths, new ArrayList<>(actual.keySet()));
+    private void assertCollected(FileCollector collector, List<PathId> expected) {
+        List<PathId> actual = CollectionUtil.map(collector.getCollectedFiles(), TextFile::getPathId);
+        assertEquals(expected, actual);
     }
 
     private void assertNoErrors(FileCollector collector) {

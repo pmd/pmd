@@ -35,7 +35,7 @@ public final class FileLocation {
 
 
     public static final Comparator<FileLocation> COMPARATOR =
-        Comparator.comparing(FileLocation::getFileName).thenComparing(COORDS_COMPARATOR);
+        Comparator.comparing(FileLocation::getFileId).thenComparing(COORDS_COMPARATOR);
 
     private final int beginLine;
     private final int endLine;
@@ -68,10 +68,9 @@ public final class FileLocation {
     }
 
     /**
-     * File name of this position. This is a display name, it shouldn't
-     * be parsed as a Path.
+     * File name of this position.
      */
-    public PathId getFileName() {
+    public PathId getFileId() {
         return fileName;
     }
 
@@ -134,7 +133,7 @@ public final class FileLocation {
      * Formats the start position as e.g. {@code "/path/to/file:1:2"}.
      */
     public String startPosToStringWithFile() {
-        return getFileName() + ":" + getStartPos().toDisplayStringWithColon();
+        return getFileId().getOriginalFileName() + ":" + getStartPos().toDisplayStringWithColon();
     }
 
     /**

@@ -12,8 +12,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Collections;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -79,7 +77,7 @@ class GlobalListenerTest {
         MyFooRule rule = new MyFooRule();
         runPmd(config, GlobalAnalysisListener.noop(), rule);
 
-        verify(mockCache).checkValidity(any(), any(), Collections.emptySet());
+        verify(mockCache).checkValidity(any(), any(), any());
         verify(mockCache, times(1)).persist();
         verify(mockCache, times(NUM_DATA_SOURCES)).isUpToDate(any());
     }
@@ -95,7 +93,7 @@ class GlobalListenerTest {
         runPmd(config, GlobalAnalysisListener.noop(), rule);
 
         // cache methods are called regardless
-        verify(mockCache).checkValidity(any(), any(), Collections.emptySet());
+        verify(mockCache).checkValidity(any(), any(), any());
         verify(mockCache, times(1)).persist();
         verify(mockCache, times(NUM_DATA_SOURCES)).isUpToDate(any());
     }
@@ -114,10 +112,10 @@ class GlobalListenerTest {
             runPmd(config, listener, rule);
         });
 
-        assertEquals("fname1.dummy", exception.getFileName());
+        assertEquals("fname1.dummy", exception.getFileName().getOriginalFileName());
 
         // cache methods are called regardless
-        verify(mockCache).checkValidity(any(), any(), Collections.emptySet());
+        verify(mockCache).checkValidity(any(), any(), any());
         verify(mockCache, times(1)).persist();
         verify(mockCache, times(1)).isUpToDate(any());
     }

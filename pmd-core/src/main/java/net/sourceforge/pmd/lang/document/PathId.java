@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.document;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 /**
  * A virtual path for a {@link TextFile}.
  *
@@ -20,10 +22,13 @@ public interface PathId extends Comparable<PathId> {
      */
     PathId UNKNOWN = fromPathLikeString("(unknown file)");
 
+    @Nullable PathId getParentFsPath();
+
     String toUriString();
 
     String getFileName();
-    String getNiceFileName();
+
+    String getOriginalFileName();
 
     String toAbsolutePath();
 
@@ -54,8 +59,13 @@ public interface PathId extends Comparable<PathId> {
         }
 
         @Override
-        public String getNiceFileName() {
+        public String getOriginalFileName() {
             return "stdin";
+        }
+
+        @Override
+        public @Nullable PathId getParentFsPath() {
+            return null;
         }
     };
 
@@ -82,7 +92,7 @@ public interface PathId extends Comparable<PathId> {
             }
 
             @Override
-            public String getNiceFileName() {
+            public String getOriginalFileName() {
                 return str;
             }
 
@@ -91,10 +101,20 @@ public interface PathId extends Comparable<PathId> {
                 return obj instanceof PathId
                     && ((PathId) obj).toUriString().equals(this.toUriString());
             }
+
+            @Override
+            public int hashCode() {
+                return toUriString().hashCode();
+            }
+
+            @Override
+            public @Nullable PathId getParentFsPath() {
+                return null;
+            }
         };
     }
 
-    static PathId fromPath(Path path) {
+    static PathId forPath(Path path, @Nullable PathId fsPath) {
         return new PathId() {
             @Override
             public String toAbsolutePath() {
@@ -112,14 +132,62 @@ public interface PathId extends Comparable<PathId> {
             }
 
             @Override
-            public String getNiceFileName() {
+            public String getOriginalFileName() {
                 return path.toString();
+            }
+
+            @Override
+            public @Nullable PathId getParentFsPath() {
+                return fsPath;
             }
 
             @Override
             public boolean equals(Object obj) {
                 return obj instanceof PathId
                     && ((PathId) obj).toUriString().equals(this.toUriString());
+            }
+
+            @Override
+            public int hashCode() {
+                return toUriString().hashCode();
+            }
+
+            @Override
+            public String toString() {
+                return "PathId.forPath(" + path + ")";
+            }
+        };
+    }
+
+    static PathId forPath(Path path) {
+        return forPath(path, null);
+    }
+
+    static PathId asChildOf(PathId self, PathId parentFsPath) {
+        return new PathId() {
+            @Override
+            public @Nullable PathId getParentFsPath() {
+                return parentFsPath;
+            }
+
+            @Override
+            public String toUriString() {
+                return self.toUriString();
+            }
+
+            @Override
+            public String getFileName() {
+                return self.getFileName();
+            }
+
+            @Override
+            public String getOriginalFileName() {
+                return self.getOriginalFileName();
+            }
+
+            @Override
+            public String toAbsolutePath() {
+                return self.toAbsolutePath();
             }
         };
     }

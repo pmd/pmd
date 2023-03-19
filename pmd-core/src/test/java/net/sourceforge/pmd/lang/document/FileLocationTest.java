@@ -20,7 +20,7 @@ class FileLocationTest {
     @Test
     void testSimple() {
         FileLocation loc = FileLocation.range(FNAME, TextRange2d.range2d(1, 1, 1, 2));
-        assertEquals("fname", loc.getFileName());
+        assertEquals(FNAME, loc.getFileId());
         assertEquals(1, loc.getStartLine());
         assertEquals(1, loc.getStartColumn());
         assertEquals(1, loc.getEndLine());

@@ -20,7 +20,7 @@ public class MalformedSourceException extends FileAnalysisException {
     public MalformedSourceException(String message, Throwable cause, FileLocation fileLocation) {
         super(message, cause);
         this.location = Objects.requireNonNull(fileLocation);
-        setFileName(fileLocation.getFileName());
+        setFileName(fileLocation.getFileId());
     }
 
     @Override
