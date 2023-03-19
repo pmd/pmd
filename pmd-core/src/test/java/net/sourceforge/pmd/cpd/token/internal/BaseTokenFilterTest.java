@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.document.FileLocation;
-import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.lang.document.PathId;
 import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.lang.document.TextRegion;
 
@@ -61,7 +61,7 @@ class BaseTokenFilterTest {
 
         @Override
         public FileLocation getReportLocation() {
-            return FileLocation.range(TextFile.UNKNOWN_FILENAME, TextRange2d.range2d(1, 1, 1, 1));
+            return FileLocation.range(PathId.UNKNOWN, TextRange2d.range2d(1, 1, 1, 1));
         }
 
         @Override

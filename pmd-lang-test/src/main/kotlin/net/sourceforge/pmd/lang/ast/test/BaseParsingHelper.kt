@@ -10,8 +10,8 @@ import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask
 import net.sourceforge.pmd.lang.ast.RootNode
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter
+import net.sourceforge.pmd.lang.document.PathId
 import net.sourceforge.pmd.lang.document.TextDocument
-import net.sourceforge.pmd.lang.document.TextFile
 import net.sourceforge.pmd.lang.rule.XPathRule
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener
@@ -118,7 +118,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     fun parse(
         sourceCode: String,
         version: String? = null,
-        fileName: String = TextFile.UNKNOWN_FILENAME
+        fileName: String = PathId.UNKNOWN
     ): T {
         val lversion = if (version == null) defaultVersion else getVersion(version)
         val params = params.copy(defaultVerString = lversion.version)

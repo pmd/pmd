@@ -17,28 +17,23 @@ import net.sourceforge.pmd.util.AssertionUtil;
  */
 class ReaderTextFile implements TextFile {
 
-    private final String name;
+    private final PathId pathId;
     private final LanguageVersion languageVersion;
     private final Reader reader;
 
-    ReaderTextFile(Reader reader, @NonNull String name, LanguageVersion languageVersion) {
+    ReaderTextFile(Reader reader, @NonNull PathId pathId, LanguageVersion languageVersion) {
         AssertionUtil.requireParamNotNull("reader", reader);
-        AssertionUtil.requireParamNotNull("file name", name);
+        AssertionUtil.requireParamNotNull("path id", pathId);
         AssertionUtil.requireParamNotNull("language version", languageVersion);
 
         this.reader = reader;
         this.languageVersion = languageVersion;
-        this.name = name;
+        this.pathId = pathId;
     }
 
     @Override
-    public @NonNull String getDisplayName() {
-        return name;
-    }
-
-    @Override
-    public String getPathId() {
-        return name;
+    public PathId getPathId() {
+        return pathId;
     }
 
     @Override
@@ -58,7 +53,7 @@ class ReaderTextFile implements TextFile {
 
     @Override
     public String toString() {
-        return "ReaderTextFile[" + name + "]";
+        return "ReaderTextFile[" + pathId + "]";
     }
 
 }

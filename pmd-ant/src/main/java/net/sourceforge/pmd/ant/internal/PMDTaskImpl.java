@@ -177,7 +177,7 @@ public class PMDTaskImpl {
 
             @Override
             public FileAnalysisListener startFileAnalysis(TextFile dataSource) {
-                String name = dataSource.getDisplayName();
+                String name = dataSource.getPathId().toUriString();
                 project.log("Processing file " + name, Project.MSG_VERBOSE);
                 return FileAnalysisListener.noop();
             }

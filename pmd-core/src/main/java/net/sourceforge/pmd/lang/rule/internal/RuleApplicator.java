@@ -106,7 +106,7 @@ public class RuleApplicator {
     private void reportException(FileAnalysisListener listener, Rule rule, Node node, Throwable e) {
         // The listener handles logging if needed,
         // it may also rethrow the error.
-        listener.onError(new ProcessingError(e, node.getTextDocument().getDisplayName()));
+        listener.onError(new ProcessingError(e, node.getTextDocument().getPathId()));
 
         // fixme - maybe duplicated logging
         LOG.warn("Exception applying rule {} on file {}, continuing with next rule", rule.getName(), node.getTextDocument().getPathId(), e);

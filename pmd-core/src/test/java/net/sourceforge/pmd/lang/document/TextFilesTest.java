@@ -49,7 +49,7 @@ class TextFilesTest {
         Path file = makeTmpFile(StandardCharsets.UTF_8, "some content").toAbsolutePath();
         try (TextFile tf = TextFile.forPath(file, StandardCharsets.UTF_8, dummyVersion())) {
             try (TextFile tfPrime = TextFile.forPath(file, StandardCharsets.UTF_8, dummyVersion())) {
-                try (TextFile stringTf = TextFile.forCharSeq("some content", file.toUri().toString(), dummyVersion())) {
+                try (TextFile stringTf = TextFile.forCharSeq("some content", PathId.fromPath(file), dummyVersion())) {
                     assertEquals(tf.getPathId(), stringTf.getPathId());
 
                     // despite same path id, they are different implementations
@@ -57,7 +57,7 @@ class TextFilesTest {
                     assertNotEquals(stringTf, tf);
 
                     // identical, but string text files use identity
-                    assertNotEquals(stringTf, TextFile.forCharSeq("some content", file.toString(), dummyVersion()));
+                    assertNotEquals(stringTf, TextFile.forCharSeq("some content", PathId.fromPath(file), dummyVersion()));
 
                     // those are identical so are equals
                     assertNotSame(tf, tfPrime);
@@ -144,7 +144,6 @@ class TextFilesTest {
     void testNioFileExplicitReadOnly() throws IOException {
         Path file = makeTmpFile(StandardCharsets.UTF_8, "some content");
         try (TextFile tf = TextFile.builderForPath(file, StandardCharsets.UTF_8, dummyVersion())
-                                   .withDisplayName(file.toString())
                                    .asReadOnly().build()) {
             assertTrue(tf.isReadOnly(), "readonly");
 
@@ -167,10 +166,8 @@ class TextFilesTest {
     void testNioFileBuilder() throws IOException {
         Path file = makeTmpFile(StandardCharsets.UTF_8, "some content");
         try (TextFile tf = TextFile.builderForPath(file, StandardCharsets.UTF_8, dummyVersion())
-                                   .withDisplayName("aname")
                                    .build()) {
             assertEquals(file.toAbsolutePath().toUri().toString(), tf.getPathId());
-            assertEquals("aname", tf.getDisplayName());
             assertEquals(dummyVersion(), tf.getLanguageVersion());
             assertEquals(Chars.wrap("some content"), tf.readContents().getNormalizedText());
         }
@@ -187,7 +184,7 @@ class TextFilesTest {
     @Test
     void testReaderFile() throws IOException {
         Path file = makeTmpFile(StandardCharsets.UTF_8, "some\r\ncontent");
-        try (TextFile tf = TextFile.forReader(Files.newBufferedReader(file, StandardCharsets.UTF_8), "filename", dummyVersion())) {
+        try (TextFile tf = TextFile.forReader(Files.newBufferedReader(file, StandardCharsets.UTF_8), PathId.UNKNOWN, dummyVersion())) {
             assertEquals("filename", tf.getPathId());
             assertEquals("filename", tf.getDisplayName());
             assertEquals(dummyVersion(), tf.getLanguageVersion());
@@ -198,7 +195,7 @@ class TextFilesTest {
     @Test
     void testReaderFileIsReadOnly() throws IOException {
         Path file = makeTmpFile(StandardCharsets.UTF_8, "some\r\ncontent");
-        try (TextFile tf = TextFile.forReader(Files.newBufferedReader(file, StandardCharsets.UTF_8), "filename", dummyVersion())) {
+        try (TextFile tf = TextFile.forReader(Files.newBufferedReader(file, StandardCharsets.UTF_8), PathId.UNKNOWN, dummyVersion())) {
             assertTrue(tf.isReadOnly(), "readonly");
             assertThrows(ReadOnlyFileException.class, () -> tf.writeContents(
                 TextFileContent.fromCharSeq("new content")
@@ -208,7 +205,7 @@ class TextFilesTest {
 
     @Test
     void testStringFileEscape() throws IOException {
-        try (TextFile tf = TextFile.forCharSeq("cont\r\nents", "filename", dummyVersion())) {
+        try (TextFile tf = TextFile.forCharSeq("cont\r\nents", PathId.UNKNOWN, dummyVersion())) {
             assertEquals("filename", tf.getPathId());
             assertEquals("filename", tf.getDisplayName());
             assertEquals(dummyVersion(), tf.getLanguageVersion());
@@ -221,7 +218,7 @@ class TextFilesTest {
 
     @Test
     void testStringFileCanBeReadMultipleTimes() throws IOException {
-        try (TextFile tf = TextFile.forCharSeq("contents", "filename", dummyVersion())) {
+        try (TextFile tf = TextFile.forCharSeq("contents", PathId.UNKNOWN, dummyVersion())) {
             assertEquals(Chars.wrap("contents"), tf.readContents().getNormalizedText());
             assertEquals(Chars.wrap("contents"), tf.readContents().getNormalizedText());
             assertEquals(Chars.wrap("contents"), tf.readContents().getNormalizedText());
@@ -230,7 +227,7 @@ class TextFilesTest {
 
     @Test
     void testStringFileIsReadonly() throws IOException {
-        try (TextFile tf = TextFile.forCharSeq("contents", "filename", dummyVersion())) {
+        try (TextFile tf = TextFile.forCharSeq("contents", PathId.UNKNOWN, dummyVersion())) {
             assertTrue(tf.isReadOnly(), "readonly");
             assertThrows(ReadOnlyFileException.class, () -> tf.writeContents(
                 TextFileContent.fromCharSeq("new content")

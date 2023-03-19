@@ -155,7 +155,6 @@ public final class FileCollector implements AutoCloseable {
         LanguageVersion languageVersion = discoverLanguage(file.toString());
         return languageVersion != null
                 && addFileImpl(TextFile.builderForPath(file, charset, languageVersion)
-                    .withDisplayName(getDisplayName(file))
                     .build());
     }
 
@@ -178,7 +177,6 @@ public final class FileCollector implements AutoCloseable {
         LanguageVersion lv = discoverer.getDefaultLanguageVersion(language);
         Objects.requireNonNull(lv);
         return addFileImpl(TextFile.builderForPath(file, charset, lv)
-                            .withDisplayName(getDisplayName(file))
                             .build());
     }
 
@@ -200,14 +198,13 @@ public final class FileCollector implements AutoCloseable {
      *
      * @return True if the file has been added
      */
-    public boolean addSourceFile(String pathId, String sourceContents) {
+    public boolean addSourceFile(PathId pathId, String sourceContents) {
         AssertionUtil.requireParamNotNull("sourceContents", sourceContents);
         AssertionUtil.requireParamNotNull("pathId", pathId);
 
-        LanguageVersion version = discoverLanguage(pathId);
+        LanguageVersion version = discoverLanguage(pathId.getFileName());
         return version != null
                 && addFileImpl(TextFile.builderForCharSeq(sourceContents, pathId, version)
-                    .withDisplayName(pathId)
                     .build());
     }
 

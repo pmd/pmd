@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -34,7 +35,9 @@ import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.cache.internal.ClasspathFingerprinter;
 import net.sourceforge.pmd.internal.util.IOUtil;
+import net.sourceforge.pmd.lang.document.PathId;
 import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 
 /**
@@ -49,8 +52,8 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
     protected static final Logger LOG = LoggerFactory.getLogger(AbstractAnalysisCache.class);
     protected static final ClasspathFingerprinter FINGERPRINTER = new ClasspathFingerprinter();
     protected final String pmdVersion;
-    protected final ConcurrentMap<String, AnalysisResult> fileResultsCache = new ConcurrentHashMap<>();
-    protected final ConcurrentMap<String, AnalysisResult> updatedResultsCache = new ConcurrentHashMap<>();
+    protected final ConcurrentMap<PathId, AnalysisResult> fileResultsCache = new ConcurrentHashMap<>();
+    protected final ConcurrentMap<PathId, AnalysisResult> updatedResultsCache = new ConcurrentHashMap<>();
     protected final CachedRuleMapper ruleMapper = new CachedRuleMapper();
     protected long rulesetChecksum;
     protected long auxClassPathChecksum;
@@ -75,13 +78,6 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
 
             if (upToDate) {
                 LOG.trace("Incremental Analysis cache HIT");
-                
-                /*
-                 * Update cached violation "filename" to match the appropriate text document,
-                 * so we can honor relativized paths for the current run
-                 */
-                final String displayName = document.getDisplayName();
-                cachedResult.getViolations().forEach(v -> ((CachedRuleViolation) v).setFileDisplayName(displayName));
                 
                 // copy results over
                 updatedResult = cachedResult;
@@ -125,7 +121,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
 
 
     @Override
-    public void checkValidity(final RuleSets ruleSets, final ClassLoader auxclassPathClassLoader) {
+    public void checkValidity(final RuleSets ruleSets, final ClassLoader auxclassPathClassLoader, Set<TextFile> files) {
         try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "validity check")) {
             boolean cacheIsValid = cacheExists();
 
@@ -222,7 +218,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
 
     @Override
     public FileAnalysisListener startFileAnalysis(TextDocument file) {
-        final String fileName = file.getPathId();
+        final PathId fileName = file.getPathId();
 
         return new FileAnalysisListener() {
             @Override

@@ -12,6 +12,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Collections;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -26,6 +28,7 @@ import net.sourceforge.pmd.cache.AnalysisCache;
 import net.sourceforge.pmd.cache.NoopAnalysisCache;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.document.PathId;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener.ViolationCounterListener;
 
@@ -76,7 +79,7 @@ class GlobalListenerTest {
         MyFooRule rule = new MyFooRule();
         runPmd(config, GlobalAnalysisListener.noop(), rule);
 
-        verify(mockCache).checkValidity(any(), any());
+        verify(mockCache).checkValidity(any(), any(), Collections.emptySet());
         verify(mockCache, times(1)).persist();
         verify(mockCache, times(NUM_DATA_SOURCES)).isUpToDate(any());
     }
@@ -92,7 +95,7 @@ class GlobalListenerTest {
         runPmd(config, GlobalAnalysisListener.noop(), rule);
 
         // cache methods are called regardless
-        verify(mockCache).checkValidity(any(), any());
+        verify(mockCache).checkValidity(any(), any(), Collections.emptySet());
         verify(mockCache, times(1)).persist();
         verify(mockCache, times(NUM_DATA_SOURCES)).isUpToDate(any());
     }
@@ -114,7 +117,7 @@ class GlobalListenerTest {
         assertEquals("fname1.dummy", exception.getFileName());
 
         // cache methods are called regardless
-        verify(mockCache).checkValidity(any(), any());
+        verify(mockCache).checkValidity(any(), any(), Collections.emptySet());
         verify(mockCache, times(1)).persist();
         verify(mockCache, times(1)).isUpToDate(any());
     }
@@ -131,9 +134,9 @@ class GlobalListenerTest {
     private void runPmd(PMDConfiguration config, GlobalAnalysisListener listener, Rule rule) {
         try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
             pmd.addRuleSet(RuleSet.forSingleRule(rule));
-            pmd.files().addSourceFile("fname1.dummy", "abc");
-            pmd.files().addSourceFile("fname2.dummy", "abcd");
-            pmd.files().addSourceFile("fname21.dummy", "abcd");
+            pmd.files().addSourceFile(PathId.fromPathLikeString("fname1.dummy"), "abc");
+            pmd.files().addSourceFile(PathId.fromPathLikeString("fname2.dummy"), "abcd");
+            pmd.files().addSourceFile(PathId.fromPathLikeString("fname21.dummy"), "abcd");
             pmd.addListener(listener);
             pmd.performAnalysis();
         }

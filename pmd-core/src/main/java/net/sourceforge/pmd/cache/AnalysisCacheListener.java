@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.cache;
 
 import java.io.IOException;
+import java.util.Collections;
 
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.annotation.InternalApi;
@@ -23,7 +24,7 @@ public class AnalysisCacheListener implements GlobalAnalysisListener {
 
     public AnalysisCacheListener(AnalysisCache cache, RuleSets ruleSets, ClassLoader classLoader) {
         this.cache = cache;
-        cache.checkValidity(ruleSets, classLoader);
+        cache.checkValidity(ruleSets, classLoader, Collections.emptySet());
     }
 
     @Override

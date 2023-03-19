@@ -18,8 +18,8 @@ import org.junit.jupiter.api.Test;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.PathId;
 import net.sourceforge.pmd.lang.document.TextFile;
-import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.renderers.Renderer;
@@ -113,14 +113,14 @@ class ReportTest {
 
 
     private static FileLocation getNode(int line, int column, String filename) {
-        return FileLocation.range(filename, TextRange2d.range2d(line, column, line, column));
+        return FileLocation.caret(PathId.fromPathLikeString(filename), line, column);
     }
 
     public static String render(Renderer renderer, Consumer<? super FileAnalysisListener> listenerEffects) {
         return renderGlobal(renderer, globalListener -> {
             LanguageVersion dummyVersion = DummyLanguageModule.getInstance().getDefaultVersion();
 
-            TextFile dummyFile = TextFile.forCharSeq("dummyText", "file", dummyVersion);
+            TextFile dummyFile = TextFile.forCharSeq("dummyText", PathId.fromPathLikeString("file"), dummyVersion);
             try (FileAnalysisListener fal = globalListener.startFileAnalysis(dummyFile)) {
                 listenerEffects.accept(fal);
             } catch (Exception e) {

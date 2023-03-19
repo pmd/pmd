@@ -17,6 +17,7 @@ import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
+import net.sourceforge.pmd.lang.document.PathId;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.AssertionUtil;
@@ -197,7 +198,7 @@ public interface GlobalAnalysisListener extends AutoCloseable {
 
             @Override
             public FileAnalysisListener startFileAnalysis(TextFile file) {
-                String filename = file.getPathId(); // capture the filename instead of the file
+                PathId filename = file.getPathId(); // capture the filename instead of the file
                 return new FileAnalysisListener() {
                     @Override
                     public void onRuleViolation(RuleViolation violation) {

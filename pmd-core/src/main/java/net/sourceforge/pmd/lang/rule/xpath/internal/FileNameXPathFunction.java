@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.rule.xpath.internal;
 
-import java.nio.file.Paths;
 import java.util.Objects;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -57,11 +56,10 @@ public final class FileNameXPathFunction extends AbstractXPathFunctionDef {
                 RootNode root = node.getRoot();
                 Objects.requireNonNull(root, "No root node in tree?");
 
-                String fileName = root.getTextDocument().getDisplayName();
+                String fileName = root.getTextDocument().getPathId().getFileName();
                 Objects.requireNonNull(fileName, "File name was not set");
-                String simpleFilename = Paths.get(fileName).getFileName().toString();
 
-                return new StringValue(simpleFilename);
+                return new StringValue(fileName);
             }
         };
     }

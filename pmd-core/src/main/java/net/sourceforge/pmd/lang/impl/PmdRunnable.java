@@ -85,7 +85,7 @@ abstract class PmdRunnable implements Runnable {
 
                             // The listener handles logging if needed,
                             // it may also rethrow the error, as a FileAnalysisException (which we let through below)
-                            completeListener.onError(new Report.ProcessingError(e, textFile.getDisplayName()));
+                            completeListener.onError(new Report.ProcessingError(e, textFile.getPathId()));
                         }
                     }
                 }
@@ -95,7 +95,7 @@ abstract class PmdRunnable implements Runnable {
         } catch (FileAnalysisException e) {
             throw e; // bubble managed exceptions, they were already reported
         } catch (Exception e) {
-            throw FileAnalysisException.wrap(textFile.getDisplayName(), "An unknown exception occurred", e);
+            throw FileAnalysisException.wrap(textFile.getPathId(), "An unknown exception occurred", e);
         }
 
         TimeTracker.finishThread();

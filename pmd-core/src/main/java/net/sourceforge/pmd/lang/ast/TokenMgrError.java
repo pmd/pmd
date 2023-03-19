@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.ast;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.document.PathId;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -26,7 +27,7 @@ public final class TokenMgrError extends FileAnalysisException {
      * @param message  Message of the error
      * @param cause    Cause of the error, if any
      */
-    public TokenMgrError(int line, int column, @Nullable String filename, String message, @Nullable Throwable cause) {
+    public TokenMgrError(int line, int column, @Nullable PathId filename, String message, @Nullable Throwable cause) {
         super(message, cause);
         this.line = line;
         this.column = column;
@@ -71,7 +72,7 @@ public final class TokenMgrError extends FileAnalysisException {
      * @return A new exception
      */
     @Override
-    public TokenMgrError setFileName(String filename) {
+    public TokenMgrError setFileName(PathId filename) {
         super.setFileName(filename);
         return this;
     }

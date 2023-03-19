@@ -154,7 +154,7 @@ public class RuleSets {
         }
 
         for (RuleSet ruleSet : ruleSets) {
-            if (ruleSet.applies(root.getTextDocument().getPathId())) {
+            if (ruleSet.applies(root.getTextDocument().getPathId().getFileName())) {
                 ruleApplicator.apply(ruleSet.getRules(), listener);
             }
         }

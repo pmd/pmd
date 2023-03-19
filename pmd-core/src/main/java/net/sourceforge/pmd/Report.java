@@ -18,6 +18,7 @@ import java.util.function.Predicate;
 import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.document.PathId;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.renderers.AbstractAccumulatingRenderer;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
@@ -102,7 +103,7 @@ public final class Report {
     public static class ProcessingError {
 
         private final Throwable error;
-        private final String file;
+        private final PathId file;
 
         /**
          * Creates a new processing error
@@ -112,7 +113,7 @@ public final class Report {
          * @param file
          *            the file during which the error occurred
          */
-        public ProcessingError(Throwable error, String file) {
+        public ProcessingError(Throwable error, PathId file) {
             this.error = error;
             this.file = file;
         }
@@ -133,7 +134,7 @@ public final class Report {
         }
 
         public String getFile() {
-            return file;
+            return file.toUriString();
         }
 
         public Throwable getError() {

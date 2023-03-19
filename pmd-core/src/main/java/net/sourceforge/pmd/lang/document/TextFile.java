@@ -44,12 +44,6 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  */
 public interface TextFile extends Closeable {
 
-    /**
-     * The name used for a file that has no name. This is mostly only
-     * relevant for unit tests.
-     */
-    String UNKNOWN_FILENAME = "(unknown file)";
-
 
     /**
      * Returns the language version which should be used to process this
@@ -76,7 +70,7 @@ public interface TextFile extends Closeable {
      * <p>Basically this may be implemented as a URL, or a file path. It
      * is used to index violation caches.
      */
-    String getPathId();
+    PathId getPathId();
 
 
     /**
@@ -85,8 +79,9 @@ public interface TextFile extends Closeable {
      * to a directory or so, it may also not be normalized. Use
      * {@link #getPathId()} when you want an identifier.
      */
-    @NonNull
-    String getDisplayName();
+    default @NonNull String getDisplayName() {
+        return getPathId().getNiceFileName();
+    }
 
 
     /**
@@ -161,7 +156,6 @@ public interface TextFile extends Closeable {
      */
     static TextFile forPath(Path path, Charset charset, LanguageVersion languageVersion) {
         return builderForPath(path, charset, languageVersion)
-                .withDisplayName(path.toString())
                 .build();
     }
 
@@ -195,9 +189,8 @@ public interface TextFile extends Closeable {
      *
      * @throws NullPointerException If any parameter is null
      */
-    static TextFile forCharSeq(CharSequence charseq, String pathId, LanguageVersion languageVersion) {
+    static TextFile forCharSeq(CharSequence charseq, PathId pathId, LanguageVersion languageVersion) {
         return builderForCharSeq(charseq, pathId, languageVersion)
-                .withDisplayName(pathId)
                 .build();
     }
 
@@ -212,7 +205,7 @@ public interface TextFile extends Closeable {
      *
      * @throws NullPointerException If any parameter is null
      */
-    static TextFileBuilder builderForCharSeq(CharSequence charseq, String pathId, LanguageVersion languageVersion) {
+    static TextFileBuilder builderForCharSeq(CharSequence charseq, PathId pathId, LanguageVersion languageVersion) {
         return new ForCharSeq(charseq, pathId, languageVersion);
     }
 
@@ -229,9 +222,8 @@ public interface TextFile extends Closeable {
      *
      * @throws NullPointerException If any parameter is null
      */
-    static TextFile forReader(Reader reader, String pathId, LanguageVersion languageVersion) {
+    static TextFile forReader(Reader reader, PathId pathId, LanguageVersion languageVersion) {
         return builderForReader(reader, pathId, languageVersion)
-                .withDisplayName(pathId)
                 .build();
     }
 
@@ -248,7 +240,7 @@ public interface TextFile extends Closeable {
      *
      * @throws NullPointerException If any parameter is null
      */
-    static TextFileBuilder builderForReader(Reader reader, String pathId, LanguageVersion languageVersion) {
+    static TextFileBuilder builderForReader(Reader reader, PathId pathId, LanguageVersion languageVersion) {
         return new ForReader(languageVersion, reader, pathId);
     }
 
@@ -264,6 +256,7 @@ public interface TextFile extends Closeable {
     @DeprecatedUntil700
     static TextFile dataSourceCompat(DataSource ds, PMDConfiguration config) {
         String pathId = ds.getNiceFileName(false, null);
+        PathId pathId2 = PathId.fromPathLikeString(pathId);
         LanguageVersion languageVersion = config.getLanguageVersionOfFile(pathId);
         if (languageVersion == null) {
             throw new NullPointerException("no language version detected for " + pathId);
@@ -277,8 +270,8 @@ public interface TextFile extends Closeable {
             }
 
             @Override
-            public String getPathId() {
-                return pathId;
+            public PathId getPathId() {
+                return pathId2;
             }
 
             @Override

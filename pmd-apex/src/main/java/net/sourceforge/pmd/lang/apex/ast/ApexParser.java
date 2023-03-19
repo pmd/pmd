@@ -32,7 +32,7 @@ public final class ApexParser implements Parser {
             final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(task, (ApexLanguageProcessor) task.getLanguageProcessor());
             return treeBuilder.buildTree(astRoot);
         } catch (apex.jorje.services.exception.ParseException e) {
-            throw new ParseException(e).setFileName(task.getFileDisplayName());
+            throw new ParseException(e).setFileName(task.getTextDocument().getPathId());
         }
     }
 }

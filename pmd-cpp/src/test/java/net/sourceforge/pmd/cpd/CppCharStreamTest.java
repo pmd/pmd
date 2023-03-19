@@ -13,14 +13,14 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.document.CpdCompat;
+import net.sourceforge.pmd.lang.document.PathId;
 import net.sourceforge.pmd.lang.document.TextDocument;
-import net.sourceforge.pmd.lang.document.TextFile;
 
 class CppCharStreamTest {
 
     @NonNull
     public CharStream charStreamFor(String source) throws IOException {
-        TextDocument textDoc = TextDocument.readOnlyString(source, TextFile.UNKNOWN_FILENAME, CpdCompat.dummyVersion());
+        TextDocument textDoc = TextDocument.readOnlyString(source, PathId.UNKNOWN, CpdCompat.dummyVersion());
         return CharStream.create(textDoc, new CPPTokenizer().tokenBehavior());
     }
 

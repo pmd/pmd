@@ -5,9 +5,9 @@
 package net.sourceforge.pmd.cli;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 
 import java.nio.file.Paths;
 import java.util.List;
@@ -44,8 +44,8 @@ class PMDFilelistTest {
 
         List<TextFile> applicableFiles = collector.getCollectedFiles();
         assertThat(applicableFiles, hasSize(2));
-        assertThat(applicableFiles.get(0).getPathId(), endsWith("anotherfile.dummy"));
-        assertThat(applicableFiles.get(1).getPathId(), endsWith("somefile.dummy"));
+        assertThat(applicableFiles.get(0).getPathId().getFileName(), equalTo("anotherfile.dummy"));
+        assertThat(applicableFiles.get(1).getPathId().getFileName(), equalTo("somefile.dummy"));
     }
 
     @Test
@@ -57,8 +57,12 @@ class PMDFilelistTest {
         List<TextFile> applicableFiles = collector.getCollectedFiles();
         // note: the file has 3 entries, but one is duplicated, resulting in 2 individual files
         assertThat(applicableFiles, hasSize(2));
-        assertThat(applicableFiles.get(0).getPathId(), endsWith("anotherfile.dummy"));
-        assertThat(applicableFiles.get(1).getPathId(), endsWith("somefile.dummy"));
+        assertFilenameIs(applicableFiles.get(0), "anotherfile.dummy");
+        assertFilenameIs(applicableFiles.get(1), "somefile.dummy");
+    }
+
+    private static void assertFilenameIs(TextFile textFile, String suffix) {
+        assertThat(textFile.getPathId().getFileName(), is(suffix));
     }
 
     @Test
@@ -72,8 +76,8 @@ class PMDFilelistTest {
 
         List<TextFile> applicableFiles = collector.getCollectedFiles();
         assertThat(applicableFiles, hasSize(2));
-        assertThat(applicableFiles.get(0).getPathId(), endsWith("somefile2.dummy"));
-        assertThat(applicableFiles.get(1).getPathId(), endsWith("somefile4.dummy"));
+        assertFilenameIs(applicableFiles.get(0), "somefile2.dummy");
+        assertFilenameIs(applicableFiles.get(1), "somefile4.dummy");
     }
 
     @Test
@@ -144,10 +148,10 @@ class PMDFilelistTest {
 
         List<TextFile> applicableFiles = collector.getCollectedFiles();
         assertThat(applicableFiles, hasSize(4));
-        assertThat(applicableFiles.get(0).getPathId(), endsWith("anotherfile.dummy"));
-        assertThat(applicableFiles.get(1).getPathId(), endsWith("somefile.dummy"));
-        assertThat(applicableFiles.get(2).getPathId(), endsWith("somefile2.dummy"));
-        assertThat(applicableFiles.get(3).getPathId(), endsWith("somefile4.dummy"));
+        assertFilenameIs(applicableFiles.get(0), "anotherfile.dummy");
+        assertFilenameIs(applicableFiles.get(1), "somefile.dummy");
+        assertFilenameIs(applicableFiles.get(2), "somefile2.dummy");
+        assertFilenameIs(applicableFiles.get(3), "somefile4.dummy");
     }
 
 }

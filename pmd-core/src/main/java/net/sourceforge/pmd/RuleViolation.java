@@ -85,7 +85,7 @@ public interface RuleViolation {
      * @return The source file name.
      */
     default String getFilename() {
-        return getLocation().getFileName();
+        return getLocation().getFileName().toUriString();
     }
 
     /**

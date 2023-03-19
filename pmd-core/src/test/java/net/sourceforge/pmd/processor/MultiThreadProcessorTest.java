@@ -19,6 +19,7 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.document.PathId;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
@@ -33,8 +34,8 @@ class MultiThreadProcessorTest {
         configuration.setThreads(2);
         PmdAnalysis pmd = PmdAnalysis.create(configuration);
         LanguageVersion lv = DummyLanguageModule.getInstance().getDefaultVersion();
-        pmd.files().addFile(TextFile.forCharSeq("abc", "file1-violation.dummy", lv));
-        pmd.files().addFile(TextFile.forCharSeq("DEF", "file2-foo.dummy", lv));
+        pmd.files().addFile(TextFile.forCharSeq("abc", PathId.fromPathLikeString("file1-violation.dummy"), lv));
+        pmd.files().addFile(TextFile.forCharSeq("DEF", PathId.fromPathLikeString("file2-foo.dummy"), lv));
 
         reportListener = new SimpleReportListener();
         GlobalAnalysisListener listener = GlobalAnalysisListener.tee(listOf(

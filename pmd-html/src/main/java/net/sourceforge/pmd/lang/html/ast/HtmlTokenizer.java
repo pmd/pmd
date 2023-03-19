@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
+import net.sourceforge.pmd.lang.document.PathId;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.html.HtmlLanguageModule;
@@ -28,7 +29,7 @@ public class HtmlTokenizer implements Tokenizer {
         try (LanguageProcessor processor = html.createProcessor(html.newPropertyBundle());
              TextFile tf = TextFile.forCharSeq(
                  sourceCode.getCodeBuffer(),
-                 sourceCode.getFileName(),
+                 PathId.fromPathLikeString(sourceCode.getFileName()),
                  html.getDefaultVersion()
              );
              TextDocument textDoc = TextDocument.create(tf)) {

@@ -9,7 +9,7 @@ import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.lang.document.PathId;
 
 /**
  * An exception that occurs while processing a file. Subtypes include
@@ -22,7 +22,7 @@ import net.sourceforge.pmd.lang.document.TextFile;
  */
 public class FileAnalysisException extends RuntimeException {
 
-    private String filename = TextFile.UNKNOWN_FILENAME;
+    private PathId filename = PathId.UNKNOWN;
 
     public FileAnalysisException() {
         super();
@@ -40,19 +40,19 @@ public class FileAnalysisException extends RuntimeException {
         super(message, cause);
     }
 
-    public FileAnalysisException setFileName(String filename) {
+    public FileAnalysisException setFileName(PathId filename) {
         this.filename = Objects.requireNonNull(filename);
         return this;
     }
 
     protected boolean hasFileName() {
-        return !TextFile.UNKNOWN_FILENAME.equals(filename);
+        return !PathId.UNKNOWN.equals(filename);
     }
 
     /**
      * The name of the file in which the error occurred.
      */
-    public @NonNull String getFileName() {
+    public @NonNull PathId getFileName() {
         return filename;
     }
 
@@ -83,7 +83,7 @@ public class FileAnalysisException extends RuntimeException {
      *
      * @return An exception
      */
-    public static FileAnalysisException wrap(@NonNull String filename, @NonNull String message, @NonNull Throwable cause) {
+    public static FileAnalysisException wrap(@NonNull PathId filename, @NonNull String message, @NonNull Throwable cause) {
         if (cause instanceof FileAnalysisException) {
             return ((FileAnalysisException) cause).setFileName(filename);
         }

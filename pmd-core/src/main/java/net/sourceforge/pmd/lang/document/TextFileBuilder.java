@@ -8,8 +8,6 @@ import java.io.Reader;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.AssertionUtil;
 
@@ -21,7 +19,6 @@ import net.sourceforge.pmd.util.AssertionUtil;
 public abstract class TextFileBuilder {
 
     protected final LanguageVersion languageVersion;
-    protected @Nullable String displayName;
 
     TextFileBuilder(LanguageVersion languageVersion) {
         this.languageVersion = AssertionUtil.requireParamNotNull("language version", languageVersion);
@@ -38,19 +35,6 @@ public abstract class TextFileBuilder {
         return this;
     }
 
-
-    /**
-     * Sets a custom display name for the new file. If null, or this is
-     * never called, the display name defaults to the path ID.
-     *
-     * @param displayName A display name
-     *
-     * @return This builder
-     */
-    public TextFileBuilder withDisplayName(@Nullable String displayName) {
-        this.displayName = displayName;
-        return this;
-    }
 
     /**
      * Creates and returns the new text file.
@@ -77,16 +61,16 @@ public abstract class TextFileBuilder {
 
         @Override
         public TextFile build() {
-            return new NioTextFile(path, charset, languageVersion, displayName, readOnly);
+            return new NioTextFile(path, charset, languageVersion, readOnly);
         }
     }
 
     static class ForCharSeq extends TextFileBuilder {
 
         private final CharSequence charSequence;
-        private final String pathId;
+        private final PathId pathId;
 
-        ForCharSeq(CharSequence charSequence, String pathId, LanguageVersion languageVersion) {
+        ForCharSeq(CharSequence charSequence, PathId pathId, LanguageVersion languageVersion) {
             super(languageVersion);
             this.charSequence = AssertionUtil.requireParamNotNull("charseq", charSequence);
             this.pathId = AssertionUtil.requireParamNotNull("path ID", pathId);
@@ -101,9 +85,9 @@ public abstract class TextFileBuilder {
     static class ForReader extends TextFileBuilder {
 
         private final Reader reader;
-        private final String pathId;
+        private final PathId pathId;
 
-        ForReader(LanguageVersion languageVersion, Reader reader, String pathId) {
+        ForReader(LanguageVersion languageVersion, Reader reader, PathId pathId) {
             super(languageVersion);
             this.reader = AssertionUtil.requireParamNotNull("reader", reader);
             this.pathId = AssertionUtil.requireParamNotNull("path ID", pathId);

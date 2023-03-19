@@ -6,6 +6,7 @@ package net.sourceforge.pmd.cache;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
@@ -64,7 +65,7 @@ public interface AnalysisCache {
      * @param ruleSets                The rulesets configured for this analysis.
      * @param auxclassPathClassLoader The class loader for auxclasspath configured for this analysis.
      */
-    void checkValidity(RuleSets ruleSets, ClassLoader auxclassPathClassLoader);
+    void checkValidity(RuleSets ruleSets, ClassLoader auxclassPathClassLoader, Set<TextFile> files);
 
     /**
      * Returns a listener that will be used like in {@link GlobalAnalysisListener#startFileAnalysis(TextFile)}.
