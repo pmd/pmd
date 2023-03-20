@@ -15,10 +15,10 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -121,7 +121,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
 
 
     @Override
-    public void checkValidity(final RuleSets ruleSets, final ClassLoader auxclassPathClassLoader, Set<TextFile> files) {
+    public void checkValidity(RuleSets ruleSets, ClassLoader auxclassPathClassLoader, Collection<? extends TextFile> files) {
         try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "validity check")) {
             boolean cacheIsValid = cacheExists();
 

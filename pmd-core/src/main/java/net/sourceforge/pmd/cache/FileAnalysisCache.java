@@ -13,9 +13,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.PMDVersion;
@@ -49,7 +49,7 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
     }
 
     @Override
-    public void checkValidity(RuleSets ruleSets, ClassLoader auxclassPathClassLoader, Set<TextFile> files) {
+    public void checkValidity(RuleSets ruleSets, ClassLoader auxclassPathClassLoader, Collection<? extends TextFile> files) {
         // load cached data before checking for validity
         loadFromFile(cacheFile, files);
         super.checkValidity(ruleSets, auxclassPathClassLoader, files);
@@ -60,7 +60,7 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
      *
      * @param cacheFile The file which backs the file analysis cache.
      */
-    private void loadFromFile(final File cacheFile, Set<TextFile> files) {
+    private void loadFromFile(final File cacheFile, Collection<? extends TextFile> files) {
         Map<String, FileId> idMap =
             files.stream().map(TextFile::getFileId)
                  .collect(Collectors.toMap(FileId::toUriString, id -> id));
@@ -88,6 +88,8 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
                             if (fileId == null) {
                                 LOG.debug("File {} is in the cache but is not part of the analysis",
                                           filePathId);
+                                // todo we wrote a URI, if this happens several times we will be
+                                //  prepending unknown:// several times.
                                 fileId = FileId.fromPathLikeString(filePathId);
                             }
                             final long checksum = inputStream.readLong();

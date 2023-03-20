@@ -332,7 +332,10 @@ public final class PmdAnalysis implements AutoCloseable {
         GlobalAnalysisListener listener;
         try {
             @SuppressWarnings("PMD.CloseResource")
-            AnalysisCacheListener cacheListener = new AnalysisCacheListener(configuration.getAnalysisCache(), rulesets, configuration.getClassLoader());
+            AnalysisCacheListener cacheListener = new AnalysisCacheListener(configuration.getAnalysisCache(),
+                                                                            rulesets,
+                                                                            configuration.getClassLoader(),
+                                                                            textFiles);
             listener = GlobalAnalysisListener.tee(listOf(createComposedRendererListener(renderers),
                                                          GlobalAnalysisListener.tee(listeners),
                                                          GlobalAnalysisListener.tee(extraListeners),
