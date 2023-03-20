@@ -17,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import org.apache.tools.ant.BuildException;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -87,15 +88,17 @@ class PMDTaskTest extends AbstractAntTest {
 
         try (InputStream in = Files.newInputStream(Paths.get("target/pmd-ant-xml.xml"));
              InputStream expectedStream = PMDTaskTest.class.getResourceAsStream("xml/expected-pmd-ant-xml.xml")) {
-            String actual = IOUtil.readToString(in, StandardCharsets.UTF_8);
-            actual = actual.replaceFirst("timestamp=\"[^\"]+\"", "timestamp=\"\"");
-            actual = actual.replaceFirst("\\.xsd\" version=\"[^\"]+\"", ".xsd\" version=\"\"");
-
-            String expected = IOUtil.readToString(expectedStream, StandardCharsets.UTF_8);
-            expected = expected.replaceFirst("timestamp=\"[^\"]+\"", "timestamp=\"\"");
-            expected = expected.replaceFirst("\\.xsd\" version=\"[^\"]+\"", ".xsd\" version=\"\"");
+            String actual = readAndNormalize(in);
+            String expected = readAndNormalize(expectedStream);
 
             assertEquals(expected, actual);
         }
+    }
+
+    private static @NonNull String readAndNormalize(InputStream expectedStream) throws IOException {
+        String expected = IOUtil.readToString(expectedStream, StandardCharsets.UTF_8);
+        expected = expected.replaceFirst("timestamp=\"[^\"]+\"", "timestamp=\"\"");
+        expected = expected.replaceFirst("\\.xsd\" version=\"[^\"]+\"", ".xsd\" version=\"\"");
+        return expected;
     }
 }

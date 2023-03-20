@@ -19,8 +19,8 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextDocument;
-import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.util.log.MessageReporter;
 
 /**
@@ -35,10 +35,14 @@ public class DummyParsingHelper implements Extension, BeforeEachCallback, AfterE
     }
 
     public DummyRootNode parse(String code) {
-        return parse(code, TextFile.UNKNOWN_FILENAME);
+        return parse(code, FileId.UNKNOWN);
     }
 
     public DummyRootNode parse(String code, String filename) {
+        return parse(code, FileId.fromPathLikeString(filename));
+    }
+
+    public DummyRootNode parse(String code, FileId filename) {
         LanguageVersion version = DummyLanguageModule.getInstance().getDefaultVersion();
         ParserTask task = new ParserTask(
             TextDocument.readOnlyString(code, filename, version),

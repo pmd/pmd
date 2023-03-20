@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.cpd;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -48,6 +49,10 @@ public class Match implements Comparable<Match>, Iterable<Mark> {
         return this.tokenCount;
     }
 
+
+    public Set<Mark> getMarkSet() {
+        return Collections.unmodifiableSet(markSet);
+    }
 
     @Override
     public Iterator<Mark> iterator() {

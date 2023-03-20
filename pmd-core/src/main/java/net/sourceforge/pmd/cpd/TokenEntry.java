@@ -4,11 +4,13 @@
 
 package net.sourceforge.pmd.cpd;
 
+import net.sourceforge.pmd.lang.document.FileId;
+
 public class TokenEntry implements Comparable<TokenEntry> {
 
     private static final int EOF = 0;
 
-    private final String filePathId;
+    private final FileId fileId;
     private final int beginLine;
     private final int beginColumn;
     private final int endColumn;
@@ -18,20 +20,20 @@ public class TokenEntry implements Comparable<TokenEntry> {
     private int hashCode;
 
     /** constructor for EOF entries. */
-    TokenEntry(String filePathId, int line, int column) {
+    TokenEntry(FileId fileId, int line, int column) {
         assert isOk(line) && isOk(column) : "Coordinates are 1-based";
         this.identifier = EOF;
-        this.filePathId = filePathId;
+        this.fileId = fileId;
         this.beginLine = line;
         this.beginColumn = column;
         this.endLine = line;
         this.endColumn = column;
     }
 
-    TokenEntry(int imageId, String filePathId, int beginLine, int beginColumn, int endLine, int endColumn, int index) {
+    TokenEntry(int imageId, FileId fileId, int beginLine, int beginColumn, int endLine, int endColumn, int index) {
         assert isOk(beginLine) && isOk(beginColumn) && isOk(endLine) && isOk(endColumn) : "Coordinates are 1-based";
         assert imageId != EOF;
-        this.filePathId = filePathId;
+        this.fileId = fileId;
         this.beginLine = beginLine;
         this.beginColumn = beginColumn;
         this.endLine = endLine;
@@ -49,8 +51,8 @@ public class TokenEntry implements Comparable<TokenEntry> {
     }
 
 
-    String getFilePathId() {
-        return filePathId;
+    FileId getFileId() {
+        return fileId;
     }
 
 
@@ -103,7 +105,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
         if (other.isEof() != this.isEof()) {
             return false;
         } else if (this.isEof()) {
-            return other.getFilePathId().equals(this.getFilePathId());
+            return other.getFileId().equals(this.getFileId());
         }
         return other.hashCode == hashCode;
     }

@@ -62,7 +62,7 @@ public class CSVRenderer implements CPDReportRenderer {
                 if (lineCountPerFile) {
                     writer.append(String.valueOf(loc.getLineCount())).append(separator);
                 }
-                writer.append(StringEscapeUtils.escapeCsv(loc.getFileName()));
+                writer.append(StringEscapeUtils.escapeCsv(report.getDisplayName(loc.getFileId())));
                 if (marks.hasNext()) {
                     writer.append(separator);
                 }

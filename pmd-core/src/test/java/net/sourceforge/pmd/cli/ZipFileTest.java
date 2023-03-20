@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.cli;
 
+import static net.sourceforge.pmd.cli.PMDFilelistTest.assertHasName;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 
 import java.nio.file.Path;
@@ -33,9 +33,9 @@ class ZipFileTest {
         try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
             List<TextFile> files = pmd.files().getCollectedFiles();
             assertThat(files, hasSize(3));
-            assertThat(files.get(0).getDisplayName(), equalTo(reportPath + "!/otherSrc/somefile.dummy"));
-            assertThat(files.get(1).getDisplayName(), equalTo(reportPath + "!/src/somefile.dummy"));
-            assertThat(files.get(2).getDisplayName(), equalTo(reportPath + "!/src/somefile1.dummy"));
+            assertHasName(files.get(0), reportPath + "!/otherSrc/somefile.dummy", pmd);
+            assertHasName(files.get(1), reportPath + "!/src/somefile.dummy", pmd);
+            assertHasName(files.get(2), reportPath + "!/src/somefile1.dummy", pmd);
         }
     }
 
@@ -48,9 +48,9 @@ class ZipFileTest {
             List<TextFile> files = pmd.files().getCollectedFiles();
             assertThat(files, hasSize(3));
             String baseZipPath = IOUtil.normalizePath("net/sourceforge/pmd/cli/zipWithSources.zip");
-            assertThat(files.get(0).getDisplayName(), equalTo(baseZipPath + "!/otherSrc/somefile.dummy"));
-            assertThat(files.get(1).getDisplayName(), equalTo(baseZipPath + "!/src/somefile.dummy"));
-            assertThat(files.get(2).getDisplayName(), equalTo(baseZipPath + "!/src/somefile1.dummy"));
+            assertHasName(files.get(0), baseZipPath + "!/otherSrc/somefile.dummy", pmd);
+            assertHasName(files.get(1), baseZipPath + "!/src/somefile.dummy", pmd);
+            assertHasName(files.get(2), baseZipPath + "!/src/somefile1.dummy", pmd);
         }
     }
 
@@ -64,9 +64,9 @@ class ZipFileTest {
         try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
             List<TextFile> files = pmd.files().getCollectedFiles();
             assertThat(files, hasSize(3));
-            assertThat(files.get(0).getDisplayName(), equalTo(reportPath + "!/otherSrc/somefile.dummy"));
-            assertThat(files.get(1).getDisplayName(), equalTo(reportPath + "!/src/somefile.dummy"));
-            assertThat(files.get(2).getDisplayName(), equalTo(reportPath + "!/src/somefile1.dummy"));
+            assertHasName(files.get(0), reportPath + "!/otherSrc/somefile.dummy", pmd);
+            assertHasName(files.get(1), reportPath + "!/src/somefile.dummy", pmd);
+            assertHasName(files.get(2), reportPath + "!/src/somefile1.dummy", pmd);
         }
     }
 

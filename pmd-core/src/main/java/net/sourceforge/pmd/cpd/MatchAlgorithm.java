@@ -69,7 +69,6 @@ class MatchAlgorithm {
                 TokenEntry endToken = tokens.getEndToken(token, match);
 
                 mark.setEndToken(endToken);
-                mark.setFileDisplayName(sourceManager.getFileDisplayName(token.getFilePathId()));
             }
         }
         cpdListener.phaseUpdate(CPDListener.DONE);

@@ -14,6 +14,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextDocument;
 
 /**
@@ -33,7 +34,7 @@ public class Tokens {
         this.tokens.add(tokenEntry);
     }
 
-    void addEof(String filePathId, int line, int column) {
+    void addEof(FileId filePathId, int line, int column) {
         add(new TokenEntry(filePathId, line, column));
     }
 
@@ -70,7 +71,7 @@ public class Tokens {
         return tokens;
     }
 
-    TokenEntry addToken(String image, String fileName, int startLine, int startCol, int endLine, int endCol) {
+    TokenEntry addToken(String image, FileId fileName, int startLine, int startCol, int endLine, int endCol) {
         TokenEntry newToken = new TokenEntry(getImageId(image), fileName, startLine, startCol, endLine, endCol, tokens.size());
         add(newToken);
         return newToken;
@@ -92,12 +93,12 @@ public class Tokens {
      */
     static TokenFactory factoryForFile(TextDocument file, Tokens tokens) {
         return new TokenFactory() {
-            final String filePathId = file.getPathId();
+            final FileId fileId = file.getFileId();
             final int firstToken = tokens.size();
 
             @Override
             public void recordToken(@NonNull String image, int startLine, int startCol, int endLine, int endCol) {
-                tokens.addToken(image, filePathId, startLine, startCol, endLine, endCol);
+                tokens.addToken(image, fileId, startLine, startCol, endLine, endCol);
             }
 
             @Override
@@ -117,9 +118,9 @@ public class Tokens {
             public void close() {
                 TokenEntry tok = peekLastToken();
                 if (tok == null) {
-                    tokens.addEof(filePathId, 1, 1);
+                    tokens.addEof(fileId, 1, 1);
                 } else {
-                    tokens.addEof(filePathId, tok.getEndLine(), tok.getEndColumn());
+                    tokens.addEof(fileId, tok.getEndLine(), tok.getEndColumn());
                 }
             }
         };

@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.cpd;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
@@ -138,8 +137,8 @@ class CpdAnalysisTest {
                 List<Match> matches = report.getMatches();
                 for (Match match : matches) {
                     // the file added first was dup2.
-                    assertTrue(match.getFirstMark().getLocation().getFileName().endsWith("dup2.java"));
-                    assertTrue(match.getSecondMark().getLocation().getFileName().endsWith("dup1.java"));
+                    assertEquals("dup2.java", match.getFirstMark().getFileId().getFileName());
+                    assertEquals("dup1.java", match.getSecondMark().getFileId().getFileName());
                 }
             });
         }

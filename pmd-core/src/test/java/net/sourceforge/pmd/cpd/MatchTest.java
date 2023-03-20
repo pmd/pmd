@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextFile;
 
 class MatchTest {
@@ -22,7 +23,7 @@ class MatchTest {
     @Test
     void testSimple() {
         String codeFragment1 = "1234567890";
-        String fileName = "/var/Foo.java";
+        FileId fileName = CpdTestUtils.FOO_FILE_ID;
         TextFile tf = TextFile.forCharSeq(codeFragment1, fileName, DummyLanguageModule.getInstance().getDefaultVersion());
         SourceManager sourceManager = new SourceManager(listOf(tf));
         Tokens tokens = new Tokens();
@@ -55,7 +56,7 @@ class MatchTest {
     void testCompareTo() {
         Tokens tokens = new Tokens();
 
-        String fileName = "/var/Foo.java";
+        FileId fileName = CpdTestUtils.FOO_FILE_ID;
         Match m1 = new Match(1,
                              tokens.addToken("public", fileName, 1, 2, 3, 4),
                              tokens.addToken("class", fileName, 1, 2, 3, 4));

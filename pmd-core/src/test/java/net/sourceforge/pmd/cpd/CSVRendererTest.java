@@ -13,14 +13,16 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.CpdTestUtils.CpdReportBuilder;
 import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
+import net.sourceforge.pmd.lang.document.FileId;
 
 class CSVRendererTest {
+
     @Test
     void testLineCountPerFile() throws IOException {
         CPDReportRenderer renderer = new CSVRenderer(true);
         CpdReportBuilder builder = new CpdReportBuilder();
-        Mark mark1 = builder.createMark("public", "/var/Foo.java", 48, 10);
-        Mark mark2 = builder.createMark("stuff", "/var/Bar.java", 73, 20);
+        Mark mark1 = builder.createMark("public", CpdTestUtils.FOO_FILE_ID, 48, 10);
+        Mark mark2 = builder.createMark("stuff", CpdTestUtils.BAR_FILE_ID, 73, 20);
         builder.addMatch(new Match(75, mark1, mark2));
 
         StringWriter sw = new StringWriter();
@@ -36,8 +38,10 @@ class CSVRendererTest {
     void testFilenameEscapes() throws IOException {
         CPDReportRenderer renderer = new CSVRenderer();
         CpdReportBuilder builder = new CpdReportBuilder();
-        Mark mark1 = builder.createMark("public", "/var,with,commas/Foo.java", 48, 10);
-        Mark mark2 = builder.createMark("stuff", "/var,with,commas/Bar.java", 73, 20);
+        FileId foo = FileId.fromPathLikeString("/var,with,commas/Foo.java");
+        FileId bar = FileId.fromPathLikeString("/var,with,commas/Bar.java");
+        Mark mark1 = builder.createMark("public", foo, 48, 10);
+        Mark mark2 = builder.createMark("stuff", bar, 73, 20);
         builder.addMatch(new Match(75, mark1, mark2));
 
         StringWriter sw = new StringWriter();

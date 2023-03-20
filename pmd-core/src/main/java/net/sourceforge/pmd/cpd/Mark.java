@@ -9,6 +9,7 @@ import java.util.Objects;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextRange2d;
 
@@ -21,7 +22,6 @@ public final class Mark implements Comparable<Mark> {
 
     private final @NonNull TokenEntry token;
     private @Nullable TokenEntry endToken;
-    private String fileDisplayName;
 
     Mark(@NonNull TokenEntry token) {
         this.token = token;
@@ -41,16 +41,13 @@ public final class Mark implements Comparable<Mark> {
     public FileLocation getLocation() {
         TokenEntry endToken = getEndToken();
         return FileLocation.range(
-            getFileName(),
+            getFileId(),
             TextRange2d.range2d(token.getBeginLine(), token.getBeginColumn(),
                                 endToken.getEndLine(), endToken.getEndColumn()));
     }
 
-    String getFileName() {
-        if (fileDisplayName == null) {
-            return token.getFilePathId();
-        }
-        return fileDisplayName;
+    FileId getFileId() {
+        return token.getFileId();
     }
 
     public int getBeginTokenIndex() {
@@ -62,7 +59,7 @@ public final class Mark implements Comparable<Mark> {
     }
 
     void setEndToken(@NonNull TokenEntry endToken) {
-        assert endToken.getFilePathId().equals(token.getFilePathId())
+        assert endToken.getFileId().equals(token.getFileId())
             : "Tokens are not from the same file";
         this.endToken = endToken;
     }
@@ -97,7 +94,4 @@ public final class Mark implements Comparable<Mark> {
         return getToken().compareTo(other.getToken());
     }
 
-    public void setFileDisplayName(String fileDisplayName) {
-        this.fileDisplayName = fileDisplayName;
-    }
 }

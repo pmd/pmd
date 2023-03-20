@@ -17,6 +17,7 @@ import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.AssertionUtil;
@@ -28,7 +29,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * for each analyzed file, which themselves handle events like violations,
  * in their file. Thread-safety is required.
  * 
- * The listener may provide a {@link ListenerInitializer} to get context
+ * <p>The listener may provide a {@link ListenerInitializer} to get context
  * information on the analysis before events start occurring.
  *
  * <p>Listeners are the main API to obtain results of an analysis. The
@@ -42,7 +43,8 @@ import net.sourceforge.pmd.util.CollectionUtil;
 public interface GlobalAnalysisListener extends AutoCloseable {
 
     /**
-     * Provides an initializer to gather analysis context before events start occurring.
+     * Provides an initializer to gather analysis context before events
+     * start occurring.
      * 
      * @return A listener initializer.
      */
@@ -197,7 +199,7 @@ public interface GlobalAnalysisListener extends AutoCloseable {
 
             @Override
             public FileAnalysisListener startFileAnalysis(TextFile file) {
-                String filename = file.getPathId(); // capture the filename instead of the file
+                FileId filename = file.getFileId(); // capture the filename instead of the file
                 return new FileAnalysisListener() {
                     @Override
                     public void onRuleViolation(RuleViolation violation) {

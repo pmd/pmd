@@ -59,7 +59,7 @@ public class SimpleRenderer implements CPDReportRenderer {
             FileLocation loc = mark.getLocation();
             writer.append("Starting at line ")
                   .append(String.valueOf(loc.getStartLine()))
-                  .append(" of ").append(loc.getFileName())
+                  .append(" of ").append(report.getDisplayName(loc.getFileId()))
                   .println();
         }
 

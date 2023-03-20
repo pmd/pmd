@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.LanguageRegistry
 import net.sourceforge.pmd.lang.ast.TokenMgrError
 import net.sourceforge.pmd.lang.document.TextDocument
 import net.sourceforge.pmd.lang.document.TextFile
+import net.sourceforge.pmd.lang.document.FileId
 import net.sourceforge.pmd.test.BaseTextComparisonTest
 import org.apache.commons.lang3.StringUtils
 import java.util.*
@@ -74,7 +75,7 @@ abstract class CpdTextComparisonTest(
     @JvmOverloads
     fun expectTokenMgrError(
         source: String,
-        fileName: String = TextFile.UNKNOWN_FILENAME,
+        fileName: FileId = FileId.UNKNOWN,
         properties: LanguagePropertyConfig = defaultProperties()
     ): TokenMgrError =
         expectTokenMgrError(FileData(fileName, source), properties)
@@ -168,7 +169,7 @@ abstract class CpdTextComparisonTest(
         TextDocument.readOnlyString(fileData.fileText, fileData.fileName, language.defaultVersion)
 
     @JvmOverloads
-    fun sourceCodeOf(text: String, fileName: String = TextFile.UNKNOWN_FILENAME): FileData =
+    fun sourceCodeOf(text: String, fileName: FileId = FileId.UNKNOWN): FileData =
         FileData(fileName = fileName, fileText = text)
 
     fun tokenize(tokenizer: Tokenizer, fileData: FileData): Tokens =

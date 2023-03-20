@@ -12,14 +12,14 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.cpp.CppLanguageModule;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextDocument;
-import net.sourceforge.pmd.lang.document.TextFile;
 
 class CppCharStreamTest {
 
     public CharStream charStreamFor(String source) {
         CppLanguageModule cpp = CppLanguageModule.getInstance();
-        TextDocument textDoc = TextDocument.readOnlyString(source, TextFile.UNKNOWN_FILENAME, cpp.getDefaultVersion());
+        TextDocument textDoc = TextDocument.readOnlyString(source, FileId.UNKNOWN, cpp.getDefaultVersion());
         CPPTokenizer tokenizer = new CPPTokenizer(cpp.newPropertyBundle());
         return tokenizer.newCharStream(textDoc);
     }

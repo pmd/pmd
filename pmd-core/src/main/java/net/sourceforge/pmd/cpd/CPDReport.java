@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.document.FileId;
 
 /**
  * @since 6.48.0
@@ -21,11 +22,11 @@ public class CPDReport {
 
     private final SourceManager sourceManager;
     private final List<Match> matches;
-    private final Map<String, Integer> numberOfTokensPerFile;
+    private final Map<FileId, Integer> numberOfTokensPerFile;
 
     CPDReport(SourceManager sourceManager,
               List<Match> matches,
-              Map<String, Integer> numberOfTokensPerFile) {
+              Map<FileId, Integer> numberOfTokensPerFile) {
         this.sourceManager = sourceManager;
         this.matches = Collections.unmodifiableList(matches);
         this.numberOfTokensPerFile = Collections.unmodifiableMap(new TreeMap<>(numberOfTokensPerFile));
@@ -35,7 +36,7 @@ public class CPDReport {
         return matches;
     }
 
-    public Map<String, Integer> getNumberOfTokensPerFile() {
+    public Map<FileId, Integer> getNumberOfTokensPerFile() {
         return numberOfTokensPerFile;
     }
 
@@ -62,5 +63,10 @@ public class CPDReport {
         List<Match> filtered = this.matches.stream().filter(filter).collect(Collectors.toList());
 
         return new CPDReport(sourceManager, filtered, this.getNumberOfTokensPerFile());
+    }
+
+
+    public String getDisplayName(FileId fileId) {
+        return sourceManager.getFileDisplayName(fileId);
     }
 }

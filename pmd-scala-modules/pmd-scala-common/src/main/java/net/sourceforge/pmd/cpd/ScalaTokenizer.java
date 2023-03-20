@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.scala.ScalaLanguageModule;
 
 import scala.collection.Iterator;
@@ -45,7 +46,7 @@ public class ScalaTokenizer implements Tokenizer {
             String fullCode = document.getText().toString();
 
             // create the input file for scala
-            Input.VirtualFile vf = new Input.VirtualFile(document.getDisplayName(), fullCode);
+            Input.VirtualFile vf = new Input.VirtualFile(document.getFileId().getOriginalPath(), fullCode);
             ScalametaTokenizer tokenizer = new ScalametaTokenizer(vf, dialect);
 
             // tokenize with a filter
@@ -68,7 +69,7 @@ public class ScalaTokenizer implements Tokenizer {
                 TokenizeException tokE = (TokenizeException) e;
                 Position pos = tokE.pos();
                 throw new TokenMgrError(
-                    pos.startLine() + 1, pos.startColumn() + 1, document.getDisplayName(), "Scalameta threw", tokE);
+                    pos.startLine() + 1, pos.startColumn() + 1, document.getFileId(), "Scalameta threw", tokE);
             } else {
                 throw e;
             }

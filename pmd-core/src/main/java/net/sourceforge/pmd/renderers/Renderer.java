@@ -22,7 +22,9 @@ import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
+import net.sourceforge.pmd.reporting.FileNameRenderer;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.reporting.ListenerInitializer;
 
 /**
  * This is an interface for rendering a Report. When a Renderer is being
@@ -107,6 +109,8 @@ public interface Renderer extends PropertySource {
      * @return The Writer.
      */
     Writer getWriter();
+
+    void setFileNameRenderer(FileNameRenderer fileNameRenderer);
 
     /**
      * Set the Writer for the Renderer.
@@ -200,6 +204,16 @@ public interface Renderer extends PropertySource {
             @Override
             public void onConfigError(ConfigurationError error) {
                 configErrorReport.onConfigError(error);
+            }
+
+            @Override
+            public ListenerInitializer initializer() {
+                return new ListenerInitializer() {
+                    @Override
+                    public void setFileNameRenderer(FileNameRenderer fileNameRenderer) {
+                        Renderer.this.setFileNameRenderer(fileNameRenderer);
+                    }
+                };
             }
 
             @Override

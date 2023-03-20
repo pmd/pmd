@@ -17,7 +17,7 @@ public class VSRenderer implements CPDReportRenderer {
         for (Match match: report.getMatches()) {
             for (Mark mark : match) {
                 FileLocation loc = mark.getLocation();
-                writer.append(loc.getFileName())
+                writer.append(report.getDisplayName(loc.getFileId()))
                       .append('(').append(String.valueOf(loc.getStartLine())).append("):")
                       .append(" Between lines ").append(String.valueOf(loc.getStartLine()))
                       .append(" and ").append(String.valueOf(loc.getEndLine()))

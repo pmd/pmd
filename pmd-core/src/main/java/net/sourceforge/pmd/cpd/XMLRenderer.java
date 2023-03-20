@@ -22,6 +22,7 @@ import org.w3c.dom.Element;
 
 import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -94,31 +95,33 @@ public final class XMLRenderer implements CPDReportRenderer {
     public void render(final CPDReport report, final Writer writer) throws IOException {
         final Document doc = createDocument();
         final Element root = doc.createElement("pmd-cpd");
-        final Map<String, Integer> numberOfTokensPerFile = report.getNumberOfTokensPerFile();
+        final Map<FileId, Integer> numberOfTokensPerFile = report.getNumberOfTokensPerFile();
         doc.appendChild(root);
 
-        for (final Map.Entry<String, Integer> pair : numberOfTokensPerFile.entrySet()) {
+        for (final Map.Entry<FileId, Integer> pair : numberOfTokensPerFile.entrySet()) {
             final Element fileElement = doc.createElement("file");
-            fileElement.setAttribute("path", pair.getKey());
+            fileElement.setAttribute("path", report.getDisplayName(pair.getKey()));
             fileElement.setAttribute("totalNumberOfTokens", String.valueOf(pair.getValue()));
             root.appendChild(fileElement);
         }
 
         for (Match match : report.getMatches()) {
-            root.appendChild(addCodeSnippet(doc,
-                    addFilesToDuplicationElement(doc, createDuplicationElement(doc, match), match), match, report));
+            Element dupElt = createDuplicationElement(doc, match);
+            addFilesToDuplicationElement(doc, dupElt, match, report);
+            addCodeSnippet(doc, dupElt, match, report);
+            root.appendChild(dupElt);
         }
         dumpDocToWriter(doc, writer);
         writer.flush();
     }
 
-    private Element addFilesToDuplicationElement(Document doc, Element duplication, Match match) {
+    private void addFilesToDuplicationElement(Document doc, Element duplication, Match match, CPDReport report) {
         for (Mark mark : match) {
             final Element file = doc.createElement("file");
             FileLocation loc = mark.getLocation();
             file.setAttribute("line", String.valueOf(loc.getStartLine()));
             // only remove invalid characters, escaping is done by the DOM impl.
-            String filenameXml10 = StringUtil.removedInvalidXml10Characters(loc.getFileName());
+            String filenameXml10 = StringUtil.removedInvalidXml10Characters(report.getDisplayName(loc.getFileId()));
             file.setAttribute("path", filenameXml10);
             file.setAttribute("endline", String.valueOf(loc.getEndLine()));
             file.setAttribute("column", String.valueOf(loc.getStartColumn()));
@@ -127,10 +130,9 @@ public final class XMLRenderer implements CPDReportRenderer {
             file.setAttribute("endtoken", String.valueOf(mark.getEndTokenIndex()));
             duplication.appendChild(file);
         }
-        return duplication;
     }
 
-    private Element addCodeSnippet(Document doc, Element duplication, Match match, CPDReport report) {
+    private void addCodeSnippet(Document doc, Element duplication, Match match, CPDReport report) {
         Chars codeSnippet = report.getSourceCodeSlice(match.getFirstMark());
         if (codeSnippet != null) {
             // the code snippet has normalized line endings
@@ -142,7 +144,6 @@ public final class XMLRenderer implements CPDReportRenderer {
             codefragment.appendChild(doc.createCDATASection(StringUtil.removedInvalidXml10Characters(platformSpecific)));
             duplication.appendChild(codefragment);
         }
-        return duplication;
     }
 
     private Element createDuplicationElement(Document doc, Match match) {

@@ -24,6 +24,7 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.lang.document.FileCollector;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -100,7 +101,7 @@ public final class CpdAnalysis implements AutoCloseable {
     }
 
     private int doTokenize(TextDocument document, Tokenizer tokenizer, Tokens tokens) throws IOException, TokenMgrError {
-        LOGGER.trace("Tokenizing {}", document.getPathId());
+        LOGGER.trace("Tokenizing {}", document.getFileId().toAbsolutePath());
         int lastTokenSize = tokens.size();
         Tokenizer.tokenize(tokenizer, document, tokens);
         return tokens.size() - lastTokenSize - 1; /* EOF */
@@ -121,7 +122,7 @@ public final class CpdAnalysis implements AutoCloseable {
                              .filter(it -> it instanceof CpdCapableLanguage)
                              .collect(Collectors.toMap(lang -> lang, lang -> ((CpdCapableLanguage) lang).createCpdTokenizer(configuration.getLanguageProperties(lang))));
 
-            Map<String, Integer> numberOfTokensPerFile = new HashMap<>();
+            Map<FileId, Integer> numberOfTokensPerFile = new HashMap<>();
 
             boolean hasErrors = false;
             Tokens tokens = new Tokens();
@@ -130,11 +131,11 @@ public final class CpdAnalysis implements AutoCloseable {
                 Tokens.State savedState = tokens.savePoint();
                 try {
                     int newTokens = doTokenize(textDocument, tokenizers.get(textFile.getLanguageVersion().getLanguage()), tokens);
-                    numberOfTokensPerFile.put(textDocument.getDisplayName(), newTokens);
+                    numberOfTokensPerFile.put(textDocument.getFileId(), newTokens);
                     listener.addedFile(1);
                 } catch (TokenMgrError | IOException e) {
                     if (e instanceof TokenMgrError) { // NOPMD
-                        ((TokenMgrError) e).setFileName(textFile.getDisplayName());
+                        ((TokenMgrError) e).setFileId(textFile.getFileId());
                     }
                     String message = configuration.isSkipLexicalErrors() ? "Skipping file" : "Error while tokenizing";
                     reporter.errorEx(message, e);

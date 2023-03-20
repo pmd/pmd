@@ -22,7 +22,7 @@ import net.sourceforge.pmd.lang.document.TextDocument;
 public abstract class AntlrTokenizer extends TokenizerBase<AntlrToken> {
     @Override
     protected final TokenManager<AntlrToken> makeLexerImpl(TextDocument doc) throws IOException {
-        CharStream charStream = CharStreams.fromReader(doc.newReader(), doc.getDisplayName());
+        CharStream charStream = CharStreams.fromReader(doc.newReader(), doc.getFileId().toAbsolutePath());
         return new AntlrTokenManager(getLexerForSource(charStream), doc);
     }
 

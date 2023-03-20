@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.test
 
+import net.sourceforge.pmd.lang.document.FileId
 import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.test.assertEquals
@@ -27,7 +28,7 @@ abstract class BaseTextComparisonTest {
     /** Extension that the unparsed source file is supposed to have. */
     protected abstract val extensionIncludingDot: String
 
-    data class FileData(val fileName:String, val fileText:String)
+    data class FileData(val fileName: FileId, val fileText:String)
 
     /**
      * Executes the test. The test files are looked up using the [parser].
@@ -66,7 +67,7 @@ abstract class BaseTextComparisonTest {
         }
 
         val sourceText = sourceFile.readText(Charsets.UTF_8).normalize()
-        return FileData(fileName = sourceFile.toString(), fileText = sourceText)
+        return FileData(fileName = FileId.forPath(sourceFile.toPath()), fileText = sourceText)
     }
 
     protected open fun String.normalize() = replace(

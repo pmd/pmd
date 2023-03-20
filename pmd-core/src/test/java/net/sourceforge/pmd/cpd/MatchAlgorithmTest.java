@@ -15,6 +15,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.DummyLanguageModule;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
 
@@ -38,7 +39,7 @@ class MatchAlgorithmTest {
     void testSimple() throws IOException {
         DummyLanguageModule dummy = DummyLanguageModule.getInstance();
         Tokenizer tokenizer = dummy.createCpdTokenizer(dummy.newPropertyBundle());
-        String fileName = "Foo.dummy";
+        FileId fileName = FileId.fromPathLikeString("Foo.dummy");
         TextFile textFile = TextFile.forCharSeq(getSampleCode(), fileName, dummy.getDefaultVersion());
         SourceManager sourceManager = new SourceManager(listOf(textFile));
         Tokens tokens = new Tokens();
@@ -57,11 +58,11 @@ class MatchAlgorithmTest {
         assertFalse(marks.hasNext());
 
         assertEquals(3, mark1.getLocation().getStartLine());
-        assertEquals(fileName, mark1.getLocation().getFileName());
+        assertEquals(fileName, mark1.getLocation().getFileId());
         assertEquals(LINE_3 + "\n", sourceManager.getSlice(mark1).toString());
 
         assertEquals(4, mark2.getLocation().getStartLine());
-        assertEquals(fileName, mark2.getLocation().getFileName());
+        assertEquals(fileName, mark2.getLocation().getFileId());
         assertEquals(LINE_4 + "\n", sourceManager.getSlice(mark2).toString());
     }
 }

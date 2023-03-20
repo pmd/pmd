@@ -43,6 +43,7 @@ import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.document.FileCollector;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.reporting.ConfigurableFileNameRenderer;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.reporting.ListenerInitializer;
 import net.sourceforge.pmd.reporting.ReportStats;
@@ -94,6 +95,7 @@ public final class PmdAnalysis implements AutoCloseable {
 
     private final Map<Language, LanguagePropertyBundle> langProperties = new HashMap<>();
     private boolean closed;
+    private final ConfigurableFileNameRenderer fileNameRenderer = new ConfigurableFileNameRenderer();
 
     /**
      * Constructs a new instance. The files paths (input files, filelist,
@@ -109,9 +111,6 @@ public final class PmdAnalysis implements AutoCloseable {
             reporter
         );
 
-        for (Path path : config.getRelativizeRoots()) {
-            this.collector.relativizeWith(path);
-        }
     }
 
     /**
@@ -163,6 +162,10 @@ public final class PmdAnalysis implements AutoCloseable {
             if (props instanceof JvmLanguagePropertyBundle) {
                 ((JvmLanguagePropertyBundle) props).setClassLoader(config.getClassLoader());
             }
+        }
+
+        for (Path path : config.getRelativizeRoots()) {
+            pmd.fileNameRenderer.relativizeWith(path);
         }
 
         return pmd;
@@ -283,6 +286,11 @@ public final class PmdAnalysis implements AutoCloseable {
         return langProperties.computeIfAbsent(language, Language::newPropertyBundle);
     }
 
+
+    public ConfigurableFileNameRenderer fileNameRenderer() {
+        return fileNameRenderer;
+    }
+
     /**
      * Run PMD with the current state of this instance. This will start
      * and finish the registered renderers, and close all
@@ -324,7 +332,10 @@ public final class PmdAnalysis implements AutoCloseable {
         GlobalAnalysisListener listener;
         try {
             @SuppressWarnings("PMD.CloseResource")
-            AnalysisCacheListener cacheListener = new AnalysisCacheListener(configuration.getAnalysisCache(), rulesets, configuration.getClassLoader());
+            AnalysisCacheListener cacheListener = new AnalysisCacheListener(configuration.getAnalysisCache(),
+                                                                            rulesets,
+                                                                            configuration.getClassLoader(),
+                                                                            textFiles);
             listener = GlobalAnalysisListener.tee(listOf(createComposedRendererListener(renderers),
                                                          GlobalAnalysisListener.tee(listeners),
                                                          GlobalAnalysisListener.tee(extraListeners),
@@ -333,6 +344,7 @@ public final class PmdAnalysis implements AutoCloseable {
             // Initialize listeners
             try (ListenerInitializer initializer = listener.initializer()) {
                 initializer.setNumberOfFilesToAnalyze(textFiles.size());
+                initializer.setFileNameRenderer(fileNameRenderer());
             }
         } catch (Exception e) {
             reporter.errorEx("Exception while initializing analysis listeners", e);
@@ -395,7 +407,7 @@ public final class PmdAnalysis implements AutoCloseable {
     }
 
 
-    private static GlobalAnalysisListener createComposedRendererListener(List<Renderer> renderers) throws Exception {
+    private GlobalAnalysisListener createComposedRendererListener(List<Renderer> renderers) throws Exception {
         if (renderers.isEmpty()) {
             return GlobalAnalysisListener.noop();
         }
@@ -551,4 +563,5 @@ public final class PmdAnalysis implements AutoCloseable {
                             + "https://pmd.github.io/{0}/pmd_userdocs_incremental_analysis.html", version);
         }
     }
+
 }

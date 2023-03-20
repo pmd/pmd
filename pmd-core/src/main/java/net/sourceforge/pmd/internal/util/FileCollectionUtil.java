@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.AbstractConfiguration;
 import net.sourceforge.pmd.lang.document.FileCollector;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.util.database.DBMSMetadata;
 import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
@@ -131,7 +132,7 @@ public final class FileCollectionUtil {
 
                 try (Reader sourceCode = dbmsMetadata.getSourceCode(sourceObject)) {
                     String source = IOUtil.readToString(sourceCode);
-                    collector.addSourceFile(source, falseFilePath);
+                    collector.addSourceFile(FileId.fromPathLikeString(falseFilePath), source);
                 } catch (SQLException ex) {
                     collector.getReporter().warnEx("Cannot get SourceCode for {}  - skipping ...",
                                                    new Object[] { falseFilePath },

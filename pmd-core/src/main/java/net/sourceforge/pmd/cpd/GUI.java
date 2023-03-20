@@ -66,6 +66,7 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageModuleBase.LanguageMetadata;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.impl.CpdOnlyLanguageModuleBase;
 import net.sourceforge.pmd.util.CollectionUtil;
 
@@ -319,7 +320,7 @@ public class GUI implements CPDListener {
     private boolean trimLeadingWhitespace;
 
     private List<Match> matches = new ArrayList<>();
-    private Map<String, Integer> numberOfTokensPerFile;
+    private Map<FileId, Integer> numberOfTokensPerFile;
 
     private void addSaveOptionsTo(JMenu menu) {
 
@@ -580,15 +581,14 @@ public class GUI implements CPDListener {
 
     private static String getLabel(Match match) {
 
-        Set<String> sourceIDs = new HashSet<>(match.getMarkCount());
+        Set<FileId> sourceIDs = new HashSet<>(match.getMarkCount());
         for (Mark mark : match) {
-            sourceIDs.add(mark.getLocation().getFileName());
+            sourceIDs.add(mark.getLocation().getFileId());
         }
 
         if (sourceIDs.size() == 1) {
-            String sourceId = sourceIDs.iterator().next();
-            int separatorPos = sourceId.lastIndexOf(File.separatorChar);
-            return "..." + sourceId.substring(separatorPos);
+            FileId sourceId = sourceIDs.iterator().next();
+            return "..." + sourceId.getFileName();
         } else {
             return String.format("(%d separate files)", sourceIDs.size());
         }

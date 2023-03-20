@@ -13,9 +13,9 @@ class TokenEntryTest {
     @Test
     void testSimple() {
         Tokens tokens = new Tokens();
-        TokenEntry mark = tokens.addToken("public", "/var/Foo.java", 1, 2, 3, 4);
+        TokenEntry mark = tokens.addToken("public", CpdTestUtils.FOO_FILE_ID, 1, 2, 3, 4);
         assertEquals(1, mark.getBeginLine());
-        assertEquals("/var/Foo.java", mark.getFilePathId());
+        assertEquals(CpdTestUtils.FOO_FILE_ID, mark.getFileId());
         assertEquals(0, mark.getIndex());
         assertEquals(2, mark.getBeginColumn());
         assertEquals(4, mark.getEndColumn());

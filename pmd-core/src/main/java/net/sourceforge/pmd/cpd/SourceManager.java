@@ -14,20 +14,23 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.document.TextRegion;
+import net.sourceforge.pmd.reporting.FileNameRenderer;
 
 class SourceManager implements AutoCloseable {
 
     private final Map<TextFile, SoftReference<TextDocument>> files = new ConcurrentHashMap<>();
-    private final Map<String, TextFile> fileByPathId = new HashMap<>();
+    private final Map<FileId, TextFile> fileByPathId = new HashMap<>();
     private final List<TextFile> textFiles;
+    private FileNameRenderer fileNameRenderer = FileId::toAbsolutePath;
 
     SourceManager(List<? extends TextFile> files) {
         textFiles = new ArrayList<>(files);
-        files.forEach(f -> fileByPathId.put(f.getPathId(), f));
+        files.forEach(f -> fileByPathId.put(f.getFileId(), f));
     }
 
 
@@ -62,8 +65,8 @@ class SourceManager implements AutoCloseable {
 
     @SuppressWarnings("PMD.CloseResource")
     public Chars getSlice(Mark mark) {
-        TextFile textFile = fileByPathId.get(mark.getToken().getFilePathId());
-        assert textFile != null : "No such file " + mark.getToken().getFilePathId();
+        TextFile textFile = fileByPathId.get(mark.getToken().getFileId());
+        assert textFile != null : "No such file " + mark.getToken().getFileId();
         TextDocument doc = get(textFile);
         assert doc != null;
         FileLocation loc = mark.getLocation();
@@ -71,7 +74,7 @@ class SourceManager implements AutoCloseable {
         return doc.sliceOriginalText(lineRange);
     }
 
-    public String getFileDisplayName(String filePathId) {
-        return fileByPathId.get(filePathId).getDisplayName();
+    public String getFileDisplayName(FileId fileId) {
+        return fileNameRenderer.getDisplayName(fileId);
     }
 }
