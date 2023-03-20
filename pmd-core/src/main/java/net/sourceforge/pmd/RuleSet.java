@@ -627,7 +627,7 @@ public class RuleSet implements ChecksumAware {
      *     <code>false</code> otherwise
      */
     boolean applies(TextFile file) {
-        return applies(file.getPathId());
+        return applies(file.getFileId());
     }
 
     /**

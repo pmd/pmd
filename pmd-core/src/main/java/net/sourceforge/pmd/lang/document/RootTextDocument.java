@@ -33,7 +33,7 @@ final class RootTextDocument extends BaseCloseable implements TextDocument {
         this.backend = backend;
         this.content = backend.readContents();
         this.langVersion = backend.getLanguageVersion();
-        this.fileId = backend.getPathId();
+        this.fileId = backend.getFileId();
 
         Objects.requireNonNull(langVersion, "Null language version for file " + backend);
         Objects.requireNonNull(fileId, "Null path id for file " + backend);
@@ -45,7 +45,7 @@ final class RootTextDocument extends BaseCloseable implements TextDocument {
     }
 
     @Override
-    public FileId getPathId() {
+    public FileId getFileId() {
         return fileId;
     }
 

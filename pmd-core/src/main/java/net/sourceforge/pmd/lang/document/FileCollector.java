@@ -103,7 +103,7 @@ public final class FileCollector implements AutoCloseable {
             throw new IllegalStateException("Collector was closed!");
         }
         List<TextFile> allFilesToProcess = new ArrayList<>(this.allFilesToProcess);
-        allFilesToProcess.sort(Comparator.comparing(TextFile::getPathId));
+        allFilesToProcess.sort(Comparator.comparing(TextFile::getFileId));
         return Collections.unmodifiableList(allFilesToProcess);
     }
 
@@ -207,7 +207,7 @@ public final class FileCollector implements AutoCloseable {
     }
 
     private boolean addFileImpl(TextFile textFile) {
-        LOG.trace("Adding file {} (lang: {}) ", textFile.getPathId(), textFile.getLanguageVersion().getTerseName());
+        LOG.trace("Adding file {} (lang: {}) ", textFile.getFileId().toAbsolutePath(), textFile.getLanguageVersion().getTerseName());
         if (allFilesToProcess.add(textFile)) {
             return true;
         }
@@ -244,7 +244,7 @@ public final class FileCollector implements AutoCloseable {
         if (!fileVersion.equals(contextVersion)) {
             reporter.error(
                 "Cannot add file {0}: version ''{1}'' does not match ''{2}''",
-                textFile.getPathId(),
+                textFile.getFileId(),
                 fileVersion,
                 contextVersion
             );
@@ -397,7 +397,7 @@ public final class FileCollector implements AutoCloseable {
         for (Iterator<TextFile> iterator = allFilesToProcess.iterator(); iterator.hasNext();) {
             TextFile file = iterator.next();
             if (toExclude.contains(file)) {
-                LOG.trace("Excluding file {}", file.getPathId());
+                LOG.trace("Excluding file {}", file.getFileId());
                 iterator.remove();
             }
         }
@@ -423,7 +423,7 @@ public final class FileCollector implements AutoCloseable {
             TextFile file = iterator.next();
             Language lang = file.getLanguageVersion().getLanguage();
             if (!languages.contains(lang)) {
-                LOG.trace("Filtering out {}, no rules for language {}", file.getPathId(), lang);
+                LOG.trace("Filtering out {}, no rules for language {}", file.getFileId(), lang);
                 iterator.remove();
             }
         }

@@ -91,7 +91,7 @@ class MultiThreadProcessorTest {
         public void apply(Node target, RuleContext ctx) {
             count.incrementAndGet();
 
-            if (target.getTextDocument().getDisplayName().contains("violation")) {
+            if (target.getTextDocument().getFileId().getOriginalPath().contains("violation")) {
                 hasViolation = true;
             } else {
                 letTheOtherThreadRun(10);

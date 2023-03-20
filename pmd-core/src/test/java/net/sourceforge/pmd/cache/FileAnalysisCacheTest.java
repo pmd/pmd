@@ -122,7 +122,7 @@ class FileAnalysisCacheTest {
 
         final RuleViolation rv = mock(RuleViolation.class);
         final TextRange2d textLocation = TextRange2d.range2d(1, 2, 3, 4);
-        when(rv.getLocation()).thenReturn(FileLocation.range(sourceFile.getPathId(), textLocation));
+        when(rv.getLocation()).thenReturn(FileLocation.range(sourceFile.getFileId(), textLocation));
         final net.sourceforge.pmd.Rule rule = mock(net.sourceforge.pmd.Rule.class, Mockito.RETURNS_SMART_NULLS);
         when(rule.getLanguage()).thenReturn(mock(Language.class));
         when(rv.getRule()).thenReturn(rule);
@@ -138,7 +138,7 @@ class FileAnalysisCacheTest {
         final List<RuleViolation> cachedViolations = reloadedCache.getCachedViolations(sourceFile);
         assertEquals(1, cachedViolations.size(), "Cached rule violations count mismatch");
         final RuleViolation cachedViolation = cachedViolations.get(0);
-        assertSame(sourceFile.getPathId(), cachedViolation.getFileId());
+        assertSame(sourceFile.getFileId(), cachedViolation.getFileId());
         assertEquals(textLocation.getStartLine(), cachedViolation.getBeginLine());
         assertEquals(textLocation.getStartColumn(), cachedViolation.getBeginColumn());
         assertEquals(textLocation.getEndLine(), cachedViolation.getEndLine());
@@ -159,7 +159,7 @@ class FileAnalysisCacheTest {
         final TextRange2d textLocation = TextRange2d.range2d(1, 2, 3, 4);
 
         TextFile mockFile = mock(TextFile.class);
-        when(mockFile.getPathId()).thenReturn(FileId.fromPathLikeString("a/bc"));
+        when(mockFile.getFileId()).thenReturn(FileId.fromPathLikeString("a/bc"));
         when(mockFile.getLanguageVersion()).thenReturn(dummyVersion);
         when(mockFile.readContents()).thenReturn(TextFileContent.fromCharSeq("abc"));
 
@@ -169,7 +169,7 @@ class FileAnalysisCacheTest {
         try (TextDocument doc0 = TextDocument.create(mockFile)) {
             cache.isUpToDate(doc0);
             try (FileAnalysisListener listener = cache.startFileAnalysis(doc0)) {
-                listener.onRuleViolation(new ParametricRuleViolation(rule, FileLocation.range(doc0.getPathId(), textLocation), "message"));
+                listener.onRuleViolation(new ParametricRuleViolation(rule, FileLocation.range(doc0.getFileId(), textLocation), "message"));
             }
         } finally {
             cache.persist();
@@ -187,7 +187,7 @@ class FileAnalysisCacheTest {
             List<RuleViolation> cachedViolations = reloadedCache.getCachedViolations(doc1);
             assertEquals(1, cachedViolations.size(), "Cached rule violations count mismatch");
             final RuleViolation cachedViolation = cachedViolations.get(0);
-            assertEquals(mockFile.getPathId(), cachedViolation.getLocation().getFileId());
+            assertEquals(mockFile.getFileId(), cachedViolation.getLocation().getFileId());
         }
     }
 

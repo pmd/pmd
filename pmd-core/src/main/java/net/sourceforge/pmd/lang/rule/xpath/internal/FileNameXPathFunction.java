@@ -56,7 +56,7 @@ public final class FileNameXPathFunction extends AbstractXPathFunctionDef {
                 RootNode root = node.getRoot();
                 Objects.requireNonNull(root, "No root node in tree?");
 
-                String fileName = root.getTextDocument().getPathId().getFileName();
+                String fileName = root.getTextDocument().getFileId().getFileName();
                 Objects.requireNonNull(fileName, "File name was not set");
 
                 return new StringValue(fileName);

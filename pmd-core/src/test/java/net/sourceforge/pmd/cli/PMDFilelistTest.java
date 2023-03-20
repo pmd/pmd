@@ -43,8 +43,8 @@ class PMDFilelistTest {
 
         List<TextFile> applicableFiles = collector.getCollectedFiles();
         assertThat(applicableFiles, hasSize(2));
-        assertThat(applicableFiles.get(0).getPathId().getFileName(), equalTo("anotherfile.dummy"));
-        assertThat(applicableFiles.get(1).getPathId().getFileName(), equalTo("somefile.dummy"));
+        assertThat(applicableFiles.get(0).getFileId().getFileName(), equalTo("anotherfile.dummy"));
+        assertThat(applicableFiles.get(1).getFileId().getFileName(), equalTo("somefile.dummy"));
     }
 
     @Test
@@ -61,7 +61,7 @@ class PMDFilelistTest {
     }
 
     private static void assertFilenameIs(TextFile textFile, String suffix) {
-        assertThat(textFile.getPathId().getFileName(), is(suffix));
+        assertThat(textFile.getFileId().getFileName(), is(suffix));
     }
 
     @Test

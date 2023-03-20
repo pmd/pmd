@@ -106,10 +106,10 @@ public class RuleApplicator {
     private void reportException(FileAnalysisListener listener, Rule rule, Node node, Throwable e) {
         // The listener handles logging if needed,
         // it may also rethrow the error.
-        listener.onError(new ProcessingError(e, node.getTextDocument().getPathId()));
+        listener.onError(new ProcessingError(e, node.getTextDocument().getFileId()));
 
         // fixme - maybe duplicated logging
-        LOG.warn("Exception applying rule {} on file {}, continuing with next rule", rule.getName(), node.getTextDocument().getPathId(), e);
+        LOG.warn("Exception applying rule {} on file {}, continuing with next rule", rule.getName(), node.getTextDocument().getFileId(), e);
         String nodeToString = StringUtil.elide(node.toString(), 600, " ... (truncated)");
         LOG.warn("Exception occurred on node {}", nodeToString);
     }

@@ -86,16 +86,9 @@ public interface TextDocument extends Closeable {
     LanguageVersion getLanguageVersion();
 
     /**
-     * Returns {@link TextFile#getPathId()} for the text file backing this document.
+     * Returns {@link TextFile#getFileId()} for the text file backing this document.
      */
-    FileId getPathId();
-
-    /**
-     * Returns {@link TextFile#getDisplayName()} for the text file backing this document.
-     */
-    default String getDisplayName() {
-        return getPathId().getOriginalPath();
-    }
+    FileId getFileId();
 
 
     /**

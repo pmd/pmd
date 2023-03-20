@@ -22,7 +22,7 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
 
     protected boolean showSuppressedViolations = true;
     protected PrintWriter writer;
-    private FileNameRenderer fileNameRenderer = FileId::getOriginalPath;
+    private FileNameRenderer fileNameRenderer = fileId -> fileId.getOriginalPath();
 
     public AbstractRenderer(String name, String description) {
         this.name = name;

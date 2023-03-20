@@ -69,7 +69,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
     @Override
     public boolean isUpToDate(final TextDocument document) {
         try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "up-to-date check")) {
-            final AnalysisResult cachedResult = fileResultsCache.get(document.getPathId());
+            final AnalysisResult cachedResult = fileResultsCache.get(document.getFileId());
             final AnalysisResult updatedResult;
 
             // is this a known file? has it changed?
@@ -89,7 +89,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
                 updatedResult = new AnalysisResult(document.getCheckSum(), new ArrayList<>());
             }
 
-            updatedResultsCache.put(document.getPathId(), updatedResult);
+            updatedResultsCache.put(document.getFileId(), updatedResult);
             
             return upToDate;
         }
@@ -97,7 +97,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
 
     @Override
     public List<RuleViolation> getCachedViolations(final TextDocument sourceFile) {
-        final AnalysisResult analysisResult = fileResultsCache.get(sourceFile.getPathId());
+        final AnalysisResult analysisResult = fileResultsCache.get(sourceFile.getFileId());
 
         if (analysisResult == null) {
             // new file, avoid nulls
@@ -109,7 +109,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
 
     @Override
     public void analysisFailed(final TextDocument sourceFile) {
-        updatedResultsCache.remove(sourceFile.getPathId());
+        updatedResultsCache.remove(sourceFile.getFileId());
     }
 
 
@@ -218,7 +218,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
 
     @Override
     public FileAnalysisListener startFileAnalysis(TextDocument file) {
-        final FileId fileName = file.getPathId();
+        final FileId fileName = file.getFileId();
 
         return new FileAnalysisListener() {
             @Override

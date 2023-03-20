@@ -32,7 +32,7 @@ class ReaderTextFile implements TextFile {
     }
 
     @Override
-    public FileId getPathId() {
+    public FileId getFileId() {
         return fileId;
     }
 

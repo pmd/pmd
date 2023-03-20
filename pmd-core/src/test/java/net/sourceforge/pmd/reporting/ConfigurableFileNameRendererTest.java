@@ -15,10 +15,7 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.document.FileId;
 
-/**
- * @author Clément Fournier
- */
-public class ConfigurableFileNameRendererTest {
+class ConfigurableFileNameRendererTest {
 
     @Test
     void testRelativize() {

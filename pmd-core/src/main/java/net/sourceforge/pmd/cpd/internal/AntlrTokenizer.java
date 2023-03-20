@@ -32,7 +32,7 @@ public abstract class AntlrTokenizer implements Tokenizer {
     public void tokenize(final SourceCode sourceCode, final Tokens tokenEntries) {
         try (TextDocument textDoc = TextDocument.create(CpdCompat.cpdCompat(sourceCode))) {
 
-            CharStream charStream = CharStreams.fromString(textDoc.getText().toString(), textDoc.getPathId().getOriginalPath());
+            CharStream charStream = CharStreams.fromString(textDoc.getText().toString(), textDoc.getFileId().getOriginalPath());
 
             final AntlrTokenManager tokenManager = new AntlrTokenManager(getLexerForSource(charStream), textDoc);
             final AntlrTokenFilter tokenFilter = getTokenFilter(tokenManager);

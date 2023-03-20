@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextFile;
@@ -41,10 +42,11 @@ public class ConfigurableFileNameRenderer implements FileNameRenderer {
     }
 
     @Override
-    public String getDisplayName(FileId fileId) {
+    public String getDisplayName(@NonNull FileId fileId) {
         String localDisplayName = getLocalDisplayName(fileId);
-        if (fileId.getParentFsPath() != null) {
-            return getDisplayName(fileId.getParentFsPath()) + "!" + localDisplayName;
+        FileId parent = fileId.getParentFsPath();
+        if (parent != null) {
+            return getDisplayName(parent) + "!" + localDisplayName;
         }
         return localDisplayName;
     }

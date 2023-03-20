@@ -35,12 +35,7 @@ class StringTextFile implements TextFile {
     }
 
     @Override
-    public @NonNull String getDisplayName() {
-        return fileId.toUriString();
-    }
-
-    @Override
-    public FileId getPathId() {
+    public FileId getFileId() {
         return fileId;
     }
 

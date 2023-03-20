@@ -78,7 +78,7 @@ public class FileAnalysisException extends RuntimeException {
         }
         FileLocation loc = location();
         if (loc != null) {
-            result += loc.startPosToString();
+            result += " at " + loc.startPosToString();
         }
         return result;
     }

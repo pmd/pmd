@@ -13,7 +13,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
-import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -48,7 +47,7 @@ public interface TextFile extends Closeable {
     /**
      * Returns the language version which should be used to process this
      * file. This is a property of the file, which allows sources for
-     * several different language versions to be processed in the same
+     * different language versions to be processed in the same
      * PMD run. It also makes it so, that the file extension is not interpreted
      * to find out the language version after the initial file collection
      * phase.
@@ -60,29 +59,13 @@ public interface TextFile extends Closeable {
 
 
     /**
-     * Returns an identifier for the path of this file. This should not
+     * Returns an identifier for this file. This should not
      * be interpreted as a {@link File}, it may not be a file on this
-     * filesystem. The only requirement for this method, is that two
-     * distinct text files should have distinct path IDs, and that from
-     * one analysis to the next, the path ID of logically identical files
-     * be the same.
-     *
-     * <p>Basically this may be implemented as a URL, or a file path. It
-     * is used to index violation caches.
+     * filesystem. Two distinct text files should have distinct path IDs,
+     * and from one analysis to the next, the path ID of logically identical
+     * files should be the same.
      */
-    FileId getPathId();
-
-
-    /**
-     * Returns a display name for the file. This name is used for
-     * reporting and should not be interpreted. It may be relative
-     * to a directory or so, it may also not be normalized. Use
-     * {@link #getPathId()} when you want an identifier.
-     */
-    @Deprecated
-    default @NonNull String getDisplayName() {
-        return getPathId().getOriginalPath();
-    }
+    FileId getFileId();
 
 
     /**
@@ -262,7 +245,6 @@ public interface TextFile extends Closeable {
         if (languageVersion == null) {
             throw new NullPointerException("no language version detected for " + pathId);
         }
-        String shortPaths = config.getInputPathList().stream().map(Path::toString).collect(Collectors.joining(","));
         class DataSourceTextFile extends BaseCloseable implements TextFile {
 
             @Override
@@ -271,13 +253,8 @@ public interface TextFile extends Closeable {
             }
 
             @Override
-            public FileId getPathId() {
+            public FileId getFileId() {
                 return fileId2;
-            }
-
-            @Override
-            public @NonNull String getDisplayName() {
-                return ds.getNiceFileName(false, shortPaths);
             }
 
             @Override

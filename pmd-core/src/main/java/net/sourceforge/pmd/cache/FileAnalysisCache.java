@@ -62,7 +62,7 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
      */
     private void loadFromFile(final File cacheFile, Set<TextFile> files) {
         Map<String, FileId> idMap =
-            files.stream().map(TextFile::getPathId)
+            files.stream().map(TextFile::getFileId)
                  .collect(Collectors.toMap(FileId::toUriString, id -> id));
 
         try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "load")) {

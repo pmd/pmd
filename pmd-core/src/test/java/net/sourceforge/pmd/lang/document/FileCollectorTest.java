@@ -100,7 +100,7 @@ class FileCollectorTest {
     }
 
     private void assertCollected(FileCollector collector, List<FileId> expected) {
-        List<FileId> actual = CollectionUtil.map(collector.getCollectedFiles(), TextFile::getPathId);
+        List<FileId> actual = CollectionUtil.map(collector.getCollectedFiles(), TextFile::getFileId);
         assertEquals(expected, actual);
     }
 
