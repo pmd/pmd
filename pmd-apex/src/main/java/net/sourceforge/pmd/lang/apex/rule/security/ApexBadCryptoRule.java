@@ -8,14 +8,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
-import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
-import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
-import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
-import net.sourceforge.pmd.lang.apex.ast.ApexNode;
+import net.sourceforge.pmd.lang.apex.ast.*;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
+import scala.concurrent.impl.FutureConvertersImpl;
 
 /**
  * Finds encryption schemes using hardcoded IV, hardcoded key
@@ -104,7 +100,19 @@ public class ApexBadCryptoRule extends AbstractApexRule {
     }
 
     private void reportIfHardCoded(Object data, Object potentialIV) {
-        if (potentialIV instanceof ASTVariableExpression) {
+        if (potentialIV instanceof ASTMethodCallExpression) {
+            ASTMethodCallExpression expression = (ASTMethodCallExpression) potentialIV;
+            if (expression.getNumChildren()>1) {
+                Object potentialStaticIV = expression.getChild(1);
+                if (potentialStaticIV instanceof ASTLiteralExpression) {
+                    ASTLiteralExpression variable = (ASTLiteralExpression) potentialStaticIV;
+                    if (variable.isString()) {
+                        addViolation(data, variable);
+                    }
+                }
+            }
+        }
+        else if (potentialIV instanceof ASTVariableExpression) {
             ASTVariableExpression variable = (ASTVariableExpression) potentialIV;
             if (potentiallyStaticBlob.contains(Helper.getFQVariableName(variable))) {
                 addViolation(data, variable);
