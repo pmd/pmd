@@ -33,7 +33,7 @@ public final class ApexParser implements Parser {
             final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(task, (ApexLanguageProcessor) task.getLanguageProcessor());
             return treeBuilder.buildTree(astRoot);
         } catch (apex.jorje.services.exception.ParseException e) {
-            FileLocation loc = FileLocation.caret(task.getTextDocument().getFileId(), e.getLoc().getLine(), e.getLoc().getColumn());
+            FileLocation loc = FileLocation.caret(task.getFileId(), e.getLoc().getLine(), e.getLoc().getColumn());
             throw new ParseException(e).withLocation(loc);
         }
     }

@@ -9,10 +9,7 @@ import org.codehaus.groovy.antlr.parser.GroovyLexer;
 
 import net.sourceforge.pmd.cpd.TokenFactory;
 import net.sourceforge.pmd.cpd.Tokenizer;
-import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.lang.document.TextDocument;
-import net.sourceforge.pmd.lang.document.CpdCompat;
-import net.sourceforge.pmd.lang.document.FileId;
 
 import groovyjarjarantlr.Token;
 import groovyjarjarantlr.TokenStream;
@@ -50,11 +47,7 @@ public class GroovyTokenizer implements Tokenizer {
                 token = tokenStream.nextToken();
             }
         } catch (TokenStreamException err) {
-            // Wrap exceptions of the Groovy tokenizer in a TokenMgrError, so
-            // they are correctly handled
-            // when CPD is executed with the '--skipLexicalErrors' command line
-            // option
-            throw new TokenMgrError(lexer.getLine(), lexer.getColumn(), document.getFileId(), err.getMessage(), err);
+            throw tokens.makeLexException(lexer.getLine(), lexer.getColumn(), err.getMessage(), err);
         }
     }
 }

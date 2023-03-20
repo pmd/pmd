@@ -68,8 +68,8 @@ public class ScalaTokenizer implements Tokenizer {
                 // cannot catch it as it's a checked exception and Scala sneaky throws
                 TokenizeException tokE = (TokenizeException) e;
                 Position pos = tokE.pos();
-                throw new TokenMgrError(
-                    pos.startLine() + 1, pos.startColumn() + 1, document.getFileId(), "Scalameta threw", tokE);
+                throw tokenEntries.makeLexException(
+                    pos.startLine() + 1, pos.startColumn() + 1, "Scalameta threw", tokE);
             } else {
                 throw e;
             }

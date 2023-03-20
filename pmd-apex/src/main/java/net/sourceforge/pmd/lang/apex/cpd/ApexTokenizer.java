@@ -16,7 +16,6 @@ import net.sourceforge.pmd.cpd.TokenFactory;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.lang.apex.ApexJorjeLogging;
 import net.sourceforge.pmd.lang.apex.ApexLanguageProperties;
-import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.lang.document.TextDocument;
 
 import apex.jorje.parser.impl.ApexLexer;
@@ -37,7 +36,7 @@ public class ApexTokenizer implements Tokenizer {
         ApexLexer lexer = new ApexLexer(ass) {
             @Override
             public void emitErrorMessage(String msg) {
-                throw new TokenMgrError(getLine(), getCharPositionInLine(), document.getFileId(), msg, null);
+                throw tokenEntries.makeLexException(getLine(), getCharPositionInLine(), msg, null);
             }
         };
 

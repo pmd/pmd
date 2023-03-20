@@ -14,6 +14,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextDocument;
 
@@ -104,6 +105,11 @@ public class Tokens {
             @Override
             public void setImage(TokenEntry entry, @NonNull String newImage) {
                 tokens.setImage(entry, newImage);
+            }
+
+            @Override
+            public TokenMgrError makeLexException(int line, int column, String message, @Nullable Throwable cause) {
+                return new TokenMgrError(line, column, fileId, message, cause);
             }
 
             @Override
