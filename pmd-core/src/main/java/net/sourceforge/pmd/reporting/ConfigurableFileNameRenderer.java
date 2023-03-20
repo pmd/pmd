@@ -4,13 +4,16 @@
 
 package net.sourceforge.pmd.reporting;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
-import net.sourceforge.pmd.PmdAnalysis;
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextFile;
 
@@ -48,8 +51,63 @@ public class ConfigurableFileNameRenderer implements FileNameRenderer {
 
     private String getLocalDisplayName(FileId file) {
         if (!relativizeRootPaths.isEmpty()) {
-            return PmdAnalysis.getDisplayName(file, relativizeRootPaths);
+            return getDisplayName(file, relativizeRootPaths);
         }
         return file.getOriginalPath();
+    }
+
+    private static int countSegments(String best) {
+        return StringUtils.countMatches(best, File.separatorChar);
+    }
+
+    static String relativizePath(String base, String other) {
+        String[] baseSegments = base.split("[/\\\\]");
+        String[] otherSegments = other.split("[/\\\\]");
+        int prefixLength = 0;
+        int maxi = Math.min(baseSegments.length, otherSegments.length);
+        while (prefixLength < maxi && baseSegments[prefixLength].equals(otherSegments[prefixLength])) {
+            prefixLength++;
+        }
+
+        if (prefixLength == 0) {
+            return other;
+        }
+
+        List<String> relative = new ArrayList<>();
+        for (int i = prefixLength; i < baseSegments.length; i++) {
+            relative.add("..");
+        }
+        relative.addAll(Arrays.asList(otherSegments).subList(prefixLength, otherSegments.length));
+        return String.join(File.separator, relative);
+    }
+
+    /** Return whether the path is the root path (/). */
+    private static boolean isFileSystemRoot(Path root) {
+        return root.isAbsolute() && root.getNameCount() == 0;
+    }
+
+    /**
+     * Return the textfile's display name. Takes the shortest path we
+     * can construct from the relativize roots.
+     *
+     * <p>package private for test only</p>
+     */
+    static String getDisplayName(FileId file, List<Path> relativizeRoots) {
+        String best = file.toAbsolutePath();
+        for (Path root : relativizeRoots) {
+            if (isFileSystemRoot(root)) {
+                // Absolutize the path. Since the relativize roots are
+                // sorted by ascending length, this should be the first in the list
+                // (so another root can override it).
+                best = file.toAbsolutePath();
+                continue;
+            }
+
+            String relative = relativizePath(root.toAbsolutePath().toString(), file.toAbsolutePath());
+            if (countSegments(relative) < countSegments(best)) {
+                best = relative;
+            }
+        }
+        return best;
     }
 }

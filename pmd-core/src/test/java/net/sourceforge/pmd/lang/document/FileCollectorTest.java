@@ -12,13 +12,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -93,11 +91,6 @@ class FileCollectorTest {
     }
 
 
-    @Test
-    void testRelativize() {
-        String displayName = PmdAnalysis.getDisplayName(FileId.forPath(Paths.get("a", "b", "c")), listOf(Paths.get("a")));
-        assertEquals(displayName, Paths.get("b", "c").toString());
-    }
 
     private Path newFile(Path root, String path) throws IOException {
         Path resolved = root.resolve(path);
