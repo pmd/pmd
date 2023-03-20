@@ -16,8 +16,8 @@ import java.util.Random;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.FileId;
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;

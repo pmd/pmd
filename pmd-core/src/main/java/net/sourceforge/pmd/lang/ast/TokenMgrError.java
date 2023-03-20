@@ -8,8 +8,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.FileId;
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
