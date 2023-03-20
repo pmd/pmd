@@ -107,7 +107,7 @@ public class ApexBadCryptoRule extends AbstractApexRule {
     private void reportIfHardCoded(Object data, Object potentialIV) {
         if (potentialIV instanceof ASTMethodCallExpression) {
             ASTMethodCallExpression expression = (ASTMethodCallExpression) potentialIV;
-            if (expression.getNumChildren()>1) {
+            if (expression.getNumChildren() > 1) {
                 Object potentialStaticIV = expression.getChild(1);
                 if (potentialStaticIV instanceof ASTLiteralExpression) {
                     ASTLiteralExpression variable = (ASTLiteralExpression) potentialStaticIV;
@@ -116,8 +116,7 @@ public class ApexBadCryptoRule extends AbstractApexRule {
                     }
                 }
             }
-        }
-        else if (potentialIV instanceof ASTVariableExpression) {
+        } else if (potentialIV instanceof ASTVariableExpression) {
             ASTVariableExpression variable = (ASTVariableExpression) potentialIV;
             if (potentiallyStaticBlob.contains(Helper.getFQVariableName(variable))) {
                 addViolation(data, variable);
