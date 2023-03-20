@@ -17,6 +17,7 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.vf.DataType;
 import net.sourceforge.pmd.lang.vf.VFTestUtils;
 import net.sourceforge.pmd.lang.vf.VfLanguageProperties;
@@ -95,7 +96,7 @@ class ObjectFieldTypesTest {
     @Test
     void testInvalidDirectoryDoesNotCauseAnException() {
         Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf).resolve("SomePage.page");
-        String vfFileName = vfPagePath.toString();
+        FileId vfFileName = FileId.forPath(vfPagePath);
 
         List<String> paths = Arrays.asList(Paths.get("..", "objects-does-not-exist").toString());
         ObjectFieldTypes objectFieldTypes = new ObjectFieldTypes();
@@ -117,12 +118,12 @@ class ObjectFieldTypesTest {
     }
 
     /**
-     * Verify that return values of {@link SalesforceFieldTypes#getDataType(String, String, List)} using the keys of
+     * Verify that return values of {@link SalesforceFieldTypes#getDataType(String, FileId, List)} using the keys of
      * {@code expectedDataTypes} matches the values of {@code expectedDataTypes}
      */
     static void validateDataTypes(Map<String, DataType> expectedDataTypes, SalesforceFieldTypes fieldTypes,
                                          Path vfPagePath, List<String> paths) {
-        String vfFileName = vfPagePath.toString();
+        FileId vfFileName = FileId.forPath(vfPagePath);
 
         for (Map.Entry<String, DataType> entry : expectedDataTypes.entrySet()) {
             assertEquals(entry.getValue(), fieldTypes.getDataType(entry.getKey(), vfFileName, paths), entry.getKey());

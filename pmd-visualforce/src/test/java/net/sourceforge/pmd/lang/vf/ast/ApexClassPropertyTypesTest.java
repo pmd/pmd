@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +16,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.vf.DataType;
 import net.sourceforge.pmd.lang.vf.VFTestUtils;
 import net.sourceforge.pmd.lang.vf.VfLanguageProperties;
@@ -68,9 +69,9 @@ class ApexClassPropertyTypesTest {
     void testInvalidDirectoryDoesNotCauseAnException() {
         Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf)
                 .resolve("SomePage.page");
-        String vfFileName = vfPagePath.toString();
+        FileId vfFileName = FileId.forPath(vfPagePath);
 
-        List<String> paths = Arrays.asList(Paths.get("..", "classes-does-not-exist").toString());
+        List<String> paths = listOf(Paths.get("..", "classes-does-not-exist").toString());
         try (LanguageProcessorRegistry lpReg = VFTestUtils.fakeLpRegistry()) {
             ApexClassPropertyTypes apexClassPropertyTypes = new ApexClassPropertyTypes(lpReg);
             assertNull(apexClassPropertyTypes.getDataType("ApexController.accOuntIdProp", vfFileName, paths));

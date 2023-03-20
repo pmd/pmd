@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.vf.DataType;
 import net.sourceforge.pmd.lang.vf.VfLanguageProperties;
 
@@ -23,7 +23,7 @@ import net.sourceforge.pmd.lang.vf.VfLanguageProperties;
  * {@link net.sourceforge.pmd.lang.vf.ast.ASTIdentifier} children that represent an IdentifierDotted construct. An
  * IdentifierDotted is of the form {@code MyObject__c.MyField__c}.
  */
-class VfExpressionTypeVisitor extends VfParserVisitorAdapter {
+class VfExpressionTypeVisitor extends VfVisitorBase<Void, Void> {
     private static final Logger LOG = LoggerFactory.getLogger(VfExpressionTypeVisitor.class);
 
     private static final String APEX_PAGE = "apex:page";
@@ -33,7 +33,7 @@ class VfExpressionTypeVisitor extends VfParserVisitorAdapter {
 
     private final ApexClassPropertyTypes apexClassPropertyTypes;
     private final ObjectFieldTypes objectFieldTypes;
-    private final String fileName;
+    private final FileId fileId;
 
     private String standardControllerName;
 
@@ -42,11 +42,12 @@ class VfExpressionTypeVisitor extends VfParserVisitorAdapter {
      * {@code controller} or {@code extensions} attribute.
      */
     private final List<String> apexClassNames;
+    // todo make those lists of Path
     private final List<String> apexDirectories;
     private final List<String> objectsDirectories;
 
     VfExpressionTypeVisitor(ParserTask task, VfLanguageProperties vfProperties) {
-        this.fileName = task.getFileDisplayName();
+        this.fileId = task.getTextDocument().getFileId();
         this.apexDirectories = vfProperties.getProperty(VfLanguageProperties.APEX_DIRECTORIES_DESCRIPTOR);
         this.objectsDirectories = vfProperties.getProperty(VfLanguageProperties.OBJECTS_DIRECTORIES_DESCRIPTOR);
         this.apexClassNames = new ArrayList<>();
@@ -55,12 +56,7 @@ class VfExpressionTypeVisitor extends VfParserVisitorAdapter {
     }
 
     @Override
-    public Object visit(ASTCompilationUnit node, Object data) {
-        if (StringUtils.isBlank(fileName)) {
-            // Skip visiting if there isn't a file that can anchor the directories
-            return data;
-        }
-
+    public Void visit(ASTCompilationUnit node, Void data) {
         if (apexDirectories.isEmpty() && objectsDirectories.isEmpty()) {
             // Skip visiting if there aren't any directories to look in
             return data;
@@ -73,23 +69,19 @@ class VfExpressionTypeVisitor extends VfParserVisitorAdapter {
      * referenced from the Visualforce page.
      */
     @Override
-    public Object visit(ASTElement node, Object data) {
+    public Void visit(ASTElement node, Void data) {
         if (APEX_PAGE.equalsIgnoreCase(node.getName())) {
-            List<ASTAttribute> attribs = node.findChildrenOfType(ASTAttribute.class);
 
-            for (ASTAttribute attr : attribs) {
+            for (ASTAttribute attr : node.children(ASTAttribute.class)) {
                 String lowerAttr = attr.getName().toLowerCase(Locale.ROOT);
                 if (CONTROLLER_ATTRIBUTE.equals(lowerAttr)) {
                     // Controller Name should always take precedence
-                    apexClassNames.add(0, attr.getFirstChildOfType(ASTAttributeValue.class)
-                            .getFirstChildOfType(ASTText.class).getImage());
+                    apexClassNames.add(0, getAttrValue(attr));
                     break;
                 } else if (STANDARD_CONTROLLER_ATTRIBUTE.equals(lowerAttr)) {
-                    standardControllerName = attr.getFirstChildOfType(ASTAttributeValue.class)
-                            .getFirstChildOfType(ASTText.class).getImage().toLowerCase(Locale.ROOT);
+                    standardControllerName = getAttrValue(attr).toLowerCase(Locale.ROOT);
                 } else if (EXTENSIONS_ATTRIBUTE.equalsIgnoreCase(lowerAttr)) {
-                    for (String extension : attr.getFirstChildOfType(ASTAttributeValue.class)
-                            .getFirstChildOfType(ASTText.class).getImage().split(",")) {
+                    for (String extension : getAttrValue(attr).split(",")) {
                         apexClassNames.add(extension.trim());
                     }
                 }
@@ -98,12 +90,18 @@ class VfExpressionTypeVisitor extends VfParserVisitorAdapter {
         return super.visit(node, data);
     }
 
+    private static String getAttrValue(ASTAttribute attr) {
+        return attr.firstChild(ASTAttributeValue.class)
+                   .firstChild(ASTText.class)
+                   .getImage();
+    }
+
     /**
      * Invoke {@link ASTExpression#getDataNodes()} on all children of {@code node} and attempt to determine the
      * {@link DataType} by looking at Apex or CustomField metadata.
      */
     @Override
-    public Object visit(ASTElExpression node, Object data) {
+    public Void visit(ASTElExpression node, Void data) {
         for (Map.Entry<VfTypedNode, String> entry : getDataNodeNames(node).entrySet()) {
             String name = entry.getValue();
             DataType type = null;
@@ -132,7 +130,7 @@ class VfExpressionTypeVisitor extends VfParserVisitorAdapter {
             // Try to find the identifier in an Apex class
             for (String apexClassName : apexClassNames) {
                 String fullName = apexClassName + "." + name;
-                type = apexClassPropertyTypes.getDataType(fullName, fileName, apexDirectories);
+                type = apexClassPropertyTypes.getDataType(fullName, fileId, apexDirectories);
                 if (type != null) {
                     break;
                 }
@@ -142,7 +140,7 @@ class VfExpressionTypeVisitor extends VfParserVisitorAdapter {
             // to the StandardController.
             if (type == null) {
                 if (parts.length >= 2 && standardControllerName != null && standardControllerName.equalsIgnoreCase(parts[0])) {
-                    type = objectFieldTypes.getDataType(name, fileName, objectsDirectories);
+                    type = objectFieldTypes.getDataType(name, fileId, objectsDirectories);
                 }
             }
 
@@ -162,12 +160,11 @@ class VfExpressionTypeVisitor extends VfParserVisitorAdapter {
     private Map<VfTypedNode, String> getDataNodeNames(ASTElExpression node) {
         Map<VfTypedNode, String> dataNodeToName = new IdentityHashMap<>();
 
-        for (ASTExpression expression : node.findChildrenOfType(ASTExpression.class)) {
+        for (ASTExpression expression : node.children(ASTExpression.class)) {
             try {
                 dataNodeToName.putAll(expression.getDataNodes());
-            } catch (ASTExpression.DataNodeStateException ignore) {
+            } catch (ASTExpression.DataNodeStateException ignored) {
                 // Intentionally left blank
-                continue;
             }
         }
 
