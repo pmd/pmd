@@ -37,7 +37,7 @@ public class ApexTokenizer implements Tokenizer {
         ApexLexer lexer = new ApexLexer(ass) {
             @Override
             public void emitErrorMessage(String msg) {
-                throw new TokenMgrError(getLine(), getCharPositionInLine(), getSourceName(), msg, null);
+                throw new TokenMgrError(getLine(), getCharPositionInLine(), document.getFileId(), msg, null);
             }
         };
 
