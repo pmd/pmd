@@ -108,7 +108,7 @@ public interface SemanticErrorReporter {
 
             @Override
             public void warning(Node location, String message, Object... args) {
-                logMessage(Level.WARN, location, message, args);
+                logMessage(Level.DEBUG, location, message, args);
             }
 
             @Override
