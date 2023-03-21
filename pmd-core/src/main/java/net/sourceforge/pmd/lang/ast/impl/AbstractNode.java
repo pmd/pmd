@@ -193,7 +193,7 @@ public abstract class AbstractNode<B extends AbstractNode<B, N>,
         // here is optimized. Importantly, this method is final and the
         // implementation returns always an instance of the same type, so
         // that the allocation can be eliminated, and the iterator call devirtualized.
-        return StreamImpl.children(this, children);
+        return StreamImpl.childrenArray(this, children);
     }
 
     @Override
