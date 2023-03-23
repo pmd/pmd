@@ -104,6 +104,7 @@ Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 #### New: Kotlin support (experimental)
 
 * use PMD to analyze Kotlin code with PMD rules
+* Support for Kotlin 1.8 grammar
 * initially 2 built-in rules
 
 #### Changed: JavaScript support
@@ -368,6 +369,7 @@ Language specific fixes:
     * [#3486](https://github.com/pmd/pmd/pull/3486):   \[java] InsufficientStringBufferDeclaration: Fix NPE
 * kotlin
     * [#419](https://github.com/pmd/pmd/issues/419):   \[kotlin] Add support for Kotlin
+    * [#4389](https://github.com/pmd/pmd/pull/4389):   \[kotlin] Update grammar to version 1.8
 * swift
     * [#1877](https://github.com/pmd/pmd/pull/1877):   \[swift] Feature/swift rules
     * [#1882](https://github.com/pmd/pmd/pull/1882):   \[swift] UnavailableFunction Swift rule
