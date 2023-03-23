@@ -115,7 +115,7 @@
             
 
                 
-                <li><a href="pmd_release_notes7.html">Release notes</a></li>
+                <li class="active"><a href="pmd_release_notes.html">Release notes</a></li>
                 
 
             
@@ -127,7 +127,7 @@
             
 
                 
-                <li><a href="pmd_next_major_development.html">PMD 7.0.0 development</a></li>
+                <li><a href="pmd_release_notes_pmd7.html">Release notes (PMD 7)</a></li>
                 
 
             
@@ -1584,41 +1584,465 @@
    
     <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
 
-  <!-- NOTE: THESE RELEASE NOTES ARE THOSE FROM MASTER -->
-<!-- They were copied to avoid merge conflicts when merging back master -->
-<!-- the 7_0_0_release_notes.md is the page to be used when adding new 7.0.0 changes -->
-
+  
 <h2 id="--2023---700-snapshot">??-?????-2023 - 7.0.0-SNAPSHOT</h2>
 
-<p>The PMD team is pleased to announce PMD 7.0.0-SNAPSHOT.</p>
+<p>We’re excited to bring you the next major version of PMD!</p>
 
-<p>This is a major release.</p>
+<p>Since this is a big release, we provide here only a concise version of the release notes. We prepared a separate
+page with the full <a href="pmd_release_notes_pmd7.html">Detailed Release Notes for PMD 7.0.0</a>.</p>
 
-<h3 id="new-and-noteworthy">New and noteworthy</h3>
+<div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b> 
 
-<h3 id="fixed-issues">Fixed Issues</h3>
+<strong>Release Candidates</strong>
+
+PMD 7.0.0 is finally almost ready. In order to gather feedback, we are going to ship a couple of release candidates.
+These are officially available on GitHub and Maven Central and can be used as usual (e.g. as a dependency).
+We encourage you to try out the new features, but keep in mind that we may introduce API breaking changes between
+the release candidates. It should be stable enough if you don’t use custom rules.
+
+We have still some tasks planned for the next release candidates.
+You can see the progress in <a href="https://github.com/pmd/pmd/issues/3898">PMD 7 Tracking Issue #3898</a>.
+
+If you find any problem or difficulty while updating from PMD 6, please provide feedback via our
+<a href="https://github.com/pmd/pmd/issues/new/choose">issue tracker</a>. That way we can improve the experience
+for all.
+
+</div>
+
+<h3 id="-major-features-and-enhancements">🚀 Major Features and Enhancements</h3>
+
+<h4 id="new-official-logo">New official logo</h4>
+
+<p>The new official logo of PMD:</p>
+
+<p><img src="images/logo/pmd-logo-300px.png" alt="New PMD Logo" /></p>
+
+<h4 id="revamped-java-module">Revamped Java module</h4>
+
 <ul>
+  <li>Java grammar substantially refactored - more correct regarding the Java Language Specification (JLS)</li>
+  <li>Built-in rules have been upgraded for the changed AST</li>
+  <li>Rewritten type resolution framework and symbol table correctly implements the JLS</li>
+  <li>AST exposes more semantic information (method calls, field accesses)</li>
+</ul>
+
+<p>For more information, see the <a href="pmd_release_notes_pmd7.html">Detailed Release Notes for PMD 7</a>.</p>
+
+<p>Contributors: <a href="https://github.com/oowekyala">Clément Fournier</a> (@oowekyala),
+<a href="https://github.com/adangel">Andreas Dangel</a> (@adangel),
+<a href="https://github.com/jsotuyod">Juan Martín Sotuyo Dodero</a> (@jsotuyod)</p>
+
+<h4 id="revamped-command-line-interface">Revamped Command Line Interface</h4>
+
+<ul>
+  <li>unified and consistent Command Line Interface for both Linux/Unix and Windows across our different utilities</li>
+  <li>single script <code class="language-plaintext highlighter-rouge">pmd</code> (<code class="language-plaintext highlighter-rouge">pmd.bat</code> for Windows) to launch the different utilities:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">pmd check</code> to run PMD rules and analyze a project</li>
+      <li><code class="language-plaintext highlighter-rouge">pmd cpd</code> to run CPD (copy paste detector)</li>
+      <li><code class="language-plaintext highlighter-rouge">pmd designer</code> to run the PMD Rule Designer</li>
+    </ul>
+  </li>
+  <li>progress bar support for <code class="language-plaintext highlighter-rouge">pmd check</code></li>
+  <li>shell completion</li>
+</ul>
+
+<p><img src="images/userdocs/pmd-demo.gif" alt="Demo" /></p>
+
+<p>For more information, see the <a href="pmd_release_notes_pmd7.html">Detailed Release Notes for PMD 7</a>.</p>
+
+<p>Contributors: <a href="https://github.com/jsotuyod">Juan Martín Sotuyo Dodero</a> (@jsotuyod)</p>
+
+<h4 id="full-antlr-support">Full Antlr support</h4>
+
+<ul>
+  <li><a href="https://www.antlr.org/">Antlr</a> based grammars can now be used to build full-fledged PMD rules.</li>
+  <li>Previously, Antlr grammar could only be used for CPD</li>
+  <li>New supported languages: Swift and Kotlin</li>
+</ul>
+
+<p>For more information, see the <a href="pmd_release_notes_pmd7.html">Detailed Release Notes for PMD 7</a>.</p>
+
+<p>Contributors: <a href="https://github.com/lsoncini">Lucas Soncini</a> (@lsoncini),
+<a href="https://github.com/matifraga">Matías Fraga</a> (@matifraga),
+<a href="https://github.com/tomidelucca">Tomás De Lucca</a> (@tomidelucca)</p>
+
+<h3 id="-language-related-changes">🎉 Language Related Changes</h3>
+
+<p>Note that this is just a concise listing of the highlight.
+For more information on the languages, see the <a href="pmd_release_notes_pmd7.html">Detailed Release Notes for PMD 7</a>.</p>
+
+<h4 id="new-swift-support">New: Swift support</h4>
+
+<ul>
+  <li>use PMD to analyze Swift code with PMD rules</li>
+  <li>initially 4 built-in rules</li>
+</ul>
+
+<p>Contributors: <a href="https://github.com/lsoncini">Lucas Soncini</a> (@lsoncini),
+<a href="https://github.com/matifraga">Matías Fraga</a> (@matifraga),
+<a href="https://github.com/tomidelucca">Tomás De Lucca</a> (@tomidelucca)</p>
+
+<h4 id="new-kotlin-support-experimental">New: Kotlin support (experimental)</h4>
+
+<ul>
+  <li>use PMD to analyze Kotlin code with PMD rules</li>
+  <li>initially 2 built-in rules</li>
+</ul>
+
+<h4 id="changed-javascript-support">Changed: JavaScript support</h4>
+
+<ul>
+  <li>latest version supports ES6 and also some new constructs (see <a href="https://github.com/mozilla/rhino">Rhino</a>])</li>
+  <li>comments are retained</li>
+</ul>
+
+<h4 id="changed-language-versions">Changed: Language versions</h4>
+
+<ul>
+  <li>more predefined language versions for each supported language</li>
+  <li>can be used to limit rule execution for specific versions only with <code class="language-plaintext highlighter-rouge">minimumLanguageVersion</code> and
+<code class="language-plaintext highlighter-rouge">maximumLanguageVersion</code> attributes.</li>
+</ul>
+
+<h3 id="-new-and-changed-rules">🌟 New and changed rules</h3>
+
+<h4 id="new-rules">New Rules</h4>
+
+<p><strong>Apex</strong></p>
+<ul>
+  <li><a href="pmd_rules_apex_design.html#unusedmethod"><code class="language-plaintext highlighter-rouge">UnusedMethod</code></a> finds unused methods in your code.</li>
+</ul>
+
+<p><strong>Java</strong></p>
+<ul>
+  <li><a href="pmd_rules_java_codestyle.html#unnecessaryboxing"><code class="language-plaintext highlighter-rouge">UnnecessaryBoxing</code></a> reports boxing and unboxing conversions that may be made implicit.</li>
+</ul>
+
+<p><strong>Kotlin</strong></p>
+<ul>
+  <li><a href="pmd_rules_kotlin_bestpractices.html#functionnametooshort"><code class="language-plaintext highlighter-rouge">FunctionNameTooShort</code></a></li>
+  <li><a href="pmd_rules_kotlin_errorprone.html#overridebothequalsandhashcode"><code class="language-plaintext highlighter-rouge">OverrideBothEqualsAndHashcode</code></a></li>
+</ul>
+
+<p><strong>Swift</strong></p>
+<ul>
+  <li><a href="pmd_rules_swift_bestpractices.html#prohibitedinterfacebuilder"><code class="language-plaintext highlighter-rouge">ProhibitedInterfaceBuilder</code></a></li>
+  <li><a href="pmd_rules_swift_bestpractices.html#unavailablefunction"><code class="language-plaintext highlighter-rouge">UnavailableFunction</code></a></li>
+  <li><a href="pmd_rules_swift_errorprone.html#forcecast"><code class="language-plaintext highlighter-rouge">ForceCast</code></a></li>
+  <li><a href="pmd_rules_swift_errorprone.html#forcetry"><code class="language-plaintext highlighter-rouge">ForceTry</code></a></li>
+</ul>
+
+<h4 id="changed-rules">Changed Rules</h4>
+
+<p><strong>Java</strong></p>
+
+<ul>
+  <li><a href="pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname"><code class="language-plaintext highlighter-rouge">UnnecessaryFullyQualifiedName</code></a>: the rule has two new properties,
+to selectively disable reporting on static field and method qualifiers. The rule also has been improved
+to be more precise.</li>
+  <li><a href="pmd_rules_java_codestyle.html#uselessparentheses"><code class="language-plaintext highlighter-rouge">UselessParentheses</code></a>: the rule has two new properties which control how strict
+the rule should be applied. With <code class="language-plaintext highlighter-rouge">ignoreClarifying</code> (default: true) parentheses that are strictly speaking
+not necessary are allowed, if they separate expressions of different precedence.
+The other property <code class="language-plaintext highlighter-rouge">ignoreBalancing</code> (default: true) is similar, in that it allows parentheses that help
+reading and understanding the expressions.</li>
+  <li><a href="pmd_rules_java_bestpractices.html#loosecoupling"><code class="language-plaintext highlighter-rouge">LooseCoupling</code></a>: the rule has a new property to allow some types to be coupled
+to (<code class="language-plaintext highlighter-rouge">allowedTypes</code>).</li>
+  <li><a href="pmd_rules_java_errorprone.html#emptycatchblock"><code class="language-plaintext highlighter-rouge">EmptyCatchBlock</code></a>: <code class="language-plaintext highlighter-rouge">CloneNotSupportedException</code> and <code class="language-plaintext highlighter-rouge">InterruptedException</code> are not
+special-cased anymore. Rename the exception parameter to <code class="language-plaintext highlighter-rouge">ignored</code> to ignore them.</li>
+  <li><a href="pmd_rules_java_errorprone.html#dontimportsun"><code class="language-plaintext highlighter-rouge">DontImportSun</code></a>: <code class="language-plaintext highlighter-rouge">sun.misc.Signal</code> is not special-cased anymore.</li>
+  <li><a href="pmd_rules_java_codestyle.html#usediamondoperator"><code class="language-plaintext highlighter-rouge">UseDiamondOperator</code></a>: the property <code class="language-plaintext highlighter-rouge">java7Compatibility</code> is removed. The rule now
+handles Java 7 properly without a property.</li>
+  <li><a href="pmd_rules_java_design.html#singularfield"><code class="language-plaintext highlighter-rouge">SingularField</code></a>: Properties <code class="language-plaintext highlighter-rouge">checkInnerClasses</code> and <code class="language-plaintext highlighter-rouge">disallowNotAssignment</code> are removed.
+The rule is now more precise and will check these cases properly.</li>
+  <li><a href="pmd_rules_java_design.html#useutilityclass"><code class="language-plaintext highlighter-rouge">UseUtilityClass</code></a>: The property <code class="language-plaintext highlighter-rouge">ignoredAnnotations</code> has been removed.</li>
+  <li><a href="pmd_rules_java_design.html#lawofdemeter"><code class="language-plaintext highlighter-rouge">LawOfDemeter</code></a>: the rule has a new property <code class="language-plaintext highlighter-rouge">trustRadius</code>. This defines the maximum degree
+of trusted data. The default of 1 is the most restrictive.</li>
+  <li><a href="pmd_rules_java_documentation.html#commentcontent"><code class="language-plaintext highlighter-rouge">CommentContent</code></a>: The properties <code class="language-plaintext highlighter-rouge">caseSensitive</code> and <code class="language-plaintext highlighter-rouge">disallowedTerms</code> are removed. The
+new property <code class="language-plaintext highlighter-rouge">fobiddenRegex</code> can be used now to define the disallowed terms with a single regular
+expression.</li>
+</ul>
+
+<h4 id="removed-rules">Removed Rules</h4>
+
+<p>Many rules, that were previously deprecated have been finally removed.
+See <a href="pmd_release_notes_pmd7.html">Detailed Release Notes for PMD 7</a> for the complete list.</p>
+
+<h3 id="-api">🚨 API</h3>
+
+<p>The API of PMD has been growing over the years and needed some cleanup. The goal is, to
+have a clear separation between a well-defined API and the implementation, which is internal.
+This should help us in future development.</p>
+
+<p>Also, there are some improvement and changes in different areas. For the detailed description
+of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed Release Notes for PMD 7</a>.</p>
+
+<ul>
+  <li>Miscellaneous smaller changes and cleanups</li>
+  <li>XPath 3.1 support for XPath-based rules</li>
+  <li>Node stream API for AST traversal</li>
+  <li>Metrics framework</li>
+  <li>Testing framework</li>
+  <li>Language Lifecycle and Language Properties</li>
+</ul>
+
+<h3 id="-compatibility-and-migration-notes">💥 Compatibility and migration notes</h3>
+<p>See <a href="pmd_release_notes_pmd7.html">Detailed Release Notes for PMD 7</a>.</p>
+
+<h3 id="-fixed-issues">🐛 Fixed Issues</h3>
+
+<ul>
+  <li>miscellaneous
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/881">#881</a>:   [all] Breaking API changes for 7.0.0</li>
+      <li><a href="https://github.com/pmd/pmd/issues/896">#896</a>:   [all] Use slf4j</li>
+      <li><a href="https://github.com/pmd/pmd/pull/1431">#1431</a>:   [ui] Remove old GUI applications (designerold, bgastviewer)</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1451">#1451</a>: [core] RulesetFactoryCompatibility stores the whole ruleset file in memory as a string</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2496">#2496</a>: Update PMD 7 Logo on landing page</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2497">#2497</a>: PMD 7 Logo page</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2498">#2498</a>: Update PMD 7 Logo in documentation</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3797">#3797</a>: [all] Use JUnit5</li>
+    </ul>
+  </li>
+  <li>ant
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4080">#4080</a>: [ant] Split off Ant integration into a new submodule</li>
+    </ul>
+  </li>
   <li>core
     <ul>
-      <li><a href="https://github.com/pmd/pmd/pull/4420">#4420</a>: [core] Remove PMD.EOL</li>
+      <li><a href="https://github.com/pmd/pmd/issues/880">#880</a>:   [core] Make visitors generic</li>
+      <li><a href="https://github.com/pmd/pmd/pull/1622">#1622</a>:   [core] NodeStream API</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1687">#1687</a>: [core] Deprecate and Remove XPath 1.0 support</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1785">#1785</a>: [core] Allow abstract node types to be valid rulechain visits</li>
+      <li><a href="https://github.com/pmd/pmd/pull/1825">#1825</a>:   [core] Support NoAttribute for XPath</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2038">#2038</a>: [core] Remove DCD</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2218">#2218</a>: [core] <code class="language-plaintext highlighter-rouge">isFindBoundary</code> should not be an attribute</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2234">#2234</a>: [core] Consolidate PMD CLI into a single command</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2239">#2239</a>: [core] Merging Javacc build scripts</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2518">#2518</a>: [core] Language properties</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2602">#2602</a>: [core] Remove ParserOptions</li>
+      <li><a href="https://github.com/pmd/pmd/pull/2614">#2614</a>:   [core] Upgrade Saxon, add XPath 3.1, remove Jaxen</li>
+      <li><a href="https://github.com/pmd/pmd/pull/2696">#2696</a>:   [core] Remove DFA</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2821">#2821</a>: [core] Rule processing error filenames are missing paths</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2873">#2873</a>: [core] Utility classes in pmd 7</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2885">#2885</a>: [core] Error recovery mode</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3203">#3203</a>: [core] Replace RuleViolationFactory implementations with ViolationDecorator</li>
+      <li><a href="https://github.com/pmd/pmd/pull/3692">#3692</a>:   [core] Analysis listeners</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3782">#3782</a>: [core] Language lifecycle</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3815">#3815</a>: [core] Update Saxon HE to 10.7</li>
+      <li><a href="https://github.com/pmd/pmd/pull/3893">#3893</a>:   [core] Text documents</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3902">#3902</a>: [core] Violation decorators</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3918">#3918</a>: [core] Make LanguageRegistry non static</li>
+      <li><a href="https://github.com/pmd/pmd/pull/3922">#3922</a>:   [core] Better error reporting for the ruleset parser</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4035">#4035</a>: [core] ConcurrentModificationException in DefaultRuleViolationFactory</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4120">#4120</a>: [core] Explicitly name all language versions</li>
+      <li><a href="https://github.com/pmd/pmd/pull/4353">#4353</a>:   [core] Micro optimizations for Node API</li>
+      <li><a href="https://github.com/pmd/pmd/pull/4365">#4365</a>:   [core] Improve benchmarking</li>
+      <li><a href="https://github.com/pmd/pmd/pull/4420">#4420</a>:   [core] Remove PMD.EOL</li>
     </ul>
   </li>
-  <li>java-bestpractices
+  <li>cli
     <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1205">#1205</a>: [java] Improve ConstantsInInterface message to mention alternatives</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2234">#2234</a>: [core] Consolidate PMD CLI into a single command</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3828">#3828</a>: [core] Progress reporting</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4079">#4079</a>: [cli] Split off CLI implementation into a pmd-cli submodule</li>
     </ul>
   </li>
-  <li>java-documentation
+  <li>testing
     <ul>
-      <li><a href="https://github.com/pmd/pmd/pull/4416">#4416</a>: [java] Fix reported line number in CommentContentRule</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2435">#2435</a>: [test] Remove duplicated Dummy language module</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4234">#4234</a>: [test] Tests that change the logging level do not work</li>
     </ul>
   </li>
 </ul>
 
-<h3 id="api-changes">API Changes</h3>
+<p>Language specific fixes:</p>
 
-<h3 id="external-contributions">External Contributions</h3>
 <ul>
+  <li>apex
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1937">#1937</a>: [apex] Apex should only have a single RootNode</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1648">#1648</a>: [apex,vf] Remove CodeClimate dependency</li>
+      <li><a href="https://github.com/pmd/pmd/pull/1750">#1750</a>:   [apex] Remove apex statistical rules</li>
+      <li><a href="https://github.com/pmd/pmd/pull/2836">#2836</a>:   [apex] Remove Apex ProjectMirror</li>
+    </ul>
+  </li>
+  <li>apex-design
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2667">#2667</a>: [apex] Integrate nawforce/ApexLink to build robust Unused rule</li>
+    </ul>
+  </li>
+  <li>java
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/520">#520</a>:   [java] Allow <code class="language-plaintext highlighter-rouge">@SuppressWarnings</code> with constants instead of literals</li>
+      <li><a href="https://github.com/pmd/pmd/issues/864">#864</a>:   [java] Similar/duplicated implementations for determining FQCN</li>
+      <li><a href="https://github.com/pmd/pmd/issues/905">#905</a>:   [java] Add new node for anonymous class declaration</li>
+      <li><a href="https://github.com/pmd/pmd/issues/910">#910</a>:   [java] AST inconsistency between primitive and reference type arrays</li>
+      <li><a href="https://github.com/pmd/pmd/issues/997">#997</a>:   [java] Java8 parsing corner case with annotated array types</li>
+      <li><a href="https://github.com/pmd/pmd/issues/998">#998</a>:   [java] AST inconsistencies around FormalParameter</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1019">#1019</a>: [java] Breaking Java Grammar changes for PMD 7.0.0</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1124">#1124</a>: [java] ImmutableList implementation in the qname codebase</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1128">#1128</a>: [java] Improve ASTLocalVariableDeclaration</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1150">#1150</a>: [java] ClassOrInterfaceType AST improvements</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1207">#1207</a>: [java] Resolve explicit types using FQCNs, without hitting the classloader</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1367">#1367</a>: [java] Parsing error on annotated inner class</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1661">#1661</a>: [java] About operator nodes</li>
+      <li><a href="https://github.com/pmd/pmd/pull/2366">#2366</a>:   [java] Remove qualified names</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2819">#2819</a>: [java] GLB bugs in pmd 7</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3763">#3763</a>: [java] Ambiguous reference error in valid code</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3749">#3749</a>: [java] Improve <code class="language-plaintext highlighter-rouge">isOverridden</code> in ASTMethodDeclaration</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3750">#3750</a>: [java] Make symbol table support instanceof pattern bindings</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3752">#3752</a>: [java] Expose annotations in symbol API</li>
+      <li><a href="https://github.com/pmd/pmd/pull/4237">#4237</a>:   [java] Cleanup handling of Java comments</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4317">#4317</a>: [java] Some AST nodes should not be TypeNodes</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4359">#4359</a>: [java] Type resolution fails with NPE when the scope is not a type declaration</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4367">#4367</a>: [java] Move testrule TypeResTest into internal</li>
+    </ul>
+  </li>
+  <li>java-bestpractices
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/342">#342</a>:   [java] AccessorMethodGeneration: Name clash with another public field not properly handled</li>
+      <li><a href="https://github.com/pmd/pmd/issues/755">#755</a>:   [java] AccessorClassGeneration false positive for private constructors</li>
+      <li><a href="https://github.com/pmd/pmd/issues/770">#770</a>:   [java] UnusedPrivateMethod yields false positive for counter-variant arguments</li>
+      <li><a href="https://github.com/pmd/pmd/issues/807">#807</a>:   [java] AccessorMethodGeneration false positive with overloads</li>
+      <li><a href="https://github.com/pmd/pmd/issues/833">#833</a>:   [java] ForLoopCanBeForeach should consider iterating on this</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1189">#1189</a>: [java] UnusedPrivateMethod false positive from inner class via external class</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1205">#1205</a>: [java] Improve ConstantsInInterface message to mention alternatives</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1212">#1212</a>: [java] Don’t raise JUnitTestContainsTooManyAsserts on JUnit 5’s assertAll</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1422">#1422</a>: [java] JUnitTestsShouldIncludeAssert false positive with inherited @Rule field</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1565">#1565</a>: [java] JUnitAssertionsShouldIncludeMessage false positive with AssertJ</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1747">#1747</a>: [java] PreserveStackTrace false-positive</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1969">#1969</a>: [java] MissingOverride false-positive triggered by package-private method overwritten in another package by extending class</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1998">#1998</a>: [java] AccessorClassGeneration false-negative: subclass calls private constructor</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2130">#2130</a>: [java] UnusedLocalVariable: false-negative with array</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2147">#2147</a>: [java] JUnitTestsShouldIncludeAssert - false positives with lambdas and static methods</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2464">#2464</a>: [java] LooseCoupling must ignore class literals: ArrayList.class</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2542">#2542</a>: [java] UseCollectionIsEmpty can not detect the case <code class="language-plaintext highlighter-rouge">foo.bar().size()</code></li>
+      <li><a href="https://github.com/pmd/pmd/issues/2650">#2650</a>: [java] UseTryWithResources false positive when AutoCloseable helper used</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2796">#2796</a>: [java] UnusedAssignment false positive with call chains</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2797">#2797</a>: [java] MissingOverride long-standing issues</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2806">#2806</a>: [java] SwitchStmtsShouldHaveDefault false-positive with Java 14 switch non-fallthrough branches</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2822">#2822</a>: [java] LooseCoupling rule: Extend to cover user defined implementations and interfaces</li>
+      <li><a href="https://github.com/pmd/pmd/pull/2843">#2843</a>:   [java] Fix UnusedAssignment FP with field accesses</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2882">#2882</a>: [java] UseTryWithResources - false negative for explicit close</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2883">#2883</a>: [java] JUnitAssertionsShouldIncludeMessage false positive with method call</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2890">#2890</a>: [java] UnusedPrivateMethod false positive with generics</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2946">#2946</a>: [java] SwitchStmtsShouldHaveDefault false positive on enum inside enums</li>
+      <li><a href="https://github.com/pmd/pmd/pull/3672">#3672</a>:   [java] LooseCoupling - fix false positive with generics</li>
+      <li><a href="https://github.com/pmd/pmd/pull/3675">#3675</a>:   [java] MissingOverride - fix false positive with mixing type vars</li>
+    </ul>
+  </li>
+  <li>java-codestyle
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1208">#1208</a>: [java] PrematureDeclaration rule false-positive on variable declared to measure time</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1429">#1429</a>: [java] PrematureDeclaration as result of method call (false positive)</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1673">#1673</a>: [java] UselessParentheses false positive with conditional operator</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1790">#1790</a>: [java] UnnecessaryFullyQualifiedName false positive with enum constant</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1918">#1918</a>: [java] UselessParentheses false positive with boolean operators</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2134">#2134</a>: [java] PreserveStackTrace not handling <code class="language-plaintext highlighter-rouge">Throwable.addSuppressed(...)</code></li>
+      <li><a href="https://github.com/pmd/pmd/issues/2299">#2299</a>: [java] UnnecessaryFullyQualifiedName false positive with similar package name</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2391">#2391</a>: [java] UseDiamondOperator FP when expected type and constructed type have a different parameterization</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2528">#2528</a>: [java] MethodNamingConventions - JUnit 5 method naming not support ParameterizedTest</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2739">#2739</a>: [java] UselessParentheses false positive for string concatenation</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2748">#2748</a>: [java] UnnecessaryCast false positive with unchecked cast</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2973">#2973</a>: [java] New rule: UnnecessaryBoxing</li>
+      <li><a href="https://github.com/pmd/pmd/pull/3195">#3195</a>:   [java] Improve rule UnnecessaryReturn to detect more cases</li>
+      <li><a href="https://github.com/pmd/pmd/pull/3218">#3218</a>:   [java] Generalize UnnecessaryCast to flag all unnecessary casts</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3221">#3221</a>: [java] PrematureDeclaration false positive for unused variables</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3238">#3238</a>: [java] Improve ExprContext, fix FNs of UnnecessaryCast</li>
+      <li><a href="https://github.com/pmd/pmd/pull/3500">#3500</a>:   [java] UnnecessaryBoxing - check for Integer.valueOf(String) calls</li>
+      <li><a href="https://github.com/pmd/pmd/pull/4357">#4357</a>:   [java] Fix IllegalStateException in UseDiamondOperator rule</li>
+    </ul>
+  </li>
+  <li>java-design
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1014">#1014</a>: [java] LawOfDemeter: False positive with lambda expression</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1605">#1605</a>: [java] LawOfDemeter: False positive for standard UTF-8 charset name</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2175">#2175</a>: [java] LawOfDemeter: False positive for chained methods with generic method call</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2179">#2179</a>: [java] LawOfDemeter: False positive with static property access - should treat class-level property as global object, not dot-accessed property</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2180">#2180</a>: [java] LawOfDemeter: False positive with Thread and ThreadLocalRandom</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2182">#2182</a>: [java] LawOfDemeter: False positive with package-private access</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2188">#2188</a>: [java] LawOfDemeter: False positive with fields assigned to local vars</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2536">#2536</a>: [java] ClassWithOnlyPrivateConstructorsShouldBeFinal can’t detect inner class</li>
+      <li><a href="https://github.com/pmd/pmd/pull/3668">#3668</a>:   [java] ClassWithOnlyPrivateConstructorsShouldBeFinal - fix FP with inner private classes</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3754">#3754</a>: [java] SingularField false positive with read in while condition</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3786">#3786</a>: [java] SimplifyBooleanReturns should consider operator precedence</li>
+      <li><a href="https://github.com/pmd/pmd/pull/4238">#4238</a>:   [java] Make LawOfDemeter not use the rulechain</li>
+    </ul>
+  </li>
+  <li>java-documentation
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/pull/4369">#4369</a>:   [java] Improve CommentSize</li>
+      <li><a href="https://github.com/pmd/pmd/pull/4416">#4416</a>:   [java] Fix reported line number in CommentContentRule</li>
+    </ul>
+  </li>
+  <li>java-errorprone
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/659">#659</a>:   [java] MissingBreakInSwitch - last default case does not contain a break</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1005">#1005</a>: [java] CloneMethodMustImplementCloneable triggers for interfaces</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1669">#1669</a>: [java] NullAssignment - FP with ternay and null as constructor argument</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1899">#1899</a>: [java] Recognize @SuppressWanings(“fallthrough”) for MissingBreakInSwitch</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2320">#2320</a>: [java] NullAssignment - FP with ternary and null as method argument</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2532">#2532</a>: [java] AvoidDecimalLiteralsInBigDecimalConstructor can not detect the case <code class="language-plaintext highlighter-rouge">new BigDecimal(Expression)</code></li>
+      <li><a href="https://github.com/pmd/pmd/issues/2579">#2579</a>: [java] MissingBreakInSwitch detects the lack of break in the last case</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2880">#2880</a>: [java] CompareObjectsWithEquals - false negative with type res</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2893">#2893</a>: [java] Remove special cases from rule EmptyCatchBlock</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2894">#2894</a>: [java] Improve MissingBreakInSwitch</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3071">#3071</a>: [java] BrokenNullCheck FP with PMD 6.30.0</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3087">#3087</a>: [java] UnnecessaryBooleanAssertion overlaps with SimplifiableTestAssertion</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3100">#3100</a>: [java] UseCorrectExceptionLogging FP in 6.31.0</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3173">#3173</a>: [java] UseProperClassLoader false positive</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3351">#3351</a>: [java] ConstructorCallsOverridableMethod ignores abstract methods</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3400">#3400</a>: [java] AvoidUsingOctalValues FN with underscores</li>
+      <li><a href="https://github.com/pmd/pmd/pull/4356">#4356</a>:   [java] Fix NPE in CloseResourceRule</li>
+    </ul>
+  </li>
+  <li>java-multithreading
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2537">#2537</a>: [java] DontCallThreadRun can’t detect the case that call run() in <code class="language-plaintext highlighter-rouge">this.run()</code></li>
+      <li><a href="https://github.com/pmd/pmd/issues/2538">#2538</a>: [java] DontCallThreadRun can’t detect the case that call run() in <code class="language-plaintext highlighter-rouge">foo.bar.run()</code></li>
+      <li><a href="https://github.com/pmd/pmd/issues/2577">#2577</a>: [java] UseNotifyAllInsteadOfNotify falsely detect a special case with argument: <code class="language-plaintext highlighter-rouge">foo.notify(bar)</code></li>
+    </ul>
+  </li>
+  <li>java-performance
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1224">#1224</a>: [java] InefficientEmptyStringCheck false negative in anonymous class</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2587">#2587</a>: [java] AvoidArrayLoops could also check for list copy through iterated List.add()</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2712">#2712</a>: [java] SimplifyStartsWith false-positive with AssertJ</li>
+      <li><a href="https://github.com/pmd/pmd/pull/3486">#3486</a>:   [java] InsufficientStringBufferDeclaration: Fix NPE</li>
+    </ul>
+  </li>
+  <li>kotlin
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/419">#419</a>:   [kotlin] Add support for Kotlin</li>
+    </ul>
+  </li>
+  <li>swift
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/pull/1877">#1877</a>:   [swift] Feature/swift rules</li>
+      <li><a href="https://github.com/pmd/pmd/pull/1882">#1882</a>:   [swift] UnavailableFunction Swift rule</li>
+    </ul>
+  </li>
+  <li>xml
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/pull/1800">#1800</a>:   [xml] Unimplement org.w3c.dom.Node from the XmlNodeWrapper</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="-external-contributions">✨ External Contributions</h3>
+
+<ul>
+  <li><a href="https://github.com/pmd/pmd/pull/1658">#1658</a>: [core] Node support for Antlr-based languages - <a href="https://github.com/matifraga">Matías Fraga</a> (@matifraga)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/1698">#1698</a>: [core] [swift] Antlr Base Parser adapter and Swift Implementation - <a href="https://github.com/lsoncini">Lucas Soncini</a> (@lsoncini)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/1774">#1774</a>: [core] Antlr visitor rules - <a href="https://github.com/lsoncini">Lucas Soncini</a> (@lsoncini)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/1877">#1877</a>: [swift] Feature/swift rules - <a href="https://github.com/matifraga">Matías Fraga</a> (@matifraga)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/1881">#1881</a>: [doc] Add ANTLR documentation - <a href="https://github.com/matifraga">Matías Fraga</a> (@matifraga)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/1882">#1882</a>: [swift] UnavailableFunction Swift rule - <a href="https://github.com/tomidelucca">Tomás de Lucca</a> (@tomidelucca)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/2830">#2830</a>: [apex] Apexlink POC - <a href="https://github.com/nawforce">Kevin Jones</a> (@nawforce)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/3866">#3866</a>: [core] Add CLI Progress Bar - <a href="https://github.com/JerritEic">@JerritEic</a> (@JerritEic)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4412">#4412</a>: [doc] Added new error msg to ConstantsInInterface - <a href="https://github.com/dague1">David Ljunggren</a> (@dague1)</li>
 </ul>
 
@@ -1651,7 +2075,7 @@
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Mar 19, 2023 <br />
+             Site last generated: Mar 23, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

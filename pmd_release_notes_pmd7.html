@@ -4,9 +4,9 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="">
-<meta name="keywords" content=" changelog, release notes, deprecation, api changes">
-<title>PMD 7.0.0 development | PMD Source Code Analyzer</title>
+<meta name="description" content="These are the detailed release notes for PMD 7.">
+<meta name="keywords" content=" changelog, release notes">
+<title>Detailed Release Notes for PMD 7 | PMD Source Code Analyzer</title>
 
 
 <link rel="stylesheet" type="text/css" href="assets/fontawesome-free-5.14.0-web/css/all.min.css">
@@ -115,7 +115,7 @@
             
 
                 
-                <li><a href="pmd_release_notes7.html">Release notes</a></li>
+                <li><a href="pmd_release_notes.html">Release notes</a></li>
                 
 
             
@@ -127,7 +127,7 @@
             
 
                 
-                <li class="active"><a href="pmd_next_major_development.html">PMD 7.0.0 development</a></li>
+                <li class="active"><a href="pmd_release_notes_pmd7.html">Release notes (PMD 7)</a></li>
                 
 
             
@@ -1559,10 +1559,10 @@
             <a href="./" role="button"
                 ><i class="fa fa-home fa-lg"></i
             ></a>
-            » PMD 7.0.0 development   
+            » Detailed Release Notes for PMD 7   
             <a
                 target="_blank"
-                href="https://github.com/pmd/pmd/blob/master/docs/pages/next_major_development.md"
+                href="https://github.com/pmd/pmd/blob/master/docs/pages/release_notes_pmd7.md"
                 class="float-right"
                 role="button"
                 ><i class="fab fa-github fa-lg"></i> Edit on GitHub</a
@@ -1576,73 +1576,240 @@
 
 
 <div class="post-header">
-   <h1 class="post-title-main">PMD 7.0.0 development</h1>
+   <h1 class="post-title-main">Detailed Release Notes for PMD 7</h1>
 </div>
 
-<div class="post-content" data-github-edit-url="https://github.com/pmd/pmd/blob/master/docs/pages/next_major_development.md">
+<div class="post-content" data-github-edit-url="https://github.com/pmd/pmd/blob/master/docs/pages/release_notes_pmd7.md">
 
+   
+    <div class="summary">These are the detailed release notes for PMD 7.</div>
    
     <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
 
-  <p>We’re excited to bring you the next major version of PMD!
-Here is a summary of what is planned for PMD 7.</p>
+  <h2 id="-major-features-and-enhancements">🚀 Major Features and Enhancements</h2>
 
-<p>To give us feedback or to suggest a new feature, drop us a line in our <a href="https://app.gitter.im/#/room/#pmd_pmd:gitter.im">Gitter room</a>!</p>
+<h3 id="new-official-logo">New official logo</h3>
 
-<h2 id="summary">Summary</h2>
-
-<h3 id="new-logo">New Logo</h3>
+<p>Many of you probably have already seen the new logo, but now it’s time to actually ship it. The new logo
+was long ago decided (see <a href="https://github.com/pmd/pmd/issues/1663">#1663</a>).</p>
 
 <p>We decided it’s time to have a modernized logo and get rid of the gun. This allows to include
-the logo in anywhere without offense.</p>
+the logo anywhere without offense.</p>
 
-<p>The current tasks are listed here: <a href="https://github.com/pmd/pmd/issues/1931">Integrate new PMD logo #1931</a></p>
+<p>The official logo is also without a tagline (such as “Code Quality Matters!”) as the tagline created some
+controversies. Without a tagline, we are not limited in the direction of future development of PMD.</p>
+
+<p><img src="images/logo/pmd-logo-300px.png" alt="New PMD Logo" /></p>
 
 <p>The new logo is available from the <a href="pmd_projectdocs_logo.html">Logo Project Page</a>.</p>
 
-<h3 id="api">API</h3>
+<h3 id="revamped-java">Revamped Java</h3>
 
-<p>The API of PMD has been growing over the years and needs to be cleaned up. The goal is, to
-have a clear separation between a well-defined API and the implementation, which is internal.
-This should help us in future development. This however entails some incompatibilities and
-deprecations, see also the sections <a href="#new-api-support-guidelines">New API support guidelines</a> and
-[Planned API removals](#planned-api-removals] below.</p>
+<p>The Java grammar has been refactored substantially in order to make it easier to maintain and more correct
+regarding the Java Language Specification. It supports now also the edge-cases where PMD 6 was failing
+(e.g. annotations were not supported everywhere). Changing the grammar entails a changed AST and therefore changed
+rules. The PMD built-in rules have all been upgraded and many bugs have been fixed on the way.
+Unfortunately, if you are using custom rules, you will most probably need to accommodate these changes yourself.</p>
 
-<h3 id="full-antlr-support">Full Antlr Support</h3>
+<p>The type resolution framework has been rewritten from scratch and should now cover the entire Java spec correctly.
+The same is true for the symbol table.
+PMD 6 on the other hand has always had problems with advanced type inference, e.g. with lambdas and call chains.
+Since it was built on the core reflection API, it also was prone to linkage errors and classloader leaks for instance.
+PMD 7 does not need to load classes, and does not have these problems.</p>
 
-<p>PMD 6 only supports JavaCC based grammars, but with <a href="https://www.antlr.org/">Antlr</a> parsers
-can be generated as well. PMD 7 adds full support for grammars written in Antlr, which allows
-to leverage existing grammars.</p>
+<p>The AST exposes much more semantic information now. For instance, you can jump from a method call to
+the declaration of the method being called, or from a field access to the field declaration. These
+improvements allow interesting rules to be written that need precise knowledge of the types
+in the program, for instance to detect <a href="pmd_rules_java_codestyle.html#unnecessaryboxing"><code class="language-plaintext highlighter-rouge">UnnecessaryBoxing</code></a>
+or <a href="pmd_rules_java_codestyle.html#usediamondoperator"><code class="language-plaintext highlighter-rouge">UseDiamondOperator</code></a>.
+These are just a small preview of the new rules we will be adding in the PMD 7 release cycle.</p>
 
-<p>The current tasks are listed here: <a href="https://github.com/pmd/pmd/issues/2499">Support for ANTLR based grammars with Swift as an example language #2499</a></p>
+<p>Overall, the changes to the parser, AST, type resolution and symbol table code has made PMD for
+Java <strong>significantly faster</strong>. On average, we have seen ~2-3X faster analysis, but as usual, this may change
+depending on your workload, configuration and ruleset.</p>
 
-<h3 id="documentation">Documentation</h3>
+<p>Contributors: <a href="https://github.com/oowekyala">Clément Fournier</a> (@oowekyala),
+<a href="https://github.com/adangel">Andreas Dangel</a> (@adangel),
+<a href="https://github.com/jsotuyod">Juan Martín Sotuyo Dodero</a> (@jsotuyod)</p>
 
-<p>We have quite some ideas how we want to improve the documentation. The goal is, that the documentation is
-up to date and nearly complete. One big task is, how the built-in rules are presented, so that users
-can easier see, what exactly is available and decide, which rules are useful for the project at hand.</p>
+<div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b> 
+The full detailed documentation of the changes are still work in progress.
 
-<p>The current tasks are listed here: <a href="https://github.com/pmd/pmd/issues/1139">Documentations improvements tracker #1139</a></p>
+Some first results of the Java AST changes are for now documented in the Wiki:
+<a href="https://github.com/pmd/pmd/wiki/Java_clean_changes">Java clean changes</a>.
 
-<h3 id="xpath">XPath</h3>
+It is planned to move the contents of the wiki page into this document before the final release of PMD 7.
+</div>
 
-<p>PMD 6 supports XPath 1.0 via the Jaxen library. This library is old and unmaintained creating some problems
-(one of which is duplicated classes in the package <code class="language-plaintext highlighter-rouge">org.w3c.dom</code> which is a Java API actually).
-Therefore XPath 1.0 support will be dropped and we upgrade our XPath 2.0 implementation with Saxon moving
-on to Saxon HE. This will eventually add support in PMD for XPath 3.1.</p>
+<h4 id="annotations">Annotations</h4>
 
-<p>The current tasks are listed here: <a href="https://github.com/pmd/pmd/issues/2523">XPath Improvements for PMD 7 #2523</a></p>
+<p>Annotations are consolidated into a single node. <code class="language-plaintext highlighter-rouge">SingleMemberAnnotation</code>, <code class="language-plaintext highlighter-rouge">NormalAnnotation</code> and <code class="language-plaintext highlighter-rouge">MarkerAnnotation</code>
+are removed in favour of <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnnotation.html#"><code>ASTAnnotation</code></a>. The Name node is removed, replaced by a
+<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceType.html#"><code>ASTClassOrInterfaceType</code></a>.</p>
 
-<h3 id="java">Java</h3>
+<p>Those different node types implement a syntax-only distinction, that only makes semantically equivalent annotations
+have different possible representations. For example, <code class="language-plaintext highlighter-rouge">@A</code> and <code class="language-plaintext highlighter-rouge">@A()</code> are semantically equivalent, yet they were
+parsed as MarkerAnnotation resp. NormalAnnotation. Similarly, <code class="language-plaintext highlighter-rouge">@A("")</code> and <code class="language-plaintext highlighter-rouge">@A(value="")</code> were parsed as
+SingleMemberAnnotation resp. NormalAnnotation. This also makes parsing much simpler. The nested ClassOrInterface
+type is used to share the disambiguation logic.</p>
 
-<p>Like the main PMD API, the Java AST has been growing over time and the grammar doesn’t support
-all edge cases (e.g. annotation are not supported everywhere). The goal is to simplify the AST by reducing
-unnecessary nodes and abstractions and fix the parsing issues.
-This helps in the end to provide a better type resolution implementation, but changing the AST is a breaking
-API change.</p>
+<p>Related issue: <a href="https://github.com/pmd/pmd/pull/2282">[java] Use single node for annotations (#2282)</a></p>
 
-<p>Some first results of the Java AST changes are for now documented in the Wiki:
-<a href="https://github.com/pmd/pmd/wiki/Java_clean_changes">Java clean changes</a>.</p>
+<details>
+  <summary>Annotation AST Examples</summary>
+
+<table>
+<tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
+<tr><td>
+
+<pre><code>@A
+</code></pre>
+
+</td><td>
+
+<pre><code>+ Annotation
+  + MarkerAnnotation
+    + Name "A"
+</code></pre>
+
+</td><td>
+
+<pre><code>+ Annotation
+  + ClassOrInterfaceType "A"
+</code></pre>
+
+</td></tr>
+<tr><td>
+
+
+<pre><code>@A()
+</code></pre>
+
+</td>
+<td>
+
+<pre><code>+ Annotation
+  + NormalAnnotation
+    + Name "A"
+</code></pre>
+
+</td>
+<td>
+
+<pre><code>+ Annotation "A"
+  + ClassOrInterfaceType "A"
+  + AnnotationMemberList
+</code></pre>
+
+</td>
+</tr>
+<tr><td>
+
+
+<pre><code>@A(value="v")
+</code></pre>
+
+</td>
+<td>
+
+<pre><code>+ Annotation
+  + NormalAnnotation
+    + Name "A"
+    + MemberValuePairs
+      + MemberValuePair "value"
+        + MemberValue
+          + PrimaryExpression
+            + PrimaryPrefix
+              + Literal '"v"'
+</code></pre>
+
+</td>
+<td>
+
+<pre><code>+ Annotation "A"
+  + ClassOrInterfaceType "A"
+  + AnnotationMemberList
+    + MemberValuePair "value" [@Shorthand=false()]
+      + StringLiteral '"v"'
+</code></pre>
+
+</td>
+</tr>
+<tr><td>
+
+
+<pre><code>@A("v")
+</code></pre>
+
+</td>
+<td>
+
+<pre><code>+ Annotation
+  + SingleMemberAnnotation
+    + Name "A"
+    + MemberValue
+      + PrimaryExpression
+        + PrimaryPrefix
+          + Literal '"v"'
+</code></pre>
+
+</td>
+<td>
+
+<pre><code>+ Annotation "A"
+  + ClassOrInterfaceType "A"
+  + AnnotationMemberList
+    + MemberValuePair "value" [@Shorthand=true()]
+      + StringLiteral '"v"'
+</code></pre>
+
+</td>
+</tr>
+
+<tr><td>
+
+<pre><code>@A(value="v", on=true)
+</code></pre>
+
+</td>
+<td>
+
+<pre><code>+ Annotation
+  + NormalAnnotation
+    + Name "A"
+    + MemberValuePairs
+      + MemberValuePair "value"
+        + MemberValue
+          + PrimaryExpression
+            + PrimaryPrefix
+              + Literal '"v"'
+      + MemberValuePair "on"
+        + MemberValue
+          + PrimaryExpression
+            + PrimaryPrefix
+              + Literal
+                + BooleanLiteral [@True=true()]
+</code></pre>
+
+</td>
+<td>
+
+<pre><code>+ Annotation "A"
+  + ClassOrInterfaceType "A"
+  + AnnotationMemberList
+    + MemberValuePair "value" [@Shorthand=false()]
+      + StringLiteral '"v"'
+    + MemberValuePair "on"
+      + BooleanLiteral [@True=true()]
+</code></pre>
+
+</td>
+</tr>
+</table>
+
+</details>
+
+<h4 id="types">Types</h4>
 
 <ul>
   <li>
@@ -1656,7 +1823,7 @@ subtrees, and allows to explore them more easily and consistently.</p>
 TODO document that when we’re done discussing the semantic rewrite phase.</p>
   </li>
   <li>
-    <p><strong>Migrating</strong>:</p>
+    <p><strong>Migrating</strong></p>
     <ul>
       <li>There is currently no way to match abstract types (or interfaces) with XPath, so <code class="language-plaintext highlighter-rouge">Type</code>
 and <code class="language-plaintext highlighter-rouge">ReferenceType</code> name tests won’t match anything anymore.</li>
@@ -1672,7 +1839,15 @@ The Java equivalent is <code class="language-plaintext highlighter-rouge">TypeHe
   </li>
 </ul>
 
-<h4 id="expression-grammar-changes">Expression grammar changes</h4>
+<h4 id="declarations">Declarations</h4>
+
+<p>TODO</p>
+
+<h4 id="statements">Statements</h4>
+
+<p>TODO</p>
+
+<h4 id="expressions">Expressions</h4>
 
 <ul>
   <li>
@@ -1684,7 +1859,8 @@ those nodes can no more be found in ASTs.</p>
   <li><strong>Migrating</strong>:
     <ul>
       <li>Basically, <code class="language-plaintext highlighter-rouge">Expression/X</code> or <code class="language-plaintext highlighter-rouge">Expression/PrimaryExpression/X</code>, just becomes <code class="language-plaintext highlighter-rouge">X</code></li>
-      <li>There is currently no way to match abstract or interface types with XPath, so <code class="language-plaintext highlighter-rouge">Expression</code> or <code class="language-plaintext highlighter-rouge">PrimaryExpression</code>  name tests won’t match anything anymore. However, the axis step *[@Expression=true()] matches any expression.</li>
+      <li>There is currently no way to match abstract or interface types with XPath, so <code class="language-plaintext highlighter-rouge">Expression</code> or <code class="language-plaintext highlighter-rouge">PrimaryExpression</code> 
+name tests won’t match anything anymore. However, the axis step *[@Expression=true()] matches any expression.</li>
     </ul>
   </li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTLiteral.html#"><code>ASTLiteral</code></a> has been turned into an interface. The fact that <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTNullLiteral.html#"><code>ASTNullLiteral</code></a>
@@ -1703,8 +1879,8 @@ and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourc
       <li>As is usual, use the designer to explore the new AST structure</li>
     </ul>
   </li>
-  <li>The nodes <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTPrimaryPrefix.html#"><code>ASTPrimaryPrefix</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTPrimarySuffix.html#"><code>ASTPrimarySuffix</code></a> are removed from the grammar.
-Subtrees for primary expressions appear to be left-recursive now. For example,</li>
+  <li>The nodes <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTPrimaryPrefix.html#"><code>ASTPrimaryPrefix</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTPrimarySuffix.html#"><code>ASTPrimarySuffix</code></a> are removed from the
+grammar. Subtrees for primary expressions appear to be left-recursive now. For example,</li>
 </ul>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">new</span> <span class="nc">Foo</span><span class="o">().</span><span class="na">bar</span><span class="o">.</span><span class="na">foo</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span>
@@ -1743,14 +1919,14 @@ The nesting follows the naturally recursive structure of expressions:</p>
 <span class="o">-------------</span>        <span class="nc">FieldAccess</span>
 <span class="o">--------------------</span> <span class="nc">MethodCall</span>
 </code></pre></div></div>
-<p>This makes the AST more regular and easier to navigate. Each node contains 
-the other nodes that are relevant to it (e.g. arguments) instead of them 
-being spread out over several siblings. The API of all nodes has been 
+<p>This makes the AST more regular and easier to navigate. Each node contains
+the other nodes that are relevant to it (e.g. arguments) instead of them
+being spread out over several siblings. The API of all nodes has been
 enriched with high-level accessors to query the AST in a semantic way,
 without bothering with the placement details.</p>
 
-<p>The amount of changes in the grammar that this change entails is enormous, 
-but hopefully firing up the designer to inspect the new structure should 
+<p>The amount of changes in the grammar that this change entails is enormous,
+but hopefully firing up the designer to inspect the new structure should
 give you the information you need quickly.</p>
 
 <p>TODO write a summary of changes in the javadoc of the package, will be more
@@ -1772,15 +1948,340 @@ E.g. <code class="language-plaintext highlighter-rouge">a+b+c</code> is not pars
 </code></pre></div></div>
 <p>which is easier to navigate, especially from XPath.</p>
 
-<h3 id="miscellaneous">Miscellaneous</h3>
+<h3 id="revamped-command-line-interface">Revamped Command Line Interface</h3>
 
-<p>There are also some small improvements, refactoring and internal tasks that are planned for PMD 7.</p>
+<p>PMD now ships with a unified Command Line Interface for both Linux/Unix and Windows. Instead of having a collection
+of scripts for the different utilities shipped with PMD, a single script <code class="language-plaintext highlighter-rouge">pmd</code> (<code class="language-plaintext highlighter-rouge">pmd.bat</code> for Windows) can now
+launch all utilities using subcommands, e.g. <code class="language-plaintext highlighter-rouge">pmd check</code>, <code class="language-plaintext highlighter-rouge">pmd designer</code>. All commands and options are thoroughly
+documented in the help, with full color support where available. Moreover, efforts were made to provide consistency
+in the usage of all PMD utilities.</p>
 
-<p>The current tasks are listed here: <a href="https://github.com/pmd/pmd/issues/2524">PMD 7 Miscellaneous Tasks #2524</a></p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>Usage: pmd <span class="o">[</span><span class="nt">-hV</span><span class="o">]</span> <span class="o">[</span>COMMAND]
+  <span class="nt">-h</span>, <span class="nt">--help</span>      Show this <span class="nb">help </span>message and exit.
+  <span class="nt">-V</span>, <span class="nt">--version</span>   Print version information and exit.
+Commands:
+  check     The PMD standard <span class="nb">source </span>code analyzer
+  cpd       Copy/Paste Detector - find duplicate code
+  designer  The PMD visual rule designer
+  cpd-gui   GUI <span class="k">for </span>the Copy/Paste Detector
+              Warning: May not support the full CPD feature <span class="nb">set
+  </span>ast-dump  Experimental: dumps the AST of parsing <span class="nb">source </span>code
+Exit Codes:
+  0   Succesful analysis, no violations found
+  1   An unexpected error occurred during execution
+  2   Usage error, please refer to the <span class="nb">command help
+  </span>4   Successful analysis, at least 1 violation found
+</code></pre></div></div>
 
-<h2 id="new-api-support-guidelines">New API support guidelines</h2>
+<p>For instance, where you previously would have run</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>run.sh pmd <span class="nt">-d</span> src <span class="nt">-R</span> ruleset.xml
+</code></pre></div></div>
+<p>you should now use</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pmd check <span class="nt">-d</span> src <span class="nt">-R</span> ruleset.xml
+</code></pre></div></div>
+<p>or even better, omit using <code class="language-plaintext highlighter-rouge">-d</code> / <code class="language-plaintext highlighter-rouge">--dir</code> and simply pass the sources at the end of the parameter list</p>
 
-<h3 id="whats-new">What’s new</h3>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pmd check <span class="nt">-R</span> ruleset.xml src
+</code></pre></div></div>
+
+<p>Multiple source directories can be passed, such as:</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pmd check <span class="nt">-R</span> ruleset.xml src/main/java src/test/java
+</code></pre></div></div>
+
+<p>And the exact same applies to CPD:</p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pmd cpd <span class="nt">--minimum-tokens</span> 100 src/main/java
+</code></pre></div></div>
+
+<p>Additionally, the CLI for the <code class="language-plaintext highlighter-rouge">check</code> command has been enhanced with a progress bar, which interactively displays the
+current progress of the analysis.</p>
+
+<p><img src="images/userdocs/pmd-demo.gif" alt="Demo" /></p>
+
+<p>This can be disabled with the <code class="language-plaintext highlighter-rouge">--no-progress</code> flag.</p>
+
+<p>Finally, we now provide a completion script for Bash/Zsh to further help daily usage.
+This script can be found under <code class="language-plaintext highlighter-rouge">shell/pmd-completion.sh</code> in the binary distribution.
+To use it, edit your <code class="language-plaintext highlighter-rouge">~/.bashrc</code> / <code class="language-plaintext highlighter-rouge">~/.zshrc</code> file and add the following line:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source *path_to_pmd*/shell/pmd-completion.sh
+</code></pre></div></div>
+
+<p>Contributors: <a href="https://github.com/jsotuyod">Juan Martín Sotuyo Dodero</a> (@jsotuyod)</p>
+
+<h3 id="full-antlr-support">Full Antlr support</h3>
+
+<p>PMD 6 only supported JavaCC based grammars, but with <a href="https://www.antlr.org/">Antlr</a> parsers
+can be generated as well. Languages backed by an Antlr grammar are now fully supported. This means, it’s now
+possible not only to use Antlr grammars for CPD, but we can actually build full-fledged PMD rules for them as well.
+Both the traditional Java visitor rules, and the simpler XPath rules are available to users. This allows
+to leverage existing grammars.</p>
+
+<p>We expect this to enable both our dev team and external contributors to largely extend PMD usage for more languages.</p>
+
+<p>Two languages (Swift and Kotlin) already use this new possibility.</p>
+
+<p>Contributors: <a href="https://github.com/lsoncini">Lucas Soncini</a> (@lsoncini),
+<a href="https://github.com/matifraga">Matías Fraga</a> (@matifraga),
+<a href="https://github.com/tomidelucca">Tomás De Lucca</a> (@tomidelucca)</p>
+
+<h2 id="-language-related-changes">🎉 Language Related Changes</h2>
+
+<h3 id="new-swift-support">New: Swift support</h3>
+
+<p>Given the full Antlr support, PMD now fully supports Swift. We are pleased to announce we are shipping a number of
+rules starting with PMD 7.</p>
+
+<ul>
+  <li><a href="pmd_rules_swift_errorprone.html#forcecast"><code class="language-plaintext highlighter-rouge">ForceCast</code></a> (<code class="language-plaintext highlighter-rouge">swift-errorprone</code>) flags all force casts, making sure you are
+defensively considering all types. Having the application crash shouldn’t be an option.</li>
+  <li><a href="pmd_rules_swift_errorprone.html#forcetry"><code class="language-plaintext highlighter-rouge">ForceTry</code></a> (<code class="language-plaintext highlighter-rouge">swift-errorprone</code>) flags all force tries, making sure you are
+defensively handling exceptions. Having the application crash shouldn’t be an option.</li>
+  <li><a href="pmd_rules_swift_bestpractices.html#prohibitedinterfacebuilder"><code class="language-plaintext highlighter-rouge">ProhibitedInterfaceBuilder</code></a> (<code class="language-plaintext highlighter-rouge">swift-bestpractices</code>) flags any usage of interface
+builder. Interface builder files are prone to merge conflicts, and are impossible to code review, so larger
+teams usually try to avoid it or reduce its usage.</li>
+  <li><a href="pmd_rules_swift_bestpractices.html#unavailablefunction"><code class="language-plaintext highlighter-rouge">UnavailableFunction</code></a> (<code class="language-plaintext highlighter-rouge">swift-bestpractices</code>) flags any function throwing
+a <code class="language-plaintext highlighter-rouge">fatalError</code> not marked as <code class="language-plaintext highlighter-rouge">@available(*, unavailable)</code> to ensure no calls are actually performed in
+the codebase.</li>
+</ul>
+
+<p>Contributors: <a href="https://github.com/lsoncini">Lucas Soncini</a> (@lsoncini),
+<a href="https://github.com/matifraga">Matías Fraga</a> (@matifraga),
+<a href="https://github.com/tomidelucca">Tomás De Lucca</a> (@tomidelucca)</p>
+
+<h3 id="new-kotlin-support-experimental">New: Kotlin support (experimental)</h3>
+
+<p>PMD now supports Kotlin as an additional language for analyzing source code. It is based on
+the official kotlin Antlr grammar. Java-based rules and XPath-based rules are supported.</p>
+
+<p>Kotlin support has <strong>experimental</strong> stability level, meaning no compatibility should
+be expected between even incremental releases. Any functionality can be added, removed or changed without
+warning.</p>
+
+<p>We are shipping the following rules:</p>
+
+<ul>
+  <li><a href="pmd_rules_kotlin_bestpractices.html#functionnametooshort"><code class="language-plaintext highlighter-rouge">FunctionNameTooShort</code></a> (<code class="language-plaintext highlighter-rouge">kotlin-bestpractices</code>) finds functions with a too
+short name.</li>
+  <li><a href="pmd_rules_kotlin_errorprone.html#overridebothequalsandhashcode"><code class="language-plaintext highlighter-rouge">OverrideBothEqualsAndHashcode</code></a> (<code class="language-plaintext highlighter-rouge">kotlin-errorprone</code>) finds classes with only
+either <code class="language-plaintext highlighter-rouge">equals</code> or <code class="language-plaintext highlighter-rouge">hashCode</code> overridden, but not both. This leads to unexpected behavior once instances
+of such classes are used in collections (Lists, HashMaps, …).</li>
+</ul>
+
+<p>Contributors: <a href="https://github.com/jborgers">Jeroen Borgers</a> (@jborgers),
+<a href="https://github.com/stokpop">Peter Paul Bakker</a> (@stokpop)</p>
+
+<h3 id="changed-javascript-support">Changed: JavaScript support</h3>
+
+<p>The JS specific parser options have been removed. The parser now always retains comments and uses version ES6.
+The language module registers a couple of different versions. The latest version, which supports ES6 and also some
+new constructs (see <a href="https://github.com/mozilla/rhino">Rhino</a>]), is the default. This should be fine for most
+use cases.</p>
+
+<h3 id="changed-language-versions">Changed: Language versions</h3>
+
+<p>We revisited the versions that were defined by each language module. Now many more versions are defined for each
+language. In general, you can expect that PMD can parse all these different versions. There might be situations
+where this fails and this can be considered a bug. Usually the latest version is selected as the default
+language version.</p>
+
+<p>The language versions can be used to mark rules to be useful only for a specific language version via
+the <code class="language-plaintext highlighter-rouge">minimumLanguageVersion</code> and <code class="language-plaintext highlighter-rouge">maximumLanguageVersion</code> attributes. While this feature is currently only used by
+the Java module, listing all possible versions enables other languages as well to use this feature.</p>
+
+<p>Related issue: <a href="https://github.com/pmd/pmd/issues/4120">[core] Explicitly name all language versions (#4120)</a></p>
+
+<h2 id="-new-and-changed-rules">🌟 New and changed rules</h2>
+
+<h3 id="new-rules">New Rules</h3>
+
+<p><strong>Apex</strong></p>
+<ul>
+  <li><a href="pmd_rules_apex_design.html#unusedmethod"><code class="language-plaintext highlighter-rouge">UnusedMethod</code></a> finds unused methods in your code.</li>
+</ul>
+
+<p><strong>Java</strong></p>
+<ul>
+  <li><a href="pmd_rules_java_codestyle.html#unnecessaryboxing"><code class="language-plaintext highlighter-rouge">UnnecessaryBoxing</code></a> reports boxing and unboxing conversions that may be made implicit.</li>
+</ul>
+
+<p><strong>Kotlin</strong></p>
+<ul>
+  <li><a href="pmd_rules_kotlin_bestpractices.html#functionnametooshort"><code class="language-plaintext highlighter-rouge">FunctionNameTooShort</code></a></li>
+  <li><a href="pmd_rules_kotlin_errorprone.html#overridebothequalsandhashcode"><code class="language-plaintext highlighter-rouge">OverrideBothEqualsAndHashcode</code></a></li>
+</ul>
+
+<p><strong>Swift</strong></p>
+<ul>
+  <li><a href="pmd_rules_swift_bestpractices.html#prohibitedinterfacebuilder"><code class="language-plaintext highlighter-rouge">ProhibitedInterfaceBuilder</code></a></li>
+  <li><a href="pmd_rules_swift_bestpractices.html#unavailablefunction"><code class="language-plaintext highlighter-rouge">UnavailableFunction</code></a></li>
+  <li><a href="pmd_rules_swift_errorprone.html#forcecast"><code class="language-plaintext highlighter-rouge">ForceCast</code></a></li>
+  <li><a href="pmd_rules_swift_errorprone.html#forcetry"><code class="language-plaintext highlighter-rouge">ForceTry</code></a></li>
+</ul>
+
+<h3 id="changed-rules">Changed Rules</h3>
+
+<p><strong>Java</strong></p>
+
+<ul>
+  <li><a href="pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname"><code class="language-plaintext highlighter-rouge">UnnecessaryFullyQualifiedName</code></a>: the rule has two new properties,
+to selectively disable reporting on static field and method qualifiers. The rule also has been improved
+to be more precise.</li>
+  <li><a href="pmd_rules_java_codestyle.html#uselessparentheses"><code class="language-plaintext highlighter-rouge">UselessParentheses</code></a>: the rule has two new properties which control how strict
+the rule should be applied. With <code class="language-plaintext highlighter-rouge">ignoreClarifying</code> (default: true) parentheses that are strictly speaking
+not necessary are allowed, if they separate expressions of different precedence.
+The other property <code class="language-plaintext highlighter-rouge">ignoreBalancing</code> (default: true) is similar, in that it allows parentheses that help
+reading and understanding the expressions.</li>
+  <li><a href="pmd_rules_java_bestpractices.html#loosecoupling"><code class="language-plaintext highlighter-rouge">LooseCoupling</code></a>: the rule has a new property to allow some types to be coupled
+to (<code class="language-plaintext highlighter-rouge">allowedTypes</code>).</li>
+  <li><a href="pmd_rules_java_errorprone.html#emptycatchblock"><code class="language-plaintext highlighter-rouge">EmptyCatchBlock</code></a>: <code class="language-plaintext highlighter-rouge">CloneNotSupportedException</code> and <code class="language-plaintext highlighter-rouge">InterruptedException</code> are not
+special-cased anymore. Rename the exception parameter to <code class="language-plaintext highlighter-rouge">ignored</code> to ignore them.</li>
+  <li><a href="pmd_rules_java_errorprone.html#dontimportsun"><code class="language-plaintext highlighter-rouge">DontImportSun</code></a>: <code class="language-plaintext highlighter-rouge">sun.misc.Signal</code> is not special-cased anymore.</li>
+  <li><a href="pmd_rules_java_codestyle.html#usediamondoperator"><code class="language-plaintext highlighter-rouge">UseDiamondOperator</code></a>: the property <code class="language-plaintext highlighter-rouge">java7Compatibility</code> is removed. The rule now
+handles Java 7 properly without a property.</li>
+  <li><a href="pmd_rules_java_design.html#singularfield"><code class="language-plaintext highlighter-rouge">SingularField</code></a>: Properties <code class="language-plaintext highlighter-rouge">checkInnerClasses</code> and <code class="language-plaintext highlighter-rouge">disallowNotAssignment</code> are removed.
+The rule is now more precise and will check these cases properly.</li>
+  <li><a href="pmd_rules_java_design.html#useutilityclass"><code class="language-plaintext highlighter-rouge">UseUtilityClass</code></a>: The property <code class="language-plaintext highlighter-rouge">ignoredAnnotations</code> has been removed.</li>
+  <li><a href="pmd_rules_java_design.html#lawofdemeter"><code class="language-plaintext highlighter-rouge">LawOfDemeter</code></a>: the rule has a new property <code class="language-plaintext highlighter-rouge">trustRadius</code>. This defines the maximum degree
+of trusted data. The default of 1 is the most restrictive.</li>
+  <li><a href="pmd_rules_java_documentation.html#commentcontent"><code class="language-plaintext highlighter-rouge">CommentContent</code></a>: The properties <code class="language-plaintext highlighter-rouge">caseSensitive</code> and <code class="language-plaintext highlighter-rouge">disallowedTerms</code> are removed. The
+new property <code class="language-plaintext highlighter-rouge">fobiddenRegex</code> can be used now to define the disallowed terms with a single regular
+expression.</li>
+</ul>
+
+<h3 id="deprecated-rules">Deprecated Rules</h3>
+
+<p>In PMD 7.0.0, there are now deprecated rules.</p>
+
+<h3 id="removed-rules">Removed Rules</h3>
+
+<p>The following previously deprecated rules have been finally removed:</p>
+
+<p><strong>Apex</strong></p>
+
+<ul>
+  <li>performance.xml/AvoidSoqlInLoops <span style="font-size: small;">(deleted)</span> -&gt; use <a href="pmd_rules_apex_performance.html#operationwithlimitsinloop"><code class="language-plaintext highlighter-rouge">OperationWithLimitsInLoop</code></a></li>
+  <li>performance.xml/AvoidSoslInLoops <span style="font-size: small;">(deleted)</span> -&gt; use <a href="pmd_rules_apex_performance.html#operationwithlimitsinloop"><code class="language-plaintext highlighter-rouge">OperationWithLimitsInLoop</code></a></li>
+  <li>performance.xml/AvoidDmlStatementsInLoops <span style="font-size: small;">(deleted)</span> -&gt; use <a href="pmd_rules_apex_performance.html#operationwithlimitsinloop"><code class="language-plaintext highlighter-rouge">OperationWithLimitsInLoop</code></a></li>
+</ul>
+
+<p><strong>Java</strong></p>
+
+<ul>
+  <li>codestyle.xml/AbstractNaming <span style="font-size: small;">(deleted)</span> -&gt; use <a href="pmd_rules_java_codestyle.html#classnamingconventions"><code class="language-plaintext highlighter-rouge">ClassNamingConventions</code></a></li>
+  <li>AvoidFinalLocalVariable (java-codestyle) -&gt; not replaced</li>
+  <li>AvoidPrefixingMethodParameters (java-codestyle) -&gt; use <a href="pmd_rules_java_codestyle.html#formalparameternamingconventions"><code class="language-plaintext highlighter-rouge">FormalParameterNamingConventions</code></a></li>
+  <li>AvoidUsingShortType (java-performance) -&gt; not replaced</li>
+  <li>BadComparison (java-errorprone) -&gt; use <a href="pmd_rules_java_errorprone.html#comparisonwithnan"><code class="language-plaintext highlighter-rouge">ComparisonWithNaN</code></a></li>
+  <li>BeanMembersShouldSerialize (java-errorprone) -&gt; use <a href="pmd_rules_java_errorprone.html#nonserializableclass"><code class="language-plaintext highlighter-rouge">NonSerializableClass</code></a></li>
+  <li>BooleanInstantiation (java-performance) -&gt; use <a href="pmd_rules_java_codestyle.html#unnecessaryboxing"><code class="language-plaintext highlighter-rouge">UnnecessaryBoxing</code></a>
+and <a href="pmd_rules_java_bestpractices.html#primitivewrapperinstantiation"><code class="language-plaintext highlighter-rouge">PrimitiveWrapperInstantiation</code></a></li>
+  <li>ByteInstantiation (java-performance) -&gt; use <a href="pmd_rules_java_codestyle.html#unnecessaryboxing"><code class="language-plaintext highlighter-rouge">UnnecessaryBoxing</code></a>
+and <a href="pmd_rules_java_bestpractices.html#primitivewrapperinstantiation"><code class="language-plaintext highlighter-rouge">PrimitiveWrapperInstantiation</code></a></li>
+  <li>CloneThrowsCloneNotSupportedException (java-errorprone) -&gt; not replaced</li>
+  <li>DataflowAnomalyAnalysis (java-errorprone) -&gt; use <a href="pmd_rules_java_bestpractices.html#unusedassignment"><code class="language-plaintext highlighter-rouge">UnusedAssignment</code></a></li>
+  <li>DefaultPackage (java-codestyle) -&gt; use <a href="pmd_rules_java_codestyle.html#commentdefaultaccessmodifier"><code class="language-plaintext highlighter-rouge">CommentDefaultAccessModifier</code></a></li>
+  <li>DoNotCallSystemExit (java-errorprone) -&gt; use <a href="pmd_rules_java_errorprone.html#donotterminatevm"><code class="language-plaintext highlighter-rouge">DoNotTerminateVM</code></a></li>
+  <li>DontImportJavaLang (java-codestyle) -&gt; use <a href="pmd_rules_java_codestyle.html#unnecessaryimport"><code class="language-plaintext highlighter-rouge">UnnecessaryImport</code></a></li>
+  <li>DuplicateImports (java-codestyle) -&gt; use <a href="pmd_rules_java_codestyle.html#unnecessaryimport"><code class="language-plaintext highlighter-rouge">UnnecessaryImport</code></a></li>
+  <li>EmptyFinallyBlock (java-errorprone) -&gt; use <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a></li>
+  <li>EmptyIfStmt (java-errorprone) -&gt; use <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a></li>
+  <li>EmptyInitializer (java-errorprone) -&gt; use <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a></li>
+  <li>EmptyStatementBlock (java-errorprone) -&gt; use <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a></li>
+  <li>EmptyStatementNotInLoop (java-errorprone) -&gt; use <a href="pmd_rules_java_codestyle.html#unnecessarysemicolon"><code class="language-plaintext highlighter-rouge">UnnecessarySemicolon</code></a></li>
+  <li>EmptySwitchStatements (java-errorprone) -&gt; use <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a></li>
+  <li>EmptySynchronizedBlock (java-errorprone) -&gt; use <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a></li>
+  <li>EmptyTryBlock (java-errorprone) -&gt; use <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a></li>
+  <li>EmptyWhileStmt (java-errorprone) -&gt; use <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a></li>
+  <li>ExcessiveClassLength (java-design) -&gt; use <a href="pmd_rules_java_design.html#ncsscount"><code class="language-plaintext highlighter-rouge">NcssCount</code></a></li>
+  <li>ExcessiveMethodLength (java-design) -&gt; use <a href="pmd_rules_java_design.html#ncsscount"><code class="language-plaintext highlighter-rouge">NcssCount</code></a></li>
+  <li>ForLoopsMustUseBraces (java-codestyle) -&gt; use <a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code class="language-plaintext highlighter-rouge">ControlStatementBraces</code></a></li>
+  <li>IfElseStmtsMustUseBraces (java-codestyle) -&gt; use <a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code class="language-plaintext highlighter-rouge">ControlStatementBraces</code></a></li>
+  <li>IfStmtsMustUseBraces (java-codestyle) -&gt; use <a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code class="language-plaintext highlighter-rouge">ControlStatementBraces</code></a></li>
+  <li>ImportFromSamePackage (java-errorprone) -&gt; use <a href="pmd_rules_java_codestyle.html#unnecessaryimport"><code class="language-plaintext highlighter-rouge">UnnecessaryImport</code></a></li>
+  <li>IntegerInstantiation (java-performance) -&gt; use <a href="pmd_rules_java_codestyle.html#unnecessaryboxing"><code class="language-plaintext highlighter-rouge">UnnecessaryBoxing</code></a>
+and <a href="pmd_rules_java_bestpractices.html#primitivewrapperinstantiation"><code class="language-plaintext highlighter-rouge">PrimitiveWrapperInstantiation</code></a></li>
+  <li>InvalidSlf4jMessageFormat (java-errorprone) -&gt;  use <a href="pmd_rules_java_errorprone.html#invalidlogmessageformat"><code class="language-plaintext highlighter-rouge">InvalidLogMessageFormat</code></a></li>
+  <li>LoggerIsNotStaticFinal (java-errorprone) -&gt; use <a href="pmd_rules_java_errorprone.html#properlogger"><code class="language-plaintext highlighter-rouge">ProperLogger</code></a></li>
+  <li>LongInstantiation (java-performance) -&gt; use <a href="pmd_rules_java_codestyle.html#unnecessaryboxing"><code class="language-plaintext highlighter-rouge">UnnecessaryBoxing</code></a>
+and <a href="pmd_rules_java_bestpractices.html#primitivewrapperinstantiation"><code class="language-plaintext highlighter-rouge">PrimitiveWrapperInstantiation</code></a></li>
+  <li>MIsLeadingVariableName (java-codestyle) -&gt; use <a href="pmd_rules_java_codestyle.html#fieldnamingconventions"><code class="language-plaintext highlighter-rouge">FieldNamingConventions</code></a>,
+<a href="pmd_rules_java_codestyle.html#formalparameternamingconventions"><code class="language-plaintext highlighter-rouge">FormalParameterNamingConventions</code></a>,
+or <a href="pmd_rules_java_codestyle.html#localvariablenamingconventions"><code class="language-plaintext highlighter-rouge">LocalVariableNamingConventions</code></a></li>
+  <li>MissingBreakInSwitch (java-errorprone) -&gt;  use <a href="pmd_rules_java_errorprone.html#implicitswitchfallthrough"><code class="language-plaintext highlighter-rouge">ImplicitSwitchFallThrough</code></a></li>
+  <li>ModifiedCyclomaticComplexity (java-design) -&gt; use <a href="pmd_rules_java_design.html#cyclomaticcomplexity"><code class="language-plaintext highlighter-rouge">CyclomaticComplexity</code></a></li>
+  <li>NcssConstructorCount (java-design) -&gt; use <a href="pmd_rules_java_design.html#ncsscount"><code class="language-plaintext highlighter-rouge">NcssCount</code></a></li>
+  <li>NcssMethodCount (java-design) -&gt; use <a href="pmd_rules_java_design.html#ncsscount"><code class="language-plaintext highlighter-rouge">NcssCount</code></a></li>
+  <li>NcssTypeCount (java-design) -&gt; use <a href="pmd_rules_java_design.html#ncsscount"><code class="language-plaintext highlighter-rouge">NcssCount</code></a></li>
+  <li>PositionLiteralsFirstInCaseInsensitiveComparisons (java-bestpractices) -&gt;
+use <a href="pmd_rules_java_bestpractices.html#literalsfirstincomparisons"><code class="language-plaintext highlighter-rouge">LiteralsFirstInComparisons</code></a></li>
+  <li>PositionLiteralsFirstInComparisons (java-bestpractices) -&gt;
+use <a href="pmd_rules_java_bestpractices.html#literalsfirstincomparisons"><code class="language-plaintext highlighter-rouge">LiteralsFirstInComparisons</code></a></li>
+  <li>ReturnEmptyArrayRatherThanNull (java-errorprone) -&gt;
+use <a href="pmd_rules_java_errorprone.html#returnemptycollectionratherthannull"><code class="language-plaintext highlighter-rouge">ReturnEmptyCollectionRatherThanNull</code></a></li>
+  <li>ShortInstantiation (java-performance) -&gt; use <a href="pmd_rules_java_codestyle.html#unnecessaryboxing"><code class="language-plaintext highlighter-rouge">UnnecessaryBoxing</code></a>
+and <a href="pmd_rules_java_bestpractices.html#primitivewrapperinstantiation"><code class="language-plaintext highlighter-rouge">PrimitiveWrapperInstantiation</code></a></li>
+  <li>SimplifyBooleanAssertion (java-design) -&gt; use <a href="pmd_rules_java_bestpractices.html#simplifiabletestassertion"><code class="language-plaintext highlighter-rouge">SimplifiableTestAssertion</code></a></li>
+  <li>SimplifyStartsWith (java-performance) -&gt; not replaced</li>
+  <li>StdCyclomaticComplexity (java-design) -&gt; use <a href="pmd_rules_java_design.html#cyclomaticcomplexity"><code class="language-plaintext highlighter-rouge">CyclomaticComplexity</code></a></li>
+  <li>SuspiciousConstantFieldName (java-codestyle) -&gt; use <a href="pmd_rules_java_codestyle.html#fieldnamingconventions"><code class="language-plaintext highlighter-rouge">FieldNamingConventions</code></a></li>
+  <li>UnnecessaryWrapperObjectCreation (java-performance) -&gt; use the new rule <a href="pmd_rules_java_codestyle.html#unnecessaryboxing"><code class="language-plaintext highlighter-rouge">UnnecessaryBoxing</code></a></li>
+  <li>UnsynchronizedStaticDateFormatter (java-multithreading) -&gt;
+use <a href="pmd_rules_java_multithreading.html#unsynchronizedstaticformatter"><code class="language-plaintext highlighter-rouge">UnsynchronizedStaticFormatter</code></a></li>
+  <li>UnusedImports (java-bestpractices) -&gt; use <a href="pmd_rules_java_codestyle.html#unnecessaryimport"><code class="language-plaintext highlighter-rouge">UnnecessaryImport</code></a></li>
+  <li>UseAssertEqualsInsteadOfAssertTrue (java-bestpractices) -&gt;
+use <a href="pmd_rules_java_bestpractices.html#simplifiabletestassertion"><code class="language-plaintext highlighter-rouge">SimplifiableTestAssertion</code></a></li>
+  <li>UseAssertNullInsteadOfAssertEquals (java-bestpractices) -&gt;
+use <a href="pmd_rules_java_bestpractices.html#simplifiabletestassertion"><code class="language-plaintext highlighter-rouge">SimplifiableTestAssertion</code></a></li>
+  <li>UseAssertSameInsteadOfAssertEquals (java-bestpractices) -&gt;
+use <a href="pmd_rules_java_bestpractices.html#simplifiabletestassertion"><code class="language-plaintext highlighter-rouge">SimplifiableTestAssertion</code></a></li>
+  <li>UseAssertTrueInsteadOfAssertEquals (java-bestpractices) -&gt;
+use <a href="pmd_rules_java_bestpractices.html#simplifiabletestassertion"><code class="language-plaintext highlighter-rouge">SimplifiableTestAssertion</code></a></li>
+  <li>VariableNamingConventions (apex-codestyle) -&gt; use <a href="pmd_rules_apex_codestyle.html#fieldnamingconventions"><code class="language-plaintext highlighter-rouge">FieldNamingConventions</code></a>,
+<a href="pmd_rules_apex_codestyle.html#formalparameternamingconventions"><code class="language-plaintext highlighter-rouge">FormalParameterNamingConventions</code></a>, <a href="pmd_rules_apex_codestyle.html#localvariablenamingconventions"><code class="language-plaintext highlighter-rouge">LocalVariableNamingConventions</code></a>,
+or <a href="pmd_rules_apex_codestyle.html#propertynamingconventions"><code class="language-plaintext highlighter-rouge">PropertyNamingConventions</code></a></li>
+  <li>VariableNamingConventions (java-codestyle) -&gt; use <a href="pmd_rules_java_codestyle.html#fieldnamingconventions"><code class="language-plaintext highlighter-rouge">FieldNamingConventions</code></a>,
+<a href="pmd_rules_java_codestyle.html#formalparameternamingconventions"><code class="language-plaintext highlighter-rouge">FormalParameterNamingConventions</code></a>,
+or <a href="pmd_rules_java_codestyle.html#localvariablenamingconventions"><code class="language-plaintext highlighter-rouge">LocalVariableNamingConventions</code></a></li>
+  <li>WhileLoopsMustUseBraces (java-codestyle) -&gt; use <a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code class="language-plaintext highlighter-rouge">ControlStatementBraces</code></a></li>
+</ul>
+
+<h2 id="-compatibility-and-migration-notes">💥 Compatibility and Migration Notes</h2>
+
+<h3 id="for-endusers">For endusers</h3>
+
+<ul>
+  <li>PMD 7 requires Java 8 or above to execute.</li>
+  <li>CLI changed: Custom scripts need to be updated (<code class="language-plaintext highlighter-rouge">run.sh pmd ...</code> -&gt; <code class="language-plaintext highlighter-rouge">pmd check ...</code>, <code class="language-plaintext highlighter-rouge">run.sh cpd ...</code>, <code class="language-plaintext highlighter-rouge">pmd cpd ...</code>).</li>
+  <li>Java module revamped: Custom rules need to be updated.</li>
+  <li>Removed rules: Custom rulesets need to be reviewed. See below for a list of new and removed rules.</li>
+  <li>XPath 1.0 support is removed, <code class="language-plaintext highlighter-rouge">violationSuppressXPath</code> now requires XPath 2.0 or 3.1: Custom rulesets need
+to be reviewed.</li>
+  <li>Custom rules using rulechains: Need to override <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/AbstractRule.html#buildTargetSelector()"><code>buildTargetSelector</code></a>
+using <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/RuleTargetSelector.html#forTypes(java.lang.Class,java.lang.Class...)"><code>forTypes</code></a>.</li>
+</ul>
+
+<h3 id="for-integrators">For integrators</h3>
+
+<ul>
+  <li>PMD 7 is a major release where many things have been moved or rewritten.</li>
+  <li>All integrators will require some level of change to adapt to the change in the API.</li>
+  <li>For more details look at the deprecations notes of the past PMD 6 releases.</li>
+  <li>The PMD Ant tasks, which were previously in the module <code class="language-plaintext highlighter-rouge">pmd-core</code> has been moved into its own module <code class="language-plaintext highlighter-rouge">pmd-ant</code></li>
+  <li>The CLI classes have also been moved out of <code class="language-plaintext highlighter-rouge">pmd-core</code> into its own module <code class="language-plaintext highlighter-rouge">pmd-cli</code>. The old entry point, the
+main class <code class="language-plaintext highlighter-rouge">PMD</code> is gone.</li>
+</ul>
+
+<h2 id="-api">🚨 API</h2>
+
+<p>The API of PMD has been growing over the years and needed some cleanup. The goal is, to
+have a clear separation between a well-defined API and the implementation, which is internal.
+This should help us in future development.</p>
+
+<p>This however entails some incompatibilities and
+deprecations, see also the sections <a href="#new-api-support-guidelines">New API support guidelines</a> and
+<a href="#api-removals">API removals</a> below.</p>
+
+<h3 id="new-api-support-guidelines">New API support guidelines</h3>
 
 <p>Until now, all released public members and types were implicitly considered part
 of PMD’s public API, including inheritance-specific members (protected members, abstract methods).
@@ -1792,7 +2293,7 @@ be invalidated with PMD 7.0.0. We now introduce more fine-grained distinctions b
 the type of compatibility support we guarantee for our libraries, and ways to make
 them explicit to clients of PMD.</p>
 
-<h4 id="internal-packages-and-internalapi-annotation"><code class="language-plaintext highlighter-rouge">.internal</code> packages and <code class="language-plaintext highlighter-rouge">@InternalApi</code> annotation</h4>
+<p><strong><code class="language-plaintext highlighter-rouge">.internal</code> packages and <code class="language-plaintext highlighter-rouge">@InternalApi</code> annotation</strong></p>
 
 <p><em>Internal API</em> is meant for use <em>only</em> by the main PMD codebase. Internal types and methods
 may be modified in any way, or even removed, at any time.</p>
@@ -1802,41 +2303,185 @@ The <code class="language-plaintext highlighter-rouge">@InternalApi</code> annot
 these packages, e.g. methods of a public type that shouldn’t be used outside of PMD (again,
 these can be removed anytime).</p>
 
-<h4 id="reservedsubclassing"><code class="language-plaintext highlighter-rouge">@ReservedSubclassing</code></h4>
+<p><strong><code class="language-plaintext highlighter-rouge">@ReservedSubclassing</code></strong></p>
 
 <p>Types marked with the <code class="language-plaintext highlighter-rouge">@ReservedSubclassing</code> annotation are only meant to be subclassed
 by classes within PMD. As such, we may add new abstract methods, or remove protected methods,
 at any time. All published public members remain supported. The annotation is <em>not</em> inherited, which
 means a reserved interface doesn’t prevent its implementors to be subclassed.</p>
 
-<h4 id="experimental"><code class="language-plaintext highlighter-rouge">@Experimental</code></h4>
+<p><strong><code class="language-plaintext highlighter-rouge">@Experimental</code></strong></p>
 
 <p>APIs marked with the <code class="language-plaintext highlighter-rouge">@Experimental</code> annotation at the class or method level are subject to change.
 They can be modified in any way, or even removed, at any time. You should not use or rely
- on them in any production code. They are purely to allow broad testing and feedback.</p>
+on them in any production code. They are purely to allow broad testing and feedback.</p>
 
-<h4 id="deprecated"><code class="language-plaintext highlighter-rouge">@Deprecated</code></h4>
+<p><strong><code class="language-plaintext highlighter-rouge">@Deprecated</code></strong></p>
 
 <p>APIs marked with the <code class="language-plaintext highlighter-rouge">@Deprecated</code> annotation at the class or method level will remain supported
-until the next major release but it is recommended to stop using them.</p>
+until the next major release, but it is recommended to stop using them.</p>
 
-<h3 id="the-transition">The transition</h3>
+<h3 id="small-changes-and-cleanups">Small Changes and cleanups</h3>
 
-<p><em>All currently supported APIs will remain so until 7.0.0</em>. All APIs that are to be moved to
-<code class="language-plaintext highlighter-rouge">.internal</code> packages or hidden will be tagged <code class="language-plaintext highlighter-rouge">@InternalApi</code> before that major release, and
-the breaking API changes will be performed in 7.0.0.</p>
+<ul>
+  <li>
+    <p><a href="https://github.com/pmd/pmd/issues/1648">#1648</a>: [apex,vf] Remove CodeClimate dependency - <a href="https://github.com/rsoesemann">Robert Sösemann</a>
+Properties “cc_categories”, “cc_remediation_points_multiplier”, “cc_block_highlighting” can no longer be overridden in rulesets.
+They were deprecated without replacement.</p>
+  </li>
+  <li>
+    <p>The old GUI applications accessible through <code class="language-plaintext highlighter-rouge">run.sh designerold</code> and <code class="language-plaintext highlighter-rouge">run.sh bgastviewer</code>
+(and corresponding Batch scripts) have been removed from the PMD distribution. Please use the newer rule designer
+with <code class="language-plaintext highlighter-rouge">pmd designer</code>. The corresponding classes in packages <code class="language-plaintext highlighter-rouge">java.net.sourceforge.pmd.util.viewer</code> and
+<code class="language-plaintext highlighter-rouge">java.net.sourceforge.pmd.util.designer</code> have all been removed.</p>
+  </li>
+  <li>
+    <p>All API related to XPath support has been moved to the package <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/xpath/package-summary.html#"><code>net.sourceforge.pmd.lang.rule.xpath</code></a>.
+This includes API that was previously dispersed over <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang</code>, <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.ast.xpath</code>,
+<code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.rule.xpath</code>, <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.rule</code>, and various language-specific packages
+(which were made internal).</p>
+  </li>
+  <li>
+    <p>The implementation of the Ant integration has been moved from the module <code class="language-plaintext highlighter-rouge">pmd-core</code> to a new module <code class="language-plaintext highlighter-rouge">pmd-ant</code>.
+This involves classes in package <a href="https://docs.pmd-code.org/apidocs/pmd-ant/7.0.0-SNAPSHOT/net/sourceforge/pmd/ant/package-summary.html#"><code>net.sourceforge.pmd.ant</code></a>. The ant CPDTask class <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.cpd.CPDTask</code>
+has been moved into the same package <a href="https://docs.pmd-code.org/apidocs/pmd-ant/7.0.0-SNAPSHOT/net/sourceforge/pmd/ant/package-summary.html#"><code>net.sourceforge.pmd.ant</code></a>. You’ll need to update your taskdef entries in your
+build.xml files with the FQCN <a href="https://docs.pmd-code.org/apidocs/pmd-ant/7.0.0-SNAPSHOT/net/sourceforge/pmd/ant/CPDTask.html#"><code>net.sourceforge.pmd.ant.CPDTask</code></a> if you use it anywhere.</p>
+  </li>
+  <li>
+    <p>Utility classes in <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/util/package-summary.html#"><code>net.sourceforge.pmd.util</code></a>, that have previously marked as <code class="language-plaintext highlighter-rouge">@InternalApi</code> have been finally
+moved to <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/internal/util/package-summary.html#"><code>net.sourceforge.pmd.internal.util</code></a>. This includes ClasspathClassLoader, FileFinder, FileUtil, and
+IOUtil.</p>
+  </li>
+  <li>
+    <p>The following utility classes in <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/util/package-summary.html#"><code>net.sourceforge.pmd.util</code></a> are now considered public API:</p>
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/util/AssertionUtil.html#"><code>AssertionUtil</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/util/CollectionUtil.html#"><code>CollectionUtil</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/util/ContextedAssertionError.html#"><code>ContextedAssertionError</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/util/ContextedStackOverflowError.html#"><code>ContextedStackOverflowError</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/util/GraphUtil.html#"><code>GraphUtil</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/util/IteratorUtil.html#"><code>IteratorUtil</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/util/StringUtil.html#"><code>StringUtil</code></a></li>
+    </ul>
+  </li>
+</ul>
 
-<h2 id="planned-api-removals">Planned API removals</h2>
+<h3 id="xpath-31-support">XPath 3.1 support</h3>
 
-<h3 id="list-of-currently-deprecated-apis">List of currently deprecated APIs</h3>
+<p>Support for XPath versions 1.0, 1.0-compatibility was removed, support for XPath 2.0 is deprecated. The default
+(and only) supported XPath version is now XPath 3.1. This version of the XPath language is mostly identical to
+XPath 2.0.</p>
 
-<div class="alert alert-danger" role="alert"><i class="fas fa-exclamation-circle"></i> <b>Warning:</b> This list is not exhaustive. The ultimate reference is whether
-an API is tagged as <code class="language-plaintext highlighter-rouge">@Deprecated</code> or not in the latest minor release. During the development of 7.0.0,
-we may decide to remove some APIs that were not tagged as deprecated, though we’ll try to avoid it.</div>
+<p>Notable changes:</p>
+<ul>
+  <li>The deprecated support for sequence-valued attributes is removed. Sequence-valued properties are still supported.</li>
+  <li>Refer to <a href="https://www.saxonica.com/html/documentation/expressions/xpath31new.html">the Saxonica documentation</a> for
+an introduction to new features in XPath 3.1.</li>
+</ul>
+
+<h3 id="node-stream-api-for-ast-traversal">Node stream API for AST traversal</h3>
+
+<p>This version includes a powerful API to navigate trees, similar in usage to the Java 8 Stream API:</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">node</span><span class="o">.</span><span class="na">descendants</span><span class="o">(</span><span class="nc">ASTMethodCall</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">filter</span><span class="o">(</span><span class="n">m</span> <span class="o">-&gt;</span> <span class="s">"toString"</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">m</span><span class="o">.</span><span class="na">getMethodName</span><span class="o">()))</span>
+    <span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="n">m</span> <span class="o">-&gt;</span> <span class="n">m</span><span class="o">.</span><span class="na">getQualifier</span><span class="o">())</span>
+    <span class="o">.</span><span class="na">filter</span><span class="o">(</span><span class="n">q</span> <span class="o">-&gt;</span> <span class="nc">TypeTestUtil</span><span class="o">.</span><span class="na">isA</span><span class="o">(</span><span class="nc">String</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">q</span><span class="o">))</span>
+    <span class="o">.</span><span class="na">foreach</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">::</span><span class="n">println</span><span class="o">);</span>
+</code></pre></div></div>
+
+<p>A pipeline like shown here traverses the tree lazily, which is more efficient than traversing eagerly to put all
+descendants in a list. It is also much easier to change than the old imperative way.</p>
+
+<p>To make this API as accessible as possible, the <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#"><code>Node</code></a> interface has been fitted with new
+methods producing node streams. Those methods replace previous tree traversal methods like <code class="language-plaintext highlighter-rouge">Node#findDescendantsOfType</code>.
+In all cases, they should be more efficient and more convenient.</p>
+
+<p>See <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/NodeStream.html#"><code>NodeStream</code></a> for more details.</p>
+
+<p>Contributors: <a href="https://github.com/oowekyala">Clément Fournier</a> (@oowekyala)</p>
+
+<h3 id="metrics-framework">Metrics framework</h3>
+
+<p>The metrics framework has been made simpler and more general.</p>
+
+<ul>
+  <li>
+    <p>The metric interface takes an additional type parameter, representing the result type of the metric. This is
+usually <code class="language-plaintext highlighter-rouge">Integer</code> or <code class="language-plaintext highlighter-rouge">Double</code>. It avoids widening the result to a <code class="language-plaintext highlighter-rouge">double</code> just to narrow it down.</p>
+
+    <p>This makes it so, that <code class="language-plaintext highlighter-rouge">Double.NaN</code> is not an appropriate sentinel value to represent “not supported” anymore.
+Instead, <code class="language-plaintext highlighter-rouge">computeFor</code> may return <code class="language-plaintext highlighter-rouge">null</code> in that case (or a garbage value). The value <code class="language-plaintext highlighter-rouge">null</code> may have caused
+problems with the narrowing casts, which through unboxing, might have thrown an NPE. But when we deprecated
+the language-specific metrics façades to replace them with the generic <code class="language-plaintext highlighter-rouge">MetricsUtil</code>, we took care of making
+the new methods throw an exception if the metric cannot be computed on the parameter. This forces you to guard
+calls to <code class="language-plaintext highlighter-rouge">MetricsUtil::computeMetric</code> with something like <code class="language-plaintext highlighter-rouge">if (metric.supports(node))</code>. If you’re following
+this pattern, then you won’t observe the undefined behavior.</p>
+  </li>
+  <li>
+    <p>The <code class="language-plaintext highlighter-rouge">MetricKey</code> interface is not so useful and has been merged into the <code class="language-plaintext highlighter-rouge">Metric</code> interface and removed. So
+the <code class="language-plaintext highlighter-rouge">Metric</code> interface has the new method <code class="language-plaintext highlighter-rouge">String name()</code>.</p>
+  </li>
+  <li>
+    <p>The framework is not tied to at most 2 node types per language anymore. Previously those were nodes for
+classes and for methods/constructors. Instead, many metrics support more node types. For example, NCSS can
+be computed on any code block.</p>
+
+    <p>For that reason, keeping around a hard distinction between “class metrics” and “operation metrics” is not
+useful. So in the Java framework for example, we removed the interfaces <code class="language-plaintext highlighter-rouge">JavaClassMetric</code>, <code class="language-plaintext highlighter-rouge">JavaOperationMetric</code>,
+abstract classes for those, <code class="language-plaintext highlighter-rouge">JavaClassMetricKey</code>, and <code class="language-plaintext highlighter-rouge">JavaOperationMetricKey</code>. Metric constants are now all
+inside the <code class="language-plaintext highlighter-rouge">JavaMetrics</code> utility class. The same was done in the Apex framework.</p>
+
+    <p>We don’t really need abstract classes for metrics now. So <code class="language-plaintext highlighter-rouge">AbstractMetric</code> is also removed from pmd-core.
+There is a factory method on the <code class="language-plaintext highlighter-rouge">Metric</code> interface to create a metric easily.</p>
+  </li>
+  <li>
+    <p>This makes it so, that <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/metrics/LanguageMetricsProvider.html#"><code>LanguageMetricsProvider</code></a> does not need type parameters.
+It can just return a <code class="language-plaintext highlighter-rouge">Set&lt;Metric&lt;?, ?&gt;&gt;</code> to list available metrics.</p>
+  </li>
+  <li>
+    <p><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/metrics/Signature.html#"><code>Signature</code></a>s, their implementations, and the interface <code class="language-plaintext highlighter-rouge">SignedNode</code> have been
+removed. Node streams allow replacing their usages very easily.</p>
+  </li>
+</ul>
+
+<h3 id="testing-framework">Testing framework</h3>
+
+<ul>
+  <li>PMD 7 has been upgraded to use JUnit 5 only. That means, that JUnit4 related classes have been removed, namely
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.testframework.PMDTestRunner</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.testframework.RuleTestRunner</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.testframework.TestDescriptor</code></li>
+    </ul>
+  </li>
+  <li>Rule tests, that use <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0-SNAPSHOT/net/sourceforge/pmd/testframework/SimpleAggregatorTst.html#"><code>SimpleAggregatorTst</code></a> or
+<a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0-SNAPSHOT/net/sourceforge/pmd/testframework/PmdRuleTst.html#"><code>PmdRuleTst</code></a> work as before without change, but use
+now JUnit5 under the hood. If you added additional JUnit4 tests to your rule test classes, then you’ll
+need to upgrade them to use JUnit5.</li>
+</ul>
+
+<h3 id="language-lifecycle-and-language-properties">Language Lifecycle and Language Properties</h3>
+
+<ul>
+  <li>Language modules now provide a proper lifecycle and can store global information. This enables the implementation
+of multifile analysis.</li>
+  <li>Language modules can define <a href="pmd_languages_configuration.html">custom language properties</a>
+which can be set via environment variables. This allows to add and use language specific configuration options
+without the need to change pmd-core.</li>
+</ul>
+
+<p>The documentation page has been updated:
+<a href="pmd_devdocs_major_adding_new_language_javacc.html">Adding a new language with JavaCC</a>
+and <a href="pmd_devdocs_major_adding_new_language_antlr.html">Adding a new language with ANTLR</a></p>
+
+<p>Related issue: <a href="https://github.com/pmd/pmd/issues/3782">[core] Language lifecycle (#3782)</a></p>
+
+<h3 id="api-removals">API removals</h3>
 
 <h4 id="6550">6.55.0</h4>
 
-<h5 id="go">Go</h5>
+<p><strong>Go</strong></p>
+
 <ul>
   <li>The LanguageModule of Go, that only supports CPD execution, has been deprecated. This language
 is not fully supported by PMD, so having a language module does not make sense. The functionality of CPD is
@@ -1847,7 +2492,7 @@ not affected by this change. The following class has been deprecated and will be
   </li>
 </ul>
 
-<h5 id="java-1">Java</h5>
+<p><strong>Java</strong></p>
 <ul>
   <li>Support for Java 18 preview language features have been removed. The version “18-preview” is no longer available.</li>
   <li>The experimental class <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.java.ast.ASTGuardedPattern</code> has been removed.</li>
@@ -1855,7 +2500,7 @@ not affected by this change. The following class has been deprecated and will be
 
 <h4 id="6540">6.54.0</h4>
 
-<h5 id="pmd-cli">PMD CLI</h5>
+<p><strong>PMD CLI</strong></p>
 
 <ul>
   <li>PMD now supports a new <code class="language-plaintext highlighter-rouge">--relativize-paths-with</code> flag (or short <code class="language-plaintext highlighter-rouge">-z</code>), which replaces <code class="language-plaintext highlighter-rouge">--short-names</code>.
@@ -1864,9 +2509,9 @@ to explicitly define one or more pathnames that should be used as the base when 
 The old flag <code class="language-plaintext highlighter-rouge">--short-names</code> is deprecated.</li>
 </ul>
 
-<h5 id="deprecated-apis">Deprecated APIs</h5>
+<p><strong>Deprecated APIs</strong></p>
 
-<h6 id="for-removal">For removal</h6>
+<p><strong>For removal</strong></p>
 
 <ul>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ApexRootNode.html#getApexVersion()"><code>ApexRootNode#getApexVersion</code></a> has been deprecated for removal. The version returned is
@@ -1895,14 +2540,14 @@ content of the zip file for analysis.</p>
 Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#addRelativizeRoot(java.nio.file.Path)"><code>PMDConfiguration#addRelativizeRoot</code></a> instead.</li>
 </ul>
 
-<h6 id="internal-apis">Internal APIs</h6>
+<p><strong>Internal APIs</strong></p>
 
 <ul>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/renderers/CSVWriter.html#"><code>CSVWriter</code></a></li>
   <li>Some fields in <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0-SNAPSHOT/net/sourceforge/pmd/ant/AbstractAntTestHelper.html#"><code>AbstractAntTestHelper</code></a></li>
 </ul>
 
-<h6 id="experimental-apis">Experimental APIs</h6>
+<p><strong>Experimental APIs</strong></p>
 
 <ul>
   <li>CPDReport has a new method which limited mutation of a given report:
@@ -1915,9 +2560,9 @@ with some matches removed with a given predicate based filter.</li>
 
 <h4 id="6530">6.53.0</h4>
 
-<h5 id="deprecated-apis-1">Deprecated APIs</h5>
+<p><strong>Deprecated APIs</strong></p>
 
-<h6 id="for-removal-1">For removal</h6>
+<p><strong>For removal</strong></p>
 
 <p>These classes / APIs have been deprecated and will be removed with PMD 7.0.0.</p>
 
@@ -1927,7 +2572,7 @@ with some matches removed with a given predicate based filter.</li>
 
 <h4 id="6520">6.52.0</h4>
 
-<h5 id="pmd-cli-1">PMD CLI</h5>
+<p><strong>PMD CLI</strong></p>
 
 <ul>
   <li>
@@ -1944,14 +2589,14 @@ In PMD 7, <code class="language-plaintext highlighter-rouge">-v</code> will enab
   </li>
 </ul>
 
-<h5 id="cpd-cli">CPD CLI</h5>
+<p><strong>CPD CLI</strong></p>
 
 <ul>
   <li>CPD now supports using <code class="language-plaintext highlighter-rouge">-d</code> or <code class="language-plaintext highlighter-rouge">--dir</code> as an alias to <code class="language-plaintext highlighter-rouge">--files</code>, in favor of consistency with PMD.
 PMD 7 will remove support for <code class="language-plaintext highlighter-rouge">--files</code> in favor of these new flags.</li>
 </ul>
 
-<h5 id="linux-runsh-parameters">Linux run.sh parameters</h5>
+<p><strong>Linux run.sh parameters</strong></p>
 
 <ul>
   <li>
@@ -1965,7 +2610,7 @@ PMD 7 will remove support for <code class="language-plaintext highlighter-rouge"
   </li>
 </ul>
 
-<h5 id="deprecated-api">Deprecated API</h5>
+<p><strong>Deprecated API</strong></p>
 
 <ul>
   <li>The following core APIs have been marked as deprecated for removal in PMD 7:
@@ -1997,7 +2642,7 @@ has been deprecated. The equivalent method <a href="https://docs.pmd-code.org/ap
 
 <h4 id="6500">6.50.0</h4>
 
-<h5 id="cpd-cli-1">CPD CLI</h5>
+<p><strong>CPD CLI</strong></p>
 
 <ul>
   <li>CPD now supports the <code class="language-plaintext highlighter-rouge">--ignore-literal-sequences</code> argument when analyzing Lua code.</li>
@@ -2005,7 +2650,7 @@ has been deprecated. The equivalent method <a href="https://docs.pmd-code.org/ap
 
 <h4 id="6490">6.49.0</h4>
 
-<h5 id="deprecated-api-1">Deprecated API</h5>
+<p><strong>Deprecated API</strong></p>
 
 <ul>
   <li>In order to reduce the dependency on Apex Jorje classes, the following methods have been deprecated.
@@ -2027,14 +2672,14 @@ the dependency to Jorje.</p>
 
 <h4 id="6480">6.48.0</h4>
 
-<h5 id="cpd-cli-2">CPD CLI</h5>
+<p><strong>CPD CLI</strong></p>
 
 <ul>
   <li>CPD has a new CLI option <code class="language-plaintext highlighter-rouge">--debug</code>. This option has the same behavior as in PMD. It enables more verbose
 logging output.</li>
 </ul>
 
-<h5 id="rule-test-framework">Rule Test Framework</h5>
+<p><strong>Rule Test Framework</strong></p>
 
 <ul>
   <li>The module “pmd-test”, which contains support classes to write rule tests, now <strong>requires Java 8</strong>. If you depend on
@@ -2054,7 +2699,7 @@ They will not be replaced.</li>
 <a href="pmd_userdocs_extending_testing.html">Testing your rules</a></li>
 </ul>
 
-<h5 id="deprecated-api-2">Deprecated API</h5>
+<p><strong>Deprecated API</strong></p>
 
 <ul>
   <li>The experimental Java AST class <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTGuardedPattern.html#"><code>ASTGuardedPattern</code></a> has been deprecated and
@@ -2066,7 +2711,7 @@ the new interface <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAP
   <li>Many methods of <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0-SNAPSHOT/net/sourceforge/pmd/testframework/RuleTst.html#"><code>RuleTst</code></a> have been deprecated as internal API.</li>
 </ul>
 
-<h5 id="experimental-apis-1">Experimental APIs</h5>
+<p><strong>Experimental APIs</strong></p>
 
 <ul>
   <li>To support the Java preview language features “Pattern Matching for Switch” and “Record Patterns”, the following
@@ -2079,7 +2724,7 @@ AST nodes have been introduced as experimental:
   </li>
 </ul>
 
-<h5 id="internal-api">Internal API</h5>
+<p><strong>Internal API</strong></p>
 
 <p>Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
 You can identify them with the <code class="language-plaintext highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
@@ -2100,7 +2745,7 @@ You can identify them with the <code class="language-plaintext highlighter-rouge
 
 <h4 id="6460">6.46.0</h4>
 
-<h5 id="deprecated-ruleset-references">Deprecated ruleset references</h5>
+<p><strong>Deprecated ruleset references</strong></p>
 
 <p>Ruleset references with the following formats are now deprecated and will produce a warning
 when used on the CLI or in a ruleset XML file:</p>
@@ -2111,7 +2756,7 @@ when used on the CLI or in a ruleset XML file:</p>
 
 <p>Use the explicit forms of these references to be compatible with PMD 7.</p>
 
-<h5 id="deprecated-api-3">Deprecated API</h5>
+<p><strong>Deprecated API</strong></p>
 
 <ul>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/RuleSetReferenceId.html#toString()"><code>toString</code></a> is now deprecated. The format of this
@@ -2122,7 +2767,7 @@ away from relying on this format, as it may be changed in PMD 7.</li>
 A new set of methods have been added, which use lists and do not rely on comma splitting.</li>
 </ul>
 
-<h5 id="internal-api-1">Internal API</h5>
+<p><strong>Internal API</strong></p>
 
 <p>Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
 You can identify them with the <code class="language-plaintext highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
@@ -2139,7 +2784,7 @@ and <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourc
 
 <h4 id="6450">6.45.0</h4>
 
-<h5 id="experimental-apis-2">Experimental APIs</h5>
+<p><strong>Experimental APIs</strong></p>
 
 <ul>
   <li>Report has two new methods which allow limited mutations of a given report:
@@ -2156,7 +2801,7 @@ some violations removed with a given predicate based filter.</li>
 
 <h4 id="6440">6.44.0</h4>
 
-<h5 id="deprecated-api-4">Deprecated API</h5>
+<p><strong>Deprecated API</strong></p>
 
 <ul>
   <li>Several members of <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/PMD.html#"><code>PMD</code></a> have been newly deprecated, including:
@@ -2186,7 +2831,7 @@ since they didn’t comply to the usual rule class naming conventions yet.
 The replacements are in the subpackage <code class="language-plaintext highlighter-rouge">bestpractices</code>.</li>
 </ul>
 
-<h5 id="experimental-apis-3">Experimental APIs</h5>
+<p><strong>Experimental APIs</strong></p>
 
 <ul>
   <li>
@@ -2202,7 +2847,7 @@ decouples you from this. A file collector is available through <a href="https://
 
 <h4 id="6430">6.43.0</h4>
 
-<h5 id="deprecated-api-5">Deprecated API</h5>
+<p><strong>Deprecated API</strong></p>
 
 <p>Some API deprecations were performed in core PMD classes, to improve compatibility with PMD 7.</p>
 <ul>
@@ -2214,7 +2859,7 @@ be the API to report violations, and it can already be used as such in PMD 6.</l
   <li>The field <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/PMD.html#configuration"><code>configuration</code></a> is unused and will be removed.</li>
 </ul>
 
-<h5 id="internal-api-2">Internal API</h5>
+<p><strong>Internal API</strong></p>
 
 <p>Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
 You can identify them with the <code class="language-plaintext highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
@@ -2225,7 +2870,7 @@ You can identify them with the <code class="language-plaintext highlighter-rouge
 and should not be overridden in own renderers.</li>
 </ul>
 
-<h5 id="changed-api">Changed API</h5>
+<p><strong>Changed API</strong></p>
 
 <p>It is now forbidden to report a violation:</p>
 <ul>
@@ -2249,7 +2894,7 @@ will change drastically in PMD 7.</p>
 
 <h4 id="6410">6.41.0</h4>
 
-<h5 id="command-line-interface">Command Line Interface</h5>
+<p><strong>Command Line Interface</strong></p>
 
 <p>The command line options for PMD and CPD now use GNU-syle long options format. E.g. instead of <code class="language-plaintext highlighter-rouge">-rulesets</code> the
 preferred usage is now <code class="language-plaintext highlighter-rouge">--rulesets</code>. Alternatively one can still use the short option <code class="language-plaintext highlighter-rouge">-R</code>.
@@ -2403,7 +3048,7 @@ compared to other cli tools.</p>
 
 <h4 id="6400">6.40.0</h4>
 
-<h5 id="experimental-apis-4">Experimental APIs</h5>
+<p><strong>Experimental APIs</strong></p>
 
 <ul>
   <li>The interface <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ASTCommentContainer.html#"><code>ASTCommentContainer</code></a> has been added to the Apex AST.
@@ -2423,7 +3068,7 @@ This information is also available via XPath attribute <code class="language-pla
 
 <h4 id="6370">6.37.0</h4>
 
-<h5 id="pmd-cli-2">PMD CLI</h5>
+<p><strong>PMD CLI</strong></p>
 
 <ul>
   <li>
@@ -2437,20 +3082,17 @@ See also the examples on <a href="pmd_userdocs_cli_reference.html#analyze-other-
   </li>
 </ul>
 
-<h5 id="experimental-apis-5">Experimental APIs</h5>
+<p><strong>Experimental APIs</strong></p>
 
 <ul>
-  <li>The AST types and APIs around Sealed Classes are not experimental anymore:
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#isSealed()"><code>ASTClassOrInterfaceDeclaration#isSealed</code></a>,
+  <li>The AST types and APIs around Sealed Classes are not experimental anymore:</li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#isSealed()"><code>ASTClassOrInterfaceDeclaration#isSealed</code></a>,
 <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#isNonSealed()"><code>ASTClassOrInterfaceDeclaration#isNonSealed</code></a>,
 <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#getPermittedSubclasses()"><code>ASTClassOrInterfaceDeclaration#getPermittedSubclasses</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTPermitsList.html#"><code>ASTPermitsList</code></a></li>
-    </ul>
-  </li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTPermitsList.html#"><code>ASTPermitsList</code></a></li>
 </ul>
 
-<h5 id="internal-api-3">Internal API</h5>
+<p><strong>Internal API</strong></p>
 
 <p>Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
 You can identify them with the <code class="language-plaintext highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
@@ -2466,7 +3108,7 @@ It will probably be moved away with PMD 7.</li>
 
 <h4 id="6350">6.35.0</h4>
 
-<h5 id="deprecated-api-6">Deprecated API</h5>
+<p><strong>Deprecated API</strong></p>
 
 <ul>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/PMD.html#doPMD(net.sourceforge.pmd.PMDConfiguration)"><code>PMD#doPMD</code></a> is deprecated.
@@ -2489,28 +3131,25 @@ are deprecated. This functionality will be replaced by another TBD mechanism in 
 
 <h4 id="6320">6.32.0</h4>
 
-<h5 id="experimental-apis-6">Experimental APIs</h5>
+<p><strong>Experimental APIs</strong></p>
 
 <ul>
   <li>The experimental class <code class="language-plaintext highlighter-rouge">ASTTypeTestPattern</code> has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTTypePattern.html#"><code>ASTTypePattern</code></a>
 in order to align the naming to the JLS.</li>
   <li>The experimental class <code class="language-plaintext highlighter-rouge">ASTRecordConstructorDeclaration</code> has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTCompactConstructorDeclaration.html#"><code>ASTCompactConstructorDeclaration</code></a>
 in order to align the naming to the JLS.</li>
-  <li>The AST types and APIs around Pattern Matching and Records are not experimental anymore:
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableDeclaratorId.html#isPatternBinding()"><code>ASTVariableDeclaratorId#isPatternBinding</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTPattern.html#"><code>ASTPattern</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTTypePattern.html#"><code>ASTTypePattern</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTRecordDeclaration.html#"><code>ASTRecordDeclaration</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTRecordComponentList.html#"><code>ASTRecordComponentList</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTRecordComponent.html#"><code>ASTRecordComponent</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTRecordBody.html#"><code>ASTRecordBody</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTCompactConstructorDeclaration.html#"><code>ASTCompactConstructorDeclaration</code></a></li>
-    </ul>
-  </li>
+  <li>The AST types and APIs around Pattern Matching and Records are not experimental anymore:</li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableDeclaratorId.html#isPatternBinding()"><code>ASTVariableDeclaratorId#isPatternBinding</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTPattern.html#"><code>ASTPattern</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTTypePattern.html#"><code>ASTTypePattern</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTRecordDeclaration.html#"><code>ASTRecordDeclaration</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTRecordComponentList.html#"><code>ASTRecordComponentList</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTRecordComponent.html#"><code>ASTRecordComponent</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTRecordBody.html#"><code>ASTRecordBody</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTCompactConstructorDeclaration.html#"><code>ASTCompactConstructorDeclaration</code></a></li>
 </ul>
 
-<h5 id="internal-api-4">Internal API</h5>
+<p><strong>Internal API</strong></p>
 
 <p>Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
 You can identify them with the <code class="language-plaintext highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
@@ -2522,7 +3161,7 @@ are deprecated and considered to be internal API. They will be removed with PMD 
 
 <h4 id="6310">6.31.0</h4>
 
-<h5 id="deprecated-api-7">Deprecated API</h5>
+<p><strong>Deprecated API</strong></p>
 
 <ul>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/rule/AbstractDomXmlRule.html#"><code>AbstractDomXmlRule</code></a></li>
@@ -2530,7 +3169,7 @@ are deprecated and considered to be internal API. They will be removed with PMD 
   <li>A few methods of <a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/rule/AbstractXmlRule.html#"><code>AbstractXmlRule</code></a></li>
 </ul>
 
-<h5 id="experimental-apis-7">Experimental APIs</h5>
+<p><strong>Experimental APIs</strong></p>
 
 <ul>
   <li>The method <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/GenericToken.html#getKind()"><code>GenericToken#getKind</code></a> has been added as experimental. This
@@ -2542,9 +3181,9 @@ of the language is changed.</li>
 
 <h4 id="6300">6.30.0</h4>
 
-<h5 id="deprecated-api-8">Deprecated API</h5>
+<p><strong>Deprecated API</strong></p>
 
-<h6 id="around-ruleset-parsing">Around RuleSet parsing</h6>
+<p><strong>Around RuleSet parsing</strong></p>
 
 <ul>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/RuleSetFactory.html#"><code>RuleSetFactory</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/RulesetsFactoryUtils.html#"><code>RulesetsFactoryUtils</code></a> have been deprecated in favor of <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/RuleSetLoader.html#"><code>RuleSetLoader</code></a>. This is easier to configure, and more maintainable than the multiple overloads of <code class="language-plaintext highlighter-rouge">RulesetsFactoryUtils</code>.</li>
@@ -2553,7 +3192,7 @@ of the language is changed.</li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/RuleSetReferenceId.html#"><code>RuleSetReferenceId</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/RuleSetReference.html#"><code>RuleSetReference</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/RuleSetFactoryCompatibility.html#"><code>RuleSetFactoryCompatibility</code></a> are deprecated. They are most likely not relevant outside of the implementation of pmd-core.</li>
 </ul>
 
-<h6 id="around-the-pmd-class">Around the <code class="language-plaintext highlighter-rouge">PMD</code> class</h6>
+<p><strong>Around the <code class="language-plaintext highlighter-rouge">PMD</code> class</strong></p>
 
 <p>Many classes around PMD’s entry point (<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/PMD.html#"><code>PMD</code></a>) have been deprecated as internal, including:</p>
 <ul>
@@ -2562,7 +3201,7 @@ of the language is changed.</li>
   <li>The constructors of <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/PMD.html#"><code>PMD</code></a> (the class will be made a utility class)</li>
 </ul>
 
-<h6 id="miscellaneous-1">Miscellaneous</h6>
+<p><strong>Miscellaneous</strong></p>
 
 <ul>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTPackageDeclaration.html#getPackageNameImage()"><code>ASTPackageDeclaration#getPackageNameImage</code></a>,
@@ -2574,7 +3213,7 @@ and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourc
 refs <a href="https://github.com/pmd/pmd/issues/905">#905</a></li>
 </ul>
 
-<h5 id="internal-api-5">Internal API</h5>
+<p><strong>Internal API</strong></p>
 
 <p>Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
 You can identify them with the <code class="language-plaintext highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
@@ -2595,9 +3234,9 @@ You can identify them with the <code class="language-plaintext highlighter-rouge
 
 <h4 id="6280">6.28.0</h4>
 
-<h5 id="deprecated-api-9">Deprecated API</h5>
+<p><strong>Deprecated API</strong></p>
 
-<h6 id="for-removal-2">For removal</h6>
+<p><strong>For removal</strong></p>
 
 <ul>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/RuleViolationComparator.html#"><code>net.sourceforge.pmd.RuleViolationComparator</code></a>. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/RuleViolation.html#DEFAULT_COMPARATOR"><code>RuleViolation#DEFAULT_COMPARATOR</code></a> instead.</li>
@@ -2610,11 +3249,11 @@ You can identify them with the <code class="language-plaintext highlighter-rouge
   <li>Antlr4 generated lexers:
     <ul>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-cs/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/cs/antlr4/CSharpLexer.html#"><code>net.sourceforge.pmd.lang.cs.antlr4.CSharpLexer</code></a> will be moved to package <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.cs.ast</code> with PMD 7.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-dart/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/dart/antlr4/Dart2Lexer.html#"><code>net.sourceforge.pmd.lang.dart.antlr4.Dart2Lexer</code></a> will be renamed to <code class="language-plaintext highlighter-rouge">DartLexer</code> and moved to package 
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-dart/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/dart/antlr4/Dart2Lexer.html#"><code>net.sourceforge.pmd.lang.dart.antlr4.Dart2Lexer</code></a> will be renamed to <code class="language-plaintext highlighter-rouge">DartLexer</code> and moved to package
 <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.dart.ast</code> with PMD 7. All other classes in the old package will be removed.</li>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-go/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/go/antlr4/GolangLexer.html#"><code>net.sourceforge.pmd.lang.go.antlr4.GolangLexer</code></a> will be moved to package
 <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.go.ast</code> with PMD 7. All other classes in the old package will be removed.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/antlr4/Kotlin.html#"><code>net.sourceforge.pmd.lang.kotlin.antlr4.Kotlin</code></a> will be renamed to <code class="language-plaintext highlighter-rouge">KotlinLexer</code> and moved to package 
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/antlr4/Kotlin.html#"><code>net.sourceforge.pmd.lang.kotlin.antlr4.Kotlin</code></a> will be renamed to <code class="language-plaintext highlighter-rouge">KotlinLexer</code> and moved to package
 <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.kotlin.ast</code> with PMD 7.</li>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-lua/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/lua/antlr4/LuaLexer.html#"><code>net.sourceforge.pmd.lang.lua.antlr4.LuaLexer</code></a> will be moved to package
 <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.lua.ast</code> with PMD 7. All other classes in the old package will be removed.</li>
@@ -2632,9 +3271,9 @@ behavior will be discontinued in PMD 7, so missing <code class="language-plainte
 reported as a forward compatibility warning.</li>
 </ul>
 
-<h5 id="deprecated-api-10">Deprecated API</h5>
+<p><strong>Deprecated API</strong></p>
 
-<h6 id="for-removal-3">For removal</h6>
+<p><strong>For removal</strong></p>
 
 <ul>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/Rule.html#getParserOptions()"><code>Rule#getParserOptions</code></a></li>
@@ -2655,18 +3294,17 @@ reported as a forward compatibility warning.</li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/Report.ReadableDuration.html#"><code>net.sourceforge.pmd.Report.ReadableDuration</code></a></li>
   <li>
     <p>Many methods of <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/Report.html#"><code>net.sourceforge.pmd.Report</code></a>. They are replaced by accessors
-  that produce a List. For example, <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/Report.html#iterator()"><code>iterator()</code></a> 
-  (and implementing Iterable) and <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/Report.html#isEmpty()"><code>isEmpty()</code></a> are both
-  replaced by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/Report.html#getViolations()"><code>getViolations()</code></a>.</p>
+that produce a List. For example, <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/Report.html#iterator()"><code>iterator()</code></a>
+(and implementing Iterable) and <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/Report.html#isEmpty()"><code>isEmpty()</code></a> are both
+replaced by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/Report.html#getViolations()"><code>getViolations()</code></a>.</p>
   </li>
   <li>The dataflow codebase is deprecated for removal in PMD 7. This
-includes all code in the following packages, and their subpackages:
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-plsql/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/plsql/dfa/package-summary.html#"><code>net.sourceforge.pmd.lang.plsql.dfa</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/dfa/package-summary.html#"><code>net.sourceforge.pmd.lang.java.dfa</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/dfa/package-summary.html#"><code>net.sourceforge.pmd.lang.dfa</code></a></li>
-      <li>and the class <a href="https://docs.pmd-code.org/apidocs/pmd-plsql/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/plsql/PLSQLDataFlowHandler.html#"><code>PLSQLDataFlowHandler</code></a></li>
-    </ul>
+includes all code in the following packages, and their subpackages:</li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-plsql/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/plsql/dfa/package-summary.html#"><code>net.sourceforge.pmd.lang.plsql.dfa</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/dfa/package-summary.html#"><code>net.sourceforge.pmd.lang.java.dfa</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/dfa/package-summary.html#"><code>net.sourceforge.pmd.lang.dfa</code></a></li>
+  <li>
+    <p>and the class <a href="https://docs.pmd-code.org/apidocs/pmd-plsql/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/plsql/PLSQLDataFlowHandler.html#"><code>PLSQLDataFlowHandler</code></a></p>
   </li>
   <li>
     <p><a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vf/VfSimpleCharStream.html#"><code>VfSimpleCharStream</code></a></p>
@@ -2680,7 +3318,7 @@ includes all code in the following packages, and their subpackages:
     <p><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/JavaParserVisitorReducedAdapter.html#"><code>JavaParserVisitorReducedAdapter</code></a></p>
   </li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/typeresolution/TypeHelper.html#"><code>TypeHelper</code></a> is deprecated in
- favor of <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/types/TypeTestUtil.html#"><code>TypeTestUtil</code></a>, which has the
+favor of <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/types/TypeTestUtil.html#"><code>TypeTestUtil</code></a>, which has the
 same functionality, but a slightly changed API.</li>
   <li>Many of the classes in <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/symboltable/package-summary.html#"><code>net.sourceforge.pmd.lang.java.symboltable</code></a>
 are deprecated as internal API.</li>
@@ -2688,9 +3326,9 @@ are deprecated as internal API.</li>
 
 <h4 id="6260">6.26.0</h4>
 
-<h5 id="deprecated-api-11">Deprecated API</h5>
+<p><strong>Deprecated API</strong></p>
 
-<h6 id="for-removal-4">For removal</h6>
+<p><strong>For removal</strong></p>
 
 <ul>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/RuleChainVisitor.html#"><code>RuleChainVisitor</code></a> and all implementations in language modules</li>
@@ -2717,9 +3355,9 @@ in PMD 7.0.0 and onwards.</p>
   </li>
 </ul>
 
-<h5 id="deprecated-apis-2">Deprecated APIs</h5>
+<p><strong>Deprecated APIs</strong></p>
 
-<h6 id="internal-api-6">Internal API</h6>
+<p><strong>Internal API</strong></p>
 
 <p>Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
 You can identify them with the <code class="language-plaintext highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
@@ -2746,7 +3384,7 @@ You can identify them with the <code class="language-plaintext highlighter-rouge
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/RulesetsFactoryUtils.html#getRuleSets(java.lang.String,net.sourceforge.pmd.RuleSetFactory)"><code>RulesetsFactoryUtils#getRuleSets</code></a></li>
 </ul>
 
-<h6 id="for-removal-5">For removal</h6>
+<p><strong>For removal</strong></p>
 
 <ul>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/TokenEntry.html#TokenEntry(java.lang.String,java.lang.String,int)"><code>TokenEntry#TokenEntry</code></a></li>
@@ -2762,7 +3400,7 @@ in the developer documentation.</li>
 
 <h4 id="6240">6.24.0</h4>
 
-<h5 id="deprecated-apis-3">Deprecated APIs</h5>
+<p><strong>Deprecated APIs</strong></p>
 
 <ul>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/BaseLanguageModule.html#addVersion(String,LanguageVersionHandler,boolean)"><code>BaseLanguageModule#addVersion(String, LanguageVersionHandler, boolean)</code></a></li>
@@ -2771,7 +3409,7 @@ that should be preferred to the old ones</li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/antlr/AntlrTokenManager/ANTLRSyntaxError.html#"><code>ANTLRSyntaxError</code></a></li>
 </ul>
 
-<h5 id="experimental-apis-8">Experimental APIs</h5>
+<p><strong>Experimental APIs</strong></p>
 
 <p><strong>Note:</strong> Experimental APIs are identified with the annotation <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/annotation/Experimental.html#"><code>Experimental</code></a>,
 see its javadoc for details</p>
@@ -2783,9 +3421,9 @@ definitive API.</li>
 
 <h4 id="6230">6.23.0</h4>
 
-<h5 id="deprecated-apis-4">Deprecated APIs</h5>
+<p><strong>Deprecated APIs</strong></p>
 
-<h6 id="internal-api-7">Internal API</h6>
+<p><strong>Internal API</strong></p>
 
 <p>Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
 You can identify them with the <code class="language-plaintext highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
@@ -2797,7 +3435,7 @@ You can identify them with the <code class="language-plaintext highlighter-rouge
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/xpath/XPathRuleQuery.html#"><code>XPathRuleQuery</code></a></li>
 </ul>
 
-<h6 id="in-asts">In ASTs</h6>
+<p><strong>In ASTs</strong></p>
 
 <p>As part of the changes we’d like to do to AST classes for 7.0.0, we would like to
 hide some methods and constructors that rule writers should not have access to.
@@ -2809,14 +3447,11 @@ marked <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/so
 which for rules, means that they never need to instantiate node themselves.
 Those constructors will be made package private with 7.0.0.</li>
   <li><strong>Subclassing of abstract node classes, or usage of their type</strong>. The base classes are internal API
-and will be hidden in version 7.0.0. You should not couple your code to them.
-    <ul>
-      <li>In the meantime you should use interfaces like <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vf/ast/VfNode.html#"><code>VfNode</code></a> or
+and will be hidden in version 7.0.0. You should not couple your code to them.</li>
+  <li>In the meantime you should use interfaces like <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vf/ast/VfNode.html#"><code>VfNode</code></a> or
 <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#"><code>Node</code></a>, or the other published interfaces in this package,
 to refer to nodes generically.</li>
-      <li>Concrete node classes will <strong>be made final</strong> with 7.0.0.</li>
-    </ul>
-  </li>
+  <li>Concrete node classes will <strong>be made final</strong> with 7.0.0.</li>
   <li>Setters found in any node class or interface. <strong>Rules should consider the AST immutable</strong>.
 We will make those setters package private with 7.0.0.</li>
   <li>The implementation classes of <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/Parser.html#"><code>Parser</code></a> (eg <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vf/VfParser.html#"><code>VfParser</code></a>) are deprecated and should not be used directly.
@@ -2868,7 +3503,7 @@ implementations, and their corresponding Parser if it exists (in the same packag
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableDeclaratorId.html#getVariableName()"><code>ASTVariableDeclaratorId#getVariableName</code></a> - use <code class="language-plaintext highlighter-rouge">getName()</code> instead</li>
 </ul>
 
-<h6 id="for-removal-6">For removal</h6>
+<p><strong>For removal</strong></p>
 
 <ul>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/Parser.html#getTokenManager(java.lang.String,java.io.Reader)"><code>Parser#getTokenManager</code></a></li>
@@ -2887,9 +3522,9 @@ implementations, and their corresponding Parser if it exists (in the same packag
 
 <h4 id="6220">6.22.0</h4>
 
-<h5 id="deprecated-apis-5">Deprecated APIs</h5>
+<p><strong>Deprecated APIs</strong></p>
 
-<h6 id="internal-api-8">Internal API</h6>
+<p><strong>Internal API</strong></p>
 
 <p>Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
 You can identify them with the <code class="language-plaintext highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
@@ -2915,10 +3550,10 @@ eg <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/source
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/AbstractApexNode.html#"><code>AbstractApexNode</code></a></li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/AbstractApexNodeBase.html#"><code>AbstractApexNodeBase</code></a>, and the related <code class="language-plaintext highlighter-rouge">visit</code>
 methods on <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ApexParserVisitor.html#"><code>ApexParserVisitor</code></a> and its implementations.
- Use <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ApexNode.html#"><code>ApexNode</code></a> instead, now considers comments too.</li>
+Use <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ApexNode.html#"><code>ApexNode</code></a> instead, now considers comments too.</li>
 </ul>
 
-<h6 id="for-removal-7">For removal</h6>
+<p><strong>For removal</strong></p>
 
 <ul>
   <li>pmd-core
@@ -2982,7 +3617,7 @@ Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourc
   </li>
 </ul>
 
-<h6 id="in-asts-jsp">In ASTs (JSP)</h6>
+<p><strong>In ASTs (JSP)</strong></p>
 
 <p>As part of the changes we’d like to do to AST classes for 7.0.0, we would like to
 hide some methods and constructors that rule writers should not have access to.
@@ -2994,14 +3629,11 @@ marked <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/so
 which for rules, means that they never need to instantiate node themselves.
 Those constructors will be made package private with 7.0.0.</li>
   <li><strong>Subclassing of abstract node classes, or usage of their type</strong>. The base classes are internal API
-and will be hidden in version 7.0.0. You should not couple your code to them.
-    <ul>
-      <li>In the meantime you should use interfaces like <a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/JspNode.html#"><code>JspNode</code></a> or
+and will be hidden in version 7.0.0. You should not couple your code to them.</li>
+  <li>In the meantime you should use interfaces like <a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/JspNode.html#"><code>JspNode</code></a> or
 <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#"><code>Node</code></a>, or the other published interfaces in this package,
 to refer to nodes generically.</li>
-      <li>Concrete node classes will <strong>be made final</strong> with 7.0.0.</li>
-    </ul>
-  </li>
+  <li>Concrete node classes will <strong>be made final</strong> with 7.0.0.</li>
   <li>Setters found in any node class or interface. <strong>Rules should consider the AST immutable</strong>.
 We will make those setters package private with 7.0.0.</li>
   <li>The class <a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/JspParser.html#"><code>JspParser</code></a> is deprecated and should not be used directly.
@@ -3010,7 +3642,7 @@ Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourc
 
 <p>Please look at <a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/package-summary.html#"><code>net.sourceforge.pmd.lang.jsp.ast</code></a> to find out the full list of deprecations.</p>
 
-<h6 id="in-asts-velocity">In ASTs (Velocity)</h6>
+<p><strong>In ASTs (Velocity)</strong></p>
 
 <p>As part of the changes we’d like to do to AST classes for 7.0.0, we would like to
 hide some methods and constructors that rule writers should not have access to.
@@ -3022,14 +3654,11 @@ marked <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/so
 which for rules, means that they never need to instantiate node themselves.
 Those constructors will be made package private with 7.0.0.</li>
   <li><strong>Subclassing of abstract node classes, or usage of their type</strong>. The base classes are internal API
-and will be hidden in version 7.0.0. You should not couple your code to them.
-    <ul>
-      <li>In the meantime you should use interfaces like <a href="https://docs.pmd-code.org/apidocs/pmd-vm/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vm/ast/VmNode.html#"><code>VmNode</code></a> or
+and will be hidden in version 7.0.0. You should not couple your code to them.</li>
+  <li>In the meantime you should use interfaces like <a href="https://docs.pmd-code.org/apidocs/pmd-vm/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vm/ast/VmNode.html#"><code>VmNode</code></a> or
 <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#"><code>Node</code></a>, or the other published interfaces in this package,
 to refer to nodes generically.</li>
-      <li>Concrete node classes will <strong>be made final</strong> with 7.0.0.</li>
-    </ul>
-  </li>
+  <li>Concrete node classes will <strong>be made final</strong> with 7.0.0.</li>
   <li>Setters found in any node class or interface. <strong>Rules should consider the AST immutable</strong>.
 We will make those setters package private with 7.0.0.</li>
   <li>The package <a href="https://docs.pmd-code.org/apidocs/pmd-vm/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vm/directive/package-summary.html#"><code>net.sourceforge.pmd.lang.vm.directive</code></a> as well as the classes
@@ -3041,16 +3670,16 @@ Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourc
 
 <p>Please look at <a href="https://docs.pmd-code.org/apidocs/pmd-vm/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vm/ast/package-summary.html#"><code>net.sourceforge.pmd.lang.vm.ast</code></a> to find out the full list of deprecations.</p>
 
-<h5 id="plsql-ast">PLSQL AST</h5>
+<p><strong>PLSQL AST</strong></p>
 
 <p>The production and node <code class="language-plaintext highlighter-rouge">ASTCursorBody</code> was unnecessary, not used and has been removed. Cursors have been already
 parsed as <code class="language-plaintext highlighter-rouge">ASTCursorSpecification</code>.</p>
 
 <h4 id="6210">6.21.0</h4>
 
-<h5 id="deprecated-apis-6">Deprecated APIs</h5>
+<p><strong>Deprecated APIs</strong></p>
 
-<h6 id="internal-api-9">Internal API</h6>
+<p><strong>Internal API</strong></p>
 
 <p>Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0.
 You can identify them with the <code class="language-plaintext highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
@@ -3077,7 +3706,7 @@ eg <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/source
   <li>
     <p><a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/AbstractApexNodeBase.html#"><code>AbstractApexNodeBase</code></a>, and the related <code class="language-plaintext highlighter-rouge">visit</code>
 methods on <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ApexParserVisitor.html#"><code>ApexParserVisitor</code></a> and its implementations.
- Use <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ApexNode.html#"><code>ApexNode</code></a> instead, now considers comments too.</p>
+Use <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ApexNode.html#"><code>ApexNode</code></a> instead, now considers comments too.</p>
   </li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/CharStream.html#"><code>CharStream</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/JavaCharStream.html#"><code>JavaCharStream</code></a>,
 <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/SimpleCharStream.html#"><code>SimpleCharStream</code></a>: these are APIs used by our JavaCC
@@ -3089,7 +3718,7 @@ subclasses of <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT
 by just that superclass.</li>
 </ul>
 
-<h6 id="for-removal-8">For removal</h6>
+<p><strong>For removal</strong></p>
 
 <ul>
   <li>pmd-core
@@ -3143,9 +3772,9 @@ anymore come 7.0.0. Test the type of the expression nested within it.</li>
 
 <h4 id="6190">6.19.0</h4>
 
-<h5 id="deprecated-apis-7">Deprecated APIs</h5>
+<p><strong>Deprecated APIs</strong></p>
 
-<h6 id="for-removal-9">For removal</h6>
+<p><strong>For removal</strong></p>
 
 <ul>
   <li>pmd-core
@@ -3188,7 +3817,7 @@ anymore come 7.0.0. Test the type of the expression nested within it.</li>
   </li>
 </ul>
 
-<h6 id="internal-apis-1">Internal APIs</h6>
+<p><strong>Internal APIs</strong></p>
 
 <ul>
   <li>pmd-core
@@ -3203,7 +3832,7 @@ except <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/so
 
 <h4 id="6180">6.18.0</h4>
 
-<h5 id="changes-to-renderer">Changes to Renderer</h5>
+<p><strong>Changes to Renderer</strong></p>
 
 <ul>
   <li>
@@ -3218,9 +3847,9 @@ CLI option “shortnames”.</p>
   </li>
 </ul>
 
-<h5 id="deprecated-apis-8">Deprecated APIs</h5>
+<p><strong>Deprecated APIs</strong></p>
 
-<h6 id="for-removal-10">For removal</h6>
+<p><strong>For removal</strong></p>
 
 <ul>
   <li>The methods <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTImportDeclaration.html#getImportedNameNode()"><code>getImportedNameNode</code></a> and
@@ -3238,7 +3867,7 @@ been deprecated. They were leftovers from a previous deprecation round targeting
 <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/stat/StatisticalRule.html#"><code>StatisticalRule</code></a>.</li>
 </ul>
 
-<h6 id="internal-apis-2">Internal APIs</h6>
+<p><strong>Internal APIs</strong></p>
 
 <p>Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0. You can identify them with the <code class="language-plaintext highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
 
@@ -3264,13 +3893,13 @@ subpackages, except <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SN
 
 <h4 id="6160">6.16.0</h4>
 
-<h5 id="deprecated-apis-9">Deprecated APIs</h5>
+<p><strong>Deprecated APIs</strong></p>
 
 <blockquote>
   <p>Reminder: Please don’t use members marked with the annotation <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/annotation/InternalApi.html#"><code>InternalApi</code></a>, as they will likely be removed, hidden, or otherwise intentionally broken with 7.0.0.</p>
 </blockquote>
 
-<h6 id="in-asts-1">In ASTs</h6>
+<p><strong>In ASTs</strong></p>
 
 <p>As part of the changes we’d like to do to AST classes for 7.0.0, we would like to
 hide some methods and constructors that rule writers should not have access to.
@@ -3292,24 +3921,21 @@ of deprecations.</p>
 
 <h4 id="6150">6.15.0</h4>
 
-<h5 id="deprecated-apis-10">Deprecated APIs</h5>
+<p><strong>Deprecated APIs</strong></p>
 
-<h6 id="for-removal-11">For removal</h6>
+<p><strong>For removal</strong></p>
 
 <ul>
   <li>The <code class="language-plaintext highlighter-rouge">DumpFacades</code> in all languages, that could be used to transform a AST into a textual representation,
-will be removed with PMD 7. The rule designer is a better way to inspect nodes.
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/DumpFacade.html#"><code>net.sourceforge.pmd.lang.apex.ast.DumpFacade</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/DumpFacade.html#"><code>net.sourceforge.pmd.lang.java.ast.DumpFacade</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/DumpFacade.html#"><code>net.sourceforge.pmd.lang.ecmascript.ast.DumpFacade</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/DumpFacade.html#"><code>net.sourceforge.pmd.lang.jsp.ast.DumpFacade</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-plsql/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/plsql/ast/DumpFacade.html#"><code>net.sourceforge.pmd.lang.plsql.ast.DumpFacade</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vf/ast/DumpFacade.html#"><code>net.sourceforge.pmd.lang.vf.ast.DumpFacade</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-vm/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vm/ast/AbstractVmNode.html#dump(String,boolean,Writer)"><code>net.sourceforge.pmd.lang.vm.ast.AbstractVmNode#dump</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/ast/DumpFacade.html#"><code>net.sourceforge.pmd.lang.xml.ast.DumpFacade</code></a></li>
-    </ul>
-  </li>
+will be removed with PMD 7. The rule designer is a better way to inspect nodes.</li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/DumpFacade.html#"><code>net.sourceforge.pmd.lang.apex.ast.DumpFacade</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/DumpFacade.html#"><code>net.sourceforge.pmd.lang.java.ast.DumpFacade</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/DumpFacade.html#"><code>net.sourceforge.pmd.lang.ecmascript.ast.DumpFacade</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/DumpFacade.html#"><code>net.sourceforge.pmd.lang.jsp.ast.DumpFacade</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-plsql/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/plsql/ast/DumpFacade.html#"><code>net.sourceforge.pmd.lang.plsql.ast.DumpFacade</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vf/ast/DumpFacade.html#"><code>net.sourceforge.pmd.lang.vf.ast.DumpFacade</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-vm/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vm/ast/AbstractVmNode.html#dump(String,boolean,Writer)"><code>net.sourceforge.pmd.lang.vm.ast.AbstractVmNode#dump</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/ast/DumpFacade.html#"><code>net.sourceforge.pmd.lang.xml.ast.DumpFacade</code></a></li>
   <li>The method <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getDumpFacade(Writer,String,boolean)"><code>LanguageVersionHandler#getDumpFacade</code></a> will be
 removed as well. It is deprecated, along with all its implementations in the subclasses of <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/LanguageVersionHandler.html#"><code>LanguageVersionHandler</code></a>.</li>
 </ul>
@@ -3320,7 +3946,7 @@ removed as well. It is deprecated, along with all its implementations in the sub
 
 <h4 id="6130">6.13.0</h4>
 
-<h5 id="command-line-interface-1">Command Line Interface</h5>
+<p><strong>Command Line Interface</strong></p>
 
 <p>The start scripts <code class="language-plaintext highlighter-rouge">run.sh</code>, <code class="language-plaintext highlighter-rouge">pmd.bat</code> and <code class="language-plaintext highlighter-rouge">cpd.bat</code> support the new environment variable <code class="language-plaintext highlighter-rouge">PMD_JAVA_OPTS</code>.
 This can be used to set arbitrary JVM options for running PMD, such as memory settings (e.g. <code class="language-plaintext highlighter-rouge">PMD_JAVA_OPTS=-Xmx512m</code>)
@@ -3328,7 +3954,7 @@ or enable preview language features (e.g. <code class="language-plaintext highli
 
 <p>The previously available variables such as <code class="language-plaintext highlighter-rouge">OPTS</code> or <code class="language-plaintext highlighter-rouge">HEAPSIZE</code> are deprecated and will be removed with PMD 7.0.0.</p>
 
-<h5 id="deprecated-api-12">Deprecated API</h5>
+<p><strong>Deprecated API</strong></p>
 
 <ul>
   <li>
@@ -3361,12 +3987,12 @@ because <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/s
 
 <h4 id="6100">6.10.0</h4>
 
-<h5 id="properties-framework">Properties framework</h5>
+<p><strong>Properties framework</strong></p>
 
 <p>The properties framework is about to get a lifting, and for that reason, we need to deprecate a lot of APIs
 to remove them in 7.0.0. The proposed changes to the API are described <a href="https://github.com/pmd/pmd/wiki/Property-framework-7-0-0">on the wiki</a></p>
 
-<h6 id="changes-to-how-you-define-properties">Changes to how you define properties</h6>
+<p><strong>Changes to how you define properties</strong></p>
 
 <ul>
   <li>
@@ -3441,7 +4067,7 @@ are discontinued for lack of a use-case, and have no planned replacement in 7.0.
 
 <p>You’re highly encouraged to migrate to using this new API as soon as possible, to ease your migration to 7.0.0.</p>
 
-<h6 id="architectural-simplifications">Architectural simplifications</h6>
+<p><strong>Architectural simplifications</strong></p>
 
 <ul>
   <li>
@@ -3462,7 +4088,7 @@ accordingly.</p>
   </li>
 </ul>
 
-<h6 id="changes-to-the-propertydescriptor-interface">Changes to the PropertyDescriptor interface</h6>
+<p><strong>Changes to the PropertyDescriptor interface</strong></p>
 
 <ul>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyDescriptor.html#preferredRowCount()"><code>preferredRowCount</code></a> is deprecated with no intended replacement. It was never implemented, and does not belong
@@ -3482,9 +4108,9 @@ new way to document these properties exhaustively will be added with 7.0.0.</li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyDescriptor.html#errorFor(java.lang.Object)"><code>errorFor</code></a> is deprecated as its return type will be changed to <code class="language-plaintext highlighter-rouge">Optional&lt;String&gt;</code> with the shift to Java 8.</li>
 </ul>
 
-<h5 id="deprecated-apis-11">Deprecated APIs</h5>
+<p><strong>Deprecated APIs</strong></p>
 
-<h6 id="for-internalization">For internalization</h6>
+<p><strong>For internalization</strong></p>
 
 <ul>
   <li>
@@ -3512,7 +4138,7 @@ and will be moved into an internal package with 7.0.0. To implement your own met
   </li>
 </ul>
 
-<h6 id="for-removal-12">For removal</h6>
+<p><strong>For removal</strong></p>
 
 <ul>
   <li>
@@ -3525,63 +4151,61 @@ It gets in the way of a grammar change for 7.0.0 and won’t be needed anymore (
   <li>
     <p>Several methods from <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTLocalVariableDeclaration.html#"><code>ASTLocalVariableDeclaration</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#"><code>ASTFieldDeclaration</code></a> have
 also been deprecated:</p>
-
-    <ul>
-      <li>
-        <p><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#"><code>ASTFieldDeclaration</code></a> won’t be a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"><code>TypeNode</code></a> come 7.0.0, so
+  </li>
+  <li>
+    <p><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#"><code>ASTFieldDeclaration</code></a> won’t be a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"><code>TypeNode</code></a> come 7.0.0, so
 <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#getType()"><code>getType</code></a> and
 <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#getTypeDefinition()"><code>getTypeDefinition</code></a> are deprecated.</p>
-      </li>
-      <li>
-        <p>The method <code class="language-plaintext highlighter-rouge">getVariableName</code> on those two nodes will be removed, too.</p>
-      </li>
-    </ul>
-
-    <p>All these are deprecated because those nodes may declare several variables at once, possibly
-with different types (and obviously with different names). They both implement <code class="language-plaintext highlighter-rouge">Iterator&lt;</code><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableDeclaratorId.html#"><code>ASTVariableDeclaratorId</code></a><code class="language-plaintext highlighter-rouge">&gt;</code>
-though, so you should iterate on each declared variable. See <a href="https://github.com/pmd/pmd/issues/910">#910</a>.</p>
   </li>
+  <li>
+    <p>The method <code class="language-plaintext highlighter-rouge">getVariableName</code> on those two nodes will be removed, too.</p>
+  </li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>All these are deprecated because those nodes may declare several variables at once, possibly
+with different types (and obviously with different names). They both implement `Iterator&lt;`&lt;a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableDeclaratorId.html#"&gt;&lt;code&gt;ASTVariableDeclaratorId&lt;/code&gt;&lt;/a&gt;`&gt;`
+though, so you should iterate on each declared variable. See [#910](https://github.com/pmd/pmd/issues/910).
+</code></pre></div></div>
+
+<ul>
   <li>
     <p>Visitor decorators are now deprecated and will be removed in PMD 7.0.0. They were originally a way to write
 composable visitors, used in the metrics framework, but they didn’t prove cost-effective.</p>
-
-    <ul>
-      <li>In <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/package-summary.html#"><code>net.sourceforge.pmd.lang.java.ast</code></a>: <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/JavaParserDecoratedVisitor.html#"><code>JavaParserDecoratedVisitor</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/JavaParserControllessVisitor.html#"><code>JavaParserControllessVisitor</code></a>,
-<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/JavaParserControllessVisitorAdapter.html#"><code>JavaParserControllessVisitorAdapter</code></a>, and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/JavaParserVisitorDecorator.html#"><code>JavaParserVisitorDecorator</code></a> are deprecated with no intended replacement.</li>
-    </ul>
+  </li>
+  <li>
+    <p>In <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/package-summary.html#"><code>net.sourceforge.pmd.lang.java.ast</code></a>: <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/JavaParserDecoratedVisitor.html#"><code>JavaParserDecoratedVisitor</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/JavaParserControllessVisitor.html#"><code>JavaParserControllessVisitor</code></a>,
+<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/JavaParserControllessVisitorAdapter.html#"><code>JavaParserControllessVisitorAdapter</code></a>, and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/JavaParserVisitorDecorator.html#"><code>JavaParserVisitorDecorator</code></a> are deprecated with no intended replacement.</p>
   </li>
   <li>
     <p>The LanguageModules of several languages, that only support CPD execution, have been deprecated. These languages
 are not fully supported by PMD, so having a language module does not make sense. The functionality of CPD is
 not affected by this change. The following classes have been deprecated and will be removed with PMD 7.0.0:</p>
-
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-cpp/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/cpp/CppHandler.html#"><code>CppHandler</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-cpp/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/cpp/CppLanguageModule.html#"><code>CppLanguageModule</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-cpp/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/cpp/CppParser.html#"><code>CppParser</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-cs/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/cs/CsLanguageModule.html#"><code>CsLanguageModule</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-fortran/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/fortran/FortranLanguageModule.html#"><code>FortranLanguageModule</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-groovy/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/groovy/GroovyLanguageModule.html#"><code>GroovyLanguageModule</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-matlab/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/matlab/MatlabHandler.html#"><code>MatlabHandler</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-matlab/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/matlab/MatlabLanguageModule.html#"><code>MatlabLanguageModule</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-matlab/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/matlab/MatlabParser.html#"><code>MatlabParser</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-objectivec/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/objectivec/ObjectiveCHandler.html#"><code>ObjectiveCHandler</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-objectivec/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/objectivec/ObjectiveCLanguageModule.html#"><code>ObjectiveCLanguageModule</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-objectivec/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/objectivec/ObjectiveCParser.html#"><code>ObjectiveCParser</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-php/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/php/PhpLanguageModule.html#"><code>PhpLanguageModule</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-python/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/python/PythonHandler.html#"><code>PythonHandler</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-python/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/python/PythonLanguageModule.html#"><code>PythonLanguageModule</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-python/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/python/PythonParser.html#"><code>PythonParser</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-ruby/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ruby/RubyLanguageModule.html#"><code>RubyLanguageModule</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ScalaLanguageModule.html#"><code>ScalaLanguageModule</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-swift/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/swift/SwiftLanguageModule.html#"><code>SwiftLanguageModule</code></a></li>
-    </ul>
   </li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-cpp/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/cpp/CppHandler.html#"><code>CppHandler</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-cpp/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/cpp/CppLanguageModule.html#"><code>CppLanguageModule</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-cpp/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/cpp/CppParser.html#"><code>CppParser</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-cs/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/cs/CsLanguageModule.html#"><code>CsLanguageModule</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-fortran/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/fortran/FortranLanguageModule.html#"><code>FortranLanguageModule</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-groovy/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/groovy/GroovyLanguageModule.html#"><code>GroovyLanguageModule</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-matlab/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/matlab/MatlabHandler.html#"><code>MatlabHandler</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-matlab/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/matlab/MatlabLanguageModule.html#"><code>MatlabLanguageModule</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-matlab/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/matlab/MatlabParser.html#"><code>MatlabParser</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-objectivec/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/objectivec/ObjectiveCHandler.html#"><code>ObjectiveCHandler</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-objectivec/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/objectivec/ObjectiveCLanguageModule.html#"><code>ObjectiveCLanguageModule</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-objectivec/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/objectivec/ObjectiveCParser.html#"><code>ObjectiveCParser</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-php/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/php/PhpLanguageModule.html#"><code>PhpLanguageModule</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-python/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/python/PythonHandler.html#"><code>PythonHandler</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-python/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/python/PythonLanguageModule.html#"><code>PythonLanguageModule</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-python/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/python/PythonParser.html#"><code>PythonParser</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-ruby/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ruby/RubyLanguageModule.html#"><code>RubyLanguageModule</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ScalaLanguageModule.html#"><code>ScalaLanguageModule</code></a></li>
   <li>
-    <p>Optional AST processing stages like symbol table, type resolution or data-flow analysis will be reified
+    <p><a href="https://docs.pmd-code.org/apidocs/pmd-swift/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/swift/SwiftLanguageModule.html#"><code>SwiftLanguageModule</code></a></p>
+  </li>
+  <li>Optional AST processing stages like symbol table, type resolution or data-flow analysis will be reified
 in 7.0.0 to factorise common logic and make them extensible. Further explanations about this change can be
 found on <a href="https://github.com/pmd/pmd/pull/1426">#1426</a>. Consequently, the following APIs are deprecated for
-removal:</p>
+removal:
     <ul>
       <li>In <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/Rule.html#"><code>Rule</code></a>: <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/Rule.html#isDfa()"><code>isDfa()</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/Rule.html#isTypeResolution()"><code>isTypeResolution()</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/Rule.html#isMultifile()"><code>isMultifile()</code></a> and their
 respective setters.</li>
@@ -3718,194 +4342,6 @@ large projects, with many duplications, it was causing <code class="language-pla
 Please use <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.PMDVersion.VERSION</code> instead.</li>
 </ul>
 
-<h3 id="list-of-currently-deprecated-rules">List of currently deprecated rules</h3>
-
-<p>These rules will be removed with PMD 7.0.0.</p>
-
-<ul>
-  <li>
-    <p>Since 6.0.0: The Java rules <code class="language-plaintext highlighter-rouge">NcssConstructorCount</code> (design), <code class="language-plaintext highlighter-rouge">NcssMethodCount</code> (design),
-and <code class="language-plaintext highlighter-rouge">NcssTypeCount</code> (design) have been deprecated. They will be replaced by the new rule
-<a href="pmd_rules_java_design.html#ncsscount"><code class="language-plaintext highlighter-rouge">NcssCount</code></a>.</p>
-  </li>
-  <li>
-    <p>Since 6.0.0: The Java rule <code class="language-plaintext highlighter-rouge">LooseCoupling</code> in ruleset <code class="language-plaintext highlighter-rouge">java-typeresolution</code> is deprecated. Use the rule with the
-same name from category <code class="language-plaintext highlighter-rouge">bestpractices</code> instead: <a href="pmd_rules_java_bestpractices.html#loosecoupling"><code class="language-plaintext highlighter-rouge">LooseCoupling</code></a>.</p>
-  </li>
-  <li>
-    <p>Since 6.0.0: The Java rule <code class="language-plaintext highlighter-rouge">CloneMethodMustImplementCloneable</code> in ruleset <code class="language-plaintext highlighter-rouge">java-typeresolution</code> is deprecated.
-Use the rule with the same name from category <code class="language-plaintext highlighter-rouge">errorprone</code> instead:
-<a href="pmd_rules_java_errorprone.html#clonemethodmustimplementcloneable"><code class="language-plaintext highlighter-rouge">CloneMethodMustImplementCloneable</code></a>.</p>
-  </li>
-  <li>
-    <p>Since 6.0.0: The Java rule <code class="language-plaintext highlighter-rouge">UnusedImports</code> in ruleset <code class="language-plaintext highlighter-rouge">java-typeresolution</code> is deprecated. Use the rule with
-the same name from category <code class="language-plaintext highlighter-rouge">bestpractices</code> instead: <code class="language-plaintext highlighter-rouge">UnusedImports</code> (bestpractices).</p>
-  </li>
-  <li>
-    <p>Since 6.0.0: The Java rule <code class="language-plaintext highlighter-rouge">SignatureDeclareThrowsException</code> in ruleset <code class="language-plaintext highlighter-rouge">java-typeresolution</code> is deprecated.
-Use the rule with the same name from category <code class="language-plaintext highlighter-rouge">design</code> instead:
-<a href="pmd_rules_java_design.html#signaturedeclarethrowsexception"><code class="language-plaintext highlighter-rouge">SignatureDeclareThrowsException</code></a>.</p>
-  </li>
-  <li>
-    <p>Since 6.0.0: The Java rule <code class="language-plaintext highlighter-rouge">EmptyStaticInitializer</code> in ruleset <code class="language-plaintext highlighter-rouge">java-empty</code> is deprecated.
-Use the rule <a href="pmd_rules_java_errorprone.html#emptyinitializer"><code class="language-plaintext highlighter-rouge">EmptyInitializer</code></a> instead, which covers both static and non-static
-empty initializers.</p>
-  </li>
-  <li>
-    <p>Since 6.0.0: The Java rules <code class="language-plaintext highlighter-rouge">GuardDebugLogging</code> (ruleset <code class="language-plaintext highlighter-rouge">java-logging-jakarta-commons</code>) and
-<code class="language-plaintext highlighter-rouge">GuardLogStatementJavaUtil</code> (ruleset <code class="language-plaintext highlighter-rouge">java-logging-java</code>) have been deprecated. Use the rule
-<a href="pmd_rules_java_bestpractices.html#guardlogstatement"><code class="language-plaintext highlighter-rouge">GuardLogStatement</code></a> instead, which covers all cases regardless of the logging framework.</p>
-  </li>
-  <li>
-    <p>Since 6.2.0: The Java rules <code class="language-plaintext highlighter-rouge">WhileLoopsMustUseBraces</code> (codestyle),
-<code class="language-plaintext highlighter-rouge">ForLoopsMustUseBraces</code> (codestyle), <code class="language-plaintext highlighter-rouge">IfStmtsMustUseBraces</code> (codestyle), and
-<code class="language-plaintext highlighter-rouge">IfElseStmtsMustUseBraces</code> (codestyle) are deprecated. They will be replaced by the new rule
-<a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code class="language-plaintext highlighter-rouge">ControlStatementBraces</code></a>.</p>
-  </li>
-  <li>
-    <p>Since 6.3.0: The Java rule <code class="language-plaintext highlighter-rouge">AbstractNaming</code> (codestyle) is deprecated
-in favour of <a href="pmd_rules_java_codestyle.html#classnamingconventions"><code class="language-plaintext highlighter-rouge">ClassNamingConventions</code></a>.</p>
-  </li>
-  <li>
-    <p>Since 6.7.0: The Java rules <code class="language-plaintext highlighter-rouge">VariableNamingConventions</code> (codestyle),
-<code class="language-plaintext highlighter-rouge">MIsLeadingVariableName</code> (codestyle), <code class="language-plaintext highlighter-rouge">SuspiciousConstantFieldName</code> (codestyle), and
-<code class="language-plaintext highlighter-rouge">AvoidPrefixingMethodParameters</code> (codestyle) are now deprecated. They are replaced by the more general
-<a href="pmd_rules_java_codestyle.html#fieldnamingconventions"><code class="language-plaintext highlighter-rouge">FieldNamingConventions</code></a>, <a href="pmd_rules_java_codestyle.html#formalparameternamingconventions"><code class="language-plaintext highlighter-rouge">FormalParameterNamingConventions</code></a>, and
-<a href="pmd_rules_java_codestyle.html#localvariablenamingconventions"><code class="language-plaintext highlighter-rouge">LocalVariableNamingConventions</code></a>.</p>
-  </li>
-  <li>
-    <p>Since 6.11.0: The Java rule <code class="language-plaintext highlighter-rouge">UnsynchronizedStaticDateFormatter</code> (multithreading) has been deprecated.
-The rule is replaced by the more general <a href="pmd_rules_java_multithreading.html#unsynchronizedstaticformatter"><code class="language-plaintext highlighter-rouge">UnsynchronizedStaticFormatter</code></a>.</p>
-  </li>
-  <li>
-    <p>Since 6.15.0: The Apex rule <code class="language-plaintext highlighter-rouge">VariableNamingConventions</code> (codestyle) has been deprecated. The rule is
-replaced by the more general rules <a href="pmd_rules_apex_codestyle.html#fieldnamingconventions"><code class="language-plaintext highlighter-rouge">FieldNamingConventions</code></a>,
-<a href="pmd_rules_apex_codestyle.html#formalparameternamingconventions"><code class="language-plaintext highlighter-rouge">FormalParameterNamingConventions</code></a>, <a href="pmd_rules_apex_codestyle.html#localvariablenamingconventions"><code class="language-plaintext highlighter-rouge">LocalVariableNamingConventions</code></a>,
-and <a href="pmd_rules_apex_codestyle.html#propertynamingconventions"><code class="language-plaintext highlighter-rouge">PropertyNamingConventions</code></a>.</p>
-  </li>
-  <li>
-    <p>Since 6.15.0: The Java rule <code class="language-plaintext highlighter-rouge">LoggerIsNotStaticFinal</code> (errorprone) has been deprecated.
-The rule is replaced by <a href="pmd_rules_java_errorprone.html#properlogger"><code class="language-plaintext highlighter-rouge">ProperLogger</code></a>.</p>
-  </li>
-  <li>
-    <p>Since 6.16.0: The Java rule <code class="language-plaintext highlighter-rouge">AvoidFinalLocalVariable</code> (codestyle) has been deprecated.
-The rule is controversial and also contradicts other existing rules such as
-<a href="pmd_rules_java_codestyle.html#localvariablecouldbefinal"><code class="language-plaintext highlighter-rouge">LocalVariableCouldBeFinal</code></a>. If the goal is to avoid defining
-constants in a scope smaller than the class, then the rule <a href="pmd_rules_java_errorprone.html#avoidduplicateliterals"><code class="language-plaintext highlighter-rouge">AvoidDuplicateLiterals</code></a>
-should be used instead.</p>
-  </li>
-  <li>
-    <p>Since 6.19.0: The Java rule <code class="language-plaintext highlighter-rouge">InvalidSlf4jMessageFormat</code> (errorprone) has been renamed to
-<a href="pmd_rules_java_errorprone.html#invalidlogmessageformat"><code class="language-plaintext highlighter-rouge">InvalidLogMessageFormat</code></a>.</p>
-  </li>
-  <li>
-    <p>Since 6.24.0: The two Java rules <code class="language-plaintext highlighter-rouge">PositionLiteralsFirstInComparisons</code> (bestpractices)
-and <code class="language-plaintext highlighter-rouge">PositionLiteralsFirstInCaseInsensitiveComparisons</code> (bestpractices)
-have been deprecated in favor of the new rule <a href="pmd_rules_java_bestpractices.html#literalsfirstincomparisons"><code class="language-plaintext highlighter-rouge">LiteralsFirstInComparisons</code></a>.</p>
-  </li>
-  <li>
-    <p>Since 6.27.0: The Java rule <code class="language-plaintext highlighter-rouge">DataflowAnomalyAnalysis</code> (errorprone)
-is deprecated in favour of <a href="pmd_rules_java_bestpractices.html#unusedassignment"><code class="language-plaintext highlighter-rouge">UnusedAssignment</code></a>,
-which was introduced in PMD 6.26.0.</p>
-  </li>
-  <li>
-    <p>Since 6.29.0: The Apex rules <a href="pmd_rules_apex_performance.html#avoiddmlstatementsinloops"><code class="language-plaintext highlighter-rouge">AvoidDmlStatementsInLoops</code></a>,
-<a href="pmd_rules_apex_performance.html#avoidsoqlinloops"><code class="language-plaintext highlighter-rouge">AvoidSoqlInLoops</code></a>, and <a href="pmd_rules_apex_performance.html#avoidsoslinloops"><code class="language-plaintext highlighter-rouge">AvoidSoslInLoops</code></a> are deprecated
-in favor of the new rule <a href="pmd_rules_apex_performance.html#operationwithlimitsinloop"><code class="language-plaintext highlighter-rouge">OperationWithLimitsInLoop</code></a>.</p>
-  </li>
-  <li>
-    <p>Since 6.29.0: The Java rule <code class="language-plaintext highlighter-rouge">DoNotCallSystemExit</code> (errorprone) has been renamed to
-<a href="pmd_rules_java_errorprone.html#donotterminatevm"><code class="language-plaintext highlighter-rouge">DoNotTerminateVM</code></a>.</p>
-  </li>
-  <li>
-    <p>Since 6.31:0: The Java rule <code class="language-plaintext highlighter-rouge">AvoidUsingShortType</code> (performance) is deprecated
-for removal without replacement.</p>
-  </li>
-  <li>
-    <p>Since 6.31.0: The Java rule <code class="language-plaintext highlighter-rouge">SimplifyStartsWith</code> (performance) is deprecated
-for removal without replacement.</p>
-  </li>
-  <li>
-    <p>Since 6.34.0: The Java rules <code class="language-plaintext highlighter-rouge">UnusedImports</code> (bestpractices), <code class="language-plaintext highlighter-rouge">DuplicateImports</code> (codestyle),
-<code class="language-plaintext highlighter-rouge">DontImportJavaLang</code> (codestyle), and <code class="language-plaintext highlighter-rouge">ImportFromSamePackage</code> (errorprone) are
-deprecated. These rules are replaced by <a href="pmd_rules_java_codestyle.html#unnecessaryimport"><code class="language-plaintext highlighter-rouge">UnnecessaryImport</code></a>.</p>
-  </li>
-  <li>
-    <p>Since 6.35.0: The Java rule <code class="language-plaintext highlighter-rouge">DefaultPackage</code> (codestyle) has been deprecated in favor of
-<a href="pmd_rules_java_codestyle.html#commentdefaultaccessmodifier"><code class="language-plaintext highlighter-rouge">CommentDefaultAccessModifier</code></a>.</p>
-  </li>
-  <li>
-    <p>Since 6.35.0: The Java rule <code class="language-plaintext highlighter-rouge">CloneThrowsCloneNotSupportedException</code> (errorprone) has been
-deprecated without replacement.</p>
-  </li>
-  <li>
-    <p>Since 6.36.0: The Java rule <code class="language-plaintext highlighter-rouge">BadComparison</code> (errorprone) has been renamed to
-<a href="pmd_rules_java_errorprone.html#comparisonwithnan"><code class="language-plaintext highlighter-rouge">ComparisonWithNaN</code></a>.</p>
-  </li>
-  <li>Since 6.37.0: The following Java rules are deprecated and removed from the quickstart ruleset,
-as the new rule <a href="pmd_rules_java_bestpractices.html#simplifiabletestassertion"><code class="language-plaintext highlighter-rouge">SimplifiableTestAssertion</code></a> merges
-their functionality:
-    <ul>
-      <li><code class="language-plaintext highlighter-rouge">UseAssertEqualsInsteadOfAssertTrue</code> (bestpractices)</li>
-      <li><code class="language-plaintext highlighter-rouge">UseAssertNullInsteadOfAssertTrue</code> (bestpractices)</li>
-      <li><code class="language-plaintext highlighter-rouge">UseAssertSameInsteadOfAssertTrue</code> (bestpractices)</li>
-      <li><code class="language-plaintext highlighter-rouge">UseAssertTrueInsteadOfAssertEquals</code> (bestpractices)</li>
-      <li><code class="language-plaintext highlighter-rouge">SimplifyBooleanAssertion</code> (design)</li>
-    </ul>
-  </li>
-  <li>
-    <p>Since 6.37.0: The Java rule <code class="language-plaintext highlighter-rouge">ReturnEmptyArrayRatherThanNull</code> (errorprone) is deprecated and removed from
-the quickstart ruleset, as the new rule <a href="pmd_rules_java_errorprone.html#returnemptycollectionratherthannull"><code class="language-plaintext highlighter-rouge">ReturnEmptyCollectionRatherThanNull</code></a>
-supersedes it.</p>
-  </li>
-  <li>Since 6.37.0: The following Java rules are deprecated and removed from the quickstart ruleset,
-as the new rule <a href="pmd_rules_java_bestpractices.html#primitivewrapperinstantiation"><code class="language-plaintext highlighter-rouge">PrimitiveWrapperInstantiation</code></a> merges
-their functionality:
-    <ul>
-      <li><code class="language-plaintext highlighter-rouge">BooleanInstantiation</code> (performance)</li>
-      <li><code class="language-plaintext highlighter-rouge">ByteInstantiation</code> (performance)</li>
-      <li><code class="language-plaintext highlighter-rouge">IntegerInstantiation</code> (performance)</li>
-      <li><code class="language-plaintext highlighter-rouge">LongInstantiation</code> (performance)</li>
-      <li><code class="language-plaintext highlighter-rouge">ShortInstantiation</code> (performance)</li>
-    </ul>
-  </li>
-  <li>
-    <p>Since 6.37.0: The Java rule <code class="language-plaintext highlighter-rouge">UnnecessaryWrapperObjectCreation</code> (performance) is deprecated
-with no planned replacement before PMD 7. In its current state, the rule is not useful
-as it finds only contrived cases of creating a primitive wrapper and unboxing it explicitly
-in the same expression. In PMD 7 this and more cases will be covered by a
-new rule <a href="pmd_rules_java_codestyle.html#unnecessaryboxing"><code class="language-plaintext highlighter-rouge">UnnecessaryBoxing</code></a>.</p>
-  </li>
-  <li>
-    <p>Since 6.37.0: The Java rule <code class="language-plaintext highlighter-rouge">MissingBreakInSwitch</code> (errorprone) has been renamed to
-<a href="pmd_rules_java_errorprone.html#implicitswitchfallthrough"><code class="language-plaintext highlighter-rouge">ImplicitSwitchFallThrough</code></a>.</p>
-  </li>
-  <li>Since 6.46.0: The following Java rules are deprecated and removed from the quickstart ruleset, as the new rule
-<a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a> merges their functionality:
-    <ul>
-      <li><a href="pmd_rules_java_errorprone.html#emptyfinallyblock"><code class="language-plaintext highlighter-rouge">EmptyFinallyBlock</code></a></li>
-      <li><a href="pmd_rules_java_errorprone.html#emptyifstmt"><code class="language-plaintext highlighter-rouge">EmptyIfStmt</code></a></li>
-      <li><a href="pmd_rules_java_errorprone.html#emptyinitializer"><code class="language-plaintext highlighter-rouge">EmptyInitializer</code></a></li>
-      <li><a href="pmd_rules_java_errorprone.html#emptystatementblock"><code class="language-plaintext highlighter-rouge">EmptyStatementBlock</code></a></li>
-      <li><a href="pmd_rules_java_errorprone.html#emptyswitchstatements"><code class="language-plaintext highlighter-rouge">EmptySwitchStatements</code></a></li>
-      <li><a href="pmd_rules_java_errorprone.html#emptysynchronizedblock"><code class="language-plaintext highlighter-rouge">EmptySynchronizedBlock</code></a></li>
-      <li><a href="pmd_rules_java_errorprone.html#emptytryblock"><code class="language-plaintext highlighter-rouge">EmptyTryBlock</code></a></li>
-      <li><a href="pmd_rules_java_errorprone.html#emptywhilestmt"><code class="language-plaintext highlighter-rouge">EmptyWhileStmt</code></a></li>
-    </ul>
-  </li>
-  <li>
-    <p>Since 6.52.0: The Java rule <a href="pmd_rules_java_errorprone.html#beanmembersshouldserialize"><code class="language-plaintext highlighter-rouge">BeanMembersShouldSerialize</code></a> has been renamed to
-<a href="pmd_rules_java_errorprone.html#nonserializableclass"><code class="language-plaintext highlighter-rouge">NonSerializableClass</code></a>.</p>
-  </li>
-  <li>
-    <p>Since 6.53.0: The Java rules <a href="pmd_rules_java_design.html#excessiveclasslength"><code class="language-plaintext highlighter-rouge">ExcessiveClassLength</code></a> and
-<a href="pmd_rules_java_design.html#excessivemethodlength"><code class="language-plaintext highlighter-rouge">ExcessiveMethodLength</code></a> have been deprecated. The rule
-<a href="pmd_rules_java_design.html#ncsscount"><code class="language-plaintext highlighter-rouge">NcssCount</code></a> can be used instead.</p>
-  </li>
-  <li>Since 6.53.0: The Java rule <a href="pmd_rules_java_errorprone.html#emptystatementnotinloop"><code class="language-plaintext highlighter-rouge">EmptyStatementNotInLoop</code></a> is deprecated.
-Use the rule <a href="pmd_rules_java_codestyle.html#unnecessarysemicolon"><code class="language-plaintext highlighter-rouge">UnnecessarySemicolon</code></a> instead.</li>
-</ul>
-
 
     <div class="tags">
         
@@ -3923,7 +4359,7 @@ Use the rule <a href="pmd_rules_java_codestyle.html#unnecessarysemicolon"><code 
         github and create a PR:
         <a
             target="_blank"
-            href="https://github.com/pmd/pmd/blob/master/docs/pages/next_major_development.md"
+            href="https://github.com/pmd/pmd/blob/master/docs/pages/release_notes_pmd7.md"
             role="button"
             ><i class="fa fa-github fa-lg"></i> Edit on GitHub</a
         >
@@ -3934,7 +4370,7 @@ Use the rule <a href="pmd_rules_java_codestyle.html#unnecessarysemicolon"><code 
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Mar 19, 2023 <br />
+             Site last generated: Mar 23, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

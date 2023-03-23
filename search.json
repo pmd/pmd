@@ -22,22 +22,6 @@
 
 
 {
-"title": "PMD Release Notes",
-"tags": "",
-"keywords": "changelog, release notes",
-"url": "pmd_release_notes7.html",
-"summary": ""
-}
-
-
-
-,
-
-
-
-
-
-{
 "title": "Adding PMD support for a new ANTLR grammar based language",
 "tags": "devdocsextending",
 "keywords": "",
@@ -4985,22 +4969,6 @@
 
 
 
-{
-"title": "PMD 7.0.0 development",
-"tags": "",
-"keywords": "changelog, release notes, deprecation, api changes",
-"url": "pmd_next_major_development.html",
-"summary": ""
-}
-
-
-
-,
-
-
-
-
-
 
 
 {
@@ -5458,6 +5426,22 @@
 "keywords": "",
 "url": "pmd_release_notes_old.html",
 "summary": ""
+}
+
+
+
+,
+
+
+
+
+
+{
+"title": "Detailed Release Notes for PMD 7",
+"tags": "",
+"keywords": "changelog, release notes",
+"url": "pmd_release_notes_pmd7.html",
+"summary": "These are the detailed release notes for PMD 7."
 }
 
 
