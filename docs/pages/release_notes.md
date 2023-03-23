@@ -21,10 +21,10 @@ page with the full [Detailed Release Notes for PMD 7.0.0]({{ baseurl }}/pmd_rele
 
 **Release Candidates**
 
-PMD 7.0.0 is finally almost ready. In order to ease the upgrade from PMD 6 to 7, we are going to ship a couple of
-release candidates. These are official pre-release versions available on GitHub and Maven Central and can be used
-as usual (e.g. as a dependency). Despite the name \"release candidate\", these releases are intended to be fully
-functional. So, don't be afraid to try out the new PMD 7.
+PMD 7.0.0 is finally almost ready. In order to gather feedback, we are going to ship a couple of release candidates.
+These are officially available on GitHub and Maven Central and can be used as usual (e.g. as a dependency).
+We encourage you to try out the new features, but keep in mind that we may introduce API breaking changes between
+the release candidates. It should be stable enough if you don't use custom rules.
 
 We have still some tasks planned for the next release candidates.
 You can see the progress in [PMD 7 Tracking Issue #3898](https://github.com/pmd/pmd/issues/3898).
