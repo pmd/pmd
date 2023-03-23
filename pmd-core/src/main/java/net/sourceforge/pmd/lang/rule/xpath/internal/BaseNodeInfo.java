@@ -69,6 +69,11 @@ abstract class BaseNodeInfo extends AbstractNodeWrapper implements SiblingCounti
     }
 
     @Override
+    public final boolean hasFingerprint() {
+        return true;
+    }
+
+    @Override
     public final NamePool getNamePool() {
         return namePool;
     }

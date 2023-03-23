@@ -9,6 +9,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTImplementsList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
@@ -43,7 +44,7 @@ public class OverrideBothEqualsAndHashcodeRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTImplementsList node, Object data) {
-        implementsComparable = node.children().filter(child -> TypeTestUtil.isA(Comparable.class, child)).nonEmpty();
+        implementsComparable = node.children().filter(child -> TypeTestUtil.isA(Comparable.class, (TypeNode) child)).nonEmpty();
         return super.visit(node, data);
     }
 
