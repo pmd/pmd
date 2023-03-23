@@ -4,12 +4,14 @@
 
 package net.sourceforge.pmd.lang.rule.xpath;
 
-import java.lang.reflect.InvocationTargetException;
+import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -25,18 +27,23 @@ import net.sourceforge.pmd.lang.ast.Node;
  * @author daniels
  */
 public class Attribute {
-    private static final Object[] EMPTY_OBJ_ARRAY = new Object[0];
+    private static final Logger LOG = LoggerFactory.getLogger(Attribute.class);
 
     private final Node parent;
     private final String name;
-    private Method method;
-    private List<?> value;
+
+    private final MethodHandle handle;
+    private final Method method;
+    private boolean invoked;
+
+    private Object value;
     private String stringValue;
 
     /** Creates a new attribute belonging to the given node using its accessor. */
-    public Attribute(Node parent, String name, Method m) {
+    public Attribute(Node parent, String name, MethodHandle handle, Method m) {
         this.parent = parent;
         this.name = name;
+        this.handle = handle;
         this.method = m;
     }
 
@@ -44,8 +51,11 @@ public class Attribute {
     public Attribute(Node parent, String name, String value) {
         this.parent = parent;
         this.name = name;
-        this.value = Collections.singletonList(value);
+        this.value = value;
+        this.handle = null;
+        this.method = null;
         this.stringValue = value;
+        this.invoked = true;
     }
 
 
@@ -55,10 +65,6 @@ public class Attribute {
      */
     public Type getType() {
         return method == null ? String.class : method.getGenericReturnType();
-    }
-
-    public Class<?> getErasedType() {
-        return method == null ? String.class : method.getReturnType();
     }
 
     public String getName() {
@@ -98,18 +104,21 @@ public class Attribute {
     }
 
     public Object getValue() {
-        if (value != null) {
-            return value.get(0);
+        if (this.invoked) {
+            return this.value;
         }
 
+        Object value;
         // this lazy loading reduces calls to Method.invoke() by about 90%
         try {
-            value = Collections.singletonList(method.invoke(parent, EMPTY_OBJ_ARRAY));
-            return value.get(0);
-        } catch (IllegalAccessException | InvocationTargetException iae) {
-            iae.printStackTrace();
+            value = handle.invokeExact(parent);
+        } catch (Throwable iae) { // NOPMD
+            LOG.debug("Exception while fetching attribute value", iae);
+            value = null;
         }
-        return null;
+        this.value = value;
+        this.invoked = true;
+        return value;
     }
 
     public String getStringValue() {

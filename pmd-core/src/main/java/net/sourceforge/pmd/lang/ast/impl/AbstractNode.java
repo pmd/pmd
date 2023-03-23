@@ -8,6 +8,8 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.DataKey;
 
@@ -183,6 +185,15 @@ public abstract class AbstractNode<B extends AbstractNode<B, N>,
     @Override
     public String toString() {
         return getXPathNodeName();
+    }
+
+    @Override
+    public final NodeStream<N> children() {
+        // Since this is used as a core part of tree traversal, the implementation
+        // here is optimized. Importantly, this method is final and the
+        // implementation returns always an instance of the same type, so
+        // that the allocation can be eliminated, and the iterator call devirtualized.
+        return StreamImpl.childrenArray(this, children);
     }
 
     @Override

@@ -402,7 +402,7 @@ class ClassTypeImpl implements JClassType {
     @Override
     public int hashCode() {
         if (hash == 0) { // hash collision is harmless
-            hash = Objects.hash(typeArgs, symbol);
+            hash = typeArgs.hashCode() * 31 + symbol.hashCode();
         }
         return hash;
     }
