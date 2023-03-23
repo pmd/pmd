@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.renderers;
 
-import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.Writer;
 
 import net.sourceforge.pmd.PMDConfiguration;
@@ -21,7 +21,7 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
     protected String description;
 
     protected boolean showSuppressedViolations = true;
-    protected Writer writer;
+    protected PrintWriter writer;
 
     public AbstractRenderer(String name, String description) {
         this.name = name;
@@ -81,7 +81,7 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
 
     @Override
     public void setWriter(Writer writer) {
-        this.writer = writer;
+        this.writer = new PrintWriter(writer);
     }
 
     @Override
@@ -98,8 +98,6 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
 
         try {
             this.writer.flush();
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
         } finally {
             IOUtil.closeQuietly(writer);
         }

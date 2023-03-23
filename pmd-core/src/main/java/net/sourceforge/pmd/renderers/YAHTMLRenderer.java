@@ -16,7 +16,6 @@ import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -101,8 +100,8 @@ public class YAHTMLRenderer extends AbstractAccumulatingRenderer {
         renderIndex(outputDir);
         renderClasses(outputDir);
 
-        writer.write("<h3 align=\"center\">The HTML files are located "
-                + (outputDir == null ? "above the project directory" : "in '" + outputDir + '\'') + ".</h3>" + PMD.EOL);
+        writer.println("<h3 align=\"center\">The HTML files are located "
+                + (outputDir == null ? "above the project directory" : "in '" + outputDir + '\'') + ".</h3>");
     }
 
     private void renderIndex(String outputDir) throws IOException {
@@ -196,14 +195,12 @@ public class YAHTMLRenderer extends AbstractAccumulatingRenderer {
     }
 
     private String renderViolationRow(String name, String value) {
-        StringBuilder row = new StringBuilder(40 + name.length() + value.length());
-        row.append("<tr><td><b>")
-            .append(name)
-            .append("</b></td>")
-            .append("<td>")
-            .append(value)
-            .append("</td></tr>");
-        return row.toString();
+        return "<tr><td><b>"
+            + name
+            + "</b></td>"
+            + "<td>"
+            + value
+            + "</td></tr>";
     }
 
     private static class ReportNode {

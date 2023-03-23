@@ -51,7 +51,8 @@ public class DeadLinksChecker {
     private static final boolean CHECK_EXTERNAL_LINKS = Boolean.parseBoolean(System.getProperty(CHECK_EXTERNAL_LINKS_PROPERTY));
 
     // Markdown-Link: something in []'s followed by something in ()'s
-    private static final Pattern LOCAL_LINK_PATTERN = Pattern.compile("(!)?\\[.*?]\\((.*?)\\)");
+    // ignoring an optional prefix "{{ baseurl }}"
+    private static final Pattern LOCAL_LINK_PATTERN = Pattern.compile("(!)?\\[.*?]\\((?:\\{\\{\\s*baseurl\\s*\\}\\})?(.*?)\\)");
 
     // Markdown permalink-header and captions
     private static final Pattern MD_HEADER_PERMALINK = Pattern.compile("permalink:\\s*(.*)");
