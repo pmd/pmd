@@ -15,7 +15,7 @@ keywords: changelog, release notes
 We're excited to bring you the next major version of PMD!
 
 Since this is a big release, we provide here only a concise version of the release notes. We prepared a separate
-page with the full [Detailed Release Notes for PMD 7.0.0]({{ baseurl }}/pmd_release_notes_pmd7.html).
+page with the full [Detailed Release Notes for PMD 7.0.0]({{ baseurl }}pmd_release_notes_pmd7.html).
 
 {% include note.html content="
 
