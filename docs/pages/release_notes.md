@@ -385,4 +385,10 @@ Language specific fixes:
 * [#4412](https://github.com/pmd/pmd/pull/4412): \[doc] Added new error msg to ConstantsInInterface - [David Ljunggren](https://github.com/dague1) (@dague1)
 * [#4428](https://github.com/pmd/pmd/pull/4428): \[apex] ApexBadCrypto bug fix for #4427 - inline detection of hard coded values - [Steven Stearns](https://github.com/sfdcsteve) (@sfdcsteve)
 
+### 📈 Stats
+* 4416 commits
+* 464 closed tickets & PRs
+* Days since last release: 28
+
 {% endtocmaker %}
+
