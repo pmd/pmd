@@ -17,24 +17,20 @@ We're excited to bring you the next major version of PMD!
 Since this is a big release, we provide here only a concise version of the release notes. We prepared a separate
 page with the full [Detailed Release Notes for PMD 7.0.0]({{ baseurl }}pmd_release_notes_pmd7.html).
 
-{% include note.html content="
-
-**Release Candidates**
-
-PMD 7.0.0 is finally almost ready. In order to gather feedback, we are going to ship a couple of release candidates.
+<div style="border: 1px solid; border-radius: .25rem; padding: .75rem 1.25rem;" role="alert">
+<strong>ℹ️ Release Candidates</strong>
+<p>PMD 7.0.0 is finally almost ready. In order to gather feedback, we are going to ship a couple of release candidates.
 These are officially available on GitHub and Maven Central and can be used as usual (e.g. as a dependency).
 We encourage you to try out the new features, but keep in mind that we may introduce API breaking changes between
-the release candidates. It should be stable enough if you don't use custom rules.
+the release candidates. It should be stable enough if you don't use custom rules.</p>
 
-We have still some tasks planned for the next release candidates.
-You can see the progress in [PMD 7 Tracking Issue #3898](https://github.com/pmd/pmd/issues/3898).
+<p>We have still some tasks planned for the next release candidates.
+You can see the progress in <a href="https://github.com/pmd/pmd/issues/3898">PMD 7 Tracking Issue #3898</a>.</p>
 
-If you find any problem or difficulty while updating from PMD 6, please provide feedback via our
-[issue tracker](https://github.com/pmd/pmd/issues/new/choose). That way we can improve the experience
-for all.
-
-" %}
-
+<p>If you find any problem or difficulty while updating from PMD 6, please provide feedback via our
+<a href="https://github.com/pmd/pmd/issues/new/choose">issue tracker</a>. That way we can improve the experience
+for all.</p>
+</div>
 
 {% tocmaker is_release_notes_processor %}
 
