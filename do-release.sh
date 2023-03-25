@@ -165,12 +165,26 @@ git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
     fi
 )
 
-./mvnw -B release:clean release:prepare \
-    -Dtag="pmd_releases/${RELEASE_VERSION}" \
-    -DreleaseVersion="${RELEASE_VERSION}" \
-    -DdevelopmentVersion="${DEVELOPMENT_VERSION}" \
-    -Pgenerate-rule-docs
-
+# for release candidates, allow snapshot dependencies
+if [[ "${RELEASE_VERSION}" == *-rc* ]]; then
+  ./mvnw versions:set -DnewVersion="${RELEASE_VERSION}" -DgenerateBackupPoms=false
+  git commit -S -a -m "[release] prepare release pmd_releases/${RELEASE_VERSION}"
+  git tag -a -s -m "[release] tag pmd_releases/${RELEASE_VERSION}" "pmd_releases/${RELEASE_VERSION}"
+  # test build
+  ./mvnw clean verify -Denforcer.skip=true
+  ./mvnw versions:set -DnewVersion="${DEVELOPMENT_VERSION}" -DgenerateBackupPoms=false
+  git commit -S -a -m "[release] prepare for next development iteration"
+  # push
+  git push origin
+  git push origin tag "pmd_releases/${RELEASE_VERSION}"
+else
+  ./mvnw -B release:clean release:prepare \
+      -Dtag="pmd_releases/${RELEASE_VERSION}" \
+      -DreleaseVersion="${RELEASE_VERSION}" \
+      -DdevelopmentVersion="${DEVELOPMENT_VERSION}" \
+      -DscmCommentPrefix="[release] " \
+      -Pgenerate-rule-docs
+fi
 
 echo
 echo "Tag has been pushed.... now check github actions: <https://github.com/pmd/pmd/actions>"
