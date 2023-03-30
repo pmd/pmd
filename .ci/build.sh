@@ -60,6 +60,11 @@ function build() {
         PMD_MAVEN_EXTRA_OPTS+=(-Denforcer.skip=true)
     fi
 
+    # skip tests when doing a release build
+    if pmd_ci_maven_isReleaseBuild; then
+        PMD_MAVEN_EXTRA_OPTS+=(-DskipTests=true)
+    fi
+
     if [ "$(pmd_ci_utils_get_os)" != "linux" ]; then
         pmd_ci_log_group_start "Build with mvnw"
             ./mvnw clean verify --show-version --errors --batch-mode --no-transfer-progress "${PMD_MAVEN_EXTRA_OPTS[@]}"
