@@ -55,6 +55,11 @@ function build() {
     # stop early for invalid maven version and branch/tag combination
     pmd_ci_maven_verify_version || exit 0
 
+    # allow snapshot dependencies in release candidate builds:
+    if [[ "${PMD_CI_MAVEN_PROJECT_VERSION}" == *-rc* ]]; then
+        PMD_MAVEN_EXTRA_OPTS+=(-Denforcer.skip=true)
+    fi
+
     if [ "$(pmd_ci_utils_get_os)" != "linux" ]; then
         pmd_ci_log_group_start "Build with mvnw"
             ./mvnw clean verify --show-version --errors --batch-mode --no-transfer-progress "${PMD_MAVEN_EXTRA_OPTS[@]}"
