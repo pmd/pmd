@@ -5,7 +5,7 @@ keywords: changelog, release notes
 ---
 
 {% if is_release_notes_processor %}
-{% capture baseurl %}https://pmd.github.io/pmd-{{ site.pmd.version }}/{% endcapture %}
+{% capture baseurl %}https://docs.pmd-code.org/pmd-doc-{{ site.pmd.version }}/{% endcapture %}
 {% else %}
 {% assign baseurl = "" %}
 {% endif %}

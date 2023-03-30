@@ -108,7 +108,7 @@
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <pmd.website.baseurl>https://pmd.github.io/pmd</pmd.website.baseurl>
+        <pmd.website.baseurl>https://docs.pmd-code.org/snapshot</pmd.website.baseurl>
 
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding} ${extraArgLine}</argLine>
         <extraArgLine /> <!-- empty by default, profiles set it as needed -->
@@ -1031,7 +1031,7 @@
         <profile>
             <id>pmd-release</id>
             <properties>
-                <pmd.website.baseurl>https://pmd.github.io/pmd-${project.version}</pmd.website.baseurl>
+                <pmd.website.baseurl>https://docs.pmd-code.org/pmd-doc-${project.version}</pmd.website.baseurl>
             </properties>
         </profile>
         <profile>
