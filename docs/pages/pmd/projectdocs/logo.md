@@ -25,3 +25,11 @@ The following PMD Logos and Icons are licensed under [CC BY 4.0](https://creativ
 *   [Logo (600px, white, suqare shape)](images/logo/pmd-logo-white-600px-squared.png)
 
 *   [Favicon (16x16)](images/logo/favicon.ico)
+
+This new greenish logo was introduced with PMD 7.
+
+Before that, PMD used the following logo with the tagline "Don't shoot the messenger".
+These old logos are provided here only as reference for historical reasons and shouldn't be used anymore.
+
+*   [Old logo - pmd-old.svg](images/logo/pmd-old.svg)
+*   [Old logo (600x440px, white)](images/logo/pmd-old-logo-white-600x440px.png)
