@@ -120,15 +120,7 @@
         <dependency>
             <groupId>com.google.summit</groupId>
             <artifactId>summit-ast</artifactId>
-            <version>2.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.nawforce</groupId>
-            <artifactId>apex-parser</artifactId>
-            <!-- note: this is usually a transitive dep of com.google.summit:summit-ast
-                 once 2.0.0+ is released, we don't need to overwrite a newer version
-            -->
-            <version>2.17.0</version>
+            <version>2.1.0</version>
         </dependency>
 
         <dependency>
