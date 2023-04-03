@@ -1612,6 +1612,20 @@ for all.</p>
 <p>This section lists the most important changes from the last release candidate.
 The remaining section describe the complete release notes for 7.0.0.</p>
 
+<p>Fixed Issues:</p>
+<ul>
+  <li>java-codestyle
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4273">#4273</a>: [java] CommentDefaultAccessModifier ignoredAnnotations should include “org.junit.jupiter.api.extension.RegisterExtension” by default</li>
+    </ul>
+  </li>
+  <li>java-errorprone
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4449">#4449</a>: [java] AvoidAccessibilityAlteration: Possible false positive in AvoidAccessibilityAlteration rule when using Lambda expression</li>
+    </ul>
+  </li>
+</ul>
+
 <h3 id="-major-features-and-enhancements">🚀 Major Features and Enhancements</h3>
 
 <h4 id="new-official-logo">New official logo</h4>
@@ -1957,6 +1971,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/issues/3221">#3221</a>: [java] PrematureDeclaration false positive for unused variables</li>
       <li><a href="https://github.com/pmd/pmd/issues/3238">#3238</a>: [java] Improve ExprContext, fix FNs of UnnecessaryCast</li>
       <li><a href="https://github.com/pmd/pmd/pull/3500">#3500</a>:   [java] UnnecessaryBoxing - check for Integer.valueOf(String) calls</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4273">#4273</a>: [java] CommentDefaultAccessModifier ignoredAnnotations should include “org.junit.jupiter.api.extension.RegisterExtension” by default</li>
       <li><a href="https://github.com/pmd/pmd/pull/4357">#4357</a>:   [java] Fix IllegalStateException in UseDiamondOperator rule</li>
     </ul>
   </li>
@@ -2001,6 +2016,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/issues/3351">#3351</a>: [java] ConstructorCallsOverridableMethod ignores abstract methods</li>
       <li><a href="https://github.com/pmd/pmd/issues/3400">#3400</a>: [java] AvoidUsingOctalValues FN with underscores</li>
       <li><a href="https://github.com/pmd/pmd/pull/4356">#4356</a>:   [java] Fix NPE in CloseResourceRule</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4449">#4449</a>: [java] AvoidAccessibilityAlteration: Possible false positive in AvoidAccessibilityAlteration rule when using Lambda expression</li>
     </ul>
   </li>
   <li>java-multithreading
@@ -2050,6 +2066,8 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
   <li><a href="https://github.com/pmd/pmd/pull/3866">#3866</a>: [core] Add CLI Progress Bar - <a href="https://github.com/JerritEic">@JerritEic</a> (@JerritEic)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4412">#4412</a>: [doc] Added new error msg to ConstantsInInterface - <a href="https://github.com/dague1">David Ljunggren</a> (@dague1)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4428">#4428</a>: [apex] ApexBadCrypto bug fix for #4427 - inline detection of hard coded values - <a href="https://github.com/sfdcsteve">Steven Stearns</a> (@sfdcsteve)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4444">#4444</a>: [java] CommentDefaultAccessModifier - ignore org.junit.jupiter.api.extension.RegisterExtension by default - <a href="https://github.com/nirvikpatel">Nirvik Patel</a> (@nirvikpatel)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4450">#4450</a>: [java] Fix #4449 AvoidAccessibilityAlteration: Correctly handle Lambda expressions in PrivilegedAction scenarios - <a href="https://github.com/mohui1999">Seren</a> (@mohui1999)</li>
 </ul>
 
 <h3 id="-stats">📈 Stats</h3>
@@ -2088,7 +2106,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Apr 1, 2023 <br />
+             Site last generated: Apr 3, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
