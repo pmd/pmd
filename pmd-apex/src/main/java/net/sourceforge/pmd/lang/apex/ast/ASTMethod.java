@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 import com.google.summit.ast.SourceLocation;
 import com.google.summit.ast.declaration.MethodDeclaration;
 
-public class ASTMethod extends AbstractApexNode implements ApexQualifiableNode,
+public final class ASTMethod extends AbstractApexNode implements ApexQualifiableNode,
         SignedNode<ASTMethod>, CanSuppressWarnings {
 
     // Store the details instead of wrapping a com.google.summit.ast.Node.
@@ -66,8 +66,9 @@ public class ASTMethod extends AbstractApexNode implements ApexQualifiableNode,
             node.getSourceLocation());
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
@@ -106,68 +107,6 @@ public class ASTMethod extends AbstractApexNode implements ApexQualifiableNode,
             return ASTProperty.formatAccessorName((ASTProperty) getParent());
         }
         return name;
-    }
-
-    @Override
-    public int getBeginLine() {
-        if (!hasRealLoc()) {
-            // this is a synthetic method, only in the AST, not in the source
-            // search for the last sibling with real location from the end
-            // and place this synthetic method after it.
-            for (int i = getParent().getNumChildren() - 1; i >= 0; i--) {
-                ApexNode<?> sibling = getParent().getChild(i);
-                if (sibling.hasRealLoc()) {
-                    return sibling.getEndLine();
-                }
-            }
-        }
-        return super.getBeginLine();
-    }
-
-    @Override
-    public int getBeginColumn() {
-        if (!hasRealLoc()) {
-            // this is a synthetic method, only in the AST, not in the source
-            // search for the last sibling with real location from the end
-            // and place this synthetic method after it.
-            for (int i = getParent().getNumChildren() - 1; i >= 0; i--) {
-                ApexNode<?> sibling = getParent().getChild(i);
-                if (sibling.hasRealLoc()) {
-                    return sibling.getEndColumn();
-                }
-            }
-        }
-        return super.getBeginColumn();
-    }
-
-    @Override
-    public int getEndLine() {
-        if (!hasRealLoc()) {
-            // this is a synthetic method, only in the AST, not in the source
-            return this.getBeginLine();
-        }
-
-        ASTBlockStatement block = getFirstChildOfType(ASTBlockStatement.class);
-        if (block != null) {
-            return block.getEndLine();
-        }
-
-        return super.getEndLine();
-    }
-
-    @Override
-    public int getEndColumn() {
-        if (!hasRealLoc()) {
-            // this is a synthetic method, only in the AST, not in the source
-            return this.getBeginColumn();
-        }
-
-        ASTBlockStatement block = getFirstChildOfType(ASTBlockStatement.class);
-        if (block != null) {
-            return block.getEndColumn();
-        }
-
-        return super.getEndColumn();
     }
 
     @Override

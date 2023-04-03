@@ -4,20 +4,17 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import com.google.summit.ast.Node;
 
-public class ASTConstructorPreamble extends AbstractApexNode.Single<Node> {
+public final class ASTConstructorPreamble extends AbstractApexNode.Single<Node> {
 
-    @Deprecated
-    @InternalApi
-    public ASTConstructorPreamble(Node node) {
+    ASTConstructorPreamble(Node node) {
         super(node);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

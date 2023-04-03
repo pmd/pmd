@@ -205,4 +205,15 @@ public abstract class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>Dont flag default methods</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+    default void isVisible() {
+
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

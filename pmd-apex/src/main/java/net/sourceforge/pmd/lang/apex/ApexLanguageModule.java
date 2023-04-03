@@ -4,21 +4,46 @@
 
 package net.sourceforge.pmd.lang.apex;
 
-import net.sourceforge.pmd.lang.BaseLanguageModule;
-import net.sourceforge.pmd.util.CollectionUtil;
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
-public class ApexLanguageModule extends BaseLanguageModule {
-    private static final String FIRST_EXTENSION = "cls";
-    private static final String[] REMAINING_EXTENSIONS = {"trigger"};
+import java.util.List;
+
+import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageModuleBase;
+import net.sourceforge.pmd.lang.LanguageProcessor;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+
+public class ApexLanguageModule extends LanguageModuleBase {
 
     public static final String NAME = "Apex";
     public static final String TERSE_NAME = "apex";
-    public static final String[] EXTENSIONS = CollectionUtil.listOf(FIRST_EXTENSION, REMAINING_EXTENSIONS).toArray(new String[0]);
+
+    @InternalApi
+    public static final List<String> EXTENSIONS = listOf("cls", "trigger");
 
     public ApexLanguageModule() {
-        super(NAME, null, TERSE_NAME, FIRST_EXTENSION, REMAINING_EXTENSIONS);
-        // addVersion(String.valueOf((int) Version.CURRENT.getExternal()), new ApexHandler(), true);
-        // TODO(b/243906862)
-        addVersion("0", new ApexHandler(), true);
+        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions(EXTENSIONS)
+                              .addVersion("52")
+                              .addVersion("53")
+                              .addVersion("54")
+                              .addVersion("55")
+                              .addVersion("56")
+                              .addDefaultVersion("57"));
+    }
+
+    @Override
+    public ApexLanguageProperties newPropertyBundle() {
+        return new ApexLanguageProperties();
+    }
+
+    @Override
+    public LanguageProcessor createProcessor(LanguagePropertyBundle bundle) {
+        return new ApexLanguageProcessor((ApexLanguageProperties) bundle);
+    }
+
+    public static Language getInstance() {
+        return LanguageRegistry.PMD.getLanguageByFullName(NAME);
     }
 }

@@ -5,47 +5,33 @@
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 
-import java.util.List;
-
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 
 /**
  * Returns Checks if the singleton rule is used properly.
  */
-public class SingleMethodSingletonRule extends AbstractJavaRule {
+public class SingleMethodSingletonRule extends AbstractJavaRulechainRule {
+
+    public SingleMethodSingletonRule() {
+        super(ASTClassOrInterfaceDeclaration.class);
+    }
 
     /**
      * Checks for getInstance method usage in the same class.
      * @param node of ASTCLass
      * @param data of Object
      * @return Object
-     *
      */
-
-
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-
-
-        List<ASTMethodDeclaration> methods = node.findDescendantsOfType(ASTMethodDeclaration.class); // Find the name of methods in it
-
-        int count = 0;
-        for (ASTMethodDeclaration method : methods) {
-
-            if ("getInstance".equals(method.getName())) {
-                count++;
-                if (count > 1) {
-                    addViolation(data, node);
-                    break;
-                }
-            }
-
+        int count = node.descendants(ASTMethodDeclaration.class)
+            .filter(m -> "getInstance".equals(m.getName()))
+            .count();
+        if (count > 1) {
+            addViolation(data, node);
         }
-
-
-        return super.visit(node, data);
-
+        return data;
     }
 }

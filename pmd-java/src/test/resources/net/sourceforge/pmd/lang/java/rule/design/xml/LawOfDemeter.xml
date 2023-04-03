@@ -17,6 +17,7 @@ public class Foo {
     <test-code>
         <description>Mixed local and foreign method calls</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
         <code><![CDATA[
 import java.util.*;
 public class Foo {
@@ -25,13 +26,14 @@ public class Foo {
         localMethod();
         this.localMethod();
         int localVariableC;
-        b.doC().doIt();
+        b.getC().doIt();
         int localVariableD;
     }
-    private void localMethod() {
-    }
+    private void localMethod() {}
     private int instanceVariableB;
 }
+class C { void doIt() {} }
+class Bar { C getC() {} }
         ]]></code>
     </test-code>
 
@@ -45,18 +47,39 @@ public class Foo {
         c.doIt();
     }
 }
+class C { void doIt() {} }
+class Bar { C getC() {} }
         ]]></code>
     </test-code>
 
     <test-code>
         <description>Simple Method calls with chaining</description>
         <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Call to `getC` on foreign value `b` (degree 1)</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public void example(Bar b) {
         b.getC().doIt();
     }
 }
+class C { void doIt() {} }
+class Bar { C getC() {} }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Simple Method calls with chaining, starts with this method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void example() {
+        getC().doIt(); // no qualifier = this
+        this.getC().doIt();
+    }
+    C getC() {}
+}
+class C { void doIt() {} }
         ]]></code>
     </test-code>
 
@@ -70,6 +93,7 @@ public class Foo {
         c.doIt();
     }
 }
+class C { void doIt() {} }
         ]]></code>
     </test-code>
 
@@ -85,6 +109,7 @@ public class Foo {
         something = "no worries";
     }
 }
+class C { void doIt() {} }
         ]]></code>
     </test-code>
 
@@ -99,6 +124,7 @@ public class Foo {
         c.doIt(data);
     }
 }
+class C { void doIt() {} }
         ]]></code>
     </test-code>
 
@@ -106,6 +132,8 @@ public class Foo {
         <description>Simple Method call on local created object within nesting local scopes</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.List;
+import java.util.ArrayList;
 public class Foo {
     public void example(int c) {
         List<Integer> result = new ArrayList<Integer>();
@@ -144,12 +172,15 @@ public class Foo {
         d.doSomethingElse();
     }
 }
+class C { void doIt() {} }
+class D { void doSomethingElse() {} }
+class Bar { C getC() {} }
         ]]></code>
     </test-code>
 
     <test-code>
         <description>Static methods</description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class B {
     public static A a = new A();
@@ -163,7 +194,53 @@ public class A {
 public class Foo {
     public void example() {
         A.doStatic(); // direct static - allowed
-        B.a.doStatic(); // static chain - violation
+
+        // Note: in PMD6, this was reported, in PMD7 not anymore. See #3510
+        B.a.doStatic(); // static chain - no violation anymore
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Instance methods on fields</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>18,19,24,25</expected-linenumbers>
+        <expected-messages>
+            <message>Access to field `a` on foreign value `b` (degree 1)</message>
+            <message>Access to field `a` on foreign value `this.b` (degree 1)</message>
+            <message>Access to field `a` on foreign value `b` (degree 1)</message>
+            <message>Access to field `a` on foreign value `this.b` (degree 1)</message>
+        </expected-messages>
+        <code><![CDATA[
+public class B {
+    public A a = new A();
+}
+
+public class A {
+    public boolean doSomething() {
+        return false;
+    }
+}
+
+public class Foo {
+
+    B b;
+    A a;
+
+    public void example() {
+        a.doSomething();             // ok: self field
+        b.a.doSomething();           // warn
+        this.b.a.doSomething();      // warn
+        foo(a);                      // ok: self field
+        foo(this.a);                 // ok: self field
+        foo(b.a);                    // ok: used in external method
+        foo(this.b.a);               // ok: used in external method
+        foo(b.a.doSomething());      // warn
+        foo(this.b.a.doSomething()); // warn
+    }
+
+    void foo(boolean b) {
+        return false;
     }
 }
         ]]></code>
@@ -172,17 +249,21 @@ public class Foo {
     <test-code>
         <description>Exclude iterator and list elements</description>
         <expected-problems>0</expected-problems>
-        <code>
+        <code><![CDATA[
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Iterator;
+
 public class Foo {
     public void example() {
-        List&lt;String&gt; list = new ArrayList&lt;String&gt;();
+        List<String> list = new ArrayList<String>();
         list.add("Tata");
-        Iterator&lt;String&gt; it = list.iterator();
+        Iterator<String> it = list.iterator();
         while (it.hasNext()) {
                 String s = it.next();
                 System.out.println(s);
         }
-        if (list != null &amp;&amp; !list.isEmpty()) {
+        if (list != null && !list.isEmpty()) {
             for (String s : list) {
                 if (!s.isEmpty()) {
                     System.out.println(s);
@@ -190,15 +271,18 @@ public class Foo {
             }
         }
 
-        List&lt;String&gt; anotherList = calcList();
+        List<String> anotherList = calcList();
         for (String s : anotherList) {
             if (!s.isEmpty()) {
                 System.out.println(s);
             }
         }
     }
+    List<String> calcList() {
+        return null;
+    }
 }
-        </code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -216,12 +300,21 @@ public class Test {
         return "A".equals(aString);              // < - - false positive
     }
 
+    Factory myFactory;
     // no violation, because the object is not used
     public Object create() {
         Object o = myFactory.create();
         return o;
     }
-
+}
+class Factory { Object create() { return new Object(); }}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>FP with builder</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
     // no violation, should be an exception, as the builder pattern is used here
     public void toString() {
         StringBuilder buffer = new StringBuilder();
@@ -233,15 +326,28 @@ public class Test {
     </test-code>
 
     <test-code>
-        <description>#999 false negatives</description>
-        <expected-problems>1</expected-problems>
+        <description>#999 false negatives -- amended: factory calls are allowed</description>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Test {
+    Factory myObjectCreator;
     // violation, because object is used
     public Object create2() {
         Object o = myObjectCreator.create();
-        o.setName("my name");                    // < - - !!!
+        o.setName("my name");
         return o;
+    }
+}
+class Factory { Object create() { return new Object(); }}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>FP with string builder</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public void create2(StringBuffer buffer) {
+        buffer.append("string").append("string").append("string");
     }
 }
         ]]></code>
@@ -251,13 +357,16 @@ public class Test {
         <description>#1245 False Positive for Law of Demeter</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.sql.Connection;
 public class Test {
+    Factory connectionFactory;
     public void bar() {
         // Create a Connection
         final Connection connection = connectionFactory.createConnection();
         connection.start();
     }
 }
+class Factory { Connection createConnection() { return new Connection(); }}
         ]]></code>
     </test-code>
 
@@ -274,6 +383,8 @@ public class Test {
         fooBuilder.withBar();
     }
 }
+class Builder {static Builder newBuilder() {}}
+class FooBuilder {static FooBuilder newBuilder() {}}
         ]]></code>
     </test-code>
 
@@ -285,11 +396,66 @@ public class Test {
     public void bar() {
         // Inner Builder pattern chained
         final Bar bar = Bar.newBuilder()
-            .withFoo("foo")
-            .build();
+                .withFoo("foo")
+                .build();
     }
 }
+
+class Bar {
+    static BarBuilder newBuilder() { }
+}
+class BarBuilder {
+    BarBuilder withFoo(String s) {}
+    Bar build() {}
+}
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Method chain is reset when someone produces trusted data</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Call to `getB` on foreign value `this.getA()` (degree 1)</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Test {
+    A getA() {}
+    public void bar() {
+        this.getA().foo("").getA(); // fine
+        this.getA().getB().getA().getB().getA(); // not ok
+        //          ^^^^ only report this
+    }
+}
+interface A {
+    B getB();
+    B foo(String s);
+}
+interface B { A getA(); }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Test trust radius</description>
+        <rule-property name="trustRadius">2</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Call to `getA` on foreign value `this.getA().getB()` (degree 2)</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Test {
+                A getA() {}
+                public void bar() {
+                    this.getA().getB().getA().getB().getA(); // not ok
+                    //                 ^^^^ only report this
+                }
+            }
+            interface A {
+                B getB();
+                B foo(String s);
+            }
+            interface B { A getA(); }
+            ]]></code>
     </test-code>
 
     <test-code>
@@ -324,6 +490,38 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>System out println</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package pmdtests;
+
+public class Foo {
+    private final int i;
+
+    public Foo(int i) {
+        this.i = i;
+    }
+
+    public void meth() {
+        System.out.println("");     // wrong violation: method chain calls
+        System.out.println("");    // wrong violation: method chain calls
+        System.out.println("");          // no violation
+    }
+
+    public void method(Foo this) {      // receiver param!!
+        System.out.println("");     // wrong violation: method chain calls
+    }
+
+    public void method(Foo this, String... args) {
+        System.out.println("");     // wrong violation: method chain calls
+        for (String arg: args) {
+            System.out.println(arg);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 
     <test-code>
         <description>[java] LawOfDemeter: False positive when casting to derived class #2189</description>
@@ -331,7 +529,11 @@ public class Foo {
         <code><![CDATA[
 package pmdtests;
 
+import java.util.List;
+import java.util.concurrent.ForkJoinTask;
+
 class TaskManager {
+
     private final List<ForkJoinTask<Integer>> tasks;
 
     public void cancelTasks(ForkJoinTask<Integer> cancelTask) {
@@ -342,6 +544,10 @@ class TaskManager {
             }
         }
     }
+
+    abstract static class SearchNumberTask extends ForkJoinTask<Integer> {
+        abstract void writeCancelMessage();
+    }
 }
         ]]></code>
     </test-code>
@@ -351,16 +557,607 @@ class TaskManager {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public final class Util {
-    public static boolean check(String passwd, String hashed) {
+    public static boolean check(String hashed) { // degree 1
         try {
-            final String[] parts = hashed.split("\\$");
+            final String[] parts = hashed.split("\\$"); // degree 1: string is pure data
 
-            if (parts.length != 5 || !parts[1].equals("s0")) {      // wrong violation - method chain calls
+            if (parts.length != 5                    // array length is ok
+                    || parts.clone()                 // wrong violation - method chain calls
+                    || parts[1].isEmpty()            // wrong violation - method chain calls
+                    || parts[1].equals("s0")) {      // wrong violation - method chain calls
                 throw new IllegalArgumentException("Invalid hashed value");
             }
         } catch (Exception e) { }
     }
 }
         ]]></code>
+    </test-code>
+    <test-code>
+        <description>List access</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+public final class Util {
+    public static boolean check(String hashed) { // degree 1
+        try {
+            final List<String> parts = hashed.split("\\$"); // degree 1: string is pure data
+
+            if (parts.size() != 5
+                    || parts.isEmpty()
+                    || parts.get(1).isEmpty()
+                    || parts.get(1).equals("s0")) {
+                throw new IllegalArgumentException("Invalid hashed value");
+            }
+        } catch (Exception e) { }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>FP when iterating on iterator field</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Iterator;
+import java.util.List;
+public final class ControlEvent {
+    List<ControlEvent> controlQueue;
+
+    // Process all events currently stored in the control queue.
+    private void processControlQueue() {
+        synchronized (controlQueue) {
+            Iterator<ControlEvent> iter = controlQueue.iterator();
+            while (iter.hasNext()) {
+                ControlEvent ev = iter.next();
+                pollsetCtl(ev.fd(), 0);
+                if (!ev.removeOnly()) {
+                    ev.setError(pollsetCtl(ev.fd(), ev.events()));
+                }
+                iter.remove();
+            }
+            controlQueue.notifyAll();
+        }
+    }
+    void setError(Object o) {}
+    boolean removeOnly() {return false;}
+    Object pollsetCtl(int a, int b) {return null;}
+    int fd() {return 0;}
+    int events() {return 0;}
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>FP when iterating on collection field</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Iterator;
+import java.util.List;
+public final class ControlEvent {
+    List<ControlEvent> controlQueue;
+
+    private void processControlQueue() {
+        synchronized (controlQueue) {
+            for (ControlEvent ev: controlQueue) {
+                pollsetCtl(ev.fd(), 0);
+                if (!ev.removeOnly()) {
+                    ev.setError(pollsetCtl(ev.fd(), ev.events()));
+                }
+            }
+            controlQueue.notifyAll();
+        }
+    }
+    void setError(Object o) {}
+    boolean removeOnly() {return false;}
+    Object pollsetCtl(int a, int b) {return null;}
+    int fd() {return 0;}
+    int events() {return 0;}
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>FP when iterating on collection param</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Iterator;
+import java.util.List;
+public final class ControlEvent {
+
+    private void processControlQueue(List<ControlEvent> controlQueue) {
+        synchronized (controlQueue) {
+            for (ControlEvent ev: controlQueue) {
+                pollsetCtl(ev.fd(), 0);
+            }
+            controlQueue.notifyAll();
+        }
+    }
+    void setError(Object o) {}
+    boolean removeOnly() {return false;}
+    Object pollsetCtl(int a, int b) {return null;}
+    int fd() {return 0;}
+    int events() {return 0;}
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Stackoverflow with cyclic data flow</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>10,12</expected-linenumbers>
+        <expected-messages>
+            <message>Access to field `attributes` on foreign value `h` (degree 1)</message>
+            <message>Access to field `attributes` on foreign value `h` (degree 1)</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.nio.ByteBuffer;
+            import java.util.Iterator;
+            import java.util.List;
+            import java.io.*;
+
+            public final class Attribute {
+
+                void writeAttributes(int ctype, Attribute.Holder h) throws IOException {
+                    ByteBuffer buf, out, bufOut;
+                    for (Attribute a : h.attributes) { // warn(h.attributes)
+                        if (a.layout()
+                                == h.attributes) { // warn(h.attributes)
+                            DataOutputStream savedOut = out;
+                            out = savedOut;
+                        } else {
+                            out.write(a.bytes());
+                        }
+                    }
+                }
+
+                byte[] bytes() {}
+
+                class Holder {
+
+                    Object attributes;
+                }
+
+                int fd() { return 0; }
+
+                int events() { return 0; }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>FP with enum - #1605</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.nio.charset.StandardCharsets;
+
+            public final class FileText {
+
+                void FileText(String fileToProcess, String charset) {
+                    final FileText fileText = FileText(fileToProcess,
+                                                       StandardCharsets.UTF_8.name());
+
+                }
+
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>FP with map iteration</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.*;
+            import java.text.MessageFormat;
+
+            public final class FileText {
+
+                void foo(Map<String, String> messages, String messageKey) {
+                    String checkMessage;
+                    for (Map.Entry<String, String> entry : messages.entrySet()) {
+                        if (messageKey.equals(entry.getKey())) {
+                            final MessageFormat formatter = new MessageFormat(entry.getValue(), Locale.ROOT);
+                            checkMessage = formatter.format(arguments);
+                            break;
+                        }
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Field access on call</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Access to field `manager` on foreign value `t.getLastToken()` (degree 1)</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.util.*;
+            import java.text.MessageFormat;
+
+            class Manager {
+
+            }
+            public final class Token {
+                Manager manager;
+                Token getLastToken() {
+
+                }
+            }
+            class Q {
+                void foo(Token t) {
+                    Manager m = t.getLastToken().manager;
+                    m.doSomethn();
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2175 - False positive for chained methods with generic method call </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.Arrays;
+            import java.util.List;
+
+            public enum Containment {
+                ;
+
+                public static void main(String... args) {
+                    Object obj = "one";
+                    List<Object> objs = Arrays.asList("one", 2, Math.PI, 4);
+                    List<Integer> ints = Arrays.asList(2, 4);
+                    assert objs.contains(obj);     // wrong violation: object not created locally
+                    assert objs.containsAll(ints); // wrong violation: object not created locally
+                    assert !ints.contains(obj);    // wrong violation: object not created locally
+                    assert !ints.containsAll(objs);// wrong violation: object not created locally
+
+                    obj = 1;
+                    objs = Arrays.<Object>asList(1, 3); // wrong violation: method chain calls
+                    ints = Arrays.asList(1, 2, 3, 4);
+                    assert ints.contains(obj);          // wrong violation: object not created locally
+                    assert ints.containsAll(objs);      // wrong violation: object not created locally
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2180 - False positive for thread.currentThread</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+
+            import java.util.concurrent.ThreadLocalRandom;
+            import static java.lang.System.out;
+
+            public class TaskLocalRandom implements Runnable {
+
+                @Override
+                public void run() {
+                    StringBuilder sb = new StringBuilder(40);
+                    sb.append(Thread.currentThread().getName()).append(" with priority ")
+                      .append(Thread.currentThread().getPriority())
+                      .append(": %d %n");
+                    String str = sb.toString();
+                    for (int i = 0; i < 10; i++)
+                        out.printf(
+                                str,
+                                ThreadLocalRandom.current().nextInt(10) );
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2179 - False positive (Law of Demeter): Static property access should treat class-level property as global object, not dot-accessed property. #2179</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+
+            import java.util.concurrent.TimeUnit;
+            import static java.util.concurrent.TimeUnit.SECONDS;
+
+            public enum Test {
+                ;
+
+                public static void main(String[] args) {
+                    try {
+
+                        TimeUnit.MILLISECONDS.sleep(300);
+                        SECONDS.sleep(2);
+
+
+                    } catch (InterruptedException ie) {
+                        System.err.println(ie);
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2182 - access to field of other instance in this class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.time.LocalDate;
+
+            public class Person {
+                LocalDate birthday;
+
+                public static int compareByAge(Person a, Person b) {
+                    return a.birthday.compareTo(b.birthday);
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>False positive with lambda expression #1014</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.function.Consumer;
+
+            public class SimpleClass{
+                public void simpleMethod() {
+                    anotherSimpleMethod(System.out::println, 10);
+                }
+
+                public <T> void anotherSimpleMethod(Consumer<T> consumer, T value) {
+                    consumer.accept(value);
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>False positive with fields assigned to local vars #2188</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+
+            public class AddressUsingCopyOnWrite {
+                private volatile AddressValue addressValue;
+
+                public AddressUsingCopyOnWrite(String street, String city, String phone) {
+                    this.addressValue = new AddressValue(street, city, phone);
+                }
+
+                @Override
+                public String toString() {
+                    AddressValue local = addressValue;
+                    return "street=" + local.street + ",city=" + local.getCity()
+                            + ",phoneNumber=" + local.getPhoneNumber();
+                }
+
+                static class AddressValue {
+                    String street;
+                    String getStreet() {}
+                    String getCity() {}
+                    String getPhoneNumber() {}
+                }
+
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Not a getter if it has arguments</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class AddressUsingCopyOnWrite {
+
+                AddressUsingCopyOnWrite getSomething(String a) { }
+
+                public String toString() {
+                    getSomething("")
+                            .getSomething("")
+                            .getSomething("")
+                            .getSomething("")
+                            .getSomething("")
+                            .getSomething("");
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>FP with stream</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class AddressUsingCopyOnWrite {
+
+                AddressUsingCopyOnWrite getSomething(String a) { }
+
+                public String toString(java.util.List<String> foo) {
+                    var a = foo.stream()
+                       .filter(a -> true)
+                       .filter(a -> true)
+                       .filter(a -> true)
+                       .filter(a -> true)
+                       .findFirst().get();
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Foreign stream</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Call to `getSomething` on foreign value `a` (degree 1)</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.util.*;
+            import java.util.stream.Stream;
+
+            class Bar {
+
+                public String toString(Foo foo) {
+                    Foo a = foo.stream()
+                               .filter(a -> true)
+                               .filter(a -> true)
+                               .filter(a -> true)
+                               .filter(a -> true)
+                               .findFirst().get();
+                    a.getSomething().foo();
+                }
+
+                void foo() {}
+            }
+
+            public class Foo {
+                Bar getSomething() { }
+                Stream<Foo> stream() { }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Can pass property of object to other method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+
+            class Bar {
+
+                void foo(String f) {}
+
+                public String toString(Foo foo) {
+                    foo(foo.getSomething());
+                }
+
+            }
+
+            public class Foo {
+                String getSomething() { }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Can get properties if their type is related</description>
+        <!-- If the types are related, this means we're not crossing a boundary of abstraction. -->
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+
+            class Foo {
+
+                void foo(Foo f) {}
+
+                public String toString(JavaNode foo) {
+                    Node p = foo.getRoot();
+                }
+
+            }
+
+            interface JavaNode extends Node {}
+            interface RootNode extends Node {}
+
+            public interface Node {
+                RootNode getRoot();
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Ignore class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                public String toString(Foo foo) {
+                    int p = foo.getClass().getModifiers();
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Null check means pure data</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+            class Foo {
+                public String toString(Rule rule) {
+                    if (rule.getLanguage() == null)
+                        throw new IllegalArgumentException();
+                    System.out.println(rule.getLanguage());
+                    System.getProperty(rule.getLanguage().getName());
+                }
+            }
+            interface Language {
+                String getName();
+            }
+            interface Rule {
+                Language getLanguage();
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Return and throw escape</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Call to `getLanguage` on foreign value `rule` (degree 1)</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Foo {
+                public String toString(Rule rule) {
+                    rule.getLanguage().doSomething(); // warn
+
+                    println(rule.getLanguage()); // no warning
+                    if (foo())
+                        return rule.getLanguage(); // no warning
+                    else
+                        throw rule.getLanguage(); // no warning
+                }
+            }
+            interface Language {
+                String getName();
+                void doSomething();
+            }
+            interface Rule {
+                Language getLanguage();
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Local var is fine until used, if some of them escape</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Call to `doSomething` on foreign value `l` (degree 2)</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Foo {
+                public String toString(Rule rule) {
+                    Language l = rule.getLanguage(); // no warning
+                    l.doSomething(); // warn: degree 3
+                    println(l); // no warning
+                    if (foo())
+                        return l; // no warning
+                    else
+                        throw l; // no warning
+                }
+            }
+            interface Language {
+                String getName();
+                void doSomething();
+            }
+            interface Rule {
+                Language getLanguage();
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Rule example</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <expected-messages>
+            <message>Call to `getC` on foreign value `b` (degree 1)</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+                /**
+                 * This example will result in one violation.
+                 */
+                public void example(Bar b) { // b has degree 1
+                    // `b.getC()` has degree 2, it's breaking a boundary of abstraction and so is reported.
+                    b.getC().doIt();
+                    // To respect the law of Demeter, Bar should encapsulate its
+                    // C member more properly, eg by exposing a method like this:
+                    b.callDoItOnC();
+
+                    // a constructor call, not a method call.
+                    D d = new D();
+                    // this method call is ok, because we have create the new
+                    // instance of D locally.
+                    d.doSomethingElse();
+                }
+            }
+            interface Bar {
+                C getC();
+            }
+            class D {
+                void doSomethingElse() {}
+            }
+            interface C { void doIt(); }
+            ]]></code>
     </test-code>
 </test-data>

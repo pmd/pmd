@@ -6,7 +6,7 @@ package net.sourceforge.pmd.properties;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Evaluates the functionality of the CharacterProperty descriptor by testing
@@ -16,26 +16,26 @@ import org.junit.Test;
  * @author Brian Remedios
  */
 @Deprecated
-public class CharacterPropertyTest extends AbstractPropertyDescriptorTester<Character> {
+class CharacterPropertyTest extends AbstractPropertyDescriptorTester<Character> {
 
     private static final char DELIMITER = '|';
     private static final char[] CHARSET = filter(ALL_CHARS.toCharArray(), DELIMITER);
 
 
-    public CharacterPropertyTest() {
+    CharacterPropertyTest() {
         super("Character");
     }
 
 
     @Override
     @Test
-    public void testErrorForBadSingle() {
+    void testErrorForBadSingle() {
     } // not until char properties use illegal chars
 
 
     @Override
     @Test
-    public void testErrorForBadMulti() {
+    void testErrorForBadMulti() {
     } // not until char properties use illegal chars
 
 

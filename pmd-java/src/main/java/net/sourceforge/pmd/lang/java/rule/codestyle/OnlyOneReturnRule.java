@@ -4,34 +4,29 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
-import java.util.Iterator;
-import java.util.List;
-
-import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 
-public class OnlyOneReturnRule extends AbstractJavaRule {
+public class OnlyOneReturnRule extends AbstractJavaRulechainRule {
 
     public OnlyOneReturnRule() {
-        addRuleChainVisit(ASTMethodDeclaration.class);
+        super(ASTMethodDeclaration.class);
     }
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
-        List<ASTReturnStatement> returnNodes = node.findDescendantsOfType(ASTReturnStatement.class);
-
-        if (returnNodes.size() > 1) {
-            for (Iterator<ASTReturnStatement> i = returnNodes.iterator(); i.hasNext();) {
-                Node problem = i.next();
-                // skip the last one, it's OK
-                if (!i.hasNext()) {
-                    continue;
-                }
-                addViolation(data, problem);
-            }
+        if (node.getBody() == null) {
+            return null;
         }
-        return data;
+
+        NodeStream<ASTReturnStatement> returnsExceptLast =
+            node.getBody().descendants(ASTReturnStatement.class).dropLast(1);
+
+        for (ASTReturnStatement returnStmt : returnsExceptLast) {
+            addViolation(data, returnStmt);
+        }
+        return null;
     }
 }

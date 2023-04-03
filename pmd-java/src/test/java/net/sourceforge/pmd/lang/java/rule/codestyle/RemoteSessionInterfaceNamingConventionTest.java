@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class RemoteSessionInterfaceNamingConventionTest extends PmdRuleTst {
+class RemoteSessionInterfaceNamingConventionTest extends PmdRuleTst {
     // no additional unit tests
 }

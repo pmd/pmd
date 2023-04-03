@@ -4,23 +4,19 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import scala.meta.Type;
 
 /**
  * The ASTTypeTuple node implementation.
  */
-public class ASTTypeTuple extends AbstractScalaNode<Type.Tuple> {
+public final class ASTTypeTuple extends AbstractScalaNode<Type.Tuple> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTypeTuple(Type.Tuple scalaNode) {
+    ASTTypeTuple(Type.Tuple scalaNode) {
         super(scalaNode);
     }
 
     @Override
-    public <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data) {
+    protected <P, R> R acceptVisitor(ScalaParserVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

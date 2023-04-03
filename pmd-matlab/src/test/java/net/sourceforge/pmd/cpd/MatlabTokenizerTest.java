@@ -6,13 +6,13 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.Properties;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
-public class MatlabTokenizerTest extends CpdTextComparisonTest {
+class MatlabTokenizerTest extends CpdTextComparisonTest {
 
-    public MatlabTokenizerTest() {
+    MatlabTokenizerTest() {
         super(".m");
     }
 
@@ -27,38 +27,38 @@ public class MatlabTokenizerTest extends CpdTextComparisonTest {
     }
     
     @Test
-    public void testLongSample() {
+    void testLongSample() {
         doTest("sample-matlab");
     }
 
     @Test
-    public void testIgnoreBetweenSpecialComments() {
+    void testIgnoreBetweenSpecialComments() {
         doTest("specialComments");
 
     }
 
     @Test
-    public void testComments() {
+    void testComments() {
         doTest("comments");
     }
 
     @Test
-    public void testBlockComments() {
+    void testBlockComments() {
         doTest("multilineComments");
     }
 
     @Test
-    public void testQuestionMark() {
+    void testQuestionMark() {
         doTest("questionMark");
     }
 
     @Test
-    public void testDoubleQuotedStrings() {
+    void testDoubleQuotedStrings() {
         doTest("doubleQuotedStrings");
     }
 
     @Test
-    public void testTabWidth() {
+    void testTabWidth() {
         doTest("tabWidth");
     }
 }

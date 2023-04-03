@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.jsp.rule.design;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class NoScriptletsTest extends PmdRuleTst {
+class NoScriptletsTest extends PmdRuleTst {
     // no additional unit tests
 }

@@ -4,23 +4,19 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import scala.meta.Pkg;
 
 /**
  * The ASTPkg node implementation.
  */
-public class ASTPkg extends AbstractScalaNode<Pkg> {
+public final class ASTPkg extends AbstractScalaNode<Pkg> {
 
-    @Deprecated
-    @InternalApi
-    public ASTPkg(Pkg scalaNode) {
+    ASTPkg(Pkg scalaNode) {
         super(scalaNode);
     }
 
     @Override
-    public <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data) {
+    protected <P, R> R acceptVisitor(ScalaParserVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

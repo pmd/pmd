@@ -6,14 +6,15 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import com.google.summit.ast.expression.SoslExpression;
 
-public class ASTSoslExpression extends AbstractApexNode.Single<SoslExpression> {
+public final class ASTSoslExpression extends AbstractApexNode.Single<SoslExpression> {
 
     ASTSoslExpression(SoslExpression soslExpression) {
         super(soslExpression);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

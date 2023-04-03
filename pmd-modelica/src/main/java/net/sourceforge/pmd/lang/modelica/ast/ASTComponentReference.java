@@ -18,10 +18,6 @@ public final class ASTComponentReference extends AbstractModelicaNode implements
         super(id);
     }
 
-    ASTComponentReference(ModelicaParser p, int id) {
-        super(p, id);
-    }
-
     void markAbsolute() {
         absolute = true;
     }
@@ -60,7 +56,7 @@ public final class ASTComponentReference extends AbstractModelicaNode implements
     }
 
     @Override
-    public Object jjtAccept(ModelicaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptModelicaVisitor(ModelicaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

@@ -4,37 +4,43 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.java.ast.ASTList.ASTMaybeEmptyListOf;
+import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AllChildrenAreOfType;
 
-public class ASTBlock extends AbstractJavaNode {
+/**
+ * A block of code. This is a {@linkplain ASTStatement statement} that
+ * contains other statements.
+ *
+ * <pre class="grammar">
+ *
+ * Block ::=  "{" {@link ASTStatement Statement}* "}"
+ *
+ * </pre>
+ */
+public final class ASTBlock extends ASTMaybeEmptyListOf<ASTStatement>
+        implements ASTSwitchArrowRHS, ASTStatement, AllChildrenAreOfType<ASTStatement> {
 
-    private boolean containsComment;
-
-    @InternalApi
-    @Deprecated
-    public ASTBlock(int id) {
-        super(id);
+    ASTBlock(int id) {
+        super(id, ASTStatement.class);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTBlock(JavaParser p, int id) {
-        super(p, id);
-    }
 
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    public <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
+
     public boolean containsComment() {
-        return this.containsComment;
-    }
+        JavaccToken t = getLastToken().getPreviousComment();
+        while (t != null) {
+            if (JavaComment.isComment(t)) {
+                return true;
+            }
+            t = t.getPreviousComment();
+        }
 
-    @InternalApi
-    @Deprecated
-    public void setContainsComment() {
-        this.containsComment = true;
+        return false;
     }
-
 }

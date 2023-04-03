@@ -22,8 +22,6 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /**
  * The test query validators will return back the query it was given. The real implementation actually creates its own
  * query.
@@ -31,9 +29,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * @author jspagnola
  */
 @SuppressWarnings("PMD.MissingStaticMethodInNonInstantiatableClass") // this class provides utility classes
-@Deprecated
-@InternalApi
-public final class TestQueryValidators {
+final class TestQueryValidators {
 
     private TestQueryValidators() {
     }

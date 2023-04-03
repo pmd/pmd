@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import com.google.summit.ast.Identifier;
 import com.google.summit.ast.expression.CallExpression;
 
-public class ASTMethodCallExpression extends AbstractApexNode.Single<CallExpression> {
+public final class ASTMethodCallExpression extends AbstractApexNode.Single<CallExpression> {
 
     /**
      * The {@link Identifier}s that constitute the {@link CallExpression#getReceiver() receiver} of
@@ -23,8 +23,9 @@ public class ASTMethodCallExpression extends AbstractApexNode.Single<CallExpress
         this.receiverComponents = receiverComponents;
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
@@ -38,5 +39,16 @@ public class ASTMethodCallExpression extends AbstractApexNode.Single<CallExpress
 
     public int getInputParametersSize() {
         return node.getArgs().size();
+    }
+
+    @Override
+    public @NonNull TextRegion getTextRegion() {
+        int fullLength = getFullMethodName().length();
+        int nameLength = getMethodName().length();
+        TextRegion base = super.getTextRegion();
+        if (fullLength > nameLength) {
+            base = base.growLeft(fullLength - nameLength);
+        }
+        return base;
     }
 }

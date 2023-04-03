@@ -8,7 +8,7 @@ import org.antlr.v4.runtime.Token;
 
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
-public class ASTFormalComment extends AbstractApexNode.Empty {
+public final class ASTFormalComment extends AbstractApexNode.Empty {
 
     private final Token token;
 
@@ -16,8 +16,9 @@ public class ASTFormalComment extends AbstractApexNode.Empty {
         this.token = token;
     }
 
+    
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
@@ -38,10 +39,42 @@ public class ASTFormalComment extends AbstractApexNode.Empty {
         this.endColumn = positioner.columnFromOffset(this.endLine, token.getStopIndex());
     }
 
-    @Override
-    public boolean hasRealLoc() {
-        return true;
+
+    /* TODO post-merge
+    static final class AstComment implements AstNode {
+
+        private final Location loc;
+
+        private AstComment(TextRegion region) {
+            this.loc = Locations.index(region.getStartOffset(), region.getLength());
+        }
+
+        @Override
+        public Location getLoc() {
+            return loc;
+        }
+
+        @Override
+        public <T extends Scope> void traverse(AstVisitor<T> astVisitor, T t) {
+            // do nothing
+        }
+
+        @Override
+        public void validate(SymbolResolver symbolResolver, ValidationScope validationScope) {
+            // do nothing
+        }
+
+        @Override
+        public void emit(Emitter emitter) {
+            // do nothing
+        }
+
+        @Override
+        public TypeInfo getDefiningType() {
+            return TypeInfos.VOID;
+        }
     }
+    */
 
     @Override
     public String getLocation() {

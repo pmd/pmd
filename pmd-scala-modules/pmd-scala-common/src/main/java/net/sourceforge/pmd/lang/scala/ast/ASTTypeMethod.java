@@ -4,23 +4,19 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import scala.meta.Type;
 
 /**
  * The ASTTypeMethod node implementation.
  */
-public class ASTTypeMethod extends AbstractScalaNode<Type.Method> {
+public final class ASTTypeMethod extends AbstractScalaNode<Type.Method> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTypeMethod(Type.Method scalaNode) {
+    ASTTypeMethod(Type.Method scalaNode) {
         super(scalaNode);
     }
 
     @Override
-    public <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data) {
+    protected <P, R> R acceptVisitor(ScalaParserVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

@@ -9,6 +9,7 @@
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
+    Object foo;
     void foo () {
         foo.notify();
     }
@@ -21,6 +22,8 @@ public class Foo {
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
+    Object foo;
+
     void foo () {
         foo.notify();
         foo.notify();
@@ -70,6 +73,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
+    Object foo;
     void foo (int x) {
         foo.notify(x);
     }
@@ -85,6 +89,21 @@ public class FlasePositive {
     public static void main(String[] args) {
         boolean notify;
         notify = true;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java]UseNotifyAllInsteadOfNotify falsely detect a special case with argument: foo.notify(bar) #2577</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class FalsePositive {
+    void notify(String s, String x) {
+
+    }
+    public static void main(FalsePositive injector) {
+        // unresolved method
+        injector.notify("", "e.getMessage()");
     }
 }
         ]]></code>

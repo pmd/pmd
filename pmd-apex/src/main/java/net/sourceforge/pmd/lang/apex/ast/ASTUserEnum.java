@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import com.google.summit.ast.declaration.EnumDeclaration;
 
-public class ASTUserEnum extends ApexRootNode<EnumDeclaration> implements ApexQualifiableNode {
+public final class ASTUserEnum extends ApexRootNode<EnumDeclaration> implements ApexQualifiableNode {
 
     private ApexQualifiedName qname;
 
@@ -15,7 +15,7 @@ public class ASTUserEnum extends ApexRootNode<EnumDeclaration> implements ApexQu
     }
 
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

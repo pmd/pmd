@@ -10,7 +10,7 @@ Rules specific to the use of J2EE implementations.
   </description>
 
     <!-- Rules, that have been moved into a category -->
-    <rule ref="category/java/errorprone.xml/DoNotCallSystemExit" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/DoNotTerminateVM" deprecated="true" />
     <rule ref="category/java/errorprone.xml/StaticEJBFieldShouldBeFinal" deprecated="true" />
     <rule ref="category/java/errorprone.xml/UseProperClassLoader" deprecated="true" />
 

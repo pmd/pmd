@@ -6,14 +6,15 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import com.google.summit.ast.expression.ArrayExpression;
 
-public class ASTArrayStoreExpression extends AbstractApexNode.Single<ArrayExpression> {
+public final class ASTArrayStoreExpression extends AbstractApexNode.Single<ArrayExpression> {
 
-    ASTArrayStoreExpression(ArrayExpression arrayExpression) {
-        super(arrayExpression);
+    ASTArrayStoreExpression(ArrayExpression arrayStoreExpression) {
+        super(arrayStoreExpression);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

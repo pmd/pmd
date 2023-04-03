@@ -5,33 +5,47 @@
 package net.sourceforge.pmd.lang.ast.test
 
 import com.github.oowekyala.treeutils.DoublyLinkedTreeLikeAdapter
-import com.github.oowekyala.treeutils.TreeLikeAdapter
 import com.github.oowekyala.treeutils.matchers.MatchingConfig
 import com.github.oowekyala.treeutils.matchers.TreeNodeWrapper
 import com.github.oowekyala.treeutils.matchers.baseShouldMatchSubtree
 import com.github.oowekyala.treeutils.printers.KotlintestBeanTreePrinter
 import net.sourceforge.pmd.lang.ast.Node
+import io.kotest.matchers.should as ktShould
 
 /** An adapter for [baseShouldMatchSubtree]. */
 object NodeTreeLikeAdapter : DoublyLinkedTreeLikeAdapter<Node> {
-    override fun getChildren(node: Node): List<Node> = node.findChildrenOfType(Node::class.java)
+    override fun getChildren(node: Node): List<Node> = node.children().toList()
 
     override fun nodeName(type: Class<out Node>): String = type.simpleName.removePrefix("AST")
 
     override fun getParent(node: Node): Node? = node.parent
 
-    override fun getChild(node: Node, index: Int): Node? = node.safeGetChild(index)
+    override fun getChild(node: Node, index: Int): Node? = node.children().get(index)
 }
 
+/** A [NodeSpec] that returns a value. */
+typealias ValuedNodeSpec<I, O> = TreeNodeWrapper<Node, out I>.() -> O
+
 /** A subtree matcher written in the DSL documented on [TreeNodeWrapper]. */
-typealias NodeSpec<N> = TreeNodeWrapper<Node, N>.() -> Unit
+typealias NodeSpec<N> = ValuedNodeSpec<N, Unit>
 
 /** A function feedable to [io.kotest.matchers.should], which fails the test if an [AssertionError] is thrown. */
 typealias Assertions<M> = (M) -> Unit
 
+fun <N : Node> ValuedNodeSpec<N, *>.ignoreResult(): NodeSpec<N> {
+    val me = this
+    return { this.me() }
+}
+
+val DefaultMatchingConfig = MatchingConfig(
+        adapter = NodeTreeLikeAdapter,
+        errorPrinter = KotlintestBeanTreePrinter(NodeTreeLikeAdapter),
+        implicitAssertions = { it.assertTextRangeIsOk() }
+)
+
 /** A shorthand for [baseShouldMatchSubtree] providing the [NodeTreeLikeAdapter]. */
-inline fun <reified N : Node> Node?.shouldMatchNode(ignoreChildren: Boolean = false, noinline nodeSpec: NodeSpec<N>) {
-    this.baseShouldMatchSubtree(MatchingConfig(adapter = NodeTreeLikeAdapter, errorPrinter = KotlintestBeanTreePrinter(NodeTreeLikeAdapter)), ignoreChildren, nodeSpec)
+inline fun <reified N : Node> Node?.shouldMatchNode(ignoreChildren: Boolean = false, noinline nodeSpec: ValuedNodeSpec<N, *>) {
+    this.baseShouldMatchSubtree(DefaultMatchingConfig, ignoreChildren, nodeSpec.ignoreResult())
 }
 
 /**
@@ -52,5 +66,24 @@ inline fun <reified N : Node> Node?.shouldMatchNode(ignoreChildren: Boolean = fa
  *
  * @return A matcher for AST nodes, suitable for use by [io.kotest.matchers.should].
  */
-inline fun <reified N : Node> matchNode(ignoreChildren: Boolean = false, noinline nodeSpec: NodeSpec<N>)
+inline fun <reified N : Node> matchNode(ignoreChildren: Boolean = false, noinline nodeSpec: ValuedNodeSpec<N, *>)
         : Assertions<Node?> = { it.shouldMatchNode(ignoreChildren, nodeSpec) }
+
+/**
+ * The spec applies to the parent, shifted so that [this] node
+ * is the first node to be queried. This allows using sweeter
+ * DSL constructs like in the Java module.
+ */
+fun Node.shouldMatchN(matcher: ValuedNodeSpec<Node, out Any>) {
+    val idx = indexInParent
+    parent ktShould matchNode<Node> {
+        if (idx > 0) {
+            unspecifiedChildren(idx)
+        }
+        matcher()
+        val left = it.numChildren - 1 - idx
+        if (left > 0) {
+            unspecifiedChildren(left)
+        }
+    }
+}

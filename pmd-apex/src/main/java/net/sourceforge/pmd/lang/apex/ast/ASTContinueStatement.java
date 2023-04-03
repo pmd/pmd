@@ -6,14 +6,15 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import com.google.summit.ast.statement.ContinueStatement;
 
-public class ASTContinueStatement extends AbstractApexNode.Single<ContinueStatement> {
+public final class ASTContinueStatement extends AbstractApexNode.Single<ContinueStatement> {
 
     ASTContinueStatement(ContinueStatement continueStatement) {
         super(continueStatement);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

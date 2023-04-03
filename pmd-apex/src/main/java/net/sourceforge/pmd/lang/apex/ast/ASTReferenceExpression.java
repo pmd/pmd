@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 import com.google.summit.ast.Identifier;
 
-public class ASTReferenceExpression extends AbstractApexNode.Many<Identifier> {
+public final class ASTReferenceExpression extends AbstractApexNode.Many<Identifier> {
 
     private final ReferenceType referenceType;
     private final boolean isSafe;
@@ -20,8 +20,9 @@ public class ASTReferenceExpression extends AbstractApexNode.Many<Identifier> {
         this.isSafe = isSafe;
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

@@ -7,13 +7,10 @@ package net.sourceforge.pmd.lang.apex.ast;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import net.sourceforge.pmd.Rule;
-
 import com.google.summit.ast.TypeRef;
 import com.google.summit.ast.declaration.ClassDeclaration;
 
-public class ASTUserClass extends ApexRootNode<ClassDeclaration> implements ASTUserClassOrInterface<ClassDeclaration>,
-        CanSuppressWarnings {
+public final class ASTUserClass extends ApexRootNode<ClassDeclaration> implements ASTUserClassOrInterface<ClassDeclaration> {
 
     private ApexQualifiedName qname;
 
@@ -21,9 +18,8 @@ public class ASTUserClass extends ApexRootNode<ClassDeclaration> implements ASTU
         super(userClass);
     }
 
-
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

@@ -7,15 +7,16 @@ package net.sourceforge.pmd.lang.apex.ast;
 import com.google.summit.ast.Node;
 import com.google.summit.ast.SourceLocation;
 
-public class ASTBlockStatement extends AbstractApexNode.Single<Node> {
+public final class ASTBlockStatement extends AbstractApexNode.Single<Node> {
     private boolean curlyBrace;
 
     ASTBlockStatement(Node blockStatement) {
         super(blockStatement);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
@@ -24,7 +25,8 @@ public class ASTBlockStatement extends AbstractApexNode.Single<Node> {
     }
 
     @Override
-    protected void handleSourceCode(final String source) {
+    void closeNode(TextDocument document) {
+        super.closeNode(document);
         if (!hasRealLoc()) {
             return;
         }
@@ -36,4 +38,11 @@ public class ASTBlockStatement extends AbstractApexNode.Single<Node> {
         String sourceRegion = loc.extractFrom(source);
         this.curlyBrace = sourceRegion.charAt(0) == '{';
     }
+
+    /* TODO post-merge
+    @Override
+    public boolean hasRealLoc() {
+        return super.hasRealLoc() && !Objects.equals(node.getLoc(), getParent().getNode().getLoc());
+    }
+    */
 }

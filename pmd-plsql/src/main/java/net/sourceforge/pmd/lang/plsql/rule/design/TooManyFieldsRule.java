@@ -19,7 +19,6 @@ import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 import net.sourceforge.pmd.lang.plsql.rule.AbstractPLSQLRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
-import net.sourceforge.pmd.util.NumericConstants;
 
 public class TooManyFieldsRule extends AbstractPLSQLRule {
 
@@ -91,7 +90,7 @@ public class TooManyFieldsRule extends AbstractPLSQLRule {
     private void bumpCounterFor(PLSQLNode clazz) {
         String key = clazz.getImage();
         if (!stats.containsKey(key)) {
-            stats.put(key, NumericConstants.ZERO);
+            stats.put(key, 0);
             nodes.put(key, clazz);
         }
         Integer i = stats.get(key) + 1;

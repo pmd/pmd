@@ -8,14 +8,15 @@ import java.util.List;
 
 import com.google.summit.ast.statement.TryStatement;
 
-public class ASTTryCatchFinallyBlockStatement extends AbstractApexNode.Single<TryStatement> {
+public final class ASTTryCatchFinallyBlockStatement extends AbstractApexNode.Single<TryStatement> {
 
     ASTTryCatchFinallyBlockStatement(TryStatement tryStatement) {
         super(tryStatement);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

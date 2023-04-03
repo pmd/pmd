@@ -7,9 +7,10 @@
     <test-code>
         <description>failure case</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>8</expected-linenumbers>
+        <expected-linenumbers>9</expected-linenumbers>
         <code><![CDATA[
 import java.io.FileInputStream;
+import java.io.IOException;
 
 public class Foo {
 
@@ -25,9 +26,10 @@ public class Foo {
     <test-code>
         <description>failure case but obfuscated</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>8</expected-linenumbers>
+        <expected-linenumbers>9</expected-linenumbers>
         <code><![CDATA[
 import java.io.FileInputStream;
+import java.io.IOException;
 
 public class Foo {
 
@@ -45,6 +47,8 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.EOFException;
 
 public class Foo {
 
@@ -67,6 +71,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.io.FileInputStream;
+import java.io.IOException;
 
 public class Foo {
 
@@ -84,6 +89,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.io.FileInputStream;
+import java.io.IOException;
 
 public class Foo {
 

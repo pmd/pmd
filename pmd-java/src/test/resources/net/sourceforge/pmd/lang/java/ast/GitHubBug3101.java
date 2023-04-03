@@ -2,8 +2,8 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-import net.sourceforge.pmd.typeresolution.testdata.MyList;
-import net.sourceforge.pmd.typeresolution.testdata.MyListAbstract;
+import net.sourceforge.pmd.lang.java.types.testdata.MyList;
+import net.sourceforge.pmd.lang.java.types.testdata.MyListAbstract;
 
 /**
  * Note: This class is not compiled (the source is only in src/test/resources). Hence we can't

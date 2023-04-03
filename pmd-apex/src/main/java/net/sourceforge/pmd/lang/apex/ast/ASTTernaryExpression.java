@@ -6,14 +6,15 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import com.google.summit.ast.expression.TernaryExpression;
 
-public class ASTTernaryExpression extends AbstractApexNode.Single<TernaryExpression> {
+public final class ASTTernaryExpression extends AbstractApexNode.Single<TernaryExpression> {
 
     ASTTernaryExpression(TernaryExpression ternaryExpression) {
         super(ternaryExpression);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

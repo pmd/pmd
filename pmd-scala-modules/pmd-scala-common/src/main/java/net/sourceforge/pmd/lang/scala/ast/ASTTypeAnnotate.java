@@ -4,23 +4,19 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import scala.meta.Type;
 
 /**
  * The ASTTypeAnnotate node implementation.
  */
-public class ASTTypeAnnotate extends AbstractScalaNode<Type.Annotate> {
+public final class ASTTypeAnnotate extends AbstractScalaNode<Type.Annotate> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTypeAnnotate(Type.Annotate scalaNode) {
+    ASTTypeAnnotate(Type.Annotate scalaNode) {
         super(scalaNode);
     }
 
     @Override
-    public <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data) {
+    protected <P, R> R acceptVisitor(ScalaParserVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

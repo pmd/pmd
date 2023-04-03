@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Good example #1</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {        // perfect, both methods provided
+    override fun equals(other: Any?): Boolean {
+      // do some comparison
+    }
+    override fun hashCode(): Int {
+      // return some hash value
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Bad example #1 - missing hashCode</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+class Bar {        // poor, missing a hashCode() method
+    override fun equals(o: Any?): Boolean {
+      // do some comparison
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Bad example #2 - missing equals</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+class Baz {        // poor, missing an equals() method
+    override fun hashCode(): Int {
+      // return some hash value
+    }
+}
+     ]]></code>
+    </test-code>
+</test-data>

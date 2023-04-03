@@ -7,6 +7,7 @@
     <test-code>
         <description>hash code only</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public int hashCode() {}
@@ -17,6 +18,7 @@ public class Foo {
     <test-code>
         <description>equals only</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public boolean equals(Object other) {}
@@ -46,6 +48,7 @@ public class Foo {}
     <test-code>
         <description>equals sig uses String, not Object</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public boolean equals(String o) {
@@ -133,6 +136,7 @@ public class Foo  {
     <test-code>
         <description>overloaded hashCode, should fail on equals</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 public class Foo  {
     public boolean equals(Object o1) { return false; }
@@ -156,6 +160,7 @@ public class Foo {
     <test-code>
         <description>implements interface other than Comparable, not resolvable</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 public class Foo implements C {
     public boolean equals(Object other) { return false; }
@@ -167,6 +172,7 @@ public class Foo implements C {
     <test-code>
         <description>implements interface other than Comparable, resolvable (#1303 OverrideBothEqualsAndHashcodeRule does not work on class implements resolvable interfaces)</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 public class Foo implements Runnable {
     public boolean equals(Object other) { return false; }

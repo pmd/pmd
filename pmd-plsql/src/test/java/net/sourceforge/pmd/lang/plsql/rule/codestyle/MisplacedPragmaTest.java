@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.plsql.rule.codestyle;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class MisplacedPragmaTest extends PmdRuleTst {
+class MisplacedPragmaTest extends PmdRuleTst {
     // no additional unit tests
 }

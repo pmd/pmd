@@ -10,10 +10,15 @@ import java.util.NavigableSet;
 import java.util.TreeSet;
 
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
+import net.sourceforge.pmd.lang.ast.AstVisitor;
+import net.sourceforge.pmd.lang.ast.FileAnalysisException;
+import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
+import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextRegion;
 
 import com.google.summit.ast.Node;
 import com.google.summit.ast.expression.LiteralExpression;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * @deprecated Use {@link ApexNode}
@@ -129,25 +134,67 @@ public abstract class AbstractApexNode extends AbstractApexNodeBase implements A
         this(Void.class);
     }
 
+    // overridden to make them visible
     @Override
-    public ApexNode<?> getChild(int index) {
-        return (ApexNode<?>) super.getChild(index);
+    protected void addChild(AbstractApexNode<?> child, int index) {
+        super.addChild(child, index);
     }
 
     @Override
-    public ApexNode<?> getParent() {
-        return (ApexNode<?>) super.getParent();
+    protected void insertChild(AbstractApexNode<?> child, int index) {
+        super.insertChild(child, index);
     }
 
     @Override
-    public Iterable<? extends ApexNode<?>> children() {
-        return (Iterable<? extends ApexNode<?>>) super.children();
+    @SuppressWarnings("unchecked")
+    public final <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
+        if (visitor instanceof ApexVisitor) {
+            return this.acceptApexVisitor((ApexVisitor<? super P, ? extends R>) visitor, data);
+        }
+        return visitor.cannotVisit(this, data);
+    }
+
+    protected abstract <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data);
+
+    @Override
+    public @NonNull ASTApexFile getRoot() {
+        return getParent().getRoot();
     }
 
     abstract void calculateLineNumbers(SourceCodePositioner positioner);
 
-    protected void handleSourceCode(String source) {
-        // default implementation does nothing
+    @Override
+    public @NonNull TextRegion getTextRegion() {
+        if (region == null) {
+            if (!hasRealLoc()) {
+                AbstractApexNode<?> parent = (AbstractApexNode<?>) getParent();
+                if (parent == null) {
+                    throw new FileAnalysisException("Unable to determine location of " + this);
+                }
+                region = parent.getTextRegion();
+            } else {
+                Location loc = node.getLoc();
+                region = TextRegion.fromBothOffsets(loc.getStartIndex(), loc.getEndIndex());
+            }
+        }
+        return region;
+    }
+
+    @Override
+    public final String getXPathNodeName() {
+        return this.getClass().getSimpleName().replaceFirst("^AST", "");
+    }
+
+    /**
+     * Note: in this routine, the node has not been added to its parents,
+     * but its children have been populated (except comments).
+     */
+    void closeNode(TextDocument positioner) {
+        // do nothing
+    }
+
+    protected void setRegion(TextRegion region) {
+        this.region = region;
     }
 
     @Override
@@ -180,6 +227,15 @@ public abstract class AbstractApexNode extends AbstractApexNodeBase implements A
             return ((LiteralExpression.StringVal) expr).getValue();
         } else if (expr instanceof LiteralExpression.NullVal) {
             return "";
+        }
+        return expr.asCodeString();
+    }
+    
+    private TypeInfo getDefiningTypeOrNull() {
+        try {
+            return node.getDefiningType();
+        } catch (UnsupportedOperationException e) {
+            return null;
         }
         return expr.asCodeString();
     }

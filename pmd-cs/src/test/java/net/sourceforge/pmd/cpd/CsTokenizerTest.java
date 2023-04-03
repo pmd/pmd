@@ -4,20 +4,18 @@
 
 package net.sourceforge.pmd.cpd;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.util.Properties;
 
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
-public class CsTokenizerTest extends CpdTextComparisonTest {
+class CsTokenizerTest extends CpdTextComparisonTest {
 
-    @org.junit.Rule
-    public ExpectedException ex = ExpectedException.none();
-
-    public CsTokenizerTest() {
+    CsTokenizerTest() {
         super(".cs");
     }
 
@@ -34,84 +32,83 @@ public class CsTokenizerTest extends CpdTextComparisonTest {
     }
 
     @Test
-    public void testSimpleClass() {
+    void testSimpleClass() {
         doTest("simpleClass");
     }
 
     @Test
-    public void testSimpleClassMethodMultipleLines() {
+    void testSimpleClassMethodMultipleLines() {
         doTest("simpleClassMethodMultipleLines");
     }
 
     @Test
-    public void testStrings() {
+    void testStrings() {
         doTest("strings");
     }
 
     @Test
-    public void testOpenString() {
-        ex.expect(TokenMgrError.class);
-        doTest("unlexable_string");
+    void testOpenString() {
+        assertThrows(TokenMgrError.class, () -> doTest("unlexable_string"));
     }
 
     @Test
-    public void testCommentsIgnored1() {
+    void testCommentsIgnored1() {
         doTest("comments");
     }
 
     @Test
-    public void testIgnoreBetweenSpecialComments() {
+    void testIgnoreBetweenSpecialComments() {
         doTest("specialComments");
     }
 
     @Test
-    public void testOperators() {
+    void testOperators() {
         doTest("operatorsAndStuff");
     }
 
 
     @Test
-    public void testLineNumberAfterMultilineString() {
+    void testLineNumberAfterMultilineString() {
         doTest("strings");
     }
 
     @Test
-    public void testDoNotIgnoreUsingDirectives() {
+    void testDoNotIgnoreUsingDirectives() {
         doTest("usingDirectives");
     }
 
     @Test
-    public void testIgnoreUsingDirectives() {
+    void testIgnoreUsingDirectives() {
         doTest("usingDirectives", "_ignored", ignoreUsings());
     }
 
     @Test
-    public void testTabWidth() {
+    void testTabWidth() {
         doTest("tabWidth");
     }
 
     @Test
-    public void testLongListsOfNumbersAreNotIgnored() {
+    void testLongListsOfNumbersAreNotIgnored() {
         doTest("listOfNumbers");
     }
 
     @Test
-    public void testLongListsOfNumbersAreIgnored() {
+    void testLongListsOfNumbersAreIgnored() {
         doTest("listOfNumbers", "_ignored", skipLiteralSequences());
     }
 
     @Test
-    public void testCSharp7And8Additions() {
+    void testCSharp7And8Additions() {
         doTest("csharp7And8Additions");
     }
 
     @Test
-    public void testAttributesAreNotIgnored() {
+    void testAttributesAreNotIgnored() {
         doTest("attributes");
     }
 
     @Test
-    public void testAttributesAreIgnored() {
+    void testAttributesAreIgnored() {
         doTest("attributes", "_ignored", skipAttributes());
     }
 

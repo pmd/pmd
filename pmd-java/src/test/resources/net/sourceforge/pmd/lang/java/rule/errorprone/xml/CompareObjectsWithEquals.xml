@@ -49,12 +49,14 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>missed hit - qualified names.  that's ok, we can't resolve the types yet, so better to skip this for now</description>
-        <expected-problems>0</expected-problems>
+        <description>Hits it</description>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
+    Foo foo;
+
     boolean bar(Foo b) {
-        return this.b == b.foo;
+        return this.foo == b.foo;
     }
 }
         ]]></code>
@@ -239,6 +241,65 @@ public class CompareWithEqualsTest {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>comparing in equals method should be ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Obj {
+    private int i;
+
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        final Obj that = (Obj) other;
+        return that.i == this.i;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] CompareObjectsWithEqualsRule: False positive with Enums #2716</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class EnumTest {
+    enum Type {
+        A, B;
+    }
+
+    private final Type type = Type.A;
+
+    public String isTypeA(Type param) {
+        return param == type ? "Yes" : "No";
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description> [java] CompareObjectsWithEquals - false negative with type res #2880</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+            import java.math.BigInteger;
+
+            public class Foo {
+                private BigInteger field = new BigInteger("10");
+                private BigInteger field2 = new BigInteger("20");
+
+                public boolean check(final BigInteger param) {
+                    final BigInteger other = new BigInteger("20");
+
+                    return (field == null
+                            || param != field   // warning expected: Use equals() to compare object references.
+                            && other != field)  // warning expected: Use equals() to compare object references.
+                            && param.testBit(field2.intValue())
+                            && other.testBit(field2.intValue());
+                }
+            }
+        ]]></code>
+    </test-code>
 
     <test-code>
         <description>#2934 False negative - class with fields</description>
@@ -304,7 +365,7 @@ public class ClassWithFields {
     private Object b;
 
     public boolean equals(Object o) {
-        if (this == o) { } // should be allowed, since this is a often used pattern in Object::equals.
+        // if (this == o) { } // should be allowed, since this is a often used pattern in Object::equals.
         // comparing class instances is ok
         if (o.getClass() == a.getClass()) { }
         if (this.getClass() == this.a.getClass()) { }

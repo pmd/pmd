@@ -6,14 +6,15 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import com.google.summit.ast.expression.CastExpression;
 
-public class ASTCastExpression extends AbstractApexNode.Single<CastExpression> {
+public final class ASTCastExpression extends AbstractApexNode.Single<CastExpression> {
 
     ASTCastExpression(CastExpression castExpression) {
         super(castExpression);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

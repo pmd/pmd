@@ -18,18 +18,19 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.zip.Checksum;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Specialized fingerprinter for Zip files.
  */
 public class ZipFileFingerprinter implements ClasspathEntryFingerprinter {
 
-    private static final Logger LOG = Logger.getLogger(ZipFileFingerprinter.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ZipFileFingerprinter.class);
 
     private static final Set<String> SUPPORTED_EXTENSIONS;
     private static final Set<String> SUPPORTED_ENTRY_EXTENSIONS;
@@ -80,10 +81,10 @@ public class ZipFileFingerprinter implements ClasspathEntryFingerprinter {
                 checksum.update(buffer.array(), 0, 4);
             }
         } catch (final FileNotFoundException | NoSuchFileException ignored) {
-            LOG.warning("Classpath entry " + entry.toString() + " doesn't exist, ignoring it");
+            LOG.warn("Classpath entry {} doesn't exist, ignoring it", entry);
         } catch (final URISyntaxException e) {
             // Should never happen?
-            LOG.log(Level.WARNING, "Malformed classpath entry doesn't refer to zip in filesystem.", e);
+            LOG.warn("Malformed classpath entry doesn't refer to zip in filesystem.", e);
         }
     }
 

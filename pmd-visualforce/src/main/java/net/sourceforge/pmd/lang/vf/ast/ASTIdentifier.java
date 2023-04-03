@@ -4,24 +4,14 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+public final class ASTIdentifier extends AbstractVFDataNode {
 
-public class ASTIdentifier extends AbstractVFDataNode {
-
-    @Deprecated
-    @InternalApi
-    public ASTIdentifier(int id) {
+    ASTIdentifier(int id) {
         super(id);
     }
 
-    @Deprecated
-    @InternalApi
-    public ASTIdentifier(VfParser p, int id) {
-        super(p, id);
-    }
-
     @Override
-    public Object jjtAccept(VfParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVfVisitor(VfVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

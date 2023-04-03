@@ -6,17 +6,13 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.ConditionalExpression;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTConditionalExpression extends AbstractEcmascriptNode<ConditionalExpression> {
-    @Deprecated
-    @InternalApi
-    public ASTConditionalExpression(ConditionalExpression conditionalExpression) {
+public final class ASTConditionalExpression extends AbstractEcmascriptNode<ConditionalExpression> {
+    ASTConditionalExpression(ConditionalExpression conditionalExpression) {
         super(conditionalExpression);
     }
 
     @Override
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+    protected <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

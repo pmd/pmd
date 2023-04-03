@@ -4,24 +4,34 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+/**
+ * The name of a module. Module names look like package names, eg
+ * {@code java.base}.
+ */
+public final class ASTModuleName extends AbstractJavaNode {
 
-public class ASTModuleName extends AbstractJavaNode {
-
-    @InternalApi
-    @Deprecated
-    public ASTModuleName(int id) {
+    ASTModuleName(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTModuleName(JavaParser p, int id) {
-        super(p, id);
+
+    @Override
+    public <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
+        return visitor.visit(this, data);
     }
 
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-        return visitor.visit(this, data);
+    @Deprecated
+    public String getImage() {
+        return null;
     }
+
+    /**
+     * Returns the name of the declared module. Module names look
+     * like package names, eg {@code java.base}.
+     */
+    public String getName() {
+        return super.getImage();
+    }
+
 }

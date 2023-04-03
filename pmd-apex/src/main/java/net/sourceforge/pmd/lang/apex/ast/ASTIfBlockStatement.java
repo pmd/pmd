@@ -6,14 +6,15 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import com.google.summit.ast.statement.IfStatement;
 
-public class ASTIfBlockStatement extends AbstractApexNode.Single<IfStatement> {
+public final class ASTIfBlockStatement extends AbstractApexNode.Single<IfStatement> {
 
     ASTIfBlockStatement(IfStatement ifStatement) {
         super(ifStatement);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

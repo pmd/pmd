@@ -2,29 +2,54 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-
 package net.sourceforge.pmd.lang.html.ast;
 
-import org.jsoup.nodes.Document;
-import org.jsoup.parser.Parser;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 
 import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.cpd.TokenEntry;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.cpd.Tokens;
+import net.sourceforge.pmd.lang.LanguageProcessor;
+import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
+import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
+import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
+import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.lang.html.HtmlLanguageModule;
 
 public class HtmlTokenizer implements Tokenizer {
 
     @Override
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
-        String data = sourceCode.getCodeBuffer().toString();
+        HtmlLanguageModule html = HtmlLanguageModule.getInstance();
 
-        Document doc = Parser.xmlParser().parseInput(data, "");
-        HtmlTreeBuilder builder = new HtmlTreeBuilder();
-        ASTHtmlDocument root = builder.build(doc, data);
-        
-        traverse(root, tokenEntries);
-        tokenEntries.add(TokenEntry.EOF);
+        try (LanguageProcessor processor = html.createProcessor(html.newPropertyBundle());
+             TextFile tf = TextFile.forCharSeq(
+                 sourceCode.getCodeBuffer(),
+                 sourceCode.getFileName(),
+                 html.getDefaultVersion()
+             );
+             TextDocument textDoc = TextDocument.create(tf)) {
+
+            ParserTask task = new ParserTask(
+                textDoc,
+                SemanticErrorReporter.noop(),
+                LanguageProcessorRegistry.singleton(processor)
+            );
+
+            HtmlParser parser = new HtmlParser();
+            ASTHtmlDocument root = parser.parse(task);
+
+            traverse(root, tokenEntries);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            tokenEntries.add(TokenEntry.EOF);
+        }
     }
 
     private void traverse(HtmlNode node, Tokens tokenEntries) {
@@ -34,13 +59,11 @@ public class HtmlTokenizer implements Tokenizer {
             image = ((ASTHtmlTextNode) node).getText();
         }
 
-        TokenEntry token = new TokenEntry(image, node.getXPathNodeName(), node.getBeginLine(),
-                node.getBeginColumn(), node.getEndColumn());
+        TokenEntry token = new TokenEntry(image, node.getReportLocation());
         tokenEntries.add(token);
 
         for (HtmlNode child : node.children()) {
             traverse(child, tokenEntries);
         }
     }
-
 }

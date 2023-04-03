@@ -11,6 +11,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.PMDConfiguration;
 
 import com.beust.jcommander.JCommander;
@@ -83,14 +85,16 @@ public final class PmdParametersParseResult {
      * Returns the resulting configuration if parsing succeeded and neither {@link #isHelp()} nor {@link #isVersion()} is requested.
      * Otherwise returns null.
      */
-    public PMDConfiguration toConfiguration() {
-        return result != null && !isHelp() && !isVersion() ? result.toConfiguration() : null;
+    public @Nullable PMDConfiguration toConfiguration() {
+        return isValidParameterSet() ? result.toConfiguration() : null;
+    }
+
+    private boolean isValidParameterSet() {
+        return result != null && !isHelp() && !isVersion();
     }
 
     /**
      * Parse an array of CLI parameters and returns a result (which may be failed).
-     * Use this instead of {@link PMDCommandLineInterface#extractParameters(PMDParameters, String[], String)},
-     * because that one may terminate the VM.
      *
      * @param args Array of parameters
      *

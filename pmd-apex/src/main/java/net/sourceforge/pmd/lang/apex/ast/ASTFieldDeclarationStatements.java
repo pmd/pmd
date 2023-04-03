@@ -7,34 +7,21 @@ package net.sourceforge.pmd.lang.apex.ast;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sourceforge.pmd.Rule;
-
 import com.google.summit.ast.declaration.FieldDeclarationGroup;
 
 
-public class ASTFieldDeclarationStatements extends AbstractApexNode.Single<FieldDeclarationGroup>
-        implements CanSuppressWarnings {
+public final class ASTFieldDeclarationStatements extends AbstractApexNode.Single<FieldDeclarationGroup> {
 
     ASTFieldDeclarationStatements(FieldDeclarationGroup fieldDeclarationStatements) {
         super(fieldDeclarationStatements);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
-    @Override
-    public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
-        for (ASTModifierNode modifier : findChildrenOfType(ASTModifierNode.class)) {
-            for (ASTAnnotation a : modifier.findChildrenOfType(ASTAnnotation.class)) {
-                if (a.suppresses(rule)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 
     public ASTModifierNode getModifiers() {
         return getFirstChildOfType(ASTModifierNode.class);

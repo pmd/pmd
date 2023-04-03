@@ -4,23 +4,14 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+public class ASTPackageBody extends AbstractPLSQLNode implements OracleObject {
 
-public class ASTPackageBody extends net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode implements OracleObject {
-    @Deprecated
-    @InternalApi
-    public ASTPackageBody(int id) {
+    ASTPackageBody(int id) {
         super(id);
     }
 
-    @Deprecated
-    @InternalApi
-    public ASTPackageBody(PLSQLParser p, int id) {
-        super(p, id);
-    }
-
     @Override
-    public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {
+    protected <P, R> R acceptPlsqlVisitor(PlsqlVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

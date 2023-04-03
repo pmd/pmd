@@ -4,31 +4,47 @@
 
 package net.sourceforge.pmd.lang.ast;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import javax.xml.parsers.ParserConfigurationException;
+import java.util.Objects;
 
-import org.jaxen.JaxenException;
-import org.w3c.dom.Document;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.ast.xpath.Attribute;
-import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
-import net.sourceforge.pmd.lang.dfa.DataFlowNode;
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
+import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.ast.NodeStream.DescendantNodeStream;
+import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
+import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextRegion;
+import net.sourceforge.pmd.lang.rule.xpath.Attribute;
+import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
+import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
+import net.sourceforge.pmd.lang.rule.xpath.impl.AttributeAxisIterator;
+import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
+import net.sourceforge.pmd.lang.rule.xpath.internal.DeprecatedAttrLogger;
+import net.sourceforge.pmd.lang.rule.xpath.internal.SaxonXPathRuleQuery;
+import net.sourceforge.pmd.reporting.Reportable;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.DataKey;
+
 
 /**
  * Root interface for all AST nodes. This interface provides only the API
  * shared by all AST implementations in PMD language modules. This includes for now:
  * <ul>
- * <li>Tree traversal methods, like {@link #getParent()} and {@link #getFirstChildOfType(Class)}
+ * <li>Tree traversal methods: {@link #getParent()}, {@link #getIndexInParent()},
+ * {@link #getChild(int)}, and {@link #getNumChildren()}. These four basic
+ * operations are used to implement more specific traversal operations,
+ * like {@link #firstChild(Class)}, and {@link NodeStream}s.
  * <li>The API used to describe nodes in a form understandable by XPath expressions:
  * {@link #getXPathNodeName()},  {@link #getXPathAttributesIterator()}
  * <li>Location metadata: eg {@link #getBeginLine()}, {@link #getBeginColumn()}
+ * <li>An extensible metadata store: {@link #getUserMap()}
  * </ul>
- * Additionally, the {@linkplain #getUserMap() user data map} is an extensibility
- * mechanism with which any client can independently associate values to AST nodes.
  *
  * <p>Every language implementation must publish a sub-interface of Node
  * which serves as a supertype for all nodes of that language (e.g.
@@ -40,275 +56,209 @@ import net.sourceforge.pmd.util.DataMap.DataKey;
  * implementations should ensure that every node returned by these methods
  * are indeed of the same type. Possibly, a type parameter will be added to
  * the Node interface in 7.0.0 to enforce it at compile-time.
- *
- * <p>A number of methods are deprecated and will be removed in 7.0.0.
- * Most of them are implementation details that clutter this API and
- * make implementation more difficult. Some methods prefixed with {@code jjt}
- * have a more conventional counterpart (e.g. {@link #jjtGetParent()} and
- * {@link #getParent()}) that should be preferred.
  */
-public interface Node {
+public interface Node extends Reportable {
 
     /**
-     * This method is called after the node has been made the current node. It
-     * indicates that child nodes can now be added to it.
+     * Compares nodes according to their location in the file.
+     * Note that this comparator is not <i>consistent with equals</i>
+     * (see {@link Comparator}) as some nodes have the same location.
+     */
+    Comparator<Node> COORDS_COMPARATOR =
+        Comparator.comparing(Node::getReportLocation, FileLocation.COMPARATOR);
+
+    /**
+     * Returns a string token, usually filled-in by the parser, which describes some textual characteristic of this
+     * node. This is usually an identifier, but you should check that using the Designer. On most nodes though, this
+     * method returns {@code null}.
      *
-     * @deprecated This is JJTree-specific and will be removed from this interface
+     * @deprecated Should be replaced with methods that have more specific
+     *     names in node classes.
      */
     @Deprecated
-    void jjtOpen();
+    @DeprecatedUntil700
+    default String getImage() {
+        return null;
+    }
 
-
-    /**
-     * This method is called after all the child nodes have been added.
-     *
-     * @deprecated This is JJTree-specific and will be removed from this interface
-     */
-    @Deprecated
-    void jjtClose();
-
-
-    /**
-     * Sets the parent of this node.
-     *
-     * @param parent The parent
-     *
-     * @deprecated This is JJTree-specific and will be removed from this interface
-     */
-    @Deprecated
-    void jjtSetParent(Node parent);
-
-
-    /**
-     * Returns the parent of this node.
-     *
-     * @return The parent of the node
-     *
-     * @deprecated Use {@link #getParent()}
-     */
-    @Deprecated
-    Node jjtGetParent();
-
-
-    /**
-     * This method tells the node to add its argument to the node's list of
-     * children.
-     *
-     * @param child The child to add
-     * @param index The index to which the child will be added
-     *
-     * @deprecated This is JJTree-specific and will be removed from this interface
-     */
-    @Deprecated
-    void jjtAddChild(Node child, int index);
-
-    /**
-     * Sets the index of this node from the perspective of its parent. This
-     * means: this.getParent().getChild(index) == this.
-     *
-     * @param index
-     *            the child index
-     *
-     * @deprecated This is JJTree-specific and will be removed from this interface
-     */
-    @Deprecated
-    void jjtSetChildIndex(int index);
-
-
-    /**
-     * Gets the index of this node in the children of its parent.
-     *
-     * @return The index of the node
-     *
-     * @deprecated Use {@link #getIndexInParent()}
-     */
-    @Deprecated
-    int jjtGetChildIndex();
-
-
-    /**
-     * This method returns a child node. The children are numbered from zero,
-     * left to right.
-     *
-     * @param index
-     *            the child index. Must be nonnegative and less than
-     *            {@link #jjtGetNumChildren}.
-     *
-     * @deprecated Use {@link #getChild(int)}
-     */
-    @Deprecated
-    Node jjtGetChild(int index);
-
-
-    /**
-     * Returns the number of children the node has.
-     *
-     * @deprecated Use {@link #getNumChildren()}
-     */
-    @Deprecated
-    int jjtGetNumChildren();
-
-
-    /**
-     * @deprecated This is JJTree-specific and will be removed from this interface.
-     */
-    @Deprecated
-    int jjtGetId();
-
-
-    /**
-     * Returns a string token, usually filled-in by the parser, which describes some textual
-     * characteristic of this node. This is usually an identifier, but you should check that
-     * using the Designer. On most nodes though, this method returns {@code null}.
-     */
-    String getImage();
-
-
-    /**
-     * @deprecated This is internal API, the image should never be set by developers.
-     */
-    @InternalApi
-    @Deprecated
-    void setImage(String image);
 
     /**
      * Returns true if this node's image is equal to the given string.
      *
      * @param image The image to check
-     */
-    boolean hasImageEqualTo(String image);
-
-    int getBeginLine();
-
-    int getBeginColumn();
-
-    int getEndLine();
-
-    // FIXME should not be inclusive
-    int getEndColumn();
-
-
-    /**
-     * @deprecated This is Java-specific and will be removed from this interface
+     *
+     * @deprecated See {@link #getImage()}
      */
     @Deprecated
-    DataFlowNode getDataFlowNode();
-
+    @DeprecatedUntil700
+    default boolean hasImageEqualTo(String image) {
+        return Objects.equals(getImage(), image);
+    }
 
     /**
-     * @deprecated This is Java-specific and will be removed from this interface
+     * Compare the coordinates of this node with the other one as if
+     * with {@link #COORDS_COMPARATOR}. The result is useless
+     * if both nodes are not from the same tree.
+     *
+     * @param other Other node
+     *
+     * @return A positive integer if this node comes AFTER the other,
+     *     0 if they have the same position, a negative integer if this
+     *     node comes BEFORE the other
      */
-    @Deprecated
-    void setDataFlowNode(DataFlowNode dataFlowNode);
+    default int compareLocation(Node other) {
+        return COORDS_COMPARATOR.compare(this, other);
+    }
+
+    /**
+     * {@inheritDoc}
+     * This is not necessarily the exact boundaries of the node in the
+     * text. Nodes that can provide exact position information do so
+     * using a {@link TextRegion}, by implementing {@link TextAvailableNode}.
+     *
+     * <p>Use this instead of {@link #getBeginColumn()}/{@link #getBeginLine()}, etc.
+     */
+    @Override
+    default FileLocation getReportLocation() {
+        return getAstInfo().getTextDocument().toLocation(getTextRegion());
+    }
+
+    /**
+     * Returns a region of text delimiting the node in the underlying
+     * text document. This does not necessarily match the
+     * {@link #getReportLocation() report location}.
+     */
+    TextRegion getTextRegion();
+
+
+    // Those are kept here because they're handled specially as XPath
+    // attributes, for now
+
+    @Override
+    default int getBeginLine() {
+        return Reportable.super.getBeginLine();
+    }
+
+    @Override
+    default int getBeginColumn() {
+        return Reportable.super.getBeginColumn();
+    }
+
+    @Override
+    default int getEndLine() {
+        return Reportable.super.getEndLine();
+    }
+
+    @Override
+    default int getEndColumn() {
+        return Reportable.super.getEndColumn();
+    }
 
 
     /**
-     * Returns true if this node is considered a boundary by traversal methods.
-     * Traversal methods such as {@link #getFirstDescendantOfType(Class)} don't
-     * look past such boundaries by default, which is usually the expected thing
-     * to do. For example, in Java, lambdas and nested classes are considered
-     * find boundaries.
+     * Returns true if this node is considered a boundary by traversal
+     * methods. Traversal methods such as {@link #descendants()}
+     * don't look past such boundaries by default, which is usually the
+     * expected thing to do. For example, in Java, lambdas and nested
+     * classes are considered find boundaries.
      *
      * <p>Note: This attribute is deprecated for XPath queries. It is not useful
      * for XPath queries and will be removed with PMD 7.0.0.
+     *
+     * @return True if this node is a find boundary
+     *
+     * @see DescendantNodeStream#crossFindBoundaries(boolean)
      */
-    @DeprecatedAttribute
-    boolean isFindBoundary();
-
+    @NoAttribute
+    default boolean isFindBoundary() {
+        return false;
+    }
 
     /**
      * Returns the n-th parent or null if there are less than {@code n} ancestors.
      *
+     * <pre>{@code
+     *    getNthParent(1) == jjtGetParent
+     * }</pre>
+     *
      * @param n how many ancestors to iterate over.
-     *
      * @return the n-th parent or null.
-     *
      * @throws IllegalArgumentException if {@code n} is negative or zero.
+     *
+     * @deprecated Use node stream methods: {@code node.ancestors().get(n-1)}
      */
-    Node getNthParent(int n);
-
+    @Deprecated
+    @DeprecatedUntil700
+    default Node getNthParent(int n) {
+        return ancestors().get(n - 1);
+    }
 
     /**
-     * Traverses up the tree to find the first parent instance of type
-     * parentType or one of its subclasses.
+     * Traverses up the tree to find the first parent instance of type parentType or one of its subclasses.
      *
      * @param parentType Class literal of the type you want to find
-     * @param <T>        The type you want to find
-     *
+     * @param <T> The type you want to find
      * @return Node of type parentType. Returns null if none found.
+     *
+     * @deprecated Use node stream methods: {@code node.ancestors(parentType).first()}
      */
-    <T> T getFirstParentOfType(Class<T> parentType);
-
+    @Deprecated
+    @DeprecatedUntil700
+    default <T extends Node> T getFirstParentOfType(Class<? extends T> parentType) {
+        return this.<T>ancestors(parentType).first();
+    }
 
     /**
-     * Traverses up the tree to find all of the parent instances of type
-     * parentType or one of its subclasses. The nodes are ordered
-     * deepest-first.
+     * Traverses up the tree to find all of the parent instances of type parentType or one of its subclasses. The nodes
+     * are ordered deepest-first.
      *
      * @param parentType Class literal of the type you want to find
-     * @param <T>        The type you want to find
-     *
+     * @param <T> The type you want to find
      * @return List of parentType instances found.
-     */
-    <T> List<T> getParentsOfType(Class<T> parentType);
-
-
-    /**
-     * Gets the first parent that's an instance of any of the given types.
      *
-     * @param parentTypes Types to look for
-     * @param <T>         Most specific common type of the parameters
-     *
-     * @return The first parent with a matching type. Returns null if there
-     * is no such parent
-     *
-     * @deprecated This method causes an unchecked warning at call sites.
-     *     PMD 7 will provide a way to do the same thing without the warning.
+     * @deprecated Use node stream methods: {@code node.ancestors(parentType).toList()}.
+     *     Most usages don't really need a list though, eg you can iterate the node stream instead
      */
     @Deprecated
-    <T> T getFirstParentOfAnyType(Class<? extends T>... parentTypes);
+    @DeprecatedUntil700
+    default <T extends Node> List<T> getParentsOfType(Class<? extends T> parentType) {
+        return this.<T>ancestors(parentType).toList();
+    }
+
 
     /**
-     * Traverses the children to find all the instances of type childType or
-     * one of its subclasses.
+     * Traverses the children to find all the instances of type childType or one of its subclasses.
      *
-     * @see #findDescendantsOfType(Class) if traversal of the entire tree is
-     *      needed.
+     * @param childType class which you want to find.
+     * @return List of all children of type childType. Returns an empty list if none found.
+     * @see #findDescendantsOfType(Class) if traversal of the entire tree is needed.
      *
-     * @param childType
-     *            class which you want to find.
-     * @return List of all children of type childType. Returns an empty list if
-     *         none found.
-     */
-    <T> List<T> findChildrenOfType(Class<T> childType);
-
-    /**
-     * Traverses down the tree to find all the descendant instances of type
-     * descendantType without crossing find boundaries.
-     *
-     * @param targetType
-     *            class which you want to find.
-     * @return List of all children of type targetType. Returns an empty list if
-     *         none found.
-     */
-    <T> List<T> findDescendantsOfType(Class<? extends T> targetType);
-
-    /**
-     * Traverses down the tree to find all the descendant instances of type
-     * descendantType.
-     *
-     * @param targetType
-     *            class which you want to find.
-     * @param results
-     *            list to store the matching descendants
-     * @param crossFindBoundaries
-     *            if <code>false</code>, recursion stops for nodes for which
-     *            {@link #isFindBoundary()} is <code>true</code>
-     * @deprecated Use {@link #findDescendantsOfType(Class, boolean)} instead, which
-     * returns a result list.
+     * @deprecated Use node stream methods: {@code node.children(childType).toList()}.
+     *     Most usages don't really need a list though, eg you can iterate the node stream instead
      */
     @Deprecated
-    <T> void findDescendantsOfType(Class<T> targetType, List<T> results, boolean crossFindBoundaries);
+    @DeprecatedUntil700
+    default <T extends Node> List<T> findChildrenOfType(Class<? extends T> childType) {
+        return this.<T>children(childType).toList();
+    }
+
+
+    /**
+     * Traverses down the tree to find all the descendant instances of type descendantType without crossing find
+     * boundaries.
+     *
+     * @param targetType class which you want to find.
+     * @return List of all children of type targetType. Returns an empty list if none found.
+     *
+     * @deprecated Use node stream methods: {@code node.descendants(targetType).toList()}.
+     *     Most usages don't really need a list though, eg you can iterate the node stream instead
+     */
+    @Deprecated
+    @DeprecatedUntil700
+    default <T extends Node> List<T> findDescendantsOfType(Class<? extends T> targetType) {
+        return this.<T>descendants(targetType).toList();
+    }
+
 
     /**
      * Traverses down the tree to find all the descendant instances of type
@@ -320,166 +270,127 @@ public interface Node {
      *            if <code>false</code>, recursion stops for nodes for which
      *            {@link #isFindBoundary()} is <code>true</code>
      * @return List of all matching descendants
+     *
+     * @deprecated Use node stream methods: {@code node.descendants(targetType).crossFindBoundaries(b).toList()}.
+     *     Most usages don't really need a list though, eg you can iterate the node stream instead
      */
-    <T> List<T> findDescendantsOfType(Class<T> targetType, boolean crossFindBoundaries);
+    @Deprecated
+    @DeprecatedUntil700
+    default <T extends Node> List<T> findDescendantsOfType(Class<? extends T> targetType, boolean crossFindBoundaries) {
+        return this.<T>descendants(targetType).crossFindBoundaries(crossFindBoundaries).toList();
+    }
 
     /**
      * Traverses the children to find the first instance of type childType.
      *
-     * @see #getFirstDescendantOfType(Class) if traversal of the entire tree is
-     *      needed.
-     *
-     * @param childType
-     *            class which you want to find.
+     * @param childType class which you want to find.
      * @return Node of type childType. Returns <code>null</code> if none found.
+     * @see #getFirstDescendantOfType(Class) if traversal of the entire tree is needed.
+     *
+     * @deprecated Use {@link #firstChild(Class)}
      */
-    <T> T getFirstChildOfType(Class<T> childType);
+    @Deprecated
+    @DeprecatedUntil700
+    default <T extends Node> T getFirstChildOfType(Class<? extends T> childType) {
+        return firstChild(childType);
+    }
+
 
     /**
-     * Traverses down the tree to find the first descendant instance of type
-     * descendantType without crossing find boundaries.
+     * Traverses down the tree to find the first descendant instance of type descendantType without crossing find
+     * boundaries.
      *
-     * @param descendantType
-     *            class which you want to find.
-     * @return Node of type descendantType. Returns <code>null</code> if none
-     *         found.
+     * @param descendantType class which you want to find.
+     * @return Node of type descendantType. Returns <code>null</code> if none found.
+     *
+     * @deprecated Use node stream methods: {@code node.descendants(targetType).first()}.
      */
-    <T> T getFirstDescendantOfType(Class<T> descendantType);
+    @Deprecated
+    @DeprecatedUntil700
+    default <T extends Node> T getFirstDescendantOfType(Class<? extends T> descendantType) {
+        return descendants(descendantType).first();
+    }
 
     /**
      * Finds if this node contains a descendant of the given type without crossing find boundaries.
      *
-     * @param type
-     *            the node type to search
-     * @return <code>true</code> if there is at least one descendant of the
-     *         given type
+     * @param type the node type to search
+     * @return <code>true</code> if there is at least one descendant of the given type
+     *
+     * @deprecated Use node stream methods: {@code node.descendants(targetType).nonEmpty()}.
      */
-    <T> boolean hasDescendantOfType(Class<T> type);
+    @Deprecated
+    @DeprecatedUntil700
+    default <T extends Node> boolean hasDescendantOfType(Class<? extends T> type) {
+        return descendants(type).nonEmpty();
+    }
 
     /**
      * Returns all the nodes matching the xpath expression.
      *
-     * @param xpathString
-     *            the expression to check
+     * @param xpathString the expression to check
      * @return List of all matching nodes. Returns an empty list if none found.
-     * @throws JaxenException if the xpath is incorrect or fails altogether
-     *
      * @deprecated This is very inefficient and should not be used in new code. PMD 7.0.0 will remove
      *             support for this method.
      */
     @Deprecated
-    List<? extends Node> findChildNodesWithXPath(String xpathString) throws JaxenException;
+    default List<Node> findChildNodesWithXPath(String xpathString) {
+        return new SaxonXPathRuleQuery(
+            xpathString,
+            XPathVersion.DEFAULT,
+            Collections.emptyMap(),
+            XPathHandler.noFunctionDefinitions(),
+            // since this method will be removed, we don't log anything anymore
+            DeprecatedAttrLogger.noop()
+        ).evaluate(this);
+    }
 
-    /**
-     * Checks whether at least one descendant matches the xpath expression.
-     *
-     * @param xpathString
-     *            the expression to check
-     * @return true if there is a match
-     *
-     * @deprecated This is very inefficient and should not be used in new code. PMD 7.0.0 will remove
-     *             support for this method.
-     */
-    @Deprecated
-    boolean hasDescendantMatchingXPath(String xpathString);
-
-    /**
-     * Get a DOM Document which contains Elements and Attributes representative
-     * of this Node and it's children. Essentially a DOM tree representation of
-     * the Node AST, thereby allowing tools which can operate upon DOM to also
-     * indirectly operate on the AST.
-     *
-     * @deprecated Converting a tree to a DOM is not a standard use case.
-     *            The implementation rethrows a {@link ParserConfigurationException}
-     *            as a {@link RuntimeException}, but a caller should handle
-     *            it if he really wants to do this. Another problem is that
-     *            this is available on any node, yet only the root node of
-     *            a tree corresponds really to a document. The conversion
-     *            is easy to implement anyway, and does not have to be part
-     *            of this API.
-     */
-    @Deprecated
-    Document getAsDocument();
-
-    /**
-     * Get the user data associated with this node. By default there is no data,
-     * unless it has been set via {@link #setUserData(Object)}.
-     *
-     * @return The user data set on this node.
-     * @deprecated Use {@link #getUserMap()}
-     */
-    @Deprecated
-    Object getUserData();
-
-    /**
-     * Set the user data associated with this node.
-     *
-     * <p>PMD itself will never set user data onto a node. Nor should any Rule
-     * implementation, as the AST nodes are shared between concurrently
-     * executing Rules (i.e. it is <strong>not</strong> thread-safe).
-     *
-     * <p>This API is most useful for external applications looking to leverage
-     * PMD's robust support for AST structures, in which case application
-     * specific annotations on the AST nodes can be quite useful.
-     *
-     * @param userData
-     *            The data to set on this node.
-     * @deprecated Use {@link #getUserMap()}
-     */
-    @Deprecated
-    void setUserData(Object userData);
-
-    /**
-     * Remove the current node from its parent.
-     *
-     * @deprecated This is internal API and will be removed from this interface with 7.0.0
-     */
-    @Deprecated
-    @InternalApi
-    void remove();
-
-    /**
-     * This method tells the node to remove the child node at the given index from the node's list of
-     * children, if any; if not, no changes are done.
-     *
-     * @param childIndex
-     *          The index of the child to be removed
-     *
-     * @deprecated This is internal API and will be removed from this interface with 7.0.0
-     */
-    @Deprecated
-    @InternalApi
-    void removeChildAtIndex(int childIndex);
 
 
     /**
      * Returns a data map used to store additional information on this node.
-     * This replaces the legacy {@link #getUserData()}/{@link #setUserData(Object)}.
      *
      * @return The user data map of this node
+     *
+     * @since 6.22.0
      */
     DataMap<DataKey<?, ?>> getUserMap();
+
+
+    /**
+     * Returns the text document from which this tree was parsed. This
+     * means, that the whole file text is in memory while the AST is.
+     *
+     * @return The text document
+     */
+    default @NonNull TextDocument getTextDocument() {
+        return getAstInfo().getTextDocument();
+    }
 
     /**
      * Returns the parent of this node, or null if this is the {@linkplain RootNode root}
      * of the tree.
      *
-     * <p>This method should be preferred to {@link #jjtGetParent()}.
-     *
      * @return The parent of this node
+     *
+     * @since 6.21.0
      */
     Node getParent();
+
 
     /**
      * Returns the child of this node at the given index.
      *
      * @throws IndexOutOfBoundsException if the index is negative or greater than {@link #getNumChildren()}.
+     * @since 6.21.0
      */
     Node getChild(int index);
 
 
     /**
      * Returns the number of children of this node.
+     *
+     * @since 6.21.0
      */
     int getNumChildren();
 
@@ -487,12 +398,49 @@ public interface Node {
      * Returns the index of this node in its parent's children. If this
      * node is a {@linkplain RootNode root node}, returns -1.
      *
-     * <p>This method replaces {@link #jjtGetChildIndex()}, whose name was
-     * JJTree-specific.
-     *
      * @return The index of this node in its parent's children
+     *
+     * @since 6.21.0
      */
     int getIndexInParent();
+
+
+    /**
+     * Calls back the visitor's visit method corresponding to the runtime
+     * type of this Node. This should usually be preferred to calling
+     * a {@code visit} method directly (usually the only calls to those
+     * are in the implementations of this {@code acceptVisitor} method).
+     *
+     * @param <R>     Return type of the visitor
+     * @param <P>     Parameter type of the visitor
+     * @param visitor Visitor to dispatch
+     * @param data    Parameter to the visit
+     *
+     * @return What the visitor returned. If this node doesn't recognize
+     * the type of the visitor, returns {@link AstVisitor#cannotVisit(Node, Object) visitor.cannotVisit(this, data)}.
+     *
+     * @implSpec A typical implementation will check the type of the visitor to
+     *     be that of the language specific visitor, then call the most specific
+     *     visit method of this Node. This is typically implemented by having
+     *     a different override per concrete node class (no shortcuts).
+     *
+     *     The default implementation calls back {@link AstVisitor#cannotVisit(Node, Object)}.
+     *
+     * @since 7.0.0
+     */
+    default <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
+        return visitor.cannotVisit(this, data);
+    }
+
+    /**
+     * Returns the {@link AstInfo} for this root node.
+     *
+     * @implNote This default implementation can not work unless overridden in the root node.
+     */
+    default AstInfo<? extends RootNode> getAstInfo() {
+        return getRoot().getAstInfo();
+    }
+
 
     /**
      * Gets the name of the node that is used to match it with XPath queries.
@@ -508,23 +456,235 @@ public interface Node {
      *
      * @return An attribute iterator for this node
      */
-    Iterator<Attribute> getXPathAttributesIterator();
+    default Iterator<Attribute> getXPathAttributesIterator() {
+        return new AttributeAxisIterator(this);
+    }
+
 
     /**
-     * Returns an iterable enumerating the children of this node.
-     * Use it with a foreach loop:
-     * <pre>{@code
-     *      for (Node child : node.children()) {
-     *          // process child
-     *      }
-     * }</pre>
+     * Returns the first child of this node, or null if it doesn't exist.
      *
-     * <p>This method's return type will be changed to NodeStream
-     * in PMD 7, which is a more powerful kind of iterable. The
-     * change will be source compatible.
-     *
-     * @return A new iterable for the children of this node
+     * @since 7.0.0
      */
-    Iterable<? extends Node> children();
+    default @Nullable Node getFirstChild() {
+        return getNumChildren() > 0 ? getChild(0) : null;
+    }
 
+
+    /**
+     * Returns the first last of this node, or null if it doesn't exist.
+     *
+     * @since 7.0.0
+     */
+    default @Nullable Node getLastChild() {
+        return getNumChildren() > 0 ? getChild(getNumChildren() - 1) : null;
+    }
+
+
+    /**
+     * Returns the previous sibling of this node, or null if it does not exist.
+     *
+     * @since 7.0.0
+     */
+    default @Nullable Node getPreviousSibling() {
+        Node parent = getParent();
+        int idx = getIndexInParent();
+        if (parent != null && idx > 0) {
+            return parent.getChild(idx - 1);
+        }
+        return null;
+    }
+
+    /**
+     * Returns the next sibling of this node, or null if it does not exist.
+     *
+     * @since 7.0.0
+     */
+    default @Nullable Node getNextSibling() {
+        Node parent = getParent();
+        int idx = getIndexInParent();
+        if (parent != null && idx + 1 < parent.getNumChildren()) {
+            return parent.getChild(idx + 1);
+        }
+        return null;
+    }
+
+    /**
+     * Returns a node stream containing only this node.
+     * {@link NodeStream#of(Node)} is a null-safe version
+     * of this method.
+     *
+     * @return A node stream containing only this node
+     *
+     * @see NodeStream#of(Node)
+     * @since 7.0.0
+     */
+    default NodeStream<? extends Node> asStream() {
+        return StreamImpl.singleton(this);
+    }
+
+
+    /**
+     * Returns a node stream containing all the children of
+     * this node. This method does not provide much type safety,
+     * you'll probably want to use {@link #children(Class)}.
+     *
+     * @see NodeStream#children(Class)
+     * @since 7.0.0
+     */
+    default NodeStream<? extends Node> children() {
+        return StreamImpl.children(this);
+    }
+
+
+    /**
+     * Returns a node stream containing all the descendants
+     * of this node. See {@link DescendantNodeStream} for details.
+     *
+     * @return A node stream of the descendants of this node
+     *
+     * @see NodeStream#descendants()
+     * @since 7.0.0
+     */
+    default DescendantNodeStream<? extends Node> descendants() {
+        return StreamImpl.descendants(this);
+    }
+
+
+    /**
+     * Returns a node stream containing this node, then all its
+     * descendants. See {@link DescendantNodeStream} for details.
+     *
+     * @return A node stream of the whole subtree topped by this node
+     *
+     * @see NodeStream#descendantsOrSelf()
+     * @since 7.0.0
+     */
+    default DescendantNodeStream<? extends Node> descendantsOrSelf() {
+        return StreamImpl.descendantsOrSelf(this);
+    }
+
+
+    /**
+     * Returns a node stream containing all the strict ancestors of this node,
+     * in innermost to outermost order. The returned stream doesn't contain this
+     * node, and is empty if this node has no parent.
+     *
+     * @return A node stream of the ancestors of this node
+     *
+     * @see NodeStream#ancestors()
+     * @since 7.0.0
+     */
+    default NodeStream<? extends Node> ancestors() {
+        return StreamImpl.ancestors(this);
+
+    }
+
+
+    /**
+     * Returns a node stream containing this node and its ancestors.
+     * The nodes of the returned stream are yielded in a depth-first fashion.
+     *
+     * @return A stream of ancestors
+     *
+     * @see NodeStream#ancestorsOrSelf()
+     * @since 7.0.0
+     */
+    default NodeStream<? extends Node> ancestorsOrSelf() {
+        return StreamImpl.ancestorsOrSelf(this);
+    }
+
+
+    /**
+     * Returns a {@linkplain NodeStream node stream} of the {@linkplain #children() children}
+     * of this node that are of the given type.
+     *
+     * @param rClass Type of node the returned stream should contain
+     * @param <R>    Type of node the returned stream should contain
+     *
+     * @return A new node stream
+     *
+     * @see NodeStream#children(Class)
+     * @since 7.0.0
+     */
+    default <R extends Node> NodeStream<R> children(Class<? extends R> rClass) {
+        return StreamImpl.children(this, rClass);
+    }
+
+    /**
+     * Returns the first child of this node that has the given type.
+     * Returns null if no such child exists.
+     *
+     * <p>If you want to process this element as a node stream, use
+     * {@code asStream().firstChild(rClass)} instead, which returns
+     * a node stream.
+     *
+     * @param rClass Type of the child to find
+     * @param <R>    Type of the child to find
+     *
+     * @return A child, or null
+     *
+     * @since 7.0.0
+     */
+    default <R extends Node> @Nullable R firstChild(Class<? extends R> rClass) {
+        return children(rClass).first();
+    }
+
+
+    /**
+     * Returns a {@linkplain NodeStream node stream} of the {@linkplain #descendants() descendants}
+     * of this node that are of the given type. See {@link DescendantNodeStream}
+     * for details.
+     *
+     * @param rClass Type of node the returned stream should contain
+     * @param <R>    Type of node the returned stream should contain
+     *
+     * @return A new node stream
+     *
+     * @see NodeStream#descendants(Class)
+     * @since 7.0.0
+     */
+    default <R extends Node> DescendantNodeStream<R> descendants(Class<? extends R> rClass) {
+        return StreamImpl.descendants(this, rClass);
+    }
+
+
+    /**
+     * Returns the {@linkplain #ancestors() ancestor stream} of this node
+     * filtered by the given node type.
+     *
+     * @param rClass Type of node the returned stream should contain
+     * @param <R>    Type of node the returned stream should contain
+     *
+     * @return A new node stream
+     *
+     * @see NodeStream#ancestors(Class)
+     * @since 7.0.0
+     */
+    default <R extends Node> NodeStream<R> ancestors(Class<? extends R> rClass) {
+        return StreamImpl.ancestors(this, rClass);
+    }
+
+    /**
+     * Returns the root of the tree this node is declared in.
+     *
+     * @since 7.0.0
+     */
+    default @NonNull RootNode getRoot() {
+        Node r = this;
+        while (r.getParent() != null) {
+            r = r.getParent();
+        }
+        if (!(r instanceof RootNode)) {
+            throw new AssertionError("Root of the tree should implement RootNode");
+        }
+        return (RootNode) r;
+    }
+
+    /**
+     * Returns the language version of this node.
+     */
+    default LanguageVersion getLanguageVersion() {
+        return getTextDocument().getLanguageVersion();
+    }
 }

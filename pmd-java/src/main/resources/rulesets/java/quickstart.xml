@@ -80,7 +80,6 @@
     <!-- OTHER -->
     <!-- <rule ref="category/java/codestyle.xml/AtLeastOneConstructor" /> -->
     <rule ref="category/java/codestyle.xml/AvoidDollarSigns"/>
-    <!-- <rule ref="category/java/codestyle.xml/AvoidFinalLocalVariable" /> -->
     <rule ref="category/java/codestyle.xml/AvoidProtectedFieldInFinalClass"/>
     <rule ref="category/java/codestyle.xml/AvoidProtectedMethodInFinalClassNotExtending"/>
     <!-- <rule ref="category/java/codestyle.xml/AvoidUsingNativeCode"/>-->
@@ -89,7 +88,6 @@
     <!-- <rule ref="category/java/codestyle.xml/CommentDefaultAccessModifier" /> -->
     <!-- <rule ref="category/java/codestyle.xml/ConfusingTernary" /> -->
     <rule ref="category/java/codestyle.xml/ControlStatementBraces"/>
-    <!--<rule ref="category/java/codestyle.xml/DefaultPackage"/> deprecated since 6.35.0 -->
     <!-- <rule ref="category/java/codestyle.xml/EmptyMethodInAbstractClassShouldBeAbstract" /> -->
     <rule ref="category/java/codestyle.xml/ExtendsObject"/>
     <!-- <rule ref="category/java/codestyle.xml/FieldDeclarationsShouldBeAtStartOfClass" /> -->
@@ -102,9 +100,9 @@
     <!-- <rule ref="category/java/codestyle.xml/UseUnderscoresInNumericLiterals" /> -->
     <!-- <rule ref="category/java/codestyle.xml/OnlyOneReturn" /> -->
     <!-- <rule ref="category/java/codestyle.xml/PrematureDeclaration" /> -->
-    <!-- <rule ref="category/java/codestyle.xml/SuspiciousConstantFieldName" /> -->
     <!-- <rule ref="category/java/codestyle.xml/TooManyStaticImports" /> -->
     <rule ref="category/java/codestyle.xml/UnnecessaryAnnotationValueElement"/>
+    <!-- <rule ref="category/java/codestyle.xml/UnnecessaryBoxing" /> -->
     <!-- <rule ref="category/java/codestyle.xml/UnnecessaryCast" /> -->
     <rule ref="category/java/codestyle.xml/UnnecessaryConstructor"/>
     <rule ref="category/java/codestyle.xml/UnnecessaryFullyQualifiedName"/>
@@ -293,7 +291,6 @@
     <!-- <rule ref="category/java/performance.xml/AvoidCalendarDateCreation" /> -->
     <!-- <rule ref="category/java/performance.xml/AvoidFileStream" /> -->
     <!-- <rule ref="category/java/performance.xml/AvoidInstantiatingObjectsInLoops" /> -->
-    <!-- <rule ref="category/java/performance.xml/AvoidUsingShortType"/> -->
     <rule ref="category/java/performance.xml/BigIntegerInstantiation"/>
     <!-- <rule ref="category/java/performance.xml/ConsecutiveAppendsShouldReuse" /> -->
     <!-- <rule ref="category/java/performance.xml/ConsecutiveLiteralAppends" /> -->
@@ -302,7 +299,6 @@
     <!-- <rule ref="category/java/performance.xml/InsufficientStringBufferDeclaration" /> -->
     <rule ref="category/java/performance.xml/OptimizableToArrayCall"/>
     <!--<rule ref="category/java/performance.xml/RedundantFieldInitializer"/>-->
-    <!-- <rule ref="category/java/performance.xml/SimplifyStartsWith" /> -->
     <!-- <rule ref="category/java/performance.xml/StringInstantiation" /> -->
     <!-- <rule ref="category/java/performance.xml/StringToString" /> -->
     <!--<rule ref="category/java/performance.xml/TooFewBranchesForASwitchStatement"/>-->

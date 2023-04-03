@@ -25,22 +25,29 @@ public final class LanguageFactory extends LanguageServiceBase<Language> {
     private static final NameExtractor<Language> NAME_EXTRACTOR = new NameExtractor<Language>() {
         @Override
         public String getName(Language language) {
+            return language.getName().toLowerCase(Locale.ROOT);
+        }
+    };
+
+    private static final NameExtractor<Language> TERSE_NAME_EXTRACTOR = new NameExtractor<Language>() {
+        @Override
+        public String getName(Language language) {
             return language.getTerseName().toLowerCase(Locale.ROOT);
         }
     };
 
-    // Important: the "instance" needs to be defined *after* LANGUAGE_COMPARATOR and NAME_EXTRACTOR
+    // Important: the "instance" needs to be defined *after* LANGUAGE_COMPARATOR and *NAME_EXTRACTOR
     // as these are needed in the constructor.
-    private static LanguageFactory instance = new LanguageFactory();
+    private static final LanguageFactory INSTANCE = new LanguageFactory();
 
     public static String[] supportedLanguages;
 
     static {
-        supportedLanguages = instance.languages.keySet().toArray(new String[instance.languages.size()]);
+        supportedLanguages = INSTANCE.languagesByTerseName.keySet().toArray(new String[0]);
     }
 
     private LanguageFactory() {
-        super(Language.class, LANGUAGE_COMPARATOR, NAME_EXTRACTOR);
+        super(Language.class, LANGUAGE_COMPARATOR, NAME_EXTRACTOR, TERSE_NAME_EXTRACTOR);
     }
 
     public static Language createLanguage(String language) {
@@ -50,9 +57,9 @@ public final class LanguageFactory extends LanguageServiceBase<Language> {
     public static Language createLanguage(String language, Properties properties) {
         Language implementation;
         if (BY_EXTENSION.equals(language)) {
-            implementation = instance.getLanguageByExtension(properties.getProperty(EXTENSION));
+            implementation = INSTANCE.getLanguageByExtension(properties.getProperty(EXTENSION));
         } else {
-            implementation = instance.languages.get(instance.languageAliases(language).toLowerCase(Locale.ROOT));
+            implementation = INSTANCE.languagesByTerseName.get(INSTANCE.languageAliases(language).toLowerCase(Locale.ROOT));
         }
         if (implementation == null) {
             // No proper implementation
@@ -74,7 +81,7 @@ public final class LanguageFactory extends LanguageServiceBase<Language> {
     private Language getLanguageByExtension(String extension) {
         Language result = null;
 
-        for (Language language : languages.values()) {
+        for (Language language : languages) {
             if (language.getExtensions().contains(extension)) {
                 result = language;
                 break;

@@ -4,19 +4,22 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+import java.util.Iterator;
+
+import net.sourceforge.pmd.lang.ast.NodeStream;
 
 
 /**
  * Represents either a {@code case} or {@code default} label inside
- * a {@linkplain ASTSwitchStatement switch statement}.
+ * a {@linkplain ASTSwitchStatement switch statement} or {@linkplain ASTSwitchExpression expression}.
+ * Since Java 14, labels may have several expressions.
  *
- * <pre>
+ * <pre class="grammar">
  *
- * SwitchLabel ::=  "case" {@linkplain ASTExpression Expression} ":"
- *                | "case" "null [ "," "default" ] ":"
- *                | "case" ( {@linkplain ASTTypePattern TypePattern} | {@linkplain ASTRecordPattern RecordPattern} ) ":"
- *                | "default" ":"
+ * SwitchLabel ::=  "case" {@linkplain ASTExpression Expression} ("," {@linkplain ASTExpression Expression} )*
+ *                | "case" "null [ "," "default" ]
+ *                | "case" ( {@linkplain ASTTypePattern TypePattern} | {@linkplain ASTRecordPattern RecordPattern} )
+ *                | "default"
  *
  * </pre>
  *
@@ -25,37 +28,42 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a>
  * @see <a href="https://openjdk.org/jeps/432">JEP 432: Record Patterns (Second Preview)</a>
  */
-public class ASTSwitchLabel extends AbstractJavaNode {
+public final class ASTSwitchLabel extends AbstractJavaNode implements Iterable<ASTExpression> {
 
     private boolean isDefault;
 
 
-    @InternalApi
-    @Deprecated
-    public ASTSwitchLabel(int id) {
+    ASTSwitchLabel(int id) {
         super(id);
     }
 
 
-    @InternalApi
-    @Deprecated
-    public ASTSwitchLabel(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
-    @InternalApi
-    @Deprecated
-    public void setDefault() {
+    void setDefault() {
         isDefault = true;
     }
 
+    /** Returns true if this is the {@code default} label. */
+    // todo `case default`
     public boolean isDefault() {
         return isDefault;
     }
 
+    /**
+     * Returns the expressions of this label, or an empty list if this
+     * is the default label. This may contain {@linkplain  ASTPatternExpression pattern expressions}
+     * to represent patterns.
+     */
+    public NodeStream<ASTExpression> getExprList() {
+        return children(ASTExpression.class);
+    }
+
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
+    }
+
+    @Override
+    public Iterator<ASTExpression> iterator() {
+        return children(ASTExpression.class).iterator();
     }
 }

@@ -10,9 +10,14 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTPackageSpecification;
  * This rule detects when a class exceeds a certain threshold. i.e. if a class
  * has more than 1000 lines of code.
  */
-public class ExcessivePackageSpecificationLengthRule extends ExcessiveLengthRule {
+public class ExcessivePackageSpecificationLengthRule extends AbstractCounterCheckRule.AbstractLineLengthCheckRule<ASTPackageSpecification> {
+
     public ExcessivePackageSpecificationLengthRule() {
         super(ASTPackageSpecification.class);
-        setProperty(MINIMUM_DESCRIPTOR, 1000d);
+    }
+
+    @Override
+    protected int defaultReportLevel() {
+        return 1000;
     }
 }

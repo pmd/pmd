@@ -93,4 +93,15 @@ public class UseShortArrayExample {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>array initialization with Object LHS type</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class UseShortArrayExample {
+    public void foo() {
+        Object ar1 = new int[] { 1, 2 };
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

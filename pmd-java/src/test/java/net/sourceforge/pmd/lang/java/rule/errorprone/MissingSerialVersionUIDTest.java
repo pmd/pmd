@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class MissingSerialVersionUIDTest extends PmdRuleTst {
+class MissingSerialVersionUIDTest extends PmdRuleTst {
     // no additional unit tests
 }

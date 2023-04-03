@@ -7107,6 +7107,25 @@
         "bug",
         "code"
       ]
+    },
+    {
+      "login": "dague1",
+      "name": "dague1",
+      "avatar_url": "https://avatars.githubusercontent.com/u/42275566?v=4",
+      "profile": "https://github.com/dague1",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "sfdcsteve",
+      "name": "Steven Stearns",
+      "avatar_url": "https://avatars.githubusercontent.com/u/16338550?v=4",
+      "profile": "https://github.com/sfdcsteve",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

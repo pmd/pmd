@@ -4,26 +4,23 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.io.StringReader;
-
 import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.cpd.token.JavaCCTokenFilter;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.GenericToken;
-import net.sourceforge.pmd.lang.modelica.ModelicaTokenManager;
-import net.sourceforge.pmd.lang.modelica.ast.ModelicaParser;
-import net.sourceforge.pmd.lang.modelica.ast.Token;
+import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.modelica.ast.ModelicaTokenKinds;
 
 
 public class ModelicaTokenizer extends JavaCCTokenizer {
+
     @Override
-    protected TokenManager getLexerForSource(SourceCode sourceCode) {
-        final StringBuilder stringBuilder = sourceCode.getCodeBuffer();
-        return new ModelicaTokenManager(new StringReader(stringBuilder.toString()));
+    protected TokenManager<JavaccToken> makeLexerImpl(CharStream sourceCode) {
+        return ModelicaTokenKinds.newTokenManager(sourceCode);
     }
 
     @Override
-    protected JavaCCTokenFilter getTokenFilter(TokenManager tokenManager) {
+    protected JavaCCTokenFilter getTokenFilter(TokenManager<JavaccToken> tokenManager) {
         return new ModelicaTokenFilter(tokenManager);
     }
 
@@ -31,32 +28,32 @@ public class ModelicaTokenizer extends JavaCCTokenizer {
         private boolean discardingWithinAndImport = false;
         private boolean discardingAnnotation = false;
 
-        ModelicaTokenFilter(TokenManager tokenManager) {
+        ModelicaTokenFilter(TokenManager<JavaccToken> tokenManager) {
             super(tokenManager);
         }
 
-        private void skipWithinAndImport(Token currentToken) {
+        private void skipWithinAndImport(JavaccToken currentToken) {
             final int type = currentToken.kind;
-            if (type == ModelicaParser.IMPORT || type == ModelicaParser.WITHIN) {
+            if (type == ModelicaTokenKinds.IMPORT || type == ModelicaTokenKinds.WITHIN) {
                 discardingWithinAndImport = true;
-            } else if (discardingWithinAndImport && type == ModelicaParser.SC) {
+            } else if (discardingWithinAndImport && type == ModelicaTokenKinds.SC) {
                 discardingWithinAndImport = false;
             }
         }
 
-        private void skipAnnotation(Token currentToken) {
+        private void skipAnnotation(JavaccToken currentToken) {
             final int type = currentToken.kind;
-            if (type == ModelicaParser.ANNOTATION) {
+            if (type == ModelicaTokenKinds.ANNOTATION) {
                 discardingAnnotation = true;
-            } else if (discardingAnnotation && type == ModelicaParser.SC) {
+            } else if (discardingAnnotation && type == ModelicaTokenKinds.SC) {
                 discardingAnnotation = false;
             }
         }
 
         @Override
-        protected void analyzeToken(GenericToken currentToken) {
-            skipWithinAndImport((Token) currentToken);
-            skipAnnotation((Token) currentToken);
+        protected void analyzeToken(JavaccToken currentToken) {
+            skipWithinAndImport(currentToken);
+            skipAnnotation(currentToken);
         }
 
         @Override

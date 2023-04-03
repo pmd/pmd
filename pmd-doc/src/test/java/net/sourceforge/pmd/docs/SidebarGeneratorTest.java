@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.docs;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -16,8 +16,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.commons.lang3.SystemUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.DumperOptions.FlowStyle;
 import org.yaml.snakeyaml.DumperOptions.LineBreak;
@@ -27,27 +27,26 @@ import org.yaml.snakeyaml.constructor.SafeConstructor;
 import org.yaml.snakeyaml.representer.Representer;
 
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RulesetsFactoryUtils;
+import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.util.IOUtil;
 
-public class SidebarGeneratorTest {
+class SidebarGeneratorTest {
     private MockedFileWriter writer = new MockedFileWriter();
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         writer.reset();
     }
 
     @Test
-    public void testSidebar() throws IOException {
+    void testSidebar() throws IOException {
         Map<Language, List<RuleSet>> rulesets = new TreeMap<>();
-        RuleSet ruleSet1 = RulesetsFactoryUtils.defaultFactory().createNewRuleSet("test", "test", "bestpractices.xml", Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
-        RuleSet ruleSet2 = RulesetsFactoryUtils.defaultFactory().createNewRuleSet("test2", "test", "codestyle.xml", Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
-        rulesets.put(LanguageRegistry.findLanguageByTerseName("java"), Arrays.asList(ruleSet1, ruleSet2));
-        rulesets.put(LanguageRegistry.findLanguageByTerseName("ecmascript"), Arrays.asList(ruleSet1));
-        rulesets.put(LanguageRegistry.findLanguageByTerseName("scala"), Collections.emptyList());
+        RuleSet ruleSet1 = RuleSet.create("test", "test", "bestpractices.xml", Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
+        RuleSet ruleSet2 = RuleSet.create("test2", "test", "codestyle.xml", Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
+        rulesets.put(LanguageRegistry.PMD.getLanguageById("java"), Arrays.asList(ruleSet1, ruleSet2));
+        rulesets.put(LanguageRegistry.PMD.getLanguageById("ecmascript"), Arrays.asList(ruleSet1));
+        rulesets.put(LanguageRegistry.PMD.getLanguageById("scala"), Collections.emptyList());
 
         SidebarGenerator generator = new SidebarGenerator(writer, FileSystems.getDefault().getPath(".."));
         List<Map<String, Object>> result = generator.generateRuleReferenceSection(rulesets);

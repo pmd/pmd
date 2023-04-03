@@ -12,7 +12,7 @@ import com.google.summit.ast.modifier.KeywordModifier;
 import com.google.summit.ast.modifier.KeywordModifier.Keyword;
 import com.google.summit.ast.modifier.Modifier;
 
-public class ASTModifierNode extends AbstractApexNode.Many<Modifier> implements AccessNode {
+public final class ASTModifierNode extends AbstractApexNode.Many<Modifier> implements AccessNode {
 
     private static final ImmutableMap<Keyword, Integer> OPCODES = ImmutableMap.<Keyword, Integer>builder()
             .put(Keyword.PUBLIC, AccessNode.PUBLIC)
@@ -28,8 +28,9 @@ public class ASTModifierNode extends AbstractApexNode.Many<Modifier> implements 
         super(modifierNode);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

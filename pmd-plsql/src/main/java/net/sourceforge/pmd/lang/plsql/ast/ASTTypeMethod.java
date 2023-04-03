@@ -4,24 +4,14 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
+public final class ASTTypeMethod extends AbstractPLSQLNode implements ExecutableCode {
 
-public class ASTTypeMethod extends AbstractPLSQLNode implements ExecutableCode, DFAGraphMethod {
-    @Deprecated
-    @InternalApi
-    public ASTTypeMethod(int id) {
+    ASTTypeMethod(int id) {
         super(id);
     }
 
-    @Deprecated
-    @InternalApi
-    public ASTTypeMethod(PLSQLParser p, int id) {
-        super(p, id);
-    }
-
     @Override
-    public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {
+    protected <P, R> R acceptPlsqlVisitor(PlsqlVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
@@ -39,7 +29,6 @@ public class ASTTypeMethod extends AbstractPLSQLNode implements ExecutableCode, 
         return null;
     }
 
-    @Override
     public String getName() {
         return getMethodName();
     }

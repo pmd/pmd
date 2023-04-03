@@ -4,23 +4,19 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import scala.meta.Pat;
 
 /**
  * The ASTPatWildcard node implementation.
  */
-public class ASTPatWildcard extends AbstractScalaNode<Pat.Wildcard> {
+public final class ASTPatWildcard extends AbstractScalaNode<Pat.Wildcard> {
 
-    @Deprecated
-    @InternalApi
-    public ASTPatWildcard(Pat.Wildcard scalaNode) {
+    ASTPatWildcard(Pat.Wildcard scalaNode) {
         super(scalaNode);
     }
 
     @Override
-    public <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data) {
+    protected <P, R> R acceptVisitor(ScalaParserVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

@@ -4,30 +4,30 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
+import java.util.Objects;
 
-public class ASTYieldStatement extends AbstractJavaTypeNode {
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+/**
+ * A {@code yield} statement in a {@linkplain ASTSwitchExpression switch expression}.
+ *
+ * <pre class="grammar">
+ *
+ * YieldStatement ::= "yield" {@link ASTExpression} ";"
+ *
+ * </pre>
+ */
+public class ASTYieldStatement extends AbstractStatement {
 
     ASTYieldStatement(int id) {
         super(id);
     }
 
-    ASTYieldStatement(JavaParser p, int id) {
-        super(p, id);
-    }
+
 
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
-    }
-
-    @Override
-    public String getImage() {
-        String result = super.getImage();
-        if (result == null && hasDescendantOfType(ASTName.class)) {
-            result = getFirstDescendantOfType(ASTName.class).getImage();
-        }
-        return result;
     }
 
 
@@ -38,21 +38,14 @@ public class ASTYieldStatement extends AbstractJavaTypeNode {
 
 
     /**
-     * @deprecated Use the type of the expression yielded by {@link #getExpr()}
+     * Returns the switch expression to which this statement yields a
+     * value.
      */
-    @Deprecated
-    @Override
-    public Class<?> getType() {
-        return super.getType();
+    @NonNull
+    public ASTSwitchExpression getYieldTarget() {
+        return Objects.requireNonNull(ancestors(ASTSwitchExpression.class).first(),
+                                      "Yield statements should only be parsable inside switch expressions");
     }
 
-    /**
-     * @deprecated Use the type of the expression yielded by {@link #getExpr()}
-     */
-    @Deprecated
-    @Override
-    public JavaTypeDefinition getTypeDefinition() {
-        return super.getTypeDefinition();
-    }
 
 }

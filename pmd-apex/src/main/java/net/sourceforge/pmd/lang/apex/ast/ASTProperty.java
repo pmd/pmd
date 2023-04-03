@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import com.google.summit.ast.declaration.PropertyDeclaration;
 
-public class ASTProperty extends AbstractApexNode.Single<PropertyDeclaration> {
+public final class ASTProperty extends AbstractApexNode.Single<PropertyDeclaration> {
 
     /**
      * Prefix added to the property name to create an internal accessor name.
@@ -17,8 +17,9 @@ public class ASTProperty extends AbstractApexNode.Single<PropertyDeclaration> {
         super(property);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

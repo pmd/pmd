@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class UseUtilityClassTest extends PmdRuleTst {
+class UseUtilityClassTest extends PmdRuleTst {
     // no additional unit tests
 }

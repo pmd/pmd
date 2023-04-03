@@ -4,23 +4,19 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import scala.meta.Type;
 
 /**
  * The ASTTypeSelect node implementation.
  */
-public class ASTTypeSelect extends AbstractScalaNode<Type.Select> {
+public final class ASTTypeSelect extends AbstractScalaNode<Type.Select> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTypeSelect(Type.Select scalaNode) {
+    ASTTypeSelect(Type.Select scalaNode) {
         super(scalaNode);
     }
 
     @Override
-    public <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data) {
+    protected <P, R> R acceptVisitor(ScalaParserVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class UselessOperationOnImmutableTest extends PmdRuleTst {
+class UselessOperationOnImmutableTest extends PmdRuleTst {
     // no additional unit tests
 }

@@ -4,23 +4,19 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import scala.meta.Decl;
 
 /**
  * The ASTDeclVal node implementation.
  */
-public class ASTDeclVal extends AbstractScalaNode<Decl.Val> {
+public final class ASTDeclVal extends AbstractScalaNode<Decl.Val> {
 
-    @Deprecated
-    @InternalApi
-    public ASTDeclVal(Decl.Val scalaNode) {
+    ASTDeclVal(Decl.Val scalaNode) {
         super(scalaNode);
     }
 
     @Override
-    public <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data) {
+    protected <P, R> R acceptVisitor(ScalaParserVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

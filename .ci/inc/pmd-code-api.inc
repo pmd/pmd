@@ -18,6 +18,7 @@ function pmd_code_uploadDocumentation() {
     scp "${filename}" ${PMD_CODE_SSH_USER}@pmd-code.org:${PMD_CODE_DOCS_PATH}
     # shellcheck disable=SC2029
     ssh ${PMD_CODE_SSH_USER}@pmd-code.org "cd \"${PMD_CODE_DOCS_PATH}\" && \
+            ( test -h pmd-doc-${pmdVersion} && rm pmd-doc-${pmdVersion} || true ) && \
             unzip -qo \"${basefilename}\" && \
             rm \"${basefilename}\""
     pmd_ci_log_info "Docs updated: https://docs.pmd-code.org/pmd-doc-${pmdVersion}/"

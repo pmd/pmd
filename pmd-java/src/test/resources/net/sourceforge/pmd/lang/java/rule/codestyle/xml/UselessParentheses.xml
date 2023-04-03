@@ -46,7 +46,23 @@ public class Foo {
 
     <test-code>
         <description>failure case, condition 2</description>
+        <rule-property name="ignoreClarifying">false</rule-property>
         <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public int bar(int x) {
+        if ((x % 2) == 0) {
+            return x;
+        }
+        return 0;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>failure case, ignore clarifying</description>
+        <rule-property name="ignoreClarifying">true</rule-property>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     public int bar(int x) {
@@ -73,15 +89,11 @@ public class Foo {
 
     <test-code>
         <description>useful parentheses, logic</description>
+        <rule-property name="ignoreClarifying">true</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     public int bar(int x) {
-        // actually, the inner parentheses wouldn't be necessary,
-        // as the "||" operator has the lowest priority, followed by "=="
-        // and by "%" with the highest priority here...
-        // But for readability, it is better to have the parentheses as in
-        // this example.
         if ((x % 2 == 0) || (x % 2 == 1)) {
             return x;
         } else {
@@ -120,26 +132,62 @@ public class Foo {
 
     <test-code>
         <description>false negatives</description>
-        <expected-problems>4</expected-problems>
+        <rule-property name="ignoreClarifying">false</rule-property>
+        <expected-problems>8</expected-problems>
+        <expected-linenumbers>8,10,14,19,20,21,22,23</expected-linenumbers>
         <code><![CDATA[
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
+import static somewhere.Unresolved.unresolved1;
+import static somewhere.Unresolved.unresolved2;
 public class Foo {
     private boolean isSimpleReturn(Node node) {
         return
-            ( node instanceof ASTReturnStatement ) // rule triggeres here
+            ( node instanceof ASTReturnStatement ) // rule triggers here
             &&
             ( node.getNumChildren() == 0 );     // and here
     }
-    public String getLocalName() {
+    public String getLocalName(String name) {
         int colonIndex = name.indexOf(':');
         return (colonIndex >= 0)                // and here
                 ? name.substring(colonIndex + 1)
                 : name;
     }
-    public void viewerModelChanged(ViewerModelEvent e) {
-        int startOffset =
-          // and here for the following parentheses once
-          (sourceCodeArea.getLineStartOffset(node.getBeginLine() - 1) +
-          node.getBeginColumn()) - 1;
+    public void viewerModelChanged() {
+        int startOffset = (unresolved1 + unresolved2) - 1; // here, the parenthesized expr has unresolved type
+        startOffset = (unresolved1 + 1) - 1; // here, the parenthesized expr has resolved type
+        startOffset = (1 + unresolved1) - 1;
+        startOffset = (1 + 1) - 1;
+        startOffset = 1 + (1 - 1); // necessary if
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Parentheses inside concat may be unnecessary</description>
+        <rule-property name="ignoreClarifying">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    {
+        String concat;
+        concat = (1 + 1) + "";          // parentheses are unnecessary but clarifying
+        concat = "" + (1 + 1);          // parentheses are necessary even if ignoring associativity
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Parentheses inside concat may be unnecessary</description>
+        <rule-property name="ignoreClarifying">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    {
+        String concat;
+        concat = (1 + 1) + "";          // parentheses are unnecessary but clarifying
+        concat = "" + (1 + 1);          // parentheses are necessary even if ignoring associativity
     }
 }
         ]]></code>
@@ -177,13 +225,16 @@ public class Test {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Test {
-    public void testMethod() {
-        if((lookahead.type == Keyword.STRING || lookahead.type == Keyword.NUMBER) && lookahead.type != baseType)
-            throw new IncompatibleAttributeTypeException(attribute);
+    static int NUMBER = 0;
+    static int STRING = 1;
+    class Lookahead { int type; }
+    public void testMethod(Lookahead lookahead, int baseType) {
+        if((lookahead.type == STRING || lookahead.type == NUMBER) && lookahead.type != baseType)
+            throw new RuntimeException("");
         System.out.println( "number " + ( 1 + 2 ) );
 
-        if(lookahead.type != baseType && (lookahead.type == Keyword.STRING || lookahead.type == Keyword.NUMBER))
-            throw new IncompatibleAttributeTypeException(attribute);
+        if(lookahead.type != baseType && (lookahead.type == STRING || lookahead.type == NUMBER))
+            throw new RuntimeException("");
     }
 }
         ]]></code>
@@ -193,9 +244,11 @@ public class Test {
         <description>#1111 False positive: Useless parentheses</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Test { public String check() {
-return (absolute ? amount.abs() : amount).toString();
-} }
+public class Test {
+    public String check(boolean absolute, Integer amount) {
+      return (absolute ? amount.abs() : amount).toString();
+    }
+}
         ]]></code>
     </test-code>
 
@@ -204,8 +257,9 @@ return (absolute ? amount.abs() : amount).toString();
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Test {
-    public void foo() {
-        xCoord = e.getX() - (MainFrame.TILESIZE >> 1);
+    int getX() { return 0; }
+    public void foo(Test e) {
+        xCoord = e.getX() - (1 >> 1);
     }
 }
         ]]></code>
@@ -254,11 +308,14 @@ public class Useless {
 
     <test-code>
         <description>#1407 UselessParentheses "&amp;" and "+" operator precedence</description>
-        <expected-problems>12</expected-problems>
-        <expected-linenumbers>3,4,5,6,7,8,9,10,11,12,13,14</expected-linenumbers>
+        <rule-property name="ignoreClarifying">false</rule-property>
+        <expected-problems>13</expected-problems>
+        <expected-linenumbers>5,6,7,8,9,10,11,12,13,14,15,16,17</expected-linenumbers>
         <code><![CDATA[
 class ExampleClass {
     void exampleExpressions() {
+        int eUseless, eGood, a, b, c, d;
+        a = b = c = d = 0;
         eUseless = (a++) + b;
         eUseless = (a--) + b;
         eUseless = (++a) + b;
@@ -271,7 +328,7 @@ class ExampleClass {
         eUseless = (a / b) + c;
         eUseless = (a % b) + c;
         eUseless = (a + b) + c;
-        eGood = (a - b) + c;
+        eUseless = (a - b) + c;
         eGood = (a << b) + c;
         eGood = (a >> b) + c;
         eGood = (a >>> b) + c;
@@ -279,7 +336,7 @@ class ExampleClass {
         eGood = (a > b) + c;
         eGood = (a <= b) + c;
         eGood = (a >= b) + c;
-        eGood = (a instanceof b) + c;
+        eGood = (a instanceof String) + c;
         eGood = (a == b) + c;
         eGood = (a != b) + c;
         eGood = (a & b) + c;
@@ -310,17 +367,19 @@ public class Example {
         <expected-problems>2</expected-problems>
         <expected-linenumbers>3,7</expected-linenumbers>
         <code><![CDATA[
-public class Useless {
-    public void method() {
-        boolean isSkipped = (pokeNick.equals(pokemon.getNickname())
-            && renameResult.getNumber() == NicknamePokemonResponse.Result.UNSET_VALUE);
+public class Pokemon {
+    public void method(String pokeNick, Pokemon pokemon, Pokemon renameResult) {
+        boolean isSkipped = (pokeNick.equals(getNickname())
+            && 0 == getNumber());
 
         // now the same in one line
-        boolean isSkipped2 = (pokeNick.equals(pokemon.getNickname()) && renameResult.getNumber() == NicknamePokemonResponse.Result.UNSET_VALUE);
+        boolean isSkipped2 = (pokeNick.equals(pokemon.getNickname()) && renameResult.getNumber() == 0);
 
         // now without the outer parenthesis - no additional violation.
-        boolean isSkipped3 = pokeNick.equals(pokemon.getNickname()) && renameResult.getNumber() == NicknamePokemonResponse.Result.UNSET_VALUE;
+        boolean isSkipped3 = pokeNick.equals(pokemon.getNickname()) && renameResult.getNumber() == 9;
     }
+    String getNickname() {return null;}
+    int getNumber() { return 0; }
 }
         ]]></code>
     </test-code>
@@ -330,6 +389,8 @@ public class Useless {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Useless {
+    int mNumber;
+    String mName, mTemplateKey, mKey;
     public boolean test(Useless team) {
         return (mNumber != null ? mNumber.equals(team.mNumber) : team.mNumber == null)
             && (mKey != null ? mKey.equals(team.mKey) : team.mKey == null)
@@ -345,6 +406,8 @@ public class Useless {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Useless {
+    int mNumber;
+    String mName, mTemplateKey, mKey;
     public boolean test(Useless team) {
         return (mNumber != null ? mNumber.equals(team.mNumber) : team.mNumber == null)
             || (mKey != null ? mKey.equals(team.mKey) : team.mKey == null)
@@ -360,6 +423,8 @@ public class Useless {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Useless {
+    int mNumber;
+    String mKey;
     public boolean test(Useless team) {
         return (mNumber != null ? mNumber : team.mNumber)
             == (mKey != null ? mKey : team.mKey);
@@ -372,6 +437,7 @@ public class Useless {
         <description>From controversial/UnnecessaryParentheses: #537 Trivial case with additive expression</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import my.Utils;
 public class Foo {
     private String getData(final String header) {
         String result = ("[" + header + ":" + Utils.decode(header) + "]");
@@ -385,6 +451,7 @@ public class Foo {
         <description>From controversial/UnnecessaryParentheses: #537 Trivial case with additive expression modified</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import my.Utils;
 public class Foo {
     private String getData(final String header) {
         String result = ("[" + header + ":" + Utils.decode(header) + "]").foo();
@@ -411,9 +478,11 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public void bar(Object o) {
+    public Foo bar(Foo a) {
         return (a.bar()).foo();
     }
+    Foo bar() { return this; }
+    Foo foo() { return this; }
 }
         ]]></code>
     </test-code>
@@ -423,9 +492,11 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public void bar(Object o) {
+    public Foo bar(Foo a) {
         return a.bar().foo();
     }
+    Foo bar() { return this; }
+    Foo foo() { return this; }
 }
         ]]></code>
     </test-code>
@@ -485,6 +556,7 @@ public class Test {
         <description>[java] False positive "UselessParentheses" for parentheses that contain assignment #1285</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.regex.*;
 public class Test {
     public void test() {
         Pattern p;
@@ -495,5 +567,100 @@ public class Test {
     }
 }
         ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2739 [java] False Positive UselessParenthesis for string concatenation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public static boolean isTest(final String alpha, final String bravo) {
+        return "Charlie".equals(alpha) || (alpha + bravo).equals(alpha);
+    }
+
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <!-- Note: this is why property ignoreClarifying was added  -->
+        <description>[java] false-positive in UselessParentheses #1673</description>
+        <rule-property name="ignoreClarifying">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public static boolean isTest(final String discordClient, final String bravo) {
+        throw new IllegalArgumentException(String.format(
+                "Unsupported client with class '%s' given",
+                (discordClient == null) ? null : discordClient.getClass()));
+    }
+
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <!-- Note: this is why property ignoreClarifying was added  -->
+        <description>[java] false-positive in UselessParentheses #1673 (!ignoreClarifying)</description>
+        <rule-property name="ignoreClarifying">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public static boolean isTest(final String discordClient, final String bravo) {
+        throw new IllegalArgumentException(String.format(
+                "Unsupported client with class '%s' given",
+                (discordClient == null) ? null : discordClient.getClass()));
+    }
+
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <!-- Note: this is why property ignoreClarifying was added  -->
+        <description>[Java] UselessParentheses: catch wrong case #1918 (ignoreClarifying)</description>
+        <rule-property name="ignoreClarifying">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public static boolean isTest() {
+        boolean a,b,c,d;
+        if(a || b || (c & d) || e) {
+            //do sth
+        }
+    }
+
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <!-- Note: this is why property ignoreClarifying was added  -->
+        <description>[Java] UselessParentheses: catch wrong case #1918 (!ignoreClarifying)</description>
+        <rule-property name="ignoreClarifying">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public static boolean isTest() {
+        boolean a,b,c,d;
+        if(a || b || (c & d) || e) {
+            //do sth
+        }
+    }
+
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] False positive for rule UselessParentheses #2910</description>
+        <rule-property name="ignoreClarifying">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package jls;
+
+            public final class TestStringInterned {
+
+                public static void main(String[] args) {
+                    String hello = "Hello";
+                    String lo = "lo";
+                    System.out.println(hello == ("Hel" + lo).intern());
+                }
+            }
+            ]]></code>
     </test-code>
 </test-data>

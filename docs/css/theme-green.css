@@ -1,11 +1,11 @@
 .summary {
     color: #808080;
-    border-left: 5px solid #E50E51;
+    border-left: 5px solid #4d94ff;
     font-size:16px;
 }
 
 
-h3 {color: #E50E51; }
+h3 {color: #4d94ff; }
 h4 {color: #808080; }
 
 .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
@@ -14,20 +14,20 @@ h4 {color: #808080; }
 }
 
 .nav > li.active > a {
-    background-color: #72ac4a;
+    background-color: #01c172;
 }
 
 .nav > li > a:hover {
-    background-color: #72ac4a;
+    background-color: #01c172;
 }
 
 div.navbar-collapse .dropdown-menu > li > a:hover {
-    background-color: #72ac4a;
+    background-color: #01c172;
 }
 
 .nav li.thirdlevel > a {
     background-color: #FAFAFA !important;
-    color: #72ac4a;
+    color: #01c172;
     font-weight: bold;
 }
 
@@ -37,24 +37,15 @@ a[data-toggle="tooltip"] {
     cursor: default;
 }
 
-.navbar-inverse {
-    background-color: #72ac4a;
+.navbar {
+    background-color: #01c172;
     border-color: #5b893c;
 }
 
-.navbar-inverse .navbar-nav > .open > a, .navbar-inverse .navbar-nav > .open > a:hover, .navbar-inverse .navbar-nav > .open > a:focus {
-    color: #5b893c;
+.navbar .nav-item > .nav-link {
+    color: white !important; /* bootstrap adds 0.5 transparency which we must override */
 }
 
-.navbar-inverse .navbar-nav > .open > a, .navbar-inverse .navbar-nav > .open > a:hover, .navbar-inverse .navbar-nav > .open > a:focus {
-    background-color: #5b893c;
-    color: #ffffff;
-}
-
-/* not sure if using this ...*/
-.navbar-inverse .navbar-collapse, .navbar-inverse .navbar-form {
-    border-color: #72ac4a !important;
-}
 
 .btn-primary {
     color: #ffffff;
@@ -67,7 +58,7 @@ a[data-toggle="tooltip"] {
 .btn-primary:active,
 .btn-primary.active,
 .open .dropdown-toggle.btn-primary {
-    background-color: #72ac4a;
+    background-color: #01c172;
     border-color: #5b893c;
 }
 
@@ -77,7 +68,7 @@ a[data-toggle="tooltip"] {
 
 body.print h1 {color: #5b893c !important; font-size:28px;}
 body.print h2 {color: #595959 !important; font-size:24px;}
-body.print h3 {color: #E50E51 !important; font-size:14px;}
+body.print h3 {color: #4d94ff !important; font-size:14px;}
 body.print h4 {color: #679DCE !important; font-size:14px; font-style: italic;}
 
 .anchorjs-link:hover {
@@ -85,15 +76,14 @@ body.print h4 {color: #679DCE !important; font-size:14px; font-style: italic;}
 }
 
 div.sidebarTitle {
-    color: #E50E51;
+    color: #4d94ff;
 }
 
 li.sidebarTitle {
     margin-top:40px;
     font-weight:normal;
     font-size:130%;
-    color: #ED1951;
+    color: #4d94ff;
     margin-bottom:2.5px;
     margin-left:5px;
-
 }

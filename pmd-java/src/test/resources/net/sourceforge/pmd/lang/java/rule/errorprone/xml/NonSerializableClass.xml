@@ -191,7 +191,7 @@ class OuterClass {
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
-public class Foo<T> implements Serializable {
+public class Foo<T> implements java.io.Serializable {
     private List<String> names = new ArrayList<>();
     private AbstractList<String> anotherList;
     private T someData;
@@ -206,16 +206,16 @@ public class Foo<T> implements Serializable {
         <expected-problems>4</expected-problems>
         <expected-linenumbers>5,6,7,8</expected-linenumbers>
         <expected-messages>
-            <message>The field 'names' of serializable class 'Foo' is of non-serializable type 'java.util.List'.</message>
-            <message>The field 'anotherList' of serializable class 'Foo' is of non-serializable type 'java.util.AbstractList'.</message>
-            <message>The field 'someData' of serializable class 'Foo' is of non-serializable type 'java.lang.Object'.</message>
+            <message>The field 'names' of serializable class 'Foo' is of non-serializable type 'java.util.List&lt;java.lang.String&gt;'.</message>
+            <message>The field 'anotherList' of serializable class 'Foo' is of non-serializable type 'java.util.AbstractList&lt;java.lang.String&gt;'.</message>
+            <message>The field 'someData' of serializable class 'Foo' is of non-serializable type 'T'.</message>
             <message>The field 'canBeAnything' of serializable class 'Foo' is of non-serializable type 'java.lang.Object'.</message>
         </expected-messages>
         <code><![CDATA[
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
-public class Foo<T> implements Serializable {
+public class Foo<T> implements java.io.Serializable {
     private List<String> names = new ArrayList<>();
     private AbstractList<String> anotherList;
     private T someData;
@@ -361,6 +361,23 @@ import java.io.Serializable;
 class Buzz implements Serializable {
     private static final ObjectStreamField[] serialPersistentFields =
         new ObjectStreamField[0];
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Explicitly ignore unresolved types (missing in auxclasspath)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Buzz implements java.io.Serializable {
+    private static final long serialVersionUID = 1L;
+
+    private FileInputStream stream; // bad - FileInputStream is not serializable, but: it is not imported, so
+    // the type is unresolved
+
+    public void setStream(FileInputStream stream) {
+        this.stream = stream;
+    }
 }
 ]]></code>
     </test-code>

@@ -6,14 +6,15 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import com.google.summit.ast.declaration.FieldDeclaration;
 
-public class ASTFieldDeclaration extends AbstractApexNode.Single<FieldDeclaration> {
+public final class ASTFieldDeclaration extends AbstractApexNode.Single<FieldDeclaration> {
 
     ASTFieldDeclaration(FieldDeclaration fieldDeclaration) {
         super(fieldDeclaration);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

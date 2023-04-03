@@ -71,8 +71,8 @@ public class Foo {
         <description>case where concatenation is not a child of a BlockStatement, but instead is a child of an ExplicitConstructorInvocation</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
-    public Foo() {
+public class Foo extends Exception {
+    public Foo(Exception ex) {
         super("CauseMsg:" + ex.getMessage(), ex);
     }
 }
@@ -162,6 +162,7 @@ public class Foo {
         <description>concatenating method + int</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.Date;
 public class Foo {
     public void bar(Date a) {
         StringBuffer buf = new StringBuffer();
@@ -175,6 +176,7 @@ public class Foo {
         <description>JTextArea.append</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import javax.swing.JTextArea;
 public class Foo {
     public void bar(JTextArea jta) {
         jta.append(f + "hi");
@@ -301,7 +303,7 @@ public class Foo {
 
     <test-code>
         <description>1503099, append with two string lengths</description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     public void bar(String str1, String str2) {
@@ -316,10 +318,12 @@ public class Foo {
         <description>3109408, false + with adding two integers in constructor</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.List;
 public class Test {
-    public void method() {
+    List m_profileItems;
+    public void method(boolean s_profiling_details_enabled, Test profilingContext) {
         int initialSizeGlobal = (int) (profilingContext.m_profileItems.size() * (150.0 * 0.30));
-        int initialSizeDetail = s_profiling_details_enabled ? profilingContext.m_overallProfileItems.size() * 150 : 0;
+        int initialSizeDetail = s_profiling_details_enabled ? profilingContext.m_profileItems.size() * 150 : 0;
         StringBuilder sb = new StringBuilder(initialSizeGlobal + initialSizeDetail);
     }
 }
@@ -389,7 +393,8 @@ public class Foo {
 
     <test-code>
         <description>No violation: Avoid concat in append method invocations</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>26,39,45</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
 
@@ -415,13 +420,17 @@ public class Foo {
         return sb.toString();
     }
 
-    private String testFinalFieldGood() { // final assumed a constant expression
-        return new StringBuilder().append("fld:" + FINAL_F).toString(); //good
+    private String testFinalFieldGood() {
+        return new StringBuilder().append("fld:" + FINAL_F).toString(); //not ok, it's not a compile time constant
     }
 
     private String testStaticFinalFieldGood() {
         return new StringBuilder().append("fld:" + STATIC_FINAL_F).toString(); // good
     }
+
+    // the following are not compile-time constants, but
+    // the JVM will very probably constant fold them anyway...
+    // for now, report it
 
     private String testFinalLocalGood() {
         final String local = "local"; // final assumed a constant expression

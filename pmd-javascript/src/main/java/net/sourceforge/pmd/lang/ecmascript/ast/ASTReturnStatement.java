@@ -6,17 +6,13 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.ReturnStatement;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTReturnStatement extends AbstractEcmascriptNode<ReturnStatement> {
-    @Deprecated
-    @InternalApi
-    public ASTReturnStatement(ReturnStatement returnStatement) {
+public final class ASTReturnStatement extends AbstractEcmascriptNode<ReturnStatement> {
+    ASTReturnStatement(ReturnStatement returnStatement) {
         super(returnStatement);
     }
 
     @Override
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+    protected <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

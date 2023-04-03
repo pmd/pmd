@@ -4,13 +4,10 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.Rule;
-
 import com.google.summit.ast.TypeRef;
 import com.google.summit.ast.declaration.InterfaceDeclaration;
 
-public class ASTUserInterface extends ApexRootNode<InterfaceDeclaration> implements ASTUserClassOrInterface<InterfaceDeclaration>,
-       CanSuppressWarnings {
+public final class ASTUserInterface extends ApexRootNode<InterfaceDeclaration> implements ASTUserClassOrInterface<InterfaceDeclaration> {
 
     private ApexQualifiedName qname;
 
@@ -19,9 +16,10 @@ public class ASTUserInterface extends ApexRootNode<InterfaceDeclaration> impleme
     }
 
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
+
 
     @Override
     public String getImage() {

@@ -13,7 +13,7 @@ import net.sourceforge.pmd.Rule;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.summit.ast.modifier.AnnotationModifier;
 
-public class ASTAnnotation extends AbstractApexNode.Single<AnnotationModifier> {
+public final class ASTAnnotation extends AbstractApexNode.Single<AnnotationModifier> {
 
     /**
      * Valid annotations in the Apex language.
@@ -69,13 +69,13 @@ public class ASTAnnotation extends AbstractApexNode.Single<AnnotationModifier> {
         super(annotationModifier);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
-    @Override
-    public String getImage() {
+    public String getName() {
         // If resolvable to a known name, return the case-normalized name.
         String rawName = node.getName().getString();
         if (NORMALIZED_ANNOTATION_NAMES.contains(rawName)) {
@@ -83,29 +83,11 @@ public class ASTAnnotation extends AbstractApexNode.Single<AnnotationModifier> {
         }
         return rawName;
     }
-
-    /**
-     * @deprecated Will be removed in 7.0, the AST shouldn't know about rules
-     */
+    
+    @Override
     @Deprecated
-    public boolean suppresses(Rule rule) {
-        final String ruleAnno = "PMD." + rule.getName();
-
-        if (hasImageEqualTo("SuppressWarnings")) {
-            for (ASTAnnotationParameter param : findChildrenOfType(ASTAnnotationParameter.class)) {
-                String image = param.getImage();
-
-                if (image != null) {
-                    Set<String> paramValues = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
-                    paramValues.addAll(Arrays.asList(image.replaceAll("\\s+", "").split(",")));
-                    if (paramValues.contains("PMD") || paramValues.contains(ruleAnno) || paramValues.contains("all")) {
-                        return true;
-                    }
-                }
-            }
-        }
-
-        return false;
+    public String getImage() {
+        return getName();
     }
 
     public boolean isResolved() {

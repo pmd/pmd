@@ -10,7 +10,9 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Represents all data types that can be referenced from a Visualforce page. This enum consolidates the data types
@@ -53,7 +55,7 @@ public enum DataType {
      */
     Unknown(true);
 
-    private static final Logger LOGGER = Logger.getLogger(DataType.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(DataType.class);
 
 
     /**
@@ -96,7 +98,7 @@ public enum DataType {
 
         if (dataType == null) {
             dataType = DataType.Unknown;
-            LOGGER.fine("Unable to determine DataType of " + value);
+            LOG.debug("Unable to determine DataType of {}", value);
         }
 
         return dataType;
@@ -104,6 +106,45 @@ public enum DataType {
 
     /**
      * Map to correct instance, returns {@code Unknown} if the value can't be mapped.
+<<<<<<< HEAD
+=======
+     *
+     * @deprecated Use {@link #fromTypeName(String)} instead.
+     */
+    @Deprecated
+    public static DataType fromBasicType(BasicType value) {
+        if (value != null) {
+            switch (value) {
+            case BOOLEAN:
+                return Checkbox;
+            case CURRENCY:
+                return Currency;
+            case DATE:
+                return Date;
+            case DATE_TIME:
+                return DateTime;
+            case ID:
+                return Lookup;
+            case DECIMAL:
+            case DOUBLE:
+            case INTEGER:
+            case LONG:
+                return Number;
+            case STRING:
+                return Text;
+            case TIME:
+                return Time;
+            default:
+                break;
+            }
+        }
+        LOG.debug("Unable to determine DataType of {}", value);
+        return Unknown;
+    }
+
+    /**
+     * Map to correct instance, returns {@code Unknown} if the value can't be mapped.
+>>>>>>> origin/master
      */
     public static DataType fromTypeName(String value) {
         value = value != null ? value : "";
@@ -111,7 +152,7 @@ public enum DataType {
 
         if (dataType == null) {
             dataType = DataType.Unknown;
-            LOGGER.fine("Unable to determine DataType of " + value);
+            LOG.debug("Unable to determine DataType of {}", value);
         }
 
         return dataType;

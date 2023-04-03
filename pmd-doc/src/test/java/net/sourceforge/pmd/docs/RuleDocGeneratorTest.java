@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.docs;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -15,29 +15,28 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.docs.MockedFileWriter.FileEntry;
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.internal.util.IOUtil;
 
-public class RuleDocGeneratorTest {
+class RuleDocGeneratorTest {
 
     private MockedFileWriter writer = new MockedFileWriter();
     private Path root;
 
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+    @TempDir
+    public Path folder;
 
-    @Before
-    public void setup() throws IOException {
+    @BeforeEach
+    void setup() throws IOException {
         writer.reset();
 
-        root = folder.newFolder().toPath();
+        root = Files.createTempDirectory(folder, null);
         Files.createDirectories(root.resolve("docs/_data/sidebars"));
         List<String> mockedSidebar = Arrays.asList(
                 "entries:",
@@ -56,7 +55,7 @@ public class RuleDocGeneratorTest {
     }
 
     @Test
-    public void testSingleRuleset() throws IOException {
+    void testSingleRuleset() throws IOException {
         RuleDocGenerator generator = new RuleDocGenerator(writer, root);
 
         RuleSetLoader rsl = new RuleSetLoader().includeDeprecatedRuleReferences(true);

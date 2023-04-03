@@ -15,9 +15,9 @@ This ruleset contains links to rules that are new in PMD v3.4
   <rule ref="rulesets/java/design.xml/UncommentedEmptyMethod"/>
   <rule ref="rulesets/java/design.xml/UncommentedEmptyConstructor"/>
 
-  <rule ref="rulesets/java/controversial.xml/DefaultPackage"/>
+<!--  <rule ref="rulesets/java/controversial.xml/DefaultPackage"/>-->
 
-  <rule ref="rulesets/java/naming.xml/MisleadingVariableName"/>
+  <!-- Removed with 7.0.0 <rule ref="rulesets/java/naming.xml/MisleadingVariableName"/> -->
 
   <rule ref="rulesets/java/migrating.xml/ReplaceVectorWithList"/>
   <rule ref="rulesets/java/migrating.xml/ReplaceHashtableWithMap"/>

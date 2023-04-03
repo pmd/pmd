@@ -11,10 +11,6 @@ public class ASTElementList extends AbstractModelicaNode {
         super(id);
     }
 
-    ASTElementList(ModelicaParser p, int id) {
-        super(p, id);
-    }
-
     void setVisibility(Visibility visibility) {
         this.visibility = visibility;
     }
@@ -24,7 +20,7 @@ public class ASTElementList extends AbstractModelicaNode {
     }
 
     @Override
-    public Object jjtAccept(ModelicaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptModelicaVisitor(ModelicaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

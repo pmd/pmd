@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class CheckSkipResultTest extends PmdRuleTst {
+class CheckSkipResultTest extends PmdRuleTst {
     // no additional unit tests
 }

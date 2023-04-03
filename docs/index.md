@@ -10,16 +10,13 @@ summary: >
 last_updated: October 2022
 author: Jeff Jensen <jjensen@apache.org>, Andreas Dangel <andreas.dangel@adangel.org>,
         Clément Fournier <clement.fournier76@gmail.com>
+
+additional_js:
+ - assets/Shuffle-5.2.3/dist/shuffle.min.js
+ - assets/jquery-ui-1.12.1/jquery-ui.min.js
+ - js/shuffle.js
 ---
 
-
-
-{% unless site.output == "pdf" %}
-<script src="js/jquery.shuffle.min.js"></script>
-<script src="js/jquery.ba-throttle-debounce.min.js"></script>
-
-{% include custom/panel_scroll.html %}
-{% endunless %}
 
 
 ## 💡 Overview
@@ -29,7 +26,7 @@ author: Jeff Jensen <jjensen@apache.org>, Andreas Dangel <andreas.dangel@adangel
 
 **PMD** is a static source code analyzer. It finds common programming flaws like
 unused variables, empty catch blocks, unnecessary object creation, and
-so forth. It's mainly concerned with **Java and Apex**, but **supports 12 other
+so forth. It's mainly concerned with **Java and Apex**, but **supports 14 other
 languages**.
 
 PMD features many **built-in checks** (in PMD lingo, *rules*), which are documented
@@ -52,6 +49,7 @@ in a variety of ways, which are [documented here](pmd_userdocs_cpd.html).
 
 The latest release of PMD can be downloaded from our [Github releases page](https://github.com/pmd/pmd/releases/latest).
 
+The Logo is available from the [Logo Project Page](pmd_projectdocs_logo.html).
 
 ## 📖 Documentation
 
@@ -81,7 +79,6 @@ See [credits](pmd_projectdocs_credits.html) for the complete list.
 
 
 
-<div class="container-fluid" >
 <div id="grid" class="row">
 
 <!--  TODO the "getting started" panel is not that useful. It would be better to make a page series. -->
@@ -97,7 +94,7 @@ See [credits](pmd_projectdocs_credits.html) for the complete list.
        tags="rule_references"
        datagroups='["userdocs"]'
        description="Pick your language to find out about the rule it supports."
-       image="fa-database"
+       fa-icon="fa-database"
        titlemaker="page.language_name" %}
 
     {% include custom/shuffle_panel.html
@@ -112,7 +109,7 @@ See [credits](pmd_projectdocs_credits.html) for the complete list.
        tags="userdocs"
        except_tags="extending,tools"
        datagroups='["userdocs"]'
-       image="fa-cog"
+       fa-icon="fa-cog"
        description="Learn how to build effective and versatile rulesets."
     %}
 
@@ -122,7 +119,8 @@ See [credits](pmd_projectdocs_credits.html) for the complete list.
        tags="devdocs"
        except_tags="extending"
        datagroups='["contributing"]'
-       image="fa-github"
+       fa-style="fab"
+       fa-icon="fa-github"
        description="If you'd like to help us build PMD, these topics may interest you. See you around!"
     %}
 
@@ -142,21 +140,11 @@ See [credits](pmd_projectdocs_credits.html) for the complete list.
        description=""
     %}
 
-
-<!-- sizer -->
-<div class="col-xs-6 col-sm-4 col-md-1 shuffle_sizer"></div>
-
-</div>
+    <!-- sizer -->
+    <div class="col-xs-6 col-sm-4 col-md-1 shuffle_sizer"></div>
 </div>
 
 <!-- {% include image.html file="pmd-logo-big.png" alt="PMD Logo" %} -->
-
-{% unless site.output == "pdf" %}
-
-{% include initialize_shuffle.html %}
-
-{% endunless %}
-
 
 
 {% include links.html %}

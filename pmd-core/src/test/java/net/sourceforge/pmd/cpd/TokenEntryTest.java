@@ -4,14 +4,14 @@
 
 package net.sourceforge.pmd.cpd;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class TokenEntryTest {
+class TokenEntryTest {
 
     @Test
-    public void testSimple() {
+    void testSimple() {
         TokenEntry.clearImages();
         TokenEntry mark = new TokenEntry("public", "/var/Foo.java", 1);
         assertEquals(1, mark.getBeginLine());
@@ -22,7 +22,7 @@ public class TokenEntryTest {
     }
 
     @Test
-    public void testColumns() {
+    void testColumns() {
         TokenEntry.clearImages();
         TokenEntry mark = new TokenEntry("public", "/var/Foo.java", 1, 2, 3);
         assertEquals(1, mark.getBeginLine());
@@ -30,9 +30,5 @@ public class TokenEntryTest {
         assertEquals(0, mark.getIndex());
         assertEquals(2, mark.getBeginColumn());
         assertEquals(3, mark.getEndColumn());
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(TokenEntryTest.class);
     }
 }

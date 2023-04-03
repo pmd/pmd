@@ -53,9 +53,6 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
 
     public ApexSOQLInjectionRule() {
         addRuleChainVisit(ASTUserClass.class);
-        setProperty(CODECLIMATE_CATEGORIES, "Security");
-        setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
-        setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
     }
 
     @Override
@@ -228,7 +225,7 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
     }
 
     private void reportStrings(ASTMethodCallExpression m, Object data) {
-        final HashSet<ASTVariableExpression> setOfSafeVars = new HashSet<>();
+        final Set<ASTVariableExpression> setOfSafeVars = new HashSet<>();
         final List<ASTStandardCondition> conditions = m.findDescendantsOfType(ASTStandardCondition.class);
         for (ASTStandardCondition c : conditions) {
             List<ASTVariableExpression> vars = c.findDescendantsOfType(ASTVariableExpression.class);
