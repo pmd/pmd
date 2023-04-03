@@ -186,7 +186,7 @@ public class Violation {
     </test-code>
 
     <test-code>
-        <description>setAccessible is ok in LambdaExpression</description>
+        <description>#4449 setAccessible is ok in LambdaExpression</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 
