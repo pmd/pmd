@@ -454,7 +454,7 @@ public enum MyEnum {
     </test-code>
 
     <test-code>
-        <description>#3859 [java] CommentDefaultAccessModifier is triggered in JUnit5 method and it was conflicting with rule JUnit5TestShouldBePackagePrivate</description>
+        <description>#3859 #4273 [java] CommentDefaultAccessModifier is triggered in JUnit5 method and it was conflicting with rule JUnit5TestShouldBePackagePrivate</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.junit.jupiter.api.AfterEach;
