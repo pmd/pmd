@@ -7,17 +7,16 @@
 
 package net.sourceforge.pmd.lang.typescript.ast;
 
-import java.util.Stack;
+import org.antlr.v4.runtime.*;
 
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.Lexer;
-import org.antlr.v4.runtime.Token;
+import java.util.Stack;
 
 /**
  * All lexer methods that used in grammar (IsStrictMode)
  * should start with Upper Case Char similar to Lexer rules.
  */
-abstract class TypeScriptLexerBase extends Lexer {
+abstract class TypeScriptLexerBase extends Lexer
+{
     /**
      * Stores values of nested modes. By default mode is strict or
      * defined externally (useStrictDefault)
@@ -102,21 +101,26 @@ abstract class TypeScriptLexerBase extends Lexer {
         return next;
     }
 
-    protected void ProcessOpenBrace() {
+    protected void ProcessOpenBrace()
+    {
         bracesDepth++;
         useStrictCurrent = scopeStrictModes.size() > 0 && scopeStrictModes.peek() || useStrictDefault;
         scopeStrictModes.push(useStrictCurrent);
     }
 
-    protected void ProcessCloseBrace() {
+    protected void ProcessCloseBrace()
+    {
         bracesDepth--;
         useStrictCurrent = scopeStrictModes.size() > 0 ? scopeStrictModes.pop() : useStrictDefault;
     }
 
-    protected void ProcessStringLiteral() {
-        if (lastToken == null || lastToken.getType() == TypeScriptLexer.OpenBrace) {
+    protected void ProcessStringLiteral()
+    {
+        if (lastToken == null || lastToken.getType() == TypeScriptLexer.OpenBrace)
+        {
             String text = getText();
-            if ("\"use strict\"".equals(text) || "'use strict'".equals(text)) {
+            if ("\"use strict\"".equals(text) || "'use strict'".equals(text))
+            {
                 if (scopeStrictModes.size() > 0) {
                     scopeStrictModes.pop();
                 }
@@ -138,31 +142,31 @@ abstract class TypeScriptLexerBase extends Lexer {
      * Returns {@code true} if the lexer can match a regex literal.
      */
     protected boolean IsRegexPossible() {
-                                       
+
         if (this.lastToken == null) {
             // No token has been produced yet: at the start of the input,
             // no division is possible, so a regex literal _is_ possible.
             return true;
         }
-        
+
         switch (this.lastToken.getType()) {
-        case TypeScriptLexer.Identifier:
-        case TypeScriptLexer.NullLiteral:
-        case TypeScriptLexer.BooleanLiteral:
-        case TypeScriptLexer.This:
-        case TypeScriptLexer.CloseBracket:
-        case TypeScriptLexer.CloseParen:
-        case TypeScriptLexer.OctalIntegerLiteral:
-        case TypeScriptLexer.DecimalLiteral:
-        case TypeScriptLexer.HexIntegerLiteral:
-        case TypeScriptLexer.StringLiteral:
-        case TypeScriptLexer.PlusPlus:
-        case TypeScriptLexer.MinusMinus:
-            // After any of the tokens above, no regex literal can follow.
-            return false;
-        default:
-            // In all other cases, a regex literal _is_ possible.
-            return true;
+            case TypeScriptLexer.Identifier:
+            case TypeScriptLexer.NullLiteral:
+            case TypeScriptLexer.BooleanLiteral:
+            case TypeScriptLexer.This:
+            case TypeScriptLexer.CloseBracket:
+            case TypeScriptLexer.CloseParen:
+            case TypeScriptLexer.OctalIntegerLiteral:
+            case TypeScriptLexer.DecimalLiteral:
+            case TypeScriptLexer.HexIntegerLiteral:
+            case TypeScriptLexer.StringLiteral:
+            case TypeScriptLexer.PlusPlus:
+            case TypeScriptLexer.MinusMinus:
+                // After any of the tokens above, no regex literal can follow.
+                return false;
+            default:
+                // In all other cases, a regex literal _is_ possible.
+                return true;
         }
     }
 }
