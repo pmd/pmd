@@ -192,24 +192,33 @@ public interface FileId extends Comparable<FileId> {
 
     static FileId forPath(Path path, @Nullable FileId fsPath) {
         return new FileId() {
+            // Compute these beforehand as that will fail if the path
+            // is invalid (better now than later).
+            // Also, not hitting the filesystem every time we want to
+            // do a compareTo is good for performance.
+            final String absPath = path.normalize().toAbsolutePath().toString();
+            final String uriString = path.normalize().toUri().toString();
+            final String fileName = path.getFileName().toString();
+            final String origPath = path.toString();
+
             @Override
             public String toAbsolutePath() {
-                return path.normalize().toAbsolutePath().toString();
+                return absPath;
             }
 
             @Override
             public String toUriString() {
-                return path.normalize().toUri().toString();
+                return uriString;
             }
 
             @Override
             public String getFileName() {
-                return path.getFileName().toString();
+                return fileName;
             }
 
             @Override
             public String getOriginalPath() {
-                return path.toString();
+                return origPath;
             }
 
             @Override
