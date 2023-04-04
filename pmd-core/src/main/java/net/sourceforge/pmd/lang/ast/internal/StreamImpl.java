@@ -5,12 +5,14 @@
 package net.sourceforge.pmd.lang.ast.internal;
 
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -19,6 +21,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.NodeStream.DescendantNodeStream;
+import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
+import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import net.sourceforge.pmd.lang.ast.internal.AxisStream.AncestorOrSelfStream;
 import net.sourceforge.pmd.lang.ast.internal.AxisStream.ChildrenStream;
 import net.sourceforge.pmd.lang.ast.internal.AxisStream.DescendantOrSelfStream;
@@ -76,6 +80,32 @@ public final class StreamImpl {
 
     public static NodeStream<Node> children(@NonNull Node node) {
         return sliceChildren(node, Filtermap.NODE_IDENTITY, 0, node.getNumChildren());
+    }
+
+    /**
+     * The optimized implementation of {@link NodeStream#children()} for
+     * {@link AbstractNode}. It is important that it returns always the
+     * same node stream type and makes no effort to pick an empty or singleton
+     * stream if possible. That allows the JVM to devirtualize calls.
+     */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static <N extends GenericNode<N>> NodeStream<N> childrenArray(GenericNode<N> parent,
+                                                                         Node @NonNull [] array) {
+        return (NodeStream) new ChildrenStream(parent, 0, parent.getNumChildren()) {
+            @Override
+            public void forEach(Consumer<? super @NonNull Node> action) {
+                // Looping on the array directly is about twice faster than
+                // the default implementation.
+                for (Node child : array) {
+                    action.accept(child);
+                }
+            }
+
+            @Override
+            protected Iterator<Node> baseIterator() {
+                return Arrays.asList(array).iterator();
+            }
+        };
     }
 
     public static DescendantNodeStream<Node> descendants(@NonNull Node node) {

@@ -7116,6 +7116,35 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "sfdcsteve",
+      "name": "Steven Stearns",
+      "avatar_url": "https://avatars.githubusercontent.com/u/16338550?v=4",
+      "profile": "https://github.com/sfdcsteve",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "nirvikpatel",
+      "name": "Nirvik Patel",
+      "avatar_url": "https://avatars.githubusercontent.com/u/76862984?v=4",
+      "profile": "https://github.com/nirvikpatel",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "mohui1999",
+      "name": "Seren",
+      "avatar_url": "https://avatars.githubusercontent.com/u/46819179?v=4",
+      "profile": "https://github.com/mohui1999",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

@@ -184,4 +184,39 @@ public class Violation {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#4449 setAccessible is ok in LambdaExpression</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+
+        import java.lang.reflect.Constructor;
+        import java.lang.reflect.Field;
+        import java.lang.reflect.Method;
+        import java.security.AccessController;
+        import java.security.PrivilegedAction;
+
+        public class Violation {
+
+            private void invalidSetAccessCalls() throws NoSuchMethodException, SecurityException {
+                Constructor<?> constructor = this.getClass().getDeclaredConstructor(String.class);
+                
+                // deliberate accessibility alteration
+                String privateField = AccessController.doPrivileged((PrivilegedAction<String>)() -> {
+                    try {
+                        Field field = Violation.class.getDeclaredField("aPrivateField");
+                        field.setAccessible(true);    //no violation
+                        return (String) field.get(null);
+                    } catch (ReflectiveOperationException | SecurityException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+            }
+        }
+
+        ]]></code>
+    </test-code>
+
+
+
 </test-data>
