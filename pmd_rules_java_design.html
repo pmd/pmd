@@ -3469,12 +3469,12 @@ so it might as well not be stored in the enclosing object.</p>
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
     <span class="kd">private</span> <span class="kt">int</span> <span class="n">x</span><span class="o">;</span> <span class="c1">// this will be reported</span>
 
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo</span><span class="o">(</span><span class="kt">int</span> <span class="n">y</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">foo</span><span class="o">(</span><span class="kt">int</span> <span class="n">y</span><span class="o">)</span> <span class="o">{</span>
        <span class="n">x</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">5</span><span class="o">;</span> <span class="c1">// assigned before any read</span>
        <span class="k">return</span> <span class="n">x</span><span class="o">;</span>
     <span class="o">}</span>
 
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">fooOk</span><span class="o">(</span><span class="kt">int</span> <span class="n">y</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">fooOk</span><span class="o">(</span><span class="kt">int</span> <span class="n">y</span><span class="o">)</span> <span class="o">{</span>
        <span class="kt">int</span> <span class="n">z</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">5</span><span class="o">;</span> <span class="c1">// might as well be a local like here</span>
        <span class="k">return</span> <span class="n">z</span><span class="o">;</span>
     <span class="o">}</span>
@@ -3851,7 +3851,7 @@ remember to add a private constructor to prevent instantiation.
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Apr 3, 2023 <br />
+             Site last generated: Apr 4, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
