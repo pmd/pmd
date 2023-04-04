@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import com.google.summit.ast.TypeRef;
 import com.google.summit.ast.declaration.ClassDeclaration;
 
-public final class ASTUserClass extends ApexRootNode<ClassDeclaration> implements ASTUserClassOrInterface<ClassDeclaration> {
+public final class ASTUserClass extends BaseApexClass<UserClass> implements ASTUserClassOrInterface<ClassDeclaration> {
 
     private ApexQualifiedName qname;
 

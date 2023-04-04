@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 import com.google.summit.ast.TypeRef;
 import com.google.summit.ast.declaration.InterfaceDeclaration;
 
-public final class ASTUserInterface extends ApexRootNode<InterfaceDeclaration> implements ASTUserClassOrInterface<InterfaceDeclaration> {
+public final class ASTUserInterface extends BaseApexClass<InterfaceDeclaration> implements ASTUserClassOrInterface<InterfaceDeclaration> {
 
     private ApexQualifiedName qname;
 

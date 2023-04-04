@@ -15,8 +15,7 @@ import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 import com.google.summit.ast.SourceLocation;
 import com.google.summit.ast.declaration.MethodDeclaration;
 
-public final class ASTMethod extends AbstractApexNode implements ApexQualifiableNode,
-        SignedNode<ASTMethod>, CanSuppressWarnings {
+public final class ASTMethod extends AbstractApexNode implements ApexQualifiableNode {
 
     // Store the details instead of wrapping a com.google.summit.ast.Node.
     // This is to allow synthetic ASTMethod nodes.
@@ -94,9 +93,9 @@ public final class ASTMethod extends AbstractApexNode implements ApexQualifiable
     @Override
     public String getImage() {
         if (isConstructor()) {
-            ApexRootNode<?> rootNode = getFirstParentOfType(ApexRootNode.class);
-            if (rootNode != null) {
-                return rootNode.node.getId().getString();
+            ASTUserClass classNode = getFirstParentOfType(ASTUserClass.class);
+            if (classNode != null) {
+                return classNode.getSimpleName();
             }
         }
         return getCanonicalName();

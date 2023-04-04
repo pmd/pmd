@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 import com.google.summit.ast.declaration.TriggerDeclaration;
 
-public final class ASTUserTrigger extends ApexRootNode<TriggerDeclaration> {
+public final class ASTUserTrigger extends BaseApexClass<TriggerDeclaration> {
 
     ASTUserTrigger(TriggerDeclaration triggerDeclaration) {
         super(triggerDeclaration);

@@ -8,7 +8,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
 
 import com.google.summit.ast.declaration.TypeDeclaration;
 
-public final class ASTAnonymousClass extends ApexRootNode<TypeDeclaration> {
+public final class ASTAnonymousClass extends AbstractApexNode.Single<TypeDeclaration> {
 
     ASTAnonymousClass(TypeDeclaration anonymousClass) {
         super(anonymousClass);

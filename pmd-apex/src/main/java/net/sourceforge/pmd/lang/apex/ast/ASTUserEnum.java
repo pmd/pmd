@@ -6,8 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import com.google.summit.ast.declaration.EnumDeclaration;
 
-public final class ASTUserEnum extends ApexRootNode<EnumDeclaration> implements ApexQualifiableNode {
-
+public final class ASTUserEnum extends BaseApexClass<UserEnum> {
     private ApexQualifiedName qname;
 
     ASTUserEnum(EnumDeclaration enumDeclaration) {

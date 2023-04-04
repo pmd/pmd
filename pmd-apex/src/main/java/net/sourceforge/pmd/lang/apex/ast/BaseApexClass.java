@@ -8,7 +8,7 @@ import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 
 import apex.jorje.semantic.ast.compilation.Compilation;
 
-abstract class BaseApexClass<T extends Compilation> extends AbstractApexNode<T> implements ASTUserClassOrInterface<T> {
+abstract class BaseApexClass<T extends Compilation> extends AbstractApexNode.Single<T> implements ASTUserClassOrInterface<T> {
 
     private ApexQualifiedName qname;
 

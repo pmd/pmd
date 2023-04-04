@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.ast.impl.GenericNode;
  *
  * @param <T> placeholder
  */
-public interface ApexNode<T> extends Node extends GenericNode<ApexNode<?>> {
+public interface ApexNode<T> extends GenericNode<ApexNode<?>> {
 
     /**
      * Accept the visitor.

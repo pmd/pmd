@@ -77,18 +77,16 @@ import com.google.summit.ast.statement.WhileLoopStatement
 
 import kotlin.reflect.KClass
 
-@Deprecated("internal")
-@InternalApi
 @Suppress("DEPRECATION")
 class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptions) {
     private val sourceCodePositioner = SourceCodePositioner(sourceCode)
     private val commentBuilder = ApexCommentBuilder(sourceCode, parserOptions)
 
     /** Builds and returns an [ApexNode] AST corresponding to the given [root] node. */
-    fun buildTree(root: CompilationUnit): ApexRootNode<TypeDeclaration> {
+    fun buildTree(root: CompilationUnit): BaseApexClass<TypeDeclaration> {
         // Build tree
         val result =
-            build(root, parent = null) as? ApexRootNode<TypeDeclaration>
+            build(root, parent = null) as? BaseApexClass<TypeDeclaration>
                 ?: throw ParseException("Unable to build tree")
 
         // Generate additional nodes
@@ -214,7 +212,7 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
         exclude: (Node) -> Boolean = { false } // exclude none by default
     ) = node.getChildren().filterNot(exclude).forEach { buildAndSetParent(it, parent) }
 
-    /** Builds an [ApexRootNode] wrapper for the [TypeDeclaration] node. */
+    /** Builds an [BaseApexClass] wrapper for the [TypeDeclaration] node. */
     private fun buildTypeDeclaration(node: TypeDeclaration) =
         when (node) {
             is ClassDeclaration -> ASTUserClass(node)
@@ -779,7 +777,7 @@ private fun buildMethodDeclaration(node: MethodDeclaration, parent: ApexNode<*>?
 
     /** Generates [ASTField] nodes for the [ASTFieldDeclarationStatements]. */
     private fun generateFields(node: ASTFieldDeclarationStatements) {
-        val parent = node.parent as ApexRootNode<*>
+        val parent = node.parent as BaseApexClass<*>
 
         node.node.declarations
             .map { decl ->
