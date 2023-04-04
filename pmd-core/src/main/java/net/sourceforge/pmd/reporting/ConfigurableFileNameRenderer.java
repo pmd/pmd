@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -62,12 +63,23 @@ public class ConfigurableFileNameRenderer implements FileNameRenderer {
         return StringUtils.countMatches(best, File.separatorChar);
     }
 
-    static String relativizePath(String base, String other) {
-        String[] baseSegments = base.split("[/\\\\]");
-        String[] otherSegments = other.split("[/\\\\]");
+    private static final Pattern PATH_SEP_PAT = Pattern.compile("[/\\\\]");
+
+    // both input paths represent absolute paths
+    private static String relativizePath(Path base, String other) {
+        assert base.isAbsolute() : "Expected an absolute path: " + base;
+
+        // If the second path starts with C:\, remove the C: part for
+        // consistency.
+        int windowsDriveEndIndex = other.indexOf(':');
+        if (windowsDriveEndIndex != -1 && windowsDriveEndIndex < other.length() - 1) {
+            other = other.substring(windowsDriveEndIndex + 1);
+        }
+        String[] otherSegments = PATH_SEP_PAT.split(other);
         int prefixLength = 0;
-        int maxi = Math.min(baseSegments.length, otherSegments.length);
-        while (prefixLength < maxi && baseSegments[prefixLength].equals(otherSegments[prefixLength])) {
+        int maxi = Math.min(base.getNameCount(), otherSegments.length);
+        while (prefixLength < maxi
+            && base.getName(prefixLength).toString().equals(otherSegments[prefixLength])) {
             prefixLength++;
         }
 
@@ -76,7 +88,7 @@ public class ConfigurableFileNameRenderer implements FileNameRenderer {
         }
 
         List<String> relative = new ArrayList<>();
-        for (int i = prefixLength; i < baseSegments.length; i++) {
+        for (int i = prefixLength; i < base.getNameCount(); i++) {
             relative.add("..");
         }
         relative.addAll(Arrays.asList(otherSegments).subList(prefixLength, otherSegments.length));
@@ -105,7 +117,7 @@ public class ConfigurableFileNameRenderer implements FileNameRenderer {
                 continue;
             }
 
-            String relative = relativizePath(root.toAbsolutePath().toString(), file.toAbsolutePath());
+            String relative = relativizePath(root.toAbsolutePath(), file.toAbsolutePath());
             if (countSegments(relative) < countSegments(best)) {
                 best = relative;
             }
