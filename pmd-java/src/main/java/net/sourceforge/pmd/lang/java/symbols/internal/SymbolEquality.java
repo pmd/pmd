@@ -36,7 +36,7 @@ public final class SymbolEquality {
     public static final EqAndHash<JTypeParameterSymbol> TYPE_PARAM = new EqAndHash<JTypeParameterSymbol>() {
         @Override
         public int hash(JTypeParameterSymbol t1) {
-            return Objects.hash(t1.getDeclaringSymbol(), t1.getSimpleName());
+            return 31 * t1.getDeclaringSymbol().hashCode() + t1.getSimpleName().hashCode();
         }
 
         @Override
@@ -57,7 +57,7 @@ public final class SymbolEquality {
     public static final EqAndHash<JMethodSymbol> METHOD = new EqAndHash<JMethodSymbol>() {
         @Override
         public int hash(JMethodSymbol t1) {
-            return 0;
+            return t1.getArity() * t1.getModifiers() + 31 * t1.getSimpleName().hashCode();
         }
 
         @Override
@@ -81,7 +81,7 @@ public final class SymbolEquality {
     public static final EqAndHash<JConstructorSymbol> CONSTRUCTOR = new EqAndHash<JConstructorSymbol>() {
         @Override
         public int hash(JConstructorSymbol t1) {
-            return 0;
+            return t1.getArity() * t1.getModifiers() + 31 * t1.getSimpleName().hashCode();
         }
 
         @Override
@@ -126,7 +126,7 @@ public final class SymbolEquality {
     public static final EqAndHash<JFieldSymbol> FIELD = new EqAndHash<JFieldSymbol>() {
         @Override
         public int hash(JFieldSymbol t1) {
-            return Objects.hash(t1.getEnclosingClass(), t1.getSimpleName());
+            return 31 * t1.getEnclosingClass().hashCode() + t1.getSimpleName().hashCode();
         }
 
         @Override
@@ -144,7 +144,7 @@ public final class SymbolEquality {
     public static final EqAndHash<SymAnnot> ANNOTATION = new EqAndHash<SymAnnot>() {
         @Override
         public int hash(SymAnnot t1) {
-            return Objects.hash(t1.getBinaryName());
+            return t1.getBinaryName().hashCode();
         }
 
         @Override
@@ -161,7 +161,7 @@ public final class SymbolEquality {
     public static final EqAndHash<JFormalParamSymbol> FORMAL_PARAM = new EqAndHash<JFormalParamSymbol>() {
         @Override
         public int hash(JFormalParamSymbol t1) {
-            return Objects.hash(t1.getDeclaringSymbol(), t1.getSimpleName());
+            return 31 * t1.getDeclaringSymbol().hashCode() + t1.getSimpleName().hashCode();
         }
 
         @Override

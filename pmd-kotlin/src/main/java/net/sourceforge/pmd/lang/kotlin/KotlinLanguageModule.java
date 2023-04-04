@@ -24,7 +24,8 @@ public class KotlinLanguageModule extends SimpleLanguageModuleBase {
         super(LanguageMetadata.withId("kotlin").name("Kotlin")
                               .extensions("kt", "ktm")
                               .addVersion("1.6")
-                              .addDefaultVersion("1.7"),
+                              .addVersion("1.7")
+                              .addDefaultVersion("1.8"),
               new KotlinHandler());
 
     }

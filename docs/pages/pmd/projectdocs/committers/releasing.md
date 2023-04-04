@@ -79,9 +79,6 @@ Add the new rules as comments to the quickstart rulesets:
 * `pmd-apex/src/main/resources/rulesets/apex/quickstart.xml`
 * `pmd-java/src/main/resources/rulesets/java/quickstart.xml`
 
-We maintain a documentation for the [next major release](pmd_next_major_development.html). Copy the API
-changes from the current release notes to this document: `docs/pages/next_major_development.md`.
-
 The designer lives at [pmd/pmd-designer](https://github.com/pmd/pmd-designer).
 Update property `pmd-designer.version` in **pom.xml** to reference the latest pmd-designer release.
 See <https://search.maven.org/search?q=g:net.sourceforge.pmd%20AND%20a:pmd-ui&core=gav> for the available releases.

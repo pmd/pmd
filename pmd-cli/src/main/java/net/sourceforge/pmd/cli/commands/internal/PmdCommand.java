@@ -277,7 +277,9 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
     @Override
     protected PMDConfiguration toConfiguration() {
         final PMDConfiguration configuration = new PMDConfiguration();
-        configuration.setInputPathList(inputPaths);
+        if (inputPaths != null) {
+            configuration.setInputPathList(inputPaths);
+        }
         configuration.setInputFilePath(fileListPath);
         configuration.setIgnoreFilePath(ignoreListPath);
         configuration.setInputUri(uri);
