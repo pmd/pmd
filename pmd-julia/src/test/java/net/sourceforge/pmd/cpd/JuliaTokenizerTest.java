@@ -6,13 +6,13 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.Properties;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 import net.sourceforge.pmd.lang.julia.cpd.JuliaTokenizer;
 
-public class JuliaTokenizerTest extends CpdTextComparisonTest {
-    public JuliaTokenizerTest() {
+class JuliaTokenizerTest extends CpdTextComparisonTest {
+    JuliaTokenizerTest() {
         super(".jl");
     }
 
@@ -28,7 +28,7 @@ public class JuliaTokenizerTest extends CpdTextComparisonTest {
     }
 
     @Test
-    public void testMathExample() {
+    void testMathExample() {
         doTest("mathExample");
     }
 }

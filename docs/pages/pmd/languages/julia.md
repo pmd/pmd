@@ -9,7 +9,7 @@ Julia was designed from the beginning for high performance.
 Julia programs compile to efficient native code for multiple platforms via LLVM.
 
 ## Support in PMD
-Starting from version 6.55.0, Julia support was added to CPD.
+Starting from version 7.0.0, Julia support was added to CPD.
 
 ### Limitations
 - Support for Julia only extends to CPD to detect code duplication in Julia source files.
