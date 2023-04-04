@@ -4,21 +4,11 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTComparisonCondition extends AbstractPLSQLNode {
+public final class ASTComparisonCondition extends AbstractPLSQLNode {
     private String operator;
 
-    @Deprecated
-    @InternalApi
-    public ASTComparisonCondition(int id) {
+    ASTComparisonCondition(int id) {
         super(id);
-    }
-
-    @Deprecated
-    @InternalApi
-    public ASTComparisonCondition(PLSQLParser p, int id) {
-        super(p, id);
     }
 
     void setOperator(String operator) {
@@ -30,7 +20,7 @@ public class ASTComparisonCondition extends AbstractPLSQLNode {
     }
 
     @Override
-    public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {
+    protected <P, R> R acceptPlsqlVisitor(PlsqlVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

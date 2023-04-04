@@ -10,7 +10,7 @@ import java.util.List;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class ToDateToCharTest extends PmdRuleTst {
+class ToDateToCharTest extends PmdRuleTst {
     // No additional unit tests
 
     @Override

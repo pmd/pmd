@@ -5,16 +5,17 @@
 package net.sourceforge.pmd.benchmark;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.Writer;
 import java.text.MessageFormat;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.benchmark.TimeTracker.TimedResult;
 
 /**
@@ -36,7 +37,8 @@ public class TextTimingReportRenderer implements TimingReportRenderer {
             + SELF_TIME_COLUMN_WIDTH + CALL_COLUMN_WIDTH + COUNTER_COLUMN_WIDTH;
 
     @Override
-    public void render(final TimingReport report, final Writer writer) throws IOException {
+    public void render(final TimingReport report, final Writer writer0) throws IOException {
+        PrintWriter writer = new PrintWriter(writer0);
         for (final TimedOperationCategory category : TimedOperationCategory.values()) {
             final Map<String, TimedResult> labeledMeasurements = report.getLabeledMeasurements(category);
             if (!labeledMeasurements.isEmpty()) {
@@ -53,19 +55,19 @@ public class TextTimingReportRenderer implements TimingReportRenderer {
             }
         }
 
-        writer.write(PMD.EOL);
+        writer.println();
         renderHeader("Total", writer);
 
         writer.write(StringUtils.rightPad("Wall Clock Time", LABEL_COLUMN_WIDTH));
         final String wallClockTime = MessageFormat.format(TIME_FORMAT, report.getWallClockMillis() / 1000.0);
         writer.write(StringUtils.leftPad(wallClockTime, TIME_COLUMN_WIDTH));
-        writer.write(PMD.EOL);
+        writer.println();
 
         writer.flush();
     }
 
     private void renderMeasurement(final String label, final TimedResult timedResult,
-            final Writer writer) throws IOException {
+            final PrintWriter writer) throws IOException {
         writer.write(StringUtils.rightPad(label, LABEL_COLUMN_WIDTH));
 
         final String time = MessageFormat.format(TIME_FORMAT, timedResult.totalTimeNanos.get() / 1000000000.0);
@@ -83,22 +85,15 @@ public class TextTimingReportRenderer implements TimingReportRenderer {
                 writer.write(StringUtils.leftPad(counter, COUNTER_COLUMN_WIDTH));
             }
         }
-
-        writer.write(PMD.EOL);
+        writer.println();
     }
 
     private void renderCategoryMeasurements(final TimedOperationCategory category,
-            final Map<String, TimedResult> labeledMeasurements, final Writer writer) throws IOException {
+            final Map<String, TimedResult> labeledMeasurements, final PrintWriter writer) throws IOException {
         renderHeader(category.displayName(), writer);
 
         final TimedResult grandTotal = new TimedResult();
-        final TreeSet<Map.Entry<String, TimedResult>> sortedKeySet = new TreeSet<>(
-            new Comparator<Map.Entry<String, TimedResult>>() {
-                @Override
-                public int compare(final Entry<String, TimedResult> o1, final Entry<String, TimedResult> o2) {
-                    return Long.compare(o1.getValue().selfTimeNanos.get(), o2.getValue().selfTimeNanos.get());
-                }
-            });
+        final Set<Entry<String, TimedResult>> sortedKeySet = new TreeSet<>(Comparator.comparingLong(o -> o.getValue().selfTimeNanos.get()));
         sortedKeySet.addAll(labeledMeasurements.entrySet());
 
         for (final Map.Entry<String, TimedResult> entry : sortedKeySet) {
@@ -106,12 +101,12 @@ public class TextTimingReportRenderer implements TimingReportRenderer {
             grandTotal.mergeTimes(entry.getValue());
         }
 
-        writer.write(PMD.EOL);
+        writer.println();
         renderMeasurement("Total " + category.displayName(), grandTotal, writer);
-        writer.write(PMD.EOL);
+        writer.println();
     }
 
-    private void renderHeader(final String displayName, final Writer writer) throws IOException {
+    private void renderHeader(final String displayName, final PrintWriter writer) throws IOException {
         final StringBuilder sb = new StringBuilder(COLUMNS)
                 .append(displayName);
 
@@ -129,7 +124,7 @@ public class TextTimingReportRenderer implements TimingReportRenderer {
         }
 
         writer.write(sb.toString());
-        writer.write(PMD.EOL);
+        writer.println();
 
         // Write table titles
         writer.write(StringUtils.rightPad("Label", LABEL_COLUMN_WIDTH));
@@ -137,8 +132,8 @@ public class TextTimingReportRenderer implements TimingReportRenderer {
         writer.write(StringUtils.leftPad("Self Time (secs)", SELF_TIME_COLUMN_WIDTH));
         writer.write(StringUtils.leftPad("# Calls", CALL_COLUMN_WIDTH));
         writer.write(StringUtils.leftPad("Counter", COUNTER_COLUMN_WIDTH));
-        writer.write(PMD.EOL);
-        writer.write(PMD.EOL);
+        writer.println();
+        writer.println();
     }
 
 }

@@ -7,11 +7,8 @@ package net.sourceforge.pmd.testframework;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.runner.RunWith;
-
 import net.sourceforge.pmd.Rule;
 
-@RunWith(PMDTestRunner.class)
 public class PmdRuleTst extends RuleTst {
 
     @Override

@@ -14,7 +14,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.internal.util.IOUtil;
 
 public class SourceCode {
 
@@ -224,5 +224,9 @@ public class SourceCode {
 
     public String getFileName() {
         return cl.getFileName();
+    }
+
+    public Reader getReader() throws Exception {
+        return cl.getReader();
     }
 }

@@ -4,23 +4,19 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import scala.meta.Enumerator;
 
 /**
  * The ASTEnumeratorVal node implementation.
  */
-public class ASTEnumeratorVal extends AbstractScalaNode<Enumerator.Val> {
+public final class ASTEnumeratorVal extends AbstractScalaNode<Enumerator.Val> {
 
-    @Deprecated
-    @InternalApi
-    public ASTEnumeratorVal(Enumerator.Val scalaNode) {
+    ASTEnumeratorVal(Enumerator.Val scalaNode) {
         super(scalaNode);
     }
 
     @Override
-    public <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data) {
+    protected <P, R> R acceptVisitor(ScalaParserVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

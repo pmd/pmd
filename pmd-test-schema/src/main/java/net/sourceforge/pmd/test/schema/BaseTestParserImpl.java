@@ -14,12 +14,14 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -27,6 +29,9 @@ import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.test.schema.TestSchemaParser.PmdXmlReporter;
 
 import com.github.oowekyala.ooxml.DomUtils;
+import com.github.oowekyala.ooxml.messages.PositionedXmlDoc;
+import com.github.oowekyala.ooxml.messages.XmlPosition;
+import com.github.oowekyala.ooxml.messages.XmlPositioner;
 
 /**
  * @author Clément Fournier
@@ -37,7 +42,8 @@ class BaseTestParserImpl {
 
     }
 
-    public RuleTestCollection parseDocument(Rule rule, Document doc, PmdXmlReporter err) {
+    public RuleTestCollection parseDocument(Rule rule, PositionedXmlDoc positionedXmlDoc, PmdXmlReporter err) {
+        Document doc = positionedXmlDoc.getDocument();
         Element root = doc.getDocumentElement();
 
         Map<String, Element> codeFragments = parseCodeFragments(err, root);
@@ -49,7 +55,7 @@ class BaseTestParserImpl {
             RuleTestDescriptor descriptor = new RuleTestDescriptor(i, rule.deepCopy());
 
             try (PmdXmlReporter errScope = err.newScope()) {
-                parseSingleTest(testCodes.get(i), descriptor, codeFragments, usedFragments, errScope);
+                parseSingleTest(testCodes.get(i), descriptor, codeFragments, usedFragments, positionedXmlDoc.getPositioner(), errScope);
                 if (!errScope.hasError()) {
                     result.addTest(descriptor);
                 }
@@ -83,6 +89,7 @@ class BaseTestParserImpl {
                                  RuleTestDescriptor descriptor,
                                  Map<String, Element> fragments,
                                  Set<String> usedFragments,
+                                 XmlPositioner xmlPositioner,
                                  PmdXmlReporter err) {
         {
             String description = getSingleChildText(testCode, "description", true, err);
@@ -123,6 +130,9 @@ class BaseTestParserImpl {
         if (lversion != null) {
             descriptor.setLanguageVersion(lversion);
         }
+
+        XmlPosition startPosition = xmlPositioner.startPositionOf(testCode);
+        descriptor.setLineNumber(startPosition.getLine());
     }
 
     private void parseExpectedProblems(Element testCode, RuleTestDescriptor descriptor, PmdXmlReporter err) {
@@ -205,12 +215,34 @@ class BaseTestParserImpl {
             return null;
         }
         String languageVersionString = parseTextNode(sourceTypeNode);
-        LanguageVersion languageVersion = LanguageRegistry.findLanguageVersionByTerseName(languageVersionString);
+        LanguageVersion languageVersion = parseSourceType(languageVersionString);
         if (languageVersion != null) {
             return languageVersion;
         }
 
         err.at(sourceTypeNode).error("Unknown language version ''{0}''", languageVersionString);
+        return null;
+    }
+
+    /** FIXME this is stupid, the language version may be of a different language than the Rule... */
+    private static LanguageVersion parseSourceType(String terseNameAndVersion) {
+        final String version;
+        final String terseName;
+        if (terseNameAndVersion.contains(" ")) {
+            version = StringUtils.trimToNull(terseNameAndVersion.substring(terseNameAndVersion.lastIndexOf(' ') + 1));
+            terseName = terseNameAndVersion.substring(0, terseNameAndVersion.lastIndexOf(' '));
+        } else {
+            version = null;
+            terseName = terseNameAndVersion;
+        }
+        Language language = LanguageRegistry.findLanguageByTerseName(terseName);
+        if (language != null) {
+            if (version == null) {
+                return language.getDefaultVersion();
+            } else {
+                return language.getVersion(version);
+            }
+        }
         return null;
     }
 

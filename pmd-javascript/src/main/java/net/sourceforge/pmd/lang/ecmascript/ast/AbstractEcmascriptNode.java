@@ -6,62 +6,48 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.AstNode;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.ast.AbstractNode;
-import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
+import net.sourceforge.pmd.lang.ast.AstVisitor;
+import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
+import net.sourceforge.pmd.lang.document.TextRegion;
 
-@Deprecated
-@InternalApi
-public abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNode implements EcmascriptNode<T> {
+abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNode<AbstractEcmascriptNode<?>, EcmascriptNode<?>> implements EcmascriptNode<T> {
 
     protected final T node;
+    private String image;
 
-    @Deprecated
-    @InternalApi
-    public AbstractEcmascriptNode(T node) {
-        super(node.getType());
+    AbstractEcmascriptNode(T node) {
         this.node = node;
     }
 
-    /* package private */
-    void calculateLineNumbers(SourceCodePositioner positioner) {
-        int startOffset = node.getAbsolutePosition();
-        int endOffset = startOffset + node.getLength();
-
-        this.beginLine = positioner.lineNumberFromOffset(startOffset);
-        this.beginColumn = positioner.columnFromOffset(this.beginLine, startOffset);
-        this.endLine = positioner.lineNumberFromOffset(endOffset);
-        // end column is inclusive
-        this.endColumn = positioner.columnFromOffset(this.endLine, endOffset) - 1;
-        if (this.endColumn < 0) {
-            this.endColumn = 0;
-        }
-    }
-
-    /**
-     * Accept the visitor. *
-     */
     @Override
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
-        return visitor.visit(this, data);
+    protected void addChild(AbstractEcmascriptNode<?> child, int index) {
+        super.addChild(child, index);
     }
 
-    /**
-     * Accept the visitor. *
-     */
     @Override
-    public Object childrenAccept(EcmascriptParserVisitor visitor, Object data) {
-        if (children != null) {
-            for (int i = 0; i < children.length; ++i) {
-                // we know that the children here
-                // are all EcmascriptNodes
-                @SuppressWarnings("unchecked")
-                EcmascriptNode<T> ecmascriptNode = (EcmascriptNode<T>) children[i];
-                ecmascriptNode.jjtAccept(visitor, data);
-            }
-        }
-        return data;
+    public String getImage() {
+        return image;
     }
+
+    protected void setImage(String image) {
+        this.image = image;
+    }
+
+    @Override
+    public TextRegion getTextRegion() {
+        return TextRegion.fromOffsetLength(node.getAbsolutePosition(), node.getLength());
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public final <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
+        if (visitor instanceof EcmascriptVisitor) {
+            return acceptJsVisitor((EcmascriptVisitor<? super P, ? extends R>) visitor, data);
+        }
+        return visitor.cannotVisit(this, data);
+    }
+
+    protected abstract <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data);
 
     @Override
     @Deprecated

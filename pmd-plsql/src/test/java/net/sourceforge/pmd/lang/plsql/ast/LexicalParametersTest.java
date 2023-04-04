@@ -4,14 +4,14 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 
-public class LexicalParametersTest extends AbstractPLSQLParserTst {
+class LexicalParametersTest extends AbstractPLSQLParserTst {
 
     @Test
-    public void parseLexicalParameters() {
+    void parseLexicalParameters() {
         plsql.parseResource("LexicalParameters.sql");
     }
 }

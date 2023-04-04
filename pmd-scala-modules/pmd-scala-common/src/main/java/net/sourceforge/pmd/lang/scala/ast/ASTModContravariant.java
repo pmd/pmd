@@ -4,23 +4,19 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import scala.meta.Mod;
 
 /**
  * The ASTModContravariant node implementation.
  */
-public class ASTModContravariant extends AbstractScalaNode<Mod.Contravariant> {
+public final class ASTModContravariant extends AbstractScalaNode<Mod.Contravariant> {
 
-    @Deprecated
-    @InternalApi
-    public ASTModContravariant(Mod.Contravariant scalaNode) {
+    ASTModContravariant(Mod.Contravariant scalaNode) {
         super(scalaNode);
     }
 
     @Override
-    public <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data) {
+    protected <P, R> R acceptVisitor(ScalaParserVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

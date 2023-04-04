@@ -56,7 +56,7 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
      * @param cacheFile The file which backs the file analysis cache.
      */
     private void loadFromFile(final File cacheFile) {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "load")) {
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "load")) {
             if (cacheExists()) {
                 try (
                     DataInputStream inputStream = new DataInputStream(
@@ -74,38 +74,38 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
 
                         // Cached results
                         while (inputStream.available() > 0) {
-                            final String fileName = inputStream.readUTF();
+                            final String filePathId = inputStream.readUTF();
                             final long checksum = inputStream.readLong();
 
                             final int countViolations = inputStream.readInt();
                             final List<RuleViolation> violations = new ArrayList<>(countViolations);
                             for (int i = 0; i < countViolations; i++) {
-                                violations.add(CachedRuleViolation.loadFromStream(inputStream, fileName, ruleMapper));
+                                violations.add(CachedRuleViolation.loadFromStream(inputStream, filePathId, ruleMapper));
                             }
 
-                            fileResultsCache.put(fileName, new AnalysisResult(checksum, violations));
+                            fileResultsCache.put(filePathId, new AnalysisResult(checksum, violations));
                         }
 
-                        LOG.info("Analysis cache loaded");
+                        LOG.debug("Analysis cache loaded from {}", cacheFile);
                     } else {
-                        LOG.info("Analysis cache invalidated, PMD version changed.");
+                        LOG.debug("Analysis cache invalidated, PMD version changed.");
                     }
                 } catch (final EOFException e) {
-                    LOG.warning("Cache file " + cacheFile.getPath() + " is malformed, will not be used for current analysis");
+                    LOG.warn("Cache file {} is malformed, will not be used for current analysis", cacheFile.getPath());
                 } catch (final IOException e) {
-                    LOG.severe("Could not load analysis cache from file. " + e.getMessage());
+                    LOG.error("Could not load analysis cache from file: {}", e.getMessage());
                 }
             } else if (cacheFile.isDirectory()) {
-                LOG.severe("The configured cache location must be the path to a file, but is a directory.");
+                LOG.error("The configured cache location must be the path to a file, but is a directory.");
             }
         }
     }
 
     @Override
     public void persist() {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "persist")) {
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "persist")) {
             if (cacheFile.isDirectory()) {
-                LOG.severe("Cannot persist the cache, the given path points to a directory.");
+                LOG.error("Cannot persist the cache, the given path points to a directory.");
                 return;
             }
 
@@ -132,7 +132,7 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
                 for (final Map.Entry<String, AnalysisResult> resultEntry : updatedResultsCache.entrySet()) {
                     final List<RuleViolation> violations = resultEntry.getValue().getViolations();
 
-                    outputStream.writeUTF(resultEntry.getKey()); // the full filename
+                    outputStream.writeUTF(resultEntry.getKey()); // the path id
                     outputStream.writeLong(resultEntry.getValue().getFileChecksum());
 
                     outputStream.writeInt(violations.size());
@@ -141,16 +141,15 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
                     }
                 }
                 if (cacheFileShouldBeCreated) {
-                    LOG.info("Analysis cache created");
+                    LOG.debug("Analysis cache created");
                 } else {
-                    LOG.info("Analysis cache updated");
+                    LOG.debug("Analysis cache updated");
                 }
             } catch (final IOException e) {
-                LOG.severe("Could not persist analysis cache to file. " + e.getMessage());
+                LOG.error("Could not persist analysis cache to file: {}", e.getMessage());
             }
         }
     }
-
 
     @Override
     protected boolean cacheExists() {

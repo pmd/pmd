@@ -20,7 +20,6 @@ Do not nest JSF component custom actions inside a custom action that iterates ov
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -55,7 +54,6 @@ Do not use an attribute called 'class'. Use "styleclass" for CSS styles.
         </description>
         <priority>2</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -86,7 +84,6 @@ little other purpose. Consider switching to JSP comments.
         </description>
         <priority>2</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -119,7 +116,6 @@ Do not do a forward from within a JSP file.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[

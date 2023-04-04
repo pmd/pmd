@@ -2,19 +2,32 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-
 package net.sourceforge.pmd.lang.html;
 
-import net.sourceforge.pmd.lang.BaseLanguageModule;
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
-public final class HtmlLanguageModule extends BaseLanguageModule {
+import java.util.List;
+
+import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
+
+public final class HtmlLanguageModule extends SimpleLanguageModuleBase {
 
     public static final String NAME = "HTML";
     public static final String TERSE_NAME = "html";
+    @InternalApi
+    public static final List<String> EXTENSIONS = listOf("html", "htm", "xhtml", "xht", "shtml");
 
     public HtmlLanguageModule() {
-        super(NAME, null, TERSE_NAME, "html", "htm", "xhtml", "xht", "shtml");
-        addDefaultVersion("", new HtmlHandler());
+        super(LanguageMetadata.withId(TERSE_NAME).name(NAME)
+                              .extensions(EXTENSIONS)
+                              .addVersion("4")
+                              .addDefaultVersion("5"),
+              new HtmlHandler());
     }
 
+    public static HtmlLanguageModule getInstance() {
+        return (HtmlLanguageModule) LanguageRegistry.PMD.getLanguageById(TERSE_NAME);
+    }
 }

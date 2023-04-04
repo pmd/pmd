@@ -4,36 +4,58 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.INSTANCEOF;
+import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.isArrayLengthFieldAccess;
+import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.isCallOnThisInstance;
+import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.isInfixExprWithOperator;
+import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.isRefToFieldOfThisClass;
+import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.isThisOrSuper;
+import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isGetterCall;
+import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isNullChecked;
+import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Stream;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
-import net.sourceforge.pmd.lang.java.ast.ASTBlock;
-import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
+import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
+import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.QualifiableExpression;
+import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
-import net.sourceforge.pmd.lang.java.symboltable.LocalScope;
-import net.sourceforge.pmd.lang.java.symboltable.MethodScope;
-import net.sourceforge.pmd.lang.java.symboltable.TypedNameDeclaration;
-import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
-import net.sourceforge.pmd.lang.symboltable.Scope;
+import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass;
+import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.AssignmentEntry;
+import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.DataflowResult;
+import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.ReachingDefinitionSet;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
+import net.sourceforge.pmd.lang.java.types.JClassType;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.TypeOps;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 
 /**
  * This rule can detect possible violations of the Law of Demeter. The Law of
@@ -49,435 +71,326 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
  * programs. Software, IEEE, 6(5):38–48, 1989.</li>
  * </ul>
  *
+ * @author Clément Fournier
  * @since 5.0
  *
  */
 public class LawOfDemeterRule extends AbstractJavaRule {
-    private static final String REASON_METHOD_CHAIN_CALLS = "method chain calls";
-    private static final String REASON_OBJECT_NOT_CREATED_LOCALLY = "object not created locally";
-    private static final String REASON_STATIC_ACCESS = "static property access";
+
+
+    private static final PropertyDescriptor<Integer> TRUST_RADIUS =
+        PropertyFactory.intProperty("trustRadius")
+                       .desc("Maximum degree of trusted data. The default of 1 is the most restrictive.")
+                       .require(positive())
+                       .defaultValue(1)
+                       .build();
+    private static final String FIELD_ACCESS_ON_FOREIGN_VALUE = "Access to field `{0}` on foreign value `{1}` (degree {2})";
+    private static final String METHOD_CALL_ON_FOREIGN_VALUE = "Call to `{0}` on foreign value `{1}` (degree {2})";
 
     public LawOfDemeterRule() {
-        addRuleChainVisit(ASTMethodDeclaration.class);
+        definePropertyDescriptor(TRUST_RADIUS);
     }
 
     /**
-     * That's a new method. We are going to check each method call inside the
-     * method.
-     *
-     * @return <code>null</code>.
+     * This cache is there to prevent recursion in case of cycles. It
+     * also avoids recomputing the degree of too many nodes, as the degree
+     * of a call chain depends on the degree of the qualifier. {@link #visit(ASTMethodCall, Object)}
+     * is called on every part of the chain, so without memoization we
+     * would run in O(n2).
      */
+    private final Map<ASTExpression, Integer> degreeCache = new LinkedHashMap<>();
+
     @Override
-    public Object visit(ASTMethodDeclaration node, Object data) {
-        List<ASTPrimaryExpression> primaryExpressions = node.findDescendantsOfType(ASTPrimaryExpression.class);
-        for (ASTPrimaryExpression expression : primaryExpressions) {
-            List<MethodCall> calls = MethodCall.createMethodCalls(expression);
-            addViolations(calls, (RuleContext) data);
+    public void apply(Node target, RuleContext ctx) {
+        degreeCache.clear();
+        // reimplement our own traversal instead of using the rulechain,
+        // so that we have a stable traversal order.
+        ((ASTCompilationUnit) target)
+            .descendants().crossFindBoundaries()
+            .forEach(it -> {
+                if (it instanceof ASTMethodCall) {
+                    this.visit((ASTMethodCall) it, ctx);
+                } else if (it instanceof ASTFieldAccess) {
+                    this.visit((ASTFieldAccess) it, ctx);
+                }
+            });
+        degreeCache.clear(); // avoid memory leak
+    }
+
+    /**
+     * Only report the first occurrences of a breach of trust. Those are
+     * the ones that need to be fixed.
+     */
+    private boolean isReportedDegree(int degree) {
+        return degree == getProperty(TRUST_RADIUS) + 1;
+    }
+
+    @Override
+    public Object visit(ASTFieldAccess node, Object data) {
+        if (shouldReport(node)) {
+            addViolationWithMessage(
+                data, node,
+                FIELD_ACCESS_ON_FOREIGN_VALUE,
+                new Object[] {
+                    node.getName(),
+                    PrettyPrintingUtil.prettyPrint(node.getQualifier()),
+                    foreignDegree(node.getQualifier()),
+                });
         }
         return null;
     }
 
-    private void addViolations(List<MethodCall> calls, RuleContext ctx) {
-        for (MethodCall method : calls) {
-            if (method.isViolation()) {
-                addViolationWithMessage(ctx, method.getExpression(),
-                        getMessage() + " (" + method.getViolationReason() + ")");
+    @Override
+    public Object visit(ASTMethodCall node, Object data) {
+        if (shouldReport(node)) {
+            addViolationWithMessage(
+                data, node,
+                METHOD_CALL_ON_FOREIGN_VALUE,
+                new Object[] {
+                    node.getMethodName(),
+                    PrettyPrintingUtil.prettyPrint(node.getQualifier()),
+                    foreignDegree(node.getQualifier()),
+                });
+        }
+        return null;
+    }
+
+    private boolean shouldReport(QualifiableExpression expr) {
+        ASTExpression qualifier = expr.getQualifier();
+        if (qualifier == null) {
+            return false;
+        }
+        int degree = foreignDegree(expr);
+        if (isReportedDegree(degree) && isUsedAsGetter(expr)) {
+            if (expr.getParent() instanceof ASTVariableDeclarator) { // NOPMD #3786
+                // Stored in local var, don't report if some usages escape.
+                // In that case, usage sites with non-escaping usage will be reported.
+                return isAllowedStore(((ASTVariableDeclarator) expr.getParent()).getVarId());
+            } else {
+                return true;
             }
         }
+        // Reported degree may be higher if LHS is a local var with the reported degree.
+        // If some usages of that local escape, the local hasn't been reported. Those usages
+        // that don't escape need to be reported.
+        if (qualifier instanceof ASTVariableAccess
+            && isReportedDegree(foreignDegree(qualifier))) {
+            JVariableSymbol sym = ((ASTVariableAccess) qualifier).getReferencedSym();
+            return sym != null && !isAllowedStore(sym.tryGetNode());
+        }
+        return false;
+    }
+
+    private boolean isAllowedStore(ASTVariableDeclaratorId varId) {
+        return varId != null && varId.getLocalUsages().stream().noneMatch(this::escapesMethod);
+    }
+
+    private int foreignDegree(@Nullable ASTExpression expr) {
+        if (expr == null) {
+            return 0;
+        }
+        Integer cachedValue = degreeCache.get(expr);
+        if (cachedValue == null) {
+            degreeCache.put(expr, -1); // recursion guard
+            int computed = foreignDegreeImpl(expr);
+            degreeCache.put(expr, computed);
+            // System.out.println("Degree " + computed + ": " + expr);
+            return computed;
+        } else if (cachedValue == -1) {
+            return cachedValue; // recursion
+        } else {
+            return cachedValue;
+        }
+    }
+
+    private int foreignDegreeImpl(ASTExpression expr) {
+        if (expr instanceof ASTMethodCall) {
+            ASTMethodCall call = (ASTMethodCall) expr;
+            return methodCallDegree(call);
+        } else if (expr instanceof ASTFieldAccess) {
+            ASTFieldAccess access = (ASTFieldAccess) expr;
+            return fieldAccessDegree(access);
+        } else if (expr instanceof ASTVariableAccess) {
+            ASTVariableAccess access = (ASTVariableAccess) expr;
+            return variableDegree(access);
+        } else if (expr instanceof ASTArrayAccess) {
+            return foreignDegree(((ASTArrayAccess) expr).getQualifier());
+        } else if (expr instanceof ASTConstructorCall) {
+            return ACCESSIBLE;
+        } else if (expr instanceof ASTTypeExpression || isThisOrSuper(expr)) {
+            return TRUSTED;
+        }
+        return ACCESSIBLE;
+    }
+
+
+
+    private int methodCallDegree(ASTMethodCall call) {
+        if (call.getOverloadSelectionInfo().isFailed() // be conservative
+            || call.getMethodType().isStatic() // static methods are taken to be construction methods.
+            || isCallOnThisInstance(call)
+            || call.getQualifier() == null // either static or call on this. Prevents NPE when unresolved
+            || isFactoryMethod(call)
+            || isBuilderPattern(call.getQualifier())
+            || isPureData(call)) {
+            return ACCESSIBLE;
+        } else if (isPureDataContainer(call.getMethodType().getDeclaringType())
+            || isPureDataContainer(call.getTypeMirror())
+            || !isGetterCall(call)
+            || isTransformationMethod(call)) {
+            return asForeignAsQualifier(call);
+        }
+        return moreForeignThanQualifier(call);
+    }
+
+    private boolean isTransformationMethod(ASTMethodCall expr) {
+        if (expr.getQualifier() == null) {
+            return false;
+        }
+        JTypeMirror qualType = expr.getQualifier().getTypeMirror();
+        JTypeMirror returnType = expr.getTypeMirror();
+        // note: there is a possible optimization that only tests
+        // if types are related when their names are similar, look into history.
+        return TypeOps.areRelated(qualType, returnType);
+    }
+
+    private boolean isPureData(ASTExpression expr) {
+        return TypeTestUtil.isA(String.class, expr)
+            || TypeTestUtil.isA(StringBuilder.class, expr)
+            || TypeTestUtil.isA(StringBuffer.class, expr)
+            || expr.getTypeMirror().isPrimitive()
+            || expr.getTypeMirror().isBoxedPrimitive()
+            || isNullChecked(expr)
+            || isInfixExprWithOperator(expr.getParent(), INSTANCEOF);
+    }
+
+    private boolean isPureDataContainer(JTypeMirror type) {
+        JTypeDeclSymbol symbol = type.getSymbol();
+        if (symbol instanceof JClassSymbol) { // NOPMD
+            return "java.util".equals(symbol.getPackageName()) // collection, map, iterator, properties, etc
+                || TypeTestUtil.isA(Stream.class, type)
+                || TypeTestUtil.isA(Class.class, type)
+                || TypeTestUtil.isA(org.w3c.dom.NodeList.class, type)
+                || TypeTestUtil.isA(org.w3c.dom.NamedNodeMap.class, type)
+                || type.isArray();
+        }
+        return false;
+    }
+
+
+    private boolean escapesMethod(ASTExpression expr) {
+        return expr.getParent() instanceof ASTArgumentList
+            || expr.getParent() instanceof ASTReturnStatement
+            || expr.getParent() instanceof ASTThrowStatement;
+    }
+
+    private boolean isUsedAsGetter(ASTExpression expr) {
+        return !escapesMethod(expr) && !(expr.getParent() instanceof ASTExpressionStatement);
+    }
+
+
+    private int variableDegree(ASTVariableAccess expr) {
+        DataflowResult dataflow = DataflowPass.getDataflowResult(expr.getRoot());
+        ReachingDefinitionSet reaching = dataflow.getReachingDefinitions(expr);
+        if (reaching.isNotFullyKnown()) {
+            // a field symbol, normally
+            return expr.getReferencedSym() instanceof JFieldSymbol
+                   ? fieldAccessDegree(expr)
+                   : TRUSTED; // unresolved, or failure in data flow pass
+        }
+
+        // note this max could be changed to min to get a more conservative
+        // strategy, trading recall for precision. maybe make that configurable
+        return reaching.getReaching().stream().mapToInt(this::foreignDegree).max().orElse(TRUSTED);
+    }
+
+    private int fieldAccessDegree(ASTNamedReferenceExpr expr) {
+        if (isRefToFieldOfThisClass(expr) || isPureData(expr)) {
+            return ACCESSIBLE;
+        } else if (isArrayLengthFieldAccess(expr)) {
+            return asForeignAsQualifier((ASTFieldAccess) expr);
+        } else if (expr instanceof ASTFieldAccess) {
+            return moreForeignThanQualifier((ASTFieldAccess) expr);
+        } else {
+            return ACCESSIBLE;
+        }
+    }
+
+
+    private int foreignDegree(AssignmentEntry def) {
+
+        if (def.isForeachVar()) {
+            ASTForeachStatement foreach = def.getVarId().ancestors(ASTForeachStatement.class).firstOrThrow();
+            // same degree as the list
+            return foreignDegree(foreach.getIterableExpr());
+        }
+        // formal parameters are not foreign otherwise we couldn't call any methods on them
+        if (def.getVarId().isFormalParameter()) {
+            return 1;
+        }
+        return foreignDegree(def.getRhsAsExpression());
+    }
+
+
+    private boolean isBuilderPattern(ASTExpression expr) {
+        return typeEndsWith(expr, "Builder");
+    }
+
+    private boolean isFactoryMethod(ASTMethodCall expr) {
+        ASTExpression qualifier = expr.getQualifier();
+        if (qualifier != null) { // NOPMD SimplifyBooleanReturns https://github.com/pmd/pmd/issues/3786
+            return typeEndsWith(qualifier, "Factory")
+                || nameEndsWith(qualifier, "Factory")
+                || nameIs(qualifier, "factory");
+        }
+        return false;
+    }
+
+    private boolean nameEndsWith(ASTExpression expr, String suffix) {
+        return expr instanceof ASTNamedReferenceExpr
+            && ((ASTNamedReferenceExpr) expr).getName().endsWith(suffix);
+    }
+
+    private boolean nameIs(ASTExpression expr, String name) {
+        return expr instanceof ASTNamedReferenceExpr
+            && ((ASTNamedReferenceExpr) expr).getName().equals(name);
+    }
+
+    private boolean typeEndsWith(ASTExpression expr, String suffix) {
+        return expr != null
+            && expr.getTypeMirror() instanceof JClassType
+            && expr.getTypeMirror().getSymbol().getSimpleName().endsWith(suffix);
     }
 
     /**
-     * Collects the information of one identified method call. The method call
-     * might be a violation of the Law of Demeter or not.
+     * Degree 0.
+     * <ul>
+     * <li>`this`
+     * </ul>
+     * You can use the object however you like.
      */
-    private static class MethodCall {
-        private static final String METHOD_CALL_CHAIN = "result from previous method call";
-        private static final String SIMPLE_ASSIGNMENT_OPERATOR = "=";
-        private static final String SCOPE_METHOD_CHAINING = "method-chaining";
-        private static final String SCOPE_CLASS = "class";
-        private static final String SCOPE_METHOD = "method";
-        private static final String SCOPE_LOCAL = "local";
-        private static final String SCOPE_STATIC_CHAIN = "static-chain";
-        private static final String SUPER = "super";
-        private static final String THIS = "this";
-        private static final String PREFIX_EXCLUSION_PATTERN = "^.*(b|B)uilder$";
-
-        private ASTPrimaryExpression expression;
-        private String baseName;
-        private String methodName;
-        private String baseScope;
-        private String baseTypeName;
-        private Class<?> baseType;
-        private boolean violation;
-        private boolean baseNameInWhitelist;
-        private String violationReason;
-
-        /**
-         * Create a new method call for the prefix expression part of the
-         * primary expression.
-         */
-        private MethodCall(ASTPrimaryExpression expression, ASTPrimaryPrefix prefix) {
-            this.expression = expression;
-            analyze(prefix);
-            determineType();
-            checkViolation();
-        }
-
-        /**
-         * Create a new method call for the given suffix expression part of the
-         * primary expression. This is used for method chains.
-         */
-        private MethodCall(ASTPrimaryExpression expression, ASTPrimarySuffix suffix) {
-            this.expression = expression;
-            analyze(suffix);
-            determineType();
-            checkViolation();
-        }
-
-        /**
-         * Factory method to convert a given primary expression into
-         * MethodCalls. In case the primary expression represents a method chain
-         * call, then multiple MethodCalls are returned.
-         *
-         * @return a list of MethodCalls, might be empty.
-         */
-        public static List<MethodCall> createMethodCalls(ASTPrimaryExpression expression) {
-            List<MethodCall> result = new ArrayList<>();
-
-            if (isNotAConstructorCall(expression) && isNotLiteral(expression) && hasSuffixesWithArguments(expression)) {
-                ASTPrimaryPrefix prefixNode = expression.getFirstChildOfType(ASTPrimaryPrefix.class);
-                ASTPrimarySuffix followingSuffix = getFollowingSuffix(prefixNode);
-                boolean firstExpressionIsMethodCall = followingSuffix != null && followingSuffix.isArguments();
-                MethodCall firstMethodCallInChain = null;
-
-                if (firstExpressionIsMethodCall) {
-                    firstMethodCallInChain = new MethodCall(expression, prefixNode);
-                    result.add(firstMethodCallInChain);
-                }
-
-                if (firstMethodCallInChain == null || firstMethodCallInChain.isNotBuilder()) {
-                    List<ASTPrimarySuffix> suffixes = findSuffixesWithoutArguments(expression);
-                    for (ASTPrimarySuffix suffix : suffixes) {
-                        if (!expression.hasDescendantOfType(ASTCastExpression.class)) {
-                            result.add(new MethodCall(expression, suffix));
-                        }
-                    }
-                }
-            }
-
-            // when method chaining is detected, it must consist of multiple method calls
-            if (result.size() == 1) {
-                MethodCall m = result.get(0);
-                if (m.isViolation() && SCOPE_METHOD_CHAINING.equals(m.baseScope)) {
-                    result.clear();
-                }
-            }
-
-            return result;
-        }
-
-        private static ASTPrimarySuffix getFollowingSuffix(JavaNode node) {
-            int current = node.getIndexInParent();
-            if (node.getParent().getNumChildren() > current + 1) {
-                JavaNode following = node.getParent().getChild(current + 1);
-                if (following instanceof ASTPrimarySuffix) {
-                    return (ASTPrimarySuffix) following;
-                }
-            }
-            return null;
-        }
-
-        private static boolean isNotAConstructorCall(ASTPrimaryExpression expression) {
-            return !expression.hasDescendantOfType(ASTAllocationExpression.class);
-        }
-
-        private static boolean isNotLiteral(ASTPrimaryExpression expression) {
-            ASTPrimaryPrefix prefix = expression.getFirstDescendantOfType(ASTPrimaryPrefix.class);
-            if (prefix != null) {
-                return !prefix.hasDescendantOfType(ASTLiteral.class);
-            }
-            return true;
-        }
-
-        private boolean isNotBuilder() {
-            return baseType != StringBuffer.class && baseType != StringBuilder.class
-                    && !"StringBuilder".equals(baseTypeName) && !"StringBuffer".equals(baseTypeName)
-                    && !methodName.endsWith("Builder");
-        }
-
-        private static List<ASTPrimarySuffix> findSuffixesWithoutArguments(ASTPrimaryExpression expr) {
-            List<ASTPrimarySuffix> result = new ArrayList<>();
-            if (hasRealPrefix(expr)) {
-                List<ASTPrimarySuffix> suffixes = expr.findChildrenOfType(ASTPrimarySuffix.class);
-                for (ASTPrimarySuffix suffix : suffixes) {
-                    if (!suffix.isArguments() && !suffix.isArrayDereference()) {
-                        result.add(suffix);
-                    }
-                }
-            }
-            return result;
-        }
-
-        private static boolean hasRealPrefix(ASTPrimaryExpression expr) {
-            ASTPrimaryPrefix prefix = expr.getFirstDescendantOfType(ASTPrimaryPrefix.class);
-            return !prefix.usesThisModifier() && !prefix.usesSuperModifier();
-        }
-
-        private static boolean hasSuffixesWithArguments(ASTPrimaryExpression expr) {
-            boolean result = false;
-            if (hasRealPrefix(expr)) {
-                List<ASTPrimarySuffix> suffixes = expr.findDescendantsOfType(ASTPrimarySuffix.class);
-                for (ASTPrimarySuffix suffix : suffixes) {
-                    if (suffix.isArguments()) {
-                        result = true;
-                        break;
-                    }
-                }
-            }
-            return result;
-        }
-
-        private void analyze(ASTPrimaryPrefix prefixNode) {
-            List<ASTName> names = prefixNode.findDescendantsOfType(ASTName.class);
-
-            baseName = "unknown";
-            methodName = "unknown";
-
-            if (!names.isEmpty()) {
-                baseName = names.get(0).getImage();
-
-                int dot = baseName.lastIndexOf('.');
-                if (dot == -1) {
-                    methodName = baseName;
-                    baseName = THIS;
-                } else {
-                    methodName = baseName.substring(dot + 1);
-                    baseName = baseName.substring(0, dot);
-                    baseNameInWhitelist = baseName.matches(PREFIX_EXCLUSION_PATTERN);
-                }
-
-            } else {
-                if (prefixNode.usesThisModifier()) {
-                    baseName = THIS;
-                } else if (prefixNode.usesSuperModifier()) {
-                    baseName = SUPER;
-                }
-            }
-        }
-
-        private void analyze(ASTPrimarySuffix suffix) {
-            baseName = METHOD_CALL_CHAIN;
-            methodName = suffix.getImage();
-        }
-
-        private void checkViolation() {
-            violation = false;
-            violationReason = null;
-
-            if (baseNameInWhitelist) {
-                return;
-            } else if (SCOPE_LOCAL.equals(baseScope)) {
-                Assignment lastAssignment = determineLastAssignment();
-                if (lastAssignment != null && !lastAssignment.allocation && !lastAssignment.iterator
-                        && !lastAssignment.forLoop) {
-                    violation = true;
-                    violationReason = REASON_OBJECT_NOT_CREATED_LOCALLY;
-                }
-            } else if (SCOPE_METHOD_CHAINING.equals(baseScope)) {
-                violation = true;
-                violationReason = REASON_METHOD_CHAIN_CALLS;
-            } else if (SCOPE_STATIC_CHAIN.equals(baseScope)) {
-                violation = true;
-                violationReason = REASON_STATIC_ACCESS;
-            }
-        }
-
-        private void determineType() {
-            NameDeclaration var = null;
-            Scope scope = expression.getScope();
-
-            baseScope = SCOPE_LOCAL;
-            var = findInLocalScope(baseName, scope);
-            if (var == null) {
-                baseScope = SCOPE_METHOD;
-                var = determineTypeOfVariable(baseName,
-                        scope.getEnclosingScope(MethodScope.class).getVariableDeclarations().keySet());
-            }
-            if (var == null) {
-                baseScope = SCOPE_CLASS;
-                var = determineTypeOfVariable(baseName,
-                        scope.getEnclosingScope(ClassScope.class).getVariableDeclarations().keySet());
-            }
-            if (var == null) {
-                baseScope = SCOPE_METHOD_CHAINING;
-            }
-            if (var == null && (THIS.equals(baseName) || SUPER.equals(baseName))) {
-                baseScope = SCOPE_CLASS;
-            }
-
-            if (var instanceof TypedNameDeclaration) {
-                baseTypeName = ((TypedNameDeclaration) var).getTypeImage();
-                baseType = ((TypedNameDeclaration) var).getType();
-            } else if (METHOD_CALL_CHAIN.equals(baseName)) {
-                baseScope = SCOPE_METHOD_CHAINING;
-            } else if (baseName.contains(".") && !baseName.startsWith("System.")) {
-                baseScope = SCOPE_STATIC_CHAIN;
-            } else {
-                // everything else is no violation - probably a static method
-                // call.
-                baseScope = null;
-            }
-        }
-
-        private VariableNameDeclaration findInLocalScope(String name, Scope scope) {
-            VariableNameDeclaration result = null;
-
-            result = determineTypeOfVariable(name, scope.getDeclarations(VariableNameDeclaration.class).keySet());
-            if (result == null && scope.getParent() instanceof LocalScope) {
-                result = findInLocalScope(name, scope.getParent());
-            }
-
-            return result;
-        }
-
-        private VariableNameDeclaration determineTypeOfVariable(String variableName,
-                Set<VariableNameDeclaration> declarations) {
-            VariableNameDeclaration result = null;
-            for (VariableNameDeclaration var : declarations) {
-                if (variableName.equals(var.getImage())) {
-                    result = var;
-                    break;
-                }
-            }
-            return result;
-        }
-
-        private Assignment determineLastAssignment() {
-            List<Assignment> assignments = new ArrayList<>();
-
-            ASTBlock block = expression.getFirstParentOfType(ASTMethodDeclaration.class)
-                    .getFirstChildOfType(ASTBlock.class);
-            //get all variableDeclarators within this block
-            List<ASTVariableDeclarator> variableDeclarators = block.findDescendantsOfType(ASTVariableDeclarator.class);
-            for (ASTVariableDeclarator declarator : variableDeclarators) {
-                ASTVariableDeclaratorId variableDeclaratorId = declarator
-                        .getFirstChildOfType(ASTVariableDeclaratorId.class);
-                //we only care about it if the image name matches the current baseName
-                if (variableDeclaratorId.hasImageEqualTo(baseName)) {
-                    boolean allocationFound = declarator
-                            .getFirstDescendantOfType(ASTAllocationExpression.class) != null;
-                    boolean iterator = isIterator() || isFactory(declarator);
-                    boolean forLoop = isForLoop(declarator);
-                    assignments.add(new Assignment(declarator.getBeginLine(), allocationFound, iterator, forLoop));
-                }
-            }
-
-            //get all AssignmentOperators within this block
-            List<ASTAssignmentOperator> assignmentStmts = block.findDescendantsOfType(ASTAssignmentOperator.class);
-            for (ASTAssignmentOperator stmt : assignmentStmts) {
-                //we only care about it if it occurs prior to (or on) the beginLine of the current expression
-                //and if it is a simple_assignment_operator
-                if (stmt.getBeginLine() <= expression.getBeginLine()
-                        && stmt.hasImageEqualTo(SIMPLE_ASSIGNMENT_OPERATOR)) {
-                    //now we need to make sure it has the right image name
-                    ASTPrimaryPrefix primaryPrefix = stmt.getParent()
-                            .getFirstDescendantOfType(ASTPrimaryPrefix.class);
-                    if (primaryPrefix != null) {
-                        ASTName prefixName = primaryPrefix.getFirstChildOfType(ASTName.class);
-                        if (prefixName != null && prefixName.hasImageEqualTo(baseName)) {
-                            //this is an assignment related to the baseName we are working with
-                            boolean allocationFound = stmt.getParent()
-                                    .getFirstDescendantOfType(ASTAllocationExpression.class) != null;
-                            boolean iterator = isIterator();
-                            assignments
-                                    .add(new Assignment(stmt.getBeginLine(), allocationFound, iterator, false));
-                        }
-                    }
-                }
-            }
-
-            Assignment result = null;
-            if (!assignments.isEmpty()) {
-                //sort them in reverse order and return the first one
-                Collections.sort(assignments);
-                result = assignments.get(0);
-            }
-            return result;
-        }
-
-        private boolean isIterator() {
-            boolean iterator = false;
-            if (baseType != null && baseType == Iterator.class
-                    || baseTypeName != null && baseTypeName.endsWith("Iterator")) {
-                iterator = true;
-            }
-            return iterator;
-        }
-
-        private boolean isFactory(ASTVariableDeclarator declarator) {
-            boolean factory = false;
-            List<ASTName> names = declarator.findDescendantsOfType(ASTName.class);
-            for (ASTName name : names) {
-                if (name.getImage().toLowerCase(Locale.ROOT).contains("factory")) {
-                    factory = true;
-                    break;
-                }
-            }
-            return factory;
-        }
-
-        private boolean isForLoop(ASTVariableDeclarator declarator) {
-            return declarator.getParent().getParent() instanceof ASTForStatement;
-        }
-
-        public ASTPrimaryExpression getExpression() {
-            return expression;
-        }
-
-        public boolean isViolation() {
-            return violation;
-        }
-
-        public String getViolationReason() {
-            return violationReason;
-        }
-
-        @Override
-        public String toString() {
-            return "MethodCall on line " + expression.getBeginLine() + ":\n" + "  " + baseName + " name: " + methodName
-                    + "\n" + "  type: " + baseTypeName + " (" + baseType + "), \n" + "  scope: " + baseScope + "\n"
-                    + "  violation: " + violation + " (" + violationReason + ")\n";
-        }
-
-    }
+    private static final int TRUSTED = 0;
 
     /**
-     * Stores the assignment of a variable and whether the variable's value is
-     * allocated locally (new constructor call). The class is comparable, so
-     * that the last assignment can be determined.
+     * Degree 1.
+     * <ul>
+     * <li>Fields of this class, but not of `this` instance (we need to
+     * access their fields to write equals, compareTo, etc.)
+     * <li>Method parameters.
+     * <li>Result of construction methods (including factories, builders,
+     * ctors, etc).
+     * </ul>
+     * You can use any method, but you can't use yourself the result of
+     * a getter, or field (though you can let it escape).
      */
-    private static class Assignment implements Comparable<Assignment> {
-        private int line;
-        private boolean allocation;
-        private boolean iterator;
-        private boolean forLoop;
+    private static final int ACCESSIBLE = 1;
 
-        Assignment(int line, boolean allocation, boolean iterator, boolean forLoop) {
-            this.line = line;
-            this.allocation = allocation;
-            this.iterator = iterator;
-            this.forLoop = forLoop;
-        }
-
-        @Override
-        public String toString() {
-            return "assignment: line=" + line + " allocation:" + allocation + " iterator:" + iterator + " forLoop: "
-                    + forLoop;
-        }
-
-        @Override
-        public int compareTo(Assignment o) {
-            return o.line - line;
-        }
+    private int asForeignAsQualifier(QualifiableExpression e) {
+        return foreignDegree(Objects.requireNonNull(e.getQualifier()));
     }
+
+    private int moreForeignThanQualifier(QualifiableExpression e) {
+        return 1 + foreignDegree(Objects.requireNonNull(e.getQualifier()));
+    }
+
 }

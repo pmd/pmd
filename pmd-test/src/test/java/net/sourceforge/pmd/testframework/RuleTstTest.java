@@ -4,100 +4,86 @@
 
 package net.sourceforge.pmd.testframework;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
+import java.util.Collections;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.mockito.ArgumentMatchers;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
-import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.DummyLanguageModule;
+import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
-import net.sourceforge.pmd.test.lang.ast.DummyNode;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.test.schema.RuleTestDescriptor;
 
-public class RuleTstTest {
-    private LanguageVersion dummyLanguage = LanguageRegistry.findLanguageByTerseName("dummy").getDefaultVersion();
+class RuleTstTest {
+    private final LanguageVersion dummyLanguage = DummyLanguageModule.getInstance().getDefaultVersion();
 
-    private Rule rule = mock(Rule.class);
+    private final Rule rule = mock(Rule.class);
 
-    private RuleTst ruleTester = new RuleTst() {
-        @Override
-        public Rule findRule(String ruleSet, String ruleName) {
-            return rule;
-        }
-    };
+    private final RuleTst ruleTester = spy(RuleTst.class);
 
     @Test
-    public void shouldCallStartAndEnd() {
-        Report report = new Report();
+    void shouldCallStartAndEnd() {
         when(rule.getLanguage()).thenReturn(dummyLanguage.getLanguage());
         when(rule.getName()).thenReturn("test rule");
+        when(rule.getTargetSelector()).thenReturn(RuleTargetSelector.forRootOnly());
+        when(rule.deepCopy()).thenReturn(rule);
 
-        ruleTester.runTestFromString("the code", rule, report, dummyLanguage, false);
+        ruleTester.runTestFromString("the code", rule, dummyLanguage);
 
+        verify(rule).initialize(any(LanguageProcessor.class));
         verify(rule).start(any(RuleContext.class));
         verify(rule).end(any(RuleContext.class));
-        verify(rule, times(5)).getLanguage();
-        verify(rule).isDfa();
-        verify(rule).isTypeResolution();
-        verify(rule).isMultifile();
-        verify(rule, times(2)).isRuleChain();
-        verify(rule).getMinimumLanguageVersion();
-        verify(rule).getMaximumLanguageVersion();
-        verify(rule).apply(ArgumentMatchers.<Node>anyList(), any(RuleContext.class));
-        verify(rule, times(4)).getName();
+        verify(rule, atLeastOnce()).getLanguage();
+        verify(rule, atLeastOnce()).getTargetSelector();
+        verify(rule, atLeastOnce()).getMinimumLanguageVersion();
+        verify(rule, atLeastOnce()).getMaximumLanguageVersion();
+        verify(rule).apply(any(Node.class), any(RuleContext.class));
+        verify(rule, atLeastOnce()).getName();
         verify(rule).getPropertiesByPropertyDescriptor();
-        verifyNoMoreInteractions(rule);
     }
 
     @Test
-    public void shouldAssertLinenumbersSorted() {
+    void shouldAssertLinenumbersSorted() {
         when(rule.getLanguage()).thenReturn(dummyLanguage.getLanguage());
         when(rule.getName()).thenReturn("test rule");
-        Mockito.doAnswer(new Answer<Void>() {
-            private RuleViolation createViolation(RuleContext context, int beginLine, String message) {
-                DummyNode node = new DummyNode(1);
-                node.testingOnlySetBeginLine(beginLine);
-                node.testingOnlySetBeginColumn(1);
-                ParametricRuleViolation<Node> violation = new ParametricRuleViolation<Node>(rule, context, node, message);
-                return violation;
-            }
+        when(rule.getMessage()).thenReturn("test rule");
+        when(rule.getTargetSelector()).thenReturn(RuleTargetSelector.forRootOnly());
+        when(rule.deepCopy()).thenReturn(rule);
 
-            @Override
-            public Void answer(InvocationOnMock invocation) throws Throwable {
-                RuleContext context = invocation.getArgument(1, RuleContext.class);
-                // the violations are reported out of order
-                context.getReport().addRuleViolation(createViolation(context, 15, "first reported violation"));
-                context.getReport().addRuleViolation(createViolation(context, 5, "second reported violation"));
-                return null;
-            }
-        }).when(rule).apply(ArgumentMatchers.<Node>anyList(), Mockito.any(RuleContext.class));
+        final String code = "(a)(b)\n(c)";
+        Mockito.doAnswer(invocation -> {
+            RuleContext context = invocation.getArgument(1, RuleContext.class);
+            DummyRootNode node = invocation.getArgument(0, DummyRootNode.class);
 
-        TestDescriptor testDescriptor = new TestDescriptor("the code", "sample test", 2, rule, dummyLanguage);
-        testDescriptor.setReinitializeRule(false);
-        testDescriptor.setExpectedLineNumbers(Arrays.asList(5, 15));
+            assertEquals(3, node.getNumChildren());
+            // the violations are reported out of order
+            // line 2
+            context.addViolation(node.getChild(2));
+            // line 1
+            context.addViolation(node.getChild(1));
+            return null;
+        }).when(rule).apply(any(Node.class), Mockito.any(RuleContext.class));
 
-        try {
-            ruleTester.runTest(testDescriptor);
-            // there should be no assertion failures
-            // expected line numbers and actual line numbers match
-        } catch (AssertionError assertionError) {
-            Assert.fail(assertionError.toString());
-        }
+        RuleTestDescriptor testDescriptor = new RuleTestDescriptor(0, rule);
+        testDescriptor.setLanguageVersion(dummyLanguage);
+        testDescriptor.setCode(code);
+        testDescriptor.setDescription("sample test");
+        testDescriptor.recordExpectedViolations(2, Arrays.asList(1, 2), Collections.emptyList());
+
+        ruleTester.runTest(testDescriptor);
     }
 }

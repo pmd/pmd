@@ -15,14 +15,14 @@ import java.util.List;
  *
  * @author Brian Remedios
  */
-public class FloatPropertyTest extends AbstractNumericPropertyDescriptorTester<Float> {
+class FloatPropertyTest extends AbstractNumericPropertyDescriptorTester<Float> {
 
     private static final float MIN = 1.0f;
     private static final float MAX = 11.0f;
     private static final float SHIFT = 3.0f;
 
 
-    public FloatPropertyTest() {
+    FloatPropertyTest() {
         super("Float");
     }
 

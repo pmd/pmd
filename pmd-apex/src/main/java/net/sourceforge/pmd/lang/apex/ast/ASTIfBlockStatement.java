@@ -4,20 +4,17 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.statement.IfBlockStatement;
 
-public class ASTIfBlockStatement extends AbstractApexNode<IfBlockStatement> {
+public final class ASTIfBlockStatement extends AbstractApexNode<IfBlockStatement> {
 
-    @Deprecated
-    @InternalApi
-    public ASTIfBlockStatement(IfBlockStatement ifBlockStatement) {
+    ASTIfBlockStatement(IfBlockStatement ifBlockStatement) {
         super(ifBlockStatement);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

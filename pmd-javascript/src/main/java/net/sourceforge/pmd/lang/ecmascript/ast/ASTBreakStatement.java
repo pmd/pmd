@@ -6,18 +6,14 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.BreakStatement;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTBreakStatement extends AbstractEcmascriptNode<BreakStatement> {
-    @Deprecated
-    @InternalApi
-    public ASTBreakStatement(BreakStatement breakStatement) {
+public final class ASTBreakStatement extends AbstractEcmascriptNode<BreakStatement> {
+    ASTBreakStatement(BreakStatement breakStatement) {
         super(breakStatement);
         super.setImage(breakStatement.getBreakLabel() != null ? breakStatement.getBreakLabel().getIdentifier() : null);
     }
 
     @Override
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+    protected <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

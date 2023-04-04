@@ -6,14 +6,14 @@ package net.sourceforge.pmd.properties;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Brian Remedios
  */
-public class BooleanPropertyTest extends AbstractPropertyDescriptorTester<Boolean> {
+class BooleanPropertyTest extends AbstractPropertyDescriptorTester<Boolean> {
 
-    public BooleanPropertyTest() {
+    BooleanPropertyTest() {
         super("Boolean");
     }
 
@@ -26,14 +26,14 @@ public class BooleanPropertyTest extends AbstractPropertyDescriptorTester<Boolea
 
     @Override
     @Test
-    public void testErrorForBadSingle() {
+    void testErrorForBadSingle() {
         // override, cannot create a 'bad' boolean per se
     }
 
 
     @Override
     @Test
-    public void testErrorForBadMulti() {
+    void testErrorForBadMulti() {
         // override, cannot create a 'bad' boolean per se
     }
 

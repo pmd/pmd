@@ -11,7 +11,6 @@ import java.util.Map.Entry;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
 
@@ -39,32 +38,29 @@ public class SummaryHTMLRenderer extends AbstractAccumulatingRenderer {
     }
 
     @Override
-    public void end() throws IOException {
-        writer.write("<html><head><title>PMD</title></head><body>" + PMD.EOL);
-        renderSummary();
+    public void outputReport(Report report) throws IOException {
+        writer.println("<html><head><title>PMD</title></head><body>");
+        renderSummary(report);
         writer.write("<center><h2>Detail</h2></center>");
-        writer.write("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL);
+        writer.println("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>");
 
         HTMLRenderer htmlRenderer = new HTMLRenderer();
         htmlRenderer.setProperty(HTMLRenderer.LINK_PREFIX, getProperty(HTMLRenderer.LINK_PREFIX));
         htmlRenderer.setProperty(HTMLRenderer.LINE_PREFIX, getProperty(HTMLRenderer.LINE_PREFIX));
         htmlRenderer.setProperty(HTMLRenderer.HTML_EXTENSION, getProperty(HTMLRenderer.HTML_EXTENSION));
         htmlRenderer.setShowSuppressedViolations(showSuppressedViolations);
-        htmlRenderer.setUseShortNames(inputPathPrefixes);
         htmlRenderer.renderBody(writer, report);
 
-        writer.write("</tr></table></body></html>" + PMD.EOL);
+        writer.println("</tr></table></body></html>");
     }
 
     /**
      * Write a Summary HTML table.
-     *
-     * @throws IOException
      */
-    public void renderSummary() throws IOException {
-        writer.write("<center><h2>Summary</h2></center>" + PMD.EOL);
-        writer.write("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\">" + PMD.EOL);
-        writer.write("<tr><th>Rule name</th><th>Number of violations</th></tr>" + PMD.EOL);
+    private void renderSummary(Report report) throws IOException {
+        writer.println("<center><h2>Summary</h2></center>");
+        writer.println("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\">");
+        writer.println("<tr><th>Rule name</th><th>Number of violations</th></tr>");
         Map<String, MutableInt> summary = getSummary(report);
         for (Entry<String, MutableInt> entry : summary.entrySet()) {
             String ruleName = entry.getKey();
@@ -72,9 +68,9 @@ public class SummaryHTMLRenderer extends AbstractAccumulatingRenderer {
             writer.write(ruleName);
             writer.write("</td><td align=center>");
             writer.write(String.valueOf(entry.getValue().intValue()));
-            writer.write("</td></tr>" + PMD.EOL);
+            writer.println("</td></tr>");
         }
-        writer.write("</table>" + PMD.EOL);
+        writer.println("</table>");
     }
 
     private static Map<String, MutableInt> getSummary(Report report) {

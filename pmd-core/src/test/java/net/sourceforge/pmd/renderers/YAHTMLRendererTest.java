@@ -4,55 +4,49 @@
 
 package net.sourceforge.pmd.renderers;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.regex.Pattern;
+import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import net.sourceforge.pmd.FooRule;
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.ast.DummyNode;
-import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.internal.util.IOUtil;
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.util.CollectionUtil;
 
-public class YAHTMLRendererTest extends AbstractRendererTest {
+class YAHTMLRendererTest extends AbstractRendererTest {
 
     private File outputDir;
 
-    @org.junit.Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+    @TempDir
+    private Path folder;
 
-    @Before
-    public void setUp() throws IOException {
-        outputDir = folder.newFolder("pmdtest");
+    @BeforeEach
+    void setUp() {
+        outputDir = folder.resolve("pmdtest").toFile();
+        assertTrue(outputDir.mkdir());
     }
 
     private RuleViolation newRuleViolation(int beginLine, int beginColumn, int endLine, int endColumn, final String packageNameArg, final String classNameArg) {
-        DummyNode node = createNode(beginLine, beginColumn, endLine, endColumn);
-        RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFile(new File(getSourceCodeFilename()));
-        return new ParametricRuleViolation<Node>(new FooRule(), ctx, node, "blah") {
-            {
-                packageName = packageNameArg;
-                className = classNameArg;
-            }
-        };
+        FileLocation loc = createLocation(beginLine, beginColumn, endLine, endColumn);
+        Map<String, String> additionalInfo = CollectionUtil.mapOf(RuleViolation.PACKAGE_NAME, packageNameArg,
+                                                                  RuleViolation.CLASS_NAME, classNameArg);
+        return new ParametricRuleViolation(new FooRule(), loc, "blah", additionalInfo);
     }
 
     @Override
@@ -61,12 +55,12 @@ public class YAHTMLRendererTest extends AbstractRendererTest {
     }
 
     @Test
-    public void testReportMultipleViolations() throws Exception {
-        Report report = new Report();
-        report.addRuleViolation(newRuleViolation(1, 1, 1, 1, "net.sf.pmd.test", "YAHTMLSampleClass1"));
-        report.addRuleViolation(newRuleViolation(1, 1, 1, 2, "net.sf.pmd.test", "YAHTMLSampleClass1"));
-        report.addRuleViolation(newRuleViolation(1, 1, 1, 1, "net.sf.pmd.other", "YAHTMLSampleClass2"));
-        String actual = renderReport(getRenderer(), report);
+    void testReportMultipleViolations() throws Exception {
+        String actual = renderReport(getRenderer(), it -> {
+            it.onRuleViolation(newRuleViolation(1, 1, 1, 1, "net.sf.pmd.test", "YAHTMLSampleClass1"));
+            it.onRuleViolation(newRuleViolation(1, 1, 1, 2, "net.sf.pmd.test", "YAHTMLSampleClass1"));
+            it.onRuleViolation(newRuleViolation(1, 1, 1, 1, "net.sf.pmd.other", "YAHTMLSampleClass2"));
+        });
         assertEquals(filter(getExpected()), filter(actual));
 
         String[] htmlFiles = outputDir.list();
@@ -82,45 +76,44 @@ public class YAHTMLRendererTest extends AbstractRendererTest {
                 String data = IOUtil.readToString(in, StandardCharsets.UTF_8);
                 String expected = normalizeLineSeparators(IOUtil.readToString(expectedIn, StandardCharsets.UTF_8));
 
-                assertEquals("File " + file + " is different", expected, data);
+                assertEquals(expected, data, "File " + file + " is different");
             }
         }
     }
 
     private static String normalizeLineSeparators(String s) {
-        return s.replaceAll(Pattern.quote("\r\n"), "\n")
-                .replaceAll(Pattern.quote("\n"), PMD.EOL);
+        return s.replaceAll("\\R", System.lineSeparator());
     }
 
     @Override
-    public Renderer getRenderer() {
+    Renderer getRenderer() {
         Renderer result = new YAHTMLRenderer();
         result.setProperty(YAHTMLRenderer.OUTPUT_DIR, outputDir.getAbsolutePath());
         return result;
     }
 
     @Override
-    public String getExpected() {
-        return "<h3 align=\"center\">The HTML files are located in '" + outputDir + "'.</h3>" + PMD.EOL;
+    String getExpected() {
+        return "<h3 align=\"center\">The HTML files are located in '" + outputDir + "'.</h3>" + System.lineSeparator();
     }
 
     @Override
-    public String getExpectedEmpty() {
+    String getExpectedEmpty() {
         return getExpected();
     }
 
     @Override
-    public String getExpectedMultiple() {
+    String getExpectedMultiple() {
         return getExpected();
     }
 
     @Override
-    public String getExpectedError(ProcessingError error) {
+    String getExpectedError(ProcessingError error) {
         return getExpected();
     }
 
     @Override
-    public String getExpectedError(ConfigurationError error) {
+    String getExpectedError(ConfigurationError error) {
         return getExpected();
     }
 }

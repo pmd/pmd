@@ -4,19 +4,18 @@
 
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.plsql.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerTimingPointSection;
-import net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode;
 import net.sourceforge.pmd.lang.symboltable.AbstractNameDeclaration;
 
 public class MethodNameDeclaration extends AbstractNameDeclaration {
-    private static final Logger LOGGER = Logger.getLogger(MethodNameDeclaration.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(MethodNameDeclaration.class);
 
     public MethodNameDeclaration(ASTMethodDeclarator node) {
         super(node);
@@ -123,8 +122,8 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
             // myTypeImg = myTypeNode.getImage();
             // otherTypeImg = otherTypeNode.getImage();
             // } else {
-            myTypeImg = ((AbstractPLSQLNode) myTypeNode.getChild(0)).getImage();
-            otherTypeImg = ((AbstractPLSQLNode) otherTypeNode.getChild(0)).getImage();
+            myTypeImg = myTypeNode.getChild(0).getImage();
+            otherTypeImg = otherTypeNode.getChild(0).getImage();
             // }
 
             if (!myTypeImg.equals(otherTypeImg)) {
@@ -143,11 +142,10 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
             // SRT node.getImage().hashCode() + ((ASTMethodDeclarator)node).getParameterCount();
             return node.hashCode();
         } catch (Exception e) {
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest(
-                        "MethodNameDeclaration problem for " + node + " of class " + node.getClass().getCanonicalName()
-                                + " => " + node.getBeginLine() + "/" + node.getBeginColumn());
-            }
+            LOG.trace(
+                    "MethodNameDeclaration problem for {} of class {} => {}/{}",
+                            node, node.getClass().getCanonicalName(),
+                            node.getBeginLine(), node.getBeginColumn());
             // @TODO SRT restore the thrown exception - throw e;
             return 0;
         }

@@ -4,20 +4,17 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.statement.Statement;
 
-public class ASTStatement extends AbstractApexNode<Statement> {
+public final class ASTStatement extends AbstractApexNode<Statement> {
 
-    @Deprecated
-    @InternalApi
-    public ASTStatement(Statement statement) {
+    ASTStatement(Statement statement) {
         super(statement);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

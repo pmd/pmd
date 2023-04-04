@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class LooseCouplingTest extends PmdRuleTst {
+class LooseCouplingTest extends PmdRuleTst {
     // no additional unit tests
 }

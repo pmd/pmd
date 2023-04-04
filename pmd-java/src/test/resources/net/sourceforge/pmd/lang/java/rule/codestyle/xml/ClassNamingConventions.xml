@@ -37,7 +37,6 @@ public class FooBar {
             <message>The class name 'foo' doesn't match '[A-Z][a-zA-Z0-9]*'</message>
         </expected-messages>
         <code><![CDATA[
-@covfefe
 public class foo {
 
     @interface covfefe {
@@ -209,7 +208,7 @@ public class Md5Checksum {
         <rule-property name="utilityClassPattern">[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class StringList extends ArrayList<String> {
+public class StringList extends java.util.ArrayList<String> {
     static StringList emptyList() {
         return new StringList();
     }
@@ -284,6 +283,26 @@ public class MyConstants {
 
     private MyConstants() {
         // whitelisted
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ClassCastException with records</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>The record name 'badlyNamedInnerRecord' doesn't match '[A-Z][a-zA-Z0-9]*'</message>
+        </expected-messages>
+        <code><![CDATA[
+public record MyRecordOk(boolean b) {
+    public MyRecordOk {
+    }
+
+    record badlyNamedInnerRecord(int i) {
+        public badlyNamedInnerRecord {
+        }
     }
 }
         ]]></code>

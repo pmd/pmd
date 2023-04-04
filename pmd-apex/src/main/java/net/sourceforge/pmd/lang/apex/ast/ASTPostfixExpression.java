@@ -4,23 +4,20 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.data.ast.PostfixOp;
 import apex.jorje.semantic.ast.expression.PostfixExpression;
 
 
-public class ASTPostfixExpression extends AbstractApexNode<PostfixExpression> {
+public final class ASTPostfixExpression extends AbstractApexNode<PostfixExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTPostfixExpression(PostfixExpression postfixExpression) {
+    ASTPostfixExpression(PostfixExpression postfixExpression) {
         super(postfixExpression);
     }
 
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

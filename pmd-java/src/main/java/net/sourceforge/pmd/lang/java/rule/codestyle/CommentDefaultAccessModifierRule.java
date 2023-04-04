@@ -4,27 +4,24 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Pattern;
 
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
-import net.sourceforge.pmd.lang.java.ast.Annotatable;
-import net.sourceforge.pmd.lang.java.ast.Comment;
-import net.sourceforge.pmd.lang.java.rule.AbstractIgnoredAnnotationRule;
+import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
+import net.sourceforge.pmd.lang.java.ast.JavaComment;
+import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaPropertyUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
@@ -36,138 +33,140 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  *
  * @author Damián Techeira
  */
-public class CommentDefaultAccessModifierRule extends AbstractIgnoredAnnotationRule {
+public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule {
 
-    private static final PropertyDescriptor<Pattern> REGEX_DESCRIPTOR = PropertyFactory.regexProperty("regex")
-            .desc("Regular expression").defaultValue("\\/\\*\\s+(default|package)\\s+\\*\\/").build();
-    private static final PropertyDescriptor<Boolean> TOP_LEVEL_TYPES = PropertyFactory.booleanProperty("checkTopLevelTypes")
-            .desc("Check for default access modifier in top-level classes, annotations, and enums")
-            .defaultValue(false).build();
-    private static final String MESSAGE = "To avoid mistakes add a comment "
-            + "at the beginning of the %s %s if you want a default access modifier";
-    private final Set<Integer> interestingLineNumberComments = new HashSet<>();
+    private static final PropertyDescriptor<Pattern> REGEX_DESCRIPTOR =
+        PropertyFactory.regexProperty("regex")
+                       .desc("Regular expression")
+                       .defaultValue("\\/\\*\\s*(default|package)\\s*\\*\\/")
+                       .build();
+
+    private static final PropertyDescriptor<Boolean> TOP_LEVEL_TYPES =
+        PropertyFactory.booleanProperty("checkTopLevelTypes")
+                       .desc("Check for default access modifier in top-level classes, annotations, and enums")
+                       .defaultValue(false)
+                       .build();
+
+    private static final PropertyDescriptor<List<String>> IGNORED_ANNOTS =
+        JavaPropertyUtil.ignoredAnnotationsDescriptor(
+            "com.google.common.annotations.VisibleForTesting",
+            "android.support.annotation.VisibleForTesting",
+            "co.elastic.clients.util.VisibleForTesting",
+            "org.junit.jupiter.api.Test",
+            "org.junit.jupiter.api.extension.RegisterExtension",
+            "org.junit.jupiter.api.ParameterizedTest",
+            "org.junit.jupiter.api.RepeatedTest",
+            "org.junit.jupiter.api.TestFactory",
+            "org.junit.jupiter.api.TestTemplate",
+            "org.junit.jupiter.api.BeforeEach",
+            "org.junit.jupiter.api.BeforeAll",
+            "org.junit.jupiter.api.AfterEach",
+            "org.junit.jupiter.api.AfterAll"
+        );
+
 
     public CommentDefaultAccessModifierRule() {
+        super(ASTMethodDeclaration.class, ASTAnyTypeDeclaration.class,
+              ASTConstructorDeclaration.class, ASTFieldDeclaration.class);
+        definePropertyDescriptor(IGNORED_ANNOTS);
         definePropertyDescriptor(REGEX_DESCRIPTOR);
         definePropertyDescriptor(TOP_LEVEL_TYPES);
     }
-
-    @Override
-    protected Collection<String> defaultSuppressionAnnotations() {
-        Collection<String> ignoredStrings = new ArrayList<>();
-        ignoredStrings.add("com.google.common.annotations.VisibleForTesting");
-        ignoredStrings.add("android.support.annotation.VisibleForTesting");
-        ignoredStrings.add("co.elastic.clients.util.VisibleForTesting");
-        ignoredStrings.add("org.junit.jupiter.api.Test");
-        ignoredStrings.add("org.junit.jupiter.api.ParameterizedTest");
-        ignoredStrings.add("org.junit.jupiter.api.RepeatedTest");
-        ignoredStrings.add("org.junit.jupiter.api.TestFactory");
-        ignoredStrings.add("org.junit.jupiter.api.TestTemplate");
-        ignoredStrings.add("org.junit.jupiter.api.BeforeEach");
-        ignoredStrings.add("org.junit.jupiter.api.BeforeAll");
-        ignoredStrings.add("org.junit.jupiter.api.AfterEach");
-        ignoredStrings.add("org.junit.jupiter.api.AfterAll");
-        ignoredStrings.add("lombok.Value");
-        return ignoredStrings;
-    }
-
-    @Override
-    public Object visit(final ASTCompilationUnit node, final Object data) {
-        interestingLineNumberComments.clear();
-        final List<Comment> comments = node.getComments();
-        for (final Comment comment : comments) {
-            if (getProperty(REGEX_DESCRIPTOR).matcher(comment.getImage()).matches()) {
-                interestingLineNumberComments.add(comment.getBeginLine());
-            }
-        }
-        return super.visit(node, data);
-    }
-
+    
     @Override
     public Object visit(final ASTMethodDeclaration decl, final Object data) {
-        if (shouldReport(decl)) {
-            addViolationWithMessage(data, decl,
-                    String.format(MESSAGE, decl.getFirstChildOfType(ASTMethodDeclarator.class).getImage(), "method"));
+        if (shouldReportNonTopLevel(decl)) {
+            report((RuleContext) data, decl, "method", PrettyPrintingUtil.displaySignature(decl));
         }
-        return super.visit(decl, data);
+        return data;
     }
 
     @Override
     public Object visit(final ASTFieldDeclaration decl, final Object data) {
-        if (shouldReport(decl)) {
-            addViolationWithMessage(data, decl, String.format(MESSAGE,
-                    decl.getFirstDescendantOfType(ASTVariableDeclaratorId.class).getImage(), "field"));
+        if (shouldReportNonTopLevel(decl)) {
+            report((RuleContext) data, decl, "field", decl.getVarIds().firstOrThrow().getName());
         }
-        return super.visit(decl, data);
-    }
-
-    @Override
-    public Object visit(final ASTAnnotationTypeDeclaration decl, final Object data) {
-        if (!decl.isNested() && shouldReportTypeDeclaration(decl)) { // check for top-level annotation declarations
-            addViolationWithMessage(data, decl, String.format(MESSAGE, decl.getImage(), "top-level annotation"));
-        }
-        return super.visit(decl, data);
-    }
-
-    @Override
-    public Object visit(final ASTEnumDeclaration decl, final Object data) {
-        if (!decl.isNested() && shouldReportTypeDeclaration(decl)) { // check for top-level enums
-            addViolationWithMessage(data, decl, String.format(MESSAGE, decl.getImage(), "top-level enum"));
-        }
-        return super.visit(decl, data);
-    }
-
-    @Override
-    public Object visit(final ASTClassOrInterfaceDeclaration decl, final Object data) {
-        if (decl.isNested() && shouldReport(decl)) { // check for nested classes
-            addViolationWithMessage(data, decl, String.format(MESSAGE, decl.getImage(), "nested class"));
-        } else if (!decl.isNested() && shouldReportTypeDeclaration(decl)) { // and for top-level ones
-            addViolationWithMessage(data, decl, String.format(MESSAGE, decl.getImage(), "top-level class"));
-        }
-        return super.visit(decl, data);
+        return data;
     }
 
     @Override
     public Object visit(final ASTConstructorDeclaration decl, Object data) {
-        if (shouldReport(decl)) {
-            addViolationWithMessage(data, decl, String.format(MESSAGE, decl.getImage(), "constructor"));
+        if (shouldReportNonTopLevel(decl)) {
+            report((RuleContext) data, decl, "constructor", PrettyPrintingUtil.displaySignature(decl));
         }
-        return super.visit(decl, data);
+        return data;
     }
 
-    private boolean shouldReport(final AccessNode decl) {
-        final ASTAnyTypeDeclaration parentClassOrInterface = decl
-                .getFirstParentOfType(ASTAnyTypeDeclaration.class);
-
-        boolean isConcreteClass = parentClassOrInterface.getTypeKind() == ASTAnyTypeDeclaration.TypeKind.CLASS;
-
-        // ignore if it's inside an interface / Annotation
-        return isConcreteClass && isMissingComment(decl) && !hasIgnoredAnnotation(parentClassOrInterface);
+    @Override
+    public Object visit(final ASTAnnotationTypeDeclaration decl, final Object data) {
+        checkTypeDecl(decl, (RuleContext) data, "annotation");
+        return data;
     }
 
-    protected boolean hasIgnoredAnnotation(AccessNode node) {
-        if (node instanceof Annotatable) {
-            return hasIgnoredAnnotation((Annotatable) node);
+    @Override
+    public Object visit(final ASTEnumDeclaration decl, final Object data) {
+        checkTypeDecl(decl, (RuleContext) data, "enum");
+        return data;
+    }
+
+    @Override
+    public Object visit(final ASTRecordDeclaration decl, final Object data) {
+        checkTypeDecl(decl, (RuleContext) data, "record");
+        return data;
+    }
+
+    @Override
+    public Object visit(final ASTClassOrInterfaceDeclaration decl, final Object data) {
+        checkTypeDecl(decl, (RuleContext) data, "class");
+        return data;
+    }
+
+    private void checkTypeDecl(ASTAnyTypeDeclaration decl, RuleContext ctx, String typeKind) {
+        if (decl.isNested() && shouldReportNonTopLevel(decl)) {
+            report(ctx, decl, "nested " + typeKind, decl.getSimpleName());
+        } else if (!decl.isNested() && shouldReportTypeDeclaration(decl)) {
+            report(ctx, decl, "top-level " + typeKind, decl.getSimpleName());
         }
-        return false;
+    }
+
+
+    private void report(RuleContext ctx, AccessNode decl, String kind, String signature) {
+        ctx.addViolation(decl, kind, signature);
+    }
+
+    private boolean shouldReportNonTopLevel(final AccessNode decl) {
+        final ASTAnyTypeDeclaration enclosing = decl.getEnclosingType();
+
+        return isMissingComment(decl)
+            && isNotIgnored(decl)
+            && !(decl instanceof ASTFieldDeclaration && enclosing.isAnnotationPresent("lombok.Value"));
     }
 
     private boolean isMissingComment(AccessNode decl) {
         // check if the class/method/field has a default access
         // modifier
-        return decl.isPackagePrivate()
-                // if is a default access modifier check if there is a comment
-                // in this line
-                && !interestingLineNumberComments.contains(decl.getBeginLine())
-                // that it is not annotated with e.g. @VisibleForTesting
-                && !hasIgnoredAnnotation(decl);
+        return decl.getVisibility() == Visibility.V_PACKAGE
+            // if is a default access modifier check if there is a comment
+            // in this line
+            && !hasOkComment(decl);
+    }
+
+    private boolean isNotIgnored(AccessNode decl) {
+        return getProperty(IGNORED_ANNOTS).stream().noneMatch(decl::isAnnotationPresent);
+    }
+
+    private boolean hasOkComment(AccessNode node) {
+        Pattern regex = getProperty(REGEX_DESCRIPTOR);
+        return JavaComment.getLeadingComments(node)
+                          .anyMatch(it -> regex.matcher(it.getText()).matches());
     }
 
     private boolean shouldReportTypeDeclaration(ASTAnyTypeDeclaration decl) {
         // don't report on interfaces
-        return decl.getTypeKind() != ASTAnyTypeDeclaration.TypeKind.INTERFACE
-                && isMissingComment(decl)
-                // either nested or top level and we should check it
-                && (decl.isNested() || getProperty(TOP_LEVEL_TYPES));
+        return !(decl.isRegularInterface() && !decl.isAnnotation())
+            && isMissingComment(decl)
+            && isNotIgnored(decl)
+            // either nested or top level and we should check it
+            && (decl.isNested() || getProperty(TOP_LEVEL_TYPES));
     }
 }

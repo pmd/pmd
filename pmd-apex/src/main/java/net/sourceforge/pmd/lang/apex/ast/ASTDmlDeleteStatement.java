@@ -4,20 +4,17 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.statement.DmlDeleteStatement;
 
-public class ASTDmlDeleteStatement extends AbstractApexNode<DmlDeleteStatement> {
+public final class ASTDmlDeleteStatement extends AbstractApexNode<DmlDeleteStatement> {
 
-    @Deprecated
-    @InternalApi
-    public ASTDmlDeleteStatement(DmlDeleteStatement dmlDeleteStatement) {
+    ASTDmlDeleteStatement(DmlDeleteStatement dmlDeleteStatement) {
         super(dmlDeleteStatement);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

@@ -12,7 +12,7 @@ directly and don't use this ruleset anymore.
 
   <rule ref="category/java/bestpractices.xml/LooseCoupling" deprecated="true" />
   <rule ref="category/java/errorprone.xml/CloneMethodMustImplementCloneable" deprecated="true" />
-  <rule ref="category/java/bestpractices.xml/UnusedImports" deprecated="true" />
+  <!--  <rule ref="category/java/bestpractices.xml/UnusedImports" deprecated="true" />-->
   <rule ref="category/java/design.xml/SignatureDeclareThrowsException" deprecated="true" />
 
 </ruleset>

@@ -9,7 +9,7 @@ import net.sourceforge.pmd.lang.html.HtmlLanguageModule;
 
 public final class HtmlParsingHelper extends BaseParsingHelper<HtmlParsingHelper, ASTHtmlDocument> {
 
-    public static final HtmlParsingHelper DEFAULT = new HtmlParsingHelper(Params.getDefaultProcess());
+    public static final HtmlParsingHelper DEFAULT = new HtmlParsingHelper(Params.getDefault());
 
     private HtmlParsingHelper(Params params) {
         super(HtmlLanguageModule.NAME, ASTHtmlDocument.class, params);

@@ -8,21 +8,13 @@ import org.mozilla.javascript.Token;
 import org.mozilla.javascript.ast.AstRoot;
 import org.mozilla.javascript.ast.InfixExpression;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+abstract class AbstractInfixEcmascriptNode<T extends InfixExpression> extends AbstractEcmascriptNode<T> {
 
-@Deprecated
-@InternalApi
-public class AbstractInfixEcmascriptNode<T extends InfixExpression> extends AbstractEcmascriptNode<T> {
-
-    @Deprecated
-    @InternalApi
-    public AbstractInfixEcmascriptNode(T infixExpression) {
+    AbstractInfixEcmascriptNode(T infixExpression) {
         this(infixExpression, true);
     }
 
-    @Deprecated
-    @InternalApi
-    public AbstractInfixEcmascriptNode(T infixExpression, boolean setImage) {
+    AbstractInfixEcmascriptNode(T infixExpression, boolean setImage) {
         super(infixExpression);
         if (setImage) {
             if (infixExpression.getOperator() == Token.ASSIGN_BITXOR) {
@@ -34,10 +26,10 @@ public class AbstractInfixEcmascriptNode<T extends InfixExpression> extends Abst
     }
 
     public EcmascriptNode<?> getLeft() {
-        return (EcmascriptNode<?>) getChild(0);
+        return getChild(0);
     }
 
     public EcmascriptNode<?> getRight() {
-        return (EcmascriptNode<?>) getChild(1);
+        return getChild(1);
     }
 }

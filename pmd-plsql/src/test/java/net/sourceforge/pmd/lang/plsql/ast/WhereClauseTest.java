@@ -4,90 +4,91 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 
-public class WhereClauseTest extends AbstractPLSQLParserTst {
+class WhereClauseTest extends AbstractPLSQLParserTst {
 
     @Test
-    public void testFunctionCall() {
+    void testFunctionCall() {
         ASTInput input = plsql.parseResource("WhereClauseFunctionCall.pls");
         List<ASTSelectIntoStatement> selectStatements = input.findDescendantsOfType(ASTSelectIntoStatement.class);
-        Assert.assertEquals(4, selectStatements.size());
+        assertEquals(4, selectStatements.size());
 
         ASTFunctionCall functionCall = selectStatements.get(0).getFirstDescendantOfType(ASTFunctionCall.class);
-        Assert.assertEquals("UPPER", functionCall.getImage());
+        assertEquals("UPPER", functionCall.getImage());
 
         ASTFunctionCall functionCall2 = selectStatements.get(2).getFirstDescendantOfType(ASTFunctionCall.class);
-        Assert.assertEquals("utils.get_colname", functionCall2.getImage());
+        assertEquals("utils.get_colname", functionCall2.getImage());
     }
 
     @Test
-    public void testLikeCondition() {
+    void testLikeCondition() {
         plsql.parseResource("WhereClauseLike.pls");
     }
 
     @Test
-    public void testNullCondition() {
+    void testNullCondition() {
         plsql.parseResource("WhereClauseIsNull.pls");
     }
 
     @Test
-    public void testBetweenCondition() {
+    void testBetweenCondition() {
         plsql.parseResource("WhereClauseBetween.pls");
     }
 
     @Test
-    public void testInCondition() {
+    void testInCondition() {
         plsql.parseResource("WhereClauseIn.pls");
     }
 
     @Test
-    public void testIsOfTypeCondition() {
+    void testIsOfTypeCondition() {
         plsql.parseResource("WhereClauseIsOfType.pls");
     }
 
     @Test
-    public void testConcatenationOperator() {
+    void testConcatenationOperator() {
         plsql.parseResource("WhereClauseConcatenation.pls");
     }
 
     @Test
-    public void testExistsCondition() {
+    void testExistsCondition() {
         plsql.parseResource("WhereClauseExists.pls");
     }
 
     @Test
-    public void testMultisetCondition() {
+    void testMultisetCondition() {
         plsql.parseResource("WhereClauseMultiset.pls");
     }
 
     @Test
-    public void testRegexpLikeCondition() {
+    void testRegexpLikeCondition() {
         ASTInput input = plsql.parseResource("WhereClauseRegexpLike.pls");
         List<ASTRegexpLikeCondition> regexps = input.findDescendantsOfType(ASTRegexpLikeCondition.class);
-        Assert.assertEquals(3, regexps.size());
-        Assert.assertEquals("last_name", regexps.get(1).getSourceChar().getImage());
-        Assert.assertEquals("'([aeiou])\\1'", regexps.get(1).getPattern().getImage());
-        Assert.assertEquals("'i'", regexps.get(1).getMatchParam());
+        assertEquals(3, regexps.size());
+        assertEquals("last_name", regexps.get(1).getSourceChar().getImage());
+        assertEquals("'([aeiou])\\1'", regexps.get(1).getPattern().getImage());
+        assertEquals("'i'", regexps.get(1).getMatchParam());
     }
 
     @Test
-    public void testSubqueries() {
+    void testSubqueries() {
         plsql.parseResource("WhereClauseSubqueries.pls");
     }
 
     @Test
-    public void testParentheses() {
+    void testParentheses() {
         plsql.parseResource("WhereClauseParens.pls");
     }
 
     @Test
-    public void testCurrentOf() {
+    void testCurrentOf() {
         plsql.parseResource("WhereCurrentOf.pls");
     }
 }

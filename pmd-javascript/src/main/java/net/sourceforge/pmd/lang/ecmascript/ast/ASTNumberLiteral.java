@@ -6,18 +6,14 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.NumberLiteral;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTNumberLiteral extends AbstractEcmascriptNode<NumberLiteral> {
-    @Deprecated
-    @InternalApi
-    public ASTNumberLiteral(NumberLiteral numberLiteral) {
+public final class ASTNumberLiteral extends AbstractEcmascriptNode<NumberLiteral> {
+    ASTNumberLiteral(NumberLiteral numberLiteral) {
         super(numberLiteral);
         super.setImage(numberLiteral.getValue());
     }
 
     @Override
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+    protected <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

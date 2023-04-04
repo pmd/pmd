@@ -4,41 +4,29 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Represents an {@code if} statement, possibly with an {@code else} statement.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * IfStatement ::= "if" "(" {@linkplain ASTExpression Expression} ")" {@linkplain ASTStatement Statement}
  *                 ( "else" {@linkplain ASTStatement Statement} )?
  *
  * </pre>
  */
-public class ASTIfStatement extends AbstractJavaNode {
+public final class ASTIfStatement extends AbstractStatement {
 
     private boolean hasElse;
 
 
-    @InternalApi
-    @Deprecated
-    public ASTIfStatement(int id) {
+    ASTIfStatement(int id) {
         super(id);
     }
 
 
-    @InternalApi
-    @Deprecated
-    public ASTIfStatement(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
-    @InternalApi
-    @Deprecated
-    public void setHasElse() {
+    void setHasElse() {
         this.hasElse = true;
     }
 
@@ -50,17 +38,6 @@ public class ASTIfStatement extends AbstractJavaNode {
         return this.hasElse;
     }
 
-
-    /**
-     * Returns the node that represents the guard of this conditional.
-     * This may be any expression of type boolean.
-     *
-     * @deprecated Use {@link #getCondition()}
-     */
-    @Deprecated
-    public ASTExpression getGuardExpressionNode() {
-        return (ASTExpression) getChild(0);
-    }
 
     /**
      * Returns the node that represents the guard of this conditional.
@@ -83,13 +60,13 @@ public class ASTIfStatement extends AbstractJavaNode {
     /**
      * Returns the statement of the {@code else} clause, if any.
      */
-    public ASTStatement getElseBranch() {
+    public @Nullable ASTStatement getElseBranch() {
         return hasElse() ? (ASTStatement) getChild(2) : null;
     }
 
 
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    public <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

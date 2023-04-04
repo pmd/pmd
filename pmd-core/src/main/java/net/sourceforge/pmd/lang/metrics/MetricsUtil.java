@@ -4,9 +4,10 @@
 
 package net.sourceforge.pmd.lang.metrics;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.DoubleSummaryStatistics;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import net.sourceforge.pmd.lang.ast.Node;
 
@@ -23,8 +24,8 @@ public final class MetricsUtil {
         // util class
     }
 
-    public static <N extends Node> boolean supportsAll(N node, MetricKey<N>... metrics) {
-        for (MetricKey<N> metric : metrics) {
+    public static boolean supportsAll(Node node, Metric<?, ?>... metrics) {
+        for (Metric<?, ?> metric : metrics) {
             if (!metric.supports(node)) {
                 return false;
             }
@@ -32,48 +33,40 @@ public final class MetricsUtil {
         return true;
     }
 
-    public static <O extends Node> double computeAggregate(MetricKey<? super O> key, Iterable<? extends O> ops, ResultOption resultOption) {
-        return computeAggregate(key, ops, MetricOptions.emptyOptions(), resultOption);
+
+    /**
+     * Computes statistics for the results of a metric over a sequence of nodes.
+     *
+     * @param key The metric to compute
+     * @param ops List of nodes for which to compute the metric
+     *
+     * @return Statistics for the value of the metric over all the nodes
+     */
+    public static <O extends Node> DoubleSummaryStatistics computeStatistics(Metric<? super O, ?> key, Iterable<? extends O> ops) {
+        return computeStatistics(key, ops, MetricOptions.emptyOptions());
     }
 
     /**
-     * Computes an aggregate result for a metric, identified with a {@link ResultOption}.
+     * Computes statistics for the results of a metric over a sequence of nodes.
      *
-     * @param key          The metric to compute
-     * @param ops          List of nodes for which to aggregate the metric
-     * @param options      The options of the metric
-     * @param resultOption The type of aggregation to perform
+     * @param key     The metric to compute
+     * @param ops     List of nodes for which to compute the metric
+     * @param options The options of the metric
      *
-     * @return The result of the computation, or {@code Double.NaN} if it couldn't be performed
+     * @return Statistics for the value of the metric over all the nodes
      */
-    public static <O extends Node> double computeAggregate(MetricKey<? super O> key, Iterable<? extends O> ops, MetricOptions options, ResultOption resultOption) {
+    public static <O extends Node> DoubleSummaryStatistics computeStatistics(Metric<? super O, ?> key,
+                                                                             Iterable<? extends O> ops,
+                                                                             MetricOptions options) {
 
 
         Objects.requireNonNull(key, NULL_KEY_MESSAGE);
         Objects.requireNonNull(options, NULL_OPTIONS_MESSAGE);
         Objects.requireNonNull(ops, NULL_NODE_MESSAGE);
-        Objects.requireNonNull(resultOption, "The result option must not be null");
 
-
-        List<Double> values = new ArrayList<>();
-        for (O op : ops) {
-            if (key.supports(op)) {
-                double val = computeMetric(key, op, options);
-                values.add(val);
-            }
-        }
-
-        // FUTURE use streams to do that when we upgrade the compiler to 1.8
-        switch (resultOption) {
-        case SUM:
-            return sum(values);
-        case HIGHEST:
-            return highest(values);
-        case AVERAGE:
-            return average(values);
-        default:
-            throw new IllegalArgumentException("Unknown result option " + resultOption);
-        }
+        return StreamSupport.stream(ops.spliterator(), false)
+                            .filter(key::supports)
+                            .collect(Collectors.summarizingDouble(op -> computeMetric(key, op, options).doubleValue()));
     }
 
     /**
@@ -84,30 +77,8 @@ public final class MetricsUtil {
      *
      * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
      */
-    public static <N extends Node> double computeMetric(MetricKey<? super N> key, N node) {
+    public static <N extends Node, R extends Number> R computeMetric(Metric<? super N, R> key, N node) {
         return computeMetric(key, node, MetricOptions.emptyOptions());
-    }
-
-    /**
-     * Computes a metric identified by its code on a node, possibly
-     * selecting a variant with the {@code options} parameter.
-     *
-     * @param key     The key identifying the metric to be computed
-     * @param node    The node on which to compute the metric
-     * @param options The options of the metric
-     *
-     * @return The value of the metric, or {@code Double.NaN} if the value couldn't be computed
-     *
-     * @deprecated This is provided for compatibility with pre 6.21.0
-     *     behavior. Users of a metric should always check beforehand if
-     *     the metric supports the argument.
-     */
-    @Deprecated
-    public static <N extends Node> double computeMetricOrNaN(MetricKey<? super N> key, N node, MetricOptions options) {
-        if (!key.supports(node)) {
-            return Double.NaN;
-        }
-        return computeMetric(key, node, options, false);
     }
 
     /**
@@ -125,7 +96,7 @@ public final class MetricsUtil {
      *
      * @throws IllegalArgumentException If the metric does not support the given node
      */
-    public static <N extends Node> double computeMetric(MetricKey<? super N> key, N node, MetricOptions options) {
+    public static <N extends Node, R extends Number> R computeMetric(Metric<? super N, R> key, N node, MetricOptions options) {
         return computeMetric(key, node, options, false);
     }
 
@@ -145,7 +116,7 @@ public final class MetricsUtil {
      *
      * @throws IllegalArgumentException If the metric does not support the given node
      */
-    public static <N extends Node> double computeMetric(MetricKey<? super N> key, N node, MetricOptions options, boolean forceRecompute) {
+    public static <N extends Node, R extends Number> R computeMetric(Metric<? super N, R> key, N node, MetricOptions options, boolean forceRecompute) {
         Objects.requireNonNull(key, NULL_KEY_MESSAGE);
         Objects.requireNonNull(options, NULL_OPTIONS_MESSAGE);
         Objects.requireNonNull(node, NULL_NODE_MESSAGE);
@@ -155,40 +126,15 @@ public final class MetricsUtil {
             throw new IllegalArgumentException(key + " cannot be computed on " + node);
         }
 
-        ParameterizedMetricKey<? super N> paramKey = ParameterizedMetricKey.getInstance(key, options);
-        Double prev = node.getUserMap().get(paramKey);
+        ParameterizedMetricKey<? super N, R> paramKey = ParameterizedMetricKey.getInstance(key, options);
+        R prev = node.getUserMap().get(paramKey);
         if (!forceRecompute && prev != null) {
             return prev;
         }
 
-        double val = key.getCalculator().computeFor(node, options);
+        R val = key.computeFor(node, options);
         node.getUserMap().set(paramKey, val);
         return val;
     }
-
-    private static double sum(List<Double> values) {
-        double sum = 0;
-        for (double val : values) {
-            sum += val;
-        }
-        return sum;
-    }
-
-
-    private static double highest(List<Double> values) {
-        double highest = Double.NEGATIVE_INFINITY;
-        for (double val : values) {
-            if (val > highest) {
-                highest = val;
-            }
-        }
-        return highest == Double.NEGATIVE_INFINITY ? 0 : highest;
-    }
-
-
-    private static double average(List<Double> values) {
-        return sum(values) / values.size();
-    }
-
 
 }

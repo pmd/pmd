@@ -26,6 +26,7 @@ public class RuleTestDescriptor {
     private int expectedProblems;
     private List<Integer> expectedLineNumbers;
     private List<String> expectedMessages;
+    private int lineNumber;
 
     public RuleTestDescriptor(int index, Rule rule) {
         this.index = index;
@@ -114,5 +115,13 @@ public class RuleTestDescriptor {
 
     public void setFocused(boolean focused) {
         this.focused = focused;
+    }
+
+    public int getLineNumber() {
+        return lineNumber;
+    }
+
+    public void setLineNumber(int lineNumber) {
+        this.lineNumber = lineNumber;
     }
 }

@@ -4,28 +4,32 @@
 
 package net.sourceforge.pmd.util.log.internal;
 
+import static net.sourceforge.pmd.util.StringUtil.quoteMessageFormat;
+
 import java.text.MessageFormat;
-import java.util.logging.Logger;
+import java.util.Objects;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.slf4j.event.Level;
 
-import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.log.MessageReporter;
 
 /**
- * A logger based on a {@link Logger}.
+ * Base implementation.
  *
  * @author Clément Fournier
  */
 abstract class MessageReporterBase implements MessageReporter {
 
     private int numErrors;
-    private Level minLevel = Level.TRACE;
+    private @Nullable Level minLevel = Level.TRACE;
 
     /**
      * null level means off.
      */
-    public final void setLevel(Level minLevel) {
+    public final void setLevel(@Nullable Level minLevel) {
         this.minLevel = minLevel;
     }
 
@@ -41,20 +45,40 @@ abstract class MessageReporterBase implements MessageReporter {
     }
 
     @Override
-    public void logEx(Level level, String message, Object[] formatArgs, Throwable error) {
+    public void logEx(Level level, @Nullable String message, Object[] formatArgs, @Nullable Throwable error) {
         if (isLoggable(level)) {
-            message = MessageFormat.format(message, formatArgs);
-            String errorMessage = error.getMessage();
-            if (errorMessage == null) {
-                errorMessage = error.getClass().getSimpleName();
+            if (error == null) {
+                Objects.requireNonNull(message, "cannot call this method with null message and error");
+                log(level, message, formatArgs);
+                return;
             }
-            errorMessage = StringUtil.quoteMessageFormat(errorMessage);
-            log(level, message + ": " + errorMessage);
+            if (level == Level.ERROR) {
+                this.numErrors++;
+            }
+            String fullMessage = getErrorMessage(error);
+            if (message != null) {
+                message = MessageFormat.format(message, formatArgs);
+                fullMessage = message + ": " + fullMessage;
+            }
+            logImpl(level, fullMessage);
             if (isLoggable(Level.DEBUG)) {
-                String stackTrace = StringUtil.quoteMessageFormat(ExceptionUtils.getStackTrace(error));
+                String stackTrace = quoteMessageFormat(ExceptionUtils.getStackTrace(error));
                 log(Level.DEBUG, stackTrace);
             }
+        } else {
+            // should be incremented even if not logged
+            if (level == Level.ERROR) {
+                this.numErrors++;
+            }
         }
+    }
+
+    private @NonNull String getErrorMessage(Throwable error) {
+        String errorMessage = error.getMessage();
+        if (errorMessage == null) {
+            errorMessage = error.getClass().getSimpleName();
+        }
+        return errorMessage;
     }
 
     @Override
@@ -63,54 +87,15 @@ abstract class MessageReporterBase implements MessageReporter {
             this.numErrors++;
         }
         if (isLoggable(level)) {
-            logImpl(level, message, formatArgs);
+            logImpl(level, MessageFormat.format(message, formatArgs));
         }
     }
 
     /**
      * Perform logging assuming {@link #isLoggable(Level)} is true.
      */
-    protected abstract void logImpl(Level level, String message, Object[] formatArgs);
+    protected abstract void logImpl(Level level, String message);
 
-    @Override
-    public void trace(String message, Object... formatArgs) {
-        log(Level.TRACE, message, formatArgs);
-    }
-
-    @Override
-    public void info(String message, Object... formatArgs) {
-        log(Level.INFO, message, formatArgs);
-    }
-
-    @Override
-    public void warn(String message, Object... formatArgs) {
-        log(Level.WARN, message, formatArgs);
-    }
-
-    @Override
-    public final void warnEx(String message, Throwable error) {
-        warnEx(message, new Object[0], error);
-    }
-
-    @Override
-    public void warnEx(String message, Object[] formatArgs, Throwable error) {
-        logEx(Level.WARN, message, formatArgs, error);
-    }
-
-    @Override
-    public void error(String message, Object... formatArgs) {
-        log(Level.ERROR, message, formatArgs);
-    }
-
-    @Override
-    public final void errorEx(String message, Throwable error) {
-        errorEx(message, new Object[0], error);
-    }
-
-    @Override
-    public void errorEx(String message, Object[] formatArgs, Throwable error) {
-        logEx(Level.ERROR, message, formatArgs, error);
-    }
 
     @Override
     public int numErrors() {

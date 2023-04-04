@@ -4,9 +4,7 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTDoctypeExternalId extends AbstractVFNode {
+public final class ASTDoctypeExternalId extends AbstractVfNode {
 
     /**
      * URI of the external entity. Cannot be null.
@@ -18,16 +16,8 @@ public class ASTDoctypeExternalId extends AbstractVFNode {
      */
     private String publicId;
 
-    @Deprecated
-    @InternalApi
-    public ASTDoctypeExternalId(int id) {
+    ASTDoctypeExternalId(int id) {
         super(id);
-    }
-
-    @Deprecated
-    @InternalApi
-    public ASTDoctypeExternalId(VfParser p, int id) {
-        super(p, id);
     }
 
     public boolean isHasPublicId() {
@@ -38,9 +28,7 @@ public class ASTDoctypeExternalId extends AbstractVFNode {
         return uri;
     }
 
-    @Deprecated
-    @InternalApi
-    public void setUri(String uri) {
+    void setUri(String uri) {
         this.uri = uri;
     }
 
@@ -52,14 +40,12 @@ public class ASTDoctypeExternalId extends AbstractVFNode {
         return null == publicId ? "" : publicId;
     }
 
-    @Deprecated
-    @InternalApi
-    public void setPublicId(String publicId) {
+    void setPublicId(String publicId) {
         this.publicId = publicId;
     }
 
     @Override
-    public Object jjtAccept(VfParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVfVisitor(VfVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

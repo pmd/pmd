@@ -4,33 +4,36 @@
 
 package net.sourceforge.pmd.cache.internal;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.file.Path;
 import java.util.zip.Adler32;
 import java.util.zip.Checksum;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import junitparams.JUnitParamsRunner;
-import junitparams.Parameters;
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+abstract class AbstractClasspathEntryFingerprinterTest {
 
-@RunWith(JUnitParamsRunner.class)
-public abstract class AbstractClasspathEntryFingerprinterTest {
-
-    @Rule
-    public TemporaryFolder tempFolder = new TemporaryFolder();
+    @TempDir
+    Path tempDir;
 
     protected ClasspathEntryFingerprinter fingerprinter = newFingerPrinter();
     protected Checksum checksum = new Adler32();
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         checksum.reset();
     }
 
@@ -43,37 +46,37 @@ public abstract class AbstractClasspathEntryFingerprinterTest {
     protected abstract File createValidNonEmptyFile() throws IOException;
 
     @Test
-    public void appliesToNullIsSafe() {
+    void appliesToNullIsSafe() {
         fingerprinter.appliesTo(null);
     }
 
-    @Parameters(method = "getValidFileExtensions")
-    @Test
-    public void appliesToValidFile(final String extension) {
-        Assert.assertTrue(fingerprinter.appliesTo(extension));
+    @ParameterizedTest
+    @MethodSource("getValidFileExtensions")
+    void appliesToValidFile(final String extension) {
+        assertTrue(fingerprinter.appliesTo(extension));
     }
 
-    @Parameters(method = "getInvalidFileExtensions")
-    @Test
-    public void doesNotApplyToInvalidFile(final String extension) {
-        Assert.assertFalse(fingerprinter.appliesTo(extension));
+    @ParameterizedTest
+    @MethodSource("getInvalidFileExtensions")
+    void doesNotApplyToInvalidFile(final String extension) {
+        assertFalse(fingerprinter.appliesTo(extension));
     }
 
     @Test
-    public void fingerprintNonExistingFile() throws MalformedURLException, IOException {
+    void fingerprintNonExistingFile() throws MalformedURLException, IOException {
         final long prevValue = checksum.getValue();
 
         fingerprinter.fingerprint(new File("non-existing").toURI().toURL(), checksum);
 
-        Assert.assertEquals(prevValue, checksum.getValue());
+        assertEquals(prevValue, checksum.getValue());
     }
 
     @Test
-    public void fingerprintExistingValidFile() throws IOException {
+    void fingerprintExistingValidFile() throws IOException {
         final long prevValue = checksum.getValue();
         final File file = createValidNonEmptyFile();
 
-        Assert.assertNotEquals(prevValue, updateFingerprint(file));
+        assertNotEquals(prevValue, updateFingerprint(file));
     }
 
     protected long updateFingerprint(final File file) throws MalformedURLException, IOException {

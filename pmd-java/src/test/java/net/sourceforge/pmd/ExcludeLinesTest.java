@@ -4,49 +4,42 @@
 
 package net.sourceforge.pmd;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertSize;
+import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertSuppressed;
 
-import java.io.File;
-import java.io.StringReader;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Before;
-import org.junit.Test;
+import net.sourceforge.pmd.lang.java.BaseParserTest;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.java.JavaLanguageModule;
-import net.sourceforge.pmd.testframework.RuleTst;
-import net.sourceforge.pmd.testframework.TestDescriptor;
+class ExcludeLinesTest extends BaseParserTest {
 
-public class ExcludeLinesTest extends RuleTst {
-    private Rule rule;
+    @Test
+    void testAcceptance() {
+        assertSize(java.executeRule(getRule(), TEST1), 0);
+        assertSize(java.executeRule(getRule(), TEST2), 1);
+    }
 
-    @Before
-    public void setUp() {
-        rule = findRule("rulesets/testing/test-rset-3.xml", "PrintsVariableNames");
+    Rule getRule() {
+        return new AbstractJavaRule() {
+            {
+                setMessage("!");
+            }
+
+            @Override
+            public Object visit(ASTVariableDeclaratorId node, Object data) {
+                addViolation(data, node);
+                return data;
+            }
+        };
     }
 
     @Test
-    public void testAcceptance() {
-        runTest(new TestDescriptor(TEST1, "NOPMD should work", 0, rule));
-        runTest(new TestDescriptor(TEST2, "Should fail without exclude marker", 1, rule));
-    }
-
-    @Test
-    public void testAlternateMarker() throws Exception {
-        PMDConfiguration configuration = new PMDConfiguration();
-        configuration.setSuppressMarker("FOOBAR");
-        RuleContext ctx = new RuleContext();
-        Report r = new Report();
-        ctx.setReport(r);
-        ctx.setSourceCodeFile(new File("n/a"));
-        ctx.setLanguageVersion(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion());
-        RuleSet rules = RuleSet.forSingleRule(rule);
-
-        SourceCodeProcessor sourceCodeProcessor = new SourceCodeProcessor(configuration);
-        sourceCodeProcessor.processSourceCode(new StringReader(TEST3), new RuleSets(rules), ctx);
-        assertTrue(r.isEmpty());
-        assertEquals(r.getSuppressedRuleViolations().size(), 1);
+    void testAlternateMarker() {
+        Report rpt = java.withSuppressMarker("FOOBAR").executeRule(getRule(), TEST3);
+        assertSize(rpt, 0);
+        assertSuppressed(rpt, 1);
     }
 
     private static final String TEST1 = "public class Foo {\n"

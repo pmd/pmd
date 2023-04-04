@@ -6,17 +6,13 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.CatchClause;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTCatchClause extends AbstractEcmascriptNode<CatchClause> {
-    @Deprecated
-    @InternalApi
-    public ASTCatchClause(CatchClause catchClause) {
+public final class ASTCatchClause extends AbstractEcmascriptNode<CatchClause> {
+    ASTCatchClause(CatchClause catchClause) {
         super(catchClause);
     }
 
     @Override
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+    protected <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

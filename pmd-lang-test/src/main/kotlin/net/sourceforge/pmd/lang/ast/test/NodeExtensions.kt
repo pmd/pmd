@@ -4,16 +4,46 @@
 
 package net.sourceforge.pmd.lang.ast.test
 
+import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.shouldNotBe
 import net.sourceforge.pmd.lang.ast.Node
+import net.sourceforge.pmd.lang.ast.TextAvailableNode
 
 
-/** Extension methods to make the Node API more Kotlin-like */
+/**
+ * Returns the text as a string. This is to allow
+ * comparing the text to another string
+ */
+val TextAvailableNode.textStr: String
+    get() = text.toString()
 
-// kotlin converts getters of java types into property accessors
-// but it doesn't recognise jjtGet* methods as getters
+infix fun TextAvailableNode.shouldHaveText(str: String) {
+    this::textStr shouldBe str
+}
+inline fun <reified T : Node> Node.getDescendantsOfType(): List<T> = descendants(T::class.java).toList()
+inline fun <reified T : Node> Node.getFirstDescendantOfType(): T = descendants(T::class.java).firstOrThrow()
 
-fun Node.safeGetChild(i: Int): Node? = when {
-    i < numChildren -> jjtGetChild(i)
-    else -> null
+fun Node.textOfReportLocation(): String? =
+        reportLocation.regionInFile?.let(textDocument::sliceOriginalText)?.toString()
+
+
+fun Node.assertTextRangeIsOk() {
+
+    reportLocation shouldNotBe null
+
+    val parent = parent ?: return
+
+    if (this is TextAvailableNode && parent is TextAvailableNode) {
+        parent.text.toString().shouldContain(this.text.toString())
+    }
 }
 
+
+fun Node.assertBounds(bline: Int, bcol: Int, eline: Int, ecol: Int) {
+    reportLocation.apply {
+        this::getStartLine shouldBe bline
+        this::getStartColumn shouldBe bcol
+        this::getEndLine shouldBe eline
+        this::getEndColumn shouldBe ecol
+    }
+}

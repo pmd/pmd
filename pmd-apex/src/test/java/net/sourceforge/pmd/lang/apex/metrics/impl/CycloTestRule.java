@@ -4,25 +4,34 @@
 
 package net.sourceforge.pmd.lang.apex.metrics.impl;
 
-import net.sourceforge.pmd.lang.apex.metrics.api.ApexClassMetricKey;
-import net.sourceforge.pmd.lang.apex.metrics.api.ApexOperationMetricKey;
+import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
+import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
+import net.sourceforge.pmd.lang.apex.metrics.ApexMetrics;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.test.AbstractMetricTestRule;
 
 /**
  * Tests standard cyclo.
  *
  * @author Clément Fournier
  */
-public class CycloTestRule extends AbstractApexMetricTestRule {
+public class CycloTestRule extends AbstractMetricTestRule.OfInt {
 
-    @Override
-    protected ApexClassMetricKey getClassKey() {
-        return null;
+    public CycloTestRule() {
+        super(ApexMetrics.CYCLO);
     }
 
 
     @Override
-    protected ApexOperationMetricKey getOpKey() {
-        return ApexOperationMetricKey.CYCLO;
+    protected boolean reportOn(Node node) {
+        return node instanceof ASTUserClassOrInterface || node instanceof ASTMethod;
+    }
+
+
+
+    @Override
+    protected String violationMessage(Node node, Integer result) {
+        return AllMetricsTest.formatApexMessage(node, result, super.violationMessage(node, result));
     }
 
 }

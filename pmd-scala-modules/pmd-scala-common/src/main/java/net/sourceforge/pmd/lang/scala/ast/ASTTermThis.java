@@ -4,23 +4,19 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import scala.meta.Term;
 
 /**
  * The ASTTermThis node implementation.
  */
-public class ASTTermThis extends AbstractScalaNode<Term.This> {
+public final class ASTTermThis extends AbstractScalaNode<Term.This> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTermThis(Term.This scalaNode) {
+    ASTTermThis(Term.This scalaNode) {
         super(scalaNode);
     }
 
     @Override
-    public <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data) {
+    protected <P, R> R acceptVisitor(ScalaParserVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

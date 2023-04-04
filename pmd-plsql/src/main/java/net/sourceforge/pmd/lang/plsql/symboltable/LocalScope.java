@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,6 +9,7 @@ import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.ast.ASTName;
+import net.sourceforge.pmd.lang.plsql.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
@@ -24,7 +25,7 @@ public class LocalScope extends MethodOrLocalScope {
                 nameOccurrences.add(occurrence);
                 Node n = occurrence.getLocation();
                 if (n instanceof ASTName) {
-                    ((ASTName) n).setNameDeclaration(decl);
+                    InternalApiBridge.setNameDeclaration((ASTName) n, decl);
                 } // TODO what to do with PrimarySuffix case?
             }
         }

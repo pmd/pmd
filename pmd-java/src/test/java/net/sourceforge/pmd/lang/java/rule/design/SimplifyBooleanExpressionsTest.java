@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class SimplifyBooleanExpressionsTest extends PmdRuleTst {
+class SimplifyBooleanExpressionsTest extends PmdRuleTst {
     // no additional unit tests
 }

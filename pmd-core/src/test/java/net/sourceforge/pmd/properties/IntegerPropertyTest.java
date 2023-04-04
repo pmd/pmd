@@ -16,29 +16,18 @@ import java.util.List;
  * @author Brian Remedios
  */
 @Deprecated
-public class IntegerPropertyTest extends AbstractNumericPropertyDescriptorTester<Integer> {
+class IntegerPropertyTest extends AbstractNumericPropertyDescriptorTester<Integer> {
 
     private static final int MIN = 1;
     private static final int MAX = 12;
     private static final int SHIFT = 4;
 
 
-    public IntegerPropertyTest() {
+    IntegerPropertyTest() {
         super("Integer");
     }
 
 
-    /*   @Override
-       @Test
-       public void testErrorForBadSingle() {
-       } // not until int properties get ranges
-
-       @Override
-       @Test
-       public void testErrorForBadMulti() {
-       } // not until int properties get ranges
-
-   */
     @Override
     protected Integer createValue() {
         return randomInt(MIN, MAX);

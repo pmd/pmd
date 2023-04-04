@@ -4,20 +4,17 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.expression.ArrayStoreExpression;
 
-public class ASTArrayStoreExpression extends AbstractApexNode<ArrayStoreExpression> {
+public final class ASTArrayStoreExpression extends AbstractApexNode<ArrayStoreExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTArrayStoreExpression(ArrayStoreExpression arrayStoreExpression) {
+    ASTArrayStoreExpression(ArrayStoreExpression arrayStoreExpression) {
         super(arrayStoreExpression);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

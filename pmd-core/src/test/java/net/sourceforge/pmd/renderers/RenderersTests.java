@@ -4,17 +4,16 @@
 
 package net.sourceforge.pmd.renderers;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /**
  * tests for the net.sourceforge.pmd.renderers package
  *
  * @author Boris Gruschko ( boris at gruschko.org )
  */
-@RunWith(Suite.class)
-@SuiteClasses({
+@Suite
+@SelectClasses({
     CodeClimateRendererTest.class,
     CSVRendererTest.class,
     EmacsRendererTest.class,
@@ -31,5 +30,5 @@ import org.junit.runners.Suite.SuiteClasses;
     XSLTRendererTest.class,
     YAHTMLRendererTest.class
 })
-public class RenderersTests {
+class RenderersTests {
 }

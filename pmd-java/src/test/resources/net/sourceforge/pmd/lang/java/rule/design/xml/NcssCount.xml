@@ -13,6 +13,9 @@ import com
          .company
                  .money.Bar;
 import com.company.Carrot;
+import com.company.ScaryException;
+import com.company.ThemAll;
+import java.util.Random;
 
 public class Foo extends Bar {
     int y, z, t;
@@ -51,7 +54,7 @@ public class Foo extends Bar {
             }
         }
 
-        super(z);
+        super.f(z);
     }
 
     public void foo() {
@@ -74,8 +77,9 @@ public class Foo extends Bar {
         } while (x != 2);
     }
 
-    public static void main(String args[]) throws RadioactiveException {
+    public static void main(String args[]) throws ScaryException {
         String k, l, m;
+        int x;
 
         bar();
 
@@ -125,10 +129,10 @@ public class Foo extends Bar {
         <rule-property name="methodReportLevel">10</rule-property>
         <expected-problems>4</expected-problems>
         <expected-messages>
-            <message>The class 'Foo' has a NCSS line count of 65 (Highest = 20).</message>
+            <message>The class 'Foo' has a NCSS line count of 66 (Highest = 21).</message>
             <message>The constructor 'Foo(int)' has a NCSS line count of 13.</message>
             <message>The method 'foo()' has a NCSS line count of 14.</message>
-            <message>The method 'main(String)' has a NCSS line count of 20.</message>
+            <message>The method 'main(String[])' has a NCSS line count of 21.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -140,10 +144,10 @@ public class Foo extends Bar {
         <rule-property name="ncssOptions">countImports</rule-property>
         <expected-problems>4</expected-problems>
         <expected-messages>
-            <message>The class 'Foo' has a NCSS line count of 68 (Highest = 20).</message>
+            <message>The class 'Foo' has a NCSS line count of 72 (Highest = 21).</message>
             <message>The constructor 'Foo(int)' has a NCSS line count of 13.</message>
             <message>The method 'foo()' has a NCSS line count of 14.</message>
-            <message>The method 'main(String)' has a NCSS line count of 20.</message>
+            <message>The method 'main(String[])' has a NCSS line count of 21.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -184,6 +188,7 @@ public class Foo {
     </test-code>
 
     <code-fragment id="complicated-method"><![CDATA[
+import java.util.Random;
 public class Foo {
     public static void main(String args[]) {
         Random r = new Random();

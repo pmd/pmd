@@ -11,7 +11,8 @@ import java.util.List;
 
 import org.jsoup.nodes.Element;
 
-import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+import net.sourceforge.pmd.lang.rule.xpath.Attribute;
+
 
 public class ASTHtmlElement extends AbstractHtmlNode<Element> {
 
@@ -27,7 +28,7 @@ public class ASTHtmlElement extends AbstractHtmlNode<Element> {
     }
 
     @Override
-    public Object acceptVisitor(HtmlVisitor visitor, Object data) {
+    protected <P, R> R acceptHtmlVisitor(HtmlVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

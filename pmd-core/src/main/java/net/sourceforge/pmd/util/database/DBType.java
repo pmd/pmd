@@ -12,8 +12,9 @@ import java.nio.file.NoSuchFileException;
 import java.util.Properties;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Encapsulate the settings needed to access database source code.
@@ -22,7 +23,7 @@ import java.util.logging.Logger;
  * @author sturton
  */
 public class DBType {
-    private static final Logger LOGGER = Logger.getLogger(DBType.class.getPackage().getName());
+    private static final Logger LOG = LoggerFactory.getLogger(DBType.class);
 
     private static final String INTERNAL_SETTINGS = "[Internal Settings]";
 
@@ -102,9 +103,7 @@ public class DBType {
      */
     public DBType(String subProtocol, String subnamePrefix) throws IOException {
 
-        if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine("subProtocol=" + subProtocol + ", subnamePrefix=" + subnamePrefix);
-        }
+        LOG.debug("subProtocol={}, subnamePrefix={}", subProtocol, subnamePrefix);
 
         if (null == subProtocol && null == subnamePrefix) {
             throw new RuntimeException("subProtocol and subnamePrefix cannot both be null");
@@ -121,9 +120,9 @@ public class DBType {
             }
 
             if (subnamePrefix != null && properties != null) {
-                LOGGER.log(Level.FINE, "DBType found using subnamePrefix={0}", subnamePrefix);
+                LOG.debug("DBType found using subnamePrefix={}", subnamePrefix);
             } else if (subProtocol != null && properties != null) {
-                LOGGER.log(Level.FINE, "DBType found using subProtocol={0}", subProtocol);
+                LOG.debug("DBType found using subProtocol={}", subProtocol);
             } else {
                 throw new RuntimeException(
                         String.format("Could not locate DBType properties using subProtocol=%s and subnamePrefix=%s",
@@ -154,13 +153,11 @@ public class DBType {
      *         files)
      */
     private Properties loadDBProperties(String matchString) throws IOException {
-        LOGGER.entering(DBType.class.getCanonicalName(), matchString);
+        LOG.trace("Entering: loadDBProperties with {}", matchString);
         // Locale locale = Control.g;
         ResourceBundle resourceBundle = null;
 
-        if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.finest("class_path+" + System.getProperty("java.class.path"));
-        }
+        LOG.trace("class_path={}", System.getProperty("java.class.path"));
 
         /*
          * Attempt to match properties files in this order:- File path with
@@ -168,39 +165,31 @@ public class DBType {
          * without class prefix Resource with class prefix
          */
         File propertiesFile = new File(matchString);
-        if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.finest("Attempting File no file suffix: " + matchString);
-        }
+        LOG.trace("Attempting File no file suffix: {}", matchString);
         try (InputStream stream = Files.newInputStream(propertiesFile.toPath())) {
             resourceBundle = new PropertyResourceBundle(stream);
             propertiesSource = propertiesFile.getAbsolutePath();
-            LOGGER.finest("FileSystemWithoutExtension");
+            LOG.trace("FileSystemWithoutExtension");
         } catch (NoSuchFileException notFoundOnFilesystemWithoutExtension) {
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("notFoundOnFilesystemWithoutExtension");
-                LOGGER.finest("Attempting File with added file suffix: " + matchString + ".properties");
-            }
+            LOG.trace("notFoundOnFilesystemWithoutExtension");
+            LOG.trace("Attempting File with added file suffix: {}.properties", matchString);
             propertiesFile = new File(matchString + ".properties");
             try (InputStream stream = Files.newInputStream(propertiesFile.toPath())) {
                 resourceBundle = new PropertyResourceBundle(stream);
                 propertiesSource = propertiesFile.getAbsolutePath();
-                LOGGER.finest("FileSystemWithExtension");
+                LOG.trace("FileSystemWithExtension");
             } catch (NoSuchFileException notFoundOnFilesystemWithExtensionTackedOn) {
-                if (LOGGER.isLoggable(Level.FINEST)) {
-                    LOGGER.finest("Attempting JARWithoutClassPrefix: " + matchString);
-                }
+                LOG.trace("Attempting JARWithoutClassPrefix: {}", matchString);
                 try {
                     resourceBundle = ResourceBundle.getBundle(matchString);
                     propertiesSource = "[" + INTERNAL_SETTINGS + "]" + File.separator + matchString + ".properties";
-                    LOGGER.finest("InJarWithoutPath");
+                    LOG.trace("InJarWithoutPath");
                 } catch (Exception notInJarWithoutPath) {
-                    if (LOGGER.isLoggable(Level.FINEST)) {
-                        LOGGER.finest("Attempting JARWithClass prefix: " + DBType.class.getCanonicalName() + "." + matchString);
-                    }
+                    LOG.trace("Attempting JARWithClass prefix: {}.{}", DBType.class.getCanonicalName(), matchString);
                     try {
                         resourceBundle = ResourceBundle.getBundle(DBType.class.getPackage().getName() + "." + matchString);
                         propertiesSource = "[" + INTERNAL_SETTINGS + "]" + File.separator + matchString + ".properties";
-                        LOGGER.finest("found InJarWithPath");
+                        LOG.trace("found InJarWithPath");
                     } catch (Exception notInJarWithPath) {
                         notInJarWithPath.printStackTrace();
                         notFoundOnFilesystemWithExtensionTackedOn.printStackTrace();
@@ -410,9 +399,7 @@ public class DBType {
 
         // Return class for source code
         if (null != this.properties.getProperty("returnType")) {
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("returnType" + this.properties.getProperty("returnType"));
-            }
+            LOG.trace("returnType={}", this.properties.getProperty("returnType"));
             this.sourceCodeReturnType = Integer.parseInt(this.properties.getProperty("returnType"));
         }
 

@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class ReturnFromFinallyBlockTest extends PmdRuleTst {
+class ReturnFromFinallyBlockTest extends PmdRuleTst {
     // no additional unit tests
 }

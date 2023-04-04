@@ -11,20 +11,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMarkerAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
-import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessNode;
-import net.sourceforge.pmd.lang.java.ast.AbstractJavaNode;
-import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.JavadocCommentOwner;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.properties.PropertyBuilder.GenericPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
@@ -33,8 +36,8 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 /**
  * @author Brian Remedios
  */
-public class CommentRequiredRule extends AbstractCommentRule {
-    private static final Logger LOG = Logger.getLogger(CommentRequiredRule.class.getName());
+public class CommentRequiredRule extends AbstractJavaRulechainRule {
+    private static final Logger LOG = LoggerFactory.getLogger(CommentRequiredRule.class);
 
     // Used to pretty print a message
     private static final Map<String, String> DESCRIPTOR_NAME_TO_COMMENT_TYPE = new HashMap<>();
@@ -68,6 +71,7 @@ public class CommentRequiredRule extends AbstractCommentRule {
     private final Map<PropertyDescriptor<CommentRequirement>, CommentRequirement> propertyValues = new HashMap<>();
 
     public CommentRequiredRule() {
+        super(ASTBodyDeclaration.class);
         definePropertyDescriptor(OVERRIDE_CMT_DESCRIPTOR);
         definePropertyDescriptor(ACCESSOR_CMT_DESCRIPTOR);
         definePropertyDescriptor(CLASS_CMT_REQUIREMENT_DESCRIPTOR);
@@ -99,7 +103,7 @@ public class CommentRequiredRule extends AbstractCommentRule {
         boolean classCommentRequirementValueOverridden = classCommentRequirementValue != CommentRequirement.Required;
 
         if (headerCommentRequirementValueOverridden && !classCommentRequirementValueOverridden) {
-            LOG.warning("Rule CommentRequired uses deprecated property 'headerCommentRequirement'. "
+            LOG.warn("Rule CommentRequired uses deprecated property 'headerCommentRequirement'. "
                     + "Future versions of PMD will remove support for this property. "
                     + "Please use 'classCommentRequirement' instead!");
             propertyValues.put(CLASS_CMT_REQUIREMENT_DESCRIPTOR, headerCommentRequirementValue);
@@ -108,18 +112,18 @@ public class CommentRequiredRule extends AbstractCommentRule {
         }
     }
 
-    private void checkCommentMeetsRequirement(Object data, AbstractJavaNode node,
+    private void checkCommentMeetsRequirement(Object data, JavadocCommentOwner node,
                                               PropertyDescriptor<CommentRequirement> descriptor) {
         switch (propertyValues.get(descriptor)) {
         case Ignored:
             break;
         case Required:
-            if (node.comment() == null) {
+            if (node.getJavadocComment() == null) {
                 commentRequiredViolation(data, node, descriptor);
             }
             break;
         case Unwanted:
-            if (node.comment() != null) {
+            if (node.getJavadocComment() != null) {
                 commentRequiredViolation(data, node, descriptor);
             }
             break;
@@ -130,7 +134,7 @@ public class CommentRequiredRule extends AbstractCommentRule {
 
 
     // Adds a violation
-    private void commentRequiredViolation(Object data, AbstractJavaNode node,
+    private void commentRequiredViolation(Object data, JavaNode node,
                                           PropertyDescriptor<CommentRequirement> descriptor) {
 
 
@@ -144,100 +148,57 @@ public class CommentRequiredRule extends AbstractCommentRule {
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration decl, Object data) {
         checkCommentMeetsRequirement(data, decl, CLASS_CMT_REQUIREMENT_DESCRIPTOR);
-        return super.visit(decl, data);
+        return data;
     }
 
 
     @Override
     public Object visit(ASTConstructorDeclaration decl, Object data) {
         checkMethodOrConstructorComment(decl, data);
-        return super.visit(decl, data);
+        return data;
     }
 
 
     @Override
     public Object visit(ASTMethodDeclaration decl, Object data) {
-        if (isAnnotatedOverride(decl)) {
+        if (decl.isOverridden()) {
             checkCommentMeetsRequirement(data, decl, OVERRIDE_CMT_DESCRIPTOR);
-        } else if (decl.getSignature().role == JavaOperationSignature.Role.GETTER_OR_SETTER) {
+        } else if (JavaRuleUtil.isGetterOrSetter(decl)) {
             checkCommentMeetsRequirement(data, decl, ACCESSOR_CMT_DESCRIPTOR);
         } else {
             checkMethodOrConstructorComment(decl, data);
         }
-        return super.visit(decl, data);
+        return data;
     }
 
 
-    private void checkMethodOrConstructorComment(AbstractJavaAccessNode decl, Object data) {
-        if (decl.isPublic()) {
+    private void checkMethodOrConstructorComment(ASTMethodOrConstructorDeclaration decl, Object data) {
+        if (decl.getVisibility() == Visibility.V_PUBLIC) {
             checkCommentMeetsRequirement(data, decl, PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR);
-        } else if (decl.isProtected()) {
+        } else if (decl.getVisibility() == Visibility.V_PROTECTED) {
             checkCommentMeetsRequirement(data, decl, PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR);
         }
     }
 
 
-    private boolean isAnnotatedOverride(ASTMethodDeclaration decl) {
-        List<ASTMarkerAnnotation> annotations = decl.getParent().findDescendantsOfType(ASTMarkerAnnotation.class);
-        for (ASTMarkerAnnotation ann : annotations) { // TODO consider making a method to get the annotations of a method
-            if ("Override".equals(ann.getFirstChildOfType(ASTName.class).getImage())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
     @Override
     public Object visit(ASTFieldDeclaration decl, Object data) {
-        if (isSerialVersionUID(decl)) {
+        if (JavaRuleUtil.isSerialVersionUID(decl)) {
             checkCommentMeetsRequirement(data, decl, SERIAL_VERSION_UID_CMT_REQUIREMENT_DESCRIPTOR);
-        } else if (isSerialPersistentFields(decl)) {
+        } else if (JavaRuleUtil.isSerialPersistentFields(decl)) {
             checkCommentMeetsRequirement(data, decl, SERIAL_PERSISTENT_FIELDS_CMT_REQUIREMENT_DESCRIPTOR);
         } else {
             checkCommentMeetsRequirement(data, decl, FIELD_CMT_REQUIREMENT_DESCRIPTOR);
         }
 
-        return super.visit(decl, data);
+        return data;
     }
 
-
-    private boolean isSerialVersionUID(ASTFieldDeclaration field) {
-        return "serialVersionUID".equals(field.getVariableName())
-               && field.isStatic()
-               && field.isFinal()
-               && field.getType() == long.class;
-    }
-
-    /**
-     * Whether the given field is a serialPersistentFields variable.
-     * <p/>
-     * This field must be initialized with an array of ObjectStreamField objects.
-     * The modifiers for the field are required to be private, static, and final.
-     *
-     * @param field the field, must not be null
-     * @return true if the field is a serialPersistentFields variable, otherwise false
-     * @see <a href="https://docs.oracle.com/javase/7/docs/platform/serialization/spec/serial-arch.html#6250">Oracle docs</a>
-     */
-    private boolean isSerialPersistentFields(final ASTFieldDeclaration field) {
-        return "serialPersistentFields".equals(field.getVariableName())
-                && field.isPrivate()
-                && field.isStatic()
-                && field.isFinal()
-                && field.isArray()
-                && "ObjectStreamField".equals(field.jjtGetFirstToken().getImage()); // .getType() returns null
-    }
 
     @Override
     public Object visit(ASTEnumDeclaration decl, Object data) {
         checkCommentMeetsRequirement(data, decl, ENUM_CMT_REQUIREMENT_DESCRIPTOR);
-        return super.visit(decl, data);
-    }
-
-    @Override
-    public Object visit(ASTCompilationUnit cUnit, Object data) {
-        assignCommentsToDeclarations(cUnit);
-        return super.visit(cUnit, data);
+        return data;
     }
 
     private boolean allCommentsAreIgnored() {

@@ -6,17 +6,13 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.WithStatement;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTWithStatement extends AbstractEcmascriptNode<WithStatement> {
-    @Deprecated
-    @InternalApi
-    public ASTWithStatement(WithStatement withStatement) {
+public final class ASTWithStatement extends AbstractEcmascriptNode<WithStatement> {
+    ASTWithStatement(WithStatement withStatement) {
         super(withStatement);
     }
 
     @Override
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+    protected <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

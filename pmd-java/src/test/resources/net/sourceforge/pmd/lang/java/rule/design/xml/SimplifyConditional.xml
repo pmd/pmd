@@ -98,11 +98,10 @@ public class Bug1843273 {
         <description>Bug 2317099 : False + in SimplifyConditional</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Bug2317099
-{
+public class Env {
     public void method(Env env) {
         if (env != null && env.getContext() != null &&
-            env.getContext().getContextObject() instanceof PageContext) {
+            env.getContext().getContextObject() instanceof String) {
         }
     }
 }

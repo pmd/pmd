@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.rule.security;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.WeakHashMap;
 
@@ -33,12 +34,9 @@ public class ApexSharingViolationsRule extends AbstractApexRule {
     /**
      * Keep track of previously reported violations to avoid duplicates.
      */
-    private WeakHashMap<ApexNode<?>, Object> localCacheOfReportedNodes = new WeakHashMap<>();
+    private Map<ApexNode<?>, Object> localCacheOfReportedNodes = new WeakHashMap<>();
 
     public ApexSharingViolationsRule() {
-        setProperty(CODECLIMATE_CATEGORIES, "Security");
-        setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
-        setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
         addRuleChainVisit(ASTDmlDeleteStatement.class);
         addRuleChainVisit(ASTDmlInsertStatement.class);
         addRuleChainVisit(ASTDmlMergeStatement.class);

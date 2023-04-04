@@ -1,15 +1,15 @@
-$('#mysidebar').height($('.nav').height());
-
 // Detect small devices and move the TOC in line
-function moveToc() {
-    if (window.innerWidth < 1350) {
-        $('#toc').detach().appendTo('#inline-toc').removeClass('affix');
+function moveToc(){
+    if(window.innerWidth < 1350){
+        $( '#toc' ).detach().appendTo('#inline-toc').removeClass('position-fixed');
     } else {
-        $('#toc').detach().appendTo('.toc-col').addClass('affix');
+        $( '#toc' ).detach().appendTo('.toc-col').addClass('position-fixed');
     }
 }
 
 $(document).ready(function () {
+    // This handles the automatic toc. Use ## for subheads to auto-generate the on-page minitoc.
+    // If you use html tags, you must supply an ID for the heading element in order for it to appear in the minitoc.
     $('#toc').toc({
         minimumHeaders: 0,
         listType: 'ul',
@@ -17,13 +17,17 @@ $(document).ready(function () {
         headers: 'h2,h3,h4',
     });
 
-    //this script says, if the height of the viewport is greater than 800px, then insert affix class, which makes the nav bar float in a fixed
-    // position as your scroll. if you have a lot of nav items, this height may not work for you.
+    $('#mysidebar').height($(".nav").height());
+
+    // this script says, if the height of the viewport is greater than 600px, then insert position-fixed class,
+    // which makes the nav bar float in a fixed position as your scroll. If you have a lot of nav items,
+    // this height may not work for you.
     var h = $(window).height();
     //console.log (h);
     if (h > 600) {
-        $('#mysidebar').attr('class', 'nav affix');
+        $( '#mysidebar' ).attr('class', 'nav position-fixed');
     }
+
     // activate tooltips. although this is a bootstrap js function, it must be activated this way in your theme.
     $('[data-toggle="tooltip"]').tooltip({
         placement: 'top',
@@ -48,43 +52,51 @@ $(document).ready(function () {
 
     // Check if TOC needs to be moved on page load
     moveToc();
-});
 
-// needed for nav tabs on pages. See Formatting > Nav tabs for more details.
-// script from http://stackoverflow.com/questions/10523433/how-do-i-keep-the-current-tab-active-with-twitter-bootstrap-after-a-page-reload
-$(function () {
-    var json, tabsState;
-    $('a[data-toggle="pill"], a[data-toggle="tab"]').on(
-        'shown.bs.tab',
-        function (e) {
-            var href, json, parentId, tabsState;
+    // This highlights the active parent class in the navgoco sidebar. This is critical so that the parent expands
+    // when you're viewing a page.
+    // Note: the class needs to be added before navgoco is initialized. Navgoco uses then this information
+    // to expand the menus.
+    $( 'li.active' ).parents('li').toggleClass('active');
 
-            tabsState = localStorage.getItem('tabs-state');
-            json = JSON.parse(tabsState || '{}');
-            parentId = $(e.target)
-                .parents('ul.nav.nav-pills, ul.nav.nav-tabs')
-                .attr('id');
-            href = $(e.target).attr('href');
-            json[parentId] = href;
-
-            return localStorage.setItem('tabs-state', JSON.stringify(json));
+    // Initialize navgoco with default options
+    $( '#mysidebar' ).navgoco({
+        caretHtml: '',
+        accordion: true,
+        openClass: 'active',
+        save: false,
+        slide: {
+            duration: 400,
+            easing: 'swing'
         }
-    );
-
-    tabsState = localStorage.getItem('tabs-state');
-    json = JSON.parse(tabsState || '{}');
-
-    $.each(json, function (containerId, href) {
-        return $('#' + containerId + ' a[href=' + href + ']').tab('show');
     });
 
-    $('ul.nav.nav-pills, ul.nav.nav-tabs').each(function () {
-        var $this = $(this);
-        if (!json[$this.attr('id')]) {
-            return $this
-                .find('a[data-toggle=tab]:first, a[data-toggle=pill]:first')
-                .tab('show');
-        }
+    // Initialize jekyll search in topnav.
+    SimpleJekyllSearch.init({
+        searchInput: document.getElementById('search-input'),
+        resultsContainer: document.getElementById('results-container'),
+        json: 'search.json',
+        searchResultTemplate: '<li><a href="{url}">{title}</a></li>',
+        noResultsText: '{{site.data.strings.search_no_results_text}}',
+        limit: 10,
+        fuzzy: true,
+    });
+    // Make sure to close and empty the search results after clicking one result item.
+    // This is necessary, if we don't switch the page but only jump to a anchor on the
+    // same page.
+    $('#results-container').click(function() {
+        $('#search-input').val('');
+        $(this).empty();
+    });
+
+    // Topnav toggle button for displaying/hiding nav sidebar
+    $("#tg-sb-link").click(function(event) {
+        $("#tg-sb-sidebar").toggle();
+        $("#tg-sb-content").toggleClass('col-md-9');
+        $("#tg-sb-content").toggleClass('col-md-12');
+        $("#tg-sb-icon").toggleClass('fa-toggle-on');
+        $("#tg-sb-icon").toggleClass('fa-toggle-off');
+        event.preventDefault();
     });
 });
 

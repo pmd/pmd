@@ -4,30 +4,30 @@
 
 package net.sourceforge.pmd.cpd;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
-import net.sourceforge.pmd.util.IOUtil;
 
-public class ApexCpdTest {
+class ApexCpdTest {
     private File testdir;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         String path = IOUtil.normalizePath("src/test/resources/net/sourceforge/pmd/cpd/issue427");
         testdir = new File(path);
     }
 
     @Test
-    public void testIssue427() throws IOException {
+    void testIssue427() throws IOException {
         CPDConfiguration configuration = new CPDConfiguration();
         configuration.setMinimumTileSize(10);
         configuration.setLanguage(LanguageFactory.createLanguage(ApexLanguageModule.TERSE_NAME));

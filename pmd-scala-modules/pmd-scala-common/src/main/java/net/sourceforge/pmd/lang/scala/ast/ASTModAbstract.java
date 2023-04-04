@@ -4,23 +4,19 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import scala.meta.Mod;
 
 /**
  * The ASTModAbstract node implementation.
  */
-public class ASTModAbstract extends AbstractScalaNode<Mod.Abstract> {
+public final class ASTModAbstract extends AbstractScalaNode<Mod.Abstract> {
 
-    @Deprecated
-    @InternalApi
-    public ASTModAbstract(Mod.Abstract scalaNode) {
+    ASTModAbstract(Mod.Abstract scalaNode) {
         super(scalaNode);
     }
 
     @Override
-    public <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data) {
+    protected <P, R> R acceptVisitor(ScalaParserVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

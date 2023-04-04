@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.renderers;
 
-import net.sourceforge.pmd.PMD;
-
 /**
  * Structure for the Code Climate Issue spec
  * (https://github.com/codeclimate/spec/blob/master/SPEC.md#issues)
@@ -31,7 +29,7 @@ public class CodeClimateIssue {
         public String path;
         public Lines lines;
 
-        private class Lines {
+        private static final class Lines {
             public int begin;
             public int end;
         }
@@ -56,7 +54,7 @@ public class CodeClimateIssue {
          * @param body The text to compose the content from
          */
         public Content(String body) {
-            this.body = body.replace(PMD.EOL, " ");
+            this.body = body.replace(System.lineSeparator(), " ");
         }
     }
 }

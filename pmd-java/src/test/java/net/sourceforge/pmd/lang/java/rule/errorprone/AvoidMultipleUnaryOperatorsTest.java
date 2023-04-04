@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class AvoidMultipleUnaryOperatorsTest extends PmdRuleTst {
+class AvoidMultipleUnaryOperatorsTest extends PmdRuleTst {
     // no additional unit tests
 }

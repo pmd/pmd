@@ -4,13 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
-import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.ast.TypeNode;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 /**
@@ -45,44 +42,43 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
  *
  * @author acaplan
  */
-public class InefficientEmptyStringCheckRule extends AbstractJavaRule {
+public class InefficientEmptyStringCheckRule extends AbstractJavaRulechainRule {
 
     public InefficientEmptyStringCheckRule() {
-        addRuleChainVisit(ASTPrimaryExpression.class);
+        super(ASTMethodCall.class);
     }
 
     @Override
-    public Object visit(ASTPrimaryExpression node, Object data) {
-        if (node.getNumChildren() > 3) {
-            // Check last suffix
-            String lastSuffix = node.getChild(node.getNumChildren() - 2).getImage();
-            if (!("isEmpty".equals(lastSuffix) || "length".equals(lastSuffix) && isComparisonWithZero(node))) {
-                return data;
-            }
-
-            TypeNode prevCall = (TypeNode) node.getChild(node.getNumChildren() - 4);
-            String target = prevCall.getNumChildren() > 0 ? prevCall.getChild(0).getImage() : prevCall.getImage();
-            if (target != null && ("trim".equals(target) || target.endsWith(".trim"))
-                    && TypeTestUtil.isA(String.class, prevCall)) {
-                addViolation(data, node);
-            }
+    public Object visit(ASTMethodCall call, Object data) {
+        if (isTrimCall(call.getQualifier())
+            && (isLengthZeroCheck(call) || isIsEmptyCall(call))) {
+            addViolation(data, call);
         }
-        return data;
+        return null;
     }
 
-    private boolean isComparisonWithZero(ASTPrimaryExpression node) {
-        if (node.getParent() instanceof ASTEqualityExpression && "==".equals(node.getParent().getImage())) {
-            JavaNode other = node.getParent().getChild(1);
-            if (node.getIndexInParent() == 1) {
-                other = node.getParent().getChild(0);
-            }
-            if (other instanceof ASTPrimaryExpression && other.getNumChildren() == 1
-                    && other.getChild(0) instanceof ASTPrimaryPrefix
-                    && other.getChild(0).getNumChildren() == 1
-                    && other.getChild(0).getChild(0) instanceof ASTLiteral) {
-                ASTLiteral literal = (ASTLiteral) other.getChild(0).getChild(0);
-                return literal.isIntLiteral() && "0".equals(literal.getImage());
-            }
+    private static boolean isLengthZeroCheck(ASTMethodCall call) {
+        return "length".equals(call.getMethodName())
+            && call.getArguments().size() == 0
+            && JavaRuleUtil.isZeroChecked(call);
+    }
+
+    private static boolean isTrimCall(ASTExpression expr) {
+        if (expr instanceof ASTMethodCall) {
+            ASTMethodCall call = (ASTMethodCall) expr;
+            return "trim".equals(call.getMethodName())
+                && call.getArguments().size() == 0
+                && TypeTestUtil.isA(String.class, call.getQualifier());
+        }
+        return false;
+    }
+
+
+    private static boolean isIsEmptyCall(ASTExpression expr) {
+        if (expr instanceof ASTMethodCall) {
+            ASTMethodCall call = (ASTMethodCall) expr;
+            return "isEmpty".equals(call.getMethodName())
+                && call.getArguments().size() == 0;
         }
         return false;
     }

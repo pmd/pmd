@@ -15,17 +15,18 @@ if [ ! -f pom.xml ] || [ ! -d ../pmd.github.io ]; then
     exit 1
 fi
 
-LAST_VERSION=
-RELEASE_VERSION=
-DEVELOPMENT_VERSION=
 CURRENT_BRANCH=
 
 echo "-------------------------------------------"
 echo "Releasing PMD"
 echo "-------------------------------------------"
 
-CURRENT_VERSION=$(./mvnw org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -q -DforceStdout)
-RELEASE_VERSION=${CURRENT_VERSION%-SNAPSHOT}
+# allow to override the release version, e.g. via "RELEASE_VERSION=7.0.0-rc1 ./do-release.sh"
+if [ "$RELEASE_VERSION" = "" ]; then
+    CURRENT_VERSION=$(./mvnw org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -q -DforceStdout)
+    RELEASE_VERSION=${CURRENT_VERSION%-SNAPSHOT}
+fi
+
 MAJOR=$(echo "$RELEASE_VERSION" | cut -d . -f 1)
 MINOR=$(echo "$RELEASE_VERSION" | cut -d . -f 2)
 PATCH=$(echo "$RELEASE_VERSION" | cut -d . -f 3)
@@ -41,15 +42,16 @@ else
     LAST_MINOR="${MINOR}"
     LAST_PATCH=$(("${PATCH}" - 1))
 fi
-LAST_VERSION="$MAJOR.$LAST_MINOR.$LAST_PATCH"
-DEVELOPMENT_VERSION="$MAJOR.$NEXT_MINOR.$NEXT_PATCH"
-DEVELOPMENT_VERSION="${DEVELOPMENT_VERSION}-SNAPSHOT"
 
-# allow to override the next version, e.g. via "NEXT_VERSION=7.0.0 ./do-release.sh"
-if [ "$NEXT_VERSION" != "" ]; then
-    DEVELOPMENT_VERSION="${NEXT_VERSION}-SNAPSHOT"
+# allow to override the next version, e.g. via "DEVELOPMENT_VERSION=7.0.0-SNAPSHOT ./do-release.sh"
+if [ "$DEVELOPMENT_VERSION" = "" ]; then
+    DEVELOPMENT_VERSION="$MAJOR.$NEXT_MINOR.$NEXT_PATCH-SNAPSHOT"
 fi
 
+# allow to override the last version, e.g. via "LAST_VERSION=6.55.0 ./do-release.sh"
+if [ "$LAST_VERSION" = "" ]; then
+    LAST_VERSION="$MAJOR.$LAST_MINOR.$LAST_PATCH"
+fi
 
 # http://stackoverflow.com/questions/1593051/how-to-programmatically-determine-the-current-checked-out-git-branch
 CURRENT_BRANCH=$(git symbolic-ref -q HEAD)
@@ -109,7 +111,7 @@ read -r
 # calculating stats for release notes
 
 STATS=$(
-echo "### Stats"
+echo "### 📈 Stats"
 echo "* $(git log pmd_releases/"${LAST_VERSION}"..HEAD --oneline --no-merges |wc -l) commits"
 echo "* $(curl -s "https://api.github.com/repos/pmd/pmd/milestones?state=all&direction=desc&per_page=5"|jq ".[] | select(.title == \"$RELEASE_VERSION\") | .closed_issues") closed tickets & PRs"
 echo "* Days since last release: $(( ( $(date +%s) - $(git log --max-count=1 --format="%at" pmd_releases/"${LAST_VERSION}") ) / 86400))"
@@ -163,12 +165,26 @@ git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
     fi
 )
 
-./mvnw -B release:clean release:prepare \
-    -Dtag="pmd_releases/${RELEASE_VERSION}" \
-    -DreleaseVersion="${RELEASE_VERSION}" \
-    -DdevelopmentVersion="${DEVELOPMENT_VERSION}" \
-    -Pgenerate-rule-docs
-
+# for release candidates, allow snapshot dependencies
+if [[ "${RELEASE_VERSION}" == *-rc* ]]; then
+  ./mvnw versions:set -DnewVersion="${RELEASE_VERSION}" -DgenerateBackupPoms=false
+  git commit -S -a -m "[release] prepare release pmd_releases/${RELEASE_VERSION}"
+  git tag -a -s -m "[release] tag pmd_releases/${RELEASE_VERSION}" "pmd_releases/${RELEASE_VERSION}"
+  # test build
+  ./mvnw clean verify -Denforcer.skip=true
+  ./mvnw versions:set -DnewVersion="${DEVELOPMENT_VERSION}" -DgenerateBackupPoms=false
+  git commit -S -a -m "[release] prepare for next development iteration"
+  # push
+  git push origin
+  git push origin tag "pmd_releases/${RELEASE_VERSION}"
+else
+  ./mvnw -B release:clean release:prepare \
+      -Dtag="pmd_releases/${RELEASE_VERSION}" \
+      -DreleaseVersion="${RELEASE_VERSION}" \
+      -DdevelopmentVersion="${DEVELOPMENT_VERSION}" \
+      -DscmCommentPrefix="[release] " \
+      -Pgenerate-rule-docs
+fi
 
 echo
 echo "Tag has been pushed.... now check github actions: <https://github.com/pmd/pmd/actions>"
@@ -217,13 +233,13 @@ This is a {{ site.pmd.release_type }} release.
 
 {% tocmaker is_release_notes_processor %}
 
-### New and noteworthy
+### 🚀 New and noteworthy
 
-### Fixed Issues
+### 🐛 Fixed Issues
 
-### API Changes
+### 🚨 API Changes
 
-### External Contributions
+### ✨ External Contributions
 
 {% endtocmaker %}
 

@@ -341,8 +341,8 @@
         <expected-problems>2</expected-problems>
         <expected-linenumbers>6,8</expected-linenumbers>
         <expected-messages>
-            <message>Empty for statement</message>
-            <message>Empty for statement</message>
+            <message>Empty foreach statement</message>
+            <message>Empty foreach statement</message>
         </expected-messages>
         <code><![CDATA[
             import java.util.List;

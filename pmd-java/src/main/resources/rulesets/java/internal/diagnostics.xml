@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<ruleset name="Diagnostics"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+    <description>
+        Contains rules for internal use.
+    </description>
+
+    <rule name="TypeResTest"
+          language="java"
+          since="7.0.0"
+          message="Type Resolution Test"
+          class="net.sourceforge.pmd.lang.java.rule.internal.TypeResTestRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_diagnostics.html#typerestest">
+        <description>
+            This is just a toy rule that counts the proportion of resolved types in a codebase, not meant as a real rule.
+
+            It is used to test the capability of PMD's own type resolution.
+        </description>
+        <priority>3</priority>
+    </rule>
+
+</ruleset>

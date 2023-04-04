@@ -21,10 +21,6 @@ abstract class AbstractModelicaImportClause extends AbstractModelicaNode impleme
         super(id);
     }
 
-    AbstractModelicaImportClause(ModelicaParser parser, int id) {
-        super(parser, id);
-    }
-
     /**
      * Some import clauses are considered "qualified", some "unqualified", the former being processed first
      * while looking up some name. See "5.3.1 Simple Name Lookup" from MLS 3.4.

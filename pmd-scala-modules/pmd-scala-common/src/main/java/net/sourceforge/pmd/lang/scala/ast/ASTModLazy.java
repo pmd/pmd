@@ -4,23 +4,19 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import scala.meta.Mod;
 
 /**
  * The ASTModLazy node implementation.
  */
-public class ASTModLazy extends AbstractScalaNode<Mod.Lazy> {
+public final class ASTModLazy extends AbstractScalaNode<Mod.Lazy> {
 
-    @Deprecated
-    @InternalApi
-    public ASTModLazy(Mod.Lazy scalaNode) {
+    ASTModLazy(Mod.Lazy scalaNode) {
         super(scalaNode);
     }
 
     @Override
-    public <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data) {
+    protected <P, R> R acceptVisitor(ScalaParserVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

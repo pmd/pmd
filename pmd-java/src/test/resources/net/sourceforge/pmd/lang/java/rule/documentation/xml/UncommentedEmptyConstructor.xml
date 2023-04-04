@@ -8,6 +8,7 @@
         <description>simple failure</description>
         <rule-property name="ignoreExplicitConstructorInvocation">true</rule-property>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     Foo() {

@@ -4,8 +4,14 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
+import net.sourceforge.pmd.lang.ast.AstVisitor;
+import net.sourceforge.pmd.lang.ast.FileAnalysisException;
+import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
+import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextRegion;
 
 import apex.jorje.data.Location;
 import apex.jorje.data.Locations;
@@ -13,46 +19,74 @@ import apex.jorje.semantic.ast.AstNode;
 import apex.jorje.semantic.exception.UnexpectedCodePathException;
 import apex.jorje.semantic.symbol.type.TypeInfo;
 
-/**
- * @deprecated Use {@link ApexNode}
- */
-@Deprecated
-@InternalApi
-public abstract class AbstractApexNode<T extends AstNode> extends AbstractApexNodeBase implements ApexNode<T> {
+abstract class AbstractApexNode<T extends AstNode> extends AbstractNode<AbstractApexNode<?>, ApexNode<?>> implements ApexNode<T> {
 
     protected final T node;
+    private TextRegion region;
 
     protected AbstractApexNode(T node) {
-        super(node.getClass());
         this.node = node;
     }
 
+    // overridden to make them visible
     @Override
-    public ApexNode<?> getChild(int index) {
-        return (ApexNode<?>) super.getChild(index);
+    protected void addChild(AbstractApexNode<?> child, int index) {
+        super.addChild(child, index);
     }
 
     @Override
-    public ApexNode<?> getParent() {
-        return (ApexNode<?>) super.getParent();
+    protected void insertChild(AbstractApexNode<?> child, int index) {
+        super.insertChild(child, index);
     }
 
     @Override
-    public Iterable<? extends ApexNode<?>> children() {
-        return (Iterable<? extends ApexNode<?>>) super.children();
-    }
-
-    void calculateLineNumbers(SourceCodePositioner positioner) {
-        if (!hasRealLoc()) {
-            return;
+    @SuppressWarnings("unchecked")
+    public final <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
+        if (visitor instanceof ApexVisitor) {
+            return this.acceptApexVisitor((ApexVisitor<? super P, ? extends R>) visitor, data);
         }
-
-        Location loc = node.getLoc();
-        calculateLineNumbers(positioner, loc.getStartIndex(), loc.getEndIndex());
+        return visitor.cannotVisit(this, data);
     }
 
-    protected void handleSourceCode(String source) {
-        // default implementation does nothing
+    protected abstract <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data);
+
+    @Override
+    public @NonNull ASTApexFile getRoot() {
+        return getParent().getRoot();
+    }
+
+    @Override
+    public @NonNull TextRegion getTextRegion() {
+        if (region == null) {
+            if (!hasRealLoc()) {
+                AbstractApexNode<?> parent = (AbstractApexNode<?>) getParent();
+                if (parent == null) {
+                    throw new FileAnalysisException("Unable to determine location of " + this);
+                }
+                region = parent.getTextRegion();
+            } else {
+                Location loc = node.getLoc();
+                region = TextRegion.fromBothOffsets(loc.getStartIndex(), loc.getEndIndex());
+            }
+        }
+        return region;
+    }
+
+    @Override
+    public final String getXPathNodeName() {
+        return this.getClass().getSimpleName().replaceFirst("^AST", "");
+    }
+
+    /**
+     * Note: in this routine, the node has not been added to its parents,
+     * but its children have been populated (except comments).
+     */
+    void closeNode(TextDocument positioner) {
+        // do nothing
+    }
+
+    protected void setRegion(TextRegion region) {
+        this.region = region;
     }
 
     @Deprecated
@@ -72,14 +106,6 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractApexNo
         } catch (IndexOutOfBoundsException | NullPointerException e) {
             // bug in apex-jorje? happens on some ReferenceExpression nodes
             return false;
-        }
-    }
-
-    public String getLocation() {
-        if (hasRealLoc()) {
-            return String.valueOf(node.getLoc());
-        } else {
-            return "no location";
         }
     }
 

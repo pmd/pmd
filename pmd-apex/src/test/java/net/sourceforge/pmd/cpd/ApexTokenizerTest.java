@@ -6,13 +6,13 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.Properties;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
-public class ApexTokenizerTest extends CpdTextComparisonTest {
+class ApexTokenizerTest extends CpdTextComparisonTest {
 
-    public ApexTokenizerTest() {
+    ApexTokenizerTest() {
         super(".cls");
     }
 
@@ -30,12 +30,12 @@ public class ApexTokenizerTest extends CpdTextComparisonTest {
 
 
     @Test
-    public void testTokenize() {
+    void testTokenize() {
         doTest("Simple");
     }
 
     @Test
-    public void testTokenizeCaseSensitive() {
+    void testTokenizeCaseSensitive() {
         doTest("Simple", "_caseSensitive", caseSensitive());
     }
 
@@ -43,12 +43,12 @@ public class ApexTokenizerTest extends CpdTextComparisonTest {
      * Comments are ignored since using ApexLexer.
      */
     @Test
-    public void testTokenizeWithComments() {
+    void testTokenizeWithComments() {
         doTest("comments");
     }
 
     @Test
-    public void testTabWidth() {
+    void testTabWidth() {
         doTest("tabWidth");
     }
 

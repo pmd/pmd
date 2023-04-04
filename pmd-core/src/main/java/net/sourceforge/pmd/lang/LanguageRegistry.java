@@ -5,73 +5,137 @@
 package net.sourceforge.pmd.lang;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.ServiceConfigurationError;
+import java.util.ServiceLoader;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.internal.LanguageServiceBase;
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
- * Provides access to the registered PMD languages. These are found
- * from the classpath of the {@link ClassLoader} of this class.
+ * A set of languages with convenient methods. In the PMD CLI, languages
+ * are loaded from the classloader of this class. These are in the registry
+ * {@link #PMD}. You can otherwise create different registries with different
+ * languages, eg filter some out.
  */
-public final class LanguageRegistry extends LanguageServiceBase<Language> {
+public final class LanguageRegistry implements Iterable<Language> {
 
-    private static final Comparator<Language> LANGUAGE_COMPARATOR = new Comparator<Language>() {
-        @Override
-        public int compare(Language o1, Language o2) {
-            return o1.getTerseName().compareToIgnoreCase(o2.getTerseName());
-        }
-    };
+    private static final Logger LOG = LoggerFactory.getLogger(LanguageRegistry.class);
 
-    private static final NameExtractor<Language> NAME_EXTRACTOR = new NameExtractor<Language>() {
-        @Override
-        public String getName(Language language) {
-            return language.getName();
-        }
-    };
+    /**
+     * Contains the languages that support PMD and are found on the classpath
+     * of the classloader of this class. This can be used as a "default" registry.
+     */
+    public static final LanguageRegistry PMD = loadLanguages(LanguageRegistry.class.getClassLoader());
 
-    // Important: the INSTANCE needs to be defined *after* LANGUAGE_COMPARATOR and NAME_EXTRACTOR
-    // as these are needed in the constructor.
-    private static final LanguageRegistry INSTANCE = new LanguageRegistry();
+    private final Set<Language> languages;
 
-    private LanguageRegistry() {
-        super(Language.class, LANGUAGE_COMPARATOR, NAME_EXTRACTOR);
+    private final Map<String, Language> languagesById;
+    private final Map<String, Language> languagesByFullName;
+
+    /**
+     * Create a new registry that contains the given set of languages.
+     * @throws NullPointerException If the parameter is null
+     */
+    public LanguageRegistry(Set<Language> languages) {
+        this.languages = languages.stream()
+                                  .sorted(Comparator.comparing(Language::getTerseName, String::compareToIgnoreCase))
+                                  .collect(CollectionUtil.toUnmodifiableSet());
+        this.languagesById = CollectionUtil.associateBy(languages, Language::getTerseName);
+        this.languagesByFullName = CollectionUtil.associateBy(languages, Language::getName);
     }
 
     /**
-     * @deprecated Use the static methods instead, will be made private
+     * Creates a language registry containing a single language. Note
+     * that this may be inconvertible to a {@link LanguageProcessorRegistry}
+     * if the language depends on other languages.
      */
-    @Deprecated
-    public static LanguageRegistry getInstance() {
-        return INSTANCE;
+    public static LanguageRegistry singleton(Language l) {
+        return new LanguageRegistry(Collections.singleton(l));
     }
 
     /**
-     * Returns a collection of all the known languages. The ordering of this
-     * collection is undefined.
+     * Creates a language registry containing the given language and
+     * its dependencies, fetched from this language registry or the
+     * parameter.
+     *
+     * @throws IllegalStateException If dependencies cannot be fulfilled.
      */
-    public static Collection<Language> getLanguages() {
-        // Filter out languages, that are not fully supported by PMD yet.
-        // Those languages should not have a LanguageModule then, but they have it.
-        // TODO This is unnecessary, if the incomplete language modules have been removed.
-        List<Language> languages = new ArrayList<>();
-        for (Language language : getInstance().languages.values()) {
-            LanguageVersionHandler languageVersionHandler = language.getDefaultVersion().getLanguageVersionHandler();
-            boolean pmdSupported = false;
+    public LanguageRegistry getDependenciesOf(Language lang) {
+        Set<Language> result = new HashSet<>();
+        result.add(lang);
+        addDepsOrThrow(lang, result);
+        return new LanguageRegistry(result);
+    }
 
-            if (languageVersionHandler != null) {
-                ParserOptions defaultParserOptions = languageVersionHandler.getDefaultParserOptions();
-                Parser parser = languageVersionHandler.getParser(defaultParserOptions);
-                pmdSupported = parser.canParse();
+    private void addDepsOrThrow(Language l, Set<Language> languages) {
+        for (String depId : l.getDependencies()) {
+            Language dep = getLanguageById(depId);
+            if (dep == null) {
+                throw new IllegalStateException(
+                    "Cannot find language " + depId + " in " + this);
             }
-
-            if (pmdSupported) {
-                languages.add(language);
+            if (languages.add(dep)) {
+                addDepsOrThrow(dep, languages);
             }
         }
+    }
+
+    @Override
+    public @NonNull Iterator<Language> iterator() {
+        return languages.iterator();
+    }
+
+    /**
+     * Create a new registry by loading the languages registered via {@link ServiceLoader}
+     * on the classpath of the given classloader.
+     *
+     * @param classLoader A classloader
+     */
+    public static @NonNull LanguageRegistry loadLanguages(ClassLoader classLoader) {
+        // sort languages by terse name. Avoiding differences in the order of languages
+        // across JVM versions / OS.
+        Set<Language> languages = new TreeSet<>(Comparator.comparing(Language::getTerseName, String::compareToIgnoreCase));
+        ServiceLoader<Language> languageLoader = ServiceLoader.load(Language.class, classLoader);
+        Iterator<Language> iterator = languageLoader.iterator();
+        while (true) {
+            // this loop is weird, but both hasNext and next may throw ServiceConfigurationError,
+            // it's more robust that way
+            try {
+                if (iterator.hasNext()) {
+                    Language language = iterator.next();
+                    languages.add(language);
+                } else {
+                    break;
+                }
+            } catch (UnsupportedClassVersionError | ServiceConfigurationError e) {
+                // Some languages require java8 and are therefore only available
+                // if java8 or later is used as runtime.
+                LOG.warn("Cannot load PMD language, ignored", e);
+            }
+        }
+        return new LanguageRegistry(languages);
+    }
+
+    /**
+     * Returns a set of all the known languages. The ordering of the languages
+     * is by terse name.
+     */
+    public Set<Language> getLanguages() {
         return languages;
     }
 
@@ -82,27 +146,55 @@ public final class LanguageRegistry extends LanguageServiceBase<Language> {
      * @param languageName Language name
      *
      * @return A language, or null if the name is unknown
+     *
+     * @deprecated Use {@link #getLanguageByFullName(String) PMD.getLanguageByFullName}
      */
+    @Deprecated
+    @DeprecatedUntil700
     public static Language getLanguage(String languageName) {
-        return getInstance().languages.get(languageName);
+        return PMD.getLanguageByFullName(languageName);
     }
 
     /**
-     * Returns a "default language" known to the service loader. This
-     * is the Java language if available, otherwise an arbitrary one.
-     * If no languages are loaded, returns null.
+     * Returns a language from its {@linkplain Language#getId() ID}
+     * (eg {@code "java"}). This is case-sensitive.
+     *
+     * @param langId Language ID
+     *
+     * @return A language, or null if the name is unknown, or the parameter is null
+     */
+    public @Nullable Language getLanguageById(@Nullable String langId) {
+        return languagesById.get(langId);
+    }
+
+    /**
+     * Returns a language version from its {@linkplain Language#getId() language ID}
+     * (eg {@code "java"}). This is case-sensitive.
+     *
+     * @param langId  Language ID
+     * @param version Version ID
      *
      * @return A language, or null if the name is unknown
      */
-    public static Language getDefaultLanguage() {
-        Language defaultLanguage = getLanguage("Java");
-        if (defaultLanguage == null) {
-            Collection<Language> allLanguages = getInstance().languages.values();
-            if (!allLanguages.isEmpty()) {
-                defaultLanguage = allLanguages.iterator().next();
-            }
+    public @Nullable LanguageVersion getLanguageVersionById(@Nullable String langId, @Nullable String version) {
+        Language lang = languagesById.get(langId);
+        if (lang == null) {
+            return null;
         }
-        return defaultLanguage;
+        return version == null ? lang.getDefaultVersion()
+                               : lang.getVersion(version);
+    }
+
+    /**
+     * Returns a language from its {@linkplain Language#getName() full name}
+     * (eg {@code "Java"}). This is case sensitive.
+     *
+     * @param languageName Language name
+     *
+     * @return A language, or null if the name is unknown
+     */
+    public @Nullable Language getLanguageByFullName(String languageName) {
+        return languagesByFullName.get(languageName);
     }
 
     /**
@@ -112,49 +204,27 @@ public final class LanguageRegistry extends LanguageServiceBase<Language> {
      * @param terseName Language terse name
      *
      * @return A language, or null if the name is unknown
-     */
-    public static Language findLanguageByTerseName(String terseName) {
-        for (Language language : getInstance().languages.values()) {
-            if (language.getTerseName().equals(terseName)) {
-                return language;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @deprecated This is not useful, will be removed with 7.0.0
+     *
+     * @deprecated Use {@link #getLanguageById(String) PMD.getLanguageById}.
      */
     @Deprecated
-    public static LanguageVersion findLanguageVersionByTerseName(String terseNameAndVersion) {
-        String version;
-        String terseName;
-        if (terseNameAndVersion.contains(" ")) {
-            version = StringUtils.trimToNull(terseNameAndVersion.substring(terseNameAndVersion.lastIndexOf(' ') + 1));
-            terseName = terseNameAndVersion.substring(0, terseNameAndVersion.lastIndexOf(' '));
-        } else {
-            version = null;
-            terseName = terseNameAndVersion;
-        }
-        Language language = findLanguageByTerseName(terseName);
-        if (language != null) {
-            if (version == null) {
-                return language.getDefaultVersion();
-            } else {
-                return language.getVersion(version);
-            }
-        }
-        return null;
+    @DeprecatedUntil700
+    public static @Nullable Language findLanguageByTerseName(@Nullable String terseName) {
+        return PMD.getLanguageById(terseName);
     }
 
     /**
      * Returns all languages that support the given extension.
      *
      * @param extensionWithoutDot A file extension (without '.' prefix)
+     *
+     * @deprecated Not replaced, extension will be extended to match full name in PMD 7.
      */
+    @Deprecated
+    @DeprecatedUntil700
     public static List<Language> findByExtension(String extensionWithoutDot) {
         List<Language> languages = new ArrayList<>();
-        for (Language language : getInstance().languages.values()) {
+        for (Language language : PMD.getLanguages()) {
             if (language.hasExtension(extensionWithoutDot)) {
                 languages.add(language);
             }
@@ -163,59 +233,15 @@ public final class LanguageRegistry extends LanguageServiceBase<Language> {
     }
 
     /**
-     * @deprecated This is not useful, will be removed with 7.0.0
+     * Formats the set of languages with the given formatter, sort and
+     * join everything with commas. Convenience method.
      */
-    @Deprecated
-    public static List<LanguageVersion> findAllVersions() {
-        List<LanguageVersion> versions = new ArrayList<>();
-        for (Language language : getLanguages()) {
-            versions.addAll(language.getVersions());
-        }
-        return versions;
+    public @NonNull String commaSeparatedList(Function<? super Language, String> languageToString) {
+        return getLanguages().stream().map(languageToString).sorted().collect(Collectors.joining(", "));
     }
 
-    /**
-     * A utility method to find the Languages which have Rule support.
-     *
-     * @return A List of Languages with Rule support.
-     *
-     * @deprecated This method will be removed with PMD 7.0.0. Use {@link #getLanguages()} instead.
-     */
-    @Deprecated
-    public static List<Language> findWithRuleSupport() {
-        return new ArrayList<>(getLanguages());
+    @Override
+    public String toString() {
+        return "LanguageRegistry(" + commaSeparatedList(Language::getId) + ")";
     }
-
-    /**
-     * @deprecated This is too specific, will be removed with 7.0.0
-     */
-    @Deprecated
-    public static String commaSeparatedTerseNamesForLanguage(List<Language> languages) {
-        StringBuilder builder = new StringBuilder();
-        for (Language language : languages) {
-            if (builder.length() > 0) {
-                builder.append(", ");
-            }
-            builder.append(language.getTerseName());
-        }
-        return builder.toString();
-    }
-
-    /**
-     * @deprecated This is too specific, will be removed with 7.0.0
-     */
-    @Deprecated
-    public static String commaSeparatedTerseNamesForLanguageVersion(List<LanguageVersion> languageVersions) {
-        if (languageVersions == null || languageVersions.isEmpty()) {
-            return "";
-        }
-
-        StringBuilder builder = new StringBuilder();
-        builder.append(languageVersions.get(0).getTerseName());
-        for (int i = 1; i < languageVersions.size(); i++) {
-            builder.append(", ").append(languageVersions.get(i).getTerseName());
-        }
-        return builder.toString();
-    }
-
 }

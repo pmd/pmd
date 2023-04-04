@@ -152,10 +152,6 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     private String className;
 
     public ApexCRUDViolationRule() {
-        setProperty(CODECLIMATE_CATEGORIES, "Security");
-        setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
-        setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
-
         // Register auth method config properties
         for (Map.Entry<PropertyDescriptor<String>, PropertyDescriptor<Integer>> entry : AUTH_METHOD_TO_TYPE_PARAM_INDEX_MAP.entrySet()) {
             PropertyDescriptor<String> authMethodPatternDescriptor = entry.getKey();
@@ -467,7 +463,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     private boolean isLastMethodName(final ASTMethodCallExpression methodNode, final String className,
             final String methodName) {
         final ASTReferenceExpression reference = methodNode.getFirstChildOfType(ASTReferenceExpression.class);
-        if (reference != null && reference.getNames().size() > 0) {
+        if (reference != null && !reference.getNames().isEmpty()) {
             if (reference.getNames().get(reference.getNames().size() - 1)
                     .equalsIgnoreCase(className) && Helper.isMethodName(methodNode, methodName)) {
                 return true;
@@ -478,31 +474,25 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     private boolean isWithSecurityEnforced(final ApexNode<?> node) {
-        if (node instanceof ASTSoqlExpression) {
-            return WITH_SECURITY_ENFORCED.matcher(((ASTSoqlExpression) node).getQuery()).matches();
-        }
-        return false;
+        return node instanceof ASTSoqlExpression
+                && WITH_SECURITY_ENFORCED.matcher(((ASTSoqlExpression) node).getQuery()).matches();
     }
 
     //For USER_MODE
     private boolean isWithUserMode(final ApexNode<?> node) {
-        if (node instanceof ASTSoqlExpression) {
-            return WITH_USER_MODE.matcher(((ASTSoqlExpression) node).getQuery()).matches();
-        }
-        return false;
+        return node instanceof ASTSoqlExpression
+            && WITH_USER_MODE.matcher(((ASTSoqlExpression) node).getQuery()).matches();
     }
 
     //For System Mode
     private boolean isWithSystemMode(final ApexNode<?> node) {
-        if (node instanceof ASTSoqlExpression) {
-            return WITH_SYSTEM_MODE.matcher(((ASTSoqlExpression) node).getQuery()).matches();
-        }
-        return false;
+        return node instanceof ASTSoqlExpression
+            && WITH_SYSTEM_MODE.matcher(((ASTSoqlExpression) node).getQuery()).matches();
     }
 
     private String getType(final ASTMethodCallExpression methodNode) {
         final ASTReferenceExpression reference = methodNode.getFirstChildOfType(ASTReferenceExpression.class);
-        if (reference.getNames().size() > 0) {
+        if (!reference.getNames().isEmpty()) {
             return new StringBuilder().append(reference.getDefiningType()).append(":")
                     .append(reference.getNames().get(0)).toString();
         }
@@ -593,7 +583,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             }
 
             // some methods might be within this class
-            mapCallToMethodDecl(self, innerMethodCalls, new ArrayList<ASTMethodCallExpression>(innerMethodCalls));
+            mapCallToMethodDecl(self, innerMethodCalls, new ArrayList<>(innerMethodCalls));
         }
 
         return innerMethodCalls;
@@ -646,7 +636,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     private List<ASTMethod> findConstructorMethods() {
-        final ArrayList<ASTMethod> ret = new ArrayList<>();
+        final List<ASTMethod> ret = new ArrayList<>();
         final Set<String> constructors = classMethods.keySet().stream()
                 .filter(p -> p.contains("<init>") || p.contains("<clinit>")
                         || p.startsWith(className + ":" + className + ":")).collect(Collectors.toSet());

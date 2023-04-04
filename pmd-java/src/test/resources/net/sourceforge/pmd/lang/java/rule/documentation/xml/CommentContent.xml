@@ -6,12 +6,13 @@
 
     <test-code>
         <description>Includes bad words</description>
-        <rule-property name="disallowedTerms">idiot|jerk</rule-property>
+        <rule-property name="forbiddenRegex">idiot|jerk</rule-property>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>8,12</expected-linenumbers>
         <code><![CDATA[
 /**
-*  This header method is ok
-*/
+ *  This header method is ok
+ */
 public class Foo {
     public Foo() {
     }
@@ -21,6 +22,36 @@ public class Foo {
     }
 
     // this method is an idiot
+    public void doNothing() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Comments with multiple lines</description>
+        <rule-property name="forbiddenRegex">idiot|jerk</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>11,17</expected-linenumbers>
+        <code><![CDATA[
+/**
+ *  This header method is ok
+ */
+public class Foo {
+    public Foo() {
+    }
+
+    /**
+     * The first line is ok
+     *
+     * this method is a jerk
+     */
+    public void doNothing() {
+    }
+
+    // this line is ok
+    // this method is an idiot
+    // doNothing
     public void doNothing() {
     }
 }

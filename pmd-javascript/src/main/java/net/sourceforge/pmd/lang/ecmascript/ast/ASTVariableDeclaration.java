@@ -9,18 +9,14 @@ import java.util.Locale;
 import org.mozilla.javascript.Token;
 import org.mozilla.javascript.ast.VariableDeclaration;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTVariableDeclaration extends AbstractEcmascriptNode<VariableDeclaration> {
-    @Deprecated
-    @InternalApi
-    public ASTVariableDeclaration(VariableDeclaration variableDeclaration) {
+public final class ASTVariableDeclaration extends AbstractEcmascriptNode<VariableDeclaration> {
+    ASTVariableDeclaration(VariableDeclaration variableDeclaration) {
         super(variableDeclaration);
         super.setImage(Token.typeToName(variableDeclaration.getType()).toLowerCase(Locale.ROOT));
     }
 
     @Override
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+    protected <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

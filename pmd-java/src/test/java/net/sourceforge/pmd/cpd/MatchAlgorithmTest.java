@@ -4,17 +4,17 @@
 
 package net.sourceforge.pmd.cpd;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class MatchAlgorithmTest {
+class MatchAlgorithmTest {
 
     private static final String LINE_1 = "public class Foo { ";
     private static final String LINE_2 = " public void bar() {";
@@ -31,7 +31,7 @@ public class MatchAlgorithmTest {
     }
 
     @Test
-    public void testSimple() throws IOException {
+    void testSimple() throws IOException {
         JavaTokenizer tokenizer = new JavaTokenizer();
         SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader(getSampleCode(), "Foo.java"));
         Tokens tokens = new Tokens();
@@ -62,7 +62,7 @@ public class MatchAlgorithmTest {
     }
 
     @Test
-    public void testIgnore() throws IOException {
+    void testIgnore() throws IOException {
         JavaTokenizer tokenizer = new JavaTokenizer();
         tokenizer.setIgnoreLiterals(true);
         tokenizer.setIgnoreIdentifiers(true);

@@ -6,20 +6,15 @@ package net.sourceforge.pmd.lang.plsql.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
-@Deprecated
 @InternalApi
-public abstract class AbstractSelectStatement extends AbstractPLSQLNode {
+abstract class AbstractSelectStatement extends AbstractPLSQLNode {
 
     private boolean distinct;
     private boolean unique;
     private boolean all;
 
-    public AbstractSelectStatement(int i) {
+    AbstractSelectStatement(int i) {
         super(i);
-    }
-
-    public AbstractSelectStatement(PLSQLParser p, int i) {
-        super(p, i);
     }
 
     protected void setDistinct(boolean distinct) {

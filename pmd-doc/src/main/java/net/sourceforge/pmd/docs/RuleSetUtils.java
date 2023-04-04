@@ -12,8 +12,8 @@ import org.apache.commons.lang3.SystemUtils;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.rule.RuleReference;
-import net.sourceforge.pmd.util.IOUtil;
 
 public final class RuleSetUtils {
 

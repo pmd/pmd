@@ -4,31 +4,66 @@
 
 package net.sourceforge.pmd.renderers;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.ReportTest;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.ast.DummyNode;
-import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 
-public class XSLTRendererTest {
+class XSLTRendererTest extends AbstractRendererTest {
+
+    @Override
+    Renderer getRenderer() {
+        return new XSLTRenderer();
+    }
+
+    @Override
+    String getExpected() {
+        return readFile("expected.html");
+    }
+
+    @Override
+    String getExpectedEmpty() {
+        return readFile("empty.html");
+    }
+
+    @Override
+    String getExpectedMultiple() {
+        return readFile("expected-multiple.html");
+    }
+
+    @Override
+    String getExpectedError(Report.ProcessingError error) {
+        return readFile("expected-error.html");
+    }
+
+    @Override
+    String getExpectedError(Report.ConfigurationError error) {
+        return readFile("expected-error.html");
+    }
+
+    @Override
+    String filter(String expected) {
+        return expected.replaceAll("<h2>PMD unknown Report\\. Generated on .+</h2>",
+                                   "<h2>PMD unknown Report. Generated on ...</h2>")
+                       .replaceAll("\r\n", "\n"); // make the test run on Windows, too
+    }
 
     @Test
-    public void testDefaultStylesheet() throws Exception {
+    void testDefaultStylesheet() throws Exception {
         XSLTRenderer renderer = new XSLTRenderer();
-        Report report = new Report();
-        DummyNode node = new DummyNode(1);
-        node.testingOnlySetBeginLine(1);
-        node.testingOnlySetBeginColumn(1);
-        RuleViolation rv = new ParametricRuleViolation<Node>(new FooRule(), new RuleContext(), node,
-                "violation message");
-        report.addRuleViolation(rv);
-        String result = ReportTest.render(renderer, report);
-        Assert.assertTrue(result.contains("violation message"));
+        FileLocation loc = FileLocation.range("file", TextRange2d.range2d(1, 1, 1, 2));
+        RuleViolation rv = new ParametricRuleViolation(new FooRule(), loc, "violation message");
+        String result = renderReport(renderer, it -> it.onRuleViolation(rv));
+        assertTrue(result.contains("violation message"));
+    }
+
+    protected String readFile(String relativePath) {
+        return super.readFile("xslt/" + relativePath);
     }
 }

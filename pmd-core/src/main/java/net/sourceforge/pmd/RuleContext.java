@@ -4,100 +4,72 @@
 
 package net.sourceforge.pmd;
 
-import java.io.File;
-import java.text.MessageFormat;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.logging.Logger;
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
+import java.text.MessageFormat;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
+import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextRange2d;
+import net.sourceforge.pmd.lang.rule.AbstractRule;
+import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
+import net.sourceforge.pmd.reporting.ViolationDecorator;
 
 /**
  * The API for rules to report violations or errors during analysis.
- * The non-deprecated API of this class represents what will be left
- * in PMD 7.
+ * This forwards events to a {@link FileAnalysisListener}. It implements
+ * violation suppression by filtering some violations out, according to
+ * the {@link ViolationSuppressor}s for the language.
  *
- * In PMD 6, the RuleContext provides access to Rule processing state.
- * This information includes the following global information:
- * <ul>
- * <li>The Report to which Rule Violations are sent.</li>
- * <li>Named attributes.</li>
- * </ul>
- * As well as the following source file specific information:
- * <ul>
- * <li>A File for the source file.</li>
- * <li>The Language Version of the source file.</li>
- * </ul>
- * It is <strong>required</strong> that all source file specific options be set
- * between calls to difference source files. Failure to do so, may result in
- * undefined behavior.
+ * A RuleContext contains a Rule instance and violation reporting methods
+ * implicitly report only for that rule. Contrary to PMD 6, RuleContext is
+ * not unique throughout the analysis, a separate one is used per file and rule.
  */
-public class RuleContext {
+public final class RuleContext {
+    // todo move to package reporting
 
-    private static final Logger LOG = Logger.getLogger(RuleContext.class.getName());
+    // Rule contexts do not need to be thread-safe, within PmdRunnable
+    // they are stack-local
+
     private static final Object[] NO_ARGS = new Object[0];
+    private static final List<ViolationSuppressor> DEFAULT_SUPPRESSORS = listOf(ViolationSuppressor.NOPMD_COMMENT_SUPPRESSOR,
+                                                                                ViolationSuppressor.REGEX_SUPPRESSOR,
+                                                                                ViolationSuppressor.XPATH_SUPPRESSOR);
 
-    private Report report = new Report();
-    private File sourceCodeFile;
-    private LanguageVersion languageVersion;
-    private final ConcurrentMap<String, Object> attributes;
-    private boolean ignoreExceptions = true;
+    private final FileAnalysisListener listener;
+    private final Rule rule;
 
-    private Rule currentRule;
-
-    /**
-     * Default constructor.
-     *
-     * @deprecated Internal API, removed in PMD 7
-     */
-    @Deprecated
-    @InternalApi
-    public RuleContext() {
-        attributes = new ConcurrentHashMap<>();
+    private RuleContext(FileAnalysisListener listener, Rule rule) {
+        Objects.requireNonNull(listener, "Listener was null");
+        Objects.requireNonNull(rule, "Rule was null");
+        this.listener = listener;
+        this.rule = rule;
     }
 
     /**
-     * Constructor which shares attributes and report listeners with the given
-     * RuleContext.
-     *
-     * @param ruleContext the context from which the values are shared
-     *
-     * @deprecated Internal API, removed in PMD 7
+     * @deprecated Used in {@link AbstractRule#asCtx(Object)}, when that is gone, will be removed.
      */
     @Deprecated
     @InternalApi
-    public RuleContext(RuleContext ruleContext) {
-        this.attributes = ruleContext.attributes;
-        this.report.addListeners(ruleContext.getReport().getListeners());
+    public Rule getRule() {
+        return rule;
     }
 
     private String getDefaultMessage() {
-        return Objects.requireNonNull(getCurrentRule().getMessage(), "rule has no message");
+        return rule.getMessage();
     }
-
-
-    /**
-     * @deprecated Internal API.
-     */
-    @InternalApi
-    @Deprecated
-    public Rule getCurrentRule() {
-        return Objects.requireNonNull(currentRule, "rule was not set");
-    }
-
-    /**
-     * @deprecated Internal API.
-     */
-    @InternalApi
-    @Deprecated
-    public void setCurrentRule(Rule currentRule) {
-        this.currentRule = currentRule;
-    }
-
 
     /**
      * Record a new violation of the contextual rule, at the given node.
@@ -156,258 +128,102 @@ public class RuleContext {
      * as a format string for a {@link MessageFormat} and should hence use
      * appropriate escapes. The given formatting arguments are used.
      *
-     * @param location   Location of the violation
+     * @param node       Location of the violation
      * @param message    Violation message
      * @param formatArgs Format arguments for the message
      */
-    public void addViolationWithPosition(Node location, int beginLine, int endLine, String message, Object... formatArgs) {
-        Objects.requireNonNull(location, "Node was null");
+    public void addViolationWithPosition(Node node, int beginLine, int endLine, String message, Object... formatArgs) {
+        Objects.requireNonNull(node, "Node was null");
         Objects.requireNonNull(message, "Message was null");
         Objects.requireNonNull(formatArgs, "Format arguments were null, use an empty array");
 
-        RuleViolationFactory fact = getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory();
+        LanguageVersionHandler handler = node.getAstInfo().getLanguageProcessor().services();
+
+        FileLocation location = node.getReportLocation();
         if (beginLine != -1 && endLine != -1) {
-            fact.addViolation(this, getCurrentRule(), location, message, beginLine, endLine, formatArgs);
+            location = FileLocation.range(location.getFileName(), TextRange2d.range2d(beginLine, 1, endLine, 1));
+        }
+
+        final Map<String, String> extraVariables = ViolationDecorator.apply(handler.getViolationDecorator(), node);
+        final String description = makeMessage(message, formatArgs, extraVariables);
+        final RuleViolation violation = new ParametricRuleViolation(rule, location, description, extraVariables);
+
+        final SuppressedViolation suppressed = suppressOrNull(node, violation, handler);
+
+        if (suppressed != null) {
+            listener.onSuppressedRuleViolation(suppressed);
         } else {
-            fact.addViolation(this, getCurrentRule(), location, message, formatArgs);
+            listener.onRuleViolation(violation);
         }
     }
 
-
-    /**
-     * Get the Report to which Rule Violations are sent.
-     *
-     * @return The Report.
-     *
-     * @deprecated Internal API, removed in PMD 7
-     */
-    @Deprecated
-    @InternalApi
-    public Report getReport() {
-        return report;
-    }
-
-    /**
-     * Set the Report to which Rule Violations are sent.
-     *
-     * @param report The Report.
-     *
-     * @deprecated Internal API, removed in PMD 7
-     */
-    @Deprecated
-    @InternalApi
-    public void setReport(Report report) {
-        this.report = report;
-    }
-
-    /**
-     * Get the File associated with the current source file.
-     *
-     * @return The File.
-     *
-     * @deprecated Internal API, removed in PMD 7
-     */
-    @Deprecated
-    @InternalApi
-    public File getSourceCodeFile() {
-        return sourceCodeFile;
-    }
-
-    /**
-     * Set the File associated with the current source file. While this may be
-     * set to <code>null</code>, the exclude/include facilities will not work
-     * properly without a File.
-     *
-     * @param sourceCodeFile The File.
-     *
-     * @deprecated Internal API, removed in PMD 7
-     */
-    @Deprecated
-    @InternalApi
-    public void setSourceCodeFile(File sourceCodeFile) {
-        this.sourceCodeFile = sourceCodeFile;
-    }
-
-    /**
-     * Get the file name associated with the current source file.
-     * If there is no source file, then an empty string is returned.
-     *
-     * @return The file name.
-     *
-     * @deprecated Internal API, removed in PMD 7
-     */
-    @Deprecated
-    @InternalApi
-    public String getSourceCodeFilename() {
-        if (sourceCodeFile != null) {
-            return sourceCodeFile.getName();
+    private static @Nullable SuppressedViolation suppressOrNull(Node location, RuleViolation rv, LanguageVersionHandler handler) {
+        SuppressedViolation suppressed = ViolationSuppressor.suppressOrNull(handler.getExtraViolationSuppressors(), rv, location);
+        if (suppressed == null) {
+            suppressed = ViolationSuppressor.suppressOrNull(DEFAULT_SUPPRESSORS, rv, location);
         }
-        return "";
+        return suppressed;
     }
 
     /**
-     * Set the file name associated with the current source file.
+     * Force the recording of a violation, ignoring the violation
+     * suppression mechanism ({@link ViolationSuppressor}).
      *
-     * @param filename
-     *            The file name.
-     * @deprecated Internal API, removed in PMD 7
+     * @param rv A violation
      */
-    @Deprecated
     @InternalApi
-    public void setSourceCodeFilename(String filename) {
-        // ignored, does nothing.
-        LOG.warning("The method RuleContext::setSourceCodeFilename(String) has been deprecated and will be removed.");
+    public void addViolationNoSuppress(RuleViolation rv) {
+        listener.onRuleViolation(rv);
     }
 
-    /**
-     * Get the LanguageVersion associated with the current source file.
-     *
-     * @return The LanguageVersion, <code>null</code> if unknown.
-     *
-     * @deprecated Will be removed in PMD 7, as the nodes have access
-     *     to their language version. In PMD 6, this is still the only way
-     *     to access the language version within a rule, and cannot be replaced.
-     *     The deprecation warning hints that the method should be replaced
-     *     in PMD 7.
-     */
-    @Deprecated
-    public LanguageVersion getLanguageVersion() {
-        return this.languageVersion;
+    private String makeMessage(@NonNull String message, Object[] args, Map<String, String> extraVars) {
+        // Escape PMD specific variable message format, specifically the {
+        // in the ${, so MessageFormat doesn't bitch.
+        final String escapedMessage = StringUtils.replace(message, "${", "$'{'");
+        String formatted = MessageFormat.format(escapedMessage, args);
+        return expandVariables(formatted, extraVars);
     }
 
-    /**
-     * Set the LanguageVersion associated with the current source file. This may
-     * be set to <code>null</code> to indicate the version is unknown and should
-     * be automatically determined.
-     *
-     * @param languageVersion The LanguageVersion.
-     *
-     * @deprecated Internal API, removed in PMD 7
-     */
-    @Deprecated
-    @InternalApi
-    public void setLanguageVersion(LanguageVersion languageVersion) {
-        this.languageVersion = languageVersion;
-    }
 
-    /**
-     * Set an attribute value on the RuleContext, if it does not already exist.
-     * <p>
-     * Attributes can be shared between RuleContext instances. This operation is
-     * thread-safe.
-     * <p>
-     * Attribute values should be modified directly via the reference provided.
-     * It is not necessary to call <code>setAttribute(String, Object)</code> to
-     * update an attribute value. Modifications made to the attribute value will
-     * automatically be seen by other threads. Because of this, you must ensure
-     * the attribute values are themselves thread safe.
-     *
-     * @param name
-     *            The attribute name.
-     * @param value
-     *            The attribute value.
-     * @exception IllegalArgumentException
-     *                if <code>name</code> or <code> value</code> are
-     *                <code>null</code>
-     * @return <code>true</code> if the attribute was set, <code>false</code>
-     *         otherwise.
-     *
-     * @deprecated Stateful methods of the rule context will be removed.
-     * Their interaction with incremental analysis are unspecified.
-     */
-    @Deprecated
-    public boolean setAttribute(String name, Object value) {
-        if (name == null) {
-            throw new IllegalArgumentException("Parameter 'name' cannot be null.");
+    private String expandVariables(String message, Map<String, String> extraVars) {
+
+        if (!message.contains("${")) {
+            return message;
         }
-        if (value == null) {
-            throw new IllegalArgumentException("Parameter 'value' cannot be null.");
+
+        StringBuilder buf = new StringBuilder(message);
+        int startIndex = -1;
+        while ((startIndex = buf.indexOf("${", startIndex + 1)) >= 0) {
+            final int endIndex = buf.indexOf("}", startIndex);
+            if (endIndex >= 0) {
+                final String name = buf.substring(startIndex + 2, endIndex);
+                String variableValue = getVariableValue(name, extraVars);
+                if (variableValue != null) {
+                    buf.replace(startIndex, endIndex + 1, variableValue);
+                }
+            }
         }
-        return this.attributes.putIfAbsent(name, value) == null;
+        return buf.toString();
     }
 
-    /**
-     * Get an attribute value on the RuleContext.
-     * <p>
-     * Attributes can be shared between RuleContext instances. This operation is
-     * thread-safe.
-     * <p>
-     * Attribute values should be modified directly via the reference provided.
-     * It is not necessary to call <code>setAttribute(String, Object)</code> to
-     * update an attribute value. Modifications made to the attribute value will
-     * automatically be seen by other threads. Because of this, you must ensure
-     * the attribute values are themselves thread safe.
-     *
-     * @param name
-     *            The attribute name.
-     * @return The current attribute value, or <code>null</code> if the
-     *         attribute does not exist.
-     *
-     * @deprecated Stateful methods of the rule context will be removed.
-     * Their interaction with incremental analysis are unspecified.
-     */
-    @Deprecated
-    public Object getAttribute(String name) {
-        return this.attributes.get(name);
+    private String getVariableValue(String name, Map<String, String> extraVars) {
+        String value = extraVars.get(name);
+        if (value != null) {
+            return value;
+        }
+        final PropertyDescriptor<?> propertyDescriptor = rule.getPropertyDescriptor(name);
+        return propertyDescriptor == null ? null : String.valueOf(rule.getProperty(propertyDescriptor));
     }
 
-    /**
-     * Remove an attribute value on the RuleContext.
-     * <p>
-     * Attributes can be shared between RuleContext instances. This operation is
-     * thread-safe.
-     * <p>
-     * Attribute values should be modified directly via the reference provided.
-     * It is not necessary to call <code>setAttribute(String, Object)</code> to
-     * update an attribute value. Modifications made to the attribute value will
-     * automatically be seen by other threads. Because of this, you must ensure
-     * the attribute values are themselves thread safe.
-     *
-     * @param name
-     *            The attribute name.
-     * @return The current attribute value, or <code>null</code> if the
-     *         attribute does not exist.
-     *
-     * @deprecated Stateful methods of the rule context will be removed.
-     * Their interaction with incremental analysis are unspecified.
-     */
-    @Deprecated
-    public Object removeAttribute(String name) {
-        return this.attributes.remove(name);
-    }
 
     /**
-     * Configure whether exceptions during applying a rule should be ignored or
-     * not. If set to <code>true</code> then such exceptions are logged as
-     * warnings and the processing is continued with the next rule - the failing
-     * rule is simply skipped. This is the default behavior. <br>
-     * If set to <code>false</code> then the processing will be aborted with the
-     * exception. This is especially useful during unit tests, in order to not
-     * oversee any exceptions.
+     * Create a new RuleContext.
      *
-     * @param ignoreExceptions if <code>true</code> simply skip failing rules (default).
-     *
-     * @deprecated Internal API, removed in PMD 7
+     * The listener must be closed by its creator.
      */
-    @Deprecated
     @InternalApi
-    public void setIgnoreExceptions(boolean ignoreExceptions) {
-        this.ignoreExceptions = ignoreExceptions;
+    public static RuleContext create(FileAnalysisListener listener, Rule rule) {
+        return new RuleContext(listener, rule);
     }
 
-    /**
-     * Gets the configuration whether to skip failing rules (<code>true</code>)
-     * or whether to throw a a RuntimeException and abort the processing for the
-     * first failing rule.
-     *
-     * @return <code>true</code> when failing rules are skipped,
-     *     <code>false</code> otherwise.
-     *
-     * @deprecated Internal API, removed in PMD 7
-     */
-    @Deprecated
-    @InternalApi
-    public boolean isIgnoreExceptions() {
-        return ignoreExceptions;
-    }
 }

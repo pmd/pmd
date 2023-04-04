@@ -1,38 +1,24 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
+import net.sourceforge.pmd.lang.ast.AstVisitor;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeNode;
 
-public interface VfNode extends Node {
-
-    /**
-     * Accept the visitor. *
-     */
-    Object jjtAccept(VfParserVisitor visitor, Object data);
-
+public interface VfNode extends JjtreeNode<VfNode> {
 
     /**
-     * Accept the visitor. *
+     * Accept the visitor.
      *
-     * @deprecated This method is not useful, the logic for combining
-     *     children values should be present on the visitor, not the node
+     * @deprecated Use {@link #acceptVisitor(AstVisitor, Object)}
      */
     @Deprecated
-    Object childrenAccept(VfParserVisitor visitor, Object data);
+    @DeprecatedUntil700
+    default Object jjtAccept(VfParserVisitor visitor, Object data) {
+        return acceptVisitor(visitor, data);
+    }
 
-
-    @Override
-    VfNode getParent();
-
-
-    @Override
-    VfNode getChild(int i);
-
-
-
-    @Override
-    Iterable<? extends VfNode> children();
 }

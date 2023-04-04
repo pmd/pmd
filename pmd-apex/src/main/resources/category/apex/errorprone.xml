@@ -54,14 +54,13 @@ public class Foo {
           language="apex"
           since="6.0.0"
           message="Avoid directly accessing Trigger.old and Trigger.new"
-          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#avoiddirectaccesstriggermap">
         <description>
 Avoid directly accessing Trigger.old and Trigger.new as it can lead to a bug. Triggers should be bulkified and iterate through the map to handle the actions for each item separately.
         </description>
         <priority>3</priority>
             <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -139,7 +138,7 @@ public without sharing class Foo {
           language="apex"
           since="6.0.0"
           message="Avoid empty catch blocks"
-          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#emptycatchblock">
         <description>
 Empty Catch Block finds instances where an exception is caught, but nothing is done.
@@ -148,7 +147,6 @@ or reported.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="allowCommentedBlocks" type="Boolean" description="Empty blocks containing comments will be skipped" value="false"/>
             <property name="allowExceptionNameRegex" type="Regex" description="Empty blocks catching exceptions with names matching this regular expression will be skipped" value="^(ignored|expected)$"/>
             <property name="xpath">
@@ -179,14 +177,13 @@ public void doSomething() {
           language="apex"
           since="6.0.0"
           message="Avoid empty 'if' statements"
-          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#emptyifstmt">
         <description>
 Empty If Statement finds instances where a condition is checked but nothing is done about it.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -213,21 +210,20 @@ public class Foo {
           language="apex"
           since="6.0.0"
           message="Avoid empty block statements."
-          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#emptystatementblock">
         <description>
 Empty block statements serve no purpose and should be removed.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="reportEmptyPrivateNoArgConstructor" type="Boolean" value="true" description="If false, empty private no-arg constructors are not flagged. This supports a common idiom used by singleton pattern implementations, utility classes, etc."/>
             <property name="reportEmptyVirtualMethod" type="Boolean" value="true" description="If false, empty virtual methods are not flagged. This supports abstract base classes with default no-op implementations."/>
             <property name="xpath">
                 <value>
 <![CDATA[
 //Method[$reportEmptyPrivateNoArgConstructor = true() or (@Constructor != true() or ./ModifierNode[@Private != true()] or ./Parameter[count(*) > 0])]/ModifierNode[@Abstract != true() and ($reportEmptyVirtualMethod = true() or @Virtual != true()) and ../BlockStatement[count(*) = 0]]
-| //Method/BlockStatement//BlockStatement[count(*) = 0 and @Location != parent::*/@Location]
+| //Method/BlockStatement//BlockStatement[count(*) = 0 and @RealLoc = true()]
 ]]>
                 </value>
             </property>
@@ -251,14 +247,13 @@ public class Foo {
           language="apex"
           since="6.0.0"
           message="Avoid empty try or finally blocks"
-          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#emptytryorfinallyblock">
         <description>
 Avoid empty try or finally blocks - what's the point?
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -296,7 +291,7 @@ public class Foo {
           language="apex"
           since="6.0.0"
           message="Avoid empty 'while' statements"
-          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#emptywhilestmt">
         <description>
 Empty While Statement finds all instances where a while statement does nothing.
@@ -305,7 +300,6 @@ a while loop that does a lot in the exit expression, rewrite it to make it clear
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -451,7 +445,7 @@ public class Foo {        // perfect, both methods provided
           language="apex"
           since="6.22.0"
           message="Test methods must be in test classes"
-          class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#testmethodsmustbeintestclasses">
        <description>
           Test methods marked as a testMethod or annotated with @IsTest,
@@ -464,7 +458,6 @@ public class Foo {        // perfect, both methods provided
        </description>
        <priority>3</priority>
        <properties>
-          <property name="version" value="2.0"/>
           <property name="xpath">
              <value>
     <![CDATA[

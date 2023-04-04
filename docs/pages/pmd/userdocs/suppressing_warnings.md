@@ -116,7 +116,7 @@ public class Foo {
     }
 }
 
-$ ./run.sh pmd -d Foo.java -f text -R java-unusedcode -suppressmarker TURN_OFF_WARNINGS
+$ pmd check -d Foo.java -f text -R java-unusedcode --suppress-marker TURN_OFF_WARNINGS
 No problems found!
 UnusedLocalVariable rule violation suppressed by //NOPMD in /home/tom/pmd/pmd/bin/Foo.java
 ```

@@ -4,24 +4,14 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
+public final class ASTTriggerTimingPointSection extends AbstractPLSQLNode implements ExecutableCode {
 
-public class ASTTriggerTimingPointSection extends AbstractPLSQLNode implements ExecutableCode, DFAGraphMethod {
-    @Deprecated
-    @InternalApi
-    public ASTTriggerTimingPointSection(int id) {
+    ASTTriggerTimingPointSection(int id) {
         super(id);
     }
 
-    @Deprecated
-    @InternalApi
-    public ASTTriggerTimingPointSection(PLSQLParser p, int id) {
-        super(p, id);
-    }
-
     @Override
-    public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {
+    protected <P, R> R acceptPlsqlVisitor(PlsqlVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
@@ -35,7 +25,6 @@ public class ASTTriggerTimingPointSection extends AbstractPLSQLNode implements E
         return getImage();
     }
 
-    @Override
     public String getName() {
         return getMethodName();
     }

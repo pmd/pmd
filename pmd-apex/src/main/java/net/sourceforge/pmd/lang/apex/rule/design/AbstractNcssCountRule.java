@@ -8,20 +8,25 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.apex.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTContinueStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDoLoopStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTForEachStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTForLoopStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTIfBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTIfElseBlockStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTTryCatchFinallyBlockStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
+import net.sourceforge.pmd.lang.apex.ast.ASTUserEnum;
+import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
 import net.sourceforge.pmd.lang.apex.ast.ASTWhileLoopStatement;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
-import net.sourceforge.pmd.lang.apex.rule.AbstractStatisticalApexRule;
-import net.sourceforge.pmd.stat.DataPoint;
-import net.sourceforge.pmd.util.NumericConstants;
+import net.sourceforge.pmd.lang.apex.ast.ApexVisitorBase;
+import net.sourceforge.pmd.lang.apex.rule.internal.AbstractCounterCheckRule;
+import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * Abstract superclass for NCSS counting methods. Counts tokens according to
@@ -32,132 +37,144 @@ import net.sourceforge.pmd.util.NumericConstants;
  */
 @Deprecated
 @InternalApi
-public abstract class AbstractNcssCountRule extends AbstractStatisticalApexRule {
+public abstract class AbstractNcssCountRule<T extends ApexNode<?>> extends AbstractCounterCheckRule<T> {
 
-    private Class<?> nodeClass;
 
     /**
      * Count the nodes of the given type using NCSS rules.
      *
-     * @param nodeClass
-     *            class of node to count
+     * @param nodeClass class of node to count
      */
-    protected AbstractNcssCountRule(Class<?> nodeClass) {
-        this.nodeClass = nodeClass;
-
-        setProperty(MINIMUM_DESCRIPTOR, 1000d);
-        setProperty(CODECLIMATE_CATEGORIES, "Complexity");
-        setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
-        setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
+    protected AbstractNcssCountRule(Class<T> nodeClass) {
+        super(nodeClass);
     }
 
-    @Override
-    public Object visit(ApexNode<?> node, Object data) {
-        int numNodes = 0;
 
-        for (ApexNode<?> child : node.children()) {
-            numNodes += (Integer) child.jjtAccept(this, data);
+    @Override
+    protected int getMetric(T node) {
+        return node.acceptVisitor(NcssVisitor.INSTANCE, null) + 1;
+    }
+
+    private static final class NcssVisitor extends ApexVisitorBase<Void, Integer> {
+        // todo this would be better with a <MutableInt, Void> signature
+
+        static final NcssVisitor INSTANCE = new NcssVisitor();
+
+        @Override
+        public Integer visitApexNode(ApexNode<?> node, Void data) {
+            return countNodeChildren(node, data);
         }
 
-        if (this.nodeClass.isInstance(node)) {
-            // Add 1 to account for base node
-            numNodes++;
-            DataPoint point = new DataPoint();
-            point.setNode(node);
-            point.setScore(1.0 * numNodes);
-            point.setMessage(getMessage());
-            addDataPoint(point);
+        @Override
+        protected Integer visitChildren(Node node, Void data) {
+            int v = 0;
+            for (Node child : node.children()) {
+                v += child.acceptVisitor(this, data);
+            }
+            return v;
         }
 
-        return Integer.valueOf(numNodes);
-    }
-
-    /**
-     * Count the number of children of the given node. Adds one to count the
-     * node itself.
-     *
-     * @param node
-     *            node having children counted
-     * @param data
-     *            node data
-     * @return count of the number of children of the node, plus one
-     */
-    protected Integer countNodeChildren(ApexNode<?> node, Object data) {
-        Integer nodeCount;
-        int lineCount = 0;
-        for (ApexNode<?> child : node.children()) {
-            nodeCount = (Integer) child.jjtAccept(this, data);
-            lineCount += nodeCount;
+        /**
+         * Count the number of children of the given node. Adds one to count the
+         * node itself.
+         *
+         * @param node node having children counted
+         * @param data node data
+         *
+         * @return count of the number of children of the node, plus one
+         */
+        protected Integer countNodeChildren(ApexNode<?> node, Void data) {
+            return visitChildren(node, data);
         }
-        return ++lineCount;
-    }
 
-    @Override
-    public Object visit(ASTForLoopStatement node, Object data) {
-        return countNodeChildren(node, data);
-    }
+        @Override
+        public Integer visit(ASTForLoopStatement node, Void data) {
+            return countNodeChildren(node, data) + 1;
+        }
 
-    @Override
-    public Object visit(ASTForEachStatement node, Object data) {
-        return countNodeChildren(node, data);
-    }
+        @Override
+        public Integer visit(ASTForEachStatement node, Void data) {
+            return countNodeChildren(node, data) + 1;
+        }
 
-    @Override
-    public Object visit(ASTDoLoopStatement node, Object data) {
-        return countNodeChildren(node, data);
-    }
+        @Override
+        public Integer visit(ASTDoLoopStatement node, Void data) {
+            return countNodeChildren(node, data) + 1;
+        }
 
-    @Override
-    public Object visit(ASTIfBlockStatement node, Object data) {
-        return countNodeChildren(node, data);
-    }
+        @Override
+        public Integer visit(ASTIfBlockStatement node, Void data) {
+            return countNodeChildren(node, data) + 1;
+        }
 
-    @Override
-    public Object visit(ASTIfElseBlockStatement node, Object data) {
+        @Override
+        public Integer visit(ASTIfElseBlockStatement node, Void data) {
+            return countNodeChildren(node, data) + 2;
+        }
 
-        Integer lineCount = countNodeChildren(node, data);
-        lineCount++;
+        @Override
+        public Integer visit(ASTWhileLoopStatement node, Void data) {
+            return countNodeChildren(node, data) + 1;
+        }
 
-        return lineCount;
-    }
+        @Override
+        public Integer visit(ASTBreakStatement node, Void data) {
+            return 1;
+        }
 
-    @Override
-    public Object visit(ASTWhileLoopStatement node, Object data) {
-        return countNodeChildren(node, data);
-    }
+        @Override
+        public Integer visit(ASTTryCatchFinallyBlockStatement node, Void data) {
+            return countNodeChildren(node, data) + 1;
+        }
 
-    @Override
-    public Object visit(ASTBreakStatement node, Object data) {
-        return NumericConstants.ONE;
-    }
+        @Override
+        public Integer visit(ASTContinueStatement node, Void data) {
+            return 1;
+        }
 
-    @Override
-    public Object visit(ASTTryCatchFinallyBlockStatement node, Object data) {
-        return countNodeChildren(node, data);
-    }
+        @Override
+        public Integer visit(ASTReturnStatement node, Void data) {
+            return countNodeChildren(node, data) + 1;
+        }
 
-    @Override
-    public Object visit(ASTContinueStatement node, Object data) {
-        return NumericConstants.ONE;
-    }
+        @Override
+        public Integer visit(ASTThrowStatement node, Void data) {
+            return countNodeChildren(node, data) + 1;
+        }
 
-    @Override
-    public Object visit(ASTReturnStatement node, Object data) {
-        return countNodeChildren(node, data);
-    }
+        @Override
+        public Integer visit(ASTStatement node, Void data) {
+            return 1;
+        }
 
-    @Override
-    public Object visit(ASTThrowStatement node, Object data) {
-        return countNodeChildren(node, data);
-    }
+        @Override
+        public Integer visit(ASTMethodCallExpression node, Void data) {
+            return 1;
+        }
 
-    @Override
-    public Object visit(ASTStatement node, Object data) {
-        return NumericConstants.ONE;
-    }
+        @Override
+        public Integer visit(ASTMethod node, Void data) {
+            return node.isSynthetic() ? 0 : countNodeChildren(node, data);
+        }
 
-    @Override
-    public Object visit(ASTMethodCallExpression node, Object data) {
-        return NumericConstants.ONE;
+        @Override
+        public Integer visit(ASTUserClass node, Void data) {
+            return countNodeChildren(node, data) + 1;
+        }
+
+        @Override
+        public Integer visit(ASTUserEnum node, Void data) {
+            return countNodeChildren(node, data) + 1;
+        }
+
+        @Override
+        public Integer visit(ASTUserInterface node, Void data) {
+            return countNodeChildren(node, data) + 1;
+        }
+
+        @Override
+        public Integer visit(ASTFieldDeclaration node, Void data) {
+            return 1;
+        }
     }
 }

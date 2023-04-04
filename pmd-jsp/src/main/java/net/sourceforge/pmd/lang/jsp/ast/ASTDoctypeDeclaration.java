@@ -4,39 +4,27 @@
 
 package net.sourceforge.pmd.lang.jsp.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTDoctypeDeclaration extends AbstractJspNode {
+public final class ASTDoctypeDeclaration extends AbstractJspNode {
 
     /**
      * Name of the document type. Cannot be null.
      */
     private String name;
 
-    @InternalApi
-    @Deprecated
-    public ASTDoctypeDeclaration(int id) {
+    ASTDoctypeDeclaration(int id) {
         super(id);
-    }
-
-    @InternalApi
-    @Deprecated
-    public ASTDoctypeDeclaration(JspParser p, int id) {
-        super(p, id);
     }
 
     public String getName() {
         return name;
     }
 
-    @InternalApi
-    @Deprecated
-    public void setName(String name) {
+    void setName(String name) {
         this.name = name;
     }
 
     @Override
-    public Object jjtAccept(JspParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JspVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

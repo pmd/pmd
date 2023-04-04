@@ -5,31 +5,21 @@
 package net.sourceforge.pmd.cli;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.apache.commons.lang3.reflect.FieldUtils;
-import org.junit.Assert;
-import org.junit.Test;
+import java.nio.file.Path;
+
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.PMDConfiguration;
+import net.sourceforge.pmd.util.CollectionUtil;
 
-public class PMDParametersTest {
-
-    @Test
-    public void testVersion() throws Exception {
-        PMDParameters parameters = new PMDParameters();
-        // no language set, uses default language
-        Assert.assertEquals("1.7", parameters.getVersion());
-
-        // now set language
-        FieldUtils.writeDeclaredField(parameters, "language", "dummy2", true);
-        Assert.assertEquals("1.0", parameters.getVersion());
-    }
+class PMDParametersTest {
 
     @Test
-    public void testMultipleDirsAndRuleSets() {
+    void testMultipleDirsAndRuleSets() {
         PmdParametersParseResult result = PmdParametersParseResult.extractParameters(
             "-d", "a", "b", "-R", "x.xml", "y.xml"
         );
@@ -37,7 +27,7 @@ public class PMDParametersTest {
     }
 
     @Test
-    public void testMultipleDirsAndRuleSetsWithCommas() {
+    void testMultipleDirsAndRuleSetsWithCommas() {
         PmdParametersParseResult result = PmdParametersParseResult.extractParameters(
             "-d", "a,b", "-R", "x.xml,y.xml"
         );
@@ -45,7 +35,7 @@ public class PMDParametersTest {
     }
 
     @Test
-    public void testMultipleDirsAndRuleSetsWithRepeatedOption() {
+    void testMultipleDirsAndRuleSetsWithRepeatedOption() {
         PmdParametersParseResult result = PmdParametersParseResult.extractParameters(
             "-d", "a", "-d", "b", "-R", "x.xml", "-R", "y.xml"
         );
@@ -53,7 +43,7 @@ public class PMDParametersTest {
     }
 
     @Test
-    public void testNoPositionalParametersAllowed() {
+    void testNoPositionalParametersAllowed() {
         assertError(
             //                        vvvv
             "-R", "x.xml", "-d", "a", "--", "-d", "b"
@@ -64,17 +54,17 @@ public class PMDParametersTest {
     private void assertMultipleDirsAndRulesets(PmdParametersParseResult result) {
         assertFalse(result.isError());
         PMDConfiguration config = result.toConfiguration();
-        assertEquals(config.getAllInputPaths(), listOf("a", "b"));
+        assertEquals(CollectionUtil.map(config.getInputPathList(), Path::toString), listOf("a", "b"));
         assertEquals(config.getRuleSetPaths(), listOf("x.xml", "y.xml"));
     }
 
     @Test
-    public void testEmptyDirOption() {
+    void testEmptyDirOption() {
         assertError("-d", "-R", "y.xml");
     }
 
     @Test
-    public void testEmptyRulesetOption() {
+    void testEmptyRulesetOption() {
         assertError("-R", "-d", "something");
     }
 

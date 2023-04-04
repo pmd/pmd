@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.modelica.ast.InternalModelicaNodeApi;
 import net.sourceforge.pmd.lang.modelica.ast.ModelicaNode;
 import net.sourceforge.pmd.lang.modelica.ast.ModelicaParserVisitorAdapter;
 
-public class ScopeAndDeclarationFinder extends ModelicaParserVisitorAdapter {
+class ScopeAndDeclarationFinder extends ModelicaParserVisitorAdapter {
     private final Deque<AbstractModelicaScope> scopes = new ArrayDeque<>();
 
     ScopeAndDeclarationFinder() {
@@ -68,7 +68,7 @@ public class ScopeAndDeclarationFinder extends ModelicaParserVisitorAdapter {
     }
 
     private Object cont(ModelicaNode node) {
-        super.visit(node, null);
+        super.visitModelicaNode(node, null);
         scopes.pop();
         return null;
     }

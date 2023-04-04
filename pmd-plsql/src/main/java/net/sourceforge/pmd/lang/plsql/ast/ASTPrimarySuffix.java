@@ -4,32 +4,21 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTPrimarySuffix extends net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode {
-    @Deprecated
-    @InternalApi
-    public ASTPrimarySuffix(int id) {
-        super(id);
-    }
-
-    @Deprecated
-    @InternalApi
-    public ASTPrimarySuffix(PLSQLParser p, int id) {
-        super(p, id);
-    }
-
-    @Override
-    public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {
-        return visitor.visit(this, data);
-    }
-
+public final class ASTPrimarySuffix extends AbstractPLSQLNode {
     private boolean isArguments;
     private boolean isArrayDereference;
 
-    @Deprecated
-    @InternalApi
-    public void setIsArrayDereference() {
+    ASTPrimarySuffix(int id) {
+        super(id);
+    }
+
+    @Override
+    protected <P, R> R acceptPlsqlVisitor(PlsqlVisitor<? super P, ? extends R> visitor, P data) {
+        return visitor.visit(this, data);
+    }
+
+
+    void setIsArrayDereference() {
         isArrayDereference = true;
     }
 
@@ -37,9 +26,7 @@ public class ASTPrimarySuffix extends net.sourceforge.pmd.lang.plsql.ast.Abstrac
         return isArrayDereference;
     }
 
-    @Deprecated
-    @InternalApi
-    public void setIsArguments() {
+    void setIsArguments() {
         this.isArguments = true;
     }
 
