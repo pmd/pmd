@@ -409,6 +409,9 @@ entries:
     - title: Java
       url: /pmd_languages_java.html
       output: web, pdf
+    - title: JavaScript / TypeScript
+      url: /pmd_languages_js_ts.html
+      output: web, pdf
     - title: JSP
       url: /pmd_languages_jsp.html
       output: web, pdf
