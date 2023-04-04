@@ -9,7 +9,8 @@ package net.sourceforge.pmd.lang.typescript.ast;
 
 import org.antlr.v4.runtime.*;
 
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 /**
  * All lexer methods that used in grammar (IsStrictMode)
@@ -21,7 +22,7 @@ abstract class TypeScriptLexerBase extends Lexer
      * Stores values of nested modes. By default mode is strict or
      * defined externally (useStrictDefault)
      */
-    private Stack<Boolean> scopeStrictModes = new Stack<>();
+    private Deque<Boolean> scopeStrictModes = new ArrayDeque<>();
 
     private Token lastToken = null;
     /**
@@ -104,14 +105,14 @@ abstract class TypeScriptLexerBase extends Lexer
     protected void ProcessOpenBrace()
     {
         bracesDepth++;
-        useStrictCurrent = scopeStrictModes.size() > 0 && scopeStrictModes.peek() || useStrictDefault;
+        useStrictCurrent = !scopeStrictModes.isEmpty() && scopeStrictModes.peek() || useStrictDefault;
         scopeStrictModes.push(useStrictCurrent);
     }
 
     protected void ProcessCloseBrace()
     {
         bracesDepth--;
-        useStrictCurrent = scopeStrictModes.size() > 0 ? scopeStrictModes.pop() : useStrictDefault;
+        useStrictCurrent = !scopeStrictModes.isEmpty() ? scopeStrictModes.pop() : useStrictDefault;
     }
 
     protected void ProcessStringLiteral()
@@ -121,7 +122,7 @@ abstract class TypeScriptLexerBase extends Lexer
             String text = getText();
             if ("\"use strict\"".equals(text) || "'use strict'".equals(text))
             {
-                if (scopeStrictModes.size() > 0) {
+                if (!scopeStrictModes.isEmpty()) {
                     scopeStrictModes.pop();
                 }
                 useStrictCurrent = true;
