@@ -6,28 +6,16 @@ package net.sourceforge.pmd.lang.plsql.ast;
 
 import java.util.List;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 public final class ASTExtractExpression extends AbstractPLSQLNode {
-
     private boolean xml;
 
-    @InternalApi
-    @Deprecated
-    public ASTExtractExpression(int id) {
+    ASTExtractExpression(int id) {
         super(id);
     }
 
 
-    @InternalApi
-    @Deprecated
-    public ASTExtractExpression(PLSQLParser p, int id) {
-        super(p, id);
-    }
-
-
     @Override
-    public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {
+    protected <P, R> R acceptPlsqlVisitor(PlsqlVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

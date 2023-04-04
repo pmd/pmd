@@ -8,25 +8,22 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.data.Identifier;
 import apex.jorje.data.ast.LiteralType;
 import apex.jorje.semantic.ast.expression.LiteralExpression;
 import apex.jorje.semantic.ast.expression.NewKeyValueObjectExpression.NameValueParameter;
 
 
-public class ASTLiteralExpression extends AbstractApexNode<LiteralExpression> {
+public final class ASTLiteralExpression extends AbstractApexNode<LiteralExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTLiteralExpression(LiteralExpression literalExpression) {
+    ASTLiteralExpression(LiteralExpression literalExpression) {
         super(literalExpression);
     }
 
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

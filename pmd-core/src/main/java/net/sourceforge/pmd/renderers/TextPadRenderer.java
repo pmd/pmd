@@ -7,7 +7,6 @@ package net.sourceforge.pmd.renderers;
 import java.io.IOException;
 import java.util.Iterator;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RuleViolation;
 
 /**
@@ -57,12 +56,12 @@ public class TextPadRenderer extends AbstractIncrementingRenderer {
             // Filename
             buf.append(determineFileName(rv.getFilename())).append("(");
             // Line number
-            buf.append(Integer.toString(rv.getBeginLine())).append(",  ");
+            buf.append(rv.getBeginLine()).append(",  ");
             // Name of violated rule
             buf.append(rv.getRule().getName()).append("):  ");
             // Specific violation message
-            buf.append(rv.getDescription()).append(PMD.EOL);
-            writer.write(buf.toString());
+            buf.append(rv.getDescription());
+            writer.println(buf);
         }
     }
 }

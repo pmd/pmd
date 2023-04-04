@@ -64,7 +64,7 @@ public class TestSchemaParser {
         PositionedXmlDoc doc = ooxml.parse(newDocumentBuilder(), inputSource);
 
         try (PmdXmlReporterImpl err = new PmdXmlReporterImpl(ooxml, doc.getPositioner())) {
-            RuleTestCollection collection = version.getParserImpl().parseDocument(rule, doc.getDocument(), err);
+            RuleTestCollection collection = version.getParserImpl().parseDocument(rule, doc, err);
             if (err.hasError()) {
                 // todo maybe add a way not to throw here
                 throw new IllegalStateException("Errors were encountered while parsing XML tests");

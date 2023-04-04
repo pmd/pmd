@@ -4,20 +4,17 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.statement.MethodBlockStatement;
 
-public class ASTMethodBlockStatement extends AbstractApexNode<MethodBlockStatement> {
+public final class ASTMethodBlockStatement extends AbstractApexNode<MethodBlockStatement> {
 
-    @Deprecated
-    @InternalApi
-    public ASTMethodBlockStatement(MethodBlockStatement node) {
+    ASTMethodBlockStatement(MethodBlockStatement node) {
         super(node);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

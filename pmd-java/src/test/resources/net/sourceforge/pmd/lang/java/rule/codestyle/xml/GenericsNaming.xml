@@ -8,7 +8,7 @@
         <description>1 upper case/single letter</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public interface Foo <B extends Bar>
+public interface Foo <B extends Number>
 {
 }
         ]]></code>
@@ -18,7 +18,7 @@ public interface Foo <B extends Bar>
         <description>2 upper case/single letter</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public interface Foo <B extends Bar, C extends Car>
+public interface Foo <B extends Number, C extends Comparable<C>>
 {
 }
         ]]></code>
@@ -28,7 +28,7 @@ public interface Foo <B extends Bar, C extends Car>
         <description>1 lower Case/single letter</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-public interface Foo <b extends Bar>
+public interface Foo <b extends Number>
 {
 }
         ]]></code>
@@ -38,7 +38,7 @@ public interface Foo <b extends Bar>
         <description>1 lower case/multiple letter</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-public interface Foo <BA extends Bar>
+public interface Foo <BA extends Foo<BA>>
 {
 }
         ]]></code>

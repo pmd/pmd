@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.util.database;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.net.URISyntaxException;
@@ -14,19 +16,19 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author sturton
  */
-@Ignore
-public class DBMSMetadataTest {
+@Disabled
+class DBMSMetadataTest {
+    private static final Logger LOG = LoggerFactory.getLogger(DBMSMetadataTest.class);
 
     static final String C_ORACLE_THIN_1 = "jdbc:oracle:thin:scott/tiger@//192.168.100.21:5521/customer_db?characterset=utf8&schemas=scott,hr,sh,system&objectTypes=procedures,functions,triggers,package,types&languages=plsql,java&name=PKG_%25%7C%7CPRC_%25";
 
@@ -47,7 +49,7 @@ public class DBMSMetadataTest {
     private DBURI dbURI5;
     private DBURI dbURIDefault;
 
-    public DBMSMetadataTest() throws URISyntaxException, Exception {
+    DBMSMetadataTest() throws URISyntaxException, Exception {
         dbURI = new DBURI(C_ORACLE_THIN_3);
         dbURI4 = new DBURI(C_ORACLE_THIN_4);
         dbURI5 = new DBURI(C_ORACLE_THIN_5);
@@ -106,7 +108,7 @@ public class DBMSMetadataTest {
             }
 
         } catch (SQLException ex) {
-            Logger.getLogger(DBMSMetadataTest.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.error(ex.getMessage(), ex);
         }
         System.out.format("...\n]\n");
     }
@@ -114,8 +116,8 @@ public class DBMSMetadataTest {
     /**
      * Verify getConnection method, of class DBMSMetadata.
      */
-    @org.junit.Test
-    public void testGetConnection() throws Exception {
+    @Test
+    void testGetConnection() throws Exception {
         System.out.println("getConnection");
         String driverClass = dbURI.getDriverClass();
         System.out.println("driverClass==" + driverClass);
@@ -129,7 +131,7 @@ public class DBMSMetadataTest {
         Connection expResult = DriverManager.getDriver(dbURI.getURL()).connect(dbURI.getURL(), properties);
         DBMSMetadata instance = new DBMSMetadata(dbURI);
         Connection result = instance.getConnection();
-        Assert.assertNotNull(result);
+        assertNotNull(result);
         // TODO review the generated test code and remove the default call to
         // fail.
         // fail("The test case is a prototype.");
@@ -139,7 +141,7 @@ public class DBMSMetadataTest {
      * Verify getConnection method, of class DBMSMetadata.
      */
     @Test
-    public void testGetConnectionWithConnectionParameters() throws Exception {
+    void testGetConnectionWithConnectionParameters() throws Exception {
         System.out.println("getConnection");
         String driverClass = dbURI5.getDriverClass();
         System.out.println("driverClass==" + driverClass);
@@ -152,7 +154,7 @@ public class DBMSMetadataTest {
         Connection expResult = DriverManager.getDriver(dbURI5.getURL()).connect(dbURI5.getURL(), properties);
         DBMSMetadata instance = new DBMSMetadata(dbURI5);
         Connection result = instance.getConnection();
-        Assert.assertNotNull(result);
+        assertNotNull(result);
         // TODO review the generated test code and remove the default call to
         // fail.
         // fail("The test case is a prototype.");
@@ -162,7 +164,7 @@ public class DBMSMetadataTest {
      * Test of getSourceCode method, of class DBMSMetadata.
      */
     @Test
-    public void testGetSourceCode() throws Exception {
+    void testGetSourceCode() throws Exception {
         System.out.println("getSourceCode");
         // String objectType = "PACKAGE";
         // String name = "DBMS_REPCAT_AUTH";
@@ -205,7 +207,7 @@ public class DBMSMetadataTest {
      * Verify getSchemas method, of class DBMSMetadata.
      */
     @Test
-    public void testGetSchemas() throws Exception {
+    void testGetSchemas() throws Exception {
         System.out.println("getSchemas");
         DBURI testURI = dbURI4;
         String driverClass = testURI.getDriverClass();
@@ -220,7 +222,7 @@ public class DBMSMetadataTest {
         Connection expResult = DriverManager.getDriver(testURI.getURL()).connect(testURI.getURL(), properties);
         DBMSMetadata instance = new DBMSMetadata(testURI);
         Connection result = instance.getConnection();
-        Assert.assertNotNull(result);
+        assertNotNull(result);
 
         ResultSet allSchemas = result.getMetaData().getSchemas();
         dumpResultSet(allSchemas, "All Schemas");
@@ -253,7 +255,7 @@ public class DBMSMetadataTest {
      * Verify getSchemas method, of class DBMSMetadata.
      */
     @Test
-    public void testGetSourceObjectList() throws Exception {
+    void testGetSourceObjectList() throws Exception {
         System.out.println("getConnection");
         DBURI testURI = dbURI4;
         String driverClass = testURI.getDriverClass();
@@ -268,10 +270,10 @@ public class DBMSMetadataTest {
         Connection expResult = DriverManager.getDriver(testURI.getURL()).connect(testURI.getURL(), properties);
         DBMSMetadata instance = new DBMSMetadata(testURI);
         Connection result = instance.getConnection();
-        Assert.assertNotNull(result);
+        assertNotNull(result);
 
         List<SourceObject> sourceObjectList = instance.getSourceObjectList();
-        Assert.assertNotNull(sourceObjectList);
+        assertNotNull(sourceObjectList);
 
         System.out.format("testURI=%s,\ngetParameters()=%s\n", C_ORACLE_THIN_4, testURI.getParameters());
 

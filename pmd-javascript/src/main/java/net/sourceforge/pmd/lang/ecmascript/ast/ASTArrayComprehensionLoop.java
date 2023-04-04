@@ -6,17 +6,13 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.ArrayComprehensionLoop;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTArrayComprehensionLoop extends AbstractEcmascriptNode<ArrayComprehensionLoop> {
-    @Deprecated
-    @InternalApi
-    public ASTArrayComprehensionLoop(ArrayComprehensionLoop arrayComprehensionLoop) {
+public final class ASTArrayComprehensionLoop extends AbstractEcmascriptNode<ArrayComprehensionLoop> {
+    ASTArrayComprehensionLoop(ArrayComprehensionLoop arrayComprehensionLoop) {
         super(arrayComprehensionLoop);
     }
 
     @Override
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+    protected <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

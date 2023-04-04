@@ -4,22 +4,20 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.compilation.Compilation;
-
 public class ApexParserTestBase {
 
     protected final ApexParsingHelper apex = ApexParsingHelper.DEFAULT.withResourceContext(getClass());
 
 
-    protected ApexRootNode<? extends Compilation> parse(String code) {
-        return apex.parse(code);
+    protected ASTUserClassOrInterface<?> parse(String code) {
+        return apex.parse(code).getMainNode();
     }
 
-    protected ApexRootNode<? extends Compilation> parse(String code, String fileName) {
-        return apex.parse(code, null, fileName);
+    protected ASTUserClassOrInterface<?> parse(String code, String fileName) {
+        return apex.parse(code, null, fileName).getMainNode();
     }
 
-    protected ApexRootNode<? extends Compilation> parseResource(String code) {
-        return apex.parseResource(code);
+    protected ASTUserClassOrInterface<?> parseResource(String code) {
+        return apex.parseResource(code).getMainNode();
     }
 }

@@ -4,23 +4,19 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import scala.meta.Type;
 
 /**
  * The ASTTypeSingleton node implementation.
  */
-public class ASTTypeSingleton extends AbstractScalaNode<Type.Singleton> {
+public final class ASTTypeSingleton extends AbstractScalaNode<Type.Singleton> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTypeSingleton(Type.Singleton scalaNode) {
+    ASTTypeSingleton(Type.Singleton scalaNode) {
         super(scalaNode);
     }
 
     @Override
-    public <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data) {
+    protected <P, R> R acceptVisitor(ScalaParserVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

@@ -8,46 +8,30 @@ import java.util.IdentityHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.ast.AbstractTokenManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.sourceforge.pmd.lang.ast.Node;
 
-public class ASTExpression extends AbstractVFNode {
-    private static final Logger LOGGER = Logger.getLogger(ASTExpression.class.getName());
+public final class ASTExpression extends AbstractVfNode {
+    private static final Logger LOG = LoggerFactory.getLogger(ASTExpression.class);
 
-    /**
-     * Thrown in cases where the the Identifiers in this node aren't ALL successfully parsed in a call to
-     * {@link #getDataNodes()}
-     */
-    public static final class DataNodeStateException extends Exception {
-    }
-
-    @Deprecated
-    @InternalApi
-    public ASTExpression(int id) {
+    ASTExpression(int id) {
         super(id);
     }
 
-    @Deprecated
-    @InternalApi
-    public ASTExpression(VfParser p, int id) {
-        super(p, id);
-    }
-
     @Override
-    public Object jjtAccept(VfParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVfVisitor(VfVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
     private void logWarning(String warning, Node node) {
-        LOGGER.warning(warning
-                + ". nodeClass=" + node.getClass().getSimpleName()
-                + ", fileName=" + AbstractTokenManager.getFileName()
-                + ", beginLine=" + node.getBeginLine()
-                + ", image=" + node.getImage());
+        LOG.warn("{}: {}\n{}",
+                node.getReportLocation().startPosToStringWithFile(),
+                warning,
+                node);
     }
 
     /**
@@ -108,6 +92,7 @@ public class ASTExpression extends AbstractVFNode {
         int numChildren = getNumChildren();
         List<ASTIdentifier> identifiers = findChildrenOfType(ASTIdentifier.class);
         for (ASTIdentifier identifier : identifiers) {
+            @SuppressWarnings("PMD.LooseCoupling") // see #1218 - we are calling getLast() which is LinkedList specific
             LinkedList<VfTypedNode> identifierNodes = new LinkedList<>();
 
             // The Identifier is the first item that makes up the string
@@ -157,4 +142,13 @@ public class ASTExpression extends AbstractVFNode {
         }
         return result;
     }
+
+
+    /**
+     * Thrown in cases where the the Identifiers in this node aren't ALL successfully parsed in a call to
+     * {@link #getDataNodes()}
+     */
+    public static final class DataNodeStateException extends Exception {
+    }
+
 }

@@ -4,23 +4,20 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.data.ast.BooleanOp;
 import apex.jorje.semantic.ast.expression.BooleanExpression;
 
 
-public class ASTBooleanExpression extends AbstractApexNode<BooleanExpression> {
+public final class ASTBooleanExpression extends AbstractApexNode<BooleanExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTBooleanExpression(BooleanExpression booleanExpression) {
+    ASTBooleanExpression(BooleanExpression booleanExpression) {
         super(booleanExpression);
     }
 
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

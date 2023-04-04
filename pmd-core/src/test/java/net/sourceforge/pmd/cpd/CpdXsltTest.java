@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.cpd;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
@@ -17,13 +20,12 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.internal.util.IOUtil;
 
 
-public class CpdXsltTest {
+class CpdXsltTest {
     /* Sample ant build.xml file. Run with "ant cpdxsl".
 
 <project>
@@ -34,7 +36,7 @@ public class CpdXsltTest {
      */
 
     @Test
-    public void cpdhtml() throws Exception {
+    void cpdhtml() throws Exception {
         XSLTErrorListener errorListener = new XSLTErrorListener();
 
         // note: using the default JDK factory, otherwise we would use Saxon from PMD's classpath
@@ -51,8 +53,8 @@ public class CpdXsltTest {
         transformer.transform(cpdReport, result);
 
         String expected = IOUtil.readToString(CpdXsltTest.class.getResourceAsStream("ExpectedCpdHtmlReport.html"), StandardCharsets.UTF_8);
-        Assert.assertEquals(expected, result.getWriter().toString());
-        Assert.assertTrue("XSLT errors occured: " + errorListener, errorListener.hasNoErrors());
+        assertEquals(expected, result.getWriter().toString());
+        assertTrue(errorListener.hasNoErrors(), "XSLT errors occured: " + errorListener);
     }
 
     private static class XSLTErrorListener implements ErrorListener {

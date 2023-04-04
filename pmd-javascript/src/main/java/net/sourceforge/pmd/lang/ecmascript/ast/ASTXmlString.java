@@ -6,18 +6,14 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.XmlString;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTXmlString extends AbstractEcmascriptNode<XmlString> {
-    @Deprecated
-    @InternalApi
-    public ASTXmlString(XmlString xmlString) {
+public final class ASTXmlString extends AbstractEcmascriptNode<XmlString> {
+    ASTXmlString(XmlString xmlString) {
         super(xmlString);
         super.setImage(xmlString.getXml());
     }
 
     @Override
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+    protected <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

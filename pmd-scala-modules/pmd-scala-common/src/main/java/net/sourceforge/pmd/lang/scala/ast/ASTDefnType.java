@@ -4,23 +4,19 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import scala.meta.Defn;
 
 /**
  * The ASTDefnType node implementation.
  */
-public class ASTDefnType extends AbstractScalaNode<Defn.Type> {
+public final class ASTDefnType extends AbstractScalaNode<Defn.Type> {
 
-    @Deprecated
-    @InternalApi
-    public ASTDefnType(Defn.Type scalaNode) {
+    ASTDefnType(Defn.Type scalaNode) {
         super(scalaNode);
     }
 
     @Override
-    public <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data) {
+    protected <P, R> R acceptVisitor(ScalaParserVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

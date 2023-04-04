@@ -66,6 +66,9 @@ public class Foo {
     <test-code>
         <description>Common basic case</description>
         <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Do not hard code the IP address badIdea</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     String badIdea = "127.0.0.1";

@@ -6,8 +6,11 @@ package net.sourceforge.pmd.util.log;
 
 import java.text.MessageFormat;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.slf4j.event.Level;
+
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.util.log.internal.QuietReporter;
 
 /**
  * Façade to report user-facing messages (info, warning and error).
@@ -16,39 +19,74 @@ import net.sourceforge.pmd.internal.util.AssertionUtil;
  * <p>Internal API: this is a transitional API that will be significantly
  * changed in PMD 7, with the transition to SLF4J. See https://github.com/pmd/pmd/issues/3816
  *
+ *  TODO rename to PmdReporter
+ *
  * @author Clément Fournier
  */
 @InternalApi
 public interface MessageReporter {
 
+    // todo change String to MessageFormat in those arg lists, it's too confusing
+    // where to apply MessageFormat otherwise...
+
     boolean isLoggable(Level level);
 
-    void log(Level level, String message, Object... formatArgs);
+    default void log(Level level, String message, Object... formatArgs) {
+        logEx(level, message, formatArgs, null);
+    }
 
-    void logEx(Level level, String message, Object[] formatArgs, Throwable error);
-
-    void info(String message, Object... formatArgs);
+    void logEx(Level level, @Nullable String message, Object[] formatArgs, @Nullable Throwable error);
 
     /**
-     * @deprecated Trace messages should be reported on a Logger instance.
-     * This is kept because it's simpler to port calls to this method to
-     * SLF4J in PMD 7 than to do the same if these calls were calls to a
-     * java.util.logging.Logger in PMD 6.
+     * Logs and returns a new exception.
+     * Message and cause may not be null a the same time.
      */
-    @Deprecated
-    void trace(String message, Object... formatArgs);
+    default RuntimeException newException(Level level, @Nullable Throwable cause, @Nullable String message, Object... formatArgs) {
+        logEx(level, message, formatArgs, cause);
+        if (message == null) {
+            return new RuntimeException(cause);
+        }
+        return new RuntimeException(MessageFormat.format(message, formatArgs), cause);
+    }
 
-    void warn(String message, Object... formatArgs);
+    default void info(String message, Object... formatArgs) {
+        log(Level.INFO, message, formatArgs);
+    }
 
-    void warnEx(String message, Throwable error);
+    default void warn(String message, Object... formatArgs) {
+        log(Level.WARN, message, formatArgs);
+    }
 
-    void warnEx(String message, Object[] formatArgs, Throwable error);
+    default void warnEx(String message, Throwable error) {
+        logEx(Level.WARN, message, new Object[0], error);
+    }
 
-    void error(String message, Object... formatArgs);
+    default void warnEx(String message, Object[] formatArgs, Throwable error) {
+        logEx(Level.WARN, message, formatArgs, error);
+    }
 
-    void errorEx(String message, Throwable error);
+    default RuntimeException error(String message, Object... formatArgs) {
+        return error(null, message, formatArgs);
+    }
 
-    void errorEx(String message, Object[] formatArgs, Throwable error);
+    /**
+     * Only one of the cause or the message can be null.
+     */
+    default RuntimeException error(@Nullable Throwable cause, @Nullable String contextMessage, Object... formatArgs) {
+        return newException(Level.ERROR, cause, contextMessage, formatArgs);
+    }
+
+    default RuntimeException error(Throwable error) {
+        return error(error, null);
+    }
+
+    default void errorEx(String message, Throwable error) {
+        logEx(Level.ERROR, message, new Object[0], error);
+    }
+
+    default void errorEx(String message, Object[] formatArgs, Throwable error) {
+        logEx(Level.ERROR, message, formatArgs, error);
+    }
 
     /**
      * Returns the number of errors reported on this instance.
@@ -58,35 +96,13 @@ public interface MessageReporter {
      */
     int numErrors();
 
-    /**
-     * Message severity level. This maps to SLF4J levels transparently.
-     *
-     * @deprecated Will be replaced with SLF4J Level in PMD 7
-     */
-    @Deprecated
-    enum Level {
-        ERROR,
-        WARN,
-        INFO,
-        DEBUG,
-        TRACE;
 
-        public java.util.logging.Level toJutilLevel() {
-            switch (this) {
-            case ERROR:
-                return java.util.logging.Level.SEVERE;
-            case WARN:
-                return java.util.logging.Level.WARNING;
-            case INFO:
-                return java.util.logging.Level.INFO;
-            case DEBUG:
-                return java.util.logging.Level.FINE;
-            case TRACE:
-                return java.util.logging.Level.FINER;
-            default:
-                throw AssertionUtil.shouldNotReachHere("exhaustive");
-            }
-        }
+    /**
+     * Returns a reporter instance that does not output anything, but
+     * still counts errors.
+     */
+    static MessageReporter quiet() {
+        return new QuietReporter();
     }
 
 }

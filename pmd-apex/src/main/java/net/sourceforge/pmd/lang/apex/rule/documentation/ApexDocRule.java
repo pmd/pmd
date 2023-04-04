@@ -12,6 +12,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.apex.ast.ASTFormalComment;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
@@ -22,6 +24,8 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public class ApexDocRule extends AbstractApexRule {
@@ -38,11 +42,11 @@ public class ApexDocRule extends AbstractApexRule {
 
     private static final PropertyDescriptor<Boolean> REPORT_PRIVATE_DESCRIPTOR =
             booleanProperty("reportPrivate")
-                .desc("Report private classes, methods and properties").defaultValue(false).build();
+                    .desc("Report private classes, methods and properties").defaultValue(false).build();
 
     private static final PropertyDescriptor<Boolean> REPORT_PROTECTED_DESCRIPTOR =
             booleanProperty("reportProtected")
-                .desc("Report protected classes, methods and properties").defaultValue(false).build();
+                    .desc("Report protected classes, methods and properties").defaultValue(false).build();
 
     private static final PropertyDescriptor<Boolean> REPORT_MISSING_DESCRIPTION_DESCRIPTOR =
             booleanProperty("reportMissingDescription")
@@ -57,11 +61,11 @@ public class ApexDocRule extends AbstractApexRule {
         definePropertyDescriptor(REPORT_PROTECTED_DESCRIPTOR);
         definePropertyDescriptor(REPORT_MISSING_DESCRIPTION_DESCRIPTOR);
         definePropertyDescriptor(REPORT_PROPERTY_DESCRIPTOR);
+    }
 
-        addRuleChainVisit(ASTUserClass.class);
-        addRuleChainVisit(ASTUserInterface.class);
-        addRuleChainVisit(ASTMethod.class);
-        addRuleChainVisit(ASTProperty.class);
+    @Override
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forTypes(ASTUserClass.class, ASTUserInterface.class, ASTMethod.class, ASTProperty.class);
     }
 
     @Override
@@ -175,12 +179,12 @@ public class ApexDocRule extends AbstractApexRule {
     private ApexDocComment getApexDocComment(ApexNode<?> node) {
         ASTFormalComment comment = node.getFirstChildOfType(ASTFormalComment.class);
         if (comment != null) {
-            String token = comment.getToken();
+            Chars token = comment.getToken();
 
             boolean hasDescription = DESCRIPTION_PATTERN.matcher(token).find();
             boolean hasReturn = RETURN_PATTERN.matcher(token).find();
 
-            ArrayList<String> params = new ArrayList<>();
+            List<String> params = new ArrayList<>();
             Matcher paramMatcher = PARAM_PATTERN.matcher(token);
             while (paramMatcher.find()) {
                 params.add(paramMatcher.group(1));

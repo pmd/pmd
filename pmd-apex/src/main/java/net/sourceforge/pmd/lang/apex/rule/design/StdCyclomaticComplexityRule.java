@@ -7,8 +7,10 @@ package net.sourceforge.pmd.lang.apex.rule.design;
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.inRange;
 
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.apex.ast.ASTBooleanExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTDoLoopStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTForEachStatement;
@@ -55,7 +57,7 @@ public class StdCyclomaticComplexityRule extends AbstractApexRule {
     private boolean showClassesComplexity = true;
     private boolean showMethodsComplexity = true;
 
-    protected static class Entry {
+    protected static final class Entry {
         private int decisionPoints = 1;
         public int highestDecisionPoints;
         public int methodCount;
@@ -76,23 +78,23 @@ public class StdCyclomaticComplexityRule extends AbstractApexRule {
         }
     }
 
-    protected Stack<Entry> entryStack = new Stack<>();
+    protected Deque<Entry> entryStack = new ArrayDeque<>();
 
     public StdCyclomaticComplexityRule() {
         definePropertyDescriptor(REPORT_LEVEL_DESCRIPTOR);
         definePropertyDescriptor(SHOW_CLASSES_COMPLEXITY_DESCRIPTOR);
         definePropertyDescriptor(SHOW_METHODS_COMPLEXITY_DESCRIPTOR);
+    }
 
-        setProperty(CODECLIMATE_CATEGORIES, "Complexity");
-        setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 250);
-        setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
+    @Override
+    public void start(RuleContext ctx) {
+        reportLevel = getProperty(REPORT_LEVEL_DESCRIPTOR);
+        showClassesComplexity = getProperty(SHOW_CLASSES_COMPLEXITY_DESCRIPTOR);
+        showMethodsComplexity = getProperty(SHOW_METHODS_COMPLEXITY_DESCRIPTOR);
     }
 
     @Override
     public Object visit(ASTUserClass node, Object data) {
-        reportLevel = getProperty(REPORT_LEVEL_DESCRIPTOR);
-        showClassesComplexity = getProperty(SHOW_CLASSES_COMPLEXITY_DESCRIPTOR);
-        showMethodsComplexity = getProperty(SHOW_METHODS_COMPLEXITY_DESCRIPTOR);
         entryStack.push(new Entry());
         super.visit(node, data);
         Entry classEntry = entryStack.pop();
@@ -107,9 +109,6 @@ public class StdCyclomaticComplexityRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTUserTrigger node, Object data) {
-        reportLevel = getProperty(REPORT_LEVEL_DESCRIPTOR);
-        showClassesComplexity = getProperty(SHOW_CLASSES_COMPLEXITY_DESCRIPTOR);
-        showMethodsComplexity = getProperty(SHOW_METHODS_COMPLEXITY_DESCRIPTOR);
         entryStack.push(new Entry());
         super.visit(node, data);
         Entry classEntry = entryStack.pop();
@@ -134,7 +133,7 @@ public class StdCyclomaticComplexityRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTMethod node, Object data) {
-        if (!node.getImage().matches("<clinit>|<init>|clone")) {
+        if (!node.isSynthetic()) {
             entryStack.push(new Entry());
             super.visit(node, data);
             Entry methodEntry = entryStack.pop();

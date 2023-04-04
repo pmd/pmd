@@ -6,12 +6,12 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.Properties;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
-public class LuaTokenizerTest extends CpdTextComparisonTest {
-    public LuaTokenizerTest() {
+class LuaTokenizerTest extends CpdTextComparisonTest {
+    LuaTokenizerTest() {
         super(".lua");
     }
 
@@ -26,27 +26,27 @@ public class LuaTokenizerTest extends CpdTextComparisonTest {
     }
 
     @Test
-    public void testSimple() {
+    void testSimple() {
         doTest("helloworld");
     }
 
     @Test
-    public void testFactorial() {
+    void testFactorial() {
         doTest("factorial");
     }
 
     @Test
-    public void testTabWidth() {
+    void testTabWidth() {
         doTest("tabWidth");
     }
 
     @Test
-    public void testLuauTypes() {
+    void testLuauTypes() {
         doTest("luauTypes");
     }
 
     @Test
-    public void testComment() {
+    void testComment() {
         doTest("comment");
     }
 }

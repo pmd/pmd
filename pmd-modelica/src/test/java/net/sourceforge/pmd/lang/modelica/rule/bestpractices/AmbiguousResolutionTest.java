@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.modelica.rule.bestpractices;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class AmbiguousResolutionTest extends PmdRuleTst {
+class AmbiguousResolutionTest extends PmdRuleTst {
     // no additional unit tests
 }

@@ -7,10 +7,12 @@
     <test-code>
         <description>failure case</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
-    public void bar() {
-        if (x != null && foo.getBar().equals(x)) {}
+    public Foo getBar(Foo x) {
+        Foo foo = new Foo();
+        if (x != null && foo.getBar(foo).equals(x)) {}
     }
 }
         ]]></code>
@@ -21,7 +23,8 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public void bar() {
+    public void bar(Foo x, Foo y) {
+        Foo foo = new Foo();
         if (x != null && foo.equals(y)) {}
     }
 }
@@ -33,7 +36,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public void bar() {
+    public void bar(Foo x, Foo y) {
         if (x != null && x.equals(y)) {}
     }
 }
@@ -45,7 +48,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public void bar() {
+    public void bar(String x, String y) {
         if (x != null && "Foo".equals(y)) {}
         if (y.equals(x)) {}
     }
@@ -58,8 +61,10 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public void bar() {
-        if (c != null && A.b(c).equals(d)) {}
+    public static Foo A = new Foo();
+    public void bar(String c) {
+        String d = "bar";
+        if (c != null && A.bar(c).equals(d)) {}
     }
 }
         ]]></code>
@@ -70,10 +75,11 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public void bar() {
+    public void bar(Foo[] o1, Foo[] o2) {
         if (o1 != null && o1[0] != null && o2[0].getName() != null && o2[0].getName().equals(o1[0].getName())) { }
         if (o1 != null && o2.equals(o1.getName())) { }
     }
+    public String getName() { return ""; }
 }
         ]]></code>
     </test-code>
@@ -81,9 +87,10 @@ public class Foo {
     <test-code>
         <description>shouldn't this fail? Yes, it should. Fixed it, so that method calls to equals on variables are considered, too.</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
-    public void bar() {
+    public void bar(String x, String y) {
         if (x != null && y.equals(x)) {}
     }
 }
@@ -94,9 +101,58 @@ public class Foo {
         <description>Arrays can't be compared directly but with Arrays.equals().</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.Arrays;
+
 public class Foo {
     private static boolean isSame(Object[] a1, Object[] a2) {
         return a1 == a2 || (a1 != null && a2 != null && Arrays.equals(a1, a2));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False negative with another condition in the middle</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>3,7,14</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    private boolean matches(String thatString, Object other, Class<?> otherClass) {
+        return thatString != null && otherClass == thatString.getClass() && other.equals(thatString);
+    }
+
+    private boolean matches_if(String thatString, Object other, Class<?> otherClass) {
+        if (thatString != null && otherClass == thatString.getClass() && other.equals(thatString)) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean matches_var(String thatString, Object other, Class<?> otherClass) {
+        boolean result = thatString != null && otherClass == thatString.getClass() && other.equals(thatString);
+        return result;
+    }
+
+    private boolean matchesCorrected(String thatString, Object other, Class<?> otherClass) {
+        return thatString != null && otherClass == thatString.getClass() && thatString.equals(other);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with string literals / constants</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private static final String CONST = "";
+
+    private boolean test(String val) {
+        return val != null && "".equals(val);
+    }
+
+    private boolean test_const(String val) {
+        return val != null && CONST.equals(val);
     }
 }
         ]]></code>

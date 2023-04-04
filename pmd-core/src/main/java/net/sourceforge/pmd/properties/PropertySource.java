@@ -6,7 +6,6 @@ package net.sourceforge.pmd.properties;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 
 /**
@@ -152,39 +151,6 @@ public interface PropertySource {
      * @return {@code true} if the descriptor is defined, {@code false} otherwise.
      */
     boolean hasDescriptor(PropertyDescriptor<?> descriptor);
-
-
-    /**
-     * Returns whether this Rule uses default values for properties.
-     *
-     * @return boolean <code>true</code> if the properties all have default values, <code>false</code> otherwise.
-     *
-     * @deprecated Has no real utility, will be removed by 7.0.0
-     */
-    @Deprecated
-    boolean usesDefaultValues();
-
-
-    /**
-     * Clears out any user-specified value for the property allowing it to use the default value in the descriptor.
-     *
-     * @param desc the property to clear out
-     *
-     * @deprecated Has no real utility, and the name is confusing, will be removed by 7.0.0
-     */
-    @Deprecated
-    void useDefaultValueFor(PropertyDescriptor<?> desc);
-
-
-    /**
-     * Return the properties that are effectively ignored due to the configuration of the rule and values held by other
-     * properties. This can be used to disable corresponding widgets in a UI.
-     *
-     * @return the properties that are ignored
-     * @deprecated Has no real utility, will be removed by 7.0.0
-     */
-    @Deprecated
-    Set<PropertyDescriptor<?>> ignoredProperties();
 
 
     /**

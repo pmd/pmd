@@ -6,13 +6,13 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.Properties;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 import net.sourceforge.pmd.lang.gherkin.cpd.GherkinTokenizer;
 
-public class GherkinTokenizerTest extends CpdTextComparisonTest {
-    public GherkinTokenizerTest() {
+class GherkinTokenizerTest extends CpdTextComparisonTest {
+    GherkinTokenizerTest() {
         super(".feature");
     }
 
@@ -28,12 +28,12 @@ public class GherkinTokenizerTest extends CpdTextComparisonTest {
     }
 
     @Test
-    public void testAnnotatedSource() {
+    void testAnnotatedSource() {
         doTest("annotatedSource");
     }
 
     @Test
-    public void testDocstring() {
+    void testDocstring() {
         doTest("docstring");
     }
 }

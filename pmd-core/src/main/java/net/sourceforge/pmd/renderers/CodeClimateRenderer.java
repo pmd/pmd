@@ -4,10 +4,6 @@
 
 package net.sourceforge.pmd.renderers;
 
-import static net.sourceforge.pmd.renderers.CodeClimateRule.CODECLIMATE_BLOCK_HIGHLIGHTING;
-import static net.sourceforge.pmd.renderers.CodeClimateRule.CODECLIMATE_CATEGORIES;
-import static net.sourceforge.pmd.renderers.CodeClimateRule.CODECLIMATE_REMEDIATION_MULTIPLIER;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -15,7 +11,6 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
@@ -61,7 +56,7 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
             rule = rv.getRule();
             String json = gson.toJson(asIssue(rv));
             json = json.replace(BODY_PLACEHOLDER, getBody());
-            writer.write(json + NULL_CHARACTER + PMD.EOL);
+            writer.println(json + NULL_CHARACTER);
         }
     }
 
@@ -110,42 +105,16 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     }
 
     private CodeClimateIssue.Location getLocation(RuleViolation rv) {
-        CodeClimateIssue.Location result;
-
-        String pathWithoutCcRoot = StringUtils.removeStartIgnoreCase(
-                determineFileName(rv.getFilename()), "/code/");
-
-        if (rule.hasDescriptor(CODECLIMATE_REMEDIATION_MULTIPLIER)
-            && !rule.getProperty(CODECLIMATE_BLOCK_HIGHLIGHTING)) {
-            result = new CodeClimateIssue.Location(pathWithoutCcRoot, rv.getBeginLine(), rv.getBeginLine());
-        } else {
-            result = new CodeClimateIssue.Location(pathWithoutCcRoot, rv.getBeginLine(), rv.getEndLine());
-        }
-
-        return result;
+        String pathWithoutCcRoot = StringUtils.removeStartIgnoreCase(determineFileName(rv.getFilename()), "/code/");
+        return new CodeClimateIssue.Location(pathWithoutCcRoot, rv.getBeginLine(), rv.getEndLine());
     }
 
     private int getRemediationPoints() {
-        int remediationPoints = REMEDIATION_POINTS_DEFAULT;
-
-        if (rule.hasDescriptor(CODECLIMATE_REMEDIATION_MULTIPLIER)) {
-            remediationPoints *= rule.getProperty(CODECLIMATE_REMEDIATION_MULTIPLIER);
-        }
-
-        return remediationPoints;
+        return REMEDIATION_POINTS_DEFAULT;
     }
 
     private String[] getCategories() {
-        String[] result;
-
-        if (rule.hasDescriptor(CODECLIMATE_CATEGORIES)) {
-            List<String> categories = rule.getProperty(CODECLIMATE_CATEGORIES);
-            result = categories.toArray(new String[0]);
-        } else {
-            result = CODECLIMATE_DEFAULT_CATEGORIES;
-        }
-
-        return result;
+        return CODECLIMATE_DEFAULT_CATEGORIES;
     }
 
     private <T> String getBody() {

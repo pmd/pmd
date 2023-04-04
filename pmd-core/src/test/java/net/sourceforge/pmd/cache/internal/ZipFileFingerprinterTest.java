@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.cache.internal;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -15,13 +18,12 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ZipFileFingerprinterTest extends AbstractClasspathEntryFingerprinterTest {
+class ZipFileFingerprinterTest extends AbstractClasspathEntryFingerprinterTest {
 
     @Test
-    public void zipEntryMetadataDoesNotAffectFingerprint() throws IOException {
+    void zipEntryMetadataDoesNotAffectFingerprint() throws IOException {
         final File file = createValidNonEmptyFile();
         final long baselineFingerprint = getBaseLineFingerprint(file);
         final long originalFileSize = file.length();
@@ -35,8 +37,34 @@ public class ZipFileFingerprinterTest extends AbstractClasspathEntryFingerprinte
             overwriteZipFileContents(file, zipEntry);
         }
 
-        Assert.assertEquals(baselineFingerprint, updateFingerprint(file));
-        Assert.assertNotEquals(originalFileSize, file.length());
+        assertEquals(baselineFingerprint, updateFingerprint(file));
+        assertNotEquals(originalFileSize, file.length());
+    }
+    
+    @Test
+    void zipEntryOrderDoesNotAffectFingerprint() throws IOException {
+        final File zipFile = tempDir.resolve("foo.jar").toFile();
+        final ZipEntry fooEntry = new ZipEntry("lib/Foo.class");
+        final ZipEntry barEntry = new ZipEntry("lib/Bar.class");
+        overwriteZipFileContents(zipFile, fooEntry, barEntry);
+        final long baselineFingerprint = getBaseLineFingerprint(zipFile);
+        
+        // swap order
+        overwriteZipFileContents(zipFile, barEntry, fooEntry);
+        assertEquals(baselineFingerprint, updateFingerprint(zipFile));
+    }
+    
+    @Test
+    void nonClassZipEntryDoesNotAffectFingerprint() throws IOException {
+        final File zipFile = tempDir.resolve("foo.jar").toFile();
+        final ZipEntry fooEntry = new ZipEntry("lib/Foo.class");
+        final ZipEntry barEntry = new ZipEntry("bar.properties");
+        overwriteZipFileContents(zipFile, fooEntry);
+        final long baselineFingerprint = getBaseLineFingerprint(zipFile);
+        
+        // add a properties file to the jar
+        overwriteZipFileContents(zipFile, fooEntry, barEntry);
+        assertEquals(baselineFingerprint, updateFingerprint(zipFile));
     }
 
     @Override
@@ -56,7 +84,7 @@ public class ZipFileFingerprinterTest extends AbstractClasspathEntryFingerprinte
 
     @Override
     protected File createValidNonEmptyFile() throws IOException {
-        final File zipFile = tempFolder.newFile("foo.jar");
+        final File zipFile = tempDir.resolve("foo.jar").toFile();
         overwriteZipFileContents(zipFile, new ZipEntry("lib/Foo.class"));
         return zipFile;
     }

@@ -4,55 +4,58 @@
 
 package net.sourceforge.pmd.lang.document;
 
-import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Objects;
 
-import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.internal.util.AssertionUtil;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.internal.util.BaseCloseable;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.util.IOUtil;
-import net.sourceforge.pmd.util.datasource.DataSource;
-import net.sourceforge.pmd.util.datasource.internal.LanguageAwareDataSource;
-import net.sourceforge.pmd.util.datasource.internal.PathDataSource;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * A {@link TextFile} backed by a file in some {@link FileSystem}.
  */
-@Experimental
-class NioTextFile implements TextFile {
+class NioTextFile extends BaseCloseable implements TextFile {
 
     private final Path path;
     private final Charset charset;
     private final LanguageVersion languageVersion;
     private final String displayName;
     private final String pathId;
+    private boolean readOnly;
 
-    NioTextFile(Path path, Charset charset, LanguageVersion languageVersion, String displayName) {
+    NioTextFile(Path path,
+                Charset charset,
+                LanguageVersion languageVersion,
+                String displayName,
+                boolean readOnly) {
         AssertionUtil.requireParamNotNull("path", path);
         AssertionUtil.requireParamNotNull("charset", charset);
         AssertionUtil.requireParamNotNull("language version", languageVersion);
         AssertionUtil.requireParamNotNull("display name", displayName);
 
         this.displayName = displayName;
+        this.readOnly = readOnly;
         this.path = path;
         this.charset = charset;
         this.languageVersion = languageVersion;
         // using the URI here, that handles files inside zip archives automatically (schema "jar:file:...!/path/inside/zip")
-        this.pathId = path.toUri().toString();
+        // normalization ensures cannonical paths
+        this.pathId = path.normalize().toUri().toString();
     }
 
     @Override
-    public LanguageVersion getLanguageVersion() {
+    public @NonNull LanguageVersion getLanguageVersion() {
         return languageVersion;
     }
 
     @Override
-    public String getDisplayName() {
+    public @NonNull String getDisplayName() {
         return displayName;
     }
 
@@ -61,22 +64,44 @@ class NioTextFile implements TextFile {
         return pathId;
     }
 
+    @Override
+    public boolean isReadOnly() {
+        return readOnly || !Files.isWritable(path);
+    }
 
     @Override
-    public String readContents() throws IOException {
+    public void writeContents(TextFileContent content) throws IOException {
+        ensureOpen();
+        if (isReadOnly()) {
+            throw new ReadOnlyFileException(this);
+        }
+        try (BufferedWriter bw = Files.newBufferedWriter(path, charset)) {
+            if (TextFileContent.NORMALIZED_LINE_TERM.equals(content.getLineTerminator())) {
+                content.getNormalizedText().writeFully(bw);
+            } else {
+                for (Chars line : content.getNormalizedText().lines()) {
+                    line.writeFully(bw);
+                    bw.write(content.getLineTerminator());
+                }
+            }
+        }
+    }
+
+    @Override
+    public TextFileContent readContents() throws IOException {
+        ensureOpen();
 
         if (!Files.isRegularFile(path)) {
             throw new IOException("Not a regular file: " + path);
         }
 
-        try (BufferedReader br = Files.newBufferedReader(path, charset)) {
-            return IOUtil.readToString(br);
-        }
+        return TextFileContent.fromInputStream(Files.newInputStream(path), charset);
     }
 
+
     @Override
-    public DataSource toDataSourceCompat() {
-        return new LanguageAwareDataSource(new PathDataSource(path, displayName), languageVersion);
+    protected void doClose() throws IOException {
+        // nothing to do.
     }
 
     @Override
@@ -87,17 +112,18 @@ class NioTextFile implements TextFile {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        @SuppressWarnings("PMD.CloseResource")
         NioTextFile that = (NioTextFile) o;
-        return Objects.equals(path, that.path);
+        return path.equals(that.path);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(pathId);
+        return path.hashCode();
     }
 
     @Override
     public String toString() {
-        return getPathId();
+        return "NioTextFile[charset=" + charset + ", path=" + path + ']';
     }
 }

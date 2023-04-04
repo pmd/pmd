@@ -4,20 +4,17 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.condition.StandardCondition;
 
-public class ASTStandardCondition extends AbstractApexNode<StandardCondition> {
+public final class ASTStandardCondition extends AbstractApexNode<StandardCondition> {
 
-    @Deprecated
-    @InternalApi
-    public ASTStandardCondition(StandardCondition standardCondition) {
+    ASTStandardCondition(StandardCondition standardCondition) {
         super(standardCondition);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

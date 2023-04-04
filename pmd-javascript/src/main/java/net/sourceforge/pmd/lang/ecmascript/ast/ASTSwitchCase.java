@@ -6,17 +6,13 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.SwitchCase;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTSwitchCase extends AbstractEcmascriptNode<SwitchCase> {
-    @Deprecated
-    @InternalApi
-    public ASTSwitchCase(SwitchCase switchCase) {
+public final class ASTSwitchCase extends AbstractEcmascriptNode<SwitchCase> {
+    ASTSwitchCase(SwitchCase switchCase) {
         super(switchCase);
     }
 
     @Override
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+    protected <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class MDBAndSessionBeanNamingConventionTest extends PmdRuleTst {
+class MDBAndSessionBeanNamingConventionTest extends PmdRuleTst {
     // no additional unit tests
 }

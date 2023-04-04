@@ -4,23 +4,14 @@
 
 package net.sourceforge.pmd.lang.jsp.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+public final class ASTHtmlScript extends AbstractJspNode {
 
-public class ASTHtmlScript extends AbstractJspNode {
-    @InternalApi
-    @Deprecated
-    public ASTHtmlScript(int id) {
+    ASTHtmlScript(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTHtmlScript(JspParser p, int id) {
-        super(p, id);
-    }
-
     @Override
-    public Object jjtAccept(JspParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JspVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

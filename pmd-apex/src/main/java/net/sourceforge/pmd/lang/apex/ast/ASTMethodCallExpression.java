@@ -4,23 +4,22 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import java.util.Iterator;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.document.TextRegion;
 
 import apex.jorje.data.Identifier;
 import apex.jorje.semantic.ast.expression.MethodCallExpression;
 
 
-public class ASTMethodCallExpression extends AbstractApexNode<MethodCallExpression> {
-    @Deprecated
-    @InternalApi
-    public ASTMethodCallExpression(MethodCallExpression methodCallExpression) {
+public final class ASTMethodCallExpression extends AbstractApexNode<MethodCallExpression> {
+    ASTMethodCallExpression(MethodCallExpression methodCallExpression) {
         super(methodCallExpression);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
@@ -31,13 +30,24 @@ public class ASTMethodCallExpression extends AbstractApexNode<MethodCallExpressi
     public String getFullMethodName() {
         final String methodName = getMethodName();
         StringBuilder typeName = new StringBuilder();
-        for (Iterator<Identifier> it = node.getReferenceContext().getNames().iterator(); it.hasNext();) {
-            typeName.append(it.next().getValue()).append('.');
+        for (Identifier identifier : node.getReferenceContext().getNames()) {
+            typeName.append(identifier.getValue()).append('.');
         }
         return typeName.toString() + methodName;
     }
 
     public int getInputParametersSize() {
         return node.getInputParameters().size();
+    }
+
+    @Override
+    public @NonNull TextRegion getTextRegion() {
+        int fullLength = getFullMethodName().length();
+        int nameLength = getMethodName().length();
+        TextRegion base = super.getTextRegion();
+        if (fullLength > nameLength) {
+            base = base.growLeft(fullLength - nameLength);
+        }
+        return base;
     }
 }

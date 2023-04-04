@@ -1,88 +1,88 @@
     [Image] or [Truncated image[            Bcol      Ecol
 L1
-    [DECLARE]                               1         7
+    [DECLARE]                               1         8
 L2
-    [qty_on_hand]                           2         12
-    [NUMBER]                                14        19
-    [(]                                     20        20
-    [5]                                     21        21
-    [)]                                     22        22
-    [;]                                     23        23
+    [qty_on_hand]                           2         13
+    [NUMBER]                                14        20
+    [(]                                     20        21
+    [5]                                     21        22
+    [)]                                     22        23
+    [;]                                     23        24
 L3
-    [BEGIN]                                 1         5
+    [BEGIN]                                 1         6
 L4
-    [SELECT]                                2         7
-    [quantity]                              9         16
-    [INTO]                                  18        21
-    [qty_on_hand]                           23        33
-    [FROM]                                  35        38
-    [inventory]                             40        48
+    [SELECT]                                2         8
+    [quantity]                              9         17
+    [INTO]                                  18        22
+    [qty_on_hand]                           23        34
+    [FROM]                                  35        39
+    [inventory]                             40        49
 L5
-    [WHERE]                                 3         7
-    [product]                               9         15
-    [=]                                     17        17
-    ['TENNIS RACKET']                       19        33
+    [WHERE]                                 3         8
+    [product]                               9         16
+    [=]                                     17        18
+    ['TENNIS RACKET']                       19        34
 L6
-    [FOR]                                   3         5
-    [UPDATE]                                7         12
-    [OF]                                    14        15
-    [quantity]                              17        24
-    [;]                                     25        25
+    [FOR]                                   3         6
+    [UPDATE]                                7         13
+    [OF]                                    14        16
+    [quantity]                              17        25
+    [;]                                     25        26
 L7
-    [IF]                                    2         3
-    [qty_on_hand]                           5         15
-    [>]                                     17        17
-    [0]                                     19        19
-    [THEN]                                  21        24
+    [IF]                                    2         4
+    [qty_on_hand]                           5         16
+    [>]                                     17        18
+    [0]                                     19        20
+    [THEN]                                  21        25
 L8
-    [UPDATE]                                3         8
-    [inventory]                             10        18
-    [SET]                                   20        22
-    [quantity]                              24        31
-    [=]                                     33        33
-    [quantity]                              35        42
-    [-]                                     44        44
-    [1]                                     46        46
+    [UPDATE]                                3         9
+    [inventory]                             10        19
+    [SET]                                   20        23
+    [quantity]                              24        32
+    [=]                                     33        34
+    [quantity]                              35        43
+    [-]                                     44        45
+    [1]                                     46        47
 L9
-    [WHERE]                                 4         8
-    [product]                               10        16
-    [=]                                     18        18
-    ['TENNIS RACKET']                       20        34
-    [;]                                     35        35
+    [WHERE]                                 4         9
+    [product]                               10        17
+    [=]                                     18        19
+    ['TENNIS RACKET']                       20        35
+    [;]                                     35        36
 L10
-    [INSERT]                                3         8
-    [INTO]                                  10        13
-    [purchase_record]                       15        29
+    [INSERT]                                3         9
+    [INTO]                                  10        14
+    [purchase_record]                       15        30
 L11
-    [VALUES]                                4         9
-    [(]                                     11        11
-    ['Tennis racket purchased']             12        36
-    [,]                                     37        37
-    [SYSDATE]                               39        45
-    [)]                                     46        46
-    [;]                                     47        47
+    [VALUES]                                4         10
+    [(]                                     11        12
+    ['Tennis racket purchased']             12        37
+    [,]                                     37        38
+    [SYSDATE]                               39        46
+    [)]                                     46        47
+    [;]                                     47        48
 L12
-    [ELSE]                                  2         5
+    [ELSE]                                  2         6
 L13
-    [INSERT]                                3         8
-    [INTO]                                  10        13
-    [purchase_record]                       15        29
+    [INSERT]                                3         9
+    [INTO]                                  10        14
+    [purchase_record]                       15        30
 L14
-    [VALUES]                                4         9
-    [(]                                     11        11
-    ['Out of tennis rackets']               12        34
-    [,]                                     35        35
-    [SYSDATE]                               37        43
-    [)]                                     44        44
-    [;]                                     45        45
+    [VALUES]                                4         10
+    [(]                                     11        12
+    ['Out of tennis rackets']               12        35
+    [,]                                     35        36
+    [SYSDATE]                               37        44
+    [)]                                     44        45
+    [;]                                     45        46
 L15
-    [END]                                   2         4
-    [IF]                                    6         7
-    [;]                                     8         8
+    [END]                                   2         5
+    [IF]                                    6         8
+    [;]                                     8         9
 L16
-    [COMMIT]                                2         7
-    [;]                                     8         8
+    [COMMIT]                                2         8
+    [;]                                     8         9
 L17
-    [END]                                   1         3
-    [;]                                     4         4
+    [END]                                   1         4
+    [;]                                     4         5
 EOF

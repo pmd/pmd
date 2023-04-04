@@ -15,10 +15,6 @@ abstract class AbstractModelicaClassSpecifierNode extends AbstractModelicaNode i
         super(id);
     }
 
-    AbstractModelicaClassSpecifierNode(ModelicaParser parser, int id) {
-        super(parser, id);
-    }
-
     @Override
     public void jjtClose() {
         super.jjtClose();

@@ -14,14 +14,14 @@ import java.util.List;
  *
  * @author Brian Remedios
  */
-public class StringPropertyTest extends AbstractPropertyDescriptorTester<String> {
+class StringPropertyTest extends AbstractPropertyDescriptorTester<String> {
 
     private static final int MAX_STRING_LENGTH = 52;
     private static final char DELIMITER = '|';
     private static final char[] CHARSET = filter(ALL_CHARS.toCharArray(), DELIMITER);
 
 
-    public StringPropertyTest() {
+    StringPropertyTest() {
         super("String");
     }
 

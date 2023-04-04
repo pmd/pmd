@@ -1,4 +1,4 @@
-+- Input[@CanonicalImage = null, @ExcludedLinesCount = 0, @ExcludedRangesCount = 0, @Sourcecode = "--\n-- BSD-style license; for more info see http://pmd.sourceforge.net/license.html\n--\n\nCREATE OR REPLACE PROCEDURE EXAMPLE_PROCEDURE IS\n   --\n   TYPE t_data IS TABLE OF dual%ROWTYPE INDEX BY BINARY_INTEGER;\n   --\n   l_data t_data;\n   l_sql  VARCHAR2(500);\n   --\nBEGIN\n   --\n   l_sql := \'SELECT * FROM DUAL\';\n   --\n   EXECUTE IMMEDIATE l_sql BULK COLLECT\n      INTO l_data;\n   --\nEND EXAMPLE_PROCEDURE;\n"]
++- Input[@CanonicalImage = null, @ExcludedLinesCount = 0, @ExcludedRangesCount = 0]
    +- Global[@CanonicalImage = null]
       +- ProgramUnit[@CanonicalImage = null, @MethodName = "EXAMPLE_PROCEDURE", @Name = "EXAMPLE_PROCEDURE", @ObjectName = null]
          +- MethodDeclarator[@CanonicalImage = "EXAMPLE_PROCEDURE", @Image = "EXAMPLE_PROCEDURE", @ParameterCount = 1]

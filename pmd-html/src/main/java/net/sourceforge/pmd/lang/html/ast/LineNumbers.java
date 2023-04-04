@@ -4,17 +4,16 @@
 
 package net.sourceforge.pmd.lang.html.ast;
 
-import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
+
+import net.sourceforge.pmd.lang.document.Chars;
 
 class LineNumbers {
     private final ASTHtmlDocument document;
-    private String htmlString;
-    private SourceCodePositioner sourceCodePositioner;
+    private final Chars htmlString;
 
-    LineNumbers(ASTHtmlDocument document, String htmlString) {
+    LineNumbers(ASTHtmlDocument document) {
         this.document = document;
-        this.htmlString = htmlString;
-        this.sourceCodePositioner = new SourceCodePositioner(htmlString);
+        this.htmlString = document.getTextDocument().getText();
     }
 
     public void determine() {
@@ -80,19 +79,13 @@ class LineNumbers {
 
     private void setBeginLocation(AbstractHtmlNode<?> n, int index) {
         if (n != null) {
-            int line = sourceCodePositioner.lineNumberFromOffset(index);
-            int column = sourceCodePositioner.columnFromOffset(line, index);
-            n.setBeginLine(line);
-            n.setBeginColumn(column);
+            n.startOffset = index;
         }
     }
 
     private void setEndLocation(AbstractHtmlNode<?> n, int index) {
         if (n != null) {
-            int line = sourceCodePositioner.lineNumberFromOffset(index);
-            int column = sourceCodePositioner.columnFromOffset(line, index);
-            n.setEndLine(line);
-            n.setEndColumn(column);
+            n.endOffset = index;
         }
     }
 }

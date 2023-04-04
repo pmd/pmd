@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class CheckResultSetTest extends PmdRuleTst {
+class CheckResultSetTest extends PmdRuleTst {
     // no additional unit tests
 }

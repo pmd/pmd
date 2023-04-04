@@ -4,23 +4,19 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import scala.meta.Term;
 
 /**
  * The ASTTermTuple node implementation.
  */
-public class ASTTermTuple extends AbstractScalaNode<Term.Tuple> {
+public final class ASTTermTuple extends AbstractScalaNode<Term.Tuple> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTermTuple(Term.Tuple scalaNode) {
+    ASTTermTuple(Term.Tuple scalaNode) {
         super(scalaNode);
     }
 
     @Override
-    public <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data) {
+    protected <P, R> R acceptVisitor(ScalaParserVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

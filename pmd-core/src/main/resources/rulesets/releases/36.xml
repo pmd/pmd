@@ -9,9 +9,9 @@ This ruleset contains links to rules that are new in PMD v3.6
   </description>
 
   <rule ref="rulesets/java/strings.xml/InefficientEmptyStringCheck"/>
-  <rule ref="rulesets/java/design.xml/UnsynchronizedStaticDateFormatter"/>
+  <!-- Removed with 7.0.0 <rule ref="rulesets/java/design.xml/UnsynchronizedStaticDateFormatter"/>-->
   <rule ref="rulesets/java/strings.xml/InsufficientStringBufferDeclaration"/>
-  <rule ref="rulesets/java/junit.xml/SimplifyBooleanAssertion"/>
+<!--  <rule ref="rulesets/java/junit.xml/SimplifyBooleanAssertion"/>-->
   <rule ref="rulesets/java/basic.xml/AvoidThreadGroup"/>
   <rule ref="rulesets/jsp/basic-jsf.xml/DontNestJsfInJstlIteration"/>
   <rule ref="rulesets/jsp/basic.xml/NoLongScripts"/>

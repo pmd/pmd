@@ -8,7 +8,8 @@ package net.sourceforge.pmd.lang.java.ast;
 import net.sourceforge.pmd.annotation.Experimental;
 
 /**
- * Contains a potentially empty list of nested Patterns for {@linkplain ASTRecordPattern RecordPattern} (JDK 19).
+ * Contains a potentially empty list of nested Patterns for {@linkplain ASTRecordPattern RecordPattern}
+ * (Java 19 Preview and Java 20 Preview).
  *
  * <pre class="grammar">
  *
@@ -16,20 +17,16 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * </pre>
  *
- * @see <a href="https://openjdk.org/jeps/405">JEP 405: Record Patterns (Preview)</a>
+ * @see <a href="https://openjdk.org/jeps/432">JEP 432: Record Patterns (Second Preview)</a>
  */
 @Experimental
-public final class ASTComponentPatternList extends AbstractJavaNode {
+public final class ASTComponentPatternList extends ASTList<ASTPattern> {
     ASTComponentPatternList(int id) {
-        super(id);
-    }
-
-    ASTComponentPatternList(JavaParser p, int id) {
-        super(p, id);
+        super(id, ASTPattern.class);
     }
 
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

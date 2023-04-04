@@ -80,16 +80,8 @@ import org.apache.commons.lang3.StringUtils;
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (obj instanceof PropertyDescriptor) {
-            return name.equals(((PropertyDescriptor<?>) obj).name());
-        }
-        return false;
+        return this == obj || obj instanceof PropertyDescriptor
+            && name.equals(((PropertyDescriptor<?>) obj).name());
     }
 
 

@@ -1,13 +1,13 @@
     [Image] or [Truncated image[            Bcol      Ecol
 L1
-    [class]                                 1         5
-    [MyClass]                               7         13
-    [{]                                     15        15
+    [class]                                 1         6
+    [MyClass]                               7         14
+    [{]                                     15        16
 L2
-    [final]                                 3         7
-    [stringWithBackslashes]                 9         29
-    [=]                                     31        31
-    ["Escaping\\ spaces\\ should work"]     33        63
+    [final]                                 3         8
+    [stringWithBackslashes]                 9         30
+    [=]                                     31        32
+    ["Escaping\\ spaces\\ should work"]     33        64
 L3
-    [}]                                     1         1
+    [}]                                     1         2
 EOF

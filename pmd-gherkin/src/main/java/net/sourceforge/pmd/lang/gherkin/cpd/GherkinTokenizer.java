@@ -5,11 +5,9 @@
 package net.sourceforge.pmd.lang.gherkin.cpd;
 
 import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.Lexer;
 
-import net.sourceforge.pmd.cpd.AntlrTokenizer;
-import net.sourceforge.pmd.cpd.SourceCode;
-import net.sourceforge.pmd.cpd.token.AntlrTokenFilter;
-import net.sourceforge.pmd.lang.antlr.AntlrTokenManager;
+import net.sourceforge.pmd.cpd.internal.AntlrTokenizer;
 import net.sourceforge.pmd.lang.gherkin.ast.GherkinLexer;
 
 /**
@@ -18,13 +16,7 @@ import net.sourceforge.pmd.lang.gherkin.ast.GherkinLexer;
 public class GherkinTokenizer extends AntlrTokenizer {
 
     @Override
-    protected AntlrTokenManager getLexerForSource(SourceCode sourceCode) {
-        CharStream charStream = AntlrTokenizer.getCharStreamFromSourceCode(sourceCode);
-        return new AntlrTokenManager(new GherkinLexer(charStream), sourceCode.getFileName());
-    }
-
-    @Override
-    protected AntlrTokenFilter getTokenFilter(final AntlrTokenManager tokenManager) {
-        return new AntlrTokenFilter(tokenManager);
+    protected Lexer getLexerForSource(CharStream charStream) {
+        return new GherkinLexer(charStream);
     }
 }

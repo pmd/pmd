@@ -4,36 +4,36 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest;
 import net.sourceforge.pmd.lang.ast.test.RelevantAttributePrinter;
 import net.sourceforge.pmd.lang.plsql.PlsqlParsingHelper;
 
-public class ExecuteImmediateBulkCollectTest extends BaseTreeDumpTest {
+class ExecuteImmediateBulkCollectTest extends BaseTreeDumpTest {
 
-    public ExecuteImmediateBulkCollectTest() {
+    ExecuteImmediateBulkCollectTest() {
         super(new RelevantAttributePrinter(), ".pls");
     }
 
     @Override
     public BaseParsingHelper<?, ?> getParser() {
-        return PlsqlParsingHelper.WITH_PROCESSING.withResourceContext(getClass());
+        return PlsqlParsingHelper.DEFAULT.withResourceContext(getClass());
     }
 
     @Test
-    public void testExecuteImmediateBulkCollect1() {
+    void testExecuteImmediateBulkCollect1() {
         doTest("ExecuteImmediateBulkCollect1");
     }
 
     @Test
-    public void testExecuteImmediateBulkCollect2() {
+    void testExecuteImmediateBulkCollect2() {
         doTest("ExecuteImmediateBulkCollect2");
     }
 
     @Test
-    public void testExecuteImmediateBulkCollect3() {
+    void testExecuteImmediateBulkCollect3() {
         doTest("ExecuteImmediateBulkCollect3");
     }
 }

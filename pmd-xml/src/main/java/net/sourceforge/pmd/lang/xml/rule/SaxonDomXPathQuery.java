@@ -16,10 +16,10 @@ import org.apache.commons.lang3.exception.ContextedRuntimeException;
 import org.w3c.dom.Document;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.xpath.SaxonXPathRuleQuery;
+import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
+import net.sourceforge.pmd.lang.rule.xpath.internal.DomainConversion;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
-import net.sourceforge.pmd.lang.xml.ast.XmlParser.RootXmlNode;
-import net.sourceforge.pmd.lang.xpath.Initializer;
+import net.sourceforge.pmd.lang.xml.ast.internal.XmlParserImpl.RootXmlNode;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.util.DataMap;
@@ -28,11 +28,12 @@ import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 
 import net.sf.saxon.Configuration;
 import net.sf.saxon.dom.DocumentWrapper;
-import net.sf.saxon.dom.NodeWrapper;
+import net.sf.saxon.lib.ExtensionFunctionDefinition;
+import net.sf.saxon.lib.NamespaceConstant;
+import net.sf.saxon.om.AtomicSequence;
 import net.sf.saxon.om.Item;
 import net.sf.saxon.om.NamePool;
-import net.sf.saxon.om.NamespaceConstant;
-import net.sf.saxon.om.ValueRepresentation;
+import net.sf.saxon.om.StructuredQName;
 import net.sf.saxon.sxpath.IndependentContext;
 import net.sf.saxon.sxpath.XPathDynamicContext;
 import net.sf.saxon.sxpath.XPathEvaluator;
@@ -40,6 +41,7 @@ import net.sf.saxon.sxpath.XPathExpression;
 import net.sf.saxon.sxpath.XPathStaticContext;
 import net.sf.saxon.sxpath.XPathVariable;
 import net.sf.saxon.trans.XPathException;
+import net.sf.saxon.tree.wrapper.AbstractNodeWrapper;
 
 final class SaxonDomXPathQuery {
 
@@ -50,14 +52,19 @@ final class SaxonDomXPathQuery {
 
     /** The XPath expression as a string. */
     private final String xpath;
+    private final XPathHandler xpathHandler;
     /** The executable XPath expression. */
     private final XPathExpressionWithProperties xpathExpression;
 
 
     private final Configuration configuration;
 
-    SaxonDomXPathQuery(String xpath, String defaultNsUri, List<PropertyDescriptor<?>> properties) {
+    SaxonDomXPathQuery(String xpath,
+                       String defaultNsUri,
+                       List<PropertyDescriptor<?>> properties,
+                       XPathHandler xpathHandler) {
         this.xpath = xpath;
+        this.xpathHandler = xpathHandler;
         configuration = new Configuration();
         configuration.setNamePool(NAME_POOL);
         xpathExpression = makeXPathExpression(this.xpath, defaultNsUri, properties);
@@ -69,8 +76,13 @@ final class SaxonDomXPathQuery {
         xpathStaticContext.setDefaultElementNamespace(defaultUri);
 
 
-        // Register PMD functions
-        Initializer.initialize(xpathStaticContext);
+
+
+        for (ExtensionFunctionDefinition fun : xpathHandler.getRegisteredExtensionFunctions()) {
+            StructuredQName qname = fun.getFunctionQName();
+            xpathStaticContext.declareNamespace(qname.getPrefix(), qname.getURI());
+            this.configuration.registerExtensionFunction(fun);
+        }
 
         Map<PropertyDescriptor<?>, XPathVariable> xpathVariables = declareXPathVariables(properties, xpathStaticContext);
 
@@ -118,8 +130,8 @@ final class SaxonDomXPathQuery {
         try {
             List<Node> result = new ArrayList<>();
             for (Item item : this.xpathExpression.evaluate(wrapper, propertyValues)) {
-                if (item instanceof NodeWrapper) {
-                    NodeWrapper nodeInfo = (NodeWrapper) item;
+                if (item instanceof AbstractNodeWrapper) {
+                    AbstractNodeWrapper nodeInfo = (AbstractNodeWrapper) item;
                     Object domNode = nodeInfo.getUnderlyingNode();
                     if (domNode instanceof org.w3c.dom.Node) {
                         XmlNode wrapped = root.wrap((org.w3c.dom.Node) domNode);
@@ -158,18 +170,17 @@ final class SaxonDomXPathQuery {
             this.xpathVariables = xpathVariables;
         }
 
-        @SuppressWarnings("unchecked")
         private List<Item> evaluate(final DocumentWrapper elementNode, PropertySource properties) throws XPathException {
             XPathDynamicContext dynamicContext = createDynamicContext(elementNode, properties);
-            return (List<Item>) expr.evaluate(dynamicContext);
+            return expr.evaluate(dynamicContext);
         }
 
-        private XPathDynamicContext createDynamicContext(final DocumentWrapper elementNode, PropertySource properties) {
-            final XPathDynamicContext dynamicContext = expr.createDynamicContext(elementNode);
+        private XPathDynamicContext createDynamicContext(final DocumentWrapper elementNode, PropertySource properties) throws XPathException {
+            final XPathDynamicContext dynamicContext = expr.createDynamicContext(elementNode.getRootNode());
 
             // Set variable values on the dynamic context
             for (final Entry<PropertyDescriptor<?>, XPathVariable> entry : xpathVariables.entrySet()) {
-                ValueRepresentation saxonValue = getSaxonValue(properties, entry);
+                AtomicSequence saxonValue = getSaxonValue(properties, entry);
                 XPathVariable variable = entry.getValue();
                 try {
                     dynamicContext.setVariable(variable, saxonValue);
@@ -181,10 +192,10 @@ final class SaxonDomXPathQuery {
             return dynamicContext;
         }
 
-        private static ValueRepresentation getSaxonValue(PropertySource properties, Entry<PropertyDescriptor<?>, XPathVariable> entry) {
+        private static AtomicSequence getSaxonValue(PropertySource properties, Entry<PropertyDescriptor<?>, XPathVariable> entry) {
             Object value = properties.getProperty(entry.getKey());
             Objects.requireNonNull(value, "null property value for " + entry.getKey());
-            return SaxonXPathRuleQuery.getRepresentation(entry.getKey(), value);
+            return DomainConversion.convert(value);
         }
     }
 

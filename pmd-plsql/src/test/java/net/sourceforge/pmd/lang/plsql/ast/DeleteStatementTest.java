@@ -4,22 +4,23 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 
-public class DeleteStatementTest extends AbstractPLSQLParserTst {
+class DeleteStatementTest extends AbstractPLSQLParserTst {
 
     @Test
-    public void parseDeleteStatementExample() {
+    void parseDeleteStatementExample() {
         ASTInput input = plsql.parseResource("DeleteStatementExample.pls");
         List<ASTDeleteStatement> deleteStatements = input.findDescendantsOfType(ASTDeleteStatement.class);
-        Assert.assertEquals(3, deleteStatements.size());
+        assertEquals(3, deleteStatements.size());
 
-        Assert.assertEquals("product_descriptions", deleteStatements.get(0).getChild(0)
+        assertEquals("product_descriptions", deleteStatements.get(0).getChild(0)
                                                                     .getFirstChildOfType(ASTTableName.class).getImage());
     }
 }

@@ -4,37 +4,30 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.ast.xpath.internal.DeprecatedAttribute;
+/**
+ * Package declaration at the top of a {@linkplain ASTCompilationUnit source file}.
+ * Since 7.0, there is no Name node anymore. Use {@link #getName()} instead.
+ *
+ *
+ * <pre class="grammar">
+ *
+ * PackageDeclaration ::= {@link ASTModifierList AnnotationList} "package" Name ";"
+ *
+ * </pre>
+ *
+ */
+public final class ASTPackageDeclaration extends AbstractJavaNode implements Annotatable, ASTTopLevelDeclaration, JavadocCommentOwner {
 
-public class ASTPackageDeclaration extends AbstractJavaAnnotatableNode {
-
-    @InternalApi
-    @Deprecated
-    public ASTPackageDeclaration(int id) {
+    ASTPackageDeclaration(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTPackageDeclaration(JavaParser p, int id) {
-        super(p, id);
-    }
 
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
-
-    /**
-     * @deprecated Use {@link #getName()}
-     */
-    @Deprecated
-    @DeprecatedAttribute(replaceWith = "@Name")
-    public String getPackageNameImage() {
-        return getName();
-    }
 
     /**
      * Returns the name of the package.
@@ -42,6 +35,12 @@ public class ASTPackageDeclaration extends AbstractJavaAnnotatableNode {
      * @since 6.30.0
      */
     public String getName() {
-        return ((ASTName) getChild(this.getNumChildren() - 1)).getImage();
+        return super.getImage();
+    }
+
+    @Override
+    public String getImage() {
+        // the image was null before 7.0, best keep it that way
+        return null;
     }
 }

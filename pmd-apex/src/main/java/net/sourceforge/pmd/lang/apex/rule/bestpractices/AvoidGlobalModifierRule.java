@@ -16,12 +16,6 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 
 public class AvoidGlobalModifierRule extends AbstractApexRule {
 
-    public AvoidGlobalModifierRule() {
-        setProperty(CODECLIMATE_CATEGORIES, "Style");
-        setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
-        setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
-    }
-
     @Override
     public Object visit(ASTUserClass node, Object data) {
         return checkForGlobal(node, data);

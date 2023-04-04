@@ -1,7 +1,4 @@
 
-.panel-body {
-    padding-top: 0cm;
-}
 
 .landing-page.cat-title {
     margin-bottom: .5cm;
@@ -10,6 +7,16 @@
 
 .landing-page.cat-description {
     margin-top: .4cm;
+}
+
+#grid > div {
+    margin: 10px 0px;
+}
+#grid .card-body {
+    padding-top: 0cm;
+}
+#grid .card-header {
+    font-weight: bold;
 }
 
 /* Offsets contents by the height of the nav bar */
@@ -87,6 +94,33 @@ details[open] summary {
 }
 .xpath-fun-doc .code-examples dt {
     font-weight: normal;
+}
+
+.float-right {
+    float: right;
+}
+
+.float-left {
+    float: left;
+}
+
+.footer p img {
+    margin-left: 1em;
+}
+
+
+pre {
+    display: block;
+    padding: 9.5px;
+    margin: 0 0 10px;
+    font-size: 13px;
+    line-height: 1.428571429;
+    word-break: break-all;
+    word-wrap: break-word;
+    color: #77777a;
+    background-color: #f5f5f5;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
 }
 
 div.sidebarTitleDate {

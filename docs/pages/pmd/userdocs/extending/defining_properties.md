@@ -55,7 +55,7 @@ This is fairly more readable than a constructor call, but keep in mind the descr
 
 {%include note.html
 content='As of version 6.10.0, all property concrete classes are deprecated for
-removal in 7.0.0. See the <a href="pmd_next_major_development.html#properties-framework">detailed list of planned removals</a> for
+removal in 7.0.0. See the <a href="pmd_release_notes_pmd7.html#properties-framework">detailed list of planned removals</a> for
 information about how to migrate.' %}
 
 

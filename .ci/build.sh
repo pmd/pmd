@@ -9,15 +9,16 @@ SCRIPT_INCLUDES="log.bash utils.bash setup-secrets.bash openjdk.bash maven.bash 
 source "$(dirname "$0")/inc/fetch_ci_scripts.bash" && fetch_ci_scripts
 
 function build() {
-    pmd_ci_log_group_start "Prepare Java 7+11+17, Bundler"
+    pmd_ci_log_group_start "Prepare Java 8+11+17, Bundler"
         pmd_ci_openjdk_install_adoptium 11
         pmd_ci_openjdk_setdefault 11
         PMD_MAVEN_EXTRA_OPTS=()
         if [ "$(pmd_ci_utils_get_os)" = "linux" ]; then
-            pmd_ci_log_info "Install openjdk7 for integration tests"
-            pmd_ci_openjdk_install_zuluopenjdk 7
+            pmd_ci_log_info "Install openjdk8 for integration tests and pmd-regression-tests"
+            pmd_ci_openjdk_install_adoptium 8
+            pmd_ci_log_info "Install openjdk17 for integration tests and pmd-regression-tests"
             pmd_ci_openjdk_install_adoptium 17
-            PMD_MAVEN_EXTRA_OPTS=(-Djava7.home="${HOME}/openjdk7" -Djava17.home="${HOME}/openjdk17")
+            PMD_MAVEN_EXTRA_OPTS=(-Djava8.home="${HOME}/openjdk8" -Djava17.home="${HOME}/openjdk17")
         fi
         pmd_ci_build_setup_bundler
     pmd_ci_log_group_end
@@ -175,7 +176,7 @@ function pmd_ci_build_run() {
 # Deploys the binary distribution
 #
 function pmd_ci_deploy_build_artifacts() {
-    # Deploy to sourceforge files
+    # Deploy to sourceforge files https://sourceforge.net/projects/pmd/files/pmd/
     pmd_ci_sourceforge_uploadFile "pmd/${PMD_CI_MAVEN_PROJECT_VERSION}" "pmd-dist/target/pmd-bin-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
     pmd_ci_sourceforge_uploadFile "pmd/${PMD_CI_MAVEN_PROJECT_VERSION}" "pmd-dist/target/pmd-src-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
 
@@ -192,6 +193,7 @@ function pmd_ci_deploy_build_artifacts() {
 
 #
 # Builds and uploads the documentation site
+# Renders release notes and uploads them as ReadMe.md to sourceforge
 #
 function pmd_ci_build_and_upload_doc() {
     pmd_doc_generate_jekyll_site
@@ -206,6 +208,20 @@ function pmd_ci_build_and_upload_doc() {
     pmd_code_uploadDocumentation "${PMD_CI_MAVEN_PROJECT_VERSION}" "docs/pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
     # Deploy javadoc to https://docs.pmd-code.org/apidocs/*/${PMD_CI_MAVEN_PROJECT_VERSION}/
     pmd_code_uploadJavadoc "${PMD_CI_MAVEN_PROJECT_VERSION}" "$(pwd)"
+
+    # render release notes
+    # updating github release text
+    rm -f .bundle/config
+    bundle config set --local path vendor/bundle
+    bundle config set --local with release_notes_preprocessing
+    bundle install
+    # renders, and skips the first 6 lines - the Jekyll front-matter
+    local rendered_release_notes
+    rendered_release_notes=$(bundle exec docs/render_release_notes.rb docs/pages/release_notes.md | tail -n +6)
+    local release_name
+    release_name="PMD ${PMD_CI_MAVEN_PROJECT_VERSION} ($(date -u +%d-%B-%Y))"
+    # Upload to https://sourceforge.net/projects/pmd/files/pmd/${PMD_CI_MAVEN_PROJECT_VERSION}/ReadMe.md
+    pmd_ci_sourceforge_uploadReleaseNotes "pmd/${PMD_CI_MAVEN_PROJECT_VERSION}" "${rendered_release_notes}"
 
     if pmd_ci_maven_isSnapshotBuild && [ "${PMD_CI_BRANCH}" = "master" ]; then
         # only for snapshot builds from branch master
@@ -223,22 +239,12 @@ function pmd_ci_build_and_upload_doc() {
         pmd_code_createSymlink "${PMD_CI_MAVEN_PROJECT_VERSION}" "latest"
         # remove old doc and point to the new version
         pmd_code_removeDocumentation "${PMD_CI_MAVEN_PROJECT_VERSION}-SNAPSHOT"
-        pmd_code_createSymlink "${PMD_CI_MAVEN_PROJECT_VERSION}" "${PMD_CI_MAVEN_PROJECT_VERSION}-SNAPSHOT"
+        pmd_code_createSymlink "${PMD_CI_MAVEN_PROJECT_VERSION}" "pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}-SNAPSHOT"
         # remove old javadoc
         pmd_code_removeJavadoc "${PMD_CI_MAVEN_PROJECT_VERSION}-SNAPSHOT"
 
-        # updating github release text
-        rm -f .bundle/config
-        bundle config set --local path vendor/bundle
-        bundle config set --local with release_notes_preprocessing
-        bundle install
-        # renders, and skips the first 6 lines - the Jekyll front-matter
-        local rendered_release_notes
-        rendered_release_notes=$(bundle exec docs/render_release_notes.rb docs/pages/release_notes.md | tail -n +6)
-        local release_name
-        release_name="PMD ${PMD_CI_MAVEN_PROJECT_VERSION} ($(date -u +%d-%B-%Y))"
+        # github release only for releases
         pmd_ci_gh_releases_updateRelease "$GH_RELEASE" "$release_name" "${rendered_release_notes}"
-        pmd_ci_sourceforge_uploadReleaseNotes "pmd/${PMD_CI_MAVEN_PROJECT_VERSION}" "${rendered_release_notes}"
 
         local rendered_release_notes_with_links
         rendered_release_notes_with_links="
@@ -251,6 +257,7 @@ ${rendered_release_notes}"
 
         # updates https://pmd.github.io/latest/ and https://pmd.github.io/pmd-${PMD_CI_MAVEN_PROJECT_VERSION}
         publish_release_documentation_github
+        # rsync site to https://pmd.sourceforge.io/pmd-${PMD_CI_MAVEN_PROJECT_VERSION}
         pmd_ci_sourceforge_rsyncSnapshotDocumentation "${PMD_CI_MAVEN_PROJECT_VERSION}" "pmd-${PMD_CI_MAVEN_PROJECT_VERSION}"
     fi
 }
@@ -264,7 +271,7 @@ function pmd_ci_dogfood() {
     sed -i 's/<version>[0-9]\{1,\}\.[0-9]\{1,\}\.[0-9]\{1,\}.*<\/version>\( *<!-- pmd.dogfood.version -->\)/<version>'"${PMD_CI_MAVEN_PROJECT_VERSION}"'<\/version>\1/' pom.xml
     if [ "${PMD_CI_MAVEN_PROJECT_VERSION}" = "7.0.0-SNAPSHOT" ]; then
         sed -i 's/pmd-dogfood-config\.xml/pmd-dogfood-config7.xml/' pom.xml
-        mpmdVersion=(-Denforcer.skip=true -Dpmd.plugin.version=3.18.0-pmd7-SNAPSHOT)
+        mpmdVersion=(-Denforcer.skip=true -Dpmd.plugin.version=3.20.1-pmd-7-SNAPSHOT)
     fi
     ./mvnw verify --show-version --errors --batch-mode --no-transfer-progress "${PMD_MAVEN_EXTRA_OPTS[@]}" \
         "${mpmdVersion[@]}" \

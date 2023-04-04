@@ -12,30 +12,24 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
-import net.sourceforge.pmd.lang.java.ast.ASTArguments;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
-import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
+import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
+import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.ast.TypeNode;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.java.ast.BinaryOp;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
-import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 /**
@@ -47,7 +41,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  * @author Tammo van Lessen - provided original XPath expression
  *
  */
-public class GuardLogStatementRule extends AbstractJavaRule implements Rule {
+public class GuardLogStatementRule extends AbstractJavaRulechainRule {
     /*
      * guard methods and log levels:
      *
@@ -82,7 +76,7 @@ public class GuardLogStatementRule extends AbstractJavaRule implements Rule {
                     .defaultValues("isTraceEnabled", "isDebugEnabled", "isInfoEnabled", "isWarnEnabled", "isErrorEnabled", "isLoggable")
                     .delim(',').build();
 
-    private Map<String, String> guardStmtByLogLevel = new HashMap<>(12);
+    private final Map<String, String> guardStmtByLogLevel = new HashMap<>(12);
 
     /*
      * java util methods, that need special handling, e.g. they require an argument, which
@@ -92,228 +86,116 @@ public class GuardLogStatementRule extends AbstractJavaRule implements Rule {
     private static final String JAVA_UTIL_LOG_GUARD_METHOD = "isLoggable";
 
     public GuardLogStatementRule() {
+        super(ASTExpressionStatement.class);
         definePropertyDescriptor(LOG_LEVELS);
         definePropertyDescriptor(GUARD_METHODS);
     }
 
     @Override
-    public Object visit(ASTCompilationUnit unit, Object data) {
+    public void start(RuleContext ctx) {
         extractProperties();
-        return super.visit(unit, data);
     }
 
     @Override
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        if (node.isInterface()) {
-            return data; // don't consider interfaces
-        }
-        return super.visit(node, data);
-    }
-
-    @Override
-    public Object visit(ASTStatementExpression node, Object data) {
-        if (node.getNumChildren() < 1 || !(node.getChild(0) instanceof ASTPrimaryExpression)) {
-            // only consider primary expressions
-            return node;
+    public Object visit(ASTExpressionStatement node, Object data) {
+        ASTExpression expr = node.getExpr();
+        if (!(expr instanceof ASTMethodCall)) {
+            return null;
         }
 
-        ASTPrimaryExpression primary = (ASTPrimaryExpression) node.getChild(0);
-        if (primary.getNumChildren() >= 2 && primary.getChild(0) instanceof ASTPrimaryPrefix) {
-            ASTPrimaryPrefix prefix = (ASTPrimaryPrefix) primary.getChild(0);
-            String methodCall = getMethodCallName(prefix);
-            String logLevel = getLogLevelName(primary, methodCall);
-
-            if (guardStmtByLogLevel.containsKey(methodCall) && logLevel != null
-                    && primary.getChild(1) instanceof ASTPrimarySuffix
-                    && !hasGuard(primary, methodCall, logLevel)) {
-
-                ASTPrimarySuffix primarySuffix = (ASTPrimarySuffix) primary.getChild(1);
-                if (hasStringConcatenationWithVars(primarySuffix)
-                        || hasArgumentWithMethodCall(primarySuffix)) {
-                    addViolation(data, node);
-                }
+        ASTMethodCall methodCall = (ASTMethodCall) expr;
+        String logLevel = getLogLevelName(methodCall);
+        if (logLevel != null && guardStmtByLogLevel.containsKey(logLevel)) {
+            if (needsGuard(methodCall) && !hasGuard(methodCall, logLevel)) {
+                addViolation(data, node);
             }
         }
-        return super.visit(node, data);
+        return null;
     }
 
-    private boolean hasStringConcatenationWithVars(ASTPrimarySuffix node) {
-        if (!node.isArguments() || node.getArgumentCount() == 0) {
+    private boolean needsGuard(ASTMethodCall node) {
+        if (node.getArguments().size() == 0) {
             return false;
         }
-        ASTArgumentList argumentList = node.getFirstChildOfType(ASTArguments.class).getFirstChildOfType(ASTArgumentList.class);
-        for (JavaNode child : argumentList.children()) {
-            if (child.hasDescendantOfType(ASTAdditiveExpression.class)
-                && child instanceof TypeNode
-                && TypeTestUtil.isA(String.class, (TypeNode) child)) {
+
+        ASTArgumentList argumentList = node.getArguments();
+        for (ASTExpression child : argumentList) {
+            if (child.descendantsOrSelf()
+                    .filterIs(ASTInfixExpression.class)
+                    .filter(n -> n.getOperator() == BinaryOp.ADD)
+                    .nonEmpty()
+                && TypeTestUtil.isA(String.class, child)) {
                 // only consider the first String argument - which is the log message - and return here
                 return !isConstantStringExpression(child);
             }
         }
 
-        // if there is only one argument and this is a AdditiveExpression, we assume, it is the message
-        // and this is a string concatenation even we are not sure, that the type is string.
-        // this can happen for lambda parameters.
-        return isSingleAdditiveExpression(argumentList);
+        return true;
     }
 
-    private boolean isSingleAdditiveExpression(ASTArgumentList argumentList) {
-        return argumentList.size() == 1
-                && argumentList.getChild(0).getNumChildren() == 1
-                && argumentList.getChild(0).getChild(0) instanceof ASTAdditiveExpression;
-    }
-
-    private boolean isConstantStringExpression(JavaNode expr) {
-        if (expr instanceof ASTPrimaryExpression && expr.getChild(0) instanceof ASTPrimaryPrefix
-                && expr.getChild(0).getNumChildren() == 1
-                && expr.getChild(0).getChild(0) instanceof ASTLiteral) {
-            return ((ASTLiteral) expr.getChild(0).getChild(0)).isStringLiteral();
-        }
-        if (expr instanceof ASTPrimaryExpression && expr.getChild(0) instanceof ASTPrimaryPrefix
-                && expr.getChild(0).getNumChildren() == 1
-                && expr.getChild(0).getChild(0) instanceof ASTName) {
-            ASTName name = (ASTName) expr.getChild(0).getChild(0);
-            if (!TypeTestUtil.isA(String.class, name)) {
-                return false;
-            }
-            NameDeclaration nameDeclaration = name.getNameDeclaration();
-            if (nameDeclaration instanceof VariableNameDeclaration) {
-                ASTVariableDeclaratorId varId = ((VariableNameDeclaration) nameDeclaration).getDeclaratorId();
-                if (!varId.isFinal()) {
-                    return false;
-                }
-                if (varId.getParent() instanceof ASTVariableDeclarator) {
-                    ASTVariableInitializer initializer = ((ASTVariableDeclarator) varId.getParent()).getInitializer();
-                    if (initializer == null) {
-                        return false;
-                    }
-                    return isConstantStringExpression(initializer.getFirstChildOfType(ASTExpression.class));
-                }
-            }
-        }
-        if (expr instanceof ASTExpression || expr instanceof ASTAdditiveExpression) {
-            for (JavaNode child : expr.children()) {
-                if (!isConstantStringExpression(child)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-        return false;
-    }
-
-    private boolean hasArgumentWithMethodCall(ASTPrimarySuffix node) {
-        if (!node.isArguments() || node.getArgumentCount() <= 0) {
+    private boolean isConstantStringExpression(ASTExpression expr) {
+        if (expr == null) {
             return false;
         }
 
-        ASTArgumentList arguments = node.getFirstDescendantOfType(ASTArgumentList.class);
-        for (int i = 0; i < arguments.getNumChildren(); i++) {
-            JavaNode expression = arguments.getChild(i);
-            if (expression.getNumChildren() > 0) {
-                JavaNode primaryExpr = expression.getChild(0);
-                if (primaryExpr instanceof ASTPrimaryExpression && primaryExpr.getNumChildren() > 1) {
-                    JavaNode lastChild = primaryExpr.getChild(primaryExpr.getNumChildren() - 1);
-                    if (lastChild instanceof ASTPrimarySuffix) {
-                        return ((ASTPrimarySuffix) lastChild).isArguments();
-                    }
-                }
+        if (expr instanceof ASTStringLiteral) {
+            return true;
+        }
+
+        if (expr instanceof ASTVariableAccess) {
+            ASTVariableAccess var = (ASTVariableAccess) expr;
+            if (var.isCompileTimeConstant()) {
+                return true;
+            }
+            JVariableSymbol symbol = var.getReferencedSym();
+            if (symbol == null) {
+                return false;
+            }
+            if (!var.getReferencedSym().isFinal()) {
+                return false;
+            }
+            @Nullable
+            ASTVariableDeclaratorId declaratorId = symbol.tryGetNode();
+            if (declaratorId != null) {
+                return isConstantStringExpression(declaratorId.getInitializer());
             }
         }
 
+        if (expr instanceof ASTInfixExpression) {
+            ASTInfixExpression infix = (ASTInfixExpression) expr;
+            if (isConstantStringExpression(infix.getLeftOperand())
+                    && isConstantStringExpression(infix.getRightOperand())) {
+                return true;
+            }
+        }
         return false;
     }
 
-    private boolean hasGuard(ASTPrimaryExpression node, String methodCall, String logLevel) {
-        ASTIfStatement ifStatement = node.getFirstParentOfType(ASTIfStatement.class);
+    private boolean hasGuard(ASTMethodCall node, String logLevel) {
+        ASTIfStatement ifStatement = node.ancestors(ASTIfStatement.class).first();
         if (ifStatement == null) {
             return false;
         }
 
-        // an if statement always has an expression
-        ASTExpression expr = ifStatement.getFirstChildOfType(ASTExpression.class);
-        List<ASTPrimaryPrefix> guardCalls = expr.findDescendantsOfType(ASTPrimaryPrefix.class);
-        if (guardCalls.isEmpty()) {
-            return false;
-        }
+        for (ASTMethodCall maybeAGuardCall : ifStatement.getCondition().descendantsOrSelf().filterIs(ASTMethodCall.class)) {
+            String guardMethodName = maybeAGuardCall.getMethodName();
+            // the guard is adapted to the actual log statement
 
-        boolean foundGuard = false;
-        // check all conditions in the if expression
-        for (ASTPrimaryPrefix guardCall : guardCalls) {
-            if (guardCall.getNumChildren() < 1
-                    || guardCall.getChild(0).getImage() == null) {
+            if (!guardStmtByLogLevel.get(logLevel).contains(guardMethodName)) {
                 continue;
             }
 
-            String guardMethodCall = getLastPartOfName(guardCall.getChild(0));
-            boolean guardMethodCallMatches = guardStmtByLogLevel.get(methodCall).contains(guardMethodCall);
-            boolean hasArguments = guardCall.getParent().hasDescendantOfType(ASTArgumentList.class);
-
-            if (guardMethodCallMatches && !JAVA_UTIL_LOG_GUARD_METHOD.equals(guardMethodCall)) {
-                // simple case: guard method without the need to check arguments found
-                foundGuard = true;
-            } else if (guardMethodCallMatches && hasArguments) {
+            if (JAVA_UTIL_LOG_GUARD_METHOD.equals(guardMethodName)) {
                 // java.util.logging: guard method with argument. Verify the log level
-                String guardArgLogLevel = getLogLevelName(guardCall.getParent(), guardMethodCall);
-                foundGuard = logLevel.equals(guardArgLogLevel);
-            }
-
-            if (foundGuard) {
-                break;
-            }
-        }
-
-        return foundGuard;
-    }
-
-    /**
-     * Extracts the method name of the method call.
-     * @param prefix the method call
-     * @return the name of the called method
-     */
-    private String getMethodCallName(ASTPrimaryPrefix prefix) {
-        String result = "";
-        if (prefix.getNumChildren() == 1 && prefix.getChild(0) instanceof ASTName) {
-            result = getLastPartOfName(prefix.getChild(0));
-        }
-        return result;
-    }
-
-    private String getLastPartOfName(Node name) {
-        String result = "";
-        if (name != null) {
-            result = name.getImage();
-        }
-        int dotIndex = result.lastIndexOf('.');
-        if (dotIndex > -1 && result.length() > dotIndex + 1) {
-            result = result.substring(dotIndex + 1);
-        }
-        return result;
-    }
-
-    /**
-     * Gets the first child, first grand child, ... of the given types.
-     * The children must follow the given order of types
-     *
-     * @param root the node from where to start the search
-     * @param childrenTypes the list of types
-     * @param <N> should match the last type of childrenType, otherwise you'll get a ClassCastException
-     * @return the found child node or <code>null</code>
-     */
-    @SafeVarargs
-    private static <N extends Node> N getFirstChild(Node root, Class<? extends Node>... childrenTypes) {
-        Node current = root;
-        for (Class<? extends Node> clazz : childrenTypes) {
-            Node child = current.getFirstChildOfType(clazz);
-            if (child != null) {
-                current = child;
+                if (logLevel.equals(getJutilLogLevelInFirstArg(maybeAGuardCall))) {
+                    return true;
+                }
             } else {
-                return null;
+                return true;
             }
+
         }
-        @SuppressWarnings("unchecked")
-        N result = (N) current;
-        return result;
+        return false;
     }
 
     /**
@@ -321,32 +203,41 @@ public class GuardLogStatementRule extends AbstractJavaRule implements Rule {
      * itself or - in case java util logging is used, then it is the first argument of
      * the method call (if it exists).
      *
-     * @param node the method call
-     * @param methodCallName the called method name previously determined
+     * @param methodCall the method call
+     *
      * @return the log level or <code>null</code> if it could not be determined
      */
-    private String getLogLevelName(Node node, String methodCallName) {
-        if (!JAVA_UTIL_LOG_METHOD.equals(methodCallName) && !JAVA_UTIL_LOG_GUARD_METHOD.equals(methodCallName)) {
-            return methodCallName;
-        }
-
-        String logLevel = null;
-        ASTPrimarySuffix suffix = node.getFirstDescendantOfType(ASTPrimarySuffix.class);
-        if (suffix != null) {
-            ASTArgumentList argumentList = suffix.getFirstDescendantOfType(ASTArgumentList.class);
-            if (argumentList != null && argumentList.getNumChildren() > 0) {
-                // at least one argument - the log level. If the method call is "log", then a message might follow
-                ASTName name = GuardLogStatementRule.<ASTName>getFirstChild(argumentList.getChild(0),
-                        ASTPrimaryExpression.class, ASTPrimaryPrefix.class, ASTName.class);
-                String lastPart = getLastPartOfName(name);
-                lastPart = lastPart.toLowerCase(Locale.ROOT);
-                if (!lastPart.isEmpty()) {
-                    logLevel = lastPart;
-                }
+    private @Nullable String getLogLevelName(ASTMethodCall methodCall) {
+        String methodName = methodCall.getMethodName();
+        if (!JAVA_UTIL_LOG_METHOD.equals(methodName)) {
+            if (isUnguardedAccessOk(methodCall, 0)) {
+                return null;
             }
+            return methodName; // probably logger.warn(...)
         }
 
-        return logLevel;
+        // else it's java.util.logging, eg
+        // LOGGER.log(Level.FINE, "m")
+        if (isUnguardedAccessOk(methodCall, 1)) {
+            return null;
+        }
+        return getJutilLogLevelInFirstArg(methodCall);
+    }
+
+    private @Nullable String getJutilLogLevelInFirstArg(ASTMethodCall methodCall) {
+        ASTExpression firstArg = methodCall.getArguments().toStream().get(0);
+        if (TypeTestUtil.isA("java.util.logging.Level", firstArg) && firstArg instanceof ASTNamedReferenceExpr) {
+            return ((ASTNamedReferenceExpr) firstArg).getName().toLowerCase(Locale.ROOT);
+        }
+        return null;
+    }
+
+    private boolean isUnguardedAccessOk(ASTMethodCall call, int messageArgIndex) {
+        // return true if the statement has limited overhead even if unguarded,
+        // so that we can ignore it
+        return call.getArguments().toStream()
+                   .drop(messageArgIndex) // remove the level argument if needed
+                   .all(it -> it instanceof ASTStringLiteral || it instanceof ASTLambdaExpression || it instanceof ASTVariableAccess);
     }
 
     private void extractProperties() {

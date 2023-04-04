@@ -6,17 +6,13 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.ParenthesizedExpression;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTParenthesizedExpression extends AbstractEcmascriptNode<ParenthesizedExpression> {
-    @Deprecated
-    @InternalApi
-    public ASTParenthesizedExpression(ParenthesizedExpression parenthesizedExpression) {
+public final class ASTParenthesizedExpression extends AbstractEcmascriptNode<ParenthesizedExpression> {
+    ASTParenthesizedExpression(ParenthesizedExpression parenthesizedExpression) {
         super(parenthesizedExpression);
     }
 
     @Override
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+    protected <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

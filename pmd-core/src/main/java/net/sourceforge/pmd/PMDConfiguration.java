@@ -13,23 +13,32 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 
-import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.cache.AnalysisCache;
 import net.sourceforge.pmd.cache.FileAnalysisCache;
 import net.sourceforge.pmd.cache.NoopAnalysisCache;
 import net.sourceforge.pmd.cli.PmdParametersParseResult;
-import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
-import net.sourceforge.pmd.util.ClasspathClassLoader;
+import net.sourceforge.pmd.util.AssertionUtil;
+import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 /**
  * This class contains the details for the runtime configuration of a PMD run.
@@ -41,7 +50,7 @@ import net.sourceforge.pmd.util.ClasspathClassLoader;
  * <p>The aspects related to generic PMD behavior:</p>
  * <ul>
  * <li>Suppress marker is used in source files to suppress a RuleViolation,
- * defaults to {@link PMD#SUPPRESS_MARKER}. {@link #getSuppressMarker()}</li>
+ * defaults to {@value DEFAULT_SUPPRESS_MARKER}. {@link #getSuppressMarker()}</li>
  * <li>The number of threads to create when invoking on multiple files, defaults
  * one thread per available processor. {@link #getThreads()}</li>
  * <li>A ClassLoader to use when loading classes during Rule processing (e.g.
@@ -58,16 +67,16 @@ import net.sourceforge.pmd.util.ClasspathClassLoader;
  *
  * <p>The aspects related to Rules and Source files are:</p>
  * <ul>
- * <li>A comma separated list of RuleSets URIs. {@link #getRuleSets()}</li>
+ * <li>RuleSets URIs: {@link #getRuleSetPaths()}</li>
  * <li>A minimum priority threshold when loading Rules from RuleSets, defaults
  * to {@link RulePriority#LOW}. {@link #getMinimumPriority()}</li>
  * <li>The character encoding of source files, defaults to the system default as
  * returned by <code>System.getProperty("file.encoding")</code>.
  * {@link #getSourceEncoding()}</li>
- * <li>A comma separated list of input paths to process for source files. This
+ * <li>A list of input paths to process for source files. This
  * may include files, directories, archives (e.g. ZIP files), etc.
- * {@link #getInputPaths()}</li>
- * <li>A flag which controls, whether {@link RuleSetFactoryCompatibility} filter
+ * {@link #getInputPathList()}</li>
+ * <li>A flag which controls, whether {@link RuleSetLoader#enableCompatibility(boolean)} filter
  * should be used or not: #isRuleSetFactoryCompatibilityEnabled;
  * </ul>
  *
@@ -93,6 +102,7 @@ import net.sourceforge.pmd.util.ClasspathClassLoader;
  * </ul>
  */
 public class PMDConfiguration extends AbstractConfiguration {
+    private static final LanguageRegistry DEFAULT_REGISTRY = LanguageRegistry.PMD;
 
     /** The default suppress marker string. */
     public static final String DEFAULT_SUPPRESS_MARKER = "NOPMD";
@@ -101,13 +111,14 @@ public class PMDConfiguration extends AbstractConfiguration {
     private String suppressMarker = DEFAULT_SUPPRESS_MARKER;
     private int threads = Runtime.getRuntime().availableProcessors();
     private ClassLoader classLoader = getClass().getClassLoader();
-    private LanguageVersionDiscoverer languageVersionDiscoverer = new LanguageVersionDiscoverer();
+    private final LanguageVersionDiscoverer languageVersionDiscoverer;
     private LanguageVersion forceLanguageVersion;
+    private MessageReporter reporter = new SimpleMessageReporter(LoggerFactory.getLogger(PMD.class));
 
     // Rule and source file options
     private List<String> ruleSets = new ArrayList<>();
     private RulePriority minimumPriority = RulePriority.LOW;
-    private List<Path> inputPaths = new ArrayList<>();
+    private @NonNull List<Path> inputPaths = new ArrayList<>();
     private URI inputUri;
     private Path inputFilePath;
     private Path ignoreFilePath;
@@ -116,8 +127,6 @@ public class PMDConfiguration extends AbstractConfiguration {
     // Reporting options
     private String reportFormat;
     private Path reportFile;
-    @Deprecated
-    private boolean reportShortNames = false;
     private Properties reportProperties = new Properties();
     private boolean showSuppressedViolations = false;
     private boolean failOnViolation = true;
@@ -128,7 +137,18 @@ public class PMDConfiguration extends AbstractConfiguration {
     private boolean benchmark;
     private AnalysisCache analysisCache = new NoopAnalysisCache();
     private boolean ignoreIncrementalAnalysis;
+    private final LanguageRegistry langRegistry;
     private final List<Path> relativizeRoots = new ArrayList<>();
+    private final Map<Language, LanguagePropertyBundle> langProperties = new HashMap<>();
+
+    public PMDConfiguration() {
+        this(DEFAULT_REGISTRY);
+    }
+
+    public PMDConfiguration(@NonNull LanguageRegistry languageRegistry) {
+        this.langRegistry = Objects.requireNonNull(languageRegistry);
+        this.languageVersionDiscoverer = new LanguageVersionDiscoverer(languageRegistry);
+    }
 
     /**
      * Get the suppress marker. This is the source level marker used to indicate
@@ -147,6 +167,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      *            The suppress marker to use.
      */
     public void setSuppressMarker(String suppressMarker) {
+        Objects.requireNonNull(suppressMarker, "Suppress marker was null");
         this.suppressMarker = suppressMarker;
     }
 
@@ -253,6 +274,25 @@ public class PMDConfiguration extends AbstractConfiguration {
     }
 
     /**
+     * Returns the message reporter that is to be used while running
+     * the analysis.
+     */
+    public @NonNull MessageReporter getReporter() {
+        return reporter;
+    }
+
+    /**
+     * Sets the message reporter that is to be used while running
+     * the analysis.
+     *
+     * @param reporter A non-null message reporter
+     */
+    public void setReporter(@NonNull MessageReporter reporter) {
+        AssertionUtil.requireParamNotNull("reporter", reporter);
+        this.reporter = reporter;
+    }
+
+    /**
      * Get the LanguageVersionDiscoverer, used to determine the LanguageVersion
      * of a source file.
      *
@@ -287,7 +327,10 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @param forceLanguageVersion the language version
      */
-    public void setForceLanguageVersion(LanguageVersion forceLanguageVersion) {
+    public void setForceLanguageVersion(@Nullable LanguageVersion forceLanguageVersion) {
+        if (forceLanguageVersion != null) {
+            checkLanguageIsRegistered(forceLanguageVersion.getLanguage());
+        }
         this.forceLanguageVersion = forceLanguageVersion;
         languageVersionDiscoverer.setForcedVersion(forceLanguageVersion);
     }
@@ -300,7 +343,8 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     public void setDefaultLanguageVersion(LanguageVersion languageVersion) {
         Objects.requireNonNull(languageVersion);
-        setDefaultLanguageVersions(Arrays.asList(languageVersion));
+        languageVersionDiscoverer.setDefaultLanguageVersion(languageVersion);
+        getLanguageProperties(languageVersion.getLanguage()).setLanguageVersion(languageVersion.getVersion());
     }
 
     /**
@@ -312,8 +356,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     public void setDefaultLanguageVersions(List<LanguageVersion> languageVersions) {
         for (LanguageVersion languageVersion : languageVersions) {
-            Objects.requireNonNull(languageVersion);
-            languageVersionDiscoverer.setDefaultLanguageVersion(languageVersion);
+            setDefaultLanguageVersion(languageVersion);
         }
     }
 
@@ -332,14 +375,19 @@ public class PMDConfiguration extends AbstractConfiguration {
     // FUTURE Delete this? I can't think of a good reason to keep it around.
     // Failure to determine the LanguageVersion for a file should be a hard
     // error, or simply cause the file to be skipped?
-    public LanguageVersion getLanguageVersionOfFile(String fileName) {
-        LanguageVersion languageVersion = languageVersionDiscoverer.getDefaultLanguageVersionForFile(fileName);
-        if (languageVersion == null) {
-            // For compatibility with older code that does not always pass in
-            // a correct filename.
-            languageVersion = languageVersionDiscoverer.getDefaultLanguageVersion(LanguageRegistry.getLanguage("Java"));
+    public @Nullable LanguageVersion getLanguageVersionOfFile(String fileName) {
+        LanguageVersion forcedVersion = getForceLanguageVersion();
+        if (forcedVersion != null) {
+            // use force language if given
+            return forcedVersion;
         }
-        return languageVersion;
+
+        // otherwise determine by file extension
+        return languageVersionDiscoverer.getDefaultLanguageVersionForFile(fileName);
+    }
+
+    LanguageRegistry getLanguageRegistry() {
+        return langRegistry;
     }
 
     /**
@@ -350,11 +398,12 @@ public class PMDConfiguration extends AbstractConfiguration {
      * @deprecated Use {@link #getRuleSetPaths()}
      */
     @Deprecated
-    public String getRuleSets() {
+    @DeprecatedUntil700
+    public @Nullable String getRuleSets() {
         if (ruleSets.isEmpty()) {
             return null;
         }
-        return StringUtils.join(ruleSets, ",");
+        return String.join(",", ruleSets);
     }
 
     /**
@@ -362,7 +411,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @see RuleSetLoader#loadFromResource(String)
      */
-    public List<String> getRuleSetPaths() {
+    public @NonNull List<@NonNull String> getRuleSetPaths() {
         return ruleSets;
     }
 
@@ -373,7 +422,9 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @throws NullPointerException If the parameter is null
      */
-    public void setRuleSets(List<String> ruleSetPaths) {
+    public void setRuleSets(@NonNull List<@NonNull String> ruleSetPaths) {
+        AssertionUtil.requireParamNotNull("ruleSetPaths", ruleSetPaths);
+        AssertionUtil.requireContainsNoNullValue("ruleSetPaths", ruleSetPaths);
         this.ruleSets = new ArrayList<>(ruleSetPaths);
     }
 
@@ -385,7 +436,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @throws NullPointerException If the parameter is null
      */
-    public void addRuleSet(String rulesetPath) {
+    public void addRuleSet(@NonNull String rulesetPath) {
         AssertionUtil.requireParamNotNull("rulesetPath", rulesetPath);
         this.ruleSets.add(rulesetPath);
     }
@@ -398,7 +449,8 @@ public class PMDConfiguration extends AbstractConfiguration {
      * @deprecated Use {@link #setRuleSets(List)} or {@link #addRuleSet(String)}.
      */
     @Deprecated
-    public void setRuleSets(String ruleSets) {
+    @DeprecatedUntil700
+    public void setRuleSets(@Nullable String ruleSets) {
         if (ruleSets == null) {
             this.ruleSets = new ArrayList<>();
         } else {
@@ -425,40 +477,12 @@ public class PMDConfiguration extends AbstractConfiguration {
         this.minimumPriority = minimumPriority;
     }
 
-    /**
-     * Get the comma separated list of input paths to process for source files.
-     *
-     * @return A comma separated list.
-     *
-     * @deprecated Use {@link #getAllInputPaths()}
-     */
-    @Deprecated
-    public String getInputPaths() {
-        return inputPaths.isEmpty() ? null : StringUtils.join(inputPaths, ",");
-    }
 
     /**
-     * Returns an unmodifiable list.
-     *
-     * @throws NullPointerException If the parameter is null
-     * @deprecated Use {@link #getInputPathList()}
+     * Returns the list of input paths to explore. This is an
+     * unmodifiable list.
      */
-    @Deprecated
-    public List<String> getAllInputPaths() {
-        final List<String> ret = new ArrayList<>(inputPaths.size());
-        for (final Path p : inputPaths) {
-            ret.add(p.toString());
-        }
-
-        return Collections.unmodifiableList(ret);
-    }
-
-    /**
-     * Returns an unmodifiable list.
-     *
-     * @throws NullPointerException If the parameter is null
-     */
-    public List<Path> getInputPathList() {
+    public @NonNull List<Path> getInputPathList() {
         return Collections.unmodifiableList(inputPaths);
     }
 
@@ -468,10 +492,13 @@ public class PMDConfiguration extends AbstractConfiguration {
      * @param inputPaths The comma separated list.
      *
      * @throws NullPointerException If the parameter is null
-     * @deprecated Use {@link #setInputPaths(List)} or {@link #addInputPath(String)}
+     * @deprecated Use {@link #setInputPathList(List)} or {@link #addInputPath(Path)}
      */
     @Deprecated
     public void setInputPaths(String inputPaths) {
+        if (inputPaths.isEmpty()) {
+            return;
+        }
         List<Path> paths = new ArrayList<>();
         for (String s : inputPaths.split(",")) {
             paths.add(Paths.get(s));
@@ -481,69 +508,31 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     /**
      * Set the input paths to the given list of paths.
-     * @throws NullPointerException If the parameter is null
-     * @deprecated Use {@link #setInputPathList(List)}
-     */
-    @Deprecated
-    public void setInputPaths(List<String> inputPaths) {
-        final List<Path> paths = new ArrayList<>(inputPaths.size());
-        for (String s : inputPaths) {
-            paths.add(Paths.get(s));
-        }
-        this.inputPaths = paths;
-    }
-
-    /**
-     * Set the input paths to the given list of paths.
-     * @throws NullPointerException If the parameter is null
+     *
+     * @throws NullPointerException If the parameter is null or contains a null value
      */
     public void setInputPathList(final List<Path> inputPaths) {
+        AssertionUtil.requireContainsNoNullValue("input paths", inputPaths);
         this.inputPaths = new ArrayList<>(inputPaths);
     }
 
-    /**
-     * Add an input path. It is not split on commas.
-     *
-     * @throws NullPointerException If the parameter is null
-     * @deprecated Use {@link #addInputPath(Path)}
-     */
-    @Deprecated
-    public void addInputPath(String inputPath) {
-        Objects.requireNonNull(inputPath);
-        this.inputPaths.add(Paths.get(inputPath));
-    }
 
     /**
      * Add an input path. It is not split on commas.
      *
      * @throws NullPointerException If the parameter is null
      */
-    public void addInputPath(Path inputPath) {
+    public void addInputPath(@NonNull Path inputPath) {
         Objects.requireNonNull(inputPath);
         this.inputPaths.add(inputPath);
     }
 
-    /**
-     * @deprecated Use {@link #getInputFile()}
-     */
-    @Deprecated
-    public String getInputFilePath() {
-        return inputFilePath == null ? null : inputFilePath.toString();
-    }
-
-    public Path getInputFile() {
+    /** Returns the path to the file list text file. */
+    public @Nullable Path getInputFile() {
         return inputFilePath;
     }
 
-    /**
-     * @deprecated Use {@link #getIgnoreFile()}
-     */
-    @Deprecated
-    public String getIgnoreFilePath() {
-        return ignoreFilePath == null ? null : ignoreFilePath.toString();
-    }
-
-    public Path getIgnoreFile() {
+    public @Nullable Path getIgnoreFile() {
         return ignoreFilePath;
     }
 
@@ -595,17 +584,6 @@ public class PMDConfiguration extends AbstractConfiguration {
      * Get the input URI to process for source code objects.
      *
      * @return URI
-     * @deprecated Use {@link #getUri}
-     */
-    @Deprecated
-    public String getInputUri() {
-        return inputUri == null ? null : inputUri.toString();
-    }
-
-    /**
-     * Get the input URI to process for source code objects.
-     *
-     * @return URI
      */
     public URI getUri() {
         return inputUri;
@@ -632,28 +610,6 @@ public class PMDConfiguration extends AbstractConfiguration {
     }
 
     /**
-     * Get whether to use File short names in Reports.
-     *
-     * @return <code>true</code> when using short names in reports.
-     */
-    @Deprecated
-    public boolean isReportShortNames() {
-        return reportShortNames;
-    }
-
-    /**
-     * Set whether to use File short names in Reports.
-     *
-     * @param reportShortNames
-     *            <code>true</code> when using short names in reports.
-     * @deprecated for removal. Use {@link #addRelativizeRoot(Path)} instead.
-     */
-    @Deprecated
-    public void setReportShortNames(boolean reportShortNames) {
-        this.reportShortNames = reportShortNames;
-    }
-
-    /**
      * Create a Renderer instance based upon the configured reporting options.
      * No writer is created.
      *
@@ -675,11 +631,8 @@ public class PMDConfiguration extends AbstractConfiguration {
     public Renderer createRenderer(boolean withReportWriter) {
         Renderer renderer = RendererFactory.createRenderer(reportFormat, reportProperties);
         renderer.setShowSuppressedViolations(showSuppressedViolations);
-        if (reportShortNames && inputPaths != null) {
-            renderer.setUseShortNames(getAllInputPaths());
-        }
         if (withReportWriter) {
-            renderer.setReportFile(getReportFile());
+            renderer.setReportFile(reportFile == null ? null : reportFile.toString());
         }
         return renderer;
     }
@@ -865,7 +818,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @return true, if the rule set factory compatibility feature is enabled
      *
-     * @see RuleSetFactoryCompatibility
+     * @see RuleSetLoader#enableCompatibility(boolean)
      */
     public boolean isRuleSetFactoryCompatibilityEnabled() {
         return ruleSetFactoryCompatibilityEnabled;
@@ -876,7 +829,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @param ruleSetFactoryCompatibilityEnabled {@code true} if the feature should be enabled
      *
-     * @see RuleSetFactoryCompatibility
+     * @see RuleSetLoader#enableCompatibility(boolean)
      */
     public void setRuleSetFactoryCompatibilityEnabled(boolean ruleSetFactoryCompatibilityEnabled) {
         this.ruleSetFactoryCompatibilityEnabled = ruleSetFactoryCompatibilityEnabled;
@@ -990,12 +943,30 @@ public class PMDConfiguration extends AbstractConfiguration {
     /**
      * Returns the paths used to shorten paths output in the report.
      * <ul>
-     * <li>If the list is empty, then paths are not touched (unless {@link #isReportShortNames()} is true)
+     * <li>If the list is empty, then paths are not touched
      * <li>If the list is non-empty, then source file paths are relativized with all the items in the list.
      * The shortest of these relative paths is taken as the display name of the file.
      * </ul>
      */
     public List<Path> getRelativizeRoots() {
         return Collections.unmodifiableList(relativizeRoots);
+    }
+
+    /**
+     * Returns a mutable bundle of language properties that are associated
+     * to the given language (always the same for a given language).
+     *
+     * @param language A language, which must be registered
+     */
+    public @NonNull LanguagePropertyBundle getLanguageProperties(Language language) {
+        checkLanguageIsRegistered(language);
+        return langProperties.computeIfAbsent(language, Language::newPropertyBundle);
+    }
+
+    void checkLanguageIsRegistered(Language language) {
+        if (!langRegistry.getLanguages().contains(language)) {
+            throw new IllegalArgumentException(
+                "Language '" + language.getId() + "' is not registered in " + getLanguageRegistry());
+        }
     }
 }

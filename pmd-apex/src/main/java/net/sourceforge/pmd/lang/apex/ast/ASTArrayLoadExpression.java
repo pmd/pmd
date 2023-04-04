@@ -4,20 +4,17 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.expression.ArrayLoadExpression;
 
-public class ASTArrayLoadExpression extends AbstractApexNode<ArrayLoadExpression> {
+public final class ASTArrayLoadExpression extends AbstractApexNode<ArrayLoadExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTArrayLoadExpression(ArrayLoadExpression arrayLoadExpression) {
+    ASTArrayLoadExpression(ArrayLoadExpression arrayLoadExpression) {
         super(arrayLoadExpression);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

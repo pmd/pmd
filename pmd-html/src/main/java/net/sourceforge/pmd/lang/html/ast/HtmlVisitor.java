@@ -4,21 +4,42 @@
 
 package net.sourceforge.pmd.lang.html.ast;
 
-public interface HtmlVisitor {
+import net.sourceforge.pmd.lang.ast.AstVisitor;
 
-    Object visit(HtmlNode node, Object data);
+public interface HtmlVisitor<P, R> extends AstVisitor<P, R> {
 
-    Object visit(ASTHtmlCDataNode node, Object data);
+    /**
+     * The default visit method, to which other methods delegate.
+     */
+    default R visitHtmlNode(HtmlNode node, P data) {
+        return visitNode(node, data);
+    }
 
-    Object visit(ASTHtmlComment node, Object data);
+    default R visit(ASTHtmlCDataNode node, P data) {
+        return visitHtmlNode(node, data);
+    }
 
-    Object visit(ASTHtmlDocument node, Object data);
+    default R visit(ASTHtmlComment node, P data) {
+        return visitHtmlNode(node, data);
+    }
 
-    Object visit(ASTHtmlDocumentType node, Object data);
+    default R visit(ASTHtmlDocument node, P data) {
+        return visitHtmlNode(node, data);
+    }
 
-    Object visit(ASTHtmlElement node, Object data);
+    default R visit(ASTHtmlDocumentType node, P data) {
+        return visitHtmlNode(node, data);
+    }
 
-    Object visit(ASTHtmlTextNode node, Object data);
+    default R visit(ASTHtmlElement node, P data) {
+        return visitHtmlNode(node, data);
+    }
 
-    Object visit(ASTHtmlXmlDeclaration node, Object data);
+    default R visit(ASTHtmlTextNode node, P data) {
+        return visitHtmlNode(node, data);
+    }
+
+    default R visit(ASTHtmlXmlDeclaration node, P data) {
+        return visitHtmlNode(node, data);
+    }
 }

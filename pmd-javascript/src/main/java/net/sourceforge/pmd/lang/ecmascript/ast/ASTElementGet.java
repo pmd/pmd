@@ -6,17 +6,13 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.ElementGet;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTElementGet extends AbstractEcmascriptNode<ElementGet> {
-    @Deprecated
-    @InternalApi
-    public ASTElementGet(ElementGet elementGet) {
+public final class ASTElementGet extends AbstractEcmascriptNode<ElementGet> {
+    ASTElementGet(ElementGet elementGet) {
         super(elementGet);
     }
 
     @Override
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+    protected <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

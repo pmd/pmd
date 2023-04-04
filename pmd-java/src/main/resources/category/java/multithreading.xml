@@ -22,9 +22,8 @@ gets it.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
-                <value>//MethodDeclaration[@Synchronized = true()]</value>
+                <value>//MethodDeclaration[pmd-java:modifiers() = "synchronized"]</value>
             </property>
         </properties>
         <example>
@@ -78,7 +77,6 @@ public class Foo {
           since="3.6"
           message="Avoid using java.lang.ThreadGroup; it is not thread safe"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#avoidthreadgroup">
         <description>
 Avoid using java.lang.ThreadGroup; although it is intended to be used in a threaded environment
@@ -86,12 +84,11 @@ it contains methods that are not thread-safe.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//AllocationExpression/ClassOrInterfaceType[pmd-java:typeIs('java.lang.ThreadGroup')]|
-//PrimarySuffix[contains(@Image, 'getThreadGroup')]
+  //ConstructorCall/ClassOrInterfaceType[pmd-java:typeIs('java.lang.ThreadGroup')]
+| //MethodCall[@MethodName = 'getThreadGroup']
 ]]>
                 </value>
             </property>
@@ -123,9 +120,8 @@ the volatile keyword should not be used for maintenance purpose and portability.
         </description>
         <priority>2</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
-                <value>//FieldDeclaration[@Volatile = true()]</value>
+                <value>//FieldDeclaration[pmd-java:modifiers() = "volatile"]</value>
             </property>
         </properties>
         <example>
@@ -141,7 +137,6 @@ public class ThrDeux {
     <rule name="DoNotUseThreads"
           language="java"
           since="4.1"
-          typeResolution="true"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           message="To be compliant to J2EE, a webapp should not use any thread."
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#donotusethreads">
@@ -152,21 +147,24 @@ Also, EJBs might be moved between machines in a cluster and only managed resourc
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceType[pmd-java:typeIs('java.lang.Thread') or pmd-java:typeIs('java.util.concurrent.ExecutorService')]
-    (: exclude duplicated types on the same line :)
-    [not((../../../../FieldDeclaration|../../../../LocalVariableDeclaration)/VariableDeclarator/VariableInitializer//AllocationExpression/ClassOrInterfaceType[pmd-java:typeIs('java.lang.Thread')])
-     or
-      @BeginLine != (../../../../FieldDeclaration|../../../../LocalVariableDeclaration)/VariableDeclarator/VariableInitializer//AllocationExpression/ClassOrInterfaceType[pmd-java:typeIs('java.lang.Thread')]/@BeginLine]
-    (: exclude constructor call chains :)
-    [not(parent::AllocationExpression/ClassOrInterfaceType[pmd-java:typeIs('java.lang.Thread')])]
+//ClassOrInterfaceType
+[pmd-java:typeIs('java.lang.Thread') or pmd-java:typeIs('java.util.concurrent.ExecutorService')]
+(: allow Thread.currentThread().getContextClassLoader() :)
+[not(parent::TypeExpression[parent::MethodCall[pmd-java:matchesSig('_#currentThread()')
+                                               and parent::MethodCall[pmd-java:matchesSig('_#getContextClassLoader()')]
+                                              ]
+                           ]
+)]
+(: exclude duplicated types on the same line :)
+ [not((parent::FieldDeclaration|parent::LocalVariableDeclaration)/VariableDeclarator/*[2][pmd-java:typeIs('java.lang.Thread') or pmd-java:typeIs('java.util.concurrent.ExecutorService')])
+ or
+  @BeginLine != (parent::FieldDeclaration|parent::LocalVariableDeclaration)/VariableDeclarator/ConstructorCall/ClassOrInterfaceType/@BeginLine]
 |
-//AllocationExpression/ClassOrInterfaceType[pmd-java:typeIs('java.lang.Thread')]
-|
-//StatementExpression/PrimaryExpression/PrimaryPrefix/Name[pmd-java:typeIs('java.util.concurrent.Executors') or pmd-java:typeIs('java.util.concurrent.ExecutorService')]
+//MethodCall[*[1][not(pmd-java:nodeIs('MethodCall'))][pmd-java:nodeIs('Expression') and (pmd-java:typeIs('java.util.concurrent.Executors')
+   or pmd-java:typeIs('java.util.concurrent.ExecutorService'))]]
 ]]>
                 </value>
             </property>
@@ -212,28 +210,16 @@ public class UsingExecutors {
           since="4.3"
           message="Don't call Thread.run() explicitly, use Thread.start()"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#dontcallthreadrun">
         <description>
 Explicitly calling Thread.run() method will execute in the caller's thread of control.  Instead, call Thread.start() for the intended behavior.
         </description>
         <priority>4</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//StatementExpression/PrimaryExpression
-[
-    PrimaryPrefix
-    [pmd-java:typeIs('java.lang.Thread')]
-    [
-            ./Name[ends-with(@Image, '.run') or @Image = 'run']
-        or
-            ./AllocationExpression/ClassOrInterfaceType[pmd-java:typeIs('java.lang.Thread')]
-            and ../PrimarySuffix[@Image = 'run']
-    ]
-]
+//MethodCall[ pmd-java:matchesSig("java.lang.Thread#run()") ]
 ]]>
                 </value>
             </property>
@@ -318,39 +304,6 @@ public static Foo getFoo() {
         </example>
     </rule>
 
-    <rule name="UnsynchronizedStaticDateFormatter"
-          language="java"
-          since="3.6"
-          deprecated="true"
-          message="Static DateFormatter objects should be accessed in a synchronized manner"
-          class="net.sourceforge.pmd.lang.java.rule.multithreading.UnsynchronizedStaticDateFormatterRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#unsynchronizedstaticdateformatter">
-        <description>
-SimpleDateFormat instances are not synchronized. Sun recommends using separate format instances
-for each thread. If multiple threads must access a static formatter, the formatter must be
-synchronized on block level.
-
-_Note:_ This rule has been deprecated since PMD 6.11.0 and will be removed with PMD 7.0.0. The rule is replaced
-by the more general rule {% rule UnsynchronizedStaticFormatter %}.
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
-public class Foo {
-    private static final SimpleDateFormat sdf = new SimpleDateFormat();
-    void bar() {
-        sdf.format(); // poor, no thread-safety
-    }
-    void foo() {
-        synchronized (sdf) { // preferred
-            sdf.format();
-        }
-    }
-}
-]]>
-        </example>
-    </rule>
-
     <rule name="UnsynchronizedStaticFormatter"
           language="java"
           since="6.11.0"
@@ -394,12 +347,10 @@ perform efficient map reads without blocking other threads.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//Type[../VariableDeclarator/VariableInitializer//AllocationExpression/ClassOrInterfaceType[@Image != 'ConcurrentHashMap']]
-/ReferenceType/ClassOrInterfaceType[@Image = 'Map']
+//VariableDeclarator[VariableDeclaratorId[pmd-java:typeIsExactly('java.util.Map')] and *[2][self::ConstructorCall and not(pmd-java:typeIs('java.util.concurrent.ConcurrentHashMap'))]]
 ]]>
                 </value>
             </property>
@@ -431,19 +382,10 @@ one is chosen.  The thread chosen is arbitrary; thus its usually safer to call n
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//StatementExpression/PrimaryExpression
-[PrimarySuffix/Arguments[@Size = 0]]
-[
-    PrimaryPrefix[
-        ./Name[@Image='notify' or ends-with(@Image,'.notify')]
-        or ../PrimarySuffix/@Image='notify'
-        or (./AllocationExpression and ../PrimarySuffix[@Image='notify'])
-    ]
-]
+//MethodCall[@MethodName="notify" and ArgumentList[count(*) = 0]]
 ]]>
                 </value>
             </property>

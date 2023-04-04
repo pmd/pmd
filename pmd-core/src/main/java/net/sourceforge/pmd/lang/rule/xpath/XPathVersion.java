@@ -14,21 +14,34 @@ public enum XPathVersion {
     /**
      * XPath 1.0.
      *
-     * @deprecated Will become unsupported in 7.0.0
+     * @deprecated not supported anymore
      */
     @Deprecated
-    XPATH_1_0(XPathRuleQuery.XPATH_1_0),
-
+    XPATH_1_0("1.0"),
     /**
      * XPath 1.0 compatibility mode.
      *
-     * @deprecated Will become unsupported in 7.0.0
+     * @deprecated Not supported any more.
      */
     @Deprecated
-    XPATH_1_0_COMPATIBILITY(XPathRuleQuery.XPATH_1_0_COMPATIBILITY),
+    XPATH_1_0_COMPATIBILITY("1.0 compatibility"),
 
-    /** XPath 2.0. */
-    XPATH_2_0(XPathRuleQuery.XPATH_2_0);
+    /**
+     * XPath 2.0.
+     *
+     * @deprecated Technically still supported, use 3.1 instead. There
+     *     are no known incompatibilities.
+     */
+    @Deprecated
+    XPATH_2_0("2.0"),
+    /** XPath 3.1. */
+    XPATH_3_1("3.1");
+
+
+    /**
+     * The default XPath version for XPath queries.
+     */
+    public static final XPathVersion DEFAULT = XPATH_3_1;
 
     private static final Map<String, XPathVersion> BY_NAME = new HashMap<>();
     private final String version;
@@ -55,6 +68,10 @@ public enum XPathVersion {
         return version;
     }
 
+    @Override
+    public String toString() {
+        return getXmlName();
+    }
 
     /**
      * Gets an XPath version from the string used to represent

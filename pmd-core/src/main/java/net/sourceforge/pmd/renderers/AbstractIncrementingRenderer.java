@@ -11,7 +11,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.util.datasource.DataSource;
+import net.sourceforge.pmd.lang.document.TextFile;
 
 /**
  * Abstract base class for {@link Renderer} implementations which can produce
@@ -51,28 +51,24 @@ public abstract class AbstractIncrementingRenderer extends AbstractRenderer {
     }
 
     @Override
-    public void startFileAnalysis(DataSource dataSource) {
+    public void startFileAnalysis(TextFile dataSource) {
         // does nothing - override if necessary
     }
 
     @Override
     public void renderFileReport(Report report) throws IOException {
-        Iterator<RuleViolation> violations = report.iterator();
+        Iterator<RuleViolation> violations = report.getViolations().iterator();
         if (violations.hasNext()) {
             renderFileViolations(violations);
             getWriter().flush();
         }
 
-        for (Iterator<Report.ProcessingError> i = report.errors(); i.hasNext();) {
-            errors.add(i.next());
-        }
+        errors.addAll(report.getProcessingErrors());
 
-        for (Iterator<Report.ConfigurationError> i = report.configErrors(); i.hasNext();) {
-            configErrors.add(i.next());
-        }
+        configErrors.addAll(report.getConfigurationErrors());
 
         if (showSuppressedViolations) {
-            suppressed.addAll(report.getSuppressedRuleViolations());
+            suppressed.addAll(report.getSuppressedViolations());
         }
     }
 

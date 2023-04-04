@@ -20,7 +20,6 @@ A missing 'meta' tag or page directive will trigger this rule, as well as a non-
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[

@@ -97,7 +97,7 @@ You can also provide your own custom renderers.
 3.  The we configure the default language version for Java. And in order to support type resolution,
     PMD needs to have access to the compiled classes and dependencies as well. This is called
     "auxclasspath" and is also configured here.
-    
+
     Note: you can specify multiple class paths separated by `:` on Unix-systems or `;` under Windows.
     
     ```java
@@ -120,7 +120,7 @@ You can also provide your own custom renderers.
     ```java
     Writer rendererOutput = new StringWriter();
     Renderer renderer = createRenderer(rendererOutput);
-    
+
     // ...
     private static Renderer createRenderer(Writer writer) {
         XMLRenderer xml = new XMLRenderer("UTF-8");
@@ -128,7 +128,7 @@ You can also provide your own custom renderers.
         return xml;
     }
     ```
-    
+
 6.  Finally we can start the PMD analysis. There is the possibility to fine-tune the configuration
     by adding additional files to analyze or adding additional rulesets or renderers:
     
@@ -140,14 +140,14 @@ You can also provide your own custom renderers.
         pmd.files().addFile(Paths.get("src", "main", "more-java", "ExtraSource.java"));
         // optional: add more renderers
         pmd.addRenderer(renderer);
-        
+
         // or just call PMD
         pmd.performAnalysis();
     }
     ```
     
     The renderer will be automatically flushed and closed at the end of the analysis.
-    
+
 7.  Then you can check the rendered output.
     
     ``` java

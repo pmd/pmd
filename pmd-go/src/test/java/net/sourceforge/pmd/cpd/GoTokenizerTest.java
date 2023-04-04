@@ -6,13 +6,13 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.Properties;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
-public class GoTokenizerTest extends CpdTextComparisonTest {
+class GoTokenizerTest extends CpdTextComparisonTest {
 
-    public GoTokenizerTest() {
+    GoTokenizerTest() {
         super(".go");
     }
 
@@ -27,22 +27,22 @@ public class GoTokenizerTest extends CpdTextComparisonTest {
     }
 
     @Test
-    public void simpleTest() {
+    void simpleTest() {
         doTest("hello");
     }
 
     @Test
-    public void bigFileTest() {
+    void bigFileTest() {
         doTest("btrfs");
     }
 
     @Test
-    public void testIssue1751() {
+    void testIssue1751() {
         doTest("issue-1751");
     }
 
     @Test
-    public void testUnicode() {
+    void testUnicode() {
         // https://github.com/pmd/pmd/issues/2752
         doTest("sample_unicode");
     }

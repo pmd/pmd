@@ -7,6 +7,7 @@
     <test-code>
         <description>basic test</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class PrimitiveType {
     public void downCastPrimitiveType() {
@@ -49,9 +50,13 @@ public class MyClass {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public void bar() {
+    public void bar(String aString) {
         if( ( flags & Flag.IMPORTANT ) != 0 ) {}
         if (aString.indexOf(DOT) != -1) {}     // magic number -1, by default ignored
+    }
+    private static final String DOT = ".";
+    public static class Flag {
+        public static final int IMPORTANT = 0x1;
     }
 }
         ]]></code>
@@ -63,7 +68,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public void bar() {
+    public void bar(double aDouble) {
         if (aDouble > 0.0) {}                  // magic number 0.0
         if (aDouble >= Double.MIN_VALUE) {}    // preferred approach
     }
@@ -76,7 +81,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public void bar() {
+    public void bar(double aDouble) {
         if (true && aDouble > 0) {
         }
     }
@@ -90,11 +95,12 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 class Foo {
-    void bar() {
+    void bar(double num) {
         if (num == 0.0) {
-            return MathExtItg.sgn0raw(num) == 1 ? IEEEclass.PositiveZero : IEEEclass.NegativeZero;
+            return Math.signum(num) == 1 ? IEEEclass.PositiveZero : IEEEclass.NegativeZero;
         }
     }
+    public static enum IEEEclass { PositiveZero, NegativeZero; }
 }
         ]]></code>
     </test-code>
@@ -124,7 +130,7 @@ public class Foo {
         <expected-linenumbers>4,7,7,8,9,10,11,11</expected-linenumbers>
         <code><![CDATA[
 public class AvoidLiteralsInIfConditionWithExpressions {
-    public void test() {
+    public void test(String currentToken, int bodyStart, String s) {
         if (1) {}    // ok, "1" is in ignoreMagicNumbers
         if (1+1) {}  // not ok! multiple literals in expression
         if (a+1) {}  // ok, single literal, whitelisted

@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedna
 
 
 
+@org.junit.Ignore("Rule has not been updated yet")
 public class TestClass {
 
     protected class SomeInnerClass {

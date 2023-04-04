@@ -4,14 +4,25 @@
 
 package net.sourceforge.pmd.lang.modelica;
 
-import net.sourceforge.pmd.lang.BaseLanguageModule;
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
-public class ModelicaLanguageModule extends BaseLanguageModule {
+import java.util.List;
+
+import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
+
+public class ModelicaLanguageModule extends SimpleLanguageModuleBase {
     public static final String NAME = "Modelica";
     public static final String TERSE_NAME = "modelica";
+    @InternalApi
+    public static final List<String> EXTENSIONS = listOf("mo");
 
     public ModelicaLanguageModule() {
-        super(NAME, null, TERSE_NAME, "mo");
-        addVersion("", new ModelicaHandler(), true);
+        super(LanguageMetadata.withId(TERSE_NAME).name(NAME)
+                              .extensions(EXTENSIONS)
+                              .addVersion("3.4")
+                              .addDefaultVersion("3.5"),
+              new ModelicaHandler());
     }
+
 }

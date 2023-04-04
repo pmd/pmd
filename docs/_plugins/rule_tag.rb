@@ -14,6 +14,7 @@
 class RuleTag < Liquid::Tag
   def initialize(tag_name, rule_ref, tokens)
     super
+    @was_removed = tag_name == "deleted_rule"
 
     if %r!(?:(?:(\w+)/)?(\w+)/)?(\w+)! =~ rule_ref
 
@@ -55,7 +56,12 @@ class RuleTag < Liquid::Tag
       url_prefix = "https://pmd.github.io/pmd-#{context["site.pmd.version"]}/"
     end
 
-    markup_link(@rule_name, url_prefix + relativelink(@lang_name, @category_name, @rule_name))
+    if @was_removed
+      # Link is broken
+      "#{@category_name}.xml/#{@rule_name}&nbsp;<span style='font-size: small;'>(deleted)</span>"
+    else
+      markup_link(@rule_name, url_prefix + relativelink(@lang_name, @category_name, @rule_name))
+    end
   end
 
   private
@@ -71,3 +77,4 @@ class RuleTag < Liquid::Tag
 end
 
 Liquid::Template.register_tag('rule', RuleTag)
+Liquid::Template.register_tag('deleted_rule', RuleTag)
