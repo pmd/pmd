@@ -143,16 +143,21 @@ public interface FileId extends Comparable<FileId> {
     @Override
     String toString();
 
+    // todo doc
+
     static FileId fromPathLikeString(String str) {
         String[] segments = str.split("[/\\\\]");
+        String fname;
         if (segments.length == 0) {
-            throw new IllegalArgumentException("Invalid path id: '" + str + "'");
+            fname = ""; // this must be "/" or "\\"
+        } else {
+            fname = segments[segments.length - 1];
         }
-        String fname = segments[segments.length - 1];
         return new FileId() {
+            final String absPath = Paths.get(str).toAbsolutePath().toString();
             @Override
             public String toAbsolutePath() {
-                return Paths.get(str).toAbsolutePath().toString();
+                return absPath;
             }
 
             @Override
