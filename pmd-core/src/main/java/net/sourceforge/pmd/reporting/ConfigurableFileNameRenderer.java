@@ -77,9 +77,12 @@ public class ConfigurableFileNameRenderer implements FileNameRenderer {
         }
         String[] otherSegments = PATH_SEP_PAT.split(other);
         int prefixLength = 0;
-        int maxi = Math.min(base.getNameCount(), otherSegments.length);
+        // We remove 1 because since 'other' is absolute it always starts
+        // with the empty string.
+        int maxi = Math.min(base.getNameCount(), otherSegments.length - 1);
         while (prefixLength < maxi
-            && base.getName(prefixLength).toString().equals(otherSegments[prefixLength])) {
+            // here we add 1 for the same reason                          vvvvvvvvvvvvvvvv
+            && base.getName(prefixLength).toString().equals(otherSegments[prefixLength + 1])) {
             prefixLength++;
         }
 
@@ -91,7 +94,7 @@ public class ConfigurableFileNameRenderer implements FileNameRenderer {
         for (int i = prefixLength; i < base.getNameCount(); i++) {
             relative.add("..");
         }
-        relative.addAll(Arrays.asList(otherSegments).subList(prefixLength, otherSegments.length));
+        relative.addAll(Arrays.asList(otherSegments).subList(prefixLength + 1, otherSegments.length));
         return String.join(File.separator, relative);
     }
 
@@ -107,17 +110,18 @@ public class ConfigurableFileNameRenderer implements FileNameRenderer {
      * <p>package private for test only</p>
      */
     static String getDisplayName(FileId file, List<Path> relativizeRoots) {
-        String best = file.toAbsolutePath();
+        final String fileAbsPath = file.toAbsolutePath();
+        String best = fileAbsPath;
         for (Path root : relativizeRoots) {
             if (isFileSystemRoot(root)) {
                 // Absolutize the path. Since the relativize roots are
                 // sorted by ascending length, this should be the first in the list
                 // (so another root can override it).
-                best = file.toAbsolutePath();
+                best = fileAbsPath;
                 continue;
             }
 
-            String relative = relativizePath(root.toAbsolutePath(), file.toAbsolutePath());
+            String relative = relativizePath(root.toAbsolutePath(), fileAbsPath);
             if (countSegments(relative) < countSegments(best)) {
                 best = relative;
             }
