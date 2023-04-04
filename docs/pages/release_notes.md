@@ -57,7 +57,7 @@ The new official logo of PMD:
 * Rewritten type resolution framework and symbol table correctly implements the JLS
 * AST exposes more semantic information (method calls, field accesses)
 
-For more information, see the [Detailed Release Notes for PMD 7](pmd_release_notes_pmd7.html).
+For more information, see the [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html).
 
 Contributors: [Clément Fournier](https://github.com/oowekyala) (@oowekyala),
 [Andreas Dangel](https://github.com/adangel) (@adangel),
@@ -75,7 +75,7 @@ Contributors: [Clément Fournier](https://github.com/oowekyala) (@oowekyala),
 
 ![Demo]({{ baseurl }}images/userdocs/pmd-demo.gif)
 
-For more information, see the [Detailed Release Notes for PMD 7](pmd_release_notes_pmd7.html).
+For more information, see the [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html).
 
 Contributors: [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
 
@@ -85,7 +85,7 @@ Contributors: [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuy
 * Previously, Antlr grammar could only be used for CPD
 * New supported languages: Swift and Kotlin
 
-For more information, see the [Detailed Release Notes for PMD 7](pmd_release_notes_pmd7.html).
+For more information, see the [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html).
 
 Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 [Matías Fraga](https://github.com/matifraga) (@matifraga),
@@ -94,7 +94,7 @@ Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 ### 🎉 Language Related Changes
 
 Note that this is just a concise listing of the highlight.
-For more information on the languages, see the [Detailed Release Notes for PMD 7](pmd_release_notes_pmd7.html).
+For more information on the languages, see the [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html).
 
 #### New: Swift support
 
@@ -173,7 +173,7 @@ Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 #### Removed Rules
 
 Many rules, that were previously deprecated have been finally removed.
-See [Detailed Release Notes for PMD 7](pmd_release_notes_pmd7.html) for the complete list.
+See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html) for the complete list.
 
 ### 🚨 API
 
@@ -182,7 +182,7 @@ have a clear separation between a well-defined API and the implementation, which
 This should help us in future development.
 
 Also, there are some improvement and changes in different areas. For the detailed description
-of the changes listed here, see [Detailed Release Notes for PMD 7](pmd_release_notes_pmd7.html).
+of the changes listed here, see [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html).
 
 * Miscellaneous smaller changes and cleanups
 * XPath 3.1 support for XPath-based rules
@@ -192,7 +192,7 @@ of the changes listed here, see [Detailed Release Notes for PMD 7](pmd_release_n
 * Language Lifecycle and Language Properties
 
 ### 💥 Compatibility and migration notes
-See [Detailed Release Notes for PMD 7](pmd_release_notes_pmd7.html).
+See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html).
 
 ### 🐛 Fixed Issues
 
