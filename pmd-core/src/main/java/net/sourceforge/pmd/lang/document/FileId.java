@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.document;
 
+import java.io.File;
+import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -109,7 +111,6 @@ public interface FileId extends Comparable<FileId> {
 
     /**
      * Return a string that looks like a URI pointing to this file.
-     * TODO what does this do for a zip file?
      */
     String toUriString();
 
@@ -145,31 +146,28 @@ public interface FileId extends Comparable<FileId> {
 
     // todo doc
 
+
     static FileId fromPathLikeString(String str) {
-        String[] segments = str.split("[/\\\\]");
-        String fname;
-        if (segments.length == 0) {
-            fname = ""; // this must be "/" or "\\"
-        } else {
-            fname = segments[segments.length - 1];
-        }
+        Path absPath = Paths.get(str).toAbsolutePath();
+
         return new FileId() {
-            final String absPath = Paths.get(str).toAbsolutePath().toString();
+            final String fileName = absPath.getFileName().toString();
+            final String absPathStr = absPath.toString();
+
             @Override
             public String toAbsolutePath() {
-                return absPath;
+                return absPathStr;
             }
 
             @Override
             public String toUriString() {
-                // this is mostly just to make sure that renderers do
-                // not use that by default.
-                return "unknown://" + str;
+                // pretend...
+                return "file://" + str;
             }
 
             @Override
             public String getFileName() {
-                return fname;
+                return fileName;
             }
 
             @Override
@@ -280,5 +278,73 @@ public interface FileId extends Comparable<FileId> {
                 return self.toAbsolutePath();
             }
         };
+    }
+
+    static FileId fromAbsolutePath(String absPath, @Nullable FileId outer) throws IllegalArgumentException {
+        Path fileName = Paths.get(absPath).getFileName();
+        // we know this one uses platform specific thing (for display)
+        String platformAbsPath = absPath.replace('/', File.separatorChar);
+        // we know this one uses / (for URIs)
+        String uriAbsPath = platformAbsPath.replace(File.separatorChar, '/');
+        String uriStr = outer != null ? "jar:" + outer.toUriString() + "!" + uriAbsPath
+                                      : "file://" + uriAbsPath;
+        // zip file
+        return new FileId() {
+            @Override
+            public String getFileName() {
+                return fileName.toString();
+            }
+
+            @Override
+            public String getOriginalPath() {
+                return absPath;
+            }
+
+            @Override
+            public String toAbsolutePath() {
+                return platformAbsPath;
+            }
+
+            @Override
+            public String toUriString() {
+                return uriStr;
+            }
+
+            @Override
+            public @Nullable FileId getParentFsPath() {
+                return outer;
+            }
+
+            @Override
+            public boolean equals(Object obj) {
+                return obj instanceof FileId && toUriString().equals(((FileId) obj).toUriString());
+            }
+
+            @Override
+            public int hashCode() {
+                return toUriString().hashCode();
+            }
+        };
+    }
+
+    static FileId fromURI(String uriStr) throws IllegalArgumentException {
+        URI uri = URI.create(uriStr);
+        String schemeSpecificPart = uri.getSchemeSpecificPart();
+        if (uri.getScheme().equals("jar")) {
+            int split = schemeSpecificPart.lastIndexOf('!');
+            if (split == -1) {
+                throw new IllegalArgumentException("expected a jar specific path");
+            } else {
+                String zipUri = schemeSpecificPart.substring(0, split);
+                String localPath = schemeSpecificPart.substring(split + 1);
+                FileId outer = fromURI(zipUri);
+
+                return fromAbsolutePath(localPath, outer);
+            }
+        } else if (uri.getScheme().equals("file")) {
+            String absPath = schemeSpecificPart.substring("//".length());
+            return fromAbsolutePath(absPath, null);
+        }
+        throw new UnsupportedOperationException("Unknown scheme " + uriStr);
     }
 }

@@ -88,9 +88,7 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
                             if (fileId == null) {
                                 LOG.debug("File {} is in the cache but is not part of the analysis",
                                           filePathId);
-                                // todo we wrote a URI, if this happens several times we will be
-                                //  prepending unknown:// several times.
-                                fileId = FileId.fromPathLikeString(filePathId);
+                                fileId = FileId.fromURI(filePathId);
                             }
                             final long checksum = inputStream.readLong();
 
