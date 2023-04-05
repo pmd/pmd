@@ -6,10 +6,13 @@ package net.sourceforge.pmd.lang.apex.ast
 
 import java.util.Optional
 
-import net.sourceforge.pmd.annotation.InternalApi
-import net.sourceforge.pmd.lang.apex.ApexParserOptions
+import net.sourceforge.pmd.lang.apex.ApexLanguageProcessor
+import net.sourceforge.pmd.lang.ast.Parser.ParserTask
+import net.sourceforge.pmd.lang.document.Chars
+import net.sourceforge.pmd.lang.document.TextDocument
+import net.sourceforge.pmd.lang.document.TextFileContent
+import net.sourceforge.pmd.lang.document.TextRegion
 import net.sourceforge.pmd.lang.ast.ParseException
-import net.sourceforge.pmd.lang.ast.SourceCodePositioner
 
 import com.google.summit.ast.CompilationUnit
 import com.google.summit.ast.Identifier
@@ -78,15 +81,16 @@ import com.google.summit.ast.statement.WhileLoopStatement
 import kotlin.reflect.KClass
 
 @Suppress("DEPRECATION")
-class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptions) {
-    private val sourceCodePositioner = SourceCodePositioner(sourceCode)
-    private val commentBuilder = ApexCommentBuilder(sourceCode, parserOptions)
+class ApexTreeBuilder(val task: ParserTask, val proc: ApexLanguageProcessor) {
+    private val sourceCode = task.getTextDocument()
+    private val sourceContent = TextFileContent.fromReader(sourceCode.newReader())
+    private val commentBuilder = ApexCommentBuilder(sourceContent, proc.getProperties().getSuppressMarker())
 
-    /** Builds and returns an [ApexNode] AST corresponding to the given [root] node. */
-    fun buildTree(root: CompilationUnit): BaseApexClass<TypeDeclaration> {
+    /** Builds and returns an [ASTApexFile] corresponding to the given [CompilationUnit]. */
+    fun buildTree(compilationUnit: CompilationUnit): ASTApexFile {
         // Build tree
         val result =
-            build(root, parent = null) as? BaseApexClass<TypeDeclaration>
+            build(compilationUnit, parent = null) as? BaseApexClass<*>
                 ?: throw ParseException("Unable to build tree")
 
         // Generate additional nodes
@@ -96,18 +100,17 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
 
         commentBuilder.addFormalComments()
 
-        return result
+        return ASTApexFile(task, compilationUnit, /*TODO*/ mapOf(), proc).also{ result.setParent(it) }
     }
 
     /** Calls additional methods for each node in [root] using a post-order traversal. */
-    private fun postProcessTree(root: ApexNode<*>) =
-        root.jjtAccept(
-            object : ApexParserVisitorAdapter() {
-                override fun visit(node: ApexNode<*>?, data: Any?): Any? =
-                    super.visit(node, data).also {
+    private fun postProcessTree(root: AbstractApexNode) =
+        root.acceptVisitor(
+            object : ApexVisitorBase<Void, Void>() {
+                override fun visitApexNode(node: ApexNode<*>?, data: Void): Void =
+                    super.visitNode(node, data).also {
                         if (node is AbstractApexNode) {
-                            node.handleSourceCode(sourceCode)
-                            node.calculateLineNumbers(sourceCodePositioner)
+                            node.calculateTextRegion(sourceContent)
                         }
                         if (node is AbstractApexCommentContainerNode<*>) {
                             node.setContainsComment(commentBuilder.containsComments(node));
@@ -124,10 +127,9 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
         )
 
     /** Builds an [ApexNode] wrapper for [node]. */
-    private fun build(node: Node?, parent: ApexNode<*>?): ApexNode<*>? =
+    private fun build(node: Node?, parent: AbstractApexNode?): AbstractApexNode? =
         when (node) {
             null -> null
-            is CompilationUnit -> build(node.typeDeclaration, parent)
             is TypeDeclaration -> buildTypeDeclaration(node)
             is EnumValue -> buildEnumValue(node)
             is MethodDeclaration -> buildMethodDeclaration(node, parent)
@@ -197,7 +199,7 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
         }
 
     /** Builds an [ApexNode] wrapper for [node] and sets its parent to [parent]. */
-    private fun buildAndSetParent(node: Node?, parent: ApexNode<*>) =
+    private fun buildAndSetParent(node: Node?, parent: AbstractApexNode) =
         build(node, parent)?.also { it.setParent(parent) }
 
     /**
@@ -208,7 +210,7 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
      */
     private fun buildChildren(
         node: Node,
-        parent: ApexNode<*>,
+        parent: AbstractApexNode,
         exclude: (Node) -> Boolean = { false } // exclude none by default
     ) = node.getChildren().filterNot(exclude).forEach { buildAndSetParent(it, parent) }
 
@@ -232,14 +234,14 @@ class ApexTreeBuilder(val sourceCode: String, val parserOptions: ApexParserOptio
                 // 2. Add the expected ASTModifier child node
                 buildModifiers(emptyList()).also { it.setParent(invokeMethod) }
                 // 3. Elide the body CompoundStatement->ASTBlockStatement
-                buildChildren(node.body, parent = invokeMethod as ApexNode<*>)
+                buildChildren(node.body, parent = invokeMethod as AbstractApexNode)
             } else {
                 buildChildren(node, parent = this, exclude = { it in node.modifiers })
             }
         }
 
-/** Builds an [ASTMethod] wrapper for the [MethodDeclaration] node. */
-private fun buildMethodDeclaration(node: MethodDeclaration, parent: ApexNode<*>?) =
+    /** Builds an [ASTMethod] wrapper for the [MethodDeclaration] node. */
+    private fun buildMethodDeclaration(node: MethodDeclaration, parent: AbstractApexNode?) =
         when {
             node.isAnonymousInitializationCode() && !node.hasKeyword(Keyword.STATIC) ->
                     build(node.body, parent)
@@ -545,7 +547,7 @@ private fun buildMethodDeclaration(node: MethodDeclaration, parent: ApexNode<*>?
         }.apply { buildChildren(node, parent = this) }
 
     /** Wraps the body of a control statement with an [ASTBlockStatement] if it isn't already one. */
-    private fun wrapBody(body: Statement, parent: ApexNode<*>) =
+    private fun wrapBody(body: Statement, parent: AbstractApexNode) =
         when (body) {
             is CompoundStatement -> build(body, parent) as ASTBlockStatement
             else -> ASTBlockStatement(body).apply { buildAndSetParent(body, parent = this) }
@@ -730,7 +732,7 @@ private fun buildMethodDeclaration(node: MethodDeclaration, parent: ApexNode<*>?
         ASTModifierNode(modifiers).apply { modifiers.forEach { buildAndSetParent(it, parent = this) } }
 
     /** Generates additional nodes for the [root] node. */
-    private fun generateAdditional(root: ApexNode<*>) {
+    private fun generateAdditional(root: AbstractApexNode) {
         // Generate fields
         findDescendants(root, nodeType = ASTFieldDeclarationStatements::class).forEach { node ->
             generateFields(node)
@@ -751,10 +753,7 @@ private fun buildMethodDeclaration(node: MethodDeclaration, parent: ApexNode<*>?
       * the start of the ordered children.
       */
     private fun sortUserClassChildren(node: ASTUserClass) {
-      val children = ArrayList<net.sourceforge.pmd.lang.ast.Node>(node.jjtGetNumChildren())
-      for(i in 0..node.jjtGetNumChildren()-1) {
-        children.add(node.jjtGetChild(i))
-      }
+      val children = ArrayList(node.children().toList())
 
       children.sortBy{ when (it) {
           is ASTModifierNode -> 1
@@ -763,14 +762,14 @@ private fun buildMethodDeclaration(node: MethodDeclaration, parent: ApexNode<*>?
         }
       }
 
-      for(i in 0..node.jjtGetNumChildren()-1) {
-        node.jjtAddChild(children.get(i), i)
+      for(i in 0..node.getNumChildren()-1) {
+        node.setChild(children.get(i) as AbstractApexNode, i)
       }
     }
 
     /** Returns all descendants of [root] of type [nodeType], including [root]. */
-    private inline fun <reified T : ApexNode<*>> findDescendants(
-        root: ApexNode<*>,
+    private inline fun <reified T : AbstractApexNode> findDescendants(
+        root: AbstractApexNode,
         nodeType: KClass<T>
     ): List<T> =
         root.findDescendantsOfType(nodeType.java, true) + (if (root is T) listOf(root) else emptyList())
@@ -801,10 +800,9 @@ private fun buildMethodDeclaration(node: MethodDeclaration, parent: ApexNode<*>?
      * If [parent] is not null, adds this [ApexNode] as a [child][ApexNode.jjtAddChild] and sets
      * [parent] as the [parent][ApexNode.jjtSetParent].
      */
-    private fun ApexNode<*>.setParent(parent: ApexNode<*>?) {
+    private fun AbstractApexNode.setParent(parent: AbstractApexNode?) {
         if (parent != null) {
-            parent.jjtAddChild(this, parent.numChildren)
-            this.jjtSetParent(parent)
+            parent.addChild(this, parent.numChildren)
         }
     }
 

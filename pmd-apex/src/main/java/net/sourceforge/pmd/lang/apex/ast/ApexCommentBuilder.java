@@ -18,19 +18,18 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.Token;
 
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.apex.ApexParserOptions;
-import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
+import net.sourceforge.pmd.lang.document.TextFileContent;
 
 import com.nawforce.apexparser.ApexLexer;
 
 @InternalApi
 final class ApexCommentBuilder {
-    private final SourceCodePositioner sourceCodePositioner;
+    private final TextFileContent sourceContent;
     private final CommentInformation commentInfo;
 
-    ApexCommentBuilder(String sourceCode, ApexParserOptions parserOptions) {
-        sourceCodePositioner = new SourceCodePositioner(sourceCode);
-        commentInfo = extractInformationFromComments(sourceCode, parserOptions.getSuppressMarker());
+    ApexCommentBuilder(TextFileContent sourceContent, String suppressMarker) {
+	this.sourceContent = sourceContent;
+        commentInfo = extractInformationFromComments(sourceContent, suppressMarker);
     }
 
     private static final class LineColumnPosition implements Comparable<LineColumnPosition> {
@@ -93,7 +92,7 @@ final class ApexCommentBuilder {
             ApexNode<?> parent = docToken.nearestNode;
             if (parent != null) {
                 ASTFormalComment comment = new ASTFormalComment(docToken.token);
-                comment.calculateLineNumbers(sourceCodePositioner);
+                comment.calculateTextRegion(sourceContent);
 
                 // move existing nodes so that we can insert the comment as the first node
                 for (int i = parent.getNumChildren(); i > 0; i--) {
@@ -138,8 +137,8 @@ final class ApexCommentBuilder {
         }
     }
 
-    private static CommentInformation extractInformationFromComments(String source, String suppressMarker) {
-        ApexLexer lexer = new ApexLexer(CharStreams.fromString(source));
+    private static CommentInformation extractInformationFromComments(TextFileContent sourceContent, String suppressMarker) {
+        ApexLexer lexer = new ApexLexer(CharStreams.fromString(sourceContent.getNormalizedText()));
 
         ArrayList<Token> allCommentTokens = new ArrayList<>();
         Map<Integer, String> suppressMap = new HashMap<>();

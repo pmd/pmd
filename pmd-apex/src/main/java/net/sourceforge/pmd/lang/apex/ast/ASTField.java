@@ -16,7 +16,7 @@ import com.google.summit.ast.declaration.EnumDeclaration;
 import com.google.summit.ast.expression.Expression;
 import com.google.summit.ast.expression.LiteralExpression;
 
-public final class ASTField extends AbstractApexNode.Many<Node> implements CanSuppressWarnings {
+public final class ASTField extends AbstractApexNode.Many<Node> {
 
     private final Identifier name;
     private final Optional<Expression> value;

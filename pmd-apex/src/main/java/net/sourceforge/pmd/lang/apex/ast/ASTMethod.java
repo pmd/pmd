@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.apex.metrics.signature.ApexOperationSignature;
 import net.sourceforge.pmd.lang.ast.SignedNode;
-import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
+import net.sourceforge.pmd.lang.document.TextFileContent;
 
 import com.google.summit.ast.SourceLocation;
 import com.google.summit.ast.declaration.MethodDeclaration;
@@ -72,8 +72,8 @@ public final class ASTMethod extends AbstractApexNode implements ApexQualifiable
     }
 
     @Override
-    void calculateLineNumbers(SourceCodePositioner positioner) {
-        setLineNumbers(sourceLocation);
+    void calculateTextRegion(TextFileContent sourceContent) {
+        // TODO post-merge setLineNumbers(sourceLocation);
     }
 
     @Override

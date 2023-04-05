@@ -14,13 +14,16 @@ import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextFileContent;
 import net.sourceforge.pmd.lang.document.TextRegion;
 
 import com.google.summit.ast.Node;
 import com.google.summit.ast.expression.LiteralExpression;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-abstract class AbstractApexNode extends AbstractApexNodeBase implements ApexNode<Void> {
+abstract class AbstractApexNode extends AbstractNode<AbstractApexNode, ApexNode<?>> implements ApexNode<Void> {
+
+    private TextRegion region;
 
     /**
      * {@link AbstractApexNode} wrapper around a single {@link Node}.
@@ -35,9 +38,9 @@ abstract class AbstractApexNode extends AbstractApexNodeBase implements ApexNode
         }
 
         @Override
-        void calculateLineNumbers(SourceCodePositioner positioner) {
-            setLineNumbers(node.getSourceLocation());
-        }
+	protected calculateTextRegion(TextFileContent sourceContent) {
+            // TODO
+	}
 
         @Override
         public boolean hasRealLoc() {
@@ -67,10 +70,12 @@ abstract class AbstractApexNode extends AbstractApexNodeBase implements ApexNode
         }
 
         @Override
-        void calculateLineNumbers(SourceCodePositioner positioner) {
+        protected calculateTextRegion(TextFileContent sourceContent) {
+	    // TODO                                                                                                         /*
             for (Node node : nodes) {
                 setLineNumbers(node.getSourceLocation());
             }
+	    */
         }
 
         @Override
@@ -94,9 +99,9 @@ abstract class AbstractApexNode extends AbstractApexNodeBase implements ApexNode
         }
 
         @Override
-        void calculateLineNumbers(SourceCodePositioner positioner) {
-            // no operation
-        }
+        protected calculateTextRegion(TextFileContent sourceContent) {
+	    // TODO
+	}
 
         @Override
         public boolean hasRealLoc() {
@@ -129,6 +134,11 @@ abstract class AbstractApexNode extends AbstractApexNodeBase implements ApexNode
     }
 
     @Override
+    protected void setChild(AbstractApexNode<?> child, int index) {
+        super.setChild(child, index);
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public final <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
         if (visitor instanceof ApexVisitor) {
@@ -144,7 +154,7 @@ abstract class AbstractApexNode extends AbstractApexNodeBase implements ApexNode
         return getParent().getRoot();
     }
 
-    abstract void calculateLineNumbers(SourceCodePositioner positioner);
+    abstract void calculateTextRegion(TextFileContent sourceContent);
 
     @Override
     public @NonNull TextRegion getTextRegion() {
@@ -156,9 +166,8 @@ abstract class AbstractApexNode extends AbstractApexNodeBase implements ApexNode
                 }
                 region = parent.getTextRegion();
             } else {
-                Location loc = node.getLoc();
-                region = TextRegion.fromBothOffsets(loc.getStartIndex(), loc.getEndIndex());
-            }
+                throw new FileAnalysisException("Unable to determine location of " + this);
+	    }
         }
         return region;
     }
@@ -176,14 +185,8 @@ abstract class AbstractApexNode extends AbstractApexNodeBase implements ApexNode
         // do nothing
     }
 
-    protected void setRegion(TextRegion region) {
-        this.region = region;
-    }
-
     @Override
     public abstract boolean hasRealLoc();
-
-    public abstract String getLocation();
 
     @Override
     public String getDefiningType() {
@@ -210,15 +213,6 @@ abstract class AbstractApexNode extends AbstractApexNodeBase implements ApexNode
             return ((LiteralExpression.StringVal) expr).getValue();
         } else if (expr instanceof LiteralExpression.NullVal) {
             return "";
-        }
-        return expr.asCodeString();
-    }
-    
-    private TypeInfo getDefiningTypeOrNull() {
-        try {
-            return node.getDefiningType();
-        } catch (UnsupportedOperationException e) {
-            return null;
         }
         return expr.asCodeString();
     }
