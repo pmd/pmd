@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.lang.ast.QualifiedName;
 
 /**
  * Qualified name of an apex class or method.

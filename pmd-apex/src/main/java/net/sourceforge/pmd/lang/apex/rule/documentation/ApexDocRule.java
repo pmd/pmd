@@ -179,7 +179,7 @@ public class ApexDocRule extends AbstractApexRule {
     private ApexDocComment getApexDocComment(ApexNode<?> node) {
         ASTFormalComment comment = node.getFirstChildOfType(ASTFormalComment.class);
         if (comment != null) {
-            Chars token = comment.getToken();
+            String token = comment.getImage();
 
             boolean hasDescription = DESCRIPTION_PATTERN.matcher(token).find();
             boolean hasReturn = RETURN_PATTERN.matcher(token).find();

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import net.sourceforge.pmd.lang.document.TextDocument;
+
 import com.google.summit.ast.Node;
 import com.google.summit.ast.SourceLocation;
 
@@ -34,15 +36,9 @@ public final class ASTBlockStatement extends AbstractApexNode.Single<Node> {
         // check, whether the this block statement really begins with a curly brace
         // unfortunately, for-loop and if-statements always contain a block statement,
         // regardless whether curly braces where present or not.
+        // TODO: Revisit this, because it is Jorje-specific.
         SourceLocation loc = node.getSourceLocation();
-        String sourceRegion = loc.extractFrom(source);
+        String sourceRegion = loc.extractFrom(document.getText().toString());
         this.curlyBrace = sourceRegion.charAt(0) == '{';
     }
-
-    /* TODO post-merge
-    @Override
-    public boolean hasRealLoc() {
-        return super.hasRealLoc() && !Objects.equals(node.getLoc(), getParent().getNode().getLoc());
-    }
-    */
 }

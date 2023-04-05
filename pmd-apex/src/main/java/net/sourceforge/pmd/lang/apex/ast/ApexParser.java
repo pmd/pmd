@@ -16,12 +16,11 @@ import com.google.summit.ast.CompilationUnit;
 public final class ApexParser implements Parser {
 
     public ApexParser() {
-        Locations.useIndexFactory();
     }
 
     @Override
     public ASTApexFile parse(final ParserTask task) {
-        final CompilationUnit astRoot = SummitAST.INSTANCE.parseAndTranslate(sourceCode, null);
+        final CompilationUnit astRoot = SummitAST.INSTANCE.parseAndTranslate(task.getTextDocument().getText().toString(), null);
 
         if (astRoot == null) {
             throw new ParseException("Couldn't parse the source - there is not root node - Syntax Error??");

@@ -30,8 +30,7 @@ public interface ApexNode<T> extends GenericNode<ApexNode<?>> {
     }
 
 
-    @Override
-    Iterable<? extends ApexNode<?>> children();
+    boolean hasRealLoc();
 
 
     String getDefiningType();

@@ -33,27 +33,17 @@ abstract class AbstractApexNode extends AbstractNode<AbstractApexNode, ApexNode<
         protected final T node;
 
         protected Single(T node) {
-            super(node.getClass());
             this.node = node;
         }
 
         @Override
-	protected calculateTextRegion(TextFileContent sourceContent) {
+	protected void calculateTextRegion(TextFileContent sourceContent) {
             // TODO
 	}
 
         @Override
         public boolean hasRealLoc() {
             return !node.getSourceLocation().isUnknown();
-        }
-
-        @Override
-        public String getLocation() {
-            if (hasRealLoc()) {
-                return String.valueOf(node.getSourceLocation());
-            } else {
-                return "no location";
-            }
         }
     }
 
@@ -65,13 +55,13 @@ abstract class AbstractApexNode extends AbstractNode<AbstractApexNode, ApexNode<
         protected final List<T> nodes;
 
         protected Many(List<T> nodes) {
-            super(nodes.getClass());
             this.nodes = nodes;
         }
 
         @Override
-        protected calculateTextRegion(TextFileContent sourceContent) {
-	    // TODO                                                                                                         /*
+        protected void calculateTextRegion(TextFileContent sourceContent) {
+	    // TODO
+	    /*
             for (Node node : nodes) {
                 setLineNumbers(node.getSourceLocation());
             }
@@ -82,11 +72,6 @@ abstract class AbstractApexNode extends AbstractNode<AbstractApexNode, ApexNode<
         public boolean hasRealLoc() {
             return false;
         }
-
-        @Override
-        public String getLocation() {
-            return "no location";
-        }
     }
 
     /**
@@ -95,11 +80,10 @@ abstract class AbstractApexNode extends AbstractNode<AbstractApexNode, ApexNode<
     abstract static class Empty extends AbstractApexNode {
 
         protected Empty() {
-            super(Void.class);
         }
 
         @Override
-        protected calculateTextRegion(TextFileContent sourceContent) {
+        protected void calculateTextRegion(TextFileContent sourceContent) {
 	    // TODO
 	}
 
@@ -107,34 +91,24 @@ abstract class AbstractApexNode extends AbstractNode<AbstractApexNode, ApexNode<
         public boolean hasRealLoc() {
             return false;
         }
-
-        @Override
-        public String getLocation() {
-            return "no location";
-        }
-    }
-
-    protected AbstractApexNode(Class<?> klass) {
-        super(klass);
     }
 
     protected AbstractApexNode() {
-        this(Void.class);
     }
 
     // overridden to make them visible
     @Override
-    protected void addChild(AbstractApexNode<?> child, int index) {
+    protected void addChild(AbstractApexNode child, int index) {
         super.addChild(child, index);
     }
 
     @Override
-    protected void insertChild(AbstractApexNode<?> child, int index) {
+    protected void insertChild(AbstractApexNode child, int index) {
         super.insertChild(child, index);
     }
 
     @Override
-    protected void setChild(AbstractApexNode<?> child, int index) {
+    protected void setChild(AbstractApexNode child, int index) {
         super.setChild(child, index);
     }
 
@@ -160,7 +134,7 @@ abstract class AbstractApexNode extends AbstractNode<AbstractApexNode, ApexNode<
     public @NonNull TextRegion getTextRegion() {
         if (region == null) {
             if (!hasRealLoc()) {
-                AbstractApexNode<?> parent = (AbstractApexNode<?>) getParent();
+                AbstractApexNode parent = (AbstractApexNode) getParent();
                 if (parent == null) {
                     throw new FileAnalysisException("Unable to determine location of " + this);
                 }
@@ -185,6 +159,10 @@ abstract class AbstractApexNode extends AbstractNode<AbstractApexNode, ApexNode<
         // do nothing
     }
 
+    protected void setRegion(TextRegion region) {
+        this.region = region;
+    }
+    
     @Override
     public abstract boolean hasRealLoc();
 
@@ -192,7 +170,7 @@ abstract class AbstractApexNode extends AbstractNode<AbstractApexNode, ApexNode<
     public String getDefiningType() {
         BaseApexClass<?> baseNode = this instanceof BaseApexClass ? (BaseApexClass<?>) this : getFirstParentOfType(BaseApexClass.class);
         if (baseNode != null) {
-            return baseNode.getQualifiedName();
+            return baseNode.getQualifiedName().toString();
         }
         return null;
     }

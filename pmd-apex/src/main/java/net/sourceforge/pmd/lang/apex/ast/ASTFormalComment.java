@@ -6,6 +6,9 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import org.antlr.v4.runtime.Token;
 
+import net.sourceforge.pmd.lang.document.TextFileContent;
+import net.sourceforge.pmd.lang.document.TextRegion;
+
 public final class ASTFormalComment extends AbstractApexNode.Empty {
 
     private final Token token;
@@ -25,18 +28,15 @@ public final class ASTFormalComment extends AbstractApexNode.Empty {
         return token.getText();
     }
 
-    public String getToken() {
-        return token.getText();
+    /* TODO: needed?
+    public Chars getToken() {
+        String text = token.getText();
+        return Chars.fromString(text, 0, text.length());
     }
+    */
 
     @Override
-    void calculateTextRegion(TextFileContent sourceContent) {
-	this.region = TextRegion(token.getStartIndex(), token.getStopIndex());
-    }
-
-    @Override
-    public String getLocation() {
-        return String.format("[%d:%d,%d:%d]", this.beginLine, this.beginColumn,
-                this.endLine, this.endColumn);
+    protected void calculateTextRegion(TextFileContent sourceContent) {
+	setRegion(TextRegion.fromBothOffsets(token.getStartIndex(), token.getStopIndex()));
     }
 }

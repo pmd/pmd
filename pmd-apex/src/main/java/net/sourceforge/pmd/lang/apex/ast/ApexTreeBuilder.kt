@@ -111,15 +111,14 @@ class ApexTreeBuilder(val task: ParserTask, val proc: ApexLanguageProcessor) {
                     super.visitNode(node, data).also {
                         if (node is AbstractApexNode) {
                             node.calculateTextRegion(sourceContent)
-                        }
-                        if (node is AbstractApexCommentContainerNode<*>) {
-                            node.setContainsComment(commentBuilder.containsComments(node));
-                        }
-                        when (node) {
-                          is ASTUserInterface,
-                          is ASTProperty,
-                          is ASTUserClass,
-                          is ASTMethod -> commentBuilder.buildFormalComment(node)
+                            when (node) {
+                              is AbstractApexCommentContainerNode<*> ->
+                                  node.setContainsComment(commentBuilder.containsComments(node))
+                              is ASTUserInterface,
+                              is ASTProperty,
+                              is ASTUserClass,
+                              is ASTMethod -> commentBuilder.buildFormalComment(node)
+                            }
                         }
                     }
             },

@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.lang.apex.metrics.signature.ApexOperationSignature;
-import net.sourceforge.pmd.lang.ast.SignedNode;
 import net.sourceforge.pmd.lang.document.TextFileContent;
 
 import com.google.summit.ast.SourceLocation;
@@ -82,15 +80,6 @@ public final class ASTMethod extends AbstractApexNode implements ApexQualifiable
     }
 
     @Override
-    public String getLocation() {
-        if (hasRealLoc()) {
-            return String.valueOf(sourceLocation);
-        } else {
-            return "no location";
-        }
-    }
-
-    @Override
     public String getImage() {
         if (isConstructor()) {
             ASTUserClass classNode = getFirstParentOfType(ASTUserClass.class);
@@ -113,23 +102,14 @@ public final class ASTMethod extends AbstractApexNode implements ApexQualifiable
         return ApexQualifiedName.ofMethod(this);
     }
 
-    @Override
-    public ApexOperationSignature getSignature() {
-        return ApexOperationSignature.of(this);
+    /**
+     * Returns true if this is a synthetic class initializer, inserted
+     * by the parser.
+     */
+    public boolean isSynthetic() {
+        return getImage().matches("<clinit>|<init>|clone");
     }
-
-    @Override
-    public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
-        for (ASTModifierNode modifier : findChildrenOfType(ASTModifierNode.class)) {
-            for (ASTAnnotation a : modifier.findChildrenOfType(ASTAnnotation.class)) {
-                if (a.suppresses(rule)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
+    
     public boolean isConstructor() {
         return CONSTRUCTOR_ID.equals(name);
     }
