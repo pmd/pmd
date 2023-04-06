@@ -40,6 +40,8 @@ This section lists the most important changes from the last release candidate.
 The remaining section describe the complete release notes for 7.0.0.
 
 Fixed Issues:
+* miscellaneous
+  * [#4462](https://github.com/pmd/pmd/issues/4462): Provide Software Bill of Materials (SBOM)
 * java-codestyle
   * [#4273](https://github.com/pmd/pmd/issues/4273): \[java] CommentDefaultAccessModifier ignoredAnnotations should include "org.junit.jupiter.api.extension.RegisterExtension" by default
 * java-errorprone
@@ -208,6 +210,7 @@ See [Detailed Release Notes for PMD 7](pmd_release_notes_pmd7.html).
     * [#2497](https://github.com/pmd/pmd/issues/2497): PMD 7 Logo page
     * [#2498](https://github.com/pmd/pmd/issues/2498): Update PMD 7 Logo in documentation
     * [#3797](https://github.com/pmd/pmd/issues/3797): \[all] Use JUnit5
+    * [#4462](https://github.com/pmd/pmd/issues/4462): Provide Software Bill of Materials (SBOM)
 * ant
     * [#4080](https://github.com/pmd/pmd/issues/4080): \[ant] Split off Ant integration into a new submodule
 * core
