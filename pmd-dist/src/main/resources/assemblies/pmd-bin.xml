@@ -71,7 +71,9 @@
         <dependencySet>
             <scope>runtime</scope>
             <excludes>
+                <exclude>net.sourceforge.pmd:pmd-apex-jorje:pom</exclude>
                 <exclude>net.sourceforge.pmd:pmd-cli:sh:completion:*</exclude>
+                <exclude>net.sourceforge.pmd:pmd-languages-deps:pom</exclude>
             </excludes>
             <outputDirectory>lib</outputDirectory>
             <directoryMode>0755</directoryMode>
