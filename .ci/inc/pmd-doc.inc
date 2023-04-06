@@ -35,8 +35,8 @@ function pmd_doc_create_archive() {
     echo -e "\n\n"
     pmd_ci_log_info "Creating pmd-doc archive..."
     mv _site "pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}"
-    zip -qr "pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}.zip" "pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}/"
-    pmd_ci_log_success "Successfully created pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
+    zip -qr "pmd-dist-${PMD_CI_MAVEN_PROJECT_VERSION}-doc.zip" "pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}/"
+    pmd_ci_log_success "Successfully created pmd-dist-${PMD_CI_MAVEN_PROJECT_VERSION}-doc.zip"
 
     popd || exit 1
 }

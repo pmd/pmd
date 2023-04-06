@@ -39,6 +39,11 @@ for all.</p>
 This section lists the most important changes from the last release candidate.
 The remaining section describe the complete release notes for 7.0.0.
 
+Incompatible changes:
+* The asset filenames of PMD on [GitHub Releases](https://github.com/pmd/pmd/releases) are
+  now `pmd-dist-<version>-bin.zip` and `pmd-dist-<version>-src.zip`. Keep that in mind, if you have an automated
+  download script.
+
 Fixed Issues:
 * java-codestyle
   * [#4273](https://github.com/pmd/pmd/issues/4273): \[java] CommentDefaultAccessModifier ignoredAnnotations should include "org.junit.jupiter.api.extension.RegisterExtension" by default

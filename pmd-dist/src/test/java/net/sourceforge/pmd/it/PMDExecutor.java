@@ -16,7 +16,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.SystemUtils;
 
-import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.internal.util.IOUtil;
 
 /**
@@ -37,7 +36,7 @@ public class PMDExecutor {
     }
 
     private static ExecutionResult runPMDUnix(Path tempDir, Path reportFile, String... arguments) throws Exception {
-        String cmd = tempDir.resolve(AbstractBinaryDistributionTest.PMD_BIN_PREFIX + PMDVersion.VERSION + "/bin/pmd").toAbsolutePath().toString();
+        String cmd = tempDir.resolve(AbstractBinaryDistributionTest.PMD_BIN_PREFIX + "/bin/pmd").toAbsolutePath().toString();
         List<String> args = new ArrayList<>();
         args.add("check");
         args.addAll(Arrays.asList(arguments));
@@ -45,7 +44,7 @@ public class PMDExecutor {
     }
 
     private static ExecutionResult runPMDWindows(Path tempDir, Path reportFile, String... arguments) throws Exception {
-        String cmd = tempDir.resolve(AbstractBinaryDistributionTest.PMD_BIN_PREFIX + PMDVersion.VERSION + "/bin/pmd.bat").toAbsolutePath().toString();
+        String cmd = tempDir.resolve(AbstractBinaryDistributionTest.PMD_BIN_PREFIX + "/bin/pmd.bat").toAbsolutePath().toString();
         List<String> args = new ArrayList<>();
         args.add("check");
         args.addAll(Arrays.asList(arguments));
