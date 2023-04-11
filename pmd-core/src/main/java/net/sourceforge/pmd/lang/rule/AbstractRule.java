@@ -8,9 +8,12 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -378,8 +381,32 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 
         if (equality) {
             Rule that = (Rule) o;
-            equality = getName().equals(that.getName()) && getPriority().equals(that.getPriority())
-                    && getPropertiesByPropertyDescriptor().equals(that.getPropertiesByPropertyDescriptor());
+            equality = getName().equals(that.getName()) && getPriority().equals(that.getPriority());
+
+            if (equality) {
+                // Before calling equals on the properties, replace any Pattern with it pattern string
+                // This is only needed for RegexProperties.
+                Map<PropertyDescriptor<?>, Object> propertiesWithValues = new HashMap<>();
+                getPropertiesByPropertyDescriptor()
+                        .forEach((key, value) -> {
+                            Object newValue = value;
+                            if (newValue instanceof Pattern) {
+                                newValue = ((Pattern) newValue).pattern();
+                            }
+                            propertiesWithValues.put(key, newValue);
+                        });
+                Map<PropertyDescriptor<?>, Object> thatPropertiesWithValues = new HashMap<>();
+                that.getPropertiesByPropertyDescriptor()
+                        .forEach((key, value) -> {
+                            Object newValue = value;
+                            if (newValue instanceof Pattern) {
+                                newValue = ((Pattern) newValue).pattern();
+                            }
+                            thatPropertiesWithValues.put(key, newValue);
+                        });
+
+                equality = propertiesWithValues.equals(thatPropertiesWithValues);
+            }
         }
 
         return equality;

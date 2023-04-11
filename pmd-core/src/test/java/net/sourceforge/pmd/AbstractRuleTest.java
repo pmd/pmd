@@ -204,6 +204,21 @@ class AbstractRuleTest {
     }
 
     @Test
+    void twoRulesetsWithRulesUsingPatternPropertiesShouldBeEqual() {
+        class MockRuleWithPatternProperty extends net.sourceforge.pmd.lang.rule.MockRule {
+            MockRuleWithPatternProperty() {
+                super();
+                definePropertyDescriptor(PropertyFactory.regexProperty("myRegexProperty")
+                        .desc("description")
+                        .defaultValue("abc")
+                        .build());
+            }
+        }
+
+        assertEquals(new MockRuleWithPatternProperty(), new MockRuleWithPatternProperty());
+    }
+
+    @Test
     void testDeepCopyRule() {
         MyRule r1 = new MyRule();
         MyRule r2 = (MyRule) r1.deepCopy();
