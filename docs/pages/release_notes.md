@@ -39,7 +39,13 @@ for all.</p>
 This section lists the most important changes from the last release candidate.
 The remaining section describe the complete release notes for 7.0.0.
 
-Fixed Issues:
+**API Changes:**
+* The parameter order of {% jdoc core::lang.document.FileCollector#addSourceFile(String, String) %} has been swapped
+  in order to have the same meaning as in 6.55.0. That will make it easier if you upgrade from 6.55.0 to 7.0.0.
+  However, that means, that you need to change these method calls if you have migrated to 7.0.0-rc1 already.
+
+**Fixed Issues:**
+
 * java-codestyle
   * [#4273](https://github.com/pmd/pmd/issues/4273): \[java] CommentDefaultAccessModifier ignoredAnnotations should include "org.junit.jupiter.api.extension.RegisterExtension" by default
 * java-errorprone
