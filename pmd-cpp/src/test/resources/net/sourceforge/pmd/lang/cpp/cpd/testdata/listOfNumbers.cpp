@@ -18,7 +18,7 @@ int main() {
     0b000001, // C++ 14 binary literal
   };
   int c[3][4] = {{0,1,2,3},{4,5,6,7},{8,9,10,11}}; // multi-dimensional array
-  int d[3] = {a, a, a}; // identifiers should not be filtered out
+  int d[3] = {a, a, a}; // identifiers should filtered out if identifiers are allowed in sequences
   int e[1][3] = {{a, a, a}}; // identifiers in multi-dimensional array
   int f[1] = {main()}; // method invocations should not be filtered out
   int g[1][1] = {{main()}}; // method invocation in multi-dimensional array

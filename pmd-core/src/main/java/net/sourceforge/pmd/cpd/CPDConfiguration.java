@@ -65,6 +65,8 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     private boolean ignoreLiteralSequences = false;
 
+    private boolean ignoreIdentifierAndLiteralSequences = false;
+
     private boolean skipLexicalErrors = false;
 
     private boolean noSkipBlocks = false;
@@ -190,6 +192,11 @@ public class CPDConfiguration extends AbstractConfiguration {
         } else {
             properties.remove(Tokenizer.OPTION_IGNORE_LITERAL_SEQUENCES);
         }
+        if (configuration.isIgnoreIdentifierAndLiteralSequences()) {
+            properties.setProperty(Tokenizer.OPTION_IGNORE_IDENTIFIER_AND_LITERAL_SEQUENCES, "true");
+        } else {
+            properties.remove(Tokenizer.OPTION_IGNORE_IDENTIFIER_AND_LITERAL_SEQUENCES);
+        }
         properties.setProperty(Tokenizer.OPTION_SKIP_BLOCKS, Boolean.toString(!configuration.isNoSkipBlocks()));
         properties.setProperty(Tokenizer.OPTION_SKIP_BLOCKS_PATTERN, configuration.getSkipBlocksPattern());
         configuration.getLanguage().setProperties(properties);
@@ -314,6 +321,14 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     public void setIgnoreLiteralSequences(boolean ignoreLiteralSequences) {
         this.ignoreLiteralSequences = ignoreLiteralSequences;
+    }
+
+    public boolean isIgnoreIdentifierAndLiteralSequences() {
+        return ignoreIdentifierAndLiteralSequences;
+    }
+
+    public void setIgnoreIdentifierAndLiteralSequences(boolean ignoreIdentifierAndLiteralSequences) {
+        this.ignoreIdentifierAndLiteralSequences = ignoreIdentifierAndLiteralSequences;
     }
 
     public boolean isSkipLexicalErrors() {

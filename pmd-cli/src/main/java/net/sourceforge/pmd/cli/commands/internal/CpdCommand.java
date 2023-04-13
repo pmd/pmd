@@ -69,6 +69,9 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand {
     @Option(names = "--ignore-literal-sequences", description = "Ignore sequences of literals such as list initializers.")
     private boolean ignoreLiteralSequences;
 
+    @Option(names = "--ignore-sequences", description = "Ignore sequences of identifiers and  literals")
+    private boolean ignoreIdentifierAndLiteralSequences;
+
     @Option(names = "--skip-lexical-errors",
             description = "Skip files which can't be tokenized due to invalid characters, instead of aborting with an error.")
     private boolean skipLexicalErrors;
