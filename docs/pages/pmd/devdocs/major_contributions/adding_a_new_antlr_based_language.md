@@ -52,6 +52,12 @@ definitely don't come for free. It is much effort and requires perseverance to i
 
 ## 1.  Start with a new sub-module
 *   See pmd-swift for examples.
+*   Make sure to add your new module to the parent pom as `<module>` entry, so that it is built alongside the
+    other languages.
+*   Also add your new module to the dependencies list in "pmd-languages-deps/pom.xml", so that the new language
+    is automatically available in the binary distribution (pmd-dist) as well as for the shell-completion
+    in the pmd-cli module.
+
 
 ## 2.  Implement an AST parser for your language
 *   ANTLR will generate the parser for you based on the grammar file. The grammar file needs to be placed in the
