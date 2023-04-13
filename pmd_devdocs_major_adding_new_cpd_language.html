@@ -1595,7 +1595,15 @@
 <p>All you need to do is follow this few steps:</p>
 
 <ol>
-  <li>Create a new module for your language, you can take <a href="https://github.com/pmd/pmd/tree/master/pmd-go">the Golang module</a> as an example</li>
+  <li>Create a new module for your language, you can take <a href="https://github.com/pmd/pmd/tree/master/pmd-go">the Golang module</a> as an example
+    <ul>
+      <li>Make sure to add your new module to the parent pom as <code class="language-plaintext highlighter-rouge">&lt;module&gt;</code> entry, so that it is built alongside the
+other languages.</li>
+      <li>Also add your new module to the dependencies list in “pmd-languages-deps/pom.xml”, so that the new language
+is automatically available in the binary distribution (pmd-dist) as well as for the shell-completion
+in the pmd-cli module.</li>
+    </ul>
+  </li>
   <li>
     <p>Create a Tokenizer</p>
 
@@ -1775,7 +1783,7 @@ call the method <code class="language-plaintext highlighter-rouge">doTest</code>
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            March 18, 2019 (6.13.0)<br /> Site last generated: Apr 7, 2023 <br />
+            March 18, 2019 (6.13.0)<br /> Site last generated: Apr 13, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

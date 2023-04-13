@@ -1613,6 +1613,11 @@ definitely don’t come for free. It is much effort and requires perseverance to
 <h2 id="1--start-with-a-new-sub-module">1.  Start with a new sub-module</h2>
 <ul>
   <li>See pmd-java or pmd-vm for examples.</li>
+  <li>Make sure to add your new module to the parent pom as <code class="language-plaintext highlighter-rouge">&lt;module&gt;</code> entry, so that it is built alongside the
+other languages.</li>
+  <li>Also add your new module to the dependencies list in “pmd-languages-deps/pom.xml”, so that the new language
+is automatically available in the binary distribution (pmd-dist) as well as for the shell-completion
+in the pmd-cli module.</li>
 </ul>
 
 <h2 id="2--implement-an-ast-parser-for-your-language">2.  Implement an AST parser for your language</h2>
@@ -1866,7 +1871,7 @@ This can be achieved with Rule Designer:</p>
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            February 2023 (7.0.0)<br /> Site last generated: Apr 7, 2023 <br />
+            February 2023 (7.0.0)<br /> Site last generated: Apr 13, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

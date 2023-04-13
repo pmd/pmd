@@ -2370,13 +2370,13 @@ city/state/zip fields could park them within a single Address field.</p>
 <p>This rule finds not only unused private methods, but public methods as well.</p>
 
 <p><a href="https://github.com/nawforce/ApexLink">ApexLink</a> is used to make this possible and this needs
-additional configuration. The environment variable <code class="language-plaintext highlighter-rouge">PMD_APEX_ROOTDIRECTORY</code> needs to be set prior to executing
+additional configuration. The environment variable <code class="language-plaintext highlighter-rouge">PMD_APEX_ROOT_DIRECTORY</code> needs to be set prior to executing
 PMD. With this variable the root directory of the Salesforce metadata, where <code class="language-plaintext highlighter-rouge">sfdx-project.json</code> resides, is
 specified. ApexLink can then load all the classes in the project and figure out, whether a method is used or not.</p>
 
-<p>For an accurate analysis it is important that the <code class="language-plaintext highlighter-rouge">PMD_APEX_ROOTDIRECTORY</code> contains a complete set of metadata that
+<p>For an accurate analysis it is important that the <code class="language-plaintext highlighter-rouge">PMD_APEX_ROOT_DIRECTORY</code> contains a complete set of metadata that
 may be referenced from the Apex source code, such as Custom Objects, Visualforce Pages, Flows and Labels. The
-<code class="language-plaintext highlighter-rouge">PMD_APEX_ROOTDIRECTORY</code> directory must contain a <code class="language-plaintext highlighter-rouge">sfdx-project.json</code>, but metadata may be either in the
+<code class="language-plaintext highlighter-rouge">PMD_APEX_ROOT_DIRECTORY</code> directory must contain a <code class="language-plaintext highlighter-rouge">sfdx-project.json</code>, but metadata may be either in the
 <a href="https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_source_file_format.htm">SFDX Source format</a>
 or the older MDAPI format. The <code class="language-plaintext highlighter-rouge">packageDirectories</code> entries in <code class="language-plaintext highlighter-rouge">sfdx-project.json</code> are used to determine which
 directories to search for metadata, if a <code class="language-plaintext highlighter-rouge">.forceignore</code> file is present it will be respected.</p>
@@ -2457,7 +2457,7 @@ well-formed <code class="language-plaintext highlighter-rouge">sfdx-project.json
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Apr 7, 2023 <br />
+             Site last generated: Apr 13, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
