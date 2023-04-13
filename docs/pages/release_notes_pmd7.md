@@ -752,7 +752,9 @@ until the next major release, but it is recommended to stop using them.
 
 * Moved the two classes {% jdoc core::cpd.impl.AntlrTokenizer %} and {% jdoc core::cpd.impl.JavaCCTokenizer %} from
   `internal` package into package {% jdoc_package core::cpd.impl %}. These two classes are part of the API and
-  are base classes for CPD language implementations.
+  are base classes for CPD language implementations. Since 7.0.0-rc2.
+* `AntlrBaseRule` is gone in favor of {% jdoc core::pmd.lang.rule.AbstractVisitorRule %}. Since 7.0.0-rc2.
+
 
 ### XPath 3.1 support
 

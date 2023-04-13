@@ -154,9 +154,12 @@ definitely don't come for free. It is much effort and requires perseverance to i
 ## 10. Create an abstract rule class for the language
 *   You need to create your own `AbstractRule` in order to interface your language with PMD's generic rule
     execution.
-*   See [`AbstractSwiftRule`](https://github.com/pmd/pmd/blob/pmd/7.0.x/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/AbstractSwiftRule.java) as an example.
-*   While the rule basically just extends
-    [`AntlrBaseRule`](https://github.com/pmd/pmd/blob/pmd/7.0.x/pmd-core/src/main/java/net/sourceforge/pmd/lang/ast/impl/antlr4/AntlrBaseRule.java) without adding anything, every language should have its own base class for rule.
+*   See [`AbstractSwiftRule`](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/AbstractSwiftRule.java) as an example.
+*   The rule basically just extends
+    [`AbstractVisitorRule`](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/lang/rule/AbstractVisitorRule.java)
+    and only redefines the abstract `buildVisitor()` method to return our own type of visitor.
+    In this case our `SwiftVisitor` is used.
+    While there is no real functionality added, every language should have its own base class for rules.
     This helps to organize the code.
 *   All other rules for your language should extend this class. The purpose of this class is to provide a visitor
     via the method `buildVisitor()` for analyzing the AST. The provided visitor only implements the visit methods
