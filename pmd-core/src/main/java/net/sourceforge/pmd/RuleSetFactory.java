@@ -426,11 +426,9 @@ final class RuleSetFactory {
             }
         }
 
-        if (!excludedRulesCheck.isEmpty()) {
-            excludedRulesCheck.forEach(
-                (name, elt) ->
-                    err.at(elt).warn("Exclude pattern ''{0}'' did not match any rule in ruleset ''{1}''", name, ref));
-        }
+        excludedRulesCheck.forEach(
+        (name, elt) ->
+            err.at(elt).warn("Exclude pattern ''{0}'' did not match any rule in ruleset ''{1}''", name, ref));
 
         if (rulesetReferences.contains(ref)) {
             err.at(ruleElement).warn("The ruleset {0} is referenced multiple times in ruleset ''{1}''", ref, ruleSetBuilder.getName());
