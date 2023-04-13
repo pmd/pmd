@@ -750,6 +750,10 @@ until the next major release, but it is recommended to stop using them.
   * {% jdoc core::util.IteratorUtil %}
   * {% jdoc core::util.StringUtil %}
 
+* Moved the two classes {% jdoc core::cpd.impl.AntlrTokenizer %} and {% jdoc core::cpd.impl.JavaCCTokenizer %} from
+  `internal` package into package {% jdoc_package core::cpd.impl %}. These two classes are part of the API and
+  are base classes for CPD language implementations.
+
 ### XPath 3.1 support
 
 Support for XPath versions 1.0, 1.0-compatibility was removed, support for XPath 2.0 is deprecated. The default

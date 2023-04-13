@@ -39,7 +39,12 @@ for all.</p>
 This section lists the most important changes from the last release candidate.
 The remaining section describe the complete release notes for 7.0.0.
 
-Fixed Issues:
+#### API Changes
+* Moved the two classes {% jdoc core::cpd.impl.AntlrTokenizer %} and {% jdoc core::cpd.impl.JavaCCTokenizer %} from
+  `internal` package into package {% jdoc_package core::cpd.impl %}. These two classes are part of the API and
+  are base classes for CPD language implementations.
+
+#### Fixed Issues:
 * java-codestyle
   * [#4273](https://github.com/pmd/pmd/issues/4273): \[java] CommentDefaultAccessModifier ignoredAnnotations should include "org.junit.jupiter.api.extension.RegisterExtension" by default
 * java-errorprone
