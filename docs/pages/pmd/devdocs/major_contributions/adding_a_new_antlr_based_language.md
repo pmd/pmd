@@ -16,27 +16,33 @@ folder: pmd/devdocs
 This is really a big contribution and can't be done with a drive by contribution. It requires dedicated passion
 and long commitment to implement support for a new language.<br><br>
 
-This step-by-step guide is just a small intro to get the basics started and it's also not necessarily up-to-date
-or complete and you have to be able to fill in the blanks.<br><br>
+This step-by-step guide is just a small intro to get the basics started, and it's also not necessarily up-to-date
+or complete. You have to be able to fill in the blanks.<br><br>
 
-Currently the Antlr integration has some basic limitations compared to JavaCC: The output of the
-Antlr parser generator is not an abstract syntax tree (AST) but a parse tree. As such, a parse tree is
-much more fine-grained than what a typical JavaCC grammar will produce. This means that the
+Currently, the Antlr integration has some basic limitations compared to JavaCC: The output of the
+Antlr parser generator is not an abstract syntax tree (AST) but a parse tree (also known as CST, concrete syntax tree).
+As such, a parse tree is much more fine-grained than what a typical JavaCC grammar will produce. This means that the
 parse tree is much deeper and contains nodes down to the different token types.<br><br>
 
-The Antlr nodes themselves don't have any attributes because they are on the wrong abstraction level.
-As they don't have attributes, there are no attributes that can be used in XPath based rules.<br><br>
+The Antlr nodes are context objects and serve a different abstraction than nodes in an AST. These context objects
+themselves don't have any attributes because they themselves represent the attributes (as nodes or leaves in the
+parse tree). As they don't have attributes, there are no attributes that can be used in XPath based rules.<br><br>
+
+The current implementation of the languages using ANTLR use these context objects as nodes in PMD's AST
+representation.<br><br>
 
 In order to overcome these limitations, one would need to implement a post-processing step that transforms
-a parse tree into an abstract syntax tree and introducing real nodes on a higher abstraction level. This
-step is **not** described in this guide.<br><br>
+a parse tree into an abstract syntax tree and introducing real nodes on a higher abstraction level. These
+real nodes can then have attributes which are available in XPath based rules. The transformation can happen
+with a visitor, but the implementation of the AST is a manual step. This step is **not** described
+in this guide.<br><br>
 
 After the basic support for a language is there, there are lots of missing features left. Typical features
 that can greatly improve rule writing are: symbol table, type resolution, call/data flow analysis.<br><br>
 
 Symbol table keeps track of variables and their usages. Type resolution tries to find the actual class type
 of each used type, following along method calls (including overloaded and overwritten methods), allowing
-to query sub types and type hierarchy. This requires additional configuration of an auxiliary classpath.
+to query subtypes and type hierarchy. This requires additional configuration of an auxiliary classpath.
 Call and data flow analysis keep track of the data as it is moving through different execution paths
 a program has.<br><br>
 
