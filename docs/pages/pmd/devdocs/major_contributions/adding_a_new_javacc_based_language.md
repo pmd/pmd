@@ -36,7 +36,7 @@ definitely don't come for free. It is much effort and requires perseverance to i
 
 ## 1.  Start with a new sub-module
 *   See pmd-java or pmd-vm for examples.
-*   Make sure to add your new module to the parent pom as `<module>` entry, so that it is built alongside the
+*   Make sure to add your new module to PMD's parent pom as `<module>` entry, so that it is built alongside the
     other languages.
 *   Also add your new module to the dependencies list in "pmd-languages-deps/pom.xml", so that the new language
     is automatically available in the binary distribution (pmd-dist) as well as for the shell-completion

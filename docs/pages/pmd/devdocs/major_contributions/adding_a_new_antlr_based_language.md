@@ -19,7 +19,7 @@ and long commitment to implement support for a new language.<br><br>
 This step-by-step guide is just a small intro to get the basics started, and it's also not necessarily up-to-date
 or complete. You have to be able to fill in the blanks.<br><br>
 
-Currently, the Antlr integration has some basic limitations compared to JavaCC: The output of the
+Currently, the Antlr integration has some basic **limitations** compared to JavaCC: The output of the
 Antlr parser generator is not an abstract syntax tree (AST) but a parse tree (also known as CST, concrete syntax tree).
 As such, a parse tree is much more fine-grained than what a typical JavaCC grammar will produce. This means that the
 parse tree is much deeper and contains nodes down to the different token types.<br><br>
@@ -53,7 +53,7 @@ definitely don't come for free. It is much effort and requires perseverance to i
 
 ## 1.  Start with a new sub-module
 *   See pmd-swift for examples.
-*   Make sure to add your new module to the parent pom as `<module>` entry, so that it is built alongside the
+*   Make sure to add your new module to PMD's parent pom as `<module>` entry, so that it is built alongside the
     other languages.
 *   Also add your new module to the dependencies list in "pmd-languages-deps/pom.xml", so that the new language
     is automatically available in the binary distribution (pmd-dist) as well as for the shell-completion
@@ -65,6 +65,8 @@ definitely don't come for free. It is much effort and requires perseverance to i
     folder `src/main/antlr4` in the appropriate sub package `ast` of the language. E.g. for swift, the grammar
     file is [Swift.g4](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/antlr4/net/sourceforge/pmd/lang/swift/ast/Swift.g4)
     and is placed in the package `net.sourceforge.pmd.lang.swift.ast`.
+*   Configure the options "superClass" and "contextSuperClass". These are the base classes for the generated
+    classes.
 
 ## 3.  Create AST node classes
 *   The individual AST nodes are generated, but you need to define the common interface for them.
@@ -89,11 +91,19 @@ definitely don't come for free. It is much effort and requires perseverance to i
         See [`SwiftTerminalNode`](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/ast/SwiftTerminalNode.java).
     *   a language specific error node.
         See [`SwiftErrorNode`](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/ast/SwiftErrorNode.java).
+    *   a language name dictionary. This is used to convert ANTLR node names to useful XPath node names.
+        See [`SwiftNameDictionary'](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/ast/SwiftNameDictionary.java).
+* Once these base classes exist, you need to change the ANTLR grammar to add additional members via `@parser::members`
+    * Define a package private field `DICO` which creates a new instance of your language name dictionary using the
+      vocabulary from the generated parser (`VOCABULARY`).
+    * Define two additional methods to help converting the ANTLR context objects into PMD AST nodes.
+      The methods are abstract in [`AntlrGeneratedParserBase`](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/lang/ast/impl/antlr4/AntlrGeneratedParserBase.java)
+      and need to be implemented here for the concrete language: `createPmdTerminal()` and `createPmdError()`.
 *   In order for the generated code to match and use our custom classes, we have a common ant script, that fiddles with
-    the generated code. The ant script is [`antlr4-wrapper.xml`](https://github.com/pmd/pmd/blob/master/antlr4-wrapper.xml) and
-    does not need to be adjusted - it has plenty of parameters to set. The ant script is added in the
-    language module's `pom.xml` where the parameters are set (e.g. name of root name class). Have a look at
-    Swift's example: [`pmd-swift/pom.xml`](https://github.com/pmd/pmd/blob/master/pmd-swift/pom.xml).
+    the generated code. The ant script is [`antlr4-wrapper.xml`](https://github.com/pmd/pmd/blob/master/antlr4-wrapper.xml)
+    and does not need to be adjusted - it has plenty of parameters that can be configured.
+    The ant script is added in the language module's `pom.xml` where the parameters are set (e.g. name of root name
+    class). Have a look at Swift's example: [`pmd-swift/pom.xml`](https://github.com/pmd/pmd/blob/master/pmd-swift/pom.xml).
 *   You can add additional methods in your "InnerNode" (e.g. `SwiftInnerNode`) that are available on all nodes.
     But on most cases you won't need to do anything.
 
@@ -104,7 +114,7 @@ definitely don't come for free. It is much effort and requires perseverance to i
     have the parser generated.
 *   The generated code will be placed under `target/generated-sources/antlr4` and will not be committed to
     source control.
-*   You should review the [swift pom](https://github.com/pmd/pmd/blob/master/pmd-swift/pom.xml).
+*   You should review [`pmd-swift/pom.xml`](https://github.com/pmd/pmd/blob/master/pmd-swift/pom.xml).
 
 ## 5.  Create a TokenManager
 *   This is needed to support CPD (copy paste detection)
@@ -157,7 +167,7 @@ definitely don't come for free. It is much effort and requires perseverance to i
     Add your fully qualified class name as a single line into it.
 
 ## 10. Create an abstract rule class for the language
-*   You need to create your own `AbstractRule` in order to interface your language with PMD's generic rule
+*   You need to create your own abstract rule class in order to interface your language with PMD's generic rule
     execution.
 *   See [`AbstractSwiftRule`](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/AbstractSwiftRule.java) as an example.
 *   The rule basically just extends
@@ -168,7 +178,10 @@ definitely don't come for free. It is much effort and requires perseverance to i
     This helps to organize the code.
 *   All other rules for your language should extend this class. The purpose of this class is to provide a visitor
     via the method `buildVisitor()` for analyzing the AST. The provided visitor only implements the visit methods
-    for specific AST nodes. The other node types use the default behavior and you don't need to care about them.
+    for specific AST nodes. The other node types use the default behavior, and you don't need to care about them.
+*   Note: This is different from how it was in PMD 6: Each rule in PMD 6 was itself a visitor (implementing the visitor
+    interface of the specific language). Now the rule just provides a visitor, which can be hidden and potentially
+    shared between rules.
 
 ## 11. Create rules
 *   Creating rules is already pretty well documented in PMD - and it’s no different for a new language, except you
@@ -180,16 +193,34 @@ definitely don't come for free. It is much effort and requires perseverance to i
     as an example. Note, that all rule classes should be suffixed with `Rule` and should be placed
     in a package the corresponds to their category.
 *   To add an XPath rule you can follow our guide [Writing XPath Rules](pmd_userdocs_extending_writing_xpath_rules.html).
+*   When creating the category ruleset XML file, the XML can reference build properties that are replaced
+    during the build. This is used for the `externalInfoUrl` attribute of a rule. E.g. we use `${pmd.website.baseurl}`
+    to point to the correct webpage (depending on the PMD version). In order for this to work, you need to add a
+    resource filtering configuration in the language module's `pom.xml`. Under `<build>` add the following lines:
+    ```xml
+        <resources>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    ```
 
 ## 14. Test the rules
 *   Testing rules is described in depth in [Testing your rules](pmd_userdocs_extending_testing.html).
     *   Each rule has its own test class: Create a test class for your rule extending `PmdRuleTst`
-        *(see UnavailableFunctionTest for example)*
-    *   Create a category rule set for your language *(see pmd-swift/src/main/resources/bestpractices.xml for example)*
+        *(see
+        [`UnavailableFunctionTest`](https://github.com/pmd/pmd/blob/master/pmd-swift/src/test/java/net/sourceforge/pmd/lang/swift/rule/bestpractices/UnavailableFunctionTest.java)
+        for example)*
+    *   Create a category rule set for your language *(see
+        [`pmd-swift/src/main/resources/bestpractices.xml`](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/resources/category/swift/bestpractices.xml)
+        for example)*
     *   Place the test XML file with the test cases in the correct location
     *   When executing the test class
         *   this triggers the unit test to read the corresponding XML file with the rule test data
-            *(see `UnavailableFunction.xml` for example)*
+            *(see
+            [`UnavailableFunction.xml`](https://github.com/pmd/pmd/blob/master/pmd-swift/src/test/resources/net/sourceforge/pmd/lang/swift/rule/bestpractices/xml/UnavailableFunction.xml)
+            for example)*
         *   This test XML file contains sample pieces of code which should trigger a specified number of
             violations of this rule. The unit test will execute the rule on this piece of code, and verify
             that the number of violations matches.
