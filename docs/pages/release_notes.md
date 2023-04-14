@@ -48,6 +48,8 @@ The remaining section describe the complete release notes for 7.0.0.
   are package-private now.
 
 #### Fixed Issues:
+* core
+  * [#2500](https://github.com/pmd/pmd/issues/2500): \[core] Clarify API for ANTLR based languages
 * java-codestyle
   * [#4273](https://github.com/pmd/pmd/issues/4273): \[java] CommentDefaultAccessModifier ignoredAnnotations should include "org.junit.jupiter.api.extension.RegisterExtension" by default
 * java-errorprone
@@ -228,6 +230,7 @@ See [Detailed Release Notes for PMD 7](pmd_release_notes_pmd7.html).
     * [#2218](https://github.com/pmd/pmd/issues/2218): \[core] `isFindBoundary` should not be an attribute
     * [#2234](https://github.com/pmd/pmd/issues/2234): \[core] Consolidate PMD CLI into a single command
     * [#2239](https://github.com/pmd/pmd/issues/2239): \[core] Merging Javacc build scripts
+    * [#2500](https://github.com/pmd/pmd/issues/2500): \[core] Clarify API for ANTLR based languages
     * [#2518](https://github.com/pmd/pmd/issues/2518): \[core] Language properties
     * [#2602](https://github.com/pmd/pmd/issues/2602): \[core] Remove ParserOptions
     * [#2614](https://github.com/pmd/pmd/pull/2614):   \[core] Upgrade Saxon, add XPath 3.1, remove Jaxen
