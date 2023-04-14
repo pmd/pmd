@@ -3,15 +3,10 @@ title: Adding PMD support for a new ANTLR grammar based language
 short_title: Adding a new language with ANTLR
 tags: [devdocs, extending]
 summary: "How to add a new language to PMD using ANTLR grammar."
-last_updated: February 2023 (7.0.0)
+last_updated: April 2023 (7.0.0)
 sidebar: pmd_sidebar
 permalink: pmd_devdocs_major_adding_new_language_antlr.html
 folder: pmd/devdocs
-
-#
-# needs to be changed to branch master instead of pmd/7.0.x once pmd7 is released
-# https://github.com/pmd/pmd/blob/pmd/7.0.x -> https://github.com/pmd/pmd/blob/master
-#
 ---
 
 {% include callout.html type="warning" content="
@@ -62,14 +57,14 @@ definitely don't come for free. It is much effort and requires perseverance to i
 ## 2.  Implement an AST parser for your language
 *   ANTLR will generate the parser for you based on the grammar file. The grammar file needs to be placed in the
     folder `src/main/antlr4` in the appropriate sub package `ast` of the language. E.g. for swift, the grammar
-    file is [Swift.g4](https://github.com/pmd/pmd/blob/pmd/7.0.x/pmd-swift/src/main/antlr4/net/sourceforge/pmd/lang/swift/ast/Swift.g4)
+    file is [Swift.g4](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/antlr4/net/sourceforge/pmd/lang/swift/ast/Swift.g4)
     and is placed in the package `net.sourceforge.pmd.lang.swift.ast`.
 
 ## 3.  Create AST node classes
 *   The individual AST nodes are generated, but you need to define the common interface for them.
 *   You need to define the supertype interface for all nodes of the language. For that, we provide
-    [`AntlrNode`](https://github.com/pmd/pmd/blob/pmd/7.0.x/pmd-core/src/main/java/net/sourceforge/pmd/lang/ast/impl/antlr4/AntlrNode.java).
-*   See [`SwiftNode`](https://github.com/pmd/pmd/blob/pmd/7.0.x/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/ast/SwiftNode.java)
+    [`AntlrNode`](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/lang/ast/impl/antlr4/AntlrNode.java).
+*   See [`SwiftNode`](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/ast/SwiftNode.java)
     as an example.
 *   Additionally, you need several base classes:
     *   a language specific inner node - these nodes represent the production rules from the grammar.
@@ -103,31 +98,31 @@ definitely don't come for free. It is much effort and requires perseverance to i
     have the parser generated.
 *   The generated code will be placed under `target/generated-sources/antlr4` and will not be committed to
     source control.
-*   You should review the [swift pom](https://github.com/pmd/pmd/blob/pmd/7.0.x/pmd-swift/pom.xml).
+*   You should review the [swift pom](https://github.com/pmd/pmd/blob/master/pmd-swift/pom.xml).
 
 ## 5.  Create a TokenManager
 *   This is needed to support CPD (copy paste detection)
-*   We provide a default implementation using [`AntlrTokenManager`](https://github.com/pmd/pmd/blob/pmd/7.0.x/pmd-core/src/main/java/net/sourceforge/pmd/cpd/internal/AntlrTokenizer.java).
+*   We provide a default implementation using [`AntlrTokenManager`](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/internal/AntlrTokenizer.java).
 *   You must create your own "AntlrTokenizer" such as we do with
-    [`SwiftTokenizer`](https://github.com/pmd/pmd/blob/pmd/7.0.x/pmd-swift/src/main/java/net/sourceforge/pmd/cpd/SwiftTokenizer.java).
+    [`SwiftTokenizer`](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/cpd/SwiftTokenizer.java).
 *   If you wish to filter specific tokens (e.g. comments to support CPD suppression via "CPD-OFF" and "CPD-ON")
     you can create your own implementation of
-    [`AntlrTokenFilter`](https://github.com/pmd/pmd/blob/pmd/7.0.x/pmd-core/src/main/java/net/sourceforge/pmd/cpd/token/AntlrTokenFilter.java).
+    [`AntlrTokenFilter`](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/token/AntlrTokenFilter.java).
     You'll need to override then the protected method `getTokenFilter(AntlrTokenManager)`
     and return your custom filter. See the tokenizer for C# as an exmaple:
-    [`CsTokenizer`](https://github.com/pmd/pmd/blob/pmd/7.0.x/pmd-cs/src/main/java/net/sourceforge/pmd/cpd/CsTokenizer.java).
+    [`CsTokenizer`](https://github.com/pmd/pmd/blob/master/pmd-cs/src/main/java/net/sourceforge/pmd/cpd/CsTokenizer.java).
     
     If you don't need a custom token filter, you don't need to override the method. It returns the default
     `AntlrTokenFilter` which doesn't filter anything.
 
 ## 6.  Create a PMD parser “adapter”
 *   Create your own parser, that adapts the ANLTR interface to PMD's parser interface.
-*   We provide a [`AntlrBaseParser`](https://github.com/pmd/pmd/blob/pmd/7.0.x/pmd-core/src/main/java/net/sourceforge/pmd/lang/ast/impl/antlr4/AntlrBaseParser.java)
+*   We provide a [`AntlrBaseParser`](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/lang/ast/impl/antlr4/AntlrBaseParser.java)
     implementation that you need to extend to create your own adapter as we do with
-    [`PmdSwiftParser`](https://github.com/pmd/pmd/blob/pmd/7.0.x/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/ast/PmdSwiftParser.java).
+    [`PmdSwiftParser`](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/ast/PmdSwiftParser.java).
 
 ## 7.  Create a language version handler
-*   Now you need to create your version handler, as we did with [`SwiftHandler`](https://github.com/pmd/pmd/blob/pmd/7.0.x/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/SwiftHandler.java).
+*   Now you need to create your version handler, as we did with [`SwiftHandler`](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/SwiftHandler.java).
 *   This class is sort of a gateway between PMD and all parsing logic specific to your language.
 *   For a minimal implementation, it just needs to return a parser *(see step #6)*.
 *   It can be used to provide other features for your language like
@@ -140,15 +135,15 @@ definitely don't come for free. It is much effort and requires perseverance to i
 *   A parser visitor adapter is not needed anymore with PMD 7. The visitor interface now provides a default
     implementation.
 *   The visitor for ANTLR based AST is generated along the parser from the ANTLR grammar file. The
-    base interface for a visitor is [`AstVisitor`](https://github.com/pmd/pmd/blob/pmd/7.0.x/pmd-core/src/main/java/net/sourceforge/pmd/lang/ast/AstVisitor.java).
+    base interface for a visitor is [`AstVisitor`](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/lang/ast/AstVisitor.java).
 *   The generated visitor class for Swift is called `SwiftVisitor`.
 *   In order to help use this visitor later on, a base visitor class should be created.
-    See [`SwiftVisitorBase`](https://github.com/pmd/pmd/blob/pmd/7.0.x/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/ast/SwiftVisitorBase.java)
+    See [`SwiftVisitorBase`](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/ast/SwiftVisitorBase.java)
     as an example.
 
 ## 9. Make PMD recognize your language
 * Create your own subclass of `net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase`, see Swift as an example:
-    [`SwiftLanguageModule`](https://github.com/pmd/pmd/blob/pmd/7.0.x/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/SwiftLanguageModule.java).
+    [`SwiftLanguageModule`](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/SwiftLanguageModule.java).
 *   Add for each version of your language a call to `addVersion` in your language module’s constructor.
     Use `addDefaultVersion` for defining the default version.
 *   You’ll need to refer the language version handler created in step #7.
@@ -175,7 +170,7 @@ definitely don't come for free. It is much effort and requires perseverance to i
 *   PMD supports 2 types of rules, through visitors or XPath.
 *   To add a visitor rule:
     *   You need to extend the abstract rule you created on the previous step, you can use the swift
-    rule [UnavailableFunctionRule](https://github.com/pmd/pmd/blob/pmd/7.0.x/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/rule/bestpractices/UnavailableFunctionRule.java)
+    rule [UnavailableFunctionRule](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/rule/bestpractices/UnavailableFunctionRule.java)
     as an example. Note, that all rule classes should be suffixed with `Rule` and should be placed
     in a package the corresponds to their category.
 *   To add an XPath rule you can follow our guide [Writing XPath Rules](pmd_userdocs_extending_writing_xpath_rules.html).
