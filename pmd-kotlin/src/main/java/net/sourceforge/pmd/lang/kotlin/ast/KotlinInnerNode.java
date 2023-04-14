@@ -9,8 +9,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.BaseAntlrInnerNode;
 
-public abstract class KotlinInnerNode
-    extends BaseAntlrInnerNode<KotlinNode> implements KotlinNode {
+abstract class KotlinInnerNode extends BaseAntlrInnerNode<KotlinNode> implements KotlinNode {
 
     KotlinInnerNode(ParserRuleContext parent, int invokingStateNumber) {
         super(parent, invokingStateNumber);

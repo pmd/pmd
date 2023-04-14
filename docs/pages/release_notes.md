@@ -43,7 +43,9 @@ The remaining section describe the complete release notes for 7.0.0.
 * Moved the two classes {% jdoc core::cpd.impl.AntlrTokenizer %} and {% jdoc core::cpd.impl.JavaCCTokenizer %} from
   `internal` package into package {% jdoc_package core::cpd.impl %}. These two classes are part of the API and
   are base classes for CPD language implementations.
-* `AntlrBaseRule` is gone in favor of {% jdoc core::pmd.lang.rule.AbstractVisitorRule %}.
+* `AntlrBaseRule` is gone in favor of {% jdoc core::lang.rule.AbstractVisitorRule %}.
+* The classes {% jdoc kotlin::lang.kotlin.ast.KotlinInnerNode %} and {% jdoc swift::lang.swift.ast.SwiftInnerNode %}
+  are package-private now.
 
 #### Fixed Issues:
 * java-codestyle
