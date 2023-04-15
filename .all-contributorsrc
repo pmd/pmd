@@ -7154,6 +7154,16 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "PimvanderLoos",
+      "name": "Pim van der Loos",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3114723?v=4",
+      "profile": "https://github.com/PimvanderLoos",
+      "contributions": [
+        "code",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
