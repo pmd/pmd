@@ -55,12 +55,9 @@ function build() {
     # stop early for invalid maven version and branch/tag combination
     pmd_ci_maven_verify_version || exit 0
 
-    # allow snapshot dependencies in release candidate builds:
-    if [[ "${PMD_CI_MAVEN_PROJECT_VERSION}" == *-rc* ]]; then
-        PMD_MAVEN_EXTRA_OPTS+=(-Denforcer.skip=true)
-    fi
-
-    # skip tests when doing a release build
+    # skip tests when doing a release build - this makes the process faster
+    # it's a manual task now to verify that a release is only started, when the main branch
+    # was green before. This is usually checked via a local build, see ./do-release.sh
     if pmd_ci_maven_isReleaseBuild; then
         PMD_MAVEN_EXTRA_OPTS+=(-DskipTests=true)
     fi
