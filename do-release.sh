@@ -169,6 +169,7 @@ git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
     -Dtag="pmd_releases/${RELEASE_VERSION}" \
     -DreleaseVersion="${RELEASE_VERSION}" \
     -DdevelopmentVersion="${DEVELOPMENT_VERSION}" \
+    -DscmCommentPrefix="[release] " \
     -Pgenerate-rule-docs
 
 
