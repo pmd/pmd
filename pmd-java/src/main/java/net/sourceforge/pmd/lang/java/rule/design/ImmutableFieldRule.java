@@ -32,7 +32,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
 public class ImmutableFieldRule extends AbstractJavaRulechainRule {
 
     private static final PropertyDescriptor<List<String>> IGNORED_ANNOTS =
-        JavaPropertyUtil.ignoredAnnotationsDescriptor();
+        JavaPropertyUtil.ignoredAnnotationsDescriptor("lombok.Getter", "lombok.Setter");
 
     private static final Set<String> INVALIDATING_CLASS_ANNOT =
         setOf(
