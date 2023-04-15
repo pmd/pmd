@@ -45,9 +45,8 @@ java_heapsize_settings() {
     esac
 }
 
-
-set_lib_dir() {
-  if [ -z "${LIB_DIR}" ]; then
+set_pmd_dist_dir() {
+  if [ -z "${PMD_DIST_DIR}" ]; then
     # Allow for symlinks to this script
     if [ -L "$0" ]; then
       local script_real_loc=$(readlink "$0")
@@ -56,10 +55,14 @@ set_lib_dir() {
     fi
     local script_dir=$(dirname "${script_real_loc}")
 
-    pushd "${script_dir}/../lib" >/dev/null
-    readonly LIB_DIR=$(pwd -P)
+    pushd "${script_dir}/.." >/dev/null
+    readonly PMD_DIST_DIR=$(pwd -P)
     popd >/dev/null
   fi
+}
+
+set_lib_dir() {
+  readonly LIB_DIR="${PMD_DIST_DIR}/lib"
 }
 
 check_lib_dir() {
@@ -69,19 +72,7 @@ check_lib_dir() {
 }
 
 set_conf_dir() {
-  if [ -z ${CONF_DIR} ]; then
-    # Allow for symlinks to this script
-    if [ -L $0 ]; then
-      local script_real_loc=$(readlink "$0")
-    else
-      local script_real_loc=$0
-    fi
-    local script_dir=$(dirname "${script_real_loc}")
-
-    pushd "${script_dir}/../conf" >/dev/null
-    readonly CONF_DIR=$(pwd -P)
-    popd >/dev/null
-  fi
+  readonly CONF_DIR="${PMD_DIST_DIR}/conf"
 }
 
 check_conf_dir() {
@@ -183,6 +174,7 @@ readonly APPNAME="${1}"
 
 is_cygwin
 
+set_pmd_dist_dir
 set_lib_dir
 check_lib_dir
 set_conf_dir
@@ -200,4 +192,5 @@ cygwin_paths
 
 java_heapsize_settings
 
+export PMD_DIST_DIR
 java ${HEAPSIZE} ${PMD_JAVA_OPTS} $(jre_specific_vm_options) -cp "${classpath}" net.sourceforge.pmd.cli.PmdCli "$@"

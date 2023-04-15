@@ -90,13 +90,6 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Needed for Designer command -->
-        <dependency>
-            <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-ui</artifactId>
-            <version>${pmd-designer.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>

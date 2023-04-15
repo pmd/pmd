@@ -149,11 +149,6 @@
         </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-ui</artifactId>
-            <version>${pmd-designer.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-languages-deps</artifactId>
             <version>${project.version}</version>
             <type>pom</type>
