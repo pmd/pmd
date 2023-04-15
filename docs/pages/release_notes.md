@@ -39,6 +39,10 @@ for all.</p>
 This section lists the most important changes from the last release candidate.
 The remaining section describe the complete release notes for 7.0.0.
 
+**Updated PMD Designer**
+This PMD release ships a new version of the pmd-designer.
+For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designer/releases/tag/7.0.0-rc1).
+
 Fixed Issues:
 * java-codestyle
   * [#4273](https://github.com/pmd/pmd/issues/4273): \[java] CommentDefaultAccessModifier ignoredAnnotations should include "org.junit.jupiter.api.extension.RegisterExtension" by default
@@ -93,6 +97,11 @@ For more information, see the [Detailed Release Notes for PMD 7](pmd_release_not
 Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 [Matías Fraga](https://github.com/matifraga) (@matifraga),
 [Tomás De Lucca](https://github.com/tomidelucca) (@tomidelucca)
+
+#### Updated PMD Designer
+
+This PMD release ships a new version of the pmd-designer.
+For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designer/releases/tag/7.0.0-rc1).
 
 ### 🎉 Language Related Changes
 
