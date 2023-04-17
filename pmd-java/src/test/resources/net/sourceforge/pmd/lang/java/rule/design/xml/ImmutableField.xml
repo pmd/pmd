@@ -434,7 +434,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>#410 [java] ImmutableField: False positive with lombok on field</description>
+        <description>#4254 [java] ImmutableField: False positive with lombok on field</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import lombok.Getter;
