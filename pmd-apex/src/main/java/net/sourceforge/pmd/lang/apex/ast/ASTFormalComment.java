@@ -30,6 +30,6 @@ public final class ASTFormalComment extends AbstractApexNode.Empty {
 
     @Override
     protected void calculateTextRegion(TextFileContent sourceContent) {
-        setRegion(TextRegion.fromBothOffsets(token.getStartIndex(), token.getStopIndex()+1));
+        setRegion(TextRegion.fromBothOffsets(token.getStartIndex(), token.getStopIndex() + 1));
     }
 }

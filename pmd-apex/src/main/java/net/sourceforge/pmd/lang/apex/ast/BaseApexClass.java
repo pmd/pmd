@@ -4,9 +4,9 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.declaration.TypeDeclaration;
-
 import net.sourceforge.pmd.annotation.DeprecatedUntil700;
+
+import com.google.summit.ast.declaration.TypeDeclaration;
 
 abstract class BaseApexClass<T extends TypeDeclaration> extends AbstractApexNode.Single<T> implements ASTUserClassOrInterface<T> {
 

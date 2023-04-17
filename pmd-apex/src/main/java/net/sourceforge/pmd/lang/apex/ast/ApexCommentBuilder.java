@@ -32,7 +32,7 @@ final class ApexCommentBuilder {
     private final CommentInformation commentInfo;
 
     ApexCommentBuilder(TextFileContent sourceContent, String suppressMarker) {
-	this.sourceContent = sourceContent;
+        this.sourceContent = sourceContent;
 
         PrintStream err = System.err; //NOPMD ok not to close; is save/restore pattern
         try {

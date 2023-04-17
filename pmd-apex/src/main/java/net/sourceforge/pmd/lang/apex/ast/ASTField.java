@@ -7,8 +7,6 @@ package net.sourceforge.pmd.lang.apex.ast;
 import java.util.Arrays;
 import java.util.Optional;
 
-import net.sourceforge.pmd.Rule;
-
 import com.google.summit.ast.Identifier;
 import com.google.summit.ast.Node;
 import com.google.summit.ast.TypeRef;

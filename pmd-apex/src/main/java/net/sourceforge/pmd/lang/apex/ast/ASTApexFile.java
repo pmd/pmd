@@ -9,7 +9,6 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
-import com.google.summit.ast.CompilationUnit;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.apex.ApexLanguageProcessor;
@@ -19,6 +18,7 @@ import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.document.TextRegion;
 
+import com.google.summit.ast.CompilationUnit;
 import com.nawforce.common.diagnostics.Issue;
 
 public final class ASTApexFile extends AbstractApexNode.Single<CompilationUnit> implements RootNode {

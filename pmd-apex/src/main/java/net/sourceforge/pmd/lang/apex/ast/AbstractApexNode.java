@@ -9,18 +9,17 @@ import java.util.List;
 import java.util.NavigableSet;
 import java.util.TreeSet;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
-import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFileContent;
 import net.sourceforge.pmd.lang.document.TextRegion;
 
 import com.google.summit.ast.Node;
 import com.google.summit.ast.SourceLocation;
 import com.google.summit.ast.expression.LiteralExpression;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 abstract class AbstractApexNode extends AbstractNode<AbstractApexNode, ApexNode<?>> implements ApexNode<Void> {
 
@@ -38,17 +37,17 @@ abstract class AbstractApexNode extends AbstractNode<AbstractApexNode, ApexNode<
         }
 
         @Override
-	protected void calculateTextRegion(TextFileContent sourceContent) {
+        protected void calculateTextRegion(TextFileContent sourceContent) {
             SourceLocation loc = node.getSourceLocation();
             if (loc.isUnknown()) {
                 return;
             }
             // Column+1 because Summit columns are 0-based and PMD are 1-based
             setRegion(TextRegion.fromBothOffsets(
-                sourceContent.offsetFromLineColumn(loc.getStartLine(), loc.getStartColumn()+1),
-                sourceContent.offsetFromLineColumn(loc.getEndLine(), loc.getEndColumn()+1)
+                sourceContent.offsetFromLineColumn(loc.getStartLine(), loc.getStartColumn() + 1),
+                sourceContent.offsetFromLineColumn(loc.getEndLine(), loc.getEndColumn() + 1)
             ));
-	}
+        }
 
         @Override
         public boolean hasRealLoc() {
@@ -75,8 +74,8 @@ abstract class AbstractApexNode extends AbstractNode<AbstractApexNode, ApexNode<
                 if (!loc.isUnknown()) {
                     // Column+1 because Summit columns are 0-based and PMD are 1-based
                     setRegion(TextRegion.fromBothOffsets(
-                        sourceContent.offsetFromLineColumn(loc.getStartLine(), loc.getStartColumn()+1),
-                        sourceContent.offsetFromLineColumn(loc.getEndLine(), loc.getEndColumn()+1)
+                        sourceContent.offsetFromLineColumn(loc.getStartLine(), loc.getStartColumn() + 1),
+                        sourceContent.offsetFromLineColumn(loc.getEndLine(), loc.getEndColumn() + 1)
                     ));
                 }
             }
@@ -149,7 +148,7 @@ abstract class AbstractApexNode extends AbstractNode<AbstractApexNode, ApexNode<
                 region = parent.getTextRegion();
             } else {
                 throw new FileAnalysisException("Unable to determine location of " + this);
-	    }
+            }
         }
         return region;
     }

@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import com.google.summit.ast.declaration.TypeDeclaration;
 
 public final class ASTAnonymousClass extends AbstractApexNode.Single<TypeDeclaration> {

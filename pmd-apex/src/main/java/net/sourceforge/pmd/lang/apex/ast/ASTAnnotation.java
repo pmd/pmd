@@ -4,12 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import java.util.Arrays;
-import java.util.Set;
-import java.util.TreeSet;
-
-import net.sourceforge.pmd.Rule;
-
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.summit.ast.modifier.AnnotationModifier;
 

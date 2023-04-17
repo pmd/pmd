@@ -15,8 +15,8 @@ import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.Parser;
 
 import com.google.summit.SummitAST;
-import com.google.summit.translation.Translate;
 import com.google.summit.ast.CompilationUnit;
+import com.google.summit.translation.Translate;
 
 @InternalApi
 @SuppressWarnings("PMD.DoNotUseJavaUtilLogging")
