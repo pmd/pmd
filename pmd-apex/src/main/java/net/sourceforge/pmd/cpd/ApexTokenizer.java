@@ -16,9 +16,6 @@ import com.nawforce.apexparser.CaseInsensitiveInputStream;
 
 public class ApexTokenizer implements Tokenizer {
 
-    public ApexTokenizer() {
-    }
-
     /**
      * If the properties is <code>false</code> (default), then the case of any token
      * is ignored.

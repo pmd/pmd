@@ -12,8 +12,6 @@ import com.google.summit.ast.declaration.ClassDeclaration;
 
 public final class ASTUserClass extends BaseApexClass<ClassDeclaration> implements ASTUserClassOrInterface<ClassDeclaration> {
 
-    private ApexQualifiedName qname;
-
     ASTUserClass(ClassDeclaration userClass) {
         super(userClass);
     }

@@ -19,9 +19,11 @@ import com.google.summit.translation.Translate;
 import com.google.summit.ast.CompilationUnit;
 
 @InternalApi
+@SuppressWarnings("PMD.DoNotUseJavaUtilLogging")
 public final class ApexParser implements Parser {
 
     public ApexParser() {
+        // Suppress INFO-level output
         Logger.getLogger(Translate.class.getName()).setLevel(Level.WARNING);
     }
 
@@ -29,7 +31,7 @@ public final class ApexParser implements Parser {
     public ASTApexFile parse(final ParserTask task) {
         CompilationUnit astRoot = null;
 
-        PrintStream err = System.err;
+        PrintStream err = System.err; //NOPMD ok not to close; is save/restore pattern
         try {
             // Redirect System.err to suppress ANTLR warning about runtime/compilation version mismatch.
             // See: org.antlr.v4.runtime.RuntimeMetadata

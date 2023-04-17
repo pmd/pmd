@@ -9,8 +9,6 @@ import com.google.summit.ast.declaration.InterfaceDeclaration;
 
 public final class ASTUserInterface extends BaseApexClass<InterfaceDeclaration> implements ASTUserClassOrInterface<InterfaceDeclaration> {
 
-    private ApexQualifiedName qname;
-
     ASTUserInterface(InterfaceDeclaration userInterface) {
         super(userInterface);
     }

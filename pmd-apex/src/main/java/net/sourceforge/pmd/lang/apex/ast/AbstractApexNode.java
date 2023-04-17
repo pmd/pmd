@@ -93,20 +93,15 @@ abstract class AbstractApexNode extends AbstractNode<AbstractApexNode, ApexNode<
      */
     abstract static class Empty extends AbstractApexNode {
 
-        protected Empty() {
-        }
-
         @Override
         protected void calculateTextRegion(TextFileContent sourceContent) {
+            // no location
         }
 
         @Override
         public boolean hasRealLoc() {
             return false;
         }
-    }
-
-    protected AbstractApexNode() {
     }
 
     // overridden to make them visible

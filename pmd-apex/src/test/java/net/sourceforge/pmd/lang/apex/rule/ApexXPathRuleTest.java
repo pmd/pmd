@@ -39,7 +39,7 @@ class ApexXPathRuleTest extends ApexParserTestBase {
     }
 
     @Test
-    public void testOldOperatorProperty() {
+    void testOldOperatorProperty() {
         Report report = apex.executeRuleOnResource(makeXPath("//BooleanExpression[@Operator='&&']"),
                                                    "BooleanExpressions.cls");
         assertSize(report, 0);  // retired

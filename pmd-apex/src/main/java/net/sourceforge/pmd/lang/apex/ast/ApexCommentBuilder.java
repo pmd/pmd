@@ -34,7 +34,7 @@ final class ApexCommentBuilder {
     ApexCommentBuilder(TextFileContent sourceContent, String suppressMarker) {
 	this.sourceContent = sourceContent;
 
-        PrintStream err = System.err;
+        PrintStream err = System.err; //NOPMD ok not to close; is save/restore pattern
         try {
             // Redirect System.err to suppress ANTLR warning about runtime/compilation version mismatch.
             // See: org.antlr.v4.runtime.RuntimeMetadata
