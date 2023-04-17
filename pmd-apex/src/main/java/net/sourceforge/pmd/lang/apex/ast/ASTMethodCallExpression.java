@@ -44,15 +44,4 @@ public final class ASTMethodCallExpression extends AbstractApexNode.Single<CallE
     public int getInputParametersSize() {
         return node.getArgs().size();
     }
-
-    @Override
-    public @NonNull TextRegion getTextRegion() {
-        int fullLength = getFullMethodName().length();
-        int nameLength = getMethodName().length();
-        TextRegion base = super.getTextRegion();
-        if (fullLength > nameLength) {
-            base = base.growLeft(fullLength - nameLength);
-        }
-        return base;
-    }
 }

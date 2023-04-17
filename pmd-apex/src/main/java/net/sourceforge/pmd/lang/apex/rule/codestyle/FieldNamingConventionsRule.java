@@ -59,6 +59,8 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionsRule {
 
         if (node.getFirstParentOfType(ASTUserEnum.class) != null) {
             checkMatches(ENUM_CONSTANT_REGEX, node, data);
+        } else if (modifiers == null) {
+            checkMatches(INSTANCE_REGEX, node, data);
         } else if (modifiers.isFinal() && modifiers.isStatic()) {
             checkMatches(CONSTANT_REGEX, node, data);
         } else if (modifiers.isFinal()) {

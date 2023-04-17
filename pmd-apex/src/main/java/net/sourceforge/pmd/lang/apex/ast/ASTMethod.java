@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.document.TextFileContent;
+import net.sourceforge.pmd.lang.document.TextRegion;
 
 import com.google.summit.ast.SourceLocation;
 import com.google.summit.ast.declaration.MethodDeclaration;
@@ -71,7 +72,16 @@ public final class ASTMethod extends AbstractApexNode implements ApexQualifiable
 
     @Override
     void calculateTextRegion(TextFileContent sourceContent) {
-        // TODO post-merge setLineNumbers(sourceLocation);
+        if (sourceLocation.isUnknown()) {
+            return;
+        }
+        // Column+1 because Summit columns are 0-based and PMD are 1-based
+        setRegion(TextRegion.fromBothOffsets(
+            sourceContent.offsetFromLineColumn(sourceLocation.getStartLine(),
+                                               sourceLocation.getStartColumn()+1),
+            sourceContent.offsetFromLineColumn(sourceLocation.getEndLine(),
+                                               sourceLocation.getEndColumn()+1)
+        ));
     }
 
     @Override

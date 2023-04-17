@@ -28,15 +28,8 @@ public final class ASTFormalComment extends AbstractApexNode.Empty {
         return token.getText();
     }
 
-    /* TODO: needed?
-    public Chars getToken() {
-        String text = token.getText();
-        return Chars.fromString(text, 0, text.length());
-    }
-    */
-
     @Override
     protected void calculateTextRegion(TextFileContent sourceContent) {
-	setRegion(TextRegion.fromBothOffsets(token.getStartIndex(), token.getStopIndex()));
+        setRegion(TextRegion.fromBothOffsets(token.getStartIndex(), token.getStopIndex()+1));
     }
 }

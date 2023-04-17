@@ -33,6 +33,7 @@ public final class ASTApexFile extends AbstractApexNode.Single<CompilationUnit> 
         super(compilationUnit);
         this.astInfo = new AstInfo<>(task, this).withSuppressMap(suppressMap);
         this.multifileAnalysis = apexLang.getMultiFileState();
+        this.setRegion(TextRegion.fromOffsetLength(0, task.getTextDocument().getLength()));
     }
 
     @Override
@@ -42,7 +43,8 @@ public final class ASTApexFile extends AbstractApexNode.Single<CompilationUnit> 
 
     @Override
     public double getApexVersion() {
-        return 176.0; // TODO Hack
+        // TODO: remove this method?
+        return 54.0;
     }
 
     public ASTUserClassOrInterface<?> getMainNode() {

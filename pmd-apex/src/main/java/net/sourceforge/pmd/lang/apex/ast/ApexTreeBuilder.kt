@@ -89,25 +89,25 @@ class ApexTreeBuilder(val task: ParserTask, val proc: ApexLanguageProcessor) {
     /** Builds and returns an [ASTApexFile] corresponding to the given [CompilationUnit]. */
     fun buildTree(compilationUnit: CompilationUnit): ASTApexFile {
         // Build tree
-        val result =
+        val baseClass =
             build(compilationUnit, parent = null) as? BaseApexClass<*>
                 ?: throw ParseException("Unable to build tree")
+        val result = ASTApexFile(task, compilationUnit, commentBuilder.getSuppressMap(), proc)
+        baseClass.setParent(result)
 
-        // Generate additional nodes
+        // Post-processing passes
         generateAdditional(result)
-
         postProcessTree(result)
-
         commentBuilder.addFormalComments()
 
-        return ASTApexFile(task, compilationUnit, /*TODO*/ mapOf(), proc).also{ result.setParent(it) }
+        return result
     }
 
     /** Calls additional methods for each node in [root] using a post-order traversal. */
     private fun postProcessTree(root: AbstractApexNode) =
         root.acceptVisitor(
-            object : ApexVisitorBase<Void, Void>() {
-                override fun visitApexNode(node: ApexNode<*>?, data: Void): Void =
+            object : ApexVisitorBase<Unit, Unit>() {
+                override fun visitApexNode(node: ApexNode<*>?, data: Unit): Unit =
                     super.visitNode(node, data).also {
                         if (node is AbstractApexNode) {
                             node.calculateTextRegion(sourceContent)
@@ -122,13 +122,14 @@ class ApexTreeBuilder(val task: ParserTask, val proc: ApexLanguageProcessor) {
                         }
                     }
             },
-            null
+            Unit
         )
 
     /** Builds an [ApexNode] wrapper for [node]. */
     private fun build(node: Node?, parent: AbstractApexNode?): AbstractApexNode? =
         when (node) {
             null -> null
+            is CompilationUnit -> build(node.typeDeclaration, parent)
             is TypeDeclaration -> buildTypeDeclaration(node)
             is EnumValue -> buildEnumValue(node)
             is MethodDeclaration -> buildMethodDeclaration(node, parent)
@@ -804,7 +805,4 @@ class ApexTreeBuilder(val task: ParserTask, val proc: ApexLanguageProcessor) {
             parent.addChild(this, parent.numChildren)
         }
     }
-
-    val suppressMap
-        get() = commentBuilder.getSuppressMap()
 }
