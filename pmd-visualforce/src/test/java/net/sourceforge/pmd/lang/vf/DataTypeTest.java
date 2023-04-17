@@ -10,13 +10,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-<<<<<<< HEAD
-public class DataTypeTest {
-=======
-import apex.jorje.semantic.symbol.type.BasicType;
-
 class DataTypeTest {
->>>>>>> origin/master
+
     @Test
     void testFromString() {
         assertEquals(DataType.AutoNumber, DataType.fromString("AutoNumber"));
@@ -38,20 +33,7 @@ class DataTypeTest {
     }
 
     @Test
-<<<<<<< HEAD
-    public void testRequiresEncoding() {
-=======
-    void testDeprecatedFromBasicType() {
-        assertEquals(DataType.Checkbox, DataType.fromBasicType(BasicType.BOOLEAN));
-        assertEquals(DataType.Number, DataType.fromBasicType(BasicType.DECIMAL));
-        assertEquals(DataType.Number, DataType.fromBasicType(BasicType.DOUBLE));
-        assertEquals(DataType.Unknown, DataType.fromBasicType(BasicType.APEX_OBJECT));
-        assertEquals(DataType.Unknown, DataType.fromBasicType(null));
-    }
-
-    @Test
     void testRequiresEncoding() {
->>>>>>> origin/master
         assertFalse(DataType.AutoNumber.requiresEscaping);
         assertTrue(DataType.Text.requiresEscaping);
     }

@@ -106,45 +106,6 @@ public enum DataType {
 
     /**
      * Map to correct instance, returns {@code Unknown} if the value can't be mapped.
-<<<<<<< HEAD
-=======
-     *
-     * @deprecated Use {@link #fromTypeName(String)} instead.
-     */
-    @Deprecated
-    public static DataType fromBasicType(BasicType value) {
-        if (value != null) {
-            switch (value) {
-            case BOOLEAN:
-                return Checkbox;
-            case CURRENCY:
-                return Currency;
-            case DATE:
-                return Date;
-            case DATE_TIME:
-                return DateTime;
-            case ID:
-                return Lookup;
-            case DECIMAL:
-            case DOUBLE:
-            case INTEGER:
-            case LONG:
-                return Number;
-            case STRING:
-                return Text;
-            case TIME:
-                return Time;
-            default:
-                break;
-            }
-        }
-        LOG.debug("Unable to determine DataType of {}", value);
-        return Unknown;
-    }
-
-    /**
-     * Map to correct instance, returns {@code Unknown} if the value can't be mapped.
->>>>>>> origin/master
      */
     public static DataType fromTypeName(String value) {
         value = value != null ? value : "";
