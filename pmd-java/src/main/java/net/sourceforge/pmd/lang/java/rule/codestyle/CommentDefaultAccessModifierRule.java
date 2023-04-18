@@ -53,6 +53,7 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
             "android.support.annotation.VisibleForTesting",
             "co.elastic.clients.util.VisibleForTesting",
             "org.junit.jupiter.api.Test",
+            "org.junit.jupiter.api.extension.RegisterExtension",
             "org.junit.jupiter.api.ParameterizedTest",
             "org.junit.jupiter.api.RepeatedTest",
             "org.junit.jupiter.api.TestFactory",

@@ -436,7 +436,7 @@
                         </execution>
                     </executions>
                     <configuration>
-                        <linkXRef>true</linkXRef>
+                        <linkXRef>false</linkXRef>
                         <minimumTokens>100</minimumTokens>
                         <targetJdk>1.${java.version}</targetJdk>
                         <rulesets>
@@ -1183,5 +1183,6 @@
         <module>pmd-vm</module>
         <module>pmd-xml</module>
         <module>pmd-ant</module>
+        <module>pmd-languages-deps</module>
     </modules>
 </project>

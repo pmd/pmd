@@ -87,6 +87,8 @@ suppression methods (e.g. by using `@SuppressWarnings` annotation).
     [not(ancestor::ConstructorCall[1][pmd-java:typeIs('java.security.PrivilegedAction')]/AnonymousClassDeclaration)]
     (: exclude inner privileged action classes :)
     [not(ancestor::ClassOrInterfaceDeclaration[1][pmd-java:typeIs('java.security.PrivilegedAction')])]
+    (: exclude privileged action lambdas :)
+    [not(ancestor::LambdaExpression[pmd-java:typeIs('java.security.PrivilegedAction')])]
 ]]>
                 </value>
             </property>
