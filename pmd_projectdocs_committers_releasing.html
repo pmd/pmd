@@ -1629,7 +1629,7 @@ e.g. it requires that the repo <code class="language-plaintext highlighter-rouge
 
 <p>The script <code class="language-plaintext highlighter-rouge">do-release.sh</code> is called in the directory <code class="language-plaintext highlighter-rouge">/home/joe/source/pmd</code> and searches for <code class="language-plaintext highlighter-rouge">../pmd.github.io</code>.</p>
 
-<p>Also make sure, that the repo “pmd.github.io” is locally up to date and has no local changes.</p>
+<p>Also make sure, that the repo “pmd.github.io” is locally up-to-date and has no local changes.</p>
 
 <h3 id="the-release-notes-and-docs">The Release Notes and docs</h3>
 
@@ -1766,11 +1766,8 @@ Also create a symlink from pmd-doc-6.34.0-SNAPSHOT to pmd-doc-6.34.0, so that ol
   <li>Remove old javadoc for the SNAPSHOT version, e.g. delete <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.34.0-SNAPSHOT/">https://docs.pmd-code.org/apidocs/pmd-core/6.34.0-SNAPSHOT/</a>.</li>
   <li>Create a draft news post on <a href="https://sourceforge.net/p/pmd/news/">https://sourceforge.net/p/pmd/news/</a> for the new release. This contains the
 rendered release notes.</li>
-  <li>Add the documentation of the new release to a subfolder on <a href="https://pmd.github.io">https://pmd.github.io</a>, also make
-this folder available as <code class="language-plaintext highlighter-rouge">latest</code>, so that <a href="https://pmd.github.io/latest/">https://pmd.github.io/latest/</a> shows the new
-version and <a href="https://pmd.github.io/pmd-6.34.0/">https://pmd.github.io/pmd-6.34.0/</a> is the URL for the specific release.</li>
-  <li>Also copy the documentation to sourceforge’s web space, so that it is available as
-<a href="https://pmd.sourceforge.io/pmd-6.34.0/">https://pmd.sourceforge.io/pmd-6.34.0/</a>. All previously copied version are listed
+  <li>Copy the documentation to sourceforge’s web space, so that it is available as
+<a href="https://pmd.sourceforge.io/pmd-6.34.0/">https://pmd.sourceforge.io/pmd-6.34.0/</a>. All previously copied versions are listed
 under <a href="https://pmd.sourceforge.io/archive.phtml">https://pmd.sourceforge.io/archive.phtml</a>.</li>
   <li>After all this is done, the release on github (<a href="https://github.com/pmd/pmd/releases">https://github.com/pmd/pmd/releases</a>) is published
 and the news post on sourceforge (https://sourceforge.net/p/pmd/news/&gt; is publishes as well.</li>
@@ -1792,7 +1789,7 @@ news:</p>
 
     <ul>
       <li>Downloads: https://github.com/pmd/pmd/releases/tag/pmd_releases%2F<version></version></li>
-      <li>Documentation: https://pmd.github.io/pmd-<version>/</version></li>
+      <li>Documentation: https://docs.pmd-code.org/pmd-doc-<version>/</version></li>
     </ul>
 
     <p>And Copy-Paste the release notes</p>
@@ -1853,6 +1850,12 @@ news:</p>
       <td>docs</td>
       <td>New docs are uploaded</td>
       <td><a href="https://docs.pmd-code.org/latest/">https://docs.pmd-code.org/latest/</a></td>
+      <td><input type="checkbox" /></td>
+    </tr>
+    <tr>
+      <td>docs2</td>
+      <td>New version in the docs is listed under “Version specific documentation”</td>
+      <td><a href="https://docs.pmd-code.org/">https://docs.pmd-code.org/</a></td>
       <td><input type="checkbox" /></td>
     </tr>
     <tr>
@@ -1968,7 +1971,7 @@ In theory, the fixes should already be there, but you never now.</p>
 <p>If releases from multiple branches are being done, the order matters. You should start from the “oldest” branch,
 e.g. <code class="language-plaintext highlighter-rouge">pmd/5.4.x</code>, release from there. Then merge (see above) into the next branch, e.g. <code class="language-plaintext highlighter-rouge">pmd/5.5.x</code> and release
 from there. Then merge into the <code class="language-plaintext highlighter-rouge">master</code> branch and release from there. This way, the last release done, becomes
-automatically the latest release on <a href="https://pmd.github.io/latest/">https://pmd.github.io/latest/</a> and on sourceforge.</p>
+automatically the latest release on <a href="https://docs.pmd-code.org/latest/">https://docs.pmd-code.org/latest/</a> and on sourceforge.</p>
 
 <h3 id="optional-create-a-new-release-branch">(Optional) Create a new release branch</h3>
 
