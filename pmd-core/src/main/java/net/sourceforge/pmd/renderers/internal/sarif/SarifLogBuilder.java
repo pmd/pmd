@@ -190,7 +190,7 @@ public class SarifLogBuilder {
         return Component.builder()
                 .name("PMD")
                 .version(PMDVersion.VERSION)
-                .informationUri("https://pmd.github.io/pmd/")
+                .informationUri("https://docs.pmd-code.org/latest/")
                 .build();
     }
 }

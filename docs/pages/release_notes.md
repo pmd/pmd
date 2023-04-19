@@ -5,7 +5,7 @@ keywords: changelog, release notes
 ---
 
 {% if is_release_notes_processor %}
-{% capture baseurl %}https://pmd.github.io/pmd-{{ site.pmd.version }}/{% endcapture %}
+{% capture baseurl %}https://docs.pmd-code.org/pmd-doc-{{ site.pmd.version }}/{% endcapture %}
 {% else %}
 {% assign baseurl = "" %}
 {% endif %}
@@ -46,16 +46,22 @@ The remaining section describe the complete release notes for 7.0.0.
 * `AntlrBaseRule` is gone in favor of {% jdoc core::lang.rule.AbstractVisitorRule %}.
 * The classes {% jdoc kotlin::lang.kotlin.ast.KotlinInnerNode %} and {% jdoc swift::lang.swift.ast.SwiftInnerNode %}
   are package-private now.
+* The parameter order of {% jdoc core::lang.document.FileCollector#addSourceFile(String, String) %} has been swapped
+  in order to have the same meaning as in 6.55.0. That will make it easier if you upgrade from 6.55.0 to 7.0.0.
+  However, that means, that you need to change these method calls if you have migrated to 7.0.0-rc1 already.
 
 #### Fixed Issues:
 * core
   * [#2500](https://github.com/pmd/pmd/issues/2500): \[core] Clarify API for ANTLR based languages
 * doc
   * [#2501](https://github.com/pmd/pmd/issues/2501): \[doc] Verify ANTLR Documentation
+  * [#4438](https://github.com/pmd/pmd/issues/4438): \[doc] Documentation links in VS Code are outdated
 * java-codestyle
   * [#4273](https://github.com/pmd/pmd/issues/4273): \[java] CommentDefaultAccessModifier ignoredAnnotations should include "org.junit.jupiter.api.extension.RegisterExtension" by default
 * java-errorprone
   * [#4449](https://github.com/pmd/pmd/issues/4449): \[java] AvoidAccessibilityAlteration: Possible false positive in AvoidAccessibilityAlteration rule when using Lambda expression
+* miscellaneous
+  * [#4462](https://github.com/pmd/pmd/issues/4462): Provide Software Bill of Materials (SBOM)
 
 ### 🚀 Major Features and Enhancements
 
@@ -72,7 +78,7 @@ The new official logo of PMD:
 * Rewritten type resolution framework and symbol table correctly implements the JLS
 * AST exposes more semantic information (method calls, field accesses)
 
-For more information, see the [Detailed Release Notes for PMD 7](pmd_release_notes_pmd7.html).
+For more information, see the [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html).
 
 Contributors: [Clément Fournier](https://github.com/oowekyala) (@oowekyala),
 [Andreas Dangel](https://github.com/adangel) (@adangel),
@@ -90,7 +96,7 @@ Contributors: [Clément Fournier](https://github.com/oowekyala) (@oowekyala),
 
 ![Demo]({{ baseurl }}images/userdocs/pmd-demo.gif)
 
-For more information, see the [Detailed Release Notes for PMD 7](pmd_release_notes_pmd7.html).
+For more information, see the [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html).
 
 Contributors: [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
 
@@ -100,7 +106,7 @@ Contributors: [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuy
 * Previously, Antlr grammar could only be used for CPD
 * New supported languages: Swift and Kotlin
 
-For more information, see the [Detailed Release Notes for PMD 7](pmd_release_notes_pmd7.html).
+For more information, see the [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html).
 
 Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 [Matías Fraga](https://github.com/matifraga) (@matifraga),
@@ -109,7 +115,7 @@ Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 ### 🎉 Language Related Changes
 
 Note that this is just a concise listing of the highlight.
-For more information on the languages, see the [Detailed Release Notes for PMD 7](pmd_release_notes_pmd7.html).
+For more information on the languages, see the [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html).
 
 #### New: Swift support
 
@@ -188,7 +194,7 @@ Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 #### Removed Rules
 
 Many rules, that were previously deprecated have been finally removed.
-See [Detailed Release Notes for PMD 7](pmd_release_notes_pmd7.html) for the complete list.
+See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html) for the complete list.
 
 ### 🚨 API
 
@@ -197,7 +203,7 @@ have a clear separation between a well-defined API and the implementation, which
 This should help us in future development.
 
 Also, there are some improvement and changes in different areas. For the detailed description
-of the changes listed here, see [Detailed Release Notes for PMD 7](pmd_release_notes_pmd7.html).
+of the changes listed here, see [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html).
 
 * Miscellaneous smaller changes and cleanups
 * XPath 3.1 support for XPath-based rules
@@ -207,7 +213,7 @@ of the changes listed here, see [Detailed Release Notes for PMD 7](pmd_release_n
 * Language Lifecycle and Language Properties
 
 ### 💥 Compatibility and migration notes
-See [Detailed Release Notes for PMD 7](pmd_release_notes_pmd7.html).
+See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html).
 
 ### 🐛 Fixed Issues
 
@@ -220,6 +226,7 @@ See [Detailed Release Notes for PMD 7](pmd_release_notes_pmd7.html).
     * [#2497](https://github.com/pmd/pmd/issues/2497): PMD 7 Logo page
     * [#2498](https://github.com/pmd/pmd/issues/2498): Update PMD 7 Logo in documentation
     * [#3797](https://github.com/pmd/pmd/issues/3797): \[all] Use JUnit5
+    * [#4462](https://github.com/pmd/pmd/issues/4462): Provide Software Bill of Materials (SBOM)
 * ant
     * [#4080](https://github.com/pmd/pmd/issues/4080): \[ant] Split off Ant integration into a new submodule
 * core
@@ -259,6 +266,7 @@ See [Detailed Release Notes for PMD 7](pmd_release_notes_pmd7.html).
     * [#4079](https://github.com/pmd/pmd/issues/4079): \[cli] Split off CLI implementation into a pmd-cli submodule
 * doc
     * [#2501](https://github.com/pmd/pmd/issues/2501): \[doc] Verify ANTLR Documentation
+    * [#4438](https://github.com/pmd/pmd/issues/4438): \[doc] Documentation links in VS Code are outdated
 * testing
     * [#2435](https://github.com/pmd/pmd/issues/2435): \[test] Remove duplicated Dummy language module
     * [#4234](https://github.com/pmd/pmd/issues/4234): \[test] Tests that change the logging level do not work
@@ -360,6 +368,7 @@ Language specific fixes:
     * [#3754](https://github.com/pmd/pmd/issues/3754): \[java] SingularField false positive with read in while condition
     * [#3786](https://github.com/pmd/pmd/issues/3786): \[java] SimplifyBooleanReturns should consider operator precedence
     * [#4238](https://github.com/pmd/pmd/pull/4238):   \[java] Make LawOfDemeter not use the rulechain
+    * [#4254](https://github.com/pmd/pmd/issues/4254): \[java] ImmutableField - false positive with Lombok @<!-- -->Setter
 * java-documentation
     * [#4369](https://github.com/pmd/pmd/pull/4369):   \[java] Improve CommentSize
     * [#4416](https://github.com/pmd/pmd/pull/4416):   \[java] Fix reported line number in CommentContentRule
@@ -386,6 +395,7 @@ Language specific fixes:
     * [#2537](https://github.com/pmd/pmd/issues/2537): \[java] DontCallThreadRun can't detect the case that call run() in `this.run()`
     * [#2538](https://github.com/pmd/pmd/issues/2538): \[java] DontCallThreadRun can't detect the case that call run() in `foo.bar.run()`
     * [#2577](https://github.com/pmd/pmd/issues/2577): \[java] UseNotifyAllInsteadOfNotify falsely detect a special case with argument: `foo.notify(bar)`
+    * [#4483](https://github.com/pmd/pmd/issues/4483): \[java] NonThreadSafeSingleton false positive with double-checked locking
 * java-performance
     * [#1224](https://github.com/pmd/pmd/issues/1224): \[java] InefficientEmptyStringCheck false negative in anonymous class
     * [#2587](https://github.com/pmd/pmd/issues/2587): \[java] AvoidArrayLoops could also check for list copy through iterated List.add()
@@ -415,6 +425,7 @@ Language specific fixes:
 * [#4444](https://github.com/pmd/pmd/pull/4444): \[java] CommentDefaultAccessModifier - ignore org.junit.jupiter.api.extension.RegisterExtension by default - [Nirvik Patel](https://github.com/nirvikpatel) (@nirvikpatel)
 * [#4450](https://github.com/pmd/pmd/pull/4450): \[java] Fix #4449 AvoidAccessibilityAlteration: Correctly handle Lambda expressions in PrivilegedAction scenarios - [Seren](https://github.com/mohui1999) (@mohui1999)
 * [#4452](https://github.com/pmd/pmd/pull/4452): \[doc] Update PMD_APEX_ROOT_DIRECTORY documentation reference - [nwcm](https://github.com/nwcm) (@nwcm)
+* [#4474](https://github.com/pmd/pmd/pull/4474): \[java] ImmutableField: False positive with lombok (fixes #4254) - [Pim van der Loos](https://github.com/PimvanderLoos) (@PimvanderLoos)
 
 ### 📈 Stats
 * 4416 commits

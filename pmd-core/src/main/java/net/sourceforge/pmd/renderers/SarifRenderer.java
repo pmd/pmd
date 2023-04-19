@@ -71,6 +71,7 @@ public class SarifRenderer extends AbstractIncrementingRenderer {
         final SarifLog sarifLog = sarifLogBuilder.build();
         final String json = gson.toJson(sarifLog);
         writer.write(json);
+        writer.println();
     }
 
     @Override
