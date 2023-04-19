@@ -7,7 +7,7 @@
         "driver": {
           "name": "PMD",
           "version": "unknown",
-          "informationUri": "https://pmd.github.io/pmd/",
+          "informationUri": "https://docs.pmd-code.org/latest/",
           "rules": []
         }
       },
