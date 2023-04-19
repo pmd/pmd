@@ -1612,6 +1612,13 @@ for all.</p>
 <p>This section lists the most important changes from the last release candidate.
 The remaining section describe the complete release notes for 7.0.0.</p>
 
+<p><strong>API Changes:</strong></p>
+<ul>
+  <li>The parameter order of <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/document/FileCollector.html#addSourceFile(String,String)"><code>addSourceFile</code></a> has been swapped
+in order to have the same meaning as in 6.55.0. That will make it easier if you upgrade from 6.55.0 to 7.0.0.
+However, that means, that you need to change these method calls if you have migrated to 7.0.0-rc1 already.</li>
+</ul>
+
 <h4 id="fixed-issues">Fixed issues</h4>
 <ul>
   <li>documentation
@@ -2117,7 +2124,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
             target="_blank"
             href="https://github.com/pmd/pmd/blob/master/docs/pages/release_notes.md"
             role="button"
-            ><i class="fa fa-github fa-lg"></i> Edit on GitHub</a
+            ><i class="fab fa-github fa-lg"></i> Edit on GitHub</a
         >
     </div>
     
