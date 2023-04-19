@@ -7126,6 +7126,44 @@
         "bug",
         "code"
       ]
+    },
+    {
+      "login": "nirvikpatel",
+      "name": "Nirvik Patel",
+      "avatar_url": "https://avatars.githubusercontent.com/u/76862984?v=4",
+      "profile": "https://github.com/nirvikpatel",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "mohui1999",
+      "name": "Seren",
+      "avatar_url": "https://avatars.githubusercontent.com/u/46819179?v=4",
+      "profile": "https://github.com/mohui1999",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "nwcm",
+      "name": "nwcm",
+      "avatar_url": "https://avatars.githubusercontent.com/u/111259588?v=4",
+      "profile": "https://github.com/nwcm",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "PimvanderLoos",
+      "name": "Pim van der Loos",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3114723?v=4",
+      "profile": "https://github.com/PimvanderLoos",
+      "contributions": [
+        "code",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
