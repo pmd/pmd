@@ -79,6 +79,8 @@ public final class TestFrameworksUtil {
                 || method.isAnnotationPresent("org.junit.BeforeClass")
                 || method.isAnnotationPresent("org.junit.After")
                 || method.isAnnotationPresent("org.junit.AfterClass")
+                || method.isAnnotationPresent("org.testng.annotations.AfterClass")
+                || method.isAnnotationPresent("org.testng.annotations.BeforeClass")
                 || isJUnit3Class(method.getEnclosingType())
                         && ("setUp".equals(method.getName())
                             || "tearDown".equals(method.getName()));
