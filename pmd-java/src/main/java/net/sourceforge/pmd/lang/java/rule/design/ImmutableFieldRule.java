@@ -43,6 +43,12 @@ public class ImmutableFieldRule extends AbstractJavaRulechainRule {
             "lombok.Value"
         );
 
+    private static final Set<String> INVALIDATING_FIELD_ANNOT =
+        setOf(
+            "lombok.Getter",
+            "lombok.Setter"
+        );
+
     public ImmutableFieldRule() {
         super(ASTFieldDeclaration.class);
         definePropertyDescriptor(IGNORED_ANNOTS);
@@ -55,6 +61,7 @@ public class ImmutableFieldRule extends AbstractJavaRulechainRule {
         if (field.getEffectiveVisibility().isAtMost(Visibility.V_PRIVATE)
             && !field.getModifiers().hasAny(JModifier.VOLATILE, JModifier.STATIC, JModifier.FINAL)
             && !JavaAstUtils.hasAnyAnnotation(enclosingType, INVALIDATING_CLASS_ANNOT)
+            && !JavaAstUtils.hasAnyAnnotation(field, INVALIDATING_FIELD_ANNOT)
             && !JavaAstUtils.hasAnyAnnotation(field, getProperty(IGNORED_ANNOTS))) {
 
             DataflowResult dataflow = DataflowPass.getDataflowResult(field.getRoot());

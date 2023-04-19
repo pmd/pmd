@@ -415,7 +415,7 @@ public class CombinersTest {
     </test-code>
 
     <test-code>
-        <description>#410 [java] ImmutableField: False positive with lombok</description>
+        <description>#410 [java] ImmutableField: False positive with lombok on class</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import lombok.Getter;
@@ -424,6 +424,25 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Foo {
+    private String id;
+
+    public Foo(String id) {
+        this.id = id;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4254 [java] ImmutableField: False positive with lombok on field</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Getter;
+import lombok.Setter;
+
+public class Foo {
+    @Getter
+    @Setter
     private String id;
 
     public Foo(String id) {

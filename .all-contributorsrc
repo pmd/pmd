@@ -7145,6 +7145,25 @@
         "bug",
         "code"
       ]
+    },
+    {
+      "login": "nwcm",
+      "name": "nwcm",
+      "avatar_url": "https://avatars.githubusercontent.com/u/111259588?v=4",
+      "profile": "https://github.com/nwcm",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "PimvanderLoos",
+      "name": "Pim van der Loos",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3114723?v=4",
+      "profile": "https://github.com/PimvanderLoos",
+      "contributions": [
+        "code",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
