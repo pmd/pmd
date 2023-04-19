@@ -39,6 +39,11 @@ for all.</p>
 This section lists the most important changes from the last release candidate.
 The remaining section describe the complete release notes for 7.0.0.
 
+**API Changes:**
+* The parameter order of {% jdoc core::lang.document.FileCollector#addSourceFile(String, String) %} has been swapped
+  in order to have the same meaning as in 6.55.0. That will make it easier if you upgrade from 6.55.0 to 7.0.0.
+  However, that means, that you need to change these method calls if you have migrated to 7.0.0-rc1 already.
+
 #### Fixed issues
 * documentation
   * [#4438](https://github.com/pmd/pmd/issues/4438): \[doc] Documentation links in VS Code are outdated

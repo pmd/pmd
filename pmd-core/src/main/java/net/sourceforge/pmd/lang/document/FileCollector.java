@@ -200,7 +200,7 @@ public final class FileCollector implements AutoCloseable {
      *
      * @return True if the file has been added
      */
-    public boolean addSourceFile(String pathId, String sourceContents) {
+    public boolean addSourceFile(String sourceContents, String pathId) {
         AssertionUtil.requireParamNotNull("sourceContents", sourceContents);
         AssertionUtil.requireParamNotNull("pathId", pathId);
 
