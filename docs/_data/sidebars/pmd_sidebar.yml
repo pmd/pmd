@@ -469,7 +469,7 @@ entries:
         - title: Adding a new language (JavaCC)
           url: /pmd_devdocs_major_adding_new_language_javacc.html
           output: web, pdf
-        - title: Adding a new language (Antlr)
+        - title: Adding a new language (ANTLR)
           url: /pmd_devdocs_major_adding_new_language_antlr.html
           output: web, pdf
         - title: Adding a new CPD language
