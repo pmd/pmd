@@ -150,14 +150,18 @@ public interface FileId extends Comparable<FileId> {
     static FileId fromPathLikeString(String str) {
         Path absPath = Paths.get(str).toAbsolutePath();
 
+        // this is null for the root path.
+        @Nullable Path fileNamePath = absPath.getFileName();
         return new FileId() {
-            final String fileName = absPath.getFileName().toString();
+            final String fileName = fileNamePath == null ? "" : fileNamePath.toString();
             final String absPathStr = absPath.toString();
+
 
             @Override
             public String toAbsolutePath() {
                 return absPathStr;
             }
+
 
             @Override
             public String toUriString() {
@@ -330,7 +334,7 @@ public interface FileId extends Comparable<FileId> {
     static FileId fromURI(String uriStr) throws IllegalArgumentException {
         URI uri = URI.create(uriStr);
         String schemeSpecificPart = uri.getSchemeSpecificPart();
-        if (uri.getScheme().equals("jar")) {
+        if ("jar".equals(uri.getScheme())) {
             int split = schemeSpecificPart.lastIndexOf('!');
             if (split == -1) {
                 throw new IllegalArgumentException("expected a jar specific path");
@@ -341,7 +345,7 @@ public interface FileId extends Comparable<FileId> {
 
                 return fromAbsolutePath(localPath, outer);
             }
-        } else if (uri.getScheme().equals("file")) {
+        } else if ("file".equals(uri.getScheme())) {
             String absPath = schemeSpecificPart.substring("//".length());
             return fromAbsolutePath(absPath, null);
         }
