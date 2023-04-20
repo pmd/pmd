@@ -118,7 +118,7 @@ definitely don't come for free. It is much effort and requires perseverance to i
 
 ## 5.  Create a TokenManager
 *   This is needed to support CPD (copy paste detection)
-*   We provide a default implementation using [`AntlrTokenManager`](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/internal/AntlrTokenizer.java).
+*   We provide a default implementation using [`AntlrTokenManager`](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/impl/AntlrTokenizer.java).
 *   You must create your own "AntlrTokenizer" such as we do with
     [`SwiftTokenizer`](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/cpd/SwiftTokenizer.java).
 *   If you wish to filter specific tokens (e.g. comments to support CPD suppression via "CPD-OFF" and "CPD-ON")
