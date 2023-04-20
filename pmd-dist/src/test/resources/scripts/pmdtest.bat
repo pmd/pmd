@@ -4,9 +4,9 @@ rem BSD-style license; for more info see http://pmd.sourceforge.net/license.html
 
 rem
 rem Simple manual test script
-rem - code is copied from designer.bat to be tested here (so please check, it might be out of sync)
+rem - code is copied from pmd.bat to be tested here (so please check, it might be out of sync)
 rem - mostly the function "determine_java_version" is tested here
-rem - just run it with "designertest.bat" and look at the output
+rem - just run it with "pmd.bat" and look at the output
 rem - test cases are at the end of this script
 rem
 
