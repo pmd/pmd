@@ -66,8 +66,8 @@ class ZipFileTest {
             List<TextFile> files = pmd.files().getCollectedFiles();
             assertThat(files, hasSize(3));
             assertEquals("/otherSrc/somefile.dummy", files.get(0).getFileId().toAbsolutePath());
-            assertEquals(
-                "jar:file://" + reportPath + "!/lotherSrc/somefile.dummy", files.get(0).getFileId().toUriString());
+            assertEquals("jar:file://" + reportPath + "!/otherSrc/somefile.dummy",
+                         files.get(0).getFileId().toUriString());
             assertHasName(files.get(0), reportPath + "!/otherSrc/somefile.dummy", pmd);
             assertHasName(files.get(1), reportPath + "!/src/somefile.dummy", pmd);
             assertHasName(files.get(2), reportPath + "!/src/somefile1.dummy", pmd);
