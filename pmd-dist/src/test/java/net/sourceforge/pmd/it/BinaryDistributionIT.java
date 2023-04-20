@@ -218,4 +218,13 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         result = CpdExecutor.runCpd(tempDir, "--minimum-tokens", "1000", "--format", "text", "--dir", srcDir);
         result.assertExitCode(0);
     }
+
+    @Test
+    void runAstDump() throws Exception {
+        File jumbledIncrementerSrc = new File(srcDir, "JumbledIncrementer.java");
+        List<String> args = listOf("--format", "xml", "--language", "java", "--file", jumbledIncrementerSrc.toString());
+        ExecutionResult result = PMDExecutor.runCommand(tempDir, "ast-dump", args);
+        result.assertExitCode(0);
+    }
+
 }
