@@ -9,7 +9,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/pmd/pmd/badge.svg)](https://coveralls.io/github/pmd/pmd)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/ea550046a02344ec850553476c4aa2ca)](https://www.codacy.com/gh/pmd/pmd/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pmd/pmd&amp;utm_campaign=Badge_Grade)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](code_of_conduct.md) 
-[![Documentation (latest)](https://img.shields.io/badge/docs-latest-green)](https://pmd.github.io/latest/)
+[![Documentation (latest)](https://img.shields.io/badge/docs-latest-green)](https://docs.pmd-code.org/latest/)
 
 **PMD** is a source code analyzer. It finds common programming flaws like unused variables, empty catch blocks,
 unnecessary object creation, and so forth. It supports many languages. It can be extended with custom rules.
@@ -32,9 +32,9 @@ it makes sense.
 Download the latest binary zip from the [releases](https://github.com/pmd/pmd/releases/latest)
 and extract it somewhere.
 
-Execute `bin/run.sh pmd` or `bin\pmd.bat`.
+Execute `bin/pmd check` or `bin\pmd.bat check`.
 
-See also [Getting Started](https://pmd.github.io/latest/pmd_userdocs_installation.html)
+See also [Getting Started](https://docs.pmd-code.org/latest/pmd_userdocs_installation.html)
 
 **Demo:**
 
@@ -43,7 +43,7 @@ This shows how PMD can detect for loops, that can be replaced by for-each loops.
 ![Demo](docs/images/userdocs/pmd-demo.gif)
 
 There are plugins for Maven and Gradle as well as for various IDEs.
-See [Tools / Integrations](https://pmd.github.io/latest/pmd_userdocs_tools.html)
+See [Tools / Integrations](https://docs.pmd-code.org/latest/pmd_userdocs_tools.html)
 
 ## ℹ️ How to get support?
 
@@ -54,7 +54,7 @@ See [Tools / Integrations](https://pmd.github.io/latest/pmd_userdocs_tools.html)
 *   I got this error and I'm sure it's a bug -- file an [issue](https://github.com/pmd/pmd/issues).
 *   I have an idea/request/question -- create a new [discussion](https://github.com/pmd/pmd/discussions).
 *   I have a quick question -- ask in our [Gitter room](https://app.gitter.im/#/room/#pmd_pmd:gitter.im).
-*   Where's your documentation? -- <https://pmd.github.io/latest/>
+*   Where's your documentation? -- <https://docs.pmd-code.org/latest/>
 
 ## 🤝 Contributing
 
