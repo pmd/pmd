@@ -418,10 +418,8 @@ public class CombinersTest {
         <description>#410 [java] ImmutableField: False positive with lombok on class</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import lombok.Getter;
 import lombok.Setter;
 
-@Getter
 @Setter
 public class Foo {
     private String id;
@@ -441,7 +439,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class Foo {
-    @Getter
     @Setter
     private String id;
 
@@ -827,6 +824,25 @@ public class MyTable implements Serializable
    {
       return m_id;
    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4490 False negative with Lombok @Getter only</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import lombok.Getter;
+import lombok.Setter;
+
+class Foo {
+    @Getter
+    private String name = "tada";
+
+    @Getter
+    @Setter
+    private String name2 = "tada";
 }
 ]]></code>
     </test-code>

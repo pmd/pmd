@@ -38,14 +38,12 @@ public class ImmutableFieldRule extends AbstractJavaRulechainRule {
         setOf(
             "lombok.Builder",
             "lombok.Data",
-            "lombok.Getter",
             "lombok.Setter",
             "lombok.Value"
         );
 
     private static final Set<String> INVALIDATING_FIELD_ANNOT =
         setOf(
-            "lombok.Getter",
             "lombok.Setter"
         );
 
