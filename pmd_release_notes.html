@@ -1337,7 +1337,7 @@
                         
                         
                         
-                        <li><a href="pmd_devdocs_major_adding_new_language_antlr.html">Adding a new language (Antlr)</a></li>
+                        <li><a href="pmd_devdocs_major_adding_new_language_antlr.html">Adding a new language (ANTLR)</a></li>
                         
                         
                         
@@ -1612,23 +1612,30 @@ for all.</p>
 <p>This section lists the most important changes from the last release candidate.
 The remaining section describe the complete release notes for 7.0.0.</p>
 
-<p><strong>API Changes:</strong></p>
+<h4 id="api-changes">API Changes</h4>
 <ul>
+  <li>Moved the two classes <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/impl/AntlrTokenizer.html#"><code>AntlrTokenizer</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/impl/JavaCCTokenizer.html#"><code>JavaCCTokenizer</code></a> from
+<code class="language-plaintext highlighter-rouge">internal</code> package into package <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/impl/package-summary.html#"><code>net.sourceforge.pmd.cpd.impl</code></a>. These two classes are part of the API and
+are base classes for CPD language implementations.</li>
+  <li><code class="language-plaintext highlighter-rouge">AntlrBaseRule</code> is gone in favor of <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/AbstractVisitorRule.html#"><code>AbstractVisitorRule</code></a>.</li>
+  <li>The classes <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KotlinInnerNode.html#"><code>KotlinInnerNode</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-swift/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/swift/ast/SwiftInnerNode.html#"><code>SwiftInnerNode</code></a>
+are package-private now.</li>
   <li>The parameter order of <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/document/FileCollector.html#addSourceFile(String,String)"><code>addSourceFile</code></a> has been swapped
 in order to have the same meaning as in 6.55.0. That will make it easier if you upgrade from 6.55.0 to 7.0.0.
 However, that means, that you need to change these method calls if you have migrated to 7.0.0-rc1 already.</li>
 </ul>
 
-<h4 id="fixed-issues">Fixed issues</h4>
+<h4 id="fixed-issues">Fixed Issues</h4>
 <ul>
-  <li>documentation
+  <li>core
     <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4438">#4438</a>: [doc] Documentation links in VS Code are outdated</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2500">#2500</a>: [core] Clarify API for ANTLR based languages</li>
     </ul>
   </li>
-  <li>miscellaneous
+  <li>doc
     <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4462">#4462</a>: Provide Software Bill of Materials (SBOM)</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2501">#2501</a>: [doc] Verify ANTLR Documentation</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4438">#4438</a>: [doc] Documentation links in VS Code are outdated</li>
     </ul>
   </li>
   <li>java-codestyle
@@ -1636,11 +1643,34 @@ However, that means, that you need to change these method calls if you have migr
       <li><a href="https://github.com/pmd/pmd/issues/4273">#4273</a>: [java] CommentDefaultAccessModifier ignoredAnnotations should include “org.junit.jupiter.api.extension.RegisterExtension” by default</li>
     </ul>
   </li>
+  <li>java-design
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4254">#4254</a>: [java] ImmutableField - false positive with Lombok @<!-- -->Setter</li>
+    </ul>
+  </li>
   <li>java-errorprone
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/4449">#4449</a>: [java] AvoidAccessibilityAlteration: Possible false positive in AvoidAccessibilityAlteration rule when using Lambda expression</li>
     </ul>
   </li>
+  <li>java-multithreading
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4483">#4483</a>: [java] NonThreadSafeSingleton false positive with double-checked locking</li>
+    </ul>
+  </li>
+  <li>miscellaneous
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4462">#4462</a>: Provide Software Bill of Materials (SBOM)</li>
+    </ul>
+  </li>
+</ul>
+
+<h4 id="external-contributions">External contributions</h4>
+<ul>
+  <li><a href="https://github.com/pmd/pmd/pull/4444">#4444</a>: [java] CommentDefaultAccessModifier - ignore org.junit.jupiter.api.extension.RegisterExtension by default - <a href="https://github.com/nirvikpatel">Nirvik Patel</a> (@nirvikpatel)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4450">#4450</a>: [java] Fix #4449 AvoidAccessibilityAlteration: Correctly handle Lambda expressions in PrivilegedAction scenarios - <a href="https://github.com/mohui1999">Seren</a> (@mohui1999)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4452">#4452</a>: [doc] Update PMD_APEX_ROOT_DIRECTORY documentation reference - <a href="https://github.com/nwcm">nwcm</a> (@nwcm)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4474">#4474</a>: [java] ImmutableField: False positive with lombok (fixes #4254) - <a href="https://github.com/PimvanderLoos">Pim van der Loos</a> (@PimvanderLoos)</li>
 </ul>
 
 <h3 id="-major-features-and-enhancements">🚀 Major Features and Enhancements</h3>
@@ -1856,6 +1886,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/issues/2218">#2218</a>: [core] <code class="language-plaintext highlighter-rouge">isFindBoundary</code> should not be an attribute</li>
       <li><a href="https://github.com/pmd/pmd/issues/2234">#2234</a>: [core] Consolidate PMD CLI into a single command</li>
       <li><a href="https://github.com/pmd/pmd/issues/2239">#2239</a>: [core] Merging Javacc build scripts</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2500">#2500</a>: [core] Clarify API for ANTLR based languages</li>
       <li><a href="https://github.com/pmd/pmd/issues/2518">#2518</a>: [core] Language properties</li>
       <li><a href="https://github.com/pmd/pmd/issues/2602">#2602</a>: [core] Remove ParserOptions</li>
       <li><a href="https://github.com/pmd/pmd/pull/2614">#2614</a>:   [core] Upgrade Saxon, add XPath 3.1, remove Jaxen</li>
@@ -1887,6 +1918,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
   </li>
   <li>doc
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2501">#2501</a>: [doc] Verify ANTLR Documentation</li>
       <li><a href="https://github.com/pmd/pmd/issues/4438">#4438</a>: [doc] Documentation links in VS Code are outdated</li>
     </ul>
   </li>
@@ -2133,7 +2165,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Apr 19, 2023 <br />
+             Site last generated: Apr 20, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

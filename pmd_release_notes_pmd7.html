@@ -1337,7 +1337,7 @@
                         
                         
                         
-                        <li><a href="pmd_devdocs_major_adding_new_language_antlr.html">Adding a new language (Antlr)</a></li>
+                        <li><a href="pmd_devdocs_major_adding_new_language_antlr.html">Adding a new language (ANTLR)</a></li>
                         
                         
                         
@@ -2352,8 +2352,7 @@ build.xml files with the FQCN <a href="https://docs.pmd-code.org/apidocs/pmd-ant
 moved to <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/internal/util/package-summary.html#"><code>net.sourceforge.pmd.internal.util</code></a>. This includes ClasspathClassLoader, FileFinder, FileUtil, and
 IOUtil.</p>
   </li>
-  <li>
-    <p>The following utility classes in <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/util/package-summary.html#"><code>net.sourceforge.pmd.util</code></a> are now considered public API:</p>
+  <li>The following utility classes in <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/util/package-summary.html#"><code>net.sourceforge.pmd.util</code></a> are now considered public API:
     <ul>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/util/AssertionUtil.html#"><code>AssertionUtil</code></a></li>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/util/CollectionUtil.html#"><code>CollectionUtil</code></a></li>
@@ -2364,6 +2363,12 @@ IOUtil.</p>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/util/StringUtil.html#"><code>StringUtil</code></a></li>
     </ul>
   </li>
+  <li>Moved the two classes <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/impl/AntlrTokenizer.html#"><code>AntlrTokenizer</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/impl/JavaCCTokenizer.html#"><code>JavaCCTokenizer</code></a> from
+<code class="language-plaintext highlighter-rouge">internal</code> package into package <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/impl/package-summary.html#"><code>net.sourceforge.pmd.cpd.impl</code></a>. These two classes are part of the API and
+are base classes for CPD language implementations. Since 7.0.0-rc2.</li>
+  <li><code class="language-plaintext highlighter-rouge">AntlrBaseRule</code> is gone in favor of <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/AbstractVisitorRule.html#"><code>AbstractVisitorRule</code></a>. Since 7.0.0-rc2.</li>
+  <li>The classes <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KotlinInnerNode.html#"><code>KotlinInnerNode</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-swift/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/swift/ast/SwiftInnerNode.html#"><code>SwiftInnerNode</code></a>
+are package-private now. Since 7.0.0-rc2.</li>
 </ul>
 
 <h3 id="xpath-31-support">XPath 3.1 support</h3>
@@ -4370,7 +4375,7 @@ Please use <code class="language-plaintext highlighter-rouge">net.sourceforge.pm
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Apr 19, 2023 <br />
+             Site last generated: Apr 20, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
