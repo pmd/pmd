@@ -87,6 +87,8 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         result.add(basedir + "shell/pmd-completion.sh");
         result.add(basedir + "lib/pmd-core-" + PMDVersion.VERSION + ".jar");
         result.add(basedir + "lib/pmd-java-" + PMDVersion.VERSION + ".jar");
+        result.add(basedir + "sbom/pmd-" + PMDVersion.VERSION + "-cyclonedx.xml");
+        result.add(basedir + "sbom/pmd-" + PMDVersion.VERSION + "-cyclonedx.json");
         return result;
     }
 

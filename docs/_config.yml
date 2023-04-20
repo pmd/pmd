@@ -44,7 +44,6 @@ exclude:
   - pdf-*.sh
   - pdfconfigs/
   - pdf/
-  - sitemap_generator.sh
   - render_release_notes.rb
 
 feedback_subject_line: PMD Source Code Analyzer
@@ -117,7 +116,7 @@ description: "Intended as a documentation theme based on Jekyll for technical wr
 # the description is used in the feed.xml file
 
 # needed for sitemap.xml file only
-url: https://pmd.github.io/pmd
+url: https://docs.pmd-code.org/latest
 baseurl: ""
 
 # used by javadoc_tag.rb

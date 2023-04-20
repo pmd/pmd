@@ -12,7 +12,7 @@ Previous versions of PMD can be downloaded here: https://github.com/pmd/pmd/rele
 We're excited to bring you the next major version of PMD!
 
 Since this is a big release, we provide here only a concise version of the release notes. We prepared a separate
-page with the full [Detailed Release Notes for PMD 7.0.0](https://pmd.github.io/pmd-7.0.0-rc1/pmd_release_notes_pmd7.html).
+page with the full [Detailed Release Notes for PMD 7.0.0](https://docs.pmd-code.org/pmd-doc-7.0.0-rc1/pmd_release_notes_pmd7.html).
 
 <div style="border: 1px solid; border-radius: .25rem; padding: .75rem 1.25rem;" role="alert">
 <strong>ℹ️ Release Candidates</strong>
@@ -57,7 +57,7 @@ for all.</p>
 
 The new official logo of PMD:
 
-![New PMD Logo](https://pmd.github.io/pmd-7.0.0-rc1/images/logo/pmd-logo-300px.png)
+![New PMD Logo](https://docs.pmd-code.org/pmd-doc-7.0.0-rc1/images/logo/pmd-logo-300px.png)
 
 #### Revamped Java module
 
@@ -82,7 +82,7 @@ Contributors: [Clément Fournier](https://github.com/oowekyala) (@oowekyala),
 * progress bar support for `pmd check`
 * shell completion
 
-![Demo](https://pmd.github.io/pmd-7.0.0-rc1/images/userdocs/pmd-demo.gif)
+![Demo](https://docs.pmd-code.org/pmd-doc-7.0.0-rc1/images/userdocs/pmd-demo.gif)
 
 For more information, see the [Detailed Release Notes for PMD 7](pmd_release_notes_pmd7.html).
 
@@ -136,46 +136,46 @@ Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 #### New Rules
 
 **Apex**
-* [`UnusedMethod`](https://pmd.github.io/pmd-7.0.0-rc1/pmd_rules_apex_design.html#unusedmethod) finds unused methods in your code.
+* [`UnusedMethod`](https://docs.pmd-code.org/pmd-doc-7.0.0-rc1/pmd_rules_apex_design.html#unusedmethod) finds unused methods in your code.
 
 **Java**
-* [`UnnecessaryBoxing`](https://pmd.github.io/pmd-7.0.0-rc1/pmd_rules_java_codestyle.html#unnecessaryboxing) reports boxing and unboxing conversions that may be made implicit.
+* [`UnnecessaryBoxing`](https://docs.pmd-code.org/pmd-doc-7.0.0-rc1/pmd_rules_java_codestyle.html#unnecessaryboxing) reports boxing and unboxing conversions that may be made implicit.
 
 **Kotlin**
-* [`FunctionNameTooShort`](https://pmd.github.io/pmd-7.0.0-rc1/pmd_rules_kotlin_bestpractices.html#functionnametooshort)
-* [`OverrideBothEqualsAndHashcode`](https://pmd.github.io/pmd-7.0.0-rc1/pmd_rules_kotlin_errorprone.html#overridebothequalsandhashcode)
+* [`FunctionNameTooShort`](https://docs.pmd-code.org/pmd-doc-7.0.0-rc1/pmd_rules_kotlin_bestpractices.html#functionnametooshort)
+* [`OverrideBothEqualsAndHashcode`](https://docs.pmd-code.org/pmd-doc-7.0.0-rc1/pmd_rules_kotlin_errorprone.html#overridebothequalsandhashcode)
 
 **Swift**
-* [`ProhibitedInterfaceBuilder`](https://pmd.github.io/pmd-7.0.0-rc1/pmd_rules_swift_bestpractices.html#prohibitedinterfacebuilder)
-* [`UnavailableFunction`](https://pmd.github.io/pmd-7.0.0-rc1/pmd_rules_swift_bestpractices.html#unavailablefunction)
-* [`ForceCast`](https://pmd.github.io/pmd-7.0.0-rc1/pmd_rules_swift_errorprone.html#forcecast)
-* [`ForceTry`](https://pmd.github.io/pmd-7.0.0-rc1/pmd_rules_swift_errorprone.html#forcetry)
+* [`ProhibitedInterfaceBuilder`](https://docs.pmd-code.org/pmd-doc-7.0.0-rc1/pmd_rules_swift_bestpractices.html#prohibitedinterfacebuilder)
+* [`UnavailableFunction`](https://docs.pmd-code.org/pmd-doc-7.0.0-rc1/pmd_rules_swift_bestpractices.html#unavailablefunction)
+* [`ForceCast`](https://docs.pmd-code.org/pmd-doc-7.0.0-rc1/pmd_rules_swift_errorprone.html#forcecast)
+* [`ForceTry`](https://docs.pmd-code.org/pmd-doc-7.0.0-rc1/pmd_rules_swift_errorprone.html#forcetry)
 
 #### Changed Rules
 
 **Java**
 
-* [`UnnecessaryFullyQualifiedName`](https://pmd.github.io/pmd-7.0.0-rc1/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname): the rule has two new properties,
+* [`UnnecessaryFullyQualifiedName`](https://docs.pmd-code.org/pmd-doc-7.0.0-rc1/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname): the rule has two new properties,
   to selectively disable reporting on static field and method qualifiers. The rule also has been improved
   to be more precise.
-* [`UselessParentheses`](https://pmd.github.io/pmd-7.0.0-rc1/pmd_rules_java_codestyle.html#uselessparentheses): the rule has two new properties which control how strict
+* [`UselessParentheses`](https://docs.pmd-code.org/pmd-doc-7.0.0-rc1/pmd_rules_java_codestyle.html#uselessparentheses): the rule has two new properties which control how strict
   the rule should be applied. With `ignoreClarifying` (default: true) parentheses that are strictly speaking
   not necessary are allowed, if they separate expressions of different precedence.
   The other property `ignoreBalancing` (default: true) is similar, in that it allows parentheses that help
   reading and understanding the expressions.
-* [`LooseCoupling`](https://pmd.github.io/pmd-7.0.0-rc1/pmd_rules_java_bestpractices.html#loosecoupling): the rule has a new property to allow some types to be coupled
+* [`LooseCoupling`](https://docs.pmd-code.org/pmd-doc-7.0.0-rc1/pmd_rules_java_bestpractices.html#loosecoupling): the rule has a new property to allow some types to be coupled
   to (`allowedTypes`).
-* [`EmptyCatchBlock`](https://pmd.github.io/pmd-7.0.0-rc1/pmd_rules_java_errorprone.html#emptycatchblock): `CloneNotSupportedException` and `InterruptedException` are not
+* [`EmptyCatchBlock`](https://docs.pmd-code.org/pmd-doc-7.0.0-rc1/pmd_rules_java_errorprone.html#emptycatchblock): `CloneNotSupportedException` and `InterruptedException` are not
   special-cased anymore. Rename the exception parameter to `ignored` to ignore them.
-* [`DontImportSun`](https://pmd.github.io/pmd-7.0.0-rc1/pmd_rules_java_errorprone.html#dontimportsun): `sun.misc.Signal` is not special-cased anymore.
-* [`UseDiamondOperator`](https://pmd.github.io/pmd-7.0.0-rc1/pmd_rules_java_codestyle.html#usediamondoperator): the property `java7Compatibility` is removed. The rule now
+* [`DontImportSun`](https://docs.pmd-code.org/pmd-doc-7.0.0-rc1/pmd_rules_java_errorprone.html#dontimportsun): `sun.misc.Signal` is not special-cased anymore.
+* [`UseDiamondOperator`](https://docs.pmd-code.org/pmd-doc-7.0.0-rc1/pmd_rules_java_codestyle.html#usediamondoperator): the property `java7Compatibility` is removed. The rule now
   handles Java 7 properly without a property.
-* [`SingularField`](https://pmd.github.io/pmd-7.0.0-rc1/pmd_rules_java_design.html#singularfield): Properties `checkInnerClasses` and `disallowNotAssignment` are removed.
+* [`SingularField`](https://docs.pmd-code.org/pmd-doc-7.0.0-rc1/pmd_rules_java_design.html#singularfield): Properties `checkInnerClasses` and `disallowNotAssignment` are removed.
   The rule is now more precise and will check these cases properly.
-* [`UseUtilityClass`](https://pmd.github.io/pmd-7.0.0-rc1/pmd_rules_java_design.html#useutilityclass): The property `ignoredAnnotations` has been removed.
-* [`LawOfDemeter`](https://pmd.github.io/pmd-7.0.0-rc1/pmd_rules_java_design.html#lawofdemeter): the rule has a new property `trustRadius`. This defines the maximum degree
+* [`UseUtilityClass`](https://docs.pmd-code.org/pmd-doc-7.0.0-rc1/pmd_rules_java_design.html#useutilityclass): The property `ignoredAnnotations` has been removed.
+* [`LawOfDemeter`](https://docs.pmd-code.org/pmd-doc-7.0.0-rc1/pmd_rules_java_design.html#lawofdemeter): the rule has a new property `trustRadius`. This defines the maximum degree
   of trusted data. The default of 1 is the most restrictive.
-* [`CommentContent`](https://pmd.github.io/pmd-7.0.0-rc1/pmd_rules_java_documentation.html#commentcontent): The properties `caseSensitive` and `disallowedTerms` are removed. The
+* [`CommentContent`](https://docs.pmd-code.org/pmd-doc-7.0.0-rc1/pmd_rules_java_documentation.html#commentcontent): The properties `caseSensitive` and `disallowedTerms` are removed. The
   new property `fobiddenRegex` can be used now to define the disallowed terms with a single regular
   expression.
 
