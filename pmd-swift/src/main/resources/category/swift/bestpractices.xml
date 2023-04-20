@@ -10,11 +10,11 @@ Rules which enforce generally accepted best practices.
     </description>
 
     <rule name="ProhibitedInterfaceBuilder"
-          since="7.0"
+          since="7.0.0"
           language="swift"
           message="Creating views using Interface Builder should be avoided."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.github.io/pmd/pmd_rules_swift_bestpractices.html#prohibitedinterfacebuilder">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_swift_bestpractices.html#prohibitedinterfacebuilder">
         <description>
             Creating views using Interface Builder should be avoided.
             Defining views by code allows the compiler to detect issues that otherwise will be runtime errors.
@@ -45,11 +45,11 @@ class ViewController: UIViewController {
     </rule>
 
     <rule name="UnavailableFunction"
-          since="7.0"
+          since="7.0.0"
           language="swift"
           message="Unimplemented functions should be marked as unavailable."
           class="net.sourceforge.pmd.lang.swift.rule.bestpractices.UnavailableFunctionRule"
-          externalInfoUrl="http://pmd.github.io/pmd/pmd_rules_swift_bestpractices.html#unavailablefunction">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_swift_bestpractices.html#unavailablefunction">
         <description>
             Due to Objective-C and Swift interoperability some functions are often required to be implemented but
             aren't really needed. It is extremely common that the sole implementation of the functions consist of throwing

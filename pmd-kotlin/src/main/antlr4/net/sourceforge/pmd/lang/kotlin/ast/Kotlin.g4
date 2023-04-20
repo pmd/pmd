@@ -15,12 +15,12 @@ import net.sourceforge.pmd.lang.ast.AstVisitor;
     static final AntlrNameDictionary DICO = new KotlinNameDictionary(VOCABULARY, ruleNames);
 
     @Override
-    public KotlinTerminalNode createPmdTerminal(ParserRuleContext parent, Token t) {
+    protected KotlinTerminalNode createPmdTerminal(ParserRuleContext parent, Token t) {
         return new KotlinTerminalNode(t);
     }
 
     @Override
-    public KotlinErrorNode createPmdError(ParserRuleContext parent, Token t) {
+    protected KotlinErrorNode createPmdError(ParserRuleContext parent, Token t) {
         return new KotlinErrorNode(t);
     }
 }
@@ -116,6 +116,7 @@ delegationSpecifier
     | explicitDelegation
     | userType
     | functionType
+    | SUSPEND NL* functionType
     ;
 
 constructorInvocation
@@ -272,7 +273,7 @@ enumEntry
 // SECTION: types
 
 type
-    : typeModifiers? (parenthesizedType | nullableType | typeReference | functionType)
+    : typeModifiers? (functionType | parenthesizedType | nullableType | typeReference | definitelyNonNullableType)
     ;
 
 typeReference
@@ -331,6 +332,10 @@ parenthesizedUserType
     : LPAREN NL* (userType | parenthesizedUserType) NL* RPAREN
     ;
 
+definitelyNonNullableType
+    : typeModifiers? (userType | parenthesizedUserType) NL* AMP NL* typeModifiers? (userType | parenthesizedUserType)
+    ;
+
 // SECTION: statements
 
 statements
@@ -379,12 +384,10 @@ assignment
 
 semi
     : (SEMICOLON | NL) NL*
-    | EOF
     ;
 
 semis
     : (SEMICOLON | NL)+
-    | EOF
     ;
 
 // SECTION: expressions

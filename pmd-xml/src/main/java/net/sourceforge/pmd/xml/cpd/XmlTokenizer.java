@@ -7,7 +7,7 @@ package net.sourceforge.pmd.xml.cpd;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Lexer;
 
-import net.sourceforge.pmd.cpd.internal.AntlrTokenizer;
+import net.sourceforge.pmd.cpd.impl.AntlrTokenizer;
 import net.sourceforge.pmd.lang.xml.antlr4.XMLLexer;
 
 public class XmlTokenizer extends AntlrTokenizer {

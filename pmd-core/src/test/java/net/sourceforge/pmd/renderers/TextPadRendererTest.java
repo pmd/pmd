@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.renderers;
 
-import net.sourceforge.pmd.PMD;
-
 class TextPadRendererTest extends AbstractRendererTest {
 
     @Override
@@ -15,7 +13,7 @@ class TextPadRendererTest extends AbstractRendererTest {
 
     @Override
     String getExpected() {
-        return getSourceCodeFilename() + "(1,  Foo):  blah" + PMD.EOL;
+        return getSourceCodeFilename() + "(1,  Foo):  blah" + EOL;
     }
 
     @Override
@@ -25,6 +23,6 @@ class TextPadRendererTest extends AbstractRendererTest {
 
     @Override
     String getExpectedMultiple() {
-        return getSourceCodeFilename() + "(1,  Foo):  blah" + PMD.EOL + getSourceCodeFilename() + "(1,  Boo):  blah" + PMD.EOL;
+        return getSourceCodeFilename() + "(1,  Foo):  blah" + EOL + getSourceCodeFilename() + "(1,  Boo):  blah" + EOL;
     }
 }

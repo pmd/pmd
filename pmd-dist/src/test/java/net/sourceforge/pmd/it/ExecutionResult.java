@@ -58,6 +58,10 @@ public class ExecutionResult {
         return this;
     }
 
+    public String getOutput() {
+        return output;
+    }
+
     /**
      * Asserts that the given error message is not in the error output.
      *
@@ -78,7 +82,7 @@ public class ExecutionResult {
     public void assertErrorOutputContains(String message) {
         assertStdErr(containsString(message));
     }
-    
+
     public void assertIdenticalResults(ExecutionResult other) {
         // Notice we don't check for error output, as log messages may differ due to cache
         assertEquals(exitCode, other.exitCode, "Exit codes differ");

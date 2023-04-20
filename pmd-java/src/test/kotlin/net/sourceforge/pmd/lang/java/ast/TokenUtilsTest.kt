@@ -4,18 +4,18 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
-import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.shouldBe
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestScope
-import net.sourceforge.pmd.lang.ast.GenericToken
+import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken
 import net.sourceforge.pmd.lang.ast.test.Assertions
+import net.sourceforge.pmd.lang.ast.test.IntelliMarker
 
 /**
  * @author Clément Fournier
  */
-class TokenUtilsTest : FunSpec({
+class TokenUtilsTest : IntelliMarker, FunSpec({
 
     fun TestScope.setup1(assertions: Assertions<List<JavaccToken>>) {
 
