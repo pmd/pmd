@@ -281,7 +281,7 @@ public void addPerson(Date birthdate, BodyMeasurements measurements, int ssn) {
     <rule name="ExcessivePublicCount"
           language="apex"
           since="5.5.0"
-          message="The class {0} has {1} public methods and attributes"
+          message="The class {0} has {1} public methods and attributes (limit: {2})"
           class="net.sourceforge.pmd.lang.apex.rule.design.ExcessivePublicCountRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#excessivepubliccount">
         <description>

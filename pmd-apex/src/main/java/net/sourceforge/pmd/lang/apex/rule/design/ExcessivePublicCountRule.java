@@ -53,7 +53,7 @@ public class ExcessivePublicCountRule extends AbstractCounterCheckRule<ASTUserCl
     }
 
     @Override
-    protected Object[] getViolationParameters(ASTUserClass node, int metric) {
-        return new Object[] { node.getSimpleName(), metric };
+    protected Object[] getViolationParameters(ASTUserClass node, int metric, int limit) {
+        return new Object[] { node.getSimpleName(), metric, limit };
     }
 }

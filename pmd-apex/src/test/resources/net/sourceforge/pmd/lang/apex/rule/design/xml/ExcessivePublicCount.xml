@@ -120,8 +120,8 @@ public class SomeClass {
         <expected-problems>2</expected-problems>
         <expected-linenumbers>1,5</expected-linenumbers>
         <expected-messages>
-            <message>The class OuterClass has 2 public methods and attributes</message>
-            <message>The class InnerClass has 4 public methods and attributes</message>
+            <message>The class OuterClass has 2 public methods and attributes (limit: 1)</message>
+            <message>The class InnerClass has 4 public methods and attributes (limit: 1)</message>
         </expected-messages>
         <code><![CDATA[
 public class OuterClass {
