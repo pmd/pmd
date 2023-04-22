@@ -340,7 +340,7 @@ public class Foo extends Bar {
     <rule name="NcssMethodCount"
           language="apex"
           since="5.5.0"
-          message="The method ''{0}()'' has an NCSS line count of {1}"
+          message="The method ''{0}()'' has an NCSS line count of {1} (limit: {2})"
           class="net.sourceforge.pmd.lang.apex.rule.design.NcssMethodCountRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#ncssmethodcount">
         <description>
