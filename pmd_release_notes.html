@@ -1625,6 +1625,12 @@ in order to have the same meaning as in 6.55.0. That will make it easier if you 
 However, that means, that you need to change these method calls if you have migrated to 7.0.0-rc1 already.</li>
 </ul>
 
+<h4 id="rule-changes">Rule Changes</h4>
+<ul>
+  <li><a href="pmd_rules_java_design.html#immutablefield"><code class="language-plaintext highlighter-rouge">ImmutableField</code></a>: the property <code class="language-plaintext highlighter-rouge">ignoredAnnotations</code> has been removed. The property was
+deprecated since PMD 6.52.0.</li>
+</ul>
+
 <h4 id="fixed-issues">Fixed Issues</h4>
 <ul>
   <li>cli
@@ -1658,6 +1664,7 @@ However, that means, that you need to change these method calls if you have migr
   <li>java-errorprone
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/4449">#4449</a>: [java] AvoidAccessibilityAlteration: Possible false positive in AvoidAccessibilityAlteration rule when using Lambda expression</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4493">#4493</a>: [java] MissingStaticMethodInNonInstantiatableClass: false-positive about @<!-- -->Inject</li>
     </ul>
   </li>
   <li>java-multithreading
@@ -1678,6 +1685,7 @@ However, that means, that you need to change these method calls if you have migr
   <li><a href="https://github.com/pmd/pmd/pull/4450">#4450</a>: [java] Fix #4449 AvoidAccessibilityAlteration: Correctly handle Lambda expressions in PrivilegedAction scenarios - <a href="https://github.com/mohui1999">Seren</a> (@mohui1999)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4452">#4452</a>: [doc] Update PMD_APEX_ROOT_DIRECTORY documentation reference - <a href="https://github.com/nwcm">nwcm</a> (@nwcm)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4474">#4474</a>: [java] ImmutableField: False positive with lombok (fixes #4254) - <a href="https://github.com/PimvanderLoos">Pim van der Loos</a> (@PimvanderLoos)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4495">#4495</a>: [java] Fix #4493: false-positive about MissingStaticMethodInNonInstantiatableClass and @Inject - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
 </ul>
 
 <h3 id="-major-features-and-enhancements">🚀 Major Features and Enhancements</h3>
@@ -1833,6 +1841,8 @@ of trusted data. The default of 1 is the most restrictive.</li>
   <li><a href="pmd_rules_java_documentation.html#commentcontent"><code class="language-plaintext highlighter-rouge">CommentContent</code></a>: The properties <code class="language-plaintext highlighter-rouge">caseSensitive</code> and <code class="language-plaintext highlighter-rouge">disallowedTerms</code> are removed. The
 new property <code class="language-plaintext highlighter-rouge">fobiddenRegex</code> can be used now to define the disallowed terms with a single regular
 expression.</li>
+  <li><a href="pmd_rules_java_design.html#immutablefield"><code class="language-plaintext highlighter-rouge">ImmutableField</code></a>: the property <code class="language-plaintext highlighter-rouge">ignoredAnnotations</code> has been removed. The property was
+deprecated since PMD 6.52.0.</li>
 </ul>
 
 <h4 id="removed-rules">Removed Rules</h4>
@@ -2083,6 +2093,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/issues/3400">#3400</a>: [java] AvoidUsingOctalValues FN with underscores</li>
       <li><a href="https://github.com/pmd/pmd/pull/4356">#4356</a>:   [java] Fix NPE in CloseResourceRule</li>
       <li><a href="https://github.com/pmd/pmd/issues/4449">#4449</a>: [java] AvoidAccessibilityAlteration: Possible false positive in AvoidAccessibilityAlteration rule when using Lambda expression</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4493">#4493</a>: [java] MissingStaticMethodInNonInstantiatableClass: false-positive about @<!-- -->Inject</li>
     </ul>
   </li>
   <li>java-multithreading
@@ -2137,6 +2148,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
   <li><a href="https://github.com/pmd/pmd/pull/4450">#4450</a>: [java] Fix #4449 AvoidAccessibilityAlteration: Correctly handle Lambda expressions in PrivilegedAction scenarios - <a href="https://github.com/mohui1999">Seren</a> (@mohui1999)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4452">#4452</a>: [doc] Update PMD_APEX_ROOT_DIRECTORY documentation reference - <a href="https://github.com/nwcm">nwcm</a> (@nwcm)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4474">#4474</a>: [java] ImmutableField: False positive with lombok (fixes #4254) - <a href="https://github.com/PimvanderLoos">Pim van der Loos</a> (@PimvanderLoos)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4495">#4495</a>: [java] Fix #4493: false-positive about MissingStaticMethodInNonInstantiatableClass and @Inject - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
 </ul>
 
 <h3 id="-stats">📈 Stats</h3>
@@ -2175,7 +2187,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Apr 21, 2023 <br />
+             Site last generated: Apr 22, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
