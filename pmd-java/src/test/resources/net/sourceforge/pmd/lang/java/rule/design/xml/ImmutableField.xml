@@ -494,23 +494,6 @@ class Foo {
     </test-code>
 
     <test-code>
-        <description>#1056 [java] Property ignoredAnnotations does not work for SingularField and ImmutableField</description>
-        <rule-property name="ignoredAnnotations">java.lang.Deprecated</rule-property>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
-    @Deprecated
-    @SuppressWarnings("PMD.ImmutableField")
-    private int x;
-
-    public Foo() {
-        x = 2;
-    }
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
         <description>#1792 Immutable field should still be detected with @Delegate</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
