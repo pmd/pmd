@@ -50,6 +50,10 @@ The remaining section describe the complete release notes for 7.0.0.
   in order to have the same meaning as in 6.55.0. That will make it easier if you upgrade from 6.55.0 to 7.0.0.
   However, that means, that you need to change these method calls if you have migrated to 7.0.0-rc1 already.
 
+#### Rule Changes
+* {% rule "java/design/ImmutableField" %}: the property `ignoredAnnotations` has been removed. The property was
+  deprecated since PMD 6.52.0.
+
 #### Fixed Issues
 * cli
   * [#4482](https://github.com/pmd/pmd/issues/4482): \[cli] pmd.bat can only be executed once
@@ -204,6 +208,8 @@ Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 * {% rule "java/documentation/CommentContent" %}: The properties `caseSensitive` and `disallowedTerms` are removed. The
   new property `fobiddenRegex` can be used now to define the disallowed terms with a single regular
   expression.
+* {% rule "java/design/ImmutableField" %}: the property `ignoredAnnotations` has been removed. The property was
+  deprecated since PMD 6.52.0.
 
 #### Removed Rules
 

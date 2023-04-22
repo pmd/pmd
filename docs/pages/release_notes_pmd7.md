@@ -550,6 +550,8 @@ Related issue: [[core] Explicitly name all language versions (#4120)](https://gi
 * {% rule "java/documentation/CommentContent" %}: The properties `caseSensitive` and `disallowedTerms` are removed. The
   new property `fobiddenRegex` can be used now to define the disallowed terms with a single regular
   expression.
+* {% rule "java/design/ImmutableField" %}: the property `ignoredAnnotations` has been removed. The property was
+  deprecated since PMD 6.52.0.
 
 ### Deprecated Rules
 
