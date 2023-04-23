@@ -527,6 +527,9 @@ Related issue: [[core] Explicitly name all language versions (#4120)](https://gi
 
 **Java Best Practices**
 
+* {% rule java/bestpractices/AvoidReassigningLoopVariables %}: This rule might not report anymore all
+  reassignments of the control variable in for-loops when the property `forReassign` is set to `skip`.
+  See [issue #4500](https://github.com/pmd/pmd/issues/4500) for more details.
 * {% rule java/bestpractices/LooseCoupling %}: the rule has a new property to allow some types to be coupled
   to (`allowedTypes`).
 
