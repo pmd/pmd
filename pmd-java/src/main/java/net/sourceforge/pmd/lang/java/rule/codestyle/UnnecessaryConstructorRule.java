@@ -36,7 +36,8 @@ public class UnnecessaryConstructorRule extends AbstractIgnoredAnnotationRule {
     @Override
     protected Collection<String> defaultSuppressionAnnotations() {
         return Arrays.asList("javax.inject.Inject",
-                "com.google.inject.Inject");
+                "com.google.inject.Inject",
+                "org.springframework.beans.factory.annotation.Autowired");
     }
 
     @Override
