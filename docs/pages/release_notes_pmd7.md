@@ -525,33 +525,45 @@ Related issue: [[core] Explicitly name all language versions (#4120)](https://gi
 
 ### Changed Rules
 
-**Java**
+**Java Best Practices**
 
-* {% rule "java/codestyle/UnnecessaryFullyQualifiedName" %}: the rule has two new properties,
+* {% rule java/bestpractices/LooseCoupling %}: the rule has a new property to allow some types to be coupled
+  to (`allowedTypes`).
+
+**Java Codestyle**
+
+* {% rule java/codestyle/UseDiamondOperator %}: the property `java7Compatibility` is removed. The rule now
+  handles Java 7 properly without a property.
+* {% rule java/codestyle/UnnecessaryFullyQualifiedName %}: the rule has two new properties,
   to selectively disable reporting on static field and method qualifiers. The rule also has been improved
   to be more precise.
-* {% rule "java/codestyle/UselessParentheses" %}: the rule has two new properties which control how strict
+* {% rule java/codestyle/UselessParentheses %}: the rule has two new properties which control how strict
   the rule should be applied. With `ignoreClarifying` (default: true) parentheses that are strictly speaking
   not necessary are allowed, if they separate expressions of different precedence.
   The other property `ignoreBalancing` (default: true) is similar, in that it allows parentheses that help
   reading and understanding the expressions.
-* {% rule "java/bestpractices/LooseCoupling" %}: the rule has a new property to allow some types to be coupled
-  to (`allowedTypes`).
-* {% rule "java/errorprone/EmptyCatchBlock" %}: `CloneNotSupportedException` and `InterruptedException` are not
-  special-cased anymore. Rename the exception parameter to `ignored` to ignore them.
-* {% rule "java/errorprone/DontImportSun" %}: `sun.misc.Signal` is not special-cased anymore.
-* {% rule "java/codestyle/UseDiamondOperator" %}: the property `java7Compatibility` is removed. The rule now
-  handles Java 7 properly without a property.
-* {% rule "java/design/SingularField" %}: Properties `checkInnerClasses` and `disallowNotAssignment` are removed.
-  The rule is now more precise and will check these cases properly.
-* {% rule "java/design/UseUtilityClass" %}: The property `ignoredAnnotations` has been removed.
-* {% rule "java/design/LawOfDemeter" %}: the rule has a new property `trustRadius`. This defines the maximum degree
+
+**Java Design**
+
+* {% rule java/design/ImmutableField %}: the property `ignoredAnnotations` has been removed. The property was
+  deprecated since PMD 6.52.0.
+* {% rule java/design/LawOfDemeter %}: the rule has a new property `trustRadius`. This defines the maximum degree
   of trusted data. The default of 1 is the most restrictive.
-* {% rule "java/documentation/CommentContent" %}: The properties `caseSensitive` and `disallowedTerms` are removed. The
+* {% rule java/design/SingularField %}: Properties `checkInnerClasses` and `disallowNotAssignment` are removed.
+  The rule is now more precise and will check these cases properly.
+* {% rule java/design/UseUtilityClass %}: The property `ignoredAnnotations` has been removed.
+
+**Java Documentation**
+
+* {% rule java/documentation/CommentContent %}: The properties `caseSensitive` and `disallowedTerms` are removed. The
   new property `fobiddenRegex` can be used now to define the disallowed terms with a single regular
   expression.
-* {% rule "java/design/ImmutableField" %}: the property `ignoredAnnotations` has been removed. The property was
-  deprecated since PMD 6.52.0.
+
+**Java Error Prone**
+
+* {% rule java/errorprone/DontImportSun %}: `sun.misc.Signal` is not special-cased anymore.
+* {% rule java/errorprone/EmptyCatchBlock %}: `CloneNotSupportedException` and `InterruptedException` are not
+  special-cased anymore. Rename the exception parameter to `ignored` to ignore them.
 
 ### Deprecated Rules
 
