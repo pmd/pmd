@@ -218,11 +218,16 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import com.google.inject.Inject;
+import org.springframework.beans.factory.annotation.Autowired;
 public class Foo {
     private Foo() {}
 }
 public class Bar extends Foo {
     @Inject
+    public Bar() {}
+}
+public class Bar extends Foo {
+    @Autowired
     public Bar() {}
 }
         ]]></code>
