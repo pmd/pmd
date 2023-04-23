@@ -204,6 +204,8 @@ Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 
 **Java Best Practices**
 
+* {% rule java/bestpractices/ArrayIsStoredDirectly %}: Violations are now reported on the assignment and not
+  anymore on the formal parameter. The reported line numbers will probably move.
 * {% rule java/bestpractices/AvoidReassigningLoopVariables %}: This rule might not report anymore all
   reassignments of the control variable in for-loops when the property `forReassign` is set to `skip`.
   See [issue #4500](https://github.com/pmd/pmd/issues/4500) for more details.
