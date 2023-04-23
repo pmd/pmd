@@ -1653,6 +1653,7 @@ deprecated since PMD 6.52.0.</li>
   <li>java-codestyle
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/4273">#4273</a>: [java] CommentDefaultAccessModifier ignoredAnnotations should include “org.junit.jupiter.api.extension.RegisterExtension” by default</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4487">#4487</a>: [java] UnnecessaryConstructor: false-positive with @Inject and @Autowired</li>
     </ul>
   </li>
   <li>java-design
@@ -1685,6 +1686,7 @@ deprecated since PMD 6.52.0.</li>
   <li><a href="https://github.com/pmd/pmd/pull/4450">#4450</a>: [java] Fix #4449 AvoidAccessibilityAlteration: Correctly handle Lambda expressions in PrivilegedAction scenarios - <a href="https://github.com/mohui1999">Seren</a> (@mohui1999)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4452">#4452</a>: [doc] Update PMD_APEX_ROOT_DIRECTORY documentation reference - <a href="https://github.com/nwcm">nwcm</a> (@nwcm)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4474">#4474</a>: [java] ImmutableField: False positive with lombok (fixes #4254) - <a href="https://github.com/PimvanderLoos">Pim van der Loos</a> (@PimvanderLoos)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4494">#4494</a>: [java] Fix #4487: A false-positive about UnnecessaryConstructor and @Inject and @Autowired - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4495">#4495</a>: [java] Fix #4493: false-positive about MissingStaticMethodInNonInstantiatableClass and @Inject - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
 </ul>
 
@@ -2187,7 +2189,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Apr 22, 2023 <br />
+             Site last generated: Apr 23, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
