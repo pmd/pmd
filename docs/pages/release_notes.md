@@ -190,7 +190,13 @@ Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 
 #### Changed Rules
 
-**General changes**
+**Apex General changes**
+
+* The properties `cc_categories`, `cc_remediation_points_multiplier`, `cc_block_highlighting` have been removed
+  from all rules. These properties have been deprecated since PMD 6.13.0.
+  See [issue #1648](https://github.com/pmd/pmd/issues/1648) for more details.
+
+**Java General changes**
 
 * Violations reported on methods or classes previously reported the line range of the entire method
   or class. With PMD 7.0.0, the reported location is now just the identifier of the method or class.
@@ -209,17 +215,20 @@ Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 * {% rule java/bestpractices/AvoidReassigningLoopVariables %}: This rule might not report anymore all
   reassignments of the control variable in for-loops when the property `forReassign` is set to `skip`.
   See [issue #4500](https://github.com/pmd/pmd/issues/4500) for more details.
-* {% rule java/bestpractices/LooseCoupling %}: the rule has a new property to allow some types to be coupled
+* {% rule java/bestpractices/LooseCoupling %}: The rule has a new property to allow some types to be coupled
   to (`allowedTypes`).
 
 **Java Codestyle**
 
-* {% rule java/codestyle/UseDiamondOperator %}: the property `java7Compatibility` is removed. The rule now
+* {% rule java/codestyle/MethodNamingConventions %}: The property `checkNativeMethods` has been removed. The
+  property was deprecated since PMD 6.3.0. Use the property `nativePattern` to control whether native methods
+  should be considered or not.
+* {% rule java/codestyle/UseDiamondOperator %}: The property `java7Compatibility` has been removed. The rule now
   handles Java 7 properly without a property.
-* {% rule java/codestyle/UnnecessaryFullyQualifiedName %}: the rule has two new properties,
+* {% rule java/codestyle/UnnecessaryFullyQualifiedName %}: The rule has two new properties,
   to selectively disable reporting on static field and method qualifiers. The rule also has been improved
   to be more precise.
-* {% rule java/codestyle/UselessParentheses %}: the rule has two new properties which control how strict
+* {% rule java/codestyle/UselessParentheses %}: The rule has two new properties which control how strict
   the rule should be applied. With `ignoreClarifying` (default: true) parentheses that are strictly speaking
   not necessary are allowed, if they separate expressions of different precedence.
   The other property `ignoreBalancing` (default: true) is similar, in that it allows parentheses that help
@@ -227,11 +236,16 @@ Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 
 **Java Design**
 
-* {% rule java/design/ImmutableField %}: the property `ignoredAnnotations` has been removed. The property was
+* {% rule java/design/CyclomaticComplexity %}: The property `reportLevel` has been removed. The property was
+  deprecated since PMD 6.0.0. The report level can now be configured separated for classes and methods using
+  `classReportLevel` and `methodReportLevel` instead.
+* {% rule java/design/ImmutableField %}: The property `ignoredAnnotations` has been removed. The property was
   deprecated since PMD 6.52.0.
-* {% rule java/design/LawOfDemeter %}: the rule has a new property `trustRadius`. This defines the maximum degree
+* {% rule java/design/LawOfDemeter %}: The rule has a new property `trustRadius`. This defines the maximum degree
   of trusted data. The default of 1 is the most restrictive.
-* {% rule java/design/SingularField %}: Properties `checkInnerClasses` and `disallowNotAssignment` are removed.
+* {% rule java/design/NPathComplexity %}: The property `minimum` has been removed. It was deprecated since PMD 6.0.0.
+  Use the property `reportLevel` instead.
+* {% rule java/design/SingularField %}: The properties `checkInnerClasses` and `disallowNotAssignment` have been removed.
   The rule is now more precise and will check these cases properly.
 * {% rule java/design/UseUtilityClass %}: The property `ignoredAnnotations` has been removed.
 
@@ -243,6 +257,8 @@ Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 
 **Java Error Prone**
 
+* {% rule java/errorprone/AvoidDuplicateLiterals %}: The property `exceptionfile` has been removed. The property was
+  deprecated since PMD 6.10.0. Use the property `exceptionList` instead.
 * {% rule java/errorprone/DontImportSun %}: `sun.misc.Signal` is not special-cased anymore.
 * {% rule java/errorprone/EmptyCatchBlock %}: `CloneNotSupportedException` and `InterruptedException` are not
   special-cased anymore. Rename the exception parameter to `ignored` to ignore them.
