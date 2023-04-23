@@ -190,6 +190,18 @@ Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 
 #### Changed Rules
 
+**General changes**
+
+* Violations reported on methods or classes previously reported the line range of the entire method
+  or class. With PMD 7.0.0, the reported location is now just the identifier of the method or class.
+  This affects various rules, e.g. {% rule java/design/CognitiveComplexity %}.
+  
+  The report location is controlled by the overrides of the method {% jdoc core::lang.ast.Node#getReportLocation() %}
+  in different node types.
+  
+  See [issue #4439](https://github.com/pmd/pmd/issues/4439) and [issue #730](https://github.com/pmd/pmd/issues/730)
+  for more details.
+
 **Java Best Practices**
 
 * {% rule java/bestpractices/AvoidReassigningLoopVariables %}: This rule might not report anymore all
