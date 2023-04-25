@@ -1653,12 +1653,13 @@ deprecated since PMD 6.52.0.</li>
   <li>java-codestyle
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/4273">#4273</a>: [java] CommentDefaultAccessModifier ignoredAnnotations should include “org.junit.jupiter.api.extension.RegisterExtension” by default</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4487">#4487</a>: [java] UnnecessaryConstructor: false-positive with @Inject and @Autowired</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4487">#4487</a>: [java] UnnecessaryConstructor: false-positive with @<!-- -->Inject and @<!-- -->Autowired</li>
     </ul>
   </li>
   <li>java-design
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/4254">#4254</a>: [java] ImmutableField - false positive with Lombok @<!-- -->Setter</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4477">#4477</a>: [java] SignatureDeclareThrowsException: false-positive with TestNG annotations</li>
       <li><a href="https://github.com/pmd/pmd/issues/4490">#4490</a>: [java] ImmutableField - false negative with Lombok @<!-- -->Getter</li>
     </ul>
   </li>
@@ -1666,6 +1667,7 @@ deprecated since PMD 6.52.0.</li>
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/4449">#4449</a>: [java] AvoidAccessibilityAlteration: Possible false positive in AvoidAccessibilityAlteration rule when using Lambda expression</li>
       <li><a href="https://github.com/pmd/pmd/issues/4493">#4493</a>: [java] MissingStaticMethodInNonInstantiatableClass: false-positive about @<!-- -->Inject</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4505">#4505</a>: [java] ImplicitSwitchFallThrough NPE in PMD 7.0.0-rc1</li>
     </ul>
   </li>
   <li>java-multithreading
@@ -1686,8 +1688,9 @@ deprecated since PMD 6.52.0.</li>
   <li><a href="https://github.com/pmd/pmd/pull/4450">#4450</a>: [java] Fix #4449 AvoidAccessibilityAlteration: Correctly handle Lambda expressions in PrivilegedAction scenarios - <a href="https://github.com/mohui1999">Seren</a> (@mohui1999)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4452">#4452</a>: [doc] Update PMD_APEX_ROOT_DIRECTORY documentation reference - <a href="https://github.com/nwcm">nwcm</a> (@nwcm)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4474">#4474</a>: [java] ImmutableField: False positive with lombok (fixes #4254) - <a href="https://github.com/PimvanderLoos">Pim van der Loos</a> (@PimvanderLoos)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/4494">#4494</a>: [java] Fix #4487: A false-positive about UnnecessaryConstructor and @Inject and @Autowired - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/4495">#4495</a>: [java] Fix #4493: false-positive about MissingStaticMethodInNonInstantiatableClass and @Inject - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4488">#4488</a>: [java] Fix #4477: A false-positive about SignatureDeclareThrowsException - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4494">#4494</a>: [java] Fix #4487: A false-positive about UnnecessaryConstructor and @<!-- -->Inject and @<!-- -->Autowired - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4495">#4495</a>: [java] Fix #4493: false-positive about MissingStaticMethodInNonInstantiatableClass and @<!-- -->Inject - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
 </ul>
 
 <h3 id="-major-features-and-enhancements">🚀 Major Features and Enhancements</h3>
@@ -2005,7 +2008,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/issues/1189">#1189</a>: [java] UnusedPrivateMethod false positive from inner class via external class</li>
       <li><a href="https://github.com/pmd/pmd/issues/1205">#1205</a>: [java] Improve ConstantsInInterface message to mention alternatives</li>
       <li><a href="https://github.com/pmd/pmd/issues/1212">#1212</a>: [java] Don’t raise JUnitTestContainsTooManyAsserts on JUnit 5’s assertAll</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1422">#1422</a>: [java] JUnitTestsShouldIncludeAssert false positive with inherited @Rule field</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1422">#1422</a>: [java] JUnitTestsShouldIncludeAssert false positive with inherited @<!-- -->Rule field</li>
       <li><a href="https://github.com/pmd/pmd/issues/1565">#1565</a>: [java] JUnitAssertionsShouldIncludeMessage false positive with AssertJ</li>
       <li><a href="https://github.com/pmd/pmd/issues/1747">#1747</a>: [java] PreserveStackTrace false-positive</li>
       <li><a href="https://github.com/pmd/pmd/issues/1969">#1969</a>: [java] MissingOverride false-positive triggered by package-private method overwritten in another package by extending class</li>
@@ -2049,6 +2052,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/pull/3500">#3500</a>:   [java] UnnecessaryBoxing - check for Integer.valueOf(String) calls</li>
       <li><a href="https://github.com/pmd/pmd/issues/4273">#4273</a>: [java] CommentDefaultAccessModifier ignoredAnnotations should include “org.junit.jupiter.api.extension.RegisterExtension” by default</li>
       <li><a href="https://github.com/pmd/pmd/pull/4357">#4357</a>:   [java] Fix IllegalStateException in UseDiamondOperator rule</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4487">#4487</a>: [java] UnnecessaryConstructor: false-positive with @<!-- -->Inject and @<!-- -->Autowired</li>
     </ul>
   </li>
   <li>java-design
@@ -2066,6 +2070,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/issues/3786">#3786</a>: [java] SimplifyBooleanReturns should consider operator precedence</li>
       <li><a href="https://github.com/pmd/pmd/pull/4238">#4238</a>:   [java] Make LawOfDemeter not use the rulechain</li>
       <li><a href="https://github.com/pmd/pmd/issues/4254">#4254</a>: [java] ImmutableField - false positive with Lombok @<!-- -->Setter</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4477">#4477</a>: [java] SignatureDeclareThrowsException: false-positive with TestNG annotations</li>
       <li><a href="https://github.com/pmd/pmd/issues/4490">#4490</a>: [java] ImmutableField - false negative with Lombok @<!-- -->Getter</li>
     </ul>
   </li>
@@ -2080,7 +2085,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/issues/659">#659</a>:   [java] MissingBreakInSwitch - last default case does not contain a break</li>
       <li><a href="https://github.com/pmd/pmd/issues/1005">#1005</a>: [java] CloneMethodMustImplementCloneable triggers for interfaces</li>
       <li><a href="https://github.com/pmd/pmd/issues/1669">#1669</a>: [java] NullAssignment - FP with ternay and null as constructor argument</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1899">#1899</a>: [java] Recognize @SuppressWanings(“fallthrough”) for MissingBreakInSwitch</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1899">#1899</a>: [java] Recognize @<!-- -->SuppressWanings(“fallthrough”) for MissingBreakInSwitch</li>
       <li><a href="https://github.com/pmd/pmd/issues/2320">#2320</a>: [java] NullAssignment - FP with ternary and null as method argument</li>
       <li><a href="https://github.com/pmd/pmd/issues/2532">#2532</a>: [java] AvoidDecimalLiteralsInBigDecimalConstructor can not detect the case <code class="language-plaintext highlighter-rouge">new BigDecimal(Expression)</code></li>
       <li><a href="https://github.com/pmd/pmd/issues/2579">#2579</a>: [java] MissingBreakInSwitch detects the lack of break in the last case</li>
@@ -2096,6 +2101,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/pull/4356">#4356</a>:   [java] Fix NPE in CloseResourceRule</li>
       <li><a href="https://github.com/pmd/pmd/issues/4449">#4449</a>: [java] AvoidAccessibilityAlteration: Possible false positive in AvoidAccessibilityAlteration rule when using Lambda expression</li>
       <li><a href="https://github.com/pmd/pmd/issues/4493">#4493</a>: [java] MissingStaticMethodInNonInstantiatableClass: false-positive about @<!-- -->Inject</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4505">#4505</a>: [java] ImplicitSwitchFallThrough NPE in PMD 7.0.0-rc1</li>
     </ul>
   </li>
   <li>java-multithreading
@@ -2150,7 +2156,9 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
   <li><a href="https://github.com/pmd/pmd/pull/4450">#4450</a>: [java] Fix #4449 AvoidAccessibilityAlteration: Correctly handle Lambda expressions in PrivilegedAction scenarios - <a href="https://github.com/mohui1999">Seren</a> (@mohui1999)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4452">#4452</a>: [doc] Update PMD_APEX_ROOT_DIRECTORY documentation reference - <a href="https://github.com/nwcm">nwcm</a> (@nwcm)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4474">#4474</a>: [java] ImmutableField: False positive with lombok (fixes #4254) - <a href="https://github.com/PimvanderLoos">Pim van der Loos</a> (@PimvanderLoos)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/4495">#4495</a>: [java] Fix #4493: false-positive about MissingStaticMethodInNonInstantiatableClass and @Inject - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4488">#4488</a>: [java] Fix #4477: A false-positive about SignatureDeclareThrowsException - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4494">#4494</a>: [java] Fix #4487: A false-positive about UnnecessaryConstructor and @<!-- -->Inject and @<!-- -->Autowired - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4495">#4495</a>: [java] Fix #4493: false-positive about MissingStaticMethodInNonInstantiatableClass and @<!-- -->Inject - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
 </ul>
 
 <h3 id="-stats">📈 Stats</h3>
@@ -2189,7 +2197,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Apr 23, 2023 <br />
+             Site last generated: Apr 25, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
