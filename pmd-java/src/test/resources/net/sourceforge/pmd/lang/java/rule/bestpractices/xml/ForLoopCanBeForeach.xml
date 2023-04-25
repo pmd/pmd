@@ -409,4 +409,21 @@ public class Test {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>#1563 FP with ForLoopCanBeForeach</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.List;
+            class X {
+                private void fofo(List<Foo> mList) {
+                    for (int i = 0; i < mList.size(); i++) {
+                        mList.get(i).setIndex(i);
+                    }
+                }
+                interface Foo {
+                    void setIndex(int i);
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>
