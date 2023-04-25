@@ -402,7 +402,7 @@ record MyRecord(boolean b) {
     </test-code>
 
     <test-code>
-        <description>NPE with Switch in enum constant body</description>
+        <description>#4505 NPE with Switch in enum constant body</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
