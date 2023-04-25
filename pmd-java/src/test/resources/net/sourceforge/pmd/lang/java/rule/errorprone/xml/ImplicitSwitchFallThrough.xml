@@ -400,4 +400,25 @@ record MyRecord(boolean b) {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#4505 NPE with Switch in enum constant body</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+            enum Foo {
+                A {
+                    void foo() {
+                        switch (A) {
+                        case A:
+                            if (A != null) {}
+                        default:
+                            throw new UnsupportedOperationException();
+                        }
+                    }
+                }
+            }
+
+            ]]></code>
+    </test-code>
 </test-data>
