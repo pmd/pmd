@@ -581,6 +581,7 @@ Related issue: [[core] Explicitly name all language versions (#4120)](https://gi
 * {% rule java/codestyle/MethodNamingConventions %}: The property `checkNativeMethods` has been removed. The
   property was deprecated since PMD 6.3.0. Use the property `nativePattern` to control whether native methods
   should be considered or not.
+* {% rule java/codestyle/ShortVariable %}: This rule now also reports short enum constant names.
 * {% rule java/codestyle/UseDiamondOperator %}: The property `java7Compatibility` has been removed. The rule now
   handles Java 7 properly without a property.
 * {% rule java/codestyle/UnnecessaryFullyQualifiedName %}: The rule has two new properties,
