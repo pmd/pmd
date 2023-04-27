@@ -289,6 +289,8 @@ Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 * {% rule java/errorprone/DontImportSun %}: `sun.misc.Signal` is not special-cased anymore.
 * {% rule java/errorprone/EmptyCatchBlock %}: `CloneNotSupportedException` and `InterruptedException` are not
   special-cased anymore. Rename the exception parameter to `ignored` to ignore them.
+* {% rule java/errorprone/ImplicitSwitchFallThrough %}: Violations are now reported on the case statements
+  rather than on the switch statements. This is more accurate but might result in more violations now.
 
 #### Removed Rules
 

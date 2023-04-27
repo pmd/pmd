@@ -624,6 +624,8 @@ Related issue: [[core] Explicitly name all language versions (#4120)](https://gi
 * {% rule java/errorprone/DontImportSun %}: `sun.misc.Signal` is not special-cased anymore.
 * {% rule java/errorprone/EmptyCatchBlock %}: `CloneNotSupportedException` and `InterruptedException` are not
   special-cased anymore. Rename the exception parameter to `ignored` to ignore them.
+* {% rule java/errorprone/ImplicitSwitchFallThrough %}: Violations are now reported on the case statements
+  rather than on the switch statements. This is more accurate but might result in more violations now.
 
 ### Deprecated Rules
 
