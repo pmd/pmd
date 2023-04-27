@@ -193,4 +193,23 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] UselessOperationOnImmutable various false negatives with String #4513</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>3,6,9</expected-linenumbers>
+        <code><![CDATA[
+public class TestCase {
+  public void method1(String s) {
+    s.trim();
+  }
+  public void method2() {
+   String.valueOf(0);
+  }
+  public void method3() {
+   String.valueOf(0).trim();
+  }
+}
+]]></code>
+    </test-code>
 </test-data>
