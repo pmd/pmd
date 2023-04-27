@@ -276,7 +276,7 @@ Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 **Java Documentation**
 
 * {% rule java/documentation/CommentContent %}: The properties `caseSensitive` and `disallowedTerms` are removed. The
-  new property `fobiddenRegex` can be used now to define the disallowed terms with a single regular
+  new property `forbiddenRegex` can be used now to define the disallowed terms with a single regular
   expression.
 * {% rule java/documentation/CommentRequired %}:
   * Overridden methods are now detected even without the `@Override`
