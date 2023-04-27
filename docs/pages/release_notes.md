@@ -278,6 +278,12 @@ Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 * {% rule java/documentation/CommentContent %}: The properties `caseSensitive` and `disallowedTerms` are removed. The
   new property `fobiddenRegex` can be used now to define the disallowed terms with a single regular
   expression.
+* {% rule java/documentation/CommentRequired %}:
+  * Overridden methods are now detected even without the `@Override`
+    annotation. This is relevant for the property `methodWithOverrideCommentRequirement`.
+    See also [pull request #3757](https://github.com/pmd/pmd/pull/3757).
+  * Elements in annotation types are now detected as well. This might lead to an increased number of violations
+    for missing public method comments.
 * {% rule java/documentation/CommentSize %}: When determining the line-length of a comment, the leading comment
   prefix markers (e.g. `*` or `//`) are ignored and don't add up to the line-length.
   See also [pull request #4369](https://github.com/pmd/pmd/pull/4369).
