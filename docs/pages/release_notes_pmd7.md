@@ -613,6 +613,9 @@ Related issue: [[core] Explicitly name all language versions (#4120)](https://gi
 * {% rule java/documentation/CommentContent %}: The properties `caseSensitive` and `disallowedTerms` are removed. The
   new property `fobiddenRegex` can be used now to define the disallowed terms with a single regular
   expression.
+* {% rule java/documentation/CommentSize %}: When determining the line-length of a comment, the leading comment
+  prefix markers (e.g. `*` or `//`) are ignored and don't add up to the line-length.
+  See also [pull request #4369](https://github.com/pmd/pmd/pull/4369).
 
 **Java Error Prone**
 
