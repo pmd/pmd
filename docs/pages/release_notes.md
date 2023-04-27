@@ -190,23 +190,28 @@ Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 
 #### Changed Rules
 
-**General changes for statistical rules**
+**General changes**
 
-All statistical rules (like ExcessiveClassLength, ExcessiveParameterList) have been simplified and unified.
-The properties `topscore` and `sigma` have been removed. The property `minimum` is still there, however the type is not
-a decimal number anymore but has been changed to an integer. This affects rules in the languages Apex, Java, PLSQL
-and Velocity Template Language (vm):
-* Apex: {% rule apex/design/ExcessiveClassLength %}, {% rule apex/design/ExcessiveParameterList %},
-  {% rule apex/design/ExcessivePublicCount %}, {% rule apex/design/NcssConstructorCount %},
-  {% rule apex/design/NcssMethodCount %}, {% rule apex/design/NcssTypeCount %}
-* Java: {% rule java/design/ExcessiveImports %}, {% rule java/design/ExcessiveParameterList %},
-  {% rule java/design/ExcessivePublicCount %}, {% rule java/design/SwitchDensity %}
-* PLSQL: {% rule plsql/design/ExcessiveMethodLength %}, {% rule plsql/design/ExcessiveObjectLength %},
-  {% rule plsql/design/ExcessivePackageBodyLength %}, {% rule plsql/design/ExcessivePackageSpecificationLength %},
-  {% rule plsql/design/ExcessiveParameterList %}, {% rule plsql/design/ExcessiveTypeLength %},
-  {% rule plsql/design/NcssMethodCount %}, {% rule plsql/design/NcssObjectCount %},
-  {% rule plsql/design/NPathComplexity %}
-* VM: {% rule vm/design/ExcessiveTemplateLength %}
+* All statistical rules (like ExcessiveClassLength, ExcessiveParameterList) have been simplified and unified.
+  The properties `topscore` and `sigma` have been removed. The property `minimum` is still there, however the type is not
+  a decimal number anymore but has been changed to an integer. This affects rules in the languages Apex, Java, PLSQL
+  and Velocity Template Language (vm):
+  * Apex: {% rule apex/design/ExcessiveClassLength %}, {% rule apex/design/ExcessiveParameterList %},
+    {% rule apex/design/ExcessivePublicCount %}, {% rule apex/design/NcssConstructorCount %},
+    {% rule apex/design/NcssMethodCount %}, {% rule apex/design/NcssTypeCount %}
+  * Java: {% rule java/design/ExcessiveImports %}, {% rule java/design/ExcessiveParameterList %},
+    {% rule java/design/ExcessivePublicCount %}, {% rule java/design/SwitchDensity %}
+  * PLSQL: {% rule plsql/design/ExcessiveMethodLength %}, {% rule plsql/design/ExcessiveObjectLength %},
+    {% rule plsql/design/ExcessivePackageBodyLength %}, {% rule plsql/design/ExcessivePackageSpecificationLength %},
+    {% rule plsql/design/ExcessiveParameterList %}, {% rule plsql/design/ExcessiveTypeLength %},
+    {% rule plsql/design/NcssMethodCount %}, {% rule plsql/design/NcssObjectCount %},
+    {% rule plsql/design/NPathComplexity %}
+  * VM: {% rule vm/design/ExcessiveTemplateLength %}
+
+* The general property `violationSuppressXPath` which is available for all rules to
+  [suppress warnings]({{ baseurl }}pmd_userdocs_suppressing_warnings.html) now uses XPath version 3.1 by default.
+  This version of the XPath language is mostly identical to XPath 2.0. In PMD 6, XPath 1.0 has been used.
+  If you upgrade from PMD 6, you need to verify your `violationSuppressXPath` properties.
 
 **Apex General changes**
 
