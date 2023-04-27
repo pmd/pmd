@@ -7,11 +7,12 @@
     <test-code>
         <description>May be final</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void test1() {
         int a = 0;
-        System.out.println(a);
+        System.out.println(a); // a is used here
     }
 }
         ]]></code>
@@ -30,7 +31,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Unused, no violation</description>
+        <description>#4511 Unused, no violation</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
