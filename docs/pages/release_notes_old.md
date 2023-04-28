@@ -453,6 +453,7 @@ version `20-preview`:
     ./run.sh pmd --use-version java-20-preview ...
 
 #### T-SQL support
+
 Thanks to the contribution from [Paul Guyot](https://github.com/pguyot) PMD now has CPD support
 for T-SQL (Transact-SQL).
 
