@@ -509,4 +509,35 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] UnusedLocalVariable: false-positive with multiple for-loop indices #4518</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>3,3,6,15</expected-linenumbers>
+        <expected-messages>
+            <message>Avoid unused local variables such as 'a'.</message>
+            <message>Avoid unused local variables such as 'b'.</message>
+            <message>Avoid unused local variables such as 'b'.</message>
+            <message>Avoid unused local variables such as 'j'.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class UnusedLocalVarsMultiple {
+    public void sample1() {
+        int a = 0, b = 1; // a and b unused (line 3)
+    }
+    public void sample2() {
+        int a = 0, b = a; // only b unused (line 6)
+    }
+    public void sample3() {
+        for (int i = 0; i < 10; i++); // i is loop index, is used and should be ignored
+    }
+    public void sample4() {
+        for (int i = 0, j = 0; i < 10; i++, j++); // i and j are loop indices, both are used (line 12)
+    }
+    public void sample5() {
+        for (int i = 0, j = 0; i < 10; i++); // i and j are loop indices, but j is not used (line 15)
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
