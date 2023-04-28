@@ -240,6 +240,9 @@ Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
   See [issue #4500](https://github.com/pmd/pmd/issues/4500) for more details.
 * {% rule java/bestpractices/LooseCoupling %}: The rule has a new property to allow some types to be coupled
   to (`allowedTypes`).
+* {% rule java/bestpractices/UnusedLocalVariable %}: This rule has some important false-negatives fixed
+  and finds many more cases now. For details see issues [#2130](https://github.com/pmd/pmd/issues/2130),
+  [#4516](https://github.com/pmd/pmd/issues/4516), and [#4517](https://github.com/pmd/pmd/issues/4517).
 
 **Java Codestyle**
 
@@ -446,6 +449,8 @@ Language specific fixes:
     * [#2946](https://github.com/pmd/pmd/issues/2946): \[java] SwitchStmtsShouldHaveDefault false positive on enum inside enums
     * [#3672](https://github.com/pmd/pmd/pull/3672):   \[java] LooseCoupling - fix false positive with generics
     * [#3675](https://github.com/pmd/pmd/pull/3675):   \[java] MissingOverride - fix false positive with mixing type vars
+    * [#4516](https://github.com/pmd/pmd/issues/4516): \[java] UnusedLocalVariable: false-negative with try-with-resources
+    * [#4517](https://github.com/pmd/pmd/issues/4517): \[java] UnusedLocalVariable: false-negative with compound assignments
 * java-codestyle
     * [#1208](https://github.com/pmd/pmd/issues/1208): \[java] PrematureDeclaration rule false-positive on variable declared to measure time
     * [#1429](https://github.com/pmd/pmd/issues/1429): \[java] PrematureDeclaration as result of method call (false positive)

@@ -575,6 +575,9 @@ Related issue: [[core] Explicitly name all language versions (#4120)](https://gi
   See [issue #4500](https://github.com/pmd/pmd/issues/4500) for more details.
 * {% rule java/bestpractices/LooseCoupling %}: The rule has a new property to allow some types to be coupled
   to (`allowedTypes`).
+* {% rule java/bestpractices/UnusedLocalVariable %}: This rule has some important false-negatives fixed
+  and finds many more cases now. For details see issues [#2130](https://github.com/pmd/pmd/issues/2130),
+  [#4516](https://github.com/pmd/pmd/issues/4516), and [#4517](https://github.com/pmd/pmd/issues/4517).
 
 **Java Codestyle**
 
