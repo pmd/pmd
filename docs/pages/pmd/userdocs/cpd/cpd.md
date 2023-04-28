@@ -457,7 +457,7 @@ public Object someParameterizedFactoryMethod(int x) throws Exception {
     // any code here will be ignored for the duplication detection
 }
 //disable suppression
-@SuppressWarnings("CPD-END)
+@SuppressWarnings("CPD-END")
 public void nextMethod() {
 }
 ```
