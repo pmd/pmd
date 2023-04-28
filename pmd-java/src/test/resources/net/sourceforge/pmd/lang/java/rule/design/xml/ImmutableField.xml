@@ -415,15 +415,31 @@ public class CombinersTest {
     </test-code>
 
     <test-code>
-        <description>#410 [java] ImmutableField: False positive with lombok</description>
+        <description>#410 [java] ImmutableField: False positive with lombok on class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Setter;
+
+@Setter
+public class Foo {
+    private String id;
+
+    public Foo(String id) {
+        this.id = id;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4254 [java] ImmutableField: False positive with lombok on field</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-@Setter
 public class Foo {
+    @Setter
     private String id;
 
     public Foo(String id) {
@@ -472,23 +488,6 @@ class Foo {
     }
 
     static class Bar {
-    }
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>#1056 [java] Property ignoredAnnotations does not work for SingularField and ImmutableField</description>
-        <rule-property name="ignoredAnnotations">java.lang.Deprecated</rule-property>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
-    @Deprecated
-    @SuppressWarnings("PMD.ImmutableField")
-    private int x;
-
-    public Foo() {
-        x = 2;
     }
 }
         ]]></code>
@@ -808,6 +807,25 @@ public class MyTable implements Serializable
    {
       return m_id;
    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4490 False negative with Lombok @Getter only</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import lombok.Getter;
+import lombok.Setter;
+
+class Foo {
+    @Getter
+    private String name = "tada";
+
+    @Getter
+    @Setter
+    private String name2 = "tada";
 }
 ]]></code>
     </test-code>

@@ -113,4 +113,29 @@ public class SomeClass {
 }
        ]]></code>
     </test-code>
+
+    <test-code>
+        <description>class with inner classes</description>
+        <rule-property name="minimum">1</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>1,5</expected-linenumbers>
+        <expected-messages>
+            <message>The class OuterClass has 2 public methods and attributes (limit: 1)</message>
+            <message>The class InnerClass has 4 public methods and attributes (limit: 1)</message>
+        </expected-messages>
+        <code><![CDATA[
+public class OuterClass {
+    public int outerField1;
+    public int outerField2;
+
+    public class InnerClass {
+        public String field1;
+        public int field2;
+
+        public void method1() { }
+        public void method2() { }
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

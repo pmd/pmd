@@ -53,7 +53,7 @@ class RuleTag < Liquid::Tag
     # This is passed from the release notes processing script
     # When generating links for the release notes, the links should be absolute
     if context["is_release_notes_processor"]
-      url_prefix = "https://pmd.github.io/pmd-#{context["site.pmd.version"]}/"
+      url_prefix = "https://docs.pmd-code.org/pmd-doc-#{context["site.pmd.version"]}/"
     end
 
     if @was_removed

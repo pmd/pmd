@@ -126,7 +126,7 @@
     <dependencies>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-apex</artifactId>
+            <artifactId>pmd-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -141,11 +141,6 @@
             <version>${project.version}</version>
             <type>sh</type>
             <classifier>completion</classifier>
-        </dependency>
-        <dependency>
-            <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-core</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
@@ -210,11 +205,6 @@
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-jsp</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-julia</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -284,20 +274,11 @@
         </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-visualforce</artifactId>
+            <artifactId>pmd-languages-deps</artifactId>
             <version>${project.version}</version>
+            <type>pom</type>
+            <scope>runtime</scope>
         </dependency>
-        <dependency>
-            <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-vm</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-xml</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
 
         <dependency>
             <groupId>org.slf4j</groupId>

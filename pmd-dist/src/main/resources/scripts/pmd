@@ -95,6 +95,13 @@ function script_exit() {
     exit 1
 }
 
+function check_java() {
+  java -version >/dev/null 2>&1
+  if [ $? -ne 0 ]; then
+    script_exit "No java executable found in PATH"
+  fi
+}
+
 determine_java_version() {
     local full_ver=$(java -version 2>&1)
     # java_ver is eg "80" for java 1.8, "90" for java 9.0, "100" for java 10.0.x
@@ -182,6 +189,8 @@ function add_openjfx_classpath() {
 readonly APPNAME="${1}"
 
 is_cygwin
+
+check_java
 
 set_lib_dir
 check_lib_dir

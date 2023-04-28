@@ -194,4 +194,20 @@ public class Foo {{
 }}
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] UseEqualsToCompareStrings should consider return type #3843</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    String getLiteral() {
+        return "hello";
+    }
+    void useEqualsToCompareStrings(String x) {
+        if (x == getLiteral()) {} // a false negative should report
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

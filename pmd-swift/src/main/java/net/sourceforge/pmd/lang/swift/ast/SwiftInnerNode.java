@@ -9,7 +9,8 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.BaseAntlrInnerNode;
 
-public abstract class SwiftInnerNode
+// package private base class
+abstract class SwiftInnerNode
     extends BaseAntlrInnerNode<SwiftNode> implements SwiftNode {
 
     SwiftInnerNode() {
