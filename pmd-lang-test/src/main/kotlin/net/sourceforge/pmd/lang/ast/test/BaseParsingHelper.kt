@@ -239,7 +239,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         return PmdAnalysis.create(config).use { pmd ->
             pmd.addListener(GlobalAnalysisListener.exceptionThrower())
             pmd.addRuleSet(RuleSet.forSingleRule(rule))
-            pmd.files().addSourceFile(fileName, code)
+            pmd.files().addSourceFile(code, fileName)
             pmd.performAnalysisAndCollectReport()
         }
     }

@@ -9,9 +9,9 @@ import net.sourceforge.pmd.cpd.AbstractLanguage;
 /**
  * @author pguyot@kallisys.net
  */
-public class TypescriptLanguage extends AbstractLanguage {
+public class TypeScriptLanguage extends AbstractLanguage {
 
-    public TypescriptLanguage() {
-        super("Typescript", "typescript", new TypescriptTokenizer(), ".ts");
+    public TypeScriptLanguage() {
+        super("TypeScript", "typescript", new TypeScriptTokenizer(), ".ts");
     }
 }

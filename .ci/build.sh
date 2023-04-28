@@ -179,6 +179,11 @@ function pmd_ci_deploy_build_artifacts() {
     # Deploy to sourceforge files https://sourceforge.net/projects/pmd/files/pmd/
     pmd_ci_sourceforge_uploadFile "pmd/${PMD_CI_MAVEN_PROJECT_VERSION}" "pmd-dist/target/pmd-bin-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
     pmd_ci_sourceforge_uploadFile "pmd/${PMD_CI_MAVEN_PROJECT_VERSION}" "pmd-dist/target/pmd-src-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
+    # Deploy SBOM
+    cp pmd-dist/target/bom.xml  "pmd-dist/target/pmd-${PMD_CI_MAVEN_PROJECT_VERSION}-cyclonedx.xml"
+    cp pmd-dist/target/bom.json "pmd-dist/target/pmd-${PMD_CI_MAVEN_PROJECT_VERSION}-cyclonedx.json"
+    pmd_ci_sourceforge_uploadFile "pmd/${PMD_CI_MAVEN_PROJECT_VERSION}" "pmd-dist/target/pmd-${PMD_CI_MAVEN_PROJECT_VERSION}-cyclonedx.xml"
+    pmd_ci_sourceforge_uploadFile "pmd/${PMD_CI_MAVEN_PROJECT_VERSION}" "pmd-dist/target/pmd-${PMD_CI_MAVEN_PROJECT_VERSION}-cyclonedx.json"
 
     if pmd_ci_maven_isReleaseBuild; then
         # create a draft github release
@@ -188,6 +193,9 @@ function pmd_ci_deploy_build_artifacts() {
         # Deploy to github releases
         pmd_ci_gh_releases_uploadAsset "$GH_RELEASE" "pmd-dist/target/pmd-bin-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
         pmd_ci_gh_releases_uploadAsset "$GH_RELEASE" "pmd-dist/target/pmd-src-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
+        # Deploy SBOM
+        pmd_ci_gh_releases_uploadAsset "$GH_RELEASE" "pmd-dist/target/pmd-${PMD_CI_MAVEN_PROJECT_VERSION}-cyclonedx.xml"
+        pmd_ci_gh_releases_uploadAsset "$GH_RELEASE" "pmd-dist/target/pmd-${PMD_CI_MAVEN_PROJECT_VERSION}-cyclonedx.json"
     fi
 }
 
@@ -224,7 +232,7 @@ function pmd_ci_build_and_upload_doc() {
     pmd_ci_sourceforge_uploadReleaseNotes "pmd/${PMD_CI_MAVEN_PROJECT_VERSION}" "${rendered_release_notes}"
 
     if pmd_ci_maven_isSnapshotBuild && [ "${PMD_CI_BRANCH}" = "master" ]; then
-        # only for snapshot builds from branch master
+        # only for snapshot builds from branch master: https://docs.pmd-code.org/snapshot -> pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}
         pmd_code_createSymlink "${PMD_CI_MAVEN_PROJECT_VERSION}" "snapshot"
 
         # update github pages https://pmd.github.io/pmd/
@@ -249,14 +257,12 @@ function pmd_ci_build_and_upload_doc() {
         local rendered_release_notes_with_links
         rendered_release_notes_with_links="
 *   Downloads: https://github.com/pmd/pmd/releases/tag/pmd_releases%2F${PMD_CI_MAVEN_PROJECT_VERSION}
-*   Documentation: https://pmd.github.io/pmd-${PMD_CI_MAVEN_PROJECT_VERSION}/
+*   Documentation: https://docs.pmd-code.org/pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}/
 
 ${rendered_release_notes}"
         pmd_ci_sourceforge_createDraftBlogPost "${release_name} released" "${rendered_release_notes_with_links}" "pmd,release"
         SF_BLOG_URL="${RESULT}"
 
-        # updates https://pmd.github.io/latest/ and https://pmd.github.io/pmd-${PMD_CI_MAVEN_PROJECT_VERSION}
-        publish_release_documentation_github
         # rsync site to https://pmd.sourceforge.io/pmd-${PMD_CI_MAVEN_PROJECT_VERSION}
         pmd_ci_sourceforge_rsyncSnapshotDocumentation "${PMD_CI_MAVEN_PROJECT_VERSION}" "pmd-${PMD_CI_MAVEN_PROJECT_VERSION}"
     fi

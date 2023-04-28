@@ -45,7 +45,7 @@ e.g. it requires that the repo `pmd.github.io` is checked out aside the main pmd
 
 The script `do-release.sh` is called in the directory `/home/joe/source/pmd` and searches for `../pmd.github.io`.
 
-Also make sure, that the repo "pmd.github.io" is locally up to date and has no local changes.
+Also make sure, that the repo "pmd.github.io" is locally up-to-date and has no local changes.
 
 ### The Release Notes and docs
 
@@ -183,11 +183,8 @@ Here is, what happens:
 *   Remove old javadoc for the SNAPSHOT version, e.g. delete <https://docs.pmd-code.org/apidocs/pmd-core/6.34.0-SNAPSHOT/>.
 *   Create a draft news post on <https://sourceforge.net/p/pmd/news/> for the new release. This contains the
     rendered release notes.
-*   Add the documentation of the new release to a subfolder on <https://pmd.github.io>, also make
-    this folder available as `latest`, so that <https://pmd.github.io/latest/> shows the new
-    version and <https://pmd.github.io/pmd-6.34.0/> is the URL for the specific release.
-*   Also copy the documentation to sourceforge's web space, so that it is available as
-    <https://pmd.sourceforge.io/pmd-6.34.0/>. All previously copied version are listed
+*   Copy the documentation to sourceforge's web space, so that it is available as
+    <https://pmd.sourceforge.io/pmd-6.34.0/>. All previously copied versions are listed
     under <https://pmd.sourceforge.io/archive.phtml>.
 *   After all this is done, the release on github (<https://github.com/pmd/pmd/releases>) is published
     and the news post on sourceforge (https://sourceforge.net/p/pmd/news/> is publishes as well.
@@ -206,7 +203,7 @@ news:
 
 
     *   Downloads: https://github.com/pmd/pmd/releases/tag/pmd_releases%2F<version>
-    *   Documentation: https://pmd.github.io/pmd-<version>/
+    *   Documentation: https://docs.pmd-code.org/pmd-doc-<version>/
 
     And Copy-Paste the release notes
 
@@ -219,20 +216,21 @@ Tweet on <https://twitter.com/pmd_analyzer>, eg.:
 
 ### Checklist
 
-| Task | Description | URL | ☐ / ✔ |
-|------|-------------|-----|-------|
-| maven central | The new version of all artifacts are available in maven central | <https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd/> | <input type="checkbox"> |
-| github releases | A new release with 3 assets (bin, src, doc) is created | <https://github.com/pmd/pmd/releases> | <input type="checkbox"> |
-| sourceforge files | The 3 assets (bin, src, doc) are uploaded, the new version is pre-selected as latest | <https://sourceforge.net/projects/pmd/files/pmd/> | <input type="checkbox"> |
-| homepage | Main landing page points to new version, doc for new version is available | <https://pmd.github.io> | <input type="checkbox"> |
-| homepage2 | New blogpost for the new release is posted | <https://pmd.github.io/#news> | <input type="checkbox"> |
-| docs | New docs are uploaded | <https://docs.pmd-code.org/latest/> | <input type="checkbox"> |
-| docs-archive | New docs are also on archive site | <https://pmd.sourceforge.io/archive.phtml> | <input type="checkbox"> |
-| javadoc | New javadocs are uploaded | <https://docs.pmd-code.org/apidocs/> | <input type="checkbox"> |
-| news | New blogpost on sourceforge is posted | <https://sourceforge.net/p/pmd/news/> | <input type="checkbox"> |
-| regression-tester | New release baseline is uploaded | <https://pmd-code.org/pmd-regression-tester> | <input type="checkbox"> |
-| mailing list | announcement on mailing list is sent | <https://sourceforge.net/p/pmd/mailman/pmd-devel/> | <input type="checkbox"> |
-| twitter | tweet about the new release | <https://twitter.com/pmd_analyzer> | <input type="checkbox"> |
+| Task              | Description                                                                          | URL                                                             | ☐ / ✔                   |
+|-------------------|--------------------------------------------------------------------------------------|-----------------------------------------------------------------|-------------------------|
+| maven central     | The new version of all artifacts are available in maven central                      | <https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd/> | <input type="checkbox"> |
+| github releases   | A new release with 3 assets (bin, src, doc) is created                               | <https://github.com/pmd/pmd/releases>                           | <input type="checkbox"> |
+| sourceforge files | The 3 assets (bin, src, doc) are uploaded, the new version is pre-selected as latest | <https://sourceforge.net/projects/pmd/files/pmd/>               | <input type="checkbox"> |
+| homepage          | Main landing page points to new version, doc for new version is available            | <https://pmd.github.io>                                         | <input type="checkbox"> |
+| homepage2         | New blogpost for the new release is posted                                           | <https://pmd.github.io/#news>                                   | <input type="checkbox"> |
+| docs              | New docs are uploaded                                                                | <https://docs.pmd-code.org/latest/>                             | <input type="checkbox"> |
+| docs2             | New version in the docs is listed under "Version specific documentation"             | <https://docs.pmd-code.org/>                                    | <input type="checkbox"> |
+| docs-archive      | New docs are also on archive site                                                    | <https://pmd.sourceforge.io/archive.phtml>                      | <input type="checkbox"> |
+| javadoc           | New javadocs are uploaded                                                            | <https://docs.pmd-code.org/apidocs/>                            | <input type="checkbox"> |
+| news              | New blogpost on sourceforge is posted                                                | <https://sourceforge.net/p/pmd/news/>                           | <input type="checkbox"> |
+| regression-tester | New release baseline is uploaded                                                     | <https://pmd-code.org/pmd-regression-tester>                    | <input type="checkbox"> |
+| mailing list      | announcement on mailing list is sent                                                 | <https://sourceforge.net/p/pmd/mailman/pmd-devel/>              | <input type="checkbox"> |
+| twitter           | tweet about the new release                                                          | <https://twitter.com/pmd_analyzer>                              | <input type="checkbox"> |
 
 ## Prepare the next release
 
@@ -309,7 +307,7 @@ In theory, the fixes should already be there, but you never now.
 If releases from multiple branches are being done, the order matters. You should start from the "oldest" branch,
 e.g. `pmd/5.4.x`, release from there. Then merge (see above) into the next branch, e.g. `pmd/5.5.x` and release
 from there. Then merge into the `master` branch and release from there. This way, the last release done, becomes
-automatically the latest release on <https://pmd.github.io/latest/> and on sourceforge.
+automatically the latest release on <https://docs.pmd-code.org/latest/> and on sourceforge.
 
 
 ### (Optional) Create a new release branch

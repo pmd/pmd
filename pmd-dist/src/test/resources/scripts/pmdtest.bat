@@ -1,27 +1,27 @@
 @echo off
 
-:: BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+rem BSD-style license; for more info see http://pmd.sourceforge.net/license.html
 
-::
-:: Simple manual test script
-:: - code is copied from designer.bat to be tested here (so please check, it might be out of sync)
-:: - mostly the function "determine_java_version" is tested here
-:: - just run it with "designertest.bat" and look at the output
-:: - test cases are at the end of this script
-::
+rem
+rem Simple manual test script
+rem - code is copied from pmd.bat to be tested here (so please check, it might be out of sync)
+rem - mostly the function "determine_java_version" is tested here
+rem - just run it with "pmd.bat" and look at the output
+rem - test cases are at the end of this script
+rem
 
 GOTO :main
 
 :determine_java_version
-:: sets the jver variable to the java version, eg 90 for 9.0.1+x or 80 for 1.8.0_171-b11 or 110 for 11.0.6.1
-:: sets the jvendor variable to either java (oracle) or openjdk
+rem sets the jver variable to the java version, eg 90 for 9.0.1+x or 80 for 1.8.0_171-b11 or 110 for 11.0.6.1
+rem sets the jvendor variable to either java (oracle) or openjdk
 for /f tokens^=1^,3^,4^,5^ delims^=.-_+^"^  %%j in (%full_version%) do (
   set jvendor=%%j
   if %%l EQU ea (
     set /A "jver=%%k0"
   ) else (
     if %%k EQU 1 (
-      :: for java version 1.7.x, 1.8.x, ignore the first 1.
+      rem for java version 1.7.x, 1.8.x, ignore the first 1.
       set /A "jver=%%l%%m"
     ) else (
       set /A "jver=%%k%%l"
@@ -67,6 +67,24 @@ if [%detection%] == [] (
 EXIT /B
 
 
+:check_for_java_command
+set cmd=%1
+echo cmd=%1
+%cmd% -version > nul 2>&1 || (
+    echo No java executable not found in PATH
+    EXIT /B 1
+)
+EXIT /B 0
+
+:check_classpath_extension
+setlocal
+set cp=%1
+echo testing cp=%1
+if defined cp (
+    echo classpath is not empty
+)
+endlocal
+EXIT /B
 
 :run_test
 set full_version=%1
@@ -85,6 +103,16 @@ echo.
 EXIT /B
 
 :main
+
+CALL :check_for_java_command javanotfound
+echo errorlevel: %ERRORLEVEL%
+
+CALL :check_classpath_extension
+CALL :check_classpath_extension a\b.jar
+CALL :check_classpath_extension "a\b.jar;c\d.jar"
+CALL :check_classpath_extension "a\b.jar"
+CALL :check_classpath_extension "a"\b.jar
+CALL :check_classpath_extension "a"\b.jar;"c"\d.jar
 
 CALL :run_test "java version ""1.7.0_80"""                java      70    "detected java 7"
 CALL :run_test "openjdk version ""1.7.0_352"""            openjdk   70    "detected java 7"

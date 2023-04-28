@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
-import java.util.List;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
@@ -25,27 +24,25 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.AssignmentEntry;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.DataflowResult;
-import net.sourceforge.pmd.lang.java.rule.internal.JavaPropertyUtil;
-import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 public class ImmutableFieldRule extends AbstractJavaRulechainRule {
-
-    private static final PropertyDescriptor<List<String>> IGNORED_ANNOTS =
-        JavaPropertyUtil.ignoredAnnotationsDescriptor();
 
     private static final Set<String> INVALIDATING_CLASS_ANNOT =
         setOf(
             "lombok.Builder",
             "lombok.Data",
-            "lombok.Getter",
             "lombok.Setter",
             "lombok.Value"
         );
 
+    private static final Set<String> INVALIDATING_FIELD_ANNOT =
+        setOf(
+            "lombok.Setter"
+        );
+
     public ImmutableFieldRule() {
         super(ASTFieldDeclaration.class);
-        definePropertyDescriptor(IGNORED_ANNOTS);
     }
 
 
@@ -55,7 +52,7 @@ public class ImmutableFieldRule extends AbstractJavaRulechainRule {
         if (field.getEffectiveVisibility().isAtMost(Visibility.V_PRIVATE)
             && !field.getModifiers().hasAny(JModifier.VOLATILE, JModifier.STATIC, JModifier.FINAL)
             && !JavaAstUtils.hasAnyAnnotation(enclosingType, INVALIDATING_CLASS_ANNOT)
-            && !JavaAstUtils.hasAnyAnnotation(field, getProperty(IGNORED_ANNOTS))) {
+            && !JavaAstUtils.hasAnyAnnotation(field, INVALIDATING_FIELD_ANNOT)) {
 
             DataflowResult dataflow = DataflowPass.getDataflowResult(field.getRoot());
 
@@ -82,9 +79,9 @@ public class ImmutableFieldRule extends AbstractJavaRulechainRule {
 
                 if (!hasWrite && !isBlank) {
                     //todo this case may also handle static fields easily.
-                    addViolation(data, varId, varId.getName());
+                    asCtx(data).addViolation(varId, varId.getName());
                 } else if (hasWrite && defaultValueDoesNotReachEndOfCtor(dataflow, varId)) {
-                    addViolation(data, varId, varId.getName());
+                    asCtx(data).addViolation(varId, varId.getName());
                 }
             }
 

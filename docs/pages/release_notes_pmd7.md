@@ -550,6 +550,8 @@ Related issue: [[core] Explicitly name all language versions (#4120)](https://gi
 * {% rule "java/documentation/CommentContent" %}: The properties `caseSensitive` and `disallowedTerms` are removed. The
   new property `fobiddenRegex` can be used now to define the disallowed terms with a single regular
   expression.
+* {% rule "java/design/ImmutableField" %}: the property `ignoredAnnotations` has been removed. The property was
+  deprecated since PMD 6.52.0.
 
 ### Deprecated Rules
 
@@ -749,6 +751,13 @@ until the next major release, but it is recommended to stop using them.
   * {% jdoc core::util.GraphUtil %}
   * {% jdoc core::util.IteratorUtil %}
   * {% jdoc core::util.StringUtil %}
+
+* Moved the two classes {% jdoc core::cpd.impl.AntlrTokenizer %} and {% jdoc core::cpd.impl.JavaCCTokenizer %} from
+  `internal` package into package {% jdoc_package core::cpd.impl %}. These two classes are part of the API and
+  are base classes for CPD language implementations. Since 7.0.0-rc2.
+* `AntlrBaseRule` is gone in favor of {% jdoc core::lang.rule.AbstractVisitorRule %}. Since 7.0.0-rc2.
+* The classes {% jdoc kotlin::lang.kotlin.ast.KotlinInnerNode %} and {% jdoc swift::lang.swift.ast.SwiftInnerNode %}
+  are package-private now. Since 7.0.0-rc2.
 
 ### XPath 3.1 support
 

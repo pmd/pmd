@@ -11,15 +11,15 @@ import org.junit.jupiter.api.Test;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
-class TypescriptTokenizerTest extends CpdTextComparisonTest {
+class TypeScriptTokenizerTest extends CpdTextComparisonTest {
 
-    TypescriptTokenizerTest() {
+    TypeScriptTokenizerTest() {
         super(".ts");
     }
 
     @Override
     public Tokenizer newTokenizer(Properties properties) {
-        return new TypescriptTokenizer();
+        return new TypeScriptTokenizer();
     }
 
     @Override
