@@ -1691,6 +1691,7 @@ deprecated since PMD 6.52.0.</li>
   <li><a href="https://github.com/pmd/pmd/pull/4488">#4488</a>: [java] Fix #4477: A false-positive about SignatureDeclareThrowsException - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4494">#4494</a>: [java] Fix #4487: A false-positive about UnnecessaryConstructor and @<!-- -->Inject and @<!-- -->Autowired - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4495">#4495</a>: [java] Fix #4493: false-positive about MissingStaticMethodInNonInstantiatableClass and @<!-- -->Inject - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4520">#4520</a>: [doc] Fix typo: missing closing quotation mark after CPD-END - <a href="https://github.com/joaodinissf">João Dinis Ferreira</a> (@joaodinissf)</li>
 </ul>
 
 <h3 id="-major-features-and-enhancements">🚀 Major Features and Enhancements</h3>
@@ -1988,6 +1989,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/issues/1661">#1661</a>: [java] About operator nodes</li>
       <li><a href="https://github.com/pmd/pmd/pull/2366">#2366</a>:   [java] Remove qualified names</li>
       <li><a href="https://github.com/pmd/pmd/issues/2819">#2819</a>: [java] GLB bugs in pmd 7</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3642">#3642</a>: [java] Parse error on rare extra dimensions on method return type on annotation methods</li>
       <li><a href="https://github.com/pmd/pmd/issues/3763">#3763</a>: [java] Ambiguous reference error in valid code</li>
       <li><a href="https://github.com/pmd/pmd/issues/3749">#3749</a>: [java] Improve <code class="language-plaintext highlighter-rouge">isOverridden</code> in ASTMethodDeclaration</li>
       <li><a href="https://github.com/pmd/pmd/issues/3750">#3750</a>: [java] Make symbol table support instanceof pattern bindings</li>
@@ -2009,6 +2011,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/issues/1205">#1205</a>: [java] Improve ConstantsInInterface message to mention alternatives</li>
       <li><a href="https://github.com/pmd/pmd/issues/1212">#1212</a>: [java] Don’t raise JUnitTestContainsTooManyAsserts on JUnit 5’s assertAll</li>
       <li><a href="https://github.com/pmd/pmd/issues/1422">#1422</a>: [java] JUnitTestsShouldIncludeAssert false positive with inherited @<!-- -->Rule field</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1455">#1455</a>: [java] JUnitTestsShouldIncludeAssert: False positives for assert methods named “check” and “verify”</li>
       <li><a href="https://github.com/pmd/pmd/issues/1563">#1563</a>: [java] False positive ForLoopCanBeForeach</li>
       <li><a href="https://github.com/pmd/pmd/issues/1565">#1565</a>: [java] JUnitAssertionsShouldIncludeMessage false positive with AssertJ</li>
       <li><a href="https://github.com/pmd/pmd/issues/1747">#1747</a>: [java] PreserveStackTrace false-positive</li>
@@ -2030,6 +2033,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/issues/2946">#2946</a>: [java] SwitchStmtsShouldHaveDefault false positive on enum inside enums</li>
       <li><a href="https://github.com/pmd/pmd/pull/3672">#3672</a>:   [java] LooseCoupling - fix false positive with generics</li>
       <li><a href="https://github.com/pmd/pmd/pull/3675">#3675</a>:   [java] MissingOverride - fix false positive with mixing type vars</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3858">#3858</a>: [java] UseCollectionIsEmpty should infer local variable type from method invocation</li>
     </ul>
   </li>
   <li>java-codestyle
@@ -2061,6 +2065,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/1014">#1014</a>: [java] LawOfDemeter: False positive with lambda expression</li>
       <li><a href="https://github.com/pmd/pmd/issues/1605">#1605</a>: [java] LawOfDemeter: False positive for standard UTF-8 charset name</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2160">#2160</a>: [java] Issues with Law of Demeter</li>
       <li><a href="https://github.com/pmd/pmd/issues/2175">#2175</a>: [java] LawOfDemeter: False positive for chained methods with generic method call</li>
       <li><a href="https://github.com/pmd/pmd/issues/2179">#2179</a>: [java] LawOfDemeter: False positive with static property access - should treat class-level property as global object, not dot-accessed property</li>
       <li><a href="https://github.com/pmd/pmd/issues/2180">#2180</a>: [java] LawOfDemeter: False positive with Thread and ThreadLocalRandom</li>
@@ -2100,6 +2105,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/issues/3173">#3173</a>: [java] UseProperClassLoader false positive</li>
       <li><a href="https://github.com/pmd/pmd/issues/3351">#3351</a>: [java] ConstructorCallsOverridableMethod ignores abstract methods</li>
       <li><a href="https://github.com/pmd/pmd/issues/3400">#3400</a>: [java] AvoidUsingOctalValues FN with underscores</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3843">#3843</a>: [java] UseEqualsToCompareStrings should consider return type</li>
       <li><a href="https://github.com/pmd/pmd/pull/4356">#4356</a>:   [java] Fix NPE in CloseResourceRule</li>
       <li><a href="https://github.com/pmd/pmd/issues/4449">#4449</a>: [java] AvoidAccessibilityAlteration: Possible false positive in AvoidAccessibilityAlteration rule when using Lambda expression</li>
       <li><a href="https://github.com/pmd/pmd/issues/4493">#4493</a>: [java] MissingStaticMethodInNonInstantiatableClass: false-positive about @<!-- -->Inject</li>
@@ -2120,6 +2126,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/issues/2587">#2587</a>: [java] AvoidArrayLoops could also check for list copy through iterated List.add()</li>
       <li><a href="https://github.com/pmd/pmd/issues/2712">#2712</a>: [java] SimplifyStartsWith false-positive with AssertJ</li>
       <li><a href="https://github.com/pmd/pmd/pull/3486">#3486</a>:   [java] InsufficientStringBufferDeclaration: Fix NPE</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3848">#3848</a>: [java] StringInstantiation: false negative when using method result</li>
     </ul>
   </li>
   <li>kotlin
@@ -2161,6 +2168,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
   <li><a href="https://github.com/pmd/pmd/pull/4488">#4488</a>: [java] Fix #4477: A false-positive about SignatureDeclareThrowsException - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4494">#4494</a>: [java] Fix #4487: A false-positive about UnnecessaryConstructor and @<!-- -->Inject and @<!-- -->Autowired - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4495">#4495</a>: [java] Fix #4493: false-positive about MissingStaticMethodInNonInstantiatableClass and @<!-- -->Inject - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4520">#4520</a>: [doc] Fix typo: missing closing quotation mark after CPD-END - <a href="https://github.com/joaodinissf">João Dinis Ferreira</a> (@joaodinissf)</li>
 </ul>
 
 <h3 id="-stats">📈 Stats</h3>
@@ -2199,7 +2207,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Apr 25, 2023 <br />
+             Site last generated: Apr 28, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
