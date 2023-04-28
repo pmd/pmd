@@ -351,4 +351,9 @@ class ParserCornersTest extends BaseJavaTreeDumpTest {
     void testGithubBug3101UnresolvedTypeParams() {
         java.parseResource("GitHubBug3101.java");
     }
+
+    @Test
+    void testGitHubBug3642() {
+        doTest("GitHubBug3642");
+    }
 }

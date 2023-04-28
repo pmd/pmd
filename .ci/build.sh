@@ -55,6 +55,13 @@ function build() {
     # stop early for invalid maven version and branch/tag combination
     pmd_ci_maven_verify_version || exit 0
 
+    # skip tests when doing a release build - this makes the process faster
+    # it's a manual task now to verify that a release is only started, when the main branch
+    # was green before. This is usually checked via a local build, see ./do-release.sh
+    if pmd_ci_maven_isReleaseBuild; then
+        PMD_MAVEN_EXTRA_OPTS+=(-DskipTests=true)
+    fi
+
     if [ "$(pmd_ci_utils_get_os)" != "linux" ]; then
         pmd_ci_log_group_start "Build with mvnw"
             ./mvnw clean verify --show-version --errors --batch-mode --no-transfer-progress "${PMD_MAVEN_EXTRA_OPTS[@]}"

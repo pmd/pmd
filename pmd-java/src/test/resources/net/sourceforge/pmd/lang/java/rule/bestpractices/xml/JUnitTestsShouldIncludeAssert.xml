@@ -653,7 +653,7 @@ public class FooTest extends TestCase {
     </test-code>
 
     <test-code>
-        <description>AssertJ and JUnit5</description>
+        <description>AssertJ and JUnit5 #3339</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.assertj.core.api.Assertions;
@@ -670,7 +670,7 @@ class JUnit5AssertJTest {
     </test-code>
 
     <test-code>
-        <description>JUnit5</description>
+        <description>JUnit5 #3339</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.junit.jupiter.api.Assertions;
@@ -704,5 +704,58 @@ public class BigTest {
     }
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] JUnitTestsShouldIncludeAssert: False positives for assert methods named "check" and "verify" #1455</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.Test;
+
+import java.time.LocalTime;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+public class CustomAssertTests {
+    private LocalTime localTime = LocalTime.of(5, 11, 33, 811*1_000_000);
+    private int hour = 1;
+
+    @Test
+    public void test1() { // false positive
+        check(localTime, hour);
+    }
+
+    @Test
+    public void test2() { // false positive
+        checkMore(localTime, hour);
+    }
+
+    @Test
+    public void test3() { // false positive
+        verify(localTime, hour);
+    }
+
+    @Test
+    public void test4() { // false positive
+        verifyOtherStuff(localTime, hour);
+    }
+
+    private void check(LocalTime localTime2, int hour) {
+        assertEquals(localTime2.getHour(), hour);
+    }
+
+    private void checkMore(LocalTime localTime2, int hour) {
+        assertEquals(localTime2.getHour(), hour);
+    }
+
+    private void verify(LocalTime localTime2, int hour) {
+        assertEquals(localTime2.getHour(), hour);
+    }
+
+    private void verifyOtherStuff(LocalTime localTime2, int hour) {
+        assertEquals(localTime2.getHour(), hour);
+    }
+}
+]]></code>
     </test-code>
 </test-data>
