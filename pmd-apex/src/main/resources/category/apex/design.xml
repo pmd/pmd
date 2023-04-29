@@ -48,13 +48,13 @@ Avoid having unused methods since they make understanding and maintaining code h
 This rule finds not only unused private methods, but public methods as well.
 
 [ApexLink](https://github.com/nawforce/ApexLink) is used to make this possible and this needs
-additional configuration. The environment variable `PMD_APEX_ROOTDIRECTORY` needs to be set prior to executing
+additional configuration. The environment variable `PMD_APEX_ROOT_DIRECTORY` needs to be set prior to executing
 PMD. With this variable the root directory of the Salesforce metadata, where `sfdx-project.json` resides, is
 specified. ApexLink can then load all the classes in the project and figure out, whether a method is used or not.
 
-For an accurate analysis it is important that the `PMD_APEX_ROOTDIRECTORY` contains a complete set of metadata that
+For an accurate analysis it is important that the `PMD_APEX_ROOT_DIRECTORY` contains a complete set of metadata that
 may be referenced from the Apex source code, such as Custom Objects, Visualforce Pages, Flows and Labels. The
-`PMD_APEX_ROOTDIRECTORY` directory must contain a `sfdx-project.json`, but metadata may be either in the
+`PMD_APEX_ROOT_DIRECTORY` directory must contain a `sfdx-project.json`, but metadata may be either in the
 [SFDX Source format](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_source_file_format.htm)
 or the older MDAPI format. The `packageDirectories` entries in `sfdx-project.json` are used to determine which
 directories to search for metadata, if a `.forceignore` file is present it will be respected.
@@ -281,7 +281,7 @@ public void addPerson(Date birthdate, BodyMeasurements measurements, int ssn) {
     <rule name="ExcessivePublicCount"
           language="apex"
           since="5.5.0"
-          message="This class has a bunch of public methods and attributes"
+          message="The class {0} has {1} public methods and attributes (limit: {2})"
           class="net.sourceforge.pmd.lang.apex.rule.design.ExcessivePublicCountRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#excessivepubliccount">
         <description>
@@ -340,7 +340,7 @@ public class Foo extends Bar {
     <rule name="NcssMethodCount"
           language="apex"
           since="5.5.0"
-          message="The method ''{0}()'' has an NCSS line count of {1}"
+          message="The method ''{0}()'' has an NCSS line count of {1} (limit: {2})"
           class="net.sourceforge.pmd.lang.apex.rule.design.NcssMethodCountRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#ncssmethodcount">
         <description>

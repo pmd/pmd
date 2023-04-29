@@ -576,4 +576,21 @@ public final class TestPrivateClassWithFactory implements GenericTest {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#4493:[java]false-positive about MissingStaticMethodInNonInstantiatableClass and @Inject </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import com.google.inject.Inject;
+public class Foo {  
+   @Inject
+   private Foo() {}
+}
+
+public class Bar extends Foo {
+   public Bar() {}
+}
+]]></code>
+    </test-code>
+
 </test-data>
