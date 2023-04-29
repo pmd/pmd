@@ -122,6 +122,8 @@
 
         <antlr4.outputDirectory>${project.build.directory}/generated-sources/antlr4</antlr4.outputDirectory>
         <antlr4.ant.wrapper>${project.basedir}/../antlr4-wrapper.xml</antlr4.ant.wrapper>
+        <sonar.organization>diya1201</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
 
     <build>

@@ -1,72 +1,37 @@
-name: build
-
+name: SonarCloud
 on:
   push:
     branches:
-      - main
       - master
-      - experimental-apex-parser
-    tags:
-      - '**'
   pull_request:
-  merge_group:
-  schedule:
-    # build it monthly: At 04:00 on day-of-month 1.
-    - cron:  '0 4 1 * *'
-  workflow_dispatch:
-
-permissions:
-  contents: read # to fetch code (actions/checkout)
-
+    types: [opened, synchronize, reopened]
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
-    permissions:
-      # read to fetch code (actions/checkout)
-      # write to push code to gh-pages, create releases
-      # note: forked repositories will have maximum read access
-      contents: write
-    continue-on-error: false
-    strategy:
-      matrix:
-        os: [ ubuntu-latest, windows-latest, macos-latest ]
-    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    name: Build and analyze
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 2
-    - uses: actions/cache@v3
-      with:
-        path: |
-          ~/.m2/repository
-          ~/.gradle/caches
-          ~/.cache
-          ~/work/pmd/target/repositories
-          vendor/bundle
-        key: v3-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
-        restore-keys: |
-          v3-${{ runner.os }}-
-    - name: Set up Ruby 2.7
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: 2.7
-    - name: Setup Environment
-      shell: bash
-      run: |
-        echo "LANG=en_US.UTF-8" >> $GITHUB_ENV
-        echo "MAVEN_OPTS=-Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=3 -DautoReleaseAfterClose=true -DstagingProgressTimeoutMinutes=30" >> $GITHUB_ENV
-        echo "PMD_CI_SCRIPTS_URL=https://raw.githubusercontent.com/pmd/build-tools/21/scripts" >> $GITHUB_ENV
-    - name: Check Environment
-      shell: bash
-      run: |
-        f=check-environment.sh; \
-        mkdir -p .ci && \
-        ( [ -e .ci/$f ] || curl -sSL "${PMD_CI_SCRIPTS_URL}/$f" > ".ci/$f" ) && \
-        chmod 755 .ci/$f && \
-        .ci/$f
-    - name: Build
-      run: .ci/build.sh
-      shell: bash
-      env:
-        PMD_CI_SECRET_PASSPHRASE: ${{ secrets.PMD_CI_SECRET_PASSPHRASE }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: 11
+          distribution: 'zulu' # Alternative distribution options are available.
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Cache Maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: Build and analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Diya1201_pmd-Asn3b
