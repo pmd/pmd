@@ -85,8 +85,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 7.0.0-SNAPSHOT</li>
-    <div class="sidebarTitleDate">Release date: ??-????-2023</div>
+    <li class="sidebarTitle">PMD 7.0.0-rc2</li>
+    <div class="sidebarTitleDate">Release date: 29-April-2023</div>
     
     
     
@@ -1609,7 +1609,7 @@
     <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
 
   
-<h2 id="--2023---700-snapshot">??-????-2023 - 7.0.0-SNAPSHOT</h2>
+<h2 id="29-april-2023---700-rc2">29-April-2023 - 7.0.0-rc2</h2>
 
 <p>We’re excited to bring you the next major version of PMD!</p>
 
@@ -1638,13 +1638,13 @@ The remaining section describes the complete release notes for 7.0.0.</p>
 
 <h4 id="api-changes">API Changes</h4>
 <ul>
-  <li>Moved the two classes <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/impl/AntlrTokenizer.html#"><code>AntlrTokenizer</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/impl/JavaCCTokenizer.html#"><code>JavaCCTokenizer</code></a> from
-<code class="language-plaintext highlighter-rouge">internal</code> package into package <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/impl/package-summary.html#"><code>net.sourceforge.pmd.cpd.impl</code></a>. These two classes are part of the API and
+  <li>Moved the two classes <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-rc2/net/sourceforge/pmd/cpd/impl/AntlrTokenizer.html#"><code>AntlrTokenizer</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-rc2/net/sourceforge/pmd/cpd/impl/JavaCCTokenizer.html#"><code>JavaCCTokenizer</code></a> from
+<code class="language-plaintext highlighter-rouge">internal</code> package into package <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-rc2/net/sourceforge/pmd/cpd/impl/package-summary.html#"><code>net.sourceforge.pmd.cpd.impl</code></a>. These two classes are part of the API and
 are base classes for CPD language implementations.</li>
-  <li><code class="language-plaintext highlighter-rouge">AntlrBaseRule</code> is gone in favor of <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/AbstractVisitorRule.html#"><code>AbstractVisitorRule</code></a>.</li>
-  <li>The classes <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KotlinInnerNode.html#"><code>KotlinInnerNode</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-swift/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/swift/ast/SwiftInnerNode.html#"><code>SwiftInnerNode</code></a>
+  <li><code class="language-plaintext highlighter-rouge">AntlrBaseRule</code> is gone in favor of <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-rc2/net/sourceforge/pmd/lang/rule/AbstractVisitorRule.html#"><code>AbstractVisitorRule</code></a>.</li>
+  <li>The classes <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.0.0-rc2/net/sourceforge/pmd/lang/kotlin/ast/KotlinInnerNode.html#"><code>KotlinInnerNode</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-swift/7.0.0-rc2/net/sourceforge/pmd/lang/swift/ast/SwiftInnerNode.html#"><code>SwiftInnerNode</code></a>
 are package-private now.</li>
-  <li>The parameter order of <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/document/FileCollector.html#addSourceFile(String,String)"><code>addSourceFile</code></a> has been swapped
+  <li>The parameter order of <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-rc2/net/sourceforge/pmd/lang/document/FileCollector.html#addSourceFile(String,String)"><code>addSourceFile</code></a> has been swapped
 in order to have the same meaning as in 6.55.0. That will make it easier if you upgrade from 6.55.0 to 7.0.0.
 However, that means, that you need to change these method calls if you have migrated to 7.0.0-rc1 already.</li>
 </ul>
@@ -1921,7 +1921,7 @@ See <a href="https://github.com/pmd/pmd/issues/1648">issue #1648</a> for more de
 or class. With PMD 7.0.0, the reported location is now just the identifier of the method or class.
 This affects various rules, e.g. <a href="pmd_rules_java_design.html#cognitivecomplexity"><code class="language-plaintext highlighter-rouge">CognitiveComplexity</code></a>.</p>
 
-    <p>The report location is controlled by the overrides of the method <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getReportLocation()"><code>getReportLocation</code></a>
+    <p>The report location is controlled by the overrides of the method <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-rc2/net/sourceforge/pmd/lang/ast/Node.html#getReportLocation()"><code>getReportLocation</code></a>
 in different node types.</p>
 
     <p>See <a href="https://github.com/pmd/pmd/issues/4439">issue #4439</a> and <a href="https://github.com/pmd/pmd/issues/730">issue #730</a>
@@ -2344,9 +2344,9 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
 
 <h3 id="-stats">📈 Stats</h3>
 <ul>
-  <li>4416 commits</li>
-  <li>464 closed tickets &amp; PRs</li>
-  <li>Days since last release: 28</li>
+  <li>4557 commits</li>
+  <li>572 closed tickets &amp; PRs</li>
+  <li>Days since last release: 35</li>
 </ul>
 
 
