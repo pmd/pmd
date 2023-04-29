@@ -1,4 +1,7 @@
 # PMD - source code analyzer
+[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-black.svg)](https://sonarcloud.io/summary/new_code?id=Diya1201_pmd-Asn3b)
+
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Diya1201_pmd-Asn3b&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Diya1201_pmd-Asn3b)
 
 ![PMD Logo](https://raw.githubusercontent.com/pmd/pmd/pmd/7.0.x/docs/images/logo/pmd-logo-300px.png)
 
