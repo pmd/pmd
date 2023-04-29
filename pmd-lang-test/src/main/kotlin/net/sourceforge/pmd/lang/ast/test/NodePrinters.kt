@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.ast.test
 
 import net.sourceforge.pmd.lang.ast.Node
+import net.sourceforge.pmd.lang.document.Chars
 import net.sourceforge.pmd.lang.rule.xpath.Attribute
 import net.sourceforge.pmd.util.StringUtil
 import net.sourceforge.pmd.util.treeexport.TextTreeRenderer
@@ -87,7 +88,7 @@ open class BaseNodeAttributePrinter : TextTreeRenderer(true, -1) {
 
     protected open fun valueToString(value: Any?): String? {
         return when (value) {
-            is String -> "\"" + StringUtil.escapeJava(value) + "\""
+            is String, is Chars -> "\"" + StringUtil.escapeJava(value.toString()) + "\""
             is Char -> '\''.toString() + value.toString().replace("'".toRegex(), "\\'") + '\''.toString()
             is Enum<*> -> value.enumDeclaringClass.simpleName + "." + value.name
             is Class<*> -> value.canonicalName?.let { "$it.class" }

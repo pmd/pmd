@@ -696,7 +696,7 @@ fun TreeNodeWrapper<Node, *>.annotationMethod(contents: NodeSpec<ASTMethodDeclar
 
 fun TreeNodeWrapper<Node, *>.classDecl(simpleName: String, assertions: NodeSpec<ASTClassOrInterfaceDeclaration> = EmptyAssertions) =
         child<ASTClassOrInterfaceDeclaration>(ignoreChildren = assertions == EmptyAssertions) {
-            it::getImage shouldBe simpleName
+            it::getSimpleName shouldBe simpleName
 
             assertions()
         }
