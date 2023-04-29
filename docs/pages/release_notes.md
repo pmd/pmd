@@ -599,9 +599,9 @@ Language specific fixes:
 * [#4520](https://github.com/pmd/pmd/pull/4520): \[doc] Fix typo: missing closing quotation mark after CPD-END - [João Dinis Ferreira](https://github.com/joaodinissf) (@joaodinissf)
 
 ### 📈 Stats
-* 4416 commits
-* 464 closed tickets & PRs
-* Days since last release: 28
+* 4557 commits
+* 572 closed tickets & PRs
+* Days since last release: 35
 
 {% endtocmaker %}
 
