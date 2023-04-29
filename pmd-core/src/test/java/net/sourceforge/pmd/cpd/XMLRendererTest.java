@@ -77,7 +77,7 @@ class XMLRendererTest {
         }
         if (file != null) {
             assertEquals("1", file.getAttributes().getNamedItem("line").getNodeValue());
-            assertEquals(foo1.toAbsolutePath(), file.getAttributes().getNamedItem("path").getNodeValue());
+            assertEquals(foo1.getAbsolutePath(), file.getAttributes().getNamedItem("path").getNodeValue());
             assertEquals("6", file.getAttributes().getNamedItem("endline").getNodeValue());
             assertEquals("1", file.getAttributes().getNamedItem("column").getNodeValue());
             assertEquals("1", file.getAttributes().getNamedItem("endcolumn").getNodeValue());
@@ -146,7 +146,7 @@ class XMLRendererTest {
         }
         if (file != null) {
             assertEquals("1", file.getAttributes().getNamedItem("line").getNodeValue());
-            assertEquals(fileName.toAbsolutePath(), file.getAttributes().getNamedItem("path").getNodeValue());
+            assertEquals(fileName.getAbsolutePath(), file.getAttributes().getNamedItem("path").getNodeValue());
             assertEquals("2", file.getAttributes().getNamedItem("endline").getNodeValue());
             assertEquals("2", file.getAttributes().getNamedItem("column").getNodeValue());
             assertEquals("3", file.getAttributes().getNamedItem("endcolumn").getNodeValue());

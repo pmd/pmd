@@ -26,7 +26,7 @@ class SourceManager implements AutoCloseable {
     private final Map<TextFile, SoftReference<TextDocument>> files = new ConcurrentHashMap<>();
     private final Map<FileId, TextFile> fileByPathId = new HashMap<>();
     private final List<TextFile> textFiles;
-    private FileNameRenderer fileNameRenderer = FileId::toAbsolutePath;
+    private FileNameRenderer fileNameRenderer = FileId::getAbsolutePath;
 
     SourceManager(List<? extends TextFile> files) {
         textFiles = new ArrayList<>(files);

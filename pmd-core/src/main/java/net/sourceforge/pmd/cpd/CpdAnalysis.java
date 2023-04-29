@@ -101,7 +101,7 @@ public final class CpdAnalysis implements AutoCloseable {
     }
 
     private int doTokenize(TextDocument document, Tokenizer tokenizer, Tokens tokens) throws IOException, TokenMgrError {
-        LOGGER.trace("Tokenizing {}", document.getFileId().toAbsolutePath());
+        LOGGER.trace("Tokenizing {}", document.getFileId().getAbsolutePath());
         int lastTokenSize = tokens.size();
         Tokenizer.tokenize(tokenizer, document, tokens);
         return tokens.size() - lastTokenSize - 1; /* EOF */
