@@ -69,14 +69,7 @@ public final class ASTImportDeclaration extends AbstractJavaNode implements ASTT
      * the final dot and asterisk.
      */
     public @NonNull String getImportedName() {
-        return super.getImage();
-    }
-
-
-    @Override
-    public String getImage() {
-        // the image was null before 7.0, best keep it that way
-        return null;
+        return getImageInternal();
     }
 
     /**

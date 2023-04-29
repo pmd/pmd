@@ -20,13 +20,6 @@ abstract class AbstractLiteral extends AbstractJavaExpr implements ASTLiteral {
     }
 
 
-    /** @deprecated Use {@link #getLiteralText()}. */
-    @Override
-    @Deprecated
-    public String getImage() {
-        return null;
-    }
-
     @Override
     public void jjtClose() {
         super.jjtClose();

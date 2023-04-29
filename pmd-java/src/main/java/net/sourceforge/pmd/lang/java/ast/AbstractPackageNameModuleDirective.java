@@ -4,20 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public abstract class AbstractPackageNameModuleDirective extends ASTModuleDirective {
+abstract class AbstractPackageNameModuleDirective extends ASTModuleDirective {
 
     AbstractPackageNameModuleDirective(int id) {
         super(id);
     }
 
+    /** Return the package name specified in this directive. */
     public final String getPackageName() {
-        return super.getImage();
-    }
-
-    @Override
-    @Deprecated
-    public final String getImage() {
-        return null;
+        return getImageInternal();
     }
 
     final void setPackageName(String name) {

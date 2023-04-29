@@ -32,7 +32,7 @@ public final class ASTConstructorDeclaration extends AbstractMethodOrConstructor
 
     @Override
     public String getName() {
-        return getImage();
+        return getImageInternal();
     }
 
     @Override

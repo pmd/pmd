@@ -20,18 +20,12 @@ public final class ASTModuleName extends AbstractJavaNode {
         return visitor.visit(this, data);
     }
 
-    @Override
-    @Deprecated
-    public String getImage() {
-        return null;
-    }
-
     /**
      * Returns the name of the declared module. Module names look
      * like package names, eg {@code java.base}.
      */
     public String getName() {
-        return super.getImage();
+        return getImageInternal();
     }
 
 }

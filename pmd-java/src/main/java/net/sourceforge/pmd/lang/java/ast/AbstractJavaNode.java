@@ -21,6 +21,19 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, Jav
         super(id);
     }
 
+    /**
+     * @deprecated Use the more specific getters and attributes instead of the image.
+     *             This will mostly return null and
+     */
+    @Override
+    @Deprecated
+    public String getImage() {
+        return null;
+    }
+
+    final String getImageInternal() {
+        return super.getImage();
+    }
 
     @Override
     public void jjtClose() {

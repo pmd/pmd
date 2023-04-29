@@ -53,7 +53,7 @@ public final class ASTVariableAccess extends AbstractJavaExpr implements ASTName
 
     @Override
     public String getName() {
-        return getImage();
+        return getImageInternal();
     }
 
 

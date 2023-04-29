@@ -97,13 +97,7 @@ public final class ASTMethodReference extends AbstractJavaExpr
      */
     @Override
     public @NonNull String getMethodName() {
-        return super.getImage();
-    }
-
-    @Deprecated
-    @Override
-    public @Nullable String getImage() {
-        return null;
+        return getImageInternal();
     }
 
     @Override
