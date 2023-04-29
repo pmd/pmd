@@ -167,12 +167,19 @@ Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 * Support for Kotlin 1.8 grammar
 * initially 2 built-in rules
 
-#### New: TypeScript support
+#### New: CPD support for TypeScript
 
 Thanks to a contribution, CPD now supports the TypeScript language. It is shipped
 with the rest of the JavaScript support in the module `pmd-javascript`.
 
 Contributors: [Paul Guyot](https://github.com/pguyot) (@pguyot)
+
+#### New: CPD support for Julia
+
+Thanks to a contribution, CPD now supports the Julia language. It is shipped
+in the new module `pmd-julia`.
+
+Contributors: [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
 
 #### Changed: JavaScript support
 
@@ -480,6 +487,7 @@ Language specific fixes:
 * [#2830](https://github.com/pmd/pmd/pull/2830): \[apex] Apexlink POC - [Kevin Jones](https://github.com/nawforce) (@nawforce)
 * [#3866](https://github.com/pmd/pmd/pull/3866): \[core] Add CLI Progress Bar - [@JerritEic](https://github.com/JerritEic) (@JerritEic)
 * [#4402](https://github.com/pmd/pmd/pull/4402): \[javascript] CPD: add support for Typescript using antlr4 grammar - [Paul Guyot](https://github.com/pguyot) (@pguyot)
+* [#4403](https://github.com/pmd/pmd/pull/4403): \[julia] CPD: Add support for Julia code duplication  - [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
 * [#4412](https://github.com/pmd/pmd/pull/4412): \[doc] Added new error msg to ConstantsInInterface - [David Ljunggren](https://github.com/dague1) (@dague1)
 * [#4428](https://github.com/pmd/pmd/pull/4428): \[apex] ApexBadCrypto bug fix for #4427 - inline detection of hard coded values - [Steven Stearns](https://github.com/sfdcsteve) (@sfdcsteve)
 * [#4444](https://github.com/pmd/pmd/pull/4444): \[java] CommentDefaultAccessModifier - ignore org.junit.jupiter.api.extension.RegisterExtension by default - [Nirvik Patel](https://github.com/nirvikpatel) (@nirvikpatel)
