@@ -59,8 +59,10 @@ For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designe
 * New: CPD support for Julia
 
 #### Rule Changes
-* {% rule "java/design/ImmutableField" %}: the property `ignoredAnnotations` has been removed. The property was
+* {% rule java/design/ImmutableField %}: the property `ignoredAnnotations` has been removed. The property was
   deprecated since PMD 6.52.0.
+* {% rule java/design/SwitchDensity %}: the type of the property `minimum` has been changed from decimal to integer
+  for consistency with other statistical rules.
 
 #### Fixed Issues
 * cli
