@@ -65,9 +65,9 @@ public final class LanguageRegistry implements Iterable<Language> {
      */
     public LanguageRegistry(Set<? extends Language> languages) {
         this.languages = languages.stream()
-                                  .sorted(Comparator.comparing(Language::getTerseName, String::compareToIgnoreCase))
+                                  .sorted(Comparator.comparing(Language::getId, String::compareToIgnoreCase))
                                   .collect(CollectionUtil.toUnmodifiableSet());
-        this.languagesById = CollectionUtil.associateBy(languages, Language::getTerseName);
+        this.languagesById = CollectionUtil.associateBy(languages, Language::getId);
         this.languagesByFullName = CollectionUtil.associateBy(languages, Language::getName);
     }
 
@@ -129,7 +129,7 @@ public final class LanguageRegistry implements Iterable<Language> {
     public static @NonNull LanguageRegistry loadLanguages(ClassLoader classLoader) {
         // sort languages by terse name. Avoiding differences in the order of languages
         // across JVM versions / OS.
-        Set<Language> languages = new TreeSet<>(Comparator.comparing(Language::getTerseName, String::compareToIgnoreCase));
+        Set<Language> languages = new TreeSet<>(Comparator.comparing(Language::getId, String::compareToIgnoreCase));
         ServiceLoader<Language> languageLoader = ServiceLoader.load(Language.class, classLoader);
         Iterator<Language> iterator = languageLoader.iterator();
         while (true) {
