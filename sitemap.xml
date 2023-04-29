@@ -684,6 +684,15 @@
   
   
   <url>
+    <loc>https://docs.pmd-code.org/latest/pmd_languages_julia.html</loc>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+    <lastmod>2023-04-29</lastmod>
+  </url>
+  
+  
+  
+  <url>
     <loc>https://docs.pmd-code.org/latest/pmd_languages_kotlin.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
