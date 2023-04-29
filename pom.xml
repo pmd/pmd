@@ -671,11 +671,6 @@
                 <version>${ant.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.beust</groupId>
-                <artifactId>jcommander</artifactId>
-                <version>1.48</version> <!-- 1.48 is the latest version compatible with java7 -->
-            </dependency>
-            <dependency>
                 <groupId>info.picocli</groupId>
                 <artifactId>picocli</artifactId>
                 <version>4.7.0</version>
