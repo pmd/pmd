@@ -282,7 +282,6 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
         configuration.setIgnoreFilePath(ignoreListPath);
         configuration.setInputUri(uri);
         configuration.setReportFormat(format);
-        configuration.setDebug(debug);
         configuration.setSourceEncoding(encoding.getEncoding().name());
         configuration.setMinimumPriority(minimumPriority);
         configuration.setReportFile(reportFile);

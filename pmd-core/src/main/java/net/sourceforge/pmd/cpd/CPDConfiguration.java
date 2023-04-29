@@ -85,8 +85,6 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     private boolean failOnViolation = true;
 
-    private boolean debug = false;
-
     public SourceCode sourceCodeFor(File file) {
         return new SourceCode(new SourceCode.FileCodeLoader(file, getSourceEncoding().name()));
     }
@@ -396,13 +394,4 @@ public class CPDConfiguration extends AbstractConfiguration {
         this.failOnViolation = failOnViolation;
     }
 
-    @Override
-    public boolean isDebug() {
-        return debug;
-    }
-
-    @Override
-    public void setDebug(boolean debug) {
-        this.debug = debug;
-    }
 }
