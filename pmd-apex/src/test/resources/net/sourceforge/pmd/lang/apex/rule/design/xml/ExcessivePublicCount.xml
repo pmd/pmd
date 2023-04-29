@@ -115,7 +115,7 @@ public class SomeClass {
     </test-code>
 
     <test-code>
-        <description>class with inner classes</description>
+        <description>#4509 class with inner classes</description>
         <rule-property name="minimum">1</rule-property>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>1,5</expected-linenumbers>
