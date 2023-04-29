@@ -126,4 +126,23 @@ class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>[java] IdenticalCatchBranches false positive #1480</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                public boolean classNameExists(String fullyQualifiedClassName) {
+                    try {
+                        Foo.class.getClassLoader().loadClass(fullyQualifiedClassName);
+                        return true; // Class found
+                    } catch (ClassNotFoundException e) {
+                        return false;
+                    } catch (LinkageError e2) {
+                        // Class exists, but may be invalid (see https://github.com/pmd/pmd/issues/1131)
+                        return true;
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>

@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFinallyClause;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
+import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
@@ -57,7 +58,7 @@ public final class UseTryWithResourcesRule extends AbstractJavaRulechainRule {
 
     private boolean hasAutoClosableArguments(ASTMethodCall method) {
         return method.getArguments().children()
-                .filter(e -> TypeTestUtil.isA(AutoCloseable.class, e))
+                .filter(e -> TypeTestUtil.isA(AutoCloseable.class, (TypeNode) e))
                 .nonEmpty();
     }
 }

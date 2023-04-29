@@ -33,7 +33,6 @@ import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.reporting.ReportStats;
 import net.sourceforge.pmd.util.log.MessageReporter;
-import net.sourceforge.pmd.util.log.internal.NoopReporter;
 
 /**
  * @author Clément Fournier
@@ -94,7 +93,7 @@ class PmdAnalysisTest {
         config.setForceLanguageVersion(DummyLanguageModule.getInstance().getVersionWhereParserThrows());
         try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
             pmd.addRuleSet(RuleSet.forSingleRule(new MockRule()));
-            pmd.files().addSourceFile("file", "some source");
+            pmd.files().addSourceFile("some source", "file");
 
             ReportStats stats = pmd.runAndReturnStats();
             assertEquals(1, stats.getNumErrors(), "Errors");
@@ -106,7 +105,7 @@ class PmdAnalysisTest {
     void testRuleFailureDuringInitialization() {
         PMDConfiguration config = new PMDConfiguration();
         config.setThreads(1);
-        MessageReporter mockReporter = spy(NoopReporter.class);
+        MessageReporter mockReporter = spy(MessageReporter.quiet());
         config.setReporter(mockReporter);
 
         try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
@@ -117,7 +116,7 @@ class PmdAnalysisTest {
                 }
             }));
 
-            pmd.files().addSourceFile("file", "some source");
+            pmd.files().addSourceFile("some source", "file");
 
             ReportStats stats = pmd.runAndReturnStats();
             // the error number here is only for FileAnalysisException, so

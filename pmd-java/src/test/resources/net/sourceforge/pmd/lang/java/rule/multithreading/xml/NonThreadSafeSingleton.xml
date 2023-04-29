@@ -176,7 +176,7 @@ class A extends B {
     </test-code>
 
     <test-code>
-        <description>False positive with correct double checked pattern</description>
+        <description>False positive with correct double-checked pattern #4483</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {

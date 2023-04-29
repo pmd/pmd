@@ -290,10 +290,9 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
      * @return the type node, or {@code null} if there is no explicit type,
      *     e.g. if {@link #isTypeInferred()} returns true.
      */
-    @Nullable
-    public ASTType getTypeNode() {
+    public @Nullable ASTType getTypeNode() {
         AccessNode parent = getModifierOwnerParent();
-        return parent.children(ASTType.class).first();
+        return parent.firstChild(ASTType.class);
     }
 
     // @formatter:off

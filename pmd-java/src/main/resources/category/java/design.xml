@@ -1349,12 +1349,12 @@ Limitations: We can only check private fields for now.
 public class Foo {
     private int x; // this will be reported
 
-    public void foo(int y) {
+    public int foo(int y) {
        x = y + 5; // assigned before any read
        return x;
     }
 
-    public void fooOk(int y) {
+    public int fooOk(int y) {
        int z = y + 5; // might as well be a local like here
        return z;
     }

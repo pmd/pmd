@@ -16,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.mozilla.javascript.ast.AstRoot;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ecmascript.rule.AbstractEcmascriptRule;
@@ -28,7 +27,7 @@ class EcmascriptParserTest extends EcmascriptParserTestBase {
      */
     @Test
     void testLineNumbers() {
-        final String SOURCE_CODE = "function a() {" + PMD.EOL + "  alert('hello');" + PMD.EOL + "}" + PMD.EOL;
+        final String SOURCE_CODE = "function a() {\n  alert('hello');\n}\n";
         EcmascriptNode<AstRoot> node = js.parse(SOURCE_CODE);
         assertEquals(1, node.getBeginLine());
         assertEquals(1, node.getBeginColumn());

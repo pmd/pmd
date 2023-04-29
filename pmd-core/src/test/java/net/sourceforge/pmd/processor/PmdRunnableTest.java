@@ -74,7 +74,7 @@ class PmdRunnableTest {
         configuration.setForceLanguageVersion(lv);
         configuration.setIgnoreIncrementalAnalysis(true);
         try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
-            pmd.files().addSourceFile("test.dummy", "foo");
+            pmd.files().addSourceFile("foo", "test.dummy");
             pmd.addRuleSet(RuleSet.forSingleRule(rule));
             return pmd.performAnalysisAndCollectReport();
         }
@@ -127,7 +127,7 @@ class PmdRunnableTest {
         Report report = process(versionWithParserThatReportsSemanticError());
 
         verify(reporter, times(1))
-            .log(eq(Level.ERROR), eq("at !debug only! test.dummy:1:1: " + TEST_MESSAGE_SEMANTIC_ERROR));
+            .log(eq(Level.ERROR), eq("at test.dummy:1:1: " + TEST_MESSAGE_SEMANTIC_ERROR));
         verify(rule, never()).apply(Mockito.any(), Mockito.any());
 
         assertEquals(1, report.getProcessingErrors().size());

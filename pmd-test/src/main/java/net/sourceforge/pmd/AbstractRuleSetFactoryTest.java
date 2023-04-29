@@ -136,8 +136,7 @@ public abstract class AbstractRuleSetFactoryTest {
                             .append(fileName)
                             .append("/")
                             .append(rule.getName())
-                            .append(" is missing 'since' attribute")
-                            .append(PMD.EOL);
+                            .append(" is missing 'since' attribute\n");
                 }
                 // Is URL valid ?
                 if (rule.getExternalInfoUrl() == null || "".equalsIgnoreCase(rule.getExternalInfoUrl())) {
@@ -146,10 +145,9 @@ public abstract class AbstractRuleSetFactoryTest {
                             .append(fileName)
                             .append("/")
                             .append(rule.getName())
-                            .append(" is missing 'externalInfoURL' attribute")
-                            .append(PMD.EOL);
+                            .append(" is missing 'externalInfoURL' attribute\n");
                 } else {
-                    String expectedExternalInfoURL = "https?://pmd.(sourceforge.net|github.io)/.+/pmd_rules_"
+                    String expectedExternalInfoURL = "https://docs.pmd-code.org/.+/pmd_rules_"
                             + language.getTerseName() + "_"
                             + IOUtil.getFilenameBase(fileName)
                             + ".html#"
@@ -165,7 +163,7 @@ public abstract class AbstractRuleSetFactoryTest {
                                 .append(rule.getExternalInfoUrl())
                                 .append("), it should be:")
                                 .append(expectedExternalInfoURL)
-                                .append(PMD.EOL);
+                                .append('\n');
                     }
                 }
                 // Proper class name/packaging?
@@ -182,7 +180,7 @@ public abstract class AbstractRuleSetFactoryTest {
                             .append(rule.getRuleClass())
                             .append("), it should be:")
                             .append(expectedClassName)
-                            .append(PMD.EOL);
+                            .append('\n');
                 }
                 // Should not have violation suppress regex property
                 if (rule.getProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR) != null) {
@@ -193,13 +191,12 @@ public abstract class AbstractRuleSetFactoryTest {
                             .append(rule.getName())
                             .append(" should not have '")
                             .append(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR.name())
-                            .append("', this is intended for end user customization only.")
-                            .append(PMD.EOL);
+                            .append("', this is intended for end user customization only.\n");
                 }
                 // Should not have violation suppress xpath property
                 if (rule.getProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR) != null) {
                     invalidXPathSuppress++;
-                    messages.append("Rule ").append(fileName).append("/").append(rule.getName()).append(" should not have '").append(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR.name()).append("', this is intended for end user customization only.").append(PMD.EOL);
+                    messages.append("Rule ").append(fileName).append("/").append(rule.getName()).append(" should not have '").append(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR.name()).append("', this is intended for end user customization only.").append(System.lineSeparator());
                 }
             }
         }
@@ -212,7 +209,7 @@ public abstract class AbstractRuleSetFactoryTest {
                     + " are invalid), a class name meeting conventions (" + invalidClassName + " are invalid), no '"
                     + Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR.name() + "' property (" + invalidRegexSuppress
                     + " are invalid), and no '" + Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR.name() + "' property ("
-                    + invalidXPathSuppress + " are invalid)" + PMD.EOL + messages);
+                    + invalidXPathSuppress + " are invalid)\n" + messages);
         }
     }
 
@@ -357,10 +354,13 @@ public abstract class AbstractRuleSetFactoryTest {
                 + " https://pmd.sourceforge.io/ruleset_\\d_0_0.xsd\"", "");
 
         if (RuleSetWriter.RULESET_2_0_0_NS_URI.equals(rulesetNamespace)) {
-            file = "<?xml version=\"1.0\"?>" + PMD.EOL + "<!DOCTYPE ruleset SYSTEM "
-                    + "\"https://pmd.sourceforge.io/ruleset_2_0_0.dtd\">" + PMD.EOL + file;
+            file = "<?xml version=\"1.0\"?>" + System.lineSeparator()
+                + "<!DOCTYPE ruleset SYSTEM \"https://pmd.sourceforge.io/ruleset_2_0_0.dtd\">" + System.lineSeparator()
+                + file;
         } else {
-            file = "<?xml version=\"1.0\"?>" + PMD.EOL + "<!DOCTYPE ruleset>" + PMD.EOL + file;
+            file = "<?xml version=\"1.0\"?>" + System.lineSeparator()
+                + "<!DOCTYPE ruleset>" + System.lineSeparator()
+                + file;
         }
 
         try (InputStream modifiedStream = new ByteArrayInputStream(file.getBytes())) {
@@ -375,7 +375,7 @@ public abstract class AbstractRuleSetFactoryTest {
             String line;
             while ((line = reader.readLine()) != null) {
                 buf.append(line);
-                buf.append(PMD.EOL);
+                buf.append(System.lineSeparator());
             }
             return buf.toString();
         }

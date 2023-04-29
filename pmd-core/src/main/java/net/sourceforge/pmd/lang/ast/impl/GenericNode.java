@@ -60,8 +60,8 @@ public interface GenericNode<N extends GenericNode<N>> extends Node {
     }
 
     @Override
-    default NodeStream<? extends N> children() {
-        return (NodeStream<? extends N>) Node.super.children();
+    default NodeStream<N> children() {
+        return (NodeStream<N>) Node.super.children();
     }
 
     @Override

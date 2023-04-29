@@ -249,7 +249,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
             XMLOutputFactory outputFactory = XMLOutputFactory.newFactory();
             this.xmlWriter = outputFactory.createXMLStreamWriter(this.stream, encoding);
             // for backwards compatibility, also provide a writer. Note: xmlWriter won't use that.
-            this.writer = new WrappedOutputStreamWriter(xmlWriter, stream, encoding);
+            super.setWriter(new WrappedOutputStreamWriter(xmlWriter, stream, encoding));
         } catch (IOException | XMLStreamException e) {
             throw new IllegalArgumentException(e);
         }
@@ -266,7 +266,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
             this.xmlWriter = outputFactory.createXMLStreamWriter(this.stream, encoding);
             // for backwards compatibility, also provide a writer.
             // Note: both XMLStreamWriter and this writer will write to this.stream
-            this.writer = new WrappedOutputStreamWriter(xmlWriter, stream, encoding);
+            super.setWriter(new WrappedOutputStreamWriter(xmlWriter, stream, encoding));
         } catch (XMLStreamException | UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }

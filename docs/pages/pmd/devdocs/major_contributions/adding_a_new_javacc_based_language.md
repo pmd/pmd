@@ -16,15 +16,15 @@ folder: pmd/devdocs
 This is really a big contribution and can't be done with a drive by contribution. It requires dedicated passion
 and long commitment to implement support for a new language.<br><br>
 
-This step-by-step guide is just a small intro to get the basics started and it's also not necessarily up-to-date
-or complete and you have to be able to fill in the blanks.<br><br>
+This step-by-step guide is just a small intro to get the basics started, and it's also not necessarily up-to-date
+or complete. You have to be able to fill in the blanks.<br><br>
 
 After the basic support for a language is there, there are lots of missing features left. Typical features
 that can greatly improve rule writing are: symbol table, type resolution, call/data flow analysis.<br><br>
 
 Symbol table keeps track of variables and their usages. Type resolution tries to find the actual class type
 of each used type, following along method calls (including overloaded and overwritten methods), allowing
-to query sub types and type hierarchy. This requires additional configuration of an auxiliary classpath.
+to query subtypes and type hierarchy. This requires additional configuration of an auxiliary classpath.
 Call and data flow analysis keep track of the data as it is moving through different execution paths
 a program has.<br><br>
 
@@ -35,7 +35,12 @@ definitely don't come for free. It is much effort and requires perseverance to i
 
 
 ## 1.  Start with a new sub-module
-*    See pmd-java or pmd-vm for examples.
+*   See pmd-java or pmd-vm for examples.
+*   Make sure to add your new module to PMD's parent pom as `<module>` entry, so that it is built alongside the
+    other languages.
+*   Also add your new module to the dependencies list in "pmd-languages-deps/pom.xml", so that the new language
+    is automatically available in the binary distribution (pmd-dist) as well as for the shell-completion
+    in the pmd-cli module.
 
 ## 2.  Implement an AST parser for your language
 *   Ideally an AST parser should be implemented as a JJT file *(see VmParser.jjt or Java.jjt for example)*

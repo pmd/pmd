@@ -11,7 +11,6 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
@@ -40,12 +39,10 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     }
 
     private static String getPmdPropertiesURL() {
+        final String BASE_URL = "https://docs.pmd-code.org/";
         final String PAGE = "/pmd_userdocs_configuring_rules.html#rule-properties";
-        String url = "https://pmd.github.io/pmd-" + PMDVersion.VERSION + PAGE;
-        if (PMDVersion.isSnapshot() || PMDVersion.isUnknown()) {
-            url = "https://pmd.github.io/latest" + PAGE;
-        }
-        return url;
+        final String VERSION_PART = PMDVersion.isUnknown() || PMDVersion.isSnapshot() ? "latest" : "pmd-doc-" + PMDVersion.VERSION;
+        return BASE_URL + VERSION_PART + PAGE;
     }
 
     @Override
@@ -57,7 +54,7 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
             rule = rv.getRule();
             String json = gson.toJson(asIssue(rv));
             json = json.replace(BODY_PLACEHOLDER, getBody());
-            writer.write(json + NULL_CHARACTER + PMD.EOL);
+            writer.println(json + NULL_CHARACTER);
         }
     }
 

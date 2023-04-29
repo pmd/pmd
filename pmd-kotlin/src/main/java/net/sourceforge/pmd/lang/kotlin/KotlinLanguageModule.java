@@ -35,7 +35,8 @@ public class KotlinLanguageModule extends SimpleLanguageModuleBase {
         super(LanguageMetadata.withId(TERSE_NAME).name(NAME)
                               .extensions(EXTENSIONS)
                               .addVersion("1.6")
-                              .addDefaultVersion("1.7"),
+                              .addVersion("1.7")
+                              .addDefaultVersion("1.8"),
               new KotlinHandler());
     }
 }

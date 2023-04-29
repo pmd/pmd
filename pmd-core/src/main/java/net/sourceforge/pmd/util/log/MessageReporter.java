@@ -10,6 +10,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.util.log.internal.QuietReporter;
 
 /**
  * Façade to report user-facing messages (info, warning and error).
@@ -94,5 +95,14 @@ public interface MessageReporter {
      * of {@link Level#ERROR} should increment this number.
      */
     int numErrors();
+
+
+    /**
+     * Returns a reporter instance that does not output anything, but
+     * still counts errors.
+     */
+    static MessageReporter quiet() {
+        return new QuietReporter();
+    }
 
 }

@@ -6,6 +6,10 @@ package net.sourceforge.pmd.lang.rule.xpath.impl;
 
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodHandles.Lookup;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
@@ -22,6 +26,7 @@ import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 import net.sourceforge.pmd.lang.rule.xpath.NoAttribute.NoAttrScope;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 
 /**
@@ -75,7 +80,13 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
     private List<MethodWrapper> getWrappersForClass(Class<?> nodeClass) {
         return Arrays.stream(nodeClass.getMethods())
                      .filter(m -> isAttributeAccessor(nodeClass, m))
-                     .map(MethodWrapper::new)
+                     .map(m -> {
+                         try {
+                             return new MethodWrapper(m);
+                         } catch (IllegalAccessException e) {
+                             throw AssertionUtil.shouldNotReachHere("Method should be accessible " + e);
+                         }
+                     })
                      .collect(Collectors.toList());
     }
 
@@ -129,8 +140,11 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
 
         if (localAnnot == null) {
             return false;
-        } else if (!declaration.equals(nodeClass)) {
-            // then the node suppressed the attributes of its parent
+        } else if (!declaration.equals(nodeClass) || method.isBridge()) {
+            // Bridge methods appear declared in the subclass but represent
+            // an inherited method.
+
+            // Then the node suppressed the attributes of its parent
             return localAnnot.scope() == NoAttrScope.INHERITED;
         } else {
             // then declaration == nodeClass so we need the scope to be ALL
@@ -143,7 +157,7 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
     @Override
     public Attribute next() {
         MethodWrapper m = iterator.next();
-        return new Attribute(node, m.name, m.method);
+        return new Attribute(node, m.name, m.methodHandle, m.method);
     }
 
 
@@ -160,12 +174,16 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
      * once and put inside the {@link #METHOD_CACHE}).
      */
     private static class MethodWrapper {
+        static final Lookup LOOKUP = MethodHandles.publicLookup();
+        private static final MethodType GETTER_TYPE = MethodType.methodType(Object.class, Node.class);
+        public MethodHandle methodHandle;
         public Method method;
         public String name;
 
 
-        MethodWrapper(Method m) {
+        MethodWrapper(Method m) throws IllegalAccessException {
             this.method = m;
+            this.methodHandle = LOOKUP.unreflect(m).asType(GETTER_TYPE);
             this.name = truncateMethodName(m.getName());
         }
 
