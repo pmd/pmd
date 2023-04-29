@@ -128,10 +128,6 @@ public class PMDConfiguration extends AbstractConfiguration {
     private boolean showSuppressedViolations = false;
     private boolean failOnViolation = true;
 
-    @Deprecated
-    private boolean stressTest;
-    @Deprecated
-    private boolean benchmark;
     private AnalysisCache analysisCache = new NoopAnalysisCache();
     private boolean ignoreIncrementalAnalysis;
     private final LanguageRegistry langRegistry;
@@ -736,60 +732,6 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     public void setReportProperties(Properties reportProperties) {
         this.reportProperties = reportProperties;
-    }
-
-    /**
-     * Return the stress test indicator. If this value is <code>true</code> then
-     * PMD will randomize the order of file processing to attempt to shake out
-     * bugs.
-     *
-     * @return <code>true</code> if stress test is enbaled, <code>false</code>
-     *         otherwise.
-     *
-     * @deprecated For removal
-     */
-    @Deprecated
-    public boolean isStressTest() {
-        return stressTest;
-    }
-
-    /**
-     * Set the stress test indicator.
-     *
-     * @param stressTest
-     *            The stree test indicator to set.
-     * @see #isStressTest()
-     * @deprecated For removal.
-     */
-    @Deprecated
-    public void setStressTest(boolean stressTest) {
-        this.stressTest = stressTest;
-    }
-
-    /**
-     * Return the benchmark indicator. If this value is <code>true</code> then
-     * PMD will log benchmark information.
-     *
-     * @return <code>true</code> if benchmark logging is enbaled,
-     *         <code>false</code> otherwise.
-     * @deprecated This behavior is down to CLI, not part of the core analysis.
-     */
-    @Deprecated
-    public boolean isBenchmark() {
-        return benchmark;
-    }
-
-    /**
-     * Set the benchmark indicator.
-     *
-     * @param benchmark
-     *            The benchmark indicator to set.
-     * @see #isBenchmark()
-     * @deprecated This behavior is down to CLI, not part of the core analysis.
-     */
-    @Deprecated
-    public void setBenchmark(boolean benchmark) {
-        this.benchmark = benchmark;
     }
 
     /**
