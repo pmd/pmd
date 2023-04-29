@@ -37,7 +37,7 @@ for all.</p>
 ### Changes since 7.0.0-rc1
 
 This section lists the most important changes from the last release candidate.
-The remaining section describe the complete release notes for 7.0.0.
+The remaining section describes the complete release notes for 7.0.0.
 
 #### API Changes
 * Moved the two classes {% jdoc core::cpd.impl.AntlrTokenizer %} and {% jdoc core::cpd.impl.JavaCCTokenizer %} from
@@ -53,6 +53,10 @@ The remaining section describe the complete release notes for 7.0.0.
 #### Updated PMD Designer
 This PMD release ships a new version of the pmd-designer.
 For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designer/releases/tag/7.0.0-rc1).
+
+#### Language Related Changes
+* New: CPD support for TypeScript
+* New: CPD support for Julia
 
 #### Rule Changes
 * {% rule "java/design/ImmutableField" %}: the property `ignoredAnnotations` has been removed. The property was
@@ -84,6 +88,8 @@ For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designe
   * [#4462](https://github.com/pmd/pmd/issues/4462): Provide Software Bill of Materials (SBOM)
 
 #### External contributions
+* [#4402](https://github.com/pmd/pmd/pull/4402): \[javascript] CPD: add support for Typescript using antlr4 grammar - [Paul Guyot](https://github.com/pguyot) (@pguyot)
+* [#4403](https://github.com/pmd/pmd/pull/4403): \[julia] CPD: Add support for Julia code duplication  - [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
 * [#4444](https://github.com/pmd/pmd/pull/4444): \[java] CommentDefaultAccessModifier - ignore org.junit.jupiter.api.extension.RegisterExtension by default - [Nirvik Patel](https://github.com/nirvikpatel) (@nirvikpatel)
 * [#4450](https://github.com/pmd/pmd/pull/4450): \[java] Fix #4449 AvoidAccessibilityAlteration: Correctly handle Lambda expressions in PrivilegedAction scenarios - [Seren](https://github.com/mohui1999) (@mohui1999)
 * [#4452](https://github.com/pmd/pmd/pull/4452): \[doc] Update PMD_APEX_ROOT_DIRECTORY documentation reference - [nwcm](https://github.com/nwcm) (@nwcm)

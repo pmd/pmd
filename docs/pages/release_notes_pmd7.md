@@ -488,6 +488,20 @@ We are shipping the following rules:
 Contributors: [Jeroen Borgers](https://github.com/jborgers) (@jborgers),
 [Peter Paul Bakker](https://github.com/stokpop) (@stokpop)
 
+#### New: CPD support for TypeScript
+
+Thanks to a contribution, CPD now supports the TypeScript language. It is shipped
+with the rest of the JavaScript support in the module `pmd-javascript`.
+
+Contributors: [Paul Guyot](https://github.com/pguyot) (@pguyot)
+
+#### New: CPD support for Julia
+
+Thanks to a contribution, CPD now supports the Julia language. It is shipped
+in the new module `pmd-julia`.
+
+Contributors: [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
+
 ### Changed: JavaScript support
 
 The JS specific parser options have been removed. The parser now always retains comments and uses version ES6.
