@@ -520,69 +520,75 @@ public final class Chars implements CharSequence {
      * a line delimiter is {@code CR}, {@code LF} or {@code CR+LF}.
      */
     public Iterable<Chars> lines() {
-        return () -> new Iterator<Chars>() {
-            final int max = len;
-            int pos = 0;
-            // If those are NOT_TRIED, then we should scan ahead to find them
-            // If the scan fails then they'll stay -1 forever and won't be tried again.
-            // This is important to scan in documents where we know there are no
-            // CR characters, as in our normalized TextFileContent.
-            int nextCr = NOT_TRIED;
-            int nextLf = NOT_TRIED;
+    return () -> new LineIterator();
+}
 
-            @Override
-            public boolean hasNext() {
-                return pos < max;
-            }
+private class LineIterator implements Iterator<Chars> {
+    final int max = len;
+    int pos = 0;
+    int nextCr = NOT_TRIED;
+    int nextLf = NOT_TRIED;
 
-            @Override
-            public Chars next() {
-                final int curPos = pos;
-                if (nextCr == NOT_TRIED) {
-                    nextCr = indexOf('\r', curPos);
-                }
-                if (nextLf == NOT_TRIED) {
-                    nextLf = indexOf('\n', curPos);
-                }
-                final int cr = nextCr;
-                final int lf = nextLf;
-
-                if (cr != NOT_FOUND && lf != NOT_FOUND) {
-                    // found both CR and LF
-                    int min = Math.min(cr, lf);
-                    if (lf == cr + 1) {
-                        // CRLF
-                        pos = lf + 1;
-                        nextCr = NOT_TRIED;
-                        nextLf = NOT_TRIED;
-                    } else {
-                        pos = min + 1;
-                        resetLookahead(cr, min);
-                    }
-
-                    return subSequence(curPos, min);
-                } else if (cr == NOT_FOUND && lf == NOT_FOUND) {
-                    // no following line terminator, cut until the end
-                    pos = max;
-                    return subSequence(curPos, max);
-                } else {
-                    // lf or cr (exactly one is != -1 and max returns that one)
-                    int idx = Math.max(cr, lf);
-                    resetLookahead(cr, idx);
-                    pos = idx + 1;
-                    return subSequence(curPos, idx);
-                }
-            }
-
-            private void resetLookahead(int cr, int idx) {
-                if (idx == cr) {
-                    nextCr = NOT_TRIED;
-                } else {
-                    nextLf = NOT_TRIED;
-                }
-            }
-        };
+    @Override
+    public boolean hasNext() {
+        return pos < max;
     }
+
+    @Override
+    public Chars next() {
+        final int curPos = pos;
+        final int cr = findNext('\r');
+        final int lf = findNext('\n');
+
+        if (cr != NOT_FOUND && lf != NOT_FOUND) {
+            return handleCRLF(curPos, cr, lf);
+        } else if (cr == NOT_FOUND && lf == NOT_FOUND) {
+            return handleNoTerminator(curPos);
+        } else {
+            return handleSingleTerminator(curPos, Math.max(cr, lf));
+        }
+    }
+
+    private int findNext(char ch) {
+        if (ch == '\r' && nextCr == NOT_TRIED) {
+            nextCr = indexOf(ch, pos);
+        } else if (ch == '\n' && nextLf == NOT_TRIED) {
+            nextLf = indexOf(ch, pos);
+        }
+        return (ch == '\r') ? nextCr : nextLf;
+    }
+
+    private Chars handleCRLF(int curPos, int cr, int lf) {
+        if (lf == cr + 1) {
+            pos = lf + 1;
+            resetLookahead();
+            return subSequence(curPos, lf);
+        } else {
+            int min = Math.min(cr, lf);
+            pos = min + 1;
+            resetLookahead();
+            return subSequence(curPos, min);
+        }
+    }
+
+    private Chars handleNoTerminator(int curPos) {
+        pos = max;
+        resetLookahead();
+        return subSequence(curPos, max);
+    }
+
+    private Chars handleSingleTerminator(int curPos, int idx) {
+        pos = idx + 1;
+        resetLookahead();
+        return subSequence(curPos, idx);
+    }
+
+    private void resetLookahead() {
+        nextCr = NOT_TRIED;
+        nextLf = NOT_TRIED;
+    }
+}
+
 
     /**
      * Returns a stream of lines yielded by {@link #lines()}.
