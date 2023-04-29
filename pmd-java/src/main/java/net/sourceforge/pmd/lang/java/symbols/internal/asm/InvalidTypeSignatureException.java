@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
 class InvalidTypeSignatureException extends IllegalArgumentException {
 
-    public InvalidTypeSignatureException(String s) {
+    InvalidTypeSignatureException(String s) {
         super(s);
     }
 }

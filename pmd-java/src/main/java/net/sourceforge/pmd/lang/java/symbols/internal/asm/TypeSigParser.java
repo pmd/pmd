@@ -313,16 +313,16 @@ final class TypeSigParser {
         }
 
         JTypeMirror pop() {
-            assert this.type !=null;
+            assert this.type != null;
             JTypeMirror t = this.type;
-            this.type=null;
+            this.type = null;
             return t;
         }
 
         List<JTypeMirror> popList() {
-            assert this.list !=null;
+            assert this.list != null;
             List<JTypeMirror> l = this.list;
-            this.list=null;
+            this.list = null;
             return l;
         }
 
