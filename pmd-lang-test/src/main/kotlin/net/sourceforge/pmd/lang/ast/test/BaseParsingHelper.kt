@@ -170,7 +170,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
      */
     @JvmOverloads
     open fun parseFile(path: Path, version: String? = null): T =
-        parse(IOUtil.readToString(Files.newBufferedReader(path)), version, fileName = FileId.forPath(path))
+        parse(IOUtil.readToString(Files.newBufferedReader(path)), version, fileName = FileId.fromPath(path))
 
     /**
      * Fetches the source of the given [clazz].
@@ -255,6 +255,6 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         executeRule(
             rule,
             code = Files.newBufferedReader(path).readText(),
-            fileName = FileId.forPath(path)
+            fileName = FileId.fromPath(path)
         )
 }

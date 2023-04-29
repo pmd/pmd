@@ -110,7 +110,7 @@ public class ConfigurableFileNameRenderer implements FileNameRenderer {
      * <p>package private for test only</p>
      */
     static String getDisplayName(FileId file, List<Path> relativizeRoots) {
-        final String fileAbsPath = file.toAbsolutePath();
+        final String fileAbsPath = file.getAbsolutePath();
         String best = fileAbsPath;
         for (Path root : relativizeRoots) {
             if (isFileSystemRoot(root)) {

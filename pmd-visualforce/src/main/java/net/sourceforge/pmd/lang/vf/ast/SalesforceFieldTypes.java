@@ -57,7 +57,7 @@ abstract class SalesforceFieldTypes {
             return null;
         } else {
             // todo that could be done in the caller
-            Path vfFilePath = Paths.get(vfFileName.toAbsolutePath());
+            Path vfFilePath = Paths.get(vfFileName.getAbsolutePath());
             List<Path> resolvedPaths = new ArrayList<>();
             for (String metadataDirectory : metadataDirectories) {
                 if (Paths.get(metadataDirectory).isAbsolute()) {

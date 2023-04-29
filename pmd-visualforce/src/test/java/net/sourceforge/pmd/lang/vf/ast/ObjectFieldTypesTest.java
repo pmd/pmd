@@ -96,7 +96,7 @@ class ObjectFieldTypesTest {
     @Test
     void testInvalidDirectoryDoesNotCauseAnException() {
         Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf).resolve("SomePage.page");
-        FileId vfFileName = FileId.forPath(vfPagePath);
+        FileId vfFileName = FileId.fromPath(vfPagePath);
 
         List<String> paths = Arrays.asList(Paths.get("..", "objects-does-not-exist").toString());
         ObjectFieldTypes objectFieldTypes = new ObjectFieldTypes();
@@ -123,7 +123,7 @@ class ObjectFieldTypesTest {
      */
     static void validateDataTypes(Map<String, DataType> expectedDataTypes, SalesforceFieldTypes fieldTypes,
                                          Path vfPagePath, List<String> paths) {
-        FileId vfFileName = FileId.forPath(vfPagePath);
+        FileId vfFileName = FileId.fromPath(vfPagePath);
 
         for (Map.Entry<String, DataType> entry : expectedDataTypes.entrySet()) {
             assertEquals(entry.getValue(), fieldTypes.getDataType(entry.getKey(), vfFileName, paths), entry.getKey());

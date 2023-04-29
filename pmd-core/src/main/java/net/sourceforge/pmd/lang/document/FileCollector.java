@@ -207,7 +207,7 @@ public final class FileCollector implements AutoCloseable {
     }
 
     private boolean addFileImpl(TextFile textFile) {
-        LOG.trace("Adding file {} (lang: {}) ", textFile.getFileId().toAbsolutePath(), textFile.getLanguageVersion().getTerseName());
+        LOG.trace("Adding file {} (lang: {}) ", textFile.getFileId().getAbsolutePath(), textFile.getLanguageVersion().getTerseName());
         if (allFilesToProcess.add(textFile)) {
             return true;
         }
@@ -371,7 +371,7 @@ public final class FileCollector implements AutoCloseable {
     /** A collector that prefixes the display name of the files it will contain with the path of the zip. */
     @Experimental
     private FileCollector newZipCollector(Path zipFilePath) {
-        return new FileCollector(discoverer, reporter, FileId.forPath(zipFilePath));
+        return new FileCollector(discoverer, reporter, FileId.fromPath(zipFilePath));
     }
 
     // configuration

@@ -150,7 +150,7 @@ abstract class CpdTextComparisonTest(
 
     fun sourceCodeOf(str: String): SourceCode = SourceCode(SourceCode.StringCodeLoader(str))
     fun sourceCodeOf(fileData: FileData): SourceCode =
-        SourceCode(SourceCode.StringCodeLoader(fileData.fileText, fileData.fileName.toAbsolutePath()))
+        SourceCode(SourceCode.StringCodeLoader(fileData.fileText, fileData.fileName.getAbsolutePath()))
 
     fun tokenize(tokenizer: Tokenizer, str: String): Tokens =
         Tokens().also {

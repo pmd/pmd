@@ -6,9 +6,11 @@ package net.sourceforge.pmd.cli;
 
 import static net.sourceforge.pmd.cli.PMDFilelistTest.assertHasName;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -41,6 +43,21 @@ class ZipFileTest {
     }
 
     @Test
+    void testZipFileIds() throws IOException {
+        PMDConfiguration conf = new PMDConfiguration();
+        // no relativizeRoot paths configured -> we use the relative path
+        try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
+            pmd.files().addZipFileWithContent(zipPath);
+            List<TextFile> files = pmd.files().getCollectedFiles();
+            assertThat(files, hasSize(3));
+            assertThat(files.get(0).getFileId().getUriString(),
+                       equalTo("jar:file://" + zipPath.toAbsolutePath() + "!/otherSrc/somefile.dummy"));
+
+        }
+    }
+
+
+    @Test
     void testZipFileRelativizeWith() {
         PMDConfiguration conf = new PMDConfiguration();
         conf.addInputPath(zipPath);
@@ -65,9 +82,9 @@ class ZipFileTest {
         try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
             List<TextFile> files = pmd.files().getCollectedFiles();
             assertThat(files, hasSize(3));
-            assertEquals("/otherSrc/somefile.dummy", files.get(0).getFileId().toAbsolutePath());
+            assertEquals("/otherSrc/somefile.dummy", files.get(0).getFileId().getAbsolutePath());
             assertEquals(
-                "jar:file://" + reportPath + "!/lotherSrc/somefile.dummy", files.get(0).getFileId().toUriString());
+                "jar:file://" + reportPath + "!/otherSrc/somefile.dummy", files.get(0).getFileId().getUriString());
             assertHasName(files.get(0), reportPath + "!/otherSrc/somefile.dummy", pmd);
             assertHasName(files.get(1), reportPath + "!/src/somefile.dummy", pmd);
             assertHasName(files.get(2), reportPath + "!/src/somefile1.dummy", pmd);

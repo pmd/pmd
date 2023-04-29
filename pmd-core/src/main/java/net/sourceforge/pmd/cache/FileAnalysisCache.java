@@ -63,7 +63,7 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
     private void loadFromFile(final File cacheFile, Collection<? extends TextFile> files) {
         Map<String, FileId> idMap =
             files.stream().map(TextFile::getFileId)
-                 .collect(Collectors.toMap(FileId::toUriString, id -> id));
+                 .collect(Collectors.toMap(FileId::getUriString, id -> id));
 
         try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "load")) {
             if (cacheExists()) {
@@ -147,7 +147,7 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
                 for (final Map.Entry<FileId, AnalysisResult> resultEntry : updatedResultsCache.entrySet()) {
                     final List<RuleViolation> violations = resultEntry.getValue().getViolations();
 
-                    outputStream.writeUTF(resultEntry.getKey().toUriString()); // the path id
+                    outputStream.writeUTF(resultEntry.getKey().getUriString()); // the path id
                     outputStream.writeLong(resultEntry.getValue().getFileChecksum());
 
                     outputStream.writeInt(violations.size());

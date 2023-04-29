@@ -70,12 +70,12 @@ abstract class PmdRunnable implements Runnable {
                     FileAnalysisListener completeListener = FileAnalysisListener.tee(listOf(listener, cacheListener));
 
                     if (analysisCache.isUpToDate(textDocument)) {
-                        LOG.trace("Skipping file (lang: {}) because it was found in the cache: {}", textFile.getLanguageVersion(), textFile.getFileId().toAbsolutePath());
+                        LOG.trace("Skipping file (lang: {}) because it was found in the cache: {}", textFile.getLanguageVersion(), textFile.getFileId().getAbsolutePath());
                         // note: no cache listener here
                         //                         vvvvvvvv
                         reportCachedRuleViolations(listener, textDocument);
                     } else {
-                        LOG.trace("Processing file (lang: {}): {}", textFile.getLanguageVersion(), textFile.getFileId().toAbsolutePath());
+                        LOG.trace("Processing file (lang: {}): {}", textFile.getLanguageVersion(), textFile.getFileId().getAbsolutePath());
                         try {
                             processSource(completeListener, textDocument, ruleSets);
                         } catch (Exception | StackOverflowError | AssertionError e) {
