@@ -253,6 +253,9 @@ public class PMDConfiguration extends AbstractConfiguration {
      * <code>file://</code>) the file will be read with each line representing
      * an entry on the classpath.</p>
      *
+     * <p>You can specify multiple class paths separated by `:` on Unix-systems or `;` under Windows.
+     * See {@link File#pathSeparator}.
+     *
      * @param classpath The prepended classpath.
      *
      * @throws IllegalArgumentException if the given classpath is invalid (e.g. does not exist)
