@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.rule.xpath.impl;
 
+import static net.sourceforge.pmd.util.CollectionUtil.emptyList;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.lang.invoke.MethodHandle;
@@ -20,6 +21,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.lang.document.Chars;
@@ -34,6 +37,8 @@ import net.sourceforge.pmd.util.AssertionUtil;
  * attributes. This is the default way the attributes of a node
  * are made accessible to XPath rules, and defines an important
  * piece of PMD's XPath support.
+ *
+ * @see Node#getXPathAttributesIterator()
  */
 public class AttributeAxisIterator implements Iterator<Attribute> {
 
@@ -72,7 +77,7 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
      * Note: if you want to access the attributes of a node, don't use this directly,
      * use instead the overridable {@link Node#getXPathAttributesIterator()}.
      */
-    public AttributeAxisIterator(Node contextNode) {
+    public AttributeAxisIterator(@NonNull Node contextNode) {
         this.node = contextNode;
         this.iterator = METHOD_CACHE.computeIfAbsent(contextNode.getClass(), this::getWrappersForClass).iterator();
     }
@@ -82,8 +87,8 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
                      .filter(m -> isAttributeAccessor(nodeClass, m))
                      .map(m -> {
                          try {
-                             return new MethodWrapper(m);
-                         } catch (IllegalAccessException e) {
+                             return new MethodWrapper(m, nodeClass);
+                         } catch (ReflectiveOperationException e) {
                              throw AssertionUtil.shouldNotReachHere("Method should be accessible " + e);
                          }
                      })
@@ -108,7 +113,7 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
             // Antlr ones, unless they're opted-in
             && Node.class.isAssignableFrom(method.getDeclaringClass())
             // Methods of package-private classes are not accessible.
-            && Modifier.isPublic(method.getDeclaringClass().getModifiers())
+            && Modifier.isPublic(method.getModifiers())
             && !isIgnored(nodeClass, method);
     }
 
@@ -174,17 +179,27 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
      * once and put inside the {@link #METHOD_CACHE}).
      */
     private static class MethodWrapper {
+
         static final Lookup LOOKUP = MethodHandles.publicLookup();
         private static final MethodType GETTER_TYPE = MethodType.methodType(Object.class, Node.class);
-        public MethodHandle methodHandle;
-        public Method method;
-        public String name;
+        public final MethodHandle methodHandle;
+        public final Method method;
+        public final String name;
 
 
-        MethodWrapper(Method m) throws IllegalAccessException {
+        MethodWrapper(Method m, Class<?> nodeClass) throws IllegalAccessException, NoSuchMethodException {
             this.method = m;
-            this.methodHandle = LOOKUP.unreflect(m).asType(GETTER_TYPE);
             this.name = truncateMethodName(m.getName());
+
+            if (!Modifier.isPublic(m.getDeclaringClass().getModifiers())) {
+                // This is a public method of a non-public class.
+                // To call it from reflection we need to call it via invokevirtual,
+                // whereas the default handle would use invokespecial.
+                MethodType methodType = MethodType.methodType(m.getReturnType(), emptyList());
+                this.methodHandle = MethodWrapper.LOOKUP.findVirtual(nodeClass, m.getName(), methodType).asType(GETTER_TYPE);
+            } else {
+                this.methodHandle = LOOKUP.unreflect(m).asType(GETTER_TYPE);
+            }
         }
 
 
