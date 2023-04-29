@@ -63,6 +63,6 @@ public final class ASTApexFile extends AbstractApexNode<AstNode> implements Root
 
     public List<Issue> getGlobalIssues() {
         FileId fileId = getAstInfo().getTextDocument().getFileId();
-        return multifileAnalysis.getFileIssues(fileId.toAbsolutePath());
+        return multifileAnalysis.getFileIssues(fileId.getAbsolutePath());
     }
 }

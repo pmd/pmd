@@ -15,12 +15,12 @@ import net.sourceforge.pmd.lang.ast.AstVisitor;
     static final AntlrNameDictionary DICO = new KotlinNameDictionary(VOCABULARY, ruleNames);
 
     @Override
-    public KotlinTerminalNode createPmdTerminal(ParserRuleContext parent, Token t) {
+    protected KotlinTerminalNode createPmdTerminal(ParserRuleContext parent, Token t) {
         return new KotlinTerminalNode(t);
     }
 
     @Override
-    public KotlinErrorNode createPmdError(ParserRuleContext parent, Token t) {
+    protected KotlinErrorNode createPmdError(ParserRuleContext parent, Token t) {
         return new KotlinErrorNode(t);
     }
 }

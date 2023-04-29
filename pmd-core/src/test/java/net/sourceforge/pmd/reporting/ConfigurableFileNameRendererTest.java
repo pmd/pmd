@@ -19,15 +19,23 @@ class ConfigurableFileNameRendererTest {
 
     @Test
     void testRelativize() {
-        FileId file = FileId.forPath(Paths.get("a", "b", "c"));
+        FileId file = FileId.fromPath(Paths.get("a", "b", "c"));
         String displayName = getDisplayName(file, listOf(Paths.get("a")));
         assertEquals(displayName, Paths.get("b", "c").toString());
     }
 
     @Test
+    void testRelativizeOutOfDir() {
+        FileId file = FileId.fromPath(Paths.get("a", "b", "c"));
+        String displayName = getDisplayName(file, listOf(Paths.get("d")));
+        assertEquals(displayName, Paths.get("..", "a", "b", "c").toString());
+    }
+
+
+    @Test
     void testRelativizeWithRoot() {
         Path path = Paths.get("a", "b", "c");
-        FileId file = FileId.forPath(path);
+        FileId file = FileId.fromPath(path);
         String displayName = getDisplayName(file, listOf(Paths.get("/")));
         assertEquals(path.toAbsolutePath().toString(),
                      displayName);

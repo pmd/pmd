@@ -611,7 +611,7 @@ public class RuleSet implements ChecksumAware {
     // TODO get rid of this overload
     @InternalApi
     public boolean applies(FileId qualFileName) {
-        return filter.test(qualFileName.toAbsolutePath());
+        return filter.test(qualFileName.getAbsolutePath());
     }
 
     /**

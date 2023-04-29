@@ -42,7 +42,7 @@ class FileCollectorTest {
         assertTrue(collector.addFile(foo), "should be dummy language");
         assertFalse(collector.addFile(bar), "should be unknown language");
 
-        assertCollected(collector, listOf(FileId.forPath(foo)));
+        assertCollected(collector, listOf(FileId.fromPath(foo)));
     }
 
     @Test
@@ -54,7 +54,7 @@ class FileCollectorTest {
         FileCollector collector = newCollector(dummy.getDefaultVersion());
 
         assertTrue(collector.addFile(bar, dummy), "should be unknown language");
-        assertCollected(collector, listOf(FileId.forPath(bar)));
+        assertCollected(collector, listOf(FileId.fromPath(bar)));
         assertNoErrors(collector);
     }
 
@@ -87,7 +87,7 @@ class FileCollectorTest {
 
         collector.addDirectory(root.resolve("src"));
 
-        assertCollected(collector, listOf(FileId.forPath(foo), FileId.forPath(bar)));
+        assertCollected(collector, listOf(FileId.fromPath(foo), FileId.fromPath(bar)));
     }
 
 

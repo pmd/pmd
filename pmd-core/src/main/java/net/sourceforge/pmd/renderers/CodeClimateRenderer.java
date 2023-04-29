@@ -39,12 +39,10 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     }
 
     private static String getPmdPropertiesURL() {
+        final String BASE_URL = "https://docs.pmd-code.org/";
         final String PAGE = "/pmd_userdocs_configuring_rules.html#rule-properties";
-        String url = "https://pmd.github.io/pmd-" + PMDVersion.VERSION + PAGE;
-        if (PMDVersion.isSnapshot() || PMDVersion.isUnknown()) {
-            url = "https://pmd.github.io/latest" + PAGE;
-        }
-        return url;
+        final String VERSION_PART = PMDVersion.isUnknown() || PMDVersion.isSnapshot() ? "latest" : "pmd-doc-" + PMDVersion.VERSION;
+        return BASE_URL + VERSION_PART + PAGE;
     }
 
     @Override

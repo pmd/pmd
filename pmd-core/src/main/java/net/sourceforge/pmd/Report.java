@@ -189,6 +189,8 @@ public final class Report {
     @InternalApi
     public void addRuleViolation(RuleViolation violation) {
         synchronized (violations) {
+            // note that this binary search is inefficient as we usually
+            // report violations file by file.
             int index = Collections.binarySearch(violations, violation, RuleViolation.DEFAULT_COMPARATOR);
             violations.add(index < 0 ? -index - 1 : index, violation);
         }

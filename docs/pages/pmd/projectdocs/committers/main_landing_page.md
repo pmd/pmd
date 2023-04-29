@@ -27,12 +27,6 @@ It usually takes 15 minutes.
   * There is also a sub page "news" which lists all news.
     * Layout: [_layouts/news.html](https://github.com/pmd/pmd.github.io/blob/master/_layouts/news.html)
     * Page (which is pretty empty): [news.html](https://github.com/pmd/pmd.github.io/blob/master/news.html)
-* Documentation for the latest release: <https://pmd.github.io/latest/>
-  * The PMD documentation of the latest release is simply copied as static html into the folder [latest/](https://github.com/pmd/pmd.github.io/tree/master/latest).
-    This makes the latest release documentation available under the stable URL
-    <https://pmd.github.io/latest/>. This URL is also used for the [sitemap.xml](https://github.com/pmd/pmd.github.io/blob/master/sitemap.xml).
-* Documentation for previous releases are still being kept under the folders `pmd-<version>/`.
-
 
 ## Building the page locally
 

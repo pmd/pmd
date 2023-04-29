@@ -69,7 +69,7 @@ class ApexClassPropertyTypesTest {
     void testInvalidDirectoryDoesNotCauseAnException() {
         Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf)
                 .resolve("SomePage.page");
-        FileId vfFileName = FileId.forPath(vfPagePath);
+        FileId vfFileName = FileId.fromPath(vfPagePath);
 
         List<String> paths = listOf(Paths.get("..", "classes-does-not-exist").toString());
         try (LanguageProcessorRegistry lpReg = VFTestUtils.fakeLpRegistry()) {

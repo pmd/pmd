@@ -179,7 +179,7 @@ public class PMDTaskImpl {
 
             @Override
             public FileAnalysisListener startFileAnalysis(TextFile dataSource) {
-                String name = dataSource.getFileId().toUriString();
+                String name = dataSource.getFileId().getUriString();
                 project.log("Processing file " + name, Project.MSG_VERBOSE);
                 return FileAnalysisListener.noop();
             }

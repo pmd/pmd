@@ -37,7 +37,7 @@ class TextFilesTest {
     void testNioFile() throws IOException {
         Path file = makeTmpFile(StandardCharsets.UTF_8, "some content");
         try (TextFile tf = TextFile.forPath(file, StandardCharsets.UTF_8, dummyVersion())) {
-            assertEquals(file.toAbsolutePath().toUri().toString(), tf.getFileId().toUriString());
+            assertEquals(file.toAbsolutePath().toUri().toString(), tf.getFileId().getUriString());
             assertEquals(file.toString(), tf.getFileId().getOriginalPath());
             assertEquals(file.getFileName().toString(), tf.getFileId().getFileName());
             assertEquals(dummyVersion(), tf.getLanguageVersion());
@@ -50,7 +50,7 @@ class TextFilesTest {
         Path file = makeTmpFile(StandardCharsets.UTF_8, "some content").toAbsolutePath();
         try (TextFile tf = TextFile.forPath(file, StandardCharsets.UTF_8, dummyVersion())) {
             try (TextFile tfPrime = TextFile.forPath(file, StandardCharsets.UTF_8, dummyVersion())) {
-                try (TextFile stringTf = TextFile.forCharSeq("some content", FileId.forPath(file), dummyVersion())) {
+                try (TextFile stringTf = TextFile.forCharSeq("some content", FileId.fromPath(file), dummyVersion())) {
                     assertEquals(tf.getFileId(), stringTf.getFileId());
 
                     // despite same path id, they are different implementations
@@ -58,7 +58,7 @@ class TextFilesTest {
                     assertNotEquals(stringTf, tf);
 
                     // identical, but string text files use identity
-                    assertNotEquals(stringTf, TextFile.forCharSeq("some content", FileId.forPath(file), dummyVersion()));
+                    assertNotEquals(stringTf, TextFile.forCharSeq("some content", FileId.fromPath(file), dummyVersion()));
 
                     // those are identical so are equals
                     assertNotSame(tf, tfPrime);
@@ -166,7 +166,7 @@ class TextFilesTest {
         Path file = makeTmpFile(StandardCharsets.UTF_8, "some content");
         try (TextFile tf = TextFile.builderForPath(file, StandardCharsets.UTF_8, dummyVersion())
                                    .build()) {
-            assertEquals(file.toAbsolutePath().toUri().toString(), tf.getFileId().toUriString());
+            assertEquals(file.toAbsolutePath().toUri().toString(), tf.getFileId().getUriString());
             assertEquals(dummyVersion(), tf.getLanguageVersion());
             assertEquals(Chars.wrap("some content"), tf.readContents().getNormalizedText());
         }

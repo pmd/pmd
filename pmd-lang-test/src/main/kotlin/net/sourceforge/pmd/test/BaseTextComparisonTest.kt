@@ -67,7 +67,7 @@ abstract class BaseTextComparisonTest {
         }
 
         val sourceText = sourceFile.readText(Charsets.UTF_8).normalize()
-        return FileData(fileName = FileId.forPath(sourceFile.toPath()), fileText = sourceText)
+        return FileData(fileName = FileId.fromPath(sourceFile.toPath()), fileText = sourceText)
     }
 
     protected open fun String.normalize() = replace(

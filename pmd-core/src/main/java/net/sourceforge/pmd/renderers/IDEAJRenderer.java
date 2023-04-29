@@ -70,7 +70,7 @@ public class IDEAJRenderer extends AbstractIncrementingRenderer {
             RuleViolation rv = violations.next();
             buf.append(rv.getDescription()).append(System.lineSeparator());
             // todo is this the right thing?                                    vvvvvvvvvvvvvvvv
-            buf.append(" at ").append(getFullyQualifiedClassName(rv.getFileId().toAbsolutePath(), sourcePath)).append(".method(");
+            buf.append(" at ").append(getFullyQualifiedClassName(rv.getFileId().getAbsolutePath(), sourcePath)).append(".method(");
             buf.append(rv.getFileId().getFileName()).append(':').append(rv.getBeginLine()).append(')');
             writer.println(buf);
         }

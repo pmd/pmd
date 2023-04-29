@@ -42,7 +42,7 @@ class NioTextFile extends BaseCloseable implements TextFile {
         this.path = path;
         this.charset = charset;
         this.languageVersion = languageVersion;
-        this.fileId = FileId.forPath(path, parentFsPath);
+        this.fileId = FileId.fromPath(path, parentFsPath);
     }
 
     @Override
