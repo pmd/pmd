@@ -1634,7 +1634,7 @@ for all.</p>
 <h3 id="changes-since-700-rc1">Changes since 7.0.0-rc1</h3>
 
 <p>This section lists the most important changes from the last release candidate.
-The remaining section describe the complete release notes for 7.0.0.</p>
+The remaining section describes the complete release notes for 7.0.0.</p>
 
 <h4 id="api-changes">API Changes</h4>
 <ul>
@@ -1653,10 +1653,18 @@ However, that means, that you need to change these method calls if you have migr
 <p>This PMD release ships a new version of the pmd-designer.
 For the changes, see <a href="https://github.com/pmd/pmd-designer/releases/tag/7.0.0-rc1">PMD Designer Changelog</a>.</p>
 
+<h4 id="language-related-changes">Language Related Changes</h4>
+<ul>
+  <li>New: CPD support for TypeScript</li>
+  <li>New: CPD support for Julia</li>
+</ul>
+
 <h4 id="rule-changes">Rule Changes</h4>
 <ul>
   <li><a href="pmd_rules_java_design.html#immutablefield"><code class="language-plaintext highlighter-rouge">ImmutableField</code></a>: the property <code class="language-plaintext highlighter-rouge">ignoredAnnotations</code> has been removed. The property was
 deprecated since PMD 6.52.0.</li>
+  <li><a href="pmd_rules_java_design.html#switchdensity"><code class="language-plaintext highlighter-rouge">SwitchDensity</code></a>: the type of the property <code class="language-plaintext highlighter-rouge">minimum</code> has been changed from decimal to integer
+for consistency with other statistical rules.</li>
 </ul>
 
 <h4 id="fixed-issues">Fixed Issues</h4>
@@ -1712,6 +1720,8 @@ deprecated since PMD 6.52.0.</li>
 
 <h4 id="external-contributions">External contributions</h4>
 <ul>
+  <li><a href="https://github.com/pmd/pmd/pull/4402">#4402</a>: [javascript] CPD: add support for Typescript using antlr4 grammar - <a href="https://github.com/pguyot">Paul Guyot</a> (@pguyot)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4403">#4403</a>: [julia] CPD: Add support for Julia code duplication  - <a href="https://github.com/wener-tiobe">Wener</a> (@wener-tiobe)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4444">#4444</a>: [java] CommentDefaultAccessModifier - ignore org.junit.jupiter.api.extension.RegisterExtension by default - <a href="https://github.com/nirvikpatel">Nirvik Patel</a> (@nirvikpatel)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4450">#4450</a>: [java] Fix #4449 AvoidAccessibilityAlteration: Correctly handle Lambda expressions in PrivilegedAction scenarios - <a href="https://github.com/mohui1999">Seren</a> (@mohui1999)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4452">#4452</a>: [doc] Update PMD_APEX_ROOT_DIRECTORY documentation reference - <a href="https://github.com/nwcm">nwcm</a> (@nwcm)</li>
@@ -1868,34 +1878,138 @@ in the new module <code class="language-plaintext highlighter-rouge">pmd-julia</
 
 <h4 id="changed-rules">Changed Rules</h4>
 
-<p><strong>Java</strong></p>
+<p><strong>General changes</strong></p>
 
 <ul>
-  <li><a href="pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname"><code class="language-plaintext highlighter-rouge">UnnecessaryFullyQualifiedName</code></a>: the rule has two new properties,
+  <li>All statistical rules (like ExcessiveClassLength, ExcessiveParameterList) have been simplified and unified.
+The properties <code class="language-plaintext highlighter-rouge">topscore</code> and <code class="language-plaintext highlighter-rouge">sigma</code> have been removed. The property <code class="language-plaintext highlighter-rouge">minimum</code> is still there, however the type is not
+a decimal number anymore but has been changed to an integer. This affects rules in the languages Apex, Java, PLSQL
+and Velocity Template Language (vm):
+    <ul>
+      <li>Apex: <a href="pmd_rules_apex_design.html#excessiveclasslength"><code class="language-plaintext highlighter-rouge">ExcessiveClassLength</code></a>, <a href="pmd_rules_apex_design.html#excessiveparameterlist"><code class="language-plaintext highlighter-rouge">ExcessiveParameterList</code></a>,
+<a href="pmd_rules_apex_design.html#excessivepubliccount"><code class="language-plaintext highlighter-rouge">ExcessivePublicCount</code></a>, <a href="pmd_rules_apex_design.html#ncssconstructorcount"><code class="language-plaintext highlighter-rouge">NcssConstructorCount</code></a>,
+<a href="pmd_rules_apex_design.html#ncssmethodcount"><code class="language-plaintext highlighter-rouge">NcssMethodCount</code></a>, <a href="pmd_rules_apex_design.html#ncsstypecount"><code class="language-plaintext highlighter-rouge">NcssTypeCount</code></a></li>
+      <li>Java: <a href="pmd_rules_java_design.html#excessiveimports"><code class="language-plaintext highlighter-rouge">ExcessiveImports</code></a>, <a href="pmd_rules_java_design.html#excessiveparameterlist"><code class="language-plaintext highlighter-rouge">ExcessiveParameterList</code></a>,
+<a href="pmd_rules_java_design.html#excessivepubliccount"><code class="language-plaintext highlighter-rouge">ExcessivePublicCount</code></a>, <a href="pmd_rules_java_design.html#switchdensity"><code class="language-plaintext highlighter-rouge">SwitchDensity</code></a></li>
+      <li>PLSQL: <a href="pmd_rules_plsql_design.html#excessivemethodlength"><code class="language-plaintext highlighter-rouge">ExcessiveMethodLength</code></a>, <a href="pmd_rules_plsql_design.html#excessiveobjectlength"><code class="language-plaintext highlighter-rouge">ExcessiveObjectLength</code></a>,
+<a href="pmd_rules_plsql_design.html#excessivepackagebodylength"><code class="language-plaintext highlighter-rouge">ExcessivePackageBodyLength</code></a>, <a href="pmd_rules_plsql_design.html#excessivepackagespecificationlength"><code class="language-plaintext highlighter-rouge">ExcessivePackageSpecificationLength</code></a>,
+<a href="pmd_rules_plsql_design.html#excessiveparameterlist"><code class="language-plaintext highlighter-rouge">ExcessiveParameterList</code></a>, <a href="pmd_rules_plsql_design.html#excessivetypelength"><code class="language-plaintext highlighter-rouge">ExcessiveTypeLength</code></a>,
+<a href="pmd_rules_plsql_design.html#ncssmethodcount"><code class="language-plaintext highlighter-rouge">NcssMethodCount</code></a>, <a href="pmd_rules_plsql_design.html#ncssobjectcount"><code class="language-plaintext highlighter-rouge">NcssObjectCount</code></a>,
+<a href="pmd_rules_plsql_design.html#npathcomplexity"><code class="language-plaintext highlighter-rouge">NPathComplexity</code></a></li>
+      <li>VM: <a href="pmd_rules_vm_design.html#excessivetemplatelength"><code class="language-plaintext highlighter-rouge">ExcessiveTemplateLength</code></a></li>
+    </ul>
+  </li>
+  <li>The general property <code class="language-plaintext highlighter-rouge">violationSuppressXPath</code> which is available for all rules to
+<a href="pmd_userdocs_suppressing_warnings.html">suppress warnings</a> now uses XPath version 3.1 by default.
+This version of the XPath language is mostly identical to XPath 2.0. In PMD 6, XPath 1.0 has been used.
+If you upgrade from PMD 6, you need to verify your <code class="language-plaintext highlighter-rouge">violationSuppressXPath</code> properties.</li>
+</ul>
+
+<p><strong>Apex General changes</strong></p>
+
+<ul>
+  <li>The properties <code class="language-plaintext highlighter-rouge">cc_categories</code>, <code class="language-plaintext highlighter-rouge">cc_remediation_points_multiplier</code>, <code class="language-plaintext highlighter-rouge">cc_block_highlighting</code> have been removed
+from all rules. These properties have been deprecated since PMD 6.13.0.
+See <a href="https://github.com/pmd/pmd/issues/1648">issue #1648</a> for more details.</li>
+</ul>
+
+<p><strong>Java General changes</strong></p>
+
+<ul>
+  <li>
+    <p>Violations reported on methods or classes previously reported the line range of the entire method
+or class. With PMD 7.0.0, the reported location is now just the identifier of the method or class.
+This affects various rules, e.g. <a href="pmd_rules_java_design.html#cognitivecomplexity"><code class="language-plaintext highlighter-rouge">CognitiveComplexity</code></a>.</p>
+
+    <p>The report location is controlled by the overrides of the method <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getReportLocation()"><code>getReportLocation</code></a>
+in different node types.</p>
+
+    <p>See <a href="https://github.com/pmd/pmd/issues/4439">issue #4439</a> and <a href="https://github.com/pmd/pmd/issues/730">issue #730</a>
+for more details.</p>
+  </li>
+</ul>
+
+<p><strong>Java Best Practices</strong></p>
+
+<ul>
+  <li><a href="pmd_rules_java_bestpractices.html#arrayisstoreddirectly"><code class="language-plaintext highlighter-rouge">ArrayIsStoredDirectly</code></a>: Violations are now reported on the assignment and not
+anymore on the formal parameter. The reported line numbers will probably move.</li>
+  <li><a href="pmd_rules_java_bestpractices.html#avoidreassigningloopvariables"><code class="language-plaintext highlighter-rouge">AvoidReassigningLoopVariables</code></a>: This rule might not report anymore all
+reassignments of the control variable in for-loops when the property <code class="language-plaintext highlighter-rouge">forReassign</code> is set to <code class="language-plaintext highlighter-rouge">skip</code>.
+See <a href="https://github.com/pmd/pmd/issues/4500">issue #4500</a> for more details.</li>
+  <li><a href="pmd_rules_java_bestpractices.html#loosecoupling"><code class="language-plaintext highlighter-rouge">LooseCoupling</code></a>: The rule has a new property to allow some types to be coupled
+to (<code class="language-plaintext highlighter-rouge">allowedTypes</code>).</li>
+  <li><a href="pmd_rules_java_bestpractices.html#unusedlocalvariable"><code class="language-plaintext highlighter-rouge">UnusedLocalVariable</code></a>: This rule has some important false-negatives fixed
+and finds many more cases now. For details see issues <a href="https://github.com/pmd/pmd/issues/2130">#2130</a>,
+<a href="https://github.com/pmd/pmd/issues/4516">#4516</a>, and <a href="https://github.com/pmd/pmd/issues/4517">#4517</a>.</li>
+</ul>
+
+<p><strong>Java Codestyle</strong></p>
+
+<ul>
+  <li><a href="pmd_rules_java_codestyle.html#methodnamingconventions"><code class="language-plaintext highlighter-rouge">MethodNamingConventions</code></a>: The property <code class="language-plaintext highlighter-rouge">checkNativeMethods</code> has been removed. The
+property was deprecated since PMD 6.3.0. Use the property <code class="language-plaintext highlighter-rouge">nativePattern</code> to control whether native methods
+should be considered or not.</li>
+  <li><a href="pmd_rules_java_codestyle.html#shortvariable"><code class="language-plaintext highlighter-rouge">ShortVariable</code></a>: This rule now also reports short enum constant names.</li>
+  <li><a href="pmd_rules_java_codestyle.html#usediamondoperator"><code class="language-plaintext highlighter-rouge">UseDiamondOperator</code></a>: The property <code class="language-plaintext highlighter-rouge">java7Compatibility</code> has been removed. The rule now
+handles Java 7 properly without a property.</li>
+  <li><a href="pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname"><code class="language-plaintext highlighter-rouge">UnnecessaryFullyQualifiedName</code></a>: The rule has two new properties,
 to selectively disable reporting on static field and method qualifiers. The rule also has been improved
 to be more precise.</li>
-  <li><a href="pmd_rules_java_codestyle.html#uselessparentheses"><code class="language-plaintext highlighter-rouge">UselessParentheses</code></a>: the rule has two new properties which control how strict
+  <li><a href="pmd_rules_java_codestyle.html#uselessparentheses"><code class="language-plaintext highlighter-rouge">UselessParentheses</code></a>: The rule has two new properties which control how strict
 the rule should be applied. With <code class="language-plaintext highlighter-rouge">ignoreClarifying</code> (default: true) parentheses that are strictly speaking
 not necessary are allowed, if they separate expressions of different precedence.
 The other property <code class="language-plaintext highlighter-rouge">ignoreBalancing</code> (default: true) is similar, in that it allows parentheses that help
 reading and understanding the expressions.</li>
-  <li><a href="pmd_rules_java_bestpractices.html#loosecoupling"><code class="language-plaintext highlighter-rouge">LooseCoupling</code></a>: the rule has a new property to allow some types to be coupled
-to (<code class="language-plaintext highlighter-rouge">allowedTypes</code>).</li>
-  <li><a href="pmd_rules_java_errorprone.html#emptycatchblock"><code class="language-plaintext highlighter-rouge">EmptyCatchBlock</code></a>: <code class="language-plaintext highlighter-rouge">CloneNotSupportedException</code> and <code class="language-plaintext highlighter-rouge">InterruptedException</code> are not
-special-cased anymore. Rename the exception parameter to <code class="language-plaintext highlighter-rouge">ignored</code> to ignore them.</li>
-  <li><a href="pmd_rules_java_errorprone.html#dontimportsun"><code class="language-plaintext highlighter-rouge">DontImportSun</code></a>: <code class="language-plaintext highlighter-rouge">sun.misc.Signal</code> is not special-cased anymore.</li>
-  <li><a href="pmd_rules_java_codestyle.html#usediamondoperator"><code class="language-plaintext highlighter-rouge">UseDiamondOperator</code></a>: the property <code class="language-plaintext highlighter-rouge">java7Compatibility</code> is removed. The rule now
-handles Java 7 properly without a property.</li>
-  <li><a href="pmd_rules_java_design.html#singularfield"><code class="language-plaintext highlighter-rouge">SingularField</code></a>: Properties <code class="language-plaintext highlighter-rouge">checkInnerClasses</code> and <code class="language-plaintext highlighter-rouge">disallowNotAssignment</code> are removed.
+</ul>
+
+<p><strong>Java Design</strong></p>
+
+<ul>
+  <li><a href="pmd_rules_java_design.html#cyclomaticcomplexity"><code class="language-plaintext highlighter-rouge">CyclomaticComplexity</code></a>: The property <code class="language-plaintext highlighter-rouge">reportLevel</code> has been removed. The property was
+deprecated since PMD 6.0.0. The report level can now be configured separated for classes and methods using
+<code class="language-plaintext highlighter-rouge">classReportLevel</code> and <code class="language-plaintext highlighter-rouge">methodReportLevel</code> instead.</li>
+  <li><a href="pmd_rules_java_design.html#immutablefield"><code class="language-plaintext highlighter-rouge">ImmutableField</code></a>: The property <code class="language-plaintext highlighter-rouge">ignoredAnnotations</code> has been removed. The property was
+deprecated since PMD 6.52.0.</li>
+  <li><a href="pmd_rules_java_design.html#lawofdemeter"><code class="language-plaintext highlighter-rouge">LawOfDemeter</code></a>: The rule has a new property <code class="language-plaintext highlighter-rouge">trustRadius</code>. This defines the maximum degree
+of trusted data. The default of 1 is the most restrictive.</li>
+  <li><a href="pmd_rules_java_design.html#npathcomplexity"><code class="language-plaintext highlighter-rouge">NPathComplexity</code></a>: The property <code class="language-plaintext highlighter-rouge">minimum</code> has been removed. It was deprecated since PMD 6.0.0.
+Use the property <code class="language-plaintext highlighter-rouge">reportLevel</code> instead.</li>
+  <li><a href="pmd_rules_java_design.html#singularfield"><code class="language-plaintext highlighter-rouge">SingularField</code></a>: The properties <code class="language-plaintext highlighter-rouge">checkInnerClasses</code> and <code class="language-plaintext highlighter-rouge">disallowNotAssignment</code> have been removed.
 The rule is now more precise and will check these cases properly.</li>
   <li><a href="pmd_rules_java_design.html#useutilityclass"><code class="language-plaintext highlighter-rouge">UseUtilityClass</code></a>: The property <code class="language-plaintext highlighter-rouge">ignoredAnnotations</code> has been removed.</li>
-  <li><a href="pmd_rules_java_design.html#lawofdemeter"><code class="language-plaintext highlighter-rouge">LawOfDemeter</code></a>: the rule has a new property <code class="language-plaintext highlighter-rouge">trustRadius</code>. This defines the maximum degree
-of trusted data. The default of 1 is the most restrictive.</li>
+</ul>
+
+<p><strong>Java Documentation</strong></p>
+
+<ul>
   <li><a href="pmd_rules_java_documentation.html#commentcontent"><code class="language-plaintext highlighter-rouge">CommentContent</code></a>: The properties <code class="language-plaintext highlighter-rouge">caseSensitive</code> and <code class="language-plaintext highlighter-rouge">disallowedTerms</code> are removed. The
-new property <code class="language-plaintext highlighter-rouge">fobiddenRegex</code> can be used now to define the disallowed terms with a single regular
+new property <code class="language-plaintext highlighter-rouge">forbiddenRegex</code> can be used now to define the disallowed terms with a single regular
 expression.</li>
-  <li><a href="pmd_rules_java_design.html#immutablefield"><code class="language-plaintext highlighter-rouge">ImmutableField</code></a>: the property <code class="language-plaintext highlighter-rouge">ignoredAnnotations</code> has been removed. The property was
-deprecated since PMD 6.52.0.</li>
+  <li><a href="pmd_rules_java_documentation.html#commentrequired"><code class="language-plaintext highlighter-rouge">CommentRequired</code></a>:
+    <ul>
+      <li>Overridden methods are now detected even without the <code class="language-plaintext highlighter-rouge">@Override</code>
+annotation. This is relevant for the property <code class="language-plaintext highlighter-rouge">methodWithOverrideCommentRequirement</code>.
+See also <a href="https://github.com/pmd/pmd/pull/3757">pull request #3757</a>.</li>
+      <li>Elements in annotation types are now detected as well. This might lead to an increased number of violations
+for missing public method comments.</li>
+    </ul>
+  </li>
+  <li><a href="pmd_rules_java_documentation.html#commentsize"><code class="language-plaintext highlighter-rouge">CommentSize</code></a>: When determining the line-length of a comment, the leading comment
+prefix markers (e.g. <code class="language-plaintext highlighter-rouge">*</code> or <code class="language-plaintext highlighter-rouge">//</code>) are ignored and don’t add up to the line-length.
+See also <a href="https://github.com/pmd/pmd/pull/4369">pull request #4369</a>.</li>
+</ul>
+
+<p><strong>Java Error Prone</strong></p>
+
+<ul>
+  <li><a href="pmd_rules_java_errorprone.html#avoidduplicateliterals"><code class="language-plaintext highlighter-rouge">AvoidDuplicateLiterals</code></a>: The property <code class="language-plaintext highlighter-rouge">exceptionfile</code> has been removed. The property was
+deprecated since PMD 6.10.0. Use the property <code class="language-plaintext highlighter-rouge">exceptionList</code> instead.</li>
+  <li><a href="pmd_rules_java_errorprone.html#dontimportsun"><code class="language-plaintext highlighter-rouge">DontImportSun</code></a>: <code class="language-plaintext highlighter-rouge">sun.misc.Signal</code> is not special-cased anymore.</li>
+  <li><a href="pmd_rules_java_errorprone.html#emptycatchblock"><code class="language-plaintext highlighter-rouge">EmptyCatchBlock</code></a>: <code class="language-plaintext highlighter-rouge">CloneNotSupportedException</code> and <code class="language-plaintext highlighter-rouge">InterruptedException</code> are not
+special-cased anymore. Rename the exception parameter to <code class="language-plaintext highlighter-rouge">ignored</code> to ignore them.</li>
+  <li><a href="pmd_rules_java_errorprone.html#implicitswitchfallthrough"><code class="language-plaintext highlighter-rouge">ImplicitSwitchFallThrough</code></a>: Violations are now reported on the case statements
+rather than on the switch statements. This is more accurate but might result in more violations now.</li>
 </ul>
 
 <h4 id="removed-rules">Removed Rules</h4>
@@ -2017,6 +2131,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
   <li>apex-design
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2667">#2667</a>: [apex] Integrate nawforce/ApexLink to build robust Unused rule</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4509">#4509</a>: [apex] ExcessivePublicCount doesn’t consider inner classes correctly</li>
     </ul>
   </li>
   <li>java
@@ -2059,7 +2174,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/issues/1212">#1212</a>: [java] Don’t raise JUnitTestContainsTooManyAsserts on JUnit 5’s assertAll</li>
       <li><a href="https://github.com/pmd/pmd/issues/1422">#1422</a>: [java] JUnitTestsShouldIncludeAssert false positive with inherited @<!-- -->Rule field</li>
       <li><a href="https://github.com/pmd/pmd/issues/1455">#1455</a>: [java] JUnitTestsShouldIncludeAssert: False positives for assert methods named “check” and “verify”</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1563">#1563</a>: [java] False positive ForLoopCanBeForeach</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1563">#1563</a>: [java] ForLoopCanBeForeach false positive with method call using index variable</li>
       <li><a href="https://github.com/pmd/pmd/issues/1565">#1565</a>: [java] JUnitAssertionsShouldIncludeMessage false positive with AssertJ</li>
       <li><a href="https://github.com/pmd/pmd/issues/1747">#1747</a>: [java] PreserveStackTrace false-positive</li>
       <li><a href="https://github.com/pmd/pmd/issues/1969">#1969</a>: [java] MissingOverride false-positive triggered by package-private method overwritten in another package by extending class</li>
@@ -2081,13 +2196,16 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/pull/3672">#3672</a>:   [java] LooseCoupling - fix false positive with generics</li>
       <li><a href="https://github.com/pmd/pmd/pull/3675">#3675</a>:   [java] MissingOverride - fix false positive with mixing type vars</li>
       <li><a href="https://github.com/pmd/pmd/issues/3858">#3858</a>: [java] UseCollectionIsEmpty should infer local variable type from method invocation</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4516">#4516</a>: [java] UnusedLocalVariable: false-negative with try-with-resources</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4517">#4517</a>: [java] UnusedLocalVariable: false-negative with compound assignments</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4518">#4518</a>: [java] UnusedLocalVariable: false-positive with multiple for-loop indices</li>
     </ul>
   </li>
   <li>java-codestyle
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/1208">#1208</a>: [java] PrematureDeclaration rule false-positive on variable declared to measure time</li>
       <li><a href="https://github.com/pmd/pmd/issues/1429">#1429</a>: [java] PrematureDeclaration as result of method call (false positive)</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1480">#1480</a>: [java] IdenticalCatchBranches false positive</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1480">#1480</a>: [java] IdenticalCatchBranches false positive with return expressions</li>
       <li><a href="https://github.com/pmd/pmd/issues/1673">#1673</a>: [java] UselessParentheses false positive with conditional operator</li>
       <li><a href="https://github.com/pmd/pmd/issues/1790">#1790</a>: [java] UnnecessaryFullyQualifiedName false positive with enum constant</li>
       <li><a href="https://github.com/pmd/pmd/issues/1918">#1918</a>: [java] UselessParentheses false positive with boolean operators</li>
@@ -2106,6 +2224,8 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/issues/4273">#4273</a>: [java] CommentDefaultAccessModifier ignoredAnnotations should include “org.junit.jupiter.api.extension.RegisterExtension” by default</li>
       <li><a href="https://github.com/pmd/pmd/pull/4357">#4357</a>:   [java] Fix IllegalStateException in UseDiamondOperator rule</li>
       <li><a href="https://github.com/pmd/pmd/issues/4487">#4487</a>: [java] UnnecessaryConstructor: false-positive with @<!-- -->Inject and @<!-- -->Autowired</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4511">#4511</a>: [java] LocalVariableCouldBeFinal shouldn’t report unused variables</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4512">#4512</a>: [java] MethodArgumentCouldBeFinal shouldn’t report unused parameters</li>
     </ul>
   </li>
   <li>java-design
@@ -2157,6 +2277,8 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/issues/4449">#4449</a>: [java] AvoidAccessibilityAlteration: Possible false positive in AvoidAccessibilityAlteration rule when using Lambda expression</li>
       <li><a href="https://github.com/pmd/pmd/issues/4493">#4493</a>: [java] MissingStaticMethodInNonInstantiatableClass: false-positive about @<!-- -->Inject</li>
       <li><a href="https://github.com/pmd/pmd/issues/4505">#4505</a>: [java] ImplicitSwitchFallThrough NPE in PMD 7.0.0-rc1</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4513">#4513</a>: [java] UselessOperationOnImmutable various false negatives with String</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4514">#4514</a>: [java] AvoidLiteralsInIfCondition false positive and negative for String literals when ignoreExpressions=true</li>
     </ul>
   </li>
   <li>java-multithreading

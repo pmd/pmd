@@ -3615,7 +3615,7 @@ can reorder code.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Fields, local variables, or parameter names that are very short are not helpful to the reader.</p>
+<p>Fields, local variables, enum constant names or parameter names that are very short are not helpful to the reader.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">VariableDeclaratorId</span><span class="p">[</span><span class="nf">string-length</span><span class="p">(</span><span class="na">@Name</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nv">$minimum</span><span class="p">]</span><span class="w">

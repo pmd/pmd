@@ -2099,6 +2099,20 @@ of such classes are used in collections (Lists, HashMaps, …).</li>
 <p>Contributors: <a href="https://github.com/jborgers">Jeroen Borgers</a> (@jborgers),
 <a href="https://github.com/stokpop">Peter Paul Bakker</a> (@stokpop)</p>
 
+<h4 id="new-cpd-support-for-typescript">New: CPD support for TypeScript</h4>
+
+<p>Thanks to a contribution, CPD now supports the TypeScript language. It is shipped
+with the rest of the JavaScript support in the module <code class="language-plaintext highlighter-rouge">pmd-javascript</code>.</p>
+
+<p>Contributors: <a href="https://github.com/pguyot">Paul Guyot</a> (@pguyot)</p>
+
+<h4 id="new-cpd-support-for-julia">New: CPD support for Julia</h4>
+
+<p>Thanks to a contribution, CPD now supports the Julia language. It is shipped
+in the new module <code class="language-plaintext highlighter-rouge">pmd-julia</code>.</p>
+
+<p>Contributors: <a href="https://github.com/wener-tiobe">Wener</a> (@wener-tiobe)</p>
+
 <h3 id="changed-javascript-support">Changed: JavaScript support</h3>
 
 <p>The JS specific parser options have been removed. The parser now always retains comments and uses version ES6.
@@ -2149,34 +2163,138 @@ the Java module, listing all possible versions enables other languages as well t
 
 <h3 id="changed-rules">Changed Rules</h3>
 
-<p><strong>Java</strong></p>
+<p><strong>General changes</strong></p>
 
 <ul>
-  <li><a href="pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname"><code class="language-plaintext highlighter-rouge">UnnecessaryFullyQualifiedName</code></a>: the rule has two new properties,
+  <li>All statistical rules (like ExcessiveClassLength, ExcessiveParameterList) have been simplified and unified.
+The properties <code class="language-plaintext highlighter-rouge">topscore</code> and <code class="language-plaintext highlighter-rouge">sigma</code> have been removed. The property <code class="language-plaintext highlighter-rouge">minimum</code> is still there, however the type is not
+a decimal number anymore but has been changed to an integer. This affects rules in the languages Apex, Java, PLSQL
+and Velocity Template Language (vm):
+    <ul>
+      <li>Apex: <a href="pmd_rules_apex_design.html#excessiveclasslength"><code class="language-plaintext highlighter-rouge">ExcessiveClassLength</code></a>, <a href="pmd_rules_apex_design.html#excessiveparameterlist"><code class="language-plaintext highlighter-rouge">ExcessiveParameterList</code></a>,
+<a href="pmd_rules_apex_design.html#excessivepubliccount"><code class="language-plaintext highlighter-rouge">ExcessivePublicCount</code></a>, <a href="pmd_rules_apex_design.html#ncssconstructorcount"><code class="language-plaintext highlighter-rouge">NcssConstructorCount</code></a>,
+<a href="pmd_rules_apex_design.html#ncssmethodcount"><code class="language-plaintext highlighter-rouge">NcssMethodCount</code></a>, <a href="pmd_rules_apex_design.html#ncsstypecount"><code class="language-plaintext highlighter-rouge">NcssTypeCount</code></a></li>
+      <li>Java: <a href="pmd_rules_java_design.html#excessiveimports"><code class="language-plaintext highlighter-rouge">ExcessiveImports</code></a>, <a href="pmd_rules_java_design.html#excessiveparameterlist"><code class="language-plaintext highlighter-rouge">ExcessiveParameterList</code></a>,
+<a href="pmd_rules_java_design.html#excessivepubliccount"><code class="language-plaintext highlighter-rouge">ExcessivePublicCount</code></a>, <a href="pmd_rules_java_design.html#switchdensity"><code class="language-plaintext highlighter-rouge">SwitchDensity</code></a></li>
+      <li>PLSQL: <a href="pmd_rules_plsql_design.html#excessivemethodlength"><code class="language-plaintext highlighter-rouge">ExcessiveMethodLength</code></a>, <a href="pmd_rules_plsql_design.html#excessiveobjectlength"><code class="language-plaintext highlighter-rouge">ExcessiveObjectLength</code></a>,
+<a href="pmd_rules_plsql_design.html#excessivepackagebodylength"><code class="language-plaintext highlighter-rouge">ExcessivePackageBodyLength</code></a>, <a href="pmd_rules_plsql_design.html#excessivepackagespecificationlength"><code class="language-plaintext highlighter-rouge">ExcessivePackageSpecificationLength</code></a>,
+<a href="pmd_rules_plsql_design.html#excessiveparameterlist"><code class="language-plaintext highlighter-rouge">ExcessiveParameterList</code></a>, <a href="pmd_rules_plsql_design.html#excessivetypelength"><code class="language-plaintext highlighter-rouge">ExcessiveTypeLength</code></a>,
+<a href="pmd_rules_plsql_design.html#ncssmethodcount"><code class="language-plaintext highlighter-rouge">NcssMethodCount</code></a>, <a href="pmd_rules_plsql_design.html#ncssobjectcount"><code class="language-plaintext highlighter-rouge">NcssObjectCount</code></a>,
+<a href="pmd_rules_plsql_design.html#npathcomplexity"><code class="language-plaintext highlighter-rouge">NPathComplexity</code></a></li>
+      <li>VM: <a href="pmd_rules_vm_design.html#excessivetemplatelength"><code class="language-plaintext highlighter-rouge">ExcessiveTemplateLength</code></a></li>
+    </ul>
+  </li>
+  <li>The general property <code class="language-plaintext highlighter-rouge">violationSuppressXPath</code> which is available for all rules to
+<a href="pmd_userdocs_suppressing_warnings.html">suppress warnings</a> now uses XPath version 3.1 by default.
+This version of the XPath language is mostly identical to XPath 2.0. In PMD 6, XPath 1.0 has been used.
+If you upgrade from PMD 6, you need to verify your <code class="language-plaintext highlighter-rouge">violationSuppressXPath</code> properties.</li>
+</ul>
+
+<p><strong>Apex General changes</strong></p>
+
+<ul>
+  <li>The properties <code class="language-plaintext highlighter-rouge">cc_categories</code>, <code class="language-plaintext highlighter-rouge">cc_remediation_points_multiplier</code>, <code class="language-plaintext highlighter-rouge">cc_block_highlighting</code> have been removed
+from all rules. These properties have been deprecated since PMD 6.13.0.
+See <a href="https://github.com/pmd/pmd/issues/1648">issue #1648</a> for more details.</li>
+</ul>
+
+<p><strong>Java General changes</strong></p>
+
+<ul>
+  <li>
+    <p>Violations reported on methods or classes previously reported the line range of the entire method
+or class. With PMD 7.0.0, the reported location is now just the identifier of the method or class.
+This affects various rules, e.g. <a href="pmd_rules_java_design.html#cognitivecomplexity"><code class="language-plaintext highlighter-rouge">CognitiveComplexity</code></a>.</p>
+
+    <p>The report location is controlled by the overrides of the method <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getReportLocation()"><code>getReportLocation</code></a>
+in different node types.</p>
+
+    <p>See <a href="https://github.com/pmd/pmd/issues/4439">issue #4439</a> and <a href="https://github.com/pmd/pmd/issues/730">issue #730</a>
+for more details.</p>
+  </li>
+</ul>
+
+<p><strong>Java Best Practices</strong></p>
+
+<ul>
+  <li><a href="pmd_rules_java_bestpractices.html#arrayisstoreddirectly"><code class="language-plaintext highlighter-rouge">ArrayIsStoredDirectly</code></a>: Violations are now reported on the assignment and not
+anymore on the formal parameter. The reported line numbers will probably move.</li>
+  <li><a href="pmd_rules_java_bestpractices.html#avoidreassigningloopvariables"><code class="language-plaintext highlighter-rouge">AvoidReassigningLoopVariables</code></a>: This rule might not report anymore all
+reassignments of the control variable in for-loops when the property <code class="language-plaintext highlighter-rouge">forReassign</code> is set to <code class="language-plaintext highlighter-rouge">skip</code>.
+See <a href="https://github.com/pmd/pmd/issues/4500">issue #4500</a> for more details.</li>
+  <li><a href="pmd_rules_java_bestpractices.html#loosecoupling"><code class="language-plaintext highlighter-rouge">LooseCoupling</code></a>: The rule has a new property to allow some types to be coupled
+to (<code class="language-plaintext highlighter-rouge">allowedTypes</code>).</li>
+  <li><a href="pmd_rules_java_bestpractices.html#unusedlocalvariable"><code class="language-plaintext highlighter-rouge">UnusedLocalVariable</code></a>: This rule has some important false-negatives fixed
+and finds many more cases now. For details see issues <a href="https://github.com/pmd/pmd/issues/2130">#2130</a>,
+<a href="https://github.com/pmd/pmd/issues/4516">#4516</a>, and <a href="https://github.com/pmd/pmd/issues/4517">#4517</a>.</li>
+</ul>
+
+<p><strong>Java Codestyle</strong></p>
+
+<ul>
+  <li><a href="pmd_rules_java_codestyle.html#methodnamingconventions"><code class="language-plaintext highlighter-rouge">MethodNamingConventions</code></a>: The property <code class="language-plaintext highlighter-rouge">checkNativeMethods</code> has been removed. The
+property was deprecated since PMD 6.3.0. Use the property <code class="language-plaintext highlighter-rouge">nativePattern</code> to control whether native methods
+should be considered or not.</li>
+  <li><a href="pmd_rules_java_codestyle.html#shortvariable"><code class="language-plaintext highlighter-rouge">ShortVariable</code></a>: This rule now also reports short enum constant names.</li>
+  <li><a href="pmd_rules_java_codestyle.html#usediamondoperator"><code class="language-plaintext highlighter-rouge">UseDiamondOperator</code></a>: The property <code class="language-plaintext highlighter-rouge">java7Compatibility</code> has been removed. The rule now
+handles Java 7 properly without a property.</li>
+  <li><a href="pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname"><code class="language-plaintext highlighter-rouge">UnnecessaryFullyQualifiedName</code></a>: The rule has two new properties,
 to selectively disable reporting on static field and method qualifiers. The rule also has been improved
 to be more precise.</li>
-  <li><a href="pmd_rules_java_codestyle.html#uselessparentheses"><code class="language-plaintext highlighter-rouge">UselessParentheses</code></a>: the rule has two new properties which control how strict
+  <li><a href="pmd_rules_java_codestyle.html#uselessparentheses"><code class="language-plaintext highlighter-rouge">UselessParentheses</code></a>: The rule has two new properties which control how strict
 the rule should be applied. With <code class="language-plaintext highlighter-rouge">ignoreClarifying</code> (default: true) parentheses that are strictly speaking
 not necessary are allowed, if they separate expressions of different precedence.
 The other property <code class="language-plaintext highlighter-rouge">ignoreBalancing</code> (default: true) is similar, in that it allows parentheses that help
 reading and understanding the expressions.</li>
-  <li><a href="pmd_rules_java_bestpractices.html#loosecoupling"><code class="language-plaintext highlighter-rouge">LooseCoupling</code></a>: the rule has a new property to allow some types to be coupled
-to (<code class="language-plaintext highlighter-rouge">allowedTypes</code>).</li>
-  <li><a href="pmd_rules_java_errorprone.html#emptycatchblock"><code class="language-plaintext highlighter-rouge">EmptyCatchBlock</code></a>: <code class="language-plaintext highlighter-rouge">CloneNotSupportedException</code> and <code class="language-plaintext highlighter-rouge">InterruptedException</code> are not
-special-cased anymore. Rename the exception parameter to <code class="language-plaintext highlighter-rouge">ignored</code> to ignore them.</li>
-  <li><a href="pmd_rules_java_errorprone.html#dontimportsun"><code class="language-plaintext highlighter-rouge">DontImportSun</code></a>: <code class="language-plaintext highlighter-rouge">sun.misc.Signal</code> is not special-cased anymore.</li>
-  <li><a href="pmd_rules_java_codestyle.html#usediamondoperator"><code class="language-plaintext highlighter-rouge">UseDiamondOperator</code></a>: the property <code class="language-plaintext highlighter-rouge">java7Compatibility</code> is removed. The rule now
-handles Java 7 properly without a property.</li>
-  <li><a href="pmd_rules_java_design.html#singularfield"><code class="language-plaintext highlighter-rouge">SingularField</code></a>: Properties <code class="language-plaintext highlighter-rouge">checkInnerClasses</code> and <code class="language-plaintext highlighter-rouge">disallowNotAssignment</code> are removed.
+</ul>
+
+<p><strong>Java Design</strong></p>
+
+<ul>
+  <li><a href="pmd_rules_java_design.html#cyclomaticcomplexity"><code class="language-plaintext highlighter-rouge">CyclomaticComplexity</code></a>: The property <code class="language-plaintext highlighter-rouge">reportLevel</code> has been removed. The property was
+deprecated since PMD 6.0.0. The report level can now be configured separated for classes and methods using
+<code class="language-plaintext highlighter-rouge">classReportLevel</code> and <code class="language-plaintext highlighter-rouge">methodReportLevel</code> instead.</li>
+  <li><a href="pmd_rules_java_design.html#immutablefield"><code class="language-plaintext highlighter-rouge">ImmutableField</code></a>: The property <code class="language-plaintext highlighter-rouge">ignoredAnnotations</code> has been removed. The property was
+deprecated since PMD 6.52.0.</li>
+  <li><a href="pmd_rules_java_design.html#lawofdemeter"><code class="language-plaintext highlighter-rouge">LawOfDemeter</code></a>: The rule has a new property <code class="language-plaintext highlighter-rouge">trustRadius</code>. This defines the maximum degree
+of trusted data. The default of 1 is the most restrictive.</li>
+  <li><a href="pmd_rules_java_design.html#npathcomplexity"><code class="language-plaintext highlighter-rouge">NPathComplexity</code></a>: The property <code class="language-plaintext highlighter-rouge">minimum</code> has been removed. It was deprecated since PMD 6.0.0.
+Use the property <code class="language-plaintext highlighter-rouge">reportLevel</code> instead.</li>
+  <li><a href="pmd_rules_java_design.html#singularfield"><code class="language-plaintext highlighter-rouge">SingularField</code></a>: The properties <code class="language-plaintext highlighter-rouge">checkInnerClasses</code> and <code class="language-plaintext highlighter-rouge">disallowNotAssignment</code> have been removed.
 The rule is now more precise and will check these cases properly.</li>
   <li><a href="pmd_rules_java_design.html#useutilityclass"><code class="language-plaintext highlighter-rouge">UseUtilityClass</code></a>: The property <code class="language-plaintext highlighter-rouge">ignoredAnnotations</code> has been removed.</li>
-  <li><a href="pmd_rules_java_design.html#lawofdemeter"><code class="language-plaintext highlighter-rouge">LawOfDemeter</code></a>: the rule has a new property <code class="language-plaintext highlighter-rouge">trustRadius</code>. This defines the maximum degree
-of trusted data. The default of 1 is the most restrictive.</li>
+</ul>
+
+<p><strong>Java Documentation</strong></p>
+
+<ul>
   <li><a href="pmd_rules_java_documentation.html#commentcontent"><code class="language-plaintext highlighter-rouge">CommentContent</code></a>: The properties <code class="language-plaintext highlighter-rouge">caseSensitive</code> and <code class="language-plaintext highlighter-rouge">disallowedTerms</code> are removed. The
-new property <code class="language-plaintext highlighter-rouge">fobiddenRegex</code> can be used now to define the disallowed terms with a single regular
+new property <code class="language-plaintext highlighter-rouge">forbiddenRegex</code> can be used now to define the disallowed terms with a single regular
 expression.</li>
-  <li><a href="pmd_rules_java_design.html#immutablefield"><code class="language-plaintext highlighter-rouge">ImmutableField</code></a>: the property <code class="language-plaintext highlighter-rouge">ignoredAnnotations</code> has been removed. The property was
-deprecated since PMD 6.52.0.</li>
+  <li><a href="pmd_rules_java_documentation.html#commentrequired"><code class="language-plaintext highlighter-rouge">CommentRequired</code></a>:
+    <ul>
+      <li>Overridden methods are now detected even without the <code class="language-plaintext highlighter-rouge">@Override</code>
+annotation. This is relevant for the property <code class="language-plaintext highlighter-rouge">methodWithOverrideCommentRequirement</code>.
+See also <a href="https://github.com/pmd/pmd/pull/3757">pull request #3757</a>.</li>
+      <li>Elements in annotation types are now detected as well. This might lead to an increased number of violations
+for missing public method comments.</li>
+    </ul>
+  </li>
+  <li><a href="pmd_rules_java_documentation.html#commentsize"><code class="language-plaintext highlighter-rouge">CommentSize</code></a>: When determining the line-length of a comment, the leading comment
+prefix markers (e.g. <code class="language-plaintext highlighter-rouge">*</code> or <code class="language-plaintext highlighter-rouge">//</code>) are ignored and don’t add up to the line-length.
+See also <a href="https://github.com/pmd/pmd/pull/4369">pull request #4369</a>.</li>
+</ul>
+
+<p><strong>Java Error Prone</strong></p>
+
+<ul>
+  <li><a href="pmd_rules_java_errorprone.html#avoidduplicateliterals"><code class="language-plaintext highlighter-rouge">AvoidDuplicateLiterals</code></a>: The property <code class="language-plaintext highlighter-rouge">exceptionfile</code> has been removed. The property was
+deprecated since PMD 6.10.0. Use the property <code class="language-plaintext highlighter-rouge">exceptionList</code> instead.</li>
+  <li><a href="pmd_rules_java_errorprone.html#dontimportsun"><code class="language-plaintext highlighter-rouge">DontImportSun</code></a>: <code class="language-plaintext highlighter-rouge">sun.misc.Signal</code> is not special-cased anymore.</li>
+  <li><a href="pmd_rules_java_errorprone.html#emptycatchblock"><code class="language-plaintext highlighter-rouge">EmptyCatchBlock</code></a>: <code class="language-plaintext highlighter-rouge">CloneNotSupportedException</code> and <code class="language-plaintext highlighter-rouge">InterruptedException</code> are not
+special-cased anymore. Rename the exception parameter to <code class="language-plaintext highlighter-rouge">ignored</code> to ignore them.</li>
+  <li><a href="pmd_rules_java_errorprone.html#implicitswitchfallthrough"><code class="language-plaintext highlighter-rouge">ImplicitSwitchFallThrough</code></a>: Violations are now reported on the case statements
+rather than on the switch statements. This is more accurate but might result in more violations now.</li>
 </ul>
 
 <h3 id="deprecated-rules">Deprecated Rules</h3>

@@ -2268,6 +2268,7 @@ the property ignoreMagicNumbers is not taken into account, if there are multiple
     <span class="c1">// with rule property "ignoreExpressions" set to "false"</span>
     <span class="k">if</span> <span class="o">(</span><span class="n">i</span> <span class="o">==</span> <span class="n">pos</span> <span class="o">+</span> <span class="mi">5</span><span class="o">)</span> <span class="o">{}</span>  <span class="c1">// violation: magic number 5 within an (additive) expression</span>
     <span class="k">if</span> <span class="o">(</span><span class="n">i</span> <span class="o">==</span> <span class="n">pos</span> <span class="o">+</span> <span class="no">SUFFIX_LENGTH</span><span class="o">)</span> <span class="o">{}</span> <span class="c1">// preferred approach</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">i</span> <span class="o">==</span> <span class="mi">5</span> <span class="o">&amp;&amp;</span> <span class="s">"none"</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">aString</span><span class="o">))</span> <span class="o">{}</span> <span class="c1">// 2 violations: magic number 5 and literal "none"</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
