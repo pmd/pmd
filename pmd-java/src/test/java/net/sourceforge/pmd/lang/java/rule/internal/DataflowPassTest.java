@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.DataflowResult;
 /**
  * @author Clément Fournier
  */
-public class DataflowPassTest extends BaseParserTest {
+class DataflowPassTest extends BaseParserTest {
 
 
     @Test
