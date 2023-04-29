@@ -159,14 +159,18 @@ public interface FileId extends Comparable<FileId> {
     static FileId fromPathLikeString(String str) {
         Path absPath = Paths.get(str).toAbsolutePath();
 
+        // this is null for the root path.
+        @Nullable Path fileNamePath = absPath.getFileName();
         return new FileId() {
-            final String fileName = absPath.getFileName() == null ? "" : absPath.getFileName().toString();
+            final String fileName = fileNamePath == null ? "" : fileNamePath.toString();
             final String absPathStr = absPath.toString();
+
 
             @Override
             public String getAbsolutePath() {
                 return absPathStr;
             }
+
 
             @Override
             public String getUriString() {
