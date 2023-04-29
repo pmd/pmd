@@ -395,8 +395,8 @@ public interface FileId extends Comparable<FileId> {
                 return fromAbsolutePath(localPath, outer);
             }
         } else if ("file".equals(uri.getScheme())) {
-            String absPath = uri.getPath();
-            return fromAbsolutePath(absPath, null);
+            Path path = Paths.get(uri);
+            return fromPath(path);
         }
         throw new UnsupportedOperationException("Unknown scheme " + uriStr);
     }
