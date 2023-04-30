@@ -80,10 +80,14 @@ class NioTextFile extends BaseCloseable implements TextFile {
             if (content.hasNormalizedLineTerminator()) {
                 content.writeNormalizedTextFully(bw);
             } else {
-                for (Chars line : content.getNormalizedText().lines()) {
-                    line.writeFully(bw);
-                    bw.write(content.getLineTerminator());
-                }
+                NormalizedText normalizedText = content.getNormalizedText();
+                LineTerminator lineTerminator = content.getLineTerminator();
+                for (Chars line : normalizedText.lines()) {
+                line.writeFully(bw);
+                bw.write(lineTerminator.get());
+            }
+}
+
             }
         }
     }
