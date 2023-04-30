@@ -589,7 +589,6 @@ private class LineIterator implements Iterator<Chars> {
     }
 }
 
-
     /**
      * Returns a stream of lines yielded by {@link #lines()}.
      */

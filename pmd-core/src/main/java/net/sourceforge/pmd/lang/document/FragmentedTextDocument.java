@@ -46,46 +46,53 @@ final class FragmentedTextDocument extends BaseMappedDocument implements TextDoc
     }
 
     @Override
-    protected int localOffsetTransform(int outOffset, boolean inclusive) {
-        // caching the last accessed fragment instead of doing
-        // a linear search is critical for performance.
-        Fragment f = this.lastAccessedFragment;
-        if (f == null) {
-            return outOffset;
-        }
+   protected int localOffsetTransform(int outOffset, boolean inclusive) {
+    Fragment f = getLastAccessedFragment();
 
-        // Whether the fragment contains the offset we're looking for.
-        // Will be true most of the time.
-        boolean containsOffset =
-            f.outStart() <= outOffset && outOffset < f.outEnd();
-
-        if (!containsOffset) {
-            // Slow path, we must search for the fragment
-            // This optimisation is important, otherwise we have
-            // to search for very long times in some files
-
-            if (f.outEnd() < outOffset) { // search forward
-                while (f.next != null && f.outEnd() < outOffset) {
-                    f = f.next;
-                }
-            } else { // search backwards
-                while (f.prev != null && outOffset <= f.outStart()) {
-                    f = f.prev;
-                }
-            }
-            lastAccessedFragment = f;
-        }
-
-        if (inclusive && f.outEnd() == outOffset && f.next != null) {
-            // Inclusive means, the offset must correspond to a character in the source document.
-            // Here we have to skip forward to the fragment that contains the character, because
-            // it's not this one.
-            do {
-                f = f.next;
-            } while (f.next != null && f.outLen() == 0);
-        }
+    if (f != null && f.contains(outOffset)) {
         return f.outToIn(outOffset);
     }
+
+    f = searchForFragment(outOffset, f);
+    setLastAccessedFragment(f);
+
+    if (inclusive && f.isAtEnd(outOffset)) {
+        f = skipEmptyFragments(f);
+    }
+
+    return f.outToIn(outOffset);
+}
+
+private Fragment getLastAccessedFragment() {
+    return this.lastAccessedFragment;
+}
+
+private void setLastAccessedFragment(Fragment f) {
+    this.lastAccessedFragment = f;
+}
+
+private Fragment searchForFragment(int outOffset, Fragment f) {
+    if (f == null || f.outEnd() < outOffset) {
+        // search forward
+        while (f != null && f.outEnd() < outOffset) {
+            f = f.next;
+        }
+    } else {
+        // search backwards
+        while (f.prev != null && outOffset <= f.outStart()) {
+            f = f.prev;
+        }
+    }
+    return f;
+}
+
+private Fragment skipEmptyFragments(Fragment f) {
+    while (f.next != null && f.outLen() == 0) {
+        f = f.next;
+    }
+    return f;
+}
+
 
 
     /**
