@@ -51,7 +51,7 @@ class ApexMultifileAnalysisTest {
             assertTrue(analysisInstance.getFileIssues("any file").isEmpty());
         });
         assertThat(log,
-                containsStringIgnoringCase("error: 'path' is required for all 'packageDirectories' elements"));
+                containsStringIgnoringCase("Error: line 3 at 4: 'path' is required"));
     }
 
     @Test
@@ -63,6 +63,8 @@ class ApexMultifileAnalysisTest {
 
             assertFalse(analysisInstance.isFailed());
         });
+
+        // TODO: This is failing due to ANTLR versions, 4.9.1 vs 4.8, expect to resolve with apex-dev-tools switch
         assertTrue(log.isEmpty());
     }
 
