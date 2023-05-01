@@ -20,13 +20,11 @@ class FileIdTest {
     // note we can't hardcode the expected paths because they look different on win and nix
 
     @Test
-    void testRootStringPath() {
-        Path file = Paths.get("/a");
-        FileId fileId = FileId.fromPath(file);
-        assertEquals(file.toString(), fileId.getOriginalPath());
-        assertEquals(file.toString(), fileId.getAbsolutePath());
-        assertEquals("a", fileId.getFileName());
-        assertEquals("file:///a", fileId.getUriString());
+    void testFromPath() {
+        Path path = Paths.get("/a");
+        Path absPath = path.toAbsolutePath();
+        FileId fileId = FileId.fromPath(path);
+        checkId(fileId, absPath.toString(), "a", path.toUri().toString(), absPath.toString());
     }
 
 
