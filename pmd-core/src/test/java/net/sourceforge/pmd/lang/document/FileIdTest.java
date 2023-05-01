@@ -21,9 +21,12 @@ class FileIdTest {
 
     @Test
     void testRootStringPath() {
-        Path root = Paths.get("/").toAbsolutePath();
-        FileId fileId = FileId.fromPath(root);
-        assertEquals(root.toString(), fileId.getAbsolutePath());
+        Path file = Paths.get("/a");
+        FileId fileId = FileId.fromPath(file);
+        assertEquals(file.toString(), fileId.getOriginalPath());
+        assertEquals(file.toString(), fileId.getAbsolutePath());
+        assertEquals("a", fileId.getFileName());
+        assertEquals("file:///a", fileId.getUriString());
     }
 
 
