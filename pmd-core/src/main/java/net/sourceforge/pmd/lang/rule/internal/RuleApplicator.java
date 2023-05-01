@@ -109,7 +109,7 @@ public class RuleApplicator {
         listener.onError(new ProcessingError(e, node.getTextDocument().getFileId()));
 
         // fixme - maybe duplicated logging
-        LOG.warn("Exception applying rule {} on file {}, continuing with next rule", rule.getName(), node.getTextDocument().getFileId(), e);
+        LOG.warn("Exception applying rule {} on file {}, continuing with next rule", rule.getName(), node.getTextDocument().getFileId().getAbsolutePath(), e);
         String nodeToString = StringUtil.elide(node.toString(), 600, " ... (truncated)");
         LOG.warn("Exception occurred on node {}", nodeToString);
     }

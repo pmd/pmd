@@ -140,11 +140,12 @@ public interface FileId extends Comparable<FileId> {
      * This method is intentionally only meant for debugging, and its output
      * is unspecified. Code that needs a string representation should use one
      * of the named string conversion methods.
+     *
+     * @deprecated Do not use this method, use one of the other getters
      */
     @Override
+    @Deprecated
     String toString();
-
-    // todo doc
 
     /**
      * Return a path ID for the given string. The string is interpreted
