@@ -7164,6 +7164,15 @@
         "code",
         "test"
       ]
+    },
+    {
+      "login": "joaodinissf",
+      "name": "João Dinis Ferreira",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6786818?v=4",
+      "profile": "https://github.com/joaodinissf",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,

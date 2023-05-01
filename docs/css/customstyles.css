@@ -1079,9 +1079,9 @@ span.soft {
 /* this part adds an icon after external links, using FontAwesome*/
 a[href^="http://"]:after, a[href^="https://"]:after
 {
-    content: '\f08e';
-    font-family: FontAwesome;
-    font-weight: normal;
+    content: '\f35d'; /* f35d  https://fontawesome.com/v5/icons/external-link-alt?f=classic&s=solid */
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900; /* solid */
     font-style: normal;
     display: inline-block;
     text-decoration: none;

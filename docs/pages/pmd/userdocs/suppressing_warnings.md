@@ -192,8 +192,7 @@ then the violation will be suppressed. Note that the query shouldn't be finding
 the violation nodes to suppress, but rather, finding a non-empty sequence of nodes
 when evaluated with the violation node as a context node.
 
-The XPath version used by those queries is XPath 1.0, so it doesn't support various XPath 2.0
-features. This will be updated with PMD 7.0.0.
+The XPath version used by those queries is XPath 3.1 since PMD 7. Before then XPath 1.0 was used.
 
 For example, to suppress reporting specifically "String" parameters which are unused:
 

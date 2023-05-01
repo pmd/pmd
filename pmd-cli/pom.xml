@@ -38,7 +38,7 @@
                 <arguments>
                   <argument>-Dpicocli.autocomplete.systemExitOnError</argument>
                   <argument>-cp</argument>
-                  <classpath/>
+                  <classpath />
                   <argument>picocli.AutoComplete</argument>
                   <argument>--force</argument>
                   <argument>--completionScript</argument>
