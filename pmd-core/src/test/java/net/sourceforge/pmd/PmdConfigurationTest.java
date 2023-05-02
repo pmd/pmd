@@ -217,30 +217,6 @@ class PmdConfigurationTest {
     }
 
     @Test
-    void testDebug() {
-        PMDConfiguration configuration = new PMDConfiguration();
-        assertEquals(false, configuration.isDebug(), "Default debug");
-        configuration.setDebug(true);
-        assertEquals(true, configuration.isDebug(), "Changed debug");
-    }
-
-    @Test
-    void testStressTest() {
-        PMDConfiguration configuration = new PMDConfiguration();
-        assertEquals(false, configuration.isStressTest(), "Default stress test");
-        configuration.setStressTest(true);
-        assertEquals(true, configuration.isStressTest(), "Changed stress test");
-    }
-
-    @Test
-    void testBenchmark() {
-        PMDConfiguration configuration = new PMDConfiguration();
-        assertEquals(false, configuration.isBenchmark(), "Default benchmark");
-        configuration.setBenchmark(true);
-        assertEquals(true, configuration.isBenchmark(), "Changed benchmark");
-    }
-
-    @Test
     void testAnalysisCache(@TempDir Path folder) throws IOException {
         final PMDConfiguration configuration = new PMDConfiguration();
         assertNotNull(configuration.getAnalysisCache(), "Default cache is null");

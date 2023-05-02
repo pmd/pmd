@@ -110,13 +110,20 @@ public interface Renderer extends PropertySource {
      */
     Writer getWriter();
 
+    /**
+     * Set the {@link FileNameRenderer} used to render file paths to the report.
+     * Note that this renderer does not have to use the parameter to output paths.
+     * Some report formats require a specific format for paths (eg a URI), and are
+     * allowed to circumvent the provided strategy.
+     *
+     * @param fileNameRenderer a non-null file name renderer
+     */
     void setFileNameRenderer(FileNameRenderer fileNameRenderer);
 
     /**
      * Set the Writer for the Renderer.
      *
-     * @param writer
-     *            The Writer.
+     * @param writer The Writer.
      */
     void setWriter(Writer writer);
 

@@ -6,7 +6,10 @@ package net.sourceforge.pmd.renderers;
 
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.util.Objects;
 
+import net.sourceforge.pmd.AbstractConfiguration;
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.document.FileId;
@@ -66,16 +69,20 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
 
     @Override
     public void setFileNameRenderer(FileNameRenderer fileNameRenderer) {
-        this.fileNameRenderer = fileNameRenderer;
+        this.fileNameRenderer = Objects.requireNonNull(fileNameRenderer);
     }
 
     /**
-     * Determines the filename that should be used in the report depending on the
-     * option "shortnames". If the option is enabled, then the filename in the report
-     * is without the directory prefix of the directories, that have been analyzed.
-     * If the option "shortnames" is not enabled, then the fileId is returned as-is.
+     * Determines the filename that should be used in the report for the
+     * given ID. This uses the {@link FileNameRenderer} of this renderer.
+     * In the PMD CLI, the file name renderer respects the {@link PMDConfiguration#getRelativizeRoots()}
+     * relativize roots to output relative paths.
+     *
+     * <p>A renderer does not have to use this method to output paths.
+     * Some report formats require a specific format for paths, eg URIs.
+     * They can implement this ad-hoc.
      */
-    protected String determineFileName(FileId fileId) {
+    protected final String determineFileName(FileId fileId) {
         return fileNameRenderer.getDisplayName(fileId);
     }
 

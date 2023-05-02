@@ -44,6 +44,7 @@ import net.sourceforge.pmd.lang.document.FileCollector;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.reporting.ConfigurableFileNameRenderer;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.reporting.ListenerInitializer;
 import net.sourceforge.pmd.reporting.ReportStats;
@@ -53,11 +54,19 @@ import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.log.MessageReporter;
 
 /**
- * Main programmatic API of PMD. Create and configure a {@link PMDConfiguration},
+ * Main programmatic API of PMD. This is not a CLI entry point, see module
+ * {@code pmd-cli} for that.
+ *
+ * <h3>Usage overview</h3>
+ *
+ * Create and configure a {@link PMDConfiguration},
  * then use {@link #create(PMDConfiguration)} to obtain an instance.
- * You can perform additional configuration on the instance, eg adding
+ * You can perform additional configuration on the instance, e.g. adding
  * files to process, or additional rulesets and renderers. Then, call
- * {@link #performAnalysis()}. Example:
+ * {@link #performAnalysis()} or one of the related terminal methods.
+ *
+ * <h3>Simple example</h3>
+ *
  * <pre>{@code
  *   PMDConfiguration config = new PMDConfiguration();
  *   config.setDefaultLanguageVersion(LanguageRegistry.findLanguageByTerseName("java").getVersion("11"));
@@ -80,6 +89,42 @@ import net.sourceforge.pmd.util.log.MessageReporter;
  *     pmd.performAnalysis();
  *   }
  * }</pre>
+ *
+ * <h3>Rendering reports</h3>
+ *
+ * If you just want to render a report to a file like with the CLI, you
+ * should use a {@link Renderer}. You can add a custom one with {@link PmdAnalysis#addRenderer(Renderer)}.
+ * You can add one of the builtin renderers from its ID using {@link PMDConfiguration#setReportFormat(String)}.
+ *
+ * <h3>Reports and events</h3>
+ *
+ * <p>If you want strongly typed access to violations and other analysis events,
+ * you can implement and register a {@link GlobalAnalysisListener} with {@link #addListener(GlobalAnalysisListener)}.
+ * The listener needs to provide a new {@link FileAnalysisListener} for each file,
+ * which will receive events from the analysis. The listener's lifecycle
+ * happens only once the analysis is started ({@link #performAnalysis()}).
+ *
+ * <p>If you want access to all events once the analysis ends instead of processing
+ * events as they go, you can obtain a {@link Report} instance from {@link #performAnalysisAndCollectReport()},
+ * or use {@link Report.GlobalReportBuilderListener} manually. Keep in
+ * mind collecting a report is less memory-efficient than using a listener.
+ *
+ * <p>If you want to process events in batches, one per file, you can
+ * use {@link Report.ReportBuilderListener}. to implement {@link GlobalAnalysisListener#startFileAnalysis(TextFile)}.
+ *
+ * <p>Listeners can be used alongside renderers.
+ *
+ * <h3>Specifying the Java classpath</h3>
+ *
+ * Java rules work better if you specify the path to the compiled classes
+ * of the analysed sources. See {@link PMDConfiguration#prependAuxClasspath(String)}.
+ *
+ * <h3>Customizing message output</h3>
+ *
+ * <p>The analysis reports messages like meta warnings and errors through a
+ * {@link MessageReporter} instance. To override how those messages are output,
+ * you can set it in {@link PMDConfiguration#setReporter(MessageReporter)}.
+ * By default, it forwards messages to SLF4J.
  *
  */
 public final class PmdAnalysis implements AutoCloseable {
