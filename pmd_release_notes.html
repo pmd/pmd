@@ -85,8 +85,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 7.0.0-rc2</li>
-    <div class="sidebarTitleDate">Release date: 29-April-2023</div>
+    <li class="sidebarTitle">PMD 7.0.0-SNAPSHOT</li>
+    <div class="sidebarTitleDate">Release date: 27-May-2023</div>
     
     
     
@@ -1609,7 +1609,7 @@
     <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
 
   
-<h2 id="29-april-2023---700-rc2">29-April-2023 - 7.0.0-rc2</h2>
+<h2 id="27-may-2023---700-snapshot">27-May-2023 - 7.0.0-SNAPSHOT</h2>
 
 <p>We’re excited to bring you the next major version of PMD!</p>
 
@@ -1631,106 +1631,10 @@ You can see the progress in <a href="https://github.com/pmd/pmd/issues/3898">PMD
 for all.</p>
 </div>
 
-<h3 id="changes-since-700-rc1">Changes since 7.0.0-rc1</h3>
+<h3 id="changes-since-700-rc2">Changes since 7.0.0-rc2</h3>
 
 <p>This section lists the most important changes from the last release candidate.
 The remaining section describes the complete release notes for 7.0.0.</p>
-
-<h4 id="api-changes">API Changes</h4>
-<ul>
-  <li>Moved the two classes <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-rc2/net/sourceforge/pmd/cpd/impl/AntlrTokenizer.html#"><code>AntlrTokenizer</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-rc2/net/sourceforge/pmd/cpd/impl/JavaCCTokenizer.html#"><code>JavaCCTokenizer</code></a> from
-<code class="language-plaintext highlighter-rouge">internal</code> package into package <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-rc2/net/sourceforge/pmd/cpd/impl/package-summary.html#"><code>net.sourceforge.pmd.cpd.impl</code></a>. These two classes are part of the API and
-are base classes for CPD language implementations.</li>
-  <li><code class="language-plaintext highlighter-rouge">AntlrBaseRule</code> is gone in favor of <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-rc2/net/sourceforge/pmd/lang/rule/AbstractVisitorRule.html#"><code>AbstractVisitorRule</code></a>.</li>
-  <li>The classes <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.0.0-rc2/net/sourceforge/pmd/lang/kotlin/ast/KotlinInnerNode.html#"><code>KotlinInnerNode</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-swift/7.0.0-rc2/net/sourceforge/pmd/lang/swift/ast/SwiftInnerNode.html#"><code>SwiftInnerNode</code></a>
-are package-private now.</li>
-  <li>The parameter order of <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-rc2/net/sourceforge/pmd/lang/document/FileCollector.html#addSourceFile(String,String)"><code>addSourceFile</code></a> has been swapped
-in order to have the same meaning as in 6.55.0. That will make it easier if you upgrade from 6.55.0 to 7.0.0.
-However, that means, that you need to change these method calls if you have migrated to 7.0.0-rc1 already.</li>
-</ul>
-
-<h4 id="updated-pmd-designer">Updated PMD Designer</h4>
-<p>This PMD release ships a new version of the pmd-designer.
-For the changes, see <a href="https://github.com/pmd/pmd-designer/releases/tag/7.0.0-rc1">PMD Designer Changelog</a>.</p>
-
-<h4 id="language-related-changes">Language Related Changes</h4>
-<ul>
-  <li>New: CPD support for TypeScript</li>
-  <li>New: CPD support for Julia</li>
-</ul>
-
-<h4 id="rule-changes">Rule Changes</h4>
-<ul>
-  <li><a href="pmd_rules_java_design.html#immutablefield"><code class="language-plaintext highlighter-rouge">ImmutableField</code></a>: the property <code class="language-plaintext highlighter-rouge">ignoredAnnotations</code> has been removed. The property was
-deprecated since PMD 6.52.0.</li>
-  <li><a href="pmd_rules_java_design.html#switchdensity"><code class="language-plaintext highlighter-rouge">SwitchDensity</code></a>: the type of the property <code class="language-plaintext highlighter-rouge">minimum</code> has been changed from decimal to integer
-for consistency with other statistical rules.</li>
-</ul>
-
-<h4 id="fixed-issues">Fixed Issues</h4>
-<ul>
-  <li>cli
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4482">#4482</a>: [cli] pmd.bat can only be executed once</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4484">#4484</a>: [cli] ast-dump with no properties produce an NPE</li>
-    </ul>
-  </li>
-  <li>core
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2500">#2500</a>: [core] Clarify API for ANTLR based languages</li>
-    </ul>
-  </li>
-  <li>doc
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2501">#2501</a>: [doc] Verify ANTLR Documentation</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4438">#4438</a>: [doc] Documentation links in VS Code are outdated</li>
-    </ul>
-  </li>
-  <li>java-codestyle
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4273">#4273</a>: [java] CommentDefaultAccessModifier ignoredAnnotations should include “org.junit.jupiter.api.extension.RegisterExtension” by default</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4487">#4487</a>: [java] UnnecessaryConstructor: false-positive with @<!-- -->Inject and @<!-- -->Autowired</li>
-    </ul>
-  </li>
-  <li>java-design
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4254">#4254</a>: [java] ImmutableField - false positive with Lombok @<!-- -->Setter</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4477">#4477</a>: [java] SignatureDeclareThrowsException: false-positive with TestNG annotations</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4490">#4490</a>: [java] ImmutableField - false negative with Lombok @<!-- -->Getter</li>
-    </ul>
-  </li>
-  <li>java-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4449">#4449</a>: [java] AvoidAccessibilityAlteration: Possible false positive in AvoidAccessibilityAlteration rule when using Lambda expression</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4493">#4493</a>: [java] MissingStaticMethodInNonInstantiatableClass: false-positive about @<!-- -->Inject</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4505">#4505</a>: [java] ImplicitSwitchFallThrough NPE in PMD 7.0.0-rc1</li>
-    </ul>
-  </li>
-  <li>java-multithreading
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4483">#4483</a>: [java] NonThreadSafeSingleton false positive with double-checked locking</li>
-    </ul>
-  </li>
-  <li>miscellaneous
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4462">#4462</a>: Provide Software Bill of Materials (SBOM)</li>
-    </ul>
-  </li>
-</ul>
-
-<h4 id="external-contributions">External contributions</h4>
-<ul>
-  <li><a href="https://github.com/pmd/pmd/pull/4402">#4402</a>: [javascript] CPD: add support for Typescript using antlr4 grammar - <a href="https://github.com/pguyot">Paul Guyot</a> (@pguyot)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/4403">#4403</a>: [julia] CPD: Add support for Julia code duplication  - <a href="https://github.com/wener-tiobe">Wener</a> (@wener-tiobe)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/4444">#4444</a>: [java] CommentDefaultAccessModifier - ignore org.junit.jupiter.api.extension.RegisterExtension by default - <a href="https://github.com/nirvikpatel">Nirvik Patel</a> (@nirvikpatel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/4450">#4450</a>: [java] Fix #4449 AvoidAccessibilityAlteration: Correctly handle Lambda expressions in PrivilegedAction scenarios - <a href="https://github.com/mohui1999">Seren</a> (@mohui1999)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/4452">#4452</a>: [doc] Update PMD_APEX_ROOT_DIRECTORY documentation reference - <a href="https://github.com/nwcm">nwcm</a> (@nwcm)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/4474">#4474</a>: [java] ImmutableField: False positive with lombok (fixes #4254) - <a href="https://github.com/PimvanderLoos">Pim van der Loos</a> (@PimvanderLoos)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/4488">#4488</a>: [java] Fix #4477: A false-positive about SignatureDeclareThrowsException - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/4494">#4494</a>: [java] Fix #4487: A false-positive about UnnecessaryConstructor and @<!-- -->Inject and @<!-- -->Autowired - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/4495">#4495</a>: [java] Fix #4493: false-positive about MissingStaticMethodInNonInstantiatableClass and @<!-- -->Inject - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/4520">#4520</a>: [doc] Fix typo: missing closing quotation mark after CPD-END - <a href="https://github.com/joaodinissf">João Dinis Ferreira</a> (@joaodinissf)</li>
-</ul>
 
 <h3 id="-major-features-and-enhancements">🚀 Major Features and Enhancements</h3>
 
@@ -1790,7 +1694,7 @@ for consistency with other statistical rules.</li>
 <a href="https://github.com/matifraga">Matías Fraga</a> (@matifraga),
 <a href="https://github.com/tomidelucca">Tomás De Lucca</a> (@tomidelucca)</p>
 
-<h4 id="updated-pmd-designer-1">Updated PMD Designer</h4>
+<h4 id="updated-pmd-designer">Updated PMD Designer</h4>
 
 <p>This PMD release ships a new version of the pmd-designer.
 For the changes, see <a href="https://github.com/pmd/pmd-designer/releases/tag/7.0.0-rc1">PMD Designer Changelog</a>.</p>
@@ -1921,7 +1825,7 @@ See <a href="https://github.com/pmd/pmd/issues/1648">issue #1648</a> for more de
 or class. With PMD 7.0.0, the reported location is now just the identifier of the method or class.
 This affects various rules, e.g. <a href="pmd_rules_java_design.html#cognitivecomplexity"><code class="language-plaintext highlighter-rouge">CognitiveComplexity</code></a>.</p>
 
-    <p>The report location is controlled by the overrides of the method <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-rc2/net/sourceforge/pmd/lang/ast/Node.html#getReportLocation()"><code>getReportLocation</code></a>
+    <p>The report location is controlled by the overrides of the method <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getReportLocation()"><code>getReportLocation</code></a>
 in different node types.</p>
 
     <p>See <a href="https://github.com/pmd/pmd/issues/4439">issue #4439</a> and <a href="https://github.com/pmd/pmd/issues/730">issue #730</a>
@@ -2378,7 +2282,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Apr 29, 2023 <br />
+             Site last generated: May 2, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
