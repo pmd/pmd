@@ -311,4 +311,26 @@ class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description> False-negative about try/catch block in Loop #4063 </description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+class A {
+    void foo(java.util.List<String> list) {
+        while (true){
+            try{
+                // nothing to do
+            }
+            catch (Throwable c){
+                throw c;
+            }
+            finally{
+                break;
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

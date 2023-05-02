@@ -17,10 +17,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTContinueStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTFinallyClause;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -73,7 +75,7 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRulecha
 
     protected Object check(PropertyDescriptor<List<String>> property, Node node, Object data) {
         Node parent = node.getParent();
-        if (parent instanceof ASTBlock) {
+        while (parent instanceof ASTBlock || parent instanceof ASTFinallyClause || parent instanceof ASTTryStatement) {
             parent = parent.getParent();
         }
         if (parent instanceof ASTForStatement || parent instanceof ASTForeachStatement) {
