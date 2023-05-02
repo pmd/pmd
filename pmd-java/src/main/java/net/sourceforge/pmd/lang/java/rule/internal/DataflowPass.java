@@ -322,10 +322,10 @@ public final class DataflowPass {
         // null if we're not processing instance/static initializers,
         // so in methods we don't care about fields
         // If not null, fields are effectively treated as locals
-        private final JClassSymbol enclosingClassScope;
+        private final @Nullable JClassSymbol enclosingClassScope;
         private final boolean inStaticCtx;
 
-        private ReachingDefsVisitor(JClassSymbol scope, boolean inStaticCtx) {
+        private ReachingDefsVisitor(@Nullable JClassSymbol scope, boolean inStaticCtx) {
             this.enclosingClassScope = scope;
             this.inStaticCtx = inStaticCtx;
         }
@@ -884,8 +884,7 @@ public final class DataflowPass {
         private boolean isStaticFieldOfThisClass(JVariableSymbol var) {
             return var instanceof JFieldSymbol
                 && ((JFieldSymbol) var).isStatic()
-                // must be non-null
-                && enclosingClassScope.equals(((JFieldSymbol) var).getEnclosingClass());
+                && ((JFieldSymbol) var).getEnclosingClass().equals(enclosingClassScope);
         }
 
         private static JVariableSymbol getVarIfUnaryAssignment(ASTUnaryExpression node) { // NOPMD UnusedPrivateMethod
@@ -919,13 +918,16 @@ public final class DataflowPass {
         @Override
         public SpanInfo visit(ASTThisExpression node, SpanInfo data) {
             if (trackThisInstance() && !(node.getParent() instanceof ASTFieldAccess)) {
-                data.recordThisLeak(true, enclosingClassScope, node);
+                data.recordThisLeak(enclosingClassScope, node);
             }
             return data;
         }
 
         @Override
         public SpanInfo visit(ASTMethodCall node, SpanInfo state) {
+            if (trackThisInstance() && JavaAstUtils.isCallOnThisInstance(node) != OptionalBool.NO) {
+                state.recordThisLeak(enclosingClassScope, node);
+            }
             return visitInvocationExpr(node, state);
         }
 
@@ -975,7 +977,7 @@ public final class DataflowPass {
 
         private static void processInitializers(NodeStream<ASTBodyDeclaration> declarations,
                                                 SpanInfo beforeLocal,
-                                                JClassSymbol classSymbol) {
+                                                @NonNull JClassSymbol classSymbol) {
 
             ReachingDefsVisitor instanceVisitor = new ReachingDefsVisitor(classSymbol, false);
             ReachingDefsVisitor staticVisitor = new ReachingDefsVisitor(classSymbol, true);
@@ -1240,8 +1242,8 @@ public final class DataflowPass {
          * of `this`. So the analysis may show some false positives, which
          * hopefully should be rare enough.
          */
-        public void recordThisLeak(boolean thisIsLeaking, JClassSymbol enclosingClassSym, JavaNode escapingNode) {
-            if (thisIsLeaking && enclosingClassSym != null) {
+        public void recordThisLeak(JClassSymbol enclosingClassSym, JavaNode escapingNode) {
+            if (enclosingClassSym != null) {
                 // all reaching defs to fields until now may be observed
                 ReachingDefsVisitor.useAllSelfFields(null, this, enclosingClassSym, escapingNode);
             }
@@ -1308,7 +1310,7 @@ public final class DataflowPass {
             // Find the first block that has a finally
             // Be absorbed into every catch block on the way.
 
-            // In 7.0, with the precise type/overload resolution, we
+            // todo In 7.0, with the precise type/overload resolution, we
             // can target the specific catch block that would catch the
             // exception.
             if (!byMethodCall) {

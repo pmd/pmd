@@ -3543,4 +3543,50 @@ public class UnusedAssignmentUnusedVariableFP {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>[java] [7.0-rc1] UnusedAssignment for used field #4435</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        class FP {
+            long nanos;
+            static final long[] SHIFT = {};
+            public void advance(long currentTimeNanos) {
+                long previousTimeNanos = nanos;
+                nanos = currentTimeNanos;
+
+                try {
+                    // ...
+                    for (int i = 0; i < SHIFT.length; i++) {
+                        long previousTicks = (previousTimeNanos >>> SHIFT[i]);
+                        long currentTicks = (currentTimeNanos >>> SHIFT[i]);
+                        long delta = (currentTicks - previousTicks);
+                        if (delta <= 0L) {
+                            break;
+                        }
+                        expire(i, previousTicks, delta);
+                    }
+                } catch (Throwable t) {
+                    nanos = previousTimeNanos;
+                    throw t;
+                }
+            }
+            void expire(int index, long previousTicks, long delta) {}
+        }
+
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Consider method calls in ctors as leaking this</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        class FP {
+            long nanos;
+            FP() {
+                nanos = 2;
+                advance(4);
+                nanos = 6;
+            }
+        }
+        ]]></code>
+    </test-code>
 </test-data>

@@ -70,6 +70,7 @@ import net.sourceforge.pmd.lang.java.ast.QualifiableExpression;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.ast.UnaryOp;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
+import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.ast.AstLocalVarSym;
@@ -589,16 +590,22 @@ public final class JavaAstUtils {
         return false;
     }
 
-    public static boolean isCallOnThisInstance(ASTMethodCall call) {
+    public static OptionalBool isCallOnThisInstance(ASTMethodCall call) {
         // syntactic approach.
         if (call.getQualifier() != null) {
-            return isUnqualifiedThisOrSuper(call.getQualifier());
+            return OptionalBool.definitely(isUnqualifiedThisOrSuper(call.getQualifier()));
         }
 
         // unqualified call
         JMethodSig mtype = call.getMethodType();
-        return !mtype.getSymbol().isUnresolved()
-            && mtype.getSymbol().getEnclosingClass().equals(call.getEnclosingType().getSymbol());
+        JExecutableSymbol methodSym = mtype.getSymbol();
+        if (methodSym.isUnresolved()) {
+            return OptionalBool.UNKNOWN;
+        }
+        return OptionalBool.definitely(
+            !methodSym.isStatic()
+                && methodSym.getEnclosingClass().equals(call.getEnclosingType().getSymbol())
+        );
     }
 
     public static ASTClassOrInterfaceType getThisOrSuperQualifier(ASTExpression expr) {
