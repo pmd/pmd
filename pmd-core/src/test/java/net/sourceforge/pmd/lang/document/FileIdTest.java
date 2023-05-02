@@ -24,7 +24,7 @@ class FileIdTest {
         Path path = Paths.get("/a");
         Path absPath = path.toAbsolutePath();
         FileId fileId = FileId.fromPath(path);
-        checkId(fileId, absPath.toString(), "a", path.toUri().toString(), absPath.toString());
+        checkId(fileId, absPath.toString(), "a", path.toUri().toString(), path.toString());
     }
 
 
