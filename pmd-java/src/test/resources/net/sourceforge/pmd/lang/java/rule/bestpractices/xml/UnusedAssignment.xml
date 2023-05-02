@@ -3557,13 +3557,7 @@ public class UnusedAssignmentUnusedVariableFP {
                 try {
                     // ...
                     for (int i = 0; i < SHIFT.length; i++) {
-                        long previousTicks = (previousTimeNanos >>> SHIFT[i]);
-                        long currentTicks = (currentTimeNanos >>> SHIFT[i]);
-                        long delta = (currentTicks - previousTicks);
-                        if (delta <= 0L) {
-                            break;
-                        }
-                        expire(i, previousTicks, delta);
+                        expire(i, i * 2L, i * 4L);
                     }
                 } catch (Throwable t) {
                     nanos = previousTimeNanos;
@@ -3583,8 +3577,32 @@ public class UnusedAssignmentUnusedVariableFP {
             long nanos;
             FP() {
                 nanos = 2;
+                unknownMethod(4);
+                nanos = 6;
+            }
+            FP(int i) {
+                nanos = 2;
                 advance(4);
                 nanos = 6;
+            }
+            void advance(int i) {}
+        }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Don't consider fields that are not of this </description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+        class Foo {
+            long nanos;
+            void method() {
+                nanos = 2; // warn here
+                nanos = 4;
+            }
+            void method(Foo other) {
+                nanos = 2; // do not warn here
+                other.nanos = 4;
             }
         }
         ]]></code>

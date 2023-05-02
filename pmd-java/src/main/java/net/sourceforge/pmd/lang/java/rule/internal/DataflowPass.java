@@ -141,7 +141,7 @@ public final class DataflowPass {
         DataflowResult dataflowResult = new DataflowResult();
         for (ASTAnyTypeDeclaration typeDecl : node.getTypeDeclarations()) {
             GlobalAlgoState subResult = new GlobalAlgoState();
-            typeDecl.acceptVisitor(ReachingDefsVisitor.ONLY_LOCALS, new SpanInfo(subResult));
+            ReachingDefsVisitor.processTypeDecl(typeDecl, new SpanInfo(subResult));
             if (subResult.usedAssignments.size() < subResult.allAssignments.size()) {
                 Set<AssignmentEntry> unused = subResult.allAssignments;
                 unused.removeAll(subResult.usedAssignments);
@@ -314,18 +314,15 @@ public final class DataflowPass {
 
     private static final class ReachingDefsVisitor extends JavaVisitorBase<SpanInfo, SpanInfo> {
 
-
-        static final ReachingDefsVisitor ONLY_LOCALS = new ReachingDefsVisitor(null, false);
-
         // The class scope for the "this" reference, used to find fields
         // of this class
         // null if we're not processing instance/static initializers,
         // so in methods we don't care about fields
         // If not null, fields are effectively treated as locals
-        private final @Nullable JClassSymbol enclosingClassScope;
+        private final @NonNull JClassSymbol enclosingClassScope;
         private final boolean inStaticCtx;
 
-        private ReachingDefsVisitor(@Nullable JClassSymbol scope, boolean inStaticCtx) {
+        private ReachingDefsVisitor(@NonNull JClassSymbol scope, boolean inStaticCtx) {
             this.enclosingClassScope = scope;
             this.inStaticCtx = inStaticCtx;
         }
@@ -340,7 +337,7 @@ public final class DataflowPass {
 
         private boolean trackStaticFields() {
             // only tracked in initializers
-            return enclosingClassScope != null && inStaticCtx;
+            return inStaticCtx;
         }
 
         // following deals with control flow structures
@@ -884,7 +881,7 @@ public final class DataflowPass {
         private boolean isStaticFieldOfThisClass(JVariableSymbol var) {
             return var instanceof JFieldSymbol
                 && ((JFieldSymbol) var).isStatic()
-                && ((JFieldSymbol) var).getEnclosingClass().equals(enclosingClassScope);
+                && enclosingClassScope.equals(((JFieldSymbol) var).getEnclosingClass());
         }
 
         private static JVariableSymbol getVarIfUnaryAssignment(ASTUnaryExpression node) { // NOPMD UnusedPrivateMethod
@@ -908,8 +905,7 @@ public final class DataflowPass {
         @Override
         public SpanInfo visit(ASTFieldAccess node, SpanInfo data) {
             data = node.getQualifier().acceptVisitor(this, data);
-
-            if (isRelevantField(node) && node.getAccessType() == AccessType.READ) {
+            if (node.getAccessType() == AccessType.READ) {
                 data.use(node.getReferencedSym(), node);
             }
             return data;
@@ -955,8 +951,16 @@ public final class DataflowPass {
 
         @Override
         public SpanInfo visitTypeDecl(ASTAnyTypeDeclaration node, SpanInfo data) {
+            return processTypeDecl(node, data);
+        }
+
+        private static SpanInfo processTypeDecl(ASTAnyTypeDeclaration node, SpanInfo data) {
+            ReachingDefsVisitor instanceVisitor = new ReachingDefsVisitor(node.getSymbol(), false);
+            ReachingDefsVisitor staticVisitor = new ReachingDefsVisitor(node.getSymbol(), true);
+
             // process initializers and ctors first
-            processInitializers(node.getDeclarations(), data, node.getSymbol());
+            processInitializers(node.getDeclarations(), data, node.getSymbol(),
+                                instanceVisitor, staticVisitor);
 
             for (ASTBodyDeclaration decl : node.getDeclarations()) {
                 if (decl instanceof ASTMethodDeclaration) {
@@ -965,22 +969,23 @@ public final class DataflowPass {
                         SpanInfo span = data.forkCapturingNonLocal();
                         if (!method.isStatic()) {
                             span.declareSpecialFieldValues(node.getSymbol());
+                            instanceVisitor.acceptOpt(decl, span);
+                        } else {
+                            staticVisitor.acceptOpt(decl, span);
                         }
-                        ONLY_LOCALS.acceptOpt(decl, span);
                     }
                 } else if (decl instanceof ASTAnyTypeDeclaration) {
-                    visitTypeDecl((ASTAnyTypeDeclaration) decl, data.forkEmptyNonLocal());
+                    processTypeDecl((ASTAnyTypeDeclaration) decl, data.forkEmptyNonLocal());
                 }
             }
-            return data; // type doesn't contribute anything to the enclosing control flow
+            return data;
         }
 
         private static void processInitializers(NodeStream<ASTBodyDeclaration> declarations,
                                                 SpanInfo beforeLocal,
-                                                @NonNull JClassSymbol classSymbol) {
-
-            ReachingDefsVisitor instanceVisitor = new ReachingDefsVisitor(classSymbol, false);
-            ReachingDefsVisitor staticVisitor = new ReachingDefsVisitor(classSymbol, true);
+                                                @NonNull JClassSymbol classSymbol,
+                                                ReachingDefsVisitor instanceVisitor,
+                                                ReachingDefsVisitor staticVisitor) {
 
             // All field initializers + instance initializers
             SpanInfo ctorHeader = beforeLocal.forkCapturingNonLocal();
@@ -1022,15 +1027,10 @@ public final class DataflowPass {
             useAllSelfFields(staticInit, ctorEndState, classSymbol, classSymbol.tryGetNode());
         }
 
-        static void useAllSelfFields(@Nullable SpanInfo staticState, SpanInfo instanceState, JClassSymbol enclosingSym, JavaNode escapingNode) {
+        static void useAllSelfFields(SpanInfo staticState, SpanInfo instanceState, JClassSymbol enclosingSym, JavaNode escapingNode) {
             for (JFieldSymbol field : enclosingSym.getDeclaredFields()) {
-                if (field.isStatic()) {
-                    if (staticState != null) {
-                        staticState.assignOutOfScope(field, escapingNode);
-                    }
-                } else {
-                    instanceState.assignOutOfScope(field, escapingNode);
-                }
+                SpanInfo state = field.isStatic() ? staticState : instanceState;
+                state.use(field, null);
             }
         }
     }
@@ -1191,11 +1191,15 @@ public final class DataflowPass {
             if (var == null) {
                 return;
             }
+            if (!symtable.containsKey(var)) {
+                // just an optimization, no need to assign this var since it's not being tracked
+                return;
+            }
             use(var, null);
             assign(var, escapingNode, true, false);
         }
 
-        void use(@Nullable JVariableSymbol var, ASTNamedReferenceExpr reachingDefSink) {
+        void use(@Nullable JVariableSymbol var, @Nullable ASTNamedReferenceExpr reachingDefSink) {
             if (var == null) {
                 return;
             }
@@ -1234,7 +1238,7 @@ public final class DataflowPass {
          * <p>Constructs that are considered to leak the `this` reference
          * (only processed if they occur in a ctor):
          * - using `this` as a method/ctor argument
-         * - using `this` as the receiver of a method/ctor invocation
+         * - using `this` as the receiver of a method/ctor invocation (also implicitly)
          *
          * <p>Because `this` may be aliased (eg in a field, a local var,
          * inside an anon class or capturing lambda, etc), any method
@@ -1243,9 +1247,11 @@ public final class DataflowPass {
          * hopefully should be rare enough.
          */
         public void recordThisLeak(JClassSymbol enclosingClassSym, JavaNode escapingNode) {
-            if (enclosingClassSym != null) {
-                // all reaching defs to fields until now may be observed
-                ReachingDefsVisitor.useAllSelfFields(null, this, enclosingClassSym, escapingNode);
+            // all reaching defs to fields until now may be observed
+            for (JFieldSymbol field : enclosingClassSym.getDeclaredFields()) {
+                if (!field.isStatic()) {
+                    assignOutOfScope(field, escapingNode);
+                }
             }
         }
 
