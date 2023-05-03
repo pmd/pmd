@@ -1392,7 +1392,7 @@ public class ShortMethod {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#shortvariable">
         <description>
-Fields, local variables, or parameter names that are very short are not helpful to the reader.
+Fields, local variables, enum constant names or parameter names that are very short are not helpful to the reader.
         </description>
         <priority>3</priority>
         <properties>

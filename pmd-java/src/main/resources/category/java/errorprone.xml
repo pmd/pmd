@@ -566,6 +566,7 @@ public void checkRequests() {
     // with rule property "ignoreExpressions" set to "false"
     if (i == pos + 5) {}  // violation: magic number 5 within an (additive) expression
     if (i == pos + SUFFIX_LENGTH) {} // preferred approach
+    if (i == 5 && "none".equals(aString)) {} // 2 violations: magic number 5 and literal "none"
 }
 ]]>
         </example>

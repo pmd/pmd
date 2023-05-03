@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.RuleViolation;
@@ -17,10 +18,13 @@ import net.sourceforge.pmd.util.AssertionUtil;
 /**
  * A handler for events occuring during analysis of a single file. Instances
  * are only used on a single thread for their entire lifetime, so don't
- * need to be synchronized to access state they own.
+ * need to be synchronized to access state they own. File listeners are
+ * spawned by a {@link GlobalAnalysisListener}.
  *
  * <p>Listeners are assumed to be ready to receive events as soon as they
  * are constructed.
+ *
+ * @see Report.ReportBuilderListener
  */
 public interface FileAnalysisListener extends AutoCloseable {
 

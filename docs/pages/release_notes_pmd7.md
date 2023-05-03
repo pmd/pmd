@@ -488,6 +488,20 @@ We are shipping the following rules:
 Contributors: [Jeroen Borgers](https://github.com/jborgers) (@jborgers),
 [Peter Paul Bakker](https://github.com/stokpop) (@stokpop)
 
+#### New: CPD support for TypeScript
+
+Thanks to a contribution, CPD now supports the TypeScript language. It is shipped
+with the rest of the JavaScript support in the module `pmd-javascript`.
+
+Contributors: [Paul Guyot](https://github.com/pguyot) (@pguyot)
+
+#### New: CPD support for Julia
+
+Thanks to a contribution, CPD now supports the Julia language. It is shipped
+in the new module `pmd-julia`.
+
+Contributors: [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
+
 ### Changed: JavaScript support
 
 The JS specific parser options have been removed. The parser now always retains comments and uses version ES6.
@@ -530,33 +544,116 @@ Related issue: [[core] Explicitly name all language versions (#4120)](https://gi
 
 ### Changed Rules
 
-**Java**
+**General changes**
 
-* {% rule "java/codestyle/UnnecessaryFullyQualifiedName" %}: the rule has two new properties,
+* All statistical rules (like ExcessiveClassLength, ExcessiveParameterList) have been simplified and unified.
+  The properties `topscore` and `sigma` have been removed. The property `minimum` is still there, however the type is not
+  a decimal number anymore but has been changed to an integer. This affects rules in the languages Apex, Java, PLSQL
+  and Velocity Template Language (vm):
+    * Apex: {% rule apex/design/ExcessiveClassLength %}, {% rule apex/design/ExcessiveParameterList %},
+      {% rule apex/design/ExcessivePublicCount %}, {% rule apex/design/NcssConstructorCount %},
+      {% rule apex/design/NcssMethodCount %}, {% rule apex/design/NcssTypeCount %}
+    * Java: {% rule java/design/ExcessiveImports %}, {% rule java/design/ExcessiveParameterList %},
+      {% rule java/design/ExcessivePublicCount %}, {% rule java/design/SwitchDensity %}
+    * PLSQL: {% rule plsql/design/ExcessiveMethodLength %}, {% rule plsql/design/ExcessiveObjectLength %},
+      {% rule plsql/design/ExcessivePackageBodyLength %}, {% rule plsql/design/ExcessivePackageSpecificationLength %},
+      {% rule plsql/design/ExcessiveParameterList %}, {% rule plsql/design/ExcessiveTypeLength %},
+      {% rule plsql/design/NcssMethodCount %}, {% rule plsql/design/NcssObjectCount %},
+      {% rule plsql/design/NPathComplexity %}
+    * VM: {% rule vm/design/ExcessiveTemplateLength %}
+
+* The general property `violationSuppressXPath` which is available for all rules to
+  [suppress warnings](pmd_userdocs_suppressing_warnings.html) now uses XPath version 3.1 by default.
+  This version of the XPath language is mostly identical to XPath 2.0. In PMD 6, XPath 1.0 has been used.
+  If you upgrade from PMD 6, you need to verify your `violationSuppressXPath` properties.
+
+**Apex General changes**
+
+* The properties `cc_categories`, `cc_remediation_points_multiplier`, `cc_block_highlighting` have been removed
+  from all rules. These properties have been deprecated since PMD 6.13.0.
+  See [issue #1648](https://github.com/pmd/pmd/issues/1648) for more details.
+
+**Java General changes**
+
+* Violations reported on methods or classes previously reported the line range of the entire method
+  or class. With PMD 7.0.0, the reported location is now just the identifier of the method or class.
+  This affects various rules, e.g. {% rule java/design/CognitiveComplexity %}.
+
+  The report location is controlled by the overrides of the method {% jdoc core::lang.ast.Node#getReportLocation() %}
+  in different node types.
+
+  See [issue #4439](https://github.com/pmd/pmd/issues/4439) and [issue #730](https://github.com/pmd/pmd/issues/730)
+  for more details.
+
+**Java Best Practices**
+
+* {% rule java/bestpractices/ArrayIsStoredDirectly %}: Violations are now reported on the assignment and not
+  anymore on the formal parameter. The reported line numbers will probably move.
+* {% rule java/bestpractices/AvoidReassigningLoopVariables %}: This rule might not report anymore all
+  reassignments of the control variable in for-loops when the property `forReassign` is set to `skip`.
+  See [issue #4500](https://github.com/pmd/pmd/issues/4500) for more details.
+* {% rule java/bestpractices/LooseCoupling %}: The rule has a new property to allow some types to be coupled
+  to (`allowedTypes`).
+* {% rule java/bestpractices/UnusedLocalVariable %}: This rule has some important false-negatives fixed
+  and finds many more cases now. For details see issues [#2130](https://github.com/pmd/pmd/issues/2130),
+  [#4516](https://github.com/pmd/pmd/issues/4516), and [#4517](https://github.com/pmd/pmd/issues/4517).
+
+**Java Codestyle**
+
+* {% rule java/codestyle/MethodNamingConventions %}: The property `checkNativeMethods` has been removed. The
+  property was deprecated since PMD 6.3.0. Use the property `nativePattern` to control whether native methods
+  should be considered or not.
+* {% rule java/codestyle/ShortVariable %}: This rule now also reports short enum constant names.
+* {% rule java/codestyle/UseDiamondOperator %}: The property `java7Compatibility` has been removed. The rule now
+  handles Java 7 properly without a property.
+* {% rule java/codestyle/UnnecessaryFullyQualifiedName %}: The rule has two new properties,
   to selectively disable reporting on static field and method qualifiers. The rule also has been improved
   to be more precise.
-* {% rule "java/codestyle/UselessParentheses" %}: the rule has two new properties which control how strict
+* {% rule java/codestyle/UselessParentheses %}: The rule has two new properties which control how strict
   the rule should be applied. With `ignoreClarifying` (default: true) parentheses that are strictly speaking
   not necessary are allowed, if they separate expressions of different precedence.
   The other property `ignoreBalancing` (default: true) is similar, in that it allows parentheses that help
   reading and understanding the expressions.
-* {% rule "java/bestpractices/LooseCoupling" %}: the rule has a new property to allow some types to be coupled
-  to (`allowedTypes`).
-* {% rule "java/errorprone/EmptyCatchBlock" %}: `CloneNotSupportedException` and `InterruptedException` are not
-  special-cased anymore. Rename the exception parameter to `ignored` to ignore them.
-* {% rule "java/errorprone/DontImportSun" %}: `sun.misc.Signal` is not special-cased anymore.
-* {% rule "java/codestyle/UseDiamondOperator" %}: the property `java7Compatibility` is removed. The rule now
-  handles Java 7 properly without a property.
-* {% rule "java/design/SingularField" %}: Properties `checkInnerClasses` and `disallowNotAssignment` are removed.
-  The rule is now more precise and will check these cases properly.
-* {% rule "java/design/UseUtilityClass" %}: The property `ignoredAnnotations` has been removed.
-* {% rule "java/design/LawOfDemeter" %}: the rule has a new property `trustRadius`. This defines the maximum degree
-  of trusted data. The default of 1 is the most restrictive.
-* {% rule "java/documentation/CommentContent" %}: The properties `caseSensitive` and `disallowedTerms` are removed. The
-  new property `fobiddenRegex` can be used now to define the disallowed terms with a single regular
-  expression.
-* {% rule "java/design/ImmutableField" %}: the property `ignoredAnnotations` has been removed. The property was
+
+**Java Design**
+
+* {% rule java/design/CyclomaticComplexity %}: The property `reportLevel` has been removed. The property was
+  deprecated since PMD 6.0.0. The report level can now be configured separated for classes and methods using
+  `classReportLevel` and `methodReportLevel` instead.
+* {% rule java/design/ImmutableField %}: The property `ignoredAnnotations` has been removed. The property was
   deprecated since PMD 6.52.0.
+* {% rule java/design/LawOfDemeter %}: The rule has a new property `trustRadius`. This defines the maximum degree
+  of trusted data. The default of 1 is the most restrictive.
+* {% rule java/design/NPathComplexity %}: The property `minimum` has been removed. It was deprecated since PMD 6.0.0.
+  Use the property `reportLevel` instead.
+* {% rule java/design/SingularField %}: The properties `checkInnerClasses` and `disallowNotAssignment` have been removed.
+  The rule is now more precise and will check these cases properly.
+* {% rule java/design/UseUtilityClass %}: The property `ignoredAnnotations` has been removed.
+
+**Java Documentation**
+
+* {% rule java/documentation/CommentContent %}: The properties `caseSensitive` and `disallowedTerms` are removed. The
+  new property `forbiddenRegex` can be used now to define the disallowed terms with a single regular
+  expression.
+* {% rule java/documentation/CommentRequired %}:
+  * Overridden methods are now detected even without the `@Override`
+    annotation. This is relevant for the property `methodWithOverrideCommentRequirement`.
+    See also [pull request #3757](https://github.com/pmd/pmd/pull/3757).
+  * Elements in annotation types are now detected as well. This might lead to an increased number of violations
+    for missing public method comments.
+* {% rule java/documentation/CommentSize %}: When determining the line-length of a comment, the leading comment
+  prefix markers (e.g. `*` or `//`) are ignored and don't add up to the line-length.
+  See also [pull request #4369](https://github.com/pmd/pmd/pull/4369).
+
+**Java Error Prone**
+
+* {% rule java/errorprone/AvoidDuplicateLiterals %}: The property `exceptionfile` has been removed. The property was
+  deprecated since PMD 6.10.0. Use the property `exceptionList` instead.
+* {% rule java/errorprone/DontImportSun %}: `sun.misc.Signal` is not special-cased anymore.
+* {% rule java/errorprone/EmptyCatchBlock %}: `CloneNotSupportedException` and `InterruptedException` are not
+  special-cased anymore. Rename the exception parameter to `ignored` to ignore them.
+* {% rule java/errorprone/ImplicitSwitchFallThrough %}: Violations are now reported on the case statements
+  rather than on the switch statements. This is more accurate but might result in more violations now.
 
 ### Deprecated Rules
 

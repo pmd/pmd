@@ -31,6 +31,7 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
     private static final List<String> SUPPORTED_LANGUAGES_CPD = listOf(
         "apex", "cpp", "cs", "dart", "ecmascript",
         "fortran", "gherkin", "go", "groovy", "html", "java", "jsp",
+        "julia",
         "kotlin", "lua", "matlab", "modelica", "objectivec", "perl",
         "php", "plsql", "python", "ruby", "scala", "swift", "tsql",
         "typescript", "vf", "xml"

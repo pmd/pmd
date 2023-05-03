@@ -81,7 +81,7 @@
     </issueManagement>
 
     <properties>
-        <project.build.outputTimestamp>2023-03-25T11:47:31Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2023-04-29T21:39:33Z</project.build.outputTimestamp>
 
         <java.version>8</java.version>
 
@@ -671,11 +671,6 @@
                 <version>${ant.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.beust</groupId>
-                <artifactId>jcommander</artifactId>
-                <version>1.48</version> <!-- 1.48 is the latest version compatible with java7 -->
-            </dependency>
-            <dependency>
                 <groupId>info.picocli</groupId>
                 <artifactId>picocli</artifactId>
                 <version>4.7.0</version>
@@ -1188,6 +1183,7 @@
         <module>pmd-java</module>
         <module>pmd-javascript</module>
         <module>pmd-jsp</module>
+        <module>pmd-julia</module>
         <module>pmd-kotlin</module>
         <module>pmd-lang-test</module>
         <module>pmd-matlab</module>
