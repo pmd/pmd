@@ -180,4 +180,23 @@ public class Foo implements Runnable {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description> [java]A false negative about OverrideBothEqualsAndHashcode #4457 </description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  public class B {
+      Object o = new Object() {
+          public boolean equals(Object other) {   // report no warning
+              return false;
+          }
+      };
+      public int hashCode() {
+          return 1;
+      }
+  }
+}
+        ]]></code>
+    </test-code>
 </test-data>

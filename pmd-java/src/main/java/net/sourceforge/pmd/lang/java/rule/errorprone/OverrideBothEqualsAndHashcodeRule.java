@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTImplementsList;
@@ -25,6 +26,25 @@ public class OverrideBothEqualsAndHashcodeRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+        if (node.isInterface()) {
+            return data;
+        }
+        super.visit(node, data);
+        if (!implementsComparable && containsEquals ^ containsHashCode) {
+            if (nodeFound == null) {
+                nodeFound = node;
+            }
+            addViolation(data, nodeFound);
+        }
+        implementsComparable = false;
+        containsEquals = false;
+        containsHashCode = false;
+        nodeFound = null;
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTAnonymousClassDeclaration node, Object data) {
         if (node.isInterface()) {
             return data;
         }
