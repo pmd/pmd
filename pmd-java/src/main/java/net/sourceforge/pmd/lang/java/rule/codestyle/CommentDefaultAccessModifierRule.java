@@ -61,7 +61,8 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
             "org.junit.jupiter.api.BeforeEach",
             "org.junit.jupiter.api.BeforeAll",
             "org.junit.jupiter.api.AfterEach",
-            "org.junit.jupiter.api.AfterAll"
+            "org.junit.jupiter.api.AfterAll",
+            "org.testng.annotations.Test"
         );
 
 

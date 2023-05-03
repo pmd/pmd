@@ -514,4 +514,18 @@ class Test { // missing
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description> [java] CommentDefaultAccessModifier - false positive with TestNG's @Test annotation #4268 </description>
+        <rule-property name="checkTopLevelTypes">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.testng.annotations.Test;
+public class C {
+    @Test
+    void foo() {
+        synchronized (this) {}
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
