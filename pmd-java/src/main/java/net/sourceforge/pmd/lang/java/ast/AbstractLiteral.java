@@ -27,7 +27,7 @@ abstract class AbstractLiteral extends AbstractJavaExpr implements ASTLiteral {
         // its parentheses have not yet been set yet so the text is
         // just the literal.
         assert getParenthesisDepth() == 0;
-        assert getFirstToken() == getLastToken();
+        assert getFirstToken() == getLastToken(); // NOPMD
         literalToken = getFirstToken();
     }
 
