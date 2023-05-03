@@ -808,6 +808,7 @@ in each object at runtime.
 //FieldDeclaration
     [pmd-java:modifiers() = 'final']
     [not(pmd-java:modifiers() = 'static')]
+    [not(./ancestor::ClassOrInterfaceDeclaration[1][pmd-java:hasAnnotation('lombok.experimental.UtilityClass')])]
     [not(.//Annotation[pmd-java:typeIs('lombok.Builder.Default')])]
     /VariableDeclarator[*[pmd-java:nodeIs('Literal')]
          or VariableAccess[@Name = //FieldDeclaration[pmd-java:modifiers() = 'static']/VariableDeclarator/VariableDeclaratorId/@Name]
