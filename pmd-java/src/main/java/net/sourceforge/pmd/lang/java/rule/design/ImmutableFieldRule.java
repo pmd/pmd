@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.design;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.util.Set;
+import java.util.function.Function;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
@@ -40,6 +41,10 @@ public class ImmutableFieldRule extends AbstractJavaRulechainRule {
         setOf(
             "lombok.Setter"
         );
+    private static final Function<Object, JavaNode> INTERESTING_ANCESTOR =
+        NodeStream.asInstanceOf(ASTLambdaExpression.class,
+                                ASTAnyTypeDeclaration.class,
+                                ASTConstructorDeclaration.class);
 
     public ImmutableFieldRule() {
         super(ASTFieldDeclaration.class);
@@ -64,7 +69,7 @@ public class ImmutableFieldRule extends AbstractJavaRulechainRule {
                     if (usage.getAccessType() == AccessType.WRITE) {
                         hasWrite = true;
 
-                        JavaNode enclosing = usage.ancestors().map(NodeStream.asInstanceOf(ASTLambdaExpression.class, ASTAnyTypeDeclaration.class, ASTConstructorDeclaration.class)).first();
+                        JavaNode enclosing = usage.ancestors().map(INTERESTING_ANCESTOR).first();
                         if (!(enclosing instanceof ASTConstructorDeclaration)
                             || enclosing.getEnclosingType() != enclosingType) {
                             continue outer; // written-to outside ctor

@@ -1030,7 +1030,7 @@ public final class DataflowPass {
         static void useAllSelfFields(SpanInfo staticState, SpanInfo instanceState, JClassSymbol enclosingSym, JavaNode escapingNode) {
             for (JFieldSymbol field : enclosingSym.getDeclaredFields()) {
                 SpanInfo state = field.isStatic() ? staticState : instanceState;
-                state.use(field, null);
+                state.assignOutOfScope(field, escapingNode);
             }
         }
     }
