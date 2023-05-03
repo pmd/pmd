@@ -1281,7 +1281,7 @@ Consider replacing Hashtable usage with the newer java.util.Map if thread safety
         <properties>
             <property name="xpath">
                 <value><![CDATA[
-                //ClassOrInterfaceType[pmd-java:typeIs('java.util.Hashtable')]
+                //ClassOrInterfaceType[pmd-java:typeIsExactly('java.util.Hashtable')]
                 ]]></value>
             </property>
         </properties>
