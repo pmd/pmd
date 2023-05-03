@@ -42,7 +42,7 @@ class FileIdTest {
         String uriStr = "jar:" + zipPath.toUri() + "!/x/c.d";
         FileId fileId = FileId.fromURI(uriStr);
         String absLocalPath = "/x/c.d".replace('/', File.separatorChar);
-        checkId(fileId, absLocalPath, "c.d", uriStr, absLocalPath);
+        checkId(fileId, absLocalPath, "c.d", uriStr, "/x/c.d");
         checkId(fileId.getParentFsPath(), zipPath.toAbsolutePath().toString(), "b.zip", zipPath.toUri().toString(), zipPath.toAbsolutePath().toString());
     }
 
