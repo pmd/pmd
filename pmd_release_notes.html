@@ -1636,6 +1636,17 @@ for all.</p>
 <p>This section lists the most important changes from the last release candidate.
 The remaining section describes the complete release notes for 7.0.0.</p>
 
+<h4 id="fixed-issues">Fixed issues</h4>
+
+<ul>
+  <li>java-errorprone
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4457">#4457</a>: [java] OverrideBothEqualsAndHashcode: false negative with anonymous classes</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4546">#4546</a>: [java] OverrideBothEqualsAndHashCode ignores records</li>
+    </ul>
+  </li>
+</ul>
+
 <h4 id="api-changes">API Changes</h4>
 
 <ul>
@@ -1651,6 +1662,12 @@ The remaining section describes the complete release notes for 7.0.0.</p>
       </li>
     </ul>
   </li>
+</ul>
+
+<h4 id="external-contributions">External Contributions</h4>
+
+<ul>
+  <li><a href="https://github.com/pmd/pmd/pull/4540">#4540</a>: [java] Fix #4457: false negative about OverrideBothEqualsAndHashcode - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
 </ul>
 
 <h3 id="-major-features-and-enhancements">🚀 Major Features and Enhancements</h3>
@@ -2199,10 +2216,12 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/issues/3843">#3843</a>: [java] UseEqualsToCompareStrings should consider return type</li>
       <li><a href="https://github.com/pmd/pmd/pull/4356">#4356</a>:   [java] Fix NPE in CloseResourceRule</li>
       <li><a href="https://github.com/pmd/pmd/issues/4449">#4449</a>: [java] AvoidAccessibilityAlteration: Possible false positive in AvoidAccessibilityAlteration rule when using Lambda expression</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4457">#4457</a>: [java] OverrideBothEqualsAndHashcode: false negative with anonymous classes</li>
       <li><a href="https://github.com/pmd/pmd/issues/4493">#4493</a>: [java] MissingStaticMethodInNonInstantiatableClass: false-positive about @<!-- -->Inject</li>
       <li><a href="https://github.com/pmd/pmd/issues/4505">#4505</a>: [java] ImplicitSwitchFallThrough NPE in PMD 7.0.0-rc1</li>
       <li><a href="https://github.com/pmd/pmd/issues/4513">#4513</a>: [java] UselessOperationOnImmutable various false negatives with String</li>
       <li><a href="https://github.com/pmd/pmd/issues/4514">#4514</a>: [java] AvoidLiteralsInIfCondition false positive and negative for String literals when ignoreExpressions=true</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4546">#4546</a>: [java] OverrideBothEqualsAndHashCode ignores records</li>
     </ul>
   </li>
   <li>java-multithreading
@@ -2265,6 +2284,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
   <li><a href="https://github.com/pmd/pmd/pull/4494">#4494</a>: [java] Fix #4487: A false-positive about UnnecessaryConstructor and @<!-- -->Inject and @<!-- -->Autowired - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4495">#4495</a>: [java] Fix #4493: false-positive about MissingStaticMethodInNonInstantiatableClass and @<!-- -->Inject - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4520">#4520</a>: [doc] Fix typo: missing closing quotation mark after CPD-END - <a href="https://github.com/joaodinissf">João Dinis Ferreira</a> (@joaodinissf)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4540">#4540</a>: [java] Fix #4457: false negative about OverrideBothEqualsAndHashcode - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
 </ul>
 
 <h3 id="-stats">📈 Stats</h3>
