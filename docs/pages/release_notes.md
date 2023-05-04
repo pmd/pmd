@@ -39,6 +39,15 @@ for all.</p>
 This section lists the most important changes from the last release candidate.
 The remaining section describes the complete release notes for 7.0.0.
 
+#### API Changes
+
+* The following previously deprecated classes have been removed:
+  * pmd-core
+    * `net.sourceforge.pmd.PMD`
+    * `net.sourceforge.pmd.cli.PMDCommandLineInterface`
+    * `net.sourceforge.pmd.cli.PMDParameters`
+    * `net.sourceforge.pmd.cli.PmdParametersParseResult`
+
 ### 🚀 Major Features and Enhancements
 
 #### New official logo
