@@ -182,7 +182,7 @@ public class Foo implements Runnable {
     </test-code>
 
     <test-code>
-        <description> [java]A false negative about OverrideBothEqualsAndHashcode #4457 </description>
+        <description>[java] OverrideBothEqualsAndHashcode: false negative with anonymous classes #4457</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -200,7 +200,7 @@ public class Foo {
         ]]></code>
     </test-code>
     <test-code>
-        <description>Support records</description>
+        <description>[java] OverrideBothEqualsAndHashCode ignores records #4546</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
             public record Foo(int x) {
