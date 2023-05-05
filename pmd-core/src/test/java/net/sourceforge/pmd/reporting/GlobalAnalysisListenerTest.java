@@ -119,20 +119,6 @@ class GlobalAnalysisListenerTest {
         verify(mockCache, times(1)).isUpToDate(any());
     }
 
-    @Test
-    void teeShouldForwardAllEventsSingleListeners() throws Exception {
-        GlobalAnalysisListener mockListener1 = createMockListener();
-        GlobalAnalysisListener teed = GlobalAnalysisListener.tee(Arrays.asList(mockListener1));
-
-        teed.initializer();
-        teed.startFileAnalysis(null);
-        teed.onConfigError(null);
-        teed.close();
-
-        verifyMethods(mockListener1);
-        Mockito.verifyNoMoreInteractions(mockListener1);
-    }
-
     @NonNull
     private PMDConfiguration newConfig() {
         PMDConfiguration config = new PMDConfiguration();
@@ -170,6 +156,20 @@ class GlobalAnalysisListenerTest {
         public void apply(Node node, RuleContext ctx) {
             throw new IllegalArgumentException("Something happened");
         }
+    }
+
+    @Test
+    void teeShouldForwardAllEventsSingleListeners() throws Exception {
+        GlobalAnalysisListener mockListener1 = createMockListener();
+        GlobalAnalysisListener teed = GlobalAnalysisListener.tee(Arrays.asList(mockListener1));
+
+        teed.initializer();
+        teed.startFileAnalysis(null);
+        teed.onConfigError(null);
+        teed.close();
+
+        verifyMethods(mockListener1);
+        Mockito.verifyNoMoreInteractions(mockListener1);
     }
 
     @Test
