@@ -1188,4 +1188,40 @@ public final class ControlEvent {
             }
             ]]></code>
     </test-code>
+
+    <test-code>
+        <description>conditional self assignment of fields</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>15,17</expected-linenumbers>
+        <expected-messages>
+            <message>Access to field `left` on foreign value `p` (degree 1)</message>
+            <message>Access to field `right` on foreign value `p` (degree 2)</message>
+        </expected-messages>
+        <code><![CDATA[
+class LawOfDemeterFields {
+    static class Entry {
+        Entry left;
+        Entry right;
+        Integer value;
+    }
+
+    private Entry root;
+
+    Entry find(Integer i) {
+        Entry p = root;
+        while (p != null) {
+            int cmp = p.value.compareTo(i);
+            if (cmp < 0) {
+                p = p.left; // law of demeter: degree 1
+            } else if (cpm > 0) {
+                p = p.right; // law of demeter: degree 2
+            } else {
+                return p;
+            }
+        }
+        return null;
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
