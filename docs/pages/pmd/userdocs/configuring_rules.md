@@ -4,7 +4,7 @@ short_title: Configuring rules
 keywords: [property, properties, message, priority]
 tags: [userdocs, getting_started]
 summary: "Learn how to configure your rules directly from the ruleset XML."
-last_updated: May 2018 (6.4.0)
+last_updated: May 2023 (7.0.0)
 permalink: pmd_userdocs_configuring_rules.html
 author: Hooper Bloob <hooperbloob@users.sourceforge.net>, Romain Pelisse <rpelisse@users.sourceforge.net>, Clément Fournier <clement.fournier76@gmail.com>
 ---
@@ -17,13 +17,20 @@ value and change the message the rule will print on the report.
 
 Similarly, the **priority** of a rule can be changed via a nested
 element. Using priority, you can deactivate some rules based on a
-minimum priority threshold (set using the `-min` CLI option).
-Priority is an integer ranging from 1 to 5, with 1 being the highest
-priority.
+minimum priority threshold (set using the `--minimum-priority` CLI option).
+Priority in the ruleset is an integer ranging from 1 to 5, with 1 being the highest
+priority. On the command line, you need to use the following values:
 
+| Priority | --minimum-priority value |
+|----------|--------------------------|
+| 1        | High                     |
+| 2        | Medium High              |
+| 3        | Medium                   |
+| 4        | Medium Low               |
+| 5        | Low                      |
 
 Putting things together, the following rule reference lowers the priority
-of EmptyCatchBlock to 5, such that e.g. using the `-min 4` CLI parameters
+of EmptyCatchBlock to 5, such that e.g. using the `--minimum-priority=Medium` CLI parameters
 will cause the rule to be ignored.
 
 ```xml

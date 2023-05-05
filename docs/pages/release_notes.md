@@ -41,6 +41,8 @@ The remaining section describes the complete release notes for 7.0.0.
 
 #### Fixed issues
 
+* core
+  * [#4454](https://github.com/pmd/pmd/issues/4454): \[core] "Unknown option: '-min'" but is referenced in documentation
 * java-errorprone
   * [#4457](https://github.com/pmd/pmd/issues/4457): \[java] OverrideBothEqualsAndHashcode: false negative with anonymous classes
   * [#4546](https://github.com/pmd/pmd/issues/4546): \[java] OverrideBothEqualsAndHashCode ignores records
@@ -53,6 +55,10 @@ The remaining section describes the complete release notes for 7.0.0.
     * `net.sourceforge.pmd.cli.PMDCommandLineInterface`
     * `net.sourceforge.pmd.cli.PMDParameters`
     * `net.sourceforge.pmd.cli.PmdParametersParseResult`
+
+* The CLI option `--stress` (or `-stress`) has been removed without replacement.
+* The CLI option `--minimum-priority` now takes one of the following values instead of an integer:
+  High, Medium High, Medium, Medium Low, Low.
 
 #### External Contributions
 
@@ -359,6 +365,7 @@ See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html)
     * [#4353](https://github.com/pmd/pmd/pull/4353):   \[core] Micro optimizations for Node API
     * [#4365](https://github.com/pmd/pmd/pull/4365):   \[core] Improve benchmarking
     * [#4420](https://github.com/pmd/pmd/pull/4420):   \[core] Remove PMD.EOL
+    * [#4454](https://github.com/pmd/pmd/issues/4454): \[core] "Unknown option: '-min'" but is referenced in documentation
 * cli
     * [#2234](https://github.com/pmd/pmd/issues/2234): \[core] Consolidate PMD CLI into a single command
     * [#3828](https://github.com/pmd/pmd/issues/3828): \[core] Progress reporting
