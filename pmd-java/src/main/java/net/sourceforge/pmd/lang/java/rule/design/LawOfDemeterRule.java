@@ -14,7 +14,6 @@ import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isGetterC
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isNullChecked;
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
 
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -303,9 +302,6 @@ public class LawOfDemeterRule extends AbstractJavaRule {
         // note this max could be changed to min to get a more conservative
         // strategy, trading recall for precision. maybe make that configurable
         return reaching.getReaching().stream()
-                // sort the assignments to have a deterministic result. We need to call #foreignDegree always
-                // in the same order, to get the same computed degrees.
-                .sorted(Comparator.comparing(AssignmentEntry::getLocation, Node::compareLocation))
                 .mapToInt(this::foreignDegree).max().orElse(TRUSTED);
     }
 
