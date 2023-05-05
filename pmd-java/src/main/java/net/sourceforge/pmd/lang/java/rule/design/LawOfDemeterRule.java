@@ -305,7 +305,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
         return reaching.getReaching().stream()
                 // sort the assignments to have a deterministic result. We need to call #foreignDegree always
                 // in the same order, to get the same computed degrees.
-                .sorted(Comparator.comparing(AssignmentEntry::getLocation, Node.COORDS_COMPARATOR).reversed())
+                .sorted(Comparator.comparing(AssignmentEntry::getLocation, Node.COORDS_COMPARATOR))
                 .mapToInt(this::foreignDegree).max().orElse(TRUSTED);
     }
 

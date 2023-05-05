@@ -1194,8 +1194,8 @@ public final class ControlEvent {
         <expected-problems>2</expected-problems>
         <expected-linenumbers>15,17</expected-linenumbers>
         <expected-messages>
-            <message>Access to field `left` on foreign value `p` (degree 1)</message>
-            <message>Access to field `right` on foreign value `p` (degree 2)</message>
+            <message>Access to field `left` on foreign value `p` (degree 2)</message>
+            <message>Access to field `right` on foreign value `p` (degree 1)</message>
         </expected-messages>
         <code><![CDATA[
 class LawOfDemeterFields {
