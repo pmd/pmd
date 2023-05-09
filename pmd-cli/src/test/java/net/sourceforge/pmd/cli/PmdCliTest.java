@@ -474,6 +474,17 @@ class PmdCliTest extends BaseCliTest {
                 ));
     }
 
+    @Test
+    void minimumPriorityOption() throws Exception {
+        runCli(VIOLATIONS_FOUND, "-d", srcDir.toString(), "-f", "text", "-R", RULESET_WITH_VIOLATION, "--minimum-priority", "Medium")
+                .verify(r -> r.checkStdOut(
+                        containsString("Violation from ReportAllRootNodes")
+                ));
+        runCliSuccessfully("-d", srcDir.toString(), "-f", "text", "-R", RULESET_WITH_VIOLATION, "--minimum-priority", "High");
+        runCliSuccessfully("-d", srcDir.toString(), "-f", "text", "-R", RULESET_WITH_VIOLATION, "--minimum-priority", "medium HIGH");
+        runCliSuccessfully("-d", srcDir.toString(), "-f", "text", "-R", RULESET_WITH_VIOLATION, "--minimum-priority", "Medium_High");
+    }
+
     // utilities
     private Path tempRoot() {
         return tempDir;
