@@ -29,10 +29,10 @@ public class RulePriorityTypeSupport implements ITypeConverter<RulePriority>, It
 
     @Override
     public Iterator<String> iterator() {
-        List<String> descriptiveNames = new ArrayList<>();
+        List<String> completionValues = new ArrayList<>();
         for (RulePriority rulePriority : RulePriority.values()) {
-            descriptiveNames.add(rulePriority.getName());
+            completionValues.add(rulePriority.name());
         }
-        return descriptiveNames.iterator();
+        return completionValues.iterator();
     }
 }
