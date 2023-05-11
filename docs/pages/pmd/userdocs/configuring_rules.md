@@ -19,18 +19,18 @@ Similarly, the **priority** of a rule can be changed via a nested
 element. Using priority, you can deactivate some rules based on a
 minimum priority threshold (set using the `--minimum-priority` CLI option).
 Priority in the ruleset is an integer ranging from 1 to 5, with 1 being the highest
-priority. On the command line, you need to use the following values:
+priority. On the command line, you can either use the integer or the following values:
 
 | Priority | --minimum-priority value |
 |----------|--------------------------|
 | 1        | High                     |
-| 2        | Medium High              |
+| 2        | Medium_High              |
 | 3        | Medium                   |
-| 4        | Medium Low               |
+| 4        | Medium_Low               |
 | 5        | Low                      |
 
 Putting things together, the following rule reference lowers the priority
-of EmptyCatchBlock to 5, such that e.g. using the `--minimum-priority=Medium` CLI parameters
+of EmptyCatchBlock to 5 ("Low"), such that e.g. using the `--minimum-priority=Medium_Low` CLI parameters
 will cause the rule to be ignored.
 
 ```xml

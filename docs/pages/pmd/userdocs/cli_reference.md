@@ -127,10 +127,10 @@ The tool comes with a rather extensive help text, simply running with `--help`!
     %}
     {% include custom/cli_option_row.html options="--minimum-priority"
                option_arg="priority"
-               description="Rule priority threshold; rules with lower priority
-                              than configured here won't be used.
-                            Valid values (case insensitive): High, Medium High,
-                              Medium, Medium Low, Low"
+               description="Rule priority threshold; rules with lower priority than configured here won't be used.
+                            Valid values (case insensitive): High, Medium_High, Medium, Medium_Low, Low.
+                            An integer between 1 (High) and 5 (Low) is also supported. See [Configuring rules](pmd_userdocs_configuring_rules.html)
+                            on how to override priorities in custom rulesets."
                default="Low"
     %}
     {% include custom/cli_option_row.html options="--no-ruleset-compatibility"

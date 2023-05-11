@@ -57,8 +57,9 @@ The remaining section describes the complete release notes for 7.0.0.
     * `net.sourceforge.pmd.cli.PmdParametersParseResult`
 
 * The CLI option `--stress` (or `-stress`) has been removed without replacement.
-* The CLI option `--minimum-priority` now takes one of the following values instead of an integer:
-  High, Medium High, Medium, Medium Low, Low.
+* The CLI option `--minimum-priority` was changed with 7.0.0-rc1 to only take the following values:
+  High, Medium High, Medium, Medium Low, Low. With 7.0.0-rc2 compatibility has been restored, so that the equivalent
+  integer values (1 to 5) are supported as well.
 
 #### External Contributions
 
