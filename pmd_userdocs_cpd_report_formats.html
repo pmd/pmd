@@ -1696,7 +1696,8 @@ Starting at line 110 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/
 
 <h2 id="xml">xml</h2>
 
-<p>This format uses XML to output the duplications in a more structured format.</p>
+<p>This format uses XML to output the duplications in a more structured format.
+The XML format can then further be processed using XSLT transformations. See <a href="#xslt">section xslt</a> for examples.</p>
 
 <p>Example:</p>
 
@@ -1815,6 +1816,41 @@ is shown in the console. You can then click on the filenames to jump to the sour
 /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java(88): Between lines 88 and 104
 /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java(110): Between lines 110 and 126
 </code></pre></div></div>
+
+<h2 id="xslt">xslt</h2>
+
+<p>This is not a direct report format. But you can use <code class="language-plaintext highlighter-rouge">xml</code> to generate an XML report and then use one of the following
+XSLT stylesheets to convert the report into html. Or you can write your own stylesheet.</p>
+
+<p>You can either use <a href="https://ant.apache.org/manual/Tasks/style.html">Ant’s XSLT task</a> or use any other (CLI) xslt processor,
+e.g. <code class="language-plaintext highlighter-rouge">xalan</code> (see <a href="https://xalan.apache.org/">https://xalan.apache.org/</a>).</p>
+
+<h3 id="cpdhtmlxslt">cpdhtml.xslt</h3>
+
+<p>This stylesheet is available in the sources or from GitHub at: <a href="https://raw.githubusercontent.com/pmd/pmd/master/pmd-core/etc/xslt/cpdhtml.xslt">https://raw.githubusercontent.com/pmd/pmd/master/pmd-core/etc/xslt/cpdhtml.xslt</a>.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>xalan <span class="nt">-in</span> cpd-report-sample.xml <span class="nt">-xsl</span> cpdhtml.xslt <span class="nt">-out</span> cpd-report-sample-cpdhtml.html
+</code></pre></div></div>
+
+<p><a href="report-examples/cpdhtml.html">Example</a></p>
+
+<p>This stylesheet by default only consideres duplications longer than 30 lines. You can change the default value with
+the param <code class="language-plaintext highlighter-rouge">lines</code>:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>xalan <span class="nt">-in</span> cpd-report-sample.xml <span class="nt">-xsl</span> cpdhtml.xslt <span class="nt">-out</span> cpd-report-sample-cpdhtml.html <span class="nt">-param</span> lines 10
+</code></pre></div></div>
+
+<h3 id="cpdhtml-v2xslt">cpdhtml-v2.xslt</h3>
+
+<p>This stylesheet is available in the sources or from GitHub at: <a href="https://raw.githubusercontent.com/pmd/pmd/master/pmd-core/etc/xslt/cpdhtml-v2.xslt">https://raw.githubusercontent.com/pmd/pmd/master/pmd-core/etc/xslt/cpdhtml-v2.xslt</a>.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>xalan <span class="nt">-in</span> pmd-core-cpd-report.xml <span class="nt">-xsl</span> etc/xslt/cpdhtml-v2.xslt <span class="nt">-out</span> pmd-core-cpd-report-v2.html
+</code></pre></div></div>
+
+<p><a href="report-examples/cpdhtml-v2.html">Example</a></p>
+
+<p>It requires javascript enabled and uses <a href="https://getbootstrap.com/">Bootstrap</a>,
+<a href="https://jquery.com/">jQuery</a>, and <a href="https://datatables.net/">DataTables</a>.</p>
 
 
     <div class="tags">

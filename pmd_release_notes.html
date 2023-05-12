@@ -1636,6 +1636,13 @@ for all.</p>
 <p>This section lists the most important changes from the last release candidate.
 The remaining section describes the complete release notes for 7.0.0.</p>
 
+<h4 id="new-cpd-report-format-cpdhtml-v2xslt">New CPD report format cpdhtml-v2.xslt</h4>
+
+<p>Thanks to @mohan-chinnappan-n a new CPD report format has been added which features a data table.
+It uses an XSLT stylesheet to convert CPD’s XML format into HTML.</p>
+
+<p>See <a href="report-examples/cpdhtml-v2.html">the example report</a>.</p>
+
 <h4 id="fixed-issues">Fixed issues</h4>
 
 <ul>
@@ -1672,6 +1679,7 @@ The remaining section describes the complete release notes for 7.0.0.</p>
 <h4 id="external-contributions">External Contributions</h4>
 
 <ul>
+  <li><a href="https://github.com/pmd/pmd/pull/4426">#4426</a>: [cpd] New XML to HTML XLST report format for PMD CPD - <a href="https://github.com/mohan-chinnappan-n">mohan-chinnappan-n</a> (@mohan-chinnappan-n)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4540">#4540</a>: [java] Fix #4457: false negative about OverrideBothEqualsAndHashcode - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
 </ul>
 
@@ -1737,6 +1745,13 @@ The remaining section describes the complete release notes for 7.0.0.</p>
 
 <p>This PMD release ships a new version of the pmd-designer.
 For the changes, see <a href="https://github.com/pmd/pmd-designer/releases/tag/7.0.0-rc1">PMD Designer Changelog</a>.</p>
+
+<h4 id="new-cpd-report-format-cpdhtml-v2xslt-1">New CPD report format cpdhtml-v2.xslt</h4>
+
+<p>Thanks to @mohan-chinnappan-n a new CPD report format has been added which features a data table.
+It uses an XSLT stylesheet to convert CPD’s XML format into HTML.</p>
+
+<p>See <a href="report-examples/cpdhtml-v2.html">the example report</a>.</p>
 
 <h3 id="-language-related-changes">🎉 Language Related Changes</h3>
 
@@ -2281,6 +2296,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
   <li><a href="https://github.com/pmd/pmd/pull/4402">#4402</a>: [javascript] CPD: add support for Typescript using antlr4 grammar - <a href="https://github.com/pguyot">Paul Guyot</a> (@pguyot)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4403">#4403</a>: [julia] CPD: Add support for Julia code duplication  - <a href="https://github.com/wener-tiobe">Wener</a> (@wener-tiobe)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4412">#4412</a>: [doc] Added new error msg to ConstantsInInterface - <a href="https://github.com/dague1">David Ljunggren</a> (@dague1)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4426">#4426</a>: [cpd] New XML to HTML XLST report format for PMD CPD - <a href="https://github.com/mohan-chinnappan-n">mohan-chinnappan-n</a> (@mohan-chinnappan-n)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4428">#4428</a>: [apex] ApexBadCrypto bug fix for #4427 - inline detection of hard coded values - <a href="https://github.com/sfdcsteve">Steven Stearns</a> (@sfdcsteve)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4444">#4444</a>: [java] CommentDefaultAccessModifier - ignore org.junit.jupiter.api.extension.RegisterExtension by default - <a href="https://github.com/nirvikpatel">Nirvik Patel</a> (@nirvikpatel)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4450">#4450</a>: [java] Fix #4449 AvoidAccessibilityAlteration: Correctly handle Lambda expressions in PrivilegedAction scenarios - <a href="https://github.com/mohui1999">Seren</a> (@mohui1999)</li>
