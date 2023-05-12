@@ -102,11 +102,11 @@
   let params = (new URL(document.location)).searchParams;
   let showDatatable = false;
 
-  //------------ can be called with this parameter d 
+  //------------ can be called with this parameter d
   if (params.get('d') !== null) { // got it via query param d
       showDatatable = true;
   }
-  
+
   if (showDatatable)  {
     $("#nav_disable_datatable").show();
     $("#nav_enable_datatable").hide();
@@ -125,7 +125,7 @@
     $("#nav_disable_datatable").hide();
     $("#nav_enable_datatable").show();
   }
-  
+
 </script>
 
 </body>
