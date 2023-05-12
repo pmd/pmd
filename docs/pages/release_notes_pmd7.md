@@ -958,6 +958,15 @@ Related issue: [[core] Language lifecycle (#3782)](https://github.com/pmd/pmd/is
 
 ### API removals
 
+#### 7.0.0-rc2
+
+* The following previously deprecated classes have been removed:
+  * pmd-core 
+    * `net.sourceforge.pmd.PMD`
+    * `net.sourceforge.pmd.cli.PMDCommandLineInterface`
+    * `net.sourceforge.pmd.cli.PMDParameters`
+    * `net.sourceforge.pmd.cli.PmdParametersParseResult`
+
 #### 6.55.0
 
 **Go**

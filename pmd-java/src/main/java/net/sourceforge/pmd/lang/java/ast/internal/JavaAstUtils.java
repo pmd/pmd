@@ -683,6 +683,19 @@ public final class JavaAstUtils {
             && !node.isStatic();
     }
 
+    public static boolean isEqualsMethod(ASTMethodDeclaration node) {
+        return "equals".equals(node.getName())
+            && node.getArity() == 1
+            && node.getFormalParameters().get(0).getTypeMirror().isTop()
+            && !node.isStatic();
+    }
+
+    public static boolean isHashCodeMethod(ASTMethodDeclaration node) {
+        return "hashCode".equals(node.getName())
+            && node.getArity() == 0
+            && !node.isStatic();
+    }
+
     public static boolean isArrayLengthFieldAccess(ASTExpression node) {
         if (node instanceof ASTFieldAccess) {
             ASTFieldAccess field = (ASTFieldAccess) node;
