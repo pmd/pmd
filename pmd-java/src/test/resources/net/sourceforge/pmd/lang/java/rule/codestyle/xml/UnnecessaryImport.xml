@@ -1116,4 +1116,31 @@ public class Sample {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#4432 - Necessary import for interface method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package p;
+
+            import static p.Top2.foo;
+
+            class Klass implements Top {
+                static {
+                    foo(); // This is Top2.foo
+                }
+
+                static class Child {
+                    {
+                        foo(); // This is also Top2.foo
+                    }
+                }
+            }
+            interface Top {
+                static void foo() {}
+            }
+            interface Top2 {
+                static void foo() {}
+            }
+            ]]></code>
+    </test-code>
 </test-data>
