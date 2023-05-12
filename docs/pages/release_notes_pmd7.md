@@ -446,6 +446,13 @@ Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 This PMD release ships a new version of the pmd-designer.
 For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designer/releases/tag/7.0.0-rc1).
 
+#### New CPD report format cpdhtml-v2.xslt
+
+Thanks to @mohan-chinnappan-n a new CPD report format has been added which features a data table.
+It uses an XSLT stylesheet to convert CPD's XML format into HTML.
+
+See [the example report](report-examples/cpdhtml-v2.html).
+
 ## 🎉 Language Related Changes
 
 ### New: Swift support

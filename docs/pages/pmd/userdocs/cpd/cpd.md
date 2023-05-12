@@ -290,7 +290,7 @@ to be "debug".
 ## Available report formats
 
 * text : Default format
-* xml
+* xml (and xslt)
 * csv
 * csv_with_linecount_per_file
 * vs
@@ -403,6 +403,8 @@ the CPD task as usual and right after it invoke the Ant XSLT script like this:
 ```xml
 <xslt in="cpd.xml" style="etc/xslt/cpdhtml.xslt" out="cpd.html" />
 ```
+
+See [section "xslt" in CPD Report Formats](pmd_userdocs_cpd_report_formats.html#xslt) for more examples.
 
 ## GUI
 
