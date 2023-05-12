@@ -42,7 +42,7 @@ public interface AccessNode extends Annotatable {
      * Returns the node representing the modifier list of this node.
      */
     default @NonNull ASTModifierList getModifiers() {
-        return children(ASTModifierList.class).firstOrThrow();
+        return firstChild(ASTModifierList.class);
     }
 
 

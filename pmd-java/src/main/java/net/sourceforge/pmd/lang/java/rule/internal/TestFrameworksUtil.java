@@ -46,6 +46,23 @@ public final class TestFrameworksUtil {
                                                                "junit.framework.Assert",
                                                                "junit.framework.TestCase");
 
+    private static final Set<String> TEST_CONFIGURATION_ANNOTATIONS =
+        setOf("org.junit.Before",
+                "org.junit.BeforeClass",
+                "org.junit.After",
+                "org.junit.AfterClass",
+                "org.testng.annotations.AfterClass",
+                "org.testng.annotations.AfterGroups",
+                "org.testng.annotations.AfterMethod",
+                "org.testng.annotations.AfterSuite",
+                "org.testng.annotations.AfterTest",
+                "org.testng.annotations.BeforeClass",
+                "org.testng.annotations.BeforeGroups",
+                "org.testng.annotations.BeforeMethod",
+                "org.testng.annotations.BeforeSuite",
+                "org.testng.annotations.BeforeTest"
+        );
+
     private TestFrameworksUtil() {
         // utility class
     }
@@ -75,10 +92,7 @@ public final class TestFrameworksUtil {
      * Returns true if this is a Before/setUp method or After/tearDown.
      */
     public static boolean isTestConfigurationMethod(ASTMethodDeclaration method) {
-        return method.isAnnotationPresent("org.junit.Before")
-                || method.isAnnotationPresent("org.junit.BeforeClass")
-                || method.isAnnotationPresent("org.junit.After")
-                || method.isAnnotationPresent("org.junit.AfterClass")
+        return TEST_CONFIGURATION_ANNOTATIONS.stream().anyMatch(method::isAnnotationPresent)
                 || isJUnit3Class(method.getEnclosingType())
                         && ("setUp".equals(method.getName())
                             || "tearDown".equals(method.getName()));

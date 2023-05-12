@@ -1,0 +1,35 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L3
+    [function]                              1         9
+    [greeter]                               10        17
+    [(]                                     17        18
+    [person]                                18        24
+    [)]                                     24        25
+    [{]                                     26        27
+L4
+    [return]                                3         9
+    ["Hello, "]                             10        19
+    [+]                                     20        21
+    [person]                                22        28
+    [;]                                     28        29
+L5
+    [}]                                     1         2
+L7
+    [let]                                   1         4
+    [user]                                  5         9
+    [=]                                     10        11
+    ["Jane User"]                           12        23
+    [;]                                     23        24
+L9
+    [document]                              1         9
+    [.]                                     9         10
+    [body]                                  10        14
+    [.]                                     14        15
+    [textContent]                           15        26
+    [=]                                     27        28
+    [greeter]                               29        36
+    [(]                                     36        37
+    [user]                                  37        41
+    [)]                                     41        42
+    [;]                                     42        43
+EOF

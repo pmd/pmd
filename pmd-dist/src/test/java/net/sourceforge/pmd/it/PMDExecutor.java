@@ -36,31 +36,21 @@ public class PMDExecutor {
         // this is a helper class only
     }
 
-    private static ExecutionResult runPMDUnix(Path tempDir, Path reportFile, String... arguments) throws Exception {
-        String cmd = tempDir.resolve(AbstractBinaryDistributionTest.PMD_BIN_PREFIX + PMDVersion.VERSION + "/bin/pmd").toAbsolutePath().toString();
-        List<String> args = new ArrayList<>();
-        args.add("check");
-        args.addAll(Arrays.asList(arguments));
-        return runCommand(cmd, args, reportFile);
+    static ExecutionResult runCommand(Path tempDir, String cmd, List<String> arguments) throws Exception {
+        return runCommand(tempDir, cmd, arguments, null);
     }
 
-    private static ExecutionResult runPMDWindows(Path tempDir, Path reportFile, String... arguments) throws Exception {
-        String cmd = tempDir.resolve(AbstractBinaryDistributionTest.PMD_BIN_PREFIX + PMDVersion.VERSION + "/bin/pmd.bat").toAbsolutePath().toString();
-        List<String> args = new ArrayList<>();
-        args.add("check");
-        args.addAll(Arrays.asList(arguments));
-        return runCommand(cmd, args, reportFile);
-    }
-
-    static ExecutionResult runCommand(String cmd, List<String> arguments, Path reportFile) throws Exception {
-        ProcessBuilder pb = new ProcessBuilder(cmd);
-        
-        if (reportFile != null) {
-            arguments.add(REPORTFILE_FLAG);
-            arguments.add(reportFile.toString());
+    static ExecutionResult runCommand(Path tempDir, String cmd, List<String> arguments, Path reportFile) throws Exception {
+        final String pmdScript;
+        if (SystemUtils.IS_OS_WINDOWS) {
+            pmdScript = tempDir.resolve(AbstractBinaryDistributionTest.PMD_BIN_PREFIX + PMDVersion.VERSION + "/bin/pmd.bat").toAbsolutePath().toString();
+        } else {
+            pmdScript = tempDir.resolve(AbstractBinaryDistributionTest.PMD_BIN_PREFIX + PMDVersion.VERSION + "/bin/pmd").toAbsolutePath().toString();
         }
-        
+        ProcessBuilder pb = new ProcessBuilder(pmdScript);
+        pb.command().add(cmd);
         pb.command().addAll(arguments);
+
         pb.redirectErrorStream(false);
         
         // Ensure no ANSI output so tests can properly look at it
@@ -137,10 +127,13 @@ public class PMDExecutor {
      * @throws Exception if the execution fails for any reason (executable not found, ...)
      */
     public static ExecutionResult runPMD(Path reportFile, Path tempDir, String... arguments) throws Exception {
-        if (SystemUtils.IS_OS_WINDOWS) {
-            return runPMDWindows(tempDir, reportFile, arguments);
-        } else {
-            return runPMDUnix(tempDir, reportFile, arguments);
+        List<String> args = new ArrayList<>();
+        if (reportFile != null) {
+            args.add(REPORTFILE_FLAG);
+            args.add(reportFile.toString());
         }
+        args.addAll(Arrays.asList(arguments));
+
+        return runCommand(tempDir, "check", args, reportFile);
     }
 }

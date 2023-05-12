@@ -5,19 +5,19 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
-        <description>TEST1</description>
+        <description>One non-final parameter</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     public void bar(int a) {
-        System.out.println(a);
+        System.out.println(a); // a is used here
     }
 }
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>TEST2</description>
+        <description>Two non-final parameters</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -30,7 +30,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>TEST3</description>
+        <description>Two non-final parameters with assignments to local vars</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -43,7 +43,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>TEST4</description>
+        <description>Two parameters, one final, one non-final (1)</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -56,7 +56,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>TEST5</description>
+        <description>Two parameters, one final, one non-final (2)</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -69,7 +69,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>TEST6</description>
+        <description>Already two final parameters</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -197,5 +197,15 @@ public interface InterfaceWithClass {
     }
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4512 [java] MethodArgumentCouldBeFinal shouldn't report unused parameters</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static void main(String[] args) {}
+}
+]]></code>
     </test-code>
 </test-data>

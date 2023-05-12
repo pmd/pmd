@@ -44,12 +44,12 @@ import net.sourceforge.pmd.lang.ast.AstVisitor;
     static final AntlrNameDictionary DICO = new SwiftNameDictionary(VOCABULARY, ruleNames);
 
     @Override
-    public SwiftTerminalNode createPmdTerminal(ParserRuleContext parent, Token t) {
+    protected SwiftTerminalNode createPmdTerminal(ParserRuleContext parent, Token t) {
         return new SwiftTerminalNode(t);
     }
 
     @Override
-    public SwiftErrorNode createPmdError(ParserRuleContext parent, Token t) {
+    protected SwiftErrorNode createPmdError(ParserRuleContext parent, Token t) {
         return new SwiftErrorNode(t);
     }
 }

@@ -97,7 +97,6 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand {
      */
     public CPDConfiguration toConfiguration() {
         final CPDConfiguration configuration = new CPDConfiguration();
-        configuration.setDebug(debug);
         configuration.setExcludes(excludes);
         configuration.setFailOnViolation(failOnViolation);
         configuration.setFileListPath(fileListPath == null ? null : fileListPath.toString());

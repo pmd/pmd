@@ -212,4 +212,24 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Issue #4487: [java]A false-positive about UnnecessaryConstructor and @Inject</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import com.google.inject.Inject;
+import org.springframework.beans.factory.annotation.Autowired;
+public class Foo {
+    private Foo() {}
+}
+public class Bar extends Foo {
+    @Inject
+    public Bar() {}
+}
+public class Bar extends Foo {
+    @Autowired
+    public Bar() {}
+}
+        ]]></code>
+    </test-code>
 </test-data>

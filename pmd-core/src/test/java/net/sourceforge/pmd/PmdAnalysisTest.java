@@ -93,7 +93,7 @@ class PmdAnalysisTest {
         config.setForceLanguageVersion(DummyLanguageModule.getInstance().getVersionWhereParserThrows());
         try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
             pmd.addRuleSet(RuleSet.forSingleRule(new MockRule()));
-            pmd.files().addSourceFile("file", "some source");
+            pmd.files().addSourceFile("some source", "file");
 
             ReportStats stats = pmd.runAndReturnStats();
             assertEquals(1, stats.getNumErrors(), "Errors");
@@ -116,7 +116,7 @@ class PmdAnalysisTest {
                 }
             }));
 
-            pmd.files().addSourceFile("file", "some source");
+            pmd.files().addSourceFile("some source", "file");
 
             ReportStats stats = pmd.runAndReturnStats();
             // the error number here is only for FileAnalysisException, so

@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.swift.rule.bestpractices;
 import java.util.List;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.swift.AbstractSwiftRule;
 import net.sourceforge.pmd.lang.swift.ast.SwiftParser.SwAttribute;
 import net.sourceforge.pmd.lang.swift.ast.SwiftParser.SwAttributes;
@@ -15,6 +14,7 @@ import net.sourceforge.pmd.lang.swift.ast.SwiftParser.SwCodeBlock;
 import net.sourceforge.pmd.lang.swift.ast.SwiftParser.SwFunctionDeclaration;
 import net.sourceforge.pmd.lang.swift.ast.SwiftParser.SwInitializerDeclaration;
 import net.sourceforge.pmd.lang.swift.ast.SwiftParser.SwStatement;
+import net.sourceforge.pmd.lang.swift.ast.SwiftVisitor;
 import net.sourceforge.pmd.lang.swift.ast.SwiftVisitorBase;
 
 public class UnavailableFunctionRule extends AbstractSwiftRule {
@@ -29,7 +29,7 @@ public class UnavailableFunctionRule extends AbstractSwiftRule {
     }
 
     @Override
-    public AstVisitor<RuleContext, ?> buildVisitor() {
+    public SwiftVisitor<RuleContext, ?> buildVisitor() {
         return new SwiftVisitorBase<RuleContext, Void>() {
 
             @Override
