@@ -1688,6 +1688,34 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="UseExplicitTypes"
+          language="java"
+          minimumLanguageVersion="10"
+          since="7.0.0"
+          message="Use Explicit Types"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#useexplicittypes">
+        <description>
+Java 10 introduced the `var` keyword. This reduces the amount of typing but decreases the reading comprehension of the
+code.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="allowLiterals" type="Boolean" value="false" description="Allow when variables are directly initialized with literals"/>
+            <property name="allowCtors" type="Boolean" value="false" description="Allow when variables are directly initialized with a constructor call"/>
+            <property name="version" value="3.1"/>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//LocalVariableDeclaration[@TypeInferred = true()]
+    [not(VariableDeclarator[*[pmd-java:nodeIs("Literal")]]) or $allowLiterals = false()]
+    [not(VariableDeclarator[ConstructorCall]) or $allowCtors = false()]
+]]>
+                </value>
+            </property>
+        </properties>
+    </rule>
+
     <rule name="UseStandardCharsets"
           language="java"
           since="6.34.0"
