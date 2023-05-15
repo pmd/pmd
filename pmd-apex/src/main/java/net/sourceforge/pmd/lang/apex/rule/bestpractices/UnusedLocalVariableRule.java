@@ -34,7 +34,7 @@ public class UnusedLocalVariableRule extends AbstractApexRule {
             "Database.countQuery".toLowerCase(Locale.ROOT)
     ));
 
-    private static final Pattern BINDING_VARIABLE = Pattern.compile("(?i):([a-z0-9]+)");
+    private static final Pattern BINDING_VARIABLE = Pattern.compile("(?i):(?:\s|)([_a-z0-9]+)");
 
     @Override
     protected @NonNull RuleTargetSelector buildTargetSelector() {
