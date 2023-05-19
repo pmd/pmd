@@ -144,6 +144,11 @@ Novice as much as advanced readers may want to [read on on Refactoring Guru](htt
                default="false"
                languages="C#, C++, Lua"
     %}
+    {% include custom/cli_option_row.html options="--ignore-sequences"
+               description="Ignore sequences of identifier and literals"
+               default="false"
+               languages="C++"
+    %}
     {% include custom/cli_option_row.html options="--ignore-usings"
                description="Ignore `using` directives in C# when comparing text"
                default="false"

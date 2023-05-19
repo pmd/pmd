@@ -537,6 +537,13 @@ the Java module, listing all possible versions enables other languages as well t
 
 Related issue: [[core] Explicitly name all language versions (#4120)](https://github.com/pmd/pmd/issues/4120)
 
+### Changed: CPP can now ignore identifiers in sequences (CPD)
+
+* new command line option for CPD: `--ignore-sequences`.
+* This option is used for CPP only: with the already existing option `--ignore-literal-sequences`, only
+  literals were ignored. The new option additional ignores identifiers as well in sequences.
+* See [PR #4470](https://github.com/pmd/pmd/pull/4470) for details.
+
 ## 🌟 New and changed rules
 
 ### New Rules
