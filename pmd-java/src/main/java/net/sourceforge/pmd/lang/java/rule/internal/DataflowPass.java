@@ -633,18 +633,16 @@ public final class DataflowPass {
         @Override
         public SpanInfo visit(ASTForeachStatement node, SpanInfo data) {
             ASTStatement body = node.getBody();
-            // the iterable expression
-            JavaNode init = node.getChild(1);
-            ASTVariableDeclaratorId foreachVar = ((ASTLocalVariableDeclaration) node.getChild(0)).iterator().next();
-            return handleLoop(node, data, init, null, null, body, true, foreachVar);
+            ASTExpression init = node.getIterableExpr();
+            return handleLoop(node, data, init, null, null, body, true, node.getVarId());
         }
 
         @Override
         public SpanInfo visit(ASTForStatement node, SpanInfo data) {
             ASTStatement body = node.getBody();
-            ASTForInit init = node.getFirstChildOfType(ASTForInit.class);
+            ASTForInit init = node.firstChild(ASTForInit.class);
             ASTExpression cond = node.getCondition();
-            ASTForUpdate update = node.getFirstChildOfType(ASTForUpdate.class);
+            ASTForUpdate update = node.firstChild(ASTForUpdate.class);
             return handleLoop(node, data, init, cond, update, body, true, null);
         }
 

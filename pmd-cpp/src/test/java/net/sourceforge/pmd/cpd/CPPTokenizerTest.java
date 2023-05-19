@@ -139,8 +139,18 @@ class CPPTokenizerTest extends CpdTextComparisonTest {
         doTest("listOfNumbers", "_ignored", skipLiteralSequences());
     }
 
+    @Test
+    void testLongListsOfNumbersAndIdentifiersAreIgnored() {
+        doTest("listOfNumbers", "_ignored_identifiers", skipIdentifierAndLiteralsSequences());
+    }
+
+    @Test
+    void testLongListsOfIdentifiersAreIgnored() {
+        doTest("listOfNumbers", "_ignored_identifiers", skipIdentifierSequences());
+    }
+
     private static Properties skipBlocks(String skipPattern) {
-        return properties(true, skipPattern, false);
+        return properties(true, skipPattern, false, false);
     }
 
     private static Properties skipBlocks() {
@@ -148,20 +158,29 @@ class CPPTokenizerTest extends CpdTextComparisonTest {
     }
 
     private static Properties dontSkipBlocks() {
-        return properties(false, null, false);
+        return properties(false, null, false, false);
     }
 
     private static Properties skipLiteralSequences() {
-        return properties(false, null, true);
+        return properties(false, null, true, false);
     }
 
-    private static Properties properties(boolean skipBlocks, String skipPattern, boolean skipLiteralSequences) {
+    private static Properties skipIdentifierAndLiteralsSequences() {
+        return properties(false, null, true, true);
+    }
+
+    private static Properties skipIdentifierSequences() {
+        return properties(false, null, false, true);
+    }
+
+    private static Properties properties(boolean skipBlocks, String skipPattern, boolean skipLiteralSequences, boolean skipSequences) {
         Properties properties = new Properties();
         properties.setProperty(Tokenizer.OPTION_SKIP_BLOCKS, Boolean.toString(skipBlocks));
         if (skipPattern != null) {
             properties.setProperty(Tokenizer.OPTION_SKIP_BLOCKS_PATTERN, skipPattern);
         }
         properties.setProperty(Tokenizer.OPTION_IGNORE_LITERAL_SEQUENCES, Boolean.toString(skipLiteralSequences));
+        properties.setProperty(Tokenizer.OPTION_IGNORE_IDENTIFIER_AND_LITERAL_SEQUENCES, Boolean.toString(skipSequences));
         return properties;
     }
 }

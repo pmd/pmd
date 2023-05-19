@@ -14,12 +14,12 @@
         Rules can be written in Java or using a XPath query.
 
         It supports Java, JavaScript, Salesforce.com Apex and Visualforce,
-        Modelica, PLSQL, Apache Velocity, HTML, XML and XSL.
+        Kotlin, Swift, Modelica, PLSQL, Apache Velocity, JSP, WSDL, HTML, XML and XSL.
         Scala is supported, but there are currently no Scala rules available.
 
         Additionally, it includes CPD, the copy-paste-detector. CPD finds duplicated code in
-        C/C++, C#, Dart, Fortran, Gherkin, Go, Groovy, HTML, Java, JavaScript, JSP, Kotlin, Lua, Matlab, Modelica,
-        Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex and Visualforce, Scala, Swift, T-SQL and XML.
+        Coco, C/C++, C#, Dart, Fortran, Gherkin, Go, Groovy, HTML, Java, JavaScript, JSP, Julia, Kotlin, Lua, Matlab, Modelica,
+        Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex and Visualforce, Scala, Swift, T-SQL, Typescript and XML.
     </description>
 
     <url>https://pmd.github.io/</url>
@@ -671,11 +671,6 @@
                 <version>${ant.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.beust</groupId>
-                <artifactId>jcommander</artifactId>
-                <version>1.48</version> <!-- 1.48 is the latest version compatible with java7 -->
-            </dependency>
-            <dependency>
                 <groupId>info.picocli</groupId>
                 <artifactId>picocli</artifactId>
                 <version>4.7.0</version>
@@ -1173,6 +1168,7 @@
         <module>pmd-apex-jorje</module>
         <module>pmd-apex</module>
         <module>pmd-cli</module>
+        <module>pmd-coco</module>
         <module>pmd-core</module>
         <module>pmd-cpp</module>
         <module>pmd-cs</module>

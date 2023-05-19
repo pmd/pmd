@@ -62,10 +62,8 @@ class SignatureParser {
 
     public void parseMethodType(LazyMethodType type, String genericSig) {
         TypeScanner b = typeParamsWrapper(type, genericSig);
-        parseFully(b, TypeSigParser::methodType);
-        type.setExceptionTypes(b.popList());
-        type.setReturnType(b.pop());
-        type.setParameterTypes(b.popList());
+        int eof = TypeSigParser.methodType(type, b.start, b);
+        b.expectEoI(eof);
     }
 
     /**
