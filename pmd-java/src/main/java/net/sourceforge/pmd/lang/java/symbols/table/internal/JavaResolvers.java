@@ -128,7 +128,15 @@ public final class JavaResolvers {
                 return t.streamMethods(
                     it -> it.nameEquals(simpleName)
                         && isAccessibleIn(nestRoot, it, true) // fetch protected methods
+                        && isNotStaticInterfaceMethod(it)
                 ).collect(OverloadSet.collectMostSpecific(t)); // remove overridden, hidden methods
+            }
+
+            // Static interface methods are not inherited and are in fact not in scope in the subtypes.
+            // They must be explicitly qualified or imported.
+            private boolean isNotStaticInterfaceMethod(JMethodSymbol it) {
+                return !it.isStatic() || it.getEnclosingClass().equals(t.getSymbol())
+                    || !it.getEnclosingClass().isInterface();
             }
 
             @Override
