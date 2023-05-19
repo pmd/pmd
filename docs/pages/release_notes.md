@@ -182,6 +182,13 @@ Contributors: [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
 * can be used to limit rule execution for specific versions only with `minimumLanguageVersion` and
   `maximumLanguageVersion` attributes.
 
+#### Changed: CPP can now ignore identifiers in sequences (CPD)
+
+* new command line option for CPD: `--ignore-sequences`.
+* This option is used for CPP only: with the already existing option `--ignore-literal-sequences`, only
+  literals were ignored. The new option additional ignores identifiers as well in sequences.
+* See [PR #4470](https://github.com/pmd/pmd/pull/4470) for details.
+
 ### 🌟 New and changed rules
 
 #### New Rules
@@ -583,6 +590,7 @@ Language specific fixes:
 * [#4444](https://github.com/pmd/pmd/pull/4444): \[java] CommentDefaultAccessModifier - ignore org.junit.jupiter.api.extension.RegisterExtension by default - [Nirvik Patel](https://github.com/nirvikpatel) (@nirvikpatel)
 * [#4450](https://github.com/pmd/pmd/pull/4450): \[java] Fix #4449 AvoidAccessibilityAlteration: Correctly handle Lambda expressions in PrivilegedAction scenarios - [Seren](https://github.com/mohui1999) (@mohui1999)
 * [#4452](https://github.com/pmd/pmd/pull/4452): \[doc] Update PMD_APEX_ROOT_DIRECTORY documentation reference - [nwcm](https://github.com/nwcm) (@nwcm)
+* [#4470](https://github.com/pmd/pmd/pull/4470): \[cpp] CPD: Added strings as literal and ignore identifiers in sequences - [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
 * [#4474](https://github.com/pmd/pmd/pull/4474): \[java] ImmutableField: False positive with lombok (fixes #4254) - [Pim van der Loos](https://github.com/PimvanderLoos) (@PimvanderLoos)
 * [#4488](https://github.com/pmd/pmd/pull/4488): \[java] Fix #4477: A false-positive about SignatureDeclareThrowsException - [AnnaDev](https://github.com/LynnBroe) (@LynnBroe)
 * [#4494](https://github.com/pmd/pmd/pull/4494): \[java] Fix #4487: A false-positive about UnnecessaryConstructor and @<!-- -->Inject and @<!-- -->Autowired - [AnnaDev](https://github.com/LynnBroe) (@LynnBroe)
