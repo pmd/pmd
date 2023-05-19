@@ -6,7 +6,7 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.regex.Pattern;
 
-import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
+import net.sourceforge.pmd.cpd.impl.JavaCCTokenizer;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;

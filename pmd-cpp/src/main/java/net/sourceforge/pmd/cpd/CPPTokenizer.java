@@ -7,7 +7,7 @@ package net.sourceforge.pmd.cpd;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
-import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
+import net.sourceforge.pmd.cpd.impl.JavaCCTokenizer;
 import net.sourceforge.pmd.cpd.token.JavaCCTokenFilter;
 import net.sourceforge.pmd.cpd.token.TokenFilter;
 import net.sourceforge.pmd.lang.TokenManager;

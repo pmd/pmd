@@ -29,4 +29,9 @@ public class NcssMethodCountRule extends AbstractNcssCountRule<ASTMethod> {
     protected boolean isIgnored(ASTMethod node) {
         return node.isConstructor();
     }
+
+    @Override
+    protected Object[] getViolationParameters(ASTMethod node, int metric, int limit) {
+        return new Object[]{ node.getImage(), metric, limit };
+    }
 }

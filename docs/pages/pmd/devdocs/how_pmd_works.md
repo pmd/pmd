@@ -9,10 +9,7 @@ author: Tom Copeland, Andreas Dangel <andreas.dangel@adangel.org>
 
 ## Overview
 
-The processing starts e.g. with the main class: `net.sourceforge.pmd.PMD`
-
-{%include note.html content="This is the command line interface. There are many other means, who
-PMD can be invoked. E.g. via ant, maven, gradle..." %}
+The processing starts with the main class {% jdoc core::PmdAnalysis %}.
 
 *   Parse command line parameters (see net.sourceforge.pmd.cli.PMDParameters)
     Also load the incremental analysis cache file
