@@ -163,6 +163,14 @@ in the new module `pmd-julia`.
 
 Contributors: [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
 
+#### New: CPD support for Coco
+
+Thanks to a contribution, CPD now supports Coco, a modern programming language
+designed specifically for building event-driven software. It is shipped in the new
+module `pmd-coco`.
+
+Contributors: [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
+
 #### Changed: JavaScript support
 
 * latest version supports ES6 and also some new constructs (see [Rhino](https://github.com/mozilla/rhino)])
@@ -571,6 +579,7 @@ Language specific fixes:
 * [#4412](https://github.com/pmd/pmd/pull/4412): \[doc] Added new error msg to ConstantsInInterface - [David Ljunggren](https://github.com/dague1) (@dague1)
 * [#4426](https://github.com/pmd/pmd/pull/4426): \[cpd] New XML to HTML XLST report format for PMD CPD - [mohan-chinnappan-n](https://github.com/mohan-chinnappan-n) (@mohan-chinnappan-n)
 * [#4428](https://github.com/pmd/pmd/pull/4428): \[apex] ApexBadCrypto bug fix for #4427 - inline detection of hard coded values - [Steven Stearns](https://github.com/sfdcsteve) (@sfdcsteve)
+* [#4431](https://github.com/pmd/pmd/pull/4431): \[coco] CPD: Coco support for code duplication detection - [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
 * [#4444](https://github.com/pmd/pmd/pull/4444): \[java] CommentDefaultAccessModifier - ignore org.junit.jupiter.api.extension.RegisterExtension by default - [Nirvik Patel](https://github.com/nirvikpatel) (@nirvikpatel)
 * [#4450](https://github.com/pmd/pmd/pull/4450): \[java] Fix #4449 AvoidAccessibilityAlteration: Correctly handle Lambda expressions in PrivilegedAction scenarios - [Seren](https://github.com/mohui1999) (@mohui1999)
 * [#4452](https://github.com/pmd/pmd/pull/4452): \[doc] Update PMD_APEX_ROOT_DIRECTORY documentation reference - [nwcm](https://github.com/nwcm) (@nwcm)
