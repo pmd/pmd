@@ -1230,6 +1230,18 @@
 
             
             
+            
+
+            
+
+                
+                <li><a href="pmd_languages_coco.html">Coco</a></li>
+                
+
+            
+
+            
+            
         </ul>
      </li>
        
@@ -1646,6 +1658,11 @@ It uses an XSLT stylesheet to convert CPD’s XML format into HTML.</p>
 <h4 id="fixed-issues">Fixed issues</h4>
 
 <ul>
+  <li>java-bestpractices
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4503">#4503</a>: [java] JUnitTestsShouldIncludeAssert: false negative with TestNG</li>
+    </ul>
+  </li>
   <li>java-codestyle
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/4432">#4432</a>: [java] [7.0-rc1] UnnecessaryImport - Unused static import is being used</li>
@@ -1791,6 +1808,14 @@ in the new module <code class="language-plaintext highlighter-rouge">pmd-julia</
 
 <p>Contributors: <a href="https://github.com/wener-tiobe">Wener</a> (@wener-tiobe)</p>
 
+<h4 id="new-cpd-support-for-coco">New: CPD support for Coco</h4>
+
+<p>Thanks to a contribution, CPD now supports Coco, a modern programming language
+designed specifically for building event-driven software. It is shipped in the new
+module <code class="language-plaintext highlighter-rouge">pmd-coco</code>.</p>
+
+<p>Contributors: <a href="https://github.com/wener-tiobe">Wener</a> (@wener-tiobe)</p>
+
 <h4 id="changed-javascript-support">Changed: JavaScript support</h4>
 
 <ul>
@@ -1804,6 +1829,15 @@ in the new module <code class="language-plaintext highlighter-rouge">pmd-julia</
   <li>more predefined language versions for each supported language</li>
   <li>can be used to limit rule execution for specific versions only with <code class="language-plaintext highlighter-rouge">minimumLanguageVersion</code> and
 <code class="language-plaintext highlighter-rouge">maximumLanguageVersion</code> attributes.</li>
+</ul>
+
+<h4 id="changed-cpp-can-now-ignore-identifiers-in-sequences-cpd">Changed: CPP can now ignore identifiers in sequences (CPD)</h4>
+
+<ul>
+  <li>new command line option for CPD: <code class="language-plaintext highlighter-rouge">--ignore-sequences</code>.</li>
+  <li>This option is used for CPP only: with the already existing option <code class="language-plaintext highlighter-rouge">--ignore-literal-sequences</code>, only
+literals were ignored. The new option additional ignores identifiers as well in sequences.</li>
+  <li>See <a href="https://github.com/pmd/pmd/pull/4470">PR #4470</a> for details.</li>
 </ul>
 
 <h3 id="-new-and-changed-rules">🌟 New and changed rules</h3>
@@ -2156,6 +2190,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/pull/3672">#3672</a>:   [java] LooseCoupling - fix false positive with generics</li>
       <li><a href="https://github.com/pmd/pmd/pull/3675">#3675</a>:   [java] MissingOverride - fix false positive with mixing type vars</li>
       <li><a href="https://github.com/pmd/pmd/issues/3858">#3858</a>: [java] UseCollectionIsEmpty should infer local variable type from method invocation</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4503">#4503</a>: [java] JUnitTestsShouldIncludeAssert: false negative with TestNG</li>
       <li><a href="https://github.com/pmd/pmd/issues/4516">#4516</a>: [java] UnusedLocalVariable: false-negative with try-with-resources</li>
       <li><a href="https://github.com/pmd/pmd/issues/4517">#4517</a>: [java] UnusedLocalVariable: false-negative with compound assignments</li>
       <li><a href="https://github.com/pmd/pmd/issues/4518">#4518</a>: [java] UnusedLocalVariable: false-positive with multiple for-loop indices</li>
@@ -2298,13 +2333,16 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
   <li><a href="https://github.com/pmd/pmd/pull/4412">#4412</a>: [doc] Added new error msg to ConstantsInInterface - <a href="https://github.com/dague1">David Ljunggren</a> (@dague1)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4426">#4426</a>: [cpd] New XML to HTML XLST report format for PMD CPD - <a href="https://github.com/mohan-chinnappan-n">mohan-chinnappan-n</a> (@mohan-chinnappan-n)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4428">#4428</a>: [apex] ApexBadCrypto bug fix for #4427 - inline detection of hard coded values - <a href="https://github.com/sfdcsteve">Steven Stearns</a> (@sfdcsteve)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4431">#4431</a>: [coco] CPD: Coco support for code duplication detection - <a href="https://github.com/wener-tiobe">Wener</a> (@wener-tiobe)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4444">#4444</a>: [java] CommentDefaultAccessModifier - ignore org.junit.jupiter.api.extension.RegisterExtension by default - <a href="https://github.com/nirvikpatel">Nirvik Patel</a> (@nirvikpatel)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4450">#4450</a>: [java] Fix #4449 AvoidAccessibilityAlteration: Correctly handle Lambda expressions in PrivilegedAction scenarios - <a href="https://github.com/mohui1999">Seren</a> (@mohui1999)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4452">#4452</a>: [doc] Update PMD_APEX_ROOT_DIRECTORY documentation reference - <a href="https://github.com/nwcm">nwcm</a> (@nwcm)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4470">#4470</a>: [cpp] CPD: Added strings as literal and ignore identifiers in sequences - <a href="https://github.com/wener-tiobe">Wener</a> (@wener-tiobe)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4474">#4474</a>: [java] ImmutableField: False positive with lombok (fixes #4254) - <a href="https://github.com/PimvanderLoos">Pim van der Loos</a> (@PimvanderLoos)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4488">#4488</a>: [java] Fix #4477: A false-positive about SignatureDeclareThrowsException - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4494">#4494</a>: [java] Fix #4487: A false-positive about UnnecessaryConstructor and @<!-- -->Inject and @<!-- -->Autowired - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4495">#4495</a>: [java] Fix #4493: false-positive about MissingStaticMethodInNonInstantiatableClass and @<!-- -->Inject - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4507">#4507</a>: [java] Fix #4503: A false negative about JUnitTestsShouldIncludeAssert and testng - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4520">#4520</a>: [doc] Fix typo: missing closing quotation mark after CPD-END - <a href="https://github.com/joaodinissf">João Dinis Ferreira</a> (@joaodinissf)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4540">#4540</a>: [java] Fix #4457: false negative about OverrideBothEqualsAndHashcode - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
 </ul>
@@ -2345,7 +2383,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: May 12, 2023 <br />
+             Site last generated: May 19, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
