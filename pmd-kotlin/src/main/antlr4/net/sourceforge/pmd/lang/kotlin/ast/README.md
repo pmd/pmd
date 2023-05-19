@@ -24,8 +24,8 @@ All other files in this PMD module are licensed under BSD.
 
 ## Currently used version
 
-* Release: <https://github.com/Kotlin/kotlin-spec/releases/tag/v1.6-rfc%2B0.1>
-* Source: <https://github.com/Kotlin/kotlin-spec/tree/v1.6-rfc%2B0.1/grammar/src/main/antlr>
+* Release: <https://github.com/Kotlin/kotlin-spec/releases/tag/v1.8-rfc%2B0.1>
+* Source: <https://github.com/Kotlin/kotlin-spec/tree/v1.8-rfc%2B0.1/grammar/src/main/antlr>
 
 ### Modifications
 
@@ -50,12 +50,12 @@ import net.sourceforge.pmd.lang.ast.AstVisitor;
     static final AntlrNameDictionary DICO = new KotlinNameDictionary(VOCABULARY, ruleNames);
 
     @Override
-    public KotlinTerminalNode createPmdTerminal(ParserRuleContext parent, Token t) {
+    protected KotlinTerminalNode createPmdTerminal(ParserRuleContext parent, Token t) {
         return new KotlinTerminalNode(t);
     }
 
     @Override
-    public KotlinErrorNode createPmdError(ParserRuleContext parent, Token t) {
+    protected KotlinErrorNode createPmdError(ParserRuleContext parent, Token t) {
         return new KotlinErrorNode(t);
     }
 }

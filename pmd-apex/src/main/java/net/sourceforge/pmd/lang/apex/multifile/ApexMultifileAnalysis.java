@@ -71,7 +71,16 @@ public final class ApexMultifileAnalysis {
                 // FIXME: Syntax & Semantic errors found during Org loading are not currently being reported. These
                 // should be routed to the new SemanticErrorReporter but that is not available for use just yet.
             }
-        } catch (Exception e) {
+        } catch (Exception | ExceptionInInitializerError | NoClassDefFoundError e) {
+            // Note: Org.newOrg() will try to find the base Apex Types through the current classloader
+            // in package "com.nawforce.runforce". This requires, that directory listings can be retrievied
+            // on the URL that the classloader returns from getResource("/com/nawforce/runforce"):
+            // https://github.com/nawforce/apex-link/blob/7688adcb7a2d7f8aa28d0618ffb2a3aa81151858/apexlink/src/main/scala/com/nawforce/apexlink/types/platform/PlatformTypeDeclaration.scala#L260-L273
+            // However, when running as an Eclipse plugin, we have a special bundle classloader, that returns
+            // URIs in the form "bundleresource://...". For the schema "bundleresource", no FileSystemProvider can be
+            // found, so we get a java.nio.file.ProviderNotFoundException. Since all this happens during initialization of the class
+            // com.nawforce.apexlink.types.platform.PlatformTypeDeclaration we get a ExceptionInInitializerError
+            // and later NoClassDefFoundErrors, because PlatformTypeDeclaration couldn't be loaded.
             LOG.error("Exception while initializing Apexlink ({})", e.getMessage(), e);
             LOG.error("PMD will not attempt to initialize Apexlink further, this can cause rules like UnusedMethod to be dysfunctional");
             org = null;

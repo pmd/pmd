@@ -201,8 +201,9 @@ public abstract class RuleTst {
         System.out.println(" -> Expected messages: " + test.getExpectedMessages());
         System.out.println(" -> Expected line numbers: " + test.getExpectedLineNumbers());
         System.out.println();
+        StringWriter reportOutput = new StringWriter();
         TextRenderer renderer = new TextRenderer();
-        renderer.setWriter(new StringWriter());
+        renderer.setWriter(reportOutput);
         try {
             renderer.start();
             renderer.renderFileReport(report);
@@ -210,7 +211,7 @@ public abstract class RuleTst {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        System.out.println(renderer.getWriter().toString());
+        System.out.println(reportOutput);
         System.out.println("--------------------------------------------------------------");
     }
 

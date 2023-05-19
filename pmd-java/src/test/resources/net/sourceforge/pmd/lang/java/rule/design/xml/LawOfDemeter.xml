@@ -1160,4 +1160,32 @@ public final class ControlEvent {
             interface C { void doIt(); }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>[java] LawOfDemeter disallows method call on locally created object #3840</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.List;
+            import java.util.concurrent.CompletableFuture;
+
+            public class ParallelHandler<T> {
+
+                private List<CompletableFuture<T>> futures;
+
+                //...
+
+                // pmd failed to warn
+                public List<CompletableFuture<T>> get_nowarning() {
+                    CompletableFuture.allOf(futures.toArray(new CompletableFuture[] {})).join(); // point 1: true-negative
+                    return futures;
+                }
+
+                // pmd warns CompletableFuture.allOf(tempVar).join();
+                public List<CompletableFuture<T>> get_fp() {
+                    CompletableFuture[] tempVar =  futures.toArray(new CompletableFuture[] {});
+                    CompletableFuture.allOf(tempVar).join(); // point 2: false positive
+                    return futures;
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>

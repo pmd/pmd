@@ -275,12 +275,13 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
      */
     public PMDConfiguration toConfiguration() {
         final PMDConfiguration configuration = new PMDConfiguration();
-        configuration.setInputPathList(inputPaths);
+        if (inputPaths != null) {
+            configuration.setInputPathList(inputPaths);
+        }
         configuration.setInputFilePath(fileListPath);
         configuration.setIgnoreFilePath(ignoreListPath);
         configuration.setInputUri(uri);
         configuration.setReportFormat(format);
-        configuration.setDebug(debug);
         configuration.setSourceEncoding(encoding.getEncoding().name());
         configuration.setMinimumPriority(minimumPriority);
         configuration.setReportFile(reportFile);

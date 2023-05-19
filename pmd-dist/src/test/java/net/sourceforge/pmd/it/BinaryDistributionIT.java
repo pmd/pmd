@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.it;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.matchesRegex;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -30,9 +31,10 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
     private static final List<String> SUPPORTED_LANGUAGES_CPD = listOf(
         "apex", "coco", "cpp", "cs", "dart", "ecmascript",
         "fortran", "gherkin", "go", "groovy", "html", "java", "jsp",
+        "julia",
         "kotlin", "lua", "matlab", "modelica", "objectivec", "perl",
         "php", "plsql", "python", "ruby", "scala", "swift", "tsql",
-        "vf", "xml"
+        "typescript", "vf", "xml"
     );
 
     private static final List<String> SUPPORTED_LANGUAGES_PMD = listOf(
@@ -49,7 +51,7 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         "java-19-preview", "java-20", "java-20-preview",
         "java-5", "java-6", "java-7",
         "java-8", "java-9", "jsp-2", "jsp-3", "kotlin-1.6",
-        "kotlin-1.7", "modelica-3.4", "modelica-3.5",
+        "kotlin-1.7", "kotlin-1.8", "modelica-3.4", "modelica-3.5",
         "plsql-11g", "plsql-12.1", "plsql-12.2",
         "plsql-12c_Release_1", "plsql-12c_Release_2",
         "plsql-18c", "plsql-19c", "plsql-21c", "pom-4.0.0",
@@ -62,12 +64,11 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         "xsl-3.0"
     );
 
-
     private final String srcDir = new File(".", "src/test/resources/sample-source/java/").getAbsolutePath();
 
     private static Pattern toListPattern(List<String> items) {
         String pattern = items.stream().map(Pattern::quote)
-                              .collect(Collectors.joining(",\\s+", ".*Valid values: ", ".*"));
+                              .collect(Collectors.joining(",", ".*Validvalues:", ".*"));
         return Pattern.compile(pattern, Pattern.DOTALL);
     }
 
@@ -87,6 +88,8 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         result.add(basedir + "shell/pmd-completion.sh");
         result.add(basedir + "lib/pmd-core-" + PMDVersion.VERSION + ".jar");
         result.add(basedir + "lib/pmd-java-" + PMDVersion.VERSION + ".jar");
+        result.add(basedir + "sbom/pmd-" + PMDVersion.VERSION + "-cyclonedx.xml");
+        result.add(basedir + "sbom/pmd-" + PMDVersion.VERSION + "-cyclonedx.json");
         return result;
     }
 
@@ -146,8 +149,9 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
     @Test
     void testPmdHelp() throws Exception {
         ExecutionResult result = PMDExecutor.runPMD(null, tempDir, "-h");
-        result.assertExitCode(0)
-              .assertStdOut(matchesRegex(toListPattern(SUPPORTED_LANGUAGES_PMD)));
+        result.assertExitCode(0);
+        String output = result.getOutput().replaceAll("\\s+|\r|\n", "");
+        assertThat(output, matchesRegex(toListPattern(SUPPORTED_LANGUAGES_PMD)));
     }
 
     @Test
@@ -194,8 +198,9 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         result.assertExitCode(2).assertStdErr(containsString("Usage: pmd cpd "));
 
         result = CpdExecutor.runCpd(tempDir, "-h");
-        result.assertExitCode(0)
-              .assertStdOut(matchesRegex(toListPattern(SUPPORTED_LANGUAGES_CPD)));
+        result.assertExitCode(0);
+        String output = result.getOutput().replaceAll("\\s+|\r|\n", "");
+        assertThat(output, matchesRegex(toListPattern(SUPPORTED_LANGUAGES_CPD)));
 
         result = CpdExecutor.runCpd(tempDir, "--minimum-tokens", "10", "--format", "text", "--dir", srcDir);
         result.assertExitCode(4)
@@ -216,4 +221,13 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         result = CpdExecutor.runCpd(tempDir, "--minimum-tokens", "1000", "--format", "text", "--dir", srcDir);
         result.assertExitCode(0);
     }
+
+    @Test
+    void runAstDump() throws Exception {
+        File jumbledIncrementerSrc = new File(srcDir, "JumbledIncrementer.java");
+        List<String> args = listOf("--format", "xml", "--language", "java", "--file", jumbledIncrementerSrc.toString());
+        ExecutionResult result = PMDExecutor.runCommand(tempDir, "ast-dump", args);
+        result.assertExitCode(0);
+    }
+
 }

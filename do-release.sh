@@ -111,7 +111,7 @@ read -r
 # calculating stats for release notes
 
 STATS=$(
-echo "### Stats"
+echo "### 📈 Stats"
 echo "* $(git log pmd_releases/"${LAST_VERSION}"..HEAD --oneline --no-merges |wc -l) commits"
 echo "* $(curl -s "https://api.github.com/repos/pmd/pmd/milestones?state=all&direction=desc&per_page=5"|jq ".[] | select(.title == \"$RELEASE_VERSION\") | .closed_issues") closed tickets & PRs"
 echo "* Days since last release: $(( ( $(date +%s) - $(git log --max-count=1 --format="%at" pmd_releases/"${LAST_VERSION}") ) / 86400))"
@@ -169,6 +169,7 @@ git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
     -Dtag="pmd_releases/${RELEASE_VERSION}" \
     -DreleaseVersion="${RELEASE_VERSION}" \
     -DdevelopmentVersion="${DEVELOPMENT_VERSION}" \
+    -DscmCommentPrefix="[release] " \
     -Pgenerate-rule-docs
 
 
@@ -219,13 +220,13 @@ This is a {{ site.pmd.release_type }} release.
 
 {% tocmaker is_release_notes_processor %}
 
-### New and noteworthy
+### 🚀 New and noteworthy
 
-### Fixed Issues
+### 🐛 Fixed Issues
 
-### API Changes
+### 🚨 API Changes
 
-### External Contributions
+### ✨ External Contributions
 
 {% endtocmaker %}
 

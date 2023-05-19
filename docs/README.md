@@ -1,8 +1,10 @@
 # PMD Documentation
 
-The documentation is available at: <https://pmd.github.io/pmd/>
+The snapshot documentation (build by github pages) is available at: <https://pmd.github.io/pmd/>.
 
-The documentation for the latest release is at: <https://pmd.github.io/latest/>
+The same documentation (build with our own scripts) is available at: <https://docs.pmd-code.org/snapshot/>. 
+
+The documentation for the latest release is at: <https://docs.pmd-code.org/latest/>
 
 ## Site Theme
 

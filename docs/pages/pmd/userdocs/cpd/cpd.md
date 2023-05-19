@@ -290,7 +290,7 @@ to be "debug".
 ## Available report formats
 
 * text : Default format
-* xml
+* xml (and xslt)
 * csv
 * csv_with_linecount_per_file
 * vs
@@ -404,6 +404,8 @@ the CPD task as usual and right after it invoke the Ant XSLT script like this:
 <xslt in="cpd.xml" style="etc/xslt/cpdhtml.xslt" out="cpd.html" />
 ```
 
+See [section "xslt" in CPD Report Formats](pmd_userdocs_cpd_report_formats.html#xslt) for more examples.
+
 ## GUI
 
 CPD also comes with a simple GUI. You can start it through the unified CLI interface provided in the `bin` folder:
@@ -457,7 +459,7 @@ public Object someParameterizedFactoryMethod(int x) throws Exception {
     // any code here will be ignored for the duplication detection
 }
 //disable suppression
-@SuppressWarnings("CPD-END)
+@SuppressWarnings("CPD-END")
 public void nextMethod() {
 }
 ```
