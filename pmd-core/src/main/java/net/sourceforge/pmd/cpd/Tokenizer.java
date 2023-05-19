@@ -17,7 +17,9 @@ public interface Tokenizer {
     String OPTION_IGNORE_LITERAL_SEQUENCES = "net.sourceforge.pmd.cpd.Tokenizer.skipLiteralSequences";
 
     /**
-     * Ignore comma separated sequences of identifies and literals (e.g, <code>0,0,0,0...</code>).
+     * Ignore comma separated sequences of identifies and literals (e.g, <code>a,b,0,0...</code>).
+     *
+     * @since 7.0.0
      */
     String OPTION_IGNORE_IDENTIFIER_AND_LITERAL_SEQUENCES = "net.sourceforge.pmd.cpd.Tokenizer.skipSequences";
 
