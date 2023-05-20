@@ -206,7 +206,7 @@ class AbstractRuleTest {
     }
 
     @Test
-    void twoRulesetsWithRulesUsingPatternPropertiesShouldBeEqual() {
+    void twoRulesUsingPatternPropertiesShouldBeEqual() {
         class MockRuleWithPatternProperty extends net.sourceforge.pmd.lang.rule.MockRule {
             MockRuleWithPatternProperty(String defaultValue) {
                 super();
