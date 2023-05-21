@@ -108,7 +108,16 @@ public class ImmutableFieldRule extends AbstractJavaRulechainRule {
     }
 
     private boolean isReassignedOnSomeCodePath(DataflowResult dataflow, AssignmentEntry anAssignment) {
+        // Ie, return whether there exists an assignment that overwrites the given assignment,
+        // and simultaneously is not unbound (=happens for sure). Unbound assignments are introduced by the
+        // dataflow pass to help analysis, but are overly conservative. They represent the
+        // "final value" of a field when a ctor ends, and also the value a field may have
+        // been set to when an instance method is called (we don't know whether the method
+        // actually sets anything, but we assume it does). The first case can be ignored
+        // because we already check for that in the logic of this rule. The second case
+        // can be ignored because we already made sure that the field is only written to
+        // in ctors, but not in any instance method.
         Set<AssignmentEntry> killers = dataflow.getKillers(anAssignment);
-        return CollectionUtil.any(killers, killer -> !killer.isFieldAssignmentAtEndOfCtor());
+        return CollectionUtil.any(killers, killer -> !killer.isUnbound());
     }
 }

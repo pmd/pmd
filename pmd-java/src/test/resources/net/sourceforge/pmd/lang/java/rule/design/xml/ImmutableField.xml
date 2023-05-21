@@ -829,4 +829,42 @@ class Foo {
 }
 ]]></code>
     </test-code>
+    <test-code>
+        <description>FN with instance method call in ctor</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,3</expected-linenumbers>
+        <code><![CDATA[
+            class BitSieve {
+                private long bits[];
+                private int length;
+
+                private BitSieve() {
+                    length = 150 * 64;
+                    bits = new long[(unitIndex(length - 1) + 1)];
+
+                    // This instance method call will cause the fields to be "reassigned"
+                    // to some unknown (unbound) value, to be conservative.
+                    set(0);
+                }
+
+                private static int unitIndex(int bitIndex) {
+                    return bitIndex >>> 6;
+                }
+
+                private static long bit(int bitIndex) {
+                    return 1L << (bitIndex & ((1<<6) - 1));
+                }
+
+                private boolean get(int bitIndex) {
+                    int unitIndex = unitIndex(bitIndex);
+                    return ((bits[unitIndex] & bit(bitIndex)) != 0);
+                }
+
+                private void set(int bitIndex) {
+                    int unitIndex = unitIndex(bitIndex);
+                    bits[unitIndex] |= bit(bitIndex);
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>

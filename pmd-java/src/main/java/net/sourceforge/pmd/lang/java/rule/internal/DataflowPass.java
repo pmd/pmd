@@ -1532,6 +1532,9 @@ public final class DataflowPass {
          * If true, then this "assignment" is not real. We conservatively
          * assume that the variable may have been set to another value by
          * a call to some external code.
+         *
+         * @see #isFieldAssignmentAtEndOfCtor()
+         * @see #isFieldAssignmentAtStartOfMethod()
          */
         public boolean isUnbound() {
             return false;

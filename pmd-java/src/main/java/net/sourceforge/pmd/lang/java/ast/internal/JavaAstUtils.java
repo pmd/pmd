@@ -590,6 +590,12 @@ public final class JavaAstUtils {
         return false;
     }
 
+    /**
+     * Return whether the method call is a call whose receiver is the
+     * {@code this} object. This is the case also if the method is called
+     * with a {@code super} qualifier, or if it is not syntactically
+     * qualified but refers to a non-static method of the enclosing class.
+     */
     public static OptionalBool isCallOnThisInstance(ASTMethodCall call) {
         // syntactic approach.
         if (call.getQualifier() != null) {
