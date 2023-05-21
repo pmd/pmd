@@ -21,7 +21,7 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJavaRulechainRule
     public Object visit(ASTMethodDeclaration method, Object data) {
         ASTBlock body = method.getBody();
         if (body != null
-            && TestFrameworksUtil.isJUnitMethod(method)
+            && TestFrameworksUtil.isTestMethod(method)
             && !TestFrameworksUtil.isExpectAnnotated(method)
             && body.descendants(ASTMethodCall.class)
                    .none(TestFrameworksUtil::isProbableAssertCall)) {
