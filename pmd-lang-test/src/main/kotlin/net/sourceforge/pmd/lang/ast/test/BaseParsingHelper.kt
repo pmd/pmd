@@ -233,7 +233,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
             suppressMarker = params.suppressMarker
             forceLanguageVersion = defaultVersion
             isIgnoreIncrementalAnalysis = true
-            threads = 1
+            threads = 0 // don't use separate threads for rule execution
         }
 
         return PmdAnalysis.create(config).use { pmd ->
