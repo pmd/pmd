@@ -11,13 +11,13 @@ import java.util.Map;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.PmdLoggerFactoryFriend;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.slf4j.event.Level;
 
 public final class Slf4jSimpleConfiguration {
     private static final String SIMPLE_LOGGER_FACTORY_CLASS = "org.slf4j.impl.SimpleLoggerFactory";
     private static final String SIMPLE_LOGGER_CLASS = "org.slf4j.impl.SimpleLogger";
+    private static final String SIMPLE_LOGGER_CONFIGURATION = "org.slf4j.impl.SimpleLoggerConfiguration";
     private static final String PMD_ROOT_LOGGER = "net.sourceforge.pmd";
 
     private Slf4jSimpleConfiguration() { }
@@ -36,37 +36,55 @@ public final class Slf4jSimpleConfiguration {
         // Alternatively: move the CLI related classes into an own module, add
         // slf4j-simple as a compile dependency and create a PmdSlf4jSimpleFriend class in
         // the package org.slf4j.simple to gain access to this package-private init method.
+        //
+        // SimpleLogger.init() will reevaluate the configuration from the system properties or
+        // simplelogger.properties file.
         ILoggerFactory loggerFactory = LoggerFactory.getILoggerFactory();
-        Class<? extends ILoggerFactory> loggerFactoryClass = loggerFactory.getClass();
+        ClassLoader classLoader = loggerFactory.getClass().getClassLoader();
         try {
-            Class<?> simpleLoggerClass = loggerFactoryClass.getClassLoader().loadClass(SIMPLE_LOGGER_CLASS);
+            Class<?> simpleLoggerClass = classLoader.loadClass(SIMPLE_LOGGER_CLASS);
             Method initMethod = simpleLoggerClass.getDeclaredMethod("init");
             initMethod.setAccessible(true);
             initMethod.invoke(null);
 
-            int newLogLevel = getDefaultLogLevelInt(simpleLoggerClass);
+            int newDefaultLogLevel = getDefaultLogLevelInt(simpleLoggerClass);
 
             Field currentLogLevelField = simpleLoggerClass.getDeclaredField("currentLogLevel");
             currentLogLevelField.setAccessible(true);
 
+            Method levelStringMethod = simpleLoggerClass.getDeclaredMethod("recursivelyComputeLevelString");
+            levelStringMethod.setAccessible(true);
+
+            Method stringToLevelMethod = classLoader.loadClass(SIMPLE_LOGGER_CONFIGURATION)
+                    .getDeclaredMethod("stringToLevel", String.class);
+            stringToLevelMethod.setAccessible(true);
+
             // Change the logging level of loggers that were already created.
             // For this we fetch the map of name to logger that is stored in the logger factory,
             // then set the log level field of each logger via reflection.
+            // The new log level is determined similar to the constructor of SimpleLogger, that
+            // means, configuration params are being considered.
+            Class<?> loggerFactoryClass = classLoader.loadClass(SIMPLE_LOGGER_FACTORY_CLASS);
             Field loggerMapField = loggerFactoryClass.getDeclaredField("loggerMap");
             loggerMapField.setAccessible(true);
+            // we checked previously, that loggerFactory instanceof SimpleLoggerFactory
+            // see #isSimpleLogger()
             @SuppressWarnings("unchecked")
             Map<String, Logger> loggerMap = (Map<String, Logger>) loggerMapField.get(loggerFactory);
             for (Logger logger : loggerMap.values()) {
                 if (logger.getName().startsWith(PMD_ROOT_LOGGER)
-                    && SIMPLE_LOGGER_CLASS.equals(logger.getClass().getName())) {
+                    && simpleLoggerClass.isAssignableFrom(logger.getClass())) {
+                    String newConfiguredLevel = (String) levelStringMethod.invoke(logger);
+                    int newLogLevel = newDefaultLogLevel;
+                    if (newConfiguredLevel != null) {
+                        newLogLevel = (int) stringToLevelMethod.invoke(null, newConfiguredLevel);
+                    }
                     currentLogLevelField.set(logger, newLogLevel);
                 }
             }
-        } catch (ReflectiveOperationException ex) {
+        } catch (ReflectiveOperationException | ClassCastException ex) {
             System.err.println("Error while initializing logging: " + ex);
         }
-
-        PmdLoggerFactoryFriend.reset();
     }
 
     private static int getDefaultLogLevelInt(Class<?> simpleLoggerClass) throws ReflectiveOperationException {
@@ -111,8 +129,14 @@ public final class Slf4jSimpleConfiguration {
     }
 
     public static boolean isSimpleLogger() {
-        ILoggerFactory loggerFactory = LoggerFactory.getILoggerFactory();
-        return SIMPLE_LOGGER_FACTORY_CLASS.equals(loggerFactory.getClass().getName());
+        try {
+            ILoggerFactory loggerFactory = LoggerFactory.getILoggerFactory();
+            Class<?> loggerFactoryClass = loggerFactory.getClass().getClassLoader().loadClass(SIMPLE_LOGGER_FACTORY_CLASS);
+            return loggerFactoryClass.isAssignableFrom(loggerFactory.getClass());
+        } catch (ClassNotFoundException e) {
+            // not slf4j simple logger
+            return false;
+        }
     }
 
     public static void installJulBridge() {
