@@ -110,6 +110,10 @@ public class GUI implements CPDListener {
             return getLanguage().newPropertyBundle().hasDescriptor(Tokenizer.CPD_IGNORE_LITERAL_SEQUENCES);
         }
 
+        public boolean canIgnoreIdentifierAndLiteralSequences() {
+            return getLanguage().newPropertyBundle().hasDescriptor(Tokenizer.CPD_IGNORE_LITERAL_AND_IDENTIFIER_SEQUENCES);
+        }
+
     }
 
     private static final List<LanguageConfig> LANGUAGE_SETS;
@@ -309,6 +313,7 @@ public class GUI implements CPDListener {
     private final JCheckBox ignoreAnnotationsCheckbox = new JCheckBox("", false);
     private final JCheckBox ignoreUsingsCheckbox = new JCheckBox("", false);
     private final JCheckBox ignoreLiteralSequencesCheckbox = new JCheckBox("", false);
+    private final JCheckBox ignoreIdentifierAndLiteralSequencesCheckbox = new JCheckBox("", false);
     private final JComboBox<String> languageBox = new JComboBox<>();
     private final JTextField extensionField = new JTextField();
     private final JLabel extensionLabel = new JLabel("Extension:", SwingConstants.RIGHT);
@@ -398,6 +403,7 @@ public class GUI implements CPDListener {
         ignoreAnnotationsCheckbox.setEnabled(current.canIgnoreAnnotations());
         ignoreUsingsCheckbox.setEnabled(current.canIgnoreUsings());
         ignoreLiteralSequencesCheckbox.setEnabled(current.canIgnoreLiteralSequences());
+        ignoreIdentifierAndLiteralSequencesCheckbox.setEnabled(current.canIgnoreIdentifierAndLiteralSequences());
         boolean enableExtension = current.canUseCustomExtension();
         if (enableExtension) {
             extensionField.setText("");
@@ -463,6 +469,13 @@ public class GUI implements CPDListener {
         helper.nextRow();
         helper.addLabel("Ignore literal sequences?");
         helper.add(ignoreLiteralSequencesCheckbox);
+        helper.add(goButton);
+        helper.add(cxButton);
+        helper.nextRow();
+
+        helper.nextRow();
+        helper.addLabel("Ignore identifier and literal sequences?");
+        helper.add(ignoreIdentifierAndLiteralSequencesCheckbox);
         helper.add(goButton);
         helper.add(cxButton);
         helper.nextRow();
@@ -622,6 +635,7 @@ public class GUI implements CPDListener {
             config.setIgnoreAnnotations(ignoreAnnotationsCheckbox.isSelected());
             config.setIgnoreUsings(ignoreUsingsCheckbox.isSelected());
             config.setIgnoreLiteralSequences(ignoreLiteralSequencesCheckbox.isSelected());
+            config.setIgnoreIdentifierAndLiteralSequences(ignoreIdentifierAndLiteralSequencesCheckbox.isSelected());
             if (extensionField.isEnabled()) {
                 CUSTOM_EXTENSION_LANG.setExtension(extensionField.getText());
             }

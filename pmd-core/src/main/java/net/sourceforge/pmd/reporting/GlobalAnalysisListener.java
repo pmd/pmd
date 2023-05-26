@@ -146,6 +146,11 @@ public interface GlobalAnalysisListener extends AutoCloseable {
             public String toString() {
                 return "TeeListener{" + myList + '}';
             }
+
+            @Override
+            public void onConfigError(ConfigurationError error) {
+                myList.forEach(l -> l.onConfigError(error));
+            }
         }
         
         // Flatten other tee listeners in the list

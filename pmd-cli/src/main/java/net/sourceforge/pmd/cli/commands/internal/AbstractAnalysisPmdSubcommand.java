@@ -81,6 +81,7 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
     protected CliExitCode execute() {
         final C configuration = toConfiguration();
         return PmdRootLogger.executeInLoggingContext(configuration,
+                                                     debug,
                                                      this::doExecute);
     }
 

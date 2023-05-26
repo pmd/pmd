@@ -33,13 +33,13 @@ public final class PmdRootLogger {
         // utility class
     }
 
-    public static <C extends AbstractConfiguration, R> R executeInLoggingContext(C conf, Function<C, R> runnable) {
+    public static <C extends AbstractConfiguration, R> R executeInLoggingContext(C conf, boolean isDebug, Function<C, R> runnable) {
         Level curLogLevel = Slf4jSimpleConfiguration.getDefaultLogLevel();
         boolean resetLogLevel = false;
         try {
             // only reconfigure logging, if debug flag was used on command line
             // otherwise just use whatever is in conf/simplelogger.properties which happens automatically
-            if (conf.isDebug()) {
+            if (isDebug) {
                 Slf4jSimpleConfiguration.reconfigureDefaultLogLevel(Level.TRACE);
                 // need to reload the logger with the new configuration
                 log = LoggerFactory.getLogger(PMD_CLI_LOGGER);

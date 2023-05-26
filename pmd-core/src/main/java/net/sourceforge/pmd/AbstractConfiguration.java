@@ -37,7 +37,6 @@ public abstract class AbstractConfiguration {
     private final List<Path> relativizeRoots = new ArrayList<>();
     protected URI inputUri;
     private Charset sourceEncoding = Charset.forName(System.getProperty("file.encoding"));
-    private boolean debug;
     private final Map<Language, LanguagePropertyBundle> langProperties = new HashMap<>();
     private final LanguageRegistry langRegistry;
     private MessageReporter reporter;
@@ -74,29 +73,6 @@ public abstract class AbstractConfiguration {
     public void setSourceEncoding(Charset sourceEncoding) {
         this.sourceEncoding = Objects.requireNonNull(sourceEncoding);
     }
-
-    /**
-     * Return the debug indicator. If this value is <code>true</code> then PMD
-     * will log debug information.
-     *
-     * @return <code>true</code> if debug logging is enabled, <code>false</code>
-     *         otherwise.
-     */
-    public boolean isDebug() {
-        return debug;
-    }
-
-    /**
-     * Set the debug indicator.
-     *
-     * @param debug
-     *            The debug indicator to set.
-     * @see #isDebug()
-     */
-    public void setDebug(boolean debug) {
-        this.debug = debug;
-    }
-
 
     /**
      * Returns a mutable bundle of language properties that are associated

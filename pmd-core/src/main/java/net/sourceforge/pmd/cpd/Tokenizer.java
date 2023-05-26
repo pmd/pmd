@@ -21,6 +21,12 @@ public interface Tokenizer {
                        .desc("Ignore sequences of literals, eg `0, 0, 0, 0`")
                        .build();
 
+    PropertyDescriptor<Boolean> CPD_IGNORE_LITERAL_AND_IDENTIFIER_SEQUENCES =
+        PropertyFactory.booleanProperty("cpdIgnoreLiteralAndIdentifierSequences")
+                       .defaultValue(false)
+                       .desc("Ignore sequences of literals, eg `a, b, 0, 0`")
+                       .build();
+
     PropertyDescriptor<Boolean> CPD_ANONYMIZE_LITERALS =
         PropertyFactory.booleanProperty("cpdAnonymizeLiterals")
                        .defaultValue(false)

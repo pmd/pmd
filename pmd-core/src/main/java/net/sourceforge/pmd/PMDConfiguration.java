@@ -6,6 +6,8 @@ package net.sourceforge.pmd;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -22,8 +24,8 @@ import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.cache.AnalysisCache;
 import net.sourceforge.pmd.cache.FileAnalysisCache;
 import net.sourceforge.pmd.cache.NoopAnalysisCache;
-import net.sourceforge.pmd.cli.PmdParametersParseResult;
 import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
@@ -31,44 +33,38 @@ import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 /**
- * This class contains the details for the runtime configuration of a PMD run.
- * You can either create one and set individual fields, or mimic a CLI run by
- * using {@link PmdParametersParseResult#extractParameters(String...) extractParameters}.
+ * This class contains the details for the runtime configuration of a
+ * PMD run. Once configured, use {@link PmdAnalysis#create(PMDConfiguration)}
+ * in a try-with-resources to execute the analysis (see {@link PmdAnalysis}).
  *
- * <p>There are several aspects to the configuration of PMD.
+ * <h3>Rulesets</h3>
  *
- * <p>The aspects related to generic PMD behavior:</p>
  * <ul>
- * <li>Suppress marker is used in source files to suppress a RuleViolation,
- * defaults to {@value DEFAULT_SUPPRESS_MARKER}. {@link #getSuppressMarker()}</li>
- * <li>The number of threads to create when invoking on multiple files, defaults
- * one thread per available processor. {@link #getThreads()}</li>
- * <li>A ClassLoader to use when loading classes during Rule processing (e.g.
- * during type resolution), defaults to ClassLoader of the Configuration class.
- * {@link #getClassLoader()}</li>
- * <li>A means to configure a ClassLoader using a prepended classpath String,
- * instead of directly setting it programmatically.
- * {@link #prependAuxClasspath(String)}</li>
- * <li>A LanguageVersionDiscoverer instance, which defaults to using the default
- * LanguageVersion of each Language. Means are provided to change the
- * LanguageVersion for each Language.
- * {@link #getLanguageVersionDiscoverer()}</li>
+ * <li>You can configure paths to the rulesets to use with {@link #addRuleSet(String)}.
+ * These can be file paths or classpath resources.</li>
+ * <li>Use {@link #setMinimumPriority(RulePriority)} to control the minimum priority a
+ * rule must have to be included. Defaults to the lowest priority, ie all rules are loaded.</li>
+ * <li>Use {@link #setRuleSetFactoryCompatibilityEnabled(boolean)} to disable the
+ * compatibility measures for removed and renamed rules in the rulesets that will
+ * be loaded.
  * </ul>
  *
- * <p>The aspects related to Rules and Source files are:</p>
+ * <h3>Source files</h3>
+ *
  * <ul>
- * <li>RuleSets URIs: {@link #getRuleSetPaths()}</li>
- * <li>A minimum priority threshold when loading Rules from RuleSets, defaults
- * to {@link RulePriority#LOW}. {@link #getMinimumPriority()}</li>
- * <li>The character encoding of source files, defaults to the system default as
+ * <li>The default encoding of source files is the system default as
  * returned by <code>System.getProperty("file.encoding")</code>.
- * {@link #getSourceEncoding()}</li>
- * <li>A list of input paths to process for source files. This
- * may include files, directories, archives (e.g. ZIP files), etc.
- * {@link #getInputPathList()}</li>
- * <li>A flag which controls, whether {@link RuleSetLoader#enableCompatibility(boolean)} filter
- * should be used or not: #isRuleSetFactoryCompatibilityEnabled;
+ * You can set it with {@link #setSourceEncoding(Charset)}.</li>
+ * <li>The source files to analyze can be given in many ways. See
+ * {@link #addInputPath(Path)} {@link #setInputFilePath(Path)}, {@link #setInputUri(URI)}.
+ * <li>Files are assigned a language based on their name. The language
+ * version of languages can be given with
+ * {@link #setDefaultLanguageVersion(LanguageVersion)}.
+ * The default language assignment can be overridden with
+ * {@link #setForceLanguageVersion(LanguageVersion)}.</li>
  * </ul>
+ *
+ * <h3>Rendering</h3>
  *
  * <ul>
  * <li>The renderer format to use for Reports. {@link #getReportFormat()}</li>
@@ -81,14 +77,18 @@ import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
  * {@link #isShowSuppressedViolations()}</li>
  * </ul>
  *
- * <p>The aspects related to special PMD behavior are:</p>
+ * <h3>Language configuration </h3>
  * <ul>
- * <li>An indicator of whether PMD should log debug information.
- * {@link #isDebug()}</li>
- * <li>An indicator of whether PMD should perform stress testing behaviors, such
- * as randomizing the order of file processing. {@link #isStressTest()}</li>
- * <li>An indicator of whether PMD should log benchmarking information.
- * {@link #isBenchmark()}</li>
+ * <li>Use {@link #setSuppressMarker(String)} to change the comment marker for suppression comments. Defaults to {@value #DEFAULT_SUPPRESS_MARKER}.</li>
+ * <li>See {@link #setClassLoader(ClassLoader)} and {@link #prependAuxClasspath(String)} for
+ *  information for how to configure classpath for Java analysis.</li>
+ * <li>You can set additional language properties with {@link #getLanguageProperties(Language)}</li>
+ * </ul>
+ *
+ * <h3>Miscellaneous</h3>
+ * <ul>
+ * <li>Use {@link #setThreads(int)} to control the parallelism of the analysis. Defaults
+ * one thread per available processor. {@link #getThreads()}</li>
  * </ul>
  */
 public class PMDConfiguration extends AbstractConfiguration {
@@ -114,10 +114,6 @@ public class PMDConfiguration extends AbstractConfiguration {
     private boolean showSuppressedViolations = false;
     private boolean failOnViolation = true;
 
-    @Deprecated
-    private boolean stressTest;
-    @Deprecated
-    private boolean benchmark;
     private AnalysisCache analysisCache = new NoopAnalysisCache();
     private boolean ignoreIncrementalAnalysis;
 
@@ -126,7 +122,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     }
 
     public PMDConfiguration(@NonNull LanguageRegistry languageRegistry) {
-        super(languageRegistry, new SimpleMessageReporter(LoggerFactory.getLogger(PMD.class)));
+        super(languageRegistry, new SimpleMessageReporter(LoggerFactory.getLogger(PmdAnalysis.class)));
     }
 
     /**
@@ -231,6 +227,9 @@ public class PMDConfiguration extends AbstractConfiguration {
      * <p>If the classpath String looks like a URL to a file (i.e. starts with
      * <code>file://</code>) the file will be read with each line representing
      * an entry on the classpath.</p>
+     *
+     * <p>You can specify multiple class paths separated by `:` on Unix-systems or `;` under Windows.
+     * See {@link File#pathSeparator}.
      *
      * @param classpath The prepended classpath.
      *
@@ -427,60 +426,6 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     public void setReportProperties(Properties reportProperties) {
         this.reportProperties = reportProperties;
-    }
-
-    /**
-     * Return the stress test indicator. If this value is <code>true</code> then
-     * PMD will randomize the order of file processing to attempt to shake out
-     * bugs.
-     *
-     * @return <code>true</code> if stress test is enbaled, <code>false</code>
-     *         otherwise.
-     *
-     * @deprecated For removal
-     */
-    @Deprecated
-    public boolean isStressTest() {
-        return stressTest;
-    }
-
-    /**
-     * Set the stress test indicator.
-     *
-     * @param stressTest
-     *            The stree test indicator to set.
-     * @see #isStressTest()
-     * @deprecated For removal.
-     */
-    @Deprecated
-    public void setStressTest(boolean stressTest) {
-        this.stressTest = stressTest;
-    }
-
-    /**
-     * Return the benchmark indicator. If this value is <code>true</code> then
-     * PMD will log benchmark information.
-     *
-     * @return <code>true</code> if benchmark logging is enbaled,
-     *         <code>false</code> otherwise.
-     * @deprecated This behavior is down to CLI, not part of the core analysis.
-     */
-    @Deprecated
-    public boolean isBenchmark() {
-        return benchmark;
-    }
-
-    /**
-     * Set the benchmark indicator.
-     *
-     * @param benchmark
-     *            The benchmark indicator to set.
-     * @see #isBenchmark()
-     * @deprecated This behavior is down to CLI, not part of the core analysis.
-     */
-    @Deprecated
-    public void setBenchmark(boolean benchmark) {
-        this.benchmark = benchmark;
     }
 
     /**

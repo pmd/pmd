@@ -45,6 +45,7 @@ public class CppLanguageModule extends CpdOnlyLanguageModuleBase {
     public LanguagePropertyBundle newPropertyBundle() {
         LanguagePropertyBundle bundle = super.newPropertyBundle();
         bundle.definePropertyDescriptor(Tokenizer.CPD_IGNORE_LITERAL_SEQUENCES);
+        bundle.definePropertyDescriptor(Tokenizer.CPD_IGNORE_LITERAL_AND_IDENTIFIER_SEQUENCES);
         bundle.definePropertyDescriptor(CPD_SKIP_BLOCKS);
         return bundle;
     }

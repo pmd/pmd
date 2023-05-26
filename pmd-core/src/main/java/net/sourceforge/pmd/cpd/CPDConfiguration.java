@@ -65,6 +65,8 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     private boolean ignoreLiteralSequences = false;
 
+    private boolean ignoreIdentifierAndLiteralSequences = false;
+
     private boolean skipLexicalErrors = false;
 
     private boolean noSkipBlocks = false;
@@ -218,6 +220,14 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     public void setIgnoreLiteralSequences(boolean ignoreLiteralSequences) {
         this.ignoreLiteralSequences = ignoreLiteralSequences;
+    }
+
+    public boolean isIgnoreIdentifierAndLiteralSequences() {
+        return ignoreIdentifierAndLiteralSequences;
+    }
+
+    public void setIgnoreIdentifierAndLiteralSequences(boolean ignoreIdentifierAndLiteralSequences) {
+        this.ignoreIdentifierAndLiteralSequences = ignoreIdentifierAndLiteralSequences;
     }
 
     public boolean isSkipLexicalErrors() {

@@ -85,7 +85,6 @@ public class TreeExportCommand extends AbstractPmdSubcommand {
 
     public TreeExportConfiguration toConfiguration() {
         final TreeExportConfiguration configuration = new TreeExportConfiguration();
-        configuration.setDebug(debug);
         configuration.setFile(file);
         configuration.setFormat(format);
         configuration.setLanguage(language);

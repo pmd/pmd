@@ -133,8 +133,18 @@ class CPPTokenizerTest extends CpdTextComparisonTest {
         doTest("listOfNumbers", "_ignored", skipLiteralSequences());
     }
 
+    @Test
+    void testLongListsOfNumbersAndIdentifiersAreIgnored() {
+        doTest("listOfNumbers", "_ignored_identifiers", skipIdentifierAndLiteralsSequences());
+    }
+
+    @Test
+    void testLongListsOfIdentifiersAreIgnored() {
+        doTest("listOfNumbers", "_ignored_identifiers", skipIdentifierSequences());
+    }
+
     private static LanguagePropertyConfig skipBlocks(String skipPattern) {
-        return properties(true, skipPattern, false);
+        return properties(true, skipPattern, false, false);
     }
 
     private static LanguagePropertyConfig skipBlocks() {
@@ -142,14 +152,22 @@ class CPPTokenizerTest extends CpdTextComparisonTest {
     }
 
     private static LanguagePropertyConfig dontSkipBlocks() {
-        return properties(false, null, false);
+        return properties(false, null, false, false);
     }
 
     private static LanguagePropertyConfig skipLiteralSequences() {
-        return properties(false, null, true);
+        return properties(false, null, true, false);
     }
 
-    private static LanguagePropertyConfig properties(boolean skipBlocks, String skipPattern, boolean skipLiteralSequences) {
+    private static LanguagePropertyConfig skipIdentifierAndLiteralsSequences() {
+        return properties(false, null, true, true);
+    }
+
+    private static LanguagePropertyConfig skipIdentifierSequences() {
+        return properties(false, null, false, true);
+    }
+
+    private static LanguagePropertyConfig properties(boolean skipBlocks, String skipPattern, boolean skipLiteralSequences, boolean skipSequences) {
         return properties -> {
             if (!skipBlocks) {
                 properties.setProperty(CppLanguageModule.CPD_SKIP_BLOCKS, "");
@@ -157,6 +175,7 @@ class CPPTokenizerTest extends CpdTextComparisonTest {
                 properties.setProperty(CppLanguageModule.CPD_SKIP_BLOCKS, skipPattern);
             }
             properties.setProperty(Tokenizer.CPD_IGNORE_LITERAL_SEQUENCES, skipLiteralSequences);
+            properties.setProperty(Tokenizer.CPD_IGNORE_LITERAL_AND_IDENTIFIER_SEQUENCES, skipSequences);
         };
     }
 }

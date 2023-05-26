@@ -108,6 +108,17 @@ public interface Language extends Comparable<Language> {
     List<LanguageVersion> getVersions();
 
     /**
+     * Returns the latest language version. May not be the
+     * {@linkplain #getDefaultVersion() default}.
+     *
+     * @return The latest language version
+     */
+    default LanguageVersion getLatestVersion() {
+        List<LanguageVersion> versions = getVersions();
+        return versions.get(versions.size() - 1);
+    }
+
+    /**
      * Returns a complete set of supported version names for this language
      * including all aliases.
      *

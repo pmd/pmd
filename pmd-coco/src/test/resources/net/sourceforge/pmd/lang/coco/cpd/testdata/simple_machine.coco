@@ -1,0 +1,54 @@
+import unqualified ExternalTypes
+
+port Example_Device {
+  function do_something(instanceId : TypeId) : Nil
+
+  outgoing signal signal_a(instanceId : TypeId)
+  outgoing signal signal_b(instanceId : TypeId, errorId : ErrorId)
+  outgoing signal trigger()
+
+
+  machine M {
+    var num_items_ : Bounded<0, 10> = 0
+    val upper_bound_ : Bounded<0, 10> = 10
+    val lower_bound_ : Bounded<0, 10> = 0
+
+    if (num_items_ > lower_bound_)
+    spontaneous = {
+      nondet {
+        signal_a(_),
+        signal_b(_, _),
+      }
+      num_items_ = num_items_ - 1;
+    }
+
+    state Init {
+      if (num_items_ < upper_bound_) do_something(_ : TypeId) = nondet {
+        {
+          setNextState(AddItem)
+        },
+        {
+          trigger();
+          num_items_ = num_items_ + 1;
+        },
+      }
+    }
+
+    state AddItem {
+      spontaneous = {
+        nondet {
+          {
+            trigger();
+            num_items_ = num_items_ + 1;
+          },
+        }
+        setNextState(Init);
+      }
+    }
+  }
+}
+
+@runtime(.SingleThreaded)
+external component Example_Device_Base {
+  val ExampleDevice : Required<Example_Device>
+}
