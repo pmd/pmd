@@ -454,7 +454,7 @@ public enum MyEnum {
     </test-code>
 
     <test-code>
-        <description>#3859 [java] CommentDefaultAccessModifier is triggered in JUnit5 method and it was conflicting with rule JUnit5TestShouldBePackagePrivate</description>
+        <description>#3859 #4273 [java] CommentDefaultAccessModifier is triggered in JUnit5 method and it was conflicting with rule JUnit5TestShouldBePackagePrivate</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.junit.jupiter.api.AfterEach;
@@ -463,6 +463,7 @@ import org.junit.jupiter.api.ParameterizedTest;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 class SomeTest {
 
@@ -481,6 +482,9 @@ class SomeTest {
 
   @RepeatedTest(10)
   void repeatedTest() {}
+
+  @RegisterExtension
+  void registerExtenstionTest(){}
 }
         ]]></code>
     </test-code>
@@ -507,6 +511,59 @@ import lombok.Value;
 @Value
 class Test { // missing
     int foo;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] CommentDefaultAccessModifier: false positive with TestNG annotations #4268</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterGroups;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterSuite;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeGroups;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
+class C {
+    @BeforeSuite
+    void beforeSuite() {}
+
+    @BeforeTest
+    void beforeTest() {}
+
+    @BeforeClass
+    void beforeClass() {}
+
+    @BeforeGroups(groups = "group1")
+    void beforeGroups() {}
+
+    @BeforeMethod
+    void beforeMethod() {}
+
+    @Test(groups = "group1")
+    void foo() {
+        synchronized (this) {}
+    }
+
+    @AfterMethod
+    void afterMethod() {}
+
+    @AfterGroups(groups = "group1")
+    void afterGroups() {}
+
+    @AfterClass
+    void afterClass() {}
+
+    @AfterTest
+    void afterTest() {}
+
+    @AfterSuite
+    void afterSuite() {}
 }
         ]]></code>
     </test-code>

@@ -604,12 +604,14 @@ public class Foo extends Error { }
     <rule name="ExceptionAsFlowControl"
           language="java"
           since="1.8"
-          message="Avoid using exceptions as flow control."
+          message="Exception thrown at line {0} is caught in this block."
           class="net.sourceforge.pmd.lang.java.rule.design.ExceptionAsFlowControlRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#exceptionasflowcontrol">
         <description>
-Using Exceptions as form of flow control is not recommended as they obscure true exceptions when debugging.
-Either add the necessary validation or use an alternate control structure.
+This rule reports exceptions thrown and caught in an enclosing try statement.
+This use of exceptions as a form of `goto` statement is discouraged, as that may
+hide actual exceptions, and obscures control flow, especially when debugging.
+To fix a violation, add the necessary validation or use an alternate control structure.
         </description>
         <priority>3</priority>
         <example>
@@ -1349,12 +1351,12 @@ Limitations: We can only check private fields for now.
 public class Foo {
     private int x; // this will be reported
 
-    public void foo(int y) {
+    public int foo(int y) {
        x = y + 5; // assigned before any read
        return x;
     }
 
-    public void fooOk(int y) {
+    public int fooOk(int y) {
        int z = y + 5; // might as well be a local like here
        return z;
     }

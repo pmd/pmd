@@ -75,7 +75,7 @@ public class TreeExportCommand extends AbstractPmdSubcommand {
     @Option(names = "-P", description = "Key-value pair defining a property for the report format.%n"
             + "Supported values for each report format:%n${sys:pmd-cli.tree-export.report.properties.help}",
             completionCandidates = TreeExportReportPropertiesCandidates.class)
-    private Properties properties;
+    private Properties properties = new Properties();
 
     @Option(names = "--file", description = "The file to parse and dump.")
     private Path file;
@@ -85,7 +85,6 @@ public class TreeExportCommand extends AbstractPmdSubcommand {
 
     public TreeExportConfiguration toConfiguration() {
         final TreeExportConfiguration configuration = new TreeExportConfiguration();
-        configuration.setDebug(debug);
         configuration.setFile(file);
         configuration.setFormat(format);
         configuration.setLanguage(language);

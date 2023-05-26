@@ -53,6 +53,7 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
             "android.support.annotation.VisibleForTesting",
             "co.elastic.clients.util.VisibleForTesting",
             "org.junit.jupiter.api.Test",
+            "org.junit.jupiter.api.extension.RegisterExtension",
             "org.junit.jupiter.api.ParameterizedTest",
             "org.junit.jupiter.api.RepeatedTest",
             "org.junit.jupiter.api.TestFactory",
@@ -60,7 +61,18 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
             "org.junit.jupiter.api.BeforeEach",
             "org.junit.jupiter.api.BeforeAll",
             "org.junit.jupiter.api.AfterEach",
-            "org.junit.jupiter.api.AfterAll"
+            "org.junit.jupiter.api.AfterAll",
+            "org.testng.annotations.Test",
+            "org.testng.annotations.AfterClass",
+            "org.testng.annotations.AfterGroups",
+            "org.testng.annotations.AfterMethod",
+            "org.testng.annotations.AfterSuite",
+            "org.testng.annotations.AfterTest",
+            "org.testng.annotations.BeforeClass",
+            "org.testng.annotations.BeforeGroups",
+            "org.testng.annotations.BeforeMethod",
+            "org.testng.annotations.BeforeSuite",
+            "org.testng.annotations.BeforeTest"
         );
 
 

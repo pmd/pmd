@@ -7,11 +7,12 @@
     <test-code>
         <description>May be final</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void test1() {
         int a = 0;
-        System.out.println(a);
+        System.out.println(a); // a is used here
     }
 }
         ]]></code>
@@ -30,7 +31,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Unused, no violation</description>
+        <description>#4511 Unused, no violation</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -68,9 +69,24 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <!-- TODO blank local may also be final, all three should be violations -->
-        <description>Blank local var</description>
+        <description>Initialized local vars</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,4</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void test1() {
+        int a = 0;
+        int b = 0;
+        System.out.println("a=" + a + " b=" + b);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code disabled="true">
+        <description>#3122 Blank uninitialized local var</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>3,4,5</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void test1() {

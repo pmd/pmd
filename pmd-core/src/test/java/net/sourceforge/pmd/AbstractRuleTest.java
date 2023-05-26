@@ -8,6 +8,7 @@ import static net.sourceforge.pmd.ReportTestUtil.getReportForRuleApply;
 import static net.sourceforge.pmd.properties.NumericConstraints.inRange;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -15,6 +16,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.Collections;
+import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -201,6 +203,37 @@ class AbstractRuleTest {
         r2.setMessage("another message");
         assertEquals(r1, r2, "Rules with different messages are still equal");
         assertEquals(r1.hashCode(), r2.hashCode(), "Rules that are equal must have the an equal hashcode");
+    }
+
+    @Test
+    void twoRulesUsingPatternPropertiesShouldBeEqual() {
+        class MockRuleWithPatternProperty extends net.sourceforge.pmd.lang.rule.MockRule {
+            MockRuleWithPatternProperty(String defaultValue) {
+                super();
+                definePropertyDescriptor(PropertyFactory.regexProperty("myRegexProperty")
+                        .desc("description")
+                        .defaultValue(defaultValue)
+                        .build());
+            }
+        }
+
+        assertEquals(new MockRuleWithPatternProperty("abc"), new MockRuleWithPatternProperty("abc"));
+        assertNotEquals(new MockRuleWithPatternProperty("abc"), new MockRuleWithPatternProperty("def"));
+
+        MockRuleWithPatternProperty rule1 = new MockRuleWithPatternProperty("abc");
+        PropertyDescriptor<Pattern> myRegexProperty1 = (PropertyDescriptor<Pattern>) rule1.getPropertyDescriptor("myRegexProperty");
+        rule1.setProperty(myRegexProperty1, Pattern.compile("ghi"));
+        MockRuleWithPatternProperty rule2 = new MockRuleWithPatternProperty("abc");
+        PropertyDescriptor<Pattern> myRegexProperty2 = (PropertyDescriptor<Pattern>) rule1.getPropertyDescriptor("myRegexProperty");
+        rule2.setProperty(myRegexProperty2, Pattern.compile("ghi"));
+        assertEquals(rule1, rule2);
+
+        rule2.setProperty(myRegexProperty2, Pattern.compile("jkl"));
+        assertNotEquals(rule1, rule2);
+
+        // the two rules have the same value, one using default, the other using an explicit value.
+        // they use effectively the same value, although the default values of the properties are different.
+        assertEquals(new MockRuleWithPatternProperty("jkl"), rule2);
     }
 
     @Test

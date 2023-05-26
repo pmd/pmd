@@ -311,4 +311,71 @@ class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] AvoidBranchingStatementAsLastInLoop: False-negative about try/finally block #4063</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>11</expected-linenumbers>
+        <code><![CDATA[
+class A {
+    void foo() {
+        while (true) {
+            try {
+                // nothing to do
+            }
+            catch (Throwable c) {
+                throw c;
+            }
+            finally {
+                break;
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>conditional break in finally #4063</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class A {
+    void foo() {
+        for (int i = 0; i < 10; i++) {
+            try {
+                // nothing to do
+            }
+            catch (Throwable c){
+                throw c;
+            }
+            finally {
+                if (i*i > 25) {
+                    break;
+                }
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>allow break in try #4063</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class A {
+    void foo() {
+        while (true) {
+            try {
+                // nothing to do
+                break;
+            }
+            catch (Throwable c) {
+                // try next
+            }
+        }
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

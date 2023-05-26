@@ -74,7 +74,7 @@ class JsonRendererTest extends AbstractRendererTest {
         return expected
                 .replaceAll("\"timestamp\":\\s*\"[^\"]+\"", "\"timestamp\": \"--replaced--\"")
                 .replaceAll("\"pmdVersion\":\\s*\"[^\"]+\"", "\"pmdVersion\": \"unknown\"")
-                .replaceAll("\r\n", "\n"); // make the test run on Windows, too
+                .replaceAll("\\R", "\n"); // make the test run on Windows, too
     }
 
     @Test

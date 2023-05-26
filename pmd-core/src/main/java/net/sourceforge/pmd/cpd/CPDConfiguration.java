@@ -65,6 +65,8 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     private boolean ignoreLiteralSequences = false;
 
+    private boolean ignoreIdentifierAndLiteralSequences = false;
+
     private boolean skipLexicalErrors = false;
 
     private boolean noSkipBlocks = false;
@@ -84,8 +86,6 @@ public class CPDConfiguration extends AbstractConfiguration {
     private boolean help;
 
     private boolean failOnViolation = true;
-
-    private boolean debug = false;
 
     public SourceCode sourceCodeFor(File file) {
         return new SourceCode(new SourceCode.FileCodeLoader(file, getSourceEncoding().name()));
@@ -189,6 +189,11 @@ public class CPDConfiguration extends AbstractConfiguration {
             properties.setProperty(Tokenizer.OPTION_IGNORE_LITERAL_SEQUENCES, "true");
         } else {
             properties.remove(Tokenizer.OPTION_IGNORE_LITERAL_SEQUENCES);
+        }
+        if (configuration.isIgnoreIdentifierAndLiteralSequences()) {
+            properties.setProperty(Tokenizer.OPTION_IGNORE_IDENTIFIER_AND_LITERAL_SEQUENCES, "true");
+        } else {
+            properties.remove(Tokenizer.OPTION_IGNORE_IDENTIFIER_AND_LITERAL_SEQUENCES);
         }
         properties.setProperty(Tokenizer.OPTION_SKIP_BLOCKS, Boolean.toString(!configuration.isNoSkipBlocks()));
         properties.setProperty(Tokenizer.OPTION_SKIP_BLOCKS_PATTERN, configuration.getSkipBlocksPattern());
@@ -316,6 +321,14 @@ public class CPDConfiguration extends AbstractConfiguration {
         this.ignoreLiteralSequences = ignoreLiteralSequences;
     }
 
+    public boolean isIgnoreIdentifierAndLiteralSequences() {
+        return ignoreIdentifierAndLiteralSequences;
+    }
+
+    public void setIgnoreIdentifierAndLiteralSequences(boolean ignoreIdentifierAndLiteralSequences) {
+        this.ignoreIdentifierAndLiteralSequences = ignoreIdentifierAndLiteralSequences;
+    }
+
     public boolean isSkipLexicalErrors() {
         return skipLexicalErrors;
     }
@@ -396,13 +409,4 @@ public class CPDConfiguration extends AbstractConfiguration {
         this.failOnViolation = failOnViolation;
     }
 
-    @Override
-    public boolean isDebug() {
-        return debug;
-    }
-
-    @Override
-    public void setDebug(boolean debug) {
-        this.debug = debug;
-    }
 }

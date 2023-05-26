@@ -4,12 +4,10 @@
 
 package net.sourceforge.pmd.renderers;
 
-import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.Writer;
 
-import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.cli.PMDParameters;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.properties.AbstractPropertySource;
 
@@ -21,7 +19,7 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
     protected String description;
 
     protected boolean showSuppressedViolations = true;
-    protected Writer writer;
+    protected PrintWriter writer;
 
     public AbstractRenderer(String name, String description) {
         this.name = name;
@@ -68,12 +66,6 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
      * option "shortnames". If the option is enabled, then the filename in the report
      * is without the directory prefix of the directories, that have been analyzed.
      * If the option "shortnames" is not enabled, then the inputFileName is returned as-is.
-     *
-     * @param inputFileName
-     * @return
-     *
-     * @see PMDConfiguration#isReportShortNames()
-     * @see PMDParameters#isShortnames()
      */
     protected String determineFileName(String inputFileName) {
         return inputFileName; // now the TextFile always has a short display name if it was created so.
@@ -81,7 +73,7 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
 
     @Override
     public void setWriter(Writer writer) {
-        this.writer = writer;
+        this.writer = new PrintWriter(writer);
     }
 
     @Override
@@ -98,8 +90,6 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
 
         try {
             this.writer.flush();
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
         } finally {
             IOUtil.closeQuietly(writer);
         }

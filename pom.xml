@@ -14,12 +14,12 @@
         Rules can be written in Java or using a XPath query.
 
         It supports Java, JavaScript, Salesforce.com Apex and Visualforce,
-        Modelica, PLSQL, Apache Velocity, HTML, XML and XSL.
+        Kotlin, Swift, Modelica, PLSQL, Apache Velocity, JSP, WSDL, HTML, XML and XSL.
         Scala is supported, but there are currently no Scala rules available.
 
         Additionally, it includes CPD, the copy-paste-detector. CPD finds duplicated code in
-        C/C++, C#, Dart, Fortran, Gherkin, Go, Groovy, HTML, Java, JavaScript, JSP, Kotlin, Lua, Matlab, Modelica,
-        Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex and Visualforce, Scala, Swift, T-SQL and XML.
+        Coco, C/C++, C#, Dart, Fortran, Gherkin, Go, Groovy, HTML, Java, JavaScript, JSP, Julia, Kotlin, Lua, Matlab, Modelica,
+        Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex and Visualforce, Scala, Swift, T-SQL, Typescript and XML.
     </description>
 
     <url>https://pmd.github.io/</url>
@@ -81,7 +81,7 @@
     </issueManagement>
 
     <properties>
-        <project.build.outputTimestamp>2023-02-25T10:50:54Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2023-04-29T21:39:33Z</project.build.outputTimestamp>
 
         <java.version>8</java.version>
 
@@ -108,14 +108,14 @@
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <pmd.website.baseurl>https://pmd.github.io/pmd</pmd.website.baseurl>
+        <pmd.website.baseurl>https://docs.pmd-code.org/snapshot</pmd.website.baseurl>
 
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding} ${extraArgLine}</argLine>
         <extraArgLine /> <!-- empty by default, profiles set it as needed -->
 
-        <pmd.build-tools.version>20</pmd.build-tools.version>
+        <pmd.build-tools.version>21</pmd.build-tools.version>
 
-        <pmd-designer.version>7.0.0-SNAPSHOT</pmd-designer.version>
+        <pmd-designer.version>7.0.0-rc1</pmd-designer.version>
         <javacc.jar>${settings.localRepository}/net/java/dev/javacc/javacc/${javacc.version}/javacc-${javacc.version}.jar</javacc.jar>
         <javacc.outputDirectory>${project.build.directory}/generated-sources/javacc</javacc.outputDirectory>
         <javacc.ant.wrapper>${project.basedir}/../javacc-wrapper.xml</javacc.ant.wrapper>
@@ -277,6 +277,9 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>3.3.0</version>
+                    <configuration>
+                        <propertiesEncoding>${project.build.sourceEncoding}</propertiesEncoding>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -433,7 +436,7 @@
                         </execution>
                     </executions>
                     <configuration>
-                        <linkXRef>true</linkXRef>
+                        <linkXRef>false</linkXRef>
                         <minimumTokens>100</minimumTokens>
                         <targetJdk>1.${java.version}</targetJdk>
                         <rulesets>
@@ -499,6 +502,11 @@
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>0.8.8</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.cyclonedx</groupId>
+                    <artifactId>cyclonedx-maven-plugin</artifactId>
+                    <version>2.7.6</version>
                 </plugin>
                 <!--This plugin's configuration is used to store Eclipse
                     m2e settings only. It has no influence on the Maven build itself. -->
@@ -621,6 +629,26 @@
                     <nexusUrl>https://oss.sonatype.org/</nexusUrl>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.cyclonedx</groupId>
+                <artifactId>cyclonedx-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>makeAggregateBom</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <!-- https://github.com/CycloneDX/cyclonedx-maven-plugin/issues/326 -->
+                <dependencies>
+                    <dependency>
+                        <groupId>org.ow2.asm</groupId>
+                        <artifactId>asm</artifactId>
+                        <version>9.5</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
         </plugins>
     </build>
 
@@ -641,11 +669,6 @@
                 <groupId>org.apache.ant</groupId>
                 <artifactId>ant</artifactId>
                 <version>${ant.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.beust</groupId>
-                <artifactId>jcommander</artifactId>
-                <version>1.48</version> <!-- 1.48 is the latest version compatible with java7 -->
             </dependency>
             <dependency>
                 <groupId>info.picocli</groupId>
@@ -1028,7 +1051,7 @@
         <profile>
             <id>pmd-release</id>
             <properties>
-                <pmd.website.baseurl>https://pmd.github.io/pmd-${project.version}</pmd.website.baseurl>
+                <pmd.website.baseurl>https://docs.pmd-code.org/pmd-doc-${project.version}</pmd.website.baseurl>
             </properties>
         </profile>
         <profile>
@@ -1145,6 +1168,7 @@
         <module>pmd-apex-jorje</module>
         <module>pmd-apex</module>
         <module>pmd-cli</module>
+        <module>pmd-coco</module>
         <module>pmd-core</module>
         <module>pmd-cpp</module>
         <module>pmd-cs</module>
@@ -1160,6 +1184,7 @@
         <module>pmd-java</module>
         <module>pmd-javascript</module>
         <module>pmd-jsp</module>
+        <module>pmd-julia</module>
         <module>pmd-kotlin</module>
         <module>pmd-lang-test</module>
         <module>pmd-matlab</module>
@@ -1182,5 +1207,6 @@
         <module>pmd-vm</module>
         <module>pmd-xml</module>
         <module>pmd-ant</module>
+        <module>pmd-languages-deps</module>
     </modules>
 </project>

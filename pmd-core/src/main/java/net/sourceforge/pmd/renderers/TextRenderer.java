@@ -7,7 +7,6 @@ package net.sourceforge.pmd.renderers;
 import java.io.IOException;
 import java.util.Iterator;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
 
@@ -41,8 +40,8 @@ public class TextRenderer extends AbstractIncrementingRenderer {
             buf.append(determineFileName(rv.getFilename()));
             buf.append(SMALL_SEPARATOR).append(rv.getBeginLine());
             buf.append(MEDIUM_SEPARATOR).append(rv.getRule().getName());
-            buf.append(MEDIUM_SEPARATOR).append(rv.getDescription()).append(PMD.EOL);
-            writer.write(buf.toString());
+            buf.append(MEDIUM_SEPARATOR).append(rv.getDescription());
+            writer.println(buf);
         }
     }
 
@@ -53,8 +52,8 @@ public class TextRenderer extends AbstractIncrementingRenderer {
         for (Report.ProcessingError error : errors) {
             buf.setLength(0);
             buf.append(determineFileName(error.getFile()));
-            buf.append(LARGE_SEPARATOR).append(error.getMsg()).append(PMD.EOL);
-            writer.write(buf.toString());
+            buf.append(LARGE_SEPARATOR).append(error.getMsg());
+            writer.println(buf);
         }
 
         for (Report.SuppressedViolation excluded : suppressed) {
@@ -63,16 +62,15 @@ public class TextRenderer extends AbstractIncrementingRenderer {
                .append(" rule violation suppressed by ")
                .append(excluded.getSuppressor().getId())
                .append(" in ")
-               .append(determineFileName(excluded.getRuleViolation().getFilename()))
-                .append(PMD.EOL);
-            writer.write(buf.toString());
+                .append(determineFileName(excluded.getRuleViolation().getFilename()));
+            writer.println(buf);
         }
 
         for (Report.ConfigurationError error : configErrors) {
             buf.setLength(0);
             buf.append(error.rule().getName());
-            buf.append(LARGE_SEPARATOR).append(error.issue()).append(PMD.EOL);
-            writer.write(buf.toString());
+            buf.append(LARGE_SEPARATOR).append(error.issue());
+            writer.println(buf);
         }
     }
 

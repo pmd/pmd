@@ -8,6 +8,7 @@
         <description>Too many lines</description>
         <rule-property name="maxLines">5</rule-property>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
         <code><![CDATA[
 /* 1
  * 2
@@ -28,7 +29,7 @@ public class Foo {
         ]]></code>
     </test-code>
     <test-code>
-        <description>Line too long</description>
+        <description>#4369 Line too long</description>
         <rule-property name="maxLineLength">5</rule-property>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>5</expected-linenumbers>
@@ -36,7 +37,7 @@ public class Foo {
 //
 
 
-/* 4
+/*     12345
  * 5 way too long
  */
 public class Foo {

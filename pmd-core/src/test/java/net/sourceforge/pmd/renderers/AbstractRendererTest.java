@@ -44,6 +44,7 @@ abstract class AbstractRendererTest {
     @RegisterExtension
     protected final DummyParsingHelper helper = new DummyParsingHelper();
 
+    protected static final String EOL = System.lineSeparator();
     @TempDir
     private Path tempDir;
 

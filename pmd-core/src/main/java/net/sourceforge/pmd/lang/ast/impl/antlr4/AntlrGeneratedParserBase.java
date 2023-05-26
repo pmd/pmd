@@ -31,7 +31,8 @@ import net.sourceforge.pmd.lang.ast.Node;
  * which stores the XPath names of the generated nodes (and terminals).
  *
  * <p>Additional members can be added to a parser with {@code @parser::members { ... }}
- * in the g4 file.
+ * in the g4 file. That's how the implementations for {@link #createPmdTerminal(ParserRuleContext, Token)}
+ * and {@link #createPmdError(ParserRuleContext, Token)} can be added.
  */
 public abstract class AntlrGeneratedParserBase<N extends AntlrNode<N>> extends Parser {
 
@@ -52,9 +53,9 @@ public abstract class AntlrGeneratedParserBase<N extends AntlrNode<N>> extends P
 
     // Those two need to return a node that implements eg SwiftNode
 
-    public abstract BaseAntlrTerminalNode<N> createPmdTerminal(ParserRuleContext parent, Token t);
+    protected abstract BaseAntlrTerminalNode<N> createPmdTerminal(ParserRuleContext parent, Token t);
 
-    public abstract BaseAntlrErrorNode<N> createPmdError(ParserRuleContext parent, Token t);
+    protected abstract BaseAntlrErrorNode<N> createPmdError(ParserRuleContext parent, Token t);
 
 
     protected Node asPmdNode(RuleContext ctx) {

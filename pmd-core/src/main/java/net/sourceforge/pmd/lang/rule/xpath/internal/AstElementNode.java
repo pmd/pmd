@@ -45,6 +45,7 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
 
     private final List<AstElementNode> children;
     private @Nullable Map<String, AstAttributeNode> attributes;
+    private @Nullable Map<String, Attribute> lightAttributes;
 
 
     AstElementNode(AstTreeInfo document,
@@ -96,6 +97,20 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
             attributes = makeAttributes(getUnderlyingNode());
         }
         return attributes;
+    }
+
+    public Map<String, Attribute> getLightAttributes() {
+        if (lightAttributes == null) {
+            lightAttributes = new HashMap<>();
+            getUnderlyingNode().getXPathAttributesIterator()
+                               .forEachRemaining(it -> lightAttributes.put(it.getName(), it));
+        }
+        return lightAttributes;
+    }
+
+    @Override
+    public boolean hasChildNodes() {
+        return !children.isEmpty();
     }
 
     @Override
@@ -158,12 +173,14 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
         return filter(nodeTest, iterateList(siblingsList, forwards));
     }
 
-
     @Override
     public String getAttributeValue(String uri, String local) {
-        AstAttributeNode attributeWrapper = getAttributes().get(local);
-
-        return attributeWrapper == null ? null : attributeWrapper.getStringValue();
+        Attribute attribute = getLightAttributes().get(local);
+        if (attribute != null) {
+            getTreeInfo().getLogger().recordUsageOf(attribute);
+            return attribute.getStringValue();
+        }
+        return null;
     }
 
 
@@ -206,11 +223,6 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
         // text nodes
         // TODO: for some languages like html we have text nodes
         return "";
-    }
-
-    @Override
-    public boolean hasFingerprint() {
-        return true;
     }
 
     @Override

@@ -66,10 +66,10 @@ class ReportTest {
         assertSuppressed(rpt, 1);
     }
 
-    private static final String TEST1 = "public class Foo {}" + PMD.EOL;
+    private static final String TEST1 = "public class Foo {}";
 
-    private static final String TEST2 = "@SuppressWarnings(\"PMD\")" + PMD.EOL + "public class Foo {}";
-    private static final String TEST2_FULL = "@java.lang.SuppressWarnings(\"PMD\")" + PMD.EOL + "public class Foo {}";
+    private static final String TEST2 = "@SuppressWarnings(\"PMD\")\npublic class Foo {}";
+    private static final String TEST2_FULL = "@java.lang.SuppressWarnings(\"PMD\")\npublic class Foo {}";
 
     private static final String TEST3 = "public class Foo {} // NOPMD";
 }
