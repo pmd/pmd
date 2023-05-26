@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.processor;
+package net.sourceforge.pmd.lang.impl;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,6 +31,7 @@ class MultiThreadProcessorTest {
     PmdAnalysis setupForTest(final String ruleset) {
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.setThreads(2);
+        configuration.setIgnoreIncrementalAnalysis(true);
         PmdAnalysis pmd = PmdAnalysis.create(configuration);
         LanguageVersion lv = DummyLanguageModule.getInstance().getDefaultVersion();
         pmd.files().addFile(TextFile.forCharSeq("abc", "file1-violation.dummy", lv));
@@ -47,7 +48,7 @@ class MultiThreadProcessorTest {
         return pmd;
     }
 
-    // Dysfunctional rules are pruned upstream of the processor.
+    // TODO: Dysfunctional rules are pruned upstream of the processor.
     //
     //    @Test
     //    void testRulesDysnfunctionalLog() throws Exception {

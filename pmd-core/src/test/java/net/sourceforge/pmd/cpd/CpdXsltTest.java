@@ -37,6 +37,19 @@ class CpdXsltTest {
 
     @Test
     void cpdhtml() throws Exception {
+        String result = runXslt("cpdhtml.xslt");
+        String expected = IOUtil.readToString(CpdXsltTest.class.getResourceAsStream("ExpectedCpdHtmlReport.html"), StandardCharsets.UTF_8);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void cpdhtmlv2() throws Exception {
+        String result = runXslt("cpdhtml-v2.xslt");
+        String expected = IOUtil.readToString(CpdXsltTest.class.getResourceAsStream("ExpectedCpdHtmlReport-v2.html"), StandardCharsets.UTF_8);
+        assertEquals(expected, result);
+    }
+
+    private String runXslt(String stylesheet) throws Exception {
         XSLTErrorListener errorListener = new XSLTErrorListener();
 
         // note: using the default JDK factory, otherwise we would use Saxon from PMD's classpath
@@ -44,7 +57,7 @@ class CpdXsltTest {
         TransformerFactory factory = TransformerFactory
                 .newInstance("com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl", null);
         factory.setErrorListener(errorListener);
-        StreamSource xslt = new StreamSource(new File("etc/xslt/cpdhtml.xslt"));
+        StreamSource xslt = new StreamSource(new File("etc/xslt/" + stylesheet));
         Templates template = factory.newTemplates(xslt);
         StreamSource cpdReport = new StreamSource(CpdXsltTest.class.getResourceAsStream("SampleCpdReport.xml"));
         StreamResult result = new StreamResult(new StringWriter());
@@ -52,9 +65,8 @@ class CpdXsltTest {
         transformer.setErrorListener(errorListener);
         transformer.transform(cpdReport, result);
 
-        String expected = IOUtil.readToString(CpdXsltTest.class.getResourceAsStream("ExpectedCpdHtmlReport.html"), StandardCharsets.UTF_8);
-        assertEquals(expected, result.getWriter().toString());
         assertTrue(errorListener.hasNoErrors(), "XSLT errors occured: " + errorListener);
+        return result.getWriter().toString();
     }
 
     private static class XSLTErrorListener implements ErrorListener {

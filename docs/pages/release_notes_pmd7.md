@@ -446,6 +446,13 @@ Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 This PMD release ships a new version of the pmd-designer.
 For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designer/releases/tag/7.0.0-rc1).
 
+#### New CPD report format cpdhtml-v2.xslt
+
+Thanks to @mohan-chinnappan-n a new CPD report format has been added which features a data table.
+It uses an XSLT stylesheet to convert CPD's XML format into HTML.
+
+See [the example report](report-examples/cpdhtml-v2.html).
+
 ## 🎉 Language Related Changes
 
 ### New: Swift support
@@ -488,17 +495,25 @@ We are shipping the following rules:
 Contributors: [Jeroen Borgers](https://github.com/jborgers) (@jborgers),
 [Peter Paul Bakker](https://github.com/stokpop) (@stokpop)
 
-#### New: CPD support for TypeScript
+### New: CPD support for TypeScript
 
 Thanks to a contribution, CPD now supports the TypeScript language. It is shipped
 with the rest of the JavaScript support in the module `pmd-javascript`.
 
 Contributors: [Paul Guyot](https://github.com/pguyot) (@pguyot)
 
-#### New: CPD support for Julia
+### New: CPD support for Julia
 
 Thanks to a contribution, CPD now supports the Julia language. It is shipped
 in the new module `pmd-julia`.
+
+Contributors: [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
+
+### New: CPD support for Coco
+
+Thanks to a contribution, CPD now supports Coco, a modern programming language
+designed specifically for building event-driven software. It is shipped in the new
+module `pmd-coco`.
 
 Contributors: [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
 
@@ -521,6 +536,13 @@ the `minimumLanguageVersion` and `maximumLanguageVersion` attributes. While this
 the Java module, listing all possible versions enables other languages as well to use this feature.
 
 Related issue: [[core] Explicitly name all language versions (#4120)](https://github.com/pmd/pmd/issues/4120)
+
+### Changed: CPP can now ignore identifiers in sequences (CPD)
+
+* new command line option for CPD: `--ignore-sequences`.
+* This option is used for CPP only: with the already existing option `--ignore-literal-sequences`, only
+  literals were ignored. The new option additional ignores identifiers as well in sequences.
+* See [PR #4470](https://github.com/pmd/pmd/pull/4470) for details.
 
 ## 🌟 New and changed rules
 

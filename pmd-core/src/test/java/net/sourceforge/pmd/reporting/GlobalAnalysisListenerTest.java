@@ -124,7 +124,7 @@ class GlobalAnalysisListenerTest {
         PMDConfiguration config = new PMDConfiguration();
         config.setAnalysisCache(new NoopAnalysisCache());
         config.setIgnoreIncrementalAnalysis(true);
-        config.setThreads(1);
+        config.setThreads(0); // no multithreading for this test
         return config;
     }
 
