@@ -212,4 +212,5 @@ public class PmdExample2 {
 }
 ```
 
+If you would like to process the report programmatically instead of writing it to a file, replace the call to `pmd.performAnalysis()` with `Report report = pmd.performAnalysisAndCollectReport()`.
 
