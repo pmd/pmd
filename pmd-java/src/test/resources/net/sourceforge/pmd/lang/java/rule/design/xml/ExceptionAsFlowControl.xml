@@ -113,7 +113,7 @@ class SubE extends TopE { }
                         }
                         return result;
                     } catch (NullPointerException | InvalidCacheLoadException e) {
-                        throw e; // <-- Violation
+                        throw e;
                     } catch (CacheLoaderException e) {
                         throw new ExecutionException(e.getCause());
                     } catch (Exception e) {
