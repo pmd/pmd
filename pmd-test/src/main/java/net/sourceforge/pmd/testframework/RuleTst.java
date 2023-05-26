@@ -227,7 +227,7 @@ public abstract class RuleTst {
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.setIgnoreIncrementalAnalysis(true);
         configuration.setDefaultLanguageVersion(languageVersion);
-        configuration.setThreads(1);
+        configuration.setThreads(0); // don't use separate threads
         configuration.prependAuxClasspath(".");
 
         try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
