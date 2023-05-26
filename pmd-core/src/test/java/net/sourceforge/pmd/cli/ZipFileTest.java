@@ -11,6 +11,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -51,7 +52,7 @@ class ZipFileTest {
             List<TextFile> files = pmd.files().getCollectedFiles();
             assertThat(files, hasSize(3));
             assertThat(files.get(0).getFileId().getUriString(),
-                       equalTo("jar:file://" + zipPath.toAbsolutePath() + "!/otherSrc/somefile.dummy"));
+                       equalTo("jar:" + zipPath.toUri() + "!/otherSrc/somefile.dummy"));
 
         }
     }
@@ -83,8 +84,8 @@ class ZipFileTest {
             List<TextFile> files = pmd.files().getCollectedFiles();
             assertThat(files, hasSize(3));
             assertEquals("/otherSrc/somefile.dummy", files.get(0).getFileId().getAbsolutePath());
-            assertEquals(
-                "jar:file://" + reportPath + "!/otherSrc/somefile.dummy", files.get(0).getFileId().getUriString());
+            URI zipUri = zipPath.toUri();
+            assertEquals("jar:" + zipUri + "!/otherSrc/somefile.dummy", files.get(0).getFileId().getUriString());
             assertHasName(files.get(0), reportPath + "!/otherSrc/somefile.dummy", pmd);
             assertHasName(files.get(1), reportPath + "!/src/somefile.dummy", pmd);
             assertHasName(files.get(2), reportPath + "!/src/somefile1.dummy", pmd);

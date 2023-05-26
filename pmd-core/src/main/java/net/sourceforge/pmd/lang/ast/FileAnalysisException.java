@@ -88,19 +88,19 @@ public class FileAnalysisException extends RuntimeException {
      * Wraps the cause into an analysis exception. If it is itself an analysis
      * exception, just returns it after setting the filename for context.
      *
-     * @param filename Filename
+     * @param fileId Filename
      * @param message  Context message, if the cause is not a {@link FileAnalysisException}
      * @param cause    Exception to wrap
      *
      * @return An exception
      */
-    public static FileAnalysisException wrap(@NonNull FileId filename, @NonNull String message, @NonNull Throwable cause) {
+    public static FileAnalysisException wrap(@NonNull FileId fileId, @NonNull String message, @NonNull Throwable cause) {
         if (cause instanceof FileAnalysisException) {
-            return ((FileAnalysisException) cause).setFileId(filename);
+            return ((FileAnalysisException) cause).setFileId(fileId);
         }
 
-        String fullMessage = "In file '" + filename + "': " + message;
+        String fullMessage = "In file '" + fileId.getAbsolutePath() + "': " + message;
 
-        return new FileAnalysisException(fullMessage, cause).setFileId(filename);
+        return new FileAnalysisException(fullMessage, cause).setFileId(fileId);
     }
 }

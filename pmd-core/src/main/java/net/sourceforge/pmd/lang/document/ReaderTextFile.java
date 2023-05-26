@@ -53,7 +53,7 @@ class ReaderTextFile implements TextFile {
 
     @Override
     public String toString() {
-        return "ReaderTextFile[" + fileId + "]";
+        return "ReaderTextFile[" + fileId.getAbsolutePath() + "]";
     }
 
 }
