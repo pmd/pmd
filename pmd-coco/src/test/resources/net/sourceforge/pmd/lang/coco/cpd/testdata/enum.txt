@@ -1,0 +1,623 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L1
+    [import]                                1         7
+    [unqualified]                           8         19
+    [ComponentDef]                          20        32
+L2
+    [import]                                1         7
+    [unqualified]                           8         19
+    [ExternalTypes]                         20        33
+L3
+    [import]                                1         7
+    [unqualified]                           8         19
+    [ExternalComponent]                     20        37
+L5
+    [@]                                     1         2
+    [runtime]                               2         9
+    [(]                                     9         10
+    [Runtime]                               10        17
+    [.]                                     17        18
+    [SingleThreaded]                        18        32
+    [)]                                     32        33
+L6
+    [component]                             1         10
+    [ComponentDefImpl]                      11        27
+    [{]                                     28        29
+L7
+    [val]                                   3         6
+    [componentInst]                         7         20
+    [:]                                     21        22
+    [Provided]                              23        31
+    [<]                                     31        32
+    [ComponentDef]                          32        44
+    [>]                                     44        45
+L8
+    [val]                                   3         6
+    [rExternalComponent]                    7         25
+    [:]                                     26        27
+    [Required]                              28        36
+    [<]                                     36        37
+    [ExternalComponent]                     37        54
+    [>]                                     54        55
+L10
+    [init]                                  3         7
+    [(]                                     7         8
+    [)]                                     8         9
+    [=]                                     10        11
+    [{]                                     12        13
+    [}]                                     13        14
+L12
+    [@]                                     3         4
+    [ignoreWarning]                         4         17
+    [(]                                     17        18
+    [Warning]                               18        25
+    [.]                                     25        26
+    [Unreachable]                           26        37
+    [)]                                     37        38
+L13
+    [machine]                               3         10
+    [M]                                     11        12
+    [{]                                     13        14
+L14
+    [enum]                                  5         9
+    [CompEnum]                              10        18
+    [{]                                     19        20
+L15
+    [case]                                  7         11
+    [Unknown]                               12        19
+L16
+    [case]                                  7         11
+    [Value1]                                12        18
+L17
+    [case]                                  7         11
+    [Value2]                                12        18
+L18
+    [}]                                     5         6
+L20
+    [var]                                   5         8
+    [compEnum_]                             9         18
+    [:]                                     19        20
+    [CompEnum]                              21        29
+    [=]                                     30        31
+    [CompEnum]                              32        40
+    [.]                                     40        41
+    [Unknown]                               41        48
+L22
+    [entry]                                 5         10
+    [(]                                     10        11
+    [)]                                     11        12
+    [=]                                     13        14
+    [{]                                     15        16
+L23
+    [setNextState]                          7         19
+    [(]                                     19        20
+    [InitialState]                          20        32
+    [)]                                     32        33
+    [;]                                     33        34
+L24
+    [}]                                     5         6
+L26
+    [function]                              5         13
+    [FunctionA]                             14        23
+    [(]                                     23        24
+    [inputVal]                              24        32
+    [:]                                     33        34
+    [ExternalComponent]                     35        52
+    [.]                                     52        53
+    [value]                                 53        58
+    [)]                                     58        59
+    [:]                                     60        61
+    [Nil]                                   62        65
+    [=]                                     66        67
+    [{]                                     68        69
+L28
+    [@]                                     7         8
+    [ignoreWarning]                         8         21
+    [(]                                     21        22
+    [Warning]                               22        29
+    [.]                                     29        30
+    [IncompleteMatch]                       30        45
+    [)]                                     45        46
+L29
+    [match]                                 7         12
+    [(]                                     13        14
+    [inputVal]                              14        22
+    [)]                                     22        23
+    [{]                                     24        25
+L30
+    [.]                                     9         10
+    [Scenario1]                             10        19
+    [=>]                                    20        22
+    [{]                                     23        24
+L31
+    [if]                                    11        13
+    [(]                                     14        15
+    [compEnum_]                             15        24
+    [==]                                    25        27
+    [CompEnum]                              28        36
+    [.]                                     36        37
+    [Value1]                                37        43
+    [)]                                     43        44
+    [{]                                     45        46
+L32
+    [componentInst]                         13        26
+    [.]                                     26        27
+    [doStuff]                               27        34
+    [(]                                     34        35
+    [)]                                     35        36
+    [;]                                     36        37
+L33
+    [setNextState]                          13        25
+    [(]                                     25        26
+    [StateA]                                26        32
+    [)]                                     32        33
+    [;]                                     33        34
+L34
+    [return]                                13        19
+    [nil]                                   20        23
+    [;]                                     23        24
+L35
+    [}]                                     11        12
+    [else]                                  13        17
+    [if]                                    18        20
+    [(]                                     21        22
+    [compEnum_]                             22        31
+    [==]                                    32        34
+    [CompEnum]                              35        43
+    [.]                                     43        44
+    [Value2]                                44        50
+    [)]                                     50        51
+    [{]                                     52        53
+L36
+    [ExternalComponent]                     13        30
+    [.]                                     30        31
+    [doOtherStuff]                          31        43
+    [(]                                     43        44
+    [)]                                     44        45
+    [;]                                     45        46
+L37
+    [setNextState]                          13        25
+    [(]                                     25        26
+    [StateB]                                26        32
+    [)]                                     32        33
+    [;]                                     33        34
+L38
+    [return]                                13        19
+    [nil]                                   20        23
+    [;]                                     23        24
+L39
+    [}]                                     11        12
+    [;]                                     12        13
+L40
+    [}]                                     9         10
+    [,]                                     10        11
+L41
+    [.]                                     9         10
+    [Scenario2]                             10        19
+    [=>]                                    20        22
+    [{]                                     23        24
+L42
+    [if]                                    11        13
+    [(]                                     14        15
+    [compEnum_]                             15        24
+    [==]                                    25        27
+    [CompEnum]                              28        36
+    [.]                                     36        37
+    [Value1]                                37        43
+    [)]                                     43        44
+    [{]                                     45        46
+L43
+    [ExternalComponent]                     13        30
+    [.]                                     30        31
+    [doOtherStuff]                          31        43
+    [(]                                     43        44
+    [)]                                     44        45
+    [;]                                     45        46
+L44
+    [setNextState]                          13        25
+    [(]                                     25        26
+    [StateB]                                26        32
+    [)]                                     32        33
+    [;]                                     33        34
+L45
+    [return]                                13        19
+    [nil]                                   20        23
+    [;]                                     23        24
+L46
+    [}]                                     11        12
+    [else]                                  13        17
+    [if]                                    18        20
+    [(]                                     21        22
+    [compEnum_]                             22        31
+    [==]                                    32        34
+    [CompEnum]                              35        43
+    [.]                                     43        44
+    [Value2]                                44        50
+    [)]                                     50        51
+    [{]                                     52        53
+L47
+    [componentInst]                         13        26
+    [.]                                     26        27
+    [doStuff]                               27        34
+    [(]                                     34        35
+    [)]                                     35        36
+    [;]                                     36        37
+L48
+    [setNextState]                          13        25
+    [(]                                     25        26
+    [StateA]                                26        32
+    [)]                                     32        33
+    [;]                                     33        34
+L49
+    [return]                                13        19
+    [nil]                                   20        23
+    [;]                                     23        24
+L50
+    [}]                                     11        12
+    [;]                                     12        13
+L51
+    [}]                                     9         10
+    [,]                                     10        11
+L52
+    [}]                                     7         8
+L53
+    [abort]                                 7         12
+    [(]                                     12        13
+    [)]                                     13        14
+    [;]                                     14        15
+L54
+    [}]                                     5         6
+L56
+    [function]                              5         13
+    [FunctionB]                             14        23
+    [(]                                     23        24
+    [inputVal]                              24        32
+    [:]                                     33        34
+    [ExternalComponent]                     35        52
+    [.]                                     52        53
+    [value]                                 53        58
+    [)]                                     58        59
+    [:]                                     60        61
+    [Nil]                                   62        65
+    [=]                                     66        67
+    [{]                                     68        69
+L58
+    [@]                                     7         8
+    [ignoreWarning]                         8         21
+    [(]                                     21        22
+    [Warning]                               22        29
+    [.]                                     29        30
+    [IncompleteMatch]                       30        45
+    [)]                                     45        46
+L59
+    [match]                                 7         12
+    [(]                                     13        14
+    [inputVal]                              14        22
+    [)]                                     22        23
+    [{]                                     24        25
+L60
+    [.]                                     9         10
+    [Scenario1]                             10        19
+    [=>]                                    20        22
+    [{]                                     23        24
+L61
+    [compEnum_]                             11        20
+    [=]                                     21        22
+    [CompEnum]                              23        31
+    [.]                                     31        32
+    [Value1]                                32        38
+    [;]                                     38        39
+L62
+    [setNextState]                          11        23
+    [(]                                     23        24
+    [StateA]                                24        30
+    [)]                                     30        31
+    [;]                                     31        32
+L63
+    [return]                                11        17
+    [nil]                                   18        21
+    [;]                                     21        22
+L64
+    [}]                                     9         10
+    [,]                                     10        11
+L65
+    [.]                                     9         10
+    [Scenario2]                             10        19
+    [=>]                                    20        22
+    [{]                                     23        24
+L66
+    [compEnum_]                             11        20
+    [=]                                     21        22
+    [CompEnum]                              23        31
+    [.]                                     31        32
+    [Value2]                                32        38
+    [;]                                     38        39
+L67
+    [setNextState]                          11        23
+    [(]                                     23        24
+    [StateA]                                24        30
+    [)]                                     30        31
+    [;]                                     31        32
+L68
+    [return]                                11        17
+    [nil]                                   18        21
+    [;]                                     21        22
+L69
+    [}]                                     9         10
+    [,]                                     10        11
+L70
+    [}]                                     7         8
+L71
+    [abort]                                 7         12
+    [(]                                     12        13
+    [)]                                     13        14
+    [;]                                     14        15
+L72
+    [}]                                     5         6
+L74
+    [state]                                 5         10
+    [InitialState]                          11        23
+    [{]                                     24        25
+L75
+    [assert]                                7         13
+    [(]                                     13        14
+    [compEnum_]                             14        23
+    [==]                                    24        26
+    [CompEnum]                              27        35
+    [.]                                     35        36
+    [Unknown]                               36        43
+    [)]                                     43        44
+L77
+    [componentInst]                         7         20
+    [.]                                     20        21
+    [initialize]                            21        31
+    [(]                                     31        32
+    [)]                                     32        33
+    [=]                                     34        35
+    [{]                                     36        37
+L78
+    [FunctionB]                             9         18
+    [(]                                     18        19
+    [ExternalComponent]                     19        36
+    [.]                                     36        37
+    [doYourThing]                           37        48
+    [(]                                     48        49
+    [)]                                     49        50
+    [)]                                     50        51
+    [;]                                     51        52
+L79
+    [}]                                     7         8
+L80
+    [}]                                     5         6
+L82
+    [state]                                 5         10
+    [StateA]                                11        17
+    [{]                                     18        19
+L83
+    [assert]                                7         13
+    [(]                                     13        14
+    [compEnum_]                             14        23
+    [!=]                                    24        26
+    [CompEnum]                              27        35
+    [.]                                     35        36
+    [Unknown]                               36        43
+    [)]                                     43        44
+L85
+    [componentInst]                         7         20
+    [.]                                     20        21
+    [run]                                   21        24
+    [(]                                     24        25
+    [)]                                     25        26
+    [=]                                     27        28
+    [{]                                     29        30
+L86
+    [FunctionA]                             9         18
+    [(]                                     18        19
+    [ExternalComponent]                     19        36
+    [.]                                     36        37
+    [doYourThing]                           37        48
+    [(]                                     48        49
+    [)]                                     49        50
+    [)]                                     50        51
+    [;]                                     51        52
+L87
+    [}]                                     7         8
+L88
+    [componentInst]                         7         20
+    [.]                                     20        21
+    [initialize]                            21        31
+    [(]                                     31        32
+    [)]                                     32        33
+    [=]                                     34        35
+    [{]                                     36        37
+L89
+    [FunctionB]                             9         18
+    [(]                                     18        19
+    [ExternalComponent]                     19        36
+    [.]                                     36        37
+    [doYourThing]                           37        48
+    [(]                                     48        49
+    [)]                                     49        50
+    [)]                                     50        51
+    [;]                                     51        52
+L90
+    [}]                                     7         8
+L91
+    [}]                                     5         6
+L93
+    [state]                                 5         10
+    [StateB]                                11        17
+    [{]                                     18        19
+L94
+    [ExternalComponent]                     7         24
+    [.]                                     24        25
+    [doOtherStuff]                          25        37
+    [(]                                     37        38
+    [)]                                     38        39
+    [=]                                     40        41
+    [{]                                     42        43
+L95
+    [componentInst]                         9         22
+    [.]                                     22        23
+    [run]                                   23        26
+    [(]                                     26        27
+    [)]                                     27        28
+    [;]                                     28        29
+L96
+    [compEnum_]                             9         18
+    [=]                                     19        20
+    [CompEnum]                              21        29
+    [.]                                     29        30
+    [Unknown]                               30        37
+    [;]                                     37        38
+L97
+    [setNextState]                          9         21
+    [(]                                     21        22
+    [InitialState]                          22        34
+    [)]                                     34        35
+    [;]                                     35        36
+L98
+    [}]                                     7         8
+L99
+    [ExternalComponent]                     7         24
+    [.]                                     24        25
+    [doOtherStuffAgain]                     25        42
+    [(]                                     42        43
+    [)]                                     43        44
+    [=]                                     45        46
+    [{]                                     47        48
+L100
+    [ExternalComponent]                     9         26
+    [.]                                     26        27
+    [process]                               27        34
+    [(]                                     34        35
+    [)]                                     35        36
+    [;]                                     36        37
+L101
+    [setNextState]                          9         21
+    [(]                                     21        22
+    [StateC]                                22        28
+    [)]                                     28        29
+    [;]                                     29        30
+L102
+    [}]                                     7         8
+L103
+    [}]                                     5         6
+L105
+    [state]                                 5         10
+    [StateC]                                11        17
+    [{]                                     18        19
+L106
+    [ExternalComponent]                     7         24
+    [.]                                     24        25
+    [process]                               25        32
+    [(]                                     32        33
+    [)]                                     33        34
+    [=]                                     35        36
+    [{]                                     37        38
+L107
+    [componentInst]                         9         22
+    [.]                                     22        23
+    [run]                                   23        26
+    [(]                                     26        27
+    [)]                                     27        28
+    [;]                                     28        29
+L108
+    [compEnum_]                             9         18
+    [=]                                     19        20
+    [CompEnum]                              21        29
+    [.]                                     29        30
+    [Unknown]                               30        37
+    [;]                                     37        38
+L109
+    [setNextState]                          9         21
+    [(]                                     21        22
+    [InitialState]                          22        34
+    [)]                                     34        35
+    [;]                                     35        36
+L110
+    [}]                                     7         8
+L111
+    [ExternalComponent]                     7         24
+    [.]                                     24        25
+    [processAgain]                          25        37
+    [(]                                     37        38
+    [)]                                     38        39
+    [=]                                     40        41
+    [offer]                                 42        47
+    [{]                                     48        49
+L112
+    [if]                                    9         11
+    [(]                                     12        13
+    [compEnum_]                             13        22
+    [==]                                    23        25
+    [CompEnum]                              26        34
+    [.]                                     34        35
+    [Value1]                                35        41
+    [)]                                     41        42
+    [{]                                     43        44
+L113
+    [componentInst]                         11        24
+    [.]                                     24        25
+    [doStuff]                               25        32
+    [(]                                     32        33
+    [)]                                     33        34
+    [;]                                     34        35
+L114
+    [compEnum_]                             11        20
+    [=]                                     21        22
+    [CompEnum]                              23        31
+    [.]                                     31        32
+    [Value2]                                32        38
+    [;]                                     38        39
+L115
+    [setNextState]                          11        23
+    [(]                                     23        24
+    [StateA]                                24        30
+    [)]                                     30        31
+    [;]                                     31        32
+L116
+    [}]                                     9         10
+    [,]                                     10        11
+L117
+    [if]                                    9         11
+    [(]                                     12        13
+    [compEnum_]                             13        22
+    [==]                                    23        25
+    [CompEnum]                              26        34
+    [.]                                     34        35
+    [Value2]                                35        41
+    [)]                                     41        42
+    [{]                                     43        44
+L118
+    [componentInst]                         11        24
+    [.]                                     24        25
+    [doStuff]                               25        32
+    [(]                                     32        33
+    [)]                                     33        34
+    [;]                                     34        35
+L119
+    [compEnum_]                             11        20
+    [=]                                     21        22
+    [CompEnum]                              23        31
+    [.]                                     31        32
+    [Value1]                                32        38
+    [;]                                     38        39
+L120
+    [setNextState]                          11        23
+    [(]                                     23        24
+    [StateA]                                24        30
+    [)]                                     30        31
+    [;]                                     31        32
+L121
+    [}]                                     9         10
+    [,]                                     10        11
+L122
+    [}]                                     7         8
+L123
+    [}]                                     5         6
+L124
+    [}]                                     3         4
+L125
+    [}]                                     1         2
+EOF
