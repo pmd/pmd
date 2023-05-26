@@ -566,6 +566,7 @@ public void checkRequests() {
     // with rule property "ignoreExpressions" set to "false"
     if (i == pos + 5) {}  // violation: magic number 5 within an (additive) expression
     if (i == pos + SUFFIX_LENGTH) {} // preferred approach
+    if (i == 5 && "none".equals(aString)) {} // 2 violations: magic number 5 and literal "none"
 }
 ]]>
         </example>
@@ -2349,7 +2350,7 @@ See the property `annotations`.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="annotations" type="List[String]" delimiter="," value="org.springframework.beans.factory.annotation.Autowired,javax.inject.Inject" description="If a constructor is annotated with one of these annotations, then the class is ignored."/>
+            <property name="annotations" type="List[String]" delimiter="," value="org.springframework.beans.factory.annotation.Autowired,javax.inject.Inject,com.google.inject.Inject" description="If a constructor is annotated with one of these annotations, then the class is ignored."/>
             <property name="xpath">
                 <value>
 <![CDATA[

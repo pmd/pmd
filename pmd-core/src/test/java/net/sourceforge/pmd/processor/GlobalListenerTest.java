@@ -124,16 +124,16 @@ class GlobalListenerTest {
         PMDConfiguration config = new PMDConfiguration();
         config.setAnalysisCache(new NoopAnalysisCache());
         config.setIgnoreIncrementalAnalysis(true);
-        config.setThreads(1);
+        config.setThreads(0); // no multithreading for this test
         return config;
     }
 
     private void runPmd(PMDConfiguration config, GlobalAnalysisListener listener, Rule rule) {
         try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
             pmd.addRuleSet(RuleSet.forSingleRule(rule));
-            pmd.files().addSourceFile("fname1.dummy", "abc");
-            pmd.files().addSourceFile("fname2.dummy", "abcd");
-            pmd.files().addSourceFile("fname21.dummy", "abcd");
+            pmd.files().addSourceFile("abc", "fname1.dummy");
+            pmd.files().addSourceFile("abcd", "fname2.dummy");
+            pmd.files().addSourceFile("abcd", "fname21.dummy");
             pmd.addListener(listener);
             pmd.performAnalysis();
         }

@@ -36,6 +36,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTContinueStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -632,18 +633,16 @@ public final class DataflowPass {
         @Override
         public SpanInfo visit(ASTForeachStatement node, SpanInfo data) {
             ASTStatement body = node.getBody();
-            // the iterable expression
-            JavaNode init = node.getChild(1);
-            ASTVariableDeclaratorId foreachVar = ((ASTLocalVariableDeclaration) node.getChild(0)).iterator().next();
-            return handleLoop(node, data, init, null, null, body, true, foreachVar);
+            ASTExpression init = node.getIterableExpr();
+            return handleLoop(node, data, init, null, null, body, true, node.getVarId());
         }
 
         @Override
         public SpanInfo visit(ASTForStatement node, SpanInfo data) {
             ASTStatement body = node.getBody();
-            ASTForInit init = node.getFirstChildOfType(ASTForInit.class);
+            ASTForInit init = node.firstChild(ASTForInit.class);
             ASTExpression cond = node.getCondition();
-            ASTForUpdate update = node.getFirstChildOfType(ASTForUpdate.class);
+            ASTForUpdate update = node.firstChild(ASTForUpdate.class);
             return handleLoop(node, data, init, cond, update, body, true, null);
         }
 
@@ -954,6 +953,7 @@ public final class DataflowPass {
 
         @Override
         public SpanInfo visitTypeDecl(ASTAnyTypeDeclaration node, SpanInfo data) {
+            // process initializers and ctors first
             processInitializers(node.getDeclarations(), data, node.getSymbol());
 
             for (ASTBodyDeclaration decl : node.getDeclarations()) {
@@ -989,12 +989,14 @@ public final class DataflowPass {
 
             for (ASTBodyDeclaration declaration : declarations) {
                 final boolean isStatic;
-                if (declaration instanceof ASTFieldDeclaration) {
+                if (declaration instanceof ASTEnumConstant) {
+                    isStatic = true;
+                } else if (declaration instanceof ASTFieldDeclaration) {
                     isStatic = ((ASTFieldDeclaration) declaration).isStatic();
                 } else if (declaration instanceof ASTInitializer) {
                     isStatic = ((ASTInitializer) declaration).isStatic();
                 } else if (declaration instanceof ASTConstructorDeclaration
-                        || declaration instanceof ASTCompactConstructorDeclaration) {
+                    || declaration instanceof ASTCompactConstructorDeclaration) {
                     ctors.add(declaration);
                     continue;
                 } else {

@@ -14,7 +14,6 @@ import java.nio.charset.Charset;
 public abstract class AbstractConfiguration {
 
     private Charset sourceEncoding = Charset.forName(System.getProperty("file.encoding"));
-    private boolean debug;
 
     /**
      * Create a new abstract configuration.
@@ -42,25 +41,4 @@ public abstract class AbstractConfiguration {
         this.sourceEncoding = Charset.forName(sourceEncoding);
     }
 
-    /**
-     * Return the debug indicator. If this value is <code>true</code> then PMD
-     * will log debug information.
-     *
-     * @return <code>true</code> if debug logging is enabled, <code>false</code>
-     *         otherwise.
-     */
-    public boolean isDebug() {
-        return debug;
-    }
-
-    /**
-     * Set the debug indicator.
-     *
-     * @param debug
-     *            The debug indicator to set.
-     * @see #isDebug()
-     */
-    public void setDebug(boolean debug) {
-        this.debug = debug;
-    }
 }
