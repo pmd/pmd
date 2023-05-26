@@ -6,7 +6,7 @@
   Ruleset used by test MultiThreadProcessorTest
   </description>
 
-    <rule name="DysfunctionalRule" language="dummy" since="1.0" message="dysfunctional rule" class="net.sourceforge.pmd.processor.MultiThreadProcessorTest$DysfunctionalRule"
+    <rule name="DysfunctionalRule" language="dummy" since="1.0" message="dysfunctional rule" class="net.sourceforge.pmd.lang.impl.MultiThreadProcessorTest$DysfunctionalRule"
         externalInfoUrl="foo">
         <description>Dysfunctional</description>
         <priority>3</priority>

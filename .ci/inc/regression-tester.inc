@@ -50,6 +50,7 @@ function regression_tester_uploadBaseline() {
         --patch-branch "${baseline_branch}" \
         --patch-config ./pmd/.ci/files/all-regression-rules.xml \
         --list-of-project ./pmd/.ci/files/project-list.xml --html-flag \
+        --threads "$(nproc)" \
         --error-recovery
     pushd target/reports || { echo "Directory 'target/reports' doesn't exist"; exit 1; }
     BRANCH_FILENAME="${baseline_branch/\//_}"
