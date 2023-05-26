@@ -2328,8 +2328,10 @@ gives information about the values of these metrics:</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Using Exceptions as form of flow control is not recommended as they obscure true exceptions when debugging.
-Either add the necessary validation or use an alternate control structure.</p>
+<p>This rule reports exceptions thrown and caught in an enclosing try statement.
+This use of exceptions as a form of <code class="language-plaintext highlighter-rouge">goto</code> statement is discouraged, as that may
+hide actual exceptions, and obscures control flow, especially when debugging.
+To fix a violation, add the necessary validation or use an alternate control structure.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/ExceptionAsFlowControlRule.java">net.sourceforge.pmd.lang.java.rule.design.ExceptionAsFlowControlRule</a></p>
 
@@ -3858,7 +3860,7 @@ remember to add a private constructor to prevent instantiation.
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: May 22, 2023 <br />
+             Site last generated: May 26, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
