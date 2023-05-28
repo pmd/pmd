@@ -22,7 +22,8 @@ following guidelines to assert the legitimate priority of your rule:
     standards/style/good taste.
 5.  **Low: Change highly optional.** Nice to have, such as a consistent naming policy for package/class/fields…
 
-For instance, let's take the ExplicitCallToGC rule (“Do not explicitly trigger a garbage collection.”). Calling GC is
+For instance, let's take the DoNotCallGarbageCollectionExplicitly rule
+(“Do not explicitly trigger a garbage collection.”). Calling GC is
 a bad idea, but it doesn't break the application. So we skip priority one. However, as explicit call to gc may really
 hinder application performances, we set for the priority 2 ("Medium High").
 
