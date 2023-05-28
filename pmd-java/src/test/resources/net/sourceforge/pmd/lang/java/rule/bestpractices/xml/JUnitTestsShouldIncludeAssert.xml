@@ -705,7 +705,22 @@ public class BigTest {
 }
         ]]></code>
     </test-code>
-
+    
+    <test-code>
+        <description>[java] JUnitTestsShouldIncludeAssert: false negative with TestNG #4503</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import org.testng.annotations.Test;
+import org.testng.annotations.AfterClass;
+public class A {
+  @AfterClass
+  @Test
+  void test() {}
+}
+        ]]></code>
+    </test-code>
+    
     <test-code>
         <description>[java] JUnitTestsShouldIncludeAssert: False positives for assert methods named "check" and "verify" #1455</description>
         <expected-problems>0</expected-problems>
