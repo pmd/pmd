@@ -618,14 +618,14 @@ public class MyTimestamp {
     </test-code>
 
     <test-code>
-        <description> [java]A false positive about ConstructorCallsOverridableMethod and @Value #4510 </description>
+        <description>[java] ConstructorCallsOverridableMethod: false positive with lombok's @Value #4510</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import lombok.Value;
 @Value
 class Foo1 {
     public Foo1(String bar) {
-        bar();  //  report a warning
+        bar();  //  false positive warning
     }
     public void bar() {}
 }
