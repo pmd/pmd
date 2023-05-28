@@ -65,8 +65,8 @@ class PmdRunnableTest {
         reporter = mock(MessageReporter.class);
         configuration.setReporter(reporter);
         // exceptions thrown on a worker thread are not thrown by the main thread,
-        // so this test only makes sense with one thread
-        configuration.setThreads(1);
+        // so this test only makes sense without separate threads
+        configuration.setThreads(0);
     }
 
 
