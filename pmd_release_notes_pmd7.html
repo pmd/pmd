@@ -2003,7 +2003,7 @@ Commands:
               Warning: May not support the full CPD feature <span class="nb">set
   </span>ast-dump  Experimental: dumps the AST of parsing <span class="nb">source </span>code
 Exit Codes:
-  0   Succesful analysis, no violations found
+  0   Successful analysis, no violations found
   1   An unexpected error occurred during execution
   2   Usage error, please refer to the <span class="nb">command help
   </span>4   Successful analysis, at least 1 violation found
@@ -2443,6 +2443,14 @@ or <a href="pmd_rules_java_codestyle.html#localvariablenamingconventions"><code 
 to be reviewed.</li>
   <li>Custom rules using rulechains: Need to override <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/AbstractRule.html#buildTargetSelector()"><code>buildTargetSelector</code></a>
 using <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/RuleTargetSelector.html#forTypes(java.lang.Class,java.lang.Class...)"><code>forTypes</code></a>.</li>
+  <li>
+    <p>The asset filenames of PMD on <a href="https://github.com/pmd/pmd/releases">GitHub Releases</a> are
+now <code class="language-plaintext highlighter-rouge">pmd-dist-&lt;version&gt;-bin.zip</code>, <code class="language-plaintext highlighter-rouge">pmd-dist-&lt;version&gt;-src.zip</code> and <code class="language-plaintext highlighter-rouge">pmd-dist-&lt;version&gt;-doc.zip</code>.
+Keep that in mind, if you have an automated download script.</p>
+
+    <p>The structure inside the ZIP files stay the same, e.g. we still provide inside the binary distribution
+ZIP file the base directory <code class="language-plaintext highlighter-rouge">pmd-bin-&lt;version&gt;</code>.</p>
+  </li>
 </ul>
 
 <h3 id="for-integrators">For integrators</h3>
@@ -2683,6 +2691,17 @@ and <a href="pmd_devdocs_major_adding_new_language_antlr.html">Adding a new lang
       </li>
     </ul>
   </li>
+  <li>The CLI option <code class="language-plaintext highlighter-rouge">--minimum-priority</code> was changed with 7.0.0-rc1 to only take the following values:
+High, Medium High, Medium, Medium Low, Low. With 7.0.0-rc2 compatibility has been restored, so that the equivalent
+integer values (1 to 5) are supported as well.</li>
+</ul>
+
+<h4 id="700-rc1">7.0.0-rc1</h4>
+
+<ul>
+  <li>The CLI option <code class="language-plaintext highlighter-rouge">--stress</code> (or <code class="language-plaintext highlighter-rouge">-stress</code>) has been removed without replacement.</li>
+  <li>The CLI option <code class="language-plaintext highlighter-rouge">--minimum-priority</code> now takes one of the following values instead of an integer:
+High, Medium High, Medium, Medium Low, Low.</li>
 </ul>
 
 <h4 id="6550">6.55.0</h4>
@@ -4577,7 +4596,7 @@ Please use <code class="language-plaintext highlighter-rouge">net.sourceforge.pm
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: May 26, 2023 <br />
+             Site last generated: May 28, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

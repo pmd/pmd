@@ -1658,6 +1658,16 @@ It uses an XSLT stylesheet to convert CPD’s XML format into HTML.</p>
 <h4 id="fixed-issues">Fixed issues</h4>
 
 <ul>
+  <li>miscellaneous
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/pull/4460">#4460</a>:   Fix assembly-plugin warnings</li>
+    </ul>
+  </li>
+  <li>core
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4454">#4454</a>: [core] “Unknown option: ‘-min’” but is referenced in documentation</li>
+    </ul>
+  </li>
   <li>java-bestpractices
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/4503">#4503</a>: [java] JUnitTestsShouldIncludeAssert: false negative with TestNG</li>
@@ -1667,7 +1677,15 @@ It uses an XSLT stylesheet to convert CPD’s XML format into HTML.</p>
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/4268">#4268</a>: [java] CommentDefaultAccessModifier: false positive with TestNG annotations</li>
       <li><a href="https://github.com/pmd/pmd/issues/4432">#4432</a>: [java] [7.0-rc1] UnnecessaryImport - Unused static import is being used</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4455">#4455</a>: [java] FieldNamingConventions: false positive with lombok’s @<!-- -->UtilityClass</li>
       <li><a href="https://github.com/pmd/pmd/issues/4557">#4557</a>: [java] UnnecessaryImport FP with static imports of overloaded methods</li>
+    </ul>
+  </li>
+  <li>java-design
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4434">#4434</a>: [java] [7.0-rc1] ExceptionAsFlowControl when simply propagating</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4456">#4456</a>: [java] FinalFieldCouldBeStatic: false positive with lombok’s @<!-- -->UtilityClass</li>
+      <li><a href="https://github.com/pmd/pmd/pull/4549">#4549</a>:   [java] Make LawOfDemeter results deterministic</li>
     </ul>
   </li>
   <li>java-errorprone
@@ -1694,6 +1712,18 @@ It uses an XSLT stylesheet to convert CPD’s XML format into HTML.</p>
       </li>
     </ul>
   </li>
+  <li>
+    <p>The asset filenames of PMD on <a href="https://github.com/pmd/pmd/releases">GitHub Releases</a> are
+now <code class="language-plaintext highlighter-rouge">pmd-dist-&lt;version&gt;-bin.zip</code>, <code class="language-plaintext highlighter-rouge">pmd-dist-&lt;version&gt;-src.zip</code> and <code class="language-plaintext highlighter-rouge">pmd-dist-&lt;version&gt;-doc.zip</code>.
+Keep that in mind, if you have an automated download script.</p>
+
+    <p>The structure inside the ZIP files stay the same, e.g. we still provide inside the binary distribution
+ZIP file the base directory <code class="language-plaintext highlighter-rouge">pmd-bin-&lt;version&gt;</code>.</p>
+  </li>
+  <li>The CLI option <code class="language-plaintext highlighter-rouge">--stress</code> (or <code class="language-plaintext highlighter-rouge">-stress</code>) has been removed without replacement.</li>
+  <li>The CLI option <code class="language-plaintext highlighter-rouge">--minimum-priority</code> was changed with 7.0.0-rc1 to only take the following values:
+High, Medium High, Medium, Medium Low, Low. With 7.0.0-rc2 compatibility has been restored, so that the equivalent
+integer values (1 to 5) are supported as well.</li>
 </ul>
 
 <h4 id="external-contributions">External Contributions</h4>
@@ -1705,6 +1735,8 @@ It uses an XSLT stylesheet to convert CPD’s XML format into HTML.</p>
   <li><a href="https://github.com/pmd/pmd/pull/4507">#4507</a>: [java] Fix #4503: A false negative about JUnitTestsShouldIncludeAssert and testng - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4533">#4533</a>: [java] Fix #4063: False-negative about try/catch block in Loop - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4536">#4536</a>: [java] Fix #4268: CommentDefaultAccessModifier - false positive with TestNG’s @<!-- -->Test annotation - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4537">#4537</a>: [java] Fix #4455: A false positive about FieldNamingConventions and UtilityClass - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4538">#4538</a>: [java] Fix #4456: A false positive about FinalFieldCouldBeStatic and UtilityClass - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4540">#4540</a>: [java] Fix #4457: false negative about OverrideBothEqualsAndHashcode - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
 </ul>
 
@@ -2052,6 +2084,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/issues/2498">#2498</a>: Update PMD 7 Logo in documentation</li>
       <li><a href="https://github.com/pmd/pmd/issues/3797">#3797</a>: [all] Use JUnit5</li>
       <li><a href="https://github.com/pmd/pmd/issues/4462">#4462</a>: Provide Software Bill of Materials (SBOM)</li>
+      <li><a href="https://github.com/pmd/pmd/pull/4460">#4460</a>:   Fix assembly-plugin warnings</li>
     </ul>
   </li>
   <li>ant
@@ -2091,6 +2124,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/pull/4353">#4353</a>:   [core] Micro optimizations for Node API</li>
       <li><a href="https://github.com/pmd/pmd/pull/4365">#4365</a>:   [core] Improve benchmarking</li>
       <li><a href="https://github.com/pmd/pmd/pull/4420">#4420</a>:   [core] Remove PMD.EOL</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4454">#4454</a>: [core] “Unknown option: ‘-min’” but is referenced in documentation</li>
     </ul>
   </li>
   <li>cli
@@ -2228,6 +2262,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/issues/4273">#4273</a>: [java] CommentDefaultAccessModifier ignoredAnnotations should include “org.junit.jupiter.api.extension.RegisterExtension” by default</li>
       <li><a href="https://github.com/pmd/pmd/pull/4357">#4357</a>:   [java] Fix IllegalStateException in UseDiamondOperator rule</li>
       <li><a href="https://github.com/pmd/pmd/issues/4432">#4432</a>: [java] [7.0-rc1] UnnecessaryImport - Unused static import is being used</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4455">#4455</a>: [java] FieldNamingConventions: false positive with lombok’s @<!-- -->UtilityClass</li>
       <li><a href="https://github.com/pmd/pmd/issues/4487">#4487</a>: [java] UnnecessaryConstructor: false-positive with @<!-- -->Inject and @<!-- -->Autowired</li>
       <li><a href="https://github.com/pmd/pmd/issues/4511">#4511</a>: [java] LocalVariableCouldBeFinal shouldn’t report unused variables</li>
       <li><a href="https://github.com/pmd/pmd/issues/4512">#4512</a>: [java] MethodArgumentCouldBeFinal shouldn’t report unused parameters</li>
@@ -2252,8 +2287,10 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/pull/4238">#4238</a>:   [java] Make LawOfDemeter not use the rulechain</li>
       <li><a href="https://github.com/pmd/pmd/issues/4254">#4254</a>: [java] ImmutableField - false positive with Lombok @<!-- -->Setter</li>
       <li><a href="https://github.com/pmd/pmd/issues/4434">#4434</a>: [java] [7.0-rc1] ExceptionAsFlowControl when simply propagating</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4456">#4456</a>: [java] FinalFieldCouldBeStatic: false positive with lombok’s @<!-- -->UtilityClass</li>
       <li><a href="https://github.com/pmd/pmd/issues/4477">#4477</a>: [java] SignatureDeclareThrowsException: false-positive with TestNG annotations</li>
       <li><a href="https://github.com/pmd/pmd/issues/4490">#4490</a>: [java] ImmutableField - false negative with Lombok @<!-- -->Getter</li>
+      <li><a href="https://github.com/pmd/pmd/pull/4549">#4549</a>:   [java] Make LawOfDemeter results deterministic</li>
     </ul>
   </li>
   <li>java-documentation
@@ -2358,6 +2395,8 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
   <li><a href="https://github.com/pmd/pmd/pull/4520">#4520</a>: [doc] Fix typo: missing closing quotation mark after CPD-END - <a href="https://github.com/joaodinissf">João Dinis Ferreira</a> (@joaodinissf)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4533">#4533</a>: [java] Fix #4063: False-negative about try/catch block in Loop - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4536">#4536</a>: [java] Fix #4268: CommentDefaultAccessModifier - false positive with TestNG’s @<!-- -->Test annotation - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4537">#4537</a>: [java] Fix #4455: A false positive about FieldNamingConventions and UtilityClass - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4538">#4538</a>: [java] Fix #4456: A false positive about FinalFieldCouldBeStatic and UtilityClass - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4540">#4540</a>: [java] Fix #4457: false negative about OverrideBothEqualsAndHashcode - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
 </ul>
 
@@ -2397,7 +2436,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: May 26, 2023 <br />
+             Site last generated: May 28, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

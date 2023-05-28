@@ -1630,12 +1630,43 @@ value and change the message the rule will print on the report.</p>
 
 <p>Similarly, the <strong>priority</strong> of a rule can be changed via a nested
 element. Using priority, you can deactivate some rules based on a
-minimum priority threshold (set using the <code class="language-plaintext highlighter-rouge">-min</code> CLI option).
-Priority is an integer ranging from 1 to 5, with 1 being the highest
-priority.</p>
+minimum priority threshold (set using the <code class="language-plaintext highlighter-rouge">--minimum-priority</code> CLI option).
+Priority in the ruleset is an integer ranging from 1 to 5, with 1 being the highest
+priority. On the command line, you can either use the integer or the following values:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Priority</th>
+      <th>–minimum-priority value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>High</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Medium_High</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Medium</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Medium_Low</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>Low</td>
+    </tr>
+  </tbody>
+</table>
 
 <p>Putting things together, the following rule reference lowers the priority
-of EmptyCatchBlock to 5, such that e.g. using the <code class="language-plaintext highlighter-rouge">-min 4</code> CLI parameters
+of EmptyCatchBlock to 5 (“Low”), such that e.g. using the <code class="language-plaintext highlighter-rouge">--minimum-priority=Medium_Low</code> CLI parameters
 will cause the rule to be ignored.</p>
 
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/errorprone.xml/EmptyCatchBlock"</span>
@@ -1714,7 +1745,7 @@ will cause the rule to be ignored.</p>
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            May 2018 (6.4.0)<br /> Site last generated: May 26, 2023 <br />
+            May 2023 (7.0.0)<br /> Site last generated: May 28, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

@@ -2026,10 +2026,10 @@
 
 <tr>
     <td><a style="pointer-events: none; cursor: default;" name="-minimum-priority"><code>--minimum-priority&nbsp;&lt;priority&gt;</code></a></td>
-    <td>Rule priority threshold; rules with lower priority
-                              than configured here won't be used.
-                            Valid values (case insensitive): High, Medium High,
-                              Medium, Medium Low, Low</td>
+    <td>Rule priority threshold; rules with lower priority than configured here won't be used.
+                            Valid values (case insensitive): High, Medium_High, Medium, Medium_Low, Low.
+                            An integer between 1 (High) and 5 (Low) is also supported. See <a href="pmd_userdocs_configuring_rules.html">Configuring rules</a>
+                            on how to override priorities in custom rulesets.</td>
     <td><code>Low</code></td>
     <td></td>
 </tr>
@@ -2532,7 +2532,7 @@ parse errors are suppressed in order to reduce irrelevant noise:</p>
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: May 26, 2023 <br />
+             Site last generated: May 28, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
