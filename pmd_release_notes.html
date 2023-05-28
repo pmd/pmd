@@ -1670,6 +1670,8 @@ It uses an XSLT stylesheet to convert CPD’s XML format into HTML.</p>
   </li>
   <li>java-bestpractices
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4433">#4433</a>: [java] [7.0-rc1] ReplaceHashtableWithMap on java.util.Properties</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4492">#4492</a>: [java] GuardLogStatement gives false positive when argument is a Java method reference</li>
       <li><a href="https://github.com/pmd/pmd/issues/4503">#4503</a>: [java] JUnitTestsShouldIncludeAssert: false negative with TestNG</li>
     </ul>
   </li>
@@ -1692,7 +1694,13 @@ It uses an XSLT stylesheet to convert CPD’s XML format into HTML.</p>
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/4063">#4063</a>: [java] AvoidBranchingStatementAsLastInLoop: False-negative about try/finally block</li>
       <li><a href="https://github.com/pmd/pmd/issues/4457">#4457</a>: [java] OverrideBothEqualsAndHashcode: false negative with anonymous classes</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4510">#4510</a>: [java] ConstructorCallsOverridableMethod: false positive with lombok’s @<!-- -->Value</li>
       <li><a href="https://github.com/pmd/pmd/issues/4546">#4546</a>: [java] OverrideBothEqualsAndHashCode ignores records</li>
+    </ul>
+  </li>
+  <li>java-performance
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4458">#4458</a>: [java] RedundantFieldInitializer: false positive with lombok’s @<!-- -->Value</li>
     </ul>
   </li>
 </ul>
@@ -1738,6 +1746,9 @@ integer values (1 to 5) are supported as well.</li>
   <li><a href="https://github.com/pmd/pmd/pull/4537">#4537</a>: [java] Fix #4455: A false positive about FieldNamingConventions and UtilityClass - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4538">#4538</a>: [java] Fix #4456: A false positive about FinalFieldCouldBeStatic and UtilityClass - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4540">#4540</a>: [java] Fix #4457: false negative about OverrideBothEqualsAndHashcode - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4541">#4541</a>: [java] Fix #4458: A false positive about RedundantFieldInitializer and @<!-- -->Value - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4542">#4542</a>: [java] Fix #4510: A false positive about ConstructorCallsOverridableMethod and @<!-- -->Value - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4553">#4553</a>: [java] Fix #4492: GuardLogStatement gives false positive when argument is a Java method reference - <a href="https://github.com/anastasiia-koba">Anastasiia Koba</a> (@anastasiia-koba)</li>
 </ul>
 
 <h3 id="-major-features-and-enhancements">🚀 Major Features and Enhancements</h3>
@@ -2232,6 +2243,8 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/pull/3672">#3672</a>:   [java] LooseCoupling - fix false positive with generics</li>
       <li><a href="https://github.com/pmd/pmd/pull/3675">#3675</a>:   [java] MissingOverride - fix false positive with mixing type vars</li>
       <li><a href="https://github.com/pmd/pmd/issues/3858">#3858</a>: [java] UseCollectionIsEmpty should infer local variable type from method invocation</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4433">#4433</a>: [java] [7.0-rc1] ReplaceHashtableWithMap on java.util.Properties</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4492">#4492</a>: [java] GuardLogStatement gives false positive when argument is a Java method reference</li>
       <li><a href="https://github.com/pmd/pmd/issues/4503">#4503</a>: [java] JUnitTestsShouldIncludeAssert: false negative with TestNG</li>
       <li><a href="https://github.com/pmd/pmd/issues/4516">#4516</a>: [java] UnusedLocalVariable: false-negative with try-with-resources</li>
       <li><a href="https://github.com/pmd/pmd/issues/4517">#4517</a>: [java] UnusedLocalVariable: false-negative with compound assignments</li>
@@ -2324,6 +2337,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/issues/4457">#4457</a>: [java] OverrideBothEqualsAndHashcode: false negative with anonymous classes</li>
       <li><a href="https://github.com/pmd/pmd/issues/4493">#4493</a>: [java] MissingStaticMethodInNonInstantiatableClass: false-positive about @<!-- -->Inject</li>
       <li><a href="https://github.com/pmd/pmd/issues/4505">#4505</a>: [java] ImplicitSwitchFallThrough NPE in PMD 7.0.0-rc1</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4510">#4510</a>: [java] ConstructorCallsOverridableMethod: false positive with lombok’s @<!-- -->Value</li>
       <li><a href="https://github.com/pmd/pmd/issues/4513">#4513</a>: [java] UselessOperationOnImmutable various false negatives with String</li>
       <li><a href="https://github.com/pmd/pmd/issues/4514">#4514</a>: [java] AvoidLiteralsInIfCondition false positive and negative for String literals when ignoreExpressions=true</li>
       <li><a href="https://github.com/pmd/pmd/issues/4546">#4546</a>: [java] OverrideBothEqualsAndHashCode ignores records</li>
@@ -2345,6 +2359,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/pull/3486">#3486</a>:   [java] InsufficientStringBufferDeclaration: Fix NPE</li>
       <li><a href="https://github.com/pmd/pmd/issues/3848">#3848</a>: [java] StringInstantiation: false negative when using method result</li>
       <li><a href="https://github.com/pmd/pmd/issues/4070">#4070</a>: [java] A false positive about the rule RedundantFieldInitializer</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4458">#4458</a>: [java] RedundantFieldInitializer: false positive with lombok’s @<!-- -->Value</li>
     </ul>
   </li>
   <li>kotlin
@@ -2398,6 +2413,9 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
   <li><a href="https://github.com/pmd/pmd/pull/4537">#4537</a>: [java] Fix #4455: A false positive about FieldNamingConventions and UtilityClass - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4538">#4538</a>: [java] Fix #4456: A false positive about FinalFieldCouldBeStatic and UtilityClass - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4540">#4540</a>: [java] Fix #4457: false negative about OverrideBothEqualsAndHashcode - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4541">#4541</a>: [java] Fix #4458: A false positive about RedundantFieldInitializer and @<!-- -->Value - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4542">#4542</a>: [java] Fix #4510: A false positive about ConstructorCallsOverridableMethod and @<!-- -->Value - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4553">#4553</a>: [java] Fix #4492: GuardLogStatement gives false positive when argument is a Java method reference - <a href="https://github.com/anastasiia-koba">Anastasiia Koba</a> (@anastasiia-koba)</li>
 </ul>
 
 <h3 id="-stats">📈 Stats</h3>
