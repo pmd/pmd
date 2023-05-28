@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 
 /**
@@ -217,4 +218,41 @@ public abstract class AbstractPropertySource implements PropertySource {
         return descriptor.errorFor(getProperty(descriptor));
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AbstractPropertySource that = (AbstractPropertySource) o;
+
+        if (!Objects.equals(propertyDescriptors, that.propertyDescriptors)) {
+            return false;
+        }
+
+        // Convert the values to strings for comparisons. This is needed at least for RegexProperties,
+        // as java.util.regex.Pattern doesn't implement equals().
+        Map<String, String> propertiesWithValues = new HashMap<>();
+        propertyDescriptors.forEach(propertyDescriptor -> {
+            Object value = propertyValuesByDescriptor.getOrDefault(propertyDescriptor, propertyDescriptor.defaultValue());
+            @SuppressWarnings({"unchecked", "rawtypes"})
+            String valueString = ((PropertyDescriptor) propertyDescriptor).asDelimitedString(value);
+            propertiesWithValues.put(propertyDescriptor.name(), valueString);
+        });
+        Map<String, String> thatPropertiesWithValues = new HashMap<>();
+        that.propertyDescriptors.forEach(propertyDescriptor -> {
+            Object value = that.propertyValuesByDescriptor.getOrDefault(propertyDescriptor, propertyDescriptor.defaultValue());
+            @SuppressWarnings({"unchecked", "rawtypes"})
+            String valueString = ((PropertyDescriptor) propertyDescriptor).asDelimitedString(value);
+            thatPropertiesWithValues.put(propertyDescriptor.name(), valueString);
+        });
+        return Objects.equals(propertiesWithValues, thatPropertiesWithValues);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(propertyDescriptors, propertyValuesByDescriptor);
+    }
 }
