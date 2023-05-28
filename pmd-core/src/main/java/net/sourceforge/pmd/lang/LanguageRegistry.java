@@ -167,7 +167,7 @@ public final class LanguageRegistry implements Iterable<Language> {
      *
      * @return A language, or null if the name is unknown
      *
-     * @deprecated Use {@link #getLanguageByFullName(String) PMD.getLanguageByFullName}
+     * @deprecated Use {@link #getLanguageByFullName(String) LanguageRegistry.PMD.getLanguageByFullName}
      */
     @Deprecated
     @DeprecatedUntil700
@@ -225,7 +225,7 @@ public final class LanguageRegistry implements Iterable<Language> {
      *
      * @return A language, or null if the name is unknown
      *
-     * @deprecated Use {@link #getLanguageById(String) PMD.getLanguageById}.
+     * @deprecated Use {@link #getLanguageById(String) LanguageRegistry.PMD.getLanguageById}.
      */
     @Deprecated
     @DeprecatedUntil700
