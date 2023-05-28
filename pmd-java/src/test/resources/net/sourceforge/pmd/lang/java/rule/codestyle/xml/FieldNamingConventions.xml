@@ -218,7 +218,7 @@ public class MyException {
         ]]></code>
     </test-code>
     <test-code>
-        <description> [java]A false positive about FieldNamingConventions and UtilityClass #4455 </description>
+        <description>[java] FieldNamingConventions: false positive with lombok's @UtilityClass #4455</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import lombok.experimental.UtilityClass;
