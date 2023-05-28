@@ -15,10 +15,7 @@ import net.sourceforge.pmd.lang.ast.test.component8
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChain
-import net.sourceforge.pmd.lang.java.types.JClassType
-import net.sourceforge.pmd.lang.java.types.JVariableSig
-import net.sourceforge.pmd.lang.java.types.shouldHaveType
-import net.sourceforge.pmd.lang.java.types.typeDsl
+import net.sourceforge.pmd.lang.java.types.*
 
 @Suppress("UNUSED_VARIABLE")
 class MemberInheritanceTest : ParserTestSpec({
@@ -763,6 +760,54 @@ class Top {
 
         importedFieldAccess.referencedSym shouldBe importedFieldSym
         importedMethodCall.methodType.symbol shouldBe importedMethodSym
+    }
+
+
+    parserTest("Static methods of interfaces are not in scope in subclasses") {
+        // This is what allows the import below to not be shadowed by the inherited declaration
+        // This was tested with javac. The intellij compiler doesn't understand this code.
+
+        val acu = parser.withProcessing().parse("""
+package p;
+
+import static p.Top2.foo;
+
+class Klass implements Top {
+  static {
+    foo(); // This is Top2.foo 
+  }
+  
+  static class Child {
+      {
+        foo(); // This is also Top2.foo
+      }
+  }
+}
+interface Top {
+    static void foo() {}
+
+    static void bar() {
+        foo(); // just test that this is not the import
+    }
+}
+interface Top2 {
+    static void foo() {}
+}
+        """)
+
+        val (fooInTop1, _, fooInTop2) = acu.methodDeclarations().toList()
+        val (call1, call2, callInBar) = acu.methodCalls().crossFindBoundaries().toList()
+
+        withClue(call1) {
+            call1.methodType.symbol shouldBe fooInTop2.symbol
+        }
+        withClue(call2) {
+            call2.methodType.symbol shouldBe fooInTop2.symbol
+        }
+        withClue(callInBar) {
+            callInBar.methodType.symbol shouldBe fooInTop1.symbol
+        }
+
     }
 
 })

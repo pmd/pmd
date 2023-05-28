@@ -58,7 +58,7 @@ public abstract class AbstractPmdSubcommand implements Callable<Integer> {
         // always install java.util.logging to slf4j bridge
         Slf4jSimpleConfiguration.installJulBridge();
 
-        // logging, mostly for testing purposes
+        // log the current log level. This is used in unit tests to verify that --debug actually works
         Level defaultLogLevel = Slf4jSimpleConfiguration.getDefaultLogLevel();
         LoggerFactory.getLogger(AbstractPmdSubcommand.class).info("Log level is at {}", defaultLogLevel);
     }

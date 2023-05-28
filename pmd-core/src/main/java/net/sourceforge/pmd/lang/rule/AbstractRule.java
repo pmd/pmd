@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -366,30 +367,22 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
      */
     @Override
     public boolean equals(Object o) {
-        if (o == null) {
-            return false; // trivial
-        }
-
         if (this == o) {
             return true; // trivial
         }
-
-        boolean equality = getClass() == o.getClass();
-
-        if (equality) {
-            Rule that = (Rule) o;
-            equality = getName().equals(that.getName()) && getPriority().equals(that.getPriority())
-                    && getPropertiesByPropertyDescriptor().equals(that.getPropertiesByPropertyDescriptor());
+        if (o == null || getClass() != o.getClass()) {
+            return false;
         }
 
-        return equality;
+        AbstractRule that = (AbstractRule) o;
+        return Objects.equals(getName(), that.getName())
+                && Objects.equals(getPriority(), that.getPriority())
+                && super.equals(o);
     }
 
     @Override
     public int hashCode() {
-        Object propertyValues = getPropertiesByPropertyDescriptor();
-        return getClass().getName().hashCode() + (getName() != null ? getName().hashCode() : 0)
-                + getPriority().hashCode() + (propertyValues != null ? propertyValues.hashCode() : 0);
+        return Objects.hash(getName(), getPriority(), super.hashCode());
     }
 
     @SuppressWarnings("unchecked")
