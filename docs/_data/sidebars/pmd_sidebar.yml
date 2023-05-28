@@ -436,6 +436,9 @@ entries:
     - title: Julia
       url: /pmd_languages_julia.html
       output: web, pdf
+    - title: Coco
+      url: /pmd_languages_coco.html
+      output: web, pdf
   - title: Developer Documentation
     output: web, pdf
     folderitems:
