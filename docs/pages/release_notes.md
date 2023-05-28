@@ -48,6 +48,8 @@ See [the example report]({{ baseurl }}report-examples/cpdhtml-v2.html).
 
 #### Fixed issues
 
+* miscellaneous
+  * [#4460](https://github.com/pmd/pmd/pull/4460):   Fix assembly-plugin warnings
 * java-bestpractices
   * [#4503](https://github.com/pmd/pmd/issues/4503): \[java] JUnitTestsShouldIncludeAssert: false negative with TestNG
 * java-codestyle
@@ -69,8 +71,11 @@ See [the example report]({{ baseurl }}report-examples/cpdhtml-v2.html).
     * `net.sourceforge.pmd.cli.PmdParametersParseResult`
 
 * The asset filenames of PMD on [GitHub Releases](https://github.com/pmd/pmd/releases) are
-  now `pmd-dist-<version>-bin.zip` and `pmd-dist-<version>-src.zip`. Keep that in mind, if you have an automated
-  download script.
+  now `pmd-dist-<version>-bin.zip`, `pmd-dist-<version>-src.zip` and `pmd-dist-<version>-doc.zip`.
+  Keep that in mind, if you have an automated download script.
+
+  The structure inside the ZIP files stay the same, e.g. we still provide inside the binary distribution
+  ZIP file the base directory `pmd-bin-<version>`.
 
 #### External Contributions
 
@@ -372,6 +377,7 @@ See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html)
     * [#2498](https://github.com/pmd/pmd/issues/2498): Update PMD 7 Logo in documentation
     * [#3797](https://github.com/pmd/pmd/issues/3797): \[all] Use JUnit5
     * [#4462](https://github.com/pmd/pmd/issues/4462): Provide Software Bill of Materials (SBOM)
+    * [#4460](https://github.com/pmd/pmd/pull/4460):   Fix assembly-plugin warnings
 * ant
     * [#4080](https://github.com/pmd/pmd/issues/4080): \[ant] Split off Ant integration into a new submodule
 * core
