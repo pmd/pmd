@@ -616,4 +616,19 @@ public class MyTimestamp {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] ConstructorCallsOverridableMethod: false positive with lombok's @Value #4510</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Value;
+@Value
+class Foo1 {
+    public Foo1(String bar) {
+        bar();  //  false positive warning
+    }
+    public void bar() {}
+}
+]]></code>
+    </test-code>
 </test-data>

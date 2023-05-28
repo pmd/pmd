@@ -21,7 +21,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.condition.OS;
 
-import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.internal.util.IOUtil;
 
 /**
@@ -36,7 +35,7 @@ class AntIT extends AbstractBinaryDistributionTest {
     @EnabledOnOs(OS.LINUX)
     void runAnt() throws IOException, InterruptedException {
         String antBasepath = new File("target/ant").getAbsolutePath();
-        String pmdHome = tempDir.resolve(PMD_BIN_PREFIX + PMDVersion.VERSION).toAbsolutePath().toString();
+        String pmdHome = tempDir.resolve(PMD_BIN_PREFIX).toAbsolutePath().toString();
         File antTestProjectFolder = prepareAntTestProjectFolder();
 
         ExecutionResult result = runAnt(antBasepath, pmdHome, antTestProjectFolder);
