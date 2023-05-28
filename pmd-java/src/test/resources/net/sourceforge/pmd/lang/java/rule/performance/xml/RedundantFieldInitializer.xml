@@ -1483,13 +1483,13 @@ class O {
     </test-code>
 
     <test-code>
-        <description> [java]A false positive about RedundantFieldInitializer and @Value #4458 </description>
+        <description>[java] RedundantFieldInitializer: false positive with lombok's @Value #4458</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import lombok.Value;
 @Value
 public class Test {
-    String bar = null;   // report a warning
+    String bar = null;   // false positive warning
 }
         ]]></code>
     </test-code>
