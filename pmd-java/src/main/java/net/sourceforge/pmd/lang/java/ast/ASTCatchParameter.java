@@ -4,9 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Collection;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.java.types.JIntersectionType;
+import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
 
 /**
@@ -68,6 +72,12 @@ public final class ASTCatchParameter extends AbstractJavaNode
     /**
      * Returns a stream of all declared exception types (expanding a union
      * type if present).
+     *
+     * <p>Note that this is the only reliable way to inspect multi-catch clauses,
+     * as the type mirror of a {@link ASTUnionType} is not itself a {@link JIntersectionType},
+     * but the {@link TypeSystem#lub(Collection) LUB} of the components.
+     * Since exception types cannot be interfaces, the LUB always erases
+     * to a single class supertype (eg {@link RuntimeException}).
      */
     public NodeStream<ASTClassOrInterfaceType> getAllExceptionTypes() {
         ASTType typeNode = getTypeNode();

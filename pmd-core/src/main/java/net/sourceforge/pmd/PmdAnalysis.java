@@ -389,6 +389,7 @@ public final class PmdAnalysis implements AutoCloseable {
                 // todo Just like we throw for invalid properties, "broken rules"
                 // shouldn't be a "config error". This is the only instance of
                 // config errors...
+                // see https://github.com/pmd/pmd/issues/3901
                 listener.onConfigError(new Report.ConfigurationError(rule, rule.dysfunctionReason()));
             }
 

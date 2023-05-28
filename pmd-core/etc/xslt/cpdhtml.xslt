@@ -1,13 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!-- Stylesheet to turn the XML output of CPD into a nice-looking HTML page -->
 <!-- $Id$ -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
-<xsl:output method="html" encoding="UTF-8" doctype-public="-//W3C//DTD HTML 4.01 Transitional//EN" 
-	doctype-system="http://www.w3.org/TR/html4/loose.dtd" indent="yes"/>
+<xsl:output method="html" encoding="utf-8" doctype-system="about:legacy-compat"/>
+<xsl:param name="lines" required="yes">30</xsl:param>
 
 <xsl:template match="pmd-cpd">
 <html>
 	<head>
+		<meta charset="utf-8"/>
 		<script type="text/javascript">
 			function toggleCodeSection(btn, id)
 			{
@@ -24,7 +25,7 @@
 					}
 			}
 		</script>
-		<style>
+		<style type="text/css">
 			.SummaryTitle  { }
 			.SummaryNumber { background-color:#DDDDDD; text-align: center; }
 			.ItemNumber    { background-color: #DDDDDD; }
@@ -35,7 +36,7 @@
 <body>
     <h2>Summary of duplicated code</h2>
     This page summarizes the code fragments that have been found to be replicated in the code.
-    Only those fragments longer than 30 lines of code are shown.
+    Only those fragments longer than <xsl:value-of select="$lines"/> lines of code are shown.
     <p/>
     <table border="1" class="summary" cellpadding="2">
       <tr style="background-color:#CCCCCC;">
@@ -45,10 +46,10 @@
         <th>Approx # bytes</th>
       </tr>
       <tr>
-        <td class="SummaryNumber"><xsl:value-of select="count(//duplication[@lines>30])"/></td>
-        <td class="SummaryNumber"><xsl:value-of select="sum(//duplication[@lines>30]/@lines)"/></td>
-        <td class="SummaryNumber"><xsl:value-of select="sum(//duplication[@lines>30]/@tokens)"/></td>
-        <td class="SummaryNumber"><xsl:value-of select="sum(//duplication[@lines>30]/@tokens) * 4"/></td>
+        <td class="SummaryNumber"><xsl:value-of select="count(//duplication[@lines>$lines])"/></td>
+        <td class="SummaryNumber"><xsl:value-of select="sum(//duplication[@lines>$lines]/@lines)"/></td>
+        <td class="SummaryNumber"><xsl:value-of select="sum(//duplication[@lines>$lines]/@tokens)"/></td>
+        <td class="SummaryNumber"><xsl:value-of select="sum(//duplication[@lines>$lines]/@tokens) * 4"/></td>
       </tr>
     </table>
     <p/>
@@ -57,7 +58,7 @@
     <p/>
     <table>
     	<tr style="background-color: #444444; color: #DDDDDD;"><td>ID</td><td>Files</td><td>Lines</td></tr>
-    <xsl:for-each select="//duplication[@lines>30]">
+    <xsl:for-each select="//duplication[@lines>$lines]">
         <xsl:sort data-type="number" order="descending" select="@lines"/>
         <tr>
         	<td class="ItemNumber"><xsl:value-of select="position()"/></td>
@@ -78,7 +79,8 @@
         				<button class="ExpandButton" ><xsl:attribute name="onclick">blur(); toggleCodeSection(this, 'frag_<xsl:value-of select="position()"/>')</xsl:attribute>+</button>
         			</td>
         			<td>
-        				<textarea cols="100" rows="30" wrap="off" class='CodeFragment' style='display:none;'>
+        				<textarea cols="100" wrap="off" class='CodeFragment' style='display:none;'>
+							<xsl:attribute name="rows"><xsl:value-of select="$lines"/></xsl:attribute>
         					<xsl:attribute name="id">frag_<xsl:value-of select="position()"/></xsl:attribute>
         					<xsl:value-of select="codefragment"/>
         				</textarea>
