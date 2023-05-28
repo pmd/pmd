@@ -6,7 +6,7 @@
   Ruleset used by test RuleSetReferenceIdTest
   </description>
 
-    <rule name="NotThreadSafeRule" language="dummy" since="1.0" message="Not thread safe" class="net.sourceforge.pmd.processor.MultiThreadProcessorTest$NotThreadSafeRule"
+    <rule name="NotThreadSafeRule" language="dummy" since="1.0" message="Not thread safe" class="net.sourceforge.pmd.lang.impl.MultiThreadProcessorTest$NotThreadSafeRule"
         externalInfoUrl="foo">
         <description>Foo</description>
         <priority>3</priority>

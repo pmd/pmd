@@ -48,8 +48,6 @@ class PMDCoverageTest {
 
     /**
      * Run the PMD command line tool, i.e. call PMD.main().
-     *
-     * @param commandLine
      */
     private void runPmd(String inputPath, Consumer<PMDConfiguration> configure) {
         StringBuilder report = new StringBuilder("missing report");
@@ -79,9 +77,13 @@ class PMDCoverageTest {
             });
 
             assertThat(output, is(emptyString()));
-            assertThat(output, not(containsString("Error while processing")));
+
+            // No processing errors expected
+            assertThat(report.toString(), not(containsString("Error while processing")));
             // we might have explicit examples of parsing errors, so these are maybe false positives
-            assertThat(output, not(containsString("Error while parsing")));
+            // these examples of parsing errors need to be excluded in rulesets/internal/all-java.xml via
+            // exclude-patterns.
+            assertThat(report.toString(), not(containsString("Error while parsing")));
         } catch (IOException ioe) {
             fail("Problem creating temporary file: " + ioe.getLocalizedMessage());
         } catch (AssertionError ae) {
