@@ -378,7 +378,7 @@ Commands:
               Warning: May not support the full CPD feature set
   ast-dump  Experimental: dumps the AST of parsing source code
 Exit Codes:
-  0   Succesful analysis, no violations found
+  0   Successful analysis, no violations found
   1   An unexpected error occurred during execution
   2   Usage error, please refer to the command help
   4   Successful analysis, at least 1 violation found
@@ -994,6 +994,16 @@ Related issue: [[core] Language lifecycle (#3782)](https://github.com/pmd/pmd/is
     * `net.sourceforge.pmd.cli.PMDCommandLineInterface`
     * `net.sourceforge.pmd.cli.PMDParameters`
     * `net.sourceforge.pmd.cli.PmdParametersParseResult`
+
+* The CLI option `--minimum-priority` was changed with 7.0.0-rc1 to only take the following values:
+  High, Medium High, Medium, Medium Low, Low. With 7.0.0-rc2 compatibility has been restored, so that the equivalent
+  integer values (1 to 5) are supported as well.
+
+#### 7.0.0-rc1
+
+* The CLI option `--stress` (or `-stress`) has been removed without replacement.
+* The CLI option `--minimum-priority` now takes one of the following values instead of an integer:
+  High, Medium High, Medium, Medium Low, Low.
 
 #### 6.55.0
 

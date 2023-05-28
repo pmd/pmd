@@ -12,7 +12,7 @@ package net.sourceforge.pmd;
  * avoided in favor of {@link RulePriority#getPriority()} and
  * {@link RulePriority#valueOf(int)}
  *
- * @see <a href="http://pmd.sourceforge.net/pmd-5.1.2/rule-guidelines.html">How
+ * @see <a href="https://docs.pmd-code.org/latest/pmd_userdocs_extending_rule_guidelines.html">How
  *      to define rules priority</a>
  */
 public enum RulePriority {

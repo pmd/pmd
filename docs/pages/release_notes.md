@@ -50,6 +50,8 @@ See [the example report]({{ baseurl }}report-examples/cpdhtml-v2.html).
 
 * miscellaneous
   * [#4460](https://github.com/pmd/pmd/pull/4460):   Fix assembly-plugin warnings
+* core
+  * [#4454](https://github.com/pmd/pmd/issues/4454): \[core] "Unknown option: '-min'" but is referenced in documentation
 * java-bestpractices
   * [#4503](https://github.com/pmd/pmd/issues/4503): \[java] JUnitTestsShouldIncludeAssert: false negative with TestNG
 * java-codestyle
@@ -72,13 +74,16 @@ See [the example report]({{ baseurl }}report-examples/cpdhtml-v2.html).
     * `net.sourceforge.pmd.cli.PMDCommandLineInterface`
     * `net.sourceforge.pmd.cli.PMDParameters`
     * `net.sourceforge.pmd.cli.PmdParametersParseResult`
-
 * The asset filenames of PMD on [GitHub Releases](https://github.com/pmd/pmd/releases) are
   now `pmd-dist-<version>-bin.zip`, `pmd-dist-<version>-src.zip` and `pmd-dist-<version>-doc.zip`.
   Keep that in mind, if you have an automated download script.
 
   The structure inside the ZIP files stay the same, e.g. we still provide inside the binary distribution
   ZIP file the base directory `pmd-bin-<version>`.
+* The CLI option `--stress` (or `-stress`) has been removed without replacement.
+* The CLI option `--minimum-priority` was changed with 7.0.0-rc1 to only take the following values:
+  High, Medium High, Medium, Medium Low, Low. With 7.0.0-rc2 compatibility has been restored, so that the equivalent
+  integer values (1 to 5) are supported as well.
 
 #### External Contributions
 
@@ -414,6 +419,7 @@ See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html)
     * [#4353](https://github.com/pmd/pmd/pull/4353):   \[core] Micro optimizations for Node API
     * [#4365](https://github.com/pmd/pmd/pull/4365):   \[core] Improve benchmarking
     * [#4420](https://github.com/pmd/pmd/pull/4420):   \[core] Remove PMD.EOL
+    * [#4454](https://github.com/pmd/pmd/issues/4454): \[core] "Unknown option: '-min'" but is referenced in documentation
 * cli
     * [#2234](https://github.com/pmd/pmd/issues/2234): \[core] Consolidate PMD CLI into a single command
     * [#3828](https://github.com/pmd/pmd/issues/3828): \[core] Progress reporting
