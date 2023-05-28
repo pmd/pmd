@@ -543,4 +543,29 @@ public record Record(Set<String> stringSet) {
     }
 }        ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] UseCollectionIsEmpty should infer local variable type from method invocation #3858</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
+public class Example {
+
+    public void func() {
+        var list = getList();
+        if (list.size()>0) { // point 1:  false negative
+            System.out.println("!list.isEmpty() is better!");
+            // ...
+        }
+    }
+
+    private List<String> getList() { // mock
+        return new ArrayList<>();
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

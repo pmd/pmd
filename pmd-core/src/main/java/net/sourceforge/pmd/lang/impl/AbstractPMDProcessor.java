@@ -34,10 +34,12 @@ abstract class AbstractPMDProcessor implements AutoCloseable {
 
     /**
      * Returns a new file processor. The strategy used for threading is
-     * determined by {@link AnalysisTask#getThreads()}.
+     * determined by {@link AnalysisTask#getThreadCount()}.
+     * <p>Note: Only {@code 0} threads disables multi-thread processing. See the CLI documentation
+     * for parameter {@code --threads}.</p>
      */
     public static AbstractPMDProcessor newFileProcessor(AnalysisTask analysisTask) {
-        return analysisTask.getThreadCount() > 1
+        return analysisTask.getThreadCount() > 0
                ? new MultiThreadProcessor(analysisTask)
                : new MonoThreadProcessor(analysisTask);
     }

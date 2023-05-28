@@ -38,6 +38,7 @@ val testTypeSystem: TypeSystem get() = JavaParsingHelper.TEST_TYPE_SYSTEM
 val TypeSystem.asmLoader: AsmSymbolResolver get() = this.resolver as AsmSymbolResolver
 
 fun TypeSystem.lub(vararg us: JTypeMirror): JTypeMirror = lub(us.toList())
+fun TypeSystem.glb(vararg us: JTypeMirror): JTypeMirror = glb(us.toList())
 
 val TypeSystem.STRING get() = declaration(getClassSymbol(String::class.java)) as JClassType
 

@@ -42,55 +42,7 @@ function pmd_doc_create_archive() {
 }
 
 #
-# Publishes the site to https://pmd.github.io/pmd-${PMD_CI_MAVEN_PROJECT_VERSION} and
-# https://pmd.github.io/latest/
-#
-function publish_release_documentation_github() {
-    echo -e "\n\n"
-    pmd_ci_log_info "Adding the new doc to pmd.github.io..."
-    # clone pmd.github.io. Note: This uses the ssh key setup earlier
-    # In order to speed things up, we use a sparse checkout - no need to checkout all directories here
-    mkdir pmd.github.io
-    (
-        cd pmd.github.io || { echo "Directory 'pmd.github.io' doesn't exist"; exit 1; }
-        git init
-        git config user.name "PMD CI (pmd-bot)"
-        git config user.email "pmd-bot@users.noreply.github.com"
-        git config core.sparsecheckout true
-        git remote add origin git@github.com-pmd.github.io:pmd/pmd.github.io.git
-        echo "/latest/" > .git/info/sparse-checkout
-        echo "/sitemap.xml" >> .git/info/sparse-checkout
-        git pull --depth=1 origin master
-        pmd_ci_log_info "Copying documentation from ../docs/pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}/ to pmd-${PMD_CI_MAVEN_PROJECT_VERSION}/ ..."
-        rsync -ah --stats "../docs/pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}/" "pmd-${PMD_CI_MAVEN_PROJECT_VERSION}/"
-        git status
-        pmd_ci_log_debug "Executing: git add pmd-${PMD_CI_MAVEN_PROJECT_VERSION}"
-        git add --sparse "pmd-${PMD_CI_MAVEN_PROJECT_VERSION}"
-        pmd_ci_log_debug "Executing: git commit..."
-        git commit -q -m "Added pmd-${PMD_CI_MAVEN_PROJECT_VERSION}"
-
-        pmd_ci_log_info "Copying pmd-${PMD_CI_MAVEN_PROJECT_VERSION} to latest ..."
-        git rm -qr latest
-        cp -a "pmd-${PMD_CI_MAVEN_PROJECT_VERSION}" latest
-        pmd_ci_log_debug "Executing: git add latest"
-        git add latest
-        pmd_ci_log_debug "Executing: git commit..."
-        git commit -q -m "Copying pmd-${PMD_CI_MAVEN_PROJECT_VERSION} to latest"
-
-        pmd_ci_log_info "Generating sitemap.xml"
-        ../docs/sitemap_generator.sh > sitemap.xml
-        pmd_ci_log_debug "Executing: git add sitemap.xml"
-        git add sitemap.xml
-        pmd_ci_log_debug "Executing: git commit..."
-        git commit -q -m "Generated sitemap.xml"
-
-        pmd_ci_log_info "Executing: git push origin master"
-        git push origin master
-    )
-}
-
-#
-# Updates github pages of the main repository,
+# Updates github pages branch "gh-pages" of the main repository,
 # so that https://pmd.github.io/pmd/ has the latest (snapshot) content
 #
 function pmd_doc_publish_to_github_pages() {

@@ -53,6 +53,19 @@
         </fileSet>
     </fileSets>
 
+    <files>
+        <file>
+            <source>target/bom.xml</source>
+            <outputDirectory>sbom</outputDirectory>
+            <destName>pmd-${project.version}-cyclonedx.xml</destName>
+        </file>
+        <file>
+            <source>target/bom.json</source>
+            <outputDirectory>sbom</outputDirectory>
+            <destName>pmd-${project.version}-cyclonedx.json</destName>
+        </file>
+    </files>
+
     <dependencySets>
         <!-- shell completion goes to shell/ -->
         <dependencySet>
@@ -71,7 +84,9 @@
         <dependencySet>
             <scope>runtime</scope>
             <excludes>
+                <exclude>net.sourceforge.pmd:pmd-apex-jorje:pom</exclude>
                 <exclude>net.sourceforge.pmd:pmd-cli:sh:completion:*</exclude>
+                <exclude>net.sourceforge.pmd:pmd-languages-deps:pom</exclude>
             </excludes>
             <outputDirectory>lib</outputDirectory>
             <directoryMode>0755</directoryMode>

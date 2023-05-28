@@ -138,7 +138,7 @@ f=check-environment.sh; \
 
 Calling `.ci/build.sh` directly would re-release the tag $TAG_NAME - that's why it is commented out.
 All the side-effects of a release would be carried out like creating and publishing a release on github,
-uploading the release to sourceforge, uploading the docs to pmd.github.io/docs.pmd-code.org, uploading a
+uploading the release to sourceforge, uploading the docs to docs.pmd-code.org, uploading a
 new baseline for the regression tester and so on. While the release should be reproducible and therefore should
 produce exactly the same artifacts, re-uploading artifacts is not desired just for testing.
 

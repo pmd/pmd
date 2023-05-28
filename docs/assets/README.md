@@ -4,7 +4,7 @@
 
 Doc: https://fontawesome.com/how-to-use/on-the-web/setup/hosting-font-awesome-yourself
 
-Download: https://use.fontawesome.com/releases/v5.14.0/fontawesome-free-5.14.0-web.zip
+Download: https://use.fontawesome.com/releases/v5.15.4/fontawesome-free-5.15.4-web.zip
 
 ## Bootstrap
 
