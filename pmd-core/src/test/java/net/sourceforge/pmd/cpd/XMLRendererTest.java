@@ -6,9 +6,8 @@ package net.sourceforge.pmd.cpd;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -169,17 +168,15 @@ class XMLRendererTest {
     void testRendererEncodedPath() throws IOException {
         CPDReportRenderer renderer = new XMLRenderer();
         CpdReportBuilder builder = new CpdReportBuilder();
-        final String espaceChar = "&lt;";
-        Mark mark1 = builder.createMark("public", FileId.fromPathLikeString("/var/A<oo.java" + FORM_FEED), 2, 6);
-        Mark mark2 = builder.createMark("void", FileId.fromPathLikeString("/var/B<oo.java"), 17, 6);
+        final String escapeChar = "&amp;";
+        Mark mark1 = builder.createMark("public", FileId.fromPathLikeString("/var/A&oo.java"), 2, 6);
+        Mark mark2 = builder.createMark("void", FileId.fromPathLikeString("/var/B&oo.java"), 17, 6);
         builder.addMatch(new Match(75, mark1, mark2));
 
         StringWriter sw = new StringWriter();
         renderer.render(builder.build(), sw);
         String report = sw.toString();
-        assertTrue(report.contains(espaceChar));
-        assertFalse(report.contains(FORM_FEED));
-        assertFalse(report.contains(FORM_FEED_ENTITY));
+        assertThat(report, containsString(escapeChar));
     }
 
     @Test
@@ -203,7 +200,7 @@ class XMLRendererTest {
         final NodeList files = doc.getElementsByTagName("file");
         final Node file = files.item(0);
         final NamedNodeMap attributes = file.getAttributes();
-        assertEquals("/var/Foo.java", attributes.getNamedItem("path").getNodeValue());
+        assertEquals(CpdTestUtils.FOO_FILE_ID.getAbsolutePath(), attributes.getNamedItem("path").getNodeValue());
         assertEquals("888", attributes.getNamedItem("totalNumberOfTokens").getNodeValue());
     }
 
@@ -255,10 +252,10 @@ class XMLRendererTest {
         StringWriter sw = new StringWriter();
         renderer.render(builder.build(), sw);
         String report = sw.toString();
-        assertFalse(report.contains(FORM_FEED));
-        assertFalse(report.contains(FORM_FEED_ENTITY));
+        assertThat(report, not(containsString(FORM_FEED)));
+        assertThat(report, not(containsString(FORM_FEED_ENTITY)));
         assertThat(report, containsString("no & escaping necessary in CDATA"));
         assertThat(report, containsString("x=\"]]]]><![CDATA[>\";"));
-        assertFalse(report.contains("x=\"]]>\";")); // must be escaped
+        assertThat(report, not(containsString("x=\"]]>\";"))); // must be escaped
     }
 }
