@@ -267,13 +267,13 @@ class foo {
     </test-code>
 
     <test-code>
-        <description> [java]A false positive about FinalFieldCouldBeStatic and UtilityClass #4456 </description>
+        <description>[java] FinalFieldCouldBeStatic: false positive with lombok's @UtilityClass #4456</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import lombok.experimental.UtilityClass;
 @UtilityClass
 public class Test {
-    public final String BAR = "42";  //  report a warning
+    public final String BAR = "42";  //  false positive warning
 }
 ]]></code>
     </test-code>
