@@ -184,8 +184,8 @@ function pmd_ci_build_run() {
 #
 function pmd_ci_deploy_build_artifacts() {
     # Deploy to sourceforge files https://sourceforge.net/projects/pmd/files/pmd/
-    pmd_ci_sourceforge_uploadFile "pmd/${PMD_CI_MAVEN_PROJECT_VERSION}" "pmd-dist/target/pmd-bin-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
-    pmd_ci_sourceforge_uploadFile "pmd/${PMD_CI_MAVEN_PROJECT_VERSION}" "pmd-dist/target/pmd-src-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
+    pmd_ci_sourceforge_uploadFile "pmd/${PMD_CI_MAVEN_PROJECT_VERSION}" "pmd-dist/target/pmd-dist-${PMD_CI_MAVEN_PROJECT_VERSION}-bin.zip"
+    pmd_ci_sourceforge_uploadFile "pmd/${PMD_CI_MAVEN_PROJECT_VERSION}" "pmd-dist/target/pmd-dist-${PMD_CI_MAVEN_PROJECT_VERSION}-src.zip"
     # Deploy SBOM
     cp pmd-dist/target/bom.xml  "pmd-dist/target/pmd-${PMD_CI_MAVEN_PROJECT_VERSION}-cyclonedx.xml"
     cp pmd-dist/target/bom.json "pmd-dist/target/pmd-${PMD_CI_MAVEN_PROJECT_VERSION}-cyclonedx.json"
@@ -198,8 +198,8 @@ function pmd_ci_deploy_build_artifacts() {
         GH_RELEASE="$RESULT"
 
         # Deploy to github releases
-        pmd_ci_gh_releases_uploadAsset "$GH_RELEASE" "pmd-dist/target/pmd-bin-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
-        pmd_ci_gh_releases_uploadAsset "$GH_RELEASE" "pmd-dist/target/pmd-src-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
+        pmd_ci_gh_releases_uploadAsset "$GH_RELEASE" "pmd-dist/target/pmd-dist-${PMD_CI_MAVEN_PROJECT_VERSION}-bin.zip"
+        pmd_ci_gh_releases_uploadAsset "$GH_RELEASE" "pmd-dist/target/pmd-dist-${PMD_CI_MAVEN_PROJECT_VERSION}-src.zip"
         # Deploy SBOM
         pmd_ci_gh_releases_uploadAsset "$GH_RELEASE" "pmd-dist/target/pmd-${PMD_CI_MAVEN_PROJECT_VERSION}-cyclonedx.xml"
         pmd_ci_gh_releases_uploadAsset "$GH_RELEASE" "pmd-dist/target/pmd-${PMD_CI_MAVEN_PROJECT_VERSION}-cyclonedx.json"
@@ -216,11 +216,11 @@ function pmd_ci_build_and_upload_doc() {
 
     pmd_ci_sourceforge_uploadFile "pmd/${PMD_CI_MAVEN_PROJECT_VERSION}" "docs/pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
     if pmd_ci_maven_isReleaseBuild; then
-        pmd_ci_gh_releases_uploadAsset "$GH_RELEASE" "docs/pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
+        pmd_ci_gh_releases_uploadAsset "$GH_RELEASE" "docs/pmd-dist-${PMD_CI_MAVEN_PROJECT_VERSION}-doc.zip"
     fi
 
     # Deploy doc to https://docs.pmd-code.org/pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}/
-    pmd_code_uploadDocumentation "${PMD_CI_MAVEN_PROJECT_VERSION}" "docs/pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}.zip"
+    pmd_code_uploadDocumentation "${PMD_CI_MAVEN_PROJECT_VERSION}" "docs/pmd-dist-${PMD_CI_MAVEN_PROJECT_VERSION}-doc.zip"
     # Deploy javadoc to https://docs.pmd-code.org/apidocs/*/${PMD_CI_MAVEN_PROJECT_VERSION}/
     pmd_code_uploadJavadoc "${PMD_CI_MAVEN_PROJECT_VERSION}" "$(pwd)"
 

@@ -20,7 +20,7 @@ class SourceDistributionIT {
     private static final String BASE_PATH = "pmd-src-" + PMDVersion.VERSION;
 
     private File getSourceDistribution() {
-        return new File(".", "target/" + BASE_PATH + ".zip");
+        return new File(".", "target/pmd-dist-" + PMDVersion.VERSION + "-src.zip");
     }
 
     @Test

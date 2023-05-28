@@ -782,6 +782,12 @@ The following previously deprecated rules have been finally removed:
   to be reviewed.
 * Custom rules using rulechains: Need to override {% jdoc core::lang.rule.AbstractRule#buildTargetSelector() %}
   using {% jdoc core::lang.rule.RuleTargetSelector#forTypes(java.lang.Class,java.lang.Class...) %}.
+* The asset filenames of PMD on [GitHub Releases](https://github.com/pmd/pmd/releases) are
+  now `pmd-dist-<version>-bin.zip`, `pmd-dist-<version>-src.zip` and `pmd-dist-<version>-doc.zip`.
+  Keep that in mind, if you have an automated download script.
+
+  The structure inside the ZIP files stay the same, e.g. we still provide inside the binary distribution
+  ZIP file the base directory `pmd-bin-<version>`.
 
 ### For integrators
 
