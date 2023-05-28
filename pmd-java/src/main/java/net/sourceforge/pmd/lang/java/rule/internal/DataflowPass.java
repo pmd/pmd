@@ -8,8 +8,8 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -212,7 +212,7 @@ public final class DataflowPass {
             this.containsInitialFieldValue |= reaching.containsInitialFieldValue;
             this.isNotFullyKnown |= reaching.isNotFullyKnown;
             if (this.reaching.isEmpty()) { // unmodifiable
-                this.reaching = new HashSet<>(reaching.reaching);
+                this.reaching = new LinkedHashSet<>(reaching.reaching);
             } else {
                 this.reaching.addAll(reaching.reaching);
             }
@@ -234,8 +234,8 @@ public final class DataflowPass {
 
 
         DataflowResult() {
-            this.unusedAssignments = new HashSet<>();
-            this.killRecord = new HashMap<>();
+            this.unusedAssignments = new LinkedHashSet<>();
+            this.killRecord = new LinkedHashMap<>();
         }
 
         /**
@@ -360,7 +360,7 @@ public final class DataflowPass {
             // next iteration
 
             SpanInfo state = data;
-            Set<ASTVariableDeclaratorId> localsToKill = new HashSet<>();
+            Set<ASTVariableDeclaratorId> localsToKill = new LinkedHashSet<>();
 
             for (JavaNode child : node.children()) {
                 // each output is passed as input to the next (most relevant for blocks)
@@ -1060,9 +1060,9 @@ public final class DataflowPass {
         }
 
         private GlobalAlgoState() {
-            this(new HashSet<>(),
-                 new HashSet<>(),
-                 new HashMap<>());
+            this(new LinkedHashSet<>(),
+                 new LinkedHashSet<>(),
+                 new LinkedHashMap<>());
         }
     }
 
@@ -1081,7 +1081,7 @@ public final class DataflowPass {
             if (other == this) { // NOPMD #3205
                 return this;
             }
-            Set<AssignmentEntry> merged = new HashSet<>(reachingDefs.size() + other.reachingDefs.size());
+            Set<AssignmentEntry> merged = new LinkedHashSet<>(reachingDefs.size() + other.reachingDefs.size());
             merged.addAll(reachingDefs);
             merged.addAll(other.reachingDefs);
             return new VarLocalInfo(merged);
@@ -1123,7 +1123,7 @@ public final class DataflowPass {
         private OptionalBool hasCompletedAbruptly = OptionalBool.NO;
 
         private SpanInfo(GlobalAlgoState global) {
-            this(null, global, new HashMap<>());
+            this(null, global, new LinkedHashMap<>());
         }
 
         private SpanInfo(SpanInfo parent,
@@ -1163,7 +1163,7 @@ public final class DataflowPass {
                         continue;
                     }
 
-                    global.killRecord.computeIfAbsent(killed, k -> new HashSet<>(1))
+                    global.killRecord.computeIfAbsent(killed, k -> new LinkedHashSet<>(1))
                                      .add(entry);
                 }
             }
@@ -1202,7 +1202,7 @@ public final class DataflowPass {
             if (info != null) {
                 global.usedAssignments.addAll(info.reachingDefs);
                 if (reachingDefSink != null) {
-                    ReachingDefinitionSet reaching = new ReachingDefinitionSet(new HashSet<>(info.reachingDefs));
+                    ReachingDefinitionSet reaching = new ReachingDefinitionSet(new LinkedHashSet<>(info.reachingDefs));
                     // need to merge into previous to account for cyclic control flow
                     reachingDefSink.getUserMap().compute(REACHING_DEFS, current -> {
                         if (current != null) {
@@ -1256,12 +1256,12 @@ public final class DataflowPass {
         }
 
         SpanInfo forkEmpty() {
-            return doFork(this, new HashMap<>());
+            return doFork(this, new LinkedHashMap<>());
         }
 
 
         SpanInfo forkEmptyNonLocal() {
-            return doFork(null, new HashMap<>());
+            return doFork(null, new LinkedHashMap<>());
         }
 
         SpanInfo forkCapturingNonLocal() {
@@ -1269,7 +1269,7 @@ public final class DataflowPass {
         }
 
         private Map<JVariableSymbol, VarLocalInfo> copyTable() {
-            return new HashMap<>(this.symtable);
+            return new LinkedHashMap<>(this.symtable);
         }
 
         private SpanInfo doFork(/*nullable*/ SpanInfo parent, Map<JVariableSymbol, VarLocalInfo> reaching) {
@@ -1377,7 +1377,7 @@ public final class DataflowPass {
     static class TargetStack {
 
         final Deque<SpanInfo> unnamedTargets = new ArrayDeque<>();
-        final Map<String, SpanInfo> namedTargets = new HashMap<>();
+        final Map<String, SpanInfo> namedTargets = new LinkedHashMap<>();
 
 
         void push(SpanInfo state) {

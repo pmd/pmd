@@ -16,7 +16,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.SystemUtils;
 
-import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.internal.util.IOUtil;
 
 /**
@@ -43,9 +42,9 @@ public class PMDExecutor {
     static ExecutionResult runCommand(Path tempDir, String cmd, List<String> arguments, Path reportFile) throws Exception {
         final String pmdScript;
         if (SystemUtils.IS_OS_WINDOWS) {
-            pmdScript = tempDir.resolve(AbstractBinaryDistributionTest.PMD_BIN_PREFIX + PMDVersion.VERSION + "/bin/pmd.bat").toAbsolutePath().toString();
+            pmdScript = tempDir.resolve(AbstractBinaryDistributionTest.PMD_BIN_PREFIX + "/bin/pmd.bat").toAbsolutePath().toString();
         } else {
-            pmdScript = tempDir.resolve(AbstractBinaryDistributionTest.PMD_BIN_PREFIX + PMDVersion.VERSION + "/bin/pmd").toAbsolutePath().toString();
+            pmdScript = tempDir.resolve(AbstractBinaryDistributionTest.PMD_BIN_PREFIX + "/bin/pmd").toAbsolutePath().toString();
         }
         ProcessBuilder pb = new ProcessBuilder(pmdScript);
         pb.command().add(cmd);
