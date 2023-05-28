@@ -39,4 +39,17 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>Properties #4433</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.Properties;
+            public class Foo {
+                Properties field;
+                void bar(Properties h) {
+                    Properties local;
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>
