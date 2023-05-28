@@ -561,4 +561,24 @@ public class Logger {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#4492 GuardLogStatement gives false positive when argument is a Java method reference</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
+public class GuardLogStatementTest {
+    static String foo() {
+        return "foo";
+    }
+
+    public void test() {
+        final Logger logger = LogManager.getLogger(GuardLogStatementTest.class);
+        logger.info("Some info: {}", GuardLogStatementTest::foo);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

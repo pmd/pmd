@@ -1143,4 +1143,29 @@ public class Sample {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>#4557 - UnnecessaryImport FP with static imports of overloaded methods</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package p;
+
+            import static p.Static.assertThat;
+
+            class Klass {
+                static {
+                    assertThat(1); // This is assertThat(Integer)
+                }
+            }
+            class Static {
+
+                public static Object assertThat(Integer actual) {
+                    return null;
+                }
+
+                public static Object assertThat(Long actual) {
+                    return null;
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>

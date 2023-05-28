@@ -302,7 +302,8 @@ public class LawOfDemeterRule extends AbstractJavaRule {
 
         // note this max could be changed to min to get a more conservative
         // strategy, trading recall for precision. maybe make that configurable
-        return reaching.getReaching().stream().mapToInt(this::foreignDegree).max().orElse(TRUSTED);
+        return reaching.getReaching().stream()
+                .mapToInt(this::foreignDegree).max().orElse(TRUSTED);
     }
 
     private int fieldAccessDegree(ASTNamedReferenceExpr expr) {
