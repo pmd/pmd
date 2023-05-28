@@ -967,10 +967,10 @@ public final class DataflowPass {
                     if (method.getBody() != null) {
                         SpanInfo span = data.forkCapturingNonLocal();
                         span.declareSpecialFieldValues(node.getSymbol(), method.isStatic());
-                        if (!method.isStatic()) {
-                            instanceVisitor.acceptOpt(decl, span);
-                        } else {
+                        if (method.isStatic()) {
                             staticVisitor.acceptOpt(decl, span);
+                        } else {
+                            instanceVisitor.acceptOpt(decl, span);
                         }
                     }
                 } else if (decl instanceof ASTAnyTypeDeclaration) {
@@ -1029,7 +1029,7 @@ public final class DataflowPass {
         static void useAllSelfFields(SpanInfo staticState, SpanInfo instanceState, JClassSymbol enclosingSym, JavaNode escapingNode) {
             for (JFieldSymbol field : enclosingSym.getDeclaredFields()) {
                 SpanInfo state = field.isStatic() ? staticState : instanceState;
-                state.assignOutOfScope(field, escapingNode);
+                state.assignOutOfScope(field, escapingNode, SpecialAssignmentKind.END_OF_CTOR);
             }
         }
     }
@@ -1145,18 +1145,27 @@ public final class DataflowPass {
         }
 
         void assign(JVariableSymbol var, JavaNode rhs) {
-            assign(var, rhs, false, false);
+            assign(var, rhs, SpecialAssignmentKind.NOT_SPECIAL);
         }
 
-        void assign(JVariableSymbol var, JavaNode rhs, boolean outOfScope, boolean isFieldBeforeMethod) {
+        @Nullable AssignmentEntry assign(JVariableSymbol var, JavaNode rhs, SpecialAssignmentKind kind) {
             ASTVariableDeclaratorId node = var.tryGetNode();
             if (node == null) {
-                return; // we don't care about non-local declarations
+                return null; // we don't care about non-local declarations
             }
-            AssignmentEntry entry = outOfScope || isFieldBeforeMethod
-                                    ? new UnboundAssignment(var, node, rhs, isFieldBeforeMethod)
+            AssignmentEntry entry = kind != SpecialAssignmentKind.NOT_SPECIAL
+                                    ? new UnboundAssignment(var, node, rhs, kind)
                                     : new AssignmentEntry(var, node, rhs);
-            VarLocalInfo previous = symtable.put(var, new VarLocalInfo(Collections.singleton(entry)));
+            VarLocalInfo newInfo = new VarLocalInfo(Collections.singleton(entry));
+            if (kind.shouldJoinWithPreviousAssignment()) {
+                // For unknown method calls, we don't know if the existing reaching defs were killed or not.
+                // In that case we just add an unbound entry to the existing reaching def set.
+                VarLocalInfo prev = symtable.remove(var);
+                if (prev != null) {
+                    newInfo = prev.merge(newInfo);
+                }
+            }
+            VarLocalInfo previous = symtable.put(var, newInfo);
             if (previous != null) {
                 // those assignments were overwritten ("killed")
                 for (AssignmentEntry killed : previous.reachingDefs) {
@@ -1169,6 +1178,7 @@ public final class DataflowPass {
                 }
             }
             global.allAssignments.add(entry);
+            return entry;
         }
 
         void declareSpecialFieldValues(JClassSymbol sym, boolean onlyStatic) {
@@ -1185,13 +1195,13 @@ public final class DataflowPass {
                 // Final fields definitions are fully known since they
                 // have to occur in a ctor.
                 if (!field.isFinal()) {
-                    assign(field, id, true, true);
+                    assign(field, id, SpecialAssignmentKind.INITIAL_FIELD_VALUE);
                 }
             }
         }
 
 
-        void assignOutOfScope(@Nullable JVariableSymbol var, JavaNode escapingNode) {
+        void assignOutOfScope(@Nullable JVariableSymbol var, JavaNode escapingNode, SpecialAssignmentKind kind) {
             if (var == null) {
                 return;
             }
@@ -1200,7 +1210,7 @@ public final class DataflowPass {
                 return;
             }
             use(var, null);
-            assign(var, escapingNode, true, false);
+            assign(var, escapingNode, kind);
         }
 
         void use(@Nullable JVariableSymbol var, @Nullable ASTNamedReferenceExpr reachingDefSink) {
@@ -1254,7 +1264,7 @@ public final class DataflowPass {
             // all reaching defs to fields until now may be observed
             for (JFieldSymbol field : enclosingClassSym.getDeclaredFields()) {
                 if (!field.isStatic()) {
-                    assignOutOfScope(field, escapingNode);
+                    assignOutOfScope(field, escapingNode, SpecialAssignmentKind.UNKNOWN_METHOD_CALL);
                 }
             }
         }
@@ -1588,15 +1598,11 @@ public final class DataflowPass {
 
     static class UnboundAssignment extends AssignmentEntry {
 
-        /**
-         * If true, then this is the unknown value of a field
-         * before an instance method call.
-         */
-        private final boolean isFieldStartValue;
+        private final SpecialAssignmentKind kind;
 
-        UnboundAssignment(JVariableSymbol var, ASTVariableDeclaratorId node, JavaNode rhs, boolean isFieldStartValue) {
+        UnboundAssignment(JVariableSymbol var, ASTVariableDeclaratorId node, JavaNode rhs, SpecialAssignmentKind kind) {
             super(var, node, rhs);
-            this.isFieldStartValue = isFieldStartValue;
+            this.kind = kind;
         }
 
         @Override
@@ -1606,12 +1612,23 @@ public final class DataflowPass {
 
         @Override
         public boolean isFieldAssignmentAtStartOfMethod() {
-            return isFieldStartValue;
+            return kind == SpecialAssignmentKind.INITIAL_FIELD_VALUE;
         }
 
         @Override
         public boolean isFieldAssignmentAtEndOfCtor() {
             return rhs instanceof ASTAnyTypeDeclaration;
+        }
+    }
+
+    enum SpecialAssignmentKind {
+        NOT_SPECIAL,
+        UNKNOWN_METHOD_CALL,
+        INITIAL_FIELD_VALUE,
+        END_OF_CTOR;
+
+        boolean shouldJoinWithPreviousAssignment() {
+            return this == UNKNOWN_METHOD_CALL;
         }
     }
 }
