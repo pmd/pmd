@@ -228,6 +228,13 @@ Contributors: [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
   literals were ignored. The new option additional ignores identifiers as well in sequences.
 * See [PR #4470](https://github.com/pmd/pmd/pull/4470) for details.
 
+
+#### Changed: Rule properties
+
+* The old deprecated classes like `IntProperty` and `StringProperty` have been removed. Please use {% jdoc core::properties.PropertyFactory %} to create properties.
+* All properties which accept multiple values now use a comma (`,`) as a delimiter. The previous default was a pipe character (`|`). The delimiter is not configurable anymore.
+* The `min` and `max` attributes in property definitions in the XML are now optional and can appear separately or be omitted.
+
 ### 🌟 New and changed rules
 
 #### New Rules
