@@ -290,11 +290,6 @@ public final class PropertyFactory {
         return new GenericPropertyBuilder<>(name, PropertyParsingUtil.BOOLEAN);
     }
 
-    // We can add more useful factories with Java 8.
-    // * We don't really need a Map, just a Function<String, T>.
-    // * We could have a factory taking a Class<? extends Enum<T>>
-    //   and a Function<T, String> to build a mapper for a whole enum.
-
     /**
      * Returns a builder for an enumerated property. Such a property can be
      * defined for any type {@code <T>}, provided the possible values can be
