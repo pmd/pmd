@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import static net.sourceforge.pmd.lang.java.ast.JModifier.FINAL;
-import static net.sourceforge.pmd.lang.java.ast.JModifier.STATIC;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.util.ArrayList;
@@ -24,6 +22,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
+import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
@@ -95,9 +94,13 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
         return null;
     }
 
-    public static boolean mayBeSingular(AccessNode varId) {
+    private static boolean mayBeSingular(AccessNode varId) {
         return varId.getEffectiveVisibility().isAtMost(Visibility.V_PRIVATE)
-            && !varId.getModifiers().hasAny(STATIC, FINAL);
+            // We ignore final variables for a reason:
+            // - if they're static they are there to share a value and that is not a mistake
+            // - if they're not static then if this rule matches, then so does FinalFieldCouldBeStatic,
+            // and that rule has the better fix.
+            && !varId.hasModifiers(JModifier.FINAL);
     }
 
     private boolean isSingularField(ASTAnyTypeDeclaration fieldOwner, ASTVariableDeclaratorId varId, DataflowResult dataflow) {
@@ -105,11 +108,13 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
             return false; // don't report unused field
         }
 
+        boolean isStaticField = varId.isStatic();
         //Check usages for validity & group them by scope
         //They're valid if they don't escape the scope of their method, eg by being in a nested class or lambda
         Map<ASTBodyDeclaration, List<ASTNamedReferenceExpr>> usagesByScope = new HashMap<>();
         for (ASTNamedReferenceExpr usage : varId.getLocalUsages()) {
-            if (usage.getEnclosingType() != fieldOwner || !JavaAstUtils.isThisFieldAccess(usage)) {
+            if (usage.getEnclosingType() != fieldOwner
+                || !isStaticField && !JavaAstUtils.isThisFieldAccess(usage)) {
                 return false; // give up
             }
             ASTBodyDeclaration enclosing = getEnclosingBodyDecl(fieldOwner, usage);

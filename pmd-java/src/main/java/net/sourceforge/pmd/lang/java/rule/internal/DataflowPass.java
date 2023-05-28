@@ -81,7 +81,6 @@ import net.sourceforge.pmd.lang.java.ast.QualifiableExpression;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedAssignmentRule;
-import net.sourceforge.pmd.lang.java.rule.design.SingularFieldRule;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
@@ -337,7 +336,7 @@ public final class DataflowPass {
 
         private boolean trackStaticFields() {
             // only tracked in initializers
-            return inStaticCtx;
+            return true;
         }
 
         // following deals with control flow structures
@@ -967,8 +966,8 @@ public final class DataflowPass {
                     ASTMethodDeclaration method = (ASTMethodDeclaration) decl;
                     if (method.getBody() != null) {
                         SpanInfo span = data.forkCapturingNonLocal();
+                        span.declareSpecialFieldValues(node.getSymbol(), method.isStatic());
                         if (!method.isStatic()) {
-                            span.declareSpecialFieldValues(node.getSymbol());
                             instanceVisitor.acceptOpt(decl, span);
                         } else {
                             staticVisitor.acceptOpt(decl, span);
@@ -1172,17 +1171,22 @@ public final class DataflowPass {
             global.allAssignments.add(entry);
         }
 
-        void declareSpecialFieldValues(JClassSymbol sym) {
+        void declareSpecialFieldValues(JClassSymbol sym, boolean onlyStatic) {
             List<JFieldSymbol> declaredFields = sym.getDeclaredFields();
             for (JFieldSymbol field : declaredFields) {
+                if (onlyStatic && !field.isStatic()) {
+                    continue;
+                }
                 ASTVariableDeclaratorId id = field.tryGetNode();
-                if (id == null || !SingularFieldRule.mayBeSingular(id)) {
-                    // useless to track final fields
-                    // static fields are out of scope of this impl for now
+                if (id == null) {
                     continue;
                 }
 
-                assign(field, id, true, true);
+                // Final fields definitions are fully known since they
+                // have to occur in a ctor.
+                if (!field.isFinal()) {
+                    assign(field, id, true, true);
+                }
             }
         }
 
