@@ -32,7 +32,7 @@ public final class ASTMemberValuePair extends AbstractJavaNode {
      * This returns {@code "value"} if this is a shorthand declaration.
      */
     public String getName() {
-        return getImage();
+        return getImageInternal();
     }
 
     /**

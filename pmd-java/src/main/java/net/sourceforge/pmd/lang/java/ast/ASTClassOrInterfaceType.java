@@ -88,13 +88,6 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
         this.simpleName = image;
         assertSimpleNameOk();
     }
-
-    @Deprecated
-    @Override
-    public String getImage() {
-        return null;
-    }
-
     private void assertSimpleNameOk() {
         assert this.simpleName != null
             && this.simpleName.indexOf('.') < 0
@@ -166,32 +159,6 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
      */
     public String getSimpleName() {
         return simpleName;
-    }
-
-    /**
-     * Checks whether the type this node is referring to is declared within the
-     * same compilation unit - either a class/interface or a enum type. You want
-     * to check this, if {@link #getType()} is null.
-     *
-     * @return {@code true} if this node referencing a type in the same
-     * compilation unit, {@code false} otherwise.
-     *
-     * @deprecated This may be removed once type resolution is afoot
-     */
-    @Deprecated
-    public boolean isReferenceToClassSameCompilationUnit() {
-        ASTCompilationUnit root = getFirstParentOfType(ASTCompilationUnit.class);
-        for (ASTClassOrInterfaceDeclaration c : root.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class, true)) {
-            if (c.hasImageEqualTo(getImage())) {
-                return true;
-            }
-        }
-        for (ASTEnumDeclaration e : root.findDescendantsOfType(ASTEnumDeclaration.class, true)) {
-            if (e.hasImageEqualTo(getImage())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     void setFullyQualified() {

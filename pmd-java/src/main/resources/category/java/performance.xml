@@ -68,7 +68,7 @@ If you want to copy/move elements inside the _same_ array (e.g. shift the elemen
             <property name="xpath">
                 <value>
 <![CDATA[
-//(ForStatement[ForUpdate//(UnaryExpression[@Operator=('++','--')] | AssignmentExpression[@Operator = ('+=', '-=')][NumericLiteral[@Image = '1']])]
+//(ForStatement[ForUpdate//(UnaryExpression[@Operator=('++','--')] | AssignmentExpression[@Operator = ('+=', '-=')][NumericLiteral[@ValueAsInt = 1]])]
  | WhileStatement | DoStatement)
     [not(.//ContinueStatement)]
     [not(.//BreakStatement)]
@@ -508,7 +508,7 @@ is faster, but returns only an array of type `Object[]`.
                 <value>
 <![CDATA[
 //MethodCall[pmd-java:matchesSig("java.util.Collection#toArray(_)")]
-    [ArgumentList/ArrayAllocation/ArrayType/ArrayDimensions/ArrayDimExpr[not(NumericLiteral[@Image="0"])]]
+    [ArgumentList/ArrayAllocation/ArrayType/ArrayDimensions/ArrayDimExpr[not(NumericLiteral[@Integral=true() and @ValueAsInt=0])]]
 ]]>
                 </value>
             </property>
@@ -704,9 +704,9 @@ You must use `new ArrayList<>(Arrays.asList(...))` if that is inconvenient for y
 <![CDATA[
 //ForStatement
   [ForInit
-    [LocalVariableDeclaration
-      [PrimitiveType[@Kind = 'int']]
-      [VariableDeclarator[NumericLiteral[@IntLiteral][@Image = '0']]]
+    [LocalVariableDeclaration[
+      VariableDeclarator[VariableDeclaratorId[pmd-java:typeIs('int')]]
+      [NumericLiteral[@ValueAsInt = 0]]]
     ]
   ]
   [*[2]//FieldAccess[@Name = 'length']/VariableAccess[pmd-java:typeIs("java.lang.Object[]")]]
@@ -893,7 +893,7 @@ or StringBuffer.toString().length() == ...
 (: finds sb.toString().equals(someVar) where var is a final variable initialized with literal "" :)
 //MethodCall[pmd-java:matchesSig('_#equals(_)')
   and MethodCall[pmd-java:matchesSig('java.lang.AbstractStringBuilder#toString()')]
-  and ArgumentList/VariableAccess[@Name = //VariableDeclarator[StringLiteral[@Image='""']]
+  and ArgumentList/VariableAccess[@Name = //VariableDeclarator[StringLiteral[@Empty=true()]]
                                             /VariableDeclaratorId[pmd-java:modifiers() = 'final']/@Name]]
 ]]></value>
             </property>

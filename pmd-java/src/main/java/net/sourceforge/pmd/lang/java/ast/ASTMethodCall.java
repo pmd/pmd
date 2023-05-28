@@ -54,7 +54,7 @@ public final class ASTMethodCall extends AbstractInvocationExpr
 
     @Override
     public @NonNull String getMethodName() {
-        return super.getImage();
+        return getImageInternal();
     }
 
     @Override
@@ -67,7 +67,7 @@ public final class ASTMethodCall extends AbstractInvocationExpr
     @Override
     @Nullable
     public ASTTypeArguments getExplicitTypeArguments() {
-        return getFirstChildOfType(ASTTypeArguments.class);
+        return firstChild(ASTTypeArguments.class);
     }
 
     @Override

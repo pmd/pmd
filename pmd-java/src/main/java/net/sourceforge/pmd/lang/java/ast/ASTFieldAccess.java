@@ -58,7 +58,7 @@ public final class ASTFieldAccess extends AbstractJavaExpr implements ASTNamedRe
 
     @Override
     public String getName() {
-        return getImage();
+        return getImageInternal();
     }
 
     @Override

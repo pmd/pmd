@@ -75,7 +75,7 @@ public class LiteralsFirstInComparisonsRule extends AbstractJavaRulechainRule {
     private void checkArgs(RuleContext ctx, ASTMethodCall call) {
         ASTExpression arg = call.getArguments().get(0);
         ASTExpression qualifier = call.getQualifier();
-        if (!isConstantString(qualifier) && (arg instanceof ASTStringLiteral || isConstantString(arg))) {
+        if (!isConstantString(qualifier) && isConstantString(arg)) {
             addViolation(ctx, call);
         }
     }

@@ -81,9 +81,4 @@ public final class ASTInfixExpression extends AbstractJavaExpr implements Binary
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public String getImage() {
-        return null;
-    }
-
 }

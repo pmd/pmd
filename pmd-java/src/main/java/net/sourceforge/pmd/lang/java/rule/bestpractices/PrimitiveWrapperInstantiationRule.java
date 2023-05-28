@@ -69,9 +69,9 @@ public class PrimitiveWrapperInstantiationRule extends AbstractJavaRulechainRule
         ASTStringLiteral stringLiteral = getFirstArgStringLiteralOrNull(arguments);
         ASTBooleanLiteral boolLiteral = getFirstArgBooleanLiteralOrNull(arguments);
         if (stringLiteral != null) {
-            if ("\"true\"".equals(stringLiteral.getImage())) {
+            if (stringLiteral.getLiteralText().contentEquals("\"true\"")) { // NOPMD FP in PMD 6.55.0
                 addViolationWithMessage(data, node, messagePart + "(\"true\")`, prefer `Boolean.TRUE`");
-            } else if ("\"false\"".equals(stringLiteral.getImage())) {
+            } else if (stringLiteral.getLiteralText().contentEquals("\"false\"")) { // NOPMD FP in PMD 6.55.0
                 addViolationWithMessage(data, node, messagePart + "(\"false\")`, prefer `Boolean.FALSE`");
             } else {
                 addViolationWithMessage(data, node, messagePart + "(\"...\")`, prefer `Boolean.valueOf`");

@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.document.Chars
 
 class Java15KotlinTest : ParserTestSpec({
 
@@ -29,7 +30,7 @@ class Java15KotlinTest : ParserTestSpec({
                             "    </body>\n" +
                             "</html>\n"
 
-                    it::getImage shouldBe tblock
+                    it::getLiteralText shouldBe Chars.wrap(tblock)
                 }
             }
         }

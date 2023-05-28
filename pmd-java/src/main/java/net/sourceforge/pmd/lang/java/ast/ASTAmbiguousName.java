@@ -75,7 +75,7 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
 
     /** Returns the entire name, including periods if any. */
     public String getName() {
-        return super.getImage();
+        return getImageInternal();
     }
 
     boolean wasProcessed() {

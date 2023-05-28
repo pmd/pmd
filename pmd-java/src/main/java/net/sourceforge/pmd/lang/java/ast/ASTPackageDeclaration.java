@@ -35,12 +35,6 @@ public final class ASTPackageDeclaration extends AbstractJavaNode implements Ann
      * @since 6.30.0
      */
     public String getName() {
-        return super.getImage();
-    }
-
-    @Override
-    public String getImage() {
-        // the image was null before 7.0, best keep it that way
-        return null;
+        return getImageInternal();
     }
 }

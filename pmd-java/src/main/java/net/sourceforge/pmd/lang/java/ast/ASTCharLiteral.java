@@ -7,11 +7,13 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.lang.document.Chars;
+
 
 /**
- * Represents a character literal. The image of this node can be the literal as it appeared
- * in the source, but JavaCC performs its own unescaping and some escapes may be lost. At the
- * very least it has delimiters. {@link #getConstValue()} allows to recover the actual runtime value.
+ * Represents a character literal. {@link #getConstValue()} allows to
+ * retrieve the actual runtime value. Use {@link #getLiteralText()} to
+ * retrieve the text.
  */
 public final class ASTCharLiteral extends AbstractLiteral implements ASTLiteral {
 
@@ -32,9 +34,9 @@ public final class ASTCharLiteral extends AbstractLiteral implements ASTLiteral 
      */
     @Override
     public @NonNull Character getConstValue() {
-        String image = getImage();
-        String woDelims = image.substring(1, image.length() - 1);
-        return StringEscapeUtils.unescapeJava(woDelims).charAt(0);
+        Chars image = getLiteralText();
+        Chars woDelims = image.subSequence(1, image.length() - 1);
+        return StringEscapeUtils.UNESCAPE_JAVA.translate(woDelims).charAt(0);
     }
 
 }

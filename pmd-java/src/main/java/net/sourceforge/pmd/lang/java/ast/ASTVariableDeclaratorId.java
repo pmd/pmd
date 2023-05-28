@@ -107,26 +107,9 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
         return (AccessNode) parent;
     }
 
-    /**
-     * @deprecated Use {@link #getName()}
-     */
-    @Override
-    @DeprecatedAttribute(replaceWith = "@Name")
-    @Deprecated
-    public String getImage() {
-        return getName();
-    }
-
     /** Returns the name of the variable. */
     public String getName() {
-        return super.getImage();
-    }
-
-    /**
-     * Returns true if the declared variable has an array type.
-     */
-    public boolean hasArrayType() {
-        return getExtraDimensions() != null || getTypeNode() instanceof ASTArrayType;
+        return getImageInternal();
     }
 
 

@@ -186,7 +186,7 @@ public final class XmlTreeRenderer implements TreeRenderer {
                 if (takeAttribute(node, next)) {
                     try {
 
-                        attrs.put(next.getName(), next.getStringValue());
+                        attrs.put(next.getName(), next.getStringValue().toString());
                     } catch (Exception e) {
                         handleAttributeFetchException(next, e);
                     }

@@ -11,7 +11,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
-import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 
 /**
@@ -37,21 +36,10 @@ abstract class AbstractAnyTypeDeclaration extends AbstractTypedSymbolDeclarator<
         }
     }
 
-    /**
-     * @deprecated Use {@link #getSimpleName()}
-     */
-    @Deprecated
-    @DeprecatedAttribute(replaceWith = "@SimpleName")
     @Override
-    public String getImage() {
-        return getSimpleName();
-    }
-
-    @NonNull
-    @Override
-    public String getSimpleName() {
-        assert super.getImage() != null : "Null simple name";
-        return super.getImage();
+    public @NonNull String getSimpleName() {
+        assert getImageInternal() != null : "Null simple name";
+        return getImageInternal();
     }
 
     @Override

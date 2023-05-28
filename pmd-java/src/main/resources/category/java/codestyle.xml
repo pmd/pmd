@@ -1128,7 +1128,7 @@ public class ClassInDefaultPackage {
  (: Filter out ignored field name :)
  [not(ancestor::VariableDeclarator[1][@Name = 'serialVersionUID'])]
  [
-   some $num in tokenize(@Image, "[dDfFlLeE+\-]")
+   some $num in tokenize(@LiteralText, "[dDfFlLeE+\-]")
    satisfies not(
                   ( contains($num, ".")
                     and string-length(substring-before($num, ".")) <= $acceptableDecimalLength
@@ -1992,7 +1992,7 @@ E.g. `int[] x = new int[] { 1, 2, 3 };` can be written as `int[] x = { 1, 2, 3 }
             <property name="xpath">
                 <value><![CDATA[
 //VariableDeclarator
-    [VariableDeclaratorId[@TypeInferred = false() and @ArrayType = true()]]
+    [VariableDeclaratorId[@TypeInferred = false() and (ArrayDimensions or ../../ArrayType)]]
     [ArrayAllocation/ArrayInitializer]
                 ]]></value>
             </property>

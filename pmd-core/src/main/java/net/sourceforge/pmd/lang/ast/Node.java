@@ -455,6 +455,8 @@ public interface Node extends Reportable {
      * from XPath for this node.
      *
      * @return An attribute iterator for this node
+     *
+     * @see AttributeAxisIterator
      */
     default Iterator<Attribute> getXPathAttributesIterator() {
         return new AttributeAxisIterator(this);

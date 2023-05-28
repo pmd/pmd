@@ -40,7 +40,7 @@ public final class ASTContinueStatement extends AbstractStatement {
      * Returns the label, or null if there is none.
      */
     public @Nullable String getLabel() {
-        return getImage();
+        return getImageInternal();
     }
 
     /**

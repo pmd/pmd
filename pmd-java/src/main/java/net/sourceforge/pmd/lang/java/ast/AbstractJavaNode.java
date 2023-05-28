@@ -21,6 +21,21 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, Jav
         super(id);
     }
 
+    /**
+     * @deprecated Use the more specific getters and attributes instead of the image.
+     *
+     */
+    @Override
+    @Deprecated
+    public final String getImage() {
+        // Note: this should be returning null, but XPath rules use the image in their message.
+        // We need a mechanism to use custom template attributes for XPath.
+        return super.getImage();
+    }
+
+    final String getImageInternal() {
+        return super.getImage();
+    }
 
     @Override
     public void jjtClose() {

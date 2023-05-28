@@ -14,20 +14,25 @@ import java.util.stream.Collectors;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAmbiguousName;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompactConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
+import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
@@ -111,8 +116,7 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
         return info;
     }
 
-    @NonNull
-    private String formatModifierSet(Set<JModifier> modifierSet) {
+    private @NonNull String formatModifierSet(Set<JModifier> modifierSet) {
         return modifierSet.stream().map(JModifier::toString).collect(Collectors.joining(", ", "(", ")"));
     }
 
@@ -121,8 +125,11 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
         return n -> {
             if (n instanceof ASTNamedReferenceExpr) {
                 JVariableSymbol sym = ((ASTNamedReferenceExpr) n).getReferencedSym();
-                if (sym != null && sym.tryGetNode() != null) {
-                    return Collections.unmodifiableList(sym.tryGetNode().getLocalUsages());
+                if (sym != null) {
+                    ASTVariableDeclaratorId node = sym.tryGetNode();
+                    if (node != null) {
+                        return Collections.unmodifiableList(node.getLocalUsages());
+                    }
                 }
             }
 
@@ -161,6 +168,21 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
         }
 
         @Override
+        public Attribute visit(ASTTypeParameter node, Void data) {
+            return new Attribute(node, "Name", node.getName());
+        }
+
+        @Override
+        public Attribute visit(ASTPackageDeclaration node, Void data) {
+            return new Attribute(node, "Name", node.getName());
+        }
+
+        @Override
+        public Attribute visit(ASTImportDeclaration node, Void data) {
+            return new Attribute(node, "ImportedName", node.getImportedName());
+        }
+
+        @Override
         public Attribute visit(ASTPrimitiveType node, Void data) {
             return new Attribute(node, "Kind", node.getKind().getSimpleName());
         }
@@ -185,6 +207,15 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
             return new Attribute(node, "Name", node.getName());
         }
 
+        @Override
+        public Attribute visit(ASTEnumConstant node, Void data) {
+            return new Attribute(node, "Name", node.getName());
+        }
+
+        @Override
+        public Attribute visit(ASTAmbiguousName node, Void data) {
+            return new Attribute(node, "Name", node.getName());
+        }
 
         @Override
         public Attribute visit(ASTMethodDeclaration node, Void data) {

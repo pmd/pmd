@@ -29,7 +29,7 @@ public final class ASTLabeledStatement extends AbstractStatement {
      * Returns the name of the label.
      */
     public String getLabel() {
-        return getImage();
+        return getImageInternal();
     }
 
     /**

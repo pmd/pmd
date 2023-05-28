@@ -40,7 +40,6 @@ public class UnnecessaryModifierRule extends AbstractJavaRulechainRule {
               ASTResource.class,
               ASTFieldDeclaration.class,
               ASTConstructorDeclaration.class);
-        addRuleChainVisit(ASTRecordDeclaration.class);
     }
 
 
@@ -55,12 +54,11 @@ public class UnnecessaryModifierRule extends AbstractJavaRulechainRule {
         if (unnecessaryModifiers.isEmpty()) {
             return;
         }
-        super.addViolation(data, node, new String[]{
-                formatUnnecessaryModifiers(unnecessaryModifiers),
-                PrettyPrintingUtil.getPrintableNodeKind(node),
-                PrettyPrintingUtil.getNodeName(node),
-                explanation.isEmpty() ? "" : ": " + explanation,
-        });
+        asCtx(data).addViolation(node,
+                                 formatUnnecessaryModifiers(unnecessaryModifiers),
+                                 PrettyPrintingUtil.getPrintableNodeKind(node),
+                                 PrettyPrintingUtil.getNodeName(node),
+                                 explanation.isEmpty() ? "" : ": " + explanation);
     }
 
 
