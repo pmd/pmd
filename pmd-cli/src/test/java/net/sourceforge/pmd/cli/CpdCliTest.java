@@ -32,12 +32,13 @@ class CpdCliTest extends BaseCliTest {
 
     private static final String BASE_RES_PATH = "src/test/resources/net/sourceforge/pmd/cli/cpd/";
     private static final String SRC_DIR = BASE_RES_PATH + "files/";
+    private static final Path SRC_PATH = Paths.get(SRC_DIR).toAbsolutePath();
 
     private static final Map<String, Integer> NUMBER_OF_TOKENS = ImmutableMap.of(
-            Paths.get(SRC_DIR, "dup1.java").toString(), 89,
-            Paths.get(SRC_DIR, "dup2.java").toString(), 89,
-            Paths.get(SRC_DIR, "file_with_ISO-8859-1_encoding.java").toString(), 8,
-            Paths.get(SRC_DIR, "file_with_utf8_bom.java").toString(), 9
+        SRC_PATH.resolve("dup1.java").toString(), 89,
+        SRC_PATH.resolve("dup2.java").toString(), 89,
+        SRC_PATH.resolve("file_with_ISO-8859-1_encoding.java").toString(), 8,
+        SRC_PATH.resolve("file_with_utf8_bom.java").toString(), 9
     );
     @TempDir
     private Path tempDir;
@@ -146,17 +147,17 @@ class CpdCliTest extends BaseCliTest {
 
     @Test
     void testNoDuplicatesResultRendering() throws Exception {
-        final Path srcDir = Paths.get(SRC_DIR);
+        final Path srcDir = Paths.get(SRC_DIR).toAbsolutePath();
         String expectedReport = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                + "<pmd-cpd>\n"
-                + "   <file path=\"" + srcDir.resolve("dup1.java") + "\"\n"
-                + "         totalNumberOfTokens=\"89\"/>\n"
-                + "   <file path=\"" + srcDir.resolve("dup2.java") + "\"\n"
-                + "         totalNumberOfTokens=\"89\"/>\n"
-                + "   <file path=\"" + srcDir.resolve("file_with_ISO-8859-1_encoding.java")
-                + "\"\n"
-                + "         totalNumberOfTokens=\"8\"/>\n"
-                + "   <file path=\"" + srcDir.resolve("file_with_utf8_bom.java") + "\"\n"
+            + "<pmd-cpd>\n"
+            + "   <file path=\"" + srcDir.resolve("dup1.java") + "\"\n"
+            + "         totalNumberOfTokens=\"89\"/>\n"
+            + "   <file path=\"" + srcDir.resolve("dup2.java") + "\"\n"
+            + "         totalNumberOfTokens=\"89\"/>\n"
+            + "   <file path=\"" + srcDir.resolve("file_with_ISO-8859-1_encoding.java")
+            + "\"\n"
+            + "         totalNumberOfTokens=\"8\"/>\n"
+            + "   <file path=\"" + srcDir.resolve("file_with_utf8_bom.java") + "\"\n"
                 + "         totalNumberOfTokens=\"9\"/>\n"
                 + "</pmd-cpd>\n";
 
@@ -206,7 +207,7 @@ class CpdCliTest extends BaseCliTest {
 
     @Test
     void jsShouldFindDuplicatesWithDifferentFileExtensions() throws Exception {
-        runCli(VIOLATIONS_FOUND, "--minimum-tokens", "5", "--language", "ts",
+        runCli(VIOLATIONS_FOUND, "--minimum-tokens", "5", "--language", "typescript",
                "-d", BASE_RES_PATH + "tsFiles/File1.ts", BASE_RES_PATH + "tsFiles/File2.ts")
             .checkStdOut(containsString("Found a 9 line (32 tokens) duplication in the following files"));
     }
