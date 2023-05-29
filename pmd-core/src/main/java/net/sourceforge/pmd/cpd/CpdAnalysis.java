@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.cpd;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +23,7 @@ import net.sourceforge.pmd.internal.util.FileCollectionUtil;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.lang.document.FileCollector;
 import net.sourceforge.pmd.lang.document.FileId;
@@ -134,8 +136,8 @@ public final class CpdAnalysis implements AutoCloseable {
                     numberOfTokensPerFile.put(textDocument.getFileId(), newTokens);
                     listener.addedFile(1);
                 } catch (TokenMgrError | IOException e) {
-                    if (e instanceof TokenMgrError) { // NOPMD
-                        ((TokenMgrError) e).setFileId(textFile.getFileId());
+                    if (e instanceof FileAnalysisException) { // NOPMD
+                        ((FileAnalysisException) e).setFileId(textFile.getFileId());
                     }
                     String message = configuration.isSkipLexicalErrors() ? "Skipping file" : "Error while tokenizing";
                     reporter.errorEx(message, e);
@@ -157,7 +159,9 @@ public final class CpdAnalysis implements AutoCloseable {
             CPDReport cpdReport = new CPDReport(sourceManager, matches, numberOfTokensPerFile);
 
             if (renderer != null) {
-                renderer.render(cpdReport, IOUtil.createWriter(Charset.defaultCharset(), null));
+                try (Writer writer = IOUtil.createWriter(Charset.defaultCharset(), null)) {
+                    renderer.render(cpdReport, writer);
+                }
             }
 
             consumer.accept(cpdReport);

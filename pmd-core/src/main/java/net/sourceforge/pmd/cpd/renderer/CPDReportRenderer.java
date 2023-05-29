@@ -9,9 +9,29 @@ import java.io.StringWriter;
 import java.io.Writer;
 
 import net.sourceforge.pmd.cpd.CPDReport;
+import net.sourceforge.pmd.cpd.CSVRenderer;
+import net.sourceforge.pmd.cpd.SimpleRenderer;
+import net.sourceforge.pmd.cpd.VSRenderer;
+import net.sourceforge.pmd.cpd.XMLRenderer;
 
+/**
+ * Render a {@link CPDReport} to a file.
+ *
+ * @see CSVRenderer
+ * @see XMLRenderer
+ * @see SimpleRenderer
+ * @see VSRenderer
+ */
 public interface CPDReportRenderer {
 
+    /**
+     * Write out the contents of the report to the given writer.
+     *
+     * @param report The report to write
+     * @param writer A writer for the report file
+     *
+     * @throws IOException If the writer throws
+     */
     void render(CPDReport report, Writer writer) throws IOException;
 
 

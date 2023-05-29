@@ -21,6 +21,10 @@ import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.reporting.FileNameRenderer;
 
+/**
+ * Maps {@link FileId} to {@link TextDocument}, reusing documents with
+ * {@link SoftReference} if they have not been replaced yet.
+ */
 class SourceManager implements AutoCloseable {
 
     private final Map<TextFile, SoftReference<TextDocument>> files = new ConcurrentHashMap<>();

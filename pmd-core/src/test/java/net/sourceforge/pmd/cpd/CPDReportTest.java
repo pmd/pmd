@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.CpdTestUtils.CpdReportBuilder;
 import net.sourceforge.pmd.lang.document.FileId;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 class CPDReportTest {
 
@@ -31,15 +32,10 @@ class CPDReportTest {
         assertEquals(3, original.getMatches().size());
 
         CPDReport filtered = original.filterMatches(
-            match -> {
-                // only keep file1.java
-                for (Mark mark : match) {
-                    if (mark.getLocation().getFileId().equals(file1)) {
-                        return true;
-                    }
-                }
-                return false;
-            });
+            // only keep file1.java
+            match -> CollectionUtil.any(match, mark -> mark.getLocation().getFileId().equals(file1))
+        );
+
         assertEquals(2, filtered.getMatches().size());
         for (Match match : filtered.getMatches()) {
             boolean containsFile1 =
