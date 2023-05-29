@@ -188,7 +188,9 @@ class PmdCliTest extends BaseCliTest {
             // change working directory
             System.setProperty("user.dir", srcDir.toString());
             runCli(VIOLATIONS_FOUND, "--dir", ".", "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS)
-                .verify(res -> res.checkStdOut(containsString("./src/test/resources/net/sourceforge/pmd/cli/src/anotherfile.dummy")));
+                .verify(res -> res.checkStdOut(containsString(
+                    "./src/test/resources/net/sourceforge/pmd/cli/src/anotherfile.dummy".replace('/', File.separatorChar)
+                )));
 
         });
     }
@@ -364,7 +366,7 @@ class PmdCliTest extends BaseCliTest {
     @Test
     void testNoRelativizeWithRelativeSrcDir() throws Exception {
         // Note, that we can't reliably change the current working directory for the current java process
-        // therefore we use the current directory and make sure, we are at the correct place - in pmd-core
+        // therefore we use the current directory and make sure, we are at the correct place - in pmd-cli
         Path cwd = Paths.get(".").toRealPath();
         assertThat(cwd.toString(), endsWith("pmd-cli"));
         String relativeSrcDir = "src/test/resources/net/sourceforge/pmd/cli/src";
@@ -379,7 +381,7 @@ class PmdCliTest extends BaseCliTest {
     @Test
     void testNoRelativizeWithRelativeSrcDirParent() throws Exception {
         // Note, that we can't reliably change the current working directory for the current java process
-        // therefore we use the current directory and make sure, we are at the correct place - in pmd-core
+        // therefore we use the current directory and make sure, we are at the correct place - in pmd-cli
         Path cwd = Paths.get(".").toRealPath();
         assertThat(cwd.toString(), endsWith("pmd-cli"));
         String relativeSrcDir = "src/test/resources/net/sourceforge/pmd/cli/src";
@@ -388,16 +390,16 @@ class PmdCliTest extends BaseCliTest {
         // use the parent directory
         Path relativeSrcDirWithParent = Paths.get(relativeSrcDir, "..");
 
+        String expectedFile = "\n" + relativeSrcDirWithParent.resolve("src/somefile.dummy");
         runCli(VIOLATIONS_FOUND, "--dir", relativeSrcDirWithParent.toString(), "--rulesets",
-                DUMMY_RULESET_WITH_VIOLATIONS)
-                .verify(result -> result.checkStdOut(
-                        containsString("\n" + relativeSrcDirWithParent + "/src/somefile.dummy")));
+               DUMMY_RULESET_WITH_VIOLATIONS)
+                .verify(result -> result.checkStdOut(containsString(expectedFile)));
     }
 
     @Test
     void testRelativizeWithRootRelativeSrcDir() throws Exception {
         // Note, that we can't reliably change the current working directory for the current java process
-        // therefore we use the current directory and make sure, we are at the correct place - in pmd-core
+        // therefore we use the current directory and make sure, we are at the correct place - in pmd-cli
         Path cwd = Paths.get(".").toRealPath();
         assertThat(cwd.toString(), endsWith("pmd-cli"));
         String relativeSrcDir = "src/test/resources/net/sourceforge/pmd/cli/src";
