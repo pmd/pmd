@@ -916,5 +916,18 @@ public class Foo {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>Static field incremented in ctor</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class PrintStream {
+                private static int gid;
+                private final int id;
+                public PrintStream() {
+                    this.id = gid++;
+                }
+            }
+            ]]></code>
+    </test-code>
 
 </test-data>

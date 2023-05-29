@@ -334,11 +334,6 @@ public final class DataflowPass {
             return !inStaticCtx;
         }
 
-        private boolean trackStaticFields() {
-            // only tracked in initializers
-            return true;
-        }
-
         // following deals with control flow structures
 
         @Override
@@ -872,9 +867,9 @@ public final class DataflowPass {
         }
 
         private boolean isRelevantField(ASTExpression lhs) {
-            return lhs instanceof ASTNamedReferenceExpr
-                && (trackThisInstance() && JavaAstUtils.isThisFieldAccess(lhs)
-                || trackStaticFields() && isStaticFieldOfThisClass(((ASTNamedReferenceExpr) lhs).getReferencedSym()));
+            return lhs instanceof ASTNamedReferenceExpr && (trackThisInstance() && JavaAstUtils.isThisFieldAccess(lhs)
+                || true && isStaticFieldOfThisClass(((ASTNamedReferenceExpr) lhs).getReferencedSym()));
+            // only tracked in initializers
         }
 
         private boolean isStaticFieldOfThisClass(JVariableSymbol var) {
@@ -1018,7 +1013,9 @@ public final class DataflowPass {
 
             SpanInfo ctorEndState = ctors.isEmpty() ? ctorHeader : null;
             for (ASTBodyDeclaration ctor : ctors) {
-                SpanInfo state = instanceVisitor.acceptOpt(ctor, ctorHeader.forkCapturingNonLocal());
+                SpanInfo ctorBody = ctorHeader.forkCapturingNonLocal();
+                ctorBody.declareSpecialFieldValues(classSymbol, true);
+                SpanInfo state = instanceVisitor.acceptOpt(ctor, ctorBody);
                 ctorEndState = ctorEndState == null ? state : ctorEndState.absorb(state);
             }
 
