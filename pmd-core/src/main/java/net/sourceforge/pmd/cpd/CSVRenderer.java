@@ -94,7 +94,7 @@ public class CSVRenderer implements CPDReportRenderer {
             }
             writer.append(String.valueOf(match.getTokenCount())).append(separator)
                   .append(String.valueOf(match.getMarkCount())).append(separator);
-            for (Iterator<Mark> marks = match.iterator(); marks.hasNext(); ) {
+            for (Iterator<Mark> marks = match.iterator(); marks.hasNext();) {
                 Mark mark = marks.next();
                 FileLocation loc = mark.getLocation();
 
