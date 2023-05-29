@@ -1665,6 +1665,7 @@ It uses an XSLT stylesheet to convert CPD’s XML format into HTML.</p>
   </li>
   <li>core
     <ul>
+      <li><a href="https://github.com/pmd/pmd/pull/4425">#4425</a>:   [core] Replace TextFile::pathId</li>
       <li><a href="https://github.com/pmd/pmd/issues/4454">#4454</a>: [core] “Unknown option: ‘-min’” but is referenced in documentation</li>
     </ul>
   </li>
@@ -1732,6 +1733,17 @@ ZIP file the base directory <code class="language-plaintext highlighter-rouge">p
   <li>The CLI option <code class="language-plaintext highlighter-rouge">--minimum-priority</code> was changed with 7.0.0-rc1 to only take the following values:
 High, Medium High, Medium, Medium Low, Low. With 7.0.0-rc2 compatibility has been restored, so that the equivalent
 integer values (1 to 5) are supported as well.</li>
+  <li>
+    <p>Replaced <code class="language-plaintext highlighter-rouge">RuleViolation::getFilename</code> with new <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/RuleViolation.html#getFileId()"><code>RuleViolation#getFileId</code></a>, that returns a
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/document/FileId.html#"><code>FileId</code></a>. This is an identifier for a <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/document/TextFile.html#"><code>TextFile</code></a>
+and could represent a path name. This allows to have a separate display name, e.g. renderers use
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/reporting/FileNameRenderer.html#"><code>FileNameRenderer</code></a> to either display the full path name or a relative path name
+(see <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/renderers/Renderer.html#setFileNameRenderer(net.sourceforge.pmd.reporting.FileNameRenderer)"><code>Renderer#setFileNameRenderer</code></a> and
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/reporting/ConfigurableFileNameRenderer.html#"><code>ConfigurableFileNameRenderer</code></a>). Many places where we used a simple String for
+a path-like name before have been adapted to use the new <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/document/FileId.html#"><code>FileId</code></a>.</p>
+
+    <p>See <a href="https://github.com/pmd/pmd/pull/4425">PR #4425</a> for details.</p>
+  </li>
 </ul>
 
 <h4 id="external-contributions">External Contributions</h4>
@@ -2135,6 +2147,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/pull/4353">#4353</a>:   [core] Micro optimizations for Node API</li>
       <li><a href="https://github.com/pmd/pmd/pull/4365">#4365</a>:   [core] Improve benchmarking</li>
       <li><a href="https://github.com/pmd/pmd/pull/4420">#4420</a>:   [core] Remove PMD.EOL</li>
+      <li><a href="https://github.com/pmd/pmd/pull/4425">#4425</a>:   [core] Replace TextFile::pathId</li>
       <li><a href="https://github.com/pmd/pmd/issues/4454">#4454</a>: [core] “Unknown option: ‘-min’” but is referenced in documentation</li>
     </ul>
   </li>
@@ -2454,7 +2467,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: May 28, 2023 <br />
+             Site last generated: May 29, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
