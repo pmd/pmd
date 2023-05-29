@@ -26,7 +26,7 @@ public abstract class AntlrBaseParser<
 
     @Override
     public R parse(ParserTask task) throws ParseException {
-        CharStream cs = CharStreams.fromString(task.getSourceText(), task.getFileDisplayName());
+        CharStream cs = CharStreams.fromString(task.getSourceText(), task.getTextDocument().getFileId().getAbsolutePath());
         return parse(getLexer(cs), task);
     }
 

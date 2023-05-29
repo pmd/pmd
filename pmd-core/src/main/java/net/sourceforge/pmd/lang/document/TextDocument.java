@@ -86,14 +86,9 @@ public interface TextDocument extends Closeable {
     LanguageVersion getLanguageVersion();
 
     /**
-     * Returns {@link TextFile#getPathId()} for the text file backing this document.
+     * Returns {@link TextFile#getFileId()} for the text file backing this document.
      */
-    String getPathId();
-
-    /**
-     * Returns {@link TextFile#getDisplayName()} for the text file backing this document.
-     */
-    String getDisplayName();
+    FileId getFileId();
 
 
     /**
@@ -261,10 +256,10 @@ public interface TextDocument extends Closeable {
     /**
      * Returns a read-only document for the given text.
      *
-     * @see TextFile#forCharSeq(CharSequence, String, LanguageVersion)
+     * @see TextFile#forCharSeq(CharSequence, FileId, LanguageVersion)
      */
     static TextDocument readOnlyString(final CharSequence source, LanguageVersion lv) {
-        return readOnlyString(source, TextFile.UNKNOWN_FILENAME, lv);
+        return readOnlyString(source, FileId.UNKNOWN, lv);
     }
 
     /**
@@ -274,10 +269,10 @@ public interface TextDocument extends Closeable {
      * but doesn't throw {@link IOException}, as such text files will
      * not throw.
      *
-     * @see TextFile#forCharSeq(CharSequence, String, LanguageVersion)
+     * @see TextFile#forCharSeq(CharSequence, FileId, LanguageVersion)
      */
     @SuppressWarnings("PMD.CloseResource")
-    static TextDocument readOnlyString(@NonNull CharSequence source, @NonNull String filename, @NonNull LanguageVersion lv) {
+    static TextDocument readOnlyString(@NonNull CharSequence source, @NonNull FileId filename, @NonNull LanguageVersion lv) {
         TextFile textFile = TextFile.forCharSeq(source, filename, lv);
         try {
             return create(textFile);

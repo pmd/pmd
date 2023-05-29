@@ -28,6 +28,7 @@ import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.SimpleTestTextFile;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.renderers.Renderer;
@@ -93,7 +94,7 @@ class PmdAnalysisTest {
         config.setForceLanguageVersion(DummyLanguageModule.getInstance().getVersionWhereParserThrows());
         try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
             pmd.addRuleSet(RuleSet.forSingleRule(new MockRule()));
-            pmd.files().addSourceFile("some source", "file");
+            pmd.files().addSourceFile(FileId.fromPathLikeString("file"), "some source");
 
             ReportStats stats = pmd.runAndReturnStats();
             assertEquals(1, stats.getNumErrors(), "Errors");
@@ -116,7 +117,7 @@ class PmdAnalysisTest {
                 }
             }));
 
-            pmd.files().addSourceFile("some source", "file");
+            pmd.files().addSourceFile(FileId.fromPathLikeString("fname1.dummy"), "some source");
 
             ReportStats stats = pmd.runAndReturnStats();
             // the error number here is only for FileAnalysisException, so
@@ -156,7 +157,7 @@ class PmdAnalysisTest {
 
         try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
             pmd.addRuleSet(ruleset);
-            pmd.files().addFile(new SimpleTestTextFile("test content foo", "foo.txt", language.getDefaultVersion()));
+            pmd.files().addFile(new SimpleTestTextFile("test content foo", FileId.fromPathLikeString("foo.txt"), language.getDefaultVersion()));
             Report report = pmd.performAnalysisAndCollectReport();
             for (Report.ProcessingError error : report.getProcessingErrors()) {
                 System.out.println("error = " + error.getMsg() + ": " + error.getDetail());

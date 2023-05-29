@@ -4,10 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
@@ -309,7 +310,7 @@ class JDKVersionTest extends BaseJavaTreeDumpTest {
     @Test
     void jdk7PrivateMethodInnerClassInterface2() {
         ParseException thrown = assertThrows(ParseException.class, () -> java7.parseResource("private_method_in_inner_class_interface2.java"));
-        assertTrue(thrown.getMessage().contains("line 19"));
+        assertThat(thrown.getMessage(), containsString("line 19"));
     }
 
     @Override

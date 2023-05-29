@@ -51,6 +51,7 @@ See [the example report]({{ baseurl }}report-examples/cpdhtml-v2.html).
 * miscellaneous
   * [#4460](https://github.com/pmd/pmd/pull/4460):   Fix assembly-plugin warnings
 * core
+  * [#4425](https://github.com/pmd/pmd/pull/4425):   \[core] Replace TextFile::pathId
   * [#4454](https://github.com/pmd/pmd/issues/4454): \[core] "Unknown option: '-min'" but is referenced in documentation
 * java-bestpractices
   * [#4433](https://github.com/pmd/pmd/issues/4433): \[java] \[7.0-rc1] ReplaceHashtableWithMap on java.util.Properties
@@ -91,6 +92,15 @@ See [the example report]({{ baseurl }}report-examples/cpdhtml-v2.html).
 * The CLI option `--minimum-priority` was changed with 7.0.0-rc1 to only take the following values:
   High, Medium High, Medium, Medium Low, Low. With 7.0.0-rc2 compatibility has been restored, so that the equivalent
   integer values (1 to 5) are supported as well.
+* Replaced `RuleViolation::getFilename` with new {% jdoc !!core::RuleViolation#getFileId() %}, that returns a
+  {% jdoc core::lang.document.FileId %}. This is an identifier for a {% jdoc core::lang.document.TextFile %}
+  and could represent a path name. This allows to have a separate display name, e.g. renderers use
+  {% jdoc core::reporting.FileNameRenderer %} to either display the full path name or a relative path name
+  (see {% jdoc !!core::renderers.Renderer#setFileNameRenderer(net.sourceforge.pmd.reporting.FileNameRenderer) %} and
+  {%jdoc core::reporting.ConfigurableFileNameRenderer %}). Many places where we used a simple String for
+  a path-like name before have been adapted to use the new {% jdoc core::lang.document.FileId %}.
+
+  See [PR #4425](https://github.com/pmd/pmd/pull/4425) for details.
 
 #### External Contributions
 
@@ -431,6 +441,7 @@ See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html)
     * [#4353](https://github.com/pmd/pmd/pull/4353):   \[core] Micro optimizations for Node API
     * [#4365](https://github.com/pmd/pmd/pull/4365):   \[core] Improve benchmarking
     * [#4420](https://github.com/pmd/pmd/pull/4420):   \[core] Remove PMD.EOL
+    * [#4425](https://github.com/pmd/pmd/pull/4425):   \[core] Replace TextFile::pathId
     * [#4454](https://github.com/pmd/pmd/issues/4454): \[core] "Unknown option: '-min'" but is referenced in documentation
 * cli
     * [#2234](https://github.com/pmd/pmd/issues/2234): \[core] Consolidate PMD CLI into a single command

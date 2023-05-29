@@ -120,6 +120,7 @@ public class PMDTaskImpl {
                 }
             }
 
+
             @SuppressWarnings("PMD.CloseResource")
             ReportStatsListener reportStatsListener = new ReportStatsListener();
             pmd.addListener(getListener(reportStatsListener));
@@ -177,7 +178,7 @@ public class PMDTaskImpl {
 
             @Override
             public FileAnalysisListener startFileAnalysis(TextFile dataSource) {
-                String name = dataSource.getDisplayName();
+                String name = dataSource.getFileId().getUriString();
                 project.log("Processing file " + name, Project.MSG_VERBOSE);
                 return FileAnalysisListener.noop();
             }

@@ -33,6 +33,7 @@ import net.sourceforge.pmd.RuleSetLoadException;
 import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.renderers.TextRenderer;
@@ -230,7 +231,7 @@ public abstract class RuleTst {
         configuration.prependAuxClasspath(".");
 
         try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
-            pmd.files().addFile(TextFile.forCharSeq(code, "testFile", languageVersion));
+            pmd.files().addFile(TextFile.forCharSeq(code, FileId.fromPathLikeString("file"), languageVersion));
             pmd.addRuleSet(RuleSet.forSingleRule(rule));
             pmd.addListener(GlobalAnalysisListener.exceptionThrower());
             return pmd.performAnalysisAndCollectReport();
