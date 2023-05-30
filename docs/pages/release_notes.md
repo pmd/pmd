@@ -671,8 +671,9 @@ Language specific fixes:
 * [#4553](https://github.com/pmd/pmd/pull/4553): \[java] Fix #4492: GuardLogStatement gives false positive when argument is a Java method reference - [Anastasiia Koba](https://github.com/anastasiia-koba) (@anastasiia-koba)
 
 ### 📈 Stats
-* 4557 commits
-* 572 closed tickets & PRs
-* Days since last release: 35
+* 4694 commits
+* 617 closed tickets & PRs
+* Days since last release: 30
 
 {% endtocmaker %}
+
