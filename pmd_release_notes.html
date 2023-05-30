@@ -85,8 +85,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 7.0.0-SNAPSHOT</li>
-    <div class="sidebarTitleDate">Release date: 27-May-2023</div>
+    <li class="sidebarTitle">PMD 7.0.0-rc3</li>
+    <div class="sidebarTitleDate">Release date: 30-May-2023</div>
     
     
     
@@ -1621,7 +1621,7 @@
     <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
 
   
-<h2 id="27-may-2023---700-snapshot">27-May-2023 - 7.0.0-SNAPSHOT</h2>
+<h2 id="30-may-2023---700-rc3">30-May-2023 - 7.0.0-rc3</h2>
 
 <p>We’re excited to bring you the next major version of PMD!</p>
 
@@ -1734,13 +1734,13 @@ ZIP file the base directory <code class="language-plaintext highlighter-rouge">p
 High, Medium High, Medium, Medium Low, Low. With 7.0.0-rc2 compatibility has been restored, so that the equivalent
 integer values (1 to 5) are supported as well.</li>
   <li>
-    <p>Replaced <code class="language-plaintext highlighter-rouge">RuleViolation::getFilename</code> with new <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/RuleViolation.html#getFileId()"><code>RuleViolation#getFileId</code></a>, that returns a
-<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/document/FileId.html#"><code>FileId</code></a>. This is an identifier for a <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/document/TextFile.html#"><code>TextFile</code></a>
+    <p>Replaced <code class="language-plaintext highlighter-rouge">RuleViolation::getFilename</code> with new <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-rc3/net/sourceforge/pmd/RuleViolation.html#getFileId()"><code>RuleViolation#getFileId</code></a>, that returns a
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-rc3/net/sourceforge/pmd/lang/document/FileId.html#"><code>FileId</code></a>. This is an identifier for a <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-rc3/net/sourceforge/pmd/lang/document/TextFile.html#"><code>TextFile</code></a>
 and could represent a path name. This allows to have a separate display name, e.g. renderers use
-<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/reporting/FileNameRenderer.html#"><code>FileNameRenderer</code></a> to either display the full path name or a relative path name
-(see <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/renderers/Renderer.html#setFileNameRenderer(net.sourceforge.pmd.reporting.FileNameRenderer)"><code>Renderer#setFileNameRenderer</code></a> and
-<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/reporting/ConfigurableFileNameRenderer.html#"><code>ConfigurableFileNameRenderer</code></a>). Many places where we used a simple String for
-a path-like name before have been adapted to use the new <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/document/FileId.html#"><code>FileId</code></a>.</p>
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-rc3/net/sourceforge/pmd/reporting/FileNameRenderer.html#"><code>FileNameRenderer</code></a> to either display the full path name or a relative path name
+(see <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-rc3/net/sourceforge/pmd/renderers/Renderer.html#setFileNameRenderer(net.sourceforge.pmd.reporting.FileNameRenderer)"><code>Renderer#setFileNameRenderer</code></a> and
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-rc3/net/sourceforge/pmd/reporting/ConfigurableFileNameRenderer.html#"><code>ConfigurableFileNameRenderer</code></a>). Many places where we used a simple String for
+a path-like name before have been adapted to use the new <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-rc3/net/sourceforge/pmd/lang/document/FileId.html#"><code>FileId</code></a>.</p>
 
     <p>See <a href="https://github.com/pmd/pmd/pull/4425">PR #4425</a> for details.</p>
   </li>
@@ -1976,7 +1976,7 @@ See <a href="https://github.com/pmd/pmd/issues/1648">issue #1648</a> for more de
 or class. With PMD 7.0.0, the reported location is now just the identifier of the method or class.
 This affects various rules, e.g. <a href="pmd_rules_java_design.html#cognitivecomplexity"><code class="language-plaintext highlighter-rouge">CognitiveComplexity</code></a>.</p>
 
-    <p>The report location is controlled by the overrides of the method <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getReportLocation()"><code>getReportLocation</code></a>
+    <p>The report location is controlled by the overrides of the method <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-rc3/net/sourceforge/pmd/lang/ast/Node.html#getReportLocation()"><code>getReportLocation</code></a>
 in different node types.</p>
 
     <p>See <a href="https://github.com/pmd/pmd/issues/4439">issue #4439</a> and <a href="https://github.com/pmd/pmd/issues/730">issue #730</a>
@@ -2433,9 +2433,9 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
 
 <h3 id="-stats">📈 Stats</h3>
 <ul>
-  <li>4557 commits</li>
-  <li>572 closed tickets &amp; PRs</li>
-  <li>Days since last release: 35</li>
+  <li>4694 commits</li>
+  <li>617 closed tickets &amp; PRs</li>
+  <li>Days since last release: 30</li>
 </ul>
 
 
@@ -2467,7 +2467,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: May 29, 2023 <br />
+             Site last generated: May 30, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
