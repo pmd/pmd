@@ -85,8 +85,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 7.0.0-rc3</li>
-    <div class="sidebarTitleDate">Release date: 30-May-2023</div>
+    <li class="sidebarTitle">PMD 7.0.0-SNAPSHOT</li>
+    <div class="sidebarTitleDate">Release date: 27-June-2023</div>
     
     
     
@@ -1621,7 +1621,7 @@
     <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
 
   
-<h2 id="30-may-2023---700-rc3">30-May-2023 - 7.0.0-rc3</h2>
+<h2 id="27-june-2023---700-snapshot">27-June-2023 - 7.0.0-SNAPSHOT</h2>
 
 <p>We’re excited to bring you the next major version of PMD!</p>
 
@@ -1643,125 +1643,16 @@ You can see the progress in <a href="https://github.com/pmd/pmd/issues/3898">PMD
 for all.</p>
 </div>
 
-<h3 id="changes-since-700-rc2">Changes since 7.0.0-rc2</h3>
+<h3 id="changes-since-700-rc3">Changes since 7.0.0-rc3</h3>
 
 <p>This section lists the most important changes from the last release candidate.
 The remaining section describes the complete release notes for 7.0.0.</p>
 
-<h4 id="new-cpd-report-format-cpdhtml-v2xslt">New CPD report format cpdhtml-v2.xslt</h4>
-
-<p>Thanks to @mohan-chinnappan-n a new CPD report format has been added which features a data table.
-It uses an XSLT stylesheet to convert CPD’s XML format into HTML.</p>
-
-<p>See <a href="report-examples/cpdhtml-v2.html">the example report</a>.</p>
-
 <h4 id="fixed-issues">Fixed issues</h4>
-
-<ul>
-  <li>miscellaneous
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/pull/4460">#4460</a>:   Fix assembly-plugin warnings</li>
-    </ul>
-  </li>
-  <li>core
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/pull/4425">#4425</a>:   [core] Replace TextFile::pathId</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4454">#4454</a>: [core] “Unknown option: ‘-min’” but is referenced in documentation</li>
-    </ul>
-  </li>
-  <li>java-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4433">#4433</a>: [java] [7.0-rc1] ReplaceHashtableWithMap on java.util.Properties</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4492">#4492</a>: [java] GuardLogStatement gives false positive when argument is a Java method reference</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4503">#4503</a>: [java] JUnitTestsShouldIncludeAssert: false negative with TestNG</li>
-    </ul>
-  </li>
-  <li>java-codestyle
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4268">#4268</a>: [java] CommentDefaultAccessModifier: false positive with TestNG annotations</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4432">#4432</a>: [java] [7.0-rc1] UnnecessaryImport - Unused static import is being used</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4455">#4455</a>: [java] FieldNamingConventions: false positive with lombok’s @<!-- -->UtilityClass</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4557">#4557</a>: [java] UnnecessaryImport FP with static imports of overloaded methods</li>
-    </ul>
-  </li>
-  <li>java-design
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4434">#4434</a>: [java] [7.0-rc1] ExceptionAsFlowControl when simply propagating</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4456">#4456</a>: [java] FinalFieldCouldBeStatic: false positive with lombok’s @<!-- -->UtilityClass</li>
-      <li><a href="https://github.com/pmd/pmd/pull/4549">#4549</a>:   [java] Make LawOfDemeter results deterministic</li>
-    </ul>
-  </li>
-  <li>java-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4063">#4063</a>: [java] AvoidBranchingStatementAsLastInLoop: False-negative about try/finally block</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4457">#4457</a>: [java] OverrideBothEqualsAndHashcode: false negative with anonymous classes</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4510">#4510</a>: [java] ConstructorCallsOverridableMethod: false positive with lombok’s @<!-- -->Value</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4546">#4546</a>: [java] OverrideBothEqualsAndHashCode ignores records</li>
-    </ul>
-  </li>
-  <li>java-performance
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4458">#4458</a>: [java] RedundantFieldInitializer: false positive with lombok’s @<!-- -->Value</li>
-    </ul>
-  </li>
-</ul>
 
 <h4 id="api-changes">API Changes</h4>
 
-<ul>
-  <li>The following previously deprecated classes have been removed:
-    <ul>
-      <li>pmd-core
-        <ul>
-          <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.PMD</code></li>
-          <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.cli.PMDCommandLineInterface</code></li>
-          <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.cli.PMDParameters</code></li>
-          <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.cli.PmdParametersParseResult</code></li>
-        </ul>
-      </li>
-    </ul>
-  </li>
-  <li>
-    <p>The asset filenames of PMD on <a href="https://github.com/pmd/pmd/releases">GitHub Releases</a> are
-now <code class="language-plaintext highlighter-rouge">pmd-dist-&lt;version&gt;-bin.zip</code>, <code class="language-plaintext highlighter-rouge">pmd-dist-&lt;version&gt;-src.zip</code> and <code class="language-plaintext highlighter-rouge">pmd-dist-&lt;version&gt;-doc.zip</code>.
-Keep that in mind, if you have an automated download script.</p>
-
-    <p>The structure inside the ZIP files stay the same, e.g. we still provide inside the binary distribution
-ZIP file the base directory <code class="language-plaintext highlighter-rouge">pmd-bin-&lt;version&gt;</code>.</p>
-  </li>
-  <li>The CLI option <code class="language-plaintext highlighter-rouge">--stress</code> (or <code class="language-plaintext highlighter-rouge">-stress</code>) has been removed without replacement.</li>
-  <li>The CLI option <code class="language-plaintext highlighter-rouge">--minimum-priority</code> was changed with 7.0.0-rc1 to only take the following values:
-High, Medium High, Medium, Medium Low, Low. With 7.0.0-rc2 compatibility has been restored, so that the equivalent
-integer values (1 to 5) are supported as well.</li>
-  <li>
-    <p>Replaced <code class="language-plaintext highlighter-rouge">RuleViolation::getFilename</code> with new <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-rc3/net/sourceforge/pmd/RuleViolation.html#getFileId()"><code>RuleViolation#getFileId</code></a>, that returns a
-<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-rc3/net/sourceforge/pmd/lang/document/FileId.html#"><code>FileId</code></a>. This is an identifier for a <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-rc3/net/sourceforge/pmd/lang/document/TextFile.html#"><code>TextFile</code></a>
-and could represent a path name. This allows to have a separate display name, e.g. renderers use
-<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-rc3/net/sourceforge/pmd/reporting/FileNameRenderer.html#"><code>FileNameRenderer</code></a> to either display the full path name or a relative path name
-(see <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-rc3/net/sourceforge/pmd/renderers/Renderer.html#setFileNameRenderer(net.sourceforge.pmd.reporting.FileNameRenderer)"><code>Renderer#setFileNameRenderer</code></a> and
-<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-rc3/net/sourceforge/pmd/reporting/ConfigurableFileNameRenderer.html#"><code>ConfigurableFileNameRenderer</code></a>). Many places where we used a simple String for
-a path-like name before have been adapted to use the new <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-rc3/net/sourceforge/pmd/lang/document/FileId.html#"><code>FileId</code></a>.</p>
-
-    <p>See <a href="https://github.com/pmd/pmd/pull/4425">PR #4425</a> for details.</p>
-  </li>
-</ul>
-
 <h4 id="external-contributions">External Contributions</h4>
-
-<ul>
-  <li><a href="https://github.com/pmd/pmd/pull/4426">#4426</a>: [cpd] New XML to HTML XLST report format for PMD CPD - <a href="https://github.com/mohan-chinnappan-n">mohan-chinnappan-n</a> (@mohan-chinnappan-n)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/4431">#4431</a>: [coco] CPD: Coco support for code duplication detection - <a href="https://github.com/wener-tiobe">Wener</a> (@wener-tiobe)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/4470">#4470</a>: [cpp] CPD: Added strings as literal and ignore identifiers in sequences - <a href="https://github.com/wener-tiobe">Wener</a> (@wener-tiobe)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/4507">#4507</a>: [java] Fix #4503: A false negative about JUnitTestsShouldIncludeAssert and testng - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/4533">#4533</a>: [java] Fix #4063: False-negative about try/catch block in Loop - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/4536">#4536</a>: [java] Fix #4268: CommentDefaultAccessModifier - false positive with TestNG’s @<!-- -->Test annotation - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/4537">#4537</a>: [java] Fix #4455: A false positive about FieldNamingConventions and UtilityClass - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/4538">#4538</a>: [java] Fix #4456: A false positive about FinalFieldCouldBeStatic and UtilityClass - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/4540">#4540</a>: [java] Fix #4457: false negative about OverrideBothEqualsAndHashcode - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/4541">#4541</a>: [java] Fix #4458: A false positive about RedundantFieldInitializer and @<!-- -->Value - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/4542">#4542</a>: [java] Fix #4510: A false positive about ConstructorCallsOverridableMethod and @<!-- -->Value - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/4553">#4553</a>: [java] Fix #4492: GuardLogStatement gives false positive when argument is a Java method reference - <a href="https://github.com/anastasiia-koba">Anastasiia Koba</a> (@anastasiia-koba)</li>
-</ul>
 
 <h3 id="-major-features-and-enhancements">🚀 Major Features and Enhancements</h3>
 
@@ -1826,7 +1717,7 @@ a path-like name before have been adapted to use the new <a href="https://docs.p
 <p>This PMD release ships a new version of the pmd-designer.
 For the changes, see <a href="https://github.com/pmd/pmd-designer/releases/tag/7.0.0-rc1">PMD Designer Changelog</a>.</p>
 
-<h4 id="new-cpd-report-format-cpdhtml-v2xslt-1">New CPD report format cpdhtml-v2.xslt</h4>
+<h4 id="new-cpd-report-format-cpdhtml-v2xslt">New CPD report format cpdhtml-v2.xslt</h4>
 
 <p>Thanks to @mohan-chinnappan-n a new CPD report format has been added which features a data table.
 It uses an XSLT stylesheet to convert CPD’s XML format into HTML.</p>
@@ -1976,7 +1867,7 @@ See <a href="https://github.com/pmd/pmd/issues/1648">issue #1648</a> for more de
 or class. With PMD 7.0.0, the reported location is now just the identifier of the method or class.
 This affects various rules, e.g. <a href="pmd_rules_java_design.html#cognitivecomplexity"><code class="language-plaintext highlighter-rouge">CognitiveComplexity</code></a>.</p>
 
-    <p>The report location is controlled by the overrides of the method <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-rc3/net/sourceforge/pmd/lang/ast/Node.html#getReportLocation()"><code>getReportLocation</code></a>
+    <p>The report location is controlled by the overrides of the method <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getReportLocation()"><code>getReportLocation</code></a>
 in different node types.</p>
 
     <p>See <a href="https://github.com/pmd/pmd/issues/4439">issue #4439</a> and <a href="https://github.com/pmd/pmd/issues/730">issue #730</a>
@@ -2467,7 +2358,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: May 30, 2023 <br />
+             Site last generated: Jun 1, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
