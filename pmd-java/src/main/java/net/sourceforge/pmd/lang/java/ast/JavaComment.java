@@ -132,8 +132,9 @@ public class JavaComment implements Reportable {
         return line.subSequence(subseqFrom, line.length()).trim();
     }
 
-    private static Stream<JavaccToken> getSpecialCommentsIn(JjtreeNode<?> node) {
-        return GenericToken.streamRange(node.getFirstToken(), node.getLastToken())
+    private static Stream<JavaccToken> getSpecialTokensIn(JjtreeNode<?> node) {
+        // Consider one more token to include also comments immediately after the node
+        return GenericToken.streamRange(node.getFirstToken(), node.getLastToken().getNext())
                            .flatMap(it -> IteratorUtil.toStream(GenericToken.previousSpecials(it).iterator()));
     }
 
@@ -141,7 +142,7 @@ public class JavaComment implements Reportable {
         if (node instanceof AccessNode) {
             node = ((AccessNode) node).getModifiers();
         }
-        return getSpecialCommentsIn(node).filter(JavaComment::isComment)
+        return getSpecialTokensIn(node).filter(JavaComment::isComment)
                                          .map(JavaComment::toComment);
     }
 
