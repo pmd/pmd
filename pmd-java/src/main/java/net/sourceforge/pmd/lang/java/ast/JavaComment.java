@@ -133,16 +133,26 @@ public class JavaComment implements Reportable {
     }
 
     private static Stream<JavaccToken> getSpecialTokensIn(JjtreeNode<?> node) {
-        // Consider one more token to include also comments immediately after the node
-        return GenericToken.streamRange(node.getFirstToken(), node.getLastToken().getNext())
+        return GenericToken.streamRange(node.getFirstToken(), node.getLastToken())
                            .flatMap(it -> IteratorUtil.toStream(GenericToken.previousSpecials(it).iterator()));
     }
 
     public static Stream<JavaComment> getLeadingComments(JavaNode node) {
+        Stream<JavaccToken> specialTokens;
+        
         if (node instanceof AccessNode) {
             node = ((AccessNode) node).getModifiers();
+            specialTokens = getSpecialTokensIn(node);
+            
+            // if this was a non-implicit empty modifier node, we should also consider comments immediately after
+            if (!node.getFirstToken().isImplicit()) {
+                specialTokens = Stream.concat(specialTokens, getSpecialTokensIn(node.getNextSibling()));
+            }
+        } else {
+            specialTokens = getSpecialTokensIn(node);
         }
-        return getSpecialTokensIn(node).filter(JavaComment::isComment)
+        
+        return specialTokens.filter(JavaComment::isComment)
                                          .map(JavaComment::toComment);
     }
 
