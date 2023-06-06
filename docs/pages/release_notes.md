@@ -45,6 +45,8 @@ The remaining section describes the complete release notes for 7.0.0.
   * [#4582](https://github.com/pmd/pmd/issues/4582): \[dist] Download link broken
 * java
   * [#4401](https://github.com/pmd/pmd/issues/4401): \[java] PMD 7 fails to build under Java 19
+* java-codestyle
+  * [#4578](https://github.com/pmd/pmd/issues/4578): \[java] CommentDefaultAccessModifier comment needs to be before annotation if present
 
 #### API Changes
 
