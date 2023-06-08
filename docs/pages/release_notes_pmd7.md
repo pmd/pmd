@@ -416,11 +416,10 @@ current progress of the analysis.
 This can be disabled with the `--no-progress` flag.
 
 Finally, we now provide a completion script for Bash/Zsh to further help daily usage.
-This script can be found under `shell/pmd-completion.sh` in the binary distribution.
 To use it, edit your `~/.bashrc` / `~/.zshrc` file and add the following line:
 
 ```
-source *path_to_pmd*/shell/pmd-completion.sh
+source <(*path_to_pmd*/bin/pmd generate-completion)
 ```
 
 Contributors: [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)

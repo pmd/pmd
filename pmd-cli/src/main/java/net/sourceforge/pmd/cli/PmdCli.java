@@ -13,9 +13,13 @@ public final class PmdCli {
     private PmdCli() { }
 
     public static void main(String[] args) {
-        final int exitCode = new CommandLine(new PmdRootCommand())
-                .setCaseInsensitiveEnumValuesAllowed(true)
-                .execute(args);
-        System.exit(exitCode);
+        final CommandLine cli = new CommandLine(new PmdRootCommand())
+                .setCaseInsensitiveEnumValuesAllowed(true);
+        
+        // Don't show autocomplete subcommand in help by default
+        cli.getSubcommands().get("generate-completion")
+            .getCommandSpec().usageMessage().hidden(true);
+        
+        System.exit(cli.execute(args));
     }
 }
