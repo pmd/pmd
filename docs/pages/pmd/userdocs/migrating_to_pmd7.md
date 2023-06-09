@@ -6,31 +6,54 @@ permalink: pmd_userdocs_migrating_to_pmd7.html
 author: Andreas Dangel <andreas.dangel@pmd-code.org>
 ---
 
-## In general
+## Before you update
 
-Update to the latest PMD 6.x version and try to fix deprecation warnings
+Before updating to PMD 7, you should first update to the latest PMD 6 version 6.55.0 and try to fix all
+deprecation warnings.
 
-Deprecations in PMD 6:
-* Properties:
-  StringProperty.named(...) -> PropertyFactory.stringProperty(...)
-  uiOrder is gone
-* addViolation(data, node, ...) -> asCtx(data).addViolation(node, ...)
-* deprecated cli params
-  -no-cache --> --no-cache
-  -failOnViolation --> --fail-on-violation
-  -reportfile --> --report-file
-  -language --> --use-version
-* deprecated XPath attributes
-WARNING: Use of deprecated attribute 'VariableDeclaratorId/@Image' by XPath rule 'VariableNaming' (in ruleset 'VariableNamingRule'), please use @Name instead
+There are a couple of deprecated things in PMD 6, you might encounter:
 
+* Properties: In order to define property descriptors, you should use {% jdoc core::properties.PropertyFactory %} now.
+  This factory can create properties of any type. E.g. instead of `StringProperty.named(...)` use
+  `PropertyFactory.stringProperty(...)`.
 
+  Also note, that `uiOrder` is gone. You can just remove it.
+
+  See also [Defining rule properties](pmd_userdocs_extending_defining_properties.html)
+
+* When reporting a violation, you might see a deprecation of the `addViolation` methods. These methods have been moved
+  to {% jdoc core::RuleContext %}. E.g. instead of `addViolation(data, node, ...)` use `asCtx(data).addViolation(node, ...)`.
+
+* When you are calling PMD from CLI, you need to stop using deprecated CLI params, e.g.
+  * `-no-cache` --> `--no-cache`
+  * `-failOnViolation` --> `--fail-on-violation`
+  * `-reportfile` --> `--report-file`
+  * `-language` --> `--use-version`
+
+* If you have written custom XPath rule, look out for warning about deprecated XPath attributes. These warnings
+  might look like
+  ```
+  WARNING: Use of deprecated attribute 'VariableDeclaratorId/@Image' by XPath rule 'VariableNaming' (in ruleset 'VariableNamingRule'), please use @Name instead
+  ```
+  and often suggest already an alternative.
 
 ## Use cases
 
 ### I'm using only built-in rules
 
-check whether the ruleset/rules are still available,
-have the same properties, etc.
+When you are using only built-in rules, then you should check, whether you use any deprecated rule. With PMD 7
+many deprecated rules are finally removed. You can see a complete list of the [removed rules](pmd_release_notes_pmd7.html#removed-rules)
+in the release notes for PMD 7.
+The release notes also mention the replacement rule, that should be used instead. For some rules, there is no
+replacement.
+
+Then many rules have been changed or improved. New properties have been added to make the further configurable or
+properties have been removed, if they are not necessary anymore. See [changed rules](pmd_release_notes_pmd7.html#changed-rules)
+in the release notes for PMD 7.
+
+A handful rules are new with PMD 7. You might want to check these out: [new rules](pmd_release_notes_pmd7.html#new-rules).
+
+Once you have reviewed your ruleset(s), you can switch to PMD 7.
 
 ### I'm using custom rules
 

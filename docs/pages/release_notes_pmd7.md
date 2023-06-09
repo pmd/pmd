@@ -679,7 +679,7 @@ Related issue: [[core] Explicitly name all language versions (#4120)](https://gi
 
 ### Deprecated Rules
 
-In PMD 7.0.0, there are now deprecated rules.
+In PMD 7.0.0, there are no deprecated rules.
 
 ### Removed Rules
 
