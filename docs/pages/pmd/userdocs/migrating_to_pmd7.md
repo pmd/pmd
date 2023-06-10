@@ -78,6 +78,10 @@ override the method {% jdoc core::lang.rule.AbstractRule#buildTargetSelector %}:
     }
 ```
 
+The API to **navigate the AST** also changed significantly:
+* Tree traversal using [Node API](#node-api)
+* Consider using the new [NodeStream API](#nodestream-api) to navigate with null-safety. This is optional.
+
 Additionally, if you have created rules for **Java** - regardless whether it is a XPath based rule or a Java based
 rule - you might need to adjust your queries or visitor methods. The Java AST has been refactored substantially.
 The easiest way is to use the [PMD Rule Designer](pmd_userdocs_extending_designer_reference.html) to see the structure
@@ -113,9 +117,95 @@ But both would work.
 CPD: End Columns of Tokens are exclusive on PMD 7,
 but inclusive on PMD 6.x. See 5b7ed58
 
-### AST Navigation in general
+### Node API
 
-Methods like Node::getFirstChildOfType... use replacement either, NodeStream or in that case Node::firstChild(...).
+Starting from one node in the AST, you can navigate to children or parents with the following methods. This is
+the "traditional" way for simple cases. For more complex cases, consider to use the new [NodeStream API](#nodestream-api).
+
+Many methods available in PMD 6 have been deprecated and removed for a slicker API with consistent naming,
+that also integrates tightly with the NodeStream API.
+
+* `getNthParent(n)` ➡️ `ancestors().get(n - 1)`
+* `getFirstParentOfType(parentType)` ➡️ `ancestors(parentType).first()`
+* `getParentsOfType(parentType)` ➡️ `ancestors(parentType).toList()`
+* `findChildrenOfType(childType)` ➡️ `children(childType).toList()`
+* `findDescendantsOfType(targetType)` ➡️ `descendants(targetType).toList()`
+* `getFirstChildOfType(childType)` ➡️ `firstChild(childType)`
+* `getFirstDescendantOfType(descendantType)` ➡️ `descendants(descendantType).first()`
+* `hasDescendantOfType(type)` ➡️ `descendants(type).nonEmpty()`
+
+{% include tip.html content="First use PMD 7.0.0-rc3, which still has these methods. These methods are marked as
+deprecated, so you can then start to change them. The replacement method is usually provided in the javadocs.
+That way you avoid being confronted with just compile errors." %}
+
+Unchanged methods that work as before:
+* {% jdoc core::lang.ast.Node#getParent() %}
+* {% jdoc core::lang.ast.Node#getChild(int) %}
+* {% jdoc core::lang.ast.Node#getNumChildren() %}
+* {% jdoc core::lang.ast.Node#getIndexInParent() %}
+
+New methods:
+* {% jdoc core::lang.ast.Node#getFirstChild() %}
+* {% jdoc core::lang.ast.Node#getLastChild() %}
+* {% jdoc core::lang.ast.Node#getPreviousSibling() %}
+* {% jdoc core::lang.ast.Node#getNextSibling() %}
+* {% jdoc core::lang.ast.Node#getRoot() %}
+
+New methods that integrate with NodeStream:
+* {% jdoc core::lang.ast.Node#children() %} - returns a NodeStream containing all the children of this node.
+  Note: in PMD 6, this method returned an `Iterable`
+* {% jdoc core::lang.ast.Node#descendants() %}
+* {% jdoc core::lang.ast.Node#descendantsOrSelf() %}
+* {% jdoc core::lang.ast.Node#ancestors() %}
+* {% jdoc core::lang.ast.Node#ancestorsOrSelf() %}
+* {% jdoc core::lang.ast.Node#children(java.lang.Class) %}
+* {% jdoc core::lang.ast.Node#firstChild(java.lang.Class) %}
+* {% jdoc core::lang.ast.Node#descendants(java.lang.Class) %}
+* {% jdoc core::lang.ast.Node#ancestors(java.lang.Class) %}
+
+Methods removed completely:
+* `getFirstParentOfAnyType(parentTypes)`:️ There is no direct replacement, but something along the lines:
+  ```java
+        ancestors()
+                .filter(n -> Arrays.stream(classes)
+                        .map(c -> c.isInstance(n))
+                        .anyMatch(Boolean::booleanValue))
+                .first();
+  ```
+* `findChildNodesWithXPath`: Has been removed, because it is very inefficient. Use NodeStream instead.
+* `hasDescendantMatchingXPath`: Has been removed, because it is very inefficient. Use NodeStream instead.
+* `jjt*` like `jjtGetParent`. These methods were implementation specific. Use the equivalent methods like `getParent()`.
+
+See {% jdoc core::lang.ast.Node %} for the details.
+
+### NodeStream API
+
+In java rule implementations, you often need to navigate the AST to find the interesting nodes. In PMD 6, this
+was often done by calling `jjtGetChild(int)` or `jjtGetParent(int)` and then checking the node type
+with `instanceof`. There are also helper methods available, like `getFirstChildOfType(Class)` or
+`findDescendantsOfType(Class)`. These methods might return `null` and you need to check this for every
+level.
+
+The new **NodeStream API** provides easy to use methods that follow the Java Stream API (`java.util.stream`).
+
+Many complex predicates about nodes can be expressed by testing the emptiness of a node stream.
+E.g. the following tests if the node is a variable declarator id initialized to the value `0`:
+
+Example:
+
+```java
+
+     NodeStream.of(someNode)                           // the stream here is empty if the node is null
+               .filterIs(ASTVariableDeclaratorId.class)// the stream here is empty if the node was not a variable declarator id
+               .followingSiblings()                    // the stream here contains only the siblings, not the original node
+               .children(ASTNumericLiteral.class)
+               .filter(ASTNumericLiteral::isIntLiteral)
+               .filterMatching(ASTNumericLiteral::getValueAsInt, 0)
+               .nonEmpty(); // If the stream is non empty here, then all the pipeline matched
+```
+
+See {% jdoc core::lang.ast.NodeStream %} for the details.
+Note: This was implemented via [PR #1622 [core] NodeStream API](https://github.com/pmd/pmd/pull/1622)
 
 ### XPath: Migrating from 1.0 to 2.0
 
