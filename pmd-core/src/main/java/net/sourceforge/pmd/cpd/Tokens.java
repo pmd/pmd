@@ -31,6 +31,15 @@ public class Tokens {
     // the first ID is 1, 0 is the ID of the EOF token.
     private int curImageId = 1;
 
+    /**
+     * Create a new instance, is internal.
+     */
+    @InternalApi
+    @Deprecated // just to get a warning
+    public Tokens() {
+
+    }
+
     private void add(TokenEntry tokenEntry) {
         this.tokens.add(tokenEntry);
     }
