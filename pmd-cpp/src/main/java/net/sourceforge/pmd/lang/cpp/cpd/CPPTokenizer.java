@@ -2,12 +2,13 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.cpd;
+package net.sourceforge.pmd.lang.cpp.cpd;
 
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.cpd.impl.JavaCCTokenFilter;
 import net.sourceforge.pmd.cpd.impl.TokenizerBase;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;

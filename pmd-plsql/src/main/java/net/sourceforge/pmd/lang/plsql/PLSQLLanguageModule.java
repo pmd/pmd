@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.plsql;
 
-import net.sourceforge.pmd.cpd.PLSQLTokenizer;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
+import net.sourceforge.pmd.lang.plsql.cpd.PLSQLTokenizer;
 
 /**
  * Created by christoferdutz on 20.09.14.

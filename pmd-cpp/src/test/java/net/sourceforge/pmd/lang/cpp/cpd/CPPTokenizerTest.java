@@ -1,14 +1,16 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.cpd;
+package net.sourceforge.pmd.lang.cpp.cpd;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.cpd.Tokens;
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 import net.sourceforge.pmd.cpd.test.LanguagePropertyConfig;
 import net.sourceforge.pmd.lang.cpp.CppLanguageModule;
@@ -17,11 +19,6 @@ class CPPTokenizerTest extends CpdTextComparisonTest {
 
     CPPTokenizerTest() {
         super(CppLanguageModule.getInstance(), ".cpp");
-    }
-
-    @Override
-    protected String getResourcePrefix() {
-        return "../lang/cpp/cpd/testdata";
     }
 
     @Override

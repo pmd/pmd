@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.cpd;
+package net.sourceforge.pmd.lang.plsql.cpd;
 
 import org.junit.jupiter.api.Test;
 
@@ -14,12 +14,6 @@ class PLSQLTokenizerTest extends CpdTextComparisonTest {
     PLSQLTokenizerTest() {
         super(PLSQLLanguageModule.getInstance(), ".sql");
     }
-
-    @Override
-    protected String getResourcePrefix() {
-        return "../lang/plsql/cpd/testdata";
-    }
-
 
     @Test
     void testSimple() {
