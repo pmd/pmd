@@ -274,13 +274,13 @@ XPath 1.0 and 2.0 queries. Here's a list of known incompatibilities:
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-└─ Annotation
-   └─ MarkerAnnotation
+└─ Annotation "A"
+   └─ MarkerAnnotation "A"
       └─ Name "A"
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-└─ Annotation
+└─ Annotation "A"
    └─ ClassOrInterfaceType "A"
 {% endhighlight %}
 </td></tr>
@@ -292,8 +292,8 @@ XPath 1.0 and 2.0 queries. Here's a list of known incompatibilities:
 </td>
 <td>
 {% highlight js %}
-└─ Annotation
-   └─ NormalAnnotation
+└─ Annotation "A"
+   └─ NormalAnnotation "A"
       └─ Name "A"
 {% endhighlight %}
 </td>
@@ -313,8 +313,8 @@ XPath 1.0 and 2.0 queries. Here's a list of known incompatibilities:
 </td>
 <td>
 {% highlight js %}
-└─ Annotation
-   └─ NormalAnnotation
+└─ Annotation "A"
+   └─ NormalAnnotation "A"
       ├─ Name "A"
       └─ MemberValuePairs
          └─ MemberValuePair "value"
@@ -342,8 +342,8 @@ XPath 1.0 and 2.0 queries. Here's a list of known incompatibilities:
 </td>
 <td>
 {% highlight js %}
-└─ Annotation
-   └─ SingleMemberAnnotation
+└─ Annotation "A"
+   └─ SingleMemberAnnotation "A"
       ├─ Name "A"
       └─ MemberValue
          └─ PrimaryExpression
@@ -369,8 +369,8 @@ XPath 1.0 and 2.0 queries. Here's a list of known incompatibilities:
 </td>
 <td>
 {% highlight js %}
-└─ Annotation
-   └─ NormalAnnotation
+└─ Annotation "A"
+   └─ NormalAnnotation "A"
       ├─ Name "A"
       └─ MemberValuePairs
          ├─ MemberValuePair "value"
@@ -418,11 +418,11 @@ public void set(int x) { }
 </td><td>
 {% highlight js %}
 └─ ClassOrInterfaceBodyDeclaration
-   ├─ Annotation
-   │  └─ MarkerAnnotation
+   ├─ Annotation "A"
+   │  └─ MarkerAnnotation "A"
    │     └─ Name "A"
    └─ MethodDeclaration
-      ├─ ResultType[@Void=true]
+      ├─ ResultType[ @Void = true ]
       ├─ ...
 {% endhighlight %}
 </td><td>
@@ -430,6 +430,7 @@ public void set(int x) { }
 └─ MethodDeclaration
    ├─ ModifierList
    │  └─ Annotation "A"
+   │     └─ ClassOrInterfaceType "A"
    ├─ VoidType
    ├─ ...
 {% endhighlight %}
@@ -445,20 +446,20 @@ Top-level type declaration
 <td>
 {% highlight js %}
 └─ TypeDeclaration
-   ├─ Annotation
-   │  └─ MarkerAnnotation
+   ├─ Annotation "A"
+   │  └─ MarkerAnnotation "A"
    │     └─ Name "A"
-   └─ ClassOrInterfaceDeclaration
+   └─ ClassOrInterfaceDeclaration "C"
       └─ ClassOrInterfaceBody
 {% endhighlight %}
 </td>
 <td>
 {% highlight js %}
-└─ TypeDeclaration
-   └─ ClassOrInterfaceDeclaration
-       ├─ ModifierList
-       │  └─ Annotation "A"
-       └─ ClassOrInterfaceBody
+└─ ClassOrInterfaceDeclaration
+    ├─ ModifierList
+    │  └─ Annotation "A"
+    │     └─ ClassOrInterfaceType "A"
+    └─ ClassOrInterfaceBody
 {% endhighlight %}
 </td>
 </tr>
@@ -467,19 +468,35 @@ Top-level type declaration
 Cast expression
 
 {% highlight java %}
-(@A T.@B S) expr
+var x = (@A T.@B S) expr;
 {% endhighlight %}
 </td><td>
-N/A (Parse error)
+{% highlight js %}
+└─ CastExpression
+   ├─ Annotation "A"
+   │  └─ MarkerAnnotation "A"
+   │     └─ Name "A"
+   ├─ Type
+   │  └─ ReferenceType
+   │     └─ ClassOrInterfaceType "T.S"
+   │        └─ Annotation "B"
+   │           └─ MarkerAnnotation "B"
+   │              └─ Name "B"
+   └─ PrimaryExpression
+      └─ PrimaryPrefix
+         └─ Name "expr"
+{% endhighlight %}
 </td>
 <td>
 {% highlight js %}
 └─ CastExpression
    ├─ ClassOrInterfaceType "S"
+   │  ├─ ClassOrInterfaceType "T"
+   │  │  └─ Annotation "A"
+   │  │     └─ ClassOrInterfaceType "A"
    │  └─ Annotation "B"
-   │  └─ ClassOrInterfaceType "T"
-   │     └─ Annotation "A"
-   └─ (Expression `expr`)
+   │     └─ ClassOrInterfaceType "B"
+   └─ VariableAccess "expr"
 {% endhighlight %}
 </td></tr>
 
@@ -487,25 +504,33 @@ N/A (Parse error)
 Cast expression with intersection
 
 {% highlight java %}
-(@A T & S) expr
+var x = (@A T & S) expr;
 {% endhighlight %}
 </td><td>
 {% highlight js %}
 └─ CastExpression
-   ├─ MarkerAnnotation "A"
-   ├─ ClassOrInterfaceType "T"
-   ├─ ClassOrInterfaceType "S"
-   └─ (Expression `expr`)
+   ├─ Annotation "A"
+   │  └─ MarkerAnnotation "A"
+   │     └─ Name "A"
+   ├─ Type
+   │  └─ ReferenceType
+   │     └─ ClassOrInterfaceType "T"
+   ├─ ReferenceType
+   │  └─ ClassOrInterfaceType "S"
+   └─ PrimaryExpression
+      └─ PrimaryPrefix
+         └─ Name "expr"
 {% endhighlight %}
 </td>
 <td>
 {% highlight js %}
 └─ CastExpression
-   ├─ IntersectionType
-   │  ├─ ClassOrInterfaceType "T"
-   │  │  └─ Annotation "A"
-   │  └─ ClassOrInterfaceType "S"
-   └─ (Expression `expr`)
+  ├─ IntersectionType
+  │  ├─ ClassOrInterfaceType "T"
+  │  │  └─ Annotation "A"
+  │  │     └─ ClassOrInterfaceType "A"
+  │  └─ ClassOrInterfaceType "S"
+  └─ VariableAccess "expr"
 {% endhighlight %}
 
 Notice <code>@A</code> binds to <code>T</code>, not <code>T & S</code>
@@ -521,10 +546,10 @@ new @A T()
 </td><td>
 {% highlight js %}
 └─ AllocationExpression
-   ├─ MarkerAnnotation "A"
-   ├─ Type
-   │  └─ ReferenceType
-   │     └─ ClassOrInterfaceType "T"
+   ├─ Annotation "A"
+   │  └─ MarkerAnnotation "A"
+   │     └─ Name "A"
+   ├─ ClassOrInterfaceType "T"
    └─ Arguments
 {% endhighlight %}
 </td>
@@ -533,7 +558,8 @@ new @A T()
 └─ ConstructorCall
    ├─ ClassOrInterfaceType "T"
    │  └─ Annotation "A"
-   └─ ArgumentsList
+   │     └─ ClassOrInterfaceType "A"
+   └─ ArgumentList
 {% endhighlight %}
 </td></tr>
 
@@ -546,23 +572,27 @@ new @A int[0]
 </td><td>
 {% highlight js %}
 └─ AllocationExpression
-   ├─ MarkerAnnotation "A"
-   ├─ Type
-   │  └─ PrimitiveType "int"
+   ├─ Annotation "A"
+   │  └─ MarkerAnnotation "A"
+   │     └─ Name "A"
+   ├─ PrimitiveType "int"
    └─ ArrayDimsAndInits
       └─ Expression
          └─ PrimaryExpression
-            └─ Literal "0"
+            └─ PrimaryPrefix
+               └─ Literal "0"
 {% endhighlight %}
 </td>
 <td>
 {% highlight js %}
 └─ ArrayAllocation
-   ├─ PrimitiveType "int"
-   │  └─ Annotation "A"
-   └─ ArrayAllocationDims
-      └─ ArrayDimExpr
-         └─ NumericLiteral "0"
+   └─ ArrayType
+      ├─ PrimitiveType "int"
+      │  └─ Annotation "A"
+      │     └─ ClassOrInterfaceType "A"
+      └─ ArrayDimensions
+         └─ ArrayDimExpr
+            └─ NumericLiteral "0"
 {% endhighlight %}
 </td></tr>
 
@@ -570,22 +600,39 @@ new @A int[0]
 Array type
 
 {% highlight java %}
-@A int @B[]
+@A int @B[] x;
 {% endhighlight %}
 </td><td>
-N/A (parse error)
+{% highlight js %}
+└─ LocalVariableDeclaration
+   ├─ Annotation "A"
+   │  └─ MarkerAnnotation "A"
+   │     └─ Name "A"
+   ├─ Type[ @ArrayType = true() ]
+   │  └─ ReferenceType
+   │     ├─ PrimitiveType "int"
+   │     └─ Annotation "B"
+   │        └─ MarkerAnnotation "B"
+   │           └─ Name "B"
+   └─ VariableDeclarator
+      └─ VariableDeclaratorId "x"
+{% endhighlight %}
 </td>
 <td>
 {% highlight js %}
-└─ ArrayType
-   ├─ PrimitiveType "int"
-   │  └─ Annotation "A"
-   └─ ArrayTypeDims
-      └─ ArrayTypeDim
-         └─ Annotation "B"
+└─ LocalVariableDeclaration
+  ├─ ModifierList
+  │  └─ Annotation "A"
+  │     └─ ClassOrInterfaceType "A"
+  ├─ ArrayType
+  │  ├─ PrimitiveType "int"
+  │  └─ ArrayDimensions
+  │     └─ ArrayTypeDim
+  │        └─ Annotation "B"
+  │           └─ ClassOrInterfaceType "B"
+  └─ VariableDeclarator
+     └─ VariableDeclaratorId "x"
 {% endhighlight %}
-
-Notice <code>@A</code> binds to <code>int</code>, not <code>int[]</code>
 
 </td></tr>
 
@@ -598,14 +645,19 @@ Type parameters
 </td><td>
 {% highlight js %}
 └─ TypeParameters
-   ├─ MarkerAnnotation "A"
    ├─ TypeParameter "T"
-   ├─ MarkerAnnotation "B"
+   │  └─ Annotation "A"
+   │     └─ MarkerAnnotation "A"
+   │        └─ Name "A"
    └─ TypeParameter "S"
-      ├─ MarkerAnnotation "C"
+      ├─ Annotation "B"
+      │  └─ MarkerAnnotation "B"
+      │     └─ Name "B"
       └─ TypeBound
-         └─ ReferenceType
-            └─ ClassOrInterfaceType "Object"
+         ├─ Annotation "C"
+         │  └─ MarkerAnnotation "C"
+         │     └─ Name "C"
+         └─ ClassOrInterfaceType "Object"
 {% endhighlight %}
 </td>
 <td>
@@ -613,10 +665,13 @@ Type parameters
 └─ TypeParameters
    ├─ TypeParameter "T"
    │  └─ Annotation "A"
-   └─ TypeParameter "S"
+   │     └─ ClassOrInterfaceType "A"
+   └─ TypeParameter "S" [ @TypeBound = true() ]
       ├─ Annotation "B"
+      │  └─ ClassOrInterfaceType "B"
       └─ ClassOrInterfaceType "Object"
          └─ Annotation "C"
+            └─ ClassOrInterfaceType "C"
 {% endhighlight %}
 
 <ul>
@@ -632,17 +687,21 @@ Type parameters
 Enum constants
 
 {% highlight java %}
-enum {
- @A E1, @B E2   
+enum E {
+  @A E1, @B E2;
 }
 {% endhighlight %}
 </td><td>
 {% highlight js %}
 └─ EnumBody
-   ├─ MarkerAnnotation "A"
-   ├─ EnumConstant "E1"
-   ├─ MarkerAnnotation "B"
-   └─ EnumConstant "E2"
+  ├─ Annotation "A"
+  │  └─ MarkerAnnotation "A"
+  │     └─ Name "A"
+  ├─ EnumConstant "E1"
+  ├─ Annotation "B"
+  │  └─ MarkerAnnotation "B"
+  │     └─ Name "B"
+  └─ EnumConstant "E2"
 {% endhighlight %}
 </td>
 <td>
@@ -651,11 +710,13 @@ enum {
    ├─ EnumConstant "E1"
    │  ├─ ModifierList
    │  │  └─ Annotation "A"
+   │  │     └─ ClassOrInterfaceType "A"
    │  └─ VariableDeclaratorId "E1"
    └─ EnumConstant "E2"
       ├─ ModifierList
       │  └─ Annotation "B"
-      └─ VariableDeclaratorId "E1"
+      │     └─ ClassOrInterfaceType "B"
+      └─ VariableDeclaratorId "E2"
 {% endhighlight %}
 
 <ul>
