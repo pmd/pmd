@@ -10,6 +10,7 @@ import java.io.Reader;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
@@ -263,7 +264,7 @@ public interface TextDocument extends Closeable {
     /**
      * Returns a read-only document for the given text. This works as
      * if by calling {@link TextDocument#create(TextFile)} on a textfile
-     * produced by {@link TextFile#forCharSeq(CharSequence, String, LanguageVersion) forString},
+     * produced by {@link TextFile#forCharSeq(CharSequence, FileId, LanguageVersion) forString},
      * but doesn't throw {@link IOException}, as such text files will
      * not throw.
      *
@@ -279,4 +280,10 @@ public interface TextDocument extends Closeable {
         }
     }
 
+    @Deprecated
+    @DeprecatedUntil700
+    // note: this method is for backwards compatibility only - currently used by pmd-designer
+    static TextDocument readOnlyString(@NonNull CharSequence source, @NonNull String filename, @NonNull LanguageVersion lv) {
+        return readOnlyString(source, FileId.fromPathLikeString(filename), lv);
+    }
 }
