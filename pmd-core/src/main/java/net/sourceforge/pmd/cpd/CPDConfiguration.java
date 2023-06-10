@@ -8,7 +8,6 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
-import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
@@ -35,7 +34,6 @@ public class CPDConfiguration extends AbstractConfiguration {
     public static final String DEFAULT_RENDERER = "text";
 
     private static final Map<String, Class<? extends CPDReportRenderer>> RENDERERS = new HashMap<>();
-    protected Path reportFile;
 
 
     static {

@@ -85,6 +85,7 @@ public final class CpdAnalysis implements AutoCloseable {
         setPropertyIfMissing(Tokenizer.CPD_IGNORE_METADATA, props, configuration.isIgnoreAnnotations());
         setPropertyIfMissing(Tokenizer.CPD_IGNORE_IMPORTS, props, configuration.isIgnoreUsings());
         setPropertyIfMissing(Tokenizer.CPD_IGNORE_LITERAL_SEQUENCES, props, configuration.isIgnoreLiteralSequences());
+        setPropertyIfMissing(Tokenizer.CPD_IGNORE_LITERAL_AND_IDENTIFIER_SEQUENCES, props, configuration.isIgnoreIdentifierAndLiteralSequences());
         if (!configuration.isNoSkipBlocks()) {
             PropertyDescriptor<String> skipBlocks = (PropertyDescriptor) props.getPropertyDescriptor("cpdSkipBlocksPattern");
             setPropertyIfMissing(skipBlocks, props, configuration.getSkipBlocksPattern());
