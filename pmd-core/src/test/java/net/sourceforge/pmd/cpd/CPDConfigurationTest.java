@@ -16,8 +16,6 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
-
 class CPDConfigurationTest {
 
     @Test

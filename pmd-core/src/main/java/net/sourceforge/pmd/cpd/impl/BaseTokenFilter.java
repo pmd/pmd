@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.cpd.token.internal;
+package net.sourceforge.pmd.cpd.impl;
 
 import static net.sourceforge.pmd.util.IteratorUtil.AbstractIterator;
 
@@ -10,7 +10,6 @@ import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import net.sourceforge.pmd.cpd.token.TokenFilter;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 
@@ -18,7 +17,7 @@ import net.sourceforge.pmd.lang.ast.GenericToken;
  * A generic filter for PMD token managers that allows to use comments
  * to enable / disable analysis of parts of the stream
  */
-public class BaseTokenFilter<T extends GenericToken<T>> implements TokenFilter<T> {
+public class BaseTokenFilter<T extends GenericToken<T>> implements TokenManager<T> {
 
     private final TokenManager<T> tokenManager;
     private final LinkedList<T> unprocessedTokens; // NOPMD - used both as Queue and List

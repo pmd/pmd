@@ -18,7 +18,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 import net.sourceforge.pmd.internal.util.FileCollectionUtil;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.Language;
@@ -167,7 +166,6 @@ public final class CpdAnalysis implements AutoCloseable {
 
             consumer.accept(cpdReport);
         } catch (Exception e) {
-            e.printStackTrace();
             reporter.errorEx("Exception while running CPD", e);
         }
         // source manager is closed and closes all text files now.

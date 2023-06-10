@@ -12,7 +12,6 @@ import java.io.StringWriter;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.CpdTestUtils.CpdReportBuilder;
-import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 import net.sourceforge.pmd.lang.document.FileId;
 
 class CSVRendererTest {

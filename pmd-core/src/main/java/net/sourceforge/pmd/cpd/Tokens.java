@@ -35,11 +35,11 @@ public class Tokens {
         this.tokens.add(tokenEntry);
     }
 
-    void addEof(FileId filePathId, int line, int column) {
+    private void addEof(FileId filePathId, int line, int column) {
         add(new TokenEntry(filePathId, line, column));
     }
 
-    void setImage(TokenEntry entry, String newImage) {
+    private void setImage(TokenEntry entry, String newImage) {
         int i = getImageId(newImage);
         entry.setImageIdentifier(i);
     }
@@ -52,7 +52,7 @@ public class Tokens {
         return images.entrySet().stream().filter(it -> it.getValue() == i).findFirst().map(Entry::getKey).orElse(null);
     }
 
-    TokenEntry peekLastToken() {
+    private TokenEntry peekLastToken() {
         return tokens.isEmpty() ? null : getToken(size() - 1);
     }
 

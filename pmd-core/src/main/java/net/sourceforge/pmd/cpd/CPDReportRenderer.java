@@ -1,18 +1,12 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.cpd.renderer;
+package net.sourceforge.pmd.cpd;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-
-import net.sourceforge.pmd.cpd.CPDReport;
-import net.sourceforge.pmd.cpd.CSVRenderer;
-import net.sourceforge.pmd.cpd.SimpleRenderer;
-import net.sourceforge.pmd.cpd.VSRenderer;
-import net.sourceforge.pmd.cpd.XMLRenderer;
 
 /**
  * Render a {@link CPDReport} to a file.

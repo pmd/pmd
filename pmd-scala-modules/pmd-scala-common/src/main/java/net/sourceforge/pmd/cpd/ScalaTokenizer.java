@@ -6,7 +6,7 @@ package net.sourceforge.pmd.cpd;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.cpd.token.internal.BaseTokenFilter;
+import net.sourceforge.pmd.cpd.impl.BaseTokenFilter;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.TokenManager;

@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.modelica;
 
-import net.sourceforge.pmd.cpd.ModelicaTokenizer;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
+import net.sourceforge.pmd.lang.modelica.cpd.ModelicaTokenizer;
 
 public class ModelicaLanguageModule extends SimpleLanguageModuleBase {
     public static final String NAME = "Modelica";

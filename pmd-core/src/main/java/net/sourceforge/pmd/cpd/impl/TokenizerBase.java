@@ -8,11 +8,13 @@ import java.io.IOException;
 
 import net.sourceforge.pmd.cpd.TokenFactory;
 import net.sourceforge.pmd.cpd.Tokenizer;
-import net.sourceforge.pmd.cpd.token.internal.BaseTokenFilter;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.document.TextDocument;
 
+/**
+ * Generic base class for a {@link Tokenizer}.
+ */
 public abstract class TokenizerBase<T extends GenericToken<T>> implements Tokenizer {
 
     protected abstract TokenManager<T> makeLexerImpl(TextDocument doc) throws IOException;

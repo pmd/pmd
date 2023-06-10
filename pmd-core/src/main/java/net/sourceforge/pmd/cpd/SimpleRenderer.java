@@ -9,7 +9,6 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Iterator;
 
-import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.util.StringUtil;

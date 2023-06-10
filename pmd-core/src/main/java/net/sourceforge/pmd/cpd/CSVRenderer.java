@@ -10,7 +10,6 @@ import java.util.Iterator;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
-import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 import net.sourceforge.pmd.lang.document.FileLocation;
 
 /**
