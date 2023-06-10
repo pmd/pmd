@@ -255,13 +255,6 @@ XPath 1.0 and 2.0 queries. Here's a list of known incompatibilities:
 
 ### Java AST
 
-{% comment %}
-"└─ ",
-"├─ ",
-"│  ",
-"   "
-{% endcomment %}
-
 #### Annotations
 
 * What: Annotations are consolidated into a single node. SingleMemberAnnotation, NormalAnnotation and MarkerAnnotation
@@ -618,7 +611,7 @@ Type parameters
 <td>
 {% highlight js %}
 └─ TypeParameters
-   └─ TypeParameter "T"
+   ├─ TypeParameter "T"
    │  └─ Annotation "A"
    └─ TypeParameter "S"
       ├─ Annotation "B"
@@ -774,68 +767,68 @@ new Foo[] { f, g }
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-AllocationExpression
-  + PrimitiveType "int"
-  + ArrayDimsAndInits
-    + Expression
-      + PrimaryExpression
-        + PrimaryPrefix
-          + Literal "2"
-AllocationExpression
-  + Annotation
-    + MarkerAnnotation
-      + Name "Bar"
-  + PrimitiveType "int"
-  + ArrayDimsAndInits
-    + Expression
-      + PrimaryExpression
-        + PrimaryPrefix
-          + Literal "3"
-    + Expression
-      + PrimaryExpression
-        + PrimaryPrefix
-          + Literal "2"
-AllocationExpression
-  + ClassOrInterfaceType "Foo"
-  + ArrayDimsAndInits
-    + ArrayInitializer
-      + VariableInitializer
-        + Expression
-          + PrimaryExpression
-            + PrimaryPrefix
-              + Name "f"
-      + VariableInitializer
-        + Expression
-          + PrimaryExpression
-            + PrimaryPrefix
-              + Name "g"
+├─ AllocationExpression
+│  ├─ PrimitiveType "int"
+│  └─ ArrayDimsAndInits
+│     └─ Expression
+│        └─ PrimaryExpression
+│           └─ PrimaryPrefix
+│              └─ Literal "2"
+├─ AllocationExpression
+│  ├─ Annotation
+│  │  └─ MarkerAnnotation
+│  │     └─ Name "Bar"
+│  ├─ PrimitiveType "int"
+│  └─ ArrayDimsAndInits
+│     ├─ Expression
+│     │  └─ PrimaryExpression
+│     │     └─ PrimaryPrefix
+│     │        └─ Literal "3"
+│     └─ Expression
+│        └─ PrimaryExpression
+│           └─ PrimaryPrefix
+│              └─ Literal "2"
+└─ AllocationExpression
+   ├─ ClassOrInterfaceType "Foo"
+   └─ ArrayDimsAndInits
+      └─ ArrayInitializer
+         ├─ VariableInitializer
+         │  └─ Expression
+         │     └─ PrimaryExpression
+         │        └─ PrimaryPrefix
+         │           └─ Name "f"
+         └─ VariableInitializer
+            └─ Expression
+               └─ PrimaryExpression
+                  └─ PrimaryPrefix
+                     └─ Name "g"
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-ArrayAllocation
-  + ArrayType
-    + PrimitiveType "int"
-    + ArrayDimensions
-      + ArrayDimExpr
-        + NumericLiteral "2"
-      + ArrayTypeDim
-ArrayAllocation
-  + ArrayType
-    + PrimitiveType "int"
-      + MarkerAnnotation "Bar"
-    + ArrayDimensions
-      + ArrayDimExpr
-        + NumericLiteral "3"
-      + ArrayDimExpr
-        + NumericLiteral "2"
-ArrayAllocation
-  + ArrayType
-    + ClassOrInterfaceType "Foo"
-    + ArrayDimensions
-      + ArrayTypeDim
-  + ArrayInitializer
-    + VariableAccess "f"
-    + VariableAccess "g"
+├─ ArrayAllocation
+│  └─ ArrayType
+│     ├─ PrimitiveType "int"
+│     └─ ArrayDimensions
+│        ├─ ArrayDimExpr
+│        │  └─ NumericLiteral "2"
+│        └─ ArrayTypeDim
+├─ ArrayAllocation
+│  └─ ArrayType
+│     ├─ PrimitiveType "int"
+│     │  └─ MarkerAnnotation "Bar"
+│     └─ ArrayDimensions
+│        ├─ ArrayDimExpr
+│        │  └─ NumericLiteral "3"
+│        └─ ArrayDimExpr
+│           └─ NumericLiteral "2"
+└─ ArrayAllocation
+   └─ ArrayType
+   │  ├─ ClassOrInterfaceType "Foo"
+   │  └─ ArrayDimensions
+   │     └─ ArrayTypeDim
+   └─ ArrayInitializer
+      ├─ VariableAccess "f"
+      └─ VariableAccess "g"
 {% endhighlight %}
 </td></tr>
 </table>
@@ -855,23 +848,23 @@ Map.Entry<K,V>
 </td>
 <td>
 {% highlight js %}
-ClassOrInterfaceType "Map.Entry"
-   + TypeArguments
-     + TypeArgument
-       + ReferenceType
-         + ClassOrInterfaceType "K"
-     + TypeArgument
-       + ReferenceType
-         + ClassOrInterfaceType "V"
+└─ ClassOrInterfaceType "Map.Entry"
+   └─ TypeArguments
+      ├─ TypeArgument
+      │  └─ ReferenceType
+      │     └─ ClassOrInterfaceType "K"
+      └─ TypeArgument
+         └─ ReferenceType
+            └─ ClassOrInterfaceType "V"
 {% endhighlight %}
 </td>
 <td>
 {% highlight js %}
-ClassOrInterfaceType "Entry"
-   + ClassOrInterfaceType "Map"
-   + TypeArguments
-     + ClassOrInterfaceType "K"
-     + ClassOrInterfaceType "V"
+└─ ClassOrInterfaceType "Entry"
+   ├─ ClassOrInterfaceType "Map"
+   └─ TypeArguments
+      ├─ ClassOrInterfaceType "K"
+      └─ ClassOrInterfaceType "V"
 {% endhighlight %}
 </td>
 </tr>
@@ -882,25 +875,25 @@ First<K>.Second.Third<V>
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-ClassOrInterfaceType "First.Second.Third"
-   + TypeArguments
-     + TypeArgument
-       + ReferenceType
-         + ClassOrInterfaceType "K"
-   + TypeArguments
-     + TypeArgument
-       + ReferenceType
-         + ClassOrInterfaceType "V"
+└─ ClassOrInterfaceType "First.Second.Third"
+   ├─ TypeArguments
+   │  └─ TypeArgument
+   │     └─ ReferenceType
+   │        └─ ClassOrInterfaceType "K"
+   └─ TypeArguments
+      └─ TypeArgument
+         └─ ReferenceType
+            └─ ClassOrInterfaceType "V"
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-ClassOrInterfaceType "Third"
-   - ClassOrInterfaceType "Second"
-      - ClassOrInterfaceType "First"
-          - TypeArguments
-             - ClassOrInterfaceType "K"
-   - TypeArguments
-     - ClassOrInterfaceType "V"
+└─ ClassOrInterfaceType "Third"
+   ├─  ClassOrInterfaceType "Second"
+   │   └─ ClassOrInterfaceType "First"
+   │      └─ TypeArguments
+   │         └─ ClassOrInterfaceType "K"
+   └─ TypeArguments
+      └─ ClassOrInterfaceType "V"
 {% endhighlight %}
 </td></tr>
 </table>
@@ -921,24 +914,24 @@ Entry<String, ? extends Node>
 </td>
 <td>
 {% highlight js %}
-ClassOrInterfaceType "Entry"
-   + TypeArguments
-     + TypeArgument
-       + ReferenceType
-         + ClassOrInterfaceType "String"
-     + TypeArgument[@UpperBound = true()]
-       + WildcardBounds
-         + ReferenceType
-           + ClassOrInterfaceType "Node"
+└─ ClassOrInterfaceType "Entry"
+   └─ TypeArguments
+      ├─ TypeArgument
+      │  └─ ReferenceType
+      │     └─ ClassOrInterfaceType "String"
+      └─ TypeArgument[ @UpperBound = true() ]
+         └─ WildcardBounds
+            └─ ReferenceType
+               └─ ClassOrInterfaceType "Node"
 {% endhighlight %}
 </td>
 <td>
 {% highlight js %}
-ClassOrInterfaceType "Entry"
-   + TypeArguments
-     + ClassOrInterfaceType "String"
-     + WildcardType[@UpperBound = true()]
-       + ClassOrInterfaceType "Node"
+└─ ClassOrInterfaceType "Entry"
+   └─ TypeArguments
+      ├─ ClassOrInterfaceType "String"
+      └─ WildcardType[ @UpperBound = true() ]
+         └─ ClassOrInterfaceType "Node"
 {% endhighlight %}
 </td>
 </tr>
@@ -950,16 +943,16 @@ List<?>
 </td>
 <td>
 {% highlight js %}
-ClassOrInterfaceType "List"
-   + TypeArguments
-     + TypeArgument
+└─ ClassOrInterfaceType "List"
+   └─ TypeArguments
+      └─ TypeArgument
 {% endhighlight %}
 </td>
 <td>
 {% highlight js %}
-ClassOrInterfaceType "List"
-   + TypeArguments
-     + WildcardType
+└─ ClassOrInterfaceType "List"
+   └─ TypeArguments
+      └─ WildcardType
 {% endhighlight %}
 </td>
 </tr>
@@ -983,18 +976,18 @@ import java.util.*;
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-ImportDeclaration
-  + Name "java.util.ArrayList"
-ImportDeclaration[@Static=true()]
-  + Name "java.util.Comparator.reverseOrder"
-ImportDeclaration[@ImportOnDemand=true()]
-  + Name "java.util"
+├─ ImportDeclaration
+│  └─ Name "java.util.ArrayList"
+├─ ImportDeclaration[ @Static=true() ]
+│  └─ Name "java.util.Comparator.reverseOrder"
+└─ ImportDeclaration[ @ImportOnDemand = true() ]
+   └─ Name "java.util"
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-ImportDeclaration "java.util.ArrayList"
-ImportDeclaration[@Static=true()] "java.util.Comparator.reverseOrder"
-ImportDeclaration[@ImportOnDemand=true()] "java.util"
+├─ ImportDeclaration "java.util.ArrayList"
+├─ ImportDeclaration[ @Static = true() ] "java.util.Comparator.reverseOrder"
+└─ ImportDeclaration[ @ImportOnDemand = true() ] "java.util"
 {% endhighlight %}
 </td></tr>
 
@@ -1005,14 +998,14 @@ package com.example.tool;
 </td>
 <td>
 {% highlight js %}
-PackageDeclaration
-  + Name "com.example.tool"
+└─ PackageDeclaration
+   └─ Name "com.example.tool"
 {% endhighlight %}
 </td>
 <td>
 {% highlight js %}
-PackageDeclaration "com.example.tool"
-+ ModifierList
+└─ PackageDeclaration "com.example.tool"
+   └─ ModifierList
 {% endhighlight %}
 </td></tr>
 </table>
@@ -1038,32 +1031,32 @@ public void set(final int x, int y) { }
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-ClassOrInterfaceBodyDeclaration
-  + Annotation
-    + MarkerAnnotation
-      + Name "A"
-  + MethodDeclaration[@Public = true()]
-    + ResultType[@Void=true]
-    + MethodDeclarator
-      + FormalParameters
-        + FormalParameter[@Final = true()]
-          + VariableDeclaratorId "x"
-        + FormalParameter[@Final = false()]
-          + VariableDeclaratorId "y"
+└─ ClassOrInterfaceBodyDeclaration
+   ├─ Annotation
+   │  └─ MarkerAnnotation
+   │     └─ Name "A"
+   └─ MethodDeclaration[ @Public = true() ]
+      ├─ ResultType[@Void=true]
+      └─ MethodDeclarator
+         └─ FormalParameters
+            ├─ FormalParameter[ @Final = true() ]
+            │  └─ VariableDeclaratorId "x"
+            └─ FormalParameter[ @Final = false() ]
+               └─ VariableDeclaratorId "y"
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-MethodDeclaration
-  + ModifierList[@Modifiers=("public")]
-    + Annotation "A"
-  + VoidType
-  + FormalParameters
-    + FormalParameter
-      + ModifierList[@Modifiers=("final")]
-      + VariableDeclaratorId "x"
-    + FormalParameter
-      + ModifierList[@Modifiers=()]
-      + VariableDeclaratorId "y"
+└─ MethodDeclaration
+   ├─ ModifierList[ @Modifiers = ( "public" ) ]
+   │  └─ Annotation "A"
+   ├─ VoidType
+   └─ FormalParameters
+      ├─ FormalParameter
+      │  ├─ ModifierList[ @Modifiers = ("final") ]
+      │  └─ VariableDeclaratorId "x"
+      └─ FormalParameter
+         ├─ ModifierList[ @Modifiers = () ]
+         └─ VariableDeclaratorId "y"
 {% endhighlight %}
 </td></tr>
 
@@ -1076,21 +1069,21 @@ public @A class C {}
 </td>
 <td>
 {% highlight js %}
-TypeDeclaration
-  + Annotation
-    + MarkerAnnotation
-      + Name "A"
-  + ClassOrInterfaceDeclaration[@Public=true()]
-    + ClassOrInterfaceBody
+└─ TypeDeclaration
+   ├─ Annotation
+   │  └─ MarkerAnnotation
+   │     └─ Name "A"
+   └─ ClassOrInterfaceDeclaration[ @Public = true() ]
+      └─ ClassOrInterfaceBody
 {% endhighlight %}
 </td>
 <td>
 {% highlight js %}
-TypeDeclaration
-  + ClassOrInterfaceDeclaration
-     + ModifierList[@Modifiers=("public")]
-       + MarkerAnnotation "A"
-     + ClassOrInterfaceBody
+└─ TypeDeclaration
+   └─ ClassOrInterfaceDeclaration
+      ├─ ModifierList[ @Modifiers = ( "public" ) ]
+      │  └─ MarkerAnnotation "A"
+      └─ ClassOrInterfaceBody
 {% endhighlight %}
 </td>
 </tr>
@@ -1275,48 +1268,48 @@ public class Sample {
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-ConstructorDeclaration "Sample"
-  + FormalParameters
-    + FormalParameter ...
-  + NameList
-    + Name "Exception"
-  + ExplicitConstructorInvocation
-    + Arguments
-  + BlockStatement
-    + Statement ...
-MethodDeclaration
-  + ResultType
-  + MethodDeclarator "greet"
-    + FormatParameters
-      + FormalParameter ...
-  + NameList
-    + Name "Exception"
-  + Block
-    + BlockStatement
-      + Statement ...
+├─ ConstructorDeclaration "Sample"
+│  ├─ FormalParameters
+│  │  └─ FormalParameter ...
+│  ├─ NameList
+│  │  └─ Name "Exception"
+│  ├─ ExplicitConstructorInvocation
+│  │  └─ Arguments
+│  └─ BlockStatement
+│     └─ Statement ...
+└─ MethodDeclaration
+   ├─ ResultType
+   ├─ MethodDeclarator "greet"
+   │  └─ FormatParameters
+   │     └─ FormalParameter ...
+   ├─ NameList
+   │  └─ Name "Exception"
+   └─ Block
+      └─ BlockStatement
+         └─ Statement ...
 {% endhighlight %}
 </td>
 <td>
 {% highlight js %}
-ConstructorDeclaration "Sample"
-  + ModifierList
-  + FormalParameters
-    + FormalParameter ...
-  + ThrowsList
-    + ClassOrInterfaceType ...
-  + Block
-    + ExplicitConstructorInvocation
-      + ArgumentList
-    + ExpressionStatement
-MethodDeclaration "greet"
-  + ModifierList
-  + VoidType
-  + FormalParameters
-    + FormalParameter ...
-  + ThrowsList
-    + ClassOrInterfaceType ...
-  + Block
-    + ExpressionStatement
+├─ ConstructorDeclaration "Sample"
+│  ├─ ModifierList
+│  ├─ FormalParameters
+│  │  └─ FormalParameter ...
+│  ├─ ThrowsList
+│  │  └─ ClassOrInterfaceType ...
+│  └─ Block
+│     ├─ ExplicitConstructorInvocation
+│     │  └─ ArgumentList
+│     └─ ExpressionStatement
+└─ MethodDeclaration "greet"
+   ├─ ModifierList
+   ├─ VoidType
+   ├─ FormalParameters
+   │  └─ FormalParameter ...
+   ├─ ThrowsList
+   │  └─ ClassOrInterfaceType ...
+   └─ Block
+      └─ ExpressionStatement
 {% endhighlight %}
 </td></tr>
 
@@ -1328,23 +1321,23 @@ public @interface MyAnnotation {
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-AnnotationTypeDeclaration "MyAnnotation"
-  + AnnotationTypeBody
-    + AnnotationTypeMemberDeclaration
-      + AnnotationMethodDeclaration "value"
-        + Type ...
-        + DefaultValue ...
+└─ AnnotationTypeDeclaration "MyAnnotation"
+   └─ AnnotationTypeBody
+      └─ AnnotationTypeMemberDeclaration
+         └─ AnnotationMethodDeclaration "value"
+            ├─ Type ...
+            └─ DefaultValue ...
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-AnnotationTypeDeclaration "MyAnnotation"
-  + AnnotationTypeBody
-    + AnnotationTypeMemberDeclaration
-      + MethodDeclaration
-        + ModifierList
-        + PrimitiveType
-        + FormalParameters ...
-        + DefaultValue ...
+└─ AnnotationTypeDeclaration "MyAnnotation"
+   └─ AnnotationTypeBody
+      └─ AnnotationTypeMemberDeclaration
+         └─ MethodDeclaration
+            ├─ ModifierList
+            ├─ PrimitiveType
+            ├─ FormalParameters ...
+            └─ DefaultValue ...
 {% endhighlight %}
 </td></tr>
 </table>
@@ -1370,34 +1363,34 @@ try {
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-TryStatement
-  + Block
-  + CatchStatement
-    + FormalParameter
-      + Annotation "A"
-      + Type
-        + ReferenceType
-          + ClassOrInterfaceType "IOException"
-      + Type
-        + ReferenceType
-          + ClassOrInterfaceType "IllegalArgumentException"
-      + VariableDeclaratorId
-    + Block
+└─ TryStatement
+   ├─ Block
+   └─ CatchStatement
+      ├─ FormalParameter
+      │  ├─ Annotation "A"
+      │  ├─ Type
+      │  │  └─ ReferenceType
+      │  │     └─ ClassOrInterfaceType "IOException"
+      │  ├─ Type
+      │  │  └─ ReferenceType
+      │  │     └─ ClassOrInterfaceType "IllegalArgumentException"
+      │  └─ VariableDeclaratorId
+      └─ Block
 {% endhighlight %}
 </td>
 <td>
 {% highlight js %}
-TryStatement
-  + Block
-  + CatchClause
-    + CatchParameter
-      + ModifierList
-        + Annotation "A"
-      + UnionType
-        + ClassOrInterfaceType "IOException"
-        + ClassOrInterfaceType "IllegalArgumentException"
-      + VariableDeclaratorId
-    + Block
+└─ TryStatement
+   ├─ Block
+   └─ CatchClause
+      ├─ CatchParameter
+      │  ├─ ModifierList
+      │  │  └─ Annotation "A"
+      │  ├─ UnionType
+      │  │  └─ ClassOrInterfaceType "IOException"
+      │  │  └─ ClassOrInterfaceType "IllegalArgumentException"
+      │  └─ VariableDeclaratorId
+      └─ Block
 {% endhighlight %}
 </td></tr>
 
@@ -1410,81 +1403,81 @@ c -> {}
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-Expression
-  + PrimaryExpression
-    + PrimaryPrefix
-      + LambdaExpression
-        + VariableDeclaratorId "a"
-        + VariableDeclaratorId "b"
-        + Block
+└─ Expression
+   └─ PrimaryExpression
+      └─ PrimaryPrefix
+         └─ LambdaExpression
+            ├─ VariableDeclaratorId "a"
+            ├─ VariableDeclaratorId "b"
+            └─ Block
 
-Expression
-  + PrimaryExpression
-    + PrimaryPrefix
-      + LambdaExpression
-        + VariableDeclaratorId "c"
-        + Block
+└─ Expression
+   └─ PrimaryExpression
+      └─ PrimaryPrefix
+         └─ LambdaExpression
+            ├─ VariableDeclaratorId "c"
+            └─ Block
 
-Expression
-  + PrimaryExpression
-    + PrimaryPrefix
-      + LambdaExpression
-        + FormalParameters
-          + FormalParameter
-            + Annotation "A"
-              + ...
-            + VariableDeclaratorId "d"
-        + Block
+└─ Expression
+   └─ PrimaryExpression
+      └─ PrimaryPrefix
+         └─ LambdaExpression
+            ├─ FormalParameters
+            │  └─ FormalParameter
+            │     ├─ Annotation "A"
+            │     │  └─ ...
+            │     └─ VariableDeclaratorId "d"
+            └─ Block
 
-Expression
-  + PrimaryExpression
-    + PrimaryPrefix
-      + LambdaExpression
-        + FormalParameters
-          + FormalParameter
-            + Annotation "A"
-              + ...
-            + Type
-              + PrimitiveType
-            + VariableDeclaratorId "e"
-        + Block
+└─ Expression
+   └─ PrimaryExpression
+      └─ PrimaryPrefix
+         └─ LambdaExpression
+            ├─ FormalParameters
+            │  └─ FormalParameter
+            │     ├─ Annotation "A"
+            │     │  └─ ...
+            │     ├─ Type
+            │     │  └─ PrimitiveType
+            │     └─ VariableDeclaratorId "e"
+            └─ Block
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-LambdaExpression
-  + LambdaParameters
-    + LambdaParameter
-      + ModifierList
-      + VariableDeclaratorId "a"
-    + LambdaParameter
-      + ModifierList
-      + VariableDeclaratorId "b"
-  + Block
+└─ LambdaExpression
+   ├─ LambdaParameters
+   │  ├─ LambdaParameter
+   │  │  ├─ ModifierList
+   │  │  └─ VariableDeclaratorId "a"
+   │  └─ LambdaParameter
+   │     ├─ ModifierList
+   │     └─ VariableDeclaratorId "b"
+   └─ Block
 
-+ LambdaExpression
-  + LambdaParameters
-    + LambdaParameter
-      + ModifierList
-      + VariableDeclaratorId "c"
-  + Block
+└─ LambdaExpression
+   ├─ LambdaParameters
+   │  └─ LambdaParameter
+   │     ├─ ModifierList
+   │     └─ VariableDeclaratorId "c"
+   └─ Block
 
 
-LambdaExpression
-  + LambdaParameters
-    + LambdaParameter
-      + ModifierList
-        + Annotation "A"
-      + VariableDeclaratorId "d"
-  + Block
+└─ LambdaExpression
+   ├─ LambdaParameters
+   │  └─ LambdaParameter
+   │     ├─ ModifierList
+   │     │  └─ Annotation "A"
+   │     └─ VariableDeclaratorId "d"
+   └─ Block
 
-LambdaExpression
-  + LambdaParameters
-    + LambdaParameter
-      + ModifierList
-        + Annotation "A"
-      + PrimitiveType "int"
-      + VariableDeclaratorId "e"
-  + Block
+└─ LambdaExpression
+   ├─ LambdaParameters
+   │  └─ LambdaParameter
+   │     ├─ ModifierList
+   │     │  └─ Annotation "A"
+   │     ├─ PrimitiveType "int"
+   │     └─ VariableDeclaratorId "e"
+   └─ Block
 {% endhighlight %}
 </td></tr>
 </table>
@@ -1507,25 +1500,25 @@ LambdaExpression
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-FormalParameters[@ParameterCount = 1]
-  + FormalParameter[@ReceiverParameter=true()]
-    + ClassOrInterfaceType
-       + Annotation "A"
-    + VariableDeclaratorId[@Image="this", @ReceiverParameter=true()]
-  + FormalParameter
-    + ClassOrInterfaceType
-    + VariableDeclaratorId "other"
+└─ FormalParameters[ @ParameterCount = 1 ]
+   ├─ FormalParameter[ @ReceiverParameter = true() ]
+   │  ├─ ClassOrInterfaceType
+   │  │  └─ Annotation "A"
+   │  └─ VariableDeclaratorId[ @Image = "this" ][ @ReceiverParameter = true() ]
+   └─ FormalParameter
+      ├─ ClassOrInterfaceType
+      └─ VariableDeclaratorId "other"
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-FormalParameters[@ParameterCount = 1]
-  + ReceiverParameter
-    + ClassOrInterfaceType
-       + Annotation "A"
-  + FormalParameter
-    + ModifierList
-    + ClassOrInterfaceType
-    + VariableDeclaratorId "other"
+└─ FormalParameters[ @ParameterCount = 1 ]
+   ├─ ReceiverParameter
+   │  └─ ClassOrInterfaceType
+   │     └─ Annotation "A"
+   └─ FormalParameter
+      ├─ ModifierList
+      ├─ ClassOrInterfaceType
+      └─ VariableDeclaratorId "other"
 {% endhighlight %}
 </td></tr>
 </table>
@@ -1543,20 +1536,20 @@ FormalParameters[@ParameterCount = 1]
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-+ FormalParameter[ @Varargs = true() ]
-  + Type
-    + PrimitiveType "int"
-  + VariableDeclaratorId "is"
+└─ FormalParameter[ @Varargs = true() ]
+   ├─ Type
+   │  └─ PrimitiveType "int"
+   └─ VariableDeclaratorId "is"
 {% endhighlight %}
 </td>
 <td>
 {% highlight js %}
-+ FormalParameter[ @Varargs = true() ]
-  + ArrayType
-    + PrimitiveType "int"
-    + ArrayDimensions
-      + ArrayTypeDim[ @Varargs = true() ]
-  + VariableDeclaratorId "is"
+└─ FormalParameter[ @Varargs = true() ]
+   ├─ ArrayType
+   │  ├─ PrimitiveType "int"
+   │  └─ ArrayDimensions
+   │     └─ ArrayTypeDim[ @Varargs = true() ]
+   └─ VariableDeclaratorId "is"
 {% endhighlight %}
 </td></tr>
 
@@ -1569,14 +1562,14 @@ n/a (parse error)
 </td>
 <td>
 {% highlight js %}
-+ FormalParameter[ @Varargs = true() ]
-  + ModifierList
-  + ArrayType
-    + PrimitiveType "int"
-    + ArrayDimensions
-      + ArrayTypeDim[ @Varargs = true() ]
-        + Annotation "A"
-  + VariableDeclaratorId "is"
+└─ FormalParameter[ @Varargs = true() ]
+   ├─ ModifierList
+   ├─ ArrayType
+   │  ├─ PrimitiveType "int"
+   │  └─ ArrayDimensions
+   │     └─ ArrayTypeDim[ @Varargs = true() ]
+   │        └─ Annotation "A"
+   └─ VariableDeclaratorId "is"
 {% endhighlight %}
 </td></tr>
 
@@ -1586,25 +1579,25 @@ n/a (parse error)
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-+ FormalParameter[ @Varargs = true() ]
-  + ModifierList
-  + Type
-    + ReferenceType
-      + PrimitiveType "int"
-  + VariableDeclaratorId "is"
+└─ FormalParameter[ @Varargs = true() ]
+   ├─ ModifierList
+   ├─ Type
+   │  └─ ReferenceType
+   │     └─ PrimitiveType "int"
+   └─ VariableDeclaratorId "is"
 {% endhighlight %}
 </td>
 <td>
 {% highlight js %}
-+ FormalParameter[ @Varargs = true() ]
-  + ModifierList
-  + ArrayType
-    + PrimitiveType "int"
-    + ArrayDimensions
-      + ArrayTypeDim
-      + ArrayTypeDim[ @Varargs = true() ]
-        + Annotation "A"
-  + VariableDeclaratorId "is"
+└─ FormalParameter[ @Varargs = true() ]
+   ├─ ModifierList
+   ├─ ArrayType
+   │  ├─ PrimitiveType "int"
+   │  └─ ArrayDimensions
+   │     ├─ ArrayTypeDim
+   │     └─ ArrayTypeDim[ @Varargs = true() ]
+   │        └─ Annotation "A"
+   └─ VariableDeclaratorId "is"
 {% endhighlight %}
 </td></tr>
 </table>
@@ -1625,7 +1618,7 @@ void foo();
 </td><td>
 {% highlight js %}
 └─ MethodDeclaration
-   └─ ResultType[@Void=true()]
+   └─ ResultType[ @Void = true() ]
    └─ MethodDeclarator
       └─ FormalParameters
 {% endhighlight %}
@@ -1645,7 +1638,7 @@ int foo();
 </td><td>
 {% highlight js %}
 └─ MethodDeclaration
-   └─ ResultType[@Void=false()]
+   └─ ResultType[ @Void = false() ]
       └─ Type
          └─ PrimitiveType
    └─ MethodDeclarator
@@ -1681,46 +1674,46 @@ try (InputStream in = new FileInputStream(); OutputStream out = new FileOutputSt
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-TryStatement
-  + ResourceSpecification
-    + Resources
-      + Resource
-        + Type
-          + ReferenceType
-            + ClassOrInterfaceType "InputStream"
-        + VariableDeclaratorId "in"
-        + Expression
-          + ...
-      + Resource
-        + Type
-          + ReferenceType
-            + ClassOrInterfaceType "OutputStream"
-        + VariableDeclaratorId "in"
-        + Expression
-          + ...
+└─ TryStatement
+   └─ ResourceSpecification
+      └─ Resources
+         ├─ Resource
+         │  ├─ Type
+         │  │  └─ ReferenceType
+         │  │     └─ ClassOrInterfaceType "InputStream"
+         │  ├─ VariableDeclaratorId "in"
+         │  └─ Expression
+         │     └─ ...
+         └─ Resource
+            ├─ Type
+            │  └─ ReferenceType
+            │     └─ ClassOrInterfaceType "OutputStream"
+            ├─ VariableDeclaratorId "in"
+            └─ Expression
+               └─ ...
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-TryStatement
-  + ResourceList[@TrailingSemiColon=true()]
-    + Resource[@ConciseResource=false()]
-      + LocalVariableDeclaration
-        + ModifierList
-        + Type
-        + VariableDeclarator
-          + VariableDeclaratorId "in"
-          + ConstructorCall
-            + ClassOrInterfaceType
-            + ArgumentList
-    + Resource[@ConciseResource=false()]
-      + LocalVariableDeclaration
-        + ModifierList
-        + Type
-        + VariableDeclarator
-          + VariableDeclaratorId "in"
-          + ConstructorCall
-            + ClassOrInterfaceType
-            + ArgumentList
+└─ TryStatement
+   └─ ResourceList[ @TrailingSemiColon = true() ]
+      ├─ Resource[ @ConciseResource = false() ]
+      │  └─ LocalVariableDeclaration
+      │     ├─ ModifierList
+      │     ├─ Type
+      │     └─ VariableDeclarator
+      │        ├─ VariableDeclaratorId "in"
+      │        └─ ConstructorCall
+      │           ├─ ClassOrInterfaceType
+      │           └─ ArgumentList
+      └─ Resource[ @ConciseResource = false() ]
+         └─ LocalVariableDeclaration
+            ├─ ModifierList
+            ├─ Type
+            └─ VariableDeclarator
+               ├─ VariableDeclaratorId "in"
+               └─ ConstructorCall
+                  ├─ ClassOrInterfaceType
+                  └─ ArgumentList
 {% endhighlight %}
 </td></tr>
 
@@ -1731,18 +1724,18 @@ try (in) {}
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-TryStatement
-  + ResourceSpecification
-    + Resources
-      + Resource
-        + Name "in"
+└─ TryStatement
+   └─ ResourceSpecification
+      └─ Resources
+         └─ Resource
+            └─ Name "in"
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-TryStatement
-  + ResourceList[@TrailingSemiColon=false()]
-    + Resource[@ConciseResource=true()]
-      + VariableAccess[@VariableName='in']
+└─ TryStatement
+   └─ ResourceList[ @TrailingSemiColon = false() ]
+      └─ Resource[ @ConciseResource = true() ]
+         └─ VariableAccess[ @VariableName = 'in' ]
 {% endhighlight %}
 </td></tr>
 </table>
@@ -1777,41 +1770,47 @@ d--;
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-StatementExpression
-  + PreIncrementExpression
-    + PrimaryExpression
-      + PrimaryPrefix
-        + Name "a"
-StatementExpression
-  + PreDecrementExpression
-    + PrimaryExpression
-      + PrimaryPrefix
-        + Name "b"
-StatementExpression
-  + PostfixExpression "++"
-    + PrimaryExpression
-      + PrimaryPrefix
-        + Name "c"
-StatementExpression
-  + PostfixExpression "--"
-    + PrimaryExpression
-      + PrimaryPrefix
-        + Name "d"
+└─ StatementExpression
+   └─ PreIncrementExpression
+      └─ PrimaryExpression
+         └─ PrimaryPrefix
+            └─ Name "a"
+
+└─ StatementExpression
+   └─ PreDecrementExpression
+      └─ PrimaryExpression
+         └─ PrimaryPrefix
+            └─ Name "b"
+
+└─ StatementExpression
+   └─ PostfixExpression "++"
+      └─ PrimaryExpression
+         └─ PrimaryPrefix
+            └─ Name "c"
+
+└─ StatementExpression
+   └─ PostfixExpression "--"
+      └─ PrimaryExpression
+         └─ PrimaryPrefix
+            └─ Name "d"
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-StatementExpression
-  + UnaryExpression[@Prefix=true()][@Operator="++"]
-    + VariableAccess "a"
-StatementExpression
-  + UnaryExpression[@Prefix=true()][@Operator="--"]
-    + VariableAccess "b"
-StatementExpression
-  + UnaryExpression[@Prefix=false()][@Operator="++"]
-    + VariableAccess "c"
-StatementExpression
-  + UnaryExpression[@Prefix=false()][@Operator="--"]
-    + VariableAccess "d"
+└─ StatementExpression
+   └─ UnaryExpression[ @Prefix = true() ][ @Operator = '++' ]
+      └─ VariableAccess "a"
+
+└─ StatementExpression
+   └─ UnaryExpression[ @Prefix = true() ][ @Operator = '--' ]
+      └─ VariableAccess "b"
+
+└─ StatementExpression
+   └─ UnaryExpression[ @Prefix = false() ][ @Operator = '++' ]
+      └─ VariableAccess "c"
+
+└─ StatementExpression
+   └─ UnaryExpression[ @Prefix = false() ][ @Operator = '--' ]
+      └─ VariableAccess "d"
 {% endhighlight %}
 </td></tr>
 
@@ -1822,24 +1821,24 @@ StatementExpression
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-UnaryExpression[@Image=null]
-  + UnaryExpressionNotPlusMinus[@Image="~"]
-    + PrimaryExpression
-      + PrimaryPrefix
-        + Name "a"
+└─ UnaryExpression[ @Image = null ]
+   └─ UnaryExpressionNotPlusMinus[ @Image = '~' ]
+      └─ PrimaryExpression
+         └─ PrimaryPrefix
+            └─ Name "a"
 
-UnaryExpression[@Image="+"]
-  + PrimaryExpression
-    + PrimaryPrefix
-      + Name "a"
+└─ UnaryExpression[ @Image = '+' ]
+   └─ PrimaryExpression
+      └─ PrimaryPrefix
+         └─ Name "a"
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-+ UnaryExpression[@Operator="~"]
-  + VariableAccess "a"
+└─ UnaryExpression[ @Operator = '~' ]
+   └─ VariableAccess "a"
 
-+ UnaryExpression[@Operator="+"]
-  + VariableAccess "a"
+└─ UnaryExpression[ @Operator = '+' ]
+   └─ VariableAccess "a"
 {% endhighlight %}
 </td></tr>
 </table>
@@ -1865,30 +1864,30 @@ int i = 1 * 2 * 3 % 4;
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-Expression
-  + MultiplicativeExpression "%"
-    + PrimaryExpression
-      + PrimaryPrefix
-        + Literal "1"
-    + PrimaryExpression
-      + PrimaryPrefix
-        + Literal "2"
-    + PrimaryExpression
-      + PrimaryPrefix
-        + Literal "3"
-    + PrimaryExpression
-      + PrimaryPrefix
-        + Literal "4"
+└─ Expression
+   └─ MultiplicativeExpression "%"
+      ├─ PrimaryExpression
+      │  └─ PrimaryPrefix
+      │     └─ Literal "1"
+      ├─ PrimaryExpression
+      │  └─ PrimaryPrefix
+      │     └─ Literal "2"
+      ├─ PrimaryExpression
+      │  └─ PrimaryPrefix
+      │     └─ Literal "3"
+      └─ PrimaryExpression
+         └─ PrimaryPrefix
+            └─ Literal "4"
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-InfixExpression[@Operator='%']
- + InfixExpression[@Operator='*']
-   + InfixExpression[@Operator='*']
-     + NumericLiteral[@ValueAsInt=1]
-     + NumericLiteral[@ValueAsInt=2]
-   + NumericLiteral[@ValueAsInt=3]
- + NumericLiteral[@ValueAsInt=4]
+└─ InfixExpression[ @Operator = '%' ]
+   ├─ InfixExpression[@Operator='*']
+   │  ├─ InfixExpression[@Operator='*']
+   │  │  ├─ NumericLiteral[@ValueAsInt=1]
+   │  │  └─ NumericLiteral[@ValueAsInt=2]
+   │  └─ NumericLiteral[@ValueAsInt=3]
+   └─ NumericLiteral[@ValueAsInt=4]
 {% endhighlight %}
 </td></tr>
 </table>
