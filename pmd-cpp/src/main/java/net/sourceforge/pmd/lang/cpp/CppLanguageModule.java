@@ -33,7 +33,6 @@ public class CppLanguageModule extends CpdOnlyLanguageModuleBase {
     public CppLanguageModule() {
         super(LanguageMetadata.withId("cpp")
                               .name("C++")
-                              .addDefaultVersion("any")
                               .extensions("h", "hpp", "hxx", "c", "cpp", "cxx", "cc", "C"));
     }
 
