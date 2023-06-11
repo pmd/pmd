@@ -402,8 +402,10 @@ XPath 1.0 and 2.0 queries. Here's a list of known incompatibilities:
 
 ##### Annotation nesting
 
-* What: Annotations are now nested within the node, to which they are applied to. E.g. if a method is annotated, the Annotation node is now a child of a ModifierList, inside the MethodDeclaration.
-* Why: Fixes a lot of inconsistencies, where sometimes the annotations were inside the node, and sometimes just somewhere in the parent, with no real structure.
+* What: Annotations are now nested within the node, to which they are applied to. E.g. if a method is annotated,
+  the Annotation node is now a child of a ModifierList, inside the MethodDeclaration.
+* Why: Fixes a lot of inconsistencies, where sometimes the annotations were inside the node, and sometimes just
+  somewhere in the parent, with no real structure.
 * [#1875 [java] Move annotations inside the node they apply to](https://github.com/pmd/pmd/pull/1875)
 
 <table>
@@ -729,10 +731,14 @@ enum E {
 
 ##### Type and ReferenceType
 
-* What: those two nodes are turned into interfaces, implemented by concrete syntax nodes. See their javadoc for exactly what nodes implement them.
+* What: those two nodes are turned into interfaces, implemented by concrete syntax nodes. See their javadoc for
+  exactly what nodes implement them.
 * Why:
-  * some syntactic contexts only allow reference types, other allow any kind of type. If you want to match all types of a program, then matching Type would be the intuitive solution. But in 6.0.x, it wouldn't have sufficed, since in some contexts, no Type node was pushed, only a ReferenceType
-  * Regardless of the original syntactic context, any reference type *is* a type, and searching for ASTType should yield all the types in the tree.
+  * some syntactic contexts only allow reference types, other allow any kind of type. If you want to match all types
+    of a program, then matching Type would be the intuitive solution. But in 6.0.x, it wouldn't have sufficed,
+    since in some contexts, no Type node was pushed, only a ReferenceType
+  * Regardless of the original syntactic context, any reference type *is* a type, and searching for ASTType should
+    yield all the types in the tree.
   * Using interfaces allows to abstract behaviour and make a nicer and safer API.
 
 <table>
@@ -750,13 +756,15 @@ List<String> strs;
       └─ ClassOrInterfaceType "List"
          └─ TypeArguments
             └─ TypeArgument
-               └─ ReferenceType (2) 
+               └─ ReferenceType (2)
                   └─ ClassOrInterfaceType "String"
 {% endhighlight %}
+
 <ol>
-<li><small>Notice that there is a Type node here, since a local var can have a primitive type</small></li>
-<li><small>In contrast, notice that there is no Type here, since only reference types are allowed as type arguments</small></li>
+  <li>Notice that there is a Type node here, since a local var can have a primitive type.</li>
+  <li>In contrast, notice that there is no Type here, since only reference types are allowed as type arguments.</li>
 </ol>
+
 </td>
 <td>
 {% highlight js %}
@@ -764,7 +772,11 @@ List<String> strs;
    └─ TypeArguments
       └─ ClassOrInterfaceType "String"
 {% endhighlight %}
-<small>ClassOrInterfaceType implements ASTReferenceType, which implements ASTType.</small>
+
+<ul>
+  <li>ClassOrInterfaceType implements ASTReferenceType, which implements ASTType.</li>
+</ul>
+
 </td>
 </tr>
 </table>
@@ -786,15 +798,15 @@ String[][] myArray;
 </td>
 <td>
 {% highlight js %}
-└─ Type
-   └─ ReferenceType[ @Array = true() ][ @ArrayDepth = 2 ]
-      └─ ClassOrInterfaceType
+└─ Type[ @ArrayType = true() ]
+   └─ ReferenceType
+      └─ ClassOrInterfaceType[ @Array = true() ][ @ArrayDepth = 2 ] "String"
 {% endhighlight %}
 </td>
 <td>
 {% highlight js %}
 └─ ArrayType[ @ArrayDepth = 2 ]
-   ├─ ClassOrInterfaceType
+   ├─ ClassOrInterfaceType "String"
    └─ ArrayDimensions[ @Size = 2 ]
       ├─ ArrayTypeDim
       └─ ArrayTypeDim
@@ -807,51 +819,65 @@ String[][] myArray;
 String @Annotation1[] @Annotation2[] myArray;
 {% endhighlight %}
 </td><td>
-n/a (parse error)
+{% highlight js %}
+└─ Type[ @ArrayType = true() ]
+   └─ ReferenceType
+      ├─ ClassOrInterfaceType[ @Array = true() ][ @ArrayDepth = 2 ] "String"
+      ├─ Annotation "Annotation1"
+      │  └─ MarkerAnnotation "Annotation1"
+      │     └─ Name "Annotation1"
+      └─ Annotation "Annotation2"
+         └─ MarkerAnnotation "Annotation2"
+            └─ Name "Annotation2"
+{% endhighlight %}
 </td><td>
 {% highlight js %}
-└─ ArrayType
-   ├─ ClassOrInterfaceType
-   └─ ArrayDimensions
+└─ ArrayType[ @ArrayDepth = 2 ]
+   ├─ ClassOrInterfaceType "String"
+   └─ ArrayDimensions[ @Size = 2 ]
       ├─ ArrayTypeDim
-      │  └─ Annotation[ @AnnotationName = 'Annotation1' ]
+      │  └─ Annotation "Annotation1"
+      │     └─ ClassOrInterfaceType "Annotation1"
       └─ ArrayTypeDim
-         └─ Annotation[ @AnnotationName = 'Annotation2' ]
+         └─ Annotation "Annotation2"
+            └─ ClassOrInterfaceType "Annotation2"
 {% endhighlight %}
 </td></tr>
 
 <tr><td>
 {% highlight java %}
-new int[2][]
-new @Bar int[3][2]
-new Foo[] { f, g }
+new int[2][];
+new @Bar int[3][2];
+new Foo[] { f, g };
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-├─ AllocationExpression
-│  ├─ PrimitiveType "int"
-│  └─ ArrayDimsAndInits
-│     └─ Expression
-│        └─ PrimaryExpression
-│           └─ PrimaryPrefix
-│              └─ Literal "2"
-├─ AllocationExpression
-│  ├─ Annotation
-│  │  └─ MarkerAnnotation
-│  │     └─ Name "Bar"
-│  ├─ PrimitiveType "int"
-│  └─ ArrayDimsAndInits
-│     ├─ Expression
-│     │  └─ PrimaryExpression
-│     │     └─ PrimaryPrefix
-│     │        └─ Literal "3"
-│     └─ Expression
-│        └─ PrimaryExpression
-│           └─ PrimaryPrefix
-│              └─ Literal "2"
+└─ AllocationExpression
+   ├─ PrimitiveType "int"
+   └─ ArrayDimsAndInits[ @ArrayDepth = 2 ]
+      └─ Expression
+         └─ PrimaryExpression
+            └─ PrimaryPrefix
+               └─ Literal "2"
+
+└─ AllocationExpression
+   ├─ Annotation "Bar"
+   │  └─ MarkerAnnotation "Bar"
+   │     └─ Name "Bar"
+   ├─ PrimitiveType "int"
+   └─ ArrayDimsAndInits[ @ArrayDepth = 2 ]
+      ├─ Expression
+      │  └─ PrimaryExpression
+      │     └─ PrimaryPrefix
+      │        └─ Literal "3"
+      └─ Expression
+         └─ PrimaryExpression
+            └─ PrimaryPrefix
+               └─ Literal "2"
+
 └─ AllocationExpression
    ├─ ClassOrInterfaceType "Foo"
-   └─ ArrayDimsAndInits
+   └─ ArrayDimsAndInits[ @ArrayDepth = 1 ]
       └─ ArrayInitializer
          ├─ VariableInitializer
          │  └─ Expression
@@ -866,28 +892,31 @@ new Foo[] { f, g }
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-├─ ArrayAllocation
-│  └─ ArrayType
-│     ├─ PrimitiveType "int"
-│     └─ ArrayDimensions
-│        ├─ ArrayDimExpr
-│        │  └─ NumericLiteral "2"
-│        └─ ArrayTypeDim
-├─ ArrayAllocation
-│  └─ ArrayType
-│     ├─ PrimitiveType "int"
-│     │  └─ MarkerAnnotation "Bar"
-│     └─ ArrayDimensions
-│        ├─ ArrayDimExpr
-│        │  └─ NumericLiteral "3"
-│        └─ ArrayDimExpr
-│           └─ NumericLiteral "2"
-└─ ArrayAllocation
-   └─ ArrayType
+└─ ArrayAllocation[ @ArrayDepth = 2 ]
+   └─ ArrayType[ @ArrayDepth = 2 ]
+      ├─ PrimitiveType "int"
+      └─ ArrayDimensions[ @Size = 2]
+         ├─ ArrayDimExpr
+         │  └─ NumericLiteral "2"
+         └─ ArrayTypeDim
+
+└─ ArrayAllocation[ @ArrayDepth = 2 ]
+   └─ ArrayType[ @Array Depth = 2 ]
+      ├─ PrimitiveType "int"
+      │  └─ Annotation "Bar"
+      │     └─ ClassOrInterfaceType "Bar"
+      └─ ArrayDimensions[ @Size = 2 ]
+         ├─ ArrayDimExpr
+         │  └─ NumericLiteral "3"
+         └─ ArrayDimExpr
+            └─ NumericLiteral "2"
+
+└─ ArrayAllocation[ @ArrayDepth = 1 ]
+   └─ ArrayType[ @ArrayDepth = 1 ]
    │  ├─ ClassOrInterfaceType "Foo"
-   │  └─ ArrayDimensions
+   │  └─ ArrayDimensions[ @Size = 1 ]
    │     └─ ArrayTypeDim
-   └─ ArrayInitializer
+   └─ ArrayInitializer[ @Length = 2 ]
       ├─ VariableAccess "f"
       └─ VariableAccess "g"
 {% endhighlight %}
@@ -923,7 +952,7 @@ Map.Entry<K,V>
 {% highlight js %}
 └─ ClassOrInterfaceType "Entry"
    ├─ ClassOrInterfaceType "Map"
-   └─ TypeArguments
+   └─ TypeArguments[ @Size = 2 ]
       ├─ ClassOrInterfaceType "K"
       └─ ClassOrInterfaceType "V"
 {% endhighlight %}
@@ -951,9 +980,9 @@ First<K>.Second.Third<V>
 └─ ClassOrInterfaceType "Third"
    ├─  ClassOrInterfaceType "Second"
    │   └─ ClassOrInterfaceType "First"
-   │      └─ TypeArguments
+   │      └─ TypeArguments[ @Size = 1]
    │         └─ ClassOrInterfaceType "K"
-   └─ TypeArguments
+   └─ TypeArguments[ @Size = 1 ]
       └─ ClassOrInterfaceType "V"
 {% endhighlight %}
 </td></tr>
@@ -980,8 +1009,8 @@ Entry<String, ? extends Node>
       ├─ TypeArgument
       │  └─ ReferenceType
       │     └─ ClassOrInterfaceType "String"
-      └─ TypeArgument[ @UpperBound = true() ]
-         └─ WildcardBounds
+      └─ TypeArgument[ @Wildcard = true() ]
+         └─ WildcardBounds[ @UpperBound = true() ]
             └─ ReferenceType
                └─ ClassOrInterfaceType "Node"
 {% endhighlight %}
@@ -989,7 +1018,7 @@ Entry<String, ? extends Node>
 <td>
 {% highlight js %}
 └─ ClassOrInterfaceType "Entry"
-   └─ TypeArguments
+   └─ TypeArguments[ @Size = 2 ]
       ├─ ClassOrInterfaceType "String"
       └─ WildcardType[ @UpperBound = true() ]
          └─ ClassOrInterfaceType "Node"
@@ -1006,14 +1035,14 @@ List<?>
 {% highlight js %}
 └─ ClassOrInterfaceType "List"
    └─ TypeArguments
-      └─ TypeArgument
+      └─ TypeArgument[ @Wildcard = true() ]
 {% endhighlight %}
 </td>
 <td>
 {% highlight js %}
 └─ ClassOrInterfaceType "List"
-   └─ TypeArguments
-      └─ WildcardType
+   └─ TypeArguments[ @Size = 1 ]
+      └─ WildcardType[ @UpperBound = true() ]
 {% endhighlight %}
 </td>
 </tr>
@@ -1024,7 +1053,9 @@ List<?>
 ##### Import and Package declarations
 
 * What: Remove the Name node in imports and package declaration nodes.
-* Why: Name is a TypeNode, but it's equivalent to AmbiguousName in that it describes nothing about what it represents. The name in an import may represent a method name, a type name, a field name... It's too ambiguous to treat in the parser and could just be the image of the import, or package, or module.
+* Why: Name is a TypeNode, but it's equivalent to AmbiguousName in that it describes nothing about what it
+  represents. The name in an import may represent a method name, a type name, a field name... It's too ambiguous
+  to treat in the parser and could just be the image of the import, or package, or module.
 * [#1888 [java] Remove Name nodes in Import- and PackageDeclaration](https://github.com/pmd/pmd/pull/1888)
 
 <table>
@@ -1093,30 +1124,35 @@ public void set(final int x, int y) { }
 </td><td>
 {% highlight js %}
 └─ ClassOrInterfaceBodyDeclaration
-   ├─ Annotation
-   │  └─ MarkerAnnotation
+   ├─ Annotation "A"
+   │  └─ MarkerAnnotation "A"
    │     └─ Name "A"
-   └─ MethodDeclaration[ @Public = true() ]
-      ├─ ResultType[@Void=true]
+   └─ MethodDeclaration[ @Public = true() ] "set"
+      ├─ ResultType[ @Void = true() ]
       └─ MethodDeclarator
-         └─ FormalParameters
+         └─ FormalParameters[ @Size = 2 ]
             ├─ FormalParameter[ @Final = true() ]
+            │  ├─ Type
+            │  │  └─ PrimitiveType "int"
             │  └─ VariableDeclaratorId "x"
             └─ FormalParameter[ @Final = false() ]
+               ├─ Type
+               │  └─ PrimitiveType "int"
                └─ VariableDeclaratorId "y"
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-└─ MethodDeclaration
-   ├─ ModifierList[ @Modifiers = ( "public" ) ]
+└─ MethodDeclaration[ pmd-java:modifiers() = 'public' ] "set"
+   ├─ ModifierList
    │  └─ Annotation "A"
+   │     └─ ClassOrInterfaceType "A"
    ├─ VoidType
    └─ FormalParameters
-      ├─ FormalParameter
-      │  ├─ ModifierList[ @Modifiers = ("final") ]
+      ├─ FormalParameter[ pmd-java:modifiers() = 'final' ]
+      │  ├─ ModifierList
       │  └─ VariableDeclaratorId "x"
-      └─ FormalParameter
-         ├─ ModifierList[ @Modifiers = () ]
+      └─ FormalParameter[ pmd-java:modifiers() = () ]
+         ├─ ModifierList
          └─ VariableDeclaratorId "y"
 {% endhighlight %}
 </td></tr>
@@ -1131,20 +1167,20 @@ public @A class C {}
 <td>
 {% highlight js %}
 └─ TypeDeclaration
-   ├─ Annotation
-   │  └─ MarkerAnnotation
+   ├─ Annotation "A"
+   │  └─ MarkerAnnotation "A"
    │     └─ Name "A"
-   └─ ClassOrInterfaceDeclaration[ @Public = true() ]
+   └─ ClassOrInterfaceDeclaration[ @Public = true() ] "C"
       └─ ClassOrInterfaceBody
 {% endhighlight %}
 </td>
 <td>
 {% highlight js %}
-└─ TypeDeclaration
-   └─ ClassOrInterfaceDeclaration
-      ├─ ModifierList[ @Modifiers = ( "public" ) ]
-      │  └─ MarkerAnnotation "A"
-      └─ ClassOrInterfaceBody
+└─ ClassOrInterfaceDeclaration[ pmd-java:modifiers() = 'public' ] "C"
+   ├─ ModifierList
+   │  └─ Annotation "A"
+   │     └─ ClassOrInterfaceType "A"
+   └─ ClassOrInterfaceBody
 {% endhighlight %}
 </td>
 </tr>
