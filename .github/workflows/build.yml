@@ -70,3 +70,9 @@ jobs:
       env:
         PMD_CI_SECRET_PASSPHRASE: ${{ secrets.PMD_CI_SECRET_PASSPHRASE }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Upload regression tester report
+      uses: actions/upload-artifact@v3
+      with:
+        name: pmd-regression-tester
+        path: ${{ github.workspace }}/target/pr-*-diff-report-*.tar.gz
+        if-no-files-found: ignore
