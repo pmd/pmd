@@ -30,7 +30,7 @@ function build() {
 
     if pmd_ci_utils_is_fork_or_pull_request; then
         pmd_ci_log_group_start "Build with mvnw"
-            ./mvnw clean install --show-version --errors --batch-mode --no-transfer-progress "${PMD_MAVEN_EXTRA_OPTS[@]}"
+            ./mvnw clean install --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
         pmd_ci_log_group_end
 
         # Execute danger and dogfood only for pull requests in our own repository
@@ -64,7 +64,7 @@ function build() {
 
     if [ "$(pmd_ci_utils_get_os)" != "linux" ]; then
         pmd_ci_log_group_start "Build with mvnw"
-            ./mvnw clean verify --show-version --errors --batch-mode --no-transfer-progress "${PMD_MAVEN_EXTRA_OPTS[@]}"
+            ./mvnw clean verify --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
         pmd_ci_log_group_end
 
         pmd_ci_log_info "Stopping build here, because os is not linux"
@@ -81,7 +81,7 @@ function build() {
 
     if [ "${PMD_CI_BRANCH}" = "experimental-apex-parser" ]; then
         pmd_ci_log_group_start "Build with mvnw"
-            ./mvnw clean install --show-version --errors --batch-mode --no-transfer-progress "${PMD_MAVEN_EXTRA_OPTS[@]}"
+            ./mvnw clean install --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
         pmd_ci_log_group_end
 
         pmd_ci_log_group_start "Creating new baseline for regression tester"
@@ -128,7 +128,7 @@ function build() {
             -Dmaven.source.skip \
             -Dcheckstyle.skip \
             -Dpmd.skip \
-            --show-version --errors --batch-mode --no-transfer-progress \
+            --show-version --errors --batch-mode \
             clean package \
             sonar:sonar -Dsonar.login="${SONAR_TOKEN}" -Psonar
         pmd_ci_log_success "New sonar results: https://sonarcloud.io/dashboard?id=net.sourceforge.pmd%3Apmd"
@@ -144,7 +144,7 @@ function build() {
             -Dcheckstyle.skip \
             -Dpmd.skip \
             -DrepoToken="${COVERALLS_REPO_TOKEN}" \
-            --show-version --errors --batch-mode --no-transfer-progress \
+            --show-version --errors --batch-mode \
             clean package jacoco:report \
             coveralls:report -Pcoveralls
         pmd_ci_log_success "New coveralls result: https://coveralls.io/github/pmd/pmd"
@@ -176,7 +176,7 @@ function pmd_ci_build_run() {
         pmd_ci_log_info "This is a snapshot build"
     fi
 
-    ./mvnw clean deploy -P${mvn_profiles} --show-version --errors --batch-mode --no-transfer-progress "${PMD_MAVEN_EXTRA_OPTS[@]}"
+    ./mvnw clean deploy -P${mvn_profiles} --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
 }
 
 #
@@ -286,7 +286,7 @@ function pmd_ci_dogfood() {
         sed -i 's/pmd-dogfood-config\.xml/pmd-dogfood-config7.xml/' pom.xml
         mpmdVersion=(-Denforcer.skip=true -Dpmd.plugin.version=3.21.1-pmd-7-SNAPSHOT)
     fi
-    ./mvnw verify --show-version --errors --batch-mode --no-transfer-progress "${PMD_MAVEN_EXTRA_OPTS[@]}" \
+    ./mvnw verify --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}" \
         "${mpmdVersion[@]}" \
         -DskipTests \
         -Dmaven.javadoc.skip=true \
