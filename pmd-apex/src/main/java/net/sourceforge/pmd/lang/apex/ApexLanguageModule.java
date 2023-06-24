@@ -30,7 +30,9 @@ public class ApexLanguageModule extends LanguageModuleBase {
                               .addVersion("54")
                               .addVersion("55")
                               .addVersion("56")
-                              .addDefaultVersion("57"));
+                              .addVersion("57")
+                              .addVersion("58")
+                              .addDefaultVersion("59"));
     }
 
     @Override
