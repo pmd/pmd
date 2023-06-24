@@ -74,5 +74,5 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: pmd-regression-tester
-        path: ${{ github.workspace }}/target/pr-*-diff-report-*.tar.gz
+        path: ${{ github.workspace }}/../target/pr-*-diff-report-*.tar.gz
         if-no-files-found: ignore
