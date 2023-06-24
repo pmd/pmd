@@ -981,12 +981,12 @@ public final class DataflowPass {
                                                 ReachingDefsVisitor instanceVisitor,
                                                 ReachingDefsVisitor staticVisitor) {
 
-            // All field initializers + instance initializers
-            SpanInfo ctorHeader = beforeLocal.forkCapturingNonLocal();
             // All static field initializers + static initializers
             SpanInfo staticInit = beforeLocal.forkEmptyNonLocal();
 
             List<ASTBodyDeclaration> ctors = new ArrayList<>();
+            // Those are initializer blocks and instance field initializers
+            List<ASTBodyDeclaration> ctorHeaders = new ArrayList<>();
 
             for (ASTBodyDeclaration declaration : declarations) {
                 final boolean isStatic;
@@ -1007,8 +1007,24 @@ public final class DataflowPass {
                 if (isStatic) {
                     staticInit = staticVisitor.acceptOpt(declaration, staticInit);
                 } else {
-                    ctorHeader = instanceVisitor.acceptOpt(declaration, ctorHeader);
+                    ctorHeaders.add(declaration);
                 }
+            }
+
+            // Static init is done, mark all static fields as escaping
+            useAllSelfFields(staticInit, true, classSymbol, classSymbol.tryGetNode());
+
+
+            // All field initializers + instance initializers
+            // This also contains the static definitions, as the class must be
+            // initialized before an instance is created.
+            SpanInfo ctorHeader = beforeLocal.forkCapturingNonLocal().absorb(staticInit);
+
+            // Static fields get an "initial value" placeholder before starting instance ctors
+            ctorHeader.declareSpecialFieldValues(classSymbol, true);
+
+            for (ASTBodyDeclaration fieldInit : ctorHeaders) {
+                ctorHeader = instanceVisitor.acceptOpt(fieldInit, ctorHeader);
             }
 
             SpanInfo ctorEndState = ctors.isEmpty() ? ctorHeader : null;
@@ -1020,13 +1036,14 @@ public final class DataflowPass {
             }
 
             // assignments that reach the end of any constructor must be considered used
-            useAllSelfFields(staticInit, ctorEndState, classSymbol, classSymbol.tryGetNode());
+            useAllSelfFields(ctorEndState, false, classSymbol, classSymbol.tryGetNode());
         }
 
-        static void useAllSelfFields(SpanInfo staticState, SpanInfo instanceState, JClassSymbol enclosingSym, JavaNode escapingNode) {
+        static void useAllSelfFields(SpanInfo state, boolean onlyStatic, JClassSymbol enclosingSym, JavaNode escapingNode) {
             for (JFieldSymbol field : enclosingSym.getDeclaredFields()) {
-                SpanInfo state = field.isStatic() ? staticState : instanceState;
-                state.assignOutOfScope(field, escapingNode, SpecialAssignmentKind.END_OF_CTOR);
+                if (field.isStatic() == onlyStatic) {
+                    state.assignOutOfScope(field, escapingNode, SpecialAssignmentKind.END_OF_CTOR);
+                }
             }
         }
     }

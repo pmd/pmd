@@ -930,4 +930,17 @@ public class Foo {
             ]]></code>
     </test-code>
 
+    <test-code>
+        <description>Static field used in field initializers</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class PrintStream {
+                private static Object[] EMPTY = {};
+                private Object[] field = EMPTY;
+                public PrintStream() {
+                }
+            }
+            ]]></code>
+    </test-code>
+
 </test-data>

@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
@@ -126,7 +127,7 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
 
         // the field is singular if it is used as a local var in every method.
         for (ASTBodyDeclaration method : usagesByScope.keySet()) {
-            if (method != null && !usagesDontObserveValueBeforeMethodCall(usagesByScope.get(method), dataflow)) {
+            if (method != null && usagesObserveValueBeforeMethodCall(usagesByScope.get(method), dataflow)) {
                 return false;
             }
         }
@@ -134,10 +135,16 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
         return true;
     }
 
-    private @Nullable ASTBodyDeclaration getEnclosingBodyDecl(JavaNode stop, ASTNamedReferenceExpr usage) {
-        return usage.ancestors()
-                    .takeWhile(it -> it != stop)
-                    .first(ASTBodyDeclaration.class);
+    private @Nullable ASTBodyDeclaration getEnclosingBodyDecl(ASTAnyTypeDeclaration enclosingType, ASTNamedReferenceExpr usage) {
+        ASTBodyDeclaration decl = usage.ancestors()
+                                       .takeWhile(it -> it != enclosingType)
+                                       .first(ASTBodyDeclaration.class);
+        if (decl instanceof ASTFieldDeclaration
+            || decl instanceof ASTInitializer) {
+            // then the usage is logically part of the ctors.
+            return enclosingType;
+        }
+        return decl;
     }
 
     private boolean hasEnclosingLambda(JavaNode stop, ASTNamedReferenceExpr usage) {
@@ -146,13 +153,13 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
                     .any(it -> it instanceof ASTLambdaExpression);
     }
 
-    private boolean usagesDontObserveValueBeforeMethodCall(List<ASTNamedReferenceExpr> usages, DataflowResult dataflow) {
+    private boolean usagesObserveValueBeforeMethodCall(List<ASTNamedReferenceExpr> usages, DataflowResult dataflow) {
         for (ASTNamedReferenceExpr usage : usages) {
             ReachingDefinitionSet reaching = dataflow.getReachingDefinitions(usage);
             if (reaching.containsInitialFieldValue()) {
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     }
 }
