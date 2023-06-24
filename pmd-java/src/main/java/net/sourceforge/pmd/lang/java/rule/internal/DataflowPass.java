@@ -64,6 +64,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchFallthroughBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
@@ -315,9 +316,6 @@ public final class DataflowPass {
 
         // The class scope for the "this" reference, used to find fields
         // of this class
-        // null if we're not processing instance/static initializers,
-        // so in methods we don't care about fields
-        // If not null, fields are effectively treated as locals
         private final @NonNull JClassSymbol enclosingClassScope;
         private final boolean inStaticCtx;
 
@@ -509,6 +507,16 @@ public final class DataflowPass {
             return cur;
         }
 
+        @Override
+        public SpanInfo visit(ASTSynchronizedStatement node, SpanInfo data) {
+            // visit lock expr and child block
+            SpanInfo body = super.visit(node, data);
+            // We should assume that all assignments may be observed by other threads
+            // at the end of the critical section.
+            useAllSelfFields(body, JavaAstUtils.isInStaticCtx(node),
+                             enclosingClassScope, enclosingClassScope.tryGetNode());
+            return body;
+        }
 
         @Override
         public SpanInfo visit(ASTTryStatement node, final SpanInfo before) {

@@ -3607,4 +3607,74 @@ public class UnusedAssignmentUnusedVariableFP {
         }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>FP with synchronized</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        class Foo {
+            private static boolean someField;
+            private static final Object lock = new Object();
+            static void method() {
+                synchronized (lock) {
+                    processPendingActive = true;
+                }
+                doSomething();
+                synchronized (lock) {
+                    processPendingActive = false;
+                }
+            }
+            static void doSomething() {
+
+            }
+        }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>FP with synchronized 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        class Foo {
+            private static native void waitForReferencePendingList();
+
+            private static final Object processPendingLock = new Object();
+            private static boolean processPendingActive = false;
+
+            private static void processPendingReferences() {
+                // Only the singleton reference processing thread calls
+                // waitForReferencePendingList() and getAndClearReferencePendingList().
+                // These are separate operations to avoid a race with other threads
+                // that are calling waitForReferenceProcessing().
+                waitForReferencePendingList();
+                Reference<Object> pendingList;
+                synchronized (processPendingLock) {
+                    pendingList = getAndClearReferencePendingList();
+                    processPendingActive = true;
+                }
+                while (pendingList != null) {
+                    Reference<Object> ref = pendingList;
+                    pendingList = ref.discovered;
+                    ref.discovered = null;
+
+                    if (ref instanceof Cleaner) {
+                        ((Cleaner)ref).clean();
+                        // Notify any waiters that progress has been made.
+                        // This improves latency for nio.Bits waiters, which
+                        // are the only important ones.
+                        synchronized (processPendingLock) {
+                            processPendingLock.notifyAll();
+                        }
+                    } else {
+                        ReferenceQueue<? super Object> q = ref.queue;
+                        if (q != ReferenceQueue.NULL) q.enqueue(ref);
+                    }
+                }
+                // Notify any waiters of completion of current round.
+                synchronized (processPendingLock) {
+                    processPendingActive = false;
+                    processPendingLock.notifyAll();
+                }
+            }
+        }
+        ]]></code>
+    </test-code>
 </test-data>
