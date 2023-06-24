@@ -14,6 +14,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.vf.DataType;
 
 /**
@@ -46,7 +47,7 @@ abstract class SalesforceFieldTypes {
      *                            to {@code expression}
      * @return the DataType if it can be determined, else null
      */
-    public DataType getDataType(String expression, String vfFileName, List<String> metadataDirectories) {
+    public DataType getDataType(String expression, FileId vfFileName, List<String> metadataDirectories) {
         String lowerExpression = expression.toLowerCase(Locale.ROOT);
         if (variableNameToVariableType.containsKey(lowerExpression)) {
             // The expression has been previously retrieved
@@ -55,8 +56,8 @@ abstract class SalesforceFieldTypes {
             // The expression has been previously requested, but was not found
             return null;
         } else {
-            // fixme getting a Path from the display name is just wrong.
-            Path vfFilePath = Paths.get(vfFileName).toAbsolutePath();
+            // todo that could be done in the caller
+            Path vfFilePath = Paths.get(vfFileName.getAbsolutePath());
             List<Path> resolvedPaths = new ArrayList<>();
             for (String metadataDirectory : metadataDirectories) {
                 if (Paths.get(metadataDirectory).isAbsolute()) {

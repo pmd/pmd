@@ -11,7 +11,7 @@ package net.sourceforge.pmd.lang.document;
 public class ReadOnlyFileException extends UnsupportedOperationException {
 
     public ReadOnlyFileException(TextFile textFile) {
-        super("Read only: " + textFile.getPathId());
+        super("Read only: " + textFile.getFileId().getAbsolutePath());
     }
 
 }

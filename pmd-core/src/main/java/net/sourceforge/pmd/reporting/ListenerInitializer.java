@@ -9,13 +9,19 @@ import java.util.Collection;
 import java.util.List;
 
 import net.sourceforge.pmd.internal.util.IOUtil;
+import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * An initializer for {@link GlobalAnalysisListener} that gets notified of
  * general analysis parameters.
- * 
- * Each method will be called exactly once, before any events on the {@link GlobalAnalysisListener}
+ *
+ * <p>Each method will be called exactly once, before any events on the
+ * {@link GlobalAnalysisListener}. The order of calls is unspecified,
+ * except that {@link #close()} is called last, and before
+ * {@link GlobalAnalysisListener#startFileAnalysis(TextFile)} is called
+ * for the first time.
  */
 public interface ListenerInitializer extends AutoCloseable {
 
@@ -23,6 +29,17 @@ public interface ListenerInitializer extends AutoCloseable {
      * Notifies the total number of files collected for analysis.
      */
     default void setNumberOfFilesToAnalyze(int totalFiles) {
+        // noop
+    }
+
+    /**
+     * Notify this listener that the given {@link FileNameRenderer} will
+     * be used by default for this analysis. This is mostly only relevant
+     * for {@link Renderer} listeners.
+     *
+     * @param fileNameRenderer The renderer
+     */
+    default void setFileNameRenderer(FileNameRenderer fileNameRenderer) {
         // noop
     }
 
@@ -77,6 +94,13 @@ public interface ListenerInitializer extends AutoCloseable {
             public void setNumberOfFilesToAnalyze(int totalFiles) {
                 for (ListenerInitializer initializer : list) {
                     initializer.setNumberOfFilesToAnalyze(totalFiles);
+                }
+            }
+
+            @Override
+            public void setFileNameRenderer(FileNameRenderer fileNameRenderer) {
+                for (ListenerInitializer initializer : list) {
+                    initializer.setFileNameRenderer(fileNameRenderer);
                 }
             }
 

@@ -19,6 +19,7 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
@@ -34,8 +35,8 @@ class MultiThreadProcessorTest {
         configuration.setIgnoreIncrementalAnalysis(true);
         PmdAnalysis pmd = PmdAnalysis.create(configuration);
         LanguageVersion lv = DummyLanguageModule.getInstance().getDefaultVersion();
-        pmd.files().addFile(TextFile.forCharSeq("abc", "file1-violation.dummy", lv));
-        pmd.files().addFile(TextFile.forCharSeq("DEF", "file2-foo.dummy", lv));
+        pmd.files().addFile(TextFile.forCharSeq("abc", FileId.fromPathLikeString("file1-violation.dummy"), lv));
+        pmd.files().addFile(TextFile.forCharSeq("DEF", FileId.fromPathLikeString("file2-foo.dummy"), lv));
 
         reportListener = new SimpleReportListener();
         GlobalAnalysisListener listener = GlobalAnalysisListener.tee(listOf(
@@ -91,7 +92,7 @@ class MultiThreadProcessorTest {
         public void apply(Node target, RuleContext ctx) {
             count.incrementAndGet();
 
-            if (target.getTextDocument().getDisplayName().contains("violation")) {
+            if (target.getTextDocument().getFileId().getOriginalPath().contains("violation")) {
                 hasViolation = true;
             } else {
                 letTheOtherThreadRun(10);

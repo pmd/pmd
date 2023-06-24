@@ -719,9 +719,8 @@ ASTMethodDeclarator MethodDeclarator() :
         {
           throw new ParseException("FUNCTION must RETURN a value or must be WRAPPED : found \""
 		                              + nextToken.getImage()
-		                              + "\" at line "+nextToken.getBeginLine()
-		                              + ", column "+nextToken.getBeginColumn()
-		                             );
+		                              + "\""
+		                             ).withLocation(nextToken);
         }
       }
        // There is no RETURN for a WRAPPED object
@@ -5428,9 +5427,8 @@ void KEYWORD(String id) #void:
     {
         if (!token.getImage().equalsIgnoreCase(id)) {
             String eol = System.getProperty("line.separator", "\n");
-            throw new ParseException("Encountered \"" + token.getImage() + "\" at line "
-                + token.getBeginLine() + ", column " + token.getBeginColumn() + "." + eol
-                + "Was expecting: " + id);
+            throw new ParseException("Encountered \"" + token.getImage() + "\" "
+                + "Was expecting: " + id).withLocation(token);
         }
     }
 }

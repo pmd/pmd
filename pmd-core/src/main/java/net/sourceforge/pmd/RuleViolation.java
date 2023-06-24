@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.Map;
 
 import net.sourceforge.pmd.annotation.DeprecatedUntil700;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
 
 /**
@@ -29,7 +30,7 @@ public interface RuleViolation {
      * in an unspecified order.
      */
     Comparator<RuleViolation> DEFAULT_COMPARATOR =
-        Comparator.comparing(RuleViolation::getFilename)
+        Comparator.comparing(RuleViolation::getFileId)
                   .thenComparingInt(RuleViolation::getBeginLine)
                   .thenComparingInt(RuleViolation::getBeginColumn)
                   .thenComparing(RuleViolation::getDescription, Comparator.nullsLast(Comparator.naturalOrder()))
@@ -80,12 +81,10 @@ public interface RuleViolation {
     FileLocation getLocation();
 
     /**
-     * Get the source file name in which this violation was identified.
-     *
-     * @return The source file name.
+     * Return the ID of the file where the violation was found.
      */
-    default String getFilename() {
-        return getLocation().getFileName();
+    default FileId getFileId() {
+        return getLocation().getFileId();
     }
 
     /**

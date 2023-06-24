@@ -34,12 +34,12 @@ public class ParserCornerCases17 {
 		short aShort = (short)0b1010000101000101;
 
 		// Some 32-bit 'int' values:
-		int anInt1 = 0b10100001010001011010000101000101;
+		int anInt1 = 0b00000000100000000010100001010001;
 		int anInt2 = 0b101;
 		int anInt3 = 0B101; // The B can be upper or lower case.
 
 		// A 64-bit 'long' value. Note the "L" suffix:
-		long aLong = 0b1010000101000101101000010100010110100001010001011010000101000101L;
+		long aLong = 0b0000000000000000000000000000000000000000100010001000010000010000L;
 
 		int[] phases = {
 			  0b00110001,
@@ -70,14 +70,14 @@ public class ParserCornerCases17 {
 	}
 
 	public void underscoreInNumericLiterals() {
-		long creditCardNumber = 1234_5678_9012_3456L;
+		long creditCardNumber = 1111_2222_3333_4444L;
 		long socialSecurityNumber = 999_99_9999L;
 		float pi = 	3.14_15F;
-		long hexBytes = 0xFF_EC_DE_5E;
-		long hexWords = 0xCAFE_BABE;
+		long hexBytes = 0x00_11_22_33;
+		long hexWords = 0x0001_CAFE;
 		long maxLong = 0x7fff_ffff_ffff_ffffL;
 		byte nybbles = 0b0010_0101;
-		long bytes = 0b11010010_01101001_10010100_10010010;
+		long bytes = 0b00000000_10001000_10000100_00010000;
 
 		int _52 = 1;
 		int x1 = _52;              // This is an identifier, not a numeric literal

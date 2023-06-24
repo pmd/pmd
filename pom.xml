@@ -81,7 +81,7 @@
     </issueManagement>
 
     <properties>
-        <project.build.outputTimestamp>2023-04-29T21:39:33Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2023-05-30T18:15:07Z</project.build.outputTimestamp>
 
         <java.version>8</java.version>
 
@@ -113,7 +113,7 @@
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding} ${extraArgLine}</argLine>
         <extraArgLine /> <!-- empty by default, profiles set it as needed -->
 
-        <pmd.build-tools.version>21</pmd.build-tools.version>
+        <pmd.build-tools.version>22-SNAPSHOT</pmd.build-tools.version>
 
         <pmd-designer.version>7.0.0-rc1</pmd-designer.version>
         <javacc.jar>${settings.localRepository}/net/java/dev/javacc/javacc/${javacc.version}/javacc-${javacc.version}.jar</javacc.jar>

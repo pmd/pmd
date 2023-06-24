@@ -100,9 +100,8 @@ public class TypeResTestRule extends AbstractJavaRule {
     }
 
 
-    @NonNull
-    public String position(JavaNode node) {
-        return "In: " + node.getTextDocument().getDisplayName() + ":" + node.getBeginLine() + ":" + node.getBeginColumn();
+    public @NonNull String position(JavaNode node) {
+        return "In: " + node.getReportLocation().startPosToStringWithFile();
     }
 
     @Override

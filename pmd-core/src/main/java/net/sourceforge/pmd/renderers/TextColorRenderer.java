@@ -130,7 +130,7 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
         for (RuleViolation rv : report.getViolations()) {
             buf.setLength(0);
             numberOfWarnings++;
-            String nextFile = determineFileName(rv.getFilename());
+            String nextFile = determineFileName(rv.getFileId());
             if (!nextFile.equals(lastFile)) {
                 lastFile = nextFile;
                 buf.append(this.yellowBold)
@@ -184,7 +184,7 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
         for (ProcessingError error : report.getProcessingErrors()) {
             buf.setLength(0);
             numberOfErrors++;
-            String nextFile = determineFileName(error.getFile());
+            String nextFile = determineFileName(error.getFileId());
             if (!nextFile.equals(lastFile)) {
                 lastFile = nextFile;
                 buf.append(this.redBold)

@@ -246,6 +246,11 @@
             <fileset file="${parser-file}" />
         </replaceregexp>
 
+        <replaceregexp flags="g">
+            <regexp pattern="throw new ParseException\(\);" />
+            <substitution expression='throw net.sourceforge.pmd.util.AssertionUtil.shouldNotReachHere("consumetoken(-1) should have thrown");' />
+            <fileset file="${parser-file}" />
+        </replaceregexp>
 
         <replaceregexp>
             <regexp pattern="public interface"/>

@@ -43,7 +43,7 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
     private final ColumnDescriptor<RuleViolation>[] allColumns = new ColumnDescriptor[] {
         newColDescriptor("problem", "Problem", (idx, rv, cr) -> Integer.toString(idx)),
         newColDescriptor("package", "Package", (idx, rv, cr) -> rv.getAdditionalInfo().getOrDefault(RuleViolation.PACKAGE_NAME, "")),
-        newColDescriptor("file", "File", (idx, rv, cr) -> determineFileName(rv.getFilename())),
+        newColDescriptor("file", "File", (idx, rv, cr) -> determineFileName(rv.getFileId())),
         newColDescriptor("priority", "Priority", (idx, rv, cr) -> Integer.toString(rv.getRule().getPriority().getPriority())),
         newColDescriptor("line", "Line", (idx, rv, cr) -> Integer.toString(rv.getBeginLine())),
         newColDescriptor("desc", "Description", (idx, rv, cr) -> StringUtils.replaceChars(rv.getDescription(), '\"', '\'')),

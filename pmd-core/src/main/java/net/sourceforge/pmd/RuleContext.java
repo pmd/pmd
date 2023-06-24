@@ -141,7 +141,7 @@ public final class RuleContext {
 
         FileLocation location = node.getReportLocation();
         if (beginLine != -1 && endLine != -1) {
-            location = FileLocation.range(location.getFileName(), TextRange2d.range2d(beginLine, 1, endLine, 1));
+            location = FileLocation.range(location.getFileId(), TextRange2d.range2d(beginLine, 1, endLine, 1));
         }
 
         final Map<String, String> extraVariables = ViolationDecorator.apply(handler.getViolationDecorator(), node);
