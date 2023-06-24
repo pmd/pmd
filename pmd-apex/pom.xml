@@ -69,7 +69,6 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <scope>compile</scope>
         </dependency>
 
         <dependency>

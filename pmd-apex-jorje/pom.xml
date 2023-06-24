@@ -69,7 +69,6 @@
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
         <!-- apex jorje actually depends on 26.0-jre (https://github.com/forcedotcom/salesforcedx-vscode/commit/c27a5d6c91b494f4797e3c1d8782152b091e6233) -->
-        <scope>compile</scope>
     </dependency>
     <dependency>
         <groupId>com.google.j2objc</groupId>
