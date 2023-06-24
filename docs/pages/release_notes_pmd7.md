@@ -544,6 +544,11 @@ Related issue: [[core] Explicitly name all language versions (#4120)](https://gi
   literals were ignored. The new option additional ignores identifiers as well in sequences.
 * See [PR #4470](https://github.com/pmd/pmd/pull/4470) for details.
 
+### Changed: Apex Jorje Updated
+
+With the new version of Apex Jorje, the new language constructs like User Mode Database Operations
+can be parsed now. PMD should now be able to parse Apex code up to version 59.0 (Winter '23).
+
 ## 🌟 New and changed rules
 
 ### New Rules
