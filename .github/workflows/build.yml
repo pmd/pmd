@@ -70,9 +70,12 @@ jobs:
       env:
         PMD_CI_SECRET_PASSPHRASE: ${{ secrets.PMD_CI_SECRET_PASSPHRASE }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Workaround actions/upload-artifact#176
+      run: |
+        echo "artifacts_path=$(realpath ..)" >> $GITHUB_ENV
     - name: Upload regression tester report
       uses: actions/upload-artifact@v3
       with:
         name: pmd-regression-tester
-        path: ${{ github.workspace }}/target/pr-*-diff-report-*.tar.gz
+        path: ${{ env.artifacts_path }}/target/pr-*-diff-report-*.tar.gz
         if-no-files-found: ignore
