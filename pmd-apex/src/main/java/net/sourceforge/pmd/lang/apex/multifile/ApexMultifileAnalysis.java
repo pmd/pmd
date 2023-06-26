@@ -57,7 +57,7 @@ public final class ApexMultifileAnalysis {
         String rootDir = properties.getProperty(ApexLanguageProperties.MULTIFILE_DIRECTORY);
         LOG.debug("MultiFile Analysis created for {}", rootDir);
 
-        Org org=null;
+        Org org = null;
         try {
             // Load the package into the org, this can take some time!
             if (rootDir != null && !rootDir.isEmpty()) {
