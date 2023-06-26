@@ -4,9 +4,12 @@
 
 package net.sourceforge.pmd.lang.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.document.FileId;
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -26,12 +29,12 @@ public final class TokenMgrError extends FileAnalysisException {
      * @param message  Message of the error
      * @param cause    Cause of the error, if any
      */
-    public TokenMgrError(int line, int column, @Nullable String filename, String message, @Nullable Throwable cause) {
+    public TokenMgrError(int line, int column, @Nullable FileId filename, String message, @Nullable Throwable cause) {
         super(message, cause);
         this.line = line;
         this.column = column;
         if (filename != null) {
-            super.setFileName(filename);
+            super.setFileId(filename);
         }
     }
 
@@ -54,8 +57,8 @@ public final class TokenMgrError extends FileAnalysisException {
     }
 
     @Override
-    protected String positionToString() {
-        return super.positionToString() + " at line " + line + ", column " + column;
+    protected @NonNull FileLocation location() {
+        return FileLocation.caret(getFileId(), line, column);
     }
 
     @Override
@@ -66,13 +69,13 @@ public final class TokenMgrError extends FileAnalysisException {
     /**
      * Replace the file name of this error.
      *
-     * @param filename New filename
+     * @param fileId New filename
      *
      * @return A new exception
      */
     @Override
-    public TokenMgrError setFileName(String filename) {
-        super.setFileName(filename);
+    public TokenMgrError setFileId(FileId fileId) {
+        super.setFileId(fileId);
         return this;
     }
 

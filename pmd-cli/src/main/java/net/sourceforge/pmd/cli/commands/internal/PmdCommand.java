@@ -27,6 +27,7 @@ import net.sourceforge.pmd.benchmark.TimingReport;
 import net.sourceforge.pmd.benchmark.TimingReportRenderer;
 import net.sourceforge.pmd.cli.commands.typesupport.internal.PmdLanguageTypeSupport;
 import net.sourceforge.pmd.cli.commands.typesupport.internal.PmdLanguageVersionTypeSupport;
+import net.sourceforge.pmd.cli.commands.typesupport.internal.RulePriorityTypeSupport;
 import net.sourceforge.pmd.cli.internal.CliExitCode;
 import net.sourceforge.pmd.cli.internal.ProgressBarListener;
 import net.sourceforge.pmd.internal.LogMessages;
@@ -173,7 +174,8 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
     @Option(names = "--minimum-priority",
             description = "Rule priority threshold; rules with lower priority than configured here won't be used.%n"
                     + "Valid values (case insensitive): ${COMPLETION-CANDIDATES}",
-            defaultValue = "Low")
+            defaultValue = "Low",
+            completionCandidates = RulePriorityTypeSupport.class, converter = RulePriorityTypeSupport.class)
     public void setMinimumPriority(final RulePriority priority) {
         this.minimumPriority = priority;
     }
@@ -282,7 +284,6 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
         configuration.setIgnoreFilePath(ignoreListPath);
         configuration.setInputUri(uri);
         configuration.setReportFormat(format);
-        configuration.setDebug(debug);
         configuration.setSourceEncoding(encoding.getEncoding().name());
         configuration.setMinimumPriority(minimumPriority);
         configuration.setReportFile(reportFile);

@@ -1116,4 +1116,56 @@ public class Sample {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#4432 - Necessary import for interface method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package p;
+
+            import static p.Top2.foo;
+
+            class Klass implements Top {
+                static {
+                    foo(); // This is Top2.foo
+                }
+
+                static class Child {
+                    {
+                        foo(); // This is also Top2.foo
+                    }
+                }
+            }
+            interface Top {
+                static void foo() {}
+            }
+            interface Top2 {
+                static void foo() {}
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>#4557 - UnnecessaryImport FP with static imports of overloaded methods</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package p;
+
+            import static p.Static.assertThat;
+
+            class Klass {
+                static {
+                    assertThat(1); // This is assertThat(Integer)
+                }
+            }
+            class Static {
+
+                public static Object assertThat(Integer actual) {
+                    return null;
+                }
+
+                public static Object assertThat(Long actual) {
+                    return null;
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>

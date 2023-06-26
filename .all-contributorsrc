@@ -2679,7 +2679,7 @@
       ]
     },
     {
-      "login": "Fernal73",
+      "login": "linusjf",
       "name": "Linus Fernandes",
       "avatar_url": "https://avatars.githubusercontent.com/u/24714685?v=4",
       "profile": "https://linusfernandes.com/",
@@ -7172,6 +7172,24 @@
       "profile": "https://github.com/joaodinissf",
       "contributions": [
         "doc"
+      ]
+    },
+    {
+      "login": "wener-tiobe",
+      "name": "Wener",
+      "avatar_url": "https://avatars.githubusercontent.com/u/85687939?v=4",
+      "profile": "https://github.com/wener-tiobe",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "anastasiia-koba",
+      "name": "Anastasiia Koba",
+      "avatar_url": "https://avatars.githubusercontent.com/u/42797303?v=4",
+      "profile": "https://github.com/anastasiia-koba",
+      "contributions": [
+        "code"
       ]
     }
   ],

@@ -42,7 +42,7 @@
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
-                    <appendAssemblyId>false</appendAssemblyId>
+                    <appendAssemblyId>true</appendAssemblyId>
                     <attach>false</attach>
                     <archiverConfig>
                         <defaultDirectoryMode>493</defaultDirectoryMode> <!-- 0755 -->
@@ -56,7 +56,6 @@
                             <goal>single</goal>
                         </goals>
                         <configuration>
-                            <finalName>${pmd.dist.bin.baseDirectory}</finalName>
                             <descriptors>
                                 <descriptor>src/main/resources/assemblies/pmd-bin.xml</descriptor>
                             </descriptors>
@@ -69,7 +68,6 @@
                             <goal>single</goal>
                         </goals>
                         <configuration>
-                            <finalName>pmd-src-${project.version}</finalName>
                             <descriptors>
                                 <descriptor>src/main/resources/assemblies/pmd-src.xml</descriptor>
                             </descriptors>
@@ -168,6 +166,13 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
+        </dependency>
+
+        <!-- needed for pmd-designer 7.0.0-rc1 -->
+        <dependency>
+            <groupId>com.beust</groupId>
+            <artifactId>jcommander</artifactId>
+            <version>1.48</version>
         </dependency>
 
         <dependency>

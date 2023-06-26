@@ -19,6 +19,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument.TokenDocumentBehavior;
 import net.sourceforge.pmd.lang.document.CpdCompat;
 import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextFile;
 
 public abstract class JavaCCTokenizer implements Tokenizer {
 
@@ -47,7 +48,8 @@ public abstract class JavaCCTokenizer implements Tokenizer {
 
     @Override
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) throws IOException {
-        try (TextDocument textDoc = TextDocument.create(CpdCompat.cpdCompat(sourceCode))) {
+        TextFile textFile = CpdCompat.cpdCompat(sourceCode);
+        try (TextDocument textDoc = TextDocument.create(textFile)) {
             TokenManager<JavaccToken> tokenManager = getLexerForSource(textDoc);
             final TokenFilter<JavaccToken> tokenFilter = getTokenFilter(tokenManager);
             JavaccToken currentToken = tokenFilter.getNextToken();
@@ -56,7 +58,7 @@ public abstract class JavaCCTokenizer implements Tokenizer {
                 currentToken = tokenFilter.getNextToken();
             }
         } catch (FileAnalysisException e) {
-            throw e.setFileName(sourceCode.getFileName());
+            throw e.setFileId(textFile.getFileId());
         } finally {
             tokenEntries.add(TokenEntry.getEOF());
         }

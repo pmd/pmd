@@ -144,4 +144,36 @@ public class AvoidLiteralsInIfConditionWithExpressions {
 }
         ]]></code>
     </test-code>
+
+    <code-fragment id="code-for-4514"><![CDATA[
+public class AvoidLiteralsInIfCondition {
+    private static final int MY_CONSTANT = 1;
+    public void test(int i, String s) {
+        if ("test".equals(s)) {}      // expected violation is missing (false negative)
+        if (i == 1) {}                // expected violation
+
+        // the following literals should be ignored because ignoreExpression=true
+        if (i == MY_CONSTANT && "test".equals(s)) {} // violation for "test" only  (false positive)
+        if (i == 1 && "test".equals(s)) {}           // violation for "test" (false positive)
+    }
+}
+]]></code-fragment>
+
+    <test-code>
+        <description>[java] AvoidLiteralsInIfCondition false positive and negative for String literals when ignoreExpressions=true #4514</description>
+        <rule-property name="ignoreExpressions">true</rule-property>
+        <rule-property name="ignoreMagicNumbers">-1,0</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,5</expected-linenumbers>
+        <code-ref id="code-for-4514"/>
+    </test-code>
+
+    <test-code>
+        <description>[java] AvoidLiteralsInIfCondition false positive and negative for String literals when ignoreExpressions=false #4514</description>
+        <rule-property name="ignoreExpressions">false</rule-property>
+        <rule-property name="ignoreMagicNumbers">-1,0</rule-property>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>4,5,8,9,9</expected-linenumbers>
+        <code-ref id="code-for-4514"/>
+    </test-code>
 </test-data>

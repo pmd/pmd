@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.processor;
+package net.sourceforge.pmd.reporting;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -11,6 +11,8 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
@@ -26,19 +28,18 @@ import net.sourceforge.pmd.cache.AnalysisCache;
 import net.sourceforge.pmd.cache.NoopAnalysisCache;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
-import net.sourceforge.pmd.reporting.GlobalAnalysisListener.ViolationCounterListener;
+import net.sourceforge.pmd.lang.document.FileId;
 
-class GlobalListenerTest {
+class GlobalAnalysisListenerTest {
 
     static final int NUM_DATA_SOURCES = 3;
 
     @Test
-    void testViolationCounter() throws Exception {
+    void testViolationCounter() {
 
         PMDConfiguration config = newConfig();
 
-        ViolationCounterListener listener = new GlobalAnalysisListener.ViolationCounterListener();
+        GlobalAnalysisListener.ViolationCounterListener listener = new GlobalAnalysisListener.ViolationCounterListener();
 
         MyFooRule mockrule = Mockito.spy(MyFooRule.class);
         runPmd(config, listener, mockrule);
@@ -49,12 +50,12 @@ class GlobalListenerTest {
     }
 
     @Test
-    void testViolationCounterOnMulti() throws Exception {
+    void testViolationCounterOnMulti() {
 
         PMDConfiguration config = newConfig();
         config.setThreads(2);
 
-        ViolationCounterListener listener = new GlobalAnalysisListener.ViolationCounterListener();
+        GlobalAnalysisListener.ViolationCounterListener listener = new GlobalAnalysisListener.ViolationCounterListener();
 
         MyFooRule mockrule = Mockito.spy(MyFooRule.class);
         when(mockrule.deepCopy()).thenReturn(mockrule); // the spy cannot track the deep copies
@@ -76,7 +77,7 @@ class GlobalListenerTest {
         MyFooRule rule = new MyFooRule();
         runPmd(config, GlobalAnalysisListener.noop(), rule);
 
-        verify(mockCache).checkValidity(any(), any());
+        verify(mockCache).checkValidity(any(), any(), any());
         verify(mockCache, times(1)).persist();
         verify(mockCache, times(NUM_DATA_SOURCES)).isUpToDate(any());
     }
@@ -92,7 +93,7 @@ class GlobalListenerTest {
         runPmd(config, GlobalAnalysisListener.noop(), rule);
 
         // cache methods are called regardless
-        verify(mockCache).checkValidity(any(), any());
+        verify(mockCache).checkValidity(any(), any(), any());
         verify(mockCache, times(1)).persist();
         verify(mockCache, times(NUM_DATA_SOURCES)).isUpToDate(any());
     }
@@ -111,10 +112,10 @@ class GlobalListenerTest {
             runPmd(config, listener, rule);
         });
 
-        assertEquals("fname1.dummy", exception.getFileName());
+        assertEquals("fname1.dummy", exception.getFileId().getOriginalPath());
 
         // cache methods are called regardless
-        verify(mockCache).checkValidity(any(), any());
+        verify(mockCache).checkValidity(any(), any(), any());
         verify(mockCache, times(1)).persist();
         verify(mockCache, times(1)).isUpToDate(any());
     }
@@ -124,16 +125,16 @@ class GlobalListenerTest {
         PMDConfiguration config = new PMDConfiguration();
         config.setAnalysisCache(new NoopAnalysisCache());
         config.setIgnoreIncrementalAnalysis(true);
-        config.setThreads(1);
+        config.setThreads(0); // no multithreading for this test
         return config;
     }
 
     private void runPmd(PMDConfiguration config, GlobalAnalysisListener listener, Rule rule) {
         try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
             pmd.addRuleSet(RuleSet.forSingleRule(rule));
-            pmd.files().addSourceFile("abc", "fname1.dummy");
-            pmd.files().addSourceFile("abcd", "fname2.dummy");
-            pmd.files().addSourceFile("abcd", "fname21.dummy");
+            pmd.files().addSourceFile(FileId.fromPathLikeString("fname1.dummy"), "abc");
+            pmd.files().addSourceFile(FileId.fromPathLikeString("fname2.dummy"), "abcd");
+            pmd.files().addSourceFile(FileId.fromPathLikeString("fname21.dummy"), "abcd");
             pmd.addListener(listener);
             pmd.performAnalysis();
         }
@@ -144,7 +145,7 @@ class GlobalListenerTest {
 
         @Override
         public void apply(Node node, RuleContext ctx) {
-            if (node.getTextDocument().getDisplayName().contains("1")) {
+            if (node.getTextDocument().getFileId().getFileName().contains("1")) {
                 ctx.addViolation(node);
             }
         }
@@ -156,5 +157,49 @@ class GlobalListenerTest {
         public void apply(Node node, RuleContext ctx) {
             throw new IllegalArgumentException("Something happened");
         }
+    }
+
+    @Test
+    void teeShouldForwardAllEventsSingleListeners() throws Exception {
+        GlobalAnalysisListener mockListener1 = createMockListener();
+        GlobalAnalysisListener teed = GlobalAnalysisListener.tee(Arrays.asList(mockListener1));
+
+        teed.initializer();
+        teed.startFileAnalysis(null);
+        teed.onConfigError(null);
+        teed.close();
+
+        verifyMethods(mockListener1);
+        Mockito.verifyNoMoreInteractions(mockListener1);
+    }
+
+    @Test
+    void teeShouldForwardAllEventsMultipleListeners() throws Exception {
+        GlobalAnalysisListener mockListener1 = createMockListener();
+        GlobalAnalysisListener mockListener2 = createMockListener();
+        GlobalAnalysisListener teed = GlobalAnalysisListener.tee(Arrays.asList(mockListener1, mockListener2));
+
+        teed.initializer();
+        teed.startFileAnalysis(null);
+        teed.onConfigError(null);
+        teed.close();
+
+        verifyMethods(mockListener1);
+        verifyMethods(mockListener2);
+        Mockito.verifyNoMoreInteractions(mockListener1, mockListener2);
+    }
+
+    private GlobalAnalysisListener createMockListener() {
+        GlobalAnalysisListener mockListener = Mockito.mock(GlobalAnalysisListener.class);
+        Mockito.when(mockListener.initializer()).thenReturn(ListenerInitializer.noop());
+        Mockito.when(mockListener.startFileAnalysis(Mockito.any())).thenReturn(FileAnalysisListener.noop());
+        return mockListener;
+    }
+
+    private void verifyMethods(GlobalAnalysisListener listener) throws Exception {
+        Mockito.verify(listener, Mockito.times(1)).initializer();
+        Mockito.verify(listener, Mockito.times(1)).startFileAnalysis(null);
+        Mockito.verify(listener, Mockito.times(1)).onConfigError(null);
+        Mockito.verify(listener, Mockito.times(1)).close();
     }
 }

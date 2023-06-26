@@ -2,6 +2,7 @@ require 'pmdtester'
 require 'time'
 require 'logger'
 require 'fileutils'
+require 'etc'
 
 @logger = Logger.new(STDOUT)
 
@@ -16,6 +17,7 @@ def get_args(base_branch, autogen = TRUE, patch_config = './pmd/.ci/files/all-re
    '--keep-reports',
    '--error-recovery',
    '--baseline-download-url', 'https://pmd-code.org/pmd-regression-tester/',
+   '--threads', Etc.nprocessors.to_s,
    # '--debug',
    ]
 end

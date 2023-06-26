@@ -1471,4 +1471,26 @@ class O {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>FP #4070</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class FP {
+                private static final int BASE = 1;
+                char c = 0 + BASE;  // should not report a warning in this line
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] RedundantFieldInitializer: false positive with lombok's @Value #4458</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Value;
+@Value
+public class Test {
+    String bar = null;   // false positive warning
+}
+        ]]></code>
+    </test-code>
 </test-data>

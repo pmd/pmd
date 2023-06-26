@@ -9,6 +9,7 @@ import net.sourceforge.pmd.lang.apex.ApexJorjeLogging;
 import net.sourceforge.pmd.lang.apex.ApexLanguageProcessor;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.Parser;
+import net.sourceforge.pmd.lang.document.FileLocation;
 
 import apex.jorje.data.Locations;
 import apex.jorje.semantic.ast.compilation.Compilation;
@@ -32,7 +33,8 @@ public final class ApexParser implements Parser {
             final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(task, (ApexLanguageProcessor) task.getLanguageProcessor());
             return treeBuilder.buildTree(astRoot);
         } catch (apex.jorje.services.exception.ParseException e) {
-            throw new ParseException(e).setFileName(task.getFileDisplayName());
+            FileLocation loc = FileLocation.caret(task.getTextDocument().getFileId(), e.getLoc().getLine(), e.getLoc().getColumn());
+            throw new ParseException(e).withLocation(loc);
         }
     }
 }

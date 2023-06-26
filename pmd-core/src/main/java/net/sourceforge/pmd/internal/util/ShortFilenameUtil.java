@@ -9,9 +9,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.cli.PMDParameters;
-
 public final class ShortFilenameUtil {
 
     private ShortFilenameUtil() {
@@ -27,8 +24,6 @@ public final class ShortFilenameUtil {
      * @param inputFileName
      * @return
      *
-     * @see PMDConfiguration#isReportShortNames()
-     * @see PMDParameters#isShortnames()
      */
     public static String determineFileName(List<String> inputPathPrefixes, String inputFileName) {
         for (final String prefix : inputPathPrefixes) {

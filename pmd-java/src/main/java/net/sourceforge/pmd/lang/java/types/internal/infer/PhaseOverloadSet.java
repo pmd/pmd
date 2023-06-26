@@ -167,6 +167,23 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
             JMethodSig sfun = TypeOps.findFunctionalInterfaceMethod(si);
             JMethodSig tfun = TypeOps.findFunctionalInterfaceMethod(ti);
             if (sfun == null || tfun == null) {
+                if (phase.canBox()) {
+                    JTypeMirror stdExprTy = ei.getStandaloneType();
+                    if (stdExprTy != null
+                        // there is a boxing or unboxing conversion happening
+                        && stdExprTy.isPrimitive() != si.isPrimitive()
+                        && stdExprTy.isPrimitive() != ti.isPrimitive()) {
+                        // si or ti is more specific if it only involves
+                        // the boxing/unboxing conversion, without widening
+                        // afterwards.
+                        if (stdExprTy.box().equals(si.box())) {
+                            return true;
+                        } else if (stdExprTy.box().equals(ti.box())) {
+                            return false;
+                        }
+                    }
+                }
+
                 infer.checkConvertibleOrDefer(ctx, si, ti, ei, phase, site);
                 continue;
             }
