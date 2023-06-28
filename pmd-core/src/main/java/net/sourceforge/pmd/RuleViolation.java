@@ -87,6 +87,11 @@ public interface RuleViolation {
         return getLocation().getFileId();
     }
 
+    @Deprecated
+    default String getFilename() {
+        return getFileId().getAbsolutePath();
+    }
+
     /**
      * Get the begin line number in the source file in which this violation was
      * identified.

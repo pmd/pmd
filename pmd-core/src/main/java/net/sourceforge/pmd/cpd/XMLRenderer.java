@@ -7,6 +7,7 @@ package net.sourceforge.pmd.cpd;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
@@ -22,6 +23,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
 import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -30,7 +32,7 @@ import net.sourceforge.pmd.util.StringUtil;
  * @author Romain Pelisse - javax.xml implementation
  *
  */
-public final class XMLRenderer implements CPDReportRenderer {
+public final class XMLRenderer implements CPDReportRenderer, CPDRenderer {
 
     private String encoding;
 
@@ -89,6 +91,22 @@ public final class XMLRenderer implements CPDReportRenderer {
         }
     }
 
+    @Override
+    @Deprecated
+    public void render(Iterator<Match> matches, Writer writer) throws IOException {
+        Document doc = createDocument();
+        Element root = doc.createElement("pmd-cpd");
+        doc.appendChild(root);
+
+        Match match;
+        while (matches.hasNext()) {
+            match = matches.next();
+            root.appendChild(addCodeSnippet(doc,
+                                            addFilesToDuplicationElement(doc, createDuplicationElement(doc, match), match), match));
+        }
+        dumpDocToWriter(doc, writer);
+        writer.flush();
+    }
 
     @Override
     public void render(final CPDReport report, final Writer writer) throws IOException {

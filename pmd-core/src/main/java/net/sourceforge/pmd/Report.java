@@ -137,6 +137,11 @@ public final class Report {
             return file;
         }
 
+        @Deprecated
+        public String getFile() {
+            return getFileId().getAbsolutePath();
+        }
+
         public Throwable getError() {
             return error;
         }
@@ -388,6 +393,12 @@ public final class Report {
         copy.errors.addAll(errors);
         copy.configErrors.addAll(configErrors);
         return copy;
+    }
+
+    @Experimental
+    @Deprecated
+    public Report filterViolations(net.sourceforge.pmd.util.Predicate<RuleViolation> filter) {
+        return filterViolations((Predicate<RuleViolation>) filter);
     }
 
     /**

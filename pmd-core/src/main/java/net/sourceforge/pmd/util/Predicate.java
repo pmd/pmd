@@ -13,7 +13,6 @@ import net.sourceforge.pmd.annotation.Experimental;
  */
 // TODO java8 - replace with java.util.function.Predicate
 @Experimental
-public interface Predicate<T> {
-
-    boolean test(T t);
+@FunctionalInterface
+public interface Predicate<T> extends java.util.function.Predicate<T> {
 }
