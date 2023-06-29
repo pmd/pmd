@@ -516,7 +516,7 @@ public final class StringUtil {
 
             @Override
             String joinWords(List<String> words) {
-                return words.stream().map(s -> s.toLowerCase(Locale.ROOT)).collect(Collectors.joining("_"));
+                return words.stream().map(s -> s.toUpperCase(Locale.ROOT)).collect(Collectors.joining("_"));
             }
         },
         /** camelCase. */

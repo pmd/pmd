@@ -117,6 +117,14 @@ public final class LanguageProcessorRegistry implements AutoCloseable {
     public static LanguageProcessorRegistry create(LanguageRegistry registry,
                                                    Map<Language, LanguagePropertyBundle> languageProperties,
                                                    MessageReporter messageReporter) {
+        return create(registry, languageProperties, messageReporter, System.getenv());
+    }
+
+    // overload for testing to allow mocking the system env vars.
+    static LanguageProcessorRegistry create(LanguageRegistry registry,
+                                            Map<Language, LanguagePropertyBundle> languageProperties,
+                                            MessageReporter messageReporter,
+                                            Map<String, String> env) {
         Set<LanguageProcessor> processors = new HashSet<>();
         for (Language language : registry) {
             LanguagePropertyBundle properties = languageProperties.getOrDefault(language, language.newPropertyBundle());
@@ -126,7 +134,7 @@ public final class LanguageProcessorRegistry implements AutoCloseable {
 
             try {
                 //
-                readLanguagePropertiesFromEnv(properties, messageReporter);
+                readLanguagePropertiesFromEnv(properties, messageReporter, env);
 
                 processors.add(language.createProcessor(properties));
             } catch (IllegalArgumentException e) {
@@ -182,11 +190,11 @@ public final class LanguageProcessorRegistry implements AutoCloseable {
         }
     }
 
-    private static void readLanguagePropertiesFromEnv(LanguagePropertyBundle props, MessageReporter reporter) {
+    private static void readLanguagePropertiesFromEnv(LanguagePropertyBundle props, MessageReporter reporter, Map<String, String> env) {
         for (PropertyDescriptor<?> propertyDescriptor : props.getPropertyDescriptors()) {
 
             String envVarName = getEnvironmentVariableName(props.getLanguage(), propertyDescriptor);
-            String propertyValue = System.getenv(envVarName);
+            String propertyValue = env.get(envVarName);
 
             if (propertyValue != null) {
                 if (props.isPropertyOverridden(propertyDescriptor)) {
