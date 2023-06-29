@@ -43,6 +43,8 @@ The remaining section describes the complete release notes for 7.0.0.
 
 * miscellaneous
   * [#4582](https://github.com/pmd/pmd/issues/4582): \[dist] Download link broken
+* apex
+  * [#4453](https://github.com/pmd/pmd/issues/4453): \[apex] \[7.0-rc1] Exception while initializing Apexlink (Index 34812 out of bounds for length 34812)
 * apex-design
   * [#4596](https://github.com/pmd/pmd/issues/4596): \[apex] ExcessivePublicCount ignores properties
 * java
@@ -401,6 +403,7 @@ Language specific fixes:
     * [#1750](https://github.com/pmd/pmd/pull/1750):   \[apex] Remove apex statistical rules
     * [#2836](https://github.com/pmd/pmd/pull/2836):   \[apex] Remove Apex ProjectMirror
     * [#4427](https://github.com/pmd/pmd/issues/4427): \[apex] ApexBadCrypto test failing to detect inline code
+    * [#4453](https://github.com/pmd/pmd/issues/4453): \[apex] \[7.0-rc1] Exception while initializing Apexlink (Index 34812 out of bounds for length 34812)
 * apex-design
     * [#2667](https://github.com/pmd/pmd/issues/2667): \[apex] Integrate nawforce/ApexLink to build robust Unused rule
     * [#4509](https://github.com/pmd/pmd/issues/4509): \[apex] ExcessivePublicCount doesn't consider inner classes correctly
