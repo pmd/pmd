@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
@@ -25,22 +26,33 @@ import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
 import net.sourceforge.pmd.lang.apex.ApexLanguageProperties;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 
+import com.nawforce.pkgforce.path.PathFactory;
+import com.nawforce.pkgforce.path.PathLike;
+import com.nawforce.runtime.platform.Environment;
+import scala.Option;
+
 class UnusedMethodTest {
+    @TempDir
+    private Path tempDir;
 
     @Test
     void findUnusedMethodsWithSfdxProject() throws Exception {
         Path testProjectDir = Paths.get("src/test/resources/net/sourceforge/pmd/lang/apex/rule/design/UnusedMethod/project1");
         Report report = runRule(testProjectDir);
         assertEquals(1, report.getViolations().size());
-        assertViolation(report.getViolations().get(0), "Foo.cls", 6);
+        assertViolation(report.getViolations().get(0), "Foo.cls", 10); // line 10 is method unusedMethod()
     }
 
     private void assertViolation(RuleViolation violation, String fileName, int lineNumber) {
-        assertEquals("Foo.cls", violation.getFileId().getFileName());
-        assertEquals(6, violation.getBeginLine()); // line 6 is method unusedMethod()
+        assertEquals(fileName, violation.getFileId().getFileName());
+        assertEquals(lineNumber, violation.getBeginLine());
     }
 
     private Report runRule(Path testProjectDir) throws IOException {
+        Option<PathLike> pathLikeOption = Option.apply(PathFactory.apply(tempDir.toString()));
+        Option<Option<PathLike>> cachDirOption = Option.apply(pathLikeOption);
+        Environment.setCacheDirOverride(cachDirOption);
+
         Language apexLanguage = ApexLanguageModule.getInstance();
         LanguageVersion languageVersion = apexLanguage.getDefaultVersion();
         PMDConfiguration configuration = new PMDConfiguration();
