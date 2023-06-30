@@ -1205,26 +1205,26 @@ public class Flat {
 {% highlight js %}
 └─ CompilationUnit
    └─ TypeDeclaration
-      └─ ClassOrInterfaceDeclaration[ @SimpleName = 'Flat' ]
+      └─ ClassOrInterfaceDeclaration "Flat"
          └─ ClassOrInterfaceBody
             └─ ClassOrInterfaceBodyDeclaration
                └─ FieldDeclaration
                   ├─ Type
-                  │  └─ PrimitiveType
+                  │  └─ PrimitiveType "int"
                   └─ VariableDeclarator
-                     └─ VariableDeclaratorId[ @VariableName = 'f' ]
+                     └─ VariableDeclaratorId "f"
 {% endhighlight %}
 </td><td>
 {% highlight js %}
 └─ CompilationUnit
-   └─ ClassOrInterfaceDeclaration[ @SimpleName = 'Flat' ]
+   └─ ClassOrInterfaceDeclaration "Flat"
       ├─ ModifierList
       └─ ClassOrInterfaceBody
          └─ FieldDeclaration
             ├─ ModifierList
-            ├─ PrimitiveType
+            ├─ PrimitiveType "int"
             └─ VariableDeclarator
-               └─ VariableDeclaratorId[ @VariableName = 'f' ]
+               └─ VariableDeclaratorId "f"
 {% endhighlight %}
 </td></tr>
 
@@ -1238,31 +1238,31 @@ public @interface FlatAnnotation {
 {% highlight js %}
 └─ CompilationUnit
    └─ TypeDeclaration
-      └─ AnnotationTypeDeclaration
+      └─ AnnotationTypeDeclaration "FlatAnnotation"
          └─ AnnotationTypeBody
             └─ AnnotationTypeMemberDeclaration
-               └─ AnnotationMethodDeclaration
+               └─ AnnotationMethodDeclaration "value"
                   ├─ Type
                   │  └─ ReferenceType
-                  │     └─ ClassOrInterfaceType
+                  │     └─ ClassOrInterfaceType "String"
                   └─ DefaultValue
                      └─ MemberValue
                         └─ PrimaryExpression
                            └─ PrimaryPrefix
-                              └─ Literal
+                              └─ Literal "\"\""
 {% endhighlight %}
 </td><td>
 {% highlight js %}
 └─ CompilationUnit
-   └─ AnnotationTypeDeclaration
+   └─ AnnotationTypeDeclaration "FlatAnnotation"
       ├─ ModifierList
       └─ AnnotationTypeBody
-         └─ MethodDeclaration
+         └─ MethodDeclaration "value"
             ├─ ModifierList
-            ├─ ClassOrInterfaceType
+            ├─ ClassOrInterfaceType "String"
             ├─ FormalParameters
             └─ DefaultValue
-               └─ StringLiteral
+               └─ StringLiteral "\"\""
 {% endhighlight %}
 </td></tr>
 </table>
@@ -1336,7 +1336,55 @@ open module com.example.foo {
 </td></tr>
 </table>
 
-##### TODO: new node for anonymous class
+##### Anonymous class declarations
+
+* What: A separate node type `AnonymousClassDeclaration` is introduced for anonymous classes.
+* Why: Unify the AST for type declarations including anonymous class declaration in constructor calls
+  and enums.
+* [#905 [java] Add new node for anonymous class declaration](https://github.com/pmd/pmd/issues/905)
+* [#1759 [java] New expression and type grammar](https://github.com/pmd/pmd/pull/1759)
+
+<table>
+<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><td>
+{% highlight java %}
+Object anonymous = new Object() {  };
+{% endhighlight %}
+</td>
+<td>
+{% highlight js %}
+└─ LocalVariableDeclaration
+   ├─ Type
+   │  └─ ReferenceType
+   │     └─ ClassOrInterfaceType[ @Image = 'Object' ]
+   └─ VariableDeclarator
+      ├─ VariableDeclaratorId "anonymous"
+      └─ VariableInitializer
+         └─ Expression
+            └─ PrimaryExpression
+               └─ PrimaryPrefix
+                  └─ AllocationExpression
+                     ├─ ClassOrInterfaceType[ @AnonymousClass = true() ][ @Image = 'Object' ]
+                     ├─ Arguments
+                     └─ ClassOrInterfaceBody
+{% endhighlight %}
+</td>
+<td>
+{% highlight js %}
+└─ LocalVariableDeclaration
+   ├─ ModifierList
+   ├─ ClassOrInterfaceType[ @SimpleName = 'Object' ]
+   └─ VariableDeclarator
+      ├─ VariableDeclaratorId[ @Name = 'anonymous' ]
+      └─ ConstructorCall
+         ├─ ClassOrInterfaceType[ @SimpleName = 'Object' ]
+         ├─ ArgumentList
+         └─ AnonymousClassDeclaration
+            ├─ ModifierList
+            └─ ClassOrInterfaceBody
+{% endhighlight %}
+</td></tr>
+</table>
 
 #### Method and Constructor declarations
 
@@ -1344,7 +1392,7 @@ open module com.example.foo {
 
 * What: Simplify and align the grammar used for method and constructor declarations. The methods in an annotation
   type are now also method declarations.
-* Why: The method declaration had an nested node "MethodDeclarator", which was not available for constructor
+* Why: The method declaration had a nested node "MethodDeclarator", which was not available for constructor
   declarations. This made it difficult to write rules, that concern both methods and constructors without
   explicitly differentiate between these two.
 * [#2034 [java] Align method and constructor declaration grammar](https://github.com/pmd/pmd/pull/2034)
@@ -1365,48 +1413,60 @@ public class Sample {
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-├─ ConstructorDeclaration "Sample"
-│  ├─ FormalParameters
-│  │  └─ FormalParameter ...
-│  ├─ NameList
-│  │  └─ Name "Exception"
-│  ├─ ExplicitConstructorInvocation
-│  │  └─ Arguments
-│  └─ BlockStatement
-│     └─ Statement ...
-└─ MethodDeclaration
-   ├─ ResultType
-   ├─ MethodDeclarator "greet"
-   │  └─ FormatParameters
-   │     └─ FormalParameter ...
-   ├─ NameList
-   │  └─ Name "Exception"
-   └─ Block
-      └─ BlockStatement
-         └─ Statement ...
+└─ ClassOrInterfaceBody
+   ├─ ClassOrInterfaceBodyDeclaration
+   │  └─ ConstructorDeclaration[ @Image = 'Sample' ]
+   │     ├─ FormalParameters
+   │     │  └─ FormalParameter
+   │     │     ├─ ...
+   │     ├─ NameList
+   │     │  └─ Name[ @Image = 'Exception' ]
+   │     ├─ ExplicitConstructorInvocation
+   │     │  └─ Arguments
+   │     └─ BlockStatement
+   │        └─ Statement
+   │           └─ ...
+   └─ ClassOrInterfaceBodyDeclaration
+      └─ MethodDeclaration[ @Name = 'greet' ]
+         ├─ ResultType
+         ├─ MethodDeclarator[ @Image = 'greet' ]
+         │  └─ FormalParameters
+         │     └─ FormalParameter
+         │        ├─ ...
+         ├─ NameList
+         │  └─ Name[ @Image = 'Exception' ]
+         └─ Block
+            └─ BlockStatement
+               └─ Statement
+                  └─ ...
 {% endhighlight %}
 </td>
 <td>
 {% highlight js %}
-├─ ConstructorDeclaration "Sample"
-│  ├─ ModifierList
-│  ├─ FormalParameters
-│  │  └─ FormalParameter ...
-│  ├─ ThrowsList
-│  │  └─ ClassOrInterfaceType ...
-│  └─ Block
-│     ├─ ExplicitConstructorInvocation
-│     │  └─ ArgumentList
-│     └─ ExpressionStatement
-└─ MethodDeclaration "greet"
-   ├─ ModifierList
-   ├─ VoidType
-   ├─ FormalParameters
-   │  └─ FormalParameter ...
-   ├─ ThrowsList
-   │  └─ ClassOrInterfaceType ...
-   └─ Block
-      └─ ExpressionStatement
+└─ ClassOrInterfaceBody
+   ├─ ConstructorDeclaration[ @Name = 'Sample' ]
+   │  ├─ ModifierList
+   │  ├─ FormalParameters
+   │  │  └─ FormalParameter
+   │  │     ├─ ...
+   │  ├─ ThrowsList
+   │  │  └─ ClassOrInterfaceType[ @SimpleName = 'Exception' ]
+   │  └─ Block
+   │     ├─ ExplicitConstructorInvocation
+   │     │  └─ ArgumentList
+   │     └─ ExpressionStatement
+   │        └─ ...
+   └─ MethodDeclaration[ @Name = 'greet' ]
+      ├─ ModifierList
+      ├─ VoidType
+      ├─ FormalParameters
+      │  └─ FormalParameter
+      │     ├─ ...
+      ├─ ThrowsList
+      │  └─ ClassOrInterfaceType[ @SimpleName = 'Exception' ]
+      └─ Block
+         └─ ExpressionStatement
+            └─ ...
 {% endhighlight %}
 </td></tr>
 
@@ -1418,23 +1478,23 @@ public @interface MyAnnotation {
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-└─ AnnotationTypeDeclaration "MyAnnotation"
+└─ AnnotationTypeDeclaration[ @SimpleName = 'MyAnnotation' ]
    └─ AnnotationTypeBody
       └─ AnnotationTypeMemberDeclaration
-         └─ AnnotationMethodDeclaration "value"
+         └─ AnnotationMethodDeclaration[ @Image = 'value' ]
             ├─ Type ...
             └─ DefaultValue ...
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-└─ AnnotationTypeDeclaration "MyAnnotation"
+└─ AnnotationTypeDeclaration[ @SimpleName = 'MyAnnotation' ]
+   ├─ ModifierList
    └─ AnnotationTypeBody
-      └─ AnnotationTypeMemberDeclaration
-         └─ MethodDeclaration
-            ├─ ModifierList
-            ├─ PrimitiveType
-            ├─ FormalParameters ...
-            └─ DefaultValue ...
+      └─ MethodDeclaration[ @Name = 'value' ]
+         ├─ ModifierList
+         ├─ PrimitiveType
+         ├─ FormalParameters
+         └─ DefaultValue ...
 {% endhighlight %}
 </td></tr>
 </table>
@@ -1464,14 +1524,16 @@ try {
    ├─ Block
    └─ CatchStatement
       ├─ FormalParameter
-      │  ├─ Annotation "A"
+      │  ├─ Annotation[ @AnnotationName = 'A' ]
+      │  │  └─ MarkerAnnotation[ @AnnotationName = 'A' ]
+      │  │     └─ Name[ @Image = 'A' ]
       │  ├─ Type
       │  │  └─ ReferenceType
-      │  │     └─ ClassOrInterfaceType "IOException"
+      │  │     └─ ClassOrInterfaceType[ @Image = 'IOException' ]
       │  ├─ Type
       │  │  └─ ReferenceType
-      │  │     └─ ClassOrInterfaceType "IllegalArgumentException"
-      │  └─ VariableDeclaratorId
+      │  │     └─ ClassOrInterfaceType[ @Image = 'IllegalArgumentException' ]
+      │  └─ VariableDeclaratorId[ @Name = 'e' ]
       └─ Block
 {% endhighlight %}
 </td>
@@ -1482,104 +1544,110 @@ try {
    └─ CatchClause
       ├─ CatchParameter
       │  ├─ ModifierList
-      │  │  └─ Annotation "A"
+      │  │  └─ Annotation[ @SimpleName = 'A' ]
+      │  │     └─ ClassOrInterfaceType[ @SimpleName = 'A' ]
       │  ├─ UnionType
-      │  │  └─ ClassOrInterfaceType "IOException"
-      │  │  └─ ClassOrInterfaceType "IllegalArgumentException"
-      │  └─ VariableDeclaratorId
+      │  │  ├─ ClassOrInterfaceType[ @SimpleName = 'IOException' ]
+      │  │  └─ ClassOrInterfaceType[ @SimpleName = 'IllegalArgumentException' ]
+      │  └─ VariableDeclaratorId[ @Name = 'e' ]
       └─ Block
 {% endhighlight %}
 </td></tr>
 
 <tr><td>
 {% highlight java %}
-(a, b) -> {}
-c -> {} 
-(@A var d) -> {}
-(@A int e) -> {}
+(a, b) -> {};
+c -> {};
+(@A var d) -> {};
+(@A int e) -> {};
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-└─ Expression
+└─ StatementExpression
    └─ PrimaryExpression
       └─ PrimaryPrefix
          └─ LambdaExpression
-            ├─ VariableDeclaratorId "a"
-            ├─ VariableDeclaratorId "b"
+            ├─ VariableDeclaratorId[ @Name = 'a' ]
+            ├─ VariableDeclaratorId[ @Name = 'b' ]
             └─ Block
 
-└─ Expression
+└─ StatementExpression
    └─ PrimaryExpression
       └─ PrimaryPrefix
          └─ LambdaExpression
-            ├─ VariableDeclaratorId "c"
+            ├─ VariableDeclaratorId[ @Name = 'c' ]
             └─ Block
 
-└─ Expression
+└─ StatementExpression
    └─ PrimaryExpression
       └─ PrimaryPrefix
          └─ LambdaExpression
             ├─ FormalParameters
             │  └─ FormalParameter
-            │     ├─ Annotation "A"
-            │     │  └─ ...
-            │     └─ VariableDeclaratorId "d"
+            │     ├─ Annotation[ @AnnotationName = 'A' ]
+            │     │  └─ MarkerAnnotation[ @AnnotationName = 'A' ]
+            │     │     └─ Name[ @Image = 'A' ]
+            │     └─ VariableDeclaratorId[ @Name = 'd' ]
             └─ Block
 
-└─ Expression
+└─ StatementExpression
    └─ PrimaryExpression
       └─ PrimaryPrefix
          └─ LambdaExpression
             ├─ FormalParameters
             │  └─ FormalParameter
-            │     ├─ Annotation "A"
-            │     │  └─ ...
+            │     ├─ Annotation[ @AnnotationName = 'A' ]
+            │     │  └─ MarkerAnnotation[ @AnnotationName = 'A' ]
+            │     │     └─ Name[ @Image = 'A' ]
             │     ├─ Type
-            │     │  └─ PrimitiveType
-            │     └─ VariableDeclaratorId "e"
+            │     │  └─ PrimitiveType[ @Image = 'int' ]
+            │     └─ VariableDeclaratorId[ @Name = 'e' ]
             └─ Block
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-└─ LambdaExpression
-   ├─ LambdaParameters
-   │  ├─ LambdaParameter
-   │  │  ├─ ModifierList
-   │  │  └─ VariableDeclaratorId "a"
-   │  └─ LambdaParameter
-   │     ├─ ModifierList
-   │     └─ VariableDeclaratorId "b"
-   └─ Block
+└─ ExpressionStatement
+   └─ LambdaExpression
+      ├─ LambdaParameterList
+      │  ├─ LambdaParameter
+      │  │  ├─ ModifierList
+      │  │  └─ VariableDeclaratorId[ @Name = 'a' ]
+      │  └─ LambdaParameter
+      │     ├─ ModifierList
+      │     └─ VariableDeclaratorId[ @Name = 'b' ]
+      └─ Block
 
-└─ LambdaExpression
-   ├─ LambdaParameters
-   │  └─ LambdaParameter
-   │     ├─ ModifierList
-   │     └─ VariableDeclaratorId "c"
-   └─ Block
+└─ ExpressionStatement
+   └─ LambdaExpression
+      ├─ LambdaParameterList
+      │  └─ LambdaParameter
+      │     ├─ ModifierList
+      │     └─ VariableDeclaratorId[ @Name = 'c' ]
+      └─ Block
 
+└─ ExpressionStatement
+   └─ LambdaExpression
+      ├─ LambdaParameterList
+      │  └─ LambdaParameter
+      │     ├─ ModifierList
+      │     │  └─ Annotation[ @SimpleName = 'A' ]
+      │     │     └─ ClassOrInterfaceType[ @SimpleName = 'A' ]
+      │     └─ VariableDeclaratorId[ @Name = 'd' ]
+      └─ Block
 
-└─ LambdaExpression
-   ├─ LambdaParameters
-   │  └─ LambdaParameter
-   │     ├─ ModifierList
-   │     │  └─ Annotation "A"
-   │     └─ VariableDeclaratorId "d"
-   └─ Block
-
-└─ LambdaExpression
-   ├─ LambdaParameters
-   │  └─ LambdaParameter
-   │     ├─ ModifierList
-   │     │  └─ Annotation "A"
-   │     ├─ PrimitiveType "int"
-   │     └─ VariableDeclaratorId "e"
-   └─ Block
+└─ ExpressionStatement
+   └─ LambdaExpression
+      ├─ LambdaParameterList
+      │  └─ LambdaParameter
+      │     ├─ ModifierList
+      │     │  └─ Annotation[ @SimpleName = 'A' ]
+      │     │     └─ ClassOrInterfaceType[ @SimpleName = 'A' ]
+      │     ├─ PrimitiveType[ @Kind = 'int' ]
+      │     └─ VariableDeclaratorId[ @Name = 'e' ]
+      └─ Block
 {% endhighlight %}
 </td></tr>
 </table>
-
-
 
 ##### New node for explicit receiver parameter
 
@@ -1593,29 +1661,36 @@ c -> {}
 <tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
 <tr><td>
 {% highlight java %}
-(@A Foo this, Foo other)
+void myMethod(@A Foo this, Foo other) {}
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-└─ FormalParameters[ @ParameterCount = 1 ]
-   ├─ FormalParameter[ @ReceiverParameter = true() ]
-   │  ├─ ClassOrInterfaceType
-   │  │  └─ Annotation "A"
-   │  └─ VariableDeclaratorId[ @Image = "this" ][ @ReceiverParameter = true() ]
+└─ FormalParameters[ @Size = 1 ]
+   ├─ FormalParameter[ @ExplicitReceiverParameter = true() ]
+   │  ├─ Annotation[ @AnnotationName = 'A' ]
+   │  │  └─ MarkerAnnotation[ @AnnotationName = 'A' ]
+   │  │     └─ Name[ @Image = 'A' ]
+   │  ├─ Type
+   │  │  └─ ReferenceType
+   │  │     └─ ClassOrInterfaceType[ @Image = 'Foo' ]
+   │  └─ VariableDeclaratorId[ @Image = 'this' ][ @ExplicitReceiverParameter = true() ]
    └─ FormalParameter
-      ├─ ClassOrInterfaceType
-      └─ VariableDeclaratorId "other"
+      ├─ Type
+      │  └─ ReferenceType
+      │     └─ ClassOrInterfaceType[ @Image = 'Foo' ]
+      └─ VariableDeclaratorId[ @Image = 'other' ]
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-└─ FormalParameters[ @ParameterCount = 1 ]
+└─ FormalParameters[ @Size = 1 ]
    ├─ ReceiverParameter
-   │  └─ ClassOrInterfaceType
-   │     └─ Annotation "A"
+   │  └─ ClassOrInterfaceType[ @SimpleName = 'Foo' ]
+   │     └─ Annotation[ @SimpleName = 'A' ]
+   │        └─ ClassOrInterfaceType[ @SimpleName = 'A' ]
    └─ FormalParameter
       ├─ ModifierList
-      ├─ ClassOrInterfaceType
-      └─ VariableDeclaratorId "other"
+      ├─ ClassOrInterfaceType[ @SimpleName = 'Foo' ]
+      └─ VariableDeclaratorId[ @Name = 'other' ]
 {% endhighlight %}
 </td></tr>
 </table>
@@ -1629,76 +1704,83 @@ c -> {}
 <tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
 <tr><td>
 {% highlight java %}
-(int... is)
+void myMethod(int... is) {}
 {% endhighlight %}
 </td><td>
 {% highlight js %}
 └─ FormalParameter[ @Varargs = true() ]
    ├─ Type
-   │  └─ PrimitiveType "int"
-   └─ VariableDeclaratorId "is"
+   │  └─ PrimitiveType[ @Image = 'int' ]
+   └─ VariableDeclaratorId[ @Image = 'is' ]
 {% endhighlight %}
-</td>
-<td>
-{% highlight js %}
-└─ FormalParameter[ @Varargs = true() ]
-   ├─ ArrayType
-   │  ├─ PrimitiveType "int"
-   │  └─ ArrayDimensions
-   │     └─ ArrayTypeDim[ @Varargs = true() ]
-   └─ VariableDeclaratorId "is"
-{% endhighlight %}
-</td></tr>
-
-<tr><td>
-{% highlight java %}
-(int @A ... is)
-{% endhighlight %}
-</td><td>
-n/a (parse error)
 </td>
 <td>
 {% highlight js %}
 └─ FormalParameter[ @Varargs = true() ]
    ├─ ModifierList
    ├─ ArrayType
-   │  ├─ PrimitiveType "int"
+   │  ├─ PrimitiveType[ @Kind = 'int' ]
    │  └─ ArrayDimensions
    │     └─ ArrayTypeDim[ @Varargs = true() ]
-   │        └─ Annotation "A"
-   └─ VariableDeclaratorId "is"
+   └─ VariableDeclaratorId[ @Name = 'is' ]
 {% endhighlight %}
 </td></tr>
 
 <tr><td>
 {% highlight java %}
-(int[]... is)
+void myMethod(int @A ... is) {}
 {% endhighlight %}
 </td><td>
 {% highlight js %}
 └─ FormalParameter[ @Varargs = true() ]
-   ├─ ModifierList
    ├─ Type
+   │  └─ PrimitiveType[ @Image = 'int' ]
+   ├─ Annotation[ @AnnotationName = 'A' ]
+   │  └─ MarkerAnnotation[ @AnnotationName = 'A' ]
+   │     └─ Name[ @Image = 'A' ]
+   └─ VariableDeclaratorId[ @Image = is ]
+{% endhighlight %}
+</td>
+<td>
+{% highlight js %}
+└─ FormalParameter[ @Varargs = true() ]
+   ├─ ModifierList
+   ├─ ArrayType
+   │  ├─ PrimitiveType[ @Kind = 'int' ]
+   │  └─ ArrayDimensions
+   │     └─ ArrayTypeDim[ @Varargs = true() ]
+   │        └─ Annotation[ @SimpleName = 'A' ]
+   │           └─ ClassOrInterfaceType[ @SimpleName = 'A' ]
+   └─ VariableDeclaratorId[ @Name = 'is' ]
+{% endhighlight %}
+</td></tr>
+
+<tr><td>
+{% highlight java %}
+void myMethod(int[]... is) {}
+{% endhighlight %}
+</td><td>
+{% highlight js %}
+└─ FormalParameter[ @Varargs = true() ]
+   ├─ Type[ @ArrayType = true() ]
    │  └─ ReferenceType
-   │     └─ PrimitiveType "int"
-   └─ VariableDeclaratorId "is"
+   │     └─ PrimitiveType[ @Image = 'int' ]
+   └─ VariableDeclaratorId[ @Image = 'is' ]
 {% endhighlight %}
 </td>
 <td>
 {% highlight js %}
 └─ FormalParameter[ @Varargs = true() ]
    ├─ ModifierList
-   ├─ ArrayType
-   │  ├─ PrimitiveType "int"
-   │  └─ ArrayDimensions
+   ├─ ArrayType[ @ArrayDepth = 2 ]
+   │  ├─ PrimitiveType[ @Kind = 'int' ]
+   │  └─ ArrayDimensions[ @Size = 2 ]
    │     ├─ ArrayTypeDim
    │     └─ ArrayTypeDim[ @Varargs = true() ]
-   │        └─ Annotation "A"
-   └─ VariableDeclaratorId "is"
+   └─ VariableDeclaratorId[ @Name = 'is' ]
 {% endhighlight %}
 </td></tr>
 </table>
-
 
 ##### Add void type node to replace ResultType
 
@@ -1714,16 +1796,16 @@ void foo();
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-└─ MethodDeclaration
-   └─ ResultType[ @Void = true() ]
+└─ MethodDeclaration[ @Name = 'foo' ]
+   ├─ ResultType[ @Void = true() ]
    └─ MethodDeclarator
       └─ FormalParameters
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-└─ MethodDeclaration
-   └─ ModifierList
-   └─ VoidType
+└─ MethodDeclaration[ @Name = 'foo' ]
+   ├─ ModifierList
+   ├─ VoidType
    └─ FormalParameters
 {% endhighlight %}
 </td></tr>
@@ -1734,18 +1816,18 @@ int foo();
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-└─ MethodDeclaration
-   └─ ResultType[ @Void = false() ]
-      └─ Type
-         └─ PrimitiveType
+└─ MethodDeclaration[ @Name = 'foo' ]
+   ├─ ResultType[ @Void = false() ]
+   │  └─ Type
+   │     └─ PrimitiveType[ @Image = 'int' ]
    └─ MethodDeclarator
       └─ FormalParameters
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-└─ MethodDeclaration
-   └─ ModifierList
-   └─ PrimitiveType
+└─ MethodDeclaration[ @Name = 'foo' ]
+   ├─ ModifierList
+   ├─ PrimitiveType[ @Kind = 'int' ]
    └─ FormalParameters
 {% endhighlight %}
 </td></tr>
