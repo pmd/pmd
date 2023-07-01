@@ -3677,4 +3677,40 @@ public class UnusedAssignmentUnusedVariableFP {
         }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>Problem with assignment to field</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+
+    private boolean withIssues = false;
+
+    interface SkipMode {
+
+        boolean isDeclared();
+    }
+
+    SkipMode getSkipModeForModule(String mod) {
+
+    }
+    static boolean something() {}
+
+    void foo() {
+        if (!getSkipModeForModule("junixsocket-rmi").isDeclared()) {
+            try {
+                Class.forName("java.rmi.Remote");
+            } catch (ClassNotFoundException e) {
+                System.setProperty("selftest.skip.junixsocket-rmi", "force_auto");
+                withIssues = true;
+            }
+
+            if (!something()) {
+                System.setProperty("selftest.skip.junixsocket-rmi", "force_auto");
+                withIssues = true;
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
