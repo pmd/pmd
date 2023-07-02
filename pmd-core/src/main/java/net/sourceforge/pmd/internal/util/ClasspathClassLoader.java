@@ -13,6 +13,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.StringTokenizer;
 
 import org.apache.commons.lang3.StringUtils;
@@ -105,6 +106,21 @@ public class ClasspathClassLoader extends URLClassLoader {
             + "[["
             + StringUtils.join(getURLs(), ":")
             + "] parent: " + getParent() + ']';
+    }
+
+    @Override
+    public URL getResource(String name) {
+        // Override to make it child-first. This is the method used by
+        // pmd-java's type resolution to fetch classes, instead of loadClass.
+        Objects.requireNonNull(name);
+
+        URL url = findResource(name);
+        if (url == null) {
+            // note this will actually call back into findResource, but
+            // we can't avoid this as the super call
+            return super.getResource(name);
+        }
+        return url;
     }
 
     @Override
