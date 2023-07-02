@@ -116,8 +116,9 @@ public class ClasspathClassLoader extends URLClassLoader {
 
         URL url = findResource(name);
         if (url == null) {
-            // note this will actually call back into findResource, but
-            // we can't avoid this as the super call
+            // note this will actually call back into this.findResource, but
+            // we can't avoid this as the super implementation uses JDK internal
+            // stuff that we can't copy down here.
             return super.getResource(name);
         }
         return url;
