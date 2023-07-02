@@ -943,4 +943,73 @@ public class Foo {
             ]]></code>
     </test-code>
 
+    <test-code disabled="true">
+        <!-- This is disabled because it looks legit to the rule, we can't know that doLoop is used concurrently. -->
+        <description>#4616 SingularField false-positive with field used concurrently</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+// AFTIPCTopologyWatcher.java
+public class AFTIPCTopologyWatcher {
+
+    private Channel channel;
+    private Selector selector;
+    private boolean doLoop;
+    private final AtomicBoolean running = new AtomicBoolean(false);
+
+
+    public final void runLoop() throws IOException {
+        if (!running.compareAndSet(false, true)) {
+            throw new IllegalStateException("Already running");
+        }
+
+        ByteBuffer buf = ByteBuffer.allocate(64);
+
+        try {
+            doLoop = true;
+            while (!Thread.interrupted() && doLoop) {
+                int n = selector.select();
+                if (!doLoop) {
+                    break;
+                }
+                if (n > 0) {
+                    channel.receive(buf);
+                    Event event = readFromBuffer((ByteBuffer) buf.flip());
+                    onEvent(event);
+                    buf.clear();
+                }
+            }
+        } finally {
+            running.set(false);
+        }
+    }
+
+    static Event readFromBuffer(ByteBuffer b) { }
+
+    protected void onEvent(Event event) throws IOException {
+    }
+
+
+    public final void stopLoop() {
+        doLoop = false;
+        selector.wakeup();
+    }
+
+    interface Event { }
+
+    interface Channel {
+
+        void receive(ByteBuffer buf);
+    }
+    interface Selector {
+        int select();
+        void wakeup();
+    }
+}
+            ]]></code>
+    </test-code>
+
 </test-data>
