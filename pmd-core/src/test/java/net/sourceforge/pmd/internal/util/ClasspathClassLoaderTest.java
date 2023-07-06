@@ -6,6 +6,7 @@ package net.sourceforge.pmd.internal.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
@@ -100,6 +101,9 @@ class ClasspathClassLoaderTest {
                     assertClassFile(data, 17);
                 }
             }
+
+            // should not fail for resources without a package
+            assertNull(loader.getResourceAsStream("ClassInDefaultPackage.class"));
         }
     }
 
