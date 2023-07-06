@@ -56,7 +56,7 @@ The semantic analysis roughly works like so:
 3. The last pass resolves the types of expressions, which performs overload resolution on method calls, and type inference.
 
 TODO describe 
-* why we need auxclasspath
+* why we need auxclasspath, and how to put the java classes onto the auxclasspath (jre/lib/rt.jar or lib/jrt-fs.jar).
 * how disambiguation can fail
 
 ## Type and symbol APIs
