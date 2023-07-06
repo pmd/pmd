@@ -1836,6 +1836,51 @@ int foo();
 #### Statements
 
 ##### TODO: statements are flattened (no BlockStatement, Statement nodes)
+
+<table>
+<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><td>
+{% highlight java %}
+int i;
+i = 1;
+{% endhighlight %}
+</td><td>
+{% highlight js %}
+└─ Block
+   ├─ BlockStatement
+   │  └─ LocalVariableDeclaration
+   │     ├─ Type
+   │     │  └─ PrimitiveType
+   │     └─ VariableDeclarator
+   │        └─ VariableDeclaratorId
+   └─ BlockStatement
+      └─ Statement
+         └─ StatementExpression
+            ├─ PrimaryExpression
+            │  └─ PrimaryPrefix
+            │     └─ Name
+            ├─ AssignmentOperator
+            └─ Expression
+               └─ PrimaryExpression
+                  └─ PrimaryPrefix
+                     └─ Literal
+{% endhighlight %}
+</td><td>
+{% highlight js %}
+└─ Block
+   ├─ LocalVariableDeclaration
+   │  ├─ ModifierList
+   │  ├─ PrimitiveType
+   │  └─ VariableDeclarator
+   │     └─ VariableDeclaratorId
+   └─ ExpressionStatement
+      └─ AssignmentExpression
+         ├─ VariableAccess
+         └─ NumericLiteral
+{% endhighlight %}
+</td></tr>
+</table>
+
 ##### TODO: new node for ForeachStatement
 ##### TODO: New nodes for ExpressionStatement, LocalClassStatement
 
