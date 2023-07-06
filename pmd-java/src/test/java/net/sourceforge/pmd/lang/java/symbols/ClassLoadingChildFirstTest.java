@@ -9,7 +9,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
 
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -33,12 +32,16 @@ class ClassLoadingChildFirstTest {
      * a {@link TypeSystem} prefers that custom class to the one on the
      * bootstrap classpath. The functionality under test is actually in
      * {@link ClasspathClassLoader}.
+     *
+     * <p>The jar file "custom_java_lang.jar" also contains the sources
+     * for the custom class {@code java.lang.Void}.
+     * </p>
      */
     @Test
     void testClassLoading() {
-        String jarPath = getClass().getPackage().getName().replace('.', '/') + "/custom_java_lang.jar";
-        URL url = Thread.currentThread().getContextClassLoader().getResource(jarPath);
-        Path file = Paths.get(url.getPath());
+        Path file = Paths.get("src/test/resources",
+                getClass().getPackage().getName().replace('.', '/'),
+                "custom_java_lang.jar");
 
         PMDConfiguration config = new PMDConfiguration();
         config.prependAuxClasspath(file.toAbsolutePath().toString());
@@ -49,7 +52,6 @@ class ClassLoadingChildFirstTest {
         List<JMethodSymbol> declaredMethods = voidClass.getSymbol().getDeclaredMethods();
         assertThat(declaredMethods, hasSize(1));
         assertThat(declaredMethods.get(0), hasProperty("simpleName", equalTo("customMethodOnJavaLangVoid")));
-
     }
 
 }
