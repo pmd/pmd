@@ -154,6 +154,10 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
         return this.parseLock.getCloseable();
     }
 
+    boolean isFailed() {
+        return this.parseLock.isFailed();
+    }
+
     @Override
     public AsmSymbolResolver getResolver() {
         return resolver;

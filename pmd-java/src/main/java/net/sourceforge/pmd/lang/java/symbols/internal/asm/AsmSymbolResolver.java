@@ -126,13 +126,34 @@ public class AsmSymbolResolver implements SymbolResolver {
     public void close() throws Exception {
         closed = true;
         Exception e = null;
+        LOG.trace("Closing resolver with entries for {} stubs", knownStubs.size());
+        int numParsed = 0;
+        int numClosed = 0;
+        int numFailed = 0;
+        int numFailedQueries = 0;
         for (ClassStub stub : knownStubs.values()) {
             Closeable closeable = stub.getCloseable();
             if (closeable != null) {
                 LOG.trace("Closing stream for {}", stub);
                 e = IOUtil.closeAndAccumulate(closeable, e);
+                numClosed++;
+            } else if (stub == failed) {
+                // Note that failed queries may occur under normal circumstances.
+                // Eg package names may be queried just to figure
+                // out whether they're packages or classes.
+                numFailedQueries++;
+            } else if (!stub.isFailed()) {
+                numParsed++;
+            } else {
+                numFailed++;
             }
         }
+        LOG.trace("Of {} distinct queries to the classloader, {} queries failed, "
+                      + "{} classes were found and parsed successfully, "
+                      + "{} were found but failed parsing (!), "
+                      + "{} were found but never parsed.",
+                  knownStubs.size(), numFailedQueries, numParsed, numFailed, numClosed);
+
         knownStubs.clear();
         if (e != null) {
             throw e;
