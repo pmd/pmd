@@ -1665,32 +1665,32 @@ void myMethod(@A Foo this, Foo other) {}
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-└─ FormalParameters[ @Size = 1 ]
+└─ FormalParameters (1)
    ├─ FormalParameter[ @ExplicitReceiverParameter = true() ]
-   │  ├─ Annotation[ @AnnotationName = 'A' ]
-   │  │  └─ MarkerAnnotation[ @AnnotationName = 'A' ]
-   │  │     └─ Name[ @Image = 'A' ]
+   │  ├─ Annotation "A"
+   │  │  └─ MarkerAnnotation "A"
+   │  │     └─ Name "A"
    │  ├─ Type
    │  │  └─ ReferenceType
-   │  │     └─ ClassOrInterfaceType[ @Image = 'Foo' ]
-   │  └─ VariableDeclaratorId[ @Image = 'this' ][ @ExplicitReceiverParameter = true() ]
+   │  │     └─ ClassOrInterfaceType "Foo"
+   │  └─ VariableDeclaratorId[ @ExplicitReceiverParameter = true() ] "this"
    └─ FormalParameter
       ├─ Type
       │  └─ ReferenceType
-      │     └─ ClassOrInterfaceType[ @Image = 'Foo' ]
-      └─ VariableDeclaratorId[ @Image = 'other' ]
+      │     └─ ClassOrInterfaceType "Foo"
+      └─ VariableDeclaratorId "other"
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-└─ FormalParameters[ @Size = 1 ]
+└─ FormalParameters (1)
    ├─ ReceiverParameter
-   │  └─ ClassOrInterfaceType[ @SimpleName = 'Foo' ]
-   │     └─ Annotation[ @SimpleName = 'A' ]
-   │        └─ ClassOrInterfaceType[ @SimpleName = 'A' ]
+   │  └─ ClassOrInterfaceType "Foo"
+   │     └─ Annotation "A"
+   │        └─ ClassOrInterfaceType "A"
    └─ FormalParameter
       ├─ ModifierList
-      ├─ ClassOrInterfaceType[ @SimpleName = 'Foo' ]
-      └─ VariableDeclaratorId[ @Name = 'other' ]
+      ├─ ClassOrInterfaceType "Foo"
+      └─ VariableDeclaratorId "other"
 {% endhighlight %}
 </td></tr>
 </table>
@@ -1710,8 +1710,8 @@ void myMethod(int... is) {}
 {% highlight js %}
 └─ FormalParameter[ @Varargs = true() ]
    ├─ Type
-   │  └─ PrimitiveType[ @Image = 'int' ]
-   └─ VariableDeclaratorId[ @Image = 'is' ]
+   │  └─ PrimitiveType "int"
+   └─ VariableDeclaratorId "is"
 {% endhighlight %}
 </td>
 <td>
@@ -1719,10 +1719,10 @@ void myMethod(int... is) {}
 └─ FormalParameter[ @Varargs = true() ]
    ├─ ModifierList
    ├─ ArrayType
-   │  ├─ PrimitiveType[ @Kind = 'int' ]
+   │  ├─ PrimitiveType "int"
    │  └─ ArrayDimensions
    │     └─ ArrayTypeDim[ @Varargs = true() ]
-   └─ VariableDeclaratorId[ @Name = 'is' ]
+   └─ VariableDeclaratorId "is"
 {% endhighlight %}
 </td></tr>
 
@@ -1734,11 +1734,11 @@ void myMethod(int @A ... is) {}
 {% highlight js %}
 └─ FormalParameter[ @Varargs = true() ]
    ├─ Type
-   │  └─ PrimitiveType[ @Image = 'int' ]
-   ├─ Annotation[ @AnnotationName = 'A' ]
-   │  └─ MarkerAnnotation[ @AnnotationName = 'A' ]
-   │     └─ Name[ @Image = 'A' ]
-   └─ VariableDeclaratorId[ @Image = is ]
+   │  └─ PrimitiveType "int"
+   ├─ Annotation "A"
+   │  └─ MarkerAnnotation "A"
+   │     └─ Name "A"
+   └─ VariableDeclaratorId "is"
 {% endhighlight %}
 </td>
 <td>
@@ -1746,12 +1746,12 @@ void myMethod(int @A ... is) {}
 └─ FormalParameter[ @Varargs = true() ]
    ├─ ModifierList
    ├─ ArrayType
-   │  ├─ PrimitiveType[ @Kind = 'int' ]
+   │  ├─ PrimitiveType "int"
    │  └─ ArrayDimensions
    │     └─ ArrayTypeDim[ @Varargs = true() ]
-   │        └─ Annotation[ @SimpleName = 'A' ]
-   │           └─ ClassOrInterfaceType[ @SimpleName = 'A' ]
-   └─ VariableDeclaratorId[ @Name = 'is' ]
+   │        └─ Annotation "A"
+   │           └─ ClassOrInterfaceType "A"
+   └─ VariableDeclaratorId "is"
 {% endhighlight %}
 </td></tr>
 
@@ -1764,20 +1764,20 @@ void myMethod(int[]... is) {}
 └─ FormalParameter[ @Varargs = true() ]
    ├─ Type[ @ArrayType = true() ]
    │  └─ ReferenceType
-   │     └─ PrimitiveType[ @Image = 'int' ]
-   └─ VariableDeclaratorId[ @Image = 'is' ]
+   │     └─ PrimitiveType "int"
+   └─ VariableDeclaratorId "is"
 {% endhighlight %}
 </td>
 <td>
 {% highlight js %}
 └─ FormalParameter[ @Varargs = true() ]
    ├─ ModifierList
-   ├─ ArrayType[ @ArrayDepth = 2 ]
-   │  ├─ PrimitiveType[ @Kind = 'int' ]
-   │  └─ ArrayDimensions[ @Size = 2 ]
+   ├─ ArrayType (2)
+   │  ├─ PrimitiveType "int"
+   │  └─ ArrayDimensions (2)
    │     ├─ ArrayTypeDim
    │     └─ ArrayTypeDim[ @Varargs = true() ]
-   └─ VariableDeclaratorId[ @Name = 'is' ]
+   └─ VariableDeclaratorId "is"
 {% endhighlight %}
 </td></tr>
 </table>
@@ -1796,14 +1796,14 @@ void foo();
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-└─ MethodDeclaration[ @Name = 'foo' ]
+└─ MethodDeclaration "foo"
    ├─ ResultType[ @Void = true() ]
    └─ MethodDeclarator
       └─ FormalParameters
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-└─ MethodDeclaration[ @Name = 'foo' ]
+└─ MethodDeclaration "foo"
    ├─ ModifierList
    ├─ VoidType
    └─ FormalParameters
@@ -1816,18 +1816,18 @@ int foo();
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-└─ MethodDeclaration[ @Name = 'foo' ]
+└─ MethodDeclaration "foo"
    ├─ ResultType[ @Void = false() ]
    │  └─ Type
-   │     └─ PrimitiveType[ @Image = 'int' ]
+   │     └─ PrimitiveType "int"
    └─ MethodDeclarator
       └─ FormalParameters
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-└─ MethodDeclaration[ @Name = 'foo' ]
+└─ MethodDeclaration "foo"
    ├─ ModifierList
-   ├─ PrimitiveType[ @Kind = 'int' ]
+   ├─ PrimitiveType "int"
    └─ FormalParameters
 {% endhighlight %}
 </td></tr>
@@ -1835,7 +1835,16 @@ int foo();
 
 #### Statements
 
-##### TODO: statements are flattened (no BlockStatement, Statement nodes)
+##### Statements are flattened
+
+* What: Statements are flattened. There are no superfluous BlockStatement and Statement nodes anymore.
+  All children of a {% jdoc java::lang.java.ast.ASTBlock %} are by definition
+  {% jdoc java::lang.java.ast.ASTStatement %}s, which is now an interface implemented by all statements.
+* Why: This simplifies the tree traversal. The removed nodes BlockStatement and Statement didn't add any
+  additional information. We only need a Statement abstraction. BlockStatement was used to enforce, that no
+  variable or local class declaration is found alone as the child of e.g. an unbraced if, else, for, etc.
+  This is a parser-only distinction that's not that useful for analysis later on.
+* [[java] Improve statement grammar #2164](https://github.com/pmd/pmd/pull/2164)
 
 <table>
 <tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
@@ -1850,43 +1859,150 @@ i = 1;
    ├─ BlockStatement
    │  └─ LocalVariableDeclaration
    │     ├─ Type
-   │     │  └─ PrimitiveType
+   │     │  └─ PrimitiveType "int"
    │     └─ VariableDeclarator
-   │        └─ VariableDeclaratorId
+   │        └─ VariableDeclaratorId "i"
    └─ BlockStatement
       └─ Statement
          └─ StatementExpression
             ├─ PrimaryExpression
             │  └─ PrimaryPrefix
-            │     └─ Name
-            ├─ AssignmentOperator
+            │     └─ Name "i"
+            ├─ AssignmentOperator "="
             └─ Expression
                └─ PrimaryExpression
                   └─ PrimaryPrefix
-                     └─ Literal
+                     └─ Literal "1"
 {% endhighlight %}
 </td><td>
 {% highlight js %}
 └─ Block
    ├─ LocalVariableDeclaration
    │  ├─ ModifierList
-   │  ├─ PrimitiveType
+   │  ├─ PrimitiveType "int"
    │  └─ VariableDeclarator
-   │     └─ VariableDeclaratorId
+   │     └─ VariableDeclaratorId "i"
    └─ ExpressionStatement
-      └─ AssignmentExpression
-         ├─ VariableAccess
-         └─ NumericLiteral
+      └─ AssignmentExpression "="
+         ├─ VariableAccess "i"
+         └─ NumericLiteral "1"
 {% endhighlight %}
 </td></tr>
 </table>
 
-##### TODO: new node for ForeachStatement
-##### TODO: New nodes for ExpressionStatement, LocalClassStatement
+##### New node for For-each statements
+
+* What: New node for For-each statements: ForeachStatement instead of ForStatement.
+* Why: This makes it a lot easier to distinguish in the AST between For-loops and For-Each-loops. E.g. some
+  rules only apply to one or the other, and it was complicated to write a rule that works with both different
+  subtrees (for loops have additional children ForInit and ForUpdate)
+* [[java] Improve statement grammar #2164](https://github.com/pmd/pmd/pull/2164)
+
+<table>
+<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><td>
+{% highlight java %}
+for (String s : List.of("a", "b")) { }
+{% endhighlight %}
+</td><td>
+{% highlight js %}
+└─ BlockStatement
+   └─ Statement
+      └─ ForStatement[ @Foreach = true() ]
+         ├─ LocalVariableDeclaration
+         │  ├─ Type
+         │  │  └─ ReferenceType
+         │  │     └─ ClassOrInterfaceType "String"
+         │  └─ VariableDeclarator
+         │     └─ VariableDeclaratorId "s"
+         ├─ Expression
+         │  └─ PrimaryExpression
+         │     ├─ PrimaryPrefix
+         │     │  └─ Name "List.of"
+         │     └─ PrimarySuffix
+         │        └─ Arguments (2)
+         │           └─ ArgumentList (2)
+         │              ├─ Expression
+         │              │  └─ PrimaryExpression
+         │              │     └─ PrimaryPrefix
+         │              │        └─ Literal[ @StringLiteral = true() ][ @Image = '"a"' ]
+         │              └─ Expression
+         │                 └─ PrimaryExpression
+         │                    └─ PrimaryPrefix
+         │                       └─ Literal[ @StringLiteral = true() ][ @Image = '"b"' ]
+         └─ Statement
+            └─ Block
+{% endhighlight %}
+</td><td>
+{% highlight js %}
+└─ Block
+   └─ ForeachStatement
+      ├─ LocalVariableDeclaration
+      │  ├─ ModifierList
+      │  ├─ ClassOrInterfaceType "String"
+      │  └─ VariableDeclarator "s"
+      │     └─ VariableDeclaratorId "s"
+      ├─ MethodCall "of"
+      │  ├─ TypeExpression
+      │  │  └─ ClassOrInterfaceType "List"
+      │  └─ ArgumentList (2)
+      │     ├─ StringLiteral[ @Image = '"a"' ]
+      │     └─ StringLiteral[ @Image = '"b"' ]
+      └─ Block
+{% endhighlight %}
+</td></tr>
+</table>
+
+##### New nodes for ExpressionStatement, LocalClassStatement
+
+* What: Renamed StatementExpression to ExpressionStatement. Added new node LocalClassStatement.
+* Why: ExpressionStatement is now a {% jdoc java::lang.java.ast.ASTStatement %}, that can be used as a child in a
+  block. It itself has only one child, which is some kind of {% jdoc java::lang.java.ast.ASTExpression %},
+  which can be really any kind of expression (like assignment).
+  In order to allow local class declarations as part of a block, we introduced {% jdoc java::lang.java.ast.ASTLocalClassStatement %}
+  which is a statement that carries a type declaration. Now blocks are just a list of statements.
+  This allows us to have two distinct hierarchies for expressions and statements.
+* [[java] Improve statement grammar #2164](https://github.com/pmd/pmd/pull/2164)
+
+<table>
+<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><td>
+{% highlight java %}
+i++;
+class LocalClass {}
+{% endhighlight %}
+</td><td>
+{% highlight js %}
+└─ Block
+   ├─ BlockStatement
+   │  └─ Statement
+   │     └─ StatementExpression
+   │        └─ PostfixExpression "++"
+   │           └─ PrimaryExpression
+   │              └─ PrimaryPrefix
+   │                 └─ Name "i"
+   └─ BlockStatement
+      └─ ClassOrInterfaceDeclaration[ @Local = true() ] "LocalClass"
+         └─ ClassOrInterfaceBody
+{% endhighlight %}
+</td><td>
+{% highlight js %}
+└─ Block
+   ├─ ExpressionStatement
+   │  └─ UnaryExpression "++"
+   │     └─ VariableAccess "i"
+   └─ LocalClassStatement
+      └─ ClassOrInterfaceDeclaration "LocalClass"
+         ├─ ModifierList
+         └─ ClassOrInterfaceBody
+{% endhighlight %}
+</td></tr>
+</table> 
 
 ##### Improve try-with-resources grammar
+
 * What: The AST representation of a try-with-resources statement has been simplified.
-  It uses now LocalVariableDeclaration unless it is a concise try-with-resources grammar.
+  It uses now LocalVariableDeclaration unless it is a concise try-with-resources.
 * Why: Simpler integration try-with-resources into symboltable and type resolution.
 * [#1897 [java] Improve try-with-resources grammar](https://github.com/pmd/pmd/pull/1897)
 
@@ -1912,32 +2028,32 @@ try (InputStream in = new FileInputStream(); OutputStream out = new FileOutputSt
             ├─ Type
             │  └─ ReferenceType
             │     └─ ClassOrInterfaceType "OutputStream"
-            ├─ VariableDeclaratorId "in"
+            ├─ VariableDeclaratorId "out"
             └─ Expression
                └─ ...
 {% endhighlight %}
 </td><td>
 {% highlight js %}
 └─ TryStatement
-   └─ ResourceList[ @TrailingSemiColon = true() ]
-      ├─ Resource[ @ConciseResource = false() ]
+   └─ ResourceList[ @TrailingSemiColon = true() ] (2)
+      ├─ Resource[ @ConciseResource = false() ] "in"
       │  └─ LocalVariableDeclaration
       │     ├─ ModifierList
-      │     ├─ Type
+      │     ├─ ClassOrInterfaceType "InputStream"
       │     └─ VariableDeclarator
       │        ├─ VariableDeclaratorId "in"
       │        └─ ConstructorCall
-      │           ├─ ClassOrInterfaceType
-      │           └─ ArgumentList
-      └─ Resource[ @ConciseResource = false() ]
+      │           ├─ ClassOrInterfaceType "FileInputStream"
+      │           └─ ArgumentList (0)
+      └─ Resource[ @ConciseResource = false() ] "out"
          └─ LocalVariableDeclaration
             ├─ ModifierList
-            ├─ Type
+            ├─ ClassOrInterfaceType "OutputStream"
             └─ VariableDeclarator
-               ├─ VariableDeclaratorId "in"
+               ├─ VariableDeclaratorId "out"
                └─ ConstructorCall
-                  ├─ ClassOrInterfaceType
-                  └─ ArgumentList
+                  ├─ ClassOrInterfaceType "FileOutputStream"
+                  └─ ArgumentList (0)
 {% endhighlight %}
 </td></tr>
 
@@ -1951,15 +2067,15 @@ try (in) {}
 └─ TryStatement
    └─ ResourceSpecification
       └─ Resources
-         └─ Resource
+         └─ Resource "in"
             └─ Name "in"
 {% endhighlight %}
 </td><td>
 {% highlight js %}
 └─ TryStatement
-   └─ ResourceList[ @TrailingSemiColon = false() ]
-      └─ Resource[ @ConciseResource = true() ]
-         └─ VariableAccess[ @VariableName = 'in' ]
+   └─ ResourceList[ @TrailingSemiColon = false() ] (1)
+      └─ Resource[ @ConciseResource = true() ] "in"
+         └─ VariableAccess "in"
 {% endhighlight %}
 </td></tr>
 </table>
