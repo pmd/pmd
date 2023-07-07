@@ -121,7 +121,15 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
             GetCommentOnFunction.INSTANCE
         );
 
+
     public void setTypeSystem(TypeSystem ts) {
         this.typeSystem = Objects.requireNonNull(ts);
+    }
+
+
+    @Override
+    public void close() throws Exception {
+        super.close();
+        this.typeSystem.close();
     }
 }

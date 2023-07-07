@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
+import java.io.Closeable;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,6 +73,13 @@ abstract class ParseLock {
     protected boolean postCondition() {
         return true;
     }
+
+
+    public @Nullable Closeable getCloseable() {
+        // do nothing by default
+        return null;
+    }
+
 
     @Override
     public String toString() {

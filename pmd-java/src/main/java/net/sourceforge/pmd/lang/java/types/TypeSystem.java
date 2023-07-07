@@ -63,7 +63,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * {@link JavaNode#getTypeSystem()}.
  */
 @SuppressWarnings("PMD.CompareObjectsWithEquals")
-public final class TypeSystem {
+public final class TypeSystem implements AutoCloseable {
 
     /**
      * Top type of the reference type system. This is the type for the
@@ -315,12 +315,22 @@ public final class TypeSystem {
         return Objects.requireNonNull(sym, "sym");
     }
 
+
     private @NonNull JPrimitiveType createPrimitive(PrimitiveTypeKind kind, Class<?> box) {
         return new JPrimitiveType(this, kind, new RealPrimitiveSymbol(this, kind), getBootStrapSymbol(box), HashTreePSet.empty());
     }
 
 
+    /**
+     * This should only be called once all files have been processed.
+     */
+    @Override
+    public void close() throws Exception {
+        this.resolver.close();
+    }
+
     // type creation routines
+
 
     /**
      * Returns the class symbol for the given reflected class. This asks

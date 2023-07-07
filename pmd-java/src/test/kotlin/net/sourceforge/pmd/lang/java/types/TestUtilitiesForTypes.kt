@@ -34,8 +34,12 @@ val javaParser: JavaParsingHelper = JavaParsingHelper.DEFAULT
 
 val testTypeSystem: TypeSystem get() = JavaParsingHelper.TEST_TYPE_SYSTEM
 
-// bc the method is package private
-val TypeSystem.asmLoader: AsmSymbolResolver get() = this.resolver as AsmSymbolResolver
+/**
+ * This is here bc the method is package private.
+ * The resolver is not necessarily an AsmSymbolResolver so that's why
+ * the return type is nullable.
+ */
+val TypeSystem.asmLoader: AsmSymbolResolver? get() = this.resolver as? AsmSymbolResolver
 
 fun TypeSystem.lub(vararg us: JTypeMirror): JTypeMirror = lub(us.toList())
 fun TypeSystem.glb(vararg us: JTypeMirror): JTypeMirror = glb(us.toList())

@@ -35,4 +35,10 @@ final class MapSymResolver implements SymbolResolver {
     public @Nullable JClassSymbol resolveClassFromCanonicalName(@NonNull String canonicalName) {
         return byCanonicalName.get(canonicalName);
     }
+
+
+    @Override
+    public void close() throws Exception {
+        // nothing to do
+    }
 }

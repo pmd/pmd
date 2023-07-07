@@ -29,6 +29,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaParser;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.internal.JavaLanguageProcessor;
+import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
+import net.sourceforge.pmd.lang.java.symbols.internal.asm.AsmSymbolResolver;
+import net.sourceforge.pmd.lang.java.symbols.internal.asm.Classpath;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.SimpleLogger;
@@ -45,7 +48,11 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
      * default options of JavaParsingHelper. This allows constants like
      * the null type to be compared.
      */
-    public static final TypeSystem TEST_TYPE_SYSTEM = TypeSystem.usingClassLoaderClasspath(JavaParsingHelper.class.getClassLoader());
+    public static final TypeSystem TEST_TYPE_SYSTEM = new TypeSystem(ts -> {
+        Classpath classpath = Classpath.forClassLoader(JavaParsingHelper.class.getClassLoader());
+        AsmSymbolResolver symResolver = new AsmSymbolResolver(ts, classpath);
+        return SymbolResolver.closeShieldResolver(symResolver);
+    });
 
     /** This runs all processing stages when parsing. */
     public static final JavaParsingHelper DEFAULT = new JavaParsingHelper(
@@ -68,7 +75,7 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
 
     @Override
     protected @NonNull ASTCompilationUnit doParse(@NotNull LanguageProcessor processor, @NotNull Params params, @NotNull ParserTask task) {
-        @SuppressWarnings({ "PMD.CloseResource", "resource" })
+        @SuppressWarnings({"PMD.CloseResource", "resource"})
         JavaLanguageProcessor proc = (JavaLanguageProcessor) processor;
         proc.setTypeSystem(ts);
         JavaParser parser = proc.getParserWithoutProcessing();
