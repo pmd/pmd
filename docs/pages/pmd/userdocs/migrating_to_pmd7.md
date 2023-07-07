@@ -2226,60 +2226,316 @@ new int[] { 1, 2, 3 };
 {% endhighlight %}
 </td></tr></table>
 
-##### TODO: Field access, array access, variable access
+##### Method call chains are left-recursive
 
-* What:
-* Why:
-* 
+* What: The order of the nodes are different now. The right most expression is at the top of the tree, qualified
+  by the expressions on the left.
+* Why: Allows to reuse abstractions like method calls without introducing a new artificial node (like method chain).
+* Part of [[java] New expression and type grammar #1759](https://github.com/pmd/pmd/pull/1759)
 
 <table>
 <tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
 <tr><td>
 {% highlight java %}
+new Foo().bar.foo(1);
 {% endhighlight %}
 </td><td>
 {% highlight js %}
+└─ StatementExpression
+   └─ PrimaryExpression
+      ├─ PrimaryPrefix
+      │  └─ AllocationExpression
+      │     ├─ ClassOrInterfaceType "Foo"
+      │     └─ Arguments (0)
+      ├─ PrimarySuffix "bar"
+      ├─ PrimarySuffix "foo"
+      └─ PrimarySuffix[ @Arguments = true() ]
+         └─ Arguments (1)
+            └─ ArgumentList
+               └─ Expression
+                  └─ PrimaryExpression
+                     └─ PrimaryPrefix
+                        └─ Literal "1"
 {% endhighlight %}
 </td><td>
 {% highlight js %}
+└─ ExpressionStatement
+   └─ MethodCall "foo"
+      ├─ FieldAccess "bar"
+      │  └─ ConstructorCall
+      │     ├─ ClassOrInterfaceType "Foo"
+      │     └─ ArgumentList (0)
+      └─ ArgumentList (1)
+         └─ NumericLiteral "1"
 {% endhighlight %}
 </td></tr></table>
 
-##### TODO: this/super expression
+##### Field access, array access, variable access
 
-* What:
-* Why:
-*
+* What: New nodes dedicated to accessing field, variables and referencing arrays.
+  Also provide info about the access type, like whether a variable is read or written.
+* Why: Like MethodCalls, this was a missing abstraction in the AST that has been added now.
+* Part of [[java] New expression and type grammar #1759](https://github.com/pmd/pmd/pull/1759)
 
 <table>
 <tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
 <tr><td>
 {% highlight java %}
+field = 1;
+localVar = 1;
+array[0] = 1;
+Foo.staticField = localVar;
 {% endhighlight %}
 </td><td>
 {% highlight js %}
+└─ BlockStatement
+   └─ Statement
+      └─ StatementExpression
+         ├─ PrimaryExpression
+         │  └─ PrimaryPrefix
+         │     └─ Name "field"
+         ├─ AssignmentOperator "="
+         └─ Expression
+            └─ PrimaryExpression
+               └─ PrimaryPrefix
+                  └─ Literal "1"
+
+└─ BlockStatement
+   └─ Statement
+      └─ StatementExpression
+         ├─ PrimaryExpression
+         │  └─ PrimaryPrefix
+         │     └─ Name "localVar"
+         ├─ AssignmentOperator "="
+         └─ Expression
+            └─ PrimaryExpression
+               └─ PrimaryPrefix
+                  └─ Literal "1"
+
+└─ BlockStatement
+   └─ Statement
+      └─ StatementExpression
+         ├─ PrimaryExpression
+         │  ├─ PrimaryPrefix
+         │  │  └─ Name "array"
+         │  └─ PrimarySuffix[ @ArrayDereference = true() ]
+         │     └─ Expression
+         │        └─ PrimaryExpression
+         │           └─ PrimaryPrefix
+         │              └─ Literal "0"
+         ├─ AssignmentOperator "="
+         └─ Expression
+            └─ PrimaryExpression
+               └─ PrimaryPrefix
+                  └─ Literal "1"
+
+└─ BlockStatement
+   └─ Statement
+      └─ StatementExpression
+         ├─ PrimaryExpression
+         │  └─ PrimaryPrefix
+         │     └─ Name "Foo.staticField"
+         ├─ AssignmentOperator "="
+         └─ Expression
+            └─ PrimaryExpression
+               └─ PrimaryPrefix
+                  └─ Name "localVar"
 {% endhighlight %}
 </td><td>
 {% highlight js %}
+└─ ExpressionStatement
+   └─ AssignmentExpression "="
+      ├─ VariableAccess "field"
+      └─ NumericLiteral "1"
+
+└─ ExpressionStatement
+   └─ AssignmentExpression "="
+      ├─ VariableAccess "localVar"
+      └─ NumericLiteral "1"
+
+└─ ExpressionStatement
+   └─ AssignmentExpression "="
+      ├─ ArrayAccess[ @AccessType = "WRITE" ]
+      │  ├─ VariableAccess "array"
+      │  └─ NumericLiteral "0"
+      └─ NumericLiteral "1"
+
+└─ ExpressionStatement
+   └─ AssignmentExpression "="
+      ├─ FieldAccess[ @AccessType = "WRITE" ] "staticField"
+      │  └─ TypeExpression
+      │     └─ ClassOrInterfaceType "Foo"
+      └─ VariableAccess[ @AccessType = "READ" ] "localVar"
+{% endhighlight %}
+
+<ul>
+  <li>As seen above, an unqualified field access currently shows up as a VariableAccess. This may be fixed
+      future versions of PMD.</li>
+</ul>
+
+</td></tr></table>
+
+##### Explicit nodes for this/super expressions
+
+* What: `this` and `super` are now explicit nodes instead of PrimaryPrefix.
+* Why: That way these nodes can qualify other nodes like FieldAccess.
+* Part of [[java] New expression and type grammar #1759](https://github.com/pmd/pmd/pull/1759)
+
+<table>
+<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><td>
+{% highlight java %}
+this.field = 1;
+super.field = 1;
+
+this.method();
+super.method();
+{% endhighlight %}
+</td><td>
+{% highlight js %}
+└─ BlockStatement
+   └─ Statement
+      └─ StatementExpression
+         ├─ PrimaryExpression
+         │  ├─ PrimaryPrefix[ @ThisModifier = true() ]
+         │  └─ PrimarySuffix "field"
+         ├─ AssignmentOperator "="
+         └─ Expression
+            └─ PrimaryExpression
+               └─ PrimaryPrefix
+                  └─ Literal "1"
+
+└─ BlockStatement
+   └─ Statement
+      └─ StatementExpression
+         ├─ PrimaryExpression
+         │  ├─ PrimaryPrefix[ @SuperModifier = true() ]
+         │  └─ PrimarySuffix "field"
+         ├─ AssignmentOperator "="
+         └─ Expression
+            └─ PrimaryExpression
+               └─ PrimaryPrefix
+                  └─ Literal "1"
+
+└─ BlockStatement
+   └─ Statement
+      └─ StatementExpression
+         └─ PrimaryExpression
+            ├─ PrimaryPrefix[ @ThisModifier = true() ]
+            ├─ PrimarySuffix "method"
+            └─ PrimarySuffix[ @Arguments = true() ]
+               └─ Arguments (0)
+
+└─ BlockStatement
+   └─ Statement
+      └─ StatementExpression
+         └─ PrimaryExpression
+            ├─ PrimaryPrefix[ @SuperModifier = true() ]
+            ├─ PrimarySuffix "method"
+            └─ PrimarySuffix[ @Arguments = true() ]
+               └─ Arguments (0)
+{% endhighlight %}
+</td><td>
+{% highlight js %}
+└─ ExpressionStatement
+   └─ AssignmentExpression "="
+      ├─ FieldAccess[ @AccessType = "WRITE" ] "field"
+      │  └─ ThisExpression
+      └─ NumericLiteral "1"
+
+└─ ExpressionStatement
+   └─ AssignmentExpression "="
+      ├─ FieldAccess[ @AcessType = "WRITE" ] "field"
+      │  └─ SuperExpression
+      └─ NumericLiteral "1"
+
+└─ ExpressionStatement
+   └─ MethodCall "method"
+      ├─ ThisExpression
+      └─ ArgumentList (0)
+
+└─ ExpressionStatement
+   └─ MethodCall "method"
+      ├─ SuperExpression
+      └─ ArgumentList (0)
 {% endhighlight %}
 </td></tr></table>
 
-##### TODO: TypeExpression
+##### Type expressions
 
-* What:
-* Why:
-*
+* What: The node TypeExpression wraps a type node (such as ClassOrInterfaceType) and is used to qualify
+  a method call or field access or method reference.
+* Why: Simplify the qualifier of method calls, treat instanceof as infix expression.
+* [[java] Grammar type expr #2039](https://github.com/pmd/pmd/pull/2039)
 
 <table>
 <tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
 <tr><td>
 {% highlight java %}
+Foo.staticMethod();
+if (x instanceof Foo) {}
+var x = Foo::method;
 {% endhighlight %}
 </td><td>
 {% highlight js %}
+└─ BlockStatement
+   └─ Statement
+      └─ StatementExpression
+         └─ PrimaryExpression
+            ├─ PrimaryPrefix
+            │  └─ Name "Foo.staticMethod"
+            └─ PrimarySuffix[ @Arguments = true() ]
+               └─ Arguments (0)
+
+└─ BlockStatement
+   └─ Statement
+      └─ IfStatement
+         ├─ Expression
+         │  └─ InstanceOfExpression
+         │     ├─ PrimaryExpression
+         │     │  └─ PrimaryPrefix
+         │     │     └─ Name "x"
+         │     └─ Type
+         │        └─ ReferenceType
+         │           └─ ClassOrInterfaceType "Foo"
+         └─ Statement
+            └─ Block
+
+└─ BlockStatement
+   └─ LocalVariableDeclaration
+      └─ VariableDeclarator
+         ├─ VariableDeclaratorId "x"
+         └─ VariableInitializer
+            └─ Expression
+               └─ PrimaryExpression
+                  ├─ PrimaryPrefix
+                  │  └─ Name "Foo"
+                  └─ PrimarySuffix
+                     └─ MemberSelector
+                        └─ MethodReference "method"
 {% endhighlight %}
 </td><td>
 {% highlight js %}
+└─ ExpressionStatement
+   └─ MethodCall "staticMethod"
+      ├─ TypeExpression
+      │  └─ ClassOrInterfaceType "Foo"
+      └─ ArgumentList (0)
+
+└─ IfStatement
+   ├─ InfixExpression "instanceof"
+   │  ├─ VariableAccess[ @AccessType = "READ" ] "x"
+   │  └─ TypeExpression
+   │     └─ ClassOrInterfaceType "Foo"
+   └─ Block
+
+└─ LocalVariableDeclaration
+   ├─ ModifierList
+   └─ VariableDeclarator
+      ├─ VariableDeclaratorId "x"
+      └─ MethodReference "method"
+         └─ TypeExpression
+            └─ ClassOrInterfaceType "Foo"
 {% endhighlight %}
 </td></tr></table>
 
@@ -2290,7 +2546,8 @@ new int[] { 1, 2, 3 };
   * PreDecrementExpression
   * UnaryExpression
   * UnaryExpressionNotPlusMinus
-* Why: Those nodes were asymmetric, and inconsistently nested within UnaryExpression. By definition they're all unary, so that using a single node is appropriate.
+* Why: Those nodes were asymmetric, and inconsistently nested within UnaryExpression. By definition, they're all unary,
+  so that using a single node is appropriate.
 * [#1890 [java] Merge different increment/decrement expressions](https://github.com/pmd/pmd/pull/1890)
 * [#2155 [java] Merge prefix/postfix expressions into one node](https://github.com/pmd/pmd/pull/2155)
 
@@ -2331,48 +2588,47 @@ d--;
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-└─ StatementExpression
+└─ ExpressionStatement
    └─ UnaryExpression[ @Prefix = true() ][ @Operator = '++' ]
-      └─ VariableAccess "a"
+      └─ VariableAccess[ @AccessType = "WRITE" ] "a"
 
-└─ StatementExpression
+└─ ExpressionStatement
    └─ UnaryExpression[ @Prefix = true() ][ @Operator = '--' ]
-      └─ VariableAccess "b"
+      └─ VariableAccess[ @AccessType = "WRITE" ] "b"
 
-└─ StatementExpression
+└─ ExpressionStatement
    └─ UnaryExpression[ @Prefix = false() ][ @Operator = '++' ]
-      └─ VariableAccess "c"
+      └─ VariableAccess[ @AccessType = "WRITE" ] "c"
 
-└─ StatementExpression
+└─ ExpressionStatement
    └─ UnaryExpression[ @Prefix = false() ][ @Operator = '--' ]
-      └─ VariableAccess "d"
+      └─ VariableAccess[ @AccessType = "WRITE" ] "d"
 {% endhighlight %}
 </td></tr>
 
 <tr><td>
 {% highlight java %}
-~a
-+a
+x = ~a;
+x = +a;
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-└─ UnaryExpression[ @Image = null ]
-   └─ UnaryExpressionNotPlusMinus[ @Image = '~' ]
-      └─ PrimaryExpression
-         └─ PrimaryPrefix
-            └─ Name "a"
+└─ UnaryExpressionNotPlusMinus "~"
+   └─ PrimaryExpression
+      └─ PrimaryPrefix
+         └─ Name "a"
 
-└─ UnaryExpression[ @Image = '+' ]
+└─ UnaryExpression "+"
    └─ PrimaryExpression
       └─ PrimaryPrefix
          └─ Name "a"
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-└─ UnaryExpression[ @Operator = '~' ]
+└─ UnaryExpression[ @Prefix = true() ] "~"
    └─ VariableAccess "a"
 
-└─ UnaryExpression[ @Operator = '+' ]
+└─ UnaryExpression[ @Prefix = true() ] "+"
    └─ VariableAccess "a"
 {% endhighlight %}
 </td></tr>
@@ -2427,6 +2683,49 @@ int i = 1 * 2 * 3 % 4;
 </td></tr>
 </table>
 
+##### Parenthesized expressions
+
+* What: Parentheses are not modelled in the AST anymore, but can be checked with the attributes `@Parenthesized`
+  and `@ParenthesisDepth`
+* Why: This keeps the tree flat while still preserving the information. The tree is the same in case of unnecessary
+  parenthesis, which makes it harder to fool rules that look at the structure of the tree.
+* [[java] Remove ParenthesizedExpr #1872](https://github.com/pmd/pmd/pull/1872)
+
+<table>
+<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><td>
+{% highlight java %}
+a = (((1)));
+{% endhighlight %}
+</td><td>
+{% highlight js %}
+└─ StatementExpression
+   ├─ PrimaryExpression
+   │  └─ PrimaryPrefix
+   │     └─ Name "a"
+   ├─ AssignmentOperator "="
+   └─ Expression
+      └─ PrimaryExpression
+         └─ PrimaryPrefix
+            └─ Expression
+               └─ PrimaryExpression
+                  └─ PrimaryPrefix
+                     └─ Expression
+                        └─ PrimaryExpression
+                           └─ PrimaryPrefix
+                              └─ Expression
+                                 └─ PrimaryExpression
+                                    └─ PrimaryPrefix
+                                       └─ Literal "1"
+{% endhighlight %}
+</td><td>
+{% highlight js %}
+└─ ExpressionStatement
+   └─ AssignmentExpression
+      ├─ VariableAccess "a"
+      └─ NumericLiteral[ @Parenthesized = true() ][ @ParenthesisDepth = 3 ] "1"
+{% endhighlight %}
+</td></tr></table>
 
 ### Language versions
 
