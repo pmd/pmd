@@ -30,12 +30,12 @@ There are a couple of deprecated things in PMD 6, you might encounter:
   * `-reportfile` ➡️ `--report-file`
   * `-language` ➡️ `--use-version`
 
-* If you have written custom XPath rule, look out for warning about deprecated XPath attributes. These warnings
+* If you have written custom XPath rule, look out for warnings about deprecated XPath attributes. These warnings
   might look like
   ```
   WARNING: Use of deprecated attribute 'VariableDeclaratorId/@Image' by XPath rule 'VariableNaming' (in ruleset 'VariableNamingRule'), please use @Name instead
   ```
-  and often suggest already an alternative.
+  and often already suggest an alternative.
 
 ## Use cases
 
@@ -47,11 +47,11 @@ in the release notes for PMD 7.
 The release notes also mention the replacement rule, that should be used instead. For some rules, there is no
 replacement.
 
-Then many rules have been changed or improved. New properties have been added to make the further configurable or
+Then many rules have been changed or improved. New properties have been added to make them more versatile or
 properties have been removed, if they are not necessary anymore. See [changed rules](pmd_release_notes_pmd7.html#changed-rules)
 in the release notes for PMD 7.
 
-A handful rules are new with PMD 7. You might want to check these out: [new rules](pmd_release_notes_pmd7.html#new-rules).
+A handful of rules are new to PMD 7. You might want to check these out: [new rules](pmd_release_notes_pmd7.html#new-rules).
 
 Once you have reviewed your ruleset(s), you can switch to PMD 7.
 
@@ -168,8 +168,7 @@ Methods removed completely:
   ```java
         ancestors()
                 .filter(n -> Arrays.stream(classes)
-                        .map(c -> c.isInstance(n))
-                        .anyMatch(Boolean::booleanValue))
+                        .anyMatch(c -> c.isInstance(n)))
                 .first();
   ```
 * `findChildNodesWithXPath`: Has been removed, because it is very inefficient. Use NodeStream instead.
@@ -250,8 +249,9 @@ XPath 1.0 and 2.0 queries. Here's a list of known incompatibilities:
   See e.g. [an issue caused by this](https://github.com/pmd/pmd/issues/1919#issuecomment-512865434) in Apex,
   with nested classes.
 
-* The custom function "pmd:matches" has been removed, since there is a built-in function available since XPath 2.0
-  which can be used instead.
+* The custom function "pmd:matches" which checks a regular expression against a string has been removed,
+  since there is a built-in function available since XPath 2.0 which can be used instead. If you use "pmd:matches"
+  simply remove the "pmd:" prefix.
 
 ### Java AST
 
