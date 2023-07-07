@@ -2082,11 +2082,206 @@ try (in) {}
 
 #### Expressions
 
-##### TODO: Literals
-##### TODO: Method calls, constructor call, array allocation
+##### New nodes for different literals types
+
+* What: We have now CharLiteral, NullLiteral, NumericLiteral and StringLiteral as distinct node types with
+  a consistent structure. All these nodes implement the interface {% jdoc java::lang.java.ast.ASTLiteral %}.
+* Why: It makes it easier to target e.g. just String literals. With the interface, one can still query
+  all literals regardless of type. BooleanLiterals and NullLiterals were previously child nodes of Literal.
+  This has been cleaned up.
+* Part of [[java] New expression and type grammar #1759](https://github.com/pmd/pmd/pull/1759)
+
+<table>
+<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><td>
+{% highlight java %}
+char c = 'c';
+boolean b = true;
+int i = 1;
+double d = 1.0;
+String s = "s";
+Object n = null;
+{% endhighlight %}</td><td>
+{% highlight js %}
+└─ Literal[ @CharLiteral = true() ] "'c'"
+└─ Literal
+   └─ BooleanLiteral[ @True = true() ]
+└─ Literal[ @IntLiteral = true() ] "1"
+└─ Literal[ @DoubleLiteral = true() ] "1.0"
+└─ Literal[ @StringLiteral = true() ] "\"s\""
+└─ Literal
+   └─ NullLiteral
+{% endhighlight %}
+</td><td>
+{% highlight js %}
+└─ CharLiteral "'c'"
+└─ BooleanLiteral[ @True = true() ]
+└─ NumericLiteral[ @IntLiteral = true() ] "1"
+└─ NumericLiteral[ @DoubleLiteral = true() ] "1.0"
+└─ StringLiteral "\"s\""
+└─ NullLiteral
+{% endhighlight %}
+</td></tr></table>
+
+##### Method calls, constructor calls, array allocations
+
+* What: Extra nodes dedicated for method and constructor calls and array allocations
+* Why: It was extremely difficult to identify method calls in PMD 6 - these consisted of multiple nodes with
+  primary prefix, suffix and expressions. This was too low level to be easy to be used.
+* Part of [[java] New expression and type grammar #1759](https://github.com/pmd/pmd/pull/1759)
+
+<table>
+<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><td>
+{% highlight java %}
+o.myMethod("a");
+new Object("b");
+new int[10];
+new int[] { 1, 2, 3 };
+{% endhighlight %}
+</td><td>
+{% highlight js %}
+└─ PrimaryExpression
+   ├─ PrimaryPrefix
+   │  └─ Name "o.myMethod"
+   └─ PrimarySuffix
+      └─ Arguments
+         └─ ArgumentList (1)
+            └─ Expression
+               └─ PrimaryExpression
+                  └─ PrimaryPrefix
+                     └─ Literal "\"a\""
+
+└─ PrimaryExpression
+   └─ PrimaryPrefix
+      └─ AllocationExpression
+         ├─ ClassOrInterfaceType "Object"
+         └─ Arguments
+            └─ ArgumentList
+               └─ Expression
+                  └─ PrimaryExpression
+                     └─ PrimaryPrefix
+                        └─ Literal "\"b\""
+
+└─ PrimaryExpression
+   └─ PrimaryPrefix
+      └─ AllocationExpression
+         ├─ PrimitiveType "int"
+         └─ ArrayDimsAndInits
+            └─ Expression
+               └─ PrimaryExpression
+                  └─ PrimaryPrefix
+                     └─ Literal "10"
+
+└─ PrimaryPrefix
+   └─ AllocationExpression
+      ├─ PrimitiveType "int"
+      └─ ArrayDimsAndInits
+         └─ ArrayInitializer
+            ├─ VariableInitializer
+            │  └─ Expression
+            │     └─ PrimaryExpression
+            │        └─ PrimaryPrefix
+            │           └─ Literal "1"
+            ├─ VariableInitializer
+            │  └─ Expression
+            │     └─ PrimaryExpression
+            │        └─ PrimaryPrefix
+            │           └─ Literal "2"
+            └─ VariableInitializer
+               └─ Expression
+                  └─ PrimaryExpression
+                     └─ PrimaryPrefix
+                        └─ Literal "3"
+
+{% endhighlight %}
+</td><td>
+{% highlight js %}
+└─ MethodCall "myMethod"
+   ├─ VariableAccess "o"
+   └─ ArgumentList (1)
+      └─ StringLiteral "\"a\""
+
+└─ ConstructorCall
+   ├─ ClassOrInterfaceType "Object"
+   └─ ArgumentList (1)
+      └─ StringLiteral "\"b\""
+
+└─ ArrayAllocation[ @ArrayDepth = 1 ]
+   └─ ArrayType
+      ├─ PrimitiveType "int"
+      └─ ArrayDimensions (1)
+         └─ ArrayDimExpr
+            └─ NumericLiteral "10"
+
+└─ ArrayAllocation[ @ArrayDepth = 1 ]
+   ├─ ArrayType
+   │  ├─ PrimitiveType "int"
+   │  └─ ArrayDimensions (1)
+   │     └─ ArrayTypeDim
+   └─ ArrayInitializer[ @Length = 3 ]
+      ├─ NumericLiteral "1"
+      ├─ NumericLiteral "2"
+      └─ NumericLiteral "3"
+{% endhighlight %}
+</td></tr></table>
+
 ##### TODO: Field access, array access, variable access
+
+* What:
+* Why:
+* 
+
+<table>
+<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><td>
+{% highlight java %}
+{% endhighlight %}
+</td><td>
+{% highlight js %}
+{% endhighlight %}
+</td><td>
+{% highlight js %}
+{% endhighlight %}
+</td></tr></table>
+
 ##### TODO: this/super expression
+
+* What:
+* Why:
+*
+
+<table>
+<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><td>
+{% highlight java %}
+{% endhighlight %}
+</td><td>
+{% highlight js %}
+{% endhighlight %}
+</td><td>
+{% highlight js %}
+{% endhighlight %}
+</td></tr></table>
+
 ##### TODO: TypeExpression
+
+* What:
+* Why:
+*
+
+<table>
+<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><td>
+{% highlight java %}
+{% endhighlight %}
+</td><td>
+{% highlight js %}
+{% endhighlight %}
+</td><td>
+{% highlight js %}
+{% endhighlight %}
+</td></tr></table>
 
 ##### Merge unary expressions
 
