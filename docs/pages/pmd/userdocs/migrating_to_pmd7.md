@@ -348,19 +348,34 @@ XPath 1.0 and 2.0 queries. Here's a list of known incompatibilities:
 
 ### Java AST
 
+The Java grammar has been refactored substantially in order to make it easier to maintain and more correct
+regarding the Java Language Specification.
+
+Here you can see the most important changes as a comparison between the PMD 6 AST ("Old AST") and
+PMD 7 AST ("New AST") and with some background info about the changes.
+
+When in doubt, it is recommended to use the [PMD Designer](pmd_userdocs_extending_designer_reference.html)
+which can also display the AST.
+
+{% jdoc_nspace :jast java::lang.java.ast %}
+
 #### Annotations
 
-* What: Annotations are consolidated into a single node. SingleMemberAnnotation, NormalAnnotation and MarkerAnnotation
-  are removed in favour of Annotation. The Name node is removed, replaced by a ClassOrInterfaceType.
-* Why: Those different node types implement a syntax-only distinction, that only makes semantically equivalent
-  annotations have different possible representations. For example, `@A` and `@A()` are semantically equivalent,
-  yet they were parsed as MarkerAnnotation resp. NormalAnnotation. Similarly, `@A("")` and `@A(value="")` were parsed
-  as SingleMemberAnnotation resp. NormalAnnotation. This also makes parsing much simpler. The nested ClassOrInterface
+* What: Annotations are consolidated into a single node. `SingleMemberAnnotation`, `NormalAnnotation` and `MarkerAnnotation`
+  are removed in favour of {% jdoc jast::ASTAnnotation %}. The Name node is removed, replaced by a
+  {% jdoc jast::ASTClassOrInterfaceType %}.
+* Why: Those different node types implement a syntax-only distinction, that only makes semantically equivalent annotations
+  have different possible representations. For example, `@A` and `@A()` are semantically equivalent, yet they were
+  parsed as MarkerAnnotation resp. NormalAnnotation. Similarly, `@A("")` and `@A(value="")` were parsed as
+  SingleMemberAnnotation resp. NormalAnnotation. This also makes parsing much simpler. The nested ClassOrInterface
   type is used to share the disambiguation logic.
-* [#2282 [java] Use single node for annotations](https://github.com/pmd/pmd/pull/2282)
+* Related issue: [[java] Use single node for annotations (#2282)](https://github.com/pmd/pmd/pull/2282)
+
+<details>
+  <summary>Annotation AST Examples</summary>
 
 <table>
-<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 {% highlight java %}
 @A
@@ -493,16 +508,22 @@ XPath 1.0 and 2.0 queries. Here's a list of known incompatibilities:
 </tr>
 </table>
 
+</details>
+
 ##### Annotation nesting
 
-* What: Annotations are now nested within the node, to which they are applied to. E.g. if a method is annotated,
-  the Annotation node is now a child of a ModifierList, inside the MethodDeclaration.
+* What: {% jdoc jast::ASTAnnotation %}s are now nested within the node, to which they are applied to.
+  E.g. if a method is annotated, the Annotation node is now a child of a {% jdoc jast::ASTModifierList %},
+  inside the {% jdoc jast::ASTMethodDeclaration %}.
 * Why: Fixes a lot of inconsistencies, where sometimes the annotations were inside the node, and sometimes just
   somewhere in the parent, with no real structure.
-* [#1875 [java] Move annotations inside the node they apply to](https://github.com/pmd/pmd/pull/1875)
+* Related issue: [[java] Move annotations inside the node they apply to (#1875)](https://github.com/pmd/pmd/pull/1875)
+
+<details>
+  <summary>Annotation nesting Examples</summary>
 
 <table>
-<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 Method
 
@@ -820,12 +841,17 @@ enum E {
 </td></tr>
 </table>
 
+</details>
+
 #### Types
 
 ##### Type and ReferenceType
 
-* What: those two nodes are turned into interfaces, implemented by concrete syntax nodes. See their javadoc for
-  exactly what nodes implement them.
+* What:
+  * {% jdoc jast::ASTType %} and {% jdoc jast::ASTReferenceType %} have been turned into
+    interfaces, implemented by {% jdoc jast::ASTPrimitiveType %}, {% jdoc jast::ASTClassOrInterfaceType %},
+    and the new node {% jdoc jast::ASTArrayType %}. This reduces the depth of the relevant
+    subtrees, and allows to explore them more easily and consistently.
 * Why:
   * some syntactic contexts only allow reference types, other allow any kind of type. If you want to match all types
     of a program, then matching Type would be the intuitive solution. But in 6.0.x, it wouldn't have sufficed,
@@ -833,9 +859,23 @@ enum E {
   * Regardless of the original syntactic context, any reference type *is* a type, and searching for ASTType should
     yield all the types in the tree.
   * Using interfaces allows to abstract behaviour and make a nicer and safer API.
+* **Migrating**
+  * There is currently no way to match abstract types (or interfaces) with XPath, so `Type`
+    and `ReferenceType` name tests won't match anything anymore.
+  * `Type/ReferenceType/ClassOrInterfaceType` ➡️ `ClassOrInterfaceType`
+  * `Type/PrimitiveType` ➡️ `PrimitiveType`.
+  * `Type/ReferenceType[@ArrayDepth > 1]/ClassOrInterfaceType` ➡️ `ArrayType/ClassOrInterfaceType`.
+  * `Type/ReferenceType/PrimitiveType` ➡️ `ArrayType/PrimitiveType`.
+  * Note that in most cases you should check the type of a variable with e.g.
+    `VariableDeclaratorId[pmd-java:typeIs("java.lang.String[]")]` because it
+    considers the additional dimensions on declarations like `String foo[];`.
+    The Java equivalent is `TypeHelper.isA(id, String[].class);`
+
+<details>
+  <summary>Type and ReferenceType Examples</summary>
 
 <table>
-<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 {% highlight java %}
 // in the context of a variable declaration
@@ -874,16 +914,20 @@ List<String> strs;
 </tr>
 </table>
 
+</details>
+
 ##### Array changes
 
-What: Additional nodes `ArrayType`, `ArrayTypeDim`, `ArrayTypeDims`, `ArrayAllocation`.
-Why: Support annotated array types ([#997 Java8 parsing corner case with annotated array types](https://github.com/pmd/pmd/issues/997))
-* [#1981 [java] Simplify array allocation expressions](https://github.com/pmd/pmd/pull/1981)
+* What: Additional nodes {% jdoc jast::ASTArrayType %}, {% jdoc jast::ASTArrayTypeDim %},
+  {% jdoc jast::ASTArrayTypeDims %}, {% jdoc jast::ASTArrayAllocation %}.
+* Why: Support annotated array types ([[java] Java8 parsing corner case with annotated array types (#997)](https://github.com/pmd/pmd/issues/997))
+* Related issue: [[java] Simplify array allocation expressions (#1981)](https://github.com/pmd/pmd/pull/1981)
 
-Examples:
+<details>
+  <summary>Array Examples</summary>
 
 <table>
-<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 {% highlight java %}
 String[][] myArray;
@@ -1016,14 +1060,19 @@ new Foo[] { f, g };
 </td></tr>
 </table>
 
+</details>
+
 ##### ClassOrInterfaceType nesting
 
-* What: ClassOrInterfaceType is now left-recursive, and encloses its qualifying type.
+* What: {% jdoc jast::ASTClassOrInterfaceType %} appears to be left recursive now, and encloses its qualifying type.
 * Why: To preserve the position of annotations and type arguments
-  * [#1150 ClassOrInterfaceType AST improvements](https://github.com/pmd/pmd/issues/1150)
+* Related issue: [[java] ClassOrInterfaceType AST improvements (#1150)](https://github.com/pmd/pmd/issues/1150)
+
+<details>
+  <summary>ClassOrInterfaceType Examples</summary>
 
 <table>
-<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 {% highlight java %}
 Map.Entry<K,V>
@@ -1081,15 +1130,23 @@ First<K>.Second.Third<V>
 </td></tr>
 </table>
 
+</details>
+
 ##### TypeArgument and WildcardType
 
 * What:
-  * TypeArgument is removed. Instead, the TypeArguments node contains directly a sequence of Type nodes. To support this, the new node type WildcardType captures the syntax previously parsed as a TypeArgument.
-  * The WildcardBounds node is removed. Instead, the bound is a direct child of the WildcardType.
-* Why: Because wildcard types are types in their own right, and having a node to represent them skims several levels of nesting off.
+  * {% jdoc_old jast::ASTTypeArgument %} is removed. Instead, the {% jdoc jast::ASTTypeArguments %} node contains directly
+    a sequence of {% jdoc jast::ASTType %} nodes. To support this, the new node type {% jdoc jast::ASTWildcardType %}
+    captures the syntax previously parsed as a TypeArgument.
+  * The {% jdoc_old jast::ASTWildcardBounds %} node is removed. Instead, the bound is a direct child of the WildcardType.
+* Why: Because wildcard types are types in their own right, and having a node to represent them skims several levels
+  of nesting off.
+
+<details>
+  <summary>TypeArgument and WildcardType Examples</summary>
 
 <table>
-<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 {% highlight java %}
 Entry<String, ? extends Node>
@@ -1141,18 +1198,23 @@ List<?>
 </tr>
 </table>
 
+</details>
+
 #### Declarations
 
 ##### Import and Package declarations
 
 * What: Remove the Name node in imports and package declaration nodes.
-* Why: Name is a TypeNode, but it's equivalent to AmbiguousName in that it describes nothing about what it
-  represents. The name in an import may represent a method name, a type name, a field name... It's too ambiguous
-  to treat in the parser and could just be the image of the import, or package, or module.
-* [#1888 [java] Remove Name nodes in Import- and PackageDeclaration](https://github.com/pmd/pmd/pull/1888)
+* Why: Name is a TypeNode, but it's equivalent to {% jdoc jast::ASTAmbiguousName %} in that it describes nothing
+  about what it represents. The name in an import may represent a method name, a type name, a field name...
+  It's too ambiguous to treat in the parser and could just be the image of the import, or package, or module.
+* Related issue: [[java] Remove Name nodes in Import- and PackageDeclaration (#1888)](https://github.com/pmd/pmd/pull/1888)
+
+<details>
+  <summary>Import and Package declarations Examples</summary>
 
 <table>
-<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 {% highlight java %}
 import java.util.ArrayList;
@@ -1195,18 +1257,23 @@ package com.example.tool;
 </td></tr>
 </table>
 
+</details>
+
 ##### Modifier lists
 
-* What: AccessNode is now based on a node: ModifierList. That node represents modifiers occurring before
-  a declaration. It provides a flexible API to query modifiers, both explicit and implicit. All declaration
-  nodes now have such a modifier list, even if it's implicit (no explicit modifiers).
+* What: {% jdoc jast::AccessNode %} is now based on a node: {% jdoc jast::ASTModifierList %}. That node represents
+  modifiers occurring before a declaration. It provides a flexible API to query modifiers, both explicit and
+  implicit. All declaration nodes now have such a modifier list, even if it's implicit (no explicit modifiers).
 * Why: AccessNode gave a lot of irrelevant methods to its subtypes. E.g. `ASTFieldDeclaration::isSynchronized`
   makes no sense. Now, these irrelevant methods don't clutter the API. The API of ModifierList is both more
   general and flexible
-* See [#2259 [java] Rework AccessNode](https://github.com/pmd/pmd/pull/2259)
+* Related issue: [[java] Rework AccessNode (#2259)](https://github.com/pmd/pmd/pull/2259)
+
+<details>
+  <summary>Modifier lists Examples</summary>
 
 <table>
-<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 Method
 
@@ -1279,15 +1346,21 @@ public @A class C {}
 </tr>
 </table>
 
+</details>
+
 ##### Flattened body declarations
 
-* What: Removes ClassOrInterfaceBodyDeclaration, TypeDeclaration, and AnnotationTypeMemberDeclaration.
+* What: Removes {% jdoc_old jast::ASTClassOrInterfaceBodyDeclaration %}, {% jdoc_old jast::ASTTypeDeclaration %},
+  and {% jdoc_old jast::ASTAnnotationTypeMemberDeclaration %}.
   These were unnecessary since annotations are nested (see above [Annotation nesting](#annotation-nesting)).
 * Why: This flattens the tree, makes it less verbose and simpler.
-* [#2300 [java] Flatten body declarations](https://github.com/pmd/pmd/pull/2300)
+* Related issue: [[java] Flatten body declarations (#2300)](https://github.com/pmd/pmd/pull/2300)
+
+<details>
+  <summary>Flattened body declarations Examples</summary>
 
 <table>
-<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 {% highlight java %}
 public class Flat {
@@ -1360,15 +1433,20 @@ public @interface FlatAnnotation {
 </td></tr>
 </table>
 
+</details>
+
 ##### Module declarations
 
-* What: Removes the generic Name node and uses instead ClassOrInterfaceType where appropriate. Also
+* What: Removes the generic Name node and uses instead {% jdoc jast::ASTClassOrInterfaceType %} where appropriate. Also
   uses specific node types for different directives (requires, exports, uses, provides).
 * Why: Simplify queries, support type resolution
-* [#3890 [java] Improve module grammar](https://github.com/pmd/pmd/pull/3890)
+* Related issue: [[java] Improve module grammar (#3890)](https://github.com/pmd/pmd/pull/3890)
+
+<details>
+  <summary>Module declarations Examples</summary>
 
 <table>
-<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 {% highlight java %}
 open module com.example.foo {
@@ -1429,16 +1507,22 @@ open module com.example.foo {
 </td></tr>
 </table>
 
+</details>
+
 ##### Anonymous class declarations
 
-* What: A separate node type `AnonymousClassDeclaration` is introduced for anonymous classes.
+* What: A separate node type {% jdoc jast::ASTAnonymousClassDeclaration %} is introduced for anonymous classes.
 * Why: Unify the AST for type declarations including anonymous class declaration in constructor calls
   and enums.
-* [#905 [java] Add new node for anonymous class declaration](https://github.com/pmd/pmd/issues/905)
-* [#1759 [java] New expression and type grammar](https://github.com/pmd/pmd/pull/1759)
+* Related issues:
+  * [[java] Add new node for anonymous class declaration (#905)](https://github.com/pmd/pmd/issues/905)
+  * [[java] New expression and type grammar (#1759)](https://github.com/pmd/pmd/pull/1759)
+
+<details>
+  <summary>Anonymous class declarations Examples</summary>
 
 <table>
-<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 {% highlight java %}
 Object anonymous = new Object() {  };
@@ -1479,6 +1563,8 @@ Object anonymous = new Object() {  };
 </td></tr>
 </table>
 
+</details>
+
 #### Method and Constructor declarations
 
 ##### Method grammar simplification
@@ -1488,10 +1574,13 @@ Object anonymous = new Object() {  };
 * Why: The method declaration had a nested node "MethodDeclarator", which was not available for constructor
   declarations. This made it difficult to write rules, that concern both methods and constructors without
   explicitly differentiate between these two.
-* [#2034 [java] Align method and constructor declaration grammar](https://github.com/pmd/pmd/pull/2034)
+* Related issue: [[java] Align method and constructor declaration grammar (#2034)](https://github.com/pmd/pmd/pull/2034)
+
+<details>
+  <summary>Method grammar Examples</summary>
 
 <table>
-<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 {% highlight java %}
 public class Sample {
@@ -1592,17 +1681,23 @@ public @interface MyAnnotation {
 </td></tr>
 </table>
 
+</details>
+
 ##### Formal parameters
 
-* What: Use FormalParameter only for method and constructor declaration. Lambdas use LambdaParameter, catch clauses use CatchParameter
+* What: Use {% jdoc jast::ASTFormalParameter %} only for method and constructor declaration. Lambdas use
+  {% jdoc jast::ASTLambdaParameter %}, catch clauses use {% jdoc jast::ASTCatchParameter %}.
 * Why: FormalParameter's API is different from the other ones.
   * FormalParameter must mention a type node.
   * LambdaParameter can be inferred
   * CatchParameter cannot be varargs
-  * CatchParameter can have multiple exception types (a UnionType now)
+  * CatchParameter can have multiple exception types (a {% jdoc jast::ASTUnionType %} now)
+
+<details>
+  <summary>Formal parameters Examples</summary>
 
 <table>
-<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 {% highlight java %}
 try {
@@ -1742,16 +1837,22 @@ c -> {};
 </td></tr>
 </table>
 
+</details>
+
 ##### New node for explicit receiver parameter
 
-* What: A separate node type `ReceiverParameter` is introduced to differentiate it from formal parameters.
+* What: A separate node type {% jdoc jast::ASTReceiverParameter %} is introduced to differentiate it from formal parameters.
 * Why: A receiver parameter is not a formal parameter, even though it looks like one: it doesn't declare a variable,
   and doesn't affect the arity of the method or constructor. It's so rarely used that giving it its own node avoids
-  matching it by mistake and simplifies the API and grammar of the ubiquitous FormalParameter and VariableDeclaratorId.
-* [#1980 [java] Separate receiver parameter from formal parameter](https://github.com/pmd/pmd/pull/1980)
+  matching it by mistake and simplifies the API and grammar of the ubiquitous {% jdoc jast::ASTFormalParameter %}
+  and {% jdoc jast::ASTVariableDeclaratorId %}.
+* Related issue: [[java] Separate receiver parameter from formal parameter (#1980)](https://github.com/pmd/pmd/pull/1980)
+
+<details>
+  <summary>explicit receiver parameter Examples</summary>
 
 <table>
-<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 {% highlight java %}
 void myMethod(@A Foo this, Foo other) {}
@@ -1788,13 +1889,18 @@ void myMethod(@A Foo this, Foo other) {}
 </td></tr>
 </table>
 
+</details>
+
 ##### Varargs
 
-* What: parse the varargs ellipsis as an ArrayType
+* What: parse the varargs ellipsis as an {% jdoc jast::ASTArrayType %}.
 * Why: this improves regularity of the grammar, and allows type annotations to be added to the ellipsis
 
+<details>
+  <summary>Varargs Examples</summary>
+
 <table>
-<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 {% highlight java %}
 void myMethod(int... is) {}
@@ -1875,14 +1981,19 @@ void myMethod(int[]... is) {}
 </td></tr>
 </table>
 
+</details>
+
 ##### Add void type node to replace ResultType
 
-* What: Add a VoidType node to replace ResultType.
+* What: Add a {% jdoc jast::ASTVoidType %} node to replace {% jdoc_old jast::ASTResultType %}.
 * Why: This means we don't need the ResultType wrapper when the method is not void, and the result type node is never null.
-* [[java] Add void type node to replace ResultType #2715](https://github.com/pmd/pmd/pull/2715)
+* Related issue: [[java] Add void type node to replace ResultType (#2715)](https://github.com/pmd/pmd/pull/2715)
+
+<details>
+  <summary>Void Type Examples</summary>
 
 <table>
-<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 {% highlight java %}
 void foo();
@@ -1926,21 +2037,26 @@ int foo();
 </td></tr>
 </table>
 
+</details>
+
 #### Statements
 
 ##### Statements are flattened
 
 * What: Statements are flattened. There are no superfluous BlockStatement and Statement nodes anymore.
-  All children of a {% jdoc java::lang.java.ast.ASTBlock %} are by definition
-  {% jdoc java::lang.java.ast.ASTStatement %}s, which is now an interface implemented by all statements.
+  All children of a {% jdoc jast::ASTBlock %} are by definition
+  {% jdoc jast::ASTStatement %}s, which is now an interface implemented by all statements.
 * Why: This simplifies the tree traversal. The removed nodes BlockStatement and Statement didn't add any
   additional information. We only need a Statement abstraction. BlockStatement was used to enforce, that no
   variable or local class declaration is found alone as the child of e.g. an unbraced if, else, for, etc.
   This is a parser-only distinction that's not that useful for analysis later on.
-* [[java] Improve statement grammar #2164](https://github.com/pmd/pmd/pull/2164)
+* Related issue: [[java] Improve statement grammar (#2164)](https://github.com/pmd/pmd/pull/2164)
+
+<details>
+  <summary>Statements Examples</summary>
 
 <table>
-<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 {% highlight java %}
 int i;
@@ -1983,16 +2099,21 @@ i = 1;
 </td></tr>
 </table>
 
+</details>
+
 ##### New node for For-each statements
 
-* What: New node for For-each statements: ForeachStatement instead of ForStatement.
+* What: New node for For-each statements: {% jdoc jast::ASTForeachStatement %} instead of ForStatement.
 * Why: This makes it a lot easier to distinguish in the AST between For-loops and For-Each-loops. E.g. some
   rules only apply to one or the other, and it was complicated to write a rule that works with both different
   subtrees (for loops have additional children ForInit and ForUpdate)
-* [[java] Improve statement grammar #2164](https://github.com/pmd/pmd/pull/2164)
+* Related issue: [[java] Improve statement grammar (#2164)](https://github.com/pmd/pmd/pull/2164)
+
+<details>
+  <summary>For-each statement Examples</summary>
 
 <table>
-<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 {% highlight java %}
 for (String s : List.of("a", "b")) { }
@@ -2046,19 +2167,25 @@ for (String s : List.of("a", "b")) { }
 </td></tr>
 </table>
 
+</details>
+
 ##### New nodes for ExpressionStatement, LocalClassStatement
 
-* What: Renamed StatementExpression to ExpressionStatement. Added new node LocalClassStatement.
-* Why: ExpressionStatement is now a {% jdoc java::lang.java.ast.ASTStatement %}, that can be used as a child in a
-  block. It itself has only one child, which is some kind of {% jdoc java::lang.java.ast.ASTExpression %},
+* What: Renamed StatementExpression to {% jdoc jast::ASTExpressionStatement %}.
+  Added new node {% jdoc jast::ASTLocalClassStatement %}.
+* Why: ExpressionStatement is now a {% jdoc jast::ASTStatement %}, that can be used as a child in a
+  block. It itself has only one child, which is some kind of {% jdoc jast::ASTExpression %},
   which can be really any kind of expression (like assignment).
-  In order to allow local class declarations as part of a block, we introduced {% jdoc java::lang.java.ast.ASTLocalClassStatement %}
+  In order to allow local class declarations as part of a block, we introduced {% jdoc jast::ASTLocalClassStatement %}
   which is a statement that carries a type declaration. Now blocks are just a list of statements.
   This allows us to have two distinct hierarchies for expressions and statements.
-* [[java] Improve statement grammar #2164](https://github.com/pmd/pmd/pull/2164)
+* Related issue: [[java] Improve statement grammar (#2164)](https://github.com/pmd/pmd/pull/2164)
+
+<details>
+  <summary>ExpressionStatement, LocalClassStatement Examples</summary>
 
 <table>
-<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 {% highlight java %}
 i++;
@@ -2090,17 +2217,22 @@ class LocalClass {}
          └─ ClassOrInterfaceBody
 {% endhighlight %}
 </td></tr>
-</table> 
+</table>
+
+</details>
 
 ##### Improve try-with-resources grammar
 
 * What: The AST representation of a try-with-resources statement has been simplified.
-  It uses now LocalVariableDeclaration unless it is a concise try-with-resources.
+  It uses now {% jdoc jast::ASTLocalVariableDeclaration %} unless it is a concise try-with-resources.
 * Why: Simpler integration try-with-resources into symboltable and type resolution.
-* [#1897 [java] Improve try-with-resources grammar](https://github.com/pmd/pmd/pull/1897)
+* Related issue: [[java] Improve try-with-resources grammar (#1897)](https://github.com/pmd/pmd/pull/1897)
+
+<details>
+  <summary>Try-With-Resources Examples</summary>
 
 <table>
-<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 {% highlight java %}
 try (InputStream in = new FileInputStream(); OutputStream out = new FileOutputStream();) { }
@@ -2173,19 +2305,41 @@ try (in) {}
 </td></tr>
 </table>
 
+</details>
+
 #### Expressions
+
+* {% jdoc jast::ASTExpression %} and {% jdoc jast::ASTPrimaryExpression %} have
+  been turned into interfaces. These added no information to the AST and increased
+  its depth unnecessarily. All expressions implement the first interface. Both of
+  those nodes can no more be found in ASTs.
+
+* **Migrating**:
+  * Basically, `Expression/X` or `Expression/PrimaryExpression/X`, just becomes `X`
+  * There is currently no way to match abstract or interface types with XPath, so `Expression` or `PrimaryExpression`
+    name tests won't match anything anymore. However, the axis step *[@Expression=true()] matches any expression.
 
 ##### New nodes for different literals types
 
-* What: We have now CharLiteral, NullLiteral, NumericLiteral and StringLiteral as distinct node types with
-  a consistent structure. All these nodes implement the interface {% jdoc java::lang.java.ast.ASTLiteral %}.
-* Why: It makes it easier to target e.g. just String literals. With the interface, one can still query
-  all literals regardless of type. BooleanLiterals and NullLiterals were previously child nodes of Literal.
-  This has been cleaned up.
-* Part of [[java] New expression and type grammar #1759](https://github.com/pmd/pmd/pull/1759)
+* What:
+  * {% jdoc jast::ASTLiteral %} has been turned into an interface. 
+  * {% jdoc jast::ASTNumericLiteral %}, {% jdoc jast::ASTCharLiteral %}, {% jdoc jast::ASTStringLiteral %},
+    and {% jdoc jast::ASTClassLiteral %} are new nodes that implement that interface.
+  * ASTLiteral implements {% jdoc jast::ASTPrimaryExpression %}
+* Why: The fact that {% jdoc jast::ASTNullLiteral %}
+  and {% jdoc jast::ASTBooleanLiteral %} were nested within it but other literals types were all directly represented
+  by it was inconsistent, and ultimately that level of nesting was unnecessary.
+* Related issue: [[java] New expression and type grammar (#1759)](https://github.com/pmd/pmd/pull/1759)
+* **Migrating**:
+  * Remove all `/Literal/` segments from your XPath expressions
+  * If you tested several types of literals, you can e.g. do it like `/*[self::StringLiteral or self::CharLiteral]/`
+  * As usual, use the designer to explore the new AST structure
+
+<details>
+  <summary>Literals Examples</summary>
 
 <table>
-<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 {% highlight java %}
 char c = 'c';
@@ -2216,15 +2370,23 @@ Object n = null;
 {% endhighlight %}
 </td></tr></table>
 
+</details>
+
 ##### Method calls, constructor calls, array allocations
 
 * What: Extra nodes dedicated for method and constructor calls and array allocations
+  * {% jdoc jast::ASTConstructorCall %}
+  * {% jdoc jast::ASTMethodCall %}
+  * {% jdoc jast::ASTArrayAllocation %}
 * Why: It was extremely difficult to identify method calls in PMD 6 - these consisted of multiple nodes with
   primary prefix, suffix and expressions. This was too low level to be easy to be used.
-* Part of [[java] New expression and type grammar #1759](https://github.com/pmd/pmd/pull/1759)
+* Related issue: [[java] New expression and type grammar (#1759)](https://github.com/pmd/pmd/pull/1759)
+
+<details>
+  <summary>Method calls, constructor calls, array allocations Examples</summary>
 
 <table>
-<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 {% highlight java %}
 o.myMethod("a");
@@ -2319,15 +2481,20 @@ new int[] { 1, 2, 3 };
 {% endhighlight %}
 </td></tr></table>
 
+</details>
+
 ##### Method call chains are left-recursive
 
-* What: The order of the nodes are different now. The right most expression is at the top of the tree, qualified
-  by the expressions on the left.
+* What: The nodes {% jdoc_old jast::ASTPrimaryPrefix %} and {% jdoc_old jast::ASTPrimarySuffix %} are removed from the
+  grammar. Subtrees for primary expressions appear to be left-recursive now.
 * Why: Allows to reuse abstractions like method calls without introducing a new artificial node (like method chain).
-* Part of [[java] New expression and type grammar #1759](https://github.com/pmd/pmd/pull/1759)
+* Related issue: [[java] New expression and type grammar (#1759)](https://github.com/pmd/pmd/pull/1759)
+
+<details>
+  <summary>Method call chain Examples</summary>
 
 <table>
-<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 {% highlight java %}
 new Foo().bar.foo(1);
@@ -2363,15 +2530,61 @@ new Foo().bar.foo(1);
 {% endhighlight %}
 </td></tr></table>
 
+</details>
+
+Instead of being flat, the subexpressions are now nested within one another.
+The nesting follows the naturally recursive structure of expressions:
+
+```java
+new Foo().bar.foo(1)
+└───────┘   │      │ ConstructorCall
+└───────────┘      │ FieldAccess
+└──────────────────┘ MethodCall
+```
+
+This makes the AST more regular and easier to navigate. Each node contains
+the other nodes that are relevant to it (e.g. arguments) instead of them
+being spread out over several siblings. The API of all nodes has been
+enriched with high-level accessors to query the AST in a semantic way,
+without bothering with the placement details.
+
+The amount of changes in the grammar that this change entails is enormous,
+but hopefully firing up the designer to inspect the new structure should
+give you the information you need quickly.
+
+Note: this doesn't affect binary expressions like {% jdoc jast::ASTAdditiveExpression %}.
+E.g. `a+b+c` is not parsed as
+```
+AdditiveExpression
++ AdditiveExpression
+  + (a)
+  + (b)
++ (c)  
+``` 
+It's still
+```
+AdditiveExpression
++ (a)
++ (b)
++ (c)  
+``` 
+which is easier to navigate, especially from XPath.
+
 ##### Field access, array access, variable access
 
 * What: New nodes dedicated to accessing field, variables and referencing arrays.
   Also provide info about the access type, like whether a variable is read or written.
+  * {% jdoc jast::ASTFieldAccess %}
+  * {% jdoc jast::ASTVariableAccess %}
+  * {% jdoc jast::ASTArrayAccess %}
 * Why: Like MethodCalls, this was a missing abstraction in the AST that has been added now.
-* Part of [[java] New expression and type grammar #1759](https://github.com/pmd/pmd/pull/1759)
+* Related issue: [[java] New expression and type grammar (#1759)](https://github.com/pmd/pmd/pull/1759)
+
+<details>
+  <summary>Field access, array access, variable access Examples</summary>
 
 <table>
-<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 {% highlight java %}
 field = 1;
@@ -2468,14 +2681,21 @@ Foo.staticField = localVar;
 
 </td></tr></table>
 
+</details>
+
 ##### Explicit nodes for this/super expressions
 
 * What: `this` and `super` are now explicit nodes instead of PrimaryPrefix.
+  * {% jdoc jast::ASTThisExpression %}
+  * {% jdoc jast::ASTSuperExpression %}
 * Why: That way these nodes can qualify other nodes like FieldAccess.
-* Part of [[java] New expression and type grammar #1759](https://github.com/pmd/pmd/pull/1759)
+* Related issue: [[java] New expression and type grammar (#1759)](https://github.com/pmd/pmd/pull/1759)
+
+<details>
+  <summary>this/super expressions Examples</summary>
 
 <table>
-<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 {% highlight java %}
 this.field = 1;
@@ -2554,15 +2774,20 @@ super.method();
 {% endhighlight %}
 </td></tr></table>
 
+</details>
+
 ##### Type expressions
 
-* What: The node TypeExpression wraps a type node (such as ClassOrInterfaceType) and is used to qualify
-  a method call or field access or method reference.
+* What: The node {% jdoc jast::ASTTypeExpression %} wraps a {% jdoc jast::ASTType %} node (such as
+  {% jdoc jast::ASTClassOrInterfaceType %}) and is used to qualify a method call or field access or method reference.
 * Why: Simplify the qualifier of method calls, treat instanceof as infix expression.
-* [[java] Grammar type expr #2039](https://github.com/pmd/pmd/pull/2039)
+* Related issue: [[java] Grammar type expr (#2039)](https://github.com/pmd/pmd/pull/2039)
+
+<details>
+  <summary>Type expressions Examples</summary>
 
 <table>
-<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 {% highlight java %}
 Foo.staticMethod();
@@ -2632,20 +2857,27 @@ var x = Foo::method;
 {% endhighlight %}
 </td></tr></table>
 
+</details>
+
 ##### Merge unary expressions
 
-* What: Merge AST nodes for postfix and prefix expressions into the single UnaryExpression node. The merged nodes are:
+* What: Merge AST nodes for postfix and prefix expressions into the single {% jdoc jast::ASTUnaryExpression %} node.
+  The merged nodes are:
   * PreIncrementExpression
   * PreDecrementExpression
   * UnaryExpression
   * UnaryExpressionNotPlusMinus
 * Why: Those nodes were asymmetric, and inconsistently nested within UnaryExpression. By definition, they're all unary,
   so that using a single node is appropriate.
-* [#1890 [java] Merge different increment/decrement expressions](https://github.com/pmd/pmd/pull/1890)
-* [#2155 [java] Merge prefix/postfix expressions into one node](https://github.com/pmd/pmd/pull/2155)
+* Related issues:
+  * [[java] Merge different increment/decrement expressions (#1890)](https://github.com/pmd/pmd/pull/1890)
+  * [[java] Merge prefix/postfix expressions into one node (#2155)](https://github.com/pmd/pmd/pull/2155)
+
+<details>
+  <summary>Unary Expressions Examples</summary>
 
 <table>
-<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 {% highlight java %}
 ++a;
@@ -2727,6 +2959,8 @@ x = +a;
 </td></tr>
 </table>
 
+</details>
+
 ##### Binary operators are left-recursive
 
 * What: For each operator, there were separate AST nodes (like AdditiveExpression, AndExpression, ...).
@@ -2738,10 +2972,13 @@ x = +a;
   This makes it easier for the type mapping algorithms. It also provides the information, which operands are
   used with which operator. This information was lost if more than 2 operands where used and the tree was
   flattened with PMD 6.
-* [#1979 [java] Make binary operators left-recursive](https://github.com/pmd/pmd/pull/1979)
+* Related issue: [[java] Make binary operators left-recursive (#1979)](https://github.com/pmd/pmd/pull/1979)
+
+<details>
+  <summary>Binary operators Examples</summary>
 
 <table>
-<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 {% highlight java %}
 int i = 1 * 2 * 3 % 4;
@@ -2776,16 +3013,21 @@ int i = 1 * 2 * 3 % 4;
 </td></tr>
 </table>
 
+</details>
+
 ##### Parenthesized expressions
 
 * What: Parentheses are not modelled in the AST anymore, but can be checked with the attributes `@Parenthesized`
   and `@ParenthesisDepth`
 * Why: This keeps the tree flat while still preserving the information. The tree is the same in case of unnecessary
   parenthesis, which makes it harder to fool rules that look at the structure of the tree.
-* [[java] Remove ParenthesizedExpr #1872](https://github.com/pmd/pmd/pull/1872)
+* Related issue: [[java] Remove ParenthesizedExpr (#1872)](https://github.com/pmd/pmd/pull/1872)
+
+<details>
+  <summary>Parenthesized expressions Examples</summary>
 
 <table>
-<tr><th>Code</th><th>Old AST</th><th>New AST</th></tr>
+<tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
 <tr><td>
 {% highlight java %}
 a = (((1)));
@@ -2819,6 +3061,8 @@ a = (((1)));
       └─ NumericLiteral[ @Parenthesized = true() ][ @ParenthesisDepth = 3 ] "1"
 {% endhighlight %}
 </td></tr></table>
+
+</details>
 
 ### Language versions
 
