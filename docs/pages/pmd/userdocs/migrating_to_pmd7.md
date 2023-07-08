@@ -2822,8 +2822,105 @@ a = (((1)));
 
 ### Language versions
 
-For some languages, that previously hadn't any version, now there are versions, e.g. plsql.
+* Since all languages now have defined language versions, you could now write rules that apply only for specific
+  versions (using `minimumLanguageVersion` and `maximumLanguageVersion`).
+* All languages have a default version. If no specific version on the CLI is given using `--use-version`, then
+  this default version will be used. Usually the latest version is the default version.
+* The available versions for each language can be seen in the help message of the CLI `pmd check --help`.
+* See also [Changed: Language versions](pmd_release_notes_pmd7.html#changed-language-versions)
 
 ### Build Tools
 
-maven...
+{% include note.html content="
+When you switch from PMD 6.x to PMD 7 in your build tools, you most likely need to review your
+ruleset(s) as well and check for removed rules.
+See the use case[I'm using only built-in rules](#im-using-only-built-in-rules) above.
+" %}
+
+#### Ant
+
+* The Ant tasks {% jdoc ant::ant.PMDTask %} and {% jdoc ant::ant.CPDTask %} have been moved from the module
+  `pmd-core` into the new module `pmd-ant`.
+* You need to add this dependency/jar file onto the class path (`net.sourceforge.pmd:pmd-ant`) in order to
+  import the tasks into your build file.
+* When using the guide [Ant Task Usage](pmd_userdocs_tools_ant.html) then no change is needed, since
+  the pmd-ant jar file is included in the binary distribution of PMD. It is part of PMD's lib folder.
+
+#### Maven
+
+* Due to some changes in PMD's API, you can't simply pull in the new PMD 7 dependency using the
+  approach documented in [Upgrading PMD at Runtime](https://maven.apache.org/plugins/maven-pmd-plugin/examples/upgrading-PMD-at-runtime.html).
+* A new maven-pmd-plugin version, that supports PMD 7 is in the works. See [MPMD-379](https://issues.apache.org/jira/browse/MPMD-379).
+* As long as no new maven-pmd-plugin version with PMD 7 support is released, you can try it out using a
+  SNAPSHOT version:
+  1. Add the Apache SNAPSHOT maven repository:
+     ```xml
+        <pluginRepository>
+            <id>apache.snapshots</id>
+            <name>Apache Snapshot Repository</name>
+            <url>https://repository.apache.org/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository> 
+        ```
+  2. Use the version **3.21.1-pmd-7-SNAPSHOT** of the maven-pmd-plugin
+  3. Override the dependencies of the plugin to use PMD 7, e.g.
+     ```xml
+     <project>
+       <properties>
+         <pmdVersion>7.0.0-rc3</pmdVersion>
+         <mavenPmdPluginVersion>3.21.1-pmd-7-SNAPSHOT</mavenPmdPluginVersion>
+      </properties>
+      ...
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-pmd-plugin</artifactId>
+              <version>${mavenPmdPluginVersion}</version>
+              <dependencies>
+                <dependency>
+                  <groupId>net.sourceforge.pmd</groupId>
+                  <artifactId>pmd-core</artifactId>
+                  <version>${pmdVersion}</version>
+                </dependency>
+                <dependency>
+                  <groupId>net.sourceforge.pmd</groupId>
+                  <artifactId>pmd-java</artifactId>
+                  <version>${pmdVersion}</version>
+                </dependency>
+                <dependency>
+                  <groupId>net.sourceforge.pmd</groupId>
+                  <artifactId>pmd-javascript</artifactId>
+                  <version>${pmdVersion}</version>
+                </dependency>
+                <dependency>
+                  <groupId>net.sourceforge.pmd</groupId>
+                  <artifactId>pmd-jsp</artifactId>
+                  <version>${pmdVersion}</version>
+                </dependency>
+              </dependencies>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+       </build>
+     ...
+     </project>
+     ```
+
+#### Gradle
+
+* Gradle uses internally PMD's Ant task to execute PMD
+* You can set `toolVersion = "7.0.0-rc3"`, but you also need configure the dependencies manually for now, since
+  the ant task is in an own dependency with PMD 7:
+  ```groovy
+  pmd 'net.sourceforge.pmd:pmd-ant:7.0.0-rc3'
+  pmd 'net.sourceforge.pmd:pmd-java:7.0.0-rc3'
+  ```
+* Gradle 8.3 most likely will support PMD 7 out of the box.
+* See [Support for PMD 7.0](https://github.com/gradle/gradle/issues/24502)
