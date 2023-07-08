@@ -89,33 +89,126 @@ of the AST. See the section [Java AST](#java-ast) below for details.
 
 ### I've extended PMD with a custom language...
 
+The guides for [Adding a new language with JavaCC](pmd_devdocs_major_adding_new_language_javacc.html) and
+[Adding a new CPD language](pmd_devdocs_major_adding_new_cpd_language.html) have been updated.
+
+Most notable changes are:
+
+* As an alternative, PMD 7 now supports ANTLR in addition to JavaCC:
+  [Adding a new language with ANTLR](pmd_devdocs_major_adding_new_language_antlr.html).
+* There is a shared ant script that wraps the calls to javacc: `javacc-wrapper.xml`. This should be used now.
+* PMD's parser adapter for JavaCC generated parsers is called now
+  {% jdoc core::lang.ast.impl.javacc.JjtreeParserAdapter %}. This is the class that needs to be implemented now.
+* There is no need anymore to write a custom `TokenManager` - we have now a common base class for JavaCC generated
+  token managers. This base class is {% jdoc core::lang.ast.impl.javacc.AbstractTokenManager %}.
+* A rule violation factory is not needed anymore. For language specific information on rule violations, there is
+  now a {% jdoc core::reporting.ViolationDecorator %} that a language can implement. These ViolationDecorators
+  are called when a violation is reported and they can provide the additional information. This information can be
+  used by renderers via {% jdoc !!core::RuleViolation#getAdditionalInfo() %}.
+* A parser visitor adapter is not needed anymore. The visitor interface now provides a default implementation.
+  Instead, a base visitor for the language should be created, which extends {% jdoc core::lang.ast.AstVisitorBase %}.
+* A rule chain visitor is not needed anymore. PMD provides a common implementation that fits all languages.
+
 ### I've extended PMD with a custom feature...
+
+In that case we can't provide a general guide unless we know the specific custom feature. If you are having difficulties
+finding your way around the PMD source code and javadocs and you don't see the aspect of PMD documented you are
+using, we are probably missing documentation. Please reach out to use by opening a
+[discussion](https://github.com/pmd/pmd/discussions). We then can enhance the documentation and/or the PMD API.
 
 ## Special topics
 
+### Release downloads
+
+* The asset filenames of PMD on [GitHub Releases](https://github.com/pmd/pmd/releases) are
+  now `pmd-dist-<version>-bin.zip`, `pmd-dist-<version>-src.zip` and `pmd-dist-<version>-doc.zip`.
+  Keep that in mind, if you have an automated download script.
+* The structure inside the ZIP files stay the same, e.g. we still provide inside the binary distribution
+  ZIP file the base directory `pmd-bin-<version>`.
+
 ### CLI Changes
 
-run.sh pmd -> pmd check
+The CLI has been revamped completely
+(see [Release Notes: Revamped Command Line Interface](pmd_release_notes_pmd7.html#revamped-command-line-interface)).
 
-Message: [main] ERROR net.sourceforge.pmd.cli.commands.internal.PmdCommand - No such file false
---> comes from "--fail-on-violation false" -> "--no-fail-on-violation"
+Most notable changes:
+
+* Unified start script on all platforms for all commands (PMD, CPD, Designer). Instead of `run.sh` and `pmd.bat`,
+  we now have `pmd` only (technically on Windows, there is still a `pmd.bat`, but it behaves the same). 
+  * Executing PMD from CLI now means: `run.sh pmd` / `pmd.bat` ➡️ `pmd check`
+  * Executing CPD: `run.sh cpd` / `cpd.bat` ➡️ `pmd cpd`
+  * Executing Designer: `run.sh designer` / `designer.bat` ➡️ `pmd designer`
+  * Executing CPD GUI: `run.sh cpd-gui` / `cpdgui.bat` ➡️ `pmd cpd-gui`
+* There are some changes to the CLI arguments:
+  * `--fail-on-violation false` ➡️ `--no-fail-on-violation`
+    
+    If you don't replace this argument, then "false" will be interpreted as a file to analyze. You might see then
+    an error message such as `[main] ERROR net.sourceforge.pmd.cli.commands.internal.PmdCommand - No such file false`.
+  * PMD tries to display a progress bar. If you don't want this (e.g. on a CI build server), you can disable this
+    with `--no-progress`.
 
 ### Custom distribution packages
-needs pmd-cli dependencies
-needs cyclonedx plugin
-additional config needed to include conf/simpelogger.properties
 
+When creating a custom distribution which only integrates the languages you need, there are some changes to apply:
 
-### Rule tests
+* In addition to the language dependencies you want, you also need add a dependency to
+  `net.sourceforge.pmd:pmd-cli` in order to get the CLI classes.
+* When fetching the scripts for the CLI with "maven-dependency-plugin", you need to additionally fetch the
+  logging configuration. That means, the line
+  `<includes>scripts/**,LICENSE</includes>` needs to be changed to `<includes>scripts/**,LICENSE,conf/**</includes>`.
+* Since the assembly descriptor `pmd-bin` includes now also a BOM (bill of material), you need to create one for
+  your custom distribution as well. Simply add the following plugin configuration:
+  ```xml
+     <plugin>
+        <groupId>org.cyclonedx</groupId>
+        <artifactId>cyclonedx-maven-plugin</artifactId>
+        <version>2.7.6</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>makeAggregateBom</goal>
+            </goals>
+          </execution>
+        </executions>
+        <!-- https://github.com/CycloneDX/cyclonedx-maven-plugin/issues/326 -->
+        <dependencies>
+          <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm</artifactId>
+            <version>9.5</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+  ```
 
-Nice to have - not immediately required:
-Should replace junit4 with junit5
-But both would work.
+Note: The examples on <https://github.com/pmd/pmd-examples> have been updated.
 
-### Endcolumn
+### Rule tests are now using JUnit5
 
-CPD: End Columns of Tokens are exclusive on PMD 7,
-but inclusive on PMD 6.x. See 5b7ed58
+When you have custom rules, and you have written rule tests according to the guide
+[Testing your rules](pmd_userdocs_extending_testing.html), you might want to consider upgrading your other tests to
+[JUnit 5](https://junit.org/junit5/). The tests in PMD 7 have been migrated to JUnit5 - including the rule tests
+for the built-in rules.
+
+When executing the rule tests, you need to make sure to have JUnit5 on the classpath - which you automatically
+get when you depend on `net.sourceforge.pmd:pmd-test`. If you also have JUnit4 tests, you need to make sure
+to have a [junit-vintage-engine](https://junit.org/junit5/docs/current/user-guide/#migrating-from-junit4-running)
+as well on the test classpath, so that all tests are executed. That means, you might
+need to add now a dependency to JUnit4 explicitly if needed.
+
+### CPD: Reported endcolumn is now exclusive
+
+In PMD 6, the reported position of the duplicated tokens in CPD where always including, e.g. the following
+described a duplication of length 4 in PMD 6: beginLine=1, endLine=1, beginColumn=1, endColumn=4 - these are
+the first 4 character in the first line. With PMD 7, the endColumn is now **excluding**. The same duplication
+will be reported in PMD 7 as: beginLine=1, endLine=1, beginColumn=1, endColumn=5.
+
+The reported positions in a file follow now the usual meaning: line numbering starts from 1, begin line and end line
+are inclusive, begin column is inclusive and end column is exclusive. This is the usual behavior of the most
+common text editors and the PMD part already used that meaning in RuleViolations for a long time in PMD 6 already.
+
+This only affects the XML report format as the others don't provide column information.
 
 ### Node API
 
