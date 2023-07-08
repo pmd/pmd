@@ -6,6 +6,11 @@ permalink: pmd_userdocs_migrating_to_pmd7.html
 author: Andreas Dangel <andreas.dangel@pmd-code.org>
 ---
 
+{% include important.html content="
+This document might be incomplete and doesn't answer all questions. In that case please reach out to us
+by opening a [discussion](https://github.com/pmd/pmd/discussions) so that we can improve this guide.
+" %}
+
 ## Before you update
 
 Before updating to PMD 7, you should first update to the latest PMD 6 version 6.55.0 and try to fix all
@@ -60,15 +65,19 @@ Once you have reviewed your ruleset(s), you can switch to PMD 7.
 Ideally, you have written good tests already for your custom rules - see [Testing your rules](pmd_userdocs_extending_testing.html).
 This helps to identify problems early on.
 
-If you have **XPath based** rules, the first step will be to migrate to XPath 2.0, which is available in PMD 6 already.
-With PMD 7, XPath 1.0 won't be supported anymore and the default XPath version is actually 3.1. But the difference
-from XPath 2.0 and XPath 3.1 is not big. So the migration path is to simply migrate to XPath 2.0.
+#### XPath rules
+If you have **XPath based** rules, the first step will be to migrate to XPath 2.0 and then to XPath 3.1.
+XPath 2.0 is available in PMD 6 already and can be used right away. PMD 7 will use by default XPath 3.1 and
+won't support XPath 1.0 anymore. The difference between XPath 2.0 and XPath 3.1 is not big, so your XPath 2.0
+can be expected to work in PMD 7 without any further changes. So the migration path is to simply migrate to XPath 2.0.
+
 After you have migrated your XPath rules to XPath 2.0, remove the "version" property, since that will be removed
 with PMD 7. PMD 7 by default uses XPath 3.1.
 See below [XPath](#xpath-migrating-from-10-to-20) for details.
 
+#### Java rules
 If you have **Java based rules**, and you are using rulechain, this works a bit different now. The RuleChain API
-has changed, see [\[core] Simplify the rulechain #2490](https://github.com/pmd/pmd/pull/2490) for the full details.
+has changed, see [[core] Simplify the rulechain (#2490)](https://github.com/pmd/pmd/pull/2490) for the full details.
 But in short, you don't call `addRuleChainVisit(...)` in the rule's constructor anymore. Instead, you
 override the method {% jdoc core::lang.rule.AbstractRule#buildTargetSelector %}:
 
@@ -78,6 +87,7 @@ override the method {% jdoc core::lang.rule.AbstractRule#buildTargetSelector %}:
     }
 ```
 
+#### Java AST changes
 The API to **navigate the AST** also changed significantly:
 * Tree traversal using [Node API](#node-api)
 * Consider using the new [NodeStream API](#nodestream-api) to navigate with null-safety. This is optional.
@@ -113,7 +123,7 @@ Most notable changes are:
 
 In that case we can't provide a general guide unless we know the specific custom feature. If you are having difficulties
 finding your way around the PMD source code and javadocs and you don't see the aspect of PMD documented you are
-using, we are probably missing documentation. Please reach out to use by opening a
+using, we are probably missing documentation. Please reach out to us by opening a
 [discussion](https://github.com/pmd/pmd/discussions). We then can enhance the documentation and/or the PMD API.
 
 ## Special topics
@@ -182,7 +192,10 @@ When creating a custom distribution which only integrates the languages you need
       </plugin>
   ```
 
-Note: The examples on <https://github.com/pmd/pmd-examples> have been updated.
+{% include note.html content="
+The examples on <https://github.com/pmd/pmd-examples> have been updated.
+" %}
+
 
 ### Rule tests are now using JUnit5
 
