@@ -46,7 +46,6 @@ public class JavaLanguageModule extends LanguageModuleBase {
                               .addVersion("17")
                               .addVersion("18")
                               .addVersion("19")
-                              .addVersion("19-preview")
                               .addVersion("20")
                               .addVersion("20-preview")
                               .addDefaultVersion("21") // 21 is the default
