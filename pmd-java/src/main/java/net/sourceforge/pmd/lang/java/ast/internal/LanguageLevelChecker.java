@@ -39,6 +39,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchArrowBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
+import net.sourceforge.pmd.lang.java.ast.ASTTemplateExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
@@ -163,6 +164,12 @@ public class LanguageLevelChecker<T> {
          * @see <a href="https://openjdk.org/jeps/440">JEP 440: Record Patterns</a> (Java 21)
          */
         DECONSTRUCTION_PATTERNS_IN_ENHANCED_FOR_STATEMENT(20, 20, false),
+
+        /**
+         * String Templates.
+         * @see <a href="https://openjdk.org/jeps/430">JEP 430: String Templates (Preview)</a>
+         */
+        STRING_TEMPLATES(21, 21, false),
 
         ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
@@ -623,6 +630,12 @@ public class LanguageLevelChecker<T> {
         @Override
         public Void visit(ASTVariableDeclaratorId node, T data) {
             checkIdent(node, node.getName(), data);
+            return null;
+        }
+
+        @Override
+        public Void visit(ASTTemplateExpression node, T data) {
+            check(node, PreviewFeature.STRING_TEMPLATES, data);
             return null;
         }
 
