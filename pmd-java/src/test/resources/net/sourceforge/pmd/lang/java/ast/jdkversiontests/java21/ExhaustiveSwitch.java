@@ -3,12 +3,14 @@
  */
 
 /**
- * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a>
+ * @see <a href="https://openjdk.org/jeps/441">JEP 441: Pattern Matching for switch</a>
  */
 public class ExhaustiveSwitch {
 
-    static int coverage(Object o) {
-        return switch (o) {
+    // As of Java 21
+    // Type coverage
+    static int coverage(Object obj) {
+        return switch (obj) {
             case String s  -> s.length();
             case Integer i -> i;
             default -> 0;
@@ -27,11 +29,13 @@ public class ExhaustiveSwitch {
                 break;
         }
     }
-    
+
+    // As of Java 21
+    // Exhaustiveness and sealed classes
     sealed interface S permits A, B, C {}
     final static class A implements S {}
     final static class B implements S {}
-    record C(int i) implements S {}  // Implicitly final
+    record C(int i) implements S {}    // Implicitly final
 
     static int testSealedExhaustive(S s) {
         return switch (s) {
@@ -54,6 +58,9 @@ public class ExhaustiveSwitch {
                 break;
         };
     }
+
+    // As of Java 21
+    // Exhaustiveness and sealed classes
     sealed interface I<T> permits E, F {}
     final static class E<X> implements I<String> {}
     final static class F<Y> implements I<Y> {}

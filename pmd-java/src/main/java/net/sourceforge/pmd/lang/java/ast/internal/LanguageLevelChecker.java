@@ -124,8 +124,9 @@ public class LanguageLevelChecker<T> {
          * @see <a href="https://openjdk.org/jeps/420">JEP 420: Pattern Matching for switch (Second Preview)</a> (Java 18)
          * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a> (Java 19)
          * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a> (Java 20)
+         * @see <a href="https://openjdk.org/jeps/441">JEP 441: Pattern Matching for switch</a> (Java 21)
          */
-        PATTERNS_IN_SWITCH_STATEMENTS(17, 20, false),
+        PATTERNS_IN_SWITCH_STATEMENTS(17, 20, true),
 
         /**
          * Part of pattern matching for switch
@@ -134,16 +135,18 @@ public class LanguageLevelChecker<T> {
          * @see <a href="https://openjdk.org/jeps/420">JEP 420: Pattern Matching for switch (Second Preview)</a> (Java 18)
          * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a> (Java 19)
          * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a> (Java 20)
+         * @see <a href="https://openjdk.org/jeps/441">JEP 441: Pattern Matching for switch</a> (Java 21)
          */
-        NULL_IN_SWITCH_CASES(17, 20, false),
+        NULL_IN_SWITCH_CASES(17, 20, true),
 
         /**
          * Part of pattern matching for switch: Case refinement using "when"
          * @see #PATTERNS_IN_SWITCH_STATEMENTS
          * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a> (Java 19)
          * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a> (Java 20)
+         * @see <a href="https://openjdk.org/jeps/441">JEP 441: Pattern Matching for switch</a> (Java 21)
          */
-        CASE_REFINEMENT(19, 20, false),
+        CASE_REFINEMENT(19, 20, true),
 
         /**
          * Record patterns

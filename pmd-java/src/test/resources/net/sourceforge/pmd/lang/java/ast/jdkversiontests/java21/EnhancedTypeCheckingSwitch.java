@@ -3,18 +3,22 @@
  */
 
 /**
- * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a>
+ * @see <a href="https://openjdk.org/jeps/441">JEP 441: Pattern Matching for switch</a>
  */
 public class EnhancedTypeCheckingSwitch {
 
+    // As of Java 21
+    // Selector expression typing
+    record Point(int i, int j) {}
+    enum Color { RED, GREEN, BLUE; }
 
-    static void typeTester(Object o) {
-        switch (o) {
+    static void typeTester(Object obj) {
+        switch (obj) {
             case null     -> System.out.println("null");
             case String s -> System.out.println("String");
-            case Color c  -> System.out.println("Color with " + c.values().length + " values");
+            case Color c  -> System.out.println("Color: " + c.toString());
             case Point p  -> System.out.println("Record class: " + p.toString());
-            case int[] ia -> System.out.println("Array of ints of length " + ia.length);
+            case int[] ia -> System.out.println("Array of ints of length" + ia.length);
             default       -> System.out.println("Something else");
         }
     }
@@ -34,6 +38,3 @@ public class EnhancedTypeCheckingSwitch {
         typeTester(o);
     }
 }
-
-record Point(int i, int j) {}
-enum Color { RED, GREEN, BLUE; }

@@ -3,7 +3,7 @@
  */
 
 /**
- * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a>
+ * @see <a href="https://openjdk.org/jeps/441">JEP 441: Pattern Matching for switch</a>
  */
 public class RefiningPatternsInSwitch {
 

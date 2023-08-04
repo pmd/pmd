@@ -3,9 +3,9 @@
  */
 
 /**
- * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a>
+ * @see <a href="https://openjdk.org/jeps/441">JEP 441: Pattern Matching for switch</a>
  */
-public class GuardedAndParenthesizedPatterns {
+public class GuardedPatterns {
 
 
     static void test(Object o) {
@@ -13,8 +13,6 @@ public class GuardedAndParenthesizedPatterns {
             case String s when s.length() == 1     -> System.out.println("single char string");
             case String s                          -> System.out.println("string");
             case Integer i when i.intValue() == 1  -> System.out.println("integer 1");
-            case (Long l) when l.longValue() == 1L -> System.out.println("long 1 with parens");
-            case (((Double d)))                    -> System.out.println("double with parens");
             default                                -> System.out.println("default case");
         }
     }
@@ -37,9 +35,7 @@ public class GuardedAndParenthesizedPatterns {
         switch (o) {
             case String s when (s.length() == 1)         -> System.out.println("single char string");
             case String s                                -> System.out.println("string");
-            case (Integer i) when i.intValue() == 1      -> System.out.println("integer 1");
-            case ((Long l)) when ((l.longValue() == 1L)) -> System.out.println("long 1 with parens");
-            case (((Double d)))                          -> System.out.println("double with parens");
+            case Integer i when i.intValue() == 1        -> System.out.println("integer 1");
             case null                                    -> System.out.println("null!");
             default                                      -> System.out.println("default case");
         }
