@@ -1,4 +1,8 @@
 /**
+ * Promote "JEP 441: Pattern Matching for switch" as permanent language feature for Java 21.
+ *    Renamed SwitchGuard to Guard.
+ * Andreas Dangel 08/2023
+ *====================================================================
  * Support "JEP 433: Pattern Matching for switch (Fourth Preview)" for Java 20 Preview
  *    SwitchLabel simplified
  * Support "JEP 432: Record Patterns (Second Preview)" for Java 20 Preview
@@ -1721,6 +1725,8 @@ void Pattern() #void:
     | TypePattern()
 }
 
+// ParenthesizedPatterns are removed with Java 21 (JEP 441), but needed for now to support Java 20 Preview
+// TODO: Remove ParenthesizedPattern once java 20-preview is removed
 void ParenthesizedPattern() #void:
 {}
 {
@@ -2453,22 +2459,14 @@ void SwitchLabel() :
 void CaseLabelElement(ASTSwitchLabel label) #void:
 {}
 {
-    "default" {label.setDefault();} // only valid in java-19-preview
-    |
-    "null" #NullLiteral
-        [
-            // this lookahead is only required to allow parsing java-19-preview code
-            // since java-20-preview, combining null is only allowed with default
-            LOOKAHEAD(2)
-            "," "default" {label.setDefault();}
-        ]
+    "null" #NullLiteral [ "," "default" {label.setDefault();} ]
     |
     LOOKAHEAD(Pattern()) Pattern() [ LOOKAHEAD({isKeyword("when")}) Guard() ]
     |
     ConditionalExpression()
 }
 
-void Guard() #SwitchGuard:
+void Guard() :
 {}
 {
     softKeyword("when")

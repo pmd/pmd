@@ -37,7 +37,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTResource;
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchArrowBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTSwitchGuard;
+import net.sourceforge.pmd.lang.java.ast.ASTGuard;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
@@ -550,7 +550,7 @@ public class LanguageLevelChecker<T> {
         }
 
         @Override
-        public Void visit(ASTSwitchGuard node, T data) {
+        public Void visit(ASTGuard node, T data) {
             check(node, PreviewFeature.CASE_REFINEMENT, data);
             return null;
         }
