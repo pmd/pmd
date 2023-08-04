@@ -99,26 +99,26 @@ class Java21TreeDumpTest extends BaseTreeDumpTest {
     }
 
     @Test
+    void recordPatternsJep() {
+        doTest("Jep440_RecordPatterns");
+    }
+
+    @Test
+    void recordPatternsJepBeforeJava21() {
+        ParseException thrown = assertThrows(ParseException.class, () -> java20.parseResource("Jep440_RecordPatterns.java"));
+        assertTrue(thrown.getMessage().contains("Record patterns is a preview feature of JDK 20, you should select your language version accordingly"),
+                "Unexpected message: " + thrown.getMessage());
+    }
+
+    @Test
     void recordPatterns() {
         doTest("RecordPatterns");
     }
 
     @Test
-    void recordPatternsBeforeJava21Preview() {
-        ParseException thrown = assertThrows(ParseException.class, () -> java21.parseResource("RecordPatterns.java"));
-        assertTrue(thrown.getMessage().contains("Deconstruction patterns is a preview feature of JDK 20, you should select your language version accordingly"),
-                "Unexpected message: " + thrown.getMessage());
-    }
-
-    @Test
-    void recordPatternsInEnhancedFor() {
-        doTest("RecordPatternsInEnhancedFor");
-    }
-
-    @Test
-    void recordPatternsInEnhancedForBeforeJava21Preview() {
-        ParseException thrown = assertThrows(ParseException.class, () -> java21.parseResource("RecordPatternsInEnhancedFor.java"));
-        assertTrue(thrown.getMessage().contains("Deconstruction patterns in enhanced for statement is a preview feature of JDK 20, you should select your language version accordingly"),
+    void recordPatternsBeforeJava21() {
+        ParseException thrown = assertThrows(ParseException.class, () -> java20.parseResource("RecordPatterns.java"));
+        assertTrue(thrown.getMessage().contains("Record patterns is a preview feature of JDK 20, you should select your language version accordingly"),
                 "Unexpected message: " + thrown.getMessage());
     }
 

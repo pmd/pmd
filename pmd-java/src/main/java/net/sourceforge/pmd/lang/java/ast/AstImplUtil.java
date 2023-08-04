@@ -48,6 +48,10 @@ final class AstImplUtil {
         ((AbstractJavaExpr) expression).bumpParenDepth();
     }
 
+    /**
+     * @deprecated Parenthesized patterns are only possible with Java 20 Preview and are removed with Java 21.
+     */
+    @Deprecated
     static void bumpParenDepth(ASTPattern pattern) {
         assert pattern instanceof ASTTypePattern
                 || pattern instanceof ASTRecordPattern

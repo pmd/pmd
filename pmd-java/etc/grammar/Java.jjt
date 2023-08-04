@@ -1,6 +1,8 @@
 /**
  * Promote "JEP 441: Pattern Matching for switch" as permanent language feature for Java 21.
  *    Renamed SwitchGuard to Guard.
+ * Promote "JEP 440: Record Patterns" as permanent language feature for Java 21.
+ *    Renamed ComponentPatternList to PatternList
  * Andreas Dangel 08/2023
  *====================================================================
  * Support "JEP 433: Pattern Matching for switch (Fourth Preview)" for Java 20 Preview
@@ -1745,13 +1747,13 @@ void RecordPattern():
   (Annotation())* ReferenceType() RecordStructurePattern()
 }
 
-void RecordStructurePattern() #ComponentPatternList:
+void RecordStructurePattern() #void:
 {}
 {
-  "(" [ RecordComponentPatternList() ] ")"
+    "(" [ PatternList() ] ")"
 }
 
-void RecordComponentPatternList() #void:
+void PatternList() :
 {}
 {
   Pattern() ( "," Pattern() )*
@@ -2523,6 +2525,7 @@ void EnhancedForDeclaration() #void:
 {}
 {
       LOOKAHEAD(LocalVariableDeclaration()) LocalVariableDeclaration()
+    // TODO: a recored pattern here is only valid with Java 20 Preview and not anymore with Java 21 (see JEP 440)
     | RecordPattern()
 }
 

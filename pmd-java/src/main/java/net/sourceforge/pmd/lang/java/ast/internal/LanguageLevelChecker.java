@@ -152,12 +152,15 @@ public class LanguageLevelChecker<T> {
          * Record patterns
          * @see <a href="https://openjdk.org/jeps/405">JEP 405: Record Patterns (Preview)</a> (Java 19)
          * @see <a href="https://openjdk.org/jeps/432">JEP 432: Record Patterns (Second Preview)</a> (Java 20)
+         * @see <a href="https://openjdk.org/jeps/440">JEP 440: Record Patterns</a> (Java 21)
          */
-        DECONSTRUCTION_PATTERNS(19, 20, false),
+        RECORD_PATTERNS(19, 20, true),
 
         /**
-         * Record deconstruction patterns in for-each loops
+         * Record deconstruction patterns in for-each loops.
+         * Note: support for this has been removed with Java 21 (JEP 440).
          * @see <a href="https://openjdk.org/jeps/432">JEP 432: Record Patterns (Second Preview)</a> (Java 20)
+         * @see <a href="https://openjdk.org/jeps/440">JEP 440: Record Patterns</a> (Java 21)
          */
         DECONSTRUCTION_PATTERNS_IN_ENHANCED_FOR_STATEMENT(20, 20, false),
 
@@ -545,7 +548,7 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public Void visit(ASTRecordPattern node, T data) {
-            check(node, PreviewFeature.DECONSTRUCTION_PATTERNS, data);
+            check(node, PreviewFeature.RECORD_PATTERNS, data);
             return null;
         }
 

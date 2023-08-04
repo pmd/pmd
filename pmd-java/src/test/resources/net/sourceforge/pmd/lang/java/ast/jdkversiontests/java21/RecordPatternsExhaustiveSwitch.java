@@ -3,7 +3,7 @@
  */
 
 /**
- * @see <a href="https://openjdk.org/jeps/432">JEP 432: Record Patterns (Second Preview)</a>
+ * @see <a href="https://openjdk.org/jeps/440">JEP 440: Record Patterns</a>
  */
 public class RecordPatternsExhaustiveSwitch {
     class A {}
