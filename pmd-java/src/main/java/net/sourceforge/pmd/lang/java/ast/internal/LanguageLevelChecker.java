@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
@@ -86,7 +87,7 @@ public class LanguageLevelChecker<T> {
 
     public void check(JavaNode node) {
         T accumulator = reportingStrategy.createAccumulator();
-        node.descendants(JavaNode.class).crossFindBoundaries().forEach(n -> n.acceptVisitor(visitor, accumulator));
+        node.descendantsOrSelf().crossFindBoundaries().filterIs(JavaNode.class).forEach(n -> n.acceptVisitor(visitor, accumulator));
         reportingStrategy.done(accumulator);
     }
 
@@ -177,6 +178,12 @@ public class LanguageLevelChecker<T> {
          * @see <a href="https://openjdk.org/jeps/443">JEP 443: Unnamed patterns and variables (Preview)</a> (Java 21)
          */
         UNNAMED_PATTERNS_AND_VARIABLES(21, 21, false),
+
+        /**
+         * Unnamed Classes and Instance Main Methods
+         * @see <a href="https://openjdk.org/jeps/445">JEP 445: Unnamed Classes and Instance Main Methods (Preview)</a> (Java 21)
+         */
+        UNNAMED_CLASSES(21, 21, false),
 
         ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
@@ -410,6 +417,14 @@ public class LanguageLevelChecker<T> {
         }
 
         @Override
+        public Void visit(ASTCompilationUnit node, T data) {
+            if (node.isUnnamedClass()) {
+                check(node, PreviewFeature.UNNAMED_CLASSES, data);
+            }
+            return null;
+        }
+
+        @Override
         public Void visit(ASTStringLiteral node, T data) {
             if (node.isStringLiteral() && SPACE_ESCAPE_PATTERN.matcher(node.getImage()).find()) {
                 check(node, RegularLanguageFeature.SPACE_STRING_ESCAPES, data);
@@ -540,7 +555,7 @@ public class LanguageLevelChecker<T> {
                 check(node, RegularLanguageFeature.DEFAULT_METHODS, data);
             }
 
-            if (node.isPrivate() && node.getEnclosingType().isInterface()) {
+            if (node.isPrivate() && node.getEnclosingType() != null && node.getEnclosingType().isInterface()) {
                 check(node, RegularLanguageFeature.PRIVATE_METHODS_IN_INTERFACES, data);
             }
 
