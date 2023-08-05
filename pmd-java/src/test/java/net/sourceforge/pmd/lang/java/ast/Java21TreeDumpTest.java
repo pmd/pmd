@@ -4,8 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -38,7 +39,7 @@ class Java21TreeDumpTest extends BaseTreeDumpTest {
     @Test
     void patternMatchingForSwitchBeforeJava21() {
         ParseException thrown = assertThrows(ParseException.class, () -> java20.parseResource("Jep441_PatternMatchingForSwitch.java"));
-        assertTrue(thrown.getMessage().contains("Patterns in switch statements is a preview feature of JDK 20, you should select your language version accordingly"));
+        assertThat(thrown.getMessage(), containsString("Patterns in switch statements is a preview feature of JDK 20, you should select your language version accordingly"));
     }
 
     @Test
@@ -49,8 +50,7 @@ class Java21TreeDumpTest extends BaseTreeDumpTest {
     @Test
     void dealingWithNullBeforeJava21() {
         ParseException thrown = assertThrows(ParseException.class, () -> java20.parseResource("DealingWithNull.java"));
-        assertTrue(thrown.getMessage().contains("Null in switch cases is a preview feature of JDK 20, you should select your language version accordingly"),
-                "Unexpected message: " + thrown.getMessage());
+        assertThat(thrown.getMessage(), containsString("Null in switch cases is a preview feature of JDK 20, you should select your language version accordingly"));
     }
 
 
@@ -72,8 +72,7 @@ class Java21TreeDumpTest extends BaseTreeDumpTest {
     @Test
     void guardedPatternsBeforeJava21() {
         ParseException thrown = assertThrows(ParseException.class, () -> java20.parseResource("GuardedPatterns.java"));
-        assertTrue(thrown.getMessage().contains("Patterns in switch statements is a preview feature of JDK 20, you should select your language version accordingly"),
-                "Unexpected message: " + thrown.getMessage());
+        assertThat(thrown.getMessage(), containsString("Patterns in switch statements is a preview feature of JDK 20, you should select your language version accordingly"));
     }
 
     @Test
@@ -84,8 +83,7 @@ class Java21TreeDumpTest extends BaseTreeDumpTest {
     @Test
     void patternsInSwitchLabelsBeforeJava21() {
         ParseException thrown = assertThrows(ParseException.class, () -> java20.parseResource("PatternsInSwitchLabels.java"));
-        assertTrue(thrown.getMessage().contains("Patterns in switch statements is a preview feature of JDK 20, you should select your language version accordingly"),
-                "Unexpected message: " + thrown.getMessage());
+        assertThat(thrown.getMessage(), containsString("Patterns in switch statements is a preview feature of JDK 20, you should select your language version accordingly"));
     }
 
     @Test
@@ -106,8 +104,7 @@ class Java21TreeDumpTest extends BaseTreeDumpTest {
     @Test
     void recordPatternsJepBeforeJava21() {
         ParseException thrown = assertThrows(ParseException.class, () -> java20.parseResource("Jep440_RecordPatterns.java"));
-        assertTrue(thrown.getMessage().contains("Record patterns is a preview feature of JDK 20, you should select your language version accordingly"),
-                "Unexpected message: " + thrown.getMessage());
+        assertThat(thrown.getMessage(), containsString("Record patterns is a preview feature of JDK 20, you should select your language version accordingly"));
     }
 
     @Test
@@ -118,8 +115,7 @@ class Java21TreeDumpTest extends BaseTreeDumpTest {
     @Test
     void recordPatternsBeforeJava21() {
         ParseException thrown = assertThrows(ParseException.class, () -> java20.parseResource("RecordPatterns.java"));
-        assertTrue(thrown.getMessage().contains("Record patterns is a preview feature of JDK 20, you should select your language version accordingly"),
-                "Unexpected message: " + thrown.getMessage());
+        assertThat(thrown.getMessage(), containsString("Record patterns is a preview feature of JDK 20, you should select your language version accordingly"));
     }
 
     @Test

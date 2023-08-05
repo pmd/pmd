@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -50,5 +52,19 @@ class Java21PreviewTreeDumpTest extends BaseTreeDumpTest {
         ASTTemplateExpression templateExpression = unit.descendants(ASTTemplateExpression.class).first();
         JTypeMirror typeMirror = templateExpression.getTypeMirror();
         assertEquals("java.lang.String", ((JClassSymbol) typeMirror.getSymbol()).getCanonicalName());
+    }
+
+    @Test
+    void unnamedPatternsAndVariables() {
+        doTest("Jep443_UnnamedPatternsAndVariables");
+    }
+
+    @Test
+    void unnamedPatternsAndVariablesBeforeJava21Preview() {
+        ParseException thrown = assertThrows(ParseException.class, () -> java21.parseResource("Jep443_UnnamedPatternsAndVariables.java"));
+        assertThat(thrown.getMessage(), containsString("Since Java 9, '_' is reserved and cannot be used as an identifier"));
+
+        thrown = assertThrows(ParseException.class, () -> java21.parseResource("Jep443_UnnamedPatternsAndVariables2.java"));
+        assertThat(thrown.getMessage(), containsString("Unnamed patterns and variables is a preview feature of JDK 21, you should select your language version accordingly"));
     }
 }

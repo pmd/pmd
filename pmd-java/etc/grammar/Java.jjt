@@ -1,4 +1,6 @@
 /**
+ * Support "JEP 443: Unnamed Patterns and Variables" for Java 21 Preview.
+ *    New AST nodes: ASTUnnamedPattern
  * Support "JEP 430: String Templates" for Java 21 Preview.
  *    New AST nodes: ASTTemplateExpression, ASTTemplate, ASTTemplateFragment
  * Promote "JEP 441: Pattern Matching for switch" as permanent language feature for Java 21.
@@ -1884,13 +1886,26 @@ void RecordPattern():
 void RecordStructurePattern() #void:
 {}
 {
-    "(" [ PatternList() ] ")"
+    "(" [ ComponentPatternList() ] ")"
 }
 
-void PatternList() :
+void ComponentPatternList() #PatternList :
 {}
 {
-  Pattern() ( "," Pattern() )*
+  ComponentPattern() ( "," ComponentPattern() )*
+}
+
+void ComponentPattern() #void:
+{}
+{
+      LOOKAHEAD({isKeyword("_")}) UnnamedPattern()
+    | Pattern()
+}
+
+void UnnamedPattern():
+{}
+{
+    softKeyword("_")
 }
 
 void InstanceOfExpression() #void:
@@ -2637,9 +2652,21 @@ void CaseLabelElement(ASTSwitchLabel label) #void:
 {
     "null" #NullLiteral [ "," "default" {label.setDefault();} ]
     |
-    LOOKAHEAD(Pattern()) Pattern() [ LOOKAHEAD({isKeyword("when")}) Guard() ]
+    LOOKAHEAD(Pattern()) CasePattern() [ LOOKAHEAD({isKeyword("when")}) Guard() ]
     |
+    CaseConstant()
+}
+
+void CaseConstant() #void:
+{}
+{
     ConditionalExpression()
+}
+
+void CasePattern() #void:
+{}
+{
+    Pattern()
 }
 
 void Guard() :

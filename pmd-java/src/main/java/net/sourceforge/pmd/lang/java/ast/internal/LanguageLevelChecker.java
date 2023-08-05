@@ -45,6 +45,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTTypePattern;
+import net.sourceforge.pmd.lang.java.ast.ASTUnnamedPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
@@ -167,9 +168,15 @@ public class LanguageLevelChecker<T> {
 
         /**
          * String Templates.
-         * @see <a href="https://openjdk.org/jeps/430">JEP 430: String Templates (Preview)</a>
+         * @see <a href="https://openjdk.org/jeps/430">JEP 430: String Templates (Preview)</a> (Java 21)
          */
         STRING_TEMPLATES(21, 21, false),
+
+        /**
+         * Unnamed patterns and variables.
+         * @see <a href="https://openjdk.org/jeps/443">JEP 443: Unnamed patterns and variables (Preview)</a> (Java 21)
+         */
+        UNNAMED_PATTERNS_AND_VARIABLES(21, 21, false),
 
         ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
@@ -640,6 +647,12 @@ public class LanguageLevelChecker<T> {
         }
 
         @Override
+        public Void visit(ASTUnnamedPattern node, T data) {
+            check(node, PreviewFeature.UNNAMED_PATTERNS_AND_VARIABLES, data);
+            return null;
+        }
+
+        @Override
         public Void visitTypeDecl(ASTAnyTypeDeclaration node, T data) {
             if (node.getModifiers().hasAnyExplicitly(JModifier.SEALED, JModifier.NON_SEALED)) {
                 check(node, RegularLanguageFeature.SEALED_CLASSES, data);
@@ -668,7 +681,11 @@ public class LanguageLevelChecker<T> {
             } else if ("assert".equals(simpleName)) {
                 check(node, Keywords.ASSERT_AS_AN_IDENTIFIER, acc);
             } else if ("_".equals(simpleName)) {
-                check(node, Keywords.UNDERSCORE_AS_AN_IDENTIFIER, acc);
+                if (LanguageLevelChecker.this.preview) {
+                    check(node, PreviewFeature.UNNAMED_PATTERNS_AND_VARIABLES, acc);
+                } else {
+                    check(node, Keywords.UNDERSCORE_AS_AN_IDENTIFIER, acc);
+                }
             }
         }
 
