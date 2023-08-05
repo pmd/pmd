@@ -7192,6 +7192,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "krdabrowski",
+      "name": "Krystian Dabrowski",
+      "avatar_url": "https://avatars.githubusercontent.com/u/98942253?v=4",
+      "profile": "https://github.com/krdabrowski",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
