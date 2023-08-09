@@ -3,6 +3,6 @@
  *
  * ä (this is an a-umlaut U+00E4)
  */
-public class FileWith_ISO8859-1_Encoding {
+public class fileWith_ISO8859_1_Encoding {
 
 }

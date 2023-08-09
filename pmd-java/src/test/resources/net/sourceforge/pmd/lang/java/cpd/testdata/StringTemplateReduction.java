@@ -1,3 +1,7 @@
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 /**
  * This is part of Java 21 Preview: String Templates.
  * When tokenizing and reducing the input characters to the tokens, a "}" is ambiguous

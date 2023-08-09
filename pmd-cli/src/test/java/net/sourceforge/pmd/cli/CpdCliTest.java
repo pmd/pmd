@@ -37,9 +37,9 @@ class CpdCliTest extends BaseCliTest {
     private static final Map<String, Integer> NUMBER_OF_TOKENS = ImmutableMap.of(
             new File(SRC_DIR, "dup1.java").getAbsolutePath(), 89,
             new File(SRC_DIR, "dup2.java").getAbsolutePath(), 89,
-            new File(SRC_DIR, "file_with_ISO-8859-1_encoding.java").getAbsolutePath(), 8,
-            new File(SRC_DIR, "file_with_utf8_bom.java").getAbsolutePath(), 9
-    );
+            new File(SRC_DIR, "fileWith_ISO8859_1_Encoding.java").getAbsolutePath(), 5,
+            new File(SRC_DIR, "fileWith_UTF_8_BOM_Encoding.java").getAbsolutePath(), 5
+            );
     @TempDir
     private Path tempDir;
 
@@ -154,11 +154,11 @@ class CpdCliTest extends BaseCliTest {
                 + "         totalNumberOfTokens=\"89\"/>\n"
                 + "   <file path=\"" + absoluteSrcDir.resolve("dup2.java") + "\"\n"
                 + "         totalNumberOfTokens=\"89\"/>\n"
-                + "   <file path=\"" + absoluteSrcDir.resolve("file_with_ISO-8859-1_encoding.java")
+                + "   <file path=\"" + absoluteSrcDir.resolve("fileWith_ISO8859_1_Encoding.java")
                 + "\"\n"
-                + "         totalNumberOfTokens=\"8\"/>\n"
-                + "   <file path=\"" + absoluteSrcDir.resolve("file_with_utf8_bom.java") + "\"\n"
-                + "         totalNumberOfTokens=\"9\"/>\n"
+                + "         totalNumberOfTokens=\"5\"/>\n"
+                + "   <file path=\"" + absoluteSrcDir.resolve("fileWith_UTF_8_BOM_Encoding.java") + "\"\n"
+                + "         totalNumberOfTokens=\"5\"/>\n"
                 + "</pmd-cpd>\n";
 
         runCliSuccessfully("--minimum-tokens", "340", "--language", "java", "--dir", SRC_DIR, "--format", "xml")

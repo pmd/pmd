@@ -40,6 +40,11 @@ class JavaTokenizerTest extends CpdTextComparisonTest {
         doTest("StringTemplateReduction");
     }
 
+    @Test
+    void testStringTemplateReduction2() {
+        doTest("StringTemplateReduction2");
+    }
+
     @Disabled("Needs to be enabled after java-grammar changes are finalized")
     @Test
     void testCommentsIgnored() {

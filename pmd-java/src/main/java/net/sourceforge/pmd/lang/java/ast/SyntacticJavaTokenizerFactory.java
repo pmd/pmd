@@ -8,9 +8,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
+import net.sourceforge.pmd.lang.java.internal.JavaLanguageProperties;
 
 /**
  * Creates a tokenizer, that uses the syntactic grammar to provide context
@@ -34,7 +37,12 @@ public final class SyntacticJavaTokenizerFactory {
                 return token;
             }
         };
+
+        LanguageVersion latestVersion = JavaLanguageModule.getInstance().getLatestVersion();
         JavaParserImpl parser = new JavaParserImpl(tokenManager);
+        parser.setJdkVersion(JavaLanguageProperties.getInternalJdkVersion(latestVersion));
+        parser.setPreview(JavaLanguageProperties.isPreviewEnabled(latestVersion));
+
         ASTCompilationUnit compilationUnit = parser.CompilationUnit();
         assert compilationUnit != null;
 
