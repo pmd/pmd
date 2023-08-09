@@ -20,7 +20,7 @@ class MatchAlgorithmTest {
     private static final String LINE_2 = " public void bar() {";
     private static final String LINE_3 = "  System.out.println(\"hello\");";
     private static final String LINE_4 = "  System.out.println(\"hello\");";
-    private static final String LINE_5 = "  int i = 5";
+    private static final String LINE_5 = "  int i = 5;";
     private static final String LINE_6 = "  System.out.print(\"hello\");";
     private static final String LINE_7 = " }";
     private static final String LINE_8 = "}";
