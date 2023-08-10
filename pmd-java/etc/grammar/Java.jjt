@@ -279,6 +279,7 @@ options {
   MULTI = true;
   VISITOR = true;
   NODE_PACKAGE="net.sourceforge.pmd.lang.java.ast";
+  TOKEN_MANAGER_USES_PARSER = true;
 
   // disable the calculation of expected tokens when a parse error occurs
   // depending on the possible allowed next tokens, this
@@ -292,9 +293,10 @@ options {
 
 PARSER_BEGIN(JavaParserImpl)
 package net.sourceforge.pmd.lang.java.ast;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Collections;
+import java.util.Deque;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
@@ -305,6 +307,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.JavaParserImplTokenManager.TokenContext;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 
 class JavaParserImpl {
@@ -582,6 +585,13 @@ class JavaParserImpl {
      */
     private boolean inExplicitConstructorInvoc = false;
 
+    private Deque<TokenContext> tokenContexts = new ArrayDeque<TokenContext>();
+    TokenContext determineTokenContext() {
+        if (tokenContexts.isEmpty()) {
+            return null;
+        }
+        return tokenContexts.peek();
+    }
 }
 PARSER_END(JavaParserImpl)
 
@@ -597,22 +607,7 @@ TOKEN_MGR_DECLS :
         java.util.regex.Pattern.compile("^}(?:[^\"\\\\\n\r]|\\\\(?:[ntbrfs\\\\'\"]|[0-7][0-7]?|[0-3][0-7][0-7]))*(\\{|\")");
 
     private TokenContext determineContext() {
-        Throwable t = new Throwable().fillInStackTrace();
-        for (StackTraceElement e : t.getStackTrace()) {
-            String method = e.getMethodName();
-            if ("TextBlockTemplate".equals(method)) {
-                return TokenContext.TEXT_BLOCK_TEMPLATE;
-            } else if ("StringTemplate".equals(method)) {
-                return TokenContext.STRING_TEMPLATE;
-            } else if ("Block".equals(method)
-                || "ClassOrInterfaceBody".equals(method)
-                || "ArrayInitializer".equals(method)
-                || "MemberValueArrayInitializer".equals(method)
-                || "SwitchBlock".equals(method)) {
-                return TokenContext.BLOCK;
-            }
-        }
-        return null;
+       return parser.determineTokenContext();
     }
 
     private net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken rereadTokenAs(int kind, int length) {
@@ -1286,11 +1281,11 @@ void EnumDeclaration():
 void EnumBody():
 {}
 {
-   "{"
+   "{" { tokenContexts.push(TokenContext.BLOCK); }
     [ EnumConstant() ( LOOKAHEAD(2) "," EnumConstant() )* ]
     [ "," { jjtThis.setTrailingComma(); } ]
     [ ";" { jjtThis.setSeparatorSemi(); } ( ClassOrInterfaceBodyDeclaration() )* ]
-   "}"
+   "}" { tokenContexts.pop(); }
 }
 
 void EnumConstant():
@@ -1333,9 +1328,9 @@ void RecordComponent():
 void RecordBody():
 {}
 {
-  "{"
+  "{" { tokenContexts.push(TokenContext.BLOCK); }
     ( RecordBodyDeclaration() )*
-  "}"
+  "}" { tokenContexts.pop(); }
 }
 
 void RecordBodyDeclaration() #void :
@@ -1375,7 +1370,9 @@ void TypeParameter():
 void ClassOrInterfaceBody():
 {}
 {
-  "{" ( ClassOrInterfaceBodyDeclaration() )* "}"
+  "{" { tokenContexts.push(TokenContext.BLOCK); }
+  ( ClassOrInterfaceBodyDeclaration() )*
+  "}" { tokenContexts.pop(); }
 }
 
 void ClassOrInterfaceBodyDeclaration() #void:
@@ -1436,7 +1433,9 @@ void VariableInitializer() #void:
 void ArrayInitializer() :
 {}
 {
-  "{" [ VariableInitializer() ( LOOKAHEAD(2) "," VariableInitializer() )* ] [ "," ] "}"
+  "{" { tokenContexts.push(TokenContext.BLOCK); }
+  [ VariableInitializer() ( LOOKAHEAD(2) "," VariableInitializer() )* ] [ "," ]
+  "}" { tokenContexts.pop(); }
 }
 
 void MethodDeclaration() :
@@ -1501,10 +1500,10 @@ void ConstructorDeclaration() :
 private void ConstructorBlock() #Block:
 {}
 {
-    "{"
+    "{" { tokenContexts.push(TokenContext.BLOCK); }
         [ LOOKAHEAD(ExplicitConstructorInvocation()) ExplicitConstructorInvocation() ]
         ( BlockStatement() )*
-    "}"
+    "}" { tokenContexts.pop(); }
 }
 
 void ExplicitConstructorInvocation() :
@@ -2329,19 +2328,27 @@ void Template() :
 void StringTemplate() #void :
 {}
 {
+  { tokenContexts.push(TokenContext.STRING_TEMPLATE); }
+
         <STRING_TEMPLATE_BEGIN> { setLastTokenImage(jjtThis); } #TemplateFragment
         EmbeddedExpression()
         ( <STRING_TEMPLATE_MID> { setLastTokenImage(jjtThis); } #TemplateFragment EmbeddedExpression() )*
         <STRING_TEMPLATE_END> { setLastTokenImage(jjtThis); } #TemplateFragment
+
+  { tokenContexts.pop(); }
 }
 
 void TextBlockTemplate() #void :
 {}
 {
+  { tokenContexts.push(TokenContext.TEXT_BLOCK_TEMPLATE); }
+
         <TEXT_BLOCK_TEMPLATE_BEGIN> { setLastTokenImage(jjtThis); } #TemplateFragment
         EmbeddedExpression()
         ( <TEXT_BLOCK_TEMPLATE_MID> { setLastTokenImage(jjtThis); } #TemplateFragment EmbeddedExpression() )*
         <TEXT_BLOCK_TEMPLATE_END> { setLastTokenImage(jjtThis); } #TemplateFragment
+
+  { tokenContexts.pop(); }
 }
 
 void EmbeddedExpression() #void :
@@ -2507,7 +2514,9 @@ void LabeledStatement() :
 void Block() :
 {}
 {
-    "{" ( BlockStatement() )* "}"
+    "{" { tokenContexts.push(TokenContext.BLOCK); }
+    ( BlockStatement() )*
+    "}" { tokenContexts.pop(); }
 }
 
 void BlockStatement() #void:
@@ -2638,12 +2647,12 @@ void SwitchStatement():
 void SwitchBlock() #void:
 {}
 {
-    "{"
+  "{" { tokenContexts.push(TokenContext.BLOCK); }
         (
           LOOKAHEAD(SwitchLabel() ":") (SwitchFallthroughBranch())+
         | (SwitchArrowBranch())*
         )
-    "}"
+  "}" { tokenContexts.pop(); }
 }
 
 void SwitchArrowBranch():
@@ -2940,7 +2949,9 @@ void MemberValue() #void:
 void  MemberValueArrayInitializer():
 {}
 {
-  "{" (MemberValue() ( LOOKAHEAD(2) "," MemberValue() )*)? [ "," ] "}"
+  "{" { tokenContexts.push(TokenContext.BLOCK); }
+  (MemberValue() ( LOOKAHEAD(2) "," MemberValue() )*)? [ "," ]
+  "}" { tokenContexts.pop(); }
 }
 
 /*
@@ -2965,7 +2976,9 @@ void AnnotationTypeDeclaration():
 void AnnotationTypeBody():
 {}
 {
-  "{" ( AnnotationTypeMemberDeclaration() )* "}"
+  "{" { tokenContexts.push(TokenContext.BLOCK); }
+  ( AnnotationTypeMemberDeclaration() )*
+  "}" { tokenContexts.pop(); }
 }
 
 void AnnotationTypeMemberDeclaration() #void:
@@ -3010,7 +3023,9 @@ void ModuleDeclaration():
   [LOOKAHEAD({isKeyword("open")}) <IDENTIFIER> {jjtThis.setOpen(true);}]
   LOOKAHEAD({isKeyword("module")}) <IDENTIFIER>
   ModuleName()
-  "{" (ModuleDirective())* "}"
+  "{" { tokenContexts.push(TokenContext.BLOCK); }
+  (ModuleDirective())*
+  "}" { tokenContexts.pop(); }
 }
 
 void ModuleDirective() #void:
