@@ -517,6 +517,29 @@ module `pmd-coco`.
 
 Contributors: [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
 
+### New: Java 21 Support
+
+This release of PMD brings support for Java 21. There are the following new standard language features,
+that are supported now:
+
+* [JEP 440: Record Patterns](https://openjdk.org/jeps/440)
+* [JEP 441: Pattern Matching for switch](https://openjdk.org/jeps/441)
+
+PMD also supports the following preview language features:
+
+* [JEP 430: String Templates (Preview)](https://openjdk.org/jeps/430)
+* [JEP 443: Unnamed Patterns and Variables (Preview)](https://openjdk.org/jeps/443)
+* [JEP 445: Unnamed Classes and Instance Main Methods (Preview)](https://openjdk.org/jeps/445)
+
+In order to analyze a project with PMD that uses these language features,
+you'll need to enable it via the environment variable `PMD_JAVA_OPTS` and select the new language
+version `21-preview`:
+
+    export PMD_JAVA_OPTS=--enable-preview
+    pmd check --use-version java-21-preview ...
+
+Note: Support for Java 19 preview language features have been removed. The version "19-preview" is no longer available.
+
 ### Changed: JavaScript support
 
 The JS specific parser options have been removed. The parser now always retains comments and uses version ES6.
