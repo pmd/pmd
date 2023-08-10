@@ -9,7 +9,7 @@ SCRIPT_INCLUDES="log.bash utils.bash setup-secrets.bash openjdk.bash maven.bash 
 source "$(dirname "$0")/inc/fetch_ci_scripts.bash" && fetch_ci_scripts
 
 function build() {
-    pmd_ci_log_group_start "Prepare Java 8+11+17, Bundler"
+    pmd_ci_log_group_start "Prepare Java 8+11+17+21, Bundler"
         pmd_ci_openjdk_install_adoptium 11
         pmd_ci_openjdk_setdefault 11
         PMD_MAVEN_EXTRA_OPTS=()
@@ -18,7 +18,13 @@ function build() {
             pmd_ci_openjdk_install_adoptium 8
             pmd_ci_log_info "Install openjdk17 for integration tests and pmd-regression-tests"
             pmd_ci_openjdk_install_adoptium 17
-            PMD_MAVEN_EXTRA_OPTS=(-Djava8.home="${HOME}/openjdk8" -Djava17.home="${HOME}/openjdk17")
+            pmd_ci_log_info "Install openjdk21 for integration tests and pmd-regression-tests"
+            pmd_ci_openjdk_install_adoptium "21-ea"
+            PMD_MAVEN_EXTRA_OPTS=(
+                -Djava8.home="${HOME}/openjdk8"
+                -Djava17.home="${HOME}/openjdk17"
+                -Djava21.home="${HOME}/openjdk21"
+            )
         fi
         pmd_ci_build_setup_bundler
     pmd_ci_log_group_end
