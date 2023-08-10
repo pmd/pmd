@@ -122,4 +122,9 @@ class Java21TreeDumpTest extends BaseTreeDumpTest {
     void recordPatternsExhaustiveSwitch() {
         doTest("RecordPatternsExhaustiveSwitch");
     }
+
+    @Test
+    void canParseAnnotationValueInitializers() {
+        doTest("AnnotationValueInitializers");
+    }
 }

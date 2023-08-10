@@ -578,17 +578,23 @@ class JavaParserImpl {
        prev.setLastToken(top.getLastToken());
   }
 
-  /**
+    /**
      * Keeps track during tree construction, whether we are currently building an
      * explicit constructor invocation. Then the PrimaryExpression that may prefix
      * a qualified super constructor call may not consume "super" tokens.
      */
     private boolean inExplicitConstructorInvoc = false;
 
+    /**
+     * Keeps track of the current token context. This is needed to resolve the ambiguities around String Templates:
+     * A closing bracket (RBRACE) might close a block or might be the start of a STRING_TEMPLATE_MID/END token.
+     *
+     * @see <a href="https://openjdk.org/jeps/430">JEP 430: String Templates (Preview)</a>
+     */
     private Deque<TokenContext> tokenContexts = new ArrayDeque<TokenContext>();
     TokenContext determineTokenContext() {
         if (tokenContexts.isEmpty()) {
-            return null;
+            return TokenContext.BLOCK;
         }
         return tokenContexts.peek();
     }
