@@ -18,11 +18,13 @@ class HTMLRendererTest extends AbstractRendererTest {
 
     @Override
     protected String getSourceCodeFilename() {
-        return "someFilename<br>thatNeedsEscaping.ext";
+        // note: the file name should still be a valid file name on both win and nix.
+        // This precludes using chars like <> to test escaping (https://stackoverflow.com/questions/1976007/what-characters-are-forbidden-in-windows-and-linux-directory-names)
+        return "someFilename\u00A0thatNeedsEscaping.ext";
     }
 
     private String getEscapedFilename() {
-        return "someFilename&lt;br&gt;thatNeedsEscaping.ext";
+        return "someFilename&nbsp;thatNeedsEscaping.ext";
     }
 
     @Override

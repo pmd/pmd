@@ -14,6 +14,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.reporting.Reportable;
 import net.sourceforge.pmd.util.StringUtil;
 
 public class ParseException extends FileAnalysisException {
@@ -23,26 +24,16 @@ public class ParseException extends FileAnalysisException {
      * this object has been created due to a parse error, the token
      * followng this token will (therefore) be the first error token.
      */
-    public final @Nullable GenericToken currentToken;
-
-    public ParseException() {
-        super();
-        this.currentToken = null;
-    }
+    private @Nullable FileLocation location;
 
     public ParseException(String message) {
         super(message);
-        this.currentToken = null;
+        this.location = null;
     }
 
     public ParseException(Throwable cause) {
         super(cause);
-        this.currentToken = null;
-    }
-
-    public ParseException(String message, JavaccToken token) {
-        super(message);
-        this.currentToken = token;
+        this.location = null;
     }
 
     /**
@@ -51,12 +42,28 @@ public class ParseException extends FileAnalysisException {
     public ParseException(@NonNull JavaccToken currentTokenVal,
                           int[][] expectedTokenSequencesVal) {
         super(makeMessage(currentTokenVal, expectedTokenSequencesVal));
-        currentToken = currentTokenVal;
+        location = currentTokenVal.getNext().getReportLocation();
     }
+
+    public ParseException withLocation(FileLocation loc) {
+        location = loc;
+        super.setFileId(loc.getFileId());
+        return this;
+    }
+
+    public ParseException withLocation(Reportable reportable) {
+        return withLocation(reportable.getReportLocation());
+    }
+
 
     @Override
     protected String errorKind() {
         return "Parse exception";
+    }
+
+    @Override
+    protected @Nullable FileLocation location() {
+        return location;
     }
 
     /**
@@ -123,8 +130,6 @@ public class ParseException extends FileAnalysisException {
         if (maxSize > 1) {
             retval.append(']');
         }
-        FileLocation loc = currentToken.next.getReportLocation();
-        retval.append(" at ").append(loc.getStartPos().toDisplayStringInEnglish());
         retval.append('.').append(eol);
         if (expectedTokenSequences.length == 1) {
             retval.append("Was expecting:").append(eol).append("    ");

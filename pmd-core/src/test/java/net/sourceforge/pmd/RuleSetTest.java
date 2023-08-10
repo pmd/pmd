@@ -42,7 +42,6 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.RuleSet.RuleSetBuilder;
-import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -531,7 +530,7 @@ class RuleSetTest {
         assertThat(error.getMsg(), containsString("java.lang.IllegalStateException: Test exception while applying rule\n"));
         assertThat(error.getMsg(), containsString("Rule applied on node=dummyRootNode[@Image=Foo]"));
         assertThat(error.getError().getCause(), instanceOf(IllegalStateException.class));
-        assertThat(IOUtil.normalizePath(error.getFile()), equalTo("samplefile.dummy"));
+        assertThat(error.getFileId().getFileName(), equalTo("samplefile.dummy"));
 
         assertThat(report.getViolations(), hasSize(1));
     }

@@ -311,13 +311,7 @@ class JavaParserImpl {
   }
 
   private void throwParseException(String message) {
-    int line = -1;
-    int col = -1;
-    if (jj_lastpos != null) {
-      line = jj_lastpos.beginLine;
-      col = jj_lastpos.beginColumn;
-    }
-    throw new ParseException("Line " + line + ", Column " + col + ": " + message);
+    throw new ParseException(message).withLocation(token);
   }
 
 
@@ -1105,30 +1099,18 @@ void ImplementsList():
 }
 
 void PermittedSubclasses() #PermitsList:
+{}
 {
-    Token t;
-}
-{
-    t = <IDENTIFIER> {
-        if (!"permits".equals(t.image)) {
-          throw new ParseException("ERROR: expecting permits");
-        }
-    }
+   softKeyword("permits")
     ClassOrInterfaceType()
     ( "," ClassOrInterfaceType() )*
 }
 
 void EnumDeclaration():
+{}
 {
-  JavaccToken t;
-}
-{
-  t = <IDENTIFIER> {
-    if (!"enum".equals(t.image)) {
-      throw new ParseException("ERROR: expecting enum");
-    }
-  }
-  t=<IDENTIFIER> {jjtThis.setImage(t.image);}
+  softKeyword("enum")
+  <IDENTIFIER> {setLastTokenImage(jjtThis);}
   [ ImplementsList() ]
   EnumBody()
 }
@@ -1150,16 +1132,10 @@ void EnumConstant():
 }
 
 void RecordDeclaration():
+{}
 {
-    JavaccToken t;
-}
-{
-  t = <IDENTIFIER> {
-    if (!"record".equals(t.image)) {
-      throw new ParseException("ERROR: expecting record");
-    }
-  }
-  t=<IDENTIFIER> {jjtThis.setImage(t.image);}
+  softKeyword("record")
+  <IDENTIFIER> {setLastTokenImage(jjtThis);}
   [ TypeParameters() ]
   RecordHeader()
   [ ImplementsList() ]
@@ -2493,16 +2469,9 @@ void CaseLabelElement(ASTSwitchLabel label) #void:
 }
 
 void Guard() #SwitchGuard:
+{}
 {
-    Token t;
-}
-{
-    t = <IDENTIFIER> {
-        if (!"when".equals(t.image)) {
-            throw new ParseException("ERROR: expected 'when'");
-        }
-    }
-
+    softKeyword("when")
     Expression()
 }
 
@@ -2890,3 +2859,10 @@ void VariableAccess(): {} { <IDENTIFIER> }
 void TypeExpression(): {} { <IDENTIFIER> }
 void PatternExpression(): {} { <IDENTIFIER> }
 void LocalClassStatement(): {} { TypeDeclaration() }
+
+void softKeyword(String name) #void: {} {
+    <IDENTIFIER> {
+        if (!getToken(0).getImageCs().contentEquals(name))
+            throwParseException("Expecting keyword '" + name + "'");
+    }
+}

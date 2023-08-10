@@ -63,7 +63,7 @@ class CompilerService {
     public Compilation parseApex(TextDocument document) {
         SourceFile sourceFile = SourceFile.builder()
                                           .setBody(document.getText().toString())
-                                          .setKnownName(document.getDisplayName())
+                                          .setKnownName(document.getFileId().getUriString())
                                           .build();
         ApexCompiler compiler = ApexCompiler.builder().setInput(createCompilationInput(Collections.singletonList(sourceFile))).build();
         compiler.compile(CompilerStage.POST_TYPE_RESOLVE);

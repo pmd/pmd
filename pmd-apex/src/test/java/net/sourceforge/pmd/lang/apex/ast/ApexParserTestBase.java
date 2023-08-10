@@ -13,11 +13,4 @@ public class ApexParserTestBase {
         return apex.parse(code).getMainNode();
     }
 
-    protected ASTUserClassOrInterface<?> parse(String code, String fileName) {
-        return apex.parse(code, null, fileName).getMainNode();
-    }
-
-    protected ASTUserClassOrInterface<?> parseResource(String code) {
-        return apex.parseResource(code).getMainNode();
-    }
 }

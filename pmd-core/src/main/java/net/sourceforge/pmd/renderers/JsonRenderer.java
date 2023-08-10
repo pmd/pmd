@@ -70,7 +70,7 @@ public class JsonRenderer extends AbstractIncrementingRenderer {
 
         while (violations.hasNext()) {
             RuleViolation rv = violations.next();
-            String nextFilename = determineFileName(rv.getFilename());
+            String nextFilename = determineFileName(rv.getFileId());
             if (!nextFilename.equals(filename)) {
                 // New File
                 if (filename != null) {
@@ -129,7 +129,7 @@ public class JsonRenderer extends AbstractIncrementingRenderer {
         if (!this.suppressed.isEmpty()) {
             for (Report.SuppressedViolation s : this.suppressed) {
                 RuleViolation rv = s.getRuleViolation();
-                String nextFilename = determineFileName(rv.getFilename());
+                String nextFilename = determineFileName(rv.getFileId());
                 if (!nextFilename.equals(filename)) {
                     // New File
                     if (filename != null) {
@@ -152,7 +152,7 @@ public class JsonRenderer extends AbstractIncrementingRenderer {
         jsonWriter.name("processingErrors").beginArray();
         for (Report.ProcessingError error : this.errors) {
             jsonWriter.beginObject();
-            jsonWriter.name("filename").value(error.getFile());
+            jsonWriter.name("filename").value(determineFileName(error.getFileId()));
             jsonWriter.name("message").value(error.getMsg());
             jsonWriter.name("detail").value(error.getDetail());
             jsonWriter.endObject();

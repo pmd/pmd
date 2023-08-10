@@ -690,6 +690,9 @@ The following previously deprecated rules have been finally removed:
 * {% deleted_rule apex/performance/AvoidSoqlInLoops %} -> use {% rule apex/performance/OperationWithLimitsInLoop %}
 * {% deleted_rule apex/performance/AvoidSoslInLoops %} -> use {% rule apex/performance/OperationWithLimitsInLoop %}
 * {% deleted_rule apex/performance/AvoidDmlStatementsInLoops %} -> use {% rule apex/performance/OperationWithLimitsInLoop %}
+* {% deleted_rule apex/codestyle/VariableNamingConventions %} -> use {% rule apex/codestyle/FieldNamingConventions %},
+  {% rule apex/codestyle/FormalParameterNamingConventions %}, {% rule apex/codestyle/LocalVariableNamingConventions %},
+  or {% rule apex/codestyle/PropertyNamingConventions %}
 
 **Java**
 
@@ -762,9 +765,6 @@ The following previously deprecated rules have been finally removed:
   use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
 * UseAssertTrueInsteadOfAssertEquals (java-bestpractices) ->
   use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
-* VariableNamingConventions (apex-codestyle) -> use {% rule apex/codestyle/FieldNamingConventions %},
-  {% rule apex/codestyle/FormalParameterNamingConventions %}, {% rule apex/codestyle/LocalVariableNamingConventions %},
-  or {% rule apex/codestyle/PropertyNamingConventions %}
 * VariableNamingConventions (java-codestyle) -> use {% rule java/codestyle/FieldNamingConventions %},
   {% rule java/codestyle/FormalParameterNamingConventions %},
   or {% rule java/codestyle/LocalVariableNamingConventions %}
@@ -984,7 +984,35 @@ and [Adding a new language with ANTLR](pmd_devdocs_major_adding_new_language_ant
 Related issue: [[core] Language lifecycle (#3782)](https://github.com/pmd/pmd/issues/3782)
 
 
-### API removals
+### API changes
+
+#### 7.0.0-rc3
+
+* The following previously deprecated classes have been removed:
+  * pmd-core
+    * `net.sourceforge.pmd.PMD`
+    * `net.sourceforge.pmd.cli.PMDCommandLineInterface`
+    * `net.sourceforge.pmd.cli.PMDParameters`
+    * `net.sourceforge.pmd.cli.PmdParametersParseResult`
+* The asset filenames of PMD on [GitHub Releases](https://github.com/pmd/pmd/releases) are
+  now `pmd-dist-<version>-bin.zip`, `pmd-dist-<version>-src.zip` and `pmd-dist-<version>-doc.zip`.
+  Keep that in mind, if you have an automated download script.
+
+  The structure inside the ZIP files stay the same, e.g. we still provide inside the binary distribution
+  ZIP file the base directory `pmd-bin-<version>`.
+* The CLI option `--stress` (or `-stress`) has been removed without replacement.
+* The CLI option `--minimum-priority` was changed with 7.0.0-rc1 to only take the following values:
+  High, Medium High, Medium, Medium Low, Low. With 7.0.0-rc2 compatibility has been restored, so that the equivalent
+  integer values (1 to 5) are supported as well.
+* Replaced `RuleViolation::getFilename` with new {% jdoc !!core::RuleViolation#getFileId() %}, that returns a
+  {% jdoc core::lang.document.FileId %}. This is an identifier for a {% jdoc core::lang.document.TextFile %}
+  and could represent a path name. This allows to have a separate display name, e.g. renderers use
+  {% jdoc core::reporting.FileNameRenderer %} to either display the full path name or a relative path name
+  (see {% jdoc !!core::renderers.Renderer#setFileNameRenderer(net.sourceforge.pmd.reporting.FileNameRenderer) %} and
+  {%jdoc core::reporting.ConfigurableFileNameRenderer %}). Many places where we used a simple String for
+  a path-like name before have been adapted to use the new {% jdoc core::lang.document.FileId %}.
+
+  See [PR #4425](https://github.com/pmd/pmd/pull/4425) for details.
 
 #### 7.0.0-rc2
 

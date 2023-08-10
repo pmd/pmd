@@ -18,6 +18,7 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
@@ -134,7 +135,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
             buf.append("> ").append(System.lineSeparator());
             buf.append("<td align=\"center\">").append(violationCount).append("</td>").append(System.lineSeparator());
             buf.append("<td width=\"*%\">")
-               .append(renderFileName(rv.getFilename(), rv.getBeginLine()))
+               .append(renderFileName(rv.getFileId(), rv.getBeginLine()))
                .append("</td>")
                 .append(System.lineSeparator());
             buf.append("<td align=\"center\" width=\"5%\">").append(rv.getBeginLine()).append("</td>").append(System.lineSeparator());
@@ -156,8 +157,8 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
         }
     }
 
-    private String renderFileName(String filename, int beginLine) {
-        return maybeWrap(StringEscapeUtils.escapeHtml4(determineFileName(filename)),
+    private String renderFileName(FileId fileId, int beginLine) {
+        return maybeWrap(StringEscapeUtils.escapeHtml4(determineFileName(fileId)),
                 linePrefix == null || beginLine < 0 ? "" : linePrefix + beginLine);
     }
 
@@ -191,7 +192,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
             }
             colorize = !colorize;
             buf.append("> ").append(System.lineSeparator());
-            buf.append("<td>").append(renderFileName(pe.getFile(), -1)).append("</td>").append(System.lineSeparator());
+            buf.append("<td>").append(renderFileName(pe.getFileId(), -1)).append("</td>").append(System.lineSeparator());
             buf.append("<td><pre>").append(pe.getDetail()).append("</pre></td>").append(System.lineSeparator());
             buf.append("</tr>").append(System.lineSeparator());
             writer.write(buf.toString());
@@ -220,7 +221,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
             colorize = !colorize;
             buf.append("> ").append(System.lineSeparator());
             RuleViolation rv = sv.getRuleViolation();
-            buf.append("<td align=\"left\">").append(renderFileName(rv.getFilename(), rv.getBeginLine())).append("</td>").append(System.lineSeparator());
+            buf.append("<td align=\"left\">").append(renderFileName(rv.getFileId(), rv.getBeginLine())).append("</td>").append(System.lineSeparator());
             buf.append("<td align=\"center\">").append(rv.getBeginLine()).append("</td>").append(System.lineSeparator());
             buf.append("<td align=\"center\">").append(renderRuleName(rv.getRule())).append("</td>").append(System.lineSeparator());
             buf.append("<td align=\"center\">").append(sv.getSuppressor().getId()).append("</td>").append(System.lineSeparator());

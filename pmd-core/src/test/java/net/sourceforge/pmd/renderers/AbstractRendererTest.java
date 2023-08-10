@@ -32,6 +32,7 @@ import net.sourceforge.pmd.RuleWithProperties;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.document.TextRange2d;
@@ -101,7 +102,7 @@ abstract class AbstractRendererTest {
 
     protected FileLocation createLocation(int beginLine, int beginColumn, int endLine, int endColumn) {
         TextRange2d range2d = TextRange2d.range2d(beginLine, beginColumn, endLine, endColumn);
-        return FileLocation.range(getSourceCodeFilename(), range2d);
+        return FileLocation.range(FileId.fromPathLikeString(getSourceCodeFilename()), range2d);
     }
 
     protected RuleViolation newRuleViolation(int beginLine, int beginColumn, int endLine, int endColumn, Rule rule) {
@@ -175,14 +176,14 @@ abstract class AbstractRendererTest {
 
     @Test
     void testError() throws Exception {
-        Report.ProcessingError err = new Report.ProcessingError(new RuntimeException("Error"), "file");
+        Report.ProcessingError err = new Report.ProcessingError(new RuntimeException("Error"), FileId.fromPathLikeString("file"));
         String actual = render(it -> it.onError(err));
         assertEquals(filter(getExpectedError(err)), filter(actual));
     }
 
     @Test
     void testErrorWithoutMessage() throws Exception {
-        Report.ProcessingError err = new Report.ProcessingError(new NullPointerException(), "file");
+        Report.ProcessingError err = new Report.ProcessingError(new NullPointerException(), FileId.fromPathLikeString("file"));
         String actual = render(it -> it.onError(err));
         assertEquals(filter(getExpectedErrorWithoutMessage(err)), filter(actual));
     }
@@ -207,7 +208,7 @@ abstract class AbstractRendererTest {
         return renderGlobal(renderer, globalListener -> {
 
             LanguageVersion version = DummyLanguageModule.getInstance().getDefaultVersion();
-            TextFile dummyFile = TextFile.forCharSeq("dummyText", "file", version);
+            TextFile dummyFile = TextFile.forCharSeq("dummyText", FileId.fromPathLikeString("fname1.dummy"), version);
             try (FileAnalysisListener fal = globalListener.startFileAnalysis(dummyFile)) {
                 listenerEffects.accept(fal);
             } catch (Exception e) {

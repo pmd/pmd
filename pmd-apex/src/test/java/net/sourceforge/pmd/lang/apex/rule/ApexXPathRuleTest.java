@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.lang.apex.ast.ApexParserTestBase;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 
 /**
@@ -26,7 +27,7 @@ class ApexXPathRuleTest extends ApexParserTestBase {
     void testFileNameInXpath() {
         Report report = apex.executeRule(makeXPath("/UserClass[pmd:fileName() = 'Foo.cls']"),
                                          "class Foo {}",
-                                         "src/Foo.cls");
+                                         FileId.fromPathLikeString("src/Foo.cls"));
 
         assertSize(report, 1);
     }

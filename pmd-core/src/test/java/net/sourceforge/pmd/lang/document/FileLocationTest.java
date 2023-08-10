@@ -15,10 +15,12 @@ import org.junit.jupiter.api.Test;
  */
 class FileLocationTest {
 
+    public static final FileId FNAME = FileId.fromPathLikeString("fname");
+
     @Test
     void testSimple() {
-        FileLocation loc = FileLocation.range("fname", TextRange2d.range2d(1, 1, 1, 2));
-        assertEquals("fname", loc.getFileName());
+        FileLocation loc = FileLocation.range(FNAME, TextRange2d.range2d(1, 1, 1, 2));
+        assertEquals(FNAME, loc.getFileId());
         assertEquals(1, loc.getStartLine());
         assertEquals(1, loc.getStartColumn());
         assertEquals(1, loc.getEndLine());
@@ -28,13 +30,13 @@ class FileLocationTest {
     @Test
     void testToRange() {
         TextRange2d range2d = TextRange2d.range2d(1, 1, 1, 2);
-        FileLocation loc = FileLocation.range("fname", range2d);
+        FileLocation loc = FileLocation.range(FNAME, range2d);
         assertEquals(range2d, loc.toRange2d());
     }
 
     @Test
     void testToString() {
-        FileLocation loc = FileLocation.range("fname", TextRange2d.range2d(1, 1, 1, 2));
+        FileLocation loc = FileLocation.range(FNAME, TextRange2d.range2d(1, 1, 1, 2));
 
         assertEquals(
             "line 1, column 1",
