@@ -44,7 +44,12 @@ The remaining section describes the complete release notes for 7.0.0.
 * miscellaneous
   * [#4582](https://github.com/pmd/pmd/issues/4582): \[dist] Download link broken
 * core
+  * [#1204](https://github.com/pmd/pmd/issues/1204): \[core] Allow numeric properties in XML to be within an unbounded range
+  * [#4301](https://github.com/pmd/pmd/issues/4301): \[core] Remove deprecated property concrete classes
+  * [#4302](https://github.com/pmd/pmd/issues/4302): \[core] Migrate Property Framework API to Java 8
   * [#4621](https://github.com/pmd/pmd/issues/4621): \[core] Make `ClasspathClassLoader::getResource` child first
+* doc
+  * [#4303](https://github.com/pmd/pmd/issues/4303): \[doc] Document new property framework
 * apex-design
   * [#4596](https://github.com/pmd/pmd/issues/4596): \[apex] ExcessivePublicCount ignores properties
 * java
@@ -53,6 +58,85 @@ The remaining section describes the complete release notes for 7.0.0.
   * [#4634](https://github.com/pmd/pmd/issues/4634): \[java] JUnit4TestShouldUseTestAnnotation false positive with TestNG
 
 #### API Changes
+
+**Rule properties**
+
+* The old deprecated classes like `IntProperty` and `StringProperty` have been removed. Please use
+  {% jdoc core::properties.PropertyFactory %} to create properties.
+* All properties which accept multiple values now use a comma (`,`) as a delimiter. The previous default was a
+  pipe character (`|`). The delimiter is not configurable anymore. If needed, the comma can be escaped
+  with a backslash.
+* The `min` and `max` attributes in property definitions in the XML are now optional and can appear separately
+  or be omitted.
+
+**Removed classes and methods**
+
+The following previously deprecated classes have been removed:
+
+* pmd-core
+  * `net.sourceforge.pmd.properties.BooleanMultiProperty`
+  * `net.sourceforge.pmd.properties.BooleanProperty`
+  * `net.sourceforge.pmd.properties.CharacterMultiProperty`
+  * `net.sourceforge.pmd.properties.CharacterProperty`
+  * `net.sourceforge.pmd.properties.DoubleMultiProperty`
+  * `net.sourceforge.pmd.properties.DoubleProperty`
+  * `net.sourceforge.pmd.properties.EnumeratedMultiProperty`
+  * `net.sourceforge.pmd.properties.EnumeratedProperty`
+  * `net.sourceforge.pmd.properties.EnumeratedPropertyDescriptor`
+  * `net.sourceforge.pmd.properties.FileProperty` (note: without replacement)
+  * `net.sourceforge.pmd.properties.FloatMultiProperty`
+  * `net.sourceforge.pmd.properties.FloatProperty`
+  * `net.sourceforge.pmd.properties.IntegerMultiProperty`
+  * `net.sourceforge.pmd.properties.IntegerProperty`
+  * `net.sourceforge.pmd.properties.LongMultiProperty`
+  * `net.sourceforge.pmd.properties.LongProperty`
+  * `net.sourceforge.pmd.properties.MultiValuePropertyDescriptor`
+  * `net.sourceforge.pmd.properties.NumericPropertyDescriptor`
+  * `net.sourceforge.pmd.properties.PropertyDescriptorField`
+  * `net.sourceforge.pmd.properties.RegexProperty`
+  * `net.sourceforge.pmd.properties.SingleValuePropertyDescriptor`
+  * `net.sourceforge.pmd.properties.StringMultiProperty`
+  * `net.sourceforge.pmd.properties.StringProperty`
+  * `net.sourceforge.pmd.properties.ValueParser`
+  * `net.sourceforge.pmd.properties.ValueParserConstants`
+  * `net.sourceforge.pmd.properties.builders.MultiNumericPropertyBuilder`
+  * `net.sourceforge.pmd.properties.builders.MultiPackagedPropertyBuilder`
+  * `net.sourceforge.pmd.properties.builders.MultiValuePropertyBuilder`
+  * `net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilder`
+  * `net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper`
+  * `net.sourceforge.pmd.properties.builders.PropertyDescriptorExternalBuilder`
+  * `net.sourceforge.pmd.properties.builders.SingleNumericPropertyBuilder`
+  * `net.sourceforge.pmd.properties.builders.SinglePackagedPropertyBuilder`
+  * `net.sourceforge.pmd.properties.builders.SingleValuePropertyBuilder`
+  * `net.sourceforge.pmd.properties.modules.EnumeratedPropertyModule`
+  * `net.sourceforge.pmd.properties.modules.NumericPropertyModule`
+
+The following previously deprecated methods have been removed:
+
+* pmd-core
+  * `net.sourceforge.pmd.properties.PropertyBuilder.GenericCollectionPropertyBuilder#delim(char)`
+  * `net.sourceforge.pmd.properties.PropertySource#setProperty(...)`
+  * `net.sourceforge.pmd.properties.PropertyTypeId#factoryFor(...)`
+  * `net.sourceforge.pmd.properties.PropertyTypeId#typeIdFor(...)`
+  * `net.sourceforge.pmd.properties.PropertyDescriptor`: removed methods errorFor, type, isMultiValue,
+     uiOrder, compareTo, isDefinedExternally
+
+**Moved packages**
+
+* pmd-core
+  * {%jdoc core::net.sourceforge.pmd.properties.NumericConstraints %} (old package: `net.sourceforge.pmd.properties.constraints.NumericConstraints`)
+  * {%jdoc core::net.sourceforge.pmd.properties.PropertyConstraint %} (old package: `net.sourceforge.pmd.properties.constraints.PropertyConstraint`)
+    * not experimental anymore
+
+**Changed types**
+
+* pmd-core
+  * {%jdoc core::net.sourceforge.pmd.properties.PropertyDescriptor %} is now a class (was an interface)
+    and it is not comparable anymore.
+
+**Internal APIs**
+
+* {% jdoc core::net.sourceforge.pmd.properties.PropertyTypeId %}
 
 #### External Contributions
 * [#4528](https://github.com/pmd/pmd/pull/4528): \[apex] Update to apexlink - [Kevin Jones](https://github.com/nawforce) (@nawforce)
@@ -182,9 +266,13 @@ Contributors: [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
 
 #### Changed: Rule properties
 
-* The old deprecated classes like `IntProperty` and `StringProperty` have been removed. Please use {% jdoc core::properties.PropertyFactory %} to create properties.
-* All properties which accept multiple values now use a comma (`,`) as a delimiter. The previous default was a pipe character (`|`). The delimiter is not configurable anymore.
-* The `min` and `max` attributes in property definitions in the XML are now optional and can appear separately or be omitted.
+* The old deprecated classes like `IntProperty` and `StringProperty` have been removed. Please use
+  {% jdoc core::properties.PropertyFactory %} to create properties.
+* All properties which accept multiple values now use a comma (`,`) as a delimiter. The previous default was a
+  pipe character (`|`). The delimiter is not configurable anymore. If needed, the comma can be escaped
+  with a backslash.
+* The `min` and `max` attributes in property definitions in the XML are now optional and can appear separately
+  or be omitted.
 
 ### 🌟 New and changed rules
 
@@ -339,6 +427,7 @@ of the changes listed here, see [Detailed Release Notes for PMD 7]({{ baseurl }}
 * Metrics framework
 * Testing framework
 * Language Lifecycle and Language Properties
+* Rule Properties
 
 ### 💥 Compatibility and migration notes
 See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html).
@@ -361,6 +450,7 @@ See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html)
     * [#4080](https://github.com/pmd/pmd/issues/4080): \[ant] Split off Ant integration into a new submodule
 * core
     * [#880](https://github.com/pmd/pmd/issues/880):   \[core] Make visitors generic
+    * [#1204](https://github.com/pmd/pmd/issues/1204): \[core] Allow numeric properties in XML to be within an unbounded range
     * [#1622](https://github.com/pmd/pmd/pull/1622):   \[core] NodeStream API
     * [#1687](https://github.com/pmd/pmd/issues/1687): \[core] Deprecate and Remove XPath 1.0 support
     * [#1785](https://github.com/pmd/pmd/issues/1785): \[core] Allow abstract node types to be valid rulechain visits
@@ -387,6 +477,8 @@ See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html)
     * [#3922](https://github.com/pmd/pmd/pull/3922):   \[core] Better error reporting for the ruleset parser
     * [#4035](https://github.com/pmd/pmd/issues/4035): \[core] ConcurrentModificationException in DefaultRuleViolationFactory
     * [#4120](https://github.com/pmd/pmd/issues/4120): \[core] Explicitly name all language versions
+    * [#4301](https://github.com/pmd/pmd/issues/4301): \[core] Remove deprecated property concrete classes
+    * [#4302](https://github.com/pmd/pmd/issues/4302): \[core] Migrate Property Framework API to Java 8
     * [#4353](https://github.com/pmd/pmd/pull/4353):   \[core] Micro optimizations for Node API
     * [#4365](https://github.com/pmd/pmd/pull/4365):   \[core] Improve benchmarking
     * [#4420](https://github.com/pmd/pmd/pull/4420):   \[core] Remove PMD.EOL
@@ -401,6 +493,7 @@ See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html)
     * [#4484](https://github.com/pmd/pmd/issues/4484): \[cli] ast-dump with no properties produce an NPE
 * doc
     * [#2501](https://github.com/pmd/pmd/issues/2501): \[doc] Verify ANTLR Documentation
+    * [#4303](https://github.com/pmd/pmd/issues/4303): \[doc] Document new property framework
     * [#4438](https://github.com/pmd/pmd/issues/4438): \[doc] Documentation links in VS Code are outdated
 * testing
     * [#2435](https://github.com/pmd/pmd/issues/2435): \[test] Remove duplicated Dummy language module
