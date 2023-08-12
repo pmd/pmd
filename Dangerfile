@@ -53,12 +53,12 @@ def run_pmdtester
 
       tar_report
 
-      message1 += "[Download full report as build artifact](#{ENV['PMD_CI_JOB_URL']}"
+      message1 += "[Download full report as build artifact](#{ENV['PMD_CI_JOB_URL']})"
       # set value of sticky to true and the message is kept after new commits are submitted to the PR
       message(message1, sticky: true)
 
       if message2
-        message2 += "[Download full report as build artifact](#{ENV['PMD_CI_JOB_URL']}"
+        message2 += "[Download full report as build artifact](#{ENV['PMD_CI_JOB_URL']})"
         # set value of sticky to true and the message is kept after new commits are submitted to the PR
         message(message2, sticky: true)
       end
