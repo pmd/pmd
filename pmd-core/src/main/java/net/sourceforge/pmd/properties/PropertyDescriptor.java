@@ -20,9 +20,6 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * serialization, and default values for a datatype {@code <T>}.
  * Property descriptors are immutable and can be shared freely.
  *
- * <h1>Upcoming API changes to the properties framework</h1>
- * see <a href="https://github.com/pmd/pmd/issues/1432">pmd/pmd#1432</a>
- *
  * @param <T> Type of the property's value
  *
  * @author Brian Remedios

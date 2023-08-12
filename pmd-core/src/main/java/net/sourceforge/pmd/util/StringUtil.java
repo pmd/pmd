@@ -325,25 +325,6 @@ public final class StringUtil {
     }
 
 
-    /**
-     * Replace common indentation in the lines of the given string.
-     */
-    public static StringBuilder replaceIndent(Chars string, String newIndent) {
-        List<Chars> lines = string.lineStream().collect(CollectionUtil.toMutableList());
-        trimIndentInPlace(lines);
-        // this is joinCharsIntoStringBuilder inlined and with the appender modified
-        return CollectionUtil.joinOn(
-            new StringBuilder(),
-            lines,
-            (buf, line) -> {
-                buf.append(newIndent); // here
-                line.appendChars(buf);
-            },
-            "\n"
-        );
-    }
-
-
     private static int countLeadingWhitespace(CharSequence s) {
         int count = 0;
         while (count < s.length() && Character.isWhitespace(s.charAt(count))) {

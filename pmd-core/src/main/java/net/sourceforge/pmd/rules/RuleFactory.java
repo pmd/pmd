@@ -183,7 +183,7 @@ public class RuleFactory {
         SINCE.getAttributeOpt(ruleElement).ifPresent(rule::setSince);
         MESSAGE.getAttributeOpt(ruleElement).ifPresent(rule::setMessage);
         EXTERNAL_INFO_URL.getAttributeOpt(ruleElement).ifPresent(rule::setExternalInfoUrl);
-        rule.setDeprecated(DEPRECATED.getAsBooleanAttr(ruleElement, false));
+        DEPRECATED.getAttributeOpt(ruleElement).map(Boolean::parseBoolean).ifPresent(rule::setDeprecated);
 
         for (Element node : DomUtils.children(ruleElement)) {
             if (DESCRIPTION.matchesElt(node)) {
