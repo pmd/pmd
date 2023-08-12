@@ -3,7 +3,7 @@ title: Defining rule properties
 short_title: Defining rule properties
 tags: [extending, userdocs]
 summary: "Learn how to define your own properties both for Java and XPath rules."
-last_updated: February 2020 (6.22.0)
+last_updated: August 2022 (7.0.0)
 permalink: pmd_userdocs_extending_defining_properties.html
 author: Hooper Bloob <hooperbloob@users.sourceforge.net>, Romain Pelisse <rpelisse@users.sourceforge.net>, Clément Fournier <clement.fournier76@gmail.com>
 ---
@@ -88,7 +88,7 @@ static PropertyDescriptor<Mode> modeProperty
 
 ### Example
 
-You can see an example of properties used in a PMD rule [here](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/AvoidReassigningLoopVariablesRule.java#L40).
+You can see an example of properties used in a PMD rule such as [AvoidReassigningLoopVariables](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/AvoidReassigningLoopVariablesRule.java#L40).
 There are several things to notice here:
 * The property descriptors are declared `static final`, which should generally be
 the case, as descriptors are immutable and can be shared between instances of the same rule;
@@ -105,15 +105,15 @@ doesn't change).
 
 XPath rules can also define their own properties. To do so, you must add a `property` element in the `properties` element of your rule, which **declares the `type` attribute**. This attribute conditions what type the underlying property has, and can have the following values:
 
-| `type` attribute | XSD type
-|----------|----------|
-|Integer  | xs:integer
-|Long     | xs:integer
-|Double   | xs:decimal
-|Boolean  | xs:boolean
-|String   | xs:string
-|Character| xs:string
-|Regex    | xs:string
+| `type` attribute | XSD type   |
+|------------------|------------|
+| Integer          | xs:integer |
+| Long             | xs:integer |
+| Double           | xs:decimal |
+| Boolean          | xs:boolean |
+| String           | xs:string  |
+| Character        | xs:string  |
+| Regex            | xs:string  |
 
 Note that enumerated properties are not available in XPath rules (yet?).
 
@@ -146,6 +146,8 @@ You can then use the property in XPath with the syntax `$propertyName`, for exam
 Multivalued properties are also allowed and their `type` attribute has the form
 `List[Boolean]` or `List[Character]`, with every above type allowed. These properties
 make use of the **sequence datatype** provided by XPath 2.0 and above.
+When providing multiple values, the delimiter is a simple comma ("`,`"). The comma can be escaped
+with a backslash when needed.
 
 ```xml
 <rule name="MyXpathRule" ...>
