@@ -172,7 +172,7 @@ public final class LanguageProcessorRegistry implements AutoCloseable {
                                                   String propertyValue,
                                                   MessageReporter reporter) {
         try {
-            T value = propertyDescriptor.valueFrom(propertyValue);
+            T value = propertyDescriptor.serializer().fromString(propertyValue);
             source.setProperty(propertyDescriptor, value);
         } catch (IllegalArgumentException e) {
             reporter.error("Cannot set property {0} to {1}: {2}",

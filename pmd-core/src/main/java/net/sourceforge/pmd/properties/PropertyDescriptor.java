@@ -118,36 +118,6 @@ public final class PropertyDescriptor<T> {
     }
 
 
-    /**
-     * TODO port tests to use the mapper directly.
-     *
-     * @throws IllegalArgumentException      if the given string cannot be parsed
-     * @throws UnsupportedOperationException If operation is not supported
-     * @deprecated PMD 7.0.0 will use a more powerful scheme to represent values than
-     *     simple strings, this method won't be general enough
-     */
-    @Deprecated
-    public T valueFrom(String propertyString) throws IllegalArgumentException {
-        return serializer().fromString(propertyString);
-    }
-
-
-    /**
-     * TODO port tests to use the mapper directly.
-     *
-     * @param value Object
-     *
-     * @return String
-     *
-     * @throws UnsupportedOperationException If operation is not supported
-     * @deprecated PMD 7.0.0 will use a more powerful scheme to represent values than
-     *     simple strings, this method won't be general enough
-     */
-    @Deprecated
-    public String asDelimitedString(T value) {
-        return serializer().toString(value);
-    }
-
     @Override
     public String toString() {
         return "PropertyDescriptor{ "

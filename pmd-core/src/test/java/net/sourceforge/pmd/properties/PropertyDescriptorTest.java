@@ -104,8 +104,8 @@ class PropertyDescriptorTest {
         assertEquals("intProp", descriptor.name());
         assertEquals("hello", descriptor.description());
         assertEquals(Integer.valueOf(1), descriptor.defaultValue());
-        assertEquals(Integer.valueOf(5), descriptor.valueFrom("5"));
-        assertEquals(Integer.valueOf(5), descriptor.valueFrom(" 5 "));
+        assertEquals(Integer.valueOf(5), descriptor.serializer().fromString("5"));
+        assertEquals(Integer.valueOf(5), descriptor.serializer().fromString(" 5 "));
 
         PropertyDescriptor<List<Integer>> listDescriptor = PropertyFactory.intListProperty("intListProp")
                 .desc("hello")
@@ -114,8 +114,8 @@ class PropertyDescriptorTest {
         assertEquals("intListProp", listDescriptor.name());
         assertEquals("hello", listDescriptor.description());
         assertEquals(Arrays.asList(1, 2), listDescriptor.defaultValue());
-        assertEquals(Arrays.asList(5, 7), listDescriptor.valueFrom("5,7"));
-        assertEquals(Arrays.asList(5, 7), listDescriptor.valueFrom(" 5 , 7 "));
+        assertEquals(Arrays.asList(5, 7), listDescriptor.serializer().fromString("5,7"));
+        assertEquals(Arrays.asList(5, 7), listDescriptor.serializer().fromString(" 5 , 7 "));
     }
 
     @Test
@@ -126,7 +126,7 @@ class PropertyDescriptorTest {
                 .build();
 
         NumberFormatException thrown = assertThrows(NumberFormatException.class, () ->
-            descriptor.valueFrom("not a number"));
+            descriptor.serializer().fromString("not a number"));
         assertThat(thrown.getMessage(), containsString("not a number"));
     }
 
@@ -139,8 +139,8 @@ class PropertyDescriptorTest {
         assertEquals("doubleProp", descriptor.name());
         assertEquals("hello", descriptor.description());
         assertEquals(Double.valueOf(1.0), descriptor.defaultValue());
-        assertEquals(Double.valueOf(2.0), descriptor.valueFrom("2.0"));
-        assertEquals(Double.valueOf(2.0), descriptor.valueFrom("  2.0  "));
+        assertEquals(Double.valueOf(2.0), descriptor.serializer().fromString("2.0"));
+        assertEquals(Double.valueOf(2.0), descriptor.serializer().fromString("  2.0  "));
 
         PropertyDescriptor<List<Double>> listDescriptor = PropertyFactory.doubleListProperty("doubleListProp")
                 .desc("hello")
@@ -149,8 +149,8 @@ class PropertyDescriptorTest {
         assertEquals("doubleListProp", listDescriptor.name());
         assertEquals("hello", listDescriptor.description());
         assertEquals(Arrays.asList(1.0, 2.0), listDescriptor.defaultValue());
-        assertEquals(Arrays.asList(2.0, 3.0), listDescriptor.valueFrom("2.0,3.0"));
-        assertEquals(Arrays.asList(2.0, 3.0), listDescriptor.valueFrom(" 2.0 , 3.0 "));
+        assertEquals(Arrays.asList(2.0, 3.0), listDescriptor.serializer().fromString("2.0,3.0"));
+        assertEquals(Arrays.asList(2.0, 3.0), listDescriptor.serializer().fromString(" 2.0 , 3.0 "));
     }
 
     @Test
@@ -160,7 +160,7 @@ class PropertyDescriptorTest {
                 .defaultValue(1.0)
                 .build();
         NumberFormatException thrown = assertThrows(NumberFormatException.class, () ->
-            descriptor.valueFrom("this is not a number"));
+            descriptor.serializer().fromString("this is not a number"));
         assertThat(thrown.getMessage(), containsString("this is not a number"));
     }
 
@@ -173,8 +173,8 @@ class PropertyDescriptorTest {
         assertEquals("stringProp", descriptor.name());
         assertEquals("hello", descriptor.description());
         assertEquals("default value", descriptor.defaultValue());
-        assertEquals("foo", descriptor.valueFrom("foo"));
-        assertEquals("foo", descriptor.valueFrom("  foo   "));
+        assertEquals("foo", descriptor.serializer().fromString("foo"));
+        assertEquals("foo", descriptor.serializer().fromString("  foo   "));
 
     }
 
@@ -187,8 +187,8 @@ class PropertyDescriptorTest {
         assertEquals("stringListProp", listDescriptor.name());
         assertEquals("hello", listDescriptor.description());
         assertEquals(Arrays.asList("v1", "v2"), listDescriptor.defaultValue());
-        assertEquals(Arrays.asList("foo", "bar"), listDescriptor.valueFrom("foo,bar"));
-        assertEquals(Arrays.asList("foo", "bar"), listDescriptor.valueFrom("  foo ,  bar  "));
+        assertEquals(Arrays.asList("foo", "bar"), listDescriptor.serializer().fromString("foo,bar"));
+        assertEquals(Arrays.asList("foo", "bar"), listDescriptor.serializer().fromString("  foo ,  bar  "));
     }
 
     private enum SampleEnum { A, B, C }
@@ -210,7 +210,7 @@ class PropertyDescriptorTest {
         assertEquals("enumProp", descriptor.name());
         assertEquals("hello", descriptor.description());
         assertEquals(SampleEnum.B, descriptor.defaultValue());
-        assertEquals(SampleEnum.C, descriptor.valueFrom("TEST_C"));
+        assertEquals(SampleEnum.C, descriptor.serializer().fromString("TEST_C"));
 
         PropertyDescriptor<List<SampleEnum>> listDescriptor = PropertyFactory.enumListProperty("enumListProp", NAME_MAP)
                 .desc("hello")
@@ -219,7 +219,7 @@ class PropertyDescriptorTest {
         assertEquals("enumListProp", listDescriptor.name());
         assertEquals("hello", listDescriptor.description());
         assertEquals(Arrays.asList(SampleEnum.A, SampleEnum.B), listDescriptor.defaultValue());
-        assertEquals(Arrays.asList(SampleEnum.B, SampleEnum.C), listDescriptor.valueFrom("TEST_B,TEST_C"));
+        assertEquals(Arrays.asList(SampleEnum.B, SampleEnum.C), listDescriptor.serializer().fromString("TEST_B,TEST_C"));
     }
 
 
@@ -253,7 +253,7 @@ class PropertyDescriptorTest {
                 .build();
 
         IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () ->
-            descriptor.valueFrom("InvalidEnumValue"));
+            descriptor.serializer().fromString("InvalidEnumValue"));
         assertThat(thrown.getMessage(), containsString("'InvalidEnumValue' should be one of 'TEST_A', 'TEST_B', 'TEST_C'"));
     }
 
@@ -266,7 +266,7 @@ class PropertyDescriptorTest {
         assertEquals("regexProp", descriptor.name());
         assertEquals("hello", descriptor.description());
         assertEquals("^[A-Z].*$", descriptor.defaultValue().toString());
-        assertEquals("[0-9]+", descriptor.valueFrom("[0-9]+").toString());
+        assertEquals("[0-9]+", descriptor.serializer().fromString("[0-9]+").toString());
     }
 
     @Test
@@ -277,7 +277,7 @@ class PropertyDescriptorTest {
                 .build();
 
         PatternSyntaxException thrown = assertThrows(PatternSyntaxException.class, () ->
-            descriptor.valueFrom("[open class"));
+            descriptor.serializer().fromString("[open class"));
         assertThat(thrown.getMessage(), containsString("Unclosed character class"));
     }
 

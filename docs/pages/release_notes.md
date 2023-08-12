@@ -119,7 +119,7 @@ The following previously deprecated methods have been removed:
   * `net.sourceforge.pmd.properties.PropertyTypeId#factoryFor(...)`
   * `net.sourceforge.pmd.properties.PropertyTypeId#typeIdFor(...)`
   * `net.sourceforge.pmd.properties.PropertyDescriptor`: removed methods errorFor, type, isMultiValue,
-     uiOrder, compareTo, isDefinedExternally
+     uiOrder, compareTo, isDefinedExternally, valueFrom, asDelimitedString
 
 **Moved packages**
 

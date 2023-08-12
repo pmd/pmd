@@ -158,10 +158,7 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
                 @SuppressWarnings("unchecked")
                 PropertyDescriptor<T> typed = (PropertyDescriptor<T>) property;
                 T value = rule.getProperty(typed);
-                String propertyValue = typed.asDelimitedString(value);
-                if (propertyValue == null) {
-                    propertyValue = "";
-                }
+                String propertyValue = typed.serializer().toString(value);
                 propertyValue = propertyValue.replaceAll("\\R", "\\\\n");
 
                 result.append(propertyName).append(" | ").append(propertyValue).append(" | ").append(property.description()).append("\\n");
