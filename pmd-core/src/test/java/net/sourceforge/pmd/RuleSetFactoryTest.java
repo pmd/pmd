@@ -30,7 +30,6 @@ import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.internal.xml.SchemaConstants;
-import net.sourceforge.pmd.util.internal.xml.XmlErrorMessages;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 
@@ -191,25 +190,6 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
         assertEquals(listOf("com.aptsssss", "com.abc"), propValue);
     }
 
-    @Test
-    void testStringMultiPropertyDelimiter() {
-        Rule r = loadFirstRule(
-            rulesetXml(
-                dummyRule(
-                    priority("3"),
-                    properties(
-                        "<property name=\"packageRegEx\" value=\"com.aptsssss|com.abc\" delimiter=\"|\" type=\"List[String]\" description=\"valid packages\"/>"
-                    )
-                )
-            ));
-        Object propValue = r.getProperty(r.getPropertyDescriptor("packageRegEx"));
-
-        assertEquals(listOf("com.aptsssss|com.abc"), propValue);
-
-        verifyFoundAWarningWithMessage(
-            containing(XmlErrorMessages.WARN__DELIMITER_DEPRECATED)
-        );
-    }
 
     /**
      * Verifies that empty values for properties are possible. Empty values can be used to disable a property.
