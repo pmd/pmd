@@ -7,6 +7,7 @@ package net.sourceforge.pmd;
 import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
@@ -34,6 +35,7 @@ import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.RuleReference;
+import net.sourceforge.pmd.properties.PropertyConstraint;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySerializer;
 import net.sourceforge.pmd.properties.PropertySource;
@@ -313,7 +315,27 @@ public class RuleSetWriter {
         SchemaConstants.NAME.setOn(element, propertyDescriptor.name());
         SchemaConstants.PROPERTY_TYPE.setOn(element, typeId.getStringId());
         SchemaConstants.DESCRIPTION.setOn(element, propertyDescriptor.description());
-        // TODO support property constraints in XML
+
+        for (PropertyConstraint<? super T> constraint : propertyDescriptor.serializer().getConstraints()) {
+            Map<String, String> attributes = constraint.getXmlConstraint();
+
+            if (attributes == null || attributes.isEmpty()) {
+                throw new IllegalArgumentException("Unsupported property constraint in XML: " + constraint);
+            }
+
+            for (Map.Entry<String, String> attribute : attributes.entrySet()) {
+                if (SchemaConstants.PROPERTY_MAX.xmlName().equals(attribute.getKey())) {
+                    SchemaConstants.PROPERTY_MAX.setOn(element, attribute.getValue());
+                } else if (SchemaConstants.PROPERTY_MIN.xmlName().equals(attribute.getKey())) {
+                    SchemaConstants.PROPERTY_MIN.setOn(element, attribute.getValue());
+                } else {
+                    throw new IllegalArgumentException("Unsupported property constraint in XML: " + constraint
+                            + ". There is no attribute " + attribute.getKey());
+                }
+            }
+
+        }
+
         return element;
     }
 

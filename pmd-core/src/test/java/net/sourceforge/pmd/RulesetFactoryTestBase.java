@@ -15,6 +15,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.text.MessageFormat;
+import java.util.Collections;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -215,14 +216,24 @@ public class RulesetFactoryTestBase {
                                                               String description,
                                                               String type,
                                                               String valueAttr) {
+        return propertyDefWithValueAttr(name, description, type, valueAttr, Collections.emptyMap());
+    }
+
+    protected static @NonNull String propertyDefWithValueAttr(String name,
+                                                              String description,
+                                                              String type,
+                                                              String valueAttr,
+                                                              Map<SchemaConstant, String> constraints) {
         return emptyTag("property", buildMap(
-            map -> {
-                map.put(SchemaConstants.NAME, name);
-                map.put(SchemaConstants.DESCRIPTION, description);
-                map.put(SchemaConstants.PROPERTY_TYPE, type);
-                map.put(SchemaConstants.PROPERTY_VALUE, valueAttr);
-            }
+                map -> {
+                    map.put(SchemaConstants.NAME, name);
+                    map.put(SchemaConstants.DESCRIPTION, description);
+                    map.put(SchemaConstants.PROPERTY_TYPE, type);
+                    map.put(SchemaConstants.PROPERTY_VALUE, valueAttr);
+                    map.putAll(constraints);
+                }
         ));
+
     }
 
     protected static @NonNull String tag(String tagName, String... body) {

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.properties;
 
+import java.util.Collections;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -45,6 +47,23 @@ public interface PropertyConstraint<T> {
      * @return A description of the constraint
      */
     String getConstraintDescription();
+
+    /**
+     * Serializes this constraint as XML attributes, that are
+     * part of the property element of a rule definition.
+     *
+     * <p>Note: This is only used for constraints, which can be defined
+     * in a rule definition in a ruleset (e.g. for XPath rules).</p>
+     *
+     * @return a map with attribute name and attribute value, suitable to be used in XML.
+     *
+     * @see net.sourceforge.pmd.util.internal.xml.SchemaConstants#PROPERTY_MIN
+     * @see net.sourceforge.pmd.util.internal.xml.SchemaConstants#PROPERTY_MAX
+     */
+    @Experimental
+    default Map<String, String> getXmlConstraint() {
+        return Collections.emptyMap();
+    }
 
     /**
      * Returns a constraint that validates an {@code Optional<T>}
@@ -105,6 +124,18 @@ public interface PropertyConstraint<T> {
      */
     @Experimental
     static <U> PropertyConstraint<U> fromPredicate(final Predicate<? super U> pred, final String constraintDescription) {
+        return fromPredicate(pred, constraintDescription, Collections.emptyMap());
+    }
+
+    /**
+     * Builds a new constraint from a predicate, a description and xml attributes to serialize the
+     * constraint.
+     *
+     * @see #fromPredicate(Predicate, String)
+     */
+    @Experimental
+    static <U> PropertyConstraint<U> fromPredicate(final Predicate<? super U> pred, final String constraintDescription,
+                                                   final Map<String, String> xmlConstraint) {
         return new PropertyConstraint<U>() {
 
             @Override
@@ -117,6 +148,16 @@ public interface PropertyConstraint<T> {
             @Override
             public String getConstraintDescription() {
                 return StringUtils.capitalize(constraintDescription);
+            }
+
+            @Override
+            public String toString() {
+                return "PropertyConstraint(" + constraintDescription + ")";
+            }
+
+            @Override
+            public Map<String, String> getXmlConstraint() {
+                return xmlConstraint;
             }
         };
     }
