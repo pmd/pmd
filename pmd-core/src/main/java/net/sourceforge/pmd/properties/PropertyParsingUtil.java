@@ -110,8 +110,7 @@ final class PropertyParsingUtil {
     }
 
     /**
-     * Builds an XML syntax that understands a {@code <seq>} syntax and
-     * a delimited {@code <value>} syntax.
+     * Builds an XML syntax that understands delimited {@code <value>} syntax.
      *
      * @param <T>        Type of items
      * @param <C>        Type of collection to handle

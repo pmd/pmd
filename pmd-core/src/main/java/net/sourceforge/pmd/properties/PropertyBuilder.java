@@ -254,19 +254,13 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
          * with value type {@code <C>}. The validators already added are
          * converted to collection validators. The default value cannot
          * have previously been set. The returned builder will support
-         * conversion to and from a delimited string if this property does.
-         * Otherwise, it will only support the {@code <seq>} syntax.
+         * conversion to and from a delimited string.
          *
          * <p>Example usage:
          * <pre>{@code
          *
-         * // this can be set both with
+         * // this can be set with
          * // <value>a,b,c</value>
-         * // and
-         * // <seq>
-         * //  <value>a</value>
-         * //  <value>b</value>
-         * // </seq>
          * PropertyDescriptor<Set<String>> whitelistSet =
          *      PropertyFactory.stringProperty("whitelist")
          *                     .desc(...)
