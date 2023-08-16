@@ -7202,9 +7202,19 @@
         "bug",
         "code"
       ]
+    },
+    {
+      "login": "rcorfieldffdc",
+      "name": "Richard Corfield",
+      "avatar_url": "https://avatars.githubusercontent.com/u/42997936?v=4",
+      "profile": "https://github.com/rcorfieldffdc",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
   "contributorsSortAlphabetically": true,
-  "skipCi": true
+  "skipCi": true,
+  "commitType": "docs"
 }
