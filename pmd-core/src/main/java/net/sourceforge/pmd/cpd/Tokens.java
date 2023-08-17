@@ -36,8 +36,8 @@ public class Tokens {
      */
     @InternalApi
     @Deprecated // just to get a warning
-    public Tokens() {
-
+    public Tokens() { // NOPMD: UnnecessaryConstructor - constructor is needed to place the annotations
+        // constructor is needed to place the annotations
     }
 
     private void add(TokenEntry tokenEntry) {
