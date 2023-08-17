@@ -690,6 +690,9 @@ The following previously deprecated rules have been finally removed:
 * {% deleted_rule apex/performance/AvoidSoqlInLoops %} -> use {% rule apex/performance/OperationWithLimitsInLoop %}
 * {% deleted_rule apex/performance/AvoidSoslInLoops %} -> use {% rule apex/performance/OperationWithLimitsInLoop %}
 * {% deleted_rule apex/performance/AvoidDmlStatementsInLoops %} -> use {% rule apex/performance/OperationWithLimitsInLoop %}
+* {% deleted_rule apex/codestyle/VariableNamingConventions %} -> use {% rule apex/codestyle/FieldNamingConventions %},
+  {% rule apex/codestyle/FormalParameterNamingConventions %}, {% rule apex/codestyle/LocalVariableNamingConventions %},
+  or {% rule apex/codestyle/PropertyNamingConventions %}
 
 **Java**
 
@@ -762,9 +765,6 @@ The following previously deprecated rules have been finally removed:
   use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
 * UseAssertTrueInsteadOfAssertEquals (java-bestpractices) ->
   use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
-* VariableNamingConventions (apex-codestyle) -> use {% rule apex/codestyle/FieldNamingConventions %},
-  {% rule apex/codestyle/FormalParameterNamingConventions %}, {% rule apex/codestyle/LocalVariableNamingConventions %},
-  or {% rule apex/codestyle/PropertyNamingConventions %}
 * VariableNamingConventions (java-codestyle) -> use {% rule java/codestyle/FieldNamingConventions %},
   {% rule java/codestyle/FormalParameterNamingConventions %},
   or {% rule java/codestyle/LocalVariableNamingConventions %}

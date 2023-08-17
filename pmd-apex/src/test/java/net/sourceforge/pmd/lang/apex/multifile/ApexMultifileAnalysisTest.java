@@ -51,7 +51,7 @@ class ApexMultifileAnalysisTest {
             assertTrue(analysisInstance.getFileIssues("any file").isEmpty());
         });
         assertThat(log,
-                containsStringIgnoringCase("error: 'path' is required for all 'packageDirectories' elements"));
+                containsStringIgnoringCase("Error: line 3 at 4: 'path' is required"));
     }
 
     @Test
@@ -63,6 +63,11 @@ class ApexMultifileAnalysisTest {
 
             assertFalse(analysisInstance.isFailed());
         });
+
+        // TODO: log is not empty due to ANTLR versions, 4.9.1 vs 4.8, expect to resolve with apex-dev-tools switch
+        log = log.replace("ANTLR Tool version 4.8 used for code generation does not match the current runtime version 4.9.1", "");
+        log = log.replace("ANTLR Runtime version 4.8 used for parser compilation does not match the current runtime version 4.9.1", "");
+        log = log.trim();
         assertTrue(log.isEmpty());
     }
 

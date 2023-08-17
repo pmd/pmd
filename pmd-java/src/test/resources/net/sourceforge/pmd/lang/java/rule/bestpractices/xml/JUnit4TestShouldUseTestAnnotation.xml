@@ -190,4 +190,17 @@ public class MyTests {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#4634 JUnit4TestShouldUseTestAnnotation rule false positive with TestNG</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.testng.annotations.Test;
+
+public class Foo {
+    @Test
+    public void testFoo() { }
+}
+        ]]></code>
+    </test-code>
 </test-data>
