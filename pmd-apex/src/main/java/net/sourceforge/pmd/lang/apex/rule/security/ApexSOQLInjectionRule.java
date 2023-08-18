@@ -39,7 +39,7 @@ import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
  */
 public class ApexSOQLInjectionRule extends AbstractApexRule {
     private static final Set<String> SAFE_VARIABLE_TYPES = 
-    	Collections.unmodifiableSet(Stream.of(
+        Collections.unmodifiableSet(Stream.of(
             "double", "long", "decimal", "boolean", "id", "integer",
             "sobjecttype", "schema.sobjecttype", "sobjectfield", "schema.sobjectfield"
         ).collect(Collectors.toSet()));
