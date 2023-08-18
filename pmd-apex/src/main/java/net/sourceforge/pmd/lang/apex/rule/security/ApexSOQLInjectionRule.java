@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.rule.security;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,6 +12,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTBinaryExpression;
@@ -37,11 +38,11 @@ import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
  *
  */
 public class ApexSOQLInjectionRule extends AbstractApexRule {
-    private static final Set<String> SAFE_VARIABLE_TYPES = Collections.unmodifiableSet(
-        new HashSet<>(Arrays.asList(
+    private static final Set<String> SAFE_VARIABLE_TYPES = 
+    	Collections.unmodifiableSet(Stream.of(
             "double", "long", "decimal", "boolean", "id", "integer",
             "sobjecttype", "schema.sobjecttype", "sobjectfield", "schema.sobjectfield"
-        )));
+        ).collect(Collectors.toSet()));
     
     private static final String JOIN = "join";
     private static final String ESCAPE_SINGLE_QUOTES = "escapeSingleQuotes";
