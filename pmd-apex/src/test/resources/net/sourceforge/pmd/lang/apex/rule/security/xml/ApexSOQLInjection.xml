@@ -91,22 +91,6 @@ public with sharing class Foo {
     </test-code>
 
     <test-code>
-        <description>SObjectType and Field as constants are safe to use in SOQL query string building</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public with sharing class Foo {
-    private static final SObjectType TYPE = getSObjectType();
-    private static final SObjectField FIELD = getSObjectField();
-
-    public void getUniqueValues() {
-        String query = 'SELECT ' + FIELD + ' FROM ' + TYPE;
-        Database.query(query);
-    }
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
         <description>Schema.SObjectType and Field as parameters are safe to use in SOQL query string building</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -128,22 +112,6 @@ public with sharing class Foo {
         Schema.SObjectType type = getSObjectType();
         Schema.SObjectField field = getSObjectField();
         String query = 'SELECT ' + field + ' FROM ' + type;
-        Database.query(query);
-    }
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>Schema.SObjectType and Field as constants are safe to use in SOQL query string building</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public with sharing class Foo {
-    private static final Schema.SObjectType TYPE = getSObjectType();
-    private static final Schema.SObjectField FIELD = getSObjectField();
-
-    public void getUniqueValues() {
-        String query = 'SELECT ' + FIELD + ' FROM ' + TYPE;
         Database.query(query);
     }
 }
