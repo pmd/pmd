@@ -4,46 +4,38 @@
 
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
-import java.io.IOException;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
 import org.mozilla.javascript.CompilerEnvirons;
+import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Parser;
 import org.mozilla.javascript.ast.AstRoot;
 import org.mozilla.javascript.ast.Comment;
 import org.mozilla.javascript.ast.ErrorCollector;
 import org.mozilla.javascript.ast.ParseProblem;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.ast.AstInfo;
+import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.ecmascript.EcmascriptParserOptions;
+import net.sourceforge.pmd.lang.ast.RootNode;
 
-public class EcmascriptParser {
-    @Deprecated
-    @InternalApi
-    protected final EcmascriptParserOptions parserOptions;
+public final class EcmascriptParser implements net.sourceforge.pmd.lang.ast.Parser {
+    private final LanguagePropertyBundle properties;
 
-    private Map<Integer, String> suppressMap;
-    private String suppressMarker = "NOPMD"; // that's the default value
-
-    public EcmascriptParser(EcmascriptParserOptions parserOptions) {
-        this.parserOptions = parserOptions;
-        if (parserOptions.getSuppressMarker() != null) {
-            suppressMarker = parserOptions.getSuppressMarker();
-        }
+    public EcmascriptParser(LanguagePropertyBundle properties) {
+        this.properties = properties;
     }
 
-    protected AstRoot parseEcmascript(final String sourceCode, final List<ParseProblem> parseProblems)
-            throws ParseException {
+    private AstRoot parseEcmascript(final String sourceCode, final LanguageVersion version, final List<ParseProblem> parseProblems) throws ParseException {
         final CompilerEnvirons compilerEnvirons = new CompilerEnvirons();
-        compilerEnvirons.setRecordingComments(parserOptions.isRecordingComments());
-        compilerEnvirons.setRecordingLocalJsDocComments(parserOptions.isRecordingLocalJsDocComments());
-        compilerEnvirons.setLanguageVersion(parserOptions.getRhinoLanguageVersion().getVersion());
+        compilerEnvirons.setRecordingComments(true);
+        compilerEnvirons.setRecordingLocalJsDocComments(true);
+        compilerEnvirons.setLanguageVersion(determineRhinoLanguageVersion(version));
         // Scope's don't appear to get set right without this
         compilerEnvirons.setIdeMode(true);
         compilerEnvirons.setWarnTrailingComma(true);
@@ -61,34 +53,35 @@ public class EcmascriptParser {
         return astRoot;
     }
 
-    public EcmascriptNode<AstRoot> parse(final Reader reader) {
-        try {
-            final List<ParseProblem> parseProblems = new ArrayList<>();
-            final String sourceCode = IOUtils.toString(reader);
-            final AstRoot astRoot = parseEcmascript(sourceCode, parseProblems);
-            final EcmascriptTreeBuilder treeBuilder = new EcmascriptTreeBuilder(sourceCode, parseProblems);
-            EcmascriptNode<AstRoot> tree = treeBuilder.build(astRoot);
-
-            suppressMap = new HashMap<>();
-            if (astRoot.getComments() != null) {
-                for (Comment comment : astRoot.getComments()) {
-                    int nopmd = comment.getValue().indexOf(suppressMarker);
-                    if (nopmd > -1) {
-                        String suppression = comment.getValue().substring(nopmd + suppressMarker.length());
-                        EcmascriptNode<Comment> node = treeBuilder.build(comment);
-                        suppressMap.put(node.getBeginLine(), suppression);
-                    }
-                }
-            }
-            return tree;
-        } catch (IOException e) {
-            throw new ParseException(e);
+    private static int determineRhinoLanguageVersion(LanguageVersion version) {
+        switch (version.getVersion()) {
+        case "3": return Context.VERSION_1_5;
+        case "5": return Context.VERSION_1_8;
+        default: return Context.VERSION_ES6;
         }
     }
 
-    @Deprecated
-    @InternalApi
-    public Map<Integer, String> getSuppressMap() {
-        return suppressMap;
+    @Override
+    public RootNode parse(ParserTask task) throws FileAnalysisException {
+        final LanguageVersion version = task.getLanguageVersion();
+        final List<ParseProblem> parseProblems = new ArrayList<>();
+        final AstRoot astRoot = parseEcmascript(task.getSourceText(), version, parseProblems);
+        final EcmascriptTreeBuilder treeBuilder = new EcmascriptTreeBuilder(parseProblems);
+        ASTAstRoot tree = (ASTAstRoot) treeBuilder.build(astRoot);
+
+        String suppressMarker = properties.getSuppressMarker();
+        Map<Integer, String> suppressMap = new HashMap<>();
+        if (astRoot.getComments() != null) {
+            for (Comment comment : astRoot.getComments()) {
+                int nopmd = comment.getValue().indexOf(suppressMarker);
+                if (nopmd > -1) {
+                    String suppression = comment.getValue().substring(nopmd + suppressMarker.length());
+                    suppressMap.put(comment.getLineno(), suppression);
+                }
+            }
+        }
+        tree.setAstInfo(new AstInfo<>(task, tree).withSuppressMap(suppressMap));
+        return tree;
     }
+
 }

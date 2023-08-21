@@ -7,6 +7,7 @@
     <test-code>
         <description>Fail, BigInteger(1)</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 import java.math.BigInteger;
 
@@ -33,6 +34,7 @@ public class Foo {
     <test-code>
         <description>Fail, BigInteger(0)</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 import java.math.BigInteger;
 
@@ -83,6 +85,7 @@ public class Foo {
     <test-code>
         <description>Fail, BigInteger(10) 1.5 mode</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 import java.math.BigInteger;
 
@@ -95,12 +98,14 @@ public class Foo {
 
     <test-code>
         <description>Fail, BigDecimal(1)</description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,5</expected-linenumbers>
         <code><![CDATA[
 import java.math.BigDecimal;
 
 public class Foo {
-    BigDecimal b = new BigDecimal(1);
+    BigDecimal b1 = new BigDecimal(1);
+    BigDecimal b2 = new BigDecimal("1");
 }
         ]]></code>
         <source-type>java 1.5</source-type>
@@ -108,12 +113,14 @@ public class Foo {
 
     <test-code>
         <description>Fail, BigDecimal(10)</description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,5</expected-linenumbers>
         <code><![CDATA[
 import java.math.BigDecimal;
 
 public class Foo {
-    BigDecimal b = new BigDecimal(10);
+    BigDecimal b1 = new BigDecimal(10);
+    BigDecimal b2 = new BigDecimal("10");
 }
         ]]></code>
         <source-type>java 1.5</source-type>
@@ -121,14 +128,50 @@ public class Foo {
 
     <test-code>
         <description>Fail, BigDecimal(0)</description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>4,5,6</expected-linenumbers>
         <code><![CDATA[
 import java.math.BigDecimal;
 
 public class Foo {
-    BigDecimal b = new BigDecimal(0);
+    BigDecimal b1 = new BigDecimal(0);
+    BigDecimal b2 = new BigDecimal("0");
+    BigDecimal b3 = new BigDecimal("0.");
+    BigDecimal b4 = new BigDecimal("0.0"); // that's not ZERO - ZERO has no decimals, this has 1 decimal (scale)
 }
         ]]></code>
         <source-type>java 1.5</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Fail, BigInteger(2) with Java9</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import java.math.BigInteger;
+
+public class Foo {
+    BigInteger b = new BigInteger("2"); // Use BigInteger.TWO instead
+}
+        ]]></code>
+        <source-type>java 9</source-type>
+    </test-code>
+
+    <test-code>
+        <description>False negative with indirect const string</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.math.BigInteger;
+
+class Foo {
+    static final String Z = "0";
+    static { new BigInteger(Z); }
+
+    public void test(String a) {
+        new BigInteger(a); // not a const value
+    }
+}
+        ]]></code>
     </test-code>
 </test-data>

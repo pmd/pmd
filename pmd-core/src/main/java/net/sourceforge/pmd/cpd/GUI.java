@@ -20,7 +20,6 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.Writer;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -66,35 +65,15 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
 import net.sourceforge.pmd.PMDVersion;
-import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
+import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 
 public class GUI implements CPDListener {
 
-    // private interface Renderer {
-    // String render(Iterator<Match> items);
-    // }
-
-    private static final Object[][] RENDERER_SETS = new Object[][] { { "Text", new CPDRenderer() {
-        @Override
-        public void render(Iterator<Match> items, Writer writer) throws IOException {
-            new SimpleRenderer().render(items, writer);
-        }
-    }, }, { "XML", new CPDRenderer() {
-        @Override
-        public void render(Iterator<Match> items, Writer writer) throws IOException {
-            new XMLRenderer().render(items, writer);
-        }
-    }, }, { "CSV (comma)", new CPDRenderer() {
-        @Override
-        public void render(Iterator<Match> items, Writer writer) throws IOException {
-            new CSVRenderer(',').render(items, writer);
-        }
-    }, }, { "CSV (tab)", new CPDRenderer() {
-        @Override
-        public void render(Iterator<Match> items, Writer writer) throws IOException {
-            new CSVRenderer('\t').render(items, writer);
-        }
-    }, }, };
+    private static final Object[][] RENDERER_SETS = {
+        { "Text", new SimpleRenderer(), },
+        { "XML", new XMLRenderer(), },
+        { "CSV (comma)", new CSVRenderer(','), },
+        { "CSV (tab)", new CSVRenderer('\t'), }, };
 
     private abstract static class LanguageConfig {
         public abstract Language languageFor(Properties p);
@@ -112,6 +91,14 @@ public class GUI implements CPDListener {
         }
 
         public boolean canIgnoreUsings() {
+            return false;
+        }
+
+        public boolean canIgnoreLiteralSequences() {
+            return false;
+        }
+
+        public boolean canIgnoreIdentifierAndLiteralSequences() {
             return false;
         }
 
@@ -143,7 +130,16 @@ public class GUI implements CPDListener {
 
                 @Override
                 public boolean canIgnoreAnnotations() {
-                    return "java".equals(terseName);
+                    if (terseName == null) {
+                        return false;
+                    }
+                    switch (terseName) {
+                        case "cs":
+                        case "java":
+                            return true;
+                        default:
+                            return false;
+                    }
                 }
 
                 @Override
@@ -159,6 +155,26 @@ public class GUI implements CPDListener {
                 @Override
                 public boolean canIgnoreUsings() {
                     return "cs".equals(terseName);
+                }
+
+                @Override
+                public boolean canIgnoreLiteralSequences() {
+                    if (terseName == null) {
+                        return false;
+                    }
+                    switch (terseName) {
+                        case "cpp":
+                        case "cs":
+                        case "lua":
+                            return true;
+                        default:
+                            return false;
+                    }
+                }
+
+                @Override
+                public boolean canIgnoreIdentifierAndLiteralSequences() {
+                    return "cpp".equals(terseName);
                 }
             };
         }
@@ -227,14 +243,14 @@ public class GUI implements CPDListener {
         return LANGUAGE_CONFIGS_BY_LABEL.get(label);
     }
 
-    private static class CancelListener implements ActionListener {
+    private static final class CancelListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             System.exit(0);
         }
     }
 
-    private class GoListener implements ActionListener {
+    private final class GoListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             new Thread(new Runnable() {
@@ -253,9 +269,9 @@ public class GUI implements CPDListener {
 
     private class SaveListener implements ActionListener {
 
-        final CPDRenderer renderer;
+        final CPDReportRenderer renderer;
 
-        SaveListener(CPDRenderer theRenderer) {
+        SaveListener(CPDReportRenderer theRenderer) {
             renderer = theRenderer;
         }
 
@@ -269,8 +285,9 @@ public class GUI implements CPDListener {
             }
 
             if (!f.canWrite()) {
+                final CPDReport report = new CPDReport(matches, numberOfTokensPerFile);
                 try (PrintWriter pw = new PrintWriter(Files.newOutputStream(f.toPath()))) {
-                    renderer.render(matches.iterator(), pw);
+                    renderer.render(report, pw);
                     pw.flush();
                     JOptionPane.showMessageDialog(frame, "Saved " + matches.size() + " matches");
                 } catch (IOException e) {
@@ -290,7 +307,7 @@ public class GUI implements CPDListener {
 
     }
 
-    private class BrowseListener implements ActionListener {
+    private final class BrowseListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             JFileChooser fc = new JFileChooser(rootDirectoryField.getText());
@@ -333,6 +350,8 @@ public class GUI implements CPDListener {
     private JCheckBox ignoreLiteralsCheckbox = new JCheckBox("", false);
     private JCheckBox ignoreAnnotationsCheckbox = new JCheckBox("", false);
     private JCheckBox ignoreUsingsCheckbox = new JCheckBox("", false);
+    private JCheckBox ignoreLiteralSequencesCheckbox = new JCheckBox("", false);
+    private JCheckBox ignoreIdentifierAndLiteralSequencesCheckbox = new JCheckBox("", false);
     private JComboBox<String> languageBox = new JComboBox<>();
     private JTextField extensionField = new JTextField();
     private JLabel extensionLabel = new JLabel("Extension:", SwingConstants.RIGHT);
@@ -344,14 +363,15 @@ public class GUI implements CPDListener {
     private boolean trimLeadingWhitespace;
 
     private List<Match> matches = new ArrayList<>();
+    private Map<String, Integer> numberOfTokensPerFile;
 
     private void addSaveOptionsTo(JMenu menu) {
 
         JMenuItem saveItem;
 
-        for (int i = 0; i < RENDERER_SETS.length; i++) {
-            saveItem = new JMenuItem("Save as " + RENDERER_SETS[i][0]);
-            saveItem.addActionListener(new SaveListener((CPDRenderer) RENDERER_SETS[i][1]));
+        for (final Object[] rendererSet : RENDERER_SETS) {
+            saveItem = new JMenuItem("Save as " + rendererSet[0]);
+            saveItem.addActionListener(new SaveListener((CPDReportRenderer) rendererSet[1]));
             menu.add(saveItem);
         }
     }
@@ -420,6 +440,8 @@ public class GUI implements CPDListener {
         ignoreLiteralsCheckbox.setEnabled(current.canIgnoreLiterals());
         ignoreAnnotationsCheckbox.setEnabled(current.canIgnoreAnnotations());
         ignoreUsingsCheckbox.setEnabled(current.canIgnoreUsings());
+        ignoreLiteralSequencesCheckbox.setEnabled(current.canIgnoreLiteralSequences());
+        ignoreIdentifierAndLiteralSequencesCheckbox.setEnabled(current.canIgnoreIdentifierAndLiteralSequences());
         extensionField.setText(current.extensions()[0]);
         boolean enableExtension = current.extensions()[0].isEmpty();
         extensionField.setEnabled(enableExtension);
@@ -478,6 +500,20 @@ public class GUI implements CPDListener {
         helper.nextRow();
         helper.addLabel("Ignore usings?");
         helper.add(ignoreUsingsCheckbox);
+        helper.addLabel("");
+        helper.addLabel("");
+        helper.nextRow();
+
+        helper.nextRow();
+        helper.addLabel("Ignore literal sequences?");
+        helper.add(ignoreLiteralSequencesCheckbox);
+        helper.add(goButton);
+        helper.add(cxButton);
+        helper.nextRow();
+
+        helper.nextRow();
+        helper.addLabel("Ignore identifier and literal sequences?");
+        helper.add(ignoreIdentifierAndLiteralSequencesCheckbox);
         helper.add(goButton);
         helper.add(cxButton);
         helper.nextRow();
@@ -525,10 +561,11 @@ public class GUI implements CPDListener {
         int[] selectionIndices = resultsTable.getSelectedRows();
         TableModel model = resultsTable.getModel();
         List<Match> selections = new ArrayList<>(selectionIndices.length);
-        for (int i = 0; i < selectionIndices.length; i++) {
-            selections.add((Match) model.getValueAt(selectionIndices[i], 99));
+        for (int selectionIndex : selectionIndices) {
+            selections.add((Match) model.getValueAt(selectionIndex, 99));
         }
-        String report = new SimpleRenderer(trimLeadingWhitespace).render(selections.iterator());
+        CPDReport toRender = new CPDReport(selections, Collections.emptyMap());
+        String report = new SimpleRenderer(trimLeadingWhitespace).renderToString(toRender);
         resultsTextArea.setText(report);
         resultsTextArea.setCaretPosition(0); // move to the top
     }
@@ -658,11 +695,13 @@ public class GUI implements CPDListener {
             Properties p = new Properties();
             CPDConfiguration config = new CPDConfiguration();
             config.setMinimumTileSize(Integer.parseInt(minimumLengthField.getText()));
-            config.setEncoding(encodingField.getText());
+            config.setSourceEncoding(encodingField.getText());
             config.setIgnoreIdentifiers(ignoreIdentifiersCheckbox.isSelected());
             config.setIgnoreLiterals(ignoreLiteralsCheckbox.isSelected());
             config.setIgnoreAnnotations(ignoreAnnotationsCheckbox.isSelected());
             config.setIgnoreUsings(ignoreUsingsCheckbox.isSelected());
+            config.setIgnoreLiteralSequences(ignoreLiteralSequencesCheckbox.isSelected());
+            config.setIgnoreIdentifierAndLiteralSequences(ignoreIdentifierAndLiteralSequencesCheckbox.isSelected());
             p.setProperty(LanguageFactory.EXTENSION, extensionField.getText());
 
             LanguageConfig conf = languageConfigFor((String) languageBox.getSelectedItem());
@@ -691,15 +730,16 @@ public class GUI implements CPDListener {
             cpd.go();
             t.stop();
 
+            CPDReport cpdReport = cpd.toReport();
+            numberOfTokensPerFile = cpdReport.getNumberOfTokensPerFile();
             matches = new ArrayList<>();
-            for (Iterator<Match> i = cpd.getMatches(); i.hasNext();) {
-                Match match = i.next();
+            for (Match match : cpdReport.getMatches()) {
                 setLabelFor(match);
                 matches.add(match);
             }
 
             setListDataFrom(matches);
-            String report = new SimpleRenderer().render(cpd.getMatches());
+            String report = new SimpleRenderer().renderToString(cpdReport);
             if (report.length() == 0) {
                 JOptionPane.showMessageDialog(frame,
                         "Done. Couldn't find any duplicates longer than " + minimumLengthField.getText() + " tokens");
@@ -724,7 +764,7 @@ public class GUI implements CPDListener {
                 long elapsedMillis = now - start;
                 long elapsedSeconds = elapsedMillis / 1000;
                 long minutes = (long) Math.floor(elapsedSeconds / 60);
-                long seconds = elapsedSeconds - (minutes * 60);
+                long seconds = elapsedSeconds - minutes * 60;
                 timeField.setText(formatTime(minutes, seconds));
             }
         });

@@ -1,0 +1,7 @@
++- CompilationUnit[@PackageName = ""]
+   +- ImportDeclaration[@ImportOnDemand = false, @ImportedName = "a", @ImportedSimpleName = "a", @PackageName = "", @Static = false]
+   +- EmptyDeclaration[]
+   +- ImportDeclaration[@ImportOnDemand = false, @ImportedName = "b", @ImportedSimpleName = "b", @PackageName = "", @Static = false]
+   +- ClassOrInterfaceDeclaration[@Abstract = false, @Annotation = false, @Anonymous = false, @BinaryName = "Foo", @CanonicalName = "Foo", @EffectiveVisibility = Visibility.V_PUBLIC, @Enum = false, @Final = false, @Interface = false, @Local = false, @Nested = false, @PackageName = "", @PackagePrivate = false, @Record = false, @RegularClass = true, @RegularInterface = false, @SimpleName = "Foo", @TopLevel = true, @Visibility = Visibility.V_PUBLIC]
+      +- ModifierList[@EffectiveModifiers = "{public}", @ExplicitModifiers = "{public}"]
+      +- ClassOrInterfaceBody[@Empty = true, @Size = 0]

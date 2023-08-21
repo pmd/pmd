@@ -134,23 +134,26 @@ public class Test {
         <code><![CDATA[
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.io.IOException;
 
 public class InvalidSlf4jExceptionTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(InvalidSlf4jExceptionTest.class);
 
-    public void foo() {
+    public void foo(int tcmport) {
         try {
             throw new RuntimeException();
         } catch (RuntimeException e) {
             try {
-                LOGGER.error("Exception was thrown during conversion from tc model: {}.", jsonMarshaller.marshall(tcmport));
+                LOGGER.error("Exception was thrown during conversion from tc model: {}.", marshall(tcmport));
             } catch (IOException e1) {
                 LOGGER.error("Problem to marshall to json tcImport: {}", tcsTripImport, e1);
             }
             throw e;
         }
     }
+
+    Object marshall(int i) {}
 }
         ]]></code>
     </test-code>
@@ -171,6 +174,27 @@ public class InvalidSl4jExceptionBug1541 {
         } catch (Exception e) {
             log.error("Arg1 = {}. Exception: {}", "arg1Value", e);
         }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#3560 [java] InvalidLogMessageFormat: False positive with message and exception in a block inside a lambda</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.util.function.Consumer;
+
+public class InvalidSl4jExceptionBug3560 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(InvalidSl4jExceptionBug3560.class);
+
+    public static Consumer<Throwable> build() {
+        return e -> {
+            if (e instanceof RuntimeException) {
+                LOGGER.warn("Unexpected RuntimeException", e);
+            }
+        };
     }
 }
         ]]></code>
@@ -226,6 +250,7 @@ public class Foo
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LoggerHelper {
     public LoggerHelper(String loggerName) {
@@ -271,6 +296,7 @@ public final class Main {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LoggerHelper {
     static {
@@ -284,9 +310,10 @@ public class LoggerHelper {
     <test-code>
         <description>missing argument in static block</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>8</expected-linenumbers>
+        <expected-linenumbers>9</expected-linenumbers>
         <code><![CDATA[
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LoggerHelper {
     static {
@@ -304,6 +331,8 @@ public class LoggerHelper {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.util.List;
 
 public class LoggerHelper {
     final Logger logger = LoggerFactory.getLogger(loggerName);
@@ -316,9 +345,11 @@ public class LoggerHelper {
     <test-code>
         <description>missing argument in lambda call</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>9</expected-linenumbers>
+        <expected-linenumbers>11</expected-linenumbers>
         <code><![CDATA[
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.util.List;
 
 public class LoggerHelper {
     final Logger logger = LoggerFactory.getLogger(loggerName);
@@ -507,23 +538,25 @@ public class Test {
         <code><![CDATA[
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import java.io.IOException;
 
 public class InvalidLog4j2ExceptionTest {
 
     private static final Logger LOGGER = LogManager.getLogger(InvalidLog4j2ExceptionTest.class);
 
-    public void foo() {
+    public void foo(int tcmport) {
         try {
             throw new RuntimeException();
         } catch (RuntimeException e) {
             try {
-                LOGGER.error("Exception was thrown during conversion from tc model: {}.", jsonMarshaller.marshall(tcmport));
+                LOGGER.error("Exception was thrown during conversion from tc model: {}.", marshall(tcmport));
             } catch (IOException e1) {
                 LOGGER.error("Problem to marshall to json tcImport: {}", tcsTripImport, e1);
             }
             throw e;
         }
     }
+    Object marshall(int i) {}
 }
         ]]></code>
     </test-code>
@@ -599,6 +632,7 @@ public class Foo
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public class LoggerHelper {
     public LoggerHelper(String loggerName) {
@@ -644,6 +678,7 @@ public final class Main {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public class LoggerHelper {
     static {
@@ -657,9 +692,10 @@ public class LoggerHelper {
     <test-code>
         <description>log4j2: missing argument in static block</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>8</expected-linenumbers>
+        <expected-linenumbers>9</expected-linenumbers>
         <code><![CDATA[
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public class LoggerHelper {
     static {
@@ -677,6 +713,8 @@ public class LoggerHelper {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import java.util.List;
 
 public class LoggerHelper {
     final Logger logger = LogManager.getLogger(loggerName);
@@ -689,9 +727,11 @@ public class LoggerHelper {
     <test-code>
         <description>log4j2: missing argument in lambda call</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>9</expected-linenumbers>
+        <expected-linenumbers>11</expected-linenumbers>
         <code><![CDATA[
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import java.util.List;
 
 public class LoggerHelper {
     final Logger logger = LogManager.getLogger(loggerName);
@@ -790,12 +830,13 @@ public class InvalidLogMessageFormatTest {
 
     <test-code>
         <description>ignore slf4j-Markers when detecting the number of arguments #2250</description>
-        <expected-problems>2</expected-problems>
-        <expected-linenumbers>11,17</expected-linenumbers>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>12</expected-linenumbers>
         <code><![CDATA[
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 import org.slf4j.helpers.BasicMarkerFactory;
 
 public class InvalidLogMessageFormatTest {
@@ -809,7 +850,11 @@ public class InvalidLogMessageFormatTest {
         logger.warn(marker, "foo {}", "bar"); // correct: marker and one argument
 
         final var otherMarker = MarkerFactory.getMarker("OTHER_MARKER");
-        logger.warn(otherMarker, "foo"); // gets flagged as we can't statically determine the type of the "otherMarker" variable
+        // we can't statically determine the type of the "otherMarker" variable, so we assume it is not a string and ignore it
+        logger.warn(otherMarker, "foo");
+
+        final var message = "foo {} {}";
+        logger.warn(message, "a", "b"); // correct: first var is the message with expects two parameters
     }
 }
         ]]></code>
@@ -821,6 +866,7 @@ public class InvalidLogMessageFormatTest {
         <code><![CDATA[
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.util.function.Consumer;
 
 class InvalidLogMessageFormatTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(InvalidLogMessageFormatTest.class);
@@ -839,7 +885,7 @@ class InvalidLogMessageFormatTest {
         ]]></code>
     </test-code>
 
-    <test-code regressionTest="false">
+    <test-code disabled="true">
         <description>[java] InvalidLogMessageFormat false-negative for a lambda argument #2255</description>
         <expected-problems>3</expected-problems>
         <expected-linenumbers>11,13,16</expected-linenumbers>
@@ -868,7 +914,7 @@ class InvalidLogMessageFormatTest {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>#2431 IndexOutOfBoundsException when only logging exception message</description>
         <expected-problems>0</expected-problems>
@@ -879,12 +925,243 @@ public class Foo {
     private static final Logger LOG = LoggerFactory.getLogger(Foo.class);
     public void bar() {
         try {
-            new File("/text.txt");
+            new java.io.File("/text.txt");
         } catch (Exception e) {
             LOG.warn(e.getMessage());
         }
     }
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] InvalidLogMessageFormat FP with StringFormattedMessage and ParameterizedMessage #3133</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>10,14</expected-linenumbers>
+        <expected-messages>
+            <message>Missing arguments, expected 2 arguments but found 1</message>
+            <message>Too many arguments, expected 1 argument but found 2</message>
+        </expected-messages>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+class TestInvalidLogMessageFormat {
+    Logger log = LoggerFactory.getLogger(TestInvalidLogMessageFormat.class);
+
+    public void testPMD() {
+        /* whistled, fp*/ log.debug("param %10s %% %n %%", "1"); // string formatted message
+
+        /*10:violation*/ log.debug("param %.2d%s", "expected 2 params, given 1");
+        try {
+            throw new Exception();
+        } catch (Exception e) {
+            /*14:violation*/ log.debug("param %s", "expected 1 params, given 2", "too many params", e);
+        }
+    }
+
+    protected void logProblem(String type, Object val) {
+        if (log.isDebugEnabled() && val instanceof Throwable) {
+            /*whistled, fp*/ log.debug("Trace for "+type+" reading "+getBriefDescription()+": "+val, (Throwable)val);
+        }
+
+        if (log.isDebugEnabled()) {
+            /*whistled, fp*/ log.debug("Recurring {} reading {} in {} (still in grace period): {}", new Object[] {type, this, getBriefDescription(), val});
+        }
+    }
+
+    private String getBriefDescription() { return ""; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] InvalidLogMessageFormat detection failing when String.format used #3146</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import static java.lang.String.format;
+
+class TestInvalidLogMessageFormat {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestInvalidLogMessageFormat.class);
+    public void testPMD() {
+        LOGGER.info(String.format("Skipping file %s because no parser could be found", getName()));
+        LOGGER.info(format("Skipping file %s", getName()));
+    }
+
+    private String getName() { return "the-name"; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] InvalidLogMessageFormat detection failing when String.format used in a variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import static java.lang.String.format;
+
+class TestInvalidLogMessageFormat {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestInvalidLogMessageFormat.class);
+    public void testPMD() {
+        String message = String.format("Skipping file %s because no parser could be found", getName());
+        LOGGER.info(message);
+    }
+
+    private String getName() { return "the-name"; }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2642 [java] InvalidLogMessageFormat throws IndexOutOfBoundsException with SLF4J and a StringBuilder variable set using var</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import org.slf4j.Logger;
+            import org.slf4j.LoggerFactory;
+
+            public class Foo {
+
+                private static final Logger LOGGER = LoggerFactory.getLogger(Foo.class);
+
+                public void okStr() {
+                    String message = "Test"; // No exception
+                    LOGGER.info(message.toString());
+                }
+                public void okStrVar() {
+                    var message = "Test"; // No exception
+                    LOGGER.info(message.toString());
+                }
+                public void okSb() {
+                    StringBuilder message = new StringBuilder("Test"); // No exception
+                    LOGGER.info(message.toString());
+                }
+                public void exceptionOnThisOne() {
+                    var message = new StringBuilder("Test"); // Throws IndexOutOfBoundsException
+                    LOGGER.info(message.toString());
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] InvalidLogMessageFormat may examine the value of a different but identically named String variable #3284</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+public class Foo {
+    public void aTest() {
+        Logger logger = null;
+
+        if (true) {
+            final String logMessage = "A message formatted with three parameters: {}, {}, {}";
+        }
+
+        if (true) {
+            final String logMessage = "A message formatted with only one parameter: {}";
+            final Object param = null;
+            logger.trace(logMessage, param);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] InvalidLogMessageFormat: false positives with logstash structured logging #3644</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>27,29</expected-linenumbers>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import net.logstash.logback.argument.StructuredArguments;
+import static net.logstash.logback.marker.Markers.*;
+import static net.logstash.logback.argument.StructuredArguments.*;
+
+public class Foo {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Foo.class);
+
+    public void withMarkers() {
+        // Add "foo:bar" to the JSON output
+        LOGGER.info(append("foo", "bar"), "Some log message");
+        // Add "foo:bar,name:value" to the JSON output
+        LOGGER.info(append("foo", "bar").and(append("name", "value")), "Some log message");
+    }
+
+    public void withStructuredArguments() {
+        // Add "foo:bar" to JSON output and "bar" to log message
+        LOGGER.info("log message {}", value("foo", "bar"));
+        // Add "foo:bar" to JSON output only
+        LOGGER.info("log message", keyValue("foo", "bar"));
+        // Add "foo:bar" to JSON output only
+        LOGGER.info("log message", StructuredArguments.keyValue("foo", "bar"));
+        // Add "foo:bar" to JSON output only, but one parameter
+        LOGGER.info("log message: {}", "used parameter", keyValue("foo", "bar"));
+        // Add "foo:bar" to JSON output only - too many arguments!
+        LOGGER.info("log message", "unused parameter", keyValue("foo", "bar")); // line 27
+        // Add "foo:bar" to JSON output only - too less arguments!
+        LOGGER.info("log message {} {}", keyValue("foo", "bar")); // line 29
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] InvalidLogMessageFormat rule produces a NPE #4185</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import net.logstash.logback.argument.StructuredArguments;
+import static net.logstash.logback.marker.Markers.*;
+
+public class Foo {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Foo.class);
+
+    public void bar(Object span, long duration) {
+        new Runnable() {
+            public void run() {
+                LOGGER.info(
+                      LogMarker.OBSERVABILITY.getMarker(),
+                      "End span {} in {}ms",
+                      kindMessage(span),
+                      duration,
+                      StructuredArguments.keyValue("traceId", "Text"));
+            }
+        };
+    }
+
+    public enum LogMarker {
+        OBSERVABILITY {
+            public LogstashMarker getMarker() {
+                return append("foo", "bar");
+            }
+        };
+        public abstract LogstashMarker getMarker();
+    }
+
+    private String kindMessage(Object span) {
+        return String.valueOf(span);
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] InvalidLogMessageFormat false positive on externally formatted strings #4172</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+public class Foo {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Foo.class);
+    public void bar() {
+        String msg = "Got kafka msg, headers=%s, body=%s".formatted(headers, new String(body, UTF_8));
+        LOGGER.info(msg);
+        return msg;
+    }
+}
+]]></code>
     </test-code>
 </test-data>

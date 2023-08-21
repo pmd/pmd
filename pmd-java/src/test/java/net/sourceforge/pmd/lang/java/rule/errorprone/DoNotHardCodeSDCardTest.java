@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class DoNotHardCodeSDCardTest extends PmdRuleTst {
+class DoNotHardCodeSDCardTest extends PmdRuleTst {
     // no additional unit tests
 }

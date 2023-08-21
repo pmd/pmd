@@ -4,20 +4,17 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.modifier.ModifierOrAnnotation;
 
-public class ASTModifierOrAnnotation extends AbstractApexNode<ModifierOrAnnotation> {
+public final class ASTModifierOrAnnotation extends AbstractApexNode<ModifierOrAnnotation> {
 
-    @Deprecated
-    @InternalApi
-    public ASTModifierOrAnnotation(ModifierOrAnnotation modifierOrAnnotation) {
+    ASTModifierOrAnnotation(ModifierOrAnnotation modifierOrAnnotation) {
         super(modifierOrAnnotation);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

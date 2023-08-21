@@ -4,14 +4,14 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 
-public class SlashAsDivisionTest extends AbstractPLSQLParserTst {
+class SlashAsDivisionTest extends AbstractPLSQLParserTst {
 
     @Test
-    public void parseSlashAsDivision() {
+    void parseSlashAsDivision() {
         plsql.parseResource("SlashAsDivision.sql");
     }
 

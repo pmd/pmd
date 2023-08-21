@@ -4,36 +4,83 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
-import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.java.ast.JavaVersion
-import net.sourceforge.pmd.lang.java.ast.JavaVersion.*
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNot
+import net.sourceforge.pmd.lang.java.ast.JavaVersion.J16
 import java.io.IOException
 
-class ASTPatternTest : ParserTestSpec({
+class ASTPatternTest : ProcessorTestSpec({
 
-    parserTest("Test patterns only available on JDK 14+15 (preview)", javaVersions = JavaVersion.values().asList().minus(J14__PREVIEW).minus(J15__PREVIEW)) {
+    val typePatternsVersions = JavaVersion.since(J16)
 
-        expectParseException("Pattern Matching for instanceof is only supported with Java 14 Preview and Java 15 Preview") {
-            parseAstExpression("obj instanceof Class c")
+    parserTest("Test patterns only available on JDK16 or higher (including preview)",
+        javaVersions = JavaVersion.except(typePatternsVersions)) {
+
+        inContext(ExpressionParsingCtx) {
+            "obj instanceof Class c" shouldNot parse()
         }
-
     }
 
-    parserTest("Test simple patterns", javaVersions = listOf(J14__PREVIEW, J15__PREVIEW)) {
+    parserTest("Test simple patterns", javaVersions = typePatternsVersions) {
 
         importedTypes += IOException::class.java
+        inContext(ExpressionParsingCtx) {
 
-        "obj instanceof Class c" should matchExpr<ASTInstanceOfExpression> {
-            unspecifiedChild()
-            child<ASTTypeTestPattern> {
-                it::getTypeNode shouldBe child(ignoreChildren = true) {}
+            "obj instanceof Class c" should parseAs {
+                infixExpr(BinaryOp.INSTANCEOF) {
+                    variableAccess("obj")
+                    child<ASTPatternExpression> {
+                        it.pattern shouldBe child<ASTTypePattern> {
+                            it.isAnnotationPresent("java.lang.Deprecated") shouldBe false
+                            it.modifiers shouldBe modifiers { } // dummy/empty modifier list
+                            it.typeNode shouldBe classType("Class")
+                            it.varId shouldBe variableId("c") {
+                                it.hasExplicitModifiers(JModifier.FINAL) shouldBe false
+                                it.hasModifiers(JModifier.FINAL) shouldBe false
+                                it.isPatternBinding shouldBe true
+                            }
+                        }
+                    }
+                }
+            }
 
-                it::getVarId shouldBe child {
-                    it::getVariableName shouldBe "c"
+            "obj instanceof final Class c" should parseAs {
+                infixExpr(BinaryOp.INSTANCEOF) {
+                    variableAccess("obj")
+                    child<ASTPatternExpression> {
+                        it.pattern shouldBe child<ASTTypePattern> {
+                            it.isAnnotationPresent("java.lang.Deprecated") shouldBe false
+                            it.modifiers shouldBe modifiers { } // explicit modifier list
+                            it.typeNode shouldBe classType("Class")
+                            it.varId shouldBe variableId("c") {
+                                it.hasExplicitModifiers(JModifier.FINAL) shouldBe true
+                                it.hasModifiers(JModifier.FINAL) shouldBe true
+                                it.isPatternBinding shouldBe true
+                            }
+                        }
+                    }
+                }
+            }
+
+            "obj instanceof @Deprecated Class c" should parseAs {
+                infixExpr(BinaryOp.INSTANCEOF) {
+                    variableAccess("obj")
+                    child<ASTPatternExpression> {
+                        it.pattern shouldBe child<ASTTypePattern> {
+                            it.isAnnotationPresent("java.lang.Deprecated") shouldBe true
+                            it.modifiers shouldBe modifiers {
+                                annotation("Deprecated")
+                            }
+                            it.typeNode shouldBe classType("Class")
+                            it.varId shouldBe variableId("c") {
+                                it.hasExplicitModifiers(JModifier.FINAL) shouldBe false
+                                it.hasModifiers(JModifier.FINAL) shouldBe false
+                                it.isPatternBinding shouldBe true
+                            }
+                        }
+                    }
                 }
             }
         }
     }
-
-
 })

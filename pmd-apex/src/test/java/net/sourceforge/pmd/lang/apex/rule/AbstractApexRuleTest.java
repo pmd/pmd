@@ -4,55 +4,53 @@
 
 package net.sourceforge.pmd.lang.apex.rule;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
-
-import org.junit.Test;
-
-import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.lang.apex.ast.ASTAnonymousClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserEnum;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserTrigger;
-import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.ast.ApexParserTestBase;
+import net.sourceforge.pmd.lang.ast.test.TestUtilsKt;
 
-import apex.jorje.semantic.ast.compilation.Compilation;
-
-public class AbstractApexRuleTest extends ApexParserTestBase {
+class AbstractApexRuleTest extends ApexParserTestBase {
 
     @Test
-    public void shouldVisitTopLevelClass() {
+    void shouldVisitTopLevelClass() {
         run("class Foo { }");
     }
 
     @Test
-    public void shouldVisitTopLevelInterface() {
+    void shouldVisitTopLevelInterface() {
         run("interface Foo { }");
     }
 
     @Test
-    public void shouldVisitTopLevelTrigger() {
+    void shouldVisitTopLevelTrigger() {
         run("trigger Foo on Account (before insert, before update) { }");
     }
 
     @Test
-    public void shouldVisitTopLevelEnum() {
+    void shouldVisitTopLevelEnum() {
         run("enum Foo { }");
     }
 
     private void run(String code) {
-        ApexNode<Compilation> node = parse(code);
-        RuleContext ctx = new RuleContext();
-        ctx.setLanguageVersion(apex.getDefaultVersion());
         TopLevelRule rule = new TopLevelRule();
-        rule.apply(Collections.singletonList(node), ctx);
-        assertEquals(1, ctx.getReport().size());
+
+        Report report = apex.executeRule(rule, code);
+        TestUtilsKt.assertSize(report, 1);
     }
 
     private static class TopLevelRule extends AbstractApexRule {
+
+        @Override
+        public String getMessage() {
+            return "a message";
+        }
+
         @Override
         public Object visit(ASTUserClass node, Object data) {
             addViolation(data, node);

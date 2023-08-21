@@ -1,24 +1,68 @@
 require 'pmdtester'
 require 'time'
 require 'logger'
+require 'fileutils'
+require 'etc'
 
 @logger = Logger.new(STDOUT)
 
+def get_args(base_branch, autogen = TRUE, patch_config = './pmd/.ci/files/all-regression-rules.xml')
+  ['--local-git-repo', './pmd',
+   '--list-of-project', './pmd/.ci/files/project-list.xml',
+   '--base-branch', base_branch,
+   '--patch-branch', 'HEAD',
+   '--patch-config', patch_config,
+   '--mode', 'online',
+   autogen ? '--auto-gen-config' : '--filter-with-patch-config',
+   '--keep-reports',
+   '--error-recovery',
+   '--baseline-download-url', 'https://pmd-code.org/pmd-regression-tester/',
+   '--threads', Etc.nprocessors.to_s,
+   # '--debug',
+   ]
+end
+
 def run_pmdtester
   Dir.chdir('..') do
-    argv = ['--local-git-repo', './pmd',
-            '--list-of-project', './pmd/.travis/project-list.xml',
-            '--base-branch', "#{ENV['TRAVIS_BRANCH']}",
-            '--patch-branch', 'HEAD',
-            '--patch-config', './pmd/.travis/all-java.xml',
-            '--mode', 'online',
-            '--auto-gen-config',
-            # '--debug',
-            ]
     begin
-      runner = PmdTester::Runner.new(argv)
-      @new_errors, @removed_errors, @new_violations, @removed_violations, @new_configerrors, @removed_configerrors = runner.run
-      upload_report
+      @base_branch = ENV['PMD_CI_BRANCH']
+      @logger.info "\n\n--------------------------------------"
+      @logger.info "Run against PR base #{@base_branch}"
+      @summary = PmdTester::Runner.new(get_args(@base_branch)).run
+
+      unless Dir.exist?('target/reports/diff')
+        message("No regression tested rules have been changed.", sticky: true)
+        return
+      end
+
+      # move the generated report out of the way
+      FileUtils.mv 'target/reports/diff', 'target/diff1'
+      message1 = create_message
+
+      # run against master branch (if the PR is not already against master)
+      unless ENV['PMD_CI_BRANCH'] == 'master'
+        @base_branch = 'master'
+        @logger.info "\n\n--------------------------------------"
+        @logger.info "Run against #{@base_branch}"
+        @summary = PmdTester::Runner.new(get_args(@base_branch, FALSE, 'target/diff1/patch_config.xml')).run
+
+        # move the generated report out of the way
+        FileUtils.mv 'target/reports/diff', 'target/diff2'
+        message2 = create_message
+      end
+
+      tar_report
+
+      message1 += "[Download full report as build artifact](#{ENV['PMD_CI_JOB_URL']})"
+      # set value of sticky to true and the message is kept after new commits are submitted to the PR
+      message(message1, sticky: true)
+
+      if message2
+        message2 += "[Download full report as build artifact](#{ENV['PMD_CI_JOB_URL']})"
+        # set value of sticky to true and the message is kept after new commits are submitted to the PR
+        message(message2, sticky: true)
+      end
+
     rescue StandardError => e
       warn("Running pmdtester failed, this message is mainly used to remind the maintainers of PMD.")
       @logger.error "Running pmdtester failed: #{e.inspect}"
@@ -26,38 +70,29 @@ def run_pmdtester
   end
 end
 
-def upload_report
-  Dir.chdir('target/reports') do
-    tar_filename = "pr-#{ENV['TRAVIS_PULL_REQUEST']}-diff-report-#{Time.now.strftime("%Y-%m-%dT%H-%M-%SZ")}.tar"
-    unless Dir.exist?('diff/')
-      message("No java rules are changed!", sticky: true)
-      return
-    end
+def create_message
+  "Compared to #{@base_branch}:\n"\
+  "This changeset " \
+  "changes #{@summary[:violations][:changed]} violations,\n" \
+  "introduces #{@summary[:violations][:new]} new violations, " \
+  "#{@summary[:errors][:new]} new errors and " \
+  "#{@summary[:configerrors][:new]} new configuration errors,\n" \
+  "removes #{@summary[:violations][:removed]} violations, "\
+  "#{@summary[:errors][:removed]} errors and " \
+  "#{@summary[:configerrors][:removed]} configuration errors.\n"
+end
 
-    `tar -cf #{tar_filename} diff/`
-    report_url = `curl -u #{ENV['CHUNK_TOKEN']} -T #{tar_filename} https://chunk.io`
-    if $?.success?
-      @logger.info "Successfully uploaded #{tar_filename} to chunk.io"
+def tar_report
+  Dir.chdir('target') do
+    tar_filename = "pr-#{ENV['PMD_CI_PULL_REQUEST_NUMBER']}-diff-report-#{Time.now.strftime("%Y-%m-%dT%H-%M-%SZ")}.tar.gz"
 
-      # set value of sticky to true and the message is kept after new commits are submited to the PR
-      message("This changeset introduces #{@new_violations} new violations, #{@new_errors} new errors and " +
-              "#{@new_configerrors} new configuration errors,\n" +
-              "removes #{@removed_violations} violations, #{@removed_errors} errors and " +
-              "#{@removed_configerrors} configuration errors.\n" +
-              "[Full report](#{report_url.chomp}/diff/index.html)", sticky: true)
-    else
-      @logger.error "Error while uploading #{tar_filename} to chunk.io: #{report_url}"
-      warn("Uploading the diff report failed, this message is mainly used to remind the maintainers of PMD.")
-    end
+    `tar czf #{tar_filename} diff1/ diff2/`
+    tar_size = (10 * File.size(tar_filename) / 1024 / 1024)/10.0
+    @logger.info "Created file #{tar_filename} (#{tar_size}mb)"
   end
 end
 
 # Perform regression testing
-can_merge = github.pr_json['mergeable']
-if can_merge
-  run_pmdtester
-else
-  warn("This PR cannot be merged yet.", sticky: false)
-end
+run_pmdtester
 
 # vim: syntax=ruby

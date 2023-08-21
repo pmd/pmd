@@ -5,8 +5,32 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
-        <description>assignment of a variable (local or field) to itself</description>
+        <description>assignment of a variable (field) to itself</description>
         <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    int x;
+    private void bar() {
+        x = x;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>assignment of a variable (local) to itself</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private void bar() {
+        int x;
+        x = x;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>no fp for unknown reference</description>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     private void bar() {
@@ -34,6 +58,8 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
+    Foo x;
+    Foo foo;
     void bar() {this.x = foo;}
     void buz() {foo = this.x;}
 }
@@ -64,12 +90,37 @@ public class Foo {
         <description>#1104 IdempotentOperation false positive</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+// uncompilable
 public class Foo {
     void bar() {
         SignDelayer.this.sign = SignDelayer.this.arg.sign();
         MMultiplexer.this.lastEvent = MMultiplexer.this.firstEvent;
     }
 }
+class MMultiplexer {}
+class SignDelayer {}
         ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1104 IdempotentOperation false positive (compilable)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class MMultiplexer {
+                SignDelayer lastEvent, firstEvent;
+
+                class SignDelayer {
+                    int sign;
+                    Foo arg;
+
+                    public class Foo {
+                        void bar() {
+                            SignDelayer.this.sign = SignDelayer.this.arg.sign();
+                            MMultiplexer.this.lastEvent = MMultiplexer.this.firstEvent;
+                        }
+                        int sign() {return 0;}
+                    }
+                }
+            }
+            ]]></code>
     </test-code>
 </test-data>

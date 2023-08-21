@@ -10,7 +10,7 @@
         <code><![CDATA[
 public class Foo {
     private boolean baz(String buz) {
-        return foo.toUpperCase().equals("foo");
+        return buz.toUpperCase().equals("foo");
     }
 }
         ]]></code>
@@ -22,7 +22,7 @@ public class Foo {
         <code><![CDATA[
 public class Foo {
     private boolean baz(String buz) {
-        return foo.toLowerCase().equals("foo");
+        return buz.toLowerCase().equals("foo");
     }
 }
         ]]></code>
@@ -34,7 +34,7 @@ public class Foo {
         <code><![CDATA[
 public class Foo {
     private boolean baz(String buz) {
-        return foo.toUpperCase().equalsIgnoreCase("foo");
+        return buz.toUpperCase().equalsIgnoreCase("foo");
     }
 }
         ]]></code>
@@ -46,7 +46,7 @@ public class Foo {
         <code><![CDATA[
 public class Foo {
     private boolean baz(String buz) {
-        return foo.toUpperCase(locale).equals("foo");
+        return buz.toUpperCase(locale).equals("foo");
     }
 }
         ]]></code>
@@ -57,13 +57,17 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public Object visit(ASTFieldDeclaration node, Object data) {
-        ASTClassOrInterfaceDeclaration cl = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+    public Object visit(Foo node, Object data) {
+        Foo cl = node.getFirstParentOfType(Foo.class);
         if (cl != null && node.getVariableName().toLowerCase().equals(cl.getImage().toLowerCase())) {
             addViolation(data, node);
         }
         return data;
     }
+
+    public Foo getFirstParentOfType(Class<?> clazz) { return null; }
+    public String getVariableName() { return null; }
+    public String getImage() { return null; }
 }
         ]]></code>
     </test-code>
@@ -86,8 +90,11 @@ public class Foo {
         <description>NullPointerException if in constructor test</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
-    public void bar(String s) {
+public class Person {
+    public Person(String name) { }
+    public void printData() { }
+
+    public static void bar(String s) {
         Person p = new Person(s.toUpperCase());
         p.printData();
     }

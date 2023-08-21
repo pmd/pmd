@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.ecmascript.rule.bestpractices;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class UseBaseWithParseIntTest extends PmdRuleTst {
+class UseBaseWithParseIntTest extends PmdRuleTst {
     // no additional unit tests
 }

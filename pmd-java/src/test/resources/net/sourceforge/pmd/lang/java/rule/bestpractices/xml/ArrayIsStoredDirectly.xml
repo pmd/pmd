@@ -7,6 +7,7 @@
     <test-code>
         <description>Clear violation</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     String [] arr;
@@ -18,6 +19,7 @@ public class Foo {
     <test-code>
         <description>Clear violation with this.</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     String [] arr;
@@ -29,6 +31,7 @@ public class Foo {
     <test-code>
         <description>assignment to an internal array</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     String [] arr;
@@ -96,6 +99,7 @@ public class Foo {
     <test-code>
         <description>Constructor clear violation</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     String [] arr;
@@ -129,6 +133,7 @@ public class Foo {
     <test-code>
         <description>Trigger on Varargs</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     String [] arr;
@@ -222,20 +227,107 @@ public class AISD {
         <description>do not allow private methods</description>
         <rule-property name="allowPrivate">false</rule-property>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>3,6</expected-linenumbers>
+        <expected-linenumbers>4,7</expected-linenumbers>
         <code><![CDATA[
 public class AISD {
     private final byte[] buf;
     private AISD(final byte[] buf) {
         this.buf = buf;
     }
-    private void set(final byte[] buf) {
-        this.buf = buf;
+    private void set(final byte[] buf2) {
+        this.buf = buf2;
     }
-    public AISD of(final byte[] buf) {
-        return new AISD(buf.clone());
+    public AISD of(final byte[] buf3) {
+        return new AISD(buf3.clone());
     }
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>nested classes</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>4,9,16,20</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public class Inner {
+        String [] arr;
+        void foo (String[] x) {arr = x;}
+    }
+    public interface InnerInterface {
+        class Nested {
+            String [] arr;
+            void foo (String[] x) {arr = x;}
+        }
+    }
+    public enum InnerEnum {
+        A;
+
+        String [] arr;
+        void foo (String[] x) {arr = x;}
+
+        class Nested {
+            String [] arr;
+            void foo (String[] x) {arr = x;}
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ArrayIsStoredDirectly reports duplicated violation #3879</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+public class ExampleAISD {
+
+    public String[] strs;
+
+    public void func(String[] strs, boolean flag) { // line 5
+        if (flag) {
+            this.strs = strs; // line 7
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ArrayIsStoredDirectly false positive with method call #1474</description>
+        <rule-property name="allowPrivate">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class TestArrayIsStoredDirectly {
+    public double energy(int x) {
+        return 0.0;
+    }
+
+    // if energy[] is replace by energy2[], then no ArrayIsStoredDirectly warning
+    private void f(double[] energy) {
+        energy[0] = energy(1);
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ArrayIsStoredDirectly false positive with field access #1185</description>
+        <rule-property name="allowPrivate">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class TestArrayIsStoredDirectly {
+    private final boolean[] a;
+    private final foo b;
+
+    private TestArrayIsStoredDirectly(boolean[] a) {
+        this.a = null;
+        this.a = a.clone(); // no violation, it doesn't matter what the state of this.a is
+        this.b = new TestArrayIsStoredDirectly(a); // no violation
+        this.b = new TestArrayIsStoredDirectly(this.a); // false positive violation here
+    }
+}
+]]></code>
+    </test-code>
+
 </test-data>

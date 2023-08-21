@@ -8,6 +8,7 @@
         <description>simple failure</description>
         <rule-property name="ignoreExplicitConstructorInvocation">true</rule-property>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     Foo() {
@@ -187,4 +188,30 @@ public class MyClass {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#4141 UncommentedEmptyConstructor FP when annotated constructor with @Autowired</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.springframework.beans.factory.annotation.Autowired;
+public class Bug {
+    @Autowired
+    public Bug() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4141 UncommentedEmptyConstructor FP when annotated constructor with @Autowired</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Bug {
+    @org.springframework.beans.factory.annotation.Autowired
+    public Bug() {
+    }
+}
+        ]]></code>
+    </test-code>
+
 </test-data>

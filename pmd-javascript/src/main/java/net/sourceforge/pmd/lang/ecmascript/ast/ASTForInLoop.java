@@ -6,17 +6,13 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.ForInLoop;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTForInLoop extends AbstractEcmascriptNode<ForInLoop> {
-    @Deprecated
-    @InternalApi
-    public ASTForInLoop(ForInLoop forInLoop) {
+public final class ASTForInLoop extends AbstractEcmascriptNode<ForInLoop> {
+    ASTForInLoop(ForInLoop forInLoop) {
         super(forInLoop);
     }
 
     @Override
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+    protected <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

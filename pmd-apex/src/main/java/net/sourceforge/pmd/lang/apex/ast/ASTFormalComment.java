@@ -5,10 +5,9 @@
 package net.sourceforge.pmd.lang.apex.ast;
 
 
-import org.antlr.runtime.Token;
-
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.apex.ast.ASTFormalComment.AstComment;
+import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.document.TextRegion;
 
 import apex.jorje.data.Location;
 import apex.jorje.data.Locations;
@@ -21,46 +20,37 @@ import apex.jorje.semantic.symbol.resolver.SymbolResolver;
 import apex.jorje.semantic.symbol.type.TypeInfo;
 import apex.jorje.semantic.symbol.type.TypeInfos;
 
-public class ASTFormalComment extends AbstractApexNode<AstComment> {
+public final class ASTFormalComment extends AbstractApexNode<AstComment> {
 
-    private final String image;
+    private final Chars image;
 
-    ASTFormalComment(Token token) {
+    ASTFormalComment(TextRegion token, Chars image) {
         super(new AstComment(token));
-        this.image = token.getText();
+        this.image = image;
     }
 
-    @Deprecated
-    public ASTFormalComment(String token) {
-        super(new AstComment(null));
-        image = token;
-    }
 
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
     @Override
     public String getImage() {
+        return image.toString();
+    }
+
+    public Chars getToken() {
         return image;
     }
 
-    public String getToken() {
-        return image;
-    }
 
-
-    @Deprecated
-    @InternalApi
-    public static final class AstComment implements AstNode {
+    static final class AstComment implements AstNode {
 
         private final Location loc;
 
-        private AstComment(Token token) {
-            this.loc = token == null
-                       ? Locations.NONE
-                       : Locations.loc(token.getLine(), token.getCharPositionInLine() + 1);
+        private AstComment(TextRegion region) {
+            this.loc = Locations.index(region.getStartOffset(), region.getLength());
         }
 
         @Override

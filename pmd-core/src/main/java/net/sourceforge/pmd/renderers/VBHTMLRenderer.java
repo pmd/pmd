@@ -7,7 +7,6 @@ package net.sourceforge.pmd.renderers;
 import java.io.IOException;
 import java.util.Iterator;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
 
@@ -42,13 +41,13 @@ public class VBHTMLRenderer extends AbstractIncrementingRenderer {
 
         StringBuilder sb = new StringBuilder(500);
         String filename = null;
-        String lineSep = PMD.EOL;
+        String lineSep = System.lineSeparator();
 
         boolean colorize = false;
         while (violations.hasNext()) {
             sb.setLength(0);
             RuleViolation rv = violations.next();
-            String nextFilename = determineFileName(rv.getFilename());
+            String nextFilename = determineFileName(rv.getFileId());
             if (!nextFilename.equals(filename)) { // New File
                 if (filename != null) {
                     sb.append("</table></br>");
@@ -98,7 +97,7 @@ public class VBHTMLRenderer extends AbstractIncrementingRenderer {
                     sb.append("<tr id=RowColor2>");
                 }
                 colorize = !colorize;
-                sb.append("<td><font class=body>").append(determineFileName(error.getFile())).append("</font></td>");
+                sb.append("<td><font class=body>").append(determineFileName(error.getFileId())).append("</font></td>");
                 sb.append("<td><font class=body><pre>").append(error.getDetail()).append("</pre></font></td></tr>");
             }
             sb.append("</table>");
@@ -128,22 +127,21 @@ public class VBHTMLRenderer extends AbstractIncrementingRenderer {
     }
 
     private String header() {
-        StringBuilder sb = new StringBuilder(600).append("<html><head><title>PMD</title></head>")
-                .append("<style type=\"text/css\">").append("<!--").append(PMD.EOL)
-                .append("body { background-color: white; font-family:verdana, arial, helvetica, geneva; font-size: 16px; font-style: italic; color: black; }")
-                .append(PMD.EOL)
-                .append(".title { font-family: verdana, arial, helvetica,geneva; font-size: 12px; font-weight:bold; color: white; }")
-                .append(PMD.EOL)
-                .append(".body { font-family: verdana, arial, helvetica, geneva; font-size: 12px; font-weight:plain; color: black; }")
-                .append(PMD.EOL).append("#TableHeader { background-color: #003366; }").append(PMD.EOL)
-                .append("#RowColor1 { background-color: #eeeeee; }").append(PMD.EOL)
-                .append("#RowColor2 { background-color: white; }").append(PMD.EOL).append("-->").append("</style>")
-                .append("<body><center>");
-        return sb.toString();
+        return "<html><head><title>PMD</title></head>"
+            + "<style type=\"text/css\">" + "<!--" + System.lineSeparator()
+            + "body { background-color: white; font-family:verdana, arial, helvetica, geneva; font-size: 16px; font-style: italic; color: black; }"
+            + System.lineSeparator()
+            + ".title { font-family: verdana, arial, helvetica,geneva; font-size: 12px; font-weight:bold; color: white; }"
+            + System.lineSeparator()
+            + ".body { font-family: verdana, arial, helvetica, geneva; font-size: 12px; font-weight:plain; color: black; }"
+            + System.lineSeparator() + "#TableHeader { background-color: #003366; }" + System.lineSeparator()
+            + "#RowColor1 { background-color: #eeeeee; }" + System.lineSeparator()
+            + "#RowColor2 { background-color: white; }" + System.lineSeparator() + "-->" + "</style>"
+            + "<body><center>";
     }
 
     private String footer() {
-        return "</center></body></html>" + PMD.EOL;
+        return "</center></body></html>" + System.lineSeparator();
     }
 
 }

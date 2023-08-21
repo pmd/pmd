@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.xml.rule.errorprone;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class MistypedCDATASectionTest extends PmdRuleTst {
+class MistypedCDATASectionTest extends PmdRuleTst {
     // no additional unit tests
 }

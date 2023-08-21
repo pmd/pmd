@@ -14,10 +14,22 @@ be customized further via properties. Violations might also be suppressed and th
 be processing errors or configuration errors. Not all report formats display all information.
 
 The header of the sections below are used to select the format on the command line, as
-arguments to the `-format` option. When a format accepts *properties*,
-those can be specified with the `-property` / `-P` option on the command-line.
+arguments to the `--format` option. When a format accepts *properties*,
+those can be specified with the `--property` / `-P` option on the command-line.
 
-{% include note.html content="Suppressed violations are only reported, if the CLI parameter `-showsuppressed` is set." %}
+{% include note.html content="Suppressed violations are only reported, if the CLI parameter `--show-suppressed` is set." %}
+
+## sarif
+
+"SARIF, the Static Analysis Results Interchange Format, is a standard, JSON-based format for the output of static
+analysis tools. It has been approved as an OASIS standard" - <https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html>.
+
+SARIF schema can be found here: <https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json>.
+
+PMD holds an initial implementation version of SARIF rendering. This means SARIF allows for more complexity and the
+current implementation can be extended.
+
+[Example](report-examples/pmd-report.sarif.json)
 
 ## codeclimate
 
@@ -110,11 +122,11 @@ It has two ways of calling:
 
 1. For a single file: then all three properties need to be provided
 
-`run.sh pmd -d src/Foo.java -R rulesets/java/quickstart.xml -f ideaj -P fileName=src/Foo.java -P sourcePath=/home/pmd/src -P classAndMethodName=Foo`
+`pmd check -d src/Foo.java -R rulesets/java/quickstart.xml -f ideaj -P fileName=src/Foo.java -P sourcePath=/home/pmd/src -P classAndMethodName=Foo`
 
 2. For a directory: then the fileName property can be omitted
 
-`run.sh pmd -d src -R rulesets/java/quickstart.xml -f ideaj -P sourcePath=/home/pmd/src -P classAndMethodName=.method`
+`pmd check -d src -R rulesets/java/quickstart.xml -f ideaj -P sourcePath=/home/pmd/src -P classAndMethodName=.method`
 
 Example:
 
@@ -169,8 +181,8 @@ and configuration errors are reported.
 Example:
 
 ```
-/home/pmd/source/pmd-core/src/main/java/net/sourceforge/pmd/RuleContext.java:124:    Logger calls should be surrounded by log level guards.
-/home/pmd/source/pmd-core/src/main/java/net/sourceforge/pmd/benchmark/Benchmarker.java:58:   This for loop can be replaced by a foreach loop
+/home/pmd/source/pmd-core/src/main/java/net/sourceforge/pmd/RuleContext.java:124:    GuardLogStatement:    Logger calls should be surrounded by log level guards.
+/home/pmd/source/pmd-core/src/main/java/net/sourceforge/pmd/benchmark/Benchmarker.java:58:    ForLoopCanBeForeach:   This for loop can be replaced by a foreach loop
 /home/pmd/source/pmd-core/src/test/resources/net/sourceforge/pmd/cpd/files/file_with_ISO-8859-1_encoding.java    -   PMDException: Error while parsing /home/pmd/source/pmd-core/src/test/resources/net/sourceforge/pmd/cpd/files/file_with_ISO-8859-1_encoding.java
 CloseResource rule violation suppressed by Annotation in /home/pmd/source/pmd-core/src/main/java/net/sourceforge/pmd/PMD.java
 LoosePackageCoupling    -   No packages or classes specified
@@ -333,9 +345,16 @@ Was expecting one of:
 XML with a XSL transformation applied.
 
 PMD provides one built-in stylesheet, that is used by default, if no other
-stylesheet with the property "xsltFilename" is specified. It is called [pmd-nicerhtml.xsl](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/resources/pmd-nicerhtml.xsl) and can be used for customization.
+stylesheet with the property "xsltFilename" is specified. It is called
+[pmd-nicerhtml.xsl](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/resources/pmd-nicerhtml.xsl)
+and can be used for customization.
 
-[Example with pmd-nicerhtml.xsl](report-examples/pmd-report-pmd-nicerhtml.html)
+There are many other stylesheets available online: <https://github.com/pmd/pmd/tree/master/pmd-core/etc/xslt>.
+
+Examples:
+* [Example with pmd-nicerhtml.xsl](report-examples/pmd-report-pmd-nicerhtml.html)
+* [Example with html-report-v2.xslt](report-examples/html-report-v2.html) - includes charts. It requires javascript enabled and uses
+  [jQuery](https://jquery.com/), [DataTables](https://datatables.net/), and [Vega](https://vega.github.io/vega/) for charting. 
 
 **Properties:**
 

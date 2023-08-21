@@ -7,31 +7,18 @@ package net.sourceforge.pmd.lang.apex.ast;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.data.Identifier;
 import apex.jorje.semantic.ast.compilation.UserTrigger;
 
-public class ASTUserTrigger extends ApexRootNode<UserTrigger> {
+public final class ASTUserTrigger extends BaseApexClass<UserTrigger> {
 
-    @Deprecated
-    @InternalApi
-    public ASTUserTrigger(UserTrigger userTrigger) {
+    ASTUserTrigger(UserTrigger userTrigger) {
         super(userTrigger);
     }
 
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
-    }
-
-    @Override
-    public String getImage() {
-        return getDefiningType();
-    }
-
-    public ASTModifierNode getModifiers() {
-        return getFirstChildOfType(ASTModifierNode.class);
     }
 
     public String getTargetName() {

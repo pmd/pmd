@@ -4,20 +4,17 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.member.bridge.BridgeMethodCreator;
 
-public class ASTBridgeMethodCreator extends AbstractApexNode<BridgeMethodCreator> {
+public final class ASTBridgeMethodCreator extends AbstractApexNode<BridgeMethodCreator> {
 
-    @Deprecated
-    @InternalApi
-    public ASTBridgeMethodCreator(BridgeMethodCreator bridgeMethodCreator) {
+    ASTBridgeMethodCreator(BridgeMethodCreator bridgeMethodCreator) {
         super(bridgeMethodCreator);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

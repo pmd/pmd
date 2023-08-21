@@ -4,77 +4,48 @@
 
 package net.sourceforge.pmd.lang.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.document.FileId;
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * An error thrown during lexical analysis of a file.
  */
-public final class TokenMgrError extends RuntimeException {
+public final class TokenMgrError extends FileAnalysisException {
 
     private final int line;
     private final int column;
-    private final String filename;
-
-    // these constants are deprecated because they're useless,
-    // they've been removed from 7.0.x
-
-    @Deprecated
-    public static final int LEXICAL_ERROR = 0;
-    @Deprecated
-    public static final int STATIC_LEXER_ERROR = 1;
-    @Deprecated
-    public static final int INVALID_LEXICAL_STATE = 2;
-    @Deprecated
-    public static final int LOOP_DETECTED = 3;
-
-    /**
-     * @deprecated Use {@link #TokenMgrError(int, int, String, String, Throwable)}
-     */
-    @Deprecated
-    public TokenMgrError() {
-        this("NO_MESSAGE", LEXICAL_ERROR);
-    }
-
-    /**
-     * @deprecated Use {@link #TokenMgrError(int, int, String, String, Throwable)}
-     */
-    @Deprecated
-    public TokenMgrError(String message, @SuppressWarnings("PMD.UnusedFormalParameter") int reason) {
-        super(message);
-        this.line = -1;
-        this.column = -1;
-        this.filename = null;
-    }
 
     /**
      * Create a new exception.
      *
      * @param line     Line number
      * @param column   Column number
-     * @param filename Filename. If unknown, it can be completed with {@link #withFileName(String)} later
+     * @param filename Filename. If unknown, it can be completed with {@link #setFileName(String)} later
      * @param message  Message of the error
      * @param cause    Cause of the error, if any
      */
-    public TokenMgrError(int line, int column, /*@Nullable*/ String filename, String message, /*@Nullable*/ Throwable cause) {
+    public TokenMgrError(int line, int column, @Nullable FileId filename, String message, @Nullable Throwable cause) {
         super(message, cause);
         this.line = line;
         this.column = column;
-        this.filename = filename;
+        if (filename != null) {
+            super.setFileId(filename);
+        }
     }
 
     /**
      * Constructor called by JavaCC.
-     *
-     * @deprecated This should only be used by the Javacc implementations we maintain, will change in 7.0
      */
     @InternalApi
-    @Deprecated
-    public TokenMgrError(boolean eofSeen, int lexStateName, int errorLine, int errorColumn, String errorAfter, char curChar, @SuppressWarnings("PMD.UnusedFormalParameter") int reason) {
+    public TokenMgrError(boolean eofSeen, String lexStateName, int errorLine, int errorColumn, String errorAfter, char curChar) {
         super(makeReason(eofSeen, lexStateName, errorAfter, curChar));
         line = errorLine;
         column = errorColumn;
-        filename = null; // may be replaced with #withFileName
     }
 
     public int getLine() {
@@ -85,46 +56,30 @@ public final class TokenMgrError extends RuntimeException {
         return column;
     }
 
-    public /*@Nullable*/ String getFilename() {
-        return filename;
-    }
-
-    /**
-     * @deprecated Use {@link StringUtil#escapeJava(String)}
-     */
-    @Deprecated
-    protected static String addEscapes(String str) {
-        return StringUtil.escapeJava(str);
-    }
-
-
-    @Deprecated
-    protected static String LexicalError(boolean eofSeen, int lexState, int errorLine, int errorColumn, String errorAfter, char curChar) { // SUPPRESS CHECKSTYLE yes it's ugly, but it's for compatibility
-        return makeMessage(null, errorLine, errorColumn, makeReason(eofSeen, lexState, errorAfter, curChar));
+    @Override
+    protected @NonNull FileLocation location() {
+        return FileLocation.caret(getFileId(), line, column);
     }
 
     @Override
-    public String getMessage() {
-        return makeMessage(filename, line, column, super.getMessage());
-    }
-
-    private static String makeMessage(String filename, int line, int column, String message) {
-        String leader = filename != null ? "Lexical error in file " + filename : "Lexical error";
-        return leader + " at line " + line + ", column " + column + ".  Encountered: " + message;
+    protected String errorKind() {
+        return "Lexical error";
     }
 
     /**
      * Replace the file name of this error.
      *
-     * @param filename New filename
+     * @param fileId New filename
      *
      * @return A new exception
      */
-    public TokenMgrError withFileName(String filename) {
-        return new TokenMgrError(this.line, this.column, filename, this.getMessage(), this.getCause());
+    @Override
+    public TokenMgrError setFileId(FileId fileId) {
+        super.setFileId(fileId);
+        return this;
     }
 
-    private static String makeReason(boolean eofseen, int lexStateName, String errorAfter, char curChar) {
+    private static String makeReason(boolean eofseen, String lexStateName, String errorAfter, char curChar) {
         String message;
         if (eofseen) {
             message = "<EOF> ";

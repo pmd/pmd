@@ -8,6 +8,7 @@
         <description>Bad SessionBean name</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import javax.ejb.SessionBean;
 public class SomeClass implements SessionBean {}
         ]]></code>
     </test-code>
@@ -16,6 +17,7 @@ public class SomeClass implements SessionBean {}
         <description>Bad MessageDrivenBean name</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import javax.ejb.MessageDrivenBean;
 public class SomeClass implements MessageDrivenBean {}
         ]]></code>
     </test-code>
@@ -24,6 +26,7 @@ public class SomeClass implements MessageDrivenBean {}
         <description>Good SessionBean name</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import javax.ejb.SessionBean;
 public class SomeBean implements SessionBean {}
         ]]></code>
     </test-code>
@@ -32,6 +35,7 @@ public class SomeBean implements SessionBean {}
         <description>Good MessageDrivenBean name</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import javax.ejb.MessageDrivenBean;
 public class SomeBean implements MessageDrivenBean {}
         ]]></code>
     </test-code>

@@ -5,18 +5,19 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.List;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 
 /**
- * A record declaration is a special data class type (JDK 14 and JDK 15 preview feature).
+ * A record declaration is a special data class type (JDK 16 feature).
  * This is a {@linkplain Node#isFindBoundary() find boundary} for tree traversal methods.
  *
  * <pre class="grammar">
  *
- * RecordDeclaration ::= "record"
+ * RecordDeclaration ::= {@link ASTModifierList ModifierList}
+ *                       "record"
  *                       &lt;IDENTIFIER&gt;
  *                       {@linkplain ASTTypeParameters TypeParameters}?
  *                       {@linkplain ASTRecordComponentList RecordComponents}
@@ -25,60 +26,25 @@ import net.sourceforge.pmd.lang.ast.Node;
  *
  * </pre>
  *
- * @see <a href="https://openjdk.java.net/jeps/384">JEP 384: Records (Second Preview)</a>
+ * @see <a href="https://openjdk.java.net/jeps/395">JEP 395: Records</a>
  */
-@Experimental
 public final class ASTRecordDeclaration extends AbstractAnyTypeDeclaration {
     ASTRecordDeclaration(int id) {
         super(id);
     }
 
-    ASTRecordDeclaration(JavaParser p, int id) {
-        super(p, id);
-    }
-
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
     @Override
-    public TypeKind getTypeKind() {
-        return TypeKind.RECORD;
+    public NodeStream<ASTBodyDeclaration> getDeclarations() {
+        return getFirstChildOfType(ASTRecordBody.class).children(ASTBodyDeclaration.class);
     }
 
     @Override
-    public List<ASTAnyTypeBodyDeclaration> getDeclarations() {
-        return getFirstChildOfType(ASTRecordBody.class).findChildrenOfType(ASTAnyTypeBodyDeclaration.class);
-    }
-
-    @Override
-    public boolean isFindBoundary() {
-        return isNested();
-    }
-
-    @Override
-    public boolean isFinal() {
-        // A record is implicitly final
-        return true;
-    }
-
-    @Override
-    public boolean isLocal() {
-        return getParent() instanceof ASTBlockStatement;
-    }
-
-    /**
-     * @deprecated Renamed to {@link #getRecordComponents()}
-     */
-    @Deprecated
-    public ASTRecordComponentList getComponentList() {
-        return getRecordComponents();
-    }
-
-    /** Returns the record component list. */
-    // @NonNull
-    @Override
+    @NonNull
     public ASTRecordComponentList getRecordComponents() {
         return getFirstChildOfType(ASTRecordComponentList.class);
     }

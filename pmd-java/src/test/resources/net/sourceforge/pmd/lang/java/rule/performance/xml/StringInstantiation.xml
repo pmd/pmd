@@ -80,9 +80,10 @@ public class Foo {
         <description>Not a new String</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import my.String;
 public class Foo {
-    STRING foo() {
-        return new STRING("foo");
+    String foo() {
+        return new String("foo");
     }
 }
         ]]></code>
@@ -118,5 +119,21 @@ public class Foo {
     }
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] StringInstantiation: false negative when using method result #3848</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    String getLiteral() {
+        return "foo";
+    }
+    String foo() {
+        return new String(getLiteral()); // should report a warning at this line
+    }
+}
+]]></code>
     </test-code>
 </test-data>

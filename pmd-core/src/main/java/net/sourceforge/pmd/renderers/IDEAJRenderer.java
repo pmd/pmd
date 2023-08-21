@@ -5,15 +5,15 @@
 package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
-import java.io.Writer;
+import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.properties.StringProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 
 /**
  * Renderer for IntelliJ IDEA integration.
@@ -26,10 +26,12 @@ public class IDEAJRenderer extends AbstractIncrementingRenderer {
     public static final String NAME = "ideaj";
 
     // TODO 7.0.0 use PropertyDescriptor<String>
-    public static final StringProperty FILE_NAME = new StringProperty("fileName", "File name.", "", 0);
-    public static final StringProperty SOURCE_PATH = new StringProperty("sourcePath", "Source path.", "", 1);
-    public static final StringProperty CLASS_AND_METHOD_NAME = new StringProperty("classAndMethodName",
-            "Class and Method name, pass '.method' when processing a directory.", "", 2);
+    public static final PropertyDescriptor<String> FILE_NAME =
+        PropertyFactory.stringProperty("fileName").desc("File name.").defaultValue("").build();
+    public static final PropertyDescriptor<String> SOURCE_PATH =
+        PropertyFactory.stringProperty("sourcePath").desc("Source path.").defaultValue("").build();
+    public static final PropertyDescriptor<String> CLASS_AND_METHOD_NAME =
+        PropertyFactory.stringProperty("classAndMethodName").desc("Class and Method name, pass '.method' when processing a directory.").defaultValue("").build();
 
     private static final String FILE_SEPARATOR = System.getProperty("file.separator");
     private static final String PATH_SEPARATOR = System.getProperty("path.separator");
@@ -60,40 +62,36 @@ public class IDEAJRenderer extends AbstractIncrementingRenderer {
         }
     }
 
-    private void renderDirectory(Writer writer, Iterator<RuleViolation> violations) throws IOException {
+    private void renderDirectory(PrintWriter writer, Iterator<RuleViolation> violations) throws IOException {
         SourcePath sourcePath = new SourcePath(getProperty(SOURCE_PATH));
         StringBuilder buf = new StringBuilder();
         while (violations.hasNext()) {
             buf.setLength(0);
             RuleViolation rv = violations.next();
-            buf.append(rv.getDescription()).append(PMD.EOL);
-            buf.append(" at ").append(getFullyQualifiedClassName(rv.getFilename(), sourcePath)).append(".method(");
-            buf.append(getSimpleFileName(rv.getFilename())).append(':').append(rv.getBeginLine()).append(')')
-                    .append(PMD.EOL);
-            writer.write(buf.toString());
+            buf.append(rv.getDescription()).append(System.lineSeparator());
+            // todo is this the right thing?                                    vvvvvvvvvvvvvvvv
+            buf.append(" at ").append(getFullyQualifiedClassName(rv.getFileId().getAbsolutePath(), sourcePath)).append(".method(");
+            buf.append(rv.getFileId().getFileName()).append(':').append(rv.getBeginLine()).append(')');
+            writer.println(buf);
         }
     }
 
-    private void renderFile(Writer writer, Iterator<RuleViolation> violations) throws IOException {
+    private void renderFile(PrintWriter writer, Iterator<RuleViolation> violations) throws IOException {
         StringBuilder buf = new StringBuilder();
         while (violations.hasNext()) {
             buf.setLength(0);
             RuleViolation rv = violations.next();
-            buf.append(rv.getDescription()).append(PMD.EOL);
+            buf.append(rv.getDescription()).append(System.lineSeparator());
             buf.append(" at ").append(classAndMethodName).append('(').append(fileName).append(':')
-                    .append(rv.getBeginLine()).append(')').append(PMD.EOL);
-            writer.write(buf.toString());
+                    .append(rv.getBeginLine()).append(')');
+            writer.println(buf);
         }
     }
 
     private String getFullyQualifiedClassName(String fileName, SourcePath sourcePath) {
         String classNameWithSlashes = sourcePath.clipPath(fileName);
         String className = classNameWithSlashes.replace(FILE_SEPARATOR.charAt(0), '.');
-        return className.substring(0, className.length() - 5);
-    }
-
-    private String getSimpleFileName(String fileName) {
-        return fileName.substring(fileName.lastIndexOf(FILE_SEPARATOR) + 1);
+        return className.substring(0, className.length() - ".java".length());
     }
 
     private static class SourcePath {

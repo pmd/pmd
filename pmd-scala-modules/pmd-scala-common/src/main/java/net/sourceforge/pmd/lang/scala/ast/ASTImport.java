@@ -4,23 +4,19 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import scala.meta.Import;
 
 /**
  * The ASTImport node implementation.
  */
-public class ASTImport extends AbstractScalaNode<Import> {
+public final class ASTImport extends AbstractScalaNode<Import> {
 
-    @Deprecated
-    @InternalApi
-    public ASTImport(Import scalaNode) {
+    ASTImport(Import scalaNode) {
         super(scalaNode);
     }
 
     @Override
-    public <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data) {
+    protected <P, R> R acceptVisitor(ScalaParserVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

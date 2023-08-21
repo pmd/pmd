@@ -4,84 +4,94 @@
 
 package net.sourceforge.pmd.coverage;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.emptyString;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.function.Consumer;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.contrib.java.lang.system.StandardErrorStreamLog;
-import org.junit.contrib.java.lang.system.StandardOutputStreamLog;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
-import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDConfiguration;
+import net.sourceforge.pmd.PmdAnalysis;
+import net.sourceforge.pmd.internal.util.IOUtil;
+import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 
-public class PMDCoverageTest {
+import com.github.stefanbirkner.systemlambda.SystemLambda;
 
-    @Rule
-    public StandardOutputStreamLog output = new StandardOutputStreamLog();
+class PMDCoverageTest {
 
-    @Rule
-    public StandardErrorStreamLog errorStream = new StandardErrorStreamLog();
+    @TempDir
+    private Path tempFolder;
 
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
-
-    /**
-     * Test some of the PMD command line options
-     */
     @Test
-    public void testPmdOptions() {
-        runPmd("-d src/main/java/net/sourceforge/pmd/lang/java/rule/design -f text -R rulesets/internal/all-java.xml -language java -stress -benchmark");
+    void runAllJavaPmdOnSourceTree() {
+        runPmd("src/main/java", conf -> {});
+    }
+
+    @Test
+    void runAllJavaPmdOnTestResourcesWithLatestJavaVersion() {
+        LanguageVersion latest = JavaLanguageModule.getInstance().getLatestVersion();
+
+        runPmd("src/test/resources", conf -> conf.setDefaultLanguageVersion(latest));
     }
 
     /**
      * Run the PMD command line tool, i.e. call PMD.main().
-     *
-     * @param commandLine
      */
-    private void runPmd(String commandLine) {
-        String[] args;
-        args = commandLine.split("\\s");
+    private void runPmd(String inputPath, Consumer<PMDConfiguration> configure) {
+        StringBuilder report = new StringBuilder("missing report");
 
         try {
-            File f = folder.newFile();
-            int n = args.length;
-            String[] a = new String[n + 2 + 2];
-            System.arraycopy(args, 0, a, 0, n);
-            a[n] = "-reportfile";
-            a[n + 1] = f.getAbsolutePath();
-            a[n + 2] = "-threads";
-            a[n + 3] = String.valueOf(Runtime.getRuntime().availableProcessors());
-            args = a;
+            Path f = Files.createTempFile(tempFolder, PMDCoverageTest.class.getSimpleName(), null);
 
-            PMD.run(args);
+            String output = SystemLambda.tapSystemOut(() -> {
+                String errorOutput = SystemLambda.tapSystemErr(() -> {
+                    PMDConfiguration conf = new PMDConfiguration();
+                    conf.addInputPath(Paths.get(inputPath));
+                    conf.setReportFile(f);
+                    conf.addRuleSet("rulesets/internal/all-java.xml");
+                    conf.setThreads(Runtime.getRuntime().availableProcessors());
+                    configure.accept(conf);
 
-            assertEquals("Nothing should be output to stdout", 0, output.getLog().length());
+                    try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
+                        pmd.performAnalysis();
+                    }
 
+                    report.setLength(0);
+                    report.append(IOUtil.readFileToString(f.toFile(), StandardCharsets.UTF_8));
+                });
+                assertThat(errorOutput, not(containsString("Exception applying rule")));
+                assertThat(errorOutput, not(containsString("Ruleset not found")));
+                assertThat(errorOutput, not(containsString("Use of deprecated attribute")));
+            });
 
-            assertEquals("No exceptions expected", 0, StringUtils.countMatches(errorStream.getLog(), "Exception applying rule"));
-            assertFalse("Wrong configuration? Ruleset not found", errorStream.getLog().contains("Ruleset not found"));
-            assertEquals("No usage of deprecated XPath attributes expected", 0, StringUtils.countMatches(errorStream.getLog(), "Use of deprecated attribute"));
+            assertThat(output, is(emptyString()));
 
-            String report = FileUtils.readFileToString(f, StandardCharsets.UTF_8);
-            assertEquals("No processing errors expected", 0, StringUtils.countMatches(report, "Error while processing"));
-
+            // No processing errors expected
+            assertThat(report.toString(), not(containsString("Error while processing")));
             // we might have explicit examples of parsing errors, so these are maybe false positives
-            assertEquals("No parsing error expected", 0, StringUtils.countMatches(report, "Error while parsing"));
+            // these examples of parsing errors need to be excluded in rulesets/internal/all-java.xml via
+            // exclude-patterns.
+            assertThat(report.toString(), not(containsString("Error while parsing")));
         } catch (IOException ioe) {
             fail("Problem creating temporary file: " + ioe.getLocalizedMessage());
+        } catch (AssertionError ae) {
+            System.out.println("\nReport:\n");
+            System.out.println(report);
+            throw ae;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-    }
-
-    @Test
-    public void runAllJavaPmdOnSourceTree() {
-        runPmd("-d src/main/java -f text -R rulesets/internal/all-java.xml -language java");
     }
 }

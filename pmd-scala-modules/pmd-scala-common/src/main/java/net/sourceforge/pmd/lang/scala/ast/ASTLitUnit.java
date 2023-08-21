@@ -4,23 +4,19 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import scala.meta.Lit;
 
 /**
  * The ASTLitUnit node implementation.
  */
-public class ASTLitUnit extends AbstractScalaNode<Lit.Unit> {
+public final class ASTLitUnit extends AbstractScalaNode<Lit.Unit> {
 
-    @Deprecated
-    @InternalApi
-    public ASTLitUnit(Lit.Unit scalaNode) {
+    ASTLitUnit(Lit.Unit scalaNode) {
         super(scalaNode);
     }
 
     @Override
-    public <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data) {
+    protected <P, R> R acceptVisitor(ScalaParserVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

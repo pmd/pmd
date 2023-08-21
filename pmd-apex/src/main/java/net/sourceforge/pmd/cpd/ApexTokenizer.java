@@ -13,6 +13,7 @@ import org.antlr.runtime.Token;
 
 import net.sourceforge.pmd.lang.apex.ApexJorjeLogging;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
+import net.sourceforge.pmd.lang.document.FileId;
 
 import apex.jorje.parser.impl.ApexLexer;
 
@@ -42,7 +43,7 @@ public class ApexTokenizer implements Tokenizer {
         ApexLexer lexer = new ApexLexer(ass) {
             @Override
             public void emitErrorMessage(String msg) {
-                throw new TokenMgrError(msg, TokenMgrError.LEXICAL_ERROR);
+                throw new TokenMgrError(getLine(), getCharPositionInLine(), FileId.fromPathLikeString(getSourceName()), msg, null);
             }
         };
 
@@ -55,9 +56,10 @@ public class ApexTokenizer implements Tokenizer {
                     if (!caseSensitive) {
                         tokenText = tokenText.toLowerCase(Locale.ROOT);
                     }
-                    TokenEntry tokenEntry = new TokenEntry(tokenText, sourceCode.getFileName(), token.getLine(),
+                    TokenEntry tokenEntry = new TokenEntry(tokenText, sourceCode.getFileName(),
+                                                           token.getLine(),
                                                            token.getCharPositionInLine() + 1,
-                                                           token.getCharPositionInLine() + tokenText.length());
+                                                           token.getCharPositionInLine() + tokenText.length() + 1);
                     tokenEntries.add(tokenEntry);
                 }
                 token = lexer.nextToken();

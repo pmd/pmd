@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class AvoidThrowingRawExceptionTypesTest extends PmdRuleTst {
+class AvoidThrowingRawExceptionTypesTest extends PmdRuleTst {
     public static class Throwable extends java.lang.Throwable {
         private static final long serialVersionUID = 1798165250043760600L;
     }

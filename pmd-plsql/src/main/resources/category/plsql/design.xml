@@ -387,7 +387,7 @@ END;
     </rule>
 
     <rule name="NcssObjectCount"
-          message="The Oracle object has an NCSS line count of {0}"
+          message="The Oracle object {0} has a NCSS line count of {1}"
           language="plsql"
           since="5.1"
           class="net.sourceforge.pmd.lang.plsql.rule.design.NcssObjectCountRule"
@@ -499,7 +499,6 @@ have more fine grained objects.
         <priority>3</priority>
         <properties>
             <property name="maxmethods" type="Integer" description="The method count reporting threshold" min="1" max="1000" value="1"/>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[

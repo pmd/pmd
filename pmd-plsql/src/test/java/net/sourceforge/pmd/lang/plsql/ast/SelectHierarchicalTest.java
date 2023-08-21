@@ -4,14 +4,14 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 
-public class SelectHierarchicalTest extends AbstractPLSQLParserTst {
+class SelectHierarchicalTest extends AbstractPLSQLParserTst {
 
     @Test
-    public void parseSelectHierarchicalQueries() {
+    void parseSelectHierarchicalQueries() {
         plsql.parseResource("SelectHierarchical.pls");
     }
 }

@@ -4,14 +4,27 @@
 
 package net.sourceforge.pmd;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static net.sourceforge.pmd.PmdCoreTestUtils.dummyLanguage;
+import static net.sourceforge.pmd.PmdCoreTestUtils.dummyLanguage2;
+import static net.sourceforge.pmd.PmdCoreTestUtils.dummyVersion;
+import static net.sourceforge.pmd.ReportTestUtil.getReportForRuleSetApply;
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.File;
+import java.nio.charset.Charset;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -21,352 +34,344 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
-import org.apache.commons.io.FilenameUtils;
-import org.junit.Test;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.RuleSet.RuleSetBuilder;
-import net.sourceforge.pmd.lang.Dummy2LanguageModule;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.ast.DummyNode;
+import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.MockRule;
+import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.RuleReference;
-import net.sourceforge.pmd.util.CollectionUtil;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
-public class RuleSetTest {
+class RuleSetTest {
 
-    @Test(expected = NullPointerException.class)
-    public void testRuleSetRequiresName() {
-        new RuleSetBuilder(new Random().nextLong())
-            .withName(null);
-    }
+    @RegisterExtension
+    private final DummyParsingHelper helper = new DummyParsingHelper();
 
-    @Test(expected = NullPointerException.class)
-    public void testRuleSetRequiresDescription() {
-        new RuleSetBuilder(new Random().nextLong())
-            .withName("some name")
-            .withDescription(null);
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testRuleSetRequiresName2() {
-        new RuleSetBuilder(new Random().nextLong()).build();
+    @Test
+    void testRuleSetRequiresName() {
+        assertThrows(NullPointerException.class, () ->
+            new RuleSetBuilder(new Random().nextLong())
+                .withName(null));
     }
 
     @Test
-    public void testNoDFA() {
-        MockRule mock = new MockRule("name", "desc", "msg", "rulesetname");
-        mock.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
-        RuleSet rs = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(mock);
-        assertFalse(rs.usesDFA(LanguageRegistry.getLanguage(DummyLanguageModule.NAME)));
+    void testRuleSetRequiresDescription() {
+        assertThrows(NullPointerException.class, () ->
+            new RuleSetBuilder(new Random().nextLong())
+                .withName("some name")
+                .withDescription(null));
     }
 
     @Test
-    public void testIncludesRuleWithDFA() {
-        MockRule mock = new MockRule("name", "desc", "msg", "rulesetname");
-        mock.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
-        mock.setDfa(true);
-        RuleSet rs = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(mock);
-        assertTrue(rs.usesDFA(LanguageRegistry.getLanguage(DummyLanguageModule.NAME)));
+    void testRuleSetRequiresName2() {
+        assertThrows(NullPointerException.class, () ->
+            new RuleSetBuilder(new Random().nextLong()).build());
     }
 
     @Test
-    public void testAccessors() {
+    void testAccessors() {
         RuleSet rs = new RuleSetBuilder(new Random().nextLong())
                 .withFileName("baz")
                 .withName("foo")
                 .withDescription("bar")
                 .build();
-        assertEquals("file name mismatch", "baz", rs.getFileName());
-        assertEquals("name mismatch", "foo", rs.getName());
-        assertEquals("description mismatch", "bar", rs.getDescription());
+        assertEquals("baz", rs.getFileName(), "file name mismatch");
+        assertEquals("foo", rs.getName(), "name mismatch");
+        assertEquals("bar", rs.getDescription(), "description mismatch");
     }
 
     @Test
-    public void testGetRuleByName() {
+    void testGetRuleByName() {
         MockRule mock = new MockRule("name", "desc", "msg", "rulesetname");
-        RuleSet rs = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(mock);
-        assertEquals("unable to fetch rule by name", mock, rs.getRuleByName("name"));
+        RuleSet rs = RuleSet.forSingleRule(mock);
+        assertEquals(mock, rs.getRuleByName("name"), "unable to fetch rule by name");
     }
 
     @Test
-    public void testGetRuleByName2() {
+    void testGetRuleByName2() {
         MockRule mock = new MockRule("name", "desc", "msg", "rulesetname");
-        RuleSet rs = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(mock);
-        assertNull("the rule FooRule must not be found!", rs.getRuleByName("FooRule"));
+        RuleSet rs = RuleSet.forSingleRule(mock);
+        assertNull(rs.getRuleByName("FooRule"), "the rule FooRule must not be found!");
     }
 
     @Test
-    public void testRuleList() {
+    void testRuleList() {
         MockRule rule = new MockRule("name", "desc", "msg", "rulesetname");
-        RuleSet ruleset = RulesetsFactoryUtils.defaultFactory().createSingleRuleRuleSet(rule);
+        RuleSet ruleset = RuleSet.forSingleRule(rule);
 
-        assertEquals("Size of RuleSet isn't one.", 1, ruleset.size());
+        assertEquals(1, ruleset.size(), "Size of RuleSet isn't one.");
 
         Collection<Rule> rules = ruleset.getRules();
 
         Iterator<Rule> i = rules.iterator();
-        assertTrue("Empty Set", i.hasNext());
-        assertEquals("Returned set of wrong size.", 1, rules.size());
-        assertEquals("Rule isn't in ruleset.", rule, i.next());
+        assertTrue(i.hasNext(), "Empty Set");
+        assertEquals(1, rules.size(), "Returned set of wrong size.");
+        assertEquals(rule, i.next(), "Rule isn't in ruleset.");
     }
 
     private RuleSetBuilder createRuleSetBuilder(String name) {
         return new RuleSetBuilder(new Random().nextLong())
-                .withName(name)
-                .withDescription("Description for " + name);
+            .withName(name)
+            .withDescription("Description for " + name);
     }
 
     @Test
-    public void testAddRuleSet() {
+    void testAddRuleSet() {
         RuleSet set1 = createRuleSetBuilder("ruleset1")
-                .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
-                .build();
+            .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
+            .build();
         RuleSet set2 = createRuleSetBuilder("ruleset2")
                 .addRule(new MockRule("name2", "desc", "msg", "rulesetname"))
                 .addRuleSet(set1)
                 .build();
-        assertEquals("ruleset size wrong", 2, set2.size());
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void testAddRuleSetByReferenceBad() {
-        RuleSet set1 = createRuleSetBuilder("ruleset1")
-                .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
-                .build();
-
-        createRuleSetBuilder("ruleset2")
-                .addRule(new MockRule("name2", "desc", "msg", "rulesetname"))
-                .addRuleSetByReference(set1, false)
-                .build();
+        assertEquals(2, set2.size(), "ruleset size wrong");
     }
 
     @Test
-    public void testAddRuleSetByReferenceAllRule() {
+    void testAddRuleSetByReferenceBad() {
+        RuleSet set1 = createRuleSetBuilder("ruleset1")
+            .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
+            .build();
+
+        assertThrows(RuntimeException.class, () ->
+            createRuleSetBuilder("ruleset2")
+                    .addRule(new MockRule("name2", "desc", "msg", "rulesetname"))
+                    .addRuleSetByReference(set1, false)
+                    .build());
+    }
+
+    @Test
+    void testAddRuleSetByReferenceAllRule() {
         RuleSet set2 = createRuleSetBuilder("ruleset2")
-                .withFileName("foo")
-                .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
-                .addRule(new MockRule("name2", "desc", "msg", "rulesetname"))
-                .build();
+            .withFileName("foo")
+            .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
+            .addRule(new MockRule("name2", "desc", "msg", "rulesetname"))
+            .build();
         RuleSet set1 = createRuleSetBuilder("ruleset1")
                 .addRuleSetByReference(set2, true)
                 .build();
-        assertEquals("wrong rule size", 2, set1.getRules().size());
+        assertEquals(2, set1.getRules().size(), "wrong rule size");
         for (Rule rule : set1.getRules()) {
-            assertTrue("not a rule reference", rule instanceof RuleReference);
+            assertTrue(rule instanceof RuleReference, "not a rule reference");
             RuleReference ruleReference = (RuleReference) rule;
-            assertEquals("wrong ruleset file name", "foo", ruleReference.getRuleSetReference().getRuleSetFileName());
-            assertTrue("not all rule reference", ruleReference.getRuleSetReference().isAllRules());
+            assertEquals("foo", ruleReference.getRuleSetReference().getRuleSetFileName(), "wrong ruleset file name");
+            assertTrue(ruleReference.getRuleSetReference().isAllRules(), "not all rule reference");
         }
     }
 
     @Test
-    public void testAddRuleSetByReferenceSingleRule() {
+    void testAddRuleSetByReferenceSingleRule() {
         RuleSet set2 = createRuleSetBuilder("ruleset2")
-                .withFileName("foo")
-                .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
-                .addRule(new MockRule("name2", "desc", "msg", "rulesetname"))
-                .build();
+            .withFileName("foo")
+            .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
+            .addRule(new MockRule("name2", "desc", "msg", "rulesetname"))
+            .build();
         RuleSet set1 = createRuleSetBuilder("ruleset1")
                 .addRuleSetByReference(set2, false)
                 .build();
-        assertEquals("wrong rule size", 2, set1.getRules().size());
+        assertEquals(2, set1.getRules().size(), "wrong rule size");
         for (Rule rule : set1.getRules()) {
-            assertTrue("not a rule reference", rule instanceof RuleReference);
+            assertTrue(rule instanceof RuleReference, "not a rule reference");
             RuleReference ruleReference = (RuleReference) rule;
-            assertEquals("wrong ruleset file name", "foo", ruleReference.getRuleSetReference().getRuleSetFileName());
-            assertFalse("should not be all rule reference", ruleReference.getRuleSetReference().isAllRules());
+            assertEquals("foo", ruleReference.getRuleSetReference().getRuleSetFileName(), "wrong ruleset file name");
+            assertFalse(ruleReference.getRuleSetReference().isAllRules(), "should not be all rule reference");
         }
     }
 
     @Test
-    public void testApply0Rules() throws Exception {
+    void testApply0Rules() throws Exception {
         RuleSet ruleset = createRuleSetBuilder("ruleset").build();
-        verifyRuleSet(ruleset, 0, new HashSet<RuleViolation>());
+        verifyRuleSet(ruleset, new HashSet<RuleViolation>());
     }
 
     @Test
-    public void testEquals1() {
+    void testEquals1() {
         RuleSet s = createRuleSetBuilder("ruleset").build();
-        assertFalse("A ruleset cannot be equals to null", s.equals(null));
+        assertFalse(s.equals(null), "A ruleset cannot be equals to null");
     }
 
     @Test
     @SuppressWarnings("PMD.UseAssertEqualsInsteadOfAssertTrue")
-    public void testEquals2() {
+    void testEquals2() {
         RuleSet s = createRuleSetBuilder("ruleset").build();
-        assertTrue("A rulset must be equals to itself", s.equals(s));
+        assertTrue(s.equals(s), "A rulset must be equals to itself");
     }
 
     @Test
-    public void testEquals3() {
+    void testEquals3() {
         RuleSet s = new RuleSetBuilder(new Random().nextLong())
                 .withName("basic rules")
                 .withDescription("desc")
                 .build();
-        assertFalse("A ruleset cannot be equals to another kind of object", s.equals("basic rules"));
+        assertFalse(s.equals("basic rules"), "A ruleset cannot be equals to another kind of object");
     }
 
     @Test
-    public void testEquals4() {
+    void testEquals4() {
         RuleSet s1 = createRuleSetBuilder("my ruleset")
-                .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
-                .build();
+            .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
+            .build();
 
         RuleSet s2 = createRuleSetBuilder("my ruleset")
-                .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
-                .build();
+            .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
+            .build();
 
-        assertEquals("2 rulesets with same name and rules must be equals", s1, s2);
-        assertEquals("Equals rulesets must have the same hashcode", s1.hashCode(), s2.hashCode());
+        assertEquals(s1, s2, "2 rulesets with same name and rules must be equals");
+        assertEquals(s1.hashCode(), s2.hashCode(), "Equals rulesets must have the same hashcode");
     }
 
     @Test
-    public void testEquals5() {
+    void testEquals5() {
         RuleSet s1 = createRuleSetBuilder("my ruleset")
-                .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
-                .build();
+            .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
+            .build();
 
         RuleSet s2 = createRuleSetBuilder("my other ruleset")
-                .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
-                .build();
+            .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
+            .build();
 
-        assertFalse("2 rulesets with different name but same rules must not be equals", s1.equals(s2));
+        assertFalse(s1.equals(s2), "2 rulesets with different name but same rules must not be equals");
     }
 
     @Test
-    public void testEquals6() {
+    void testEquals6() {
         RuleSet s1 = createRuleSetBuilder("my ruleset")
-                .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
-                .build();
+            .addRule(new MockRule("name", "desc", "msg", "rulesetname"))
+            .build();
 
         RuleSet s2 = createRuleSetBuilder("my ruleset")
-                .addRule(new MockRule("other rule", "desc", "msg", "rulesetname"))
-                .build();
+            .addRule(new MockRule("other rule", "desc", "msg", "rulesetname"))
+            .build();
 
-        assertFalse("2 rulesets with same name but different rules must not be equals", s1.equals(s2));
+        assertFalse(s1.equals(s2), "2 rulesets with same name but different rules must not be equals");
     }
 
     @Test
-    public void testLanguageApplies() {
+    void testLanguageApplies() {
 
         Rule rule = new MockRule();
 
-        rule.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
-        assertFalse("Different languages should not apply",
-                RuleSet.applies(rule, LanguageRegistry.getLanguage(Dummy2LanguageModule.NAME).getDefaultVersion()));
+        assertFalse(RuleSet.applies(rule, dummyLanguage2().getDefaultVersion()),
+                "Different languages should not apply");
 
-        rule.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
-        assertTrue("Same language with no min/max should apply",
-                RuleSet.applies(rule, LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.5")));
+        assertTrue(RuleSet.applies(rule, dummyLanguage().getVersion("1.5")),
+                "Same language with no min/max should apply");
 
-        rule.setMinimumLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.5"));
-        assertTrue("Same language with valid min only should apply",
-                RuleSet.applies(rule, LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.5")));
+        rule.setMinimumLanguageVersion(dummyLanguage().getVersion("1.5"));
+        assertTrue(RuleSet.applies(rule, dummyLanguage().getVersion("1.5")),
+                "Same language with valid min only should apply");
 
-        rule.setMaximumLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.6"));
-        assertTrue("Same language with valid min and max should apply",
-                RuleSet.applies(rule, LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.5")));
-        assertFalse("Same language with outside range of min/max should not apply",
-                RuleSet.applies(rule, LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.4")));
-        assertFalse("Same language with outside range of min/max should not apply",
-                RuleSet.applies(rule, LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.7")));
+        rule.setMaximumLanguageVersion(dummyLanguage().getVersion("1.6"));
+        assertTrue(RuleSet.applies(rule, dummyLanguage().getVersion("1.5")),
+                "Same language with valid min and max should apply");
+        assertFalse(RuleSet.applies(rule, dummyLanguage().getVersion("1.4")),
+                "Same language with outside range of min/max should not apply");
+        assertFalse(RuleSet.applies(rule, dummyLanguage().getVersion("1.7")),
+                "Same language with outside range of min/max should not apply");
     }
 
     @Test
-    public void testAddExcludePattern() {
+    void testAddExcludePattern() {
         RuleSet ruleSet =
             createRuleSetBuilder("ruleset1")
                 .withFileExclusions(Pattern.compile(".*"))
                 .build();
-        assertNotNull("Exclude patterns", ruleSet.getExcludePatterns());
-        assertEquals("Invalid number of patterns", 1, ruleSet.getExcludePatterns().size());
+        assertNotNull(ruleSet.getFileExclusions(), "Exclude patterns");
+        assertEquals(1, ruleSet.getFileExclusions().size(), "Invalid number of patterns");
     }
 
     @Test
-    public void testExcludePatternAreOrdered() {
+    void testExcludePatternAreOrdered() {
 
         RuleSet ruleSet2 = createRuleSetBuilder("ruleset2")
                 .withFileExclusions(Pattern.compile(".*"))
                 .withFileExclusions(Pattern.compile(".*ha"))
                 .build();
-        assertEquals("Exclude pattern", Arrays.asList(".*", ".*ha"), ruleSet2.getExcludePatterns());
+        assertEquals(Arrays.asList(".*", ".*ha"), toStrings(ruleSet2.getFileExclusions()), "Exclude pattern");
     }
 
     @Test
-    public void testIncludePatternsAreOrdered() {
+    void testIncludePatternsAreOrdered() {
 
         RuleSet ruleSet2 = createRuleSetBuilder("ruleset2")
-                .withFileInclusions(Pattern.compile(".*"))
-                .withFileInclusions(Arrays.asList(Pattern.compile(".*ha"), Pattern.compile(".*hb")))
-                .build();
-        assertEquals("Exclude pattern", Arrays.asList(".*", ".*ha", ".*hb"), ruleSet2.getIncludePatterns());
+            .withFileInclusions(Pattern.compile(".*"))
+            .withFileInclusions(Arrays.asList(Pattern.compile(".*ha"), Pattern.compile(".*hb")))
+            .build();
+        assertEquals(Arrays.asList(".*", ".*ha", ".*hb"), toStrings(ruleSet2.getFileInclusions()), "Exclude pattern");
+    }
+
+    private List<String> toStrings(List<Pattern> strings) {
+        return strings.stream().map(Pattern::pattern).collect(Collectors.toList());
     }
 
     @Test
-    public void testAddExcludePatterns() {
+    void testAddExcludePatterns() {
         RuleSet ruleSet = createRuleSetBuilder("ruleset1")
-                .withFileExclusions(Pattern.compile(".*"))
-                .build();
+            .withFileExclusions(Pattern.compile(".*"))
+            .build();
 
-        assertNotNull("Exclude patterns", ruleSet.getFileExclusions());
-        assertEquals("Invalid number of patterns", 1, ruleSet.getFileExclusions().size());
+        assertNotNull(ruleSet.getFileExclusions(), "Exclude patterns");
+        assertEquals(1, ruleSet.getFileExclusions().size(), "Invalid number of patterns");
 
         RuleSet ruleSet2 = createRuleSetBuilder("ruleset2")
                 .withFileExclusions(ruleSet.getFileExclusions())
                 .build();
-        assertNotNull("Exclude patterns", ruleSet2.getFileExclusions());
-        assertEquals("Invalid number of patterns", 1, ruleSet2.getFileExclusions().size());
+        assertNotNull(ruleSet2.getFileExclusions(), "Exclude patterns");
+        assertEquals(1, ruleSet2.getFileExclusions().size(), "Invalid number of patterns");
     }
 
     @Test
-    public void testSetExcludePatterns() {
+    void testSetExcludePatterns() {
         List<Pattern> excludePatterns = new ArrayList<>();
         excludePatterns.add(Pattern.compile("ah*"));
         excludePatterns.add(Pattern.compile(".*"));
         RuleSet ruleSet = createRuleSetBuilder("ruleset").replaceFileExclusions(excludePatterns).build();
-        assertNotNull("Exclude patterns", ruleSet.getExcludePatterns());
-        assertNotNull("Exclude patterns", ruleSet.getFileExclusions());
-        assertEquals("Invalid number of exclude patterns", 2, ruleSet.getFileExclusions().size());
-        assertEquals("Exclude pattern", "ah*", ruleSet.getFileExclusions().get(0).pattern());
-        assertEquals("Exclude pattern", ".*", ruleSet.getFileExclusions().get(1).pattern());
-        assertNotNull("Include patterns", ruleSet.getFileInclusions());
-        assertEquals("Invalid number of include patterns", 0, ruleSet.getFileInclusions().size());
+        assertNotNull(ruleSet.getFileExclusions(), "Exclude patterns");
+        assertEquals(2, ruleSet.getFileExclusions().size(), "Invalid number of exclude patterns");
+        assertEquals("ah*", ruleSet.getFileExclusions().get(0).pattern(), "Exclude pattern");
+        assertEquals(".*", ruleSet.getFileExclusions().get(1).pattern(), "Exclude pattern");
+        assertNotNull(ruleSet.getFileInclusions(), "Include patterns");
+        assertEquals(0, ruleSet.getFileInclusions().size(), "Invalid number of include patterns");
     }
 
     @Test
-    public void testAddIncludePattern() {
+    void testAddIncludePattern() {
         RuleSet ruleSet = createRuleSetBuilder("ruleset")
                 .withFileInclusions(Pattern.compile(".*"))
                 .build();
-        assertNotNull("Include patterns", ruleSet.getFileInclusions());
-        assertEquals("Invalid number of patterns", 1, ruleSet.getFileInclusions().size());
-        assertEquals("Include pattern", ".*", ruleSet.getFileInclusions().get(0).pattern());
-        assertNotNull("Exclude patterns", ruleSet.getFileExclusions());
-        assertEquals("Invalid number of exclude patterns", 0, ruleSet.getFileExclusions().size());
+        assertNotNull(ruleSet.getFileInclusions(), "Include patterns");
+        assertEquals(1, ruleSet.getFileInclusions().size(), "Invalid number of patterns");
+        assertEquals(".*", ruleSet.getFileInclusions().get(0).pattern(), "Include pattern");
+        assertNotNull(ruleSet.getFileExclusions(), "Exclude patterns");
+        assertEquals(0, ruleSet.getFileExclusions().size(), "Invalid number of exclude patterns");
     }
 
     @Test
-    public void testAddIncludePatterns() {
+    void testAddIncludePatterns() {
         RuleSet ruleSet = createRuleSetBuilder("ruleset1")
-                .withFileInclusions(Pattern.compile("ah*"), Pattern.compile(".*"))
-                .build();
+            .withFileInclusions(Pattern.compile("ah*"), Pattern.compile(".*"))
+            .build();
         RuleSet ruleSet2 = createRuleSetBuilder("ruleset1")
                 .withFileInclusions(ruleSet.getFileInclusions())
                 .build();
-        assertNotNull("Include patterns", ruleSet2.getFileInclusions());
-        assertEquals("Invalid number of patterns", 2, ruleSet2.getFileInclusions().size());
-        assertEquals("Include pattern", "ah*", ruleSet2.getFileInclusions().get(0).pattern());
-        assertEquals("Include pattern", ".*", ruleSet2.getFileInclusions().get(1).pattern());
-        assertNotNull("Exclude patterns", ruleSet.getFileExclusions());
-        assertEquals("Invalid number of exclude patterns", 0, ruleSet.getFileExclusions().size());
+        assertNotNull(ruleSet2.getFileInclusions(), "Include patterns");
+        assertEquals(2, ruleSet2.getFileInclusions().size(), "Invalid number of patterns");
+        assertEquals("ah*", ruleSet2.getFileInclusions().get(0).pattern(), "Include pattern");
+        assertEquals(".*", ruleSet2.getFileInclusions().get(1).pattern(), "Include pattern");
+        assertNotNull(ruleSet.getFileExclusions(), "Exclude patterns");
+        assertEquals(0, ruleSet.getFileExclusions().size(), "Invalid number of exclude patterns");
     }
 
     @Test
-    public void testSetIncludePatterns() {
+    void testSetIncludePatterns() {
         List<Pattern> includePatterns = new ArrayList<>();
         includePatterns.add(Pattern.compile("ah*"));
         includePatterns.add(Pattern.compile(".*"));
@@ -374,34 +379,34 @@ public class RuleSetTest {
             .replaceFileInclusions(includePatterns)
             .build();
 
-        assertEquals("Include patterns", includePatterns, ruleSet.getFileInclusions());
-        assertNotNull("Exclude patterns", ruleSet.getFileInclusions());
-        assertEquals("Invalid number of exclude patterns", 0, ruleSet.getFileExclusions().size());
+        assertEquals(includePatterns, ruleSet.getFileInclusions(), "Include patterns");
+        assertNotNull(ruleSet.getFileInclusions(), "Exclude patterns");
+        assertEquals(0, ruleSet.getFileExclusions().size(), "Invalid number of exclude patterns");
     }
 
     @Test
-    public void testIncludeExcludeApplies() {
-        File file = new File("C:\\myworkspace\\project\\some\\random\\package\\RandomClass.java");
+    void testIncludeExcludeApplies() {
+        TextFile file = TextFile.forPath(Paths.get("C:\\myworkspace\\project\\some\\random\\package\\RandomClass.java"), Charset.defaultCharset(), dummyVersion());
 
         RuleSet ruleSet = createRuleSetBuilder("ruleset").build();
-        assertTrue("No patterns", ruleSet.applies(file));
+        assertTrue(ruleSet.applies(file), "No patterns");
 
         ruleSet = createRuleSetBuilder("ruleset")
                 .withFileExclusions(Pattern.compile("nomatch"))
                 .build();
-        assertTrue("Non-matching exclude", ruleSet.applies(file));
+        assertTrue(ruleSet.applies(file), "Non-matching exclude");
 
         ruleSet = createRuleSetBuilder("ruleset")
                 .withFileExclusions(Pattern.compile("nomatch"), Pattern.compile(".*/package/.*"))
                 .build();
-        assertFalse("Matching exclude", ruleSet.applies(file));
+        assertFalse(ruleSet.applies(file), "Matching exclude");
 
         ruleSet = createRuleSetBuilder("ruleset")
                 .withFileExclusions(Pattern.compile("nomatch"))
                 .withFileExclusions(Pattern.compile(".*/package/.*"))
                 .withFileInclusions(Pattern.compile(".*/randomX/.*"))
                 .build();
-        assertFalse("Non-matching include", ruleSet.applies(file));
+        assertFalse(ruleSet.applies(file), "Non-matching include");
 
         ruleSet = createRuleSetBuilder("ruleset")
                 .withFileExclusions(Pattern.compile("nomatch"))
@@ -409,64 +414,44 @@ public class RuleSetTest {
                 .withFileInclusions(Pattern.compile(".*/randomX/.*"))
                 .withFileInclusions(Pattern.compile(".*/random/.*"))
                 .build();
-        assertTrue("Matching include", ruleSet.applies(file));
+        assertTrue(ruleSet.applies(file), "Matching include");
     }
 
     @Test
-    public void testIncludeExcludeMultipleRuleSetWithRuleChainApplies() throws PMDException {
-        File file = new File("C:\\myworkspace\\project\\some\\random\\package\\RandomClass.java");
-
+    void testIncludeExcludeMultipleRuleSetWithRuleChainApplies() throws Exception {
         Rule rule = new FooRule();
         rule.setName("FooRule1");
-        rule.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
-        rule.addRuleChainVisit("dummyNode");
-        assertTrue("RuleChain rule", rule.isRuleChain());
-        RuleSet ruleSet1 = createRuleSetBuilder("RuleSet1")
-                .addRule(rule)
-                .build();
+        rule.setLanguage(dummyLanguage());
 
-        RuleSet ruleSet2 = createRuleSetBuilder("RuleSet2")
-                .addRule(rule)
-                .build();
+        RuleSet ruleSet1 = createRuleSetBuilder("RuleSet1").addRule(rule).build();
+        RuleSet ruleSet2 = createRuleSetBuilder("RuleSet2").addRule(rule).build();
 
-        RuleSets ruleSets = new RuleSets();
-        ruleSets.addRuleSet(ruleSet1);
-        ruleSets.addRuleSet(ruleSet2);
+
+        RuleSets ruleSets = new RuleSets(listOf(ruleSet1, ruleSet2));
 
         // Two violations
-        RuleContext ctx = new RuleContext();
-        Report r = new Report();
-        ctx.setReport(r);
-        ctx.setSourceCodeFile(file);
-        ctx.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
-        ruleSets.apply(makeCompilationUnits(), ctx, LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
-        assertEquals("Violations", 2, r.size());
+        Report report = Report.buildReport(ctx1 -> ruleSets.apply(makeCompilationUnits(), ctx1));
+        assertEquals(2, report.getViolations().size(), "Violations");
 
         // One violation
         ruleSet1 = createRuleSetBuilder("RuleSet1")
-                .withFileExclusions(Pattern.compile(".*/package/.*"))
-                .addRule(rule)
-                .build();
+            .withFileExclusions(Pattern.compile(".*/package/.*"))
+            .addRule(rule)
+            .build();
 
-        ruleSets = new RuleSets();
-        ruleSets.addRuleSet(ruleSet1);
-        ruleSets.addRuleSet(ruleSet2);
+        RuleSets ruleSets2 = new RuleSets(listOf(ruleSet1, ruleSet2));
 
-        r = new Report();
-        ctx.setReport(r);
-        ruleSets.apply(makeCompilationUnits(), ctx, LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
-        assertEquals("Violations", 1, r.size());
+        report = Report.buildReport(ctx -> ruleSets2.apply(makeCompilationUnits("C:\\package\\RandomClass.java"), ctx));
+        assertEquals(1, report.getViolations().size(), "Violations");
     }
 
     @Test
-    public void copyConstructorDeepCopies() {
+    void copyConstructorDeepCopies() {
         Rule rule = new FooRule();
         rule.setName("FooRule1");
-        rule.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
-        rule.addRuleChainVisit("dummyNode");
         RuleSet ruleSet1 = createRuleSetBuilder("RuleSet1")
-                .addRule(rule)
-                .build();
+            .addRule(rule)
+            .build();
         RuleSet ruleSet2 = new RuleSet(ruleSet1);
 
         assertEquals(ruleSet1, ruleSet2);
@@ -476,155 +461,136 @@ public class RuleSetTest {
         assertNotSame(rule, ruleSet2.getRuleByName("FooRule1"));
     }
 
-    private void verifyRuleSet(RuleSet ruleset, int size, Set<RuleViolation> values) {
+    private void verifyRuleSet(RuleSet ruleset, Set<RuleViolation> expected) throws Exception {
 
-        RuleContext context = new RuleContext();
-        Set<RuleViolation> reportedValues = new HashSet<>();
-        context.setReport(new Report());
-        ruleset.apply(makeCompilationUnits(), context);
+        Report report = getReportForRuleSetApply(ruleset, makeCompilationUnits());
 
-        assertEquals("Invalid number of Violations Reported", size, context.getReport().size());
+        assertEquals(expected.size(), report.getViolations().size(), "Invalid number of Violations Reported");
 
-        Iterator<RuleViolation> violations = context.getReport().iterator();
-        while (violations.hasNext()) {
-            RuleViolation violation = violations.next();
-
-            reportedValues.add(violation);
-            assertTrue("Unexpected Violation Returned: " + violation, values.contains(violation));
+        for (RuleViolation violation : report.getViolations()) {
+            assertTrue(expected.contains(violation), "Unexpected Violation Returned: " + violation);
         }
 
-        Iterator<RuleViolation> expected = values.iterator();
-        while (expected.hasNext()) {
-            RuleViolation violation = expected.next();
-            assertTrue("Expected Violation not Returned: " + violation, reportedValues.contains(violation));
+        for (RuleViolation violation : expected) {
+            assertTrue(report.getViolations().contains(violation), "Expected Violation not Returned: " + violation);
         }
     }
 
-    private List<Node> makeCompilationUnits() {
-        List<Node> nodes = new ArrayList<>();
-        DummyNode node = new DummyNode(1);
-        node.testingOnlySetBeginLine(1);
-        node.testingOnlySetBeginColumn(1);
+    private RootNode makeCompilationUnits() {
+        return makeCompilationUnits("sampleFile.dummy");
+    }
+
+    private RootNode makeCompilationUnits(String filename) {
+        DummyRootNode node = helper.parse("dummyCode", filename);
         node.setImage("Foo");
-        nodes.add(node);
-        return nodes;
+        return node;
     }
 
     @Test
-    public void ruleExceptionShouldBeReported() {
+    void ruleExceptionShouldBeReported() throws Exception {
         RuleSet ruleset = createRuleSetBuilder("ruleExceptionShouldBeReported")
-                .addRule(new MockRule() {
-                    @Override
-                    public void apply(List<? extends Node> nodes, RuleContext ctx) {
-                        throw new RuntimeException("Test exception while applying rule");
-                    }
-                })
-                .build();
-        RuleContext context = new RuleContext();
-        context.setReport(new Report());
-        context.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
-        context.setSourceCodeFile(new File(RuleSetTest.class.getName() + ".ruleExceptionShouldBeReported"));
-        context.setIgnoreExceptions(true); // the default
-        ruleset.apply(makeCompilationUnits(), context);
+            .addRule(new MockRule() {
+                @Override
+                public void apply(Node nodes, RuleContext ctx) {
+                    throw new IllegalStateException("Test exception while applying rule");
+                }
+            })
+            .build();
 
-        List<ProcessingError> errors = context.getReport().getProcessingErrors();
-        assertTrue("Report should have processing errors", !errors.isEmpty());
-        assertEquals("Errors expected", 1, errors.size());
-        assertEquals("Wrong error message", "RuntimeException: Test exception while applying rule", errors.get(0).getMsg());
-        assertTrue("Should be a RuntimeException", errors.get(0).getError() instanceof RuntimeException);
+        Report report = getReportForRuleSetApply(ruleset, makeCompilationUnits());
+
+        List<ProcessingError> errors = report.getProcessingErrors();
+        assertThat(errors, hasSize(1));
+        ProcessingError error = errors.get(0);
+        assertThat(error.getMsg(), containsString("java.lang.IllegalStateException: Test exception while applying rule\n"));
+        assertThat(error.getMsg(), containsString("Rule applied on node=dummyRootNode[@Image=Foo]"));
+        assertThat(error.getError().getCause(), instanceOf(IllegalStateException.class));
     }
 
-    @Test(expected = RuntimeException.class)
-    public void ruleExceptionShouldBeThrownIfNotIgnored() {
-        RuleSet ruleset = createRuleSetBuilder("ruleExceptionShouldBeReported")
-                .addRule(new MockRule() {
-                    @Override
-                    public void apply(List<? extends Node> nodes, RuleContext ctx) {
-                        throw new RuntimeException("Test exception while applying rule");
-                    }
-                })
-                .build();
-        RuleContext context = new RuleContext();
-        context.setReport(new Report());
-        context.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
-        context.setSourceCodeFile(new File(RuleSetTest.class.getName() + ".ruleExceptionShouldBeThrownIfNotIgnored"));
-        context.setIgnoreExceptions(false);
-        ruleset.apply(makeCompilationUnits(), context);
-    }
 
     @Test
-    public void ruleExceptionShouldNotStopProcessingFile() {
+    void ruleExceptionShouldNotStopProcessingFile() throws Exception {
         RuleSet ruleset = createRuleSetBuilder("ruleExceptionShouldBeReported").addRule(new MockRule() {
             @Override
-            public void apply(List<? extends Node> nodes, RuleContext ctx) {
-                throw new RuntimeException("Test exception while applying rule");
+            public void apply(Node target, RuleContext ctx) {
+                throw new IllegalStateException("Test exception while applying rule");
             }
         }).addRule(new MockRule() {
             @Override
-            public void apply(List<? extends Node> nodes, RuleContext ctx) {
-                for (Node node : nodes) {
-                    addViolationWithMessage(ctx, node, "Test violation of the second rule in the ruleset");
-                }
+            public void apply(Node target, RuleContext ctx) {
+                addViolationWithMessage(ctx, target, "Test violation of the second rule in the ruleset");
             }
         }).build();
-        RuleContext context = new RuleContext();
-        context.setReport(new Report());
-        context.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
-        context.setSourceCodeFile(new File(RuleSetTest.class.getName(), "ruleExceptionShouldBeReported.java"));
-        context.setIgnoreExceptions(true); // the default
-        ruleset.apply(makeCompilationUnits(), context);
 
-        assertTrue("Report should have processing errors", context.getReport().hasErrors());
-        List<ProcessingError> errors = CollectionUtil.toList(context.getReport().errors());
-        assertEquals("Errors expected", 1, errors.size());
-        ProcessingError processingError = errors.get(0);
-        assertEquals("Wrong error message", "RuntimeException: Test exception while applying rule", processingError.getMsg());
-        assertTrue("Should be a RuntimeException", processingError.getError() instanceof RuntimeException);
-        assertEquals("Wrong filename in processing error",
-                "net.sourceforge.pmd.RuleSetTest/ruleExceptionShouldBeReported.java",
-                FilenameUtils.normalize(processingError.getFile(), true));
+        Report report = getReportForRuleSetApply(ruleset, makeCompilationUnits("samplefile.dummy"));
 
-        assertEquals("There should be a violation", 1, context.getReport().size());
+        List<ProcessingError> errors = report.getProcessingErrors();
+        assertThat(errors, hasSize(1));
+        ProcessingError error = errors.get(0);
+        assertThat(error.getMsg(), containsString("java.lang.IllegalStateException: Test exception while applying rule\n"));
+        assertThat(error.getMsg(), containsString("Rule applied on node=dummyRootNode[@Image=Foo]"));
+        assertThat(error.getError().getCause(), instanceOf(IllegalStateException.class));
+        assertThat(error.getFileId().getFileName(), equalTo("samplefile.dummy"));
+
+        assertThat(report.getViolations(), hasSize(1));
     }
 
     @Test
-    public void ruleExceptionShouldNotStopProcessingFileWithRuleChain() {
+    void ruleExceptionShouldNotStopProcessingFileWithRuleChain() throws Exception {
         RuleSet ruleset = createRuleSetBuilder("ruleExceptionShouldBeReported").addRule(new MockRule() {
-            {
-                addRuleChainVisit("dummyNode");
+
+            @Override
+            protected @NonNull RuleTargetSelector buildTargetSelector() {
+                return RuleTargetSelector.forXPathNames(setOf("dummyRootNode"));
             }
 
             @Override
-            public void apply(List<? extends Node> nodes, RuleContext ctx) {
-                throw new RuntimeException("Test exception while applying rule");
+            public void apply(Node target, RuleContext ctx) {
+                throw new UnsupportedOperationException("Test exception while applying rule");
             }
         }).addRule(new MockRule() {
-            {
-                addRuleChainVisit("dummyNode");
+
+            @Override
+            protected @NonNull RuleTargetSelector buildTargetSelector() {
+                return RuleTargetSelector.forXPathNames(setOf("dummyRootNode"));
             }
 
             @Override
-            public void apply(List<? extends Node> nodes, RuleContext ctx) {
-                for (Node node : nodes) {
-                    addViolationWithMessage(ctx, node, "Test violation of the second rule in the ruleset");
-                }
+            public void apply(Node target, RuleContext ctx) {
+                addViolationWithMessage(ctx, target, "Test violation of the second rule in the ruleset");
             }
         }).build();
-        RuleContext context = new RuleContext();
-        context.setReport(new Report());
-        context.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
-        context.setSourceCodeFile(new File(RuleSetTest.class.getName() + ".ruleExceptionShouldBeReported"));
-        context.setIgnoreExceptions(true); // the default
-        RuleSets rulesets = new RuleSets(ruleset);
-        rulesets.apply(makeCompilationUnits(), context, LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
 
-        assertTrue("Report should have processing errors", context.getReport().hasErrors());
-        List<ProcessingError> errors = CollectionUtil.toList(context.getReport().errors());
-        assertEquals("Errors expected", 1, errors.size());
-        assertEquals("Wrong error message", "RuntimeException: Test exception while applying rule", errors.get(0).getMsg());
-        assertTrue("Should be a RuntimeException", errors.get(0).getError() instanceof RuntimeException);
+        Report report = getReportForRuleSetApply(ruleset, makeCompilationUnits());
 
-        assertEquals("There should be a violation", 1, context.getReport().size());
+        List<ProcessingError> errors = report.getProcessingErrors();
+        assertThat(errors, hasSize(1));
+        ProcessingError error = errors.get(0);
+        assertThat(error.getMsg(), containsString("java.lang.UnsupportedOperationException: Test exception while applying rule\n"));
+        assertThat(error.getMsg(), containsString("Rule applied on node=dummyRootNode[@Image=Foo]"));
+        assertThat(error.getError().getCause(), instanceOf(UnsupportedOperationException.class));
+
+        assertThat(report.getViolations(), hasSize(1));
+    }
+
+
+    static class MockRule extends net.sourceforge.pmd.lang.rule.MockRule {
+
+        MockRule() {
+            super();
+            setLanguage(DummyLanguageModule.getInstance());
+        }
+
+        MockRule(String name, String description, String message, String ruleSetName, RulePriority priority) {
+            super(name, description, message, ruleSetName, priority);
+            setLanguage(DummyLanguageModule.getInstance());
+        }
+
+        MockRule(String name, String description, String message, String ruleSetName) {
+            super(name, description, message, ruleSetName);
+            setLanguage(DummyLanguageModule.getInstance());
+        }
+
     }
 
 }

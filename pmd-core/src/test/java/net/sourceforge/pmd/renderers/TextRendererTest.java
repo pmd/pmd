@@ -4,45 +4,44 @@
 
 package net.sourceforge.pmd.renderers;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 
-public class TextRendererTest extends AbstractRendererTest {
+class TextRendererTest extends AbstractRendererTest {
 
     @Override
-    public Renderer getRenderer() {
+    Renderer getRenderer() {
         return new TextRenderer();
     }
 
     @Override
-    public String getExpected() {
-        return getSourceCodeFilename() + ":1:\tblah" + PMD.EOL;
+    String getExpected() {
+        return getSourceCodeFilename() + ":1:\tFoo:\tblah" + EOL;
     }
 
     @Override
-    public String getExpectedEmpty() {
+    String getExpectedEmpty() {
         return "";
     }
 
     @Override
-    public String getExpectedMultiple() {
-        return getSourceCodeFilename() + ":1:\tblah" + PMD.EOL
-                + getSourceCodeFilename() + ":1:\tblah" + PMD.EOL;
+    String getExpectedMultiple() {
+        return getSourceCodeFilename() + ":1:\tFoo:\tblah" + EOL
+                + getSourceCodeFilename() + ":1:\tBoo:\tblah" + EOL;
     }
 
     @Override
-    public String getExpectedError(ProcessingError error) {
-        return "file\t-\tRuntimeException: Error" + PMD.EOL;
+    String getExpectedError(ProcessingError error) {
+        return "file\t-\tRuntimeException: Error" + EOL;
     }
 
     @Override
-    public String getExpectedErrorWithoutMessage(ProcessingError error) {
-        return "file\t-\tNullPointerException: null" + PMD.EOL;
+    String getExpectedErrorWithoutMessage(ProcessingError error) {
+        return "file\t-\tNullPointerException: null" + EOL;
     }
 
     @Override
-    public String getExpectedError(ConfigurationError error) {
-        return "Foo\t-\ta configuration error" + PMD.EOL;
+    String getExpectedError(ConfigurationError error) {
+        return "Foo\t-\ta configuration error" + EOL;
     }
 }

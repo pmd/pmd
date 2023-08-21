@@ -26,12 +26,6 @@ public class Foo {
     ]]></code-fragment>
 
     <test-code>
-        <description>default package: nothing configured, ok</description>
-        <expected-problems>0</expected-problems>
-        <code-ref id="default-package" />
-    </test-code>
-
-    <test-code>
         <description>default package: unused package, ok</description>
         <rule-property name="packages">nothing.used</rule-property>
         <rule-property name="classes">nothing.used.AClass</rule-property>
@@ -67,12 +61,6 @@ public class Foo {
         <rule-property name="classes">some.other.package1.Class1,some.other.package1.subpackage1.Class2,some.other.package1.subpackage2.Class3</rule-property>
         <expected-problems>1</expected-problems>
         <code-ref id="default-package" />
-    </test-code>
-
-    <test-code>
-        <description>some package: nothing configured, ok</description>
-        <expected-problems>0</expected-problems>
-        <code-ref id="some-package" />
     </test-code>
 
     <test-code>
@@ -115,9 +103,9 @@ public class Foo {
 
     <test-code>
         <description>bug fix: annotation before package</description>
+        <rule-property name="packages">javax.xml.ws.wsaddressing</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-@javax.xml.bind.annotation.XmlSchema(namespace=W3CEndpointReference.NS, location="http://www.w3.org/2006/03/addressing/ws-addr.xsd")
 @Deprecated
 package javax.xml.ws.wsaddressing;
         ]]></code>

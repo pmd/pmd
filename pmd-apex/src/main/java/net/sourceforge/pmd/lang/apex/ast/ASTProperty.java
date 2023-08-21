@@ -4,20 +4,17 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.member.Property;
 
-public class ASTProperty extends AbstractApexNode<Property> {
+public final class ASTProperty extends AbstractApexNode<Property> {
 
-    @Deprecated
-    @InternalApi
-    public ASTProperty(Property property) {
+    ASTProperty(Property property) {
         super(property);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

@@ -7,53 +7,12 @@
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
-        <version>6.30.0-SNAPSHOT</version>
-        <relativePath>../</relativePath>
+        <version>7.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <inherited>true</inherited>
-                <executions>
-                    <execution>
-                        <id>generate-sources</id>
-                        <phase>generate-sources</phase>
-                        <configuration>
-                            <target>
-                                <ant antfile="src/main/ant/alljavacc.xml">
-                                    <property name="target" value="${project.build.directory}/generated-sources/javacc" />
-                                    <property name="javacc.jar" value="${settings.localRepository}/net/java/dev/javacc/javacc/${javacc.version}/javacc-${javacc.version}.jar" />
-                                </ant>
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>add-javacc-generated-sources</id>
-                        <goals>
-                            <goal>add-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>${project.build.directory}/generated-sources/javacc</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
@@ -63,28 +22,13 @@
             </plugin>
 
             <plugin>
+                <!-- package test sources for use by other submodules -->
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <configuration>
-                    <artifactSet>
-                        <includes>jaxen:jaxen</includes>
-                    </artifactSet>
-                    <filters>
-                        <filter>
-                            <artifact>jaxen:jaxen</artifact>
-                            <includes>
-                                <include>org/jaxen/**</include>
-                            </includes>
-                            <excludes>
-                                <exclude>org/w3c/dom/**</exclude>
-                            </excludes>
-                        </filter>
-                    </filters>
-                </configuration>
+                <artifactId>maven-jar-plugin</artifactId>
                 <executions>
                     <execution>
                         <goals>
-                            <goal>shade</goal>
+                            <goal>test-jar</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -92,46 +36,23 @@
         </plugins>
     </build>
     <dependencies>
-        <dependency>
-            <groupId>org.apache.ant</groupId>
-            <artifactId>ant</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.java.dev.javacc</groupId>
-            <artifactId>javacc</artifactId>
-            <scope>provided</scope> <!-- only needed for generating the parser via ant -->
-        </dependency>
 
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.beust</groupId>
-            <artifactId>jcommander</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>jaxen</groupId>
-            <artifactId>jaxen</artifactId>
-            <!--
-                Jaxen is optionally, so that it doesn't get inherited by default.
-                Jaxen is shaded into pmd-core (without org.w3c.dom.UserDataHandler).
-                Adding Jaxen again as a dependency would reintroduce the duplicated
-                org.w3c.dom.UserDataHandler interface.
-                See https://github.com/pmd/pmd/issues/1074
-                and https://github.com/pmd/pmd/pull/1201
-            -->
-            <optional>true</optional>
-        </dependency>
 
         <dependency>
-            <groupId>net.sourceforge.saxon</groupId>
-            <artifactId>saxon</artifactId>
+            <groupId>net.sf.saxon</groupId>
+            <artifactId>Saxon-HE</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -144,20 +65,30 @@
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>2.8.5</version>
         </dependency>
-
 
         <dependency>
-            <groupId>net.sourceforge.saxon</groupId>
-            <artifactId>saxon</artifactId>
-            <classifier>dom</classifier>
-            <scope>runtime</scope>
+            <groupId>org.checkerframework</groupId>
+            <artifactId>checker-qual</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.pcollections</groupId>
+            <artifactId>pcollections</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.oowekyala.ooxml</groupId>
+            <artifactId>nice-xml-messages</artifactId>
+            <version>3.1</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>com.github.tomakehurst</groupId>
-            <artifactId>wiremock</artifactId>
+            <artifactId>wiremock-jre8</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -166,18 +97,13 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>pl.pragmatists</groupId>
-            <artifactId>JUnitParams</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.ant</groupId>
-            <artifactId>ant-testutil</artifactId>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-suite</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -187,49 +113,8 @@
         </dependency>
         <dependency>
             <groupId>com.github.stefanbirkner</groupId>
-            <artifactId>system-rules</artifactId>
+            <artifactId>system-lambda</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <profiles>
-        <profile>
-            <id>m2e</id>
-            <!-- This profile is only activated when building in Eclipse with m2e -->
-            <activation>
-                <property>
-                    <name>m2e.version</name>
-                </property>
-            </activation>
-            <dependencies>
-                <!--
-                    the maven-shade-plugin runs during package phase,
-                    but inside eclipse, this phase is not executed during development.
-                    Therefore this profile adds back the jaxen dependency in eclipse.
-                 -->
-                <dependency>
-                    <groupId>jaxen</groupId>
-                    <artifactId>jaxen</artifactId>
-                    <optional>false</optional>
-                </dependency>
-            </dependencies>
-        </profile>
-        <profile>
-            <id>idea</id>
-            <!-- This profile is only activated when building in IntelliJ -->
-            <!-- It serves the same purpose as the above for eclipse-->
-            <activation>
-                <property>
-                    <name>idea.maven.embedder.version</name>
-                </property>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>jaxen</groupId>
-                    <artifactId>jaxen</artifactId>
-                    <optional>false</optional>
-                </dependency>
-            </dependencies>
-        </profile>
-    </profiles>
 </project>

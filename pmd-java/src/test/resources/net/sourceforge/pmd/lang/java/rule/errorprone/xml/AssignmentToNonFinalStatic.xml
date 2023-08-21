@@ -8,11 +8,31 @@
         <description>clear rule violation</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Possible unsafe assignment to non-final static field 'x' in a constructor.</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     static int x;
     Foo(int y) {
         x = y;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>clear rule violation with this</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Possible unsafe assignment to non-final static field 'x' in a constructor.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    static int x;
+    Foo(int y) {
+        this.x = y;
     }
 }
         ]]></code>
@@ -35,12 +55,53 @@ public class Foo {
         <description>rule violated twice</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>4,5</expected-linenumbers>
+        <expected-messages>
+            <message>Possible unsafe assignment to non-final static field 'x' in a constructor.</message>
+            <message>Possible unsafe assignment to non-final static field 'x' in a constructor.</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     static int x;
     Foo(int y) {
         x = y;
         x = y;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>legitimate case - assignment in a regular method instead of constructor</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    static int counter;
+    public void increment() {
+        counter++;
+    }
+    public void clear() {
+        counter = 0;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>violation with increments</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,7</expected-linenumbers>
+        <expected-messages>
+            <message>Possible unsafe assignment to non-final static field 'counter' in a constructor.</message>
+            <message>Possible unsafe assignment to non-final static field 'counter' in a constructor.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    static int counter;
+    private final int id1;
+    private final int id2;
+    Foo() {
+        id1 = ++counter;
+        id2 = counter++;
     }
 }
         ]]></code>

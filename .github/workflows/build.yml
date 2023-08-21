@@ -1,30 +1,81 @@
-name: Java CI
+name: build
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+      - master
+      - experimental-apex-parser
+    tags:
+      - '**'
+  pull_request:
+  merge_group:
+  schedule:
+    # build it monthly: At 04:00 on day-of-month 1.
+    - cron:  '0 4 1 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read # to fetch code (actions/checkout)
 
 jobs:
   build:
     runs-on: ${{ matrix.os }}
-    continue-on-error: ${{ matrix.experimental }}
-    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    permissions:
+      # read to fetch code (actions/checkout)
+      # write to push code to gh-pages, create releases
+      # note: forked repositories will have maximum read access
+      contents: write
+    continue-on-error: false
     strategy:
       matrix:
-        os: [ ubuntu-latest , windows-latest , macos-latest ]
-        java: [ 11 ]
-        experimental: [ false ]
-
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/cache@v2
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - name: Set up JDK ${{ matrix.java }}
-        uses: actions/setup-java@v1
-        with:
-          java-version: ${{ matrix.java }}
-      - name: Build with mvnw
-        run: |
-          ./mvnw -V clean install
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 2
+    - uses: actions/cache@v3
+      with:
+        path: |
+          ~/.m2/repository
+          ~/.gradle/caches
+          ~/.cache
+          ~/work/pmd/target/repositories
+          vendor/bundle
+        key: v3-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          v3-${{ runner.os }}-
+    - name: Set up Ruby 2.7
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 2.7
+    - name: Setup Environment
+      shell: bash
+      run: |
+        echo "LANG=en_US.UTF-8" >> $GITHUB_ENV
+        echo "MAVEN_OPTS=-Daether.connector.http.connectionMaxTtl=180 -DautoReleaseAfterClose=true -DstagingProgressTimeoutMinutes=30" >> $GITHUB_ENV
+        echo "PMD_CI_SCRIPTS_URL=https://raw.githubusercontent.com/pmd/build-tools/master/scripts" >> $GITHUB_ENV
+    - name: Check Environment
+      shell: bash
+      run: |
+        f=check-environment.sh; \
+        mkdir -p .ci && \
+        ( [ -e .ci/$f ] || curl -sSL "${PMD_CI_SCRIPTS_URL}/$f" > ".ci/$f" ) && \
+        chmod 755 .ci/$f && \
+        .ci/$f
+    - name: Build
+      run: .ci/build.sh
+      shell: bash
+      env:
+        PMD_CI_SECRET_PASSPHRASE: ${{ secrets.PMD_CI_SECRET_PASSPHRASE }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Workaround actions/upload-artifact#176
+      run: |
+        echo "artifacts_path=$(realpath ..)" >> $GITHUB_ENV
+    - name: Upload regression tester report
+      uses: actions/upload-artifact@v3
+      with:
+        name: pmd-regression-tester
+        path: ${{ env.artifacts_path }}/target/pr-*-diff-report-*.tar.gz
+        if-no-files-found: ignore

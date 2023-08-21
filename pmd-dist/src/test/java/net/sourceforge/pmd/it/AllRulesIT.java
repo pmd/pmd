@@ -4,44 +4,36 @@
 
 package net.sourceforge.pmd.it;
 
+import static org.hamcrest.Matchers.containsString;
+
 import java.io.File;
 import java.util.Arrays;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameter;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
-@RunWith(Parameterized.class)
-public class AllRulesIT extends AbstractBinaryDistributionTest {
+class AllRulesIT extends AbstractBinaryDistributionTest {
 
-    @Parameter
-    public String language;
 
-    @Parameters
-    public static Iterable<String> languagesToTest() {
-        if (PMDExecutor.isJava7Test()) {
-            // note: apex and scala require java8
-            return Arrays.asList("java", "javascript", "jsp", "modelica",
-                    "plsql", "pom", "visualforce", "velocitytemplate", "xml", "xsl");
-        }
+    static Iterable<String> languagesToTest() {
         // note: scala and wsdl have no rules
-        return Arrays.asList("java", "apex", "javascript", "jsp", "modelica",
+        return Arrays.asList("java", "apex", "html", "javascript", "jsp", "modelica",
                 "plsql", "pom", "visualforce", "velocitytemplate", "xml", "xsl");
     }
 
-    @Test
-    public void runRuleTests() throws Exception {
+    @ParameterizedTest
+    @MethodSource("languagesToTest")
+    void runRuleTests(String language) throws Exception {
         String srcDir = new File(".", "src/test/resources/sample-source/" + language + "/").getAbsolutePath();
 
-        ExecutionResult result = PMDExecutor.runPMDRules(folder.newFile().toPath(), tempDir, srcDir,
+        ExecutionResult result = PMDExecutor.runPMDRules(createTemporaryReportFile(), tempDir, srcDir,
                 "src/test/resources/rulesets/all-" + language + ".xml");
         assertDefaultExecutionResult(result);
     }
 
     private static void assertDefaultExecutionResult(ExecutionResult result) {
-        result.assertExecutionResult(4, "");
+        result.assertExitCode(4)
+              .assertStdOut(containsString(""));
 
         result.assertNoError("Exception applying rule");
         result.assertNoError("Ruleset not found");

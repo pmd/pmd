@@ -1,0 +1,42 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "PMD",
+          "version": "unknown",
+          "informationUri": "https://docs.pmd-code.org/latest/",
+          "rules": []
+        }
+      },
+      "results": [],
+      "invocations": [
+        {
+          "executionSuccessful": false,
+          "toolConfigurationNotifications": [],
+          "toolExecutionNotifications": [
+            {
+              "locations": [
+                {
+                  "physicalLocation": {
+                    "artifactLocation": {
+                      "uri": "file://file"
+                    }
+                  }
+                }
+              ],
+              "message": {
+                "text": "RuntimeException: Error"
+              },
+              "exception": {
+                "message": "###REPLACE_ME###"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

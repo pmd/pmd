@@ -6,8 +6,9 @@
     <test-code>
         <description>Pos in return</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>3</expected-linenumbers>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
+import java.util.*;
 class Foo {
     List<String> bar() {
         return new ArrayList<String>(){{addAll("a","b","c");}};
@@ -20,6 +21,7 @@ class Foo {
         <description>Neg, override</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.*;
 class Foo {
     List<String> bar() {
         return new ArrayList<String>() {
@@ -38,6 +40,7 @@ class Foo {
         <description>Neg, new field</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.*;
 class Foo {
     List<String> bar() {
         return new ArrayList<String>(){
@@ -55,10 +58,11 @@ class Foo {
         <description>Neg, enum constant</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-enum Foo {
+import java.util.*;
+enum Foo implements List<String> {
     A {
         // neg in enum cons
-        {addAll("a","b","c");}
+        {addAll(Arrays.asList("a","b","c"));}
     };
 }
         ]]></code>

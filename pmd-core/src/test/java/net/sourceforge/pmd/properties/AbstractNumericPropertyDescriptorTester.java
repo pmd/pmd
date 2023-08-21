@@ -4,11 +4,12 @@
 
 package net.sourceforge.pmd.properties;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.properties.builders.MultiNumericPropertyBuilder;
 import net.sourceforge.pmd.properties.builders.SingleNumericPropertyBuilder;
@@ -17,15 +18,15 @@ import net.sourceforge.pmd.properties.builders.SingleNumericPropertyBuilder;
 /**
  * @author Clément Fournier
  */
-public abstract class AbstractNumericPropertyDescriptorTester<T> extends AbstractPropertyDescriptorTester<T> {
+abstract class AbstractNumericPropertyDescriptorTester<T> extends AbstractPropertyDescriptorTester<T> {
 
-    public AbstractNumericPropertyDescriptorTester(String typeName) {
+    AbstractNumericPropertyDescriptorTester(String typeName) {
         super(typeName);
     }
 
 
     @Test
-    public void testLowerUpperLimit() {
+    void testLowerUpperLimit() {
         assertNotNull(((NumericPropertyDescriptor<T>) createProperty()).lowerLimit());
         assertNotNull(((NumericPropertyDescriptor<T>) createProperty()).upperLimit());
         assertNotNull(((NumericPropertyDescriptor<T>) createMultiProperty()).lowerLimit());
@@ -33,11 +34,11 @@ public abstract class AbstractNumericPropertyDescriptorTester<T> extends Abstrac
     }
 
 
-    @Test(expected = RuntimeException.class)
-    public void testMissingMinThreshold() {
+    @Test
+    void testMissingMinThreshold() {
         Map<PropertyDescriptorField, String> attributes = getPropertyDescriptorValues();
         attributes.remove(PropertyDescriptorField.MIN);
-        getSingleFactory().build(attributes);
+        assertThrows(RuntimeException.class, () -> getSingleFactory().build(attributes));
     }
 
 
@@ -50,25 +51,24 @@ public abstract class AbstractNumericPropertyDescriptorTester<T> extends Abstrac
     }
 
 
-    @Test(expected = RuntimeException.class)
-    public void testMissingMaxThreshold() {
+    @Test
+    void testMissingMaxThreshold() {
         Map<PropertyDescriptorField, String> attributes = getPropertyDescriptorValues();
         attributes.remove(PropertyDescriptorField.MAX);
-        getSingleFactory().build(attributes);
-
+        assertThrows(RuntimeException.class, () -> getSingleFactory().build(attributes));
     }
 
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testBadDefaultValue() {
-        singleBuilder().defaultValue(createBadValue()).build();
+    @Test
+    void testBadDefaultValue() {
+        assertThrows(IllegalArgumentException.class, () -> singleBuilder().defaultValue(createBadValue()).build());
     }
 
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     @SuppressWarnings("unchecked")
-    public void testMultiBadDefaultValue() {
-        multiBuilder().defaultValues(createValue(), createBadValue()).build();
+    void testMultiBadDefaultValue() {
+        assertThrows(IllegalArgumentException.class, () -> multiBuilder().defaultValues(createValue(), createBadValue()).build());
     }
 
 

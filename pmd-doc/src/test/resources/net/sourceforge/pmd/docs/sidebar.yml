@@ -16,7 +16,7 @@
 - title: null
   output: web, pdf
   subfolders:
-  - title: Ecmascript Rules
+  - title: JavaScript Rules
     output: web, pdf
     subfolderitems:
     - title: Index
@@ -25,3 +25,12 @@
     - title: test
       output: web, pdf
       url: /pmd_rules_ecmascript_bestpractices.html
+- title: null
+  output: web, pdf
+  subfolders:
+  - title: Scala Rules
+    output: web, pdf
+    subfolderitems:
+    - title: Index
+      output: web, pdf
+      url: /pmd_rules_scala.html

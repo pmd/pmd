@@ -4,21 +4,11 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTOutOfLineConstraint extends net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode {
+public final class ASTOutOfLineConstraint extends AbstractPLSQLNode {
     private ConstraintType type;
 
-    @Deprecated
-    @InternalApi
-    public ASTOutOfLineConstraint(int id) {
+    ASTOutOfLineConstraint(int id) {
         super(id);
-    }
-
-    @Deprecated
-    @InternalApi
-    public ASTOutOfLineConstraint(PLSQLParser p, int id) {
-        super(p, id);
     }
 
     void setType(ConstraintType type) {
@@ -46,7 +36,7 @@ public class ASTOutOfLineConstraint extends net.sourceforge.pmd.lang.plsql.ast.A
     }
 
     @Override
-    public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {
+    protected <P, R> R acceptPlsqlVisitor(PlsqlVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

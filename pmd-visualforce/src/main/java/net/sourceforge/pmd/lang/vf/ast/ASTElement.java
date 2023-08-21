@@ -4,9 +4,7 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTElement extends AbstractVFNode {
+public final class ASTElement extends AbstractVfNode {
 
     /**
      * Name of the element-tag. Cannot be null.
@@ -24,16 +22,8 @@ public class ASTElement extends AbstractVFNode {
      */
     private boolean unclosed;
 
-    @Deprecated
-    @InternalApi
-    public ASTElement(int id) {
+    ASTElement(int id) {
         super(id);
-    }
-
-    @Deprecated
-    @InternalApi
-    public ASTElement(VfParser p, int id) {
-        super(p, id);
     }
 
     /**
@@ -67,9 +57,7 @@ public class ASTElement extends AbstractVFNode {
         return name;
     }
 
-    @Deprecated
-    @InternalApi
-    public void setName(String name) {
+    void setName(String name) {
         this.name = name;
     }
 
@@ -81,20 +69,16 @@ public class ASTElement extends AbstractVFNode {
         return unclosed;
     }
 
-    @Deprecated
-    @InternalApi
-    public void setUnclosed(boolean unclosed) {
+    void setUnclosed(boolean unclosed) {
         this.unclosed = unclosed;
     }
 
-    @Deprecated
-    @InternalApi
-    public void setEmpty(boolean empty) {
+    void setEmpty(boolean empty) {
         this.empty = empty;
     }
 
     @Override
-    public Object jjtAccept(VfParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVfVisitor(VfVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

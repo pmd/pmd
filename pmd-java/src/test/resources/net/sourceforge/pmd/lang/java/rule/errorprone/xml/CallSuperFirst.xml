@@ -8,12 +8,17 @@
         <description>Success</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import android.app.Activity;
+import android.os.Bundle;
+
 public class MyActivity extends Activity {
     @Override
     protected void onCreate(final Bundle state) {
         super.onCreate(state);
         foo();
     }
+
+    private void foo() { }
 }
         ]]></code>
     </test-code>
@@ -22,6 +27,9 @@ public class MyActivity extends Activity {
         <description>Success</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import android.app.Activity;
+import android.os.Bundle;
+
 public class MyActivity extends Activity {
     @Override
     protected void onCreate(final Bundle state) {
@@ -38,19 +46,44 @@ public class MyActivity extends Activity {
         super.onStart();
         foo();
     }
+    private void foo() {}
 }
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>Failure</description>
+        <description>Failure - missing super</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
+import android.app.Activity;
+import android.os.Bundle;
+
 public class MyActivity extends Activity {
     @Override
     protected void onCreate(final Bundle state) {
         foo();
     }
+    private void foo() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Failure - super not as first</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import android.app.Activity;
+import android.os.Bundle;
+
+public class MyActivity extends Activity {
+    @Override
+    protected void onCreate(final Bundle state) {
+        foo();
+        super.onCreate(state);
+    }
+    private void foo() {}
 }
         ]]></code>
     </test-code>
@@ -59,11 +92,15 @@ public class MyActivity extends Activity {
         <description>#1154 Call super onPause when there is no super</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import android.app.Activity;
+
 public class NotAnActivity {
-    Activity a = myActivity;
+    Activity a = getActivity();
     protected void onResume() {
         doSomething();
     }
+    private Activity getActivity() { return null; }
+    private void doSomething() {}
 }
         ]]></code>
     </test-code>

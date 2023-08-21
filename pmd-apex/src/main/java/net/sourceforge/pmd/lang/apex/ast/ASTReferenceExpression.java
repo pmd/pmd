@@ -8,25 +8,22 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.data.Identifier;
 import apex.jorje.semantic.ast.expression.IdentifierContext;
 import apex.jorje.semantic.ast.expression.ReferenceExpression;
 import apex.jorje.semantic.ast.expression.ReferenceType;
 
 
-public class ASTReferenceExpression extends AbstractApexNode<ReferenceExpression> {
+public final class ASTReferenceExpression extends AbstractApexNode<ReferenceExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTReferenceExpression(ReferenceExpression referenceExpression) {
+    ASTReferenceExpression(ReferenceExpression referenceExpression) {
         super(referenceExpression);
     }
 
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
@@ -58,5 +55,11 @@ public class ASTReferenceExpression extends AbstractApexNode<ReferenceExpression
 
     public boolean isSafeNav() {
         return node.isSafeNav();
+    }
+
+    public boolean isSObjectType() {
+        List<Identifier> identifiers = node.getNames();
+        return identifiers != null
+            && identifiers.stream().anyMatch(id -> "sobjecttype".equalsIgnoreCase(id.getValue()));
     }
 }

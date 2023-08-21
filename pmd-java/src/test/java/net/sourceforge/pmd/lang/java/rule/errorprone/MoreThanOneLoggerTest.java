@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class MoreThanOneLoggerTest extends PmdRuleTst {
+class MoreThanOneLoggerTest extends PmdRuleTst {
     // no additional unit tests
 }

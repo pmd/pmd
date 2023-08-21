@@ -1,18 +1,18 @@
     [Image] or [Truncated image[            Bcol      Ecol
 L1
-    [class]                                 1         5
-    [MyClass]                               7         13
-    [{]                                     15        15
+    [class]                                 1         6
+    [MyClass]                               7         14
+    [{]                                     15        16
 L2
-    [var]                                   5         7
-    [s1]                                    9         10
-    [=]                                     12        12
-    ['''\nYou can create\nmulti-line st[    14        3
+    [var]                                   5         8
+    [s1]                                    9         11
+    [=]                                     12        13
+    ['''\nYou can create\nmulti-line st[    14        4
 L7
-    [var]                                   5         7
-    [s2]                                    9         10
-    [=]                                     12        12
-    ["""This is also a\nmulti-line stri[    14        21
+    [var]                                   5         8
+    [s2]                                    9         11
+    [=]                                     12        13
+    ["""This is also a\nmulti-line stri[    14        22
 L9
-    [}]                                     1         1
+    [}]                                     1         2
 EOF

@@ -6,17 +6,13 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.Assignment;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTAssignment extends AbstractInfixEcmascriptNode<Assignment> {
-    @Deprecated
-    @InternalApi
-    public ASTAssignment(Assignment asssignment) {
+public final class ASTAssignment extends AbstractInfixEcmascriptNode<Assignment> {
+    ASTAssignment(Assignment asssignment) {
         super(asssignment);
     }
 
     @Override
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+    protected <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

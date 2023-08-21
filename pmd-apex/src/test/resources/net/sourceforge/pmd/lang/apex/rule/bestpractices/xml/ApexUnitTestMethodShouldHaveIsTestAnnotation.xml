@@ -14,7 +14,7 @@ private class ATest {
     @isTest
     static void methodATest() {
     }
-    static void methodBTest() {
+    static testmethod void methodBTest() {
         System.assert(1==2);
     }
     @isTest static void methodCTest() {
@@ -26,7 +26,7 @@ private class ATest {
     static void methodETest() {
         System.debug('I am a debug statement.');
     }
-    static void methodFTest() {
+    static testmethod void methodFTest() {
         System.assertEquals(1,2);
     }
     private void fetchData() {
@@ -69,6 +69,20 @@ private class A {
     private void fetchData() {
         System.assertEquals(1,1);
     }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>false positive with @testsetup #3282</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@isTest
+public class TestFactory {
+    @testsetup static void setup() {
+        System.assertEquals(null, null, 'this should be null');
+    }
+    @isTest static void testCase1() { }
 }
         ]]></code>
     </test-code>

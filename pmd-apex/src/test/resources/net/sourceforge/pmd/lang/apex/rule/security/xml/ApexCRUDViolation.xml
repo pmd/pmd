@@ -5,8 +5,7 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
-        <description>Scheduled classes don't need crud, run as system
-        </description>
+        <description>Scheduled classes don't need crud, run as system</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 class FooBatchJob implements Database.Batchable < sObject > , Database.Stateful {
@@ -79,8 +78,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Proper CRUD checks for Aggregate Result return
-        </description>
+        <description>Proper CRUD checks for Aggregate Result return</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -97,13 +95,16 @@ public class Foo {
     <test-code>
         <description>Not a getter</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public Contact getFoo(ID tempID) {
          Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
          return c;
     }
-
 }
         ]]></code>
     </test-code>
@@ -125,6 +126,11 @@ public class Foo {
     <test-code>
         <description>No CRUD check for inline upsert</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,3</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public void foo() {
@@ -135,8 +141,44 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>VF built-in CRUD checks via getter</description>
+        <description>Proper CRUD,FLS via upsert with database class</description>
         <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String newName, String tempID) {
+        if (Contact.sObjectType.getDescribe().isCreateable() && Contact.sObjectType.getDescribe().isUpdateable()) {
+            Database.upsert(new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414'));
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No CRUD check for inline upsert with database class</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,3</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        Database.upsert(new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414'));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>VF built-in CRUD checks via getter, but cannot determine if is really VF</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,10</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public Contact getFoo() {
@@ -147,36 +189,7 @@ public class Foo {
 
     public Contact getBaz() {
         String tempID = 'someID';
-         return  [SELECT Name FROM Contact WHERE Id=:tempID];
-    }
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>Bypassing VF built-in CRUD checks via getter method
-        </description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-public class Foo {
-    public String getUserName() {
-        String tempID = 'someID';
-         Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
-         return c.Name;
-    }
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>No VF provided CRUD checks via getter method
-        </description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-public class Foo {
-    public Contact justGiveMeFoo() {
-        String tempID = 'someID';
-         return [SELECT Name FROM Contact WHERE Id=:tempID];
+        return [SELECT Name FROM Contact WHERE Id=:tempID];
     }
 }
         ]]></code>
@@ -201,19 +214,23 @@ public class Foo {
     <test-code>
         <description>No CRUD,FLS via sObject property</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public Contact contactProperty { get; set; }
 
     public void foo(String tempID) {
-             contactProperty = [SELECT Name FROM Contact WHERE Id=:tempID];
+         contactProperty = [SELECT Name FROM Contact WHERE Id=:tempID];
     }
 }
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>Proper FLS check </description>
+        <description>Proper FLS check</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -230,7 +247,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Proper FLS fall-through check </description>
+        <description>Proper FLS fall-through check</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -246,8 +263,12 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Improper accessibility CRUD </description>
+        <description>Improper accessibility CRUD</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public Contact foo(String tempID) {
@@ -259,7 +280,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Accepts Closure SECURITY ENFORCED </description>
+        <description>Accepts Closure SECURITY ENFORCED</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -272,7 +293,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Accepts Closure SECURITY ENFORCED Line Break </description>
+        <description>Accepts Closure SECURITY ENFORCED Line Break</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -286,7 +307,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Accepts Closure SECURITY ENFORCED in a List </description>
+        <description>Accepts Closure SECURITY ENFORCED in a List</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -313,7 +334,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Accepts Closure SECURITY ENFORCED with Case Insensitivity </description>
+        <description>Accepts Closure SECURITY ENFORCED with Case Insensitivity</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -326,7 +347,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Accepts Closure SECURITY ENFORCED with Case Insensitivity Line Break </description>
+        <description>Accepts Closure SECURITY ENFORCED with Case Insensitivity Line Break</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -340,8 +361,12 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Accepts Closure SECURITY ENFORCED Not Secured </description>
+        <description>Accepts Closure SECURITY ENFORCED Not Secured</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public Contact foo() {
@@ -353,7 +378,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Accepts Closure SECURITY ENFORCED Secured </description>
+        <description>Accepts Closure SECURITY ENFORCED Secured</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -366,7 +391,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Accepts Closure SECURITY ENFORCED Secured Line Break </description>
+        <description>Accepts Closure SECURITY ENFORCED Secured Line Break</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -380,7 +405,65 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Proper accessibility CRUD,FLS </description>
+        <description>Flagged as Critical With No Mode</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
+        <code><![CDATA[
+public class User {
+    public void coverAllCasesWithTest() {
+        Contact c;
+        c = [SELECT Name FROM Contact];
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>User Mode</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class User {
+    public void coverAllCasesWithTest() {
+        Contact c;
+        c = [SELECT Name FROM Contact WITH USER_MODE];
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Explicit System Mode, gives no warning because it ignores CRUD but explicitly</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class User {
+    public void coverAllCasesWithTest() {
+        Contact c;
+        c = [SELECT Name FROM Contact WITH SYSTEM_MODE];
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Explicit system Mode, no warning, because CRUD permissions are checked</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class User {
+    public void coverAllCasesWithTest() {
+        if (Contact.sObjectType.getDescribe().isAccessible()) {
+            Contact c;
+            c = [SELECT Name FROM Contact WITH SYSTEM_MODE];
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper accessibility CRUD,FLS</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -408,15 +491,17 @@ public class Foo {
             insert MyWriteOnlyProp;
         }
     }
-
 }
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>No CRUD,FLS via sObject property, write is not protected
-        </description>
+        <description>No CRUD,FLS via sObject property, write is not protected</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public Contact MyWriteOnlyProp { get; set; }
@@ -430,8 +515,12 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>No CRUD,FLS for List insertion </description>
+        <description>No CRUD,FLS for List insertion</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public List<Contact> MyWriteOnlyProp { get; set; }
@@ -445,17 +534,17 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Proper CRUD,FLS for List insertion </description>
+        <description>Proper CRUD,FLS for List insertion</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     public List<Contact> MyWriteOnlyProp { get; set; }
 
     public void foo(String newName, String tempID) {
-            MyWriteOnlyProp.add(new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414'));
-            if(Contact.sObjectType.getDescribe().isCreateable()) {
-                insert MyWriteOnlyProp;
-            }
+        MyWriteOnlyProp.add(new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414'));
+        if(Contact.sObjectType.getDescribe().isCreateable()) {
+            insert MyWriteOnlyProp;
+        }
     }
 }
         ]]></code>
@@ -464,13 +553,17 @@ public class Foo {
     <test-code>
         <description>No CRUD,FLS via String property</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public String nameProperty { get; set; }
 
     public void foo(String tempID) {
-             Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
-            nameProperty = c.Name;
+        Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
+        nameProperty = c.Name;
     }
 }
         ]]></code>
@@ -494,6 +587,10 @@ public class Foo {
     <test-code>
         <description>Partial CRUD,FLS via upsert</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public void foo(String newName, String tempID) {
@@ -507,8 +604,13 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description> No CRUD,FLS via upsert</description>
+        <description>No CRUD,FLS via upsert</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,4</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public void foo(String newName, String tempID) {
@@ -522,6 +624,11 @@ public class Foo {
     <test-code>
         <description>Improper CRUD,FLS via ESAPI 1</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,9</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public void foo(String newName, String tempID) {
@@ -560,6 +667,11 @@ public class Foo {
     <test-code>
         <description>Improper CRUD,FLS via ESAPI 2</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,9</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public void foo(String newName, String tempID) {
@@ -598,6 +710,11 @@ public class Foo {
     <test-code>
         <description>No CRUD,FLS check for update</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,5</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public void foo(String newName, String tempID) {
@@ -630,8 +747,51 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>No CRUD,FLS check for update with database class</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,5</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String newName, String tempID) {
+        Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
+        c.Name = newName;
+        Database.update(c);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD,FLS check for update with database class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Contact foo(String newName, String tempID) {
+        if (Contact.sObjectType.getDescribe().isAccessible()) {
+            Contact c = [SELECT Name FROM Contact WHERE Id=:tempID];
+            if (!Schema.sObjectType.Contact.fields.Name.isUpdateable()){
+                return null;
+            }
+            c.Name = newName;
+        }
+        Database.update(c);
+        return c;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>No CRUD check for insert</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public void foo() {
@@ -658,13 +818,50 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>No CRUD check for insert with database class</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        Contact myCon = new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
+        Database.insert(myCon);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD check for insert with database class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        if (Contact.sObjectType.getDescribe().isCreateable()) {
+            Contact myCon = new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
+            Database.insert(myCon);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>No CRUD check for delete</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,4</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public void bar(String contactId) {
-            Contact toDelete = [SELECT Id FROM Contact WHERE Id=: contactId];
-            delete toDelete;
+        Contact toDelete = [SELECT Id FROM Contact WHERE Id=: contactId];
+        delete toDelete;
     }
 }
         ]]></code>
@@ -680,6 +877,41 @@ public class Foo {
             Contact toDelete = [SELECT Id FROM Contact WHERE Id=: contactId];
             if (Contact.sObjectType.getDescribe().isDeletable()) {
                 delete toDelete;
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No CRUD check for delete with database class</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,4</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void bar(String contactId) {
+        Contact toDelete = [SELECT Id FROM Contact WHERE Id=: contactId];
+        Database.delete(toDelete);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD check for delete with database class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(String contactId) {
+        if (Contact.sObjectType.getDescribe().isAccessible()) {
+            Contact toDelete = [SELECT Id FROM Contact WHERE Id=: contactId];
+            if (Contact.sObjectType.getDescribe().isDeletable()) {
+                Database.delete(toDelete);
             }
         }
     }
@@ -762,8 +994,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Control flow constructor based CRUD,FLS check
-        </description>
+        <description>Control flow constructor based CRUD,FLS check</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -826,11 +1057,15 @@ public class Foo {
     <test-code>
         <description>Forgot to call the CRUD check</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public Contact justGiveMeFoo() {
         String tempID = 'someID';
-         return [SELECT Name FROM Contact WHERE Id=:tempID];
+        return [SELECT Name FROM Contact WHERE Id=:tempID];
     }
 
     private void checkPerms() {
@@ -845,6 +1080,10 @@ public class Foo {
     <test-code>
         <description>Control flow substitute CRUD check should fail when check follows SOQL</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     private void bar() {
@@ -885,21 +1124,28 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Count does not expose data and CRUD checks are unnecessary</description>
-        <expected-problems>0</expected-problems>
+        <description>Count does expose data and CRUD checks are necessary</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public Integer getBaz() {
-         return  [SELECT count() FROM Contact];
+         return [SELECT count() FROM Contact];
     }
 }
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>Count does not leak data and CRUD checks are unnecessary
-        </description>
-        <expected-problems>0</expected-problems>
+        <description>Count does leak data and CRUD checks are necessary</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public void getBaz() {
@@ -912,6 +1158,10 @@ public class Foo {
     <test-code>
         <description>Field detection</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
         <code><![CDATA[
 public class MyProfilePageController {
     private User currentUser;
@@ -944,5 +1194,632 @@ public class Foo {
     }
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No CRUD check in SOQL for-loop</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        for (Account a : [SELECT Id FROM Account]) {
+            // loop body
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No CRUD check inside for-each loop</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        Id[] accIds = new List<Id>();
+        for (Id accId : accIds) {
+            Account acc = [SELECT Id FROM Account WHERE Id = :accId];
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD check inside for-each loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        Id[] accIds = new List<Id>();
+        if (Account.sObjectType.getDescribe().isAccessible()) {
+            for (Id accId : accIds) {
+                Account a = [SELECT Id FROM Account WHERE Id = :accId];
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD check in SOQL for-loop with security enforced</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        for (Account a : [SELECT Id FROM Account WITH SECURITY_ENFORCED]) {
+            // loop body
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD check in SOQL for-loop with explicit check</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        if (Account.sObjectType.getDescribe().isAccessible()) {
+            for (Account a : [SELECT Id FROM Account]) {
+                // loop body
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No CRUD,FLS for inline no-args object</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        insert new Account();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD,FLS for inline no-args object</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String newName, String tempID) {
+        if (Account.sObjectType.getDescribe().isCreateable()) {
+            insert new Account();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No CRUD,FLS for inline literal list</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        insert new Account[]{new Account(Name = 'X')};
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD,FLS for inline literal list</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String newName, String tempID) {
+        if (Account.sObjectType.getDescribe().isCreateable()) {
+            insert new Account[]{new Account(Name = 'X')};
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No CRUD,FLS for inline initialized list</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        insert new List<Account>(new Account(Name = 'X'));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Proper CRUD,FLS for inline initialized list</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String newName, String tempID) {
+        if (Account.sObjectType.getDescribe().isCreateable()) {
+            insert new List<Account>(new Account(Name = 'X'));
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <!-- Test cases for issue 3576 that allows configurable method name patterns for valid authorization checks -->
+
+    <test-code>
+        <description>#3576 - Verify use of createAuthMethodPattern, negative test</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,8</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        if (AuthorizationUtil.isCreateable(Account.SObjectType)) {
+            insert new List<Account>(new Account(Name = 'X'));
+        }
+
+        AuthorizationUtil.assertCreateable(Account.SObjectType);
+        Database.insert(new List<Account>(new Account(Name = 'X')));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3576 - Verify use of createAuthMethodPattern, positive test</description>
+        <rule-property name="createAuthMethodPattern">AuthorizationUtil\.(is|assert)Createable</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        if (AuthorizationUtil.isCreateable(Account.SObjectType)) {
+            insert new List<Account>(new Account(Name = 'X'));
+        }
+
+        AuthorizationUtil.assertCreateable(Account.SObjectType);
+        Database.insert(new List<Account>(new Account(Name = 'X')));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3576 - Verify use of readAuthMethodPattern, negative test</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,9</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        if (AuthorizationUtil.isAccessible(Account.SObjectType)) {
+            List<Account> accounts = [SELECT Id FROM Account];
+        }
+
+        AuthorizationUtil.assertAccessible(Account.SObjectType);
+        // TODO: Evidently this rule doesn't check Database.query() yet
+        List<Account> accounts = [SELECT Id FROM Account];
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3576 - Verify use of readAuthMethodPattern, positive test</description>
+        <rule-property name="readAuthMethodPattern">AuthorizationUtil\.(is|assert)Accessible</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        if (AuthorizationUtil.isAccessible(Account.SObjectType)) {
+            List<Account> accounts = [SELECT Id FROM Account];
+        }
+
+        AuthorizationUtil.assertAccessible(Account.SObjectType);
+        // TODO: Evidently this rule doesn't check Database.query() yet
+        List<Account> accounts = [SELECT Id FROM Account];
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3576 - Verify use of updateAuthMethodPattern, negative test</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,8</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        if (AuthorizationUtil.isUpdateable(Account.SObjectType)) {
+            update new List<Account>(new Account(Name = 'X'));
+        }
+
+        AuthorizationUtil.assertUpdateable(Account.SObjectType);
+        Database.update(new List<Account>(new Account(Name = 'X')));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3576 - Verify use of updateAuthMethodPattern, positive test</description>
+        <rule-property name="updateAuthMethodPattern">AuthorizationUtil\.(is|assert)Updateable</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        if (AuthorizationUtil.isUpdateable(Account.SObjectType)) {
+            update new List<Account>(new Account(Name = 'X'));
+        }
+
+        AuthorizationUtil.assertUpdateable(Account.SObjectType);
+        Database.update(new List<Account>(new Account(Name = 'X')));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3576 - Verify use of createAuthMethodPattern and updateAuthMethodPattern for upsert, negative test</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>4,4,8,8</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        if (AuthorizationUtil.isUpsertable(Account.SObjectType)) {
+            upsert new List<Account>(new Account(Name = 'X'));
+        }
+
+        AuthorizationUtil.assertUpsertable(Account.SObjectType);
+        Database.upsert(new List<Account>(new Account(Name = 'X')));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3576 - Verify use of createAuthMethodPattern and updateAuthMethodPattern for upsert, positive test</description>
+        <rule-property name="createAuthMethodPattern">AuthorizationUtil\.(is|assert)(Createable|Upsertable)</rule-property>
+        <rule-property name="updateAuthMethodPattern">AuthorizationUtil\.(is|assert)(Updateable|Upsertable)</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        if (AuthorizationUtil.isUpsertable(Account.SObjectType)) {
+            upsert new List<Account>(new Account(Name = 'X'));
+        }
+
+        AuthorizationUtil.assertUpsertable(Account.SObjectType);
+        Database.upsert(new List<Account>(new Account(Name = 'X')));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3576 - Verify use of deleteAuthMethodPattern, negative test</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,8</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        if (AuthorizationUtil.isDeletable(Account.SObjectType)) {
+            delete new List<Account>(new Account(Name = 'X'));
+        }
+
+        AuthorizationUtil.assertDeletable(Account.SObjectType);
+        Database.delete(new List<Account>(new Account(Name = 'X')));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3576 - Verify use of deleteAuthMethodPattern, positive test</description>
+        <rule-property name="deleteAuthMethodPattern">AuthorizationUtil\.(is|assert)Deletable</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        if (AuthorizationUtil.isDeletable(Account.SObjectType)) {
+            delete new List<Account>(new Account(Name = 'X'));
+        }
+
+        AuthorizationUtil.assertDeletable(Account.SObjectType);
+        Database.delete(new List<Account>(new Account(Name = 'X')));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3576 - Verify use of undeleteAuthMethodPattern, negative test</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,8</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        if (AuthorizationUtil.isUndeletable(Account.SObjectType)) {
+            undelete new List<Account>(new Account(Name = 'X'));
+        }
+
+        AuthorizationUtil.assertUndeletable(Account.SObjectType);
+        Database.undelete(new List<Account>(new Account(Name = 'X')));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3576 - Verify use of undeleteAuthMethodPattern, positive test</description>
+        <rule-property name="undeleteAuthMethodPattern">AuthorizationUtil\.(is|assert)Undeletable</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        if (AuthorizationUtil.isUndeletable(Account.SObjectType)) {
+            undelete new List<Account>(new Account(Name = 'X'));
+        }
+
+        AuthorizationUtil.assertUndeletable(Account.SObjectType);
+        Database.undelete(new List<Account>(new Account(Name = 'X')));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3576 - Verify use of mergeAuthMethodPattern, negative test</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,11</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        Account masterAccount;
+        Account mergeAccount;
+
+        if (AuthorizationUtil.isMergeable(Account.SObjectType)) {
+            merge masterAccount mergeAccount;
+        }
+
+        AuthorizationUtil.assertMergeable(Account.SObjectType);
+        Database.merge(masterAccount, mergeAccount, false);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3576 - Verify use of mergeAuthMethodPattern, positive test</description>
+        <rule-property name="mergeAuthMethodPattern">AuthorizationUtil\.(is|assert)Mergeable</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        Account masterAccount;
+        Account mergeAccount;
+
+        if (AuthorizationUtil.isMergeable(Account.SObjectType)) {
+            merge masterAccount mergeAccount;
+        }
+
+        AuthorizationUtil.assertMergeable(Account.SObjectType);
+        Database.merge(masterAccount, mergeAccount, false);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3576 - Verify use of *AuthMethodTypeParamIndex</description>
+        <rule-property name="createAuthMethodPattern">SomeAuthUtil\.canCreate\w+</rule-property>
+        <rule-property name="createAuthMethodTypeParamIndex">1</rule-property>
+        <rule-property name="readAuthMethodPattern">SomeAuthUtil\.canRead\w+</rule-property>
+        <rule-property name="readAuthMethodTypeParamIndex">2</rule-property>
+        <rule-property name="updateAuthMethodPattern">SomeAuthUtil\.canUpdate\w+</rule-property>
+        <rule-property name="updateAuthMethodTypeParamIndex">3</rule-property>
+        <rule-property name="deleteAuthMethodPattern">SomeAuthUtil\.canDelete\w+</rule-property>
+        <rule-property name="deleteAuthMethodTypeParamIndex">4</rule-property>
+        <rule-property name="undeleteAuthMethodPattern">SomeAuthUtil\.canUndelete\w+</rule-property>
+        <rule-property name="undeleteAuthMethodTypeParamIndex">0</rule-property>
+        <rule-property name="mergeAuthMethodPattern">SomeAuthUtil\.canMerge\w+</rule-property>
+        <!--<rule-property name="mergeAuthMethodTypeParamIndex">0</rule-property>--><!-- Unspecified; should be 0 -->
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        if (SomeAuthUtil.canCreateWithTypeAsSecondParam(param1, Account.SObjectType)) {
+            insert new List<Account>(new Account(Name = 'X'));
+        }
+
+        if (SomeAuthUtil.canReadWithTypeAsThirdParam(param1, param2, Account.SObjectType)) {
+            List<Account> accounts = [SELECT Id FROM Account];
+        }
+
+        if (SomeAuthUtil.canUpdateWithTypeAsFourthParam(param1, param2, param3, Account.SObjectType)) {
+            update new List<Account>(new Account(Name = 'X'));
+        }
+
+        if (SomeAuthUtil.canDeleteWithTypeAsFifthParam(param1, param2, param3, param4, Account.SObjectType)) {
+            delete new List<Account>(new Account(Name = 'X'));
+        }
+
+        if (SomeAuthUtil.canUndeleteWithTypeAsFirstParamExplicit(Account.SObjectType)) {
+            undelete new List<Account>(new Account(Name = 'X'));
+        }
+
+        Account masterAccount;
+        Account mergeAccount;
+        if (SomeAuthUtil.canMergeWithTypeAsFirstParamImplicit(Account.SObjectType)) {
+            merge masterAccount mergeAccount;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+
+    <test-code disabled="true">
+        <!--
+            Demonstrate that authorization for sub-relation queries doesn't work properly; see checkForAccessibility()
+            See https://github.com/pmd/pmd/issues/2775
+        -->
+        <description>Demonstrate that authorization for sub-relation queries doesn't work properly #2775</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        if (Account.SObjectType.getDescribe().isAccessible() &&
+            // This check isn't working because it's checking against "Contacts" due to the nested FROM clause
+            // instead of "Contact" given that "Contacts" is of type "List<Contact>"
+            Contact.SObjectType.getDescribe().isAccessible()) {
+            List<Account> accounts = [
+                SELECT Id, (
+                    SELECT Id
+                    FROM Contacts
+                )
+                FROM Account
+            ];
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Consider Database DML methods with AccessLevel parameter</description>
+        <expected-problems>7</expected-problems>
+        <expected-linenumbers>4,12,19,19,26,33,39</expected-linenumbers>
+        <expected-messages>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+            <message>Validate CRUD permission before SOQL/DML operation or enforce user mode</message>
+        </expected-messages>
+        <code><![CDATA[
+public class UserMode {
+    public void databaseDMLInsert() {
+        Contact contact = new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
+        Database.insert(contact); // violation
+        Database.insert(contact, AccessLevel.USER_MODE); // ok
+        Database.insert(contact, AccessLevel.SYSTEM_MODE); // explicit system mode, ok
+    }
+
+    public void databaseDMLUpdate(String newName, String tempID) {
+        Contact c = [SELECT Name FROM Contact WHERE Id=:tempID WITH USER_MODE];
+        c.Name = newName;
+        Database.update(c); // violation
+        Database.update(c, true, AccessLevel.USER_MODE); // ok
+        Database.update(c, System.AccessLevel.SYSTEM_MODE); // explicit system mode, ok
+    }
+
+    public void databaseDMLUpsert() {
+        Contact c = new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
+        Database.upsert(c); // 2 violations (create, update permissions)
+        Database.upsert(new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414'), AccessLevel.USER_MODE); // ok
+        Database.upsert(new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414'), AccessLevel.SYSTEM_MODE); // explicit system mode, ok
+    }
+
+    public void databaseDMLDelete(String contactId) {
+        Contact toDelete = [SELECT Id FROM Contact WHERE Id=: contactId WITH USER_MODE];
+        Database.deleteAsync(toDelete); // violation
+        Database.delete(toDelete, AccessLevel.USER_MODE); // ok
+        Database.delete(toDelete,  AccessLevel.SYSTEM_MODE); // explicit system mode, ok
+    }
+
+    public void databaseDMLUndelete() {
+        Contact c = new Contact(FirstName = 'First', LastName = 'Last', Phone = '414-414-4414');
+        Database.undelete(c); // violation
+        Database.undelete(c, AccessLevel.USER_MODE); // ok
+        Database.undelete(c, AccessLevel.SYSTEM_MODE); // explicit system mode, ok
+    }
+
+    public void databaseDMLMerge(Contact masterRecord, Contact duplicateRecord) {
+        Database.merge(masterRecord, duplicateRecord); // violation
+        Database.merge(masterRecord, duplicateRecord, AccessLevel.USER_MODE); // ok
+        Database.merge(masterRecord, duplicateRecord, AccessLevel.SYSTEM_MODE); // explicit system mode, ok
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code disabled="true">
+        <!-- disabled, because jorje can't parse "as user" -->
+        <description>Consider "insert as"</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+public class UserMode {
+public void coverAllCasesWithTest() {
+    Contact c;
+    c = [SELECT Name FROM Contact WITH USER_MODE];
+
+    // Should be flagged a critical issue
+    insert contact;
+
+    // Should be ignored
+    insert as user contact;
+
+    // Should be at best a warning because it ignores CRUD but explicitly
+    insert as system contact;
+}
+}
+]]></code>
     </test-code>
 </test-data>

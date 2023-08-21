@@ -4,20 +4,17 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.expression.NewListLiteralExpression;
 
-public class ASTNewListLiteralExpression extends AbstractApexNode<NewListLiteralExpression> {
+public final class ASTNewListLiteralExpression extends AbstractApexNode<NewListLiteralExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTNewListLiteralExpression(NewListLiteralExpression newListLiteralExpression) {
+    ASTNewListLiteralExpression(NewListLiteralExpression newListLiteralExpression) {
         super(newListLiteralExpression);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

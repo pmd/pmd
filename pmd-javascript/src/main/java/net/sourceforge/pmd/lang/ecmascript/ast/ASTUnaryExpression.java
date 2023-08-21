@@ -8,22 +8,14 @@ import org.mozilla.javascript.Token;
 import org.mozilla.javascript.ast.AstRoot;
 import org.mozilla.javascript.ast.UnaryExpression;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTUnaryExpression extends AbstractEcmascriptNode<UnaryExpression> {
-    @Deprecated
-    @InternalApi
-    public ASTUnaryExpression(UnaryExpression unaryExpression) {
+public final class ASTUnaryExpression extends AbstractEcmascriptNode<UnaryExpression> {
+    ASTUnaryExpression(UnaryExpression unaryExpression) {
         super(unaryExpression);
-        if (unaryExpression.getOperator() == Token.VOID) {
-            super.setImage("void");
-        } else {
-            super.setImage(AstRoot.operatorToString(unaryExpression.getOperator()));
-        }
+        super.setImage(AstRoot.operatorToString(unaryExpression.getOperator()));
     }
 
     @Override
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+    protected <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
@@ -32,10 +24,10 @@ public class ASTUnaryExpression extends AbstractEcmascriptNode<UnaryExpression> 
     }
 
     public boolean isPrefix() {
-        return node.isPrefix();
+        return !isPostfix();
     }
 
     public boolean isPostfix() {
-        return node.isPostfix();
+        return node.getOperator() == Token.INC || node.getOperator() == Token.DEC;
     }
 }

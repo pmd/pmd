@@ -90,4 +90,45 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#3570 - Verify use of reportInForLoopInitializer, negative test unspecified/default</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        for (Integer i = 0, maxValue = computeMaxValue(); i < maxValue; i++) {
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3570 - Verify use of reportInForLoopInitializer, negative test specified</description>
+        <rule-property name="reportInForLoopInitializer">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        for (Integer i = 0, maxValue = computeMaxValue(); i < maxValue; i++) {
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3570 - Verify use of reportInForLoopInitializer, positive test</description>
+        <rule-property name="reportInForLoopInitializer">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        for (Integer i = 0, maxValue = computeMaxValue(); i < maxValue; i++) {
+        }
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

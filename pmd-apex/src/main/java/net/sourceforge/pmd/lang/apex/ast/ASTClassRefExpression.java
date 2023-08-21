@@ -4,20 +4,17 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.expression.ClassRefExpression;
 
-public class ASTClassRefExpression extends AbstractApexNode<ClassRefExpression> {
+public final class ASTClassRefExpression extends AbstractApexNode<ClassRefExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTClassRefExpression(ClassRefExpression classRefExpression) {
+    ASTClassRefExpression(ClassRefExpression classRefExpression) {
         super(classRefExpression);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

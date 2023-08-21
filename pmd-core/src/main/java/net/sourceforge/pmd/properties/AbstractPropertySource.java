@@ -10,10 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import net.sourceforge.pmd.util.CollectionUtil;
+import java.util.Objects;
 
 
 /**
@@ -79,12 +76,6 @@ public abstract class AbstractPropertySource implements PropertySource {
     @Deprecated
     protected Map<PropertyDescriptor<?>, Object> copyPropertyValues() {
         return new HashMap<>(propertyValuesByDescriptor);
-    }
-
-    @Override
-    @Deprecated
-    public Set<PropertyDescriptor<?>> ignoredProperties() {
-        return Collections.emptySet();
     }
 
 
@@ -210,32 +201,6 @@ public abstract class AbstractPropertySource implements PropertySource {
     }
 
 
-    @Override
-    @Deprecated
-    public boolean usesDefaultValues() {
-
-        Map<PropertyDescriptor<?>, Object> valuesByProperty = getPropertiesByPropertyDescriptor();
-        if (valuesByProperty.isEmpty()) {
-            return true;
-        }
-
-        for (Entry<PropertyDescriptor<?>, Object> entry : valuesByProperty.entrySet()) {
-            if (!CollectionUtil.areEqual(entry.getKey().defaultValue(), entry.getValue())) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-
-    @Override
-    @Deprecated
-    public void useDefaultValueFor(PropertyDescriptor<?> desc) {
-        propertyValuesByDescriptor.remove(desc);
-    }
-
-
     // todo Java 8 move up to interface
     @Override
     public String dysfunctionReason() {
@@ -251,5 +216,43 @@ public abstract class AbstractPropertySource implements PropertySource {
 
     private <T> String errorForPropCapture(PropertyDescriptor<T> descriptor) {
         return descriptor.errorFor(getProperty(descriptor));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AbstractPropertySource that = (AbstractPropertySource) o;
+
+        if (!Objects.equals(propertyDescriptors, that.propertyDescriptors)) {
+            return false;
+        }
+
+        // Convert the values to strings for comparisons. This is needed at least for RegexProperties,
+        // as java.util.regex.Pattern doesn't implement equals().
+        Map<String, String> propertiesWithValues = new HashMap<>();
+        propertyDescriptors.forEach(propertyDescriptor -> {
+            Object value = propertyValuesByDescriptor.getOrDefault(propertyDescriptor, propertyDescriptor.defaultValue());
+            @SuppressWarnings({"unchecked", "rawtypes"})
+            String valueString = ((PropertyDescriptor) propertyDescriptor).asDelimitedString(value);
+            propertiesWithValues.put(propertyDescriptor.name(), valueString);
+        });
+        Map<String, String> thatPropertiesWithValues = new HashMap<>();
+        that.propertyDescriptors.forEach(propertyDescriptor -> {
+            Object value = that.propertyValuesByDescriptor.getOrDefault(propertyDescriptor, propertyDescriptor.defaultValue());
+            @SuppressWarnings({"unchecked", "rawtypes"})
+            String valueString = ((PropertyDescriptor) propertyDescriptor).asDelimitedString(value);
+            thatPropertiesWithValues.put(propertyDescriptor.name(), valueString);
+        });
+        return Objects.equals(propertiesWithValues, thatPropertiesWithValues);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(propertyDescriptors, propertyValuesByDescriptor);
     }
 }

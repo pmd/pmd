@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
 import net.sourceforge.pmd.lang.apex.ast.ASTNewKeyValueObjectExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTNewObjectExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTParameter;
 import net.sourceforge.pmd.lang.apex.ast.ASTReferenceExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTSoqlExpression;
@@ -90,7 +91,7 @@ public final class Helper {
 
         return reference != null && reference.getNames().size() == 1
                 && reference.getNames().get(0).equalsIgnoreCase(className)
-                && (methodName.equals(ANY_METHOD) || isMethodName(methodNode, methodName));
+                && (ANY_METHOD.equals(methodName) || isMethodName(methodNode, methodName));
     }
 
     public static boolean isMethodName(final ASTMethodCallExpression m, final String methodName) {
@@ -158,6 +159,13 @@ public final class Helper {
     }
 
     public static String getFQVariableName(final ASTNewKeyValueObjectExpression variable) {
+        StringBuilder sb = new StringBuilder()
+                .append(variable.getDefiningType()).append(":")
+                .append(variable.getType());
+        return sb.toString();
+    }
+
+    public static String getFQVariableName(final ASTNewObjectExpression variable) {
         StringBuilder sb = new StringBuilder()
                 .append(variable.getDefiningType()).append(":")
                 .append(variable.getType());

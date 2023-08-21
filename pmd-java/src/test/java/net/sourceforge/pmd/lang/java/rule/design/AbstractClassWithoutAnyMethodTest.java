@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class AbstractClassWithoutAnyMethodTest extends PmdRuleTst {
+class AbstractClassWithoutAnyMethodTest extends PmdRuleTst {
     // no additional unit tests
 }

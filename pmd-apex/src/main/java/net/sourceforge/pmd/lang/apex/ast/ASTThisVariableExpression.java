@@ -4,20 +4,17 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.expression.ThisVariableExpression;
 
-public class ASTThisVariableExpression extends AbstractApexNode<ThisVariableExpression> {
+public final class ASTThisVariableExpression extends AbstractApexNode<ThisVariableExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTThisVariableExpression(ThisVariableExpression thisVariableExpression) {
+    ASTThisVariableExpression(ThisVariableExpression thisVariableExpression) {
         super(thisVariableExpression);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

@@ -10,6 +10,7 @@ import net.sourceforge.pmd.cpd.TokenEntry
 import net.sourceforge.pmd.cpd.Tokenizer
 import net.sourceforge.pmd.cpd.Tokens
 import net.sourceforge.pmd.lang.ast.TokenMgrError
+import net.sourceforge.pmd.lang.document.FileId
 import net.sourceforge.pmd.test.BaseTextComparisonTest
 import org.apache.commons.lang3.StringUtils
 import java.util.*
@@ -46,8 +47,8 @@ abstract class CpdTextComparisonTest(
      */
     @JvmOverloads
     fun doTest(fileBaseName: String, expectedSuffix: String = "", properties: Properties = defaultProperties()) {
-        super.doTest(fileBaseName, expectedSuffix) { sourceText ->
-            val sourceCode = SourceCode(SourceCode.StringCodeLoader(sourceText, "$fileBaseName$extensionIncludingDot"))
+        super.doTest(fileBaseName, expectedSuffix) { fileData ->
+            val sourceCode = sourceCodeOf(fileData)
             val tokens = Tokens().also {
                 val tokenizer = newTokenizer(properties)
                 tokenizer.tokenize(sourceCode, it)
@@ -58,30 +59,38 @@ abstract class CpdTextComparisonTest(
     }
 
     @JvmOverloads
-    fun expectTokenMgrError(source: String, properties: Properties = defaultProperties()): TokenMgrError =
-            shouldThrow {
-                newTokenizer(properties).tokenize(sourceCodeOf(source), Tokens())
-            }
+    fun expectTokenMgrError(
+        source: String,
+        fileName: FileId = FileId.UNKNOWN,
+        properties: Properties = defaultProperties()
+    ): TokenMgrError =
+        expectTokenMgrError(FileData(fileName, source), properties)
+
+    @JvmOverloads
+    fun expectTokenMgrError(fileData: FileData, properties: Properties = defaultProperties()): TokenMgrError =
+        shouldThrow {
+            newTokenizer(properties).tokenize(sourceCodeOf(fileData), Tokens())
+        }
 
 
     private fun StringBuilder.format(tokens: Tokens) {
-        appendHeader().appendln()
+        appendHeader().appendLine()
 
         var curLine = -1
 
         for (token in tokens.iterator()) {
 
             if (token === TokenEntry.EOF) {
-                append("EOF").appendln()
+                append("EOF").appendLine()
                 continue
             }
 
             if (curLine != token.beginLine) {
                 curLine = token.beginLine
-                append('L').append(curLine).appendln()
+                append('L').append(curLine).appendLine()
             }
 
-            formatLine(token).appendln()
+            formatLine(token).appendLine()
         }
     }
 
@@ -105,6 +114,7 @@ abstract class CpdTextComparisonTest(
     private fun StringBuilder.formatLine(escapedImage: String, bcol: Any, ecol: Any): StringBuilder {
         var colStart = length
         colStart = append(Indent).append(escapedImage).padCol(colStart, Col0Width)
+        @Suppress("UNUSED_VALUE")
         colStart = append(Indent).append(bcol).padCol(colStart, Col1Width)
         return append(ecol)
     }
@@ -139,11 +149,13 @@ abstract class CpdTextComparisonTest(
 
 
     fun sourceCodeOf(str: String): SourceCode = SourceCode(SourceCode.StringCodeLoader(str))
+    fun sourceCodeOf(fileData: FileData): SourceCode =
+        SourceCode(SourceCode.StringCodeLoader(fileData.fileText, fileData.fileName.getAbsolutePath()))
 
     fun tokenize(tokenizer: Tokenizer, str: String): Tokens =
-            Tokens().also {
-                tokenizer.tokenize(sourceCodeOf(str), it)
-            }
+        Tokens().also {
+            tokenizer.tokenize(sourceCodeOf(str), it)
+        }
 
     private companion object {
         const val Indent = "    "

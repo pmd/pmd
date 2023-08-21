@@ -8,6 +8,8 @@
         <description>ok, uses a two arg constructor</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 class Foo {
     private SimpleDateFormat sdf = new SimpleDateFormat("pattern", Locale.US);
 }
@@ -17,7 +19,9 @@ class Foo {
     <test-code>
         <description>bad, using the single-arg constructor</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
+import java.text.SimpleDateFormat;
 class Foo {
     private SimpleDateFormat sdf = new SimpleDateFormat("pattern");
 }

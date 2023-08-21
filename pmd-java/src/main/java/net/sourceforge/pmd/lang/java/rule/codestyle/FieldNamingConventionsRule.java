@@ -4,12 +4,20 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
+import static net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility.V_PUBLIC;
+import static net.sourceforge.pmd.lang.java.ast.JModifier.FINAL;
+import static net.sourceforge.pmd.lang.java.ast.JModifier.STATIC;
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
+
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
@@ -29,6 +37,11 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionRule<AST
                            .defaultValues("serialVersionUID", "serialPersistentFields")
                            .build();
 
+    private static final Set<String> MAKE_FIELD_STATIC_CLASS_ANNOT =
+        setOf(
+            "lombok.experimental.UtilityClass"
+        );
+
 
     private final PropertyDescriptor<Pattern> publicConstantFieldRegex = defaultProp("public constant").defaultValue("[A-Z][A-Z_0-9]*").build();
     private final PropertyDescriptor<Pattern> constantFieldRegex = defaultProp("constant").desc("Regex which applies to non-public static final field names").defaultValue("[A-Z][A-Z_0-9]*").build();
@@ -39,6 +52,7 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionRule<AST
 
 
     public FieldNamingConventionsRule() {
+        super(ASTFieldDeclaration.class, ASTEnumConstant.class);
         definePropertyDescriptor(publicConstantFieldRegex);
         definePropertyDescriptor(constantFieldRegex);
         definePropertyDescriptor(enumConstantRegex);
@@ -46,11 +60,7 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionRule<AST
         definePropertyDescriptor(staticFieldRegex);
         definePropertyDescriptor(defaultFieldRegex);
         definePropertyDescriptor(EXCLUDED_NAMES);
-
-        addRuleChainVisit(ASTFieldDeclaration.class);
-        addRuleChainVisit(ASTEnumConstant.class);
     }
-
 
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
@@ -58,12 +68,14 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionRule<AST
             if (getProperty(EXCLUDED_NAMES).contains(id.getVariableName())) {
                 continue;
             }
-
-            if (node.isFinal() && node.isStatic()) {
-                checkMatches(id, node.isPublic() ? publicConstantFieldRegex : constantFieldRegex, data);
-            } else if (node.isFinal()) {
+            ASTAnyTypeDeclaration enclosingType = node.getEnclosingType();
+            boolean isFinal = node.hasModifiers(FINAL);
+            boolean isStatic = node.hasModifiers(STATIC) || JavaAstUtils.hasAnyAnnotation(enclosingType, MAKE_FIELD_STATIC_CLASS_ANNOT);
+            if (isFinal && isStatic) {
+                checkMatches(id, node.getVisibility() == V_PUBLIC ? publicConstantFieldRegex : constantFieldRegex, data);
+            } else if (isFinal) {
                 checkMatches(id, finalFieldRegex, data);
-            } else if (node.isStatic()) {
+            } else if (isStatic) {
                 checkMatches(id, staticFieldRegex, data);
             } else {
                 checkMatches(id, defaultFieldRegex, data);
@@ -94,16 +106,22 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionRule<AST
         return CAMEL_CASE;
     }
 
+    @Override
+    String nameExtractor(ASTVariableDeclaratorId node) {
+        return node.getName();
+    }
 
     @Override
     String kindDisplayName(ASTVariableDeclaratorId node, PropertyDescriptor<Pattern> descriptor) {
-        ASTFieldDeclaration field = (ASTFieldDeclaration) node.getNthParent(2);
 
-        if (field.isFinal() && field.isStatic()) {
-            return field.isPublic() ? "public constant" : "constant";
-        } else if (field.isFinal()) {
+        boolean isFinal = node.hasModifiers(FINAL);
+        boolean isStatic = node.hasModifiers(STATIC);
+
+        if (isFinal && isStatic) {
+            return node.getVisibility() == V_PUBLIC ? "public constant" : "constant";
+        } else if (isFinal) {
             return "final field";
-        } else if (field.isStatic()) {
+        } else if (isStatic) {
             return "static field";
         } else {
             return "field";

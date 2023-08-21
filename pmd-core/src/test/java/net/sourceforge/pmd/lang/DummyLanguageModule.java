@@ -4,154 +4,127 @@
 
 package net.sourceforge.pmd.lang;
 
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 
-import org.jaxen.Navigator;
-
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.DummyNode;
-import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.ast.xpath.AbstractASTXPathHandler;
-import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
-import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
-import net.sourceforge.pmd.lang.rule.AbstractRuleViolationFactory;
-import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
-import net.sourceforge.pmd.lang.rule.RuleChainVisitor;
-
-import net.sf.saxon.expr.XPathContext;
-import net.sf.saxon.sxpath.IndependentContext;
+import net.sourceforge.pmd.lang.ast.Parser;
+import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
+import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextRegion;
+import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
+import net.sourceforge.pmd.reporting.ViolationDecorator;
 
 /**
  * Dummy language used for testing PMD.
  */
-public class DummyLanguageModule extends BaseLanguageModule {
+public class DummyLanguageModule extends SimpleLanguageModuleBase {
 
     public static final String NAME = "Dummy";
     public static final String TERSE_NAME = "dummy";
+    private static final String PARSER_THROWS = "parserThrows";
 
     public DummyLanguageModule() {
-        super(NAME, null, TERSE_NAME, "dummy");
-        addVersion("1.0", new Handler());
-        addVersion("1.1", new Handler());
-        addVersion("1.2", new Handler());
-        addVersion("1.3", new Handler());
-        addVersion("1.4", new Handler());
-        addVersion("1.5", new Handler(), "5");
-        addVersion("1.6", new Handler(), "6");
-        addDefaultVersion("1.7", new Handler(), "7");
-        addVersion("1.8", new Handler(), "8");
+        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("dummy")
+                              .addVersion("1.0")
+                              .addVersion("1.1")
+                              .addVersion("1.2")
+                              .addVersion("1.3")
+                              .addVersion("1.4")
+                              .addVersion("1.5", "5")
+                              .addVersion("1.6", "6")
+                              .addDefaultVersion("1.7", "7")
+                              .addVersion(PARSER_THROWS)
+                              .addVersion("1.8", "8"), new Handler());
+    }
+
+    public static DummyLanguageModule getInstance() {
+        return (DummyLanguageModule) Objects.requireNonNull(LanguageRegistry.PMD.getLanguageByFullName(NAME));
+    }
+
+    public LanguageVersion getVersionWhereParserThrows() {
+        return getVersion(PARSER_THROWS);
+    }
+
+    public static class Handler extends AbstractPmdLanguageVersionHandler {
+
+        @Override
+        public Parser getParser() {
+            return task -> {
+                if (task.getLanguageVersion().getVersion().equals(PARSER_THROWS)) {
+                    throw new ParseException("ohio");
+                }
+                return readLispNode(task);
+            };
+        }
+
+        @Override
+        public ViolationDecorator getViolationDecorator() {
+            return (node, data) -> data.put(RuleViolation.PACKAGE_NAME, "foo");
+        }
     }
 
     /**
-     * @deprecated for removal with PMD 7. A language dependent rule chain visitor is not needed anymore.
-     *      See {@link RuleChainVisitor}.
+     * Creates a tree of nodes that corresponds to the nesting structures
+     * of parentheses in the text. The image of each node is also populated.
+     * This is useful to create non-trivial trees with all the relevant
+     * data (eg coordinates) set properly.
+     *
+     * Eg {@code (a(b)x(c))} will create a tree with a node "a", with two
+     * children "b" and "c". "x" is ignored. The node "a" is not the root
+     * node, it has a {@link DummyRootNode} as parent, whose image is "".
      */
-    @Deprecated
-    public static class DummyRuleChainVisitor extends AbstractRuleChainVisitor {
-        @Override
-        protected void visit(Rule rule, Node node, RuleContext ctx) {
-            rule.apply(Arrays.asList(node), ctx);
-        }
+    public static DummyRootNode readLispNode(ParserTask task) {
+        TextDocument document = task.getTextDocument();
+        final DummyRootNode root = new DummyRootNode().withTaskInfo(task);
+        root.setRegion(document.getEntireRegion());
 
-        @Override
-        protected void indexNodes(List<Node> nodes, RuleContext ctx) {
-            for (Node n : nodes) {
-                indexNode(n);
-                List<Node> childs = new ArrayList<>();
-                for (int i = 0; i < n.getNumChildren(); i++) {
-                    childs.add(n.getChild(i));
+        DummyNode top = root;
+        int lastNodeStart = 0;
+        Chars text = document.getText();
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            if (c == '(') {
+                DummyNode node = new DummyNode();
+                node.setParent(top);
+                top.addChild(node, top.getNumChildren());
+                // setup coordinates, temporary (will be completed when node closes)
+                node.setRegion(TextRegion.caretAt(i));
+
+                // cut out image
+                if (top.getImage() == null) {
+                    // image may be non null if this is not the first child of 'top'
+                    // eg in (a(b)x(c)), the image of the parent is set to "a".
+                    // When we're processing "(c", we ignore "x".
+                    String image = text.substring(lastNodeStart, i);
+                    top.setImage(image);
                 }
-                indexNodes(childs, ctx);
+                lastNodeStart = i + 1;
+                // node is the top of the stack now
+                top = node;
+            } else if (c == ')') {
+                if (top == null) {
+                    throw new ParseException("Unbalanced parentheses: " + text);
+                }
+
+                top.setRegion(TextRegion.fromBothOffsets(top.getTextRegion().getStartOffset(), i));
+
+                if (top.getImage() == null) {
+                    // cut out image (if node doesn't have children it hasn't been populated yet)
+                    String image = text.substring(lastNodeStart, i);
+                    top.setImage(image);
+                    lastNodeStart = i + 1;
+                }
+                top = top.getParent();
             }
         }
+        if (top != root) {
+            throw new ParseException("Unbalanced parentheses: " + text);
+        }
+        return root;
     }
 
-    public static class Handler extends AbstractLanguageVersionHandler {
-        public static class TestFunctions {
-            public static boolean typeIs(final XPathContext context, final String fullTypeName) {
-                return false;
-            }
-        }
-
-        @Override
-        public XPathHandler getXPathHandler() {
-            return new AbstractASTXPathHandler() {
-                @Override
-                public void initialize(IndependentContext context) {
-                    super.initialize(context, LanguageRegistry.getLanguage(DummyLanguageModule.NAME), TestFunctions.class);
-                }
-
-                @Override
-                public void initialize() {
-                }
-
-                @Override
-                public Navigator getNavigator() {
-                    return new DocumentNavigator();
-                }
-            };
-        }
-
-        @Override
-        public RuleViolationFactory getRuleViolationFactory() {
-            return new RuleViolationFactory();
-        }
-
-        @Override
-        public Parser getParser(ParserOptions parserOptions) {
-            return new AbstractParser(parserOptions) {
-                @Override
-                public Node parse(String fileName, Reader source) throws ParseException {
-                    DummyNode node = new DummyNode(1);
-                    node.testingOnlySetBeginLine(1);
-                    node.testingOnlySetBeginColumn(1);
-                    node.setImage("Foo");
-                    return node;
-                }
-
-                @Override
-                public Map<Integer, String> getSuppressMap() {
-                    return Collections.emptyMap();
-                }
-
-                @Override
-                public boolean canParse() {
-                    return true;
-                }
-
-                @Override
-                protected TokenManager createTokenManager(Reader source) {
-                    return null;
-                }
-            };
-        }
-    }
-
-    public static class RuleViolationFactory extends AbstractRuleViolationFactory {
-        @Override
-        protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message) {
-            return createRuleViolation(rule, ruleContext, node, message, 0, 0);
-        }
-
-        @Override
-        protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message,
-                int beginLine, int endLine) {
-            ParametricRuleViolation<Node> rv = new ParametricRuleViolation<Node>(rule, ruleContext, node, message) {
-                public String getPackageName() {
-                    this.packageName = "foo"; // just for testing variable expansion
-                    return super.getPackageName();
-                }
-            };
-            rv.setLines(beginLine, endLine);
-            return rv;
-        }
-    }
 }

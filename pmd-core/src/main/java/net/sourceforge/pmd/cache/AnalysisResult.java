@@ -4,16 +4,8 @@
 
 package net.sourceforge.pmd.cache;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.Adler32;
-import java.util.zip.CheckedInputStream;
-
-import org.apache.commons.io.IOUtils;
 
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
@@ -35,28 +27,8 @@ public class AnalysisResult {
         this.violations = violations;
     }
 
-    public AnalysisResult(final File sourceFile) {
-        this(computeFileChecksum(sourceFile), new ArrayList<RuleViolation>());
-    }
-
-    private static long computeFileChecksum(final File sourceFile) {
-        try (
-            CheckedInputStream stream = new CheckedInputStream(
-                new BufferedInputStream(Files.newInputStream(sourceFile.toPath())), new Adler32());
-        ) {
-            // Just read it, the CheckedInputStream will update the checksum on it's own
-            IOUtils.skipFully(stream, sourceFile.length());
-
-            return stream.getChecksum().getValue();
-        } catch (final IOException ignored) {
-            // We don't really care, if it's unreadable
-            // the analysis will fail and report the error on it's own since the checksum won't match
-        }
-
-        // we couldn't read the file, maybe the file doesn't exist
-        // in any case, we can't use the cache. Returning here the timestamp should make
-        // sure, we see that the file changed every time we analyze it.
-        return System.currentTimeMillis();
+    public AnalysisResult(final long fileChecksum) {
+        this(fileChecksum, new ArrayList<>());
     }
 
     public long getFileChecksum() {

@@ -22,9 +22,9 @@
           "endline": 1,
           "endcolumn": 2,
           "description": "blah",
-          "rule": "Foo",
+          "rule": "Boo",
           "ruleset": "RuleSet",
-          "priority": 5
+          "priority": 1
         }
       ]
     }

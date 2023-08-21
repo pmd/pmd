@@ -8,12 +8,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-
-import net.sourceforge.pmd.PMD;
 
 public class MockedFileWriter implements FileWriter {
 
@@ -49,7 +45,6 @@ public class MockedFileWriter implements FileWriter {
     }
 
     public static String normalizeLineSeparators(String s) {
-        return s.replaceAll(Pattern.quote(IOUtils.LINE_SEPARATOR_WINDOWS), IOUtils.LINE_SEPARATOR_UNIX)
-                .replaceAll(Pattern.quote(IOUtils.LINE_SEPARATOR_UNIX), PMD.EOL);
+        return s.replaceAll("\\R", System.lineSeparator());
     }
 }

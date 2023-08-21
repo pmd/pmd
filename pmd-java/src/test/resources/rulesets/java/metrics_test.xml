@@ -9,6 +9,12 @@
         Metrics testing ruleset. Each metric is tested through a dummy rule.
     </description>
 
+    <rule name="CognitiveComplexityTest"
+        language="java"
+        message = "''{0}'' has value {1}."
+        class="net.sourceforge.pmd.lang.java.metrics.impl.CognitiveComplexityTestRule">
+    </rule>
+
     <rule name="CycloTest"
           language="java"
           message = "''{0}'' has value {1}."

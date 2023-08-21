@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.plsql.rule.codestyle;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class AvoidTabCharacterTest extends PmdRuleTst {
+class AvoidTabCharacterTest extends PmdRuleTst {
     // no additional unit tests
 }

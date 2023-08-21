@@ -78,11 +78,6 @@ The examples below won't repeat this taskdef element, as this is always required
       <td>No</td>
     </tr>
     <tr>
-      <td>shortFilenames</td>
-      <td>Places truncated filenames in the report.  This can reduce your report file size by 15%-20%.</td>
-      <td>No</td>
-    </tr>
-    <tr>
       <td>failuresPropertyName</td>
       <td>A property name to plug the number of rule violations into when the task finishes</td>
       <td>No</td>
@@ -119,6 +114,14 @@ The examples below won't repeat this taskdef element, as this is always required
       <td>
         Setting this property to true disables Incremental Analysis, even if <i>cacheLocation</i> is provided.
         You can use this to explicitly turn off suggestions to use incremental analysis, or for testing purposes.
+      </td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>threads</td>
+      <td>
+        Sets the number of threads used by PMD. Set threads to <code>0</code> to disable multi-threading processing.
+        Default: 1
       </td>
       <td>No</td>
     </tr>
@@ -179,7 +182,7 @@ automatically and the latest language version is used.
 
     <target name="pmd">
         <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-        <pmd shortFilenames="true">
+        <pmd>
             <ruleset>rulesets/java/quickstart.xml</ruleset>
             <ruleset>config/my-ruleset.xml</ruleset>
             <fileset dir="/usr/local/j2sdk1.4.1_01/src/">
@@ -190,6 +193,11 @@ automatically and the latest language version is used.
 
 `fileset` nested element - specify the actual java source files, that PMD should analyze. You can use multiple
 fileset elements. See [FileSet](https://ant.apache.org/manual/Types/fileset.html) for the syntax and usage.
+
+`relativizePathsWith` nested element - configures the paths relative to which directories are rendered in the report.
+This option allows shortening directories in the report; without it, paths are rendered as absolute paths.
+The option can be repeated, in which case the shortest relative path will be used.
+It is a [path-like structure](https://ant.apache.org/manual/using.html#path).
 
 ### Language version selection
 
@@ -203,43 +211,12 @@ sense with Java 1.7 and later. If your project uses Java 1.5, then you should co
 accordingly and this rule won't be executed.
 
 The specific version of a language to be used is selected via the `sourceLanguage`
-nested element. Possible values are:
+nested element. Example:
 
-    <sourceLanguage name="apex" version="48"/>
-    <sourceLanguage name="ecmascript" version="3"/>
-    <sourceLanguage name="java" version="1.3"/>
-    <sourceLanguage name="java" version="1.4"/>
-    <sourceLanguage name="java" version="1.5"/>
-    <sourceLanguage name="java" version="5"/> <!-- alias for 1.5 -->
-    <sourceLanguage name="java" version="1.6"/>
-    <sourceLanguage name="java" version="6"/> <!-- alias for 1.6 -->
-    <sourceLanguage name="java" version="1.7"/>
-    <sourceLanguage name="java" version="7"/> <!-- alias for 1.7 -->
-    <sourceLanguage name="java" version="1.8"/>
-    <sourceLanguage name="java" version="8"/> <!-- alias for 1.8 -->
-    <sourceLanguage name="java" version="9"/>
-    <sourceLanguage name="java" version="1.9"/> <!-- alias for 9 -->
-    <sourceLanguage name="java" version="10"/>
-    <sourceLanguage name="java" version="1.10"/> <!-- alias for 10 -->
-    <sourceLanguage name="java" version="11"/>
-    <sourceLanguage name="java" version="12"/>
-    <sourceLanguage name="java" version="13"/>
-    <sourceLanguage name="java" version="13-preview"/>
-    <sourceLanguage name="java" version="14"/> <!-- this is the default -->
-    <sourceLanguage name="java" version="14-preview"/>
-    <sourceLanguage name="jsp" version=""/>
-    <sourceLanguage name="modelica" version=""/>
-    <sourceLanguage name="pom" version=""/>
-    <sourceLanguage name="plsql" version=""/>
-    <sourceLanguage name="scala" version="2.10"/>
-    <sourceLanguage name="scala" version="2.11"/>
-    <sourceLanguage name="scala" version="2.12"/>
-    <sourceLanguage name="scala" version="2.13"/> <!-- this is the default -->
-    <sourceLanguage name="vf" version=""/>
-    <sourceLanguage name="vm" version=""/>
-    <sourceLanguage name="wsdl" version=""/>
-    <sourceLanguage name="xml" version=""/>
-    <sourceLanguage name="xsl" version=""/>
+    <sourceLanguage name="java" version="17"/>
+
+The available versions depend on the language. You can get a list of the currently supported language versions
+via the CLI option `--help`.
 
 ### Postprocessing the report file with XSLT
 
@@ -397,7 +374,7 @@ An HTML report with the "linkPrefix" and "linePrefix" properties:
 
     <target name="pmd">
         <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-        <pmd rulesetfiles="rulesets/java/quickstart.xml" shortFilenames="true">
+        <pmd rulesetfiles="rulesets/java/quickstart.xml">
             <formatter type="html" toFile="pmd_report.html">
                 <param name="linkPrefix" value="https://maven.apache.org/plugins/maven-pmd-plugin/xref/"/>
                 <param name="linePrefix" value="L"/>
@@ -405,6 +382,9 @@ An HTML report with the "linkPrefix" and "linePrefix" properties:
             <fileset dir="/usr/local/j2sdk1.4.1_01/src/">
                 <include name="java/lang/*.java"/>
             </fileset>
+            <relativizePathsWith>
+                <pathelement location="/usr/local/j2sdk1.4.1_01/src/"/>
+            </relativizePathsWith>
         </pmd>
     </target>
 

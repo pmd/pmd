@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -14,22 +13,21 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.benchmark.TimeTracker;
-import net.sourceforge.pmd.benchmark.TimedOperation;
-import net.sourceforge.pmd.benchmark.TimedOperationCategory;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.cache.ChecksumAware;
-import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.internal.util.PredicateUtil;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.document.FileId;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.RuleReference;
-import net.sourceforge.pmd.util.filter.Filter;
-import net.sourceforge.pmd.util.filter.Filters;
+import net.sourceforge.pmd.lang.rule.XPathRule;
 
 /**
  * This class represents a collection of rules along with some optional filter
@@ -39,7 +37,7 @@ import net.sourceforge.pmd.util.filter.Filters;
  */
 public class RuleSet implements ChecksumAware {
 
-    private static final Logger LOG = Logger.getLogger(RuleSet.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(RuleSet.class);
     private static final String MISSING_RULE = "Missing rule";
     private static final String MISSING_RULESET_DESCRIPTION = "RuleSet description must not be null";
     private static final String MISSING_RULESET_NAME = "RuleSet name must not be null";
@@ -58,7 +56,7 @@ public class RuleSet implements ChecksumAware {
     private final List<Pattern> excludePatterns;
     private final List<Pattern> includePatterns;
 
-    private final Filter<File> filter;
+    private final Predicate<String> filter;
 
     /**
      * Creates a new RuleSet with the given checksum.
@@ -76,12 +74,8 @@ public class RuleSet implements ChecksumAware {
         excludePatterns = Collections.unmodifiableList(new ArrayList<>(builder.excludePatterns));
         includePatterns = Collections.unmodifiableList(new ArrayList<>(builder.includePatterns));
 
-        // Remapping back to string is not great but the only way to keep the Filter API
-        // compatible in PMD 6. The Filter API can be replaced
-        // entirely with standard JDK Predicates in PMD 7, so we can forget about this until 7.0.0.
-
-        final Filter<String> regexFilter = Filters.buildRegexFilterIncludeOverExclude(getIncludePatterns(), getExcludePatterns());
-        filter = Filters.toNormalizedFileFilter(regexFilter);
+        final Predicate<String> regexFilter = PredicateUtil.buildRegexFilterIncludeOverExclude(includePatterns, excludePatterns);
+        filter = PredicateUtil.toNormalizedFileFilter(regexFilter);
     }
 
     public RuleSet(final RuleSet rs) {
@@ -98,6 +92,89 @@ public class RuleSet implements ChecksumAware {
         excludePatterns = rs.excludePatterns; // we can share immutable lists of immutable elements
         includePatterns = rs.includePatterns;
         filter = rs.filter; // filters are immutable, can be shared
+    }
+
+    /**
+     * Creates a new ruleset containing a single rule. The ruleset will
+     * have default description, name, and null file name.
+     *
+     * @param rule The rule being created
+     *
+     * @return The newly created RuleSet
+     */
+    public static RuleSet forSingleRule(final Rule rule) {
+        final long checksum;
+        if (rule instanceof XPathRule) {
+            checksum = ((XPathRule) rule).getXPathExpression().hashCode();
+        } else {
+            // TODO : Is this good enough? all properties' values + rule name
+            checksum = rule.getPropertiesByPropertyDescriptor().values().hashCode() * 31 + rule.getName().hashCode();
+        }
+
+        final RuleSetBuilder builder =
+            new RuleSetBuilder(checksum)
+                .withName(rule.getName())
+                .withDescription("RuleSet for " + rule.getName());
+        builder.addRule(rule);
+        return builder.build();
+    }
+
+
+    /**
+     * Creates a new ruleset with the given metadata such as name, description,
+     * fileName, exclude/include patterns are used. The rules are taken from the given
+     * collection.
+     *
+     * <p><strong>Note:</strong> The rule instances are shared between the collection
+     * and the new ruleset (copy-by-reference). This might lead to concurrency issues,
+     * if the rules of the collection are also referenced by other rulesets and used
+     * in different threads.
+     * </p>
+     *
+     * @param name            the name of the ruleset
+     * @param description     the description
+     * @param fileName        the filename
+     * @param excludePatterns list of exclude patterns
+     * @param includePatterns list of include patterns, that override the exclude patterns
+     * @param rules           the collection with the rules to add to the new ruleset
+     *
+     * @return the new ruleset
+     *
+     * @throws NullPointerException If any parameter is null, or the collections contain null elements
+     */
+    public static RuleSet create(String name,
+                                 String description,
+                                 String fileName,
+                                 Collection<Pattern> excludePatterns,
+                                 Collection<Pattern> includePatterns,
+                                 Iterable<? extends Rule> rules) {
+        RuleSetBuilder builder = new RuleSetBuilder(0L); // TODO: checksum missing
+        builder.withName(name)
+               .withDescription(description)
+               .withFileName(fileName)
+               .replaceFileExclusions(excludePatterns)
+               .replaceFileInclusions(includePatterns);
+        for (Rule rule : rules) {
+            builder.addRule(rule);
+        }
+        return builder.build();
+    }
+
+    /**
+     * Creates a copy of the given ruleset. All properties like name, description, fileName
+     * and exclude/include patterns are copied.
+     *
+     * <p><strong>Note:</strong> The rule instances are shared between the original
+     * and the new ruleset (copy-by-reference). This might lead to concurrency issues,
+     * if the original ruleset and the new ruleset are used in different threads.
+     * </p>
+     *
+     * @param original the original rule set to copy from
+     *
+     * @return the copy
+     */
+    public static RuleSet copy(RuleSet original) {
+        return new RuleSet(original);
     }
 
     /* package */ static class RuleSetBuilder {
@@ -141,9 +218,10 @@ public class RuleSet implements ChecksumAware {
             // check for duplicates - adding more than one rule with the same name will
             // be problematic - see #RuleSet.getRuleByName(String)
             for (Rule rule : rules) {
-                if (rule.getName().equals(newRule.getName()) && rule.getLanguage() == newRule.getLanguage()) {
-                    LOG.warning("The rule with name " + newRule.getName() + " is duplicated. "
-                            + "Future versions of PMD will reject to load such rulesets.");
+                if (rule.getName().equals(newRule.getName()) && rule.getLanguage().equals(newRule.getLanguage())) {
+                    LOG.warn("The rule with name {} is duplicated. "
+                            + "Future versions of PMD will reject to load such rulesets.",
+                            newRule.getName());
                     break;
                 }
             }
@@ -159,7 +237,7 @@ public class RuleSet implements ChecksumAware {
          */
         Rule getExistingRule(final Rule rule) {
             for (Rule r : rules) {
-                if (r.getName().equals(rule.getName()) && r.getLanguage() == rule.getLanguage()) {
+                if (r.getName().equals(rule.getName()) && r.getLanguage().equals(rule.getLanguage())) {
                     return r;
                 }
             }
@@ -194,7 +272,7 @@ public class RuleSet implements ChecksumAware {
 
             for (final Iterator<Rule> it = rules.iterator(); it.hasNext();) {
                 final Rule r = it.next();
-                if (r.getName().equals(rule.getName()) && r.getLanguage() == rule.getLanguage()) {
+                if (r.getName().equals(rule.getName()) && r.getLanguage().equals(rule.getLanguage())) {
                     it.remove();
                 }
             }
@@ -266,7 +344,7 @@ public class RuleSet implements ChecksumAware {
          * @return The same builder, for a fluid programming interface
          */
         public RuleSetBuilder addRuleSet(final RuleSet ruleSet) {
-            rules.addAll(rules.size(), ruleSet.getRules());
+            rules.addAll(ruleSet.getRules());
             return this;
         }
 
@@ -471,23 +549,12 @@ public class RuleSet implements ChecksumAware {
             while (iterator.hasNext()) {
                 Rule rule = iterator.next();
                 if (rule.getPriority().compareTo(minimumPriority) > 0) {
-                    LOG.fine("Removing rule " + rule.getName() + " due to priority: " + rule.getPriority() + " required: " + minimumPriority);
+                    LOG.debug("Removing rule {} due to priority: {} required: {}",
+                            rule.getName(), rule.getPriority(), minimumPriority);
                     iterator.remove();
                 }
             }
         }
-    }
-
-    /**
-     * @deprecated Use {@link #getFileExclusions()}
-     */
-    @Deprecated
-    public List<String> getExcludePatterns() {
-        List<String> excludes = new ArrayList<>();
-        for (Pattern p : excludePatterns) {
-            excludes.add(p.pattern());
-        }
-        return excludes;
     }
 
     /**
@@ -536,58 +603,31 @@ public class RuleSet implements ChecksumAware {
      * which also matches the file. In other words, <code>include</code>
      * patterns override <code>exclude</code> patterns.
      *
-     * @param file
-     *            the source file to check
+     * @param qualFileName the source path to check
+     *
      * @return <code>true</code> if the file should be checked,
-     *         <code>false</code> otherwise
+     *     <code>false</code> otherwise
      */
-    public boolean applies(File file) {
-        return file == null || filter.filter(file);
+    // TODO get rid of this overload
+    @InternalApi
+    public boolean applies(FileId qualFileName) {
+        return filter.test(qualFileName.getAbsolutePath());
     }
 
     /**
-     * Triggers that start lifecycle event on each rule in this ruleset. Some
-     * rules perform initialization tasks on start.
+     * Check if a given source file should be checked by rules in this RuleSet.
+     * A file should not be checked if there is an <code>exclude</code> pattern
+     * which matches the file, unless there is an <code>include</code> pattern
+     * which also matches the file. In other words, <code>include</code>
+     * patterns override <code>exclude</code> patterns.
      *
-     * @param ctx
-     *            the current context
-     */
-    public void start(RuleContext ctx) {
-        for (Rule rule : rules) {
-            rule.start(ctx);
-        }
-    }
-
-    /**
-     * Executes the rules in this ruleset against each of the given nodes.
+     * @param file a text file
      *
-     * @param acuList
-     *            the node list, usually the root nodes like compilation units
-     * @param ctx
-     *            the current context
+     * @return <code>true</code> if the file should be checked,
+     *     <code>false</code> otherwise
      */
-    public void apply(List<? extends Node> acuList, RuleContext ctx) {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.RULE)) {
-            for (Rule rule : rules) {
-                if (!rule.isRuleChain() && applies(rule, ctx.getLanguageVersion())) {
-
-                    try (TimedOperation rto = TimeTracker.startOperation(TimedOperationCategory.RULE, rule.getName())) {
-                        rule.apply(acuList, ctx);
-                    } catch (RuntimeException e) {
-                        if (ctx.isIgnoreExceptions()) {
-                            ctx.getReport().addError(new Report.ProcessingError(e, String.valueOf(ctx.getSourceCodeFile())));
-
-                            if (LOG.isLoggable(Level.WARNING)) {
-                                LOG.log(Level.WARNING, "Exception applying rule " + rule.getName() + " on file "
-                                        + ctx.getSourceCodeFile() + ", continuing with next rule", e);
-                            }
-                        } else {
-                            throw e;
-                        }
-                    }
-                }
-            }
-        }
+    boolean applies(TextFile file) {
+        return applies(file.getFileId());
     }
 
     /**
@@ -602,26 +642,19 @@ public class RuleSet implements ChecksumAware {
      *
      * @return <code>true</code> if the given rule matches the given language,
      *         which means, that the rule would be executed.
+     *
+     * @deprecated This is internal API, removed in PMD 7. You should
+     * not use a ruleset directly.
      */
+    @Deprecated
+    @InternalApi
     public static boolean applies(Rule rule, LanguageVersion languageVersion) {
         final LanguageVersion min = rule.getMinimumLanguageVersion();
         final LanguageVersion max = rule.getMaximumLanguageVersion();
+        assert rule.getLanguage() != null : "Rule has no language " + rule;
         return rule.getLanguage().equals(languageVersion.getLanguage())
                 && (min == null || min.compareTo(languageVersion) <= 0)
                 && (max == null || max.compareTo(languageVersion) >= 0);
-    }
-
-    /**
-     * Triggers the end lifecycle event on each rule in the ruleset. Some rules
-     * perform a final summary calculation or cleanup in the end.
-     *
-     * @param ctx
-     *            the current context
-     */
-    public void end(RuleContext ctx) {
-        for (Rule rule : rules) {
-            rule.end(ctx);
-        }
     }
 
     /**
@@ -665,18 +698,6 @@ public class RuleSet implements ChecksumAware {
     }
 
     /**
-     * @deprecated Use {@link #getFileInclusions()}
-     */
-    @Deprecated
-    public List<String> getIncludePatterns() {
-        List<String> includes = new ArrayList<>();
-        for (Pattern p : includePatterns) {
-            includes.add(p.pattern());
-        }
-        return includes;
-    }
-
-    /**
      * Returns the file exclusion patterns as an unmodifiable list.
      */
     public List<Pattern> getFileExclusions() {
@@ -690,71 +711,20 @@ public class RuleSet implements ChecksumAware {
         return includePatterns;
     }
 
-    /**
-     * Does any Rule for the given Language use the DFA layer?
-     *
-     * @param language
-     *            The Language.
-     * @return <code>true</code> if a Rule for the Language uses the DFA layer,
-     *         <code>false</code> otherwise.
-     * @deprecated See {@link Rule#isDfa()}
-     */
-    @Deprecated
-    public boolean usesDFA(Language language) {
-        for (Rule r : rules) {
-            if (r.getLanguage().equals(language) && r.isDfa()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Does any Rule for the given Language use Type Resolution?
-     *
-     * @param language
-     *            The Language.
-     * @return <code>true</code> if a Rule for the Language uses Type
-     *         Resolution, <code>false</code> otherwise.
-     * @deprecated See {@link Rule#isTypeResolution()}
-     */
-    @Deprecated
-    public boolean usesTypeResolution(Language language) {
-        for (Rule r : rules) {
-            if (r.getLanguage().equals(language) && r.isTypeResolution()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
-    /**
-     * Does any Rule for the given Language use multi-file analysis?
-     *
-     * @param language
-     *            The Language.
-     *
-     * @return {@code true} if a Rule for the Language uses multi file analysis,
-     *         {@code false} otherwise.
-     * @deprecated See {@link Rule#isMultifile()}
-     */
-    @Deprecated
-    public boolean usesMultifile(Language language) {
-        for (Rule r : rules) {
-            if (r.getLanguage().equals(language) && r.isMultifile()) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     /**
      * Remove and collect any misconfigured rules.
+     * TODO remove this method. This mutates rulesets for nothing. Whether
+     *  a rule is dysfunctional or not should be checked when it is initialized.
      *
      * @param collector
      *            the removed rules will be added to this collection
+     *
+     * @deprecated This is internal API, removed in PMD 7. You should
+     * not use a ruleset directly.
      */
+    @Deprecated
+    @InternalApi
     public void removeDysfunctionalRules(Collection<Rule> collector) {
         Iterator<Rule> iter = rules.iterator();
 

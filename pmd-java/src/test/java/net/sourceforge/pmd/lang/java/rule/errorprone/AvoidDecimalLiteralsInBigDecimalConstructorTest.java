@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class AvoidDecimalLiteralsInBigDecimalConstructorTest extends PmdRuleTst {
+class AvoidDecimalLiteralsInBigDecimalConstructorTest extends PmdRuleTst {
     // no additional unit tests
 }

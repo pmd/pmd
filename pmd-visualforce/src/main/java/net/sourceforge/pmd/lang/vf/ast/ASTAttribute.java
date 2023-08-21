@@ -4,31 +4,20 @@
 
 package net.sourceforge.pmd.lang.vf.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTAttribute extends AbstractVFNode {
+public final class ASTAttribute extends AbstractVfNode {
 
     private String name;
 
-    @Deprecated
-    @InternalApi
-    public ASTAttribute(int id) {
+    ASTAttribute(int id) {
         super(id);
     }
 
-    @Deprecated
-    @InternalApi
-    public ASTAttribute(VfParser p, int id) {
-        super(p, id);
-    }
 
     public String getName() {
         return name;
     }
 
-    @Deprecated
-    @InternalApi
-    public void setName(String name) {
+    void setName(String name) {
         this.name = name;
     }
 
@@ -60,7 +49,7 @@ public class ASTAttribute extends AbstractVFNode {
     }
 
     @Override
-    public Object jjtAccept(VfParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVfVisitor(VfVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

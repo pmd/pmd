@@ -12,7 +12,7 @@ package net.sourceforge.pmd;
  * avoided in favor of {@link RulePriority#getPriority()} and
  * {@link RulePriority#valueOf(int)}
  *
- * @see <a href="http://pmd.sourceforge.net/pmd-5.1.2/rule-guidelines.html">How
+ * @see <a href="https://docs.pmd-code.org/latest/pmd_userdocs_extending_rule_guidelines.html">How
  *      to define rules priority</a>
  */
 public enum RulePriority {
@@ -92,6 +92,37 @@ public enum RulePriority {
             return RulePriority.values()[priority - 1];
         } catch (ArrayIndexOutOfBoundsException e) {
             return LOW;
+        }
+    }
+
+    /**
+     * Returns the priority which corresponds to the given number as returned by
+     * {@link RulePriority#getPriority()}. If the number is an invalid value,
+     * then null will be returned.
+     *
+     * @param priority The numeric priority value.
+     */
+    public static RulePriority valueOfNullable(int priority) {
+        try {
+            return RulePriority.values()[priority - 1];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Returns the priority which corresponds to the given number as returned by
+     * {@link RulePriority#getPriority()}. If the number is an invalid value,
+     * then null will be returned.
+     *
+     * @param priority The numeric priority value.
+     */
+    public static RulePriority valueOfNullable(String priority) {
+        try {
+            int integer = Integer.parseInt(priority);
+            return RulePriority.values()[integer - 1];
+        } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
+            return null;
         }
     }
 }

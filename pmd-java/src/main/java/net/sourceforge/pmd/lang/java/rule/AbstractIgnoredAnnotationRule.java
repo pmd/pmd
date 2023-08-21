@@ -23,12 +23,16 @@ public abstract class AbstractIgnoredAnnotationRule extends AbstractJavaRule {
 
     private final PropertyDescriptor<List<String>> ignoredAnnotationsDescriptor
         = stringListProperty("ignoredAnnotations")
-        .desc("Fully qualified names of the annotation types that should be ignored by this rule")
+        .desc(defaultIgnoredAnnotationsDescription())
         .defaultValue(defaultSuppressionAnnotations())
         .build();
 
     protected Collection<String> defaultSuppressionAnnotations() {
         return Collections.emptyList();
+    }
+
+    protected String defaultIgnoredAnnotationsDescription() {
+        return "Fully qualified names of the annotation types that should be ignored by this rule";
     }
 
     protected AbstractIgnoredAnnotationRule() {
@@ -44,6 +48,6 @@ public abstract class AbstractIgnoredAnnotationRule extends AbstractJavaRule {
      * @return <code>true</code> if the annotation has been found, otherwise <code>false</code>
      */
     protected boolean hasIgnoredAnnotation(Annotatable node) {
-        return node.isAnyAnnotationPresent(getProperty(ignoredAnnotationsDescriptor));
+        return getProperty(ignoredAnnotationsDescriptor).stream().anyMatch(node::isAnnotationPresent);
     }
 }

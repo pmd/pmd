@@ -6,20 +6,20 @@ package net.sourceforge.pmd.lang.apex.rule.errorprone;
 
 import java.util.List;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 public class MethodWithSameNameAsEnclosingClassRule extends AbstractApexRule {
 
-    public MethodWithSameNameAsEnclosingClassRule() {
-        setProperty(CODECLIMATE_CATEGORIES, "Style");
-        // Note: x10 as Apex has not automatic refactoring
-        setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 50);
-        setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
-
-        addRuleChainVisit(ASTUserClass.class);
+    @Override
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forTypes(ASTUserClass.class);
     }
+
 
     @Override
     public Object visit(ASTUserClass node, Object data) {

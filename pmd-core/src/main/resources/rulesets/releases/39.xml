@@ -13,7 +13,8 @@ This ruleset contains links to rules that are new in PMD v3.9
   <rule ref="rulesets/java/strings.xml/StringBufferInstantiationWithChar"/>
   <rule ref="rulesets/java/codesize.xml/NPathComplexity"/>
   <rule ref="rulesets/java/design.xml/UseCollectionIsEmpty"/>
-  <rule ref="rulesets/java/codesize.xml/NcssMethodCount"/>
-  <rule ref="rulesets/java/codesize.xml/NcssTypeCount"/>
-  <rule ref="rulesets/java/codesize.xml/NcssConstructorCount"/>
+<!--  Removed in 7.0.0: -->
+<!--  <rule ref="rulesets/java/codesize.xml/NcssMethodCount"/>-->
+<!--  <rule ref="rulesets/java/codesize.xml/NcssTypeCount"/>-->
+<!--  <rule ref="rulesets/java/codesize.xml/NcssConstructorCount"/>-->
 </ruleset>

@@ -4,23 +4,19 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import scala.meta.Term;
 
 /**
  * The ASTTermApplyUnary node implementation.
  */
-public class ASTTermApplyUnary extends AbstractScalaNode<Term.ApplyUnary> {
+public final class ASTTermApplyUnary extends AbstractScalaNode<Term.ApplyUnary> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTermApplyUnary(Term.ApplyUnary scalaNode) {
+    ASTTermApplyUnary(Term.ApplyUnary scalaNode) {
         super(scalaNode);
     }
 
     @Override
-    public <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data) {
+    protected <P, R> R acceptVisitor(ScalaParserVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

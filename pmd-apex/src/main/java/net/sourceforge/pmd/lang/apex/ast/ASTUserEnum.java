@@ -4,30 +4,33 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import apex.jorje.semantic.ast.compilation.UserEnum;
 
-public class ASTUserEnum extends ApexRootNode<UserEnum> {
+public final class ASTUserEnum extends BaseApexClass<UserEnum> {
+    private ApexQualifiedName qname;
 
-    @Deprecated
-    @InternalApi
-    public ASTUserEnum(UserEnum userEnum) {
+    ASTUserEnum(UserEnum userEnum) {
         super(userEnum);
     }
 
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
     @Override
-    public String getImage() {
-        String apexName = getDefiningType();
-        return apexName.substring(apexName.lastIndexOf('.') + 1);
-    }
+    public ApexQualifiedName getQualifiedName() {
+        if (qname == null) {
 
-    public ASTModifierNode getModifiers() {
-        return getFirstChildOfType(ASTModifierNode.class);
+            ASTUserClass parent = this.getFirstParentOfType(ASTUserClass.class);
+
+            if (parent != null) {
+                qname = ApexQualifiedName.ofNestedEnum(parent.getQualifiedName(), this);
+            } else {
+                qname = ApexQualifiedName.ofOuterEnum(this);
+            }
+        }
+
+        return qname;
     }
 }

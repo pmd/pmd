@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.apex.rule.codestyle;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class LocalVariableNamingConventionsTest extends PmdRuleTst {
+class LocalVariableNamingConventionsTest extends PmdRuleTst {
     // no additional unit tests
 }

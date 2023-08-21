@@ -4,35 +4,36 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.ObjectStreamField;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.concurrent.Callable;
 
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.function.ThrowingRunnable;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
+import net.sourceforge.pmd.lang.java.BaseParserTest;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMarkerAnnotation;
-import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
-import net.sourceforge.pmd.lang.java.symboltable.BaseNonParserTest;
 import net.sourceforge.pmd.lang.java.types.testdata.SomeClassWithAnon;
 
-public class TypeTestUtilTest extends BaseNonParserTest {
-
-    @Rule
-    public final ExpectedException expect = ExpectedException.none();
+class TypeTestUtilTest extends BaseParserTest {
 
     @Test
-    public void testIsAFallback() {
+    void testIsAFallback() {
 
         ASTClassOrInterfaceDeclaration klass =
             java.parse("package org; import java.io.Serializable; "
@@ -40,15 +41,32 @@ public class TypeTestUtilTest extends BaseNonParserTest {
                 .getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class);
 
 
-        Assert.assertNull(klass.getType());
-        Assert.assertTrue(TypeTestUtil.isA("org.FooBar", klass));
-        Assert.assertTrue(TypeTestUtil.isA("java.io.Serializable", klass));
-        Assert.assertTrue(TypeTestUtil.isA(Serializable.class, klass));
+        assertNull(klass.getType());
+        assertTrue(TypeTestUtil.isA("org.FooBar", klass));
+        assertTrue(TypeTestUtil.isA("java.io.Serializable", klass));
+        assertTrue(TypeTestUtil.isA(Serializable.class, klass));
+    }
+
+    @Test
+    void testIsAFallbackWithUnresolvedClassReference() { // != declaration
+
+        ASTAnnotation annot =
+            java.parse("import a.b.Test;"
+                           + "class FooBar { @Test void bar() {} }")
+                .getFirstDescendantOfType(ASTAnnotation.class);
+
+        assertTrue(TypeTestUtil.isA("a.b.Test", annot));
+        assertTrue(TypeOps.isUnresolved(annot.getTypeMirror()));
+
+        assertFalse(TypeTestUtil.isA(org.junit.Test.class, annot));
+        assertFalse(TypeTestUtil.isA("org.junit.Test", annot));
+        assertFalse(TypeTestUtil.isA(Override.class, annot));
+        assertFalse(TypeTestUtil.isA("java.lang.Override", annot));
     }
 
 
     @Test
-    public void testIsAFallbackEnum() {
+    void testIsAFallbackEnum() {
 
         ASTEnumDeclaration klass =
             java.parse("package org; "
@@ -56,8 +74,8 @@ public class TypeTestUtilTest extends BaseNonParserTest {
                 .getFirstDescendantOfType(ASTEnumDeclaration.class);
 
 
-        Assert.assertNull(klass.getType());
-        Assert.assertTrue(TypeTestUtil.isA("org.FooBar", klass));
+        assertNull(klass.getType());
+        assertTrue(TypeTestUtil.isA("org.FooBar", klass));
         assertIsStrictSubtype(klass, Iterable.class);
         assertIsStrictSubtype(klass, Enum.class);
         assertIsStrictSubtype(klass, Serializable.class);
@@ -66,7 +84,7 @@ public class TypeTestUtilTest extends BaseNonParserTest {
 
 
     @Test
-    public void testIsAnArrayClass() {
+    void testIsAnArrayClass() {
 
         ASTType arrayT =
             java.parse("import java.io.ObjectStreamField; "
@@ -82,20 +100,20 @@ public class TypeTestUtilTest extends BaseNonParserTest {
     }
 
     @Test
-    public void testIsAnAnnotationClass() {
+    void testIsAnAnnotationClass() {
 
         ASTType arrayT =
             java.parse("class Foo { org.junit.Test field; }")
                 .getFirstDescendantOfType(ASTType.class);
 
 
-        assertIsExactlyA(arrayT, Test.class);
+        assertIsExactlyA(arrayT, org.junit.Test.class);
         assertIsStrictSubtype(arrayT, Annotation.class);
         assertIsStrictSubtype(arrayT, Object.class);
     }
 
     @Test
-    public void testIsAPrimitiveArrayClass() {
+    void testIsAPrimitiveArrayClass() {
 
         ASTType arrayT =
             java.parse("import java.io.ObjectStreamField; "
@@ -111,9 +129,25 @@ public class TypeTestUtilTest extends BaseNonParserTest {
         assertIsStrictSubtype(arrayT, Object.class);
     }
 
+    @Test
+    void testIsAPrimitiveSubtype() {
+
+        ASTType arrayT =
+            java.parse("import java.io.ObjectStreamField; "
+                           + "class Foo { private static final int serialPersistentFields; }")
+                .getFirstDescendantOfType(ASTType.class);
+
+
+        assertIsExactlyA(arrayT, int.class);
+        assertIsNot(arrayT, long.class);
+        assertIsNot(arrayT, double.class);
+        assertIsNot(arrayT, float.class);
+        assertIsNot(arrayT, Object.class);
+    }
+
 
     @Test
-    public void testIsAFallbackAnnotation() {
+    void testIsAFallbackAnnotation() {
 
         ASTAnnotationTypeDeclaration klass =
             java.parse("package org; import foo.Stuff;"
@@ -121,35 +155,75 @@ public class TypeTestUtilTest extends BaseNonParserTest {
                 .getFirstDescendantOfType(ASTAnnotationTypeDeclaration.class);
 
 
-        Assert.assertNull(klass.getType());
-        Assert.assertTrue(TypeTestUtil.isA("org.FooBar", klass));
+        assertNull(klass.getType());
+        assertTrue(TypeTestUtil.isA("org.FooBar", klass));
         assertIsA(klass, Annotation.class);
         assertIsA(klass, Object.class);
     }
 
     @Test
-    public void testAnonClassTypeNPE() {
+    void testIsATypeVarWithUnresolvedBound() {
+        // a type var with an unresolved bound should not be considered
+        // a subtype of everything
+
+        ASTType field =
+            java.parse("class Foo<T extends Unresolved> {\n"
+                           + "\tT field;\n"
+                           + "}")
+                .descendants(ASTFieldDeclaration.class)
+                .firstOrThrow().getTypeNode();
+
+        assertIsA(field, Object.class);
+        assertIsNot(field, String.class);
+    }
+
+    @Test
+    void testIsAStringWithTypeArguments() {
+
+        ASTAnyTypeDeclaration klass =
+            java.parse("package org;"
+                           + "public class FooBar {}")
+                .getFirstDescendantOfType(ASTAnyTypeDeclaration.class);
+
+
+        assertThrows(IllegalArgumentException.class,
+                () -> TypeTestUtil.isA("java.util.List<java.lang.String>", klass));
+    }
+
+    @Test
+    void testIsAStringWithTypeArgumentsAnnotation() {
+
+        ASTAnyTypeDeclaration klass =
+            java.parse("package org;"
+                           + "public @interface FooBar {}")
+                .getFirstDescendantOfType(ASTAnyTypeDeclaration.class);
+
+
+        assertThrows(IllegalArgumentException.class, () ->
+            TypeTestUtil.isA("java.util.List<java.lang.String>", klass));
+    }
+
+    @Test
+    void testAnonClassTypeNPE() {
         // #2756
 
-        ASTAllocationExpression anon =
+        ASTAnonymousClassDeclaration anon =
             java.parseClass(SomeClassWithAnon.class)
-                .getFirstDescendantOfType(ASTAllocationExpression.class);
+                .getFirstDescendantOfType(ASTAnonymousClassDeclaration.class);
 
 
-        Assert.assertNotNull("Type should be resolved", anon.getType());
-        Assert.assertTrue("Anon class", anon.isAnonymousClass());
-        Assert.assertTrue("Anon class", anon.getType().isAnonymousClass());
-        Assert.assertTrue("Should be a Runnable", TypeTestUtil.isA(Runnable.class, anon));
+        assertTrue(anon.getSymbol().isAnonymousClass(), "Anon class");
+        assertTrue(TypeTestUtil.isA(Runnable.class, anon), "Should be a Runnable");
 
         // This is not a canonical name, so we give up early
-        Assert.assertFalse(TypeTestUtil.isA(SomeClassWithAnon.class.getName() + "$1", anon));
-        Assert.assertFalse(TypeTestUtil.isExactlyA(SomeClassWithAnon.class.getName() + "$1", anon));
+        assertFalse(TypeTestUtil.isA(SomeClassWithAnon.class.getName() + "$1", anon));
+        assertFalse(TypeTestUtil.isExactlyA(SomeClassWithAnon.class.getName() + "$1", anon));
 
         // this is the failure case: if the binary name doesn't match, we test the canoname, which was null
-        Assert.assertFalse(TypeTestUtil.isA(Callable.class, anon));
-        Assert.assertFalse(TypeTestUtil.isA(Callable.class.getCanonicalName(), anon));
-        Assert.assertFalse(TypeTestUtil.isExactlyA(Callable.class, anon));
-        Assert.assertFalse(TypeTestUtil.isExactlyA(Callable.class.getCanonicalName(), anon));
+        assertFalse(TypeTestUtil.isA(Callable.class, anon));
+        assertFalse(TypeTestUtil.isA(Callable.class.getCanonicalName(), anon));
+        assertFalse(TypeTestUtil.isExactlyA(Callable.class, anon));
+        assertFalse(TypeTestUtil.isExactlyA(Callable.class.getCanonicalName(), anon));
     }
 
     /**
@@ -159,55 +233,36 @@ public class TypeTestUtilTest extends BaseNonParserTest {
      * simple names.
      */
     @Test
-    public void testIsAFallbackAnnotationSimpleNameImport() {
-        ASTName annotation = java.parse("package org; import foo.Stuff; @Stuff public class FooBar {}")
-                                 .getFirstDescendantOfType(ASTMarkerAnnotation.class).getFirstChildOfType(ASTName.class);
+    void testIsAFallbackAnnotationSimpleNameImport() {
+        ASTAnnotation annotation = java.parse("package org; import foo.Stuff; @Stuff public class FooBar {}")
+                                       .getFirstDescendantOfType(ASTAnnotation.class);
 
-        Assert.assertNull(annotation.getType());
-        Assert.assertTrue(TypeTestUtil.isA("foo.Stuff", annotation));
-        Assert.assertFalse(TypeTestUtil.isA("other.Stuff", annotation));
-        // if the searched class name is not fully qualified, then the search should still be successful
-        Assert.assertTrue(TypeTestUtil.isA("Stuff", annotation));
+        assertNull(annotation.getType());
+        assertTrue(TypeTestUtil.isA("foo.Stuff", annotation));
+        assertFalse(TypeTestUtil.isA("other.Stuff", annotation));
+        // we know it's not Stuff, it's foo.Stuff
+        assertFalse(TypeTestUtil.isA("Stuff", annotation));
     }
 
     @Test
-    public void testNullNode() {
-        Assert.assertFalse(TypeTestUtil.isA(String.class, null));
-        Assert.assertFalse(TypeTestUtil.isA("java.lang.String", null));
-        Assert.assertFalse(TypeTestUtil.isExactlyA(String.class, null));
-        Assert.assertFalse(TypeTestUtil.isExactlyA("java.lang.String", null));
+    void testNullNode() {
+        assertFalse(TypeTestUtil.isA(String.class, (TypeNode) null));
+        assertFalse(TypeTestUtil.isA("java.lang.String", (JTypeMirror) null));
+        assertFalse(TypeTestUtil.isA("java.lang.String", (TypeNode) null));
+        assertFalse(TypeTestUtil.isExactlyA(String.class, (TypeNode) null));
+        assertFalse(TypeTestUtil.isExactlyA("java.lang.String", null));
     }
 
     @Test
-    public void testNullClass() {
-        final ASTName node = java.parse("package org; import foo.Stuff; @Stuff public class FooBar {}")
-                                 .getFirstDescendantOfType(ASTMarkerAnnotation.class).getFirstChildOfType(ASTName.class);
-        Assert.assertNotNull(node);
+    void testNullClass() {
+        final ASTAnnotation node = java.parse("package org; import foo.Stuff; @Stuff public class FooBar {}")
+                                       .getFirstDescendantOfType(ASTAnnotation.class);
+        assertNotNull(node);
 
-        Assert.assertThrows(NullPointerException.class, new ThrowingRunnable() {
-            @Override
-            public void run() {
-                TypeTestUtil.isA((String) null, node);
-            }
-        });
-        Assert.assertThrows(NullPointerException.class, new ThrowingRunnable() {
-            @Override
-            public void run() {
-                TypeTestUtil.isA((Class<?>) null, node);
-            }
-        });
-        Assert.assertThrows(NullPointerException.class, new ThrowingRunnable() {
-            @Override
-            public void run() {
-                TypeTestUtil.isExactlyA((Class<?>) null, node);
-            }
-        });
-        Assert.assertThrows(NullPointerException.class, new ThrowingRunnable() {
-            @Override
-            public void run() {
-                TypeTestUtil.isExactlyA((String) null, node);
-            }
-        });
+        assertThrows(NullPointerException.class, () -> TypeTestUtil.isA((String) null, node));
+        assertThrows(NullPointerException.class, () -> TypeTestUtil.isA((Class<?>) null, node));
+        assertThrows(NullPointerException.class, () -> TypeTestUtil.isExactlyA((Class<?>) null, node));
+        assertThrows(NullPointerException.class, () -> TypeTestUtil.isExactlyA((String) null, node));
     }
 
     private void assertIsA(TypeNode node, Class<?> type) {
@@ -234,14 +289,14 @@ public class TypeTestUtilTest extends BaseNonParserTest {
     }
 
     private void assertIsA(TypeNode node, Class<?> type, boolean exactly, boolean expectTrue) {
-        Assert.assertEquals("TypeTestUtil::isA with class arg: " + type.getCanonicalName(),
-                            expectTrue,
-                            exactly ? TypeTestUtil.isExactlyA(type, node)
-                                    : TypeTestUtil.isA(type, node));
-        Assert.assertEquals("TypeTestUtil::isA with string arg: " + type.getCanonicalName(),
-                            expectTrue,
-                            exactly ? TypeTestUtil.isExactlyA(type.getCanonicalName(), node)
-                                    : TypeTestUtil.isA(type.getCanonicalName(), node));
+        assertEquals(expectTrue,
+                     exactly ? TypeTestUtil.isExactlyA(type, node)
+                             : TypeTestUtil.isA(type, node),
+                "TypeTestUtil::isA with class arg: " + type.getCanonicalName());
+        assertEquals(expectTrue,
+                     exactly ? TypeTestUtil.isExactlyA(type.getCanonicalName(), node)
+                             : TypeTestUtil.isA(type.getCanonicalName(), node),
+                "TypeTestUtil::isA with string arg: " + type.getCanonicalName());
     }
 
 

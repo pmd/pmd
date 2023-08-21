@@ -9,24 +9,46 @@ author: Tom Copeland <tom@infoether.org>
 
 ### Salesforce / Apex Language Module
 
+*   October 2020 - [Salesforce CLI Scanner Custom XPath Rules - Part 1](https://bobbuzzard.blogspot.com/2020/10/salesforce-cli-scanner-custom-xpath.html),
+    [Salesforce CLI Scanner Custom XPath Rules - Part 2](http://bobbuzzard.blogspot.com/2020/10/salesforce-cli-scanner-custom-xpath_11.html)
+    by [Keir Bowden](https://twitter.com/bob_buzzard)
+
 *   March 2020 - [Helping Salesforce developers create readable and maintainable Apex code](https://gearset.com/blog/helping-sf-developers-create-readable-and-maintainable-apex-code)
 
 *   July 2019 - [Apex PMD \| Static code analysis - Apex Hours](https://youtu.be/34PxAHtAavU)
 
-*   June 2019 - [Pluralsight](https://www.pluralsight.com/authors/don-robins) Course about leveraging PMD usage for Salesforce by [Robert Sösemann](https://github.com/rsoesemann) (Apex Language Module Contributor) [Play by Play: Automated Code Analysis in Salesforce - a Tools Deep-Dive](https://www.pluralsight.com/courses/play-by-play-automated-code-analysis-in-salesforce)
+*   June 2019 - [Pluralsight](https://www.pluralsight.com/authors/don-robins) Course about leveraging PMD usage for
+    Salesforce by [Robert Sösemann](https://github.com/rsoesemann) (Apex Language Module Contributor)
+    [Play by Play: Automated Code Analysis in Salesforce - a Tools Deep-Dive](https://www.pluralsight.com/courses/play-by-play-automated-code-analysis-in-salesforce)
 
-*   June 2018 - [Salesforce Way Podcast](https://salesforceway.com/podcast/podcast/) with [Robert Sösemann](https://github.com/rsoesemann) [Static Code Analysis with PMD for Apex](https://salesforceway.com/podcast/podcast/static-code-analysis-with-pmd-for-apex/)
+*   June 2018 - [Salesforce Way Podcast](https://salesforceway.com/podcast/podcast/) with
+    [Robert Sösemann](https://github.com/rsoesemann) [Static Code Analysis with PMD for Apex](https://salesforceway.com/podcast/podcast/static-code-analysis-with-pmd-for-apex/)
 
-* January 2018 - [Webinar: How to contribute Apex rules to PMD with Robert Sösemann](https://www.youtube.com/watch?v=7_Ex9WWS_3Q)
+*   January 2018 - [Webinar: How to contribute Apex rules to PMD with Robert Sösemann](https://www.youtube.com/watch?v=7_Ex9WWS_3Q)
 
-*   August 2017 - Webinar about how to use PMD with The Welkin Suite Salesforce IDE - Author [Robert Sösemann](https://github.com/rsoesemann) - [Improving your Apex Code Quality with PMD in The Welkin Suite](https://www.youtube.com/watch?v=Ypyiy5b6huc)
+*   August 2017 - Webinar about how to use PMD with The Welkin Suite Salesforce IDE - Author
+    [Robert Sösemann](https://github.com/rsoesemann) - [Improving your Apex Code Quality with PMD in The Welkin Suite](https://www.youtube.com/watch?v=Ypyiy5b6huc)
 
-*   November 2016 - Recording of [Robert Sösemann](https://github.com/rsoesemann)'s Session at Salesforce Dreamforce Conference about enforcing Clean Code in the Salesforce world using PMD and other tools [Clean Apex Code with Automatic Code Metrics](https://www.youtube.com/watch?v=bW7m6y6bEug)
+*   November 2016 - Recording of [Robert Sösemann](https://github.com/rsoesemann)'s Session at Salesforce Dreamforce
+    Conference about enforcing Clean Code in the Salesforce world using PMD and other tools
+    [Clean Apex Code with Automatic Code Metrics](https://www.youtube.com/watch?v=bW7m6y6bEug)
 
 
 ### PMD in general and other Language Modules
 
-*   May 2019 - [Code quality assurance with PMD – An extensible static code analyser for Java and other languages](https://www.datarespons.com/code-quality-assurance-with-pmd/)
+*   April 2022 - Prediction of who should refactor the code, research available at
+    <https://github.com/rkipp/DSCI644-2022-RefactoringRanking>.
+
+*   February 2021 - Artem Krosheninnikov's talk about Quality Assurance Automation:
+    [Artem Krosheninnikov, Wrike - How static analysis can help in QAA processes](
+    https://www.youtube.com/watch?v=L42zH5ne074)
+
+*   December 2020 - Jeroen Borgers' talk about finding performance bugs with PMD:
+    [J-Fall Virtual 2020: Jeroen Borgers - Fixing your performance and concurrency bugs before they bite you](
+    https://www.youtube.com/watch?v=Z_sT38KTRNk)
+
+*   May 2019 - [Code quality assurance with PMD – An extensible static code analyser for Java and other languages](
+    https://www.datarespons.com/code-quality-assurance-with-pmd/)
 
 *   February 2012 - Romain Pelisse's lightning talk at FOSDEM 2012 about "PMD5: What can it do for you?".
     [Video recording is available](http://video.fosdem.org/2012/lightningtalks/PMD5.webm).

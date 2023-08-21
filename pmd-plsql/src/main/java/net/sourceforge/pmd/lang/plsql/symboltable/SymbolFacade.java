@@ -6,11 +6,16 @@ package net.sourceforge.pmd.lang.plsql.symboltable;
 
 import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
 
-public class SymbolFacade {
-    public void initializeWith(ASTInput node) {
+public final class SymbolFacade {
+
+    private SymbolFacade() {
+
+    }
+
+    public static void process(ASTInput node) {
         ScopeAndDeclarationFinder sc = new ScopeAndDeclarationFinder();
-        node.jjtAccept(sc, null);
+        node.acceptVisitor(sc, null);
         OccurrenceFinder of = new OccurrenceFinder();
-        node.jjtAccept(of, null);
+        node.acceptVisitor(of, null);
     }
 }

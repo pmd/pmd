@@ -6,7 +6,7 @@
 
     <test-code>
         <description>A too complex procedure which triggers NcssObjectCountRule</description>
-        <rule-property name="minimum">1.0</rule-property>
+        <rule-property name="minimum">1</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 CREATE OR REPLACE PACKAGE BODY pkg_test_unreserved_keyword AS

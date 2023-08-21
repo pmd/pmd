@@ -4,57 +4,52 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
+
 
 /**
  * Represents a primitive type.
  *
- * <pre>
+ * <pre class="grammar">
  *
- * PrimitiveType ::= "boolean" | "char" | "byte" | "short" | "int" | "long" | "float" | "double"
+ * PrimitiveType ::= {@link ASTAnnotation Annotation}* ("boolean" | "char" | "byte" | "short" | "int" | "long" | "float" | "double")
  *
  * </pre>
  */
-public class ASTPrimitiveType extends AbstractJavaTypeNode implements Dimensionable {
+public final class ASTPrimitiveType extends AbstractJavaTypeNode implements ASTType {
 
-    private int arrayDepth;
+    private PrimitiveTypeKind kind;
 
-    @InternalApi
-    @Deprecated
-    public ASTPrimitiveType(int id) {
+    ASTPrimitiveType(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTPrimitiveType(JavaParser p, int id) {
-        super(p, id);
+    void setKind(PrimitiveTypeKind kind) {
+        assert this.kind == null : "Cannot set kind multiple times";
+        this.kind = kind;
     }
 
-    public boolean isBoolean() {
-        return "boolean".equals(getImage());
+    public PrimitiveTypeKind getKind() {
+        assert kind != null : "Primitive kind not set for " + this;
+        return kind;
     }
 
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    @Deprecated
+    public String getImage() {
+        return null;
+    }
+
+    @Override
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
-    @Deprecated
-    public void bumpArrayDepth() {
-        arrayDepth++;
-    }
-
     @Override
-    @Deprecated
-    public int getArrayDepth() {
-        return arrayDepth;
+    public @NonNull JPrimitiveType getTypeMirror() {
+        return (JPrimitiveType) super.getTypeMirror();
     }
-
-    @Override
-    @Deprecated
-    public boolean isArray() {
-        return arrayDepth > 0;
-    }
-
 }

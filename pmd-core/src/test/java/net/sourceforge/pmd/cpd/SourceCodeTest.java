@@ -4,21 +4,21 @@
 
 package net.sourceforge.pmd.cpd;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.SourceCode.FileCodeLoader;
 
-public class SourceCodeTest {
+class SourceCodeTest {
     private static final String BASE_RESOURCE_PATH = "src/test/resources/net/sourceforge/pmd/cpd/files/";
 
     private static final String SAMPLE_CODE = "Line 1\n" + "Line 2\n" + "Line 3\n" + "Line 4\n";
 
     @Test
-    public void testSlice() {
+    void testSlice() {
         SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader(SAMPLE_CODE, "Foo.java"));
         assertEquals("Foo.java", sourceCode.getFileName());
 
@@ -31,7 +31,7 @@ public class SourceCodeTest {
     }
 
     @Test
-    public void testEncodingDetectionFromBOM() throws Exception {
+    void testEncodingDetectionFromBOM() throws Exception {
         FileCodeLoader loader = new SourceCode.FileCodeLoader(new File(BASE_RESOURCE_PATH + "file_with_utf8_bom.java"),
                 "ISO-8859-1");
 
@@ -41,7 +41,7 @@ public class SourceCodeTest {
     }
 
     @Test
-    public void testEncodingIsNotChangedWhenThereIsNoBOM() throws Exception {
+    void testEncodingIsNotChangedWhenThereIsNoBOM() throws Exception {
         FileCodeLoader loader = new SourceCode.FileCodeLoader(
                 new File(BASE_RESOURCE_PATH + "file_with_ISO-8859-1_encoding.java"), "ISO-8859-1");
 

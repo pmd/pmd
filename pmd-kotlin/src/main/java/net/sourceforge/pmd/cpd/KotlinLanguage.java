@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.cpd;
 
+import net.sourceforge.pmd.lang.kotlin.KotlinLanguageModule;
+
 /**
  * Language implementation for Kotlin
  */
@@ -13,6 +15,6 @@ public class KotlinLanguage extends AbstractLanguage {
      * Creates a new Kotlin Language instance.
      */
     public KotlinLanguage() {
-        super("Kotlin", "kotlin", new KotlinTokenizer(), ".kt");
+        super(KotlinLanguageModule.NAME, KotlinLanguageModule.TERSE_NAME, new KotlinTokenizer(), KotlinLanguageModule.EXTENSIONS);
     }
 }

@@ -23,7 +23,7 @@ public class Foo {
     public void foo() {}
 
     public static void main(String args[]) {
-        String k, l, m;
+        String k, l, m; int x = 0;
 
         bar();
 
@@ -69,9 +69,9 @@ public class Foo {
         <description>Full example</description>
         <expected-problems>3</expected-problems>
         <expected-messages>
-            <message>'Foo' has value 58 highest 40.</message>
+            <message>'Foo' has value 58.</message>
             <message>'Foo#foo()' has value 1.</message>
-            <message>'Foo#main(String)' has value 40.</message>
+            <message>'Foo#main(String[])' has value 40.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -80,7 +80,7 @@ public class Foo {
         <description>Empty method</description>
         <expected-problems>2</expected-problems>
         <expected-messages>
-            <message>'Foo' has value 5 highest 3.</message>
+            <message>'Foo' has value 5.</message>
             <message>'Foo#foo()' has value 3.</message>
         </expected-messages>
         <code><![CDATA[
@@ -96,7 +96,7 @@ public class Foo {
         <description>Empty class</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'Foo' has value 2 highest 0.</message>
+            <message>'Foo' has value 2.</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
@@ -108,7 +108,7 @@ public class Foo {
         <description>Switch</description>
         <expected-problems>2</expected-problems>
         <expected-messages>
-            <message>'Foo' has value 12 highest 10.</message>
+            <message>'Foo' has value 12.</message>
             <message>'Foo#foo()' has value 10.</message>
         </expected-messages>
         <code><![CDATA[

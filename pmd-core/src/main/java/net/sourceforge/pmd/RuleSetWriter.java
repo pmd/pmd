@@ -9,8 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
@@ -22,16 +21,17 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
+import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -43,15 +43,9 @@ import net.sourceforge.pmd.properties.PropertyTypeId;
  * file.
  */
 public class RuleSetWriter {
-    private static final Logger LOG = Logger.getLogger(RuleSetWriter.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(RuleSetWriter.class);
 
     public static final String RULESET_2_0_0_NS_URI = "http://pmd.sourceforge.net/ruleset/2.0.0";
-
-    /**
-     * @deprecated use {@link #RULESET_2_0_0_NS_URI} instead
-     */
-    @Deprecated // To be removed in PMD 7.0.0
-    public static final String RULESET_NS_URI = RULESET_2_0_0_NS_URI;
 
     private final OutputStream outputStream;
     private Document document;
@@ -62,7 +56,7 @@ public class RuleSetWriter {
     }
 
     public void close() {
-        IOUtils.closeQuietly(outputStream);
+        IOUtil.closeQuietly(outputStream);
     }
 
     public void write(RuleSet ruleSet) {
@@ -81,7 +75,7 @@ public class RuleSetWriter {
                 transformerFactory.setAttribute("indent-number", 3);
             } catch (IllegalArgumentException iae) {
                 // ignore it, specific to one parser
-                LOG.log(Level.FINE, "Couldn't set indentation", iae);
+                LOG.debug("Couldn't set indentation", iae);
             }
             Transformer transformer = transformerFactory.newTransformer();
             transformer.setOutputProperty(OutputKeys.METHOD, "xml");
@@ -105,12 +99,12 @@ public class RuleSetWriter {
         Element descriptionElement = createDescriptionElement(ruleSet.getDescription());
         ruleSetElement.appendChild(descriptionElement);
 
-        for (String excludePattern : ruleSet.getExcludePatterns()) {
-            Element excludePatternElement = createExcludePatternElement(excludePattern);
+        for (Pattern excludePattern : ruleSet.getFileExclusions()) {
+            Element excludePatternElement = createExcludePatternElement(excludePattern.pattern());
             ruleSetElement.appendChild(excludePatternElement);
         }
-        for (String includePattern : ruleSet.getIncludePatterns()) {
-            Element includePatternElement = createIncludePatternElement(includePattern);
+        for (Pattern includePattern : ruleSet.getFileInclusions()) {
+            Element includePatternElement = createIncludePatternElement(includePattern.pattern());
             ruleSetElement.appendChild(includePatternElement);
         }
         for (Rule rule : ruleSet.getRules()) {
@@ -169,7 +163,6 @@ public class RuleSetWriter {
                     return null;
                 }
             } else {
-                Language language = ruleReference.getOverriddenLanguage();
                 LanguageVersion minimumLanguageVersion = ruleReference.getOverriddenMinimumLanguageVersion();
                 LanguageVersion maximumLanguageVersion = ruleReference.getOverriddenMaximumLanguageVersion();
                 Boolean deprecated = ruleReference.isOverriddenDeprecated();
@@ -185,18 +178,18 @@ public class RuleSetWriter {
                         .getOverriddenPropertiesByPropertyDescriptor();
                 List<String> examples = ruleReference.getOverriddenExamples();
 
-                return createSingleRuleElement(language, minimumLanguageVersion, maximumLanguageVersion, deprecated,
-                        name, null, ref, message, externalInfoUrl, null, null, null, null, description, priority,
+                return createSingleRuleElement(null, minimumLanguageVersion, maximumLanguageVersion, deprecated,
+                        name, null, ref, message, externalInfoUrl, null, description, priority,
                         propertyDescriptors, propertiesByPropertyDescriptor, examples);
             }
         } else {
-            return createSingleRuleElement(rule instanceof ImmutableLanguage ? null : rule.getLanguage(),
-                    rule.getMinimumLanguageVersion(), rule.getMaximumLanguageVersion(), rule.isDeprecated(),
-                    rule.getName(), rule.getSince(), null, rule.getMessage(), rule.getExternalInfoUrl(),
-                    rule.getRuleClass(), rule.isDfa(), rule.isTypeResolution(), rule.isMultifile(),
-                    rule.getDescription(),
-                    rule.getPriority(), rule.getPropertyDescriptors(), rule.getPropertiesByPropertyDescriptor(),
-                    rule.getExamples());
+            return createSingleRuleElement(rule.getLanguage(),
+                                           rule.getMinimumLanguageVersion(), rule.getMaximumLanguageVersion(), rule.isDeprecated(),
+                                           rule.getName(), rule.getSince(), null, rule.getMessage(), rule.getExternalInfoUrl(),
+                                           rule.getRuleClass(),
+                                           rule.getDescription(),
+                                           rule.getPriority(), rule.getPropertyDescriptors(), rule.getPropertiesByPropertyDescriptor(),
+                                           rule.getExamples());
         }
     }
 
@@ -208,12 +201,12 @@ public class RuleSetWriter {
 
     private Element createSingleRuleElement(Language language, LanguageVersion minimumLanguageVersion,
             LanguageVersion maximumLanguageVersion, Boolean deprecated, String name, String since, String ref,
-            String message, String externalInfoUrl, String clazz, Boolean dfa, Boolean typeResolution,
-            Boolean multifile, // NOPMD: TODO multifile
+            String message, String externalInfoUrl, String clazz,
             String description, RulePriority priority, List<PropertyDescriptor<?>> propertyDescriptors,
             Map<PropertyDescriptor<?>, Object> propertiesByPropertyDescriptor, List<String> examples) {
         Element ruleElement = createRuleElement();
-        if (language != null) {
+        // language is now a required attribute, unless this is a rule reference
+        if (clazz != null) {
             ruleElement.setAttribute("language", language.getTerseName());
         }
         if (minimumLanguageVersion != null) {
@@ -230,9 +223,6 @@ public class RuleSetWriter {
         setIfNonNull(message, ruleElement, "message");
         setIfNonNull(clazz, ruleElement, "class");
         setIfNonNull(externalInfoUrl, ruleElement, "externalInfoUrl");
-        setIfNonNull(dfa, ruleElement, "dfa");
-        setIfNonNull(typeResolution, ruleElement, "typeResolution");
-        //TODO multifile: setIfNonNull(multifile, ruleElement, "multifile");
 
         if (description != null) {
             Element descriptionElement = createDescriptionElement(description);

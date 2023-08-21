@@ -4,36 +4,44 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTInitializer extends AbstractJavaNode {
+/**
+ * A class or instance initializer. Don't confuse with {@link ASTVariableInitializer}.
+ *
+ * <pre class="grammar">
+ *
+ * Initializer ::= "static"? {@link ASTBlock Block}
+ *
+ * </pre>
+ *
+ */
+public final class ASTInitializer extends AbstractJavaNode implements ASTBodyDeclaration {
 
     private boolean isStatic;
 
-    @InternalApi
-    @Deprecated
-    public ASTInitializer(int id) {
+    ASTInitializer(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTInitializer(JavaParser p, int id) {
-        super(p, id);
-    }
 
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
+
 
     public boolean isStatic() {
         return isStatic;
     }
 
-    @InternalApi
-    @Deprecated
-    public void setStatic() {
+    void setStatic() {
         isStatic = true;
     }
+
+    /**
+     * Returns the body of this initializer.
+     */
+    public ASTBlock getBody() {
+        return (ASTBlock) getChild(0);
+    }
+
 }

@@ -4,23 +4,19 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import scala.meta.Lit;
 
 /**
  * The ASTLitChar node implementation.
  */
-public class ASTLitChar extends AbstractScalaNode<Lit.Char> {
+public final class ASTLitChar extends AbstractScalaNode<Lit.Char> {
 
-    @Deprecated
-    @InternalApi
-    public ASTLitChar(Lit.Char scalaNode) {
+    ASTLitChar(Lit.Char scalaNode) {
         super(scalaNode);
     }
 
     @Override
-    public <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data) {
+    protected <P, R> R acceptVisitor(ScalaParserVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

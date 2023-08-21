@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.apex.ast.ASTLiteralExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
@@ -35,9 +36,7 @@ public class ApexBadCryptoRule extends AbstractApexRule {
     private final Set<String> potentiallyStaticBlob = new HashSet<>();
 
     public ApexBadCryptoRule() {
-        setProperty(CODECLIMATE_CATEGORIES, "Security");
-        setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
-        setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
+        addRuleChainVisit(ASTUserClass.class);
     }
 
     @Override
@@ -106,7 +105,18 @@ public class ApexBadCryptoRule extends AbstractApexRule {
     }
 
     private void reportIfHardCoded(Object data, Object potentialIV) {
-        if (potentialIV instanceof ASTVariableExpression) {
+        if (potentialIV instanceof ASTMethodCallExpression) {
+            ASTMethodCallExpression expression = (ASTMethodCallExpression) potentialIV;
+            if (expression.getNumChildren() > 1) {
+                Object potentialStaticIV = expression.getChild(1);
+                if (potentialStaticIV instanceof ASTLiteralExpression) {
+                    ASTLiteralExpression variable = (ASTLiteralExpression) potentialStaticIV;
+                    if (variable.isString()) {
+                        addViolation(data, variable);
+                    }
+                }
+            }
+        } else if (potentialIV instanceof ASTVariableExpression) {
             ASTVariableExpression variable = (ASTVariableExpression) potentialIV;
             if (potentiallyStaticBlob.contains(Helper.getFQVariableName(variable))) {
                 addViolation(data, variable);

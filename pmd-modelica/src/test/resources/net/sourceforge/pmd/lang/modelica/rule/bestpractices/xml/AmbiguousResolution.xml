@@ -68,7 +68,7 @@ end Test;
         ]]></code>
     </test-code>
 
-    <test-code regressionTest="false">
+    <test-code disabled="true">
         <description>Invalid example: suspicious reference to X</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[

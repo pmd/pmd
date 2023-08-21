@@ -4,17 +4,17 @@
 
 package net.sourceforge.pmd.cpd;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Properties;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
-public class CPPTokenizerTest extends CpdTextComparisonTest {
+class CPPTokenizerTest extends CpdTextComparisonTest {
 
-    public CPPTokenizerTest() {
+    CPPTokenizerTest() {
         super(".cpp");
     }
 
@@ -36,102 +36,121 @@ public class CPPTokenizerTest extends CpdTextComparisonTest {
     }
 
     @Test
-    public void testUTFwithBOM() {
+    void testUTFwithBOM() {
         Tokenizer tokenizer = newTokenizer(dontSkipBlocks());
         Tokens tokens = tokenize(tokenizer, "\ufeffint start()\n{ int ret = 1;\nreturn ret;\n}\n");
         assertEquals(15, tokens.size());
     }
 
     @Test
-    public void testContinuation() {
+    void testContinuation() {
         doTest("continuation");
     }
 
     @Test
-    public void testContinuationInIdent() {
+    void testContinuationInIdent() {
         doTest("continuation_intra_token");
     }
 
     @Test
-    public void testContinuationBetweenTokens() {
+    void testContinuationBetweenTokens() {
         doTest("continuation_inter_token");
     }
 
     @Test
-    public void testUnicodeStringSupport() {
+    void testUnicodeStringSupport() {
         doTest("unicodeStrings");
     }
 
     @Test
-    public void testIgnoreBetweenSpecialComments() {
+    void testIgnoreBetweenSpecialComments() {
         doTest("specialComments");
     }
 
     @Test
-    public void testMultiLineMacros() {
+    void testMultiLineMacros() {
         doTest("multilineMacros");
     }
 
     @Test
-    public void testIdentifierValidChars() {
+    void testIdentifierValidChars() {
         doTest("identifierChars");
     }
 
     @Test
-    public void testWrongUnicodeInIdentifier() {
+    void testWrongUnicodeInIdentifier() {
         expectTokenMgrError(" void main() { int ⚜ = __; }");
     }
 
     @Test
-    public void testTokenizerWithSkipBlocks() {
+    void testTokenizerWithSkipBlocks() {
         doTest("simpleSkipBlocks", "_skipDefault", skipBlocks());
     }
 
     @Test
-    public void testTokenizerWithSkipBlocksPattern() {
+    void testTokenizerWithSkipBlocksPattern() {
         doTest("simpleSkipBlocks", "_skipDebug", skipBlocks("#if debug|#endif"));
     }
 
     @Test
-    public void testTokenizerWithoutSkipBlocks() {
+    void testTokenizerWithoutSkipBlocks() {
         doTest("simpleSkipBlocks", "_noSkip", dontSkipBlocks());
     }
 
     @Test
-    public void testAsm() {
+    void testAsm() {
         // ASM code containing the '@' character
         doTest("asm", "", dontSkipBlocks());
     }
 
     @Test
-    public void testPreprocessingDirectives() {
+    void testPreprocessingDirectives() {
         doTest("preprocessorDirectives");
     }
 
     @Test
-    public void testLiterals() {
+    void testLiterals() {
         doTest("literals");
     }
 
     @Test
-    public void testLexicalErrorFilename() {
+    void testLexicalErrorFilename() {
         expectTokenMgrError(sourceText("issue-1559"), dontSkipBlocks());
     }
 
 
     @Test
-    public void testRawStringLiterals() {
+    void testRawStringLiterals() {
         doTest("issue-1784");
     }
 
     @Test
-    public void testTabWidth() {
+    void testTabWidth() {
         doTest("tabWidth");
     }
 
+    @Test
+    void testLongListsOfNumbersAreNotIgnored() {
+        doTest("listOfNumbers");
+    }
+
+    @Test
+    void testLongListsOfNumbersAreIgnored() {
+        doTest("listOfNumbers", "_ignored", skipLiteralSequences());
+    }
+
+    @Test
+    void testLongListsOfNumbersAndIdentifiersAreIgnored() {
+        doTest("listOfNumbers", "_ignored_identifiers", skipIdentifierAndLiteralsSequences());
+    }
+
+    @Test
+    void testLongListsOfIdentifiersAreIgnored() {
+        doTest("listOfNumbers", "_ignored_identifiers", skipIdentifierSequences());
+    }
 
     private static Properties skipBlocks(String skipPattern) {
-        return properties(true, skipPattern);
+        return properties(true, skipPattern, false, false);
     }
 
     private static Properties skipBlocks() {
@@ -139,15 +158,29 @@ public class CPPTokenizerTest extends CpdTextComparisonTest {
     }
 
     private static Properties dontSkipBlocks() {
-        return properties(false, null);
+        return properties(false, null, false, false);
     }
 
-    private static Properties properties(boolean skipBlocks, String skipPattern) {
+    private static Properties skipLiteralSequences() {
+        return properties(false, null, true, false);
+    }
+
+    private static Properties skipIdentifierAndLiteralsSequences() {
+        return properties(false, null, true, true);
+    }
+
+    private static Properties skipIdentifierSequences() {
+        return properties(false, null, false, true);
+    }
+
+    private static Properties properties(boolean skipBlocks, String skipPattern, boolean skipLiteralSequences, boolean skipSequences) {
         Properties properties = new Properties();
         properties.setProperty(Tokenizer.OPTION_SKIP_BLOCKS, Boolean.toString(skipBlocks));
         if (skipPattern != null) {
             properties.setProperty(Tokenizer.OPTION_SKIP_BLOCKS_PATTERN, skipPattern);
         }
+        properties.setProperty(Tokenizer.OPTION_IGNORE_LITERAL_SEQUENCES, Boolean.toString(skipLiteralSequences));
+        properties.setProperty(Tokenizer.OPTION_IGNORE_IDENTIFIER_AND_LITERAL_SEQUENCES, Boolean.toString(skipSequences));
         return properties;
     }
 }

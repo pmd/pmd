@@ -5,15 +5,15 @@
 package net.sourceforge.pmd.cpd;
 
 import java.io.IOException;
-import java.io.StringWriter;
+import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Iterator;
 
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
+import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
+import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.util.StringUtil;
 
-public class SimpleRenderer implements Renderer, CPDRenderer {
+public class SimpleRenderer implements CPDReportRenderer {
 
     private String separator;
     private boolean trimLeadingWhitespace;
@@ -33,59 +33,45 @@ public class SimpleRenderer implements Renderer, CPDRenderer {
         separator = theSeparator;
     }
 
-    private void renderOn(Writer writer, Match match) throws IOException {
-
-        writer.append("Found a ").append(String.valueOf(match.getLineCount())).append(" line (").append(String.valueOf(match.getTokenCount()))
-                .append(" tokens) duplication in the following files: ").append(PMD.EOL);
-
-        for (Iterator<Mark> occurrences = match.iterator(); occurrences.hasNext();) {
-            Mark mark = occurrences.next();
-            writer.append("Starting at line ").append(String.valueOf(mark.getBeginLine())).append(" of ").append(mark.getFilename())
-                    .append(PMD.EOL);
-        }
-
-        writer.append(PMD.EOL); // add a line to separate the source from the desc above
-
-        String source = match.getSourceCodeSlice();
-
-        if (trimLeadingWhitespace) {
-            String[] lines = source.split("\n");
-            int trimDepth = StringUtil.maxCommonLeadingWhitespaceForAll(lines);
-            if (trimDepth > 0) {
-                lines = StringUtil.trimStartOn(lines, trimDepth);
-            }
-            for (String line : lines) {
-                writer.append(line).append(PMD.EOL);
-            }
-            return;
-        }
-
-        writer.append(source).append(PMD.EOL);
-    }
-
     @Override
-    public String render(Iterator<Match> matches) {
-        StringWriter writer = new StringWriter(300);
-        try {
-            render(matches, writer);
-        } catch (IOException ignored) {
-            // Not really possible with a StringWriter
-        }
-        return writer.toString();
-    }
-
-    @Override
-    public void render(Iterator<Match> matches, Writer writer) throws IOException {
+    public void render(CPDReport report, Writer writer0) throws IOException {
+        PrintWriter writer = new PrintWriter(writer0);
+        Iterator<Match> matches = report.getMatches().iterator();
         if (matches.hasNext()) {
             renderOn(writer, matches.next());
         }
 
-        Match match;
         while (matches.hasNext()) {
-            match = matches.next();
-            writer.append(separator).append(PMD.EOL);
+            Match match = matches.next();
+            writer.println(separator);
             renderOn(writer, match);
         }
         writer.flush();
     }
+
+    private void renderOn(PrintWriter writer, Match match) throws IOException {
+
+        writer.append("Found a ").append(String.valueOf(match.getLineCount())).append(" line (").append(String.valueOf(match.getTokenCount()))
+                .append(" tokens) duplication in the following files: ").println();
+
+        for (Mark mark : match) {
+            writer.append("Starting at line ").append(String.valueOf(mark.getBeginLine())).append(" of ").append(mark.getFilename())
+                  .println();
+        }
+
+        writer.println(); // add a line to separate the source from the desc above
+
+        String source = match.getSourceCodeSlice();
+
+        if (trimLeadingWhitespace) {
+            for (Chars line : StringUtil.linesWithTrimIndent(source)) {
+                line.writeFully(writer);
+                writer.println();
+            }
+            return;
+        }
+
+        writer.println(source);
+    }
+
 }

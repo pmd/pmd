@@ -7,9 +7,13 @@
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
-        <version>6.30.0-SNAPSHOT</version>
-        <relativePath>../</relativePath>
+        <version>7.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
+
+    <properties>
+        <java.version>8</java.version>
+    </properties>
 
     <build>
         <resources>
@@ -19,6 +23,10 @@
             </resource>
         </resources>
         <plugins>
+            <plugin>
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr4-maven-plugin</artifactId>
+            </plugin>
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <configuration>
@@ -38,9 +46,11 @@
                         <phase>generate-sources</phase>
                         <configuration>
                             <target>
-                                <ant antfile="src/main/ant/alljavacc.xml">
-                                    <property name="target" value="${project.build.directory}/generated-sources/javacc" />
-                                    <property name="javacc.jar" value="${settings.localRepository}/net/java/dev/javacc/javacc/${javacc.version}/javacc-${javacc.version}.jar" />
+                                <ant antfile="${javacc.ant.wrapper}" target="alljavacc">
+                                    <property name="no-jjtree" value="true" /> <!-- This is a CPD module -->
+                                    <property name="lang-name" value="Ecmascript5" />
+                                    <property name="lang-terse-name" value="ecmascript5" />
+                                    <property name="javacc.jar" value="${javacc.jar}" />
                                 </ant>
                             </target>
                         </configuration>
@@ -68,6 +78,14 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <configuration>
+                    <suppressionsLocation>pmd-javascript-checkstyle-suppressions.xml</suppressionsLocation>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <dependencies>
@@ -76,17 +94,18 @@
             <artifactId>pmd-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.mozilla</groupId>
-            <artifactId>rhino</artifactId>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-runtime</artifactId>
         </dependency>
         <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
+            <groupId>org.mozilla</groupId>
+            <artifactId>rhino</artifactId>
+            <version>1.7.14</version>
         </dependency>
 
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

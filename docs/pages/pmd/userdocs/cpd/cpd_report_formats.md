@@ -95,16 +95,19 @@ Starting at line 110 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/
 ## xml
 
 This format uses XML to output the duplications in a more structured format.
+The XML format can then further be processed using XSLT transformations. See [section xslt](#xslt) for examples.
 
 Example:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <pmd-cpd>
+   <file path="/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/RuleReferenceTest.java" totalNumberOfTokens="523"/>
+   <file path="/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java" totalNumberOfTokens="120"/>
    <duplication lines="33" tokens="239">
-      <file column="29" endcolumn="75" endline="64" line="32"
+      <file column="29" endcolumn="75" endline="64" line="32" begintoken="2356" endtoken="2594"
             path="/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/RuleReferenceTest.java"/>
-      <file column="37" endcolumn="75" endline="100" line="68"
+      <file column="37" endcolumn="75" endline="100" line="68" begintoken="5700" endtoken="5938"
             path="/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/RuleReferenceTest.java"/>
       <codefragment><![CDATA[    public void testOverride() {
         final StringProperty PROPERTY1_DESCRIPTOR = new StringProperty("property1", "Test property", null, 0f);
@@ -141,11 +144,11 @@ Example:
         validateOverriddenValues(PROPERTY1_DESCRIPTOR, PROPERTY2_DESCRIPTOR, ruleReference);]]></codefragment>
    </duplication>
    <duplication lines="16" tokens="110">
-      <file column="9" endcolumn="28" endline="81" line="66"
+      <file column="9" endcolumn="28" endline="81" line="66" begintoken="3000" endtoken="3109"
             path="/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java"/>
-      <file column="9" endcolumn="28" endline="103" line="88"
+      <file column="9" endcolumn="28" endline="103" line="88" begintoken="3200" endtoken="3309"
             path="/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java"/>
-      <file column="9" endcolumn="28" endline="125" line="110"
+      <file column="9" endcolumn="28" endline="125" line="110" begintoken="3400" endtoken="3509"
             path="/home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java"/>
       <codefragment><![CDATA[        JaxenXPathRuleQuery query = createQuery(xpath);
         List<String> ruleChainVisits = query.getRuleChainVisits();
@@ -218,3 +221,41 @@ Example:
 /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java(88): Between lines 88 and 104
 /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java(110): Between lines 110 and 126
 ```
+
+## xslt
+
+This is not a direct report format. But you can use `xml` to generate an XML report and then use one of the following
+XSLT stylesheets to convert the report into html. Or you can write your own stylesheet.
+
+You can either use [Ant's XSLT task](https://ant.apache.org/manual/Tasks/style.html) or use any other (CLI) xslt processor,
+e.g. `xalan` (see <https://xalan.apache.org/>).
+
+### cpdhtml.xslt
+
+This stylesheet is available in the sources or from GitHub at: <https://raw.githubusercontent.com/pmd/pmd/master/pmd-core/etc/xslt/cpdhtml.xslt>.
+
+```shell
+xalan -in cpd-report-sample.xml -xsl cpdhtml.xslt -out cpd-report-sample-cpdhtml.html
+```
+
+[Example](report-examples/cpdhtml.html)
+
+This stylesheet by default only consideres duplications longer than 30 lines. You can change the default value with
+the param `lines`:
+
+```shell
+xalan -in cpd-report-sample.xml -xsl cpdhtml.xslt -out cpd-report-sample-cpdhtml.html -param lines 10
+```
+
+### cpdhtml-v2.xslt
+
+This stylesheet is available in the sources or from GitHub at: <https://raw.githubusercontent.com/pmd/pmd/master/pmd-core/etc/xslt/cpdhtml-v2.xslt>.
+
+```shell
+xalan -in pmd-core-cpd-report.xml -xsl etc/xslt/cpdhtml-v2.xslt -out pmd-core-cpd-report-v2.html
+```
+
+[Example](report-examples/cpdhtml-v2.html)
+
+It requires javascript enabled and uses [Bootstrap](https://getbootstrap.com/),
+[jQuery](https://jquery.com/), and [DataTables](https://datatables.net/). 

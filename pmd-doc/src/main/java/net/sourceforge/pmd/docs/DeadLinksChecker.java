@@ -31,25 +31,28 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.RunnableFuture;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.internal.util.IOUtil;
 
 /**
  * Checks links to local pages for non-existing link-targets.
  */
 public class DeadLinksChecker {
-    private static final Logger LOG = Logger.getLogger(DeadLinksChecker.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(DeadLinksChecker.class);
 
     private static final String CHECK_EXTERNAL_LINKS_PROPERTY = "pmd.doc.checkExternalLinks";
     private static final boolean CHECK_EXTERNAL_LINKS = Boolean.parseBoolean(System.getProperty(CHECK_EXTERNAL_LINKS_PROPERTY));
 
     // Markdown-Link: something in []'s followed by something in ()'s
-    private static final Pattern LOCAL_LINK_PATTERN = Pattern.compile("(!)?\\[.*?]\\((.*?)\\)");
+    // ignoring an optional prefix "{{ baseurl }}"
+    private static final Pattern LOCAL_LINK_PATTERN = Pattern.compile("(!)?\\[.*?]\\((?:\\{\\{\\s*baseurl\\s*\\}\\})?(.*?)\\)");
 
     // Markdown permalink-header and captions
     private static final Pattern MD_HEADER_PERMALINK = Pattern.compile("permalink:\\s*(.*)");
@@ -82,7 +85,7 @@ public class DeadLinksChecker {
 
         if (!Files.isDirectory(pagesDirectory)) {
             // docsDirectory is implicitly checked by this statement too
-            LOG.severe("can't check for dead links, didn't find \"pages\" directory at: " + pagesDirectory);
+            LOG.error("can't check for dead links, didn't find \"pages\" directory at: {}", pagesDirectory);
             System.exit(1);
         }
 
@@ -129,21 +132,21 @@ public class DeadLinksChecker {
                         final Path localFile = rootDirectory.resolve(localLinkPart);
                         linkOk = Files.isRegularFile(localFile);
                         if (!linkOk) {
-                            LOG.warning("local file not found: " + localFile);
-                            LOG.warning("  linked by: " + linkTarget);
+                            LOG.warn("local file not found: {}", localFile);
+                            LOG.warn("  linked by: {}", linkTarget);
                         }
 
                     } else if (linkTarget.startsWith("http://") || linkTarget.startsWith("https://")) {
                         foundExternalLinks++;
 
                         if (!CHECK_EXTERNAL_LINKS) {
-                            LOG.finer("ignoring check of external url: " + linkTarget);
+                            LOG.debug("ignoring check of external url: {}", linkTarget);
                             continue;
                         }
 
                         for (String ignoredUrlPrefix : IGNORED_URL_PREFIXES) {
                             if (linkTarget.startsWith(ignoredUrlPrefix)) {
-                                LOG.finer("not checking link: " + linkTarget);
+                                LOG.debug("not checking link: {}", linkTarget);
                                 continue linkCheck;
                             }
                         }
@@ -198,8 +201,8 @@ public class DeadLinksChecker {
 
         executorService.shutdown();
 
-        LOG.info("Scanned " + scannedFiles + " files for dead links.");
-        LOG.info("  Found " + foundExternalLinks + " external links, " + checkedExternalLinks + " of those where checked.");
+        LOG.info("Scanned {} files for dead links.", scannedFiles);
+        LOG.info("  Found {} external links, {} of those where checked.", foundExternalLinks, checkedExternalLinks);
 
         if (!CHECK_EXTERNAL_LINKS) {
             LOG.info("External links weren't checked, set -D" + CHECK_EXTERNAL_LINKS_PROPERTY + "=true to enable it.");
@@ -210,10 +213,10 @@ public class DeadLinksChecker {
         if (joined.isEmpty()) {
             LOG.info("No errors found!");
         } else {
-            LOG.warning("Found dead link(s):");
+            LOG.warn("Found dead link(s):");
             for (Path file : joined.keySet()) {
                 System.err.println(rootDirectory.relativize(file).toString());
-                joined.get(file).forEach(LOG::warning);
+                joined.get(file).forEach(LOG::warn);
             }
             throw new AssertionError("Dead links detected");
         }
@@ -284,8 +287,8 @@ public class DeadLinksChecker {
 
 
     private List<Path> listMdFiles(Path pagesDirectory) {
-        try {
-            return Files.walk(pagesDirectory)
+        try (Stream<Path> stream = Files.walk(pagesDirectory)) {
+            return stream
                  .filter(Files::isRegularFile)
                  .filter(path -> path.toString().endsWith(".md"))
                  .collect(Collectors.toList());
@@ -297,7 +300,7 @@ public class DeadLinksChecker {
 
     private String fileToString(Path mdFile) {
         try (InputStream inputStream = Files.newInputStream(mdFile)) {
-            return IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+            return IOUtil.readToString(inputStream, StandardCharsets.UTF_8);
         } catch (IOException ex) {
             throw new RuntimeException("error reading " + mdFile, ex);
         }
@@ -306,7 +309,7 @@ public class DeadLinksChecker {
 
     private CompletableFuture<Integer> getCachedFutureResponse(String url) {
         if (urlResponseCache.containsKey(url)) {
-            LOG.info("response: HTTP " + urlResponseCache.get(url) + " (CACHED) on " + url);
+            LOG.info("response: HTTP {} (CACHED) on {}", urlResponseCache.get(url), url);
             return urlResponseCache.get(url);
         } else {
             // process asynchronously
@@ -331,13 +334,13 @@ public class DeadLinksChecker {
                 response += ", Location: " + httpURLConnection.getHeaderField("Location");
             }
 
-            LOG.fine("response: " + response + " on " + url);
+            LOG.debug("response: {} on {}", response, url);
 
             // success (HTTP 2xx) or redirection (HTTP 3xx)
             return responseCode;
 
         } catch (IOException ex) {
-            LOG.fine("response: " + ex.getClass().getName() + " on " + url + " : " + ex.getMessage());
+            LOG.debug("response: {} on {} : {}", ex.getClass().getName(), url, ex.getMessage());
             return 599;
         }
     }

@@ -5,9 +5,10 @@
 package net.sourceforge.pmd.cpd;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -21,7 +22,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
+import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -29,7 +30,7 @@ import net.sourceforge.pmd.util.StringUtil;
  * @author Romain Pelisse - javax.xml implementation
  *
  */
-public final class XMLRenderer implements Renderer, CPDRenderer {
+public final class XMLRenderer implements CPDReportRenderer {
 
     private String encoding;
 
@@ -88,26 +89,23 @@ public final class XMLRenderer implements Renderer, CPDRenderer {
         }
     }
 
-    @Override
-    public String render(Iterator<Match> matches) {
-        StringWriter writer = new StringWriter();
-        try {
-            render(matches, writer);
-        } catch (IOException ignored) {
-            // Not really possible with a StringWriter
-        }
-        return writer.toString();
-    }
 
     @Override
-    public void render(Iterator<Match> matches, Writer writer) throws IOException {
-        Document doc = createDocument();
-        Element root = doc.createElement("pmd-cpd");
+    public void render(final CPDReport report, final Writer writer) throws IOException {
+        final Document doc = createDocument();
+        final Element root = doc.createElement("pmd-cpd");
+        final Map<String, Integer> numberOfTokensPerFile = report.getNumberOfTokensPerFile();
         doc.appendChild(root);
 
-        Match match;
-        while (matches.hasNext()) {
-            match = matches.next();
+        final List<Map.Entry<String, Integer>> entries = new ArrayList<>(numberOfTokensPerFile.entrySet());
+        for (final Map.Entry<String, Integer> pair : entries) {
+            final Element fileElement = doc.createElement("file");
+            fileElement.setAttribute("path", pair.getKey());
+            fileElement.setAttribute("totalNumberOfTokens", String.valueOf(pair.getValue()));
+            root.appendChild(fileElement);
+        }
+
+        for (Match match : report.getMatches()) {
             root.appendChild(addCodeSnippet(doc,
                     addFilesToDuplicationElement(doc, createDuplicationElement(doc, match), match), match));
         }
@@ -116,9 +114,7 @@ public final class XMLRenderer implements Renderer, CPDRenderer {
     }
 
     private Element addFilesToDuplicationElement(Document doc, Element duplication, Match match) {
-        Mark mark;
-        for (Iterator<Mark> iterator = match.iterator(); iterator.hasNext();) {
-            mark = iterator.next();
+        for (Mark mark : match) {
             final Element file = doc.createElement("file");
             file.setAttribute("line", String.valueOf(mark.getBeginLine()));
             // only remove invalid characters, escaping is done by the DOM impl.
@@ -132,6 +128,12 @@ public final class XMLRenderer implements Renderer, CPDRenderer {
             }
             if (endCol != -1) {
                 file.setAttribute("endcolumn", String.valueOf(endCol));
+            }
+            final int beginIndex = mark.getBeginTokenIndex();
+            final int endIndex = mark.getEndTokenIndex();
+            file.setAttribute("begintoken", String.valueOf(beginIndex));
+            if (endIndex != -1) {
+                file.setAttribute("endtoken", String.valueOf(endIndex));
             }
             duplication.appendChild(file);
         }

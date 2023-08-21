@@ -8,13 +8,16 @@ package net.sourceforge.pmd.renderers;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.ViolationSuppressor;
 
 import com.google.gson.stream.JsonWriter;
 
@@ -26,6 +29,16 @@ public class JsonRenderer extends AbstractIncrementingRenderer {
     //    /* handle unsupported version */
     //  because the JsonRenderer.FORMAT_VERSION would be hardcoded by the compiler
     private static final int FORMAT_VERSION = 0;
+
+    private static final Map<String, String> SUPPRESSION_TYPE_FORMAT_0 = new HashMap<>();
+
+    static {
+        SUPPRESSION_TYPE_FORMAT_0.put(ViolationSuppressor.NOPMD_COMMENT_SUPPRESSOR.getId(), "nopmd");
+        // Java and Apex Suppression Types
+        // see net.sourceforge.pmd.lang.java.rule.internal.JavaRuleViolationFactory.JAVA_ANNOT_SUPPRESSOR
+        // see net.sourceforge.pmd.lang.apex.rule.internal.ApexRuleViolationFactory.APEX_ANNOT_SUPPRESSOR
+        SUPPRESSION_TYPE_FORMAT_0.put("@SuppressWarnings", "annotation");
+    }
 
     private JsonWriter jsonWriter;
 
@@ -57,7 +70,7 @@ public class JsonRenderer extends AbstractIncrementingRenderer {
 
         while (violations.hasNext()) {
             RuleViolation rv = violations.next();
-            String nextFilename = determineFileName(rv.getFilename());
+            String nextFilename = determineFileName(rv.getFileId());
             if (!nextFilename.equals(filename)) {
                 // New File
                 if (filename != null) {
@@ -103,6 +116,10 @@ public class JsonRenderer extends AbstractIncrementingRenderer {
         jsonWriter.endObject();
     }
 
+    private String getSuppressionType(ViolationSuppressor suppressor) {
+        return SUPPRESSION_TYPE_FORMAT_0.getOrDefault(suppressor.getId(), suppressor.getId());
+    }
+
     @Override
     public void end() throws IOException {
         jsonWriter.endArray(); // files
@@ -112,7 +129,7 @@ public class JsonRenderer extends AbstractIncrementingRenderer {
         if (!this.suppressed.isEmpty()) {
             for (Report.SuppressedViolation s : this.suppressed) {
                 RuleViolation rv = s.getRuleViolation();
-                String nextFilename = determineFileName(rv.getFilename());
+                String nextFilename = determineFileName(rv.getFileId());
                 if (!nextFilename.equals(filename)) {
                     // New File
                     if (filename != null) {
@@ -125,7 +142,7 @@ public class JsonRenderer extends AbstractIncrementingRenderer {
                     jsonWriter.name("filename").value(filename);
                     jsonWriter.name("violations").beginArray();
                 }
-                renderSingleViolation(rv, s.suppressedByNOPMD() ? "nopmd" : "annotation", s.getUserMessage());
+                renderSingleViolation(rv, getSuppressionType(s.getSuppressor()), s.getUserMessage());
             }
             jsonWriter.endArray(); // violations
             jsonWriter.endObject(); // file object
@@ -135,7 +152,7 @@ public class JsonRenderer extends AbstractIncrementingRenderer {
         jsonWriter.name("processingErrors").beginArray();
         for (Report.ProcessingError error : this.errors) {
             jsonWriter.beginObject();
-            jsonWriter.name("filename").value(error.getFile());
+            jsonWriter.name("filename").value(determineFileName(error.getFileId()));
             jsonWriter.name("message").value(error.getMsg());
             jsonWriter.name("detail").value(error.getDetail());
             jsonWriter.endObject();

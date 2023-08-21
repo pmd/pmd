@@ -114,15 +114,15 @@ public class Foo {
         <description>#959 StringToString False Positive</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
+public class MyObject {
     public static String toString(MyObject o) {
         return "MyObject: " + o;
     }
 
-    public static vod main(String[] args) {
+    public static void main(String[] args) {
         //in your code
         MyObject o = new MyObject(); //MyObject has no relation with String
-        System.out.println(Foo.toString(o)); //PMD violation false positive
+        System.out.println(MyObject.toString(o)); //PMD violation false positive
     }
 }
         ]]></code>
@@ -133,7 +133,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    private void log(Supplier<String> msg) { }
+    private void log(java.util.function.Supplier<String> msg) { }
     public void run() {
         String abc = "abc";
         log(abc::toString); // fails rule
@@ -206,15 +206,15 @@ public class Foo {
         <description>getString().toString(), object false-positive test</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
+public class Person {
     public String value() {
         return "test";
     }
 
     public void bar() {
         Person p = new Person();
-        int val = p.value();
-        if (val == 0) {
+        String val = p.value();
+        if (val == null) {
             throw new RuntimeException();
         }
     }
@@ -228,7 +228,7 @@ public class Foo {
         <expected-linenumbers>10</expected-linenumbers>
         <code><![CDATA[
 import java.util.Properties;
-public class Foo {
+public class User {
     public Long getData(User usr) {
         return usr.getId();
     }
@@ -248,9 +248,41 @@ public class Foo {
         <expected-linenumbers>5,6,7</expected-linenumbers>
         <code><![CDATA[
 import java.io.*;
+class A {
+    public void foo() {
+        String s = new A().str().toString(); // not detected because str() is from another class which is not on the auxclasspath
+        s = getString().toString(); // detected
+        s = getData(new FileInputStream()).toString(); // detected because of argument (sub) type
+        s = getData(new Integer(4), new Integer(5)).toString(); // detected because of unique args count
+    }
+    public String getString() {
+        return "exampleStr";
+    }
+    public String getData(InputStream is) {
+        return "argsResolutionIssueExample";
+    }
+    public int getData(String s) {
+        return 0;
+    }
+    public String getData(Number a, Number b) {
+        return "uniqueArgsCountExample";
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Limitations with type resolution</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>7,8,9,10</expected-linenumbers>
+        <code><![CDATA[
+import java.io.FileInputStream;
+import java.io.InputStream;
+import net.sourceforge.pmd.lang.java.rule.performance.stringtostring.User;
+
 class B {
     public void foo() {
-        String s = new A().str().toString(); // not detected because str() is from another class
+        String s = new User().getName().toString(); // detected because class User is on the auxclasspath
         s = getString().toString(); // detected
         s = getData(new FileInputStream()).toString(); // detected because of argument (sub) type
         s = getData(new Integer(4), new Integer(5)).toString(); // detected because of unique args count
@@ -312,5 +344,128 @@ public class Foo {
     }
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] StringToString false-positive with local method name confusion #3977</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.performance.stringtostring;
+public class StringToStringFP {
+  private String s;
+
+  public void print(A a) {
+    this.s = a.getB().getC().toString(); // line 6 - false positive
+    this.s = String.valueOf(a.getB().getC()); // workaround
+    System.out.println(s);
+  }
+
+  public String getC() {
+    return "";
+  }
+
+  interface A {
+      B getB();
+  }
+
+  interface B {
+      Character getC();
+  }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Use type resolution for method call return type</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.performance.stringtostring;
+public class Foo {
+    public void bar() {
+        User user = new User();
+        String s = user.getName().toString();
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] StringToString doesn't trigger on string literals #3681</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+class Impl {
+  String foo() {
+    return "123".toString();
+  }
+  String bar() {
+    return 'a'.toString();
+  }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] StringToString rule false-positive with field access #2080</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.performance.stringtostring;
+
+public final class Issue2080 {
+    String value;
+
+    public void foo() {
+        A a = new A();
+        value = a.value.toString(); // false positive
+    }
+
+    class A {
+        B value;
+    }
+
+    class B { }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] StringToString doesn't trigger on Bar.class.getSimpleName().toString() #3437</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+  @Override
+  public String toString() {
+    return new StringJoiner(",", Bar.class.getSimpleName().toString() + "[", "]");
+  }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with unqualified toString() call</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.performance.stringtostring;
+
+public class User {
+
+    public String getName() {
+        String s;
+        s = toString();
+        s = this.toString();
+        s = super.toString();
+        s = convert(toString());
+        s = convert(this.toString());
+        s = convert(super.toString());
+        return s;
+    }
+
+    private String convert(String s) {
+        return s.toLowerCase(Locale.ROOT);
+    }
+}
+]]></code>
     </test-code>
 </test-data>

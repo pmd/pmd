@@ -6,6 +6,8 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.Properties;
 
+import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
+
 public class ApexLanguage extends AbstractLanguage {
 
     public ApexLanguage() {
@@ -13,7 +15,7 @@ public class ApexLanguage extends AbstractLanguage {
     }
 
     public ApexLanguage(Properties properties) {
-        super("Apex", "apex", new ApexTokenizer(), ".cls");
+        super(ApexLanguageModule.NAME, ApexLanguageModule.TERSE_NAME, new ApexTokenizer(), ApexLanguageModule.EXTENSIONS);
         setProperties(properties);
     }
 

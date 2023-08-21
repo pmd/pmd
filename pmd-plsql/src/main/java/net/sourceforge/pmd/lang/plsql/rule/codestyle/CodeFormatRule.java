@@ -31,8 +31,12 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 
 public class CodeFormatRule extends AbstractPLSQLRule {
 
-    private static final PropertyDescriptor<Integer> INDENTATION_PROPERTY = PropertyFactory.intProperty("indentation")
-                                                                                           .desc("Indentation to be used for blocks").defaultValue(2).require(inRange(0, 32)).build();
+    private static final PropertyDescriptor<Integer> INDENTATION_PROPERTY =
+            PropertyFactory.intProperty("indentation")
+                .desc("Indentation to be used for blocks")
+                .defaultValue(2)
+                .require(inRange(0, 32))
+                .build();
 
     private int indentation = INDENTATION_PROPERTY.defaultValue();
 
@@ -207,7 +211,8 @@ public class CodeFormatRule extends AbstractPLSQLRule {
     public Object visit(ASTArgumentList node, Object data) {
         List<ASTArgument> arguments = node.findChildrenOfType(ASTArgument.class);
 
-        if (node.getEndColumn() > 120) {
+        // note: end column is exclusive
+        if (node.getEndColumn() >= 120) {
             addViolationWithMessage(data, node, "Line is too long, please split parameters on separate lines");
             return super.visit(node, data);
         }
@@ -229,7 +234,7 @@ public class CodeFormatRule extends AbstractPLSQLRule {
 
                 if (argument.getChild(0) instanceof ASTUnqualifiedID) {
                     if (argument.getChild(0).getEndColumn() > longestParameterEndColumn) {
-                        longestParameterEndColumn = argument.getChild(0).getEndColumn();
+                        longestParameterEndColumn = argument.getChild(0).getEndColumn() - 1;
                     }
                 }
             }
@@ -248,10 +253,10 @@ public class CodeFormatRule extends AbstractPLSQLRule {
                 }
             }
 
-            // closing paranthesis should be on a new line
+            // closing parenthesis should be on a new line
             Node primaryExpression = node.getNthParent(3);
             if (primaryExpression.getEndLine() != node.getEndLine() + 1) {
-                addViolationWithMessage(data, primaryExpression, "Closing paranthesis should be on a new line.");
+                addViolationWithMessage(data, primaryExpression, "Closing parenthesis should be on a new line.");
             }
         }
 

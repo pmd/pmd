@@ -1,0 +1,17 @@
+<apex:page standardController="Account" extensions="ApexExtension1,ApexExtension2">
+    <!-- Safe -->
+    <apex:outputText value="{!Account.CreatedDate}" escape="false"/>
+    <apex:outputText value="{!Account.Checkbox__c}" escape="false"/>
+    <apex:outputText value="{!Account.DateTime__c}" escape="false"/>
+    <apex:outputText value="{!IdFromExtension1}" escape="false"/>
+    <apex:outputText value="{!IdFromExtension2}" escape="false"/>
+    <!-- Unsafe -->
+    <apex:outputText value="{!Account.Name}" escape="false"/>
+    <apex:outputText value="{!Account.Text__c}" escape="false"/>
+    <td><apex:outputText value="{!Account.TextArea__c}" escape="false"/>
+    <apex:outputText value="{!Account.LongTextArea__c}" escape="false"/>
+    <apex:outputText value="{!Account.Picklist__c}" escape="false"/>
+    <apex:outputText value="{!Account.NotFoundField__c}" escape="false"/> <!-- This field doesn't exist on Account -->
+    <apex:outputText value="{!Account.StringFromExtension1}" escape="false"/>
+    <apex:outputText value="{!Account.StringFromExtension2}" escape="false"/>
+</apex:page>

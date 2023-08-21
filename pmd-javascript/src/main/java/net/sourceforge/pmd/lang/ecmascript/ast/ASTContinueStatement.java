@@ -6,18 +6,14 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.ContinueStatement;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTContinueStatement extends AbstractEcmascriptNode<ContinueStatement> {
-    @Deprecated
-    @InternalApi
-    public ASTContinueStatement(ContinueStatement continueStatement) {
+public final class ASTContinueStatement extends AbstractEcmascriptNode<ContinueStatement> {
+    ASTContinueStatement(ContinueStatement continueStatement) {
         super(continueStatement);
         super.setImage(continueStatement.getLabel() != null ? continueStatement.getLabel().getIdentifier() : null);
     }
 
     @Override
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+    protected <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

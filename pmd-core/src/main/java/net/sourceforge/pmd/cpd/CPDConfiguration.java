@@ -21,13 +21,9 @@ import java.util.Properties;
 import java.util.Set;
 
 import net.sourceforge.pmd.AbstractConfiguration;
-import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
-import net.sourceforge.pmd.util.FileFinder;
-import net.sourceforge.pmd.util.FileUtil;
-
-import com.beust.jcommander.IStringConverter;
-import com.beust.jcommander.Parameter;
-import com.beust.jcommander.converters.FileConverter;
+import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
+import net.sourceforge.pmd.internal.util.FileFinder;
+import net.sourceforge.pmd.internal.util.FileUtil;
 
 /**
  *
@@ -39,7 +35,7 @@ public class CPDConfiguration extends AbstractConfiguration {
     public static final String DEFAULT_LANGUAGE = "java";
     public static final String DEFAULT_RENDERER = "text";
 
-    private static final Map<String, Class<? extends CPDRenderer>> RENDERERS = new HashMap<>();
+    private static final Map<String, Class<? extends CPDReportRenderer>> RENDERERS = new HashMap<>();
 
     static {
         RENDERERS.put(DEFAULT_RENDERER, SimpleRenderer.class);
@@ -49,106 +45,47 @@ public class CPDConfiguration extends AbstractConfiguration {
         RENDERERS.put("vs", VSRenderer.class);
     }
 
-    @Parameter(names = "--language", description = "Sources code language. Default value is " + DEFAULT_LANGUAGE,
-            required = false, converter = LanguageConverter.class)
     private Language language;
 
-    @Parameter(names = "--minimum-tokens",
-            description = "The minimum token length which should be reported as a duplicate.", required = true)
     private int minimumTileSize;
 
-    @Parameter(names = "--skip-duplicate-files",
-            description = "Ignore multiple copies of files of the same name and length in comparison", required = false)
     private boolean skipDuplicates;
 
-    @Parameter(names = "--format", description = "Report format. Default value is " + DEFAULT_RENDERER,
-            required = false)
     private String rendererName;
 
-    /**
-     * The actual renderer. constructed by using the {@link #rendererName}. This
-     * property is only valid after {@link #postContruct()} has been called!
-     */
-    @Deprecated
-    private Renderer renderer;
+    private CPDReportRenderer cpdReportRenderer;
 
-    private CPDRenderer cpdRenderer;
-
-    private String encoding;
-
-    @Parameter(names = "--ignore-literals",
-            description = "Ignore number values and string contents when comparing text", required = false)
     private boolean ignoreLiterals;
 
-    @Parameter(names = "--ignore-identifiers", description = "Ignore constant and variable names when comparing text",
-            required = false)
     private boolean ignoreIdentifiers;
 
-    @Parameter(names = "--ignore-annotations", description = "Ignore language annotations when comparing text",
-            required = false)
     private boolean ignoreAnnotations;
 
-    @Parameter(names = "--ignore-usings", description = "Ignore using directives in C#", required = false)
     private boolean ignoreUsings;
 
-    @Parameter(names = "--skip-lexical-errors",
-            description = "Skip files which can't be tokenized due to invalid characters instead of aborting CPD",
-            required = false)
+    private boolean ignoreLiteralSequences = false;
+
+    private boolean ignoreIdentifierAndLiteralSequences = false;
+
     private boolean skipLexicalErrors = false;
 
-    @Parameter(names = "--no-skip-blocks",
-            description = "Do not skip code blocks marked with --skip-blocks-pattern (e.g. #if 0 until #endif)",
-            required = false)
     private boolean noSkipBlocks = false;
 
-    @Parameter(names = "--skip-blocks-pattern",
-            description = "Pattern to find the blocks to skip. Start and End pattern separated by |. " + "Default is \""
-                    + Tokenizer.DEFAULT_SKIP_BLOCKS_PATTERN + "\".",
-            required = false)
     private String skipBlocksPattern = Tokenizer.DEFAULT_SKIP_BLOCKS_PATTERN;
 
-    @Parameter(names = "--files", variableArity = true, description = "List of files and directories to process",
-            required = false, converter = FileConverter.class)
     private List<File> files;
 
-    @Parameter(names = "--filelist", description = "Path to a file containing a list of files to analyze.",
-            required = false)
     private String fileListPath;
 
-    @Parameter(names = "--exclude", variableArity = true, description = "Files to be excluded from CPD check",
-            required = false, converter = FileConverter.class)
     private List<File> excludes;
 
-    @Parameter(names = "--non-recursive", description = "Don't scan subdirectiories", required = false)
     private boolean nonRecursive;
 
-    @Parameter(names = "--uri", description = "URI to process", required = false)
     private String uri;
 
-    @Parameter(names = { "--help", "-h" }, description = "Print help text", required = false, help = true)
     private boolean help;
 
-    @Parameter(names = { "--failOnViolation", "-failOnViolation" }, arity = 1,
-            description = "By default CPD exits with status 4 if code duplications are found. Disable this option with '-failOnViolation false' to exit with 0 instead and just write the report.")
     private boolean failOnViolation = true;
-
-    // this has to be a public static class, so that JCommander can use it!
-    public static class LanguageConverter implements IStringConverter<Language> {
-
-        @Override
-        public Language convert(String languageString) {
-            if (languageString == null || "".equals(languageString)) {
-                languageString = DEFAULT_LANGUAGE;
-            }
-            return LanguageFactory.createLanguage(languageString);
-        }
-    }
-
-    @Parameter(names = "--encoding", description = "Character encoding to use when processing files", required = false)
-    public void setEncoding(String encoding) {
-        this.encoding = encoding;
-        setSourceEncoding(encoding);
-    }
 
     public SourceCode sourceCodeFor(File file) {
         return new SourceCode(new SourceCode.FileCodeLoader(file, getSourceEncoding().name()));
@@ -165,68 +102,43 @@ public class CPDConfiguration extends AbstractConfiguration {
         if (getRendererName() == null) {
             setRendererName(DEFAULT_RENDERER);
         }
-        if (getRenderer() == null && getCPDRenderer() == null) {
-            try {
-                setCPDRenderer(getCPDRendererFromString(getRendererName(), getEncoding()));
-            } catch (ClassCastException e) {
-                // The renderer class configured is not using the new CPDRenderer interface...
-                setRenderer(getRendererFromString(getRendererName(), getEncoding()));
-            }
+        if (this.cpdReportRenderer == null) {
+            //may throw
+            CPDReportRenderer renderer = createRendererByName(getRendererName(), getSourceEncoding().name());
+            setRenderer(renderer);
         }
     }
 
-    /**
-     * @deprecated Use {@link #getCPDRendererFromString(String, String)} instead
-     */
-    @Deprecated
-    public static Renderer getRendererFromString(String name, String encoding) {
-        String clazzname = name;
-        if (clazzname == null || "".equals(clazzname)) {
-            clazzname = DEFAULT_RENDERER;
+    static CPDReportRenderer createRendererByName(String name, String encoding) {
+        if (name == null || "".equals(name)) {
+            name = DEFAULT_RENDERER;
         }
-        @SuppressWarnings("unchecked") // Safe, all standard implementations implement both interfaces
-        Class<? extends Renderer> clazz = (Class<? extends Renderer>) RENDERERS.get(clazzname.toLowerCase(Locale.ROOT));
-        if (clazz == null) {
+        Class<? extends CPDReportRenderer> rendererClass = RENDERERS.get(name.toLowerCase(Locale.ROOT));
+        if (rendererClass == null) {
+            Class<?> klass;
             try {
-                clazz = Class.forName(clazzname).asSubclass(Renderer.class);
+                klass = Class.forName(name);
+                if (CPDReportRenderer.class.isAssignableFrom(klass)) {
+                    rendererClass = (Class) klass;
+                } else {
+                    throw new IllegalArgumentException("Class " + name + " does not implement " + CPDReportRenderer.class);
+                }
             } catch (ClassNotFoundException e) {
-                System.err.println("Can't find class '" + name + "', defaulting to SimpleRenderer.");
-                clazz = SimpleRenderer.class;
+                throw new IllegalArgumentException("Cannot find class " + name);
             }
         }
+
+        CPDReportRenderer renderer = null;
         try {
-            Renderer renderer = clazz.getDeclaredConstructor().newInstance();
+            renderer = rendererClass.getDeclaredConstructor().newInstance();
             setRendererEncoding(renderer, encoding);
-            return renderer;
         } catch (Exception e) {
             System.err.println("Couldn't instantiate renderer, defaulting to SimpleRenderer: " + e);
-            return new SimpleRenderer();
+            renderer = new SimpleRenderer();
         }
+        return renderer;
     }
 
-    public static CPDRenderer getCPDRendererFromString(String name, String encoding) {
-        String clazzname = name;
-        if (clazzname == null || "".equals(clazzname)) {
-            clazzname = DEFAULT_RENDERER;
-        }
-        Class<? extends CPDRenderer> clazz = RENDERERS.get(clazzname.toLowerCase(Locale.ROOT));
-        if (clazz == null) {
-            try {
-                clazz = Class.forName(clazzname).asSubclass(CPDRenderer.class);
-            } catch (ClassNotFoundException e) {
-                System.err.println("Can't find class '" + name + "', defaulting to SimpleRenderer.");
-                clazz = SimpleRenderer.class;
-            }
-        }
-        try {
-            CPDRenderer renderer = clazz.getDeclaredConstructor().newInstance();
-            setRendererEncoding(renderer, encoding);
-            return renderer;
-        } catch (Exception e) {
-            System.err.println("Couldn't instantiate renderer, defaulting to SimpleRenderer: " + e);
-            return new SimpleRenderer();
-        }
-    }
 
     private static void setRendererEncoding(Object renderer, String encoding)
             throws IllegalAccessException, InvocationTargetException {
@@ -242,7 +154,7 @@ public class CPDConfiguration extends AbstractConfiguration {
     }
 
     public static String[] getRenderers() {
-        String[] result = RENDERERS.keySet().toArray(new String[RENDERERS.size()]);
+        String[] result = RENDERERS.keySet().toArray(new String[0]);
         Arrays.sort(result);
         return result;
     }
@@ -272,6 +184,16 @@ public class CPDConfiguration extends AbstractConfiguration {
             properties.setProperty(Tokenizer.IGNORE_USINGS, "true");
         } else {
             properties.remove(Tokenizer.IGNORE_USINGS);
+        }
+        if (configuration.isIgnoreLiteralSequences()) {
+            properties.setProperty(Tokenizer.OPTION_IGNORE_LITERAL_SEQUENCES, "true");
+        } else {
+            properties.remove(Tokenizer.OPTION_IGNORE_LITERAL_SEQUENCES);
+        }
+        if (configuration.isIgnoreIdentifierAndLiteralSequences()) {
+            properties.setProperty(Tokenizer.OPTION_IGNORE_IDENTIFIER_AND_LITERAL_SEQUENCES, "true");
+        } else {
+            properties.remove(Tokenizer.OPTION_IGNORE_IDENTIFIER_AND_LITERAL_SEQUENCES);
         }
         properties.setProperty(Tokenizer.OPTION_SKIP_BLOCKS, Boolean.toString(!configuration.isNoSkipBlocks()));
         properties.setProperty(Tokenizer.OPTION_SKIP_BLOCKS_PATTERN, configuration.getSkipBlocksPattern());
@@ -310,16 +232,9 @@ public class CPDConfiguration extends AbstractConfiguration {
         this.rendererName = rendererName;
     }
 
-    /**
-     * @deprecated Use {@link #getCPDRenderer()} instead
-     */
-    @Deprecated
-    public Renderer getRenderer() {
-        return renderer;
-    }
 
-    public CPDRenderer getCPDRenderer() {
-        return cpdRenderer;
+    public CPDReportRenderer getCPDReportRenderer() {
+        return cpdReportRenderer;
     }
 
     public Tokenizer tokenizer() {
@@ -351,32 +266,19 @@ public class CPDConfiguration extends AbstractConfiguration {
             }
         }
 
-        return new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                File f = new File(dir, name);
-                if (exclusions.contains(FileUtil.normalizeFilename(f.getAbsolutePath()))) {
-                    System.err.println("Excluding " + f.getAbsolutePath());
-                    return false;
-                }
-                return languageFilter.accept(dir, name);
+        return (dir, name) -> {
+            File f = new File(dir, name);
+            if (exclusions.contains(FileUtil.normalizeFilename(f.getAbsolutePath()))) {
+                System.err.println("Excluding " + f.getAbsolutePath());
+                return false;
             }
+            return languageFilter.accept(dir, name);
         };
     }
 
-    /**
-     * @deprecated Use {@link #setCPDRenderer(CPDRenderer)} instead
-     * @param renderer
-     */
-    @Deprecated
-    public void setRenderer(Renderer renderer) {
-        this.renderer = renderer;
-        this.cpdRenderer = null;
-    }
 
-    public void setCPDRenderer(CPDRenderer renderer) {
-        this.cpdRenderer = renderer;
-        this.renderer = null;
+    void setRenderer(CPDReportRenderer renderer) {
+        this.cpdReportRenderer = renderer;
     }
 
     public boolean isIgnoreLiterals() {
@@ -409,6 +311,22 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     public void setIgnoreUsings(boolean ignoreUsings) {
         this.ignoreUsings = ignoreUsings;
+    }
+
+    public boolean isIgnoreLiteralSequences() {
+        return ignoreLiteralSequences;
+    }
+
+    public void setIgnoreLiteralSequences(boolean ignoreLiteralSequences) {
+        this.ignoreLiteralSequences = ignoreLiteralSequences;
+    }
+
+    public boolean isIgnoreIdentifierAndLiteralSequences() {
+        return ignoreIdentifierAndLiteralSequences;
+    }
+
+    public void setIgnoreIdentifierAndLiteralSequences(boolean ignoreIdentifierAndLiteralSequences) {
+        this.ignoreIdentifierAndLiteralSequences = ignoreIdentifierAndLiteralSequences;
     }
 
     public boolean isSkipLexicalErrors() {
@@ -467,10 +385,6 @@ public class CPDConfiguration extends AbstractConfiguration {
         this.help = help;
     }
 
-    public String getEncoding() {
-        return encoding;
-    }
-
     public boolean isNoSkipBlocks() {
         return noSkipBlocks;
     }
@@ -494,4 +408,5 @@ public class CPDConfiguration extends AbstractConfiguration {
     public void setFailOnViolation(boolean failOnViolation) {
         this.failOnViolation = failOnViolation;
     }
+
 }

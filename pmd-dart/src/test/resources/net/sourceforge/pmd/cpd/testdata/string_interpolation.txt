@@ -1,22 +1,22 @@
     [Image] or [Truncated image[            Bcol      Ecol
 L1
-    [var]                                   1         3
-    [stringInStringUnicode]                 5         25
-    [=]                                     27        27
-    ["${"∆"}"]                              29        36
+    [var]                                   1         4
+    [stringInStringUnicode]                 5         26
+    [=]                                     27        28
+    ["${"∆"}"]                              29        37
 L2
-    [var]                                   1         3
-    [stringInStringNewline]                 5         25
-    [=]                                     27        27
-    ["${"\\n"}"]                            29        37
+    [var]                                   1         4
+    [stringInStringNewline]                 5         26
+    [=]                                     27        28
+    ["${"\\n"}"]                            29        38
 L3
-    [var]                                   1         3
-    [nestedInterpolation]                   5         23
-    [=]                                     25        25
-    ["${"${"\\n"}"}"]                       27        40
+    [var]                                   1         4
+    [nestedInterpolation]                   5         24
+    [=]                                     25        26
+    ["${"${"\\n"}"}"]                       27        41
 L4
-    [var]                                   1         3
-    [interpolationWithMethodCall]           5         31
-    [=]                                     33        33
-    ["${foo("")}"]                          35        46
+    [var]                                   1         4
+    [interpolationWithMethodCall]           5         32
+    [=]                                     33        34
+    ["${foo("")}"]                          35        47
 EOF

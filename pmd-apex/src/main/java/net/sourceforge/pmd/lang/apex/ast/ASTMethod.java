@@ -4,24 +4,17 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.apex.metrics.signature.ApexOperationSignature;
-import net.sourceforge.pmd.lang.ast.SignedNode;
-
 import apex.jorje.semantic.ast.member.Method;
 
-public class ASTMethod extends AbstractApexNode<Method> implements ApexQualifiableNode,
-       SignedNode<ASTMethod>, CanSuppressWarnings {
+public final class ASTMethod extends AbstractApexNode<Method> implements ApexQualifiableNode {
 
-    @Deprecated
-    @InternalApi
-    public ASTMethod(Method method) {
+    ASTMethod(Method method) {
         super(method);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
@@ -35,46 +28,16 @@ public class ASTMethod extends AbstractApexNode<Method> implements ApexQualifiab
     }
 
     @Override
-    public int getEndLine() {
-        ASTBlockStatement block = getFirstChildOfType(ASTBlockStatement.class);
-        if (block != null) {
-            return block.getEndLine();
-        }
-
-        return super.getEndLine();
-    }
-
-    @Override
-    public int getEndColumn() {
-        ASTBlockStatement block = getFirstChildOfType(ASTBlockStatement.class);
-        if (block != null) {
-            return block.getEndColumn();
-        }
-
-        return super.getEndColumn();
-    }
-
-    @Override
     public ApexQualifiedName getQualifiedName() {
         return ApexQualifiedName.ofMethod(this);
     }
 
-
-    @Override
-    public ApexOperationSignature getSignature() {
-        return ApexOperationSignature.of(this);
-    }
-
-    @Override
-    public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
-        for (ASTModifierNode modifier : findChildrenOfType(ASTModifierNode.class)) {
-            for (ASTAnnotation a : modifier.findChildrenOfType(ASTAnnotation.class)) {
-                if (a.suppresses(rule)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    /**
+     * Returns true if this is a synthetic class initializer, inserted
+     * by the parser.
+     */
+    public boolean isSynthetic() {
+        return getImage().matches("<clinit>|<init>|clone");
     }
 
     public boolean isConstructor() {

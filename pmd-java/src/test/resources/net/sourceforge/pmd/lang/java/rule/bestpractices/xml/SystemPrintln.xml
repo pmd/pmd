@@ -8,7 +8,7 @@
         <description>one</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>System.out.println is used</message>
+            <message>Usage of System.out/err</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
@@ -22,11 +22,6 @@ public class Foo {
     <test-code>
         <description>many</description>
         <expected-problems>3</expected-problems>
-        <expected-messages>
-            <message>System.out.println is used</message>
-            <message>System.out.println is used</message>
-            <message>System.out.println is used</message>
-        </expected-messages>
         <code><![CDATA[
 public class Foo {
     private void foo1() {
@@ -55,12 +50,6 @@ public class Foo {
     <test-code>
         <description>#1217 SystemPrintln always says "System.out.print is used"</description>
         <expected-problems>4</expected-problems>
-        <expected-messages>
-            <message>System.out.print is used</message>
-            <message>System.out.println is used</message>
-            <message>System.err.print is used</message>
-            <message>System.err.println is used</message>
-        </expected-messages>
         <code><![CDATA[
 public class TestPrintLn {
     public static void main(String args[]) {

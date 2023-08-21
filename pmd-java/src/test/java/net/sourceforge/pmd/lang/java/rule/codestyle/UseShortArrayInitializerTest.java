@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class UseShortArrayInitializerTest extends PmdRuleTst {
+class UseShortArrayInitializerTest extends PmdRuleTst {
   // no additional unit tests
 }
