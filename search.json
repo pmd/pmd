@@ -200,189 +200,19 @@
 
 
 {
-"title": "Best Practices (PLSQL, Best Practices)",
+"title": "Best Practices (Kotlin, Best Practices)",
 "tags": "",
 "keywords": "Best Practices",
-"url": "pmd_rules_plsql_bestpractices.html#best practices",
+"url": "pmd_rules_kotlin_bestpractices.html#best practices",
 "summary": "Rules which enforce generally accepted best practices."
 }
 ,
 
 {
-"title": "TomKytesDespair (PLSQL, Best Practices)",
+"title": "FunctionNameTooShort (Kotlin, Best Practices)",
 "tags": "",
-"keywords": "TomKytesDespair",
-"url": "pmd_rules_plsql_bestpractices.html#tomkytesdespair",
-"summary": "Rules which enforce generally accepted best practices."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Best Practices (Modelica, Best Practices)",
-"tags": "",
-"keywords": "Best Practices",
-"url": "pmd_rules_modelica_bestpractices.html#best practices",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "ClassStartNameEqualsEndName (Modelica, Best Practices)",
-"tags": "",
-"keywords": "ClassStartNameEqualsEndName",
-"url": "pmd_rules_modelica_bestpractices.html#classstartnameequalsendname",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "ConnectUsingNonConnector (Modelica, Best Practices)",
-"tags": "",
-"keywords": "ConnectUsingNonConnector",
-"url": "pmd_rules_modelica_bestpractices.html#connectusingnonconnector",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "AmbiguousResolution (Modelica, Best Practices)",
-"tags": "",
-"keywords": "AmbiguousResolution",
-"url": "pmd_rules_modelica_bestpractices.html#ambiguousresolution",
-"summary": "Rules which enforce generally accepted best practices."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Best Practices (VM, Best Practices)",
-"tags": "",
-"keywords": "Best Practices",
-"url": "pmd_rules_vm_bestpractices.html#best practices",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "AvoidReassigningParameters (VM, Best Practices)",
-"tags": "",
-"keywords": "AvoidReassigningParameters",
-"url": "pmd_rules_vm_bestpractices.html#avoidreassigningparameters",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "UnusedMacroParameter (VM, Best Practices)",
-"tags": "",
-"keywords": "UnusedMacroParameter",
-"url": "pmd_rules_vm_bestpractices.html#unusedmacroparameter",
-"summary": "Rules which enforce generally accepted best practices."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Best Practices (Swift, Best Practices)",
-"tags": "",
-"keywords": "Best Practices",
-"url": "pmd_rules_swift_bestpractices.html#best practices",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "ProhibitedInterfaceBuilder (Swift, Best Practices)",
-"tags": "",
-"keywords": "ProhibitedInterfaceBuilder",
-"url": "pmd_rules_swift_bestpractices.html#prohibitedinterfacebuilder",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "UnavailableFunction (Swift, Best Practices)",
-"tags": "",
-"keywords": "UnavailableFunction",
-"url": "pmd_rules_swift_bestpractices.html#unavailablefunction",
-"summary": "Rules which enforce generally accepted best practices."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Best Practices (HTML, Best Practices)",
-"tags": "",
-"keywords": "Best Practices",
-"url": "pmd_rules_html_bestpractices.html#best practices",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "AvoidInlineStyles (HTML, Best Practices)",
-"tags": "",
-"keywords": "AvoidInlineStyles",
-"url": "pmd_rules_html_bestpractices.html#avoidinlinestyles",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "UnnecessaryTypeAttribute (HTML, Best Practices)",
-"tags": "",
-"keywords": "UnnecessaryTypeAttribute",
-"url": "pmd_rules_html_bestpractices.html#unnecessarytypeattribute",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "UseAltAttributeForImages (HTML, Best Practices)",
-"tags": "",
-"keywords": "UseAltAttributeForImages",
-"url": "pmd_rules_html_bestpractices.html#usealtattributeforimages",
+"keywords": "FunctionNameTooShort",
+"url": "pmd_rules_kotlin_bestpractices.html#functionnametooshort",
 "summary": "Rules which enforce generally accepted best practices."
 }
 
@@ -439,6 +269,100 @@
 "tags": "",
 "keywords": "NoJspForward",
 "url": "pmd_rules_jsp_bestpractices.html#nojspforward",
+"summary": "Rules which enforce generally accepted best practices."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Best Practices (PLSQL, Best Practices)",
+"tags": "",
+"keywords": "Best Practices",
+"url": "pmd_rules_plsql_bestpractices.html#best practices",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "TomKytesDespair (PLSQL, Best Practices)",
+"tags": "",
+"keywords": "TomKytesDespair",
+"url": "pmd_rules_plsql_bestpractices.html#tomkytesdespair",
+"summary": "Rules which enforce generally accepted best practices."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Best Practices (JavaScript, Best Practices)",
+"tags": "",
+"keywords": "Best Practices",
+"url": "pmd_rules_ecmascript_bestpractices.html#best practices",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "AvoidWithStatement (JavaScript, Best Practices)",
+"tags": "",
+"keywords": "AvoidWithStatement",
+"url": "pmd_rules_ecmascript_bestpractices.html#avoidwithstatement",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "ConsistentReturn (JavaScript, Best Practices)",
+"tags": "",
+"keywords": "ConsistentReturn",
+"url": "pmd_rules_ecmascript_bestpractices.html#consistentreturn",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "GlobalVariable (JavaScript, Best Practices)",
+"tags": "",
+"keywords": "GlobalVariable",
+"url": "pmd_rules_ecmascript_bestpractices.html#globalvariable",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "ScopeForInVariable (JavaScript, Best Practices)",
+"tags": "",
+"keywords": "ScopeForInVariable",
+"url": "pmd_rules_ecmascript_bestpractices.html#scopeforinvariable",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "UseBaseWithParseInt (JavaScript, Best Practices)",
+"tags": "",
+"keywords": "UseBaseWithParseInt",
+"url": "pmd_rules_ecmascript_bestpractices.html#usebasewithparseint",
 "summary": "Rules which enforce generally accepted best practices."
 }
 
@@ -925,55 +849,28 @@
 
 
 {
-"title": "Best Practices (JavaScript, Best Practices)",
+"title": "Best Practices (VM, Best Practices)",
 "tags": "",
 "keywords": "Best Practices",
-"url": "pmd_rules_ecmascript_bestpractices.html#best practices",
+"url": "pmd_rules_vm_bestpractices.html#best practices",
 "summary": "Rules which enforce generally accepted best practices."
 }
 ,
 
 {
-"title": "AvoidWithStatement (JavaScript, Best Practices)",
+"title": "AvoidReassigningParameters (VM, Best Practices)",
 "tags": "",
-"keywords": "AvoidWithStatement",
-"url": "pmd_rules_ecmascript_bestpractices.html#avoidwithstatement",
+"keywords": "AvoidReassigningParameters",
+"url": "pmd_rules_vm_bestpractices.html#avoidreassigningparameters",
 "summary": "Rules which enforce generally accepted best practices."
 }
 ,
 
 {
-"title": "ConsistentReturn (JavaScript, Best Practices)",
+"title": "UnusedMacroParameter (VM, Best Practices)",
 "tags": "",
-"keywords": "ConsistentReturn",
-"url": "pmd_rules_ecmascript_bestpractices.html#consistentreturn",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "GlobalVariable (JavaScript, Best Practices)",
-"tags": "",
-"keywords": "GlobalVariable",
-"url": "pmd_rules_ecmascript_bestpractices.html#globalvariable",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "ScopeForInVariable (JavaScript, Best Practices)",
-"tags": "",
-"keywords": "ScopeForInVariable",
-"url": "pmd_rules_ecmascript_bestpractices.html#scopeforinvariable",
-"summary": "Rules which enforce generally accepted best practices."
-}
-,
-
-{
-"title": "UseBaseWithParseInt (JavaScript, Best Practices)",
-"tags": "",
-"keywords": "UseBaseWithParseInt",
-"url": "pmd_rules_ecmascript_bestpractices.html#usebasewithparseint",
+"keywords": "UnusedMacroParameter",
+"url": "pmd_rules_vm_bestpractices.html#unusedmacroparameter",
 "summary": "Rules which enforce generally accepted best practices."
 }
 
@@ -990,19 +887,122 @@
 
 
 {
-"title": "Best Practices (Kotlin, Best Practices)",
+"title": "Best Practices (HTML, Best Practices)",
 "tags": "",
 "keywords": "Best Practices",
-"url": "pmd_rules_kotlin_bestpractices.html#best practices",
+"url": "pmd_rules_html_bestpractices.html#best practices",
 "summary": "Rules which enforce generally accepted best practices."
 }
 ,
 
 {
-"title": "FunctionNameTooShort (Kotlin, Best Practices)",
+"title": "AvoidInlineStyles (HTML, Best Practices)",
 "tags": "",
-"keywords": "FunctionNameTooShort",
-"url": "pmd_rules_kotlin_bestpractices.html#functionnametooshort",
+"keywords": "AvoidInlineStyles",
+"url": "pmd_rules_html_bestpractices.html#avoidinlinestyles",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "UnnecessaryTypeAttribute (HTML, Best Practices)",
+"tags": "",
+"keywords": "UnnecessaryTypeAttribute",
+"url": "pmd_rules_html_bestpractices.html#unnecessarytypeattribute",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "UseAltAttributeForImages (HTML, Best Practices)",
+"tags": "",
+"keywords": "UseAltAttributeForImages",
+"url": "pmd_rules_html_bestpractices.html#usealtattributeforimages",
+"summary": "Rules which enforce generally accepted best practices."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Best Practices (Modelica, Best Practices)",
+"tags": "",
+"keywords": "Best Practices",
+"url": "pmd_rules_modelica_bestpractices.html#best practices",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "ClassStartNameEqualsEndName (Modelica, Best Practices)",
+"tags": "",
+"keywords": "ClassStartNameEqualsEndName",
+"url": "pmd_rules_modelica_bestpractices.html#classstartnameequalsendname",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "ConnectUsingNonConnector (Modelica, Best Practices)",
+"tags": "",
+"keywords": "ConnectUsingNonConnector",
+"url": "pmd_rules_modelica_bestpractices.html#connectusingnonconnector",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "AmbiguousResolution (Modelica, Best Practices)",
+"tags": "",
+"keywords": "AmbiguousResolution",
+"url": "pmd_rules_modelica_bestpractices.html#ambiguousresolution",
+"summary": "Rules which enforce generally accepted best practices."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Best Practices (Swift, Best Practices)",
+"tags": "",
+"keywords": "Best Practices",
+"url": "pmd_rules_swift_bestpractices.html#best practices",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "ProhibitedInterfaceBuilder (Swift, Best Practices)",
+"tags": "",
+"keywords": "ProhibitedInterfaceBuilder",
+"url": "pmd_rules_swift_bestpractices.html#prohibitedinterfacebuilder",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "UnavailableFunction (Swift, Best Practices)",
+"tags": "",
+"keywords": "UnavailableFunction",
+"url": "pmd_rules_swift_bestpractices.html#unavailablefunction",
 "summary": "Rules which enforce generally accepted best practices."
 }
 
@@ -1184,6 +1184,35 @@
 
 
 {
+"title": "Code Style (Java Server Pages, Code Style)",
+"tags": "",
+"keywords": "Code Style",
+"url": "pmd_rules_jsp_codestyle.html#code style",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "DuplicateJspImports (Java Server Pages, Code Style)",
+"tags": "",
+"keywords": "DuplicateJspImports",
+"url": "pmd_rules_jsp_codestyle.html#duplicatejspimports",
+"summary": "Rules which enforce a specific coding style."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
 "title": "Code Style (PLSQL, Code Style)",
 "tags": "",
 "keywords": "Code Style",
@@ -1249,19 +1278,91 @@
 
 
 {
-"title": "Code Style (Java Server Pages, Code Style)",
+"title": "Code Style (JavaScript, Code Style)",
 "tags": "",
 "keywords": "Code Style",
-"url": "pmd_rules_jsp_codestyle.html#code style",
+"url": "pmd_rules_ecmascript_codestyle.html#code style",
 "summary": "Rules which enforce a specific coding style."
 }
 ,
 
 {
-"title": "DuplicateJspImports (Java Server Pages, Code Style)",
+"title": "AssignmentInOperand (JavaScript, Code Style)",
 "tags": "",
-"keywords": "DuplicateJspImports",
-"url": "pmd_rules_jsp_codestyle.html#duplicatejspimports",
+"keywords": "AssignmentInOperand",
+"url": "pmd_rules_ecmascript_codestyle.html#assignmentinoperand",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "ForLoopsMustUseBraces (JavaScript, Code Style)",
+"tags": "",
+"keywords": "ForLoopsMustUseBraces",
+"url": "pmd_rules_ecmascript_codestyle.html#forloopsmustusebraces",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "IfElseStmtsMustUseBraces (JavaScript, Code Style)",
+"tags": "",
+"keywords": "IfElseStmtsMustUseBraces",
+"url": "pmd_rules_ecmascript_codestyle.html#ifelsestmtsmustusebraces",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "IfStmtsMustUseBraces (JavaScript, Code Style)",
+"tags": "",
+"keywords": "IfStmtsMustUseBraces",
+"url": "pmd_rules_ecmascript_codestyle.html#ifstmtsmustusebraces",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "NoElseReturn (JavaScript, Code Style)",
+"tags": "",
+"keywords": "NoElseReturn",
+"url": "pmd_rules_ecmascript_codestyle.html#noelsereturn",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "UnnecessaryBlock (JavaScript, Code Style)",
+"tags": "",
+"keywords": "UnnecessaryBlock",
+"url": "pmd_rules_ecmascript_codestyle.html#unnecessaryblock",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "UnnecessaryParentheses (JavaScript, Code Style)",
+"tags": "",
+"keywords": "UnnecessaryParentheses",
+"url": "pmd_rules_ecmascript_codestyle.html#unnecessaryparentheses",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "UnreachableCode (JavaScript, Code Style)",
+"tags": "",
+"keywords": "UnreachableCode",
+"url": "pmd_rules_ecmascript_codestyle.html#unreachablecode",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "WhileLoopsMustUseBraces (JavaScript, Code Style)",
+"tags": "",
+"keywords": "WhileLoopsMustUseBraces",
+"url": "pmd_rules_ecmascript_codestyle.html#whileloopsmustusebraces",
 "summary": "Rules which enforce a specific coding style."
 }
 
@@ -1793,107 +1894,6 @@
 
 
 {
-"title": "Code Style (JavaScript, Code Style)",
-"tags": "",
-"keywords": "Code Style",
-"url": "pmd_rules_ecmascript_codestyle.html#code style",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "AssignmentInOperand (JavaScript, Code Style)",
-"tags": "",
-"keywords": "AssignmentInOperand",
-"url": "pmd_rules_ecmascript_codestyle.html#assignmentinoperand",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "ForLoopsMustUseBraces (JavaScript, Code Style)",
-"tags": "",
-"keywords": "ForLoopsMustUseBraces",
-"url": "pmd_rules_ecmascript_codestyle.html#forloopsmustusebraces",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "IfElseStmtsMustUseBraces (JavaScript, Code Style)",
-"tags": "",
-"keywords": "IfElseStmtsMustUseBraces",
-"url": "pmd_rules_ecmascript_codestyle.html#ifelsestmtsmustusebraces",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "IfStmtsMustUseBraces (JavaScript, Code Style)",
-"tags": "",
-"keywords": "IfStmtsMustUseBraces",
-"url": "pmd_rules_ecmascript_codestyle.html#ifstmtsmustusebraces",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "NoElseReturn (JavaScript, Code Style)",
-"tags": "",
-"keywords": "NoElseReturn",
-"url": "pmd_rules_ecmascript_codestyle.html#noelsereturn",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "UnnecessaryBlock (JavaScript, Code Style)",
-"tags": "",
-"keywords": "UnnecessaryBlock",
-"url": "pmd_rules_ecmascript_codestyle.html#unnecessaryblock",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "UnnecessaryParentheses (JavaScript, Code Style)",
-"tags": "",
-"keywords": "UnnecessaryParentheses",
-"url": "pmd_rules_ecmascript_codestyle.html#unnecessaryparentheses",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "UnreachableCode (JavaScript, Code Style)",
-"tags": "",
-"keywords": "UnreachableCode",
-"url": "pmd_rules_ecmascript_codestyle.html#unreachablecode",
-"summary": "Rules which enforce a specific coding style."
-}
-,
-
-{
-"title": "WhileLoopsMustUseBraces (JavaScript, Code Style)",
-"tags": "",
-"keywords": "WhileLoopsMustUseBraces",
-"url": "pmd_rules_ecmascript_codestyle.html#whileloopsmustusebraces",
-"summary": "Rules which enforce a specific coding style."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
 "title": "Code Style (XSL, Code Style)",
 "tags": "",
 "keywords": "Code Style",
@@ -2147,6 +2147,62 @@
 
 
 {
+"title": "Design (Java Server Pages, Design)",
+"tags": "",
+"keywords": "Design",
+"url": "pmd_rules_jsp_design.html#design",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "NoInlineScript (Java Server Pages, Design)",
+"tags": "",
+"keywords": "NoInlineScript",
+"url": "pmd_rules_jsp_design.html#noinlinescript",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "NoInlineStyleInformation (Java Server Pages, Design)",
+"tags": "",
+"keywords": "NoInlineStyleInformation",
+"url": "pmd_rules_jsp_design.html#noinlinestyleinformation",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "NoLongScripts (Java Server Pages, Design)",
+"tags": "",
+"keywords": "NoLongScripts",
+"url": "pmd_rules_jsp_design.html#nolongscripts",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "NoScriptlets (Java Server Pages, Design)",
+"tags": "",
+"keywords": "NoScriptlets",
+"url": "pmd_rules_jsp_design.html#noscriptlets",
+"summary": "Rules that help you discover design issues."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
 "title": "Design (PLSQL, Design)",
 "tags": "",
 "keywords": "Design",
@@ -2259,127 +2315,6 @@
 "tags": "",
 "keywords": "TooManyMethods",
 "url": "pmd_rules_plsql_design.html#toomanymethods",
-"summary": "Rules that help you discover design issues."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Design (VM, Design)",
-"tags": "",
-"keywords": "Design",
-"url": "pmd_rules_vm_design.html#design",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "AvoidDeeplyNestedIfStmts (VM, Design)",
-"tags": "",
-"keywords": "AvoidDeeplyNestedIfStmts",
-"url": "pmd_rules_vm_design.html#avoiddeeplynestedifstmts",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "CollapsibleIfStatements (VM, Design)",
-"tags": "",
-"keywords": "CollapsibleIfStatements",
-"url": "pmd_rules_vm_design.html#collapsibleifstatements",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "ExcessiveTemplateLength (VM, Design)",
-"tags": "",
-"keywords": "ExcessiveTemplateLength",
-"url": "pmd_rules_vm_design.html#excessivetemplatelength",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "NoInlineJavaScript (VM, Design)",
-"tags": "",
-"keywords": "NoInlineJavaScript",
-"url": "pmd_rules_vm_design.html#noinlinejavascript",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "NoInlineStyles (VM, Design)",
-"tags": "",
-"keywords": "NoInlineStyles",
-"url": "pmd_rules_vm_design.html#noinlinestyles",
-"summary": "Rules that help you discover design issues."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Design (Java Server Pages, Design)",
-"tags": "",
-"keywords": "Design",
-"url": "pmd_rules_jsp_design.html#design",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "NoInlineScript (Java Server Pages, Design)",
-"tags": "",
-"keywords": "NoInlineScript",
-"url": "pmd_rules_jsp_design.html#noinlinescript",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "NoInlineStyleInformation (Java Server Pages, Design)",
-"tags": "",
-"keywords": "NoInlineStyleInformation",
-"url": "pmd_rules_jsp_design.html#noinlinestyleinformation",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "NoLongScripts (Java Server Pages, Design)",
-"tags": "",
-"keywords": "NoLongScripts",
-"url": "pmd_rules_jsp_design.html#nolongscripts",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "NoScriptlets (Java Server Pages, Design)",
-"tags": "",
-"keywords": "NoScriptlets",
-"url": "pmd_rules_jsp_design.html#noscriptlets",
 "summary": "Rules that help you discover design issues."
 }
 
@@ -2803,6 +2738,71 @@
 
 
 {
+"title": "Design (VM, Design)",
+"tags": "",
+"keywords": "Design",
+"url": "pmd_rules_vm_design.html#design",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "AvoidDeeplyNestedIfStmts (VM, Design)",
+"tags": "",
+"keywords": "AvoidDeeplyNestedIfStmts",
+"url": "pmd_rules_vm_design.html#avoiddeeplynestedifstmts",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "CollapsibleIfStatements (VM, Design)",
+"tags": "",
+"keywords": "CollapsibleIfStatements",
+"url": "pmd_rules_vm_design.html#collapsibleifstatements",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "ExcessiveTemplateLength (VM, Design)",
+"tags": "",
+"keywords": "ExcessiveTemplateLength",
+"url": "pmd_rules_vm_design.html#excessivetemplatelength",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "NoInlineJavaScript (VM, Design)",
+"tags": "",
+"keywords": "NoInlineJavaScript",
+"url": "pmd_rules_vm_design.html#noinlinejavascript",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
+"title": "NoInlineStyles (VM, Design)",
+"tags": "",
+"keywords": "NoInlineStyles",
+"url": "pmd_rules_vm_design.html#noinlinestyles",
+"summary": "Rules that help you discover design issues."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
 "title": "Design (Apex, Design)",
 "tags": "",
 "keywords": "Design",
@@ -3073,6 +3073,64 @@
 
 
 {
+"title": "Error Prone (Kotlin, Error Prone)",
+"tags": "",
+"keywords": "Error Prone",
+"url": "pmd_rules_kotlin_errorprone.html#error prone",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "OverrideBothEqualsAndHashcode (Kotlin, Error Prone)",
+"tags": "",
+"keywords": "OverrideBothEqualsAndHashcode",
+"url": "pmd_rules_kotlin_errorprone.html#overridebothequalsandhashcode",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Error Prone (Java Server Pages, Error Prone)",
+"tags": "",
+"keywords": "Error Prone",
+"url": "pmd_rules_jsp_errorprone.html#error prone",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "JspEncoding (Java Server Pages, Error Prone)",
+"tags": "",
+"keywords": "JspEncoding",
+"url": "pmd_rules_jsp_errorprone.html#jspencoding",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
 "title": "Error Prone (PLSQL, Error Prone)",
 "tags": "",
 "keywords": "Error Prone",
@@ -3149,66 +3207,37 @@
 
 
 {
-"title": "Error Prone (VM, Error Prone)",
+"title": "Error Prone (JavaScript, Error Prone)",
 "tags": "",
 "keywords": "Error Prone",
-"url": "pmd_rules_vm_errorprone.html#error prone",
+"url": "pmd_rules_ecmascript_errorprone.html#error prone",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 ,
 
 {
-"title": "EmptyForeachStmt (VM, Error Prone)",
+"title": "AvoidTrailingComma (JavaScript, Error Prone)",
 "tags": "",
-"keywords": "EmptyForeachStmt",
-"url": "pmd_rules_vm_errorprone.html#emptyforeachstmt",
+"keywords": "AvoidTrailingComma",
+"url": "pmd_rules_ecmascript_errorprone.html#avoidtrailingcomma",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 ,
 
 {
-"title": "EmptyIfStmt (VM, Error Prone)",
+"title": "EqualComparison (JavaScript, Error Prone)",
 "tags": "",
-"keywords": "EmptyIfStmt",
-"url": "pmd_rules_vm_errorprone.html#emptyifstmt",
+"keywords": "EqualComparison",
+"url": "pmd_rules_ecmascript_errorprone.html#equalcomparison",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
-
-
-
-
-
 ,
 
-
-
-
-
-
-
 {
-"title": "Error Prone (Swift, Error Prone)",
+"title": "InnaccurateNumericLiteral (JavaScript, Error Prone)",
 "tags": "",
-"keywords": "Error Prone",
-"url": "pmd_rules_swift_errorprone.html#error prone",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "ForceCast (Swift, Error Prone)",
-"tags": "",
-"keywords": "ForceCast",
-"url": "pmd_rules_swift_errorprone.html#forcecast",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "ForceTry (Swift, Error Prone)",
-"tags": "",
-"keywords": "ForceTry",
-"url": "pmd_rules_swift_errorprone.html#forcetry",
+"keywords": "InnaccurateNumericLiteral",
+"url": "pmd_rules_ecmascript_errorprone.html#innaccuratenumericliteral",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 
@@ -3225,19 +3254,28 @@
 
 
 {
-"title": "Error Prone (Java Server Pages, Error Prone)",
+"title": "Error Prone (Maven POM, Error Prone)",
 "tags": "",
 "keywords": "Error Prone",
-"url": "pmd_rules_jsp_errorprone.html#error prone",
+"url": "pmd_rules_pom_errorprone.html#error prone",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 ,
 
 {
-"title": "JspEncoding (Java Server Pages, Error Prone)",
+"title": "InvalidDependencyTypes (Maven POM, Error Prone)",
 "tags": "",
-"keywords": "JspEncoding",
-"url": "pmd_rules_jsp_errorprone.html#jspencoding",
+"keywords": "InvalidDependencyTypes",
+"url": "pmd_rules_pom_errorprone.html#invaliddependencytypes",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "ProjectVersionAsDependencyVersion (Maven POM, Error Prone)",
+"tags": "",
+"keywords": "ProjectVersionAsDependencyVersion",
+"url": "pmd_rules_pom_errorprone.html#projectversionasdependencyversion",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 
@@ -4129,28 +4167,28 @@
 
 
 {
-"title": "Error Prone (Maven POM, Error Prone)",
+"title": "Error Prone (VM, Error Prone)",
 "tags": "",
 "keywords": "Error Prone",
-"url": "pmd_rules_pom_errorprone.html#error prone",
+"url": "pmd_rules_vm_errorprone.html#error prone",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 ,
 
 {
-"title": "InvalidDependencyTypes (Maven POM, Error Prone)",
+"title": "EmptyForeachStmt (VM, Error Prone)",
 "tags": "",
-"keywords": "InvalidDependencyTypes",
-"url": "pmd_rules_pom_errorprone.html#invaliddependencytypes",
+"keywords": "EmptyForeachStmt",
+"url": "pmd_rules_vm_errorprone.html#emptyforeachstmt",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 ,
 
 {
-"title": "ProjectVersionAsDependencyVersion (Maven POM, Error Prone)",
+"title": "EmptyIfStmt (VM, Error Prone)",
 "tags": "",
-"keywords": "ProjectVersionAsDependencyVersion",
-"url": "pmd_rules_pom_errorprone.html#projectversionasdependencyversion",
+"keywords": "EmptyIfStmt",
+"url": "pmd_rules_vm_errorprone.html#emptyifstmt",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 
@@ -4167,66 +4205,28 @@
 
 
 {
-"title": "Error Prone (JavaScript, Error Prone)",
-"tags": "",
-"keywords": "Error Prone",
-"url": "pmd_rules_ecmascript_errorprone.html#error prone",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "AvoidTrailingComma (JavaScript, Error Prone)",
-"tags": "",
-"keywords": "AvoidTrailingComma",
-"url": "pmd_rules_ecmascript_errorprone.html#avoidtrailingcomma",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "EqualComparison (JavaScript, Error Prone)",
-"tags": "",
-"keywords": "EqualComparison",
-"url": "pmd_rules_ecmascript_errorprone.html#equalcomparison",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
-"title": "InnaccurateNumericLiteral (JavaScript, Error Prone)",
-"tags": "",
-"keywords": "InnaccurateNumericLiteral",
-"url": "pmd_rules_ecmascript_errorprone.html#innaccuratenumericliteral",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Error Prone (Kotlin, Error Prone)",
+"title": "Error Prone (Swift, Error Prone)",
 "tags": "",
 "keywords": "Error Prone",
-"url": "pmd_rules_kotlin_errorprone.html#error prone",
+"url": "pmd_rules_swift_errorprone.html#error prone",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 ,
 
 {
-"title": "OverrideBothEqualsAndHashcode (Kotlin, Error Prone)",
+"title": "ForceCast (Swift, Error Prone)",
 "tags": "",
-"keywords": "OverrideBothEqualsAndHashcode",
-"url": "pmd_rules_kotlin_errorprone.html#overridebothequalsandhashcode",
+"keywords": "ForceCast",
+"url": "pmd_rules_swift_errorprone.html#forcecast",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "ForceTry (Swift, Error Prone)",
+"tags": "",
+"keywords": "ForceTry",
+"url": "pmd_rules_swift_errorprone.html#forcetry",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 
@@ -5549,11 +5549,11 @@
 
 
 {
-"title": "Rule guidelines",
-"tags": "extendinguserdocs",
+"title": "Guidelines for standard rules",
+"tags": "devdocsextending",
 "keywords": "",
-"url": "pmd_userdocs_extending_rule_guidelines.html",
-"summary": "Rule Guidelines, or the last touches to a rule"
+"url": "pmd_devdocs_major_rule_guidelines.html",
+"summary": "Guidelines for rules that are included in the standard distribution"
 }
 
 
@@ -5565,11 +5565,11 @@
 
 
 {
-"title": "Guidelines for standard rules",
-"tags": "devdocsextending",
+"title": "Rule guidelines",
+"tags": "extendinguserdocs",
 "keywords": "",
-"url": "pmd_devdocs_major_rule_guidelines.html",
-"summary": "Guidelines for rules that are included in the standard distribution"
+"url": "pmd_userdocs_extending_rule_guidelines.html",
+"summary": "Rule Guidelines, or the last touches to a rule"
 }
 
 
