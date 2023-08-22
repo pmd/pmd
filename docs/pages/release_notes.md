@@ -45,6 +45,8 @@ The remaining section describes the complete release notes for 7.0.0.
   * [#4582](https://github.com/pmd/pmd/issues/4582): \[dist] Download link broken
 * core
   * [#4621](https://github.com/pmd/pmd/issues/4621): \[core] Make `ClasspathClassLoader::getResource` child first
+* doc
+  * [#4521](https://github.com/pmd/pmd/issues/4521): \[doc] Website is not mobile friendly
 * apex-design
   * [#4596](https://github.com/pmd/pmd/issues/4596): \[apex] ExcessivePublicCount ignores properties
 * java
@@ -395,6 +397,7 @@ See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html)
 * doc
     * [#2501](https://github.com/pmd/pmd/issues/2501): \[doc] Verify ANTLR Documentation
     * [#4438](https://github.com/pmd/pmd/issues/4438): \[doc] Documentation links in VS Code are outdated
+    * [#4521](https://github.com/pmd/pmd/issues/4521): \[doc] Website is not mobile friendly
 * testing
     * [#2435](https://github.com/pmd/pmd/issues/2435): \[test] Remove duplicated Dummy language module
     * [#4234](https://github.com/pmd/pmd/issues/4234): \[test] Tests that change the logging level do not work
