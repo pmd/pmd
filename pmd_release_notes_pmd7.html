@@ -2068,7 +2068,7 @@ to leverage existing grammars.</p>
 <p>This PMD release ships a new version of the pmd-designer.
 For the changes, see <a href="https://github.com/pmd/pmd-designer/releases/tag/7.0.0-rc1">PMD Designer Changelog</a>.</p>
 
-<h4 id="new-cpd-report-format-cpdhtml-v2xslt">New CPD report format cpdhtml-v2.xslt</h4>
+<h3 id="new-cpd-report-format-cpdhtml-v2xslt">New CPD report format cpdhtml-v2.xslt</h3>
 
 <p>Thanks to @mohan-chinnappan-n a new CPD report format has been added which features a data table.
 It uses an XSLT stylesheet to convert CPD’s XML format into HTML.</p>
@@ -2676,6 +2676,18 @@ without the need to change pmd-core.</li>
 and <a href="pmd_devdocs_major_adding_new_language_antlr.html">Adding a new language with ANTLR</a></p>
 
 <p>Related issue: <a href="https://github.com/pmd/pmd/issues/3782">[core] Language lifecycle (#3782)</a></p>
+
+<h3 id="rule-properties">Rule properties</h3>
+
+<ul>
+  <li>The old deprecated classes like <code class="language-plaintext highlighter-rouge">IntProperty</code> and <code class="language-plaintext highlighter-rouge">StringProperty</code> have been removed. Please use
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyFactory.html#"><code>PropertyFactory</code></a> to create properties.</li>
+  <li>All properties which accept multiple values now use a comma (<code class="language-plaintext highlighter-rouge">,</code>) as a delimiter. The previous default was a
+pipe character (<code class="language-plaintext highlighter-rouge">|</code>). The delimiter is not configurable anymore. If needed, the comma can be escaped
+with a backslash.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">min</code> and <code class="language-plaintext highlighter-rouge">max</code> attributes in property definitions in the XML are now optional and can appear separately
+or be omitted.</li>
+</ul>
 
 <h3 id="api-changes">API changes</h3>
 

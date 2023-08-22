@@ -1656,7 +1656,6 @@ properties.</p>
       <th>Name</th>
       <th>Default Value</th>
       <th>Description</th>
-      <th>Multivalued</th>
     </tr>
   </thead>
   <tbody>
@@ -1664,31 +1663,26 @@ properties.</p>
       <td>testClassPattern</td>
       <td>[A-Z][a-zA-Z0-9_]*</td>
       <td>Regex which applies to test class names</td>
-      <td>no</td>
     </tr>
     <tr>
       <td>abstractClassPattern</td>
       <td>[A-Z][a-zA-Z0-9_]*</td>
       <td>Regex which applies to abstract class names</td>
-      <td>no</td>
     </tr>
     <tr>
       <td>classPattern</td>
       <td>[A-Z][a-zA-Z0-9_]*</td>
       <td>Regex which applies to class names</td>
-      <td>no</td>
     </tr>
     <tr>
       <td>interfacePattern</td>
       <td>[A-Z][a-zA-Z0-9_]*</td>
       <td>Regex which applies to interface names</td>
-      <td>no</td>
     </tr>
     <tr>
       <td>enumPattern</td>
       <td>[A-Z][a-zA-Z0-9_]*</td>
       <td>Regex which applies to enum names</td>
-      <td>no</td>
     </tr>
   </tbody>
 </table>
@@ -1766,7 +1760,6 @@ static field, final field. Each regex can be configured through properties.</p>
       <th>Name</th>
       <th>Default Value</th>
       <th>Description</th>
-      <th>Multivalued</th>
     </tr>
   </thead>
   <tbody>
@@ -1774,31 +1767,26 @@ static field, final field. Each regex can be configured through properties.</p>
       <td>enumConstantPattern</td>
       <td>[A-Z][A-Z0-9_]*</td>
       <td>Regex which applies to enum constant field names</td>
-      <td>no</td>
     </tr>
     <tr>
       <td>constantPattern</td>
       <td>[A-Z][A-Z0-9_]*</td>
       <td>Regex which applies to constant field names</td>
-      <td>no</td>
     </tr>
     <tr>
       <td>finalPattern</td>
       <td>[a-z][a-zA-Z0-9]*</td>
       <td>Regex which applies to final field names</td>
-      <td>no</td>
     </tr>
     <tr>
       <td>staticPattern</td>
       <td>[a-z][a-zA-Z0-9]*</td>
       <td>Regex which applies to static field names</td>
-      <td>no</td>
     </tr>
     <tr>
       <td>instancePattern</td>
       <td>[a-z][a-zA-Z0-9]*</td>
       <td>Regex which applies to instance field names</td>
-      <td>no</td>
     </tr>
   </tbody>
 </table>
@@ -1881,7 +1869,6 @@ configured through properties.</p>
       <th>Name</th>
       <th>Default Value</th>
       <th>Description</th>
-      <th>Multivalued</th>
     </tr>
   </thead>
   <tbody>
@@ -1889,13 +1876,11 @@ configured through properties.</p>
       <td>finalMethodParameterPattern</td>
       <td>[a-z][a-zA-Z0-9]*</td>
       <td>Regex which applies to final method parameter names</td>
-      <td>no</td>
     </tr>
     <tr>
       <td>methodParameterPattern</td>
       <td>[a-z][a-zA-Z0-9]*</td>
       <td>Regex which applies to method parameter names</td>
-      <td>no</td>
     </tr>
   </tbody>
 </table>
@@ -2007,7 +1992,6 @@ properties.</p>
       <th>Name</th>
       <th>Default Value</th>
       <th>Description</th>
-      <th>Multivalued</th>
     </tr>
   </thead>
   <tbody>
@@ -2015,13 +1999,11 @@ properties.</p>
       <td>finalLocalPattern</td>
       <td>[a-z][a-zA-Z0-9]*</td>
       <td>Regex which applies to final local variable names</td>
-      <td>no</td>
     </tr>
     <tr>
       <td>localPattern</td>
       <td>[a-z][a-zA-Z0-9]*</td>
       <td>Regex which applies to local variable names</td>
-      <td>no</td>
     </tr>
   </tbody>
 </table>
@@ -2070,7 +2052,6 @@ configured through properties.</p>
       <th>Name</th>
       <th>Default Value</th>
       <th>Description</th>
-      <th>Multivalued</th>
     </tr>
   </thead>
   <tbody>
@@ -2078,25 +2059,21 @@ configured through properties.</p>
       <td>skipTestMethodUnderscores</td>
       <td>false</td>
       <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Skip underscores in test methods</td>
-      <td>no</td>
     </tr>
     <tr>
       <td>testPattern</td>
       <td>[a-z][a-zA-Z0-9]*</td>
       <td>Regex which applies to test method names</td>
-      <td>no</td>
     </tr>
     <tr>
       <td>staticPattern</td>
       <td>[a-z][a-zA-Z0-9]*</td>
       <td>Regex which applies to static method names</td>
-      <td>no</td>
     </tr>
     <tr>
       <td>instancePattern</td>
       <td>[a-z][a-zA-Z0-9]*</td>
       <td>Regex which applies to instance method names</td>
-      <td>no</td>
     </tr>
   </tbody>
 </table>
@@ -2153,7 +2130,6 @@ can lead to quite messy code. This rule looks for several declarations on the sa
       <th>Name</th>
       <th>Default Value</th>
       <th>Description</th>
-      <th>Multivalued</th>
     </tr>
   </thead>
   <tbody>
@@ -2161,13 +2137,11 @@ can lead to quite messy code. This rule looks for several declarations on the sa
       <td>strictMode</td>
       <td>false</td>
       <td>If true, mark combined declaration even if the declarations are on separate lines.</td>
-      <td>no</td>
     </tr>
     <tr>
       <td>reportInForLoopInitializer</td>
       <td>true</td>
       <td>If false, multiple declarations in a for loop initializer are not flagged.</td>
-      <td>no</td>
     </tr>
   </tbody>
 </table>
@@ -2217,7 +2191,6 @@ configured through properties.</p>
       <th>Name</th>
       <th>Default Value</th>
       <th>Description</th>
-      <th>Multivalued</th>
     </tr>
   </thead>
   <tbody>
@@ -2225,13 +2198,11 @@ configured through properties.</p>
       <td>staticPattern</td>
       <td>[a-z][a-zA-Z0-9]*</td>
       <td>Regex which applies to static property names</td>
-      <td>no</td>
     </tr>
     <tr>
       <td>instancePattern</td>
       <td>[a-z][a-zA-Z0-9]*</td>
       <td>Regex which applies to instance property names</td>
-      <td>no</td>
     </tr>
   </tbody>
 </table>

@@ -1661,11 +1661,15 @@ The remaining section describes the complete release notes for 7.0.0.</p>
   </li>
   <li>core
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1204">#1204</a>: [core] Allow numeric properties in XML to be within an unbounded range</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4301">#4301</a>: [core] Remove deprecated property concrete classes</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4302">#4302</a>: [core] Migrate Property Framework API to Java 8</li>
       <li><a href="https://github.com/pmd/pmd/issues/4621">#4621</a>: [core] Make <code class="language-plaintext highlighter-rouge">ClasspathClassLoader::getResource</code> child first</li>
     </ul>
   </li>
   <li>doc
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4303">#4303</a>: [doc] Document new property framework</li>
       <li><a href="https://github.com/pmd/pmd/issues/4521">#4521</a>: [doc] Website is not mobile friendly</li>
     </ul>
   </li>
@@ -1687,6 +1691,112 @@ The remaining section describes the complete release notes for 7.0.0.</p>
 </ul>
 
 <h4 id="api-changes">API Changes</h4>
+
+<p><strong>Rule properties</strong></p>
+
+<ul>
+  <li>The old deprecated classes like <code class="language-plaintext highlighter-rouge">IntProperty</code> and <code class="language-plaintext highlighter-rouge">StringProperty</code> have been removed. Please use
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyFactory.html#"><code>PropertyFactory</code></a> to create properties.</li>
+  <li>All properties which accept multiple values now use a comma (<code class="language-plaintext highlighter-rouge">,</code>) as a delimiter. The previous default was a
+pipe character (<code class="language-plaintext highlighter-rouge">|</code>). The delimiter is not configurable anymore. If needed, the comma can be escaped
+with a backslash.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">min</code> and <code class="language-plaintext highlighter-rouge">max</code> attributes in property definitions in the XML are now optional and can appear separately
+or be omitted.</li>
+</ul>
+
+<p><strong>Removed classes and methods</strong></p>
+
+<p>The following previously deprecated classes have been removed:</p>
+
+<ul>
+  <li>pmd-core
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.BooleanMultiProperty</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.BooleanProperty</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.CharacterMultiProperty</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.CharacterProperty</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.DoubleMultiProperty</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.DoubleProperty</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.EnumeratedMultiProperty</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.EnumeratedProperty</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.EnumeratedPropertyDescriptor</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.FileProperty</code> (note: without replacement)</li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.FloatMultiProperty</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.FloatProperty</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.IntegerMultiProperty</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.IntegerProperty</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.LongMultiProperty</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.LongProperty</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.MultiValuePropertyDescriptor</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.NumericPropertyDescriptor</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.PropertyDescriptorField</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.RegexProperty</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.SingleValuePropertyDescriptor</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.StringMultiProperty</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.StringProperty</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.ValueParser</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.ValueParserConstants</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.builders.MultiNumericPropertyBuilder</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.builders.MultiPackagedPropertyBuilder</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.builders.MultiValuePropertyBuilder</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilder</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.builders.PropertyDescriptorExternalBuilder</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.builders.SingleNumericPropertyBuilder</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.builders.SinglePackagedPropertyBuilder</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.builders.SingleValuePropertyBuilder</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.modules.EnumeratedPropertyModule</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.modules.NumericPropertyModule</code></li>
+    </ul>
+  </li>
+</ul>
+
+<p>The following previously deprecated methods have been removed:</p>
+
+<ul>
+  <li>pmd-core
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.PropertyBuilder.GenericCollectionPropertyBuilder#delim(char)</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.PropertySource#setProperty(...)</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.PropertyTypeId#factoryFor(...)</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.PropertyTypeId#typeIdFor(...)</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.PropertyDescriptor</code>: removed methods errorFor, type, isMultiValue,
+ uiOrder, compareTo, isDefinedExternally, valueFrom, asDelimitedString</li>
+    </ul>
+  </li>
+</ul>
+
+<p><strong>Moved packages</strong></p>
+
+<ul>
+  <li>pmd-core
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/net/sourceforge/pmd/properties/NumericConstraints.html#"><code>NumericConstraints</code></a> (old package: <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.constraints.NumericConstraints</code>)</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/net/sourceforge/pmd/properties/PropertyConstraint.html#"><code>PropertyConstraint</code></a> (old package: <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.constraints.PropertyConstraint</code>)
+        <ul>
+          <li>not experimental anymore</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p><strong>Changed types</strong></p>
+
+<ul>
+  <li>pmd-core
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/net/sourceforge/pmd/properties/PropertyDescriptor.html#"><code>PropertyDescriptor</code></a> is now a class (was an interface)
+and it is not comparable anymore.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><strong>Internal APIs</strong></p>
+
+<ul>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/net/sourceforge/pmd/properties/PropertyTypeId.html#"><code>PropertyTypeId</code></a></li>
+</ul>
 
 <h4 id="external-contributions">External Contributions</h4>
 <ul>
@@ -1832,6 +1942,18 @@ module <code class="language-plaintext highlighter-rouge">pmd-coco</code>.</p>
   <li>This option is used for CPP only: with the already existing option <code class="language-plaintext highlighter-rouge">--ignore-literal-sequences</code>, only
 literals were ignored. The new option additional ignores identifiers as well in sequences.</li>
   <li>See <a href="https://github.com/pmd/pmd/pull/4470">PR #4470</a> for details.</li>
+</ul>
+
+<h4 id="changed-rule-properties">Changed: Rule properties</h4>
+
+<ul>
+  <li>The old deprecated classes like <code class="language-plaintext highlighter-rouge">IntProperty</code> and <code class="language-plaintext highlighter-rouge">StringProperty</code> have been removed. Please use
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyFactory.html#"><code>PropertyFactory</code></a> to create properties.</li>
+  <li>All properties which accept multiple values now use a comma (<code class="language-plaintext highlighter-rouge">,</code>) as a delimiter. The previous default was a
+pipe character (<code class="language-plaintext highlighter-rouge">|</code>). The delimiter is not configurable anymore. If needed, the comma can be escaped
+with a backslash.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">min</code> and <code class="language-plaintext highlighter-rouge">max</code> attributes in property definitions in the XML are now optional and can appear separately
+or be omitted.</li>
 </ul>
 
 <h3 id="-new-and-changed-rules">🌟 New and changed rules</h3>
@@ -2019,6 +2141,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
   <li>Metrics framework</li>
   <li>Testing framework</li>
   <li>Language Lifecycle and Language Properties</li>
+  <li>Rule Properties</li>
 </ul>
 
 <h3 id="-compatibility-and-migration-notes">💥 Compatibility and migration notes</h3>
@@ -2050,6 +2173,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
   <li>core
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/880">#880</a>:   [core] Make visitors generic</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1204">#1204</a>: [core] Allow numeric properties in XML to be within an unbounded range</li>
       <li><a href="https://github.com/pmd/pmd/pull/1622">#1622</a>:   [core] NodeStream API</li>
       <li><a href="https://github.com/pmd/pmd/issues/1687">#1687</a>: [core] Deprecate and Remove XPath 1.0 support</li>
       <li><a href="https://github.com/pmd/pmd/issues/1785">#1785</a>: [core] Allow abstract node types to be valid rulechain visits</li>
@@ -2076,6 +2200,8 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/pull/3922">#3922</a>:   [core] Better error reporting for the ruleset parser</li>
       <li><a href="https://github.com/pmd/pmd/issues/4035">#4035</a>: [core] ConcurrentModificationException in DefaultRuleViolationFactory</li>
       <li><a href="https://github.com/pmd/pmd/issues/4120">#4120</a>: [core] Explicitly name all language versions</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4301">#4301</a>: [core] Remove deprecated property concrete classes</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4302">#4302</a>: [core] Migrate Property Framework API to Java 8</li>
       <li><a href="https://github.com/pmd/pmd/pull/4353">#4353</a>:   [core] Micro optimizations for Node API</li>
       <li><a href="https://github.com/pmd/pmd/pull/4365">#4365</a>:   [core] Improve benchmarking</li>
       <li><a href="https://github.com/pmd/pmd/pull/4420">#4420</a>:   [core] Remove PMD.EOL</li>
@@ -2096,6 +2222,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
   <li>doc
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2501">#2501</a>: [doc] Verify ANTLR Documentation</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4303">#4303</a>: [doc] Document new property framework</li>
       <li><a href="https://github.com/pmd/pmd/issues/4438">#4438</a>: [doc] Documentation links in VS Code are outdated</li>
       <li><a href="https://github.com/pmd/pmd/issues/4521">#4521</a>: [doc] Website is not mobile friendly</li>
     </ul>

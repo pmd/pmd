@@ -1644,7 +1644,7 @@ page can help you squeeze that sweet flexibility out of your rule.</p>
   <li>Its <em>default value</em></li>
 </ul>
 
-<p>Don’t worry, all of these attributes can be specified in a single Java statement (or xml element for XPath rules).</p>
+<p>All of these attributes can be specified in a single Java statement (or XML element for XPath rules).</p>
 
 <h2 id="for-java-rules">For Java rules</h2>
 
@@ -1661,7 +1661,7 @@ builder from <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/
 
 <p>Properties can be built using type-specific <strong>builders</strong>, which can be obtained
 from the factory methods of <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyFactory.html#"><code>PropertyFactory</code></a>. For example, to build a
-string property, you’d call</p>
+string property, you would call</p>
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">PropertyFactory</span><span class="o">.</span><span class="na">stringProperty</span><span class="o">(</span><span class="s">"myProperty"</span><span class="o">)</span>
                <span class="o">.</span><span class="na">desc</span><span class="o">(</span><span class="s">"This is my property"</span><span class="o">)</span>
                <span class="o">.</span><span class="na">defaultValue</span><span class="o">(</span><span class="s">"foo"</span><span class="o">)</span>
@@ -1670,47 +1670,39 @@ string property, you’d call</p>
 
 <p>This is fairly more readable than a constructor call, but keep in mind the description and the default value are not optional.</p>
 
-<div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b> As of version 6.10.0, all property concrete classes are deprecated for
-removal in 7.0.0. See the <a href="pmd_release_notes_pmd7.html#properties-framework">detailed list of planned removals</a> for
-information about how to migrate.</div>
-
 <p>For <strong>numeric properties</strong>, you can add constraints on the range of acceptable values, e.g.</p>
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">PropertyFactory</span><span class="o">.</span><span class="na">intProperty</span><span class="o">(</span><span class="s">"myIntProperty"</span><span class="o">)</span>
                <span class="o">.</span><span class="na">desc</span><span class="o">(</span><span class="s">"This is my property"</span><span class="o">)</span>
                <span class="o">.</span><span class="na">defaultValue</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span>
-               <span class="o">.</span><span class="na">require</span><span class="o">(</span><span class="n">positive</span><span class="o">())</span>
-               <span class="o">.</span><span class="na">range</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">100</span><span class="o">)</span>
+               <span class="o">.</span><span class="na">require</span><span class="o">(</span><span class="n">positive</span><span class="o">())</span> <span class="c1">// must be &gt; 0</span>
+               <span class="o">.</span><span class="na">require</span><span class="o">(</span><span class="n">below</span><span class="o">(</span><span class="mi">100</span><span class="o">))</span> <span class="c1">// must be &lt;= 100</span>
                <span class="o">.</span><span class="na">build</span><span class="o">();</span>
 </code></pre></div></div>
 
-<p>The <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/properties/constraints/NumericConstraints.html#positive()"><code>positive</code></a> method is part of
-the <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/properties/constraints/NumericConstraints.html#"><code>NumericConstraints</code></a> class, which provides some
-other constraints. The constraint mechanism will be completely unlocked with 7.0.0,
-since we’ll be migrating our API to Java 8.</p>
+<p>Predefined constraints such as <code class="language-plaintext highlighter-rouge">positive</code> and <code class="language-plaintext highlighter-rouge">below</code> are available in the class <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/properties/NumericConstraints.html#"><code>NumericConstraints</code></a>.
+A custom constraint can be implemented by implementing the interface <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyConstraint.html#"><code>PropertyConstraint</code></a>.</p>
 
-<p><strong>Enumerated properties</strong> are a bit less straightforward to define, though they are
-arguably more powerful. These properties don’t have a specific value type, instead,
+<p><strong>Enumerated properties</strong> do not have a specific value type, instead,
 you can choose any type of value, provided the values are from a closed set. To make
 that actionable, you give string labels to each of the acceptable values, and the user
 will provide one of those labels as a value in the XML. The property will give you back
 the associated value, not the label. Here’s an example:</p>
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">static</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">ModeStrategy</span><span class="o">&gt;</span> <span class="n">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HashMap</span><span class="o">&lt;&gt;();</span>
-
-<span class="kd">static</span> <span class="o">{</span>
-  <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"easyMode"</span><span class="o">,</span> <span class="k">new</span> <span class="nc">EasyStrategy</span><span class="o">());</span>
-  <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"hardMode"</span><span class="o">,</span> <span class="k">new</span> <span class="nc">HardStrategy</span><span class="o">());</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">enum</span> <span class="nc">Mode</span> <span class="o">{</span>
+    <span class="nc">Easy</span><span class="o">,</span> <span class="nc">Hard</span>
 <span class="o">}</span>
 
-<span class="kd">static</span> <span class="nc">PropertyDescriptor</span><span class="o">&lt;</span><span class="nc">ModeStrategy</span><span class="o">&gt;</span> <span class="n">modeProperty</span>
- <span class="o">=</span> <span class="nc">PropertyFactory</span><span class="o">.</span><span class="na">enumProperty</span><span class="o">(</span><span class="s">"modeProperty"</span><span class="o">,</span> <span class="n">map</span><span class="o">)</span>
+<span class="c1">// Using this method, the labels are the `toString` of each enum constant.</span>
+<span class="c1">// To customize this look at the overloads of `enumProperty`.</span>
+<span class="kd">static</span> <span class="nc">PropertyDescriptor</span><span class="o">&lt;</span><span class="nc">Mode</span><span class="o">&gt;</span> <span class="n">modeProperty</span>
+ <span class="o">=</span> <span class="nc">PropertyFactory</span><span class="o">.</span><span class="na">enumProperty</span><span class="o">(</span><span class="s">"modeProperty"</span><span class="o">,</span> <span class="nc">Mode</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
                   <span class="o">.</span><span class="na">desc</span><span class="o">(</span><span class="s">"This is my property"</span><span class="o">)</span>
-                  <span class="o">.</span><span class="na">defaultValue</span><span class="o">(</span><span class="k">new</span> <span class="nc">EasyStrategy</span><span class="o">())</span>
+                  <span class="o">.</span><span class="na">defaultValue</span><span class="o">(</span><span class="nc">Mode</span><span class="o">.</span><span class="na">Easy</span><span class="o">)</span>
                   <span class="o">.</span><span class="na">build</span><span class="o">();</span>
 </code></pre></div></div>
 
 <h3 id="example">Example</h3>
 
-<p>You can see an example of properties used in a PMD rule <a href="https://github.com/pmd/pmd/blob/d06b01785a712e61d33f366520f37c2473f5bd1a/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/SingularFieldRule.java#L43-L52">here</a>.
+<p>You can see an example of properties used in a PMD rule such as <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/AvoidReassigningLoopVariablesRule.java#L40">AvoidReassigningLoopVariables</a>.
 There are several things to notice here:</p>
 <ul>
   <li>The property descriptors are declared <code class="language-plaintext highlighter-rouge">static final</code>, which should generally be
@@ -1766,11 +1758,6 @@ doesn’t change).</li>
   </tbody>
 </table>
 
-<div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b> In XPath 1.0 mode, all values are actually represented as
-                    string values, which is mostly fine as there is no type
-                    checking. This is a problem when <a href="pmd_userdocs_extending_writing_xpath_rules.html#migrating-from-10-to-20">migrating from XPath 1.0
-                    to 2.0</a> though</div>
-
 <p>Note that enumerated properties are not available in XPath rules (yet?).</p>
 
 <p>Properties defined in XPath also <em>must</em> declare the <code class="language-plaintext highlighter-rouge">description</code> attribute.
@@ -1798,17 +1785,16 @@ a few examples to sum it up:</p>
 <h3 id="multivalued-properties">Multivalued properties</h3>
 
 <p>Multivalued properties are also allowed and their <code class="language-plaintext highlighter-rouge">type</code> attribute has the form
-<code class="language-plaintext highlighter-rouge">List[Boolean]</code> or <code class="language-plaintext highlighter-rouge">List[Character]</code>, with every above type allowed. These
-properties <strong>require XPath 2.0</strong> to work properly, and make use of the
-<strong>sequence datatype</strong> provided by that language. You thus need to set the
-<code class="language-plaintext highlighter-rouge">version</code> property to <code class="language-plaintext highlighter-rouge">2.0</code> to use them. Properties can also declare the
-<code class="language-plaintext highlighter-rouge">delimiter</code> attribute.</p>
+<code class="language-plaintext highlighter-rouge">List[Boolean]</code> or <code class="language-plaintext highlighter-rouge">List[Character]</code>, with every above type allowed. These properties
+make use of the <strong>sequence datatype</strong> provided by XPath 2.0 and above.
+When providing multiple values, the delimiter is a simple comma (“<code class="language-plaintext highlighter-rouge">,</code>”). The comma can be escaped
+with a backslash when needed.</p>
 
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">name=</span><span class="s">"MyXpathRule"</span> <span class="err">...</span><span class="nt">&gt;</span>
   <span class="nt">&lt;properties&gt;</span>
     <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"version"</span> <span class="na">value=</span><span class="s">"2.0"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"intProp"</span> <span class="na">type=</span><span class="s">"List[Integer]"</span> <span class="na">value=</span><span class="s">"1,2,5"</span> <span class="na">description=</span><span class="s">"An IntegerMultiProperty."</span> <span class="nt">/&gt;</span>
-    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"reportedIdentifiers"</span> <span class="na">type=</span><span class="s">"List[String]"</span> <span class="na">value=</span><span class="s">"foo$bar"</span> <span class="na">delimiter=</span><span class="s">"$"</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"reportedIdentifiers"</span> <span class="na">type=</span><span class="s">"List[String]"</span> <span class="na">value=</span><span class="s">"foo,bar"</span>
               <span class="na">description=</span><span class="s">"A StringMultiProperty."</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"xpath"</span><span class="nt">&gt;</span>
     <span class="cp">&lt;![CDATA[
@@ -1867,7 +1853,7 @@ are supported.</p>
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            February 2020 (6.22.0)<br /> Site last generated: Aug 22, 2023 <br />
+            August 2022 (7.0.0)<br /> Site last generated: Aug 22, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

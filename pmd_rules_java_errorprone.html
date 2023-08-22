@@ -1654,7 +1654,6 @@
       <th>Name</th>
       <th>Default Value</th>
       <th>Description</th>
-      <th>Multivalued</th>
     </tr>
   </thead>
   <tbody>
@@ -1662,25 +1661,21 @@
       <td>allowIf</td>
       <td>false</td>
       <td>Allow assignment within the conditional expression of an if statement</td>
-      <td>no</td>
     </tr>
     <tr>
       <td>allowFor</td>
       <td>false</td>
       <td>Allow assignment within the conditional expression of a for statement</td>
-      <td>no</td>
     </tr>
     <tr>
       <td>allowWhile</td>
       <td>false</td>
       <td>Allow assignment within the conditional expression of a while statement</td>
-      <td>no</td>
     </tr>
     <tr>
       <td>allowIncrementDecrement</td>
       <td>false</td>
       <td>Allow increment or decrement operators within the conditional expression of an if, for, or while statement</td>
-      <td>no</td>
     </tr>
   </tbody>
 </table>
@@ -1864,27 +1859,23 @@ Ensure that the usage is not a bug, or consider using another approach.</p>
       <th>Name</th>
       <th>Default Value</th>
       <th>Description</th>
-      <th>Multivalued</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>checkBreakLoopTypes</td>
-      <td>for | do | while</td>
+      <td>for , do , while</td>
       <td>List of loop types in which break statements will be checked</td>
-      <td>yes. Delimiter is ‘|’.</td>
     </tr>
     <tr>
       <td>checkContinueLoopTypes</td>
-      <td>for | do | while</td>
+      <td>for , do , while</td>
       <td>List of loop types in which continue statements will be checked</td>
-      <td>yes. Delimiter is ‘|’.</td>
     </tr>
     <tr>
       <td>checkReturnLoopTypes</td>
-      <td>for | do | while</td>
+      <td>for , do , while</td>
       <td>List of loop types in which return statements will be checked</td>
-      <td>yes. Delimiter is ‘|’.</td>
     </tr>
   </tbody>
 </table>
@@ -1896,9 +1887,9 @@ Ensure that the usage is not a bug, or consider using another approach.</p>
 <p><strong>Use this rule and customize it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/errorprone.xml/AvoidBranchingStatementAsLastInLoop"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;properties&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"checkBreakLoopTypes"</span> <span class="na">value=</span><span class="s">"for|do|while"</span> <span class="nt">/&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"checkContinueLoopTypes"</span> <span class="na">value=</span><span class="s">"for|do|while"</span> <span class="nt">/&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"checkReturnLoopTypes"</span> <span class="na">value=</span><span class="s">"for|do|while"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"checkBreakLoopTypes"</span> <span class="na">value=</span><span class="s">"for,do,while"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"checkContinueLoopTypes"</span> <span class="na">value=</span><span class="s">"for,do,while"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"checkReturnLoopTypes"</span> <span class="na">value=</span><span class="s">"for,do,while"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
@@ -2051,7 +2042,6 @@ exactly equal to 0.1, as one would expect.  Therefore, it is generally recommend
       <th>Name</th>
       <th>Default Value</th>
       <th>Description</th>
-      <th>Multivalued</th>
     </tr>
   </thead>
   <tbody>
@@ -2059,25 +2049,21 @@ exactly equal to 0.1, as one would expect.  Therefore, it is generally recommend
       <td>maxDuplicateLiterals</td>
       <td>4</td>
       <td>Max duplicate literals</td>
-      <td>no</td>
     </tr>
     <tr>
       <td>minimumLength</td>
       <td>3</td>
       <td>Minimum string length to check</td>
-      <td>no</td>
     </tr>
     <tr>
       <td>skipAnnotations</td>
       <td>false</td>
       <td>Skip literals within annotations</td>
-      <td>no</td>
     </tr>
     <tr>
       <td>exceptionList</td>
       <td> </td>
       <td>List of literals to ignore. A literal is ignored if its image can be found in this list. Components of this list should not be surrounded by double quotes.</td>
-      <td>yes. Delimiter is ‘,’.</td>
     </tr>
   </tbody>
 </table>
@@ -2295,7 +2281,6 @@ the property ignoreMagicNumbers is not taken into account, if there are multiple
       <th>Name</th>
       <th>Default Value</th>
       <th>Description</th>
-      <th>Multivalued</th>
     </tr>
   </thead>
   <tbody>
@@ -2303,13 +2288,11 @@ the property ignoreMagicNumbers is not taken into account, if there are multiple
       <td>ignoreMagicNumbers</td>
       <td>-1,0</td>
       <td>Comma-separated list of magic numbers, that should be ignored</td>
-      <td>no</td>
     </tr>
     <tr>
       <td>ignoreExpressions</td>
       <td>true</td>
       <td>If true, only literals in simple if conditions are considered. Otherwise literals in expressions are checked, too.</td>
-      <td>no</td>
     </tr>
   </tbody>
 </table>
@@ -2426,7 +2409,6 @@ interpreted as an octal value.</p>
       <th>Name</th>
       <th>Default Value</th>
       <th>Description</th>
-      <th>Multivalued</th>
     </tr>
   </thead>
   <tbody>
@@ -2434,7 +2416,6 @@ interpreted as an octal value.</p>
       <td>strict</td>
       <td>false</td>
       <td>Detect violations between 00 and 07</td>
-      <td>no</td>
     </tr>
   </tbody>
 </table>
@@ -2504,7 +2485,6 @@ serializable regardless of the name.</p>
       <th>Name</th>
       <th>Default Value</th>
       <th>Description</th>
-      <th>Multivalued</th>
     </tr>
   </thead>
   <tbody>
@@ -2512,13 +2492,11 @@ serializable regardless of the name.</p>
       <td>prefix</td>
       <td> </td>
       <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  A variable prefix to skip, i.e., m_</td>
-      <td>no</td>
     </tr>
     <tr>
       <td>checkAbstractTypes</td>
       <td>false</td>
       <td>Enable to verify fields with abstract types like abstract classes, interfaces, generic types or java.lang.Object. Enabling this might lead to more false positives, since the concrete runtime type can actually be serializable.</td>
-      <td>no</td>
     </tr>
   </tbody>
 </table>
@@ -2866,7 +2844,6 @@ just remove "AutoCloseable" from the types.</p>
       <th>Name</th>
       <th>Default Value</th>
       <th>Description</th>
-      <th>Multivalued</th>
     </tr>
   </thead>
   <tbody>
@@ -2874,31 +2851,26 @@ just remove "AutoCloseable" from the types.</p>
       <td>closeTargets</td>
       <td> </td>
       <td>Methods which may close this resource</td>
-      <td>yes. Delimiter is ‘,’.</td>
     </tr>
     <tr>
       <td>types</td>
       <td>java.lang.AutoCloseable , java.sql.Connection , java.sql.Statement , java.sql.ResultSet</td>
       <td>Affected types</td>
-      <td>yes. Delimiter is ‘,’.</td>
     </tr>
     <tr>
       <td>closeAsDefaultTarget</td>
       <td>true</td>
       <td>Consider ‘close’ as a target by default</td>
-      <td>no</td>
     </tr>
     <tr>
       <td>allowedResourceTypes</td>
-      <td>java.io.ByteArrayOutputStream | java.io.ByteArrayInputStream | java.io.StringWriter | java.io.CharArrayWriter | java.util.stream.Stream | java.util.stream.IntStream | java.util.stream.LongStream | java.util.stream.DoubleStream</td>
+      <td>java.io.ByteArrayOutputStream , java.io.ByteArrayInputStream , java.io.StringWriter , java.io.CharArrayWriter , java.util.stream.Stream , java.util.stream.IntStream , java.util.stream.LongStream , java.util.stream.DoubleStream</td>
       <td>Exact class names that do not need to be closed</td>
-      <td>yes. Delimiter is ‘|’.</td>
     </tr>
     <tr>
       <td>closeNotInFinally</td>
       <td>false</td>
       <td>Detect if ‘close’ (or other closeTargets) is called outside of a finally-block</td>
-      <td>no</td>
     </tr>
   </tbody>
 </table>
@@ -2913,7 +2885,7 @@ just remove "AutoCloseable" from the types.</p>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"closeTargets"</span> <span class="na">value=</span><span class="s">""</span> <span class="nt">/&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"types"</span> <span class="na">value=</span><span class="s">"java.lang.AutoCloseable,java.sql.Connection,java.sql.Statement,java.sql.ResultSet"</span> <span class="nt">/&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"closeAsDefaultTarget"</span> <span class="na">value=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"allowedResourceTypes"</span> <span class="na">value=</span><span class="s">"java.io.ByteArrayOutputStream|java.io.ByteArrayInputStream|java.io.StringWriter|java.io.CharArrayWriter|java.util.stream.Stream|java.util.stream.IntStream|java.util.stream.LongStream|java.util.stream.DoubleStream"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"allowedResourceTypes"</span> <span class="na">value=</span><span class="s">"java.io.ByteArrayOutputStream,java.io.ByteArrayInputStream,java.io.StringWriter,java.io.CharArrayWriter,java.util.stream.Stream,java.util.stream.IntStream,java.util.stream.LongStream,java.util.stream.DoubleStream"</span> <span class="nt">/&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"closeNotInFinally"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
@@ -2967,7 +2939,6 @@ in the <code class="language-plaintext highlighter-rouge">typesThatCompareByRefe
       <th>Name</th>
       <th>Default Value</th>
       <th>Description</th>
-      <th>Multivalued</th>
     </tr>
   </thead>
   <tbody>
@@ -2975,7 +2946,6 @@ in the <code class="language-plaintext highlighter-rouge">typesThatCompareByRefe
       <td>typesThatCompareByReference</td>
       <td>java.lang.Enum , java.lang.Class</td>
       <td>List of canonical type names for which reference comparison is allowed.</td>
-      <td>yes. Delimiter is ‘,’.</td>
     </tr>
   </tbody>
 </table>
@@ -3368,7 +3338,6 @@ or reported.</p>
       <th>Name</th>
       <th>Default Value</th>
       <th>Description</th>
-      <th>Multivalued</th>
     </tr>
   </thead>
   <tbody>
@@ -3376,13 +3345,11 @@ or reported.</p>
       <td>allowCommentedBlocks</td>
       <td>false</td>
       <td>Empty blocks containing comments will be skipped</td>
-      <td>no</td>
     </tr>
     <tr>
       <td>allowExceptionNameRegex</td>
       <td>^(ignored|expected)$</td>
       <td>Empty blocks catching exceptions with names matching this regular expression will be skipped</td>
-      <td>no</td>
     </tr>
   </tbody>
 </table>
@@ -4259,7 +4226,6 @@ See the property <code class="language-plaintext highlighter-rouge">annotations<
       <th>Name</th>
       <th>Default Value</th>
       <th>Description</th>
-      <th>Multivalued</th>
     </tr>
   </thead>
   <tbody>
@@ -4267,7 +4233,6 @@ See the property <code class="language-plaintext highlighter-rouge">annotations<
       <td>annotations</td>
       <td>org.springframework.beans.factory.annotation.Autowired , javax.inject.Inject , com.google.inject.Inject</td>
       <td>If a constructor is annotated with one of these annotations, then the class is ignored.</td>
-      <td>yes. Delimiter is ‘,’.</td>
     </tr>
   </tbody>
 </table>
@@ -4401,7 +4366,6 @@ serializable regardless of the name.</p>
       <th>Name</th>
       <th>Default Value</th>
       <th>Description</th>
-      <th>Multivalued</th>
     </tr>
   </thead>
   <tbody>
@@ -4409,13 +4373,11 @@ serializable regardless of the name.</p>
       <td>prefix</td>
       <td> </td>
       <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  A variable prefix to skip, i.e., m_</td>
-      <td>no</td>
     </tr>
     <tr>
       <td>checkAbstractTypes</td>
       <td>false</td>
       <td>Enable to verify fields with abstract types like abstract classes, interfaces, generic types or java.lang.Object. Enabling this might lead to more false positives, since the concrete runtime type can actually be serializable.</td>
-      <td>no</td>
     </tr>
   </tbody>
 </table>
@@ -4601,7 +4563,6 @@ with the restriction that the logger needs to be passed into the constructor.</p
       <th>Name</th>
       <th>Default Value</th>
       <th>Description</th>
-      <th>Multivalued</th>
     </tr>
   </thead>
   <tbody>
@@ -4609,19 +4570,16 @@ with the restriction that the logger needs to be passed into the constructor.</p
       <td>staticLoggerName</td>
       <td>LOG</td>
       <td>Name of the static Logger variable</td>
-      <td>no</td>
     </tr>
     <tr>
       <td>loggerName</td>
       <td>log</td>
       <td>Name of the Logger instance variable</td>
-      <td>no</td>
     </tr>
     <tr>
       <td>loggerClass</td>
       <td>org.apache.commons.logging.Log</td>
       <td>Class name of the logger</td>
-      <td>no</td>
     </tr>
   </tbody>
 </table>
@@ -5031,7 +4989,6 @@ by name, set this property to an empty string.</p>
       <th>Name</th>
       <th>Default Value</th>
       <th>Description</th>
-      <th>Multivalued</th>
     </tr>
   </thead>
   <tbody>
@@ -5039,7 +4996,6 @@ by name, set this property to an empty string.</p>
       <td>testClassPattern</td>
       <td>^(?:.*\.)?Test[^\.]*$|^(?:.*\.)?.*Tests?$|^(?:.*\.)?.*TestCase$</td>
       <td>Test class name pattern to identify test classes by their fully qualified name. An empty pattern disables test class detection by name. Since PMD 6.51.0.</td>
-      <td>no</td>
     </tr>
   </tbody>
 </table>
