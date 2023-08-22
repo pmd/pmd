@@ -179,7 +179,7 @@ public class PMDDemo {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>14</expected-linenumbers>
         <code><![CDATA[
-import java.util.Function;
+import java.util.function.Function;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -189,12 +189,12 @@ public class Message {
 
     public Message(Message message) {}
 
-    private SortedSet<Message> getFilteredMessages() {
+    private SortedSet<Message> getFilteredMessages(List<Message> messages) {
         final SortedSet<Message> result = new TreeSet<>(messages);
         for (Message element : messages) {
             Message event = new Message(element);
             for (Function<Message, Boolean> filter : filters) {
-                if (!filter.accept(event)) {
+                if (!filter.apply(event)) {
                     result.remove(element);
                     break;
                 }

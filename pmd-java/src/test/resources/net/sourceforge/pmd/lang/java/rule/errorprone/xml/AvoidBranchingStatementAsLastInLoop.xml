@@ -138,7 +138,7 @@ public class Foo {
 
     <test-code>
         <description>violations: break:for/do/while</description>
-        <rule-property name="checkBreakLoopTypes">for|do|while</rule-property>
+        <rule-property name="checkBreakLoopTypes">for,do,while</rule-property>
         <rule-property name="checkContinueLoopTypes"></rule-property>
         <rule-property name="checkReturnLoopTypes"></rule-property>
         <expected-problems>4</expected-problems>
@@ -149,7 +149,7 @@ public class Foo {
     <test-code>
         <description>violations: continue:for/do/while</description>
         <rule-property name="checkBreakLoopTypes"></rule-property>
-        <rule-property name="checkContinueLoopTypes">for|do|while</rule-property>
+        <rule-property name="checkContinueLoopTypes">for,do,while</rule-property>
         <rule-property name="checkReturnLoopTypes"></rule-property>
         <expected-problems>4</expected-problems>
         <expected-linenumbers>11,20,29,38</expected-linenumbers>
@@ -160,7 +160,7 @@ public class Foo {
         <description>violations: return:for/do/while</description>
         <rule-property name="checkBreakLoopTypes"></rule-property>
         <rule-property name="checkContinueLoopTypes"></rule-property>
-        <rule-property name="checkReturnLoopTypes">for|do|while</rule-property>
+        <rule-property name="checkReturnLoopTypes">for,do,while</rule-property>
         <expected-problems>4</expected-problems>
         <expected-linenumbers>5,14,23,32</expected-linenumbers>
         <code-ref id="violations"/>
