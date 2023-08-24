@@ -59,11 +59,12 @@ public final class PmdRootLogger {
     }
 
     private static @NonNull MessageReporter setupMessageReporter() {
+        // Note: This implementation uses slf4j as the backend. If PMD is integrated into an application
+        // a slf4j implementation binding must be provided to see any loggings (even errors).
+        // In pmd-cli, we use slf4j-simple.
 
         // create a top-level reporter
         // TODO CLI errors should also be reported through this
-        // TODO this should not use the logger as backend, otherwise without
-        //  slf4j implementation binding, errors are entirely ignored.
         MessageReporter pmdReporter = new SimpleMessageReporter(log);
         // always install java.util.logging to slf4j bridge
         Slf4jSimpleConfiguration.installJulBridge();
