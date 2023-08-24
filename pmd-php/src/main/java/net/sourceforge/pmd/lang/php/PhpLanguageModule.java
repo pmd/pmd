@@ -20,6 +20,6 @@ public class PhpLanguageModule extends CpdOnlyLanguageModuleBase {
 
     @Override
     public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
-        return new AnyTokenizer("#");
+        return new AnyTokenizer("#|//");
     }
 }
