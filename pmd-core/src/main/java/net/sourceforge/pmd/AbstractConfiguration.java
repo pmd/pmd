@@ -35,7 +35,7 @@ import net.sourceforge.pmd.util.log.MessageReporter;
 public abstract class AbstractConfiguration {
 
     private final List<Path> relativizeRoots = new ArrayList<>();
-    protected URI inputUri;
+    private URI inputUri;
     private Charset sourceEncoding = Charset.forName(System.getProperty("file.encoding"));
     private final Map<Language, LanguagePropertyBundle> langProperties = new HashMap<>();
     private final LanguageRegistry langRegistry;

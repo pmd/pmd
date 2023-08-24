@@ -96,7 +96,7 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     /** The default suppress marker string. */
     public static final String DEFAULT_SUPPRESS_MARKER = "NOPMD";
-    protected Path reportFile;
+    private Path reportFile;
 
     // General behavior options
     private String suppressMarker = DEFAULT_SUPPRESS_MARKER;
