@@ -79,13 +79,14 @@ public final class CpdAnalysis implements AutoCloseable {
     private void setLanguageProperties(Language language, CPDConfiguration configuration) {
         LanguagePropertyBundle props = configuration.getLanguageProperties(language);
 
-        setPropertyIfMissing(Tokenizer.CPD_ANONYMIZE_LITERALS, props, configuration.isIgnoreLiterals());
-        setPropertyIfMissing(Tokenizer.CPD_ANONYMIZE_IDENTIFIERS, props, configuration.isIgnoreIdentifiers());
-        setPropertyIfMissing(Tokenizer.CPD_IGNORE_METADATA, props, configuration.isIgnoreAnnotations());
-        setPropertyIfMissing(Tokenizer.CPD_IGNORE_IMPORTS, props, configuration.isIgnoreUsings());
-        setPropertyIfMissing(Tokenizer.CPD_IGNORE_LITERAL_SEQUENCES, props, configuration.isIgnoreLiteralSequences());
-        setPropertyIfMissing(Tokenizer.CPD_IGNORE_LITERAL_AND_IDENTIFIER_SEQUENCES, props, configuration.isIgnoreIdentifierAndLiteralSequences());
+        setPropertyIfMissing(CpdLanguageProperties.CPD_ANONYMIZE_LITERALS, props, configuration.isIgnoreLiterals());
+        setPropertyIfMissing(CpdLanguageProperties.CPD_ANONYMIZE_IDENTIFIERS, props, configuration.isIgnoreIdentifiers());
+        setPropertyIfMissing(CpdLanguageProperties.CPD_IGNORE_METADATA, props, configuration.isIgnoreAnnotations());
+        setPropertyIfMissing(CpdLanguageProperties.CPD_IGNORE_IMPORTS, props, configuration.isIgnoreUsings());
+        setPropertyIfMissing(CpdLanguageProperties.CPD_IGNORE_LITERAL_SEQUENCES, props, configuration.isIgnoreLiteralSequences());
+        setPropertyIfMissing(CpdLanguageProperties.CPD_IGNORE_LITERAL_AND_IDENTIFIER_SEQUENCES, props, configuration.isIgnoreIdentifierAndLiteralSequences());
         if (!configuration.isNoSkipBlocks()) {
+            // see net.sourceforge.pmd.lang.cpp.CppLanguageModule.CPD_SKIP_BLOCKS
             PropertyDescriptor<String> skipBlocks = (PropertyDescriptor) props.getPropertyDescriptor("cpdSkipBlocksPattern");
             setPropertyIfMissing(skipBlocks, props, configuration.getSkipBlocksPattern());
         }

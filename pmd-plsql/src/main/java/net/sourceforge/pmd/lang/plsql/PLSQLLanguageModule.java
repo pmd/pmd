@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.plsql;
 
+import net.sourceforge.pmd.cpd.CpdLanguageProperties;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
@@ -45,8 +46,8 @@ public class PLSQLLanguageModule extends SimpleLanguageModuleBase {
     @Override
     public LanguagePropertyBundle newPropertyBundle() {
         LanguagePropertyBundle bundle = super.newPropertyBundle();
-        bundle.definePropertyDescriptor(Tokenizer.CPD_ANONYMIZE_LITERALS);
-        bundle.definePropertyDescriptor(Tokenizer.CPD_ANONYMIZE_IDENTIFIERS);
+        bundle.definePropertyDescriptor(CpdLanguageProperties.CPD_ANONYMIZE_LITERALS);
+        bundle.definePropertyDescriptor(CpdLanguageProperties.CPD_ANONYMIZE_IDENTIFIERS);
         return bundle;
     }
 

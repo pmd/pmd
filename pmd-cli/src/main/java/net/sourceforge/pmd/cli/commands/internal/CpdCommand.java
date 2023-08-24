@@ -17,7 +17,7 @@ import net.sourceforge.pmd.cli.commands.typesupport.internal.CpdLanguageTypeSupp
 import net.sourceforge.pmd.cli.internal.CliExitCode;
 import net.sourceforge.pmd.cpd.CPDConfiguration;
 import net.sourceforge.pmd.cpd.CpdAnalysis;
-import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.cpd.CpdLanguageProperties;
 import net.sourceforge.pmd.internal.LogMessages;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.util.StringUtil;
@@ -78,7 +78,7 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
 
     @Option(names = "--skip-blocks-pattern",
             description = "Pattern to find the blocks to skip. Start and End pattern separated by |.",
-            defaultValue = Tokenizer.DEFAULT_SKIP_BLOCKS_PATTERN)
+            defaultValue = CpdLanguageProperties.DEFAULT_SKIP_BLOCKS_PATTERN)
     private String skipBlocksPattern;
 
     @Option(names = "--exclude", arity = "1..*", description = "Files to be excluded from the analysis")

@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.cs;
 
+import net.sourceforge.pmd.cpd.CpdLanguageProperties;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -29,9 +30,9 @@ public class CsLanguageModule extends CpdOnlyLanguageModuleBase {
     @Override
     public LanguagePropertyBundle newPropertyBundle() {
         LanguagePropertyBundle bundle = super.newPropertyBundle();
-        bundle.definePropertyDescriptor(Tokenizer.CPD_IGNORE_LITERAL_SEQUENCES);
-        bundle.definePropertyDescriptor(Tokenizer.CPD_IGNORE_IMPORTS);
-        bundle.definePropertyDescriptor(Tokenizer.CPD_IGNORE_METADATA);
+        bundle.definePropertyDescriptor(CpdLanguageProperties.CPD_IGNORE_LITERAL_SEQUENCES);
+        bundle.definePropertyDescriptor(CpdLanguageProperties.CPD_IGNORE_IMPORTS);
+        bundle.definePropertyDescriptor(CpdLanguageProperties.CPD_IGNORE_METADATA);
         return bundle;
     }
 

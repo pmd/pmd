@@ -7,9 +7,9 @@ package net.sourceforge.pmd.lang.java.cpd;
 import java.util.Deque;
 import java.util.LinkedList;
 
+import net.sourceforge.pmd.cpd.CpdLanguageProperties;
 import net.sourceforge.pmd.cpd.TokenEntry;
 import net.sourceforge.pmd.cpd.TokenFactory;
-import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.cpd.impl.JavaCCTokenFilter;
 import net.sourceforge.pmd.cpd.impl.JavaCCTokenizer;
 import net.sourceforge.pmd.lang.TokenManager;
@@ -32,9 +32,9 @@ public class JavaTokenizer extends JavaCCTokenizer {
     private final ConstructorDetector constructorDetector;
 
     public JavaTokenizer(JavaLanguageProperties properties) {
-        ignoreAnnotations = properties.getProperty(Tokenizer.CPD_IGNORE_METADATA);
-        ignoreLiterals = properties.getProperty(Tokenizer.CPD_ANONYMIZE_LITERALS);
-        ignoreIdentifiers = properties.getProperty(Tokenizer.CPD_ANONYMIZE_IDENTIFIERS);
+        ignoreAnnotations = properties.getProperty(CpdLanguageProperties.CPD_IGNORE_METADATA);
+        ignoreLiterals = properties.getProperty(CpdLanguageProperties.CPD_ANONYMIZE_LITERALS);
+        ignoreIdentifiers = properties.getProperty(CpdLanguageProperties.CPD_ANONYMIZE_IDENTIFIERS);
         constructorDetector = new ConstructorDetector(ignoreIdentifiers);
     }
 

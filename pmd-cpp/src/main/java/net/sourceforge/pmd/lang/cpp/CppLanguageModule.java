@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.cpp;
 
+import net.sourceforge.pmd.cpd.CpdLanguageProperties;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -20,7 +21,7 @@ public class CppLanguageModule extends CpdOnlyLanguageModuleBase {
 
     public static final PropertyDescriptor<String> CPD_SKIP_BLOCKS =
         PropertyFactory.stringProperty("cpdSkipBlocksPattern")
-                       .defaultValue("#if 0|#endif")
+                       .defaultValue(CpdLanguageProperties.DEFAULT_SKIP_BLOCKS_PATTERN)
                        .desc("Specifies a start and end delimiter for CPD to completely ignore. "
                                  + "The delimiters are separated by a pipe |. The default skips code "
                                  + " that is conditionally compiled out. Set this property to empty to disable this.")
@@ -43,8 +44,8 @@ public class CppLanguageModule extends CpdOnlyLanguageModuleBase {
     @Override
     public LanguagePropertyBundle newPropertyBundle() {
         LanguagePropertyBundle bundle = super.newPropertyBundle();
-        bundle.definePropertyDescriptor(Tokenizer.CPD_IGNORE_LITERAL_SEQUENCES);
-        bundle.definePropertyDescriptor(Tokenizer.CPD_IGNORE_LITERAL_AND_IDENTIFIER_SEQUENCES);
+        bundle.definePropertyDescriptor(CpdLanguageProperties.CPD_IGNORE_LITERAL_SEQUENCES);
+        bundle.definePropertyDescriptor(CpdLanguageProperties.CPD_IGNORE_LITERAL_AND_IDENTIFIER_SEQUENCES);
         bundle.definePropertyDescriptor(CPD_SKIP_BLOCKS);
         return bundle;
     }

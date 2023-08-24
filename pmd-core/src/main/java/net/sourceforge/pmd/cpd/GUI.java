@@ -90,27 +90,27 @@ public class GUI implements CPDListener {
         }
 
         public boolean canIgnoreIdentifiers() {
-            return getLanguage().newPropertyBundle().hasDescriptor(Tokenizer.CPD_ANONYMIZE_IDENTIFIERS);
+            return getLanguage().newPropertyBundle().hasDescriptor(CpdLanguageProperties.CPD_ANONYMIZE_IDENTIFIERS);
         }
 
         public boolean canIgnoreLiterals() {
-            return getLanguage().newPropertyBundle().hasDescriptor(Tokenizer.CPD_ANONYMIZE_LITERALS);
+            return getLanguage().newPropertyBundle().hasDescriptor(CpdLanguageProperties.CPD_ANONYMIZE_LITERALS);
         }
 
         public boolean canIgnoreAnnotations() {
-            return getLanguage().newPropertyBundle().hasDescriptor(Tokenizer.CPD_IGNORE_METADATA);
+            return getLanguage().newPropertyBundle().hasDescriptor(CpdLanguageProperties.CPD_IGNORE_METADATA);
         }
 
         public boolean canIgnoreUsings() {
-            return getLanguage().newPropertyBundle().hasDescriptor(Tokenizer.CPD_IGNORE_IMPORTS);
+            return getLanguage().newPropertyBundle().hasDescriptor(CpdLanguageProperties.CPD_IGNORE_IMPORTS);
         }
 
         public boolean canIgnoreLiteralSequences() {
-            return getLanguage().newPropertyBundle().hasDescriptor(Tokenizer.CPD_IGNORE_LITERAL_SEQUENCES);
+            return getLanguage().newPropertyBundle().hasDescriptor(CpdLanguageProperties.CPD_IGNORE_LITERAL_SEQUENCES);
         }
 
         public boolean canIgnoreIdentifierAndLiteralSequences() {
-            return getLanguage().newPropertyBundle().hasDescriptor(Tokenizer.CPD_IGNORE_LITERAL_AND_IDENTIFIER_SEQUENCES);
+            return getLanguage().newPropertyBundle().hasDescriptor(CpdLanguageProperties.CPD_IGNORE_LITERAL_AND_IDENTIFIER_SEQUENCES);
         }
 
     }

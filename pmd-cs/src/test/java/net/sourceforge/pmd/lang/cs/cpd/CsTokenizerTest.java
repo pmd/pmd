@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.cpd.CpdLanguageProperties;
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 import net.sourceforge.pmd.cpd.test.LanguagePropertyConfig;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
@@ -120,9 +120,9 @@ class CsTokenizerTest extends CpdTextComparisonTest {
 
     private LanguagePropertyConfig properties(boolean ignoreUsings, boolean ignoreLiteralSequences, boolean ignoreAttributes) {
         return properties -> {
-            properties.setProperty(Tokenizer.CPD_IGNORE_IMPORTS, ignoreUsings);
-            properties.setProperty(Tokenizer.CPD_IGNORE_LITERAL_SEQUENCES, ignoreLiteralSequences);
-            properties.setProperty(Tokenizer.CPD_IGNORE_METADATA, ignoreAttributes);
+            properties.setProperty(CpdLanguageProperties.CPD_IGNORE_IMPORTS, ignoreUsings);
+            properties.setProperty(CpdLanguageProperties.CPD_IGNORE_LITERAL_SEQUENCES, ignoreLiteralSequences);
+            properties.setProperty(CpdLanguageProperties.CPD_IGNORE_METADATA, ignoreAttributes);
         };
     }
 }

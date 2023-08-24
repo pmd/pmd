@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.cpd.CpdLanguageProperties;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.cpd.Tokens;
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
@@ -171,8 +172,8 @@ class CPPTokenizerTest extends CpdTextComparisonTest {
             } else if (skipPattern != null) {
                 properties.setProperty(CppLanguageModule.CPD_SKIP_BLOCKS, skipPattern);
             }
-            properties.setProperty(Tokenizer.CPD_IGNORE_LITERAL_SEQUENCES, skipLiteralSequences);
-            properties.setProperty(Tokenizer.CPD_IGNORE_LITERAL_AND_IDENTIFIER_SEQUENCES, skipSequences);
+            properties.setProperty(CpdLanguageProperties.CPD_IGNORE_LITERAL_SEQUENCES, skipLiteralSequences);
+            properties.setProperty(CpdLanguageProperties.CPD_IGNORE_LITERAL_AND_IDENTIFIER_SEQUENCES, skipSequences);
         };
     }
 }

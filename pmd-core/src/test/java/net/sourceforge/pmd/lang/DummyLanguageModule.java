@@ -8,7 +8,7 @@ import java.util.Objects;
 
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.cpd.CpdCapableLanguage;
-import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.cpd.CpdLanguageProperties;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.ParseException;
@@ -50,8 +50,8 @@ public class DummyLanguageModule extends SimpleLanguageModuleBase implements Cpd
     @Override
     public LanguagePropertyBundle newPropertyBundle() {
         LanguagePropertyBundle bundle = super.newPropertyBundle();
-        bundle.definePropertyDescriptor(Tokenizer.CPD_ANONYMIZE_LITERALS);
-        bundle.definePropertyDescriptor(Tokenizer.CPD_ANONYMIZE_IDENTIFIERS);
+        bundle.definePropertyDescriptor(CpdLanguageProperties.CPD_ANONYMIZE_LITERALS);
+        bundle.definePropertyDescriptor(CpdLanguageProperties.CPD_ANONYMIZE_IDENTIFIERS);
         return bundle;
     }
 

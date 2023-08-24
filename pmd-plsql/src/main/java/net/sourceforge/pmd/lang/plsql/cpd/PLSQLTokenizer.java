@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.plsql.cpd;
 
-import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.cpd.CpdLanguageProperties;
 import net.sourceforge.pmd.cpd.impl.JavaCCTokenizer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.TokenManager;
@@ -25,8 +25,8 @@ public class PLSQLTokenizer extends JavaCCTokenizer {
          * interested in comment variation, so we shall default ignoreComments
          * to true
          */
-        ignoreIdentifiers = properties.getProperty(Tokenizer.CPD_ANONYMIZE_IDENTIFIERS);
-        ignoreLiterals = properties.getProperty(Tokenizer.CPD_ANONYMIZE_LITERALS);
+        ignoreIdentifiers = properties.getProperty(CpdLanguageProperties.CPD_ANONYMIZE_IDENTIFIERS);
+        ignoreLiterals = properties.getProperty(CpdLanguageProperties.CPD_ANONYMIZE_LITERALS);
     }
 
     @Override

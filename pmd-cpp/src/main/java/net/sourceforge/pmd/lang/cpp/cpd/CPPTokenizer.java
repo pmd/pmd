@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.cpd.CpdLanguageProperties;
 import net.sourceforge.pmd.cpd.impl.JavaCCTokenFilter;
 import net.sourceforge.pmd.cpd.impl.TokenizerBase;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
@@ -33,8 +33,8 @@ public class CPPTokenizer extends TokenizerBase<JavaccToken> {
     private final boolean ignoreLiteralSequences;
 
     public CPPTokenizer(LanguagePropertyBundle cppProperties) {
-        ignoreLiteralSequences = cppProperties.getProperty(Tokenizer.CPD_IGNORE_LITERAL_SEQUENCES);
-        ignoreIdentifierAndLiteralSeqences = cppProperties.getProperty(Tokenizer.CPD_IGNORE_LITERAL_AND_IDENTIFIER_SEQUENCES);
+        ignoreLiteralSequences = cppProperties.getProperty(CpdLanguageProperties.CPD_IGNORE_LITERAL_SEQUENCES);
+        ignoreIdentifierAndLiteralSeqences = cppProperties.getProperty(CpdLanguageProperties.CPD_IGNORE_LITERAL_AND_IDENTIFIER_SEQUENCES);
         String skipBlocksPattern = cppProperties.getProperty(CppLanguageModule.CPD_SKIP_BLOCKS);
         if (StringUtils.isNotBlank(skipBlocksPattern)) {
             skipBlocks = true;

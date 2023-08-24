@@ -68,7 +68,7 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     private boolean noSkipBlocks = false;
 
-    private String skipBlocksPattern = Tokenizer.DEFAULT_SKIP_BLOCKS_PATTERN;
+    private String skipBlocksPattern = CpdLanguageProperties.DEFAULT_SKIP_BLOCKS_PATTERN;
 
     private boolean help;
 

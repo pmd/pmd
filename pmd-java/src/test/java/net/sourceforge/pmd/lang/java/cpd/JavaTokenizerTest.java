@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.cpd;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.cpd.CpdLanguageProperties;
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 import net.sourceforge.pmd.cpd.test.LanguagePropertyConfig;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
@@ -100,9 +100,9 @@ class JavaTokenizerTest extends CpdTextComparisonTest {
                                                      boolean ignoreLiterals,
                                                      boolean ignoreIdents) {
         return properties -> {
-            properties.setProperty(Tokenizer.CPD_IGNORE_METADATA, ignoreAnnotations);
-            properties.setProperty(Tokenizer.CPD_ANONYMIZE_IDENTIFIERS, ignoreIdents);
-            properties.setProperty(Tokenizer.CPD_ANONYMIZE_LITERALS, ignoreLiterals);
+            properties.setProperty(CpdLanguageProperties.CPD_IGNORE_METADATA, ignoreAnnotations);
+            properties.setProperty(CpdLanguageProperties.CPD_ANONYMIZE_IDENTIFIERS, ignoreIdents);
+            properties.setProperty(CpdLanguageProperties.CPD_ANONYMIZE_LITERALS, ignoreLiterals);
         };
     }
 

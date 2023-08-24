@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.cs.cpd;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Lexer;
 
-import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.cpd.CpdLanguageProperties;
 import net.sourceforge.pmd.cpd.impl.AntlrTokenFilter;
 import net.sourceforge.pmd.cpd.impl.AntlrTokenizer;
 import net.sourceforge.pmd.cpd.impl.BaseTokenFilter;
@@ -26,9 +26,9 @@ public class CsTokenizer extends AntlrTokenizer {
     private final boolean ignoreAttributes;
 
     public CsTokenizer(LanguagePropertyBundle properties) {
-        ignoreUsings = properties.getProperty(Tokenizer.CPD_IGNORE_IMPORTS);
-        ignoreLiteralSequences = properties.getProperty(Tokenizer.CPD_IGNORE_LITERAL_SEQUENCES);
-        ignoreAttributes = properties.getProperty(Tokenizer.CPD_IGNORE_METADATA);
+        ignoreUsings = properties.getProperty(CpdLanguageProperties.CPD_IGNORE_IMPORTS);
+        ignoreLiteralSequences = properties.getProperty(CpdLanguageProperties.CPD_IGNORE_LITERAL_SEQUENCES);
+        ignoreAttributes = properties.getProperty(CpdLanguageProperties.CPD_IGNORE_METADATA);
     }
 
     @Override

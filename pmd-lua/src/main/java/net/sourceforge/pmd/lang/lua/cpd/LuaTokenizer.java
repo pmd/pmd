@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.lua.cpd;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Lexer;
 
-import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.cpd.CpdLanguageProperties;
 import net.sourceforge.pmd.cpd.impl.AntlrTokenFilter;
 import net.sourceforge.pmd.cpd.impl.AntlrTokenizer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
@@ -23,7 +23,7 @@ public class LuaTokenizer extends AntlrTokenizer {
     private final boolean ignoreLiteralSequences;
 
     public LuaTokenizer(LanguagePropertyBundle bundle) {
-        ignoreLiteralSequences = bundle.getProperty(Tokenizer.CPD_IGNORE_LITERAL_SEQUENCES);
+        ignoreLiteralSequences = bundle.getProperty(CpdLanguageProperties.CPD_IGNORE_LITERAL_SEQUENCES);
     }
 
     @Override
