@@ -9,10 +9,10 @@ import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.lang.PmdCapableLanguage;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.PmdCapableLanguage;
 import net.sourceforge.pmd.lang.document.TextFile;
 
 /**
