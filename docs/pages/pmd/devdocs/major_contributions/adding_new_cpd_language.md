@@ -21,6 +21,10 @@ easy to implement the Tokenizer interface.
 Use the following guide to set up a new language module that supports CPD.
 
 1. Create a new Maven module for your language. You can take [the Golang module](https://github.com/pmd/pmd/tree/master/pmd-go/pom.xml) as an example.
+   - Make sure to add your new module to the parent pom as `<module>` entry, so that it is built alongside the
+     other languages.
+   - Also add your new module to the dependencies list in "pmd-languages-deps/pom.xml", so that the new language
+     is automatically available in the binary distribution (pmd-dist).
 
 2. Implement a {% jdoc core::cpd.Tokenizer %}.
     - For Antlr grammars you can take the grammar from [antlr/grammars-v4](https://github.com/antlr/grammars-v4) and place it in `src/main/antlr4` followed by the package name of the language. You then need to call the appropriate ant wrapper to generate
