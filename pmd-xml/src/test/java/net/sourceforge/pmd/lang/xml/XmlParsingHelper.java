@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.xml;
 
-import net.sourceforge.pmd.cpd.PmdCapableLanguage;
+import net.sourceforge.pmd.lang.PmdCapableLanguage;
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
 import net.sourceforge.pmd.lang.xml.ast.internal.XmlParserImpl.RootXmlNode;
 

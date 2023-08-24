@@ -2,12 +2,9 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.cpd;
+package net.sourceforge.pmd.lang;
 
 import net.sourceforge.pmd.PmdAnalysis;
-import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguageProcessor;
-import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 
 /**
  * A language that supports {@link PmdAnalysis PMD}.

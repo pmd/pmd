@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.cpd.CpdCapableLanguage;
-import net.sourceforge.pmd.cpd.PmdCapableLanguage;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**

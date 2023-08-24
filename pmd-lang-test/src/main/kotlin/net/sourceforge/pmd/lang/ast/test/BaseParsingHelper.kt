@@ -4,7 +4,7 @@
 package net.sourceforge.pmd.lang.ast.test
 
 import net.sourceforge.pmd.*
-import net.sourceforge.pmd.cpd.PmdCapableLanguage
+import net.sourceforge.pmd.lang.PmdCapableLanguage
 import net.sourceforge.pmd.internal.util.IOUtil
 import net.sourceforge.pmd.lang.*
 import net.sourceforge.pmd.lang.ast.Node
