@@ -39,7 +39,7 @@ public class ApexLanguageModule extends LanguageModuleBase implements PmdCapable
 
     @Override
     public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
-        return new ApexTokenizer((ApexLanguageProperties) bundle);
+        return new ApexTokenizer();
     }
 
     public static ApexLanguageModule getInstance() {

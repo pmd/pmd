@@ -48,12 +48,6 @@ public interface Tokenizer {
                        .defaultValue(false)
                        .desc("Ignore metadata such as Java annotations or C# attributes.")
                        .build();
-    PropertyDescriptor<Boolean> CPD_CASE_SENSITIVE =
-        PropertyFactory.booleanProperty("cpdCaseSensitive")
-                       .defaultValue(true)
-                       .desc("Whether CPD should respect the case of tokens. Affects all tokens.")
-                       .build();
-
 
     @Deprecated // TODO what to do with this?
     String DEFAULT_SKIP_BLOCKS_PATTERN = "#if 0|#endif";

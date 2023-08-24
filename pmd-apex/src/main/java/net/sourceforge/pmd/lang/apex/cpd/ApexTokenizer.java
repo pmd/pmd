@@ -15,17 +15,13 @@ import org.antlr.runtime.Token;
 import net.sourceforge.pmd.cpd.TokenFactory;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.lang.apex.ApexJorjeLogging;
-import net.sourceforge.pmd.lang.apex.ApexLanguageProperties;
 import net.sourceforge.pmd.lang.document.TextDocument;
 
 import apex.jorje.parser.impl.ApexLexer;
 
 public class ApexTokenizer implements Tokenizer {
 
-    private final boolean caseSensitive;
-
-    public ApexTokenizer(ApexLanguageProperties properties) {
-        this.caseSensitive = properties.getProperty(Tokenizer.CPD_CASE_SENSITIVE);
+    public ApexTokenizer() {
         ApexJorjeLogging.disableLogging();
     }
 
@@ -45,9 +41,8 @@ public class ApexTokenizer implements Tokenizer {
         while (token.getType() != Token.EOF) {
             if (token.getChannel() != Lexer.HIDDEN) {
                 String tokenText = token.getText();
-                if (!caseSensitive) {
-                    tokenText = tokenText.toLowerCase(Locale.ROOT);
-                }
+                // be case-insensitive
+                tokenText = tokenText.toLowerCase(Locale.ROOT);
                 tokenEntries.recordToken(
                     tokenText,
                     token.getLine(),
