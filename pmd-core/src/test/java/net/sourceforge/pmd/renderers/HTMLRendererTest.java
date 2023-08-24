@@ -7,6 +7,7 @@ package net.sourceforge.pmd.renderers;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
@@ -95,7 +96,7 @@ class HTMLRendererTest extends AbstractRendererTest {
         final String linkPrefix = "https://github.com/pmd/pmd/blob/master/";
         final String linePrefix = "L";
         renderer.setProperty(HTMLRenderer.LINK_PREFIX, linkPrefix);
-        renderer.setProperty(HTMLRenderer.LINE_PREFIX, linePrefix);
+        renderer.setProperty(HTMLRenderer.LINE_PREFIX, Optional.of(linePrefix));
         renderer.setProperty(HTMLRenderer.HTML_EXTENSION, false);
 
         String actual = renderReport(renderer, reportOneViolation());
@@ -119,7 +120,7 @@ class HTMLRendererTest extends AbstractRendererTest {
         final HTMLRenderer renderer = new HTMLRenderer();
         final String linkPrefix = "https://github.com/pmd/pmd/blob/master/";
         renderer.setProperty(HTMLRenderer.LINK_PREFIX, linkPrefix);
-        renderer.setProperty(HTMLRenderer.LINE_PREFIX, "");
+        renderer.setProperty(HTMLRenderer.LINE_PREFIX, Optional.of(""));
         renderer.setProperty(HTMLRenderer.HTML_EXTENSION, false);
 
         String actual = renderReport(renderer, reportOneViolation());

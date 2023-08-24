@@ -66,7 +66,7 @@ Here might be &lt;script&gt;alert('XSS');&lt;/script&gt; as well. And "quotes".
                </value>
            </property>
            <property name="sampleRegexProperty" type="Regex" description="The property is of type regex" value="\/\*\s+(default|package)\s+\*\/" />
-           <property name="XSSpropertyTest &lt;script&gt;alert('XSS');&lt;/script&gt;" type="String" description="&lt;script&gt;alert('XSS');&lt;/script&gt;" value="&lt;script&gt;alert('XSS');&lt;/script&gt;" />
+           <property name="XSSpropertyTest" type="String" description="&lt;script&gt;alert('XSS');&lt;/script&gt;" value="&lt;script&gt;alert('XSS');&lt;/script&gt;" />
            <property name="escapingNeeded" type="String" description="You should be able to use | in the description" value="this is escaped: |" />
        </properties>
        <example>
@@ -161,7 +161,7 @@ Avoid jumbled loop incrementers - its usually a mistake, and is confusing even i
              </value>
          </property>
          <property name="sampleAdditionalProperty" type="String" description="This is a additional property for tests" value="the value" />
-         <property name="sampleMultiStringProperty" type="List[String]" description="Test property with multiple strings" value="Value1|Value2" />
+         <property name="sampleMultiStringProperty" type="List[String]" description="Test property with multiple strings" value="Value1,Value2" />
          <property name="sampleDeprecatedProperty" type="String" description="Deprecated! This is a sample deprecated property for tests" value="test" />
          <property name="sampleRegexProperty1" type="Regex" description="The property is of type regex" value="\/\*\s+(default|package)\s+\*\/" />
          <property name="sampleRegexProperty2" type="Regex" description="The property is of type regex" value="[a-z]*" />

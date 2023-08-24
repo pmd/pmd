@@ -446,7 +446,7 @@ Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 This PMD release ships a new version of the pmd-designer.
 For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designer/releases/tag/7.0.0-rc1).
 
-#### New CPD report format cpdhtml-v2.xslt
+### New CPD report format cpdhtml-v2.xslt
 
 Thanks to @mohan-chinnappan-n a new CPD report format has been added which features a data table.
 It uses an XSLT stylesheet to convert CPD's XML format into HTML.
@@ -983,6 +983,15 @@ and [Adding a new language with ANTLR](pmd_devdocs_major_adding_new_language_ant
 
 Related issue: [[core] Language lifecycle (#3782)](https://github.com/pmd/pmd/issues/3782)
 
+### Rule properties
+
+* The old deprecated classes like `IntProperty` and `StringProperty` have been removed. Please use
+  {% jdoc core::properties.PropertyFactory %} to create properties.
+* All properties which accept multiple values now use a comma (`,`) as a delimiter. The previous default was a
+  pipe character (`|`). The delimiter is not configurable anymore. If needed, the comma can be escaped
+  with a backslash.
+* The `min` and `max` attributes in property definitions in the XML are now optional and can appear separately
+  or be omitted.
 
 ### API changes
 

@@ -5,10 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule.documentation;
 
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -31,6 +28,7 @@ import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.properties.PropertyBuilder.GenericPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 
 /**
@@ -223,39 +221,10 @@ public class CommentRequiredRule extends AbstractJavaRulechainRule {
     private enum CommentRequirement {
         Required("Required"), Ignored("Ignored"), Unwanted("Unwanted");
 
-        private static final List<String> LABELS = buildValueLabels();
-        private static final Map<String, CommentRequirement> MAPPINGS;
         private final String label;
-
-        static {
-            Map<String, CommentRequirement> tmp = new HashMap<>();
-            for (CommentRequirement r : values()) {
-                tmp.put(r.label, r);
-            }
-            MAPPINGS = Collections.unmodifiableMap(tmp);
-        }
 
         CommentRequirement(String theLabel) {
             label = theLabel;
-        }
-
-
-        private static List<String> buildValueLabels() {
-            List<String> labels = new ArrayList<>(values().length);
-            for (CommentRequirement r : values()) {
-                labels.add(r.label);
-            }
-            return Collections.unmodifiableList(labels);
-        }
-
-
-        public static List<String> labels() {
-            return LABELS;
-        }
-
-
-        public static Map<String, CommentRequirement> mappings() {
-            return MAPPINGS;
         }
     }
 
@@ -263,8 +232,8 @@ public class CommentRequiredRule extends AbstractJavaRulechainRule {
     // pre-filled builder
     private static GenericPropertyBuilder<CommentRequirement> requirementPropertyBuilder(String name, String commentType) {
         DESCRIPTOR_NAME_TO_COMMENT_TYPE.put(name, commentType);
-        return PropertyFactory.enumProperty(name, CommentRequirement.mappings())
-            .desc(commentType + ". Possible values: " + CommentRequirement.labels())
-            .defaultValue(CommentRequirement.Required);
+        return PropertyFactory.enumProperty(name, CommentRequirement.class, cr -> cr.label)
+                              .desc(commentType + ". Possible values: " + CollectionUtil.map(CommentRequirement.values(), cr -> cr.label))
+                              .defaultValue(CommentRequirement.Required);
     }
 }

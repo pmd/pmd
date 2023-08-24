@@ -4,11 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-import static java.util.Arrays.asList;
 import static net.sourceforge.pmd.properties.PropertyFactory.enumProperty;
-import static net.sourceforge.pmd.util.CollectionUtil.associateBy;
 
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -39,20 +36,14 @@ import net.sourceforge.pmd.util.StringUtil.CaseConvention;
 
 public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule {
 
-    private static final Map<String, ForeachReassignOption> FOREACH_REASSIGN_VALUES =
-        associateBy(asList(ForeachReassignOption.values()), ForeachReassignOption::getDisplayName);
-
     private static final PropertyDescriptor<ForeachReassignOption> FOREACH_REASSIGN
-        = enumProperty("foreachReassign", FOREACH_REASSIGN_VALUES)
+        = enumProperty("foreachReassign", ForeachReassignOption.class, ForeachReassignOption::getDisplayName)
         .defaultValue(ForeachReassignOption.DENY)
         .desc("how/if foreach control variables may be reassigned")
         .build();
 
-    private static final Map<String, ForReassignOption> FOR_REASSIGN_VALUES =
-        associateBy(asList(ForReassignOption.values()), ForReassignOption::getDisplayName);
-
     private static final PropertyDescriptor<ForReassignOption> FOR_REASSIGN
-        = enumProperty("forReassign", FOR_REASSIGN_VALUES)
+        = enumProperty("forReassign", ForReassignOption.class, ForReassignOption::getDisplayName)
         .defaultValue(ForReassignOption.DENY)
         .desc("how/if for control variables may be reassigned")
         .build();

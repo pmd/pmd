@@ -8,6 +8,9 @@ import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertSize;
 import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertSuppressed;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
+import java.util.Optional;
+import java.util.regex.Pattern;
+
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
@@ -26,7 +29,7 @@ class ReportTest {
     @Test
     void testExclusionsInReportWithRuleViolationSuppressRegex() {
         Rule rule = new FooRule();
-        rule.setProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR, ".*No Foo.*");
+        rule.setProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR, Optional.of(Pattern.compile(".*No Foo.*")));
         Report rpt = java.executeRule(rule, TEST1);
         assertSize(rpt, 0);
         assertSuppressed(rpt, 1);
@@ -35,7 +38,7 @@ class ReportTest {
     @Test
     void testExclusionsInReportWithRuleViolationSuppressXPath() {
         Rule rule = new FooRule();
-        rule.setProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR, ".[@SimpleName = 'Foo']");
+        rule.setProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR, Optional.of(".[@SimpleName = 'Foo']"));
         Report rpt = java.executeRule(rule, TEST1);
         assertSize(rpt, 0);
         assertSuppressed(rpt, 1);
