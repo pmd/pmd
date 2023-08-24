@@ -4,24 +4,28 @@
 
 package net.sourceforge.pmd.lang.vm;
 
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
 
 /**
  * Created by christoferdutz on 20.09.14.
  */
 public class VmLanguageModule extends SimpleLanguageModuleBase {
-
-    public static final String NAME = "VM";
-    public static final String TERSE_NAME = "vm";
+    static final String ID = "vm";
+    static final String NAME = "VM";
 
     public VmLanguageModule() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME)
+        super(LanguageMetadata.withId(ID).name(NAME)
                               .extensions("vm")
                               .addVersion("2.0")
                               .addVersion("2.1")
                               .addVersion("2.2")
                               .addDefaultVersion("2.3"),
                 new VmHandler());
+    }
+
+    public static VmLanguageModule getInstance() {
+        return (VmLanguageModule) LanguageRegistry.PMD.getLanguageById(ID);
     }
 
 }

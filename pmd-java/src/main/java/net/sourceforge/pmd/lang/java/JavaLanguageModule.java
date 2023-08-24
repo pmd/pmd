@@ -19,12 +19,11 @@ import net.sourceforge.pmd.lang.java.internal.JavaLanguageProperties;
  * Created by christoferdutz on 20.09.14.
  */
 public class JavaLanguageModule extends LanguageModuleBase implements PmdCapableLanguage, CpdCapableLanguage {
-
-    public static final String NAME = "Java";
-    public static final String TERSE_NAME = "java";
+    private static final String ID = "java";
+    static final String NAME = "Java";
 
     public JavaLanguageModule() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("java")
+        super(LanguageMetadata.withId(ID).name(NAME).extensions("java")
                               .addVersion("1.3")
                               .addVersion("1.4")
                               .addVersion("1.5", "5")
@@ -47,6 +46,9 @@ public class JavaLanguageModule extends LanguageModuleBase implements PmdCapable
                               .addVersion("20-preview"));
     }
 
+    public static JavaLanguageModule getInstance() {
+        return (JavaLanguageModule) LanguageRegistry.PMD.getLanguageById(ID);
+    }
 
     @Override
     public LanguagePropertyBundle newPropertyBundle() {
@@ -61,9 +63,5 @@ public class JavaLanguageModule extends LanguageModuleBase implements PmdCapable
     @Override
     public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
         return new JavaTokenizer((JavaLanguageProperties) bundle);
-    }
-
-    public static JavaLanguageModule getInstance() {
-        return (JavaLanguageModule) LanguageRegistry.PMD.getLanguageByFullName(NAME);
     }
 }

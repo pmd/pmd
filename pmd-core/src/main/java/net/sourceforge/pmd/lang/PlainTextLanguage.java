@@ -28,13 +28,12 @@ import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
  */
 @Experimental
 public final class PlainTextLanguage extends SimpleLanguageModuleBase implements CpdCapableLanguage {
+    private static final String ID = "text";
 
-    private static final Language INSTANCE = new PlainTextLanguage();
-
-    static final String TERSE_NAME = "text";
+    private static final PlainTextLanguage INSTANCE = new PlainTextLanguage();
 
     private PlainTextLanguage() {
-        super(LanguageMetadata.withId(TERSE_NAME).name("Plain text")
+        super(LanguageMetadata.withId(ID).name("Plain text")
                               .extensions("plain-text-file-goo-extension")
                               .addDefaultVersion("default"),
               new TextLvh());
@@ -43,8 +42,8 @@ public final class PlainTextLanguage extends SimpleLanguageModuleBase implements
     /**
      * Returns the singleton instance of this language.
      */
-    public static Language getInstance() {
-        return INSTANCE;
+    public static PlainTextLanguage getInstance() {
+        return INSTANCE; // note: this language is _not_ exposed via LanguageRegistry (no entry in META-INF/services)
     }
 
     @Override

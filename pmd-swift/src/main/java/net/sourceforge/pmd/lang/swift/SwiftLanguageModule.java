@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.swift;
 
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
 import net.sourceforge.pmd.lang.swift.cpd.SwiftTokenizer;
 
@@ -13,14 +14,13 @@ import net.sourceforge.pmd.lang.swift.cpd.SwiftTokenizer;
  * Language Module for Swift
  */
 public class SwiftLanguageModule extends SimpleLanguageModuleBase {
-
-    private static final SwiftLanguageModule INSTANCE = new SwiftLanguageModule();
+    private static final String ID = "swift";
 
     /**
      * Create a new instance of Swift Language Module.
      */
     public SwiftLanguageModule() {
-        super(LanguageMetadata.withId("swift").name("Swift")
+        super(LanguageMetadata.withId(ID).name("Swift")
                               .extensions("swift")
                               .addVersion("4.2")
                               .addVersion("5.0")
@@ -34,12 +34,12 @@ public class SwiftLanguageModule extends SimpleLanguageModuleBase {
               new SwiftHandler());
     }
 
+    public static SwiftLanguageModule getInstance() {
+        return (SwiftLanguageModule) LanguageRegistry.PMD.getLanguageById(ID);
+    }
+
     @Override
     public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
         return new SwiftTokenizer();
-    }
-
-    public static SwiftLanguageModule getInstance() {
-        return INSTANCE;
     }
 }

@@ -14,20 +14,21 @@ import net.sourceforge.pmd.lang.julia.cpd.JuliaTokenizer;
  * Language implementation for Julia.
  */
 public class JuliaLanguageModule extends CpdOnlyLanguageModuleBase {
+    private static final String ID = "julia";
 
     /**
      * Creates a new Julia Language instance.
      */
     public JuliaLanguageModule() {
-        super(LanguageMetadata.withId("julia").name("Julia").extensions("jl"));
+        super(LanguageMetadata.withId(ID).name("Julia").extensions("jl"));
+    }
+
+    public static JuliaLanguageModule getInstance() {
+        return (JuliaLanguageModule) LanguageRegistry.CPD.getLanguageById(ID);
     }
 
     @Override
     public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
         return new JuliaTokenizer();
-    }
-
-    public static JuliaLanguageModule getInstance() {
-        return (JuliaLanguageModule) LanguageRegistry.CPD.getLanguageById("julia");
     }
 }

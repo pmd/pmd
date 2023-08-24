@@ -14,17 +14,18 @@ import net.sourceforge.pmd.lang.impl.CpdOnlyLanguageModuleBase;
  * Language implementation for Coco.
  */
 public class CocoLanguageModule extends CpdOnlyLanguageModuleBase {
+    private static final String ID = "coco";
 
     public CocoLanguageModule() {
-        super(LanguageMetadata.withId("coco").name("Coco").extensions("coco"));
+        super(LanguageMetadata.withId(ID).name("Coco").extensions("coco"));
+    }
+
+    public static CocoLanguageModule getInstance() {
+        return (CocoLanguageModule) LanguageRegistry.CPD.getLanguageById(ID);
     }
 
     @Override
     public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
         return new CocoTokenizer();
-    }
-
-    public static CocoLanguageModule getInstance() {
-        return (CocoLanguageModule) LanguageRegistry.CPD.getLanguageById("coco");
     }
 }

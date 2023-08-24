@@ -12,7 +12,7 @@ import net.sourceforge.pmd.AbstractLanguageVersionTest;
 class LanguageVersionTest extends AbstractLanguageVersionTest {
 
     static Collection<TestDescriptor> data() {
-        return Arrays.asList(new TestDescriptor(VmLanguageModule.NAME, VmLanguageModule.TERSE_NAME, "2.3",
+        return Arrays.asList(new TestDescriptor(VmLanguageModule.NAME, VmLanguageModule.ID, "2.3",
             getLanguage(VmLanguageModule.NAME).getDefaultVersion()));
     }
 }

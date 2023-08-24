@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.wsdl;
 
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
 import net.sourceforge.pmd.lang.xml.XmlHandler;
 
@@ -11,10 +12,10 @@ import net.sourceforge.pmd.lang.xml.XmlHandler;
  * Created by bernardo-macedo on 24.06.15.
  */
 public class WsdlLanguageModule extends SimpleLanguageModuleBase {
-    private static final WsdlLanguageModule INSTANCE = new WsdlLanguageModule();
+    private static final String ID = "wsdl";
 
     public WsdlLanguageModule() {
-        super(LanguageMetadata.withId("wsdl").name("WSDL")
+        super(LanguageMetadata.withId(ID).name("WSDL")
                               .extensions("wsdl")
                               .addVersion("1.1")
                               .addDefaultVersion("2.0"),
@@ -22,6 +23,6 @@ public class WsdlLanguageModule extends SimpleLanguageModuleBase {
     }
 
     public static WsdlLanguageModule getInstance() {
-        return INSTANCE;
+        return (WsdlLanguageModule) LanguageRegistry.PMD.getLanguageById(ID);
     }
 }

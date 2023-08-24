@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.matlab;
 
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.impl.CpdOnlyLanguageModuleBase;
 import net.sourceforge.pmd.lang.matlab.cpd.MatlabTokenizer;
 
@@ -13,13 +14,18 @@ import net.sourceforge.pmd.lang.matlab.cpd.MatlabTokenizer;
  * Defines the Language module for Matlab
  */
 public class MatlabLanguageModule extends CpdOnlyLanguageModuleBase {
+    private static final String ID = "matlab";
 
     /**
      * Creates a new instance of {@link MatlabLanguageModule} with the default
      * extensions for matlab files.
      */
     public MatlabLanguageModule() {
-        super(LanguageMetadata.withId("matlab").name("Matlab").extensions("m"));
+        super(LanguageMetadata.withId(ID).name("Matlab").extensions("m"));
+    }
+
+    public static MatlabLanguageModule getInstance() {
+        return (MatlabLanguageModule) LanguageRegistry.CPD.getLanguageById(ID);
     }
 
     @Override

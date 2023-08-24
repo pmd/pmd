@@ -15,16 +15,17 @@ import net.sourceforge.pmd.lang.impl.CpdOnlyLanguageModuleBase;
  * Defines the Language module for C#.
  */
 public class CsLanguageModule extends CpdOnlyLanguageModuleBase {
+    private static final String ID = "cs";
 
     public CsLanguageModule() {
-        super(LanguageMetadata.withId("cs")
+        super(LanguageMetadata.withId(ID)
                               .name("C#")
                               .addDefaultVersion("any")
                               .extensions("cs"));
     }
 
     public static CsLanguageModule getInstance() {
-        return (CsLanguageModule) LanguageRegistry.CPD.getLanguageById("cs");
+        return (CsLanguageModule) LanguageRegistry.CPD.getLanguageById(ID);
     }
 
     @Override

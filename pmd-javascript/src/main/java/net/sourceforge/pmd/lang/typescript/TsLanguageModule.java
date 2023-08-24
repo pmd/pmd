@@ -14,19 +14,20 @@ import net.sourceforge.pmd.lang.typescript.cpd.TypeScriptTokenizer;
  * @author pguyot@kallisys.net
  */
 public class TsLanguageModule extends CpdOnlyLanguageModuleBase {
+    private static final String ID = "typescript";
 
     public TsLanguageModule() {
-        super(LanguageMetadata.withId("typescript")
+        super(LanguageMetadata.withId(ID)
                   .name("TypeScript")
                   .extensions("ts"));
+    }
+
+    public static TsLanguageModule getInstance() {
+        return (TsLanguageModule) LanguageRegistry.CPD.getLanguageById(ID);
     }
 
     @Override
     public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
         return new TypeScriptTokenizer();
-    }
-
-    public static TsLanguageModule getInstance() {
-        return (TsLanguageModule) LanguageRegistry.CPD.getLanguageById("typescript");
     }
 }

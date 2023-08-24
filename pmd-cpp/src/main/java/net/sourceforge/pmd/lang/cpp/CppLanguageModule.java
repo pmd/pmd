@@ -17,7 +17,7 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  * Defines the Language module for C/C++
  */
 public class CppLanguageModule extends CpdOnlyLanguageModuleBase {
-
+    private static final String ID = "cpp";
 
     public static final PropertyDescriptor<String> CPD_SKIP_BLOCKS =
         PropertyFactory.stringProperty("cpdSkipBlocksPattern")
@@ -32,13 +32,13 @@ public class CppLanguageModule extends CpdOnlyLanguageModuleBase {
      * for c/c++ files.
      */
     public CppLanguageModule() {
-        super(LanguageMetadata.withId("cpp")
+        super(LanguageMetadata.withId(ID)
                               .name("C++")
                               .extensions("h", "hpp", "hxx", "c", "cpp", "cxx", "cc", "C"));
     }
 
     public static CppLanguageModule getInstance() {
-        return (CppLanguageModule) LanguageRegistry.CPD.getLanguageById("cpp");
+        return (CppLanguageModule) LanguageRegistry.CPD.getLanguageById(ID);
     }
 
     @Override

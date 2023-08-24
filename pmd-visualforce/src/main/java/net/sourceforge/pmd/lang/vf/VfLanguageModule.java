@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.vf;
 import net.sourceforge.pmd.cpd.CpdCapableLanguage;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
 import net.sourceforge.pmd.lang.vf.cpd.VfTokenizer;
@@ -15,17 +16,19 @@ import net.sourceforge.pmd.lang.vf.cpd.VfTokenizer;
  * @author sergey.gorbaty
  */
 public class VfLanguageModule extends SimpleLanguageModuleBase implements CpdCapableLanguage {
-
+    static final String ID = "vf";
     static final String NAME = "Salesforce VisualForce";
-    static final String TERSE_NAME = "vf";
-    private static final VfLanguageModule INSTANCE = new VfLanguageModule();
 
     public VfLanguageModule() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME)
+        super(LanguageMetadata.withId(ID).name(NAME)
                               .extensions("page", "component")
                               .dependsOnLanguage(ApexLanguageModule.getInstance().getId())
                               .addAllVersionsOf(ApexLanguageModule.getInstance()),
               p -> new VfHandler((VfLanguageProperties) p));
+    }
+
+    public static VfLanguageModule getInstance() {
+        return (VfLanguageModule) LanguageRegistry.PMD.getLanguageById(ID);
     }
 
     @Override
@@ -36,9 +39,5 @@ public class VfLanguageModule extends SimpleLanguageModuleBase implements CpdCap
     @Override
     public LanguagePropertyBundle newPropertyBundle() {
         return new VfLanguageProperties();
-    }
-
-    public static VfLanguageModule getInstance() {
-        return INSTANCE;
     }
 }

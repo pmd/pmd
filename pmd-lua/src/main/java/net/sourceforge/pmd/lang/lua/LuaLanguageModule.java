@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.lua;
 import net.sourceforge.pmd.cpd.CpdLanguageProperties;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.impl.CpdOnlyLanguageModuleBase;
 import net.sourceforge.pmd.lang.lua.cpd.LuaTokenizer;
 
@@ -14,9 +15,14 @@ import net.sourceforge.pmd.lang.lua.cpd.LuaTokenizer;
  * @author Clément Fournier
  */
 public class LuaLanguageModule extends CpdOnlyLanguageModuleBase {
+    private static final String ID = "lua";
 
     public LuaLanguageModule() {
-        super(LanguageMetadata.withId("lua").name("Lua").extensions("lua"));
+        super(LanguageMetadata.withId(ID).name("Lua").extensions("lua"));
+    }
+
+    public static LuaLanguageModule getInstance() {
+        return (LuaLanguageModule) LanguageRegistry.CPD.getLanguageById(ID);
     }
 
     @Override

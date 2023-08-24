@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.xml.XmlLanguageModule;
 class XmlCPDTokenizerTest extends CpdTextComparisonTest {
 
     XmlCPDTokenizerTest() {
-        super(XmlLanguageModule.TERSE_NAME, ".xml");
+        super(XmlLanguageModule.getInstance(), ".xml");
     }
 
     @Test

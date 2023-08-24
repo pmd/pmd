@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.xsl;
 
-import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
 import net.sourceforge.pmd.lang.xml.XmlHandler;
 
@@ -12,11 +12,10 @@ import net.sourceforge.pmd.lang.xml.XmlHandler;
  * Created by christoferdutz on 20.09.14.
  */
 public class XslLanguageModule extends SimpleLanguageModuleBase {
-
-    private static final Language INSTANCE = new XslLanguageModule();
+    private static final String ID = "xsl";
 
     public XslLanguageModule() {
-        super(LanguageMetadata.withId("xsl").name("XSL")
+        super(LanguageMetadata.withId(ID).name("XSL")
                               .extensions("xsl", "xslt")
                               .addVersion("1.0")
                               .addVersion("2.0")
@@ -24,7 +23,7 @@ public class XslLanguageModule extends SimpleLanguageModuleBase {
                 new XmlHandler());
     }
 
-    public static Language getInstance() {
-        return INSTANCE;
+    public static XslLanguageModule getInstance() {
+        return (XslLanguageModule) LanguageRegistry.PMD.getLanguageById(ID);
     }
 }
