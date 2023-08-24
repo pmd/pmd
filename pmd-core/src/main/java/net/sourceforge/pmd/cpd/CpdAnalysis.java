@@ -31,6 +31,40 @@ import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.log.MessageReporter;
 
+/**
+ * Main programmatic API of CPD. This is not a CLI entry point, see module
+ * {@code pmd-cli} for that.
+ *
+ * <h3>Usage overview</h3>
+ *
+ * <p>Create and configure a {@link CPDConfiguration}, then use {@link #create(CPDConfiguration)} to
+ * obtain an instance. You can perform additional configuration on the instance, e.g. adding
+ * files to process or add a listener. Then call {@link #performAnalysis()} or {@link #performAnalysis(Consumer)}
+ * in order to get the report directly.
+ *
+ * <h3>Simple example</h3>
+ *
+ * <pre>{@code
+ *   CPDConfiguration config = new CPDConfiguration();
+ *   config.setMinimumTileSize(100);
+ *   config.setOnlyRecognizeLanguage(config.getLanguageRegistry().getLanguageById("java"));
+ *   config.setSourceEncoding(StandardCharsets.UTF_8);
+ *   config.addInputPath(Path.of("src/main/java")
+ *
+ *   config.setIgnoreAnnotations(true);
+ *   config.setIgnoreLiterals(false);
+ *
+ *   config.setRendererName("text");
+ *
+ *   try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
+ *      // note: don't use `config` once a CpdAnalysis has been created.
+ *      // optional: add more files
+ *      cpd.files().addFile(Paths.get("src", "main", "more-java", "ExtraSource.java"));
+ *
+ *      cpd.performAnalysis();
+ *   }
+ * }</pre>
+ */
 public final class CpdAnalysis implements AutoCloseable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CpdAnalysis.class);
