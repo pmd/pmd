@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.cli.commands.internal;
 
 import java.net.URI;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +59,25 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
         }
         
         this.inputPaths.addAll(inputPaths);
+    }
+
+    protected List<Path> relativizeRootPaths;
+
+    @Option(names = { "--relativize-paths-with", "-z"}, description = "Path relative to which directories are rendered in the report. "
+            + "This option allows shortening directories in the report; "
+            + "without it, paths are rendered as mentioned in the source directory (option \"--dir\"). "
+            + "The option can be repeated, in which case the shortest relative path will be used. "
+            + "If the root path is mentioned (e.g. \"/\" or \"C:\\\"), then the paths will be rendered as absolute.",
+            arity = "1..*", split = ",")
+    public void setRelativizePathsWith(List<Path> rootPaths) {
+        this.relativizeRootPaths = rootPaths;
+
+        for (Path path : this.relativizeRootPaths) {
+            if (Files.isRegularFile(path)) {
+                throw new ParameterException(spec.commandLine(),
+                        "Expected a directory path for option '--relativize-paths-with', found a file: " + path);
+            }
+        }
     }
 
     @Override
