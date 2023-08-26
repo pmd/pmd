@@ -12,16 +12,17 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -29,7 +30,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
+import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -65,6 +68,7 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageModuleBase.LanguageMetadata;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.document.FileCollector;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.impl.CpdOnlyLanguageModuleBase;
 import net.sourceforge.pmd.util.CollectionUtil;
@@ -154,6 +158,7 @@ public class GUI implements CPDListener {
                 return l;
             }
         }).forEach(languages::add);
+        Collections.sort(languages, Comparator.comparing(LanguageConfig::getLanguage));
         languages.add(CUSTOM_EXTENSION_LANG);
         LANGUAGE_SETS = languages;
     }
@@ -207,9 +212,24 @@ public class GUI implements CPDListener {
         return LANGUAGE_CONFIGS_BY_LABEL.get(label);
     }
 
-    private static final class CancelListener implements ActionListener {
+    private static final class ExitAction extends AbstractAction {
+        private final Runnable cleanupTask;
+
+        private ExitAction(Runnable cleanupTask) {
+            this.cleanupTask = cleanupTask;
+            this.putValue(Action.NAME, "Exit");
+            this.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_X);
+        }
+
         @Override
         public void actionPerformed(ActionEvent e) {
+            if (cleanupTask != null) {
+                try {
+                    cleanupTask.run();
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+            }
             System.exit(0);
         }
     }
@@ -246,7 +266,7 @@ public class GUI implements CPDListener {
             }
 
             if (!f.canWrite()) {
-                final CPDReport report = new CPDReport(new SourceManager(Collections.emptyList()), matches, numberOfTokensPerFile);
+                final CPDReport report = new CPDReport(sourceManager, matches, numberOfTokensPerFile);
                 try (PrintWriter pw = new PrintWriter(Files.newOutputStream(f.toPath()))) {
                     renderer.render(report, pw);
                     pw.flush();
@@ -324,6 +344,7 @@ public class GUI implements CPDListener {
     private boolean trimLeadingWhitespace;
 
     private List<Match> matches = new ArrayList<>();
+    private SourceManager sourceManager;
     private Map<FileId, Integer> numberOfTokensPerFile;
 
     private void addSaveOptionsTo(JMenu menu) {
@@ -342,24 +363,20 @@ public class GUI implements CPDListener {
 
         timeField.setEditable(false);
 
+        final ExitAction exitAction = new ExitAction(this::closeSourceManager);
+
         JMenu fileMenu = new JMenu("File");
         fileMenu.setMnemonic('f');
 
         addSaveOptionsTo(fileMenu);
 
-        JMenuItem exitItem = new JMenuItem("Exit");
-        exitItem.setMnemonic('x');
-        exitItem.addActionListener(new CancelListener());
-        fileMenu.add(exitItem);
+        fileMenu.add(new JMenuItem(exitAction));
         JMenu viewMenu = new JMenu("View");
         fileMenu.setMnemonic('v');
         JMenuItem trimItem = new JCheckBoxMenuItem("Trim leading whitespace");
-        trimItem.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                AbstractButton button = (AbstractButton) e.getItem();
-                GUI.this.trimLeadingWhitespace = button.isSelected();
-            }
+        trimItem.addItemListener(e -> {
+            AbstractButton button = (AbstractButton) e.getItem();
+            this.trimLeadingWhitespace = button.isSelected();
         });
         viewMenu.add(trimItem);
         JMenuBar menuBar = new JMenuBar();
@@ -374,8 +391,8 @@ public class GUI implements CPDListener {
         goButton = new JButton("Go");
         goButton.setMnemonic('g');
         goButton.addActionListener(new GoListener());
-        cancelButton = new JButton("Cancel");
-        cancelButton.addActionListener(new CancelListener());
+        cancelButton = new JButton(exitAction);
+        cancelButton.setText("Cancel");
 
         JPanel settingsPanel = makeSettingsPanel(browseButton, goButton, cancelButton);
         progressPanel = makeProgressPanel();
@@ -391,7 +408,13 @@ public class GUI implements CPDListener {
         setProgressControls(false); // not running now
         frame.getContentPane().add(topPanel, BorderLayout.NORTH);
         frame.getContentPane().add(resultsPanel, BorderLayout.CENTER);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                closeSourceManager();
+                System.exit(0);
+            }
+        });
         frame.pack();
         frame.setVisible(true);
     }
@@ -525,7 +548,7 @@ public class GUI implements CPDListener {
         for (int selectionIndex : selectionIndices) {
             selections.add((Match) model.getValueAt(selectionIndex, 99));
         }
-        CPDReport toRender = new CPDReport(new SourceManager(Collections.emptyList()), selections, Collections.emptyMap());
+        CPDReport toRender = new CPDReport(sourceManager, selections, Collections.emptyMap());
         String report = new SimpleRenderer(trimLeadingWhitespace).renderToString(toRender);
         resultsTextArea.setText(report);
         resultsTextArea.setCaretPosition(0); // move to the top
@@ -613,6 +636,7 @@ public class GUI implements CPDListener {
     }
 
     private void go() {
+        closeSourceManager();
         try {
             File dirPath = new File(rootDirectoryField.getText());
             if (!dirPath.exists()) {
@@ -656,6 +680,7 @@ public class GUI implements CPDListener {
                     numberOfTokensPerFile = report.getNumberOfTokensPerFile();
                     matches = new ArrayList<>(report.getMatches());
                     setListDataFrom(matches);
+                    prepareNewSourceManager(config, dirPath.toPath(), recurseCheckbox.isSelected());
                     String reportString = new SimpleRenderer().renderToString(report);
                     if (reportString.isEmpty()) {
                         JOptionPane.showMessageDialog(frame,
@@ -670,6 +695,31 @@ public class GUI implements CPDListener {
             JOptionPane.showMessageDialog(frame, "Halted due to " + t.getClass().getName() + "; " + t.getMessage());
         }
         setProgressControls(false);
+    }
+
+    private void closeSourceManager() {
+        try {
+            if (sourceManager != null) {
+                sourceManager.close();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void prepareNewSourceManager(CPDConfiguration config, Path dirPath, boolean recurse) {
+        try {
+            closeSourceManager();
+            // fileCollector itself is empty, contains no closable resources.
+            // the created sourceManager will be closed when exiting or when a new analysis is started,
+            // see #closeSourceManager().
+            @SuppressWarnings("PMD.CloseResource")
+            FileCollector fileCollector = FileCollector.newCollector(config.getLanguageVersionDiscoverer(), config.getReporter());
+            fileCollector.addFileOrDirectory(dirPath, recurse);
+            sourceManager = new SourceManager(fileCollector.getCollectedFiles());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private Timer createTimer() {
