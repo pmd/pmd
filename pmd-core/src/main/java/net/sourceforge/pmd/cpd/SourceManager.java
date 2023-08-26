@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.cpd;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,16 +43,23 @@ class SourceManager implements AutoCloseable {
         return textFiles;
     }
 
+    private TextDocument load(TextFile file) {
+        try {
+            return TextDocument.create(file);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
     TextDocument get(TextFile file) {
-        return files.computeIfAbsent(file, f -> {
-            TextDocument doc;
-            try {
-                doc = TextDocument.create(f);
-                return new SoftReference<>(doc);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }).get();
+        TextDocument textDocument = files.computeIfAbsent(file, f -> new SoftReference<>(load(f))).get();
+        if (textDocument == null) {
+            // SoftReference was freed up already, recreate it
+            TextDocument doc = load(file);
+            files.put(file, new SoftReference<>(doc));
+            return doc;
+        }
+        return textDocument;
     }
 
     public int size() {
