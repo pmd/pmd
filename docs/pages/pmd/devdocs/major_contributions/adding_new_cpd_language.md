@@ -49,7 +49,7 @@ Use the following guide to set up a new language module that supports CPD.
       You can then subclass {% jdoc core::cpd.impl.JavaCCTokenizer %} instead of AntlrTokenizer.
     - For any other scenario just implement the interface however you can. Look at the Scala or Apex module for existing implementations.
 
-3. Create a {% jdoc core::lang.Language %} implementation, and make it implement {% core::cpd.CpdCapableLanguage %}.
+3. Create a {% jdoc core::lang.Language %} implementation, and make it implement {% jdoc core::cpd.CpdCapableLanguage %}.
 If your language only supports CPD, then you can subclass {% jdoc core::lang.impl.CpdOnlyLanguageModuleBase %} to get going:
     
     ```java
@@ -99,7 +99,7 @@ Take a look at the [Kotlin token filter implementation](https://github.com/pmd/p
 Add a Maven dependency on `pmd-lang-test` (scope `test`) in your `pom.xml`.
 This contains utilities to test your tokenizer.
 
-Create a test class extending from {% lang-test::cpd.test.CpdTextComparisonTest %}.
+Create a test class extending from {% jdoc lang-test::cpd.test.CpdTextComparisonTest %}.
 To add tests, you need to write regular JUnit `@Test`-annotated methods, and
 call the method `doTest` with the name of the test file.
 
