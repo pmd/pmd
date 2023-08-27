@@ -312,8 +312,11 @@ to be "debug".
 * T-SQL
 * [TypeScript](pmd_languages_js_ts.html)
 * [Visualforce](pmd_languages_visualforce.html)
+* vm (Apache Velocity)
 * [XML](pmd_languages_xml.html)
-
+  * POM (Apache Maven)
+  * XSL
+  * WSDL
 
 ## Available report formats
 
