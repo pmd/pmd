@@ -121,3 +121,11 @@ The Java language can be configured with the following properties:
   Specifying an empty string will disable data type resolution for Custom Object fields.
 
   Environment variable: `PMD_VF_OBJECTS_DIRECTORIES`
+
+## CPP language properties
+
+- `cpdSkipBlocksPattern`: Specifies a start and end delimiter for CPD to completely ignore.
+  The delimiters are separated by a pipe `|`. The default skips code
+  that is conditionally compiled out. Set this property to empty to disable this.
+
+  This property can also be set via the CLI option `--skip-blocks-pattern`.

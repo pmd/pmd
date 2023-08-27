@@ -1029,6 +1029,8 @@ try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
 CPD can of course still be called via command line or using the module `pmd-cli`. But for tight integration
 this new programmatic API is recommended.
 
+See [PR #4397](https://github.com/pmd/pmd/pull/4397) for details.
+
 ### API changes
 
 #### 7.0.0-rc3

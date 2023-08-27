@@ -50,6 +50,7 @@ The remaining section describes the complete release notes for 7.0.0.
   * [#4301](https://github.com/pmd/pmd/issues/4301): \[core] Remove deprecated property concrete classes
   * [#4302](https://github.com/pmd/pmd/issues/4302): \[core] Migrate Property Framework API to Java 8
   * [#4323](https://github.com/pmd/pmd/issues/4323): \[core] Refactor CPD integration
+  * [#4397](https://github.com/pmd/pmd/pull/4397):   \[core] Refactor CPD
   * [#4621](https://github.com/pmd/pmd/issues/4621): \[core] Make `ClasspathClassLoader::getResource` child first
 * doc
   * [#4303](https://github.com/pmd/pmd/issues/4303): \[doc] Document new property framework
@@ -75,7 +76,8 @@ The remaining section describes the complete release notes for 7.0.0.
 
 **New Programmatic API for CPD**
 
-See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html#new-programmatic-api-for-cpd).
+See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html#new-programmatic-api-for-cpd)
+and [PR #4397](https://github.com/pmd/pmd/pull/4397) for details.
 
 **Removed classes and methods**
 
@@ -567,6 +569,7 @@ See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html)
     * [#4323](https://github.com/pmd/pmd/issues/4323): \[core] Refactor CPD integration
     * [#4353](https://github.com/pmd/pmd/pull/4353):   \[core] Micro optimizations for Node API
     * [#4365](https://github.com/pmd/pmd/pull/4365):   \[core] Improve benchmarking
+    * [#4397](https://github.com/pmd/pmd/pull/4397):   \[core] Refactor CPD
     * [#4420](https://github.com/pmd/pmd/pull/4420):   \[core] Remove PMD.EOL
     * [#4425](https://github.com/pmd/pmd/pull/4425):   \[core] Replace TextFile::pathId
     * [#4454](https://github.com/pmd/pmd/issues/4454): \[core] "Unknown option: '-min'" but is referenced in documentation
