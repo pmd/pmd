@@ -25,7 +25,7 @@ public final class CpdLanguageProperties {
     public static final PropertyDescriptor<Boolean> CPD_IGNORE_LITERAL_AND_IDENTIFIER_SEQUENCES =
         PropertyFactory.booleanProperty("cpdIgnoreLiteralAndIdentifierSequences")
                        .defaultValue(false)
-                       .desc("Ignore sequences of literals, eg `a, b, 0, 0`")
+                       .desc("Ignore sequences of literals and identifiers, eg `a, b, 0, 0`")
                        .build();
     public static final PropertyDescriptor<Boolean> CPD_ANONYMIZE_LITERALS =
         PropertyFactory.booleanProperty("cpdAnonymizeLiterals")
