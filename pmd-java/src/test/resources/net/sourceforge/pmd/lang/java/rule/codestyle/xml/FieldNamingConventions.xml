@@ -207,13 +207,29 @@ public class Foo implements Serializable {
 
     <test-code>
         <description>More exclusions can be configured</description>
-        <rule-property name="exclusions">m$mangled|serialVersionUID</rule-property>
+        <rule-property name="exclusions">m$mangled,serialVersionUID</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class MyException {
     private static final long serialVersionUID = -8134636876462178354L;
     private static final long m$mangled = -8134636876462178354L;
 
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] FieldNamingConventions: false positive with lombok's @UtilityClass #4455</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.experimental.UtilityClass;
+public  class Foo {
+    @UtilityClass
+    public class Test1 {
+        private final String FINAL_F = "final_field";  // should not report a warning
+    }
+    public class Test2 {
+        private static final String FINAL_F = "final_field";  // report no warning
+    }
 }
         ]]></code>
     </test-code>

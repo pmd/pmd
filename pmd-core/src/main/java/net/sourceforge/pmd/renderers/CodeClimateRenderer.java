@@ -103,7 +103,7 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     }
 
     private CodeClimateIssue.Location getLocation(RuleViolation rv) {
-        String pathWithoutCcRoot = StringUtils.removeStartIgnoreCase(determineFileName(rv.getFilename()), "/code/");
+        String pathWithoutCcRoot = StringUtils.removeStartIgnoreCase(determineFileName(rv.getFileId()), "/code/");
         return new CodeClimateIssue.Location(pathWithoutCcRoot, rv.getBeginLine(), rv.getEndLine());
     }
 
@@ -158,11 +158,8 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
                 @SuppressWarnings("unchecked")
                 PropertyDescriptor<T> typed = (PropertyDescriptor<T>) property;
                 T value = rule.getProperty(typed);
-                String propertyValue = typed.asDelimitedString(value);
-                if (propertyValue == null) {
-                    propertyValue = "";
-                }
-                propertyValue = propertyValue.replaceAll("(\n|\r\n|\r)", "\\\\n");
+                String propertyValue = typed.serializer().toString(value);
+                propertyValue = propertyValue.replaceAll("\\R", "\\\\n");
 
                 result.append(propertyName).append(" | ").append(propertyValue).append(" | ").append(property.description()).append("\\n");
             }

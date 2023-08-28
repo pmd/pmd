@@ -15,6 +15,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.text.MessageFormat;
+import java.util.Collections;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -32,7 +33,7 @@ import net.sourceforge.pmd.util.internal.xml.SchemaConstants;
 import net.sourceforge.pmd.util.log.MessageReporter;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
-class RulesetFactoryTestBase {
+public class RulesetFactoryTestBase {
 
     protected MessageReporter mockReporter;
 
@@ -156,7 +157,7 @@ class RulesetFactoryTestBase {
             map -> {
                 map.put(SchemaConstants.NAME, "MockRuleName");
                 map.put(SchemaConstants.LANGUAGE, DummyLanguageModule.TERSE_NAME);
-                map.put(SchemaConstants.CLASS, net.sourceforge.pmd.lang.rule.MockRule.class.getName());
+                map.put(SchemaConstants.CLASS, net.sourceforge.pmd.lang.rule.MockRuleWithNoProperties.class.getName());
                 map.put(SchemaConstants.MESSAGE, "avoid the mock rule");
             }
         );
@@ -208,34 +209,44 @@ class RulesetFactoryTestBase {
     }
 
     protected static @NonNull String propertyWithValueAttr(String name, String valueAttr) {
-        return "<property name='" + name + "' value='" + valueAttr + "/>\n";
+        return "<property name='" + name + "' value='" + valueAttr + "'/>\n";
     }
 
     protected static @NonNull String propertyDefWithValueAttr(String name,
                                                               String description,
                                                               String type,
                                                               String valueAttr) {
-        return emptyTag("property", buildMap(
-            map -> {
-                map.put(SchemaConstants.NAME, name);
-                map.put(SchemaConstants.DESCRIPTION, description);
-                map.put(SchemaConstants.PROPERTY_TYPE, type);
-                map.put(SchemaConstants.PROPERTY_VALUE, valueAttr);
-            }
-        ));
+        return propertyDefWithValueAttr(name, description, type, valueAttr, Collections.emptyMap());
     }
 
-    private static @NonNull String tag(String tagName, String... body) {
+    protected static @NonNull String propertyDefWithValueAttr(String name,
+                                                              String description,
+                                                              String type,
+                                                              String valueAttr,
+                                                              Map<SchemaConstant, String> constraints) {
+        return emptyTag("property", buildMap(
+                map -> {
+                    map.put(SchemaConstants.NAME, name);
+                    map.put(SchemaConstants.DESCRIPTION, description);
+                    map.put(SchemaConstants.PROPERTY_TYPE, type);
+                    map.put(SchemaConstants.PROPERTY_VALUE, valueAttr);
+                    map.putAll(constraints);
+                }
+        ));
+
+    }
+
+    protected static @NonNull String tag(String tagName, String... body) {
         return "<" + tagName + ">\n"
             + body(body)
             + "</" + tagName + ">";
     }
 
-    private static @NonNull String emptyTag(String tagName, Map<SchemaConstant, String> attrs) {
+    protected static @NonNull String emptyTag(String tagName, Map<SchemaConstant, String> attrs) {
         return "<" + tagName + " " + attrs(attrs) + " />";
     }
 
-    private static @NonNull String tagOneLine(String tagName, String text) {
+    protected static @NonNull String tagOneLine(String tagName, String text) {
         return "<" + tagName + ">" + text + "</" + tagName + ">";
     }
 }

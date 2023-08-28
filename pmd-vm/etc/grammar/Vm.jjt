@@ -66,6 +66,9 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 */
 public class VmParserImpl
 {
+  private void throwParseException(String message) {
+    throw new ParseException(message).withLocation(token);
+  }
     /**
      * Check whether there is a left parenthesis with leading optional
      * whitespaces. This method is used in the semantic look ahead of
@@ -1174,14 +1177,14 @@ VmNode Directive() :
                     else if (!jjtThis.isDirective())
                     {
                         // not a real directive, but maybe a Velocimacro
-                        throw new ParseException("Invalid arg #"
-                        + argPos + " in VM " + t.getImage(), t);
+                        throwParseException("Invalid arg #"
+                        + argPos + " in VM " + t.getImage());
                     }
                     /* if #foreach and it's the 2nd arg, ok */
                     else if (jjtThis.isDirective() && (!"foreach".equals(jjtThis.getDirectiveName()) || argPos != 1))
                     {
-                        throw new ParseException("Invalid arg #"
-                        + argPos + " in directive " + t.getImage(), t);
+                        throwParseException("Invalid arg #"
+                        + argPos + " in directive " + t.getImage());
                     }
                     else
                     {
@@ -1195,9 +1198,9 @@ VmNode Directive() :
                     {
                         /* if a VM and it's the 0th arg, not ok */
 
-                        throw new ParseException("Invalid first arg"
+                        throwParseException("Invalid first arg"
                         + " in #macro() directive - must be a"
-                        + " word token (no ' or double quote surrounding)", t);
+                        + " word token (no ' or double quote surrounding)");
                     }
                 }
 
@@ -1218,7 +1221,7 @@ VmNode Directive() :
 	{
             // VELOCITY-667 We get here if we have a "#macro" construct
 	    // without parenthesis which is a parse error
-            throw new ParseException("A macro declaration requires at least a name argument", t);
+            throwParseException("A macro declaration requires at least a name argument");
 	}
 
         /**

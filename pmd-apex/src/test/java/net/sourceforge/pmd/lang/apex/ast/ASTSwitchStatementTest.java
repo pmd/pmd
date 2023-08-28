@@ -15,7 +15,7 @@ class ASTSwitchStatementTest extends ApexParserTestBase {
 
     @Test
     void testExamples() {
-        ApexNode<?> node = parseResource("SwitchStatements.cls");
+        ApexNode<?> node = apex.parseResource("SwitchStatements.cls").getMainNode();
         List<ASTSwitchStatement> switchStatements = node.findDescendantsOfType(ASTSwitchStatement.class);
         assertEquals(4, switchStatements.size());
 

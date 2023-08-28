@@ -16,8 +16,8 @@ import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextDocument;
-import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 
@@ -133,7 +133,7 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> {
         public DummyRootNode() {
             TextDocument document = TextDocument.readOnlyString(
                 "dummy text",
-                TextFile.UNKNOWN_FILENAME,
+                FileId.UNKNOWN,
                 DummyLanguageModule.getInstance().getDefaultVersion()
             );
             astInfo = new AstInfo<>(

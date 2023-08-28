@@ -378,7 +378,7 @@ Commands:
               Warning: May not support the full CPD feature set
   ast-dump  Experimental: dumps the AST of parsing source code
 Exit Codes:
-  0   Succesful analysis, no violations found
+  0   Successful analysis, no violations found
   1   An unexpected error occurred during execution
   2   Usage error, please refer to the command help
   4   Successful analysis, at least 1 violation found
@@ -446,7 +446,7 @@ Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 This PMD release ships a new version of the pmd-designer.
 For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designer/releases/tag/7.0.0-rc1).
 
-#### New CPD report format cpdhtml-v2.xslt
+### New CPD report format cpdhtml-v2.xslt
 
 Thanks to @mohan-chinnappan-n a new CPD report format has been added which features a data table.
 It uses an XSLT stylesheet to convert CPD's XML format into HTML.
@@ -495,17 +495,25 @@ We are shipping the following rules:
 Contributors: [Jeroen Borgers](https://github.com/jborgers) (@jborgers),
 [Peter Paul Bakker](https://github.com/stokpop) (@stokpop)
 
-#### New: CPD support for TypeScript
+### New: CPD support for TypeScript
 
 Thanks to a contribution, CPD now supports the TypeScript language. It is shipped
 with the rest of the JavaScript support in the module `pmd-javascript`.
 
 Contributors: [Paul Guyot](https://github.com/pguyot) (@pguyot)
 
-#### New: CPD support for Julia
+### New: CPD support for Julia
 
 Thanks to a contribution, CPD now supports the Julia language. It is shipped
 in the new module `pmd-julia`.
+
+Contributors: [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
+
+### New: CPD support for Coco
+
+Thanks to a contribution, CPD now supports Coco, a modern programming language
+designed specifically for building event-driven software. It is shipped in the new
+module `pmd-coco`.
 
 Contributors: [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
 
@@ -528,6 +536,13 @@ the `minimumLanguageVersion` and `maximumLanguageVersion` attributes. While this
 the Java module, listing all possible versions enables other languages as well to use this feature.
 
 Related issue: [[core] Explicitly name all language versions (#4120)](https://github.com/pmd/pmd/issues/4120)
+
+### Changed: CPP can now ignore identifiers in sequences (CPD)
+
+* new command line option for CPD: `--ignore-sequences`.
+* This option is used for CPP only: with the already existing option `--ignore-literal-sequences`, only
+  literals were ignored. The new option additional ignores identifiers as well in sequences.
+* See [PR #4470](https://github.com/pmd/pmd/pull/4470) for details.
 
 ## 🌟 New and changed rules
 
@@ -676,6 +691,9 @@ The following previously deprecated rules have been finally removed:
 * {% deleted_rule apex/performance/AvoidSoqlInLoops %} -> use {% rule apex/performance/OperationWithLimitsInLoop %}
 * {% deleted_rule apex/performance/AvoidSoslInLoops %} -> use {% rule apex/performance/OperationWithLimitsInLoop %}
 * {% deleted_rule apex/performance/AvoidDmlStatementsInLoops %} -> use {% rule apex/performance/OperationWithLimitsInLoop %}
+* {% deleted_rule apex/codestyle/VariableNamingConventions %} -> use {% rule apex/codestyle/FieldNamingConventions %},
+  {% rule apex/codestyle/FormalParameterNamingConventions %}, {% rule apex/codestyle/LocalVariableNamingConventions %},
+  or {% rule apex/codestyle/PropertyNamingConventions %}
 
 **Java**
 
@@ -748,9 +766,6 @@ The following previously deprecated rules have been finally removed:
   use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
 * UseAssertTrueInsteadOfAssertEquals (java-bestpractices) ->
   use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
-* VariableNamingConventions (apex-codestyle) -> use {% rule apex/codestyle/FieldNamingConventions %},
-  {% rule apex/codestyle/FormalParameterNamingConventions %}, {% rule apex/codestyle/LocalVariableNamingConventions %},
-  or {% rule apex/codestyle/PropertyNamingConventions %}
 * VariableNamingConventions (java-codestyle) -> use {% rule java/codestyle/FieldNamingConventions %},
   {% rule java/codestyle/FormalParameterNamingConventions %},
   or {% rule java/codestyle/LocalVariableNamingConventions %}
@@ -768,6 +783,12 @@ The following previously deprecated rules have been finally removed:
   to be reviewed.
 * Custom rules using rulechains: Need to override {% jdoc core::lang.rule.AbstractRule#buildTargetSelector() %}
   using {% jdoc core::lang.rule.RuleTargetSelector#forTypes(java.lang.Class,java.lang.Class...) %}.
+* The asset filenames of PMD on [GitHub Releases](https://github.com/pmd/pmd/releases) are
+  now `pmd-dist-<version>-bin.zip`, `pmd-dist-<version>-src.zip` and `pmd-dist-<version>-doc.zip`.
+  Keep that in mind, if you have an automated download script.
+
+  The structure inside the ZIP files stay the same, e.g. we still provide inside the binary distribution
+  ZIP file the base directory `pmd-bin-<version>`.
 
 ### For integrators
 
@@ -963,8 +984,45 @@ and [Adding a new language with ANTLR](pmd_devdocs_major_adding_new_language_ant
 
 Related issue: [[core] Language lifecycle (#3782)](https://github.com/pmd/pmd/issues/3782)
 
+### Rule properties
 
-### API removals
+* The old deprecated classes like `IntProperty` and `StringProperty` have been removed. Please use
+  {% jdoc core::properties.PropertyFactory %} to create properties.
+* All properties which accept multiple values now use a comma (`,`) as a delimiter. The previous default was a
+  pipe character (`|`). The delimiter is not configurable anymore. If needed, the comma can be escaped
+  with a backslash.
+* The `min` and `max` attributes in property definitions in the XML are now optional and can appear separately
+  or be omitted.
+
+### API changes
+
+#### 7.0.0-rc3
+
+* The following previously deprecated classes have been removed:
+  * pmd-core
+    * `net.sourceforge.pmd.PMD`
+    * `net.sourceforge.pmd.cli.PMDCommandLineInterface`
+    * `net.sourceforge.pmd.cli.PMDParameters`
+    * `net.sourceforge.pmd.cli.PmdParametersParseResult`
+* The asset filenames of PMD on [GitHub Releases](https://github.com/pmd/pmd/releases) are
+  now `pmd-dist-<version>-bin.zip`, `pmd-dist-<version>-src.zip` and `pmd-dist-<version>-doc.zip`.
+  Keep that in mind, if you have an automated download script.
+
+  The structure inside the ZIP files stay the same, e.g. we still provide inside the binary distribution
+  ZIP file the base directory `pmd-bin-<version>`.
+* The CLI option `--stress` (or `-stress`) has been removed without replacement.
+* The CLI option `--minimum-priority` was changed with 7.0.0-rc1 to only take the following values:
+  High, Medium High, Medium, Medium Low, Low. With 7.0.0-rc2 compatibility has been restored, so that the equivalent
+  integer values (1 to 5) are supported as well.
+* Replaced `RuleViolation::getFilename` with new {% jdoc !!core::RuleViolation#getFileId() %}, that returns a
+  {% jdoc core::lang.document.FileId %}. This is an identifier for a {% jdoc core::lang.document.TextFile %}
+  and could represent a path name. This allows to have a separate display name, e.g. renderers use
+  {% jdoc core::reporting.FileNameRenderer %} to either display the full path name or a relative path name
+  (see {% jdoc !!core::renderers.Renderer#setFileNameRenderer(net.sourceforge.pmd.reporting.FileNameRenderer) %} and
+  {%jdoc core::reporting.ConfigurableFileNameRenderer %}). Many places where we used a simple String for
+  a path-like name before have been adapted to use the new {% jdoc core::lang.document.FileId %}.
+
+  See [PR #4425](https://github.com/pmd/pmd/pull/4425) for details.
 
 #### 7.0.0-rc2
 
@@ -974,6 +1032,16 @@ Related issue: [[core] Language lifecycle (#3782)](https://github.com/pmd/pmd/is
     * `net.sourceforge.pmd.cli.PMDCommandLineInterface`
     * `net.sourceforge.pmd.cli.PMDParameters`
     * `net.sourceforge.pmd.cli.PmdParametersParseResult`
+
+* The CLI option `--minimum-priority` was changed with 7.0.0-rc1 to only take the following values:
+  High, Medium High, Medium, Medium Low, Low. With 7.0.0-rc2 compatibility has been restored, so that the equivalent
+  integer values (1 to 5) are supported as well.
+
+#### 7.0.0-rc1
+
+* The CLI option `--stress` (or `-stress`) has been removed without replacement.
+* The CLI option `--minimum-priority` now takes one of the following values instead of an integer:
+  High, Medium High, Medium, Medium Low, Low.
 
 #### 6.55.0
 

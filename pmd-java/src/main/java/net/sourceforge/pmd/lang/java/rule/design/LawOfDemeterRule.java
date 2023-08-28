@@ -12,7 +12,7 @@ import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.isRefToFie
 import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.isThisOrSuper;
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isGetterCall;
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isNullChecked;
-import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -301,7 +301,8 @@ public class LawOfDemeterRule extends AbstractJavaRule {
 
         // note this max could be changed to min to get a more conservative
         // strategy, trading recall for precision. maybe make that configurable
-        return reaching.getReaching().stream().mapToInt(this::foreignDegree).max().orElse(TRUSTED);
+        return reaching.getReaching().stream()
+                .mapToInt(this::foreignDegree).max().orElse(TRUSTED);
     }
 
     private int fieldAccessDegree(ASTNamedReferenceExpr expr) {

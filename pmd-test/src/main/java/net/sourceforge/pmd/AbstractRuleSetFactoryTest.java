@@ -183,7 +183,7 @@ public abstract class AbstractRuleSetFactoryTest {
                             .append('\n');
                 }
                 // Should not have violation suppress regex property
-                if (rule.getProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR) != null) {
+                if (rule.getProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR).isPresent()) {
                     invalidRegexSuppress++;
                     messages.append("Rule ")
                             .append(fileName)
@@ -194,7 +194,7 @@ public abstract class AbstractRuleSetFactoryTest {
                             .append("', this is intended for end user customization only.\n");
                 }
                 // Should not have violation suppress xpath property
-                if (rule.getProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR) != null) {
+                if (rule.getProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR).isPresent()) {
                     invalidXPathSuppress++;
                     messages.append("Rule ").append(fileName).append("/").append(rule.getName()).append(" should not have '").append(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR.name()).append("', this is intended for end user customization only.").append(System.lineSeparator());
                 }
@@ -499,11 +499,12 @@ public abstract class AbstractRuleSetFactoryTest {
                 Object value1 = rule1.getProperty(propertyDescriptors1.get(j));
                 Object value2 = rule2.getProperty(propertyDescriptors2.get(j));
                 // special case for Pattern, there is no equals method
-                if (propertyDescriptors1.get(j).type() == Pattern.class) {
+                if (value1 instanceof Pattern && value2 instanceof Pattern) {
                     value1 = ((Pattern) value1).pattern();
                     value2 = ((Pattern) value2).pattern();
                 }
-                assertEquals(value1, value2, message + ", Rule property value " + j);
+                assertEquals(value1, value2, message + ", Rule " + rule1.getName() + " property "
+                    + propertyDescriptors1.get(j).name());
             }
             assertEquals(propertyDescriptors1.size(), propertyDescriptors2.size(),
                     message + ", Rule property descriptor count");

@@ -7,6 +7,7 @@ package net.sourceforge.pmd.renderers;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Collections;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,7 @@ class SummaryHTMLRendererTest extends AbstractRendererTest {
     Renderer getRenderer() {
         Renderer result = new SummaryHTMLRenderer();
         result.setProperty(HTMLRenderer.LINK_PREFIX, "link_prefix");
-        result.setProperty(HTMLRenderer.LINE_PREFIX, "line_prefix");
+        result.setProperty(HTMLRenderer.LINE_PREFIX, Optional.of("line_prefix"));
         result.setProperty(HTMLRenderer.HTML_EXTENSION, true);
         return result;
     }

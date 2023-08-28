@@ -136,10 +136,10 @@ public class RuleSets {
      * Apply all applicable rules to the compilation units. Applicable means the
      * language of the rules must match the language of the source (@see
      * applies).
-     *  @param root
-     *            the List of compilation units; the type these must have,
-     *            depends on the source language
-     * @param listener
+     *
+     * @param root     the List of compilation units; the type these must have,
+     *                 depends on the source language
+     * @param listener Listener that will handle events while analysing.
      */
     public void apply(RootNode root, FileAnalysisListener listener) {
         if (ruleApplicator == null) {
@@ -154,7 +154,7 @@ public class RuleSets {
         }
 
         for (RuleSet ruleSet : ruleSets) {
-            if (ruleSet.applies(root.getTextDocument().getPathId())) {
+            if (ruleSet.applies(root.getTextDocument().getFileId())) {
                 ruleApplicator.apply(ruleSet.getRules(), listener);
             }
         }

@@ -758,13 +758,14 @@ public class MyTest2 {
     <rule name="JUnit4TestShouldUseTestAnnotation"
           language="java"
           since="4.0"
-          message="JUnit 4 tests that execute tests should use the @Test annotation, JUnit 5 tests should use @Test, @RepeatedTest, @TestFactory, @TestTemplate or @ParameterizedTest"
+          message="Unit tests that execute tests should use the @Test annotation. In case of JUnit 5, test methods might use @RepeatedTest, @TestFactory, @TestTemplate or @ParameterizedTest annotations instead."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junit4testshouldusetestannotation">
         <description>
 In JUnit 3, the framework executed all methods which started with the word test as a unit test.
 In JUnit 4, only methods annotated with the @Test annotation are executed.
 In JUnit 5, one of the following annotations should be used for tests: @Test, @RepeatedTest, @TestFactory, @TestTemplate or @ParameterizedTest.
+In TestNG, only methods annotated with the @Test annotation are executed.
         </description>
         <priority>3</priority>
         <properties>
@@ -778,9 +779,12 @@ In JUnit 5, one of the following annotations should be used for tests: @Test, @R
         and starts-with(@Name, 'test')
         and not(ModifierList/Annotation[
           pmd-java:typeIs('org.junit.Test')
-          or pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
-          or pmd-java:typeIs('org.junit.jupiter.api.TestFactory') or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+          or pmd-java:typeIs('org.junit.jupiter.api.Test')
+          or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+          or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
+          or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
           or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
+          or pmd-java:typeIs('org.testng.annotations.Test')
           ]
         )
     ]
@@ -1281,7 +1285,7 @@ Consider replacing Hashtable usage with the newer java.util.Map if thread safety
         <properties>
             <property name="xpath">
                 <value><![CDATA[
-                //ClassOrInterfaceType[pmd-java:typeIs('java.util.Hashtable')]
+                //ClassOrInterfaceType[pmd-java:typeIsExactly('java.util.Hashtable')]
                 ]]></value>
             </property>
         </properties>

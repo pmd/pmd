@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
@@ -34,7 +35,9 @@ import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.cache.internal.ClasspathFingerprinter;
 import net.sourceforge.pmd.internal.util.IOUtil;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 
 /**
@@ -49,8 +52,8 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
     protected static final Logger LOG = LoggerFactory.getLogger(AbstractAnalysisCache.class);
     protected static final ClasspathFingerprinter FINGERPRINTER = new ClasspathFingerprinter();
     protected final String pmdVersion;
-    protected final ConcurrentMap<String, AnalysisResult> fileResultsCache = new ConcurrentHashMap<>();
-    protected final ConcurrentMap<String, AnalysisResult> updatedResultsCache = new ConcurrentHashMap<>();
+    protected final ConcurrentMap<FileId, AnalysisResult> fileResultsCache = new ConcurrentHashMap<>();
+    protected final ConcurrentMap<FileId, AnalysisResult> updatedResultsCache = new ConcurrentHashMap<>();
     protected final CachedRuleMapper ruleMapper = new CachedRuleMapper();
     protected long rulesetChecksum;
     protected long auxClassPathChecksum;
@@ -66,7 +69,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
     @Override
     public boolean isUpToDate(final TextDocument document) {
         try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "up-to-date check")) {
-            final AnalysisResult cachedResult = fileResultsCache.get(document.getPathId());
+            final AnalysisResult cachedResult = fileResultsCache.get(document.getFileId());
             final AnalysisResult updatedResult;
 
             // is this a known file? has it changed?
@@ -75,13 +78,6 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
 
             if (upToDate) {
                 LOG.trace("Incremental Analysis cache HIT");
-                
-                /*
-                 * Update cached violation "filename" to match the appropriate text document,
-                 * so we can honor relativized paths for the current run
-                 */
-                final String displayName = document.getDisplayName();
-                cachedResult.getViolations().forEach(v -> ((CachedRuleViolation) v).setFileDisplayName(displayName));
                 
                 // copy results over
                 updatedResult = cachedResult;
@@ -93,7 +89,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
                 updatedResult = new AnalysisResult(document.getCheckSum(), new ArrayList<>());
             }
 
-            updatedResultsCache.put(document.getPathId(), updatedResult);
+            updatedResultsCache.put(document.getFileId(), updatedResult);
             
             return upToDate;
         }
@@ -101,7 +97,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
 
     @Override
     public List<RuleViolation> getCachedViolations(final TextDocument sourceFile) {
-        final AnalysisResult analysisResult = fileResultsCache.get(sourceFile.getPathId());
+        final AnalysisResult analysisResult = fileResultsCache.get(sourceFile.getFileId());
 
         if (analysisResult == null) {
             // new file, avoid nulls
@@ -113,7 +109,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
 
     @Override
     public void analysisFailed(final TextDocument sourceFile) {
-        updatedResultsCache.remove(sourceFile.getPathId());
+        updatedResultsCache.remove(sourceFile.getFileId());
     }
 
 
@@ -125,7 +121,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
 
 
     @Override
-    public void checkValidity(final RuleSets ruleSets, final ClassLoader auxclassPathClassLoader) {
+    public void checkValidity(RuleSets ruleSets, ClassLoader auxclassPathClassLoader, Collection<? extends TextFile> files) {
         try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "validity check")) {
             boolean cacheIsValid = cacheExists();
 
@@ -222,7 +218,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
 
     @Override
     public FileAnalysisListener startFileAnalysis(TextDocument file) {
-        final String fileName = file.getPathId();
+        final FileId fileName = file.getFileId();
 
         return new FileAnalysisListener() {
             @Override

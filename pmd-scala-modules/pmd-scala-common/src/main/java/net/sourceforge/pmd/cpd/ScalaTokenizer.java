@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.lang.document.CpdCompat;
 import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.scala.ScalaLanguageModule;
 
 import scala.collection.Iterator;
@@ -65,7 +66,8 @@ public class ScalaTokenizer implements Tokenizer {
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) throws IOException {
 
 
-        try (TextDocument textDoc = TextDocument.create(CpdCompat.cpdCompat(sourceCode))) {
+        TextFile textFile = CpdCompat.cpdCompat(sourceCode);
+        try (TextDocument textDoc = TextDocument.create(textFile)) {
             String fullCode = textDoc.getText().toString();
 
             // create the input file for scala
@@ -92,7 +94,7 @@ public class ScalaTokenizer implements Tokenizer {
                 // cannot catch it as it's a checked exception and Scala sneaky throws
                 TokenizeException tokE = (TokenizeException) e;
                 Position pos = tokE.pos();
-                throw new TokenMgrError(pos.startLine() + 1, pos.startColumn() + 1, sourceCode.getFileName(), "Scalameta threw", tokE);
+                throw new TokenMgrError(pos.startLine() + 1, pos.startColumn() + 1, textFile.getFileId(), "Scalameta threw", tokE);
             } else {
                 throw e;
             }

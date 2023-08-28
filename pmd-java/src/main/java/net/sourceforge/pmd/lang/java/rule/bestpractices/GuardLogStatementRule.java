@@ -23,6 +23,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
@@ -67,14 +68,13 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
                     .desc("LogLevels to guard")
                     .defaultValues("trace", "debug", "info", "warn", "error",
                                    "log", "finest", "finer", "fine", "info", "warning", "severe")
-                    .delim(',')
                     .build();
 
     private static final PropertyDescriptor<List<String>> GUARD_METHODS =
             stringListProperty("guardsMethods")
                     .desc("Method use to guard the log statement")
                     .defaultValues("isTraceEnabled", "isDebugEnabled", "isInfoEnabled", "isWarnEnabled", "isErrorEnabled", "isLoggable")
-                    .delim(',').build();
+                    .build();
 
     private final Map<String, String> guardStmtByLogLevel = new HashMap<>(12);
 
@@ -237,7 +237,7 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
         // so that we can ignore it
         return call.getArguments().toStream()
                    .drop(messageArgIndex) // remove the level argument if needed
-                   .all(it -> it instanceof ASTStringLiteral || it instanceof ASTLambdaExpression || it instanceof ASTVariableAccess);
+                   .all(it -> it instanceof ASTStringLiteral || it instanceof ASTLambdaExpression || it instanceof ASTVariableAccess || it instanceof ASTMethodReference);
     }
 
     private void extractProperties() {

@@ -56,7 +56,7 @@ public class LanguagePropertyBundle extends AbstractPropertySource {
     }
 
     public void setLanguageVersion(String string) {
-        setProperty(languageVersion, languageVersion.valueFrom(string));
+        setProperty(languageVersion, languageVersion.serializer().fromString(string));
     }
 
     @Override

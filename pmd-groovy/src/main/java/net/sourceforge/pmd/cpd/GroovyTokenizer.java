@@ -10,6 +10,8 @@ import org.codehaus.groovy.antlr.SourceInfo;
 import org.codehaus.groovy.antlr.parser.GroovyLexer;
 
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
+import net.sourceforge.pmd.lang.document.CpdCompat;
+import net.sourceforge.pmd.lang.document.FileId;
 
 import groovyjarjarantlr.Token;
 import groovyjarjarantlr.TokenStream;
@@ -24,6 +26,7 @@ public class GroovyTokenizer implements Tokenizer {
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
         StringBuilder buffer = sourceCode.getCodeBuffer();
 
+        FileId fileId = CpdCompat.cpdCompat(sourceCode).getFileId();
         GroovyLexer lexer = new GroovyLexer(new StringReader(buffer.toString()));
         TokenStream tokenStream = lexer.plumb();
 
@@ -51,7 +54,7 @@ public class GroovyTokenizer implements Tokenizer {
             // they are correctly handled
             // when CPD is executed with the '--skipLexicalErrors' command line
             // option
-            throw new TokenMgrError(lexer.getLine(), lexer.getColumn(), lexer.getFilename(), err.getMessage(), err);
+            throw new TokenMgrError(lexer.getLine(), lexer.getColumn(), fileId, err.getMessage(), err);
         } finally {
             tokenEntries.add(TokenEntry.getEOF());
         }

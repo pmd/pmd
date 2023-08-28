@@ -144,6 +144,11 @@ Novice as much as advanced readers may want to [read on on Refactoring Guru](htt
                default="false"
                languages="C#, C++, Lua"
     %}
+    {% include custom/cli_option_row.html options="--ignore-sequences"
+               description="Ignore sequences of identifier and literals"
+               default="false"
+               languages="C++"
+    %}
     {% include custom/cli_option_row.html options="--ignore-usings"
                description="Ignore `using` directives in C# when comparing text"
                default="false"
@@ -261,30 +266,34 @@ to be "debug".
 
 * C#
 * C/C++
+* [Coco](pmd_languages_coco.html)
 * Dart
 * EcmaScript (JavaScript)
 * Fortran
-* Gherkin (Cucumber)
+* [Gherkin](pmd_languages_gherkin.html) (Cucumber)
 * Go
 * Groovy
-* Html
-* Java
-* Jsp
-* Kotlin
+* [Html](pmd_languages_html.html)
+* [Java](pmd_languages_java.html)
+* [Jsp](pmd_languages_jsp.html)
+* [Julia](pmd_languages_julia.html)
+* [Kotlin](pmd_languages_kotlin.html)
 * Lua
 * Matlab
 * Modelica
 * Objective-C
 * Perl
 * PHP
-* PL/SQL
+* [PL/SQL](pmd_languages_plsql.html)
 * Python
 * Ruby
-* Salesforce.com Apex
+* [Salesforce.com Apex](pmd_languages_apex.html)
 * Scala
 * Swift
-* Visualforce
-* XML
+* T-SQL
+* [TypeScript](pmd_languages_js_ts.html)
+* [Visualforce](pmd_languages_visualforce.html)
+* [XML](pmd_languages_xml.html)
 
 
 ## Available report formats

@@ -38,6 +38,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.util.ContextedAssertionError;
@@ -65,8 +66,8 @@ class PmdRunnableTest {
         reporter = mock(MessageReporter.class);
         configuration.setReporter(reporter);
         // exceptions thrown on a worker thread are not thrown by the main thread,
-        // so this test only makes sense with one thread
-        configuration.setThreads(1);
+        // so this test only makes sense without separate threads
+        configuration.setThreads(0);
     }
 
 
@@ -74,7 +75,7 @@ class PmdRunnableTest {
         configuration.setForceLanguageVersion(lv);
         configuration.setIgnoreIncrementalAnalysis(true);
         try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
-            pmd.files().addSourceFile("foo", "test.dummy");
+            pmd.files().addSourceFile(FileId.fromPathLikeString("test.dummy"), "foo");
             pmd.addRuleSet(RuleSet.forSingleRule(rule));
             return pmd.performAnalysisAndCollectReport();
         }
