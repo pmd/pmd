@@ -537,8 +537,8 @@ Related issue: [[core] Explicitly name all language versions (#4120)](https://gi
 * {% rule apex/design/UnusedMethod %} finds unused methods in your code.
 
 **Java**
-* {% rule java/bestpractices/UseExplicitTypes %} reports usages of `var` keyword, which was introduced with Java 10.
 * {% rule java/codestyle/UnnecessaryBoxing %} reports boxing and unboxing conversions that may be made implicit.
+* {% rule java/codestyle/UseExplicitTypes %} reports usages of `var` keyword, which was introduced with Java 10.
 
 **Kotlin**
 * {% rule kotlin/bestpractices/FunctionNameTooShort %}
