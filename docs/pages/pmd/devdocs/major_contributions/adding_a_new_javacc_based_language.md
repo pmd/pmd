@@ -39,8 +39,7 @@ definitely don't come for free. It is much effort and requires perseverance to i
 *   Make sure to add your new module to PMD's parent pom as `<module>` entry, so that it is built alongside the
     other languages.
 *   Also add your new module to the dependencies list in "pmd-languages-deps/pom.xml", so that the new language
-    is automatically available in the binary distribution (pmd-dist) as well as for the shell-completion
-    in the pmd-cli module.
+    is automatically available in the binary distribution (pmd-dist).
 
 ## 2.  Implement an AST parser for your language
 *   Ideally an AST parser should be implemented as a JJT file *(see VmParser.jjt or Java.jjt for example)*

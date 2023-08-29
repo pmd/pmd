@@ -13,7 +13,7 @@ public class ApexParsingHelper extends BaseParsingHelper<ApexParsingHelper, ASTA
 
 
     private ApexParsingHelper(Params p) {
-        super(ApexLanguageModule.NAME, ASTApexFile.class, p);
+        super(ApexLanguageModule.getInstance(), ASTApexFile.class, p);
     }
 
     @Override

@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.io.File;
-
 public interface CPDListener {
 
     int INIT = 0;
@@ -14,7 +12,7 @@ public interface CPDListener {
     int GROUPING = 3;
     int DONE = 4;
 
-    void addedFile(int fileCount, File file);
+    void addedFile(int fileCount);
 
     void phaseUpdate(int phase);
 }

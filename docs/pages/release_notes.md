@@ -45,8 +45,12 @@ The remaining section describes the complete release notes for 7.0.0.
   * [#4582](https://github.com/pmd/pmd/issues/4582): \[dist] Download link broken
 * core
   * [#1204](https://github.com/pmd/pmd/issues/1204): \[core] Allow numeric properties in XML to be within an unbounded range
+  * [#3919](https://github.com/pmd/pmd/issues/3919): \[core] Merge CPD and PMD language
+  * [#4204](https://github.com/pmd/pmd/issues/4204): \[core] Provide a CpdAnalysis class as a programmatic entry point into CPD
   * [#4301](https://github.com/pmd/pmd/issues/4301): \[core] Remove deprecated property concrete classes
   * [#4302](https://github.com/pmd/pmd/issues/4302): \[core] Migrate Property Framework API to Java 8
+  * [#4323](https://github.com/pmd/pmd/issues/4323): \[core] Refactor CPD integration
+  * [#4397](https://github.com/pmd/pmd/pull/4397):   \[core] Refactor CPD
   * [#4621](https://github.com/pmd/pmd/issues/4621): \[core] Make `ClasspathClassLoader::getResource` child first
 * doc
   * [#4303](https://github.com/pmd/pmd/issues/4303): \[doc] Document new property framework
@@ -70,11 +74,22 @@ The remaining section describes the complete release notes for 7.0.0.
 * The `min` and `max` attributes in property definitions in the XML are now optional and can appear separately
   or be omitted.
 
+**New Programmatic API for CPD**
+
+See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html#new-programmatic-api-for-cpd)
+and [PR #4397](https://github.com/pmd/pmd/pull/4397) for details.
+
 **Removed classes and methods**
 
 The following previously deprecated classes have been removed:
 
 * pmd-core
+  * `net.sourceforge.pmd.cpd.AbstractTokenizer` -> use {%jdoc core::cpd.AnyTokenizer %} instead
+  * `net.sourceforge.pmd.cpd.CPD` -> use {% jdoc cli::cli.PmdCli %} from `pmd-cli` module for CLI support or use
+    {%jdoc core::cpd.CpdAnalysis %} for programmatic API
+  * `net.sourceforge.pmd.cpd.GridBagHelper` (now package private)
+  * `net.sourceforge.pmd.cpd.TokenEntry.State`
+  * `net.sourceforge.pmd.lang.document.CpdCompat`
   * `net.sourceforge.pmd.properties.BooleanMultiProperty`
   * `net.sourceforge.pmd.properties.BooleanProperty`
   * `net.sourceforge.pmd.properties.CharacterMultiProperty`
@@ -122,22 +137,90 @@ The following previously deprecated methods have been removed:
   * `net.sourceforge.pmd.properties.PropertyDescriptor`: removed methods errorFor, type, isMultiValue,
      uiOrder, compareTo, isDefinedExternally, valueFrom, asDelimitedString
 
+The following methods have been removed:
+
+* pmd-core
+  * {%jdoc core::cpd.CPDConfiguration %}
+    * `#sourceCodeFor(File)`, `#postConstruct()`, `#tokenizer()`, `#filenameFilter()` removed
+  * {%jdoc core::cpd.Mark %}
+    * `#getSourceSlice()`, `#setLineCount(int)`, `#getLineCount()`, `#setSourceCode(SourceCode)` removed
+    * `#getBeginColumn()`, `#getBeginLine()`, `#getEndLine()`, `#getEndColumn()` removed
+      -> use {%jdoc core::cpd.Mark#getLocation() %} instead
+  * {%jdoc core::cpd.Match %}
+    * `#LABEL_COMPARATOR` removed
+    * `#setMarkSet(...)`, `#setLabel(...)`, `#getLabel()`, `#addTokenEntry(...)` removed
+    * `#getSourceCodeSlice()` removed
+      -> use {%jdoc !!core::cpd.CPDReport#getSourceCodeSlice(net.sourceforge.pmd.cpd.Mark) %} instead
+  * {%jdoc core::cpd.TokenEntry %}
+    * `#getEOF()`, `#clearImages()`, `#getIdentifier()`, `#getIndex()`, `#setHashCode(int)` removed
+    * `#EOF` removed -> use {%jdoc core::cpd.TokenEntry#isEof() %} instead
+  * {%jdoc core::lang.ast.Parser.ParserTask %}
+    * `#getFileDisplayName()` removed -> use {%jdoc core::lang.ast.Parser.ParserTask#getFileId() %} instead
+      (`getFileId().getAbsolutePath()`)
+
+The following classes have been removed:
+
+* pmd-core
+  * `net.sourceforge.pmd.cpd.AbstractLanguage`
+  * `net.sourceforge.pmd.cpd.AnyLanguage`
+  * `net.sourceforge.pmd.cpd.Language`
+  * `net.sourceforge.pmd.cpd.LanguageFactory`
+  * `net.sourceforge.pmd.cpd.MatchAlgorithm` (now package private)
+  * `net.sourceforge.pmd.cpd.MatchCollector` (now package private)
+  * `net.sourceforge.pmd.cpd.SourceCode` (and all inner classes like `FileCodeLoader`, ...)
+  * `net.sourceforge.pmd.cpd.token.TokenFilter`
+
 **Moved packages**
 
 * pmd-core
   * {%jdoc core::net.sourceforge.pmd.properties.NumericConstraints %} (old package: `net.sourceforge.pmd.properties.constraints.NumericConstraints`)
   * {%jdoc core::net.sourceforge.pmd.properties.PropertyConstraint %} (old package: `net.sourceforge.pmd.properties.constraints.PropertyConstraint`)
     * not experimental anymore
+  * {%jdoc ant::ant.ReportException %} (old package: `net.sourceforge.pmd.cpd`, moved to module `pmd-ant`)
+    * it is now a RuntimeException
+  * {%jdoc core::cpd.CPDReportRenderer %} (old package: `net.sourceforge.pmd.cpd.renderer`)
+  * {%jdoc core::cpd.impl.AntlrTokenFilter %} (old package: `net.sourceforge.pmd.cpd.token`)
+  * {%jdoc core::cpd.impl.BaseTokenFilter %} (old package: `net.sourceforge.pmd.cpd.token.internal`)
+  * {%jdoc core::cpd.impl.JavaCCTokenFilter %} (old package: `net.sourceforge.pmd.cpd.token`)
 
-**Changed types**
+**Changed types and other changes**
 
 * pmd-core
   * {%jdoc core::net.sourceforge.pmd.properties.PropertyDescriptor %} is now a class (was an interface)
     and it is not comparable anymore.
+  * {%jdoc !!core::AbstractConfiguration#setSourceEncoding(java.nio.charset.Charset) %}
+    * previously this method took a simple String for the encoding.
+  * {%jdoc core::PmdConfiguration %} and {%jdoc core::cpd.CPDConfiguration %}
+    * many getters and setters have been moved to the parent class {%jdoc core::AbstractConfiguration %}
+  * {%jdoc !!core::cpd.CPDListener#addedFile(int) %}
+    * no `File` parameter anymore
+  * {%jdoc !!core::cpd.CPDReport#getNumberOfTokensPerFile() %} returns a `Map` of `FileId,Integer` instead of `String`
+  * {%jdoc !!core::cpd.CPDReport#filterMatches(java.util.function.Predicate) %} now takes a `java.util.function.Predicate`
+    as parameter
+  * {%jdoc core::cpd.Tokenizer %}
+    * constants are now {%jdoc core::properties.PropertyDescriptor %} instead of `String`,
+      to be used as language properties
+    * {%jdoc core::cpd.Tokenizer#tokenize(net.sourceforge.pmd.lang.document.TextDocument, net.sourceforge.pmd.cpd.TokenFactory) %}
+      changed parameters. Now takes a {%jdoc core::lang.document.TextDocument %} and a {%jdoc core::cpd.TokenFactory %}
+      (instead of `SourceCode` and `Tokens`)
+  * {% jdoc core::lang.Language %}
+    * method `#createProcessor(LanguagePropertyBundle)` moved to {%jdoc core::lang.PmdCapableLanguage %}
+  * {% jdoc !!core::util.StringUtil#linesWithTrimIndent(net.sourceforge.pmd.lang.document.Chars) %} now takes a `Chars`
+    instead of a `String`.
+* All language modules (like pmd-apex, pmd-cpp, ...)
+  * consistent package naming: `net.sourceforge.pmd.lang.<langId>.cpd`
+  * adapted to use {% jdoc core::cpd.CpdCapableLanguage %}
+  * consistent static method `#getInstance()`
+  * removed constants like `ID`, `TERSE_NAME` or `NAME`. Use `getInstance().getName()` etc. instead
 
 **Internal APIs**
 
+* {% jdoc core::cpd.Tokens %}
 * {% jdoc core::net.sourceforge.pmd.properties.PropertyTypeId %}
+
+**Deprecations**
+
+* {% jdoc !!core::lang.Language#getTerseName() %} -> use {% jdoc core::lang.Language#getId() %} instead
 
 #### External Contributions
 * [#4528](https://github.com/pmd/pmd/pull/4528): \[apex] Update to apexlink - [Kevin Jones](https://github.com/nawforce) (@nawforce)
@@ -429,6 +512,7 @@ of the changes listed here, see [Detailed Release Notes for PMD 7]({{ baseurl }}
 * Testing framework
 * Language Lifecycle and Language Properties
 * Rule Properties
+* New Programmatic API for CPD
 
 ### 💥 Compatibility and migration notes
 See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html).
@@ -475,13 +559,17 @@ See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html)
     * [#3893](https://github.com/pmd/pmd/pull/3893):   \[core] Text documents
     * [#3902](https://github.com/pmd/pmd/issues/3902): \[core] Violation decorators
     * [#3918](https://github.com/pmd/pmd/issues/3918): \[core] Make LanguageRegistry non static
+    * [#3919](https://github.com/pmd/pmd/issues/3919): \[core] Merge CPD and PMD language
     * [#3922](https://github.com/pmd/pmd/pull/3922):   \[core] Better error reporting for the ruleset parser
     * [#4035](https://github.com/pmd/pmd/issues/4035): \[core] ConcurrentModificationException in DefaultRuleViolationFactory
     * [#4120](https://github.com/pmd/pmd/issues/4120): \[core] Explicitly name all language versions
+    * [#4204](https://github.com/pmd/pmd/issues/4204): \[core] Provide a CpdAnalysis class as a programmatic entry point into CPD
     * [#4301](https://github.com/pmd/pmd/issues/4301): \[core] Remove deprecated property concrete classes
     * [#4302](https://github.com/pmd/pmd/issues/4302): \[core] Migrate Property Framework API to Java 8
+    * [#4323](https://github.com/pmd/pmd/issues/4323): \[core] Refactor CPD integration
     * [#4353](https://github.com/pmd/pmd/pull/4353):   \[core] Micro optimizations for Node API
     * [#4365](https://github.com/pmd/pmd/pull/4365):   \[core] Improve benchmarking
+    * [#4397](https://github.com/pmd/pmd/pull/4397):   \[core] Refactor CPD
     * [#4420](https://github.com/pmd/pmd/pull/4420):   \[core] Remove PMD.EOL
     * [#4425](https://github.com/pmd/pmd/pull/4425):   \[core] Replace TextFile::pathId
     * [#4454](https://github.com/pmd/pmd/issues/4454): \[core] "Unknown option: '-min'" but is referenced in documentation

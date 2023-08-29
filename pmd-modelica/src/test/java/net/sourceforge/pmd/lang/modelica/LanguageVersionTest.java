@@ -12,7 +12,6 @@ import net.sourceforge.pmd.AbstractLanguageVersionTest;
 class LanguageVersionTest extends AbstractLanguageVersionTest {
 
     static Collection<TestDescriptor> data() {
-        return Arrays.asList(new TestDescriptor(ModelicaLanguageModule.NAME, ModelicaLanguageModule.TERSE_NAME, "3.5",
-                getLanguage(ModelicaLanguageModule.NAME).getDefaultVersion()));
+        return Arrays.asList(new TestDescriptor(ModelicaLanguageModule.getInstance(), "3.5"));
     }
 }

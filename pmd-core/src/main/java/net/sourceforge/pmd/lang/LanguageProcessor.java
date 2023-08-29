@@ -46,7 +46,7 @@ public interface LanguageProcessor extends AutoCloseable {
     /**
      * The language of this processor.
      */
-    @NonNull Language getLanguage();
+    @NonNull PmdCapableLanguage getLanguage();
 
     /**
      * The language version that was configured when creating this processor.
