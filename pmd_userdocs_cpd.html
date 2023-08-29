@@ -1639,19 +1639,27 @@ See how to add it <a href="pmd_devdocs_major_adding_new_cpd_language.html">here<
 
 <h3 id="why-should-you-care-about-duplicates">Why should you care about duplicates?</h3>
 
-<p>It’s certainly important to know where to get CPD, and how to call it, but it’s worth stepping back for a moment and asking yourself why you should care about this, being the occurrence of duplicate code blocks.</p>
+<p>It’s certainly important to know where to get CPD, and how to call it, but it’s worth stepping back for a moment and
+asking yourself why you should care about this, being the occurrence of duplicate code blocks.</p>
 
-<p>Assuming duplicated blocks of code are supposed to do the same thing, any refactoring, even simple, must be duplicated too – which is unrewarding grunt work, and puts pressure on the developer to find every place in which to perform the refactoring. Automated tools like CPD can help with that to some extent.</p>
+<p>Assuming duplicated blocks of code are supposed to do the same thing, any refactoring, even simple, must be duplicated
+too – which is unrewarding grunt work, and puts pressure on the developer to find every place in which to perform
+the refactoring. Automated tools like CPD can help with that to some extent.</p>
 
-<p>However, failure to keep the code in sync may mean automated tools will no longer recognise these blocks as duplicates. This means the task of finding duplicates to keep them in sync when doing subsequent refactorings can no longer be entrusted to an automated tool – adding more burden on the maintainer. Segments of code initially supposed to do the same thing may grow apart undetected upon further refactoring.</p>
+<p>However, failure to keep the code in sync may mean automated tools will no longer recognise these blocks as duplicates.
+This means the task of finding duplicates to keep them in sync when doing subsequent refactorings can no longer be
+entrusted to an automated tool – adding more burden on the maintainer. Segments of code initially supposed to do the
+same thing may grow apart undetected upon further refactoring.</p>
 
 <p>Now, if the code may never change in the future, then this is not a problem.</p>
 
-<p>Otherwise, the most viable solution is to not duplicate. If the duplicates are already there, then they should be refactored out. We thus advise developers to use CPD to <strong>help remove duplicates</strong>, not to help keep duplicates in sync.</p>
+<p>Otherwise, the most viable solution is to not duplicate. If the duplicates are already there, then they should be
+refactored out. We thus advise developers to use CPD to <strong>help remove duplicates</strong>, not to help keep duplicates in sync.</p>
 
 <h3 id="refactoring-duplicates">Refactoring duplicates</h3>
 
-<p>Once you have located some duplicates, several refactoring strategies may apply depending of the scope and extent of the duplication. Here’s a quick summary:</p>
+<p>Once you have located some duplicates, several refactoring strategies may apply depending of the scope and extent of
+the duplication. Here’s a quick summary:</p>
 
 <ul>
   <li>If the duplication is local to a method or single class:
@@ -1673,7 +1681,8 @@ See how to add it <a href="pmd_devdocs_major_adding_new_cpd_language.html">here<
   </li>
 </ul>
 
-<p>Novice as much as advanced readers may want to <a href="https://refactoring.guru/smells/duplicate-code">read on on Refactoring Guru</a> for more in-depth strategies, use cases and explanations.</p>
+<p>Novice as much as advanced readers may want to <a href="https://refactoring.guru/smells/duplicate-code">read on on Refactoring Guru</a>
+for more in-depth strategies, use cases and explanations.</p>
 
 <h2 id="cli-usage">CLI Usage</h2>
 
@@ -1939,6 +1948,33 @@ See how to add it <a href="pmd_devdocs_major_adding_new_cpd_language.html">here<
     <td>Output format of the analysis report. The available formats
                             are described <a href="#available-report-formats">here</a>.</td>
     <td><code>text</code></td>
+    <td></td>
+</tr>
+
+    <!-- Row of the CLI reference table, describing an option -->
+<!-- Rows can be linked to the name of the option (without leading dash) -->
+<!-- Argument summary: -->
+<!-- options: comma separated list of aliases for the option.-->
+<!-- option_arg: optional name for the argument of the option, eg 'arg', will be formatted eg to '<arg>'-->
+<!-- description: description, you can use "some" inline markdown -->
+<!-- required: whether the option is required, if specified, whatever the value, it's considered required -->
+<!-- languages: languages to which the option applies -->
+<!-- default: default value -->
+
+
+
+<!-- fragment id in the page -->
+
+
+<tr>
+    <td><a style="pointer-events: none; cursor: default;" name="-relativize-paths-with"><code>--relativize-paths-with&nbsp;&lt;path&gt;</code><br /><code>-z&nbsp;&lt;path&gt;</code></a></td>
+    <td>Path relative to which directories are rendered in the report. This option allows
+                    shortening directories in the report; without it, paths are rendered as mentioned in the
+                    source directory (option "--dir").
+                    The option can be repeated, in which case the shortest relative path will be used.
+                    If the root path is mentioned (e.g. "/" or "C:\\"), then the paths will be rendered
+                    as absolute.</td>
+    <td><code></code></td>
     <td></td>
 </tr>
 
@@ -2444,7 +2480,14 @@ to be “debug”.</p>
   <li>T-SQL</li>
   <li><a href="pmd_languages_js_ts.html">TypeScript</a></li>
   <li><a href="pmd_languages_visualforce.html">Visualforce</a></li>
-  <li><a href="pmd_languages_xml.html">XML</a></li>
+  <li>vm (Apache Velocity)</li>
+  <li><a href="pmd_languages_xml.html">XML</a>
+    <ul>
+      <li>POM (Apache Maven)</li>
+      <li>XSL</li>
+      <li>WSDL</li>
+    </ul>
+  </li>
 </ul>
 
 <h2 id="available-report-formats">Available report formats</h2>
@@ -2928,7 +2971,8 @@ the comment based approach will be extended to those of them that can support it
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Aug 22, 2023 <br />
+            <span>Page last updated:</span>
+            August 2023 (7.0.0)<br /> Site last generated: Aug 29, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

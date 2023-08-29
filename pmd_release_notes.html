@@ -1662,8 +1662,12 @@ The remaining section describes the complete release notes for 7.0.0.</p>
   <li>core
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/1204">#1204</a>: [core] Allow numeric properties in XML to be within an unbounded range</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3919">#3919</a>: [core] Merge CPD and PMD language</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4204">#4204</a>: [core] Provide a CpdAnalysis class as a programmatic entry point into CPD</li>
       <li><a href="https://github.com/pmd/pmd/issues/4301">#4301</a>: [core] Remove deprecated property concrete classes</li>
       <li><a href="https://github.com/pmd/pmd/issues/4302">#4302</a>: [core] Migrate Property Framework API to Java 8</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4323">#4323</a>: [core] Refactor CPD integration</li>
+      <li><a href="https://github.com/pmd/pmd/pull/4397">#4397</a>:   [core] Refactor CPD</li>
       <li><a href="https://github.com/pmd/pmd/issues/4621">#4621</a>: [core] Make <code class="language-plaintext highlighter-rouge">ClasspathClassLoader::getResource</code> child first</li>
     </ul>
   </li>
@@ -1704,6 +1708,11 @@ with a backslash.</li>
 or be omitted.</li>
 </ul>
 
+<p><strong>New Programmatic API for CPD</strong></p>
+
+<p>See <a href="pmd_release_notes_pmd7.html#new-programmatic-api-for-cpd">Detailed Release Notes for PMD 7</a>
+and <a href="https://github.com/pmd/pmd/pull/4397">PR #4397</a> for details.</p>
+
 <p><strong>Removed classes and methods</strong></p>
 
 <p>The following previously deprecated classes have been removed:</p>
@@ -1711,6 +1720,12 @@ or be omitted.</li>
 <ul>
   <li>pmd-core
     <ul>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.cpd.AbstractTokenizer</code> -&gt; use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/AnyTokenizer.html#"><code>AnyTokenizer</code></a> instead</li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.cpd.CPD</code> -&gt; use <a href="https://docs.pmd-code.org/apidocs/pmd-cli/7.0.0-SNAPSHOT/net/sourceforge/pmd/cli/PmdCli.html#"><code>PmdCli</code></a> from <code class="language-plaintext highlighter-rouge">pmd-cli</code> module for CLI support or use
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/CpdAnalysis.html#"><code>CpdAnalysis</code></a> for programmatic API</li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.cpd.GridBagHelper</code> (now package private)</li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.cpd.TokenEntry.State</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.document.CpdCompat</code></li>
       <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.BooleanMultiProperty</code></li>
       <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.BooleanProperty</code></li>
       <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.properties.CharacterMultiProperty</code></li>
@@ -1766,6 +1781,64 @@ or be omitted.</li>
   </li>
 </ul>
 
+<p>The following methods have been removed:</p>
+
+<ul>
+  <li>pmd-core
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPDConfiguration.html#"><code>CPDConfiguration</code></a>
+        <ul>
+          <li><code class="language-plaintext highlighter-rouge">#sourceCodeFor(File)</code>, <code class="language-plaintext highlighter-rouge">#postConstruct()</code>, <code class="language-plaintext highlighter-rouge">#tokenizer()</code>, <code class="language-plaintext highlighter-rouge">#filenameFilter()</code> removed</li>
+        </ul>
+      </li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/Mark.html#"><code>Mark</code></a>
+        <ul>
+          <li><code class="language-plaintext highlighter-rouge">#getSourceSlice()</code>, <code class="language-plaintext highlighter-rouge">#setLineCount(int)</code>, <code class="language-plaintext highlighter-rouge">#getLineCount()</code>, <code class="language-plaintext highlighter-rouge">#setSourceCode(SourceCode)</code> removed</li>
+          <li><code class="language-plaintext highlighter-rouge">#getBeginColumn()</code>, <code class="language-plaintext highlighter-rouge">#getBeginLine()</code>, <code class="language-plaintext highlighter-rouge">#getEndLine()</code>, <code class="language-plaintext highlighter-rouge">#getEndColumn()</code> removed
+-&gt; use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/Mark.html#getLocation()"><code>getLocation</code></a> instead</li>
+        </ul>
+      </li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/Match.html#"><code>Match</code></a>
+        <ul>
+          <li><code class="language-plaintext highlighter-rouge">#LABEL_COMPARATOR</code> removed</li>
+          <li><code class="language-plaintext highlighter-rouge">#setMarkSet(...)</code>, <code class="language-plaintext highlighter-rouge">#setLabel(...)</code>, <code class="language-plaintext highlighter-rouge">#getLabel()</code>, <code class="language-plaintext highlighter-rouge">#addTokenEntry(...)</code> removed</li>
+          <li><code class="language-plaintext highlighter-rouge">#getSourceCodeSlice()</code> removed
+-&gt; use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPDReport.html#getSourceCodeSlice(net.sourceforge.pmd.cpd.Mark)"><code>CPDReport#getSourceCodeSlice</code></a> instead</li>
+        </ul>
+      </li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/TokenEntry.html#"><code>TokenEntry</code></a>
+        <ul>
+          <li><code class="language-plaintext highlighter-rouge">#getEOF()</code>, <code class="language-plaintext highlighter-rouge">#clearImages()</code>, <code class="language-plaintext highlighter-rouge">#getIdentifier()</code>, <code class="language-plaintext highlighter-rouge">#getIndex()</code>, <code class="language-plaintext highlighter-rouge">#setHashCode(int)</code> removed</li>
+          <li><code class="language-plaintext highlighter-rouge">#EOF</code> removed -&gt; use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/TokenEntry.html#isEof()"><code>isEof</code></a> instead</li>
+        </ul>
+      </li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Parser.ParserTask.html#"><code>Parser.ParserTask</code></a>
+        <ul>
+          <li><code class="language-plaintext highlighter-rouge">#getFileDisplayName()</code> removed -&gt; use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Parser.ParserTask.html#getFileId()"><code>getFileId</code></a> instead
+(<code class="language-plaintext highlighter-rouge">getFileId().getAbsolutePath()</code>)</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p>The following classes have been removed:</p>
+
+<ul>
+  <li>pmd-core
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.cpd.AbstractLanguage</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.cpd.AnyLanguage</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.cpd.Language</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.cpd.LanguageFactory</code></li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.cpd.MatchAlgorithm</code> (now package private)</li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.cpd.MatchCollector</code> (now package private)</li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.cpd.SourceCode</code> (and all inner classes like <code class="language-plaintext highlighter-rouge">FileCodeLoader</code>, …)</li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.cpd.token.TokenFilter</code></li>
+    </ul>
+  </li>
+</ul>
+
 <p><strong>Moved packages</strong></p>
 
 <ul>
@@ -1777,17 +1850,68 @@ or be omitted.</li>
           <li>not experimental anymore</li>
         </ul>
       </li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-ant/7.0.0-SNAPSHOT/net/sourceforge/pmd/ant/ReportException.html#"><code>ReportException</code></a> (old package: <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.cpd</code>, moved to module <code class="language-plaintext highlighter-rouge">pmd-ant</code>)
+        <ul>
+          <li>it is now a RuntimeException</li>
+        </ul>
+      </li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPDReportRenderer.html#"><code>CPDReportRenderer</code></a> (old package: <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.cpd.renderer</code>)</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/impl/AntlrTokenFilter.html#"><code>AntlrTokenFilter</code></a> (old package: <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.cpd.token</code>)</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/impl/BaseTokenFilter.html#"><code>BaseTokenFilter</code></a> (old package: <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.cpd.token.internal</code>)</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/impl/JavaCCTokenFilter.html#"><code>JavaCCTokenFilter</code></a> (old package: <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.cpd.token</code>)</li>
     </ul>
   </li>
 </ul>
 
-<p><strong>Changed types</strong></p>
+<p><strong>Changed types and other changes</strong></p>
 
 <ul>
   <li>pmd-core
     <ul>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/net/sourceforge/pmd/properties/PropertyDescriptor.html#"><code>PropertyDescriptor</code></a> is now a class (was an interface)
 and it is not comparable anymore.</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/AbstractConfiguration.html#setSourceEncoding(java.nio.charset.Charset)"><code>AbstractConfiguration#setSourceEncoding</code></a>
+        <ul>
+          <li>previously this method took a simple String for the encoding.</li>
+        </ul>
+      </li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/PmdConfiguration.html#"><code>PmdConfiguration</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPDConfiguration.html#"><code>CPDConfiguration</code></a>
+        <ul>
+          <li>many getters and setters have been moved to the parent class <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/AbstractConfiguration.html#"><code>AbstractConfiguration</code></a></li>
+        </ul>
+      </li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPDListener.html#addedFile(int)"><code>CPDListener#addedFile</code></a>
+        <ul>
+          <li>no <code class="language-plaintext highlighter-rouge">File</code> parameter anymore</li>
+        </ul>
+      </li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPDReport.html#getNumberOfTokensPerFile()"><code>CPDReport#getNumberOfTokensPerFile</code></a> returns a <code class="language-plaintext highlighter-rouge">Map</code> of <code class="language-plaintext highlighter-rouge">FileId,Integer</code> instead of <code class="language-plaintext highlighter-rouge">String</code></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPDReport.html#filterMatches(java.util.function.Predicate)"><code>CPDReport#filterMatches</code></a> now takes a <code class="language-plaintext highlighter-rouge">java.util.function.Predicate</code>
+as parameter</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/Tokenizer.html#"><code>Tokenizer</code></a>
+        <ul>
+          <li>constants are now <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyDescriptor.html#"><code>PropertyDescriptor</code></a> instead of <code class="language-plaintext highlighter-rouge">String</code>,
+to be used as language properties</li>
+          <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/Tokenizer.html#tokenize(net.sourceforge.pmd.lang.document.TextDocument,net.sourceforge.pmd.cpd.TokenFactory)"><code>tokenize</code></a>
+changed parameters. Now takes a <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/document/TextDocument.html#"><code>TextDocument</code></a> and a <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/TokenFactory.html#"><code>TokenFactory</code></a>
+(instead of <code class="language-plaintext highlighter-rouge">SourceCode</code> and <code class="language-plaintext highlighter-rouge">Tokens</code>)</li>
+        </ul>
+      </li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/Language.html#"><code>Language</code></a>
+        <ul>
+          <li>method <code class="language-plaintext highlighter-rouge">#createProcessor(LanguagePropertyBundle)</code> moved to <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/PmdCapableLanguage.html#"><code>PmdCapableLanguage</code></a></li>
+        </ul>
+      </li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/util/StringUtil.html#linesWithTrimIndent(net.sourceforge.pmd.lang.document.Chars)"><code>StringUtil#linesWithTrimIndent</code></a> now takes a <code class="language-plaintext highlighter-rouge">Chars</code>
+instead of a <code class="language-plaintext highlighter-rouge">String</code>.</li>
+    </ul>
+  </li>
+  <li>All language modules (like pmd-apex, pmd-cpp, …)
+    <ul>
+      <li>consistent package naming: <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.&lt;langId&gt;.cpd</code></li>
+      <li>adapted to use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/CpdCapableLanguage.html#"><code>CpdCapableLanguage</code></a></li>
+      <li>consistent static method <code class="language-plaintext highlighter-rouge">#getInstance()</code></li>
+      <li>removed constants like <code class="language-plaintext highlighter-rouge">ID</code>, <code class="language-plaintext highlighter-rouge">TERSE_NAME</code> or <code class="language-plaintext highlighter-rouge">NAME</code>. Use <code class="language-plaintext highlighter-rouge">getInstance().getName()</code> etc. instead</li>
     </ul>
   </li>
 </ul>
@@ -1795,7 +1919,14 @@ and it is not comparable anymore.</li>
 <p><strong>Internal APIs</strong></p>
 
 <ul>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/Tokens.html#"><code>Tokens</code></a></li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/net/sourceforge/pmd/properties/PropertyTypeId.html#"><code>PropertyTypeId</code></a></li>
+</ul>
+
+<p><strong>Deprecations</strong></p>
+
+<ul>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/Language.html#getTerseName()"><code>Language#getTerseName</code></a> -&gt; use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/Language.html#getId()"><code>getId</code></a> instead</li>
 </ul>
 
 <h4 id="external-contributions">External Contributions</h4>
@@ -2142,6 +2273,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
   <li>Testing framework</li>
   <li>Language Lifecycle and Language Properties</li>
   <li>Rule Properties</li>
+  <li>New Programmatic API for CPD</li>
 </ul>
 
 <h3 id="-compatibility-and-migration-notes">💥 Compatibility and migration notes</h3>
@@ -2197,13 +2329,17 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/pull/3893">#3893</a>:   [core] Text documents</li>
       <li><a href="https://github.com/pmd/pmd/issues/3902">#3902</a>: [core] Violation decorators</li>
       <li><a href="https://github.com/pmd/pmd/issues/3918">#3918</a>: [core] Make LanguageRegistry non static</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3919">#3919</a>: [core] Merge CPD and PMD language</li>
       <li><a href="https://github.com/pmd/pmd/pull/3922">#3922</a>:   [core] Better error reporting for the ruleset parser</li>
       <li><a href="https://github.com/pmd/pmd/issues/4035">#4035</a>: [core] ConcurrentModificationException in DefaultRuleViolationFactory</li>
       <li><a href="https://github.com/pmd/pmd/issues/4120">#4120</a>: [core] Explicitly name all language versions</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4204">#4204</a>: [core] Provide a CpdAnalysis class as a programmatic entry point into CPD</li>
       <li><a href="https://github.com/pmd/pmd/issues/4301">#4301</a>: [core] Remove deprecated property concrete classes</li>
       <li><a href="https://github.com/pmd/pmd/issues/4302">#4302</a>: [core] Migrate Property Framework API to Java 8</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4323">#4323</a>: [core] Refactor CPD integration</li>
       <li><a href="https://github.com/pmd/pmd/pull/4353">#4353</a>:   [core] Micro optimizations for Node API</li>
       <li><a href="https://github.com/pmd/pmd/pull/4365">#4365</a>:   [core] Improve benchmarking</li>
+      <li><a href="https://github.com/pmd/pmd/pull/4397">#4397</a>:   [core] Refactor CPD</li>
       <li><a href="https://github.com/pmd/pmd/pull/4420">#4420</a>:   [core] Remove PMD.EOL</li>
       <li><a href="https://github.com/pmd/pmd/pull/4425">#4425</a>:   [core] Replace TextFile::pathId</li>
       <li><a href="https://github.com/pmd/pmd/issues/4454">#4454</a>: [core] “Unknown option: ‘-min’” but is referenced in documentation</li>
@@ -2533,7 +2669,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Aug 22, 2023 <br />
+             Site last generated: Aug 29, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

@@ -1642,7 +1642,10 @@ completely in uppercase:</p>
 
 <p>As a convention, properties whose name start with an <em>x</em> are internal and may be removed or changed without notice.</p>
 
-<p>Programmatically, the language properties can be set on <code class="language-plaintext highlighter-rouge">PMDConfiguration</code> before using the PmdAnalyzer instance
+<p>Properties whose name start with <strong>CPD</strong> are used to configure CPD tokenizer options.</p>
+
+<p>Programmatically, the language properties can be set on <code class="language-plaintext highlighter-rouge">PMDConfiguration</code> (or <code class="language-plaintext highlighter-rouge">CPDConfiguration</code>) before using the
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/PmdAnalyzer.html#"><code>PmdAnalyzer</code></a> (or <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/CpdAnalyzer.html#"><code>CpdAnalyzer</code></a>) instance
 to start the analysis:</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">PMDConfiguration</span> <span class="n">configuration</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PMDConfiguration</span><span class="o">();</span>
@@ -1669,6 +1672,48 @@ version of the language will be used.</p>
     <p>This property can also be set via the CLI option <code class="language-plaintext highlighter-rouge">--use-version</code>.</p>
   </li>
 </ul>
+
+<h2 id="cpd-language-properties">CPD language properties</h2>
+
+<p>Many languages support the following properties, which are centrally defined in <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/CpdLanguageProperties.html#"><code>CpdLanguageProperties</code></a>:</p>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">cpdIgnoreLiteralSequences</code>: Ignore sequences of literals, eg <code class="language-plaintext highlighter-rouge">0, 0, 0, 0</code>.</p>
+
+    <p>This property can also be set via the CLI option <code class="language-plaintext highlighter-rouge">--ignore-literal-sequences</code>.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">cpdIgnoreLiteralAndIdentifierSequences</code>: Ignore sequences of literals and identifiers, eg <code class="language-plaintext highlighter-rouge">a, b, 0, 0</code>.</p>
+
+    <p>This property can also be set via the CLI option <code class="language-plaintext highlighter-rouge">--ignore-sequences</code>.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">cpdAnonymizeLiterals</code>: Anonymize literals. They are still part of the token stream but all literals appear to have
+the same value.</p>
+
+    <p>This property can also be set via the CLI option <code class="language-plaintext highlighter-rouge">--ignore-literals</code>.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">cpdAnonymizeIdentifiers</code>: Anonymize identifiers. They are still part of the token stream but all identifiers
+appear to have the same value.</p>
+
+    <p>This property can also be set via the CLI option <code class="language-plaintext highlighter-rouge">--ignore-identifiers</code>.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">cpdIgnoreImports</code>: Ignore import statements and equivalent (eg using statements in C#).</p>
+
+    <p>This property can also be set via the CLI option <code class="language-plaintext highlighter-rouge">--ignore-usings</code>.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">cpdIgnoreMetadata</code>: Ignore metadata such as Java annotations or C# attributes.</p>
+
+    <p>This property can also be set via the CLI option <code class="language-plaintext highlighter-rouge">--ignore-annotations</code>.</p>
+  </li>
+</ul>
+
+<p>Note: <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPDConfiguration.html#"><code>CPDConfiguration</code></a> has convenience methods to control these options, e.g.
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPDConfiguration.html#setIgnoreAnnotations(boolean)"><code>setIgnoreAnnotations</code></a>.</p>
 
 <h2 id="java-language-properties">Java language properties</h2>
 
@@ -1722,6 +1767,18 @@ Specifying an empty string will disable data type resolution for Custom Object f
   </li>
 </ul>
 
+<h2 id="cpp-language-properties">CPP language properties</h2>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">cpdSkipBlocksPattern</code>: Specifies a start and end delimiter for CPD to completely ignore.
+The delimiters are separated by a pipe <code class="language-plaintext highlighter-rouge">|</code>. The default skips code
+that is conditionally compiled out. Set this property to empty to disable this.</p>
+
+    <p>This property can also be set via the CLI option <code class="language-plaintext highlighter-rouge">--skip-blocks-pattern</code>.</p>
+  </li>
+</ul>
+
 
     <div class="tags">
         
@@ -1759,7 +1816,7 @@ Specifying an empty string will disable data type resolution for Custom Object f
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            July 2022 (7.0.0)<br /> Site last generated: Aug 22, 2023 <br />
+            August 2023 (7.0.0)<br /> Site last generated: Aug 29, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

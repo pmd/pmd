@@ -2143,6 +2143,12 @@ module <code class="language-plaintext highlighter-rouge">pmd-coco</code>.</p>
 
 <p>Contributors: <a href="https://github.com/wener-tiobe">Wener</a> (@wener-tiobe)</p>
 
+<h3 id="new-cpd-support-for-apache-velocity-template-language">New: CPD support for Apache Velocity Template Language</h3>
+
+<p>PMD supports Apache Velocity for a very long time, but the CPD integration never got finished.
+This is now done and CPD supports Apache Velocity Template language for detecting copy and paste.
+It is shipped in the module <code class="language-plaintext highlighter-rouge">pmd-vm</code>.</p>
+
 <h3 id="changed-javascript-support">Changed: JavaScript support</h3>
 
 <p>The JS specific parser options have been removed. The parser now always retains comments and uses version ES6.
@@ -2689,6 +2695,37 @@ with a backslash.</li>
 or be omitted.</li>
 </ul>
 
+<h3 id="new-programmatic-api-for-cpd">New Programmatic API for CPD</h3>
+
+<p>This release introduces a new programmatic API to replace the old class <code class="language-plaintext highlighter-rouge">CPD</code>. The new API uses a similar model to
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/PmdAnalysis.html#"><code>PmdAnalysis</code></a> and is called <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/CpdAnalysis.html#"><code>CpdAnalysis</code></a>. Programmatic execution of CPD should now be
+done with a <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPDConfiguration.html#"><code>CPDConfiguration</code></a> and a <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/CpdAnalysis.html#"><code>CpdAnalysis</code></a>, for instance:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">CPDConfiguration</span> <span class="n">config</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">CPDConfiguration</span><span class="o">();</span>
+<span class="n">config</span><span class="o">.</span><span class="na">setMinimumTileSize</span><span class="o">(</span><span class="mi">100</span><span class="o">);</span>
+<span class="n">config</span><span class="o">.</span><span class="na">setOnlyRecognizeLanguage</span><span class="o">(</span><span class="n">config</span><span class="o">.</span><span class="na">getLanguageRegistry</span><span class="o">().</span><span class="na">getLanguageById</span><span class="o">(</span><span class="s">"java"</span><span class="o">));</span>
+<span class="n">config</span><span class="o">.</span><span class="na">setSourceEncoding</span><span class="o">(</span><span class="nc">StandardCharsets</span><span class="o">.</span><span class="na">UTF_8</span><span class="o">);</span>
+<span class="n">config</span><span class="o">.</span><span class="na">addInputPath</span><span class="o">(</span><span class="nc">Path</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">"src/main/java"</span><span class="o">)</span>
+
+<span class="n">config</span><span class="o">.</span><span class="na">setIgnoreAnnotations</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+<span class="n">config</span><span class="o">.</span><span class="na">setIgnoreLiterals</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+
+<span class="n">config</span><span class="o">.</span><span class="na">setRendererName</span><span class="o">(</span><span class="s">"text"</span><span class="o">);</span>
+
+<span class="k">try</span> <span class="o">(</span><span class="nc">CpdAnalysis</span> <span class="n">cpd</span> <span class="o">=</span> <span class="nc">CpdAnalysis</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="n">config</span><span class="o">))</span> <span class="o">{</span>
+   <span class="c1">// note: don't use `config` once a CpdAnalysis has been created.</span>
+   <span class="c1">// optional: add more files</span>
+   <span class="n">cpd</span><span class="o">.</span><span class="na">files</span><span class="o">().</span><span class="na">addFile</span><span class="o">(</span><span class="nc">Paths</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"src"</span><span class="o">,</span> <span class="s">"main"</span><span class="o">,</span> <span class="s">"more-java"</span><span class="o">,</span> <span class="s">"ExtraSource.java"</span><span class="o">));</span>
+
+   <span class="n">cpd</span><span class="o">.</span><span class="na">performAnalysis</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>CPD can of course still be called via command line or using the module <code class="language-plaintext highlighter-rouge">pmd-cli</code>. But for tight integration
+this new programmatic API is recommended.</p>
+
+<p>See <a href="https://github.com/pmd/pmd/pull/4397">PR #4397</a> for details.</p>
+
 <h3 id="api-changes">API changes</h3>
 
 <h4 id="700-rc3">7.0.0-rc3</h4>
@@ -2910,7 +2947,7 @@ PMD 7 will remove support for <code class="language-plaintext highlighter-rouge"
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setReportFile(String)"><code>PMDConfiguration#setReportFile</code></a> - It is now superseded by <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setReportFile(Path)"><code>PMDConfiguration#setReportFile</code></a></li>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#isStressTest()"><code>PMDConfiguration#isStressTest</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setStressTest(boolean)"><code>PMDConfiguration#setStressTest</code></a> - Will be removed with no replacement.</li>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#isBenchmark()"><code>PMDConfiguration#isBenchmark</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setBenchmark(boolean)"><code>PMDConfiguration#setBenchmark</code></a> - Will be removed with no replacement, the CLI will still support it.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPD.html#"><code>CPD</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPD.StatusCode.html#"><code>CPD.StatusCode</code></a> - PMD 7 will ship with a revamped CLI split from pmd-core. An alterative to programatically launch CPD analysis will be added in due time.</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPD.html#"><code>CPD</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPD/StatusCode.html#"><code>StatusCode</code></a> - PMD 7 will ship with a revamped CLI split from pmd-core. An alterative to programatically launch CPD analysis will be added in due time.</li>
     </ul>
   </li>
   <li>In order to reduce the dependency on Apex Jorje classes, the method <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/vf/DataType.html#fromBasicType(apex.jorje.semantic.symbol.type.BasicType)"><code>DataType#fromBasicType</code></a>
@@ -4651,7 +4688,7 @@ Please use <code class="language-plaintext highlighter-rouge">net.sourceforge.pm
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Aug 22, 2023 <br />
+             Site last generated: Aug 29, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

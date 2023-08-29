@@ -1673,8 +1673,7 @@ definitely don’t come for free. It is much effort and requires perseverance to
   <li>Make sure to add your new module to PMD’s parent pom as <code class="language-plaintext highlighter-rouge">&lt;module&gt;</code> entry, so that it is built alongside the
 other languages.</li>
   <li>Also add your new module to the dependencies list in “pmd-languages-deps/pom.xml”, so that the new language
-is automatically available in the binary distribution (pmd-dist) as well as for the shell-completion
-in the pmd-cli module.</li>
+is automatically available in the binary distribution (pmd-dist).</li>
 </ul>
 
 <h2 id="2--implement-an-ast-parser-for-your-language">2.  Implement an AST parser for your language</h2>
@@ -1750,14 +1749,14 @@ source control.</li>
   <li>This is needed to support CPD (copy paste detection)</li>
   <li>We provide a default implementation using <a href="https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/impl/AntlrTokenizer.java"><code class="language-plaintext highlighter-rouge">AntlrTokenManager</code></a>.</li>
   <li>You must create your own “AntlrTokenizer” such as we do with
-<a href="https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/cpd/SwiftTokenizer.java"><code class="language-plaintext highlighter-rouge">SwiftTokenizer</code></a>.</li>
+<a href="https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/cpd/SwiftTokenizer.java"><code class="language-plaintext highlighter-rouge">SwiftTokenizer</code></a>.</li>
   <li>
     <p>If you wish to filter specific tokens (e.g. comments to support CPD suppression via “CPD-OFF” and “CPD-ON”)
 you can create your own implementation of
-<a href="https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/token/AntlrTokenFilter.java"><code class="language-plaintext highlighter-rouge">AntlrTokenFilter</code></a>.
+<a href="https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/impl/AntlrTokenFilter.java"><code class="language-plaintext highlighter-rouge">AntlrTokenFilter</code></a>.
 You’ll need to override then the protected method <code class="language-plaintext highlighter-rouge">getTokenFilter(AntlrTokenManager)</code>
 and return your custom filter. See the tokenizer for C# as an exmaple:
-<a href="https://github.com/pmd/pmd/blob/master/pmd-cs/src/main/java/net/sourceforge/pmd/cpd/CsTokenizer.java"><code class="language-plaintext highlighter-rouge">CsTokenizer</code></a>.</p>
+<a href="https://github.com/pmd/pmd/blob/master/pmd-cs/src/main/java/net/sourceforge/pmd/lang/cs/cpd/CsTokenizer.java"><code class="language-plaintext highlighter-rouge">CsTokenizer</code></a>.</p>
 
     <p>If you don’t need a custom token filter, you don’t need to override the method. It returns the default
 <code class="language-plaintext highlighter-rouge">AntlrTokenFilter</code> which doesn’t filter anything.</p>
@@ -1814,7 +1813,7 @@ Add your fully qualified class name as a single line into it.</li>
 <ul>
   <li>You need to create your own abstract rule class in order to interface your language with PMD’s generic rule
 execution.</li>
-  <li>See <a href="https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/AbstractSwiftRule.java"><code class="language-plaintext highlighter-rouge">AbstractSwiftRule</code></a> as an example.</li>
+  <li>See <a href="https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/rule/AbstractSwiftRule.java"><code class="language-plaintext highlighter-rouge">AbstractSwiftRule</code></a> as an example.</li>
   <li>The rule basically just extends
 <a href="https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/lang/rule/AbstractVisitorRule.java"><code class="language-plaintext highlighter-rouge">AbstractVisitorRule</code></a>
 and only redefines the abstract <code class="language-plaintext highlighter-rouge">buildVisitor()</code> method to return our own type of visitor.
@@ -1932,7 +1931,7 @@ This will load all rulesets and verify, that all required attributes are provide
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            April 2023 (7.0.0)<br /> Site last generated: Aug 22, 2023 <br />
+            April 2023 (7.0.0)<br /> Site last generated: Aug 29, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
