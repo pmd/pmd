@@ -56,6 +56,24 @@ Then many rules have been changed or improved. New properties have been added to
 properties have been removed, if they are not necessary anymore. See [changed rules](pmd_release_notes_pmd7.html#changed-rules)
 in the release notes for PMD 7.
 
+All properties which accept multiple values now use a comma (`,`) as a delimiter. The previous default was a
+pipe character (`|`). The delimiter is not configurable anymore. If needed, the comma can be escaped 
+with a backslash. This affects the following rules:
+{% rule  java/bestpractices/AvoidUsingHardCodedIP %},
+{% rule  java/bestpractices/LooseCoupling %},
+{% rule  java/bestpractices/UnusedPrivateField %},
+{% rule  java/bestpractices/UnusedPrivateMethod %},
+{% rule  java/codestyle/AtLeastOneConstructor %},
+{% rule  java/codestyle/CommentDefaultAccessModifier %},
+{% rule  java/codestyle/FieldNamingConventions %},
+{% rule  java/codestyle/LinguisticNaming %},
+{% rule  java/codestyle/UnnecessaryConstructor %},
+{% rule  java/design/CyclomaticComplexity %},
+{% rule  java/design/NcssCount %},
+{% rule  java/design/SingularField %},
+{% rule  java/errorprone/AvoidBranchingStatementAsLastInLoop %},
+{% rule  java/errorprone/CloseResource %}.
+
 A handful of rules are new to PMD 7. You might want to check these out: [new rules](pmd_release_notes_pmd7.html#new-rules).
 
 Once you have reviewed your ruleset(s), you can switch to PMD 7.
