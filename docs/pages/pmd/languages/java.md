@@ -82,3 +82,15 @@ public Object visit(ASTMethodDeclaration node, Object data) {
 ```
 
 The Javadocs are the reference documentation.
+
+## Violation Decorators
+
+Violations reported are the same for all languages, but languages can opt in to provide more details.
+Java does this by adding the following additional information for each reported violation:
+
+* {% jdoc core::RuleViolation#VARIABLE_NAME %}
+* {% jdoc core::RuleViolation#METHOD_NAME %}
+* {% jdoc core::RuleViolation#CLASS_NAME %}
+* {% jdoc core::RuleViolation#PACKAGE_NAME %}
+
+You can access these via {% jdoc core::RuleViolation#getAdditionalInfo() %}
