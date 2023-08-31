@@ -3147,8 +3147,8 @@ See the use case[I'm using only built-in rules](#im-using-only-built-in-rules) a
      ```xml
      <project>
        <properties>
-         <pmdVersion>7.0.0-rc3</pmdVersion>
-         <mavenPmdPluginVersion>3.21.1-pmd-7-SNAPSHOT</mavenPmdPluginVersion>
+         <pmdVersion>{{site.pmd.version}}</pmdVersion>
+         <mavenPmdPluginVersion>3.21.1-pmd-7.0.0-SNAPSHOT</mavenPmdPluginVersion>
       </properties>
       ...
       <build>
@@ -3191,11 +3191,11 @@ See the use case[I'm using only built-in rules](#im-using-only-built-in-rules) a
 #### Gradle
 
 * Gradle uses internally PMD's Ant task to execute PMD
-* You can set `toolVersion = "7.0.0-rc3"`, but you also need configure the dependencies manually for now, since
+* You can set `toolVersion = "{{site.pmd.version}}"`, but you also need configure the dependencies manually for now, since
   the ant task is in an own dependency with PMD 7:
   ```groovy
-  pmd 'net.sourceforge.pmd:pmd-ant:7.0.0-rc3'
-  pmd 'net.sourceforge.pmd:pmd-java:7.0.0-rc3'
+  pmd 'net.sourceforge.pmd:pmd-ant:{{site.pmd.version}}'
+  pmd 'net.sourceforge.pmd:pmd-java:{{site.pmd.version}}'
   ```
 * Gradle 8.3 most likely will support PMD 7 out of the box.
 * See [Support for PMD 7.0](https://github.com/gradle/gradle/issues/24502)
