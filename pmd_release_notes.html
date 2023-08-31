@@ -162,6 +162,18 @@
             
 
                 
+                <li><a href="pmd_userdocs_migrating_to_pmd7.html">Migration Guide for PMD 7</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
                 <li><a href="pmd_userdocs_installation.html">Installation and basic CLI usage</a></li>
                 
 
@@ -1673,6 +1685,7 @@ The remaining section describes the complete release notes for 7.0.0.</p>
   </li>
   <li>doc
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4294">#4294</a>: [doc] Migration Guide for upgrading PMD 6 ➡️ 7</li>
       <li><a href="https://github.com/pmd/pmd/issues/4303">#4303</a>: [doc] Document new property framework</li>
       <li><a href="https://github.com/pmd/pmd/issues/4521">#4521</a>: [doc] Website is not mobile friendly</li>
     </ul>
@@ -1720,8 +1733,8 @@ and <a href="https://github.com/pmd/pmd/pull/4397">PR #4397</a> for details.</p>
 <ul>
   <li>pmd-core
     <ul>
-      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.cpd.AbstractTokenizer</code> -&gt; use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/AnyTokenizer.html#"><code>AnyTokenizer</code></a> instead</li>
-      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.cpd.CPD</code> -&gt; use <a href="https://docs.pmd-code.org/apidocs/pmd-cli/7.0.0-SNAPSHOT/net/sourceforge/pmd/cli/PmdCli.html#"><code>PmdCli</code></a> from <code class="language-plaintext highlighter-rouge">pmd-cli</code> module for CLI support or use
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.cpd.AbstractTokenizer</code> ➡️ use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/AnyTokenizer.html#"><code>AnyTokenizer</code></a> instead</li>
+      <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.cpd.CPD</code> ➡️ use <a href="https://docs.pmd-code.org/apidocs/pmd-cli/7.0.0-SNAPSHOT/net/sourceforge/pmd/cli/PmdCli.html#"><code>PmdCli</code></a> from <code class="language-plaintext highlighter-rouge">pmd-cli</code> module for CLI support or use
 <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/CpdAnalysis.html#"><code>CpdAnalysis</code></a> for programmatic API</li>
       <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.cpd.GridBagHelper</code> (now package private)</li>
       <li><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.cpd.TokenEntry.State</code></li>
@@ -1795,7 +1808,7 @@ and <a href="https://github.com/pmd/pmd/pull/4397">PR #4397</a> for details.</p>
         <ul>
           <li><code class="language-plaintext highlighter-rouge">#getSourceSlice()</code>, <code class="language-plaintext highlighter-rouge">#setLineCount(int)</code>, <code class="language-plaintext highlighter-rouge">#getLineCount()</code>, <code class="language-plaintext highlighter-rouge">#setSourceCode(SourceCode)</code> removed</li>
           <li><code class="language-plaintext highlighter-rouge">#getBeginColumn()</code>, <code class="language-plaintext highlighter-rouge">#getBeginLine()</code>, <code class="language-plaintext highlighter-rouge">#getEndLine()</code>, <code class="language-plaintext highlighter-rouge">#getEndColumn()</code> removed
--&gt; use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/Mark.html#getLocation()"><code>getLocation</code></a> instead</li>
+➡️ use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/Mark.html#getLocation()"><code>getLocation</code></a> instead</li>
         </ul>
       </li>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/Match.html#"><code>Match</code></a>
@@ -1803,18 +1816,18 @@ and <a href="https://github.com/pmd/pmd/pull/4397">PR #4397</a> for details.</p>
           <li><code class="language-plaintext highlighter-rouge">#LABEL_COMPARATOR</code> removed</li>
           <li><code class="language-plaintext highlighter-rouge">#setMarkSet(...)</code>, <code class="language-plaintext highlighter-rouge">#setLabel(...)</code>, <code class="language-plaintext highlighter-rouge">#getLabel()</code>, <code class="language-plaintext highlighter-rouge">#addTokenEntry(...)</code> removed</li>
           <li><code class="language-plaintext highlighter-rouge">#getSourceCodeSlice()</code> removed
--&gt; use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPDReport.html#getSourceCodeSlice(net.sourceforge.pmd.cpd.Mark)"><code>CPDReport#getSourceCodeSlice</code></a> instead</li>
+➡️ use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/CPDReport.html#getSourceCodeSlice(net.sourceforge.pmd.cpd.Mark)"><code>CPDReport#getSourceCodeSlice</code></a> instead</li>
         </ul>
       </li>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/TokenEntry.html#"><code>TokenEntry</code></a>
         <ul>
           <li><code class="language-plaintext highlighter-rouge">#getEOF()</code>, <code class="language-plaintext highlighter-rouge">#clearImages()</code>, <code class="language-plaintext highlighter-rouge">#getIdentifier()</code>, <code class="language-plaintext highlighter-rouge">#getIndex()</code>, <code class="language-plaintext highlighter-rouge">#setHashCode(int)</code> removed</li>
-          <li><code class="language-plaintext highlighter-rouge">#EOF</code> removed -&gt; use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/TokenEntry.html#isEof()"><code>isEof</code></a> instead</li>
+          <li><code class="language-plaintext highlighter-rouge">#EOF</code> removed ➡️ use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/TokenEntry.html#isEof()"><code>isEof</code></a> instead</li>
         </ul>
       </li>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Parser.ParserTask.html#"><code>Parser.ParserTask</code></a>
         <ul>
-          <li><code class="language-plaintext highlighter-rouge">#getFileDisplayName()</code> removed -&gt; use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Parser.ParserTask.html#getFileId()"><code>getFileId</code></a> instead
+          <li><code class="language-plaintext highlighter-rouge">#getFileDisplayName()</code> removed ➡️ use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Parser.ParserTask.html#getFileId()"><code>getFileId</code></a> instead
 (<code class="language-plaintext highlighter-rouge">getFileId().getAbsolutePath()</code>)</li>
         </ul>
       </li>
@@ -1926,7 +1939,7 @@ instead of a <code class="language-plaintext highlighter-rouge">String</code>.</
 <p><strong>Deprecations</strong></p>
 
 <ul>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/Language.html#getTerseName()"><code>Language#getTerseName</code></a> -&gt; use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/Language.html#getId()"><code>getId</code></a> instead</li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/Language.html#getTerseName()"><code>Language#getTerseName</code></a> ➡️ use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/Language.html#getId()"><code>getId</code></a> instead</li>
 </ul>
 
 <h4 id="external-contributions">External Contributions</h4>
@@ -1952,7 +1965,7 @@ instead of a <code class="language-plaintext highlighter-rouge">String</code>.</
   <li>AST exposes more semantic information (method calls, field accesses)</li>
 </ul>
 
-<p>For more information, see the <a href="pmd_release_notes_pmd7.html">Detailed Release Notes for PMD 7</a>.</p>
+<p>For more information, see the <a href="pmd_release_notes_pmd7.html#revamped-java">Detailed Release Notes for PMD 7</a>.</p>
 
 <p>Contributors: <a href="https://github.com/oowekyala">Clément Fournier</a> (@oowekyala),
 <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel),
@@ -2358,6 +2371,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
   <li>doc
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2501">#2501</a>: [doc] Verify ANTLR Documentation</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4294">#4294</a>: [doc] Migration Guide for upgrading PMD 6 ➡️ 7</li>
       <li><a href="https://github.com/pmd/pmd/issues/4303">#4303</a>: [doc] Document new property framework</li>
       <li><a href="https://github.com/pmd/pmd/issues/4438">#4438</a>: [doc] Documentation links in VS Code are outdated</li>
       <li><a href="https://github.com/pmd/pmd/issues/4521">#4521</a>: [doc] Website is not mobile friendly</li>
@@ -2669,7 +2683,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Aug 29, 2023 <br />
+             Site last generated: Aug 31, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

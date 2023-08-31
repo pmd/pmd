@@ -162,6 +162,18 @@
             
 
                 
+                <li><a href="pmd_userdocs_migrating_to_pmd7.html">Migration Guide for PMD 7</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
                 <li><a href="pmd_userdocs_installation.html">Installation and basic CLI usage</a></li>
                 
 
@@ -1672,320 +1684,9 @@ depending on your workload, configuration and ruleset.</p>
 <a href="https://github.com/jsotuyod">Juan Martín Sotuyo Dodero</a> (@jsotuyod)</p>
 
 <div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b> 
-The full detailed documentation of the changes are still work in progress.
-
-Some first results of the Java AST changes are for now documented in the Wiki:
-<a href="https://github.com/pmd/pmd/wiki/Java_clean_changes">Java clean changes</a>.
-
-It is planned to move the contents of the wiki page into this document before the final release of PMD 7.
+The full detailed documentation of the changes are available in the
+<a href="pmd_userdocs_migrating_to_pmd7.html#java-ast">Migration Guide for PMD 7</a>
 </div>
-
-<h4 id="annotations">Annotations</h4>
-
-<p>Annotations are consolidated into a single node. <code class="language-plaintext highlighter-rouge">SingleMemberAnnotation</code>, <code class="language-plaintext highlighter-rouge">NormalAnnotation</code> and <code class="language-plaintext highlighter-rouge">MarkerAnnotation</code>
-are removed in favour of <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnnotation.html#"><code>ASTAnnotation</code></a>. The Name node is removed, replaced by a
-<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceType.html#"><code>ASTClassOrInterfaceType</code></a>.</p>
-
-<p>Those different node types implement a syntax-only distinction, that only makes semantically equivalent annotations
-have different possible representations. For example, <code class="language-plaintext highlighter-rouge">@A</code> and <code class="language-plaintext highlighter-rouge">@A()</code> are semantically equivalent, yet they were
-parsed as MarkerAnnotation resp. NormalAnnotation. Similarly, <code class="language-plaintext highlighter-rouge">@A("")</code> and <code class="language-plaintext highlighter-rouge">@A(value="")</code> were parsed as
-SingleMemberAnnotation resp. NormalAnnotation. This also makes parsing much simpler. The nested ClassOrInterface
-type is used to share the disambiguation logic.</p>
-
-<p>Related issue: <a href="https://github.com/pmd/pmd/pull/2282">[java] Use single node for annotations (#2282)</a></p>
-
-<details>
-  <summary>Annotation AST Examples</summary>
-
-<table>
-<tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
-<tr><td>
-
-<pre><code>@A
-</code></pre>
-
-</td><td>
-
-<pre><code>+ Annotation
-  + MarkerAnnotation
-    + Name "A"
-</code></pre>
-
-</td><td>
-
-<pre><code>+ Annotation
-  + ClassOrInterfaceType "A"
-</code></pre>
-
-</td></tr>
-<tr><td>
-
-
-<pre><code>@A()
-</code></pre>
-
-</td>
-<td>
-
-<pre><code>+ Annotation
-  + NormalAnnotation
-    + Name "A"
-</code></pre>
-
-</td>
-<td>
-
-<pre><code>+ Annotation "A"
-  + ClassOrInterfaceType "A"
-  + AnnotationMemberList
-</code></pre>
-
-</td>
-</tr>
-<tr><td>
-
-
-<pre><code>@A(value="v")
-</code></pre>
-
-</td>
-<td>
-
-<pre><code>+ Annotation
-  + NormalAnnotation
-    + Name "A"
-    + MemberValuePairs
-      + MemberValuePair "value"
-        + MemberValue
-          + PrimaryExpression
-            + PrimaryPrefix
-              + Literal '"v"'
-</code></pre>
-
-</td>
-<td>
-
-<pre><code>+ Annotation "A"
-  + ClassOrInterfaceType "A"
-  + AnnotationMemberList
-    + MemberValuePair "value" [@Shorthand=false()]
-      + StringLiteral '"v"'
-</code></pre>
-
-</td>
-</tr>
-<tr><td>
-
-
-<pre><code>@A("v")
-</code></pre>
-
-</td>
-<td>
-
-<pre><code>+ Annotation
-  + SingleMemberAnnotation
-    + Name "A"
-    + MemberValue
-      + PrimaryExpression
-        + PrimaryPrefix
-          + Literal '"v"'
-</code></pre>
-
-</td>
-<td>
-
-<pre><code>+ Annotation "A"
-  + ClassOrInterfaceType "A"
-  + AnnotationMemberList
-    + MemberValuePair "value" [@Shorthand=true()]
-      + StringLiteral '"v"'
-</code></pre>
-
-</td>
-</tr>
-
-<tr><td>
-
-<pre><code>@A(value="v", on=true)
-</code></pre>
-
-</td>
-<td>
-
-<pre><code>+ Annotation
-  + NormalAnnotation
-    + Name "A"
-    + MemberValuePairs
-      + MemberValuePair "value"
-        + MemberValue
-          + PrimaryExpression
-            + PrimaryPrefix
-              + Literal '"v"'
-      + MemberValuePair "on"
-        + MemberValue
-          + PrimaryExpression
-            + PrimaryPrefix
-              + Literal
-                + BooleanLiteral [@True=true()]
-</code></pre>
-
-</td>
-<td>
-
-<pre><code>+ Annotation "A"
-  + ClassOrInterfaceType "A"
-  + AnnotationMemberList
-    + MemberValuePair "value" [@Shorthand=false()]
-      + StringLiteral '"v"'
-    + MemberValuePair "on"
-      + BooleanLiteral [@True=true()]
-</code></pre>
-
-</td>
-</tr>
-</table>
-
-</details>
-
-<h4 id="types">Types</h4>
-
-<ul>
-  <li>
-    <p><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTType.html#"><code>ASTType</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTReferenceType.html#"><code>ASTReferenceType</code></a> have been turned into
-interfaces, implemented by <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTPrimitiveType.html#"><code>ASTPrimitiveType</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceType.html#"><code>ASTClassOrInterfaceType</code></a>,
-and the new node <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTArrayType.html#"><code>ASTArrayType</code></a>. This reduces the depth of the relevant
-subtrees, and allows to explore them more easily and consistently.</p>
-  </li>
-  <li>
-    <p><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceType.html#"><code>ASTClassOrInterfaceType</code></a> appears to be left recursive now.
-TODO document that when we’re done discussing the semantic rewrite phase.</p>
-  </li>
-  <li>
-    <p><strong>Migrating</strong></p>
-    <ul>
-      <li>There is currently no way to match abstract types (or interfaces) with XPath, so <code class="language-plaintext highlighter-rouge">Type</code>
-and <code class="language-plaintext highlighter-rouge">ReferenceType</code> name tests won’t match anything anymore.</li>
-      <li><code class="language-plaintext highlighter-rouge">Type/ReferenceType/ClassOrInterfaceType</code> -&gt; <code class="language-plaintext highlighter-rouge">ClassOrInterfaceType</code></li>
-      <li><code class="language-plaintext highlighter-rouge">Type/PrimitiveType</code> -&gt; <code class="language-plaintext highlighter-rouge">PrimitiveType</code>.</li>
-      <li><code class="language-plaintext highlighter-rouge">Type/ReferenceType[@ArrayDepth&gt;1]/ClassOrInterfaceType</code> -&gt; <code class="language-plaintext highlighter-rouge">ArrayType/ClassOrInterfaceType</code>.</li>
-      <li><code class="language-plaintext highlighter-rouge">Type/ReferenceType/PrimitiveType</code> -&gt; <code class="language-plaintext highlighter-rouge">ArrayType/PrimitiveType</code>.</li>
-      <li>Note that in most cases you should check the type of a variable with e.g.
-<code class="language-plaintext highlighter-rouge">VariableDeclaratorId[pmd-java:typeIs("java.lang.String[]")]</code> because it
-considers the additional dimensions on declarations like <code class="language-plaintext highlighter-rouge">String foo[];</code>.
-The Java equivalent is <code class="language-plaintext highlighter-rouge">TypeHelper.isA(id, String[].class);</code></li>
-    </ul>
-  </li>
-</ul>
-
-<h4 id="declarations">Declarations</h4>
-
-<p>TODO</p>
-
-<h4 id="statements">Statements</h4>
-
-<p>TODO</p>
-
-<h4 id="expressions">Expressions</h4>
-
-<ul>
-  <li>
-    <p><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTExpression.html#"><code>ASTExpression</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTPrimaryExpression.html#"><code>ASTPrimaryExpression</code></a> have
-been turned into interfaces. These added no information to the AST and increased
-its depth unnecessarily. All expressions implement the first interface. Both of
-those nodes can no more be found in ASTs.</p>
-  </li>
-  <li><strong>Migrating</strong>:
-    <ul>
-      <li>Basically, <code class="language-plaintext highlighter-rouge">Expression/X</code> or <code class="language-plaintext highlighter-rouge">Expression/PrimaryExpression/X</code>, just becomes <code class="language-plaintext highlighter-rouge">X</code></li>
-      <li>There is currently no way to match abstract or interface types with XPath, so <code class="language-plaintext highlighter-rouge">Expression</code> or <code class="language-plaintext highlighter-rouge">PrimaryExpression</code> 
-name tests won’t match anything anymore. However, the axis step *[@Expression=true()] matches any expression.</li>
-    </ul>
-  </li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTLiteral.html#"><code>ASTLiteral</code></a> has been turned into an interface. The fact that <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTNullLiteral.html#"><code>ASTNullLiteral</code></a>
-and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTBooleanLiteral.html#"><code>ASTBooleanLiteral</code></a> were nested within it but other literals types were all directly represented
-by it was inconsistent, and ultimately that level of nesting was unnecessary.
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTNumericLiteral.html#"><code>ASTNumericLiteral</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTCharLiteral.html#"><code>ASTCharLiteral</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTStringLiteral.html#"><code>ASTStringLiteral</code></a>,
-and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassLiteral.html#"><code>ASTClassLiteral</code></a> are new nodes that implement that interface.</li>
-      <li>ASTLiteral implements <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTPrimaryExpression.html#"><code>ASTPrimaryExpression</code></a></li>
-    </ul>
-  </li>
-  <li><strong>Migrating</strong>:
-    <ul>
-      <li>Remove all <code class="language-plaintext highlighter-rouge">/Literal/</code> segments from your XPath expressions</li>
-      <li>If you tested several types of literals, you can e.g. do it like <code class="language-plaintext highlighter-rouge">/*[self::StringLiteral or self::CharLiteral]/</code></li>
-      <li>As is usual, use the designer to explore the new AST structure</li>
-    </ul>
-  </li>
-  <li>The nodes <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTPrimaryPrefix.html#"><code>ASTPrimaryPrefix</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-java/6.55.0/net/sourceforge/pmd/lang/java/ast/ASTPrimarySuffix.html#"><code>ASTPrimarySuffix</code></a> are removed from the
-grammar. Subtrees for primary expressions appear to be left-recursive now. For example,</li>
-</ul>
-
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">new</span> <span class="nc">Foo</span><span class="o">().</span><span class="na">bar</span><span class="o">.</span><span class="na">foo</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span>
-</code></pre></div></div>
-<p>used to be parsed as</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Expression
-+ PrimaryExpression
-  + PrimaryPrefix
-    + AllocationExpression
-      + ClassOrInterfaceType[@Image="Foo"]
-  + PrimarySuffix
-    + Arguments
-  + PrimarySuffix
-    + Name[@Image="bar.foo"]
-  + PrimarySuffix
-    + Arguments
-      + ArgumentsList
-        + Expression
-          + PrimaryExpression
-            + Literal[@ValueAsInt=1]
-</code></pre></div></div>
-<p>It’s now parsed as</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>MethodCall[@MethodName="foo"]
-+ FieldAccess[@FieldName="bar"]
-  + ConstructorCall
-    + ClassOrInterfaceType[@TypeImage="Foo"]
-    + ArgumentsList
-+ ArgumentsList
-  + NumericLiteral[@ValueAsInt=1]
-</code></pre></div></div>
-<p>Instead of being flat, the subexpressions are now nested within one another.
-The nesting follows the naturally recursive structure of expressions:</p>
-
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">new</span> <span class="nc">Foo</span><span class="o">().</span><span class="na">bar</span><span class="o">.</span><span class="na">foo</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span>
-<span class="o">---------</span>            <span class="nc">ConstructorCall</span>
-<span class="o">-------------</span>        <span class="nc">FieldAccess</span>
-<span class="o">--------------------</span> <span class="nc">MethodCall</span>
-</code></pre></div></div>
-<p>This makes the AST more regular and easier to navigate. Each node contains
-the other nodes that are relevant to it (e.g. arguments) instead of them
-being spread out over several siblings. The API of all nodes has been
-enriched with high-level accessors to query the AST in a semantic way,
-without bothering with the placement details.</p>
-
-<p>The amount of changes in the grammar that this change entails is enormous,
-but hopefully firing up the designer to inspect the new structure should
-give you the information you need quickly.</p>
-
-<p>TODO write a summary of changes in the javadoc of the package, will be more
-accessible.</p>
-
-<p>Note: this doesn’t affect binary expressions like <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAdditiveExpression.html#"><code>ASTAdditiveExpression</code></a>.
-E.g. <code class="language-plaintext highlighter-rouge">a+b+c</code> is not parsed as</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>AdditiveExpression
-+ AdditiveExpression
-  + (a)
-  + (b)
-+ (c)  
-</code></pre></div></div>
-<p>It’s still</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>AdditiveExpression
-+ (a)
-+ (b)
-+ (c)  
-</code></pre></div></div>
-<p>which is easier to navigate, especially from XPath.</p>
 
 <h3 id="revamped-command-line-interface">Revamped Command Line Interface</h3>
 
@@ -2344,7 +2045,7 @@ rather than on the switch statements. This is more accurate but might result in 
 
 <h3 id="deprecated-rules">Deprecated Rules</h3>
 
-<p>In PMD 7.0.0, there are now deprecated rules.</p>
+<p>In PMD 7.0.0, there are no deprecated rules.</p>
 
 <h3 id="removed-rules">Removed Rules</h3>
 
@@ -2353,10 +2054,10 @@ rather than on the switch statements. This is more accurate but might result in 
 <p><strong>Apex</strong></p>
 
 <ul>
-  <li>performance.xml/AvoidSoqlInLoops <span style="font-size: small;">(deleted)</span> -&gt; use <a href="pmd_rules_apex_performance.html#operationwithlimitsinloop"><code class="language-plaintext highlighter-rouge">OperationWithLimitsInLoop</code></a></li>
-  <li>performance.xml/AvoidSoslInLoops <span style="font-size: small;">(deleted)</span> -&gt; use <a href="pmd_rules_apex_performance.html#operationwithlimitsinloop"><code class="language-plaintext highlighter-rouge">OperationWithLimitsInLoop</code></a></li>
-  <li>performance.xml/AvoidDmlStatementsInLoops <span style="font-size: small;">(deleted)</span> -&gt; use <a href="pmd_rules_apex_performance.html#operationwithlimitsinloop"><code class="language-plaintext highlighter-rouge">OperationWithLimitsInLoop</code></a></li>
-  <li>codestyle.xml/VariableNamingConventions <span style="font-size: small;">(deleted)</span> -&gt; use <a href="pmd_rules_apex_codestyle.html#fieldnamingconventions"><code class="language-plaintext highlighter-rouge">FieldNamingConventions</code></a>,
+  <li>performance.xml/AvoidSoqlInLoops <span style="font-size: small;">(deleted)</span> ➡️ use <a href="pmd_rules_apex_performance.html#operationwithlimitsinloop"><code class="language-plaintext highlighter-rouge">OperationWithLimitsInLoop</code></a></li>
+  <li>performance.xml/AvoidSoslInLoops <span style="font-size: small;">(deleted)</span> ➡️ use <a href="pmd_rules_apex_performance.html#operationwithlimitsinloop"><code class="language-plaintext highlighter-rouge">OperationWithLimitsInLoop</code></a></li>
+  <li>performance.xml/AvoidDmlStatementsInLoops <span style="font-size: small;">(deleted)</span> ➡️ use <a href="pmd_rules_apex_performance.html#operationwithlimitsinloop"><code class="language-plaintext highlighter-rouge">OperationWithLimitsInLoop</code></a></li>
+  <li>codestyle.xml/VariableNamingConventions <span style="font-size: small;">(deleted)</span> ➡️ use <a href="pmd_rules_apex_codestyle.html#fieldnamingconventions"><code class="language-plaintext highlighter-rouge">FieldNamingConventions</code></a>,
 <a href="pmd_rules_apex_codestyle.html#formalparameternamingconventions"><code class="language-plaintext highlighter-rouge">FormalParameterNamingConventions</code></a>, <a href="pmd_rules_apex_codestyle.html#localvariablenamingconventions"><code class="language-plaintext highlighter-rouge">LocalVariableNamingConventions</code></a>,
 or <a href="pmd_rules_apex_codestyle.html#propertynamingconventions"><code class="language-plaintext highlighter-rouge">PropertyNamingConventions</code></a></li>
 </ul>
@@ -2364,79 +2065,79 @@ or <a href="pmd_rules_apex_codestyle.html#propertynamingconventions"><code class
 <p><strong>Java</strong></p>
 
 <ul>
-  <li>codestyle.xml/AbstractNaming <span style="font-size: small;">(deleted)</span> -&gt; use <a href="pmd_rules_java_codestyle.html#classnamingconventions"><code class="language-plaintext highlighter-rouge">ClassNamingConventions</code></a></li>
-  <li>AvoidFinalLocalVariable (java-codestyle) -&gt; not replaced</li>
-  <li>AvoidPrefixingMethodParameters (java-codestyle) -&gt; use <a href="pmd_rules_java_codestyle.html#formalparameternamingconventions"><code class="language-plaintext highlighter-rouge">FormalParameterNamingConventions</code></a></li>
-  <li>AvoidUsingShortType (java-performance) -&gt; not replaced</li>
-  <li>BadComparison (java-errorprone) -&gt; use <a href="pmd_rules_java_errorprone.html#comparisonwithnan"><code class="language-plaintext highlighter-rouge">ComparisonWithNaN</code></a></li>
-  <li>BeanMembersShouldSerialize (java-errorprone) -&gt; use <a href="pmd_rules_java_errorprone.html#nonserializableclass"><code class="language-plaintext highlighter-rouge">NonSerializableClass</code></a></li>
-  <li>BooleanInstantiation (java-performance) -&gt; use <a href="pmd_rules_java_codestyle.html#unnecessaryboxing"><code class="language-plaintext highlighter-rouge">UnnecessaryBoxing</code></a>
+  <li>codestyle.xml/AbstractNaming <span style="font-size: small;">(deleted)</span> ➡️ use <a href="pmd_rules_java_codestyle.html#classnamingconventions"><code class="language-plaintext highlighter-rouge">ClassNamingConventions</code></a></li>
+  <li>AvoidFinalLocalVariable (java-codestyle) ➡️ not replaced</li>
+  <li>AvoidPrefixingMethodParameters (java-codestyle) ➡️ use <a href="pmd_rules_java_codestyle.html#formalparameternamingconventions"><code class="language-plaintext highlighter-rouge">FormalParameterNamingConventions</code></a></li>
+  <li>AvoidUsingShortType (java-performance) ➡️ not replaced</li>
+  <li>BadComparison (java-errorprone) ➡️ use <a href="pmd_rules_java_errorprone.html#comparisonwithnan"><code class="language-plaintext highlighter-rouge">ComparisonWithNaN</code></a></li>
+  <li>BeanMembersShouldSerialize (java-errorprone) ➡️ use <a href="pmd_rules_java_errorprone.html#nonserializableclass"><code class="language-plaintext highlighter-rouge">NonSerializableClass</code></a></li>
+  <li>BooleanInstantiation (java-performance) ➡️ use <a href="pmd_rules_java_codestyle.html#unnecessaryboxing"><code class="language-plaintext highlighter-rouge">UnnecessaryBoxing</code></a>
 and <a href="pmd_rules_java_bestpractices.html#primitivewrapperinstantiation"><code class="language-plaintext highlighter-rouge">PrimitiveWrapperInstantiation</code></a></li>
-  <li>ByteInstantiation (java-performance) -&gt; use <a href="pmd_rules_java_codestyle.html#unnecessaryboxing"><code class="language-plaintext highlighter-rouge">UnnecessaryBoxing</code></a>
+  <li>ByteInstantiation (java-performance) ➡️ use <a href="pmd_rules_java_codestyle.html#unnecessaryboxing"><code class="language-plaintext highlighter-rouge">UnnecessaryBoxing</code></a>
 and <a href="pmd_rules_java_bestpractices.html#primitivewrapperinstantiation"><code class="language-plaintext highlighter-rouge">PrimitiveWrapperInstantiation</code></a></li>
-  <li>CloneThrowsCloneNotSupportedException (java-errorprone) -&gt; not replaced</li>
-  <li>DataflowAnomalyAnalysis (java-errorprone) -&gt; use <a href="pmd_rules_java_bestpractices.html#unusedassignment"><code class="language-plaintext highlighter-rouge">UnusedAssignment</code></a></li>
-  <li>DefaultPackage (java-codestyle) -&gt; use <a href="pmd_rules_java_codestyle.html#commentdefaultaccessmodifier"><code class="language-plaintext highlighter-rouge">CommentDefaultAccessModifier</code></a></li>
-  <li>DoNotCallSystemExit (java-errorprone) -&gt; use <a href="pmd_rules_java_errorprone.html#donotterminatevm"><code class="language-plaintext highlighter-rouge">DoNotTerminateVM</code></a></li>
-  <li>DontImportJavaLang (java-codestyle) -&gt; use <a href="pmd_rules_java_codestyle.html#unnecessaryimport"><code class="language-plaintext highlighter-rouge">UnnecessaryImport</code></a></li>
-  <li>DuplicateImports (java-codestyle) -&gt; use <a href="pmd_rules_java_codestyle.html#unnecessaryimport"><code class="language-plaintext highlighter-rouge">UnnecessaryImport</code></a></li>
-  <li>EmptyFinallyBlock (java-errorprone) -&gt; use <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a></li>
-  <li>EmptyIfStmt (java-errorprone) -&gt; use <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a></li>
-  <li>EmptyInitializer (java-errorprone) -&gt; use <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a></li>
-  <li>EmptyStatementBlock (java-errorprone) -&gt; use <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a></li>
-  <li>EmptyStatementNotInLoop (java-errorprone) -&gt; use <a href="pmd_rules_java_codestyle.html#unnecessarysemicolon"><code class="language-plaintext highlighter-rouge">UnnecessarySemicolon</code></a></li>
-  <li>EmptySwitchStatements (java-errorprone) -&gt; use <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a></li>
-  <li>EmptySynchronizedBlock (java-errorprone) -&gt; use <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a></li>
-  <li>EmptyTryBlock (java-errorprone) -&gt; use <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a></li>
-  <li>EmptyWhileStmt (java-errorprone) -&gt; use <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a></li>
-  <li>ExcessiveClassLength (java-design) -&gt; use <a href="pmd_rules_java_design.html#ncsscount"><code class="language-plaintext highlighter-rouge">NcssCount</code></a></li>
-  <li>ExcessiveMethodLength (java-design) -&gt; use <a href="pmd_rules_java_design.html#ncsscount"><code class="language-plaintext highlighter-rouge">NcssCount</code></a></li>
-  <li>ForLoopsMustUseBraces (java-codestyle) -&gt; use <a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code class="language-plaintext highlighter-rouge">ControlStatementBraces</code></a></li>
-  <li>IfElseStmtsMustUseBraces (java-codestyle) -&gt; use <a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code class="language-plaintext highlighter-rouge">ControlStatementBraces</code></a></li>
-  <li>IfStmtsMustUseBraces (java-codestyle) -&gt; use <a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code class="language-plaintext highlighter-rouge">ControlStatementBraces</code></a></li>
-  <li>ImportFromSamePackage (java-errorprone) -&gt; use <a href="pmd_rules_java_codestyle.html#unnecessaryimport"><code class="language-plaintext highlighter-rouge">UnnecessaryImport</code></a></li>
-  <li>IntegerInstantiation (java-performance) -&gt; use <a href="pmd_rules_java_codestyle.html#unnecessaryboxing"><code class="language-plaintext highlighter-rouge">UnnecessaryBoxing</code></a>
+  <li>CloneThrowsCloneNotSupportedException (java-errorprone) ➡️ not replaced</li>
+  <li>DataflowAnomalyAnalysis (java-errorprone) ➡️ use <a href="pmd_rules_java_bestpractices.html#unusedassignment"><code class="language-plaintext highlighter-rouge">UnusedAssignment</code></a></li>
+  <li>DefaultPackage (java-codestyle) ➡️ use <a href="pmd_rules_java_codestyle.html#commentdefaultaccessmodifier"><code class="language-plaintext highlighter-rouge">CommentDefaultAccessModifier</code></a></li>
+  <li>DoNotCallSystemExit (java-errorprone) ➡️ use <a href="pmd_rules_java_errorprone.html#donotterminatevm"><code class="language-plaintext highlighter-rouge">DoNotTerminateVM</code></a></li>
+  <li>DontImportJavaLang (java-codestyle) ➡️ use <a href="pmd_rules_java_codestyle.html#unnecessaryimport"><code class="language-plaintext highlighter-rouge">UnnecessaryImport</code></a></li>
+  <li>DuplicateImports (java-codestyle) ➡️ use <a href="pmd_rules_java_codestyle.html#unnecessaryimport"><code class="language-plaintext highlighter-rouge">UnnecessaryImport</code></a></li>
+  <li>EmptyFinallyBlock (java-errorprone) ➡️ use <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a></li>
+  <li>EmptyIfStmt (java-errorprone) ➡️ use <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a></li>
+  <li>EmptyInitializer (java-errorprone) ➡️ use <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a></li>
+  <li>EmptyStatementBlock (java-errorprone) ➡️ use <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a></li>
+  <li>EmptyStatementNotInLoop (java-errorprone) ➡️ use <a href="pmd_rules_java_codestyle.html#unnecessarysemicolon"><code class="language-plaintext highlighter-rouge">UnnecessarySemicolon</code></a></li>
+  <li>EmptySwitchStatements (java-errorprone) ➡️ use <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a></li>
+  <li>EmptySynchronizedBlock (java-errorprone) ➡️ use <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a></li>
+  <li>EmptyTryBlock (java-errorprone) ➡️ use <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a></li>
+  <li>EmptyWhileStmt (java-errorprone) ➡️ use <a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a></li>
+  <li>ExcessiveClassLength (java-design) ➡️ use <a href="pmd_rules_java_design.html#ncsscount"><code class="language-plaintext highlighter-rouge">NcssCount</code></a></li>
+  <li>ExcessiveMethodLength (java-design) ➡️ use <a href="pmd_rules_java_design.html#ncsscount"><code class="language-plaintext highlighter-rouge">NcssCount</code></a></li>
+  <li>ForLoopsMustUseBraces (java-codestyle) ➡️ use <a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code class="language-plaintext highlighter-rouge">ControlStatementBraces</code></a></li>
+  <li>IfElseStmtsMustUseBraces (java-codestyle) ➡️ use <a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code class="language-plaintext highlighter-rouge">ControlStatementBraces</code></a></li>
+  <li>IfStmtsMustUseBraces (java-codestyle) ➡️ use <a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code class="language-plaintext highlighter-rouge">ControlStatementBraces</code></a></li>
+  <li>ImportFromSamePackage (java-errorprone) ➡️ use <a href="pmd_rules_java_codestyle.html#unnecessaryimport"><code class="language-plaintext highlighter-rouge">UnnecessaryImport</code></a></li>
+  <li>IntegerInstantiation (java-performance) ➡️ use <a href="pmd_rules_java_codestyle.html#unnecessaryboxing"><code class="language-plaintext highlighter-rouge">UnnecessaryBoxing</code></a>
 and <a href="pmd_rules_java_bestpractices.html#primitivewrapperinstantiation"><code class="language-plaintext highlighter-rouge">PrimitiveWrapperInstantiation</code></a></li>
-  <li>InvalidSlf4jMessageFormat (java-errorprone) -&gt;  use <a href="pmd_rules_java_errorprone.html#invalidlogmessageformat"><code class="language-plaintext highlighter-rouge">InvalidLogMessageFormat</code></a></li>
-  <li>LoggerIsNotStaticFinal (java-errorprone) -&gt; use <a href="pmd_rules_java_errorprone.html#properlogger"><code class="language-plaintext highlighter-rouge">ProperLogger</code></a></li>
-  <li>LongInstantiation (java-performance) -&gt; use <a href="pmd_rules_java_codestyle.html#unnecessaryboxing"><code class="language-plaintext highlighter-rouge">UnnecessaryBoxing</code></a>
+  <li>InvalidSlf4jMessageFormat (java-errorprone) ➡️  use <a href="pmd_rules_java_errorprone.html#invalidlogmessageformat"><code class="language-plaintext highlighter-rouge">InvalidLogMessageFormat</code></a></li>
+  <li>LoggerIsNotStaticFinal (java-errorprone) ➡️ use <a href="pmd_rules_java_errorprone.html#properlogger"><code class="language-plaintext highlighter-rouge">ProperLogger</code></a></li>
+  <li>LongInstantiation (java-performance) ➡️ use <a href="pmd_rules_java_codestyle.html#unnecessaryboxing"><code class="language-plaintext highlighter-rouge">UnnecessaryBoxing</code></a>
 and <a href="pmd_rules_java_bestpractices.html#primitivewrapperinstantiation"><code class="language-plaintext highlighter-rouge">PrimitiveWrapperInstantiation</code></a></li>
-  <li>MIsLeadingVariableName (java-codestyle) -&gt; use <a href="pmd_rules_java_codestyle.html#fieldnamingconventions"><code class="language-plaintext highlighter-rouge">FieldNamingConventions</code></a>,
+  <li>MIsLeadingVariableName (java-codestyle) ➡️ use <a href="pmd_rules_java_codestyle.html#fieldnamingconventions"><code class="language-plaintext highlighter-rouge">FieldNamingConventions</code></a>,
 <a href="pmd_rules_java_codestyle.html#formalparameternamingconventions"><code class="language-plaintext highlighter-rouge">FormalParameterNamingConventions</code></a>,
 or <a href="pmd_rules_java_codestyle.html#localvariablenamingconventions"><code class="language-plaintext highlighter-rouge">LocalVariableNamingConventions</code></a></li>
-  <li>MissingBreakInSwitch (java-errorprone) -&gt;  use <a href="pmd_rules_java_errorprone.html#implicitswitchfallthrough"><code class="language-plaintext highlighter-rouge">ImplicitSwitchFallThrough</code></a></li>
-  <li>ModifiedCyclomaticComplexity (java-design) -&gt; use <a href="pmd_rules_java_design.html#cyclomaticcomplexity"><code class="language-plaintext highlighter-rouge">CyclomaticComplexity</code></a></li>
-  <li>NcssConstructorCount (java-design) -&gt; use <a href="pmd_rules_java_design.html#ncsscount"><code class="language-plaintext highlighter-rouge">NcssCount</code></a></li>
-  <li>NcssMethodCount (java-design) -&gt; use <a href="pmd_rules_java_design.html#ncsscount"><code class="language-plaintext highlighter-rouge">NcssCount</code></a></li>
-  <li>NcssTypeCount (java-design) -&gt; use <a href="pmd_rules_java_design.html#ncsscount"><code class="language-plaintext highlighter-rouge">NcssCount</code></a></li>
-  <li>PositionLiteralsFirstInCaseInsensitiveComparisons (java-bestpractices) -&gt;
+  <li>MissingBreakInSwitch (java-errorprone) ➡️  use <a href="pmd_rules_java_errorprone.html#implicitswitchfallthrough"><code class="language-plaintext highlighter-rouge">ImplicitSwitchFallThrough</code></a></li>
+  <li>ModifiedCyclomaticComplexity (java-design) ➡️ use <a href="pmd_rules_java_design.html#cyclomaticcomplexity"><code class="language-plaintext highlighter-rouge">CyclomaticComplexity</code></a></li>
+  <li>NcssConstructorCount (java-design) ➡️ use <a href="pmd_rules_java_design.html#ncsscount"><code class="language-plaintext highlighter-rouge">NcssCount</code></a></li>
+  <li>NcssMethodCount (java-design) ➡️ use <a href="pmd_rules_java_design.html#ncsscount"><code class="language-plaintext highlighter-rouge">NcssCount</code></a></li>
+  <li>NcssTypeCount (java-design) ➡️ use <a href="pmd_rules_java_design.html#ncsscount"><code class="language-plaintext highlighter-rouge">NcssCount</code></a></li>
+  <li>PositionLiteralsFirstInCaseInsensitiveComparisons (java-bestpractices) ➡️
 use <a href="pmd_rules_java_bestpractices.html#literalsfirstincomparisons"><code class="language-plaintext highlighter-rouge">LiteralsFirstInComparisons</code></a></li>
-  <li>PositionLiteralsFirstInComparisons (java-bestpractices) -&gt;
+  <li>PositionLiteralsFirstInComparisons (java-bestpractices) ➡️
 use <a href="pmd_rules_java_bestpractices.html#literalsfirstincomparisons"><code class="language-plaintext highlighter-rouge">LiteralsFirstInComparisons</code></a></li>
-  <li>ReturnEmptyArrayRatherThanNull (java-errorprone) -&gt;
+  <li>ReturnEmptyArrayRatherThanNull (java-errorprone) ➡️
 use <a href="pmd_rules_java_errorprone.html#returnemptycollectionratherthannull"><code class="language-plaintext highlighter-rouge">ReturnEmptyCollectionRatherThanNull</code></a></li>
-  <li>ShortInstantiation (java-performance) -&gt; use <a href="pmd_rules_java_codestyle.html#unnecessaryboxing"><code class="language-plaintext highlighter-rouge">UnnecessaryBoxing</code></a>
+  <li>ShortInstantiation (java-performance) ➡️ use <a href="pmd_rules_java_codestyle.html#unnecessaryboxing"><code class="language-plaintext highlighter-rouge">UnnecessaryBoxing</code></a>
 and <a href="pmd_rules_java_bestpractices.html#primitivewrapperinstantiation"><code class="language-plaintext highlighter-rouge">PrimitiveWrapperInstantiation</code></a></li>
-  <li>SimplifyBooleanAssertion (java-design) -&gt; use <a href="pmd_rules_java_bestpractices.html#simplifiabletestassertion"><code class="language-plaintext highlighter-rouge">SimplifiableTestAssertion</code></a></li>
-  <li>SimplifyStartsWith (java-performance) -&gt; not replaced</li>
-  <li>StdCyclomaticComplexity (java-design) -&gt; use <a href="pmd_rules_java_design.html#cyclomaticcomplexity"><code class="language-plaintext highlighter-rouge">CyclomaticComplexity</code></a></li>
-  <li>SuspiciousConstantFieldName (java-codestyle) -&gt; use <a href="pmd_rules_java_codestyle.html#fieldnamingconventions"><code class="language-plaintext highlighter-rouge">FieldNamingConventions</code></a></li>
-  <li>UnnecessaryWrapperObjectCreation (java-performance) -&gt; use the new rule <a href="pmd_rules_java_codestyle.html#unnecessaryboxing"><code class="language-plaintext highlighter-rouge">UnnecessaryBoxing</code></a></li>
-  <li>UnsynchronizedStaticDateFormatter (java-multithreading) -&gt;
+  <li>SimplifyBooleanAssertion (java-design) ➡️ use <a href="pmd_rules_java_bestpractices.html#simplifiabletestassertion"><code class="language-plaintext highlighter-rouge">SimplifiableTestAssertion</code></a></li>
+  <li>SimplifyStartsWith (java-performance) ➡️ not replaced</li>
+  <li>StdCyclomaticComplexity (java-design) ➡️ use <a href="pmd_rules_java_design.html#cyclomaticcomplexity"><code class="language-plaintext highlighter-rouge">CyclomaticComplexity</code></a></li>
+  <li>SuspiciousConstantFieldName (java-codestyle) ➡️ use <a href="pmd_rules_java_codestyle.html#fieldnamingconventions"><code class="language-plaintext highlighter-rouge">FieldNamingConventions</code></a></li>
+  <li>UnnecessaryWrapperObjectCreation (java-performance) ➡️ use the new rule <a href="pmd_rules_java_codestyle.html#unnecessaryboxing"><code class="language-plaintext highlighter-rouge">UnnecessaryBoxing</code></a></li>
+  <li>UnsynchronizedStaticDateFormatter (java-multithreading) ➡️
 use <a href="pmd_rules_java_multithreading.html#unsynchronizedstaticformatter"><code class="language-plaintext highlighter-rouge">UnsynchronizedStaticFormatter</code></a></li>
-  <li>UnusedImports (java-bestpractices) -&gt; use <a href="pmd_rules_java_codestyle.html#unnecessaryimport"><code class="language-plaintext highlighter-rouge">UnnecessaryImport</code></a></li>
-  <li>UseAssertEqualsInsteadOfAssertTrue (java-bestpractices) -&gt;
+  <li>UnusedImports (java-bestpractices) ➡️ use <a href="pmd_rules_java_codestyle.html#unnecessaryimport"><code class="language-plaintext highlighter-rouge">UnnecessaryImport</code></a></li>
+  <li>UseAssertEqualsInsteadOfAssertTrue (java-bestpractices) ➡️
 use <a href="pmd_rules_java_bestpractices.html#simplifiabletestassertion"><code class="language-plaintext highlighter-rouge">SimplifiableTestAssertion</code></a></li>
-  <li>UseAssertNullInsteadOfAssertEquals (java-bestpractices) -&gt;
+  <li>UseAssertNullInsteadOfAssertEquals (java-bestpractices) ➡️
 use <a href="pmd_rules_java_bestpractices.html#simplifiabletestassertion"><code class="language-plaintext highlighter-rouge">SimplifiableTestAssertion</code></a></li>
-  <li>UseAssertSameInsteadOfAssertEquals (java-bestpractices) -&gt;
+  <li>UseAssertSameInsteadOfAssertEquals (java-bestpractices) ➡️
 use <a href="pmd_rules_java_bestpractices.html#simplifiabletestassertion"><code class="language-plaintext highlighter-rouge">SimplifiableTestAssertion</code></a></li>
-  <li>UseAssertTrueInsteadOfAssertEquals (java-bestpractices) -&gt;
+  <li>UseAssertTrueInsteadOfAssertEquals (java-bestpractices) ➡️
 use <a href="pmd_rules_java_bestpractices.html#simplifiabletestassertion"><code class="language-plaintext highlighter-rouge">SimplifiableTestAssertion</code></a></li>
-  <li>VariableNamingConventions (java-codestyle) -&gt; use <a href="pmd_rules_java_codestyle.html#fieldnamingconventions"><code class="language-plaintext highlighter-rouge">FieldNamingConventions</code></a>,
+  <li>VariableNamingConventions (java-codestyle) ➡️ use <a href="pmd_rules_java_codestyle.html#fieldnamingconventions"><code class="language-plaintext highlighter-rouge">FieldNamingConventions</code></a>,
 <a href="pmd_rules_java_codestyle.html#formalparameternamingconventions"><code class="language-plaintext highlighter-rouge">FormalParameterNamingConventions</code></a>,
 or <a href="pmd_rules_java_codestyle.html#localvariablenamingconventions"><code class="language-plaintext highlighter-rouge">LocalVariableNamingConventions</code></a></li>
-  <li>WhileLoopsMustUseBraces (java-codestyle) -&gt; use <a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code class="language-plaintext highlighter-rouge">ControlStatementBraces</code></a></li>
+  <li>WhileLoopsMustUseBraces (java-codestyle) ➡️ use <a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code class="language-plaintext highlighter-rouge">ControlStatementBraces</code></a></li>
 </ul>
 
 <h2 id="-compatibility-and-migration-notes">💥 Compatibility and Migration Notes</h2>
@@ -2445,7 +2146,7 @@ or <a href="pmd_rules_java_codestyle.html#localvariablenamingconventions"><code 
 
 <ul>
   <li>PMD 7 requires Java 8 or above to execute.</li>
-  <li>CLI changed: Custom scripts need to be updated (<code class="language-plaintext highlighter-rouge">run.sh pmd ...</code> -&gt; <code class="language-plaintext highlighter-rouge">pmd check ...</code>, <code class="language-plaintext highlighter-rouge">run.sh cpd ...</code>, <code class="language-plaintext highlighter-rouge">pmd cpd ...</code>).</li>
+  <li>CLI changed: Custom scripts need to be updated (<code class="language-plaintext highlighter-rouge">run.sh pmd ...</code> ➡️ <code class="language-plaintext highlighter-rouge">pmd check ...</code>, <code class="language-plaintext highlighter-rouge">run.sh cpd ...</code>, <code class="language-plaintext highlighter-rouge">pmd cpd ...</code>).</li>
   <li>Java module revamped: Custom rules need to be updated.</li>
   <li>Removed rules: Custom rulesets need to be reviewed. See below for a list of new and removed rules.</li>
   <li>XPath 1.0 support is removed, <code class="language-plaintext highlighter-rouge">violationSuppressXPath</code> now requires XPath 2.0 or 3.1: Custom rulesets need
@@ -4688,7 +4389,7 @@ Please use <code class="language-plaintext highlighter-rouge">net.sourceforge.pm
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Aug 29, 2023 <br />
+             Site last generated: Aug 31, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

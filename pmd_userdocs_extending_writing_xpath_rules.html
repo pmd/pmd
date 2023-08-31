@@ -162,6 +162,18 @@
             
 
                 
+                <li><a href="pmd_userdocs_migrating_to_pmd7.html">Migration Guide for PMD 7</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
                 <li><a href="pmd_userdocs_installation.html">Installation and basic CLI usage</a></li>
                 
 
@@ -1714,64 +1726,6 @@ by the Java getter <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNA
 
 <div class="alert alert-danger" role="alert"><i class="fas fa-exclamation-circle"></i> <b>Warning:</b> Lists are only supported for rule properties, not attributes.</div>
 
-<h2 id="migrating-from-10-to-20">Migrating from 1.0 to 2.0</h2>
-
-<!-- TODO should this still be there in PMD 7? We could just link to an older version of the doc, as this is not so relevant. -->
-
-<p>XPath 1.0 and 2.0 have some incompatibilities. The <a href="https://www.w3.org/TR/xpath20/#id-incompat-in-false-mode">XPath 2.0 specification</a>
-describes them precisely. Those are however mostly corner cases and XPath
-rules usually don’t feature any of them.</p>
-
-<p>The incompatibilities that are most relevant to migrating your rules are not
-caused by the specification, but by the different engines we use to run
-XPath 1.0 and 2.0 queries. Here’s a list of known incompatibilities:</p>
-
-<ul>
-  <li>The namespace prefixes <code class="language-plaintext highlighter-rouge">fn:</code> and <code class="language-plaintext highlighter-rouge">string:</code> should not be mentioned explicitly.
-In XPath 2.0 mode, the engine will complain about an undeclared namespace, but
-the functions are in the default namespace. Removing the namespace prefixes fixes it.
-    <ul>
-      <li><code><b style="color:red">fn:</b>substring("Foo", 1)</code> → <code class="language-plaintext highlighter-rouge">substring("Foo", 1)</code></li>
-    </ul>
-  </li>
-  <li>Conversely, calls to custom PMD functions like <code class="language-plaintext highlighter-rouge">typeIs</code> <em>must</em> be prefixed
-with the namespace of the declaring module (<code class="language-plaintext highlighter-rouge">pmd-java</code>).
-    <ul>
-      <li><code class="language-plaintext highlighter-rouge">typeIs("Foo")</code> → <code><b style="color:green">pmd-java:</b>typeIs("Foo")</code></li>
-    </ul>
-  </li>
-  <li>Boolean attribute values on our 1.0 engine are represented as the string values
-<code class="language-plaintext highlighter-rouge">"true"</code> and <code class="language-plaintext highlighter-rouge">"false"</code>. In 2.0 mode though, boolean values are truly represented
-as boolean values, which in XPath may only be obtained through the functions
-<code class="language-plaintext highlighter-rouge">true()</code> and <code class="language-plaintext highlighter-rouge">false()</code>.
-If your XPath 1.0 rule tests an attribute like <code class="language-plaintext highlighter-rouge">@Private="true"</code>, then it just
-needs to be changed to <code class="language-plaintext highlighter-rouge">@Private=true()</code> when migrating. A type error will warn
-you that you must update the comparison. More is explained on <a href="https://github.com/pmd/pmd/issues/1244">issue #1244</a>.
-    <ul>
-      <li><code class="language-plaintext highlighter-rouge">"true"</code>, <code class="language-plaintext highlighter-rouge">'true'</code> → <code class="language-plaintext highlighter-rouge">true()</code></li>
-      <li><code class="language-plaintext highlighter-rouge">"false"</code>, <code class="language-plaintext highlighter-rouge">'false'</code> → <code class="language-plaintext highlighter-rouge">false()</code></li>
-    </ul>
-  </li>
-  <li>In XPath 1.0, comparing a number to a string coerces the string to a number.
-In XPath 2.0, a type error occurs. Like for boolean values, numeric values are
-represented by our 1.0 implementation as strings, meaning that <code class="language-plaintext highlighter-rouge">@BeginLine &gt; "1"</code>
-worked —that’s not the case in 2.0 mode.
-    <ul>
-      <li><code>@ArgumentCount &gt; <b style="color:red">'</b>1<b style="color:red">'</b></code> → <code class="language-plaintext highlighter-rouge">@ArgumentCount &gt; 1</code></li>
-    </ul>
-  </li>
-  <li>In XPath 1.0, the expression <code class="language-plaintext highlighter-rouge">/Foo</code> matches the <em>children</em> of the root named <code class="language-plaintext highlighter-rouge">Foo</code>.
-In XPath 2.0, that expression matches the root, if it is named <code class="language-plaintext highlighter-rouge">Foo</code>. Consider the following tree:
-    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Foo</span>
-<span class="err">└─</span> <span class="nc">Foo</span>
-<span class="err">└─</span> <span class="nc">Foo</span>
-</code></pre></div>    </div>
-    <p>Then <code class="language-plaintext highlighter-rouge">/Foo</code> will match the root in XPath 2, and the other nodes (but not the root) in XPath 1.
-See eg <a href="https://github.com/pmd/pmd/issues/1919#issuecomment-512865434">an issue caused by this</a> in Apex,
-with nested classes.</p>
-  </li>
-</ul>
-
 <h2 id="rule-properties">Rule properties</h2>
 
 <p><strong>See <a href="pmd_userdocs_extending_defining_properties.html#for-xpath-rules">Defining rule properties</a></strong></p>
@@ -2827,7 +2781,7 @@ deprecated and whose usages should be replaced with uses of <code class="languag
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            February 2020 (6.22.0)<br /> Site last generated: Aug 29, 2023 <br />
+            February 2020 (6.22.0)<br /> Site last generated: Aug 31, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

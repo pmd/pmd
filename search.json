@@ -4844,6 +4844,22 @@
 
 
 {
+"title": "Migration Guide for PMD 7",
+"tags": "pmduserdocs",
+"keywords": "",
+"url": "pmd_userdocs_migrating_to_pmd7.html",
+"summary": "Migrating to PMD 7 from PMD 6.x"
+}
+
+
+
+,
+
+
+
+
+
+{
 "title": "Modelica Rules",
 "tags": "rule_referencesmodelica",
 "keywords": "",

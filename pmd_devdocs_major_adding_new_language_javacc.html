@@ -162,6 +162,18 @@
             
 
                 
+                <li><a href="pmd_userdocs_migrating_to_pmd7.html">Migration Guide for PMD 7</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
                 <li><a href="pmd_userdocs_installation.html">Installation and basic CLI usage</a></li>
                 
 
@@ -1649,7 +1661,9 @@ definitely don’t come for free. It is much effort and requires perseverance to
 
 </div>
 
-<h2 id="1--start-with-a-new-sub-module">1.  Start with a new sub-module</h2>
+<h2 id="steps">Steps</h2>
+
+<h3 id="1--start-with-a-new-sub-module">1.  Start with a new sub-module</h3>
 <ul>
   <li>See pmd-java or pmd-vm for examples.</li>
   <li>Make sure to add your new module to PMD’s parent pom as <code class="language-plaintext highlighter-rouge">&lt;module&gt;</code> entry, so that it is built alongside the
@@ -1658,7 +1672,7 @@ other languages.</li>
 is automatically available in the binary distribution (pmd-dist).</li>
 </ul>
 
-<h2 id="2--implement-an-ast-parser-for-your-language">2.  Implement an AST parser for your language</h2>
+<h3 id="2--implement-an-ast-parser-for-your-language">2.  Implement an AST parser for your language</h3>
 <ul>
   <li>Ideally an AST parser should be implemented as a JJT file <em>(see VmParser.jjt or Java.jjt for example)</em></li>
   <li>There is nothing preventing any other parser implementation, as long as you have some way to convert an input
@@ -1666,7 +1680,7 @@ stream into an AST tree. Doing it as a JJT simplifies maintenance down the road.
   <li>See this link for reference: <a href="https://javacc.java.net/doc/JJTree.html">https://javacc.java.net/doc/JJTree.html</a></li>
 </ul>
 
-<h2 id="3--create-ast-node-classes">3.  Create AST node classes</h2>
+<h3 id="3--create-ast-node-classes">3.  Create AST node classes</h3>
 <ul>
   <li>For each AST node that your parser can generate, there should be a class</li>
   <li>The name of the AST class should be “AST” + “whatever is the name of the node in JJT file”.
@@ -1680,7 +1694,7 @@ creation later. <em>(see SimpleNode for Velocity and AbstractJavaNode for Java f
   <li>Note: These AST node classes are generated usually once by javacc/jjtree and can then be modified as needed.</li>
 </ul>
 
-<h2 id="4--generate-your-parser-using-jjt">4.  Generate your parser (using JJT)</h2>
+<h3 id="4--generate-your-parser-using-jjt">4.  Generate your parser (using JJT)</h3>
 <ul>
   <li>An ant script is being used to compile jjt files into classes. This is in <code class="language-plaintext highlighter-rouge">javacc-wrapper.xml</code> file in the
 top-level pmd sources.</li>
@@ -1690,7 +1704,7 @@ it the language name. You can use <code class="language-plaintext highlighter-ro
 call <code class="language-plaintext highlighter-rouge">./mvnw generate-sources</code> directly for your module if you want your parser to be generated.</li>
 </ul>
 
-<h2 id="5--create-a-pmd-parser-adapter">5.  Create a PMD parser “adapter”</h2>
+<h3 id="5--create-a-pmd-parser-adapter">5.  Create a PMD parser “adapter”</h3>
 <ul>
   <li>Create a new class that extends <code class="language-plaintext highlighter-rouge">JjtreeParserAdapter</code>.</li>
   <li>This is a generic class, and you need to declare the root AST node.</li>
@@ -1705,7 +1719,7 @@ all the available tokens in the field <code class="language-plaintext highlighte
   </li>
 </ul>
 
-<h2 id="6--create-a-language-version-handler">6.  Create a language version handler</h2>
+<h3 id="6--create-a-language-version-handler">6.  Create a language version handler</h3>
 <ul>
   <li>Extend <code class="language-plaintext highlighter-rouge">AbstractPmdLanguageVersionHandler</code> <em>(see VmHandler for example)</em></li>
   <li>This class is sort of a gateway between PMD and all parsing logic specific to your language.</li>
@@ -1721,7 +1735,7 @@ all the available tokens in the field <code class="language-plaintext highlighte
   <li>See <code class="language-plaintext highlighter-rouge">VmHandler</code> class as an example</li>
 </ul>
 
-<h2 id="7--create-a-base-visitor">7.  Create a base visitor</h2>
+<h3 id="7--create-a-base-visitor">7.  Create a base visitor</h3>
 <ul>
   <li>A parser visitor adapter is not needed anymore with PMD 7. The visitor interface now provides a default
 implementation.</li>
@@ -1732,7 +1746,7 @@ base interface for a visitor is <a href="https://github.com/pmd/pmd/blob/pmd/7.0
 See <code class="language-plaintext highlighter-rouge">VmVisitorBase</code> as an example.</li>
 </ul>
 
-<h2 id="8-make-pmd-recognize-your-language">8. Make PMD recognize your language</h2>
+<h3 id="8-make-pmd-recognize-your-language">8. Make PMD recognize your language</h3>
 <ul>
   <li>Create your own subclass of <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase</code>. <em>(see VmLanguageModule or
 JavaLanguageModule as an example)</em></li>
@@ -1743,7 +1757,7 @@ Use <code class="language-plaintext highlighter-rouge">addDefaultVersion</code> 
 Add your fully qualified class name as a single line into it.</li>
 </ul>
 
-<h2 id="9-add-ast-regression-tests">9. Add AST regression tests</h2>
+<h3 id="9-add-ast-regression-tests">9. Add AST regression tests</h3>
 
 <p>For languages, that use an external library for parsing, the AST can easily change when upgrading the library.
 Also for languages, where we have the grammar under our control, it is useful to have such tests.</p>
@@ -1793,7 +1807,7 @@ The test resources are in the subpackage “testdata”: <code class="language-p
 <p>The Scala module also has a test, written in Kotlin instead of Java:
 <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.scala.ast.ScalaParserTests</code>.</p>
 
-<h2 id="10-create-an-abstract-rule-class-for-the-language">10. Create an abstract rule class for the language</h2>
+<h3 id="10-create-an-abstract-rule-class-for-the-language">10. Create an abstract rule class for the language</h3>
 <ul>
   <li>Extend <code class="language-plaintext highlighter-rouge">AbstractRule</code> and implement the parser visitor interface for your language <em>(see AbstractVmRule for example)</em></li>
   <li>All other rules for your language should extend this class. The purpose of this class is to implement visit
@@ -1802,14 +1816,14 @@ about specific AST nodes, but PMD needs to know what to do with each node - so t
 behavior for nodes you don’t care about.</li>
 </ul>
 
-<h2 id="11-create-rules">11. Create rules</h2>
+<h3 id="11-create-rules">11. Create rules</h3>
 <ul>
   <li>Rules are created by extending the abstract rule class created in step 9 <em>(see <code class="language-plaintext highlighter-rouge">EmptyForeachStmtRule</code> for example)</em></li>
   <li>Creating rules is already pretty well documented in PMD - and it’s no different for a new language,
 except you may have different AST nodes.</li>
 </ul>
 
-<h2 id="12-test-the-rules">12. Test the rules</h2>
+<h3 id="12-test-the-rules">12. Test the rules</h3>
 <ul>
   <li>Testing rules is described in depth in <a href="pmd_userdocs_extending_testing.html">Testing your rules</a>.
     <ul>
@@ -1854,9 +1868,9 @@ This can be achieved with Rule Designer:</p>
   </li>
 </ul>
 
-<h1 id="optional-features">Optional features</h1>
+<h2 id="optional-features">Optional features</h2>
 
-<h2 id="metrics">Metrics</h2>
+<h3 id="metrics">Metrics</h3>
 
 <p>If you want to add support for computing metrics:</p>
 <ul>
@@ -1909,7 +1923,7 @@ This can be achieved with Rule Designer:</p>
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            February 2023 (7.0.0)<br /> Site last generated: Aug 29, 2023 <br />
+            February 2023 (7.0.0)<br /> Site last generated: Aug 31, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
