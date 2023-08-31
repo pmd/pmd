@@ -33,21 +33,22 @@ definitely don't come for free. It is much effort and requires perseverance to i
 
 " %}
 
+## Steps
 
-## 1.  Start with a new sub-module
+### 1.  Start with a new sub-module
 *   See pmd-java or pmd-vm for examples.
 *   Make sure to add your new module to PMD's parent pom as `<module>` entry, so that it is built alongside the
     other languages.
 *   Also add your new module to the dependencies list in "pmd-languages-deps/pom.xml", so that the new language
     is automatically available in the binary distribution (pmd-dist).
 
-## 2.  Implement an AST parser for your language
+### 2.  Implement an AST parser for your language
 *   Ideally an AST parser should be implemented as a JJT file *(see VmParser.jjt or Java.jjt for example)*
 *   There is nothing preventing any other parser implementation, as long as you have some way to convert an input
     stream into an AST tree. Doing it as a JJT simplifies maintenance down the road.
 *   See this link for reference: [https://javacc.java.net/doc/JJTree.html](https://javacc.java.net/doc/JJTree.html)
 
-## 3.  Create AST node classes
+### 3.  Create AST node classes
 *   For each AST node that your parser can generate, there should be a class
 *   The name of the AST class should be “AST” + “whatever is the name of the node in JJT file”.
     *   For example, if JJT contains a node called “IfStatement”, there should be a class called “ASTIfStatement”
@@ -56,7 +57,7 @@ definitely don't come for free. It is much effort and requires perseverance to i
     creation later. *(see SimpleNode for Velocity and AbstractJavaNode for Java for example)*
 *   Note: These AST node classes are generated usually once by javacc/jjtree and can then be modified as needed.
 
-## 4.  Generate your parser (using JJT)
+### 4.  Generate your parser (using JJT)
 *   An ant script is being used to compile jjt files into classes. This is in `javacc-wrapper.xml` file in the
     top-level pmd sources.
 *   The ant script is executed via the `maven-antrun-plugin`. Add this plugin to your `pom.xml` file and configure
@@ -64,7 +65,7 @@ definitely don't come for free. It is much effort and requires perseverance to i
 *   The ant script is called in the phase `generate-sources` whenever the whole project is built. But you can
     call `./mvnw generate-sources` directly for your module if you want your parser to be generated.
 
-## 5.  Create a PMD parser “adapter”
+### 5.  Create a PMD parser “adapter”
 *   Create a new class that extends `JjtreeParserAdapter`.
 *   This is a generic class, and you need to declare the root AST node.
 *   There are two important methods to implement
@@ -74,7 +75,7 @@ definitely don't come for free. It is much effort and requires perseverance to i
     *   `parseImpl` method should return the root node of the AST tree obtained by parsing the CharStream source
     *   See `VmParser` class as an example
 
-## 6.  Create a language version handler
+### 6.  Create a language version handler
 *   Extend `AbstractPmdLanguageVersionHandler` *(see VmHandler for example)*
 *   This class is sort of a gateway between PMD and all parsing logic specific to your language.
 *   For a minimal implementation, it just needs to return a parser *(see step #5)*.
@@ -85,7 +86,7 @@ definitely don't come for free. It is much effort and requires perseverance to i
     *   custom XPath functions
 *   See `VmHandler` class as an example
 
-## 7.  Create a base visitor
+### 7.  Create a base visitor
 *   A parser visitor adapter is not needed anymore with PMD 7. The visitor interface now provides a default
     implementation.
 *   The visitor for JavaCC based AST is generated along the parser from the grammar file. The
@@ -94,7 +95,7 @@ definitely don't come for free. It is much effort and requires perseverance to i
 *   In order to help use this visitor later on, a base visitor class should be created.
     See `VmVisitorBase` as an example.
 
-## 8. Make PMD recognize your language
+### 8. Make PMD recognize your language
 *   Create your own subclass of `net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase`. *(see VmLanguageModule or
     JavaLanguageModule as an example)*
 *   Add for each version of your language a call to `addVersion` in your language module’s constructor.
@@ -103,7 +104,7 @@ definitely don't come for free. It is much effort and requires perseverance to i
 *   Create the service registration via the text file `src/main/resources/META-INF/services/net.sourceforge.pmd.lang.Language`.
     Add your fully qualified class name as a single line into it.
 
-## 9. Add AST regression tests
+### 9. Add AST regression tests
 
 For languages, that use an external library for parsing, the AST can easily change when upgrading the library.
 Also for languages, where we have the grammar under our control, it is useful to have such tests.
@@ -150,19 +151,19 @@ The Scala module also has a test, written in Kotlin instead of Java:
 `net.sourceforge.pmd.lang.scala.ast.ScalaParserTests`.
 
 
-## 10. Create an abstract rule class for the language
+### 10. Create an abstract rule class for the language
 *   Extend `AbstractRule` and implement the parser visitor interface for your language *(see AbstractVmRule for example)*
 *   All other rules for your language should extend this class. The purpose of this class is to implement visit
     methods for all AST types to simply delegate to default behavior. This is useful because most rules care only
     about specific AST nodes, but PMD needs to know what to do with each node - so this just lets you use default
     behavior for nodes you don’t care about.
 
-## 11. Create rules
+### 11. Create rules
 *   Rules are created by extending the abstract rule class created in step 9 *(see `EmptyForeachStmtRule` for example)*
 *   Creating rules is already pretty well documented in PMD - and it’s no different for a new language,
     except you may have different AST nodes.
 
-## 12. Test the rules
+### 12. Test the rules
 *   Testing rules is described in depth in [Testing your rules](pmd_userdocs_extending_testing.html).
     *   Each rule has its own test class: Create a test class for your rule extending `PmdRuleTst`
         *(see AvoidReassigningParametersTest in pmd-vm for example)*
@@ -192,9 +193,9 @@ This can be achieved with Rule Designer:
     *   Register it in the `AvailableSyntaxHighlighters` enumeration.
     *   Now build your implementation and place the `target/pmd-ui-<version>-SNAPSHOT.jar` to the `lib` directory inside your `pmd-bin-...` distribution (you have to delete old `pmd-ui-*.jar` from there).
 
-# Optional features
+## Optional features
 
-## Metrics
+### Metrics
 
 If you want to add support for computing metrics:
 * Create a package `lang.<langname>.metrics`

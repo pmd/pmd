@@ -53,6 +53,7 @@ The remaining section describes the complete release notes for 7.0.0.
   * [#4397](https://github.com/pmd/pmd/pull/4397):   \[core] Refactor CPD
   * [#4621](https://github.com/pmd/pmd/issues/4621): \[core] Make `ClasspathClassLoader::getResource` child first
 * doc
+  * [#4294](https://github.com/pmd/pmd/issues/4294): \[doc] Migration Guide for upgrading PMD 6 ➡️ 7
   * [#4303](https://github.com/pmd/pmd/issues/4303): \[doc] Document new property framework
   * [#4521](https://github.com/pmd/pmd/issues/4521): \[doc] Website is not mobile friendly
 * apex-design
@@ -84,8 +85,8 @@ and [PR #4397](https://github.com/pmd/pmd/pull/4397) for details.
 The following previously deprecated classes have been removed:
 
 * pmd-core
-  * `net.sourceforge.pmd.cpd.AbstractTokenizer` -> use {%jdoc core::cpd.AnyTokenizer %} instead
-  * `net.sourceforge.pmd.cpd.CPD` -> use {% jdoc cli::cli.PmdCli %} from `pmd-cli` module for CLI support or use
+  * `net.sourceforge.pmd.cpd.AbstractTokenizer` ➡️ use {%jdoc core::cpd.AnyTokenizer %} instead
+  * `net.sourceforge.pmd.cpd.CPD` ➡️ use {% jdoc cli::cli.PmdCli %} from `pmd-cli` module for CLI support or use
     {%jdoc core::cpd.CpdAnalysis %} for programmatic API
   * `net.sourceforge.pmd.cpd.GridBagHelper` (now package private)
   * `net.sourceforge.pmd.cpd.TokenEntry.State`
@@ -145,17 +146,17 @@ The following methods have been removed:
   * {%jdoc core::cpd.Mark %}
     * `#getSourceSlice()`, `#setLineCount(int)`, `#getLineCount()`, `#setSourceCode(SourceCode)` removed
     * `#getBeginColumn()`, `#getBeginLine()`, `#getEndLine()`, `#getEndColumn()` removed
-      -> use {%jdoc core::cpd.Mark#getLocation() %} instead
+      ➡️ use {%jdoc core::cpd.Mark#getLocation() %} instead
   * {%jdoc core::cpd.Match %}
     * `#LABEL_COMPARATOR` removed
     * `#setMarkSet(...)`, `#setLabel(...)`, `#getLabel()`, `#addTokenEntry(...)` removed
     * `#getSourceCodeSlice()` removed
-      -> use {%jdoc !!core::cpd.CPDReport#getSourceCodeSlice(net.sourceforge.pmd.cpd.Mark) %} instead
+      ➡️ use {%jdoc !!core::cpd.CPDReport#getSourceCodeSlice(net.sourceforge.pmd.cpd.Mark) %} instead
   * {%jdoc core::cpd.TokenEntry %}
     * `#getEOF()`, `#clearImages()`, `#getIdentifier()`, `#getIndex()`, `#setHashCode(int)` removed
-    * `#EOF` removed -> use {%jdoc core::cpd.TokenEntry#isEof() %} instead
+    * `#EOF` removed ➡️ use {%jdoc core::cpd.TokenEntry#isEof() %} instead
   * {%jdoc core::lang.ast.Parser.ParserTask %}
-    * `#getFileDisplayName()` removed -> use {%jdoc core::lang.ast.Parser.ParserTask#getFileId() %} instead
+    * `#getFileDisplayName()` removed ➡️ use {%jdoc core::lang.ast.Parser.ParserTask#getFileId() %} instead
       (`getFileId().getAbsolutePath()`)
 
 The following classes have been removed:
@@ -220,7 +221,7 @@ The following classes have been removed:
 
 **Deprecations**
 
-* {% jdoc !!core::lang.Language#getTerseName() %} -> use {% jdoc core::lang.Language#getId() %} instead
+* {% jdoc !!core::lang.Language#getTerseName() %} ➡️ use {% jdoc core::lang.Language#getId() %} instead
 
 #### External Contributions
 * [#4528](https://github.com/pmd/pmd/pull/4528): \[apex] Update to apexlink - [Kevin Jones](https://github.com/nawforce) (@nawforce)
@@ -241,7 +242,7 @@ The new official logo of PMD:
 * Rewritten type resolution framework and symbol table correctly implements the JLS
 * AST exposes more semantic information (method calls, field accesses)
 
-For more information, see the [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html).
+For more information, see the [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html#revamped-java).
 
 Contributors: [Clément Fournier](https://github.com/oowekyala) (@oowekyala),
 [Andreas Dangel](https://github.com/adangel) (@adangel),
@@ -582,6 +583,7 @@ See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html)
     * [#4484](https://github.com/pmd/pmd/issues/4484): \[cli] ast-dump with no properties produce an NPE
 * doc
     * [#2501](https://github.com/pmd/pmd/issues/2501): \[doc] Verify ANTLR Documentation
+    * [#4294](https://github.com/pmd/pmd/issues/4294): \[doc] Migration Guide for upgrading PMD 6 ➡️ 7
     * [#4303](https://github.com/pmd/pmd/issues/4303): \[doc] Document new property framework
     * [#4438](https://github.com/pmd/pmd/issues/4438): \[doc] Documentation links in VS Code are outdated
     * [#4521](https://github.com/pmd/pmd/issues/4521): \[doc] Website is not mobile friendly
