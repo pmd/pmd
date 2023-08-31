@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.properties;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -88,8 +87,6 @@ public abstract class AbstractPropertySource implements PropertySource {
 
         }
         propertyDescriptors.add(propertyDescriptor);
-        // Sort in UI order
-        Collections.sort(propertyDescriptors);
     }
 
 
@@ -154,14 +151,6 @@ public abstract class AbstractPropertySource implements PropertySource {
     }
 
 
-    @Override
-    @Deprecated
-    public <V> void setProperty(MultiValuePropertyDescriptor<V> propertyDescriptor, V... values) {
-        checkValidPropertyDescriptor(propertyDescriptor);
-        propertyValuesByDescriptor.put(propertyDescriptor, Collections.unmodifiableList(Arrays.asList(values)));
-    }
-
-
     /**
      * Checks whether this property descriptor is defined for this property source.
      *
@@ -201,23 +190,6 @@ public abstract class AbstractPropertySource implements PropertySource {
     }
 
 
-    // todo Java 8 move up to interface
-    @Override
-    public String dysfunctionReason() {
-        for (PropertyDescriptor<?> descriptor : getOverriddenPropertyDescriptors()) {
-            String error = errorForPropCapture(descriptor);
-            if (error != null) {
-                return error;
-            }
-        }
-        return null;
-    }
-
-
-    private <T> String errorForPropCapture(PropertyDescriptor<T> descriptor) {
-        return descriptor.errorFor(getProperty(descriptor));
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -238,14 +210,14 @@ public abstract class AbstractPropertySource implements PropertySource {
         propertyDescriptors.forEach(propertyDescriptor -> {
             Object value = propertyValuesByDescriptor.getOrDefault(propertyDescriptor, propertyDescriptor.defaultValue());
             @SuppressWarnings({"unchecked", "rawtypes"})
-            String valueString = ((PropertyDescriptor) propertyDescriptor).asDelimitedString(value);
+            String valueString = ((PropertyDescriptor) propertyDescriptor).serializer().toString(value);
             propertiesWithValues.put(propertyDescriptor.name(), valueString);
         });
         Map<String, String> thatPropertiesWithValues = new HashMap<>();
         that.propertyDescriptors.forEach(propertyDescriptor -> {
             Object value = that.propertyValuesByDescriptor.getOrDefault(propertyDescriptor, propertyDescriptor.defaultValue());
             @SuppressWarnings({"unchecked", "rawtypes"})
-            String valueString = ((PropertyDescriptor) propertyDescriptor).asDelimitedString(value);
+            String valueString = ((PropertyDescriptor) propertyDescriptor).serializer().toString(value);
             thatPropertiesWithValues.put(propertyDescriptor.name(), valueString);
         });
         return Objects.equals(propertiesWithValues, thatPropertiesWithValues);

@@ -59,7 +59,7 @@ import net.sourceforge.pmd.util.log.MessageReporter;
  *
  * <h3>Usage overview</h3>
  *
- * Create and configure a {@link PMDConfiguration},
+ * <p>Create and configure a {@link PMDConfiguration},
  * then use {@link #create(PMDConfiguration)} to obtain an instance.
  * You can perform additional configuration on the instance, e.g. adding
  * files to process, or additional rulesets and renderers. Then, call
@@ -70,7 +70,7 @@ import net.sourceforge.pmd.util.log.MessageReporter;
  * <pre>{@code
  *   PMDConfiguration config = new PMDConfiguration();
  *   config.setDefaultLanguageVersion(LanguageRegistry.findLanguageByTerseName("java").getVersion("11"));
- *   config.setInputPaths("src/main/java");
+ *   config.addInputPath(Path.of("src/main/java"));
  *   config.prependClasspath("target/classes");
  *   config.setMinimumPriority(RulePriority.HIGH);
  *   config.addRuleSet("rulesets/java/quickstart.xml");
@@ -92,7 +92,7 @@ import net.sourceforge.pmd.util.log.MessageReporter;
  *
  * <h3>Rendering reports</h3>
  *
- * If you just want to render a report to a file like with the CLI, you
+ * <p>If you just want to render a report to a file like with the CLI, you
  * should use a {@link Renderer}. You can add a custom one with {@link PmdAnalysis#addRenderer(Renderer)}.
  * You can add one of the builtin renderers from its ID using {@link PMDConfiguration#setReportFormat(String)}.
  *
@@ -116,7 +116,7 @@ import net.sourceforge.pmd.util.log.MessageReporter;
  *
  * <h3>Specifying the Java classpath</h3>
  *
- * Java rules work better if you specify the path to the compiled classes
+ * <p>Java rules work better if you specify the path to the compiled classes
  * of the analysed sources. See {@link PMDConfiguration#prependAuxClasspath(String)}.
  *
  * <h3>Customizing message output</h3>

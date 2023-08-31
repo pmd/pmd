@@ -13,7 +13,7 @@ public class PlsqlParsingHelper extends BaseParsingHelper<PlsqlParsingHelper, AS
     public static final PlsqlParsingHelper DEFAULT = new PlsqlParsingHelper(Params.getDefault());
 
     private PlsqlParsingHelper(Params params) {
-        super(PLSQLLanguageModule.NAME, ASTInput.class, params);
+        super(PLSQLLanguageModule.getInstance(), ASTInput.class, params);
     }
 
     @Override

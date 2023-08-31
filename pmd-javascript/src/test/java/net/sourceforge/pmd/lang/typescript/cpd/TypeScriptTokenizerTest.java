@@ -4,27 +4,15 @@
 
 package net.sourceforge.pmd.lang.typescript.cpd;
 
-import java.util.Properties;
-
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
+import net.sourceforge.pmd.lang.typescript.TsLanguageModule;
 
 class TypeScriptTokenizerTest extends CpdTextComparisonTest {
 
     TypeScriptTokenizerTest() {
-        super(".ts");
-    }
-
-    @Override
-    public Tokenizer newTokenizer(Properties properties) {
-        return new TypeScriptTokenizer();
-    }
-
-    @Override
-    protected String getResourcePrefix() {
-        return "../cpd/testdata";
+        super(TsLanguageModule.getInstance(), ".ts");
     }
 
     @Test

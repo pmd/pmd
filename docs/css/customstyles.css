@@ -1007,9 +1007,9 @@ span.soft {
     }
 }
 
-@media (max-width: 990px) {
+@media (min-height: 600px) and (min-width: 990px) {
     #mysidebar {
-        position: relative;
+        position: fixed !important;
     }
 }
 
@@ -1022,6 +1022,15 @@ span.soft {
 @media (max-width: 900px) {
     ul#mysidebar {
         max-width: 100%;
+    }
+}
+
+#inline-toc-details {
+    display: none;
+}
+@media (max-width: 1350px) {
+    #inline-toc-details {
+        display: block;
     }
 }
 

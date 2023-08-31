@@ -13,14 +13,7 @@ import java.awt.Insets;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-/**
- * @deprecated Is internal API
- */
-@Deprecated
-@InternalApi
-public class GridBagHelper {
+class GridBagHelper {
 
     GridBagLayout gridbag;
     Container container;
@@ -30,7 +23,7 @@ public class GridBagHelper {
     int labelAlignment = SwingConstants.RIGHT;
     double[] weights;
 
-    public GridBagHelper(Container container, double[] weights) {
+    GridBagHelper(Container container, double[] weights) {
         this.container = container;
         this.weights = weights;
 

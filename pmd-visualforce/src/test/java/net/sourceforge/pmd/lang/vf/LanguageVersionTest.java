@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
 class LanguageVersionTest extends AbstractLanguageVersionTest {
 
     static Collection<TestDescriptor> data() {
-        return Arrays.asList(new TestDescriptor(VfLanguageModule.NAME, VfLanguageModule.TERSE_NAME,
+        return Arrays.asList(new TestDescriptor(VfLanguageModule.NAME, VfLanguageModule.ID,
                 ApexLanguageModule.getInstance().getDefaultVersion().getVersion(),
                 getLanguage(VfLanguageModule.NAME).getDefaultVersion()));
     }

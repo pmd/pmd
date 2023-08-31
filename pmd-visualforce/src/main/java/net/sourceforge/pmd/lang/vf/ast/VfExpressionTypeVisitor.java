@@ -47,7 +47,7 @@ class VfExpressionTypeVisitor extends VfVisitorBase<Void, Void> {
     private final List<String> objectsDirectories;
 
     VfExpressionTypeVisitor(ParserTask task, VfLanguageProperties vfProperties) {
-        this.fileId = task.getTextDocument().getFileId();
+        this.fileId = task.getFileId();
         this.apexDirectories = vfProperties.getProperty(VfLanguageProperties.APEX_DIRECTORIES_DESCRIPTOR);
         this.objectsDirectories = vfProperties.getProperty(VfLanguageProperties.OBJECTS_DIRECTORIES_DESCRIPTOR);
         this.apexClassNames = new ArrayList<>();

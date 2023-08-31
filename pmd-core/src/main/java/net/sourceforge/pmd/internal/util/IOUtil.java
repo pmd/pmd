@@ -243,7 +243,6 @@ public final class IOUtil {
 
     public static String normalizePath(String path) {
         Path path1 = Paths.get(path);
-        path1.isAbsolute();
         String normalized = path1.normalize().toString();
         if (normalized.contains("." + File.separator) || normalized.contains(".." + File.separator) || "".equals(normalized)) {
             return null;

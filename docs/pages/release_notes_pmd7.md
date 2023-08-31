@@ -144,7 +144,7 @@ Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 This PMD release ships a new version of the pmd-designer.
 For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designer/releases/tag/7.0.0-rc1).
 
-#### New CPD report format cpdhtml-v2.xslt
+### New CPD report format cpdhtml-v2.xslt
 
 Thanks to @mohan-chinnappan-n a new CPD report format has been added which features a data table.
 It uses an XSLT stylesheet to convert CPD's XML format into HTML.
@@ -214,6 +214,12 @@ designed specifically for building event-driven software. It is shipped in the n
 module `pmd-coco`.
 
 Contributors: [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
+
+### New: CPD support for Apache Velocity Template Language
+
+PMD supports Apache Velocity for a very long time, but the CPD integration never got finished.
+This is now done and CPD supports Apache Velocity Template language for detecting copy and paste.
+It is shipped in the module `pmd-vm`.
 
 ### Changed: JavaScript support
 
@@ -388,6 +394,9 @@ The following previously deprecated rules have been finally removed:
 * {% deleted_rule apex/performance/AvoidSoqlInLoops %} -> use {% rule apex/performance/OperationWithLimitsInLoop %}
 * {% deleted_rule apex/performance/AvoidSoslInLoops %} -> use {% rule apex/performance/OperationWithLimitsInLoop %}
 * {% deleted_rule apex/performance/AvoidDmlStatementsInLoops %} -> use {% rule apex/performance/OperationWithLimitsInLoop %}
+* {% deleted_rule apex/codestyle/VariableNamingConventions %} -> use {% rule apex/codestyle/FieldNamingConventions %},
+  {% rule apex/codestyle/FormalParameterNamingConventions %}, {% rule apex/codestyle/LocalVariableNamingConventions %},
+  or {% rule apex/codestyle/PropertyNamingConventions %}
 
 **Java**
 
@@ -460,9 +469,6 @@ The following previously deprecated rules have been finally removed:
   use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
 * UseAssertTrueInsteadOfAssertEquals (java-bestpractices) ->
   use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
-* VariableNamingConventions (apex-codestyle) -> use {% rule apex/codestyle/FieldNamingConventions %},
-  {% rule apex/codestyle/FormalParameterNamingConventions %}, {% rule apex/codestyle/LocalVariableNamingConventions %},
-  or {% rule apex/codestyle/PropertyNamingConventions %}
 * VariableNamingConventions (java-codestyle) -> use {% rule java/codestyle/FieldNamingConventions %},
   {% rule java/codestyle/FormalParameterNamingConventions %},
   or {% rule java/codestyle/LocalVariableNamingConventions %}
@@ -681,6 +687,47 @@ and [Adding a new language with ANTLR](pmd_devdocs_major_adding_new_language_ant
 
 Related issue: [[core] Language lifecycle (#3782)](https://github.com/pmd/pmd/issues/3782)
 
+### Rule properties
+
+* The old deprecated classes like `IntProperty` and `StringProperty` have been removed. Please use
+  {% jdoc core::properties.PropertyFactory %} to create properties.
+* All properties which accept multiple values now use a comma (`,`) as a delimiter. The previous default was a
+  pipe character (`|`). The delimiter is not configurable anymore. If needed, the comma can be escaped
+  with a backslash.
+* The `min` and `max` attributes in property definitions in the XML are now optional and can appear separately
+  or be omitted.
+
+### New Programmatic API for CPD
+
+This release introduces a new programmatic API to replace the old class `CPD`. The new API uses a similar model to
+{% jdoc core::PmdAnalysis %} and is called {% jdoc core::cpd.CpdAnalysis %}. Programmatic execution of CPD should now be
+done with a {% jdoc core::cpd.CPDConfiguration %} and a {% jdoc core::cpd.CpdAnalysis %}, for instance:
+
+```java
+CPDConfiguration config = new CPDConfiguration();
+config.setMinimumTileSize(100);
+config.setOnlyRecognizeLanguage(config.getLanguageRegistry().getLanguageById("java"));
+config.setSourceEncoding(StandardCharsets.UTF_8);
+config.addInputPath(Path.of("src/main/java")
+
+config.setIgnoreAnnotations(true);
+config.setIgnoreLiterals(false);
+
+config.setRendererName("text");
+
+try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
+   // note: don't use `config` once a CpdAnalysis has been created.
+   // optional: add more files
+   cpd.files().addFile(Paths.get("src", "main", "more-java", "ExtraSource.java"));
+
+   cpd.performAnalysis();
+}
+```
+
+CPD can of course still be called via command line or using the module `pmd-cli`. But for tight integration
+this new programmatic API is recommended.
+
+See [PR #4397](https://github.com/pmd/pmd/pull/4397) for details.
 
 ### API changes
 

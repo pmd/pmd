@@ -12,7 +12,7 @@ public final class ScalaParsingHelper extends BaseParsingHelper<ScalaParsingHelp
     public static final ScalaParsingHelper DEFAULT = new ScalaParsingHelper(Params.getDefault());
 
     private ScalaParsingHelper(Params params) {
-        super(ScalaLanguageModule.NAME, ASTSource.class, params);
+        super(ScalaLanguageModule.getInstance(), ASTSource.class, params);
     }
 
     @Override

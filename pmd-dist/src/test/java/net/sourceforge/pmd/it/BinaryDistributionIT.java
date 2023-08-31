@@ -33,8 +33,8 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         "fortran", "gherkin", "go", "groovy", "html", "java", "jsp",
         "julia",
         "kotlin", "lua", "matlab", "modelica", "objectivec", "perl",
-        "php", "plsql", "python", "ruby", "scala", "swift", "tsql",
-        "typescript", "vf", "xml"
+        "php", "plsql", "pom", "python", "ruby", "scala", "swift",
+        "tsql", "typescript", "vf", "vm", "wsdl", "xml", "xsl"
     );
 
     private static final List<String> SUPPORTED_LANGUAGES_PMD = listOf(
@@ -169,13 +169,13 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
 
         result = PMDExecutor.runPMD(createTemporaryReportFile(), tempDir, "-d", srcDir, "-R", "src/test/resources/rulesets/sample-ruleset.xml");
         result.assertExitCode(4);
-        result.assertErrorOutputContains("[main] INFO net.sourceforge.pmd.cli.commands.internal.AbstractPmdSubcommand - Log level is at INFO");
+        result.assertErrorOutputContains("[main] INFO net.sourceforge.pmd.cli - Log level is at INFO");
 
 
         // now with debug
         result = PMDExecutor.runPMD(createTemporaryReportFile(), tempDir, "-d", srcDir, "-R", "src/test/resources/rulesets/sample-ruleset.xml", "--debug");
         result.assertExitCode(4);
-        result.assertErrorOutputContains("[main] INFO net.sourceforge.pmd.cli.commands.internal.AbstractPmdSubcommand - Log level is at TRACE");
+        result.assertErrorOutputContains("[main] INFO net.sourceforge.pmd.cli - Log level is at TRACE");
     }
 
     @Test
