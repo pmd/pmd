@@ -53,6 +53,7 @@ The remaining section describes the complete release notes for 7.0.0.
   * [#4397](https://github.com/pmd/pmd/pull/4397):   \[core] Refactor CPD
   * [#4621](https://github.com/pmd/pmd/issues/4621): \[core] Make `ClasspathClassLoader::getResource` child first
 * doc
+  * [#4294](https://github.com/pmd/pmd/issues/4294): \[doc] Migration Guide for upgrading PMD 6 ➡️ 7
   * [#4303](https://github.com/pmd/pmd/issues/4303): \[doc] Document new property framework
   * [#4521](https://github.com/pmd/pmd/issues/4521): \[doc] Website is not mobile friendly
 * apex-design
@@ -582,6 +583,7 @@ See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html)
     * [#4484](https://github.com/pmd/pmd/issues/4484): \[cli] ast-dump with no properties produce an NPE
 * doc
     * [#2501](https://github.com/pmd/pmd/issues/2501): \[doc] Verify ANTLR Documentation
+    * [#4294](https://github.com/pmd/pmd/issues/4294): \[doc] Migration Guide for upgrading PMD 6 ➡️ 7
     * [#4303](https://github.com/pmd/pmd/issues/4303): \[doc] Document new property framework
     * [#4438](https://github.com/pmd/pmd/issues/4438): \[doc] Documentation links in VS Code are outdated
     * [#4521](https://github.com/pmd/pmd/issues/4521): \[doc] Website is not mobile friendly
