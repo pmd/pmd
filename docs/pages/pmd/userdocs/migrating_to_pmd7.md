@@ -3104,6 +3104,21 @@ a = (((1)));
 * The available versions for each language can be seen in the help message of the CLI `pmd check --help`.
 * See also [Changed: Language versions](pmd_release_notes_pmd7.html#changed-language-versions)
 
+### Migrating custom CPD language modules
+
+This is only relevant, if you are maintaining a CPD language module for a custom language.
+
+* Instead of `AbstractLanguage` extend now {% jdoc core::lang.impl.CpdOnlyLanguageModuleBase %}.
+* Instead of `AntlrTokenManager` use now {% jdoc core::lang.TokenManager %}
+* Instead of `AntlrTokenFilter` also use now {% jdoc core::lang.TokenManager %}
+* Instead of `AntlrTokenFilter` extend now {% jdoc core::cpd.impl.BaseTokenFilter %}
+* CPD Module discovery change. The service loader won't load anymore `src/main/resources/META-INF/services/net.sourceforge.pmd.cpd.Language`
+  but instead `src/main/resources/META-INF/services/net.sourceforge.pmd.lang.Language`. This is the unified
+  language interface for both PMD and CPD capable languages. See also the subinterfaces
+  {% jdoc core::cpd.CpdCapableLanguage %} and {% jdoc core::lang.PmdCapableLanguage %}.
+* The documentation [How to add a new CPD language](pmd_devdocs_major_adding_new_cpd_language.html) has been updated
+  to reflect these changes.
+
 ### Build Tools
 
 {% include note.html content="
