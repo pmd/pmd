@@ -1,10 +1,12 @@
 ---
 title: PLSQL Support
 permalink: pmd_languages_plsql.html
-last_updated: March 2021 (6.33.0)
+last_updated: September 2023 (7.0.0)
 tags: [languages]
 summary: "PLSQL-specific features and guidance"
 ---
+
+{% include language_info.html name='PLSQL' id='plsql' implementation='plsql::lang.plsql.PLSQLLanguageModule' supports_pmd=true supports_cpd=true %}
 
 ## Parsing Exclusions
 
@@ -17,9 +19,9 @@ which cause PMD to treat the source in between these comments more or less
 like a multi-line comment, or in other words, just not try to parse them.
 
 It is good practice to include a reason for excluding inside the
-`-- PMD-EXCUDE-BEGIN` comment separated by a colon.
+`-- PMD-EXCLUDE-BEGIN` comment separated by a colon.
 
-The `PMD-EXCLUDE-BEGIN` and `PMD-EXLUDE-END` comment lines must not contain
+The `PMD-EXCLUDE-BEGIN` and `PMD-EXCLUDE-END` comment lines must not contain
 other statements, e.g. `do_xy(); -- PMD-EXCLUDE-BEGIN` is invalid.
 
 Example:

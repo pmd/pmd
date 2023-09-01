@@ -1,9 +1,14 @@
 ---
 title: JavaScript and TypeScript
 permalink: pmd_languages_js_ts.html
+last_updated: September 2023 (7.0.0)
 tags: [languages]
 summary: "JavaScript and TypeScript infos"
 ---
+
+{% include language_info.html name='JavaScript' id='ecmascript' implementation='javascript::lang.ecmascript.EcmascriptLanguageModule' supports_pmd=true supports_cpd=true %}
+{% include language_info.html name='TypeScript' id='ts' implementation='javascript::lang.typescript.TsLanguageModule' supports_cpd=true %}
+
 
 **JavaScript** support is using [Rhino](https://github.com/mozilla/rhino) for parsing and supports CPD as well as
 PMD with rules.

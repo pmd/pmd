@@ -409,6 +409,32 @@ entries:
     - title: Apex
       url: /pmd_languages_apex.html
       output: web, pdf
+    - title: C/C++
+      url: /pmd_languages_cpp.html
+      output: web, pdf
+    - title: C#
+      url: /pmd_languages_cs.html
+      output: web, pdf
+    - title: Coco
+      url: /pmd_languages_coco.html
+      output: web, pdf
+    - title: Dart
+      url: /pmd_languages_dart.html
+      output: web, pdf
+    - title: Fortran
+      url: /pmd_languages_fortran.html
+      output: web, pdf
+    - title: Gherkin
+      url: /pmd_languages_gherkin.html
+      output: web, pdf
+    - title: Go
+      url: /pmd_languages_go.html
+      output: web, pdf
+    - title: Groovy
+      url: /pmd_languages_groovy.html
+    - title: HTML
+      url: /pmd_languages_html.html
+      output: web, pdf
     - title: Java
       url: /pmd_languages_java.html
       output: web, pdf
@@ -418,29 +444,56 @@ entries:
     - title: JSP
       url: /pmd_languages_jsp.html
       output: web, pdf
+    - title: Julia
+      url: /pmd_languages_julia.html
+      output: web, pdf
     - title: Kotlin
       url: /pmd_languages_kotlin.html
+      output: web, pdf
+    - title: Lua
+      url: /pmd_languages_lua.html
+      output: web, pdf
+    - title: Matlab
+      url: /pmd_languages_matlab.html
+      output: web, pdf
+    - title: Modelica
+      url: /pmd_languages_modelica.html
+      output: web, pdf
+    - title: Objective-C
+      url: /pmd_languages_objectivec.html
+      output: web, pdf
+    - title: Perl
+      url: /pmd_languages_perl.html
+      output: web, pdf
+    - title: PHP
+      url: /pmd_languages_php.html
       output: web, pdf
     - title: PLSQL
       url: /pmd_languages_plsql.html
       output: web, pdf
+    - title: Python
+      url: /pmd_languages_python.html
+      output: web, pdf
+    - title: Ruby
+      url: /pmd_languages_ruby.html
+      output: web, pdf
+    - title: Scala
+      url: /pmd_languages_scala.html
+      output: web, pdf
+    - title: Swift
+      url: /pmd_languages_swift.html
+      output: web, pdf
+    - title: TSql
+      url: /pmd_languages_tsql.html
+      output: web, pdf
     - title: Visualforce
       url: /pmd_languages_visualforce.html
       output: web, pdf
+    - title: Velocity Template Language (VTL)
+      url: /pmd_languages_vm.html
+      output: web, pdf
     - title: XML and XML dialects
       url: /pmd_languages_xml.html
-      output: web, pdf
-    - title: HTML
-      url: /pmd_languages_html.html
-      output: web, pdf
-    - title: Gherkin
-      url: /pmd_languages_gherkin.html
-      output: web, pdf
-    - title: Julia
-      url: /pmd_languages_julia.html
-      output: web, pdf
-    - title: Coco
-      url: /pmd_languages_coco.html
       output: web, pdf
   - title: Developer Documentation
     output: web, pdf

@@ -1,7 +1,11 @@
 ---
 title: Gherkin 
 permalink: pmd_languages_gherkin.html
+last_updated: September 2023 (7.0.0)
+tags: [languages]
 ---
+
+{% include language_info.html name='Gherkin' id='gherkin' implementation='gherkin::lang.gherkin.GherkinLanguageModule' supports_cpd=true %}
 
 The [Gherkin](https://cucumber.io/docs/gherkin/) language is used to define test cases for the
 [Cucumber](https://cucumber.io/) testing tool for behavior-driven development.

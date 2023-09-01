@@ -1,19 +1,16 @@
 ---
 title: Visualforce Support
 permalink: pmd_languages_visualforce.html
-author: Andreas Dangel
 last_updated: September 2023
+tags: [languages]
+author: Andreas Dangel
 ---
 
-Implementation: {% jdoc visualforce::lang.vf.VfLanguageModule %}
-Name: Salesforce VisualForce
-id: vf
-PMD: yes
-CPD: yes
+{% include language_info.html name='Salesforce Visualforce' id='vf' implementation='visualforce::lang.vf.VfLanguageModule' supports_pmd=true supports_cpd=true %}
 
 ## Language Properties
 
-See [VisualForce language properties](pmd_languages_configuration.html#visualforce-language-properties)
+See [Visualforce language properties](pmd_languages_configuration.html#visualforce-language-properties)
 
 ## Type resolution
 

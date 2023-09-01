@@ -1,13 +1,13 @@
 ---
 title: Apex support
 permalink: pmd_languages_apex.html
-author: Clément Fournier
 last_updated: September 2023 (7.0.0)
+author: Clément Fournier
 tags: [languages]
 summary: "Apex-specific features and guidance"
 ---
 
-{% include language_info.html name='Apex' id='apex' implementation='apex::lang.apex.ApexLanguageModule' supports_pmd='✔️' supports_cpd='✔️' %}
+{% include language_info.html name='Apex' id='apex' implementation='apex::lang.apex.ApexLanguageModule' supports_pmd=true supports_cpd=true %}
 
 ## Metrics framework
 
