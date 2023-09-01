@@ -143,7 +143,7 @@ class JavadocTag < Liquid::Tag
     artifact_name, @type_fqcn = JDocNamespaceDeclaration::parse_fqcn(@type_fqcn, var_ctx)
     resolved_type = JavadocTag::fqcn_type(artifact_name, @type_fqcn)
 
-    JavadocTag::diagnose(artifact_name, @type_fqcn, @is_package_ref, resolved_type)
+    diagnose(var_ctx, artifact_name, @type_fqcn, @is_package_ref, resolved_type)
 
     # Expand FQCN of arguments
     @member_suffix.gsub!(JDocNamespaceDeclaration::NAMESPACED_FQCN_REGEX) {|fqcn| JDocNamespaceDeclaration::parse_fqcn(fqcn, var_ctx)[1]}
@@ -221,15 +221,18 @@ class JavadocTag < Liquid::Tag
 
   BASE_PMD_DIR = File.join(File.expand_path(File.dirname(__FILE__)), "..", "..")
 
-  def self.diagnose(artifact_id, fqcn, expect_package, resolved_type)
+  def diagnose(context, artifact_id, fqcn, expect_package, resolved_type)
     tag_name= expect_package ? "jdoc_package" : "jdoc"
+    # Note: the line numbers don't account for the frontmatter lines
+    # See https://github.com/jekyll/jekyll/issues/7192 and https://github.com/jekyll/jekyll/pull/9385
+    location = "#{context['page']['path']}:#{@line_number}+?"
 
     if resolved_type == :package && !expect_package
-      warn "\e[33;1m#{tag_name} generated link to #{fqcn}, but it was found to be a package name. Did you mean to use jdoc_package instead of jdoc?\e[0m"
+      warn "\e[33;1m#{location}: #{tag_name} generated link to #{fqcn}, but it was found to be a package name. Did you mean to use jdoc_package instead of jdoc?\e[0m"
     elsif resolved_type == :file && expect_package
-      warn "\e[33;1m#{tag_name} generated link to #{fqcn}, but it was found to be a java file name. Did you mean to use jdoc instead of jdoc_package?\e[0m"
+      warn "\e[33;1m#{location}: #{tag_name} generated link to #{fqcn}, but it was found to be a java file name. Did you mean to use jdoc instead of jdoc_package?\e[0m"
     elsif !resolved_type
-      warn "\e[33;1m#{tag_name} generated link to #{fqcn}, but the #{expect_package ? "directory" : "source file"} couldn't be found in the source tree of #{artifact_id}\e[0m"
+      warn "\e[33;1m#{location}: #{tag_name} generated link to #{fqcn}, but the #{expect_package ? "directory" : "source file"} couldn't be found in the source tree of #{artifact_id}\e[0m"
     end
   end
 
