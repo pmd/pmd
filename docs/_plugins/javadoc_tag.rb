@@ -106,16 +106,25 @@ class JavadocTag < Liquid::Tag
   def initialize(tag_name, doc_ref, tokens)
     super
 
-    # sanitize a little
-    doc_ref.delete! " \"'"
+    @doc_ref = doc_ref
+  end
 
-    arr = doc_ref.split("#") # split into fqcn + member suffix
+  def render(var_ctx)
+    # maybe the parameter is actually a variable - try to resolve it first
+    if var_ctx.key?(@doc_ref)
+        @doc_ref = var_ctx[@doc_ref]
+    end
+
+    # sanitize a little
+    @doc_ref.delete! " \"'"
+
+    arr = @doc_ref.split("#") # split into fqcn + member suffix
 
     @type_fqcn = arr[0]
     @member_suffix = arr[1] || "" # default to empty string
 
     unless Regexp.new('(!\w*!)?' + Regexp.union(JDocNamespaceDeclaration::NAMESPACED_FQCN_REGEX, JDocNamespaceDeclaration::SYM_REGEX).source ) =~ @type_fqcn
-      fail "Wrong syntax for type reference, expected eg nspace::a.b.C, !opts!nspace::a.b.C, or :nspace"
+      fail "Wrong syntax for type reference, expected eg nspace::a.b.C, !opts!nspace::a.b.C, or :nspace, but got \'" + @type_fqcn + "\'"
     end
 
     # If no options, then split produces [@type_fqcn]
@@ -130,9 +139,6 @@ class JavadocTag < Liquid::Tag
     elsif tag_name == "jdoc_old"
       @use_previous_api_version = true
     end
-  end
-
-  def render(var_ctx)
 
     artifact_name, @type_fqcn = JDocNamespaceDeclaration::parse_fqcn(@type_fqcn, var_ctx)
     resolved_type = JavadocTag::fqcn_type(artifact_name, @type_fqcn)

@@ -7,14 +7,7 @@ tags: [languages]
 summary: "Apex-specific features and guidance"
 ---
 
-Implementation: {% jdoc apex::lang.apex.ApexLanguageModule %}
-Name: Apex
-id: apex
-PMD: yes
-CPD: yes
-
-
-{% include warning.html content="Todo for pmd 7" %}
+{% include language_info.html name='Apex' id='apex' implementation='apex::lang.apex.ApexLanguageModule' supports_pmd='✔️' supports_cpd='✔️' %}
 
 ## Metrics framework
 

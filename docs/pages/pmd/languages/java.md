@@ -7,6 +7,8 @@ tags: [languages]
 summary: "Java-specific features and guidance"
 ---
 
+{% include language_info.html name='Java' id='java' implementation='java::lang.java.JavaLanguageModule' supports_pmd='✔️' supports_cpd='✔️' %}
+
 {% include warning.html content="WIP, todo for pmd 7" %}
 
 ## Overview of supported Java language versions

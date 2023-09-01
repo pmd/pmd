@@ -1,0 +1,11 @@
+<details>
+    <summary>Name: {{include.name}}</summary>
+    <div class="card">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">Implementation: {% jdoc include.implementation %}</li>
+            <li class="list-group-item">id: {{include.id}}</li>
+            <li class="list-group-item">PMD: {% if include.supports_pmd %}✔️{% else %}❌{% endif %}</li>
+            <li class="list-group-item">CPD: {% if include.supports_cpd %}✔️{% else %}❌{% endif %}</li>
+        </ul>
+    </div>
+</details>
