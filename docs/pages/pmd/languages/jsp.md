@@ -2,7 +2,7 @@
 title: JSP Support
 permalink: pmd_languages_jsp.html
 last_updated: September 2023 (7.0.0)
-tags: [languages]
+tags: [languages, PmdCapableLanguage, CpdCapableLanguage]
 author: Pieter Vanraemdonck
 summary: "JSP-specific features and guidance"
 ---

@@ -183,6 +183,29 @@ The Scala module also has a test, written in Kotlin instead of Java:
 
     *Note:* You'll need to add your category ruleset to `categories.properties`, so that it can be found.
 
+### 13. Create documentation page
+Finishing up your new language module by adding a page in the documentation. Create a new markdown file
+`<langId>.md` in `docs/pages/pmd/languages/`. This file should have the following frontmatter:
+
+```
+---
+title: <Language Name>
+permalink: pmd_languages_<langId>.html
+last_updated: <Month> <Year> (<PMD Version>)
+tags: [languages, PmdCapableLanguage, CpdCapableLanguage]
+---
+```
+
+On this page, language specifics can be documented, e.g. when the language was first supported by PMD.
+There is also the following Jekyll Include, that creates summary box for the language:
+
+```
+{% raw %}
+{% include language_info.html name='<Language Name>' id='<langId>' implementation='<langId>::lang.<langId>.<langId>LanguageModule' supports_cpd=true supports_pmd=true %}
+{% endraw %}
+```
+
+
 ## Debugging with Rule Designer
 
 When implementing your grammar it may be very useful to see how PMD parses your example files.

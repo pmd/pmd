@@ -2,7 +2,7 @@
 title: Julia 
 permalink: pmd_languages_julia.html
 last_updated: September 2023 (7.0.0)
-tags: [languages]
+tags: [languages, CpdCapableLanguage]
 ---
 
 {% include language_info.html name='Julia' id='julia' implementation='julia::lang.julia.JuliaLanguageModule' supports_cpd=true %}

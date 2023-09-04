@@ -2,7 +2,7 @@
 title: Visualforce Support
 permalink: pmd_languages_visualforce.html
 last_updated: September 2023
-tags: [languages]
+tags: [languages, PmdCapableLanguage, CpdCapableLanguage]
 author: Andreas Dangel
 ---
 

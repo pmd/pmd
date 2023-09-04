@@ -2,7 +2,7 @@
 title: Processing XML files
 permalink: pmd_languages_xml.html
 last_updated: September 2023 (7.0.0)
-tags: [languages]
+tags: [languages, PmdCapableLanguage, CpdCapableLanguage]
 ---
 
 {% include language_info.html name='Maven POM' id='pom' implementation='xml::lang.pom.PomLanguageModule' supports_pmd=true supports_cpd=true %}

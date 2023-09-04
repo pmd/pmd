@@ -2,7 +2,7 @@
 title: JavaScript and TypeScript
 permalink: pmd_languages_js_ts.html
 last_updated: September 2023 (7.0.0)
-tags: [languages]
+tags: [languages, PmdCapableLanguage, CpdCapableLanguage]
 summary: "JavaScript and TypeScript infos"
 ---
 

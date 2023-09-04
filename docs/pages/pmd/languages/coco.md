@@ -2,7 +2,7 @@
 title: Coco 
 permalink: pmd_languages_coco.html
 last_updated: September 2023 (7.0.0)
-tags: [languages]
+tags: [languages, CpdCapableLanguage]
 ---
 
 {% include language_info.html name='Coco' id='coco' implementation='coco::lang.coco.CocoLanguageModule' supports_cpd=true %}

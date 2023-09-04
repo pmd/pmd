@@ -3,7 +3,7 @@ title: Java support
 permalink: pmd_languages_java.html
 author: Clément Fournier
 last_updated: September 2023 (7.0.0)
-tags: [languages]
+tags: [languages, PmdCapableLanguage, CpdCapableLanguage]
 summary: "Java-specific features and guidance"
 ---
 

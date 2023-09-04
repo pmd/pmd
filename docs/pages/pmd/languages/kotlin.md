@@ -2,7 +2,7 @@
 title: Kotlin Support
 permalink: pmd_languages_kotlin.html
 last_updated: September 2023 (7.0.0)
-tags: [languages]
+tags: [languages, PmdCapableLanguage, CpdCapableLanguage]
 summary: "Kotlin-specific features and guidance"
 ---
 

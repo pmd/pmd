@@ -313,7 +313,7 @@ entries:
     - title: null
       output: web, pdf
       subfolders:
-      - title: Salesforce VisualForce Rules
+      - title: Salesforce Visualforce Rules
         output: web, pdf
         subfolderitems:
         - title: Index
@@ -349,7 +349,7 @@ entries:
     - title: null
       output: web, pdf
       subfolders:
-      - title: VM Rules
+      - title: Velocity Template Language (VTL) Rules
         output: web, pdf
         subfolderitems:
         - title: Index
@@ -403,6 +403,9 @@ entries:
   - title: Language-Specific Documentation
     output: web, pdf
     folderitems:
+    - title: Overview
+      url: /pmd_languages_index.html
+      output: web, pdf
     - title: Language configuration
       url: /pmd_languages_configuration.html
       output: web, pdf

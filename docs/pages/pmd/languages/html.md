@@ -2,7 +2,7 @@
 title: Processing HTML files
 permalink: pmd_languages_html.html
 last_updated: September 2023 (7.0.0)
-tags: [languages]
+tags: [languages, PmdCapableLanguage, CpdCapableLanguage]
 ---
 
 {% include language_info.html name='HTML' id='html' implementation='html::lang.html.HtmlLanguageModule' supports_pmd=true supports_cpd=true %}

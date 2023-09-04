@@ -2,7 +2,7 @@
 title: PLSQL Support
 permalink: pmd_languages_plsql.html
 last_updated: September 2023 (7.0.0)
-tags: [languages]
+tags: [languages, PmdCapableLanguage, CpdCapableLanguage]
 summary: "PLSQL-specific features and guidance"
 ---
 
