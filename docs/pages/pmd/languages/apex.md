@@ -7,7 +7,12 @@ tags: [languages, PmdCapableLanguage, CpdCapableLanguage]
 summary: "Apex-specific features and guidance"
 ---
 
-{% include language_info.html name='Apex' id='apex' implementation='apex::lang.apex.ApexLanguageModule' supports_pmd=true supports_cpd=true %}
+> Apex is a strongly typed, object-oriented programming language that allows developers to execute flow and
+> transaction control statements on the Salesforce Platform server, in conjunction with calls to the API.
+
+More info: [Apex Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_dev_guide.htm)
+
+{% include language_info.html name='Apex' id='apex' implementation='apex::lang.apex.ApexLanguageModule' supports_pmd=true supports_cpd=true since='5.5.0' %}
 
 ## Metrics framework
 
@@ -16,10 +21,10 @@ together with {% jdoc core::lang.metrics.MetricsUtil %}.
 
 ## Multifile Analysis
 
-See {% jdoc apex::lang.apex.multifile.ApexMultifileAnalysis %}
-Uses [ApexLink](https://github.com/nawforce/apex-link), see also [Apexlink POC #2830](https://github.com/pmd/pmd/pull/2830).
+Integration happens in {% jdoc apex::lang.apex.multifile.ApexMultifileAnalysis %}. It uses
+[ApexLink](https://github.com/nawforce/apex-link). For detailed information, see also [Apexlink POC #2830](https://github.com/pmd/pmd/pull/2830).
 
-Note: ApexLink new home: https://github.com/apex-dev-tools 
+{% include note.html content="ApexLink's new home: <https://github.com/apex-dev-tools>" %}
 
 Used for rule {% rule apex/design/UnusedMethod %}
 
@@ -29,7 +34,8 @@ See [Apex language properties](pmd_languages_configuration.html#apex-language-pr
 
 ## Parser
 
-We use Jorje...
+We use Jorje, the Apex parsers that is shipped within the Apex Language Server. This is part of
+the [Salesforce Extensions for VS Code](https://github.com/forcedotcom/salesforcedx-vscode).
 
-## Limitations
-
+We take the binary from <https://github.com/forcedotcom/salesforcedx-vscode/tree/develop/packages/salesforcedx-vscode-apex/out>
+and provide it as a maven dependency (see [pmd-apex-jorje](https://github.com/pmd/pmd/tree/master/pmd-apex-jorje)).

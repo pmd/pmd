@@ -2,6 +2,7 @@
     <summary>Language Info for {{include.name}}</summary>
     <div class="card">
         <ul class="list-group list-group-flush">
+            {% if include.since %}<li class="list-group-item">Since PMD {{include.since}}</li>{% endif %}
             <li class="list-group-item">Implementation: {% jdoc include.implementation %}</li>
             <li class="list-group-item">Id: {{include.id}}</li>
             <li class="list-group-item">PMD: {% if include.supports_pmd %}✔️{% else %}❌{% endif %}</li>

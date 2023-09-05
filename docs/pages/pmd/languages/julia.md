@@ -5,7 +5,7 @@ last_updated: September 2023 (7.0.0)
 tags: [languages, CpdCapableLanguage]
 ---
 
-{% include language_info.html name='Julia' id='julia' implementation='julia::lang.julia.JuliaLanguageModule' supports_cpd=true %}
+{% include language_info.html name='Julia' id='julia' implementation='julia::lang.julia.JuliaLanguageModule' supports_cpd=true since='7.0.0' %}
 
 The [Julia](https://julialang.org/) language is dynamically typed, like a scripting language,
 and has good support for interactive use. 

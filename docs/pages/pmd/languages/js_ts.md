@@ -7,7 +7,7 @@ summary: "JavaScript and TypeScript infos"
 ---
 
 {% include language_info.html name='JavaScript' id='ecmascript' implementation='javascript::lang.ecmascript.EcmascriptLanguageModule' supports_pmd=true supports_cpd=true %}
-{% include language_info.html name='TypeScript' id='ts' implementation='javascript::lang.typescript.TsLanguageModule' supports_cpd=true %}
+{% include language_info.html name='TypeScript' id='ts' implementation='javascript::lang.typescript.TsLanguageModule' supports_cpd=true since='7.0.0' %}
 
 
 **JavaScript** support is using [Rhino](https://github.com/mozilla/rhino) for parsing and supports CPD as well as
