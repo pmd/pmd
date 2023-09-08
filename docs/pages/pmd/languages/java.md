@@ -67,7 +67,7 @@ TODO describe
 
 ## Type and symbol APIs
 
-TODO describe APIs: see #4319
+TODO describe APIs: see #4319 and #2689
 
 ## Metrics framework
 
