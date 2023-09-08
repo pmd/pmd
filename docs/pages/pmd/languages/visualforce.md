@@ -4,9 +4,13 @@ permalink: pmd_languages_visualforce.html
 last_updated: September 2023
 tags: [languages, PmdCapableLanguage, CpdCapableLanguage]
 author: Andreas Dangel
+summary: "Visualforce-specific features and guidance"
 ---
 
-{% include language_info.html name='Salesforce Visualforce' id='vf' implementation='visualforce::lang.vf.VfLanguageModule' supports_pmd=true supports_cpd=true %}
+> [Visualforce](https://developer.salesforce.com/docs/atlas.en-us.pages.meta/pages/) consists of a tag-based markup
+> language that gives developers way to build applications and customize the Salesforce user interface.
+
+{% include language_info.html name='Salesforce Visualforce' id='vf' implementation='visualforce::lang.vf.VfLanguageModule' supports_pmd=true supports_cpd=true since='5.6.0' %}
 
 ## Language Properties
 

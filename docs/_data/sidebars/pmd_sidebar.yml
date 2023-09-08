@@ -486,7 +486,7 @@ entries:
     - title: Swift
       url: /pmd_languages_swift.html
       output: web, pdf
-    - title: TSql
+    - title: T-SQL
       url: /pmd_languages_tsql.html
       output: web, pdf
     - title: Visualforce

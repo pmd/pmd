@@ -6,8 +6,8 @@ tags: [languages, CpdCapableLanguage]
 summary: "Coco features and guidance"
 ---
 
-Coco is a modern programming language designed specifically for building event-driven software.
-It is part of the Coco Platform from <https://cocotec.io/>.
+> Coco is a modern programming language designed specifically for building event-driven software.
+> It is part of the Coco Platform from <https://cocotec.io/>.
 
 {% include language_info.html name='Coco' id='coco' implementation='coco::lang.coco.CocoLanguageModule' supports_cpd=true since='7.0.0' %}
 

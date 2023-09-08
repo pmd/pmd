@@ -7,7 +7,7 @@ tags: [languages, PmdCapableLanguage, CpdCapableLanguage]
 summary: "Java-specific features and guidance"
 ---
 
-{% include language_info.html name='Java' id='java' implementation='java::lang.java.JavaLanguageModule' supports_pmd=true supports_cpd=true %}
+{% include language_info.html name='Java' id='java' implementation='java::lang.java.JavaLanguageModule' supports_pmd=true supports_cpd=true since='1.0.0' %}
 
 {% include warning.html content="WIP, todo for pmd 7" %}
 
@@ -48,6 +48,10 @@ it via the environment variable `PMD_JAVA_OPTS` and select the new language vers
 
 Note: we only support preview language features for the latest two java versions.
 
+## Language Properties
+
+See [Java language properties](pmd_languages_configuration.html#java-language-properties)
+
 ## Type and symbol resolution
 
 Java being a statically typed language, a Java program contains more information that just its syntax tree; for instance, every expression has a static type, and every method call is bound to a method overload statically (even if that overload is virtual). In PMD, much of this information is resolved from the AST by additional passes, which run after parsing, and before rules can inspect the tree. 
@@ -63,7 +67,7 @@ TODO describe
 
 ## Type and symbol APIs
 
-TODO describe APIs 
+TODO describe APIs: see #4319
 
 ## Metrics framework
 

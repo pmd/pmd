@@ -1,16 +1,24 @@
 ---
-title: PLSQL Support
+title: PL/SQL Support
 permalink: pmd_languages_plsql.html
 last_updated: September 2023 (7.0.0)
 tags: [languages, PmdCapableLanguage, CpdCapableLanguage]
-summary: "PLSQL-specific features and guidance"
+summary: "PL/SQL-specific features and guidance"
 ---
 
-{% include language_info.html name='PLSQL' id='plsql' implementation='plsql::lang.plsql.PLSQLLanguageModule' supports_pmd=true supports_cpd=true %}
+> [Oracle Database PL/SQL Language Reference](https://docs.oracle.com/en/database/oracle/oracle-database/23/lnpls/index.html)
+> describes and explains how to use PL/SQL, the Oracle procedural extension of SQL.
+
+{% include language_info.html name='PLSQL' id='plsql' implementation='plsql::lang.plsql.PLSQLLanguageModule' supports_pmd=true supports_cpd=true since='5.1.0' %}
+
+## Grammar
+
+PL/SQL support started out using the grammar from [PlDoc](https://pldoc.sourceforge.net/), an open-source utility for
+generating HTML documentation of PL/SQL code. But the grammar has been changed significantly.
 
 ## Parsing Exclusions
 
-The grammar for PLSQL used in PMD has several bugs and might not parse all DDL scripts
+The grammar for PL/SQL used in PMD has several bugs and might not parse all DDL scripts
 without errors. However, it should be best practice to call PMD for _every_ DDL script.
 Thus, we introduce the following workaround to cope with the situation.
 

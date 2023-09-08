@@ -1,17 +1,12 @@
 ---
-title: Processing HTML files
+title: HTML support
 permalink: pmd_languages_html.html
 last_updated: September 2023 (7.0.0)
 tags: [languages, PmdCapableLanguage, CpdCapableLanguage]
+summary: "HTML-specific features and guidance"
 ---
 
-{% include language_info.html name='HTML' id='html' implementation='html::lang.html.HtmlLanguageModule' supports_pmd=true supports_cpd=true %}
-
-## The HTML language module
-
-**Since:** 6.45.0
-
-**Minimum Java Runtime:** Java 8
+{% include language_info.html name='HTML' id='html' implementation='html::lang.html.HtmlLanguageModule' supports_pmd=true supports_cpd=true since='6.45.0' %}
 
 {% include warning.html content="This language module is experimental and may change any time." %}
 

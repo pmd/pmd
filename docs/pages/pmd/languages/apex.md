@@ -7,10 +7,9 @@ tags: [languages, PmdCapableLanguage, CpdCapableLanguage]
 summary: "Apex-specific features and guidance"
 ---
 
-> Apex is a strongly typed, object-oriented programming language that allows developers to execute flow and
+> [Apex](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_dev_guide.htm) is a strongly
+> typed, object-oriented programming language that allows developers to execute flow and
 > transaction control statements on the Salesforce Platform server, in conjunction with calls to the API.
-
-More info: [Apex Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_dev_guide.htm)
 
 {% include language_info.html name='Apex' id='apex' implementation='apex::lang.apex.ApexLanguageModule' supports_pmd=true supports_cpd=true since='5.5.0' %}
 
