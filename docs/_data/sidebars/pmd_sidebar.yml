@@ -549,6 +549,9 @@ entries:
         - title: Creating (XML) dump of the AST
           url: /pmd_devdocs_experimental_ast_dump.html
           output: web, pdf
+        - title: List of experimental Features
+          url: /tag_experimental.html
+          output: web, pdf
   - title: Project documentation
     output: web, pdf
     folderitems:
