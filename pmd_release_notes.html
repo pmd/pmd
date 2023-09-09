@@ -1683,6 +1683,11 @@ The remaining section describes the complete release notes for 7.0.0.</p>
       <li><a href="https://github.com/pmd/pmd/issues/4621">#4621</a>: [core] Make <code class="language-plaintext highlighter-rouge">ClasspathClassLoader::getResource</code> child first</li>
     </ul>
   </li>
+  <li>cli
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/pull/4423">#4423</a>:   [cli] Fix NPE when only <code class="language-plaintext highlighter-rouge">--file-list</code> is specified</li>
+    </ul>
+  </li>
   <li>doc
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/4294">#4294</a>: [doc] Migration Guide for upgrading PMD 6 ➡️ 7</li>
@@ -1946,6 +1951,7 @@ instead of a <code class="language-plaintext highlighter-rouge">String</code>.</
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/4528">#4528</a>: [apex] Update to apexlink - <a href="https://github.com/nawforce">Kevin Jones</a> (@nawforce)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4637">#4637</a>: [java] fix #4634 - JUnit4TestShouldUseTestAnnotation false positive with TestNG - <a href="https://github.com/krdabrowski">Krystian Dabrowski</a> (@krdabrowski)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4664">#4664</a>: [cli] CPD: Fix NPE when only <code class="language-plaintext highlighter-rouge">--file-list</code> is specified - <a href="https://github.com/wener-tiobe">Wener</a> (@wener-tiobe)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4665">#4665</a>: [java] Doc: Fix references AutoClosable -&gt; AutoCloseable - <a href="https://github.com/AndreyBozhko">Andrey Bozhko</a> (@AndreyBozhko)</li>
 </ul>
 
@@ -2365,6 +2371,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/issues/2234">#2234</a>: [core] Consolidate PMD CLI into a single command</li>
       <li><a href="https://github.com/pmd/pmd/issues/3828">#3828</a>: [core] Progress reporting</li>
       <li><a href="https://github.com/pmd/pmd/issues/4079">#4079</a>: [cli] Split off CLI implementation into a pmd-cli submodule</li>
+      <li><a href="https://github.com/pmd/pmd/pull/4423">#4423</a>:   [cli] Fix NPE when only <code class="language-plaintext highlighter-rouge">--file-list</code> is specified</li>
       <li><a href="https://github.com/pmd/pmd/issues/4482">#4482</a>: [cli] pmd.bat can only be executed once</li>
       <li><a href="https://github.com/pmd/pmd/issues/4484">#4484</a>: [cli] ast-dump with no properties produce an NPE</li>
     </ul>
@@ -2646,6 +2653,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
   <li><a href="https://github.com/pmd/pmd/pull/4542">#4542</a>: [java] Fix #4510: A false positive about ConstructorCallsOverridableMethod and @<!-- -->Value - <a href="https://github.com/LynnBroe">AnnaDev</a> (@LynnBroe)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4553">#4553</a>: [java] Fix #4492: GuardLogStatement gives false positive when argument is a Java method reference - <a href="https://github.com/anastasiia-koba">Anastasiia Koba</a> (@anastasiia-koba)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4637">#4637</a>: [java] fix #4634 - JUnit4TestShouldUseTestAnnotation false positive with TestNG - <a href="https://github.com/krdabrowski">Krystian Dabrowski</a> (@krdabrowski)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4664">#4664</a>: [cli] CPD: Fix NPE when only <code class="language-plaintext highlighter-rouge">--file-list</code> is specified - <a href="https://github.com/wener-tiobe">Wener</a> (@wener-tiobe)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4665">#4665</a>: [java] Doc: Fix references AutoClosable -&gt; AutoCloseable - <a href="https://github.com/AndreyBozhko">Andrey Bozhko</a> (@AndreyBozhko)</li>
 </ul>
 
@@ -2685,7 +2693,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Sep 8, 2023 <br />
+             Site last generated: Sep 9, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
