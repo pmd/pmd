@@ -12,6 +12,8 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.equalTo;
 
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -147,17 +149,16 @@ class CpdCliTest extends BaseCliTest {
 
     @Test
     void testNoDuplicatesResultRendering() throws Exception {
-        final Path srcDir = Paths.get(SRC_DIR).toAbsolutePath();
         String expectedReport = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             + "<pmd-cpd>\n"
-            + "   <file path=\"" + srcDir.resolve("dup1.java") + "\"\n"
+            + "   <file path=\"" + SRC_PATH.resolve("dup1.java") + "\"\n"
             + "         totalNumberOfTokens=\"89\"/>\n"
-            + "   <file path=\"" + srcDir.resolve("dup2.java") + "\"\n"
+            + "   <file path=\"" + SRC_PATH.resolve("dup2.java") + "\"\n"
             + "         totalNumberOfTokens=\"89\"/>\n"
-            + "   <file path=\"" + srcDir.resolve("file_with_ISO-8859-1_encoding.java")
+            + "   <file path=\"" + SRC_PATH.resolve("file_with_ISO-8859-1_encoding.java")
             + "\"\n"
             + "         totalNumberOfTokens=\"8\"/>\n"
-            + "   <file path=\"" + srcDir.resolve("file_with_utf8_bom.java") + "\"\n"
+            + "   <file path=\"" + SRC_PATH.resolve("file_with_utf8_bom.java") + "\"\n"
                 + "         totalNumberOfTokens=\"9\"/>\n"
                 + "</pmd-cpd>\n";
 
@@ -227,5 +228,18 @@ class CpdCliTest extends BaseCliTest {
             .checkStdOut(equalTo(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<pmd-cpd/>\n"
             ));
+    }
+
+    @Test
+    void testFileListOnly() throws Exception {
+        Path fileList = tempDir.resolve("fileList.txt");
+        StringBuilder fileListContent = new StringBuilder();
+        fileListContent.append(SRC_PATH.resolve("dup1.java")).append(System.lineSeparator());
+        fileListContent.append(SRC_PATH.resolve("dup2.java")).append(System.lineSeparator());
+        Files.write(fileList, fileListContent.toString().getBytes(StandardCharsets.UTF_8));
+        runCli(VIOLATIONS_FOUND, "--minimum-tokens", "5", "--file-list", fileList.toString())
+            .verify(result -> result.checkStdOut(containsString(
+                    "Found a 14 line (86 tokens) duplication in the following files:"
+            )));
     }
 }
