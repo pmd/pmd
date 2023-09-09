@@ -7211,6 +7211,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "m0rjc",
+      "name": "Richard Corfield",
+      "avatar_url": "https://avatars.githubusercontent.com/u/994206?v=4",
+      "profile": "https://github.com/m0rjc",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
