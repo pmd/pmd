@@ -61,5 +61,7 @@ class EcmascriptTokenizerTest extends CpdTextComparisonTest {
     }
 
     @Test
-    void testDecorators() { doTest("decorator"); }
+    void testDecorators() {
+        doTest("decorator");
+    }
 }
