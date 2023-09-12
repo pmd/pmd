@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.cpd.impl;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.Lexer;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class AntlrTokenizerTest {
 
