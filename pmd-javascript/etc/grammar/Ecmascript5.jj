@@ -281,7 +281,8 @@ TOKEN :
     |
         [
           "$",
-          "_"
+          "_",
+          "@"
         ]
     |
         <UNICODE_ESCAPE_SEQUENCE>
