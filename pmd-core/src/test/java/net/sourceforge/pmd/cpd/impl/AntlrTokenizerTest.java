@@ -25,7 +25,7 @@ class AntlrTokenizerTest {
         CharStream inputStream = CharStreams.fromString("//Header Comment\n\uFEFFusing System");
         CharStream expectedStream = CharStreams.fromString("//Header Comment\nusing System");
         final AntlrTokenizerTester genericToken = new AntlrTokenizerTester();
-        final CharStream outputStream = genericToken.bomFilter(inputStream);
+        final CharStream outputStream = genericToken.filterBomChar(inputStream);
 
         assertEquals(outputStream.toString(), expectedStream.toString());
     }
@@ -34,7 +34,7 @@ class AntlrTokenizerTest {
     void testStreamWithoutBOM() {
         CharStream inputStream = CharStreams.fromString("//Header Comment\nusing System");
         final AntlrTokenizerTester genericToken = new AntlrTokenizerTester();
-        final CharStream outputStream = genericToken.bomFilter(inputStream);
+        final CharStream outputStream = genericToken.filterBomChar(inputStream);
 
         assertEquals(outputStream.toString(), inputStream.toString());
     }
