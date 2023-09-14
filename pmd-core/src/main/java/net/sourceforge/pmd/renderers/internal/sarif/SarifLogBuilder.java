@@ -58,7 +58,7 @@ public class SarifLogBuilder {
 
     public SarifLogBuilder addRunTimeError(Report.ProcessingError error) {
         ArtifactLocation artifactLocation = ArtifactLocation.builder()
-                .uri(error.getFile())
+                .uri(error.getFileId().getUriString())
                 .build();
 
         PhysicalLocation physicalLocation = PhysicalLocation.builder()
@@ -147,7 +147,7 @@ public class SarifLogBuilder {
 
     private Location getRuleViolationLocation(RuleViolation rv) {
         ArtifactLocation artifactLocation = ArtifactLocation.builder()
-                .uri(rv.getFilename())
+                .uri(rv.getFileId().getUriString())
                 .build();
 
         Region region = Region.builder()
@@ -190,7 +190,7 @@ public class SarifLogBuilder {
         return Component.builder()
                 .name("PMD")
                 .version(PMDVersion.VERSION)
-                .informationUri("https://pmd.github.io/pmd/")
+                .informationUri("https://docs.pmd-code.org/latest/")
                 .build();
     }
 }

@@ -29,11 +29,12 @@ import net.sourceforge.pmd.PMDVersion;
 class BinaryDistributionIT extends AbstractBinaryDistributionTest {
 
     private static final List<String> SUPPORTED_LANGUAGES_CPD = listOf(
-        "apex", "cpp", "cs", "dart", "ecmascript",
+        "apex", "coco", "cpp", "cs", "dart", "ecmascript",
         "fortran", "gherkin", "go", "groovy", "html", "java", "jsp",
+        "julia",
         "kotlin", "lua", "matlab", "modelica", "objectivec", "perl",
-        "php", "plsql", "python", "ruby", "scala", "swift", "tsql",
-        "vf", "xml"
+        "php", "plsql", "pom", "python", "ruby", "scala", "swift",
+        "tsql", "typescript", "vf", "vm", "wsdl", "xml", "xsl"
     );
 
     private static final List<String> SUPPORTED_LANGUAGES_PMD = listOf(
@@ -87,6 +88,8 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         result.add(basedir + "shell/pmd-completion.sh");
         result.add(basedir + "lib/pmd-core-" + PMDVersion.VERSION + ".jar");
         result.add(basedir + "lib/pmd-java-" + PMDVersion.VERSION + ".jar");
+        result.add(basedir + "sbom/pmd-" + PMDVersion.VERSION + "-cyclonedx.xml");
+        result.add(basedir + "sbom/pmd-" + PMDVersion.VERSION + "-cyclonedx.json");
         return result;
     }
 
@@ -166,13 +169,13 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
 
         result = PMDExecutor.runPMD(createTemporaryReportFile(), tempDir, "-d", srcDir, "-R", "src/test/resources/rulesets/sample-ruleset.xml");
         result.assertExitCode(4);
-        result.assertErrorOutputContains("[main] INFO net.sourceforge.pmd.cli.commands.internal.AbstractPmdSubcommand - Log level is at INFO");
+        result.assertErrorOutputContains("[main] INFO net.sourceforge.pmd.cli - Log level is at INFO");
 
 
         // now with debug
         result = PMDExecutor.runPMD(createTemporaryReportFile(), tempDir, "-d", srcDir, "-R", "src/test/resources/rulesets/sample-ruleset.xml", "--debug");
         result.assertExitCode(4);
-        result.assertErrorOutputContains("[main] INFO net.sourceforge.pmd.cli.commands.internal.AbstractPmdSubcommand - Log level is at TRACE");
+        result.assertErrorOutputContains("[main] INFO net.sourceforge.pmd.cli - Log level is at TRACE");
     }
 
     @Test
@@ -218,4 +221,13 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         result = CpdExecutor.runCpd(tempDir, "--minimum-tokens", "1000", "--format", "text", "--dir", srcDir);
         result.assertExitCode(0);
     }
+
+    @Test
+    void runAstDump() throws Exception {
+        File jumbledIncrementerSrc = new File(srcDir, "JumbledIncrementer.java");
+        List<String> args = listOf("--format", "xml", "--language", "java", "--file", jumbledIncrementerSrc.toString());
+        ExecutionResult result = PMDExecutor.runCommand(tempDir, "ast-dump", args);
+        result.assertExitCode(0);
+    }
+
 }

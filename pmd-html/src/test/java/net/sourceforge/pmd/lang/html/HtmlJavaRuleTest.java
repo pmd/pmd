@@ -15,6 +15,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.html.ast.ASTHtmlElement;
+import net.sourceforge.pmd.lang.html.ast.HtmlParsingHelper;
 import net.sourceforge.pmd.lang.html.rule.AbstractHtmlRule;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 
@@ -51,7 +52,7 @@ class HtmlJavaRuleTest {
                 return super.visit(node, data);
             }
         };
-        rule.setLanguage(HtmlParsingHelper.DEFAULT.getLanguage());
+        rule.setLanguage(HtmlLanguageModule.getInstance());
         List<RuleViolation> violations = runRule(LIGHTNING_WEB_COMPONENT, rule);
         assertEquals(2, violations.size());
         assertEquals(4, violations.get(0).getBeginLine());

@@ -5,14 +5,17 @@
 package net.sourceforge.pmd;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.PropertySource;
-import net.sourceforge.pmd.properties.StringProperty;
 
 /**
  * This is the basic Rule interface for PMD rules.
@@ -25,21 +28,29 @@ import net.sourceforge.pmd.properties.StringProperty;
  */
 public interface Rule extends PropertySource {
 
+    // TODO these should not be properties
+
     /**
      * The property descriptor to universally suppress violations with messages
      * matching a regular expression.
      */
-    // TODO 7.0.0 use PropertyDescriptor<Optional<Pattern>>
-    StringProperty VIOLATION_SUPPRESS_REGEX_DESCRIPTOR = new StringProperty("violationSuppressRegex",
-            "Suppress violations with messages matching a regular expression", null, Integer.MAX_VALUE - 1);
+    PropertyDescriptor<Optional<Pattern>> VIOLATION_SUPPRESS_REGEX_DESCRIPTOR =
+        PropertyFactory.regexProperty("violationSuppressRegex")
+                       .desc("Suppress violations with messages matching a regular expression")
+                       .toOptional("")
+                       .defaultValue(Optional.empty())
+                       .build();
 
     /**
      * Name of the property to universally suppress violations on nodes which
      * match a given relative XPath expression.
      */
-    // TODO 7.0.0 use PropertyDescriptor<Optional<String>>
-    StringProperty VIOLATION_SUPPRESS_XPATH_DESCRIPTOR = new StringProperty("violationSuppressXPath",
-            "Suppress violations on nodes which match a given relative XPath expression.", null, Integer.MAX_VALUE - 2);
+    PropertyDescriptor<Optional<String>> VIOLATION_SUPPRESS_XPATH_DESCRIPTOR =
+        PropertyFactory.stringProperty("violationSuppressXPath")
+                       .desc("Suppress violations on nodes which match a given relative XPath expression.")
+                       .toOptional("")
+                       .defaultValue(Optional.empty())
+                       .build();
 
     /**
      * Get the Language of this Rule.

@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
  */
 public class SimpleTestTextFile extends StringTextFile {
 
-    public SimpleTestTextFile(String content, String pathId, LanguageVersion languageVersion) {
-        super(content, pathId, languageVersion);
+    public SimpleTestTextFile(String content, FileId fileId, LanguageVersion languageVersion) {
+        super(content, fileId, languageVersion);
     }
 }

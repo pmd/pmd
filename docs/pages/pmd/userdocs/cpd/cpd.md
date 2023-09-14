@@ -4,6 +4,7 @@ tags: [cpd, userdocs]
 summary: "Learn how to use CPD, the copy-paste detector shipped with PMD."
 permalink: pmd_userdocs_cpd.html
 author: Tom Copeland <tom@infoether.com>
+last_updated: August 2023 (7.0.0)
 ---
 
 ## Overview
@@ -22,19 +23,27 @@ See how to add it [here](pmd_devdocs_major_adding_new_cpd_language.html).
 
 ### Why should you care about duplicates?
 
-It's certainly important to know where to get CPD, and how to call it, but it's worth stepping back for a moment and asking yourself why you should care about this, being the occurrence of duplicate code blocks.
+It's certainly important to know where to get CPD, and how to call it, but it's worth stepping back for a moment and
+asking yourself why you should care about this, being the occurrence of duplicate code blocks.
 
-Assuming duplicated blocks of code are supposed to do the same thing, any refactoring, even simple, must be duplicated too -- which is unrewarding grunt work, and puts pressure on the developer to find every place in which to perform the refactoring. Automated tools like CPD can help with that to some extent.
+Assuming duplicated blocks of code are supposed to do the same thing, any refactoring, even simple, must be duplicated
+too -- which is unrewarding grunt work, and puts pressure on the developer to find every place in which to perform
+the refactoring. Automated tools like CPD can help with that to some extent.
 
-However, failure to keep the code in sync may mean automated tools will no longer recognise these blocks as duplicates. This means the task of finding duplicates to keep them in sync when doing subsequent refactorings can no longer be entrusted to an automated tool -- adding more burden on the maintainer. Segments of code initially supposed to do the same thing may grow apart undetected upon further refactoring.
+However, failure to keep the code in sync may mean automated tools will no longer recognise these blocks as duplicates.
+This means the task of finding duplicates to keep them in sync when doing subsequent refactorings can no longer be
+entrusted to an automated tool -- adding more burden on the maintainer. Segments of code initially supposed to do the
+same thing may grow apart undetected upon further refactoring.
 
 Now, if the code may never change in the future, then this is not a problem.
 
-Otherwise, the most viable solution is to not duplicate. If the duplicates are already there, then they should be refactored out. We thus advise developers to use CPD to **help remove duplicates**, not to help keep duplicates in sync.
+Otherwise, the most viable solution is to not duplicate. If the duplicates are already there, then they should be
+refactored out. We thus advise developers to use CPD to **help remove duplicates**, not to help keep duplicates in sync.
 
 ### Refactoring duplicates
 
-Once you have located some duplicates, several refactoring strategies may apply depending of the scope and extent of the duplication. Here's a quick summary:
+Once you have located some duplicates, several refactoring strategies may apply depending of the scope and extent of
+the duplication. Here's a quick summary:
 
 * If the duplication is local to a method or single class:
     * Extract a local variable if the duplicated logic is not prohibitively long
@@ -45,7 +54,8 @@ Once you have located some duplicates, several refactoring strategies may apply 
 * If the duplication occurs consistently in unrelated hierarchies:
     * Introduce a common ancestor to those class hierarchies
 
-Novice as much as advanced readers may want to [read on on Refactoring Guru](https://refactoring.guru/smells/duplicate-code) for more in-depth strategies, use cases and explanations.
+Novice as much as advanced readers may want to [read on on Refactoring Guru](https://refactoring.guru/smells/duplicate-code)
+for more in-depth strategies, use cases and explanations.
 
 ## CLI Usage
 
@@ -119,6 +129,15 @@ Novice as much as advanced readers may want to [read on on Refactoring Guru](htt
                             are described [here](#available-report-formats)."
                default="text"
     %}
+    {% include custom/cli_option_row.html options="--relativize-paths-with,-z"
+               option_arg="path"
+               description="Path relative to which directories are rendered in the report. This option allows
+                    shortening directories in the report; without it, paths are rendered as mentioned in the
+                    source directory (option \"--dir\").
+                    The option can be repeated, in which case the shortest relative path will be used.
+                    If the root path is mentioned (e.g. \"/\" or \"C:\\\"), then the paths will be rendered
+                    as absolute."
+    %}
     {% include custom/cli_option_row.html options="--[no-]fail-on-violation"
                description="Specifies whether CPD exits with non-zero status if violations are found.
                             By default CPD exits with status 4 if violations are found.
@@ -143,6 +162,11 @@ Novice as much as advanced readers may want to [read on on Refactoring Guru](htt
                description="Ignore sequences of literals (common e.g. in list initializers)"
                default="false"
                languages="C#, C++, Lua"
+    %}
+    {% include custom/cli_option_row.html options="--ignore-sequences"
+               description="Ignore sequences of identifier and literals"
+               default="false"
+               languages="C++"
     %}
     {% include custom/cli_option_row.html options="--ignore-usings"
                description="Ignore `using` directives in C# when comparing text"
@@ -261,36 +285,43 @@ to be "debug".
 
 * C#
 * C/C++
+* [Coco](pmd_languages_coco.html)
 * Dart
 * EcmaScript (JavaScript)
 * Fortran
-* Gherkin (Cucumber)
+* [Gherkin](pmd_languages_gherkin.html) (Cucumber)
 * Go
 * Groovy
-* Html
-* Java
-* Jsp
-* Kotlin
+* [Html](pmd_languages_html.html)
+* [Java](pmd_languages_java.html)
+* [Jsp](pmd_languages_jsp.html)
+* [Julia](pmd_languages_julia.html)
+* [Kotlin](pmd_languages_kotlin.html)
 * Lua
 * Matlab
 * Modelica
 * Objective-C
 * Perl
 * PHP
-* PL/SQL
+* [PL/SQL](pmd_languages_plsql.html)
 * Python
 * Ruby
-* Salesforce.com Apex
+* [Salesforce.com Apex](pmd_languages_apex.html)
 * Scala
 * Swift
-* Visualforce
-* XML
-
+* T-SQL
+* [TypeScript](pmd_languages_js_ts.html)
+* [Visualforce](pmd_languages_visualforce.html)
+* vm (Apache Velocity)
+* [XML](pmd_languages_xml.html)
+  * POM (Apache Maven)
+  * XSL
+  * WSDL
 
 ## Available report formats
 
 * text : Default format
-* xml
+* xml (and xslt)
 * csv
 * csv_with_linecount_per_file
 * vs
@@ -404,6 +435,8 @@ the CPD task as usual and right after it invoke the Ant XSLT script like this:
 <xslt in="cpd.xml" style="etc/xslt/cpdhtml.xslt" out="cpd.html" />
 ```
 
+See [section "xslt" in CPD Report Formats](pmd_userdocs_cpd_report_formats.html#xslt) for more examples.
+
 ## GUI
 
 CPD also comes with a simple GUI. You can start it through the unified CLI interface provided in the `bin` folder:
@@ -457,7 +490,7 @@ public Object someParameterizedFactoryMethod(int x) throws Exception {
     // any code here will be ignored for the duplication detection
 }
 //disable suppression
-@SuppressWarnings("CPD-END)
+@SuppressWarnings("CPD-END")
 public void nextMethod() {
 }
 ```

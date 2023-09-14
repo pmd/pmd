@@ -11,10 +11,10 @@
 
     <rule name="ForceCast"
           language="swift"
-          since="7.0"
+          since="7.0.0"
           message="Force casts should be avoided."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.github.io/pmd/pmd_rules_swift_errorprone.html#forcecast">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_swift_errorprone.html#forcecast">
         <description>
             Force casts should be avoided. This may lead to a crash if it's not used carefully.
             For example assuming a JSON property has a given type, or your reused Cell has a certain contract.
@@ -41,10 +41,10 @@ NSNumber() as? Int // no violation
 
     <rule name="ForceTry"
           language="swift"
-          since="7.0"
+          since="7.0.0"
           message="Force tries should be avoided."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.github.io/pmd/pmd_rules_swift_errorprone.html#forcetry">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_swift_errorprone.html#forcetry">
         <description>
             Force tries should be avoided. If the code being wrapped happens to raise and exception, our application will crash.
             Consider using a conditional try and handling the resulting optional, or wrapping the try statement in a do-catch block.

@@ -22,6 +22,8 @@ import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AtLeastOneChildOfTyp
  * UnionType ::= {@link ASTClassOrInterfaceType ClassType} ("|" {@link ASTClassOrInterfaceType ClassType})+
  *
  * </pre>
+ *
+ * @see ASTCatchParameter#getAllExceptionTypes()
  */
 public final class ASTUnionType extends AbstractJavaTypeNode
     implements ASTReferenceType,

@@ -33,6 +33,7 @@ import net.sourceforge.pmd.RuleSetLoadException;
 import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.renderers.TextRenderer;
@@ -98,7 +99,7 @@ public abstract class RuleTst {
                                     "No such property '" + propertyName + "' on Rule " + rule.getName());
                         }
 
-                        Object value = propertyDescriptor.valueFrom((String) entry.getValue());
+                        Object value = propertyDescriptor.serializer().fromString((String) entry.getValue());
                         rule.setProperty(propertyDescriptor, value);
                     }
                 }
@@ -201,8 +202,9 @@ public abstract class RuleTst {
         System.out.println(" -> Expected messages: " + test.getExpectedMessages());
         System.out.println(" -> Expected line numbers: " + test.getExpectedLineNumbers());
         System.out.println();
+        StringWriter reportOutput = new StringWriter();
         TextRenderer renderer = new TextRenderer();
-        renderer.setWriter(new StringWriter());
+        renderer.setWriter(reportOutput);
         try {
             renderer.start();
             renderer.renderFileReport(report);
@@ -210,7 +212,7 @@ public abstract class RuleTst {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        System.out.println(renderer.getWriter().toString());
+        System.out.println(reportOutput);
         System.out.println("--------------------------------------------------------------");
     }
 
@@ -225,11 +227,11 @@ public abstract class RuleTst {
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.setIgnoreIncrementalAnalysis(true);
         configuration.setDefaultLanguageVersion(languageVersion);
-        configuration.setThreads(1);
+        configuration.setThreads(0); // don't use separate threads
         configuration.prependAuxClasspath(".");
 
         try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
-            pmd.files().addFile(TextFile.forCharSeq(code, "testFile", languageVersion));
+            pmd.files().addFile(TextFile.forCharSeq(code, FileId.fromPathLikeString("file"), languageVersion));
             pmd.addRuleSet(RuleSet.forSingleRule(rule));
             pmd.addListener(GlobalAnalysisListener.exceptionThrower());
             return pmd.performAnalysisAndCollectReport();

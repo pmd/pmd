@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.internal.util.BaseCloseable;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -25,28 +26,23 @@ class NioTextFile extends BaseCloseable implements TextFile {
     private final Path path;
     private final Charset charset;
     private final LanguageVersion languageVersion;
-    private final String displayName;
-    private final String pathId;
+    private final FileId fileId;
     private boolean readOnly;
 
     NioTextFile(Path path,
+                @Nullable FileId parentFsPath,
                 Charset charset,
                 LanguageVersion languageVersion,
-                String displayName,
                 boolean readOnly) {
         AssertionUtil.requireParamNotNull("path", path);
         AssertionUtil.requireParamNotNull("charset", charset);
         AssertionUtil.requireParamNotNull("language version", languageVersion);
-        AssertionUtil.requireParamNotNull("display name", displayName);
 
-        this.displayName = displayName;
         this.readOnly = readOnly;
         this.path = path;
         this.charset = charset;
         this.languageVersion = languageVersion;
-        // using the URI here, that handles files inside zip archives automatically (schema "jar:file:...!/path/inside/zip")
-        // normalization ensures cannonical paths
-        this.pathId = path.normalize().toUri().toString();
+        this.fileId = FileId.fromPath(path, parentFsPath);
     }
 
     @Override
@@ -55,13 +51,8 @@ class NioTextFile extends BaseCloseable implements TextFile {
     }
 
     @Override
-    public @NonNull String getDisplayName() {
-        return displayName;
-    }
-
-    @Override
-    public String getPathId() {
-        return pathId;
+    public FileId getFileId() {
+        return fileId;
     }
 
     @Override

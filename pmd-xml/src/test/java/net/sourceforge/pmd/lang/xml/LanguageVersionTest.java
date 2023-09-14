@@ -16,13 +16,10 @@ class LanguageVersionTest extends AbstractLanguageVersionTest {
 
     static Collection<TestDescriptor> data() {
         return Arrays.asList(
-                new TestDescriptor(XmlLanguageModule.NAME, XmlLanguageModule.TERSE_NAME, "1.1",
-                    getLanguage(XmlLanguageModule.NAME).getDefaultVersion()),
-                new TestDescriptor(XslLanguageModule.NAME, XslLanguageModule.TERSE_NAME, "3.0",
-                    getLanguage(XslLanguageModule.NAME).getDefaultVersion()),
-                new TestDescriptor(WsdlLanguageModule.NAME, WsdlLanguageModule.TERSE_NAME, "2.0",
-                    getLanguage(WsdlLanguageModule.NAME).getDefaultVersion()),
-                new TestDescriptor(PomLanguageModule.NAME, PomLanguageModule.TERSE_NAME, "4.0.0",
-                    getLanguage(PomLanguageModule.NAME).getDefaultVersion()));
+            TestDescriptor.defaultVersionIs(XmlLanguageModule.getInstance(), "1.1"),
+            TestDescriptor.defaultVersionIs(XslLanguageModule.getInstance(), "3.0"),
+            TestDescriptor.defaultVersionIs(WsdlLanguageModule.getInstance(), "2.0"),
+            TestDescriptor.defaultVersionIs(PomLanguageModule.getInstance(), "4.0.0")
+        );
     }
 }

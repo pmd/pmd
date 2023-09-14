@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import java.net.URI;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -16,10 +14,11 @@ import net.sourceforge.pmd.lang.apex.multifile.ApexMultifileAnalysis;
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextRegion;
 
 import com.google.summit.ast.CompilationUnit;
-import com.nawforce.common.diagnostics.Issue;
+import com.nawforce.pkgforce.api.Issue;
 
 public final class ASTApexFile extends AbstractApexNode.Single<CompilationUnit> implements RootNode {
 
@@ -63,11 +62,7 @@ public final class ASTApexFile extends AbstractApexNode.Single<CompilationUnit> 
     }
 
     public List<Issue> getGlobalIssues() {
-        String filename = getAstInfo().getTextDocument().getPathId();
-        if (filename.length() > 7 && "file://".equalsIgnoreCase(filename.substring(0, 7))) {
-            URI uri = URI.create(filename);
-            filename = Paths.get(uri).toString();
-        }
-        return multifileAnalysis.getFileIssues(filename);
+        FileId fileId = getAstInfo().getTextDocument().getFileId();
+        return multifileAnalysis.getFileIssues(fileId.getAbsolutePath());
     }
 }

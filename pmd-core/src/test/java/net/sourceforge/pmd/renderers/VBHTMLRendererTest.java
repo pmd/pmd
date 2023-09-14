@@ -75,7 +75,7 @@ class VBHTMLRendererTest extends AbstractRendererTest {
                 + "#RowColor1 { background-color: #eeeeee; }" + EOL + "#RowColor2 { background-color: white; }"
                 + EOL
                 + "--></style><body><center><br><table border=\"0\" width=\"80%\"><tr id=TableHeader><td colspan=\"2\"><font class=title>&nbsp;Problems found</font></td></tr><tr id=RowColor2><td><font class=body>"
-                + error.getFile() + "</font></td><td><font class=body><pre>" + error.getDetail() + "</pre></font></td></tr></table></center></body></html>" + EOL;
+                + error.getFileId().getOriginalPath() + "</font></td><td><font class=body><pre>" + error.getDetail() + "</pre></font></td></tr></table></center></body></html>" + EOL;
     }
 
     @Override

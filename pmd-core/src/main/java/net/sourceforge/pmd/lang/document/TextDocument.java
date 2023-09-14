@@ -10,7 +10,7 @@ import java.io.Reader;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.cpd.SourceCode;
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
@@ -20,7 +20,7 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  * to a {@link TextFile}. It reflects some in-memory snapshot of the file,
  * though the file may still be edited externally.
  *
- * <p>TextDocument is meant to replace CPD's {@link SourceCode} and PMD's
+ * <p>TextDocument is meant to replace CPD's SourceCode and PMD's
  * {@link DataSource}, though the abstraction level of {@link DataSource}
  * is the {@link TextFile}.
  *
@@ -86,14 +86,9 @@ public interface TextDocument extends Closeable {
     LanguageVersion getLanguageVersion();
 
     /**
-     * Returns {@link TextFile#getPathId()} for the text file backing this document.
+     * Returns {@link TextFile#getFileId()} for the text file backing this document.
      */
-    String getPathId();
-
-    /**
-     * Returns {@link TextFile#getDisplayName()} for the text file backing this document.
-     */
-    String getDisplayName();
+    FileId getFileId();
 
 
     /**
@@ -168,7 +163,6 @@ public interface TextDocument extends Closeable {
 
     /**
      * Returns a region that spans the text of all the given lines.
-     * This is intended to provide a replacement for {@link SourceCode#getSlice(int, int)}.
      *
      * <p>Note that, as line numbers may only be obtained from {@link #toLocation(TextRegion)},
      * and hence are line numbers of the original source, both parameters
@@ -271,23 +265,23 @@ public interface TextDocument extends Closeable {
     /**
      * Returns a read-only document for the given text.
      *
-     * @see TextFile#forCharSeq(CharSequence, String, LanguageVersion)
+     * @see TextFile#forCharSeq(CharSequence, FileId, LanguageVersion)
      */
     static TextDocument readOnlyString(final CharSequence source, LanguageVersion lv) {
-        return readOnlyString(source, TextFile.UNKNOWN_FILENAME, lv);
+        return readOnlyString(source, FileId.UNKNOWN, lv);
     }
 
     /**
      * Returns a read-only document for the given text. This works as
      * if by calling {@link TextDocument#create(TextFile)} on a textfile
-     * produced by {@link TextFile#forCharSeq(CharSequence, String, LanguageVersion) forString},
+     * produced by {@link TextFile#forCharSeq(CharSequence, FileId, LanguageVersion) forString},
      * but doesn't throw {@link IOException}, as such text files will
      * not throw.
      *
-     * @see TextFile#forCharSeq(CharSequence, String, LanguageVersion)
+     * @see TextFile#forCharSeq(CharSequence, FileId, LanguageVersion)
      */
     @SuppressWarnings("PMD.CloseResource")
-    static TextDocument readOnlyString(@NonNull CharSequence source, @NonNull String filename, @NonNull LanguageVersion lv) {
+    static TextDocument readOnlyString(@NonNull CharSequence source, @NonNull FileId filename, @NonNull LanguageVersion lv) {
         TextFile textFile = TextFile.forCharSeq(source, filename, lv);
         try {
             return create(textFile);
@@ -296,4 +290,10 @@ public interface TextDocument extends Closeable {
         }
     }
 
+    @Deprecated
+    @DeprecatedUntil700
+    // note: this method is for backwards compatibility only - currently used by pmd-designer
+    static TextDocument readOnlyString(@NonNull CharSequence source, @NonNull String filename, @NonNull LanguageVersion lv) {
+        return readOnlyString(source, FileId.fromPathLikeString(filename), lv);
+    }
 }

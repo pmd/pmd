@@ -15,8 +15,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.PMDConfiguration;
+import net.sourceforge.pmd.AbstractConfiguration;
 import net.sourceforge.pmd.lang.document.FileCollector;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.util.database.DBMSMetadata;
 import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
@@ -34,9 +35,10 @@ public final class FileCollectionUtil {
 
     }
 
-    public static void collectFiles(PMDConfiguration configuration, FileCollector collector) {
+    public static void collectFiles(AbstractConfiguration configuration, FileCollector collector) {
         if (configuration.getSourceEncoding() != null) {
             collector.setCharset(configuration.getSourceEncoding());
+            collector.setRecursive(configuration.collectFilesRecursively());
         }
 
 
@@ -51,14 +53,18 @@ public final class FileCollectionUtil {
             collectFileList(collector, configuration.getInputFile());
         }
 
-        if (configuration.getIgnoreFile() != null) {
+        if (configuration.getIgnoreFile() != null || !configuration.getExcludes().isEmpty()) {
             // This is to be able to interpret the log (will report 'adding' xxx)
             LOG.debug("Now collecting files to exclude.");
             // errors like "excluded file does not exist" are reported as warnings.
-            // todo better reporting of *where* exactly the path is
             MessageReporter mutedLog = new ErrorsAsWarningsReporter(collector.getReporter());
             try (FileCollector excludeCollector = collector.newCollector(mutedLog)) {
-                collectFileList(excludeCollector, configuration.getIgnoreFile());
+
+                if (configuration.getIgnoreFile() != null) {
+                    // todo better reporting of *where* exactly the path is
+                    collectFileList(excludeCollector, configuration.getIgnoreFile());
+                }
+                collectFiles(excludeCollector, configuration.getExcludes());
                 collector.exclude(excludeCollector);
             }
         }
@@ -126,7 +132,7 @@ public final class FileCollectionUtil {
 
                 try (Reader sourceCode = dbmsMetadata.getSourceCode(sourceObject)) {
                     String source = IOUtil.readToString(sourceCode);
-                    collector.addSourceFile(source, falseFilePath);
+                    collector.addSourceFile(FileId.fromPathLikeString(falseFilePath), source);
                 } catch (SQLException ex) {
                     collector.getReporter().warnEx("Cannot get SourceCode for {}  - skipping ...",
                                                    new Object[] { falseFilePath },

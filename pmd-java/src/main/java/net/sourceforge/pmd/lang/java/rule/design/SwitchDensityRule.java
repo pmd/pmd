@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchBranch;
@@ -12,8 +12,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.rule.internal.CommonPropertyDescriptors;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.properties.PropertyFactory;
 
 /**
  * Switch Density - This is the number of statements over the number of
@@ -28,13 +28,12 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  */
 public class SwitchDensityRule extends AbstractJavaRulechainRule {
 
-    private static final PropertyDescriptor<Double> REPORT_LEVEL =
-        // can't use CommonPropertyDescriptors because we need a double property
-        PropertyFactory.doubleProperty("minimum")
-                       .desc("Threshold above which a node is reported")
-                       .require(positive())
-                       .defaultValue(10d)
-                       .build();
+    private static final PropertyDescriptor<Integer> REPORT_LEVEL =
+            CommonPropertyDescriptors.reportLevelProperty()
+                    .desc("Threshold above which a switch statement or expression is reported")
+                    .require(positive())
+                    .defaultValue(10)
+                    .build();
 
     public SwitchDensityRule() {
         super(ASTSwitchStatement.class, ASTSwitchExpression.class);

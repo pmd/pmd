@@ -23,6 +23,7 @@ import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
@@ -73,7 +74,7 @@ public class TreeExporter {
         TextFile textFile;
         if (configuration.isReadStdin()) {
             io.stderr.println("Reading from stdin...");
-            textFile = TextFile.forReader(readFromSystemIn(), "stdin", langVersion);
+            textFile = TextFile.forReader(readFromSystemIn(), FileId.STDIN, langVersion);
         } else {
             textFile = TextFile.forPath(configuration.getFile(), configuration.getSourceEncoding(), langVersion);
         }
@@ -115,7 +116,7 @@ public class TreeExporter {
     }
     
     private <T> void setProperty(PropertyDescriptor<T> descriptor, PropertySource bundle, String value) {
-        bundle.setProperty(descriptor, descriptor.valueFrom(value));
+        bundle.setProperty(descriptor, descriptor.serializer().fromString(value));
     }
     
     private AbortedException bail(String message) {

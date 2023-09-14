@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.ast.impl.javacc;
 
 import java.util.Objects;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.document.FileLocation;
 
@@ -20,12 +22,12 @@ public class MalformedSourceException extends FileAnalysisException {
     public MalformedSourceException(String message, Throwable cause, FileLocation fileLocation) {
         super(message, cause);
         this.location = Objects.requireNonNull(fileLocation);
-        setFileName(fileLocation.getFileName());
+        setFileId(fileLocation.getFileId());
     }
 
     @Override
-    protected String positionToString() {
-        return super.positionToString() + " at " + location.startPosToString();
+    protected @NonNull FileLocation location() {
+        return location;
     }
 
     @Override

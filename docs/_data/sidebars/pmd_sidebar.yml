@@ -34,6 +34,9 @@ entries:
   - title: User Documentation
     output: web, pdf
     folderitems:
+    - title: Migration Guide for PMD 7
+      url: /pmd_userdocs_migrating_to_pmd7.html
+      output: web, pdf
     - title: Installation and basic CLI usage
       url: /pmd_userdocs_installation.html
       output: web, pdf
@@ -409,6 +412,9 @@ entries:
     - title: Java
       url: /pmd_languages_java.html
       output: web, pdf
+    - title: JavaScript / TypeScript
+      url: /pmd_languages_js_ts.html
+      output: web, pdf
     - title: JSP
       url: /pmd_languages_jsp.html
       output: web, pdf
@@ -429,6 +435,12 @@ entries:
       output: web, pdf
     - title: Gherkin
       url: /pmd_languages_gherkin.html
+      output: web, pdf
+    - title: Julia
+      url: /pmd_languages_julia.html
+      output: web, pdf
+    - title: Coco
+      url: /pmd_languages_coco.html
       output: web, pdf
   - title: Developer Documentation
     output: web, pdf
@@ -469,7 +481,7 @@ entries:
         - title: Adding a new language (JavaCC)
           url: /pmd_devdocs_major_adding_new_language_javacc.html
           output: web, pdf
-        - title: Adding a new language (Antlr)
+        - title: Adding a new language (ANTLR)
           url: /pmd_devdocs_major_adding_new_language_antlr.html
           output: web, pdf
         - title: Adding a new CPD language

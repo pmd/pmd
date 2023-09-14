@@ -4,14 +4,15 @@
 package net.sourceforge.pmd.lang.ast.test
 
 import net.sourceforge.pmd.*
+import net.sourceforge.pmd.lang.PmdCapableLanguage
 import net.sourceforge.pmd.internal.util.IOUtil
 import net.sourceforge.pmd.lang.*
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask
 import net.sourceforge.pmd.lang.ast.RootNode
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter
+import net.sourceforge.pmd.lang.document.FileId
 import net.sourceforge.pmd.lang.document.TextDocument
-import net.sourceforge.pmd.lang.document.TextFile
 import net.sourceforge.pmd.lang.rule.XPathRule
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener
@@ -29,6 +30,9 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         private val rootClass: Class<T>,
         protected val params: Params
 ) {
+
+    constructor(lang: PmdCapableLanguage, rootClass: Class<T>, params: Params)
+            : this(lang.name, rootClass, params)
 
     data class Params(
         val doProcess: Boolean,
@@ -64,9 +68,9 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
             ?: throw AssertionError("Unsupported version $version for language $language")
     }
 
-    val language: Language
+    val language: PmdCapableLanguage
         get() =
-            params.languageRegistry.getLanguageByFullName(langName)
+            params.languageRegistry.getLanguageByFullName(langName) as? PmdCapableLanguage?
                 ?: run {
                     val langNames = params.languageRegistry.commaSeparatedList { it.name }
                     throw AssertionError("'$langName' is not a supported language (available $langNames)")
@@ -118,7 +122,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     fun parse(
         sourceCode: String,
         version: String? = null,
-        fileName: String = TextFile.UNKNOWN_FILENAME
+        fileName: FileId = FileId.UNKNOWN
     ): T {
         val lversion = if (version == null) defaultVersion else getVersion(version)
         val params = params.copy(defaultVerString = lversion.version)
@@ -159,14 +163,18 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
      */
     @JvmOverloads
     open fun parseResource(resource: String, version: String? = null): T =
-        parse(readResource(resource), version, fileName = resource)
+        parse(
+            readResource(resource),
+            version,
+            fileName = FileId.fromPathLikeString(params.resourcePrefix + resource)
+        )
 
     /**
      * Fetches and [parse]s the [path].
      */
     @JvmOverloads
     open fun parseFile(path: Path, version: String? = null): T =
-            parse(IOUtil.readToString(Files.newBufferedReader(path)), version, fileName = path.toAbsolutePath().toString())
+        parse(IOUtil.readToString(Files.newBufferedReader(path)), version, fileName = FileId.fromPath(path))
 
     /**
      * Fetches the source of the given [clazz].
@@ -224,7 +232,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     fun executeRule(
         rule: Rule,
         code: String,
-        fileName: String = "testfile.${language.extensions[0]}"
+        fileName: FileId = FileId.fromPathLikeString("testfile.${language.extensions[0]}")
     ): Report {
         if (rule.language == null)
             rule.language = language
@@ -233,7 +241,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
             suppressMarker = params.suppressMarker
             forceLanguageVersion = defaultVersion
             isIgnoreIncrementalAnalysis = true
-            threads = 1
+            threads = 0 // don't use separate threads for rule execution
         }
 
         return PmdAnalysis.create(config).use { pmd ->
@@ -251,6 +259,6 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         executeRule(
             rule,
             code = Files.newBufferedReader(path).readText(),
-            fileName = path.toString()
+            fileName = FileId.fromPath(path)
         )
 }

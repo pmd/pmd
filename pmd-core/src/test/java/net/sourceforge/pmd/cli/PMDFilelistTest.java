@@ -4,11 +4,13 @@
 
 package net.sourceforge.pmd.cli;
 
+import static net.sourceforge.pmd.internal.util.FileCollectionUtil.collectFileList;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
@@ -26,39 +28,40 @@ import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.util.log.MessageReporter;
 
 class PMDFilelistTest {
-    private static final String RESOURCE_PREFIX = "src/test/resources/net/sourceforge/pmd/cli/";
+
+    private static final Path RESOURCES = Paths.get("src/test/resources/net/sourceforge/pmd/cli/");
 
     private @NonNull FileCollector newCollector() {
         return FileCollector.newCollector(new LanguageVersionDiscoverer(LanguageRegistry.PMD), MessageReporter.quiet());
-    }
-
-    private static void collectFileList(FileCollector collector, String x) {
-        FileCollectionUtil.collectFileList(collector, Paths.get(x));
     }
 
     @Test
     void testGetApplicableFiles() {
         FileCollector collector = newCollector();
 
-        collectFileList(collector, RESOURCE_PREFIX + "filelist.txt");
+        collectFileList(collector, RESOURCES.resolve("filelist.txt"));
 
         List<TextFile> applicableFiles = collector.getCollectedFiles();
         assertThat(applicableFiles, hasSize(2));
-        assertThat(applicableFiles.get(0).getPathId(), endsWith("anotherfile.dummy"));
-        assertThat(applicableFiles.get(1).getPathId(), endsWith("somefile.dummy"));
+        assertThat(applicableFiles.get(0).getFileId().getFileName(), equalTo("anotherfile.dummy"));
+        assertThat(applicableFiles.get(1).getFileId().getFileName(), equalTo("somefile.dummy"));
     }
 
     @Test
     void testGetApplicableFilesMultipleLines() {
         FileCollector collector = newCollector();
 
-        collectFileList(collector, RESOURCE_PREFIX + "filelist2.txt");
+        collectFileList(collector, RESOURCES.resolve("filelist2.txt"));
 
         List<TextFile> applicableFiles = collector.getCollectedFiles();
         // note: the file has 3 entries, but one is duplicated, resulting in 2 individual files
         assertThat(applicableFiles, hasSize(2));
-        assertThat(applicableFiles.get(0).getPathId(), endsWith("anotherfile.dummy"));
-        assertThat(applicableFiles.get(1).getPathId(), endsWith("somefile.dummy"));
+        assertFilenameIs(applicableFiles.get(0), "anotherfile.dummy");
+        assertFilenameIs(applicableFiles.get(1), "somefile.dummy");
+    }
+
+    private static void assertFilenameIs(TextFile textFile, String suffix) {
+        assertThat(textFile.getFileId().getFileName(), is(suffix));
     }
 
     @Test
@@ -66,69 +69,73 @@ class PMDFilelistTest {
         FileCollector collector = newCollector();
 
         PMDConfiguration configuration = new PMDConfiguration();
-        configuration.setInputFilePath(RESOURCE_PREFIX + "filelist3.txt");
-        configuration.setIgnoreFilePath(RESOURCE_PREFIX + "ignorelist.txt");
+        configuration.setInputFilePath(RESOURCES.resolve("filelist3.txt"));
+        configuration.setIgnoreFilePath(RESOURCES.resolve("ignorelist.txt"));
         FileCollectionUtil.collectFiles(configuration, collector);
 
         List<TextFile> applicableFiles = collector.getCollectedFiles();
         assertThat(applicableFiles, hasSize(2));
-        assertThat(applicableFiles.get(0).getPathId(), endsWith("somefile2.dummy"));
-        assertThat(applicableFiles.get(1).getPathId(), endsWith("somefile4.dummy"));
+        assertFilenameIs(applicableFiles.get(0), "somefile2.dummy");
+        assertFilenameIs(applicableFiles.get(1), "somefile4.dummy");
     }
 
     @Test
     void testRelativizeWith() {
         PMDConfiguration conf = new PMDConfiguration();
-        conf.setInputFilePath(Paths.get(RESOURCE_PREFIX + "filelist2.txt"));
+        conf.setInputFilePath(RESOURCES.resolve("filelist2.txt"));
         conf.addRelativizeRoot(Paths.get("src/test/resources"));
         try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
             List<TextFile> files = pmd.files().getCollectedFiles();
             assertThat(files, hasSize(2));
-            assertThat(files.get(0).getDisplayName(), equalTo(IOUtil.normalizePath("net/sourceforge/pmd/cli/src/anotherfile.dummy")));
-            assertThat(files.get(1).getDisplayName(), equalTo(IOUtil.normalizePath("net/sourceforge/pmd/cli/src/somefile.dummy")));
+            assertHasName(files.get(0), IOUtil.normalizePath("net/sourceforge/pmd/cli/src/anotherfile.dummy"), pmd);
+            assertHasName(files.get(1), IOUtil.normalizePath("net/sourceforge/pmd/cli/src/somefile.dummy"), pmd);
         }
+    }
+
+    public static void assertHasName(TextFile textFile, String expected, PmdAnalysis pmd) {
+        assertThat(pmd.fileNameRenderer().getDisplayName(textFile), equalTo(expected));
     }
 
     @Test
     void testRelativizeWithOtherDir() {
         PMDConfiguration conf = new PMDConfiguration();
-        conf.setInputFilePath(Paths.get(RESOURCE_PREFIX + "filelist4.txt"));
-        conf.addRelativizeRoot(Paths.get(RESOURCE_PREFIX + "src"));
+        conf.setInputFilePath(RESOURCES.resolve("filelist4.txt"));
+        conf.addRelativizeRoot(RESOURCES.resolve("src"));
         try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
             List<TextFile> files = pmd.files().getCollectedFiles();
             assertThat(files, hasSize(3));
-            assertThat(files.get(0).getDisplayName(), equalTo(".." + IOUtil.normalizePath("/otherSrc/somefile.dummy")));
-            assertThat(files.get(1).getDisplayName(), equalTo("anotherfile.dummy"));
-            assertThat(files.get(2).getDisplayName(), equalTo("somefile.dummy"));
+            assertHasName(files.get(0), ".." + IOUtil.normalizePath("/otherSrc/somefile.dummy"), pmd);
+            assertHasName(files.get(1), "anotherfile.dummy", pmd);
+            assertHasName(files.get(2), "somefile.dummy", pmd);
         }
     }
 
     @Test
     void testRelativizeWithSeveralDirs() {
         PMDConfiguration conf = new PMDConfiguration();
-        conf.setInputFilePath(Paths.get(RESOURCE_PREFIX + "filelist4.txt"));
-        conf.addRelativizeRoot(Paths.get(RESOURCE_PREFIX + "src"));
-        conf.addRelativizeRoot(Paths.get(RESOURCE_PREFIX + "otherSrc"));
+        conf.setInputFilePath(RESOURCES.resolve("filelist4.txt"));
+        conf.addRelativizeRoot(RESOURCES.resolve("src"));
+        conf.addRelativizeRoot(RESOURCES.resolve("otherSrc"));
         try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
             List<TextFile> files = pmd.files().getCollectedFiles();
             assertThat(files, hasSize(3));
-            assertThat(files.get(0).getDisplayName(), equalTo("somefile.dummy"));
-            assertThat(files.get(1).getDisplayName(), equalTo("anotherfile.dummy"));
-            assertThat(files.get(2).getDisplayName(), equalTo("somefile.dummy"));
+            assertHasName(files.get(0), "somefile.dummy", pmd);
+            assertHasName(files.get(1), "anotherfile.dummy", pmd);
+            assertHasName(files.get(2), "somefile.dummy", pmd);
         }
     }
 
     @Test
     void testUseAbsolutePaths() {
         PMDConfiguration conf = new PMDConfiguration();
-        conf.setInputFilePath(Paths.get(RESOURCE_PREFIX + "filelist4.txt"));
-        conf.addRelativizeRoot(Paths.get(RESOURCE_PREFIX).toAbsolutePath().getRoot());
+        conf.setInputFilePath(RESOURCES.resolve("filelist4.txt"));
+        conf.addRelativizeRoot(RESOURCES.toAbsolutePath().getRoot());
         try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
             List<TextFile> files = pmd.files().getCollectedFiles();
             assertThat(files, hasSize(3));
-            assertThat(files.get(0).getDisplayName(), equalTo(Paths.get(RESOURCE_PREFIX, "otherSrc", "somefile.dummy").toAbsolutePath().toString()));
-            assertThat(files.get(1).getDisplayName(), equalTo(Paths.get(RESOURCE_PREFIX, "src", "anotherfile.dummy").toAbsolutePath().toString()));
-            assertThat(files.get(2).getDisplayName(), equalTo(Paths.get(RESOURCE_PREFIX, "src", "somefile.dummy").toAbsolutePath().toString()));
+            assertHasName(files.get(0), RESOURCES.resolve("otherSrc/somefile.dummy").toAbsolutePath().toString(), pmd);
+            assertHasName(files.get(1), RESOURCES.resolve("src/anotherfile.dummy").toAbsolutePath().toString(), pmd);
+            assertHasName(files.get(2), RESOURCES.resolve("src/somefile.dummy").toAbsolutePath().toString(), pmd);
         }
     }
 
@@ -136,18 +143,18 @@ class PMDFilelistTest {
     @Test
     void testGetApplicableFilesWithDirAndIgnores() {
         PMDConfiguration configuration = new PMDConfiguration();
-        configuration.setInputPaths(RESOURCE_PREFIX + "src");
-        configuration.setIgnoreFilePath(RESOURCE_PREFIX + "ignorelist.txt");
+        configuration.addInputPath(RESOURCES.resolve("src"));
+        configuration.setIgnoreFilePath(RESOURCES.resolve("ignorelist.txt"));
 
         FileCollector collector = newCollector();
         FileCollectionUtil.collectFiles(configuration, collector);
 
         List<TextFile> applicableFiles = collector.getCollectedFiles();
         assertThat(applicableFiles, hasSize(4));
-        assertThat(applicableFiles.get(0).getPathId(), endsWith("anotherfile.dummy"));
-        assertThat(applicableFiles.get(1).getPathId(), endsWith("somefile.dummy"));
-        assertThat(applicableFiles.get(2).getPathId(), endsWith("somefile2.dummy"));
-        assertThat(applicableFiles.get(3).getPathId(), endsWith("somefile4.dummy"));
+        assertFilenameIs(applicableFiles.get(0), "anotherfile.dummy");
+        assertFilenameIs(applicableFiles.get(1), "somefile.dummy");
+        assertFilenameIs(applicableFiles.get(2), "somefile2.dummy");
+        assertFilenameIs(applicableFiles.get(3), "somefile4.dummy");
     }
 
 }

@@ -9,11 +9,10 @@ import java.util.Locale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.lang.Language;
 
 /**
- * Instantiate the fields required to retrieve {@link SourceCode}.
+ * Instantiate the fields required to retrieve the source code.
  *
  * @author sturton
  */
