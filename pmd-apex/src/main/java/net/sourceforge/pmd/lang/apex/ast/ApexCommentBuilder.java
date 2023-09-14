@@ -21,18 +21,18 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.Token;
 
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.document.TextFileContent;
+import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextRegion;
 
 import com.nawforce.apexparser.ApexLexer;
 
 @InternalApi
 final class ApexCommentBuilder {
-    private final TextFileContent sourceContent;
+    private final TextDocument sourceCode;
     private final CommentInformation commentInfo;
 
-    ApexCommentBuilder(TextFileContent sourceContent, String suppressMarker) {
-        this.sourceContent = sourceContent;
+    ApexCommentBuilder(TextDocument sourceCode, String suppressMarker) {
+        this.sourceCode = sourceCode;
 
         PrintStream err = System.err; //NOPMD ok not to close; is save/restore pattern
         try {
@@ -40,7 +40,7 @@ final class ApexCommentBuilder {
             // See: org.antlr.v4.runtime.RuntimeMetadata
             System.setErr(new PrintStream(new ByteArrayOutputStream()));
 
-            commentInfo = extractInformationFromComments(sourceContent, suppressMarker);
+            commentInfo = extractInformationFromComments(sourceCode, suppressMarker);
         } finally {
             System.setErr(err);
         }
@@ -77,7 +77,7 @@ final class ApexCommentBuilder {
             AbstractApexNode parent = docToken.nearestNode;
             if (parent != null) {
                 ASTFormalComment comment = new ASTFormalComment(docToken.token);
-                comment.calculateTextRegion(sourceContent);
+                comment.calculateTextRegion(sourceCode);
                 parent.insertChild(comment, 0);
             }
         }
@@ -115,8 +115,8 @@ final class ApexCommentBuilder {
         }
     }
 
-    private static CommentInformation extractInformationFromComments(TextFileContent sourceContent, String suppressMarker) {
-        ApexLexer lexer = new ApexLexer(CharStreams.fromString(sourceContent.getNormalizedText().toString()));
+    private static CommentInformation extractInformationFromComments(TextDocument sourceCode, String suppressMarker) {
+        ApexLexer lexer = new ApexLexer(CharStreams.fromString(sourceCode.getText().toString()));
 
         ArrayList<Token> allCommentTokens = new ArrayList<>();
         Map<Integer, String> suppressMap = new HashMap<>();

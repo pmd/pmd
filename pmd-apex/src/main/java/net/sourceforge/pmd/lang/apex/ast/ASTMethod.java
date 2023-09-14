@@ -7,7 +7,8 @@ package net.sourceforge.pmd.lang.apex.ast;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import net.sourceforge.pmd.lang.document.TextFileContent;
+import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextPos2d;
 import net.sourceforge.pmd.lang.document.TextRegion;
 
 import com.google.summit.ast.SourceLocation;
@@ -70,16 +71,16 @@ public final class ASTMethod extends AbstractApexNode implements ApexQualifiable
     }
 
     @Override
-    void calculateTextRegion(TextFileContent sourceContent) {
+    void calculateTextRegion(TextDocument sourceCode) {
         if (sourceLocation.isUnknown()) {
             return;
         }
         // Column+1 because Summit columns are 0-based and PMD are 1-based
         setRegion(TextRegion.fromBothOffsets(
-            sourceContent.offsetFromLineColumn(sourceLocation.getStartLine(),
-                                               sourceLocation.getStartColumn() + 1),
-            sourceContent.offsetFromLineColumn(sourceLocation.getEndLine(),
-                                               sourceLocation.getEndColumn() + 1)
+                sourceCode.offsetAtLineColumn(
+                        TextPos2d.pos2d(sourceLocation.getStartLine(), sourceLocation.getStartColumn() + 1)),
+                sourceCode.offsetAtLineColumn(
+                        TextPos2d.pos2d(sourceLocation.getEndLine(), sourceLocation.getEndColumn() + 1))
         ));
     }
 

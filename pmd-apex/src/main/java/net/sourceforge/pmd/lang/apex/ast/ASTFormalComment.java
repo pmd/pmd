@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import org.antlr.v4.runtime.Token;
 
-import net.sourceforge.pmd.lang.document.TextFileContent;
+import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextRegion;
 
 public final class ASTFormalComment extends AbstractApexNode.Empty {
@@ -29,7 +29,7 @@ public final class ASTFormalComment extends AbstractApexNode.Empty {
     }
 
     @Override
-    protected void calculateTextRegion(TextFileContent sourceContent) {
+    protected void calculateTextRegion(TextDocument sourceCode) {
         setRegion(TextRegion.fromBothOffsets(token.getStartIndex(), token.getStopIndex() + 1));
     }
 }

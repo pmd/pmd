@@ -14,7 +14,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
-import net.sourceforge.pmd.lang.document.TextFileContent;
+import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextPos2d;
 import net.sourceforge.pmd.lang.document.TextRegion;
 
 import com.google.summit.ast.Node;
@@ -37,15 +38,15 @@ abstract class AbstractApexNode extends AbstractNode<AbstractApexNode, ApexNode<
         }
 
         @Override
-        protected void calculateTextRegion(TextFileContent sourceContent) {
+        protected void calculateTextRegion(TextDocument sourceCode) {
             SourceLocation loc = node.getSourceLocation();
             if (loc.isUnknown()) {
                 return;
             }
             // Column+1 because Summit columns are 0-based and PMD are 1-based
             setRegion(TextRegion.fromBothOffsets(
-                sourceContent.offsetFromLineColumn(loc.getStartLine(), loc.getStartColumn() + 1),
-                sourceContent.offsetFromLineColumn(loc.getEndLine(), loc.getEndColumn() + 1)
+                sourceCode.offsetAtLineColumn(TextPos2d.pos2d(loc.getStartLine(), loc.getStartColumn() + 1)),
+                sourceCode.offsetAtLineColumn(TextPos2d.pos2d(loc.getEndLine(), loc.getEndColumn() + 1))
             ));
         }
 
@@ -67,15 +68,15 @@ abstract class AbstractApexNode extends AbstractNode<AbstractApexNode, ApexNode<
         }
 
         @Override
-        protected void calculateTextRegion(TextFileContent sourceContent) {
+        protected void calculateTextRegion(TextDocument sourceCode) {
             // TODO: compute union of ranges?
             for (Node node : nodes) {
                 SourceLocation loc = node.getSourceLocation();
                 if (!loc.isUnknown()) {
                     // Column+1 because Summit columns are 0-based and PMD are 1-based
                     setRegion(TextRegion.fromBothOffsets(
-                        sourceContent.offsetFromLineColumn(loc.getStartLine(), loc.getStartColumn() + 1),
-                        sourceContent.offsetFromLineColumn(loc.getEndLine(), loc.getEndColumn() + 1)
+                        sourceCode.offsetAtLineColumn(TextPos2d.pos2d(loc.getStartLine(), loc.getStartColumn() + 1)),
+                        sourceCode.offsetAtLineColumn(TextPos2d.pos2d(loc.getEndLine(), loc.getEndColumn() + 1))
                     ));
                 }
             }
@@ -93,7 +94,7 @@ abstract class AbstractApexNode extends AbstractNode<AbstractApexNode, ApexNode<
     abstract static class Empty extends AbstractApexNode {
 
         @Override
-        protected void calculateTextRegion(TextFileContent sourceContent) {
+        protected void calculateTextRegion(TextDocument sourceCode) {
             // no location
         }
 
@@ -135,7 +136,7 @@ abstract class AbstractApexNode extends AbstractNode<AbstractApexNode, ApexNode<
         return getParent().getRoot();
     }
 
-    abstract void calculateTextRegion(TextFileContent sourceContent);
+    abstract void calculateTextRegion(TextDocument sourceCode);
 
     @Override
     public @NonNull TextRegion getTextRegion() {

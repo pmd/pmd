@@ -8,10 +8,6 @@ import java.util.Optional
 
 import net.sourceforge.pmd.lang.apex.ApexLanguageProcessor
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask
-import net.sourceforge.pmd.lang.document.Chars
-import net.sourceforge.pmd.lang.document.TextDocument
-import net.sourceforge.pmd.lang.document.TextFileContent
-import net.sourceforge.pmd.lang.document.TextRegion
 import net.sourceforge.pmd.lang.ast.ParseException
 
 import com.google.summit.ast.CompilationUnit
@@ -83,8 +79,7 @@ import kotlin.reflect.KClass
 @Suppress("DEPRECATION")
 class ApexTreeBuilder(val task: ParserTask, val proc: ApexLanguageProcessor) {
     private val sourceCode = task.getTextDocument()
-    private val sourceContent = TextFileContent.fromReader(sourceCode.newReader())
-    private val commentBuilder = ApexCommentBuilder(sourceContent, proc.getProperties().getSuppressMarker())
+    private val commentBuilder = ApexCommentBuilder(sourceCode, proc.getProperties().getSuppressMarker())
 
     /** Builds and returns an [ASTApexFile] corresponding to the given [CompilationUnit]. */
     fun buildTree(compilationUnit: CompilationUnit): ASTApexFile {
@@ -110,7 +105,7 @@ class ApexTreeBuilder(val task: ParserTask, val proc: ApexLanguageProcessor) {
                 override fun visitApexNode(node: ApexNode<*>?, data: Unit): Unit =
                     super.visitNode(node, data).also {
                         if (node is AbstractApexNode) {
-                            node.calculateTextRegion(sourceContent)
+                            node.calculateTextRegion(sourceCode)
                             when (node) {
                               is AbstractApexCommentContainerNode<*> ->
                                   node.setContainsComment(commentBuilder.containsComments(node))

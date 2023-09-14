@@ -100,18 +100,6 @@ public final class TextFileContent {
         return checkSum;
     }
 
-    /**
-     * Converts a line/column pair to a character offset.
-     *
-     * @param line   Line number (1-based)
-     * @param column Column number (1-based)
-     *
-     * @return Text offset (zero-based), or -1
-     */
-    public int offsetFromLineColumn(int line, int column) {
-        return positioner.offsetFromLineColumn(line, column);
-    }
-
     SourceCodePositioner getPositioner() {
         return positioner;
     }

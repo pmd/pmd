@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.lang.document.TextFileContent;
+import net.sourceforge.pmd.lang.document.TextDocument;
 
 import com.google.summit.ast.Node;
 import com.google.summit.ast.SourceLocation;
@@ -27,8 +27,8 @@ public final class ASTBlockStatement extends AbstractApexNode.Single<Node> {
     }
 
     @Override
-    protected void calculateTextRegion(TextFileContent sourceContent) {
-        super.calculateTextRegion(sourceContent);
+    protected void calculateTextRegion(TextDocument sourceCode) {
+        super.calculateTextRegion(sourceCode);
         if (!hasRealLoc()) {
             return;
         }
@@ -38,7 +38,7 @@ public final class ASTBlockStatement extends AbstractApexNode.Single<Node> {
         // regardless whether curly braces where present or not.
         // TODO: Revisit this, because it is Jorje-specific.
         SourceLocation loc = node.getSourceLocation();
-        String sourceRegion = loc.extractFrom(sourceContent.getNormalizedText().toString());
+        String sourceRegion = loc.extractFrom(sourceCode.getText().toString());
         this.curlyBrace = sourceRegion.charAt(0) == '{';
     }
 }

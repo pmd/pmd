@@ -56,6 +56,11 @@ abstract class BaseMappedDocument implements TextDocument {
         return base.lineColumnAtOffset(inputOffset(offset, inclusive));
     }
 
+    @Override
+    public int offsetAtLineColumn(TextPos2d position) {
+        throw new UnsupportedOperationException();
+    }
+
     /**
      * Translate a region given in the coordinate system of this
      * document, to the coordinate system of the base document.
