@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.apex.ast;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.summit.ast.modifier.AnnotationModifier;
@@ -14,7 +15,7 @@ import com.google.summit.ast.modifier.Modifier;
 
 public final class ASTModifierNode extends AbstractApexNode.Many<Modifier> implements AccessNode {
 
-    private static final ImmutableMap<Keyword, Integer> OPCODES = ImmutableMap.<Keyword, Integer>builder()
+    private static final Map<Keyword, Integer> OPCODES = ImmutableMap.<Keyword, Integer>builder()
             .put(Keyword.PUBLIC, AccessNode.PUBLIC)
             .put(Keyword.PRIVATE, AccessNode.PRIVATE)
             .put(Keyword.PROTECTED, AccessNode.PROTECTED)

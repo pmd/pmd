@@ -118,7 +118,7 @@ final class ApexCommentBuilder {
     private static CommentInformation extractInformationFromComments(TextDocument sourceCode, String suppressMarker) {
         ApexLexer lexer = new ApexLexer(CharStreams.fromString(sourceCode.getText().toString()));
 
-        ArrayList<Token> allCommentTokens = new ArrayList<>();
+        List<Token> allCommentTokens = new ArrayList<>();
         Map<Integer, String> suppressMap = new HashMap<>();
         int lastStartIndex = -1;
         Token token = lexer.nextToken();
@@ -153,7 +153,7 @@ final class ApexCommentBuilder {
     private static class CommentInformation {
 
         final Map<Integer, String> suppressMap;
-        final TokenListByStartIndex nonDocTokensByStartIndex;
+        final List<Integer> nonDocTokensByStartIndex;
         final List<ApexDocToken> docTokens;
 
         CommentInformation(Map<Integer, String> suppressMap, List<Token> allCommentTokens) {

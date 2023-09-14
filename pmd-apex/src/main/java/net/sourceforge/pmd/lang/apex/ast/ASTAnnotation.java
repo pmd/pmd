@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import java.util.NavigableSet;
+
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.summit.ast.modifier.AnnotationModifier;
 
@@ -27,7 +29,7 @@ public final class ASTAnnotation extends AbstractApexNode.Single<AnnotationModif
      * </ul>
      * for backward compatibility.
      */
-    private static final ImmutableSortedSet<String> NORMALIZED_ANNOTATION_NAMES =
+    private static final NavigableSet<String> NORMALIZED_ANNOTATION_NAMES =
         ImmutableSortedSet.orderedBy(String.CASE_INSENSITIVE_ORDER).add(
             "AllowCertifiedApex",
             "AuraEnabled",
