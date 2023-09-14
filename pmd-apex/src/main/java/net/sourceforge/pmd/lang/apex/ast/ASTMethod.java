@@ -92,9 +92,9 @@ public final class ASTMethod extends AbstractApexNode implements ApexQualifiable
     @Override
     public String getImage() {
         if (isConstructor()) {
-            ASTUserClass classNode = getFirstParentOfType(ASTUserClass.class);
-            if (classNode != null) {
-                return classNode.getSimpleName();
+            BaseApexClass<?> baseClassNode = ancestors(BaseApexClass.class).first();
+            if (baseClassNode != null) {
+                return baseClassNode.getSimpleName();
             }
         }
         return getCanonicalName();
