@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <!-- Begin Schema method invocations -->
+    <test-code>
+        <description>High cost performance getGlobalDescribe in loop</description>
+        <expected-problems>1</expected-problems>
+        <code>
+            <![CDATA[
+            public class Foo {
+                public void testGetGlobalDescribe() {
+                    Set<String> fieldNameSet = new Set<String> {'Id'};
+                    for (String fieldNameOrDefaultValue : fieldNameOrDefaultValueList) {
+                        if (Schema.getGlobalDescribe().get(objectName).getDescribe().fields.getMap().containsKey(fieldNameOrDefaultValue.trim() )) {
+                            fieldNameSet.add(fieldNameOrDefaultValue);
+                        }
+                    }
+                }
+            }
+                    ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>High cost performance describeSObjects in loop</description>
+        <expected-problems>1</expected-problems>
+        <code>
+            <![CDATA[
+            public class Foo {
+                public void test1() {
+                    Set<String> fieldNameSet = new Set<String> {'Id'};
+                    for (String fieldNameOrDefaultValue : fieldNameOrDefaultValueList) {
+                        Schema.DescribeSObjectResult dsr = Account.sObjectType.getDescribe();
+                        if (Schema.describeSObjects(new List<String> { sObjectType })[0].fields.getMap().containsKey(fieldNameOrDefaultValue.trim() )) {
+                            fieldNameSet.add(fieldNameOrDefaultValue);
+                        }
+                    }
+                }
+            }
+                    ]]>
+        </code>
+    </test-code>
+
+    <!-- End Schema method invocations -->
+</test-data>
