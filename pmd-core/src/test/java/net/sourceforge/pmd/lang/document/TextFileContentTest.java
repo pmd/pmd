@@ -132,6 +132,13 @@ class TextFileContentTest {
         assertEquals("\r", content.getLineTerminator());
     }
 
+    @Test
+    void testBomSkip() throws IOException {
+        StringReader reader = new StringReader("//Header Comment\n\uFEFFusing System");
+        TextFileContent content = TextFileContent.normalizingRead(reader, 8192, System.lineSeparator());
+        assertEquals(Chars.wrap("//Header Comment\nusing System"), content.getNormalizedText());
+    }
+
     enum TextContentOrigin {
         INPUT_STREAM {
             @Override

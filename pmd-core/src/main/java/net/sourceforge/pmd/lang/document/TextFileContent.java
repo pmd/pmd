@@ -260,6 +260,10 @@ public final class TextFileContent {
                     }
                     positionerBuilder.addLineEndAtOffset(newLineOffset);
                     detectedLineTerm = detectLineTerm(detectedLineTerm, newLineTerm, fallbackLineSep);
+                } else if (c == IOUtil.UTF_BOM) {
+                    // Random misplaced BOM, copy up to and not including it.
+                    result.append(cbuf, nextCharToCopy, i - nextCharToCopy);
+                    nextCharToCopy = i + 1; // set the next char to copy to be the next one
                 }
                 afterCr = c == '\r';
             } // end for
