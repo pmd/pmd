@@ -43,7 +43,7 @@ public final class ASTApexFile extends AbstractApexNode.Single<CompilationUnit> 
     @Override
     public double getApexVersion() {
         // TODO: remove this method?
-        return 54.0;
+        return Double.parseDouble(astInfo.getTextDocument().getLanguageVersion().getVersion());
     }
 
     public ASTUserClassOrInterface<?> getMainNode() {
