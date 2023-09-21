@@ -7,8 +7,6 @@ package net.sourceforge.pmd.lang.apex.ast;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-import org.antlr.v4.runtime.CharStreams;
-
 import com.nawforce.apexparser.ApexLexer;
 import com.nawforce.apexparser.ApexParser;
 
