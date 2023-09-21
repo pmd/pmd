@@ -7,8 +7,6 @@ package net.sourceforge.pmd.lang.apex.ast;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,18 +30,10 @@ final class ApexCommentBuilder {
     private final CommentInformation commentInfo;
 
     ApexCommentBuilder(TextDocument sourceCode, String suppressMarker) {
+        AntlrVersionCheckSuppression.initApexLexer();
+
         this.sourceCode = sourceCode;
-
-        PrintStream err = System.err; //NOPMD ok not to close; is save/restore pattern
-        try {
-            // Redirect System.err to suppress ANTLR warning about runtime/compilation version mismatch.
-            // See: org.antlr.v4.runtime.RuntimeMetadata
-            System.setErr(new PrintStream(new ByteArrayOutputStream()));
-
-            commentInfo = extractInformationFromComments(sourceCode, suppressMarker);
-        } finally {
-            System.setErr(err);
-        }
+        this.commentInfo = extractInformationFromComments(sourceCode, suppressMarker);
     }
 
     public boolean containsComments(ASTCommentContainer commentContainer) {

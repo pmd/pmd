@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,22 +23,12 @@ public final class ApexParser implements Parser {
     public ApexParser() {
         // Suppress INFO-level output
         Logger.getLogger(Translate.class.getName()).setLevel(Level.WARNING);
+        AntlrVersionCheckSuppression.initApexLexer();
     }
 
     @Override
     public ASTApexFile parse(final ParserTask task) {
-        CompilationUnit astRoot = null;
-
-        PrintStream err = System.err; //NOPMD ok not to close; is save/restore pattern
-        try {
-            // Redirect System.err to suppress ANTLR warning about runtime/compilation version mismatch.
-            // See: org.antlr.v4.runtime.RuntimeMetadata
-            System.setErr(new PrintStream(new ByteArrayOutputStream()));
-
-            astRoot = SummitAST.INSTANCE.parseAndTranslate(task.getTextDocument().getText().toString(), null);
-        } finally {
-            System.setErr(err);
-        }
+        CompilationUnit astRoot = SummitAST.INSTANCE.parseAndTranslate(task.getTextDocument().getText().toString(), null);
 
         if (astRoot == null) {
             throw new ParseException("Couldn't parse the source - there is not root node - Syntax Error??");
