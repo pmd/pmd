@@ -222,6 +222,7 @@ class ApexTreeBuilder(val task: ParserTask, val proc: ApexLanguageProcessor) {
                 // 1. Create a synthetic "invoke" ASTMethod for the trigger body
                 val invokeMethod = ASTMethod(
                   /* name= */ "invoke",
+                  /* internalName= */ "<invoke>",
                   /* parameterTypes= */ emptyList(),
                   /* returnType= */ "void",
                  SourceLocation.UNKNOWN,

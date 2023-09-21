@@ -31,7 +31,7 @@ public interface ASTUserClassOrInterface<T> extends ApexQualifiableNode, ApexNod
      * Returns the (non-synthetic) methods defined in this type.
      */
     default @NonNull NodeStream<ASTMethod> getMethods() {
-        return children(ASTMethod.class).filterNot(it -> it.getImage().matches("(<clinit>|<init>|clone)"));
+        return children(ASTMethod.class);
     }
 
 

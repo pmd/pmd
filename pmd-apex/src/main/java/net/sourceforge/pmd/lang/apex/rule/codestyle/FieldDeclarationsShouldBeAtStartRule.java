@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -27,6 +25,10 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
         Comparator
             .<ApexNode<?>>comparingInt(ApexNode::getBeginLine)
             .thenComparing(ApexNode::getBeginColumn);
+    /**
+     * @deprecated not used anymore, see also {@link ASTMethod#STATIC_INIT_ID}
+     */
+    @Deprecated
     public static final String STATIC_INITIALIZER_METHOD_NAME = "<clinit>";
 
     @Override
@@ -66,13 +68,7 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
         return data;
     }
 
-    private List<ApexNode<?>> getMethodNodes(ASTUserClass node) {
-        // The method <clinit> represents static initializer blocks, of which there can be many. The
-        // <clinit> method doesn't contain location information, however the containing ASTBlockStatements do,
-        // so we fetch them for that method only.
-        return node.findChildrenOfType(ASTMethod.class).stream()
-            .<ApexNode<?>>flatMap(method -> STATIC_INITIALIZER_METHOD_NAME.equals(method.getImage())
-                ? method.findChildrenOfType(ASTBlockStatement.class).stream() : Stream.of(method))
-            .collect(Collectors.toList());
+    private List<? extends ApexNode<?>> getMethodNodes(ASTUserClass node) {
+        return node.descendants(ASTMethod.class).map(m -> (ApexNode<?>) m).toList();
     }
 }

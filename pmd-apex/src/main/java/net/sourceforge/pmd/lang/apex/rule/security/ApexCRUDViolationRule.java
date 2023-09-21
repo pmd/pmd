@@ -149,7 +149,6 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     private Map<String, String> checkedTypeToDMLOperationViaESAPI;
     private HashMultimap<String, String> checkedTypeToDMLOperationsViaAuthPattern;
     private Map<String, ASTMethod> classMethods;
-    private String className;
 
     public ApexCRUDViolationRule() {
         // Register auth method config properties
@@ -170,7 +169,6 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         checkedTypeToDMLOperationViaESAPI = new HashMap<>();
         checkedTypeToDMLOperationsViaAuthPattern = HashMultimap.create();
         classMethods = new WeakHashMap<>();
-        className = null;
         super.start(ctx);
     }
 
@@ -179,8 +177,6 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         if (Helper.isTestMethodOrClass(node) || Helper.isSystemLevelClass(node)) {
             return data; // stops all the rules
         }
-
-        className = node.getImage();
 
         for (ASTMethod n : node.findDescendantsOfType(ASTMethod.class)) {
             StringBuilder sb = new StringBuilder().append(n.getDefiningType()).append(":")
@@ -636,16 +632,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     private List<ASTMethod> findConstructorMethods() {
-        final List<ASTMethod> ret = new ArrayList<>();
-        final Set<String> constructors = classMethods.keySet().stream()
-                .filter(p -> p.contains("<init>") || p.contains("<clinit>")
-                        || p.startsWith(className + ":" + className + ":")).collect(Collectors.toSet());
-
-        for (String c : constructors) {
-            ret.add(classMethods.get(c));
-        }
-
-        return ret;
+        return classMethods.values().stream().filter(m -> m.isConstructor() || m.isStaticInitializer()).collect(Collectors.toList());
     }
 
     private ASTMethod resolveMethodCalls(final ASTMethodCallExpression node) {

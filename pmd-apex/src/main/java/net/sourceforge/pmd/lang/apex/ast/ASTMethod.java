@@ -19,44 +19,55 @@ public final class ASTMethod extends AbstractApexNode implements ApexQualifiable
     // Store the details instead of wrapping a com.google.summit.ast.Node.
     // This is to allow synthetic ASTMethod nodes.
     // An example is the trigger `invoke` method.
-    private String name;
-    private List<String> parameterTypes;
-    private String returnType;
-    private SourceLocation sourceLocation;
+    private final String name;
+    private final String internalName;
+    private final List<String> parameterTypes;
+    private final String returnType;
+    private final SourceLocation sourceLocation;
 
     /**
      * Internal name used by constructors.
+     * @deprecated The name of the constructor should be the class name. Use {@link #isConstructor()} instead.
      */
+    // Note: we probably make this private
+    @Deprecated
     public static final String CONSTRUCTOR_ID = "<init>";
 
     /**
      * Internal name used by static initialization blocks.
+     * @deprecated This should be private. Use {@link #isStaticInitializer()} instead.
      */
+    // Note: we probably make this private
+    @Deprecated
     public static final String STATIC_INIT_ID = "<clinit>";
 
-    public ASTMethod(
+    ASTMethod(
         String name,
+        String internalName,
         List<String> parameterTypes,
         String returnType,
         SourceLocation sourceLocation) {
 
         this.name = name;
+        this.internalName = internalName;
         this.parameterTypes = parameterTypes;
         this.returnType = returnType;
         this.sourceLocation = sourceLocation;
     }
 
-    public static ASTMethod fromNode(MethodDeclaration node) {
+    static ASTMethod fromNode(MethodDeclaration node) {
 
         String name = node.getId().getString();
+        String internalName = name;
         if (node.isAnonymousInitializationCode()) {
-            name = STATIC_INIT_ID;
+            internalName = STATIC_INIT_ID;
         } else if (node.isConstructor()) {
-            name = CONSTRUCTOR_ID;
+            internalName = CONSTRUCTOR_ID;
         }
 
         return new ASTMethod(
             name,
+            internalName,
             node.getParameterDeclarations().stream()
                 .map(p -> caseNormalizedTypeIfPrimitive(p.getType().asCodeString()))
                 .collect(Collectors.toList()),
@@ -104,6 +115,13 @@ public final class ASTMethod extends AbstractApexNode implements ApexQualifiable
         if (getParent() instanceof ASTProperty) {
             return ASTProperty.formatAccessorName((ASTProperty) getParent());
         }
+
+        if (isConstructor()) {
+            return CONSTRUCTOR_ID;
+        } else if (isStaticInitializer()) {
+            return STATIC_INIT_ID;
+        }
+
         return name;
     }
 
@@ -115,13 +133,21 @@ public final class ASTMethod extends AbstractApexNode implements ApexQualifiable
     /**
      * Returns true if this is a synthetic class initializer, inserted
      * by the parser.
+     *
+     * @deprecated Only jorje added these synthetic methods. ApexParser/Summit doesn't. That's why this method
+     * is useless now.
      */
+    @Deprecated
     public boolean isSynthetic() {
-        return getImage().matches("<clinit>|<init>|clone");
+        return false;
     }
     
     public boolean isConstructor() {
-        return CONSTRUCTOR_ID.equals(name);
+        return CONSTRUCTOR_ID.equals(internalName);
+    }
+
+    public boolean isStaticInitializer() {
+        return STATIC_INIT_ID.equals(internalName);
     }
 
     public ASTModifierNode getModifiers() {
