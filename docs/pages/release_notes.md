@@ -58,6 +58,7 @@ The remaining section describes the complete release notes for 7.0.0.
   * [#4294](https://github.com/pmd/pmd/issues/4294): \[doc] Migration Guide for upgrading PMD 6 ➡️ 7
   * [#4303](https://github.com/pmd/pmd/issues/4303): \[doc] Document new property framework
   * [#4521](https://github.com/pmd/pmd/issues/4521): \[doc] Website is not mobile friendly
+  * [#4676](https://github.com/pmd/pmd/issues/4676): \[doc] Clarify how CPD `--ignore-literals` and `--ignore-identifiers` work
 * apex-design
   * [#4596](https://github.com/pmd/pmd/issues/4596): \[apex] ExcessivePublicCount ignores properties
 * apex-security
@@ -596,6 +597,7 @@ See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html)
     * [#4303](https://github.com/pmd/pmd/issues/4303): \[doc] Document new property framework
     * [#4438](https://github.com/pmd/pmd/issues/4438): \[doc] Documentation links in VS Code are outdated
     * [#4521](https://github.com/pmd/pmd/issues/4521): \[doc] Website is not mobile friendly
+    * [#4676](https://github.com/pmd/pmd/issues/4676): \[doc] Clarify how CPD `--ignore-literals` and `--ignore-identifiers` work
 * testing
     * [#2435](https://github.com/pmd/pmd/issues/2435): \[test] Remove duplicated Dummy language module
     * [#4234](https://github.com/pmd/pmd/issues/4234): \[test] Tests that change the logging level do not work
