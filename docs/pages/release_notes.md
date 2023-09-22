@@ -144,6 +144,15 @@ The following previously deprecated methods have been removed:
 
 The following methods have been removed:
 
+* pmd-apex
+  * {%jdoc apex::lang.apex.ast.ApexNode %} and {% jdoc apex::lang.apex.ast.ASTApexFile %}
+    * `#getApexVersion()`: In PMD 6, this method has been deprecated but was defined in the class `ApexRootNode`.
+      The version returned is always "Version.CURRENT", as the apex compiler integration
+      doesn't use additional information which Apex version actually is used. Therefore, this method can't be
+      used to determine the Apex version of the project that is being analyzed.
+
+      If the current version is needed, then `Node.getTextDocument().getLanguageVersion()` can be used. This
+      is the version that has been selected via CLI `--use-version` parameter.
 * pmd-core
   * {%jdoc core::cpd.CPDConfiguration %}
     * `#sourceCodeFor(File)`, `#postConstruct()`, `#tokenizer()`, `#filenameFilter()` removed
