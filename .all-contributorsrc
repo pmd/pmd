@@ -7231,6 +7231,15 @@
         "bug",
         "code"
       ]
+    },
+    {
+      "login": "Scrates1",
+      "name": "Scrates1",
+      "avatar_url": "https://avatars.githubusercontent.com/u/49557842?v=4",
+      "profile": "https://github.com/Scrates1",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
