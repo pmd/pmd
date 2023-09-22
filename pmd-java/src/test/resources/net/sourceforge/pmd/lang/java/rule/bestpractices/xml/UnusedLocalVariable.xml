@@ -153,13 +153,42 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>a compound assignment operator doth a usage make</description>
-        <expected-problems>0</expected-problems>
+        <description>a compound assignment operator does not a usage make #4517</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>3,9,12</expected-linenumbers>
+        <expected-messages>
+            <message>Avoid unused local variables such as 'x'.</message>
+            <message>Avoid unused local variables such as 'c'.</message>
+            <message>Avoid unused local variables such as 'c'.</message>
+        </expected-messages>
         <code><![CDATA[
-public class Foo {
-    void bar() {
-        int x = 0;
-        x += 2;
+public class UnusedCompoundAssignment {
+    void this_is_unused() {
+        int x = 0; // violation expected (line 3)
+        x += 2;    // doesn't count as usage
+    }
+    void transitive_used_but_unused1() {
+        int a = 1; // _no_ violation expected, a is used
+        int b = a; // _no_ violation expected, b is used
+        int c = b; // violation expected (line 9)
+    }
+    void transitive_used_but_unused2() {
+        int a, b, c; // 1 violation expected, only c is unused (line 12)
+        a = 1;
+        b = a;
+        c = b;
+    }
+    void transitive_used() {
+        int a, b, c; // _no_ violation expected
+        a = 1;
+        b = a;
+        c = b;
+        System.out.println(c); // usage
+    }
+    void this_is_used() {
+        int y = 0; // _no_ violation expected
+        y += 2;
+        System.out.println(y); // usage
     }
 }
         ]]></code>
@@ -170,8 +199,9 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
+    int buz;
     void bar() {
-        Bar b = new Bar();
+        Foo b = new Foo();
         b.buz = 2;
     }
 }
@@ -252,8 +282,9 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
+    int x; Foo getBaz() { return this; }
     void bar() {
-        Baz b = getBaz();
+        Foo b = getBaz();
         b.x++;
     }
 }
@@ -311,12 +342,15 @@ public class PMDFalsePositiveTest {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public void bar() {
-        KeyMap keymap = maps.getKeyMap();
-        if (obj.getParamTypes().stream().allMatch(keymap::booleanFunc))
+    public void bar(java.util.List<Object> objs) {
+        KeyMap keymap = new KeyMap();
+        if (objs.stream().allMatch(keymap::booleanFunc))
         {
             // do something
         }
+    }
+    static class KeyMap {
+        boolean booleanFunc(Object o) {return o!=null;}
     }
 }
         ]]></code>
@@ -394,6 +428,27 @@ public class UnusedLocalVariable {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#2130 [java] UnusedLocalVariable: false-negative with array</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            package pmdtests;
+
+            import java.lang.reflect.Constructor;
+
+            public final class Construct {
+
+                private Construct() {
+                    throw new IllegalStateException("Private constructor.");
+                }
+
+                public static void main(String... args) {
+                    // get all visible constructors
+                    Constructor<?>[] constructors = String.class.getConstructors();
+                }
+            }
+            ]]></code>
+    </test-code>
 
     <test-code>
         <description>False positive with try-with-resources #3656</description>
@@ -401,6 +456,25 @@ public class UnusedLocalVariable {
         <code><![CDATA[
 import java.io.InputStream;
 public class UsedLocalVar {
+    public boolean run() {
+        boolean canRead = false;
+        try(InputStream ignored = open()) {
+            canRead = true;
+        } catch (Throwable ignore) {}
+        return canRead;
+    }
+    private InputStream open() { return null; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Actually unused try-with-resources #3656 and #4516</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.io.InputStream;
+public class UnusedUsedLocalVar {
     public boolean run() {
         boolean canRead = false;
         try(InputStream resource = open()) {
@@ -419,14 +493,14 @@ public class UsedLocalVar {
         <code><![CDATA[
 public class Foo {
     public void run1(String ...args) {
-        int i;
+        int i = 0;
         for (String a : args) {
             String id = a + " -> " + i++;
             System.out.println(id);
         }
     }
     public void run2(String ...args) {
-        int x;
+        int x = 0;
         for (String a : args) {
             String id = a + " -> " + (++x);
             System.out.println(id);
@@ -434,5 +508,36 @@ public class Foo {
     }
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UnusedLocalVariable: false-positive with multiple for-loop indices #4518</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>3,3,6,15</expected-linenumbers>
+        <expected-messages>
+            <message>Avoid unused local variables such as 'a'.</message>
+            <message>Avoid unused local variables such as 'b'.</message>
+            <message>Avoid unused local variables such as 'b'.</message>
+            <message>Avoid unused local variables such as 'j'.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class UnusedLocalVarsMultiple {
+    public void sample1() {
+        int a = 0, b = 1; // a and b unused (line 3)
+    }
+    public void sample2() {
+        int a = 0, b = a; // only b unused (line 6)
+    }
+    public void sample3() {
+        for (int i = 0; i < 10; i++); // i is loop index, is used and should be ignored
+    }
+    public void sample4() {
+        for (int i = 0, j = 0; i < 10; i++, j++); // i and j are loop indices, both are used (line 12)
+    }
+    public void sample5() {
+        for (int i = 0, j = 0; i < 10; i++); // i and j are loop indices, but j is not used (line 15)
+    }
+}
+]]></code>
     </test-code>
 </test-data>

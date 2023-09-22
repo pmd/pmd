@@ -4,14 +4,29 @@
 
 package net.sourceforge.pmd.lang.modelica;
 
-import net.sourceforge.pmd.lang.BaseLanguageModule;
+import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
+import net.sourceforge.pmd.lang.modelica.cpd.ModelicaTokenizer;
 
-public class ModelicaLanguageModule extends BaseLanguageModule {
-    public static final String NAME = "Modelica";
-    public static final String TERSE_NAME = "modelica";
+public class ModelicaLanguageModule extends SimpleLanguageModuleBase {
+    private static final String ID = "modelica";
 
     public ModelicaLanguageModule() {
-        super(NAME, null, TERSE_NAME, "mo");
-        addVersion("", new ModelicaHandler(), true);
+        super(LanguageMetadata.withId(ID).name("Modelica")
+                              .extensions("mo")
+                              .addVersion("3.4")
+                              .addDefaultVersion("3.5"),
+              new ModelicaHandler());
+    }
+
+    public static ModelicaLanguageModule getInstance() {
+        return (ModelicaLanguageModule) LanguageRegistry.PMD.getLanguageById(ID);
+    }
+
+    @Override
+    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
+        return new ModelicaTokenizer();
     }
 }

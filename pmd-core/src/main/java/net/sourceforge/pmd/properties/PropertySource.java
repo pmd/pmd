@@ -6,7 +6,6 @@ package net.sourceforge.pmd.properties;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 
 /**
@@ -106,20 +105,6 @@ public interface PropertySource {
 
 
     /**
-     * Sets the value of a multi value property descriptor with a variable number of arguments.
-     * This is also referred to as "overriding" the (default) value of a property.
-     *
-     * @param propertyDescriptor The property descriptor for which to add a value
-     * @param values             Values
-     * @param <V>                The type of the values
-     *
-     * @deprecated {@link MultiValuePropertyDescriptor} is deprecated
-     */
-    @Deprecated
-    <V> void setProperty(MultiValuePropertyDescriptor<V> propertyDescriptor, V... values);
-
-
-    /**
      * Returns an unmodifiable map of descriptors to property values
      * for the current receiver. The returned map has an entry for
      * every defined descriptor ({@link #getPropertyDescriptors()}),
@@ -155,44 +140,16 @@ public interface PropertySource {
 
 
     /**
-     * Returns whether this Rule uses default values for properties.
-     *
-     * @return boolean <code>true</code> if the properties all have default values, <code>false</code> otherwise.
-     *
-     * @deprecated Has no real utility, will be removed by 7.0.0
-     */
-    @Deprecated
-    boolean usesDefaultValues();
-
-
-    /**
-     * Clears out any user-specified value for the property allowing it to use the default value in the descriptor.
-     *
-     * @param desc the property to clear out
-     *
-     * @deprecated Has no real utility, and the name is confusing, will be removed by 7.0.0
-     */
-    @Deprecated
-    void useDefaultValueFor(PropertyDescriptor<?> desc);
-
-
-    /**
-     * Return the properties that are effectively ignored due to the configuration of the rule and values held by other
-     * properties. This can be used to disable corresponding widgets in a UI.
-     *
-     * @return the properties that are ignored
-     * @deprecated Has no real utility, will be removed by 7.0.0
-     */
-    @Deprecated
-    Set<PropertyDescriptor<?>> ignoredProperties();
-
-
-    /**
      * Returns a description of why the receiver may be dysfunctional.
      * Usually due to missing property values or some kind of conflict
      * between values. Returns null if the receiver is ok.
      *
      * @return String
+     *
+     * @deprecated PMD 7 will introduce another mechanism to report dysfunctional rules better.
      */
-    String dysfunctionReason();
+    @Deprecated
+    default String dysfunctionReason() {
+        return null;
+    }
 }

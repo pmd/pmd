@@ -11,14 +11,13 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.lang.ast.QualifiedName;
 
 /**
  * Qualified name of an apex class or method.
  *
  * @author Clément Fournier
  */
-public final class ApexQualifiedName implements QualifiedName {
+public final class ApexQualifiedName {
 
 
     private final String nameSpace;
@@ -53,13 +52,21 @@ public final class ApexQualifiedName implements QualifiedName {
     }
 
 
-    @Override
+    /**
+     * Returns true if the resource addressed by this qualified name is a class.
+     *
+     * @return true if the resource addressed by this qualified name is a class.
+     */
     public boolean isClass() {
         return operation == null;
     }
 
 
-    @Override
+    /**
+     * Returns true if the resource addressed by this qualified name is an operation.
+     *
+     * @return true if the resource addressed by this qualified name is an operation.
+     */
     public boolean isOperation() {
         return operation != null;
     }
@@ -83,7 +90,12 @@ public final class ApexQualifiedName implements QualifiedName {
     }
 
 
-    @Override
+    /**
+     * Returns the qualified name of the class the resource is located in. If this instance addresses a class, returns
+     * this instance.
+     *
+     * @return The qualified name of the class
+     */
     public ApexQualifiedName getClassName() {
         if (isClass()) {
             return this;
@@ -138,7 +150,7 @@ public final class ApexQualifiedName implements QualifiedName {
     }
 
 
-    static ApexQualifiedName ofNestedClass(ApexQualifiedName parent, ASTUserClassOrInterface astUserClass) {
+    static ApexQualifiedName ofNestedClass(ApexQualifiedName parent, ASTUserClassOrInterface<?> astUserClass) {
 
         String[] classes = Arrays.copyOf(parent.classes, parent.classes.length + 1);
         classes[classes.length - 1] = astUserClass.getImage();
@@ -188,27 +200,25 @@ public final class ApexQualifiedName implements QualifiedName {
 
     static ApexQualifiedName ofMethod(ASTMethod node) {
         // Check first, as enum must be innermost potential parent
-        ASTUserEnum enumParent = node.getFirstParentOfType(ASTUserEnum.class);
+        ASTUserEnum enumParent = node.ancestors(ASTUserEnum.class).first();
         if (enumParent != null) {
             ApexQualifiedName baseName = enumParent.getQualifiedName();
 
             return new ApexQualifiedName(baseName.nameSpace, baseName.classes, getOperationString(node));
         }
 
-        ASTUserClassOrInterface<?> classParent = node.getFirstParentOfType(ASTUserClassOrInterface.class);
-        if (classParent != null) {
-            ApexQualifiedName baseName = classParent.getQualifiedName();
+        ASTUserClassOrInterface<?> parent = node.ancestors(ASTUserClassOrInterface.class).firstOrThrow();
+        if (parent instanceof ASTUserTrigger) {
+            ASTUserTrigger trigger = (ASTUserTrigger) parent;
+            String ns = trigger.getNamespace();
+            String targetObj = trigger.getTargetName();
+
+            return new ApexQualifiedName(StringUtils.isEmpty(ns) ? "c" : ns, new String[]{"trigger", targetObj}, trigger.getImage()); // uses a reserved word as a class name to prevent clashes
+
+        } else {
+            ApexQualifiedName baseName = parent.getQualifiedName();
 
             return new ApexQualifiedName(baseName.nameSpace, baseName.classes, getOperationString(node));
         }
-
-        ASTUserTrigger triggerParent = node.getFirstParentOfType(ASTUserTrigger.class);
-        if (triggerParent != null) {
-            String ns = triggerParent.getNamespace();
-            String targetObj = triggerParent.getTargetName();
-
-            return new ApexQualifiedName(StringUtils.isEmpty(ns) ? "c" : ns, new String[]{"trigger", targetObj}, triggerParent.getImage()); // uses a reserved word as a class name to prevent clashes
-        }
-        throw new UnsupportedOperationException();
     }
 }

@@ -4,19 +4,37 @@
 
 package net.sourceforge.pmd.lang.ecmascript;
 
-import net.sourceforge.pmd.lang.BaseLanguageModule;
+import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptParser;
+import net.sourceforge.pmd.lang.ecmascript.cpd.EcmascriptTokenizer;
+import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
 
 /**
  * Created by christoferdutz on 20.09.14.
  */
-public class EcmascriptLanguageModule extends BaseLanguageModule {
-
-    public static final String NAME = "Ecmascript";
-    public static final String TERSE_NAME = "ecmascript";
+public class EcmascriptLanguageModule extends SimpleLanguageModuleBase {
+    static final String ID = "ecmascript";
+    static final String NAME = "JavaScript";
 
     public EcmascriptLanguageModule() {
-        super(NAME, null, TERSE_NAME, "js");
-        addVersion("3", new Ecmascript3Handler(), true);
+        super(LanguageMetadata.withId(ID).name(NAME).extensions("js")
+                              .addVersion("3")
+                              .addVersion("5")
+                              .addVersion("6", "ES6", "ES2015")
+                              .addVersion("7", "ES2016")
+                              .addVersion("8", "ES2017")
+                              .addDefaultVersion("9", "ES2018"),
+              properties -> () -> new EcmascriptParser(properties));
     }
 
+    public static EcmascriptLanguageModule getInstance() {
+        return (EcmascriptLanguageModule) LanguageRegistry.PMD.getLanguageById(ID);
+    }
+
+    @Override
+    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
+        return new EcmascriptTokenizer();
+    }
 }

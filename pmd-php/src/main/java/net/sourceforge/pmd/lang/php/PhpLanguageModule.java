@@ -1,30 +1,31 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.php;
 
-import net.sourceforge.pmd.lang.BaseLanguageModule;
+import net.sourceforge.pmd.cpd.AnyTokenizer;
+import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.impl.CpdOnlyLanguageModuleBase;
 
 /**
- * Language Module for PHP.
- *
- * @deprecated There is no full PMD support for PHP.
+ * Language implementation for PHP
  */
-@Deprecated
-public class PhpLanguageModule extends BaseLanguageModule {
+public class PhpLanguageModule extends CpdOnlyLanguageModuleBase {
+    private static final String ID = "php";
 
-    /** The name. */
-    public static final String NAME = "PHP: Hypertext Preprocessor";
-    /** The terse name. */
-    public static final String TERSE_NAME = "php";
-
-    /**
-     * Create a new instance of the PHP Language Module.
-     */
     public PhpLanguageModule() {
-        super(NAME, "PHP", TERSE_NAME, "php", "class");
-        addVersion("", null, true);
+        super(LanguageMetadata.withId(ID).name("PHP").extensions("php", "class"));
     }
 
+    public static PhpLanguageModule getInstance() {
+        return (PhpLanguageModule) LanguageRegistry.CPD.getLanguageById(ID);
+    }
+
+    @Override
+    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
+        return new AnyTokenizer("#|//");
+    }
 }

@@ -1,0 +1,1022 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L28
+    [static]                                1         7
+    [dispatch_queue_t]                      8         24
+    [http_request_operation_processing_[    25        64
+    [(]                                     64        65
+    [)]                                     65        66
+    [{]                                     67        68
+L29
+    [static]                                5         11
+    [dispatch_queue_t]                      12        28
+    [af_http_request_operation_processi[    29        71
+    [;]                                     71        72
+L30
+    [static]                                5         11
+    [dispatch_once_t]                       12        27
+    [onceToken]                             28        37
+    [;]                                     37        38
+L31
+    [dispatch_once]                         5         18
+    [(]                                     18        19
+    [&]                                     19        20
+    [onceToken]                             20        29
+    [,]                                     29        30
+    [^]                                     31        32
+    [{]                                     32        33
+L32
+    [af_http_request_operation_processi[    9         51
+    [=]                                     52        53
+    [dispatch_queue_create]                 54        75
+    [(]                                     75        76
+    ["com.alamofire.networking.http-req[    76        126
+    [,]                                     126       127
+    [DISPATCH_QUEUE_CONCURRENT]             128       153
+    [)]                                     153       154
+    [;]                                     154       155
+L33
+    [}]                                     5         6
+    [)]                                     6         7
+    [;]                                     7         8
+L35
+    [return]                                5         11
+    [af_http_request_operation_processi[    12        54
+    [;]                                     54        55
+L36
+    [}]                                     1         2
+L38
+    [static]                                1         7
+    [dispatch_group_t]                      8         24
+    [http_request_operation_completion_[    25        64
+    [(]                                     64        65
+    [)]                                     65        66
+    [{]                                     67        68
+L39
+    [static]                                5         11
+    [dispatch_group_t]                      12        28
+    [af_http_request_operation_completi[    29        71
+    [;]                                     71        72
+L40
+    [static]                                5         11
+    [dispatch_once_t]                       12        27
+    [onceToken]                             28        37
+    [;]                                     37        38
+L41
+    [dispatch_once]                         5         18
+    [(]                                     18        19
+    [&]                                     19        20
+    [onceToken]                             20        29
+    [,]                                     29        30
+    [^]                                     31        32
+    [{]                                     32        33
+L42
+    [af_http_request_operation_completi[    9         51
+    [=]                                     52        53
+    [dispatch_group_create]                 54        75
+    [(]                                     75        76
+    [)]                                     76        77
+    [;]                                     77        78
+L43
+    [}]                                     5         6
+    [)]                                     6         7
+    [;]                                     7         8
+L45
+    [return]                                5         11
+    [af_http_request_operation_completi[    12        54
+    [;]                                     54        55
+L46
+    [}]                                     1         2
+L50
+    [@interface]                            1         11
+    [AFURLConnectionOperation]              12        36
+    [(]                                     37        38
+    [)]                                     38        39
+L51
+    [@property]                             1         10
+    [(]                                     11        12
+    [readwrite]                             12        21
+    [,]                                     21        22
+    [nonatomic]                             23        32
+    [,]                                     32        33
+    [strong]                                34        40
+    [)]                                     40        41
+    [NSURLRequest]                          42        54
+    [*]                                     55        56
+    [request]                               56        63
+    [;]                                     63        64
+L52
+    [@property]                             1         10
+    [(]                                     11        12
+    [readwrite]                             12        21
+    [,]                                     21        22
+    [nonatomic]                             23        32
+    [,]                                     32        33
+    [strong]                                34        40
+    [)]                                     40        41
+    [NSURLResponse]                         42        55
+    [*]                                     56        57
+    [response]                              57        65
+    [;]                                     65        66
+L53
+    [@end]                                  1         5
+L55
+    [@interface]                            1         11
+    [AFHTTPRequestOperation]                12        34
+    [(]                                     35        36
+    [)]                                     36        37
+L56
+    [@property]                             1         10
+    [(]                                     11        12
+    [readwrite]                             12        21
+    [,]                                     21        22
+    [nonatomic]                             23        32
+    [,]                                     32        33
+    [strong]                                34        40
+    [)]                                     40        41
+    [NSHTTPURLResponse]                     42        59
+    [*]                                     60        61
+    [response]                              61        69
+    [;]                                     69        70
+L57
+    [@property]                             1         10
+    [(]                                     11        12
+    [readwrite]                             12        21
+    [,]                                     21        22
+    [nonatomic]                             23        32
+    [,]                                     32        33
+    [strong]                                34        40
+    [)]                                     40        41
+    [id]                                    42        44
+    [responseObject]                        45        59
+    [;]                                     59        60
+L58
+    [@property]                             1         10
+    [(]                                     11        12
+    [readwrite]                             12        21
+    [,]                                     21        22
+    [nonatomic]                             23        32
+    [,]                                     32        33
+    [strong]                                34        40
+    [)]                                     40        41
+    [NSError]                               42        49
+    [*]                                     50        51
+    [responseSerializationError]            51        77
+    [;]                                     77        78
+L59
+    [@property]                             1         10
+    [(]                                     11        12
+    [readwrite]                             12        21
+    [,]                                     21        22
+    [nonatomic]                             23        32
+    [,]                                     32        33
+    [strong]                                34        40
+    [)]                                     40        41
+    [NSRecursiveLock]                       42        57
+    [*]                                     58        59
+    [lock]                                  59        63
+    [;]                                     63        64
+L60
+    [@end]                                  1         5
+L62
+    [@implementation]                       1         16
+    [AFHTTPRequestOperation]                17        39
+L63
+    [@dynamic]                              1         9
+    [lock]                                  10        14
+    [;]                                     14        15
+L65
+    [-]                                     1         2
+    [(]                                     3         4
+    [instancetype]                          4         16
+    [)]                                     16        17
+    [initWithRequest]                       17        32
+    [:]                                     32        33
+    [(]                                     33        34
+    [NSURLRequest]                          34        46
+    [*]                                     47        48
+    [)]                                     48        49
+    [urlRequest]                            49        59
+    [{]                                     60        61
+L66
+    [self]                                  5         9
+    [=]                                     10        11
+    [\[]                                    12        13
+    [super]                                 13        18
+    [initWithRequest]                       19        34
+    [:]                                     34        35
+    [urlRequest]                            35        45
+    [\]]                                    45        46
+    [;]                                     46        47
+L67
+    [if]                                    5         7
+    [(]                                     8         9
+    [!]                                     9         10
+    [self]                                  10        14
+    [)]                                     14        15
+    [{]                                     16        17
+L68
+    [return]                                9         15
+    [nil]                                   16        19
+    [;]                                     19        20
+L69
+    [}]                                     5         6
+L71
+    [self]                                  5         9
+    [.]                                     9         10
+    [responseSerializer]                    10        28
+    [=]                                     29        30
+    [\[]                                    31        32
+    [AFHTTPResponseSerializer]              32        56
+    [serializer]                            57        67
+    [\]]                                    67        68
+    [;]                                     68        69
+L73
+    [return]                                5         11
+    [self]                                  12        16
+    [;]                                     16        17
+L74
+    [}]                                     1         2
+L76
+    [-]                                     1         2
+    [(]                                     3         4
+    [void]                                  4         8
+    [)]                                     8         9
+    [setResponseSerializer]                 9         30
+    [:]                                     30        31
+    [(]                                     31        32
+    [AFHTTPResponseSerializer]              32        56
+    [<]                                     57        58
+    [AFURLResponseSerialization]            58        84
+    [>]                                     84        85
+    [*]                                     86        87
+    [)]                                     87        88
+    [responseSerializer]                    88        106
+    [{]                                     107       108
+L77
+    [NSParameterAssert]                     5         22
+    [(]                                     22        23
+    [responseSerializer]                    23        41
+    [)]                                     41        42
+    [;]                                     42        43
+L79
+    [\[]                                    5         6
+    [self]                                  6         10
+    [.]                                     10        11
+    [lock]                                  11        15
+    [lock]                                  16        20
+    [\]]                                    20        21
+    [;]                                     21        22
+L80
+    [_responseSerializer]                   5         24
+    [=]                                     25        26
+    [responseSerializer]                    27        45
+    [;]                                     45        46
+L81
+    [self]                                  5         9
+    [.]                                     9         10
+    [responseObject]                        10        24
+    [=]                                     25        26
+    [nil]                                   27        30
+    [;]                                     30        31
+L82
+    [self]                                  5         9
+    [.]                                     9         10
+    [responseSerializationError]            10        36
+    [=]                                     37        38
+    [nil]                                   39        42
+    [;]                                     42        43
+L83
+    [\[]                                    5         6
+    [self]                                  6         10
+    [.]                                     10        11
+    [lock]                                  11        15
+    [unlock]                                16        22
+    [\]]                                    22        23
+    [;]                                     23        24
+L84
+    [}]                                     1         2
+L86
+    [-]                                     1         2
+    [(]                                     3         4
+    [id]                                    4         6
+    [)]                                     6         7
+    [responseObject]                        7         21
+    [{]                                     22        23
+L87
+    [\[]                                    5         6
+    [self]                                  6         10
+    [.]                                     10        11
+    [lock]                                  11        15
+    [lock]                                  16        20
+    [\]]                                    20        21
+    [;]                                     21        22
+L88
+    [if]                                    5         7
+    [(]                                     8         9
+    [!]                                     9         10
+    [_responseObject]                       10        25
+    [&&]                                    26        28
+    [\[]                                    29        30
+    [self]                                  30        34
+    [isFinished]                            35        45
+    [\]]                                    45        46
+    [&&]                                    47        49
+    [!]                                     50        51
+    [self]                                  51        55
+    [.]                                     55        56
+    [error]                                 56        61
+    [)]                                     61        62
+    [{]                                     63        64
+L89
+    [NSError]                               9         16
+    [*]                                     17        18
+    [error]                                 18        23
+    [=]                                     24        25
+    [nil]                                   26        29
+    [;]                                     29        30
+L90
+    [self]                                  9         13
+    [.]                                     13        14
+    [responseObject]                        14        28
+    [=]                                     29        30
+    [\[]                                    31        32
+    [self]                                  32        36
+    [.]                                     36        37
+    [responseSerializer]                    37        55
+    [responseObjectForResponse]             56        81
+    [:]                                     81        82
+    [self]                                  82        86
+    [.]                                     86        87
+    [response]                              87        95
+    [data]                                  96        100
+    [:]                                     100       101
+    [self]                                  101       105
+    [.]                                     105       106
+    [responseData]                          106       118
+    [error]                                 119       124
+    [:]                                     124       125
+    [&]                                     125       126
+    [error]                                 126       131
+    [\]]                                    131       132
+    [;]                                     132       133
+L91
+    [if]                                    9         11
+    [(]                                     12        13
+    [error]                                 13        18
+    [)]                                     18        19
+    [{]                                     20        21
+L92
+    [self]                                  13        17
+    [.]                                     17        18
+    [responseSerializationError]            18        44
+    [=]                                     45        46
+    [error]                                 47        52
+    [;]                                     52        53
+L93
+    [}]                                     9         10
+L94
+    [}]                                     5         6
+L95
+    [\[]                                    5         6
+    [self]                                  6         10
+    [.]                                     10        11
+    [lock]                                  11        15
+    [unlock]                                16        22
+    [\]]                                    22        23
+    [;]                                     23        24
+L97
+    [return]                                5         11
+    [_responseObject]                       12        27
+    [;]                                     27        28
+L98
+    [}]                                     1         2
+L100
+    [-]                                     1         2
+    [(]                                     3         4
+    [NSError]                               4         11
+    [*]                                     12        13
+    [)]                                     13        14
+    [error]                                 14        19
+    [{]                                     20        21
+L101
+    [if]                                    5         7
+    [(]                                     8         9
+    [_responseSerializationError]           9         36
+    [)]                                     36        37
+    [{]                                     38        39
+L102
+    [return]                                9         15
+    [_responseSerializationError]           16        43
+    [;]                                     43        44
+L103
+    [}]                                     5         6
+    [else]                                  7         11
+    [{]                                     12        13
+L104
+    [return]                                9         15
+    [\[]                                    16        17
+    [super]                                 17        22
+    [error]                                 23        28
+    [\]]                                    28        29
+    [;]                                     29        30
+L105
+    [}]                                     5         6
+L106
+    [}]                                     1         2
+L110
+    [-]                                     1         2
+    [(]                                     3         4
+    [void]                                  4         8
+    [)]                                     8         9
+    [setCompletionBlockWithSuccess]         9         38
+    [:]                                     38        39
+    [success]                               103       110
+L111
+    [failure]                               31        38
+    [:]                                     38        39
+    [failure]                               100       107
+L112
+    [{]                                     1         2
+L117
+    [self]                                  5         9
+    [.]                                     9         10
+    [completionBlock]                       10        25
+    [=]                                     26        27
+    [^]                                     28        29
+    [{]                                     29        30
+L118
+    [if]                                    9         11
+    [(]                                     12        13
+    [self]                                  13        17
+    [.]                                     17        18
+    [completionGroup]                       18        33
+    [)]                                     33        34
+    [{]                                     35        36
+L119
+    [dispatch_group_enter]                  13        33
+    [(]                                     33        34
+    [self]                                  34        38
+    [.]                                     38        39
+    [completionGroup]                       39        54
+    [)]                                     54        55
+    [;]                                     55        56
+L120
+    [}]                                     9         10
+L122
+    [dispatch_async]                        9         23
+    [(]                                     23        24
+    [http_request_operation_processing_[    24        63
+    [(]                                     63        64
+    [)]                                     64        65
+    [,]                                     65        66
+    [^]                                     67        68
+    [{]                                     68        69
+L123
+    [if]                                    13        15
+    [(]                                     16        17
+    [self]                                  17        21
+    [.]                                     21        22
+    [error]                                 22        27
+    [)]                                     27        28
+    [{]                                     29        30
+L124
+    [if]                                    17        19
+    [(]                                     20        21
+    [failure]                               21        28
+    [)]                                     28        29
+    [{]                                     30        31
+L125
+    [dispatch_group_async]                  21        41
+    [(]                                     41        42
+    [self]                                  42        46
+    [.]                                     46        47
+    [completionGroup]                       47        62
+    [?]                                     63        64
+    [:]                                     64        65
+    [http_request_operation_completion_[    66        105
+    [(]                                     105       106
+    [)]                                     106       107
+    [,]                                     107       108
+    [self]                                  109       113
+    [.]                                     113       114
+    [completionQueue]                       114       129
+    [?]                                     130       131
+    [:]                                     131       132
+    [dispatch_get_main_queue]               133       156
+    [(]                                     156       157
+    [)]                                     157       158
+    [,]                                     158       159
+    [^]                                     160       161
+    [{]                                     161       162
+L126
+    [failure]                               25        32
+    [(]                                     32        33
+    [self]                                  33        37
+    [,]                                     37        38
+    [self]                                  39        43
+    [.]                                     43        44
+    [error]                                 44        49
+    [)]                                     49        50
+    [;]                                     50        51
+L127
+    [}]                                     21        22
+    [)]                                     22        23
+    [;]                                     23        24
+L128
+    [}]                                     17        18
+L129
+    [}]                                     13        14
+    [else]                                  15        19
+    [{]                                     20        21
+L130
+    [id]                                    17        19
+    [responseObject]                        20        34
+    [=]                                     35        36
+    [self]                                  37        41
+    [.]                                     41        42
+    [responseObject]                        42        56
+    [;]                                     56        57
+L131
+    [if]                                    17        19
+    [(]                                     20        21
+    [self]                                  21        25
+    [.]                                     25        26
+    [error]                                 26        31
+    [)]                                     31        32
+    [{]                                     33        34
+L132
+    [if]                                    21        23
+    [(]                                     24        25
+    [failure]                               25        32
+    [)]                                     32        33
+    [{]                                     34        35
+L133
+    [dispatch_group_async]                  25        45
+    [(]                                     45        46
+    [self]                                  46        50
+    [.]                                     50        51
+    [completionGroup]                       51        66
+    [?]                                     67        68
+    [:]                                     68        69
+    [http_request_operation_completion_[    70        109
+    [(]                                     109       110
+    [)]                                     110       111
+    [,]                                     111       112
+    [self]                                  113       117
+    [.]                                     117       118
+    [completionQueue]                       118       133
+    [?]                                     134       135
+    [:]                                     135       136
+    [dispatch_get_main_queue]               137       160
+    [(]                                     160       161
+    [)]                                     161       162
+    [,]                                     162       163
+    [^]                                     164       165
+    [{]                                     165       166
+L134
+    [failure]                               29        36
+    [(]                                     36        37
+    [self]                                  37        41
+    [,]                                     41        42
+    [self]                                  43        47
+    [.]                                     47        48
+    [error]                                 48        53
+    [)]                                     53        54
+    [;]                                     54        55
+L135
+    [}]                                     25        26
+    [)]                                     26        27
+    [;]                                     27        28
+L136
+    [}]                                     21        22
+L137
+    [}]                                     17        18
+    [else]                                  19        23
+    [{]                                     24        25
+L138
+    [if]                                    21        23
+    [(]                                     24        25
+    [success]                               25        32
+    [)]                                     32        33
+    [{]                                     34        35
+L139
+    [dispatch_group_async]                  25        45
+    [(]                                     45        46
+    [self]                                  46        50
+    [.]                                     50        51
+    [completionGroup]                       51        66
+    [?]                                     67        68
+    [:]                                     68        69
+    [http_request_operation_completion_[    70        109
+    [(]                                     109       110
+    [)]                                     110       111
+    [,]                                     111       112
+    [self]                                  113       117
+    [.]                                     117       118
+    [completionQueue]                       118       133
+    [?]                                     134       135
+    [:]                                     135       136
+    [dispatch_get_main_queue]               137       160
+    [(]                                     160       161
+    [)]                                     161       162
+    [,]                                     162       163
+    [^]                                     164       165
+    [{]                                     165       166
+L140
+    [success]                               29        36
+    [(]                                     36        37
+    [self]                                  37        41
+    [,]                                     41        42
+    [responseObject]                        43        57
+    [)]                                     57        58
+    [;]                                     58        59
+L141
+    [}]                                     25        26
+    [)]                                     26        27
+    [;]                                     27        28
+L142
+    [}]                                     21        22
+L143
+    [}]                                     17        18
+L144
+    [}]                                     13        14
+L146
+    [if]                                    13        15
+    [(]                                     16        17
+    [self]                                  17        21
+    [.]                                     21        22
+    [completionGroup]                       22        37
+    [)]                                     37        38
+    [{]                                     39        40
+L147
+    [dispatch_group_leave]                  17        37
+    [(]                                     37        38
+    [self]                                  38        42
+    [.]                                     42        43
+    [completionGroup]                       43        58
+    [)]                                     58        59
+    [;]                                     59        60
+L148
+    [}]                                     13        14
+L149
+    [}]                                     9         10
+    [)]                                     10        11
+    [;]                                     11        12
+L150
+    [}]                                     5         6
+    [;]                                     6         7
+L152
+    [}]                                     1         2
+L156
+    [-]                                     1         2
+    [(]                                     3         4
+    [void]                                  4         8
+    [)]                                     8         9
+    [pause]                                 9         14
+    [{]                                     15        16
+L157
+    [\[]                                    5         6
+    [super]                                 6         11
+    [pause]                                 12        17
+    [\]]                                    17        18
+    [;]                                     18        19
+L159
+    [u_int64_t]                             5         14
+    [offset]                                15        21
+    [=]                                     22        23
+    [0]                                     24        25
+    [;]                                     25        26
+L160
+    [if]                                    5         7
+    [(]                                     8         9
+    [\[]                                    9         10
+    [self]                                  10        14
+    [.]                                     14        15
+    [outputStream]                          15        27
+    [propertyForKey]                        28        42
+    [:]                                     42        43
+    [NSStreamFileCurrentOffsetKey]          43        71
+    [\]]                                    71        72
+    [)]                                     72        73
+    [{]                                     74        75
+L161
+    [offset]                                9         15
+    [=]                                     16        17
+    [\[]                                    18        19
+    [(]                                     19        20
+    [NSNumber]                              20        28
+    [*]                                     29        30
+    [)]                                     30        31
+    [\[]                                    31        32
+    [self]                                  32        36
+    [.]                                     36        37
+    [outputStream]                          37        49
+    [propertyForKey]                        50        64
+    [:]                                     64        65
+    [NSStreamFileCurrentOffsetKey]          65        93
+    [\]]                                    93        94
+    [unsignedLongLongValue]                 95        116
+    [\]]                                    116       117
+    [;]                                     117       118
+L162
+    [}]                                     5         6
+    [else]                                  7         11
+    [{]                                     12        13
+L163
+    [offset]                                9         15
+    [=]                                     16        17
+    [\[]                                    18        19
+    [(]                                     19        20
+    [NSData]                                20        26
+    [*]                                     27        28
+    [)]                                     28        29
+    [\[]                                    29        30
+    [self]                                  30        34
+    [.]                                     34        35
+    [outputStream]                          35        47
+    [propertyForKey]                        48        62
+    [:]                                     62        63
+    [NSStreamDataWrittenToMemoryStreamK[    63        99
+    [\]]                                    99        100
+    [length]                                101       107
+    [\]]                                    107       108
+    [;]                                     108       109
+L164
+    [}]                                     5         6
+L166
+    [NSMutableURLRequest]                   5         24
+    [*]                                     25        26
+    [mutableURLRequest]                     26        43
+    [=]                                     44        45
+    [\[]                                    46        47
+    [self]                                  47        51
+    [.]                                     51        52
+    [request]                               52        59
+    [mutableCopy]                           60        71
+    [\]]                                    71        72
+    [;]                                     72        73
+L167
+    [if]                                    5         7
+    [(]                                     8         9
+    [\[]                                    9         10
+    [self]                                  10        14
+    [.]                                     14        15
+    [response]                              15        23
+    [respondsToSelector]                    24        42
+    [:]                                     42        43
+    [@selector]                             43        52
+    [(]                                     52        53
+    [allHeaderFields]                       53        68
+    [)]                                     68        69
+    [\]]                                    69        70
+    [&&]                                    71        73
+    [\[]                                    74        75
+    [\[]                                    75        76
+    [self]                                  76        80
+    [.]                                     80        81
+    [response]                              81        89
+    [allHeaderFields]                       90        105
+    [\]]                                    105       106
+    [valueForKey]                           107       118
+    [:]                                     118       119
+    [@"ETag"]                               119       126
+    [\]]                                    126       127
+    [)]                                     127       128
+    [{]                                     129       130
+L168
+    [\[]                                    9         10
+    [mutableURLRequest]                     10        27
+    [setValue]                              28        36
+    [:]                                     36        37
+    [\[]                                    37        38
+    [\[]                                    38        39
+    [self]                                  39        43
+    [.]                                     43        44
+    [response]                              44        52
+    [allHeaderFields]                       53        68
+    [\]]                                    68        69
+    [valueForKey]                           70        81
+    [:]                                     81        82
+    [@"ETag"]                               82        89
+    [\]]                                    89        90
+    [forHTTPHeaderField]                    91        109
+    [:]                                     109       110
+    [@"If-Range"]                           110       121
+    [\]]                                    121       122
+    [;]                                     122       123
+L169
+    [}]                                     5         6
+L170
+    [\[]                                    5         6
+    [mutableURLRequest]                     6         23
+    [setValue]                              24        32
+    [:]                                     32        33
+    [\[]                                    33        34
+    [NSString]                              34        42
+    [stringWithFormat]                      43        59
+    [:]                                     59        60
+    [@"bytes=%llu-"]                        60        74
+    [,]                                     74        75
+    [offset]                                76        82
+    [\]]                                    82        83
+    [forHTTPHeaderField]                    84        102
+    [:]                                     102       103
+    [@"Range"]                              103       111
+    [\]]                                    111       112
+    [;]                                     112       113
+L171
+    [self]                                  5         9
+    [.]                                     9         10
+    [request]                               10        17
+    [=]                                     18        19
+    [mutableURLRequest]                     20        37
+    [;]                                     37        38
+L172
+    [}]                                     1         2
+L176
+    [+]                                     1         2
+    [(]                                     3         4
+    [BOOL]                                  4         8
+    [)]                                     8         9
+    [supportsSecureCoding]                  9         29
+    [{]                                     30        31
+L177
+    [return]                                5         11
+    [YES]                                   12        15
+    [;]                                     15        16
+L178
+    [}]                                     1         2
+L180
+    [-]                                     1         2
+    [(]                                     3         4
+    [id]                                    4         6
+    [)]                                     6         7
+    [initWithCoder]                         7         20
+    [:]                                     20        21
+    [(]                                     21        22
+    [NSCoder]                               22        29
+    [*]                                     30        31
+    [)]                                     31        32
+    [decoder]                               32        39
+    [{]                                     40        41
+L181
+    [self]                                  5         9
+    [=]                                     10        11
+    [\[]                                    12        13
+    [super]                                 13        18
+    [initWithCoder]                         19        32
+    [:]                                     32        33
+    [decoder]                               33        40
+    [\]]                                    40        41
+    [;]                                     41        42
+L182
+    [if]                                    5         7
+    [(]                                     8         9
+    [!]                                     9         10
+    [self]                                  10        14
+    [)]                                     14        15
+    [{]                                     16        17
+L183
+    [return]                                9         15
+    [nil]                                   16        19
+    [;]                                     19        20
+L184
+    [}]                                     5         6
+L186
+    [self]                                  5         9
+    [.]                                     9         10
+    [responseSerializer]                    10        28
+    [=]                                     29        30
+    [\[]                                    31        32
+    [decoder]                               32        39
+    [decodeObjectOfClass]                   40        59
+    [:]                                     59        60
+    [\[]                                    60        61
+    [AFHTTPResponseSerializer]              61        85
+    [class]                                 86        91
+    [\]]                                    91        92
+    [forKey]                                93        99
+    [:]                                     99        100
+    [NSStringFromSelector]                  100       120
+    [(]                                     120       121
+    [@selector]                             121       130
+    [(]                                     130       131
+    [responseSerializer]                    131       149
+    [)]                                     149       150
+    [)]                                     150       151
+    [\]]                                    151       152
+    [;]                                     152       153
+L188
+    [return]                                5         11
+    [self]                                  12        16
+    [;]                                     16        17
+L189
+    [}]                                     1         2
+L191
+    [-]                                     1         2
+    [(]                                     3         4
+    [void]                                  4         8
+    [)]                                     8         9
+    [encodeWithCoder]                       9         24
+    [:]                                     24        25
+    [(]                                     25        26
+    [NSCoder]                               26        33
+    [*]                                     34        35
+    [)]                                     35        36
+    [coder]                                 36        41
+    [{]                                     42        43
+L192
+    [\[]                                    5         6
+    [super]                                 6         11
+    [encodeWithCoder]                       12        27
+    [:]                                     27        28
+    [coder]                                 28        33
+    [\]]                                    33        34
+    [;]                                     34        35
+L194
+    [\[]                                    5         6
+    [coder]                                 6         11
+    [encodeObject]                          12        24
+    [:]                                     24        25
+    [self]                                  25        29
+    [.]                                     29        30
+    [responseSerializer]                    30        48
+    [forKey]                                49        55
+    [:]                                     55        56
+    [NSStringFromSelector]                  56        76
+    [(]                                     76        77
+    [@selector]                             77        86
+    [(]                                     86        87
+    [responseSerializer]                    87        105
+    [)]                                     105       106
+    [)]                                     106       107
+    [\]]                                    107       108
+    [;]                                     108       109
+L195
+    [}]                                     1         2
+L199
+    [-]                                     1         2
+    [(]                                     3         4
+    [id]                                    4         6
+    [)]                                     6         7
+    [copyWithZone]                          7         19
+    [:]                                     19        20
+    [(]                                     20        21
+    [NSZone]                                21        27
+    [*]                                     28        29
+    [)]                                     29        30
+    [zone]                                  30        34
+    [{]                                     35        36
+L200
+    [AFHTTPRequestOperation]                5         27
+    [*]                                     28        29
+    [operation]                             29        38
+    [=]                                     39        40
+    [\[]                                    41        42
+    [super]                                 42        47
+    [copyWithZone]                          48        60
+    [:]                                     60        61
+    [zone]                                  61        65
+    [\]]                                    65        66
+    [;]                                     66        67
+L202
+    [operation]                             5         14
+    [.]                                     14        15
+    [responseSerializer]                    15        33
+    [=]                                     34        35
+    [\[]                                    36        37
+    [self]                                  37        41
+    [.]                                     41        42
+    [responseSerializer]                    42        60
+    [copyWithZone]                          61        73
+    [:]                                     73        74
+    [zone]                                  74        78
+    [\]]                                    78        79
+    [;]                                     79        80
+L203
+    [operation]                             5         14
+    [.]                                     14        15
+    [completionQueue]                       15        30
+    [=]                                     31        32
+    [self]                                  33        37
+    [.]                                     37        38
+    [completionQueue]                       38        53
+    [;]                                     53        54
+L204
+    [operation]                             5         14
+    [.]                                     14        15
+    [completionGroup]                       15        30
+    [=]                                     31        32
+    [self]                                  33        37
+    [.]                                     37        38
+    [completionGroup]                       38        53
+    [;]                                     53        54
+L206
+    [return]                                5         11
+    [operation]                             12        21
+    [;]                                     21        22
+L207
+    [}]                                     1         2
+L209
+    [@end]                                  1         5
+EOF

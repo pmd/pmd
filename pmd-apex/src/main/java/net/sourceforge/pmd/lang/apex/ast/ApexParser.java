@@ -4,56 +4,37 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.apex.ApexJorjeLogging;
-import net.sourceforge.pmd.lang.apex.ApexParserOptions;
+import net.sourceforge.pmd.lang.apex.ApexLanguageProcessor;
 import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.lang.ast.Parser;
 
 import com.google.summit.SummitAST;
 import com.google.summit.ast.CompilationUnit;
+import com.google.summit.translation.Translate;
 
-/**
- * @deprecated Internal API
- */
 @InternalApi
-@Deprecated
-public class ApexParser {
-    protected final ApexParserOptions parserOptions;
+@SuppressWarnings("PMD.DoNotUseJavaUtilLogging")
+public final class ApexParser implements Parser {
 
-    private Map<Integer, String> suppressMap;
-
-    public ApexParser(ApexParserOptions parserOptions) {
-        ApexJorjeLogging.disableLogging();
-        this.parserOptions = parserOptions;
+    public ApexParser() {
+        // Suppress INFO-level output
+        Logger.getLogger(Translate.class.getName()).setLevel(Level.WARNING);
+        AntlrVersionCheckSuppression.initApexLexer();
     }
 
-    public CompilationUnit parseApex(final String sourceCode) throws ParseException {
-        return SummitAST.INSTANCE.parseAndTranslate(sourceCode, null);
-    }
+    @Override
+    public ASTApexFile parse(final ParserTask task) {
+        CompilationUnit astRoot = SummitAST.INSTANCE.parseAndTranslate(task.getTextDocument().getText().toString(), null);
 
-    public ApexNode<?> parse(final Reader reader) {
-        try {
-            final String sourceCode = IOUtil.readToString(reader);
-            final CompilationUnit astRoot = parseApex(sourceCode);
-            final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(sourceCode, parserOptions);
-            suppressMap = treeBuilder.getSuppressMap();
-
-            if (astRoot == null) {
-                throw new ParseException("Couldn't parse the source - there is not root node - Syntax Error??");
-            }
-
-            return treeBuilder.buildTree(astRoot);
-        } catch (IOException e) {
-            throw new ParseException(e);
+        if (astRoot == null) {
+            throw new ParseException("Couldn't parse the source - there is not root node - Syntax Error??");
         }
-    }
 
-    public Map<Integer, String> getSuppressMap() {
-        return suppressMap;
+        final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(task, (ApexLanguageProcessor) task.getLanguageProcessor());
+        return treeBuilder.buildTree(astRoot);
     }
 }

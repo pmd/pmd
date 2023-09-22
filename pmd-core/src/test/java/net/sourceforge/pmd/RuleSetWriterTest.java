@@ -4,22 +4,30 @@
 
 package net.sourceforge.pmd;
 
+import static net.sourceforge.pmd.util.CollectionUtil.mapOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Random;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.RuleSet.RuleSetBuilder;
 import net.sourceforge.pmd.lang.rule.RuleReference;
+import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.util.internal.xml.SchemaConstants;
 
 /**
  * Unit test for {@link RuleSetWriter}.
  *
  */
-public class RuleSetWriterTest {
+class RuleSetWriterTest extends RulesetFactoryTestBase {
 
     private ByteArrayOutputStream out;
     private RuleSetWriter writer;
@@ -27,8 +35,8 @@ public class RuleSetWriterTest {
     /**
      * Prepare the output stream.
      */
-    @Before
-    public void setupOutputStream() {
+    @BeforeEach
+    void setupOutputStream() {
         out = new ByteArrayOutputStream();
         writer = new RuleSetWriter(out);
     }
@@ -36,8 +44,8 @@ public class RuleSetWriterTest {
     /**
      * Closes the output stream at the end.
      */
-    @After
-    public void cleanupStream() {
+    @AfterEach
+    void cleanupStream() {
         if (writer != null) {
             writer.close();
         }
@@ -50,8 +58,8 @@ public class RuleSetWriterTest {
      *             any error
      */
     @Test
-    public void testWrite() throws Exception {
-        RuleSet braces = RulesetsFactoryUtils.defaultFactory().createRuleSet("net/sourceforge/pmd/TestRuleset1.xml");
+    void testWrite() throws Exception {
+        RuleSet braces = new RuleSetLoader().loadFromResource("net/sourceforge/pmd/TestRuleset1.xml");
         RuleSet ruleSet = new RuleSetBuilder(new Random().nextLong())
                 .withName("ruleset")
                 .withDescription("ruleset description")
@@ -60,8 +68,8 @@ public class RuleSetWriterTest {
 
         writer.write(ruleSet);
 
-        String written = out.toString("UTF-8");
-        Assert.assertTrue(written.contains("<exclude name=\"MockRule2\""));
+        String written = out.toString(StandardCharsets.UTF_8.name());
+        assertTrue(written.contains("<exclude name=\"MockRule2\""));
     }
 
     /**
@@ -71,21 +79,82 @@ public class RuleSetWriterTest {
      *             any error
      */
     @Test
-    public void testRuleReferenceOverriddenName() throws Exception {
-        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.defaultFactory();
-        RuleSet rs = ruleSetFactory.createRuleSet("dummy-basic");
-        RuleSetReference ruleSetReference = new RuleSetReference("rulesets/dummy/basic.xml");
+    void testRuleReferenceOverriddenName() throws Exception {
+        RuleSet rs = new RuleSetLoader().loadFromResource("rulesets/dummy/basic.xml");
 
-        RuleReference ruleRef = new RuleReference();
-        ruleRef.setRule(rs.getRuleByName("DummyBasicMockRule"));
-        ruleRef.setRuleSetReference(ruleSetReference);
+        RuleReference ruleRef = new RuleReference(
+                rs.getRuleByName("DummyBasicMockRule"),
+                new RuleSetReference("rulesets/dummy/basic.xml"));
         ruleRef.setName("Foo"); // override the name
 
         RuleSet ruleSet = RuleSet.forSingleRule(ruleRef);
 
         writer.write(ruleSet);
 
-        String written = out.toString("UTF-8");
-        Assert.assertTrue(written.contains("ref=\"rulesets/dummy/basic.xml/DummyBasicMockRule\""));
+        String written = out.toString(StandardCharsets.UTF_8.name());
+        assertTrue(written.contains("ref=\"rulesets/dummy/basic.xml/DummyBasicMockRule\""));
+    }
+
+    @Test
+    void testPropertyConstraintRange() throws Exception {
+        RuleSet ruleSet = loadRuleSet("created-on-the-fly.xml",
+                rulesetXml(
+                        dummyRule(
+                                attrs -> attrs.put(SchemaConstants.CLASS, XPathRule.class.getName()),
+                                properties(
+                                        propertyWithValueAttr("xpath", "//foo"),
+                                        propertyDefWithValueAttr("rangeProp", "the description", "Integer", "5",
+                                                mapOf(SchemaConstants.PROPERTY_MIN, "0", SchemaConstants.PROPERTY_MAX, "10"))
+                                )
+                        )
+                )
+        );
+
+        writer.write(ruleSet);
+        String written = out.toString(StandardCharsets.UTF_8.name());
+        assertThat(written, containsString("min=\"0\""));
+        assertThat(written, containsString("max=\"10\""));
+    }
+
+    @Test
+    void testPropertyConstraintAbove() throws Exception {
+        RuleSet ruleSet = loadRuleSet("created-on-the-fly.xml",
+                rulesetXml(
+                        dummyRule(
+                                attrs -> attrs.put(SchemaConstants.CLASS, XPathRule.class.getName()),
+                                properties(
+                                        propertyWithValueAttr("xpath", "//foo"),
+                                        propertyDefWithValueAttr("rangeProp", "the description", "Integer", "5",
+                                                mapOf(SchemaConstants.PROPERTY_MIN, "0"))
+                                )
+                        )
+                )
+        );
+
+        writer.write(ruleSet);
+        String written = out.toString(StandardCharsets.UTF_8.name());
+        assertThat(written, containsString("min=\"0\""));
+        assertThat(written, not(containsString("max=\"")));
+    }
+
+    @Test
+    void testPropertyConstraintBelow() throws Exception {
+        RuleSet ruleSet = loadRuleSet("created-on-the-fly.xml",
+                rulesetXml(
+                        dummyRule(
+                                attrs -> attrs.put(SchemaConstants.CLASS, XPathRule.class.getName()),
+                                properties(
+                                        propertyWithValueAttr("xpath", "//foo"),
+                                        propertyDefWithValueAttr("rangeProp", "the description", "Integer", "5",
+                                                mapOf(SchemaConstants.PROPERTY_MAX, "10"))
+                                )
+                        )
+                )
+        );
+
+        writer.write(ruleSet);
+        String written = out.toString(StandardCharsets.UTF_8.name());
+        assertThat(written, not(containsString("min=\"")));
+        assertThat(written, containsString("max=\"10\""));
     }
 }

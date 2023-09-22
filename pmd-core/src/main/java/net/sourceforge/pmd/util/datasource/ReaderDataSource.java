@@ -8,12 +8,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.util.datasource.internal.AbstractDataSource;
 
 /**
  * DataSource implementation to read data from a Reader.
  */
+@Deprecated
 public class ReaderDataSource extends AbstractDataSource {
     /**
      * Reader

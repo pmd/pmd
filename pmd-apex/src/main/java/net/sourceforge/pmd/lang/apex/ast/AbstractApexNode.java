@@ -9,157 +9,168 @@ import java.util.List;
 import java.util.NavigableSet;
 import java.util.TreeSet;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.lang.ast.AstVisitor;
+import net.sourceforge.pmd.lang.ast.FileAnalysisException;
+import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
+import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextPos2d;
+import net.sourceforge.pmd.lang.document.TextRegion;
 
 import com.google.summit.ast.Node;
+import com.google.summit.ast.SourceLocation;
 import com.google.summit.ast.expression.LiteralExpression;
 
-/**
- * @deprecated Use {@link ApexNode}
- */
-@Deprecated
-@InternalApi
-public abstract class AbstractApexNode extends AbstractApexNodeBase implements ApexNode<Void> {
+abstract class AbstractApexNode extends AbstractNode<AbstractApexNode, ApexNode<?>> implements ApexNode<Void> {
+
+    private TextRegion region;
 
     /**
      * {@link AbstractApexNode} wrapper around a single {@link Node}.
-     *
-     * @deprecated Use {@link ApexNode}
      */
-    @Deprecated
-    @InternalApi
-    public abstract static class Single<T extends Node> extends AbstractApexNode {
+    abstract static class Single<T extends Node> extends AbstractApexNode {
 
         protected final T node;
 
         protected Single(T node) {
-            super(node.getClass());
             this.node = node;
         }
 
         @Override
-        void calculateLineNumbers(SourceCodePositioner positioner) {
-            setLineNumbers(node.getSourceLocation());
+        protected void calculateTextRegion(TextDocument sourceCode) {
+            SourceLocation loc = node.getSourceLocation();
+            if (loc.isUnknown()) {
+                return;
+            }
+            // Column+1 because Summit columns are 0-based and PMD are 1-based
+            setRegion(TextRegion.fromBothOffsets(
+                sourceCode.offsetAtLineColumn(TextPos2d.pos2d(loc.getStartLine(), loc.getStartColumn() + 1)),
+                sourceCode.offsetAtLineColumn(TextPos2d.pos2d(loc.getEndLine(), loc.getEndColumn() + 1))
+            ));
         }
 
         @Override
         public boolean hasRealLoc() {
             return !node.getSourceLocation().isUnknown();
         }
-
-        @Override
-        public String getLocation() {
-            if (hasRealLoc()) {
-                return String.valueOf(node.getSourceLocation());
-            } else {
-                return "no location";
-            }
-        }
     }
 
     /**
      * {@link AbstractApexNode} wrapper around a {@link List} of {@link Node}s.
-     *
-     * @deprecated Use {@link ApexNode}
      */
-    @Deprecated
-    @InternalApi
-    public abstract static class Many<T extends Node> extends AbstractApexNode {
+    abstract static class Many<T extends Node> extends AbstractApexNode {
 
         protected final List<T> nodes;
 
         protected Many(List<T> nodes) {
-            super(nodes.getClass());
             this.nodes = nodes;
         }
 
         @Override
-        void calculateLineNumbers(SourceCodePositioner positioner) {
+        protected void calculateTextRegion(TextDocument sourceCode) {
+            // TODO: compute union of ranges?
             for (Node node : nodes) {
-                setLineNumbers(node.getSourceLocation());
+                SourceLocation loc = node.getSourceLocation();
+                if (!loc.isUnknown()) {
+                    // Column+1 because Summit columns are 0-based and PMD are 1-based
+                    setRegion(TextRegion.fromBothOffsets(
+                        sourceCode.offsetAtLineColumn(TextPos2d.pos2d(loc.getStartLine(), loc.getStartColumn() + 1)),
+                        sourceCode.offsetAtLineColumn(TextPos2d.pos2d(loc.getEndLine(), loc.getEndColumn() + 1))
+                    ));
+                }
             }
         }
 
         @Override
         public boolean hasRealLoc() {
             return false;
-        }
-
-        @Override
-        public String getLocation() {
-            return "no location";
         }
     }
 
     /**
      * {@link AbstractApexNode} that doesn't directly wrap a {@link Node}.
-     *
-     * @deprecated Use {@link ApexNode}
      */
-    @Deprecated
-    @InternalApi
-    public abstract static class Empty extends AbstractApexNode {
-
-        protected Empty() {
-            super(Void.class);
-        }
+    abstract static class Empty extends AbstractApexNode {
 
         @Override
-        void calculateLineNumbers(SourceCodePositioner positioner) {
-            // no operation
+        protected void calculateTextRegion(TextDocument sourceCode) {
+            // no location
         }
 
         @Override
         public boolean hasRealLoc() {
             return false;
         }
+    }
 
-        @Override
-        public String getLocation() {
-            return "no location";
+    // overridden to make them visible
+    @Override
+    protected void addChild(AbstractApexNode child, int index) {
+        super.addChild(child, index);
+    }
+
+    @Override
+    protected void insertChild(AbstractApexNode child, int index) {
+        super.insertChild(child, index);
+    }
+
+    @Override
+    protected void setChild(AbstractApexNode child, int index) {
+        super.setChild(child, index);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public final <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
+        if (visitor instanceof ApexVisitor) {
+            return this.acceptApexVisitor((ApexVisitor<? super P, ? extends R>) visitor, data);
         }
+        return visitor.cannotVisit(this, data);
     }
 
-    protected AbstractApexNode(Class<?> klass) {
-        super(klass);
+    protected abstract <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data);
+
+    @Override
+    public @NonNull ASTApexFile getRoot() {
+        return getParent().getRoot();
     }
 
-    protected AbstractApexNode() {
-        this(Void.class);
+    abstract void calculateTextRegion(TextDocument sourceCode);
+
+    @Override
+    public @NonNull TextRegion getTextRegion() {
+        if (region == null) {
+            if (!hasRealLoc()) {
+                AbstractApexNode parent = (AbstractApexNode) getParent();
+                if (parent == null) {
+                    throw new FileAnalysisException("Unable to determine location of " + this);
+                }
+                region = parent.getTextRegion();
+            } else {
+                throw new FileAnalysisException("Unable to determine location of " + this);
+            }
+        }
+        return region;
     }
 
     @Override
-    public ApexNode<?> getChild(int index) {
-        return (ApexNode<?>) super.getChild(index);
+    public final String getXPathNodeName() {
+        return this.getClass().getSimpleName().replaceFirst("^AST", "");
     }
 
-    @Override
-    public ApexNode<?> getParent() {
-        return (ApexNode<?>) super.getParent();
+    protected void setRegion(TextRegion region) {
+        this.region = region;
     }
-
-    @Override
-    public Iterable<? extends ApexNode<?>> children() {
-        return (Iterable<? extends ApexNode<?>>) super.children();
-    }
-
-    abstract void calculateLineNumbers(SourceCodePositioner positioner);
-
-    protected void handleSourceCode(String source) {
-        // default implementation does nothing
-    }
-
+    
     @Override
     public abstract boolean hasRealLoc();
 
-    public abstract String getLocation();
-
     @Override
     public String getDefiningType() {
-        ApexRootNode<?> rootNode = this instanceof ApexRootNode ? (ApexRootNode<?>) this : getFirstParentOfType(ApexRootNode.class);
-        if (rootNode != null) {
-            return rootNode.node.getQualifiedName();
+        BaseApexClass<?> baseNode = this instanceof BaseApexClass ? (BaseApexClass<?>) this : getFirstParentOfType(BaseApexClass.class);
+        if (baseNode != null) {
+            return baseNode.getQualifiedName().toString();
         }
         return null;
     }

@@ -9,13 +9,11 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
 
 public class PlsqlParsingHelper extends BaseParsingHelper<PlsqlParsingHelper, ASTInput> {
 
-    /** This just runs the parser and no processing stages. */
-    public static final PlsqlParsingHelper JUST_PARSE = new PlsqlParsingHelper(Params.getDefaultNoProcess());
     /** This runs all processing stages when parsing. */
-    public static final PlsqlParsingHelper WITH_PROCESSING = new PlsqlParsingHelper(Params.getDefaultProcess());
+    public static final PlsqlParsingHelper DEFAULT = new PlsqlParsingHelper(Params.getDefault());
 
     private PlsqlParsingHelper(Params params) {
-        super(PLSQLLanguageModule.NAME, ASTInput.class, params);
+        super(PLSQLLanguageModule.getInstance(), ASTInput.class, params);
     }
 
     @Override

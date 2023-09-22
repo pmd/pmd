@@ -4,35 +4,21 @@
 
 package net.sourceforge.pmd.cpd;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class TokenEntryTest {
-
-    @Test
-    public void testSimple() {
-        TokenEntry.clearImages();
-        TokenEntry mark = new TokenEntry("public", "/var/Foo.java", 1);
-        assertEquals(1, mark.getBeginLine());
-        assertEquals("/var/Foo.java", mark.getTokenSrcID());
-        assertEquals(0, mark.getIndex());
-        assertEquals(-1, mark.getBeginColumn());
-        assertEquals(-1, mark.getEndColumn());
-    }
+class TokenEntryTest {
 
     @Test
-    public void testColumns() {
-        TokenEntry.clearImages();
-        TokenEntry mark = new TokenEntry("public", "/var/Foo.java", 1, 2, 3);
+    void testSimple() {
+        Tokens tokens = new Tokens();
+        TokenEntry mark = tokens.addToken("public", CpdTestUtils.FOO_FILE_ID, 1, 2, 3, 4);
         assertEquals(1, mark.getBeginLine());
-        assertEquals("/var/Foo.java", mark.getTokenSrcID());
+        assertEquals(CpdTestUtils.FOO_FILE_ID, mark.getFileId());
         assertEquals(0, mark.getIndex());
         assertEquals(2, mark.getBeginColumn());
-        assertEquals(3, mark.getEndColumn());
+        assertEquals(4, mark.getEndColumn());
     }
 
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(TokenEntryTest.class);
-    }
 }

@@ -6,14 +6,15 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import com.google.summit.ast.declaration.VariableDeclarationGroup;
 
-public class ASTVariableDeclarationStatements extends AbstractApexNode.Single<VariableDeclarationGroup> {
+public final class ASTVariableDeclarationStatements extends AbstractApexNode.Single<VariableDeclarationGroup> {
 
     ASTVariableDeclarationStatements(VariableDeclarationGroup variableDeclarations) {
         super(variableDeclarations);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

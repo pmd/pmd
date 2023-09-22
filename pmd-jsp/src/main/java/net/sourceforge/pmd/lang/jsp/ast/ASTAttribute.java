@@ -4,31 +4,19 @@
 
 package net.sourceforge.pmd.lang.jsp.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTAttribute extends AbstractJspNode {
+public final class ASTAttribute extends AbstractJspNode {
 
     private String name;
 
-    @InternalApi
-    @Deprecated
-    public ASTAttribute(int id) {
+    ASTAttribute(int id) {
         super(id);
-    }
-
-    @InternalApi
-    @Deprecated
-    public ASTAttribute(JspParser p, int id) {
-        super(p, id);
     }
 
     public String getName() {
         return name;
     }
 
-    @InternalApi
-    @Deprecated
-    public void setName(String name) {
+    void setName(String name) {
         this.name = name;
     }
 
@@ -60,7 +48,7 @@ public class ASTAttribute extends AbstractJspNode {
     }
 
     @Override
-    public Object jjtAccept(JspParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JspVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

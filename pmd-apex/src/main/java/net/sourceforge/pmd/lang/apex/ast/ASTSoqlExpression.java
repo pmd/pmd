@@ -6,14 +6,15 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import com.google.summit.ast.expression.SoqlExpression;
 
-public class ASTSoqlExpression extends AbstractApexNode.Single<SoqlExpression> {
+public final class ASTSoqlExpression extends AbstractApexNode.Single<SoqlExpression> {
 
     ASTSoqlExpression(SoqlExpression soqlExpression) {
         super(soqlExpression);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

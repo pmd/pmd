@@ -5,12 +5,7 @@
 package net.sourceforge.pmd.cpd;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -25,9 +20,9 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
-import net.sourceforge.pmd.cpd.renderer.CPDReportRenderer;
-import net.sourceforge.pmd.util.CollectionUtil;
+import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.document.FileId;
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -35,7 +30,7 @@ import net.sourceforge.pmd.util.StringUtil;
  * @author Romain Pelisse - javax.xml implementation
  *
  */
-public final class XMLRenderer implements Renderer, CPDRenderer, CPDReportRenderer {
+public final class XMLRenderer implements CPDReportRenderer {
 
     private String encoding;
 
@@ -94,80 +89,53 @@ public final class XMLRenderer implements Renderer, CPDRenderer, CPDReportRender
         }
     }
 
-    @Override
-    public String render(Iterator<Match> matches) {
-        StringWriter writer = new StringWriter();
-        try {
-            render(matches, writer);
-        } catch (IOException ignored) {
-            // Not really possible with a StringWriter
-        }
-        return writer.toString();
-    }
-
-    @Override
-    public void render(Iterator<Match> matches, Writer writer) throws IOException {
-        render(new CPDReport(CollectionUtil.toList(matches), Collections.<String, Integer>emptyMap()), writer);
-    }
 
     @Override
     public void render(final CPDReport report, final Writer writer) throws IOException {
         final Document doc = createDocument();
         final Element root = doc.createElement("pmd-cpd");
-        final Map<String, Integer> numberOfTokensPerFile = report.getNumberOfTokensPerFile();
-        final List<Match> matches = report.getMatches();
+        final Map<FileId, Integer> numberOfTokensPerFile = report.getNumberOfTokensPerFile();
         doc.appendChild(root);
 
-        final List<Map.Entry<String, Integer>> entries = new ArrayList<>(numberOfTokensPerFile.entrySet());
-        for (final Map.Entry<String, Integer> pair : entries) {
+        for (final Map.Entry<FileId, Integer> pair : numberOfTokensPerFile.entrySet()) {
             final Element fileElement = doc.createElement("file");
-            fileElement.setAttribute("path", pair.getKey());
+            fileElement.setAttribute("path", report.getDisplayName(pair.getKey()));
             fileElement.setAttribute("totalNumberOfTokens", String.valueOf(pair.getValue()));
             root.appendChild(fileElement);
         }
 
-        for (Match match : matches) {
-            root.appendChild(addCodeSnippet(doc,
-                    addFilesToDuplicationElement(doc, createDuplicationElement(doc, match), match), match));
+        for (Match match : report.getMatches()) {
+            Element dupElt = createDuplicationElement(doc, match);
+            addFilesToDuplicationElement(doc, dupElt, match, report);
+            addCodeSnippet(doc, dupElt, match, report);
+            root.appendChild(dupElt);
         }
         dumpDocToWriter(doc, writer);
         writer.flush();
     }
 
-    private Element addFilesToDuplicationElement(Document doc, Element duplication, Match match) {
-        Mark mark;
-        for (Iterator<Mark> iterator = match.iterator(); iterator.hasNext();) {
-            mark = iterator.next();
+    private void addFilesToDuplicationElement(Document doc, Element duplication, Match match, CPDReport report) {
+        for (Mark mark : match) {
             final Element file = doc.createElement("file");
-            file.setAttribute("line", String.valueOf(mark.getBeginLine()));
+            FileLocation loc = mark.getLocation();
+            file.setAttribute("line", String.valueOf(loc.getStartLine()));
             // only remove invalid characters, escaping is done by the DOM impl.
-            String filenameXml10 = StringUtil.removedInvalidXml10Characters(mark.getFilename());
+            String filenameXml10 = StringUtil.removedInvalidXml10Characters(report.getDisplayName(loc.getFileId()));
             file.setAttribute("path", filenameXml10);
-            file.setAttribute("endline", String.valueOf(mark.getEndLine()));
-            final int beginCol = mark.getBeginColumn();
-            final int endCol = mark.getEndColumn();
-            if (beginCol != -1) {
-                file.setAttribute("column", String.valueOf(beginCol));
-            }
-            if (endCol != -1) {
-                file.setAttribute("endcolumn", String.valueOf(endCol));
-            }
-            final int beginIndex = mark.getBeginTokenIndex();
-            final int endIndex = mark.getEndTokenIndex();
-            file.setAttribute("begintoken", String.valueOf(beginIndex));
-            if (endIndex != -1) {
-                file.setAttribute("endtoken", String.valueOf(endIndex));
-            }
+            file.setAttribute("endline", String.valueOf(loc.getEndLine()));
+            file.setAttribute("column", String.valueOf(loc.getStartColumn()));
+            file.setAttribute("endcolumn", String.valueOf(loc.getEndColumn()));
+            file.setAttribute("begintoken", String.valueOf(mark.getBeginTokenIndex()));
+            file.setAttribute("endtoken", String.valueOf(mark.getEndTokenIndex()));
             duplication.appendChild(file);
         }
-        return duplication;
     }
 
-    private Element addCodeSnippet(Document doc, Element duplication, Match match) {
-        String codeSnippet = match.getSourceCodeSlice();
+    private void addCodeSnippet(Document doc, Element duplication, Match match, CPDReport report) {
+        Chars codeSnippet = report.getSourceCodeSlice(match.getFirstMark());
         if (codeSnippet != null) {
             // the code snippet has normalized line endings
-            String platformSpecific = codeSnippet.replace("\n", System.lineSeparator());
+            String platformSpecific = codeSnippet.toString().replace("\n", System.lineSeparator());
             Element codefragment = doc.createElement("codefragment");
             // only remove invalid characters, escaping is not necessary in CDATA.
             // if the string contains the end marker of a CDATA section, then the DOM impl will
@@ -175,7 +143,6 @@ public final class XMLRenderer implements Renderer, CPDRenderer, CPDReportRender
             codefragment.appendChild(doc.createCDATASection(StringUtil.removedInvalidXml10Characters(platformSpecific)));
             duplication.appendChild(codefragment);
         }
-        return duplication;
     }
 
     private Element createDuplicationElement(Document doc, Match match) {

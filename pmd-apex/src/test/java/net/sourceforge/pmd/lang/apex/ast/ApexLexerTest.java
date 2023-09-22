@@ -4,16 +4,21 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+
 /*
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.Token;
 import org.junit.Assert;
 */
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ApexLexerTest {
+
+class ApexLexerTest {
 
     private static final String CODE = "public class Foo {\n"
             + "   public List<SObject> test1() {\n"
@@ -22,7 +27,7 @@ public class ApexLexerTest {
             + "}\n";
 
     @Test
-    public void testLexer() throws Exception {
+    void testLexer() throws Exception {
         /*
         CharStream in = new ANTLRStringStream(CODE);
         ApexLexer lexer = new ApexLexer(in);
@@ -33,20 +38,22 @@ public class ApexLexerTest {
             tokenCount++;
             token = lexer.nextToken();
         }
-        Assert.assertEquals(43, tokenCount);
-         */
+        assertEquals(43, tokenCount);
+
         // TODO(b/239648780)
+        */
     }
 
     @Test
-    public void testParser() throws Exception {
+    void testParser() throws Exception {
         /*
         CharStream in = new ANTLRStringStream(CODE);
         ApexLexer lexer = new ApexLexer(in);
         ApexParser parser = new ApexParser(new CommonTokenStream(lexer));
         CompilationUnit compilationUnit = parser.compilationUnit();
-        Assert.assertNotNull(compilationUnit);
-         */
+        assertNotNull(compilationUnit);
+
         // TODO(b/239648780)
+        */
     }
 }

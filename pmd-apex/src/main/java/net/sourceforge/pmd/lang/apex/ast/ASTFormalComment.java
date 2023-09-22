@@ -6,9 +6,10 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import org.antlr.v4.runtime.Token;
 
-import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
+import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextRegion;
 
-public class ASTFormalComment extends AbstractApexNode.Empty {
+public final class ASTFormalComment extends AbstractApexNode.Empty {
 
     private final Token token;
 
@@ -16,8 +17,9 @@ public class ASTFormalComment extends AbstractApexNode.Empty {
         this.token = token;
     }
 
+    
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
@@ -26,26 +28,8 @@ public class ASTFormalComment extends AbstractApexNode.Empty {
         return token.getText();
     }
 
-    public String getToken() {
-        return token.getText();
-    }
-
     @Override
-    void calculateLineNumbers(SourceCodePositioner positioner) {
-        this.beginLine = positioner.lineNumberFromOffset(token.getStartIndex());
-        this.beginColumn = positioner.columnFromOffset(this.beginLine, token.getStartIndex());
-        this.endLine = positioner.lineNumberFromOffset(token.getStopIndex());
-        this.endColumn = positioner.columnFromOffset(this.endLine, token.getStopIndex());
-    }
-
-    @Override
-    public boolean hasRealLoc() {
-        return true;
-    }
-
-    @Override
-    public String getLocation() {
-        return String.format("[%d:%d,%d:%d]", this.beginLine, this.beginColumn,
-                this.endLine, this.endColumn);
+    protected void calculateTextRegion(TextDocument sourceCode) {
+        setRegion(TextRegion.fromBothOffsets(token.getStartIndex(), token.getStopIndex() + 1));
     }
 }

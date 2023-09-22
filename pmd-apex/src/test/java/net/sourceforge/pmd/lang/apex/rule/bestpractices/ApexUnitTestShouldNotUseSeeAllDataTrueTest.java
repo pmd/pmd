@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.apex.rule.bestpractices;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class ApexUnitTestShouldNotUseSeeAllDataTrueTest extends PmdRuleTst {
+class ApexUnitTestShouldNotUseSeeAllDataTrueTest extends PmdRuleTst {
     // no additional unit tests
 }

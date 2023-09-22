@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suppressions PUBLIC
+     "-//Puppy Crawl//DTD Suppressions 1.0//EN"
+     "http://www.puppycrawl.com/dtds/suppressions_1_0.dtd">
+<suppressions>
+    <!-- OneTopLevelClass - version providers can't be inner static classes, and make no sense outside of their commands -->
+    <suppress checks="OneTopLevelClass" files="net[\\/]sourceforge[\\/]pmd[\\/]cli[\\/]commands[\\/]internal[\\/]PmdRootCommand\.java"/>
+    <suppress checks="OneTopLevelClass" files="net[\\/]sourceforge[\\/]pmd[\\/]cli[\\/]commands[\\/]internal[\\/]DesignerCommand\.java"/>
+</suppressions>

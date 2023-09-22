@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 import com.google.summit.ast.expression.LiteralExpression;
 import com.google.summit.ast.expression.VariableExpression;
 
-public class ASTLiteralExpression extends AbstractApexNode.Single<LiteralExpression> {
+public final class ASTLiteralExpression extends AbstractApexNode.Single<LiteralExpression> {
 
     ASTLiteralExpression(LiteralExpression literalExpression) {
         super(literalExpression);
@@ -15,7 +15,7 @@ public class ASTLiteralExpression extends AbstractApexNode.Single<LiteralExpress
 
 
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

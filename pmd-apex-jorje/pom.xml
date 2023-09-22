@@ -8,12 +8,11 @@
   <parent>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd</artifactId>
-    <version>6.56.0-SNAPSHOT</version>
+    <version>7.0.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
   <properties>
-    <java.version>8</java.version>
     <apex.jorje.version>2021-10-08-631b8c</apex.jorje.version>
   </properties>
 
@@ -50,16 +49,6 @@
         <groupId>cglib</groupId>
         <artifactId>cglib</artifactId>
         <version>3.3.0</version> <!-- apex jorje actually depends on 3.2.0 (https://github.com/forcedotcom/salesforcedx-vscode/commit/631b8cfb85cff5e989bfea13bca681b6cedcb003) -->
-    </dependency>
-    <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-classic</artifactId>
-        <version>1.2.9</version> <!-- apex jorje actually depends on 1.1.7 (https://github.com/forcedotcom/salesforcedx-vscode/commit/631b8cfb85cff5e989bfea13bca681b6cedcb003) -->
-    </dependency>
-    <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-core</artifactId>
-        <version>1.2.9</version> <!-- apex jorje actually depends on 1.1.7 (https://github.com/forcedotcom/salesforcedx-vscode/commit/631b8cfb85cff5e989bfea13bca681b6cedcb003) -->
     </dependency>
     <dependency>
         <groupId>com.google.code.findbugs</groupId>

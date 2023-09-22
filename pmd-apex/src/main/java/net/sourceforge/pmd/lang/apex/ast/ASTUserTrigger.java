@@ -9,24 +9,15 @@ import java.util.stream.Collectors;
 
 import com.google.summit.ast.declaration.TriggerDeclaration;
 
-public class ASTUserTrigger extends ApexRootNode<TriggerDeclaration> {
+public final class ASTUserTrigger extends BaseApexClass<TriggerDeclaration> {
 
     ASTUserTrigger(TriggerDeclaration triggerDeclaration) {
         super(triggerDeclaration);
     }
 
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
-    }
-
-    @Override
-    public String getImage() {
-        return getDefiningType();
-    }
-
-    public ASTModifierNode getModifiers() {
-        return getFirstChildOfType(ASTModifierNode.class);
     }
 
     public String getTargetName() {

@@ -1,0 +1,22 @@
+    [Image] or [Truncated image[            Bcol      Ecol
+L1
+    [var]                                   1         4
+    [a]                                     5         6
+    [=]                                     7         8
+    ["a"]                                   9         12
+L2
+    [var]                                   1         4
+    [b]                                     5         6
+    [=]                                     7         8
+    ["b"]                                   9         12
+L3
+    [var]                                   1         4
+    [c]                                     5         6
+    [=]                                     7         8
+    ["c"]                                   9         12
+L4
+    [var]                                   1         4
+    [x]                                     5         6
+    [=]                                     7         8
+    ["$a(b: $b, c: \\"$c\\")"]              9         31
+EOF

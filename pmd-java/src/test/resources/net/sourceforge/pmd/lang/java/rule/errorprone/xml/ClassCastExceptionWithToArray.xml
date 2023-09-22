@@ -7,7 +7,11 @@
     <test-code>
         <description>bad, toArray() with cast</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
         <code><![CDATA[
+import java.util.ArrayList;
+import java.util.Collection;
+
 public class Foo {
     void bar() {
         Collection c = new ArrayList();
@@ -22,6 +26,9 @@ public class Foo {
         <description>ok, no cast</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.ArrayList;
+import java.util.Collection;
+
 public class Foo {
     void bar() {
         Collection c = new ArrayList();
@@ -36,6 +43,8 @@ public class Foo {
         <description>Ensuring we don't have a few specific false positives, see bug 1697397</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.Vector;
+
 public class Foo {
     String bar(Vector vec) {
         return (String)vec.toArray().toString();
@@ -53,6 +62,7 @@ public class Foo {
         <code><![CDATA[
 import org.apache.commons.dbutils.*;
 import org.apache.commons.dbutils.handlers.*;
+import java.util.List;
 
 public class Test {
     public void foo() {
@@ -68,8 +78,11 @@ public class Test {
     <test-code>
         <description>#998 False positive ClassCastExceptionWithToArray with generics</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
-public class Test {
+import java.util.Collection;
+
+public class Test<E> {
     public static E[] toArrayWrapped(Collection c) {
         // although you won't get a classcastexception here on the following line
         E[] retVal = (E[]) c.toArray();

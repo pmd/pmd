@@ -4,16 +4,24 @@
 
 package net.sourceforge.pmd.lang.rule;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.properties.AbstractPropertySource;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
@@ -38,10 +46,9 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     private List<String> examples = new ArrayList<>();
     private String externalInfoUrl;
     private RulePriority priority = RulePriority.LOW;
-    private boolean usesDFA;
-    private boolean usesTypeResolution;
-    private boolean usesMultifile;
-    private List<String> ruleChainVisits = new ArrayList<>();
+    private Set<String> ruleChainVisits = new LinkedHashSet<>();
+    private Set<Class<? extends Node>> classRuleChainVisits = new LinkedHashSet<>();
+    private RuleTargetSelector myStrategy;
 
     public AbstractRule() {
         definePropertyDescriptor(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR);
@@ -73,18 +80,12 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
         otherRule.priority = priority;
         otherRule.propertyDescriptors = new ArrayList<>(getPropertyDescriptors());
         otherRule.propertyValuesByDescriptor = copyPropertyValues();
-        otherRule.usesDFA = usesDFA;
-        otherRule.usesTypeResolution = usesTypeResolution;
-        otherRule.usesMultifile = usesMultifile;
-        otherRule.ruleChainVisits = copyRuleChainVisits();
+        otherRule.ruleChainVisits = new LinkedHashSet<>(ruleChainVisits);
+        otherRule.classRuleChainVisits = new LinkedHashSet<>(classRuleChainVisits);
     }
 
     private List<String> copyExamples() {
         return new ArrayList<>(examples);
-    }
-
-    private List<String> copyRuleChainVisits() {
-        return new ArrayList<>(ruleChainVisits);
     }
 
     @Override
@@ -94,7 +95,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 
     @Override
     public void setLanguage(Language language) {
-        if (this.language != null && this instanceof ImmutableLanguage && !this.language.equals(language)) {
+        if (this.language != null && !this.language.equals(language)) {
             throw new UnsupportedOperationException("The Language for Rule class " + this.getClass().getName()
                     + " is immutable and cannot be changed.");
         }
@@ -108,6 +109,9 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 
     @Override
     public void setMinimumLanguageVersion(LanguageVersion minimumLanguageVersion) {
+        if (minimumLanguageVersion != null && !minimumLanguageVersion.getLanguage().equals(getLanguage())) {
+            throw new IllegalArgumentException("Version " + minimumLanguageVersion + " does not belong to language " + getLanguage());
+        }
         this.minimumLanguageVersion = minimumLanguageVersion;
     }
 
@@ -118,6 +122,9 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 
     @Override
     public void setMaximumLanguageVersion(LanguageVersion maximumLanguageVersion) {
+        if (maximumLanguageVersion != null && !maximumLanguageVersion.getLanguage().equals(getLanguage())) {
+            throw new IllegalArgumentException("Version " + maximumLanguageVersion + " does not belong to language " + getLanguage());
+        }
         this.maximumLanguageVersion = maximumLanguageVersion;
     }
 
@@ -222,113 +229,42 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
         this.priority = priority;
     }
 
+
+    private Set<Class<? extends Node>> getClassRuleChainVisits() {
+        if (classRuleChainVisits.isEmpty() && ruleChainVisits.isEmpty()) {
+            return Collections.singleton(RootNode.class);
+        }
+        return classRuleChainVisits;
+    }
+
+
     /**
-     * This implementation returns a new instance of {@link ParserOptions} using
-     * default settings.
-     *
-     * @see Rule#setPriority(RulePriority)
+     * @deprecated Override {@link #buildTargetSelector()}, this is
+     *     provided for legacy compatibility
      */
-    @Override
     @Deprecated
-    public ParserOptions getParserOptions() {
-        return new ParserOptions();
+    protected void addRuleChainVisit(Class<? extends Node> nodeClass) {
+        classRuleChainVisits.add(nodeClass);
     }
 
     @Override
-    @Deprecated // To be removed in PMD 7.0.0
-    public void setUsesDFA() {
-        setDfa(true);
-    }
-
-    @Override
-    public void setDfa(boolean isDfa) {
-        usesDFA = isDfa;
-    }
-
-    @Override
-    @Deprecated // To be removed in PMD 7.0.0
-    public boolean usesDFA() {
-        return isDfa();
-    }
-
-    @Override
-    public boolean isDfa() {
-        return usesDFA;
-    }
-
-    @Override
-    @Deprecated // To be removed in PMD 7.0.0
-    public void setUsesTypeResolution() {
-        setTypeResolution(true);
-    }
-
-    @Override
-    public void setTypeResolution(boolean usingTypeResolution) {
-        usesTypeResolution = usingTypeResolution;
-    }
-
-    @Override
-    @Deprecated // To be removed in PMD 7.0.0
-    public boolean usesTypeResolution() {
-        return isTypeResolution();
-    }
-
-    @Override
-    public boolean isTypeResolution() {
-        return usesTypeResolution;
-    }
-
-    @Override
-    @Deprecated // To be removed in PMD 7.0.0
-    public void setUsesMultifile() {
-        setMultifile(true);
-    }
-
-    @Override
-    public void setMultifile(boolean multifile) {
-        usesMultifile = multifile;
-    }
-
-    @Override
-    @Deprecated // To be removed in PMD 7.0.0
-    public boolean usesMultifile() {
-        return isMultifile();
-    }
-
-    @Override
-    public boolean isMultifile() {
-        return usesMultifile;
-    }
-
-    @Override
-    @Deprecated // To be removed in PMD 7.0.0
-    public boolean usesRuleChain() {
-        return isRuleChain();
-    }
-
-    @Override
-    public boolean isRuleChain() {
-        return !getRuleChainVisits().isEmpty();
-    }
-
-    @Override
-    public List<String> getRuleChainVisits() {
-        return ruleChainVisits;
-    }
-
-    @Override
-    public void addRuleChainVisit(Class<? extends Node> nodeClass) {
-        if (!nodeClass.getSimpleName().startsWith("AST")) {
-            throw new IllegalArgumentException("Node class does not start with 'AST' prefix: " + nodeClass);
+    public final RuleTargetSelector getTargetSelector() {
+        if (myStrategy == null) {
+            myStrategy = buildTargetSelector();
         }
-        addRuleChainVisit(nodeClass.getSimpleName().substring("AST".length()));
+        return myStrategy;
     }
 
-    @Override
-    public void addRuleChainVisit(String astNodeName) {
-        if (!ruleChainVisits.contains(astNodeName)) {
-            ruleChainVisits.add(astNodeName);
-        }
+    /**
+     * Create the targeting strategy for this rule. Please override
+     * this instead of using {@link #addRuleChainVisit(Class)}.
+     * Use the factory methods of {@link RuleTargetSelector}.
+     */
+    @NonNull
+    protected RuleTargetSelector buildTargetSelector() {
+        Set<Class<? extends Node>> crvs = getClassRuleChainVisits();
+        return crvs.isEmpty() ? RuleTargetSelector.forRootOnly()
+                              : RuleTargetSelector.forTypes(crvs);
     }
 
     @Override
@@ -340,6 +276,8 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     public void end(RuleContext ctx) {
         // Override as needed
     }
+
+    // TODO remove those methods, make Rules have type-safe access to a RuleContext
 
     /**
      * Cast the argument to a {@link RuleContext}. Use it to report violations:
@@ -355,7 +293,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
      */
     protected final RuleContext asCtx(Object ctx) {
         if (ctx instanceof RuleContext) {
-            assert isThisRule(((RuleContext) ctx).getCurrentRule())
+            assert isThisRule(((RuleContext) ctx).getRule())
                 : "not an appropriate rule context!";
             return (RuleContext) ctx;
         } else {
@@ -429,42 +367,37 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
      */
     @Override
     public boolean equals(Object o) {
-        if (o == null) {
-            return false; // trivial
-        }
-
         if (this == o) {
             return true; // trivial
         }
-
-        boolean equality = getClass() == o.getClass();
-
-        if (equality) {
-            Rule that = (Rule) o;
-            equality = getName().equals(that.getName()) && getPriority().equals(that.getPriority())
-                    && getPropertiesByPropertyDescriptor().equals(that.getPropertiesByPropertyDescriptor());
+        if (o == null || getClass() != o.getClass()) {
+            return false;
         }
 
-        return equality;
+        AbstractRule that = (AbstractRule) o;
+        return Objects.equals(getName(), that.getName())
+                && Objects.equals(getPriority(), that.getPriority())
+                && super.equals(o);
     }
 
     @Override
     public int hashCode() {
-        Object propertyValues = getPropertiesByPropertyDescriptor();
-        return getClass().getName().hashCode() + (getName() != null ? getName().hashCode() : 0)
-                + getPriority().hashCode() + (propertyValues != null ? propertyValues.hashCode() : 0);
+        return Objects.hash(getName(), getPriority(), super.hashCode());
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public Rule deepCopy() {
-        Rule rule = null;
+        Rule result;
         try {
-            rule = getClass().newInstance();
-        } catch (InstantiationException | IllegalAccessException ignored) {
+            Constructor<? extends AbstractRule> declaredConstructor = getClass().getDeclaredConstructor();
+            declaredConstructor.setAccessible(true);
+            result = declaredConstructor.newInstance();
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException ignored) {
             // Can't happen... we already have an instance
             throw new RuntimeException(ignored); // in case it happens anyway, something is really wrong...
         }
+        Rule rule = result;
         rule.setName(getName());
         rule.setLanguage(getLanguage());
         rule.setMinimumLanguageVersion(getMinimumLanguageVersion());
@@ -473,9 +406,6 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
         rule.setMessage(getMessage());
         rule.setRuleSetName(getRuleSetName());
         rule.setExternalInfoUrl(getExternalInfoUrl());
-        rule.setDfa(isDfa());
-        rule.setTypeResolution(isTypeResolution());
-        rule.setMultifile(isMultifile());
         rule.setDescription(getDescription());
         for (final String example : getExamples()) {
             rule.addExample(example);

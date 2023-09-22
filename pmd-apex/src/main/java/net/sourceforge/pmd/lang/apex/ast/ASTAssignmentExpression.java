@@ -4,20 +4,17 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import com.google.summit.ast.expression.AssignExpression;
 
-public class ASTAssignmentExpression extends AbstractApexNode.Single<AssignExpression> {
+public final class ASTAssignmentExpression extends AbstractApexNode.Single<AssignExpression> {
 
-    @Deprecated
-    @InternalApi
-    public ASTAssignmentExpression(AssignExpression assignmentExpression) {
+    ASTAssignmentExpression(AssignExpression assignmentExpression) {
         super(assignmentExpression);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

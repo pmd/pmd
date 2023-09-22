@@ -6,13 +6,25 @@ package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.List;
 
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.Report.ConfigurationError;
+import net.sourceforge.pmd.Report.GlobalReportBuilderListener;
+import net.sourceforge.pmd.Report.ProcessingError;
+import net.sourceforge.pmd.Report.ReportBuilderListener;
+import net.sourceforge.pmd.Report.SuppressedViolation;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.benchmark.TimeTracker;
+import net.sourceforge.pmd.benchmark.TimedOperation;
+import net.sourceforge.pmd.benchmark.TimedOperationCategory;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
-import net.sourceforge.pmd.util.datasource.DataSource;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
+import net.sourceforge.pmd.reporting.FileNameRenderer;
+import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.reporting.ListenerInitializer;
 
 /**
  * This is an interface for rendering a Report. When a Renderer is being
@@ -20,10 +32,9 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  * <ol>
  * <li>Renderer construction/initialization</li>
  * <li>{@link Renderer#setShowSuppressedViolations(boolean)}</li>
- * <li>{@link Renderer#setUseShortNames(List)}</li>
  * <li>{@link Renderer#setWriter(Writer)}</li>
  * <li>{@link Renderer#start()}</li>
- * <li>{@link Renderer#startFileAnalysis(DataSource)} for each source file
+ * <li>{@link Renderer#startFileAnalysis(TextFile)} for each source file
  * processed</li>
  * <li>{@link Renderer#renderFileReport(Report)} for each Report instance</li>
  * <li>{@link Renderer#end()}</li>
@@ -93,16 +104,6 @@ public interface Renderer extends PropertySource {
     void setShowSuppressedViolations(boolean showSuppressedViolations);
 
     /**
-     * Render the filenames of found violations with short names. That is, any prefix
-     * given as inputPaths is removed.
-     * By default, the full pathnames are used. If the given list of {@code inputPaths}
-     * is empty, then the full pathnames are used.
-     *
-     * @param inputPaths
-     */
-    void setUseShortNames(List<String> inputPaths);
-
-    /**
      * Get the Writer for the Renderer.
      *
      * @return The Writer.
@@ -110,10 +111,19 @@ public interface Renderer extends PropertySource {
     Writer getWriter();
 
     /**
+     * Set the {@link FileNameRenderer} used to render file paths to the report.
+     * Note that this renderer does not have to use the parameter to output paths.
+     * Some report formats require a specific format for paths (eg a URI), and are
+     * allowed to circumvent the provided strategy.
+     *
+     * @param fileNameRenderer a non-null file name renderer
+     */
+    void setFileNameRenderer(FileNameRenderer fileNameRenderer);
+
+    /**
      * Set the Writer for the Renderer.
      *
-     * @param writer
-     *            The Writer.
+     * @param writer The Writer.
      */
     void setWriter(Writer writer);
 
@@ -138,13 +148,13 @@ public interface Renderer extends PropertySource {
      * @param dataSource
      *            The source file.
      */
-    void startFileAnalysis(DataSource dataSource);
+    void startFileAnalysis(TextFile dataSource);
 
     /**
      * Render the given file Report. There may be multiple Report instances
      * which need to be rendered if produced by different threads. It is called
      * after {@link Renderer#start()} and
-     * {@link Renderer#startFileAnalysis(DataSource)}, but before
+     * {@link Renderer#startFileAnalysis(TextFile)}, but before
      * {@link Renderer#end()}.
      *
      * @param report
@@ -158,8 +168,6 @@ public interface Renderer extends PropertySource {
     /**
      * This method is at the very end of the Rendering process, after
      * {@link Renderer#renderFileReport(Report)}.
-     *
-     * @throws IOException
      */
     void end() throws IOException;
 
@@ -177,4 +185,94 @@ public interface Renderer extends PropertySource {
      */
     @Experimental
     void setReportFile(String reportFilename);
+
+
+
+    /**
+     * Returns a new analysis listener, that handles violations by rendering
+     * them in an implementation-defined way.
+     */
+    // TODO the default implementation matches the current behavior,
+    //  ie violations are batched by file and forwarded to the renderer
+    //  when the file is done. Many renderers could directly handle
+    //  violations as they come though.
+    default GlobalAnalysisListener newListener() throws IOException {
+        try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
+            this.start();
+        }
+
+        return new GlobalAnalysisListener() {
+
+            // guard for the close routine
+            final Object reportMergeLock = new Object();
+
+            final GlobalReportBuilderListener configErrorReport = new GlobalReportBuilderListener();
+
+            @Override
+            public void onConfigError(ConfigurationError error) {
+                configErrorReport.onConfigError(error);
+            }
+
+            @Override
+            public ListenerInitializer initializer() {
+                return new ListenerInitializer() {
+                    @Override
+                    public void setFileNameRenderer(FileNameRenderer fileNameRenderer) {
+                        Renderer.this.setFileNameRenderer(fileNameRenderer);
+                    }
+                };
+            }
+
+            @Override
+            public FileAnalysisListener startFileAnalysis(TextFile file) {
+                Renderer renderer = Renderer.this;
+
+                renderer.startFileAnalysis(file); // this routine is thread-safe by contract
+                return new FileAnalysisListener() {
+                    final ReportBuilderListener reportBuilder = new ReportBuilderListener();
+
+                    @Override
+                    public void onRuleViolation(RuleViolation violation) {
+                        reportBuilder.onRuleViolation(violation);
+                    }
+
+                    @Override
+                    public void onSuppressedRuleViolation(SuppressedViolation violation) {
+                        reportBuilder.onSuppressedRuleViolation(violation);
+                    }
+
+                    @Override
+                    public void onError(ProcessingError error) {
+                        reportBuilder.onError(error);
+                    }
+
+                    @Override
+                    public void close() throws Exception {
+                        reportBuilder.close();
+                        synchronized (reportMergeLock) {
+                            // TODO renderFileReport should be thread-safe instead
+                            try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
+                                renderer.renderFileReport(reportBuilder.getResult());
+                            }
+                        }
+                    }
+
+                    @Override
+                    public String toString() {
+                        return "FileRendererListener[" + Renderer.this + "]";
+                    }
+                };
+            }
+
+            @Override
+            public void close() throws Exception {
+                configErrorReport.close();
+                Renderer.this.renderFileReport(configErrorReport.getResult());
+                try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
+                    end();
+                    flush();
+                }
+            }
+        };
+    }
 }

@@ -4,24 +4,14 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTSqlStatement extends AbstractPLSQLNode {
+public final class ASTSqlStatement extends AbstractPLSQLNode {
 
     private Type type;
 
     public enum Type { COMMIT, ROLLBACK, SAVEPOINT, SET_TRANSACTION, LOCK_TABLE, MERGE }
 
-    @Deprecated
-    @InternalApi
-    public ASTSqlStatement(int id) {
+    ASTSqlStatement(int id) {
         super(id);
-    }
-
-    @Deprecated
-    @InternalApi
-    public ASTSqlStatement(PLSQLParser p, int id) {
-        super(p, id);
     }
 
     void setType(Type type) {
@@ -33,7 +23,7 @@ public class ASTSqlStatement extends AbstractPLSQLNode {
     }
 
     @Override
-    public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {
+    protected <P, R> R acceptPlsqlVisitor(PlsqlVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

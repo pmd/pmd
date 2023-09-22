@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.rule;
 
-import java.util.List;
-
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
@@ -15,13 +13,6 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
  * @author Clément Fournier
  */
 public class DummyJavaRule extends AbstractJavaRule {
-
-    @Override
-    public void apply(List<? extends Node> nodes, RuleContext ctx) {
-        for (Node node : nodes) {
-            apply(node, ctx);
-        }
-    }
 
     public void apply(Node node, RuleContext ctx) {
 

@@ -4,30 +4,21 @@
 
 package net.sourceforge.pmd.lang.perl.cpd;
 
-import java.util.Properties;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
-
-import net.sourceforge.pmd.cpd.PerlLanguage;
-import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
 /**
  *
  */
-public class PerlTokenizerTest extends CpdTextComparisonTest {
+class PerlTokenizerTest extends CpdTextComparisonTest {
 
-    public PerlTokenizerTest() {
-        super(".pl");
-    }
-
-    @Override
-    public Tokenizer newTokenizer(Properties properties) {
-        return new PerlLanguage().getTokenizer();
+    PerlTokenizerTest() {
+        super("perl", ".pl");
     }
 
     @Test
-    public void testSample() {
+    void testSample() {
         doTest("sample");
     }
 }

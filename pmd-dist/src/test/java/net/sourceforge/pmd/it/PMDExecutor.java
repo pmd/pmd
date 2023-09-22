@@ -14,11 +14,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 
-import net.sourceforge.pmd.PMDVersion;
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.internal.util.IOUtil;
 
 /**
  * Executes PMD from command line. Deals with the differences, when PMD is run on Windows or on Linux.
@@ -31,28 +29,32 @@ public class PMDExecutor {
     private static final String FORMAT_FLAG = "-f";
     private static final String FORMATTER = "text";
     private static final String REPORTFILE_FLAG = "-r";
+    private static final String NO_PROGRESSBAR_FLAG = "--no-progress";
 
     private PMDExecutor() {
         // this is a helper class only
     }
 
-    private static ExecutionResult runPMDUnix(Path tempDir, Path reportFile, String... arguments) throws Exception {
-        String cmd = tempDir.resolve(AbstractBinaryDistributionTest.PMD_BIN_PREFIX + PMDVersion.VERSION + "/bin/run.sh").toAbsolutePath().toString();
-        List<String> args = new ArrayList<>();
-        args.add("pmd");
-        args.addAll(Arrays.asList(arguments));
-        return runCommand(cmd, args, reportFile);
+    static ExecutionResult runCommand(Path tempDir, String cmd, List<String> arguments) throws Exception {
+        return runCommand(tempDir, cmd, arguments, null);
     }
 
-    private static ExecutionResult runPMDWindows(Path tempDir, Path reportFile, String... arguments) throws Exception {
-        String cmd = tempDir.resolve(AbstractBinaryDistributionTest.PMD_BIN_PREFIX + PMDVersion.VERSION + "/bin/pmd.bat").toAbsolutePath().toString();
-        return runCommand(cmd, Arrays.asList(arguments), reportFile);
-    }
-
-    static ExecutionResult runCommand(String cmd, List<String> arguments, Path reportFile) throws Exception {
-        ProcessBuilder pb = new ProcessBuilder(cmd);
+    static ExecutionResult runCommand(Path tempDir, String cmd, List<String> arguments, Path reportFile) throws Exception {
+        final String pmdScript;
+        if (SystemUtils.IS_OS_WINDOWS) {
+            pmdScript = tempDir.resolve(AbstractBinaryDistributionTest.PMD_BIN_PREFIX + "/bin/pmd.bat").toAbsolutePath().toString();
+        } else {
+            pmdScript = tempDir.resolve(AbstractBinaryDistributionTest.PMD_BIN_PREFIX + "/bin/pmd").toAbsolutePath().toString();
+        }
+        ProcessBuilder pb = new ProcessBuilder(pmdScript);
+        pb.command().add(cmd);
         pb.command().addAll(arguments);
+
         pb.redirectErrorStream(false);
+        
+        // Ensure no ANSI output so tests can properly look at it
+        pb.environment().put("PMD_JAVA_OPTS", "-Dpicocli.ansi=false");
+        
         final Process process = pb.start();
         final ExecutionResult.Builder result = new ExecutionResult.Builder();
 
@@ -111,31 +113,26 @@ public class PMDExecutor {
     }
 
     public static ExecutionResult runPMDRules(Path reportFile, Path tempDir, String sourceDirectory, String ruleset, String formatter) throws Exception {
-        if (SystemUtils.IS_OS_WINDOWS) {
-            return runPMDWindows(tempDir, reportFile, SOURCE_DIRECTORY_FLAG, sourceDirectory, RULESET_FLAG, ruleset,
-                    FORMAT_FLAG, formatter, REPORTFILE_FLAG, reportFile.toAbsolutePath().toString());
-        } else {
-            return runPMDUnix(tempDir, reportFile, SOURCE_DIRECTORY_FLAG, sourceDirectory, RULESET_FLAG, ruleset,
-                    FORMAT_FLAG, formatter, REPORTFILE_FLAG, reportFile.toAbsolutePath().toString());
-        }
+        return runPMD(reportFile, tempDir, SOURCE_DIRECTORY_FLAG, sourceDirectory, RULESET_FLAG, ruleset,
+                    FORMAT_FLAG, formatter, NO_PROGRESSBAR_FLAG);
     }
 
     /**
      * Executes PMD found in tempDir with the given command line arguments.
+     * @param reportFile The location where to store the result. If null, the report will be discarded.
      * @param tempDir the directory, to which the binary distribution has been extracted
      * @param arguments the arguments to execute PMD with
      * @return collected result of the execution
      * @throws Exception if the execution fails for any reason (executable not found, ...)
      */
-    public static ExecutionResult runPMD(Path tempDir, String... arguments) throws Exception {
-        if (SystemUtils.IS_OS_WINDOWS) {
-            return runPMDWindows(tempDir, null, arguments);
-        } else {
-            return runPMDUnix(tempDir, null, arguments);
+    public static ExecutionResult runPMD(Path reportFile, Path tempDir, String... arguments) throws Exception {
+        List<String> args = new ArrayList<>();
+        if (reportFile != null) {
+            args.add(REPORTFILE_FLAG);
+            args.add(reportFile.toString());
         }
-    }
+        args.addAll(Arrays.asList(arguments));
 
-    public static boolean isJava7Test() {
-        return StringUtils.equals(System.getenv("JAVA_HOME"), System.getProperty("java7.home"));
+        return runCommand(tempDir, "check", args, reportFile);
     }
 }

@@ -6,17 +6,13 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.TryStatement;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTTryStatement extends AbstractEcmascriptNode<TryStatement> {
-    @Deprecated
-    @InternalApi
-    public ASTTryStatement(TryStatement tryStatement) {
+public final class ASTTryStatement extends AbstractEcmascriptNode<TryStatement> {
+    ASTTryStatement(TryStatement tryStatement) {
         super(tryStatement);
     }
 
     @Override
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+    protected <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

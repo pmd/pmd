@@ -4,23 +4,19 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import scala.meta.Mod;
 
 /**
  * The ASTModValParam node implementation.
  */
-public class ASTModValParam extends AbstractScalaNode<Mod.ValParam> {
+public final class ASTModValParam extends AbstractScalaNode<Mod.ValParam> {
 
-    @Deprecated
-    @InternalApi
-    public ASTModValParam(Mod.ValParam scalaNode) {
+    ASTModValParam(Mod.ValParam scalaNode) {
         super(scalaNode);
     }
 
     @Override
-    public <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data) {
+    protected <P, R> R acceptVisitor(ScalaParserVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

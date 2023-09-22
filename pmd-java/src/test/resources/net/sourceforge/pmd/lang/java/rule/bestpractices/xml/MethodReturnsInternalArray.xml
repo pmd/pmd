@@ -136,6 +136,7 @@ public interface Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Test {
+    byte[] content;
     public byte[] getContent() {
         return this.content == null ? null : content.clone();
     }
@@ -147,6 +148,7 @@ public class Test {
         <description>#1299 MethodReturnsInternalArray false positive</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.Arrays;
 public class WebServiceResponseMessage {
     private Object[] responseObjects;
     public Object[] getResponseObjects() {
@@ -165,6 +167,7 @@ public class Test {
     public Hit[] getHits() {
         return hits == null ? null : hits.clone();
     }
+    static class Hit {}
 }
         ]]></code>
     </test-code>
@@ -237,6 +240,21 @@ public class MethodReturnsInternalArrayCase {
                 public final String[] call2() { return foobar2; }
                 public final String[] call3() { return FOO_BAR_3; }
                 public final String[] call4() { return FOO_BAR_4; }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Unresolved array: assume public</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class MethodReturnsInternalArrayCase {
+                protected final byte[] getData() {
+                    return SomeClass.UNRESOLVED;
+                }
+            }
+            class SomeClass {
+                // unresolved field, should assume public
             }
             ]]></code>
     </test-code>
@@ -418,7 +436,7 @@ public class OuterClass {
     </test-code>
 
     <test-code>
-        <description>Detect non-final static arrays returned</description>
+        <description>Detect returned static arrays</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>8,16</expected-linenumbers>
         <code><![CDATA[
@@ -432,12 +450,12 @@ public class MyClass {
             return FOO_BAR;
         }
     };
-    
+
     private static String[] fooBarNonFinal = new String[] { "foo", "bar" };
     private final Callable<String[]> returnsFooBarNonFinal = new Callable<String[]>() {
         @Override
         public String[] call() {
-            return fooBarNonFinal;
+            return fooBarNonFinal; // violation
         }
     };
 }

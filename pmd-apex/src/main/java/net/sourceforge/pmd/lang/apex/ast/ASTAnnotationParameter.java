@@ -9,15 +9,16 @@ import com.google.summit.ast.expression.LiteralExpression;
 import com.google.summit.ast.modifier.ElementArgument;
 import com.google.summit.ast.modifier.ElementValue;
 
-public class ASTAnnotationParameter extends AbstractApexNode.Single<ElementArgument> {
+public final class ASTAnnotationParameter extends AbstractApexNode.Single<ElementArgument> {
     public static final String SEE_ALL_DATA = "seeAllData";
 
     ASTAnnotationParameter(ElementArgument elementArgument) {
         super(elementArgument);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
@@ -46,6 +47,7 @@ public class ASTAnnotationParameter extends AbstractApexNode.Single<ElementArgum
     }
 
     @Override
+    @Deprecated
     public String getImage() {
         return getValue();
     }

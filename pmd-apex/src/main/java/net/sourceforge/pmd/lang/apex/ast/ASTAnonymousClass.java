@@ -4,20 +4,16 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import com.google.summit.ast.declaration.TypeDeclaration;
 
-public class ASTAnonymousClass extends ApexRootNode<TypeDeclaration> {
+public final class ASTAnonymousClass extends AbstractApexNode.Single<TypeDeclaration> {
 
-    @Deprecated
-    @InternalApi
-    public ASTAnonymousClass(TypeDeclaration anonymousClass) {
+    ASTAnonymousClass(TypeDeclaration anonymousClass) {
         super(anonymousClass);
     }
 
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

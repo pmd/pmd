@@ -4,21 +4,14 @@
 
 package net.sourceforge.pmd.lang.java.metrics.impl;
 
-import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
-import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
+import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 
 /**
  * @author Denis Borovikov
  */
-public class CognitiveComplexityTestRule extends AbstractMetricTestRule {
+public class CognitiveComplexityTestRule extends JavaIntMetricTestRule {
 
-    @Override
-    protected JavaClassMetricKey getClassKey() {
-        return null;
-    }
-
-    @Override
-    protected JavaOperationMetricKey getOpKey() {
-        return JavaOperationMetricKey.COGNITIVE_COMPLEXITY;
+    public CognitiveComplexityTestRule() {
+        super(JavaMetrics.COGNITIVE_COMPLEXITY);
     }
 }

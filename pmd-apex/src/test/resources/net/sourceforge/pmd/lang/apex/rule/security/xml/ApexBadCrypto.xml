@@ -98,4 +98,33 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Apex Crypto inline hardcoded IV</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public Foo() {
+        Blob key = Crypto.generateAesKey(128);
+        Blob data = Blob.valueOf('Data to be encrypted');
+        Blob encrypted = Crypto.encrypt('AES128', key, Blob.valueOf('0000000000000000'), data);
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Apex Crypto Inline hardcoded Key</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public Foo() {
+        Blob data = Blob.valueOf('Data to be encrypted');
+        Blob IV = Crypto.generateAesKey(128);
+        Blob encrypted = Crypto.encrypt('AES128', Blob.valueOf('Hard Coded Key'), IV, data);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

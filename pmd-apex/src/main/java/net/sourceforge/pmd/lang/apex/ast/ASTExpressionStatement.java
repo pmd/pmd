@@ -6,14 +6,16 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import com.google.summit.ast.statement.ExpressionStatement;
 
-public class ASTExpressionStatement extends AbstractApexNode.Single<ExpressionStatement> {
+public final class ASTExpressionStatement extends AbstractApexNode.Single<ExpressionStatement> {
 
     ASTExpressionStatement(ExpressionStatement expression) {
         super(expression);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
+
 }

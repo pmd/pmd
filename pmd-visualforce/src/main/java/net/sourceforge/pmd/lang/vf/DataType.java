@@ -10,7 +10,9 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Represents all data types that can be referenced from a Visualforce page. This enum consolidates the data types
@@ -53,7 +55,7 @@ public enum DataType {
      */
     Unknown(true);
 
-    private static final Logger LOGGER = Logger.getLogger(DataType.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(DataType.class);
 
 
     /**
@@ -96,7 +98,7 @@ public enum DataType {
 
         if (dataType == null) {
             dataType = DataType.Unknown;
-            LOGGER.fine("Unable to determine DataType of " + value);
+            LOG.debug("Unable to determine DataType of {}", value);
         }
 
         return dataType;
@@ -111,7 +113,7 @@ public enum DataType {
 
         if (dataType == null) {
             dataType = DataType.Unknown;
-            LOGGER.fine("Unable to determine DataType of " + value);
+            LOG.debug("Unable to determine DataType of {}", value);
         }
 
         return dataType;

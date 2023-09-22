@@ -7,7 +7,7 @@
     <test-code>
         <description>do while true</description>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>3,5</expected-linenumbers>
+        <expected-linenumbers>4,6</expected-linenumbers>
         <code><![CDATA[
 class Foo {
     {
@@ -45,7 +45,7 @@ class Foo {
     <test-code>
         <description>do while false</description>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>3,5</expected-linenumbers>
+        <expected-linenumbers>4,6</expected-linenumbers>
         <code><![CDATA[
 class Foo {
     {

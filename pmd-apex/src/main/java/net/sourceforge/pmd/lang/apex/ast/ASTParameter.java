@@ -4,36 +4,23 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.Rule;
-
 import com.google.summit.ast.declaration.ParameterDeclaration;
 
-public class ASTParameter extends AbstractApexNode.Single<ParameterDeclaration> implements CanSuppressWarnings {
+public final class ASTParameter extends AbstractApexNode.Single<ParameterDeclaration> {
 
     ASTParameter(ParameterDeclaration parameterDeclaration) {
         super(parameterDeclaration);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
     @Override
     public String getImage() {
         return node.getId().getString();
-    }
-
-    @Override
-    public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
-        for (ASTModifierNode modifier : findChildrenOfType(ASTModifierNode.class)) {
-            for (ASTAnnotation a : modifier.findChildrenOfType(ASTAnnotation.class)) {
-                if (a.suppresses(rule)) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     public ASTModifierNode getModifiers() {

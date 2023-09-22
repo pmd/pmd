@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class ConstructorCallsOverridableMethodTest extends PmdRuleTst {
+class ConstructorCallsOverridableMethodTest extends PmdRuleTst {
     // no additional unit tests
 }

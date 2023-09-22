@@ -1,30 +1,35 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.matlab;
 
-import net.sourceforge.pmd.lang.BaseLanguageModule;
+import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.impl.CpdOnlyLanguageModuleBase;
+import net.sourceforge.pmd.lang.matlab.cpd.MatlabTokenizer;
 
 /**
- * Implementation of the Matlab Language Module.
- *
- * @deprecated There is no full PMD support for Matlab.
+ * Defines the Language module for Matlab
  */
-@Deprecated
-public class MatlabLanguageModule extends BaseLanguageModule {
-
-    /** The name, that can be used to display the language in UI. */
-    public static final String NAME = "Matlab";
-    /** The internal name. */
-    public static final String TERSE_NAME = "matlab";
+public class MatlabLanguageModule extends CpdOnlyLanguageModuleBase {
+    private static final String ID = "matlab";
 
     /**
      * Creates a new instance of {@link MatlabLanguageModule} with the default
-     * file extensions for Matlab.
+     * extensions for matlab files.
      */
     public MatlabLanguageModule() {
-        super(NAME, null, TERSE_NAME, "m");
-        addVersion("", new MatlabHandler(), true);
+        super(LanguageMetadata.withId(ID).name("Matlab").extensions("m"));
+    }
+
+    public static MatlabLanguageModule getInstance() {
+        return (MatlabLanguageModule) LanguageRegistry.CPD.getLanguageById(ID);
+    }
+
+    @Override
+    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
+        return new MatlabTokenizer();
     }
 }

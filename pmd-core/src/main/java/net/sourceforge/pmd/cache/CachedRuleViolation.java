@@ -7,10 +7,20 @@ package net.sourceforge.pmd.cache;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.document.FileId;
+import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextRange2d;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * A {@link RuleViolation} implementation that is immutable, and therefore cache friendly
@@ -24,40 +34,27 @@ public final class CachedRuleViolation implements RuleViolation {
     private final CachedRuleMapper mapper;
 
     private final String description;
-    private final String fileName;
     private final String ruleClassName;
     private final String ruleName;
     private final String ruleTargetLanguage;
-    private final int beginLine;
-    private final int beginColumn;
-    private final int endLine;
-    private final int endColumn;
-    private final String packageName;
-    private final String className;
-    private final String methodName;
-    private final String variableName;
+    private final Map<String, String> additionalInfo;
+
+    private final FileLocation location;
 
     private CachedRuleViolation(final CachedRuleMapper mapper, final String description,
-            final String fileName, final String ruleClassName, final String ruleName,
-            final String ruleTargetLanguage, final int beginLine, final int beginColumn,
-            final int endLine, final int endColumn, final String packageName,
-            final String className, final String methodName, final String variableName) {
+                                final FileId fileFileId, final String ruleClassName, final String ruleName,
+                                final String ruleTargetLanguage, final int beginLine, final int beginColumn,
+                                final int endLine, final int endColumn,
+                                final Map<String, String> additionalInfo) {
         this.mapper = mapper;
         this.description = description;
-        this.fileName = fileName;
+        this.location = FileLocation.range(fileFileId, TextRange2d.range2d(beginLine, beginColumn, endLine, endColumn));
         this.ruleClassName = ruleClassName;
         this.ruleName = ruleName;
         this.ruleTargetLanguage = ruleTargetLanguage;
-        this.beginLine = beginLine;
-        this.beginColumn = beginColumn;
-        this.endLine = endLine;
-        this.endColumn = endColumn;
-        this.packageName = packageName;
-        this.className = className;
-        this.methodName = methodName;
-        this.variableName = variableName;
+        this.additionalInfo = additionalInfo;
     }
-
+    
     @Override
     public Rule getRule() {
         // The mapper may be initialized after cache is loaded, so use it lazily
@@ -70,108 +67,82 @@ public final class CachedRuleViolation implements RuleViolation {
     }
 
     @Override
-    public boolean isSuppressed() {
-        return false; // By definition, if cached, it was not suppressed
+    public FileLocation getLocation() {
+        return location;
     }
 
     @Override
-    public String getFilename() {
-        return fileName;
-    }
-
-    @Override
-    public int getBeginLine() {
-        return beginLine;
-    }
-
-    @Override
-    public int getBeginColumn() {
-        return beginColumn;
-    }
-
-    @Override
-    public int getEndLine() {
-        return endLine;
-    }
-
-    @Override
-    public int getEndColumn() {
-        return endColumn;
-    }
-
-    @Override
-    public String getPackageName() {
-        return packageName;
-    }
-
-    @Override
-    public String getClassName() {
-        return className;
-    }
-
-    @Override
-    public String getMethodName() {
-        return methodName;
-    }
-
-    @Override
-    public String getVariableName() {
-        return variableName;
+    public Map<String, String> getAdditionalInfo() {
+        return additionalInfo;
     }
 
     /**
      * Helper method to load a {@link CachedRuleViolation} from an input stream.
      *
-     * @param stream The stream from which to load the violation.
-     * @param fileName The name of the file on which this rule was reported.
-     * @param mapper The mapper to be used to obtain rule instances from the active rulesets.
+     * @param stream     The stream from which to load the violation.
+     * @param fileFileId The name of the file on which this rule was reported.
+     * @param mapper     The mapper to be used to obtain rule instances from the active rulesets.
+     *
      * @return The loaded rule violation.
-     * @throws IOException
      */
-    /* package */ static CachedRuleViolation loadFromStream(final DataInputStream stream,
-            final String fileName, final CachedRuleMapper mapper) throws IOException {
-        final String description = stream.readUTF();
-        final String ruleClassName = stream.readUTF();
-        final String ruleName = stream.readUTF();
-        final String ruleTargetLanguage = stream.readUTF();
-        final int beginLine = stream.readInt();
-        final int beginColumn = stream.readInt();
-        final int endLine = stream.readInt();
-        final int endColumn = stream.readInt();
-        final String packageName = stream.readUTF();
-        final String className = stream.readUTF();
-        final String methodName = stream.readUTF();
-        final String variableName = stream.readUTF();
+    /* package */
+    static CachedRuleViolation loadFromStream(
+        DataInputStream stream,
+        FileId fileFileId, CachedRuleMapper mapper) throws IOException {
 
-        return new CachedRuleViolation(mapper, description, fileName, ruleClassName, ruleName, ruleTargetLanguage,
-                beginLine, beginColumn, endLine, endColumn, packageName, className, methodName, variableName);
+        String description = stream.readUTF();
+        String ruleClassName = stream.readUTF();
+        String ruleName = stream.readUTF();
+        String ruleTargetLanguage = stream.readUTF();
+        int beginLine = stream.readInt();
+        int beginColumn = stream.readInt();
+        int endLine = stream.readInt();
+        int endColumn = stream.readInt();
+        Map<String, String> additionalInfo = readAdditionalInfo(stream);
+        return new CachedRuleViolation(mapper, description, fileFileId, ruleClassName, ruleName, ruleTargetLanguage,
+                                       beginLine, beginColumn, endLine, endColumn, additionalInfo);
+    }
+
+    private static @NonNull Map<String, String> readAdditionalInfo(DataInputStream stream) throws IOException {
+        int numAdditionalInfoKeyValuePairs = stream.readInt();
+        if (numAdditionalInfoKeyValuePairs == 0) {
+            return Collections.emptyMap();
+        }
+
+        Map<String, String> additionalInfo = new LinkedHashMap<>();
+        while (numAdditionalInfoKeyValuePairs-- > 0) {
+            final String key = stream.readUTF();
+            final String value = stream.readUTF();
+            additionalInfo.put(key, value);
+        }
+        return Collections.unmodifiableMap(additionalInfo);
     }
 
     /**
      * Helper method to store a {@link RuleViolation} in an output stream to be later
      * retrieved as a {@link CachedRuleViolation}
      *
-     * @param stream The stream on which to store the violation.
+     * @param stream    The stream on which to store the violation.
      * @param violation The rule violation to cache.
-     * @throws IOException
      */
     /* package */ static void storeToStream(final DataOutputStream stream,
             final RuleViolation violation) throws IOException {
-        stream.writeUTF(getValueOrEmpty(violation.getDescription()));
-        stream.writeUTF(getValueOrEmpty(violation.getRule().getRuleClass()));
-        stream.writeUTF(getValueOrEmpty(violation.getRule().getName()));
-        stream.writeUTF(getValueOrEmpty(violation.getRule().getLanguage().getTerseName()));
-        stream.writeInt(violation.getBeginLine());
-        stream.writeInt(violation.getBeginColumn());
-        stream.writeInt(violation.getEndLine());
-        stream.writeInt(violation.getEndColumn());
-        stream.writeUTF(getValueOrEmpty(violation.getPackageName()));
-        stream.writeUTF(getValueOrEmpty(violation.getClassName()));
-        stream.writeUTF(getValueOrEmpty(violation.getMethodName()));
-        stream.writeUTF(getValueOrEmpty(violation.getVariableName()));
+        stream.writeUTF(StringUtil.nullToEmpty(violation.getDescription()));
+        stream.writeUTF(StringUtil.nullToEmpty(violation.getRule().getRuleClass()));
+        stream.writeUTF(StringUtil.nullToEmpty(violation.getRule().getName()));
+        stream.writeUTF(StringUtil.nullToEmpty(violation.getRule().getLanguage().getTerseName()));
+        FileLocation location = violation.getLocation();
+        stream.writeInt(location.getStartPos().getLine());
+        stream.writeInt(location.getStartPos().getColumn());
+        stream.writeInt(location.getEndPos().getLine());
+        stream.writeInt(location.getEndPos().getColumn());
+        Map<String, String> additionalInfo = violation.getAdditionalInfo();
+        stream.writeInt(additionalInfo.size());
+        for (Entry<String, String> entry : additionalInfo.entrySet()) {
+            stream.writeUTF(entry.getKey());
+            stream.writeUTF(StringUtil.nullToEmpty(entry.getValue()));
+
+        }
     }
 
-    private static String getValueOrEmpty(final String value) {
-        return value == null ? "" : value;
-    }
 }

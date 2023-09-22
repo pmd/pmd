@@ -6,14 +6,15 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import com.google.summit.ast.Node;
 
-public class ASTDmlMergeStatement extends AbstractApexNode.Single<Node> {
+public final class ASTDmlMergeStatement extends AbstractApexNode.Single<Node> {
 
     ASTDmlMergeStatement(Node dmlMergeStatement) {
         super(dmlMergeStatement);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

@@ -4,23 +4,14 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+public final class ASTQueryBlock extends AbstractSelectStatement {
 
-public class ASTQueryBlock extends AbstractSelectStatement {
-    @Deprecated
-    @InternalApi
-    public ASTQueryBlock(int id) {
+    ASTQueryBlock(int id) {
         super(id);
     }
 
-    @Deprecated
-    @InternalApi
-    public ASTQueryBlock(PLSQLParser p, int id) {
-        super(p, id);
-    }
-
     @Override
-    public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {
+    protected <P, R> R acceptPlsqlVisitor(PlsqlVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

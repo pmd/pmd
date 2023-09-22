@@ -1,30 +1,31 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.python;
 
-import net.sourceforge.pmd.lang.BaseLanguageModule;
+import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.impl.CpdOnlyLanguageModuleBase;
+import net.sourceforge.pmd.lang.python.cpd.PythonTokenizer;
 
 /**
- * Implementation of the Python Language Module.
- *
- * @deprecated There is no full PMD support for Python.
+ * Defines the Language module for Python
  */
-@Deprecated
-public class PythonLanguageModule extends BaseLanguageModule {
+public class PythonLanguageModule extends CpdOnlyLanguageModuleBase {
+    private static final String ID = "python";
 
-    /** The name, that can be used to display the language in UI. */
-    public static final String NAME = "Python";
-    /** The internal name. */
-    public static final String TERSE_NAME = "python";
-
-    /**
-     * Creates a new instance of {@link PythonLanguageModule} with the default
-     * file extensions for Python.
-     */
     public PythonLanguageModule() {
-        super(NAME, null, TERSE_NAME, "py");
-        addVersion("", new PythonHandler(), true);
+        super(LanguageMetadata.withId(ID).name("Python").extensions("py"));
+    }
+
+    public static PythonLanguageModule getInstance() {
+        return (PythonLanguageModule) LanguageRegistry.CPD.getLanguageById(ID);
+    }
+
+    @Override
+    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
+        return new PythonTokenizer();
     }
 }

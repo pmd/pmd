@@ -63,6 +63,62 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>SObjectType and Field as parameters are safe to use in SOQL query string building #4646</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public with sharing class Foo {
+    public void getUniqueValues(SObjectType type, SObjectField field) {
+        String query = 'SELECT ' + field + ' FROM ' + type;
+        Database.query(query);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>SObjectType and Field as variables are safe to use in SOQL query string building #4646</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public with sharing class Foo {
+    public void getUniqueValues() {
+        SObjectType type = getSObjectType();
+        SObjectField field = getSObjectField();
+        String query = 'SELECT ' + field + ' FROM ' + type;
+        Database.query(query);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Schema.SObjectType and Field as parameters are safe to use in SOQL query string building #4646</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public with sharing class Foo {
+    public void getUniqueValues(Schema.SObjectType type, Schema.SObjectField field) {
+        String query = 'SELECT ' + field + ' FROM ' + type;
+        Database.query(query);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Schema.SObjectType and Field as variables are safe to use in SOQL query string building #4646</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public with sharing class Foo {
+    public void getUniqueValues() {
+        Schema.SObjectType type = getSObjectType();
+        Schema.SObjectField field = getSObjectField();
+        String query = 'SELECT ' + field + ' FROM ' + type;
+        Database.query(query);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>Safe SOQL + merged variable from a literal</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[

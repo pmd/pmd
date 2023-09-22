@@ -6,14 +6,15 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import com.google.summit.ast.statement.EnhancedForLoopStatement;
 
-public class ASTForEachStatement extends AbstractApexNode.Single<EnhancedForLoopStatement> {
+public final class ASTForEachStatement extends AbstractApexNode.Single<EnhancedForLoopStatement> {
 
     ASTForEachStatement(EnhancedForLoopStatement enhancedForLoopStatement) {
         super(enhancedForLoopStatement);
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

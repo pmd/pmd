@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Locale;
 import javax.xml.XMLConstants;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -26,8 +27,9 @@ import org.apache.commons.lang3.StringUtils;
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.properties.StringProperty;
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.internal.util.IOUtil;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -38,8 +40,8 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
     public static final String NAME = "xml";
 
     // TODO 7.0.0 use PropertyDescriptor<String> or something more specialized
-    public static final StringProperty ENCODING = new StringProperty("encoding",
-            "XML encoding format, defaults to UTF-8.", "UTF-8", 0);
+    public static final PropertyDescriptor<String> ENCODING =
+        PropertyFactory.stringProperty("encoding").desc("XML encoding format").defaultValue("UTF-8").build();
 
     private static final String PMD_REPORT_NS_URI = "http://pmd.sourceforge.net/report/2.0.0";
     private static final String PMD_REPORT_NS_LOCATION = "http://pmd.sourceforge.net/report_2_0_0.xsd";
@@ -143,7 +145,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
             // rule violations
             while (violations.hasNext()) {
                 RuleViolation rv = violations.next();
-                String nextFilename = determineFileName(rv.getFilename());
+                String nextFilename = determineFileName(rv.getFileId());
                 if (!nextFilename.equals(filename)) {
                     // New File
                     if (filename != null) {
@@ -164,10 +166,11 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
                 xmlWriter.writeAttribute("endcolumn", String.valueOf(rv.getEndColumn()));
                 xmlWriter.writeAttribute("rule", rv.getRule().getName());
                 xmlWriter.writeAttribute("ruleset", rv.getRule().getRuleSetName());
-                maybeAdd("package", rv.getPackageName());
-                maybeAdd("class", rv.getClassName());
-                maybeAdd("method", rv.getMethodName());
-                maybeAdd("variable", rv.getVariableName());
+                maybeAdd("package", rv.getAdditionalInfo().get(RuleViolation.PACKAGE_NAME));
+                maybeAdd("class", rv.getAdditionalInfo().get(RuleViolation.CLASS_NAME));
+                maybeAdd("method", rv.getAdditionalInfo().get(RuleViolation.METHOD_NAME));
+                maybeAdd("variable", rv.getAdditionalInfo().get(RuleViolation.VARIABLE_NAME));
+                // todo other additional info keys are not rendered
                 maybeAdd("externalInfoUrl", rv.getRule().getExternalInfoUrl());
                 xmlWriter.writeAttribute("priority", String.valueOf(rv.getRule().getPriority().getPriority()));
                 writeNewLine();
@@ -191,7 +194,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
             for (Report.ProcessingError pe : errors) {
                 writeNewLine();
                 xmlWriter.writeStartElement("error");
-                xmlWriter.writeAttribute("filename", determineFileName(pe.getFile()));
+                xmlWriter.writeAttribute("filename", determineFileName(pe.getFileId()));
                 xmlWriter.writeAttribute("msg", pe.getMsg());
                 writeNewLine();
                 xmlWriter.writeCData(pe.getDetail());
@@ -204,8 +207,8 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
                 for (Report.SuppressedViolation s : suppressed) {
                     writeNewLine();
                     xmlWriter.writeStartElement("suppressedviolation");
-                    xmlWriter.writeAttribute("filename", determineFileName(s.getRuleViolation().getFilename()));
-                    xmlWriter.writeAttribute("suppressiontype", s.suppressedByNOPMD() ? "nopmd" : "annotation");
+                    xmlWriter.writeAttribute("filename", determineFileName(s.getRuleViolation().getFileId()));
+                    xmlWriter.writeAttribute("suppressiontype", s.getSuppressor().getId().toLowerCase(Locale.ROOT));
                     xmlWriter.writeAttribute("msg", s.getRuleViolation().getDescription());
                     xmlWriter.writeAttribute("usermsg", s.getUserMessage() == null ? "" : s.getUserMessage());
                     xmlWriter.writeEndElement();
@@ -246,7 +249,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
             XMLOutputFactory outputFactory = XMLOutputFactory.newFactory();
             this.xmlWriter = outputFactory.createXMLStreamWriter(this.stream, encoding);
             // for backwards compatibility, also provide a writer. Note: xmlWriter won't use that.
-            this.writer = new WrappedOutputStreamWriter(xmlWriter, stream, encoding);
+            super.setWriter(new WrappedOutputStreamWriter(xmlWriter, stream, encoding));
         } catch (IOException | XMLStreamException e) {
             throw new IllegalArgumentException(e);
         }
@@ -263,7 +266,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
             this.xmlWriter = outputFactory.createXMLStreamWriter(this.stream, encoding);
             // for backwards compatibility, also provide a writer.
             // Note: both XMLStreamWriter and this writer will write to this.stream
-            this.writer = new WrappedOutputStreamWriter(xmlWriter, stream, encoding);
+            super.setWriter(new WrappedOutputStreamWriter(xmlWriter, stream, encoding));
         } catch (XMLStreamException | UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }

@@ -5,79 +5,70 @@
 package net.sourceforge.pmd.lang.document;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
+import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * @author Clément Fournier
  */
-public class FileCollectorTest {
+class FileCollectorTest {
 
-    @Rule
-    public TemporaryFolder tempFolder = new TemporaryFolder();
+    @TempDir
+    private Path tempFolder;
 
     @Test
-    public void testAddFile() throws IOException {
-        Path root = tempFolder.getRoot().toPath();
-        Path foo = newFile(root, "foo.dummy");
-        Path bar = newFile(root, "bar.unknown");
+    void testAddFile() throws IOException {
+        Path foo = newFile(tempFolder, "foo.dummy");
+        Path bar = newFile(tempFolder, "bar.unknown");
 
         FileCollector collector = newCollector();
 
-        assertTrue("should be dummy language", collector.addFile(foo));
-        assertFalse("should be unknown language", collector.addFile(bar));
+        assertTrue(collector.addFile(foo), "should be dummy language");
+        assertFalse(collector.addFile(bar), "should be unknown language");
 
-        assertCollected(collector, listOf("foo.dummy"));
+        assertCollected(collector, listOf(FileId.fromPath(foo)));
     }
 
     @Test
-    public void testAddFileForceLanguage() throws IOException {
-        Path root = tempFolder.getRoot().toPath();
-        Path bar = newFile(root, "bar.unknown");
+    void testAddFileForceLanguage() throws IOException {
+        Path bar = newFile(tempFolder, "bar.unknown");
 
-        Language dummy = LanguageRegistry.findLanguageByTerseName("dummy");
+        Language dummy = DummyLanguageModule.getInstance();
 
         FileCollector collector = newCollector(dummy.getDefaultVersion());
 
-        assertTrue("should be unknown language", collector.addFile(bar, dummy));
-        assertCollected(collector, listOf("bar.unknown"));
+        assertTrue(collector.addFile(bar, dummy), "should be unknown language");
+        assertCollected(collector, listOf(FileId.fromPath(bar)));
         assertNoErrors(collector);
     }
 
     @Test
-    public void testAddFileNotExists() {
-        Path root = tempFolder.getRoot().toPath();
-
+    void testAddFileNotExists() {
         FileCollector collector = newCollector();
 
-        assertFalse(collector.addFile(root.resolve("does_not_exist.dummy")));
+        assertFalse(collector.addFile(tempFolder.resolve("does_not_exist.dummy")));
         assertEquals(1, collector.getReporter().numErrors());
     }
 
     @Test
-    public void testAddFileNotAFile() throws IOException {
-        Path root = tempFolder.getRoot().toPath();
-        Path dir = root.resolve("src");
+    void testAddFileNotAFile() throws IOException {
+        Path dir = tempFolder.resolve("src");
         Files.createDirectories(dir);
 
         FileCollector collector = newCollector();
@@ -86,24 +77,20 @@ public class FileCollectorTest {
     }
 
     @Test
-    public void testAddDirectory() throws IOException {
-        Path root = tempFolder.getRoot().toPath();
-        newFile(root, "src/foo.dummy");
+    void testAddDirectory() throws IOException {
+        Path root = tempFolder;
+        Path foo = newFile(root, "src/foo.dummy");
         newFile(root, "src/bar.unknown");
-        newFile(root, "src/x/bar.dummy");
+        Path bar = newFile(root, "src/x/bar.dummy");
 
         FileCollector collector = newCollector();
 
         collector.addDirectory(root.resolve("src"));
 
-        assertCollected(collector, listOf("src/foo.dummy", "src/x/bar.dummy"));
+        assertCollected(collector, listOf(FileId.fromPath(foo), FileId.fromPath(bar)));
     }
 
-    @Test
-    public void testRelativize() throws IOException {
-        String displayName = FileCollector.getDisplayNameLegacy(Paths.get("a", "b", "c"), listOf(Paths.get("a").toString()));
-        assertEquals(displayName, Paths.get("b", "c").toString());
-    }
+
 
     private Path newFile(Path root, String path) throws IOException {
         Path resolved = root.resolve(path);
@@ -112,22 +99,13 @@ public class FileCollectorTest {
         return resolved;
     }
 
-    private void assertCollected(FileCollector collector, List<String> relPaths) {
-        Map<String, String> actual = new LinkedHashMap<>();
-        for (TextFile file : collector.getCollectedFiles()) {
-            actual.put(file.getDisplayName(), file.getLanguageVersion().getTerseName());
-        }
-
-        for (int i = 0; i < relPaths.size(); i++) {
-            // normalize, we want display names to be platform-specific
-            relPaths.set(i, relPaths.get(i).replace('/', File.separatorChar));
-        }
-
-        assertEquals(relPaths, new ArrayList<>(actual.keySet()));
+    private void assertCollected(FileCollector collector, List<FileId> expected) {
+        List<FileId> actual = CollectionUtil.map(collector.getCollectedFiles(), TextFile::getFileId);
+        assertEquals(expected, actual);
     }
 
     private void assertNoErrors(FileCollector collector) {
-        assertEquals("No errors expected", 0, collector.getReporter().numErrors());
+        assertEquals(0, collector.getReporter().numErrors(), "No errors expected");
     }
 
     private FileCollector newCollector() {
@@ -135,9 +113,7 @@ public class FileCollectorTest {
     }
 
     private FileCollector newCollector(LanguageVersion forcedVersion) {
-        LanguageVersionDiscoverer discoverer = new LanguageVersionDiscoverer(forcedVersion);
-        FileCollector collector = FileCollector.newCollector(discoverer, new TestMessageReporter());
-        collector.relativizeWith(tempFolder.getRoot().getAbsolutePath());
-        return collector;
+        LanguageVersionDiscoverer discoverer = new LanguageVersionDiscoverer(LanguageRegistry.PMD, forcedVersion);
+        return FileCollector.newCollector(discoverer, new TestMessageReporter());
     }
 }

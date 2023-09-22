@@ -4,93 +4,68 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
-import java.util.List;
-
-import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
-import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
-import net.sourceforge.pmd.lang.java.ast.ASTImplementsList;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
-public class OverrideBothEqualsAndHashcodeRule extends AbstractJavaRule {
+public class OverrideBothEqualsAndHashcodeRule extends AbstractJavaRulechainRule {
 
-    private boolean implementsComparable = false;
+    public OverrideBothEqualsAndHashcodeRule() {
+        super(ASTClassOrInterfaceDeclaration.class,
+              ASTRecordDeclaration.class,
+              ASTAnonymousClassDeclaration.class);
+    }
 
-    private boolean containsEquals = false;
+    private void visitTypeDecl(ASTAnyTypeDeclaration node, Object data) {
+        if (TypeTestUtil.isA(Comparable.class, node)) {
+            return;
+        }
+        ASTMethodDeclaration equalsMethod = null;
+        ASTMethodDeclaration hashCodeMethod = null;
+        for (ASTMethodDeclaration m : node.getDeclarations(ASTMethodDeclaration.class)) {
+            if (JavaAstUtils.isEqualsMethod(m)) {
+                equalsMethod = m;
+                if (hashCodeMethod != null) {
+                    break; // shortcut
+                }
+            } else if (JavaAstUtils.isHashCodeMethod(m)) {
+                hashCodeMethod = m;
+                if (equalsMethod != null) {
+                    break; // shortcut
+                }
+            }
+        }
 
-    private boolean containsHashCode = false;
+        if (hashCodeMethod != null ^ equalsMethod != null) {
+            ASTMethodDeclaration nonNullNode =
+                equalsMethod == null ? hashCodeMethod : equalsMethod;
+            asCtx(data).addViolation(nonNullNode);
+        }
+    }
 
-    private Node nodeFound = null;
+    @Override
+    public Object visit(ASTAnonymousClassDeclaration node, Object data) {
+        visitTypeDecl(node, data);
+        return null;
+    }
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (node.isInterface()) {
-            return data;
+            return null;
         }
-        super.visit(node, data);
-        if (!implementsComparable && containsEquals ^ containsHashCode) {
-            if (nodeFound == null) {
-                nodeFound = node;
-            }
-            addViolation(data, nodeFound);
-        }
-        implementsComparable = false;
-        containsEquals = false;
-        containsHashCode = false;
-        nodeFound = null;
-        return data;
+        visitTypeDecl(node, data);
+        return null;
     }
 
     @Override
-    public Object visit(ASTImplementsList node, Object data) {
-        for (int ix = 0; ix < node.getNumChildren(); ix++) {
-            if (node.getChild(ix) instanceof ASTClassOrInterfaceType) {
-                ASTClassOrInterfaceType cit = (ASTClassOrInterfaceType) node.getChild(ix);
-                Class<?> clazz = cit.getType();
-                if (clazz != null && node.getChild(ix).hasImageEqualTo("Comparable")) {
-                    implementsComparable = true;
-                    return data;
-                }
-            }
-        }
-        return super.visit(node, data);
+    public Object visit(ASTRecordDeclaration node, Object data) {
+        visitTypeDecl(node, data);
+        return null;
     }
-
-    @Override
-    public Object visit(ASTMethodDeclarator node, Object data) {
-        if (implementsComparable) {
-            return data;
-        }
-
-        int iFormalParams = 0;
-        String paramName = null;
-        for (int ix = 0; ix < node.getNumChildren(); ix++) {
-            Node sn = node.getChild(ix);
-            if (sn instanceof ASTFormalParameters) {
-                List<ASTFormalParameter> allParams = ((ASTFormalParameters) sn)
-                        .findChildrenOfType(ASTFormalParameter.class);
-                for (ASTFormalParameter formalParam : allParams) {
-                    iFormalParams++;
-                    ASTClassOrInterfaceType param = formalParam.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
-                    if (param != null) {
-                        paramName = param.getImage();
-                    }
-                }
-            }
-        }
-
-        if (iFormalParams == 0 && node.hasImageEqualTo("hashCode")) {
-            containsHashCode = true;
-            nodeFound = node;
-        } else if (iFormalParams == 1 && node.hasImageEqualTo("equals")
-                && ("Object".equals(paramName) || "java.lang.Object".equals(paramName))) {
-            containsEquals = true;
-            nodeFound = node;
-        }
-        return super.visit(node, data);
-    }
-
 }

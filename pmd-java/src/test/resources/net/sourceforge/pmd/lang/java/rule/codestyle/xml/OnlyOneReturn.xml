@@ -80,9 +80,10 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
+    interface Filter { boolean accept(Object o); }
     public int foo() {
-        FileFilter f = new FileFilter() {
-            public boolean accept(File file) {
+        Filter f = new Filter() {
+            public boolean accept(Object o) {
                 return false;
             }
         };
@@ -93,26 +94,16 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>#1353 False positive "Only One Return" with lambda</description>
+        <description>#1353 return inside lambda</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class OnlyOneReturn {
-    public Try<SearchHit[]> search(final String indexName, final SearchRequest searchRequest) {
-        final SearchHit[] empty = new SearchHit[0];
-        final Optional<SearchDefinition> searchDefinition = settingsService.getSearchDefinition(indexName);
-        return searchDefinition.<Try<SearchHit[]>>map(
-            i -> {
-                final List<Try<ProviderSearchHit[]>> res = i.getSearchMapping().stream()
-                    .peek(m -> LOGGER.debug("Treating backend \"{}\"", m.getProviderRef()))
-                    .map(m -> invokeAdapter(getProviderSearchService(m.getProviderRef()), m, searchRequest))
-                    .collect(Collectors.toList());
-                return TryCollections.pull(res).map(l -> sortReturning(l.stream().collect(ArrayCollectors.arrayMerging(
-                        SearchServiceImpl::toSearchHit,
-                        SearchHit::getInternalId,
-                        Function.identity(),
-                        SearchServiceImpl::merge)).orElse(Collections.emptyList()), SearchServiceImpl.searchHitComparator()))
-                    .map(list -> list.toArray(empty));
-            }).orElse(Try.success(empty));
+public class Foo {
+    interface Filter { boolean accept(Object o); }
+    public int foo() {
+        Filter f = o -> {
+            return false;
+        };
+        return 2;
     }
 }
         ]]></code>

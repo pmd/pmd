@@ -150,7 +150,8 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    void foo(int bar) {
+    int i;
+    void foo(int bar, Foo otherObject) {
         for (int i=0; i < 10; i++) {
             doSomethingWith(i);
             otherObject.i++;
@@ -316,6 +317,44 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>violation: break inside switch case</description>
+        <rule-property name="forReassign">skip</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo(int bar) {
+        for (int i=0; i < 10; i++) {
+            doSomethingWith(i);
+            switch (foo()) {
+                case 1: break; //breaks the switch, not the loop
+            }
+            i++;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>no violation: continue inside switch case</description>
+        <rule-property name="forReassign">skip</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo(int bar) {
+        for (int i=0; i < 10; i++) {
+            doSomethingWith(i);
+            switch (foo()) {
+                case 1: continue;
+            }
+            i++;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>violation: incremented 'for' loop variable inside switch expression</description>
         <rule-property name="forReassign">skip</rule-property>
         <expected-problems>1</expected-problems>
@@ -414,6 +453,63 @@ public class Foo {
     }
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>violation: incremented 'for' loop variable after nested for with break</description>
+        <rule-property name="forReassign">skip</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo(int bar) {
+        for (int i=0; i < 10; i++) {
+            doSomethingWith(i);
+            for (int j=0; j < foo(); j++) break;
+            i++;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>no violation: incremented 'for' loop variable after nested for with labeled break</description>
+        <rule-property name="forReassign">skip</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo(int bar) {
+        outer:
+        for (int i=0; i < 10; i++) {
+            doSomethingWith(i);
+            for (int j=0; j < foo(); j++) break outer;
+            i++;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>no violation: incremented 'for' loop variable inside nested for</description>
+        <rule-property name="forReassign">skip</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+
+                void foo(int bar) {
+                    for (int i = 0; i < 10; i++) {
+                        doSomethingWith(i);
+                        for (int j = 0; j < foo(); j++) {
+                            if (j > 4) {
+                                break;
+                            }
+                            i++;
+                        }
+                    }
+                }
+            }
+            ]]></code>
     </test-code>
 
     <test-code>
@@ -577,11 +673,12 @@ public class Foo {
         ]]></code>
     </test-code>
 
-    <test-code>
-        <description>violation: various conditional reassignments of 'for' loop variable, skip allowed</description>
+    <!-- Deactivated because this is hard to implement in the general case. -->
+    <test-code disabled="true">
+        <description>#4500 violation: various conditional reassignments of 'for' loop variable, skip allowed</description>
         <rule-property name="forReassign">skip</rule-property>
-        <expected-problems>4</expected-problems>
-        <expected-linenumbers>13,14,15,16</expected-linenumbers>
+        <expected-problems>10</expected-problems>
+        <expected-linenumbers>13,14,15,16,17,18,19,20,21,22</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     void foo(int bar) {
@@ -595,10 +692,16 @@ public class Foo {
                 i += 1;
                 i -= 1;
                 doSomethingWith(i++);
-                i *= 1; // not OK
-                i /= 1; // not OK
-                i = 5; // not OK
-                doSomethingWith(i = 5); // not OK
+                i += 2;    // not OK (line 13)
+                i -= 2;    // not OK (line 14)
+                i &= 1;    // not OK (line 15)
+                i |= 1;    // not OK (line 16)
+                i *= 1;    // not OK - is not reported anymore (line 17)
+                i /= 1;    // not OK - is not reported anymore (line 18)
+                i = i + 1; // not OK - is reported with 7.0.0-rc1 (line 19)
+                i = i - 1; // not OK - is reported with 7.0.0-rc1 (line 20)
+                i = 5;     // not OK - is reported with 7.0.0-rc1 (line 21)
+                doSomethingWith(i = 5); // not OK - is reported with 7.0.0-rc1 (line 22)
             }
         }
     }
@@ -702,22 +805,24 @@ public class Foo {
         <description>AvoidReassigningLoopVariables detects some harmless reassigning of loop variables in foreach #2595</description>
         <rule-property name="foreachReassign">firstOnly</rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>6</expected-linenumbers>
+        <expected-linenumbers>8</expected-linenumbers>
         <code><![CDATA[
+import java.util.*;
 public class Foo {
-    void foo(int bar) {
+    void foo(int bar, int httpMethods, int large, int len) {
         String[] strings = getStrings();
+        List<String> lines = new ArrayList<>();
         for (String g : strings) {
             g = g.substring(0,g.lastIndexOf(":"));
             g = g + ": 1;"; // here
-            FileUtil.writeLineToFile(w, g);
+            System.out.println(g);
         }
         for (String item : strings) {
             item = item.trim();
-            httpMethods = httpMethods | HttpMethods.getMethod(item);
+            httpMethods = httpMethods | getHttpMethod(item);
         }
         for (String message : strings) {
-            message = OutputFormatter.escape(message);
+            message = escape(message);
             lines.add(String.format(large ? "  %s  " : " %s ", message));
             len = Math.max(length(message) + (large ? 4 : 2), len);
         }
@@ -777,6 +882,35 @@ public class ClassWithAnon {
                 }
             }
         };
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>New fns after implementing pattern binding scope</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>17,17</expected-linenumbers>
+        <code><![CDATA[
+public class CompletableFuture<T> {
+    private T result;
+
+    private CompletableFuture() {
+
+    }
+    private CompletableFuture(T o) {
+
+    }
+
+    public static CompletableFuture<Object> anyOf(CompletableFuture<?>... cfs) {
+        cfs = cfs.clone();
+        CompletableFuture<Object> d = new CompletableFuture<>();
+        if (d.result != null)
+            for (int i = 0, len = cfs.length; i < len; i++)
+                if (cfs[i].result != null)
+                    for (i++; i < len; i++) // here
+                        if (cfs[i].result == null)
+                            cfs[i].cleanStack();
+        return d;
     }
 }
         ]]></code>

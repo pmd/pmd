@@ -4,24 +4,14 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
+public final class ASTTriggerUnit extends AbstractPLSQLNode implements ExecutableCode, OracleObject {
 
-public class ASTTriggerUnit extends AbstractPLSQLNode implements ExecutableCode, OracleObject, DFAGraphMethod {
-    @Deprecated
-    @InternalApi
-    public ASTTriggerUnit(int id) {
+    ASTTriggerUnit(int id) {
         super(id);
     }
 
-    @Deprecated
-    @InternalApi
-    public ASTTriggerUnit(PLSQLParser p, int id) {
-        super(p, id);
-    }
-
     @Override
-    public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {
+    protected <P, R> R acceptPlsqlVisitor(PlsqlVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
@@ -35,7 +25,6 @@ public class ASTTriggerUnit extends AbstractPLSQLNode implements ExecutableCode,
         return getImage();
     }
 
-    @Override
     public String getName() {
         return getMethodName();
     }

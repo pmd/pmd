@@ -5,15 +5,11 @@
 package net.sourceforge.pmd.properties;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import net.sourceforge.pmd.util.CollectionUtil;
+import java.util.Objects;
 
 
 /**
@@ -81,12 +77,6 @@ public abstract class AbstractPropertySource implements PropertySource {
         return new HashMap<>(propertyValuesByDescriptor);
     }
 
-    @Override
-    @Deprecated
-    public Set<PropertyDescriptor<?>> ignoredProperties() {
-        return Collections.emptySet();
-    }
-
 
     @Override
     public void definePropertyDescriptor(PropertyDescriptor<?> propertyDescriptor) {
@@ -97,8 +87,6 @@ public abstract class AbstractPropertySource implements PropertySource {
 
         }
         propertyDescriptors.add(propertyDescriptor);
-        // Sort in UI order
-        Collections.sort(propertyDescriptors);
     }
 
 
@@ -163,14 +151,6 @@ public abstract class AbstractPropertySource implements PropertySource {
     }
 
 
-    @Override
-    @Deprecated
-    public <V> void setProperty(MultiValuePropertyDescriptor<V> propertyDescriptor, V... values) {
-        checkValidPropertyDescriptor(propertyDescriptor);
-        propertyValuesByDescriptor.put(propertyDescriptor, Collections.unmodifiableList(Arrays.asList(values)));
-    }
-
-
     /**
      * Checks whether this property descriptor is defined for this property source.
      *
@@ -211,46 +191,40 @@ public abstract class AbstractPropertySource implements PropertySource {
 
 
     @Override
-    @Deprecated
-    public boolean usesDefaultValues() {
-
-        Map<PropertyDescriptor<?>, Object> valuesByProperty = getPropertiesByPropertyDescriptor();
-        if (valuesByProperty.isEmpty()) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AbstractPropertySource that = (AbstractPropertySource) o;
 
-        for (Entry<PropertyDescriptor<?>, Object> entry : valuesByProperty.entrySet()) {
-            if (!CollectionUtil.areEqual(entry.getKey().defaultValue(), entry.getValue())) {
-                return false;
-            }
+        if (!Objects.equals(propertyDescriptors, that.propertyDescriptors)) {
+            return false;
         }
 
-        return true;
+        // Convert the values to strings for comparisons. This is needed at least for RegexProperties,
+        // as java.util.regex.Pattern doesn't implement equals().
+        Map<String, String> propertiesWithValues = new HashMap<>();
+        propertyDescriptors.forEach(propertyDescriptor -> {
+            Object value = propertyValuesByDescriptor.getOrDefault(propertyDescriptor, propertyDescriptor.defaultValue());
+            @SuppressWarnings({"unchecked", "rawtypes"})
+            String valueString = ((PropertyDescriptor) propertyDescriptor).serializer().toString(value);
+            propertiesWithValues.put(propertyDescriptor.name(), valueString);
+        });
+        Map<String, String> thatPropertiesWithValues = new HashMap<>();
+        that.propertyDescriptors.forEach(propertyDescriptor -> {
+            Object value = that.propertyValuesByDescriptor.getOrDefault(propertyDescriptor, propertyDescriptor.defaultValue());
+            @SuppressWarnings({"unchecked", "rawtypes"})
+            String valueString = ((PropertyDescriptor) propertyDescriptor).serializer().toString(value);
+            thatPropertiesWithValues.put(propertyDescriptor.name(), valueString);
+        });
+        return Objects.equals(propertiesWithValues, thatPropertiesWithValues);
     }
-
 
     @Override
-    @Deprecated
-    public void useDefaultValueFor(PropertyDescriptor<?> desc) {
-        propertyValuesByDescriptor.remove(desc);
+    public int hashCode() {
+        return Objects.hash(propertyDescriptors, propertyValuesByDescriptor);
     }
-
-
-    // todo Java 8 move up to interface
-    @Override
-    public String dysfunctionReason() {
-        for (PropertyDescriptor<?> descriptor : getOverriddenPropertyDescriptors()) {
-            String error = errorForPropCapture(descriptor);
-            if (error != null) {
-                return error;
-            }
-        }
-        return null;
-    }
-
-
-    private <T> String errorForPropCapture(PropertyDescriptor<T> descriptor) {
-        return descriptor.errorFor(getProperty(descriptor));
-    }
-
 }

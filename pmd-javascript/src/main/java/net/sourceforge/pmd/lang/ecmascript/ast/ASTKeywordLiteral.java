@@ -9,18 +9,14 @@ import java.util.Locale;
 import org.mozilla.javascript.Token;
 import org.mozilla.javascript.ast.KeywordLiteral;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTKeywordLiteral extends AbstractEcmascriptNode<KeywordLiteral> {
-    @Deprecated
-    @InternalApi
-    public ASTKeywordLiteral(KeywordLiteral keywordLiteral) {
+public final class ASTKeywordLiteral extends AbstractEcmascriptNode<KeywordLiteral> {
+    ASTKeywordLiteral(KeywordLiteral keywordLiteral) {
         super(keywordLiteral);
         super.setImage(Token.typeToName(keywordLiteral.getType()).toLowerCase(Locale.ROOT));
     }
 
     @Override
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+    protected <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

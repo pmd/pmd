@@ -1,29 +1,44 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.cs;
 
-import net.sourceforge.pmd.lang.BaseLanguageModule;
+import net.sourceforge.pmd.cpd.CpdLanguageProperties;
+import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.cs.cpd.CsTokenizer;
+import net.sourceforge.pmd.lang.impl.CpdOnlyLanguageModuleBase;
 
 /**
- * Language Module for C#
- *
- * @deprecated There is no full PMD support for c#.
+ * Defines the Language module for C#.
  */
-@Deprecated
-public class CsLanguageModule extends BaseLanguageModule {
+public class CsLanguageModule extends CpdOnlyLanguageModuleBase {
+    private static final String ID = "cs";
 
-    /** The name. */
-    public static final String NAME = "C#";
-    /** The terse name. */
-    public static final String TERSE_NAME = "cs";
-
-    /**
-     * Create a new instance of C# Language Module.
-     */
     public CsLanguageModule() {
-        super(NAME, null, TERSE_NAME, "cs");
-        addVersion("", null, true);
+        super(LanguageMetadata.withId(ID)
+                              .name("C#")
+                              .addDefaultVersion("any")
+                              .extensions("cs"));
+    }
+
+    public static CsLanguageModule getInstance() {
+        return (CsLanguageModule) LanguageRegistry.CPD.getLanguageById(ID);
+    }
+
+    @Override
+    public LanguagePropertyBundle newPropertyBundle() {
+        LanguagePropertyBundle bundle = super.newPropertyBundle();
+        bundle.definePropertyDescriptor(CpdLanguageProperties.CPD_IGNORE_LITERAL_SEQUENCES);
+        bundle.definePropertyDescriptor(CpdLanguageProperties.CPD_IGNORE_IMPORTS);
+        bundle.definePropertyDescriptor(CpdLanguageProperties.CPD_IGNORE_METADATA);
+        return bundle;
+    }
+
+    @Override
+    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
+        return new CsTokenizer(bundle);
     }
 }

@@ -6,17 +6,13 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.IfStatement;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTIfStatement extends AbstractEcmascriptNode<IfStatement> {
-    @Deprecated
-    @InternalApi
-    public ASTIfStatement(IfStatement ifStatement) {
+public final class ASTIfStatement extends AbstractEcmascriptNode<IfStatement> {
+    ASTIfStatement(IfStatement ifStatement) {
         super(ifStatement);
     }
 
     @Override
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+    protected <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

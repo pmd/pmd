@@ -4,7 +4,8 @@
 
 package net.sourceforge.pmd.lang.document;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
@@ -13,10 +14,9 @@ import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
  */
 public class TestMessageReporter extends SimpleMessageReporter {
 
-    private static final Logger LOG = Logger.getLogger("testlogger");
+    private static final Logger LOG = LoggerFactory.getLogger(TestMessageReporter.class.getName());
 
     public TestMessageReporter() {
         super(LOG);
-        setLevel(null);
     }
 }

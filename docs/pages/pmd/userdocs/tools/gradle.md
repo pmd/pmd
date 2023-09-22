@@ -61,4 +61,4 @@ Source code for Gradles PMD Plugin is available here:
     *   [Pmd.java](https://github.com/gradle/gradle/blob/master/subprojects/code-quality/src/main/groovy/org/gradle/api/plugins/quality/Pmd.java)
     *   [PmdExtension.java](https://github.com/gradle/gradle/blob/master/subprojects/code-quality/src/main/groovy/org/gradle/api/plugins/quality/PmdExtension.java)
     *   [PmdPlugin.java](https://github.com/gradle/gradle/blob/master/subprojects/code-quality/src/main/groovy/org/gradle/api/plugins/quality/PmdPlugin.java)
-*   The default PMD version used by gradle: [DEFAULT_PMD_VERSION](https://github.com/gradle/gradle/blob/62297596035d0ed59304bf458eb89bb9859bb3e3/subprojects/code-quality/src/main/groovy/org/gradle/api/plugins/quality/PmdPlugin.java#L51)
+*   The default PMD version used by gradle: [DEFAULT_PMD_VERSION](https://github.com/gradle/gradle/blob/5e8d7b6b2eadf314767a4b3426db24e841b86ece/platforms/jvm/code-quality/src/main/groovy/org/gradle/api/plugins/quality/PmdPlugin.java#L67)

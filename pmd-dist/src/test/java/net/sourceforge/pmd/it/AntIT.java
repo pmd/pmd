@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.it;
 
+import static org.hamcrest.Matchers.containsString;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,12 +17,11 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.lang3.SystemUtils;
-import org.junit.Assume;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 
-import net.sourceforge.pmd.PMDVersion;
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.internal.util.IOUtil;
 
 /**
  * This test calls ant in a fake terminal to make sure we have a {@link java.io.Console} connected.
@@ -28,25 +29,27 @@ import net.sourceforge.pmd.util.IOUtil;
  * <p>
  * See <a href="# https://stackoverflow.com/questions/1401002/how-to-trick-an-application-into-thinking-its-stdout-is-a-terminal-not-a-pipe/20401674#20401674">How to trick an application into thinking its stdout is a terminal, not a pipe</a>.
  */
-public class AntIT extends AbstractBinaryDistributionTest {
+class AntIT extends AbstractBinaryDistributionTest {
 
     @Test
-    public void runAnt() throws IOException, InterruptedException {
-        Assume.assumeTrue(SystemUtils.IS_OS_LINUX);
-
+    @EnabledOnOs(OS.LINUX)
+    void runAnt() throws IOException, InterruptedException {
         String antBasepath = new File("target/ant").getAbsolutePath();
-        String pmdHome = tempDir.resolve(PMD_BIN_PREFIX + PMDVersion.VERSION).toAbsolutePath().toString();
+        String pmdHome = tempDir.resolve(PMD_BIN_PREFIX).toAbsolutePath().toString();
         File antTestProjectFolder = prepareAntTestProjectFolder();
 
         ExecutionResult result = runAnt(antBasepath, pmdHome, antTestProjectFolder);
-        result.assertExecutionResult(0, "BUILD SUCCESSFUL");
-        result.assertExecutionResult(0, "NoPackage"); // the no package rule
+        result.assertExitCode(0)
+              .assertStdOut(containsString("BUILD SUCCESSFUL"));
+        // the no package rule
+        result.assertExitCode(0)
+              .assertStdOut(containsString("NoPackage"));
     }
 
 
     private File prepareAntTestProjectFolder() throws IOException {
         final Path sourceProjectFolder = new File("src/test/resources/ant-it").toPath();
-        final Path projectFolder = folder.newFolder().toPath();
+        final Path projectFolder = Files.createTempDirectory(folder, null);
         Files.walkFileTree(sourceProjectFolder, new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {

@@ -4,25 +4,22 @@
 
 package net.sourceforge.pmd.lang.java.rule.documentation;
 
-import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.Comment;
+import net.sourceforge.pmd.lang.java.ast.JavaComment;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * A rule to manage those who just can't shut up...
  *
  * @author Brian Remedios
  */
-public class CommentSizeRule extends AbstractCommentRule {
+public class CommentSizeRule extends AbstractJavaRulechainRule {
 
     public static final PropertyDescriptor<Integer> MAX_LINES
             = PropertyFactory.intProperty("maxLines")
@@ -30,92 +27,71 @@ public class CommentSizeRule extends AbstractCommentRule {
                              .require(positive()).defaultValue(6).build();
 
     public static final PropertyDescriptor<Integer> MAX_LINE_LENGTH
-            = PropertyFactory.intProperty("maxLineLength")
-                             .desc("Maximum line length")
-                             .require(positive()).defaultValue(80).build();
-
-    private static final String CR = "\n";
+        = PropertyFactory.intProperty("maxLineLength")
+                         .desc("Maximum line length")
+                         .require(positive()).defaultValue(80).build();
 
     public CommentSizeRule() {
+        super(ASTCompilationUnit.class);
         definePropertyDescriptor(MAX_LINES);
         definePropertyDescriptor(MAX_LINE_LENGTH);
     }
 
-    private static boolean hasRealText(String line) {
-
-        if (StringUtils.isBlank(line)) {
-            return false;
-        }
-
-        return !StringUtil.isAnyOf(line.trim(), "//", "/*", "/**", "*", "*/");
-    }
-
-    private boolean hasTooManyLines(Comment comment) {
-
-        String[] lines = comment.getImage().split(CR);
-
-        int start = 0; // start from top
-        for (; start < lines.length; start++) {
-            if (hasRealText(lines[start])) {
-                break;
-            }
-        }
-
-        int end = lines.length - 1; // go up from bottom
-        for (; end > 0; end--) {
-            if (hasRealText(lines[end])) {
-                break;
-            }
-        }
-
-        int lineCount = end - start + 1;
-
-        return lineCount > getProperty(MAX_LINES);
-    }
-
-    private String withoutCommentMarkup(String text) {
-
-        return StringUtil.withoutPrefixes(text.trim(), "//", "*", "/**");
-    }
-
-    private List<Integer> overLengthLineIndicesIn(Comment comment) {
-
-        int maxLength = getProperty(MAX_LINE_LENGTH);
-
-        List<Integer> indices = new ArrayList<>();
-        String[] lines = comment.getImage().split(CR);
-
-        int offset = comment.getBeginLine();
-
-        for (int i = 0; i < lines.length; i++) {
-            String cleaned = withoutCommentMarkup(lines[i]);
-            if (cleaned.length() > maxLength) {
-                indices.add(i + offset);
-            }
-        }
-
-        return indices;
-    }
 
     @Override
     public Object visit(ASTCompilationUnit cUnit, Object data) {
 
-        for (Comment comment : cUnit.getComments()) {
+        for (JavaComment comment : cUnit.getComments()) {
             if (hasTooManyLines(comment)) {
-                addViolationWithMessage(data, cUnit, this.getMessage() + ": Too many lines", comment.getBeginLine(),
-                        comment.getEndLine());
+                addViolationWithMessage(data, cUnit, this.getMessage()
+                    + ": Too many lines", comment.getBeginLine(), comment.getEndLine());
             }
 
-            List<Integer> lineNumbers = overLengthLineIndicesIn(comment);
-            if (lineNumbers.isEmpty()) {
-                continue;
-            }
-
-            for (Integer lineNum : lineNumbers) {
-                addViolationWithMessage(data, cUnit, this.getMessage() + ": Line too long", lineNum, lineNum);
-            }
+            reportLinesTooLong(cUnit, asCtx(data), comment);
         }
 
-        return super.visit(cUnit, data);
+        return null;
     }
+
+    private static boolean hasRealText(Chars line) {
+        return !JavaComment.removeCommentMarkup(line).isEmpty();
+    }
+
+    private boolean hasTooManyLines(JavaComment comment) {
+
+        int firstLineWithText = -1;
+        int lastLineWithText;
+        int lineNumberWithinComment = 0;
+        int maxLines = getProperty(MAX_LINES);
+        for (Chars line : comment.getText().lines()) {
+            if (hasRealText(line)) {
+                lastLineWithText = lineNumberWithinComment;
+                if (firstLineWithText == -1) {
+                    firstLineWithText = lineNumberWithinComment;
+                }
+                if (lastLineWithText - firstLineWithText + 1 > maxLines) {
+                    return true;
+                }
+            }
+            lineNumberWithinComment++;
+        }
+        return false;
+    }
+
+    private void reportLinesTooLong(ASTCompilationUnit acu, RuleContext ctx, JavaComment comment) {
+
+        int maxLength = getProperty(MAX_LINE_LENGTH);
+
+        int lineNumber = comment.getReportLocation().getStartLine();
+        for (Chars line : comment.getFilteredLines(true)) {
+            if (line.length() > maxLength) {
+                ctx.addViolationWithPosition(acu,
+                                             lineNumber,
+                                             lineNumber,
+                                             getMessage() + ": Line too long");
+            }
+            lineNumber++;
+        }
+    }
+
 }

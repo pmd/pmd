@@ -7,6 +7,7 @@
     <test-code>
         <description>Basic test case</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 public class GCCall {
     public void doSomething() {
@@ -20,6 +21,7 @@ public class GCCall {
     <test-code>
         <description>Alernate Basic test case</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,9</expected-linenumbers>
         <code><![CDATA[
 public class GCCall {
     public void explicitGCcall() {
@@ -38,11 +40,26 @@ public class GCCall {
     <test-code>
         <description>Call in a constructor</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 public class GCCall {
     public GCCall() {
         // Explicit gc call !
         System.gc();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>run finalization</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,4</expected-linenumbers>
+        <code><![CDATA[
+public class Finalizer {
+    public void doSomething() {
+        System.runFinalization();
+        Runtime.getRuntime().runFinalization();
     }
 }
         ]]></code>

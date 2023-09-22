@@ -1,8 +1,8 @@
-<?xsl version="1.0"?>
+<?xml version="1.0"?>
 
 <ruleset name="All XSL Rules" 
-    xslns="http://pmd.sourceforge.net/ruleset/2.0.0"
-    xslns:xsi="http://www.w3.org/2001/xslSchema-instance"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
     <description>Every XSL Rule in PMD</description>
 

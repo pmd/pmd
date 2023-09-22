@@ -6,17 +6,13 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.EmptyExpression;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTEmptyExpression extends AbstractEcmascriptNode<EmptyExpression> {
-    @Deprecated
-    @InternalApi
-    public ASTEmptyExpression(EmptyExpression emptyExpression) {
+public final class ASTEmptyExpression extends AbstractEcmascriptNode<EmptyExpression> {
+    ASTEmptyExpression(EmptyExpression emptyExpression) {
         super(emptyExpression);
     }
 
     @Override
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+    protected <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

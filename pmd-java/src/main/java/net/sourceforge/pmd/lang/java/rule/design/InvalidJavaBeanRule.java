@@ -13,29 +13,31 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
-import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.java.ast.Annotatable;
+import net.sourceforge.pmd.lang.java.ast.JModifier;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.types.JArrayType;
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
-import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.util.StringUtil;
 
-public class InvalidJavaBeanRule extends AbstractJavaRule {
-    private static final String LOMBOK_DATA = "lombok.Data";
-    private static final String LOMBOK_GETTER = "lombok.Getter";
-    private static final String LOMBOK_SETTER = "lombok.Setter";
+public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
+    private static final String LOMBOK_PACKAGE = "lombok";
+    private static final String LOMBOK_DATA = "Data";
+    private static final String LOMBOK_GETTER = "Getter";
+    private static final String LOMBOK_SETTER = "Setter";
 
     private static final PropertyDescriptor<Boolean> ENSURE_SERIALIZATION = PropertyFactory.booleanProperty("ensureSerialization")
             .desc("Require that beans implement java.io.Serializable.")
@@ -45,15 +47,14 @@ public class InvalidJavaBeanRule extends AbstractJavaRule {
     private static final PropertyDescriptor<List<String>> PACKAGES_DESCRIPTOR = stringListProperty("packages")
             .desc("Consider classes in only these package to be beans. Set to an empty value to check all classes.")
             .defaultValues("org.example.beans")
-            .delim(',')
             .build();
 
     private Map<String, PropertyInfo> properties;
 
     public InvalidJavaBeanRule() {
+        super(ASTClassOrInterfaceDeclaration.class);
         definePropertyDescriptor(ENSURE_SERIALIZATION);
         definePropertyDescriptor(PACKAGES_DESCRIPTOR);
-        addRuleChainVisit(ASTClassOrInterfaceDeclaration.class);
     }
 
     @Override
@@ -81,7 +82,7 @@ public class InvalidJavaBeanRule extends AbstractJavaRule {
                     beanName);
         }
 
-        if (hasClassLevelLombokDataAnnotation(node)) {
+        if (hasLombokDataAnnotation(node)) {
             // skip further analysis
             return null;
         }
@@ -91,17 +92,17 @@ public class InvalidJavaBeanRule extends AbstractJavaRule {
         collectMethods(node);
 
         for (PropertyInfo propertyInfo : properties.values()) {
-            if (!hasClassLevelLombokGetterAnnotation(node) && !hasClassLevelLombokSetterAnnotation(node)
+            if (!hasLombokGetterAnnotation(node) && !hasLombokSetterAnnotation(node)
                 && propertyInfo.hasMissingGetter() && propertyInfo.hasMissingSetter()) {
                 asCtx(data).addViolationWithMessage(propertyInfo.getDeclaratorId(),
                         "The bean ''{0}'' is missing a getter and a setter for property ''{1}''.",
                         beanName, propertyInfo.getName());
-            } else if (!hasClassLevelLombokGetterAnnotation(node) && propertyInfo.hasMissingGetter()) {
+            } else if (!hasLombokGetterAnnotation(node) && propertyInfo.hasMissingGetter()) {
                 asCtx(data).addViolationWithMessage(propertyInfo.getDeclaratorId(),
                         "The bean ''{0}'' is missing a getter for property ''{1}''.",
                         beanName, propertyInfo.getName());
 
-            } else if (!hasClassLevelLombokSetterAnnotation(node) && propertyInfo.hasMissingSetter()) {
+            } else if (!hasLombokSetterAnnotation(node) && propertyInfo.hasMissingSetter()) {
                 asCtx(data).addViolationWithMessage(propertyInfo.getDeclaratorId(),
                         "The bean ''{0}'' is missing a setter for property ''{1}''.",
                         beanName, propertyInfo.getName());
@@ -139,15 +140,13 @@ public class InvalidJavaBeanRule extends AbstractJavaRule {
     }
 
     private void collectFields(ASTClassOrInterfaceDeclaration node) {
-        Map<VariableNameDeclaration, List<NameOccurrence>> declarations = node.getScope().getDeclarations(VariableNameDeclaration.class);
-        for (VariableNameDeclaration declaration : declarations.keySet()) {
-            String propertyName = StringUtils.capitalize(declaration.getName());
-            if (declaration.getAccessNodeParent() instanceof ASTFieldDeclaration) {
-                ASTFieldDeclaration fieldDeclaration = (ASTFieldDeclaration) declaration.getAccessNodeParent();
-                if (!fieldDeclaration.isStatic() && !fieldDeclaration.isTransient()) {
+        for (ASTFieldDeclaration fieldDeclaration : node.getDeclarations(ASTFieldDeclaration.class).toList()) {
+            for (ASTVariableDeclaratorId variableDeclaratorId : fieldDeclaration) {
+                String propertyName = StringUtils.capitalize(variableDeclaratorId.getName());
+                if (!fieldDeclaration.hasModifiers(JModifier.STATIC) && !fieldDeclaration.hasModifiers(JModifier.TRANSIENT)) {
                     PropertyInfo field = getOrCreatePropertyInfo(propertyName);
-                    field.setDeclaratorId(declaration.getDeclaratorId());
-                    field.setReadonly(fieldDeclaration.isFinal());
+                    field.setDeclaratorId(variableDeclaratorId);
+                    field.setReadonly(fieldDeclaration.hasModifiers(JModifier.FINAL));
                 }
             }
         }
@@ -163,18 +162,15 @@ public class InvalidJavaBeanRule extends AbstractJavaRule {
     }
 
     private void collectMethods(ASTClassOrInterfaceDeclaration node) {
-        Map<MethodNameDeclaration, List<NameOccurrence>> declarations = node.getScope().getDeclarations(MethodNameDeclaration.class);
-        for (MethodNameDeclaration declaration : declarations.keySet()) {
-            ASTMethodDeclaration methodDeclaration = declaration.getMethodNameDeclaratorNode().getParent();
-            String methodName = declaration.getName();
-            int parameterCount = declaration.getParameterCount();
+        for (ASTMethodDeclaration methodDeclaration : node.getDeclarations(ASTMethodDeclaration.class).toList()) {
+            String methodName = methodDeclaration.getName();
+            int parameterCount = methodDeclaration.getArity();
             String propertyName = StringUtil.withoutPrefixes(methodName, "get", "set", "is");
-
             if (methodName.startsWith("get") || methodName.startsWith("is")) {
                 if (parameterCount == 0) {
                     PropertyInfo propertyInfo = getOrCreatePropertyInfo(propertyName);
                     propertyInfo.setGetter(methodDeclaration);
-                } else if (parameterCount == 1 && getFirstParameterType(methodDeclaration) == Integer.TYPE) {
+                } else if (parameterCount == 1 && getFirstParameterType(methodDeclaration).isPrimitive(JPrimitiveType.PrimitiveTypeKind.INT)) {
                     PropertyInfo propertyInfo = getOrCreatePropertyInfo(propertyName);
                     propertyInfo.setIndexedGetter(methodDeclaration);
                 }
@@ -182,7 +178,7 @@ public class InvalidJavaBeanRule extends AbstractJavaRule {
                 if (parameterCount == 1) {
                     PropertyInfo propertyInfo = getOrCreatePropertyInfo(propertyName);
                     propertyInfo.setSetter(methodDeclaration);
-                } else if (parameterCount == 2 && getFirstParameterType(methodDeclaration) == Integer.TYPE) {
+                } else if (parameterCount == 2 && getFirstParameterType(methodDeclaration).isPrimitive(JPrimitiveType.PrimitiveTypeKind.INT)) {
                     PropertyInfo propertyInfo = getOrCreatePropertyInfo(propertyName);
                     propertyInfo.setIndexedSetter(methodDeclaration);
                 }
@@ -190,51 +186,55 @@ public class InvalidJavaBeanRule extends AbstractJavaRule {
         }
     }
 
-    private static Class<?> getFirstParameterType(ASTMethodDeclaration declaration) {
+    private static JTypeMirror getFirstParameterType(ASTMethodDeclaration declaration) {
         return getParameterType(declaration, 0);
     }
 
-    private static Class<?> getParameterType(ASTMethodDeclaration declaration, int i) {
+    private static JTypeMirror getParameterType(ASTMethodDeclaration declaration, int i) {
         if (declaration.getArity() >= i + 1) {
-            ASTFormalParameter firstParameter = declaration.getFormalParameters().findChildrenOfType(ASTFormalParameter.class).get(i);
-            return firstParameter.getType();
+            ASTFormalParameter firstParameter = declaration.getFormalParameters().children(ASTFormalParameter.class).get(i);
+            return firstParameter.getTypeMirror();
         }
         return null;
     }
 
-    private static Class<?> getResultType(ASTMethodDeclaration declaration) {
-        ASTResultType resultType = declaration.getResultType();
-        if (resultType.isVoid()) {
-            return Void.class;
-        }
-        return resultType.getFirstChildOfType(ASTType.class).getType();
+    private static JTypeMirror getResultType(ASTMethodDeclaration declaration) {
+        ASTType resultType = declaration.getResultTypeNode();
+        return resultType.getTypeMirror();
     }
 
     private boolean hasNoArgConstructor(ASTClassOrInterfaceDeclaration node) {
         int constructorCount = 0;
-        for (ASTAnyTypeBodyDeclaration declaration : node.getDeclarations()) {
-            if (ASTAnyTypeBodyDeclaration.DeclarationKind.CONSTRUCTOR == declaration.getKind()) {
-                ASTConstructorDeclaration ctor = declaration.getFirstChildOfType(ASTConstructorDeclaration.class);
-                if (ctor.getArity() == 0) {
-                    return true;
-                }
-                constructorCount++;
+        for (ASTConstructorDeclaration ctor : node.getDeclarations(ASTConstructorDeclaration.class)) {
+            if (ctor.getArity() == 0) {
+                return true;
             }
+            constructorCount++;
         }
         // default constructor is ok
         return constructorCount == 0;
     }
 
-    private boolean hasClassLevelLombokDataAnnotation(ASTClassOrInterfaceDeclaration node) {
-        return node.isAnnotationPresent(LOMBOK_DATA);
+    private static boolean hasLombokImport(Annotatable node) {
+        return node.getRoot().descendants(ASTImportDeclaration.class)
+                .filter(ASTImportDeclaration::isImportOnDemand)
+                .filterNot(ASTImportDeclaration::isStatic)
+                .any(i -> LOMBOK_PACKAGE.equals(i.getImportedName()));
     }
 
-    private boolean hasClassLevelLombokGetterAnnotation(ASTClassOrInterfaceDeclaration node) {
-        return node.isAnnotationPresent(LOMBOK_GETTER);
+    private static boolean hasLombokDataAnnotation(Annotatable node) {
+        return node.isAnnotationPresent(LOMBOK_PACKAGE + "." + LOMBOK_DATA)
+                || hasLombokImport(node) && node.isAnnotationPresent(LOMBOK_DATA);
     }
 
-    private boolean hasClassLevelLombokSetterAnnotation(ASTClassOrInterfaceDeclaration node) {
-        return node.isAnnotationPresent(LOMBOK_SETTER);
+    private static boolean hasLombokGetterAnnotation(Annotatable node) {
+        return node.isAnnotationPresent(LOMBOK_PACKAGE + "." + LOMBOK_GETTER)
+                || hasLombokImport(node) && node.isAnnotationPresent(LOMBOK_GETTER);
+    }
+
+    private static boolean hasLombokSetterAnnotation(Annotatable node) {
+        return node.isAnnotationPresent(LOMBOK_PACKAGE + "." + LOMBOK_SETTER)
+                || hasLombokImport(node) && node.isAnnotationPresent(LOMBOK_SETTER);
     }
 
     private static class PropertyInfo {
@@ -311,29 +311,25 @@ public class InvalidJavaBeanRule extends AbstractJavaRule {
         }
 
         private String getTypeName() {
-            Class<?> type = null;
-            if (declaratorId != null && declaratorId.getType() != null) {
-                type = declaratorId.getType();
+            JTypeMirror type = null;
+            if (declaratorId != null) {
+                type = declaratorId.getTypeMirror();
             } else if (getter != null) {
                 type = getResultType(getter);
             } else if (setter != null) {
                 type = getFirstParameterType(setter);
             }
             if (type != null) {
-                if (type.isArray()) {
-                    return type.getComponentType().getName() + "[]";
-                }
-                return type.getName();
+                return type.toString();
             }
             return "<unknown type>";
         }
 
         private boolean hasWrongGetterType() {
             return declaratorId != null
-                    && declaratorId.getType() != null
                     && getter != null
-                    && !getter.getResultType().isVoid()
-                    && declaratorId.getType() != getResultType(getter);
+                    && !getter.getResultTypeNode().isVoid()
+                    && !declaratorId.getTypeMirror().equals(getResultType(getter));
         }
 
         private boolean hasWrongBooleanGetterName() {
@@ -347,49 +343,43 @@ public class InvalidJavaBeanRule extends AbstractJavaRule {
             if (declaratorId != null || getter == null || setter == null) {
                 return false;
             }
-            Class<?> parameterType = getFirstParameterType(setter);
-            return getter.getResultType().isVoid()
-                    || getResultType(getter) != parameterType;
+            JTypeMirror parameterType = getFirstParameterType(setter);
+            return getter.getResultTypeNode().isVoid()
+                    || !getResultType(getter).equals(parameterType);
         }
 
         private boolean hasWrongIndexedGetterType() {
             if (getter == null || indexedGetter == null) {
                 return false;
             }
-            Class<?> propertyType = getResultType(getter);
+            JTypeMirror propertyType = getResultType(getter);
             if (propertyType != null && propertyType.isArray()) {
-                propertyType = propertyType.getComponentType();
+                propertyType = ((JArrayType) propertyType).getComponentType();
             }
-            Class<?> getterType = getResultType(indexedGetter);
-            return propertyType != getterType;
+            JTypeMirror getterType = getResultType(indexedGetter);
+            return !propertyType.equals(getterType);
         }
 
         private boolean hasWrongIndexedSetterType() {
             if (setter == null || indexedSetter == null) {
                 return false;
             }
-            Class<?> propertyType = getFirstParameterType(setter);
+            JTypeMirror propertyType = getFirstParameterType(setter);
             if (propertyType != null && propertyType.isArray()) {
-                propertyType = propertyType.getComponentType();
+                propertyType = ((JArrayType) propertyType).getComponentType();
             }
-            Class<?> setterType = getParameterType(indexedSetter, 1);
-            return propertyType != setterType;
+            JTypeMirror setterType = getParameterType(indexedSetter, 1);
+            return !propertyType.equals(setterType);
         }
 
         private boolean hasFieldLombokGetter() {
-            ASTFieldDeclaration fieldDeclaration = declaratorId != null ? declaratorId.getFirstParentOfType(ASTFieldDeclaration.class) : null;
-            if (fieldDeclaration != null) {
-                return fieldDeclaration.isAnnotationPresent(LOMBOK_GETTER);
-            }
-            return false;
+            ASTFieldDeclaration fieldDeclaration = declaratorId != null ? declaratorId.ancestors(ASTFieldDeclaration.class).first() : null;
+            return fieldDeclaration != null && hasLombokGetterAnnotation(fieldDeclaration);
         }
 
         private boolean hasFieldLombokSetter() {
-            ASTFieldDeclaration fieldDeclaration = declaratorId != null ? declaratorId.getFirstParentOfType(ASTFieldDeclaration.class) : null;
-            if (fieldDeclaration != null) {
-                return fieldDeclaration.isAnnotationPresent(LOMBOK_SETTER);
-            }
-            return false;
+            ASTFieldDeclaration fieldDeclaration = declaratorId != null ? declaratorId.ancestors(ASTFieldDeclaration.class).first() : null;
+            return fieldDeclaration != null && hasLombokSetterAnnotation(fieldDeclaration);
         }
     }
 }

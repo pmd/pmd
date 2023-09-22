@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import net.sourceforge.pmd.annotation.Experimental;
 
 /**
- * A pattern (for pattern matching constructs like {@link ASTInstanceOfExpression InstanceOfExpression}
+ * A pattern (for pattern matching constructs like {@link ASTInfixExpression InstanceOfExpression}
  * or within a {@link ASTSwitchLabel}). This is a JDK 16 feature.
  *
  * <p>This interface is implemented by all forms of patterns.

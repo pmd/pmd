@@ -1,29 +1,33 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.ruby;
 
-import net.sourceforge.pmd.lang.BaseLanguageModule;
+import net.sourceforge.pmd.cpd.AnyTokenizer;
+import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.impl.CpdOnlyLanguageModuleBase;
 
 /**
- * Language module for Ruby.
+ * Language implementation for Ruby.
  *
- * @deprecated There is no full PMD support for Ruby.
+ * @author Zev Blut zb@ubit.com
  */
-@Deprecated
-public class RubyLanguageModule extends BaseLanguageModule {
+public class RubyLanguageModule extends CpdOnlyLanguageModuleBase {
+    private static final String ID = "ruby";
 
-    /** The name. */
-    public static final String NAME = "Ruby";
-    /** The terse name. */
-    public static final String TERSE_NAME = "ruby";
-
-    /**
-     * Creates a new Ruby Language Module instance.
-     */
     public RubyLanguageModule() {
-        super(NAME, null, TERSE_NAME, "rb", "cgi", "class");
-        addVersion("", null, true);
+        super(LanguageMetadata.withId(ID).name("Ruby").extensions("rb", "cgi", "class"));
+    }
+
+    public static RubyLanguageModule getInstance() {
+        return (RubyLanguageModule) LanguageRegistry.CPD.getLanguageById(ID);
+    }
+
+    @Override
+    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
+        return new AnyTokenizer("#");
     }
 }

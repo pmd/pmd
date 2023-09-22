@@ -4,56 +4,26 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTModuleDirective extends AbstractJavaNode {
+/**
+ * A directive of a {@linkplain ASTModuleDeclaration module declaration}.
+ * Implementations provide more specific attributes.
+ *
+ * <pre class="grammar">
+ *
+ * ModuleDirective ::= {@linkplain ASTModuleRequiresDirective ModuleRequiresDirective}
+ *                   | {@linkplain ASTModuleOpensDirective ModuleOpensDirective}
+ *                   | {@linkplain ASTModuleExportsDirective ModuleExportsDirective}
+ *                   | {@linkplain ASTModuleProvidesDirective ModuleProvidesDirective}
+ *                   | {@linkplain ASTModuleUsesDirective ModuleUsesDirective}
+ *
+ * </pre>
+ */
+public abstract class ASTModuleDirective extends AbstractJavaNode {
 
-    public enum DirectiveType {
-        REQUIRES, EXPORTS, OPENS, USES, PROVIDES;
-    }
 
-    public enum RequiresModifier {
-        STATIC, TRANSITIVE;
-    }
-
-    private DirectiveType type;
-
-    private RequiresModifier requiresModifier;
-
-    @InternalApi
-    @Deprecated
-    public ASTModuleDirective(int id) {
+    ASTModuleDirective(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTModuleDirective(JavaParser p, int id) {
-        super(p, id);
-    }
-
-    @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-        return visitor.visit(this, data);
-    }
-
-    @InternalApi
-    @Deprecated
-    public void setType(DirectiveType type) {
-        this.type = type;
-    }
-
-    public String getType() {
-        return String.valueOf(type);
-    }
-
-    @InternalApi
-    @Deprecated
-    public void setRequiresModifier(RequiresModifier requiresModifier) {
-        this.requiresModifier = requiresModifier;
-    }
-
-    public String getRequiresModifier() {
-        return requiresModifier == null ? null : requiresModifier.name();
-    }
 }

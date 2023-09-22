@@ -186,7 +186,7 @@ public class Foo {
         <expected-problems>10</expected-problems>
         <expected-linenumbers>8,11,14,17,20,23,26,29,32,35</expected-linenumbers>
         <code><![CDATA[
-import java.util.ArrayList;
+import java.util.*;
 
 public class TestIsEmpty {
     public static void main(String args[]) {
@@ -234,6 +234,9 @@ public class TestIsEmpty {
     }
     public static SomeOtherObjectWithSizeMethod GetBar() {
         return new SomeOtherObjectWithSizeMethod();
+    }
+    class SomeOtherObjectWithSizeMethod {
+        int size() {}
     }
 }
         ]]></code>
@@ -302,7 +305,7 @@ public class IsEmptyTest {
         <description>#1304 UseCollectionIsEmpty false positive comparing to 1</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import java.util.Collection;
+import java.util.*;
 
 public class PMDIsEmptyFalsePositive {
     public void falsePositive() {
@@ -365,12 +368,36 @@ public class Foo {
     public int size() {
         return 0;
     }
+    class Bar { int size() { return 0; } }
 }
         ]]></code>
     </test-code>
 
-    
-	<test-code>
+    <test-code>
+        <description>#2542 UseCollectionIsEmpty can not detect the case foo.bar().size()</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+import java.util.ArrayList;
+
+public class Foo {
+
+    private List<String> list = new ArrayList<>();
+
+    Foo foo() { return this; }
+    Foo bar() { return this; }
+    List<String> list() { return list; }
+
+    public void bar() {
+        if (foo().bar().foo().list().size() == 0) {
+            throw new RuntimeException("Empty list");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>#2833 NPE in UseCollectionIsEmptyRule with enums</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -515,5 +542,30 @@ public record Record(Set<String> stringSet) {
         return this.stringSet.size() == 0;
     }
 }        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UseCollectionIsEmpty should infer local variable type from method invocation #3858</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
+public class Example {
+
+    public void func() {
+        var list = getList();
+        if (list.size()>0) { // point 1:  false negative
+            System.out.println("!list.isEmpty() is better!");
+            // ...
+        }
+    }
+
+    private List<String> getList() { // mock
+        return new ArrayList<>();
+    }
+}
+]]></code>
     </test-code>
 </test-data>

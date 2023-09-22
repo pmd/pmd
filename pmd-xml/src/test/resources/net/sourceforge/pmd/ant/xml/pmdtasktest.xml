@@ -7,7 +7,7 @@
 
     <target name="testXML">
         <pmd rulesetfiles="${pmd.home}/src/main/resources/rulesets/xml/basic.xml">
-            <sourceLanguage name="xml" version="" />
+            <sourceLanguage name="xml" version="1.0" />
             <formatter type="text" toConsole="true" />
             <fileset dir="${pmd.home}/src/test/resources/ant/xml/">
                 <include name="*.xml" />

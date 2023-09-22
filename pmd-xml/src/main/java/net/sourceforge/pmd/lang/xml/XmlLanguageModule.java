@@ -4,18 +4,32 @@
 
 package net.sourceforge.pmd.lang.xml;
 
-import net.sourceforge.pmd.lang.BaseLanguageModule;
+import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
+import net.sourceforge.pmd.lang.xml.cpd.XmlTokenizer;
 
 /**
  * Created by christoferdutz on 20.09.14.
  */
-public class XmlLanguageModule extends BaseLanguageModule {
-
-    public static final String NAME = "XML";
-    public static final String TERSE_NAME = "xml";
+public class XmlLanguageModule extends SimpleLanguageModuleBase {
+    private static final String ID = "xml";
 
     public XmlLanguageModule() {
-        super(NAME, null, TERSE_NAME, "xml");
-        addVersion("", new XmlHandler(), true);
+        super(LanguageMetadata.withId(ID).name("XML")
+                              .extensions("xml")
+                              .addVersion("1.0")
+                              .addDefaultVersion("1.1"),
+                new XmlHandler());
+    }
+
+    public static XmlLanguageModule getInstance() {
+        return (XmlLanguageModule) LanguageRegistry.PMD.getLanguageById(ID);
+    }
+
+    @Override
+    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
+        return new XmlTokenizer();
     }
 }

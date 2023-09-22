@@ -4,32 +4,39 @@
 
 package net.sourceforge.pmd.cpd;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Iterator;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class MatchTest {
+import net.sourceforge.pmd.lang.DummyLanguageModule;
+import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.document.FileId;
+import net.sourceforge.pmd.lang.document.TextFile;
+
+class MatchTest {
 
     @Test
-    public void testSimple() {
-        int lineCount1 = 10;
-        String codeFragment1 = "code fragment";
-        Mark mark1 = createMark("public", "/var/Foo.java", 1, lineCount1, codeFragment1);
+    void testSimple() {
+        String codeFragment1 = "1234567890";
+        FileId fileName = CpdTestUtils.FOO_FILE_ID;
+        TextFile tf = TextFile.forCharSeq(codeFragment1, fileName, DummyLanguageModule.getInstance().getDefaultVersion());
+        SourceManager sourceManager = new SourceManager(listOf(tf));
+        Tokens tokens = new Tokens();
+        Mark mark1 = new Mark(tokens.addToken("public", fileName, 1, 1, 1, 1 + "public".length()));
 
-        int lineCount2 = 20;
-        String codeFragment2 = "code fragment 2";
-        Mark mark2 = createMark("class", "/var/Foo.java", 1, lineCount2, codeFragment2);
+        Mark mark2 = new Mark(tokens.addToken("public", fileName, 1, 1, 1, 1 + "public".length()));
         Match match = new Match(1, mark1, mark2);
 
         assertEquals(1, match.getTokenCount());
         // Returns the line count of the first mark
-        assertEquals(lineCount1, match.getLineCount());
-        // Returns the source code of the first mark
-        assertEquals(codeFragment1, match.getSourceCodeSlice());
+        assertEquals(1, match.getLineCount());
+        // Returns the source code of the first mark (the entire line)
+        assertEquals(Chars.wrap("1234567890"), sourceManager.getSlice(match.getFirstMark()));
         Iterator<Mark> i = match.iterator();
         Mark occurrence1 = i.next();
         Mark occurrence2 = i.next();
@@ -37,31 +44,24 @@ public class MatchTest {
         assertFalse(i.hasNext());
 
         assertEquals(mark1, occurrence1);
-        assertEquals(lineCount1, occurrence1.getLineCount());
-        assertEquals(codeFragment1, occurrence1.getSourceCodeSlice());
+        assertEquals(1, occurrence1.getLocation().getLineCount());
+        assertEquals(Chars.wrap("1234567890"), sourceManager.getSlice(mark1));
 
         assertEquals(mark2, occurrence2);
-        assertEquals(lineCount2, occurrence2.getLineCount());
-        assertEquals(codeFragment2, occurrence2.getSourceCodeSlice());
+        assertEquals(1, occurrence2.getLocation().getLineCount());
+        assertEquals(Chars.wrap("1234567890"), sourceManager.getSlice(mark2));
     }
 
     @Test
-    public void testCompareTo() {
-        Match m1 = new Match(1, new TokenEntry("public", "/var/Foo.java", 1),
-                new TokenEntry("class", "/var/Foo.java", 1));
-        Match m2 = new Match(2, new TokenEntry("Foo", "/var/Foo.java", 1), new TokenEntry("{", "/var/Foo.java", 1));
+    void testCompareTo() {
+        Tokens tokens = new Tokens();
+
+        FileId fileName = CpdTestUtils.FOO_FILE_ID;
+        Match m1 = new Match(1,
+                             tokens.addToken("public", fileName, 1, 2, 3, 4),
+                             tokens.addToken("class", fileName, 1, 2, 3, 4));
+        Match m2 = new Match(2, tokens.addToken("Foo", fileName, 1, 2, 3, 4),
+                             tokens.addToken("{", fileName, 1, 2, 3, 4));
         assertTrue(m2.compareTo(m1) < 0);
-    }
-
-    private Mark createMark(String image, String tokenSrcID, int beginLine, int lineCount, String code) {
-        Mark result = new Mark(new TokenEntry(image, tokenSrcID, beginLine));
-
-        result.setLineCount(lineCount);
-        result.setSourceCode(new SourceCode(new SourceCode.StringCodeLoader(code)));
-        return result;
-    }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(MatchTest.class);
     }
 }

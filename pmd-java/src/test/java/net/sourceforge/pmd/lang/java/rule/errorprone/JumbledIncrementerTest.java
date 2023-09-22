@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class JumbledIncrementerTest extends PmdRuleTst {
+class JumbledIncrementerTest extends PmdRuleTst {
     // no additional unit tests
 }

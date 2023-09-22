@@ -1,29 +1,34 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.groovy;
 
-import net.sourceforge.pmd.lang.BaseLanguageModule;
+import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.groovy.cpd.GroovyTokenizer;
+import net.sourceforge.pmd.lang.impl.CpdOnlyLanguageModuleBase;
 
 /**
- * Language Module for Groovy
- *
- * @deprecated There is no full PMD support for Groovy.
+ * Language implementation for Groovy
  */
-@Deprecated
-public class GroovyLanguageModule extends BaseLanguageModule {
-
-    /** The name. */
-    public static final String NAME = "Groovy";
-    /** The terse name. */
-    public static final String TERSE_NAME = "groovy";
+public class GroovyLanguageModule extends CpdOnlyLanguageModuleBase {
+    private static final String ID = "groovy";
 
     /**
-     * Create a new instance of Groovy Language Module.
+     * Creates a new Groovy Language instance.
      */
     public GroovyLanguageModule() {
-        super(NAME, null, TERSE_NAME, "groovy");
-        addVersion("", null, true);
+        super(LanguageMetadata.withId(ID).name("Groovy").extensions("groovy"));
+    }
+
+    public static GroovyLanguageModule getInstance() {
+        return (GroovyLanguageModule) LanguageRegistry.CPD.getLanguageById(ID);
+    }
+
+    @Override
+    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
+        return new GroovyTokenizer();
     }
 }

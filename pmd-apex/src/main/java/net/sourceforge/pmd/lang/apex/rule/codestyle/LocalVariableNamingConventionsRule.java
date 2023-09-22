@@ -8,8 +8,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclarationStatements;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public class LocalVariableNamingConventionsRule extends AbstractNamingConventionsRule {
@@ -24,14 +27,14 @@ public class LocalVariableNamingConventionsRule extends AbstractNamingConvention
     public LocalVariableNamingConventionsRule() {
         definePropertyDescriptor(FINAL_REGEX);
         definePropertyDescriptor(LOCAL_REGEX);
-
-        setProperty(CODECLIMATE_CATEGORIES, "Style");
-        // Note: x10 as Apex has not automatic refactoring
-        setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 1);
-        setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
-
-        addRuleChainVisit(ASTVariableDeclaration.class);
     }
+
+
+    @Override
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forTypes(ASTVariableDeclaration.class);
+    }
+
 
     @Override
     public Object visit(ASTVariableDeclaration node, Object data) {

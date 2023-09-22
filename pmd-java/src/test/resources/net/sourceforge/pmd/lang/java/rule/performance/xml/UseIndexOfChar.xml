@@ -150,10 +150,12 @@ public class FooTest {
         <description>#1211 PMD is failing with NPE for rule UseIndexOfChar while analyzing Jdk 8 Lambda expression</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.List;
+import java.util.Optional;
 public class Foo {
-    public void bar() {
-        Optional<Service> optionalResult = null;
-        services.stream()
+    int getLastSeen() { return 0; }
+    public void bar(List<Foo> foos) {
+        Optional<Foo> optionalResult = foos.stream()
             .filter(s -> s.getLastSeen() > 0)
             .findFirst();
     }

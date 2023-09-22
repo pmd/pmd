@@ -4,21 +4,48 @@
 
 package net.sourceforge.pmd.lang.apex;
 
-import net.sourceforge.pmd.lang.BaseLanguageModule;
-import net.sourceforge.pmd.util.CollectionUtil;
+import net.sourceforge.pmd.cpd.CpdCapableLanguage;
+import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.lang.LanguageModuleBase;
+import net.sourceforge.pmd.lang.LanguageProcessor;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.PmdCapableLanguage;
+import net.sourceforge.pmd.lang.apex.cpd.ApexTokenizer;
 
-public class ApexLanguageModule extends BaseLanguageModule {
-    private static final String FIRST_EXTENSION = "cls";
-    private static final String[] REMAINING_EXTENSIONS = {"trigger"};
+public class ApexLanguageModule extends LanguageModuleBase implements PmdCapableLanguage, CpdCapableLanguage {
+    private static final String ID = "apex";
 
-    public static final String NAME = "Apex";
-    public static final String TERSE_NAME = "apex";
-    public static final String[] EXTENSIONS = CollectionUtil.listOf(FIRST_EXTENSION, REMAINING_EXTENSIONS).toArray(new String[0]);
+    private static final ApexLanguageModule INSTANCE = new ApexLanguageModule();
 
     public ApexLanguageModule() {
-        super(NAME, null, TERSE_NAME, FIRST_EXTENSION, REMAINING_EXTENSIONS);
-        // addVersion(String.valueOf((int) Version.CURRENT.getExternal()), new ApexHandler(), true);
-        // TODO(b/243906862)
-        addVersion("0", new ApexHandler(), true);
+        super(LanguageMetadata.withId(ID).name("Apex")
+                              .extensions("cls", "trigger")
+                              .addVersion("52")
+                              .addVersion("53")
+                              .addVersion("54")
+                              .addVersion("55")
+                              .addVersion("56")
+                              .addDefaultVersion("57"));
+    }
+
+    public static ApexLanguageModule getInstance() {
+        // note: can't load this language from registry, since VfLanguageModule requires
+        // an instance of ApexLanguageModule during construction (VfLanguageModule depends on ApexLanguageModule).
+        return INSTANCE;
+    }
+
+    @Override
+    public ApexLanguageProperties newPropertyBundle() {
+        return new ApexLanguageProperties();
+    }
+
+    @Override
+    public LanguageProcessor createProcessor(LanguagePropertyBundle bundle) {
+        return new ApexLanguageProcessor((ApexLanguageProperties) bundle);
+    }
+
+    @Override
+    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
+        return new ApexTokenizer();
     }
 }

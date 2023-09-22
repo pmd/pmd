@@ -1,30 +1,36 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.fortran;
 
-import net.sourceforge.pmd.lang.BaseLanguageModule;
+import net.sourceforge.pmd.cpd.AnyTokenizer;
+import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.impl.CpdOnlyLanguageModuleBase;
 
 /**
- * Implementation for the Fortran Language Module
+ * Language implementation for Fortran
  *
- * @deprecated There is no full PMD support for fortran.
+ * @author Romain PELISSE belaran@gmail.com
  */
-@Deprecated
-public class FortranLanguageModule extends BaseLanguageModule {
-
-    /** The name */
-    public static final String NAME = "Fortran";
-    /** The terse name */
-    public static final String TERSE_NAME = "fortran";
+public class FortranLanguageModule extends CpdOnlyLanguageModuleBase {
+    private static final String ID = "fortran";
 
     /**
-     * Creates a new instance of {@link FortranLanguageModule}
+     * Create a Fortran Language instance.
      */
     public FortranLanguageModule() {
-        super(NAME, null, TERSE_NAME, "for", "f", "f66", "f77", "f90");
-        addVersion("", null, true);
+        super(LanguageMetadata.withId(ID).name("Fortran").extensions("for", "f", "f66", "f77", "f90"));
     }
 
+    public static FortranLanguageModule getInstance() {
+        return (FortranLanguageModule) LanguageRegistry.CPD.getLanguageById(ID);
+    }
+
+    @Override
+    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
+        return new AnyTokenizer("!");
+    }
 }

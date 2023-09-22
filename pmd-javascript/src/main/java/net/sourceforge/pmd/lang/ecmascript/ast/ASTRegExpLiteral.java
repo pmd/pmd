@@ -6,18 +6,14 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import org.mozilla.javascript.ast.RegExpLiteral;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTRegExpLiteral extends AbstractEcmascriptNode<RegExpLiteral> {
-    @Deprecated
-    @InternalApi
-    public ASTRegExpLiteral(RegExpLiteral regExpLiteral) {
+public final class ASTRegExpLiteral extends AbstractEcmascriptNode<RegExpLiteral> {
+    ASTRegExpLiteral(RegExpLiteral regExpLiteral) {
         super(regExpLiteral);
         super.setImage(regExpLiteral.getValue());
     }
 
     @Override
-    public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
+    protected <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 

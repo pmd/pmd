@@ -225,4 +225,16 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>static initializer</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    static {
+        String s = 'a';
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

@@ -4,54 +4,56 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-
-import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTType;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 
 /**
  * Catches the use of exception statements as a flow control device.
  *
  * @author Will Sargent
  */
-public class ExceptionAsFlowControlRule extends AbstractJavaRule {
+public class ExceptionAsFlowControlRule extends AbstractJavaRulechainRule {
 
+    // TODO tests:
+    //   - catch a supertype of the exception (unless this is unwanted)
+    //   - throw statements with not just a new SomethingExpression, eg a method call returning an exception
     public ExceptionAsFlowControlRule() {
-        addRuleChainVisit(ASTThrowStatement.class);
+        super(ASTThrowStatement.class);
     }
 
     @Override
     public Object visit(ASTThrowStatement node, Object data) {
-        ASTTryStatement parent = node.getFirstParentOfType(ASTTryStatement.class);
-        if (parent == null) {
-            return data;
-        }
-        for (parent = parent.getFirstParentOfType(ASTTryStatement.class); parent != null; parent = parent
-                .getFirstParentOfType(ASTTryStatement.class)) {
-
-            List<ASTCatchStatement> list = parent.findDescendantsOfType(ASTCatchStatement.class);
-            for (ASTCatchStatement catchStmt : list) {
-                ASTFormalParameter fp = (ASTFormalParameter) catchStmt.getChild(0);
-                ASTType type = fp.getFirstDescendantOfType(ASTType.class);
-                ASTClassOrInterfaceType name = type.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
-                if (isExceptionOfTypeThrown(node, name.getImage())) {
-                    addViolation(data, name);
+        JTypeMirror thrownType = node.getExpr().getTypeMirror();
+        JavaNode parent = node.getParent();
+        while (!(parent instanceof ASTBodyDeclaration)) {
+            if (parent instanceof ASTCatchClause) {
+                // if the exception is thrown in a catch block, then we
+                // have to ignore the try stmt (jump past it).
+                parent = parent.getParent().getParent();
+                continue;
+            }
+            if (parent instanceof ASTTryStatement) {
+                // maybe the exception is being caught here.
+                for (ASTCatchClause catchClause : ((ASTTryStatement) parent).getCatchClauses()) {
+                    if (catchClause.getParameter().getAllExceptionTypes().any(it -> thrownType.isSubtypeOf(it.getTypeMirror()))) {
+                        if (!JavaAstUtils.isJustRethrowException(catchClause)) {
+                            asCtx(data).addViolation(catchClause, node.getReportLocation().getStartLine());
+                            return null;
+                        } else {
+                            break;
+                        }
+                    }
                 }
             }
+            parent = parent.getParent();
         }
-        return data;
+        return null;
     }
 
-    private boolean isExceptionOfTypeThrown(ASTThrowStatement throwStatement, String typeName) {
-        final ASTClassOrInterfaceType t = throwStatement.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
-        String thrownTypeName = t == null ? null : t.getImage();
-        return StringUtils.equals(thrownTypeName, typeName);
-    }
 }

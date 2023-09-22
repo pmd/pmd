@@ -4,14 +4,22 @@
 
 package net.sourceforge.pmd.properties;
 
+import static java.util.Arrays.asList;
+import static net.sourceforge.pmd.properties.PropertyParsingUtil.enumerationParser;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.properties.PropertyBuilder.GenericCollectionPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyBuilder.GenericPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyBuilder.RegexPropertyBuilder;
-import net.sourceforge.pmd.properties.constraints.NumericConstraints;
-import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 //@formatter:off
 /**
@@ -74,6 +82,16 @@ import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 //@formatter:on
 public final class PropertyFactory {
 
+
+    /**
+     * Default delimiter for all properties. Note that in PMD 6 this was
+     * the pipe character {@code |}, while now it is {@value}. In PMD 6,
+     * numeric properties had a different delimiter, whereas in PMD 7, all
+     * properties have the same delimiter.
+     */
+    public static final char DEFAULT_DELIMITER = ',';
+
+
     private PropertyFactory() {
 
     }
@@ -97,7 +115,7 @@ public final class PropertyFactory {
      * @see NumericConstraints
      */
     public static GenericPropertyBuilder<Integer> intProperty(String name) {
-        return new GenericPropertyBuilder<>(name, ValueParserConstants.INTEGER_PARSER, Integer.class);
+        return new GenericPropertyBuilder<>(name, PropertyParsingUtil.INTEGER);
     }
 
 
@@ -110,7 +128,7 @@ public final class PropertyFactory {
      * @return A new builder
      */
     public static GenericCollectionPropertyBuilder<Integer, List<Integer>> intListProperty(String name) {
-        return intProperty(name).toList().delim(MultiValuePropertyDescriptor.DEFAULT_NUMERIC_DELIMITER);
+        return intProperty(name).toList();
     }
 
 
@@ -134,7 +152,7 @@ public final class PropertyFactory {
      * @see NumericConstraints
      */
     public static GenericPropertyBuilder<Long> longIntProperty(String name) {
-        return new GenericPropertyBuilder<>(name, ValueParserConstants.LONG_PARSER, Long.class);
+        return new GenericPropertyBuilder<>(name, PropertyParsingUtil.LONG);
     }
 
 
@@ -147,7 +165,7 @@ public final class PropertyFactory {
      * @return A new builder
      */
     public static GenericCollectionPropertyBuilder<Long, List<Long>> longIntListProperty(String name) {
-        return longIntProperty(name).toList().delim(MultiValuePropertyDescriptor.DEFAULT_NUMERIC_DELIMITER);
+        return longIntProperty(name).toList();
     }
 
 
@@ -166,7 +184,7 @@ public final class PropertyFactory {
      * @see NumericConstraints
      */
     public static GenericPropertyBuilder<Double> doubleProperty(String name) {
-        return new GenericPropertyBuilder<>(name, ValueParserConstants.DOUBLE_PARSER, Double.class);
+        return new GenericPropertyBuilder<>(name, PropertyParsingUtil.DOUBLE);
     }
 
 
@@ -179,7 +197,7 @@ public final class PropertyFactory {
      * @return A new builder
      */
     public static GenericCollectionPropertyBuilder<Double, List<Double>> doubleListProperty(String name) {
-        return doubleProperty(name).toList().delim(MultiValuePropertyDescriptor.DEFAULT_NUMERIC_DELIMITER);
+        return doubleProperty(name).toList();
     }
 
 
@@ -189,9 +207,6 @@ public final class PropertyFactory {
      * property should be preferred over {@linkplain #stringProperty(String) stringProperty}
      * as pattern compilation, including syntax errors, are handled transparently to
      * the rule.
-     *
-     * <p>This type of property is not available as a list, because the delimiters
-     * could be part of the regex. This restriction will be lifted with 7.0.0.
      *
      * @param name Name of the property to build
      *
@@ -207,6 +222,7 @@ public final class PropertyFactory {
      * will accept any string, and performs no expansion of escape
      * sequences (e.g. {@code \n} in the XML will be represented as the
      * character sequence '\' 'n' and not the line-feed character '\n').
+     * The value of a string attribute is trimmed.
      * This behaviour could be changed with PMD 7.0.0.
      *
      * @param name Name of the property to build
@@ -214,9 +230,8 @@ public final class PropertyFactory {
      * @return A new builder
      */
     public static GenericPropertyBuilder<String> stringProperty(String name) {
-        return new GenericPropertyBuilder<>(name, ValueParserConstants.STRING_PARSER, String.class);
+        return new GenericPropertyBuilder<>(name, PropertyParsingUtil.STRING);
     }
-
 
     /**
      * Returns a builder for a property having as value a list of strings. The
@@ -245,7 +260,7 @@ public final class PropertyFactory {
      * @return A new builder
      */
     public static GenericPropertyBuilder<Character> charProperty(String name) {
-        return new GenericPropertyBuilder<>(name, ValueParserConstants.CHARACTER_PARSER, Character.class);
+        return new GenericPropertyBuilder<>(name, PropertyParsingUtil.CHARACTER);
     }
 
 
@@ -272,13 +287,8 @@ public final class PropertyFactory {
      * @return A new builder
      */
     public static GenericPropertyBuilder<Boolean> booleanProperty(String name) {
-        return new GenericPropertyBuilder<>(name, ValueParserConstants.BOOLEAN_PARSER, Boolean.class);
+        return new GenericPropertyBuilder<>(name, PropertyParsingUtil.BOOLEAN);
     }
-
-    // We can add more useful factories with Java 8.
-    // * We don't really need a Map, just a Function<String, T>.
-    // * We could have a factory taking a Class<? extends Enum<T>>
-    //   and a Function<T, String> to build a mapper for a whole enum.
 
     /**
      * Returns a builder for an enumerated property. Such a property can be
@@ -292,13 +302,57 @@ public final class PropertyFactory {
      * @param nameToValue Map of labels to values. The null key is ignored.
      * @param <T>         Value type of the property
      *
+     * @throws IllegalArgumentException If the map contains a null value or key
+     *
      * @return A new builder
      */
     public static <T> GenericPropertyBuilder<T> enumProperty(String name, Map<String, T> nameToValue) {
-        // TODO find solution to document the set of possible values
-        // At best, map that requirement to a constraint (eg make parser return null if not found, and
-        // add a non-null constraint with the right description.)
-        return new GenericPropertyBuilder<>(name, ValueParserConstants.enumerationParser(nameToValue), (Class<T>) Object.class);
+        PropertySerializer<T> parser = enumerationParser(
+            nameToValue,
+            t -> Objects.requireNonNull(CollectionUtil.getKeyOfValue(nameToValue, t))
+        );
+        return new GenericPropertyBuilder<>(name, parser);
+    }
+
+    /**
+     * Returns a builder for an enumerated property for the given enum
+     * class, using the {@link Object#toString() toString} of its enum
+     * constants as labels.
+     *
+     * @param name      Property name
+     * @param enumClass Enum class
+     * @param <T>       Type of the enum class
+     *
+     * @return A new builder
+     */
+    public static <T extends Enum<T>> GenericPropertyBuilder<T> enumProperty(String name, Class<T> enumClass) {
+        return enumProperty(name, enumClass, Object::toString);
+    }
+
+    /**
+     * Returns a builder for an enumerated property for the given enum
+     * class, using the given function to label its constants.
+     *
+     * @param name       Property name
+     * @param enumClass  Enum class
+     * @param labelMaker Function that labels each constant
+     * @param <T>        Type of the enum class
+     *
+     * @return A new builder
+     *
+     * @throws NullPointerException     If any of the arguments is null
+     * @throws IllegalArgumentException If the label maker returns null on some constant
+     * @throws IllegalStateException    If the label maker maps two constants to the same label
+     */
+    public static <T extends Enum<T>> GenericPropertyBuilder<T> enumProperty(String name,
+                                                                             Class<T> enumClass,
+                                                                             Function<? super T, @NonNull String> labelMaker) {
+        // don't use a merge function, so that it throws if multiple
+        // values have the same key
+        Map<String, T> labelsToValues = Arrays.stream(enumClass.getEnumConstants())
+                                              .collect(Collectors.toMap(labelMaker, t -> t));
+
+        return new GenericPropertyBuilder<>(name, enumerationParser(labelsToValues, labelMaker));
     }
 
 
@@ -313,7 +367,24 @@ public final class PropertyFactory {
      * @return A new builder
      */
     public static <T> GenericCollectionPropertyBuilder<T, List<T>> enumListProperty(String name, Map<String, T> nameToValue) {
-        return enumProperty(name, nameToValue).toList().delim(MultiValuePropertyDescriptor.DEFAULT_DELIMITER);
+        return enumProperty(name, nameToValue).toList();
+    }
+
+
+    /**
+     * Returns a builder for a property having as value a list of {@code <T>}. The
+     * format of the individual items is the same as for {@linkplain #enumProperty(String, Map)}.
+     *
+     * @param name       Name of the property to build
+     * @param enumClass  Class of the values
+     * @param labelMaker Function that associates enum constants to their label
+     * @param <T>        Value type of the property
+     *
+     * @return A new builder
+     */
+    public static <T extends Enum<T>> GenericCollectionPropertyBuilder<T, List<T>> enumListProperty(String name, Class<T> enumClass, Function<? super T, String> labelMaker) {
+        Map<String, T> enumMap = CollectionUtil.associateBy(asList(enumClass.getEnumConstants()), labelMaker);
+        return enumListProperty(name, enumMap);
     }
 
 

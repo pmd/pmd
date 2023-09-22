@@ -4,24 +4,22 @@
 
 package net.sourceforge.pmd.lang.html;
 
-import java.io.StringReader;
-import java.util.Arrays;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Assert;
-import org.junit.Test;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.Parser;
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.html.ast.ASTHtmlElement;
+import net.sourceforge.pmd.lang.html.ast.HtmlParsingHelper;
 import net.sourceforge.pmd.lang.html.rule.AbstractHtmlRule;
+import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 
-public class HtmlJavaRuleTest {
+class HtmlJavaRuleTest {
     // from https://developer.salesforce.com/docs/component-library/documentation/en/lwc/lwc.js_props_getter
     private static final String LIGHTNING_WEB_COMPONENT = "<!-- helloExpressions.html -->\n"
             + "<template>\n"
@@ -35,7 +33,7 @@ public class HtmlJavaRuleTest {
             + "</template>";
 
     @Test
-    public void findAllAttributesWithInvalidExpression() {
+    void findAllAttributesWithInvalidExpression() {
         // "Don’t add spaces around the property, for example, { data } is not valid HTML."
         Rule rule = new AbstractHtmlRule() {
             @Override
@@ -54,21 +52,15 @@ public class HtmlJavaRuleTest {
                 return super.visit(node, data);
             }
         };
-        Report report = runRule(LIGHTNING_WEB_COMPONENT, rule);
-        Assert.assertEquals(2, report.getViolations().size());
-        Assert.assertEquals(4, report.getViolations().get(0).getBeginLine());
-        Assert.assertEquals(6, report.getViolations().get(1).getBeginLine());
+        rule.setLanguage(HtmlLanguageModule.getInstance());
+        List<RuleViolation> violations = runRule(LIGHTNING_WEB_COMPONENT, rule);
+        assertEquals(2, violations.size());
+        assertEquals(4, violations.get(0).getBeginLine());
+        assertEquals(6, violations.get(1).getBeginLine());
     }
 
-    private Report runRule(String html, Rule rule) {
-        LanguageVersion htmlLanguage = LanguageRegistry.findLanguageByTerseName(HtmlLanguageModule.TERSE_NAME).getDefaultVersion();
-        Parser parser = htmlLanguage.getLanguageVersionHandler().getParser(htmlLanguage.getLanguageVersionHandler().getDefaultParserOptions());
-
-        Node node = parser.parse("n/a", new StringReader(html));
-        RuleContext context = new RuleContext();
-        context.setLanguageVersion(htmlLanguage);
-        context.setCurrentRule(rule);
-        rule.apply(Arrays.asList(node), context);
-        return context.getReport();
+    private List<RuleViolation> runRule(String html, Rule rule) {
+        Report report = HtmlParsingHelper.DEFAULT.executeRule(rule, html);
+        return report.getViolations();
     }
 }

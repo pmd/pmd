@@ -5,19 +5,21 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
-        <description>TEST1</description>
+        <description>May be final</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void test1() {
         int a = 0;
+        System.out.println(a); // a is used here
     }
 }
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>TEST2</description>
+        <description>Final local var</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -29,7 +31,19 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>TEST3</description>
+        <description>#4511 Unused, no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void test1() {
+        int a = 0;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Assigned</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -42,7 +56,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>TEST4</description>
+        <description>Compound assignment</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -55,8 +69,24 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>TEST5</description>
+        <description>Initialized local vars</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,4</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void test1() {
+        int a = 0;
+        int b = 0;
+        System.out.println("a=" + a + " b=" + b);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code disabled="true">
+        <description>#3122 Blank uninitialized local var</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>3,4,5</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void test1() {
@@ -70,7 +100,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>TEST6</description>
+        <description>Prefix increment</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -96,7 +126,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>TEST8</description>
+        <description>Postfix increment</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -158,10 +188,11 @@ public class Foo {
        <description>Verify another case for Bug #1047 False Positive in 'for' loops for LocalVariableCouldBeFinal in 5.0.1</description>
        <expected-problems>0</expected-problems>
        <code><![CDATA[
+import org.junit.Assert;
 public class Test {
-    public void bar() {
-        for (final List<Integer> list : result) {
-            Assert.assertEquals( array.size() - 1, list.size() );
+    public void bar(java.util.List<java.util.List<Integer>> result) {
+        for (final java.util.List<Integer> list : result) {
+            Assert.assertEquals( list.size() - 1, list.size() );
         }
     }
 }
@@ -244,20 +275,20 @@ public interface InterfaceWithClass {
 
     <test-code>
         <description>#3266 False negative with anonymous classes</description>
-        <expected-problems>2</expected-problems>
-        <expected-linenumbers>5,11</expected-linenumbers>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
 public class ClassWithAnon {
     void method() {
         final ClassWithAnon anon = new ClassWithAnon() {
-            void bar() {
+            void method() {
                 String a = "a";
                 System.out.println(a);
             }
         };
         final Runnable runnable = new Runnable() {
             public void run() {
-                int a = 0;
+                int a = 0; //unused so no warning
             }
         };
     }
@@ -274,6 +305,7 @@ public class ClassWithLambda {
     void method() {
         final Runnable runnable = () -> {
             int a = 0;
+            System.out.println(a);
         };
     }
 }

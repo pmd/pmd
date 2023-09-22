@@ -91,11 +91,12 @@ public class Foo {
         <code><![CDATA[
 public class Foo {
     public Foo(String s) {
-        addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {bar();}
+        addRunnable(new Runnable() {
+            public void run() {bar();}
         });
     }
     public void bar() {}
+    final void addRunnable(Runnable r) {}
 }
         ]]></code>
     </test-code>
@@ -130,14 +131,14 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>ignore abstract methods</description>
-        <expected-problems>0</expected-problems>
+        <description>do not ignore abstract methods [java] ConstructorCallsOverridableMethod ignores abstract methods #3351</description>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     public Foo() {
         bar();
     }
-    abstract void bar() {}
+    abstract void bar();
 }
         ]]></code>
     </test-code>
@@ -304,6 +305,7 @@ import java.lang.annotation.*;
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>Record creates an IndexOutOfBounds exception</description>
         <expected-problems>0</expected-problems>
@@ -320,6 +322,29 @@ import java.lang.annotation.*;
             }
             ]]></code>
     </test-code>
+
+    <test-code>
+        <description>transitive dependency</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>This method may call an overridable method during object construction: Foo.bar(String) (call stack: [Foo.bar(boolean), Foo.bar(String)])</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+                public Foo() {
+                    bar(true);
+                }
+                public final void bar(boolean b) {
+                    bar(""); // unsafe
+                }
+                public void bar(String o) {
+
+                }
+            }
+            ]]></code>
+    </test-code>
+
     <test-code>
         <description>[java] ConstructorCallsOverridableMethod should consider method calls with var access #4099</description>
         <expected-problems>9</expected-problems>
@@ -511,9 +536,9 @@ class Foo {
         <expected-problems>3</expected-problems>
         <expected-linenumbers>3,4,5</expected-linenumbers>
         <expected-messages>
-            <message>Overridable method 'overridableMethod' called during object construction (call stack: [intermediatePrivateMethod, otherMethod1, otherMethod2, overridableMethod])</message>
-            <message>Overridable method 'overridableMethod' called during object construction (call stack: [shorterChain, overridableMethod])</message>
-            <message>Overridable method 'otherOverridableMethod' called during object construction (call stack: [differentChain, otherOverridableMethod])</message>
+            <message>This method may call an overridable method during object construction: Foo.overridableMethod() (call stack: [Foo.intermediatePrivateMethod(), Foo.otherMethod1(), Foo.otherMethod2(), Foo.overridableMethod()])</message>
+            <message>This method may call an overridable method during object construction: Foo.overridableMethod() (call stack: [Foo.shorterChain(), Foo.overridableMethod()])</message>
+            <message>This method may call an overridable method during object construction: Foo.otherOverridableMethod() (call stack: [Foo.differentChain(), Foo.otherOverridableMethod()])</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
@@ -588,6 +613,21 @@ public class MyTimestamp {
     public long getTime() {
         return t;
     }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ConstructorCallsOverridableMethod: false positive with lombok's @Value #4510</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Value;
+@Value
+class Foo1 {
+    public Foo1(String bar) {
+        bar();  //  false positive warning
+    }
+    public void bar() {}
 }
 ]]></code>
     </test-code>

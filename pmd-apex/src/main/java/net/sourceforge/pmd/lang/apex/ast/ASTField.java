@@ -7,8 +7,6 @@ package net.sourceforge.pmd.lang.apex.ast;
 import java.util.Arrays;
 import java.util.Optional;
 
-import net.sourceforge.pmd.Rule;
-
 import com.google.summit.ast.Identifier;
 import com.google.summit.ast.Node;
 import com.google.summit.ast.TypeRef;
@@ -16,7 +14,7 @@ import com.google.summit.ast.declaration.EnumDeclaration;
 import com.google.summit.ast.expression.Expression;
 import com.google.summit.ast.expression.LiteralExpression;
 
-public class ASTField extends AbstractApexNode.Many<Node> implements CanSuppressWarnings {
+public final class ASTField extends AbstractApexNode.Many<Node> {
 
     private final Identifier name;
     private final Optional<Expression> value;
@@ -38,8 +36,9 @@ public class ASTField extends AbstractApexNode.Many<Node> implements CanSuppress
         this.typeName = enumType.getId().asCodeString();
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
@@ -48,17 +47,6 @@ public class ASTField extends AbstractApexNode.Many<Node> implements CanSuppress
         return getName();
     }
 
-    @Override
-    public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
-        for (ASTModifierNode modifier : findChildrenOfType(ASTModifierNode.class)) {
-            for (ASTAnnotation a : modifier.findChildrenOfType(ASTAnnotation.class)) {
-                if (a.suppresses(rule)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 
     /**
      * Returns the type name.

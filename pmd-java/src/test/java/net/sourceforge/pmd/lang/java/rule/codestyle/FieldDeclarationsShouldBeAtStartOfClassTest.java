@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class FieldDeclarationsShouldBeAtStartOfClassTest extends PmdRuleTst {
+class FieldDeclarationsShouldBeAtStartOfClassTest extends PmdRuleTst {
     // no additional unit tests
 }

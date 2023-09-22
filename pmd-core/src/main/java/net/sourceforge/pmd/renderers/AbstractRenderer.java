@@ -4,17 +4,16 @@
 
 package net.sourceforge.pmd.renderers;
 
-import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.Writer;
-import java.util.Collections;
-import java.util.List;
+import java.util.Objects;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.cli.PMDParameters;
-import net.sourceforge.pmd.internal.util.ShortFilenameUtil;
+import net.sourceforge.pmd.internal.util.IOUtil;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.properties.AbstractPropertySource;
-import net.sourceforge.pmd.util.IOUtil;
+import net.sourceforge.pmd.reporting.FileNameRenderer;
 
 /**
  * Abstract base class for {@link Renderer} implementations.
@@ -24,9 +23,8 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
     protected String description;
 
     protected boolean showSuppressedViolations = true;
-    protected Writer writer;
-
-    protected List<String> inputPathPrefixes = Collections.emptyList();
+    protected PrintWriter writer;
+    private FileNameRenderer fileNameRenderer = fileId -> fileId.getOriginalPath();
 
     public AbstractRenderer(String name, String description) {
         this.name = name;
@@ -69,29 +67,27 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
     }
 
     @Override
-    public void setUseShortNames(List<String> inputPaths) {
-        this.inputPathPrefixes = inputPaths;
+    public void setFileNameRenderer(FileNameRenderer fileNameRenderer) {
+        this.fileNameRenderer = Objects.requireNonNull(fileNameRenderer);
     }
 
     /**
-     * Determines the filename that should be used in the report depending on the
-     * option "shortnames". If the option is enabled, then the filename in the report
-     * is without the directory prefix of the directories, that have been analyzed.
-     * If the option "shortnames" is not enabled, then the inputFileName is returned as-is.
+     * Determines the filename that should be used in the report for the
+     * given ID. This uses the {@link FileNameRenderer} of this renderer.
+     * In the PMD CLI, the file name renderer respects the {@link PMDConfiguration#getRelativizeRoots()}
+     * relativize roots to output relative paths.
      *
-     * @param inputFileName
-     * @return
-     *
-     * @see PMDConfiguration#isReportShortNames()
-     * @see PMDParameters#isShortnames()
+     * <p>A renderer does not have to use this method to output paths.
+     * Some report formats require a specific format for paths, eg URIs.
+     * They can implement this ad-hoc.
      */
-    protected String determineFileName(String inputFileName) {
-        return ShortFilenameUtil.determineFileName(inputPathPrefixes, inputFileName);
+    protected final String determineFileName(FileId fileId) {
+        return fileNameRenderer.getDisplayName(fileId);
     }
 
     @Override
     public void setWriter(Writer writer) {
-        this.writer = writer;
+        this.writer = new PrintWriter(writer);
     }
 
     @Override
@@ -101,10 +97,13 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
 
     @Override
     public void flush() {
+        if (writer == null) {
+            // might happen, if no writer is set. E.g. in maven-pmd-plugin's PmdCollectingRenderer
+            return;
+        }
+
         try {
             this.writer.flush();
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
         } finally {
             IOUtil.closeQuietly(writer);
         }

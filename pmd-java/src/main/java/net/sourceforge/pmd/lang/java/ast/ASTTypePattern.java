@@ -4,14 +4,16 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.List;
 import java.util.Objects;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.annotation.Experimental;
 
 /**
  * A type pattern (JDK16). This can be found on
- * the right-hand side of an {@link ASTInstanceOfExpression InstanceOfExpression}.
+ * the right-hand side of an {@link ASTInfixExpression InstanceOfExpression},
+ * in a {@link ASTPatternExpression PatternExpression}.
  *
  * <pre class="grammar">
  *
@@ -21,48 +23,29 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * @see <a href="https://openjdk.java.net/jeps/394">JEP 394: Pattern Matching for instanceof</a>
 */
-public final class ASTTypePattern extends AbstractJavaAnnotatableNode implements ASTPattern {
+public final class ASTTypePattern extends AbstractJavaNode implements ASTPattern, AccessNode {
 
-    private boolean isFinal;
     private int parenDepth;
 
     ASTTypePattern(int id) {
         super(id);
     }
 
-    ASTTypePattern(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
     @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+    protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
-    }
-
-    @Override
-    public List<ASTAnnotation> getDeclaredAnnotations() {
-        return this.findChildrenOfType(ASTAnnotation.class);
     }
 
     /**
      * Gets the type against which the expression is tested.
      */
-    public ASTType getTypeNode() {
-        return Objects.requireNonNull(getFirstChildOfType(ASTType.class));
+    public @NonNull ASTType getTypeNode() {
+        return Objects.requireNonNull(firstChild(ASTType.class));
     }
 
     /** Returns the declared variable. */
-    public ASTVariableDeclaratorId getVarId() {
-        return getFirstChildOfType(ASTVariableDeclaratorId.class);
-    }
-
-    void setFinal(boolean isFinal) {
-        this.isFinal = isFinal;
-    }
-
-    boolean isFinal() {
-        return isFinal;
+    public @NonNull ASTVariableDeclaratorId getVarId() {
+        return Objects.requireNonNull(firstChild(ASTVariableDeclaratorId.class));
     }
 
     void bumpParenDepth() {

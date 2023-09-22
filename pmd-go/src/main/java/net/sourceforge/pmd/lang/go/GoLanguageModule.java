@@ -1,28 +1,28 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.go;
 
-import net.sourceforge.pmd.lang.BaseLanguageModule;
+import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.go.cpd.GoTokenizer;
+import net.sourceforge.pmd.lang.impl.CpdOnlyLanguageModuleBase;
 
-/**
- * Language Module for Go.
- * @deprecated There is no full PMD support for go.
- */
-@Deprecated
-public class GoLanguageModule extends BaseLanguageModule {
+public class GoLanguageModule extends CpdOnlyLanguageModuleBase {
+    private static final String ID = "go";
 
-    /** The name. */
-    public static final String NAME = "Golang";
-    /** The terse name. */
-    public static final String TERSE_NAME = "go";
-
-    /**
-     * Create a new instance of Golang Language Module.
-     */
     public GoLanguageModule() {
-        super(NAME, null, TERSE_NAME, "go");
-        addVersion("1", null, true);
+        super(LanguageMetadata.withId(ID).name("Go").extensions("go"));
+    }
+
+    public static GoLanguageModule getInstance() {
+        return (GoLanguageModule) LanguageRegistry.CPD.getLanguageById(ID);
+    }
+
+    @Override
+    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
+        return new GoTokenizer();
     }
 }

@@ -4,23 +4,19 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 import scala.meta.Type;
 
 /**
  * The ASTTypeRefine node implementation.
  */
-public class ASTTypeRefine extends AbstractScalaNode<Type.Refine> {
+public final class ASTTypeRefine extends AbstractScalaNode<Type.Refine> {
 
-    @Deprecated
-    @InternalApi
-    public ASTTypeRefine(Type.Refine scalaNode) {
+    ASTTypeRefine(Type.Refine scalaNode) {
         super(scalaNode);
     }
 
     @Override
-    public <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data) {
+    protected <P, R> R acceptVisitor(ScalaParserVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 }

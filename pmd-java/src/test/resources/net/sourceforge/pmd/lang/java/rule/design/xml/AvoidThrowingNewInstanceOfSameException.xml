@@ -7,6 +7,7 @@
     <test-code>
         <description>basic failure case</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     void bar() {
@@ -16,6 +17,7 @@ public class Foo {
         }
     }
 }
+class SomeException extends Exception {}
         ]]></code>
     </test-code>
 
@@ -32,12 +34,14 @@ public class Foo {
         }
     }
 }
+class SomeException extends Exception {}
         ]]></code>
     </test-code>
 
     <test-code>
         <description>repackage cause as an instance of the same exception, failure</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     void bar() {
@@ -47,6 +51,7 @@ public class Foo {
         }
     }
 }
+class SomeException extends Exception {}
         ]]></code>
     </test-code>
 
@@ -62,12 +67,14 @@ public class Foo {
         }
     }
 }
+class SomeException extends Exception {}
         ]]></code>
     </test-code>
 
     <test-code>
         <description>throw new instance of the same exception with the same message, failure</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     void bar() {
@@ -77,6 +84,7 @@ public class Foo {
         }
     }
 }
+class SomeException extends Exception {}
         ]]></code>
     </test-code>
 
@@ -92,6 +100,7 @@ public class Foo {
         }
     }
 }
+class SomeException extends Exception {}
         ]]></code>
     </test-code>
 
@@ -110,6 +119,8 @@ public class Foo {
         }
     }
 }
+class SomeException extends Exception {}
+class OtherException extends Exception {}
         ]]></code>
     </test-code>
 
@@ -128,6 +139,8 @@ public class Foo {
         }
     }
 }
+class SomeException extends Exception {}
+class OtherException extends Exception {}
         ]]></code>
     </test-code>
 </test-data>

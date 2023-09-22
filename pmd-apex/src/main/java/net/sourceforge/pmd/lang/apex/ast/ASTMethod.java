@@ -7,58 +7,67 @@ package net.sourceforge.pmd.lang.apex.ast;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.lang.apex.metrics.signature.ApexOperationSignature;
-import net.sourceforge.pmd.lang.ast.SignedNode;
-import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
+import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextPos2d;
+import net.sourceforge.pmd.lang.document.TextRegion;
 
 import com.google.summit.ast.SourceLocation;
 import com.google.summit.ast.declaration.MethodDeclaration;
 
-public class ASTMethod extends AbstractApexNode implements ApexQualifiableNode,
-        SignedNode<ASTMethod>, CanSuppressWarnings {
+public final class ASTMethod extends AbstractApexNode implements ApexQualifiableNode {
 
     // Store the details instead of wrapping a com.google.summit.ast.Node.
     // This is to allow synthetic ASTMethod nodes.
     // An example is the trigger `invoke` method.
-    private String name;
-    private List<String> parameterTypes;
-    private String returnType;
-    private SourceLocation sourceLocation;
+    private final String name;
+    private final String internalName;
+    private final List<String> parameterTypes;
+    private final String returnType;
+    private final SourceLocation sourceLocation;
 
     /**
      * Internal name used by constructors.
+     * @deprecated The name of the constructor should be the class name. Use {@link #isConstructor()} instead.
      */
+    // Note: we probably make this private
+    @Deprecated
     public static final String CONSTRUCTOR_ID = "<init>";
 
     /**
      * Internal name used by static initialization blocks.
+     * @deprecated This should be private. Use {@link #isStaticInitializer()} instead.
      */
+    // Note: we probably make this private
+    @Deprecated
     public static final String STATIC_INIT_ID = "<clinit>";
 
-    public ASTMethod(
+    ASTMethod(
         String name,
+        String internalName,
         List<String> parameterTypes,
         String returnType,
         SourceLocation sourceLocation) {
 
         this.name = name;
+        this.internalName = internalName;
         this.parameterTypes = parameterTypes;
         this.returnType = returnType;
         this.sourceLocation = sourceLocation;
     }
 
-    public static ASTMethod fromNode(MethodDeclaration node) {
+    static ASTMethod fromNode(MethodDeclaration node) {
 
         String name = node.getId().getString();
+        String internalName = name;
         if (node.isAnonymousInitializationCode()) {
-            name = STATIC_INIT_ID;
+            internalName = STATIC_INIT_ID;
         } else if (node.isConstructor()) {
-            name = CONSTRUCTOR_ID;
+            internalName = CONSTRUCTOR_ID;
         }
 
         return new ASTMethod(
             name,
+            internalName,
             node.getParameterDeclarations().stream()
                 .map(p -> caseNormalizedTypeIfPrimitive(p.getType().asCodeString()))
                 .collect(Collectors.toList()),
@@ -66,14 +75,24 @@ public class ASTMethod extends AbstractApexNode implements ApexQualifiableNode,
             node.getSourceLocation());
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
     @Override
-    void calculateLineNumbers(SourceCodePositioner positioner) {
-        setLineNumbers(sourceLocation);
+    void calculateTextRegion(TextDocument sourceCode) {
+        if (sourceLocation.isUnknown()) {
+            return;
+        }
+        // Column+1 because Summit columns are 0-based and PMD are 1-based
+        setRegion(TextRegion.fromBothOffsets(
+                sourceCode.offsetAtLineColumn(
+                        TextPos2d.pos2d(sourceLocation.getStartLine(), sourceLocation.getStartColumn() + 1)),
+                sourceCode.offsetAtLineColumn(
+                        TextPos2d.pos2d(sourceLocation.getEndLine(), sourceLocation.getEndColumn() + 1))
+        ));
     }
 
     @Override
@@ -82,20 +101,11 @@ public class ASTMethod extends AbstractApexNode implements ApexQualifiableNode,
     }
 
     @Override
-    public String getLocation() {
-        if (hasRealLoc()) {
-            return String.valueOf(sourceLocation);
-        } else {
-            return "no location";
-        }
-    }
-
-    @Override
     public String getImage() {
         if (isConstructor()) {
-            ApexRootNode<?> rootNode = getFirstParentOfType(ApexRootNode.class);
-            if (rootNode != null) {
-                return rootNode.node.getId().getString();
+            BaseApexClass<?> baseClassNode = ancestors(BaseApexClass.class).first();
+            if (baseClassNode != null) {
+                return baseClassNode.getSimpleName();
             }
         }
         return getCanonicalName();
@@ -105,69 +115,14 @@ public class ASTMethod extends AbstractApexNode implements ApexQualifiableNode,
         if (getParent() instanceof ASTProperty) {
             return ASTProperty.formatAccessorName((ASTProperty) getParent());
         }
+
+        if (isConstructor()) {
+            return CONSTRUCTOR_ID;
+        } else if (isStaticInitializer()) {
+            return STATIC_INIT_ID;
+        }
+
         return name;
-    }
-
-    @Override
-    public int getBeginLine() {
-        if (!hasRealLoc()) {
-            // this is a synthetic method, only in the AST, not in the source
-            // search for the last sibling with real location from the end
-            // and place this synthetic method after it.
-            for (int i = getParent().getNumChildren() - 1; i >= 0; i--) {
-                ApexNode<?> sibling = getParent().getChild(i);
-                if (sibling.hasRealLoc()) {
-                    return sibling.getEndLine();
-                }
-            }
-        }
-        return super.getBeginLine();
-    }
-
-    @Override
-    public int getBeginColumn() {
-        if (!hasRealLoc()) {
-            // this is a synthetic method, only in the AST, not in the source
-            // search for the last sibling with real location from the end
-            // and place this synthetic method after it.
-            for (int i = getParent().getNumChildren() - 1; i >= 0; i--) {
-                ApexNode<?> sibling = getParent().getChild(i);
-                if (sibling.hasRealLoc()) {
-                    return sibling.getEndColumn();
-                }
-            }
-        }
-        return super.getBeginColumn();
-    }
-
-    @Override
-    public int getEndLine() {
-        if (!hasRealLoc()) {
-            // this is a synthetic method, only in the AST, not in the source
-            return this.getBeginLine();
-        }
-
-        ASTBlockStatement block = getFirstChildOfType(ASTBlockStatement.class);
-        if (block != null) {
-            return block.getEndLine();
-        }
-
-        return super.getEndLine();
-    }
-
-    @Override
-    public int getEndColumn() {
-        if (!hasRealLoc()) {
-            // this is a synthetic method, only in the AST, not in the source
-            return this.getBeginColumn();
-        }
-
-        ASTBlockStatement block = getFirstChildOfType(ASTBlockStatement.class);
-        if (block != null) {
-            return block.getEndColumn();
-        }
-
-        return super.getEndColumn();
     }
 
     @Override
@@ -175,25 +130,24 @@ public class ASTMethod extends AbstractApexNode implements ApexQualifiableNode,
         return ApexQualifiedName.ofMethod(this);
     }
 
-    @Override
-    public ApexOperationSignature getSignature() {
-        return ApexOperationSignature.of(this);
-    }
-
-    @Override
-    public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
-        for (ASTModifierNode modifier : findChildrenOfType(ASTModifierNode.class)) {
-            for (ASTAnnotation a : modifier.findChildrenOfType(ASTAnnotation.class)) {
-                if (a.suppresses(rule)) {
-                    return true;
-                }
-            }
-        }
+    /**
+     * Returns true if this is a synthetic class initializer, inserted
+     * by the parser.
+     *
+     * @deprecated Only jorje added these synthetic methods. ApexParser/Summit doesn't. That's why this method
+     * is useless now.
+     */
+    @Deprecated
+    public boolean isSynthetic() {
         return false;
     }
-
+    
     public boolean isConstructor() {
-        return CONSTRUCTOR_ID.equals(name);
+        return CONSTRUCTOR_ID.equals(internalName);
+    }
+
+    public boolean isStaticInitializer() {
+        return STATIC_INIT_ID.equals(internalName);
     }
 
     public ASTModifierNode getModifiers() {

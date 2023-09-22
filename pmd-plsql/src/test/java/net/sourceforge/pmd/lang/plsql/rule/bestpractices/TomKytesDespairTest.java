@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.plsql.rule.bestpractices;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class TomKytesDespairTest extends PmdRuleTst {
+class TomKytesDespairTest extends PmdRuleTst {
     // no additional unit tests
 }

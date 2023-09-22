@@ -70,6 +70,9 @@ public class Foo {
         <description>long method</description>
         <rule-property name="minimum">13</rule-property>
         <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The method 'foo()' has an NCSS line count of 13 (limit: 13)</message>
+        </expected-messages>
         <code-ref id="long-method"/>
     </test-code>
 

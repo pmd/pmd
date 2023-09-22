@@ -8,10 +8,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 
-import net.sourceforge.pmd.util.SearchFunction;
-
-public class ImageFinderFunction implements SearchFunction<NameDeclaration> {
+public class ImageFinderFunction implements Predicate<NameDeclaration> {
 
     private final Set<String> images;
     private NameDeclaration decl;
@@ -25,7 +24,7 @@ public class ImageFinderFunction implements SearchFunction<NameDeclaration> {
     }
 
     @Override
-    public boolean applyTo(NameDeclaration nameDeclaration) {
+    public boolean test(NameDeclaration nameDeclaration) {
         if (images.contains(nameDeclaration.getImage())) {
             decl = nameDeclaration;
             return false;

@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.test
 
+import net.sourceforge.pmd.lang.document.FileId
 import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.test.assertEquals
@@ -27,7 +28,7 @@ abstract class BaseTextComparisonTest {
     /** Extension that the unparsed source file is supposed to have. */
     protected abstract val extensionIncludingDot: String
 
-    data class FileData(val fileName:String, val fileText:String)
+    data class FileData(val fileName: FileId, val fileText:String)
 
     /**
      * Executes the test. The test files are looked up using the [parser].
@@ -45,8 +46,12 @@ abstract class BaseTextComparisonTest {
         val actual = transformTextContent(sourceText(fileBaseName))
 
         if (!expectedFile.exists()) {
-            expectedFile.writeText(actual)
-            throw AssertionError("Reference file doesn't exist, created it at $expectedFile")
+            expectedFile.writeText(actual.normalize())
+            throw AssertionError(
+            """
+            Reference file doesn't exist, created it at $expectedFile
+            Don't forget to `git add` it!
+            """.trimIndent())
         }
 
         val expected = expectedFile.readText()
@@ -62,8 +67,14 @@ abstract class BaseTextComparisonTest {
         }
 
         val sourceText = sourceFile.readText(Charsets.UTF_8).normalize()
-        return FileData(fileName = sourceFile.toString(), fileText = sourceText)
+        return FileData(fileName = FileId.fromPath(sourceFile.toPath()), fileText = sourceText)
     }
+
+    protected open fun String.normalize() = replace(
+            // \R on java 8+
+            regex = Regex("\\u000D\\u000A|[\\u000A\\u000B\\u000C\\u000D\\u0085\\u2028\\u2029]"),
+            replacement = "\n"
+    )
 
     // Outputting a path makes for better error messages
     private val srcTestResources = let {
@@ -88,11 +99,6 @@ abstract class BaseTextComparisonTest {
     companion object {
         const val ExpectedExt = ".txt"
 
-        fun String.normalize() = replace(
-                // \R on java 8+
-                regex = Regex("\\u000D\\u000A|[\\u000A\\u000B\\u000C\\u000D\\u0085\\u2028\\u2029]"),
-                replacement = "\n"
-        )
     }
 
 }

@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTLiteralExpression;
@@ -24,6 +25,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 public class UnusedLocalVariableRule extends AbstractApexRule {
     private static final Set<String> DATABASE_QUERY_METHODS = new HashSet<>(Arrays.asList(
@@ -34,8 +36,9 @@ public class UnusedLocalVariableRule extends AbstractApexRule {
 
     private static final Pattern BINDING_VARIABLE = Pattern.compile("(?i):([a-z0-9]+)");
 
-    public UnusedLocalVariableRule() {
-        addRuleChainVisit(ASTVariableDeclaration.class);
+    @Override
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forTypes(ASTVariableDeclaration.class);
     }
 
     @Override

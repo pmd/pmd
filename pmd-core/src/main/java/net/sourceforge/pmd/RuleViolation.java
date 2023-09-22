@@ -5,6 +5,11 @@
 package net.sourceforge.pmd;
 
 import java.util.Comparator;
+import java.util.Map;
+
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
+import net.sourceforge.pmd.lang.document.FileId;
+import net.sourceforge.pmd.lang.document.FileLocation;
 
 /**
  * A RuleViolation is created by a Rule when it identifies a violation of the
@@ -17,14 +22,43 @@ import java.util.Comparator;
  * @see Rule
  */
 public interface RuleViolation {
+    // todo move to package reporting
 
     /**
      * A comparator for rule violations. This compares all exposed attributes
      * of a violation, filename first. The remaining parameters are compared
      * in an unspecified order.
      */
-    // TODO in java 8 this can be a chained Comparator.comparing call
-    Comparator<RuleViolation> DEFAULT_COMPARATOR = RuleViolationComparator.INSTANCE;
+    Comparator<RuleViolation> DEFAULT_COMPARATOR =
+        Comparator.comparing(RuleViolation::getFileId)
+                  .thenComparingInt(RuleViolation::getBeginLine)
+                  .thenComparingInt(RuleViolation::getBeginColumn)
+                  .thenComparing(RuleViolation::getDescription, Comparator.nullsLast(Comparator.naturalOrder()))
+                  .thenComparingInt(RuleViolation::getEndLine)
+                  .thenComparingInt(RuleViolation::getEndColumn)
+                  .thenComparing(rv -> rv.getRule().getName());
+
+
+    /**
+     * Key in {@link #getAdditionalInfo()} for the name of the class in
+     * which the violation was identified.
+     */
+    String CLASS_NAME = "className";
+    /**
+     * Key in {@link #getAdditionalInfo()} for the name of the variable
+     * related to the violation.
+     */
+    String VARIABLE_NAME = "variableName";
+    /**
+     * Key in {@link #getAdditionalInfo()} for the name of the method in
+     * which the violation was identified.
+     */
+    String METHOD_NAME = "methodName";
+    /**
+     * Key in {@link #getAdditionalInfo()} for the name of the package in
+     * which the violation was identified.
+     */
+    String PACKAGE_NAME = "packageName";
 
     /**
      * Get the Rule which identified this violation.
@@ -40,20 +74,18 @@ public interface RuleViolation {
      */
     String getDescription();
 
-    /**
-     * Indicates whether this violation has been suppressed.
-     *
-     * @return <code>true</code> if this violation is suppressed,
-     *         <code>false</code> otherwise.
-     */
-    boolean isSuppressed();
 
     /**
-     * Get the source file name in which this violation was identified.
-     *
-     * @return The source file name.
+     * Returns the location where the violation should be reported.
      */
-    String getFilename();
+    FileLocation getLocation();
+
+    /**
+     * Return the ID of the file where the violation was found.
+     */
+    default FileId getFileId() {
+        return getLocation().getFileId();
+    }
 
     /**
      * Get the begin line number in the source file in which this violation was
@@ -61,7 +93,9 @@ public interface RuleViolation {
      *
      * @return Begin line number.
      */
-    int getBeginLine();
+    default int getBeginLine() {
+        return getLocation().getStartPos().getLine();
+    }
 
     /**
      * Get the column number of the begin line in the source file in which this
@@ -69,7 +103,9 @@ public interface RuleViolation {
      *
      * @return Begin column number.
      */
-    int getBeginColumn();
+    default int getBeginColumn() {
+        return getLocation().getStartPos().getColumn();
+    }
 
     /**
      * Get the end line number in the source file in which this violation was
@@ -77,7 +113,9 @@ public interface RuleViolation {
      *
      * @return End line number.
      */
-    int getEndLine();
+    default int getEndLine() {
+        return getLocation().getEndPos().getLine();
+    }
 
     /**
      * Get the column number of the end line in the source file in which this
@@ -85,36 +123,67 @@ public interface RuleViolation {
      *
      * @return End column number.
      */
-    int getEndColumn();
+    default int getEndColumn() {
+        return getLocation().getEndPos().getColumn();
+    }
+
+    /**
+     * A map of additional key-value pairs known about this violation.
+     * What data is in there is language specific. Common keys supported
+     * by several languages are defined as constants on this interface.
+     * The map is unmodifiable.
+     */
+    Map<String, String> getAdditionalInfo();
+
 
     /**
      * Get the package name of the Class in which this violation was identified.
      *
      * @return The package name.
+     *
+     * @deprecated Use {@link #PACKAGE_NAME}
      */
-    // TODO Isn't this Java specific?
-    String getPackageName();
+    @Deprecated
+    @DeprecatedUntil700
+    default String getPackageName() {
+        return getAdditionalInfo().get(PACKAGE_NAME);
+    }
 
     /**
      * Get the name of the Class in which this violation was identified.
      *
      * @return The Class name.
+     * @deprecated Use {@link #CLASS_NAME}
      */
-    // TODO Isn't this Java specific?
-    String getClassName();
+    @Deprecated
+    @DeprecatedUntil700
+    default String getClassName() {
+        return getAdditionalInfo().get(CLASS_NAME);
+    }
 
     /**
      * Get the method name in which this violation was identified.
      *
      * @return The method name.
+     * @deprecated Use {@link #METHOD_NAME}
      */
-    // TODO Isn't this Java specific?
-    String getMethodName();
+    @Deprecated
+    @DeprecatedUntil700
+    default String getMethodName() {
+        return getAdditionalInfo().get(METHOD_NAME);
+    }
 
     /**
      * Get the variable name on which this violation was identified.
      *
      * @return The variable name.
+     * @deprecated Use {@link #VARIABLE_NAME}
      */
-    String getVariableName();
+    @Deprecated
+    @DeprecatedUntil700
+    default String getVariableName() {
+        return getAdditionalInfo().get(VARIABLE_NAME);
+    }
+
+
 }

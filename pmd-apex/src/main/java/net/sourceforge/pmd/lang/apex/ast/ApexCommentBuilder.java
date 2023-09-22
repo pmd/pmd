@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
 
 import java.util.AbstractList;
@@ -18,49 +19,21 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.Token;
 
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.apex.ApexParserOptions;
-import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
+import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextRegion;
 
 import com.nawforce.apexparser.ApexLexer;
 
 @InternalApi
 final class ApexCommentBuilder {
-    private final SourceCodePositioner sourceCodePositioner;
+    private final TextDocument sourceCode;
     private final CommentInformation commentInfo;
 
-    ApexCommentBuilder(String sourceCode, ApexParserOptions parserOptions) {
-        sourceCodePositioner = new SourceCodePositioner(sourceCode);
-        commentInfo = extractInformationFromComments(sourceCode, parserOptions.getSuppressMarker());
-    }
+    ApexCommentBuilder(TextDocument sourceCode, String suppressMarker) {
+        AntlrVersionCheckSuppression.initApexLexer();
 
-    private static final class LineColumnPosition implements Comparable<LineColumnPosition> {
-        int line;
-        int column;
-
-        LineColumnPosition(int line, int column) {
-            this.line = line;
-            this.column = column;
-        }
-
-        public static LineColumnPosition of(Token token) {
-            return new LineColumnPosition(token.getLine(), token.getCharPositionInLine() + 1);
-        }
-
-        public static LineColumnPosition beginOf(ApexNode<?> node) {
-            return new LineColumnPosition(node.getBeginLine(), node.getBeginColumn());
-        }
-
-        public static LineColumnPosition endOf(ApexNode<?> node) {
-            return new LineColumnPosition(node.getEndLine(), node.getEndColumn());
-        }
-
-        @Override
-        public int compareTo(LineColumnPosition other) {
-            if (this.line != other.line) {
-                return this.line - other.line;
-            }
-            return this.column - other.column;
-        }
+        this.sourceCode = sourceCode;
+        this.commentInfo = extractInformationFromComments(sourceCode, suppressMarker);
     }
 
     public boolean containsComments(ASTCommentContainer commentContainer) {
@@ -68,10 +41,11 @@ final class ApexCommentBuilder {
             // Synthetic nodes don't have a location and can't have comments
             return false;
         }
-        LineColumnPosition nodeBeginPosition = LineColumnPosition.beginOf(commentContainer);
+
+        TextRegion nodeRegion = commentContainer.getTextRegion();
 
         // find the first comment after the start of the container node
-        int index = Collections.binarySearch(commentInfo.nonDocTokensByPosition, nodeBeginPosition);
+        int index = Collections.binarySearch(commentInfo.nonDocTokensByStartIndex, nodeRegion.getStartOffset());
 
         // no exact hit found - this is expected: there is no comment token starting at
         // the very same index as the node
@@ -80,28 +54,21 @@ final class ApexCommentBuilder {
         index = ~index;
 
         // now check whether the next comment after the node is still inside the node
-        if (index >= 0 && index < commentInfo.nonDocTokensByPosition.size()) {
-            LineColumnPosition commentPosition = commentInfo.nonDocTokensByPosition.get(index);
-            return commentPosition.compareTo(nodeBeginPosition) >= 0
-                && commentPosition.compareTo(LineColumnPosition.endOf(commentContainer)) <= 0;
+        if (index >= 0 && index < commentInfo.nonDocTokensByStartIndex.size()) {
+            int commentStartIndex = commentInfo.nonDocTokensByStartIndex.get(index);
+            return nodeRegion.getStartOffset() < commentStartIndex
+                    && nodeRegion.getEndOffset() >= commentStartIndex;
         }
         return false;
     }
 
     public void addFormalComments() {
         for (ApexDocToken docToken : commentInfo.docTokens) {
-            ApexNode<?> parent = docToken.nearestNode;
+            AbstractApexNode parent = docToken.nearestNode;
             if (parent != null) {
                 ASTFormalComment comment = new ASTFormalComment(docToken.token);
-                comment.calculateLineNumbers(sourceCodePositioner);
-
-                // move existing nodes so that we can insert the comment as the first node
-                for (int i = parent.getNumChildren(); i > 0; i--) {
-                    parent.jjtAddChild(parent.getChild(i - 1), i);
-                }
-
-                parent.jjtAddChild(comment, 0);
-                comment.jjtSetParent(parent);
+                comment.calculateTextRegion(sourceCode);
+                parent.insertChild(comment, 0);
             }
         }
     }
@@ -115,35 +82,34 @@ final class ApexCommentBuilder {
      *
      * @param node the potential parent node, to which the comment could belong
      */
-    public void buildFormalComment(ApexNode<?> node) {
+    public void buildFormalComment(AbstractApexNode node) {
         if (!node.hasRealLoc()) {
-            // Synthetic nodes such as "<clinit>" don't have a location in the
-            // source code, since they are generated by the compiler
+            // Synthetic nodes such as "invoke" ASTMethod for trigger bodies don't have a location in the
+            // source code, since they are generated by the parser/compiler (see ApexTreeBuilder)
             return;
         }
         // find the token, that appears as close as possible before the node
-        LineColumnPosition nodeBeginPosition = LineColumnPosition.beginOf(node);
+        TextRegion nodeRegion = node.getTextRegion();
         for (ApexDocToken docToken : commentInfo.docTokens) {
-            if (LineColumnPosition.of(docToken.token).compareTo(nodeBeginPosition) > 0) {
+            if (docToken.token.getStartIndex() > nodeRegion.getStartOffset()) {
                 // this and all remaining tokens are after the node
                 // so no need to check the remaining tokens.
                 break;
             }
 
             if (docToken.nearestNode == null
-                || nodeBeginPosition.compareTo(LineColumnPosition.beginOf(docToken.nearestNode)) < 0) {
+                || nodeRegion.compareTo(docToken.nearestNode.getTextRegion()) < 0) {
 
                 docToken.nearestNode = node;
             }
         }
     }
 
-    private static CommentInformation extractInformationFromComments(String source, String suppressMarker) {
-        ApexLexer lexer = new ApexLexer(CharStreams.fromString(source));
+    private static CommentInformation extractInformationFromComments(TextDocument sourceCode, String suppressMarker) {
+        ApexLexer lexer = new ApexLexer(CharStreams.fromString(sourceCode.getText().toString()));
 
-        ArrayList<Token> allCommentTokens = new ArrayList<>();
+        List<Token> allCommentTokens = new ArrayList<>();
         Map<Integer, String> suppressMap = new HashMap<>();
-
         int lastStartIndex = -1;
         Token token = lexer.nextToken();
 
@@ -177,7 +143,7 @@ final class ApexCommentBuilder {
     private static class CommentInformation {
 
         final Map<Integer, String> suppressMap;
-        final TokenListByPosition nonDocTokensByPosition;
+        final List<Integer> nonDocTokensByStartIndex;
         final List<ApexDocToken> docTokens;
 
         CommentInformation(Map<Integer, String> suppressMap, List<Token> allCommentTokens) {
@@ -186,10 +152,10 @@ final class ApexCommentBuilder {
                 .filter((token) -> token.getType() == ApexLexer.DOC_COMMENT)
                 .map((token) -> new ApexDocToken(token))
                 .collect(toList());
-            this.nonDocTokensByPosition = new TokenListByPosition(
+            this.nonDocTokensByStartIndex = new TokenListByStartIndex(
                 allCommentTokens.stream()
                     .filter((token) -> token.getType() != ApexLexer.DOC_COMMENT)
-                    .collect(toList()));
+                    .collect(toCollection(ArrayList::new)));
         }
     }
 
@@ -200,18 +166,17 @@ final class ApexCommentBuilder {
      * <p>
      * Note that the provided token list must implement {@link RandomAccess}.
      */
-    private static final class TokenListByPosition extends AbstractList<LineColumnPosition> implements RandomAccess {
+    private static final class TokenListByStartIndex extends AbstractList<Integer> implements RandomAccess {
 
         private final List<Token> tokens;
 
-        TokenListByPosition(List<Token> tokens) {
+        <T extends List<Token> & RandomAccess> TokenListByStartIndex(T tokens) {
             this.tokens = tokens;
         }
 
         @Override
-        public LineColumnPosition get(int index) {
-            Token token = tokens.get(index);
-            return new LineColumnPosition(token.getLine(), token.getCharPositionInLine());
+        public Integer get(int index) {
+            return tokens.get(index).getStartIndex();
         }
 
         @Override
@@ -221,7 +186,7 @@ final class ApexCommentBuilder {
     }
 
     private static class ApexDocToken {
-        ApexNode<?> nearestNode;
+        AbstractApexNode nearestNode;
         Token token;
 
         ApexDocToken(Token token) {

@@ -4,40 +4,15 @@
 
 package net.sourceforge.pmd.lang.modelica;
 
-import net.sourceforge.pmd.lang.AbstractLanguageVersionHandler;
-import net.sourceforge.pmd.lang.Parser;
-import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.VisitorStarter;
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.modelica.ast.ASTStoredDefinition;
-import net.sourceforge.pmd.lang.modelica.resolver.ModelicaSymbolFacade;
-import net.sourceforge.pmd.lang.modelica.rule.ModelicaRuleViolationFactory;
-import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
+import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
+import net.sourceforge.pmd.lang.ast.Parser;
+import net.sourceforge.pmd.lang.modelica.ast.ModelicaParser;
 
-public class ModelicaHandler extends AbstractLanguageVersionHandler {
+public class ModelicaHandler extends AbstractPmdLanguageVersionHandler {
 
     @Override
-    public RuleViolationFactory getRuleViolationFactory() {
-        return ModelicaRuleViolationFactory.INSTANCE;
+    public Parser getParser() {
+        return new ModelicaParser();
     }
 
-    @Override
-    public Parser getParser(ParserOptions parserOptions) {
-        return new ModelicaParser(parserOptions);
-    }
-
-    @Override
-    public VisitorStarter getSymbolFacade() {
-        return new VisitorStarter() {
-            @Override
-            public void start(Node rootNode) {
-                new ModelicaSymbolFacade().initializeWith((ASTStoredDefinition) rootNode);
-            }
-        };
-    }
-
-    @Override
-    public VisitorStarter getSymbolFacade(ClassLoader classLoader) {
-        return getSymbolFacade();
-    }
 }

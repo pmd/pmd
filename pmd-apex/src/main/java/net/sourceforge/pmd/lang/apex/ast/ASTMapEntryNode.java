@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 import com.google.summit.ast.expression.Expression;
 
-public class ASTMapEntryNode extends AbstractApexNode.Many<Expression> {
+public final class ASTMapEntryNode extends AbstractApexNode.Many<Expression> {
 
     private final Expression key;
     private final Expression value;
@@ -19,8 +19,9 @@ public class ASTMapEntryNode extends AbstractApexNode.Many<Expression> {
         this.value = value;
     }
 
+
     @Override
-    public Object jjtAccept(ApexParserVisitor visitor, Object data) {
+    protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
