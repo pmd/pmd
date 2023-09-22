@@ -119,9 +119,16 @@ class CpdCliTest extends BaseCliTest {
     }
 
     @Test
-    void testWrongCliOptionResultsInErrorLogging() throws Exception {
+    void testWrongCliOptionResultsInErrorLoggingAfterDir() throws Exception {
         // --ignore-identifiers doesn't take an argument anymore - it is interpreted as a file for inputPaths
         final CliExecutionResult result = runCli(VIOLATIONS_FOUND, "--minimum-tokens", "34", "--dir", SRC_DIR, "--ignore-identifiers", "false");
+        result.checkStdErr(containsString("No such file false"));
+    }
+
+    @Test
+    void testWrongCliOptionResultsInErrorLoggingBeforeDir() throws Exception {
+        // --ignore-identifiers doesn't take an argument anymore - it is interpreted as a file for inputPaths
+        final CliExecutionResult result = runCli(VIOLATIONS_FOUND, "--minimum-tokens", "34", "--ignore-identifiers", "false", "--dir", SRC_DIR);
         result.checkStdErr(containsString("No such file false"));
     }
 

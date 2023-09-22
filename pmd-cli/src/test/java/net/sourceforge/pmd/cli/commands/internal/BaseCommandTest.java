@@ -15,7 +15,7 @@ import org.hamcrest.Matchers;
 import picocli.CommandLine;
 import picocli.CommandLine.ParseResult;
 
-abstract class BaseCommandTest<T> {
+abstract class BaseCommandTest<T extends AbstractAnalysisPmdSubcommand<?>> {
 
     protected abstract T createCommand();
     
@@ -30,6 +30,7 @@ abstract class BaseCommandTest<T> {
     protected T setupAndParse(final String... params) {
         final T cmd = createCommand();
         final ParseResult parseResult = parseCommand(cmd, params);
+        cmd.validate();
 
         assertThat(parseResult.errors(), Matchers.empty());
 

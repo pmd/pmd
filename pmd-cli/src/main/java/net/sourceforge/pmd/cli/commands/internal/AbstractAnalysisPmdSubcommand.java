@@ -7,7 +7,6 @@ package net.sourceforge.pmd.cli.commands.internal;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.AbstractConfiguration;
@@ -34,6 +33,14 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
             arity = "1..*", split = ",")
     protected List<Path> inputPaths;
 
+    @Parameters(arity = "*", description = "Path to a source file, or directory containing source files to analyze. "
+            + "Equivalent to using --dir.")
+    // Note: we can't directly use inputPaths here, because "--dir" might be specified later in the
+    // command line. And PicoCli will then initialize the field inputPaths with a fresh empty List, replacing
+    // anything what was added before.So we need to combine the two lists in #validate()
+    private List<Path> positionalInputPaths;
+
+
     @Option(names = "--file-list",
             description =
                 "Path to a file containing a list of files to analyze, one path per line. "
@@ -50,16 +57,6 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
                     + "Disable this option with '--no-fail-on-violation' to exit with 0 instead and just write the report.",
             defaultValue = "true", negatable = true)
     protected boolean failOnViolation;
-    
-    @Parameters(arity = "*", description = "Path to a source file, or directory containing source files to analyze. "
-            + "Equivalent to using --dir.")
-    public void setInputPaths(final List<Path> inputPaths) {
-        if (this.inputPaths == null) {
-            this.inputPaths = new ArrayList<>();
-        }
-        
-        this.inputPaths.addAll(inputPaths);
-    }
 
     protected List<Path> relativizeRootPaths;
 
@@ -83,6 +80,14 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
     @Override
     protected final void validate() throws ParameterException {
         super.validate();
+
+        if (positionalInputPaths != null) {
+            if (inputPaths == null) {
+                inputPaths = positionalInputPaths;
+            } else {
+                inputPaths.addAll(positionalInputPaths);
+            }
+        }
 
         if ((inputPaths == null || inputPaths.isEmpty()) && uri == null && fileListPath == null) {
             throw new ParameterException(spec.commandLine(),
