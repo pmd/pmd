@@ -4,19 +4,19 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
+import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 import static net.sourceforge.pmd.properties.PropertyFactory.intProperty;
-import static net.sourceforge.pmd.properties.PropertyFactory.stringListProperty;
-import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+import static net.sourceforge.pmd.properties.PropertyFactory.stringProperty;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -39,13 +39,13 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRulechainRule {
             booleanProperty("skipAnnotations")
                     .desc("Skip literals within annotations").defaultValue(false).build();
 
-    private static final PropertyDescriptor<List<String>> EXCEPTION_LIST_DESCRIPTOR
-        = stringListProperty("exceptionList")
+    private static final PropertyDescriptor<Set<String>> EXCEPTION_LIST_DESCRIPTOR
+        = stringProperty("exceptionList")
                          .desc("List of literals to ignore. "
                                           + "A literal is ignored if its image can be found in this list. "
                                           + "Components of this list should not be surrounded by double quotes.")
-                         .defaultValue(Collections.emptyList())
-                         .delim(',')
+                         .map(Collectors.toSet())
+                         .defaultValue(Collections.emptySet())
                          .build();
 
     private Map<String, SortedSet<ASTStringLiteral>> literals = new HashMap<>();
@@ -67,7 +67,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRulechainRule {
         literals.clear();
 
         if (getProperty(EXCEPTION_LIST_DESCRIPTOR) != null) {
-            exceptions = new HashSet<>(getProperty(EXCEPTION_LIST_DESCRIPTOR));
+            exceptions = getProperty(EXCEPTION_LIST_DESCRIPTOR);
         }
 
         minLength = 2 + getProperty(MINIMUM_LENGTH_DESCRIPTOR);

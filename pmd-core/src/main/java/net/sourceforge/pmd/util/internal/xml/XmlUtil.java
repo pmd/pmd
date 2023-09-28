@@ -19,6 +19,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
 import com.github.oowekyala.ooxml.DomUtils;
@@ -101,6 +102,10 @@ public final class XmlUtil {
         }
     }
 
+    public static Set<SchemaConstant> toConstants(Set<String> names) {
+        return CollectionUtil.map(Collectors.toSet(), names, SchemaConstant::new);
+    }
+
     public static @Nullable String formatPossibleNames(Set<SchemaConstant> names) {
         if (names.isEmpty()) {
             return null;
@@ -137,4 +142,5 @@ public final class XmlUtil {
         }
         return buffer.toString();
     }
+
 }

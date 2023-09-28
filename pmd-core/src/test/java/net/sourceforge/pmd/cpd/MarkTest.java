@@ -8,55 +8,51 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.cpd.SourceCode.StringCodeLoader;
+import net.sourceforge.pmd.lang.document.FileId;
+import net.sourceforge.pmd.lang.document.FileLocation;
 
 class MarkTest {
 
     @Test
     void testSimple() {
-        String filename = "/var/Foo.java";
-        int beginLine = 1;
-        TokenEntry token = new TokenEntry("public", "/var/Foo.java", 1);
+        final FileId filename = CpdTestUtils.FOO_FILE_ID;
+        Tokens tokens = new Tokens();
+        TokenEntry token = tokens.addToken("public", filename, 1, 2, 3, 4);
 
         Mark mark = new Mark(token);
-        int lineCount = 10;
-        mark.setLineCount(lineCount);
-        String codeFragment = "code fragment";
-        mark.setSourceCode(new SourceCode(new StringCodeLoader(codeFragment)));
-
+        FileLocation loc = mark.getLocation();
         assertEquals(token, mark.getToken());
-        assertEquals(filename, mark.getFilename());
-        assertEquals(beginLine, mark.getBeginLine());
-        assertEquals(lineCount, mark.getLineCount());
-        assertEquals(beginLine + lineCount - 1, mark.getEndLine());
-        assertEquals(-1, mark.getBeginColumn());
-        assertEquals(-1, mark.getEndColumn());
-        assertEquals(codeFragment, mark.getSourceCodeSlice());
+        assertEquals(filename, loc.getFileId());
+        assertEquals(1, loc.getStartLine());
+        assertEquals(3, loc.getLineCount());
+        assertEquals(3, loc.getEndLine());
+        assertEquals(2, loc.getStartColumn());
+        assertEquals(4, loc.getEndColumn());
     }
 
     @Test
     void testColumns() {
-        final String filename = "/var/Foo.java";
+        final FileId filename = CpdTestUtils.FOO_FILE_ID;
+        Tokens tokens = new Tokens();
         final int beginLine = 1;
         final int beginColumn = 2;
-        final int endColumn = 3;
-        final TokenEntry token = new TokenEntry("public", "/var/Foo.java", 1, beginColumn, beginColumn + "public".length());
-        final TokenEntry endToken = new TokenEntry("}", "/var/Foo.java", 5, endColumn - 1, endColumn);
+        final int endColumn = 2;
+        final int lineCount = 10;
+        TokenEntry token = tokens.addToken("public", filename, beginLine, beginColumn, beginLine,
+                                           beginColumn + "public".length());
+        TokenEntry endToken = tokens.addToken("}", filename,
+                                              beginLine + lineCount, 1, beginLine + lineCount - 1, endColumn);
 
         final Mark mark = new Mark(token);
-        final int lineCount = 10;
-        mark.setLineCount(lineCount);
         mark.setEndToken(endToken);
-        final String codeFragment = "code fragment";
-        mark.setSourceCode(new SourceCode(new StringCodeLoader(codeFragment)));
+        FileLocation loc = mark.getLocation();
 
         assertEquals(token, mark.getToken());
-        assertEquals(filename, mark.getFilename());
-        assertEquals(beginLine, mark.getBeginLine());
-        assertEquals(lineCount, mark.getLineCount());
-        assertEquals(beginLine + lineCount - 1, mark.getEndLine());
-        assertEquals(beginColumn, mark.getBeginColumn());
-        assertEquals(endColumn, mark.getEndColumn());
-        assertEquals(codeFragment, mark.getSourceCodeSlice());
+        assertEquals(filename, loc.getFileId());
+        assertEquals(beginLine, loc.getStartLine());
+        assertEquals(lineCount, loc.getLineCount());
+        assertEquals(beginLine + lineCount - 1, loc.getEndLine());
+        assertEquals(beginColumn, loc.getStartColumn());
+        assertEquals(endColumn, loc.getEndColumn());
     }
 }

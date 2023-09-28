@@ -2153,7 +2153,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/11549103?v=4",
       "profile": "https://github.com/cyw3",
       "contributions": [
-        "bug"
+        "bug",
+        "doc"
       ]
     },
     {
@@ -7198,6 +7199,34 @@
       "name": "Krystian Dabrowski",
       "avatar_url": "https://avatars.githubusercontent.com/u/98942253?v=4",
       "profile": "https://github.com/krdabrowski",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "AndreyBozhko",
+      "name": "Andrey Bozhko",
+      "avatar_url": "https://avatars.githubusercontent.com/u/22246447?v=4",
+      "profile": "https://github.com/AndreyBozhko",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "rcorfieldffdc",
+      "name": "Richard Corfield",
+      "avatar_url": "https://avatars.githubusercontent.com/u/42997936?v=4",
+      "profile": "https://github.com/rcorfieldffdc",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "m0rjc",
+      "name": "Richard Corfield",
+      "avatar_url": "https://avatars.githubusercontent.com/u/994206?v=4",
+      "profile": "https://github.com/m0rjc",
       "contributions": [
         "bug",
         "code"

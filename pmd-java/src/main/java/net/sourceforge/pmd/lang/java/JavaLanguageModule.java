@@ -4,31 +4,26 @@
 
 package net.sourceforge.pmd.lang.java;
 
-import static net.sourceforge.pmd.util.CollectionUtil.listOf;
-
-import java.util.List;
-
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.cpd.CpdCapableLanguage;
+import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.lang.LanguageModuleBase;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.PmdCapableLanguage;
+import net.sourceforge.pmd.lang.java.cpd.JavaTokenizer;
 import net.sourceforge.pmd.lang.java.internal.JavaLanguageProcessor;
 import net.sourceforge.pmd.lang.java.internal.JavaLanguageProperties;
 
 /**
  * Created by christoferdutz on 20.09.14.
  */
-public class JavaLanguageModule extends LanguageModuleBase {
-
-    public static final String NAME = "Java";
-    public static final String TERSE_NAME = "java";
-    @InternalApi
-    public static final List<String> EXTENSIONS = listOf("java");
+public class JavaLanguageModule extends LanguageModuleBase implements PmdCapableLanguage, CpdCapableLanguage {
+    private static final String ID = "java";
+    static final String NAME = "Java";
 
     public JavaLanguageModule() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions(EXTENSIONS.get(0))
+        super(LanguageMetadata.withId(ID).name(NAME).extensions("java")
                               .addVersion("1.3")
                               .addVersion("1.4")
                               .addVersion("1.5", "5")
@@ -52,6 +47,9 @@ public class JavaLanguageModule extends LanguageModuleBase {
                               .addVersion("21-preview"));
     }
 
+    public static JavaLanguageModule getInstance() {
+        return (JavaLanguageModule) LanguageRegistry.PMD.getLanguageById(ID);
+    }
 
     @Override
     public LanguagePropertyBundle newPropertyBundle() {
@@ -63,7 +61,8 @@ public class JavaLanguageModule extends LanguageModuleBase {
         return new JavaLanguageProcessor((JavaLanguageProperties) bundle);
     }
 
-    public static Language getInstance() {
-        return LanguageRegistry.PMD.getLanguageByFullName(NAME);
+    @Override
+    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
+        return new JavaTokenizer((JavaLanguageProperties) bundle);
     }
 }

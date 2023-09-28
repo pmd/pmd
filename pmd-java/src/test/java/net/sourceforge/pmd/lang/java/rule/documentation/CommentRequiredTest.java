@@ -53,6 +53,6 @@ class CommentRequiredTest extends PmdRuleTst {
     }
 
     private static <T> void setPropertyValue(Rule rule, PropertyDescriptor<T> property, String value) {
-        rule.setProperty(property, property.valueFrom(value));
+        rule.setProperty(property, property.serializer().fromString(value));
     }
 }

@@ -294,22 +294,20 @@ public class SubclassWithGenericMethod extends AbstractClass {
         <description>Consider varargs parameter</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The method 'setProperty(MultiValuePropertyDescriptor&lt;V&gt;, V[])' is missing an @Override annotation.</message>
+            <message><![CDATA[The method 'setProperty(M<V>, V[])' is missing an @Override annotation.]]></message>
         </expected-messages>
         <code><![CDATA[
-package net.sourceforge.pmd.lang.rule;
+// Todo varargs method overriding non-varargs one
 
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.properties.MultiValuePropertyDescriptor;
+class M<V> {}
+interface R {
+    <V> void setProperty(M<V> m, V... vs);
+}
 
-/**
- * Base class for Rule implementations which delegate to another Rule instance.
- */
-public abstract class AbstractDelegateRule implements Rule {
+public abstract class AbstractDelegateRule implements R {
 
     // missing
-    public <V> void setProperty(MultiValuePropertyDescriptor<V> propertyDescriptor, V... values) {
-        Rule.super.setProperty(propertyDescriptor, values);
+    public <V> void setProperty(M<V> propertyDescriptor, V... values) {
     }
 
 }

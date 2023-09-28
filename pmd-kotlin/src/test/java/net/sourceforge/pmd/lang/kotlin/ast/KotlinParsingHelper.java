@@ -18,7 +18,7 @@ public class KotlinParsingHelper extends BaseParsingHelper<KotlinParsingHelper, 
 
 
     public KotlinParsingHelper(@NotNull Params params) {
-        super(KotlinLanguageModule.NAME, KotlinParser.KtKotlinFile.class, params);
+        super(KotlinLanguageModule.getInstance(), KotlinParser.KtKotlinFile.class, params);
     }
 
     @NotNull
