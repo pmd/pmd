@@ -58,6 +58,7 @@ can be parsed now. PMD should now be able to parse Apex code up to version 59.0 
   * [#4302](https://github.com/pmd/pmd/issues/4302): \[core] Migrate Property Framework API to Java 8
   * [#4323](https://github.com/pmd/pmd/issues/4323): \[core] Refactor CPD integration
   * [#4397](https://github.com/pmd/pmd/pull/4397):   \[core] Refactor CPD
+  * [#4611](https://github.com/pmd/pmd/pull/4611):   \[core] Fix loading language properties from env vars
   * [#4621](https://github.com/pmd/pmd/issues/4621): \[core] Make `ClasspathClassLoader::getResource` child first
 * cli
   * [#4423](https://github.com/pmd/pmd/pull/4423):   \[cli] Fix NPE when only `--file-list` is specified
@@ -596,6 +597,7 @@ See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html)
     * [#4420](https://github.com/pmd/pmd/pull/4420):   \[core] Remove PMD.EOL
     * [#4425](https://github.com/pmd/pmd/pull/4425):   \[core] Replace TextFile::pathId
     * [#4454](https://github.com/pmd/pmd/issues/4454): \[core] "Unknown option: '-min'" but is referenced in documentation
+    * [#4611](https://github.com/pmd/pmd/pull/4611):   \[core] Fix loading language properties from env vars
     * [#4621](https://github.com/pmd/pmd/issues/4621): \[core] Make `ClasspathClassLoader::getResource` child first
 * cli
     * [#2234](https://github.com/pmd/pmd/issues/2234): \[core] Consolidate PMD CLI into a single command
