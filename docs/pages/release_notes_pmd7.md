@@ -504,6 +504,11 @@ The following previously deprecated rules have been finally removed:
 
 ## 💥 Compatibility and Migration Notes
 
+{% include note.html content="
+The full detailed documentation of the changes are available in the
+[Migration Guide for PMD 7](pmd_userdocs_migrating_to_pmd7.html)
+" %}
+
 ### For endusers
 
 * PMD 7 requires Java 8 or above to execute.

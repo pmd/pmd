@@ -41,6 +41,11 @@ The remaining section describes the complete release notes for 7.0.0.
 
 #### New and Noteworthy
 
+##### Migration Guide for PMD 7
+
+A detailed documentation of required changes are available in the
+[Migration Guide for PMD 7]({{ baseurl }}pmd_userdocs_migrating_to_pmd7.html).
+
 ##### Apex Jorje Updated
 
 With the new version of Apex Jorje, the new language constructs like User Mode Database Operations
@@ -608,7 +613,11 @@ of the changes listed here, see [Detailed Release Notes for PMD 7]({{ baseurl }}
 * New Programmatic API for CPD
 
 ### 💥 Compatibility and migration notes
-See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html).
+
+A detailed documentation of required changes are available in the
+[Migration Guide for PMD 7]({{ baseurl }}pmd_userdocs_migrating_to_pmd7.html).
+
+See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html).
 
 ### 🐛 Fixed Issues
 
