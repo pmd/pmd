@@ -1663,6 +1663,13 @@ for all.</p>
 <p>This section lists the most important changes from the last release candidate.
 The remaining section describes the complete release notes for 7.0.0.</p>
 
+<h4 id="new-and-noteworthy">New and Noteworthy</h4>
+
+<h5 id="apex-jorje-updated">Apex Jorje Updated</h5>
+
+<p>With the new version of Apex Jorje, the new language constructs like User Mode Database Operations
+can be parsed now. PMD should now be able to parse Apex code up to version 59.0 (Winter ‘23).</p>
+
 <h4 id="fixed-issues">Fixed issues</h4>
 
 <ul>
@@ -1693,6 +1700,11 @@ The remaining section describes the complete release notes for 7.0.0.</p>
       <li><a href="https://github.com/pmd/pmd/issues/4294">#4294</a>: [doc] Migration Guide for upgrading PMD 6 ➡️ 7</li>
       <li><a href="https://github.com/pmd/pmd/issues/4303">#4303</a>: [doc] Document new property framework</li>
       <li><a href="https://github.com/pmd/pmd/issues/4521">#4521</a>: [doc] Website is not mobile friendly</li>
+    </ul>
+  </li>
+  <li>apex
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/3973">#3973</a>: [apex] Update parser to support new ‘as user’ keywords (User Mode for Database Operations)</li>
     </ul>
   </li>
   <li>apex-design
@@ -2102,6 +2114,11 @@ literals were ignored. The new option additional ignores identifiers as well in 
   <li>See <a href="https://github.com/pmd/pmd/pull/4470">PR #4470</a> for details.</li>
 </ul>
 
+<h4 id="changed-apex-jorje-updated">Changed: Apex Jorje Updated</h4>
+
+<p>With the new version of Apex Jorje, the new language constructs like User Mode Database Operations
+can be parsed now. PMD should now be able to parse Apex code up to version 59.0 (Winter ‘23).</p>
+
 <h4 id="changed-rule-properties">Changed: Rule properties</h4>
 
 <ul>
@@ -2409,6 +2426,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/issues/1648">#1648</a>: [apex,vf] Remove CodeClimate dependency</li>
       <li><a href="https://github.com/pmd/pmd/pull/1750">#1750</a>:   [apex] Remove apex statistical rules</li>
       <li><a href="https://github.com/pmd/pmd/pull/2836">#2836</a>:   [apex] Remove Apex ProjectMirror</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3973">#3973</a>: [apex] Update parser to support new ‘as user’ keywords (User Mode for Database Operations)</li>
       <li><a href="https://github.com/pmd/pmd/issues/4427">#4427</a>: [apex] ApexBadCrypto test failing to detect inline code</li>
     </ul>
   </li>
@@ -2707,7 +2725,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Sep 9, 2023 <br />
+             Site last generated: Sep 28, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
