@@ -752,7 +752,11 @@
                 <artifactId>snakeyaml</artifactId>
                 <version>1.33</version>
             </dependency>
-
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>32.0.1-jre</version>
+            </dependency>
 
             <!-- TEST DEPENDENCIES -->
             <dependency>
@@ -779,14 +783,6 @@
                 <groupId>com.github.oowekyala.treeutils</groupId>
                 <artifactId>tree-printers</artifactId>
                 <version>2.1.0</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <!-- using 31.0.1-android flavor instead of 31.0.1-jre, so that we are compatible with java7 -->
-                <version>31.0.1-android</version>
                 <scope>test</scope>
             </dependency>
 
