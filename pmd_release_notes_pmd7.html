@@ -1844,6 +1844,34 @@ module <code class="language-plaintext highlighter-rouge">pmd-coco</code>.</p>
 
 <p>Contributors: <a href="https://github.com/wener-tiobe">Wener</a> (@wener-tiobe)</p>
 
+<h3 id="new-java-21-support">New: Java 21 Support</h3>
+
+<p>This release of PMD brings support for Java 21. There are the following new standard language features,
+that are supported now:</p>
+
+<ul>
+  <li><a href="https://openjdk.org/jeps/440">JEP 440: Record Patterns</a></li>
+  <li><a href="https://openjdk.org/jeps/441">JEP 441: Pattern Matching for switch</a></li>
+</ul>
+
+<p>PMD also supports the following preview language features:</p>
+
+<ul>
+  <li><a href="https://openjdk.org/jeps/430">JEP 430: String Templates (Preview)</a></li>
+  <li><a href="https://openjdk.org/jeps/443">JEP 443: Unnamed Patterns and Variables (Preview)</a></li>
+  <li><a href="https://openjdk.org/jeps/445">JEP 445: Unnamed Classes and Instance Main Methods (Preview)</a></li>
+</ul>
+
+<p>In order to analyze a project with PMD that uses these language features,
+you’ll need to enable it via the environment variable <code class="language-plaintext highlighter-rouge">PMD_JAVA_OPTS</code> and select the new language
+version <code class="language-plaintext highlighter-rouge">21-preview</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PMD_JAVA_OPTS=--enable-preview
+pmd check --use-version java-21-preview ...
+</code></pre></div></div>
+
+<p>Note: Support for Java 19 preview language features have been removed. The version “19-preview” is no longer available.</p>
+
 <h3 id="new-cpd-support-for-apache-velocity-template-language">New: CPD support for Apache Velocity Template Language</h3>
 
 <p>PMD supports Apache Velocity for a very long time, but the CPD integration never got finished.

@@ -1670,6 +1670,34 @@ The remaining section describes the complete release notes for 7.0.0.</p>
 <p>With the new version of Apex Jorje, the new language constructs like User Mode Database Operations
 can be parsed now. PMD should now be able to parse Apex code up to version 59.0 (Winter ‘23).</p>
 
+<h5 id="java-21-support">Java 21 Support</h5>
+
+<p>This release of PMD brings support for Java 21. There are the following new standard language features,
+that are supported now:</p>
+
+<ul>
+  <li><a href="https://openjdk.org/jeps/440">JEP 440: Record Patterns</a></li>
+  <li><a href="https://openjdk.org/jeps/441">JEP 441: Pattern Matching for switch</a></li>
+</ul>
+
+<p>PMD also supports the following preview language features:</p>
+
+<ul>
+  <li><a href="https://openjdk.org/jeps/430">JEP 430: String Templates (Preview)</a></li>
+  <li><a href="https://openjdk.org/jeps/443">JEP 443: Unnamed Patterns and Variables (Preview)</a></li>
+  <li><a href="https://openjdk.org/jeps/445">JEP 445: Unnamed Classes and Instance Main Methods (Preview)</a></li>
+</ul>
+
+<p>In order to analyze a project with PMD that uses these language features,
+you’ll need to enable it via the environment variable <code class="language-plaintext highlighter-rouge">PMD_JAVA_OPTS</code> and select the new language
+version <code class="language-plaintext highlighter-rouge">21-preview</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PMD_JAVA_OPTS=--enable-preview
+pmd check --use-version java-21-preview ...
+</code></pre></div></div>
+
+<p>Note: Support for Java 19 preview language features have been removed. The version “19-preview” is no longer available.</p>
+
 <h4 id="fixed-issues">Fixed issues</h4>
 
 <ul>
@@ -1687,6 +1715,7 @@ can be parsed now. PMD should now be able to parse Apex code up to version 59.0 
       <li><a href="https://github.com/pmd/pmd/issues/4302">#4302</a>: [core] Migrate Property Framework API to Java 8</li>
       <li><a href="https://github.com/pmd/pmd/issues/4323">#4323</a>: [core] Refactor CPD integration</li>
       <li><a href="https://github.com/pmd/pmd/pull/4397">#4397</a>:   [core] Refactor CPD</li>
+      <li><a href="https://github.com/pmd/pmd/pull/4611">#4611</a>:   [core] Fix loading language properties from env vars</li>
       <li><a href="https://github.com/pmd/pmd/issues/4621">#4621</a>: [core] Make <code class="language-plaintext highlighter-rouge">ClasspathClassLoader::getResource</code> child first</li>
     </ul>
   </li>
@@ -1705,6 +1734,7 @@ can be parsed now. PMD should now be able to parse Apex code up to version 59.0 
   <li>apex
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/3973">#3973</a>: [apex] Update parser to support new ‘as user’ keywords (User Mode for Database Operations)</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4453">#4453</a>: [apex] [7.0-rc1] Exception while initializing Apexlink (Index 34812 out of bounds for length 34812)</li>
     </ul>
   </li>
   <li>apex-design
@@ -1720,6 +1750,7 @@ can be parsed now. PMD should now be able to parse Apex code up to version 59.0 
   <li>java
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/4401">#4401</a>: [java] PMD 7 fails to build under Java 19</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4583">#4583</a>: [java] Support JDK 21 (LTS)</li>
     </ul>
   </li>
   <li>java-bestpractices
@@ -1731,7 +1762,13 @@ can be parsed now. PMD should now be able to parse Apex code up to version 59.0 
 
 <h4 id="api-changes">API Changes</h4>
 
-<p><strong>Rule properties</strong></p>
+<h5 id="pmd-java">pmd-java</h5>
+
+<ul>
+  <li>Support for Java 19 preview language features have been removed. The version “19-preview” is no longer available.</li>
+</ul>
+
+<h5 id="rule-properties">Rule properties</h5>
 
 <ul>
   <li>The old deprecated classes like <code class="language-plaintext highlighter-rouge">IntProperty</code> and <code class="language-plaintext highlighter-rouge">StringProperty</code> have been removed. Please use
@@ -1743,12 +1780,12 @@ with a backslash.</li>
 or be omitted.</li>
 </ul>
 
-<p><strong>New Programmatic API for CPD</strong></p>
+<h5 id="new-programmatic-api-for-cpd">New Programmatic API for CPD</h5>
 
 <p>See <a href="pmd_release_notes_pmd7.html#new-programmatic-api-for-cpd">Detailed Release Notes for PMD 7</a>
 and <a href="https://github.com/pmd/pmd/pull/4397">PR #4397</a> for details.</p>
 
-<p><strong>Removed classes and methods</strong></p>
+<h5 id="removed-classes-and-methods">Removed classes and methods</h5>
 
 <p>The following previously deprecated classes have been removed:</p>
 
@@ -1874,7 +1911,7 @@ and <a href="https://github.com/pmd/pmd/pull/4397">PR #4397</a> for details.</p>
   </li>
 </ul>
 
-<p><strong>Moved packages</strong></p>
+<h5 id="moved-packages">Moved packages</h5>
 
 <ul>
   <li>pmd-core
@@ -1898,7 +1935,7 @@ and <a href="https://github.com/pmd/pmd/pull/4397">PR #4397</a> for details.</p>
   </li>
 </ul>
 
-<p><strong>Changed types and other changes</strong></p>
+<h5 id="changed-types-and-other-changes">Changed types and other changes</h5>
 
 <ul>
   <li>pmd-core
@@ -1951,17 +1988,45 @@ instead of a <code class="language-plaintext highlighter-rouge">String</code>.</
   </li>
 </ul>
 
-<p><strong>Internal APIs</strong></p>
+<h5 id="internal-apis">Internal APIs</h5>
 
 <ul>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/Tokens.html#"><code>Tokens</code></a></li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/net/sourceforge/pmd/properties/PropertyTypeId.html#"><code>PropertyTypeId</code></a></li>
 </ul>
 
-<p><strong>Deprecations</strong></p>
+<h5 id="deprecated-api">Deprecated API</h5>
 
 <ul>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/Language.html#getTerseName()"><code>Language#getTerseName</code></a> ➡️ use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/Language.html#getId()"><code>getId</code></a> instead</li>
+  <li>
+    <p><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/Language.html#getTerseName()"><code>Language#getTerseName</code></a> ➡️ use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/Language.html#getId()"><code>getId</code></a> instead</p>
+  </li>
+  <li>
+    <p>The method <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTPattern.html#getParenthesisDepth()"><code>ASTPattern#getParenthesisDepth</code></a> has been deprecated and will be removed.
+It was introduced for supporting parenthesized patterns, but that was removed with Java 21. It is only used when
+parsing code as java-19-preview.</p>
+  </li>
+</ul>
+
+<h5 id="experimental-apis">Experimental APIs</h5>
+
+<ul>
+  <li>To support the Java preview language features “String Templates” and “Unnamed Patterns and Variables”, the following
+AST nodes have been introduced as experimental:
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTTemplateExpression.html#"><code>ASTTemplateExpression</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTTemplate.html#"><code>ASTTemplate</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTTemplateFragment.html#"><code>ASTTemplateFragment</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTUnnamedPattern.html#"><code>ASTUnnamedPattern</code></a></li>
+    </ul>
+  </li>
+  <li>The AST nodes for supporting “Record Patterns” and “Pattern Matching for switch” are not experimental anymore:
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/jast/ast/ASTRecordPattern.html#"><code>ASTRecordPattern</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/jast/ast/ASTPatternList.html#"><code>ASTPatternList</code></a> (Note: it was renamed from <code class="language-plaintext highlighter-rouge">ASTComponentPatternList</code>)</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/jast/ast.html#"><code>ast</code></a> (Note: it was renamed from <code class="language-plaintext highlighter-rouge">ASTSwitchGuard</code>)</li>
+    </ul>
+  </li>
 </ul>
 
 <h4 id="external-contributions">External Contributions</h4>
@@ -2089,6 +2154,34 @@ designed specifically for building event-driven software. It is shipped in the n
 module <code class="language-plaintext highlighter-rouge">pmd-coco</code>.</p>
 
 <p>Contributors: <a href="https://github.com/wener-tiobe">Wener</a> (@wener-tiobe)</p>
+
+<h4 id="new-java-21-support">New: Java 21 Support</h4>
+
+<p>This release of PMD brings support for Java 21. There are the following new standard language features,
+that are supported now:</p>
+
+<ul>
+  <li><a href="https://openjdk.org/jeps/440">JEP 440: Record Patterns</a></li>
+  <li><a href="https://openjdk.org/jeps/441">JEP 441: Pattern Matching for switch</a></li>
+</ul>
+
+<p>PMD also supports the following preview language features:</p>
+
+<ul>
+  <li><a href="https://openjdk.org/jeps/430">JEP 430: String Templates (Preview)</a></li>
+  <li><a href="https://openjdk.org/jeps/443">JEP 443: Unnamed Patterns and Variables (Preview)</a></li>
+  <li><a href="https://openjdk.org/jeps/445">JEP 445: Unnamed Classes and Instance Main Methods (Preview)</a></li>
+</ul>
+
+<p>In order to analyze a project with PMD that uses these language features,
+you’ll need to enable it via the environment variable <code class="language-plaintext highlighter-rouge">PMD_JAVA_OPTS</code> and select the new language
+version <code class="language-plaintext highlighter-rouge">21-preview</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PMD_JAVA_OPTS=--enable-preview
+pmd check --use-version java-21-preview ...
+</code></pre></div></div>
+
+<p>Note: Support for Java 19 preview language features have been removed. The version “19-preview” is no longer available.</p>
 
 <h4 id="changed-javascript-support">Changed: JavaScript support</h4>
 
@@ -2387,6 +2480,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/pull/4420">#4420</a>:   [core] Remove PMD.EOL</li>
       <li><a href="https://github.com/pmd/pmd/pull/4425">#4425</a>:   [core] Replace TextFile::pathId</li>
       <li><a href="https://github.com/pmd/pmd/issues/4454">#4454</a>: [core] “Unknown option: ‘-min’” but is referenced in documentation</li>
+      <li><a href="https://github.com/pmd/pmd/pull/4611">#4611</a>:   [core] Fix loading language properties from env vars</li>
       <li><a href="https://github.com/pmd/pmd/issues/4621">#4621</a>: [core] Make <code class="language-plaintext highlighter-rouge">ClasspathClassLoader::getResource</code> child first</li>
     </ul>
   </li>
@@ -2428,6 +2522,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/pull/2836">#2836</a>:   [apex] Remove Apex ProjectMirror</li>
       <li><a href="https://github.com/pmd/pmd/issues/3973">#3973</a>: [apex] Update parser to support new ‘as user’ keywords (User Mode for Database Operations)</li>
       <li><a href="https://github.com/pmd/pmd/issues/4427">#4427</a>: [apex] ApexBadCrypto test failing to detect inline code</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4453">#4453</a>: [apex] [7.0-rc1] Exception while initializing Apexlink (Index 34812 out of bounds for length 34812)</li>
     </ul>
   </li>
   <li>apex-design
@@ -2471,6 +2566,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/issues/4383">#4383</a>: [java] IllegalStateException: Object is not an array type!</li>
       <li><a href="https://github.com/pmd/pmd/issues/4401">#4401</a>: [java] PMD 7 fails to build under Java 19</li>
       <li><a href="https://github.com/pmd/pmd/issues/4405">#4405</a>: [java] Processing error with ArrayIndexOutOfBoundsException</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4583">#4583</a>: [java] Support JDK 21 (LTS)</li>
     </ul>
   </li>
   <li>java-bestpractices
