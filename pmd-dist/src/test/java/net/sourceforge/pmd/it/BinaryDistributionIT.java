@@ -33,13 +33,14 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         "fortran", "gherkin", "go", "groovy", "html", "java", "jsp",
         "julia",
         "kotlin", "lua", "matlab", "modelica", "objectivec", "perl",
-        "php", "plsql", "python", "ruby", "scala", "swift", "tsql",
-        "typescript", "vf", "xml"
+        "php", "plsql", "pom", "python", "ruby", "scala", "swift",
+        "tsql", "typescript", "vf", "vm", "wsdl", "xml", "xsl"
     );
 
     private static final List<String> SUPPORTED_LANGUAGES_PMD = listOf(
         "apex-52", "apex-53", "apex-54", "apex-55",
-        "apex-56", "apex-57", "ecmascript-3", "ecmascript-5",
+        "apex-56", "apex-57", "apex-58", "apex-59",
+        "ecmascript-3", "ecmascript-5",
         "ecmascript-6", "ecmascript-7", "ecmascript-8",
         "ecmascript-9", "ecmascript-ES2015",
         "ecmascript-ES2016", "ecmascript-ES2017",
@@ -59,7 +60,8 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         "swift-4.2", "swift-5.0", "swift-5.1", "swift-5.2",
         "swift-5.3", "swift-5.4", "swift-5.5", "swift-5.6",
         "swift-5.7", "vf-52", "vf-53", "vf-54", "vf-55", "vf-56",
-        "vf-57", "vm-2.0", "vm-2.1", "vm-2.2", "vm-2.3", "wsdl-1.1",
+        "vf-57", "vf-58", "vf-59",
+        "vm-2.0", "vm-2.1", "vm-2.2", "vm-2.3", "wsdl-1.1",
         "wsdl-2.0", "xml-1.0", "xml-1.1", "xsl-1.0", "xsl-2.0",
         "xsl-3.0"
     );
@@ -169,13 +171,13 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
 
         result = PMDExecutor.runPMD(createTemporaryReportFile(), tempDir, "-d", srcDir, "-R", "src/test/resources/rulesets/sample-ruleset.xml");
         result.assertExitCode(4);
-        result.assertErrorOutputContains("[main] INFO net.sourceforge.pmd.cli.commands.internal.AbstractPmdSubcommand - Log level is at INFO");
+        result.assertErrorOutputContains("[main] INFO net.sourceforge.pmd.cli - Log level is at INFO");
 
 
         // now with debug
         result = PMDExecutor.runPMD(createTemporaryReportFile(), tempDir, "-d", srcDir, "-R", "src/test/resources/rulesets/sample-ruleset.xml", "--debug");
         result.assertExitCode(4);
-        result.assertErrorOutputContains("[main] INFO net.sourceforge.pmd.cli.commands.internal.AbstractPmdSubcommand - Log level is at TRACE");
+        result.assertErrorOutputContains("[main] INFO net.sourceforge.pmd.cli - Log level is at TRACE");
     }
 
     @Test

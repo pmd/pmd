@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.vm;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.lang.vm.ast.VmParsingHelper;
-
 /**
  * Unit test for VM parsing.
  */

@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.vm.rule.design;
 
-import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 
 import net.sourceforge.pmd.lang.vm.ast.ASTElseIfStatement;
 import net.sourceforge.pmd.lang.vm.ast.ASTIfStatement;

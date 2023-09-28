@@ -25,7 +25,6 @@ import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -42,7 +41,6 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
-import net.sourceforge.pmd.properties.MultiValuePropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public class RuleDocGenerator {
@@ -57,7 +55,7 @@ public class RuleDocGenerator {
     private static final String RULESET_INDEX_PERMALINK_PATTERN = "pmd_rules_${language.tersename}_${ruleset.name}.html";
 
     private static final String DEPRECATION_LABEL_SMALL = "<span style=\"border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;\">Deprecated</span> ";
-    private static final String DEPRECATION_LABEL = "<span style=\"border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;\">Deprecated</span> ";
+    private static final String DEPRECATION_LABEL = "<span style=\"border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;\">Deprecated</span>";
     private static final String DEPRECATED_RULE_PROPERTY_MARKER = "deprecated!";
 
     private static final String GITHUB_SOURCE_LINK = "https://github.com/pmd/pmd/blob/master/";
@@ -444,8 +442,8 @@ public class RuleDocGenerator {
                     if (!properties.isEmpty()) {
                         lines.add("**This rule has the following properties:**");
                         lines.add("");
-                        lines.add("|Name|Default Value|Description|Multivalued|");
-                        lines.add("|----|-------------|-----------|-----------|");
+                        lines.add("|Name|Default Value|Description|");
+                        lines.add("|----|-------------|-----------|");
                         for (PropertyDescriptor<?> propertyDescriptor : properties) {
                             String description = propertyDescriptor.description();
                             final boolean isDeprecated = isDeprecated(propertyDescriptor);
@@ -455,19 +453,14 @@ public class RuleDocGenerator {
 
                             String defaultValue = determineDefaultValueAsString(propertyDescriptor, rule, true);
 
-                            String multiValued = "no";
-                            if (propertyDescriptor.isMultiValue()) {
-                                MultiValuePropertyDescriptor<?> multiValuePropertyDescriptor =
-                                        (MultiValuePropertyDescriptor<?>) propertyDescriptor;
-                                multiValued = "yes. Delimiter is '"
-                                        + multiValuePropertyDescriptor.multiValueDelimiter() + "'.";
-                            }
-
-                            lines.add("|" + EscapeUtils.escapeMarkdown(StringEscapeUtils.escapeHtml4(propertyDescriptor.name()))
-                                    + "|" + EscapeUtils.escapeMarkdown(StringEscapeUtils.escapeHtml4(defaultValue)) + "|"
-                                    + EscapeUtils.escapeMarkdown((isDeprecated ? DEPRECATION_LABEL_SMALL : "")
-                                            + StringEscapeUtils.escapeHtml4(description))
-                                    + "|" + EscapeUtils.escapeMarkdown(StringEscapeUtils.escapeHtml4(multiValued)) + "|");
+                            lines.add("|"
+                                    + EscapeUtils.escapeMarkdown(StringEscapeUtils.escapeHtml4(propertyDescriptor.name()))
+                                    + "|"
+                                    + EscapeUtils.escapeMarkdown(defaultValue)
+                                    + "|"
+                                    + EscapeUtils.escapeMarkdown((isDeprecated ? DEPRECATION_LABEL_SMALL : "") + StringEscapeUtils.escapeHtml4(description))
+                                    + "|"
+                            );
                         }
                         lines.add("");
                     }
@@ -521,26 +514,19 @@ public class RuleDocGenerator {
             && propertyDescriptor.description().toLowerCase(Locale.ROOT).startsWith(DEPRECATED_RULE_PROPERTY_MARKER);
     }
 
-    private String determineDefaultValueAsString(PropertyDescriptor<?> propertyDescriptor, Rule rule, boolean pad) {
+    private <T> String determineDefaultValueAsString(PropertyDescriptor<T> propertyDescriptor, Rule rule, boolean pad) {
         String defaultValue = "";
-        Object realDefaultValue = rule.getProperty(propertyDescriptor);
-        @SuppressWarnings("unchecked") // just force it, we know it's the right type
-        PropertyDescriptor<Object> captured = (PropertyDescriptor<Object>) propertyDescriptor;
+        T realDefaultValue = rule.getProperty(propertyDescriptor);
 
         if (realDefaultValue != null) {
-            defaultValue = captured.asDelimitedString(realDefaultValue);
-
-            if (pad && propertyDescriptor.isMultiValue()) {
-                @SuppressWarnings("unchecked") // multi valued properties are using a List
-                MultiValuePropertyDescriptor<List<?>> multiPropertyDescriptor = (MultiValuePropertyDescriptor<List<?>>) propertyDescriptor;
-
+            defaultValue = propertyDescriptor.serializer().toString(realDefaultValue);
+            if (pad && realDefaultValue instanceof Collection) {
                 // surround the delimiter with spaces, so that the browser can wrap
                 // the value nicely
-                defaultValue = defaultValue.replaceAll(Pattern.quote(
-                        String.valueOf(multiPropertyDescriptor.multiValueDelimiter())),
-                        " " + multiPropertyDescriptor.multiValueDelimiter() + " ");
+                defaultValue = defaultValue.replaceAll(",", " , ");
             }
         }
+        defaultValue = StringEscapeUtils.escapeHtml4(defaultValue);
         return defaultValue;
     }
 

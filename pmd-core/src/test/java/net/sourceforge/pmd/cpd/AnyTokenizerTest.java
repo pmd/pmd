@@ -7,37 +7,42 @@ package net.sourceforge.pmd.cpd;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.lang.DummyLanguageModule;
+import net.sourceforge.pmd.lang.document.FileId;
+import net.sourceforge.pmd.lang.document.TextDocument;
+
 class AnyTokenizerTest {
 
     @Test
-    void testMultiLineMacros() {
+    void testMultiLineMacros() throws IOException {
         AnyTokenizer tokenizer = new AnyTokenizer("//");
         compareResult(tokenizer, TEST1, EXPECTED);
     }
 
     @Test
-    void testStringEscape() {
+    void testStringEscape() throws IOException {
         AnyTokenizer tokenizer = new AnyTokenizer("//");
         compareResult(tokenizer, "a = \"oo\\n\"", listOf("a", "=", "\"oo\\n\"", "EOF"));
     }
 
     @Test
-    void testMultilineString() {
+    void testMultilineString() throws IOException {
         AnyTokenizer tokenizer = new AnyTokenizer("//");
         Tokens tokens = compareResult(tokenizer, "a = \"oo\n\";", listOf("a", "=", "\"oo\n\"", ";", "EOF"));
         TokenEntry string = tokens.getTokens().get(2);
-        assertEquals("\"oo\n\"", getTokenImage(string));
+        assertEquals("\"oo\n\"", string.getImage(tokens));
         assertEquals(1, string.getBeginLine());
         assertEquals(5, string.getBeginColumn());
         assertEquals(2, string.getEndColumn()); // ends on line 2
 
         TokenEntry semi = tokens.getTokens().get(3);
-        assertEquals(";", getTokenImage(semi));
+        assertEquals(";", semi.getImage(tokens));
         assertEquals(2, semi.getBeginLine());
         assertEquals(2, semi.getBeginColumn());
         assertEquals(3, semi.getEndColumn());
@@ -47,11 +52,11 @@ class AnyTokenizerTest {
      * Tests that [core][cpd] AnyTokenizer doesn't count columns correctly #2760 is actually fixed.
      */
     @Test
-    void testTokenPosition() {
+    void testTokenPosition() throws IOException {
         AnyTokenizer tokenizer = new AnyTokenizer();
-        SourceCode code = new SourceCode(new SourceCode.StringCodeLoader("a;\nbbbb\n;"));
+        TextDocument code = TextDocument.readOnlyString("a;\nbbbb\n;", FileId.UNKNOWN, DummyLanguageModule.getInstance().getDefaultVersion());
         Tokens tokens = new Tokens();
-        tokenizer.tokenize(code, tokens);
+        Tokenizer.tokenize(tokenizer, code, tokens);
         TokenEntry bbbbToken = tokens.getTokens().get(2);
         assertEquals(2, bbbbToken.getBeginLine());
         assertEquals(1, bbbbToken.getBeginColumn());
@@ -59,14 +64,14 @@ class AnyTokenizerTest {
     }
 
 
-    private Tokens compareResult(AnyTokenizer tokenizer, String source, List<String> expectedImages) {
-        SourceCode code = new SourceCode(new SourceCode.StringCodeLoader(source));
+    private Tokens compareResult(AnyTokenizer tokenizer, String source, List<String> expectedImages) throws IOException {
+        TextDocument code = TextDocument.readOnlyString(source, FileId.UNKNOWN, DummyLanguageModule.getInstance().getDefaultVersion());
         Tokens tokens = new Tokens();
-        tokenizer.tokenize(code, tokens);
+        Tokenizer.tokenize(tokenizer, code, tokens);
 
         List<String> tokenStrings = new ArrayList<>();
         for (TokenEntry token : tokens.getTokens()) {
-            tokenStrings.add(getTokenImage(token));
+            tokenStrings.add(token.getImage(tokens));
         }
 
         assertEquals(expectedImages, tokenStrings);

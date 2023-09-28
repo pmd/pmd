@@ -39,19 +39,211 @@ for all.</p>
 This section lists the most important changes from the last release candidate.
 The remaining section describes the complete release notes for 7.0.0.
 
+#### New and Noteworthy
+
+##### Apex Jorje Updated
+
+With the new version of Apex Jorje, the new language constructs like User Mode Database Operations
+can be parsed now. PMD should now be able to parse Apex code up to version 59.0 (Winter '23).
+
 #### Fixed issues
 
 * miscellaneous
   * [#4582](https://github.com/pmd/pmd/issues/4582): \[dist] Download link broken
+* core
+  * [#1204](https://github.com/pmd/pmd/issues/1204): \[core] Allow numeric properties in XML to be within an unbounded range
+  * [#3919](https://github.com/pmd/pmd/issues/3919): \[core] Merge CPD and PMD language
+  * [#4204](https://github.com/pmd/pmd/issues/4204): \[core] Provide a CpdAnalysis class as a programmatic entry point into CPD
+  * [#4301](https://github.com/pmd/pmd/issues/4301): \[core] Remove deprecated property concrete classes
+  * [#4302](https://github.com/pmd/pmd/issues/4302): \[core] Migrate Property Framework API to Java 8
+  * [#4323](https://github.com/pmd/pmd/issues/4323): \[core] Refactor CPD integration
+  * [#4397](https://github.com/pmd/pmd/pull/4397):   \[core] Refactor CPD
+  * [#4621](https://github.com/pmd/pmd/issues/4621): \[core] Make `ClasspathClassLoader::getResource` child first
+* cli
+  * [#4423](https://github.com/pmd/pmd/pull/4423):   \[cli] Fix NPE when only `--file-list` is specified
+* doc
+  * [#4294](https://github.com/pmd/pmd/issues/4294): \[doc] Migration Guide for upgrading PMD 6 ➡️ 7
+  * [#4303](https://github.com/pmd/pmd/issues/4303): \[doc] Document new property framework
+  * [#4521](https://github.com/pmd/pmd/issues/4521): \[doc] Website is not mobile friendly
+* apex
+  * [#3973](https://github.com/pmd/pmd/issues/3973): \[apex] Update parser to support new 'as user' keywords (User Mode for Database Operations)
+  * [#4453](https://github.com/pmd/pmd/issues/4453): \[apex] \[7.0-rc1] Exception while initializing Apexlink (Index 34812 out of bounds for length 34812)
 * apex-design
   * [#4596](https://github.com/pmd/pmd/issues/4596): \[apex] ExcessivePublicCount ignores properties
+* apex-security
+  * [#4646](https://github.com/pmd/pmd/issues/4646): \[apex] ApexSOQLInjection does not recognise SObjectType or SObjectField as safe variable types
 * java
   * [#4401](https://github.com/pmd/pmd/issues/4401): \[java] PMD 7 fails to build under Java 19
+* java-bestpractices
+  * [#4634](https://github.com/pmd/pmd/issues/4634): \[java] JUnit4TestShouldUseTestAnnotation false positive with TestNG
 
 #### API Changes
 
+**Rule properties**
+
+* The old deprecated classes like `IntProperty` and `StringProperty` have been removed. Please use
+  {% jdoc core::properties.PropertyFactory %} to create properties.
+* All properties which accept multiple values now use a comma (`,`) as a delimiter. The previous default was a
+  pipe character (`|`). The delimiter is not configurable anymore. If needed, the comma can be escaped
+  with a backslash.
+* The `min` and `max` attributes in property definitions in the XML are now optional and can appear separately
+  or be omitted.
+
+**New Programmatic API for CPD**
+
+See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html#new-programmatic-api-for-cpd)
+and [PR #4397](https://github.com/pmd/pmd/pull/4397) for details.
+
+**Removed classes and methods**
+
+The following previously deprecated classes have been removed:
+
+* pmd-core
+  * `net.sourceforge.pmd.cpd.AbstractTokenizer` ➡️ use {%jdoc core::cpd.AnyTokenizer %} instead
+  * `net.sourceforge.pmd.cpd.CPD` ➡️ use {% jdoc cli::cli.PmdCli %} from `pmd-cli` module for CLI support or use
+    {%jdoc core::cpd.CpdAnalysis %} for programmatic API
+  * `net.sourceforge.pmd.cpd.GridBagHelper` (now package private)
+  * `net.sourceforge.pmd.cpd.TokenEntry.State`
+  * `net.sourceforge.pmd.lang.document.CpdCompat`
+  * `net.sourceforge.pmd.properties.BooleanMultiProperty`
+  * `net.sourceforge.pmd.properties.BooleanProperty`
+  * `net.sourceforge.pmd.properties.CharacterMultiProperty`
+  * `net.sourceforge.pmd.properties.CharacterProperty`
+  * `net.sourceforge.pmd.properties.DoubleMultiProperty`
+  * `net.sourceforge.pmd.properties.DoubleProperty`
+  * `net.sourceforge.pmd.properties.EnumeratedMultiProperty`
+  * `net.sourceforge.pmd.properties.EnumeratedProperty`
+  * `net.sourceforge.pmd.properties.EnumeratedPropertyDescriptor`
+  * `net.sourceforge.pmd.properties.FileProperty` (note: without replacement)
+  * `net.sourceforge.pmd.properties.FloatMultiProperty`
+  * `net.sourceforge.pmd.properties.FloatProperty`
+  * `net.sourceforge.pmd.properties.IntegerMultiProperty`
+  * `net.sourceforge.pmd.properties.IntegerProperty`
+  * `net.sourceforge.pmd.properties.LongMultiProperty`
+  * `net.sourceforge.pmd.properties.LongProperty`
+  * `net.sourceforge.pmd.properties.MultiValuePropertyDescriptor`
+  * `net.sourceforge.pmd.properties.NumericPropertyDescriptor`
+  * `net.sourceforge.pmd.properties.PropertyDescriptorField`
+  * `net.sourceforge.pmd.properties.RegexProperty`
+  * `net.sourceforge.pmd.properties.SingleValuePropertyDescriptor`
+  * `net.sourceforge.pmd.properties.StringMultiProperty`
+  * `net.sourceforge.pmd.properties.StringProperty`
+  * `net.sourceforge.pmd.properties.ValueParser`
+  * `net.sourceforge.pmd.properties.ValueParserConstants`
+  * `net.sourceforge.pmd.properties.builders.MultiNumericPropertyBuilder`
+  * `net.sourceforge.pmd.properties.builders.MultiPackagedPropertyBuilder`
+  * `net.sourceforge.pmd.properties.builders.MultiValuePropertyBuilder`
+  * `net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilder`
+  * `net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper`
+  * `net.sourceforge.pmd.properties.builders.PropertyDescriptorExternalBuilder`
+  * `net.sourceforge.pmd.properties.builders.SingleNumericPropertyBuilder`
+  * `net.sourceforge.pmd.properties.builders.SinglePackagedPropertyBuilder`
+  * `net.sourceforge.pmd.properties.builders.SingleValuePropertyBuilder`
+  * `net.sourceforge.pmd.properties.modules.EnumeratedPropertyModule`
+  * `net.sourceforge.pmd.properties.modules.NumericPropertyModule`
+
+The following previously deprecated methods have been removed:
+
+* pmd-core
+  * `net.sourceforge.pmd.properties.PropertyBuilder.GenericCollectionPropertyBuilder#delim(char)`
+  * `net.sourceforge.pmd.properties.PropertySource#setProperty(...)`
+  * `net.sourceforge.pmd.properties.PropertyTypeId#factoryFor(...)`
+  * `net.sourceforge.pmd.properties.PropertyTypeId#typeIdFor(...)`
+  * `net.sourceforge.pmd.properties.PropertyDescriptor`: removed methods errorFor, type, isMultiValue,
+     uiOrder, compareTo, isDefinedExternally, valueFrom, asDelimitedString
+
+The following methods have been removed:
+
+* pmd-core
+  * {%jdoc core::cpd.CPDConfiguration %}
+    * `#sourceCodeFor(File)`, `#postConstruct()`, `#tokenizer()`, `#filenameFilter()` removed
+  * {%jdoc core::cpd.Mark %}
+    * `#getSourceSlice()`, `#setLineCount(int)`, `#getLineCount()`, `#setSourceCode(SourceCode)` removed
+    * `#getBeginColumn()`, `#getBeginLine()`, `#getEndLine()`, `#getEndColumn()` removed
+      ➡️ use {%jdoc core::cpd.Mark#getLocation() %} instead
+  * {%jdoc core::cpd.Match %}
+    * `#LABEL_COMPARATOR` removed
+    * `#setMarkSet(...)`, `#setLabel(...)`, `#getLabel()`, `#addTokenEntry(...)` removed
+    * `#getSourceCodeSlice()` removed
+      ➡️ use {%jdoc !!core::cpd.CPDReport#getSourceCodeSlice(net.sourceforge.pmd.cpd.Mark) %} instead
+  * {%jdoc core::cpd.TokenEntry %}
+    * `#getEOF()`, `#clearImages()`, `#getIdentifier()`, `#getIndex()`, `#setHashCode(int)` removed
+    * `#EOF` removed ➡️ use {%jdoc core::cpd.TokenEntry#isEof() %} instead
+  * {%jdoc core::lang.ast.Parser.ParserTask %}
+    * `#getFileDisplayName()` removed ➡️ use {%jdoc core::lang.ast.Parser.ParserTask#getFileId() %} instead
+      (`getFileId().getAbsolutePath()`)
+
+The following classes have been removed:
+
+* pmd-core
+  * `net.sourceforge.pmd.cpd.AbstractLanguage`
+  * `net.sourceforge.pmd.cpd.AnyLanguage`
+  * `net.sourceforge.pmd.cpd.Language`
+  * `net.sourceforge.pmd.cpd.LanguageFactory`
+  * `net.sourceforge.pmd.cpd.MatchAlgorithm` (now package private)
+  * `net.sourceforge.pmd.cpd.MatchCollector` (now package private)
+  * `net.sourceforge.pmd.cpd.SourceCode` (and all inner classes like `FileCodeLoader`, ...)
+  * `net.sourceforge.pmd.cpd.token.TokenFilter`
+
+**Moved packages**
+
+* pmd-core
+  * {%jdoc core::net.sourceforge.pmd.properties.NumericConstraints %} (old package: `net.sourceforge.pmd.properties.constraints.NumericConstraints`)
+  * {%jdoc core::net.sourceforge.pmd.properties.PropertyConstraint %} (old package: `net.sourceforge.pmd.properties.constraints.PropertyConstraint`)
+    * not experimental anymore
+  * {%jdoc ant::ant.ReportException %} (old package: `net.sourceforge.pmd.cpd`, moved to module `pmd-ant`)
+    * it is now a RuntimeException
+  * {%jdoc core::cpd.CPDReportRenderer %} (old package: `net.sourceforge.pmd.cpd.renderer`)
+  * {%jdoc core::cpd.impl.AntlrTokenFilter %} (old package: `net.sourceforge.pmd.cpd.token`)
+  * {%jdoc core::cpd.impl.BaseTokenFilter %} (old package: `net.sourceforge.pmd.cpd.token.internal`)
+  * {%jdoc core::cpd.impl.JavaCCTokenFilter %} (old package: `net.sourceforge.pmd.cpd.token`)
+
+**Changed types and other changes**
+
+* pmd-core
+  * {%jdoc core::net.sourceforge.pmd.properties.PropertyDescriptor %} is now a class (was an interface)
+    and it is not comparable anymore.
+  * {%jdoc !!core::AbstractConfiguration#setSourceEncoding(java.nio.charset.Charset) %}
+    * previously this method took a simple String for the encoding.
+  * {%jdoc core::PmdConfiguration %} and {%jdoc core::cpd.CPDConfiguration %}
+    * many getters and setters have been moved to the parent class {%jdoc core::AbstractConfiguration %}
+  * {%jdoc !!core::cpd.CPDListener#addedFile(int) %}
+    * no `File` parameter anymore
+  * {%jdoc !!core::cpd.CPDReport#getNumberOfTokensPerFile() %} returns a `Map` of `FileId,Integer` instead of `String`
+  * {%jdoc !!core::cpd.CPDReport#filterMatches(java.util.function.Predicate) %} now takes a `java.util.function.Predicate`
+    as parameter
+  * {%jdoc core::cpd.Tokenizer %}
+    * constants are now {%jdoc core::properties.PropertyDescriptor %} instead of `String`,
+      to be used as language properties
+    * {%jdoc core::cpd.Tokenizer#tokenize(net.sourceforge.pmd.lang.document.TextDocument, net.sourceforge.pmd.cpd.TokenFactory) %}
+      changed parameters. Now takes a {%jdoc core::lang.document.TextDocument %} and a {%jdoc core::cpd.TokenFactory %}
+      (instead of `SourceCode` and `Tokens`)
+  * {% jdoc core::lang.Language %}
+    * method `#createProcessor(LanguagePropertyBundle)` moved to {%jdoc core::lang.PmdCapableLanguage %}
+  * {% jdoc !!core::util.StringUtil#linesWithTrimIndent(net.sourceforge.pmd.lang.document.Chars) %} now takes a `Chars`
+    instead of a `String`.
+* All language modules (like pmd-apex, pmd-cpp, ...)
+  * consistent package naming: `net.sourceforge.pmd.lang.<langId>.cpd`
+  * adapted to use {% jdoc core::cpd.CpdCapableLanguage %}
+  * consistent static method `#getInstance()`
+  * removed constants like `ID`, `TERSE_NAME` or `NAME`. Use `getInstance().getName()` etc. instead
+
+**Internal APIs**
+
+* {% jdoc core::cpd.Tokens %}
+* {% jdoc core::net.sourceforge.pmd.properties.PropertyTypeId %}
+
+**Deprecations**
+
+* {% jdoc !!core::lang.Language#getTerseName() %} ➡️ use {% jdoc core::lang.Language#getId() %} instead
+
 #### External Contributions
 * [#4528](https://github.com/pmd/pmd/pull/4528): \[apex] Update to apexlink - [Kevin Jones](https://github.com/nawforce) (@nawforce)
+* [#4637](https://github.com/pmd/pmd/pull/4637): \[java] fix #4634 - JUnit4TestShouldUseTestAnnotation false positive with TestNG - [Krystian Dabrowski](https://github.com/krdabrowski) (@krdabrowski)
+* [#4649](https://github.com/pmd/pmd/pull/4649): \[apex] Add SObjectType and SObjectField to list of injectable SOQL variable types - [Richard Corfield](https://github.com/rcorfieldffdc) (@rcorfieldffdc)
+* [#4651](https://github.com/pmd/pmd/pull/4651): \[doc] Add "Tencent Cloud Code Analysis" in Tools / Integrations - [yale](https://github.com/cyw3) (@cyw3)
+* [#4664](https://github.com/pmd/pmd/pull/4664): \[cli] CPD: Fix NPE when only `--file-list` is specified - [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
+* [#4665](https://github.com/pmd/pmd/pull/4665): \[java] Doc: Fix references AutoClosable -> AutoCloseable - [Andrey Bozhko](https://github.com/AndreyBozhko) (@AndreyBozhko)
 
 ### 🚀 Major Features and Enhancements
 
@@ -68,7 +260,7 @@ The new official logo of PMD:
 * Rewritten type resolution framework and symbol table correctly implements the JLS
 * AST exposes more semantic information (method calls, field accesses)
 
-For more information, see the [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html).
+For more information, see the [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html#revamped-java).
 
 Contributors: [Clément Fournier](https://github.com/oowekyala) (@oowekyala),
 [Andreas Dangel](https://github.com/adangel) (@adangel),
@@ -173,6 +365,21 @@ Contributors: [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
 * This option is used for CPP only: with the already existing option `--ignore-literal-sequences`, only
   literals were ignored. The new option additional ignores identifiers as well in sequences.
 * See [PR #4470](https://github.com/pmd/pmd/pull/4470) for details.
+
+#### Changed: Apex Jorje Updated
+
+With the new version of Apex Jorje, the new language constructs like User Mode Database Operations
+can be parsed now. PMD should now be able to parse Apex code up to version 59.0 (Winter '23).
+
+#### Changed: Rule properties
+
+* The old deprecated classes like `IntProperty` and `StringProperty` have been removed. Please use
+  {% jdoc core::properties.PropertyFactory %} to create properties.
+* All properties which accept multiple values now use a comma (`,`) as a delimiter. The previous default was a
+  pipe character (`|`). The delimiter is not configurable anymore. If needed, the comma can be escaped
+  with a backslash.
+* The `min` and `max` attributes in property definitions in the XML are now optional and can appear separately
+  or be omitted.
 
 ### 🌟 New and changed rules
 
@@ -327,6 +534,8 @@ of the changes listed here, see [Detailed Release Notes for PMD 7]({{ baseurl }}
 * Metrics framework
 * Testing framework
 * Language Lifecycle and Language Properties
+* Rule Properties
+* New Programmatic API for CPD
 
 ### 💥 Compatibility and migration notes
 See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html).
@@ -349,6 +558,7 @@ See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html)
     * [#4080](https://github.com/pmd/pmd/issues/4080): \[ant] Split off Ant integration into a new submodule
 * core
     * [#880](https://github.com/pmd/pmd/issues/880):   \[core] Make visitors generic
+    * [#1204](https://github.com/pmd/pmd/issues/1204): \[core] Allow numeric properties in XML to be within an unbounded range
     * [#1622](https://github.com/pmd/pmd/pull/1622):   \[core] NodeStream API
     * [#1687](https://github.com/pmd/pmd/issues/1687): \[core] Deprecate and Remove XPath 1.0 support
     * [#1785](https://github.com/pmd/pmd/issues/1785): \[core] Allow abstract node types to be valid rulechain visits
@@ -372,23 +582,34 @@ See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html)
     * [#3893](https://github.com/pmd/pmd/pull/3893):   \[core] Text documents
     * [#3902](https://github.com/pmd/pmd/issues/3902): \[core] Violation decorators
     * [#3918](https://github.com/pmd/pmd/issues/3918): \[core] Make LanguageRegistry non static
+    * [#3919](https://github.com/pmd/pmd/issues/3919): \[core] Merge CPD and PMD language
     * [#3922](https://github.com/pmd/pmd/pull/3922):   \[core] Better error reporting for the ruleset parser
     * [#4035](https://github.com/pmd/pmd/issues/4035): \[core] ConcurrentModificationException in DefaultRuleViolationFactory
     * [#4120](https://github.com/pmd/pmd/issues/4120): \[core] Explicitly name all language versions
+    * [#4204](https://github.com/pmd/pmd/issues/4204): \[core] Provide a CpdAnalysis class as a programmatic entry point into CPD
+    * [#4301](https://github.com/pmd/pmd/issues/4301): \[core] Remove deprecated property concrete classes
+    * [#4302](https://github.com/pmd/pmd/issues/4302): \[core] Migrate Property Framework API to Java 8
+    * [#4323](https://github.com/pmd/pmd/issues/4323): \[core] Refactor CPD integration
     * [#4353](https://github.com/pmd/pmd/pull/4353):   \[core] Micro optimizations for Node API
     * [#4365](https://github.com/pmd/pmd/pull/4365):   \[core] Improve benchmarking
+    * [#4397](https://github.com/pmd/pmd/pull/4397):   \[core] Refactor CPD
     * [#4420](https://github.com/pmd/pmd/pull/4420):   \[core] Remove PMD.EOL
     * [#4425](https://github.com/pmd/pmd/pull/4425):   \[core] Replace TextFile::pathId
     * [#4454](https://github.com/pmd/pmd/issues/4454): \[core] "Unknown option: '-min'" but is referenced in documentation
+    * [#4621](https://github.com/pmd/pmd/issues/4621): \[core] Make `ClasspathClassLoader::getResource` child first
 * cli
     * [#2234](https://github.com/pmd/pmd/issues/2234): \[core] Consolidate PMD CLI into a single command
     * [#3828](https://github.com/pmd/pmd/issues/3828): \[core] Progress reporting
     * [#4079](https://github.com/pmd/pmd/issues/4079): \[cli] Split off CLI implementation into a pmd-cli submodule
+    * [#4423](https://github.com/pmd/pmd/pull/4423):   \[cli] Fix NPE when only `--file-list` is specified
     * [#4482](https://github.com/pmd/pmd/issues/4482): \[cli] pmd.bat can only be executed once
     * [#4484](https://github.com/pmd/pmd/issues/4484): \[cli] ast-dump with no properties produce an NPE
 * doc
     * [#2501](https://github.com/pmd/pmd/issues/2501): \[doc] Verify ANTLR Documentation
+    * [#4294](https://github.com/pmd/pmd/issues/4294): \[doc] Migration Guide for upgrading PMD 6 ➡️ 7
+    * [#4303](https://github.com/pmd/pmd/issues/4303): \[doc] Document new property framework
     * [#4438](https://github.com/pmd/pmd/issues/4438): \[doc] Documentation links in VS Code are outdated
+    * [#4521](https://github.com/pmd/pmd/issues/4521): \[doc] Website is not mobile friendly
 * testing
     * [#2435](https://github.com/pmd/pmd/issues/2435): \[test] Remove duplicated Dummy language module
     * [#4234](https://github.com/pmd/pmd/issues/4234): \[test] Tests that change the logging level do not work
@@ -400,11 +621,15 @@ Language specific fixes:
     * [#1648](https://github.com/pmd/pmd/issues/1648): \[apex,vf] Remove CodeClimate dependency
     * [#1750](https://github.com/pmd/pmd/pull/1750):   \[apex] Remove apex statistical rules
     * [#2836](https://github.com/pmd/pmd/pull/2836):   \[apex] Remove Apex ProjectMirror
+    * [#3973](https://github.com/pmd/pmd/issues/3973): \[apex] Update parser to support new 'as user' keywords (User Mode for Database Operations)
     * [#4427](https://github.com/pmd/pmd/issues/4427): \[apex] ApexBadCrypto test failing to detect inline code
+    * [#4453](https://github.com/pmd/pmd/issues/4453): \[apex] \[7.0-rc1] Exception while initializing Apexlink (Index 34812 out of bounds for length 34812)
 * apex-design
     * [#2667](https://github.com/pmd/pmd/issues/2667): \[apex] Integrate nawforce/ApexLink to build robust Unused rule
     * [#4509](https://github.com/pmd/pmd/issues/4509): \[apex] ExcessivePublicCount doesn't consider inner classes correctly
     * [#4596](https://github.com/pmd/pmd/issues/4596): \[apex] ExcessivePublicCount ignores properties
+* apex-security
+    * [#4646](https://github.com/pmd/pmd/issues/4646): \[apex] ApexSOQLInjection does not recognise SObjectType or SObjectField as safe variable types
 * java
     * [#520](https://github.com/pmd/pmd/issues/520):   \[java] Allow `@SuppressWarnings` with constants instead of literals
     * [#864](https://github.com/pmd/pmd/issues/864):   \[java] Similar/duplicated implementations for determining FQCN
@@ -472,6 +697,7 @@ Language specific fixes:
     * [#4516](https://github.com/pmd/pmd/issues/4516): \[java] UnusedLocalVariable: false-negative with try-with-resources
     * [#4517](https://github.com/pmd/pmd/issues/4517): \[java] UnusedLocalVariable: false-negative with compound assignments
     * [#4518](https://github.com/pmd/pmd/issues/4518): \[java] UnusedLocalVariable: false-positive with multiple for-loop indices
+    * [#4634](https://github.com/pmd/pmd/issues/4634): \[java] JUnit4TestShouldUseTestAnnotation false positive with TestNG
 * java-codestyle
     * [#1208](https://github.com/pmd/pmd/issues/1208): \[java] PrematureDeclaration rule false-positive on variable declared to measure time
     * [#1429](https://github.com/pmd/pmd/issues/1429): \[java] PrematureDeclaration as result of method call (false positive)
@@ -609,6 +835,11 @@ Language specific fixes:
 * [#4541](https://github.com/pmd/pmd/pull/4541): \[java] Fix #4458: A false positive about RedundantFieldInitializer and @<!-- -->Value - [AnnaDev](https://github.com/LynnBroe) (@LynnBroe)
 * [#4542](https://github.com/pmd/pmd/pull/4542): \[java] Fix #4510: A false positive about ConstructorCallsOverridableMethod and @<!-- -->Value - [AnnaDev](https://github.com/LynnBroe) (@LynnBroe)
 * [#4553](https://github.com/pmd/pmd/pull/4553): \[java] Fix #4492: GuardLogStatement gives false positive when argument is a Java method reference - [Anastasiia Koba](https://github.com/anastasiia-koba) (@anastasiia-koba)
+* [#4637](https://github.com/pmd/pmd/pull/4637): \[java] fix #4634 - JUnit4TestShouldUseTestAnnotation false positive with TestNG - [Krystian Dabrowski](https://github.com/krdabrowski) (@krdabrowski)
+* [#4649](https://github.com/pmd/pmd/pull/4649): \[apex] Add SObjectType and SObjectField to list of injectable SOQL variable types - [Richard Corfield](https://github.com/rcorfieldffdc) (@rcorfieldffdc)
+* [#4651](https://github.com/pmd/pmd/pull/4651): \[doc] Add "Tencent Cloud Code Analysis" in Tools / Integrations - [yale](https://github.com/cyw3) (@cyw3)
+* [#4664](https://github.com/pmd/pmd/pull/4664): \[cli] CPD: Fix NPE when only `--file-list` is specified - [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
+* [#4665](https://github.com/pmd/pmd/pull/4665): \[java] Doc: Fix references AutoClosable -> AutoCloseable - [Andrey Bozhko](https://github.com/AndreyBozhko) (@AndreyBozhko)
 
 ### 📈 Stats
 * 4694 commits

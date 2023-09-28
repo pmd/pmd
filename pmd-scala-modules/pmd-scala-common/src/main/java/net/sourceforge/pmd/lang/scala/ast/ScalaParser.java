@@ -22,7 +22,7 @@ public final class ScalaParser implements Parser {
 
     @Override
     public ASTSource parse(ParserTask task) throws ParseException {
-        Input.VirtualFile virtualFile = new Input.VirtualFile(task.getFileDisplayName(), task.getSourceText());
+        Input.VirtualFile virtualFile = new Input.VirtualFile(task.getFileId().getAbsolutePath(), task.getSourceText());
         Dialect dialect = ScalaLanguageModule.dialectOf(task.getLanguageVersion());
         Source src = new ScalametaParser(virtualFile, dialect).parseSource();
         ASTSource root = (ASTSource) new ScalaTreeBuilder().build(src);

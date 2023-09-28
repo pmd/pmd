@@ -7,13 +7,13 @@ package net.sourceforge.pmd.cli.commands.internal;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.CPDConfiguration;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 class CpdCommandTest extends BaseCommandTest<CpdCommand> {
 
@@ -56,7 +56,7 @@ class CpdCommandTest extends BaseCommandTest<CpdCommand> {
 
     private void assertMultipleDirs(final CpdCommand result) {
         final CPDConfiguration config = result.toConfiguration();
-        assertEquals(listOf("a", "b"), config.getFiles().stream().map(File::toString).collect(Collectors.toList()));
+        assertEquals(listOf("a", "b"), CollectionUtil.map(config.getInputPathList(), Path::toString));
     }
 
     @Override

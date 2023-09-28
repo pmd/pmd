@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.internal;
 
-import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
