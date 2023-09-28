@@ -8,19 +8,22 @@ import java.util.function.Function;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.cpd.CpdCapableLanguage;
 import net.sourceforge.pmd.lang.LanguageModuleBase;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
+import net.sourceforge.pmd.lang.PmdCapableLanguage;
 
 /**
  * The simplest implementation of a language, where only a {@link LanguageVersionHandler}
- * needs to be implemented.
+ * needs to be implemented. A default {@link CpdCapableLanguage} implementation
+ * is provided.
  *
  * @author Clément Fournier
  * @since 7.0.0
  */
-public class SimpleLanguageModuleBase extends LanguageModuleBase {
+public class SimpleLanguageModuleBase extends LanguageModuleBase implements PmdCapableLanguage, CpdCapableLanguage {
 
     private final Function<LanguagePropertyBundle, LanguageVersionHandler> handler;
 

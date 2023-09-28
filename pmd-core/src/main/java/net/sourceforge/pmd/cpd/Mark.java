@@ -4,84 +4,72 @@
 
 package net.sourceforge.pmd.cpd;
 
-public class Mark implements Comparable<Mark> {
-    private TokenEntry token;
-    private TokenEntry endToken;
-    private int lineCount;
-    private SourceCode code;
+import java.util.Objects;
 
-    public Mark(TokenEntry token) {
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.lang.document.FileId;
+import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextRange2d;
+
+/**
+ * A range of tokens in a source file, identified by a start and end
+ * token (both included in the range). The start and end token may be
+ * the same token.
+ */
+public final class Mark implements Comparable<Mark> {
+
+    private final @NonNull TokenEntry token;
+    private @Nullable TokenEntry endToken;
+
+    Mark(@NonNull TokenEntry token) {
         this.token = token;
     }
 
-    public TokenEntry getToken() {
+    @NonNull TokenEntry getToken() {
         return this.token;
     }
 
-    public String getFilename() {
-        return this.token.getTokenSrcID();
-    }
-
-    public int getBeginLine() {
-        return this.token.getBeginLine();
+    @NonNull TokenEntry getEndToken() {
+        return endToken == null ? token : endToken;
     }
 
     /**
-     * The column number where this duplication begins.
-     * returns -1 if not available
-     * @return the begin column number
+     * Return the location of this source range in the source file.
      */
-    public int getBeginColumn() {
-        return this.token.getBeginColumn(); // TODO Java 1.8 make optional
+    public FileLocation getLocation() {
+        TokenEntry endToken = getEndToken();
+        return FileLocation.range(
+            getFileId(),
+            TextRange2d.range2d(token.getBeginLine(), token.getBeginColumn(),
+                                endToken.getEndLine(), endToken.getEndColumn()));
+    }
+
+    FileId getFileId() {
+        return token.getFileId();
     }
 
     public int getBeginTokenIndex() {
         return this.token.getIndex();
     }
 
-    public int getEndLine() {
-        return getBeginLine() + getLineCount() - 1;
-    }
-
-    /**
-     * The column number where this duplication ends.
-     * returns -1 if not available
-     * @return the end column number
-     */
-    public int getEndColumn() {
-        return this.endToken == null ? -1 : this.endToken.getEndColumn(); // TODO Java 1.8 make optional
-    }
-
     public int getEndTokenIndex() {
-        return this.endToken == null ? -1 : this.endToken.getIndex();
+        return getEndToken().getIndex();
     }
 
-    public int getLineCount() {
-        return this.lineCount;
-    }
-
-    public void setLineCount(int lineCount) {
-        this.lineCount = lineCount;
-    }
-
-    public void setEndToken(TokenEntry endToken) {
+    void setEndToken(@NonNull TokenEntry endToken) {
+        assert endToken.getFileId().equals(token.getFileId())
+            : "Tokens are not from the same file";
         this.endToken = endToken;
     }
 
-    /** Newlines are normalized to \n. */
-    public String getSourceCodeSlice() {
-        return this.code.getSlice(getBeginLine(), getEndLine());
-    }
-
-    public void setSourceCode(SourceCode code) {
-        this.code = code;
-    }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((token == null) ? 0 : token.hashCode());
+        result = prime * result + token.hashCode();
         return result;
     }
 
@@ -97,18 +85,13 @@ public class Mark implements Comparable<Mark> {
             return false;
         }
         Mark other = (Mark) obj;
-        if (token == null) {
-            if (other.token != null) {
-                return false;
-            }
-        } else if (!token.equals(other.token)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(token, other.token)
+            && Objects.equals(endToken, other.endToken);
     }
 
     @Override
     public int compareTo(Mark other) {
         return getToken().compareTo(other.getToken());
     }
+
 }

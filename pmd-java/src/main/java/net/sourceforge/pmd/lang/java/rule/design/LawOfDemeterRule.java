@@ -12,7 +12,7 @@ import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.isRefToFie
 import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.isThisOrSuper;
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isGetterCall;
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isNullChecked;
-import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

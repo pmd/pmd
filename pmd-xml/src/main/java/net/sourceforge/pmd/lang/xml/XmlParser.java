@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.xml.ast.internal.XmlParserImpl.RootXmlNode;
 /**
  * Adapter for the XmlParser.
  */
-public class XmlParser implements Parser {
+class XmlParser implements Parser {
 
     @Override
     public RootXmlNode parse(ParserTask task) throws ParseException {

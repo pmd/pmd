@@ -66,6 +66,22 @@ public abstract class AbstractLanguageVersionTest {
             this.expected = expected;
         }
 
+        public TestDescriptor(Language language, String version) {
+            this(language, version, language.getVersion(version));
+        }
+
+        public static TestDescriptor defaultVersionIs(Language lang, String version) {
+            return new TestDescriptor(lang, version, lang.getDefaultVersion());
+        }
+
+        private TestDescriptor(Language language, String version, LanguageVersion expected) {
+            this.name = language.getName();
+            this.version = version;
+            this.simpleTerseName = language.getId();
+            this.expected = expected;
+        }
+
+
         public String getName() {
             return name;
         }

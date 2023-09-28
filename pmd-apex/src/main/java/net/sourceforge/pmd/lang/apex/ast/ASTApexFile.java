@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.document.TextRegion;
 
 import apex.jorje.semantic.ast.AstNode;
 import apex.jorje.semantic.ast.compilation.Compilation;
-import com.nawforce.common.diagnostics.Issue;
+import com.nawforce.pkgforce.api.Issue;
 
 public final class ASTApexFile extends AbstractApexNode<AstNode> implements RootNode {
 

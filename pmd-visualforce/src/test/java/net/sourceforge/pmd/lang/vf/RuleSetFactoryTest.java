@@ -9,7 +9,7 @@ import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
 
 class RuleSetFactoryTest extends AbstractRuleSetFactoryTest {
     RuleSetFactoryTest() {
-        super(ApexLanguageModule.TERSE_NAME);
+        super(ApexLanguageModule.getInstance());
     }
 
     // no additional tests yet

@@ -13,7 +13,10 @@ layout: default
    {% if page.summary %}
     <div class="summary">{{page.summary}}</div>
    {% endif %}
-    <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
+    <details id="inline-toc-details">
+        <summary>Table of Contents</summary>
+        <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
+    </details>
 
   {{content}}
 
