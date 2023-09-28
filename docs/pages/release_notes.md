@@ -46,6 +46,29 @@ The remaining section describes the complete release notes for 7.0.0.
 With the new version of Apex Jorje, the new language constructs like User Mode Database Operations
 can be parsed now. PMD should now be able to parse Apex code up to version 59.0 (Winter '23).
 
+##### Java 21 Support
+
+This release of PMD brings support for Java 21. There are the following new standard language features,
+that are supported now:
+
+* [JEP 440: Record Patterns](https://openjdk.org/jeps/440)
+* [JEP 441: Pattern Matching for switch](https://openjdk.org/jeps/441)
+
+PMD also supports the following preview language features:
+
+* [JEP 430: String Templates (Preview)](https://openjdk.org/jeps/430)
+* [JEP 443: Unnamed Patterns and Variables (Preview)](https://openjdk.org/jeps/443)
+* [JEP 445: Unnamed Classes and Instance Main Methods (Preview)](https://openjdk.org/jeps/445)
+
+In order to analyze a project with PMD that uses these language features,
+you'll need to enable it via the environment variable `PMD_JAVA_OPTS` and select the new language
+version `21-preview`:
+
+    export PMD_JAVA_OPTS=--enable-preview
+    pmd check --use-version java-21-preview ...
+
+Note: Support for Java 19 preview language features have been removed. The version "19-preview" is no longer available.
+
 #### Fixed issues
 
 * miscellaneous
@@ -75,12 +98,17 @@ can be parsed now. PMD should now be able to parse Apex code up to version 59.0 
   * [#4646](https://github.com/pmd/pmd/issues/4646): \[apex] ApexSOQLInjection does not recognise SObjectType or SObjectField as safe variable types
 * java
   * [#4401](https://github.com/pmd/pmd/issues/4401): \[java] PMD 7 fails to build under Java 19
+  * [#4583](https://github.com/pmd/pmd/issues/4583): \[java] Support JDK 21 (LTS)
 * java-bestpractices
   * [#4634](https://github.com/pmd/pmd/issues/4634): \[java] JUnit4TestShouldUseTestAnnotation false positive with TestNG
 
 #### API Changes
 
-**Rule properties**
+##### pmd-java
+
+* Support for Java 19 preview language features have been removed. The version "19-preview" is no longer available.
+
+##### Rule properties
 
 * The old deprecated classes like `IntProperty` and `StringProperty` have been removed. Please use
   {% jdoc core::properties.PropertyFactory %} to create properties.
@@ -90,12 +118,12 @@ can be parsed now. PMD should now be able to parse Apex code up to version 59.0 
 * The `min` and `max` attributes in property definitions in the XML are now optional and can appear separately
   or be omitted.
 
-**New Programmatic API for CPD**
+##### New Programmatic API for CPD
 
 See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html#new-programmatic-api-for-cpd)
 and [PR #4397](https://github.com/pmd/pmd/pull/4397) for details.
 
-**Removed classes and methods**
+##### Removed classes and methods
 
 The following previously deprecated classes have been removed:
 
@@ -186,7 +214,7 @@ The following classes have been removed:
   * `net.sourceforge.pmd.cpd.SourceCode` (and all inner classes like `FileCodeLoader`, ...)
   * `net.sourceforge.pmd.cpd.token.TokenFilter`
 
-**Moved packages**
+##### Moved packages
 
 * pmd-core
   * {%jdoc core::net.sourceforge.pmd.properties.NumericConstraints %} (old package: `net.sourceforge.pmd.properties.constraints.NumericConstraints`)
@@ -199,7 +227,7 @@ The following classes have been removed:
   * {%jdoc core::cpd.impl.BaseTokenFilter %} (old package: `net.sourceforge.pmd.cpd.token.internal`)
   * {%jdoc core::cpd.impl.JavaCCTokenFilter %} (old package: `net.sourceforge.pmd.cpd.token`)
 
-**Changed types and other changes**
+##### Changed types and other changes
 
 * pmd-core
   * {%jdoc core::net.sourceforge.pmd.properties.PropertyDescriptor %} is now a class (was an interface)
@@ -229,14 +257,32 @@ The following classes have been removed:
   * consistent static method `#getInstance()`
   * removed constants like `ID`, `TERSE_NAME` or `NAME`. Use `getInstance().getName()` etc. instead
 
-**Internal APIs**
+##### Internal APIs
 
 * {% jdoc core::cpd.Tokens %}
 * {% jdoc core::net.sourceforge.pmd.properties.PropertyTypeId %}
 
-**Deprecations**
+##### Deprecated API
 
 * {% jdoc !!core::lang.Language#getTerseName() %} ➡️ use {% jdoc core::lang.Language#getId() %} instead
+
+* The method {%jdoc !!java::lang.java.ast.ASTPattern#getParenthesisDepth() %} has been deprecated and will be removed.
+  It was introduced for supporting parenthesized patterns, but that was removed with Java 21. It is only used when
+  parsing code as java-19-preview.
+
+##### Experimental APIs
+
+* To support the Java preview language features "String Templates" and "Unnamed Patterns and Variables", the following
+  AST nodes have been introduced as experimental:
+  * {% jdoc java::lang.java.ast.ASTTemplateExpression %}
+  * {% jdoc java::lang.java.ast.ASTTemplate %}
+  * {% jdoc java::lang.java.ast.ASTTemplateFragment %}
+  * {% jdoc java::lang.java.ast.ASTUnnamedPattern %}
+* The AST nodes for supporting "Record Patterns" and "Pattern Matching for switch" are not experimental anymore:
+  * {% jdoc java::lang.jast.ast.ASTRecordPattern %}
+  * {% jdoc java::lang.jast.ast.ASTPatternList %} (Note: it was renamed from `ASTComponentPatternList`)
+  * {% jdoc java::lang.jast.ast. %} (Note: it was renamed from `ASTSwitchGuard`)
+
 
 #### External Contributions
 * [#4528](https://github.com/pmd/pmd/pull/4528): \[apex] Update to apexlink - [Kevin Jones](https://github.com/nawforce) (@nawforce)
@@ -348,6 +394,29 @@ designed specifically for building event-driven software. It is shipped in the n
 module `pmd-coco`.
 
 Contributors: [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
+
+#### New: Java 21 Support
+
+This release of PMD brings support for Java 21. There are the following new standard language features,
+that are supported now:
+
+* [JEP 440: Record Patterns](https://openjdk.org/jeps/440)
+* [JEP 441: Pattern Matching for switch](https://openjdk.org/jeps/441)
+
+PMD also supports the following preview language features:
+
+* [JEP 430: String Templates (Preview)](https://openjdk.org/jeps/430)
+* [JEP 443: Unnamed Patterns and Variables (Preview)](https://openjdk.org/jeps/443)
+* [JEP 445: Unnamed Classes and Instance Main Methods (Preview)](https://openjdk.org/jeps/445)
+
+In order to analyze a project with PMD that uses these language features,
+you'll need to enable it via the environment variable `PMD_JAVA_OPTS` and select the new language
+version `21-preview`:
+
+    export PMD_JAVA_OPTS=--enable-preview
+    pmd check --use-version java-21-preview ...
+
+Note: Support for Java 19 preview language features have been removed. The version "19-preview" is no longer available.
 
 #### Changed: JavaScript support
 
@@ -660,6 +729,7 @@ Language specific fixes:
     * [#4383](https://github.com/pmd/pmd/issues/4383): \[java] IllegalStateException: Object is not an array type!
     * [#4401](https://github.com/pmd/pmd/issues/4401): \[java] PMD 7 fails to build under Java 19
     * [#4405](https://github.com/pmd/pmd/issues/4405): \[java] Processing error with ArrayIndexOutOfBoundsException
+    * [#4583](https://github.com/pmd/pmd/issues/4583): \[java] Support JDK 21 (LTS)
 * java-bestpractices
     * [#342](https://github.com/pmd/pmd/issues/342):   \[java] AccessorMethodGeneration: Name clash with another public field not properly handled
     * [#755](https://github.com/pmd/pmd/issues/755):   \[java] AccessorClassGeneration false positive for private constructors

@@ -698,6 +698,9 @@ public final class SymbolTableResolver {
         }
 
         private JClassType enclosing() {
+            if (enclosingType.isEmpty()) {
+                return null;
+            }
             return enclosingType.getFirst().getTypeMirror();
         }
 
