@@ -758,6 +758,13 @@
                 <version>32.0.1-jre</version>
             </dependency>
 
+            <!-- needed by pmd-apex via apex-link -->
+            <dependency>
+                <groupId>org.scala-lang</groupId>
+                <artifactId>scala-reflect</artifactId>
+                <version>2.13.12</version>
+            </dependency>
+
             <!-- TEST DEPENDENCIES -->
             <dependency>
                 <groupId>net.sourceforge.pmd</groupId>
