@@ -211,6 +211,7 @@ declaration
  | constantDeclaration ';'?
  | variableDeclaration ';'?
  | typealiasDeclaration ';'?
+ | macroExpansionExpression ';'?
  | functionDeclaration ';'?
  | enumDeclaration ';'?
  | structDeclaration ';'?
@@ -296,6 +297,10 @@ typealiasDeclaration : typealiasHead typealiasAssignment  ;
 typealiasHead : attributes? accessLevelModifier? 'typealias' typealiasName genericParameterClause?  ;
 typealiasName : identifier  ;
 typealiasAssignment : '=' sType  ;
+
+// GRAMMAR OF A MACRO DECLARATION
+
+macroExpansionExpression: '#' identifier genericArgumentClause? functionCallArgumentClause? ;
 
 // GRAMMAR OF A FUNCTION DECLARATION
 
