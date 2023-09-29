@@ -168,13 +168,6 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
 
-        <!-- needed for pmd-designer 7.0.0-rc1 -->
-        <dependency>
-            <groupId>com.beust</groupId>
-            <artifactId>jcommander</artifactId>
-            <version>1.48</version>
-        </dependency>
-
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
