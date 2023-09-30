@@ -1157,18 +1157,27 @@
                 </plugins>
             </build>
         </profile>
+
+        <profile>
+            <id>cli-dist</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>pmd-cli</module>
+                <module>pmd-dist</module>
+            </modules>
+        </profile>
     </profiles>
 
     <modules>
         <module>pmd-apex-jorje</module>
         <module>pmd-apex</module>
-        <module>pmd-cli</module>
         <module>pmd-coco</module>
         <module>pmd-core</module>
         <module>pmd-cpp</module>
         <module>pmd-cs</module>
         <module>pmd-dart</module>
-        <module>pmd-dist</module>
         <module>pmd-doc</module>
         <module>pmd-fortran</module>
         <module>pmd-gherkin</module>

@@ -101,8 +101,8 @@ echo "    the new release based on the release notes. Also add any deprecated ru
 echo
 echo "*   Update **../pmd.github.io/_config.yml** to mention the new release"
 echo
-echo "*   Update property \`pmd-designer.version\` in **pom.xml** to reference the latest pmd-designer release"
-echo "    See <https://search.maven.org/search?q=g:net.sourceforge.pmd%20AND%20a:pmd-ui&core=gav> for the available releases."
+echo "*   Update property \`pmd-designer.version\` in **pom.xml** to reference the version, that will be released"
+echo "    later in this process."
 echo
 echo "Press enter to continue..."
 read -r
@@ -170,8 +170,8 @@ git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
     -DreleaseVersion="${RELEASE_VERSION}" \
     -DdevelopmentVersion="${DEVELOPMENT_VERSION}" \
     -DscmCommentPrefix="[release] " \
-    -Pgenerate-rule-docs
-
+    -Darguments='-Pgenerate-rule-docs,!cli-dist' \
+    '-Pgenerate-rule-docs,!cli-dist'
 
 echo
 echo "Tag has been pushed.... now check github actions: <https://github.com/pmd/pmd/actions>"
@@ -235,14 +235,46 @@ EOF
 git commit -a -m "Prepare next development version [skip ci]"
 git push origin "${CURRENT_BRANCH}"
 ./mvnw -B release:clean
+
 echo
+echo
+echo
+echo "*   Wait until the new version is synced to maven central and appears as latest version in"
+echo "    <https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd/maven-metadata.xml>."
+echo
+echo
+echo "Then proceed with releasing pmd-designer..."
+echo "<https://github.com/pmd/pmd-designer/blob/master/releasing.md>"
+echo
+echo "Press enter to continue when pmd-designer is available in maven-central..."
+echo "<https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd-ui/maven-metadata.xml>."
+read -r
+
+echo
+echo "Continuing with release of pmd-cli and pmd-dist..."
+git checkout "pmd_releases/${RELEASE_VERSION}"
+./mvnw versions:update-parent -DparentVersion="${RELEASE_VERSION}" -DskipResolution=true -DgenerateBackupPoms=false -pl pmd-cli,pmd-dist
+git add pmd-cli/pom.xml pmd-dist/pom.xml
+git commit -m "[release] prepare release pmd_releases/${RELEASE_VERSION}-dist"
+git tag -m "[release] copy for tag pmd_releases/${RELEASE_VERSION}-dist" "pmd_releases/${RELEASE_VERSION}-dist"
+git push origin tag "pmd_releases/${RELEASE_VERSION}-dist"
+git checkout master
+# make sure parent reference is correct
+./mvnw versions:update-parent -DparentVersion="${DEVELOPMENT_VERSION}" -DskipResolution=true -DgenerateBackupPoms=false -pl pmd-cli,pmd-dist
+git add pmd-cli/pom.xml pmd-dist/pom.xml
+changes=$(git status --porcelain 2>/dev/null| grep -c -E "^[AMDRC]")
+if [ "$changes" -gt 0 ]; then
+    git commit -m "Prepare next development version [skip ci]"
+    git push origin "${CURRENT_BRANCH}"
+fi
+
+echo
+echo "Second tag 'pmd_releases/${RELEASE_VERSION}-dist' has been pushed ... now check github actions: <https://github.com/pmd/pmd/actions>"
 echo
 echo
 echo "Verify the new release on github: <https://github.com/pmd/pmd/releases/tag/pmd_releases/${RELEASE_VERSION}>"
 echo "and the news entry at <https://sourceforge.net/p/pmd/news/>"
 echo
-echo "*   Wait until the new version is synced to maven central and appears as latest version in"
-echo "    <https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd/maven-metadata.xml>."
 echo "*   Send out an announcement mail to the mailing list:"
 echo
 echo "To: PMD Developers List <pmd-devel@lists.sourceforge.net>"
