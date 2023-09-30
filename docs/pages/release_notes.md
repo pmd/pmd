@@ -925,8 +925,9 @@ Language specific fixes:
 * [#4665](https://github.com/pmd/pmd/pull/4665): \[java] Doc: Fix references AutoClosable -> AutoCloseable - [Andrey Bozhko](https://github.com/AndreyBozhko) (@AndreyBozhko)
 
 ### 📈 Stats
-* 4694 commits
-* 617 closed tickets & PRs
-* Days since last release: 30
+* 5007 commits
+* 658 closed tickets & PRs
+* Days since last release: 122
 
 {% endtocmaker %}
+
