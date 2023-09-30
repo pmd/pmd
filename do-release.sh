@@ -262,7 +262,7 @@ git checkout master
 # make sure parent reference is correct
 ./mvnw versions:update-parent -DparentVersion="${DEVELOPMENT_VERSION}" -DskipResolution=true -DgenerateBackupPoms=false -pl pmd-cli,pmd-dist
 git add pmd-cli/pom.xml pmd-dist/pom.xml
-changes=$(git status --porcelain 2>/dev/null| grep -c -E "^[AMDRC]")
+changes=$(git status --porcelain 2>/dev/null | grep -c -E "^[AMDRC]" || true)
 if [ "$changes" -gt 0 ]; then
     git commit -m "Prepare next development version [skip ci]"
     git push origin "${CURRENT_BRANCH}"

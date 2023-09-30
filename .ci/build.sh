@@ -190,7 +190,7 @@ function pmd_ci_build_run() {
             ./mvnw clean deploy -P"${mvn_profiles}",'!cli-dist' --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
         else
             # b) pmd-cli and pmd-dist
-            ./mvnw clean deploy -pl pmd-cli,pmd-dist --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
+            ./mvnw clean deploy -P"${mvn_profiles},cli-dist" -pl pmd-cli,pmd-dist --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
         fi
     else
         pmd_ci_log_info "This is a snapshot build"
