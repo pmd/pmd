@@ -141,7 +141,7 @@ function build() {
             -Dpmd.skip \
             --show-version --errors --batch-mode \
             clean package \
-            sonar:sonar -Dsonar.login="${SONAR_TOKEN}" -Psonar
+            sonar:sonar -Dsonar.login="${SONAR_TOKEN}" -Psonar,cli-dist
         pmd_ci_log_success "New sonar results: https://sonarcloud.io/dashboard?id=net.sourceforge.pmd%3Apmd"
     pmd_ci_log_group_end
 
@@ -157,7 +157,7 @@ function build() {
             -DrepoToken="${COVERALLS_REPO_TOKEN}" \
             --show-version --errors --batch-mode \
             clean package jacoco:report \
-            coveralls:report -Pcoveralls
+            coveralls:report -Pcoveralls,cli-dist
         pmd_ci_log_success "New coveralls result: https://coveralls.io/github/pmd/pmd"
     pmd_ci_log_group_end
     fi
@@ -183,18 +183,20 @@ function pmd_ci_build_run() {
     if pmd_ci_maven_isReleaseBuild; then
         pmd_ci_log_info "This is a release build"
         mvn_profiles="${mvn_profiles},pmd-release"
+
+        # There are two possible (release) builds:
+        if [[ "${PMD_CI_TAG}" != *-dist ]]; then
+            # a) pmd-core and languages modules
+            ./mvnw clean deploy -P"${mvn_profiles}",'!cli-dist' --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
+        else
+            # b) pmd-cli and pmd-dist
+            ./mvnw clean deploy -pl pmd-cli,pmd-dist --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
+        fi
     else
         pmd_ci_log_info "This is a snapshot build"
+        ./mvnw clean deploy -P"${mvn_profiles},cli-dist" --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
     fi
 
-    # There are two possible builds:
-    if [[ "${PMD_CI_TAG}" != *-dist ]]; then
-        # a) pmd-core and languages modules
-        ./mvnw clean deploy -P${mvn_profiles},'!cli-dist' --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
-    else
-        # b) pmd-cli and pmd-dist
-        ./mvnw clean deploy -pl pmd-cli,pmd-dist --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
-    fi
 }
 
 #
