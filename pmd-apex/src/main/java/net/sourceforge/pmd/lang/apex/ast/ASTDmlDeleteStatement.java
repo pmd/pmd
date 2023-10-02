@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
+import com.google.summit.ast.statement.DmlStatement;
 
-public final class ASTDmlDeleteStatement extends AbstractApexNode.Single<Node> {
+public final class ASTDmlDeleteStatement extends AbstractDmlStatement {
 
-    ASTDmlDeleteStatement(Node dmlDeleteStatement) {
+    ASTDmlDeleteStatement(DmlStatement dmlDeleteStatement) {
         super(dmlDeleteStatement);
     }
 

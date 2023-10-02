@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -220,11 +221,12 @@ public class Formatter {
                 // fall-through
             }
 
-            // Maybe this is Java17? Then there will be
+            // Maybe this is Java17+? Then there will be
             // https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Console.html#charset()
             // instead of the field "cs".
             try {
-                Charset charset = (Charset) MethodUtils.invokeMethod(console, "charset");
+                Method charsetMethod = Console.class.getDeclaredMethod("charset");
+                Charset charset = (Charset) charsetMethod.invoke(console);
                 return charset.name();
             } catch (IllegalArgumentException | ReflectiveOperationException ignored) {
                 // fall-through

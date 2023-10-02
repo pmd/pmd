@@ -30,6 +30,11 @@ class Foo {
                     it::isImplicit shouldBe false
                 }
 
+                child<ASTTypeParamClause> {
+                    it.assertPosition(bline = 1, bcol = 11, eline = 1, ecol = 11) // node has zero length
+                    it::isImplicit shouldBe true
+                }
+
                 child<ASTCtorPrimary> {
                     it.assertPosition(bline = 1, bcol = 11, eline = 1, ecol = 11) // node has zero length
                     it::isImplicit shouldBe true

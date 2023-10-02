@@ -215,6 +215,29 @@ module `pmd-coco`.
 
 Contributors: [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
 
+### New: Java 21 Support
+
+This release of PMD brings support for Java 21. There are the following new standard language features,
+that are supported now:
+
+* [JEP 440: Record Patterns](https://openjdk.org/jeps/440)
+* [JEP 441: Pattern Matching for switch](https://openjdk.org/jeps/441)
+
+PMD also supports the following preview language features:
+
+* [JEP 430: String Templates (Preview)](https://openjdk.org/jeps/430)
+* [JEP 443: Unnamed Patterns and Variables (Preview)](https://openjdk.org/jeps/443)
+* [JEP 445: Unnamed Classes and Instance Main Methods (Preview)](https://openjdk.org/jeps/445)
+
+In order to analyze a project with PMD that uses these language features,
+you'll need to enable it via the environment variable `PMD_JAVA_OPTS` and select the new language
+version `21-preview`:
+
+    export PMD_JAVA_OPTS=--enable-preview
+    pmd check --use-version java-21-preview ...
+
+Note: Support for Java 19 preview language features have been removed. The version "19-preview" is no longer available.
+
 ### New: CPD support for Apache Velocity Template Language
 
 PMD supports Apache Velocity for a very long time, but the CPD integration never got finished.
@@ -247,6 +270,11 @@ Related issue: [[core] Explicitly name all language versions (#4120)](https://gi
 * This option is used for CPP only: with the already existing option `--ignore-literal-sequences`, only
   literals were ignored. The new option additional ignores identifiers as well in sequences.
 * See [PR #4470](https://github.com/pmd/pmd/pull/4470) for details.
+
+### Changed: Apex Jorje Updated
+
+With the new version of Apex Jorje, the new language constructs like User Mode Database Operations
+can be parsed now. PMD should now be able to parse Apex code up to version 59.0 (Winter '23).
 
 ## 🌟 New and changed rules
 
@@ -475,6 +503,11 @@ The following previously deprecated rules have been finally removed:
 * WhileLoopsMustUseBraces (java-codestyle) ➡️ use {% rule "java/codestyle/ControlStatementBraces" %}
 
 ## 💥 Compatibility and Migration Notes
+
+{% include note.html content="
+The full detailed documentation of the changes are available in the
+[Migration Guide for PMD 7](pmd_userdocs_migrating_to_pmd7.html)
+" %}
 
 ### For endusers
 
@@ -730,6 +763,187 @@ this new programmatic API is recommended.
 See [PR #4397](https://github.com/pmd/pmd/pull/4397) for details.
 
 ### API changes
+
+#### 7.0.0-rc4
+
+##### pmd-java
+
+* Support for Java 19 preview language features have been removed. The version "19-preview" is no longer available.
+
+##### Rule properties
+
+* The old deprecated classes like `IntProperty` and `StringProperty` have been removed. Please use
+  {% jdoc core::properties.PropertyFactory %} to create properties.
+* All properties which accept multiple values now use a comma (`,`) as a delimiter. The previous default was a
+  pipe character (`|`). The delimiter is not configurable anymore. If needed, the comma can be escaped
+  with a backslash.
+* The `min` and `max` attributes in property definitions in the XML are now optional and can appear separately
+  or be omitted.
+
+##### New Programmatic API for CPD
+
+See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html#new-programmatic-api-for-cpd)
+and [PR #4397](https://github.com/pmd/pmd/pull/4397) for details.
+
+##### Removed classes and methods
+
+The following previously deprecated classes have been removed:
+
+* pmd-core
+  * `net.sourceforge.pmd.cpd.AbstractTokenizer` ➡️ use {%jdoc core::cpd.AnyTokenizer %} instead
+  * `net.sourceforge.pmd.cpd.CPD` ➡️ use {% jdoc cli::cli.PmdCli %} from `pmd-cli` module for CLI support or use
+    {%jdoc core::cpd.CpdAnalysis %} for programmatic API
+  * `net.sourceforge.pmd.cpd.GridBagHelper` (now package private)
+  * `net.sourceforge.pmd.cpd.TokenEntry.State`
+  * `net.sourceforge.pmd.lang.document.CpdCompat`
+  * `net.sourceforge.pmd.properties.BooleanMultiProperty`
+  * `net.sourceforge.pmd.properties.BooleanProperty`
+  * `net.sourceforge.pmd.properties.CharacterMultiProperty`
+  * `net.sourceforge.pmd.properties.CharacterProperty`
+  * `net.sourceforge.pmd.properties.DoubleMultiProperty`
+  * `net.sourceforge.pmd.properties.DoubleProperty`
+  * `net.sourceforge.pmd.properties.EnumeratedMultiProperty`
+  * `net.sourceforge.pmd.properties.EnumeratedProperty`
+  * `net.sourceforge.pmd.properties.EnumeratedPropertyDescriptor`
+  * `net.sourceforge.pmd.properties.FileProperty` (note: without replacement)
+  * `net.sourceforge.pmd.properties.FloatMultiProperty`
+  * `net.sourceforge.pmd.properties.FloatProperty`
+  * `net.sourceforge.pmd.properties.IntegerMultiProperty`
+  * `net.sourceforge.pmd.properties.IntegerProperty`
+  * `net.sourceforge.pmd.properties.LongMultiProperty`
+  * `net.sourceforge.pmd.properties.LongProperty`
+  * `net.sourceforge.pmd.properties.MultiValuePropertyDescriptor`
+  * `net.sourceforge.pmd.properties.NumericPropertyDescriptor`
+  * `net.sourceforge.pmd.properties.PropertyDescriptorField`
+  * `net.sourceforge.pmd.properties.RegexProperty`
+  * `net.sourceforge.pmd.properties.SingleValuePropertyDescriptor`
+  * `net.sourceforge.pmd.properties.StringMultiProperty`
+  * `net.sourceforge.pmd.properties.StringProperty`
+  * `net.sourceforge.pmd.properties.ValueParser`
+  * `net.sourceforge.pmd.properties.ValueParserConstants`
+  * `net.sourceforge.pmd.properties.builders.MultiNumericPropertyBuilder`
+  * `net.sourceforge.pmd.properties.builders.MultiPackagedPropertyBuilder`
+  * `net.sourceforge.pmd.properties.builders.MultiValuePropertyBuilder`
+  * `net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilder`
+  * `net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper`
+  * `net.sourceforge.pmd.properties.builders.PropertyDescriptorExternalBuilder`
+  * `net.sourceforge.pmd.properties.builders.SingleNumericPropertyBuilder`
+  * `net.sourceforge.pmd.properties.builders.SinglePackagedPropertyBuilder`
+  * `net.sourceforge.pmd.properties.builders.SingleValuePropertyBuilder`
+  * `net.sourceforge.pmd.properties.modules.EnumeratedPropertyModule`
+  * `net.sourceforge.pmd.properties.modules.NumericPropertyModule`
+
+The following previously deprecated methods have been removed:
+
+* pmd-core
+  * `net.sourceforge.pmd.properties.PropertyBuilder.GenericCollectionPropertyBuilder#delim(char)`
+  * `net.sourceforge.pmd.properties.PropertySource#setProperty(...)`
+  * `net.sourceforge.pmd.properties.PropertyTypeId#factoryFor(...)`
+  * `net.sourceforge.pmd.properties.PropertyTypeId#typeIdFor(...)`
+  * `net.sourceforge.pmd.properties.PropertyDescriptor`: removed methods errorFor, type, isMultiValue,
+    uiOrder, compareTo, isDefinedExternally, valueFrom, asDelimitedString
+
+The following methods have been removed:
+
+* pmd-core
+  * {%jdoc core::cpd.CPDConfiguration %}
+    * `#sourceCodeFor(File)`, `#postConstruct()`, `#tokenizer()`, `#filenameFilter()` removed
+  * {%jdoc core::cpd.Mark %}
+    * `#getSourceSlice()`, `#setLineCount(int)`, `#getLineCount()`, `#setSourceCode(SourceCode)` removed
+    * `#getBeginColumn()`, `#getBeginLine()`, `#getEndLine()`, `#getEndColumn()` removed
+      ➡️ use {%jdoc core::cpd.Mark#getLocation() %} instead
+  * {%jdoc core::cpd.Match %}
+    * `#LABEL_COMPARATOR` removed
+    * `#setMarkSet(...)`, `#setLabel(...)`, `#getLabel()`, `#addTokenEntry(...)` removed
+    * `#getSourceCodeSlice()` removed
+      ➡️ use {%jdoc !!core::cpd.CPDReport#getSourceCodeSlice(net.sourceforge.pmd.cpd.Mark) %} instead
+  * {%jdoc core::cpd.TokenEntry %}
+    * `#getEOF()`, `#clearImages()`, `#getIdentifier()`, `#getIndex()`, `#setHashCode(int)` removed
+    * `#EOF` removed ➡️ use {%jdoc core::cpd.TokenEntry#isEof() %} instead
+  * {%jdoc core::lang.ast.Parser.ParserTask %}
+    * `#getFileDisplayName()` removed ➡️ use {%jdoc core::lang.ast.Parser.ParserTask#getFileId() %} instead
+      (`getFileId().getAbsolutePath()`)
+
+The following classes have been removed:
+
+* pmd-core
+  * `net.sourceforge.pmd.cpd.AbstractLanguage`
+  * `net.sourceforge.pmd.cpd.AnyLanguage`
+  * `net.sourceforge.pmd.cpd.Language`
+  * `net.sourceforge.pmd.cpd.LanguageFactory`
+  * `net.sourceforge.pmd.cpd.MatchAlgorithm` (now package private)
+  * `net.sourceforge.pmd.cpd.MatchCollector` (now package private)
+  * `net.sourceforge.pmd.cpd.SourceCode` (and all inner classes like `FileCodeLoader`, ...)
+  * `net.sourceforge.pmd.cpd.token.TokenFilter`
+
+##### Moved packages
+
+* pmd-core
+  * {%jdoc core::net.sourceforge.pmd.properties.NumericConstraints %} (old package: `net.sourceforge.pmd.properties.constraints.NumericConstraints`)
+  * {%jdoc core::net.sourceforge.pmd.properties.PropertyConstraint %} (old package: `net.sourceforge.pmd.properties.constraints.PropertyConstraint`)
+    * not experimental anymore
+  * {%jdoc ant::ant.ReportException %} (old package: `net.sourceforge.pmd.cpd`, moved to module `pmd-ant`)
+    * it is now a RuntimeException
+  * {%jdoc core::cpd.CPDReportRenderer %} (old package: `net.sourceforge.pmd.cpd.renderer`)
+  * {%jdoc core::cpd.impl.AntlrTokenFilter %} (old package: `net.sourceforge.pmd.cpd.token`)
+  * {%jdoc core::cpd.impl.BaseTokenFilter %} (old package: `net.sourceforge.pmd.cpd.token.internal`)
+  * {%jdoc core::cpd.impl.JavaCCTokenFilter %} (old package: `net.sourceforge.pmd.cpd.token`)
+
+##### Changed types and other changes
+
+* pmd-core
+  * {%jdoc core::net.sourceforge.pmd.properties.PropertyDescriptor %} is now a class (was an interface)
+    and it is not comparable anymore.
+  * {%jdoc !!core::AbstractConfiguration#setSourceEncoding(java.nio.charset.Charset) %}
+    * previously this method took a simple String for the encoding.
+  * {%jdoc core::PmdConfiguration %} and {%jdoc core::cpd.CPDConfiguration %}
+    * many getters and setters have been moved to the parent class {%jdoc core::AbstractConfiguration %}
+  * {%jdoc !!core::cpd.CPDListener#addedFile(int) %}
+    * no `File` parameter anymore
+  * {%jdoc !!core::cpd.CPDReport#getNumberOfTokensPerFile() %} returns a `Map` of `FileId,Integer` instead of `String`
+  * {%jdoc !!core::cpd.CPDReport#filterMatches(java.util.function.Predicate) %} now takes a `java.util.function.Predicate`
+    as parameter
+  * {%jdoc core::cpd.Tokenizer %}
+    * constants are now {%jdoc core::properties.PropertyDescriptor %} instead of `String`,
+      to be used as language properties
+    * {%jdoc core::cpd.Tokenizer#tokenize(net.sourceforge.pmd.lang.document.TextDocument, net.sourceforge.pmd.cpd.TokenFactory) %}
+      changed parameters. Now takes a {%jdoc core::lang.document.TextDocument %} and a {%jdoc core::cpd.TokenFactory %}
+      (instead of `SourceCode` and `Tokens`)
+  * {% jdoc core::lang.Language %}
+    * method `#createProcessor(LanguagePropertyBundle)` moved to {%jdoc core::lang.PmdCapableLanguage %}
+  * {% jdoc !!core::util.StringUtil#linesWithTrimIndent(net.sourceforge.pmd.lang.document.Chars) %} now takes a `Chars`
+    instead of a `String`.
+* All language modules (like pmd-apex, pmd-cpp, ...)
+  * consistent package naming: `net.sourceforge.pmd.lang.<langId>.cpd`
+  * adapted to use {% jdoc core::cpd.CpdCapableLanguage %}
+  * consistent static method `#getInstance()`
+  * removed constants like `ID`, `TERSE_NAME` or `NAME`. Use `getInstance().getName()` etc. instead
+
+##### Internal APIs
+
+* {% jdoc core::cpd.Tokens %}
+* {% jdoc core::net.sourceforge.pmd.properties.PropertyTypeId %}
+
+##### Deprecated API
+
+* {% jdoc !!core::lang.Language#getTerseName() %} ➡️ use {% jdoc core::lang.Language#getId() %} instead
+
+* The method {%jdoc !!java::lang.java.ast.ASTPattern#getParenthesisDepth() %} has been deprecated and will be removed.
+  It was introduced for supporting parenthesized patterns, but that was removed with Java 21. It is only used when
+  parsing code as java-19-preview.
+
+##### Experimental APIs
+
+* To support the Java preview language features "String Templates" and "Unnamed Patterns and Variables", the following
+  AST nodes have been introduced as experimental:
+  * {% jdoc java::lang.java.ast.ASTTemplateExpression %}
+  * {% jdoc java::lang.java.ast.ASTTemplate %}
+  * {% jdoc java::lang.java.ast.ASTTemplateFragment %}
+  * {% jdoc java::lang.java.ast.ASTUnnamedPattern %}
+* The AST nodes for supporting "Record Patterns" and "Pattern Matching for switch" are not experimental anymore:
+  * {% jdoc java::lang.jast.ast.ASTRecordPattern %}
+  * {% jdoc java::lang.jast.ast.ASTPatternList %} (Note: it was renamed from `ASTComponentPatternList`)
+  * {% jdoc java::lang.jast.ast. %} (Note: it was renamed from `ASTSwitchGuard`)
 
 #### 7.0.0-rc3
 
