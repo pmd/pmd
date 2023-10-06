@@ -41,9 +41,16 @@ The remaining section describes the complete release notes for 7.0.0.
 
 #### New and Noteworthy
 
+#### Rule Changes
+
+**New Rules**
+
+* {% rule java/codestyle/UseExplicitTypes %} reports usages of `var` keyword, which was introduced with Java 10.
+
 #### Fixed issues
 
 * java-codestyle
+  * [#2847](https://github.com/pmd/pmd/issues/2847): \[java] New Rule: Use Explicit Types
   * [#4578](https://github.com/pmd/pmd/issues/4578): \[java] CommentDefaultAccessModifier comment needs to be before annotation if present
 
 #### API Changes
@@ -218,6 +225,7 @@ can be parsed now. PMD should now be able to parse Apex code up to version 59.0 
 
 **Java**
 * {% rule java/codestyle/UnnecessaryBoxing %} reports boxing and unboxing conversions that may be made implicit.
+* {% rule java/codestyle/UseExplicitTypes %} reports usages of `var` keyword, which was introduced with Java 10.
 
 **Kotlin**
 * {% rule kotlin/bestpractices/FunctionNameTooShort %}
@@ -546,6 +554,7 @@ Language specific fixes:
     * [#2528](https://github.com/pmd/pmd/issues/2528): \[java] MethodNamingConventions - JUnit 5 method naming not support ParameterizedTest
     * [#2739](https://github.com/pmd/pmd/issues/2739): \[java] UselessParentheses false positive for string concatenation
     * [#2748](https://github.com/pmd/pmd/issues/2748): \[java] UnnecessaryCast false positive with unchecked cast
+    * [#2847](https://github.com/pmd/pmd/issues/2847): \[java] New Rule: Use Explicit Types
     * [#2973](https://github.com/pmd/pmd/issues/2973): \[java] New rule: UnnecessaryBoxing
     * [#3195](https://github.com/pmd/pmd/pull/3195):   \[java] Improve rule UnnecessaryReturn to detect more cases
     * [#3218](https://github.com/pmd/pmd/pull/3218):   \[java] Generalize UnnecessaryCast to flag all unnecessary casts

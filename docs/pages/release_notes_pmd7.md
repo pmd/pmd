@@ -285,6 +285,7 @@ can be parsed now. PMD should now be able to parse Apex code up to version 59.0 
 
 **Java**
 * {% rule java/codestyle/UnnecessaryBoxing %} reports boxing and unboxing conversions that may be made implicit.
+* {% rule java/codestyle/UseExplicitTypes %} reports usages of `var` keyword, which was introduced with Java 10.
 
 **Kotlin**
 * {% rule kotlin/bestpractices/FunctionNameTooShort %}
