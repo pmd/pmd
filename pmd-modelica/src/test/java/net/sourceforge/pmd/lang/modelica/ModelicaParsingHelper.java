@@ -14,7 +14,7 @@ public class ModelicaParsingHelper extends BaseParsingHelper<ModelicaParsingHelp
     public static final ModelicaParsingHelper DEFAULT = new ModelicaParsingHelper(Params.getDefault());
 
     private ModelicaParsingHelper(Params params) {
-        super(ModelicaLanguageModule.NAME, ASTStoredDefinition.class, params);
+        super(ModelicaLanguageModule.getInstance(), ASTStoredDefinition.class, params);
     }
 
     @Override

@@ -56,8 +56,7 @@ definitely don't come for free. It is much effort and requires perseverance to i
 *   Make sure to add your new module to PMD's parent pom as `<module>` entry, so that it is built alongside the
     other languages.
 *   Also add your new module to the dependencies list in "pmd-languages-deps/pom.xml", so that the new language
-    is automatically available in the binary distribution (pmd-dist) as well as for the shell-completion
-    in the pmd-cli module.
+    is automatically available in the binary distribution (pmd-dist).
 
 
 ## 2.  Implement an AST parser for your language
@@ -120,13 +119,13 @@ definitely don't come for free. It is much effort and requires perseverance to i
 *   This is needed to support CPD (copy paste detection)
 *   We provide a default implementation using [`AntlrTokenManager`](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/impl/AntlrTokenizer.java).
 *   You must create your own "AntlrTokenizer" such as we do with
-    [`SwiftTokenizer`](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/cpd/SwiftTokenizer.java).
+    [`SwiftTokenizer`](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/cpd/SwiftTokenizer.java).
 *   If you wish to filter specific tokens (e.g. comments to support CPD suppression via "CPD-OFF" and "CPD-ON")
     you can create your own implementation of
-    [`AntlrTokenFilter`](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/token/AntlrTokenFilter.java).
+    [`AntlrTokenFilter`](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/impl/AntlrTokenFilter.java).
     You'll need to override then the protected method `getTokenFilter(AntlrTokenManager)`
     and return your custom filter. See the tokenizer for C# as an exmaple:
-    [`CsTokenizer`](https://github.com/pmd/pmd/blob/master/pmd-cs/src/main/java/net/sourceforge/pmd/cpd/CsTokenizer.java).
+    [`CsTokenizer`](https://github.com/pmd/pmd/blob/master/pmd-cs/src/main/java/net/sourceforge/pmd/lang/cs/cpd/CsTokenizer.java).
     
     If you don't need a custom token filter, you don't need to override the method. It returns the default
     `AntlrTokenFilter` which doesn't filter anything.
@@ -169,7 +168,7 @@ definitely don't come for free. It is much effort and requires perseverance to i
 ## 10. Create an abstract rule class for the language
 *   You need to create your own abstract rule class in order to interface your language with PMD's generic rule
     execution.
-*   See [`AbstractSwiftRule`](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/AbstractSwiftRule.java) as an example.
+*   See [`AbstractSwiftRule`](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/rule/AbstractSwiftRule.java) as an example.
 *   The rule basically just extends
     [`AbstractVisitorRule`](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/lang/rule/AbstractVisitorRule.java)
     and only redefines the abstract `buildVisitor()` method to return our own type of visitor.

@@ -7,7 +7,6 @@ package net.sourceforge.pmd.cli.commands.internal;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -15,6 +14,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +47,7 @@ import picocli.CommandLine.ParameterException;
 
 @Command(name = "check", showDefaultValues = true,
     description = "The PMD standard source code analyzer")
-public class PmdCommand extends AbstractAnalysisPmdSubcommand {
+public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> {
     private static final Logger LOG = LoggerFactory.getLogger(PmdCommand.class);
 
     static {
@@ -85,8 +85,6 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
     private int threads;
 
     private boolean benchmark;
-
-    private List<Path> relativizeRootPaths;
 
     private boolean showSuppressed;
 
@@ -140,23 +138,6 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
             description = "Benchmark mode - output a benchmark report upon completion; default to System.err.")
     public void setBenchmark(final boolean benchmark) {
         this.benchmark = benchmark;
-    }
-
-    @Option(names = { "--relativize-paths-with", "-z"}, description = "Path relative to which directories are rendered in the report. "
-            + "This option allows shortening directories in the report; "
-            + "without it, paths are rendered as mentioned in the source directory (option \"--dir\"). "
-            + "The option can be repeated, in which case the shortest relative path will be used. "
-            + "If the root path is mentioned (e.g. \"/\" or \"C:\\\"), then the paths will be rendered as absolute.",
-        arity = "1..*", split = ",")
-    public void setRelativizePathsWith(List<Path> rootPaths) {
-        this.relativizeRootPaths = rootPaths;
-
-        for (Path path : this.relativizeRootPaths) {
-            if (Files.isRegularFile(path)) {
-                throw new ParameterException(spec.commandLine(),
-                        "Expected a directory path for option '--relativize-paths-with', found a file: " + path);
-            }
-        }
     }
 
     @Option(names = "--show-suppressed", description = "Report should show suppressed rule violations.")
@@ -275,7 +256,8 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
      *
      * @throws ParameterException if the parameters are inconsistent or incomplete
      */
-    public PMDConfiguration toConfiguration() {
+    @Override
+    protected PMDConfiguration toConfiguration() {
         final PMDConfiguration configuration = new PMDConfiguration();
         if (inputPaths != null) {
             configuration.setInputPathList(inputPaths);
@@ -284,7 +266,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
         configuration.setIgnoreFilePath(ignoreListPath);
         configuration.setInputUri(uri);
         configuration.setReportFormat(format);
-        configuration.setSourceEncoding(encoding.getEncoding().name());
+        configuration.setSourceEncoding(encoding.getEncoding());
         configuration.setMinimumPriority(minimumPriority);
         configuration.setReportFile(reportFile);
         configuration.setReportProperties(properties);
@@ -323,12 +305,12 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand {
     }
 
     @Override
-    protected CliExitCode execute() {
+    @NonNull
+    protected CliExitCode doExecute(PMDConfiguration configuration) {
         if (benchmark) {
             TimeTracker.startGlobalTracking();
         }
 
-        final PMDConfiguration configuration = toConfiguration();
         final MessageReporter pmdReporter = configuration.getReporter();
 
         try {

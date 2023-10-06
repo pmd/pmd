@@ -94,7 +94,7 @@ class Java20PreviewTreeDumpTest extends BaseTreeDumpTest {
     @Test
     void recordPatternsBeforeJava20Preview() {
         ParseException thrown = assertThrows(ParseException.class, () -> java20.parseResource("RecordPatterns.java"));
-        assertTrue(thrown.getMessage().contains("Deconstruction patterns is a preview feature of JDK 20, you should select your language version accordingly"),
+        assertTrue(thrown.getMessage().contains("Record patterns is a preview feature of JDK 20, you should select your language version accordingly"),
                 "Unexpected message: " + thrown.getMessage());
     }
 

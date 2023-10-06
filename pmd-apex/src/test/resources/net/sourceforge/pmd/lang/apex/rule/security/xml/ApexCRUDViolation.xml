@@ -1740,7 +1740,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Consider Database DML methods with AccessLevel parameter</description>
+        <description>Consider Database DML methods with AccessLevel parameter #4146</description>
         <expected-problems>7</expected-problems>
         <expected-linenumbers>4,12,19,19,26,33,39</expected-linenumbers>
         <expected-messages>
@@ -1799,11 +1799,10 @@ public class UserMode {
 ]]></code>
     </test-code>
 
-    <test-code disabled="true">
-        <!-- disabled, because jorje can't parse "as user" -->
-        <description>Consider "insert as"</description>
+    <test-code>
+        <description>Consider "insert as" #4146 #3973</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>7</expected-linenumbers>
+        <expected-linenumbers>8</expected-linenumbers>
         <code><![CDATA[
 public class UserMode {
 public void coverAllCasesWithTest() {
@@ -1811,13 +1810,17 @@ public void coverAllCasesWithTest() {
     c = [SELECT Name FROM Contact WITH USER_MODE];
 
     // Should be flagged a critical issue
-    insert contact;
+    Contact c2;
+    insert c2;
 
     // Should be ignored
-    insert as user contact;
+    insert as user c2;
 
     // Should be at best a warning because it ignores CRUD but explicitly
-    insert as system contact;
+    insert as system c2;
+
+    // Should be ignored
+    update as user c2;
 }
 }
 ]]></code>

@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -127,7 +127,7 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
      * @return boolean true if variableType is not what we care about
      */
     private boolean ignoreType(ASTType typeNode, JTypeMirror t) {
-        if (typeNode.getEnclosingType().getSymbol().equals(t.getSymbol())) {
+        if (typeNode.getEnclosingType() != null && typeNode.getEnclosingType().getSymbol().equals(t.getSymbol())) {
             return true;
         }
         JTypeDeclSymbol symbol = t.getSymbol();

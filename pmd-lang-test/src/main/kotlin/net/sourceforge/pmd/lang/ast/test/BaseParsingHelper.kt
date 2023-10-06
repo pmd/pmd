@@ -4,6 +4,7 @@
 package net.sourceforge.pmd.lang.ast.test
 
 import net.sourceforge.pmd.*
+import net.sourceforge.pmd.lang.PmdCapableLanguage
 import net.sourceforge.pmd.internal.util.IOUtil
 import net.sourceforge.pmd.lang.*
 import net.sourceforge.pmd.lang.ast.Node
@@ -29,6 +30,9 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         private val rootClass: Class<T>,
         protected val params: Params
 ) {
+
+    constructor(lang: PmdCapableLanguage, rootClass: Class<T>, params: Params)
+            : this(lang.name, rootClass, params)
 
     data class Params(
         val doProcess: Boolean,
@@ -64,9 +68,9 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
             ?: throw AssertionError("Unsupported version $version for language $language")
     }
 
-    val language: Language
+    val language: PmdCapableLanguage
         get() =
-            params.languageRegistry.getLanguageByFullName(langName)
+            params.languageRegistry.getLanguageByFullName(langName) as? PmdCapableLanguage?
                 ?: run {
                     val langNames = params.languageRegistry.commaSeparatedList { it.name }
                     throw AssertionError("'$langName' is not a supported language (available $langNames)")

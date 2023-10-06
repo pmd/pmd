@@ -4,18 +4,13 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.io.IOException;
-import java.util.Properties;
-
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.cpd.token.internal.BaseTokenFilter;
+import net.sourceforge.pmd.cpd.impl.BaseTokenFilter;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.TokenMgrError;
-import net.sourceforge.pmd.lang.document.CpdCompat;
 import net.sourceforge.pmd.lang.document.TextDocument;
-import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.scala.ScalaLanguageModule;
 
 import scala.collection.Iterator;
@@ -31,53 +26,31 @@ import scala.meta.tokens.Token;
  */
 public class ScalaTokenizer implements Tokenizer {
 
-    /**
-     * Denotes the version of the scala dialect to use. Based on the values in
-     * {@linkplain ScalaLanguageModule#getVersions()}
-     */
-    public static final String SCALA_VERSION_PROPERTY = "net.sourceforge.pmd.scala.version";
     private final Dialect dialect;
 
     /**
      * Create the Tokenizer using properties from the system environment.
      */
-    public ScalaTokenizer() {
-        this(System.getProperties());
-    }
-
-    /**
-     * Create the Tokenizer given a set of properties.
-     *
-     * @param properties
-     *            the {@linkplain Properties} object to use
-     */
-    public ScalaTokenizer(Properties properties) {
-        String scalaVersion = properties.getProperty(SCALA_VERSION_PROPERTY);
-        LanguageVersion langVer;
-        if (scalaVersion == null) {
-            langVer = ScalaLanguageModule.getInstance().getDefaultVersion();
-        } else {
-            langVer = ScalaLanguageModule.getInstance().getVersion(scalaVersion);
-        }
+    public ScalaTokenizer(LanguagePropertyBundle bundle) {
+        LanguageVersion langVer = bundle.getLanguageVersion();
         dialect = ScalaLanguageModule.dialectOf(langVer);
     }
 
     @Override
-    public void tokenize(SourceCode sourceCode, Tokens tokenEntries) throws IOException {
+    public void tokenize(TextDocument document, TokenFactory tokenEntries) {
 
 
-        TextFile textFile = CpdCompat.cpdCompat(sourceCode);
-        try (TextDocument textDoc = TextDocument.create(textFile)) {
-            String fullCode = textDoc.getText().toString();
+        try {
+            String fullCode = document.getText().toString();
 
             // create the input file for scala
-            Input.VirtualFile vf = new Input.VirtualFile(sourceCode.getFileName(), fullCode);
+            Input.VirtualFile vf = new Input.VirtualFile(document.getFileId().getOriginalPath(), fullCode);
             ScalametaTokenizer tokenizer = new ScalametaTokenizer(vf, dialect);
 
             // tokenize with a filter
             scala.meta.tokens.Tokens tokens = tokenizer.tokenize();
             // use extensions to the standard PMD TokenManager and Filter
-            ScalaTokenManager scalaTokenManager = new ScalaTokenManager(tokens.iterator(), textDoc);
+            ScalaTokenManager scalaTokenManager = new ScalaTokenManager(tokens.iterator(), document);
             ScalaTokenFilter filter = new ScalaTokenFilter(scalaTokenManager);
 
             ScalaTokenAdapter token;
@@ -85,21 +58,19 @@ public class ScalaTokenizer implements Tokenizer {
                 if (StringUtils.isEmpty(token.getImage())) {
                     continue;
                 }
-                TokenEntry cpdToken = new TokenEntry(token.getImage(),
-                                                     token.getReportLocation());
-                tokenEntries.add(cpdToken);
+                tokenEntries.recordToken(token.getImage(),
+                                         token.getReportLocation());
             }
         } catch (Exception e) {
             if (e instanceof TokenizeException) { // NOPMD
                 // cannot catch it as it's a checked exception and Scala sneaky throws
                 TokenizeException tokE = (TokenizeException) e;
                 Position pos = tokE.pos();
-                throw new TokenMgrError(pos.startLine() + 1, pos.startColumn() + 1, textFile.getFileId(), "Scalameta threw", tokE);
+                throw tokenEntries.makeLexException(
+                    pos.startLine() + 1, pos.startColumn() + 1, "Scalameta threw", tokE);
             } else {
                 throw e;
             }
-        } finally {
-            tokenEntries.add(TokenEntry.getEOF());
         }
 
     }
