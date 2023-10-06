@@ -41,7 +41,16 @@ The remaining section describes the complete release notes for 7.0.0.
 
 #### New and Noteworthy
 
+#### Rule Changes
+
+**New Rules**
+
+* {% rule java/codestyle/UseExplicitTypes %} reports usages of `var` keyword, which was introduced with Java 10.
+
 #### Fixed issues
+
+* java-codestyle
+  * [#2847](https://github.com/pmd/pmd/issues/2847): \[java] New Rule: Use Explicit Types
 
 #### API Changes
 
