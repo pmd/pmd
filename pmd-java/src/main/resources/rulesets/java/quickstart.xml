@@ -51,7 +51,6 @@
     <rule ref="category/java/bestpractices.xml/UnusedPrivateField"/>
     <rule ref="category/java/bestpractices.xml/UnusedPrivateMethod"/>
     <rule ref="category/java/bestpractices.xml/UseCollectionIsEmpty"/>
-    <!-- <rule ref="category/java/bestpractices.xml/UseExplicitTypes"/> -->
     <rule ref="category/java/bestpractices.xml/UseStandardCharsets" />
     <!-- <rule ref="category/java/bestpractices.xml/UseTryWithResources" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/UseVarargs" /> -->
@@ -98,6 +97,7 @@
     <!-- <rule ref="category/java/codestyle.xml/LocalVariableCouldBeFinal" /> -->
     <!-- <rule ref="category/java/codestyle.xml/MethodArgumentCouldBeFinal" /> -->
     <rule ref="category/java/codestyle.xml/NoPackage"/>
+    <!-- <rule ref="category/java/codestyle.xml/UseExplicitTypes"/> -->
     <!-- <rule ref="category/java/codestyle.xml/UseUnderscoresInNumericLiterals" /> -->
     <!-- <rule ref="category/java/codestyle.xml/OnlyOneReturn" /> -->
     <!-- <rule ref="category/java/codestyle.xml/PrematureDeclaration" /> -->
