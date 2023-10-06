@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce a specific coding style.">
-<meta name="keywords" content=" Code Style, AtLeastOneConstructor, AvoidDollarSigns, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, EmptyMethodInAbstractClassShouldBeAbstract, EmptyControlStatement, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, FieldNamingConventions, FinalParameterInAbstractMethod, ForLoopShouldBeWhileLoop, FormalParameterNamingConventions, GenericsNaming, IdenticalCatchBranches, LinguisticNaming, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LocalVariableNamingConventions, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, NoPackage, UseUnderscoresInNumericLiterals, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, TooManyStaticImports, UnnecessaryAnnotationValueElement, UnnecessaryBoxing, UnnecessaryCast, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryImport, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UnnecessarySemicolon, UseDiamondOperator, UselessParentheses, UselessQualifiedThis, UseShortArrayInitializer">
+<meta name="keywords" content=" Code Style, AtLeastOneConstructor, AvoidDollarSigns, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, EmptyMethodInAbstractClassShouldBeAbstract, EmptyControlStatement, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, FieldNamingConventions, FinalParameterInAbstractMethod, ForLoopShouldBeWhileLoop, FormalParameterNamingConventions, GenericsNaming, IdenticalCatchBranches, LinguisticNaming, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LocalVariableNamingConventions, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, NoPackage, UseUnderscoresInNumericLiterals, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, TooManyStaticImports, UnnecessaryAnnotationValueElement, UnnecessaryBoxing, UnnecessaryCast, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryImport, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UnnecessarySemicolon, UseDiamondOperator, UseExplicitTypes, UselessParentheses, UselessQualifiedThis, UseShortArrayInitializer">
 <title>Code Style | PMD Source Code Analyzer</title>
 
 
@@ -4208,6 +4208,73 @@ was made possible for anonymous class constructors.</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/UseDiamondOperator"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
+<h2 id="useexplicittypes">UseExplicitTypes</h2>
+
+<p><strong>Since:</strong> PMD 7.0.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p><strong>Minimum Language Version:</strong> Java 10</p>
+
+<p>Java 10 introduced the <code class="language-plaintext highlighter-rouge">var</code> keyword. This reduces the amount of code written because java can infer the type
+from the initializer of the variable declaration.</p>
+
+<p>This is essentially a trade-off: On the one hand, it can make code more readable by eliminating redundant
+information. On the other hand, it can make code less readable by eliding useful information. There is no
+blanket rule for when <code class="language-plaintext highlighter-rouge">var</code> should be used or shouldn’t.</p>
+
+<p>It may make sense to use <code class="language-plaintext highlighter-rouge">var</code> when the type is inherently clear upon reading the statement
+(ie: assignment to either a literal value or a constructor call). Those use cases
+can be enabled through properties.</p>
+
+<p>Notice that lambda parameters are allowed, as they are already inferred  by default (the <code class="language-plaintext highlighter-rouge">var</code> keyword
+is completely optional).</p>
+
+<p>See also <a href="https://openjdk.org/projects/amber/guides/lvti-style-guide">Local Variable Type Inference Style Guidelines</a>.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">LocalVariableDeclaration</span><span class="p">[</span><span class="na">@TypeInferred</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]</span><span class="w">
+    </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">VariableDeclarator</span><span class="p">[</span><span class="o">*</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">nodeIs</span><span class="p">(</span><span class="s2">"Literal"</span><span class="p">)]])</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nv">$allowLiterals</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]</span><span class="w">
+    </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">VariableDeclarator</span><span class="p">[</span><span class="nt">ConstructorCall</span><span class="p">])</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nv">$allowCtors</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>allowLiterals</td>
+      <td>false</td>
+      <td>Allow when variables are directly initialized with literals</td>
+    </tr>
+    <tr>
+      <td>allowCtors</td>
+      <td>false</td>
+      <td>Allow when variables are directly initialized with a constructor call</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/UseExplicitTypes"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/UseExplicitTypes"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"allowLiterals"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"allowCtors"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
+</code></pre></div></div>
+
 <h2 id="uselessparentheses">UselessParentheses</h2>
 
 <p><strong>Since:</strong> PMD 5.0</p>
@@ -4463,7 +4530,7 @@ that are misplaced (not making groups of 3 digits) are reported.</p>
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Oct 1, 2023 <br />
+             Site last generated: Oct 6, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

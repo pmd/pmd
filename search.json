@@ -1661,6 +1661,15 @@
 ,
 
 {
+"title": "UseExplicitTypes (Java, Code Style)",
+"tags": "",
+"keywords": "UseExplicitTypes",
+"url": "pmd_rules_java_codestyle.html#useexplicittypes",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
 "title": "UselessParentheses (Java, Code Style)",
 "tags": "",
 "keywords": "UselessParentheses",

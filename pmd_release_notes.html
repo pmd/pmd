@@ -1665,7 +1665,24 @@ The remaining section describes the complete release notes for 7.0.0.</p>
 
 <h4 id="new-and-noteworthy">New and Noteworthy</h4>
 
+<h4 id="rule-changes">Rule Changes</h4>
+
+<p><strong>New Rules</strong></p>
+
+<ul>
+  <li><a href="pmd_rules_java_codestyle.html#useexplicittypes"><code class="language-plaintext highlighter-rouge">UseExplicitTypes</code></a> reports usages of <code class="language-plaintext highlighter-rouge">var</code> keyword, which was introduced with Java 10.</li>
+</ul>
+
 <h4 id="fixed-issues">Fixed issues</h4>
+
+<ul>
+  <li>java-codestyle
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2847">#2847</a>: [java] New Rule: Use Explicit Types</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4578">#4578</a>: [java] CommentDefaultAccessModifier comment needs to be before annotation if present</li>
+    </ul>
+  </li>
+</ul>
 
 <h4 id="api-changes">API Changes</h4>
 
@@ -1868,6 +1885,7 @@ or be omitted.</li>
 <p><strong>Java</strong></p>
 <ul>
   <li><a href="pmd_rules_java_codestyle.html#unnecessaryboxing"><code class="language-plaintext highlighter-rouge">UnnecessaryBoxing</code></a> reports boxing and unboxing conversions that may be made implicit.</li>
+  <li><a href="pmd_rules_java_codestyle.html#useexplicittypes"><code class="language-plaintext highlighter-rouge">UseExplicitTypes</code></a> reports usages of <code class="language-plaintext highlighter-rouge">var</code> keyword, which was introduced with Java 10.</li>
 </ul>
 
 <p><strong>Kotlin</strong></p>
@@ -2263,6 +2281,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/issues/2528">#2528</a>: [java] MethodNamingConventions - JUnit 5 method naming not support ParameterizedTest</li>
       <li><a href="https://github.com/pmd/pmd/issues/2739">#2739</a>: [java] UselessParentheses false positive for string concatenation</li>
       <li><a href="https://github.com/pmd/pmd/issues/2748">#2748</a>: [java] UnnecessaryCast false positive with unchecked cast</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2847">#2847</a>: [java] New Rule: Use Explicit Types</li>
       <li><a href="https://github.com/pmd/pmd/issues/2973">#2973</a>: [java] New rule: UnnecessaryBoxing</li>
       <li><a href="https://github.com/pmd/pmd/pull/3195">#3195</a>:   [java] Improve rule UnnecessaryReturn to detect more cases</li>
       <li><a href="https://github.com/pmd/pmd/pull/3218">#3218</a>:   [java] Generalize UnnecessaryCast to flag all unnecessary casts</li>
@@ -2278,6 +2297,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/issues/4511">#4511</a>: [java] LocalVariableCouldBeFinal shouldn’t report unused variables</li>
       <li><a href="https://github.com/pmd/pmd/issues/4512">#4512</a>: [java] MethodArgumentCouldBeFinal shouldn’t report unused parameters</li>
       <li><a href="https://github.com/pmd/pmd/issues/4557">#4557</a>: [java] UnnecessaryImport FP with static imports of overloaded methods</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4578">#4578</a>: [java] CommentDefaultAccessModifier comment needs to be before annotation if present</li>
     </ul>
   </li>
   <li>java-design
@@ -2458,7 +2478,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Oct 1, 2023 <br />
+             Site last generated: Oct 6, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
