@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 import java.util.Properties;
 
 import org.junit.jupiter.params.ParameterizedTest;
@@ -23,21 +24,18 @@ import net.sourceforge.pmd.lang.LanguageVersion;
  * Base test class for {@link LanguageVersion} implementations. <br>
  * Each language implementation should subclass this and provide a method called {@code data}.
  *
- * <pre>
- *     static Collection&lt;TestDescriptor&gt; data() {
+ * <pre>{@code
+ *     static Collection<TestDescriptor> data() {
+ *       final Language myLanguage = LanguageRegistry.getLanguage(MyLanguageModule.NAME);
  *       return Arrays.asList(
- *            new TestDescriptor(MyLanguageModule.NAME, MyLanguageModule.TERSE_NAME, "1.1",
- *                               LanguageRegistry.getLanguage(MyLanguageModule.NAME).getVersion("1.1")),
- *            new TestDescriptor(MyLanguageModule.NAME, MyLanguageModule.TERSE_NAME, "1.2",
- *                               LanguageRegistry.getLanguage(MyLanguageModule.NAME).getVersion("1.2")),
+ *            new TestDescriptor(myLanguage, "1.1"),
+ *            new TestDescriptor(myLanguage, "1.2"),
+ *            defaultVersionIs(myLanguage, "1.2),
  *
  *            // doesn't exist
- *            new TestDescriptor(MyLanguageModule.NAME, MyLanguageModule.TERSE_NAME, "1.3", null)
+ *            versionDoesNotExist(myLanguage, "1.3")
  *       };
- * </pre>
- *
- * <p>For the parameters, see the constructor
- * {@link TestDescriptor#TestDescriptor(String, String, String, LanguageVersion)}.</p>
+ * }</pre>
  */
 public abstract class AbstractLanguageVersionTest {
 
@@ -65,6 +63,28 @@ public abstract class AbstractLanguageVersionTest {
             this.simpleTerseName = terseName;
             this.expected = expected;
         }
+
+        public TestDescriptor(Language language, String version) {
+            this(language, version,
+                    Objects.requireNonNull(language.getVersion(version), "language version '" + version + "' doesn't exist"));
+        }
+
+        public static TestDescriptor versionDoesNotExist(String name, String terseName, String version) {
+            return new TestDescriptor(name, terseName, version, null);
+        }
+
+        public static TestDescriptor versionDoesNotExist(Language lang, String version) {
+            return new TestDescriptor(lang, version, null);
+        }
+
+        public static TestDescriptor defaultVersionIs(Language lang, String version) {
+            return new TestDescriptor(lang, version, lang.getDefaultVersion());
+        }
+
+        private TestDescriptor(Language language, String version, LanguageVersion expected) {
+            this(language.getName(), language.getId(), version, expected);
+        }
+
 
         public String getName() {
             return name;

@@ -25,7 +25,7 @@ public final class PMDVersion {
 
     private static final String UNKNOWN_VERSION = "unknown";
 
-    /**
+    /*
      * Determines the version from maven's generated pom.properties file.
      */
     static {

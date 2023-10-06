@@ -2153,7 +2153,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/11549103?v=4",
       "profile": "https://github.com/cyw3",
       "contributions": [
-        "bug"
+        "bug",
+        "doc"
       ]
     },
     {
@@ -7153,7 +7154,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/111259588?v=4",
       "profile": "https://github.com/nwcm",
       "contributions": [
-        "doc"
+        "doc",
+        "bug"
       ]
     },
     {
@@ -7201,6 +7203,61 @@
       "contributions": [
         "bug",
         "code"
+      ]
+    },
+    {
+      "login": "AndreyBozhko",
+      "name": "Andrey Bozhko",
+      "avatar_url": "https://avatars.githubusercontent.com/u/22246447?v=4",
+      "profile": "https://github.com/AndreyBozhko",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "rcorfieldffdc",
+      "name": "Richard Corfield",
+      "avatar_url": "https://avatars.githubusercontent.com/u/42997936?v=4",
+      "profile": "https://github.com/rcorfieldffdc",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "m0rjc",
+      "name": "Richard Corfield",
+      "avatar_url": "https://avatars.githubusercontent.com/u/994206?v=4",
+      "profile": "https://github.com/m0rjc",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "eant60",
+      "name": "eant60",
+      "avatar_url": "https://avatars.githubusercontent.com/u/41472980?v=4",
+      "profile": "https://github.com/eant60",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "Marcono1234",
+      "name": "Marcono1234",
+      "avatar_url": "https://avatars.githubusercontent.com/u/11685886?v=4",
+      "profile": "https://github.com/Marcono1234",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "eugenepugach",
+      "name": "eugenepugach",
+      "avatar_url": "https://avatars.githubusercontent.com/u/133967768?v=4",
+      "profile": "https://github.com/eugenepugach",
+      "contributions": [
+        "bug"
       ]
     }
   ],

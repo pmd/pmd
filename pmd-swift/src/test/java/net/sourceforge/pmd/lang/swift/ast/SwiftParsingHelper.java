@@ -16,7 +16,7 @@ public class SwiftParsingHelper extends BaseParsingHelper<SwiftParsingHelper, Sw
 
 
     public SwiftParsingHelper(@NonNull Params params) {
-        super(SwiftLanguageModule.NAME, SwTopLevel.class, params);
+        super(SwiftLanguageModule.getInstance(), SwTopLevel.class, params);
     }
 
     @NonNull

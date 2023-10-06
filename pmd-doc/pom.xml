@@ -74,8 +74,9 @@
     <dependencies>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-dist</artifactId>
+            <artifactId>pmd-languages-deps</artifactId>
             <version>${project.version}</version>
+            <type>pom</type>
             <scope>runtime</scope>
         </dependency>
         <dependency>
