@@ -8,6 +8,7 @@ package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -48,7 +49,11 @@ abstract class Loader {
         @Override
         @Nullable
         InputStream getInputStream() throws IOException {
-            return url.openStream();
+            URLConnection connection = url.openConnection();
+            // disable the cache, so that the underlying JarFile (if any) is closed, when
+            // the returned stream is closed - leaving no open files behind.
+            connection.setUseCaches(false);
+            return connection.getInputStream();
         }
 
         @Override
