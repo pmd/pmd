@@ -278,7 +278,7 @@ public class Something {
 
     <rule name="OperationWithHighCostInLoop"
           language="apex"
-          since="7.00.0"
+          since="7.0.0"
           message="Avoid operations in loops that may impact performances"
           class="net.sourceforge.pmd.lang.apex.rule.performance.OperationWithHighCostInLoopRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_performance.html#operationwithhighcostinloop">
