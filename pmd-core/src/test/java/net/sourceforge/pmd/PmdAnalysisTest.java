@@ -32,7 +32,6 @@ import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.SimpleTestTextFile;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.reporting.ReportStats;
 import net.sourceforge.pmd.util.log.MessageReporter;
 
@@ -55,7 +54,7 @@ class PmdAnalysisTest {
     void testRendererInteractions() throws IOException {
         PMDConfiguration config = new PMDConfiguration();
         config.addInputPath(Paths.get("sample-source/dummy"));
-        Renderer renderer = spy(new TextRenderer());
+        Renderer renderer = spy(Renderer.class);
         try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
             pmd.addRenderer(renderer);
             verify(renderer, never()).start();
