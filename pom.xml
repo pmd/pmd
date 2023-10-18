@@ -835,6 +835,23 @@
                 <scope>test</scope>
             </dependency>
 
+            <!-- byte-buddy is used by mockito.
+                 Using a newer version than the one from mockito 4.11.0 for Java 21 compatibility
+                 At least byte-buddy 1.14.3 is required for Java 21.
+            -->
+            <dependency>
+                <groupId>net.bytebuddy</groupId>
+                <artifactId>byte-buddy</artifactId>
+                <version>1.14.9</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>net.bytebuddy</groupId>
+                <artifactId>byte-buddy-agent</artifactId>
+                <version>1.14.9</version>
+                <scope>test</scope>
+            </dependency>
+
             <dependency>
                 <groupId>com.github.tomakehurst</groupId>
                 <artifactId>wiremock-jre8</artifactId>
