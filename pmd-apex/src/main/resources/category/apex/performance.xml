@@ -291,6 +291,7 @@ public class Something {
                 public void test1() {
                     Set<String> fieldNameSet = new Set<String> {'Id'};
                     for (String fieldNameOrDefaultValue : fieldNameOrDefaultValueList) {
+                        // Schema.getGlobalDescribe() should be called only once before the for-loop
                         if (Schema.getGlobalDescribe().get(objectName).getDescribe().fields.getMap().containsKey(fieldNameOrDefaultValue.trim() )) {
                             fieldNameSet.add(fieldNameOrDefaultValue);
                         }
