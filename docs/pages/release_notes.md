@@ -78,6 +78,7 @@ Note: Support for Java 19 preview language features have been removed. The versi
 
 * miscellaneous
   * [#4582](https://github.com/pmd/pmd/issues/4582): \[dist] Download link broken
+  * [#4699](https://github.com/pmd/pmd/pull/4699):   Make PMD buildable with java 21
 * core
   * [#1204](https://github.com/pmd/pmd/issues/1204): \[core] Allow numeric properties in XML to be within an unbounded range
   * [#3919](https://github.com/pmd/pmd/issues/3919): \[core] Merge CPD and PMD language
@@ -633,6 +634,7 @@ See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.
     * [#4462](https://github.com/pmd/pmd/issues/4462): Provide Software Bill of Materials (SBOM)
     * [#4460](https://github.com/pmd/pmd/pull/4460):   Fix assembly-plugin warnings
     * [#4582](https://github.com/pmd/pmd/issues/4582): \[dist] Download link broken
+    * [#4699](https://github.com/pmd/pmd/pull/4699):   Make PMD buildable with java 21
 * ant
     * [#4080](https://github.com/pmd/pmd/issues/4080): \[ant] Split off Ant integration into a new submodule
 * core
