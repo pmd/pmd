@@ -19,7 +19,7 @@ function build() {
             pmd_ci_log_info "Install openjdk17 for integration tests and pmd-regression-tests"
             pmd_ci_openjdk_install_adoptium 17
             pmd_ci_log_info "Install openjdk21 for integration tests and pmd-regression-tests"
-            pmd_ci_openjdk_install_adoptium "21-ea"
+            pmd_ci_openjdk_install_adoptium 21
             PMD_MAVEN_EXTRA_OPTS=(
                 -Djava8.home="${HOME}/openjdk8"
                 -Djava17.home="${HOME}/openjdk17"

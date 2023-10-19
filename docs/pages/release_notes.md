@@ -49,6 +49,8 @@ The remaining section describes the complete release notes for 7.0.0.
 
 #### Fixed issues
 
+* miscellaneous
+  * [#4699](https://github.com/pmd/pmd/pull/4699):   Make PMD buildable with java 21
 * java-codestyle
   * [#2847](https://github.com/pmd/pmd/issues/2847): \[java] New Rule: Use Explicit Types
   * [#4578](https://github.com/pmd/pmd/issues/4578): \[java] CommentDefaultAccessModifier comment needs to be before annotation if present
@@ -395,6 +397,7 @@ See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.
     * [#4460](https://github.com/pmd/pmd/pull/4460):   Fix assembly-plugin warnings
     * [#4582](https://github.com/pmd/pmd/issues/4582): \[dist] Download link broken
     * [#4691](https://github.com/pmd/pmd/issues/4691): \[CVEs] Critical and High CEVs reported on PMD and PMD dependencies
+    * [#4699](https://github.com/pmd/pmd/pull/4699):   Make PMD buildable with java 21
 * ant
     * [#4080](https://github.com/pmd/pmd/issues/4080): \[ant] Split off Ant integration into a new submodule
 * core
