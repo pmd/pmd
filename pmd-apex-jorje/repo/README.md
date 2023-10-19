@@ -8,7 +8,7 @@ Apex Reference:
 
 <https://resources.docs.salesforce.com/sfdc/pdf/salesforce_apex_language_reference.pdf>
 
-In order to download the jar file, minimize it and add a the jar files to the local repo, use the following script:
+In order to download the jar file, minimize it and add the jar files to the local repo, use the following script:
 
     ./create-local-repo.sh
 

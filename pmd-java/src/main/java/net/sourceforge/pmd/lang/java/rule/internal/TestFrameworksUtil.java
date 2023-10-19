@@ -138,7 +138,8 @@ public final class TestFrameworksUtil {
      * True if this is a {@code TestCase} class for Junit 3.
      */
     public static boolean isJUnit3Class(ASTAnyTypeDeclaration node) {
-        return node.isRegularClass()
+        return node != null
+            && node.isRegularClass()
             && !node.isNested()
             && !node.isAbstract()
             && TypeTestUtil.isA(JUNIT3_CLASS_NAME, node);

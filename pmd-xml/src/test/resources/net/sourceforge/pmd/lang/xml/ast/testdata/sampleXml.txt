@@ -1,4 +1,4 @@
-+- document[]
++- document[@XmlEncoding = null, @XmlStandalone = false, @XmlVersion = "1.0"]
    +- pmd:rootElement[@xmlns:pmd = "http://pmd.sf.net"]
       +- text[@Image = "\n    "]
       +- comment[]

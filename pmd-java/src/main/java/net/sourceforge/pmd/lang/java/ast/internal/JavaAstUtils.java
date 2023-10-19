@@ -151,6 +151,10 @@ public final class JavaAstUtils {
     }
 
     public static boolean hasField(ASTAnyTypeDeclaration node, String name) {
+        if (node == null) {
+            return false;
+        }
+
         for (JFieldSymbol f : node.getSymbol().getDeclaredFields()) {
             String fname = f.getSimpleName();
             if (fname.startsWith("m_") || fname.startsWith("_")) {
@@ -445,7 +449,7 @@ public final class JavaAstUtils {
     }
 
     public static boolean hasAnyAnnotation(Annotatable node, Collection<String> qualifiedNames) {
-        return qualifiedNames.stream().anyMatch(node::isAnnotationPresent);
+        return node != null && qualifiedNames.stream().anyMatch(node::isAnnotationPresent);
     }
 
     /**
@@ -586,8 +590,10 @@ public final class JavaAstUtils {
         if (usage instanceof ASTVariableAccess) {
             return !Modifier.isStatic(((JFieldSymbol) symbol).getModifiers());
         } else if (usage instanceof ASTFieldAccess) {
-            return Objects.equals(((JFieldSymbol) symbol).getEnclosingClass(),
-                                  usage.getEnclosingType().getSymbol());
+            if (usage.getEnclosingType() != null) {
+                return Objects.equals(((JFieldSymbol) symbol).getEnclosingClass(),
+                        usage.getEnclosingType().getSymbol());
+            }
         }
         return false;
     }
