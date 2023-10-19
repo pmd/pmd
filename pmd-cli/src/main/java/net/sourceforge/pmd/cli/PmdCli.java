@@ -16,10 +16,6 @@ public final class PmdCli {
         final CommandLine cli = new CommandLine(new PmdRootCommand())
                 .setCaseInsensitiveEnumValuesAllowed(true);
         
-        // Don't show autocomplete subcommand in help by default
-        cli.getSubcommands().get("generate-completion")
-            .getCommandSpec().usageMessage().hidden(true);
-        
         System.exit(cli.execute(args));
     }
 }
