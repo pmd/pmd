@@ -50,6 +50,8 @@ The remaining section describes the complete release notes for 7.0.0.
 
 #### Fixed issues
 
+* cli
+  * [#4723](https://github.com/pmd/pmd/issues/4723): \[cli] Launch fails for "bash pmd"
 * miscellaneous
   * [#4699](https://github.com/pmd/pmd/pull/4699):   Make PMD buildable with java 21
   * [#4586](https://github.com/pmd/pmd/pull/4586):   Use explicit encoding in ruleset xml files
@@ -62,6 +64,8 @@ The remaining section describes the complete release notes for 7.0.0.
 #### API Changes
 
 #### External Contributions
+
+* [#4640](https://github.com/pmd/pmd/pull/4640): \[cli] Launch script fails if run via "bash pmd" - [Shai Bennathan](https://github.com/shai-bennathan) (@shai-bennathan)
 
 ### 🚀 Major Features and Enhancements
 
