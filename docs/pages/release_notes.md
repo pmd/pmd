@@ -46,6 +46,7 @@ The remaining section describes the complete release notes for 7.0.0.
 **New Rules**
 
 * {% rule java/codestyle/UseExplicitTypes %} reports usages of `var` keyword, which was introduced with Java 10.
+* {% rule xml/bestpractices/MissingEncoding %} finds XML files without explicit encoding.
 
 #### Fixed issues
 
@@ -55,6 +56,8 @@ The remaining section describes the complete release notes for 7.0.0.
 * java-codestyle
   * [#2847](https://github.com/pmd/pmd/issues/2847): \[java] New Rule: Use Explicit Types
   * [#4578](https://github.com/pmd/pmd/issues/4578): \[java] CommentDefaultAccessModifier comment needs to be before annotation if present
+* xml-bestpractices
+  * [#4592](https://github.com/pmd/pmd/pull/4592):   \[xml] Add MissingEncoding rule
 
 #### API Changes
 
@@ -239,6 +242,9 @@ can be parsed now. PMD should now be able to parse Apex code up to version 59.0 
 * {% rule swift/bestpractices/UnavailableFunction %}
 * {% rule swift/errorprone/ForceCast %}
 * {% rule swift/errorprone/ForceTry %}
+
+**XML**
+* {% rule xml/bestpractices/MissingEncoding %} finds XML files without explicit encoding.
 
 #### Changed Rules
 
@@ -649,6 +655,8 @@ Language specific fixes:
     * [#1882](https://github.com/pmd/pmd/pull/1882):   \[swift] UnavailableFunction Swift rule
 * xml
     * [#1800](https://github.com/pmd/pmd/pull/1800):   \[xml] Unimplement org.w3c.dom.Node from the XmlNodeWrapper
+* xml-bestpractices
+    * [#4592](https://github.com/pmd/pmd/pull/4592):   \[xml] Add MissingEncoding rule
 
 ### ✨ External Contributions
 
