@@ -297,6 +297,9 @@ can be parsed now. PMD should now be able to parse Apex code up to version 59.0 
 * {% rule swift/errorprone/ForceCast %}
 * {% rule swift/errorprone/ForceTry %}
 
+**XML**
+* {% rule xml/bestpractices/MissingEncoding %} finds XML files without explicit encoding.
+
 ### Changed Rules
 
 **General changes**

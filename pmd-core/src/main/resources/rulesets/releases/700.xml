@@ -21,5 +21,6 @@ This ruleset contains links to rules that are new in PMD v7.0.0
     <rule ref="category/swift/bestpractices.xml/ProhibitedInterfaceBuilder"/>
     <rule ref="category/swift/bestpractices.xml/UnavailableFunction"/>
 
+    <rule ref="category/xml/bestpractices.xml/MissingEncoding"/>
 </ruleset>
 
