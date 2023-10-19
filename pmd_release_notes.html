@@ -1037,6 +1037,12 @@
                         
                         
                         
+                        <li><a href="pmd_rules_xml_bestpractices.html">Best Practices</a></li>
+                        
+                        
+                        
+                        
+                        
                         <li><a href="pmd_rules_xml_errorprone.html">Error Prone</a></li>
                         
                         
@@ -1671,6 +1677,7 @@ The remaining section describes the complete release notes for 7.0.0.</p>
 
 <ul>
   <li><a href="pmd_rules_java_codestyle.html#useexplicittypes"><code class="language-plaintext highlighter-rouge">UseExplicitTypes</code></a> reports usages of <code class="language-plaintext highlighter-rouge">var</code> keyword, which was introduced with Java 10.</li>
+  <li><a href="pmd_rules_xml_bestpractices.html#missingencoding"><code class="language-plaintext highlighter-rouge">MissingEncoding</code></a> finds XML files without explicit encoding.</li>
 </ul>
 
 <h4 id="fixed-issues">Fixed issues</h4>
@@ -1686,6 +1693,11 @@ The remaining section describes the complete release notes for 7.0.0.</p>
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2847">#2847</a>: [java] New Rule: Use Explicit Types</li>
       <li><a href="https://github.com/pmd/pmd/issues/4578">#4578</a>: [java] CommentDefaultAccessModifier comment needs to be before annotation if present</li>
+    </ul>
+  </li>
+  <li>xml-bestpractices
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/pull/4592">#4592</a>:   [xml] Add MissingEncoding rule</li>
     </ul>
   </li>
 </ul>
@@ -1906,6 +1918,11 @@ or be omitted.</li>
   <li><a href="pmd_rules_swift_bestpractices.html#unavailablefunction"><code class="language-plaintext highlighter-rouge">UnavailableFunction</code></a></li>
   <li><a href="pmd_rules_swift_errorprone.html#forcecast"><code class="language-plaintext highlighter-rouge">ForceCast</code></a></li>
   <li><a href="pmd_rules_swift_errorprone.html#forcetry"><code class="language-plaintext highlighter-rouge">ForceTry</code></a></li>
+</ul>
+
+<p><strong>XML</strong></p>
+<ul>
+  <li><a href="pmd_rules_xml_bestpractices.html#missingencoding"><code class="language-plaintext highlighter-rouge">MissingEncoding</code></a> finds XML files without explicit encoding.</li>
 </ul>
 
 <h4 id="changed-rules">Changed Rules</h4>
@@ -2403,6 +2420,11 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
   <li>xml
     <ul>
       <li><a href="https://github.com/pmd/pmd/pull/1800">#1800</a>:   [xml] Unimplement org.w3c.dom.Node from the XmlNodeWrapper</li>
+    </ul>
+  </li>
+  <li>xml-bestpractices
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/pull/4592">#4592</a>:   [xml] Add MissingEncoding rule</li>
     </ul>
   </li>
 </ul>

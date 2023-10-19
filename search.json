@@ -858,6 +858,35 @@
 
 
 {
+"title": "Best Practices (XML, Best Practices)",
+"tags": "",
+"keywords": "Best Practices",
+"url": "pmd_rules_xml_bestpractices.html#best practices",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "MissingEncoding (XML, Best Practices)",
+"tags": "",
+"keywords": "MissingEncoding",
+"url": "pmd_rules_xml_bestpractices.html#missingencoding",
+"summary": "Rules which enforce generally accepted best practices."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
 "title": "Best Practices (PLSQL, Best Practices)",
 "tags": "",
 "keywords": "Best Practices",

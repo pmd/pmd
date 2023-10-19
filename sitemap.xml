@@ -169,6 +169,15 @@
   
   
   <url>
+    <loc>https://docs.pmd-code.org/latest/pmd_rules_xml_bestpractices.html</loc>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+    <lastmod>2023-10-19</lastmod>
+  </url>
+  
+  
+  
+  <url>
     <loc>https://docs.pmd-code.org/latest/pmd_rules_plsql_bestpractices.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
