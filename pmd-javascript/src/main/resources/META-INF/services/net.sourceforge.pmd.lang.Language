@@ -1,1 +1,2 @@
 net.sourceforge.pmd.lang.ecmascript.EcmascriptLanguageModule
+net.sourceforge.pmd.lang.typescript.TsLanguageModule

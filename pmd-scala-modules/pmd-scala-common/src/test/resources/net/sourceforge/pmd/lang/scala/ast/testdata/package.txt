@@ -10,6 +10,7 @@
             |  +- NameAnonymous
             +- DefnType
             |  +- TypeName
+            |  +- TypeParamClause
             |  +- TypeSelect
             |  |  +- TermSelect
             |  |  |  +- TermName
@@ -26,6 +27,7 @@
             |     +- TermName
             +- DefnType
             |  +- TypeName
+            |  +- TypeParamClause
             |  +- TypeSelect
             |  |  +- TermSelect
             |  |  |  +- TermName
@@ -45,24 +47,29 @@
             |  |  +- Init
             |  |     +- TypeName
             |  |     +- NameAnonymous
-            |  |     +- LitString
-            |  |     +- LitString
+            |  |     +- TermArgClause
+            |  |        +- LitString
+            |  |        +- LitString
             |  +- TypeName
-            |  +- TypeParam
-            |  |  +- ModCovariant
-            |  |  +- TypeName
-            |  |  +- TypeBounds
+            |  +- TypeParamClause
+            |  |  +- TypeParam
+            |  |     +- ModCovariant
+            |  |     +- TypeName
+            |  |     +- TypeParamClause
+            |  |     +- TypeBounds
             |  +- TypeApply
             |  |  +- TypeName
-            |  |  +- TypeName
+            |  |  +- TypeArgClause
+            |  |     +- TypeName
             |  +- TypeBounds
             +- DefnVal
             |  +- ModAnnot
             |  |  +- Init
             |  |     +- TypeName
             |  |     +- NameAnonymous
-            |  |     +- LitString
-            |  |     +- LitString
+            |  |     +- TermArgClause
+            |  |        +- LitString
+            |  |        +- LitString
             |  +- PatVar
             |  |  +- TermName
             |  +- TermName
@@ -71,16 +78,20 @@
                |  +- Init
                |     +- TypeName
                |     +- NameAnonymous
-               |     +- LitString
-               |     +- LitString
+               |     +- TermArgClause
+               |        +- LitString
+               |        +- LitString
                +- TypeName
-               +- TypeParam
-               |  +- TypeName
-               |  +- TypeBounds
-               +- TypeParam
-               |  +- ModCovariant
-               |  +- TypeName
-               |  +- TypeBounds
+               +- TypeParamClause
+               |  +- TypeParam
+               |  |  +- TypeName
+               |  |  +- TypeParamClause
+               |  |  +- TypeBounds
+               |  +- TypeParam
+               |     +- ModCovariant
+               |     +- TypeName
+               |     +- TypeParamClause
+               |     +- TypeBounds
                +- TypeApply
                |  +- TypeSelect
                |  |  +- TermSelect
@@ -89,6 +100,7 @@
                |  |  |  |  +- TermName
                |  |  |  +- TermName
                |  |  +- TypeName
-               |  +- TypeName
-               |  +- TypeName
+               |  +- TypeArgClause
+               |     +- TypeName
+               |     +- TypeName
                +- TypeBounds

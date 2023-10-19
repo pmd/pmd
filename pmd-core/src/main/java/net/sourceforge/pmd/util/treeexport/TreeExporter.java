@@ -116,7 +116,7 @@ public class TreeExporter {
     }
     
     private <T> void setProperty(PropertyDescriptor<T> descriptor, PropertySource bundle, String value) {
-        bundle.setProperty(descriptor, descriptor.valueFrom(value));
+        bundle.setProperty(descriptor, descriptor.serializer().fromString(value));
     }
     
     private AbortedException bail(String message) {

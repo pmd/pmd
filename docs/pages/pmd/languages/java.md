@@ -2,7 +2,7 @@
 title: Java support
 permalink: pmd_languages_java.html
 author: Clément Fournier
-last_updated: March 2021 (7.0.0)
+last_updated: August 2023 (7.0.0)
 tags: [languages]
 summary: "Java-specific features and guidance"
 ---
@@ -15,9 +15,10 @@ Usually the latest non-preview Java Version is the default version.
 
 | Java Version | Alias | Supported by PMD since |
 |--------------|-------|------------------------|
+| 21-preview   |       | 7.0.0                  |
+| 21 (default) |       | 7.0.0                  |
 | 20-preview   |       | 6.55.0                 |
-| 20 (default) |       | 6.55.0                 |
-| 19-preview   |       | 6.48.0                 |
+| 20           |       | 6.55.0                 |
 | 19           |       | 6.48.0                 |
 | 18           |       | 6.44.0                 |
 | 17           |       | 6.37.0                 |
@@ -39,10 +40,10 @@ Usually the latest non-preview Java Version is the default version.
 ## Using Java preview features
 
 In order to analyze a project with PMD that uses preview language features, you'll need to enable
-it via the environment variable `PMD_JAVA_OPTS` and select the new language version, e.g. `20-preview`:
+it via the environment variable `PMD_JAVA_OPTS` and select the new language version, e.g. `21-preview`:
 
     export PMD_JAVA_OPTS=--enable-preview
-    pmd check --use-version java-20-preview ...
+    pmd check --use-version java-21-preview ...
 
 Note: we only support preview language features for the latest two java versions.
 

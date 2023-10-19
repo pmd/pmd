@@ -4,13 +4,12 @@
 
 package net.sourceforge.pmd.lang.scala;
 
-import static net.sourceforge.pmd.util.CollectionUtil.listOf;
-
-import java.util.List;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.cpd.ScalaTokenizer;
+import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
@@ -21,27 +20,23 @@ import scala.meta.Dialect;
  * Language Module for Scala.
  */
 public class ScalaLanguageModule extends SimpleLanguageModuleBase {
-
-    /** The name. */
-    public static final String NAME = "Scala";
-
-    /** The terse name. */
-    public static final String TERSE_NAME = "scala";
-
-    @InternalApi
-    public static final List<String> EXTENSIONS = listOf("scala");
+    private static final String ID = "scala";
 
     /**
      * Create a new instance of Scala Language Module.
      */
     public ScalaLanguageModule() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME)
-                              .extensions(EXTENSIONS)
+        super(LanguageMetadata.withId(ID).name("Scala")
+                              .extensions("scala")
                               .addVersion("2.10")
                               .addVersion("2.11")
                               .addVersion("2.12")
                               .addDefaultVersion("2.13"),
               new ScalaLanguageHandler());
+    }
+
+    public static ScalaLanguageModule getInstance() {
+        return (ScalaLanguageModule) LanguageRegistry.PMD.getLanguageById(ID);
     }
 
     @InternalApi
@@ -56,7 +51,8 @@ public class ScalaLanguageModule extends SimpleLanguageModuleBase {
         }
     }
 
-    public static ScalaLanguageModule getInstance() {
-        return (ScalaLanguageModule) LanguageRegistry.PMD.getLanguageByFullName(NAME);
+    @Override
+    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
+        return new ScalaTokenizer(bundle);
     }
 }

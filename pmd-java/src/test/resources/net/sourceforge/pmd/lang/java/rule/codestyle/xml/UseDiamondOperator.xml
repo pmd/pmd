@@ -419,4 +419,49 @@ public class Generic<T> {
             }
             ]]></code>
     </test-code>
+    <code-fragment id="generic-anon-class"><![CDATA[
+        class Foo {
+
+            static void foo(Generic<String> g) {
+            }
+
+            static {
+                foo(new Generic<String>() {
+                    @Override
+                    public void accept(String s) {
+                        // ...
+                    }
+                });
+            }
+
+            interface Generic<T> {
+
+                void accept(T t);
+            }
+        }
+        ]]></code-fragment>
+    <test-code>
+        <description>Diamond cannot be used for anon classes in Java 8 sources</description>
+        <expected-problems>0</expected-problems>
+        <code-ref id="generic-anon-class"/>
+        <source-type>java 8</source-type>
+    </test-code>
+    <test-code>
+        <description>Diamond cannot be used for anon classes in Java 7 sources</description>
+        <expected-problems>0</expected-problems>
+        <code-ref id="generic-anon-class"/>
+        <source-type>java 7</source-type>
+    </test-code>
+    <test-code>
+        <description>Diamond can be used for anon classes in Java 9+ sources</description>
+        <expected-problems>1</expected-problems>
+        <code-ref id="generic-anon-class"/>
+        <source-type>java 9</source-type>
+    </test-code>
+    <test-code>
+        <description>Diamond can be used for anon classes in Java 17+ sources</description>
+        <expected-problems>1</expected-problems>
+        <code-ref id="generic-anon-class"/>
+        <source-type>java 17</source-type>
+    </test-code>
 </test-data>

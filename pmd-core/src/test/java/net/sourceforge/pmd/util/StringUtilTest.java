@@ -8,9 +8,14 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.stream.Stream;
+
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.util.StringUtil.CaseConvention;
 
 class StringUtilTest {
 
@@ -91,4 +96,102 @@ class StringUtilTest {
         assertEquals("abc", StringUtil.substringAfterLast("abc", '.'));
     }
 
+    @Test
+    void caseConventionCamelCaseToScreamingSnake() {
+        assertEquals("rootDirectory", CaseConvention.SCREAMING_SNAKE_CASE.convertTo(CaseConvention.CAMEL_CASE, "ROOT_DIRECTORY"));
+        assertEquals("ROOT_DIRECTORY", CaseConvention.CAMEL_CASE.convertTo(CaseConvention.SCREAMING_SNAKE_CASE, "rootDirectory"));
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void caseConventionConvertTo(CaseConventionConversionTestData data) {
+        assertEquals(data.expected, data.from.convertTo(data.to, data.source));
+    }
+
+    private static Stream<CaseConventionConversionTestData> caseConventionConvertTo() {
+        return Stream.of(
+                new CaseConventionConversionTestData(
+                        CaseConvention.CAMEL_CASE,
+                        CaseConvention.SCREAMING_SNAKE_CASE,
+                        "camelCase",
+                        "CAMEL_CASE"),
+                new CaseConventionConversionTestData(
+                        CaseConvention.CAMEL_CASE,
+                        CaseConvention.PASCAL_CASE,
+                        "camelCase",
+                        "CamelCase"),
+                new CaseConventionConversionTestData(
+                        CaseConvention.CAMEL_CASE,
+                        CaseConvention.SPACE_SEPARATED,
+                        "camelCase",
+                        "camel case"),
+
+                new CaseConventionConversionTestData(
+                        CaseConvention.SCREAMING_SNAKE_CASE,
+                        CaseConvention.CAMEL_CASE,
+                        "SCREAMING_SNAKE_CASE",
+                        "screamingSnakeCase"),
+                new CaseConventionConversionTestData(
+                        CaseConvention.SCREAMING_SNAKE_CASE,
+                        CaseConvention.PASCAL_CASE,
+                        "SCREAMING_SNAKE_CASE",
+                        "ScreamingSnakeCase"),
+                new CaseConventionConversionTestData(
+                        CaseConvention.SCREAMING_SNAKE_CASE,
+                        CaseConvention.SPACE_SEPARATED,
+                        "SCREAMING_SNAKE_CASE",
+                        "screaming snake case"),
+
+                new CaseConventionConversionTestData(
+                        CaseConvention.PASCAL_CASE,
+                        CaseConvention.CAMEL_CASE,
+                        "PascalCase",
+                        "pascalCase"),
+                new CaseConventionConversionTestData(
+                        CaseConvention.PASCAL_CASE,
+                        CaseConvention.SCREAMING_SNAKE_CASE,
+                        "PascalCase",
+                        "PASCAL_CASE"),
+                new CaseConventionConversionTestData(
+                        CaseConvention.PASCAL_CASE,
+                        CaseConvention.SPACE_SEPARATED,
+                        "PascalCase",
+                        "pascal case"),
+
+                new CaseConventionConversionTestData(
+                        CaseConvention.SPACE_SEPARATED,
+                        CaseConvention.CAMEL_CASE,
+                        "space separated",
+                        "spaceSeparated"),
+                new CaseConventionConversionTestData(
+                        CaseConvention.SPACE_SEPARATED,
+                        CaseConvention.SCREAMING_SNAKE_CASE,
+                        "space separated",
+                        "SPACE_SEPARATED"),
+                new CaseConventionConversionTestData(
+                        CaseConvention.SPACE_SEPARATED,
+                        CaseConvention.PASCAL_CASE,
+                        "space separated",
+                        "SpaceSeparated")
+        );
+    }
+
+    private static class CaseConventionConversionTestData {
+        CaseConvention from;
+        CaseConvention to;
+        String source;
+        String expected;
+
+        CaseConventionConversionTestData(CaseConvention from, CaseConvention to, String source, String expected) {
+            this.from = from;
+            this.to = to;
+            this.source = source;
+            this.expected = expected;
+        }
+
+        @Override
+        public String toString() {
+            return source + "(" + from.name() + "->" + to.name() + ")=" + expected;
+        }
+    }
 }

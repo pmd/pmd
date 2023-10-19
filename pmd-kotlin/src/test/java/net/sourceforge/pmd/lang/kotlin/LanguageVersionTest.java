@@ -13,7 +13,7 @@ class LanguageVersionTest extends AbstractLanguageVersionTest {
 
     static Collection<TestDescriptor> data() {
         return Arrays.asList(
-                new TestDescriptor(KotlinLanguageModule.NAME, KotlinLanguageModule.TERSE_NAME, "1.8",
-                    getLanguage(KotlinLanguageModule.NAME).getDefaultVersion()));
+            TestDescriptor.defaultVersionIs(KotlinLanguageModule.getInstance(), "1.8")
+        );
     }
 }

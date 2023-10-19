@@ -1,4 +1,4 @@
-+- document[]
++- document[@XmlEncoding = null, @XmlStandalone = false, @XmlVersion = "1.0"]
    +- comment[]
    +- rootElement[]
    +- rootElement[]

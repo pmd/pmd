@@ -5,17 +5,17 @@
 package net.sourceforge.pmd.cpd;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class MatchCollector {
-    private List<Match> matchList = new ArrayList<>();
-    private Map<Integer, Map<Integer, Match>> matchTree = new TreeMap<>();
-    private MatchAlgorithm ma;
+class MatchCollector {
 
-    public MatchCollector(MatchAlgorithm ma) {
+    private final List<Match> matchList = new ArrayList<>();
+    private final Map<Integer, Map<Integer, Match>> matchTree = new TreeMap<>();
+    private final MatchAlgorithm ma;
+
+    MatchCollector(MatchAlgorithm ma) {
         this.ma = ma;
     }
 
@@ -48,25 +48,26 @@ public class MatchCollector {
     }
 
     private void reportMatch(TokenEntry mark1, TokenEntry mark2, int dupes) {
-        Map<Integer, Match> matches = matchTree.get(dupes);
-        if (matches == null) {
-            matches = new TreeMap<>();
-            matchTree.put(dupes, matches);
-            addNewMatch(mark1, mark2, dupes, matches);
-        } else {
-            Match matchA = matchTree.get(dupes).get(mark1.getIndex());
-            Match matchB = matchTree.get(dupes).get(mark2.getIndex());
+        matchTree.compute(dupes, (dupCount, matches) -> {
+            if (matches == null) {
+                matches = new TreeMap<>();
+                addNewMatch(mark1, mark2, dupCount, matches);
+            } else {
+                Match matchA = matches.get(mark1.getIndex());
+                Match matchB = matches.get(mark2.getIndex());
 
-            if (matchA == null && matchB == null) {
-                addNewMatch(mark1, mark2, dupes, matches);
-            } else if (matchA == null) {
-                matchB.addTokenEntry(mark1);
-                matches.put(mark1.getIndex(), matchB);
-            } else if (matchB == null) {
-                matchA.addTokenEntry(mark2);
-                matches.put(mark2.getIndex(), matchA);
+                if (matchA == null && matchB == null) {
+                    addNewMatch(mark1, mark2, dupes, matches);
+                } else if (matchA == null) {
+                    matchB.addMark(mark1);
+                    matches.put(mark1.getIndex(), matchB);
+                } else if (matchB == null) {
+                    matchA.addMark(mark2);
+                    matches.put(mark2.getIndex(), matchA);
+                }
             }
-        }
+            return matches;
+        });
     }
 
     private void addNewMatch(TokenEntry mark1, TokenEntry mark2, int dupes, Map<Integer, Match> matches) {
@@ -76,9 +77,7 @@ public class MatchCollector {
         matchList.add(match);
     }
 
-    @SuppressWarnings("PMD.CompareObjectsWithEquals")
-    public List<Match> getMatches() {
-        Collections.sort(matchList);
+    List<Match> getMatches() {
         return matchList;
     }
 
@@ -96,7 +95,7 @@ public class MatchCollector {
 
     private boolean matchEnded(TokenEntry token1, TokenEntry token2) {
         return token1.getIdentifier() != token2.getIdentifier()
-                || TokenEntry.EOF.equals(token1)
-                || TokenEntry.EOF.equals(token2);
+                || token1.isEof()
+                || token2.isEof();
     }
 }

@@ -4,18 +4,29 @@
 
 package net.sourceforge.pmd.lang.pom;
 
+import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
 import net.sourceforge.pmd.lang.xml.XmlHandler;
+import net.sourceforge.pmd.lang.xml.cpd.XmlTokenizer;
 
 public class PomLanguageModule extends SimpleLanguageModuleBase {
-    public static final String NAME = "Maven POM";
-    public static final String TERSE_NAME = "pom";
+    private static final String ID = "pom";
 
     public PomLanguageModule() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME)
+        super(LanguageMetadata.withId(ID).name("Maven POM")
                               .extensions("pom")
                               .addDefaultVersion("4.0.0"),
-                new XmlHandler());
+              new XmlHandler());
     }
 
+    public static PomLanguageModule getInstance() {
+        return (PomLanguageModule) LanguageRegistry.PMD.getLanguageById(ID);
+    }
+
+    @Override
+    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
+        return new XmlTokenizer();
+    }
 }

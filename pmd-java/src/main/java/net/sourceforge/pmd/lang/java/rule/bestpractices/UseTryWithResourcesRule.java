@@ -25,7 +25,6 @@ public final class UseTryWithResourcesRule extends AbstractJavaRulechainRule {
             stringListProperty("closeMethods")
                     .desc("Method names in finally block, which trigger this rule")
                     .defaultValues("close", "closeQuietly")
-                    .delim(',')
                     .build();
 
     public UseTryWithResourcesRule() {

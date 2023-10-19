@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import apex.jorje.semantic.ast.statement.DmlUpdateStatement;
 
-public final class ASTDmlUpdateStatement extends AbstractApexNode<DmlUpdateStatement> {
+public final class ASTDmlUpdateStatement extends AbstractDmlStatement<DmlUpdateStatement> {
 
     ASTDmlUpdateStatement(DmlUpdateStatement dmlUpdateStatement) {
         super(dmlUpdateStatement);

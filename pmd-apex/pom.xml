@@ -57,7 +57,7 @@
         <dependency>
             <groupId>com.github.nawforce</groupId>
             <artifactId>apexlink</artifactId>
-            <version>1.4.1</version>
+            <version>2.3.5</version>
         </dependency>
 
 
@@ -66,6 +66,10 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.hamcrest</groupId>

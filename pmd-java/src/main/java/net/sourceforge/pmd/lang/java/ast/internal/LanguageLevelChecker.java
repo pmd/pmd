@@ -17,10 +17,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTGuard;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTIntersectionType;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
@@ -37,13 +39,14 @@ import net.sourceforge.pmd.lang.java.ast.ASTResource;
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchArrowBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTSwitchGuard;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
+import net.sourceforge.pmd.lang.java.ast.ASTTemplateExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTTypePattern;
+import net.sourceforge.pmd.lang.java.ast.ASTUnnamedPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
@@ -84,7 +87,7 @@ public class LanguageLevelChecker<T> {
 
     public void check(JavaNode node) {
         T accumulator = reportingStrategy.createAccumulator();
-        node.descendants(JavaNode.class).crossFindBoundaries().forEach(n -> n.acceptVisitor(visitor, accumulator));
+        node.descendantsOrSelf().crossFindBoundaries().filterIs(JavaNode.class).forEach(n -> n.acceptVisitor(visitor, accumulator));
         reportingStrategy.done(accumulator);
     }
 
@@ -124,8 +127,9 @@ public class LanguageLevelChecker<T> {
          * @see <a href="https://openjdk.org/jeps/420">JEP 420: Pattern Matching for switch (Second Preview)</a> (Java 18)
          * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a> (Java 19)
          * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a> (Java 20)
+         * @see <a href="https://openjdk.org/jeps/441">JEP 441: Pattern Matching for switch</a> (Java 21)
          */
-        PATTERNS_IN_SWITCH_STATEMENTS(17, 20, false),
+        PATTERNS_IN_SWITCH_STATEMENTS(17, 20, true),
 
         /**
          * Part of pattern matching for switch
@@ -134,29 +138,52 @@ public class LanguageLevelChecker<T> {
          * @see <a href="https://openjdk.org/jeps/420">JEP 420: Pattern Matching for switch (Second Preview)</a> (Java 18)
          * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a> (Java 19)
          * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a> (Java 20)
+         * @see <a href="https://openjdk.org/jeps/441">JEP 441: Pattern Matching for switch</a> (Java 21)
          */
-        NULL_IN_SWITCH_CASES(17, 20, false),
+        NULL_IN_SWITCH_CASES(17, 20, true),
 
         /**
          * Part of pattern matching for switch: Case refinement using "when"
          * @see #PATTERNS_IN_SWITCH_STATEMENTS
          * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a> (Java 19)
          * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a> (Java 20)
+         * @see <a href="https://openjdk.org/jeps/441">JEP 441: Pattern Matching for switch</a> (Java 21)
          */
-        CASE_REFINEMENT(19, 20, false),
+        CASE_REFINEMENT(19, 20, true),
 
         /**
          * Record patterns
          * @see <a href="https://openjdk.org/jeps/405">JEP 405: Record Patterns (Preview)</a> (Java 19)
          * @see <a href="https://openjdk.org/jeps/432">JEP 432: Record Patterns (Second Preview)</a> (Java 20)
+         * @see <a href="https://openjdk.org/jeps/440">JEP 440: Record Patterns</a> (Java 21)
          */
-        DECONSTRUCTION_PATTERNS(19, 20, false),
+        RECORD_PATTERNS(19, 20, true),
 
         /**
-         * Record deconstruction patterns in for-each loops
+         * Record deconstruction patterns in for-each loops.
+         * Note: support for this has been removed with Java 21 (JEP 440).
          * @see <a href="https://openjdk.org/jeps/432">JEP 432: Record Patterns (Second Preview)</a> (Java 20)
+         * @see <a href="https://openjdk.org/jeps/440">JEP 440: Record Patterns</a> (Java 21)
          */
         DECONSTRUCTION_PATTERNS_IN_ENHANCED_FOR_STATEMENT(20, 20, false),
+
+        /**
+         * String Templates.
+         * @see <a href="https://openjdk.org/jeps/430">JEP 430: String Templates (Preview)</a> (Java 21)
+         */
+        STRING_TEMPLATES(21, 21, false),
+
+        /**
+         * Unnamed patterns and variables.
+         * @see <a href="https://openjdk.org/jeps/443">JEP 443: Unnamed patterns and variables (Preview)</a> (Java 21)
+         */
+        UNNAMED_PATTERNS_AND_VARIABLES(21, 21, false),
+
+        /**
+         * Unnamed Classes and Instance Main Methods
+         * @see <a href="https://openjdk.org/jeps/445">JEP 445: Unnamed Classes and Instance Main Methods (Preview)</a> (Java 21)
+         */
+        UNNAMED_CLASSES(21, 21, false),
 
         ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
@@ -390,6 +417,14 @@ public class LanguageLevelChecker<T> {
         }
 
         @Override
+        public Void visit(ASTCompilationUnit node, T data) {
+            if (node.isUnnamedClass()) {
+                check(node, PreviewFeature.UNNAMED_CLASSES, data);
+            }
+            return null;
+        }
+
+        @Override
         public Void visit(ASTStringLiteral node, T data) {
             if (node.isStringLiteral() && SPACE_ESCAPE_PATTERN.matcher(node.getImage()).find()) {
                 check(node, RegularLanguageFeature.SPACE_STRING_ESCAPES, data);
@@ -520,7 +555,7 @@ public class LanguageLevelChecker<T> {
                 check(node, RegularLanguageFeature.DEFAULT_METHODS, data);
             }
 
-            if (node.isPrivate() && node.getEnclosingType().isInterface()) {
+            if (node.isPrivate() && node.getEnclosingType() != null && node.getEnclosingType().isInterface()) {
                 check(node, RegularLanguageFeature.PRIVATE_METHODS_IN_INTERFACES, data);
             }
 
@@ -542,12 +577,12 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public Void visit(ASTRecordPattern node, T data) {
-            check(node, PreviewFeature.DECONSTRUCTION_PATTERNS, data);
+            check(node, PreviewFeature.RECORD_PATTERNS, data);
             return null;
         }
 
         @Override
-        public Void visit(ASTSwitchGuard node, T data) {
+        public Void visit(ASTGuard node, T data) {
             check(node, PreviewFeature.CASE_REFINEMENT, data);
             return null;
         }
@@ -621,6 +656,18 @@ public class LanguageLevelChecker<T> {
         }
 
         @Override
+        public Void visit(ASTTemplateExpression node, T data) {
+            check(node, PreviewFeature.STRING_TEMPLATES, data);
+            return null;
+        }
+
+        @Override
+        public Void visit(ASTUnnamedPattern node, T data) {
+            check(node, PreviewFeature.UNNAMED_PATTERNS_AND_VARIABLES, data);
+            return null;
+        }
+
+        @Override
         public Void visitTypeDecl(ASTAnyTypeDeclaration node, T data) {
             if (node.getModifiers().hasAnyExplicitly(JModifier.SEALED, JModifier.NON_SEALED)) {
                 check(node, RegularLanguageFeature.SEALED_CLASSES, data);
@@ -649,7 +696,11 @@ public class LanguageLevelChecker<T> {
             } else if ("assert".equals(simpleName)) {
                 check(node, Keywords.ASSERT_AS_AN_IDENTIFIER, acc);
             } else if ("_".equals(simpleName)) {
-                check(node, Keywords.UNDERSCORE_AS_AN_IDENTIFIER, acc);
+                if (LanguageLevelChecker.this.preview) {
+                    check(node, PreviewFeature.UNNAMED_PATTERNS_AND_VARIABLES, acc);
+                } else {
+                    check(node, Keywords.UNDERSCORE_AS_AN_IDENTIFIER, acc);
+                }
             }
         }
 

@@ -166,6 +166,20 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
             && "main".equals(this.getName())
             && this.isVoid()
             && this.getArity() == 1
-            && TypeTestUtil.isExactlyA(String[].class, this.getFormalParameters().get(0));
+            && TypeTestUtil.isExactlyA(String[].class, this.getFormalParameters().get(0))
+            || isMainMethodUnnamedClass();
+    }
+
+    /**
+     * With JEP 445 (Java 21 Preview) the main method does not need to be static anymore and
+     * does not need to be public or have a formal parameter.
+     */
+    private boolean isMainMethodUnnamedClass() {
+        return this.getRoot().isUnnamedClass()
+                && "main".equals(this.getName())
+                && !this.hasModifiers(JModifier.PRIVATE)
+                && this.isVoid()
+                && (this.getArity() == 0
+                    || this.getArity() == 1 && TypeTestUtil.isExactlyA(String[].class, this.getFormalParameters().get(0)));
     }
 }

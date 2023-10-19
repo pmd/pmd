@@ -120,8 +120,8 @@ public class SomeClass {
         <expected-problems>2</expected-problems>
         <expected-linenumbers>1,5</expected-linenumbers>
         <expected-messages>
-            <message>The class OuterClass has 2 public methods and attributes (limit: 1)</message>
-            <message>The class InnerClass has 4 public methods and attributes (limit: 1)</message>
+            <message>The class OuterClass has 2 public methods, attributes, and properties (limit: 1)</message>
+            <message>The class InnerClass has 4 public methods, attributes, and properties (limit: 1)</message>
         </expected-messages>
         <code><![CDATA[
 public class OuterClass {
@@ -135,6 +135,32 @@ public class OuterClass {
         public void method1() { }
         public void method2() { }
     }
+}
+]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>[apex] ExcessivePublicCount ignores properties #4596</description>
+        <rule-property name="minimum">4</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <expected-messages>
+            <message>The class Example has 4 public methods, attributes, and properties (limit: 4)</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Example {
+    public void publicMethod1() { }             // count: 1
+    public Integer publicField;                 // count: 2
+    public String publicProperty1 {get; set; }  // count: 3
+    public String publicProperty2 {             // count: 4
+        get {
+            return publicProperty2;
+        }
+        set {
+            publicProperty2 = value;
+        }
+    }
+    private String privateProperty1 {get; set;}
 }
 ]]></code>
     </test-code>
