@@ -150,7 +150,9 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
 
         return isMissingComment(decl)
             && isNotIgnored(decl)
-            && !(decl instanceof ASTFieldDeclaration && enclosing.isAnnotationPresent("lombok.Value"));
+            && !(decl instanceof ASTFieldDeclaration
+                && enclosing != null
+                && enclosing.isAnnotationPresent("lombok.Value"));
     }
 
     private boolean isMissingComment(AccessNode decl) {

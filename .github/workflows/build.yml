@@ -54,8 +54,8 @@ jobs:
       shell: bash
       run: |
         echo "LANG=en_US.UTF-8" >> $GITHUB_ENV
-        echo "MAVEN_OPTS=-Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=3 -DautoReleaseAfterClose=true -DstagingProgressTimeoutMinutes=30" >> $GITHUB_ENV
-        echo "PMD_CI_SCRIPTS_URL=https://raw.githubusercontent.com/pmd/build-tools/master/scripts" >> $GITHUB_ENV
+        echo "MAVEN_OPTS=-Daether.connector.http.connectionMaxTtl=180 -DautoReleaseAfterClose=true -DstagingProgressTimeoutMinutes=30" >> $GITHUB_ENV
+        echo "PMD_CI_SCRIPTS_URL=https://raw.githubusercontent.com/pmd/build-tools/22/scripts" >> $GITHUB_ENV
     - name: Check Environment
       shell: bash
       run: |
@@ -70,3 +70,12 @@ jobs:
       env:
         PMD_CI_SECRET_PASSPHRASE: ${{ secrets.PMD_CI_SECRET_PASSPHRASE }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Workaround actions/upload-artifact#176
+      run: |
+        echo "artifacts_path=$(realpath ..)" >> $GITHUB_ENV
+    - name: Upload regression tester report
+      uses: actions/upload-artifact@v3
+      with:
+        name: pmd-regression-tester
+        path: ${{ env.artifacts_path }}/target/pr-*-diff-report-*.tar.gz
+        if-no-files-found: ignore

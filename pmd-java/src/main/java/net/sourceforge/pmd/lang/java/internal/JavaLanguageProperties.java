@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.internal;
 
 import org.apache.commons.lang3.EnumUtils;
 
+import net.sourceforge.pmd.cpd.CpdLanguageProperties;
 import net.sourceforge.pmd.lang.JvmLanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
@@ -27,6 +28,9 @@ public class JavaLanguageProperties extends JvmLanguagePropertyBundle {
     public JavaLanguageProperties() {
         super(JavaLanguageModule.getInstance());
         definePropertyDescriptor(INTERNAL_INFERENCE_LOGGING_VERBOSITY);
+        definePropertyDescriptor(CpdLanguageProperties.CPD_IGNORE_METADATA);
+        definePropertyDescriptor(CpdLanguageProperties.CPD_ANONYMIZE_IDENTIFIERS);
+        definePropertyDescriptor(CpdLanguageProperties.CPD_ANONYMIZE_LITERALS);
     }
 
     public static boolean isPreviewEnabled(LanguageVersion version) {

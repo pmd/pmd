@@ -31,19 +31,39 @@ function download() {
 }
 
 
+#
+# Unfortunately, jorje is provided as a blob, which seems to be a jar-with-dependencies
+# kind of thing. We try to keep only the apex related classes and delete anything that has
+# been added into the big apex-jorje-lsp-jar. The deleted classes will be added as dependencies again.
+#
+# We unfortunately need to keep some classes in com.google.common (guava), since jorje seems
+# to have added classes there, which are not in the official guava packages.
+#
 function minimize() {
     unzip -d temp ${FILENAME}
     pushd temp
-    find . -not -path "." \
-        -and -not -path ".." \
-        -and -not -path "./apex" \
+    find . -type f \
         -and -not -path "./apex/*" \
         -and -not -path "./StandardApex*" \
         -and -not -path "./messages*" \
-        -and -not -path "./com" \
-        -and -not -path "./com/google" \
-        -and -not -path "./com/google/common*" \
+        -and -not -path "./com/google/common/collect/ConcatenatedLists*" \
+        -and -not -path "./com/google/common/collect/MoreLists*" \
+        -and -not -path "./com/google/common/collect/MoreMaps*" \
+        -and -not -path "./com/google/common/collect/MoreSets*" \
+        -and -not -path "./com/google/common/collect/PairList*" \
+        -and -not -path "./com/google/common/collect/SingleAppendList*" \
+        -and -not -path "./com/google/common/collect/SinglePrependList*" \
+        -and -not -path "./com/google/common/collect/WellBehavedMap*" \
+        -and -not -path "./com/google/common/graph/ConfigurableMutableGraph*" \
+        -and -not -path "./com/google/common/graph/ConfigurableMutableNetwork*" \
+        -and -not -path "./com/google/common/graph/ConfigurableMutableValueGraph*" \
+        -and -not -path "./com/google/common/graph/ConfigurableNetwork*" \
+        -and -not -path "./com/google/common/graph/ConfigurableValueGraph*" \
+        -and -not -path "./com/google/common/reflect/Element*" \
+        -and -not -path "./com/google/common/util/concurrent/AbstractCheckedFuture*" \
         -print0 | xargs -0 rm -rf
+        # delete empty directories
+        find . -depth -type d -empty -delete
     popd
     jar --create --file ${FILENAME_MINIMIZED} -C temp/ .
     rm -rf temp

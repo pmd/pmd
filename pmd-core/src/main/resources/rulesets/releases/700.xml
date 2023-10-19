@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <ruleset name="700"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
@@ -11,6 +11,7 @@ This ruleset contains links to rules that are new in PMD v7.0.0
     <rule ref="category/apex/design.xml/UnusedMethod"/>
 
     <rule ref="category/java/codestyle.xml/UnnecessaryBoxing"/>
+    <rule ref="category/java/codestyle.xml/UseExplicitTypes"/>
 
     <rule ref="category/kotlin/bestpractices.xml/FunctionNameTooShort"/>
     <rule ref="category/kotlin/errorprone.xml/OverrideBothEqualsAndHashcode"/>

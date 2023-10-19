@@ -10,6 +10,6 @@ import net.sourceforge.pmd.lang.rule.xpath.impl.AbstractXPathFunctionDef;
 abstract class BaseJavaXPathFunction extends AbstractXPathFunctionDef {
 
     protected BaseJavaXPathFunction(String localName) {
-        super(localName, JavaLanguageModule.TERSE_NAME);
+        super(localName, JavaLanguageModule.getInstance());
     }
 }

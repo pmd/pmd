@@ -5,24 +5,14 @@
 
 package net.sourceforge.pmd.lang.vf.cpd;
 
-import java.util.Properties;
-
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.cpd.Tokenizer;
-import net.sourceforge.pmd.cpd.VfTokenizer;
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 
 class VfTokenizerTest extends CpdTextComparisonTest {
 
     VfTokenizerTest() {
-        super(".page");
-    }
-
-    @Override
-    public Tokenizer newTokenizer(Properties properties) {
-        VfTokenizer tokenizer = new VfTokenizer();
-        return tokenizer;
+        super("vf", ".page");
     }
 
     @Test

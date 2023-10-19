@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.util;
 
 import java.text.MessageFormat;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -26,11 +25,7 @@ import net.sourceforge.pmd.lang.document.Chars;
 public final class StringUtil {
 
 
-    private static final Pattern XML_10_INVALID_CHARS = Pattern.compile(
-            "\\x00|\\x01|\\x02|\\x03|\\x04|\\x05|\\x06|\\x07|\\x08|"
-          + "\\x0b|\\x0c|\\x0e|\\x0f|"
-          + "\\x10|\\x11|\\x12|\\x13|\\x14|\\x15|\\x16|\\x17|\\x18|"
-          + "\\x19|\\x1a|\\x1b|\\x1c|\\x1d|\\x1e|\\x1f");
+    private static final Pattern XML_10_INVALID_CHARS = Pattern.compile("[[\\x00-\\x1F]&&[^\\x09\\x0A\\x0D]]");
 
     private StringUtil() {
     }
@@ -291,9 +286,8 @@ public final class StringUtil {
     /**
      * Returns a list of
      */
-    public static List<Chars> linesWithTrimIndent(String source) {
-        List<String> lines = Arrays.asList(source.split("\n"));
-        List<Chars> result = lines.stream().map(Chars::wrap).collect(CollectionUtil.toMutableList());
+    public static List<Chars> linesWithTrimIndent(Chars source) {
+        List<Chars> result = source.lineStream().collect(CollectionUtil.toMutableList());
         trimIndentInPlace(result);
         return result;
     }
@@ -516,7 +510,7 @@ public final class StringUtil {
 
             @Override
             String joinWords(List<String> words) {
-                return words.stream().map(s -> s.toLowerCase(Locale.ROOT)).collect(Collectors.joining("_"));
+                return words.stream().map(s -> s.toUpperCase(Locale.ROOT)).collect(Collectors.joining("_"));
             }
         },
         /** camelCase. */

@@ -16,6 +16,7 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -24,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.annotation.DeprecatedUntil700;
+import net.sourceforge.pmd.cpd.CpdCapableLanguage;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
@@ -36,11 +38,20 @@ public final class LanguageRegistry implements Iterable<Language> {
 
     private static final Logger LOG = LoggerFactory.getLogger(LanguageRegistry.class);
 
+    private static final LanguageRegistry ALL_LANGUAGES =
+        loadLanguages(LanguageRegistry.class.getClassLoader());
+
     /**
      * Contains the languages that support PMD and are found on the classpath
      * of the classloader of this class. This can be used as a "default" registry.
      */
-    public static final LanguageRegistry PMD = loadLanguages(LanguageRegistry.class.getClassLoader());
+    public static final LanguageRegistry PMD = ALL_LANGUAGES.filter(it -> it instanceof PmdCapableLanguage);
+
+    /**
+     * Contains the languages that support CPD and are found on the classpath
+     * of the classloader of this class.
+     */
+    public static final LanguageRegistry CPD = ALL_LANGUAGES.filter(it -> it instanceof CpdCapableLanguage);
 
     private final Set<Language> languages;
 
@@ -51,12 +62,20 @@ public final class LanguageRegistry implements Iterable<Language> {
      * Create a new registry that contains the given set of languages.
      * @throws NullPointerException If the parameter is null
      */
-    public LanguageRegistry(Set<Language> languages) {
+    public LanguageRegistry(Set<? extends Language> languages) {
         this.languages = languages.stream()
-                                  .sorted(Comparator.comparing(Language::getTerseName, String::compareToIgnoreCase))
+                                  .sorted(Comparator.comparing(Language::getId, String::compareToIgnoreCase))
                                   .collect(CollectionUtil.toUnmodifiableSet());
-        this.languagesById = CollectionUtil.associateBy(languages, Language::getTerseName);
+        this.languagesById = CollectionUtil.associateBy(languages, Language::getId);
         this.languagesByFullName = CollectionUtil.associateBy(languages, Language::getName);
+    }
+
+    /**
+     * Create a new registry with the languages that satisfy the predicate.
+     */
+    public LanguageRegistry filter(Predicate<Language> filterFun) {
+        return new LanguageRegistry(languages.stream().filter(filterFun)
+                                             .collect(Collectors.toSet()));
     }
 
     /**
@@ -109,7 +128,7 @@ public final class LanguageRegistry implements Iterable<Language> {
     public static @NonNull LanguageRegistry loadLanguages(ClassLoader classLoader) {
         // sort languages by terse name. Avoiding differences in the order of languages
         // across JVM versions / OS.
-        Set<Language> languages = new TreeSet<>(Comparator.comparing(Language::getTerseName, String::compareToIgnoreCase));
+        Set<Language> languages = new TreeSet<>(Comparator.comparing(Language::getId, String::compareToIgnoreCase));
         ServiceLoader<Language> languageLoader = ServiceLoader.load(Language.class, classLoader);
         Iterator<Language> iterator = languageLoader.iterator();
         while (true) {

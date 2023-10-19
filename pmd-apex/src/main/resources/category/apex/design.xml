@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <ruleset name="Design"
          xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
@@ -281,12 +281,12 @@ public void addPerson(Date birthdate, BodyMeasurements measurements, int ssn) {
     <rule name="ExcessivePublicCount"
           language="apex"
           since="5.5.0"
-          message="The class {0} has {1} public methods and attributes (limit: {2})"
+          message="The class {0} has {1} public methods, attributes, and properties (limit: {2})"
           class="net.sourceforge.pmd.lang.apex.rule.design.ExcessivePublicCountRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#excessivepubliccount">
         <description>
-Classes with large numbers of public methods and attributes require disproportionate testing efforts
-since combinational side effects grow rapidly and increase risk. Refactoring these classes into
+Classes with large numbers of public methods, attributes, and properties require disproportionate testing efforts
+since combinatorial side effects grow rapidly and increase risk. Refactoring these classes into
 smaller ones not only increases testability and reliability but also allows new variations to be
 developed easily.
         </description>
@@ -303,6 +303,9 @@ public class Foo {
     public void doMoreWork() {}
     public void doWorkAgain() {}
     // [... more more public methods ...]
+
+    public String property1 { get; set; }
+    // [... more more public properties ...]
 }
 ]]>
         </example>

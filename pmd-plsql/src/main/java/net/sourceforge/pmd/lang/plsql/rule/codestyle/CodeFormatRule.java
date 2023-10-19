@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.plsql.rule.codestyle;
 
-import static net.sourceforge.pmd.properties.constraints.NumericConstraints.inRange;
+import static net.sourceforge.pmd.properties.NumericConstraints.inRange;
 
 import java.util.List;
 

@@ -23,9 +23,9 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
  *
  * </pre>
  *
- * <p>Note: case null and the case patterns are a Java 19 Preview and Java 20 Preview language feature</p>
+ * <p>Note: case null and the case patterns are a Java 21 language feature</p>
  *
- * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a>
+ * @see <a href="https://openjdk.org/jeps/441">JEP 441: Pattern Matching for switch</a>
  * @see <a href="https://openjdk.org/jeps/432">JEP 432: Record Patterns (Second Preview)</a>
  */
 public final class ASTSwitchLabel extends AbstractJavaNode implements Iterable<ASTExpression> {
