@@ -419,7 +419,7 @@ Finally, we now provide a completion script for Bash/Zsh to further help daily u
 To use it, edit your `~/.bashrc` / `~/.zshrc` file and add the following line:
 
 ```
-source <(*path_to_pmd*/bin/pmd generate-completion)
+source <(pmd generate-completion)
 ```
 
 Contributors: [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)

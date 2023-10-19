@@ -47,7 +47,7 @@ On Windows this is achieved by:
 
 PMD ships with built-in completion support for Bash / Zsh.
 
-To enable it, simply add `source <(*path_to_pmd*/bin/pmd generate-completion)` to your `~/.bashrc` / `~/.zshrc` file.
+To enable it, simply add `source <(pmd generate-completion)` to your `~/.bashrc` / `~/.zshrc` file.
 
 ## Running PMD via command line
 
