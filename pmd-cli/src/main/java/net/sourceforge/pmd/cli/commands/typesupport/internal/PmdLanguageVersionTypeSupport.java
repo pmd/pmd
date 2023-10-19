@@ -17,9 +17,6 @@ import picocli.CommandLine.TypeConversionException;
 
 /**
  * Provider of candidates for valid language-version combinations.
- * 
- * Beware, the help will report this on runtime, and be accurate to available
- * modules in the classpath, but autocomplete will include all available at build time.
  */
 public class PmdLanguageVersionTypeSupport implements ITypeConverter<LanguageVersion>, Iterable<String> {
 
