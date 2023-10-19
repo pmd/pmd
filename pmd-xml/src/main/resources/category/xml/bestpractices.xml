@@ -29,7 +29,7 @@ Rules which enforce generally accepted best practices.
           <property name="xpath">
              <value>
     <![CDATA[
-    //document[@XmlEncoding = ""]
+    /document[@XmlEncoding = ""]
     ]]>
              </value>
           </property>
