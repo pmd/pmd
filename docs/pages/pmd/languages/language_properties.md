@@ -108,7 +108,7 @@ The Java language can be configured with the following properties:
 
   Environment variable: `PMD_APEX_ROOT_DIRECTORY`
 
-## VisualForce language properties
+## Visualforce language properties
 
 - `apexDirectories`: Comma separated list of directories for Apex classes. Absolute
   or relative to the Visualforce directory. Default is `../classes`. Specifying an

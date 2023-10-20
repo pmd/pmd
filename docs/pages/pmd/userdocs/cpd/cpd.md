@@ -333,8 +333,14 @@ For details, see [CPD Report Formats](pmd_userdocs_cpd_report_formats.html).
 Andy Glover wrote an Ant task for CPD; here's how to use it:
 
 ```xml
+<path id="pmd.classpath">
+    <fileset dir="/home/joe/pmd-bin-{{site.pmd.version}}/lib">
+        <include name="*.jar"/>
+    </fileset>
+</path>
+<taskdef name="cpd" classname="net.sourceforge.pmd.ant.CPDTask" classpathref="pmd.classpath" />
+
 <target name="cpd">
-    <taskdef name="cpd" classname="net.sourceforge.pmd.ant.CPDTask" />
     <cpd minimumTokenCount="100" outputFile="/home/tom/cpd.txt">
         <fileset dir="/home/tom/tmp/ant">
             <include name="**/*.java"/>

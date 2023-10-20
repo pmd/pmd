@@ -363,4 +363,9 @@ class TestAccessEvaluator implements AccessEvaluator {
     public boolean doesLightningWebComponentExist(String var1) {
         return false;
     }
+
+    @Override
+    public boolean doesStaticResourceExist(String s) {
+        return false;
+    }
 }
