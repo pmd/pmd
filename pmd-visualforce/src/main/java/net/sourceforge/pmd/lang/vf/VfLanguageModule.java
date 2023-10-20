@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.vf.cpd.VfTokenizer;
  */
 public class VfLanguageModule extends SimpleLanguageModuleBase implements CpdCapableLanguage {
     static final String ID = "vf";
-    static final String NAME = "Salesforce VisualForce";
+    static final String NAME = "Salesforce Visualforce";
 
     public VfLanguageModule() {
         super(LanguageMetadata.withId(ID).name(NAME)

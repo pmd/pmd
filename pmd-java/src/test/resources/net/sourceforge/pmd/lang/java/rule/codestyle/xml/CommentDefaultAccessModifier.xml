@@ -567,4 +567,20 @@ class C {
 }
         ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>#4578 failure with comment after annotation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    @SuppressWarnings("")
+    /* package */ void test1() {
+    }
+
+    /* package */ @SuppressWarnings("")
+    void test2() {
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
