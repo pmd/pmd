@@ -64,6 +64,20 @@ The remaining section describes the complete release notes for 7.0.0.
 
 #### API Changes
 
+**Removed classes and methods**
+
+The following previously deprecated classes have been removed:
+
+* pmd-apex
+  * {%jdoc apex::lang.apex.ast.ApexNode %} and {% jdoc apex::lang.apex.ast.ASTApexFile %}
+    * `#getApexVersion()`: In PMD 6, this method has been deprecated but was defined in the class `ApexRootNode`.
+      The version returned is always "Version.CURRENT", as the apex compiler integration
+      doesn't use additional information which Apex version actually is used. Therefore, this method can't be
+      used to determine the Apex version of the project that is being analyzed.
+
+      If the current version is needed, then `Node.getTextDocument().getLanguageVersion()` can be used. This
+      is the version that has been selected via CLI `--use-version` parameter.
+
 #### External Contributions
 
 * [#4640](https://github.com/pmd/pmd/pull/4640): \[cli] Launch script fails if run via "bash pmd" - [Shai Bennathan](https://github.com/shai-bennathan) (@shai-bennathan)

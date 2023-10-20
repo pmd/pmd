@@ -11,7 +11,6 @@ import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 
 import apex.jorje.semantic.ast.AstNode;
-import apex.jorje.services.Version;
 
 /**
  * Root interface implemented by all Apex nodes. Apex nodes wrap a tree
@@ -55,15 +54,4 @@ public interface ApexNode<T extends AstNode> extends GenericNode<ApexNode<?>> {
 
     @Override
     @NonNull ASTApexFile getRoot();
-
-    /**
-     * Gets the apex version this class has been compiled with.
-     * Use {@link Version} to compare, e.g.
-     * {@code node.getApexVersion() >= Version.V176.getExternal()}
-     *
-     * @return the apex version
-     */
-    default double getApexVersion() {
-        return getRoot().getApexVersion();
-    }
 }
