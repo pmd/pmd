@@ -51,6 +51,7 @@ The remaining section describes the complete release notes for 7.0.0.
 #### Fixed issues
 
 * cli
+  * [#4594](https://github.com/pmd/pmd/pull/4594):   \[cli] Change completion generation to runtime
   * [#4723](https://github.com/pmd/pmd/issues/4723): \[cli] Launch fails for "bash pmd"
 * doc
   * [#3175](https://github.com/pmd/pmd/issues/3175): \[doc] Document language module features
@@ -480,6 +481,7 @@ See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.
     * [#4423](https://github.com/pmd/pmd/pull/4423):   \[cli] Fix NPE when only `--file-list` is specified
     * [#4482](https://github.com/pmd/pmd/issues/4482): \[cli] pmd.bat can only be executed once
     * [#4484](https://github.com/pmd/pmd/issues/4484): \[cli] ast-dump with no properties produce an NPE
+    * [#4594](https://github.com/pmd/pmd/pull/4594):   \[cli] Change completion generation to runtime
     * [#4723](https://github.com/pmd/pmd/issues/4723): \[cli] Launch fails for "bash pmd"
 * doc
     * [#2501](https://github.com/pmd/pmd/issues/2501): \[doc] Verify ANTLR Documentation
