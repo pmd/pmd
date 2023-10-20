@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer.ast;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -51,6 +52,8 @@ class MethodInvocMirror extends BaseInvocMirror<ASTMethodCall> implements Invoca
         if (lhs == null) {
             // already filters accessibility
             return myNode.getSymbolTable().methods().resolve(getName());
+        } else if (myNode.getEnclosingType() == null) {
+            return Collections.emptyList();
         } else {
             JTypeMirror lhsType;
             if (lhs instanceof ASTConstructorCall) {

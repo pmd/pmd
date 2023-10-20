@@ -104,7 +104,9 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
         }
         configuration.setFailOnViolation(failOnViolation);
         configuration.setInputFilePath(fileListPath);
-        configuration.setInputPathList(inputPaths);
+        if (inputPaths != null) {
+            configuration.setInputPathList(inputPaths);
+        }
         configuration.setIgnoreAnnotations(ignoreAnnotations);
         configuration.setIgnoreIdentifiers(ignoreIdentifiers);
         configuration.setIgnoreLiterals(ignoreLiterals);

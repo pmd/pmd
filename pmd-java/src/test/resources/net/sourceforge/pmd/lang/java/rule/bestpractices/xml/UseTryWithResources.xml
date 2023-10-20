@@ -182,13 +182,13 @@ public class TryWithResources {
         <code><![CDATA[
 public class TryWithResources {
     public void run() {
-        var noAutoclosable = new Object() {
+        var noAutoCloseable = new Object() {
             public void close() {}
         };
         try {
-            System.out.println(noAutocloseable);
+            System.out.println(noAutoCloseable);
         } finally {
-            noAutoclosable.close();
+            noAutoCloseable.close();
         }
     }
 }
