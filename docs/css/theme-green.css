@@ -87,3 +87,10 @@ li.sidebarTitle {
     margin-bottom:2.5px;
     margin-left:5px;
 }
+
+blockquote {
+    border-left: 5px solid #01c172;
+    padding: 10px 0 10px 1rem;
+    margin: 1rem 0;
+    font-style: italic;
+}
