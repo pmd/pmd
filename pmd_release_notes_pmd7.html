@@ -1976,10 +1976,9 @@ current progress of the analysis.</p>
 <p>This can be disabled with the <code class="language-plaintext highlighter-rouge">--no-progress</code> flag.</p>
 
 <p>Finally, we now provide a completion script for Bash/Zsh to further help daily usage.
-This script can be found under <code class="language-plaintext highlighter-rouge">shell/pmd-completion.sh</code> in the binary distribution.
 To use it, edit your <code class="language-plaintext highlighter-rouge">~/.bashrc</code> / <code class="language-plaintext highlighter-rouge">~/.zshrc</code> file and add the following line:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source *path_to_pmd*/shell/pmd-completion.sh
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source &lt;(pmd generate-completion)
 </code></pre></div></div>
 
 <p>Contributors: <a href="https://github.com/jsotuyod">Juan Martín Sotuyo Dodero</a> (@jsotuyod)</p>
