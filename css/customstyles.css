@@ -1008,11 +1008,8 @@ span.soft {
 }
 
 @media (min-height: 600px) and (min-width: 990px) {
-    /* sticky sidebar for big screens */
     #mysidebar {
         position: fixed !important;
-        overflow: scroll;
-        height: 80%;
     }
 }
 
@@ -1270,8 +1267,4 @@ h4.panel-title {
 
 a.edit-header {
     font-size: 15px;
-}
-
-.language-info {
-    margin: 2em;
 }

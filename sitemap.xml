@@ -340,34 +340,7 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_languages_cpp.html</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-    <lastmod>2023-10-20</lastmod>
-  </url>
-  
-  
-  
-  <url>
     <loc>https://docs.pmd-code.org/latest/pmd_projectdocs_credits.html</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-    <lastmod>2023-10-20</lastmod>
-  </url>
-  
-  
-  
-  <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_languages_cs.html</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-    <lastmod>2023-10-20</lastmod>
-  </url>
-  
-  
-  
-  <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_languages_dart.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2023-10-20</lastmod>
@@ -585,15 +558,6 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_languages_fortran.html</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-    <lastmod>2023-10-20</lastmod>
-  </url>
-  
-  
-  
-  <url>
     <loc>https://docs.pmd-code.org/latest/pmd_languages_gherkin.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
@@ -603,25 +567,7 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_languages_go.html</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-    <lastmod>2023-10-20</lastmod>
-  </url>
-  
-  
-  
-  <url>
     <loc>https://docs.pmd-code.org/latest/pmd_userdocs_tools_gradle.html</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-    <lastmod>2023-10-20</lastmod>
-  </url>
-  
-  
-  
-  <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_languages_groovy.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2023-10-20</lastmod>
@@ -667,15 +613,6 @@
   
   <url>
     <loc>https://docs.pmd-code.org/latest/pmd_userdocs_incremental_analysis.html</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-    <lastmod>2023-10-20</lastmod>
-  </url>
-  
-  
-  
-  <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_languages_index.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2023-10-20</lastmod>
@@ -828,15 +765,6 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_languages_lua.html</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-    <lastmod>2023-10-20</lastmod>
-  </url>
-  
-  
-  
-  <url>
     <loc>https://docs.pmd-code.org/latest/pmd_projectdocs_committers_main_landing_page.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
@@ -847,15 +775,6 @@
   
   <url>
     <loc>https://docs.pmd-code.org/latest/pmd_userdocs_making_rulesets.html</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-    <lastmod>2023-10-20</lastmod>
-  </url>
-  
-  
-  
-  <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_languages_matlab.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2023-10-20</lastmod>
@@ -892,15 +811,6 @@
   
   <url>
     <loc>https://docs.pmd-code.org/latest/pmd_userdocs_migrating_to_pmd7.html</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-    <lastmod>2023-10-20</lastmod>
-  </url>
-  
-  
-  
-  <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_languages_modelica.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2023-10-20</lastmod>
@@ -954,15 +864,6 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_languages_objectivec.html</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-    <lastmod>2023-10-20</lastmod>
-  </url>
-  
-  
-  
-  <url>
     <loc>https://docs.pmd-code.org/latest/pmd_rules_java_performance.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
@@ -982,24 +883,6 @@
   
   <url>
     <loc>https://docs.pmd-code.org/latest/pmd_rules_apex_performance.html</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-    <lastmod>2023-10-20</lastmod>
-  </url>
-  
-  
-  
-  <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_languages_perl.html</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-    <lastmod>2023-10-20</lastmod>
-  </url>
-  
-  
-  
-  <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_languages_php.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2023-10-20</lastmod>
@@ -1062,15 +945,6 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_languages_python.html</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-    <lastmod>2023-10-20</lastmod>
-  </url>
-  
-  
-  
-  <url>
     <loc>https://docs.pmd-code.org/latest/pmd_release_notes.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
@@ -1116,15 +990,6 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_languages_ruby.html</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-    <lastmod>2023-10-20</lastmod>
-  </url>
-  
-  
-  
-  <url>
     <loc>https://docs.pmd-code.org/latest/pmd_devdocs_rule_deprecation_policy.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
@@ -1144,15 +1009,6 @@
   
   <url>
     <loc>https://docs.pmd-code.org/latest/pmd_devdocs_major_rule_guidelines.html</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-    <lastmod>2023-10-20</lastmod>
-  </url>
-  
-  
-  
-  <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_languages_scala.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2023-10-20</lastmod>
@@ -1228,26 +1084,11 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_languages_swift.html</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-    <lastmod>2023-10-20</lastmod>
-  </url>
-  
-  
-  
-  <url>
     <loc>https://docs.pmd-code.org/latest/pmd_rules_swift.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2023-10-20</lastmod>
   </url>
-  
-  
-  
-  
-  
-  
   
   
   
@@ -1290,15 +1131,6 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_languages_tsql.html</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-    <lastmod>2023-10-20</lastmod>
-  </url>
-  
-  
-  
-  <url>
     <loc>https://docs.pmd-code.org/latest/pmd_rules_vf.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
@@ -1309,15 +1141,6 @@
   
   <url>
     <loc>https://docs.pmd-code.org/latest/pmd_languages_visualforce.html</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-    <lastmod>2023-10-20</lastmod>
-  </url>
-  
-  
-  
-  <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_languages_vm.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2023-10-20</lastmod>

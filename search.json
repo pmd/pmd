@@ -135,7 +135,7 @@
 
 {
 "title": "Apex support",
-"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
+"tags": "languages",
 "keywords": "",
 "url": "pmd_languages_apex.html",
 "summary": "Apex-specific features and guidance"
@@ -247,7 +247,7 @@
 
 
 {
-"title": "Best Practices (Velocity Template Language (VTL), Best Practices)",
+"title": "Best Practices (VM, Best Practices)",
 "tags": "",
 "keywords": "Best Practices",
 "url": "pmd_rules_vm_bestpractices.html#best practices",
@@ -256,7 +256,7 @@
 ,
 
 {
-"title": "AvoidReassigningParameters (Velocity Template Language (VTL), Best Practices)",
+"title": "AvoidReassigningParameters (VM, Best Practices)",
 "tags": "",
 "keywords": "AvoidReassigningParameters",
 "url": "pmd_rules_vm_bestpractices.html#avoidreassigningparameters",
@@ -265,7 +265,7 @@
 ,
 
 {
-"title": "UnusedMacroParameter (Velocity Template Language (VTL), Best Practices)",
+"title": "UnusedMacroParameter (VM, Best Practices)",
 "tags": "",
 "keywords": "UnusedMacroParameter",
 "url": "pmd_rules_vm_bestpractices.html#unusedmacroparameter",
@@ -1195,11 +1195,11 @@
 
 
 {
-"title": "Coco support",
-"tags": "languagesCpdCapableLanguage",
+"title": "Coco",
+"tags": "",
 "keywords": "",
 "url": "pmd_languages_coco.html",
-"summary": "Coco features and guidance"
+"summary": ""
 }
 
 
@@ -2135,59 +2135,11 @@
 
 
 {
-"title": "C/C++ support",
-"tags": "languagesCpdCapableLanguage",
-"keywords": "",
-"url": "pmd_languages_cpp.html",
-"summary": "C/C++ features and guidance"
-}
-
-
-
-,
-
-
-
-
-
-{
 "title": "Credits",
 "tags": "",
 "keywords": "",
 "url": "pmd_projectdocs_credits.html",
 "summary": ""
-}
-
-
-
-,
-
-
-
-
-
-{
-"title": "C# support",
-"tags": "languagesCpdCapableLanguage",
-"keywords": "",
-"url": "pmd_languages_cs.html",
-"summary": "C#-specific features and guidance"
-}
-
-
-
-,
-
-
-
-
-
-{
-"title": "Dart support",
-"tags": "languagesCpdCapableLanguage",
-"keywords": "",
-"url": "pmd_languages_dart.html",
-"summary": "Dart-specific features and guidance"
 }
 
 
@@ -2233,7 +2185,7 @@
 
 
 {
-"title": "Design (Velocity Template Language (VTL), Design)",
+"title": "Design (VM, Design)",
 "tags": "",
 "keywords": "Design",
 "url": "pmd_rules_vm_design.html#design",
@@ -2242,7 +2194,7 @@
 ,
 
 {
-"title": "AvoidDeeplyNestedIfStmts (Velocity Template Language (VTL), Design)",
+"title": "AvoidDeeplyNestedIfStmts (VM, Design)",
 "tags": "",
 "keywords": "AvoidDeeplyNestedIfStmts",
 "url": "pmd_rules_vm_design.html#avoiddeeplynestedifstmts",
@@ -2251,7 +2203,7 @@
 ,
 
 {
-"title": "CollapsibleIfStatements (Velocity Template Language (VTL), Design)",
+"title": "CollapsibleIfStatements (VM, Design)",
 "tags": "",
 "keywords": "CollapsibleIfStatements",
 "url": "pmd_rules_vm_design.html#collapsibleifstatements",
@@ -2260,7 +2212,7 @@
 ,
 
 {
-"title": "ExcessiveTemplateLength (Velocity Template Language (VTL), Design)",
+"title": "ExcessiveTemplateLength (VM, Design)",
 "tags": "",
 "keywords": "ExcessiveTemplateLength",
 "url": "pmd_rules_vm_design.html#excessivetemplatelength",
@@ -2269,7 +2221,7 @@
 ,
 
 {
-"title": "NoInlineJavaScript (Velocity Template Language (VTL), Design)",
+"title": "NoInlineJavaScript (VM, Design)",
 "tags": "",
 "keywords": "NoInlineJavaScript",
 "url": "pmd_rules_vm_design.html#noinlinejavascript",
@@ -2278,7 +2230,7 @@
 ,
 
 {
-"title": "NoInlineStyles (Velocity Template Language (VTL), Design)",
+"title": "NoInlineStyles (VM, Design)",
 "tags": "",
 "keywords": "NoInlineStyles",
 "url": "pmd_rules_vm_design.html#noinlinestyles",
@@ -3197,7 +3149,7 @@
 
 
 {
-"title": "Error Prone (Velocity Template Language (VTL), Error Prone)",
+"title": "Error Prone (VM, Error Prone)",
 "tags": "",
 "keywords": "Error Prone",
 "url": "pmd_rules_vm_errorprone.html#error prone",
@@ -3206,7 +3158,7 @@
 ,
 
 {
-"title": "EmptyForeachStmt (Velocity Template Language (VTL), Error Prone)",
+"title": "EmptyForeachStmt (VM, Error Prone)",
 "tags": "",
 "keywords": "EmptyForeachStmt",
 "url": "pmd_rules_vm_errorprone.html#emptyforeachstmt",
@@ -3215,7 +3167,7 @@
 ,
 
 {
-"title": "EmptyIfStmt (Velocity Template Language (VTL), Error Prone)",
+"title": "EmptyIfStmt (VM, Error Prone)",
 "tags": "",
 "keywords": "EmptyIfStmt",
 "url": "pmd_rules_vm_errorprone.html#emptyifstmt",
@@ -4482,43 +4434,11 @@
 
 
 {
-"title": "Fortran support",
-"tags": "languagesCpdCapableLanguage",
-"keywords": "",
-"url": "pmd_languages_fortran.html",
-"summary": "Fortran features and guidance"
-}
-
-
-
-,
-
-
-
-
-
-{
-"title": "Gherkin support",
-"tags": "languagesCpdCapableLanguage",
+"title": "Gherkin",
+"tags": "",
 "keywords": "",
 "url": "pmd_languages_gherkin.html",
-"summary": "Gherkin features and guidance"
-}
-
-
-
-,
-
-
-
-
-
-{
-"title": "Go support",
-"tags": "languagesCpdCapableLanguage",
-"keywords": "",
-"url": "pmd_languages_go.html",
-"summary": "Go features and guidance"
+"summary": ""
 }
 
 
@@ -4535,22 +4455,6 @@
 "keywords": "",
 "url": "pmd_userdocs_tools_gradle.html",
 "summary": ""
-}
-
-
-
-,
-
-
-
-
-
-{
-"title": "Groovy support",
-"tags": "languagesCpdCapableLanguage",
-"keywords": "",
-"url": "pmd_languages_groovy.html",
-"summary": "Groovy-specific features and guidance"
 }
 
 
@@ -4594,11 +4498,11 @@
 
 
 {
-"title": "HTML support",
-"tags": "languagesPmdCapableLanguageCpdCapableLanguageexperimental",
+"title": "Processing HTML files",
+"tags": "",
 "keywords": "",
 "url": "pmd_languages_html.html",
-"summary": "HTML-specific features and guidance"
+"summary": ""
 }
 
 
@@ -4631,22 +4535,6 @@
 "keywords": "pmdoptionscommandincrementalanalysisperformance",
 "url": "pmd_userdocs_incremental_analysis.html",
 "summary": "Explains how to use incremental analysis to speed up analysis"
-}
-
-
-
-,
-
-
-
-
-
-{
-"title": "Overview",
-"tags": "languages",
-"keywords": "",
-"url": "pmd_languages_index.html",
-"summary": ""
 }
 
 
@@ -4723,7 +4611,7 @@
 
 {
 "title": "Java support",
-"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
+"tags": "languages",
 "keywords": "",
 "url": "pmd_languages_java.html",
 "summary": "Java-specific features and guidance"
@@ -4754,11 +4642,11 @@
 
 
 {
-"title": "JavaScript and TypeScript support",
-"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
+"title": "JavaScript and TypeScript",
+"tags": "languages",
 "keywords": "",
 "url": "pmd_languages_js_ts.html",
-"summary": "JavaScript- and TypeScript-specific features and guidance"
+"summary": "JavaScript and TypeScript infos"
 }
 
 
@@ -4771,7 +4659,7 @@
 
 {
 "title": "JSP Support",
-"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
+"tags": "languages",
 "keywords": "",
 "url": "pmd_languages_jsp.html",
 "summary": "JSP-specific features and guidance"
@@ -4802,11 +4690,11 @@
 
 
 {
-"title": "Julia support",
-"tags": "languagesCpdCapableLanguage",
+"title": "Julia",
+"tags": "",
 "keywords": "",
 "url": "pmd_languages_julia.html",
-"summary": "Julia-specific features and guidance"
+"summary": ""
 }
 
 
@@ -4819,7 +4707,7 @@
 
 {
 "title": "Kotlin Support",
-"tags": "languagesPmdCapableLanguageCpdCapableLanguageexperimental",
+"tags": "languages",
 "keywords": "",
 "url": "pmd_languages_kotlin.html",
 "summary": "Kotlin-specific features and guidance"
@@ -4914,22 +4802,6 @@
 
 
 {
-"title": "Lua support",
-"tags": "languagesCpdCapableLanguage",
-"keywords": "",
-"url": "pmd_languages_lua.html",
-"summary": "Lua-specifc features and guidance"
-}
-
-
-
-,
-
-
-
-
-
-{
 "title": "Main Landing Page",
 "tags": "",
 "keywords": "",
@@ -4951,22 +4823,6 @@
 "keywords": "rulesetsreferenceruleexcludeincludepatternfilter",
 "url": "pmd_userdocs_making_rulesets.html",
 "summary": "A ruleset is an XML configuration file, which describes a collection of rules to be executed in a PMD run. PMD includes built-in rulesets to run quick analyses with a default configuration, but users are encouraged to make their own rulesets from the start, because they allow for so much configurability. This page walk you through the creation of a ruleset and the multiple configuration features offered by rulesets."
-}
-
-
-
-,
-
-
-
-
-
-{
-"title": "Matlab support",
-"tags": "languagesCpdCapableLanguage",
-"keywords": "",
-"url": "pmd_languages_matlab.html",
-"summary": "Matlab-specific features and guidance"
 }
 
 
@@ -5031,22 +4887,6 @@
 "keywords": "",
 "url": "pmd_userdocs_migrating_to_pmd7.html",
 "summary": "Migrating to PMD 7 from PMD 6.x"
-}
-
-
-
-,
-
-
-
-
-
-{
-"title": "Modelica support",
-"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
-"keywords": "",
-"url": "pmd_languages_modelica.html",
-"summary": "Modelica-specific features and guidance"
 }
 
 
@@ -5221,22 +5061,6 @@
 "keywords": "news, blog, updates, release notes, announcements",
 "url": "news_archive.html",
 "summary": ""
-}
-
-
-
-,
-
-
-
-
-
-{
-"title": "Objective-C support",
-"tags": "languagesCpdCapableLanguage",
-"keywords": "",
-"url": "pmd_languages_objectivec.html",
-"summary": "Objective-C-specific features and guidance"
 }
 
 
@@ -5587,43 +5411,11 @@
 
 
 {
-"title": "Perl support",
-"tags": "languagesCpdCapableLanguage",
-"keywords": "",
-"url": "pmd_languages_perl.html",
-"summary": "Perl-specific features and guidance"
-}
-
-
-
-,
-
-
-
-
-
-{
-"title": "PHP support",
-"tags": "languagesCpdCapableLanguage",
-"keywords": "",
-"url": "pmd_languages_php.html",
-"summary": "PHP-specific features and guidance"
-}
-
-
-
-,
-
-
-
-
-
-{
-"title": "PL/SQL Support",
-"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
+"title": "PLSQL Support",
+"tags": "languages",
 "keywords": "",
 "url": "pmd_languages_plsql.html",
-"summary": "PL/SQL-specific features and guidance"
+"summary": "PLSQL-specific features and guidance"
 }
 
 
@@ -5715,22 +5507,6 @@
 
 
 {
-"title": "Python support",
-"tags": "languagesCpdCapableLanguage",
-"keywords": "",
-"url": "pmd_languages_python.html",
-"summary": "Python-specific features and guidance"
-}
-
-
-
-,
-
-
-
-
-
-{
 "title": "PMD Release Notes",
 "tags": "",
 "keywords": "changelog, release notes",
@@ -5811,22 +5587,6 @@
 
 
 {
-"title": "Ruby support",
-"tags": "languagesCpdCapableLanguage",
-"keywords": "",
-"url": "pmd_languages_ruby.html",
-"summary": "Ruby-specific features and guidance"
-}
-
-
-
-,
-
-
-
-
-
-{
 "title": "Rule deprecation policy",
 "tags": "devdocs",
 "keywords": "",
@@ -5864,22 +5624,6 @@
 "keywords": "",
 "url": "pmd_devdocs_major_rule_guidelines.html",
 "summary": "Guidelines for rules that are included in the standard distribution"
-}
-
-
-
-,
-
-
-
-
-
-{
-"title": "Scala support",
-"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
-"keywords": "",
-"url": "pmd_languages_scala.html",
-"summary": "Scala-specific features and guidance"
 }
 
 
@@ -6068,7 +5812,7 @@
 
 
 {
-"title": "Security (Salesforce Visualforce, Security)",
+"title": "Security (Salesforce VisualForce, Security)",
 "tags": "",
 "keywords": "Security",
 "url": "pmd_rules_vf_security.html#security",
@@ -6077,7 +5821,7 @@
 ,
 
 {
-"title": "VfCsrf (Salesforce Visualforce, Security)",
+"title": "VfCsrf (Salesforce VisualForce, Security)",
 "tags": "",
 "keywords": "VfCsrf",
 "url": "pmd_rules_vf_security.html#vfcsrf",
@@ -6086,7 +5830,7 @@
 ,
 
 {
-"title": "VfHtmlStyleTagXss (Salesforce Visualforce, Security)",
+"title": "VfHtmlStyleTagXss (Salesforce VisualForce, Security)",
 "tags": "",
 "keywords": "VfHtmlStyleTagXss",
 "url": "pmd_rules_vf_security.html#vfhtmlstyletagxss",
@@ -6095,7 +5839,7 @@
 ,
 
 {
-"title": "VfUnescapeEl (Salesforce Visualforce, Security)",
+"title": "VfUnescapeEl (Salesforce VisualForce, Security)",
 "tags": "",
 "keywords": "VfUnescapeEl",
 "url": "pmd_rules_vf_security.html#vfunescapeel",
@@ -6185,22 +5929,6 @@
 
 
 {
-"title": "Swift support",
-"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
-"keywords": "",
-"url": "pmd_languages_swift.html",
-"summary": "Swift-specific features and guidance"
-}
-
-
-
-,
-
-
-
-
-
-{
 "title": "Swift Rules",
 "tags": "rule_referencesswift",
 "keywords": "",
@@ -6211,12 +5939,6 @@
 
 
 ,
-
-
-
-
-
-
 
 
 
@@ -6275,27 +5997,11 @@
 
 
 {
-"title": "T-SQL support",
-"tags": "languagesCpdCapableLanguage",
-"keywords": "",
-"url": "pmd_languages_tsql.html",
-"summary": "T-SQL-specific features and guidance"
-}
-
-
-
-,
-
-
-
-
-
-{
-"title": "Salesforce Visualforce Rules",
+"title": "Salesforce VisualForce Rules",
 "tags": "rule_referencesvf",
 "keywords": "",
 "url": "pmd_rules_vf.html",
-"summary": "Index of all built-in rules available for Salesforce Visualforce"
+"summary": "Index of all built-in rules available for Salesforce VisualForce"
 }
 
 
@@ -6308,10 +6014,10 @@
 
 {
 "title": "Visualforce Support",
-"tags": "languagesPmdCapableLanguageCpdCapableLanguageexperimental",
+"tags": "",
 "keywords": "",
 "url": "pmd_languages_visualforce.html",
-"summary": "Visualforce-specific features and guidance"
+"summary": ""
 }
 
 
@@ -6323,27 +6029,11 @@
 
 
 {
-"title": "Velocity Template Language (VTL) support",
-"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
-"keywords": "",
-"url": "pmd_languages_vm.html",
-"summary": "VTL-specific features and guidance"
-}
-
-
-
-,
-
-
-
-
-
-{
-"title": "Velocity Template Language (VTL) Rules",
+"title": "VM Rules",
 "tags": "rule_referencesvm",
 "keywords": "",
 "url": "pmd_rules_vm.html",
-"summary": "Index of all built-in rules available for Velocity Template Language (VTL)"
+"summary": "Index of all built-in rules available for VM"
 }
 
 
@@ -6435,11 +6125,11 @@
 
 
 {
-"title": "XML support",
-"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
+"title": "Processing XML files",
+"tags": "",
 "keywords": "",
 "url": "pmd_languages_xml.html",
-"summary": "XML-specific features and guidance"
+"summary": ""
 }
 
 
