@@ -385,6 +385,9 @@ entries:
         - title: Index
           output: web, pdf
           url: /pmd_rules_xml.html
+        - title: Best Practices
+          output: web, pdf
+          url: /pmd_rules_xml_bestpractices.html
         - title: Error Prone
           output: web, pdf
           url: /pmd_rules_xml_errorprone.html
