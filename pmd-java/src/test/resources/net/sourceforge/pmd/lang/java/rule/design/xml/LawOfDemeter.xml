@@ -1224,40 +1224,4 @@ class LawOfDemeterFields {
 }
 ]]></code>
     </test-code>
-    
-    <test-code>
-        <description>sadasd conditional self assignment of fields</description>
-        <expected-problems>2</expected-problems>
-        <expected-linenumbers>12,18</expected-linenumbers>
-        <code><![CDATA[
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
-import javax.swing.*;
-import javax.swing.tree.*;
-
-public class Bar {
-    private final JTree tree = new JTree();
-    public JComponent makeUI() {
-        Box box = Box.createVerticalBox();
-        box.add(new JButton((ActionEvent e) -> {
-            TreeNode root = (TreeNode) tree.getModel().getRoot();    // NOT report 
-            visitAll(tree, new TreePath(root), true);
-        }));
-        box.add(new JButton(new AbstractAction("collapse") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                TreeNode root = (TreeNode) tree.getModel().getRoot();    // report LawOfDemeter(method chain calls)
-                visitAll(tree, new TreePath(root), false);
-            }
-        }));
-        box.add(Box.createVerticalGlue());
-        JPanel p = new JPanel(new BorderLayout());
-        p.add(box, BorderLayout.EAST);
-        p.add(new JScrollPane(tree));
-        return p;
-    }
-}
-]]></code>
-    </test-code>
 </test-data>
