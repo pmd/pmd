@@ -1940,6 +1940,30 @@ The remaining section describes the complete release notes for 7.0.0.</p>
 
 <h4 id="api-changes">API Changes</h4>
 
+<p><strong>Removed classes and methods</strong></p>
+
+<p>The following previously deprecated classes have been removed:</p>
+
+<ul>
+  <li>pmd-apex
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ApexNode.html#"><code>ApexNode</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ASTApexFile.html#"><code>ASTApexFile</code></a>
+        <ul>
+          <li>
+            <p><code class="language-plaintext highlighter-rouge">#getApexVersion()</code>: In PMD 6, this method has been deprecated but was defined in the class <code class="language-plaintext highlighter-rouge">ApexRootNode</code>.
+The version returned is always “Version.CURRENT”, as the apex compiler integration
+doesn’t use additional information which Apex version actually is used. Therefore, this method can’t be
+used to determine the Apex version of the project that is being analyzed.</p>
+
+            <p>If the current version is needed, then <code class="language-plaintext highlighter-rouge">Node.getTextDocument().getLanguageVersion()</code> can be used. This
+is the version that has been selected via CLI <code class="language-plaintext highlighter-rouge">--use-version</code> parameter.</p>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
 <h4 id="external-contributions">External Contributions</h4>
 
 <ul>
