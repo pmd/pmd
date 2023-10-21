@@ -14,9 +14,13 @@ class GroovyTokenizerTest extends CpdTextComparisonTest {
         super("groovy", ".groovy");
     }
 
-
     @Test
     void testSample() {
         doTest("sample");
+    }
+    
+    @Test
+    void testCpdOffAndOn() {
+        doTest("cpdoff");
     }
 }
