@@ -1,7 +1,0 @@
--- CPD-OFF
-CREATE OR REPLACE
-PACKAGE "test_schema"."BANK_DATA"
-IS
-pi      CONSTANT NUMBER := 3.1415;
---CPD-ON
-END;

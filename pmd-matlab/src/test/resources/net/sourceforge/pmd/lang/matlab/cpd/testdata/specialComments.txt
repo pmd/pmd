@@ -1,4 +1,0 @@
-    [Image] or [Truncated image[            Bcol      Ecol
-L8
-    [end]                                   1         4
-EOF

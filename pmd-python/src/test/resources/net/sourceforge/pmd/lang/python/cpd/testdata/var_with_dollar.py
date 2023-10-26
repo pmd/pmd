@@ -1,2 +1,0 @@
-def check():
-    a$a = []

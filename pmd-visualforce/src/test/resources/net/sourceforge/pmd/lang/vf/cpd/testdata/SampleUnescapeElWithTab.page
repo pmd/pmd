@@ -1,3 +1,0 @@
-<apex:page>
-	<link rel="stylesheet" type="text/css" href="{!$Resource.SDEFExtJS}/{!anotherRes}" id="ext-all-css"/>
-</apex:page>
