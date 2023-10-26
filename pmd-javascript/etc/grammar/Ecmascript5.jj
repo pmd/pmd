@@ -281,8 +281,7 @@ TOKEN :
     |
         [
           "$",
-          "_",
-          "@"
+          "_"
         ]
     |
         <UNICODE_ESCAPE_SEQUENCE>
@@ -783,4 +782,14 @@ TOKEN :
 | < LSHIFTASSIGN: "<<=" > : DEFAULT
 | < RSIGNEDSHIFTASSIGN: ">>=" > : DEFAULT
 | < RUNSIGNEDSHIFTASSIGN: ">>>=" > : DEFAULT
+}
+
+/*
+ * Decorators
+ * See https://github.com/tc39/proposal-decorators
+ */
+<DEFAULT,NOREGEXP,NOEOL>
+TOKEN :
+{
+    < AT: "@" > : DEFAULT
 }
