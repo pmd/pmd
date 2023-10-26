@@ -161,7 +161,15 @@ public final class IOUtil {
     public static Exception closeAll(Collection<? extends AutoCloseable> closeables) {
         Exception composed = null;
         for (AutoCloseable it : closeables) {
-            composed = closeAndAccumulate(it, composed);
+            try {
+                it.close();
+            } catch (Exception e) {
+                if (composed == null) {
+                    composed = e;
+                } else {
+                    composed.addSuppressed(e);
+                }
+            }
         }
         return composed;
     }
@@ -187,30 +195,11 @@ public final class IOUtil {
     }
 
 
-    /**
-     * Close the given closeable. If it fails with an exception,
-     * either return that one or suppress it (if the parameter
-     * exception is already non-null).
-     */
-    public static @Nullable Exception closeAndAccumulate(AutoCloseable closeable, @Nullable Exception pending) {
-        try {
-            closeable.close();
-        } catch (Exception e) {
-            if (pending == null) {
-                return e;
-            } else {
-                pending.addSuppressed(e);
-            }
-        }
-        return pending;
-    }
-
     // The following methods are taken from Apache Commons IO.
     // The dependency was removed from PMD 6 because it had a security issue,
     // and upgrading was not possible without upgrading to Java 8.
     // See https://github.com/pmd/pmd/pull/3968
     // TODO PMD 7: consider bringing back commons-io and cleaning this class up.
-
 
     public static void closeQuietly(Closeable closeable) {
         try {

@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
 
-import java.io.Closeable;
 import java.io.InputStream;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -13,10 +12,7 @@ import java.util.concurrent.ConcurrentMap;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.objectweb.asm.Opcodes;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.Loader.FailedLoader;
@@ -28,8 +24,6 @@ import net.sourceforge.pmd.util.AssertionUtil;
  * A {@link SymbolResolver} that reads class files to produce symbols.
  */
 public class AsmSymbolResolver implements SymbolResolver {
-
-    private static final Logger LOG = LoggerFactory.getLogger(AsmSymbolResolver.class);
 
     static final int ASM_API_V = Opcodes.ASM9;
 
@@ -44,7 +38,6 @@ public class AsmSymbolResolver implements SymbolResolver {
      * instead of caching failure cases separately.
      */
     private final ClassStub failed;
-    private boolean closed = false;
 
     public AsmSymbolResolver(TypeSystem ts, Classpath classLoader) {
         this.ts = ts;
@@ -56,9 +49,6 @@ public class AsmSymbolResolver implements SymbolResolver {
     @Override
     public @Nullable JClassSymbol resolveClassFromBinaryName(@NonNull String binaryName) {
         AssertionUtil.requireParamNotNull("binaryName", binaryName);
-        if (closed) {
-            throw new IllegalStateException("Resolver closed: " + binaryName);
-        }
 
         String internalName = getInternalName(binaryName);
 
@@ -119,23 +109,5 @@ public class AsmSymbolResolver implements SymbolResolver {
             Loader loader = inputStream == null ? FailedLoader.INSTANCE : new StreamLoader(internalName, inputStream);
             return new ClassStub(this, iname, loader, observedArity);
         });
-    }
-
-
-    @Override
-    public void close() throws Exception {
-        closed = true;
-        Exception e = null;
-        for (ClassStub stub : knownStubs.values()) {
-            Closeable closeable = stub.getCloseable();
-            if (closeable != null) {
-                LOG.trace("Closing stream for {}", stub);
-                e = IOUtil.closeAndAccumulate(closeable, e);
-            }
-        }
-        knownStubs.clear();
-        if (e != null) {
-            throw e;
-        }
     }
 }

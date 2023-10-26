@@ -36,9 +36,6 @@ fun TypeSystem.mockTypeVar(name: String): JTypeVar {
     return t
 }
 
-// use a secondary type system so that asm
-private val testTypeSystem = TypeSystem.usingClasspath(Classpath.contextClasspath())
-
 fun mockLexicalScope(vararg names: String): LexicalScope =
     with(testTypeSystem) {
         LexicalScope.EMPTY.andThen(names.map { mockTypeVar(name = it) })
@@ -48,14 +45,14 @@ operator fun LexicalScope.get(name: String): SubstVar = apply(name)!!
 
 fun LexicalScope.shouldParseType(sig: String, test: TypeDslOf.() -> JTypeMirror) {
     val ts = testTypeSystem
-    val parsed = ts.asmLoader!!.sigParser.parseFieldType(this, sig)
+    val parsed = ts.asmLoader.sigParser.parseFieldType(this, sig)
 
     parsed shouldBe TypeDslOf(ts).test()
 }
 private fun LexicalScope.shouldThrowWhenParsingType(sig: String, matcher: (InvalidTypeSignatureException)->Unit={}) {
     val ex = shouldThrow<InvalidTypeSignatureException> {
         val ts = testTypeSystem
-        ts.asmLoader!!.sigParser.parseFieldType(this, sig)
+        ts.asmLoader.sigParser.parseFieldType(this, sig)
     }
     matcher(ex)
 }
@@ -69,7 +66,7 @@ private fun LexicalScope.shouldParseMethod(
 ) {
     val ts = testTypeSystem
     val mockStub = mock(ExecutableStub::class.java)
-    `when`(mockStub.sigParser()).thenReturn(ts.asmLoader!!.sigParser)
+    `when`(mockStub.sigParser()).thenReturn(ts.asmLoader.sigParser)
     `when`(mockStub.enclosingTypeParameterOwner).thenReturn(null)
     `when`(mockStub.typeSystem).thenReturn(ts)
 

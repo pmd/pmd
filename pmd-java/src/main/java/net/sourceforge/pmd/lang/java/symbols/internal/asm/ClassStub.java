@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -139,19 +138,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
             protected boolean postCondition() {
                 return signature != null && enclosingInfo != null;
             }
-
-
-            @Override
-            public @Nullable Closeable getCloseable() {
-                return loader.getInputStream();
-            }
         };
-    }
-
-
-    /** Return the closeable, or null if no system resources need to be closed. */
-    @Nullable Closeable getCloseable() {
-        return this.parseLock.getCloseable();
     }
 
     @Override
