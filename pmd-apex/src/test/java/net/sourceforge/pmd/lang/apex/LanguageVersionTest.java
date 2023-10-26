@@ -13,7 +13,7 @@ class LanguageVersionTest extends AbstractLanguageVersionTest {
 
     static Collection<TestDescriptor> data() {
         return Arrays.asList(
-            TestDescriptor.defaultVersionIs(ApexLanguageModule.getInstance(), "57")
+            TestDescriptor.defaultVersionIs(ApexLanguageModule.getInstance(), "59")
         );
     }
 }
