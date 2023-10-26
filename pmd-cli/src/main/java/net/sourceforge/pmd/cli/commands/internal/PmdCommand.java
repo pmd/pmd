@@ -323,7 +323,8 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
                     return CliExitCode.ERROR;
                 }
 
-                LOG.debug("Current classpath:\n{}", System.getProperty("java.class.path"));
+                LOG.debug("Runtime classpath:\n{}", System.getProperty("java.class.path"));
+                LOG.debug("Aux classpath: {}", configuration.getClassLoader());
 
                 if (showProgressBar) {
                     if (reportFile == null) {

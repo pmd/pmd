@@ -737,6 +737,13 @@ public final class TypeSystem {
         return new TypeVarImpl.RegularTypeVar(this, symbol, HashTreePSet.empty());
     }
 
+    /**
+     * Called at the end of the analysis to log statistics about the loaded types.
+     */
+    public void logStats() {
+        resolver.logStats();
+    }
+
     private static final class NullType implements JTypeMirror {
 
         private final TypeSystem ts;

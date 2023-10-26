@@ -12,6 +12,8 @@ import java.util.concurrent.ConcurrentMap;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.objectweb.asm.Opcodes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
@@ -24,6 +26,7 @@ import net.sourceforge.pmd.util.AssertionUtil;
  * A {@link SymbolResolver} that reads class files to produce symbols.
  */
 public class AsmSymbolResolver implements SymbolResolver {
+    private static final Logger LOG = LoggerFactory.getLogger(AsmSymbolResolver.class);
 
     static final int ASM_API_V = Opcodes.ASM9;
 
@@ -109,5 +112,34 @@ public class AsmSymbolResolver implements SymbolResolver {
             Loader loader = inputStream == null ? FailedLoader.INSTANCE : new StreamLoader(internalName, inputStream);
             return new ClassStub(this, iname, loader, observedArity);
         });
+    }
+
+    @Override
+    public void logStats() {
+        int numParsed = 0;
+        int numFailed = 0;
+        int numFailedQueries = 0;
+        int numNotParsed = 0;
+
+        for (ClassStub stub : knownStubs.values()) {
+            if (stub == failed) { // NOPMD CompareObjectsWithEquals
+                // Note that failed queries may occur under normal circumstances.
+                // Eg package names may be queried just to figure
+                // out whether they're packages or classes.
+                numFailedQueries++;
+            } else if (stub.isNotParsed()) {
+                numNotParsed++;
+            } else if (!stub.isFailed()) {
+                numParsed++;
+            } else {
+                numFailed++;
+            }
+        }
+
+        LOG.trace("Of {} distinct queries to the classloader, {} queries failed, "
+                        + "{} classes were found and parsed successfully, "
+                        + "{} were found but failed parsing (!), "
+                        + "{} were found but never parsed.",
+                knownStubs.size(), numFailedQueries, numParsed, numFailed, numNotParsed);
     }
 }

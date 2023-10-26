@@ -22,6 +22,8 @@ import java.util.zip.ZipOutputStream;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class ClasspathClassLoaderTest {
     @TempDir
@@ -42,7 +44,9 @@ class ClasspathClassLoaderTest {
     /**
      * This test case just documents the current behavior: Eventually we load
      * the class files from the system class loader, even if the auxclasspath
-     * is essentially empty.
+     * is essentially empty and no parent is provided. This is an unavoidable
+     * behavior of {@link java.lang.ClassLoader#getResource(java.lang.String)}, which will
+     * search the class loader built into the VM (BootLoader).
      */
     @Test
     void loadEmptyClasspathNoParent() throws IOException {
@@ -79,26 +83,30 @@ class ClasspathClassLoaderTest {
 
     /**
      * Verifies, that we load the class files from the runtime image of the correct java home.
+     * This tests multiple versions, in order to avoid that the test accidentally is successful when
+     * testing e.g. java17 and running the build with java17. In that case, we might load java.lang.Object
+     * from the system classloader and not from jrt-fs.jar.
      *
      * <p>
-     *     This test only runs, if you have a folder ${HOME}/openjdk17.
+     *     This test only runs, if you have a folder ${HOME}/openjdk{javaVersion}.
      * </p>
      */
-    @Test
-    void loadFromJava17() throws IOException {
-        Path java17Home = Paths.get(System.getProperty("user.home"), "openjdk17");
-        assumeTrue(Files.isDirectory(java17Home), "Couldn't find java17 installation at " + java17Home);
+    @ParameterizedTest
+    @ValueSource(ints = {11, 17, 21})
+    void loadFromJava(int javaVersion) throws IOException {
+        Path javaHome = Paths.get(System.getProperty("user.home"), "openjdk" + javaVersion);
+        assumeTrue(Files.isDirectory(javaHome), "Couldn't find java" + javaVersion + " installation at " + javaHome);
 
-        Path jrtfsPath = java17Home.resolve("lib/jrt-fs.jar");
-        assertTrue(Files.isRegularFile(jrtfsPath), "java17 installation is incomplete. " + jrtfsPath + " not found!");
+        Path jrtfsPath = javaHome.resolve("lib/jrt-fs.jar");
+        assertTrue(Files.isRegularFile(jrtfsPath), "java" + javaVersion + " installation is incomplete. " + jrtfsPath + " not found!");
         String classPath = jrtfsPath.toString();
 
         try (ClasspathClassLoader loader = new ClasspathClassLoader(classPath, null)) {
-            assertEquals(java17Home.toString(), loader.javaHome);
+            assertEquals(javaHome.toString(), loader.javaHome);
             try (InputStream stream = loader.getResourceAsStream("java/lang/Object.class")) {
                 assertNotNull(stream);
                 try (DataInputStream data = new DataInputStream(stream)) {
-                    assertClassFile(data, 17);
+                    assertClassFile(data, javaVersion);
                 }
             }
 

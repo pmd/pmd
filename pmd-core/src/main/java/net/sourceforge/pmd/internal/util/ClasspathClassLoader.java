@@ -46,8 +46,9 @@ public class ClasspathClassLoader extends URLClassLoader {
 
     private static final Logger LOG = LoggerFactory.getLogger(ClasspathClassLoader.class);
 
-    private FileSystem fileSystem;
     String javaHome;
+
+    private FileSystem fileSystem;
     private Map<String, Set<String>> packagesDirsToModules;
 
     static {
@@ -71,7 +72,7 @@ public class ClasspathClassLoader extends URLClassLoader {
     private List<URL> fileToURL(List<File> files) throws IOException {
         List<URL> urlList = new ArrayList<>();
         for (File f : files) {
-            urlList.add(f.toURI().toURL());
+            urlList.add(createURLFromPath(f.getAbsolutePath()));
         }
         return urlList;
     }
@@ -137,7 +138,7 @@ public class ClasspathClassLoader extends URLClassLoader {
      */
     private void initializeJrtFilesystem(Path filePath) {
         try {
-            LOG.debug("Detect Java Runtime Filesystem Provider in {}", filePath);
+            LOG.debug("Detected Java Runtime Filesystem Provider in {}", filePath);
 
             if (fileSystem != null) {
                 throw new IllegalStateException("There is already a jrt filesystem. Do you have multiple jrt-fs.jar files on the classpath?");
@@ -152,7 +153,7 @@ public class ClasspathClassLoader extends URLClassLoader {
                 // note: providing java.home here is crucial, so that the correct runtime image is loaded.
                 // the class loader is only used to provide an implementation of JrtFileSystemProvider, if the current
                 // Java runtime doesn't provide one (e.g. if running in Java 8).
-                this.javaHome = filePath.getParent().getParent().toString();
+                javaHome = filePath.getParent().getParent().toString();
                 env.put("java.home", javaHome);
                 LOG.debug("Creating jrt-fs with env {}", env);
                 fileSystem = FileSystems.newFileSystem(URI.create("jrt:/"), env, loader);
@@ -190,6 +191,8 @@ public class ClasspathClassLoader extends URLClassLoader {
     @Override
     public InputStream getResourceAsStream(String name) {
         // always first search in jrt-fs, if available
+        // note: we can't override just getResource(String) and return a jrt:/-URL, because the URL itself
+        // won't be connected to the correct JrtFileSystem and would just load using the system classloader.
         if (fileSystem != null) {
             int lastSlash = name.lastIndexOf('/');
             String packageName = name.substring(0, Math.max(lastSlash, 0));
@@ -203,6 +206,9 @@ public class ClasspathClassLoader extends URLClassLoader {
                     if (Files.exists(candidate)) {
                         LOG.trace("Found {}", candidate);
                         try {
+                            // Note: The input streams from JrtFileSystem are ByteArrayInputStreams and do not
+                            // need to be closed - we don't need to track these. The filesystem itself needs to be closed at the end.
+                            // See https://github.com/openjdk/jdk/blob/970cd202049f592946f9c1004ea92dbd58abf6fb/src/java.base/share/classes/jdk/internal/jrtfs/JrtFileSystem.java#L334
                             return Files.newInputStream(candidate);
                         } catch (IOException e) {
                             throw new UncheckedIOException(e);
