@@ -192,7 +192,7 @@ public class ClasspathClassLoader extends URLClassLoader {
         // always first search in jrt-fs, if available
         if (fileSystem != null) {
             int lastSlash = name.lastIndexOf('/');
-            String packageName = name.substring(0, lastSlash != -1 ? lastSlash : 0);
+            String packageName = name.substring(0, Math.max(lastSlash, 0));
             Set<String> moduleNames = packagesDirsToModules.get(packageName);
             if (moduleNames != null) {
                 LOG.trace("Trying to find {} in jrt-fs with packageName={} and modules={}",
