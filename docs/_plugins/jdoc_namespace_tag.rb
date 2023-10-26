@@ -99,10 +99,11 @@ class JDocNamespaceDeclaration < Liquid::Tag
   private
 
   JDOC_NAMESPACE_MAP = "jdoc_nspaces"
-  RESERVED_NSPACES = ['ant', 'apex', 'core', 'cpp', 'cs', 'dart', 'dist', 'doc', 'fortran', 'go', 'groovy', 'java',
-    'javascript', 'jsp',
-    'kotlin', 'lua', 'matlab', 'objectivec', 'perl', 'php', 'plsql', 'python', 'ruby', 'scala', 'swift',
-    'test', 'test-schema', 'ui',
+  RESERVED_NSPACES = ['ant', 'apex', 'cli', 'coco', 'core', 'cpp', 'cs', 'dart', 'dist', 'doc',
+    'fortran', 'gherkin', 'go', 'groovy', 'html', 'java',
+    'javascript', 'jsp', 'julia',
+    'kotlin', 'lang-test', 'lua', 'matlab', 'objectivec', 'perl', 'php', 'plsql', 'python', 'ruby', 'scala', 'swift',
+    'test', 'test-schema', 'tsql', 'ui',
     'modelica', 'visualforce', 'vm', 'xml'].flat_map {|m| [m, "pmd-" + m]}
 
   def self.make_base_namespaces

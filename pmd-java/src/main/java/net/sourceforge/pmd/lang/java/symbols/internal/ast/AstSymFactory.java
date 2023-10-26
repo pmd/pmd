@@ -6,9 +6,11 @@ package net.sourceforge.pmd.lang.java.symbols.internal.ast;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
@@ -76,7 +78,7 @@ final class AstSymFactory {
         return new AstClassSym(klass, this, enclosing);
     }
 
-
-
-
+    JClassSymbol setClassSymbol(@NonNull ASTCompilationUnit compilationUnit) {
+        return new AstUnnamedClassSym(compilationUnit, this);
+    }
 }

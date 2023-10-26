@@ -12,7 +12,7 @@ public final class HtmlParsingHelper extends BaseParsingHelper<HtmlParsingHelper
     public static final HtmlParsingHelper DEFAULT = new HtmlParsingHelper(Params.getDefault());
 
     private HtmlParsingHelper(Params params) {
-        super(HtmlLanguageModule.NAME, ASTHtmlDocument.class, params);
+        super(HtmlLanguageModule.getInstance(), ASTHtmlDocument.class, params);
     }
 
     @Override

@@ -1,4 +1,4 @@
-+- document[]
++- document[@XmlEncoding = "UTF-8", @XmlStandalone = false, @XmlVersion = "1.0"]
    +- deployment-plan[@global-variables = "false", @xmlns = "http://xmlns.oracle.com/weblogic/deployment-plan", @xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance", @xsi:schemaLocation = "http://xmlns.oracle.com/weblogic/deployment-plan http://xmlns.oracle.com/weblogic/deployment-plan/1.0/deployment-plan.xsd"]
       +- text[@Image = "\n    "]
       +- application-name[]

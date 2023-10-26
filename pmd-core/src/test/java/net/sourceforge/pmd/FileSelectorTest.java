@@ -41,7 +41,7 @@ class FileSelectorTest {
     void testUnwantedFile() {
         LanguageFilenameFilter fileSelector = new LanguageFilenameFilter(DummyLanguageModule.getInstance());
 
-        File javaFile = new File("/path/to/myFile.txt");
+        File javaFile = new File("/path/to/myFile.notdummy");
 
         boolean selected = fileSelector.accept(javaFile.getParentFile(), javaFile.getName());
         assertFalse(selected, "Not-source file must not be selected!");

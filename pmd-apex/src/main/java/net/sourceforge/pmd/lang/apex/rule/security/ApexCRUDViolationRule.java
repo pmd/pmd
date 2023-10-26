@@ -51,6 +51,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTSoqlExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
+import net.sourceforge.pmd.lang.apex.ast.AbstractDmlStatement;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
@@ -261,32 +262,56 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         return false;
     }
 
+    private boolean hasRunAsMode(AbstractDmlStatement<?> node) {
+        return node.getRunAsMode().isPresent();
+    }
+
     @Override
     public Object visit(ASTDmlInsertStatement node, Object data) {
+        if (hasRunAsMode(node)) {
+            return data;
+        }
+
         checkForCRUD(node, data, IS_CREATEABLE);
         return data;
     }
 
     @Override
     public Object visit(ASTDmlDeleteStatement node, Object data) {
+        if (hasRunAsMode(node)) {
+            return data;
+        }
+
         checkForCRUD(node, data, IS_DELETABLE);
         return data;
     }
 
     @Override
     public Object visit(ASTDmlUndeleteStatement node, Object data) {
+        if (hasRunAsMode(node)) {
+            return data;
+        }
+
         checkForCRUD(node, data, IS_UNDELETABLE);
         return data;
     }
 
     @Override
     public Object visit(ASTDmlUpdateStatement node, Object data) {
+        if (hasRunAsMode(node)) {
+            return data;
+        }
+
         checkForCRUD(node, data, IS_UPDATEABLE);
         return data;
     }
 
     @Override
     public Object visit(ASTDmlUpsertStatement node, Object data) {
+        if (hasRunAsMode(node)) {
+            return data;
+        }
+
         checkForCRUD(node, data, IS_CREATEABLE);
         checkForCRUD(node, data, IS_UPDATEABLE);
         return data;
@@ -294,6 +319,10 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTDmlMergeStatement node, Object data) {
+        if (hasRunAsMode(node)) {
+            return data;
+        }
+
         checkForCRUD(node, data, IS_MERGEABLE);
         return data;
     }

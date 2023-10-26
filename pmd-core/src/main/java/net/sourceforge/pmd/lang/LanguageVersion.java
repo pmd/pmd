@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang;
 
+import java.util.List;
+import java.util.Objects;
+
 import net.sourceforge.pmd.Rule;
 
 /**
@@ -24,11 +27,13 @@ public final class LanguageVersion implements Comparable<LanguageVersion> {
     private final Language language;
     private final String version;
     private final int index;
+    private final List<String> aliases;
 
-    LanguageVersion(Language language, String version, int index) {
+    LanguageVersion(Language language, String version, int index, List<String> aliases) {
         this.language = language;
         this.version = version;
         this.index = index;
+        this.aliases = aliases;
     }
 
     /**
@@ -46,6 +51,9 @@ public final class LanguageVersion implements Comparable<LanguageVersion> {
         return version;
     }
 
+    List<String> getAliases() {
+        return aliases;
+    }
 
     /**
      * Returns the name of this language version. This is the version string
@@ -102,6 +110,24 @@ public final class LanguageVersion implements Comparable<LanguageVersion> {
             return cmp;
         }
         return Integer.compare(this.index, o.index);
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof LanguageVersion)) {
+            return false;
+        }
+        LanguageVersion that = (LanguageVersion) o;
+        return language.equals(that.language) && version.equals(that.version);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(language, version);
     }
 
     @Override

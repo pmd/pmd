@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.rule.xpath.impl;
 
+import net.sourceforge.pmd.lang.Language;
+
 import net.sf.saxon.lib.ExtensionFunctionDefinition;
 import net.sf.saxon.om.StructuredQName;
 
@@ -27,8 +29,8 @@ public abstract class AbstractXPathFunctionDef extends ExtensionFunctionDefiniti
         this(localName, "pmd", PMD_URI_PREFIX + "pmd-core");
     }
 
-    protected AbstractXPathFunctionDef(String localName, String languageTerseName) {
-        this(localName, "pmd-" + languageTerseName, PMD_URI_PREFIX + "pmd-" + languageTerseName);
+    protected AbstractXPathFunctionDef(String localName, Language language) {
+        this(localName, "pmd-" + language.getId(), PMD_URI_PREFIX + "pmd-" + language.getId());
     }
 
     @Override

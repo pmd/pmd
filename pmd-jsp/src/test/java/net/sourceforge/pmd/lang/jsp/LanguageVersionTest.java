@@ -12,7 +12,6 @@ import net.sourceforge.pmd.AbstractLanguageVersionTest;
 class LanguageVersionTest extends AbstractLanguageVersionTest {
 
     static Collection<TestDescriptor> data() {
-        return Arrays.asList(new TestDescriptor(JspLanguageModule.NAME, JspLanguageModule.TERSE_NAME, "3",
-                getLanguage(JspLanguageModule.NAME).getDefaultVersion()));
+        return Arrays.asList(TestDescriptor.defaultVersionIs(JspLanguageModule.getInstance(), "3"));
     }
 }

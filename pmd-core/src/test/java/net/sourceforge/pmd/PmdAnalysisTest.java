@@ -53,7 +53,7 @@ class PmdAnalysisTest {
     @Test
     void testRendererInteractions() throws IOException {
         PMDConfiguration config = new PMDConfiguration();
-        config.setInputPaths("sample-source/dummy");
+        config.addInputPath(Paths.get("sample-source/dummy"));
         Renderer renderer = spy(Renderer.class);
         try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
             pmd.addRenderer(renderer);

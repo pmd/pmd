@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <ruleset name="Error Prone"
          xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
@@ -30,11 +30,9 @@ The following types are considered valid: pom, jar, maven-plugin, ejb, war, ear,
 ]]>
                 </value>
             </property>
-            <!-- XPath 2.0 is needed to use a multi-valued property. -->
             <property name="validTypes"
                       value="pom,jar,maven-plugin,ejb,war,ear,rar,par"
                       type="List[String]"
-                      delimiter=","
                       description="Set of valid types."/>
         </properties>
         <example>

@@ -136,6 +136,10 @@ public final class FileLocation {
         return getFileId().getOriginalPath() + ":" + getStartPos().toDisplayStringWithColon();
     }
 
+    public int getLineCount() {
+        return getEndLine() - getStartLine() + 1;
+    }
+
     /**
      * Creates a new location for a range of text.
      *
