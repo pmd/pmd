@@ -248,6 +248,14 @@ public class ClasspathClassLoader extends URLClassLoader {
     public void close() throws IOException {
         if (fileSystem != null) {
             fileSystem.close();
+            // jrt created an own classloader to load the JrtFileSystemProvider class out of the
+            // jrt-fs.jar. This needs to be closed manually.
+            ClassLoader classLoader = fileSystem.getClass().getClassLoader();
+            if (classLoader instanceof URLClassLoader) {
+                ((URLClassLoader) classLoader).close();
+            }
+            packagesDirsToModules = null;
+            fileSystem = null;
         }
         super.close();
     }
