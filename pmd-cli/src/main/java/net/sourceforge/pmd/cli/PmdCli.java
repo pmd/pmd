@@ -13,6 +13,11 @@ public final class PmdCli {
     private PmdCli() { }
 
     public static void main(String[] args) {
+        // See https://github.com/remkop/picocli/blob/main/RELEASE-NOTES.md#-picocli-470
+        // and https://picocli.info/#_closures_in_annotations
+        // we don't use this feature. Disabling it avoids leaving the groovy jar open
+        // caused by Class.forName("groovy.lang.Closure")
+        System.setProperty("picocli.disable.closures", "true");
         final CommandLine cli = new CommandLine(new PmdRootCommand())
                 .setCaseInsensitiveEnumValuesAllowed(true);
         
