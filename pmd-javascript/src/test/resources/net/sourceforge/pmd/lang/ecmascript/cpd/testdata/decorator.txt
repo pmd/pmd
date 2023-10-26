@@ -1,7 +1,7 @@
     [Image] or [Truncated image[            Bcol      Ecol
 L2
     [@]                                     1         2
-    [annotation ]                           2         12
+    [annotation]                            2         12
 L3
     [class]                                 1         6
     [MyClass]                               7         14
