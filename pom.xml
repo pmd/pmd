@@ -1190,43 +1190,10 @@
     <modules>
         <module>pmd-apex-jorje</module>
         <module>pmd-apex</module>
-        <module>pmd-coco</module>
         <module>pmd-core</module>
-        <module>pmd-cpp</module>
-        <module>pmd-cs</module>
-        <module>pmd-dart</module>
         <module>pmd-doc</module>
-        <module>pmd-fortran</module>
-        <module>pmd-gherkin</module>
-        <module>pmd-go</module>
-        <module>pmd-groovy</module>
-        <module>pmd-html</module>
-        <module>pmd-lua</module>
         <module>pmd-java</module>
-        <module>pmd-javascript</module>
-        <module>pmd-jsp</module>
-        <module>pmd-julia</module>
-        <module>pmd-kotlin</module>
-        <module>pmd-lang-test</module>
-        <module>pmd-matlab</module>
-        <module>pmd-modelica</module>
-        <module>pmd-objectivec</module>
-        <module>pmd-perl</module>
-        <module>pmd-php</module>
-        <module>pmd-plsql</module>
-        <module>pmd-python</module>
-        <module>pmd-ruby</module>
-        <module>pmd-scala</module> <!-- deprecated -->
-        <module>pmd-scala-modules/pmd-scala-common</module>
-        <module>pmd-scala-modules/pmd-scala_2.13</module>
-        <module>pmd-scala-modules/pmd-scala_2.12</module>
-        <module>pmd-swift</module>
-        <module>pmd-test</module>
-        <module>pmd-test-schema</module>
-        <module>pmd-tsql</module>
-        <module>pmd-visualforce</module>
         <module>pmd-vm</module>
-        <module>pmd-xml</module>
         <module>pmd-ant</module>
         <module>pmd-languages-deps</module>
     </modules>
