@@ -19,7 +19,7 @@ public class VfLanguageProperties extends LanguagePropertyBundle {
     /**
      * Directory that contains Apex classes that may be referenced from a Visualforce page.
      *
-     * <p>Env variable is {@code PMD_VF_APEXDIRECTORIES}.
+     * <p>Env variable is {@code PMD_VF_APEX_DIRECTORIES}.
      */
     public static final PropertyDescriptor<List<String>> APEX_DIRECTORIES_DESCRIPTOR =
         PropertyFactory.stringListProperty("apexDirectories")
@@ -30,7 +30,7 @@ public class VfLanguageProperties extends LanguagePropertyBundle {
     /**
      * Directory that contains Object definitions that may be referenced from a Visualforce page.
      *
-     * <p>Env variable is {@code PMD_VF_OBJECTSDIRECTORIES}.
+     * <p>Env variable is {@code PMD_VF_OBJECTS_DIRECTORIES}.
      */
     public static final PropertyDescriptor<List<String>> OBJECTS_DIRECTORIES_DESCRIPTOR =
         PropertyFactory.stringListProperty("objectsDirectories")

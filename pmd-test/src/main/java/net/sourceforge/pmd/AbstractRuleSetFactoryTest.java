@@ -16,6 +16,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -235,6 +236,36 @@ public abstract class AbstractRuleSetFactoryTest {
         assertTrue(allValid, "All XML must parse without producing validation messages.");
     }
 
+    @Test
+    void verifyCorrectXmlEncoding() throws Exception {
+        boolean allValid = true;
+        List<String> ruleSetFileNames = getRuleSetFileNames();
+        StringBuilder messages = new StringBuilder();
+        for (String fileName : ruleSetFileNames) {
+            boolean valid = hasCorrectEncoding(fileName);
+            allValid = allValid && valid;
+            if (!valid) {
+                messages.append("RuleSet ")
+                        .append(fileName)
+                        .append(" is missing XML encoding or not using UTF8\n");
+            }
+        }
+        assertTrue(allValid, "All XML must use correct XML encoding\n" + messages);
+    }
+
+    public static boolean hasCorrectEncoding(String fileName) throws IOException {
+        try (InputStream inputStream = loadResourceAsStream(fileName)) {
+            // first bytes must be:
+            byte[] expectedBytes = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>".getBytes(StandardCharsets.UTF_8);
+            byte[] bytes = new byte[expectedBytes.length];
+            int count = inputStream.read(bytes);
+            if (count != expectedBytes.length || !Arrays.equals(expectedBytes, bytes)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     /**
      * Verifies that all rulesets are valid XML according to the DTD.
      *
@@ -386,8 +417,8 @@ public abstract class AbstractRuleSetFactoryTest {
         }
     }
 
-    private InputStream loadResourceAsStream(String resource) {
-        return getClass().getClassLoader().getResourceAsStream(resource);
+    private static InputStream loadResourceAsStream(String resource) {
+        return AbstractRuleSetFactoryTest.class.getClassLoader().getResourceAsStream(resource);
     }
 
     private void testRuleSet(String fileName) throws IOException, SAXException {

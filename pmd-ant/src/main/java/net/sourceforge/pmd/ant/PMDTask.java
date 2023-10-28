@@ -24,6 +24,31 @@ import net.sourceforge.pmd.ant.internal.PMDTaskImpl;
 /**
  * PMD Ant task. Setters of this class are interpreted by Ant as properties
  * settable in the XML. This is therefore published API.
+ *
+ * <p>Runs PMD analysis via ant. The ant task looks like this:</p>
+ *
+ * <pre>{@code
+ *   <project name="PMDProject" default="main" basedir=".">
+ *     <path id="pmd.classpath">
+ *         <fileset dir="/home/joe/pmd-bin-VERSION/lib">
+ *             <include name="*.jar"/>
+ *         </fileset>
+ *     </path>
+ *     <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="pmd.classpath" />
+ *
+ *     <target name="main">
+ *       <pmd>
+ *         <ruleset>rulesets/java/quickstart.xml</ruleset>
+ *         <ruleset>config/my-ruleset.xml</ruleset>
+ *         <fileset dir="/usr/local/j2sdk1.4.1_01/src/">
+ *             <include name="java/lang/*.java"/>
+ *         </fileset>
+ *       </pmd>
+ *     </target>
+ *   </project>
+ * }</pre>
+ *
+ * <p>Required: rulesetfiles/ruleset, fileset</p>
  */
 public class PMDTask extends Task {
 

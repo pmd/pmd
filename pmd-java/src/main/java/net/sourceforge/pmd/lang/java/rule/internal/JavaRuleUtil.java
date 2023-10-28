@@ -202,7 +202,9 @@ public final class JavaRuleUtil {
     public static boolean isExplicitUnusedVarName(String name) {
         return name.startsWith("ignored")
             || name.startsWith("unused")
-            || "_".equals(name); // before java 9 it's ok
+            // before java 9 it's ok, after that, "_" is a reserved keyword
+            // with Java 21 Preview (JEP 443), "_" means explicitly unused
+            || "_".equals(name);
     }
 
     /**

@@ -78,6 +78,17 @@ final class AstSymbolMakerVisitor extends JavaVisitorBase<AstSymFactory, Void> {
             || node.getParent() instanceof ASTFormalParameter);
     }
 
+    @Override
+    public Void visit(ASTCompilationUnit node, AstSymFactory data) {
+        if (node.isUnnamedClass()) {
+            JClassSymbol sym = data.setClassSymbol(node);
+            enclosingSymbols.push(sym);
+            visitChildren(node, data);
+            enclosingSymbols.pop();
+            return null;
+        }
+        return super.visit(node, data);
+    }
 
     @Override
     public Void visitTypeDecl(ASTAnyTypeDeclaration node, AstSymFactory data) {

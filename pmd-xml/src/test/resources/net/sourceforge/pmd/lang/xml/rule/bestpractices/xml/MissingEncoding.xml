@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>No XML Declaration</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+<root>
+    <child/>
+</root>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>XML Declaration without encoding</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+<?xml version="1.0" ?>
+<root>
+    <child/>
+</root>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>XML Declaration with UTF-8 encoding</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<?xml version="1.0" encoding="UTF-8" ?>
+<root>
+    <child/>
+</root>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>XML Declaration with ISO-8859-1 encoding</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<root>
+    <child/>
+</root>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>XML Declaration with UTF-8 encoding and standalone</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<root>
+    <child/>
+</root>
+        ]]></code>
+    </test-code>
+</test-data>

@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.java;
 
+import static net.sourceforge.pmd.AbstractLanguageVersionTest.TestDescriptor.defaultVersionIs;
+import static net.sourceforge.pmd.AbstractLanguageVersionTest.TestDescriptor.versionDoesNotExist;
+
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -30,11 +33,20 @@ class LanguageVersionTest extends AbstractLanguageVersionTest {
                 new TestDescriptor(java, "14"),
                 new TestDescriptor(java, "15"),
                 new TestDescriptor(java, "16"),
-                new TestDescriptor(java, "16-preview"),
                 new TestDescriptor(java, "17"),
-                new TestDescriptor(java, "17-preview"),
+                new TestDescriptor(java, "18"),
+                new TestDescriptor(java, "19"),
+                new TestDescriptor(java, "20"),
+                new TestDescriptor(java, "20-preview"),
+                new TestDescriptor(java, "21"),
+                new TestDescriptor(java, "21-preview"),
 
-                // this one won't be found: case sensitive!
-                new TestDescriptor("JAVA", "JAVA", "1.7", null));
+                defaultVersionIs(java, "21"),
+
+                // this one won't be found: case-sensitive!
+                versionDoesNotExist("JAVA", "JAVA", "1.7"),
+                // not supported anymore
+                versionDoesNotExist(java, "19-preview")
+        );
     }
 }

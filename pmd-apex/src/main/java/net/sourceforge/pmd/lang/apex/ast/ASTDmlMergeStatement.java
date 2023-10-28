@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import apex.jorje.semantic.ast.statement.DmlMergeStatement;
 
-public final class ASTDmlMergeStatement extends AbstractApexNode<DmlMergeStatement> {
+public final class ASTDmlMergeStatement extends AbstractDmlStatement<DmlMergeStatement> {
 
     ASTDmlMergeStatement(DmlMergeStatement dmlMergeStatement) {
         super(dmlMergeStatement);
