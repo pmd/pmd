@@ -281,6 +281,8 @@ can be parsed now. PMD should now be able to parse Apex code up to version 59.0 
 
 **Apex**
 * {% rule apex/design/UnusedMethod %} finds unused methods in your code.
+* {% rule apex/performance/OperationWithHighCostInLoop %} finds Schema class methods called in a loop, which is a
+  potential performance issue.
 
 **Java**
 * {% rule java/codestyle/UnnecessaryBoxing %} reports boxing and unboxing conversions that may be made implicit.
