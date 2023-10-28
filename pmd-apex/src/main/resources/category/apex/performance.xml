@@ -207,6 +207,32 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="OperationWithHighCostInLoop"
+          language="apex"
+          since="7.0.0"
+          message="Avoid operations in loops that may impact performances"
+          class="net.sourceforge.pmd.lang.apex.rule.performance.OperationWithHighCostInLoopRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_performance.html#operationwithhighcostinloop">
+        <description>
+            Schema class methods with high performance cost within loops. Instead, try to call those methods outside the loop.
+        </description>
+        <priority>3</priority>
+        <example><![CDATA[
+            public class Foo {
+                public void test1() {
+                    Set<String> fieldNameSet = new Set<String> {'Id'};
+                    for (String fieldNameOrDefaultValue : fieldNameOrDefaultValueList) {
+                        // Schema.getGlobalDescribe() should be called only once before the for-loop
+                        if (Schema.getGlobalDescribe().get(objectName).getDescribe().fields.getMap().containsKey(fieldNameOrDefaultValue.trim() )) {
+                            fieldNameSet.add(fieldNameOrDefaultValue);
+                        }
+                    }
+                }
+            }
+                    ]]>
+        </example>
+    </rule>
+
     <rule name="OperationWithLimitsInLoop"
           language="apex"
           since="6.29.0"
@@ -276,29 +302,4 @@ public class Something {
         </example>
     </rule>
 
-    <rule name="OperationWithHighCostInLoop"
-          language="apex"
-          since="7.0.0"
-          message="Avoid operations in loops that may impact performances"
-          class="net.sourceforge.pmd.lang.apex.rule.performance.OperationWithHighCostInLoopRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_performance.html#operationwithhighcostinloop">
-        <description>
-            Schema class methods with high performance cost within loops. Instead, try to call those methods outside the loop.
-        </description>
-        <priority>3</priority>
-        <example><![CDATA[
-            public class Foo {
-                public void test1() {
-                    Set<String> fieldNameSet = new Set<String> {'Id'};
-                    for (String fieldNameOrDefaultValue : fieldNameOrDefaultValueList) {
-                        // Schema.getGlobalDescribe() should be called only once before the for-loop
-                        if (Schema.getGlobalDescribe().get(objectName).getDescribe().fields.getMap().containsKey(fieldNameOrDefaultValue.trim() )) {
-                            fieldNameSet.add(fieldNameOrDefaultValue);
-                        }
-                    }
-                }
-            }
-                    ]]>
-        </example>
-    </rule>
 </ruleset>
