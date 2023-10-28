@@ -98,6 +98,25 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>High cost performance describeSObjects in loop with SObjectDescribeOptions #4675</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void testDescribeSObjects() {
+        String sObjectType = 'Account';
+        Set<String> fieldNameSet = new Set<String> {'Id'};
+        for (String fieldNameOrDefaultValue : fieldNameOrDefaultValueList) {
+            if (Schema.describeSObjects(new List<String> { sObjectType }, SObjectDescribeOptions.FULL)[0].fields.getMap().containsKey(fieldNameOrDefaultValue.trim())) {
+                fieldNameSet.add(fieldNameOrDefaultValue);
+            }
+        }
+    }
+}
+            ]]></code>
+    </test-code>
+
+    <test-code>
         <description>High cost performance describeSObjects in loop - fully qualified #4675</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
