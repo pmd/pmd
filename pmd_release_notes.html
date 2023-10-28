@@ -1906,6 +1906,8 @@ The remaining section describes the complete release notes for 7.0.0.</p>
 <p><strong>New Rules</strong></p>
 
 <ul>
+  <li><a href="pmd_rules_apex_performance.html#operationwithhighcostinloop"><code class="language-plaintext highlighter-rouge">OperationWithHighCostInLoop</code></a> finds Schema class methods called in a loop, which is a
+potential performance issue.</li>
   <li><a href="pmd_rules_java_codestyle.html#useexplicittypes"><code class="language-plaintext highlighter-rouge">UseExplicitTypes</code></a> reports usages of <code class="language-plaintext highlighter-rouge">var</code> keyword, which was introduced with Java 10.</li>
   <li><a href="pmd_rules_xml_bestpractices.html#missingencoding"><code class="language-plaintext highlighter-rouge">MissingEncoding</code></a> finds XML files without explicit encoding.</li>
 </ul>
@@ -1930,6 +1932,11 @@ The remaining section describes the complete release notes for 7.0.0.</p>
     <ul>
       <li><a href="https://github.com/pmd/pmd/pull/4699">#4699</a>:   Make PMD buildable with java 21</li>
       <li><a href="https://github.com/pmd/pmd/pull/4586">#4586</a>:   Use explicit encoding in ruleset xml files</li>
+    </ul>
+  </li>
+  <li>apex-performance
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4675">#4675</a>: [apex] New Rule: OperationWithHighCostInLoop</li>
     </ul>
   </li>
   <li>java-codestyle
@@ -1982,6 +1989,7 @@ is the version that has been selected via CLI <code class="language-plaintext hi
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/4640">#4640</a>: [cli] Launch script fails if run via “bash pmd” - <a href="https://github.com/shai-bennathan">Shai Bennathan</a> (@shai-bennathan)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4673">#4673</a>: [javascript] CPD: Added support for decorator notation - <a href="https://github.com/wener-tiobe">Wener</a> (@wener-tiobe)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4677">#4677</a>: [apex] Add new rule: OperationWithHighCostInLoop - <a href="https://github.com/tprouvot">Thomas Prouvot</a> (@tprouvot)</li>
 </ul>
 
 <h3 id="-major-features-and-enhancements">🚀 Major Features and Enhancements</h3>
@@ -2176,6 +2184,8 @@ or be omitted.</li>
 <p><strong>Apex</strong></p>
 <ul>
   <li><a href="pmd_rules_apex_design.html#unusedmethod"><code class="language-plaintext highlighter-rouge">UnusedMethod</code></a> finds unused methods in your code.</li>
+  <li><a href="pmd_rules_apex_performance.html#operationwithhighcostinloop"><code class="language-plaintext highlighter-rouge">OperationWithHighCostInLoop</code></a> finds Schema class methods called in a loop, which is a
+potential performance issue.</li>
 </ul>
 
 <p><strong>Java</strong></p>
@@ -2495,6 +2505,11 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/issues/4596">#4596</a>: [apex] ExcessivePublicCount ignores properties</li>
     </ul>
   </li>
+  <li>apex-performance
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4675">#4675</a>: [apex] New Rule: OperationWithHighCostInLoop</li>
+    </ul>
+  </li>
   <li>apex-security
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/4646">#4646</a>: [apex] ApexSOQLInjection does not recognise SObjectType or SObjectField as safe variable types</li>
@@ -2761,6 +2776,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
   <li><a href="https://github.com/pmd/pmd/pull/4664">#4664</a>: [cli] CPD: Fix NPE when only <code class="language-plaintext highlighter-rouge">--file-list</code> is specified - <a href="https://github.com/wener-tiobe">Wener</a> (@wener-tiobe)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4665">#4665</a>: [java] Doc: Fix references AutoClosable -&gt; AutoCloseable - <a href="https://github.com/AndreyBozhko">Andrey Bozhko</a> (@AndreyBozhko)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4673">#4673</a>: [javascript] CPD: Added support for decorator notation - <a href="https://github.com/wener-tiobe">Wener</a> (@wener-tiobe)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4677">#4677</a>: [apex] Add new rule: OperationWithHighCostInLoop - <a href="https://github.com/tprouvot">Thomas Prouvot</a> (@tprouvot)</li>
 </ul>
 
 <h3 id="-stats">📈 Stats</h3>
@@ -2799,7 +2815,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Oct 26, 2023 <br />
+             Site last generated: Oct 28, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

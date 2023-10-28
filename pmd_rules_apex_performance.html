@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules that flag suboptimal code.">
-<meta name="keywords" content=" Performance, AvoidDebugStatements, AvoidDmlStatementsInLoops, AvoidSoqlInLoops, AvoidSoslInLoops, EagerlyLoadedDescribeSObjectResult, OperationWithLimitsInLoop">
+<meta name="keywords" content=" Performance, AvoidDebugStatements, AvoidDmlStatementsInLoops, AvoidSoqlInLoops, AvoidSoslInLoops, EagerlyLoadedDescribeSObjectResult, OperationWithHighCostInLoop, OperationWithLimitsInLoop">
 <title>Performance | PMD Source Code Analyzer</title>
 
 
@@ -2097,6 +2097,78 @@ to be consistent across different contexts and API versions.</p>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
+<h2 id="operationwithhighcostinloop">OperationWithHighCostInLoop</h2>
+
+<p><strong>Since:</strong> PMD 7.0.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>This rule finds method calls inside loops that are known to be likely a performance issue. These methods should be
+called only once before the loop.</p>
+
+<p>Schema class methods like <a href="https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_methods_system_schema.htm#apex_System_Schema_getGlobalDescribe">Schema.getGlobalDescribe()</a>
+and <a href="https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_methods_system_schema.htm#apex_System_Schema_describeSObjects">Schema.describeSObjects()</a>
+might be slow depending on the size of your organization. Calling these methods repeatedly inside a loop creates
+a potential performance issue.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/performance/OperationWithHighCostInLoopRule.java">net.sourceforge.pmd.lang.apex.rule.performance.OperationWithHighCostInLoopRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">GlobalDescribeExample</span> <span class="o">{</span>
+    <span class="c1">// incorrect example</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">getGlobalDescribeInLoop</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">Set</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">fieldNameSet</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Set</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="o">{</span><span class="err">'</span><span class="nc">Id</span><span class="err">'</span><span class="o">};</span>
+        <span class="k">for</span> <span class="o">(</span><span class="nc">String</span> <span class="n">fieldNameOrDefaultValue</span> <span class="o">:</span> <span class="n">fieldNameOrDefaultValueList</span><span class="o">)</span> <span class="o">{</span>
+            <span class="c1">// Schema.getGlobalDescribe() should be called only once before the for-loop</span>
+            <span class="k">if</span> <span class="o">(</span><span class="nc">Schema</span><span class="o">.</span><span class="na">getGlobalDescribe</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="n">objectName</span><span class="o">).</span><span class="na">getDescribe</span><span class="o">().</span><span class="na">fields</span><span class="o">.</span><span class="na">getMap</span><span class="o">().</span><span class="na">containsKey</span><span class="o">(</span><span class="n">fieldNameOrDefaultValue</span><span class="o">.</span><span class="na">trim</span><span class="o">()))</span> <span class="o">{</span>
+                <span class="n">fieldNameSet</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">fieldNameOrDefaultValue</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="c1">// corrected example</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">getGlobalDescribeInLoopCorrected</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">Schema</span><span class="o">.</span><span class="na">SObjectField</span><span class="o">&gt;</span> <span class="n">fieldMap</span> <span class="o">=</span> <span class="nc">Schema</span><span class="o">.</span><span class="na">getGlobalDescribe</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="n">objectName</span><span class="o">).</span><span class="na">getDescribe</span><span class="o">().</span><span class="na">fields</span><span class="o">.</span><span class="na">getMap</span><span class="o">();</span>
+        <span class="nc">Set</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">fieldNameSet</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Set</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="o">{</span><span class="err">'</span><span class="nc">Id</span><span class="err">'</span><span class="o">};</span>
+        <span class="k">for</span> <span class="o">(</span><span class="nc">String</span> <span class="n">fieldNameOrDefaultValue</span> <span class="o">:</span> <span class="n">fieldNameOrDefaultValueList</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">fieldMap</span><span class="o">.</span><span class="na">containsKey</span><span class="o">(</span><span class="n">fieldNameOrDefaultValue</span><span class="o">.</span><span class="na">trim</span><span class="o">()))</span> <span class="o">{</span>
+                <span class="n">fieldNameSet</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">fieldNameOrDefaultValue</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">DescribeSObjectsExample</span> <span class="o">{</span>
+    <span class="c1">// incorrect example</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">describeSObjectsInLoop</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">Set</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">fieldNameSet</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Set</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="o">{</span><span class="err">'</span><span class="nc">Id</span><span class="err">'</span><span class="o">};</span>
+        <span class="k">for</span> <span class="o">(</span><span class="nc">String</span> <span class="n">fieldNameOrDefaultValue</span> <span class="o">:</span> <span class="n">fieldNameOrDefaultValueList</span><span class="o">)</span> <span class="o">{</span>
+            <span class="nc">Schema</span><span class="o">.</span><span class="na">DescribeSObjectResult</span> <span class="n">dsr</span> <span class="o">=</span> <span class="nc">Account</span><span class="o">.</span><span class="na">sObjectType</span><span class="o">.</span><span class="na">getDescribe</span><span class="o">();</span>
+            <span class="k">if</span> <span class="o">(</span><span class="nc">Schema</span><span class="o">.</span><span class="na">describeSObjects</span><span class="o">(</span><span class="k">new</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="o">{</span> <span class="n">sObjectType</span> <span class="o">})[</span><span class="mi">0</span><span class="o">].</span><span class="na">fields</span><span class="o">.</span><span class="na">getMap</span><span class="o">().</span><span class="na">containsKey</span><span class="o">(</span><span class="n">fieldNameOrDefaultValue</span><span class="o">.</span><span class="na">trim</span><span class="o">()))</span> <span class="o">{</span>
+                <span class="n">fieldNameSet</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">fieldNameOrDefaultValue</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="c1">// corrected example</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">describeSObjectsInLoop</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">Schema</span><span class="o">.</span><span class="na">SObjectField</span><span class="o">&gt;</span> <span class="n">fieldMap</span> <span class="o">=</span> <span class="nc">Schema</span><span class="o">.</span><span class="na">describeSObjects</span><span class="o">(</span><span class="k">new</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="o">{</span> <span class="err">'</span><span class="nc">Account</span><span class="err">'</span> <span class="o">})[</span><span class="mi">0</span><span class="o">].</span><span class="na">fields</span><span class="o">.</span><span class="na">getMap</span><span class="o">();</span>
+        <span class="nc">Set</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">fieldNameSet</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Set</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="o">{</span><span class="err">'</span><span class="nc">Id</span><span class="err">'</span><span class="o">};</span>
+        <span class="k">for</span> <span class="o">(</span><span class="nc">String</span> <span class="n">fieldNameOrDefaultValue</span> <span class="o">:</span> <span class="n">fieldNameOrDefaultValueList</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">fieldMap</span><span class="o">.</span><span class="na">containsKey</span><span class="o">(</span><span class="n">fieldNameOrDefaultValue</span><span class="o">.</span><span class="na">trim</span><span class="o">()))</span> <span class="o">{</span>
+                <span class="n">fieldNameSet</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">fieldNameOrDefaultValue</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/performance.xml/OperationWithHighCostInLoop"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
 <h2 id="operationwithlimitsinloop">OperationWithLimitsInLoop</h2>
 
 <p><strong>Since:</strong> PMD 6.29.0</p>
@@ -2197,7 +2269,7 @@ to be consistent across different contexts and API versions.</p>
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Oct 26, 2023 <br />
+             Site last generated: Oct 28, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

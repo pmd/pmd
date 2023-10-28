@@ -5349,6 +5349,15 @@
 ,
 
 {
+"title": "OperationWithHighCostInLoop (Apex, Performance)",
+"tags": "",
+"keywords": "OperationWithHighCostInLoop",
+"url": "pmd_rules_apex_performance.html#operationwithhighcostinloop",
+"summary": "Rules that flag suboptimal code."
+}
+,
+
+{
 "title": "OperationWithLimitsInLoop (Apex, Performance)",
 "tags": "",
 "keywords": "OperationWithLimitsInLoop",
