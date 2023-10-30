@@ -1191,7 +1191,6 @@
         <module>pmd-apex-jorje</module>
         <module>pmd-apex</module>
         <module>pmd-core</module>
-        <module>pmd-doc</module>
         <module>pmd-java</module>
         <module>pmd-vm</module>
         <module>pmd-ant</module>
