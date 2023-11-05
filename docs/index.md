@@ -40,6 +40,7 @@ things, PMD can be run:
 * As a [Maven goal](pmd_userdocs_tools_maven.html)
 * As an [Ant task](pmd_userdocs_tools_ant.html)
 * As a [Gradle task](https://docs.gradle.org/current/userguide/pmd_plugin.html)
+* As a [bld operation](https://github.com/rife2/bld-pmd)
 * From [command-line](pmd_userdocs_installation.html#running-pmd-via-command-line)
 
 **CPD**, the **copy-paste detector**, is also distributed with PMD. You can also use it
