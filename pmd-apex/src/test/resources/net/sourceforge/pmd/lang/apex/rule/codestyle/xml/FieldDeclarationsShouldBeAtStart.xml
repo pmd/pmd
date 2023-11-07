@@ -180,4 +180,18 @@ class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Report field declaration instead of initializer</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+    public void someMethod() {}
+
+    public Integer thisIsNotOkay =  // <--- this line should be reported
+        1;  // and not that
+}
+]]></code>
+    </test-code>
 </test-data>
