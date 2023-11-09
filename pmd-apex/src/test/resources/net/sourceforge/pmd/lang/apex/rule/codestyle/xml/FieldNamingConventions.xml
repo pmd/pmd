@@ -23,6 +23,7 @@ public class Foo {
     <test-code>
         <description>default is all caps for constants, camel case for others</description>
         <expected-problems>4</expected-problems>
+        <expected-linenumbers>2,3,4,5</expected-linenumbers>
         <expected-messages>
             <message>The constant field name 'constantField' doesn't match '[A-Z][A-Z0-9_]*'</message>
             <message>The final field name 'FINAL_FIELD' doesn't match '[a-z][a-zA-Z0-9]*'</message>
@@ -42,6 +43,7 @@ public class Foo {
     <test-code>
         <description>enum default is all caps and underscores</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <expected-messages>
             <message>The enum constant field name 'default' doesn't match '[A-Z][A-Z0-9_]*'</message>
         </expected-messages>
@@ -81,6 +83,7 @@ public class Foo {
         <description>custom constant pattern</description>
         <rule-property name="constantPattern">[a-zA-Z0-9_]+</rule-property>
         <expected-problems>3</expected-problems>
+        <expected-linenumbers>3,4,5</expected-linenumbers>
         <expected-messages>
             <message>The final field name 'FINAL_FIELD' doesn't match '[a-z][a-zA-Z0-9]*'</message>
             <message>The static field name 'STATIC_FIELD' doesn't match '[a-z][a-zA-Z0-9]*'</message>
@@ -100,6 +103,7 @@ public class Foo {
         <description>custom final pattern</description>
         <rule-property name="finalPattern">[a-zA-Z0-9_]+</rule-property>
         <expected-problems>3</expected-problems>
+        <expected-linenumbers>2,4,5</expected-linenumbers>
         <expected-messages>
             <message>The constant field name 'constantField' doesn't match '[A-Z][A-Z0-9_]*'</message>
             <message>The static field name 'STATIC_FIELD' doesn't match '[a-z][a-zA-Z0-9]*'</message>
@@ -119,6 +123,7 @@ public class Foo {
         <description>custom static pattern</description>
         <rule-property name="staticPattern">[a-zA-Z0-9_]+</rule-property>
         <expected-problems>3</expected-problems>
+        <expected-linenumbers>2,3,5</expected-linenumbers>
         <expected-messages>
             <message>The constant field name 'constantField' doesn't match '[A-Z][A-Z0-9_]*'</message>
             <message>The final field name 'FINAL_FIELD' doesn't match '[a-z][a-zA-Z0-9]*'</message>
@@ -138,6 +143,7 @@ public class Foo {
         <description>custom instance pattern</description>
         <rule-property name="instancePattern">[a-zA-Z0-9_]+</rule-property>
         <expected-problems>3</expected-problems>
+        <expected-linenumbers>2,3,4</expected-linenumbers>
         <expected-messages>
             <message>The constant field name 'constantField' doesn't match '[A-Z][A-Z0-9_]*'</message>
             <message>The final field name 'FINAL_FIELD' doesn't match '[a-z][a-zA-Z0-9]*'</message>
@@ -151,5 +157,20 @@ public class Foo {
     Integer INSTANCE_FIELD;
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>field declaration and initialization separated</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>The constant field name 'constantField' doesn't match '[A-Z][A-Z0-9_]*'</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    final static Integer constantField =
+        1;
+}
+]]></code>
     </test-code>
 </test-data>
