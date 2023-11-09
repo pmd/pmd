@@ -17,7 +17,8 @@ String buildLog = readFile(buildLogPath);
 if (!buildLog.contains("[INFO] CPD Failure: Found 3 lines of duplicated code at locations:")) {
     throw new RuntimeException("No CPD failures detected, did CPD run?");
 }
-if (!buildLog.contains("cpd-for-jsp/src/main/jsp/classAttribute.jsp line 1")) {
+File classAttribute = new File("cpd-for-jsp/src/main/jsp/classAttribute.jsp");
+if (!buildLog.contains(classAttribute + " line 1")) {
     throw new RuntimeException("No CPD failures detected, did CPD run?");
 }
 
@@ -30,6 +31,6 @@ String cpdXml = readFile(cpdXmlReport);
 if (!cpdXml.contains("<duplication lines=\"3\" tokens=\"24\">")) {
     throw new RuntimeException("Expected duplication has not been reported");
 }
-if (!cpdXml.contains("cpd-for-jsp/src/main/jsp/classAttribute.jsp\"/>")) {
+if (!cpdXml.contains(classAttribute + "\"/>")) {
     throw new RuntimeException("Expected duplication has not been reported");
 }

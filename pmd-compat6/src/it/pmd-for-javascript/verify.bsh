@@ -27,6 +27,7 @@ String pmdXml = readFile(pmdXmlReport);
 if (!pmdXml.contains("<violation beginline=\"2\" endline=\"2\" begincolumn=\"5\" endcolumn=\"28\" rule=\"GlobalVariable\" ruleset=\"Best Practices\"")) {
     throw new RuntimeException("Expected violation has not been reported");
 }
-if (!pmdXml.contains("pmd-for-javascript/src/main/js/globalVariable.js\">")) {
+File globalVariable = new File("pmd-for-javascript/src/main/js/globalVariable.js");
+if (!pmdXml.contains(globalVariable + "\">")) {
     throw new RuntimeException("Expected violation has not been reported");
 }

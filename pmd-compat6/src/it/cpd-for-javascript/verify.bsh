@@ -17,7 +17,8 @@ String buildLog = readFile(buildLogPath);
 if (!buildLog.contains("[INFO] CPD Failure: Found 7 lines of duplicated code at locations:")) {
     throw new RuntimeException("No CPD failures detected, did CPD run?");
 }
-if (!buildLog.contains("cpd-for-javascript/src/main/js/globalVariable.js line 1")) {
+File globalVariable = new File("cpd-for-javascript/src/main/js/globalVariable.js");
+if (!buildLog.contains(globalVariable + " line 1")) {
     throw new RuntimeException("No CPD failures detected, did CPD run?");
 }
 
@@ -30,6 +31,6 @@ String cpdXml = readFile(cpdXmlReport);
 if (!cpdXml.contains("<duplication lines=\"7\" tokens=\"21\">")) {
     throw new RuntimeException("Expected duplication has not been reported");
 }
-if (!cpdXml.contains("cpd-for-javascript/src/main/js/globalVariable.js\"/>")) {
+if (!cpdXml.contains(globalVariable + "\"/>")) {
     throw new RuntimeException("Expected duplication has not been reported");
 }

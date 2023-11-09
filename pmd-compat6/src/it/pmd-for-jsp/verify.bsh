@@ -27,6 +27,7 @@ String pmdXml = readFile(pmdXmlReport);
 if (!pmdXml.contains("<violation beginline=\"2\" endline=\"2\" begincolumn=\"4\" endcolumn=\"24\" rule=\"NoClassAttribute\" ruleset=\"Best Practices\"")) {
     throw new RuntimeException("Expected violation has not been reported");
 }
-if (!pmdXml.contains("pmd-for-jsp/src/main/jsp/classAttribute.jsp\">")) {
+File classAttribute = new File("pmd-for-jsp/src/main/jsp/classAttribute.jsp");
+if (!pmdXml.contains(classAttribute + "\">")) {
     throw new RuntimeException("Expected violation has not been reported");
 }

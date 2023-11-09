@@ -27,6 +27,7 @@ String pmdXml = readFile(pmdXmlReport);
 if (!pmdXml.contains("<violation beginline=\"5\" endline=\"5\" begincolumn=\"16\" endcolumn=\"37\" rule=\"UnusedLocalVariable\" ruleset=\"Best Practices\" package=\"org.example\" class=\"Main\" method=\"main\" variable=\"thisIsAUnusedLocalVar\"")) {
     throw new RuntimeException("Expected violation has not been reported");
 }
-if (!pmdXml.contains("pmd-for-java/src/main/java/org/example/Main.java\">")) {
+File mainFile = new File("pmd-for-java/src/main/java/org/example/Main.java");
+if (!pmdXml.contains(mainFile + "\">")) {
     throw new RuntimeException("Expected violation has not been reported");
 }

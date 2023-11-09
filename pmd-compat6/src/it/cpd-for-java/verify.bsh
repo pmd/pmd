@@ -17,7 +17,8 @@ String buildLog = readFile(buildLogPath);
 if (!buildLog.contains("[INFO] CPD Failure: Found 8 lines of duplicated code at locations:")) {
     throw new RuntimeException("No CPD failures detected, did CPD run?");
 }
-if (!buildLog.contains("cpd-for-java/src/main/java/org/example/ClassA.java line 3")) {
+File classA = new File("cpd-for-java/src/main/java/org/example/ClassA.java");
+if (!buildLog.contains(classA + " line 3")) {
     throw new RuntimeException("No CPD failures detected, did CPD run?");
 }
 
@@ -30,6 +31,6 @@ String cpdXml = readFile(cpdXmlReport);
 if (!cpdXml.contains("<duplication lines=\"8\" tokens=\"67\">")) {
     throw new RuntimeException("Expected duplication has not been reported");
 }
-if (!cpdXml.contains("cpd-for-java/src/main/java/org/example/ClassA.java\"/>")) {
+if (!cpdXml.contains(classA + "\"/>")) {
     throw new RuntimeException("Expected duplication has not been reported");
 }
