@@ -82,13 +82,12 @@ public class RegexStringFilter implements Filter<String> {
     public boolean filter(String obj) {
         if (this.endsWith != null) {
             return obj.endsWith(this.endsWith);
-        } else if (this.pattern != null) {
-            return this.pattern.matcher(obj).matches();
-        } else {
-            // The regular expression must have been bad, so it will match
-            // nothing.
-            return false;
         }
+
+        return this.pattern != null && this.pattern.matcher(obj).matches();
+        // if pattern was null,
+        // The regular expression must have been bad, so it will match
+        // nothing.
     }
 
     @Override
