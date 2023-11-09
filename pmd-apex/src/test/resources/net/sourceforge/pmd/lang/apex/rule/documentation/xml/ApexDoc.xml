@@ -695,4 +695,39 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>No comment required for static initializer blocks</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description My Class
+ */
+public class MyClass {
+  static {
+    Test = 1;
+  }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Misplaced formal comment for static initializer blocks</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description My Class
+ */
+public class MyClass {
+  /**
+   * Missing description... but that's no problem. Fields are not considered (yet) by ApexDoc.
+   **/
+  public static Integer Test;
+
+  static {
+    Test = 1;
+  }
+}
+]]></code>
+    </test-code>
 </test-data>
