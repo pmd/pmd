@@ -45,6 +45,12 @@ public final class ASTModifierNode extends AbstractApexNode.Many<Modifier> imple
                 .mapToInt(mod -> OPCODES.get(mod.getKeyword()))
                 .reduce(0, (current, bit) -> current | bit);
 
+        // interface methods are implicit public and abstract
+        ApexNode<?> classOrInterface = ancestors().get(1);
+        if (nodes.isEmpty() && classOrInterface instanceof ASTUserInterface) {
+            modifiers |= PUBLIC | ABSTRACT;
+        }
+
         if ((modifiers & PUBLIC) > 0) {
             // Remove PROTECTED and PRIVATE if PUBLIC
             modifiers &= ~PROTECTED;
