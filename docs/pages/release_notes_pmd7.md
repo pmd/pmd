@@ -114,11 +114,10 @@ current progress of the analysis.
 This can be disabled with the `--no-progress` flag.
 
 Finally, we now provide a completion script for Bash/Zsh to further help daily usage.
-This script can be found under `shell/pmd-completion.sh` in the binary distribution.
 To use it, edit your `~/.bashrc` / `~/.zshrc` file and add the following line:
 
 ```
-source *path_to_pmd*/shell/pmd-completion.sh
+source <(pmd generate-completion)
 ```
 
 Contributors: [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
@@ -282,6 +281,8 @@ can be parsed now. PMD should now be able to parse Apex code up to version 59.0 
 
 **Apex**
 * {% rule apex/design/UnusedMethod %} finds unused methods in your code.
+* {% rule apex/performance/OperationWithHighCostInLoop %} finds Schema class methods called in a loop, which is a
+  potential performance issue.
 
 **Java**
 * {% rule java/codestyle/UnnecessaryBoxing %} reports boxing and unboxing conversions that may be made implicit.

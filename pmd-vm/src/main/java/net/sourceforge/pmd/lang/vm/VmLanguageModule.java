@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.vm.cpd.VmTokenizer;
  */
 public class VmLanguageModule extends SimpleLanguageModuleBase {
     static final String ID = "vm";
-    static final String NAME = "VM";
+    static final String NAME = "Velocity Template Language (VTL)";
 
     public VmLanguageModule() {
         super(LanguageMetadata.withId(ID).name(NAME)

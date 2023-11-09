@@ -10,3 +10,6 @@ allowed-tags:
   - tools           # About tools and integrations, Maven, gradle, etc.
   - devdocs         # About PMD internals, contributing, building, projects
   - languages       # Language-specific documentation pages
+  - PmdCapableLanguage
+  - CpdCapableLanguage
+  - experimental
