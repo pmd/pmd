@@ -7278,6 +7278,15 @@
         "bug",
         "code"
       ]
+    },
+    {
+      "login": "ethauvin",
+      "name": "Erik C. Thauvin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/705618?v=4",
+      "profile": "https://erik.thauvin.net/",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
