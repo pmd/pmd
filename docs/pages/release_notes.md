@@ -55,6 +55,8 @@ The remaining section describes the complete release notes for 7.0.0.
 * cli
   * [#4594](https://github.com/pmd/pmd/pull/4594):   \[cli] Change completion generation to runtime
   * [#4723](https://github.com/pmd/pmd/issues/4723): \[cli] Launch fails for "bash pmd"
+* core
+  * [#1027](https://github.com/pmd/pmd/issues/1027): \[core] Apply the new PropertyDescriptor&lt;Pattern&gt; type where applicable
 * doc
   * [#3175](https://github.com/pmd/pmd/issues/3175): \[doc] Document language module features
   * [#4659](https://github.com/pmd/pmd/pull/4659):   \[doc] Improve ant documentation
@@ -445,6 +447,7 @@ See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.
     * [#4080](https://github.com/pmd/pmd/issues/4080): \[ant] Split off Ant integration into a new submodule
 * core
     * [#880](https://github.com/pmd/pmd/issues/880):   \[core] Make visitors generic
+    * [#1027](https://github.com/pmd/pmd/issues/1027): \[core] Apply the new PropertyDescriptor&lt;Pattern&gt; type where applicable
     * [#1204](https://github.com/pmd/pmd/issues/1204): \[core] Allow numeric properties in XML to be within an unbounded range
     * [#1622](https://github.com/pmd/pmd/pull/1622):   \[core] NodeStream API
     * [#1687](https://github.com/pmd/pmd/issues/1687): \[core] Deprecate and Remove XPath 1.0 support
