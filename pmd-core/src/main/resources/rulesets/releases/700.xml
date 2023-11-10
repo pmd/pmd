@@ -9,6 +9,7 @@ This ruleset contains links to rules that are new in PMD v7.0.0
   </description>
 
     <rule ref="category/apex/design.xml/UnusedMethod"/>
+    <rule ref="category/apex/performance.xml/OperationWithHighCostInLoop"/>
 
     <rule ref="category/java/codestyle.xml/UnnecessaryBoxing"/>
     <rule ref="category/java/codestyle.xml/UseExplicitTypes"/>
@@ -23,4 +24,3 @@ This ruleset contains links to rules that are new in PMD v7.0.0
 
     <rule ref="category/xml/bestpractices.xml/MissingEncoding"/>
 </ruleset>
-

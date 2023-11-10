@@ -40,12 +40,6 @@ public final class ASTApexFile extends AbstractApexNode.Single<CompilationUnit> 
         return astInfo;
     }
 
-    @Override
-    public double getApexVersion() {
-        // TODO: remove this method?
-        return Double.parseDouble(astInfo.getTextDocument().getLanguageVersion().getVersion());
-    }
-
     public ASTUserClassOrInterface<?> getMainNode() {
         return (ASTUserClassOrInterface<?>) getChild(0);
     }

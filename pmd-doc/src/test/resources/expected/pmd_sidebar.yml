@@ -93,7 +93,7 @@ entries:
     - title: null
       output: web, pdf
       subfolders:
-      - title: Salesforce VisualForce Rules
+      - title: Salesforce Visualforce Rules
         output: web, pdf
         subfolderitems:
         - title: Index
@@ -120,7 +120,7 @@ entries:
     - title: null
       output: web, pdf
       subfolders:
-      - title: VM Rules
+      - title: Velocity Template Language (VTL) Rules
         output: web, pdf
         subfolderitems:
         - title: Index

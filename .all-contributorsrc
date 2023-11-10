@@ -7268,6 +7268,34 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "shai-bennathan",
+      "name": "Shai Bennathan",
+      "avatar_url": "https://avatars.githubusercontent.com/u/62336907?v=4",
+      "profile": "https://github.com/shai-bennathan",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "ethauvin",
+      "name": "Erik C. Thauvin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/705618?v=4",
+      "profile": "https://erik.thauvin.net/",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "ciufudean",
+      "name": "ciufudean",
+      "avatar_url": "https://avatars.githubusercontent.com/u/19208954?v=4",
+      "profile": "https://github.com/ciufudean",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,

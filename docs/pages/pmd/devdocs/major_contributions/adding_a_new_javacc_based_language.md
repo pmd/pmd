@@ -81,7 +81,9 @@ definitely don't come for free. It is much effort and requires perseverance to i
 *   For a minimal implementation, it just needs to return a parser *(see step #5)*.
 *   It can be used to provide other features for your language like
     *   violation suppression logic
-    *   violation decorators, to add additional language specific information to the created violations
+    *   {% jdoc core::reporting::ViolationDecorator %}s, to add additional language specific information to the
+        created violations. The [Java language module](pmd_languages_java.html#violation-decorators) uses this to
+        provide the method name or class name, where the violation occurred.
     *   metrics (see below "Optional features")
     *   custom XPath functions
 *   See `VmHandler` class as an example
@@ -180,6 +182,29 @@ The Scala module also has a test, written in Kotlin instead of Java:
     This will load all rulesets and verify, that all required attributes are provided.
 
     *Note:* You'll need to add your category ruleset to `categories.properties`, so that it can be found.
+
+### 13. Create documentation page
+Finishing up your new language module by adding a page in the documentation. Create a new markdown file
+`<langId>.md` in `docs/pages/pmd/languages/`. This file should have the following frontmatter:
+
+```
+---
+title: <Language Name>
+permalink: pmd_languages_<langId>.html
+last_updated: <Month> <Year> (<PMD Version>)
+tags: [languages, PmdCapableLanguage, CpdCapableLanguage]
+---
+```
+
+On this page, language specifics can be documented, e.g. when the language was first supported by PMD.
+There is also the following Jekyll Include, that creates summary box for the language:
+
+```
+{% raw %}
+{% include language_info.html name='<Language Name>' id='<langId>' implementation='<langId>::lang.<langId>.<langId>LanguageModule' supports_cpd=true supports_pmd=true %}
+{% endraw %}
+```
+
 
 ## Debugging with Rule Designer
 

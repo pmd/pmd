@@ -17,7 +17,7 @@ public class TSqlLanguageModule extends CpdOnlyLanguageModuleBase {
     private static final String ID = "tsql";
 
     public TSqlLanguageModule() {
-        super(LanguageMetadata.withId(ID).name("TSql").extensions("sql"));
+        super(LanguageMetadata.withId(ID).name("T-SQL").extensions("sql"));
     }
 
     public static TSqlLanguageModule getInstance() {

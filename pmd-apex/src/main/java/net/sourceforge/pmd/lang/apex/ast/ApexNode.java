@@ -41,15 +41,4 @@ public interface ApexNode<T> extends GenericNode<ApexNode<?>> {
 
     @Override
     @NonNull ASTApexFile getRoot();
-
-    /**
-     * Gets the apex version this class has been compiled with.
-     * Use {@link Version} to compare, e.g.
-     * {@code node.getApexVersion() >= Version.V176.getExternal()}
-     *
-     * @return the apex version
-     */
-    default double getApexVersion() {
-        return getRoot().getApexVersion();
-    }
 }
