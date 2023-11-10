@@ -5343,9 +5343,9 @@ an error, use the <code class="language-plaintext highlighter-rouge">fail()</cod
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">boolean</span> <span class="n">answer1</span> <span class="o">=</span> <span class="n">buz</span><span class="o">.</span><span class="na">toUpperCase</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="s">"baz"</span><span class="o">);</span>              <span class="c1">// should be buz.equalsIgnoreCase("baz")</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">boolean</span> <span class="n">answer1</span> <span class="o">=</span> <span class="n">buz</span><span class="o">.</span><span class="na">toUpperCase</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="s">"BAZ"</span><span class="o">);</span>              <span class="c1">// should be buz.equalsIgnoreCase("BAZ")</span>
 
-<span class="kt">boolean</span> <span class="n">answer2</span> <span class="o">=</span> <span class="n">buz</span><span class="o">.</span><span class="na">toUpperCase</span><span class="o">().</span><span class="na">equalsIgnoreCase</span><span class="o">(</span><span class="s">"baz"</span><span class="o">);</span>    <span class="c1">// another unnecessary toUpperCase()</span>
+<span class="kt">boolean</span> <span class="n">answer2</span> <span class="o">=</span> <span class="n">buz</span><span class="o">.</span><span class="na">toUpperCase</span><span class="o">().</span><span class="na">equalsIgnoreCase</span><span class="o">(</span><span class="s">"BAZ"</span><span class="o">);</span>    <span class="c1">// another unnecessary toUpperCase()</span>
 </code></pre></div></div>
 
 <p><strong>Use this rule by referencing it:</strong></p>
