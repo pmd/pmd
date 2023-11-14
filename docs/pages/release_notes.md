@@ -41,6 +41,31 @@ The remaining section describes the complete release notes for 7.0.0.
 
 #### New and Noteworthy
 
+##### Maven PMD Plugin compatibility with PMD 7
+
+In order to use PMD 7 with [maven-pmd-plugin](https://maven.apache.org/plugins/maven-pmd-plugin/) a new
+compatibility module has been created. This allows to use PMD 7 by simply adding one additional dependency:
+
+1. Follow the guide [Upgrading PMD at Runtime](https://maven.apache.org/plugins/maven-pmd-plugin/examples/upgrading-PMD-at-runtime.html)
+2. Add additionally the following dependency:
+
+```xml
+<dependency>
+  <groupId>net.sourceforge.pmd</groupId>
+  <artifactId>pmd-compat6</artifactId>
+  <version>${pmdVersion}</version>
+</dependency>
+```
+
+It is important to add this dependency as the **first** in the list, so that maven-pmd-plugin sees the (old)
+compatible versions of some classes.
+
+Note: This compatibility modules only works for the built-in rules, that are still available in PMD 7 (you need
+to review your rulesets).
+As PMD 7 revamped the Java module, if you have custom rules, you need to migrate the rules.
+For more information, see the [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html#revamped-java)
+and [Migration Guide for PMD 7]({{ baseurl }}pmd_userdocs_migrating_to_pmd7.html).
+
 #### Rule Changes
 
 **New Rules**
@@ -62,6 +87,7 @@ The remaining section describes the complete release notes for 7.0.0.
 * miscellaneous
   * [#4699](https://github.com/pmd/pmd/pull/4699):   Make PMD buildable with java 21
   * [#4586](https://github.com/pmd/pmd/pull/4586):   Use explicit encoding in ruleset xml files
+  * [#4741](https://github.com/pmd/pmd/pull/4741):   Add pmd-compat6 module for maven-pmd-plugin
 * apex-performance
   * [#4675](https://github.com/pmd/pmd/issues/4675): \[apex] New Rule: OperationWithHighCostInLoop
 * java-codestyle
@@ -440,6 +466,7 @@ See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.
     * [#4586](https://github.com/pmd/pmd/pull/4586):   Use explicit encoding in ruleset xml files
     * [#4691](https://github.com/pmd/pmd/issues/4691): \[CVEs] Critical and High CEVs reported on PMD and PMD dependencies
     * [#4699](https://github.com/pmd/pmd/pull/4699):   Make PMD buildable with java 21
+    * [#4741](https://github.com/pmd/pmd/pull/4741):   Add pmd-compat6 module for maven-pmd-plugin
 * ant
     * [#4080](https://github.com/pmd/pmd/issues/4080): \[ant] Split off Ant integration into a new submodule
 * core

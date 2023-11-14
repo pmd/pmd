@@ -3138,70 +3138,21 @@ See the use case[I'm using only built-in rules](#im-using-only-built-in-rules) a
 
 #### Maven
 
-* Due to some changes in PMD's API, you can't simply pull in the new PMD 7 dependency using the
-  approach documented in [Upgrading PMD at Runtime](https://maven.apache.org/plugins/maven-pmd-plugin/examples/upgrading-PMD-at-runtime.html).
-* A new maven-pmd-plugin version, that supports PMD 7 is in the works. See [MPMD-379](https://issues.apache.org/jira/browse/MPMD-379).
-* As long as no new maven-pmd-plugin version with PMD 7 support is released, you can try it out using a
-  SNAPSHOT version:
-  1. Add the Apache SNAPSHOT maven repository:
-     ```xml
-        <pluginRepository>
-            <id>apache.snapshots</id>
-            <name>Apache Snapshot Repository</name>
-            <url>https://repository.apache.org/snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </pluginRepository> 
-        ```
-  2. Use the version **3.21.1-pmd-7-SNAPSHOT** of the maven-pmd-plugin
-  3. Override the dependencies of the plugin to use PMD 7, e.g.
-     ```xml
-     <project>
-       <properties>
-         <pmdVersion>{{site.pmd.version}}</pmdVersion>
-         <mavenPmdPluginVersion>3.21.1-pmd-7.0.0-SNAPSHOT</mavenPmdPluginVersion>
-      </properties>
-      ...
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-pmd-plugin</artifactId>
-              <version>${mavenPmdPluginVersion}</version>
-              <dependencies>
-                <dependency>
-                  <groupId>net.sourceforge.pmd</groupId>
-                  <artifactId>pmd-core</artifactId>
-                  <version>${pmdVersion}</version>
-                </dependency>
-                <dependency>
-                  <groupId>net.sourceforge.pmd</groupId>
-                  <artifactId>pmd-java</artifactId>
-                  <version>${pmdVersion}</version>
-                </dependency>
-                <dependency>
-                  <groupId>net.sourceforge.pmd</groupId>
-                  <artifactId>pmd-javascript</artifactId>
-                  <version>${pmdVersion}</version>
-                </dependency>
-                <dependency>
-                  <groupId>net.sourceforge.pmd</groupId>
-                  <artifactId>pmd-jsp</artifactId>
-                  <version>${pmdVersion}</version>
-                </dependency>
-              </dependencies>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-       </build>
-     ...
-     </project>
-     ```
+* Due to some changes in PMD's API, you can't simply pull in the new PMD 7 dependency.
+* However, there is now a compatibility module, that makes it possible to use PMD 7 with Maven. In addition to the PMD 7
+  dependencies documented in [Upgrading PMD at Runtime](https://maven.apache.org/plugins/maven-pmd-plugin/examples/upgrading-PMD-at-runtime.html)
+  you need to add additionally the following dependency (available with 7.0.0-rc4):
+
+```xml
+<dependency>
+  <groupId>net.sourceforge.pmd</groupId>
+  <artifactId>pmd-compat6</artifactId>
+  <version>${pmdVersion}</version>
+</dependency>
+```
+
+It is important to add this dependency as the **first** in the list, so that maven-pmd-plugin sees the (old)
+compatible versions of some classes.
 
 #### Gradle
 
