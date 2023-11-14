@@ -14,13 +14,15 @@ String readFile(File file) throws IOException {
 
 File buildLogPath = new File(basedir, "build.log");
 String buildLog = readFile(buildLogPath);
+if (buildLog.contains("An API incompatibility was encountered while")) {
+    throw new RuntimeException("Executing failed due to API incompatibility");
+}
 if (!buildLog.contains("[INFO] PMD Failure: org.example.Main:5 Rule:UnusedLocalVariable")) {
     throw new RuntimeException("No pmd violation detected, did PMD run?");
 }
 
 File pmdXmlReport = new File(basedir, "target/pmd.xml");
-if(!pmdXmlReport.exists())
-{
+if(!pmdXmlReport.exists()) {
     throw new FileNotFoundException("Could not find pmd xml report: " + pmdXmlReport);
 }
 String pmdXml = readFile(pmdXmlReport);
@@ -30,4 +32,22 @@ if (!pmdXml.contains("<violation beginline=\"5\" endline=\"5\" begincolumn=\"16\
 File mainFile = new File("pmd-for-java/src/main/java/org/example/Main.java");
 if (!pmdXml.contains(mainFile + "\">")) {
     throw new RuntimeException("Expected violation has not been reported");
+}
+
+File pmdCsvReport = new File(basedir, "target/pmd.csv");
+if (!pmdCsvReport.exists()) {
+    throw new FileNotFoundException("Could not find pmd CSV report: " + pmdCsvReport);
+}
+String csvReport = readFile(pmdCsvReport);
+if (!csvReport.contains(mainFile + "\",\"3\",\"5\",\"Avoid unused local")) {
+    throw new RuntimeException("Expected violation has not been reported in CSV");
+}
+
+File pmdTextReport = new File(basedir, "target/pmd.txt");
+if (!pmdTextReport.exists()) {
+    throw new FileNotFoundException("Could not find pmd TXT report: " + pmdTextReport);
+}
+String textReport = readFile(pmdTextReport);
+if (!textReport.contains(mainFile + ":5:\tUnusedLocalVariable")) {
+    throw new RuntimeException("Expected violation has not been reported in TXT");
 }
