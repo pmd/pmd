@@ -9,21 +9,12 @@ package net.sourceforge.pmd.cpd;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
 import net.sourceforge.pmd.lang.document.FileLocation;
-import net.sourceforge.pmd.lang.document.TextFile;
-import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 
 /**
  * Renders a report to CSV. The CSV format renders each match (duplication)

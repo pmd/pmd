@@ -15,7 +15,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 
