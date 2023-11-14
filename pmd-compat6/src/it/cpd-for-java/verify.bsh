@@ -14,6 +14,9 @@ String readFile(File file) throws IOException {
 
 File buildLogPath = new File(basedir, "build.log");
 String buildLog = readFile(buildLogPath);
+if (buildLog.contains("An API incompatibility was encountered while")) {
+    throw new RuntimeException("Executing failed due to API incompatibility");
+}
 if (!buildLog.contains("[INFO] CPD Failure: Found 8 lines of duplicated code at locations:")) {
     throw new RuntimeException("No CPD failures detected, did CPD run?");
 }
@@ -23,8 +26,7 @@ if (!buildLog.contains(classA + " line 3")) {
 }
 
 File cpdXmlReport = new File(basedir, "target/cpd.xml");
-if(!cpdXmlReport.exists())
-{
+if (!cpdXmlReport.exists()) {
     throw new FileNotFoundException("Could not find cpd xml report: " + cpdXmlReport);
 }
 String cpdXml = readFile(cpdXmlReport);
@@ -33,4 +35,28 @@ if (!cpdXml.contains("<duplication lines=\"8\" tokens=\"67\">")) {
 }
 if (!cpdXml.contains(classA + "\"/>")) {
     throw new RuntimeException("Expected duplication has not been reported");
+}
+
+File csvReport = new File(basedir, "target/cpd.csv");
+if (!csvReport.exists()) {
+    throw new FileNotFoundException("Could not find cpd csv report: " + csvReport);
+}
+String csv = readFile(csvReport);
+if (!csv.contains("8,67,2,3,")) {
+    throw new RuntimeException("Expected duplication in CSV has not been reported");
+}
+if (!csv.contains(classA + ",")) {
+    throw new RuntimeException("Expected duplication in CSV has not been reported");
+}
+
+File textReport = new File(basedir, "target/cpd.txt");
+if (!textReport.exists()) {
+    throw new FileNotFoundException("Could not find cpd text report: " + textReport);
+}
+String text = readFile(textReport);
+if (!text.contains("Found a 8 line (67 tokens) duplication in the following files:")) {
+    throw new RuntimeException("Expected duplication in TXT has not been reported");
+}
+if (!text.contains("Starting at line 3 of ") && !text.contains(classA.toString())) {
+    throw new RuntimeException("Expected duplication in TXT has not been reported");
 }

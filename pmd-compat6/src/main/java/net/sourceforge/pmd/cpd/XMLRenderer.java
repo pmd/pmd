@@ -169,25 +169,6 @@ public final class XMLRenderer implements CPDReportRenderer, CPDRenderer {
     // ------------------- compat extensions --------------------
     @Override
     public void render(Iterator<Match> matches, Writer writer) throws IOException {
-        List<Match> matchesList = new ArrayList<>();
-        matches.forEachRemaining(matchesList::add);
-
-        List<TextFile> textFiles = new ArrayList<>();
-        Set<String> paths = new HashSet<>();
-        for (Match match : matchesList) {
-            for (Mark mark : match.getMarkSet()) {
-                paths.add(mark.getFilename());
-            }
-        }
-        for (String path : paths) {
-            textFiles.add(TextFile.forPath(Paths.get(path), StandardCharsets.UTF_8, JavaLanguageModule.getInstance().getDefaultVersion()));
-        }
-
-        try (SourceManager sourcManager = new SourceManager(textFiles)) {
-            CPDReport report = new CPDReport(sourcManager, matchesList, Collections.emptyMap());
-            render(report, writer);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        RendererHelper.render(matches, writer, this);
     }
 }
