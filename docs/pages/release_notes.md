@@ -64,6 +64,7 @@ The remaining section describes the complete release notes for 7.0.0.
 * miscellaneous
   * [#4699](https://github.com/pmd/pmd/pull/4699):   Make PMD buildable with java 21
   * [#4586](https://github.com/pmd/pmd/pull/4586):   Use explicit encoding in ruleset xml files
+  * [#4736](https://github.com/pmd/pmd/issues/4736): \[ci] Improve build procedure
 * apex-performance
   * [#4675](https://github.com/pmd/pmd/issues/4675): \[apex] New Rule: OperationWithHighCostInLoop
 * java-codestyle
@@ -445,6 +446,7 @@ See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.
     * [#4586](https://github.com/pmd/pmd/pull/4586):   Use explicit encoding in ruleset xml files
     * [#4691](https://github.com/pmd/pmd/issues/4691): \[CVEs] Critical and High CEVs reported on PMD and PMD dependencies
     * [#4699](https://github.com/pmd/pmd/pull/4699):   Make PMD buildable with java 21
+    * [#4736](https://github.com/pmd/pmd/issues/4736): \[ci] Improve build procedure
 * ant
     * [#4080](https://github.com/pmd/pmd/issues/4080): \[ant] Split off Ant integration into a new submodule
 * core
