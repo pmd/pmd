@@ -14,6 +14,12 @@ on:
     # build it monthly: At 04:00 on day-of-month 1.
     - cron:  '0 4 1 * *'
   workflow_dispatch:
+    inputs:
+      build_cli_dist_only:
+        description: "Build only modules cli and dist"
+        required: true
+        type: boolean
+        default: false
 
 permissions:
   contents: read # to fetch code (actions/checkout)
@@ -68,6 +74,7 @@ jobs:
       run: .ci/build.sh
       shell: bash
       env:
+        BUILD_CLI_DIST_ONLY: ${{ inputs.build_cli_dist_only }}
         PMD_CI_SECRET_PASSPHRASE: ${{ secrets.PMD_CI_SECRET_PASSPHRASE }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Workaround actions/upload-artifact#176

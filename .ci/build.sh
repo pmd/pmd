@@ -107,7 +107,7 @@ function build() {
     pmd_ci_log_group_end
 
     # release is published only for the case b) pmd-cli/pmd-dist release
-    if pmd_ci_maven_isReleaseBuild && [[ "${PMD_CI_TAG}" == *-dist ]]; then
+    if pmd_ci_maven_isReleaseBuild && [ "${BUILD_CLI_DIST_ONLY}" = "true" ]; then
     pmd_ci_log_group_start "Publishing Release"
         pmd_ci_gh_releases_publishRelease "$GH_RELEASE"
         pmd_ci_sourceforge_selectDefault "${PMD_CI_MAVEN_PROJECT_VERSION}"
@@ -117,7 +117,7 @@ function build() {
 
     # create a baseline for snapshot builds (when pmd-dist is built)
     # or for release builds for case b) when pmd-cli/pmd-dist is released
-    if pmd_ci_maven_isSnapshotBuild || [[ "${PMD_CI_TAG}" == *-dist ]]; then
+    if pmd_ci_maven_isSnapshotBuild || [ "${BUILD_CLI_DIST_ONLY}" = "true" ]; then
     pmd_ci_log_group_start "Creating new baseline for regression tester"
         regression_tester_setup_ci
         regression_tester_uploadBaseline
@@ -141,7 +141,7 @@ function build() {
             -Dpmd.skip \
             --show-version --errors --batch-mode \
             clean package \
-            sonar:sonar -Dsonar.login="${SONAR_TOKEN}" -Psonar,cli-dist
+            sonar:sonar -Dsonar.login="${SONAR_TOKEN}" -Psonar
         pmd_ci_log_success "New sonar results: https://sonarcloud.io/dashboard?id=net.sourceforge.pmd%3Apmd"
     pmd_ci_log_group_end
 
@@ -157,7 +157,7 @@ function build() {
             -DrepoToken="${COVERALLS_REPO_TOKEN}" \
             --show-version --errors --batch-mode \
             clean package jacoco:report \
-            coveralls:report -Pcoveralls,cli-dist
+            coveralls:report -Pcoveralls
         pmd_ci_log_success "New coveralls result: https://coveralls.io/github/pmd/pmd"
     pmd_ci_log_group_end
     fi
@@ -185,16 +185,16 @@ function pmd_ci_build_run() {
         mvn_profiles="${mvn_profiles},pmd-release"
 
         # There are two possible (release) builds:
-        if [[ "${PMD_CI_TAG}" != *-dist ]]; then
-            # a) pmd-core and languages modules
-            ./mvnw clean deploy -P"${mvn_profiles}",'!cli-dist' --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
+        if [ "${BUILD_CLI_DIST_ONLY}" = "false" ]; then
+            # a) everything without pmd-cli and pmd-dist
+            ./mvnw clean deploy -P"${mvn_profiles}" -Dskip-cli-dist --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
         else
-            # b) pmd-cli and pmd-dist
-            ./mvnw clean deploy -P"${mvn_profiles},cli-dist" -pl pmd-cli,pmd-dist --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
+            # b) only pmd-cli and pmd-dist
+            ./mvnw clean deploy -P"${mvn_profiles}" -pl pmd-cli,pmd-dist --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
         fi
     else
         pmd_ci_log_info "This is a snapshot build"
-        ./mvnw clean deploy -P"${mvn_profiles},cli-dist" --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
+        ./mvnw clean deploy -P"${mvn_profiles}" --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
     fi
 
 }
@@ -214,15 +214,15 @@ function pmd_ci_deploy_build_artifacts() {
         pmd_ci_sourceforge_uploadFile "pmd/${PMD_CI_MAVEN_PROJECT_VERSION}" "pmd-dist/target/pmd-${PMD_CI_MAVEN_PROJECT_VERSION}-cyclonedx.json"
     fi
 
-    # release build case a): only pmd-core and language modules released
-    if pmd_ci_maven_isReleaseBuild && [[ "${PMD_CI_TAG}" != *-dist ]]; then
+    # release build case a): everything without pmd-cli and pmd-dist is released
+    if pmd_ci_maven_isReleaseBuild && [ "${BUILD_CLI_DIST_ONLY}" = "false" ]; then
         # create a draft github release
         pmd_ci_gh_releases_createDraftRelease "${PMD_CI_TAG}" "$(git rev-list -n 1 "${PMD_CI_TAG}")"
         GH_RELEASE="$RESULT"
     fi
 
-    # release build case b): pmd-cli and pmd-dist are released
-    if pmd_ci_maven_isReleaseBuild && [[ "${PMD_CI_TAG}" == *-dist ]]; then
+    # release build case b): only pmd-cli and pmd-dist are released
+    if pmd_ci_maven_isReleaseBuild && [ "${BUILD_CLI_DIST_ONLY}" = "true" ]; then
         # Deploy to sourceforge files https://sourceforge.net/projects/pmd/files/pmd/
         pmd_ci_sourceforge_uploadFile "pmd/${PMD_CI_MAVEN_PROJECT_VERSION}" "pmd-dist/target/pmd-dist-${PMD_CI_MAVEN_PROJECT_VERSION}-bin.zip"
         pmd_ci_sourceforge_uploadFile "pmd/${PMD_CI_MAVEN_PROJECT_VERSION}" "pmd-dist/target/pmd-dist-${PMD_CI_MAVEN_PROJECT_VERSION}-src.zip"
@@ -254,7 +254,7 @@ function pmd_ci_build_and_upload_doc() {
     pmd_doc_create_archive
 
     pmd_ci_sourceforge_uploadFile "pmd/${PMD_CI_MAVEN_PROJECT_VERSION}" "docs/pmd-dist-${PMD_CI_MAVEN_PROJECT_VERSION}-doc.zip"
-    if pmd_ci_maven_isReleaseBuild && [[ "${PMD_CI_TAG}" != *-dist ]]; then
+    if pmd_ci_maven_isReleaseBuild && [ "${BUILD_CLI_DIST_ONLY}" = "false" ]; then
         pmd_ci_gh_releases_uploadAsset "$GH_RELEASE" "docs/pmd-dist-${PMD_CI_MAVEN_PROJECT_VERSION}-doc.zip"
     fi
 
@@ -263,7 +263,7 @@ function pmd_ci_build_and_upload_doc() {
     # Deploy javadoc to https://docs.pmd-code.org/apidocs/*/${PMD_CI_MAVEN_PROJECT_VERSION}/
     pmd_code_uploadJavadoc "${PMD_CI_MAVEN_PROJECT_VERSION}" "$(pwd)"
 
-    if pmd_ci_maven_isSnapshotBuild || [[ "${PMD_CI_TAG}" != *-dist ]]; then
+    if pmd_ci_maven_isSnapshotBuild || [ "${BUILD_CLI_DIST_ONLY}" = "false" ]; then
         # render release notes
         # updating github release text
         rm -f .bundle/config
@@ -289,7 +289,7 @@ function pmd_ci_build_and_upload_doc() {
         pmd_ci_sourceforge_rsyncSnapshotDocumentation "${PMD_CI_MAVEN_PROJECT_VERSION}" "snapshot"
     fi
 
-    if pmd_ci_maven_isReleaseBuild && [[ "${PMD_CI_TAG}" != *-dist ]]; then
+    if pmd_ci_maven_isReleaseBuild && [ "${BUILD_CLI_DIST_ONLY}" = "false" ]; then
         # documentation is already uploaded to https://docs.pmd-code.org/pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}
         # we only need to setup symlinks for the released version
         pmd_code_createSymlink "${PMD_CI_MAVEN_PROJECT_VERSION}" "latest"

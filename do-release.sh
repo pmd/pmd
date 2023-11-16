@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+
+# abort the script on the first failing sub command
 set -e
 
 # Make sure, everything is English...
@@ -165,13 +167,32 @@ git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
     fi
 )
 
-./mvnw -B release:clean release:prepare \
-    -Dtag="pmd_releases/${RELEASE_VERSION}" \
-    -DreleaseVersion="${RELEASE_VERSION}" \
-    -DdevelopmentVersion="${DEVELOPMENT_VERSION}" \
-    -DscmCommentPrefix="[release] " \
-    -Darguments='-Pgenerate-rule-docs,!cli-dist' \
-    '-Pgenerate-rule-docs,!cli-dist'
+# check that there are no uncommitted changes
+UNCOMMITTED_CHANGES=$(git status --short --untracked-files=no)
+if [ -n "${UNCOMMITTED_CHANGES}" ]; then
+  echo "There are uncommitted changes:"
+  echo "${UNCOMMITTED_CHANGES}"
+  exit 1
+fi
+# check that there are no SNAPSHOT dependencies -> done by the enforcer plugin, see enforce-no-snapshots
+echo "Change version in the POMs to ${RELEASE_VERSION} and update build timestamp"
+./mvnw --quiet versions:set -DnewVersion="${RELEASE_VERSION}" -DgenerateBackupPoms=false -DupdateBuildOutputTimestampPolicy=always
+echo "Transform the SCM information in the POM"
+sed -i "s|<tag>.\+</tag>|<tag>pmd_releases/${RELEASE_VERSION}</tag>|" pom.xml
+echo "Run the project tests against the changed POMs to confirm everything is in running order (skipping cli and dist)"
+./mvnw clean verify -Dskip-cli-dist -Pgenerate-rule-docs
+echo "Commit and create tag"
+git commit -a -m "[release] prepare release pmd_releases/${RELEASE_VERSION}"
+git tag -m "[release] copy for tag pmd_releases/${RELEASE_VERSION}" "pmd_releases/${RELEASE_VERSION}"
+echo "Update POMs to set the new development version ${DEVELOPMENT_VERSION}"
+./mvnw --quiet versions:set -DnewVersion="${DEVELOPMENT_VERSION}" -DgenerateBackupPoms=false -DupdateBuildOutputTimestampPolicy=never
+sed -i "s|<tag>.\+</tag>|<tag>HEAD</tag>|" pom.xml
+echo "Commit"
+git commit -a -m "[release] prepare for next development iteration"
+echo "Push branch and tag pmd_releases/${RELEASE_VERSION}"
+git push origin "${CURRENT_BRANCH}"
+git push origin tag "pmd_releases/${RELEASE_VERSION}"
+
 
 echo
 echo "Tag has been pushed.... now check github actions: <https://github.com/pmd/pmd/actions>"
@@ -232,9 +253,8 @@ This is a {{ site.pmd.release_type }} release.
 
 EOF
 
-git commit -a -m "Prepare next development version [skip ci]"
+git commit -a -m "[release] Prepare next development version [skip ci]"
 git push origin "${CURRENT_BRANCH}"
-./mvnw -B release:clean
 
 echo
 echo
@@ -248,28 +268,19 @@ echo "<https://github.com/pmd/pmd-designer/blob/master/releasing.md>"
 echo
 echo "Press enter to continue when pmd-designer is available in maven-central..."
 echo "<https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd-ui/maven-metadata.xml>."
+echo
+echo "Note: If there is no new pmd-designer release needed, you can directly proceed."
 read -r
 
 echo
 echo "Continuing with release of pmd-cli and pmd-dist..."
-git checkout "pmd_releases/${RELEASE_VERSION}"
-./mvnw versions:update-parent -DparentVersion="${RELEASE_VERSION}" -DskipResolution=true -DgenerateBackupPoms=false -pl pmd-cli,pmd-dist
-git add pmd-cli/pom.xml pmd-dist/pom.xml
-git commit -m "[release] prepare release pmd_releases/${RELEASE_VERSION}-dist"
-git tag -m "[release] copy for tag pmd_releases/${RELEASE_VERSION}-dist" "pmd_releases/${RELEASE_VERSION}-dist"
-git push origin tag "pmd_releases/${RELEASE_VERSION}-dist"
-git checkout master
-# make sure parent reference is correct
-./mvnw versions:update-parent -DparentVersion="${DEVELOPMENT_VERSION}" -DskipResolution=true -DgenerateBackupPoms=false -pl pmd-cli,pmd-dist
-git add pmd-cli/pom.xml pmd-dist/pom.xml
-changes=$(git status --porcelain 2>/dev/null | grep -c -E "^[AMDRC]" || true)
-if [ "$changes" -gt 0 ]; then
-    git commit -m "Prepare next development version [skip ci]"
-    git push origin "${CURRENT_BRANCH}"
-fi
-
 echo
-echo "Second tag 'pmd_releases/${RELEASE_VERSION}-dist' has been pushed ... now check github actions: <https://github.com/pmd/pmd/actions>"
+echo "Go to <https://github.com/pmd/pmd/actions/workflows/build.yml> and manually trigger a new build"
+echo "from tag 'pmd_releases/${RELEASE_VERSION}' and with option 'Build only modules cli and dist' checked."
+echo
+echo "This triggers the second stage release and eventually publishes the release on GitHub."
+echo
+echo "Now check github actions: <https://github.com/pmd/pmd/actions>"
 echo
 echo
 echo "Verify the new release on github: <https://github.com/pmd/pmd/releases/tag/pmd_releases/${RELEASE_VERSION}>"
@@ -297,5 +308,3 @@ echo "------------------------------------------"
 echo "Done."
 echo "------------------------------------------"
 echo
-
-
