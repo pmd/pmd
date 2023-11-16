@@ -1176,9 +1176,11 @@
         </profile>
 
         <profile>
-            <id>cli-dist</id>
+            <id>cli-dist-modules</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>!skip-cli-dist</name>
+                </property>
             </activation>
             <modules>
                 <module>pmd-cli</module>
