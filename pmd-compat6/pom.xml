@@ -7,43 +7,37 @@
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
-        <version>7.0.0-rc4</version>
+        <version>7.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>pmd-compat6</artifactId>
-    <version>7.0.0-rc4</version>
     <name>PMD Compatibility Classes for PMD6</name>
 
     <properties>
-        <pmd.version>7.0.0-rc4</pmd.version>
-        <pmd.version.for.integrationtest>7.0.0-rc4</pmd.version.for.integrationtest>
+        <pmd.version.for.integrationtest>${project.version}</pmd.version.for.integrationtest>
         <maven-pmd-plugin.version.for.integrationtest>3.21.2</maven-pmd-plugin.version.for.integrationtest>
     </properties>
-
-    <scm>
-        <tag>pmd_releases/7.0.0-rc4-pmd-compat6</tag>
-    </scm>
 
     <dependencies>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-core</artifactId>
-            <version>${pmd.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-java</artifactId>
-            <version>${pmd.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-javascript</artifactId>
-            <version>${pmd.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-jsp</artifactId>
-            <version>${pmd.version}</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
