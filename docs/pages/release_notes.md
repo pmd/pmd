@@ -60,11 +60,18 @@ compatibility module has been created. This allows to use PMD 7 by simply adding
 It is important to add this dependency as the **first** in the list, so that maven-pmd-plugin sees the (old)
 compatible versions of some classes.
 
-Note: This compatibility modules only works for the built-in rules, that are still available in PMD 7 (you need
-to review your rulesets).
-As PMD 7 revamped the Java module, if you have custom rules, you need to migrate the rules.
-For more information, see the [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html#revamped-java)
-and [Migration Guide for PMD 7]({{ baseurl }}pmd_userdocs_migrating_to_pmd7.html).
+This module is available beginning with version 7.0.0-rc4 and will be there at least for the first
+final version PMD 7 (7.0.0). It's not decided yet, whether we will keep updating it, after PMD 7 is finally
+released.
+
+Note: This compatibility module only works for the built-in rules, that are still available in PMD 7. E.g. you need
+to review your rulesets and look out for deprecated rules and such. See the use case
+[I'm using only built-in rules]({{ baseurl }}pmd_userdocs_migrating_to_pmd7.html#im-using-only-built-in-rules)
+in the [Migration Guide for PMD 7]({{ baseurl }}pmd_userdocs_migrating_to_pmd7.html).
+
+As PMD 7 revamped the Java module, if you have custom rules, you need to migrate these rules.
+See the use case [I'm using custom rules]({{ baseurl }}pmd_userdocs_migrating_to_pmd7.html#im-using-custom-rules)
+in the Migration Guide.
 
 #### Rule Changes
 
