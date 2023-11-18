@@ -1901,6 +1901,39 @@ The remaining section describes the complete release notes for 7.0.0.</p>
 
 <h4 id="new-and-noteworthy">New and Noteworthy</h4>
 
+<h5 id="maven-pmd-plugin-compatibility-with-pmd-7">Maven PMD Plugin compatibility with PMD 7</h5>
+
+<p>In order to use PMD 7 with <a href="https://maven.apache.org/plugins/maven-pmd-plugin/">maven-pmd-plugin</a> a new
+compatibility module has been created. This allows to use PMD 7 by simply adding one additional dependency:</p>
+
+<ol>
+  <li>Follow the guide <a href="https://maven.apache.org/plugins/maven-pmd-plugin/examples/upgrading-PMD-at-runtime.html">Upgrading PMD at Runtime</a></li>
+  <li>Add additionally the following dependency:</li>
+</ol>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;dependency&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>net.sourceforge.pmd<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>pmd-compat6<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>${pmdVersion}<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</code></pre></div></div>
+
+<p>It is important to add this dependency as the <strong>first</strong> in the list, so that maven-pmd-plugin sees the (old)
+compatible versions of some classes.</p>
+
+<p>This module is available beginning with version 7.0.0-rc4 and will be there at least for the first
+final version PMD 7 (7.0.0). It’s not decided yet, whether we will keep updating it, after PMD 7 is finally
+released.</p>
+
+<p>Note: This compatibility module only works for the built-in rules, that are still available in PMD 7. E.g. you need
+to review your rulesets and look out for deprecated rules and such. See the use case
+<a href="pmd_userdocs_migrating_to_pmd7.html#im-using-only-built-in-rules">I’m using only built-in rules</a>
+in the <a href="pmd_userdocs_migrating_to_pmd7.html">Migration Guide for PMD 7</a>.</p>
+
+<p>As PMD 7 revamped the Java module, if you have custom rules, you need to migrate these rules.
+See the use case <a href="pmd_userdocs_migrating_to_pmd7.html#im-using-custom-rules">I’m using custom rules</a>
+in the Migration Guide.</p>
+
 <h4 id="rule-changes">Rule Changes</h4>
 
 <p><strong>New Rules</strong></p>
@@ -1937,6 +1970,7 @@ potential performance issue.</li>
     <ul>
       <li><a href="https://github.com/pmd/pmd/pull/4699">#4699</a>:   Make PMD buildable with java 21</li>
       <li><a href="https://github.com/pmd/pmd/pull/4586">#4586</a>:   Use explicit encoding in ruleset xml files</li>
+      <li><a href="https://github.com/pmd/pmd/pull/4741">#4741</a>:   Add pmd-compat6 module for maven-pmd-plugin</li>
     </ul>
   </li>
   <li>apex-performance
@@ -2411,6 +2445,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/pull/4586">#4586</a>:   Use explicit encoding in ruleset xml files</li>
       <li><a href="https://github.com/pmd/pmd/issues/4691">#4691</a>: [CVEs] Critical and High CEVs reported on PMD and PMD dependencies</li>
       <li><a href="https://github.com/pmd/pmd/pull/4699">#4699</a>:   Make PMD buildable with java 21</li>
+      <li><a href="https://github.com/pmd/pmd/pull/4741">#4741</a>:   Add pmd-compat6 module for maven-pmd-plugin</li>
     </ul>
   </li>
   <li>ant
@@ -2830,7 +2865,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Nov 16, 2023 <br />
+             Site last generated: Nov 18, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

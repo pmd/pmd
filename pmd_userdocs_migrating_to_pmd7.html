@@ -5137,7 +5137,7 @@ to reflect these changes.</li>
 <div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b> 
 When you switch from PMD 6.x to PMD 7 in your build tools, you most likely need to review your
 ruleset(s) as well and check for removed rules.
-See the use case<a href="#im-using-only-built-in-rules">I’m using only built-in rules</a> above.
+See the use case <a href="#im-using-only-built-in-rules">I’m using only built-in rules</a> above.
 </div>
 
 <h4 id="ant">Ant</h4>
@@ -5154,74 +5154,32 @@ the pmd-ant jar file is included in the binary distribution of PMD. It is part o
 <h4 id="maven">Maven</h4>
 
 <ul>
-  <li>Due to some changes in PMD’s API, you can’t simply pull in the new PMD 7 dependency using the
-approach documented in <a href="https://maven.apache.org/plugins/maven-pmd-plugin/examples/upgrading-PMD-at-runtime.html">Upgrading PMD at Runtime</a>.</li>
-  <li>A new maven-pmd-plugin version, that supports PMD 7 is in the works. See <a href="https://issues.apache.org/jira/browse/MPMD-379">MPMD-379</a>.</li>
-  <li>As long as no new maven-pmd-plugin version with PMD 7 support is released, you can try it out using a
-SNAPSHOT version:
-    <ol>
-      <li>Add the Apache SNAPSHOT maven repository:
-        <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   <span class="nt">&lt;pluginRepository&gt;</span>
-       <span class="nt">&lt;id&gt;</span>apache.snapshots<span class="nt">&lt;/id&gt;</span>
-       <span class="nt">&lt;name&gt;</span>Apache Snapshot Repository<span class="nt">&lt;/name&gt;</span>
-       <span class="nt">&lt;url&gt;</span>https://repository.apache.org/snapshots<span class="nt">&lt;/url&gt;</span>
-       <span class="nt">&lt;releases&gt;</span>
-           <span class="nt">&lt;enabled&gt;</span>false<span class="nt">&lt;/enabled&gt;</span>
-       <span class="nt">&lt;/releases&gt;</span>
-       <span class="nt">&lt;snapshots&gt;</span>
-           <span class="nt">&lt;enabled&gt;</span>true<span class="nt">&lt;/enabled&gt;</span>
-       <span class="nt">&lt;/snapshots&gt;</span>
-   <span class="nt">&lt;/pluginRepository&gt;</span> 
-</code></pre></div>        </div>
-      </li>
-      <li>Use the version <strong>3.21.1-pmd-7-SNAPSHOT</strong> of the maven-pmd-plugin</li>
-      <li>Override the dependencies of the plugin to use PMD 7, e.g.
-        <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;project&gt;</span>
-  <span class="nt">&lt;properties&gt;</span>
-    <span class="nt">&lt;pmdVersion&gt;</span>7.0.0-SNAPSHOT<span class="nt">&lt;/pmdVersion&gt;</span>
-    <span class="nt">&lt;mavenPmdPluginVersion&gt;</span>3.21.1-pmd-7.0.0-SNAPSHOT<span class="nt">&lt;/mavenPmdPluginVersion&gt;</span>
- <span class="nt">&lt;/properties&gt;</span>
- ...
- <span class="nt">&lt;build&gt;</span>
-   <span class="nt">&lt;pluginManagement&gt;</span>
-     <span class="nt">&lt;plugins&gt;</span>
-       <span class="nt">&lt;plugin&gt;</span>
-         <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
-         <span class="nt">&lt;artifactId&gt;</span>maven-pmd-plugin<span class="nt">&lt;/artifactId&gt;</span>
-         <span class="nt">&lt;version&gt;</span>${mavenPmdPluginVersion}<span class="nt">&lt;/version&gt;</span>
-         <span class="nt">&lt;dependencies&gt;</span>
-           <span class="nt">&lt;dependency&gt;</span>
-             <span class="nt">&lt;groupId&gt;</span>net.sourceforge.pmd<span class="nt">&lt;/groupId&gt;</span>
-             <span class="nt">&lt;artifactId&gt;</span>pmd-core<span class="nt">&lt;/artifactId&gt;</span>
-             <span class="nt">&lt;version&gt;</span>${pmdVersion}<span class="nt">&lt;/version&gt;</span>
-           <span class="nt">&lt;/dependency&gt;</span>
-           <span class="nt">&lt;dependency&gt;</span>
-             <span class="nt">&lt;groupId&gt;</span>net.sourceforge.pmd<span class="nt">&lt;/groupId&gt;</span>
-             <span class="nt">&lt;artifactId&gt;</span>pmd-java<span class="nt">&lt;/artifactId&gt;</span>
-             <span class="nt">&lt;version&gt;</span>${pmdVersion}<span class="nt">&lt;/version&gt;</span>
-           <span class="nt">&lt;/dependency&gt;</span>
-           <span class="nt">&lt;dependency&gt;</span>
-             <span class="nt">&lt;groupId&gt;</span>net.sourceforge.pmd<span class="nt">&lt;/groupId&gt;</span>
-             <span class="nt">&lt;artifactId&gt;</span>pmd-javascript<span class="nt">&lt;/artifactId&gt;</span>
-             <span class="nt">&lt;version&gt;</span>${pmdVersion}<span class="nt">&lt;/version&gt;</span>
-           <span class="nt">&lt;/dependency&gt;</span>
-           <span class="nt">&lt;dependency&gt;</span>
-             <span class="nt">&lt;groupId&gt;</span>net.sourceforge.pmd<span class="nt">&lt;/groupId&gt;</span>
-             <span class="nt">&lt;artifactId&gt;</span>pmd-jsp<span class="nt">&lt;/artifactId&gt;</span>
-             <span class="nt">&lt;version&gt;</span>${pmdVersion}<span class="nt">&lt;/version&gt;</span>
-           <span class="nt">&lt;/dependency&gt;</span>
-         <span class="nt">&lt;/dependencies&gt;</span>
-       <span class="nt">&lt;/plugin&gt;</span>
-     <span class="nt">&lt;/plugins&gt;</span>
-   <span class="nt">&lt;/pluginManagement&gt;</span>
-  <span class="nt">&lt;/build&gt;</span>
-...
-<span class="nt">&lt;/project&gt;</span>
-</code></pre></div>        </div>
-      </li>
-    </ol>
-  </li>
+  <li>Due to some changes in PMD’s API, you can’t simply pull in the new PMD 7 dependency.</li>
+  <li>However, there is now a compatibility module, that makes it possible to use PMD 7 with Maven. In addition to the PMD 7
+dependencies documented in <a href="https://maven.apache.org/plugins/maven-pmd-plugin/examples/upgrading-PMD-at-runtime.html">Upgrading PMD at Runtime</a>
+you need to add additionally the following dependency (first available version is 7.0.0-rc4):</li>
 </ul>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;dependency&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>net.sourceforge.pmd<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>pmd-compat6<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>${pmdVersion}<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</code></pre></div></div>
+
+<p>It is important to add this dependency as the <strong>first</strong> in the list, so that maven-pmd-plugin sees the (old)
+compatible versions of some classes.</p>
+
+<p>This module is available beginning with version 7.0.0-rc4 and will be there at least for the first
+final version PMD 7 (7.0.0). It’s not decided yet, whether we will keep updating it, after PMD 7 is finally
+released.</p>
+
+<p>Note: This compatibility module only works for the built-in rules, that are still available in PMD 7. E.g. you need
+to review your rulesets and look out for deprecated rules and such. See the use case
+<a href="#im-using-only-built-in-rules">I’m using only built-in rules</a></p>
+
+<p>As PMD 7 revamped the Java module, if you have custom rules, you need to migrate these rules.
+See the use case <a href="#im-using-custom-rules">I’m using custom rules</a>.</p>
 
 <h4 id="gradle">Gradle</h4>
 
@@ -5275,7 +5233,7 @@ the ant task is in an own dependency with PMD 7:
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Nov 16, 2023 <br />
+             Site last generated: Nov 18, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
