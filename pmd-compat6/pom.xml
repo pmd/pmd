@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>pmd-compat6</artifactId>
-    <version>7.0.0-SNAPSHOT</version>
+    <version>7.0.0-rc4</version>
     <name>PMD Compatibility Classes for PMD6</name>
 
     <properties>
@@ -19,6 +19,10 @@
         <pmd.version.for.integrationtest>7.0.0-rc4</pmd.version.for.integrationtest>
         <maven-pmd-plugin.version.for.integrationtest>3.21.2</maven-pmd-plugin.version.for.integrationtest>
     </properties>
+
+    <scm>
+        <tag>pmd_releases/7.0.0-rc4-pmd-compat6</tag>
+    </scm>
 
     <dependencies>
         <dependency>
