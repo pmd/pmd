@@ -51,3 +51,7 @@ String textReport = readFile(pmdTextReport);
 if (!textReport.contains(mainFile + ":5:\tUnusedLocalVariable")) {
     throw new RuntimeException("Expected violation has not been reported in TXT");
 }
+
+if (!pmdXml.contains("<error filename=\"" + mainFile.getAbsolutePath()) || !pmdXml.contains(mainFile + "\" msg=\"PmdXPathException")) {
+    throw new RuntimeException("Processing error has not been reported");
+}
