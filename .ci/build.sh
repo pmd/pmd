@@ -36,7 +36,7 @@ function build() {
 
     if pmd_ci_utils_is_fork_or_pull_request; then
         pmd_ci_log_group_start "Build with mvnw"
-            ./mvnw clean install -Pcli-dist --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
+            ./mvnw clean install --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
         pmd_ci_log_group_end
 
         # Execute danger and dogfood only for pull requests in our own repository
@@ -70,7 +70,7 @@ function build() {
 
     if [ "$(pmd_ci_utils_get_os)" != "linux" ]; then
         pmd_ci_log_group_start "Build with mvnw"
-            ./mvnw clean verify -Pcli-dist --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
+            ./mvnw clean verify --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
         pmd_ci_log_group_end
 
         pmd_ci_log_info "Stopping build here, because os is not linux"
@@ -87,7 +87,7 @@ function build() {
 
     if [ "${PMD_CI_BRANCH}" = "experimental-apex-parser" ]; then
         pmd_ci_log_group_start "Build with mvnw"
-            ./mvnw clean install -Pcli-dist --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
+            ./mvnw clean install --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}"
         pmd_ci_log_group_end
 
         pmd_ci_log_group_start "Creating new baseline for regression tester"
@@ -321,16 +321,15 @@ ${rendered_release_notes}"
 #
 function pmd_ci_dogfood() {
     local mpmdVersion=()
-    ./mvnw versions:set -DnewVersion="${PMD_CI_MAVEN_PROJECT_VERSION}-dogfood" -DgenerateBackupPoms=false -Pcli-dist
+    ./mvnw versions:set -DnewVersion="${PMD_CI_MAVEN_PROJECT_VERSION}-dogfood" -DgenerateBackupPoms=false
     sed -i 's/<version>[0-9]\{1,\}\.[0-9]\{1,\}\.[0-9]\{1,\}.*<\/version>\( *<!-- pmd.dogfood.version -->\)/<version>'"${PMD_CI_MAVEN_PROJECT_VERSION}"'<\/version>\1/' pom.xml
     ./mvnw verify --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}" \
-         -Pcli-dist \
         "${mpmdVersion[@]}" \
         -DskipTests \
         -Dmaven.javadoc.skip=true \
         -Dmaven.source.skip=true \
         -Dcheckstyle.skip=true
-    ./mvnw versions:set -DnewVersion="${PMD_CI_MAVEN_PROJECT_VERSION}" -DgenerateBackupPoms=false -Pcli-dist
+    ./mvnw versions:set -DnewVersion="${PMD_CI_MAVEN_PROJECT_VERSION}" -DgenerateBackupPoms=false
     git checkout -- pom.xml
 }
 
