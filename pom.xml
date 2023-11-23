@@ -99,7 +99,7 @@
         <surefire.version>3.0.0-M8</surefire.version>
         <checkstyle.version>10.7.0</checkstyle.version>
         <checkstyle.plugin.version>3.2.1</checkstyle.plugin.version>
-        <pmd.plugin.version>3.20.0</pmd.plugin.version>
+        <pmd.plugin.version>3.21.2</pmd.plugin.version>
         <ant.version>1.10.13</ant.version>
         <javadoc.plugin.version>3.4.1</javadoc.plugin.version>
         <antlr.version>4.9.1</antlr.version>
@@ -113,7 +113,7 @@
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding} ${extraArgLine}</argLine>
         <extraArgLine /> <!-- empty by default, profiles set it as needed -->
 
-        <pmd.build-tools.version>22</pmd.build-tools.version>
+        <pmd.build-tools.version>23-SNAPSHOT</pmd.build-tools.version>
 
         <pmd-designer.version>7.0.0-rc4</pmd-designer.version>
         <javacc.jar>${settings.localRepository}/net/java/dev/javacc/javacc/${javacc.version}/javacc-${javacc.version}.jar</javacc.jar>
@@ -441,7 +441,6 @@
                         <targetJdk>1.${java.version}</targetJdk>
                         <rulesets>
                             <ruleset>/net/sourceforge/pmd/pmd-dogfood-config.xml</ruleset>
-                            <ruleset>/net/sourceforge/pmd/pmd7-dogfood-config.xml</ruleset>
                         </rulesets>
                         <excludeRoots>
                             <excludeRoot>target/generated-sources/javacc</excludeRoot>
@@ -457,23 +456,28 @@
                         <!-- We use the comment "pmd.dogfood.version" as a marker and manually change the version - see .ci/build.sh -->
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
+                            <artifactId>pmd-compat6</artifactId>
+                            <version>7.0.0-rc4</version> <!-- pmd.dogfood.version -->
+                        </dependency>
+                        <dependency>
+                            <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>6.55.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.0.0-rc4</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>6.55.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.0.0-rc4</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-jsp</artifactId>
-                            <version>6.55.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.0.0-rc4</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-javascript</artifactId>
-                            <version>6.55.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.0.0-rc4</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
                         <dependency>
@@ -1189,6 +1193,18 @@
             <modules>
                 <module>pmd-cli</module>
                 <module>pmd-dist</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>pmd-compat6-module</id>
+            <activation>
+                <property>
+                    <name>!skip-pmd-compat6</name>
+                </property>
+            </activation>
+            <modules>
+                <module>pmd-compat6</module>
             </modules>
         </profile>
     </profiles>
