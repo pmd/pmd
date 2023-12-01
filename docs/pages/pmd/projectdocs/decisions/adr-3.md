@@ -11,7 +11,7 @@ last_updated: December 2023
 
 <!-- https://github.com/joelparkerhenderson/architecture-decision-record/blob/main/templates/decision-record-template-by-michael-nygard/index.md -->
 
-# Context
+## Context
 
 The API of PMD has been growing over the years and needed some cleanup. The goal is, to
 have a clear separation between a well-defined API and the implementation, which is internal.
@@ -36,9 +36,9 @@ The API will change as new features want to be implemented.
 
 This decision document aims to document principles and guidelines that are used for PMD development.
 
-# Decision
+## Decision
 
-## Semantic Versioning
+### Semantic Versioning
 
 PMD and all its modules are versioned together. PMD uses [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html).
 This means, that each PMD version consists of MAJOR.MINOR.PATCH components:
@@ -52,7 +52,7 @@ Additional labels for release candidates might be used.
 Incompatible API changes shouldn't be introduced lightly. See
 [FAQ: If even the tiniest backward incompatible changes to the public API require a major version bump, won’t I end up at version 42.0.0 very rapidly?](https://semver.org/spec/v2.0.0.html#if-even-the-tiniest-backward-incompatible-changes-to-the-public-api-require-a-major-version-bump-wont-i-end-up-at-version-4200-very-rapidly).
 
-## Project structure and Java base packages names
+### Project structure and Java base packages names
 
 PMD is mainly developed in the Java programming language. The build tool is Maven and the PMD build consists
 of several maven modules.
@@ -70,7 +70,7 @@ of several maven modules.
 * All other modules use the base package `net.sourceforge.pmd.<module>`,
   E.g. `pmd-cli` uses the package `net.sourceforge.pmd.cli`.
 
-## Criteria for public API
+### Criteria for public API
 
 Public API is
 
@@ -91,7 +91,7 @@ Public API is
   interface shouldn't be considered API breaking
 * Setters in AST classes are private. They are only used in the parser
 
-## Separation between public API, internal and implementation
+### Separation between public API, internal and implementation
 
 All packages are considered to be public API by default, with **two exceptions**:
 
@@ -107,14 +107,14 @@ All packages are considered to be public API by default, with **two exceptions**
   These packages contain base classes that are needed for extending PMD (like adding a new language).
   These can change at any time without a MAJOR version change.
 
-## Deprecation and removing of old APIs
+### Deprecation and removing of old APIs
 
 * APIs can be deprecated at any time (even in PATCH versions). Deprecated APIs are marked with the
   `@Deprecated` annotation.
 * Deprecations should be listed in the release notes.
 * Deprecated APIs can only be removed with a MAJOR version change.
 
-## Experimental APIs
+### Experimental APIs
 
 * New features often introduce new APIs. These new APIs can be marked with the annotation `@Experimental` at
   the class or method level.
@@ -125,7 +125,7 @@ All packages are considered to be public API by default, with **two exceptions**
   These experimental APIs should be listed in the release notes.
 * Experimental APIs can be promoted to Public APIs with at least a MINOR version change.
 
-## Guidelines for AST classes
+### Guidelines for AST classes
 
 AST classes of the individual language modules are used by custom rule implementations and are considered
 Public API in general. Rules only read the AST and do not need to modify it.
@@ -143,7 +143,7 @@ Non-concrete AST classes (like base classes or common interfaces) should follow 
 * Only package private constructor
 * Only package private setters
 
-## Summary of the annotations
+### Summary of the annotations
 
 * `@InternalApi` (`net.sourceforge.pmd.annotation.InternalApi`)
 
@@ -182,17 +182,17 @@ Non-concrete AST classes (like base classes or common interfaces) should follow 
   until the next major release, but it is recommended to stop using them. These members might be
   removed with the next MAJOR release.
 
-# Status
+## Status
 
 {{ page.adr_status }} (Last updated: {{ page.last_updated }})
 
-# Consequences
+## Consequences
 
 * Clearly defining the API PMD provides will help to further modularize PMD using the
   Java [Module System](https://openjdk.org/jeps/261).
 * Simpler decisions when to increase MAJOR, MINOR of PATCH version.
 * Refactoring of the implementation is possible without affecting public API.
 
-# Change History
+## Change History
 
 2023-12-01: Proposed initial version.
