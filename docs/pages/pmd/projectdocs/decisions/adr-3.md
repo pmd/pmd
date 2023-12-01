@@ -17,109 +17,136 @@ The API of PMD has been growing over the years and needed some cleanup. The goal
 have a clear separation between a well-defined API and the implementation, which is internal.
 This should help us in future development.
 
-Until now, all released public members and types were implicitly considered part
-of PMD's public API, including inheritance-specific members (protected members, abstract methods).
+Until PMD 7.0.0, all released public members and types were implicitly considered part
+of public PMD API, including inheritance-specific members (protected members, abstract methods).
 We have maintained those APIs with the goal to preserve full binary compatibility between minor releases,
 only breaking those APIs infrequently, for major releases.
 
+PMD is used and integrated in many different tools such as IDE plugins or build plugins. These plugins
+use our public API and rely on it being stable, hence we tried to break it only infrequently.
+
 In order to allow PMD to move forward at a faster pace, this implicit contract will
-be invalidated with PMD 7.0.0. We now introduce more fine-grained distinctions between
+be invalidated with PMD 7.0.0 and onwards. We now introduce more fine-grained distinctions between
 the type of compatibility support we guarantee for our libraries, and ways to make
 them explicit to clients of PMD.
-
-
-PMD is used and integrated by many different tools such as IDE plugins or build plugins.
-Having a public stable API helps to make this
-integration possible without much effort. But freezing the API will prevent further development.
-
-In order to balance the two needs - stable API vs. space for new development - we need to
-document principles on API evolution.
 
 The actual API development and marking some part of the API as internal or add new API is an ongoing task,
 that will need to be done everytime. We won't just define an API and then are done with it.
 The API will change as new features want to be implemented.
 
-This decision document aims to document
-
-- what the criteria is for a public API
-    - clear-cut between public APIs and internal
-    - which packages to use, e.g. `internal` for internal "API"
-    - when to use package `impl`
-- how to deprecate and remove old APIs
-    - how long to support a given API
-    - with respect to semantic version
-- when to define a new API as experimental
-    - when to promote an experimental API as stable
-- annotations to use, see also <https://docs.pmd-code.org/latest/pmd_release_notes_pmd7.html#new-api-support-guidelines>
-- guidelines for AST classes (package private ctor, final, etc.)
-
-Clearly defining the API PMD provides, makes sense and will help, if we at some time in the future want to
-modularize PMD using java9. That would prevent API leaking then at compile time already...
+This decision document aims to document principles and guidelines that are used for PMD development.
 
 # Decision
 
-## Java packages names and structure
-* PMD is mainly developed in the Java programming language. It consists of several modules.
-The classes belonging to one module should be in the same package. From the package name, it should be clear to
-which module this package belongs (there is a 1:1 mapping). This rule helps to find the source code for any
-fully qualified (Java) class name.
-* The base package for all PMD source code is `net.sourceforge.pmd`.
-* Language modules, such as `pmd-java` will use the package `net.sourceforge.pmd.lang.java`, or in general:
-  `net.sourceforge.pmd.lang.<language id>`.
-* The core module `pmd-core` will use the base package as an exception.
-* All other modules should use a subpackage of the base package, e.g. `pmd-cli` uses the package `net.sourceforge.pmd.cli`,
-  or in general: `net.sourceforge.pmd.<module>`
+## Semantic Versioning
 
-Sub-package `impl`
+PMD and all its modules are versioned together. PMD uses [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html).
+This means, that each PMD version consists of MAJOR.MINOR.PATCH components:
 
-Sub-package `internal`
+* MAJOR version is incremented for incompatible API changes
+* MINOR version is incremented for added functionality in a backwards compatible way
+* PATCH version is incremented for backward compatible bug fixes
 
+Additional labels for release candidates might be used.
+
+Incompatible API changes shouldn't be introduced lightly. See
+[FAQ: If even the tiniest backward incompatible changes to the public API require a major version bump, won’t I end up at version 42.0.0 very rapidly?](https://semver.org/spec/v2.0.0.html#if-even-the-tiniest-backward-incompatible-changes-to-the-public-api-require-a-major-version-bump-wont-i-end-up-at-version-4200-very-rapidly).
+
+## Project structure and Java base packages names
+
+PMD is mainly developed in the Java programming language. The build tool is Maven and the PMD build consists
+of several maven modules.
+
+* Classes belonging to one module should be in the same package (or sub-packages).
+* Given a package name, it should be easy to figure out to which module this package belongs. There is a 1:1 mapping
+  between maven module and package. This rule helps to find the source code for any fully qualified (Java) class name.
+* Two modules must not define the same packages. That means, it is not allowed that any given package spans more than
+  one module. Otherwise, the mapping between module and package wouldn't be unambiguous.
+* The base package for all PMD source code is `net.sourceforge.pmd`. There are many different sub packages.
+* The core module `pmd-core` uses directly the base package as the only module. All other modules must use
+  specific sub packages.
+* Language modules use the base package `net.sourceforge.pmd.lang.<language id>`.
+  E.g. `pmd-java` uses the package `net.sourceforge.pmd.lang.java`.
+* All other modules use the base package `net.sourceforge.pmd.<module>`,
+  E.g. `pmd-cli` uses the package `net.sourceforge.pmd.cli`.
 
 ## Criteria for public API
 
+Public API is
 
+* API needed to execute PMD analysis
+  * Renderers
+  * RuleSet XML Schema
+  * Configuration
+  * Ant Tasks
+* API needed to implement custom rules
+  * AST structure and classes of languages (incl. AST structure for XPath rules)
+  * XPath functions
+  * Language Symbol Table / Metrics / Type Resolution (Not the implementation)
 
-Not public API:
+**Not** public API is
 
-    Inheritance-specific members of AST related classes & interfaces. eg adding a member to an interface shouldn’t be considered api breaking
-    Setters only used in the parser
-    Exceptions… (I’ve seen JaxenException in the Node interface…)
-    XPath, AttributeAxisIterator
-    RuleSetFactory
+* Anything in packages `internal` and `impl`
+* Inheritance-specific members of AST related classes and interfaces. E.g. adding a member to an
+  interface shouldn't be considered API breaking
+* Setters in AST classes are private. They are only used in the parser
 
-public API
+## Separation between public API, internal and implementation
 
-    AST structure
-    Language Symbol Table / Metrics / Type Resolution …(Not the implementation!)
-    Implementing custom Rules (AbstractRule, concrete Properties, …)
-    Renderers
-    Executing PMD, Ant Task, Configuration
-    RuleSet XML
+All packages are considered to be public API by default, with **two exceptions**:
 
-*Internal API* is meant for use *only* by the main PMD codebase. Internal types and methods
-may be modified in any way, or even removed, at any time.
+* Any package that contains an `internal` segment is considered internal. E.g. `net.sourceforge.pmd.internal`.
+  *Internal API* is meant for use *only* by the main PMD codebase. Internal types and methods
+  may be modified in any way, or even removed, at any time without a MAJOR version change.
 
-Any API in a package that contains an `.internal` segment is considered internal.
-The `@InternalApi` annotation will be used for APIs that have to live outside of
-these packages, e.g. methods of a public type that shouldn't be used outside of PMD (again,
-these can be removed anytime).
+  The `@InternalApi` annotation will be used for types that have to live outside of
+  these packages, e.g. methods of a public type that shouldn't be used outside PMD (again,
+  these can be removed anytime).
+
+* Any package that contains an `impl` segment is considered internal. E.g. `net.sourceforge.pmd.lang.impl`.
+  These packages contain base classes that are needed for extending PMD (like adding a new language).
+  These can change at any time without a MAJOR version change.
 
 ## Deprecation and removing of old APIs
-Use @Deprecated during the transition (from the point we announce decide which APIs will be non-public until 7.0.0).
-Update the 7.0.0 branch as we go along
+
+* APIs can be deprecated at any time (even in PATCH versions). Deprecated APIs are marked with the
+  `@Deprecated` annotation.
+* Deprecations should be listed in the release notes.
+* Deprecated APIs can only be removed with a MAJOR version change.
 
 ## Experimental APIs
 
-New Features, maybe @Incubating or @Experimental at first
+* New features often introduce new APIs. These new APIs can be marked with the annotation `@Experimental` at
+  the class or method level.
+* APIs marked with the `@Experimental` annotation are subject to change and are considered **not stable**.
+  They can be modified in any way, or even removed, at any time. You should not use or rely
+  on them in any production code. They are purely to allow broad testing and feedback.
+* Experimental APIs can be introduced or removed with at least a MINOR version change.
+  These experimental APIs should be listed in the release notes.
+* Experimental APIs can be promoted to Public APIs with at least a MINOR version change.
 
 ## Guidelines for AST classes
-maybe, concrete AST node classes should have a package-private constructor, and be final.
-They're not meant to be instantiated by hand, but that could break some tests and rules
+
+AST classes of the individual language modules are used by custom rule implementations and are considered
+Public API in general. Rules only read the AST and do not need to modify it.
+
+In order to minimize the public API surface of AST classes, the following guidelines apply:
+
+* Concrete AST classes should be final, to avoid custom subclasses.
+* Concrete AST classes should only have a package private constructor to avoid manual instantiation.
+  Only the parser of the language (which lives in the same package) should be able to create new instances
+  of AST classes.
+* Concrete AST classes should not have public setters. All setters should be package private, so that
+  only the parser of the language can call the setters during AST construction.
+
+Non-concrete AST classes (like base classes or common interfaces) should follow similar guidelines:
+* Only package private constructor
+* Only package private setters
 
 ## Summary of the annotations
 
-* `@InternalApi`
-Full name: `net.sourceforge.pmd.annotation.InternalApi`
+* `@InternalApi` (`net.sourceforge.pmd.annotation.InternalApi`)
+
 
 * `@ReservedSubclassing`
 Full name: `net.sourceforge.pmd.annotation.ReservedSubclassing`
@@ -152,6 +179,9 @@ Full name: `net.sourceforge.pmd.annotation.DeprecatedUntil700`
 {{ page.adr_status }} (Last updated: {{ page.last_updated }})
 
 # Consequences
+
+* Clearly defining the API PMD provides, makes sense and will help, if we at some time in the future want to
+modularize PMD using java9. That would prevent API leaking then at compile time already...
 
 What becomes easier or more difficult to do because of this change?
 
