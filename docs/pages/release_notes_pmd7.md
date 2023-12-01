@@ -546,49 +546,10 @@ The API of PMD has been growing over the years and needed some cleanup. The goal
 have a clear separation between a well-defined API and the implementation, which is internal.
 This should help us in future development.
 
-This however entails some incompatibilities and
-deprecations, see also the sections [New API support guidelines](#new-api-support-guidelines) and
-[API removals](#api-removals) below.
+This however entails some incompatibilities and deprecations.
 
-### New API support guidelines
-
-Until now, all released public members and types were implicitly considered part
-of PMD's public API, including inheritance-specific members (protected members, abstract methods).
-We have maintained those APIs with the goal to preserve full binary compatibility between minor releases,
-only breaking those APIs infrequently, for major releases.
-
-In order to allow PMD to move forward at a faster pace, this implicit contract will
-be invalidated with PMD 7.0.0. We now introduce more fine-grained distinctions between
-the type of compatibility support we guarantee for our libraries, and ways to make
-them explicit to clients of PMD.
-
-**`.internal` packages and `@InternalApi` annotation**
-
-*Internal API* is meant for use *only* by the main PMD codebase. Internal types and methods
-may be modified in any way, or even removed, at any time.
-
-Any API in a package that contains an `.internal` segment is considered internal.
-The `@InternalApi` annotation will be used for APIs that have to live outside of
-these packages, e.g. methods of a public type that shouldn't be used outside of PMD (again,
-these can be removed anytime).
-
-**`@ReservedSubclassing`**
-
-Types marked with the `@ReservedSubclassing` annotation are only meant to be subclassed
-by classes within PMD. As such, we may add new abstract methods, or remove protected methods,
-at any time. All published public members remain supported. The annotation is *not* inherited, which
-means a reserved interface doesn't prevent its implementors to be subclassed.
-
-**`@Experimental`**
-
-APIs marked with the `@Experimental` annotation at the class or method level are subject to change.
-They can be modified in any way, or even removed, at any time. You should not use or rely
-on them in any production code. They are purely to allow broad testing and feedback.
-
-**`@Deprecated`**
-
-APIs marked with the `@Deprecated` annotation at the class or method level will remain supported
-until the next major release, but it is recommended to stop using them.
+See [ADR 3 - API evolution principles](pmd_projectdocs_decisions_adr_3.html) and
+[API changes](#api-changes) below.
 
 ### Small Changes and cleanups
 

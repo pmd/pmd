@@ -6,7 +6,7 @@ sidebaractiveurl: /pmd_projectdocs_decisions.html
 adr: true
 # Proposed / Accepted / Deprecated / Superseded
 adr_status: "Proposed"
-last_updated: November 2023
+last_updated: December 2023
 ---
 
 <!-- https://github.com/joelparkerhenderson/architecture-decision-record/blob/main/templates/decision-record-template-by-michael-nygard/index.md -->
@@ -147,32 +147,40 @@ Non-concrete AST classes (like base classes or common interfaces) should follow 
 
 * `@InternalApi` (`net.sourceforge.pmd.annotation.InternalApi`)
 
+  This annotation is used for API members that are not publicly supported API but have to live in
+  public packages (outside `internal` packages).
+  Such members may be removed, renamed, moved, or otherwise broken at any time and should not be
+  relied upon outside the main PMD codebase.
 
-* `@ReservedSubclassing`
-Full name: `net.sourceforge.pmd.annotation.ReservedSubclassing`
+* `@Experimental` (`net.sourceforge.pmd.annotation.Experimental`)
 
-Types marked with the `@ReservedSubclassing` annotation are only meant to be subclassed
-by classes within PMD. As such, we may add new abstract methods, or remove protected methods,
-at any time. All published public members remain supported. The annotation is *not* inherited, which
-means a reserved interface doesn't prevent its implementors to be subclassed.
+  API members marked with the `@Experimental` annotation at the class or method level are subject to change.
+  It is an indication that the feature is in experimental, unstable state.
+  The API members can be modified in any way, or even removed, at any time, without warning.
+  You should not use or rely on them in any production code. They are purely to allow broad testing and feedback.
 
-* `@Experimental`
-Full name: `net.sourceforge.pmd.annotation.Experimental`
+* `@ReservedSubclassing` (`net.sourceforge.pmd.annotation.ReservedSubclassing`)
 
-APIs marked with the `@Experimental` annotation at the class or method level are subject to change.
-They can be modified in any way, or even removed, at any time. You should not use or rely
-on them in any production code. They are purely to allow broad testing and feedback.
+  Types marked with the `@ReservedSubclassing` annotation are only meant to be subclassed
+  by classes within PMD. These types are only partially public API. Abstract or protected methods
+  may be added or removed at any time, which could break compatibility with existing
+  implementors.
 
-* `@Deprecated`
-Full name: `java.lang.Deprecated`
+  The API that is not inheritance-specific (all public members) is still public API,
+  unless the public members are marked as `@InternalApi` explicitly.
 
-APIs marked with the `@Deprecated` annotation at the class or method level will remain supported
-until the next major release, but it is recommended to stop using them.
+  The annotation is *not* inherited, which
+  means a reserved interface doesn't prevent its implementors to be subclassed.
 
-* `@DeprecatedUntil700`
-Full name: `net.sourceforge.pmd.annotation.DeprecatedUntil700`
+  This should be used for example for base rule classes that
+  are meant to be used in PMD only, or for AST-related interfaces
+  and abstract classes.
 
+* `@Deprecated` (`java.lang.Deprecated`)
 
+  API members marked with the `@Deprecated` annotation at the class or method level will remain supported
+  until the next major release, but it is recommended to stop using them. These members might be
+  removed with the next MAJOR release.
 
 # Status
 
@@ -180,13 +188,11 @@ Full name: `net.sourceforge.pmd.annotation.DeprecatedUntil700`
 
 # Consequences
 
-* Clearly defining the API PMD provides, makes sense and will help, if we at some time in the future want to
-modularize PMD using java9. That would prevent API leaking then at compile time already...
-
-What becomes easier or more difficult to do because of this change?
+* Clearly defining the API PMD provides will help to further modularize PMD using the
+  Java [Module System](https://openjdk.org/jeps/261).
+* Simpler decisions when to increase MAJOR, MINOR of PATCH version.
+* Refactoring of the implementation is possible without affecting public API.
 
 # Change History
 
-YYYY-MM-DD: Add xyz.
-
-YYYY-MM-DD: Proposed initial version.
+2023-12-01: Proposed initial version.
