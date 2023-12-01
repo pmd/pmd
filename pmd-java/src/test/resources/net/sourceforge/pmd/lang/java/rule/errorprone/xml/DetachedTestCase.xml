@@ -37,7 +37,7 @@ public class MyTest {
     </test-code>
 
     <test-code>
-        <description>Abstract methods should not be reported as detached test case</description>
+        <description>Abstract methods should not be reported as detached test case (#1831)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.junit.Test;
