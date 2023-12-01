@@ -1945,6 +1945,13 @@ potential performance issue.</li>
   <li><a href="pmd_rules_xml_bestpractices.html#missingencoding"><code class="language-plaintext highlighter-rouge">MissingEncoding</code></a> finds XML files without explicit encoding.</li>
 </ul>
 
+<p><strong>Changed Rules</strong></p>
+
+<ul>
+  <li><a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a>: The rule has a new property to allow empty blocks when
+they contain a comment (<code class="language-plaintext highlighter-rouge">allowCommentedBlocks</code>).</li>
+</ul>
+
 <h4 id="fixed-issues">Fixed issues</h4>
 
 <ul>
@@ -1989,10 +1996,12 @@ potential performance issue.</li>
       <li><a href="https://github.com/pmd/pmd/issues/2847">#2847</a>: [java] New Rule: Use Explicit Types</li>
       <li><a href="https://github.com/pmd/pmd/issues/4578">#4578</a>: [java] CommentDefaultAccessModifier comment needs to be before annotation if present</li>
       <li><a href="https://github.com/pmd/pmd/issues/4645">#4645</a>: [java] CommentDefaultAccessModifier - False Positive with JUnit5’s ParameterizedTest</li>
+      <li><a href="https://github.com/pmd/pmd/pull/4754">#4754</a>:   [java] EmptyControlStatementRule: Add allowCommentedBlocks property</li>
     </ul>
   </li>
   <li>java-errorprone
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1831">#1831</a>: [java] DetachedTestCase reports abstract methods</li>
       <li><a href="https://github.com/pmd/pmd/pull/4719">#4719</a>:   [java] UnnecessaryCaseChange: example doc toUpperCase() should compare to a capitalized string</li>
     </ul>
   </li>
@@ -2039,9 +2048,11 @@ is the version that has been selected via CLI <code class="language-plaintext hi
   <li><a href="https://github.com/pmd/pmd/pull/4640">#4640</a>: [cli] Launch script fails if run via “bash pmd” - <a href="https://github.com/shai-bennathan">Shai Bennathan</a> (@shai-bennathan)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4673">#4673</a>: [javascript] CPD: Added support for decorator notation - <a href="https://github.com/wener-tiobe">Wener</a> (@wener-tiobe)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4677">#4677</a>: [apex] Add new rule: OperationWithHighCostInLoop - <a href="https://github.com/tprouvot">Thomas Prouvot</a> (@tprouvot)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4706">#4706</a>: [java] DetachedTestCase should not report on abstract methods - <a href="https://github.com/Debamoy">Debamoy Datta</a> (@Debamoy)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4719">#4719</a>: [java] UnnecessaryCaseChange: example doc toUpperCase() should compare to a capitalized string - <a href="https://github.com/ciufudean">ciufudean</a> (@ciufudean)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4738">#4738</a>: [doc] Added reference to the PMD extension for bld - <a href="https://github.com/ethauvin">Erik C. Thauvin</a> (@ethauvin)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4750">#4750</a>: [core] Fix flaky SummaryHTMLRenderer - <a href="https://github.com/219sansim">219sansim</a> (@219sansim)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4754">#4754</a>: [java] EmptyControlStatementRule: Add allowCommentedBlocks property - <a href="https://github.com/bergander">Andreas Bergander</a> (@bergander)</li>
 </ul>
 
 <h3 id="-major-features-and-enhancements">🚀 Major Features and Enhancements</h3>
@@ -2350,6 +2361,8 @@ the rule should be applied. With <code class="language-plaintext highlighter-rou
 not necessary are allowed, if they separate expressions of different precedence.
 The other property <code class="language-plaintext highlighter-rouge">ignoreBalancing</code> (default: true) is similar, in that it allows parentheses that help
 reading and understanding the expressions.</li>
+  <li><a href="pmd_rules_java_codestyle.html#emptycontrolstatement"><code class="language-plaintext highlighter-rouge">EmptyControlStatement</code></a>: The rule has a new property to allow empty blocks when
+they contain a comment (<code class="language-plaintext highlighter-rouge">allowCommentedBlocks</code>).</li>
 </ul>
 
 <p><strong>Java Design</strong></p>
@@ -2678,6 +2691,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/issues/4557">#4557</a>: [java] UnnecessaryImport FP with static imports of overloaded methods</li>
       <li><a href="https://github.com/pmd/pmd/issues/4578">#4578</a>: [java] CommentDefaultAccessModifier comment needs to be before annotation if present</li>
       <li><a href="https://github.com/pmd/pmd/issues/4645">#4645</a>: [java] CommentDefaultAccessModifier - False Positive with JUnit5’s ParameterizedTest</li>
+      <li><a href="https://github.com/pmd/pmd/pull/4754">#4754</a>:   [java] EmptyControlStatementRule: Add allowCommentedBlocks property</li>
     </ul>
   </li>
   <li>java-design
@@ -2715,6 +2729,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/issues/659">#659</a>:   [java] MissingBreakInSwitch - last default case does not contain a break</li>
       <li><a href="https://github.com/pmd/pmd/issues/1005">#1005</a>: [java] CloneMethodMustImplementCloneable triggers for interfaces</li>
       <li><a href="https://github.com/pmd/pmd/issues/1669">#1669</a>: [java] NullAssignment - FP with ternay and null as constructor argument</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1831">#1831</a>: [java] DetachedTestCase reports abstract methods</li>
       <li><a href="https://github.com/pmd/pmd/issues/1899">#1899</a>: [java] Recognize @<!-- -->SuppressWanings(“fallthrough”) for MissingBreakInSwitch</li>
       <li><a href="https://github.com/pmd/pmd/issues/2320">#2320</a>: [java] NullAssignment - FP with ternary and null as method argument</li>
       <li><a href="https://github.com/pmd/pmd/issues/2532">#2532</a>: [java] AvoidDecimalLiteralsInBigDecimalConstructor can not detect the case <code class="language-plaintext highlighter-rouge">new BigDecimal(Expression)</code></li>
@@ -2834,9 +2849,11 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
   <li><a href="https://github.com/pmd/pmd/pull/4665">#4665</a>: [java] Doc: Fix references AutoClosable -&gt; AutoCloseable - <a href="https://github.com/AndreyBozhko">Andrey Bozhko</a> (@AndreyBozhko)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4673">#4673</a>: [javascript] CPD: Added support for decorator notation - <a href="https://github.com/wener-tiobe">Wener</a> (@wener-tiobe)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4677">#4677</a>: [apex] Add new rule: OperationWithHighCostInLoop - <a href="https://github.com/tprouvot">Thomas Prouvot</a> (@tprouvot)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4706">#4706</a>: [java] DetachedTestCase should not report on abstract methods - <a href="https://github.com/Debamoy">Debamoy Datta</a> (@Debamoy)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4719">#4719</a>: [java] UnnecessaryCaseChange: example doc toUpperCase() should compare to a capitalized string - <a href="https://github.com/ciufudean">ciufudean</a> (@ciufudean)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4738">#4738</a>: [doc] Added reference to the PMD extension for bld - <a href="https://github.com/ethauvin">Erik C. Thauvin</a> (@ethauvin)</li>
   <li><a href="https://github.com/pmd/pmd/pull/4750">#4750</a>: [core] Fix flaky SummaryHTMLRenderer - <a href="https://github.com/219sansim">219sansim</a> (@219sansim)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/4754">#4754</a>: [java] EmptyControlStatementRule: Add allowCommentedBlocks property - <a href="https://github.com/bergander">Andreas Bergander</a> (@bergander)</li>
 </ul>
 
 <h3 id="-stats">📈 Stats</h3>
