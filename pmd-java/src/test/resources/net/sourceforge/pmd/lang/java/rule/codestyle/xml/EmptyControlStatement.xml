@@ -520,7 +520,7 @@ public class Foo {
 
     </test-code>
     <test-code>
-        <description>empty if statement with comment, allow commented block</description>
+        <description>empty if statement with comment, allow commented block (#4754)</description>
         <rule-property name="allowCommentedBlocks">true</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
