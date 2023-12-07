@@ -6048,15 +6048,6 @@
 ,
 
 {
-"title": "ApexCSRF (Apex, Security)",
-"tags": "",
-"keywords": "ApexCSRF",
-"url": "pmd_rules_apex_security.html#apexcsrf",
-"summary": "Rules that flag potential security flaws."
-}
-,
-
-{
 "title": "ApexDangerousMethods (Apex, Security)",
 "tags": "",
 "keywords": "ApexDangerousMethods",
