@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.emptyString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -34,6 +36,7 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.slf4j.event.Level;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -45,6 +48,7 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.util.log.internal.MessageReporterBase;
 
 /**
  * Base test class to verify the language's rulesets. This class should be
@@ -344,7 +348,22 @@ public abstract class AbstractRuleSetFactoryTest {
     }
 
     private RuleSet loadRuleSetByFileName(String ruleSetFileName) {
-        return new RuleSetLoader().loadFromResource(ruleSetFileName);
+        final StringBuilder messages = new StringBuilder();
+        class Reporter extends MessageReporterBase {
+            @Override
+            protected void logImpl(Level level, String message) {
+                messages.append(message).append(System.lineSeparator());
+            }
+        }
+
+        RuleSet ruleSet = new RuleSetLoader()
+                .withReporter(new Reporter())
+                .loadFromResource(ruleSetFileName);
+
+        assertThat("There should be no warnings while loading the ruleset",
+                messages.toString(), emptyString());
+
+        return ruleSet;
     }
 
     private boolean validateAgainstSchema(String fileName) throws IOException, SAXException {
