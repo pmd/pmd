@@ -10,7 +10,7 @@ These rules deal with different security problems that can occur within Apex.
 
     <rule ref="category/apex/security.xml/ApexBadCrypto" deprecated="true" />
     <rule ref="category/apex/security.xml/ApexCRUDViolation" deprecated="true" />
-    <rule ref="category/apex/security.xml/ApexCSRF" deprecated="true" />
+    <rule ref="category/apex/errorprone.xml/ApexCSRF" deprecated="true" />
     <rule ref="category/apex/security.xml/ApexDangerousMethods" deprecated="true" />
     <rule ref="category/apex/security.xml/ApexInsecureEndpoint" deprecated="true" />
     <rule ref="category/apex/security.xml/ApexOpenRedirect" deprecated="true" />
