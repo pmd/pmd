@@ -2,7 +2,7 @@
 title:  Writing a custom rule
 tags: [extending, userdocs]
 summary: "Learn how to write a custom rule for PMD"
-last_updated: February 2020 (6.22.0)
+last_updated: December 2023 (7.0.0)
 permalink: pmd_userdocs_extending_writing_java_rules.html
 author: Tom Copeland <tomcopeland@users.sourceforge.net>
 ---
@@ -13,9 +13,11 @@ author: Tom Copeland <tomcopeland@users.sourceforge.net>
 {% jdoc_nspace :jast java::lang.java.ast %}
 {% jdoc_nspace :jrule java::lang.java.rule %}
 
-{% include note.html content="TODO All that should be written in the Javadocs,
-not sure we even need a doc page. Would be simpler to maintain too" %}
-{% include warning.html content="WIP lots of stuff missing" %}
+{% include note.html content="Ideally most of what is written in this document would be directly
+in the Javadocs of the relevant classes. This is not the case yet." %}
+
+{% include warning.html content="There are still many topics missing, e.g. tree traversal using NodeStreams,
+using metrics, using type resolution, ..." %}
 
 This page covers the specifics of writing a rule in Java. The basic development
 process is very similar to the process for XPath rules, which is described in
@@ -32,12 +34,13 @@ very similar for other languages.
 ## Basics
 
 To write a rule in Java you'll have to:
- 1. write a Java class that implements the interface {% jdoc core::Rule %}. Each
+
+1. Write a Java class that implements the interface {% jdoc core::Rule %}. Each
 language implementation provides a base rule class to ease your pain,
 e.g. {% jdoc jrule::AbstractJavaRule %}.
- 2. compile this class, linking it to PMD APIs (eg using PMD as a maven dependency)
- 3. bundle this into a JAR and add it to the execution classpath of PMD
- 4. declare the rule in your ruleset XML
+2. Compile this class, linking it to PMD APIs (e.g. using PMD as a Maven dependency)
+3. Bundle this into a JAR and add it to the execution classpath of PMD
+4. Declare the rule in your ruleset XML
 
 ## Rule execution
 
@@ -80,7 +83,7 @@ public class MyRule extends AbstractJavaRule {
             // reports a violation at the position of the node
             // the "data" parameter is a context object handed to by your rule
             // the message for the violation is the message defined in the rule declaration XML element
-            addViolation(data, node);
+            asCtx(data).addViolation(node);
         }
 
         // this calls back to the default implementation, which recurses further down the subtree
@@ -110,10 +113,39 @@ speed-up your rule by using the **rulechain**.
 
 That mechanism doesn't recurse on all the tree, instead, your rule will only be
 passed the nodes it is interested in. To use the rulechain correctly:
-* Your rule must register those node types by calling {% jdoc core::Rule#addRuleChainVisit(java.lang.Class) %}
-in its constructor.
+* Your rule must override the method {% jdoc core::lang.rule.AbstractRule#buildTargetSelector() %}. This method
+  should return a target selector, that selects all the node types you are interested in. E.g. the factory
+  method {% jdoc core::lang.rule.RuleTargetSelector#forTypes(java.lang.Class,java.lang.Class...) %} can be used
+  to create such a selector.
+* For the Java language, there is another base class, to make it easier:
+  {% jdoc java::lang.java.rule.AbstractJavaRulechainRule %}. You'll need to call the super constructor and
+  provide the node types you are interested in.
 * Your visit methods **must not recurse!** In effect, you should call never
-call `super.visit` in the methods.
+  call `super.visit` in the methods.
+
+### Reporting violations
+
+In your visit method, you have access to the {% jdoc core::RuleContext %} which is the entry point into
+reporting back during the analysis.
+
+* {% jdoc core::RuleContext#addViolation(core::lang.ast.Node) %} reports a rule violation at
+  the position of the given node with the message defined in the rule declaration XML element.
+* The message defined in the rule declaration XML element might contain **placeholder**, such as `{0}`.
+  In that case, you need to call {% jdoc core::RuleContext#addViolation(core::lang.ast.Node,java.lang.Object...) %}
+  and provide the values for the placeholders. The message is actually processed as a `java.text.MessageFormat`.
+* Sometimes a rule might want to differentiate between different cases of a violation and use different
+  messages. This is possible by calling the methods
+  {% jdoc core::RuleContext#addViolationWithMessage(core::lang.ast.Node,java.lang.String) %} or
+  {% jdoc core::RuleContext#addViolationWithMessage(core::lang.ast.Node,java.lang.String,java.lang.Object...) %}.
+  Using these methods, the message defined in the rule declaration XML element is _not used_.
+* Rules can be customized using properties and sometimes you want to include the actual value of a property
+  in the message, e.g. if the rule enforces a specific limit.
+  The syntax for such placeholders is: `${propertyName}`.
+* Some languages support additional placeholder variables. E.g. for Java, you can use `${methodName}` to insert
+  the name of the method in which the violation occurred. See the constants in {% jdoc core::RuleViolation %}
+  for the available variables, such as {% jdoc core::RuleViolation#METHOD_NAME %}.
+  Languages that support such variables are implementing {% jdoc core::reporting.ViolationDecorator %}.
+
 
 ### Execution across files, thread-safety and statefulness
 
@@ -123,27 +155,22 @@ instance of the rule. This means, that the rule implementation **does not need t
 threading issues**, as PMD makes sure, that a single instance is not used concurrently
 by multiple threads.
 
-However, for performance reasons, the rule instances are used for multiple files.
+However, for performance reasons, the rule instances are reused for multiple files.
 This means, that the constructor of the rule is only executed once (per thread)
 and the rule instance is reused. If you rely on a proper initialization of instance
-properties, you can do the initialization e.g. in the visit-method of the {% jdoc jast::ASTCompilationUnit %}
-node - which is visited first and only once per file. However, this
-solution would only work for rules written for the Java language. A language
-independent way is to override the method `start` of the rule.
+properties, you can do the initialization in the `start` method of the rule
+(you need to override this method).
 The start method is called exactly once per file.
-
-<!-- We don't support language-independent rules anyway... -->
 
 ## Rule lifecycle reference
 
 ### Construction
 
-Exactly once:
+Exactly once (per thread):
 
 1. The rule's no-arg constructor is called when loading the ruleset.
-The rule's constructor must define:
-  * [Rulechain visits](#economic-traversal-the-rulechain)
-  * [Property descriptors](pmd_userdocs_extending_defining_properties.html#for-java-rules)
+The rule's constructor must define already any
+[Property descriptors](pmd_userdocs_extending_defining_properties.html#for-java-rules) the rule wants to use.
 2. If the rule was included in the ruleset as a rule reference,
 some properties [may be overridden](pmd_userdocs_configuring_rules.html#rule-properties).
 If an overridden property is unknown, an error is reported.
@@ -152,12 +179,17 @@ If an overridden property is unknown, an error is reported.
 ### Execution
 
 For each thread, a deep copy of the rule is created. Each thread is given
-a different set of files to analyse. Then, for each such file, for each
+a different set of files to analyse. Then, for each such file and for each
 rule copy:
 
-3. {% jdoc core::Rule#start(core::RuleContext) %} is called once, before parsing
-4. {% jdoc core::Rule#apply(java.util.List,core::RuleContext) %} is called with the root
+1. {% jdoc core::Rule#start(core::RuleContext) %} is called once, before parsing
+2. {% jdoc core::Rule#apply(core::lang.ast.Node,core::RuleContext) %} is called with the root
 of the AST. That method performs the AST traversal that ultimately calls visit methods.
 It's not called for RuleChain rules.
-5. {% jdoc core::Rule#end(core::RuleContext) %} is called when the rule is done processing
+3. {% jdoc core::Rule#end(core::RuleContext) %} is called when the rule is done processing
 the file
+
+## Example projects
+
+See <https://github.com/pmd/pmd-examples> for a couple of example projects, that
+create custom PMD rules for different languages.
