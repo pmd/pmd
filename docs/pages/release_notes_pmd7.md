@@ -430,6 +430,7 @@ The following previously deprecated rules have been finally removed:
 * {% deleted_rule apex/codestyle/VariableNamingConventions %} ➡️ use {% rule apex/codestyle/FieldNamingConventions %},
   {% rule apex/codestyle/FormalParameterNamingConventions %}, {% rule apex/codestyle/LocalVariableNamingConventions %},
   or {% rule apex/codestyle/PropertyNamingConventions %}
+* {% deleted_rule apex/security/ApexCSRF %} ➡️ use {% rule apex/errorprone/ApexCSRF %}
 
 **Java**
 
