@@ -3,7 +3,7 @@ title: Adding PMD support for a new JavaCC grammar based language
 short_title: Adding a new language with JavaCC
 tags: [devdocs, extending]
 summary: "How to add a new language to PMD using JavaCC grammar."
-last_updated: February 2023 (7.0.0)
+last_updated: December 2023 (7.0.0)
 sidebar: pmd_sidebar
 permalink: pmd_devdocs_major_adding_new_language_javacc.html
 folder: pmd/devdocs
@@ -56,6 +56,8 @@ definitely don't come for free. It is much effort and requires perseverance to i
 *   It’s a good idea to create a parent AST class for all AST classes of the language. This simplifies rule
     creation later. *(see SimpleNode for Velocity and AbstractJavaNode for Java for example)*
 *   Note: These AST node classes are generated usually once by javacc/jjtree and can then be modified as needed.
+*   You can add additional methods in your AST node classes, that can be used in rules. Most getters
+    are also available for XPath rules, see section [XPath integration](#xpath-integration) below.
 
 ### 4.  Generate your parser (using JJT)
 *   An ant script is being used to compile jjt files into classes. This is in `javacc-wrapper.xml` file in the
@@ -205,6 +207,40 @@ There is also the following Jekyll Include, that creates summary box for the lan
 {% endraw %}
 ```
 
+## XPath integration
+
+PMD exposes the AST nodes for use by XPath based rules (see [DOM representation of ASTs](pmd_userdocs_extending_writing_xpath_rules.html#dom-representation-of-asts)).
+Most Java getters in the AST classes are made available by default. These getters constitute the API of the language.
+If a getter method is renamed, then every XPath rule that uses this getter also needs to be adjusted. In order to
+have more control over this, there are two annotations that can be used for AST classes and their methods:
+
+* {% jdoc core::lang.rule.xpath.DeprecatedAttribute %}: Getters might be annotated with that indicating, that
+  this getter method should not be used in XPath rules. When a XPath rule uses such a method, a warning is
+  issued. If the method additionally has the standard Java `@Deprecated` annotation, then the getter is also
+  deprecated for java usage. Otherwise, the getter is only deprecated for usage in XPath rules.
+
+  When a getter is deprecated and there is a different getter to be used instead, then the
+  attribute `replaceWith` should be used.
+
+* {% jdoc core::lang.rule.xpath.NoAttribute %}: This annotation can be used on an AST node type or on individual
+  methods in order to filter out which methods are available for XPath rules.
+  When used on a type, either all methods can be filtered or only inherited methods (see attribute `scope`).
+  When used directly on an individual method, then only this method will be filtered out.
+  That way methods can be added in AST nodes, that should only be used in Java rules, e.g. as auxiliary methods.
+
+{% include note.html content="
+Not all getters are available for XPath rules. It depends on the result type.
+Especially **Lists** or Collections in general are **not supported**." %}
+
+Only the following Java result types are supported:
+* String
+* any Enum-type
+* int
+* boolean
+* double
+* long
+* char
+* float
 
 ## Debugging with Rule Designer
 
