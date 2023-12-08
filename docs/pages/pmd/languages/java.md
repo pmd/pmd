@@ -66,7 +66,11 @@ TODO describe
 * why we need auxclasspath
 * how disambiguation can fail
 
-## Type and symbol APIs
+## Symbol table APIs
+
+TODO content will be filled by #4766
+
+## Type resolution APIs
 
 TODO describe APIs: see #4319 and #2689
 

@@ -16,9 +16,6 @@ author: Tom Copeland <tomcopeland@users.sourceforge.net>
 {% include note.html content="Ideally most of what is written in this document would be directly
 in the Javadocs of the relevant classes. This is not the case yet." %}
 
-{% include warning.html content="There are still many topics missing, e.g. tree traversal using NodeStreams,
-using metrics, using type resolution, ..." %}
-
 This page covers the specifics of writing a rule in Java. The basic development
 process is very similar to the process for XPath rules, which is described in
 [Your First Rule](pmd_userdocs_extending_your_first_rule.html#rule-development-process).
@@ -123,6 +120,56 @@ passed the nodes it is interested in. To use the rulechain correctly:
 * Your visit methods **must not recurse!** In effect, you should call never
   call `super.visit` in the methods.
 
+#### Manual AST navigation
+
+In Java rule implementations, you often need to navigate the AST to find the interesting nodes.
+In your `visit` implementation, you can start navigating the AST from the given node.
+
+The {% jdoc core::lang.ast.Node %} interface provides a couple of useful methods
+that return a {%jdoc core::lang.ast.NodeStream %} and can be used to query the AST:
+
+* {% jdoc core::lang.ast.Node#ancestors() %}
+* {% jdoc core::lang.ast.Node#ancestorsOrSelf() %}
+* {% jdoc core::lang.ast.Node#children() %}
+* {% jdoc core::lang.ast.Node#descendants() %}
+* {% jdoc core::lang.ast.Node#descendantsOrSelf() %}
+* {% jdoc core::lang.ast.Node#ancestors(java.lang.Class) %}
+* {% jdoc core::lang.ast.Node#children(java.lang.Class) %}
+* {% jdoc core::lang.ast.Node#descendants(java.lang.Class) %}
+
+The returned NodeStream API provides easy to use methods that follow the Java Stream API (`java.util.stream`).
+
+Example:
+
+```java
+NodeStream.of(someNode)                           // the stream here is empty if the node is null
+          .filterIs(ASTVariableDeclaratorId.class)// the stream here is empty if the node was not a variable declarator id
+          .followingSiblings()                    // the stream here contains only the siblings, not the original node
+          .filterIs(ASTVariableInitializer.class)
+          .children(ASTExpression.class)
+          .children(ASTPrimaryExpression.class)
+          .children(ASTPrimaryPrefix.class)
+          .children(ASTLiteral.class)
+          .filterMatching(Node::getImage, "0")
+          .filterNot(ASTLiteral::isStringLiteral)
+          .nonEmpty(); // If the stream is non empty here, then all the pipeline matched
+```
+
+The {% jdoc core::lang.ast.Node %} interface provides also an alternative way to navigate the AST for convenience:
+
+* {% jdoc core::lang.ast.Node#getParent() %}
+* {% jdoc core::lang.ast.Node#getNumChildren() %}
+* {% jdoc core::lang.ast.Node#getChild(int) %}
+* {% jdoc core::lang.ast.Node#getFirstChild() %}
+* {% jdoc core::lang.ast.Node#getLastChild() %}
+* {% jdoc core::lang.ast.Node#getPreviousSibling() %}
+* {% jdoc core::lang.ast.Node#getNextSibling() %}
+* {% jdoc core::lang.ast.Node#firstChild(java.lang.Class) %}
+
+Depending on the AST of the language, there might also be more specific methods that can be used to
+navigate. E.g. in Java there exists the method {% jdoc !!java::lang.java.ast.ASTIfStatement#getCondition() %}
+to get the condition of an If-statement.
+
 ### Reporting violations
 
 In your visit method, you have access to the {% jdoc core::RuleContext %} which is the entry point into
@@ -142,9 +189,8 @@ reporting back during the analysis.
   in the message, e.g. if the rule enforces a specific limit.
   The syntax for such placeholders is: `${propertyName}`.
 * Some languages support additional placeholder variables. E.g. for Java, you can use `${methodName}` to insert
-  the name of the method in which the violation occurred. See the constants in {% jdoc core::RuleViolation %}
-  for the available variables, such as {% jdoc core::RuleViolation#METHOD_NAME %}.
-  Languages that support such variables are implementing {% jdoc core::reporting.ViolationDecorator %}.
+  the name of the method in which the violation occurred.
+  See [Java-specific features and guidance](pmd_languages_java.html#violation-decorators).
 
 
 ### Execution across files, thread-safety and statefulness
@@ -161,6 +207,25 @@ and the rule instance is reused. If you rely on a proper initialization of insta
 properties, you can do the initialization in the `start` method of the rule
 (you need to override this method).
 The start method is called exactly once per file.
+
+### Using metrics
+
+Some languages might support metrics.
+
+* [Apex-specific features and guidance](pmd_languages_apex.html#metrics-framework)
+* [Java-specific features and guidance](pmd_languages_java.html#metrics-framework)
+
+### Using symbol table
+
+Some languages might support symbol table.
+
+* [Java-specific features and guidance](pmd_languages_java.html#symbol-table-apis)
+
+### Using type resolution
+
+Some languages might support type resolution.
+
+* [Java-specific features and guidance](pmd_languages_java.html#type-resolution-apis)
 
 ## Rule lifecycle reference
 
