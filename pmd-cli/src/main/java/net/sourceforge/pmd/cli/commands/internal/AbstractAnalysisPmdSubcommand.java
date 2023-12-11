@@ -7,8 +7,9 @@ package net.sourceforge.pmd.cli.commands.internal;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import net.sourceforge.pmd.AbstractConfiguration;
 import net.sourceforge.pmd.cli.commands.mixins.internal.EncodingMixin;
@@ -28,7 +29,7 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
     // see the setters #setInputPaths and setPositionalInputPaths for @Option and @Parameters annotations
     // Note: can't use annotations on the fields here, as otherwise the complete list would be replaced
     // rather than accumulated.
-    protected List<Path> inputPaths;
+    protected Set<Path> inputPaths;
 
     @Option(names = "--file-list",
             description =
@@ -75,7 +76,7 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
             arity = "1..*", split = ",")
     protected void setInputPaths(final List<Path> inputPaths) {
         if (this.inputPaths == null) {
-            this.inputPaths = new ArrayList<>();
+            this.inputPaths = new LinkedHashSet<>(); // linked hashSet in order to maintain order
         }
 
         this.inputPaths.addAll(inputPaths);
