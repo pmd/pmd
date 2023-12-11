@@ -57,7 +57,7 @@ Incompatible API changes shouldn't be introduced lightly. See
 PMD is mainly developed in the Java programming language. The build tool is Maven and the PMD build consists
 of several maven modules.
 
-* Classes belonging to one module should be in the same package (or sub-packages).
+* All packages belonging to a given module should have a common package prefix.
 * Given a package name, it should be easy to figure out to which module this package belongs. There is a 1:1 mapping
   between maven module and package. This rule helps to find the source code for any fully qualified (Java) class name.
 * Two modules must not define the same packages. That means, it is not allowed that any given package spans more than
@@ -89,7 +89,7 @@ Public API is
 * Anything in packages `internal` and `impl`
 * Inheritance-specific members of AST related classes and interfaces. E.g. adding a member to an
   interface shouldn't be considered API breaking
-* Setters in AST classes are private. They are only used in the parser
+* Setters in AST classes are private. They are only used in the parser.
 
 ### Separation between public API, internal and implementation
 
@@ -106,6 +106,12 @@ All packages are considered to be public API by default, with **two exceptions**
 * Any package that contains an `impl` segment is considered internal. E.g. `net.sourceforge.pmd.lang.impl`.
   These packages contain base classes that are needed for extending PMD (like adding a new language).
   These can change at any time without a MAJOR version change.
+
+  In a later version, the `impl` packages could be promoted as a public API for implementing new
+  languages for PMD outside the main monorepo. In that sense, e.g. the module `pmd-java` is allowed
+  to depend on `impl` packages of `pmd-core`, but ideally it doesn't depend on `internal` packages of
+  `pmd-core` (or any other module). However, for now, the `impl` packages are **explicitly considered
+  internal** until this decision is revised.
 
 ### Deprecation and removing of old APIs
 
@@ -158,23 +164,6 @@ Non-concrete AST classes (like base classes or common interfaces) should follow 
   It is an indication that the feature is in experimental, unstable state.
   The API members can be modified in any way, or even removed, at any time, without warning.
   You should not use or rely on them in any production code. They are purely to allow broad testing and feedback.
-
-* `@ReservedSubclassing` (`net.sourceforge.pmd.annotation.ReservedSubclassing`)
-
-  Types marked with the `@ReservedSubclassing` annotation are only meant to be subclassed
-  by classes within PMD. These types are only partially public API. Abstract or protected methods
-  may be added or removed at any time, which could break compatibility with existing
-  implementors.
-
-  The API that is not inheritance-specific (all public members) is still public API,
-  unless the public members are marked as `@InternalApi` explicitly.
-
-  The annotation is *not* inherited, which
-  means a reserved interface doesn't prevent its implementors to be subclassed.
-
-  This should be used for example for base rule classes that
-  are meant to be used in PMD only, or for AST-related interfaces
-  and abstract classes.
 
 * `@Deprecated` (`java.lang.Deprecated`)
 
