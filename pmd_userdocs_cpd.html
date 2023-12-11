@@ -1932,6 +1932,20 @@ the duplication. Here’s a quick summary:</p>
 <p>Novice as much as advanced readers may want to <a href="https://refactoring.guru/smells/duplicate-code">read on on Refactoring Guru</a>
 for more in-depth strategies, use cases and explanations.</p>
 
+<h3 id="finding-more-duplicates">Finding more duplicates</h3>
+
+<p>For some languages, additional options are supported. E.g. Java supports <code class="language-plaintext highlighter-rouge">--ignore-identifiers</code>. This has the
+effect, that all identifiers are replaced with the same placeholder value before the comparing. This helps to
+identify structurally identical code that only differs in naming (different class names, different method names,
+different parameter names).</p>
+
+<p>There are other similar options: <code class="language-plaintext highlighter-rouge">--ignore-annotations</code>, <code class="language-plaintext highlighter-rouge">--ignore-literals</code>, <code class="language-plaintext highlighter-rouge">--ignore-literal-sequences</code>,
+<code class="language-plaintext highlighter-rouge">--ignore-sequences</code>, <code class="language-plaintext highlighter-rouge">--ignore-usings</code>.</p>
+
+<p>Note that these options are <em>disabled</em> by default (e.g. identifiers are <em>not</em> replaced with the same placeholder
+value). By default, CPD finds identical duplicates. Using these options, the found duplicates are not anymore
+exactly identical.</p>
+
 <h2 id="cli-usage">CLI Usage</h2>
 
 <h3 id="cli-options-reference">CLI options reference</h3>
@@ -2106,7 +2120,7 @@ for more in-depth strategies, use cases and explanations.</p>
 <tr>
     <td><a style="pointer-events: none; cursor: default;" name="-skip-duplicate-files"><code>--skip-duplicate-files</code></a></td>
     <td>Ignore multiple copies of files of the same name and length in comparison.</td>
-    <td><code>false</code></td>
+    <td><code></code></td>
     <td></td>
 </tr>
 
@@ -2149,8 +2163,8 @@ for more in-depth strategies, use cases and explanations.</p>
 
 <tr>
     <td><a style="pointer-events: none; cursor: default;" name="-non-recursive"><code>--non-recursive</code></a></td>
-    <td>Don't scan subdirectories</td>
-    <td><code>false</code></td>
+    <td>Don't scan subdirectories. By default, subdirectories are considered.</td>
+    <td><code></code></td>
     <td></td>
 </tr>
 
@@ -2171,8 +2185,9 @@ for more in-depth strategies, use cases and explanations.</p>
 
 <tr>
     <td><a style="pointer-events: none; cursor: default;" name="-skip-lexical-errors"><code>--skip-lexical-errors</code></a></td>
-    <td>Skip files which can't be tokenized due to invalid characters instead of aborting CPD</td>
-    <td><code>false</code></td>
+    <td>Skip files which can't be tokenized due to invalid characters instead of aborting CPD.
+                            By default, CPD analysis is stopped on the first error.</td>
+    <td><code></code></td>
     <td></td>
 </tr>
 
@@ -2267,8 +2282,9 @@ for more in-depth strategies, use cases and explanations.</p>
 
 <tr>
     <td><a style="pointer-events: none; cursor: default;" name="-ignore-literals"><code>--ignore-literals</code></a></td>
-    <td>Ignore number values and string contents when comparing text</td>
-    <td><code>false</code></td>
+    <td>Ignore literal values such as numbers and strings when comparing text.
+                            By default, literals are not ignored.</td>
+    <td><code></code></td>
     <td>Java</td>
 </tr>
 
@@ -2288,9 +2304,33 @@ for more in-depth strategies, use cases and explanations.</p>
 
 
 <tr>
+    <td><a style="pointer-events: none; cursor: default;" name="-ignore-literal-sequences"><code>--ignore-literal-sequences</code></a></td>
+    <td>Ignore sequences of literals such as list initializers.
+                            By default, such sequences of literals are not ignored.</td>
+    <td><code></code></td>
+    <td>C#, C++, Lua</td>
+</tr>
+
+    <!-- Row of the CLI reference table, describing an option -->
+<!-- Rows can be linked to the name of the option (without leading dash) -->
+<!-- Argument summary: -->
+<!-- options: comma separated list of aliases for the option.-->
+<!-- option_arg: optional name for the argument of the option, eg 'arg', will be formatted eg to '<arg>'-->
+<!-- description: description, you can use "some" inline markdown -->
+<!-- required: whether the option is required, if specified, whatever the value, it's considered required -->
+<!-- languages: languages to which the option applies -->
+<!-- default: default value -->
+
+
+
+<!-- fragment id in the page -->
+
+
+<tr>
     <td><a style="pointer-events: none; cursor: default;" name="-ignore-identifiers"><code>--ignore-identifiers</code></a></td>
-    <td>Ignore constant and variable names when comparing text</td>
-    <td><code>false</code></td>
+    <td>Ignore names of classes, methods, variables, constants, etc. when comparing text.
+                            By default, identifier names are not ignored.</td>
+    <td><code></code></td>
     <td>Java</td>
 </tr>
 
@@ -2311,8 +2351,9 @@ for more in-depth strategies, use cases and explanations.</p>
 
 <tr>
     <td><a style="pointer-events: none; cursor: default;" name="-ignore-annotations"><code>--ignore-annotations</code></a></td>
-    <td>Ignore language annotations (Java) or attributes (C#) when comparing text</td>
-    <td><code>false</code></td>
+    <td>Ignore language annotations (Java) or attributes (C#) when comparing text.
+                            By default, annotations are not ignored.</td>
+    <td><code></code></td>
     <td>C#, Java</td>
 </tr>
 
@@ -2332,31 +2373,10 @@ for more in-depth strategies, use cases and explanations.</p>
 
 
 <tr>
-    <td><a style="pointer-events: none; cursor: default;" name="-ignore-literal-sequences"><code>--ignore-literal-sequences</code></a></td>
-    <td>Ignore sequences of literals (common e.g. in list initializers)</td>
-    <td><code>false</code></td>
-    <td>C#, C++, Lua</td>
-</tr>
-
-    <!-- Row of the CLI reference table, describing an option -->
-<!-- Rows can be linked to the name of the option (without leading dash) -->
-<!-- Argument summary: -->
-<!-- options: comma separated list of aliases for the option.-->
-<!-- option_arg: optional name for the argument of the option, eg 'arg', will be formatted eg to '<arg>'-->
-<!-- description: description, you can use "some" inline markdown -->
-<!-- required: whether the option is required, if specified, whatever the value, it's considered required -->
-<!-- languages: languages to which the option applies -->
-<!-- default: default value -->
-
-
-
-<!-- fragment id in the page -->
-
-
-<tr>
     <td><a style="pointer-events: none; cursor: default;" name="-ignore-sequences"><code>--ignore-sequences</code></a></td>
-    <td>Ignore sequences of identifier and literals</td>
-    <td><code>false</code></td>
+    <td>Ignore sequences of identifier and literals.
+                            By default, such sequences are not ignored.</td>
+    <td><code></code></td>
     <td>C++</td>
 </tr>
 
@@ -2377,8 +2397,9 @@ for more in-depth strategies, use cases and explanations.</p>
 
 <tr>
     <td><a style="pointer-events: none; cursor: default;" name="-ignore-usings"><code>--ignore-usings</code></a></td>
-    <td>Ignore <code>using</code> directives in C# when comparing text</td>
-    <td><code>false</code></td>
+    <td>Ignore <code>using</code> directives in C# when comparing text.
+                            By default, using directives are not ignored.</td>
+    <td><code></code></td>
     <td>C#</td>
 </tr>
 
@@ -2400,7 +2421,7 @@ for more in-depth strategies, use cases and explanations.</p>
 <tr>
     <td><a style="pointer-events: none; cursor: default;" name="-no-skip-blocks"><code>--no-skip-blocks</code></a></td>
     <td>Do not skip code blocks matched by <code>--skip-blocks-pattern</code></td>
-    <td><code>false</code></td>
+    <td><code></code></td>
     <td>C++</td>
 </tr>
 
@@ -2549,6 +2570,30 @@ for more in-depth strategies, use cases and explanations.</p>
 </div>
 
 <p><em>There is no limit to the number of <code class="language-plaintext highlighter-rouge">--dir</code>, you may add.</em></p>
+
+<p>You may wish to ignore identifiers so that more duplications are found, that only differ in naming:</p>
+
+<div class="text-left">
+  <ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <a class="nav-link active" id="linux-tab-ignore_identifiers" data-toggle="tab" href="#linux-ignore_identifiers" role="tab" aria-controls="linux" aria-selected="true">Linux / macOS</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="windows-tab-ignore_identifiers" data-toggle="tab" href="#windows-ignore_identifiers" role="tab" aria-controls="windows" aria-selected="false">Windows</a>
+    </li>
+  </ul>
+
+  <div class="tab-content border">
+    <div class="tab-pane fade show active" id="linux-ignore_identifiers" role="tabpanel" aria-labelledby="linux-tab">
+      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">~ $ </span><span class="s2">pmd</span> cpd --minimum-tokens 100 --dir src/main/java --ignore-identifiers
+</code></pre></figure>
+    </div>
+    <div class="tab-pane fade" id="windows-ignore_identifiers" role="tabpanel" aria-labelledby="windows-tab">
+      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">C:\&gt; </span><span class="s2">pmd.bat</span> cpd --minimum-tokens 100 --dir src\main\java --ignore-identifiers
+</code></pre></figure>
+    </div>
+  </div>
+</div>
 
 <p>And if you’re checking a C source tree with duplicate files in different architecture directories
 you can skip those using <code class="language-plaintext highlighter-rouge">--skip-duplicate-files</code>:</p>
