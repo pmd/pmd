@@ -95,6 +95,7 @@ in the Migration Guide.
 
 * cli
   * [#4594](https://github.com/pmd/pmd/pull/4594):   \[cli] Change completion generation to runtime
+  * [#4685](https://github.com/pmd/pmd/pull/4685):   \[cli] Clarify CPD documentation, fix positional parameter handling
   * [#4723](https://github.com/pmd/pmd/issues/4723): \[cli] Launch fails for "bash pmd"
 * core
   * [#1027](https://github.com/pmd/pmd/issues/1027): \[core] Apply the new PropertyDescriptor&lt;Pattern&gt; type where applicable
@@ -561,6 +562,7 @@ See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.
     * [#4482](https://github.com/pmd/pmd/issues/4482): \[cli] pmd.bat can only be executed once
     * [#4484](https://github.com/pmd/pmd/issues/4484): \[cli] ast-dump with no properties produce an NPE
     * [#4594](https://github.com/pmd/pmd/pull/4594):   \[cli] Change completion generation to runtime
+    * [#4685](https://github.com/pmd/pmd/pull/4685):   \[cli] Clarify CPD documentation, fix positional parameter handling
     * [#4723](https://github.com/pmd/pmd/issues/4723): \[cli] Launch fails for "bash pmd"
 * doc
     * [#2501](https://github.com/pmd/pmd/issues/2501): \[doc] Verify ANTLR Documentation
