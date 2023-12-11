@@ -123,6 +123,8 @@ in the Migration Guide.
   * [#4719](https://github.com/pmd/pmd/pull/4719):   \[java] UnnecessaryCaseChange: example doc toUpperCase() should compare to a capitalized string
 * javascript
   * [#4673](https://github.com/pmd/pmd/pull/4673):   \[javascript] CPD: Added support for decorator notation
+* swift
+  * [#4697](https://github.com/pmd/pmd/issues/4697): \[swift] Support Swift 5.9 features (mainly macros expansion expressions)
 * xml-bestpractices
   * [#4592](https://github.com/pmd/pmd/pull/4592):   \[xml] Add MissingEncoding rule
 
@@ -769,6 +771,7 @@ Language specific fixes:
 * swift
     * [#1877](https://github.com/pmd/pmd/pull/1877):   \[swift] Feature/swift rules
     * [#1882](https://github.com/pmd/pmd/pull/1882):   \[swift] UnavailableFunction Swift rule
+    * [#4697](https://github.com/pmd/pmd/issues/4697): \[swift] Support Swift 5.9 features (mainly macros expansion expressions)
 * xml
     * [#1800](https://github.com/pmd/pmd/pull/1800):   \[xml] Unimplement org.w3c.dom.Node from the XmlNodeWrapper
 * xml-bestpractices
