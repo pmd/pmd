@@ -2015,8 +2015,12 @@ It uses an XSLT stylesheet to convert CPD’s XML format into HTML.</p>
 
 <h3 id="new-swift-support">New: Swift support</h3>
 
-<p>Given the full Antlr support, PMD now fully supports Swift. We are pleased to announce we are shipping a number of
-rules starting with PMD 7.</p>
+<p>Given the full Antlr support, PMD now fully supports Swift for creating rules. Previously only CPD was supported.</p>
+
+<p>Note: There is only limited support for newer Swift language features in the parser, e.g. Swift 5.9 (Macro Expansions)
+are supported, but other features are not.</p>
+
+<p>We are pleased to announce we are shipping a number of rules starting with PMD 7.</p>
 
 <ul>
   <li><a href="pmd_rules_swift_errorprone.html#forcecast"><code class="language-plaintext highlighter-rouge">ForceCast</code></a> (<code class="language-plaintext highlighter-rouge">swift-errorprone</code>) flags all force casts, making sure you are
@@ -4940,7 +4944,7 @@ Please use <code class="language-plaintext highlighter-rouge">net.sourceforge.pm
         <div class="col-lg-12 footer">
             &copy;2023 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Dec 7, 2023 <br />
+             Site last generated: Dec 11, 2023 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
