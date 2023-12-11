@@ -95,6 +95,7 @@ in the Migration Guide.
 
 * cli
   * [#4594](https://github.com/pmd/pmd/pull/4594):   \[cli] Change completion generation to runtime
+  * [#4685](https://github.com/pmd/pmd/pull/4685):   \[cli] Clarify CPD documentation, fix positional parameter handling
   * [#4723](https://github.com/pmd/pmd/issues/4723): \[cli] Launch fails for "bash pmd"
 * core
   * [#1027](https://github.com/pmd/pmd/issues/1027): \[core] Apply the new PropertyDescriptor&lt;Pattern&gt; type where applicable
@@ -103,6 +104,7 @@ in the Migration Guide.
   * [#3175](https://github.com/pmd/pmd/issues/3175): \[doc] Document language module features
   * [#4659](https://github.com/pmd/pmd/pull/4659):   \[doc] Improve ant documentation
   * [#4669](https://github.com/pmd/pmd/pull/4669):   \[doc] Add bld PMD Extension to Tools / Integrations
+  * [#4676](https://github.com/pmd/pmd/issues/4676): \[doc] Clarify how CPD `--ignore-literals` and `--ignore-identifiers` work
 * miscellaneous
   * [#4699](https://github.com/pmd/pmd/pull/4699):   Make PMD buildable with java 21
   * [#4586](https://github.com/pmd/pmd/pull/4586):   Use explicit encoding in ruleset xml files
@@ -562,6 +564,7 @@ See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.
     * [#4482](https://github.com/pmd/pmd/issues/4482): \[cli] pmd.bat can only be executed once
     * [#4484](https://github.com/pmd/pmd/issues/4484): \[cli] ast-dump with no properties produce an NPE
     * [#4594](https://github.com/pmd/pmd/pull/4594):   \[cli] Change completion generation to runtime
+    * [#4685](https://github.com/pmd/pmd/pull/4685):   \[cli] Clarify CPD documentation, fix positional parameter handling
     * [#4723](https://github.com/pmd/pmd/issues/4723): \[cli] Launch fails for "bash pmd"
 * doc
     * [#2501](https://github.com/pmd/pmd/issues/2501): \[doc] Verify ANTLR Documentation
@@ -570,6 +573,7 @@ See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.
     * [#4303](https://github.com/pmd/pmd/issues/4303): \[doc] Document new property framework
     * [#4438](https://github.com/pmd/pmd/issues/4438): \[doc] Documentation links in VS Code are outdated
     * [#4521](https://github.com/pmd/pmd/issues/4521): \[doc] Website is not mobile friendly
+    * [#4676](https://github.com/pmd/pmd/issues/4676): \[doc] Clarify how CPD `--ignore-literals` and `--ignore-identifiers` work
     * [#4659](https://github.com/pmd/pmd/pull/4659):   \[doc] Improve ant documentation
     * [#4669](https://github.com/pmd/pmd/pull/4669):   \[doc] Add bld PMD Extension to Tools / Integrations
 * testing

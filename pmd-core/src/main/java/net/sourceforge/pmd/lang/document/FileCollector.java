@@ -70,6 +70,7 @@ public final class FileCollector implements AutoCloseable {
         this.discoverer = discoverer;
         this.reporter = reporter;
         this.outerFsPath = outerFsPath;
+        LOG.debug("Created new FileCollector with {}", discoverer);
     }
 
     public void setRecursive(boolean collectFilesRecursively) {
