@@ -38,7 +38,12 @@ public final class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclara
         return visitor.visit(this, data);
     }
 
+    /**
+     * @deprecated Use {@link #hasVisibility(Visibility) hasVisibility(Visibility.V_PACKAGE)} instead, which
+     * can correctly differentiate between local and package private classes.
+     */
     @Override
+    @Deprecated
     public boolean isPackagePrivate() {
         return super.isPackagePrivate() && !isLocal();
     }

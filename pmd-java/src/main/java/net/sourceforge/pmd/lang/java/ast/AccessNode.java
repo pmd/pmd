@@ -110,6 +110,15 @@ public interface AccessNode extends Annotatable {
         return getModifiers().hasAllExplicitly(mod1, mod);
     }
 
+    /**
+     * Returns true if this node has the given visibility
+     * either explicitly written or inferred through context.
+     * @see #getVisibility()
+     * @see #getEffectiveVisibility()
+     */
+    default boolean hasVisibility(Visibility visibility) {
+        return getVisibility() == visibility;
+    }
 
     // TODO remove all those, kept only for compatibility with rules
 

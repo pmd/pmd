@@ -436,7 +436,7 @@ public final class JavaMetrics {
     private static int computeNopa(ASTAnyTypeDeclaration node, MetricOptions ignored) {
         return node.getDeclarations()
                    .filterIs(ASTFieldDeclaration.class)
-                   .filter(AccessNode::isPublic)
+                   .filter(it -> it.hasVisibility(AccessNode.Visibility.V_PUBLIC))
                    .flatMap(ASTFieldDeclaration::getVarIds)
                    .count();
     }
@@ -607,7 +607,7 @@ public final class JavaMetrics {
         NodeStream<ASTMethodDeclaration> methods =
             node.getDeclarations()
                 .filterIs(ASTMethodDeclaration.class)
-                .filter(it -> !it.isPrivate());
+                .filter(it -> !it.hasVisibility(AccessNode.Visibility.V_PRIVATE));
 
         int notSetter = methods.filter(it -> !JavaRuleUtil.isGetterOrSetter(it)).count();
         int total = methods.count();

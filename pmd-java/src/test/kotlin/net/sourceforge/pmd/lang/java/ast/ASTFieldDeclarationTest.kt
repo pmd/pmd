@@ -24,9 +24,9 @@ class ASTFieldDeclarationTest : ParserTestSpec({
 
                     it::getModifiers shouldBe modifiers { }
 
-                    it::isPublic shouldBe false
+                    it.hasVisibility(AccessNode.Visibility.V_PUBLIC) shouldBe false
                     it::isSyntacticallyPublic shouldBe false
-                    it::isPackagePrivate shouldBe true
+                    it.hasVisibility(AccessNode.Visibility.V_PACKAGE) shouldBe true
 
                     primitiveType(INT)
 
