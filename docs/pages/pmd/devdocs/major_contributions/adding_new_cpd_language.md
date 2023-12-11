@@ -79,6 +79,27 @@ If your language only supports CPD, then you can subclass {% jdoc core::lang.imp
 
 5. Add some tests for your tokenizer by following the [section below](#testing-your-implementation).
 
+6. Finishing up your new language module by adding a page in the documentation. Create a new markdown file
+   `<langId>.md` in `docs/pages/pmd/languages/`. This file should have the following frontmatter:
+
+   ```
+   ---
+   title: <Language Name>
+   permalink: pmd_languages_<langId>.html
+   last_updated: <Month> <Year> (<PMD Version>)
+   tags: [languages, CpdCapableLanguage]
+   ---
+   ```
+
+   On this page, language specifics can be documented, e.g. when the language was first supported by PMD.
+   There is also the following Jekyll Include, that creates summary box for the language:
+
+   ```
+   {% raw %}
+   {% include language_info.html name='<Language Name>' id='<langId>' implementation='<langId>::lang.<langId>.<langId>LanguageModule' supports_cpd=true %}
+   {% endraw %}
+   ```
+
 ### Declaring tokenizer options
 
 To make the tokenizer configurable, first define some property descriptors using

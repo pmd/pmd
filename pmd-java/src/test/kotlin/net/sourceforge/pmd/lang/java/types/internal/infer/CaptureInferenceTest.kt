@@ -458,6 +458,39 @@ class Foo {
         }
     }
 
+    parserTest("PMD crashes while using generics and wildcards #4753") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+import java.util.Collection;
+import java.util.List;
+import java.util.Arrays;
+public class SubClass<T> {
+
+   public <C extends Collection<? super T>> C into(C collection) {
+       List<T> list = null;
+       collection.addAll(list);
+       return collection;
+   }
+}
+                """.trimIndent()
+        )
+
+        val cvar = acu.typeVar("C")
+        val tvar = acu.typeVar("T")
+
+        spy.shouldBeOk {
+            val call = acu.firstMethodCall()
+
+            call.methodType.shouldMatchMethod(
+                named = "addAll",
+                withFormals = listOf(java.util.Collection::class[`?` extends captureMatcher(`?` `super` tvar)]),
+                returning = boolean
+            )
+            call.overloadSelectionInfo::isFailed shouldBe false
+        }
+    }
+
 })
 
 

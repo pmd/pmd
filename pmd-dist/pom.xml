@@ -132,14 +132,6 @@
             <artifactId>pmd-cli</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!-- include bash/zsh completions -->
-        <dependency>
-            <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-cli</artifactId>
-            <version>${project.version}</version>
-            <type>sh</type>
-            <classifier>completion</classifier>
-        </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-ant</artifactId>
@@ -166,13 +158,6 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-        </dependency>
-
-        <!-- needed for pmd-designer 7.0.0-rc1 -->
-        <dependency>
-            <groupId>com.beust</groupId>
-            <artifactId>jcommander</artifactId>
-            <version>1.48</version>
         </dependency>
 
         <dependency>
@@ -248,6 +233,37 @@
                                     <environmentVariables>
                                         <JAVA_HOME>${java17.home}</JAVA_HOME>
                                         <PATH>${java17.home}/bin:${env.PATH}</PATH>
+                                    </environmentVariables>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>jdk21-compat-it</id>
+            <activation>
+                <property>
+                    <name>java21.home</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>jdk21-compat-it</id>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                                <configuration>
+                                    <environmentVariables>
+                                        <JAVA_HOME>${java21.home}</JAVA_HOME>
+                                        <PATH>${java21.home}/bin:${env.PATH}</PATH>
                                     </environmentVariables>
                                 </configuration>
                             </execution>

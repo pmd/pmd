@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 import net.sourceforge.pmd.lang.ecmascript.EcmascriptLanguageModule;
 
+
+
 class EcmascriptTokenizerTest extends CpdTextComparisonTest {
 
     EcmascriptTokenizerTest() {
@@ -56,5 +58,10 @@ class EcmascriptTokenizerTest extends CpdTextComparisonTest {
     @Test
     void testTabWidth() {
         doTest("tabWidth");
+    }
+
+    @Test
+    void testDecorators() {
+        doTest("decorator");
     }
 }

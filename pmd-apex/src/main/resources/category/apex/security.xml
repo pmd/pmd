@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <ruleset name="Security"
          xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
@@ -119,8 +119,6 @@ public class Foo {
 ]]>
         </example>
     </rule>
-
-    <rule name="ApexCSRF" ref="category/apex/errorprone.xml/ApexCSRF" deprecated="true"/>
 
     <rule name="ApexDangerousMethods"
           language="apex"

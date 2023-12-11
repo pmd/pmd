@@ -14,9 +14,6 @@ import picocli.CommandLine.TypeConversionException;
 
 /**
  * Provider of candidates / conversion support for supported PMD/CPD languages.
- *
- * <p>Beware, the help will report this on runtime, and be accurate to available
- * modules in the classpath, but autocomplete will include all available at build time.
  */
 public class LanguageTypeSupport implements ITypeConverter<Language>, Iterable<String> {
 

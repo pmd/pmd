@@ -127,7 +127,7 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
      * @return boolean true if variableType is not what we care about
      */
     private boolean ignoreType(ASTType typeNode, JTypeMirror t) {
-        if (typeNode.getEnclosingType().getSymbol().equals(t.getSymbol())) {
+        if (typeNode.getEnclosingType() != null && typeNode.getEnclosingType().getSymbol().equals(t.getSymbol())) {
             return true;
         }
         JTypeDeclSymbol symbol = t.getSymbol();

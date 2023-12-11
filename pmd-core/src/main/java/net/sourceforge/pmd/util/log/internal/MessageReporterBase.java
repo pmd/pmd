@@ -21,7 +21,7 @@ import net.sourceforge.pmd.util.log.MessageReporter;
  *
  * @author Clément Fournier
  */
-abstract class MessageReporterBase implements MessageReporter {
+public abstract class MessageReporterBase implements MessageReporter {
 
     private int numErrors;
     private @Nullable Level minLevel = Level.TRACE;

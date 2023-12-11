@@ -25,7 +25,9 @@ public class ApexLanguageModule extends LanguageModuleBase implements PmdCapable
                               .addVersion("54")
                               .addVersion("55")
                               .addVersion("56")
-                              .addDefaultVersion("57"));
+                              .addVersion("57")
+                              .addVersion("58")
+                              .addDefaultVersion("59"));
     }
 
     public static ApexLanguageModule getInstance() {

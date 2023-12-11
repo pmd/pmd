@@ -69,6 +69,9 @@
    <rule ref="category/apex/performance.xml/OperationWithLimitsInLoop" message="Avoid operations in loops that may hit governor limits">
       <priority>3</priority>
    </rule>
+   <rule ref="category/apex/performance.xml/OperationWithHighCostInLoop" message="Avoid operations in loops that can impact performances">
+      <priority>3</priority>
+   </rule>
    <rule ref="category/apex/errorprone.xml/AvoidDirectAccessTriggerMap" message="Avoid directly accessing Trigger.old and Trigger.new">
       <priority>3</priority>
    </rule>

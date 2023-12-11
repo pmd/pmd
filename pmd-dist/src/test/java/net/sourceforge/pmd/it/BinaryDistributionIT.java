@@ -39,7 +39,8 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
 
     private static final List<String> SUPPORTED_LANGUAGES_PMD = listOf(
         "apex-52", "apex-53", "apex-54", "apex-55",
-        "apex-56", "apex-57", "ecmascript-3", "ecmascript-5",
+        "apex-56", "apex-57", "apex-58", "apex-59",
+        "ecmascript-3", "ecmascript-5",
         "ecmascript-6", "ecmascript-7", "ecmascript-8",
         "ecmascript-9", "ecmascript-ES2015",
         "ecmascript-ES2016", "ecmascript-ES2017",
@@ -48,7 +49,8 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         "java-1.6", "java-1.7", "java-1.8", "java-1.9", "java-10",
         "java-11", "java-12", "java-13", "java-14", "java-15",
         "java-16", "java-17", "java-18", "java-19",
-        "java-19-preview", "java-20", "java-20-preview",
+        "java-20", "java-20-preview",
+        "java-21", "java-21-preview",
         "java-5", "java-6", "java-7",
         "java-8", "java-9", "jsp-2", "jsp-3", "kotlin-1.6",
         "kotlin-1.7", "kotlin-1.8", "modelica-3.4", "modelica-3.5",
@@ -58,8 +60,9 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         "scala-2.10", "scala-2.11", "scala-2.12", "scala-2.13",
         "swift-4.2", "swift-5.0", "swift-5.1", "swift-5.2",
         "swift-5.3", "swift-5.4", "swift-5.5", "swift-5.6",
-        "swift-5.7", "vf-52", "vf-53", "vf-54", "vf-55", "vf-56",
-        "vf-57", "vm-2.0", "vm-2.1", "vm-2.2", "vm-2.3", "wsdl-1.1",
+        "swift-5.7", "swift-5.8", "swift-5.9", "vf-52", "vf-53", "vf-54", "vf-55", "vf-56",
+        "vf-57", "vf-58", "vf-59",
+        "vm-2.0", "vm-2.1", "vm-2.2", "vm-2.3", "wsdl-1.1",
         "wsdl-2.0", "xml-1.0", "xml-1.1", "xsl-1.0", "xsl-2.0",
         "xsl-3.0"
     );
@@ -85,7 +88,6 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         result.add(basedir + "bin/pmd");
         result.add(basedir + "bin/pmd.bat");
         result.add(basedir + "conf/simplelogger.properties");
-        result.add(basedir + "shell/pmd-completion.sh");
         result.add(basedir + "lib/pmd-core-" + PMDVersion.VERSION + ".jar");
         result.add(basedir + "lib/pmd-java-" + PMDVersion.VERSION + ".jar");
         result.add(basedir + "sbom/pmd-" + PMDVersion.VERSION + "-cyclonedx.xml");

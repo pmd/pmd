@@ -52,16 +52,16 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
             "com.google.common.annotations.VisibleForTesting",
             "android.support.annotation.VisibleForTesting",
             "co.elastic.clients.util.VisibleForTesting",
-            "org.junit.jupiter.api.Test",
-            "org.junit.jupiter.api.extension.RegisterExtension",
-            "org.junit.jupiter.api.ParameterizedTest",
+            "org.junit.jupiter.api.AfterAll",
+            "org.junit.jupiter.api.AfterEach",
+            "org.junit.jupiter.api.BeforeAll",
+            "org.junit.jupiter.api.BeforeEach",
             "org.junit.jupiter.api.RepeatedTest",
+            "org.junit.jupiter.api.Test",
             "org.junit.jupiter.api.TestFactory",
             "org.junit.jupiter.api.TestTemplate",
-            "org.junit.jupiter.api.BeforeEach",
-            "org.junit.jupiter.api.BeforeAll",
-            "org.junit.jupiter.api.AfterEach",
-            "org.junit.jupiter.api.AfterAll",
+            "org.junit.jupiter.api.extension.RegisterExtension",
+            "org.junit.jupiter.params.ParameterizedTest",
             "org.testng.annotations.Test",
             "org.testng.annotations.AfterClass",
             "org.testng.annotations.AfterGroups",
@@ -150,7 +150,9 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
 
         return isMissingComment(decl)
             && isNotIgnored(decl)
-            && !(decl instanceof ASTFieldDeclaration && enclosing.isAnnotationPresent("lombok.Value"));
+            && !(decl instanceof ASTFieldDeclaration
+                && enclosing != null
+                && enclosing.isAnnotationPresent("lombok.Value"));
     }
 
     private boolean isMissingComment(AccessNode decl) {
