@@ -24,7 +24,7 @@ public class DetachedTestCaseRule extends AbstractJavaRulechainRule {
             // looks like a test case
             methods.filter(m -> m.getArity() == 0
                        && m.isVoid()
-                       && !m.getModifiers().hasAny(JModifier.STATIC, JModifier.PRIVATE, JModifier.PROTECTED))
+                       && !m.getModifiers().hasAny(JModifier.STATIC, JModifier.PRIVATE, JModifier.PROTECTED, JModifier.ABSTRACT))
                    // the method itself has no annotation
                    .filter(it -> it.getDeclaredAnnotations().isEmpty())
                    .forEach(m -> addViolation(data, m));

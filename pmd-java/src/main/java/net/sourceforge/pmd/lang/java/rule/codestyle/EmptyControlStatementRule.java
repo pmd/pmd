@@ -21,13 +21,25 @@ import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 
 public class EmptyControlStatementRule extends AbstractJavaRulechainRule {
+
+    private static final PropertyDescriptor<Boolean> ALLOW_COMMENTED_BLOCKS
+            = PropertyFactory.booleanProperty("allowCommentedBlocks")
+            .desc("Option for allowing empty but commented blocks. This is useful where a developer "
+                    + "wants to have the code structure and explain why a condition does not require "
+                    + "logic or to hold TODO comments for future work.")
+            .defaultValue(Boolean.FALSE)
+            .build();
 
     public EmptyControlStatementRule() {
         super(ASTFinallyClause.class, ASTSynchronizedStatement.class, ASTTryStatement.class, ASTDoStatement.class,
                 ASTBlock.class, ASTForStatement.class, ASTForeachStatement.class, ASTWhileStatement.class,
                 ASTIfStatement.class, ASTSwitchStatement.class, ASTInitializer.class);
+
+        definePropertyDescriptor(ALLOW_COMMENTED_BLOCKS);
     }
 
     @Override
@@ -145,7 +157,9 @@ public class EmptyControlStatementRule extends AbstractJavaRulechainRule {
     }
 
     private boolean isEmpty(JavaNode node) {
-        return node instanceof ASTBlock && node.getNumChildren() == 0
+        boolean allowCommentedBlocks = getProperty(ALLOW_COMMENTED_BLOCKS);
+
+        return (node instanceof ASTBlock && node.getNumChildren() == 0 && !(((ASTBlock) node).containsComment() && allowCommentedBlocks))
             || node instanceof ASTEmptyStatement;
     }
 }

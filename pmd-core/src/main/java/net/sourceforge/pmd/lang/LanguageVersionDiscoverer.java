@@ -168,4 +168,11 @@ public class LanguageVersionDiscoverer {
     public void onlyRecognizeLanguages(LanguageRegistry lang) {
         this.languageRegistry = Objects.requireNonNull(lang);
     }
+
+    @Override
+    public String toString() {
+        return "LanguageVersionDiscoverer(" + languageRegistry
+                + (forcedVersion != null ? ",forcedVersion=" + forcedVersion : "")
+                + ")";
+    }
 }
