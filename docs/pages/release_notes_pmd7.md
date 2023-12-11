@@ -154,8 +154,12 @@ See [the example report](report-examples/cpdhtml-v2.html).
 
 ### New: Swift support
 
-Given the full Antlr support, PMD now fully supports Swift. We are pleased to announce we are shipping a number of
-rules starting with PMD 7.
+Given the full Antlr support, PMD now fully supports Swift for creating rules. Previously only CPD was supported.
+
+Note: There is only limited support for newer Swift language features in the parser, e.g. Swift 5.9 (Macro Expansions)
+are supported, but other features are not.
+
+We are pleased to announce we are shipping a number of rules starting with PMD 7.
 
 * {% rule "swift/errorprone/ForceCast" %} (`swift-errorprone`) flags all force casts, making sure you are
   defensively considering all types. Having the application crash shouldn't be an option.
