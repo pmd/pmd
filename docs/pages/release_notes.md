@@ -77,6 +77,12 @@ in the Migration Guide.
 
 * limited support for Swift 5.9 (Macro Expansions)
 
+##### Groovy Support (CPD)
+
+* We now support parsing all Groovy features from Groovy 3 and 4.
+* We now support [suppression](pmd_userdocs_cpd.html#suppression) through `CPD-ON`/`CPD-OFF` comment pairs.
+* See [PR #4726](https://github.com/pmd/pmd/pull/4726) for details.
+
 #### Rule Changes
 
 **New Rules**
@@ -99,6 +105,7 @@ in the Migration Guide.
   * [#4723](https://github.com/pmd/pmd/issues/4723): \[cli] Launch fails for "bash pmd"
 * core
   * [#1027](https://github.com/pmd/pmd/issues/1027): \[core] Apply the new PropertyDescriptor&lt;Pattern&gt; type where applicable
+  * [#4674](https://github.com/pmd/pmd/issues/4674): \[core] WARNING: Illegal reflective access by org.codehaus.groovy.reflection.CachedClass
   * [#4750](https://github.com/pmd/pmd/pull/4750):   \[core] Fix flaky SummaryHTMLRenderer
 * doc
   * [#3175](https://github.com/pmd/pmd/issues/3175): \[doc] Document language module features
@@ -113,6 +120,8 @@ in the Migration Guide.
   * [#4749](https://github.com/pmd/pmd/pull/4749):   Fixes NoSuchMethodError on processing errors in pmd-compat6
 * apex-performance
   * [#4675](https://github.com/pmd/pmd/issues/4675): \[apex] New Rule: OperationWithHighCostInLoop
+* groovy
+  * [#4726](https://github.com/pmd/pmd/pull/4726):   \[groovy] Support Groovy to 3 and 4 and CPD suppressions
 * java
   * [#4753](https://github.com/pmd/pmd/issues/4753): \[java] PMD crashes while using generics and wildcards
 * java-codestyle
@@ -308,6 +317,12 @@ Note: Support for Java 19 preview language features have been removed. The versi
 
 With the new version of Apex Jorje, the new language constructs like User Mode Database Operations
 can be parsed now. PMD should now be able to parse Apex code up to version 59.0 (Winter '23).
+
+#### Changed: Groovy Support (CPD)
+
+* We now support parsing all Groovy features from Groovy 3 and 4.
+* We now support [suppression](pmd_userdocs_cpd.html#suppression) through `CPD-ON`/`CPD-OFF` comment pairs.
+* See [PR #4726](https://github.com/pmd/pmd/pull/4726) for details.
 
 #### Changed: Rule properties
 
@@ -555,6 +570,7 @@ See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.
     * [#4454](https://github.com/pmd/pmd/issues/4454): \[core] "Unknown option: '-min'" but is referenced in documentation
     * [#4611](https://github.com/pmd/pmd/pull/4611):   \[core] Fix loading language properties from env vars
     * [#4621](https://github.com/pmd/pmd/issues/4621): \[core] Make `ClasspathClassLoader::getResource` child first
+    * [#4674](https://github.com/pmd/pmd/issues/4674): \[core] WARNING: Illegal reflective access by org.codehaus.groovy.reflection.CachedClass
     * [#4750](https://github.com/pmd/pmd/pull/4750):   \[core] Fix flaky SummaryHTMLRenderer
 * cli
     * [#2234](https://github.com/pmd/pmd/issues/2234): \[core] Consolidate PMD CLI into a single command
@@ -598,6 +614,8 @@ Language specific fixes:
     * [#4675](https://github.com/pmd/pmd/issues/4675): \[apex] New Rule: OperationWithHighCostInLoop
 * apex-security
     * [#4646](https://github.com/pmd/pmd/issues/4646): \[apex] ApexSOQLInjection does not recognise SObjectType or SObjectField as safe variable types
+* groovy
+    * [#4726](https://github.com/pmd/pmd/pull/4726):   \[groovy] Support Groovy to 3 and 4 and CPD suppressions
 * java
     * [#520](https://github.com/pmd/pmd/issues/520):   \[java] Allow `@SuppressWarnings` with constants instead of literals
     * [#864](https://github.com/pmd/pmd/issues/864):   \[java] Similar/duplicated implementations for determining FQCN

@@ -279,6 +279,12 @@ Related issue: [[core] Explicitly name all language versions (#4120)](https://gi
 With the new version of Apex Jorje, the new language constructs like User Mode Database Operations
 can be parsed now. PMD should now be able to parse Apex code up to version 59.0 (Winter '23).
 
+### Changed: Groovy Support (CPD)
+
+* We now support parsing all Groovy features from Groovy 3 and 4.
+* We now support [suppression](pmd_userdocs_cpd.html#suppression) through `CPD-ON`/`CPD-OFF` comment pairs.
+* See [PR #4726](https://github.com/pmd/pmd/pull/4726) for details.
+
 ## 🌟 New and changed rules
 
 ### New Rules
