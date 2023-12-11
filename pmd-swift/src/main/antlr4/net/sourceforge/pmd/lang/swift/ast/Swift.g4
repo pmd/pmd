@@ -837,6 +837,7 @@ sType
  | sType '?'  // optional-type
  | sType '!'  // implicitly-unwrapped-optional-type
  | protocolCompositionType
+ | 'some' sType // opaque-type
  | sType '.' 'Type' | sType '.' 'Protocol' // metatype
  | 'Any' | 'Self'
  ;
@@ -969,7 +970,8 @@ contextSensitiveKeyword :
  'lazy' | 'left' | 'mutating' | 'none' | 'nonmutating' | 'optional' | 'operator' | 'override' | 'postfix' | 'precedence' |
  'prefix' | 'Protocol' | 'required' | 'right' | 'set' | 'Type' | 'unowned' | 'weak' | 'willSet' |
  'iOS' | 'iOSApplicationExtension' | 'OSX' | 'OSXApplicationExtension­' | 'watchOS' | 'x86_64' |
- 'arm' | 'arm64' | 'i386' | 'os' | 'arch' | 'safe' | 'tvOS' | 'file' | 'line' | 'default' | 'Self' | 'var'
+ 'arm' | 'arm64' | 'i386' | 'os' | 'arch' | 'safe' | 'tvOS' | 'file' | 'line' | 'default' | 'Self' | 'var' |
+ 'some'
  ;
 
 grammarString:
