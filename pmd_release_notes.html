@@ -1940,6 +1940,14 @@ in the Migration Guide.</p>
   <li>limited support for Swift 5.9 (Macro Expansions)</li>
 </ul>
 
+<h5 id="groovy-support-cpd">Groovy Support (CPD)</h5>
+
+<ul>
+  <li>We now support parsing all Groovy features from Groovy 3 and 4.</li>
+  <li>We now support <a href="pmd_userdocs_cpd.html#suppression">suppression</a> through <code class="language-plaintext highlighter-rouge">CPD-ON</code>/<code class="language-plaintext highlighter-rouge">CPD-OFF</code> comment pairs.</li>
+  <li>See <a href="https://github.com/pmd/pmd/pull/4726">PR #4726</a> for details.</li>
+</ul>
+
 <h4 id="rule-changes">Rule Changes</h4>
 
 <p><strong>New Rules</strong></p>
@@ -1971,6 +1979,7 @@ they contain a comment (<code class="language-plaintext highlighter-rouge">allow
   <li>core
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/1027">#1027</a>: [core] Apply the new PropertyDescriptor&lt;Pattern&gt; type where applicable</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4674">#4674</a>: [core] WARNING: Illegal reflective access by org.codehaus.groovy.reflection.CachedClass</li>
       <li><a href="https://github.com/pmd/pmd/pull/4750">#4750</a>:   [core] Fix flaky SummaryHTMLRenderer</li>
     </ul>
   </li>
@@ -1994,6 +2003,11 @@ they contain a comment (<code class="language-plaintext highlighter-rouge">allow
   <li>apex-performance
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/4675">#4675</a>: [apex] New Rule: OperationWithHighCostInLoop</li>
+    </ul>
+  </li>
+  <li>groovy
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/pull/4726">#4726</a>:   [groovy] Support Groovy to 3 and 4 and CPD suppressions</li>
     </ul>
   </li>
   <li>java
@@ -2246,6 +2260,14 @@ literals were ignored. The new option additional ignores identifiers as well in 
 
 <p>With the new version of Apex Jorje, the new language constructs like User Mode Database Operations
 can be parsed now. PMD should now be able to parse Apex code up to version 59.0 (Winter ‘23).</p>
+
+<h4 id="changed-groovy-support-cpd">Changed: Groovy Support (CPD)</h4>
+
+<ul>
+  <li>We now support parsing all Groovy features from Groovy 3 and 4.</li>
+  <li>We now support <a href="pmd_userdocs_cpd.html#suppression">suppression</a> through <code class="language-plaintext highlighter-rouge">CPD-ON</code>/<code class="language-plaintext highlighter-rouge">CPD-OFF</code> comment pairs.</li>
+  <li>See <a href="https://github.com/pmd/pmd/pull/4726">PR #4726</a> for details.</li>
+</ul>
 
 <h4 id="changed-rule-properties">Changed: Rule properties</h4>
 
@@ -2538,6 +2560,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/issues/4454">#4454</a>: [core] “Unknown option: ‘-min’” but is referenced in documentation</li>
       <li><a href="https://github.com/pmd/pmd/pull/4611">#4611</a>:   [core] Fix loading language properties from env vars</li>
       <li><a href="https://github.com/pmd/pmd/issues/4621">#4621</a>: [core] Make <code class="language-plaintext highlighter-rouge">ClasspathClassLoader::getResource</code> child first</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4674">#4674</a>: [core] WARNING: Illegal reflective access by org.codehaus.groovy.reflection.CachedClass</li>
       <li><a href="https://github.com/pmd/pmd/pull/4750">#4750</a>:   [core] Fix flaky SummaryHTMLRenderer</li>
     </ul>
   </li>
@@ -2604,6 +2627,11 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
   <li>apex-security
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/4646">#4646</a>: [apex] ApexSOQLInjection does not recognise SObjectType or SObjectField as safe variable types</li>
+    </ul>
+  </li>
+  <li>groovy
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/pull/4726">#4726</a>:   [groovy] Support Groovy to 3 and 4 and CPD suppressions</li>
     </ul>
   </li>
   <li>java
