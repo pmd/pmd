@@ -11,19 +11,14 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.test.BaseParsingHelper;
-import net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest;
-import net.sourceforge.pmd.lang.ast.test.RelevantAttributePrinter;
+import net.sourceforge.pmd.lang.java.BaseJavaTreeDumpTest;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 
-class Java20PreviewTreeDumpTest extends BaseTreeDumpTest {
+class Java20PreviewTreeDumpTest extends BaseJavaTreeDumpTest {
     private final JavaParsingHelper java20p =
             JavaParsingHelper.DEFAULT.withDefaultVersion("20-preview")
                     .withResourceContext(Java20PreviewTreeDumpTest.class, "jdkversiontests/java20p/");
     private final JavaParsingHelper java20 = java20p.withDefaultVersion("20");
-
-    Java20PreviewTreeDumpTest() {
-        super(new RelevantAttributePrinter(), ".java");
-    }
 
     @Override
     public BaseParsingHelper<?, ?> getParser() {
