@@ -477,7 +477,7 @@ Here's a screenshot of CPD after running on the JDK 8 java.lang package:
 
 ## Suppression
 
-Arbitrary blocks of code can be ignored through comments on **Java**, **C/C++**, **Dart**, **Go**, **Javascript**,
+Arbitrary blocks of code can be ignored through comments on **Java**, **C/C++**, **Dart**, **Go**, **Groovy**, **Javascript**,
 **Kotlin**, **Lua**, **Matlab**, **Objective-C**, **PL/SQL**, **Python**, **Scala**, **Swift** and **C#** by including the keywords `CPD-OFF` and `CPD-ON`.
 
 ```java
