@@ -16,7 +16,8 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
  * A node that owns a {@linkplain ASTModifierList modifier list}.
  *
  * <p>{@link AccessNode} methods take into account the syntactic context of the
- * declaration, e.g. {@link #isPublic()} will always return true for a field
+ * declaration, e.g. {@link #hasModifiers(JModifier, JModifier...) hasModifiers(JModifier.PUBLIC)}
+ * will always return true for a field
  * declared inside an interface, regardless of whether the {@code public}
  * modifier was specified explicitly or not. If you want to know whether
  * the modifier was explicitly stated, use {@link #hasExplicitModifiers(JModifier, JModifier...)}.

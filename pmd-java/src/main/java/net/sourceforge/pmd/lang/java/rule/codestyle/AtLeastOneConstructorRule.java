@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
+import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.rule.AbstractIgnoredAnnotationRule;
 import net.sourceforge.pmd.lang.java.rule.design.UseUtilityClassRule;
 
@@ -50,7 +51,7 @@ public class AtLeastOneConstructorRule extends AbstractIgnoredAnnotationRule {
         NodeStream<AccessNode> members = node.getDeclarations()
                                              .filterIs(AccessNode.class)
                                              .filterNot(it -> it instanceof ASTAnyTypeDeclaration);
-        if (members.isEmpty() || members.any(it -> !it.isStatic())) {
+        if (members.isEmpty() || members.any(it -> !it.hasModifiers(JModifier.STATIC))) {
             // Do we have any non-static members?
             addViolation(data, node);
         }

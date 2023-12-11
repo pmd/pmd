@@ -73,4 +73,11 @@ public final class ASTFieldDeclaration extends AbstractJavaNode
         return getFirstChildOfType(ASTType.class);
     }
 
+    /**
+     * Returns true if this field is static.
+     */
+    @Override
+    public boolean isStatic() {
+        return hasModifiers(JModifier.STATIC);
+    }
 }

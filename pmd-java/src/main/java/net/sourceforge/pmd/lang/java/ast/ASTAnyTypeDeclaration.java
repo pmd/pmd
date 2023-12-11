@@ -135,6 +135,14 @@ public interface ASTAnyTypeDeclaration
         return hasModifiers(ABSTRACT);
     }
 
+    /**
+     * Returns true if this type is static. Only inner types can be static.
+     */
+    @Override
+    default boolean isStatic() {
+        return hasModifiers(JModifier.STATIC);
+    }
+
 
     /**
      * Returns the enum constants declared by this enum. If this is not

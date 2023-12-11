@@ -132,6 +132,12 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
         return getResultTypeNode().isVoid();
     }
 
+    /** Returns true if this method is static. */
+    @Override
+    public boolean isStatic() {
+        return hasModifiers(JModifier.STATIC);
+    }
+
 
     /**
      * Returns the default clause, if this is an annotation method declaration
