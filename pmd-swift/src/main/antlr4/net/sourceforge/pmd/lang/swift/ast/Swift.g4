@@ -211,7 +211,6 @@ declaration
  | constantDeclaration ';'?
  | variableDeclaration ';'?
  | typealiasDeclaration ';'?
- | macroExpansionExpression ';'?
  | functionDeclaration ';'?
  | enumDeclaration ';'?
  | structDeclaration ';'?
@@ -297,10 +296,6 @@ typealiasDeclaration : typealiasHead typealiasAssignment  ;
 typealiasHead : attributes? accessLevelModifier? 'typealias' typealiasName genericParameterClause?  ;
 typealiasName : identifier  ;
 typealiasAssignment : '=' sType  ;
-
-// GRAMMAR OF A MACRO DECLARATION
-
-macroExpansionExpression: '#' identifier genericArgumentClause? functionCallArgumentClause? ;
 
 // GRAMMAR OF A FUNCTION DECLARATION
 
@@ -601,6 +596,7 @@ primaryExpression
  | implicitMemberExpression
 // | implicit_member_expression disallow as ambig with explicit member expr in postfix_expression
  | wildcardExpression
+ | macroExpansionExpression
  | selectorExpression
  | keyPathExpression
  ;
@@ -689,6 +685,11 @@ tupleElement: (identifier ':')? expression ;
 // GRAMMAR OF A WILDCARD EXPRESSION
 
 wildcardExpression : '_'  ;
+
+// GRAMMAR OF A MACRO EXPANSION EXPRESSION
+// https://docs.swift.org/swift-book/documentation/the-swift-programming-language/expressions#Macro-Expansion-Expression
+// https://github.com/apple/swift-evolution/blob/main/proposals/0382-expression-macros.md#macro-expansion
+macroExpansionExpression: '#' identifier genericArgumentClause? functionCallArgumentClause? ;
 
 // GRAMMAR OF A SELECTOR EXPRESSION
 

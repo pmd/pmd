@@ -1,0 +1,207 @@
++- TopLevel
+   +- Statements
+   |  +- Statement
+   |  |  +- Declaration
+   |  |     +- ConstantDeclaration
+   |  |        +- T-let
+   |  |        +- PatternInitializerList
+   |  |           +- PatternInitializer
+   |  |              +- Pattern
+   |  |              |  +- WildcardPattern
+   |  |              |  |  +- T-underscore
+   |  |              |  +- TypeAnnotation
+   |  |              |     +- T-colon
+   |  |              |     +- SType
+   |  |              |        +- TupleType
+   |  |              |           +- T-lparen
+   |  |              |           +- TupleTypeElementList
+   |  |              |           |  +- TupleTypeElement
+   |  |              |           |  |  +- SType
+   |  |              |           |  |     +- TypeIdentifier
+   |  |              |           |  |        +- TypeName
+   |  |              |           |  |           +- Identifier
+   |  |              |           |  |              +- T-Identifier
+   |  |              |           |  +- T-comma
+   |  |              |           |  +- TupleTypeElement
+   |  |              |           |     +- SType
+   |  |              |           |        +- TypeIdentifier
+   |  |              |           |           +- TypeName
+   |  |              |           |              +- Identifier
+   |  |              |           |                 +- T-Identifier
+   |  |              |           +- T-rparen
+   |  |              +- Initializer
+   |  |                 +- T-eq
+   |  |                 +- Expression
+   |  |                    +- PrefixExpression
+   |  |                       +- PostfixExpression
+   |  |                          +- PrimaryExpression
+   |  |                             +- MacroExpansionExpression
+   |  |                                +- T-hash
+   |  |                                +- Identifier
+   |  |                                |  +- T-Identifier
+   |  |                                +- FunctionCallArgumentClause
+   |  |                                   +- T-lparen
+   |  |                                   +- FunctionCallArgumentList
+   |  |                                   |  +- FunctionCallArgument
+   |  |                                   |     +- Expression
+   |  |                                   |        +- PrefixExpression
+   |  |                                   |        |  +- PostfixExpression
+   |  |                                   |        |     +- PrimaryExpression
+   |  |                                   |        |        +- Identifier
+   |  |                                   |        |           +- T-Identifier
+   |  |                                   |        +- BinaryExpression
+   |  |                                   |        |  +- BinaryOperator
+   |  |                                   |        |  |  +- Operator
+   |  |                                   |        |  |     +- OperatorHead
+   |  |                                   |        |  |        +- T-OperatorHead
+   |  |                                   |        |  +- PrefixExpression
+   |  |                                   |        |     +- PostfixExpression
+   |  |                                   |        |        +- PrimaryExpression
+   |  |                                   |        |           +- Identifier
+   |  |                                   |        |              +- T-Identifier
+   |  |                                   |        +- BinaryExpression
+   |  |                                   |           +- BinaryOperator
+   |  |                                   |           |  +- Operator
+   |  |                                   |           |     +- OperatorHead
+   |  |                                   |           |        +- T-star
+   |  |                                   |           +- PrefixExpression
+   |  |                                   |              +- PostfixExpression
+   |  |                                   |                 +- PrimaryExpression
+   |  |                                   |                    +- Identifier
+   |  |                                   |                       +- T-Identifier
+   |  |                                   +- T-rparen
+   |  +- Statement
+   |  |  +- Declaration
+   |  |     +- ConstantDeclaration
+   |  |        +- T-let
+   |  |        +- PatternInitializerList
+   |  |           +- PatternInitializer
+   |  |              +- Pattern
+   |  |              |  +- WildcardPattern
+   |  |              |  |  +- T-underscore
+   |  |              |  +- TypeAnnotation
+   |  |              |     +- T-colon
+   |  |              |     +- SType
+   |  |              |        +- TupleType
+   |  |              |           +- T-lparen
+   |  |              |           +- TupleTypeElementList
+   |  |              |           |  +- TupleTypeElement
+   |  |              |           |  |  +- SType
+   |  |              |           |  |     +- TypeIdentifier
+   |  |              |           |  |        +- TypeName
+   |  |              |           |  |           +- Identifier
+   |  |              |           |  |              +- T-Identifier
+   |  |              |           |  +- T-comma
+   |  |              |           |  +- TupleTypeElement
+   |  |              |           |     +- SType
+   |  |              |           |        +- TypeIdentifier
+   |  |              |           |           +- TypeName
+   |  |              |           |              +- Identifier
+   |  |              |           |                 +- T-Identifier
+   |  |              |           +- T-rparen
+   |  |              +- Initializer
+   |  |                 +- T-eq
+   |  |                 +- Expression
+   |  |                    +- PrefixExpression
+   |  |                       +- PostfixExpression
+   |  |                          +- PrimaryExpression
+   |  |                             +- MacroExpansionExpression
+   |  |                                +- T-hash
+   |  |                                +- Identifier
+   |  |                                |  +- T-Identifier
+   |  |                                +- FunctionCallArgumentClause
+   |  |                                   +- T-lparen
+   |  |                                   +- FunctionCallArgumentList
+   |  |                                   |  +- FunctionCallArgument
+   |  |                                   |     +- Expression
+   |  |                                   |        +- PrefixExpression
+   |  |                                   |           +- PostfixExpression
+   |  |                                   |              +- PrimaryExpression
+   |  |                                   |                 +- MacroExpansionExpression
+   |  |                                   |                    +- T-hash
+   |  |                                   |                    +- Identifier
+   |  |                                   |                    |  +- T-Identifier
+   |  |                                   |                    +- FunctionCallArgumentClause
+   |  |                                   |                       +- T-lparen
+   |  |                                   |                       +- FunctionCallArgumentList
+   |  |                                   |                       |  +- FunctionCallArgument
+   |  |                                   |                       |     +- Expression
+   |  |                                   |                       |        +- PrefixExpression
+   |  |                                   |                       |        |  +- PostfixExpression
+   |  |                                   |                       |        |     +- PrimaryExpression
+   |  |                                   |                       |        |        +- LiteralExpression
+   |  |                                   |                       |        |           +- Literal
+   |  |                                   |                       |        |              +- NumericLiteral
+   |  |                                   |                       |        |                 +- IntegerLiteral
+   |  |                                   |                       |        |                    +- T-DecimalLiteral
+   |  |                                   |                       |        +- BinaryExpression
+   |  |                                   |                       |           +- BinaryOperator
+   |  |                                   |                       |           |  +- Operator
+   |  |                                   |                       |           |     +- OperatorHead
+   |  |                                   |                       |           |        +- T-OperatorHead
+   |  |                                   |                       |           +- PrefixExpression
+   |  |                                   |                       |              +- PostfixExpression
+   |  |                                   |                       |                 +- PrimaryExpression
+   |  |                                   |                       |                    +- LiteralExpression
+   |  |                                   |                       |                       +- Literal
+   |  |                                   |                       |                          +- NumericLiteral
+   |  |                                   |                       |                             +- IntegerLiteral
+   |  |                                   |                       |                                +- T-DecimalLiteral
+   |  |                                   |                       +- T-rparen
+   |  |                                   +- T-rparen
+   |  +- Statement
+   |  |  +- Declaration
+   |  |     +- ConstantDeclaration
+   |  |        +- T-let
+   |  |        +- PatternInitializerList
+   |  |           +- PatternInitializer
+   |  |              +- Pattern
+   |  |              |  +- WildcardPattern
+   |  |              |  |  +- T-underscore
+   |  |              |  +- TypeAnnotation
+   |  |              |     +- T-colon
+   |  |              |     +- SType
+   |  |              |        +- TypeIdentifier
+   |  |              |           +- TypeName
+   |  |              |              +- Identifier
+   |  |              |                 +- T-Identifier
+   |  |              +- Initializer
+   |  |                 +- T-eq
+   |  |                 +- Expression
+   |  |                    +- PrefixExpression
+   |  |                       +- PostfixExpression
+   |  |                          +- PrimaryExpression
+   |  |                             +- Keyword
+   |  |                                +- T-directive-file
+   |  +- Statement
+   |  |  +- Expression
+   |  |     +- PrefixExpression
+   |  |        +- PostfixExpression
+   |  |           +- PrimaryExpression
+   |  |              +- Identifier
+   |  |                 +- T-Identifier
+   |  +- Statement
+   |     +- Declaration
+   |        +- ConstantDeclaration
+   |           +- T-let
+   |           +- PatternInitializerList
+   |              +- PatternInitializer
+   |                 +- Pattern
+   |                 |  +- WildcardPattern
+   |                 |  |  +- T-underscore
+   |                 |  +- TypeAnnotation
+   |                 |     +- T-colon
+   |                 |     +- SType
+   |                 |        +- TypeIdentifier
+   |                 |           +- TypeName
+   |                 |              +- Identifier
+   |                 |                 +- T-Identifier
+   |                 +- Initializer
+   |                    +- T-eq
+   |                    +- Expression
+   |                       +- PrefixExpression
+   |                          +- PostfixExpression
+   |                             +- PrimaryExpression
+   |                                +- Keyword
+   |                                   +- T-directive-line
+   +- EOF
