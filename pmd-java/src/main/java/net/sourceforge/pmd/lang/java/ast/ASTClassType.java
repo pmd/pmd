@@ -21,8 +21,8 @@ import net.sourceforge.pmd.util.AssertionUtil;
  *
  * <pre class="grammar">
  *
- * ClassOrInterfaceType ::= {@link ASTAnnotation Annotation}* &lt;IDENTIFIER&gt; {@link ASTTypeArguments TypeArguments}?
- *                        | ClassOrInterfaceType "." {@link ASTAnnotation Annotation}* &lt;IDENTIFIER&gt; {@link ASTTypeArguments TypeArguments}?
+ * ClassType ::= {@link ASTAnnotation Annotation}* &lt;IDENTIFIER&gt; {@link ASTTypeArguments TypeArguments}?
+ *                        | ClassType "." {@link ASTAnnotation Annotation}* &lt;IDENTIFIER&gt; {@link ASTTypeArguments TypeArguments}?
  *
  * </pre>
  *
@@ -34,8 +34,6 @@ import net.sourceforge.pmd.util.AssertionUtil;
  */
 // @formatter:on
 public final class ASTClassType extends AbstractJavaTypeNode implements ASTReferenceType {
-    // todo rename to ASTClassType
-
     private JTypeDeclSymbol symbol;
 
     private String simpleName;
