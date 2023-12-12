@@ -2,7 +2,7 @@
    +- ClassOrInterfaceDeclaration[@Abstract = false, @Annotation = false, @Anonymous = false, @BinaryName = "SwitchWithFallthrough", @CanonicalName = "SwitchWithFallthrough", @EffectiveVisibility = Visibility.V_PUBLIC, @Enum = false, @Final = false, @Interface = false, @Local = false, @Nested = false, @PackageName = "", @Record = false, @RegularClass = true, @RegularInterface = false, @SimpleName = "SwitchWithFallthrough", @Static = false, @TopLevel = true, @Visibility = Visibility.V_PUBLIC]
       +- ModifierList[@EffectiveModifiers = "{public}", @ExplicitModifiers = "{public}"]
       +- ClassOrInterfaceBody[@Empty = false, @Size = 1]
-         +- MethodDeclaration[@Abstract = false, @Arity = 0, @EffectiveVisibility = Visibility.V_PUBLIC, @Image = "myMethod", @Name = "myMethod", @Overridden = false, @Static = false, @Varargs = false, @Visibility = Visibility.V_PUBLIC, @Void = true]
+         +- MethodDeclaration[@Abstract = false, @Arity = 0, @EffectiveVisibility = Visibility.V_PUBLIC, @Final = false, @Image = "myMethod", @Name = "myMethod", @Overridden = false, @Static = false, @Varargs = false, @Visibility = Visibility.V_PUBLIC, @Void = true]
             +- ModifierList[@EffectiveModifiers = "{public}", @ExplicitModifiers = "{public}"]
             +- VoidType[]
             +- FormalParameters[@Empty = true, @Size = 0]

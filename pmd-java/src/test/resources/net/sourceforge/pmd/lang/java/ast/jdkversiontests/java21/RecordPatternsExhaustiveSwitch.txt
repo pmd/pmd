@@ -40,7 +40,7 @@
          |  |     +- ClassOrInterfaceType[@FullyQualified = false, @SimpleName = "T"]
          |  |     +- VariableDeclaratorId[@ArrayType = false, @EffectiveVisibility = Visibility.V_PRIVATE, @EnumConstant = false, @ExceptionBlockParameter = false, @Field = false, @Final = true, @ForLoopVariable = false, @ForeachVariable = false, @FormalParameter = false, @LambdaParameter = false, @LocalVariable = false, @Name = "y", @PatternBinding = false, @RecordComponent = true, @ResourceDeclaration = false, @TypeInferred = false, @Visibility = Visibility.V_PRIVATE]
          |  +- RecordBody[@Empty = true, @Size = 0]
-         +- MethodDeclaration[@Abstract = false, @Arity = 0, @EffectiveVisibility = Visibility.V_PACKAGE, @Image = "test", @Name = "test", @Overridden = false, @Static = true, @Varargs = false, @Visibility = Visibility.V_PACKAGE, @Void = true]
+         +- MethodDeclaration[@Abstract = false, @Arity = 0, @EffectiveVisibility = Visibility.V_PACKAGE, @Final = false, @Image = "test", @Name = "test", @Overridden = false, @Static = true, @Varargs = false, @Visibility = Visibility.V_PACKAGE, @Void = true]
             +- ModifierList[@EffectiveModifiers = "{static}", @ExplicitModifiers = "{static}"]
             +- VoidType[]
             +- FormalParameters[@Empty = true, @Size = 0]
