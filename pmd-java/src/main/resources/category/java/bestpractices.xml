@@ -426,7 +426,7 @@ For other scenarios, consider using a utility class. See Effective Java's 'Use i
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[@Interface = true()][$ignoreIfHasMethods= false() or not(ClassOrInterfaceBody/MethodDeclaration)]/ClassOrInterfaceBody/FieldDeclaration
+//ClassDeclaration[@Interface = true()][$ignoreIfHasMethods= false() or not(ClassOrInterfaceBody/MethodDeclaration)]/ClassOrInterfaceBody/FieldDeclaration
  ]]>
                 </value>
             </property>
@@ -772,7 +772,7 @@ In TestNG, only methods annotated with the @Test annotation are executed.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[matches(@SimpleName, $testClassPattern) or pmd-java:typeIs('junit.framework.TestCase')]
+//ClassDeclaration[matches(@SimpleName, $testClassPattern) or pmd-java:typeIs('junit.framework.TestCase')]
     (: a junit 3 method :)
     /ClassOrInterfaceBody/MethodDeclaration[
         @Visibility="public"
@@ -830,7 +830,7 @@ Test methods are identified as those which use `@Test`, `@RepeatedTest`,
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[
+//ClassDeclaration[
     (: a Junit 5 test class, ie, it has methods with the annotation :)
     @Interface = false() and
     ClassOrInterfaceBody/MethodDeclaration

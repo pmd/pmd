@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
@@ -14,11 +14,11 @@ import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
 public class DetachedTestCaseRule extends AbstractJavaRulechainRule {
 
     public DetachedTestCaseRule() {
-        super(ASTClassOrInterfaceDeclaration.class);
+        super(ASTClassDeclaration.class);
     }
 
     @Override
-    public Object visit(ASTClassOrInterfaceDeclaration node, final Object data) {
+    public Object visit(ASTClassDeclaration node, final Object data) {
         NodeStream<ASTMethodDeclaration> methods = node.getDeclarations(ASTMethodDeclaration.class);
         if (methods.any(TestFrameworksUtil::isTestMethod)) {
             // looks like a test case

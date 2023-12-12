@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd;
 
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
@@ -19,7 +19,7 @@ public class FooRule extends AbstractJavaRule {
     }
 
     @Override
-    public Object visit(ASTClassOrInterfaceDeclaration c, Object ctx) {
+    public Object visit(ASTClassDeclaration c, Object ctx) {
         if (c.getSimpleName().equalsIgnoreCase("Foo")) {
             addViolation(ctx, c);
         }

@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 
@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 public class SingleMethodSingletonRule extends AbstractJavaRulechainRule {
 
     public SingleMethodSingletonRule() {
-        super(ASTClassOrInterfaceDeclaration.class);
+        super(ASTClassDeclaration.class);
     }
 
     /**
@@ -25,7 +25,7 @@ public class SingleMethodSingletonRule extends AbstractJavaRulechainRule {
      * @return Object
      */
     @Override
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+    public Object visit(ASTClassDeclaration node, Object data) {
         int count = node.descendants(ASTMethodDeclaration.class)
             .filter(m -> "getInstance".equals(m.getName()))
             .count();

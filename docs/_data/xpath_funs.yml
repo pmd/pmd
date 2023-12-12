@@ -159,7 +159,7 @@ langs:
             type: "xs:string"
             description: "The name of a metric in {% jdoc jmx::JavaMetrics %} (or an alias thereof)."
         examples:
-          - code: "//ClassOrInterfaceDeclaration[metric('NCSS') > 200]"
+          - code: "//ClassDeclaration[metric('NCSS') > 200]"
             outcome: ""
           - code: "//MethodDeclaration[metric('CYCLO') > 10 and metric('NCSS') > 20]"
             outcome: ""

@@ -9,7 +9,7 @@ import java.util.Collection;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
@@ -25,7 +25,7 @@ import net.sourceforge.pmd.lang.java.rule.design.UseUtilityClassRule;
 public class AtLeastOneConstructorRule extends AbstractIgnoredAnnotationRule {
 
     public AtLeastOneConstructorRule() {
-        addRuleChainVisit(ASTClassOrInterfaceDeclaration.class);
+        addRuleChainVisit(ASTClassDeclaration.class);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class AtLeastOneConstructorRule extends AbstractIgnoredAnnotationRule {
     }
 
     @Override
-    public Object visit(final ASTClassOrInterfaceDeclaration node, final Object data) {
+    public Object visit(final ASTClassDeclaration node, final Object data) {
         // Ignore interfaces / static classes / classes that have a constructor / classes ignored through annotations
         if (!node.isRegularClass()
             || node.isStatic()

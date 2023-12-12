@@ -86,7 +86,7 @@ suppression methods (e.g. by using `@SuppressWarnings` annotation).
     (: exclude anonymous privileged action classes :)
     [not(ancestor::ConstructorCall[1][pmd-java:typeIs('java.security.PrivilegedAction')]/AnonymousClassDeclaration)]
     (: exclude inner privileged action classes :)
-    [not(ancestor::ClassOrInterfaceDeclaration[1][pmd-java:typeIs('java.security.PrivilegedAction')])]
+    [not(ancestor::ClassDeclaration[1][pmd-java:typeIs('java.security.PrivilegedAction')])]
     (: exclude privileged action lambdas :)
     [not(ancestor::LambdaExpression[pmd-java:typeIs('java.security.PrivilegedAction')])]
 ]]>
@@ -434,7 +434,7 @@ This probably means that type and/or field names should be chosen more carefully
                 <value>
 <![CDATA[
 //FieldDeclaration/VariableDeclarator/VariableDeclaratorId
-    [lower-case(@Name) = lower-case(ancestor::ClassOrInterfaceDeclaration[1]/@SimpleName)]
+    [lower-case(@Name) = lower-case(ancestor::ClassDeclaration[1]/@SimpleName)]
 ]]>
                 </value>
             </property>
@@ -712,7 +712,7 @@ public String bar(String string) {
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration
+//ClassDeclaration
     [
       pmd-java:typeIs('android.app.Activity') or
       pmd-java:typeIs('android.app.Application') or
@@ -757,7 +757,7 @@ Super should be called at the end of the method
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration
+//ClassDeclaration
     [
       pmd-java:typeIs('android.app.Activity') or
       pmd-java:typeIs('android.app.Application') or
@@ -944,7 +944,7 @@ Note: Such a covariant return type is only possible with Java 1.5 or higher.
 //MethodDeclaration
     [@Name = 'clone']
     [@Arity = 0]
-    [ClassType[1]/@SimpleName != ancestor::ClassOrInterfaceDeclaration[1]/@SimpleName]
+    [ClassType[1]/@SimpleName != ancestor::ClassDeclaration[1]/@SimpleName]
 ]]>
                 </value>
             </property>
@@ -1250,7 +1250,7 @@ Extend Exception or RuntimeException instead of Throwable.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration/ExtendsList/ClassType
+//ClassDeclaration/ExtendsList/ClassType
   [pmd-java:typeIsExactly('java.lang.Throwable')]
 ]]>
                 </value>
@@ -2213,7 +2213,7 @@ This would be confusing as it would look like a constructor.
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration[@Name = ancestor::ClassOrInterfaceDeclaration/@SimpleName]
+//MethodDeclaration[@Name = ancestor::ClassDeclaration/@SimpleName]
 ]]>
                 </value>
             </property>
@@ -2316,7 +2316,7 @@ chain needs an own serialVersionUID field. See also [Should an abstract class ha
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration
+//ClassDeclaration
     [@Interface = false()]
     [count(ClassOrInterfaceBody/FieldDeclaration/VariableDeclarator/VariableDeclaratorId[@Name='serialVersionUID']) = 0]
     [(ImplementsList | ExtendsList)/ClassType[pmd-java:typeIs('java.io.Serializable')]]
@@ -2354,7 +2354,7 @@ See the property `annotations`.
             <property name="xpath">
                 <value>
 <![CDATA[
-let $topLevelClass := /*/ClassOrInterfaceDeclaration return
+let $topLevelClass := /*/ClassDeclaration return
 let $isLombokUtility := exists($topLevelClass[pmd-java:hasAnnotation('lombok.experimental.UtilityClass')]) return
 $topLevelClass[
         (: non-instantiable :)
@@ -2379,17 +2379,17 @@ $topLevelClass[
         (: … nor fields … :)
         not(ClassOrInterfaceBody/FieldDeclaration[($isLombokUtility or pmd-java:modifiers() = "static") and @Visibility != "private"]) and
         (: … no nested classes, that are non-private and static … :)
-        not(ClassOrInterfaceBody/ClassOrInterfaceDeclaration
+        not(ClassOrInterfaceBody/ClassDeclaration
             [pmd-java:modifiers() = "static" and @Visibility != "private"]
             (: … with a default or non-private constructor … :)
             [not(ClassOrInterfaceBody/ConstructorDeclaration) or ClassOrInterfaceBody/ConstructorDeclaration[@Visibility != "private"]]
             (: … and a non-private method returning the outer class type … :)
             [(ClassOrInterfaceBody/MethodDeclaration
                 [@Visibility != "private"]
-                [descendant::ReturnStatement/*[1][pmd-java:typeIs(ancestor::ClassOrInterfaceDeclaration[@Nested = false()]/@BinaryName)]]
+                [descendant::ReturnStatement/*[1][pmd-java:typeIs(ancestor::ClassDeclaration[@Nested = false()]/@BinaryName)]]
             ) or (
                 (: … or the inner class extends the outer class :)
-                ExtendsList/ClassType[@SimpleName = ancestor::ClassOrInterfaceDeclaration[@Nested = false()]/@SimpleName]
+                ExtendsList/ClassType[@SimpleName = ancestor::ClassDeclaration[@Nested = false()]/@SimpleName]
             )]
     )]
 ]]>
@@ -2426,7 +2426,7 @@ log4j2 (since 6.19.0).
             <property name="version" value="2.0"/>
             <property name="xpath">
                 <value><![CDATA[
-//ClassOrInterfaceDeclaration[
+//ClassDeclaration[
   count(
     ClassOrInterfaceBody/FieldDeclaration/ClassType[
       pmd-java:typeIs("org.apache.log4j.Logger") or
@@ -2669,7 +2669,7 @@ with the restriction that the logger needs to be passed into the constructor.
         or (pmd-java:modifiers() = 'static' and VariableDeclarator/VariableDeclaratorId/@Name != $staticLoggerName)
         or (not(pmd-java:modifiers() = 'static') and VariableDeclarator/VariableDeclaratorId/@Name != $loggerName)
         (: check logger argument type matches class or enum name :)
-        or .//ArgumentList/ClassLiteral/ClassType/@SimpleName != ancestor::ClassOrInterfaceDeclaration/@SimpleName
+        or .//ArgumentList/ClassLiteral/ClassType/@SimpleName != ancestor::ClassDeclaration/@SimpleName
         or .//ArgumentList/ClassLiteral/ClassType/@SimpleName != ancestor::EnumDeclaration/@SimpleName
 
         (: special case - final logger initialized inside constructor :)
@@ -2888,7 +2888,7 @@ behavior especially when instances are distributed by the container on several J
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[ImplementsList/ClassType[
+//ClassDeclaration[ImplementsList/ClassType[
         pmd-java:typeIs('javax.ejb.SessionBean')
      or pmd-java:typeIs('javax.ejb.EJBHome')
      or pmd-java:typeIs('javax.ejb.EJBLocalObject')
@@ -3160,7 +3160,7 @@ an error, use the `fail()` method and provide an indication message of why it di
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration
+//ClassDeclaration
     [pmd-java:typeIs('junit.framework.TestCase')
      or .//Annotation[pmd-java:typeIs('org.junit.Test')
                    or pmd-java:typeIs('org.junit.jupiter.api.Test')

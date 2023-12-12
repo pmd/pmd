@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 public class OverrideBothEqualsAndHashcodeRule extends AbstractJavaRulechainRule {
 
     public OverrideBothEqualsAndHashcodeRule() {
-        super(ASTClassOrInterfaceDeclaration.class,
+        super(ASTClassDeclaration.class,
               ASTRecordDeclaration.class,
               ASTAnonymousClassDeclaration.class);
     }
@@ -55,7 +55,7 @@ public class OverrideBothEqualsAndHashcodeRule extends AbstractJavaRulechainRule
     }
 
     @Override
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+    public Object visit(ASTClassDeclaration node, Object data) {
         if (node.isInterface()) {
             return null;
         }

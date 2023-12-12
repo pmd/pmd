@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
  *
  * <pre class="grammar">
  *
- * AnyTypeDeclaration ::= {@link ASTClassOrInterfaceDeclaration ClassOrInterfaceDeclaration}
+ * AnyTypeDeclaration ::= {@link ASTClassDeclaration ClassDeclaration}
  *                      | {@link ASTAnonymousClassDeclaration AnonymousClassDeclaration}
  *                      | {@link ASTEnumDeclaration EnumDeclaration}
  *                      | {@link ASTAnnotationTypeDeclaration AnnotationTypeDeclaration}

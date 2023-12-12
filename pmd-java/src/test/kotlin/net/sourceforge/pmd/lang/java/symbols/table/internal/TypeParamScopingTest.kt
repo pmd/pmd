@@ -220,7 +220,7 @@ class TypeParamScopingTest : ParserTestSpec({
         """)
 
         val (fooClass, innerTClass) =
-                acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList()
+                acu.descendants(ASTClassDeclaration::class.java).toList()
 
         val (tparam) = fooClass.symbol.typeParameters
 

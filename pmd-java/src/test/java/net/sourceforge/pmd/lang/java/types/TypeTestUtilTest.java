@@ -23,7 +23,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
@@ -35,10 +35,10 @@ class TypeTestUtilTest extends BaseParserTest {
     @Test
     void testIsAFallback() {
 
-        ASTClassOrInterfaceDeclaration klass =
+        ASTClassDeclaration klass =
             java.parse("package org; import java.io.Serializable; "
                            + "class FooBar implements Serializable {}")
-                .getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class);
+                .getFirstDescendantOfType(ASTClassDeclaration.class);
 
 
         assertNull(klass.getType());

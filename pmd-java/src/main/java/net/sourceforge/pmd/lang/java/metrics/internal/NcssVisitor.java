@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTContinueStatement;
@@ -71,7 +71,7 @@ public class NcssVisitor extends JavaVisitorBase<MutableInt, Void> {
 
 
     @Override
-    public Void visit(ASTClassOrInterfaceDeclaration node, MutableInt data) {
+    public Void visit(ASTClassDeclaration node, MutableInt data) {
         if (countImports) {
             ASTCompilationUnit acu = node.getFirstParentOfType(ASTCompilationUnit.class);
             List<ASTImportDeclaration> imports = acu.findChildrenOfType(ASTImportDeclaration.class);

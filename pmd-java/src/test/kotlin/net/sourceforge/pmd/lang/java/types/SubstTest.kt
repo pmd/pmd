@@ -10,7 +10,7 @@ import io.kotest.matchers.maps.contain
 import io.kotest.matchers.maps.shouldContainExactly
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration
 import net.sourceforge.pmd.lang.java.ast.ASTClassType
 import net.sourceforge.pmd.lang.java.ast.ProcessorTestSpec
 
@@ -31,7 +31,7 @@ class SubstTest : ProcessorTestSpec({
                         Map<Map<K, F>, Map<F, C>> field;
 
                     }
-                """).descendants(ASTClassOrInterfaceDeclaration::class.java).firstOrThrow()
+                """).descendants(ASTClassDeclaration::class.java).firstOrThrow()
 
         val typeDsl = typeDecl.typeDsl
 

@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -127,7 +127,7 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
     }
 
     @Override
-    public Object visit(final ASTClassOrInterfaceDeclaration decl, final Object data) {
+    public Object visit(final ASTClassDeclaration decl, final Object data) {
         checkTypeDecl(decl, (RuleContext) data, "class");
         return data;
     }

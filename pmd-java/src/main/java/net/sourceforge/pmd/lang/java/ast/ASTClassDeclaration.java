@@ -15,21 +15,21 @@ import net.sourceforge.pmd.lang.ast.Node;
  *
  * <pre class="grammar">
  *
- * ClassOrInterfaceDeclaration ::= {@link ASTModifierList ModifierList}
- *                                 ( "class" | "interface" )
- *                                 &lt;IDENTIFIER&gt;
- *                                 {@link ASTTypeParameters TypeParameters}?
- *                                 {@link ASTExtendsList ExtendsList}?
- *                                 {@link ASTImplementsList ImplementsList}?
- *                                 {@link ASTClassOrInterfaceBody ClassOrInterfaceBody}
+ * ClassDeclaration ::= {@link ASTModifierList ModifierList}
+ *                      ( "class" | "interface" )
+ *                      &lt;IDENTIFIER&gt;
+ *                      {@link ASTTypeParameters TypeParameters}?
+ *                      {@link ASTExtendsList ExtendsList}?
+ *                      {@link ASTImplementsList ImplementsList}?
+ *                      {@link ASTClassOrInterfaceBody ClassOrInterfaceBody}
  *
  * </pre>
  */
-public final class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclaration {
+public final class ASTClassDeclaration extends AbstractAnyTypeDeclaration {
 
     private boolean isInterface;
 
-    ASTClassOrInterfaceDeclaration(int id) {
+    ASTClassDeclaration(int id) {
         super(id);
     }
 

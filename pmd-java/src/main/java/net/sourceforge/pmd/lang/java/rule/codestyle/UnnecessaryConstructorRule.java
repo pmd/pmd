@@ -12,7 +12,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
@@ -30,7 +30,7 @@ public class UnnecessaryConstructorRule extends AbstractIgnoredAnnotationRule {
 
     @Override
     protected @NonNull RuleTargetSelector buildTargetSelector() {
-        return RuleTargetSelector.forTypes(ASTEnumDeclaration.class, ASTClassOrInterfaceDeclaration.class);
+        return RuleTargetSelector.forTypes(ASTEnumDeclaration.class, ASTClassDeclaration.class);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class UnnecessaryConstructorRule extends AbstractIgnoredAnnotationRule {
     }
 
     @Override
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+    public Object visit(ASTClassDeclaration node, Object data) {
         if (node.isRegularClass()) {
             checkClassOrEnum(node, data);
         }
@@ -85,7 +85,7 @@ public class UnnecessaryConstructorRule extends AbstractIgnoredAnnotationRule {
     }
 
     private boolean hasDefaultCtorVisibility(ASTAnyTypeDeclaration node, ASTConstructorDeclaration cons) {
-        if (node instanceof ASTClassOrInterfaceDeclaration) {
+        if (node instanceof ASTClassDeclaration) {
             return node.getVisibility() == cons.getVisibility();
         } else if (node instanceof ASTEnumDeclaration) {
             return cons.getVisibility() == Visibility.V_PRIVATE;

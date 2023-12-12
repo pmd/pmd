@@ -1115,7 +1115,7 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
      * <pre>{@code
      *    ASTAnyTypeDeclaration ts =
      *       node.ancestors()
-     *           .<ASTAnyTypeDeclaration>map(asInstanceOf(ASTClassOrInterfaceDeclaration.class, ASTEnumDeclaration.class))
+     *           .<ASTAnyTypeDeclaration>map(asInstanceOf(ASTClassDeclaration.class, ASTEnumDeclaration.class))
      *           .first(); // would not compile without the explicit type arguments
      * }</pre>
      *
@@ -1124,7 +1124,7 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
      *
      * <pre>{@code
      *    ASTAnyTypeDeclaration ts =
-     *       node.ancestors().firstNonNull(asInstanceOf(ASTClassOrInterfaceDeclaration.class, ASTEnumDeclaration.class));
+     *       node.ancestors().firstNonNull(asInstanceOf(ASTClassDeclaration.class, ASTEnumDeclaration.class));
      * }</pre>
      *
      * @param c1   First type to test

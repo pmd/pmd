@@ -210,17 +210,17 @@ more violations than expected.
 
 Another example, to suppress violations occurring in classes whose name contains `Bean`:
 ```xml
-<property name="violationSuppressXPath" value="./ancestor::ClassOrInterfaceDeclaration[contains(@Image, 'Bean')]"/>
+<property name="violationSuppressXPath" value="./ancestor::ClassDeclaration[contains(@Image, 'Bean')]"/>
 ```
 
 You can also use regex for string comparison. The next example suppresses violations in classes ending with `Bean`:
 ```xml
-<property name="violationSuppressXPath" value="./ancestor::ClassOrInterfaceDeclaration[matches(@Image, '^.*Bean$')]"/>
+<property name="violationSuppressXPath" value="./ancestor::ClassDeclaration[matches(@Image, '^.*Bean$')]"/>
 ```
 
 
 Note here the usage of the `./ancestor::` axis instead of `//`. The latter would match
-any ClassOrInterfaceDeclaration in the file, while the former matches only class
+any ClassDeclaration in the file, while the former matches only class
 declaration nodes that *enclose the violation node*, which is usually what you'd want.
 
 Note for XPath based suppression to work, you must know how to write

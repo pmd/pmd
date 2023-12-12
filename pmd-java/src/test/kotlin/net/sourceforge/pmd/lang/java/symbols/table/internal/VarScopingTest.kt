@@ -58,7 +58,7 @@ class VarScopingTest : ProcessorTestSpec({
         """.trimIndent())
 
         val (outerClass, innerClass) =
-                acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList()
+                acu.descendants(ASTClassDeclaration::class.java).toList()
 
         val (outerField, localInInit, foreachParam, methodParam, localInBlock, innerField) =
                 acu.descendants(ASTVariableDeclaratorId::class.java)

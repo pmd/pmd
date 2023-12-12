@@ -394,6 +394,7 @@ which can also display the AST.
 
 * AccessNode ➡️ {% jdoc jast::ModifierOwner %}
 * ClassOrInterfaceType ➡️ ClassType ({% jdoc jast::ASTClassType %})
+* ClassOrInterfaceDeclaration ➡️ ClassDeclaration ({% jdoc jast::ASTClassDeclaration %})
 
 #### Annotations
 
@@ -607,7 +608,7 @@ Top-level type declaration
 </td>
 <td>
 {% highlight js %}
-└─ ClassOrInterfaceDeclaration
+└─ ClassDeclaration
     ├─ ModifierList
     │  └─ Annotation "A"
     │     └─ ClassType "A"
@@ -1375,7 +1376,7 @@ public @A class C {}
 </td>
 <td>
 {% highlight js %}
-└─ ClassOrInterfaceDeclaration[ pmd-java:modifiers() = 'public' ] "C"
+└─ ClassDeclaration[ pmd-java:modifiers() = 'public' ] "C"
    ├─ ModifierList
    │  └─ Annotation "A"
    │     └─ ClassType "A"
@@ -1422,7 +1423,7 @@ public class Flat {
 </td><td>
 {% highlight js %}
 └─ CompilationUnit
-   └─ ClassOrInterfaceDeclaration "Flat"
+   └─ ClassDeclaration "Flat"
       ├─ ModifierList
       └─ ClassOrInterfaceBody
          └─ FieldDeclaration
@@ -2251,7 +2252,7 @@ class LocalClass {}
    │  └─ UnaryExpression "++"
    │     └─ VariableAccess "i"
    └─ LocalClassStatement
-      └─ ClassOrInterfaceDeclaration "LocalClass"
+      └─ ClassDeclaration "LocalClass"
          ├─ ModifierList
          └─ ClassOrInterfaceBody
 {% endhighlight %}

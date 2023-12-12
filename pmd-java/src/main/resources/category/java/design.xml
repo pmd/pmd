@@ -25,7 +25,7 @@ protected constructor in order to prevent instantiation than make the class misl
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration
+//ClassDeclaration
     [@Abstract = true() and @Interface = false()]
     [ClassOrInterfaceBody[not(ConstructorDeclaration | MethodDeclaration)]]
     [not(pmd-java:hasAnnotation('com.google.auto.value.AutoValue')
@@ -589,7 +589,7 @@ Errors are system exceptions. Do not extend them.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration/ExtendsList/ClassType[pmd-java:typeIs('java.lang.Error')]
+//ClassDeclaration/ExtendsList/ClassType[pmd-java:typeIs('java.lang.Error')]
 ]]>
                 </value>
             </property>
@@ -810,7 +810,7 @@ in each object at runtime.
 //FieldDeclaration
     [pmd-java:modifiers() = 'final']
     [not(pmd-java:modifiers() = 'static')]
-    [not(./ancestor::ClassOrInterfaceDeclaration[1][pmd-java:hasAnnotation('lombok.experimental.UtilityClass')])]
+    [not(./ancestor::ClassDeclaration[1][pmd-java:hasAnnotation('lombok.experimental.UtilityClass')])]
     [not(.//Annotation[pmd-java:typeIs('lombok.Builder.Default')])]
     /VariableDeclarator[*[pmd-java:nodeIs('Literal')]
          or VariableAccess[@Name = //FieldDeclaration[pmd-java:modifiers() = 'static']/VariableDeclarator/VariableDeclaratorId/@Name]
@@ -1414,7 +1414,7 @@ city/state/zip fields could park them within a single Address field.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration/ClassOrInterfaceBody
+//ClassDeclaration/ClassOrInterfaceBody
   [count(FieldDeclaration
             [not(pmd-java:modifiers() = 'final')]
             [not(pmd-java:modifiers() = 'static')]
@@ -1457,7 +1457,7 @@ complexity and find a way to have more fine grained objects.
             <property name="xpath">
                 <value>
 <![CDATA[
- //ClassOrInterfaceDeclaration/ClassOrInterfaceBody
+ //ClassDeclaration/ClassOrInterfaceBody
      [
       count(MethodDeclaration[
          not (

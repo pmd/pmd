@@ -151,7 +151,7 @@ class TypeDisambiguationTest : ParserTestSpec({
 
         val (refInFoo, refInScratch) = acu.descendants(ASTFieldDeclaration::class.java)
             .crossFindBoundaries().map { it.typeNode as ASTClassType }.toList()
-        val (_, _, aMem) = acu.descendants(ASTClassOrInterfaceDeclaration::class.java)
+        val (_, _, aMem) = acu.descendants(ASTClassDeclaration::class.java)
             .crossFindBoundaries().toList { it.symbol }
 
 

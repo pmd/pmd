@@ -16,7 +16,7 @@ import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
@@ -225,9 +225,9 @@ final class AstClassSym
 
             return factory.enumSuperclass(this);
 
-        } else if (node instanceof ASTClassOrInterfaceDeclaration) {
+        } else if (node instanceof ASTClassDeclaration) {
 
-            ASTClassType superClass = ((ASTClassOrInterfaceDeclaration) node).getSuperClassTypeNode();
+            ASTClassType superClass = ((ASTClassDeclaration) node).getSuperClassTypeNode();
             return superClass == null
                    ? ts.OBJECT
                    // this cast relies on the fact that the superclass is not a type variable

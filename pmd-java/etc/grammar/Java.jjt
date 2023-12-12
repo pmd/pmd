@@ -1241,7 +1241,7 @@ void TypeDeclaration() #void:
   )
 }
 
-void ClassOrInterfaceDeclaration():
+void ClassOrInterfaceDeclaration() #ClassDeclaration:
 {}
 {
   ( "class" | "interface" { jjtThis.setInterface(); } )

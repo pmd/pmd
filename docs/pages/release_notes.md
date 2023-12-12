@@ -168,6 +168,8 @@ The following previously deprecated classes have been removed:
     for Java rules, which use that type directly e.g. through downcasting.
   * The node `ASTClassOrInterfaceType` has been renamed to {% jdoc java::lang.ast.ASTClassType %}. XPath rules
     need to be adjusted.
+  * The node `ASTClassOrInterfaceDeclaration` has been renamed to {% jdoc java::lang.ast.ASTClassDeclaration %}.
+    XPath rules need to be adjusted.
 
 **Deprecated classes and methods**
 

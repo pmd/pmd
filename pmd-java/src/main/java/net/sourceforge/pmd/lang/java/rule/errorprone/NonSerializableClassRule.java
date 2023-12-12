@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -60,7 +60,7 @@ public class NonSerializableClassRule extends AbstractJavaRulechainRule {
     private Map<ASTAnyTypeDeclaration, Set<String>> cachedPersistentFieldNames;
 
     public NonSerializableClassRule() {
-        super(ASTVariableDeclaratorId.class, ASTClassOrInterfaceDeclaration.class, ASTEnumDeclaration.class,
+        super(ASTVariableDeclaratorId.class, ASTClassDeclaration.class, ASTEnumDeclaration.class,
                 ASTRecordDeclaration.class);
         definePropertyDescriptor(PREFIX_DESCRIPTOR);
         definePropertyDescriptor(CHECK_ABSTRACT_TYPES);
@@ -72,7 +72,7 @@ public class NonSerializableClassRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+    public Object visit(ASTClassDeclaration node, Object data) {
         checkSerialPersistentFieldsField(node, data);
         return null;
     }

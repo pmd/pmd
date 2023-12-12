@@ -14,8 +14,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayType;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
@@ -150,7 +150,7 @@ public final class PrettyPrintingUtil {
      * Returns the generic kind of declaration this is, eg "enum" or "class".
      */
     public static String getPrintableNodeKind(ASTAnyTypeDeclaration decl) {
-        if (decl instanceof ASTClassOrInterfaceDeclaration && decl.isInterface()) {
+        if (decl instanceof ASTClassDeclaration && decl.isInterface()) {
             return "interface";
         } else if (decl instanceof ASTAnnotationTypeDeclaration) {
             return "annotation";

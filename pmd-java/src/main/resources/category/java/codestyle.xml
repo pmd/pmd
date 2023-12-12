@@ -47,7 +47,7 @@ Avoid using dollar signs in variable/method/class/interface names.
             <property name="xpath">
                 <value>
 <![CDATA[
-      //ClassOrInterfaceDeclaration[contains(@SimpleName, '$')]
+      //ClassDeclaration           [contains(@SimpleName, '$')]
     | //EnumDeclaration            [contains(@SimpleName, '$')]
     | //AnnotationTypeDeclaration  [contains(@SimpleName, '$')]
     | //RecordDeclaration          [contains(@SimpleName, '$')]
@@ -81,7 +81,7 @@ Clarify your intent by using private or package access modifiers instead.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[@Final = true()]
+//ClassDeclaration[@Final = true()]
 /ClassOrInterfaceBody
 /FieldDeclaration[@Visibility = "protected"]
 ]]>
@@ -115,7 +115,7 @@ visibility cannot be reduced). Clarify your intent by using private or package a
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[@Final= true() and not(ExtendsList)]
+//ClassDeclaration[@Final= true() and not(ExtendsList)]
 /ClassOrInterfaceBody
 /MethodDeclaration[@Visibility="protected" and @Name != 'finalize']
  ]]>
@@ -218,7 +218,7 @@ another constructor (such as an overloaded constructor) is called, this rule wil
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[ExtendsList/*]
+//ClassDeclaration[ExtendsList/*]
   /ClassOrInterfaceBody
   /ConstructorDeclaration[ not(Block/ExplicitConstructorInvocation) ]
 ]]>
@@ -431,7 +431,7 @@ usage by developers who should be implementing their own versions in the concret
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[@RegularClass = true() and pmd-java:modifiers() = "abstract"]
+//ClassDeclaration[@RegularClass = true() and pmd-java:modifiers() = "abstract"]
     /ClassOrInterfaceBody
     /MethodDeclaration
     [Block[
@@ -852,7 +852,7 @@ The Local Home interface of a Session EJB should be suffixed by 'LocalHome'.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration
+//ClassDeclaration
 [
     pmd-java:typeIs('javax.ejb.EJBLocalHome')
     and not(ends-with(@SimpleName, 'LocalHome'))
@@ -884,7 +884,7 @@ The Local Interface of a Session EJB should be suffixed by 'Local'.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration
+//ClassDeclaration
 [
     pmd-java:typeIs('javax.ejb.EJBLocalObject')
     and not(ends-with(@SimpleName, 'Local'))
@@ -1009,7 +1009,7 @@ The EJB Specification states that any MessageDrivenBean or SessionBean should be
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration
+//ClassDeclaration
 [
     (pmd-java:typeIs('javax.ejb.SessionBean')
      or pmd-java:typeIs('javax.ejb.MessageDrivenBean'))
@@ -1272,7 +1272,7 @@ Remote Interface of a Session EJB should not have a suffix.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration
+//ClassDeclaration
 [
     pmd-java:typeIs('javax.ejb.EJBObject')
     and matches(@SimpleName, '.*(Session|EJB|Bean)$')
@@ -1309,7 +1309,7 @@ A Remote Home interface type of a Session EJB should be suffixed by 'Home'.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration
+//ClassDeclaration
 [
     pmd-java:typeIs('javax.ejb.EJBHome')
     and not(ends-with(@SimpleName, 'Home'))
@@ -1342,7 +1342,7 @@ Short Classnames with fewer than e.g. five characters are not recommended.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[string-length(@SimpleName) < $minimum]
+//ClassDeclaration[string-length(@SimpleName) < $minimum]
 ]]>
                 </value>
             </property>

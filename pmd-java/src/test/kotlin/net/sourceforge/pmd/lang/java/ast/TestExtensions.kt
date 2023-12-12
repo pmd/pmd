@@ -333,7 +333,7 @@ fun TreeNodeWrapper<Node, *>.localVarDecl(contents: NodeSpec<ASTLocalVariableDec
             contents()
         }
 
-fun TreeNodeWrapper<Node, *>.localClassDecl(simpleName: String, contents: NodeSpec<ASTClassOrInterfaceDeclaration> = EmptyAssertions) =
+fun TreeNodeWrapper<Node, *>.localClassDecl(simpleName: String, contents: NodeSpec<ASTClassDeclaration> = EmptyAssertions) =
         child<ASTLocalClassStatement> {
             it::getDeclaration shouldBe classDecl(simpleName, contents)
         }
@@ -692,8 +692,8 @@ fun TreeNodeWrapper<Node, *>.annotationMethod(contents: NodeSpec<ASTMethodDeclar
         }
 
 
-fun TreeNodeWrapper<Node, *>.classDecl(simpleName: String, assertions: NodeSpec<ASTClassOrInterfaceDeclaration> = EmptyAssertions) =
-        child<ASTClassOrInterfaceDeclaration>(ignoreChildren = assertions == EmptyAssertions) {
+fun TreeNodeWrapper<Node, *>.classDecl(simpleName: String, assertions: NodeSpec<ASTClassDeclaration> = EmptyAssertions) =
+        child<ASTClassDeclaration>(ignoreChildren = assertions == EmptyAssertions) {
             it::getImage shouldBe simpleName
 
             assertions()

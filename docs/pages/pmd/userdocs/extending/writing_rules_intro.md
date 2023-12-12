@@ -49,7 +49,7 @@ class Foo extends Object {
 ```java
 └─ CompilationUnit
    └─ TypeDeclaration
-      └─ ClassOrInterfaceDeclaration "Foo"
+      └─ ClassDeclaration "Foo"
          ├─ ExtendsList
          │  └─ ClassType "Object"
          └─ ClassOrInterfaceBody

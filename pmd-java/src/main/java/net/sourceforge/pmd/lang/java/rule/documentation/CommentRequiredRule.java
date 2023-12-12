@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -144,7 +144,7 @@ public class CommentRequiredRule extends AbstractJavaRulechainRule {
 
 
     @Override
-    public Object visit(ASTClassOrInterfaceDeclaration decl, Object data) {
+    public Object visit(ASTClassDeclaration decl, Object data) {
         checkCommentMeetsRequirement(data, decl, CLASS_CMT_REQUIREMENT_DESCRIPTOR);
         return data;
     }

@@ -20,7 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -162,7 +162,7 @@ public final class JavaRuleUtil {
             return false;
         }
 
-        ASTClassOrInterfaceDeclaration classNode = (ASTClassOrInterfaceDeclaration) node;
+        ASTClassDeclaration classNode = (ASTClassDeclaration) node;
 
         // A class with a superclass or interfaces should not be considered
         if (classNode.getSuperClassTypeNode() != null

@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
@@ -34,7 +34,7 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
 
 
     public ClassNamingConventionsRule() {
-        super(ASTClassOrInterfaceDeclaration.class,
+        super(ASTClassDeclaration.class,
               ASTEnumDeclaration.class,
               ASTAnnotationTypeDeclaration.class,
               ASTRecordDeclaration.class);
@@ -48,12 +48,12 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
     }
 
 
-    private boolean isTestClass(ASTClassOrInterfaceDeclaration node) {
+    private boolean isTestClass(ASTClassDeclaration node) {
         return !node.isNested() && TestFrameworksUtil.isTestClass(node);
     }
 
     @Override
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+    public Object visit(ASTClassDeclaration node, Object data) {
 
         if (node.isAbstract()) {
             checkMatches(node, abstractClassRegex, data);

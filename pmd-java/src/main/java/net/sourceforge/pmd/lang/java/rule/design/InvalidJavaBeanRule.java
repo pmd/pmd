@@ -13,7 +13,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
@@ -52,13 +52,13 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
     private Map<String, PropertyInfo> properties;
 
     public InvalidJavaBeanRule() {
-        super(ASTClassOrInterfaceDeclaration.class);
+        super(ASTClassDeclaration.class);
         definePropertyDescriptor(ENSURE_SERIALIZATION);
         definePropertyDescriptor(PACKAGES_DESCRIPTOR);
     }
 
     @Override
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+    public Object visit(ASTClassDeclaration node, Object data) {
         String packageName = "";
         ASTPackageDeclaration packageDeclaration = node.getRoot().getPackageDeclaration();
         if (packageDeclaration != null) {
@@ -139,7 +139,7 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
         return null;
     }
 
-    private void collectFields(ASTClassOrInterfaceDeclaration node) {
+    private void collectFields(ASTClassDeclaration node) {
         for (ASTFieldDeclaration fieldDeclaration : node.getDeclarations(ASTFieldDeclaration.class).toList()) {
             for (ASTVariableDeclaratorId variableDeclaratorId : fieldDeclaration) {
                 String propertyName = StringUtils.capitalize(variableDeclaratorId.getName());
@@ -161,7 +161,7 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
         return propertyInfo;
     }
 
-    private void collectMethods(ASTClassOrInterfaceDeclaration node) {
+    private void collectMethods(ASTClassDeclaration node) {
         for (ASTMethodDeclaration methodDeclaration : node.getDeclarations(ASTMethodDeclaration.class).toList()) {
             String methodName = methodDeclaration.getName();
             int parameterCount = methodDeclaration.getArity();
@@ -203,7 +203,7 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
         return resultType.getTypeMirror();
     }
 
-    private boolean hasNoArgConstructor(ASTClassOrInterfaceDeclaration node) {
+    private boolean hasNoArgConstructor(ASTClassDeclaration node) {
         int constructorCount = 0;
         for (ASTConstructorDeclaration ctor : node.getDeclarations(ASTConstructorDeclaration.class)) {
             if (ctor.getArity() == 0) {

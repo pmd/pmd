@@ -68,7 +68,7 @@ $ cat Foo.xml
 <?xml version='1.0' encoding='UTF-8' ?>
 <CompilationUnit Image='' PackageName='' declarationsAreInDefaultPackage='true'>
     <TypeDeclaration Image=''>
-        <ClassOrInterfaceDeclaration Abstract='false' BinaryName='Foo' Default='false' Final='false' Image='Foo' Interface='false' Local='false' Modifiers='1' Native='false' Nested='false' PackagePrivate='false' Private='false' Protected='false' Public='true' SimpleName='Foo' Static='false' Strictfp='false' Synchronized='false' Transient='false' TypeKind='CLASS' Volatile='false'>
+        <ClassDeclaration Abstract='false' BinaryName='Foo' Default='false' Final='false' Image='Foo' Interface='false' Local='false' Modifiers='1' Native='false' Nested='false' PackagePrivate='false' Private='false' Protected='false' Public='true' SimpleName='Foo' Static='false' Strictfp='false' Synchronized='false' Transient='false' TypeKind='CLASS' Volatile='false'>
             <ClassOrInterfaceBody AnonymousInnerClass='false' EnumChild='false' Image=''>
                 <ClassOrInterfaceBodyDeclaration AnonymousInnerClass='false' EnumChild='false' Image='' Kind='FIELD'>
                     <FieldDeclaration Abstract='false' AnnotationMember='false' Array='false' ArrayDepth='0' Default='false' Final='false' Image='' InterfaceMember='false' Modifiers='0' Native='false' PackagePrivate='true' Private='false' Protected='false' Public='false' Static='false' Strictfp='false' Synchronized='false' SyntacticallyFinal='false' SyntacticallyPublic='false' SyntacticallyStatic='false' Transient='false' VariableName='a' Volatile='false'>
@@ -81,7 +81,7 @@ $ cat Foo.xml
                     </FieldDeclaration>
                 </ClassOrInterfaceBodyDeclaration>
             </ClassOrInterfaceBody>
-        </ClassOrInterfaceDeclaration>
+        </ClassDeclaration>
     </TypeDeclaration>
 </CompilationUnit>
 
