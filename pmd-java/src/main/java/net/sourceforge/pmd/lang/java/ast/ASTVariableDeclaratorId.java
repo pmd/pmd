@@ -42,7 +42,7 @@ import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
  *
  */
 // @formatter:on
-public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator<JVariableSymbol> implements AccessNode, SymbolDeclaratorNode, FinalizableNode {
+public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator<JVariableSymbol> implements AccessNode, SymbolDeclaratorNode {
 
     private List<ASTNamedReferenceExpr> usages = Collections.emptyList();
 
@@ -90,6 +90,11 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
     public ASTModifierList getModifiers() {
         // delegates modifiers
         return getModifierOwnerParent().getModifiers();
+    }
+
+    @Override
+    public boolean isFinal() {
+        return hasModifiers(JModifier.FINAL);
     }
 
     @Override

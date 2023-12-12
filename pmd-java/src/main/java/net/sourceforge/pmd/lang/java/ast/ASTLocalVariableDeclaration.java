@@ -27,7 +27,7 @@ import net.sourceforge.pmd.lang.document.FileLocation;
 public final class ASTLocalVariableDeclaration extends AbstractJavaNode
     implements Iterable<ASTVariableDeclaratorId>,
                ASTStatement,
-               FinalizableNode,
+               AccessNode,
                LeftRecursiveNode, // ModifierList is parsed separately in BlockStatement
                InternalInterfaces.MultiVariableIdOwner {
 
@@ -76,5 +76,8 @@ public final class ASTLocalVariableDeclaration extends AbstractJavaNode
         return getFirstChildOfType(ASTType.class);
     }
 
-
+    @Override
+    public boolean isFinal() {
+        return hasModifiers(JModifier.FINAL);
+    }
 }

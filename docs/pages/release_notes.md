@@ -141,7 +141,7 @@ in the Migration Guide.
 
 #### API Changes
 
-**Removed classes and methods**
+**Removed classes and methods (previously deprecated)**
 
 The following previously deprecated classes have been removed:
 
@@ -154,6 +154,12 @@ The following previously deprecated classes have been removed:
 
       If the current version is needed, then `Node.getTextDocument().getLanguageVersion()` can be used. This
       is the version that has been selected via CLI `--use-version` parameter.
+
+**Removed classes, interfaces and methods (not previously deprecated)**
+
+* pmd-java
+  * The interface `FinalizableNode` has been removed. It's method `isFinal()` has been moved down to the
+    nodes where needed, e.g. {% jdoc !!java::lang.java.ast.ASTLocalVariableDeclaration#isFinal() %}.
 
 **Deprecated classes and methods**
 

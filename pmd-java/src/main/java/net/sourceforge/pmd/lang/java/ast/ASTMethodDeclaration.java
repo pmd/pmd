@@ -138,6 +138,10 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
         return hasModifiers(JModifier.STATIC);
     }
 
+    @Override
+    public boolean isFinal() {
+        return hasModifiers(JModifier.FINAL);
+    }
 
     /**
      * Returns the default clause, if this is an annotation method declaration

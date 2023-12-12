@@ -25,7 +25,7 @@ import net.sourceforge.pmd.lang.java.types.TypingContext;
  * </pre>
  */
 public final class ASTFormalParameter extends AbstractJavaNode
-    implements FinalizableNode,
+    implements AccessNode,
                TypeNode,
                Annotatable,
                VariableIdOwner {
@@ -89,5 +89,10 @@ public final class ASTFormalParameter extends AbstractJavaNode
     @Override
     public @NonNull JTypeMirror getTypeMirror(TypingContext ctx) {
         return getVarId().getTypeMirror(ctx);
+    }
+
+    @Override
+    public boolean isFinal() {
+        return hasModifiers(JModifier.FINAL);
     }
 }

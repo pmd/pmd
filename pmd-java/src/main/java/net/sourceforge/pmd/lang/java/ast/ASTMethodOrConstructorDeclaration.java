@@ -76,7 +76,6 @@ public interface ASTMethodOrConstructorDeclaration
         return getFirstChildOfType(ASTFormalParameters.class);
     }
 
-
     /**
      * Returns the number of formal parameters expected by this declaration.
      * This excludes any receiver parameter, which is irrelevant to arity.

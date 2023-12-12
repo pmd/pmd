@@ -35,7 +35,6 @@ public interface ASTAnyTypeDeclaration
             TypeParamOwnerNode,
             ASTBodyDeclaration,
             ASTTopLevelDeclaration,
-            FinalizableNode,
             JavadocCommentOwner {
 
     @Override
@@ -143,6 +142,10 @@ public interface ASTAnyTypeDeclaration
         return hasModifiers(JModifier.STATIC);
     }
 
+    @Override
+    default boolean isFinal() {
+        return hasModifiers(JModifier.FINAL);
+    }
 
     /**
      * Returns the enum constants declared by this enum. If this is not

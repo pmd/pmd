@@ -19,8 +19,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * </pre>
  */
 public final class ASTLambdaParameter extends AbstractJavaTypeNode
-    implements InternalInterfaces.VariableIdOwner,
-               FinalizableNode {
+    implements InternalInterfaces.VariableIdOwner, AccessNode {
 
     ASTLambdaParameter(int id) {
         super(id);
@@ -63,4 +62,8 @@ public final class ASTLambdaParameter extends AbstractJavaTypeNode
         return getFirstChildOfType(ASTType.class);
     }
 
+    @Override
+    public boolean isFinal() {
+        return hasModifiers(JModifier.FINAL);
+    }
 }
