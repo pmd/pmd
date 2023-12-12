@@ -51,7 +51,7 @@ class Foo extends Object {
    └─ TypeDeclaration
       └─ ClassOrInterfaceDeclaration "Foo"
          ├─ ExtendsList
-         │  └─ ClassOrInterfaceType "Object"
+         │  └─ ClassType "Object"
          └─ ClassOrInterfaceBody
 ```
 
