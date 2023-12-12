@@ -31,8 +31,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
@@ -94,7 +94,7 @@ public class NonSerializableClassRule extends AbstractJavaRulechainRule {
             for (ASTVariableDeclaratorId varId : field) {
                 if (SERIAL_PERSISTENT_FIELDS_NAME.equals(varId.getName())) {
                     if (!TypeTestUtil.isA(SERIAL_PERSISTENT_FIELDS_TYPE, varId)
-                            || field.getVisibility() != AccessNode.Visibility.V_PRIVATE
+                            || field.getVisibility() != ModifierOwner.Visibility.V_PRIVATE
                             || !field.hasModifiers(JModifier.STATIC)
                             || !field.hasModifiers(JModifier.FINAL)) {
                         asCtx(data).addViolationWithMessage(varId, "The field ''{0}'' should be private static final with type ''{1}''.",
@@ -187,7 +187,7 @@ public class NonSerializableClassRule extends AbstractJavaRulechainRule {
 
         ASTVariableDeclarator persistentFieldsDecl = null;
         for (ASTFieldDeclaration field : typeDeclaration.descendants(ASTFieldDeclaration.class)) {
-            if (field.getVisibility() == AccessNode.Visibility.V_PRIVATE
+            if (field.getVisibility() == ModifierOwner.Visibility.V_PRIVATE
                 && field.hasModifiers(JModifier.STATIC, JModifier.FINAL)) {
                 for (ASTVariableDeclaratorId varId : field) {
                     if (TypeTestUtil.isA(SERIAL_PERSISTENT_FIELDS_TYPE, varId)

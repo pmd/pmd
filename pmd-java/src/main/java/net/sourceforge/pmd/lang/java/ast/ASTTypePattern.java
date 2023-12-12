@@ -23,7 +23,7 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * @see <a href="https://openjdk.java.net/jeps/394">JEP 394: Pattern Matching for instanceof</a>
 */
-public final class ASTTypePattern extends AbstractJavaNode implements ASTPattern, AccessNode {
+public final class ASTTypePattern extends AbstractJavaNode implements ASTPattern, ModifierOwner {
 
     private int parenDepth;
 

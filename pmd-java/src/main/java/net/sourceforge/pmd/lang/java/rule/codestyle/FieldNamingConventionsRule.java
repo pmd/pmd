@@ -4,9 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
-import static net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility.V_PUBLIC;
 import static net.sourceforge.pmd.lang.java.ast.JModifier.FINAL;
 import static net.sourceforge.pmd.lang.java.ast.JModifier.STATIC;
+import static net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility.V_PUBLIC;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.util.List;

@@ -24,9 +24,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
-import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 
@@ -111,7 +111,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRulechainRule {
     }
 
     // also considers annotations, as should ASTAnyTypeDeclaration do
-    private boolean isParentInterfaceType(AccessNode node) {
+    private boolean isParentInterfaceType(ModifierOwner node) {
         ASTAnyTypeDeclaration enclosing = node.getEnclosingType();
         return enclosing != null && enclosing.isInterface();
     }
@@ -205,7 +205,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRulechainRule {
     }
 
 
-    private void checkDeclarationInInterfaceType(Object data, AccessNode member, Set<JModifier> unnecessary) {
+    private void checkDeclarationInInterfaceType(Object data, ModifierOwner member, Set<JModifier> unnecessary) {
         // third ancestor could be an AllocationExpression
         // if this is a method in an anonymous inner class
         ASTAnyTypeDeclaration parent = member.getEnclosingType();

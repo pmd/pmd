@@ -38,7 +38,7 @@ class GetModifiersFunctionsTest extends BaseXPathFunctionTest {
 
 
     @Test
-    void testNotAccessNodeReturnsEmptySequence() {
+    void testNotModifierOwnerReturnsEmptySequence() {
         Rule rule = makeXpathRuleFromXPath("//ClassOrInterfaceBody[pmd-java:modifiers()]");
         String code = "interface O { class Foo { } }";
 

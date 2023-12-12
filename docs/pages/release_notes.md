@@ -161,11 +161,17 @@ The following previously deprecated classes have been removed:
   * The interface `FinalizableNode` has been removed. It's method `isFinal()` has been moved down to the
     nodes where needed, e.g. {% jdoc !!java::lang.java.ast.ASTLocalVariableDeclaration#isFinal() %}.
 
+**Renamed classes, interfaces**
+
+* pmd-java
+  * The interface `AccessNode` has been renamed to {% jdoc java::lang.ast.ModifierOwner %}. This is only relevant
+    for Java rules, which use that type directly e.g. through downcasting.
+
 **Deprecated classes and methods**
 
 * pmd-java
   * {% jdoc !!java::lang.java.ast.ASTClassOrInterfaceDeclaration#isPackagePrivate() %} has been deprecated.
-    Use {% jdoc java::lang.java.ast.AccessNode#hasVisibility(java::lang.java.ast.AccessNode.Visibility) %} instead,
+    Use {% jdoc java::lang.java.ast.ModifierOwner#hasVisibility(java::lang.java.ast.ModifierOwner.Visibility) %} instead,
     which can correctly differentiate between local and package private classes.
 
 #### External Contributions

@@ -26,8 +26,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
 import net.sourceforge.pmd.lang.java.metrics.internal.AtfdBaseVisitor;
 import net.sourceforge.pmd.lang.java.metrics.internal.ClassFanOutVisitor;
 import net.sourceforge.pmd.lang.java.metrics.internal.CognitiveComplexityVisitor;
@@ -436,7 +436,7 @@ public final class JavaMetrics {
     private static int computeNopa(ASTAnyTypeDeclaration node, MetricOptions ignored) {
         return node.getDeclarations()
                    .filterIs(ASTFieldDeclaration.class)
-                   .filter(it -> it.hasVisibility(AccessNode.Visibility.V_PUBLIC))
+                   .filter(it -> it.hasVisibility(ModifierOwner.Visibility.V_PUBLIC))
                    .flatMap(ASTFieldDeclaration::getVarIds)
                    .count();
     }
@@ -607,7 +607,7 @@ public final class JavaMetrics {
         NodeStream<ASTMethodDeclaration> methods =
             node.getDeclarations()
                 .filterIs(ASTMethodDeclaration.class)
-                .filter(it -> !it.hasVisibility(AccessNode.Visibility.V_PRIVATE));
+                .filter(it -> !it.hasVisibility(ModifierOwner.Visibility.V_PRIVATE));
 
         int notSetter = methods.filter(it -> !JavaRuleUtil.isGetterOrSetter(it)).count();
         int total = methods.count();

@@ -186,7 +186,7 @@ langs:
           Returns a sequence of the effective modifiers of a node as strings.
           This is documented on {% jdoc jast::ASTModifierList#getEffectiveModifiers() %}.
 
-        notes: "The context node must be an {% jdoc jast::AccessNode %}, otherwise this returns an empty sequence"
+        notes: "The context node must be an {% jdoc jast::ModifierOwner %}, otherwise this returns an empty sequence"
         parameters:
         examples:
           - code: '//MethodDeclaration[pmd-java:modifiers() = "native"]'
@@ -210,7 +210,7 @@ langs:
           Returns a sequence of the explicit modifiers of a node as strings.
           This is documented on {% jdoc jast::ASTModifierList#getExplicitModifiers() %}.
 
-        notes: "The context node must be an {% jdoc jast::AccessNode %}, otherwise this returns an empty sequence"
+        notes: "The context node must be an {% jdoc jast::ModifierOwner %}, otherwise this returns an empty sequence"
         parameters:
         examples:
           - code: '//MethodDeclaration[pmd-java:explicitModifiers() = "public"]'

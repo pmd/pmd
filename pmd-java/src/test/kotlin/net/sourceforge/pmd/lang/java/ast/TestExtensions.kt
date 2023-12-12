@@ -18,7 +18,6 @@ import net.sourceforge.pmd.lang.ast.test.ValuedNodeSpec
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.*
-import net.sourceforge.pmd.util.IteratorUtil
 
 fun <T, C : Collection<T>> C?.shouldContainAtMostOneOf(vararg expected: T) {
     this shouldNotBe null
@@ -28,19 +27,19 @@ fun <T, C : Collection<T>> C?.shouldContainAtMostOneOf(vararg expected: T) {
 }
 
 
-fun haveModifier(mod: JModifier): Matcher<AccessNode> = object : Matcher<AccessNode> {
-    override fun test(value: AccessNode): MatcherResult =
+fun haveModifier(mod: JModifier): Matcher<ModifierOwner> = object : Matcher<ModifierOwner> {
+    override fun test(value: ModifierOwner): MatcherResult =
             MatcherResult(value.hasModifiers(mod), "Expected $value to have modifier $mod", "Expected $value to not have modifier $mod")
 }
 
-fun haveExplicitModifier(mod: JModifier): Matcher<AccessNode> = object : Matcher<AccessNode> {
-    override fun test(value: AccessNode): MatcherResult {
+fun haveExplicitModifier(mod: JModifier): Matcher<ModifierOwner> = object : Matcher<ModifierOwner> {
+    override fun test(value: ModifierOwner): MatcherResult {
         return MatcherResult(value.hasExplicitModifiers(mod), "Expected $value to have modifier $mod", "Expected $value to not have modifier $mod")
     }
 }
 
-fun haveVisibility(vis: AccessNode.Visibility): Matcher<AccessNode> = object : Matcher<AccessNode> {
-    override fun test(value: AccessNode): MatcherResult =
+fun haveVisibility(vis: ModifierOwner.Visibility): Matcher<ModifierOwner> = object : Matcher<ModifierOwner> {
+    override fun test(value: ModifierOwner): MatcherResult =
             MatcherResult(value.visibility == vis, "Expected $value to have visibility $vis", "Expected $value to not have visibility $vis")
 }
 

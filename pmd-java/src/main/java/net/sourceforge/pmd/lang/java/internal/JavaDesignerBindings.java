@@ -32,11 +32,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
@@ -104,9 +104,9 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
             JTypeMirror typeMirror = ((TypeNode) node).getTypeMirror();
             info.add(new AdditionalInfo("Type: " + typeMirror));
         }
-        if (node instanceof AccessNode) {
-            String effective = formatModifierSet(((AccessNode) node).getModifiers().getEffectiveModifiers());
-            String explicit = formatModifierSet(((AccessNode) node).getModifiers().getExplicitModifiers());
+        if (node instanceof ModifierOwner) {
+            String effective = formatModifierSet(((ModifierOwner) node).getModifiers().getEffectiveModifiers());
+            String explicit = formatModifierSet(((ModifierOwner) node).getModifiers().getExplicitModifiers());
             info.add(new AdditionalInfo("pmd-java:modifiers(): " + effective));
             info.add(new AdditionalInfo("pmd-java:explicitModifiers(): " + explicit));
         }

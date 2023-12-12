@@ -7,7 +7,8 @@ package net.sourceforge.pmd.lang.java;
 import net.sourceforge.pmd.lang.ast.test.BaseTreeDumpTest;
 
 /**
- * Special tweak to remove deprecated attributes of AccessNode
+ * Special tweak of BaseTreeDumpTest to remove deprecated attributes
+ * of nodes.
  */
 public abstract class BaseJavaTreeDumpTest extends BaseTreeDumpTest {
 

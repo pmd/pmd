@@ -19,7 +19,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * </pre>
  */
 public final class ASTLambdaParameter extends AbstractJavaTypeNode
-    implements InternalInterfaces.VariableIdOwner, AccessNode {
+    implements InternalInterfaces.VariableIdOwner, ModifierOwner {
 
     ASTLambdaParameter(int id) {
         super(id);

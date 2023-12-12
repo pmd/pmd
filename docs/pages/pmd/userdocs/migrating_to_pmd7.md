@@ -390,6 +390,10 @@ which can also display the AST.
 
 {% jdoc_nspace :jast java::lang.java.ast %}
 
+#### Renamed classes / interfaces
+
+* AccessNode ➡️ {% jdoc jast::ModifierOwner %}
+
 #### Annotations
 
 * What: Annotations are consolidated into a single node. `SingleMemberAnnotation`, `NormalAnnotation` and `MarkerAnnotation`
@@ -1292,12 +1296,14 @@ package com.example.tool;
 
 ##### Modifier lists
 
-* What: {% jdoc jast::AccessNode %} is now based on a node: {% jdoc jast::ASTModifierList %}. That node represents
+* What: {% jdoc jast::ModifierOwner %} (formerly AccessNode) is now based on a node: {% jdoc jast::ASTModifierList %}.
+  That node represents
   modifiers occurring before a declaration. It provides a flexible API to query modifiers, both explicit and
   implicit. All declaration nodes now have such a modifier list, even if it's implicit (no explicit modifiers).
-* Why: AccessNode gave a lot of irrelevant methods to its subtypes. E.g. `ASTFieldDeclaration::isSynchronized`
+* Why: ModifierOwner (formerly AccessNode) gave a lot of irrelevant methods to its subtypes.
+  E.g. `ASTFieldDeclaration::isSynchronized`
   makes no sense. Now, these irrelevant methods don't clutter the API. The API of ModifierList is both more
-  general and flexible
+  general and flexible.
 * Related issue: [[java] Rework AccessNode (#2259)](https://github.com/pmd/pmd/pull/2259)
 
 <details>

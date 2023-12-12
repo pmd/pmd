@@ -31,7 +31,7 @@ import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
  */
 public interface ASTAnyTypeDeclaration
     extends TypeNode,
-            AccessNode,
+        ModifierOwner,
             TypeParamOwnerNode,
             ASTBodyDeclaration,
             ASTTopLevelDeclaration,

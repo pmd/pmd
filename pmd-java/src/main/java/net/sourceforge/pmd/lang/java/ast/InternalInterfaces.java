@@ -134,7 +134,7 @@ final class InternalInterfaces {
         ASTVariableDeclaratorId getVarId();
     }
 
-    interface MultiVariableIdOwner extends JavaNode, Iterable<ASTVariableDeclaratorId>, AccessNode {
+    interface MultiVariableIdOwner extends JavaNode, Iterable<ASTVariableDeclaratorId>, ModifierOwner {
 
         /**
          * Returns a stream of the variable ids declared

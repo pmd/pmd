@@ -42,7 +42,7 @@ import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
  *
  */
 // @formatter:on
-public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator<JVariableSymbol> implements AccessNode, SymbolDeclaratorNode {
+public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator<JVariableSymbol> implements ModifierOwner, SymbolDeclaratorNode {
 
     private List<ASTNamedReferenceExpr> usages = Collections.emptyList();
 
@@ -104,12 +104,12 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
     }
 
 
-    private AccessNode getModifierOwnerParent() {
+    private ModifierOwner getModifierOwnerParent() {
         JavaNode parent = getParent();
         if (parent instanceof ASTVariableDeclarator) {
-            return (AccessNode) parent.getParent();
+            return (ModifierOwner) parent.getParent();
         }
-        return (AccessNode) parent;
+        return (ModifierOwner) parent;
     }
 
     /**
@@ -296,7 +296,7 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
      *     e.g. if {@link #isTypeInferred()} returns true.
      */
     public @Nullable ASTType getTypeNode() {
-        AccessNode parent = getModifierOwnerParent();
+        ModifierOwner parent = getModifierOwnerParent();
         return parent.firstChild(ASTType.class);
     }
 

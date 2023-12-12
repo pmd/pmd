@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 public final class ASTEnumConstant extends AbstractJavaTypeNode
     implements Annotatable,
                InvocationNode,
-               AccessNode,
+        ModifierOwner,
                ASTBodyDeclaration,
                InternalInterfaces.VariableIdOwner,
                JavadocCommentOwner {

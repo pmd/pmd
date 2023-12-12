@@ -133,7 +133,7 @@ private val javaImplicitAssertions: Assertions<Node> = {
         }
     }
 
-    if (it is AccessNode) run {
+    if (it is ModifierOwner) run {
         it.modifiers.effectiveModifiers.shouldContainAll(it.modifiers.explicitModifiers)
         it.modifiers.effectiveModifiers.shouldContainAtMostOneOf(JModifier.PUBLIC, JModifier.PRIVATE, JModifier.PROTECTED)
         it.modifiers.effectiveModifiers.shouldContainAtMostOneOf(JModifier.FINAL, JModifier.ABSTRACT)

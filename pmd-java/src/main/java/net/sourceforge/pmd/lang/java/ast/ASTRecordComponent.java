@@ -34,7 +34,7 @@ import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
  *
  * </pre>
  */
-public final class ASTRecordComponent extends AbstractJavaNode implements AccessNode, VariableIdOwner {
+public final class ASTRecordComponent extends AbstractJavaNode implements ModifierOwner, VariableIdOwner {
 
     ASTRecordComponent(int id) {
         super(id);

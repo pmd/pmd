@@ -22,9 +22,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.AccessNode;
-import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass;
@@ -95,7 +95,7 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
         return null;
     }
 
-    public static boolean mayBeSingular(AccessNode varId) {
+    public static boolean mayBeSingular(ModifierOwner varId) {
         return varId.getEffectiveVisibility().isAtMost(Visibility.V_PRIVATE)
             && !varId.getModifiers().hasAny(STATIC, FINAL);
     }

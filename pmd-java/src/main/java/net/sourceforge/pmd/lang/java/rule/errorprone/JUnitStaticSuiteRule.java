@@ -9,7 +9,7 @@ import static net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil.isJ
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 
 public class JUnitStaticSuiteRule extends AbstractJavaRulechainRule {

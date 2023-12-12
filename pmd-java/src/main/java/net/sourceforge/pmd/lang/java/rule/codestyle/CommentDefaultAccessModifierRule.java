@@ -16,9 +16,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
-import net.sourceforge.pmd.lang.java.ast.AccessNode;
-import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
 import net.sourceforge.pmd.lang.java.ast.JavaComment;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaPropertyUtil;
@@ -141,11 +141,11 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
     }
 
 
-    private void report(RuleContext ctx, AccessNode decl, String kind, String signature) {
+    private void report(RuleContext ctx, ModifierOwner decl, String kind, String signature) {
         ctx.addViolation(decl, kind, signature);
     }
 
-    private boolean shouldReportNonTopLevel(final AccessNode decl) {
+    private boolean shouldReportNonTopLevel(final ModifierOwner decl) {
         final ASTAnyTypeDeclaration enclosing = decl.getEnclosingType();
 
         return isMissingComment(decl)
@@ -155,7 +155,7 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
                 && enclosing.isAnnotationPresent("lombok.Value"));
     }
 
-    private boolean isMissingComment(AccessNode decl) {
+    private boolean isMissingComment(ModifierOwner decl) {
         // check if the class/method/field has a default access
         // modifier
         return decl.getVisibility() == Visibility.V_PACKAGE
@@ -164,11 +164,11 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
             && !hasOkComment(decl);
     }
 
-    private boolean isNotIgnored(AccessNode decl) {
+    private boolean isNotIgnored(ModifierOwner decl) {
         return getProperty(IGNORED_ANNOTS).stream().noneMatch(decl::isAnnotationPresent);
     }
 
-    private boolean hasOkComment(AccessNode node) {
+    private boolean hasOkComment(ModifierOwner node) {
         Pattern regex = getProperty(REGEX_DESCRIPTOR);
         return JavaComment.getLeadingComments(node)
                           .anyMatch(it -> regex.matcher(it.getText()).matches());

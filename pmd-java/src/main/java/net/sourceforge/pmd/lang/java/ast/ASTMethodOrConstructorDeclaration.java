@@ -27,7 +27,7 @@ import net.sourceforge.pmd.lang.java.types.JMethodSig;
  * @since 5.8.1
  */
 public interface ASTMethodOrConstructorDeclaration
-    extends AccessNode,
+    extends ModifierOwner,
             ASTBodyDeclaration,
             TypeParamOwnerNode,
             GenericNode<JavaNode>,

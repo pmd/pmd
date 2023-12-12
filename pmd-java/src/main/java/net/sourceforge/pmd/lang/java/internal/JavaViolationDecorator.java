@@ -23,8 +23,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
 import net.sourceforge.pmd.reporting.ViolationDecorator;
 import net.sourceforge.pmd.util.IteratorUtil;
 
@@ -51,7 +51,7 @@ final class JavaViolationDecorator implements ViolationDecorator {
             enclosing = javaNode.getEnclosingType();
         }
         if (enclosing == null) {
-            enclosing = javaNode.getRoot().getTypeDeclarations().first(it -> it.hasVisibility(AccessNode.Visibility.V_PUBLIC));
+            enclosing = javaNode.getRoot().getTypeDeclarations().first(it -> it.hasVisibility(ModifierOwner.Visibility.V_PUBLIC));
         }
         if (enclosing == null) {
             enclosing = javaNode.getRoot().getTypeDeclarations().first();

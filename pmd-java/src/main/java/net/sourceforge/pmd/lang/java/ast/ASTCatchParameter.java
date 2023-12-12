@@ -25,7 +25,7 @@ import net.sourceforge.pmd.lang.java.types.TypeSystem;
  */
 public final class ASTCatchParameter extends AbstractJavaNode
     implements InternalInterfaces.VariableIdOwner,
-               AccessNode {
+        ModifierOwner {
 
     ASTCatchParameter(int id) {
         super(id);

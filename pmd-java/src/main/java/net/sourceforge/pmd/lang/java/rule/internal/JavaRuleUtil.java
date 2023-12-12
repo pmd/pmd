@@ -32,12 +32,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.AccessNode;
-import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
@@ -178,7 +178,7 @@ public final class JavaRuleUtil {
                 || declNode instanceof ASTMethodDeclaration) {
 
                 hasAny = isNonPrivate(declNode) && !JavaAstUtils.isMainMethod(declNode);
-                if (!((AccessNode) declNode).hasModifiers(JModifier.STATIC)) {
+                if (!((ModifierOwner) declNode).hasModifiers(JModifier.STATIC)) {
                     return false;
                 }
 
@@ -193,7 +193,7 @@ public final class JavaRuleUtil {
     }
 
     private static boolean isNonPrivate(ASTBodyDeclaration decl) {
-        return ((AccessNode) decl).getVisibility() != Visibility.V_PRIVATE;
+        return ((ModifierOwner) decl).getVisibility() != Visibility.V_PRIVATE;
     }
 
     /**

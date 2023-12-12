@@ -249,7 +249,7 @@ public final class ASTModifierList extends AbstractJavaNode {
             if (enclosing instanceof ASTEnumConstant) {
                 effective.add(STATIC);
             } else {
-                if (enclosing instanceof AccessNode && ((AccessNode) enclosing).hasModifiers(STATIC)
+                if (enclosing instanceof ModifierOwner && ((ModifierOwner) enclosing).hasModifiers(STATIC)
                     || enclosing instanceof ASTInitializer && ((ASTInitializer) enclosing).isStatic()) {
                     effective.add(STATIC);
                 }
