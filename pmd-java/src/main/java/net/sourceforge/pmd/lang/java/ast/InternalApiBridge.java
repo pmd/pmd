@@ -208,7 +208,7 @@ public final class InternalApiBridge {
         return TypesFromAst.fromAst(ts, lexicalSubst, node);
     }
 
-    public static JTypeDeclSymbol getReferencedSym(ASTClassOrInterfaceType type) {
+    public static JTypeDeclSymbol getReferencedSym(ASTClassType type) {
         return type.getReferencedSym();
     }
 

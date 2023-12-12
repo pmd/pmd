@@ -145,7 +145,7 @@ and increases the maintenance burden.
         <priority>2</priority>
         <properties>
             <property name="xpath">
-                <value>//MethodCall[TypeExpression/ClassOrInterfaceType[pmd-java:typeIs('java.lang.System')]
+                <value>//MethodCall[TypeExpression/ClassType[pmd-java:typeIs('java.lang.System')]
                                     and @MethodName = 'loadLibrary']</value>
             </property>
         </properties>
@@ -517,7 +517,7 @@ class Foo {
             <property name="xpath">
                 <value>
 <![CDATA[
-//ExtendsList/ClassOrInterfaceType[pmd-java:typeIsExactly('java.lang.Object')]
+//ExtendsList/ClassType[pmd-java:typeIsExactly('java.lang.Object')]
 ]]>
                 </value>
             </property>
@@ -1978,7 +1978,7 @@ public class Foo {
             <property name="xpath">
                 <value>
 <![CDATA[
-//ThisExpression/ClassOrInterfaceType
+//ThisExpression/ClassType
 [ ancestor::*[pmd-java:nodeIs('AnyTypeDeclaration')][1]/@SimpleName = ./@SimpleName ]
 ]]>
                 </value>

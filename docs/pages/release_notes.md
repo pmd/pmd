@@ -166,6 +166,8 @@ The following previously deprecated classes have been removed:
 * pmd-java
   * The interface `AccessNode` has been renamed to {% jdoc java::lang.ast.ModifierOwner %}. This is only relevant
     for Java rules, which use that type directly e.g. through downcasting.
+  * The node `ASTClassOrInterfaceType` has been renamed to {% jdoc java::lang.ast.ASTClassType %}. XPath rules
+    need to be adjusted.
 
 **Deprecated classes and methods**
 

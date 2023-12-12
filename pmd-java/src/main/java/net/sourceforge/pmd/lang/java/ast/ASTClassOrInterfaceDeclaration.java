@@ -75,7 +75,7 @@ public final class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclara
      *
      * <p>Returns {@code null} otherwise.
      */
-    public ASTClassOrInterfaceType getSuperClassTypeNode() {
+    public ASTClassType getSuperClassTypeNode() {
         if (isInterface()) {
             return null;
         }
@@ -85,7 +85,7 @@ public final class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclara
     }
 
 
-    public List<ASTClassOrInterfaceType> getPermittedSubclasses() {
+    public List<ASTClassType> getPermittedSubclasses() {
         return ASTList.orEmpty(children(ASTPermitsList.class).first());
     }
 }

@@ -42,7 +42,7 @@ class Java10Test {
         ASTVariableDeclaratorId varId = localVars.get(0).getVarIds().firstOrThrow();
 
         // first: var list = new ArrayList<String>();
-        assertTrue(varId.getTypeNode() instanceof ASTClassOrInterfaceType);
+        assertTrue(varId.getTypeNode() instanceof ASTClassType);
         // in that case, we don't have a class named "var", so the type will be null
         assertTrue(varId.getTypeMirror().getSymbol().isUnresolved());
 

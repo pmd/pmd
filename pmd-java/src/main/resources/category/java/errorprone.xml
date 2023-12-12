@@ -241,7 +241,7 @@ original error, causing other, more subtle problems later on.
             <property name="xpath">
                 <value>
 <![CDATA[
-//CatchClause/CatchParameter/ClassOrInterfaceType[pmd-java:typeIsExactly('java.lang.NullPointerException')]
+//CatchClause/CatchParameter/ClassType[pmd-java:typeIsExactly('java.lang.NullPointerException')]
 ]]>
                 </value>
             </property>
@@ -274,7 +274,7 @@ OutOfMemoryError that should be exposed and managed separately.
         <properties>
             <property name="xpath">
                 <value><![CDATA[
-                //CatchParameter[ClassOrInterfaceType[pmd-java:typeIsExactly('java.lang.Throwable')]]/VariableDeclaratorId
+                //CatchParameter[ClassType[pmd-java:typeIsExactly('java.lang.Throwable')]]/VariableDeclaratorId
                 ]]></value>
             </property>
         </properties>
@@ -834,7 +834,7 @@ in a `ClassCastException`.
             <property name="xpath">
                 <value>
 <![CDATA[
-//CastExpression[ArrayType/ClassOrInterfaceType[not(pmd-java:typeIsExactly('java.lang.Object'))]]
+//CastExpression[ArrayType/ClassType[not(pmd-java:typeIsExactly('java.lang.Object'))]]
     /MethodCall[pmd-java:matchesSig("java.util.Collection#toArray()")]
 ]]>
                 </value>
@@ -944,7 +944,7 @@ Note: Such a covariant return type is only possible with Java 1.5 or higher.
 //MethodDeclaration
     [@Name = 'clone']
     [@Arity = 0]
-    [ClassOrInterfaceType[1]/@SimpleName != ancestor::ClassOrInterfaceDeclaration[1]/@SimpleName]
+    [ClassType[1]/@SimpleName != ancestor::ClassOrInterfaceDeclaration[1]/@SimpleName]
 ]]>
                 </value>
             </property>
@@ -1250,7 +1250,7 @@ Extend Exception or RuntimeException instead of Throwable.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration/ExtendsList/ClassOrInterfaceType
+//ClassOrInterfaceDeclaration/ExtendsList/ClassType
   [pmd-java:typeIsExactly('java.lang.Throwable')]
 ]]>
                 </value>
@@ -2319,7 +2319,7 @@ chain needs an own serialVersionUID field. See also [Should an abstract class ha
 //ClassOrInterfaceDeclaration
     [@Interface = false()]
     [count(ClassOrInterfaceBody/FieldDeclaration/VariableDeclarator/VariableDeclaratorId[@Name='serialVersionUID']) = 0]
-    [(ImplementsList | ExtendsList)/ClassOrInterfaceType[pmd-java:typeIs('java.io.Serializable')]]
+    [(ImplementsList | ExtendsList)/ClassType[pmd-java:typeIs('java.io.Serializable')]]
 ]]>
                 </value>
             </property>
@@ -2389,7 +2389,7 @@ $topLevelClass[
                 [descendant::ReturnStatement/*[1][pmd-java:typeIs(ancestor::ClassOrInterfaceDeclaration[@Nested = false()]/@BinaryName)]]
             ) or (
                 (: … or the inner class extends the outer class :)
-                ExtendsList/ClassOrInterfaceType[@SimpleName = ancestor::ClassOrInterfaceDeclaration[@Nested = false()]/@SimpleName]
+                ExtendsList/ClassType[@SimpleName = ancestor::ClassOrInterfaceDeclaration[@Nested = false()]/@SimpleName]
             )]
     )]
 ]]>
@@ -2428,7 +2428,7 @@ log4j2 (since 6.19.0).
                 <value><![CDATA[
 //ClassOrInterfaceDeclaration[
   count(
-    ClassOrInterfaceBody/FieldDeclaration/ClassOrInterfaceType[
+    ClassOrInterfaceBody/FieldDeclaration/ClassType[
       pmd-java:typeIs("org.apache.log4j.Logger") or
       pmd-java:typeIs("org.apache.logging.log4j.Logger") or
       pmd-java:typeIs("java.util.logging.Logger") or
@@ -2661,7 +2661,7 @@ with the restriction that the logger needs to be passed into the constructor.
                 <value>
 <![CDATA[
 //FieldDeclaration
-    [ClassOrInterfaceType[pmd-java:typeIs($loggerClass)]]
+    [ClassType[pmd-java:typeIs($loggerClass)]]
     [
         (: check modifiers :)
         (not(pmd-java:modifiers() = 'private') or not(pmd-java:modifiers() = 'final'))
@@ -2669,8 +2669,8 @@ with the restriction that the logger needs to be passed into the constructor.
         or (pmd-java:modifiers() = 'static' and VariableDeclarator/VariableDeclaratorId/@Name != $staticLoggerName)
         or (not(pmd-java:modifiers() = 'static') and VariableDeclarator/VariableDeclaratorId/@Name != $loggerName)
         (: check logger argument type matches class or enum name :)
-        or .//ArgumentList/ClassLiteral/ClassOrInterfaceType/@SimpleName != ancestor::ClassOrInterfaceDeclaration/@SimpleName
-        or .//ArgumentList/ClassLiteral/ClassOrInterfaceType/@SimpleName != ancestor::EnumDeclaration/@SimpleName
+        or .//ArgumentList/ClassLiteral/ClassType/@SimpleName != ancestor::ClassOrInterfaceDeclaration/@SimpleName
+        or .//ArgumentList/ClassLiteral/ClassType/@SimpleName != ancestor::EnumDeclaration/@SimpleName
 
         (: special case - final logger initialized inside constructor :)
         or (VariableDeclarator/@Initializer = false()
@@ -2722,7 +2722,7 @@ See Effective Java, 3rd Edition, Item 54: Return empty collections or arrays ins
 //ReturnStatement/NullLiteral
 [ancestor::MethodDeclaration[1]
     [ArrayType
-     or ClassOrInterfaceType[pmd-java:typeIs('java.util.Collection')
+     or ClassType[pmd-java:typeIs('java.util.Collection')
         or pmd-java:typeIs('java.util.Map')]]
 ]
 [not(./ancestor::LambdaExpression)]
@@ -2888,7 +2888,7 @@ behavior especially when instances are distributed by the container on several J
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[ImplementsList/ClassOrInterfaceType[
+//ClassOrInterfaceDeclaration[ImplementsList/ClassType[
         pmd-java:typeIs('javax.ejb.SessionBean')
      or pmd-java:typeIs('javax.ejb.EJBHome')
      or pmd-java:typeIs('javax.ejb.EJBLocalObject')

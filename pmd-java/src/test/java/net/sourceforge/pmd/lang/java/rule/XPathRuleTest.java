@@ -102,8 +102,8 @@ class XPathRuleTest {
 
     @Test
     void testSimpleQueryIsRuleChain2() {
-        // docOrder(((/)/descendant-or-self::node())/(child::element(ClassOrInterfaceType)[typeIs("java.util.Vector")]))
-        assertIsRuleChain("//ClassOrInterfaceType[pmd-java:typeIs('java.util.Vector')]");
+        // docOrder(((/)/descendant-or-self::node())/(child::element(ClassType)[typeIs("java.util.Vector")]))
+        assertIsRuleChain("//ClassType[pmd-java:typeIs('java.util.Vector')]");
     }
 
     private void assertIsRuleChain(String xpath) {
@@ -127,7 +127,7 @@ class XPathRuleTest {
         final String source = "public interface dummy extends Foo, Bar, Baz {}";
         ASTCompilationUnit cu = JavaParsingHelper.DEFAULT.parse(source);
 
-        String xpath = "//ExtendsList/ClassOrInterfaceType/following-sibling::ClassOrInterfaceType";
+        String xpath = "//ExtendsList/ClassType/following-sibling::ClassType";
 
 
         SaxonXPathRuleQuery xpathRuleQuery = new SaxonXPathRuleQuery(xpath,

@@ -10,7 +10,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
@@ -62,7 +62,7 @@ public class UnsynchronizedStaticFormatterRule extends AbstractJavaRulechainRule
         if (!node.hasModifiers(JModifier.STATIC)) {
             return data;
         }
-        ASTClassOrInterfaceType cit = node.descendants(ASTClassOrInterfaceType.class).first();
+        ASTClassType cit = node.descendants(ASTClassType.class).first();
         if (cit == null || !TypeTestUtil.isA(formatterClassToCheck, cit)) {
             return data;
         }

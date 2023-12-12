@@ -18,7 +18,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *                     | {@link ASTExpression Expression} "." UnqualifiedAlloc
  *
  * UnqualifiedAlloc                  ::=
- *      "new" {@link ASTTypeArguments TypeArguments}? {@link ASTClassOrInterfaceType ClassOrInterfaceType} {@link ASTArgumentList ArgumentList} {@link ASTAnonymousClassDeclaration AnonymousClassDeclaration}?
+ *      "new" {@link ASTTypeArguments TypeArguments}? {@link ASTClassType ClassType} {@link ASTArgumentList ArgumentList} {@link ASTAnonymousClassDeclaration AnonymousClassDeclaration}?
  *
  * </pre>
  */
@@ -86,8 +86,8 @@ public final class ASTConstructorCall extends AbstractInvocationExpr
     /**
      * Returns the type node.
      */
-    public ASTClassOrInterfaceType getTypeNode() {
-        return getFirstChildOfType(ASTClassOrInterfaceType.class);
+    public ASTClassType getTypeNode() {
+        return getFirstChildOfType(ASTClassType.class);
     }
 
 

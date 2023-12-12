@@ -288,7 +288,7 @@ public interface ASTAnyTypeDeclaration
      * Returns the list of interfaces implemented by this class, or
      * extended by this interface. Returns null if no such list is declared.
      */
-    default @NonNull NodeStream<ASTClassOrInterfaceType> getSuperInterfaceTypeNodes() {
+    default @NonNull NodeStream<ASTClassType> getSuperInterfaceTypeNodes() {
         return ASTList.orEmptyStream(isInterface() ? firstChild(ASTExtendsList.class)
                                                    : firstChild(ASTImplementsList.class));
     }

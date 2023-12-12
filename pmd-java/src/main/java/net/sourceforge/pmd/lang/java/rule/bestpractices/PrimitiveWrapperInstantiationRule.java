@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
@@ -26,7 +26,7 @@ public class PrimitiveWrapperInstantiationRule extends AbstractJavaRulechainRule
 
     @Override
     public Object visit(ASTConstructorCall node, Object data) {
-        ASTClassOrInterfaceType type = node.firstChild(ASTClassOrInterfaceType.class);
+        ASTClassType type = node.firstChild(ASTClassType.class);
         if (type == null) {
             return data;
         }

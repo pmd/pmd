@@ -24,7 +24,7 @@ import net.sf.saxon.value.SequenceType;
  * XPath function {@code pmd-java:typeIs(typeName as xs:string) as xs:boolean}
  * and {@code typeIsExactly}.
  *
- * <p>Example XPath 2.0: {@code //ClassOrInterfaceType[pmd-java:typeIs('java.lang.String')]}
+ * <p>Example XPath 2.0: {@code //ClassType[pmd-java:typeIs('java.lang.String')]}
  *
  * <p>Returns true if the type of the node matches, false otherwise.
  */

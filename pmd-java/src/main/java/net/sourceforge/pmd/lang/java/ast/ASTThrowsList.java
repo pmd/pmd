@@ -11,14 +11,14 @@ import net.sourceforge.pmd.lang.java.ast.ASTList.ASTNonEmptyList;
  *
  * <pre class="grammar">
  *
- * ThrowsList ::= "throws" {@link ASTClassOrInterfaceType ClassType} ("," {@link ASTClassOrInterfaceType ClassType})*
+ * ThrowsList ::= "throws" {@link ASTClassType ClassType} ("," {@link ASTClassType ClassType})*
  *
  * </pre>
  */
-public final class ASTThrowsList extends ASTNonEmptyList<ASTClassOrInterfaceType> {
+public final class ASTThrowsList extends ASTNonEmptyList<ASTClassType> {
 
     ASTThrowsList(int id) {
-        super(id, ASTClassOrInterfaceType.class);
+        super(id, ASTClassType.class);
     }
 
     @Override

@@ -75,7 +75,7 @@ public interface ASTType extends TypeNode, Annotatable, LeftRecursiveNode {
 
     @Deprecated
     default boolean isClassOrInterfaceType() {
-        return this instanceof ASTClassOrInterfaceType;
+        return this instanceof ASTClassType;
     }
 
 

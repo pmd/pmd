@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompactConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
@@ -158,7 +158,7 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
         }
 
         @Override
-        public Attribute visit(ASTClassOrInterfaceType node, Void data) {
+        public Attribute visit(ASTClassType node, Void data) {
             return new Attribute(node, "SimpleName", node.getSimpleName());
         }
 

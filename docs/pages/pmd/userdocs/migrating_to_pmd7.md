@@ -393,6 +393,7 @@ which can also display the AST.
 #### Renamed classes / interfaces
 
 * AccessNode ➡️ {% jdoc jast::ModifierOwner %}
+* ClassOrInterfaceType ➡️ ClassType ({% jdoc jast::ASTClassType %})
 
 #### Annotations
 

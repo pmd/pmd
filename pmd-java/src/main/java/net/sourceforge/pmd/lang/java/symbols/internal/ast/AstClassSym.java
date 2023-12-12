@@ -17,7 +17,7 @@ import org.pcollections.PSet;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
@@ -227,7 +227,7 @@ final class AstClassSym
 
         } else if (node instanceof ASTClassOrInterfaceDeclaration) {
 
-            ASTClassOrInterfaceType superClass = ((ASTClassOrInterfaceDeclaration) node).getSuperClassTypeNode();
+            ASTClassType superClass = ((ASTClassOrInterfaceDeclaration) node).getSuperClassTypeNode();
             return superClass == null
                    ? ts.OBJECT
                    // this cast relies on the fact that the superclass is not a type variable

@@ -13,7 +13,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * <pre class="grammar">
  *
  * ThisExpression ::= "this"
- *                  | {@link ASTClassOrInterfaceType TypeName} "." "this"
+ *                  | {@link ASTClassType ClassType} "." "this"
  *
  * </pre>
  */
@@ -25,8 +25,8 @@ public final class ASTThisExpression extends AbstractJavaExpr implements ASTPrim
 
 
     @Nullable
-    public ASTClassOrInterfaceType getQualifier() {
-        return getNumChildren() > 0 ? (ASTClassOrInterfaceType) getChild(0) : null;
+    public ASTClassType getQualifier() {
+        return getNumChildren() > 0 ? (ASTClassType) getChild(0) : null;
     }
 
     @Override

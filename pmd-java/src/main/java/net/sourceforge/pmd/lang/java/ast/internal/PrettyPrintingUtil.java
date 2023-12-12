@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTArrayType;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTClassLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -95,8 +95,8 @@ public final class PrettyPrintingUtil {
     private static void prettyPrintTypeNode(StringBuilder sb, ASTType t) {
         if (t instanceof ASTPrimitiveType) {
             sb.append(((ASTPrimitiveType) t).getKind().getSimpleName());
-        } else if (t instanceof ASTClassOrInterfaceType) {
-            ASTClassOrInterfaceType classT = (ASTClassOrInterfaceType) t;
+        } else if (t instanceof ASTClassType) {
+            ASTClassType classT = (ASTClassType) t;
             sb.append(classT.getSimpleName());
 
             ASTTypeArguments targs = classT.getTypeArguments();

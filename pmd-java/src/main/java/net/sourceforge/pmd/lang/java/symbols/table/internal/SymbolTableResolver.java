@@ -29,7 +29,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompactConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
@@ -166,7 +166,7 @@ public final class SymbolTableResolver {
         }
 
         @Override
-        public Void visit(ASTClassOrInterfaceType node, @NonNull ReferenceCtx data) {
+        public Void visit(ASTClassType node, @NonNull ReferenceCtx data) {
             // all types are disambiguated in this resolver, because
             // the symbols available inside the body of an anonymous class
             // depend on the type of the superclass/superinterface (the Runnable in `new Runnable() { }`).

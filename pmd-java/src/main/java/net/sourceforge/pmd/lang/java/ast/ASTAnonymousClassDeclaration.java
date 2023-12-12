@@ -42,7 +42,7 @@ public final class ASTAnonymousClassDeclaration extends AbstractAnyTypeDeclarati
     }
 
     @Override
-    public @NonNull NodeStream<ASTClassOrInterfaceType> getSuperInterfaceTypeNodes() {
+    public @NonNull NodeStream<ASTClassType> getSuperInterfaceTypeNodes() {
         if (getParent() instanceof ASTConstructorCall) {
             ASTConstructorCall ctor = (ASTConstructorCall) getParent();
             @NonNull JTypeMirror type = ctor.getTypeMirror();

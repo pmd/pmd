@@ -104,7 +104,7 @@ fun TreeNodeWrapper<Node, *>.enumBody(contents: NodeSpec<ASTEnumBody> = EmptyAss
             contents()
         }
 
-fun TreeNodeWrapper<Node, *>.thisExpr(qualifier: ValuedNodeSpec<ASTThisExpression, ASTClassOrInterfaceType?> = { null }) =
+fun TreeNodeWrapper<Node, *>.thisExpr(qualifier: ValuedNodeSpec<ASTThisExpression, ASTClassType?> = { null }) =
         child<ASTThisExpression> {
             it::getQualifier shouldBe qualifier()
         }
@@ -372,14 +372,14 @@ fun TreeNodeWrapper<Node, *>.typeParam(name: String, contents: ValuedNodeSpec<AS
             it::getTypeBoundNode shouldBe contents()
         }
 
-fun TreeNodeWrapper<Node, *>.classType(simpleName: String, contents: NodeSpec<ASTClassOrInterfaceType> = EmptyAssertions) =
-        child<ASTClassOrInterfaceType>(ignoreChildren = contents == EmptyAssertions) {
+fun TreeNodeWrapper<Node, *>.classType(simpleName: String, contents: NodeSpec<ASTClassType> = EmptyAssertions) =
+        child<ASTClassType>(ignoreChildren = contents == EmptyAssertions) {
             it::getSimpleName shouldBe simpleName
             contents()
         }
 
-fun TreeNodeWrapper<Node, *>.qualClassType(canoName: String, contents: NodeSpec<ASTClassOrInterfaceType> = EmptyAssertions) =
-        child<ASTClassOrInterfaceType>(ignoreChildren = contents == EmptyAssertions) {
+fun TreeNodeWrapper<Node, *>.qualClassType(canoName: String, contents: NodeSpec<ASTClassType> = EmptyAssertions) =
+        child<ASTClassType>(ignoreChildren = contents == EmptyAssertions) {
             val simpleName = canoName.substringAfterLast('.')
             it::getSimpleName shouldBe simpleName
             it.text.toString() shouldBe canoName

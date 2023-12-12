@@ -1684,7 +1684,7 @@ void ClassOrInterfaceType() #void:
         // a type name, otherwise it wouldn't have compiled. So it's not ambiguous and we can
         // start fresh: "@B Map.Entry" will be unambiguously [[@B Map].Entry]
 
-        (<IDENTIFIER> {setLastTokenImage(jjtThis);} [ TypeArguments() ]) #ClassOrInterfaceType
+        (<IDENTIFIER> {setLastTokenImage(jjtThis);} [ TypeArguments() ]) #ClassType
   |
 
 
@@ -1694,13 +1694,13 @@ void ClassOrInterfaceType() #void:
        // be sure that the last segment is a type name.
 
       AmbiguousName()
-      [ TypeArguments() #ClassOrInterfaceType(2) ]
+      [ TypeArguments() #ClassType(2) ]
       {
         // At this point the first ClassOrInterfaceType may be on top of the stack,
         // but its image is not set. If it is on the stack we need to shrink the bounds
         // of the ambiguous name, or delete it.
         Node first = jjtree.peekNode();
-        if (first instanceof ASTClassOrInterfaceType) {
+        if (first instanceof ASTClassType) {
           // then we saw type arguments, so the last segment is definitely a type name
           ASTAmbiguousName name = first.getFirstChildOfType(ASTAmbiguousName.class);
           name.shrinkOrDeleteInParentSetImage();
@@ -1720,7 +1720,7 @@ void ClassOrInterfaceType() #void:
   { forceTypeContext(); }
 }
 
-private void ClassTypeSegment() #ClassOrInterfaceType(jjtree.nodeArity() + 1):
+private void ClassTypeSegment() #ClassType(jjtree.nodeArity() + 1):
 {}
 {
      TypeAnnotListNoInject()

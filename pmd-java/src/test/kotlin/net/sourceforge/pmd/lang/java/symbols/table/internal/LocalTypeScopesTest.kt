@@ -5,11 +5,8 @@
 package net.sourceforge.pmd.lang.java.symbols.table.internal
 
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.component6
-import net.sourceforge.pmd.lang.ast.test.component7
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
-import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.types.JClassType
 import net.sourceforge.pmd.lang.java.types.shouldHaveType
 import net.sourceforge.pmd.lang.java.types.typeDsl
@@ -178,7 +175,7 @@ class LocalTypeScopesTest : ParserTestSpec({
 
 
         val (n2, mapEntry, kkEntry, n2i2, i4) =
-                acu.descendants(ASTClassOrInterfaceType::class.java).toList()
+                acu.descendants(ASTClassType::class.java).toList()
 
         val (_, cKK, cKkEntry, cN2, cN2i2) =
                 acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }

@@ -87,7 +87,7 @@ it contains methods that are not thread-safe.
             <property name="xpath">
                 <value>
 <![CDATA[
-  //ConstructorCall/ClassOrInterfaceType[pmd-java:typeIs('java.lang.ThreadGroup')]
+  //ConstructorCall/ClassType[pmd-java:typeIs('java.lang.ThreadGroup')]
 | //MethodCall[@MethodName = 'getThreadGroup']
 ]]>
                 </value>
@@ -150,7 +150,7 @@ Also, EJBs might be moved between machines in a cluster and only managed resourc
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceType
+//ClassType
 [pmd-java:typeIs('java.lang.Thread') or pmd-java:typeIs('java.util.concurrent.ExecutorService')]
 (: allow Thread.currentThread().getContextClassLoader() :)
 [not(parent::TypeExpression[parent::MethodCall[pmd-java:matchesSig('_#currentThread()')
@@ -161,7 +161,7 @@ Also, EJBs might be moved between machines in a cluster and only managed resourc
 (: exclude duplicated types on the same line :)
  [not((parent::FieldDeclaration|parent::LocalVariableDeclaration)/VariableDeclarator/*[2][pmd-java:typeIs('java.lang.Thread') or pmd-java:typeIs('java.util.concurrent.ExecutorService')])
  or
-  @BeginLine != (parent::FieldDeclaration|parent::LocalVariableDeclaration)/VariableDeclarator/ConstructorCall/ClassOrInterfaceType/@BeginLine]
+  @BeginLine != (parent::FieldDeclaration|parent::LocalVariableDeclaration)/VariableDeclarator/ConstructorCall/ClassType/@BeginLine]
 |
 //MethodCall[*[1][not(pmd-java:nodeIs('MethodCall'))][pmd-java:nodeIs('Expression') and (pmd-java:typeIs('java.util.concurrent.Executors')
    or pmd-java:typeIs('java.util.concurrent.ExecutorService'))]]

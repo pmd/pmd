@@ -256,7 +256,7 @@ that one covers both.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ConstructorCall/ClassOrInterfaceType[
+//ConstructorCall/ClassType[
        pmd-java:typeIs('java.io.FileInputStream')
     or pmd-java:typeIs('java.io.FileOutputStream')
     or pmd-java:typeIs('java.io.FileReader')
@@ -661,7 +661,7 @@ ArrayList is a much better Collection implementation than Vector if thread-safe 
             <property name="xpath">
                 <value>
 <![CDATA[
-//ConstructorCall/ClassOrInterfaceType[pmd-java:typeIsExactly('java.util.Vector') or pmd-java:typeIsExactly('Vector')]
+//ConstructorCall/ClassType[pmd-java:typeIsExactly('java.util.Vector') or pmd-java:typeIsExactly('Vector')]
 ]]>
                 </value>
             </property>

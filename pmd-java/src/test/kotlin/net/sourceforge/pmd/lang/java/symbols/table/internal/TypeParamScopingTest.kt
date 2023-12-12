@@ -9,8 +9,6 @@ import io.kotest.matchers.types.shouldBeSameInstanceAs
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.java.ast.*
-import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
-import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol
 import net.sourceforge.pmd.lang.java.types.JClassType
 import net.sourceforge.pmd.lang.java.types.JTypeVar
 
@@ -89,7 +87,7 @@ class TypeParamScopingTest : ParserTestSpec({
 
             val (t, x) = acu.descendants(ASTTypeParameter::class.java).toList()
 
-            t.typeBoundNode.shouldBeA<ASTClassOrInterfaceType> {
+            t.typeBoundNode.shouldBeA<ASTClassType> {
                 it.symbolTable.shouldResolveTypeTo<JTypeVar>("X", x.typeMirror)
             }
         }
@@ -106,7 +104,7 @@ class TypeParamScopingTest : ParserTestSpec({
 
             val (x, t) = acu.descendants(ASTTypeParameter::class.java).toList()
 
-            t.typeBoundNode.shouldBeA<ASTClassOrInterfaceType> {
+            t.typeBoundNode.shouldBeA<ASTClassType> {
                 it.symbolTable.shouldResolveTypeTo("X", x.typeMirror)
             }
         }
@@ -123,7 +121,7 @@ class TypeParamScopingTest : ParserTestSpec({
 
             val (t) = acu.descendants(ASTTypeParameter::class.java).toList()
 
-            t.typeBoundNode.shouldBeA<ASTClassOrInterfaceType> {
+            t.typeBoundNode.shouldBeA<ASTClassType> {
                 it.symbolTable.shouldResolveTypeTo("T", t.typeMirror)
             }
         }
@@ -170,7 +168,7 @@ class TypeParamScopingTest : ParserTestSpec({
 
         doTest("TParams of class are in scope inside method tparam declaration") {
 
-            t2.typeBoundNode.shouldBeA<ASTClassOrInterfaceType> {
+            t2.typeBoundNode.shouldBeA<ASTClassType> {
                 it.symbolTable.shouldResolveTypeTo("X", x.typeMirror)
             }
 

@@ -37,7 +37,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
@@ -205,12 +205,12 @@ public final class JavaAstUtils {
      */
     @SafeVarargs
     public static boolean hasExceptionList(ASTMethodOrConstructorDeclaration node, Class<? extends Throwable>... types) {
-        @NonNull List<ASTClassOrInterfaceType> formals = ASTList.orEmpty(node.getThrowsList());
+        @NonNull List<ASTClassType> formals = ASTList.orEmpty(node.getThrowsList());
         if (formals.size() != types.length) {
             return false;
         }
         for (int i = 0; i < formals.size(); i++) {
-            ASTClassOrInterfaceType fi = formals.get(i);
+            ASTClassType fi = formals.get(i);
             if (!TypeTestUtil.isExactlyA(types[i], fi)) {
                 return false;
             }
@@ -610,7 +610,7 @@ public final class JavaAstUtils {
             && mtype.getSymbol().getEnclosingClass().equals(call.getEnclosingType().getSymbol());
     }
 
-    public static ASTClassOrInterfaceType getThisOrSuperQualifier(ASTExpression expr) {
+    public static ASTClassType getThisOrSuperQualifier(ASTExpression expr) {
         if (expr instanceof ASTThisExpression) {
             return ((ASTThisExpression) expr).getQualifier();
         } else if (expr instanceof ASTSuperExpression) {

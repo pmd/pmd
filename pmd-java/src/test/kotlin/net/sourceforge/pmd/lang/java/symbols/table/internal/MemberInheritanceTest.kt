@@ -276,7 +276,7 @@ class MemberInheritanceTest : ParserTestSpec({
             it.shouldBe(`t_Scratch{String}Inner`)
         }
 
-        val typeNode = acu.descendants(ASTClassOrInterfaceType::class.java).first { it.simpleName == "Inner" }!!
+        val typeNode = acu.descendants(ASTClassType::class.java).first { it.simpleName == "Inner" }!!
 
         typeNode.shouldMatchN {
             classType("Inner") {

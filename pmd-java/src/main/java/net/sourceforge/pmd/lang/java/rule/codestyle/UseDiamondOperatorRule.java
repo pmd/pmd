@@ -12,7 +12,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
@@ -65,7 +65,7 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTConstructorCall ctorCall, Object data) {
-        ASTClassOrInterfaceType newTypeNode = ctorCall.getTypeNode();
+        ASTClassType newTypeNode = ctorCall.getTypeNode();
         JTypeMirror newType = newTypeNode.getTypeMirror();
 
         ASTTypeArguments targs = newTypeNode.getTypeArguments();
@@ -157,13 +157,13 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
         return sb.append(argsString).toString();
     }
 
-    private static StringBuilder produceSameTypeWithDiamond(ASTClassOrInterfaceType type, StringBuilder sb, boolean topLevel) {
+    private static StringBuilder produceSameTypeWithDiamond(ASTClassType type, StringBuilder sb, boolean topLevel) {
         if (type.isFullyQualified()) {
             JTypeDeclSymbol sym = type.getTypeMirror().getSymbol();
             Objects.requireNonNull(sym);
             sb.append(sym.getPackageName()).append('.');
         } else {
-            ASTClassOrInterfaceType qualifier = type.getQualifier();
+            ASTClassType qualifier = type.getQualifier();
             if (qualifier != null) {
                 produceSameTypeWithDiamond(qualifier, sb, false).append('.');
             }
