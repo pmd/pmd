@@ -398,6 +398,7 @@ which can also display the AST.
 * AnyTypeDeclaration ➡️ TypeDeclaration ({% jdoc jast::ASTTypeDeclaration %})
 * MethodOrConstructorDeclaration ➡️ ExecutableDeclaration ({% jdoc jast::ASTExecutableDeclaration %})
 * VariableDeclaratorId ➡️ VariableId ({% jdoc jast::ASTVariableId %})
+* ClassOrInterfaceBody ➡️ ClassBody ({% jdoc jast::ASTClassBody %})
 
 #### Annotations
 
@@ -615,7 +616,7 @@ Top-level type declaration
     ├─ ModifierList
     │  └─ Annotation "A"
     │     └─ ClassType "A"
-    └─ ClassOrInterfaceBody
+    └─ ClassBody
 {% endhighlight %}
 </td>
 </tr>
@@ -1383,7 +1384,7 @@ public @A class C {}
    ├─ ModifierList
    │  └─ Annotation "A"
    │     └─ ClassType "A"
-   └─ ClassOrInterfaceBody
+   └─ ClassBody
 {% endhighlight %}
 </td>
 </tr>
@@ -1428,7 +1429,7 @@ public class Flat {
 └─ CompilationUnit
    └─ ClassDeclaration "Flat"
       ├─ ModifierList
-      └─ ClassOrInterfaceBody
+      └─ ClassBody
          └─ FieldDeclaration
             ├─ ModifierList
             ├─ PrimitiveType "int"
@@ -1601,7 +1602,7 @@ Object anonymous = new Object() {  };
          ├─ ArgumentList
          └─ AnonymousClassDeclaration
             ├─ ModifierList
-            └─ ClassOrInterfaceBody
+            └─ ClassBody
 {% endhighlight %}
 </td></tr>
 </table>
@@ -1668,7 +1669,7 @@ public class Sample {
 </td>
 <td>
 {% highlight js %}
-└─ ClassOrInterfaceBody
+└─ ClassBody
    ├─ ConstructorDeclaration[ @Name = 'Sample' ]
    │  ├─ ModifierList
    │  ├─ FormalParameters
@@ -2257,7 +2258,7 @@ class LocalClass {}
    └─ LocalClassStatement
       └─ ClassDeclaration "LocalClass"
          ├─ ModifierList
-         └─ ClassOrInterfaceBody
+         └─ ClassBody
 {% endhighlight %}
 </td></tr>
 </table>

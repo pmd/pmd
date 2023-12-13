@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
  *
  * <pre class="grammar">
  *
- * AnonymousClassDeclaration ::= {@link ASTModifierList EmptyModifierList} {@link ASTClassOrInterfaceBody}
+ * AnonymousClassDeclaration ::= {@link ASTModifierList EmptyModifierList} {@link ASTClassBody}
  *
  * </pre>
  */

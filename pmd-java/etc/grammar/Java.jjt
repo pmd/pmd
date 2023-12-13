@@ -1373,7 +1373,7 @@ void TypeParameter():
    <IDENTIFIER> {setLastTokenImage(jjtThis);} [ "extends" IntersectionType() ]
 }
 
-void ClassOrInterfaceBody():
+void ClassOrInterfaceBody() #ClassBody:
 {}
 {
   "{" { tokenContexts.push(TokenContext.BLOCK); }

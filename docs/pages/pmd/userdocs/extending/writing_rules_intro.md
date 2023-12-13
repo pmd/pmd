@@ -52,7 +52,7 @@ class Foo extends Object {
       └─ ClassDeclaration "Foo"
          ├─ ExtendsList
          │  └─ ClassType "Object"
-         └─ ClassOrInterfaceBody
+         └─ ClassBody
 ```
 
 </td>

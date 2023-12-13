@@ -8,4 +8,4 @@
       |  +- ClassType[@FullyQualified = false, @SimpleName = "PlusExpr"]
       |  +- ClassType[@FullyQualified = false, @SimpleName = "TimesExpr"]
       |  +- ClassType[@FullyQualified = false, @SimpleName = "NegExpr"]
-      +- ClassOrInterfaceBody[@Empty = true, @Size = 0]
+      +- ClassBody[@Empty = true, @Size = 0]

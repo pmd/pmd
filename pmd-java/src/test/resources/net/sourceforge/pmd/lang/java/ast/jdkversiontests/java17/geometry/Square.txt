@@ -5,4 +5,4 @@
       +- ModifierList[@EffectiveModifiers = "{public, non-sealed}", @ExplicitModifiers = "{public, non-sealed}"]
       +- ExtendsList[@Empty = false, @Size = 1]
       |  +- ClassType[@FullyQualified = false, @SimpleName = "Shape"]
-      +- ClassOrInterfaceBody[@Empty = true, @Size = 0]
+      +- ClassBody[@Empty = true, @Size = 0]

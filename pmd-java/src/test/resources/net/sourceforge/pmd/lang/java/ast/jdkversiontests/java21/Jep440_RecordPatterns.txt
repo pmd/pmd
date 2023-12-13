@@ -1,7 +1,7 @@
 +- CompilationUnit[@PackageName = ""]
    +- ClassDeclaration[@Abstract = false, @Annotation = false, @Anonymous = false, @BinaryName = "Jep440_RecordPatterns", @CanonicalName = "Jep440_RecordPatterns", @EffectiveVisibility = Visibility.V_PACKAGE, @Enum = false, @Final = false, @Interface = false, @Local = false, @Nested = false, @PackageName = "", @Record = false, @RegularClass = true, @RegularInterface = false, @SimpleName = "Jep440_RecordPatterns", @Static = false, @TopLevel = true, @Visibility = Visibility.V_PACKAGE]
       +- ModifierList[@EffectiveModifiers = "{}", @ExplicitModifiers = "{}"]
-      +- ClassOrInterfaceBody[@Empty = false, @Size = 15]
+      +- ClassBody[@Empty = false, @Size = 15]
          +- RecordDeclaration[@Abstract = false, @Annotation = false, @Anonymous = false, @BinaryName = "Jep440_RecordPatterns$Point", @CanonicalName = "Jep440_RecordPatterns.Point", @EffectiveVisibility = Visibility.V_PACKAGE, @Enum = false, @Final = true, @Interface = false, @Local = false, @Nested = true, @PackageName = "", @Record = true, @RegularClass = false, @RegularInterface = false, @SimpleName = "Point", @Static = true, @TopLevel = false, @Visibility = Visibility.V_PACKAGE]
          |  +- ModifierList[@EffectiveModifiers = "{static, final}", @ExplicitModifiers = "{}"]
          |  +- RecordComponentList[@Empty = false, @Size = 2, @Varargs = false]

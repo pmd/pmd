@@ -426,7 +426,7 @@ For other scenarios, consider using a utility class. See Effective Java's 'Use i
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassDeclaration[@Interface = true()][$ignoreIfHasMethods= false() or not(ClassOrInterfaceBody/MethodDeclaration)]/ClassOrInterfaceBody/FieldDeclaration
+//ClassDeclaration[@Interface = true()][$ignoreIfHasMethods= false() or not(ClassBody/MethodDeclaration)]/ClassBody/FieldDeclaration
  ]]>
                 </value>
             </property>
@@ -514,7 +514,7 @@ public class Foo {
             <property name="xpath">
                 <value>
                     <![CDATA[
-//ConstructorCall/AnonymousClassDeclaration/ClassOrInterfaceBody[count(*)=1]/Initializer[@Static=false()]
+//ConstructorCall/AnonymousClassDeclaration/ClassBody[count(*)=1]/Initializer[@Static=false()]
 ]]>
                 </value>
             </property>
@@ -774,7 +774,7 @@ In TestNG, only methods annotated with the @Test annotation are executed.
 <![CDATA[
 //ClassDeclaration[matches(@SimpleName, $testClassPattern) or pmd-java:typeIs('junit.framework.TestCase')]
     (: a junit 3 method :)
-    /ClassOrInterfaceBody/MethodDeclaration[
+    /ClassBody/MethodDeclaration[
         @Visibility="public"
         and starts-with(@Name, 'test')
         and not(ModifierList/Annotation[
@@ -833,7 +833,7 @@ Test methods are identified as those which use `@Test`, `@RepeatedTest`,
 //ClassDeclaration[
     (: a Junit 5 test class, ie, it has methods with the annotation :)
     @Interface = false() and
-    ClassOrInterfaceBody/MethodDeclaration
+    ClassBody/MethodDeclaration
     [ModifierList/Annotation[
                pmd-java:typeIs('org.junit.jupiter.api.Test')
             or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
@@ -843,7 +843,7 @@ Test methods are identified as those which use `@Test`, `@RepeatedTest`,
     ]]
 ]/(
        self::*[@Abstract = false() and @Visibility = ("public", "protected")]
-|      ClassOrInterfaceBody/MethodDeclaration
+|      ClassBody/MethodDeclaration
        [@Visibility = ("public", "protected")]
        [ModifierList/Annotation[
                pmd-java:typeIs('org.junit.jupiter.api.Test')

@@ -179,6 +179,8 @@ The following previously deprecated classes have been removed:
     directly, e.g. through downcasting. Or when using the XPath function `pmd-java:nodeIs()`.
   * The node `ASTVariableDeclaratorId` has been renamed to {% jdoc java::lang.ast.ASTVariableId %}. XPath rules
     need to be adjusted.
+  * The node `ASTClassOrInterfaceBody` has been renamed to {% jdoc java::lang.ast.ASTClassBody %}. XPath rules
+    need to be adjusted.
 
 **Deprecated classes and methods**
 

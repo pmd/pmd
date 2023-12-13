@@ -1,7 +1,7 @@
 +- CompilationUnit[@PackageName = ""]
    +- ClassDeclaration[@Abstract = false, @Annotation = false, @Anonymous = false, @BinaryName = "SimpleSwitchExpressions", @CanonicalName = "SimpleSwitchExpressions", @EffectiveVisibility = Visibility.V_PUBLIC, @Enum = false, @Final = false, @Interface = false, @Local = false, @Nested = false, @PackageName = "", @Record = false, @RegularClass = true, @RegularInterface = false, @SimpleName = "SimpleSwitchExpressions", @Static = false, @TopLevel = true, @Visibility = Visibility.V_PUBLIC]
       +- ModifierList[@EffectiveModifiers = "{public}", @ExplicitModifiers = "{public}"]
-      +- ClassOrInterfaceBody[@Empty = false, @Size = 9]
+      +- ClassBody[@Empty = false, @Size = 9]
          +- FieldDeclaration[@EffectiveVisibility = Visibility.V_PRIVATE, @Static = true, @Visibility = Visibility.V_PRIVATE]
          |  +- ModifierList[@EffectiveModifiers = "{private, static, final}", @ExplicitModifiers = "{private, static, final}"]
          |  +- PrimitiveType[@Kind = PrimitiveTypeKind.INT]

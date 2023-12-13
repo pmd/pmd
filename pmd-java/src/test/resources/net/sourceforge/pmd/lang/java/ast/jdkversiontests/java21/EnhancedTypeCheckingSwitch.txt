@@ -1,7 +1,7 @@
 +- CompilationUnit[@PackageName = ""]
    +- ClassDeclaration[@Abstract = false, @Annotation = false, @Anonymous = false, @BinaryName = "EnhancedTypeCheckingSwitch", @CanonicalName = "EnhancedTypeCheckingSwitch", @EffectiveVisibility = Visibility.V_PUBLIC, @Enum = false, @Final = false, @Interface = false, @Local = false, @Nested = false, @PackageName = "", @Record = false, @RegularClass = true, @RegularInterface = false, @SimpleName = "EnhancedTypeCheckingSwitch", @Static = false, @TopLevel = true, @Visibility = Visibility.V_PUBLIC]
       +- ModifierList[@EffectiveModifiers = "{public}", @ExplicitModifiers = "{public}"]
-      +- ClassOrInterfaceBody[@Empty = false, @Size = 4]
+      +- ClassBody[@Empty = false, @Size = 4]
          +- RecordDeclaration[@Abstract = false, @Annotation = false, @Anonymous = false, @BinaryName = "EnhancedTypeCheckingSwitch$Point", @CanonicalName = "EnhancedTypeCheckingSwitch.Point", @EffectiveVisibility = Visibility.V_PACKAGE, @Enum = false, @Final = true, @Interface = false, @Local = false, @Nested = true, @PackageName = "", @Record = true, @RegularClass = false, @RegularInterface = false, @SimpleName = "Point", @Static = true, @TopLevel = false, @Visibility = Visibility.V_PACKAGE]
          |  +- ModifierList[@EffectiveModifiers = "{static, final}", @ExplicitModifiers = "{}"]
          |  +- RecordComponentList[@Empty = false, @Size = 2, @Varargs = false]

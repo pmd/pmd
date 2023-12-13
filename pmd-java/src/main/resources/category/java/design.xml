@@ -27,7 +27,7 @@ protected constructor in order to prevent instantiation than make the class misl
 <![CDATA[
 //ClassDeclaration
     [@Abstract = true() and @Interface = false()]
-    [ClassOrInterfaceBody[not(ConstructorDeclaration | MethodDeclaration)]]
+    [ClassBody[not(ConstructorDeclaration | MethodDeclaration)]]
     [not(pmd-java:hasAnnotation('com.google.auto.value.AutoValue')
          or pmd-java:hasAnnotation('lombok.AllArgsConstructor')
          or pmd-java:hasAnnotation('lombok.NoArgsConstructor')
@@ -1414,7 +1414,7 @@ city/state/zip fields could park them within a single Address field.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassDeclaration/ClassOrInterfaceBody
+//ClassDeclaration/ClassBody
   [count(FieldDeclaration
             [not(pmd-java:modifiers() = 'final')]
             [not(pmd-java:modifiers() = 'static')]
@@ -1457,7 +1457,7 @@ complexity and find a way to have more fine grained objects.
             <property name="xpath">
                 <value>
 <![CDATA[
- //ClassDeclaration/ClassOrInterfaceBody
+ //ClassDeclaration/ClassBody
      [
       count(MethodDeclaration[
          not (

@@ -69,18 +69,16 @@ $ cat Foo.xml
 <CompilationUnit Image='' PackageName='' declarationsAreInDefaultPackage='true'>
     <TypeDeclaration Image=''>
         <ClassDeclaration Abstract='false' BinaryName='Foo' Default='false' Final='false' Image='Foo' Interface='false' Local='false' Modifiers='1' Native='false' Nested='false' PackagePrivate='false' Private='false' Protected='false' Public='true' SimpleName='Foo' Static='false' Strictfp='false' Synchronized='false' Transient='false' TypeKind='CLASS' Volatile='false'>
-            <ClassOrInterfaceBody AnonymousInnerClass='false' EnumChild='false' Image=''>
-                <ClassOrInterfaceBodyDeclaration AnonymousInnerClass='false' EnumChild='false' Image='' Kind='FIELD'>
-                    <FieldDeclaration Abstract='false' AnnotationMember='false' Array='false' ArrayDepth='0' Default='false' Final='false' Image='' InterfaceMember='false' Modifiers='0' Native='false' PackagePrivate='true' Private='false' Protected='false' Public='false' Static='false' Strictfp='false' Synchronized='false' SyntacticallyFinal='false' SyntacticallyPublic='false' SyntacticallyStatic='false' Transient='false' VariableName='a' Volatile='false'>
-                        <Type Array='false' ArrayDepth='0' ArrayType='false' Image='' TypeImage='int'>
-                            <PrimitiveType Array='false' ArrayDepth='0' Boolean='false' Image='int' />
-                        </Type>
-                        <VariableDeclarator Image='' Initializer='false' Name='a'>
-                            <VariableId Array='false' ArrayDepth='0' ArrayType='false' ExceptionBlockParameter='false' ExplicitReceiverParameter='false' Field='true' Final='false' FormalParameter='false' Image='a' LambdaParameter='false' LocalVariable='false' ResourceDeclaration='false' TypeInferred='false' VariableName='a' />
-                        </VariableDeclarator>
-                    </FieldDeclaration>
-                </ClassOrInterfaceBodyDeclaration>
-            </ClassOrInterfaceBody>
+            <ClassBody AnonymousInnerClass='false' EnumChild='false' Image=''>
+                <FieldDeclaration Abstract='false' AnnotationMember='false' Array='false' ArrayDepth='0' Default='false' Final='false' Image='' InterfaceMember='false' Modifiers='0' Native='false' PackagePrivate='true' Private='false' Protected='false' Public='false' Static='false' Strictfp='false' Synchronized='false' SyntacticallyFinal='false' SyntacticallyPublic='false' SyntacticallyStatic='false' Transient='false' VariableName='a' Volatile='false'>
+                    <Type Array='false' ArrayDepth='0' ArrayType='false' Image='' TypeImage='int'>
+                        <PrimitiveType Array='false' ArrayDepth='0' Boolean='false' Image='int' />
+                    </Type>
+                    <VariableDeclarator Image='' Initializer='false' Name='a'>
+                        <VariableId Array='false' ArrayDepth='0' ArrayType='false' ExceptionBlockParameter='false' ExplicitReceiverParameter='false' Field='true' Final='false' FormalParameter='false' Image='a' LambdaParameter='false' LocalVariable='false' ResourceDeclaration='false' TypeInferred='false' VariableName='a' />
+                    </VariableDeclarator>
+                </FieldDeclaration>
+            </ClassBody>
         </ClassDeclaration>
     </TypeDeclaration>
 </CompilationUnit>

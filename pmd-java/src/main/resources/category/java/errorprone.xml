@@ -400,7 +400,7 @@ Smalltalk often prefer this approach as the methods denote accessor methods.
                 <value>
 <![CDATA[
 //FieldDeclaration/VariableDeclarator/VariableId
-    [some $method in ../../..[self::ClassOrInterfaceBody or self::EnumBody]/MethodDeclaration
+    [some $method in ../../..[self::ClassBody or self::EnumBody]/MethodDeclaration
      satisfies lower-case(@Name) = lower-case($method/@Name)]
 ]]>
                 </value>
@@ -2318,7 +2318,7 @@ chain needs an own serialVersionUID field. See also [Should an abstract class ha
 <![CDATA[
 //ClassDeclaration
     [@Interface = false()]
-    [count(ClassOrInterfaceBody/FieldDeclaration/VariableDeclarator/VariableId[@Name='serialVersionUID']) = 0]
+    [count(ClassBody/FieldDeclaration/VariableDeclarator/VariableId[@Name='serialVersionUID']) = 0]
     [(ImplementsList | ExtendsList)/ClassType[pmd-java:typeIs('java.io.Serializable')]]
 ]]>
                 </value>
@@ -2365,26 +2365,26 @@ $topLevelClass[
                 pmd-java:hasAnnotation('lombok.RequiredArgsConstructor') or
                 pmd-java:hasAnnotation('lombok.AllArgsConstructor')) and
             (: or has non-default constructors … :)
-            ClassOrInterfaceBody/ConstructorDeclaration and
+            ClassBody/ConstructorDeclaration and
                 (: … but only private … :)
-                not(ClassOrInterfaceBody/ConstructorDeclaration[@Visibility != "private"]) and
+                not(ClassBody/ConstructorDeclaration[@Visibility != "private"]) and
                 (: … and none annotated … :)
                 (every $x in $annotations satisfies
-                      not(ClassOrInterfaceBody/ConstructorDeclaration/ModifierList/Annotation[pmd-java:typeIs($x)]))
+                      not(ClassBody/ConstructorDeclaration/ModifierList/Annotation[pmd-java:typeIs($x)]))
         )
     ]
     [
         (: With no visible static methods … :)
-        not(ClassOrInterfaceBody/MethodDeclaration[($isLombokUtility or pmd-java:modifiers() = "static") and @Visibility != "private"]) and
+        not(ClassBody/MethodDeclaration[($isLombokUtility or pmd-java:modifiers() = "static") and @Visibility != "private"]) and
         (: … nor fields … :)
-        not(ClassOrInterfaceBody/FieldDeclaration[($isLombokUtility or pmd-java:modifiers() = "static") and @Visibility != "private"]) and
+        not(ClassBody/FieldDeclaration[($isLombokUtility or pmd-java:modifiers() = "static") and @Visibility != "private"]) and
         (: … no nested classes, that are non-private and static … :)
-        not(ClassOrInterfaceBody/ClassDeclaration
+        not(ClassBody/ClassDeclaration
             [pmd-java:modifiers() = "static" and @Visibility != "private"]
             (: … with a default or non-private constructor … :)
-            [not(ClassOrInterfaceBody/ConstructorDeclaration) or ClassOrInterfaceBody/ConstructorDeclaration[@Visibility != "private"]]
+            [not(ClassBody/ConstructorDeclaration) or ClassBody/ConstructorDeclaration[@Visibility != "private"]]
             (: … and a non-private method returning the outer class type … :)
-            [(ClassOrInterfaceBody/MethodDeclaration
+            [(ClassBody/MethodDeclaration
                 [@Visibility != "private"]
                 [descendant::ReturnStatement/*[1][pmd-java:typeIs(ancestor::ClassDeclaration[@Nested = false()]/@BinaryName)]]
             ) or (
@@ -2428,7 +2428,7 @@ log4j2 (since 6.19.0).
                 <value><![CDATA[
 //ClassDeclaration[
   count(
-    ClassOrInterfaceBody/FieldDeclaration/ClassType[
+    ClassBody/FieldDeclaration/ClassType[
       pmd-java:typeIs("org.apache.log4j.Logger") or
       pmd-java:typeIs("org.apache.logging.log4j.Logger") or
       pmd-java:typeIs("java.util.logging.Logger") or
@@ -2675,7 +2675,7 @@ with the restriction that the logger needs to be passed into the constructor.
         (: special case - final logger initialized inside constructor :)
         or (VariableDeclarator/@Initializer = false()
             and not(pmd-java:modifiers() = 'static')
-            and not(ancestor::ClassOrInterfaceBody/ConstructorDeclaration
+            and not(ancestor::ClassBody/ConstructorDeclaration
                 //AssignmentExpression[@Operator = '=']
                     [FieldAccess[1]/@Name = $loggerName or VariableAccess[1]/@Name = $loggerName]
                     [*[2][@Name = ancestor::ConstructorDeclaration//FormalParameter/VariableId/@Name]])
@@ -2895,7 +2895,7 @@ behavior especially when instances are distributed by the container on several J
      or pmd-java:typeIs('javax.ejb.EJBLocalHome')
      or pmd-java:typeIs('javax.ejb.EJBObject')
     ]]
-    /ClassOrInterfaceBody/FieldDeclaration
+    /ClassBody/FieldDeclaration
         [pmd-java:modifiers() = 'static']
         [not(pmd-java:modifiers() = 'final')]
 ]]>

@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  *                      {@link ASTTypeParameters TypeParameters}?
  *                      {@link ASTExtendsList ExtendsList}?
  *                      {@link ASTImplementsList ImplementsList}?
- *                      {@link ASTClassOrInterfaceBody ClassOrInterfaceBody}
+ *                      {@link ASTClassBody ClassBody}
  *
  * </pre>
  */

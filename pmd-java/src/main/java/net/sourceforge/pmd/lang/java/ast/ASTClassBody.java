@@ -10,13 +10,13 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * <pre class="grammar">
  *
- * ClassOrInterfaceBody ::=  "{"  {@linkplain ASTBodyDeclaration ClassOrInterfaceBodyDeclaration}* "}"
+ * ClassBody ::=  "{"  {@linkplain ASTBodyDeclaration ClassBodyDeclaration}* "}"
  *
  * </pre>
  */
-public final class ASTClassOrInterfaceBody extends ASTTypeBody {
+public final class ASTClassBody extends ASTTypeBody {
 
-    ASTClassOrInterfaceBody(int id) {
+    ASTClassBody(int id) {
         super(id);
     }
 

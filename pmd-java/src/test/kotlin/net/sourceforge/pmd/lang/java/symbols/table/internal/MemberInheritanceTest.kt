@@ -265,7 +265,7 @@ class MemberInheritanceTest : ParserTestSpec({
                 acu.descendants(ASTClassDeclaration::class.java).toList { it.typeMirror }
 
         val insideFoo =
-                acu.descendants(ASTClassOrInterfaceBody::class.java)
+                acu.descendants(ASTClassBody::class.java)
                     .crossFindBoundaries().get(2)!!
 
         val `t_Scratch{String}Inner` = with (acu.typeDsl) {

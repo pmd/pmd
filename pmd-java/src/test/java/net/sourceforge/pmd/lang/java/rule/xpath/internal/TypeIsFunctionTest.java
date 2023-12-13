@@ -40,7 +40,7 @@ class TypeIsFunctionTest extends BaseXPathFunctionTest {
 
     @Test
     void testWrongTypeReturnsFalse() {
-        Rule rule = makeXpathRuleFromXPath("//ClassOrInterfaceBody[pmd-java:typeIs('java.lang.Override')]");
+        Rule rule = makeXpathRuleFromXPath("//ClassBody[pmd-java:typeIs('java.lang.Override')]");
 
         assertFinds(rule, 0, "interface O { @Override void foo(); }");
     }

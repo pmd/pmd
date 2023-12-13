@@ -1,7 +1,7 @@
 +- CompilationUnit[@PackageName = ""]
    +- ClassDeclaration[@Abstract = false, @Annotation = false, @Anonymous = false, @BinaryName = "EnhancedTypeCheckingSwitch", @CanonicalName = "EnhancedTypeCheckingSwitch", @EffectiveVisibility = Visibility.V_PUBLIC, @Enum = false, @Final = false, @Interface = false, @Local = false, @Nested = false, @PackageName = "", @Record = false, @RegularClass = true, @RegularInterface = false, @SimpleName = "EnhancedTypeCheckingSwitch", @Static = false, @TopLevel = true, @Visibility = Visibility.V_PUBLIC]
    |  +- ModifierList[@EffectiveModifiers = "{public}", @ExplicitModifiers = "{public}"]
-   |  +- ClassOrInterfaceBody[@Empty = false, @Size = 2]
+   |  +- ClassBody[@Empty = false, @Size = 2]
    |     +- MethodDeclaration[@Abstract = false, @Arity = 1, @EffectiveVisibility = Visibility.V_PACKAGE, @Final = false, @Image = "typeTester", @Name = "typeTester", @Overridden = false, @Static = true, @Varargs = false, @Visibility = Visibility.V_PACKAGE, @Void = true]
    |     |  +- ModifierList[@EffectiveModifiers = "{static}", @ExplicitModifiers = "{static}"]
    |     |  +- VoidType[]

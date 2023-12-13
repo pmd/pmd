@@ -82,7 +82,7 @@ Clarify your intent by using private or package access modifiers instead.
                 <value>
 <![CDATA[
 //ClassDeclaration[@Final = true()]
-/ClassOrInterfaceBody
+/ClassBody
 /FieldDeclaration[@Visibility = "protected"]
 ]]>
                 </value>
@@ -116,7 +116,7 @@ visibility cannot be reduced). Clarify your intent by using private or package a
                 <value>
 <![CDATA[
 //ClassDeclaration[@Final= true() and not(ExtendsList)]
-/ClassOrInterfaceBody
+/ClassBody
 /MethodDeclaration[@Visibility="protected" and @Name != 'finalize']
  ]]>
                 </value>
@@ -219,7 +219,7 @@ another constructor (such as an overloaded constructor) is called, this rule wil
                 <value>
 <![CDATA[
 //ClassDeclaration[ExtendsList/*]
-  /ClassOrInterfaceBody
+  /ClassBody
   /ConstructorDeclaration[ not(Block/ExplicitConstructorInvocation) ]
 ]]>
                 </value>
@@ -432,7 +432,7 @@ usage by developers who should be implementing their own versions in the concret
                 <value>
 <![CDATA[
 //ClassDeclaration[@RegularClass = true() and pmd-java:modifiers() = "abstract"]
-    /ClassOrInterfaceBody
+    /ClassBody
     /MethodDeclaration
     [Block[
       let $size := count(*[not(self::EmptyStatement)])
