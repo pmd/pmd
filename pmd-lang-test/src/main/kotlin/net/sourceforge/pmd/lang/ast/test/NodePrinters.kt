@@ -16,7 +16,7 @@ import net.sourceforge.pmd.util.treeexport.TextTreeRenderer
  *               ├── Type
  *               │   └── PrimitiveType
  *               └── VariableDeclarator
- *                   ├── VariableDeclaratorId
+ *                   ├── VariableId
  *                   └── VariableInitializer
  *                       └── 1 child not shown
  *

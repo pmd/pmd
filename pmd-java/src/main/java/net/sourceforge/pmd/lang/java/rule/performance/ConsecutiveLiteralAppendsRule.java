@@ -27,7 +27,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchArrowBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchFallthroughBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
@@ -90,12 +90,12 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
     private ConsecutiveCounter counter = new ConsecutiveCounter();
 
     public ConsecutiveLiteralAppendsRule() {
-        super(ASTVariableDeclaratorId.class);
+        super(ASTVariableId.class);
         definePropertyDescriptor(THRESHOLD_DESCRIPTOR);
     }
 
     @Override
-    public Object visit(ASTVariableDeclaratorId node, Object data) {
+    public Object visit(ASTVariableId node, Object data) {
         if (!isStringBuilderOrBuffer(node)) {
             return data;
         }
@@ -152,7 +152,7 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
      *
      * @param node
      */
-    private void checkConstructor(Object data, ASTVariableDeclaratorId node) {
+    private void checkConstructor(Object data, ASTVariableId node) {
         ASTExpression initializer = node.getInitializer();
         if (initializer == null) {
             return;

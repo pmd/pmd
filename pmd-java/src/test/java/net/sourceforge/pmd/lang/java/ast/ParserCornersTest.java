@@ -323,8 +323,8 @@ class ParserCornersTest extends BaseJavaTreeDumpTest {
     @Test
     void testMethodReferenceConfused() {
         ASTCompilationUnit ast = java.parseResource("MethodReferenceConfused.java", "10");
-        ASTVariableDeclaratorId varWithMethodName = AstTestUtil.varId(ast, "method");
-        ASTVariableDeclaratorId someObject = AstTestUtil.varId(ast, "someObject");
+        ASTVariableId varWithMethodName = AstTestUtil.varId(ast, "method");
+        ASTVariableId someObject = AstTestUtil.varId(ast, "someObject");
 
         assertThat(varWithMethodName.getLocalUsages(), empty());
         assertThat(someObject.getLocalUsages(), hasSize(1));

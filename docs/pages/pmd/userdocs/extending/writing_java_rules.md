@@ -61,8 +61,8 @@ public class MyRule extends AbstractJavaRule {
 
 Generally, a rule wants to check for only some node types. In our XPath example
 in [Your First Rule](pmd_userdocs_extending_your_first_rule.html),
-we wanted to check for some `VariableDeclaratorId` nodes. That's the XPath name,
-but in Java, you'll get access to the {% jdoc jast::ASTVariableDeclaratorId %}
+we wanted to check for some `VariableId` nodes. That's the XPath name,
+but in Java, you'll get access to the {% jdoc jast::ASTVariableId %}
 full API.
 
 If you want to check for some specific node types, you can override the
@@ -72,8 +72,8 @@ corresponding `visit` method:
 public class MyRule extends AbstractJavaRule {
 
     @Override
-    public Object visit(ASTVariableDeclaratorId node, Object data) {
-        // This method is called on each node of type ASTVariableDeclaratorId
+    public Object visit(ASTVariableId node, Object data) {
+        // This method is called on each node of type ASTVariableId
         // in the AST
 
         if (node.getType() == short.class) {

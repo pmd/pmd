@@ -38,7 +38,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.QualifiableExpression;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
@@ -181,7 +181,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
         return false;
     }
 
-    private boolean isAllowedStore(ASTVariableDeclaratorId varId) {
+    private boolean isAllowedStore(ASTVariableId varId) {
         return varId != null && varId.getLocalUsages().stream().noneMatch(this::escapesMethod);
     }
 

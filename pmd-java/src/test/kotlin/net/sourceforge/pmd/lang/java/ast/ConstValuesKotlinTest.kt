@@ -24,7 +24,7 @@ class ConstValuesKotlinTest : ProcessorTestSpec({
             }
         """.trimIndent())
 
-        val (i1, i2, i3) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
+        val (i1, i2, i3) = acu.descendants(ASTVariableId::class.java).toList()
 
 
         i1.initializer!!.constValue shouldBe null

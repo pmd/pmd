@@ -10,7 +10,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
@@ -50,7 +50,7 @@ public class UnusedFormalParameterRule extends AbstractJavaRulechainRule {
 
     private void check(ASTExecutableDeclaration node, Object data) {
         for (ASTFormalParameter formal : node.getFormalParameters()) {
-            ASTVariableDeclaratorId varId = formal.getVarId();
+            ASTVariableId varId = formal.getVarId();
             if (JavaAstUtils.isNeverUsed(varId) && !JavaRuleUtil.isExplicitUnusedVarName(varId.getName())) {
                 addViolation(data, varId, new Object[] { node instanceof ASTMethodDeclaration ? "method" : "constructor", varId.getName(), });
             }

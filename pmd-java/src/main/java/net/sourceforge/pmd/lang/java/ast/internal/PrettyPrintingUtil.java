@@ -43,7 +43,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTUnionType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.ASTVoidType;
 import net.sourceforge.pmd.lang.java.ast.ASTWildcardType;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -179,8 +179,8 @@ public final class PrettyPrintingUtil {
             return ((ASTResource) node).getStableName();
         } else if (node instanceof ASTTypeDeclaration) {
             return ((ASTTypeDeclaration) node).getSimpleName();
-        } else if (node instanceof ASTVariableDeclaratorId) {
-            return ((ASTVariableDeclaratorId) node).getName();
+        } else if (node instanceof ASTVariableId) {
+            return ((ASTVariableId) node).getName();
         } else {
             return node.getImage(); // todo get rid of this
         }

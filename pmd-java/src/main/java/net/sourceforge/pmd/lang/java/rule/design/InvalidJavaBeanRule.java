@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
@@ -141,11 +141,11 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
 
     private void collectFields(ASTClassDeclaration node) {
         for (ASTFieldDeclaration fieldDeclaration : node.getDeclarations(ASTFieldDeclaration.class).toList()) {
-            for (ASTVariableDeclaratorId variableDeclaratorId : fieldDeclaration) {
-                String propertyName = StringUtils.capitalize(variableDeclaratorId.getName());
+            for (ASTVariableId variableId : fieldDeclaration) {
+                String propertyName = StringUtils.capitalize(variableId.getName());
                 if (!fieldDeclaration.hasModifiers(JModifier.STATIC) && !fieldDeclaration.hasModifiers(JModifier.TRANSIENT)) {
                     PropertyInfo field = getOrCreatePropertyInfo(propertyName);
-                    field.setDeclaratorId(variableDeclaratorId);
+                    field.setDeclaratorId(variableId);
                     field.setReadonly(fieldDeclaration.hasModifiers(JModifier.FINAL));
                 }
             }
@@ -239,7 +239,7 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
 
     private static class PropertyInfo {
         private final String name;
-        private ASTVariableDeclaratorId declaratorId;
+        private ASTVariableId declaratorId;
         private boolean readonly;
         private ASTMethodDeclaration getter;
         private ASTMethodDeclaration indexedGetter;
@@ -254,11 +254,11 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
             return name;
         }
 
-        public ASTVariableDeclaratorId getDeclaratorId() {
+        public ASTVariableId getDeclaratorId() {
             return declaratorId;
         }
 
-        public void setDeclaratorId(ASTVariableDeclaratorId declaratorId) {
+        public void setDeclaratorId(ASTVariableId declaratorId) {
             this.declaratorId = declaratorId;
         }
 

@@ -147,7 +147,7 @@ for old Java code before Java 1.4. It can be used to identify problematic code p
         <priority>2</priority>
         <properties>
             <property name="xpath">
-                <value>//VariableDeclaratorId[@Name='assert']</value>
+                <value>//VariableId[@Name='assert']</value>
             </property>
         </properties>
         <example>
@@ -274,7 +274,7 @@ OutOfMemoryError that should be exposed and managed separately.
         <properties>
             <property name="xpath">
                 <value><![CDATA[
-                //CatchParameter[ClassType[pmd-java:typeIsExactly('java.lang.Throwable')]]/VariableDeclaratorId
+                //CatchParameter[ClassType[pmd-java:typeIsExactly('java.lang.Throwable')]]/VariableId
                 ]]></value>
             </property>
         </properties>
@@ -369,7 +369,7 @@ for old Java code before Java 1.5. It can be used to identify problematic code p
         <priority>2</priority>
         <properties>
             <property name="xpath">
-                <value>//VariableDeclaratorId[@Name='enum']</value>
+                <value>//VariableId[@Name='enum']</value>
             </property>
         </properties>
         <example>
@@ -399,7 +399,7 @@ Smalltalk often prefer this approach as the methods denote accessor methods.
             <property name="xpath">
                 <value>
 <![CDATA[
-//FieldDeclaration/VariableDeclarator/VariableDeclaratorId
+//FieldDeclaration/VariableDeclarator/VariableId
     [some $method in ../../..[self::ClassOrInterfaceBody or self::EnumBody]/MethodDeclaration
      satisfies lower-case(@Name) = lower-case($method/@Name)]
 ]]>
@@ -433,7 +433,7 @@ This probably means that type and/or field names should be chosen more carefully
             <property name="xpath">
                 <value>
 <![CDATA[
-//FieldDeclaration/VariableDeclarator/VariableDeclaratorId
+//FieldDeclaration/VariableDeclarator/VariableId
     [lower-case(@Name) = lower-case(ancestor::ClassDeclaration[1]/@SimpleName)]
 ]]>
                 </value>
@@ -1416,7 +1416,7 @@ performance need (space or time).
             <property name="xpath">
                 <value>
 <![CDATA[
-//ForStatement/ForInit//VariableDeclaratorId[pmd-java:typeIs('float')]
+//ForStatement/ForInit//VariableId[pmd-java:typeIs('float')]
 ]]>
                 </value>
             </property>
@@ -1459,7 +1459,7 @@ or reported.
       count(*) = 0
       and ($allowCommentedBlocks = false() or Block/@containsComment = false())
   ]
-  and CatchParameter/VariableDeclaratorId[not(matches(@Name, $allowExceptionNameRegex))]
+  and CatchParameter/VariableId[not(matches(@Name, $allowExceptionNameRegex))]
 ]
 ]]>
                 </value>
@@ -2127,10 +2127,10 @@ Avoid jumbled loop incrementers - it's usually a mistake, and is confusing even 
             <property name="xpath">
                 <value><![CDATA[
 //ForStatement
-    [not(ForInit) or ForInit//VariableDeclaratorId/@Name != ForUpdate//VariableAccess/@Name]
+    [not(ForInit) or ForInit//VariableId/@Name != ForUpdate//VariableAccess/@Name]
     [ForUpdate//VariableAccess[@AccessType = 'WRITE']/@Name
      =
-     ancestor::ForStatement/ForInit//VariableDeclaratorId/@Name
+     ancestor::ForStatement/ForInit//VariableId/@Name
     ]
 ]]>
                 </value>
@@ -2318,7 +2318,7 @@ chain needs an own serialVersionUID field. See also [Should an abstract class ha
 <![CDATA[
 //ClassDeclaration
     [@Interface = false()]
-    [count(ClassOrInterfaceBody/FieldDeclaration/VariableDeclarator/VariableDeclaratorId[@Name='serialVersionUID']) = 0]
+    [count(ClassOrInterfaceBody/FieldDeclaration/VariableDeclarator/VariableId[@Name='serialVersionUID']) = 0]
     [(ImplementsList | ExtendsList)/ClassType[pmd-java:typeIs('java.io.Serializable')]]
 ]]>
                 </value>
@@ -2666,8 +2666,8 @@ with the restriction that the logger needs to be passed into the constructor.
         (: check modifiers :)
         (not(pmd-java:modifiers() = 'private') or not(pmd-java:modifiers() = 'final'))
         (: check logger name :)
-        or (pmd-java:modifiers() = 'static' and VariableDeclarator/VariableDeclaratorId/@Name != $staticLoggerName)
-        or (not(pmd-java:modifiers() = 'static') and VariableDeclarator/VariableDeclaratorId/@Name != $loggerName)
+        or (pmd-java:modifiers() = 'static' and VariableDeclarator/VariableId/@Name != $staticLoggerName)
+        or (not(pmd-java:modifiers() = 'static') and VariableDeclarator/VariableId/@Name != $loggerName)
         (: check logger argument type matches class or enum name :)
         or .//ArgumentList/ClassLiteral/ClassType/@SimpleName != ancestor::ClassDeclaration/@SimpleName
         or .//ArgumentList/ClassLiteral/ClassType/@SimpleName != ancestor::EnumDeclaration/@SimpleName
@@ -2678,7 +2678,7 @@ with the restriction that the logger needs to be passed into the constructor.
             and not(ancestor::ClassOrInterfaceBody/ConstructorDeclaration
                 //AssignmentExpression[@Operator = '=']
                     [FieldAccess[1]/@Name = $loggerName or VariableAccess[1]/@Name = $loggerName]
-                    [*[2][@Name = ancestor::ConstructorDeclaration//FormalParameter/VariableDeclaratorId/@Name]])
+                    [*[2][@Name = ancestor::ConstructorDeclaration//FormalParameter/VariableId/@Name]])
         )
     ]
 ]]>

@@ -36,17 +36,18 @@ import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
  *
  * <pre class="grammar">
  *
- * VariableDeclaratorId ::= &lt;IDENTIFIER&gt; {@link ASTArrayDimensions ArrayDimensions}?
+ * VariableId ::= &lt;IDENTIFIER&gt; {@link ASTArrayDimensions ArrayDimensions}?
  *
  * </pre>
  *
+ * <p>Note: This node has been called ASTVariableDeclaratorId in PMD 6.
  */
 // @formatter:on
-public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator<JVariableSymbol> implements ModifierOwner, SymbolDeclaratorNode {
+public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariableSymbol> implements ModifierOwner, SymbolDeclaratorNode {
 
     private List<ASTNamedReferenceExpr> usages = Collections.emptyList();
 
-    ASTVariableDeclaratorId(int id) {
+    ASTVariableId(int id) {
         super(id);
     }
 

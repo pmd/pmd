@@ -31,7 +31,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
@@ -389,7 +389,7 @@ public final class JavaRuleUtil {
         return isGetterCall(call) || KNOWN_PURE_METHODS.anyMatch(call);
     }
 
-    public static @Nullable ASTVariableDeclaratorId getReferencedNode(ASTNamedReferenceExpr expr) {
+    public static @Nullable ASTVariableId getReferencedNode(ASTNamedReferenceExpr expr) {
         JVariableSymbol referencedSym = expr.getReferencedSym();
         return referencedSym == null ? null : referencedSym.tryGetNode();
     }

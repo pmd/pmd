@@ -22,7 +22,7 @@ import net.sourceforge.pmd.properties.PropertySource;
  *    +- Type
  *    |  +- PrimitiveType
  *    +- VariableDeclarator
- *       +- VariableDeclaratorId
+ *       +- VariableId
  *       +- VariableInitializer
  *          +- 1 child not shown
  *
@@ -36,7 +36,7 @@ import net.sourceforge.pmd.properties.PropertySource;
  *    ├─ Type
  *    │  └─ PrimitiveType
  *    └─ VariableDeclarator
- *       ├─ VariableDeclaratorId
+ *       ├─ VariableId
  *       └─ VariableInitializer
  *          └─ 1 child not shown
  *

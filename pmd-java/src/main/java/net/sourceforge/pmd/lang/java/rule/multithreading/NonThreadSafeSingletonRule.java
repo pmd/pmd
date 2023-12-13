@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
@@ -61,7 +61,7 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
         if (checkNonStaticFields || node.hasModifiers(JModifier.STATIC)) {
-            for (ASTVariableDeclaratorId varId : node.getVarIds()) {
+            for (ASTVariableId varId : node.getVarIds()) {
                 fields.add(varId.getName());
             }
         }

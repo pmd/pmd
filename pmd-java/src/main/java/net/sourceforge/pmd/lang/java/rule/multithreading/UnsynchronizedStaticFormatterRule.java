@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
@@ -67,7 +67,7 @@ public class UnsynchronizedStaticFormatterRule extends AbstractJavaRulechainRule
             return data;
         }
 
-        ASTVariableDeclaratorId var = node.descendants(ASTVariableDeclaratorId.class).first();
+        ASTVariableId var = node.descendants(ASTVariableId.class).first();
         for (String formatter: THREAD_SAFE_FORMATTER) {
             if (TypeTestUtil.isA(formatter, var)) {
                 return data;

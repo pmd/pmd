@@ -386,7 +386,7 @@ class AstSymbolTests : ParserTestSpec({
         val (canonCtor1, canonCtor2) = acu.descendants(ASTRecordComponentList::class.java).toList { it.symbol }
         val (auxCtor) = acu.descendants(ASTConstructorDeclaration::class.java).toList { it.symbol }
         val (xAccessor) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.symbol }
-        val (xComp, yComp, x2Comp, y2Comp, x2Formal) = acu.descendants(ASTVariableDeclaratorId::class.java).toList { it.symbol }
+        val (xComp, yComp, x2Comp, y2Comp, x2Formal) = acu.descendants(ASTVariableId::class.java).toList { it.symbol }
 
 
         doTest("should reflect their modifiers") {

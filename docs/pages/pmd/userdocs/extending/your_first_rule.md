@@ -83,11 +83,11 @@ public class KeepingItSerious {
 
 ```
 
-Examining the AST, you find out that the LocalVariableDeclaration has a VariableDeclaratorId
-descendant, whose `Image` XPath attribute is exactly `bill`. You thus write your first attempt
+Examining the AST, you find out that the LocalVariableDeclaration has a VariableId
+descendant, whose `Name` XPath attribute is exactly `bill`. You thus write your first attempt
 in the XPath editor:
 ```xpath
-//VariableDeclaratorId[@Image = "bill"]
+//VariableId[@Name = "bill"]
 ```
 
 You can see the XPath result list is updated with the variable declarator.
@@ -112,7 +112,7 @@ based on your examination of the Type node of the field and local variable
 declaration nodes.
 
 ```xpath
-//VariableDeclaratorId[@Image = "bill" and ../../Type[@TypeImage = "short"]]
+//VariableId[@Name = "bill" and ../../Type[@TypeImage = "short"]]
 ```
 
 ### Exporting to XML
@@ -135,7 +135,7 @@ TODO
         <property name="xpath">
             <value>
 <![CDATA[
-//VariableDeclaratorId[../../Type[@TypeImage="short"] and @Image = "bill"]
+//VariableId[../../Type[@TypeImage="short"] and @Image = "bill"]
 ]]>
             </value>
         </property>

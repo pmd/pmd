@@ -18,7 +18,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * <pre class="grammar">
  *
- * VariableDeclarator ::= {@linkplain ASTVariableDeclaratorId VariableDeclaratorId} ( "=" {@linkplain ASTExpression Expression} )?
+ * VariableDeclarator ::= {@linkplain ASTVariableId VariableId} ( "=" {@linkplain ASTExpression Expression} )?
  *
  * </pre>
  */
@@ -48,8 +48,8 @@ public class ASTVariableDeclarator extends AbstractJavaNode implements InternalI
      */
     @Override
     @NonNull
-    public ASTVariableDeclaratorId getVarId() {
-        return (ASTVariableDeclaratorId) getChild(0);
+    public ASTVariableId getVarId() {
+        return (ASTVariableId) getChild(0);
     }
 
 

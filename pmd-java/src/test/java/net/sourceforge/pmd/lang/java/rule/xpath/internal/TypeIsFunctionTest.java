@@ -34,7 +34,7 @@ class TypeIsFunctionTest extends BaseXPathFunctionTest {
     void testTypeIsArray() {
         Rule rule = makeXpathRuleFromXPath("//*[pmd-java:typeIs('int[]')]");
 
-        // ArrayType + VariableDeclaratorId
+        // ArrayType + VariableId
         assertFinds(rule, 2, "class K { int[] i; }");
     }
 

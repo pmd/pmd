@@ -51,7 +51,7 @@ Avoid using dollar signs in variable/method/class/interface names.
     | //EnumDeclaration            [contains(@SimpleName, '$')]
     | //AnnotationTypeDeclaration  [contains(@SimpleName, '$')]
     | //RecordDeclaration          [contains(@SimpleName, '$')]
-    | //VariableDeclaratorId       [contains(@Name, '$')]
+    | //VariableId                 [contains(@Name, '$')]
     | //MethodDeclaration          [contains(@Name, '$')]
 
 ]]>
@@ -975,7 +975,7 @@ Fields, formal arguments, or local variable names that are too long can make the
             <property name="xpath">
                 <value>
 <![CDATA[
-//VariableDeclaratorId[string-length(@Name) > $minimum]
+//VariableId[string-length(@Name) > $minimum]
 ]]>
                 </value>
             </property>
@@ -1400,7 +1400,7 @@ Fields, local variables, enum constant names or parameter names that are very sh
             <property name="xpath">
                 <value>
 <![CDATA[
-//VariableDeclaratorId[string-length(@Name) < $minimum]
+//VariableId[string-length(@Name) < $minimum]
  (: ForStatement :)
  [not(../../parent::ForInit)]
  (: Foreach statement :)
@@ -2033,7 +2033,7 @@ E.g. `int[] x = new int[] { 1, 2, 3 };` can be written as `int[] x = { 1, 2, 3 }
             <property name="xpath">
                 <value><![CDATA[
 //VariableDeclarator
-    [VariableDeclaratorId[@TypeInferred = false() and @ArrayType = true()]]
+    [VariableId[@TypeInferred = false() and @ArrayType = true()]]
     [ArrayAllocation/ArrayInitializer]
                 ]]></value>
             </property>

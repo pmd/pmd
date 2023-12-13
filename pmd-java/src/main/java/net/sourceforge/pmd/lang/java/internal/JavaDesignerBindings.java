@@ -31,7 +31,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -75,7 +75,7 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
         } else if (node instanceof ASTConstructorDeclaration
             || node instanceof ASTCompactConstructorDeclaration) {
             return TreeIconId.CONSTRUCTOR;
-        } else if (node instanceof ASTVariableDeclaratorId) {
+        } else if (node instanceof ASTVariableId) {
             return TreeIconId.VARIABLE;
         }
         return super.getIcon(node);
@@ -194,7 +194,7 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
         }
 
         @Override
-        public Attribute visit(ASTVariableDeclaratorId node, Void data) {
+        public Attribute visit(ASTVariableId node, Void data) {
             return new Attribute(node, "Name", node.getName());
         }
 

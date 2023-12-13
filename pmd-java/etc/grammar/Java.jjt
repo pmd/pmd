@@ -1410,13 +1410,13 @@ void VariableDeclarator() :
   VariableIdWithDims() [ "=" VariableInitializer() ]
 }
 
-void VariableDeclaratorId() :
+void VariableDeclaratorId() #VariableId:
 {}
 {
   <IDENTIFIER> { setLastTokenImage(jjtThis); }
 }
 
-void VariableIdWithDims() #VariableDeclaratorId :
+void VariableIdWithDims() #VariableId :
 {}
 {
   <IDENTIFIER> { setLastTokenImage(jjtThis); }

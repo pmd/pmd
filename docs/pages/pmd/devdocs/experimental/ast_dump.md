@@ -76,7 +76,7 @@ $ cat Foo.xml
                             <PrimitiveType Array='false' ArrayDepth='0' Boolean='false' Image='int' />
                         </Type>
                         <VariableDeclarator Image='' Initializer='false' Name='a'>
-                            <VariableDeclaratorId Array='false' ArrayDepth='0' ArrayType='false' ExceptionBlockParameter='false' ExplicitReceiverParameter='false' Field='true' Final='false' FormalParameter='false' Image='a' LambdaParameter='false' LocalVariable='false' ResourceDeclaration='false' TypeInferred='false' VariableName='a' />
+                            <VariableId Array='false' ArrayDepth='0' ArrayType='false' ExceptionBlockParameter='false' ExplicitReceiverParameter='false' Field='true' Final='false' FormalParameter='false' Image='a' LambdaParameter='false' LocalVariable='false' ResourceDeclaration='false' TypeInferred='false' VariableName='a' />
                         </VariableDeclarator>
                     </FieldDeclaration>
                 </ClassOrInterfaceBodyDeclaration>
@@ -85,8 +85,8 @@ $ cat Foo.xml
     </TypeDeclaration>
 </CompilationUnit>
 
-$ xmlstarlet select -t -c "//VariableDeclaratorId[@VariableName='a']" Foo.xml
-<VariableDeclaratorId Array="false" ArrayDepth="0" ArrayType="false" ExceptionBlockParameter="false" ExplicitReceiverParameter="false" Field="true" Final="false" FormalParameter="false" Image="a" LambdaParameter="false" LocalVariable="false" ResourceDeclaration="false" TypeInferred="false" VariableName="a"/>
+$ xmlstarlet select -t -c "//VariableId[@VariableName='a']" Foo.xml
+<VariableId Array="false" ArrayDepth="0" ArrayType="false" ExceptionBlockParameter="false" ExplicitReceiverParameter="false" Field="true" Final="false" FormalParameter="false" Image="a" LambdaParameter="false" LocalVariable="false" ResourceDeclaration="false" TypeInferred="false" VariableName="a"/>
 ```
 
 This example uses [xmlstarlet](http://xmlstar.sourceforge.net/) to query the xml document for any variables/fields

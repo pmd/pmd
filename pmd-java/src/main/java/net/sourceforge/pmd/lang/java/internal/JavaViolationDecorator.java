@@ -22,7 +22,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
 import net.sourceforge.pmd.reporting.ViolationDecorator;
@@ -82,9 +82,9 @@ final class JavaViolationDecorator implements ViolationDecorator {
         return null;
     }
 
-    private static String getVariableNames(Iterable<ASTVariableDeclaratorId> iterable) {
+    private static String getVariableNames(Iterable<ASTVariableId> iterable) {
         return IteratorUtil.toStream(iterable.iterator())
-                           .map(ASTVariableDeclaratorId::getName)
+                           .map(ASTVariableId::getName)
                            .collect(Collectors.joining(", "));
     }
 
@@ -95,10 +95,10 @@ final class JavaViolationDecorator implements ViolationDecorator {
             return getVariableNames((ASTLocalVariableDeclaration) node);
         } else if (node instanceof ASTVariableDeclarator) {
             return ((ASTVariableDeclarator) node).getVarId().getName();
-        } else if (node instanceof ASTVariableDeclaratorId) {
-            return ((ASTVariableDeclaratorId) node).getName();
+        } else if (node instanceof ASTVariableId) {
+            return ((ASTVariableId) node).getName();
         } else if (node instanceof ASTFormalParameter) {
-            return getVariableNameIfExists(node.firstChild(ASTVariableDeclaratorId.class));
+            return getVariableNameIfExists(node.firstChild(ASTVariableId.class));
         } else if (node instanceof ASTExpression) {
             return getVariableNameIfExists(node.getParent());
         }

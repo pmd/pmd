@@ -54,10 +54,10 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
  * the emptiness of a node stream. E.g. the following tests if the node
  * is a variable declarator id initialized to the value {@code 0}:
  * <pre>
- *     {@linkplain #of(Node) NodeStream.of}(someNode)                           <i>// the stream here is empty if the node is null</i>
- *               {@linkplain #filterIs(Class) .filterIs}(ASTVariableDeclaratorId.class)<i>// the stream here is empty if the node was not a variable declarator id</i>
- *               {@linkplain #followingSiblings() .followingSiblings}()                    <i>// the stream here contains only the siblings, not the original node</i>
- *               {@linkplain #take(int) .take}(1)                                <i>// the stream here contains only the first sibling, if it exists</i>
+ *     {@linkplain #of(Node) NodeStream.of}(someNode)                    <i>// the stream here is empty if the node is null</i>
+ *               {@linkplain #filterIs(Class) .filterIs}(ASTVariableId.class)   <i>// the stream here is empty if the node was not a variable declarator id</i>
+ *               {@linkplain #followingSiblings() .followingSiblings}()             <i>// the stream here contains only the siblings, not the original node</i>
+ *               {@linkplain #take(int) .take}(1)                         <i>// the stream here contains only the first sibling, if it exists</i>
  *               {@linkplain #filterIs(Class) .filterIs}(ASTNumericLiteral.class)
  *               {@linkplain #filter(Predicate) .filter}(it -&gt; !it.isFloatingPoint() &amp;&amp; it.getValueAsInt() == 0)
  *               {@linkplain #nonEmpty() .nonEmpty}(); <i>// If the stream is non empty here, then all the pipeline matched</i>

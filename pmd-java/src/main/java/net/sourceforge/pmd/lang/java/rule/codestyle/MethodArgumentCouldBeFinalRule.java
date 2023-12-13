@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 
@@ -41,9 +41,9 @@ public class MethodArgumentCouldBeFinalRule extends AbstractJavaRulechainRule {
         checkForFinal((RuleContext) data, this, node.getFormalParameters().toStream().map(ASTFormalParameter::getVarId));
     }
 
-    static void checkForFinal(RuleContext ruleContext, AbstractRule rule, NodeStream<ASTVariableDeclaratorId> variables) {
+    static void checkForFinal(RuleContext ruleContext, AbstractRule rule, NodeStream<ASTVariableId> variables) {
         outer:
-        for (ASTVariableDeclaratorId var : variables) {
+        for (ASTVariableId var : variables) {
             if (var.isFinal()) {
                 continue;
             }

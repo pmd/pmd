@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
@@ -114,7 +114,7 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
     private boolean isLocalOnlyStoredWithVolatileField(ASTMethodDeclaration method, JVariableSymbol local) {
         ASTExpression initializer;
         if (local instanceof JLocalVariableSymbol) {
-            ASTVariableDeclaratorId id = local.tryGetNode();
+            ASTVariableId id = local.tryGetNode();
             if (id == null) {
                 return false;
             }

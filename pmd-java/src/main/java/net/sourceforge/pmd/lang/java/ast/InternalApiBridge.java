@@ -53,8 +53,8 @@ public final class InternalApiBridge {
     }
 
     @Deprecated
-    public static ASTVariableDeclaratorId newVarId(String image) {
-        ASTVariableDeclaratorId varid = new ASTVariableDeclaratorId(JavaParserImplTreeConstants.JJTVARIABLEDECLARATORID);
+    public static ASTVariableId newVarId(String image) {
+        ASTVariableId varid = new ASTVariableId(JavaParserImplTreeConstants.JJTVARIABLEID);
         varid.setImage(image);
         return varid;
     }
@@ -66,8 +66,8 @@ public final class InternalApiBridge {
             ((ASTConstructorDeclaration) node).setSymbol((JConstructorSymbol) symbol);
         } else if (node instanceof ASTTypeDeclaration) {
             ((AbstractTypeDeclaration) node).setSymbol((JClassSymbol) symbol);
-        } else if (node instanceof ASTVariableDeclaratorId) {
-            ((ASTVariableDeclaratorId) node).setSymbol((JVariableSymbol) symbol);
+        } else if (node instanceof ASTVariableId) {
+            ((ASTVariableId) node).setSymbol((JVariableSymbol) symbol);
         } else if (node instanceof ASTTypeParameter) {
             ((ASTTypeParameter) node).setSymbol((JTypeParameterSymbol) symbol);
         } else if (node instanceof ASTRecordComponentList) {
@@ -104,7 +104,7 @@ public final class InternalApiBridge {
             .forEach(node -> {
                 JVariableSymbol sym = node.getReferencedSym();
                 if (sym != null) {
-                    ASTVariableDeclaratorId reffed = sym.tryGetNode();
+                    ASTVariableId reffed = sym.tryGetNode();
                     if (reffed != null) { // declared in this file
                         reffed.addUsage(node);
                     }

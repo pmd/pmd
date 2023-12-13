@@ -39,7 +39,7 @@ class Java10Test {
                                                            .findDescendantsOfType(ASTLocalVariableDeclaration.class);
         assertEquals(3, localVars.size());
 
-        ASTVariableDeclaratorId varId = localVars.get(0).getVarIds().firstOrThrow();
+        ASTVariableId varId = localVars.get(0).getVarIds().firstOrThrow();
 
         // first: var list = new ArrayList<String>();
         assertTrue(varId.getTypeNode() instanceof ASTClassType);
@@ -62,19 +62,19 @@ class Java10Test {
 
         // first: var list = new ArrayList<String>();
         assertNull(localVars.get(0).getTypeNode());
-        ASTVariableDeclaratorId varDecl = localVars.get(0).getVarIds().firstOrThrow();
+        ASTVariableId varDecl = localVars.get(0).getVarIds().firstOrThrow();
         assertEquals(ts.parameterise(ts.getClassSymbol(ArrayList.class), listOf(stringT)), varDecl.getTypeMirror(), "type should be ArrayList<String>");
 
         // second: var stream = list.stream();
         assertNull(localVars.get(1).getTypeNode());
-        ASTVariableDeclaratorId varDecl2 = localVars.get(1).getVarIds().firstOrThrow();
+        ASTVariableId varDecl2 = localVars.get(1).getVarIds().firstOrThrow();
         assertEquals(ts.parameterise(ts.getClassSymbol(Stream.class), listOf(stringT)),
                 varDecl2.getTypeMirror(),
                 "type should be Stream<String>");
 
         // third: var s = "Java 10";
         assertNull(localVars.get(2).getTypeNode());
-        ASTVariableDeclaratorId varDecl3 = localVars.get(2).getVarIds().firstOrThrow();
+        ASTVariableId varDecl3 = localVars.get(2).getVarIds().firstOrThrow();
         assertEquals(stringT, varDecl3.getTypeMirror(), "type should be String");
     }
 
@@ -85,7 +85,7 @@ class Java10Test {
         assertEquals(1, localVars.size());
 
         assertNull(localVars.get(0).getTypeNode());
-        ASTVariableDeclaratorId varDecl = localVars.get(0).getVarIds().firstOrThrow();
+        ASTVariableId varDecl = localVars.get(0).getVarIds().firstOrThrow();
         assertSame(varDecl.getTypeSystem().INT, varDecl.getTypeMirror(), "type should be int");
     }
 
@@ -96,7 +96,7 @@ class Java10Test {
         assertEquals(1, localVars.size());
 
         assertNull(localVars.get(0).getTypeNode());
-        ASTVariableDeclaratorId varDecl = localVars.get(0).getVarIds().firstOrThrow();
+        ASTVariableId varDecl = localVars.get(0).getVarIds().firstOrThrow();
         assertTrue(TypeTestUtil.isA(String.class, varDecl), "type should be String");
     }
 
@@ -107,11 +107,11 @@ class Java10Test {
         assertEquals(4, localVars.size());
 
         assertNull(localVars.get(1).getTypeNode());
-        @NonNull ASTVariableDeclaratorId varDecl2 = localVars.get(1).getVarIds().firstOrThrow();
+        @NonNull ASTVariableId varDecl2 = localVars.get(1).getVarIds().firstOrThrow();
         assertTrue(TypeTestUtil.isA(String.class, varDecl2), "type should be String");
 
         assertNull(localVars.get(3).getTypeNode());
-        ASTVariableDeclaratorId varDecl4 = localVars.get(3).getVarIds().firstOrThrow();
+        ASTVariableId varDecl4 = localVars.get(3).getVarIds().firstOrThrow();
         assertSame(varDecl2.getTypeSystem().INT, varDecl4.getTypeMirror(), "type should be int");
     }
 
@@ -122,7 +122,7 @@ class Java10Test {
         assertEquals(1, resources.size());
 
         assertNull(resources.get(0).asLocalVariableDeclaration().getTypeNode());
-        ASTVariableDeclaratorId varId = resources.get(0).asLocalVariableDeclaration().getVarIds().firstOrThrow();
+        ASTVariableId varId = resources.get(0).asLocalVariableDeclaration().getVarIds().firstOrThrow();
         assertTrue(TypeTestUtil.isA(FileInputStream.class, varId), "type should be FileInputStream");
     }
 

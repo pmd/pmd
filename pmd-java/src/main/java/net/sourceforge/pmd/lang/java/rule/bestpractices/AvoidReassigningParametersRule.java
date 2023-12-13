@@ -10,7 +10,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 
 public class AvoidReassigningParametersRule extends AbstractJavaRulechainRule {
@@ -34,7 +34,7 @@ public class AvoidReassigningParametersRule extends AbstractJavaRulechainRule {
 
     private void lookForViolations(ASTExecutableDeclaration node, Object data) {
         for (ASTFormalParameter formal : node.getFormalParameters()) {
-            ASTVariableDeclaratorId varId = formal.getVarId();
+            ASTVariableId varId = formal.getVarId();
             for (ASTNamedReferenceExpr usage : varId.getLocalUsages()) {
                 if (usage.getAccessType() == AccessType.WRITE) {
                     addViolation(data, usage, varId.getName());

@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
@@ -57,7 +57,7 @@ public class ImmutableFieldRule extends AbstractJavaRulechainRule {
             DataflowResult dataflow = DataflowPass.getDataflowResult(field.getRoot());
 
             outer:
-            for (ASTVariableDeclaratorId varId : field.getVarIds()) {
+            for (ASTVariableId varId : field.getVarIds()) {
 
                 boolean hasWrite = false;
                 for (ASTNamedReferenceExpr usage : varId.getLocalUsages()) {
@@ -89,7 +89,7 @@ public class ImmutableFieldRule extends AbstractJavaRulechainRule {
         return null;
     }
 
-    private boolean defaultValueDoesNotReachEndOfCtor(DataflowResult dataflow, ASTVariableDeclaratorId varId) {
+    private boolean defaultValueDoesNotReachEndOfCtor(DataflowResult dataflow, ASTVariableId varId) {
         AssignmentEntry fieldDef = DataflowPass.getFieldDefinition(varId);
         // first assignments to the field
         Set<AssignmentEntry> killers = dataflow.getKillers(fieldDef);

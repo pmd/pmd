@@ -33,7 +33,7 @@ class C {
         val (t_C) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
-        val id = acu.descendants(ASTVariableDeclaratorId::class.java).first { it.name == "c" }!!
+        val id = acu.descendants(ASTVariableId::class.java).first { it.name == "c" }!!
 
         spy.shouldBeOk {
             call.methodType.shouldMatchMethod(
@@ -68,7 +68,7 @@ class C {
         val (t_C) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
         val call = acu.firstMethodCall()
-        val id = acu.descendants(ASTVariableDeclaratorId::class.java).first { it.name == "c" }!!
+        val id = acu.descendants(ASTVariableId::class.java).first { it.name == "c" }!!
 
         spy.shouldBeOk {
             call.methodType.shouldMatchMethod(
@@ -141,7 +141,7 @@ class C {
         val (t_C) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
-        val id = acu.descendants(ASTVariableDeclaratorId::class.java).first { it.name == "c" }!!
+        val id = acu.descendants(ASTVariableId::class.java).first { it.name == "c" }!!
 
 
         spy.shouldBeOk {

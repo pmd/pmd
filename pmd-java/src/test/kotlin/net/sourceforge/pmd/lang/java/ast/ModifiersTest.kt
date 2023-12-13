@@ -62,7 +62,7 @@ class ModifiersTest : ParserTestSpec({
                };
             """ should parseAs {
                 exprStatement {
-                    val (i, l) = it.descendants(ASTVariableDeclaratorId::class.java)
+                    val (i, l) = it.descendants(ASTVariableId::class.java)
                             .crossFindBoundaries()
                             .toList()
 

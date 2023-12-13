@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
@@ -53,7 +53,7 @@ public class UnusedPrivateFieldRule extends AbstractJavaRulechainRule {
 
             for (ASTFieldDeclaration field : type.getDeclarations().filterIs(ASTFieldDeclaration.class)) {
                 if (!isIgnored(field)) {
-                    for (ASTVariableDeclaratorId varId : field.getVarIds()) {
+                    for (ASTVariableId varId : field.getVarIds()) {
                         if (JavaAstUtils.isNeverUsed(varId)) {
                             addViolation(data, varId, varId.getName());
                         }

@@ -38,7 +38,7 @@ There are a couple of deprecated things in PMD 6, you might encounter:
 * If you have written custom XPath rule, look out for warnings about deprecated XPath attributes. These warnings
   might look like
   ```
-  WARNING: Use of deprecated attribute 'VariableDeclaratorId/@Image' by XPath rule 'VariableNaming' (in ruleset 'VariableNamingRule'), please use @Name instead
+  WARNING: Use of deprecated attribute 'VariableId/@Image' by XPath rule 'VariableNaming' (in ruleset 'VariableNamingRule'), please use @Name instead
   ```
   and often already suggest an alternative.
 
@@ -101,7 +101,7 @@ override the method {% jdoc core::lang.rule.AbstractRule#buildTargetSelector %}:
 
 ```java
     protected RuleTargetSelector buildTargetSelector() {
-        return RuleTargetSelector.forTypes(ASTVariableDeclaratorId.class);
+        return RuleTargetSelector.forTypes(ASTVariableId.class);
     }
 ```
 
@@ -318,7 +318,7 @@ Example:
 
 ```java
      NodeStream.of(someNode)                           // the stream here is empty if the node is null
-               .filterIs(ASTVariableDeclaratorId.class)// the stream here is empty if the node was not a variable declarator id
+               .filterIs(ASTVariableId.class)          // the stream here is empty if the node was not a variable id
                .followingSiblings()                    // the stream here contains only the siblings, not the original node
                .children(ASTNumericLiteral.class)
                .filter(ASTNumericLiteral::isIntLiteral)
@@ -397,6 +397,7 @@ which can also display the AST.
 * ClassOrInterfaceDeclaration ➡️ ClassDeclaration ({% jdoc jast::ASTClassDeclaration %})
 * AnyTypeDeclaration ➡️ TypeDeclaration ({% jdoc jast::ASTTypeDeclaration %})
 * MethodOrConstructorDeclaration ➡️ ExecutableDeclaration ({% jdoc jast::ASTExecutableDeclaration %})
+* VariableDeclaratorId ➡️ VariableId ({% jdoc jast::ASTVariableId %})
 
 #### Annotations
 
@@ -786,7 +787,7 @@ Array type
   │        └─ Annotation "B"
   │           └─ ClassType "B"
   └─ VariableDeclarator
-     └─ VariableDeclaratorId "x"
+     └─ VariableId "x"
 {% endhighlight %}
 
 </td></tr>
@@ -866,12 +867,12 @@ enum E {
    │  ├─ ModifierList
    │  │  └─ Annotation "A"
    │  │     └─ ClassType "A"
-   │  └─ VariableDeclaratorId "E1"
+   │  └─ VariableId "E1"
    └─ EnumConstant "E2"
       ├─ ModifierList
       │  └─ Annotation "B"
       │     └─ ClassType "B"
-      └─ VariableDeclaratorId "E2"
+      └─ VariableId "E2"
 {% endhighlight %}
 
 <ul>
@@ -906,7 +907,7 @@ enum E {
   * `Type/ReferenceType[@ArrayDepth > 1]/ClassOrInterfaceType` ➡️ `ArrayType/ClassType`.
   * `Type/ReferenceType/PrimitiveType` ➡️ `ArrayType/PrimitiveType`.
   * Note that in most cases you should check the type of a variable with e.g.
-    `VariableDeclaratorId[pmd-java:typeIs("java.lang.String[]")]` because it
+    `VariableId[pmd-java:typeIs("java.lang.String[]")]` because it
     considers the additional dimensions on declarations like `String foo[];`.
     The Java equivalent is `TypeHelper.isA(id, String[].class);`
 
@@ -1352,10 +1353,10 @@ public void set(final int x, int y) { }
    └─ FormalParameters
       ├─ FormalParameter[ pmd-java:modifiers() = 'final' ]
       │  ├─ ModifierList
-      │  └─ VariableDeclaratorId "x"
+      │  └─ VariableId "x"
       └─ FormalParameter[ pmd-java:modifiers() = () ]
          ├─ ModifierList
-         └─ VariableDeclaratorId "y"
+         └─ VariableId "y"
 {% endhighlight %}
 </td></tr>
 
@@ -1432,7 +1433,7 @@ public class Flat {
             ├─ ModifierList
             ├─ PrimitiveType "int"
             └─ VariableDeclarator
-               └─ VariableDeclaratorId "f"
+               └─ VariableId "f"
 {% endhighlight %}
 </td></tr>
 
@@ -1594,7 +1595,7 @@ Object anonymous = new Object() {  };
    ├─ ModifierList
    ├─ ClassType[ @SimpleName = 'Object' ]
    └─ VariableDeclarator
-      ├─ VariableDeclaratorId[ @Name = 'anonymous' ]
+      ├─ VariableId[ @Name = 'anonymous' ]
       └─ ConstructorCall
          ├─ ClassType[ @SimpleName = 'Object' ]
          ├─ ArgumentList
@@ -1779,7 +1780,7 @@ try {
       │  ├─ UnionType
       │  │  ├─ ClassType[ @SimpleName = 'IOException' ]
       │  │  └─ ClassType[ @SimpleName = 'IllegalArgumentException' ]
-      │  └─ VariableDeclaratorId[ @Name = 'e' ]
+      │  └─ VariableId[ @Name = 'e' ]
       └─ Block
 {% endhighlight %}
 </td></tr>
@@ -1841,10 +1842,10 @@ c -> {};
       ├─ LambdaParameterList
       │  ├─ LambdaParameter
       │  │  ├─ ModifierList
-      │  │  └─ VariableDeclaratorId[ @Name = 'a' ]
+      │  │  └─ VariableId[ @Name = 'a' ]
       │  └─ LambdaParameter
       │     ├─ ModifierList
-      │     └─ VariableDeclaratorId[ @Name = 'b' ]
+      │     └─ VariableId[ @Name = 'b' ]
       └─ Block
 
 └─ ExpressionStatement
@@ -1852,7 +1853,7 @@ c -> {};
       ├─ LambdaParameterList
       │  └─ LambdaParameter
       │     ├─ ModifierList
-      │     └─ VariableDeclaratorId[ @Name = 'c' ]
+      │     └─ VariableId[ @Name = 'c' ]
       └─ Block
 
 └─ ExpressionStatement
@@ -1862,7 +1863,7 @@ c -> {};
       │     ├─ ModifierList
       │     │  └─ Annotation[ @SimpleName = 'A' ]
       │     │     └─ ClassType[ @SimpleName = 'A' ]
-      │     └─ VariableDeclaratorId[ @Name = 'd' ]
+      │     └─ VariableId[ @Name = 'd' ]
       └─ Block
 
 └─ ExpressionStatement
@@ -1873,7 +1874,7 @@ c -> {};
       │     │  └─ Annotation[ @SimpleName = 'A' ]
       │     │     └─ ClassType[ @SimpleName = 'A' ]
       │     ├─ PrimitiveType[ @Kind = 'int' ]
-      │     └─ VariableDeclaratorId[ @Name = 'e' ]
+      │     └─ VariableId[ @Name = 'e' ]
       └─ Block
 {% endhighlight %}
 </td></tr>
@@ -1887,7 +1888,7 @@ c -> {};
 * Why: A receiver parameter is not a formal parameter, even though it looks like one: it doesn't declare a variable,
   and doesn't affect the arity of the method or constructor. It's so rarely used that giving it its own node avoids
   matching it by mistake and simplifies the API and grammar of the ubiquitous {% jdoc jast::ASTFormalParameter %}
-  and {% jdoc jast::ASTVariableDeclaratorId %}.
+  and {% jdoc jast::ASTVariableId %}.
 * Related issue: [[java] Separate receiver parameter from formal parameter (#1980)](https://github.com/pmd/pmd/pull/1980)
 
 <details>
@@ -1926,7 +1927,7 @@ void myMethod(@A Foo this, Foo other) {}
    └─ FormalParameter
       ├─ ModifierList
       ├─ ClassType "Foo"
-      └─ VariableDeclaratorId "other"
+      └─ VariableId "other"
 {% endhighlight %}
 </td></tr>
 </table>
@@ -1963,7 +1964,7 @@ void myMethod(int... is) {}
    │  ├─ PrimitiveType "int"
    │  └─ ArrayDimensions
    │     └─ ArrayTypeDim[ @Varargs = true() ]
-   └─ VariableDeclaratorId "is"
+   └─ VariableId "is"
 {% endhighlight %}
 </td></tr>
 
@@ -1992,7 +1993,7 @@ void myMethod(int @A ... is) {}
    │     └─ ArrayTypeDim[ @Varargs = true() ]
    │        └─ Annotation "A"
    │           └─ ClassType "A"
-   └─ VariableDeclaratorId "is"
+   └─ VariableId "is"
 {% endhighlight %}
 </td></tr>
 
@@ -2018,7 +2019,7 @@ void myMethod(int[]... is) {}
    │  └─ ArrayDimensions (2)
    │     ├─ ArrayTypeDim
    │     └─ ArrayTypeDim[ @Varargs = true() ]
-   └─ VariableDeclaratorId "is"
+   └─ VariableId "is"
 {% endhighlight %}
 </td></tr>
 </table>
@@ -2132,7 +2133,7 @@ i = 1;
    │  ├─ ModifierList
    │  ├─ PrimitiveType "int"
    │  └─ VariableDeclarator
-   │     └─ VariableDeclaratorId "i"
+   │     └─ VariableId "i"
    └─ ExpressionStatement
       └─ AssignmentExpression "="
          ├─ VariableAccess "i"
@@ -2197,7 +2198,7 @@ for (String s : List.of("a", "b")) { }
       │  ├─ ModifierList
       │  ├─ ClassType "String"
       │  └─ VariableDeclarator "s"
-      │     └─ VariableDeclaratorId "s"
+      │     └─ VariableId "s"
       ├─ MethodCall "of"
       │  ├─ TypeExpression
       │  │  └─ ClassType "List"
@@ -2308,7 +2309,7 @@ try (InputStream in = new FileInputStream(); OutputStream out = new FileOutputSt
       │     ├─ ModifierList
       │     ├─ ClassType "InputStream"
       │     └─ VariableDeclarator
-      │        ├─ VariableDeclaratorId "in"
+      │        ├─ VariableId "in"
       │        └─ ConstructorCall
       │           ├─ ClassType "FileInputStream"
       │           └─ ArgumentList (0)
@@ -2317,7 +2318,7 @@ try (InputStream in = new FileInputStream(); OutputStream out = new FileOutputSt
             ├─ ModifierList
             ├─ ClassType "OutputStream"
             └─ VariableDeclarator
-               ├─ VariableDeclaratorId "out"
+               ├─ VariableId "out"
                └─ ConstructorCall
                   ├─ ClassType "FileOutputStream"
                   └─ ArgumentList (0)
@@ -2892,7 +2893,7 @@ var x = Foo::method;
 └─ LocalVariableDeclaration
    ├─ ModifierList
    └─ VariableDeclarator
-      ├─ VariableDeclaratorId "x"
+      ├─ VariableId "x"
       └─ MethodReference "method"
          └─ TypeExpression
             └─ ClassType "Foo"

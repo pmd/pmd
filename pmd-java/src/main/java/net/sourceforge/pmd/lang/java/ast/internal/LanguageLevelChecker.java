@@ -47,7 +47,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTTypePattern;
 import net.sourceforge.pmd.lang.java.ast.ASTUnnamedPattern;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -651,7 +651,7 @@ public class LanguageLevelChecker<T> {
         }
 
         @Override
-        public Void visit(ASTVariableDeclaratorId node, T data) {
+        public Void visit(ASTVariableId node, T data) {
             checkIdent(node, node.getName(), data);
             return null;
         }

@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.java.types.TypeSystem;
  *
  * <pre class="grammar">
  *
- * CatchParameter ::= {@link ASTModifierList LocalVarModifierList} {@link ASTType Type} {@link ASTVariableDeclaratorId VariableDeclaratorId}
+ * CatchParameter ::= {@link ASTModifierList LocalVarModifierList} {@link ASTType Type} {@link ASTVariableId VariableId}
  *
  * </pre>
  */
@@ -50,8 +50,8 @@ public final class ASTCatchParameter extends AbstractJavaNode
 
     @Override
     @NonNull
-    public ASTVariableDeclaratorId getVarId() {
-        return (ASTVariableDeclaratorId) getLastChild();
+    public ASTVariableId getVarId() {
+        return (ASTVariableId) getLastChild();
     }
 
     /** Returns the name of this parameter. */

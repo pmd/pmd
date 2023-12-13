@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
@@ -83,7 +83,7 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
                 || JavaAstUtils.hasAnyAnnotation(fieldDecl, getProperty(IGNORED_FIELD_ANNOTATIONS))) {
                 continue;
             }
-            for (ASTVariableDeclaratorId varId : fieldDecl.getVarIds()) {
+            for (ASTVariableId varId : fieldDecl.getVarIds()) {
                 if (dataflow == null) { //compute lazily
                     dataflow = DataflowPass.getDataflowResult(node.getRoot());
                 }
@@ -100,7 +100,7 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
             && !varId.getModifiers().hasAny(STATIC, FINAL);
     }
 
-    private boolean isSingularField(ASTTypeDeclaration fieldOwner, ASTVariableDeclaratorId varId, DataflowResult dataflow) {
+    private boolean isSingularField(ASTTypeDeclaration fieldOwner, ASTVariableId varId, DataflowResult dataflow) {
         if (JavaAstUtils.isNeverUsed(varId)) {
             return false; // don't report unused field
         }

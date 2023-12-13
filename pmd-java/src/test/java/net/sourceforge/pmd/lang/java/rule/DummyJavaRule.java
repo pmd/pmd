@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.rule;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 
 /**
@@ -34,7 +34,7 @@ public class DummyJavaRule extends AbstractJavaRule {
         }
 
         @Override
-        public Object visit(ASTVariableDeclaratorId node, Object data) {
+        public Object visit(ASTVariableId node, Object data) {
             asCtx(data).addViolation(node, node.getName());
             return super.visit(node, data);
         }

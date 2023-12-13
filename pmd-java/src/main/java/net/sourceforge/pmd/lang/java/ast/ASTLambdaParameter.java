@@ -13,8 +13,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * <pre class="grammar">
  *
- * LambdaParameter ::= {@link ASTModifierList LocalVarModifierList} ( "var" | {@link ASTType Type} ) {@link ASTVariableDeclaratorId VariableDeclaratorId}
- *                   | {@link ASTModifierList EmptyModifierList} {@link ASTVariableDeclaratorId VariableDeclaratorId}
+ * LambdaParameter ::= {@link ASTModifierList LocalVarModifierList} ( "var" | {@link ASTType Type} ) {@link ASTVariableId VariableId}
+ *                   | {@link ASTModifierList EmptyModifierList} {@link ASTVariableId VariableId}
  *
  * </pre>
  */
@@ -29,7 +29,7 @@ public final class ASTLambdaParameter extends AbstractJavaTypeNode
      * If true, this formal parameter represents one without explicit types.
      * This can appear as part of a lambda expression with java11 using "var".
      *
-     * @see ASTVariableDeclaratorId#isTypeInferred()
+     * @see ASTVariableId#isTypeInferred()
      */
     public boolean isTypeInferred() {
         return getTypeNode() == null;
@@ -52,8 +52,8 @@ public final class ASTLambdaParameter extends AbstractJavaTypeNode
      */
     @Override
     @NonNull
-    public ASTVariableDeclaratorId getVarId() {
-        return getFirstChildOfType(ASTVariableDeclaratorId.class);
+    public ASTVariableId getVarId() {
+        return getFirstChildOfType(ASTVariableId.class);
     }
 
     /** Returns the type node of this formal parameter. */

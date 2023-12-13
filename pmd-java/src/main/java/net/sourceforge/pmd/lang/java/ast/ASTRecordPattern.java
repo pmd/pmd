@@ -42,8 +42,8 @@ public final class ASTRecordPattern extends AbstractJavaNode implements ASTPatte
     }
 
     /** Returns the declared variable. */
-    public ASTVariableDeclaratorId getVarId() {
-        return getFirstChildOfType(ASTVariableDeclaratorId.class);
+    public ASTVariableId getVarId() {
+        return getFirstChildOfType(ASTVariableId.class);
     }
 
     void bumpParenDepth() {

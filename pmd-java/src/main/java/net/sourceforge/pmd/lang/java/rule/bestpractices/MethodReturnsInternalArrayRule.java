@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
@@ -69,7 +69,7 @@ public class MethodReturnsInternalArrayRule extends AbstractJavaRulechainRule {
     private static boolean isZeroLengthArrayConstant(JFieldSymbol sym) {
         return sym.isFinal()
                 && NodeStream.of(sym.tryGetNode())
-                         .map(ASTVariableDeclaratorId::getInitializer)
+                         .map(ASTVariableId::getInitializer)
                          .filter(MethodReturnsInternalArrayRule::isZeroLengthArrayExpr)
                          .nonEmpty();
     }

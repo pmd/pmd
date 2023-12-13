@@ -17,7 +17,7 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * <pre class="grammar">
  *
- * TypePattern ::= ( "final" | {@linkplain ASTAnnotation Annotation} )* {@linkplain ASTType Type} {@link ASTVariableDeclaratorId VariableDeclaratorId}
+ * TypePattern ::= ( "final" | {@linkplain ASTAnnotation Annotation} )* {@linkplain ASTType Type} {@link ASTVariableId VariableId}
  *
  * </pre>
  *
@@ -44,8 +44,8 @@ public final class ASTTypePattern extends AbstractJavaNode implements ASTPattern
     }
 
     /** Returns the declared variable. */
-    public @NonNull ASTVariableDeclaratorId getVarId() {
-        return Objects.requireNonNull(firstChild(ASTVariableDeclaratorId.class));
+    public @NonNull ASTVariableId getVarId() {
+        return Objects.requireNonNull(firstChild(ASTVariableId.class));
     }
 
     void bumpParenDepth() {

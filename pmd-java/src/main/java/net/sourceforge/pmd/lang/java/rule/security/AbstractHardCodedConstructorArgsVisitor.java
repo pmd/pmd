@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
@@ -64,7 +64,7 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
 
         if (varAccess != null && varAccess.getSignature() != null && varAccess.getSignature().getSymbol() != null) {
             // named variable or method call on named variable found
-            ASTVariableDeclaratorId varDecl = varAccess.getSignature().getSymbol().tryGetNode();
+            ASTVariableId varDecl = varAccess.getSignature().getSymbol().tryGetNode();
             validateProperKeyArgument(data, varDecl.getInitializer());
             validateVarUsages(data, varDecl);
         } else if (firstArgumentExpression instanceof ASTArrayAllocation) {
@@ -83,7 +83,7 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
         }
     }
 
-    private void validateVarUsages(Object data, ASTVariableDeclaratorId varDecl) {
+    private void validateVarUsages(Object data, ASTVariableId varDecl) {
         varDecl.getLocalUsages().stream()
             .filter(u -> u.getAccessType() == AccessType.WRITE)
             .filter(u -> u.getParent() instanceof ASTAssignmentExpression)

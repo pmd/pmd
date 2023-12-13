@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
@@ -28,7 +28,7 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  * @author Clément Fournier
  * @since 6.7.0
  */
-public class FieldNamingConventionsRule extends AbstractNamingConventionRule<ASTVariableDeclaratorId> {
+public class FieldNamingConventionsRule extends AbstractNamingConventionRule<ASTVariableId> {
     // TODO we need a more powerful scheme to match some fields, e.g. include modifiers/type
     // We could define a new property, but specifying property values as a single string doesn't scale
     private static final PropertyDescriptor<List<String>> EXCLUDED_NAMES =
@@ -64,7 +64,7 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionRule<AST
 
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
-        for (ASTVariableDeclaratorId id : node) {
+        for (ASTVariableId id : node) {
             if (getProperty(EXCLUDED_NAMES).contains(id.getVariableName())) {
                 continue;
             }
@@ -107,12 +107,12 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionRule<AST
     }
 
     @Override
-    String nameExtractor(ASTVariableDeclaratorId node) {
+    String nameExtractor(ASTVariableId node) {
         return node.getName();
     }
 
     @Override
-    String kindDisplayName(ASTVariableDeclaratorId node, PropertyDescriptor<Pattern> descriptor) {
+    String kindDisplayName(ASTVariableId node, PropertyDescriptor<Pattern> descriptor) {
 
         boolean isFinal = node.hasModifiers(FINAL);
         boolean isStatic = node.hasModifiers(STATIC);

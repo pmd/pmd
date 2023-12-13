@@ -63,7 +63,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -223,7 +223,7 @@ public final class JavaAstUtils {
      * the variable must be less than {@link Visibility#V_PRIVATE} for
      * us to be sure of it.
      */
-    public static boolean isNeverUsed(ASTVariableDeclaratorId varId) {
+    public static boolean isNeverUsed(ASTVariableId varId) {
         return CollectionUtil.none(varId.getLocalUsages(), JavaAstUtils::isReadUsage);
     }
 
@@ -288,7 +288,7 @@ public final class JavaAstUtils {
      * Returns the variable IDS corresponding to variables declared in
      * the init clause of the loop.
      */
-    public static NodeStream<ASTVariableDeclaratorId> getLoopVariables(ASTForStatement loop) {
+    public static NodeStream<ASTVariableId> getLoopVariables(ASTForStatement loop) {
         return NodeStream.of(loop.getInit())
                          .filterIs(ASTLocalVariableDeclaration.class)
                          .flatMap(ASTLocalVariableDeclaration::getVarIds);

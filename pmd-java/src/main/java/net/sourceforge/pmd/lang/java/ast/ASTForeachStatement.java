@@ -34,9 +34,9 @@ public final class ASTForeachStatement extends AbstractStatement implements Inte
 
     @Override
     @NonNull
-    public ASTVariableDeclaratorId getVarId() {
+    public ASTVariableId getVarId() {
         // in case of destructuring record patterns, there might be multiple vars
-        return getFirstChild().descendants(ASTVariableDeclaratorId.class).first();
+        return getFirstChild().descendants(ASTVariableId.class).first();
     }
 
     /**

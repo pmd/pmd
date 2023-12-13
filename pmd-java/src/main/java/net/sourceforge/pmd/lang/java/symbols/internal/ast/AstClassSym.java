@@ -25,7 +25,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordComponent;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordComponentList;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
@@ -112,7 +112,7 @@ final class AstClassSym
             } else if (dnode instanceof ASTConstructorDeclaration) {
                 myCtors.add(new AstCtorSym((ASTConstructorDeclaration) dnode, factory, this));
             } else if (dnode instanceof ASTFieldDeclaration) {
-                for (ASTVariableDeclaratorId varId : ((ASTFieldDeclaration) dnode).getVarIds()) {
+                for (ASTVariableId varId : ((ASTFieldDeclaration) dnode).getVarIds()) {
                     myFields.add(new AstFieldSym(varId, factory, this));
                 }
             }

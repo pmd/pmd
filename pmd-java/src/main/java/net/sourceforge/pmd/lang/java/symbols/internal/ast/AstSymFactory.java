@@ -11,7 +11,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
@@ -57,7 +57,7 @@ final class AstSymFactory {
     /**
      * Builds, sets and returns the symbol for the given local variable.
      */
-    void setLocalVarSymbol(ASTVariableDeclaratorId id) {
+    void setLocalVarSymbol(ASTVariableId id) {
         assert !id.isField() && !id.isEnumConstant() : "Local var symbol is not appropriate for fields";
         assert !id.isFormalParameter()
             || id.isLambdaParameter()

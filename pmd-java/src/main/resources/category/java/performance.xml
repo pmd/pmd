@@ -85,10 +85,10 @@ If you want to copy/move elements inside the _same_ array (e.g. shift the elemen
                                             [not(parent::FieldAccess[@Name='length'])]
                                             [
                                                (: exclude referenced constants :)
-                                               not(@Name = (ancestor::MethodDeclaration|//FieldDeclaration)//VariableDeclarator[NumericLiteral][not(../../../parent::ForInit)]/VariableDeclaratorId/@Name)
+                                               not(@Name = (ancestor::MethodDeclaration|//FieldDeclaration)//VariableDeclarator[NumericLiteral][not(../../../parent::ForInit)]/VariableId/@Name)
                                                or
                                                (: include loop variable :)
-                                               @Name = ancestor::ForStatement/ForInit/LocalVariableDeclaration/VariableDeclarator/VariableDeclaratorId/@Name
+                                               @Name = ancestor::ForStatement/ForInit/LocalVariableDeclaration/VariableDeclarator/VariableId/@Name
                                             ]
                                             /@Name)),
                                         sort(distinct-values(ArrayAccess[2]/(VariableAccess[2]|InfixExpression//VariableAccess)
@@ -96,10 +96,10 @@ If you want to copy/move elements inside the _same_ array (e.g. shift the elemen
                                             [not(parent::FieldAccess[@Name='length'])]
                                             [
                                                (: exclude referenced constants :)
-                                               not(@Name = (ancestor::MethodDeclaration|//FieldDeclaration)//VariableDeclarator[NumericLiteral][not(../../../parent::ForInit)]/VariableDeclaratorId/@Name)
+                                               not(@Name = (ancestor::MethodDeclaration|//FieldDeclaration)//VariableDeclarator[NumericLiteral][not(../../../parent::ForInit)]/VariableId/@Name)
                                                or
                                                (: include loop variable :)
-                                               @Name = ancestor::ForStatement/ForInit/LocalVariableDeclaration/VariableDeclarator/VariableDeclaratorId/@Name
+                                               @Name = ancestor::ForStatement/ForInit/LocalVariableDeclaration/VariableDeclarator/VariableId/@Name
                                             ]
                                             /@Name))
                                       )]
@@ -187,7 +187,7 @@ Solution: Use `new Date()`, Java 8+ `java.time.LocalDateTime.now()` or `ZonedDat
       [pmd-java:matchesSig("java.util.Calendar#getInstance()")
        or pmd-java:matchesSig("java.util.GregorianCalendar#getInstance()")
        or pmd-java:matchesSig("java.util.GregorianCalendar#new()")]
-  ]/VariableDeclaratorId/@Name]
+  ]/VariableId/@Name]
 |
 //ConstructorCall[pmd-java:typeIs("org.joda.time.DateTime") or pmd-java:typeIs("org.joda.time.LocalDateTime")]
   [ArgumentList[(MethodCall | ConstructorCall)
@@ -714,7 +714,7 @@ You must use `new ArrayList<>(Arrays.asList(...))` if that is inconvenient for y
     MethodCall
       [pmd-java:matchesSig('java.util.Collection#add(_)')]
       [ArgumentList/ArrayAccess
-        [VariableAccess[@Name = ancestor::ForStatement/ForInit/LocalVariableDeclaration/VariableDeclarator/VariableDeclaratorId/@Name]]
+        [VariableAccess[@Name = ancestor::ForStatement/ForInit/LocalVariableDeclaration/VariableDeclarator/VariableId/@Name]]
       ]
 |
 //ForeachStatement
@@ -722,7 +722,7 @@ You must use `new ArrayList<>(Arrays.asList(...))` if that is inconvenient for y
   /*[last()]/ExpressionStatement/MethodCall
       [pmd-java:matchesSig('java.util.Collection#add(_)')]
       [ArgumentList
-        [VariableAccess[@Name = ancestor::ForeachStatement/LocalVariableDeclaration/VariableDeclarator/VariableDeclaratorId/@Name]]
+        [VariableAccess[@Name = ancestor::ForeachStatement/LocalVariableDeclaration/VariableDeclarator/VariableId/@Name]]
       ]
 ]]>
                 </value>
@@ -894,7 +894,7 @@ or StringBuffer.toString().length() == ...
 //MethodCall[pmd-java:matchesSig('_#equals(_)')
   and MethodCall[pmd-java:matchesSig('java.lang.AbstractStringBuilder#toString()')]
   and ArgumentList/VariableAccess[@Name = //VariableDeclarator[StringLiteral[@Image='""']]
-                                            /VariableDeclaratorId[pmd-java:modifiers() = 'final']/@Name]]
+                                            /VariableId[pmd-java:modifiers() = 'final']/@Name]]
 ]]></value>
             </property>
         </properties>

@@ -30,7 +30,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
@@ -60,7 +60,7 @@ public class NonSerializableClassRule extends AbstractJavaRulechainRule {
     private Map<ASTTypeDeclaration, Set<String>> cachedPersistentFieldNames;
 
     public NonSerializableClassRule() {
-        super(ASTVariableDeclaratorId.class, ASTClassDeclaration.class, ASTEnumDeclaration.class,
+        super(ASTVariableId.class, ASTClassDeclaration.class, ASTEnumDeclaration.class,
                 ASTRecordDeclaration.class);
         definePropertyDescriptor(PREFIX_DESCRIPTOR);
         definePropertyDescriptor(CHECK_ABSTRACT_TYPES);
@@ -91,7 +91,7 @@ public class NonSerializableClassRule extends AbstractJavaRulechainRule {
 
     private void checkSerialPersistentFieldsField(ASTTypeDeclaration typeDeclaration, Object data) {
         for (ASTFieldDeclaration field : typeDeclaration.descendants(ASTFieldDeclaration.class)) {
-            for (ASTVariableDeclaratorId varId : field) {
+            for (ASTVariableId varId : field) {
                 if (SERIAL_PERSISTENT_FIELDS_NAME.equals(varId.getName())) {
                     if (!TypeTestUtil.isA(SERIAL_PERSISTENT_FIELDS_TYPE, varId)
                             || field.getVisibility() != ModifierOwner.Visibility.V_PRIVATE
@@ -106,7 +106,7 @@ public class NonSerializableClassRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTVariableDeclaratorId node, Object data) {
+    public Object visit(ASTVariableId node, Object data) {
         ASTTypeDeclaration typeDeclaration = node.ancestors(ASTTypeDeclaration.class).first();
 
         if (typeDeclaration == null
@@ -189,7 +189,7 @@ public class NonSerializableClassRule extends AbstractJavaRulechainRule {
         for (ASTFieldDeclaration field : typeDeclaration.descendants(ASTFieldDeclaration.class)) {
             if (field.getVisibility() == ModifierOwner.Visibility.V_PRIVATE
                 && field.hasModifiers(JModifier.STATIC, JModifier.FINAL)) {
-                for (ASTVariableDeclaratorId varId : field) {
+                for (ASTVariableId varId : field) {
                     if (TypeTestUtil.isA(SERIAL_PERSISTENT_FIELDS_TYPE, varId)
                         && SERIAL_PERSISTENT_FIELDS_NAME.equals(varId.getName())) {
                         persistentFieldsDecl = varId.ancestors(ASTVariableDeclarator.class).first();
@@ -207,7 +207,7 @@ public class NonSerializableClassRule extends AbstractJavaRulechainRule {
                 ASTExpression initializer = persistentFieldsDecl.getInitializer();
                 if (initializer instanceof ASTVariableAccess) {
                     ASTVariableAccess variableAccess = (ASTVariableAccess) initializer;
-                    ASTVariableDeclaratorId reference = variableAccess.getReferencedSym().tryGetNode();
+                    ASTVariableId reference = variableAccess.getReferencedSym().tryGetNode();
                     fields = reference.getParent().descendants(ASTStringLiteral.class).toStream()
                             .map(ASTStringLiteral::getConstValue)
                             .collect(Collectors.toSet());
@@ -219,7 +219,7 @@ public class NonSerializableClassRule extends AbstractJavaRulechainRule {
         return fields;
     }
 
-    private boolean isPersistentField(ASTTypeDeclaration typeDeclaration, ASTVariableDeclaratorId node) {
+    private boolean isPersistentField(ASTTypeDeclaration typeDeclaration, ASTVariableId node) {
         Set<String> persistentFields = determinePersistentFields(typeDeclaration);
 
         if (node.isField() && (persistentFields == null || persistentFields.contains(node.getName()))) {

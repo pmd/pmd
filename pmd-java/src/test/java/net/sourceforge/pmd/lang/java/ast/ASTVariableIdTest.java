@@ -13,20 +13,20 @@ import org.junit.jupiter.api.Test;
 import net.sourceforge.pmd.lang.java.BaseParserTest;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 
-class ASTVariableDeclaratorIdTest extends BaseParserTest {
+class ASTVariableIdTest extends BaseParserTest {
 
 
     @Test
     void testIsExceptionBlockParameter() {
         ASTCompilationUnit acu = java.parse(EXCEPTION_PARAMETER);
-        ASTVariableDeclaratorId id = acu.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
+        ASTVariableId id = acu.getFirstDescendantOfType(ASTVariableId.class);
         assertTrue(id.isExceptionBlockParameter());
     }
 
     @Test
     void testTypeNameNode() {
         ASTCompilationUnit acu = java.parse(TYPE_NAME_NODE);
-        ASTVariableDeclaratorId id = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0);
+        ASTVariableId id = acu.findDescendantsOfType(ASTVariableId.class).get(0);
 
         ASTClassType name = (ASTClassType) id.getTypeNameNode();
         assertEquals("String", name.getSimpleName());
@@ -35,7 +35,7 @@ class ASTVariableDeclaratorIdTest extends BaseParserTest {
     @Test
     void testAnnotations() {
         ASTCompilationUnit acu = java.parse(TEST_ANNOTATIONS);
-        ASTVariableDeclaratorId id = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0);
+        ASTVariableId id = acu.findDescendantsOfType(ASTVariableId.class).get(0);
 
         ASTClassType name = (ASTClassType) id.getTypeNode();
         assertEquals("String", name.getSimpleName());
@@ -45,7 +45,7 @@ class ASTVariableDeclaratorIdTest extends BaseParserTest {
     void testLambdaWithType() throws Exception {
         ASTCompilationUnit acu = java8.parse(TEST_LAMBDA_WITH_TYPE);
         ASTLambdaExpression lambda = acu.getFirstDescendantOfType(ASTLambdaExpression.class);
-        ASTVariableDeclaratorId f = lambda.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
+        ASTVariableId f = lambda.getFirstDescendantOfType(ASTVariableId.class);
         assertEquals("File", PrettyPrintingUtil.prettyPrintType(f.getTypeNode()));
     }
 
@@ -53,7 +53,7 @@ class ASTVariableDeclaratorIdTest extends BaseParserTest {
     void testLambdaWithoutType() throws Exception {
         ASTCompilationUnit acu = java8.parse(TEST_LAMBDA_WITHOUT_TYPE);
         ASTLambdaExpression lambda = acu.getFirstDescendantOfType(ASTLambdaExpression.class);
-        ASTVariableDeclaratorId f = lambda.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
+        ASTVariableId f = lambda.getFirstDescendantOfType(ASTVariableId.class);
         assertNull(f.getTypeNode());
     }
 

@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
  *
  * <pre class="grammar">
  *
- * EnumConstant ::= {@link ASTModifierList AnnotationList} {@link ASTVariableDeclaratorId VariableDeclaratorId} {@linkplain ASTArgumentList ArgumentList}? {@linkplain ASTAnonymousClassDeclaration AnonymousClassDeclaration}?
+ * EnumConstant ::= {@link ASTModifierList AnnotationList} {@link ASTVariableId VariableId} {@linkplain ASTArgumentList ArgumentList}? {@linkplain ASTAnonymousClassDeclaration AnonymousClassDeclaration}?
  *
  * </pre>
  */
@@ -45,8 +45,8 @@ public final class ASTEnumConstant extends AbstractJavaTypeNode
 
 
     @Override
-    public ASTVariableDeclaratorId getVarId() {
-        return getFirstChildOfType(ASTVariableDeclaratorId.class);
+    public ASTVariableId getVarId() {
+        return getFirstChildOfType(ASTVariableId.class);
     }
 
     @Override

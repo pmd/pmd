@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
@@ -59,7 +59,7 @@ final class AstSymbolMakerVisitor extends JavaVisitorBase<AstSymFactory, Void> {
     }
 
     @Override
-    public Void visit(ASTVariableDeclaratorId node, AstSymFactory data) {
+    public Void visit(ASTVariableId node, AstSymFactory data) {
 
         if (isTrueLocalVar(node)) {
             data.setLocalVarSymbol(node);
@@ -71,7 +71,7 @@ final class AstSymbolMakerVisitor extends JavaVisitorBase<AstSymFactory, Void> {
         return super.visit(node, data);
     }
 
-    private boolean isTrueLocalVar(ASTVariableDeclaratorId node) {
+    private boolean isTrueLocalVar(ASTVariableId node) {
         return !(node.isField()
             || node.isEnumConstant()
             || node.isRecordComponent()

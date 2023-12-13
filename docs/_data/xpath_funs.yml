@@ -129,7 +129,7 @@ langs:
         examples:
           - code: '//FormalParameter[pmd-java:typeIs("java.lang.String[]")]'
             outcome: "Matches formal parameters of type `String[]` (including vararg parameters)"
-          - code: '//VariableDeclaratorId[pmd-java:typeIs("java.lang.List")]'
+          - code: '//VariableId[pmd-java:typeIs("java.lang.List")]'
             outcome: "Matches variable declarators of type `List` or any of its subtypes (including e.g. `ArrayList`)"
 
       - name: typeIsExactly
@@ -142,7 +142,7 @@ langs:
         parameters:
           - *qname_param
         examples:
-          - code: '//VariableDeclaratorId[pmd-java:typeIsExactly("java.lang.List")]'
+          - code: '//VariableId[pmd-java:typeIsExactly("java.lang.List")]'
             outcome: "Matches variable declarators of type `List` (but not e.g. `ArrayList`)"
 
 
