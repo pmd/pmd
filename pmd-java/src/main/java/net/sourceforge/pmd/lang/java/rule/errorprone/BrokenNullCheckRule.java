@@ -60,7 +60,7 @@ public class BrokenNullCheckRule extends AbstractJavaRulechainRule {
         for (ASTExpression subexpr : exprsToCheck) {
             NpeReason npeReason = willNpeWithReason(subexpr, pathToNullVar);
             if (npeReason != null) {
-                addViolationWithMessage(ctx, subexpr, npeReason.formatMessage);
+                ctx.addViolationWithMessage(subexpr, npeReason.formatMessage);
             }
         }
 

@@ -108,7 +108,7 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
         // those that remain are unused
         consideredNames.forEach((name, unused) -> {
             for (ASTMethodDeclaration m : unused) {
-                addViolation(param, m, PrettyPrintingUtil.displaySignature(m));
+                asCtx(param).addViolation(m, PrettyPrintingUtil.displaySignature(m));
             }
         });
 

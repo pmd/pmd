@@ -173,7 +173,7 @@ public class CloseResourceRule extends AbstractJavaRule {
 
             if (isWrappingResourceSpecifiedInTry(resVar)) {
                 reportedVarNames.add(resVar.getName());
-                addViolationWithMessage(data, resVar, WRAPPING_TRY_WITH_RES_VAR_MESSAGE,
+                asCtx(data).addViolationWithMessage(resVar, WRAPPING_TRY_WITH_RES_VAR_MESSAGE,
                         new Object[] { resVar.getName() });
             } else if (shouldVarOfTypeBeClosedInMethod(resVar, resVarType, methodOrConstructor)) {
                 reportedVarNames.add(resVar.getName());
@@ -182,7 +182,7 @@ public class CloseResourceRule extends AbstractJavaRule {
                 ASTExpressionStatement reassigningStatement = getFirstReassigningStatementBeforeBeingClosed(resVar, methodOrConstructor);
                 if (reassigningStatement != null) {
                     reportedVarNames.add(resVar.getName());
-                    addViolationWithMessage(data, reassigningStatement, REASSIGN_BEFORE_CLOSED_MESSAGE,
+                    asCtx(data).addViolationWithMessage(reassigningStatement, REASSIGN_BEFORE_CLOSED_MESSAGE,
                             new Object[] { resVar.getName() });
                 }
             }
@@ -656,7 +656,7 @@ public class CloseResourceRule extends AbstractJavaRule {
 
     private void addCloseResourceViolation(ASTVariableId id, TypeNode type, Object data) {
         String resTypeName = getResourceTypeName(id, type);
-        addViolation(data, id, resTypeName);
+        asCtx(data).addViolation(id, resTypeName);
     }
 
     private String getResourceTypeName(ASTVariableId varId, TypeNode type) {
@@ -685,7 +685,7 @@ public class CloseResourceRule extends AbstractJavaRule {
         if (isCloseTargetMethodCall(node) && node.getQualifier() instanceof ASTVariableAccess) {
             ASTVariableAccess closedVar = (ASTVariableAccess) node.getQualifier();
             if (isNotInFinallyBlock(closedVar) && !reportedVarNames.contains(closedVar.getName())) {
-                addViolationWithMessage(data, closedVar, CLOSE_IN_FINALLY_BLOCK_MESSAGE,
+                asCtx(data).addViolationWithMessage(closedVar, CLOSE_IN_FINALLY_BLOCK_MESSAGE,
                         new Object[] { closedVar.getName() });
             }
         }

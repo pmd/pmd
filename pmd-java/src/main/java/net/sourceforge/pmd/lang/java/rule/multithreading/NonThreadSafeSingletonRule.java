@@ -104,7 +104,7 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRulechainRule {
                 }
             }
             if (violation) {
-                addViolation(data, ifStatement);
+                asCtx(data).addViolation(ifStatement);
             }
         }
         return data;

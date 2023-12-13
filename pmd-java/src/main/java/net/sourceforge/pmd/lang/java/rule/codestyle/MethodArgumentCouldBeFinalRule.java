@@ -14,7 +14,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.rule.AbstractRule;
 
 public class MethodArgumentCouldBeFinalRule extends AbstractJavaRulechainRule {
 
@@ -38,10 +37,10 @@ public class MethodArgumentCouldBeFinalRule extends AbstractJavaRulechainRule {
     }
 
     private void lookForViolation(ASTExecutableDeclaration node, Object data) {
-        checkForFinal((RuleContext) data, this, node.getFormalParameters().toStream().map(ASTFormalParameter::getVarId));
+        checkForFinal((RuleContext) data, node.getFormalParameters().toStream().map(ASTFormalParameter::getVarId));
     }
 
-    static void checkForFinal(RuleContext ruleContext, AbstractRule rule, NodeStream<ASTVariableId> variables) {
+    static void checkForFinal(RuleContext ruleContext, NodeStream<ASTVariableId> variables) {
         outer:
         for (ASTVariableId var : variables) {
             if (var.isFinal()) {
@@ -55,7 +54,7 @@ public class MethodArgumentCouldBeFinalRule extends AbstractJavaRulechainRule {
                 }
             }
             if (used) {
-                rule.addViolation(ruleContext, var, var.getName());
+                ruleContext.addViolation(var, var.getName());
             }
         }
     }

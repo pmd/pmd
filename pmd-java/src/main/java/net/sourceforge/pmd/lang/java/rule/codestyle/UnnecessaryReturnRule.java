@@ -39,7 +39,7 @@ public class UnnecessaryReturnRule extends AbstractJavaRulechainRule {
                 .filterIs(ASTStatement.class);
 
         if (enclosingStatements.all(UnnecessaryReturnRule::isLastStatementOfParent)) {
-            addViolation(data, node);
+            asCtx(data).addViolation(node);
         }
         return null;
     }

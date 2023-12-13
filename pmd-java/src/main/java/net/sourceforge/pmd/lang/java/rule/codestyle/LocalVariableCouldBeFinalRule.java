@@ -31,7 +31,7 @@ public class LocalVariableCouldBeFinalRule extends AbstractJavaRulechainRule {
         if (getProperty(IGNORE_FOR_EACH) && node.getParent() instanceof ASTForeachStatement) {
             return data;
         }
-        MethodArgumentCouldBeFinalRule.checkForFinal((RuleContext) data, this, node.getVarIds());
+        MethodArgumentCouldBeFinalRule.checkForFinal((RuleContext) data, node.getVarIds());
         return data;
     }
 

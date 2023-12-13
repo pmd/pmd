@@ -144,7 +144,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
 
                 if (newState.rootNode != null) {
                     if (state.isInsufficient()) {
-                        addViolation(data, state.rootNode, state.getParamsForViolation());
+                        asCtx(data).addViolation(state.rootNode, state.getParamsForViolation());
                     }
                     state = newState;
                 } else {
@@ -154,7 +154,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
         }
 
         if (state.isInsufficient()) {
-            addViolation(data, state.rootNode, state.getParamsForViolation());
+            asCtx(data).addViolation(state.rootNode, state.getParamsForViolation());
         }
         return data;
     }

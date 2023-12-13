@@ -74,12 +74,12 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRulechainRule {
             if (iterable != null) {
                 if (isReplaceableArrayLoop(forLoop, index, iterable)
                     || isReplaceableListLoop(forLoop, index, iterable)) {
-                    addViolation(data, forLoop);
+                    asCtx(data).addViolation(forLoop);
                 }
             }
         } else if (TypeTestUtil.isA(Iterator.class, index.getTypeMirror())) {
             if (isReplaceableIteratorLoop(index, forLoop)) {
-                addViolation(data, forLoop);
+                asCtx(data).addViolation(forLoop);
             }
             return data;
         }

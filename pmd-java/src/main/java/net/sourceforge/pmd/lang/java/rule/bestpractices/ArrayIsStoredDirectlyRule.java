@@ -69,7 +69,7 @@ public class ArrayIsStoredDirectlyRule extends AbstractJavaRulechainRule {
                     if (usage.getParent() instanceof ASTAssignmentExpression && usage.getIndexInParent() == 1) {
                         ASTAssignableExpr assigned = ((ASTAssignmentExpression) usage.getParent()).getLeftOperand();
                         if (JavaAstUtils.isRefToFieldOfThisInstance(assigned)) {
-                            addViolation(context, usage.getParent(), usage.getName());
+                            context.addViolation(usage.getParent(), usage.getName());
                         }
                     }
                 }

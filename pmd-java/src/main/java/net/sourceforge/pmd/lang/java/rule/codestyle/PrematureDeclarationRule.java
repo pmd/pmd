@@ -76,7 +76,7 @@ public class PrematureDeclarationRule extends AbstractJavaRulechainRule {
                 }
 
                 if (hasExit(stmt)) {
-                    addViolation(data, node, id.getName());
+                    asCtx(data).addViolation(node, id.getName());
                     break;
                 }
             }

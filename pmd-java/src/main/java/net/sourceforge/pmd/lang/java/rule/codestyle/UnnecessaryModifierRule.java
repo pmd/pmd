@@ -55,7 +55,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRulechainRule {
         if (unnecessaryModifiers.isEmpty()) {
             return;
         }
-        super.addViolation(data, node, new String[]{
+        asCtx(data).addViolation(node, new String[]{
                 formatUnnecessaryModifiers(unnecessaryModifiers),
                 PrettyPrintingUtil.getPrintableNodeKind(node),
                 PrettyPrintingUtil.getNodeName(node),

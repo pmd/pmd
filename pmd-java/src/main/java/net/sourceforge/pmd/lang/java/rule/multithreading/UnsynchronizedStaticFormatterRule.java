@@ -102,7 +102,7 @@ public class UnsynchronizedStaticFormatterRule extends AbstractJavaRulechainRule
                 }
             }
 
-            addViolation(data, n);
+            asCtx(data).addViolation(n);
         }
         return data;
     }

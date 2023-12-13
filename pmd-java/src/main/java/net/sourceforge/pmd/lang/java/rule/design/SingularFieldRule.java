@@ -88,7 +88,7 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
                     dataflow = DataflowPass.getDataflowResult(node.getRoot());
                 }
                 if (isSingularField(enclosingType, varId, dataflow)) {
-                    addViolation(data, varId, varId.getName());
+                    asCtx(data).addViolation(varId, varId.getName());
                 }
             }
         }

@@ -21,7 +21,7 @@ public class JUnitSpellingRule extends AbstractJavaRulechainRule {
         if (TestFrameworksUtil.isJUnit3Class(node)) {
             node.getDeclarations(ASTMethodDeclaration.class)
                 .filter(this::isViolation)
-                .forEach(it -> addViolation(data, it));
+                .forEach(it -> asCtx(data).addViolation(it));
         }
         return null;
     }

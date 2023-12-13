@@ -30,7 +30,7 @@ public class SingleMethodSingletonRule extends AbstractJavaRulechainRule {
             .filter(m -> "getInstance".equals(m.getName()))
             .count();
         if (count > 1) {
-            addViolation(data, node);
+            asCtx(data).addViolation(node);
         }
         return data;
     }

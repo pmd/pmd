@@ -71,7 +71,7 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRulechainRu
             if (usage.getAccessType() == AccessType.WRITE && !isSimpleAssignment) {
                 if (isWithinLoop(usage)) {
                     // always report appends within a loop
-                    addViolation(data, usage);
+                    asCtx(data).addViolation(usage);
                 } else {
                     possibleViolations.add(usage);
                 }
@@ -81,7 +81,7 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRulechainRu
         // only report, if it is used more than once
         // then all usage locations are reported
         if (usageCounter > 1) {
-            possibleViolations.forEach(v -> addViolation(data, v));
+            possibleViolations.forEach(v -> asCtx(data).addViolation(v));
         }
 
         return data;

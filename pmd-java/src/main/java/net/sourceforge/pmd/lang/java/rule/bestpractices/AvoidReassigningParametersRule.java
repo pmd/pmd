@@ -37,7 +37,7 @@ public class AvoidReassigningParametersRule extends AbstractJavaRulechainRule {
             ASTVariableId varId = formal.getVarId();
             for (ASTNamedReferenceExpr usage : varId.getLocalUsages()) {
                 if (usage.getAccessType() == AccessType.WRITE) {
-                    addViolation(data, usage, varId.getName());
+                    asCtx(data).addViolation(usage, varId.getName());
                     // only the first assignment should be reported
                     break;
                 }

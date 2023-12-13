@@ -43,7 +43,7 @@ public class AddEmptyStringRule extends AbstractJavaRulechainRule {
     private void checkExpr(Object data, JavaNode parent) {
         if (JavaAstUtils.isInfixExprWithOperator(parent, BinaryOp.ADD)
             && parent.ancestors(ASTAnnotation.class).isEmpty()) {
-            addViolation(data, parent);
+            asCtx(data).addViolation(parent);
         }
     }
 }

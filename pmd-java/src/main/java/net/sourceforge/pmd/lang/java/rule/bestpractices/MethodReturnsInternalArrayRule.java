@@ -45,14 +45,14 @@ public class MethodReturnsInternalArrayRule extends AbstractJavaRulechainRule {
                 ASTNamedReferenceExpr reference = (ASTNamedReferenceExpr) expr;
 
                 if (JavaAstUtils.isRefToFieldOfThisInstance(reference)) {
-                    addViolation(data, returnStmt, reference.getName());
+                    asCtx(data).addViolation(returnStmt, reference.getName());
                 } else {
                     // considers static, non-final fields
                     JVariableSymbol symbol = reference.getReferencedSym();
                     if (symbol instanceof JFieldSymbol) {
                         JFieldSymbol field = (JFieldSymbol) symbol;
                         if (field.isStatic() && isInternal(field) && !isZeroLengthArrayConstant(field)) {
-                            addViolation(data, returnStmt, reference.getName());
+                            asCtx(data).addViolation(returnStmt, reference.getName());
                         }
                     }
                 }

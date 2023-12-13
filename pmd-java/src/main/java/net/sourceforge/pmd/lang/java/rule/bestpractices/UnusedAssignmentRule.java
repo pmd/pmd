@@ -153,7 +153,7 @@ public class UnusedAssignmentRule extends AbstractJavaRulechainRule {
                 // practice for exceptions, and may be useful for resources/foreach vars
                 continue;
             }
-            addViolationWithMessage(ruleCtx, entry.getLocation(), makeMessage(entry, reason, entry.isField()));
+            ruleCtx.addViolationWithMessage(entry.getLocation(), makeMessage(entry, reason, entry.isField()));
         }
     }
 

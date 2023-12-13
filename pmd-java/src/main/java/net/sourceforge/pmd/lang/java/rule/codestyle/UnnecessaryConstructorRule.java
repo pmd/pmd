@@ -57,7 +57,7 @@ public class UnnecessaryConstructorRule extends AbstractIgnoredAnnotationRule {
     private void checkClassOrEnum(ASTTypeDeclaration node, Object data) {
         List<ASTConstructorDeclaration> ctors = node.getDeclarations(ASTConstructorDeclaration.class).take(2).toList();
         if (ctors.size() == 1 && isExplicitDefaultConstructor(node, ctors.get(0))) {
-            addViolation(data, ctors.get(0));
+            asCtx(data).addViolation(ctors.get(0));
         }
     }
 

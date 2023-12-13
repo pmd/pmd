@@ -63,7 +63,7 @@ public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRul
             if (!inStartOfClass && declaration instanceof ASTFieldDeclaration) {
                 ASTFieldDeclaration field = (ASTFieldDeclaration) declaration;
                 if (!isInitializerOk(field)) {
-                    addViolation(data, declaration);
+                    asCtx(data).addViolation(declaration);
                 }
             }
         }

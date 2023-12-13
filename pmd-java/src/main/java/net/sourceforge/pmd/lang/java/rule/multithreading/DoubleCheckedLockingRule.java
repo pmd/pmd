@@ -101,7 +101,7 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
                         List<ASTAssignmentExpression> assignments = is2.findDescendantsOfType(ASTAssignmentExpression.class);
                         if (assignments.size() == 1
                             && JavaAstUtils.isReferenceToVar(assignments.get(0).getLeftOperand(), returnVariable)) {
-                            addViolation(data, node);
+                            asCtx(data).addViolation(node);
 
                         }
                     }

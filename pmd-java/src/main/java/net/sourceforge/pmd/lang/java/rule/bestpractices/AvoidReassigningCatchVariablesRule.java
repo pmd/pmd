@@ -25,7 +25,7 @@ public class AvoidReassigningCatchVariablesRule extends AbstractJavaRule {
         ASTVariableId caughtExceptionId = catchParam.getVarId();
         for (ASTNamedReferenceExpr usage : caughtExceptionId.getLocalUsages()) {
             if (usage.getAccessType() == AccessType.WRITE) {
-                addViolation(data, usage, caughtExceptionId.getName());
+                asCtx(data).addViolation(usage, caughtExceptionId.getName());
             }
 
         }

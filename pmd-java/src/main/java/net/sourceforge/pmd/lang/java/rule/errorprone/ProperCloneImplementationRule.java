@@ -26,7 +26,7 @@ public class ProperCloneImplementationRule extends AbstractJavaRulechainRule {
         if (JavaAstUtils.isCloneMethod(method) && !method.isAbstract()) {
             ASTTypeDeclaration enclosingType = method.getEnclosingType();
             if (isNotFinal(enclosingType) && hasAnyAllocationOfClass(method, enclosingType)) {
-                addViolation(data, method);
+                asCtx(data).addViolation(method);
             }
         }
         return data;

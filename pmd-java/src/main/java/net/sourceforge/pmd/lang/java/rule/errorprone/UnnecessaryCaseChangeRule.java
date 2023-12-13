@@ -26,7 +26,7 @@ public class UnnecessaryCaseChangeRule extends AbstractJavaRulechainRule {
         if (EQUALITY_METHODS.contains(node.getMethodName()) && node.getArguments().size() == 1) {
             if (isCaseChangingMethodCall(node.getQualifier())
                     || isCaseChangingMethodCall(node.getArguments().get(0))) {
-                addViolation(data, node);
+                asCtx(data).addViolation(node);
             }
         }
         return data;

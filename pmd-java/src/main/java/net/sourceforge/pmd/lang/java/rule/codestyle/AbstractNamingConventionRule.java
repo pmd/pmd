@@ -60,7 +60,7 @@ abstract class AbstractNamingConventionRule<T extends JavaNode> extends Abstract
     void checkMatches(T node, PropertyDescriptor<Pattern> regex, Object data) {
         String name = nameExtractor(node);
         if (!getProperty(regex).matcher(name).matches()) {
-            addViolation(data, node, new Object[]{
+            asCtx(data).addViolation(node, new Object[]{
                 kindDisplayName(node, regex),
                 name,
                 getProperty(regex).toString(),

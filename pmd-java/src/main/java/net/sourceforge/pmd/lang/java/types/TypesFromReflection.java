@@ -46,7 +46,7 @@ public final class TypesFromReflection {
      * JTypeMirror streamOfInt = fromReflect(new TypeLiteral<Stream<Integer>>() {}, node.getTypeSystem());
      *
      * if (node.getTypeMirror().equals(streamOfInt))
-     *   addViolation(node, "Use IntStream instead of Stream<Integer>");
+     *   ruleContext.addViolation(node, "Use IntStream instead of Stream<Integer>");
      *
      * // going the long way:
      * TypeSystem ts = node.getTypeSystem();

@@ -26,7 +26,7 @@ public class JUnitStaticSuiteRule extends AbstractJavaRulechainRule {
                                                    .first();
             if (suiteMethod != null
                 && (suiteMethod.getVisibility() != Visibility.V_PUBLIC || !suiteMethod.isStatic())) {
-                addViolation(data, suiteMethod);
+                asCtx(data).addViolation(suiteMethod);
             }
         }
         return null;

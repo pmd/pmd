@@ -37,7 +37,7 @@ public class ConsecutiveAppendsShouldReuseRule extends AbstractJavaRule {
             if (variable != null) {
                 @Nullable JVariableSymbol nextVariable = getVariableAppended((ASTExpressionStatement) nextSibling);
                 if (nextVariable != null && nextVariable.equals(variable)) {
-                    addViolation(data, node);
+                    asCtx(data).addViolation(node);
                 }
             }
         }
@@ -53,7 +53,7 @@ public class ConsecutiveAppendsShouldReuseRule extends AbstractJavaRule {
                 ASTVariableId varDecl = nextVariable.tryGetNode();
                 if (varDecl != null && node.getVarIds().any(it -> it == varDecl)
                     && isStringBuilderAppend(varDecl.getInitializer())) {
-                    addViolation(data, node);
+                    asCtx(data).addViolation(node);
                 }
             }
         }

@@ -53,7 +53,7 @@ public class AtLeastOneConstructorRule extends AbstractIgnoredAnnotationRule {
                                              .filterNot(it -> it instanceof ASTTypeDeclaration);
         if (members.isEmpty() || members.any(it -> !it.hasModifiers(JModifier.STATIC))) {
             // Do we have any non-static members?
-            addViolation(data, node);
+            asCtx(data).addViolation(node);
         }
 
         return data;

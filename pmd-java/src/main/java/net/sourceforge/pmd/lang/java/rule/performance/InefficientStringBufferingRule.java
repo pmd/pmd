@@ -50,7 +50,7 @@ public class InefficientStringBufferingRule extends AbstractJavaRulechainRule {
         if (JavaAstUtils.isStringConcatExpr(arg)
             // ignore concatenations that produce constants
             && !arg.isCompileTimeConstant()) {
-            addViolation(ctx, arg);
+            ctx.addViolation(arg);
         }
     }
 

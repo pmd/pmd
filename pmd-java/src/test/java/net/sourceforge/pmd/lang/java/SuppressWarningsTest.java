@@ -32,7 +32,7 @@ class SuppressWarningsTest {
             // ASTCompilationUnit node
             for (ASTClassDeclaration c : cu.descendants(ASTClassDeclaration.class)) {
                 if ("bar".equalsIgnoreCase(c.getSimpleName())) {
-                    addViolation(ctx, cu);
+                    asCtx(ctx).addViolation(cu);
                 }
             }
             return super.visit(cu, ctx);

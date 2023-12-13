@@ -68,7 +68,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
                     ignoreNext = false;
                     continue;
                 }
-                addViolation(data, usage, loopVar.getName());
+                asCtx(data).addViolation(usage, loopVar.getName());
             } else {
                 ignoreNext = false;
             }
@@ -91,7 +91,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
                         if (update != null && usage.ancestors(ASTForUpdate.class).first() == update) {
                             continue;
                         }
-                        addViolation(data, usage, loopVar.getName());
+                        asCtx(data).addViolation(usage, loopVar.getName());
                     }
                 }
             }
@@ -204,7 +204,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
                 .filter(it -> loopVarNames.contains(it.getName()))
                 .filter(it -> onlyConsiderWrite ? JavaAstUtils.isVarAccessStrictlyWrite(it)
                                                 : JavaAstUtils.isVarAccessReadAndWrite(it))
-                .forEach(it -> addViolation(ruleCtx, it, it.getName()));
+                .forEach(it -> asCtx(ruleCtx).addViolation(it, it.getName()));
         }
     }
 

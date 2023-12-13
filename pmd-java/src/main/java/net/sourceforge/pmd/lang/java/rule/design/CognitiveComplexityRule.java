@@ -56,7 +56,7 @@ public class CognitiveComplexityRule extends AbstractJavaRulechainRule {
         int cognitive = MetricsUtil.computeMetric(COGNITIVE_COMPLEXITY, node);
         final int reportLevel = getReportLevel();
         if (cognitive >= reportLevel) {
-            addViolation(data, node, new String[] { node instanceof ASTMethodDeclaration ? "method" : "constructor",
+            asCtx(data).addViolation(node, new String[] { node instanceof ASTMethodDeclaration ? "method" : "constructor",
                                                     PrettyPrintingUtil.displaySignature(node),
                                                     String.valueOf(cognitive),
                                                     String.valueOf(reportLevel) });

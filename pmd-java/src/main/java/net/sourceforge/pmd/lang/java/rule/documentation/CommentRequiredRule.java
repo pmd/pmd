@@ -136,7 +136,7 @@ public class CommentRequiredRule extends AbstractJavaRulechainRule {
                                           PropertyDescriptor<CommentRequirement> descriptor) {
 
 
-        addViolationWithMessage(data, node,
+        asCtx(data).addViolationWithMessage(node,
             DESCRIPTOR_NAME_TO_COMMENT_TYPE.get(descriptor.name())
             + " are "
             + getProperty(descriptor).label.toLowerCase(Locale.ROOT));

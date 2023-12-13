@@ -29,7 +29,7 @@ class ExcludeLinesTest extends BaseParserTest {
 
             @Override
             public Object visit(ASTVariableId node, Object data) {
-                addViolation(data, node);
+                asCtx(data).addViolation(node);
                 return data;
             }
         };

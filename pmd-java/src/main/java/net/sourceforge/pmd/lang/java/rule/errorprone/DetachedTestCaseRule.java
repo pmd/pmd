@@ -27,7 +27,7 @@ public class DetachedTestCaseRule extends AbstractJavaRulechainRule {
                        && !m.getModifiers().hasAny(JModifier.STATIC, JModifier.PRIVATE, JModifier.PROTECTED, JModifier.ABSTRACT))
                    // the method itself has no annotation
                    .filter(it -> it.getDeclaredAnnotations().isEmpty())
-                   .forEach(m -> addViolation(data, m));
+                   .forEach(m -> asCtx(data).addViolation(m));
         }
         return null;
     }

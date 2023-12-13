@@ -79,7 +79,7 @@ public class UseUtilityClassRule extends AbstractJavaRulechainRule {
         String message;
         if (hasAnyMethods && hasNonPrivateCtor) {
             message = "This utility class has a non-private constructor";
-            addViolationWithMessage(data, klass, message);
+            asCtx(data).addViolationWithMessage(klass, message);
         }
         return null;
     }

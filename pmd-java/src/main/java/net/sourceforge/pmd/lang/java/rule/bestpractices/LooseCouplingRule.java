@@ -48,7 +48,7 @@ public class LooseCouplingRule extends AbstractJavaRulechainRule {
             && !isInAllowedSyntacticCtx(node)
             && !isAllowedType(node)
             && !isTypeParameter(node)) {
-            addViolation(data, node, node.getSimpleName());
+            asCtx(data).addViolation(node, node.getSimpleName());
         }
         return null;
     }

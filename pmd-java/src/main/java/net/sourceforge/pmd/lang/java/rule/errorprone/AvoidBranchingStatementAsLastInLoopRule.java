@@ -84,15 +84,15 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRulecha
         }
         if (parent instanceof ASTForStatement || parent instanceof ASTForeachStatement) {
             if (hasPropertyValue(property, CHECK_FOR)) {
-                super.addViolation(data, node);
+                asCtx(data).addViolation(node);
             }
         } else if (parent instanceof ASTWhileStatement) {
             if (hasPropertyValue(property, CHECK_WHILE)) {
-                super.addViolation(data, node);
+                asCtx(data).addViolation(node);
             }
         } else if (parent instanceof ASTDoStatement) {
             if (hasPropertyValue(property, CHECK_DO)) {
-                super.addViolation(data, node);
+                asCtx(data).addViolation(node);
             }
         }
         return data;

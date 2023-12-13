@@ -51,7 +51,7 @@ public class NPathComplexityRule extends AbstractJavaRulechainRule {
 
         BigInteger npath = MetricsUtil.computeMetric(JavaMetrics.NPATH, node);
         if (npath.compareTo(BigInteger.valueOf(reportLevel)) >= 0) {
-            addViolation(data, node, new String[] {node instanceof ASTMethodDeclaration ? "method" : "constructor",
+            asCtx(data).addViolation(node, new String[] {node instanceof ASTMethodDeclaration ? "method" : "constructor",
                                                    PrettyPrintingUtil.displaySignature(node),
                                                    String.valueOf(npath),
                                                    String.valueOf(reportLevel)});

@@ -89,7 +89,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRulechainRule {
             if (occurrences.size() >= threshold) {
                 ASTStringLiteral first = occurrences.first();
                 Object[] args = { first.toPrintableString(), occurrences.size(), first.getBeginLine(), };
-                addViolation(data, first, args);
+                asCtx(data).addViolation(first, args);
             }
         }
     }

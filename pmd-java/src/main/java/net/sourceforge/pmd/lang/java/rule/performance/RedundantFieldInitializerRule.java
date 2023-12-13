@@ -45,7 +45,7 @@ public class RedundantFieldInitializerRule extends AbstractJavaRulechainRule {
                 ASTExpression init = varId.getInitializer();
                 if (init != null) {
                     if (!isWhitelisted(init) && JavaAstUtils.isDefaultValue(varId.getTypeMirror(), init)) {
-                        addViolation(data, varId);
+                        asCtx(data).addViolation(varId);
                     }
                 }
             }

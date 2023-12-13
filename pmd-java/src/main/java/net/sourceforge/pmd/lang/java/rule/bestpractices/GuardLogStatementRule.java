@@ -107,7 +107,7 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
         String logLevel = getLogLevelName(methodCall);
         if (logLevel != null && guardStmtByLogLevel.containsKey(logLevel)) {
             if (needsGuard(methodCall) && !hasGuard(methodCall, logLevel)) {
-                addViolation(data, node);
+                asCtx(data).addViolation(node);
             }
         }
         return null;

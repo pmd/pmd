@@ -47,7 +47,7 @@ public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRulechainRule 
 
         if (!getProperty(STATEMENT_ORDER_MATTERS)
             || varDecl.ancestors(ASTLocalVariableDeclaration.class).firstOrThrow().getNextSibling() == returnStmt) {
-            addViolation(data, varDecl, varDecl.getName());
+            asCtx(data).addViolation(varDecl, varDecl.getName());
         }
         return null;
     }

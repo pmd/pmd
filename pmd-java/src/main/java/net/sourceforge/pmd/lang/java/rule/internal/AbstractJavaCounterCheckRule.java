@@ -55,7 +55,7 @@ public abstract class AbstractJavaCounterCheckRule<T extends JavaNode> extends A
 
         if (!isIgnored(t)) {
             if (isViolation(t, getProperty(reportLevel))) {
-                addViolation(data, node);
+                asCtx(data).addViolation(node);
             }
         }
 

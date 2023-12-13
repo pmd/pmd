@@ -28,7 +28,7 @@ public class StringInstantiationRule extends AbstractJavaRule {
                 // byte array ctor is ok
                 return data;
             }
-            addViolation(data, node);
+            asCtx(data).addViolation(node);
         }
         return data;
     }

@@ -89,7 +89,7 @@ public class CyclomaticComplexityRule extends AbstractJavaRulechainRule {
                                           " total",
                                           classWmc + " (highest " + classHighest + ")", };
 
-                addViolation(data, node, messageParams);
+                asCtx(data).addViolation(node, messageParams);
             }
         }
         return data;
@@ -121,10 +121,10 @@ public class CyclomaticComplexityRule extends AbstractJavaRulechainRule {
                 String kindname = node instanceof ASTConstructorDeclaration ? "constructor" : "method";
 
 
-                addViolation(data, node, new String[] {kindname,
-                                                       opname,
-                                                       "",
-                                                       "" + cyclo, });
+                asCtx(data).addViolation(node, new String[] {kindname,
+                                                             opname,
+                                                             "",
+                                                             "" + cyclo, });
             }
         }
     }

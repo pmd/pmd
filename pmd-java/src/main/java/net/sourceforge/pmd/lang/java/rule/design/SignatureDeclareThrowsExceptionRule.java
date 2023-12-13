@@ -44,7 +44,7 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRulechainRu
     public Object visit(ASTThrowsList throwsList, Object o) {
         if (!isIgnored(throwsList.getOwner())
             && throwsList.toStream().any(it -> TypeTestUtil.isExactlyA(Exception.class, it))) {
-            addViolation(o, throwsList);
+            asCtx(o).addViolation(throwsList);
         }
         return null;
     }

@@ -41,7 +41,7 @@ public class CloneMethodMustImplementCloneableRule extends AbstractJavaRulechain
         ASTTypeDeclaration type = node.getEnclosingType();
         if (type instanceof ASTClassDeclaration && !TypeTestUtil.isA(Cloneable.class, type)) {
             // Nothing can save us now
-            addViolation(data, node);
+            asCtx(data).addViolation(node);
         }
         return data;
     }

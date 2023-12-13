@@ -59,9 +59,9 @@ public class GodClassRule extends AbstractJavaRulechainRule {
 
         if (wmc >= WMC_VERY_HIGH && atfd > FEW_ATFD_THRESHOLD && tcc < TCC_THRESHOLD) {
 
-            addViolation(data, node, new Object[] {wmc,
-                                                   StringUtil.percentageString(tcc, 3),
-                                                   atfd, });
+            asCtx(data).addViolation(node, new Object[] {wmc,
+                                                         StringUtil.percentageString(tcc, 3),
+                                                         atfd, });
         }
         return data;
     }

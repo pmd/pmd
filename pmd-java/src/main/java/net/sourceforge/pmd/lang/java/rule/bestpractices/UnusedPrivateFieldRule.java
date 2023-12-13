@@ -55,7 +55,7 @@ public class UnusedPrivateFieldRule extends AbstractJavaRulechainRule {
                 if (!isIgnored(field)) {
                     for (ASTVariableId varId : field.getVarIds()) {
                         if (JavaAstUtils.isNeverUsed(varId)) {
-                            addViolation(data, varId, varId.getName());
+                            asCtx(data).addViolation(varId, varId.getName());
                         }
                     }
                 }
