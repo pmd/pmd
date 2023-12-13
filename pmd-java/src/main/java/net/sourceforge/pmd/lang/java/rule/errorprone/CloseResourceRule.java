@@ -546,7 +546,7 @@ public class CloseResourceRule extends AbstractJavaRule {
      *            where to search for if statements
      * @param node
      *            the node, where the call for the close is done
-     * @param varName
+     * @param var
      *            the variable, that is maybe null-checked
      * @return <code>true</code> if no if condition is involved or if the if
      *         condition is a null-check.

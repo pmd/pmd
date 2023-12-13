@@ -28,7 +28,6 @@ class ASTLiteralTest : ParserTestSpec({
 
             "\"\"" should parseAs {
                 stringLit("\"\"") {
-                    it::isStringLiteral shouldBe true
                     it::getConstValue shouldBe ""
                 }
             }
@@ -214,7 +213,6 @@ $delim
 
             "'c'" should parseAs {
                 charLit("'c'") {
-                    it::isCharLiteral shouldBe true
                     it::getConstValue shouldBe 'c'
                 }
             }

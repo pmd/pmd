@@ -171,7 +171,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
                 continue;
             }
             for (Pattern p : PATTERNS) {
-                Matcher m = p.matcher(comment.getImage());
+                Matcher m = p.matcher(comment.getText());
                 while (m.find()) {
                     String fullname = m.group(1);
 

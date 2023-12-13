@@ -115,14 +115,6 @@ object CustomTreePrinter : KotlintestBeanTreePrinter<Node>(NodeTreeLikeAdapter) 
 private val javaImplicitAssertions: Assertions<Node> = {
     DefaultMatchingConfig.implicitAssertions(it)
 
-    if (it is ASTLiteral) {
-        it::isNumericLiteral shouldBe (it is ASTNumericLiteral)
-        it::isCharLiteral shouldBe (it is ASTCharLiteral)
-        it::isStringLiteral shouldBe (it is ASTStringLiteral)
-        it::isBooleanLiteral shouldBe (it is ASTBooleanLiteral)
-        it::isNullLiteral shouldBe (it is ASTNullLiteral)
-    }
-
     if (it is ASTExpression) run {
         it::isParenthesized shouldBe (it.parenthesisDepth > 0)
     }

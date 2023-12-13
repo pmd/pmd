@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
 
 /**
  * @author Clément Fournier
@@ -30,7 +29,7 @@ public class DummyJavaRule extends AbstractJavaRule {
 
         @Override
         public void apply(Node node, RuleContext ctx) {
-            ((JavaNode) node).jjtAccept(this, ctx);
+            node.acceptVisitor(this, ctx);
         }
 
         @Override

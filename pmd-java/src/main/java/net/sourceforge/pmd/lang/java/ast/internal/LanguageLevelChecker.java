@@ -427,7 +427,7 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public Void visit(ASTStringLiteral node, T data) {
-            if (node.isStringLiteral() && SPACE_ESCAPE_PATTERN.matcher(node.getImage()).find()) {
+            if (SPACE_ESCAPE_PATTERN.matcher(node.getImage()).find()) {
                 check(node, RegularLanguageFeature.SPACE_STRING_ESCAPES, data);
             }
             if (node.isTextBlock()) {
@@ -560,7 +560,7 @@ public class LanguageLevelChecker<T> {
                 check(node, RegularLanguageFeature.PRIVATE_METHODS_IN_INTERFACES, data);
             }
 
-            checkIdent(node, node.getMethodName(), data);
+            checkIdent(node, node.getName(), data);
             return null;
         }
 

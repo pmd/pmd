@@ -66,7 +66,7 @@ public final class ASTFieldDeclaration extends AbstractJavaNode
     /**
      * Returns the type node at the beginning of this field declaration.
      * The type of this node is not necessarily the type of the variables,
-     * see {@link ASTVariableId#getType()}.
+     * see {@link ASTVariableId#getTypeNode()}.
      */
     @Override
     public ASTType getTypeNode() {

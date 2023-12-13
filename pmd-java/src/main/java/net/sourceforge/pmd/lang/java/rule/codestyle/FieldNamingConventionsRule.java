@@ -65,7 +65,7 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionRule<AST
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
         for (ASTVariableId id : node) {
-            if (getProperty(EXCLUDED_NAMES).contains(id.getVariableName())) {
+            if (getProperty(EXCLUDED_NAMES).contains(id.getName())) {
                 continue;
             }
             ASTTypeDeclaration enclosingType = node.getEnclosingType();

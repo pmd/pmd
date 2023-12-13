@@ -32,8 +32,6 @@ public final class LocalVariableNamingConventionsRule extends AbstractNamingConv
         definePropertyDescriptor(localVarRegex);
         definePropertyDescriptor(finalVarRegex);
         definePropertyDescriptor(exceptionBlockParameterRegex);
-
-        addRuleChainVisit(ASTVariableId.class);
     }
 
 

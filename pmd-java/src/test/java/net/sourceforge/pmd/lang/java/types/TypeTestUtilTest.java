@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.types;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -38,10 +37,9 @@ class TypeTestUtilTest extends BaseParserTest {
         ASTClassDeclaration klass =
             java.parse("package org; import java.io.Serializable; "
                            + "class FooBar implements Serializable {}")
-                .getFirstDescendantOfType(ASTClassDeclaration.class);
+                .descendants(ASTClassDeclaration.class).firstOrThrow();
 
 
-        assertNull(klass.getType());
         assertTrue(TypeTestUtil.isA("org.FooBar", klass));
         assertTrue(TypeTestUtil.isA("java.io.Serializable", klass));
         assertTrue(TypeTestUtil.isA(Serializable.class, klass));
@@ -53,7 +51,7 @@ class TypeTestUtilTest extends BaseParserTest {
         ASTAnnotation annot =
             java.parse("import a.b.Test;"
                            + "class FooBar { @Test void bar() {} }")
-                .getFirstDescendantOfType(ASTAnnotation.class);
+                .descendants(ASTAnnotation.class).firstOrThrow();
 
         assertTrue(TypeTestUtil.isA("a.b.Test", annot));
         assertTrue(TypeOps.isUnresolved(annot.getTypeMirror()));
@@ -74,7 +72,6 @@ class TypeTestUtilTest extends BaseParserTest {
                 .getFirstDescendantOfType(ASTEnumDeclaration.class);
 
 
-        assertNull(klass.getType());
         assertTrue(TypeTestUtil.isA("org.FooBar", klass));
         assertIsStrictSubtype(klass, Iterable.class);
         assertIsStrictSubtype(klass, Enum.class);
@@ -155,7 +152,6 @@ class TypeTestUtilTest extends BaseParserTest {
                 .getFirstDescendantOfType(ASTAnnotationTypeDeclaration.class);
 
 
-        assertNull(klass.getType());
         assertTrue(TypeTestUtil.isA("org.FooBar", klass));
         assertIsA(klass, Annotation.class);
         assertIsA(klass, Object.class);
@@ -237,7 +233,6 @@ class TypeTestUtilTest extends BaseParserTest {
         ASTAnnotation annotation = java.parse("package org; import foo.Stuff; @Stuff public class FooBar {}")
                                        .getFirstDescendantOfType(ASTAnnotation.class);
 
-        assertNull(annotation.getType());
         assertTrue(TypeTestUtil.isA("foo.Stuff", annotation));
         assertFalse(TypeTestUtil.isA("other.Stuff", annotation));
         // we know it's not Stuff, it's foo.Stuff

@@ -44,7 +44,7 @@ public interface ASTType extends TypeNode, Annotatable, LeftRecursiveNode {
 
     /**
      * Returns the number of array dimensions of this type.
-     * This is 0 unless this node {@linkplain #isArrayType()}.
+     * This is 0 unless this node is {@linkplain ASTArrayType}.
      */
     @Deprecated
     default int getArrayDepth() {

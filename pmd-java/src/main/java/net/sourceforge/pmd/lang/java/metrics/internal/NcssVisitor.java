@@ -73,11 +73,11 @@ public class NcssVisitor extends JavaVisitorBase<MutableInt, Void> {
     @Override
     public Void visit(ASTClassDeclaration node, MutableInt data) {
         if (countImports) {
-            ASTCompilationUnit acu = node.getFirstParentOfType(ASTCompilationUnit.class);
-            List<ASTImportDeclaration> imports = acu.findChildrenOfType(ASTImportDeclaration.class);
+            ASTCompilationUnit acu = node.getRoot();
+            List<ASTImportDeclaration> imports = acu.children(ASTImportDeclaration.class).toList();
 
             int increment = imports.size();
-            if (!acu.findChildrenOfType(ASTPackageDeclaration.class).isEmpty()) {
+            if (acu.children(ASTPackageDeclaration.class).nonEmpty()) {
                 increment++;
             }
             data.add(increment);

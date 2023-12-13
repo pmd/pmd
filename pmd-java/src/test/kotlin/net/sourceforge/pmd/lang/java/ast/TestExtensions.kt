@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken
 import net.sourceforge.pmd.lang.ast.test.NodeSpec
 import net.sourceforge.pmd.lang.ast.test.ValuedNodeSpec
 import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.*
 
@@ -111,7 +112,7 @@ fun TreeNodeWrapper<Node, *>.thisExpr(qualifier: ValuedNodeSpec<ASTThisExpressio
 
 fun TreeNodeWrapper<Node, *>.variableId(name: String, otherAssertions: NodeSpec<ASTVariableId> = EmptyAssertions) =
         child<ASTVariableId>(ignoreChildren = otherAssertions == EmptyAssertions) {
-            it::getVariableName shouldBe name
+            it::getName shouldBe name
             otherAssertions()
         }
 
@@ -120,7 +121,7 @@ fun TreeNodeWrapper<Node, *>.simpleLambdaParam(name: String, otherAssertions: No
             it::getModifiers shouldBe modifiers {  }
 
             child<ASTVariableId>(ignoreChildren = otherAssertions == EmptyAssertions) {
-                it::getVariableName shouldBe name
+                it::getName shouldBe name
                 otherAssertions()
             }
         }
@@ -418,7 +419,7 @@ fun TreeNodeWrapper<Node, *>.arrayType(contents: NodeSpec<ASTArrayType> = EmptyA
 fun TreeNodeWrapper<Node, *>.primitiveType(type: PrimitiveTypeKind, assertions: NodeSpec<ASTPrimitiveType> = EmptyAssertions) =
         child<ASTPrimitiveType> {
             it::getKind shouldBe type
-            it::getTypeImage shouldBe type.toString()
+            PrettyPrintingUtil.prettyPrintType(it) shouldBe type.toString();
             assertions()
         }
 

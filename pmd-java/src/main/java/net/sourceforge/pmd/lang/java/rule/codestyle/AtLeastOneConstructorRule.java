@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
@@ -15,6 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
 import net.sourceforge.pmd.lang.java.rule.AbstractIgnoredAnnotationRule;
 import net.sourceforge.pmd.lang.java.rule.design.UseUtilityClassRule;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 /**
  * This rule detects non-static classes with no constructors;
@@ -24,8 +27,9 @@ import net.sourceforge.pmd.lang.java.rule.design.UseUtilityClassRule;
  */
 public class AtLeastOneConstructorRule extends AbstractIgnoredAnnotationRule {
 
-    public AtLeastOneConstructorRule() {
-        addRuleChainVisit(ASTClassDeclaration.class);
+    @Override
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forTypes(ASTClassDeclaration.class);
     }
 
     @Override

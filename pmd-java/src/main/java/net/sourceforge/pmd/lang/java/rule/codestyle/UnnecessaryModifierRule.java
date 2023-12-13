@@ -40,7 +40,6 @@ public class UnnecessaryModifierRule extends AbstractJavaRulechainRule {
               ASTResource.class,
               ASTFieldDeclaration.class,
               ASTConstructorDeclaration.class);
-        addRuleChainVisit(ASTRecordDeclaration.class);
     }
 
 

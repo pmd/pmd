@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.document.FileLocation;
  * {@linkplain ASTForStatement foreach statements}.
  *
  * <p>This statement may define several variables, possibly of different types
- * (see {@link ASTVariableId#getType()}). The nodes corresponding to
+ * (see {@link ASTVariableId#getTypeNode()}). The nodes corresponding to
  * the declared variables are accessible through {@link #getVarIds()}.
  *
  * <pre class="grammar">

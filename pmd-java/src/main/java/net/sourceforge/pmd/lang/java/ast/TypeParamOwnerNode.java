@@ -23,7 +23,7 @@ public interface TypeParamOwnerNode extends SymbolDeclaratorNode {
      * there is none.
      */
     default @Nullable ASTTypeParameters getTypeParameters() {
-        return getFirstChildOfType(ASTTypeParameters.class);
+        return firstChild(ASTTypeParameters.class);
     }
 
 

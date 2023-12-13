@@ -89,16 +89,16 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
             return data;
         }
 
-        List<ASTIfStatement> isl = node.findDescendantsOfType(ASTIfStatement.class);
+        List<ASTIfStatement> isl = node.descendants(ASTIfStatement.class).toList();
         if (isl.size() == 2) {
             ASTIfStatement outerIf = isl.get(0);
             if (JavaRuleUtil.isNullCheck(outerIf.getCondition(), returnVariable)) {
                 // find synchronized
-                List<ASTSynchronizedStatement> ssl = outerIf.findDescendantsOfType(ASTSynchronizedStatement.class);
+                List<ASTSynchronizedStatement> ssl = outerIf.descendants(ASTSynchronizedStatement.class).toList();
                 if (ssl.size() == 1 && ssl.get(0).ancestors().any(it -> it == outerIf)) {
                     ASTIfStatement is2 = isl.get(1);
                     if (JavaRuleUtil.isNullCheck(is2.getCondition(), returnVariable)) {
-                        List<ASTAssignmentExpression> assignments = is2.findDescendantsOfType(ASTAssignmentExpression.class);
+                        List<ASTAssignmentExpression> assignments = is2.descendants(ASTAssignmentExpression.class).toList();
                         if (assignments.size() == 1
                             && JavaAstUtils.isReferenceToVar(assignments.get(0).getLeftOperand(), returnVariable)) {
                             asCtx(data).addViolation(node);

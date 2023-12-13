@@ -14,6 +14,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 // @formatter:off
@@ -291,7 +292,7 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
      * FormalParameter, LocalVariableDeclaration or FieldDeclaration).
      *
      * <p>The type of the returned node is not necessarily the type of this
-     * node. See {@link #getType()} for an explanation.
+     * node. See {@link #getTypeMirror()} for an explanation.
      *
      * @return the type node, or {@code null} if there is no explicit type,
      *     e.g. if {@link #isTypeInferred()} returns true.
@@ -327,7 +328,7 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
     // @formatter:on
     @Override
     @SuppressWarnings("PMD.UselessOverridingMethod")
-    public Class<?> getType() {
-        return super.getType();
+    public @NonNull JTypeMirror getTypeMirror() {
+        return super.getTypeMirror();
     }
 }
