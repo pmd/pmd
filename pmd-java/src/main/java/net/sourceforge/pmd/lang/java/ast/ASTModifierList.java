@@ -176,9 +176,9 @@ public final class ASTModifierList extends AbstractJavaNode {
         }
 
         @Override
-        public Void visitTypeDecl(ASTAnyTypeDeclaration node, Set<JModifier> effective) {
+        public Void visitTypeDecl(ASTTypeDeclaration node, Set<JModifier> effective) {
 
-            ASTAnyTypeDeclaration enclosing = node.getEnclosingType();
+            ASTTypeDeclaration enclosing = node.getEnclosingType();
             if (enclosing != null && enclosing.isInterface()) {
                 effective.add(PUBLIC);
                 effective.add(STATIC);
@@ -206,7 +206,7 @@ public final class ASTModifierList extends AbstractJavaNode {
 
         @Override
         public Void visit(ASTFieldDeclaration node, Set<JModifier> effective) {
-            ASTAnyTypeDeclaration enclosingType = node.getEnclosingType();
+            ASTTypeDeclaration enclosingType = node.getEnclosingType();
             if (enclosingType != null && enclosingType.isInterface()) {
                 effective.add(PUBLIC);
                 effective.add(STATIC);
@@ -243,7 +243,7 @@ public final class ASTModifierList extends AbstractJavaNode {
         public Void visit(ASTAnonymousClassDeclaration node, Set<JModifier> effective) {
             ASTBodyDeclaration enclosing = node.ancestors(ASTBodyDeclaration.class).first();
 
-            assert enclosing != null && !(enclosing instanceof ASTAnyTypeDeclaration)
+            assert enclosing != null && !(enclosing instanceof ASTTypeDeclaration)
                 : "Weird position for an anonymous class " + enclosing;
 
             if (enclosing instanceof ASTEnumConstant) {
@@ -267,7 +267,7 @@ public final class ASTModifierList extends AbstractJavaNode {
 
         @Override
         public Void visit(ASTMethodDeclaration node, Set<JModifier> effective) {
-            ASTAnyTypeDeclaration enclosingType = node.getEnclosingType();
+            ASTTypeDeclaration enclosingType = node.getEnclosingType();
             if (enclosingType != null && enclosingType.isInterface()) {
 
                 Set<JModifier> declared = node.getModifiers().explicitModifiers;

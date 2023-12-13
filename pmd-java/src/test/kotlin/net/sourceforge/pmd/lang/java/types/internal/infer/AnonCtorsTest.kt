@@ -36,7 +36,7 @@ class AnonCtorsTest : ProcessorTestSpec({
             }
             """)
 
-        val (t_Scratch, t_Gen, t_Anon) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_Scratch, t_Gen, t_Anon) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
         val call = acu.descendants(ASTMethodCall::class.java).get(1)!!
 
@@ -94,7 +94,7 @@ class AnonCtorsTest : ProcessorTestSpec({
             }
             """)
 
-        val (t_Scratch, t_BitMetric, t_Anon) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_Scratch, t_BitMetric, t_Anon) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
         val call = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
 
@@ -144,7 +144,7 @@ class AnonCtorsTest : ProcessorTestSpec({
             }
             """)
 
-        val (t_Scratch, t_BitMetric, t_Anon) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_Scratch, t_BitMetric, t_Anon) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
         val call = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
 
@@ -194,7 +194,7 @@ class AnonCtorsTest : ProcessorTestSpec({
             }
             """)
 
-        val (t_Scratch, t_Inner, t_Anon) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_Scratch, t_Inner, t_Anon) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
         val call = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
 
@@ -252,7 +252,7 @@ class AnonCtorsTest : ProcessorTestSpec({
             }
             """)
 
-        val (t_Scratch, t_Inner, t_Anon) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_Scratch, t_Inner, t_Anon) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
         val call = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
 
@@ -391,7 +391,7 @@ class AnonCtorsTest : ProcessorTestSpec({
             }
             """)
 
-        val (t_Scratch, t_BitMetric, t_Anon) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_Scratch, t_BitMetric, t_Anon) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
 
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()

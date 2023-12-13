@@ -362,7 +362,7 @@ class Scratch {
 
         """.trimIndent())
 
-        val (_, _, t_G) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (_, _, t_G) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
@@ -417,7 +417,7 @@ class Scratch {
 
         """.trimIndent())
 
-        val (_, _, t_G) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (_, _, t_G) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 

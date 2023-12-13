@@ -36,7 +36,7 @@ class LocalTypeScopesTest : ParserTestSpec({
         """)
 
         val (foo, inner, other) =
-                acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+                acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
         val (insideFoo, _, insideOther) =
                 acu.descendants(ASTFieldDeclaration::class.java).crossFindBoundaries().toList()
@@ -76,7 +76,7 @@ class LocalTypeScopesTest : ParserTestSpec({
             }
         """)
 
-        val (_, inner, localInner) = acu.descendants(ASTAnyTypeDeclaration::class.java).crossFindBoundaries().toList { it.typeMirror }
+        val (_, inner, localInner) = acu.descendants(ASTTypeDeclaration::class.java).crossFindBoundaries().toList { it.typeMirror }
 
         val (_/*the block*/, iVar, localClass, i2Var) =
                 acu.descendants(ASTStatement::class.java).toList()
@@ -178,7 +178,7 @@ class LocalTypeScopesTest : ParserTestSpec({
                 acu.descendants(ASTClassType::class.java).toList()
 
         val (_, cKK, cKkEntry, cN2, cN2i2) =
-                acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+                acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
         // setup
         n2.typeMirror.symbol shouldBe cN2.symbol

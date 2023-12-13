@@ -5,10 +5,10 @@
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
@@ -21,7 +21,7 @@ public class OverrideBothEqualsAndHashcodeRule extends AbstractJavaRulechainRule
               ASTAnonymousClassDeclaration.class);
     }
 
-    private void visitTypeDecl(ASTAnyTypeDeclaration node, Object data) {
+    private void visitTypeDecl(ASTTypeDeclaration node, Object data) {
         if (TypeTestUtil.isA(Comparable.class, node)) {
             return;
         }

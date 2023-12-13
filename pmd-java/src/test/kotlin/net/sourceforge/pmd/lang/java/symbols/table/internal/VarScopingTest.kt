@@ -426,7 +426,7 @@ class VarScopingTest : ProcessorTestSpec({
 
         """.trimIndent())
 
-        val (_, t_SomeEnum) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (_, t_SomeEnum) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
         val (enumA, enumB) =
                 acu.descendants(ASTEnumDeclaration::class.java)

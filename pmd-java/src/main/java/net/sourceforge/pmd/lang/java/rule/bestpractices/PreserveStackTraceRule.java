@@ -10,7 +10,6 @@ import java.util.Set;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
@@ -22,6 +21,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
@@ -173,7 +173,7 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
 
     private boolean callsInitCauseInAnonInitializer(ASTVariableDeclaratorId exceptionParam, ASTConstructorCall ctorCall) {
         return NodeStream.of(ctorCall.getAnonymousClassDeclaration())
-                         .flatMap(ASTAnyTypeDeclaration::getDeclarations)
+                         .flatMap(ASTTypeDeclaration::getDeclarations)
                          .map(NodeStream.asInstanceOf(ASTFieldDeclaration.class, ASTInitializer.class))
                          .descendants().filterIs(ASTMethodCall.class)
                          .any(it -> isInitCauseWithTargetInArg(exceptionParam, it));

@@ -64,8 +64,8 @@ public final class InternalApiBridge {
             ((ASTMethodDeclaration) node).setSymbol((JMethodSymbol) symbol);
         } else if (node instanceof ASTConstructorDeclaration) {
             ((ASTConstructorDeclaration) node).setSymbol((JConstructorSymbol) symbol);
-        } else if (node instanceof ASTAnyTypeDeclaration) {
-            ((AbstractAnyTypeDeclaration) node).setSymbol((JClassSymbol) symbol);
+        } else if (node instanceof ASTTypeDeclaration) {
+            ((AbstractTypeDeclaration) node).setSymbol((JClassSymbol) symbol);
         } else if (node instanceof ASTVariableDeclaratorId) {
             ((ASTVariableDeclaratorId) node).setSymbol((JVariableSymbol) symbol);
         } else if (node instanceof ASTTypeParameter) {
@@ -113,7 +113,7 @@ public final class InternalApiBridge {
     }
 
     public static void overrideResolution(JavaAstProcessor processor, ASTCompilationUnit root) {
-        root.descendants(ASTAnyTypeDeclaration.class)
+        root.descendants(ASTTypeDeclaration.class)
             .crossFindBoundaries()
             .forEach(OverrideResolutionPass::resolveOverrides);
     }
@@ -184,8 +184,8 @@ public final class InternalApiBridge {
         ((AbstractJavaNode) node).setSymbolTable(table);
     }
 
-    public static void setQname(ASTAnyTypeDeclaration declaration, String binaryName, @Nullable String canon) {
-        ((AbstractAnyTypeDeclaration) declaration).setBinaryName(binaryName, canon);
+    public static void setQname(ASTTypeDeclaration declaration, String binaryName, @Nullable String canon) {
+        ((AbstractTypeDeclaration) declaration).setBinaryName(binaryName, canon);
     }
 
     public static void assignComments(ASTCompilationUnit root) {

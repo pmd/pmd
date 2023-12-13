@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -68,7 +68,7 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionRule<AST
             if (getProperty(EXCLUDED_NAMES).contains(id.getVariableName())) {
                 continue;
             }
-            ASTAnyTypeDeclaration enclosingType = node.getEnclosingType();
+            ASTTypeDeclaration enclosingType = node.getEnclosingType();
             boolean isFinal = node.hasModifiers(FINAL);
             boolean isStatic = node.hasModifiers(STATIC) || JavaAstUtils.hasAnyAnnotation(enclosingType, MAKE_FIELD_STATIC_CLASS_ANNOT);
             if (isFinal && isStatic) {

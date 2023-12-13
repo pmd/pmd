@@ -100,7 +100,7 @@ class CommentAssignmentTest extends BaseParserTest {
                                                  + " /** enum */enum NestedEnum {}"
                                                  + "}");
 
-        List<ASTAnyTypeDeclaration> types = node.descendants(ASTAnyTypeDeclaration.class).crossFindBoundaries().toList();
+        List<ASTTypeDeclaration> types = node.descendants(ASTTypeDeclaration.class).crossFindBoundaries().toList();
         assertCommentEquals(types.get(0), "/** outer */");
         assertCommentEquals(types.get(1), "/** inner */");
         assertCommentEquals(types.get(2), "/** local */");

@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
@@ -38,7 +38,7 @@ public class CloneMethodMustImplementCloneableRule extends AbstractJavaRulechain
             return data;
         }
 
-        ASTAnyTypeDeclaration type = node.getEnclosingType();
+        ASTTypeDeclaration type = node.getEnclosingType();
         if (type instanceof ASTClassDeclaration && !TypeTestUtil.isA(Cloneable.class, type)) {
             // Nothing can save us now
             addViolation(data, node);

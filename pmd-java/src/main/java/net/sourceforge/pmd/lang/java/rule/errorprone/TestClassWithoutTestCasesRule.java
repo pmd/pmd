@@ -9,9 +9,9 @@ import static net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil.isJ
 
 import java.util.regex.Pattern;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -36,7 +36,7 @@ public class TestClassWithoutTestCasesRule extends AbstractJavaRulechainRule {
             boolean hasTests =
                 node.getDeclarations(ASTMethodDeclaration.class)
                     .any(TestFrameworksUtil::isTestMethod);
-            boolean hasNestedTestClasses = node.getDeclarations(ASTAnyTypeDeclaration.class)
+            boolean hasNestedTestClasses = node.getDeclarations(ASTTypeDeclaration.class)
                     .any(TestFrameworksUtil::isJUnit5NestedClass);
 
             if (!hasTests && !hasNestedTestClasses) {

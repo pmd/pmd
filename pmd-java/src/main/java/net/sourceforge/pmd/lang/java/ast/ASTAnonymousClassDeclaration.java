@@ -23,7 +23,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
  *
  * </pre>
  */
-public final class ASTAnonymousClassDeclaration extends AbstractAnyTypeDeclaration {
+public final class ASTAnonymousClassDeclaration extends AbstractTypeDeclaration {
 
 
     ASTAnonymousClassDeclaration(int id) {

@@ -16,7 +16,6 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
@@ -24,6 +23,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
@@ -35,7 +35,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRulechainRule {
 
 
     public UnnecessaryModifierRule() {
-        super(ASTAnyTypeDeclaration.class,
+        super(ASTTypeDeclaration.class,
               ASTMethodDeclaration.class,
               ASTResource.class,
               ASTFieldDeclaration.class,
@@ -110,9 +110,9 @@ public class UnnecessaryModifierRule extends AbstractJavaRulechainRule {
         return data;
     }
 
-    // also considers annotations, as should ASTAnyTypeDeclaration do
+    // also considers annotations, as should ASTTypeDeclaration do
     private boolean isParentInterfaceType(ModifierOwner node) {
-        ASTAnyTypeDeclaration enclosing = node.getEnclosingType();
+        ASTTypeDeclaration enclosing = node.getEnclosingType();
         return enclosing != null && enclosing.isInterface();
     }
 
@@ -150,7 +150,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRulechainRule {
                 if (node.hasModifiers(PRIVATE)) {
                     reportUnnecessaryModifiers(data, node, FINAL, "private methods cannot be overridden");
                 } else {
-                    final ASTAnyTypeDeclaration n = node.getEnclosingType();
+                    final ASTTypeDeclaration n = node.getEnclosingType();
                     // A final method of an anonymous class / enum constant. Neither can be extended / overridden
                     if (n.isAnonymous()) {
                         reportUnnecessaryModifiers(data, node, FINAL, "an anonymous class cannot be extended");
@@ -208,7 +208,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRulechainRule {
     private void checkDeclarationInInterfaceType(Object data, ModifierOwner member, Set<JModifier> unnecessary) {
         // third ancestor could be an AllocationExpression
         // if this is a method in an anonymous inner class
-        ASTAnyTypeDeclaration parent = member.getEnclosingType();
+        ASTTypeDeclaration parent = member.getEnclosingType();
         if (isParentInterfaceType(member)) {
             unnecessary.removeIf(mod -> !member.hasExplicitModifiers(mod));
 

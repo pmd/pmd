@@ -10,7 +10,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAmbiguousName;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayType;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
@@ -40,6 +39,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTUnionType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
@@ -149,7 +149,7 @@ public final class PrettyPrintingUtil {
     /**
      * Returns the generic kind of declaration this is, eg "enum" or "class".
      */
-    public static String getPrintableNodeKind(ASTAnyTypeDeclaration decl) {
+    public static String getPrintableNodeKind(ASTTypeDeclaration decl) {
         if (decl instanceof ASTClassDeclaration && decl.isInterface()) {
             return "interface";
         } else if (decl instanceof ASTAnnotationTypeDeclaration) {
@@ -177,8 +177,8 @@ public final class PrettyPrintingUtil {
             return ((ASTFieldDeclaration) node).getVarIds().firstOrThrow().getName();
         } else if (node instanceof ASTResource) {
             return ((ASTResource) node).getStableName();
-        } else if (node instanceof ASTAnyTypeDeclaration) {
-            return ((ASTAnyTypeDeclaration) node).getSimpleName();
+        } else if (node instanceof ASTTypeDeclaration) {
+            return ((ASTTypeDeclaration) node).getSimpleName();
         } else if (node instanceof ASTVariableDeclaratorId) {
             return ((ASTVariableDeclaratorId) node).getName();
         } else {
@@ -192,11 +192,11 @@ public final class PrettyPrintingUtil {
      * returns "field".
      *
      * @throws UnsupportedOperationException If unimplemented for a node kind
-     * @see #getPrintableNodeKind(ASTAnyTypeDeclaration)
+     * @see #getPrintableNodeKind(ASTTypeDeclaration)
      */
     public static String getPrintableNodeKind(JavaNode node) {
-        if (node instanceof ASTAnyTypeDeclaration) {
-            return getPrintableNodeKind((ASTAnyTypeDeclaration) node);
+        if (node instanceof ASTTypeDeclaration) {
+            return getPrintableNodeKind((ASTTypeDeclaration) node);
         } else if (node instanceof ASTMethodDeclaration) {
             return "method";
         } else if (node instanceof ASTConstructorDeclaration) {

@@ -16,11 +16,11 @@ import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
@@ -66,13 +66,13 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
         );
 
     public SingularFieldRule() {
-        super(ASTAnyTypeDeclaration.class);
+        super(ASTTypeDeclaration.class);
         definePropertyDescriptor(IGNORED_FIELD_ANNOTATIONS);
     }
 
     @Override
     public Object visitJavaNode(JavaNode node, Object data) {
-        ASTAnyTypeDeclaration enclosingType = (ASTAnyTypeDeclaration) node;
+        ASTTypeDeclaration enclosingType = (ASTTypeDeclaration) node;
         if (JavaAstUtils.hasAnyAnnotation(enclosingType, INVALIDATING_CLASS_ANNOT)) {
             return null;
         }
@@ -100,7 +100,7 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
             && !varId.getModifiers().hasAny(STATIC, FINAL);
     }
 
-    private boolean isSingularField(ASTAnyTypeDeclaration fieldOwner, ASTVariableDeclaratorId varId, DataflowResult dataflow) {
+    private boolean isSingularField(ASTTypeDeclaration fieldOwner, ASTVariableDeclaratorId varId, DataflowResult dataflow) {
         if (JavaAstUtils.isNeverUsed(varId)) {
             return false; // don't report unused field
         }

@@ -2575,7 +2575,7 @@ void LocalTypeDecl() #void:
     // Wrap the type decl into a statement
     // This can't be done with regular jjtree constructs, as the ModifierList
     // is adopted by the first node to be opened.
-    ASTAnyTypeDeclaration type = (ASTAnyTypeDeclaration) jjtree.popNode();
+    ASTTypeDeclaration type = (ASTTypeDeclaration) jjtree.popNode();
     ASTLocalClassStatement stmt = new ASTLocalClassStatement(type);
     jjtree.pushNode(stmt);
   }

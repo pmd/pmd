@@ -38,7 +38,7 @@ class NodeIsFunctionTest extends BaseXPathFunctionTest {
 
     @Test
     void testWellFormedNodeNameForSupertype() {
-        Rule rule = makeXpathRuleFromXPath("//ClassDeclaration[pmd-java:nodeIs('AnyTypeDeclaration')]");
+        Rule rule = makeXpathRuleFromXPath("//ClassDeclaration[pmd-java:nodeIs('TypeDeclaration')]");
         String code = "class Foo { Foo() {} void bar() {}}";
 
         assertFinds(rule, 1, code);

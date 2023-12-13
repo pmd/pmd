@@ -9,13 +9,13 @@ import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaComment;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
@@ -77,7 +77,7 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
 
 
     public CommentDefaultAccessModifierRule() {
-        super(ASTMethodDeclaration.class, ASTAnyTypeDeclaration.class,
+        super(ASTMethodDeclaration.class, ASTTypeDeclaration.class,
               ASTConstructorDeclaration.class, ASTFieldDeclaration.class);
         definePropertyDescriptor(IGNORED_ANNOTS);
         definePropertyDescriptor(REGEX_DESCRIPTOR);
@@ -132,7 +132,7 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
         return data;
     }
 
-    private void checkTypeDecl(ASTAnyTypeDeclaration decl, RuleContext ctx, String typeKind) {
+    private void checkTypeDecl(ASTTypeDeclaration decl, RuleContext ctx, String typeKind) {
         if (decl.isNested() && shouldReportNonTopLevel(decl)) {
             report(ctx, decl, "nested " + typeKind, decl.getSimpleName());
         } else if (!decl.isNested() && shouldReportTypeDeclaration(decl)) {
@@ -146,7 +146,7 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
     }
 
     private boolean shouldReportNonTopLevel(final ModifierOwner decl) {
-        final ASTAnyTypeDeclaration enclosing = decl.getEnclosingType();
+        final ASTTypeDeclaration enclosing = decl.getEnclosingType();
 
         return isMissingComment(decl)
             && isNotIgnored(decl)
@@ -174,7 +174,7 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
                           .anyMatch(it -> regex.matcher(it.getText()).matches());
     }
 
-    private boolean shouldReportTypeDeclaration(ASTAnyTypeDeclaration decl) {
+    private boolean shouldReportTypeDeclaration(ASTTypeDeclaration decl) {
         // don't report on interfaces
         return !(decl.isRegularInterface() && !decl.isAnnotation())
             && isMissingComment(decl)

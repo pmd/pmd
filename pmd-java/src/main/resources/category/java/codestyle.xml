@@ -1088,7 +1088,7 @@ Detects when a class, interface, enum or annotation does not have a package defi
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>/CompilationUnit[not(PackageDeclaration)]/*[pmd-java:nodeIs("AnyTypeDeclaration")][1]</value>
+                <value>/CompilationUnit[not(PackageDeclaration)]/*[pmd-java:nodeIs("TypeDeclaration")][1]</value>
             </property>
         </properties>
         <example>
@@ -1979,7 +1979,7 @@ public class Foo {
                 <value>
 <![CDATA[
 //ThisExpression/ClassType
-[ ancestor::*[pmd-java:nodeIs('AnyTypeDeclaration')][1]/@SimpleName = ./@SimpleName ]
+[ ancestor::*[pmd-java:nodeIs('TypeDeclaration')][1]/@SimpleName = ./@SimpleName ]
 ]]>
                 </value>
             </property>

@@ -9,8 +9,8 @@ import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -38,15 +38,15 @@ public class UnusedPrivateFieldRule extends AbstractJavaRulechainRule {
             .build();
 
     public UnusedPrivateFieldRule() {
-        super(ASTAnyTypeDeclaration.class);
+        super(ASTTypeDeclaration.class);
         definePropertyDescriptor(IGNORED_FIELD_NAMES);
         definePropertyDescriptor(REPORT_FOR_ANNOTATIONS_DESCRIPTOR);
     }
 
     @Override
     public Object visitJavaNode(JavaNode node, Object data) {
-        if (node instanceof ASTAnyTypeDeclaration) {
-            ASTAnyTypeDeclaration type = (ASTAnyTypeDeclaration) node;
+        if (node instanceof ASTTypeDeclaration) {
+            ASTTypeDeclaration type = (ASTTypeDeclaration) node;
             if (hasAnyAnnotation(type)) {
                 return null;
             }

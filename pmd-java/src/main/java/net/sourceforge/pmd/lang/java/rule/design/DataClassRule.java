@@ -10,7 +10,7 @@ import static net.sourceforge.pmd.lang.java.metrics.JavaMetrics.WEIGHED_METHOD_C
 import static net.sourceforge.pmd.lang.java.metrics.JavaMetrics.WEIGHT_OF_CLASS;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.metrics.MetricsUtil;
@@ -30,16 +30,16 @@ public class DataClassRule extends AbstractJavaRulechainRule {
     private static final int WMC_VERY_HIGH_LEVEL = 47;
 
     public DataClassRule() {
-        super(ASTAnyTypeDeclaration.class);
+        super(ASTTypeDeclaration.class);
     }
 
     @Override
     public Object visitJavaNode(JavaNode node, Object data) {
-        visitTypeDecl((ASTAnyTypeDeclaration) node, (RuleContext) data);
+        visitTypeDecl((ASTTypeDeclaration) node, (RuleContext) data);
         return null;
     }
 
-    private void visitTypeDecl(ASTAnyTypeDeclaration node, RuleContext data) {
+    private void visitTypeDecl(ASTTypeDeclaration node, RuleContext data) {
 
         if (!MetricsUtil.supportsAll(node, NUMBER_OF_ACCESSORS, NUMBER_OF_PUBLIC_FIELDS, WEIGHED_METHOD_COUNT, WEIGHT_OF_CLASS)) {
             return;
@@ -60,12 +60,12 @@ public class DataClassRule extends AbstractJavaRulechainRule {
     }
 
 
-    private boolean interfaceRevealsData(ASTAnyTypeDeclaration node) {
+    private boolean interfaceRevealsData(ASTTypeDeclaration node) {
         double woc = MetricsUtil.computeMetric(WEIGHT_OF_CLASS, node);
         return woc < WOC_LEVEL;
     }
 
-    private boolean classRevealsDataAndLacksComplexity(ASTAnyTypeDeclaration node) {
+    private boolean classRevealsDataAndLacksComplexity(ASTTypeDeclaration node) {
 
         int nopa = MetricsUtil.computeMetric(NUMBER_OF_PUBLIC_FIELDS, node);
         int noam = MetricsUtil.computeMetric(NUMBER_OF_ACCESSORS, node);

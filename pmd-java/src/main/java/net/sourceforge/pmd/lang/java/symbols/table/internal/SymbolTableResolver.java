@@ -25,7 +25,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAmbiguousName;
 import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
@@ -61,6 +60,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
@@ -137,7 +137,7 @@ public final class SymbolTableResolver {
         private final SymTableFactory f;
         private final Deque<JSymbolTable> stack = new ArrayDeque<>();
 
-        private final Deque<ASTAnyTypeDeclaration> enclosingType = new ArrayDeque<>();
+        private final Deque<ASTTypeDeclaration> enclosingType = new ArrayDeque<>();
 
         private final Set<DeferredNode> deferredInPrevRound;
         private final Set<DeferredNode> newDeferred;
@@ -210,14 +210,14 @@ public final class SymbolTableResolver {
             pushed += pushOnStack(f.samePackageSymTable(top()));
             pushed += pushOnStack(f.singleImportsSymbolTable(top(), isImportOnDemand.get(false)));
 
-            NodeStream<ASTAnyTypeDeclaration> typeDecls = node.getTypeDeclarations();
+            NodeStream<ASTTypeDeclaration> typeDecls = node.getTypeDeclarations();
 
             // types declared inside the compilation unit
             pushed += pushOnStack(f.typesInFile(top(), typeDecls));
 
             setTopSymbolTable(node);
 
-            for (ASTAnyTypeDeclaration td : typeDecls) {
+            for (ASTTypeDeclaration td : typeDecls) {
                 // preprocess all sibling types
                 processTypeHeader(td, ctx);
             }
@@ -231,7 +231,7 @@ public final class SymbolTableResolver {
         }
 
 
-        private void processTypeHeader(ASTAnyTypeDeclaration node, ReferenceCtx ctx) {
+        private void processTypeHeader(ASTTypeDeclaration node, ReferenceCtx ctx) {
             setTopSymbolTable(node.getModifiers());
 
             int pushed = pushOnStack(f.selfType(top(), node.getTypeMirror()));
@@ -252,7 +252,7 @@ public final class SymbolTableResolver {
         }
 
         @Override
-        public Void visitTypeDecl(ASTAnyTypeDeclaration node, @NonNull ReferenceCtx ctx) {
+        public Void visitTypeDecl(ASTTypeDeclaration node, @NonNull ReferenceCtx ctx) {
             int pushed = 0;
 
             enclosingType.push(node);
@@ -264,7 +264,7 @@ public final class SymbolTableResolver {
             setTopSymbolTable(node.getBody());
 
             // preprocess siblings
-            node.getDeclarations(ASTAnyTypeDeclaration.class)
+            node.getDeclarations(ASTTypeDeclaration.class)
                 .forEach(d -> processTypeHeader(d, bodyCtx));
 
 
@@ -398,7 +398,7 @@ public final class SymbolTableResolver {
                     pushed += processLocalVarDecl((ASTLocalVariableDeclaration) st, ctx);
                     // note we don't pop here, all those variables will be popped at the end of the block
                 } else if (st instanceof ASTLocalClassStatement) {
-                    ASTAnyTypeDeclaration local = ((ASTLocalClassStatement) st).getDeclaration();
+                    ASTTypeDeclaration local = ((ASTLocalClassStatement) st).getDeclaration();
                     pushed += pushOnStack(f.localTypeSymTable(top(), local.getTypeMirror()));
                     processTypeHeader(local, ctx);
                 }

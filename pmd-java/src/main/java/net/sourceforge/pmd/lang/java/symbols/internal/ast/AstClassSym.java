@@ -14,7 +14,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassType;
@@ -25,6 +24,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordComponent;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordComponentList;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
@@ -45,7 +45,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
 
 
 final class AstClassSym
-    extends AbstractAstTParamOwner<ASTAnyTypeDeclaration>
+    extends AbstractAstTParamOwner<ASTTypeDeclaration>
     implements JClassSymbol {
 
     private final @Nullable JTypeParameterOwnerSymbol enclosing;
@@ -56,7 +56,7 @@ final class AstClassSym
     private final List<JFieldSymbol> enumConstants; // subset of declaredFields
     private final PSet<String> annotAttributes;
 
-    AstClassSym(ASTAnyTypeDeclaration node,
+    AstClassSym(ASTTypeDeclaration node,
                 AstSymFactory factory,
                 @Nullable JTypeParameterOwnerSymbol enclosing) {
         super(node, factory);
@@ -101,8 +101,8 @@ final class AstClassSym
 
         for (ASTBodyDeclaration dnode : node.getDeclarations()) {
 
-            if (dnode instanceof ASTAnyTypeDeclaration) {
-                myClasses.add(new AstClassSym((ASTAnyTypeDeclaration) dnode, factory, this));
+            if (dnode instanceof ASTTypeDeclaration) {
+                myClasses.add(new AstClassSym((ASTTypeDeclaration) dnode, factory, this));
             } else if (dnode instanceof ASTMethodDeclaration) {
                 if (!recordComponents.isEmpty() && ((ASTMethodDeclaration) dnode).getArity() == 0) {
                     // filter out record component, so that the accessor is not generated

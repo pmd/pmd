@@ -6,10 +6,10 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import static net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility.V_PRIVATE;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
@@ -43,12 +43,12 @@ public class ClassWithOnlyPrivateConstructorsShouldBeFinalRule extends AbstractJ
 
     private boolean hasNoSubclasses(ASTClassDeclaration klass) {
         return klass.getRoot()
-                    .descendants(ASTAnyTypeDeclaration.class)
+                    .descendants(ASTTypeDeclaration.class)
                     .crossFindBoundaries()
                     .none(it -> doesExtend(it, klass));
     }
 
-    private boolean doesExtend(ASTAnyTypeDeclaration sub, ASTClassDeclaration superClass) {
+    private boolean doesExtend(ASTTypeDeclaration sub, ASTClassDeclaration superClass) {
         return sub != superClass && TypeTestUtil.isA(superClass.getTypeMirror().getErasure(), sub);
     }
 

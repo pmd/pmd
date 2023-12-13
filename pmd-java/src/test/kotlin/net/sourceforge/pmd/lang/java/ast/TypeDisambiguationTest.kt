@@ -29,7 +29,7 @@ class TypeDisambiguationTest : ParserTestSpec({
             }
         """)
 
-        val (foo, inner) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.symbol }
+        val (foo, inner) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.symbol }
         val (f1) = acu.descendants(ASTFieldDeclaration::class.java).toList()
 
         f1.typeNode.shouldMatchNode<ASTClassType> {
@@ -107,7 +107,7 @@ class TypeDisambiguationTest : ParserTestSpec({
             }
         """)
 
-        val (foo) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList()
+        val (foo) = acu.descendants(ASTTypeDeclaration::class.java).toList()
         val (fooBar) = acu.descendants(ASTClassType::class.java).toList()
 
 

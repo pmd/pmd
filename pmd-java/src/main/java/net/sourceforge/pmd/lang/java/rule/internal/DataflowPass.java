@@ -20,7 +20,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
@@ -67,6 +66,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
@@ -139,7 +139,7 @@ public final class DataflowPass {
 
     private static DataflowResult process(ASTCompilationUnit node) {
         DataflowResult dataflowResult = new DataflowResult();
-        for (ASTAnyTypeDeclaration typeDecl : node.getTypeDeclarations()) {
+        for (ASTTypeDeclaration typeDecl : node.getTypeDeclarations()) {
             GlobalAlgoState subResult = new GlobalAlgoState();
             typeDecl.acceptVisitor(ReachingDefsVisitor.ONLY_LOCALS, new SpanInfo(subResult));
             if (subResult.usedAssignments.size() < subResult.allAssignments.size()) {
@@ -952,7 +952,7 @@ public final class DataflowPass {
         // ctor/initializer handling
 
         @Override
-        public SpanInfo visitTypeDecl(ASTAnyTypeDeclaration node, SpanInfo data) {
+        public SpanInfo visitTypeDecl(ASTTypeDeclaration node, SpanInfo data) {
             // process initializers and ctors first
             processInitializers(node.getDeclarations(), data, node.getSymbol());
 
@@ -966,8 +966,8 @@ public final class DataflowPass {
                         }
                         ONLY_LOCALS.acceptOpt(decl, span);
                     }
-                } else if (decl instanceof ASTAnyTypeDeclaration) {
-                    visitTypeDecl((ASTAnyTypeDeclaration) decl, data.forkEmptyNonLocal());
+                } else if (decl instanceof ASTTypeDeclaration) {
+                    visitTypeDecl((ASTTypeDeclaration) decl, data.forkEmptyNonLocal());
                 }
             }
             return data; // type doesn't contribute anything to the enclosing control flow
@@ -1596,7 +1596,7 @@ public final class DataflowPass {
 
         @Override
         public boolean isFieldAssignmentAtEndOfCtor() {
-            return rhs instanceof ASTAnyTypeDeclaration;
+            return rhs instanceof ASTTypeDeclaration;
         }
     }
 }

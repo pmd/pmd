@@ -8,9 +8,9 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
 import net.sourceforge.pmd.lang.java.rule.AbstractIgnoredAnnotationRule;
@@ -50,7 +50,7 @@ public class AtLeastOneConstructorRule extends AbstractIgnoredAnnotationRule {
 
         NodeStream<ModifierOwner> members = node.getDeclarations()
                                              .filterIs(ModifierOwner.class)
-                                             .filterNot(it -> it instanceof ASTAnyTypeDeclaration);
+                                             .filterNot(it -> it instanceof ASTTypeDeclaration);
         if (members.isEmpty() || members.any(it -> !it.hasModifiers(JModifier.STATIC))) {
             // Do we have any non-static members?
             addViolation(data, node);

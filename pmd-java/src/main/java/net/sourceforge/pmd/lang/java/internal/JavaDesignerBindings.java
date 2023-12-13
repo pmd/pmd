@@ -15,7 +15,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTClassType;
@@ -29,6 +28,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
@@ -68,7 +68,7 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
     public TreeIconId getIcon(Node node) {
         if (node instanceof ASTFieldDeclaration) {
             return TreeIconId.FIELD;
-        } else if (node instanceof ASTAnyTypeDeclaration) {
+        } else if (node instanceof ASTTypeDeclaration) {
             return TreeIconId.CLASS;
         } else if (node instanceof ASTMethodDeclaration) {
             return TreeIconId.METHOD;
@@ -148,7 +148,7 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
         }
 
         @Override
-        public Attribute visitTypeDecl(ASTAnyTypeDeclaration node, Void data) {
+        public Attribute visitTypeDecl(ASTTypeDeclaration node, Void data) {
             return new Attribute(node, "SimpleName", node.getSimpleName());
         }
 

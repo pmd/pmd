@@ -28,7 +28,7 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
  *
  * @see <a href="https://openjdk.java.net/jeps/395">JEP 395: Records</a>
  */
-public final class ASTRecordDeclaration extends AbstractAnyTypeDeclaration {
+public final class ASTRecordDeclaration extends AbstractTypeDeclaration {
     ASTRecordDeclaration(int id) {
         super(id);
     }

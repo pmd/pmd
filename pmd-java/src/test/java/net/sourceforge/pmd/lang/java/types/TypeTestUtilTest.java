@@ -22,11 +22,11 @@ import net.sourceforge.pmd.lang.java.BaseParserTest;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.types.testdata.SomeClassWithAnon;
 
@@ -180,10 +180,10 @@ class TypeTestUtilTest extends BaseParserTest {
     @Test
     void testIsAStringWithTypeArguments() {
 
-        ASTAnyTypeDeclaration klass =
+        ASTTypeDeclaration klass =
             java.parse("package org;"
                            + "public class FooBar {}")
-                .getFirstDescendantOfType(ASTAnyTypeDeclaration.class);
+                .getFirstDescendantOfType(ASTTypeDeclaration.class);
 
 
         assertThrows(IllegalArgumentException.class,
@@ -193,10 +193,10 @@ class TypeTestUtilTest extends BaseParserTest {
     @Test
     void testIsAStringWithTypeArgumentsAnnotation() {
 
-        ASTAnyTypeDeclaration klass =
+        ASTTypeDeclaration klass =
             java.parse("package org;"
                            + "public @interface FooBar {}")
-                .getFirstDescendantOfType(ASTAnyTypeDeclaration.class);
+                .getFirstDescendantOfType(ASTTypeDeclaration.class);
 
 
         assertThrows(IllegalArgumentException.class, () ->

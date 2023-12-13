@@ -15,9 +15,9 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.BaseParserTest;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.metrics.testdata.MetricsVisitorTestData;
 import net.sourceforge.pmd.lang.metrics.Metric;
@@ -79,7 +79,7 @@ class MetricsMemoizationTest extends BaseParserTest {
 
 
             @Override
-            public Object visitTypeDecl(ASTAnyTypeDeclaration node, Object data) {
+            public Object visitTypeDecl(ASTTypeDeclaration node, Object data) {
                 Integer value = MetricsUtil.computeMetric(randomMetric, node, MetricOptions.emptyOptions(), force);
                 if (value != null) {
                     result.add(value);

@@ -104,7 +104,7 @@ class MemberInheritanceTest : ParserTestSpec({
                     .toList { it.genericSignature }
 
         val (sup, _, outer, inner) =
-                acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.body!! }
+                acu.descendants(ASTTypeDeclaration::class.java).toList { it.body!! }
 
         doTest("Inside Sup: Sup#f(int) is in scope") {
 
@@ -167,7 +167,7 @@ class MemberInheritanceTest : ParserTestSpec({
                     .toList { it.genericSignature }
 
         val (outer, inner) =
-                acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.body!! }
+                acu.descendants(ASTTypeDeclaration::class.java).toList { it.body!! }
 
 
         doTest("Inside Outer: both Outer's fs are in scope") {
@@ -203,7 +203,7 @@ class MemberInheritanceTest : ParserTestSpec({
                     .toList { it.genericSignature }
 
         val (outer, inner) =
-                acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.body!! }
+                acu.descendants(ASTTypeDeclaration::class.java).toList { it.body!! }
 
 
         doTest("Inside Outer: both Outer's fs are in scope") {
@@ -323,7 +323,7 @@ class MemberInheritanceTest : ParserTestSpec({
             }
         """)
 
-            val (m, me, sup, supe, foo) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+            val (m, me, sup, supe, foo) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
             val (insideFoo) = acu.descendants(ASTFieldDeclaration::class.java).toList()
 
@@ -348,7 +348,7 @@ class MemberInheritanceTest : ParserTestSpec({
             }
         """)
 
-            val (m, me, sup, supf, supk, foo, fook) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+            val (m, me, sup, supf, supk, foo, fook) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
             val (insideSup, insideFoo) = acu.descendants(ASTFieldDeclaration::class.java).toList()
 
@@ -385,7 +385,7 @@ class Impl implements I1, I2 {
 }
         """)
 
-            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
             val (i1a, i2a, implA) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
 
 
@@ -422,7 +422,7 @@ class Impl implements I1, I2 {
 }
         """)
 
-            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
             val (i1a, i2a, implA) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
 
 
@@ -460,7 +460,7 @@ class Impl implements I2 { // <- difference here
 }
         """)
 
-            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
             val (i1a, i2a, implA) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
 
 
@@ -500,7 +500,7 @@ class Impl extends I2 implements I1 { // <- still implements I1
 
         """)
 
-            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
             val (i1a, i2a, implA) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
 
             withClue("For types") {
@@ -538,7 +538,7 @@ class Impl extends I2 implements I1 { // <- still implements I1
 
         """)
 
-            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
             val (i1a, i2a, implA) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
 
             withClue("For types") {
@@ -576,7 +576,7 @@ class Impl extends I2 implements I1 { // <- still implements I1
 
         """)
 
-            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
             val (i1a, i2a, implA) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
 
             withClue("For types") {
@@ -615,7 +615,7 @@ class Impl extends I2 { // <- difference here, doesn't implement I1
 
         """)
 
-            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
             val (i1a, i2a, implA) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
 
             withClue("For types") {
@@ -659,7 +659,7 @@ class Impl extends Sup  {
 
         """)
 
-            val (i1, i1c, i2, i2c, sup, supC) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+            val (i1, i1c, i2, i2c, sup, supC) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
             val (i1a, i2a, supA, implA) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
 
             withClue("For types") {
@@ -704,7 +704,7 @@ class Impl extends Sup {
 
         """)
 
-            val (i1, i1c, i2, i2c) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
             val (i1a, i2a, implA) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
 
             withClue("For types") {

@@ -13,10 +13,10 @@ import org.apache.commons.lang3.mutable.MutableInt;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
@@ -91,7 +91,7 @@ final class AstSymbolMakerVisitor extends JavaVisitorBase<AstSymFactory, Void> {
     }
 
     @Override
-    public Void visitTypeDecl(ASTAnyTypeDeclaration node, AstSymFactory data) {
+    public Void visitTypeDecl(ASTTypeDeclaration node, AstSymFactory data) {
         String binaryName = makeBinaryName(node);
         @Nullable String canonicalName = makeCanonicalName(node, binaryName);
         InternalApiBridge.setQname(node, binaryName, canonicalName);
@@ -120,7 +120,7 @@ final class AstSymbolMakerVisitor extends JavaVisitorBase<AstSymFactory, Void> {
     }
 
     @NonNull
-    private String makeBinaryName(ASTAnyTypeDeclaration node) {
+    private String makeBinaryName(ASTTypeDeclaration node) {
         String simpleName = node.getSimpleName();
         if (node.isLocal()) {
             simpleName = getNextIndexFromHistogram(currentLocalIndices.getFirst(), node.getSimpleName(), 1)
@@ -136,7 +136,7 @@ final class AstSymbolMakerVisitor extends JavaVisitorBase<AstSymFactory, Void> {
     }
 
     @Nullable
-    private String makeCanonicalName(ASTAnyTypeDeclaration node, String binaryName) {
+    private String makeCanonicalName(ASTTypeDeclaration node, String binaryName) {
         if (node.isAnonymous() || node.isLocal()) {
             return null;
         }

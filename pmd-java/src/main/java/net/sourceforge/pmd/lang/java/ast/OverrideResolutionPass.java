@@ -29,7 +29,7 @@ final class OverrideResolutionPass {
 
     }
 
-    static void resolveOverrides(ASTAnyTypeDeclaration node) {
+    static void resolveOverrides(ASTTypeDeclaration node) {
         // collect methods that may override another method (non private, non static)
 
         RelevantMethodSet relevantMethods = new RelevantMethodSet(node.getTypeMirror());

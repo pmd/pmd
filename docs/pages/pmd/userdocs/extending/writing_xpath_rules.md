@@ -38,7 +38,7 @@ defined on. Concretely, this means:
 * Some Java getters are exposed as XML attributes on those elements
   * This means, that documentation for attributes can be found in our Javadocs. For
   example, the attribute `@SimpleName` of the Java node `EnumDeclaration` is backed
-  by the Java getter {% jdoc java::lang.java.ast.ASTAnyTypeDeclaration#getSimpleName() %}.
+  by the Java getter {% jdoc java::lang.java.ast.ASTTypeDeclaration#getSimpleName() %}.
 
 ### Value conversion
 

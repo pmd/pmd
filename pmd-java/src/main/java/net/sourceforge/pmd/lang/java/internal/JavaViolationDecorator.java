@@ -13,7 +13,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -21,6 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -43,9 +43,9 @@ final class JavaViolationDecorator implements ViolationDecorator {
     }
 
     private @Nullable String getClassName(JavaNode javaNode) {
-        ASTAnyTypeDeclaration enclosing = null;
-        if (javaNode instanceof ASTAnyTypeDeclaration) {
-            enclosing = (ASTAnyTypeDeclaration) javaNode;
+        ASTTypeDeclaration enclosing = null;
+        if (javaNode instanceof ASTTypeDeclaration) {
+            enclosing = (ASTTypeDeclaration) javaNode;
         }
         if (enclosing == null) {
             enclosing = javaNode.getEnclosingType();

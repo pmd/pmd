@@ -25,7 +25,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  *
  * </pre>
  */
-public final class ASTClassDeclaration extends AbstractAnyTypeDeclaration {
+public final class ASTClassDeclaration extends AbstractTypeDeclaration {
 
     private boolean isInterface;
 

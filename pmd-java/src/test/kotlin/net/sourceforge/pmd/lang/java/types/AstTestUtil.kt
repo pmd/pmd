@@ -11,7 +11,8 @@ import net.sourceforge.pmd.lang.java.ast.*
 
 
 fun JavaNode.methodDeclarations(): DescendantNodeStream<ASTMethodDeclaration> = descendants(ASTMethodDeclaration::class.java).crossFindBoundaries()
-fun JavaNode.typeDeclarations(): DescendantNodeStream<ASTAnyTypeDeclaration> = descendants(ASTAnyTypeDeclaration::class.java).crossFindBoundaries()
+fun JavaNode.typeDeclarations(): DescendantNodeStream<ASTTypeDeclaration> = descendants(
+    ASTTypeDeclaration::class.java).crossFindBoundaries()
 fun JavaNode.ctorDeclarations(): DescendantNodeStream<ASTConstructorDeclaration> = descendants(ASTConstructorDeclaration::class.java).crossFindBoundaries()
 
 fun JavaNode.firstTypeSignature(): JClassType = typeDeclarations().firstOrThrow().typeMirror

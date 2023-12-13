@@ -18,12 +18,12 @@ import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
  * Abstract class for type declarations nodes.
  * This is a {@linkplain Node#isFindBoundary() find boundary} for tree traversal methods.
  */
-abstract class AbstractAnyTypeDeclaration extends AbstractTypedSymbolDeclarator<JClassSymbol> implements ASTAnyTypeDeclaration, LeftRecursiveNode {
+abstract class AbstractTypeDeclaration extends AbstractTypedSymbolDeclarator<JClassSymbol> implements ASTTypeDeclaration, LeftRecursiveNode {
 
     private String binaryName;
     private @Nullable String canonicalName;
 
-    AbstractAnyTypeDeclaration(int i) {
+    AbstractTypeDeclaration(int i) {
         super(i);
     }
 
@@ -68,7 +68,7 @@ abstract class AbstractAnyTypeDeclaration extends AbstractTypedSymbolDeclarator<
 
     @Override
     public Visibility getVisibility() {
-        return isLocal() ? Visibility.V_LOCAL : ASTAnyTypeDeclaration.super.getVisibility();
+        return isLocal() ? Visibility.V_LOCAL : ASTTypeDeclaration.super.getVisibility();
     }
 
     void setBinaryName(String binaryName, @Nullable String canon) {

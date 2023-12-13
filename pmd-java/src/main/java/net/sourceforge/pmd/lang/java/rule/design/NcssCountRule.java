@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
@@ -63,7 +63,7 @@ public final class NcssCountRule extends AbstractJavaRulechainRule {
 
 
     public NcssCountRule() {
-        super(ASTMethodOrConstructorDeclaration.class, ASTAnyTypeDeclaration.class);
+        super(ASTMethodOrConstructorDeclaration.class, ASTTypeDeclaration.class);
         definePropertyDescriptor(METHOD_REPORT_LEVEL_DESCRIPTOR);
         definePropertyDescriptor(CLASS_REPORT_LEVEL_DESCRIPTOR);
         definePropertyDescriptor(NCSS_OPTIONS_DESCRIPTOR);
@@ -76,8 +76,8 @@ public final class NcssCountRule extends AbstractJavaRulechainRule {
         int classReportLevel = getProperty(CLASS_REPORT_LEVEL_DESCRIPTOR);
         MetricOptions ncssOptions = MetricOptions.ofOptions(getProperty(NCSS_OPTIONS_DESCRIPTOR));
 
-        if (node instanceof ASTAnyTypeDeclaration) {
-            visitTypeDecl((ASTAnyTypeDeclaration) node, classReportLevel, ncssOptions, (RuleContext) data);
+        if (node instanceof ASTTypeDeclaration) {
+            visitTypeDecl((ASTTypeDeclaration) node, classReportLevel, ncssOptions, (RuleContext) data);
         } else if (node instanceof ASTMethodOrConstructorDeclaration) {
             visitMethod((ASTMethodOrConstructorDeclaration) node, methodReportLevel, ncssOptions, (RuleContext) data);
         } else {
@@ -87,7 +87,7 @@ public final class NcssCountRule extends AbstractJavaRulechainRule {
     }
 
 
-    private void visitTypeDecl(ASTAnyTypeDeclaration node,
+    private void visitTypeDecl(ASTTypeDeclaration node,
                                int level,
                                MetricOptions ncssOptions,
                                RuleContext data) {

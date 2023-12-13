@@ -17,7 +17,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
@@ -28,6 +27,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
@@ -57,7 +57,7 @@ public class NonSerializableClassRule extends AbstractJavaRulechainRule {
     private static final String SERIAL_PERSISTENT_FIELDS_TYPE = "java.io.ObjectStreamField[]";
     private static final String SERIAL_PERSISTENT_FIELDS_NAME = "serialPersistentFields";
 
-    private Map<ASTAnyTypeDeclaration, Set<String>> cachedPersistentFieldNames;
+    private Map<ASTTypeDeclaration, Set<String>> cachedPersistentFieldNames;
 
     public NonSerializableClassRule() {
         super(ASTVariableDeclaratorId.class, ASTClassDeclaration.class, ASTEnumDeclaration.class,
@@ -89,8 +89,8 @@ public class NonSerializableClassRule extends AbstractJavaRulechainRule {
         return null;
     }
 
-    private void checkSerialPersistentFieldsField(ASTAnyTypeDeclaration anyTypeDeclaration, Object data) {
-        for (ASTFieldDeclaration field : anyTypeDeclaration.descendants(ASTFieldDeclaration.class)) {
+    private void checkSerialPersistentFieldsField(ASTTypeDeclaration typeDeclaration, Object data) {
+        for (ASTFieldDeclaration field : typeDeclaration.descendants(ASTFieldDeclaration.class)) {
             for (ASTVariableDeclaratorId varId : field) {
                 if (SERIAL_PERSISTENT_FIELDS_NAME.equals(varId.getName())) {
                     if (!TypeTestUtil.isA(SERIAL_PERSISTENT_FIELDS_TYPE, varId)
@@ -107,7 +107,7 @@ public class NonSerializableClassRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
-        ASTAnyTypeDeclaration typeDeclaration = node.ancestors(ASTAnyTypeDeclaration.class).first();
+        ASTTypeDeclaration typeDeclaration = node.ancestors(ASTTypeDeclaration.class).first();
 
         if (typeDeclaration == null
                 // ignore non-serializable classes
@@ -125,7 +125,7 @@ public class NonSerializableClassRule extends AbstractJavaRulechainRule {
         return null;
     }
 
-    private boolean hasManualSerializationMethod(ASTAnyTypeDeclaration node) {
+    private boolean hasManualSerializationMethod(ASTTypeDeclaration node) {
         boolean hasWriteObject = false;
         boolean hasReadObject = false;
         boolean hasWriteReplace = false;
@@ -180,7 +180,7 @@ public class NonSerializableClassRule extends AbstractJavaRulechainRule {
         return notSerializable;
     }
 
-    private Set<String> determinePersistentFields(ASTAnyTypeDeclaration typeDeclaration) {
+    private Set<String> determinePersistentFields(ASTTypeDeclaration typeDeclaration) {
         if (cachedPersistentFieldNames.containsKey(typeDeclaration)) {
             return cachedPersistentFieldNames.get(typeDeclaration);
         }
@@ -219,7 +219,7 @@ public class NonSerializableClassRule extends AbstractJavaRulechainRule {
         return fields;
     }
 
-    private boolean isPersistentField(ASTAnyTypeDeclaration typeDeclaration, ASTVariableDeclaratorId node) {
+    private boolean isPersistentField(ASTTypeDeclaration typeDeclaration, ASTVariableDeclaratorId node) {
         Set<String> persistentFields = determinePersistentFields(typeDeclaration);
 
         if (node.isField() && (persistentFields == null || persistentFields.contains(node.getName()))) {

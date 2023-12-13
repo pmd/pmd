@@ -82,7 +82,7 @@ public interface ModifierOwner extends Annotatable {
         if (minv == Visibility.V_LOCAL) {
             return minv;
         }
-        for (ASTAnyTypeDeclaration enclosing : ancestors(ASTAnyTypeDeclaration.class)) {
+        for (ASTTypeDeclaration enclosing : ancestors(ASTTypeDeclaration.class)) {
             minv = Visibility.min(minv, enclosing.getVisibility());
             if (minv == Visibility.V_LOCAL) {
                 return minv;

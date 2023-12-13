@@ -30,7 +30,7 @@ class C {
                 """.trimIndent()
         )
 
-        val (t_C) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_C) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
         val id = acu.descendants(ASTVariableDeclaratorId::class.java).first { it.name == "c" }!!
@@ -65,7 +65,7 @@ class C {
                 """.trimIndent()
         )
 
-        val (t_C) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_C) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
         val call = acu.firstMethodCall()
         val id = acu.descendants(ASTVariableDeclaratorId::class.java).first { it.name == "c" }!!
@@ -106,7 +106,7 @@ class C {
                 """.trimIndent()
         )
 
-        val (t_C) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_C) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
         spy.shouldBeOk {
@@ -138,7 +138,7 @@ class C {
                 """.trimIndent()
         )
 
-        val (t_C) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_C) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
         val id = acu.descendants(ASTVariableDeclaratorId::class.java).first { it.name == "c" }!!
@@ -173,7 +173,7 @@ class Scratch<N extends Number> {
 }
         """)
 
-        val (t_Scratch, t_I) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_Scratch, t_I) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
         val (nvar) = acu.descendants(ASTTypeParameter::class.java).toList { it.typeMirror }
 
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()

@@ -14,7 +14,6 @@ import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
@@ -30,6 +29,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
@@ -157,7 +157,7 @@ public final class JavaRuleUtil {
      * Returns true if the node is a utility class, according to this
      * custom definition.
      */
-    public static boolean isUtilityClass(ASTAnyTypeDeclaration node) {
+    public static boolean isUtilityClass(ASTTypeDeclaration node) {
         if (!node.isRegularClass()) {
             return false;
         }
@@ -279,7 +279,7 @@ public final class JavaRuleUtil {
             return false;
         }
 
-        ASTAnyTypeDeclaration enclosing = node.getEnclosingType();
+        ASTTypeDeclaration enclosing = node.getEnclosingType();
         if (startsWithCamelCaseWord(node.getName(), "get")) {
             return JavaAstUtils.hasField(enclosing, node.getName().substring(3));
         } else if (startsWithCamelCaseWord(node.getName(), "is")
@@ -297,7 +297,7 @@ public final class JavaRuleUtil {
             return false;
         }
 
-        ASTAnyTypeDeclaration enclosing = node.getEnclosingType();
+        ASTTypeDeclaration enclosing = node.getEnclosingType();
 
         if (startsWithCamelCaseWord(node.getName(), "set")) {
             return JavaAstUtils.hasField(enclosing, node.getName().substring(3));

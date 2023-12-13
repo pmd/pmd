@@ -7,10 +7,10 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
@@ -20,7 +20,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 /**
  * Configurable naming conventions for type declarations.
  */
-public class ClassNamingConventionsRule extends AbstractNamingConventionRule<ASTAnyTypeDeclaration> {
+public class ClassNamingConventionsRule extends AbstractNamingConventionRule<ASTTypeDeclaration> {
 
     private final PropertyDescriptor<Pattern> classRegex = defaultProp("class", "concrete class").build();
     private final PropertyDescriptor<Pattern> abstractClassRegex = defaultProp("abstract class").build();
@@ -96,13 +96,13 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
     }
 
     @Override
-    String nameExtractor(ASTAnyTypeDeclaration node) {
+    String nameExtractor(ASTTypeDeclaration node) {
         return node.getSimpleName();
     }
 
 
     @Override
-    String kindDisplayName(ASTAnyTypeDeclaration node, PropertyDescriptor<Pattern> descriptor) {
+    String kindDisplayName(ASTTypeDeclaration node, PropertyDescriptor<Pattern> descriptor) {
         return JavaRuleUtil.isUtilityClass(node) ? "utility class" : PrettyPrintingUtil.getPrintableNodeKind(node);
     }
 }

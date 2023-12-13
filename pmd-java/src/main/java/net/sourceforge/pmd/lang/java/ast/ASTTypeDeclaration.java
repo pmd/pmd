@@ -21,15 +21,18 @@ import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
  *
  * <pre class="grammar">
  *
- * AnyTypeDeclaration ::= {@link ASTClassDeclaration ClassDeclaration}
- *                      | {@link ASTAnonymousClassDeclaration AnonymousClassDeclaration}
- *                      | {@link ASTEnumDeclaration EnumDeclaration}
- *                      | {@link ASTAnnotationTypeDeclaration AnnotationTypeDeclaration}
- *                      | {@link ASTRecordDeclaration RecordDeclaration}
+ * TypeDeclaration ::= {@link ASTClassDeclaration ClassDeclaration}
+ *                   | {@link ASTAnonymousClassDeclaration AnonymousClassDeclaration}
+ *                   | {@link ASTEnumDeclaration EnumDeclaration}
+ *                   | {@link ASTAnnotationTypeDeclaration AnnotationTypeDeclaration}
+ *                   | {@link ASTRecordDeclaration RecordDeclaration}
  *
  * </pre>
+ *
+ * <p>Note: In PMD 6, there was a node with this name (ASTTypeDeclaration) which was a top-level wrapper
+ * node around type declarations. This node has been removed in PMD 7 and the name has been reused.
  */
-public interface ASTAnyTypeDeclaration
+public interface ASTTypeDeclaration
     extends TypeNode,
         ModifierOwner,
             TypeParamOwnerNode,
