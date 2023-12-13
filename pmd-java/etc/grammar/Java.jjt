@@ -1,4 +1,13 @@
 /**
+ * Renamed various nodes:
+ * ClassOrInterfaceType -> ClassType
+ * ClassOrInterfaceDeclaration -> ClassDeclaration
+ * ClassOrInterfaceBody -> ClassBody
+ * AnyTypeDeclaration -> TypeDeclaration
+ * MethodOrConstructorDeclaration -> ExecutableDeclaration
+ * VariableDeclaratorId -> VariableId
+ * Andreas Dangel 12/2023
+ *====================================================================
  * Support "JEP 443: Unnamed Patterns and Variables" for Java 21 Preview.
  *    New AST nodes: ASTUnnamedPattern
  * Support "JEP 430: String Templates" for Java 21 Preview.
