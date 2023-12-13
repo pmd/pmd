@@ -14,12 +14,12 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
@@ -74,8 +74,8 @@ final class JavaViolationDecorator implements ViolationDecorator {
                     .filterIs(ASTBodyDeclaration.class)
                     .first();
 
-        if (enclosingDecl instanceof ASTMethodOrConstructorDeclaration) {
-            return ((ASTMethodOrConstructorDeclaration) enclosingDecl).getName();
+        if (enclosingDecl instanceof ASTExecutableDeclaration) {
+            return ((ASTExecutableDeclaration) enclosingDecl).getName();
         } else if (enclosingDecl instanceof ASTInitializer) {
             return ((ASTInitializer) enclosingDecl).isStatic() ? "<clinit>" : "<init>";
         }

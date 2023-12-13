@@ -23,6 +23,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFinallyClause;
@@ -33,7 +34,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
@@ -163,7 +163,7 @@ public class CloseResourceRule extends AbstractJavaRule {
         return super.visit(node, data);
     }
 
-    private void checkForResources(ASTMethodOrConstructorDeclaration methodOrConstructor, Object data) {
+    private void checkForResources(ASTExecutableDeclaration methodOrConstructor, Object data) {
         reportedVarNames.clear();
         Map<ASTVariableDeclaratorId, TypeNode> resVars = getResourceVariables(methodOrConstructor);
         for (Map.Entry<ASTVariableDeclaratorId, TypeNode> resVarEntry : resVars.entrySet()) {
@@ -189,7 +189,7 @@ public class CloseResourceRule extends AbstractJavaRule {
         }
     }
 
-    private Map<ASTVariableDeclaratorId, TypeNode> getResourceVariables(ASTMethodOrConstructorDeclaration method) {
+    private Map<ASTVariableDeclaratorId, TypeNode> getResourceVariables(ASTExecutableDeclaration method) {
         Map<ASTVariableDeclaratorId, TypeNode> resVars = new HashMap<>();
 
         if (method.getBody() == null) {
@@ -300,7 +300,7 @@ public class CloseResourceRule extends AbstractJavaRule {
     }
 
     private boolean shouldVarOfTypeBeClosedInMethod(ASTVariableDeclaratorId var, TypeNode type,
-            ASTMethodOrConstructorDeclaration method) {
+            ASTExecutableDeclaration method) {
         return isNotAllowedResourceType(type) && isNotWrappingResourceMethodParameter(var, method)
                 && isResourceVariableUnclosed(var);
     }
@@ -324,7 +324,7 @@ public class CloseResourceRule extends AbstractJavaRule {
     }
 
     private boolean isNotWrappingResourceMethodParameter(ASTVariableDeclaratorId var,
-            ASTMethodOrConstructorDeclaration method) {
+            ASTExecutableDeclaration method) {
         return !isWrappingResourceMethodParameter(var, method);
     }
 
@@ -335,7 +335,7 @@ public class CloseResourceRule extends AbstractJavaRule {
      * @return <code>true</code> if the variable is a resource and initialized from a method parameter. <code>false</code>
      *         otherwise.
      */
-    private boolean isWrappingResourceMethodParameter(ASTVariableDeclaratorId var, ASTMethodOrConstructorDeclaration method) {
+    private boolean isWrappingResourceMethodParameter(ASTVariableDeclaratorId var, ASTExecutableDeclaration method) {
         ASTVariableAccess wrappedVarName = getWrappedVariableName(var);
         if (wrappedVarName != null) {
             ASTFormalParameters methodParams = method.getFormalParameters();
@@ -697,7 +697,7 @@ public class CloseResourceRule extends AbstractJavaRule {
         return closedVar.ancestors(ASTFinallyClause.class).isEmpty();
     }
 
-    private ASTExpressionStatement getFirstReassigningStatementBeforeBeingClosed(ASTVariableDeclaratorId variable, ASTMethodOrConstructorDeclaration methodOrConstructor) {
+    private ASTExpressionStatement getFirstReassigningStatementBeforeBeingClosed(ASTVariableDeclaratorId variable, ASTExecutableDeclaration methodOrConstructor) {
         List<ASTExpressionStatement> statements = methodOrConstructor.descendants(ASTExpressionStatement.class).toList();
         boolean variableClosed = false;
         boolean isInitialized = !hasNullInitializer(variable);

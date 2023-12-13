@@ -29,7 +29,7 @@ public class JavaVisitorBase<P, R> extends AstVisitorBase<P, R> implements JavaV
     // <editor-fold defaultstate="collapsed" desc="Methods/constructors">
 
 
-    public R visitMethodOrCtor(ASTMethodOrConstructorDeclaration node, P data) {
+    public R visitMethodOrCtor(ASTExecutableDeclaration node, P data) {
         return visitJavaNode(node, data);
     }
 

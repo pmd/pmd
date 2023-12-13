@@ -6,8 +6,8 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 
+import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowsList;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
@@ -49,7 +49,7 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRulechainRu
         return null;
     }
 
-    private boolean isIgnored(ASTMethodOrConstructorDeclaration owner) {
+    private boolean isIgnored(ASTExecutableDeclaration owner) {
         if (getProperty(IGNORE_JUNIT_COMPLETELY_DESCRIPTOR)
             && TestFrameworksUtil.isJUnit3Class(owner.getEnclosingType())) {
             return true;

@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.metrics.impl;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
@@ -41,9 +41,9 @@ class AllMetricsTest extends SimpleAggregatorTst {
         String qname = null;
         if (node instanceof ASTTypeDeclaration) {
             qname = ((ASTTypeDeclaration) node).getBinaryName();
-        } else if (node instanceof ASTMethodOrConstructorDeclaration) {
-            String enclosing = ((ASTMethodOrConstructorDeclaration) node).getEnclosingType().getBinaryName();
-            qname = enclosing + "#" + PrettyPrintingUtil.displaySignature((ASTMethodOrConstructorDeclaration) node);
+        } else if (node instanceof ASTExecutableDeclaration) {
+            String enclosing = ((ASTExecutableDeclaration) node).getEnclosingType().getBinaryName();
+            qname = enclosing + "#" + PrettyPrintingUtil.displaySignature((ASTExecutableDeclaration) node);
         }
 
         if (qname != null) {

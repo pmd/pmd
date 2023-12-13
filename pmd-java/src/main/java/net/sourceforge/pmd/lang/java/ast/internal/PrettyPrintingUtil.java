@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -29,7 +30,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
@@ -142,7 +142,7 @@ public final class PrettyPrintingUtil {
     /**
      * Returns a normalized method name. This just looks at the image of the types of the parameters.
      */
-    public static String displaySignature(ASTMethodOrConstructorDeclaration node) {
+    public static String displaySignature(ASTExecutableDeclaration node) {
         return displaySignature(node.getName(), node.getFormalParameters());
     }
 
@@ -170,7 +170,7 @@ public final class PrettyPrintingUtil {
         // constructors are differentiated by their parameters, while we only use method name for methods
         if (node instanceof ASTMethodDeclaration) {
             return ((ASTMethodDeclaration) node).getName();
-        } else if (node instanceof ASTMethodOrConstructorDeclaration) {
+        } else if (node instanceof ASTExecutableDeclaration) {
             // constructors are differentiated by their parameters, while we only use method name for methods
             return displaySignature((ASTConstructorDeclaration) node);
         } else if (node instanceof ASTFieldDeclaration) {

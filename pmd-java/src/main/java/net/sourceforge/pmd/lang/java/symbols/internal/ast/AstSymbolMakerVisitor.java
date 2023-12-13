@@ -14,8 +14,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
@@ -154,7 +154,7 @@ final class AstSymbolMakerVisitor extends JavaVisitorBase<AstSymFactory, Void> {
     }
 
     @Override
-    public Void visitMethodOrCtor(ASTMethodOrConstructorDeclaration node, AstSymFactory data) {
+    public Void visitMethodOrCtor(ASTExecutableDeclaration node, AstSymFactory data) {
         enclosingSymbols.push(node.getSymbol());
         visitChildren(node, data);
         enclosingSymbols.pop();

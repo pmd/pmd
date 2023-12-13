@@ -7,9 +7,9 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 
@@ -32,7 +32,7 @@ public class AvoidReassigningParametersRule extends AbstractJavaRulechainRule {
         return data;
     }
 
-    private void lookForViolations(ASTMethodOrConstructorDeclaration node, Object data) {
+    private void lookForViolations(ASTExecutableDeclaration node, Object data) {
         for (ASTFormalParameter formal : node.getFormalParameters()) {
             ASTVariableDeclaratorId varId = formal.getVarId();
             for (ASTNamedReferenceExpr usage : varId.getLocalUsages()) {

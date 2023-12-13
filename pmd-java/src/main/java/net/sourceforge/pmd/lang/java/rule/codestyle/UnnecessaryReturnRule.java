@@ -6,11 +6,11 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTCompactConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLoopStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchArrowBranch;
@@ -45,7 +45,7 @@ public class UnnecessaryReturnRule extends AbstractJavaRulechainRule {
     }
 
     private boolean isCfgLimit(JavaNode it) {
-        return it instanceof ASTMethodOrConstructorDeclaration
+        return it instanceof ASTExecutableDeclaration
             || it instanceof ASTCompactConstructorDeclaration
             || it instanceof ASTInitializer
             || it instanceof ASTLambdaExpression;

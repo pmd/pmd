@@ -38,6 +38,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
+import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
@@ -51,7 +52,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLoopStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
@@ -179,7 +179,7 @@ public final class JavaAstUtils {
      * @throws NullPointerException If any of the classes is null, or the node is null
      * @see TypeTestUtil#isExactlyA(Class, TypeNode)
      */
-    public static boolean hasParameters(ASTMethodOrConstructorDeclaration node, Class<?>... types) {
+    public static boolean hasParameters(ASTExecutableDeclaration node, Class<?>... types) {
         ASTFormalParameters formals = node.getFormalParameters();
         if (formals.size() != types.length) {
             return false;
@@ -204,7 +204,7 @@ public final class JavaAstUtils {
      * @see TypeTestUtil#isExactlyA(Class, TypeNode)
      */
     @SafeVarargs
-    public static boolean hasExceptionList(ASTMethodOrConstructorDeclaration node, Class<? extends Throwable>... types) {
+    public static boolean hasExceptionList(ASTExecutableDeclaration node, Class<? extends Throwable>... types) {
         @NonNull List<ASTClassType> formals = ASTList.orEmpty(node.getThrowsList());
         if (formals.size() != types.length) {
             return false;

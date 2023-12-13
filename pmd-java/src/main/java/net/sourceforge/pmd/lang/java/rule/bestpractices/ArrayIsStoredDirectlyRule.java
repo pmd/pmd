@@ -10,9 +10,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
@@ -49,7 +49,7 @@ public class ArrayIsStoredDirectlyRule extends AbstractJavaRulechainRule {
         return data;
     }
 
-    private void checkAssignments(RuleContext context, ASTMethodOrConstructorDeclaration method) {
+    private void checkAssignments(RuleContext context, ASTExecutableDeclaration method) {
         if (method.getVisibility() == Visibility.V_PRIVATE && getProperty(ALLOW_PRIVATE)
             || method.getBody() == null) {
             return;

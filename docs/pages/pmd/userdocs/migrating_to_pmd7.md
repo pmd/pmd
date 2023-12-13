@@ -396,6 +396,7 @@ which can also display the AST.
 * ClassOrInterfaceType ➡️ ClassType ({% jdoc jast::ASTClassType %})
 * ClassOrInterfaceDeclaration ➡️ ClassDeclaration ({% jdoc jast::ASTClassDeclaration %})
 * AnyTypeDeclaration ➡️ TypeDeclaration ({% jdoc jast::ASTTypeDeclaration %})
+* MethodOrConstructorDeclaration ➡️ ExecutableDeclaration ({% jdoc jast::ASTExecutableDeclaration %})
 
 #### Annotations
 

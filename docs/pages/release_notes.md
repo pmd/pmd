@@ -174,6 +174,9 @@ The following previously deprecated classes have been removed:
   * The interface `ASTAnyTypeDeclaration` has been renamed to {% jdoc java::lang.ast.ASTTypeDeclaration %}.
     This is only relevant for Java rules, which use that type directly, e.g. through downcasting.
     Or when using the XPath function `pmd-java:nodeIs()`.
+  * The interface `ASTMethodOrConstructorDeclaration` has been renamed to
+    {% jdoc java::lang.ast.ASTExecutableDeclaration %}. This is only relevant for Java rules, which sue that type
+    directly, e.g. through downcasting. Or when using the XPath function `pmd-java:nodeIs()`.
 
 **Deprecated classes and methods**
 

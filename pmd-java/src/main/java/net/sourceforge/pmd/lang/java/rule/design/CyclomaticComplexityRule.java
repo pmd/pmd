@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
@@ -59,7 +59,7 @@ public class CyclomaticComplexityRule extends AbstractJavaRulechainRule {
 
 
     public CyclomaticComplexityRule() {
-        super(ASTMethodOrConstructorDeclaration.class, ASTTypeDeclaration.class);
+        super(ASTExecutableDeclaration.class, ASTTypeDeclaration.class);
         definePropertyDescriptor(CLASS_LEVEL_DESCRIPTOR);
         definePropertyDescriptor(METHOD_LEVEL_DESCRIPTOR);
         definePropertyDescriptor(CYCLO_OPTIONS_DESCRIPTOR);
@@ -108,7 +108,7 @@ public class CyclomaticComplexityRule extends AbstractJavaRulechainRule {
         return data;
     }
 
-    private void visitMethodLike(ASTMethodOrConstructorDeclaration node, Object data) {
+    private void visitMethodLike(ASTExecutableDeclaration node, Object data) {
         MetricOptions cycloOptions = MetricOptions.ofOptions(getProperty(CYCLO_OPTIONS_DESCRIPTOR));
 
         if (JavaMetrics.CYCLO.supports(node)) {

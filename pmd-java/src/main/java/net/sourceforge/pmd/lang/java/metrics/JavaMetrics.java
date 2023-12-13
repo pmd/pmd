@@ -22,9 +22,9 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
+import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
@@ -121,7 +121,7 @@ public final class JavaMetrics {
      *
      * @see CycloOption
      */
-    public static final Metric<ASTMethodOrConstructorDeclaration, Integer> CYCLO =
+    public static final Metric<ASTExecutableDeclaration, Integer> CYCLO =
         Metric.of(JavaMetrics::computeCyclo, asMethodOrCtor(),
                   "Cyclomatic Complexity", "Cyclo");
 
@@ -197,7 +197,7 @@ public final class JavaMetrics {
      * }
      * }</pre>
      */
-    public static final Metric<ASTMethodOrConstructorDeclaration, Integer> COGNITIVE_COMPLEXITY =
+    public static final Metric<ASTExecutableDeclaration, Integer> COGNITIVE_COMPLEXITY =
         Metric.of(JavaMetrics::computeCognitive, asMethodOrCtor(),
                   "Cognitive Complexity", "CognitiveComp");
 
@@ -345,7 +345,7 @@ public final class JavaMetrics {
      * </li>
      * </ul>
      */
-    public static final Metric<ASTMethodOrConstructorDeclaration, BigInteger> NPATH =
+    public static final Metric<ASTExecutableDeclaration, BigInteger> NPATH =
         Metric.of(JavaMetrics::computeNpath, asMethodOrCtor(),
                   "NPath Complexity", "NPath");
 
@@ -411,8 +411,8 @@ public final class JavaMetrics {
         return n -> n instanceof JavaNode ? (JavaNode) n : null;
     }
 
-    private static Function<Node, @Nullable ASTMethodOrConstructorDeclaration> asMethodOrCtor() {
-        return n -> n instanceof ASTMethodOrConstructorDeclaration ? (ASTMethodOrConstructorDeclaration) n : null;
+    private static Function<Node, @Nullable ASTExecutableDeclaration> asMethodOrCtor() {
+        return n -> n instanceof ASTExecutableDeclaration ? (ASTExecutableDeclaration) n : null;
     }
 
 

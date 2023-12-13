@@ -190,8 +190,8 @@ public interface ASTTypeDeclaration
     /**
      * Returns the operations declared in this class (methods and constructors).
      */
-    default NodeStream<ASTMethodOrConstructorDeclaration> getOperations() {
-        return getDeclarations().filterIs(ASTMethodOrConstructorDeclaration.class);
+    default NodeStream<ASTExecutableDeclaration> getOperations() {
+        return getDeclarations().filterIs(ASTExecutableDeclaration.class);
     }
 
 

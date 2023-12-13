@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
@@ -63,7 +63,7 @@ public final class NcssCountRule extends AbstractJavaRulechainRule {
 
 
     public NcssCountRule() {
-        super(ASTMethodOrConstructorDeclaration.class, ASTTypeDeclaration.class);
+        super(ASTExecutableDeclaration.class, ASTTypeDeclaration.class);
         definePropertyDescriptor(METHOD_REPORT_LEVEL_DESCRIPTOR);
         definePropertyDescriptor(CLASS_REPORT_LEVEL_DESCRIPTOR);
         definePropertyDescriptor(NCSS_OPTIONS_DESCRIPTOR);
@@ -78,8 +78,8 @@ public final class NcssCountRule extends AbstractJavaRulechainRule {
 
         if (node instanceof ASTTypeDeclaration) {
             visitTypeDecl((ASTTypeDeclaration) node, classReportLevel, ncssOptions, (RuleContext) data);
-        } else if (node instanceof ASTMethodOrConstructorDeclaration) {
-            visitMethod((ASTMethodOrConstructorDeclaration) node, methodReportLevel, ncssOptions, (RuleContext) data);
+        } else if (node instanceof ASTExecutableDeclaration) {
+            visitMethod((ASTExecutableDeclaration) node, methodReportLevel, ncssOptions, (RuleContext) data);
         } else {
             throw AssertionUtil.shouldNotReachHere("unreachable");
         }
@@ -107,7 +107,7 @@ public final class NcssCountRule extends AbstractJavaRulechainRule {
     }
 
 
-    private void visitMethod(ASTMethodOrConstructorDeclaration node,
+    private void visitMethod(ASTExecutableDeclaration node,
                              int level,
                              MetricOptions ncssOptions,
                              RuleContext data) {

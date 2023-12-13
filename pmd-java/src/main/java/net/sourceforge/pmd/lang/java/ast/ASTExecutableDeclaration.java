@@ -18,15 +18,17 @@ import net.sourceforge.pmd.lang.java.types.JMethodSig;
  *
  * <pre class="grammar">
  *
- * MethodOrConstructorDeclaration ::= {@link ASTMethodDeclaration MethodDeclaration}
- *                                  | {@link ASTConstructorDeclaration ConstructorDeclaration}
+ * ExecutableDeclaration ::= {@link ASTMethodDeclaration MethodDeclaration}
+ *                         | {@link ASTConstructorDeclaration ConstructorDeclaration}
  *
  * </pre>
+ *
+ * <p>Note: This interface was called ASTMethodOrConstructorDeclaration in PMD 6.
  *
  * @author Clément Fournier
  * @since 5.8.1
  */
-public interface ASTMethodOrConstructorDeclaration
+public interface ASTExecutableDeclaration
     extends ModifierOwner,
             ASTBodyDeclaration,
             TypeParamOwnerNode,

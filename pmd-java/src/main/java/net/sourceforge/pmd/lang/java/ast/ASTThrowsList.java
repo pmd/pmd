@@ -27,7 +27,7 @@ public final class ASTThrowsList extends ASTNonEmptyList<ASTClassType> {
     }
 
     /** Returns the method or constructor that owns this throws clause. */
-    public ASTMethodOrConstructorDeclaration getOwner() {
-        return (ASTMethodOrConstructorDeclaration) getParent();
+    public ASTExecutableDeclaration getOwner() {
+        return (ASTExecutableDeclaration) getParent();
     }
 }

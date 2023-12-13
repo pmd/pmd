@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
  *
  * <p>Compact record constructors must be declared "public".
  *
- * TODO make implicit formal parameter node and implement ASTMethodOrConstructorDeclaration.
+ * TODO make implicit formal parameter node and implement ASTExecutableDeclaration.
  *
  * <pre class="grammar">
  *
