@@ -63,7 +63,7 @@ public final class ASTConstructorCall extends AbstractInvocationExpr
 
     @Override
     public @Nullable ASTTypeArguments getExplicitTypeArguments() {
-        return getFirstChildOfType(ASTTypeArguments.class);
+        return firstChild(ASTTypeArguments.class);
     }
 
 
@@ -87,24 +87,24 @@ public final class ASTConstructorCall extends AbstractInvocationExpr
      * Returns the type node.
      */
     public ASTClassType getTypeNode() {
-        return getFirstChildOfType(ASTClassType.class);
+        return firstChild(ASTClassType.class);
     }
 
 
     /**
      * Returns true if this expression defines a body,
-     * which is compiled to an anonymous class. If this
+     * which is compiled to an anonymous class. Otherwise, this
      * method returns false.
      */
     public boolean isAnonymousClass() {
-        return getChild(getNumChildren() - 1) instanceof ASTAnonymousClassDeclaration;
+        return getLastChild() instanceof ASTAnonymousClassDeclaration;
     }
 
 
     @Nullable
     public ASTAnonymousClassDeclaration getAnonymousClassDeclaration() {
         return isAnonymousClass()
-               ? (ASTAnonymousClassDeclaration) getChild(getNumChildren() - 1)
+               ? (ASTAnonymousClassDeclaration) getLastChild()
                : null;
     }
 }

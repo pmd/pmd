@@ -142,7 +142,7 @@ public final class ASTClassType extends AbstractJavaTypeNode implements ASTRefer
      */
     @Nullable
     public ASTClassType getQualifier() {
-        return getFirstChildOfType(ASTClassType.class);
+        return firstChild(ASTClassType.class);
     }
 
     /**
@@ -150,7 +150,7 @@ public final class ASTClassType extends AbstractJavaTypeNode implements ASTRefer
      */
     @Nullable
     public ASTTypeArguments getTypeArguments() {
-        return getFirstChildOfType(ASTTypeArguments.class);
+        return firstChild(ASTTypeArguments.class);
     }
 
 

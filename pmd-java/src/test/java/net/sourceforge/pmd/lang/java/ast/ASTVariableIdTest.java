@@ -19,14 +19,14 @@ class ASTVariableIdTest extends BaseParserTest {
     @Test
     void testIsExceptionBlockParameter() {
         ASTCompilationUnit acu = java.parse(EXCEPTION_PARAMETER);
-        ASTVariableId id = acu.getFirstDescendantOfType(ASTVariableId.class);
+        ASTVariableId id = acu.descendants(ASTVariableId.class).first();
         assertTrue(id.isExceptionBlockParameter());
     }
 
     @Test
     void testTypeNameNode() {
         ASTCompilationUnit acu = java.parse(TYPE_NAME_NODE);
-        ASTVariableId id = acu.findDescendantsOfType(ASTVariableId.class).get(0);
+        ASTVariableId id = acu.descendants(ASTVariableId.class).first();
 
         ASTClassType name = (ASTClassType) id.getTypeNameNode();
         assertEquals("String", name.getSimpleName());
@@ -35,7 +35,7 @@ class ASTVariableIdTest extends BaseParserTest {
     @Test
     void testAnnotations() {
         ASTCompilationUnit acu = java.parse(TEST_ANNOTATIONS);
-        ASTVariableId id = acu.findDescendantsOfType(ASTVariableId.class).get(0);
+        ASTVariableId id = acu.descendants(ASTVariableId.class).first();
 
         ASTClassType name = (ASTClassType) id.getTypeNode();
         assertEquals("String", name.getSimpleName());
@@ -44,16 +44,16 @@ class ASTVariableIdTest extends BaseParserTest {
     @Test
     void testLambdaWithType() throws Exception {
         ASTCompilationUnit acu = java8.parse(TEST_LAMBDA_WITH_TYPE);
-        ASTLambdaExpression lambda = acu.getFirstDescendantOfType(ASTLambdaExpression.class);
-        ASTVariableId f = lambda.getFirstDescendantOfType(ASTVariableId.class);
+        ASTLambdaExpression lambda = acu.descendants(ASTLambdaExpression.class).first();
+        ASTVariableId f = lambda.descendants(ASTVariableId.class).first();
         assertEquals("File", PrettyPrintingUtil.prettyPrintType(f.getTypeNode()));
     }
 
     @Test
     void testLambdaWithoutType() throws Exception {
         ASTCompilationUnit acu = java8.parse(TEST_LAMBDA_WITHOUT_TYPE);
-        ASTLambdaExpression lambda = acu.getFirstDescendantOfType(ASTLambdaExpression.class);
-        ASTVariableId f = lambda.getFirstDescendantOfType(ASTVariableId.class);
+        ASTLambdaExpression lambda = acu.descendants(ASTLambdaExpression.class).first();
+        ASTVariableId f = lambda.descendants(ASTVariableId.class).first();
         assertNull(f.getTypeNode());
     }
 

@@ -409,8 +409,8 @@ class JavaParserImpl {
           JavaccToken nonToken = getToken(1);
           JavaccToken minusToken = getToken(2);
           JavaccToken sealedToken = getToken(3);
-          return nonToken.getEndColumn() == minusToken.getBeginColumn()
-            && minusToken.getEndColumn() == sealedToken.getBeginColumn();
+          return nonToken.getReportLocation().getEndColumn() == minusToken.getReportLocation().getStartColumn()
+            && minusToken.getReportLocation().getEndColumn() == sealedToken.getReportLocation().getStartColumn();
       }
       return false;
   }
@@ -1711,7 +1711,7 @@ void ClassOrInterfaceType() #void:
         Node first = jjtree.peekNode();
         if (first instanceof ASTClassType) {
           // then we saw type arguments, so the last segment is definitely a type name
-          ASTAmbiguousName name = first.getFirstChildOfType(ASTAmbiguousName.class);
+          ASTAmbiguousName name = first.firstChild(ASTAmbiguousName.class);
           name.shrinkOrDeleteInParentSetImage();
         }
       }

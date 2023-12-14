@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -36,13 +37,14 @@ class Java10Test {
         // note, it can be parsed, but we'll have a ReferenceType of "var"
 
         List<ASTLocalVariableDeclaration> localVars = java9.parseResource("LocalVariableTypeInference.java")
-                                                           .findDescendantsOfType(ASTLocalVariableDeclaration.class);
+                                                           .descendants(ASTLocalVariableDeclaration.class)
+                                                           .toList();
         assertEquals(3, localVars.size());
 
         ASTVariableId varId = localVars.get(0).getVarIds().firstOrThrow();
 
         // first: var list = new ArrayList<String>();
-        assertTrue(varId.getTypeNode() instanceof ASTClassType);
+        assertInstanceOf(ASTClassType.class, varId.getTypeNode());
         // in that case, we don't have a class named "var", so the type will be null
         assertTrue(varId.getTypeMirror().getSymbol().isUnresolved());
 
@@ -54,7 +56,7 @@ class Java10Test {
     @Test
     void testLocalVarInferenceCanBeParsedJava10() {
         ASTCompilationUnit compilationUnit = java10.parseResource("LocalVariableTypeInference.java");
-        List<ASTLocalVariableDeclaration> localVars = compilationUnit.findDescendantsOfType(ASTLocalVariableDeclaration.class);
+        List<ASTLocalVariableDeclaration> localVars = compilationUnit.descendants(ASTLocalVariableDeclaration.class).toList();
         assertEquals(3, localVars.size());
 
         TypeSystem ts = compilationUnit.getTypeSystem();
@@ -81,7 +83,8 @@ class Java10Test {
     @Test
     void testForLoopWithVar() {
         List<ASTLocalVariableDeclaration> localVars = java10.parseResource("LocalVariableTypeInferenceForLoop.java")
-                                                            .findDescendantsOfType(ASTLocalVariableDeclaration.class);
+                                                            .descendants(ASTLocalVariableDeclaration.class)
+                                                            .toList();
         assertEquals(1, localVars.size());
 
         assertNull(localVars.get(0).getTypeNode());
@@ -92,7 +95,8 @@ class Java10Test {
     @Test
     void testForLoopEnhancedWithVar() {
         List<ASTLocalVariableDeclaration> localVars = java10.parseResource("LocalVariableTypeInferenceForLoopEnhanced.java")
-                                                            .findDescendantsOfType(ASTLocalVariableDeclaration.class);
+                                                            .descendants(ASTLocalVariableDeclaration.class)
+                                                            .toList();
         assertEquals(1, localVars.size());
 
         assertNull(localVars.get(0).getTypeNode());
@@ -103,7 +107,8 @@ class Java10Test {
     @Test
     void testForLoopEnhancedWithVar2() {
         List<ASTLocalVariableDeclaration> localVars = java10.parseResource("LocalVariableTypeInferenceForLoopEnhanced2.java")
-                                                            .findDescendantsOfType(ASTLocalVariableDeclaration.class);
+                                                            .descendants(ASTLocalVariableDeclaration.class)
+                                                            .toList();
         assertEquals(4, localVars.size());
 
         assertNull(localVars.get(1).getTypeNode());
@@ -118,7 +123,8 @@ class Java10Test {
     @Test
     void testTryWithResourcesWithVar() {
         List<ASTResource> resources = java10.parseResource("LocalVariableTypeInferenceTryWithResources.java")
-                                            .findDescendantsOfType(ASTResource.class);
+                                            .descendants(ASTResource.class)
+                                            .toList();
         assertEquals(1, resources.size());
 
         assertNull(resources.get(0).asLocalVariableDeclaration().getTypeNode());

@@ -70,7 +70,7 @@ public final class ASTFieldDeclaration extends AbstractJavaNode
      */
     @Override
     public ASTType getTypeNode() {
-        return getFirstChildOfType(ASTType.class);
+        return firstChild(ASTType.class);
     }
 
     /**

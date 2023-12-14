@@ -73,7 +73,7 @@ public final class ASTLocalVariableDeclaration extends AbstractJavaNode
      */
     @Override
     public ASTType getTypeNode() {
-        return getFirstChildOfType(ASTType.class);
+        return firstChild(ASTType.class);
     }
 
     @Override

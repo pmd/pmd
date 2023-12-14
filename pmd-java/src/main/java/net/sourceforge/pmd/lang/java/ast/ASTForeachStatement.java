@@ -45,7 +45,7 @@ public final class ASTForeachStatement extends AbstractStatement implements Inte
      */
     @NonNull
     public ASTExpression getIterableExpr() {
-        return getFirstChildOfType(ASTExpression.class);
+        return firstChild(ASTExpression.class);
     }
 
 

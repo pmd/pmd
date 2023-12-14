@@ -46,7 +46,7 @@ public final class ASTEnumConstant extends AbstractJavaTypeNode
 
     @Override
     public ASTVariableId getVarId() {
-        return getFirstChildOfType(ASTVariableId.class);
+        return firstChild(ASTVariableId.class);
     }
 
     @Override
@@ -57,7 +57,7 @@ public final class ASTEnumConstant extends AbstractJavaTypeNode
     @Override
     @Nullable
     public ASTArgumentList getArguments() {
-        return getFirstChildOfType(ASTArgumentList.class);
+        return firstChild(ASTArgumentList.class);
     }
 
     /**

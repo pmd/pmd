@@ -19,6 +19,7 @@ import net.sourceforge.pmd.lang.java.JavaParsingHelper
 import net.sourceforge.pmd.lang.java.JavaParsingHelper.*
 import java.beans.PropertyDescriptor
 import java.io.PrintStream
+import java.util.*
 
 /**
  * Represents the different Java language versions.
@@ -105,7 +106,7 @@ object CustomTreePrinter : KotlintestBeanTreePrinter<Node>(NodeTreeLikeAdapter) 
         return when {
             // boolean getter
             ktPropName matches Regex("is[A-Z].*") -> ktPropName
-            else -> "get" + ktPropName.capitalize()
+            else -> "get" + ktPropName.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
         }
     }
 
@@ -266,9 +267,12 @@ open class ParserTestCtx(testScope: TestScope,
                 Pair(false, e)
             }
 
-            return MatcherResult(pass,
-                    "Expected '$value' to parse in $nodeParsingCtx, got $e",
+            return MatcherResult(
+                pass,
+                { "Expected '$value' to parse in $nodeParsingCtx, got $e" },
+                {
                     "Expected '$value' not to parse in ${nodeParsingCtx.toString().addArticle()}"
+                }
             )
 
         }

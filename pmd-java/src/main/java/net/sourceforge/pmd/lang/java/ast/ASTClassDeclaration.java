@@ -80,7 +80,7 @@ public final class ASTClassDeclaration extends AbstractTypeDeclaration {
             return null;
         }
 
-        ASTExtendsList extendsList = getFirstChildOfType(ASTExtendsList.class);
+        ASTExtendsList extendsList = firstChild(ASTExtendsList.class);
         return extendsList == null ? null : extendsList.iterator().next();
     }
 

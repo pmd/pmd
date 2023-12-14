@@ -87,7 +87,7 @@ public final class ASTExplicitConstructorInvocation extends AbstractJavaTypeNode
     @Override
     @Nullable
     public ASTTypeArguments getExplicitTypeArguments() {
-        return getFirstChildOfType(ASTTypeArguments.class);
+        return firstChild(ASTTypeArguments.class);
     }
 
     /**

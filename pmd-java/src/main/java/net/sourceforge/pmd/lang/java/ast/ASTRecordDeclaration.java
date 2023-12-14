@@ -40,12 +40,12 @@ public final class ASTRecordDeclaration extends AbstractTypeDeclaration {
 
     @Override
     public NodeStream<ASTBodyDeclaration> getDeclarations() {
-        return getFirstChildOfType(ASTRecordBody.class).children(ASTBodyDeclaration.class);
+        return firstChild(ASTRecordBody.class).children(ASTBodyDeclaration.class);
     }
 
     @Override
     @NonNull
     public ASTRecordComponentList getRecordComponents() {
-        return getFirstChildOfType(ASTRecordComponentList.class);
+        return firstChild(ASTRecordComponentList.class);
     }
 }

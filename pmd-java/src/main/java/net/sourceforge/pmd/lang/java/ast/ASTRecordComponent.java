@@ -56,11 +56,11 @@ public final class ASTRecordComponent extends AbstractJavaNode implements Modifi
     }
 
     public ASTType getTypeNode() {
-        return getFirstChildOfType(ASTType.class);
+        return firstChild(ASTType.class);
     }
 
     @Override
     public ASTVariableId getVarId() {
-        return getFirstChildOfType(ASTVariableId.class);
+        return firstChild(ASTVariableId.class);
     }
 }

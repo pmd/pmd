@@ -36,7 +36,7 @@ public final class ASTCompactConstructorDeclaration extends AbstractJavaNode imp
     }
 
     public ASTBlock getBody() {
-        return getFirstChildOfType(ASTBlock.class);
+        return firstChild(ASTBlock.class);
     }
 
     public ASTCompactConstructorDeclaration getDeclarationNode() {

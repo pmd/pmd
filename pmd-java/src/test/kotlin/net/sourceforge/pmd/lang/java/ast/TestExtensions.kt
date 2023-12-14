@@ -30,24 +30,30 @@ fun <T, C : Collection<T>> C?.shouldContainAtMostOneOf(vararg expected: T) {
 
 fun haveModifier(mod: JModifier): Matcher<ModifierOwner> = object : Matcher<ModifierOwner> {
     override fun test(value: ModifierOwner): MatcherResult =
-            MatcherResult(value.hasModifiers(mod), "Expected $value to have modifier $mod", "Expected $value to not have modifier $mod")
+            MatcherResult(value.hasModifiers(mod),
+                { "Expected $value to have modifier $mod" },
+                { "Expected $value to not have modifier $mod" })
 }
 
 fun haveExplicitModifier(mod: JModifier): Matcher<ModifierOwner> = object : Matcher<ModifierOwner> {
     override fun test(value: ModifierOwner): MatcherResult {
-        return MatcherResult(value.hasExplicitModifiers(mod), "Expected $value to have modifier $mod", "Expected $value to not have modifier $mod")
+        return MatcherResult(value.hasExplicitModifiers(mod),
+            { "Expected $value to have modifier $mod" },
+            { "Expected $value to not have modifier $mod" })
     }
 }
 
 fun haveVisibility(vis: ModifierOwner.Visibility): Matcher<ModifierOwner> = object : Matcher<ModifierOwner> {
     override fun test(value: ModifierOwner): MatcherResult =
-            MatcherResult(value.visibility == vis, "Expected $value to have visibility $vis", "Expected $value to not have visibility $vis")
+            MatcherResult(value.visibility == vis,
+                { "Expected $value to have visibility $vis" },
+                { "Expected $value to not have visibility $vis" })
 }
 
 fun JavaNode.tokenList(): List<JavaccToken> =
         tokens().toList()
 
-fun String.addArticle() = when (this[0].toLowerCase()) {
+fun String.addArticle() = when (this[0].lowercaseChar()) {
     'a', 'e', 'i', 'o', 'u' -> "an $this"
     else -> "a $this"
 }

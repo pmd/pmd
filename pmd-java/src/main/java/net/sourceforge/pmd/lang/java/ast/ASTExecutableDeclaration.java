@@ -75,7 +75,7 @@ public interface ASTExecutableDeclaration
      */
     @NonNull
     default ASTFormalParameters getFormalParameters() {
-        return getFirstChildOfType(ASTFormalParameters.class);
+        return firstChild(ASTFormalParameters.class);
     }
 
     /**
@@ -103,7 +103,7 @@ public interface ASTExecutableDeclaration
      */
     @Nullable
     default ASTThrowsList getThrowsList() {
-        return getFirstChildOfType(ASTThrowsList.class);
+        return firstChild(ASTThrowsList.class);
     }
 
     /**

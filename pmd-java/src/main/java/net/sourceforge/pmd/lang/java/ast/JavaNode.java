@@ -47,7 +47,7 @@ public interface JavaNode extends JjtreeNode<JavaNode> {
      * {@linkplain ASTTypeDeclaration TypeDeclaration}s.
      */
     default ASTTypeDeclaration getEnclosingType() {
-        return getFirstParentOfType(ASTTypeDeclaration.class);
+        return ancestors(ASTTypeDeclaration.class).first();
     }
 
 

@@ -155,7 +155,7 @@ public interface ASTTypeDeclaration
      * an enum declaration, returns an empty stream.
      */
     default NodeStream<ASTEnumConstant> getEnumConstants() {
-        return getFirstChildOfType(ASTEnumBody.class).children(ASTEnumConstant.class);
+        return firstChild(ASTEnumBody.class).children(ASTEnumConstant.class);
     }
 
 
