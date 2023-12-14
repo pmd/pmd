@@ -10,4 +10,4 @@
                |  +- TypeExpression[@CompileTimeConstant = false, @ParenthesisDepth = 0, @Parenthesized = false]
                |     +- ClassType[@FullyQualified = false, @SimpleName = "System"]
                +- ArgumentList[@Empty = false, @Size = 1]
-                  +- StringLiteral[@CompileTimeConstant = true, @ConstValue = "Hello World", @Empty = false, @Image = "\"Hello World\"", @Length = 11, @ParenthesisDepth = 0, @Parenthesized = false, @TextBlock = false]
+                  +- StringLiteral[@CompileTimeConstant = true, @ConstValue = "Hello World", @Empty = false, @Image = "\"Hello World\"", @Length = 11, @LiteralText = "\"Hello World\"", @ParenthesisDepth = 0, @Parenthesized = false, @TextBlock = false]

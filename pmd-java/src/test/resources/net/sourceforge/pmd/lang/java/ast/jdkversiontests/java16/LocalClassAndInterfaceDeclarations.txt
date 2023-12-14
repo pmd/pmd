@@ -13,7 +13,7 @@
                |        |  +- PrimitiveType[@Kind = PrimitiveTypeKind.INT]
                |        |  +- VariableDeclarator[@Initializer = true, @Name = "constantField"]
                |        |     +- VariableId[@ArrayType = false, @EffectiveVisibility = Visibility.V_LOCAL, @EnumConstant = false, @ExceptionBlockParameter = false, @Field = true, @Final = true, @ForLoopVariable = false, @ForeachVariable = false, @FormalParameter = false, @LambdaParameter = false, @LocalVariable = false, @Name = "constantField", @PatternBinding = false, @RecordComponent = false, @ResourceDeclaration = false, @TypeInferred = false, @Visibility = Visibility.V_PACKAGE]
-               |        |     +- NumericLiteral[@Base = 10, @CompileTimeConstant = true, @DoubleLiteral = false, @FloatLiteral = false, @Image = "1", @IntLiteral = true, @Integral = true, @LongLiteral = false, @ParenthesisDepth = 0, @Parenthesized = false, @ValueAsDouble = 1.0, @ValueAsFloat = 1.0, @ValueAsInt = 1, @ValueAsLong = 1]
+               |        |     +- NumericLiteral[@Base = 10, @CompileTimeConstant = true, @DoubleLiteral = false, @FloatLiteral = false, @Image = "1", @IntLiteral = true, @Integral = true, @LiteralText = "1", @LongLiteral = false, @ParenthesisDepth = 0, @Parenthesized = false, @ValueAsDouble = 1.0, @ValueAsFloat = 1.0, @ValueAsInt = 1, @ValueAsLong = 1]
                |        +- FieldDeclaration[@EffectiveVisibility = Visibility.V_LOCAL, @Static = true, @Visibility = Visibility.V_PACKAGE]
                |        |  +- ModifierList[@EffectiveModifiers = "{static}", @ExplicitModifiers = "{static}"]
                |        |  +- PrimitiveType[@Kind = PrimitiveTypeKind.INT]

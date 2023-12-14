@@ -5,7 +5,7 @@
    |  +- FormalParameters[@Empty = true, @Size = 0]
    |  +- Block[@Empty = false, @Size = 1, @containsComment = false]
    |     +- ReturnStatement[]
-   |        +- StringLiteral[@CompileTimeConstant = true, @ConstValue = "Hello, World!", @Empty = false, @Image = "\"Hello, World!\"", @Length = 13, @ParenthesisDepth = 0, @Parenthesized = false, @TextBlock = false]
+   |        +- StringLiteral[@CompileTimeConstant = true, @ConstValue = "Hello, World!", @Empty = false, @Image = "\"Hello, World!\"", @Length = 13, @LiteralText = "\"Hello, World!\"", @ParenthesisDepth = 0, @Parenthesized = false, @TextBlock = false]
    +- MethodDeclaration[@Abstract = false, @Arity = 0, @EffectiveVisibility = Visibility.V_PACKAGE, @Final = false, @Image = "main", @MainMethod = true, @Name = "main", @Overridden = false, @Static = false, @Varargs = false, @Visibility = Visibility.V_PACKAGE, @Void = true]
       +- ModifierList[@EffectiveModifiers = "{}", @ExplicitModifiers = "{}"]
       +- VoidType[]

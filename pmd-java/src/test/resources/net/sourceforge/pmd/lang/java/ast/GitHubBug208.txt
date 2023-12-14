@@ -23,4 +23,4 @@
                            +- FormalParameters[@Empty = true, @Size = 0]
                            +- Block[@Empty = false, @Size = 1, @containsComment = false]
                               +- ReturnStatement[]
-                                 +- NullLiteral[@CompileTimeConstant = false, @ParenthesisDepth = 0, @Parenthesized = false]
+                                 +- NullLiteral[@CompileTimeConstant = false, @LiteralText = "null", @ParenthesisDepth = 0, @Parenthesized = false]
