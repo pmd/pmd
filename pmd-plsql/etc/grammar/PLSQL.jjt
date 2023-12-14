@@ -4721,7 +4721,7 @@ SPECIAL_TOKEN :
   	<PARSING_EXCLUSION: "--" (" ")* "PMD-EXCLUDE-END" (~["\n", "\r"])* >
     {
       String excluded_source = matchedToken.getImage();
-      exclusions.add(new ParsingExclusion(matchedToken.getBeginLine(), matchedToken.getEndLine(), excluded_source));
+      exclusions.add(new ParsingExclusion(matchedToken.getReportLocation().getStartLine(), matchedToken.getReportLocation().getEndLine(), excluded_source));
     } : DEFAULT
 }
 

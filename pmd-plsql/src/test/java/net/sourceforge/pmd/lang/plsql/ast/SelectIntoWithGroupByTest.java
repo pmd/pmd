@@ -18,21 +18,21 @@ class SelectIntoWithGroupByTest extends AbstractPLSQLParserTst {
     @Test
     void testExample1() {
         ASTInput input = plsql.parseResource("SelectIntoWithGroupBy1.pls");
-        ASTGroupByClause groupByClause = input.getFirstDescendantOfType(ASTGroupByClause.class);
+        ASTGroupByClause groupByClause = input.descendants(ASTGroupByClause.class).first();
         assertNotNull(groupByClause);
     }
 
     @Test
     void testExample2() {
         ASTInput input = plsql.parseResource("SelectIntoWithGroupBy2.pls");
-        ASTGroupByClause groupByClause = input.getFirstDescendantOfType(ASTGroupByClause.class);
+        ASTGroupByClause groupByClause = input.descendants(ASTGroupByClause.class).first();
         assertNotNull(groupByClause);
     }
 
     @Test
     void testExample3WithCube() {
         ASTInput input = plsql.parseResource("SelectIntoWithGroupBy3.pls");
-        ASTRollupCubeClause cubeClause = input.getFirstDescendantOfType(ASTRollupCubeClause.class);
+        ASTRollupCubeClause cubeClause = input.descendants(ASTRollupCubeClause.class).first();
         assertNotNull(cubeClause);
         assertEquals("CUBE", cubeClause.getImage());
     }
@@ -40,10 +40,10 @@ class SelectIntoWithGroupByTest extends AbstractPLSQLParserTst {
     @Test
     void testExample4WithGroupingSets() {
         ASTInput input = plsql.parseResource("SelectIntoWithGroupBy4.pls");
-        ASTGroupingSetsClause groupingSetsClause = input.getFirstDescendantOfType(ASTGroupingSetsClause.class);
+        ASTGroupingSetsClause groupingSetsClause = input.descendants(ASTGroupingSetsClause.class).first();
         assertNotNull(groupingSetsClause);
 
-        List<ASTFromClause> fromClauses = input.findDescendantsOfType(ASTFromClause.class);
+        List<ASTFromClause> fromClauses = input.descendants(ASTFromClause.class).toList();
         assertEquals(1, fromClauses.size());
         assertEquals(5, fromClauses.get(0).getNumChildren());
     }

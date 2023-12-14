@@ -93,8 +93,8 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
         // node.getChild(0);
         // SRT ASTFormalParameters otherParams = (ASTFormalParameters)
         // other.node.getChild(0);
-        ASTFormalParameters myParams = node.getFirstDescendantOfType(ASTFormalParameters.class);
-        ASTFormalParameters otherParams = other.node.getFirstDescendantOfType(ASTFormalParameters.class);
+        ASTFormalParameters myParams = node.descendants(ASTFormalParameters.class).first();
+        ASTFormalParameters otherParams = other.node.descendants(ASTFormalParameters.class).first();
         for (int i = 0; i < ((ASTMethodDeclarator) node).getParameterCount(); i++) {
             ASTFormalParameter myParam = (ASTFormalParameter) myParams.getChild(i);
             ASTFormalParameter otherParam = (ASTFormalParameter) otherParams.getChild(i);

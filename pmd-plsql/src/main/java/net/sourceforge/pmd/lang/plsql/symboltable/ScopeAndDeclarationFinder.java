@@ -265,7 +265,7 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
 
     private Object visitMethodLike(PLSQLNode node, Object data) {
         createMethodScope(node);
-        final ASTMethodDeclarator md = node.getFirstChildOfType(ASTMethodDeclarator.class);
+        final ASTMethodDeclarator md = node.firstChild(ASTMethodDeclarator.class);
         // A PLSQL Method (FUNCTION|PROCEDURE) may be schema-level
         try {
             node.getScope().getEnclosingScope(ClassScope.class).addDeclaration(new MethodNameDeclaration(md));
@@ -279,9 +279,9 @@ public class ScopeAndDeclarationFinder extends PLSQLParserVisitorAdapter {
 
                 // A File-level/Schema-level object may have a Schema-name
                 // explicitly specified in the declaration
-                ASTObjectNameDeclaration on = md.getFirstChildOfType(ASTObjectNameDeclaration.class);
+                ASTObjectNameDeclaration on = md.firstChild(ASTObjectNameDeclaration.class);
                 if (1 < on.getNumChildren()) {
-                    ASTID schemaName = on.getFirstChildOfType(ASTID.class);
+                    ASTID schemaName = on.firstChild(ASTID.class);
                     LOG.trace("SchemaName for Schema-level method: methodName={}; Image={} is {}",
                             md.getImage(), node.getImage(), schemaName.getImage());
 

@@ -19,7 +19,7 @@ class XMLTableTest extends AbstractPLSQLParserTst {
     void testParseXMLTable() {
         ASTInput node = plsql.parseResource("XMLTable.pls");
 
-        List<ASTFunctionCall> functions = node.findDescendantsOfType(ASTFunctionCall.class);
+        List<ASTFunctionCall> functions = node.descendants(ASTFunctionCall.class).toList();
         ASTFunctionCall xmlforest = functions.get(functions.size() - 1);
         assertEquals("XMLFOREST", xmlforest.getImage());
         assertEquals("e.employee_id", xmlforest.getChild(1).getImage());

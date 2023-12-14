@@ -17,9 +17,9 @@ class CreateTableTest extends AbstractPLSQLParserTst {
         ASTInput input = plsql.parseResource("CreateTable.pls");
 
         // 5th column of first table statement has a inline constraint of type check
-        ASTTableColumn columnStatus = input.findChildrenOfType(ASTTable.class).get(0).findChildrenOfType(ASTTableColumn.class).get(4);
-        assertEquals("status", columnStatus.getFirstChildOfType(ASTID.class).getImage());
-        assertEquals(ConstraintType.CHECK, columnStatus.getFirstChildOfType(ASTInlineConstraint.class).getType());
+        ASTTableColumn columnStatus = input.firstChild(ASTTable.class).children(ASTTableColumn.class).get(4);
+        assertEquals("status", columnStatus.firstChild(ASTID.class).getImage());
+        assertEquals(ConstraintType.CHECK, columnStatus.firstChild(ASTInlineConstraint.class).getType());
     }
 
     @Test

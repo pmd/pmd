@@ -21,7 +21,7 @@ class InOutNoCopyTest extends AbstractPLSQLParserTst {
     void parseInOutNoCopy() {
         ASTInput input = plsql.parseResource("InOutNoCopy.pls");
         assertNotNull(input);
-        List<ASTFormalParameter> params = input.findDescendantsOfType(ASTFormalParameter.class);
+        List<ASTFormalParameter> params = input.descendants(ASTFormalParameter.class).toList();
         assertEquals(18, params.size());
         //detailed check of first 6 test cases
         assertFalse(params.get(0).isIn());
