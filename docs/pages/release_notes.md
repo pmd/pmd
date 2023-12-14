@@ -158,8 +158,13 @@ The following previously deprecated classes have been removed:
 **Removed classes, interfaces and methods (not previously deprecated)**
 
 * pmd-java
-  * The interface `FinalizableNode` has been removed. It's method `isFinal()` has been moved down to the
+  * The interface `FinalizableNode` (introduced in 7.0.0-rc1) has been removed.
+    Its method `isFinal()` has been moved down to the
     nodes where needed, e.g. {% jdoc !!java::lang.java.ast.ASTLocalVariableDeclaration#isFinal() %}.
+  * The method `isPackagePrivate()` in {% jdoc java::lang.java.ast.ASTClassDeclaration %} (formerly ASTClassOrInterfaceDeclaration)
+    has been removed.
+    Use {% jdoc java::lang.java.ast.ModifierOwner#hasVisibility(java::lang.java.ast.ModifierOwner.Visibility) %} instead,
+    which can correctly differentiate between local and package private classes.
 
 **Renamed classes, interfaces**
 
@@ -181,13 +186,6 @@ The following previously deprecated classes have been removed:
     need to be adjusted.
   * The node `ASTClassOrInterfaceBody` has been renamed to {% jdoc java::lang.ast.ASTClassBody %}. XPath rules
     need to be adjusted.
-
-**Deprecated classes and methods**
-
-* pmd-java
-  * {% jdoc !!java::lang.java.ast.ASTClassOrInterfaceDeclaration#isPackagePrivate() %} has been deprecated.
-    Use {% jdoc java::lang.java.ast.ModifierOwner#hasVisibility(java::lang.java.ast.ModifierOwner.Visibility) %} instead,
-    which can correctly differentiate between local and package private classes.
 
 #### External Contributions
 * [#4640](https://github.com/pmd/pmd/pull/4640): \[cli] Launch script fails if run via "bash pmd" - [Shai Bennathan](https://github.com/shai-bennathan) (@shai-bennathan)
