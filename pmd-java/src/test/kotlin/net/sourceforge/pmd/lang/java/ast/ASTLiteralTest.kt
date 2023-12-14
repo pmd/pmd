@@ -5,8 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.ast.test.NodeSpec
-import net.sourceforge.pmd.lang.ast.test.ValuedNodeSpec
+import net.sourceforge.pmd.lang.ast.test.*
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
@@ -29,18 +28,28 @@ class ASTLiteralTest : ParserTestSpec({
             "\"\"" should parseAs {
                 stringLit("\"\"") {
                     it::getConstValue shouldBe ""
+                    it shouldHaveText "\"\""
                 }
             }
 
             "\"foo\"" should parseAs {
                 stringLit("\"foo\"") {
                     it::getConstValue shouldBe "foo"
+                    it shouldHaveText "\"foo\""
                 }
             }
 
             "\"foo\\t\"" should parseAs {
                 stringLit("\"foo\\t\"") {
                     it::getConstValue shouldBe "foo\t"
+                }
+            }
+
+            "(\"foo\\t\")" should parseAs {
+                stringLit("\"foo\\t\"") {
+                    it::getConstValue shouldBe "foo\t"
+                    it shouldHaveText "(\"foo\\t\")"
+                    it::getParenthesisDepth shouldBe 1
                 }
             }
         }
@@ -58,7 +67,7 @@ class ASTLiteralTest : ParserTestSpec({
                 this should parseAs {
 
                     textBlock {
-                        it::getImage shouldBe this@testTextBlock.trim()
+                        it.literalText.toString() shouldBe this@testTextBlock.trim()
                         contents()
                     }
                 }
@@ -92,7 +101,7 @@ $delim
 
             """
    $delim
-            Hi, "Bob"
+            Hi, "Alice"
        $delim
             """.testTextBlock()
 
@@ -217,6 +226,12 @@ $delim
                 }
             }
 
+            "('c')" should parseAs {
+                charLit("'c'") {
+                    it::getConstValue shouldBe 'c'
+                }
+            }
+
             "'\t'" should parseAs {
                 charLit("'\t'") {
                     it::getConstValue shouldBe '\t'
@@ -261,29 +276,34 @@ $delim
                     it::getValueAsLong shouldBe 12L
                     it::getValueAsFloat shouldBe 12.0f
                     it::getValueAsDouble shouldBe 12.0
-                    it::getImage shouldBe "12"
+                    it.literalText.toString() shouldBe "12"
                 }
             }
 
             "1___234" should parseAs {
                 number(INT) {
                     it::getValueAsInt shouldBe 1234
-                    it::getImage shouldBe "1___234"
+                    it.literalText.toString() shouldBe "1___234"
                 }
             }
 
             "0b0000_0010" should parseAs {
                 number(INT) {
                     it::getValueAsInt shouldBe 2
-                    it::getImage shouldBe "0b0000_0010"
+                    it.literalText.toString() shouldBe "0b0000_0010"
+                }
+            }
 
+            "1234_5678_9012_3456L" should parseAs {
+                number(LONG) {
+                    it::getValueAsLong shouldBe 1234_5678_9012_3456L
                 }
             }
 
             "-0X0000_000f" should parseAs { // this is not a float, it's hex
                 unaryExpr(UNARY_MINUS) {
                     number(INT) {
-                        it::getImage shouldBe "0X0000_000f"
+                        it.literalText.toString() shouldBe "0X0000_000f"
                         it::getValueAsInt shouldBe 15
                         it::getValueAsFloat shouldBe 15f
                         it::getValueAsDouble shouldBe 15.0
@@ -297,7 +317,7 @@ $delim
                     it::getValueAsLong shouldBe 12L
                     it::getValueAsFloat shouldBe 12.0f
                     it::getValueAsDouble shouldBe 12.0
-                    it::getImage shouldBe "12l"
+                    it.literalText.toString() shouldBe "12l"
                 }
             }
 
@@ -305,8 +325,7 @@ $delim
                 number(LONG) {
                     it::getValueAsInt shouldBe 12
                     it::getValueAsLong shouldBe 12L
-                    it::getImage shouldBe "12L"
-
+                    it.literalText.toString() shouldBe "12L"
                 }
             }
 
@@ -315,7 +334,7 @@ $delim
                     it::getValueAsInt shouldBe 12
                     it::getValueAsFloat shouldBe 12.0f
                     it::getValueAsDouble shouldBe 12.0
-                    it::getImage shouldBe "12d"
+                    it.literalText.toString() shouldBe "12d"
                 }
             }
 
@@ -324,18 +343,17 @@ $delim
                     it::getValueAsInt shouldBe 12
                     it::getValueAsFloat shouldBe 12.0f
                     it::getValueAsDouble shouldBe 12.0
-                    it::getImage shouldBe "12f"
-
+                    it.literalText.toString() shouldBe "12f"
                 }
             }
 
-            "-3_456.123_456" should parseAs {
+            "-3_456.12_3" should parseAs {
                 unaryExpr(UNARY_MINUS) {
                     number(DOUBLE) {
                         it::getValueAsInt shouldBe 3456
-                        it::getValueAsFloat shouldBe 3456.123456f
-                        it::getValueAsDouble shouldBe 3456.123456
-                        it::getImage shouldBe "3_456.123_456"
+                        it::getValueAsFloat shouldBe 3456.123f
+                        it::getValueAsDouble shouldBe 3456.123
+                        it.literalText.toString() shouldBe "3_456.12_3"
                     }
                 }
             }

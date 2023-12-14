@@ -38,7 +38,7 @@ class XPathRuleTest {
     }
 
     @Test
-    void testPluginname() {
+    void testImageIsAccessibleAsFormatArgument() {
         XPathRule rule = makeXPath("//VariableId[string-length(@Name) < 3]");
         rule.setMessage("{0}");
         Report report = getReportForTestString(rule, TEST1);

@@ -437,7 +437,7 @@ fun TreeNodeWrapper<Node, *>.castExpr(contents: NodeSpec<ASTCastExpression>) =
 
 fun TreeNodeWrapper<Node, *>.stringLit(image: String, contents: NodeSpec<ASTStringLiteral> = EmptyAssertions) =
         child<ASTStringLiteral> {
-            it::getImage shouldBe image
+            it.literalText.toString() shouldBe image
             it::isTextBlock shouldBe false
             it::isEmpty shouldBe it.constValue.isEmpty()
             contents()
@@ -446,7 +446,7 @@ fun TreeNodeWrapper<Node, *>.stringLit(image: String, contents: NodeSpec<ASTStri
 
 fun TreeNodeWrapper<Node, *>.charLit(image: String, contents: NodeSpec<ASTCharLiteral> = EmptyAssertions) =
         child<ASTCharLiteral> {
-            it::getImage shouldBe image
+            it.literalText.toString() shouldBe image
             contents()
         }
 
@@ -701,7 +701,7 @@ fun TreeNodeWrapper<Node, *>.annotationMethod(contents: NodeSpec<ASTMethodDeclar
 
 fun TreeNodeWrapper<Node, *>.classDecl(simpleName: String, assertions: NodeSpec<ASTClassDeclaration> = EmptyAssertions) =
         child<ASTClassDeclaration>(ignoreChildren = assertions == EmptyAssertions) {
-            it::getImage shouldBe simpleName
+            it::getSimpleName shouldBe simpleName
 
             assertions()
         }

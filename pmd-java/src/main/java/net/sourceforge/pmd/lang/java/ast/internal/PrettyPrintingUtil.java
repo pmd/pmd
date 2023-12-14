@@ -182,7 +182,7 @@ public final class PrettyPrintingUtil {
         } else if (node instanceof ASTVariableId) {
             return ((ASTVariableId) node).getName();
         } else {
-            return node.getImage(); // todo get rid of this
+            throw new IllegalArgumentException("Node " + node + " has no defined name");
         }
     }
 

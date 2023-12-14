@@ -427,7 +427,7 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public Void visit(ASTStringLiteral node, T data) {
-            if (SPACE_ESCAPE_PATTERN.matcher(node.getImage()).find()) {
+            if (!node.isTextBlock() && SPACE_ESCAPE_PATTERN.matcher(node.getLiteralText()).find()) {
                 check(node, RegularLanguageFeature.SPACE_STRING_ESCAPES, data);
             }
             if (node.isTextBlock()) {
@@ -521,7 +521,7 @@ public class LanguageLevelChecker<T> {
         @Override
         public Void visit(ASTEnumDeclaration node, T data) {
             check(node, RegularLanguageFeature.ENUMS, data);
-            visitTypeDecl((ASTTypeDeclaration) node, data);
+            visitTypeDecl(node, data);
             return null;
         }
 
@@ -532,7 +532,7 @@ public class LanguageLevelChecker<T> {
                 check(node, RegularLanguageFeature.HEXADECIMAL_FLOATING_POINT_LITERALS, data);
             } else if (base == 2) {
                 check(node, RegularLanguageFeature.BINARY_NUMERIC_LITERALS, data);
-            } else if (node.getImage().indexOf('_') >= 0) {
+            } else if (node.getLiteralText().indexOf('_') >= 0) {
                 check(node, RegularLanguageFeature.UNDERSCORES_IN_NUMERIC_LITERALS, data);
             }
             return null;
