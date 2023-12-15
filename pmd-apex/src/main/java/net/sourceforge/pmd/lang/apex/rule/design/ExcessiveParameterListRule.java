@@ -26,6 +26,6 @@ public class ExcessiveParameterListRule extends AbstractCounterCheckRule<ASTMeth
 
     @Override
     protected int getMetric(ASTMethod node) {
-        return node.getNode().getMethodInfo().getParameters().size();
+        return node.getArity();
     }
 }

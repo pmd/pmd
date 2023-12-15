@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.rule.security;
 
-import java.util.List;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTLiteralExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 /**
  * Finds all .addError method calls that are not HTML escaped on purpose
@@ -22,8 +23,9 @@ import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
 public class ApexXSSFromEscapeFalseRule extends AbstractApexRule {
     private static final String ADD_ERROR = "addError";
 
-    public ApexXSSFromEscapeFalseRule() {
-        addRuleChainVisit(ASTUserClass.class);
+    @Override
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forTypes(ASTUserClass.class);
     }
 
     @Override
@@ -32,8 +34,7 @@ public class ApexXSSFromEscapeFalseRule extends AbstractApexRule {
             return data; // stops all the rules
         }
 
-        List<ASTMethodCallExpression> methodCalls = node.findDescendantsOfType(ASTMethodCallExpression.class);
-        for (ASTMethodCallExpression methodCall : methodCalls) {
+        for (ASTMethodCallExpression methodCall : node.descendants(ASTMethodCallExpression.class)) {
             if (Helper.isMethodName(methodCall, ADD_ERROR)) {
                 validateBooleanParameter(methodCall, data);
             }
@@ -58,9 +59,8 @@ public class ApexXSSFromEscapeFalseRule extends AbstractApexRule {
     }
 
     private void validateLiteralPresence(ASTMethodCallExpression methodCall, Object data) {
-        List<ASTVariableExpression> variables = methodCall.findDescendantsOfType(ASTVariableExpression.class);
-        for (ASTVariableExpression v : variables) {
-            addViolation(data, v);
+        for (ASTVariableExpression v : methodCall.descendants(ASTVariableExpression.class)) {
+            asCtx(data).addViolation(v);
         }
     }
 

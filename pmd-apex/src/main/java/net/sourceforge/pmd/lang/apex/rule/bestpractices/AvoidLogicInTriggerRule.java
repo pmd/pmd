@@ -22,10 +22,10 @@ public class AvoidLogicInTriggerRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTUserTrigger node, Object data) {
-        List<ASTBlockStatement> blockStatements = node.findDescendantsOfType(ASTBlockStatement.class);
+        List<ASTBlockStatement> blockStatements = node.descendants(ASTBlockStatement.class).toList();
 
         if (!blockStatements.isEmpty()) {
-            addViolation(data, node);
+            asCtx(data).addViolation(node);
         }
 
         return data;

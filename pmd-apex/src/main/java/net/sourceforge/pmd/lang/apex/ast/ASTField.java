@@ -29,7 +29,7 @@ public final class ASTField extends AbstractApexNode<Field> {
     }
 
     public ASTModifierNode getModifiers() {
-        return getFirstChildOfType(ASTModifierNode.class);
+        return firstChild(ASTModifierNode.class);
     }
 
     public String getName() {

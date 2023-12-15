@@ -46,8 +46,7 @@ public final class Helper {
     }
 
     public static boolean isTestMethodOrClass(final ApexNode<?> node) {
-        final List<ASTModifierNode> modifierNode = node.findChildrenOfType(ASTModifierNode.class);
-        for (final ASTModifierNode m : modifierNode) {
+        for (final ASTModifierNode m : node.children(ASTModifierNode.class)) {
             if (m.isTest()) {
                 return true;
             }
@@ -58,10 +57,8 @@ public final class Helper {
     }
 
     public static boolean foundAnySOQLorSOSL(final ApexNode<?> node) {
-        final List<ASTSoqlExpression> dmlSoqlExpression = node.findDescendantsOfType(ASTSoqlExpression.class);
-        final List<ASTSoslExpression> dmlSoslExpression = node.findDescendantsOfType(ASTSoslExpression.class);
-
-        return !dmlSoqlExpression.isEmpty() || !dmlSoslExpression.isEmpty();
+        return node.descendants(ASTSoqlExpression.class).nonEmpty()
+                || node.descendants(ASTSoslExpression.class).nonEmpty();
     }
 
     /**
@@ -73,13 +70,12 @@ public final class Helper {
      */
     public static boolean foundAnyDML(final ApexNode<?> node) {
 
-        final List<ASTDmlUpsertStatement> dmlUpsertStatement = node.findDescendantsOfType(ASTDmlUpsertStatement.class);
-        final List<ASTDmlUpdateStatement> dmlUpdateStatement = node.findDescendantsOfType(ASTDmlUpdateStatement.class);
-        final List<ASTDmlUndeleteStatement> dmlUndeleteStatement = node
-                .findDescendantsOfType(ASTDmlUndeleteStatement.class);
-        final List<ASTDmlMergeStatement> dmlMergeStatement = node.findDescendantsOfType(ASTDmlMergeStatement.class);
-        final List<ASTDmlInsertStatement> dmlInsertStatement = node.findDescendantsOfType(ASTDmlInsertStatement.class);
-        final List<ASTDmlDeleteStatement> dmlDeleteStatement = node.findDescendantsOfType(ASTDmlDeleteStatement.class);
+        final List<ASTDmlUpsertStatement> dmlUpsertStatement = node.descendants(ASTDmlUpsertStatement.class).toList();
+        final List<ASTDmlUpdateStatement> dmlUpdateStatement = node.descendants(ASTDmlUpdateStatement.class).toList();
+        final List<ASTDmlUndeleteStatement> dmlUndeleteStatement = node.descendants(ASTDmlUndeleteStatement.class).toList();
+        final List<ASTDmlMergeStatement> dmlMergeStatement = node.descendants(ASTDmlMergeStatement.class).toList();
+        final List<ASTDmlInsertStatement> dmlInsertStatement = node.descendants(ASTDmlInsertStatement.class).toList();
+        final List<ASTDmlDeleteStatement> dmlDeleteStatement = node.descendants(ASTDmlDeleteStatement.class).toList();
 
         return !dmlUpsertStatement.isEmpty() || !dmlUpdateStatement.isEmpty() || !dmlUndeleteStatement.isEmpty()
                 || !dmlMergeStatement.isEmpty() || !dmlInsertStatement.isEmpty() || !dmlDeleteStatement.isEmpty();
@@ -87,7 +83,7 @@ public final class Helper {
 
     public static boolean isMethodName(final ASTMethodCallExpression methodNode, final String className,
             final String methodName) {
-        final ASTReferenceExpression reference = methodNode.getFirstChildOfType(ASTReferenceExpression.class);
+        final ASTReferenceExpression reference = methodNode.firstChild(ASTReferenceExpression.class);
 
         return reference != null && reference.getNames().size() == 1
                 && reference.getNames().get(0).equalsIgnoreCase(className)
@@ -101,10 +97,10 @@ public final class Helper {
     public static boolean isMethodCallChain(final ASTMethodCallExpression methodNode, final String... methodNames) {
         String methodName = methodNames[methodNames.length - 1];
         if (Helper.isMethodName(methodNode, methodName)) {
-            final ASTReferenceExpression reference = methodNode.getFirstChildOfType(ASTReferenceExpression.class);
+            final ASTReferenceExpression reference = methodNode.firstChild(ASTReferenceExpression.class);
             if (reference != null) {
                 final ASTMethodCallExpression nestedMethod = reference
-                        .getFirstChildOfType(ASTMethodCallExpression.class);
+                        .firstChild(ASTMethodCallExpression.class);
                 if (nestedMethod != null) {
                     String[] newMethodNames = Arrays.copyOf(methodNames, methodNames.length - 1);
                     return isMethodCallChain(nestedMethod, newMethodNames);
@@ -121,7 +117,7 @@ public final class Helper {
     }
 
     public static String getFQVariableName(final ASTVariableExpression variable) {
-        final ASTReferenceExpression ref = variable.getFirstChildOfType(ASTReferenceExpression.class);
+        final ASTReferenceExpression ref = variable.firstChild(ASTReferenceExpression.class);
         String objectName = "";
         if (ref != null && ref.getNames().size() == 1) {
             objectName = ref.getNames().get(0) + ".";

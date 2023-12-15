@@ -39,14 +39,14 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
         // Unfortunately the parser re-orders the AST to put field declarations before method declarations
         // so we have to rely on line numbers / positions to work out where the first non-field declaration starts
         // so we can check if the fields are in acceptable places.
-        List<ASTField> fields = node.findChildrenOfType(ASTField.class);
+        List<ASTField> fields = node.children(ASTField.class).toList();
 
         List<ApexNode<?>> nonFieldDeclarations = new ArrayList<>();
 
         nonFieldDeclarations.addAll(getMethodNodes(node));
-        nonFieldDeclarations.addAll(node.findChildrenOfType(ASTUserClass.class));
-        nonFieldDeclarations.addAll(node.findChildrenOfType(ASTProperty.class));
-        nonFieldDeclarations.addAll(node.findChildrenOfType(ASTBlockStatement.class));
+        nonFieldDeclarations.addAll(node.children(ASTUserClass.class).toList());
+        nonFieldDeclarations.addAll(node.children(ASTProperty.class).toList());
+        nonFieldDeclarations.addAll(node.children(ASTBlockStatement.class).toList());
 
         Optional<ApexNode<?>> firstNonFieldDeclaration = nonFieldDeclarations.stream()
             .filter(ApexNode::hasRealLoc)
@@ -59,7 +59,7 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
 
         for (ASTField field : fields) {
             if (NODE_BY_SOURCE_LOCATION_COMPARATOR.compare(field, firstNonFieldDeclaration.get()) > 0) {
-                addViolation(data, field, field.getName());
+                asCtx(data).addViolation(field, field.getName());
             }
         }
 
@@ -70,9 +70,9 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
         // The method <clinit> represents static initializer blocks, of which there can be many. The
         // <clinit> method doesn't contain location information, however the containing ASTBlockStatements do,
         // so we fetch them for that method only.
-        return node.findChildrenOfType(ASTMethod.class).stream()
+        return node.children(ASTMethod.class).toStream()
             .<ApexNode<?>>flatMap(method -> STATIC_INITIALIZER_METHOD_NAME.equals(method.getImage())
-                ? method.findChildrenOfType(ASTBlockStatement.class).stream() : Stream.of(method))
+                ? method.children(ASTBlockStatement.class).toStream() : Stream.of(method))
             .collect(Collectors.toList());
     }
 }

@@ -86,12 +86,12 @@ public class ApexUnitTestClassShouldHaveAssertsRule extends AbstractApexUnitTest
     }
 
     private Object checkForAssertStatements(ApexNode<?> node, Object data) {
-        final List<ASTBlockStatement> blockStatements = node.findDescendantsOfType(ASTBlockStatement.class);
+        final List<ASTBlockStatement> blockStatements = node.descendants(ASTBlockStatement.class).toList();
         final List<ASTStatement> statements = new ArrayList<>();
         final List<ASTMethodCallExpression> methodCalls = new ArrayList<>();
         for (ASTBlockStatement blockStatement : blockStatements) {
-            statements.addAll(blockStatement.findDescendantsOfType(ASTStatement.class));
-            methodCalls.addAll(blockStatement.findDescendantsOfType(ASTMethodCallExpression.class));
+            statements.addAll(blockStatement.descendants(ASTStatement.class).toList());
+            methodCalls.addAll(blockStatement.descendants(ASTMethodCallExpression.class).toList());
         }
         boolean isAssertFound = false;
 
@@ -119,7 +119,7 @@ public class ApexUnitTestClassShouldHaveAssertsRule extends AbstractApexUnitTest
         }
 
         if (!isAssertFound) {
-            addViolation(data, node);
+            asCtx(data).addViolation(node);
         }
 
         return data;

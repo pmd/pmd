@@ -25,7 +25,7 @@ abstract class AbstractAvoidNodeInLoopsRule extends AbstractApexRule {
      */
     protected Object checkForViolation(ApexNode<?> node, Object data) {
         if (insideLoop(node) && parentNotReturn(node)) {
-            addViolation(data, node);
+            asCtx(data).addViolation(node);
         }
         return data;
     }

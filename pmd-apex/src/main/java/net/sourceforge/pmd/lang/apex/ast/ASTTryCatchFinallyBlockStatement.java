@@ -25,7 +25,7 @@ public final class ASTTryCatchFinallyBlockStatement extends AbstractApexNode<Try
     }
 
     public List<ASTCatchBlockStatement> getCatchClauses() {
-        return findChildrenOfType(ASTCatchBlockStatement.class);
+        return children(ASTCatchBlockStatement.class).toList();
     }
 
     public ASTBlockStatement getFinallyBlock() {

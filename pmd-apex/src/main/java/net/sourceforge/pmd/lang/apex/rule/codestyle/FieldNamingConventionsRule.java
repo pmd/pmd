@@ -51,13 +51,13 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionsRule {
 
     @Override
     public Object visit(ASTField node, Object data) {
-        if (node.getFirstParentOfType(ASTProperty.class) != null) {
+        if (node.ancestors(ASTProperty.class).first() != null) {
             return data;
         }
 
         ASTModifierNode modifiers = node.getModifiers();
 
-        if (node.getFirstParentOfType(ASTUserEnum.class) != null) {
+        if (node.ancestors(ASTUserEnum.class).first() != null) {
             checkMatches(ENUM_CONSTANT_REGEX, node, data);
         } else if (modifiers.isFinal() && modifiers.isStatic()) {
             checkMatches(CONSTANT_REGEX, node, data);
