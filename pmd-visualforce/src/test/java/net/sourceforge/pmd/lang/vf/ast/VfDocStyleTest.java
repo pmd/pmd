@@ -43,7 +43,7 @@ class VfDocStyleTest extends AbstractVfTest {
         ASTCompilationUnit root = vf.parse(TEST_ELEMENT_AND_NAMESPACE);
 
 
-        List<ASTElement> elementNodes = root.findDescendantsOfType(ASTElement.class);
+        List<ASTElement> elementNodes = root.descendants(ASTElement.class).toList();
         assertEquals(1, elementNodes.size(), "One element node expected!");
         ASTElement element = elementNodes.iterator().next();
         assertEquals("h:html", element.getName(), "Correct name expected!");
@@ -52,7 +52,7 @@ class VfDocStyleTest extends AbstractVfTest {
         assertEquals("h", element.getNamespacePrefix(), "Correct namespace prefix of element expected!");
         assertEquals("html", element.getLocalName(), "Correct local name of element expected!");
 
-        List<ASTAttribute> attributeNodes = root.findDescendantsOfType(ASTAttribute.class);
+        List<ASTAttribute> attributeNodes = root.descendants(ASTAttribute.class).toList();
         assertEquals(1, attributeNodes.size(), "One attribute node expected!");
         ASTAttribute attribute = attributeNodes.iterator().next();
         assertEquals("MyNsPrefix:MyAttr", attribute.getName(), "Correct name expected!");
@@ -75,17 +75,17 @@ class VfDocStyleTest extends AbstractVfTest {
 
         ASTAttribute attr = attributes.get(0);
         assertEquals("something", attr.getName(), "Correct attribute name expected!");
-        assertEquals("#yes#", attr.getFirstDescendantOfType(ASTText.class).getImage(),
+        assertEquals("#yes#", attr.descendants(ASTText.class).first().getImage(),
                 "Correct attribute value expected!");
 
         attr = attributes.get(1);
         assertEquals("foo", attr.getName(), "Correct attribute name expected!");
-        assertEquals("CREATE", attr.getFirstDescendantOfType(ASTText.class).getImage(),
+        assertEquals("CREATE", attr.descendants(ASTText.class).first().getImage(),
                 "Correct attribute value expected!");
 
         attr = attributes.get(2);
         assertEquals("href", attr.getName(), "Correct attribute name expected!");
-        assertEquals("#", attr.getFirstDescendantOfType(ASTText.class).getImage(), "Correct attribute value expected!");
+        assertEquals("#", attr.descendants(ASTText.class).first().getImage(), "Correct attribute value expected!");
 
     }
 
@@ -108,12 +108,12 @@ class VfDocStyleTest extends AbstractVfTest {
     void testDoctype() {
         ASTCompilationUnit root = vf.parse(TEST_DOCTYPE);
 
-        List<ASTDoctypeDeclaration> docTypeDeclarations = root.findDescendantsOfType(ASTDoctypeDeclaration.class);
+        List<ASTDoctypeDeclaration> docTypeDeclarations = root.descendants(ASTDoctypeDeclaration.class).toList();
         assertEquals(1, docTypeDeclarations.size(), "One doctype declaration expected!");
         ASTDoctypeDeclaration docTypeDecl = docTypeDeclarations.iterator().next();
         assertEquals("html", docTypeDecl.getName(), "Correct doctype-name expected!");
 
-        List<ASTDoctypeExternalId> externalIds = root.findDescendantsOfType(ASTDoctypeExternalId.class);
+        List<ASTDoctypeExternalId> externalIds = root.descendants(ASTDoctypeExternalId.class).toList();
         assertEquals(1, externalIds.size(), "One doctype external id expected!");
         ASTDoctypeExternalId externalId = externalIds.iterator().next();
         assertEquals("-//W3C//DTD XHTML 1.1//EN", externalId.getPublicId(), "Correct external public id expected!");
@@ -130,7 +130,7 @@ class VfDocStyleTest extends AbstractVfTest {
         List<ASTHtmlScript> scripts = vf.getNodes(ASTHtmlScript.class, TEST_HTML_SCRIPT);
         assertEquals(1, scripts.size(), "One script expected!");
         ASTHtmlScript script = scripts.iterator().next();
-        ASTText text = script.getFirstChildOfType(ASTText.class);
+        ASTText text = script.firstChild(ASTText.class);
         assertEquals("Script!", text.getImage(), "Correct script content expected!");
     }
 
@@ -142,8 +142,8 @@ class VfDocStyleTest extends AbstractVfTest {
         List<ASTElement> elements = vf.getNodes(ASTElement.class, TEST_EL_IN_TAG_ATTRIBUTE);
         assertEquals(1, elements.size(), "One element expected!");
         ASTElement element = elements.iterator().next();
-        ASTAttributeValue attribute = element.getFirstDescendantOfType(ASTAttributeValue.class);
-        ASTIdentifier id = attribute.getFirstDescendantOfType(ASTIdentifier.class);
+        ASTAttributeValue attribute = element.descendants(ASTAttributeValue.class).first();
+        ASTIdentifier id = attribute.descendants(ASTIdentifier.class).first();
         assertEquals("foo", id.getImage(), "Correct identifier expected");
 
     }
@@ -156,8 +156,8 @@ class VfDocStyleTest extends AbstractVfTest {
         List<ASTElement> elements = vf.getNodes(ASTElement.class, TEST_EL_IN_TAG_ATTRIBUTE_WITH_COMMENT);
         assertEquals(1, elements.size(), "One element expected!");
         ASTElement element = elements.iterator().next();
-        ASTElExpression elExpr = element.getFirstDescendantOfType(ASTElExpression.class);
-        ASTIdentifier id = elExpr.getFirstDescendantOfType(ASTIdentifier.class);
+        ASTElExpression elExpr = element.descendants(ASTElExpression.class).first();
+        ASTIdentifier id = elExpr.descendants(ASTIdentifier.class).first();
         assertEquals("init", id.getImage(), "Correct identifier expected");
     }
 
@@ -169,8 +169,8 @@ class VfDocStyleTest extends AbstractVfTest {
         List<ASTElement> elements = vf.getNodes(ASTElement.class, TEST_EL_IN_TAG_ATTRIBUTE_WITH_COMMENT_SQ);
         assertEquals(1, elements.size(), "One element expected!");
         ASTElement element = elements.iterator().next();
-        ASTElExpression elExpr = element.getFirstDescendantOfType(ASTElExpression.class);
-        ASTIdentifier id = elExpr.getFirstDescendantOfType(ASTIdentifier.class);
+        ASTElExpression elExpr = element.descendants(ASTElExpression.class).first();
+        ASTIdentifier id = elExpr.descendants(ASTIdentifier.class).first();
         assertEquals("init", id.getImage(), "Correct identifier expected");
 
     }
@@ -183,10 +183,10 @@ class VfDocStyleTest extends AbstractVfTest {
         List<ASTHtmlScript> scripts = vf.getNodes(ASTHtmlScript.class, TEST_EL_IN_HTML_SCRIPT);
         assertEquals(1, scripts.size(), "One script expected!");
         ASTHtmlScript script = scripts.iterator().next();
-        ASTText text = script.getFirstChildOfType(ASTText.class);
+        ASTText text = script.firstChild(ASTText.class);
         assertEquals("vartext=", text.getImage(), "Correct script content expected!");
-        ASTElExpression el = script.getFirstChildOfType(ASTElExpression.class);
-        ASTIdentifier id = el.getFirstDescendantOfType(ASTIdentifier.class);
+        ASTElExpression el = script.firstChild(ASTElExpression.class);
+        ASTIdentifier id = el.descendants(ASTIdentifier.class).first();
         assertEquals("elInScript", id.getImage(), "Correct EL content expected!");
     }
 
@@ -198,10 +198,10 @@ class VfDocStyleTest extends AbstractVfTest {
         List<ASTHtmlScript> scripts = vf.getNodes(ASTHtmlScript.class, TEST_EL_IN_HTML_SCRIPT_WITH_COMMENT);
         assertEquals(1, scripts.size(), "One script expected!");
         ASTHtmlScript script = scripts.iterator().next();
-        ASTText text = script.getFirstChildOfType(ASTText.class);
+        ASTText text = script.firstChild(ASTText.class);
         assertEquals("vartext=", text.getImage(), "Correct script content expected!");
-        ASTElExpression el = script.getFirstChildOfType(ASTElExpression.class);
-        ASTIdentifier id = el.getFirstDescendantOfType(ASTIdentifier.class);
+        ASTElExpression el = script.firstChild(ASTElExpression.class);
+        ASTIdentifier id = el.descendants(ASTIdentifier.class).first();
         assertEquals("elInScript", id.getImage(), "Correct EL content expected!");
     }
 
@@ -213,10 +213,10 @@ class VfDocStyleTest extends AbstractVfTest {
         List<ASTHtmlScript> scripts = vf.getNodes(ASTHtmlScript.class, TEST_QUOTED_EL_IN_HTML_SCRIPT);
         assertEquals(1, scripts.size(), "One script expected!");
         ASTHtmlScript script = scripts.iterator().next();
-        ASTText text = script.getFirstChildOfType(ASTText.class);
+        ASTText text = script.firstChild(ASTText.class);
         assertEquals("vartext='textHere", text.getImage(), "Correct script content expected!");
-        ASTElExpression el = script.getFirstChildOfType(ASTElExpression.class);
-        ASTIdentifier id = el.getFirstDescendantOfType(ASTIdentifier.class);
+        ASTElExpression el = script.firstChild(ASTElExpression.class);
+        ASTIdentifier id = el.descendants(ASTIdentifier.class).first();
         assertEquals("elInScript", id.getImage(), "Correct EL content expected!");
     }
 
@@ -229,11 +229,11 @@ class VfDocStyleTest extends AbstractVfTest {
         List<ASTHtmlScript> scripts = vf.getNodes(ASTHtmlScript.class, TEST_IMPORT_JAVASCRIPT);
         assertEquals(1, scripts.size(), "One script expected!");
         ASTHtmlScript script = scripts.iterator().next();
-        List<ASTAttribute> attr = script.findDescendantsOfType(ASTAttribute.class);
+        List<ASTAttribute> attr = script.descendants(ASTAttribute.class).toList();
         assertEquals(1, attr.size(), "One script expected!");
         ASTAttribute att = attr.iterator().next();
-        ASTAttributeValue val = att.getFirstChildOfType(ASTAttributeValue.class);
-        ASTText text = val.getFirstChildOfType(ASTText.class);
+        ASTAttributeValue val = att.firstChild(ASTAttributeValue.class);
+        ASTText text = val.firstChild(ASTText.class);
         assertEquals("filename.js", text.getImage());
     }
 
@@ -245,9 +245,9 @@ class VfDocStyleTest extends AbstractVfTest {
         List<ASTHtmlScript> scripts = vf.getNodes(ASTHtmlScript.class, TEST_HTML_SCRIPT_WITH_ATTRIBUTE);
         assertEquals(1, scripts.size(), "One script expected!");
         ASTHtmlScript script = scripts.iterator().next();
-        ASTText text = script.getFirstChildOfType(ASTText.class);
+        ASTText text = script.firstChild(ASTText.class);
         assertEquals("Script!", text.getImage(), "Correct script content expected!");
-        List<ASTText> attrs = script.findDescendantsOfType(ASTText.class);
+        List<ASTText> attrs = script.descendants(ASTText.class).toList();
         assertEquals("text/javascript", attrs.get(0).getImage());
     }
 
@@ -259,7 +259,7 @@ class VfDocStyleTest extends AbstractVfTest {
         List<ASTHtmlScript> script = vf.getNodes(ASTHtmlScript.class, TEST_COMPLEX_SCRIPT);
         assertEquals(1, script.size(), "One script expected!");
         ASTHtmlScript next = script.iterator().next();
-        ASTText text = next.getFirstChildOfType(ASTText.class);
+        ASTText text = next.firstChild(ASTText.class);
         assertTrue(text.getImage().contains("<!--"));
 
     }
@@ -321,15 +321,15 @@ class VfDocStyleTest extends AbstractVfTest {
         assertEquals(1, element.size(), "One element expected!");
 
         for (ASTElement elem : element) {
-            ASTContent content = elem.getFirstChildOfType(ASTContent.class);
-            List<ASTElExpression> els = content.findChildrenOfType(ASTElExpression.class);
+            ASTContent content = elem.firstChild(ASTContent.class);
+            List<ASTElExpression> els = content.children(ASTElExpression.class).toList();
             assertEquals(2, els.size(), "Two EL expressions expected!");
 
             ASTElExpression node = (ASTElExpression) content.getChild(0);
-            ASTIdentifier id = node.getFirstDescendantOfType(ASTIdentifier.class);
+            ASTIdentifier id = node.descendants(ASTIdentifier.class).first();
             assertEquals("expr1", id.getImage(), "Correct content expected!");
             node = (ASTElExpression) content.getChild(1);
-            id = node.getFirstDescendantOfType(ASTIdentifier.class);
+            id = node.descendants(ASTIdentifier.class).first();
             assertEquals("expr2", id.getImage(), "Correct content expected!");
         }
 
@@ -356,10 +356,10 @@ class VfDocStyleTest extends AbstractVfTest {
         List<ASTAttributeValue> attributes = vf.getNodes(ASTAttributeValue.class, TEST_QUOTE_EL);
         assertEquals(1, attributes.size(), "One attribute expected!");
         ASTAttributeValue attr = attributes.iterator().next();
-        List<ASTElExpression> els = attr.findChildrenOfType(ASTElExpression.class);
+        List<ASTElExpression> els = attr.children(ASTElExpression.class).toList();
         assertEquals(1, els.size(), "Must be 1!");
-        ASTExpression expr = els.get(0).getFirstChildOfType(ASTExpression.class);
-        ASTIdentifier id = expr.getFirstChildOfType(ASTIdentifier.class);
+        ASTExpression expr = els.get(0).firstChild(ASTExpression.class);
+        ASTIdentifier id = expr.firstChild(ASTIdentifier.class);
         assertEquals("something", id.getImage(), "Expected to detect proper value for attribute!");
     }
 
@@ -371,7 +371,7 @@ class VfDocStyleTest extends AbstractVfTest {
         List<ASTAttributeValue> attributes = vf.getNodes(ASTAttributeValue.class, TEST_ATTR);
         assertEquals(1, attributes.size(), "One attribute expected!");
         ASTAttributeValue attr = attributes.iterator().next();
-        ASTText text = attr.getFirstChildOfType(ASTText.class);
+        ASTText text = attr.firstChild(ASTText.class);
         assertEquals("yes|", text.getImage(), "Expected to detect proper value for attribute!");
     }
 
@@ -401,7 +401,7 @@ class VfDocStyleTest extends AbstractVfTest {
         assertEquals(1, attributes.size(), "One attribute expected!");
         Iterator<ASTAttributeValue> iterator = attributes.iterator();
         ASTAttributeValue attr = iterator.next();
-        ASTText text = attr.getFirstChildOfType(ASTText.class);
+        ASTText text = attr.firstChild(ASTText.class);
         assertEquals("\t", text.getImage(), "Expected to detect proper value for attribute!");
 
     }
@@ -665,7 +665,7 @@ class VfDocStyleTest extends AbstractVfTest {
         assertEquals(1, attributes.size(), "One attribute expected!");
         Iterator<ASTAttributeValue> iterator = attributes.iterator();
         ASTAttributeValue attr = iterator.next();
-        ASTIdentifier id = attr.getFirstDescendantOfType(ASTIdentifier.class);
+        ASTIdentifier id = attr.descendants(ASTIdentifier.class).first();
         assertEquals("something", id.getImage(), "Expected to detect proper value for EL in attribute!");
     }
 

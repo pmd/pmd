@@ -24,7 +24,7 @@ public class VfCsrfRule extends AbstractVfRule {
     @Override
     public Object visit(ASTElement node, Object data) {
         if (APEX_PAGE.equalsIgnoreCase(node.getName())) {
-            List<ASTAttribute> attribs = node.findChildrenOfType(ASTAttribute.class);
+            List<ASTAttribute> attribs = node.children(ASTAttribute.class).toList();
             boolean controller = false;
             boolean isEl = false;
             ASTElExpression valToReport = null;
@@ -32,7 +32,7 @@ public class VfCsrfRule extends AbstractVfRule {
             for (ASTAttribute attr : attribs) {
                 switch (attr.getName().toLowerCase(Locale.ROOT)) {
                 case "action":
-                    ASTElExpression value = attr.getFirstDescendantOfType(ASTElExpression.class);
+                    ASTElExpression value = attr.descendants(ASTElExpression.class).first();
                     if (value != null) {
                         if (doesElContainIdentifiers(value)) {
                             isEl = true;
@@ -51,7 +51,7 @@ public class VfCsrfRule extends AbstractVfRule {
             }
 
             if (controller && isEl && valToReport != null) {
-                addViolation(data, valToReport);
+                asCtx(data).addViolation(valToReport);
             }
 
         }
@@ -59,6 +59,6 @@ public class VfCsrfRule extends AbstractVfRule {
     }
 
     private boolean doesElContainIdentifiers(ASTElExpression value) {
-        return value.getFirstDescendantOfType(ASTIdentifier.class) != null;
+        return value.descendants(ASTIdentifier.class).first() != null;
     }
 }
