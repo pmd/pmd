@@ -18,14 +18,14 @@ public class NoUnsanitizedJSPExpressionRule extends AbstractJspRule {
     @Override
     public Object visit(ASTElExpression node, Object data) {
         if (elOutsideTaglib(node)) {
-            addViolation(data, node);
+            asCtx(data).addViolation(node);
         }
 
         return super.visit(node, data);
     }
 
     private boolean elOutsideTaglib(ASTElExpression node) {
-        ASTElement parentASTElement = node.getFirstParentOfType(ASTElement.class);
+        ASTElement parentASTElement = node.ancestors(ASTElement.class).first();
 
         boolean elInTaglib = parentASTElement != null && parentASTElement.getName() != null
                 && parentASTElement.getName().contains(":");

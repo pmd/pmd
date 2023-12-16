@@ -16,11 +16,11 @@ public class ASTClassDefinition extends AbstractModelicaNode {
     }
 
     public boolean isPartial() {
-        return prefixes.getFirstChildOfType(ASTPartialClause.class) != null;
+        return prefixes.firstChild(ASTPartialClause.class) != null;
     }
 
     public boolean isEncapsulated() {
-        return getFirstChildOfType(ASTEncapsulatedClause.class) != null;
+        return firstChild(ASTEncapsulatedClause.class) != null;
     }
 
     public ModelicaClassSpecialization getSpecialization() {
@@ -32,7 +32,7 @@ public class ASTClassDefinition extends AbstractModelicaNode {
     }
 
     private void checkSpecialization(Class<? extends ModelicaNode> clauseClass, ModelicaClassSpecialization restriction) {
-        if (prefixes.getFirstChildOfType(clauseClass) != null) {
+        if (prefixes.firstChild(clauseClass) != null) {
             assert specialization == null;
             specialization = restriction;
         }
@@ -49,10 +49,10 @@ public class ASTClassDefinition extends AbstractModelicaNode {
         checkSpecialization(ASTTypeClause.class, ModelicaClassSpecialization.TYPE);
         checkSpecialization(ASTPackageClause.class, ModelicaClassSpecialization.PACKAGE);
         checkSpecialization(ASTOperatorClause.class, ModelicaClassSpecialization.OPERATOR);
-        ASTFunctionClause functionOrNull = prefixes.getFirstChildOfType(ASTFunctionClause.class);
+        ASTFunctionClause functionOrNull = prefixes.firstChild(ASTFunctionClause.class);
         if (functionOrNull != null) {
-            boolean isPure = functionOrNull.getFirstChildOfType(ASTPureClause.class) != null;
-            boolean isOperator = functionOrNull.getFirstChildOfType(ASTOperatorClause.class) != null;
+            boolean isPure = functionOrNull.firstChild(ASTPureClause.class) != null;
+            boolean isOperator = functionOrNull.firstChild(ASTOperatorClause.class) != null;
             assert specialization == null;
             specialization = ModelicaClassSpecialization.getFunctionSpecialization(isPure, isOperator);
         }
@@ -62,8 +62,8 @@ public class ASTClassDefinition extends AbstractModelicaNode {
     @Override
     public void jjtClose() {
         super.jjtClose();
-        prefixes = getFirstChildOfType(ASTClassPrefixes.class);
-        specifier = getFirstChildOfType(ASTClassSpecifier.class).getFirstChildOfType(ModelicaClassSpecifierNode.class);
+        prefixes = firstChild(ASTClassPrefixes.class);
+        specifier = firstChild(ASTClassSpecifier.class).firstChild(ModelicaClassSpecifierNode.class);
         detectSpecialization();
     }
 

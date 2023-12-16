@@ -29,7 +29,7 @@ class TrailingCommaTest extends EcmascriptParserTestBase {
 
     private void testTrailingComma() {
         ASTAstRoot node = js.parse("x = {a : 1, };\n");
-        ASTObjectLiteral fn = node.getFirstDescendantOfType(ASTObjectLiteral.class);
+        ASTObjectLiteral fn = node.descendants(ASTObjectLiteral.class).first();
         assertTrue(fn.isTrailingComma());
     }
 

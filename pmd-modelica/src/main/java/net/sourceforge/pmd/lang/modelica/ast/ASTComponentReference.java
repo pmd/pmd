@@ -66,7 +66,7 @@ public final class ASTComponentReference extends AbstractModelicaNode implements
 
         nameComponentsWithoutSubscripts = new String[getNumChildren()];
         for (int i = 0; i < nameComponentsWithoutSubscripts.length; ++i) {
-            String name = getChild(i).getFirstChildOfType(ASTSimpleName.class).getImage();
+            String name = getChild(i).firstChild(ASTSimpleName.class).getImage();
             nameComponentsWithoutSubscripts[i] = name;
         }
     }

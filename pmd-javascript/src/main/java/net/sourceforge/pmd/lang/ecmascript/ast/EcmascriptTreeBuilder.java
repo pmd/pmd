@@ -241,7 +241,7 @@ final class EcmascriptTreeBuilder implements NodeVisitor {
 
             // This will fetch the localized message
             // See https://github.com/pmd/pmd/issues/384
-            String trailingCommaLocalizedMessage = ScriptRuntime.getMessage0("msg.extra.trailing.comma");
+            String trailingCommaLocalizedMessage = ScriptRuntime.getMessageById("msg.extra.trailing.comma");
 
             for (ParseProblem parseProblem : parseProblems) {
 

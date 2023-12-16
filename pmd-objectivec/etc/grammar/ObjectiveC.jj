@@ -794,8 +794,8 @@ void PossibleCocoaType() : { Token t; }
   t = <POSSIBLE_COCOA_TYPE>
   {
      if (verbose)
-        System.out.println("WARNING: Adding typedef on possible Cocoa type " + t.image + " at line number " + t.beginLine + ", column number " + t.beginColumn);
-     addType(t.image);
+        System.out.println("WARNING: Adding typedef on possible Cocoa type " + t.getImage() + " at " + t.getReportLocation().startPosToString());
+     addType(t.getImage());
   }
 }
 
@@ -804,8 +804,8 @@ void PossibleCoreType() : { Token t; }
   t = <POSSIBLE_CORE_TYPE>
   {
      if (verbose)
-         System.out.println("WARNING: Adding typedef on possible CoreFoundation type " + t.image + " at line number " + t.beginLine + ", column number " + t.beginColumn);
-     addType(t.image);
+         System.out.println("WARNING: Adding typedef on possible CoreFoundation type " + t.getImage() + " at " + t.getReportLocation().startPosToString());
+     addType(t.getImage());
   }
 }
 
@@ -814,8 +814,8 @@ void PossibleUnknownType() : { Token t; }
   t = <IDENT>
   {
      if (verbose)
-        System.out.println("WARNING: Adding typedef on unknown identifier " + t.image + " at line number " + t.beginLine + ", column number " + t.beginColumn);
-     addType(t.image);
+        System.out.println("WARNING: Adding typedef on unknown identifier " + t.getImage() + " at " + t.getReportLocation().startPosToString());
+     addType(t.getImage());
   }
 }
 
@@ -948,7 +948,7 @@ void DirectDeclarator() : { Token t;}
   ( t =  ObjCIDENT()
 
   { if(!(typedefParsingStack.empty()) && ((Boolean)typedefParsingStack.peek()).booleanValue()){
-        addType(t.image);
+        addType(t.getImage());
     }
   }
    | LOOKAHEAD(3) "(" Declarator() ")" )
