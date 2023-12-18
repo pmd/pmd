@@ -22,7 +22,7 @@ public class SourceLanguage {
         this.version = version;
     }
 
-    /** This actually corresponds to a {@link Language#getTerseName()}. */
+    /** This actually corresponds to {@link Language#getId()}. */
     public String getName() {
         return name;
     }
