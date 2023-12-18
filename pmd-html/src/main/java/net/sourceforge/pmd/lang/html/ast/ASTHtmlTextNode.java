@@ -25,9 +25,4 @@ public class ASTHtmlTextNode extends AbstractHtmlNode<TextNode> {
     public String getText() {
         return node.getWholeText();
     }
-
-    @Override
-    public String getImage() {
-        return getNormalizedText();
-    }
 }
