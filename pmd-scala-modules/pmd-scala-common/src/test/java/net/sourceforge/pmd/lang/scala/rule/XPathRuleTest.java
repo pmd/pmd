@@ -19,7 +19,7 @@ class XPathRuleTest extends BaseScalaTest {
 
     @Test
     void testPrintHelloWorld() {
-        Report report = evaluate(SCALA_TEST, "//TermApply/TermName[@Image=\"println\"]");
+        Report report = evaluate(SCALA_TEST, "//TermApply/TermName[@Value=\"println\"]");
         RuleViolation rv = report.getViolations().get(0);
         assertEquals(2, rv.getBeginLine());
     }
