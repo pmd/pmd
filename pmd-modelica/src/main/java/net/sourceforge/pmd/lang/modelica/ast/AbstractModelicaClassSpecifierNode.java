@@ -15,12 +15,6 @@ abstract class AbstractModelicaClassSpecifierNode extends AbstractModelicaNode i
         super(id);
     }
 
-    @Override
-    public void jjtClose() {
-        super.jjtClose();
-        setImage(getFirstChildOfType(ASTSimpleName.class).getImage());
-    }
-
     /**
      * Fills in the class definition with <code>extends</code> and <code>import</code> clauses contained in this AST node.
      *
@@ -61,6 +55,6 @@ abstract class AbstractModelicaClassSpecifierNode extends AbstractModelicaNode i
 
     @Override
     public String getSimpleClassName() {
-        return getImage();
+        return firstChild(ASTSimpleName.class).getName();
     }
 }

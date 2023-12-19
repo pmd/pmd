@@ -1,11 +1,13 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.modelica.ast;
 
-public final class ASTWithinClause extends AbstractModelicaNode {
-    ASTWithinClause(int id) {
+public final class ASTNumberLiteral extends AbstractModelicaNode {
+    private String value;
+
+    ASTNumberLiteral(int id) {
         super(id);
     }
 
@@ -14,11 +16,11 @@ public final class ASTWithinClause extends AbstractModelicaNode {
         return visitor.visit(this, data);
     }
 
-    public String getName() {
-        ASTName name = getFirstChildOfType(ASTName.class);
-        if (name != null) {
-            return name.getName();
-        }
-        return "";
+    void setValue(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
     }
 }
