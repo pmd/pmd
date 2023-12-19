@@ -45,7 +45,7 @@ public class HtmlTokenizer implements Tokenizer {
         String image = node.getXPathNodeName();
 
         if (node instanceof ASTHtmlTextNode) {
-            image = ((ASTHtmlTextNode) node).getText();
+            image = ((ASTHtmlTextNode) node).getWholeText();
         }
 
         tokenEntries.recordToken(image, node.getReportLocation());
