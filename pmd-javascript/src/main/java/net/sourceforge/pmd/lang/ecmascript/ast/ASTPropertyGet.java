@@ -8,8 +8,7 @@ import org.mozilla.javascript.ast.PropertyGet;
 
 public final class ASTPropertyGet extends AbstractInfixEcmascriptNode<PropertyGet> {
     ASTPropertyGet(PropertyGet propertyGet) {
-        super(propertyGet, false);
-        super.setImage(".");
+        super(propertyGet);
     }
 
     @Override

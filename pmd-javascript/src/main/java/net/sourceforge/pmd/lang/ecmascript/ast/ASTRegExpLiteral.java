@@ -9,7 +9,6 @@ import org.mozilla.javascript.ast.RegExpLiteral;
 public final class ASTRegExpLiteral extends AbstractEcmascriptNode<RegExpLiteral> {
     ASTRegExpLiteral(RegExpLiteral regExpLiteral) {
         super(regExpLiteral);
-        super.setImage(regExpLiteral.getValue());
     }
 
     @Override
@@ -19,5 +18,9 @@ public final class ASTRegExpLiteral extends AbstractEcmascriptNode<RegExpLiteral
 
     public String getFlags() {
         return node.getFlags();
+    }
+
+    public String getValue() {
+        return node.getValue();
     }
 }

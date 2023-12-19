@@ -10,7 +10,6 @@ public final class ASTErrorNode extends AbstractEcmascriptNode<ErrorNode> {
 
     ASTErrorNode(ErrorNode errorNode) {
         super(errorNode);
-        super.setImage(errorNode.getMessage());
     }
 
     @Override
