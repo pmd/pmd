@@ -123,6 +123,7 @@ in the Migration Guide.
 * groovy
   * [#4726](https://github.com/pmd/pmd/pull/4726):   \[groovy] Support Groovy to 3 and 4 and CPD suppressions
 * java
+  * [#4628](https://github.com/pmd/pmd/pull/4628):   \[java] Support loading classes from java runtime images
   * [#4753](https://github.com/pmd/pmd/issues/4753): \[java] PMD crashes while using generics and wildcards
 * java-codestyle
   * [#2847](https://github.com/pmd/pmd/issues/2847): \[java] New Rule: Use Explicit Types
@@ -645,6 +646,7 @@ Language specific fixes:
     * [#4401](https://github.com/pmd/pmd/issues/4401): \[java] PMD 7 fails to build under Java 19
     * [#4405](https://github.com/pmd/pmd/issues/4405): \[java] Processing error with ArrayIndexOutOfBoundsException
     * [#4583](https://github.com/pmd/pmd/issues/4583): \[java] Support JDK 21 (LTS)
+    * [#4628](https://github.com/pmd/pmd/pull/4628):   \[java] Support loading classes from java runtime images
     * [#4753](https://github.com/pmd/pmd/issues/4753): \[java] PMD crashes while using generics and wildcards
 * java-bestpractices
     * [#342](https://github.com/pmd/pmd/issues/342):   \[java] AccessorMethodGeneration: Name clash with another public field not properly handled
