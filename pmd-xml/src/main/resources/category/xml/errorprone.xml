@@ -23,7 +23,7 @@ An XML CDATA section begins with a &lt;![CDATA[ marker, which has only one [, an
             <property name="xpath">
                 <value>
 <![CDATA[
-//cdata-section[starts-with(@Image,'[') or ends-with(@Image,']')]
+//cdata-section[starts-with(@Text,'[') or ends-with(@Text,']')]
 ]]>
                 </value>
             </property>

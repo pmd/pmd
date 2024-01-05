@@ -11,7 +11,6 @@ import java.util.AbstractList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -96,14 +95,11 @@ class XmlNodeWrapper implements XmlNode {
         return node.hasChildNodes() ? node.getChildNodes().getLength() : 0;
     }
 
-    @Override
-    public String getImage() {
+    /**
+     * Returns the text, if the underlying node is a text node.
+     */
+    public String getText() {
         return node instanceof Text ? ((Text) node).getData() : null;
-    }
-
-    @Override
-    public boolean hasImageEqualTo(String image) {
-        return Objects.equals(image, getImage());
     }
 
     @Override
