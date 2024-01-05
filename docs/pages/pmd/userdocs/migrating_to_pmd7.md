@@ -42,6 +42,22 @@ There are a couple of deprecated things in PMD 6, you might encounter:
   ```
   and often already suggest an alternative.
 
+* If you still reference rulesets or rules the old way which has been deprecated since 6.46.0:
+  - `<lang-name>-<ruleset-name>`, eg `java-basic`, which resolves to `rulesets/java/basic.xml`
+  - the internal release number, eg `600`, which resolves to `rulesets/releases/600.xml`
+
+  Such usages produce deprecation warnings that should be easy to spot, e.g.
+  ```
+  Ruleset reference 'java-basic' uses a deprecated form, use 'rulesets/java/basic.xml' instead
+  ```
+
+  Use the explicit forms of these references to be compatible with PMD 7.
+
+  Note: Since PMD 6, all rules are sorted into categories (such as "Best Practices", "Design", "Error Prone")
+  and the old rulesets like `basic.xml` have been deprecated and have been removed with PMD 7.
+  It is about time to create a [custom ruleset](pmd_userdocs_making_rulesets.html).
+
+
 ## Use cases
 
 ### I'm using only built-in rules
