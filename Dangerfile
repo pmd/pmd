@@ -17,9 +17,7 @@ def get_args(base_branch, autogen = TRUE, patch_config = './pmd/.ci/files/all-re
    '--keep-reports',
    '--error-recovery',
    '--baseline-download-url', 'https://pmd-code.org/pmd-regression-tester/',
-   #'--threads', Etc.nprocessors.to_s,
-   # disable multithreading, see https://github.com/google/summit-ast/pull/45
-   '--threads', '1',
+   '--threads', Etc.nprocessors.to_s,
    # '--debug',
    ]
 end
