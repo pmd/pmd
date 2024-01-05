@@ -122,6 +122,7 @@ public class AntlrNameDictionary {
 
         case "@": return "at-symbol";
         case "$": return "dollar";
+        case "#": return "hash";
 
         case "\\": return "backslash";
         case "/": return "slash";

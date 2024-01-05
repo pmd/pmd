@@ -96,6 +96,7 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
     }
 
     @Override
+    // TODO: consider to rename the flush method - this is actually closing the writer
     public void flush() {
         if (writer == null) {
             // might happen, if no writer is set. E.g. in maven-pmd-plugin's PmdCollectingRenderer

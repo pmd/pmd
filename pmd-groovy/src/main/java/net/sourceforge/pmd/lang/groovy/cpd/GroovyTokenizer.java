@@ -4,50 +4,27 @@
 
 package net.sourceforge.pmd.lang.groovy.cpd;
 
-import org.codehaus.groovy.antlr.SourceInfo;
-import org.codehaus.groovy.antlr.parser.GroovyLexer;
+import java.io.IOException;
 
-import net.sourceforge.pmd.cpd.TokenFactory;
-import net.sourceforge.pmd.cpd.Tokenizer;
+import org.apache.groovy.parser.antlr4.GroovyLexer;
+
+import net.sourceforge.pmd.cpd.impl.TokenizerBase;
+import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.groovy.ast.impl.antlr4.GroovyToken;
+import net.sourceforge.pmd.lang.groovy.ast.impl.antlr4.GroovyTokenManager;
 
-import groovyjarjarantlr.Token;
-import groovyjarjarantlr.TokenStream;
-import groovyjarjarantlr.TokenStreamException;
+import groovyjarjarantlr4.v4.runtime.CharStream;
+import groovyjarjarantlr4.v4.runtime.CharStreams;
 
 /**
  * The Groovy Tokenizer
  */
-public class GroovyTokenizer implements Tokenizer {
+public class GroovyTokenizer extends TokenizerBase<GroovyToken> {
 
     @Override
-    public void tokenize(TextDocument document, TokenFactory tokens) {
-        GroovyLexer lexer = new GroovyLexer(document.newReader());
-        TokenStream tokenStream = lexer.plumb();
-
-        try {
-            Token token = tokenStream.nextToken();
-
-            while (token.getType() != Token.EOF_TYPE) {
-                String tokenText = token.getText();
-
-
-                int lastCol;
-                int lastLine;
-                if (token instanceof SourceInfo) {
-                    lastCol = ((SourceInfo) token).getColumnLast();
-                    lastLine = ((SourceInfo) token).getLineLast();
-                } else {
-                    // fallback
-                    lastCol = token.getColumn() + tokenText.length();
-                    lastLine = token.getLine(); // todo inaccurate
-                }
-
-                tokens.recordToken(tokenText, token.getLine(), token.getColumn(), lastLine, lastCol);
-                token = tokenStream.nextToken();
-            }
-        } catch (TokenStreamException err) {
-            throw tokens.makeLexException(lexer.getLine(), lexer.getColumn(), err.getMessage(), err);
-        }
+    protected final TokenManager<GroovyToken> makeLexerImpl(TextDocument doc) throws IOException {
+        CharStream charStream = CharStreams.fromReader(doc.newReader(), doc.getFileId().getAbsolutePath());
+        return new GroovyTokenManager(new GroovyLexer(charStream), doc);
     }
 }

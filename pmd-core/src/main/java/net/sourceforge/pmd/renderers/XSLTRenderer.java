@@ -28,6 +28,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
@@ -129,6 +130,8 @@ public class XSLTRenderer extends XMLRenderer {
             transformer.transform(source, result);
         } catch (TransformerException e) {
             throw new RuntimeException(e);
+        } finally {
+            IOUtil.closeQuietly(outputWriter);
         }
     }
 

@@ -57,6 +57,20 @@ the duplication. Here's a quick summary:
 Novice as much as advanced readers may want to [read on on Refactoring Guru](https://refactoring.guru/smells/duplicate-code)
 for more in-depth strategies, use cases and explanations.
 
+### Finding more duplicates
+
+For some languages, additional options are supported. E.g. Java supports `--ignore-identifiers`. This has the
+effect, that all identifiers are replaced with the same placeholder value before the comparing. This helps to
+identify structurally identical code that only differs in naming (different class names, different method names,
+different parameter names).
+
+There are other similar options: `--ignore-annotations`, `--ignore-literals`, `--ignore-literal-sequences`,
+`--ignore-sequences`, `--ignore-usings`.
+
+Note that these options are *disabled* by default (e.g. identifiers are *not* replaced with the same placeholder
+value). By default, CPD finds identical duplicates. Using these options, the found duplicates are not anymore
+exactly identical.
+
 ## CLI Usage
 
 ### CLI options reference
@@ -109,19 +123,17 @@ for more in-depth strategies, use cases and explanations.
     %}
     {% include custom/cli_option_row.html options="--skip-duplicate-files"
                description="Ignore multiple copies of files of the same name and length in comparison."
-               default="false"
     %}
     {% include custom/cli_option_row.html options="--exclude"
                option_arg="path"
                description="Files to be excluded from the analysis"
     %}
     {% include custom/cli_option_row.html options="--non-recursive"
-               description="Don't scan subdirectories"
-               default="false"
+               description="Don't scan subdirectories. By default, subdirectories are considered."
     %}
     {% include custom/cli_option_row.html options="--skip-lexical-errors"
-               description="Skip files which can't be tokenized due to invalid characters instead of aborting CPD"
-               default="false"
+               description="Skip files which can't be tokenized due to invalid characters instead of aborting CPD.
+                            By default, CPD analysis is stopped on the first error."
     %}
     {% include custom/cli_option_row.html options="--format,-f"
                option_arg="format"
@@ -144,38 +156,37 @@ for more in-depth strategies, use cases and explanations.
                             Disable this feature with `--no-fail-on-violation` to exit with 0 instead and just output the report."
     %}
     {% include custom/cli_option_row.html options="--ignore-literals"
-               description="Ignore number values and string contents when comparing text"
-               default="false"
+               description="Ignore literal values such as numbers and strings when comparing text.
+                            By default, literals are not ignored."
                languages="Java"
     %}
+    {% include custom/cli_option_row.html options="--ignore-literal-sequences"
+               description="Ignore sequences of literals such as list initializers.
+                            By default, such sequences of literals are not ignored."
+               languages="C#, C++, Lua"
+    %}
     {% include custom/cli_option_row.html options="--ignore-identifiers"
-               description="Ignore constant and variable names when comparing text"
-               default="false"
+               description="Ignore names of classes, methods, variables, constants, etc. when comparing text.
+                            By default, identifier names are not ignored."
                languages="Java"
     %}
     {% include custom/cli_option_row.html options="--ignore-annotations"
-               description="Ignore language annotations (Java) or attributes (C#) when comparing text"
-               default="false"
+               description="Ignore language annotations (Java) or attributes (C#) when comparing text.
+                            By default, annotations are not ignored."
                languages="C#, Java"
     %}
-    {% include custom/cli_option_row.html options="--ignore-literal-sequences"
-               description="Ignore sequences of literals (common e.g. in list initializers)"
-               default="false"
-               languages="C#, C++, Lua"
-    %}
     {% include custom/cli_option_row.html options="--ignore-sequences"
-               description="Ignore sequences of identifier and literals"
-               default="false"
+               description="Ignore sequences of identifier and literals.
+                            By default, such sequences are not ignored."
                languages="C++"
     %}
     {% include custom/cli_option_row.html options="--ignore-usings"
-               description="Ignore `using` directives in C# when comparing text"
-               default="false"
+               description="Ignore `using` directives in C# when comparing text.
+                            By default, using directives are not ignored."
                languages="C#"
     %}
     {% include custom/cli_option_row.html options="--no-skip-blocks"
                description="Do not skip code blocks matched by `--skip-blocks-pattern`"
-               default="false"
                languages="C++"
     %}
     {% include custom/cli_option_row.html options="--skip-blocks-pattern"
@@ -219,6 +230,13 @@ You may wish to check sources that are stored in different directories:
    windows="pmd.bat cpd --minimum-tokens 100 --dir src\main\java --dir src\test\java" %}
 
 <em>There is no limit to the number of `--dir`, you may add.</em>
+
+You may wish to ignore identifiers so that more duplications are found, that only differ in naming:
+
+{% include cli_example.html
+    id="ignore_identifiers"
+    linux="pmd cpd --minimum-tokens 100 --dir src/main/java --ignore-identifiers"
+    windows="pmd.bat cpd --minimum-tokens 100 --dir src\main\java --ignore-identifiers" %}
 
 And if you're checking a C source tree with duplicate files in different architecture directories
 you can skip those using `--skip-duplicate-files`:
@@ -459,7 +477,7 @@ Here's a screenshot of CPD after running on the JDK 8 java.lang package:
 
 ## Suppression
 
-Arbitrary blocks of code can be ignored through comments on **Java**, **C/C++**, **Dart**, **Go**, **Javascript**,
+Arbitrary blocks of code can be ignored through comments on **Java**, **C/C++**, **Dart**, **Go**, **Groovy**, **Javascript**,
 **Kotlin**, **Lua**, **Matlab**, **Objective-C**, **PL/SQL**, **Python**, **Scala**, **Swift** and **C#** by including the keywords `CPD-OFF` and `CPD-ON`.
 
 ```java
