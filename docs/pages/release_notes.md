@@ -118,6 +118,7 @@ in the Migration Guide.
   * [#4699](https://github.com/pmd/pmd/pull/4699):   Make PMD buildable with java 21
   * [#4586](https://github.com/pmd/pmd/pull/4586):   Use explicit encoding in ruleset xml files
   * [#4642](https://github.com/pmd/pmd/issues/4642): Update regression tests with Java 21 language features
+  * [#4736](https://github.com/pmd/pmd/issues/4736): \[ci] Improve build procedure
   * [#4741](https://github.com/pmd/pmd/pull/4741):   Add pmd-compat6 module for maven-pmd-plugin
   * [#4749](https://github.com/pmd/pmd/pull/4749):   Fixes NoSuchMethodError on processing errors in pmd-compat6
 * apex-performance
@@ -526,6 +527,7 @@ See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.
     * [#4642](https://github.com/pmd/pmd/issues/4642): Update regression tests with Java 21 language features
     * [#4691](https://github.com/pmd/pmd/issues/4691): \[CVEs] Critical and High CEVs reported on PMD and PMD dependencies
     * [#4699](https://github.com/pmd/pmd/pull/4699):   Make PMD buildable with java 21
+    * [#4736](https://github.com/pmd/pmd/issues/4736): \[ci] Improve build procedure
     * [#4741](https://github.com/pmd/pmd/pull/4741):   Add pmd-compat6 module for maven-pmd-plugin
     * [#4749](https://github.com/pmd/pmd/pull/4749):   Fixes NoSuchMethodError on processing errors in pmd-compat6
 * ant
