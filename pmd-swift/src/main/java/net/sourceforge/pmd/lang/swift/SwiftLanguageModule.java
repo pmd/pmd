@@ -30,7 +30,9 @@ public class SwiftLanguageModule extends SimpleLanguageModuleBase {
                               .addVersion("5.4")
                               .addVersion("5.5")
                               .addVersion("5.6")
-                              .addDefaultVersion("5.7"),
+                              .addVersion("5.7")
+                              .addVersion("5.8")
+                              .addDefaultVersion("5.9"),
               new SwiftHandler());
     }
 

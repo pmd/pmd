@@ -7,8 +7,9 @@ package net.sourceforge.pmd.cli.commands.internal;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import net.sourceforge.pmd.AbstractConfiguration;
 import net.sourceforge.pmd.cli.commands.mixins.internal.EncodingMixin;
@@ -25,14 +26,10 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
     @Mixin
     protected EncodingMixin encoding;
 
-    @Option(names = { "--dir", "-d" },
-            description = "Path to a source file, or directory containing source files to analyze. "
-                + "Zip and Jar files are also supported, if they are specified directly "
-                + "(archive files found while exploring a directory are not recursively expanded). "
-                + "This option can be repeated, and multiple arguments can be provided to a single occurrence of the option. "
-                + "One of --dir, --file-list or --uri must be provided.",
-            arity = "1..*", split = ",")
-    protected List<Path> inputPaths;
+    // see the setters #setInputPaths and setPositionalInputPaths for @Option and @Parameters annotations
+    // Note: can't use annotations on the fields here, as otherwise the complete list would be replaced
+    // rather than accumulated.
+    protected Set<Path> inputPaths;
 
     @Option(names = "--file-list",
             description =
@@ -50,16 +47,6 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
                     + "Disable this option with '--no-fail-on-violation' to exit with 0 instead and just write the report.",
             defaultValue = "true", negatable = true)
     protected boolean failOnViolation;
-    
-    @Parameters(arity = "*", description = "Path to a source file, or directory containing source files to analyze. "
-            + "Equivalent to using --dir.")
-    public void setInputPaths(final List<Path> inputPaths) {
-        if (this.inputPaths == null) {
-            this.inputPaths = new ArrayList<>();
-        }
-        
-        this.inputPaths.addAll(inputPaths);
-    }
 
     protected List<Path> relativizeRootPaths;
 
@@ -69,7 +56,7 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
             + "The option can be repeated, in which case the shortest relative path will be used. "
             + "If the root path is mentioned (e.g. \"/\" or \"C:\\\"), then the paths will be rendered as absolute.",
             arity = "1..*", split = ",")
-    public void setRelativizePathsWith(List<Path> rootPaths) {
+    protected void setRelativizePathsWith(List<Path> rootPaths) {
         this.relativizeRootPaths = rootPaths;
 
         for (Path path : this.relativizeRootPaths) {
@@ -78,6 +65,27 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
                         "Expected a directory path for option '--relativize-paths-with', found a file: " + path);
             }
         }
+    }
+
+    @Option(names = { "--dir", "-d" },
+            description = "Path to a source file, or directory containing source files to analyze. "
+                    + "Zip and Jar files are also supported, if they are specified directly "
+                    + "(archive files found while exploring a directory are not recursively expanded). "
+                    + "This option can be repeated, and multiple arguments can be provided to a single occurrence of the option. "
+                    + "One of --dir, --file-list or --uri must be provided.",
+            arity = "1..*", split = ",")
+    protected void setInputPaths(final List<Path> inputPaths) {
+        if (this.inputPaths == null) {
+            this.inputPaths = new LinkedHashSet<>(); // linked hashSet in order to maintain order
+        }
+
+        this.inputPaths.addAll(inputPaths);
+    }
+
+    @Parameters(arity = "*", description = "Path to a source file, or directory containing source files to analyze. "
+            + "Equivalent to using --dir.")
+    protected void setPositionalInputPaths(final List<Path> inputPaths) {
+        this.setInputPaths(inputPaths);
     }
 
     @Override

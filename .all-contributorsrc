@@ -1667,7 +1667,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/8858497?v=4",
       "profile": "https://github.com/bergander",
       "contributions": [
-        "bug"
+        "bug",
+        "code"
       ]
     },
     {
@@ -7234,6 +7235,15 @@
       ]
     },
     {
+      "login": "Scrates1",
+      "name": "Scrates1",
+      "avatar_url": "https://avatars.githubusercontent.com/u/49557842?v=4",
+      "profile": "https://github.com/Scrates1",
+      "contributions": [
+        "bug"
+      ]
+     },
+     {
       "login": "eant60",
       "name": "eant60",
       "avatar_url": "https://avatars.githubusercontent.com/u/41472980?v=4",
@@ -7270,6 +7280,15 @@
       ]
     },
     {
+      "login": "nakul777",
+      "name": "Nakul Sharma",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1551545?v=4",
+      "profile": "https://github.com/nakul777",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
       "login": "shai-bennathan",
       "name": "Shai Bennathan",
       "avatar_url": "https://avatars.githubusercontent.com/u/62336907?v=4",
@@ -7295,6 +7314,42 @@
       "profile": "https://github.com/ciufudean",
       "contributions": [
         "doc"
+      ]
+    },
+    {
+      "login": "219sansim",
+      "name": "219sansim",
+      "avatar_url": "https://avatars.githubusercontent.com/u/108684604?v=4",
+      "profile": "https://github.com/219sansim",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "soyodream",
+      "name": "soyodream",
+      "avatar_url": "https://avatars.githubusercontent.com/u/151845313?v=4",
+      "profile": "https://github.com/soyodream",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "Debamoy",
+      "name": "Debamoy Datta",
+      "avatar_url": "https://avatars.githubusercontent.com/u/44639649?v=4",
+      "profile": "https://github.com/Debamoy",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "marcindabrowski",
+      "name": "Marcin Dąbrowski",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3007876?v=4",
+      "profile": "https://github.com/marcindabrowski",
+      "contributions": [
+        "code"
       ]
     }
   ],

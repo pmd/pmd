@@ -38,7 +38,7 @@ class AsmLoaderTest : IntelliMarker, FunSpec({
     //   access flags
     //   method reference with static ctdecl & zero formal parameters (asInstanceMethod)
 
-    val contextClasspath = Classpath {  Thread.currentThread().contextClassLoader.getResource(it) }
+    val contextClasspath = Classpath {  Thread.currentThread().contextClassLoader.getResourceAsStream(it) }
 
     test("First ever ASM test") {
 

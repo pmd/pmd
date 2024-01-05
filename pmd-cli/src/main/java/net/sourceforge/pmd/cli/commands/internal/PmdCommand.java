@@ -260,7 +260,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
     protected PMDConfiguration toConfiguration() {
         final PMDConfiguration configuration = new PMDConfiguration();
         if (inputPaths != null) {
-            configuration.setInputPathList(inputPaths);
+            configuration.setInputPathList(new ArrayList<>(inputPaths));
         }
         configuration.setInputFilePath(fileListPath);
         configuration.setIgnoreFilePath(ignoreListPath);
@@ -323,7 +323,8 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
                     return CliExitCode.ERROR;
                 }
 
-                LOG.debug("Current classpath:\n{}", System.getProperty("java.class.path"));
+                LOG.debug("Runtime classpath:\n{}", System.getProperty("java.class.path"));
+                LOG.debug("Aux classpath: {}", configuration.getClassLoader());
 
                 if (showProgressBar) {
                     if (reportFile == null) {

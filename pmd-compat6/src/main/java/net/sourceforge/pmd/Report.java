@@ -143,6 +143,11 @@ public final class Report {
         public Throwable getError() {
             return error;
         }
+
+        // ------------------- compat extensions --------------------
+        public String getFile() {
+            return file.getAbsolutePath();
+        }
     }
 
     /**

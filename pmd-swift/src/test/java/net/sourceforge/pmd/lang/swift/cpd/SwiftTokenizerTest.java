@@ -51,6 +51,11 @@ class SwiftTokenizerTest extends CpdTextComparisonTest {
     }
 
     @Test
+    void testSwift59() {
+        doTest("Swift5.9");
+    }
+
+    @Test
     void testStackoverflowOnLongLiteral() {
         doTest("Issue628");
     }
