@@ -90,7 +90,7 @@ public final class RendererFactory {
                     if (value != null) {
                         @SuppressWarnings("unchecked")
                         PropertyDescriptor<Object> prop2 = (PropertyDescriptor<Object>) prop;
-                        Object valueFrom = prop2.valueFrom(value);
+                        Object valueFrom = prop2.serializer().fromString(value);
                         renderer.setProperty(prop2, valueFrom);
                     }
                 }

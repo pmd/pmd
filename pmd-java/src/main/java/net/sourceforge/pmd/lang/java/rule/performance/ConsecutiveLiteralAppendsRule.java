@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
-import static net.sourceforge.pmd.properties.constraints.NumericConstraints.inRange;
+import static net.sourceforge.pmd.properties.NumericConstraints.inRange;
 
 import java.util.HashSet;
 import java.util.Set;

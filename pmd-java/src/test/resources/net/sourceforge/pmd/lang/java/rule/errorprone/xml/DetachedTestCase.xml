@@ -37,6 +37,22 @@ public class MyTest {
     </test-code>
 
     <test-code>
+        <description>Abstract methods should not be reported as detached test case (#1831)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.Test;
+
+public abstract class MyTest {
+    @Test
+    public void someTest() {}
+
+    public abstract void someOtherTest() {}
+}
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
         <description>missing annotation on public test case in JUnit 4 test class (regular annotation)</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>7</expected-linenumbers>

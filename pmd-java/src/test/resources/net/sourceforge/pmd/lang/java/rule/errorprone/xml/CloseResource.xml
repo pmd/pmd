@@ -1133,7 +1133,7 @@ public class CloseResourceJMS {
     </test-code>
 
     <test-code>
-        <description>CloseResource for closable - ignored if the types do not contain AutoClosable</description>
+        <description>CloseResource for closable - ignored if the types do not contain AutoCloseable</description>
         <rule-property name="types">java.sql.Connection,java.sql.Statement,java.sql.ResultSet</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[

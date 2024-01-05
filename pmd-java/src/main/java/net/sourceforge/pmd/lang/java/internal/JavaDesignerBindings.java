@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompactConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
@@ -28,6 +29,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
+import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
@@ -194,6 +196,16 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
         @Override
         public Attribute visit(ASTVariableDeclaratorId node, Void data) {
             return new Attribute(node, "Name", node.getName());
+        }
+
+        @Override
+        public Attribute visit(ASTAssignmentExpression node, Void data) {
+            return new Attribute(node, "Operator", node.getOperator().getToken());
+        }
+
+        @Override
+        public Attribute visit(ASTUnaryExpression node, Void data) {
+            return new Attribute(node, "Operator", node.getOperator().getToken());
         }
     }
 }

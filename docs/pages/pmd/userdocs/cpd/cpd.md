@@ -4,6 +4,7 @@ tags: [cpd, userdocs]
 summary: "Learn how to use CPD, the copy-paste detector shipped with PMD."
 permalink: pmd_userdocs_cpd.html
 author: Tom Copeland <tom@infoether.com>
+last_updated: August 2023 (7.0.0)
 ---
 
 ## Overview
@@ -22,19 +23,27 @@ See how to add it [here](pmd_devdocs_major_adding_new_cpd_language.html).
 
 ### Why should you care about duplicates?
 
-It's certainly important to know where to get CPD, and how to call it, but it's worth stepping back for a moment and asking yourself why you should care about this, being the occurrence of duplicate code blocks.
+It's certainly important to know where to get CPD, and how to call it, but it's worth stepping back for a moment and
+asking yourself why you should care about this, being the occurrence of duplicate code blocks.
 
-Assuming duplicated blocks of code are supposed to do the same thing, any refactoring, even simple, must be duplicated too -- which is unrewarding grunt work, and puts pressure on the developer to find every place in which to perform the refactoring. Automated tools like CPD can help with that to some extent.
+Assuming duplicated blocks of code are supposed to do the same thing, any refactoring, even simple, must be duplicated
+too -- which is unrewarding grunt work, and puts pressure on the developer to find every place in which to perform
+the refactoring. Automated tools like CPD can help with that to some extent.
 
-However, failure to keep the code in sync may mean automated tools will no longer recognise these blocks as duplicates. This means the task of finding duplicates to keep them in sync when doing subsequent refactorings can no longer be entrusted to an automated tool -- adding more burden on the maintainer. Segments of code initially supposed to do the same thing may grow apart undetected upon further refactoring.
+However, failure to keep the code in sync may mean automated tools will no longer recognise these blocks as duplicates.
+This means the task of finding duplicates to keep them in sync when doing subsequent refactorings can no longer be
+entrusted to an automated tool -- adding more burden on the maintainer. Segments of code initially supposed to do the
+same thing may grow apart undetected upon further refactoring.
 
 Now, if the code may never change in the future, then this is not a problem.
 
-Otherwise, the most viable solution is to not duplicate. If the duplicates are already there, then they should be refactored out. We thus advise developers to use CPD to **help remove duplicates**, not to help keep duplicates in sync.
+Otherwise, the most viable solution is to not duplicate. If the duplicates are already there, then they should be
+refactored out. We thus advise developers to use CPD to **help remove duplicates**, not to help keep duplicates in sync.
 
 ### Refactoring duplicates
 
-Once you have located some duplicates, several refactoring strategies may apply depending of the scope and extent of the duplication. Here's a quick summary:
+Once you have located some duplicates, several refactoring strategies may apply depending of the scope and extent of
+the duplication. Here's a quick summary:
 
 * If the duplication is local to a method or single class:
     * Extract a local variable if the duplicated logic is not prohibitively long
@@ -45,7 +54,22 @@ Once you have located some duplicates, several refactoring strategies may apply 
 * If the duplication occurs consistently in unrelated hierarchies:
     * Introduce a common ancestor to those class hierarchies
 
-Novice as much as advanced readers may want to [read on on Refactoring Guru](https://refactoring.guru/smells/duplicate-code) for more in-depth strategies, use cases and explanations.
+Novice as much as advanced readers may want to [read on on Refactoring Guru](https://refactoring.guru/smells/duplicate-code)
+for more in-depth strategies, use cases and explanations.
+
+### Finding more duplicates
+
+For some languages, additional options are supported. E.g. Java supports `--ignore-identifiers`. This has the
+effect, that all identifiers are replaced with the same placeholder value before the comparing. This helps to
+identify structurally identical code that only differs in naming (different class names, different method names,
+different parameter names).
+
+There are other similar options: `--ignore-annotations`, `--ignore-literals`, `--ignore-literal-sequences`,
+`--ignore-sequences`, `--ignore-usings`.
+
+Note that these options are *disabled* by default (e.g. identifiers are *not* replaced with the same placeholder
+value). By default, CPD finds identical duplicates. Using these options, the found duplicates are not anymore
+exactly identical.
 
 ## CLI Usage
 
@@ -99,19 +123,17 @@ Novice as much as advanced readers may want to [read on on Refactoring Guru](htt
     %}
     {% include custom/cli_option_row.html options="--skip-duplicate-files"
                description="Ignore multiple copies of files of the same name and length in comparison."
-               default="false"
     %}
     {% include custom/cli_option_row.html options="--exclude"
                option_arg="path"
                description="Files to be excluded from the analysis"
     %}
     {% include custom/cli_option_row.html options="--non-recursive"
-               description="Don't scan subdirectories"
-               default="false"
+               description="Don't scan subdirectories. By default, subdirectories are considered."
     %}
     {% include custom/cli_option_row.html options="--skip-lexical-errors"
-               description="Skip files which can't be tokenized due to invalid characters instead of aborting CPD"
-               default="false"
+               description="Skip files which can't be tokenized due to invalid characters instead of aborting CPD.
+                            By default, CPD analysis is stopped on the first error."
     %}
     {% include custom/cli_option_row.html options="--format,-f"
                option_arg="format"
@@ -119,44 +141,52 @@ Novice as much as advanced readers may want to [read on on Refactoring Guru](htt
                             are described [here](#available-report-formats)."
                default="text"
     %}
+    {% include custom/cli_option_row.html options="--relativize-paths-with,-z"
+               option_arg="path"
+               description="Path relative to which directories are rendered in the report. This option allows
+                    shortening directories in the report; without it, paths are rendered as mentioned in the
+                    source directory (option \"--dir\").
+                    The option can be repeated, in which case the shortest relative path will be used.
+                    If the root path is mentioned (e.g. \"/\" or \"C:\\\"), then the paths will be rendered
+                    as absolute."
+    %}
     {% include custom/cli_option_row.html options="--[no-]fail-on-violation"
                description="Specifies whether CPD exits with non-zero status if violations are found.
                             By default CPD exits with status 4 if violations are found.
                             Disable this feature with `--no-fail-on-violation` to exit with 0 instead and just output the report."
     %}
     {% include custom/cli_option_row.html options="--ignore-literals"
-               description="Ignore number values and string contents when comparing text"
-               default="false"
+               description="Ignore literal values such as numbers and strings when comparing text.
+                            By default, literals are not ignored."
                languages="Java"
     %}
+    {% include custom/cli_option_row.html options="--ignore-literal-sequences"
+               description="Ignore sequences of literals such as list initializers.
+                            By default, such sequences of literals are not ignored."
+               languages="C#, C++, Lua"
+    %}
     {% include custom/cli_option_row.html options="--ignore-identifiers"
-               description="Ignore constant and variable names when comparing text"
-               default="false"
+               description="Ignore names of classes, methods, variables, constants, etc. when comparing text.
+                            By default, identifier names are not ignored."
                languages="Java"
     %}
     {% include custom/cli_option_row.html options="--ignore-annotations"
-               description="Ignore language annotations (Java) or attributes (C#) when comparing text"
-               default="false"
+               description="Ignore language annotations (Java) or attributes (C#) when comparing text.
+                            By default, annotations are not ignored."
                languages="C#, Java"
     %}
-    {% include custom/cli_option_row.html options="--ignore-literal-sequences"
-               description="Ignore sequences of literals (common e.g. in list initializers)"
-               default="false"
-               languages="C#, C++, Lua"
-    %}
     {% include custom/cli_option_row.html options="--ignore-sequences"
-               description="Ignore sequences of identifier and literals"
-               default="false"
+               description="Ignore sequences of identifier and literals.
+                            By default, such sequences are not ignored."
                languages="C++"
     %}
     {% include custom/cli_option_row.html options="--ignore-usings"
-               description="Ignore `using` directives in C# when comparing text"
-               default="false"
+               description="Ignore `using` directives in C# when comparing text.
+                            By default, using directives are not ignored."
                languages="C#"
     %}
     {% include custom/cli_option_row.html options="--no-skip-blocks"
                description="Do not skip code blocks matched by `--skip-blocks-pattern`"
-               default="false"
                languages="C++"
     %}
     {% include custom/cli_option_row.html options="--skip-blocks-pattern"
@@ -200,6 +230,13 @@ You may wish to check sources that are stored in different directories:
    windows="pmd.bat cpd --minimum-tokens 100 --dir src\main\java --dir src\test\java" %}
 
 <em>There is no limit to the number of `--dir`, you may add.</em>
+
+You may wish to ignore identifiers so that more duplications are found, that only differ in naming:
+
+{% include cli_example.html
+    id="ignore_identifiers"
+    linux="pmd cpd --minimum-tokens 100 --dir src/main/java --ignore-identifiers"
+    windows="pmd.bat cpd --minimum-tokens 100 --dir src\main\java --ignore-identifiers" %}
 
 And if you're checking a C source tree with duplicate files in different architecture directories
 you can skip those using `--skip-duplicate-files`:
@@ -293,8 +330,11 @@ to be "debug".
 * T-SQL
 * [TypeScript](pmd_languages_js_ts.html)
 * [Visualforce](pmd_languages_visualforce.html)
+* vm (Apache Velocity)
 * [XML](pmd_languages_xml.html)
-
+  * POM (Apache Maven)
+  * XSL
+  * WSDL
 
 ## Available report formats
 
@@ -311,8 +351,14 @@ For details, see [CPD Report Formats](pmd_userdocs_cpd_report_formats.html).
 Andy Glover wrote an Ant task for CPD; here's how to use it:
 
 ```xml
+<path id="pmd.classpath">
+    <fileset dir="/home/joe/pmd-bin-{{site.pmd.version}}/lib">
+        <include name="*.jar"/>
+    </fileset>
+</path>
+<taskdef name="cpd" classname="net.sourceforge.pmd.ant.CPDTask" classpathref="pmd.classpath" />
+
 <target name="cpd">
-    <taskdef name="cpd" classname="net.sourceforge.pmd.ant.CPDTask" />
     <cpd minimumTokenCount="100" outputFile="/home/tom/cpd.txt">
         <fileset dir="/home/tom/tmp/ant">
             <include name="**/*.java"/>
@@ -431,7 +477,7 @@ Here's a screenshot of CPD after running on the JDK 8 java.lang package:
 
 ## Suppression
 
-Arbitrary blocks of code can be ignored through comments on **Java**, **C/C++**, **Dart**, **Go**, **Javascript**,
+Arbitrary blocks of code can be ignored through comments on **Java**, **C/C++**, **Dart**, **Go**, **Groovy**, **Javascript**,
 **Kotlin**, **Lua**, **Matlab**, **Objective-C**, **PL/SQL**, **Python**, **Scala**, **Swift** and **C#** by including the keywords `CPD-OFF` and `CPD-ON`.
 
 ```java

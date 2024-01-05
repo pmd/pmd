@@ -52,311 +52,9 @@ Contributors: [Clément Fournier](https://github.com/oowekyala) (@oowekyala),
 [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
 
 {% include note.html content="
-The full detailed documentation of the changes are still work in progress.
-
-Some first results of the Java AST changes are for now documented in the Wiki:
-[Java clean changes](https://github.com/pmd/pmd/wiki/Java_clean_changes).
-
-It is planned to move the contents of the wiki page into this document before the final release of PMD 7.
+The full detailed documentation of the changes are available in the
+[Migration Guide for PMD 7](pmd_userdocs_migrating_to_pmd7.html#java-ast)
 " %}
-
-{% jdoc_nspace :jast java::lang.java.ast %}
-
-#### Annotations
-
-Annotations are consolidated into a single node. `SingleMemberAnnotation`, `NormalAnnotation` and `MarkerAnnotation`
-are removed in favour of {% jdoc jast::ASTAnnotation %}. The Name node is removed, replaced by a
-{% jdoc jast::ASTClassOrInterfaceType %}.
-
-Those different node types implement a syntax-only distinction, that only makes semantically equivalent annotations
-have different possible representations. For example, `@A` and `@A()` are semantically equivalent, yet they were
-parsed as MarkerAnnotation resp. NormalAnnotation. Similarly, `@A("")` and `@A(value="")` were parsed as
-SingleMemberAnnotation resp. NormalAnnotation. This also makes parsing much simpler. The nested ClassOrInterface
-type is used to share the disambiguation logic.
-
-Related issue: [[java] Use single node for annotations (#2282)](https://github.com/pmd/pmd/pull/2282)
-
-<details>
-  <summary>Annotation AST Examples</summary>
-
-<table>
-<tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
-<tr><td>
-
-<pre><code>@A
-</code></pre>
-
-</td><td>
-
-<pre><code>+ Annotation
-  + MarkerAnnotation
-    + Name "A"
-</code></pre>
-
-</td><td>
-
-<pre><code>+ Annotation
-  + ClassOrInterfaceType "A"
-</code></pre>
-
-</td></tr>
-<tr><td>
-
-
-<pre><code>@A()
-</code></pre>
-
-</td>
-<td>
-
-<pre><code>+ Annotation
-  + NormalAnnotation
-    + Name "A"
-</code></pre>
-
-</td>
-<td>
-
-<pre><code>+ Annotation "A"
-  + ClassOrInterfaceType "A"
-  + AnnotationMemberList
-</code></pre>
-
-</td>
-</tr>
-<tr><td>
-
-
-<pre><code>@A(value="v")
-</code></pre>
-
-</td>
-<td>
-
-<pre><code>+ Annotation
-  + NormalAnnotation
-    + Name "A"
-    + MemberValuePairs
-      + MemberValuePair "value"
-        + MemberValue
-          + PrimaryExpression
-            + PrimaryPrefix
-              + Literal '"v"'
-</code></pre>
-
-</td>
-<td>
-
-<pre><code>+ Annotation "A"
-  + ClassOrInterfaceType "A"
-  + AnnotationMemberList
-    + MemberValuePair "value" [@Shorthand=false()]
-      + StringLiteral '"v"'
-</code></pre>
-
-</td>
-</tr>
-<tr><td>
-
-
-<pre><code>@A("v")
-</code></pre>
-
-</td>
-<td>
-
-<pre><code>+ Annotation
-  + SingleMemberAnnotation
-    + Name "A"
-    + MemberValue
-      + PrimaryExpression
-        + PrimaryPrefix
-          + Literal '"v"'
-</code></pre>
-
-</td>
-<td>
-
-<pre><code>+ Annotation "A"
-  + ClassOrInterfaceType "A"
-  + AnnotationMemberList
-    + MemberValuePair "value" [@Shorthand=true()]
-      + StringLiteral '"v"'
-</code></pre>
-
-</td>
-</tr>
-
-<tr><td>
-
-<pre><code>@A(value="v", on=true)
-</code></pre>
-
-</td>
-<td>
-
-<pre><code>+ Annotation
-  + NormalAnnotation
-    + Name "A"
-    + MemberValuePairs
-      + MemberValuePair "value"
-        + MemberValue
-          + PrimaryExpression
-            + PrimaryPrefix
-              + Literal '"v"'
-      + MemberValuePair "on"
-        + MemberValue
-          + PrimaryExpression
-            + PrimaryPrefix
-              + Literal
-                + BooleanLiteral [@True=true()]
-</code></pre>
-
-</td>
-<td>
-
-<pre><code>+ Annotation "A"
-  + ClassOrInterfaceType "A"
-  + AnnotationMemberList
-    + MemberValuePair "value" [@Shorthand=false()]
-      + StringLiteral '"v"'
-    + MemberValuePair "on"
-      + BooleanLiteral [@True=true()]
-</code></pre>
-
-</td>
-</tr>
-</table>
-
-</details>
-
-#### Types
-
-* {% jdoc jast::ASTType %} and {% jdoc jast::ASTReferenceType %} have been turned into
-  interfaces, implemented by {% jdoc jast::ASTPrimitiveType %}, {% jdoc jast::ASTClassOrInterfaceType %},
-  and the new node {% jdoc jast::ASTArrayType %}. This reduces the depth of the relevant
-  subtrees, and allows to explore them more easily and consistently.
-
-* {% jdoc jast::ASTClassOrInterfaceType %} appears to be left recursive now.
-  TODO document that when we're done discussing the semantic rewrite phase.
-
-* **Migrating**
-  * There is currently no way to match abstract types (or interfaces) with XPath, so `Type`
-    and `ReferenceType` name tests won't match anything anymore.
-  * `Type/ReferenceType/ClassOrInterfaceType` -> `ClassOrInterfaceType`
-  * `Type/PrimitiveType` -> `PrimitiveType`.
-  * `Type/ReferenceType[@ArrayDepth>1]/ClassOrInterfaceType` -> `ArrayType/ClassOrInterfaceType`.
-  * `Type/ReferenceType/PrimitiveType` -> `ArrayType/PrimitiveType`.
-  * Note that in most cases you should check the type of a variable with e.g.
-    `VariableDeclaratorId[pmd-java:typeIs("java.lang.String[]")]` because it
-    considers the additional dimensions on declarations like `String foo[];`.
-    The Java equivalent is `TypeHelper.isA(id, String[].class);`
-
-#### Declarations
-
-TODO
-
-#### Statements
-
-TODO
-
-#### Expressions
-
-* {% jdoc jast::ASTExpression %} and {% jdoc jast::ASTPrimaryExpression %} have
-  been turned into interfaces. These added no information to the AST and increased
-  its depth unnecessarily. All expressions implement the first interface. Both of
-  those nodes can no more be found in ASTs.
-
-* **Migrating**:
-  * Basically, `Expression/X` or `Expression/PrimaryExpression/X`, just becomes `X`
-  * There is currently no way to match abstract or interface types with XPath, so `Expression` or `PrimaryExpression` 
-    name tests won't match anything anymore. However, the axis step *[@Expression=true()] matches any expression.
-
-* {% jdoc jast::ASTLiteral %} has been turned into an interface. The fact that {% jdoc jast::ASTNullLiteral %}
-  and {% jdoc jast::ASTBooleanLiteral %} were nested within it but other literals types were all directly represented
-  by it was inconsistent, and ultimately that level of nesting was unnecessary.
-  * {% jdoc jast::ASTNumericLiteral %}, {% jdoc jast::ASTCharLiteral %}, {% jdoc jast::ASTStringLiteral %},
-    and {% jdoc jast::ASTClassLiteral %} are new nodes that implement that interface.
-  * ASTLiteral implements {% jdoc jast::ASTPrimaryExpression %}
-
-* **Migrating**:
-  * Remove all `/Literal/` segments from your XPath expressions
-  * If you tested several types of literals, you can e.g. do it like `/*[self::StringLiteral or self::CharLiteral]/`
-  * As is usual, use the designer to explore the new AST structure
-
-* The nodes {% jdoc_old jast::ASTPrimaryPrefix %} and {% jdoc_old jast::ASTPrimarySuffix %} are removed from the
-  grammar. Subtrees for primary expressions appear to be left-recursive now. For example,
-
-```java
-new Foo().bar.foo(1)
-```
-used to be parsed as
-```
-Expression
-+ PrimaryExpression
-  + PrimaryPrefix
-    + AllocationExpression
-      + ClassOrInterfaceType[@Image="Foo"]
-  + PrimarySuffix
-    + Arguments
-  + PrimarySuffix
-    + Name[@Image="bar.foo"]
-  + PrimarySuffix
-    + Arguments
-      + ArgumentsList
-        + Expression
-          + PrimaryExpression
-            + Literal[@ValueAsInt=1]
-```
-It's now parsed as
-```
-MethodCall[@MethodName="foo"]
-+ FieldAccess[@FieldName="bar"]
-  + ConstructorCall
-    + ClassOrInterfaceType[@TypeImage="Foo"]
-    + ArgumentsList
-+ ArgumentsList
-  + NumericLiteral[@ValueAsInt=1]
-```
-Instead of being flat, the subexpressions are now nested within one another.
-The nesting follows the naturally recursive structure of expressions:
-
-```java
-new Foo().bar.foo(1)
----------            ConstructorCall
--------------        FieldAccess
--------------------- MethodCall
-```
-This makes the AST more regular and easier to navigate. Each node contains
-the other nodes that are relevant to it (e.g. arguments) instead of them
-being spread out over several siblings. The API of all nodes has been
-enriched with high-level accessors to query the AST in a semantic way,
-without bothering with the placement details.
-
-The amount of changes in the grammar that this change entails is enormous,
-but hopefully firing up the designer to inspect the new structure should
-give you the information you need quickly.
-
-TODO write a summary of changes in the javadoc of the package, will be more
-accessible.
-
-Note: this doesn't affect binary expressions like {% jdoc jast::ASTAdditiveExpression %}.
-E.g. `a+b+c` is not parsed as
-```
-AdditiveExpression
-+ AdditiveExpression
-  + (a)
-  + (b)
-+ (c)  
-``` 
-It's still
-```
-AdditiveExpression
-+ (a)
-+ (b)
-+ (c)  
-``` 
-which is easier to navigate, especially from XPath.
 
 ### Revamped Command Line Interface
 
@@ -416,11 +114,10 @@ current progress of the analysis.
 This can be disabled with the `--no-progress` flag.
 
 Finally, we now provide a completion script for Bash/Zsh to further help daily usage.
-This script can be found under `shell/pmd-completion.sh` in the binary distribution.
 To use it, edit your `~/.bashrc` / `~/.zshrc` file and add the following line:
 
 ```
-source *path_to_pmd*/shell/pmd-completion.sh
+source <(pmd generate-completion)
 ```
 
 Contributors: [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
@@ -446,7 +143,7 @@ Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 This PMD release ships a new version of the pmd-designer.
 For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designer/releases/tag/7.0.0-rc1).
 
-#### New CPD report format cpdhtml-v2.xslt
+### New CPD report format cpdhtml-v2.xslt
 
 Thanks to @mohan-chinnappan-n a new CPD report format has been added which features a data table.
 It uses an XSLT stylesheet to convert CPD's XML format into HTML.
@@ -457,8 +154,12 @@ See [the example report](report-examples/cpdhtml-v2.html).
 
 ### New: Swift support
 
-Given the full Antlr support, PMD now fully supports Swift. We are pleased to announce we are shipping a number of
-rules starting with PMD 7.
+Given the full Antlr support, PMD now fully supports Swift for creating rules. Previously only CPD was supported.
+
+Note: There is only limited support for newer Swift language features in the parser, e.g. Swift 5.9 (Macro Expansions)
+are supported, but other features are not.
+
+We are pleased to announce we are shipping a number of rules starting with PMD 7.
 
 * {% rule "swift/errorprone/ForceCast" %} (`swift-errorprone`) flags all force casts, making sure you are
   defensively considering all types. Having the application crash shouldn't be an option.
@@ -517,6 +218,35 @@ module `pmd-coco`.
 
 Contributors: [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
 
+### New: Java 21 Support
+
+This release of PMD brings support for Java 21. There are the following new standard language features,
+that are supported now:
+
+* [JEP 440: Record Patterns](https://openjdk.org/jeps/440)
+* [JEP 441: Pattern Matching for switch](https://openjdk.org/jeps/441)
+
+PMD also supports the following preview language features:
+
+* [JEP 430: String Templates (Preview)](https://openjdk.org/jeps/430)
+* [JEP 443: Unnamed Patterns and Variables (Preview)](https://openjdk.org/jeps/443)
+* [JEP 445: Unnamed Classes and Instance Main Methods (Preview)](https://openjdk.org/jeps/445)
+
+In order to analyze a project with PMD that uses these language features,
+you'll need to enable it via the environment variable `PMD_JAVA_OPTS` and select the new language
+version `21-preview`:
+
+    export PMD_JAVA_OPTS=--enable-preview
+    pmd check --use-version java-21-preview ...
+
+Note: Support for Java 19 preview language features have been removed. The version "19-preview" is no longer available.
+
+### New: CPD support for Apache Velocity Template Language
+
+PMD supports Apache Velocity for a very long time, but the CPD integration never got finished.
+This is now done and CPD supports Apache Velocity Template language for detecting copy and paste.
+It is shipped in the module `pmd-vm`.
+
 ### Changed: JavaScript support
 
 The JS specific parser options have been removed. The parser now always retains comments and uses version ES6.
@@ -544,15 +274,29 @@ Related issue: [[core] Explicitly name all language versions (#4120)](https://gi
   literals were ignored. The new option additional ignores identifiers as well in sequences.
 * See [PR #4470](https://github.com/pmd/pmd/pull/4470) for details.
 
+### Changed: Apex Jorje Updated
+
+With the new version of Apex Jorje, the new language constructs like User Mode Database Operations
+can be parsed now. PMD should now be able to parse Apex code up to version 59.0 (Winter '23).
+
+### Changed: Groovy Support (CPD)
+
+* We now support parsing all Groovy features from Groovy 3 and 4.
+* We now support [suppression](pmd_userdocs_cpd.html#suppression) through `CPD-ON`/`CPD-OFF` comment pairs.
+* See [PR #4726](https://github.com/pmd/pmd/pull/4726) for details.
+
 ## 🌟 New and changed rules
 
 ### New Rules
 
 **Apex**
 * {% rule apex/design/UnusedMethod %} finds unused methods in your code.
+* {% rule apex/performance/OperationWithHighCostInLoop %} finds Schema class methods called in a loop, which is a
+  potential performance issue.
 
 **Java**
 * {% rule java/codestyle/UnnecessaryBoxing %} reports boxing and unboxing conversions that may be made implicit.
+* {% rule java/codestyle/UseExplicitTypes %} reports usages of `var` keyword, which was introduced with Java 10.
 
 **Kotlin**
 * {% rule kotlin/bestpractices/FunctionNameTooShort %}
@@ -563,6 +307,9 @@ Related issue: [[core] Explicitly name all language versions (#4120)](https://gi
 * {% rule swift/bestpractices/UnavailableFunction %}
 * {% rule swift/errorprone/ForceCast %}
 * {% rule swift/errorprone/ForceTry %}
+
+**XML**
+* {% rule xml/bestpractices/MissingEncoding %} finds XML files without explicit encoding.
 
 ### Changed Rules
 
@@ -679,7 +426,7 @@ Related issue: [[core] Explicitly name all language versions (#4120)](https://gi
 
 ### Deprecated Rules
 
-In PMD 7.0.0, there are now deprecated rules.
+In PMD 7.0.0, there are no deprecated rules.
 
 ### Removed Rules
 
@@ -687,95 +434,101 @@ The following previously deprecated rules have been finally removed:
 
 **Apex**
 
-* {% deleted_rule apex/performance/AvoidSoqlInLoops %} -> use {% rule apex/performance/OperationWithLimitsInLoop %}
-* {% deleted_rule apex/performance/AvoidSoslInLoops %} -> use {% rule apex/performance/OperationWithLimitsInLoop %}
-* {% deleted_rule apex/performance/AvoidDmlStatementsInLoops %} -> use {% rule apex/performance/OperationWithLimitsInLoop %}
-* {% deleted_rule apex/codestyle/VariableNamingConventions %} -> use {% rule apex/codestyle/FieldNamingConventions %},
+* {% deleted_rule apex/performance/AvoidSoqlInLoops %} ➡️ use {% rule apex/performance/OperationWithLimitsInLoop %}
+* {% deleted_rule apex/performance/AvoidSoslInLoops %} ➡️ use {% rule apex/performance/OperationWithLimitsInLoop %}
+* {% deleted_rule apex/performance/AvoidDmlStatementsInLoops %} ➡️ use {% rule apex/performance/OperationWithLimitsInLoop %}
+* {% deleted_rule apex/codestyle/VariableNamingConventions %} ➡️ use {% rule apex/codestyle/FieldNamingConventions %},
   {% rule apex/codestyle/FormalParameterNamingConventions %}, {% rule apex/codestyle/LocalVariableNamingConventions %},
   or {% rule apex/codestyle/PropertyNamingConventions %}
+* {% deleted_rule apex/security/ApexCSRF %} ➡️ use {% rule apex/errorprone/ApexCSRF %}
 
 **Java**
 
-* {% deleted_rule java/codestyle/AbstractNaming %} -> use {% rule java/codestyle/ClassNamingConventions %}
-* AvoidFinalLocalVariable (java-codestyle) -> not replaced
-* AvoidPrefixingMethodParameters (java-codestyle) -> use {% rule "java/codestyle/FormalParameterNamingConventions" %}
-* AvoidUsingShortType (java-performance) -> not replaced
-* BadComparison (java-errorprone) -> use {% rule "java/errorprone/ComparisonWithNaN" %}
-* BeanMembersShouldSerialize (java-errorprone) -> use {% rule java/errorprone/NonSerializableClass %}
-* BooleanInstantiation (java-performance) -> use {% rule "java/codestyle/UnnecessaryBoxing" %}
+* {% deleted_rule java/codestyle/AbstractNaming %} ➡️ use {% rule java/codestyle/ClassNamingConventions %}
+* AvoidFinalLocalVariable (java-codestyle) ➡️ not replaced
+* AvoidPrefixingMethodParameters (java-codestyle) ➡️ use {% rule "java/codestyle/FormalParameterNamingConventions" %}
+* AvoidUsingShortType (java-performance) ➡️ not replaced
+* BadComparison (java-errorprone) ➡️ use {% rule "java/errorprone/ComparisonWithNaN" %}
+* BeanMembersShouldSerialize (java-errorprone) ➡️ use {% rule java/errorprone/NonSerializableClass %}
+* BooleanInstantiation (java-performance) ➡️ use {% rule "java/codestyle/UnnecessaryBoxing" %}
   and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
-* ByteInstantiation (java-performance) -> use {% rule "java/codestyle/UnnecessaryBoxing" %}
+* ByteInstantiation (java-performance) ➡️ use {% rule "java/codestyle/UnnecessaryBoxing" %}
   and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
-* CloneThrowsCloneNotSupportedException (java-errorprone) -> not replaced
-* DataflowAnomalyAnalysis (java-errorprone) -> use {% rule java/bestpractices/UnusedAssignment %}
-* DefaultPackage (java-codestyle) -> use {% rule "java/codestyle/CommentDefaultAccessModifier" %}
-* DoNotCallSystemExit (java-errorprone) -> use {% rule "java/errorprone/DoNotTerminateVM" %}
-* DontImportJavaLang (java-codestyle) -> use {% rule java/codestyle/UnnecessaryImport %}
-* DuplicateImports (java-codestyle) -> use {% rule java/codestyle/UnnecessaryImport %}
-* EmptyFinallyBlock (java-errorprone) -> use {% rule java/codestyle/EmptyControlStatement %}
-* EmptyIfStmt (java-errorprone) -> use {% rule java/codestyle/EmptyControlStatement %}
-* EmptyInitializer (java-errorprone) -> use {% rule java/codestyle/EmptyControlStatement %}
-* EmptyStatementBlock (java-errorprone) -> use {% rule java/codestyle/EmptyControlStatement %}
-* EmptyStatementNotInLoop (java-errorprone) -> use {% rule java/codestyle/UnnecessarySemicolon %}
-* EmptySwitchStatements (java-errorprone) -> use {% rule java/codestyle/EmptyControlStatement %}
-* EmptySynchronizedBlock (java-errorprone) -> use {% rule java/codestyle/EmptyControlStatement %}
-* EmptyTryBlock (java-errorprone) -> use {% rule java/codestyle/EmptyControlStatement %}
-* EmptyWhileStmt (java-errorprone) -> use {% rule java/codestyle/EmptyControlStatement %}
-* ExcessiveClassLength (java-design) -> use {% rule java/design/NcssCount %}
-* ExcessiveMethodLength (java-design) -> use {% rule java/design/NcssCount %}
-* ForLoopsMustUseBraces (java-codestyle) -> use {% rule java/codestyle/ControlStatementBraces %}
-* IfElseStmtsMustUseBraces (java-codestyle) -> use {% rule java/codestyle/ControlStatementBraces %}
-* IfStmtsMustUseBraces (java-codestyle) -> use {% rule java/codestyle/ControlStatementBraces %}
-* ImportFromSamePackage (java-errorprone) -> use {% rule java/codestyle/UnnecessaryImport %}
-* IntegerInstantiation (java-performance) -> use {% rule java/codestyle/UnnecessaryBoxing %}
+* CloneThrowsCloneNotSupportedException (java-errorprone) ➡️ not replaced
+* DataflowAnomalyAnalysis (java-errorprone) ➡️ use {% rule java/bestpractices/UnusedAssignment %}
+* DefaultPackage (java-codestyle) ➡️ use {% rule "java/codestyle/CommentDefaultAccessModifier" %}
+* DoNotCallSystemExit (java-errorprone) ➡️ use {% rule "java/errorprone/DoNotTerminateVM" %}
+* DontImportJavaLang (java-codestyle) ➡️ use {% rule java/codestyle/UnnecessaryImport %}
+* DuplicateImports (java-codestyle) ➡️ use {% rule java/codestyle/UnnecessaryImport %}
+* EmptyFinallyBlock (java-errorprone) ➡️ use {% rule java/codestyle/EmptyControlStatement %}
+* EmptyIfStmt (java-errorprone) ➡️ use {% rule java/codestyle/EmptyControlStatement %}
+* EmptyInitializer (java-errorprone) ➡️ use {% rule java/codestyle/EmptyControlStatement %}
+* EmptyStatementBlock (java-errorprone) ➡️ use {% rule java/codestyle/EmptyControlStatement %}
+* EmptyStatementNotInLoop (java-errorprone) ➡️ use {% rule java/codestyle/UnnecessarySemicolon %}
+* EmptySwitchStatements (java-errorprone) ➡️ use {% rule java/codestyle/EmptyControlStatement %}
+* EmptySynchronizedBlock (java-errorprone) ➡️ use {% rule java/codestyle/EmptyControlStatement %}
+* EmptyTryBlock (java-errorprone) ➡️ use {% rule java/codestyle/EmptyControlStatement %}
+* EmptyWhileStmt (java-errorprone) ➡️ use {% rule java/codestyle/EmptyControlStatement %}
+* ExcessiveClassLength (java-design) ➡️ use {% rule java/design/NcssCount %}
+* ExcessiveMethodLength (java-design) ➡️ use {% rule java/design/NcssCount %}
+* ForLoopsMustUseBraces (java-codestyle) ➡️ use {% rule java/codestyle/ControlStatementBraces %}
+* IfElseStmtsMustUseBraces (java-codestyle) ➡️ use {% rule java/codestyle/ControlStatementBraces %}
+* IfStmtsMustUseBraces (java-codestyle) ➡️ use {% rule java/codestyle/ControlStatementBraces %}
+* ImportFromSamePackage (java-errorprone) ➡️ use {% rule java/codestyle/UnnecessaryImport %}
+* IntegerInstantiation (java-performance) ➡️ use {% rule java/codestyle/UnnecessaryBoxing %}
   and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
-* InvalidSlf4jMessageFormat (java-errorprone) ->  use {% rule "java/errorprone/InvalidLogMessageFormat" %}
-* LoggerIsNotStaticFinal (java-errorprone) -> use {% rule java/errorprone/ProperLogger %}
-* LongInstantiation (java-performance) -> use {% rule "java/codestyle/UnnecessaryBoxing" %}
+* InvalidSlf4jMessageFormat (java-errorprone) ➡️  use {% rule "java/errorprone/InvalidLogMessageFormat" %}
+* LoggerIsNotStaticFinal (java-errorprone) ➡️ use {% rule java/errorprone/ProperLogger %}
+* LongInstantiation (java-performance) ➡️ use {% rule "java/codestyle/UnnecessaryBoxing" %}
   and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
-* MIsLeadingVariableName (java-codestyle) -> use {% rule java/codestyle/FieldNamingConventions %},
+* MIsLeadingVariableName (java-codestyle) ➡️ use {% rule java/codestyle/FieldNamingConventions %},
   {% rule java/codestyle/FormalParameterNamingConventions %},
   or {% rule java/codestyle/LocalVariableNamingConventions %}
-* MissingBreakInSwitch (java-errorprone) ->  use {% rule "java/errorprone/ImplicitSwitchFallThrough" %}
-* ModifiedCyclomaticComplexity (java-design) -> use {% rule "java/design/CyclomaticComplexity" %}
-* NcssConstructorCount (java-design) -> use {% rule java/design/NcssCount %}
-* NcssMethodCount (java-design) -> use {% rule java/design/NcssCount %}
-* NcssTypeCount (java-design) -> use {% rule java/design/NcssCount %}
-* PositionLiteralsFirstInCaseInsensitiveComparisons (java-bestpractices) ->
+* MissingBreakInSwitch (java-errorprone) ➡️  use {% rule "java/errorprone/ImplicitSwitchFallThrough" %}
+* ModifiedCyclomaticComplexity (java-design) ➡️ use {% rule "java/design/CyclomaticComplexity" %}
+* NcssConstructorCount (java-design) ➡️ use {% rule java/design/NcssCount %}
+* NcssMethodCount (java-design) ➡️ use {% rule java/design/NcssCount %}
+* NcssTypeCount (java-design) ➡️ use {% rule java/design/NcssCount %}
+* PositionLiteralsFirstInCaseInsensitiveComparisons (java-bestpractices) ➡️
   use {% rule "java/bestpractices/LiteralsFirstInComparisons" %}
-* PositionLiteralsFirstInComparisons (java-bestpractices) ->
+* PositionLiteralsFirstInComparisons (java-bestpractices) ➡️
   use {% rule "java/bestpractices/LiteralsFirstInComparisons" %}
-* ReturnEmptyArrayRatherThanNull (java-errorprone) ->
+* ReturnEmptyArrayRatherThanNull (java-errorprone) ➡️
   use {% rule "java/errorprone/ReturnEmptyCollectionRatherThanNull" %}
-* ShortInstantiation (java-performance) -> use {% rule "java/codestyle/UnnecessaryBoxing" %}
+* ShortInstantiation (java-performance) ➡️ use {% rule "java/codestyle/UnnecessaryBoxing" %}
   and {% rule "java/bestpractices/PrimitiveWrapperInstantiation" %}
-* SimplifyBooleanAssertion (java-design) -> use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
-* SimplifyStartsWith (java-performance) -> not replaced
-* StdCyclomaticComplexity (java-design) -> use {% rule "java/design/CyclomaticComplexity" %}
-* SuspiciousConstantFieldName (java-codestyle) -> use {% rule java/codestyle/FieldNamingConventions %}
-* UnnecessaryWrapperObjectCreation (java-performance) -> use the new rule {% rule "java/codestyle/UnnecessaryBoxing" %}
-* UnsynchronizedStaticDateFormatter (java-multithreading) ->
+* SimplifyBooleanAssertion (java-design) ➡️ use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
+* SimplifyStartsWith (java-performance) ➡️ not replaced
+* StdCyclomaticComplexity (java-design) ➡️ use {% rule "java/design/CyclomaticComplexity" %}
+* SuspiciousConstantFieldName (java-codestyle) ➡️ use {% rule java/codestyle/FieldNamingConventions %}
+* UnnecessaryWrapperObjectCreation (java-performance) ➡️ use the new rule {% rule "java/codestyle/UnnecessaryBoxing" %}
+* UnsynchronizedStaticDateFormatter (java-multithreading) ➡️
   use {% rule java/multithreading/UnsynchronizedStaticFormatter %}
-* UnusedImports (java-bestpractices) -> use {% rule java/codestyle/UnnecessaryImport %}
-* UseAssertEqualsInsteadOfAssertTrue (java-bestpractices) ->
+* UnusedImports (java-bestpractices) ➡️ use {% rule java/codestyle/UnnecessaryImport %}
+* UseAssertEqualsInsteadOfAssertTrue (java-bestpractices) ➡️
   use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
-* UseAssertNullInsteadOfAssertEquals (java-bestpractices) ->
+* UseAssertNullInsteadOfAssertEquals (java-bestpractices) ➡️
   use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
-* UseAssertSameInsteadOfAssertEquals (java-bestpractices) ->
+* UseAssertSameInsteadOfAssertEquals (java-bestpractices) ➡️
   use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
-* UseAssertTrueInsteadOfAssertEquals (java-bestpractices) ->
+* UseAssertTrueInsteadOfAssertEquals (java-bestpractices) ➡️
   use {% rule "java/bestpractices/SimplifiableTestAssertion" %}
-* VariableNamingConventions (java-codestyle) -> use {% rule java/codestyle/FieldNamingConventions %},
+* VariableNamingConventions (java-codestyle) ➡️ use {% rule java/codestyle/FieldNamingConventions %},
   {% rule java/codestyle/FormalParameterNamingConventions %},
   or {% rule java/codestyle/LocalVariableNamingConventions %}
-* WhileLoopsMustUseBraces (java-codestyle) -> use {% rule "java/codestyle/ControlStatementBraces" %}
+* WhileLoopsMustUseBraces (java-codestyle) ➡️ use {% rule "java/codestyle/ControlStatementBraces" %}
 
 ## 💥 Compatibility and Migration Notes
+
+{% include note.html content="
+The full detailed documentation of the changes are available in the
+[Migration Guide for PMD 7](pmd_userdocs_migrating_to_pmd7.html)
+" %}
 
 ### For endusers
 
 * PMD 7 requires Java 8 or above to execute.
-* CLI changed: Custom scripts need to be updated (`run.sh pmd ...` -> `pmd check ...`, `run.sh cpd ...`, `pmd cpd ...`).
+* CLI changed: Custom scripts need to be updated (`run.sh pmd ...` ➡️ `pmd check ...`, `run.sh cpd ...`, `pmd cpd ...`).
 * Java module revamped: Custom rules need to be updated.
 * Removed rules: Custom rulesets need to be reviewed. See below for a list of new and removed rules.
 * XPath 1.0 support is removed, `violationSuppressXPath` now requires XPath 2.0 or 3.1: Custom rulesets need
@@ -983,8 +736,230 @@ and [Adding a new language with ANTLR](pmd_devdocs_major_adding_new_language_ant
 
 Related issue: [[core] Language lifecycle (#3782)](https://github.com/pmd/pmd/issues/3782)
 
+### Rule properties
+
+* The old deprecated classes like `IntProperty` and `StringProperty` have been removed. Please use
+  {% jdoc core::properties.PropertyFactory %} to create properties.
+* All properties which accept multiple values now use a comma (`,`) as a delimiter. The previous default was a
+  pipe character (`|`). The delimiter is not configurable anymore. If needed, the comma can be escaped
+  with a backslash.
+* The `min` and `max` attributes in property definitions in the XML are now optional and can appear separately
+  or be omitted.
+
+### New Programmatic API for CPD
+
+This release introduces a new programmatic API to replace the old class `CPD`. The new API uses a similar model to
+{% jdoc core::PmdAnalysis %} and is called {% jdoc core::cpd.CpdAnalysis %}. Programmatic execution of CPD should now be
+done with a {% jdoc core::cpd.CPDConfiguration %} and a {% jdoc core::cpd.CpdAnalysis %}, for instance:
+
+```java
+CPDConfiguration config = new CPDConfiguration();
+config.setMinimumTileSize(100);
+config.setOnlyRecognizeLanguage(config.getLanguageRegistry().getLanguageById("java"));
+config.setSourceEncoding(StandardCharsets.UTF_8);
+config.addInputPath(Path.of("src/main/java")
+
+config.setIgnoreAnnotations(true);
+config.setIgnoreLiterals(false);
+
+config.setRendererName("text");
+
+try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
+   // note: don't use `config` once a CpdAnalysis has been created.
+   // optional: add more files
+   cpd.files().addFile(Paths.get("src", "main", "more-java", "ExtraSource.java"));
+
+   cpd.performAnalysis();
+}
+```
+
+CPD can of course still be called via command line or using the module `pmd-cli`. But for tight integration
+this new programmatic API is recommended.
+
+See [PR #4397](https://github.com/pmd/pmd/pull/4397) for details.
 
 ### API changes
+
+#### 7.0.0-rc4
+
+##### pmd-java
+
+* Support for Java 19 preview language features have been removed. The version "19-preview" is no longer available.
+
+##### Rule properties
+
+* The old deprecated classes like `IntProperty` and `StringProperty` have been removed. Please use
+  {% jdoc core::properties.PropertyFactory %} to create properties.
+* All properties which accept multiple values now use a comma (`,`) as a delimiter. The previous default was a
+  pipe character (`|`). The delimiter is not configurable anymore. If needed, the comma can be escaped
+  with a backslash.
+* The `min` and `max` attributes in property definitions in the XML are now optional and can appear separately
+  or be omitted.
+
+##### New Programmatic API for CPD
+
+See [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.html#new-programmatic-api-for-cpd)
+and [PR #4397](https://github.com/pmd/pmd/pull/4397) for details.
+
+##### Removed classes and methods
+
+The following previously deprecated classes have been removed:
+
+* pmd-core
+  * `net.sourceforge.pmd.cpd.AbstractTokenizer` ➡️ use {%jdoc core::cpd.AnyTokenizer %} instead
+  * `net.sourceforge.pmd.cpd.CPD` ➡️ use {% jdoc cli::cli.PmdCli %} from `pmd-cli` module for CLI support or use
+    {%jdoc core::cpd.CpdAnalysis %} for programmatic API
+  * `net.sourceforge.pmd.cpd.GridBagHelper` (now package private)
+  * `net.sourceforge.pmd.cpd.TokenEntry.State`
+  * `net.sourceforge.pmd.lang.document.CpdCompat`
+  * `net.sourceforge.pmd.properties.BooleanMultiProperty`
+  * `net.sourceforge.pmd.properties.BooleanProperty`
+  * `net.sourceforge.pmd.properties.CharacterMultiProperty`
+  * `net.sourceforge.pmd.properties.CharacterProperty`
+  * `net.sourceforge.pmd.properties.DoubleMultiProperty`
+  * `net.sourceforge.pmd.properties.DoubleProperty`
+  * `net.sourceforge.pmd.properties.EnumeratedMultiProperty`
+  * `net.sourceforge.pmd.properties.EnumeratedProperty`
+  * `net.sourceforge.pmd.properties.EnumeratedPropertyDescriptor`
+  * `net.sourceforge.pmd.properties.FileProperty` (note: without replacement)
+  * `net.sourceforge.pmd.properties.FloatMultiProperty`
+  * `net.sourceforge.pmd.properties.FloatProperty`
+  * `net.sourceforge.pmd.properties.IntegerMultiProperty`
+  * `net.sourceforge.pmd.properties.IntegerProperty`
+  * `net.sourceforge.pmd.properties.LongMultiProperty`
+  * `net.sourceforge.pmd.properties.LongProperty`
+  * `net.sourceforge.pmd.properties.MultiValuePropertyDescriptor`
+  * `net.sourceforge.pmd.properties.NumericPropertyDescriptor`
+  * `net.sourceforge.pmd.properties.PropertyDescriptorField`
+  * `net.sourceforge.pmd.properties.RegexProperty`
+  * `net.sourceforge.pmd.properties.SingleValuePropertyDescriptor`
+  * `net.sourceforge.pmd.properties.StringMultiProperty`
+  * `net.sourceforge.pmd.properties.StringProperty`
+  * `net.sourceforge.pmd.properties.ValueParser`
+  * `net.sourceforge.pmd.properties.ValueParserConstants`
+  * `net.sourceforge.pmd.properties.builders.MultiNumericPropertyBuilder`
+  * `net.sourceforge.pmd.properties.builders.MultiPackagedPropertyBuilder`
+  * `net.sourceforge.pmd.properties.builders.MultiValuePropertyBuilder`
+  * `net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilder`
+  * `net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper`
+  * `net.sourceforge.pmd.properties.builders.PropertyDescriptorExternalBuilder`
+  * `net.sourceforge.pmd.properties.builders.SingleNumericPropertyBuilder`
+  * `net.sourceforge.pmd.properties.builders.SinglePackagedPropertyBuilder`
+  * `net.sourceforge.pmd.properties.builders.SingleValuePropertyBuilder`
+  * `net.sourceforge.pmd.properties.modules.EnumeratedPropertyModule`
+  * `net.sourceforge.pmd.properties.modules.NumericPropertyModule`
+
+The following previously deprecated methods have been removed:
+
+* pmd-core
+  * `net.sourceforge.pmd.properties.PropertyBuilder.GenericCollectionPropertyBuilder#delim(char)`
+  * `net.sourceforge.pmd.properties.PropertySource#setProperty(...)`
+  * `net.sourceforge.pmd.properties.PropertyTypeId#factoryFor(...)`
+  * `net.sourceforge.pmd.properties.PropertyTypeId#typeIdFor(...)`
+  * `net.sourceforge.pmd.properties.PropertyDescriptor`: removed methods errorFor, type, isMultiValue,
+    uiOrder, compareTo, isDefinedExternally, valueFrom, asDelimitedString
+
+The following methods have been removed:
+
+* pmd-core
+  * {%jdoc core::cpd.CPDConfiguration %}
+    * `#sourceCodeFor(File)`, `#postConstruct()`, `#tokenizer()`, `#filenameFilter()` removed
+  * {%jdoc core::cpd.Mark %}
+    * `#getSourceSlice()`, `#setLineCount(int)`, `#getLineCount()`, `#setSourceCode(SourceCode)` removed
+    * `#getBeginColumn()`, `#getBeginLine()`, `#getEndLine()`, `#getEndColumn()` removed
+      ➡️ use {%jdoc core::cpd.Mark#getLocation() %} instead
+  * {%jdoc core::cpd.Match %}
+    * `#LABEL_COMPARATOR` removed
+    * `#setMarkSet(...)`, `#setLabel(...)`, `#getLabel()`, `#addTokenEntry(...)` removed
+    * `#getSourceCodeSlice()` removed
+      ➡️ use {%jdoc !!core::cpd.CPDReport#getSourceCodeSlice(net.sourceforge.pmd.cpd.Mark) %} instead
+  * {%jdoc core::cpd.TokenEntry %}
+    * `#getEOF()`, `#clearImages()`, `#getIdentifier()`, `#getIndex()`, `#setHashCode(int)` removed
+    * `#EOF` removed ➡️ use {%jdoc core::cpd.TokenEntry#isEof() %} instead
+  * {%jdoc core::lang.ast.Parser.ParserTask %}
+    * `#getFileDisplayName()` removed ➡️ use {%jdoc core::lang.ast.Parser.ParserTask#getFileId() %} instead
+      (`getFileId().getAbsolutePath()`)
+
+The following classes have been removed:
+
+* pmd-core
+  * `net.sourceforge.pmd.cpd.AbstractLanguage`
+  * `net.sourceforge.pmd.cpd.AnyLanguage`
+  * `net.sourceforge.pmd.cpd.Language`
+  * `net.sourceforge.pmd.cpd.LanguageFactory`
+  * `net.sourceforge.pmd.cpd.MatchAlgorithm` (now package private)
+  * `net.sourceforge.pmd.cpd.MatchCollector` (now package private)
+  * `net.sourceforge.pmd.cpd.SourceCode` (and all inner classes like `FileCodeLoader`, ...)
+  * `net.sourceforge.pmd.cpd.token.TokenFilter`
+
+##### Moved packages
+
+* pmd-core
+  * {%jdoc core::net.sourceforge.pmd.properties.NumericConstraints %} (old package: `net.sourceforge.pmd.properties.constraints.NumericConstraints`)
+  * {%jdoc core::net.sourceforge.pmd.properties.PropertyConstraint %} (old package: `net.sourceforge.pmd.properties.constraints.PropertyConstraint`)
+    * not experimental anymore
+  * {%jdoc ant::ant.ReportException %} (old package: `net.sourceforge.pmd.cpd`, moved to module `pmd-ant`)
+    * it is now a RuntimeException
+  * {%jdoc core::cpd.CPDReportRenderer %} (old package: `net.sourceforge.pmd.cpd.renderer`)
+  * {%jdoc core::cpd.impl.AntlrTokenFilter %} (old package: `net.sourceforge.pmd.cpd.token`)
+  * {%jdoc core::cpd.impl.BaseTokenFilter %} (old package: `net.sourceforge.pmd.cpd.token.internal`)
+  * {%jdoc core::cpd.impl.JavaCCTokenFilter %} (old package: `net.sourceforge.pmd.cpd.token`)
+
+##### Changed types and other changes
+
+* pmd-core
+  * {%jdoc core::net.sourceforge.pmd.properties.PropertyDescriptor %} is now a class (was an interface)
+    and it is not comparable anymore.
+  * {%jdoc !!core::AbstractConfiguration#setSourceEncoding(java.nio.charset.Charset) %}
+    * previously this method took a simple String for the encoding.
+  * {%jdoc core::PmdConfiguration %} and {%jdoc core::cpd.CPDConfiguration %}
+    * many getters and setters have been moved to the parent class {%jdoc core::AbstractConfiguration %}
+  * {%jdoc !!core::cpd.CPDListener#addedFile(int) %}
+    * no `File` parameter anymore
+  * {%jdoc !!core::cpd.CPDReport#getNumberOfTokensPerFile() %} returns a `Map` of `FileId,Integer` instead of `String`
+  * {%jdoc !!core::cpd.CPDReport#filterMatches(java.util.function.Predicate) %} now takes a `java.util.function.Predicate`
+    as parameter
+  * {%jdoc core::cpd.Tokenizer %}
+    * constants are now {%jdoc core::properties.PropertyDescriptor %} instead of `String`,
+      to be used as language properties
+    * {%jdoc core::cpd.Tokenizer#tokenize(net.sourceforge.pmd.lang.document.TextDocument, net.sourceforge.pmd.cpd.TokenFactory) %}
+      changed parameters. Now takes a {%jdoc core::lang.document.TextDocument %} and a {%jdoc core::cpd.TokenFactory %}
+      (instead of `SourceCode` and `Tokens`)
+  * {% jdoc core::lang.Language %}
+    * method `#createProcessor(LanguagePropertyBundle)` moved to {%jdoc core::lang.PmdCapableLanguage %}
+  * {% jdoc !!core::util.StringUtil#linesWithTrimIndent(net.sourceforge.pmd.lang.document.Chars) %} now takes a `Chars`
+    instead of a `String`.
+* All language modules (like pmd-apex, pmd-cpp, ...)
+  * consistent package naming: `net.sourceforge.pmd.lang.<langId>.cpd`
+  * adapted to use {% jdoc core::cpd.CpdCapableLanguage %}
+  * consistent static method `#getInstance()`
+  * removed constants like `ID`, `TERSE_NAME` or `NAME`. Use `getInstance().getName()` etc. instead
+
+##### Internal APIs
+
+* {% jdoc core::cpd.Tokens %}
+* {% jdoc core::net.sourceforge.pmd.properties.PropertyTypeId %}
+
+##### Deprecated API
+
+* {% jdoc !!core::lang.Language#getTerseName() %} ➡️ use {% jdoc core::lang.Language#getId() %} instead
+
+* The method {%jdoc !!java::lang.java.ast.ASTPattern#getParenthesisDepth() %} has been deprecated and will be removed.
+  It was introduced for supporting parenthesized patterns, but that was removed with Java 21. It is only used when
+  parsing code as java-19-preview.
+
+##### Experimental APIs
+
+* To support the Java preview language features "String Templates" and "Unnamed Patterns and Variables", the following
+  AST nodes have been introduced as experimental:
+  * {% jdoc java::lang.java.ast.ASTTemplateExpression %}
+  * {% jdoc java::lang.java.ast.ASTTemplate %}
+  * {% jdoc java::lang.java.ast.ASTTemplateFragment %}
+  * {% jdoc java::lang.java.ast.ASTUnnamedPattern %}
+* The AST nodes for supporting "Record Patterns" and "Pattern Matching for switch" are not experimental anymore:
+  * {% jdoc java::lang.jast.ast.ASTRecordPattern %}
+  * {% jdoc java::lang.jast.ast.ASTPatternList %} (Note: it was renamed from `ASTComponentPatternList`)
+  * {% jdoc java::lang.jast.ast. %} (Note: it was renamed from `ASTSwitchGuard`)
 
 #### 7.0.0-rc3
 

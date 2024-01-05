@@ -99,7 +99,7 @@ public abstract class RuleTst {
                                     "No such property '" + propertyName + "' on Rule " + rule.getName());
                         }
 
-                        Object value = propertyDescriptor.valueFrom((String) entry.getValue());
+                        Object value = propertyDescriptor.serializer().fromString((String) entry.getValue());
                         rule.setProperty(propertyDescriptor, value);
                     }
                 }

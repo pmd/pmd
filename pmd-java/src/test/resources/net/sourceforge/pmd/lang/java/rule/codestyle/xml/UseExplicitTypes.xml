@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <code-fragment id="basic-sample"><![CDATA[
+import java.util.function.Function;
+
+public class Foo {
+    public void bar() {
+        var s = "a"; // line 5 - violation - literal
+        var i = 1;   // line 6 - violation - literal
+        String s2 = "a"; // no violation - explicit type
+        var f = getFoo(); // line 8 - violation
+        var f = new Foo(); // line 9 - violation - ctor call
+        Function<Integer, Integer> quadrat = (var x) -> x*x;
+    }
+
+    private String getFoo() {
+        return "a";
+    }
+}
+]]></code-fragment>
+    
+    <test-code>
+        <description>No vars anywhere</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>5,6,8,9</expected-linenumbers>
+        <code-ref id="basic-sample"/>
+    </test-code>
+
+    <test-code>
+        <description>Allow literals</description>
+        <rule-property name="allowLiterals">true</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>8,9</expected-linenumbers>
+        <code-ref id="basic-sample"/>
+    </test-code>
+
+    <test-code>
+        <description>Allow constructor calls</description>
+        <rule-property name="allowCtors">true</rule-property>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>5,6,8</expected-linenumbers>
+        <code-ref id="basic-sample"/>
+    </test-code>
+</test-data>

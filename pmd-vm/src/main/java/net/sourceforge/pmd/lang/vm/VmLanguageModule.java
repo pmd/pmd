@@ -4,18 +4,21 @@
 
 package net.sourceforge.pmd.lang.vm;
 
+import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
+import net.sourceforge.pmd.lang.vm.cpd.VmTokenizer;
 
 /**
  * Created by christoferdutz on 20.09.14.
  */
 public class VmLanguageModule extends SimpleLanguageModuleBase {
-
-    public static final String NAME = "VM";
-    public static final String TERSE_NAME = "vm";
+    static final String ID = "vm";
+    static final String NAME = "Velocity Template Language (VTL)";
 
     public VmLanguageModule() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME)
+        super(LanguageMetadata.withId(ID).name(NAME)
                               .extensions("vm")
                               .addVersion("2.0")
                               .addVersion("2.1")
@@ -24,4 +27,12 @@ public class VmLanguageModule extends SimpleLanguageModuleBase {
                 new VmHandler());
     }
 
+    public static VmLanguageModule getInstance() {
+        return (VmLanguageModule) LanguageRegistry.PMD.getLanguageById(ID);
+    }
+
+    @Override
+    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
+        return new VmTokenizer();
+    }
 }

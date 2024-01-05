@@ -4,22 +4,23 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+
 import net.sourceforge.pmd.annotation.Experimental;
 
 /**
- * A record pattern (Java 19 Preview and Java 20 Preview).
+ * A record pattern, a Java 21 language feature.
  *
  * <pre class="grammar">
  *
- * RecordPattern ::= {@linkplain ASTReferenceType ReferenceType} {@linkplain ASTComponentPatternList ComponentPatternList}
+ * RecordPattern ::= {@linkplain ASTReferenceType ReferenceType} {@linkplain ASTPatternList PatternList}
  *
  * </pre>
  *
  * @see ASTRecordDeclaration
  * @see <a href="https://openjdk.org/jeps/405">JEP 405: Record Patterns (Preview)</a> (Java 19)
  * @see <a href="https://openjdk.org/jeps/432">JEP 432: Record Patterns (Second Preview)</a> (Java 20)
+ * @see <a href="https://openjdk.org/jeps/440">JEP 440: Record Patterns</a> (Java 21)
 */
-@Experimental
 public final class ASTRecordPattern extends AbstractJavaNode implements ASTPattern {
 
     private int parenDepth;

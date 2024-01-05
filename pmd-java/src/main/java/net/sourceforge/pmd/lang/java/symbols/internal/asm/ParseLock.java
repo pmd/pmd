@@ -58,6 +58,10 @@ abstract class ParseLock {
         return getFinalStatus() == ParseStatus.FAILED;
     }
 
+    public boolean isNotParsed() {
+        return status == ParseStatus.NOT_PARSED;
+    }
+
     // will be called in the critical section after parse is done
     protected void finishParse(boolean failed) {
         // by default do nothing

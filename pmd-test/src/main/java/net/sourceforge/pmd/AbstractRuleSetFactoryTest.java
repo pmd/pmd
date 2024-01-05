@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.emptyString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -16,6 +18,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -33,6 +36,7 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.slf4j.event.Level;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -44,6 +48,7 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.util.log.internal.MessageReporterBase;
 
 /**
  * Base test class to verify the language's rulesets. This class should be
@@ -72,6 +77,11 @@ public abstract class AbstractRuleSetFactoryTest {
         this.languagesToSkip.addAll(Arrays.asList(languagesToSkip));
         validXPathClassNames.add(XPathRule.class.getName());
     }
+
+    public AbstractRuleSetFactoryTest(Language... languagesToSkip) {
+        this(Arrays.stream(languagesToSkip).map(Language::getId).toArray(String[]::new));
+    }
+
 
     /**
      * Setups the XML parser with validation.
@@ -183,7 +193,7 @@ public abstract class AbstractRuleSetFactoryTest {
                             .append('\n');
                 }
                 // Should not have violation suppress regex property
-                if (rule.getProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR) != null) {
+                if (rule.getProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR).isPresent()) {
                     invalidRegexSuppress++;
                     messages.append("Rule ")
                             .append(fileName)
@@ -194,7 +204,7 @@ public abstract class AbstractRuleSetFactoryTest {
                             .append("', this is intended for end user customization only.\n");
                 }
                 // Should not have violation suppress xpath property
-                if (rule.getProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR) != null) {
+                if (rule.getProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR).isPresent()) {
                     invalidXPathSuppress++;
                     messages.append("Rule ").append(fileName).append("/").append(rule.getName()).append(" should not have '").append(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR.name()).append("', this is intended for end user customization only.").append(System.lineSeparator());
                 }
@@ -228,6 +238,36 @@ public abstract class AbstractRuleSetFactoryTest {
             allValid = allValid && valid;
         }
         assertTrue(allValid, "All XML must parse without producing validation messages.");
+    }
+
+    @Test
+    void verifyCorrectXmlEncoding() throws Exception {
+        boolean allValid = true;
+        List<String> ruleSetFileNames = getRuleSetFileNames();
+        StringBuilder messages = new StringBuilder();
+        for (String fileName : ruleSetFileNames) {
+            boolean valid = hasCorrectEncoding(fileName);
+            allValid = allValid && valid;
+            if (!valid) {
+                messages.append("RuleSet ")
+                        .append(fileName)
+                        .append(" is missing XML encoding or not using UTF8\n");
+            }
+        }
+        assertTrue(allValid, "All XML must use correct XML encoding\n" + messages);
+    }
+
+    public static boolean hasCorrectEncoding(String fileName) throws IOException {
+        try (InputStream inputStream = loadResourceAsStream(fileName)) {
+            // first bytes must be:
+            byte[] expectedBytes = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>".getBytes(StandardCharsets.UTF_8);
+            byte[] bytes = new byte[expectedBytes.length];
+            int count = inputStream.read(bytes);
+            if (count != expectedBytes.length || !Arrays.equals(expectedBytes, bytes)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -308,7 +348,22 @@ public abstract class AbstractRuleSetFactoryTest {
     }
 
     private RuleSet loadRuleSetByFileName(String ruleSetFileName) {
-        return new RuleSetLoader().loadFromResource(ruleSetFileName);
+        final StringBuilder messages = new StringBuilder();
+        class Reporter extends MessageReporterBase {
+            @Override
+            protected void logImpl(Level level, String message) {
+                messages.append(message).append(System.lineSeparator());
+            }
+        }
+
+        RuleSet ruleSet = new RuleSetLoader()
+                .withReporter(new Reporter())
+                .loadFromResource(ruleSetFileName);
+
+        assertThat("There should be no warnings while loading the ruleset",
+                messages.toString(), emptyString());
+
+        return ruleSet;
     }
 
     private boolean validateAgainstSchema(String fileName) throws IOException, SAXException {
@@ -381,8 +436,8 @@ public abstract class AbstractRuleSetFactoryTest {
         }
     }
 
-    private InputStream loadResourceAsStream(String resource) {
-        return getClass().getClassLoader().getResourceAsStream(resource);
+    private static InputStream loadResourceAsStream(String resource) {
+        return AbstractRuleSetFactoryTest.class.getClassLoader().getResourceAsStream(resource);
     }
 
     private void testRuleSet(String fileName) throws IOException, SAXException {
@@ -499,11 +554,12 @@ public abstract class AbstractRuleSetFactoryTest {
                 Object value1 = rule1.getProperty(propertyDescriptors1.get(j));
                 Object value2 = rule2.getProperty(propertyDescriptors2.get(j));
                 // special case for Pattern, there is no equals method
-                if (propertyDescriptors1.get(j).type() == Pattern.class) {
+                if (value1 instanceof Pattern && value2 instanceof Pattern) {
                     value1 = ((Pattern) value1).pattern();
                     value2 = ((Pattern) value2).pattern();
                 }
-                assertEquals(value1, value2, message + ", Rule property value " + j);
+                assertEquals(value1, value2, message + ", Rule " + rule1.getName() + " property "
+                    + propertyDescriptors1.get(j).name());
             }
             assertEquals(propertyDescriptors1.size(), propertyDescriptors2.size(),
                     message + ", Rule property descriptor count");

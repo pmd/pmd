@@ -540,6 +540,14 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
         return getSimpleName().isEmpty();
     }
 
+    boolean isFailed() {
+        return this.parseLock.isFailed();
+    }
+
+    boolean isNotParsed() {
+        return this.parseLock.isNotParsed();
+    }
+
 
     // </editor-fold>
 

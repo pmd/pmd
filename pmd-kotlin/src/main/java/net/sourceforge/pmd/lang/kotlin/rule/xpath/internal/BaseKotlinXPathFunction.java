@@ -10,6 +10,6 @@ import net.sourceforge.pmd.lang.rule.xpath.impl.AbstractXPathFunctionDef;
 abstract class BaseKotlinXPathFunction extends AbstractXPathFunctionDef {
 
     protected BaseKotlinXPathFunction(String localName) {
-        super(localName, KotlinLanguageModule.TERSE_NAME);
+        super(localName, KotlinLanguageModule.getInstance());
     }
 }

@@ -81,7 +81,16 @@ public interface SymbolResolver {
                 }
                 return null;
             }
+
+            @Override
+            public void logStats() {
+                stack.forEach(SymbolResolver::logStats);
+            }
         };
     }
 
+    /**
+     * Called at the end of the analysis in order to log out statistics of the resolved symbols.
+     */
+    void logStats();
 }

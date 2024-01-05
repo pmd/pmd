@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.LanguageModuleBase.LanguageMetadata;
+import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
 
 /**
  * @author Clément Fournier
@@ -74,12 +75,9 @@ class LanguageModuleBaseTest {
     }
 
     private static LanguageModuleBase makeLanguage(LanguageMetadata meta) {
-        return new LanguageModuleBase(meta) {
-            @Override
-            public LanguageProcessor createProcessor(LanguagePropertyBundle bundle) {
-                throw new UnsupportedOperationException("fake instance");
-            }
-        };
+        return new SimpleLanguageModuleBase(meta, p -> {
+            throw new UnsupportedOperationException("fake instance");
+        });
     }
 
 

@@ -2,10 +2,12 @@
 title: Java support
 permalink: pmd_languages_java.html
 author: Clément Fournier
-last_updated: March 2021 (7.0.0)
-tags: [languages]
+last_updated: September 2023 (7.0.0)
+tags: [languages, PmdCapableLanguage, CpdCapableLanguage]
 summary: "Java-specific features and guidance"
 ---
+
+{% include language_info.html name='Java' id='java' implementation='java::lang.java.JavaLanguageModule' supports_pmd=true supports_cpd=true since='1.0.0' %}
 
 {% include warning.html content="WIP, todo for pmd 7" %}
 
@@ -15,9 +17,10 @@ Usually the latest non-preview Java Version is the default version.
 
 | Java Version | Alias | Supported by PMD since |
 |--------------|-------|------------------------|
+| 21-preview   |       | 7.0.0                  |
+| 21 (default) |       | 7.0.0                  |
 | 20-preview   |       | 6.55.0                 |
-| 20 (default) |       | 6.55.0                 |
-| 19-preview   |       | 6.48.0                 |
+| 20           |       | 6.55.0                 |
 | 19           |       | 6.48.0                 |
 | 18           |       | 6.44.0                 |
 | 17           |       | 6.37.0                 |
@@ -39,12 +42,16 @@ Usually the latest non-preview Java Version is the default version.
 ## Using Java preview features
 
 In order to analyze a project with PMD that uses preview language features, you'll need to enable
-it via the environment variable `PMD_JAVA_OPTS` and select the new language version, e.g. `20-preview`:
+it via the environment variable `PMD_JAVA_OPTS` and select the new language version, e.g. `21-preview`:
 
     export PMD_JAVA_OPTS=--enable-preview
-    pmd check --use-version java-20-preview ...
+    pmd check --use-version java-21-preview ...
 
 Note: we only support preview language features for the latest two java versions.
+
+## Language Properties
+
+See [Java language properties](pmd_languages_configuration.html#java-language-properties)
 
 ## Type and symbol resolution
 
@@ -56,12 +63,12 @@ The semantic analysis roughly works like so:
 3. The last pass resolves the types of expressions, which performs overload resolution on method calls, and type inference.
 
 TODO describe 
-* why we need auxclasspath
+* why we need auxclasspath, and how to put the java classes onto the auxclasspath (jre/lib/rt.jar or lib/jrt-fs.jar).
 * how disambiguation can fail
 
 ## Type and symbol APIs
 
-TODO describe APIs 
+TODO describe APIs: see #4319 and #2689
 
 ## Metrics framework
 
@@ -82,3 +89,15 @@ public Object visit(ASTMethodDeclaration node, Object data) {
 ```
 
 The Javadocs are the reference documentation.
+
+## Violation Decorators
+
+Violations reported are the same for all languages, but languages can opt in to provide more details.
+Java does this by adding the following additional information for each reported violation:
+
+* {% jdoc core::RuleViolation#VARIABLE_NAME %}
+* {% jdoc core::RuleViolation#METHOD_NAME %}
+* {% jdoc core::RuleViolation#CLASS_NAME %}
+* {% jdoc core::RuleViolation#PACKAGE_NAME %}
+
+You can access these via {% jdoc core::RuleViolation#getAdditionalInfo() %}

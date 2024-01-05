@@ -1,0 +1,62 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+
+String readFile(File file) throws IOException {
+    StringBuilder content = new StringBuilder();
+    for (String line : Files.readAllLines(file.toPath(), StandardCharsets.UTF_8)) {
+        content.append(line).append(System.lineSeparator());
+    }
+    return content.toString();
+}
+
+File buildLogPath = new File(basedir, "build.log");
+String buildLog = readFile(buildLogPath);
+if (buildLog.contains("An API incompatibility was encountered while")) {
+    throw new RuntimeException("Executing failed due to API incompatibility");
+}
+if (!buildLog.contains("[INFO] CPD Failure: Found 8 lines of duplicated code at locations:")) {
+    throw new RuntimeException("No CPD failures detected, did CPD run?");
+}
+File classA = new File("cpd-for-java/src/main/java/org/example/ClassA.java");
+if (!buildLog.contains(classA + " line 3")) {
+    throw new RuntimeException("No CPD failures detected, did CPD run?");
+}
+
+File cpdXmlReport = new File(basedir, "target/cpd.xml");
+if (!cpdXmlReport.exists()) {
+    throw new FileNotFoundException("Could not find cpd xml report: " + cpdXmlReport);
+}
+String cpdXml = readFile(cpdXmlReport);
+if (!cpdXml.contains("<duplication lines=\"8\" tokens=\"67\">")) {
+    throw new RuntimeException("Expected duplication has not been reported");
+}
+if (!cpdXml.contains(classA + "\"/>")) {
+    throw new RuntimeException("Expected duplication has not been reported");
+}
+
+File csvReport = new File(basedir, "target/cpd.csv");
+if (!csvReport.exists()) {
+    throw new FileNotFoundException("Could not find cpd csv report: " + csvReport);
+}
+String csv = readFile(csvReport);
+if (!csv.contains("8,67,2,3,")) {
+    throw new RuntimeException("Expected duplication in CSV has not been reported");
+}
+if (!csv.contains(classA + ",")) {
+    throw new RuntimeException("Expected duplication in CSV has not been reported");
+}
+
+File textReport = new File(basedir, "target/cpd.txt");
+if (!textReport.exists()) {
+    throw new FileNotFoundException("Could not find cpd text report: " + textReport);
+}
+String text = readFile(textReport);
+if (!text.contains("Found a 8 line (67 tokens) duplication in the following files:")) {
+    throw new RuntimeException("Expected duplication in TXT has not been reported");
+}
+if (!text.contains("Starting at line 3 of ") && !text.contains(classA.toString())) {
+    throw new RuntimeException("Expected duplication in TXT has not been reported");
+}

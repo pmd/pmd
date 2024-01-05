@@ -52,7 +52,7 @@ set_lib_dir() {
     if [ -L "$0" ]; then
       local script_real_loc=$(readlink "$0")
     else
-      local script_real_loc=$0
+      local script_real_loc=${BASH_SOURCE[0]:-${(%):-%x}}
     fi
     local script_dir=$(dirname "${script_real_loc}")
 
@@ -74,7 +74,7 @@ set_conf_dir() {
     if [ -L $0 ]; then
       local script_real_loc=$(readlink "$0")
     else
-      local script_real_loc=$0
+      local script_real_loc=${BASH_SOURCE[0]:-${(%):-%x}}
     fi
     local script_dir=$(dirname "${script_real_loc}")
 

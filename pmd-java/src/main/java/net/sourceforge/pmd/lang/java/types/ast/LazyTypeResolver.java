@@ -51,6 +51,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
+import net.sourceforge.pmd.lang.java.ast.ASTTemplateExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
@@ -420,6 +421,15 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
     @Override
     public JTypeMirror visit(ASTCastExpression node, TypingContext ctx) {
         return node.getCastType().getTypeMirror(ctx);
+    }
+
+    @Override
+    public @NonNull JTypeMirror visit(ASTTemplateExpression node, TypingContext data) {
+        if (node.isStringTemplate()) {
+            return stringType;
+        }
+
+        return ts.UNKNOWN;
     }
 
     @Override

@@ -24,7 +24,7 @@ import net.sourceforge.pmd.util.AssertionUtil;
  */
 public class LanguageVersionDiscoverer {
 
-    private final LanguageRegistry languageRegistry;
+    private LanguageRegistry languageRegistry;
     private final Map<Language, LanguageVersion> languageToLanguageVersion = new HashMap<>();
     private LanguageVersion forcedVersion;
 
@@ -156,5 +156,23 @@ public class LanguageVersionDiscoverer {
         return StringUtils.substringAfterLast(fileName, ".");
     }
 
+    /**
+     * Make it so that the only extensions that are considered are those
+     * of the given language. This is different from {@link #setForcedVersion(LanguageVersion)}.
+     * because that one will assign the given language version to all files
+     * irrespective of extension. This method, on the other hand, will
+     * ignore files that do not match the given language.
+     *
+     * @param lang A language
+     */
+    public void onlyRecognizeLanguages(LanguageRegistry lang) {
+        this.languageRegistry = Objects.requireNonNull(lang);
+    }
 
+    @Override
+    public String toString() {
+        return "LanguageVersionDiscoverer(" + languageRegistry
+                + (forcedVersion != null ? ",forcedVersion=" + forcedVersion : "")
+                + ")";
+    }
 }

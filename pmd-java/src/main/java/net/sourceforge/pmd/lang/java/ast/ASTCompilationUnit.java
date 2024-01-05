@@ -9,6 +9,7 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.RootNode;
@@ -16,6 +17,7 @@ import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.ast.LazyTypeResolver;
+import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 
 
 /**
@@ -23,7 +25,8 @@ import net.sourceforge.pmd.lang.java.types.ast.LazyTypeResolver;
  *
  * <pre class="grammar">
  *
- * CompilationUnit ::= RegularCompilationUnit
+ * CompilationUnit ::= OrdinaryCompilationUnit
+ *                   | UnnamedClassCompilationUnit
  *                   | ModularCompilationUnit
  *
  * RegularCompilationUnit ::=
@@ -31,11 +34,20 @@ import net.sourceforge.pmd.lang.java.types.ast.LazyTypeResolver;
  *   {@linkplain ASTImportDeclaration ImportDeclaration}*
  *   {@linkplain ASTAnyTypeDeclaration TypeDeclaration}*
  *
+ * UnnamedClassCompilationUnit ::=
+ *   {@linkplain ASTImportDeclaration ImportDeclaration}*
+ *   {@linkplain ASTFieldDeclaration FieldDeclaration}*
+ *   {@linkplain ASTMethodDeclaration MethodDeclaration}
+ *   {@linkplain ASTBodyDeclaration BodyDeclaration}*
+ *
  * ModularCompilationUnit ::=
  *   {@linkplain ASTImportDeclaration ImportDeclaration}*
  *   {@linkplain ASTModuleDeclaration ModuleDeclaration}
  *
  * </pre>
+ *
+ * @see <a href="https://openjdk.org/jeps/445">JEP 445: Unnamed Classes and Instance Main Methods (Preview)</a> (Java 21)
+ * @see #isUnnamedClass()
  */
 public final class ASTCompilationUnit extends AbstractJavaNode implements JavaNode, GenericNode<JavaNode>, RootNode {
 
@@ -126,4 +138,9 @@ public final class ASTCompilationUnit extends AbstractJavaNode implements JavaNo
         return lazyTypeResolver;
     }
 
+    @Experimental
+    @NoAttribute
+    public boolean isUnnamedClass() {
+        return children(ASTMethodDeclaration.class).nonEmpty();
+    }
 }

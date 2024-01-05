@@ -1,6 +1,7 @@
     [Image] or [Truncated image[            Bcol      Ecol
 L1
-    [<newline>]                             49        1
+    [// Copied from https://github.com/[    1         49
+    [\n]                                    49        50
 L2
     [package]                               1         8
     [net]                                   9         12
@@ -10,7 +11,11 @@ L2
     [pmd]                                   25        28
     [.]                                     28        29
     [cpd]                                   29        32
-    [<newline>]                             32        1
+    [\n]                                    32        33
+L3
+    [/**\n * User: Eric\n * Date: 4/30/[    1         4
+L6
+    [\n]                                    4         5
 L7
     [class]                                 1         6
     [BTree]                                 7         12
@@ -25,36 +30,42 @@ L7
     [K]                                     37        38
     [>]                                     38        39
     [{]                                     40        41
-    [<newline>]                             41        2
+    [\n]                                    41        42
+L8
+    [\n]                                    1         2
 L9
     [static]                                2         8
     [def]                                   9         12
     [instance]                              13        21
-    [<newline>]                             21        2
+    [\n]                                    21        22
+L10
+    [\n]                                    1         2
 L11
     [BlockManager]                          2         14
     [<]                                     14        15
     [V]                                     15        16
     [>]                                     16        17
     [manager]                               18        25
-    [<newline>]                             25        2
+    [\n]                                    25        26
+L12
+    [\n]                                    1         2
 L13
     [BTree]                                 2         7
     [(]                                     7         8
     [)]                                     8         9
     [{]                                     10        11
-    [<newline>]                             11        3
+    [\n]                                    11        12
 L14
     [instance]                              3         11
     [=]                                     12        13
     [this]                                  14        18
-    [<newline>]                             18        3
+    [\n]                                    18        19
 L15
     [getLeaf]                               3         10
     [(]                                     10        11
     [this]                                  11        15
     [)]                                     15        16
-    [<newline>]                             16        3
+    [\n]                                    16        17
 L16
     [manager]                               3         10
     [=]                                     11        12
@@ -64,17 +75,24 @@ L16
     [>]                                     30        31
     [(]                                     31        32
     [)]                                     32        33
-    [<newline>]                             33        2
+    [\n]                                    33        34
 L17
     [}]                                     2         3
-    [<newline>]                             3         2
+    [\n]                                    3         4
+L18
+    [\n]                                    1         2
 L19
     [def]                                   2         5
     [split]                                 6         11
     [(]                                     11        12
     [)]                                     12        13
     [{]                                     14        15
-    [<newline>]                             15        3
+    [\n]                                    15        16
+L20
+    [\n]                                    1         2
+L21
+    [// create two new children]            3         29
+    [\n]                                    29        30
 L22
     [BTreeNode]                             3         12
     [<]                                     12        13
@@ -85,7 +103,7 @@ L22
     [clone]                                 23        28
     [(]                                     28        29
     [)]                                     29        30
-    [<newline>]                             30        3
+    [\n]                                    30        31
 L23
     [BTreeNode]                             3         12
     [<]                                     12        13
@@ -96,7 +114,12 @@ L23
     [clone]                                 24        29
     [(]                                     29        30
     [)]                                     30        31
-    [<newline>]                             31        3
+    [\n]                                    31        32
+L24
+    [\n]                                    1         2
+L25
+    [// assign parent to this]              3         27
+    [\n]                                    27        28
 L26
     [\[]                                    3         4
     [left]                                  4         8
@@ -107,7 +130,12 @@ L26
     [parent]                                18        24
     [=]                                     25        26
     [this]                                  27        31
-    [<newline>]                             31        3
+    [\n]                                    31        32
+L27
+    [\n]                                    1         2
+L28
+    [// Assign the left and right point[    3         45
+    [\n]                                    45        46
 L29
     [left]                                  3         7
     [.]                                     7         8
@@ -127,7 +155,7 @@ L29
     [)]                                     55        56
     [as]                                    57        59
     [LinkedList]                            60        70
-    [<newline>]                             70        3
+    [\n]                                    70        71
 L30
     [right]                                 3         8
     [.]                                     8         9
@@ -147,7 +175,12 @@ L30
     [)]                                     60        61
     [as]                                    62        64
     [LinkedList]                            65        75
-    [<newline>]                             75        3
+    [\n]                                    75        76
+L31
+    [\n]                                    1         2
+L32
+    [// clear the rightmost left key]       3         34
+    [\n]                                    34        35
 L33
     [if]                                    3         5
     [(]                                     6         7
@@ -156,7 +189,7 @@ L33
     [internalNode]                          12        24
     [)]                                     24        25
     [{]                                     26        27
-    [<newline>]                             27        4
+    [\n]                                    27        28
 L34
     [left]                                  4         8
     [.]                                     8         9
@@ -169,31 +202,36 @@ L34
     [key]                                   22        25
     [=]                                     26        27
     [null]                                  28        32
-    [<newline>]                             32        3
+    [\n]                                    32        33
 L35
     [}]                                     3         4
-    [<newline>]                             4         3
+    [\n]                                    4         5
 L36
     [else]                                  3         7
     [{]                                     8         9
-    [<newline>]                             9         4
+    [\n]                                    9         10
 L37
     [left]                                  4         8
     [.]                                     8         9
     [rightSibling]                          9         21
     [=]                                     22        23
     [right]                                 24        29
-    [<newline>]                             29        4
+    [\n]                                    29        30
 L38
     [right]                                 4         9
     [.]                                     9         10
     [leftSibling]                           10        21
     [=]                                     22        23
     [left]                                  24        28
-    [<newline>]                             28        3
+    [\n]                                    28        29
 L39
     [}]                                     3         4
-    [<newline>]                             4         3
+    [\n]                                    4         5
+L40
+    [\n]                                    1         2
+L41
+    [// reassign the parent node if not[    3         45
+    [\n]                                    45        46
 L42
     [if]                                    3         5
     [(]                                     6         7
@@ -201,7 +239,7 @@ L42
     [bucketNode]                            8         18
     [)]                                     18        19
     [{]                                     20        21
-    [<newline>]                             21        4
+    [\n]                                    21        22
 L43
     [\[]                                    4         5
     [left]                                  5         9
@@ -223,17 +261,22 @@ L43
     [=]                                     62        63
     [node]                                  64        68
     [}]                                     69        70
-    [<newline>]                             70        3
+    [\n]                                    70        71
 L44
     [}]                                     3         4
-    [<newline>]                             4         3
+    [\n]                                    4         5
+L45
+    [\n]                                    1         2
+L46
+    [// add the children to this]           3         30
+    [\n]                                    30        31
 L47
     [pointers]                              3         11
     [.]                                     11        12
     [clear]                                 12        17
     [(]                                     17        18
     [)]                                     18        19
-    [<newline>]                             19        3
+    [\n]                                    19        20
 L48
     [addDirect]                             3         12
     [(]                                     12        13
@@ -247,7 +290,7 @@ L48
     [left]                                  47        51
     [)]                                     51        52
     [)]                                     52        53
-    [<newline>]                             53        3
+    [\n]                                    53        54
 L49
     [addDirect]                             3         12
     [(]                                     12        13
@@ -259,26 +302,33 @@ L49
     [right]                                 34        39
     [)]                                     39        40
     [)]                                     40        41
-    [<newline>]                             41        3
+    [\n]                                    41        42
+L50
+    [\n]                                    1         2
+L51
+    [// Transform into a pointer node]      3         35
+    [\n]                                    35        36
 L52
     [if]                                    3         5
     [(]                                     6         7
     [leafNode]                              7         15
     [)]                                     15        16
     [{]                                     17        18
-    [<newline>]                             18        4
+    [\n]                                    18        19
 L53
     [getPointer]                            4         14
     [(]                                     14        15
     [this]                                  15        19
     [)]                                     19        20
-    [<newline>]                             20        3
+    [\n]                                    20        21
 L54
     [}]                                     3         4
-    [<newline>]                             4         2
+    [\n]                                    4         5
 L55
     [}]                                     2         3
-    [<newline>]                             3         2
+    [\n]                                    3         4
+L56
+    [\n]                                    1         2
 L57
     [def]                                   2         5
     [add]                                   6         9
@@ -290,7 +340,9 @@ L57
     [value]                                 19        24
     [)]                                     24        25
     [{]                                     26        27
-    [<newline>]                             27        3
+    [\n]                                    27        28
+L58
+    [\n]                                    1         2
 L59
     [if]                                    3         5
     [(]                                     6         7
@@ -304,20 +356,22 @@ L59
     [)]                                     30        31
     [)]                                     31        32
     [{]                                     33        34
-    [<newline>]                             34        4
+    [\n]                                    34        35
 L60
     [throw]                                 4         9
     [new]                                   10        13
     [IllegalArgumentException]              14        38
     [(]                                     38        39
-    []                                      39        41
+    ["$]                                    39        41
     [key]                                   41        44
-    [ is already in the tree]               44        68
+    [is already in the tree"]               45        68
     [)]                                     68        69
-    [<newline>]                             69        3
+    [\n]                                    69        70
 L61
     [}]                                     3         4
-    [<newline>]                             4         3
+    [\n]                                    4         5
+L62
+    [\n]                                    1         2
 L63
     [BlockManager]                          3         15
     [.]                                     15        16
@@ -332,14 +386,16 @@ L63
     [manager]                               48        55
     [.]                                     55        56
     [element]                               56        63
-    [<newline>]                             63        3
+    [\n]                                    63        64
 L64
     [element]                               3         10
     [.]                                     10        11
     [value]                                 11        16
     [=]                                     17        18
     [value]                                 19        24
-    [<newline>]                             24        3
+    [\n]                                    24        25
+L65
+    [\n]                                    1         2
 L66
     [super]                                 3         8
     [.]                                     8         9
@@ -347,10 +403,12 @@ L66
     [key]                                   13        16
     [,]                                     16        17
     [element]                               18        25
-    [<newline>]                             25        2
+    [\n]                                    25        26
 L67
     [}]                                     2         3
-    [<newline>]                             3         2
+    [\n]                                    3         4
+L68
+    [\n]                                    1         2
 L69
     [def]                                   2         5
     [delete]                                6         12
@@ -359,7 +417,9 @@ L69
     [key]                                   15        18
     [)]                                     18        19
     [{]                                     20        21
-    [<newline>]                             21        3
+    [\n]                                    21        22
+L70
+    [\n]                                    1         2
 L71
     [if]                                    3         5
     [(]                                     6         7
@@ -374,26 +434,30 @@ L71
     [)]                                     31        32
     [)]                                     32        33
     [{]                                     34        35
-    [<newline>]                             35        4
+    [\n]                                    35        36
 L72
     [throw]                                 4         9
     [new]                                   10        13
     [IllegalArgumentException]              14        38
     [(]                                     38        39
-    []                                      39        41
+    ["$]                                    39        41
     [key]                                   41        44
-    [ is not in the tree]                   44        64
+    [is not in the tree"]                   45        64
     [)]                                     64        65
-    [<newline>]                             65        3
+    [\n]                                    65        66
 L73
     [}]                                     3         4
-    [<newline>]                             4         3
+    [\n]                                    4         5
+L74
+    [\n]                                    1         2
 L75
     [super]                                 3         8
     [.]                                     8         9
     [delete]                                9         15
     [key]                                   16        19
-    [<newline>]                             19        3
+    [\n]                                    19        20
+L76
+    [\n]                                    1         2
 L77
     [if]                                    3         5
     [(]                                     6         7
@@ -402,20 +466,20 @@ L77
     [0]                                     16        17
     [)]                                     17        18
     [{]                                     19        20
-    [<newline>]                             20        4
+    [\n]                                    20        21
 L78
     [getLeaf]                               4         11
     [(]                                     11        12
     [this]                                  12        16
     [)]                                     16        17
-    [<newline>]                             17        3
+    [\n]                                    17        18
 L79
     [}]                                     3         4
-    [<newline>]                             4         2
+    [\n]                                    4         5
 L80
     [}]                                     2         3
-    [<newline>]                             3         1
+    [\n]                                    3         4
 L81
     [}]                                     1         2
-    [<newline>]                             2         1
+    [\n]                                    2         3
 EOF

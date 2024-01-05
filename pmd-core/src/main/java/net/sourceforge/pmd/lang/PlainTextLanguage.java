@@ -5,6 +5,9 @@
 package net.sourceforge.pmd.lang;
 
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.cpd.AnyTokenizer;
+import net.sourceforge.pmd.cpd.CpdCapableLanguage;
+import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
@@ -24,14 +27,13 @@ import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
  * @since 6.48.0
  */
 @Experimental
-public final class PlainTextLanguage extends SimpleLanguageModuleBase {
+public final class PlainTextLanguage extends SimpleLanguageModuleBase implements CpdCapableLanguage {
+    private static final String ID = "text";
 
-    private static final Language INSTANCE = new PlainTextLanguage();
-
-    static final String TERSE_NAME = "text";
+    private static final PlainTextLanguage INSTANCE = new PlainTextLanguage();
 
     private PlainTextLanguage() {
-        super(LanguageMetadata.withId(TERSE_NAME).name("Plain text")
+        super(LanguageMetadata.withId(ID).name("Plain text")
                               .extensions("plain-text-file-goo-extension")
                               .addDefaultVersion("default"),
               new TextLvh());
@@ -40,8 +42,13 @@ public final class PlainTextLanguage extends SimpleLanguageModuleBase {
     /**
      * Returns the singleton instance of this language.
      */
-    public static Language getInstance() {
-        return INSTANCE;
+    public static PlainTextLanguage getInstance() {
+        return INSTANCE; // note: this language is _not_ exposed via LanguageRegistry (no entry in META-INF/services)
+    }
+
+    @Override
+    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
+        return new AnyTokenizer();
     }
 
     private static final class TextLvh implements LanguageVersionHandler {
