@@ -1,10 +1,13 @@
 ---
 title: JSP Support
 permalink: pmd_languages_jsp.html
+last_updated: September 2023 (7.0.0)
+tags: [languages, PmdCapableLanguage, CpdCapableLanguage]
 author: Pieter Vanraemdonck
-tags: [languages]
 summary: "JSP-specific features and guidance"
 ---
+
+{% include language_info.html name='Java Server Pages' id='jsp' implementation='jsp::lang.jsp.JspLanguageModule' supports_pmd=true supports_cpd=true %}
 
 ## What is currently supported and what is not
 
@@ -38,16 +41,3 @@ The XHTML support means that:
     further broken down. If you want to create rules that check the code
     inside EL expressions or JSP scriptlets (a.o.), you currently would
     have to do "manual" string manipulation (e.g. using regular expressions).
-
-## How to use it
-
-Using the command-line interface, two new options can be used in the arguments string:
-
-*   "-jsp" : this triggers checking JSP files (they are not checked by default)
-*   "-nojava" : this tells PMD not to check java source files (they are checked by default)
-
-Using the Ant task, you decide if PMD must check JSP files by choosing
-what files are given to the PMD task. If you use a fileset that
-contains only ".java" files, JSP files obviously will not be checked.
-
-If you want to call the PMD API for checking JSP files, you should investigate the javadoc of PMD.

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.ast;
 
+import static java.lang.Math.max;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -25,14 +27,14 @@ public final class TokenMgrError extends FileAnalysisException {
      *
      * @param line     Line number
      * @param column   Column number
-     * @param filename Filename. If unknown, it can be completed with {@link #setFileName(String)} later
+     * @param filename Filename. If unknown, it can be completed with {@link #setFileId(FileId)}} later
      * @param message  Message of the error
      * @param cause    Cause of the error, if any
      */
     public TokenMgrError(int line, int column, @Nullable FileId filename, String message, @Nullable Throwable cause) {
         super(message, cause);
-        this.line = line;
-        this.column = column;
+        this.line = max(line, 1);
+        this.column = max(column, 1);
         if (filename != null) {
             super.setFileId(filename);
         }
@@ -44,8 +46,8 @@ public final class TokenMgrError extends FileAnalysisException {
     @InternalApi
     public TokenMgrError(boolean eofSeen, String lexStateName, int errorLine, int errorColumn, String errorAfter, char curChar) {
         super(makeReason(eofSeen, lexStateName, errorAfter, curChar));
-        line = errorLine;
-        column = errorColumn;
+        line = max(errorLine, 1);
+        column = max(errorColumn, 1);
     }
 
     public int getLine() {

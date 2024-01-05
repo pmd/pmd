@@ -18,4 +18,13 @@ class SwiftParserTests extends BaseSwiftTreeDumpTest {
         doTest("BTree");
     }
 
+    @Test
+    void swift59() {
+        doTest("Swift5.9");
+    }
+
+    @Test
+    void macroExpansions() {
+        doTest("MacroExpansionExpressions");
+    }
 }

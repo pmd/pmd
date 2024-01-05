@@ -4,12 +4,21 @@
 
 package net.sourceforge.pmd.lang.java.cpd;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.CpdLanguageProperties;
+import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.cpd.Tokens;
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 import net.sourceforge.pmd.cpd.test.LanguagePropertyConfig;
+import net.sourceforge.pmd.lang.ast.TokenMgrError;
+import net.sourceforge.pmd.lang.document.FileId;
+import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 
 // TODO - enable tests
@@ -27,6 +36,20 @@ class JavaTokenizerTest extends CpdTextComparisonTest {
     @Test
     void testStringTemplateReduction() {
         doTest("StringTemplateReduction");
+    }
+
+    @Test
+    void testLexExceptionLocation() {
+        Tokenizer tokenizer = newTokenizer(defaultProperties());
+        Tokens tokens = new Tokens();
+        TokenMgrError lexException = assertThrows(TokenMgrError.class, () ->
+            Tokenizer.tokenize(tokenizer,
+                    // note: the source deliberately contains an unbalanced quote, unterminated string literal
+                    TextDocument.readOnlyString("class F {\n    String s=\"abc\";\"\n}\n", FileId.UNKNOWN, getLanguage().getDefaultVersion()),
+                    tokens)
+        );
+        // this shouldn't throw a IllegalArgumentException
+        assertThat(lexException.getMessage(), containsString("at line 3, column 1"));
     }
 
     @Test

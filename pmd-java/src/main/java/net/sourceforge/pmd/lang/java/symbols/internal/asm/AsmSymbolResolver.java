@@ -5,18 +5,20 @@
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
 
-import java.net.URL;
+import java.io.InputStream;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.objectweb.asm.Opcodes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.Loader.FailedLoader;
-import net.sourceforge.pmd.lang.java.symbols.internal.asm.Loader.UrlLoader;
+import net.sourceforge.pmd.lang.java.symbols.internal.asm.Loader.StreamLoader;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.util.AssertionUtil;
 
@@ -24,6 +26,7 @@ import net.sourceforge.pmd.util.AssertionUtil;
  * A {@link SymbolResolver} that reads class files to produce symbols.
  */
 public class AsmSymbolResolver implements SymbolResolver {
+    private static final Logger LOG = LoggerFactory.getLogger(AsmSymbolResolver.class);
 
     static final int ASM_API_V = Opcodes.ASM9;
 
@@ -53,12 +56,12 @@ public class AsmSymbolResolver implements SymbolResolver {
         String internalName = getInternalName(binaryName);
 
         ClassStub found = knownStubs.computeIfAbsent(internalName, iname -> {
-            @Nullable URL url = getUrlOfInternalName(iname);
-            if (url == null) {
+            @Nullable InputStream inputStream = getStreamOfInternalName(iname);
+            if (inputStream == null) {
                 return failed;
             }
 
-            return new ClassStub(this, iname, new UrlLoader(url), ClassStub.UNKNOWN_ARITY);
+            return new ClassStub(this, iname, new StreamLoader(binaryName, inputStream), ClassStub.UNKNOWN_ARITY);
         });
 
         if (!found.hasCanonicalName()) {
@@ -84,7 +87,7 @@ public class AsmSymbolResolver implements SymbolResolver {
     }
 
     @Nullable
-    URL getUrlOfInternalName(String internalName) {
+    InputStream getStreamOfInternalName(String internalName) {
         return classLoader.findResource(internalName + ".class");
     }
 
@@ -105,9 +108,38 @@ public class AsmSymbolResolver implements SymbolResolver {
             if (prev != failed && prev != null) {
                 return prev;
             }
-            @Nullable URL url = getUrlOfInternalName(iname);
-            Loader loader = url == null ? FailedLoader.INSTANCE : new UrlLoader(url);
+            @Nullable InputStream inputStream = getStreamOfInternalName(iname);
+            Loader loader = inputStream == null ? FailedLoader.INSTANCE : new StreamLoader(internalName, inputStream);
             return new ClassStub(this, iname, loader, observedArity);
         });
+    }
+
+    @Override
+    public void logStats() {
+        int numParsed = 0;
+        int numFailed = 0;
+        int numFailedQueries = 0;
+        int numNotParsed = 0;
+
+        for (ClassStub stub : knownStubs.values()) {
+            if (stub == failed) { // NOPMD CompareObjectsWithEquals
+                // Note that failed queries may occur under normal circumstances.
+                // Eg package names may be queried just to figure
+                // out whether they're packages or classes.
+                numFailedQueries++;
+            } else if (stub.isNotParsed()) {
+                numNotParsed++;
+            } else if (!stub.isFailed()) {
+                numParsed++;
+            } else {
+                numFailed++;
+            }
+        }
+
+        LOG.trace("Of {} distinct queries to the classloader, {} queries failed, "
+                        + "{} classes were found and parsed successfully, "
+                        + "{} were found but failed parsing (!), "
+                        + "{} were found but never parsed.",
+                knownStubs.size(), numFailedQueries, numParsed, numFailed, numNotParsed);
     }
 }

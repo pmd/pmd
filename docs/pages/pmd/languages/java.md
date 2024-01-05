@@ -2,10 +2,12 @@
 title: Java support
 permalink: pmd_languages_java.html
 author: Clément Fournier
-last_updated: August 2023 (7.0.0)
-tags: [languages]
+last_updated: September 2023 (7.0.0)
+tags: [languages, PmdCapableLanguage, CpdCapableLanguage]
 summary: "Java-specific features and guidance"
 ---
+
+{% include language_info.html name='Java' id='java' implementation='java::lang.java.JavaLanguageModule' supports_pmd=true supports_cpd=true since='1.0.0' %}
 
 {% include warning.html content="WIP, todo for pmd 7" %}
 
@@ -47,6 +49,10 @@ it via the environment variable `PMD_JAVA_OPTS` and select the new language vers
 
 Note: we only support preview language features for the latest two java versions.
 
+## Language Properties
+
+See [Java language properties](pmd_languages_configuration.html#java-language-properties)
+
 ## Type and symbol resolution
 
 Java being a statically typed language, a Java program contains more information that just its syntax tree; for instance, every expression has a static type, and every method call is bound to a method overload statically (even if that overload is virtual). In PMD, much of this information is resolved from the AST by additional passes, which run after parsing, and before rules can inspect the tree. 
@@ -57,12 +63,12 @@ The semantic analysis roughly works like so:
 3. The last pass resolves the types of expressions, which performs overload resolution on method calls, and type inference.
 
 TODO describe 
-* why we need auxclasspath
+* why we need auxclasspath, and how to put the java classes onto the auxclasspath (jre/lib/rt.jar or lib/jrt-fs.jar).
 * how disambiguation can fail
 
 ## Type and symbol APIs
 
-TODO describe APIs 
+TODO describe APIs: see #4319 and #2689
 
 ## Metrics framework
 
@@ -83,3 +89,15 @@ public Object visit(ASTMethodDeclaration node, Object data) {
 ```
 
 The Javadocs are the reference documentation.
+
+## Violation Decorators
+
+Violations reported are the same for all languages, but languages can opt in to provide more details.
+Java does this by adding the following additional information for each reported violation:
+
+* {% jdoc core::RuleViolation#VARIABLE_NAME %}
+* {% jdoc core::RuleViolation#METHOD_NAME %}
+* {% jdoc core::RuleViolation#CLASS_NAME %}
+* {% jdoc core::RuleViolation#PACKAGE_NAME %}
+
+You can access these via {% jdoc core::RuleViolation#getAdditionalInfo() %}

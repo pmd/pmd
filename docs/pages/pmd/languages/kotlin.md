@@ -1,11 +1,14 @@
 ---
 title: Kotlin Support
 permalink: pmd_languages_kotlin.html
-tags: [languages]
+last_updated: September 2023 (7.0.0)
+tags: [languages, PmdCapableLanguage, CpdCapableLanguage, experimental]
 summary: "Kotlin-specific features and guidance"
 ---
 
-Kotlin support in PMD is based on the official grammar from <https://github.com/Kotlin/kotlin-spec>.
+[Kotlin](https://kotlinlang.org/) support in PMD is based on the official grammar from <https://github.com/Kotlin/kotlin-spec>.
+
+{% include language_info.html name='Kotlin' id='kotlin' implementation='kotlin::lang.kotlin.JspLanguageModule' supports_pmd=true supports_cpd=true %}
 
 Java-based rules and XPath-based rules are supported.
 
