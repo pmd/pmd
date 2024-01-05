@@ -27,7 +27,7 @@ public final class TokenMgrError extends FileAnalysisException {
      *
      * @param line     Line number
      * @param column   Column number
-     * @param filename Filename. If unknown, it can be completed with {@link #setFileName(String)} later
+     * @param filename Filename. If unknown, it can be completed with {@link #setFileId(FileId)}} later
      * @param message  Message of the error
      * @param cause    Cause of the error, if any
      */
