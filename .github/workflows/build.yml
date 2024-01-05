@@ -81,7 +81,7 @@ jobs:
       run: |
         echo "artifacts_path=$(realpath ..)" >> $GITHUB_ENV
     - name: Upload regression tester report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: pmd-regression-tester
         path: ${{ env.artifacts_path }}/target/pr-*-diff-report-*.tar.gz
