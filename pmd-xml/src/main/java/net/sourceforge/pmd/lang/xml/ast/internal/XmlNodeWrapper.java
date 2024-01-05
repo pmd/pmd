@@ -20,6 +20,7 @@ import org.w3c.dom.Text;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
+import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 import net.sourceforge.pmd.lang.rule.xpath.internal.CoordinateXPathFunction;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 import net.sourceforge.pmd.util.DataMap;
@@ -98,6 +99,7 @@ class XmlNodeWrapper implements XmlNode {
     /**
      * Returns the text, if the underlying node is a text node.
      */
+    @NoAttribute // see getXPathAttributesIterator() for how this is exposed as XPath attribute
     public String getText() {
         return node instanceof Text ? ((Text) node).getData() : null;
     }
@@ -131,9 +133,9 @@ class XmlNodeWrapper implements XmlNode {
     @Override
     public Iterator<Attribute> getXPathAttributesIterator() {
 
-        // Expose Text/CDATA nodes to have an 'Image' attribute like AST Nodes
+        // Expose Text/CDATA nodes to have an 'Text' attribute like AST Nodes
         if (node instanceof Text) {
-            return Collections.singletonList(new Attribute(this, "Image", ((Text) node).getData())).iterator();
+            return Collections.singletonList(new Attribute(this, "Text", getText())).iterator();
         }
 
         // Expose DOM Attributes
