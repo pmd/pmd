@@ -384,7 +384,7 @@ XPath 1.0 and 2.0 queries. Here's a list of known incompatibilities:
 
 An abstract syntax tree should be abstract, but in the same time, should not be too abstract. One of the
 base interfaces for PMD's AST for all languages is {% jdoc core::lang.ast.Node %}, which provides
-the methods {% jdoc core::lang.ast.Node#getImage() %} and {% jdoc core::lang.ast.Node::hasImageEqualTo(java.lang.String) %}.
+the methods {% jdoc core::lang.ast.Node#getImage() %} and {% jdoc core::lang.ast.Node#hasImageEqualTo(java.lang.String) %}.
 However, these methods don't necessarily make sense for all nodes in all contexts. That's why `getImage()`
 often returns just `null`. Also, the name is not very describing. AST nodes should try to use more specific
 names, such as `getValue()` or `getName()`.
@@ -397,6 +397,8 @@ whatever is appropriate now (e.g. `@Name`). See below for details.
 There are many usages of `@Image`. These will be refactored after PMD 7 is released
 by deprecating the attribute and providing alternatives.
 
+See also issue [Deprecate getImage/@Image #4787](https://github.com/pmd/pmd/issues/4787).
+
 #### Html
 
 * {% jdoc html::lang.html.ast.ASTHtmlTextNode %}: `@Image` ➡️ `@Text`, `@NormalizedText` ➡️ `@Text`, `@Text` ➡️ `@WholeText`.
@@ -405,6 +407,8 @@ by deprecating the attribute and providing alternatives.
 
 There are still many usages of `@Image` which are not refactored yet. This will be done after PMD 7 is released
 by deprecating the attribute and providing alternatives.
+
+See also issue [Deprecate getImage/@Image #4787](https://github.com/pmd/pmd/issues/4787).
 
 Some nodes have already the image attribute (and others) deprecated. These deprecated attributes are removed now:
 
@@ -483,6 +487,8 @@ Some nodes have already the image attribute (and others) deprecated. These depre
 
 There are many usages of `@Image`. These will be refactored after PMD 7 is released
 by deprecating the attribute and providing alternatives.
+
+See also issue [Deprecate getImage/@Image #4787](https://github.com/pmd/pmd/issues/4787).
 
 #### Scala
 
