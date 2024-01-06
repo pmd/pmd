@@ -30,7 +30,7 @@ public class NoUnsanitizedJSPExpressionRule extends AbstractJspRule {
         boolean elInTaglib = parentASTElement != null && parentASTElement.getName() != null
                 && parentASTElement.getName().contains(":");
 
-        boolean elWithFnEscapeXml = node.getImage() != null && node.getImage().matches("^fn:escapeXml\\(.+\\)$");
+        boolean elWithFnEscapeXml = node.getContent() != null && node.getContent().matches("^fn:escapeXml\\(.+\\)$");
 
         return !elInTaglib && !elWithFnEscapeXml;
     }
