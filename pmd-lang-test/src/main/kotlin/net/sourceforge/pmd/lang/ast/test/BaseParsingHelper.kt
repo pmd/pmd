@@ -188,7 +188,9 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         val input = resourceLoader.getResourceAsStream(params.resourcePrefix + resourceName)
                 ?: throw IllegalArgumentException("Unable to find resource file ${params.resourcePrefix + resourceName} from $resourceLoader")
 
-        return consume(input)
+        input.use {
+            return consume(input)
+        }
     }
 
     private fun consume(input: InputStream) =
@@ -214,7 +216,9 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         val input = (params.resourceLoader ?: javaClass).classLoader.getResourceAsStream(sourceFile)
                 ?: throw IllegalArgumentException("Unable to find source file $sourceFile for $clazz")
 
-        return consume(input)
+        input.use {
+            return consume(input)
+        }
     }
 
     @JvmOverloads
