@@ -2,6 +2,9 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
+// This class has been taken from 7.0.0-SNAPSHOT
+// Before removing RuleSetFactoryCompatibility (#4314)
+
 package net.sourceforge.pmd;
 
 import java.io.ByteArrayInputStream;
@@ -41,6 +44,7 @@ public final class RuleSetLoader {
     private ResourceLoader resourceLoader = new ResourceLoader(RuleSetLoader.class.getClassLoader());
     private RulePriority minimumPriority = RulePriority.LOW;
     private boolean warnDeprecated = true;
+    private @NonNull RuleSetFactoryCompatibility compatFilter = RuleSetFactoryCompatibility.DEFAULT;
     private boolean includeDeprecatedRuleReferences = false;
     private @NonNull MessageReporter reporter = MessageReporter.quiet();
 
@@ -102,8 +106,28 @@ public final class RuleSetLoader {
     }
 
     /**
+     * Enable translating old rule references to newer ones, if they have
+     * been moved or renamed. This is enabled by default, if disabled,
+     * unresolved references will not be translated and will produce an
+     * error.
+     *
+     * @return This instance, modified
+     */
+    public RuleSetLoader enableCompatibility(boolean enable) {
+        return setCompatibility(enable ? RuleSetFactoryCompatibility.DEFAULT
+                                       : RuleSetFactoryCompatibility.EMPTY);
+    }
+
+    // test only
+    RuleSetLoader setCompatibility(@NonNull RuleSetFactoryCompatibility filter) {
+        this.compatFilter = filter;
+        return this;
+    }
+
+    /**
      * Follow deprecated rule references. By default this is off,
-     * and those references will be ignored.
+     * and those references will be ignored (with a warning depending
+     * on {@link #enableCompatibility(boolean)}).
      *
      * @return This instance, modified
      */
@@ -126,6 +150,7 @@ public final class RuleSetLoader {
             this.languageRegistry,
             this.minimumPriority,
             this.warnDeprecated,
+            this.compatFilter,
             this.includeDeprecatedRuleReferences,
             this.reporter
         );
@@ -256,6 +281,7 @@ public final class RuleSetLoader {
      */
     public static RuleSetLoader fromPmdConfig(PMDConfiguration configuration) {
         return new RuleSetLoader().filterAbovePriority(configuration.getMinimumPriority())
+                                  .enableCompatibility(configuration.isRuleSetFactoryCompatibilityEnabled())
                                   .withLanguages(configuration.getLanguageRegistry())
                                   .withReporter(configuration.getReporter());
     }

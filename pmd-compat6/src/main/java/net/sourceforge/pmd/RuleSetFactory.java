@@ -2,6 +2,9 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
+// This class has been taken from 7.0.0-SNAPSHOT
+// Before removing RuleSetFactoryCompatibility (#4314)
+
 package net.sourceforge.pmd;
 
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
@@ -80,6 +83,7 @@ final class RuleSetFactory {
     private final LanguageRegistry languageRegistry;
     private final RulePriority minimumPriority;
     private final boolean warnDeprecated;
+    private final RuleSetFactoryCompatibility compatibilityFilter;
     private final MessageReporter reporter;
     private final boolean includeDeprecatedRuleReferences;
 
@@ -89,6 +93,7 @@ final class RuleSetFactory {
                    LanguageRegistry languageRegistry,
                    RulePriority minimumPriority,
                    boolean warnDeprecated,
+                   RuleSetFactoryCompatibility compatFilter,
                    boolean includeDeprecatedRuleReferences,
                    MessageReporter reporter) {
         this.resourceLoader = resourceLoader;
@@ -97,6 +102,7 @@ final class RuleSetFactory {
         this.warnDeprecated = warnDeprecated;
         this.includeDeprecatedRuleReferences = includeDeprecatedRuleReferences;
 
+        this.compatibilityFilter = compatFilter;
         this.reporter = reporter;
     }
 
@@ -371,6 +377,7 @@ final class RuleSetFactory {
                     // has been reported
                     continue;
                 }
+                excludedRuleName = compatibilityFilter.applyExclude(ref, excludedRuleName, this.warnDeprecated);
                 if (excludedRuleName != null) {
                     excludedRulesCheck.put(excludedRuleName, child);
                 }
@@ -437,6 +444,7 @@ final class RuleSetFactory {
     private RuleSetReferenceId parseReferenceAndWarn(String ref,
                                                      Node xmlPlace,
                                                      PmdXmlReporter err) {
+        ref = compatibilityFilter.applyRef(ref, this.warnDeprecated);
         if (ref == null) {
             err.at(xmlPlace).warn("Rule reference references a deleted rule, ignoring");
             return null; // deleted rule
@@ -659,6 +667,7 @@ final class RuleSetFactory {
         return new RuleSetLoader().loadResourcesWith(resourceLoader)
                                   .filterAbovePriority(minimumPriority)
                                   .warnDeprecated(warnDeprecated)
+                                  .enableCompatibility(compatibilityFilter != null)
                                   .includeDeprecatedRuleReferences(includeDeprecatedRuleReferences);
     }
 

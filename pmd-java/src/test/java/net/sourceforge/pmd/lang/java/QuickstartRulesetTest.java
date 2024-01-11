@@ -20,7 +20,7 @@ class QuickstartRulesetTest {
 
     @Test
     void noDeprecations() throws Exception {
-        RuleSetLoader ruleSetLoader = new RuleSetLoader().enableCompatibility(false);
+        RuleSetLoader ruleSetLoader = new RuleSetLoader();
         String errorOutput = SystemLambda.tapSystemErr(() -> {
             RuleSet quickstart = ruleSetLoader.loadFromResource(QUICKSTART_RULESET);
             assertFalse(quickstart.getRules().isEmpty());

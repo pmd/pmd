@@ -20,7 +20,9 @@ This ruleset contains links to rules that are new in PMD v3.5
 
 <!--  <rule ref="rulesets/java/junit.xml/UseAssertNullInsteadOfAssertTrue"/>-->
 
+  <!-- removed with 5.6.0:
   <rule ref="rulesets/java/design.xml/AvoidConstantsInterface"/>
+  -->
 
   <rule ref="rulesets/java/optimizations.xml/UseArraysAsList"/>
   <rule ref="rulesets/java/optimizations.xml/AvoidArrayLoops"/>
