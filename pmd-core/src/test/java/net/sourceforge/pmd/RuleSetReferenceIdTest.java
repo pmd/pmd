@@ -195,14 +195,6 @@ class RuleSetReferenceIdTest {
     }
 
     @Test
-    void testOneReleaseRuleSet() {
-        List<RuleSetReferenceId> references = RuleSetReferenceId.parse("50");
-        assertEquals(1, references.size());
-        assertRuleSetReferenceId(true, "rulesets/releases/50.xml", true, null, "rulesets/releases/50.xml",
-                references.get(0));
-    }
-
-    @Test
     void testOneFullRuleSet() {
         List<RuleSetReferenceId> references = RuleSetReferenceId.parse("rulesets/java/unusedcode.xml");
         assertEquals(1, references.size());

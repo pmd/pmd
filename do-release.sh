@@ -84,16 +84,11 @@ if [ "${BUILD_TOOLS_VERSION}" != "${BUILD_TOOLS_VERSION_RELEASE}" ]; then
   exit 1
 fi
 
-RELEASE_RULESET="pmd-core/src/main/resources/rulesets/releases/${RELEASE_VERSION//\./}.xml"
-
 echo "*   Update date info in **docs/_config.yml**."
 echo "    date: $(date -u +%d-%B-%Y)"
 echo
 echo "*   Update version info in **docs/_config.yml**."
 echo "    remove the SNAPSHOT from site.pmd.version"
-echo
-echo "*   Ensure all the new rules are listed in the proper file:"
-echo "    ${RELEASE_RULESET}"
 echo
 echo "*   Update **pmd-apex/src/main/resources/rulesets/apex/quickstart.xml** and"
 echo "    **pmd-java/src/main/resources/rulesets/java/quickstart.xml** with the new rules."
@@ -150,11 +145,6 @@ ${NEW_RELEASE_NOTES}
 EOF
 
 echo "Committing current changes (pmd)"
-
-if [[ -e "${RELEASE_RULESET}" ]]
-then
-    git add "${RELEASE_RULESET}"
-fi
 
 git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
 (
