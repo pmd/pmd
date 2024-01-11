@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.groovy;
 
-import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.cpd.CpdLexer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.groovy.cpd.GroovyTokenizer;
+import net.sourceforge.pmd.lang.groovy.cpd.GroovyCpdLexer;
 import net.sourceforge.pmd.lang.impl.CpdOnlyLanguageModuleBase;
 
 /**
@@ -28,7 +28,7 @@ public class GroovyLanguageModule extends CpdOnlyLanguageModuleBase {
     }
 
     @Override
-    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
-        return new GroovyTokenizer();
+    public CpdLexer createCpdLexer(LanguagePropertyBundle bundle) {
+        return new GroovyCpdLexer();
     }
 }

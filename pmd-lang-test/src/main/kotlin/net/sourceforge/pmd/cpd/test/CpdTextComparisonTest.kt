@@ -31,9 +31,9 @@ abstract class CpdTextComparisonTest(
         extensionIncludingDot
     )
 
-    fun newTokenizer(config: LanguagePropertyConfig): Tokenizer {
+    fun newCpdLexer(config: LanguagePropertyConfig): CpdLexer {
         val properties = language.newPropertyBundle().also { config.setProperties(it) }
-        return language.createCpdTokenizer(properties)
+        return language.createCpdLexer(properties)
     }
 
     override val resourceLoader: Class<*>
@@ -64,7 +64,7 @@ abstract class CpdTextComparisonTest(
         config: LanguagePropertyConfig = defaultProperties()
     ) {
         super.doTest(fileBaseName, expectedSuffix) { fdata ->
-            val tokens = tokenize(newTokenizer(config), fdata)
+            val tokens = tokenize(newCpdLexer(config), fdata)
             buildString { format(tokens) }
         }
     }
@@ -83,7 +83,7 @@ abstract class CpdTextComparisonTest(
         config: LanguagePropertyConfig = defaultProperties()
     ): LexException =
         shouldThrow {
-            tokenize(newTokenizer(config), fileData)
+            tokenize(newCpdLexer(config), fileData)
         }
 
 
@@ -169,10 +169,10 @@ abstract class CpdTextComparisonTest(
     fun sourceCodeOf(text: String, fileName: FileId = FileId.UNKNOWN): FileData =
         FileData(fileName = fileName, fileText = text)
 
-    fun tokenize(tokenizer: Tokenizer, fileData: FileData): Tokens =
+    fun tokenize(cpdLexer: CpdLexer, fileData: FileData): Tokens =
         Tokens().also { tokens ->
             val source = sourceCodeOf(fileData)
-            Tokenizer.tokenize(tokenizer, source, tokens)
+            CpdLexer.tokenize(cpdLexer, source, tokens)
         }
 
     private companion object {

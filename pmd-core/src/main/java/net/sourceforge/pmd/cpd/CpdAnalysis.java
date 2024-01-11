@@ -137,10 +137,10 @@ public final class CpdAnalysis implements AutoCloseable {
         this.listener = cpdListener;
     }
 
-    private int doTokenize(TextDocument document, Tokenizer tokenizer, Tokens tokens) throws IOException, LexException {
+    private int doTokenize(TextDocument document, CpdLexer cpdLexer, Tokens tokens) throws IOException, LexException {
         LOGGER.trace("Tokenizing {}", document.getFileId().getAbsolutePath());
         int lastTokenSize = tokens.size();
-        Tokenizer.tokenize(tokenizer, document, tokens);
+        CpdLexer.tokenize(cpdLexer, document, tokens);
         return tokens.size() - lastTokenSize - 1; /* EOF */
     }
 
@@ -152,12 +152,12 @@ public final class CpdAnalysis implements AutoCloseable {
     public void performAnalysis(Consumer<CPDReport> consumer) {
 
         try (SourceManager sourceManager = new SourceManager(files.getCollectedFiles())) {
-            Map<Language, Tokenizer> tokenizers =
+            Map<Language, CpdLexer> tokenizers =
                 sourceManager.getTextFiles().stream()
                              .map(it -> it.getLanguageVersion().getLanguage())
                              .distinct()
                              .filter(it -> it instanceof CpdCapableLanguage)
-                             .collect(Collectors.toMap(lang -> lang, lang -> ((CpdCapableLanguage) lang).createCpdTokenizer(configuration.getLanguageProperties(lang))));
+                             .collect(Collectors.toMap(lang -> lang, lang -> ((CpdCapableLanguage) lang).createCpdLexer(configuration.getLanguageProperties(lang))));
 
             Map<FileId, Integer> numberOfTokensPerFile = new HashMap<>();
 

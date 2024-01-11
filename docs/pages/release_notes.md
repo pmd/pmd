@@ -159,10 +159,14 @@ The following previously deprecated classes have been removed:
       If the current version is needed, then `Node.getTextDocument().getLanguageVersion()` can be used. This
       is the version that has been selected via CLI `--use-version` parameter.
 
-**Renamed classes**
+**Renamed classes and methods **
 
 * pmd-core
   * {%jdoc_old core::lang.ast.TokenMgrError %} has been renamed to {% jdoc core::lang.ast.LexException %}
+  * {%jdoc_old core::cpd.Tokenizer %} has been renamed to {% jdoc core::cpd.CpdLexer %}. Along with this rename,
+    all the implementations have been renamed as well (`Tokenizer` -> `CpdLexer`), e.g. "CppCpdLexer", "JavaCpdLexer".
+    This affects all language modules.
+  * {%jdoc_old core::cpd.AnyTokenizer %} has been renamed to {% jdoc core::cpd.AnyCpdLexer %}.
 
 #### External Contributions
 * [#4640](https://github.com/pmd/pmd/pull/4640): \[cli] Launch script fails if run via "bash pmd" - [Shai Bennathan](https://github.com/shai-bennathan) (@shai-bennathan)

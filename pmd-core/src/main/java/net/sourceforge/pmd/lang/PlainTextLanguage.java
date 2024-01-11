@@ -5,9 +5,9 @@
 package net.sourceforge.pmd.lang;
 
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.cpd.AnyTokenizer;
+import net.sourceforge.pmd.cpd.AnyCpdLexer;
 import net.sourceforge.pmd.cpd.CpdCapableLanguage;
-import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.cpd.CpdLexer;
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
@@ -47,8 +47,8 @@ public final class PlainTextLanguage extends SimpleLanguageModuleBase implements
     }
 
     @Override
-    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
-        return new AnyTokenizer();
+    public CpdLexer createCpdLexer(LanguagePropertyBundle bundle) {
+        return new AnyCpdLexer();
     }
 
     private static final class TextLvh implements LanguageVersionHandler {

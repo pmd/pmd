@@ -93,7 +93,7 @@ public class Tokens {
 
     /**
      * Creates a token factory to process the given file with
-     * {@link Tokenizer#tokenize(TextDocument, TokenFactory)}.
+     * {@link CpdLexer#tokenize(TextDocument, TokenFactory)}.
      * Tokens are accumulated in the {@link Tokens} parameter.
      *
      * @param file   Document for the file to process

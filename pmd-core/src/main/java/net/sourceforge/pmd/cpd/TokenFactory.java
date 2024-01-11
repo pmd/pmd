@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
 
 /**
- * Proxy to record tokens from within {@link Tokenizer#tokenize(TextDocument, TokenFactory)}.
+ * Proxy to record tokens from within {@link CpdLexer#tokenize(TextDocument, TokenFactory)}.
  */
 public interface TokenFactory extends AutoCloseable {
 
@@ -57,7 +57,7 @@ public interface TokenFactory extends AutoCloseable {
 
     /**
      * This adds the EOF token, it must be called when
-     * {@link Tokenizer#tokenize(TextDocument, TokenFactory)} is done.
+     * {@link CpdLexer#tokenize(TextDocument, TokenFactory)} is done.
      */
     @Override
     void close();
