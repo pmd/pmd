@@ -123,6 +123,8 @@ in the Migration Guide.
 * groovy
   * [#4726](https://github.com/pmd/pmd/pull/4726):   \[groovy] Support Groovy to 3 and 4 and CPD suppressions
 * java
+  * [#1307](https://github.com/pmd/pmd/issues/1307): \[java] AccessNode API changes
+  * [#3751](https://github.com/pmd/pmd/issues/3751): \[java] Rename some node types
   * [#4753](https://github.com/pmd/pmd/issues/4753): \[java] PMD crashes while using generics and wildcards
 * java-codestyle
   * [#2847](https://github.com/pmd/pmd/issues/2847): \[java] New Rule: Use Explicit Types
@@ -660,6 +662,7 @@ Language specific fixes:
     * [#1128](https://github.com/pmd/pmd/issues/1128): \[java] Improve ASTLocalVariableDeclaration
     * [#1150](https://github.com/pmd/pmd/issues/1150): \[java] ClassOrInterfaceType AST improvements
     * [#1207](https://github.com/pmd/pmd/issues/1207): \[java] Resolve explicit types using FQCNs, without hitting the classloader
+    * [#1307](https://github.com/pmd/pmd/issues/1307): \[java] AccessNode API changes
     * [#1367](https://github.com/pmd/pmd/issues/1367): \[java] Parsing error on annotated inner class
     * [#1661](https://github.com/pmd/pmd/issues/1661): \[java] About operator nodes
     * [#2366](https://github.com/pmd/pmd/pull/2366):   \[java] Remove qualified names
@@ -668,6 +671,7 @@ Language specific fixes:
     * [#3763](https://github.com/pmd/pmd/issues/3763): \[java] Ambiguous reference error in valid code
     * [#3749](https://github.com/pmd/pmd/issues/3749): \[java] Improve `isOverridden` in ASTMethodDeclaration
     * [#3750](https://github.com/pmd/pmd/issues/3750): \[java] Make symbol table support instanceof pattern bindings
+    * [#3751](https://github.com/pmd/pmd/issues/3751): \[java] Rename some node types
     * [#3752](https://github.com/pmd/pmd/issues/3752): \[java] Expose annotations in symbol API
     * [#4237](https://github.com/pmd/pmd/pull/4237):   \[java] Cleanup handling of Java comments
     * [#4317](https://github.com/pmd/pmd/issues/4317): \[java] Some AST nodes should not be TypeNodes
