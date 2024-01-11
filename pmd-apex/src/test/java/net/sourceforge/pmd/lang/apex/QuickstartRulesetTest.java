@@ -15,14 +15,8 @@ import net.sourceforge.pmd.RuleSetLoader;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 
-class DefaultRulesetTest {
+class QuickstartRulesetTest {
     private static final String QUICKSTART_RULESET = "rulesets/apex/quickstart.xml";
-
-    @Test
-    void loadDefaultRuleset() {
-        RuleSet ruleset = rulesetLoader().loadFromResource("rulesets/apex/ruleset.xml");
-        assertNotNull(ruleset);
-    }
 
     @Test
     void loadQuickstartRuleset() throws Exception {
