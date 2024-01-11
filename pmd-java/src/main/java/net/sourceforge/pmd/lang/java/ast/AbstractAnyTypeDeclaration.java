@@ -40,7 +40,7 @@ abstract class AbstractAnyTypeDeclaration extends AbstractTypedSymbolDeclarator<
     /**
      * @deprecated Use {@link #getSimpleName()}
      */
-    @Deprecated
+    @Deprecated // note: already deprecated in 6.55.0
     @DeprecatedAttribute(replaceWith = "@SimpleName")
     @Override
     public String getImage() {

@@ -112,7 +112,7 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
      */
     @Override
     @DeprecatedAttribute(replaceWith = "@Name")
-    @Deprecated
+    @Deprecated // note: already deprecated in 6.55.0
     public String getImage() {
         return getName();
     }
