@@ -97,6 +97,67 @@ in the Migration Guide.
 * {% rule java/codestyle/EmptyControlStatement %}: The rule has a new property to allow empty blocks when
   they contain a comment (`allowCommentedBlocks`).
 
+**Removed deprecated rulesets**
+
+The following previously deprecated rulesets have been removed. These were the left-over rulesets from PMD 5.
+The rules have been moved into categories with PMD 6.
+
+* rulesets/apex/apexunit.xml
+* rulesets/apex/braces.xml
+* rulesets/apex/complexity.xml
+* rulesets/apex/empty.xml
+* rulesets/apex/metrics.xml
+* rulesets/apex/performance.xml
+* rulesets/apex/ruleset.xml
+* rulesets/apex/securty.xml
+* rulesets/apex/style.xml
+* rulesets/java/android.xml
+* rulesets/java/basic.xml
+* rulesets/java/clone.xml
+* rulesets/java/codesize.xml
+* rulesets/java/comments.xml
+* rulesets/java/controversial.xml
+* rulesets/java/coupling.xml
+* rulesets/java/design.xml
+* rulesets/java/empty.xml
+* rulesets/java/finalizers.xml
+* rulesets/java/imports.xml
+* rulesets/java/j2ee.xml
+* rulesets/java/javabeans.xml
+* rulesets/java/junit.xml
+* rulesets/java/logging-jakarta-commons.xml
+* rulesets/java/logging-java.xml
+* rulesets/java/metrics.xml
+* rulesets/java/migrating.xml
+* rulesets/java/migrating_to_13.xml
+* rulesets/java/migrating_to_14.xml
+* rulesets/java/migrating_to_15.xml
+* rulesets/java/migrating_to_junit4.xml
+* rulesets/java/naming.xml
+* rulesets/java/optimizations.xml
+* rulesets/java/strictexception.xml
+* rulesets/java/strings.xml
+* rulesets/java/sunsecure.xml
+* rulesets/java/typeresolution.xml
+* rulesets/java/unnecessary.xml
+* rulesets/java/unusedcode.xml
+* rulesets/ecmascript/basic.xml
+* rulesets/ecmascript/braces.xml
+* rulesets/ecmascript/controversial.xml
+* rulesets/ecmascript/unnecessary.xml
+* rulesets/jsp/basic.xml
+* rulesets/jsp/basic-jsf.xml
+* rulesets/plsql/codesize.xml
+* rulesets/plsql/dates.xml
+* rulesets/plsql/strictsyntax.xml
+* rulesets/plsql/TomKytesDespair.xml
+* rulesets/vf/security.xml
+* rulesets/vm/basic.xml
+* rulesets/pom/basic.xml
+* rulesets/xml/basic.xml
+* rulesets/xsl/xpath.xml
+* rulesets/releases/*
+
 #### Fixed issues
 
 * cli
@@ -121,6 +182,7 @@ in the Migration Guide.
   * [#4736](https://github.com/pmd/pmd/issues/4736): \[ci] Improve build procedure
   * [#4741](https://github.com/pmd/pmd/pull/4741):   Add pmd-compat6 module for maven-pmd-plugin
   * [#4749](https://github.com/pmd/pmd/pull/4749):   Fixes NoSuchMethodError on processing errors in pmd-compat6
+  * [#4796](https://github.com/pmd/pmd/pull/4796):   Remove deprecated and release rulesets
 * apex-performance
   * [#4675](https://github.com/pmd/pmd/issues/4675): \[apex] New Rule: OperationWithHighCostInLoop
 * groovy
@@ -530,6 +592,7 @@ See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.
     * [#4736](https://github.com/pmd/pmd/issues/4736): \[ci] Improve build procedure
     * [#4741](https://github.com/pmd/pmd/pull/4741):   Add pmd-compat6 module for maven-pmd-plugin
     * [#4749](https://github.com/pmd/pmd/pull/4749):   Fixes NoSuchMethodError on processing errors in pmd-compat6
+    * [#4796](https://github.com/pmd/pmd/pull/4796):   Remove deprecated and release rulesets
 * ant
     * [#4080](https://github.com/pmd/pmd/issues/4080): \[ant] Split off Ant integration into a new submodule
 * core
