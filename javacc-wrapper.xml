@@ -280,6 +280,13 @@
             <file name="${tokenmgr-file}" />
         </replaceregexp>
 
+        <!-- Use own LexException instead of JavaCC's TokenMgrError -->
+        <replaceregexp>
+            <regexp pattern='throw new TokenMgrError\(EOFSeen' />
+            <substitution expression='throw new net.sourceforge.pmd.lang.ast.LexException(EOFSeen' />
+            <file name="${tokenmgr-file}" />
+        </replaceregexp>
+
         <!-- Useless argument, also replace lex state ID with its name  -->
         <replaceregexp>
             <regexp pattern='curLexState, error_line, error_column, error_after, curChar, TokenMgrError.LEXICAL_ERROR\)' />

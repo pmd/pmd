@@ -270,7 +270,7 @@ open class ParserTestCtx(testScope: TestScope,
                 Pair(true, null)
             } catch (e: ParseException) {
                 Pair(false, e)
-            } catch (e: TokenMgrError) {
+            } catch (e: LexException) {
                 Pair(false, e)
             }
 

@@ -18,12 +18,6 @@ options {
 PARSER_BEGIN(ObjectiveCParserImpl)
 package net.sourceforge.pmd.lang.objectivec.ast;
 
-import java.io.*;
-import java.util.*;
-
-import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
-import net.sourceforge.pmd.lang.ast.TokenMgrError;
-
 /**
  * Grammar to parse ObjectiveC 2.0
  * @author Michael Hall - Based on Parnel SableCC ObjectiveC grammar and javacc C grammar

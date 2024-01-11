@@ -16,7 +16,7 @@ import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.cpd.Tokens;
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 import net.sourceforge.pmd.cpd.test.LanguagePropertyConfig;
-import net.sourceforge.pmd.lang.ast.TokenMgrError;
+import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
@@ -42,7 +42,7 @@ class JavaTokenizerTest extends CpdTextComparisonTest {
     void testLexExceptionLocation() {
         Tokenizer tokenizer = newTokenizer(defaultProperties());
         Tokens tokens = new Tokens();
-        TokenMgrError lexException = assertThrows(TokenMgrError.class, () ->
+        LexException lexException = assertThrows(LexException.class, () ->
             Tokenizer.tokenize(tokenizer,
                     // note: the source deliberately contains an unbalanced quote, unterminated string literal
                     TextDocument.readOnlyString("class F {\n    String s=\"abc\";\"\n}\n", FileId.UNKNOWN, getLanguage().getDefaultVersion()),

@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import net.sourceforge.pmd.cpd.CpdLanguageProperties;
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
 import net.sourceforge.pmd.cpd.test.LanguagePropertyConfig;
-import net.sourceforge.pmd.lang.ast.TokenMgrError;
+import net.sourceforge.pmd.lang.ast.LexException;
 
 class CsTokenizerTest extends CpdTextComparisonTest {
 
@@ -37,7 +37,7 @@ class CsTokenizerTest extends CpdTextComparisonTest {
 
     @Test
     void testOpenString() {
-        assertThrows(TokenMgrError.class, () -> doTest("unlexable_string"));
+        assertThrows(LexException.class, () -> doTest("unlexable_string"));
     }
 
     @Test

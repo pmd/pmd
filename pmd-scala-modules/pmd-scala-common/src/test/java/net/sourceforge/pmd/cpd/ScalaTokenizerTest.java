@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.test.CpdTextComparisonTest;
-import net.sourceforge.pmd.lang.ast.TokenMgrError;
+import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.scala.ScalaLanguageModule;
 
 class ScalaTokenizerTest extends CpdTextComparisonTest {
@@ -35,7 +35,7 @@ class ScalaTokenizerTest extends CpdTextComparisonTest {
 
     @Test
     void tokenizeFailTest() {
-        assertThrows(TokenMgrError.class, () -> doTest("unlexable_sample"));
+        assertThrows(LexException.class, () -> doTest("unlexable_sample"));
     }
 
     @Test

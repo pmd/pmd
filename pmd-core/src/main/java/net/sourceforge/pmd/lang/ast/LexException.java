@@ -16,8 +16,10 @@ import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * An error thrown during lexical analysis of a file.
+ *
+ * <p>Note: This exception has been called TokenMgrError in PMD 6.</p>
  */
-public final class TokenMgrError extends FileAnalysisException {
+public final class LexException extends FileAnalysisException {
 
     private final int line;
     private final int column;
@@ -31,7 +33,7 @@ public final class TokenMgrError extends FileAnalysisException {
      * @param message  Message of the error
      * @param cause    Cause of the error, if any
      */
-    public TokenMgrError(int line, int column, @Nullable FileId filename, String message, @Nullable Throwable cause) {
+    public LexException(int line, int column, @Nullable FileId filename, String message, @Nullable Throwable cause) {
         super(message, cause);
         this.line = max(line, 1);
         this.column = max(column, 1);
@@ -44,7 +46,7 @@ public final class TokenMgrError extends FileAnalysisException {
      * Constructor called by JavaCC.
      */
     @InternalApi
-    public TokenMgrError(boolean eofSeen, String lexStateName, int errorLine, int errorColumn, String errorAfter, char curChar) {
+    public LexException(boolean eofSeen, String lexStateName, int errorLine, int errorColumn, String errorAfter, char curChar) {
         super(makeReason(eofSeen, lexStateName, errorAfter, curChar));
         line = max(errorLine, 1);
         column = max(errorColumn, 1);
@@ -76,7 +78,7 @@ public final class TokenMgrError extends FileAnalysisException {
      * @return A new exception
      */
     @Override
-    public TokenMgrError setFileId(FileId fileId) {
+    public LexException setFileId(FileId fileId) {
         super.setFileId(fileId);
         return this;
     }

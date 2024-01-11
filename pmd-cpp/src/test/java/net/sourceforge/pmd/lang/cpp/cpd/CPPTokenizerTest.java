@@ -71,7 +71,7 @@ class CPPTokenizerTest extends CpdTextComparisonTest {
 
     @Test
     void testWrongUnicodeInIdentifier() {
-        expectTokenMgrError(" void main() { int ⚜ = __; }");
+        expectLexException(" void main() { int ⚜ = __; }");
     }
 
     @Test
@@ -107,7 +107,7 @@ class CPPTokenizerTest extends CpdTextComparisonTest {
 
     @Test
     void testLexicalErrorFilename() {
-        expectTokenMgrError(sourceText("issue-1559"), dontSkipBlocks());
+        expectLexException(sourceText("issue-1559"), dontSkipBlocks());
     }
 
 

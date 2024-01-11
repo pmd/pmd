@@ -7,7 +7,7 @@ package net.sourceforge.pmd.cpd;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.ast.TokenMgrError;
+import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
 
@@ -43,7 +43,7 @@ public interface TokenFactory extends AutoCloseable {
         recordToken(image, location.getStartLine(), location.getStartColumn(), location.getEndLine(), location.getEndColumn());
     }
 
-    TokenMgrError makeLexException(int line, int column, String message, @Nullable Throwable cause);
+    LexException makeLexException(int line, int column, String message, @Nullable Throwable cause);
 
     /**
      * Sets the image of an existing token entry.
