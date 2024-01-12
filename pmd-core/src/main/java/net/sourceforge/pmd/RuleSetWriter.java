@@ -40,6 +40,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySerializer;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.properties.PropertyTypeId;
+import net.sourceforge.pmd.rule.Rule;
 import net.sourceforge.pmd.util.internal.xml.SchemaConstants;
 
 /**

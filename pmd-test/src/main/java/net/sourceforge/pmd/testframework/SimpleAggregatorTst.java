@@ -7,7 +7,7 @@ package net.sourceforge.pmd.testframework;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.rule.Rule;
 
 /**
  * Simple setup for a rule unit test,

@@ -151,6 +151,10 @@ in the Migration Guide.
 
 #### API Changes
 
+**Moved classes**
+* pmd-core
+  * The interface {%jdoc core::rule.Rule %} has been moved into the new package {% jdoc_package core::rule %}.
+
 **Removed classes and methods**
 
 The following previously deprecated classes have been removed:

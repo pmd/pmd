@@ -7,6 +7,8 @@ package net.sourceforge.pmd.properties;
 import java.util.List;
 import java.util.Map;
 
+import net.sourceforge.pmd.rule.Rule;
+
 
 /**
  * Entity that manages a list of properties. Properties are described by
@@ -18,7 +20,7 @@ import java.util.Map;
  *
  * <p>Bad configuration of the properties may be reported by {@link #dysfunctionReason()}.
  *
- * <p>Notable instances of this interface are {@linkplain net.sourceforge.pmd.Rule rules} and
+ * <p>Notable instances of this interface are {@linkplain Rule rules} and
  * {@linkplain net.sourceforge.pmd.renderers.Renderer renderers}.
  *
  * @author Brian Remedios

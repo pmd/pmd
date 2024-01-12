@@ -17,8 +17,8 @@ import java.util.Objects;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.rule.Rule;
 
 /**
  * @deprecated Is internal API

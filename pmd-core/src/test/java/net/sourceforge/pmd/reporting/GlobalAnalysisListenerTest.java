@@ -21,7 +21,6 @@ import org.mockito.Mockito;
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.cache.AnalysisCache;
@@ -29,6 +28,7 @@ import net.sourceforge.pmd.cache.NoopAnalysisCache;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.document.FileId;
+import net.sourceforge.pmd.rule.Rule;
 
 class GlobalAnalysisListenerTest {
 

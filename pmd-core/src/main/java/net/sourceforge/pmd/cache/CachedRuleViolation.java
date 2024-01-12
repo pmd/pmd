@@ -14,12 +14,12 @@ import java.util.Map.Entry;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextRange2d;
+import net.sourceforge.pmd.rule.Rule;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**

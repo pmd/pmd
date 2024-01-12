@@ -10,6 +10,7 @@ import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.document.TestMessageReporter;
+import net.sourceforge.pmd.rule.Rule;
 
 public final class ReportTestUtil {
     private ReportTestUtil() {

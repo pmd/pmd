@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.plsql.rule.errorprone;
 import java.util.Collections;
 import java.util.List;
 
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.rule.Rule;
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
 class ToDateWithoutDateFormatTest extends PmdRuleTst {

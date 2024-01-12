@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.lang.DummyLanguageModule;
+import net.sourceforge.pmd.rule.Rule;
 import net.sourceforge.pmd.util.internal.xml.SchemaConstant;
 import net.sourceforge.pmd.util.internal.xml.SchemaConstants;
 import net.sourceforge.pmd.util.log.MessageReporter;

@@ -12,6 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.rule.Rule;
+
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 
 class RuleSetFactoryDuplicatedRuleLoggingTest extends RulesetFactoryTestBase {

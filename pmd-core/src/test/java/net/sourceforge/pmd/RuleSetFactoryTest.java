@@ -28,6 +28,7 @@ import org.mockito.Mockito;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.rule.Rule;
 import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.internal.xml.SchemaConstants;
 
