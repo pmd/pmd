@@ -10,10 +10,10 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 
-import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.rule.Rule;
+import net.sourceforge.pmd.rule.RuleSet;
 
 public final class RuleSetUtils {
 

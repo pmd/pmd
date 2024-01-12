@@ -7,10 +7,10 @@ package net.sourceforge.pmd.lang.rule;
 import static net.sourceforge.pmd.properties.NumericConstraints.inRange;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.rule.RulePriority;
 
 
 /**

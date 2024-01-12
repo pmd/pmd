@@ -17,7 +17,6 @@ import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageProcessor;
@@ -28,6 +27,7 @@ import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.rule.RuleSet;
 import net.sourceforge.pmd.util.log.MessageReporter;
 
 abstract class AbstractPMDProcessorTest {

@@ -9,8 +9,6 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageVersion;

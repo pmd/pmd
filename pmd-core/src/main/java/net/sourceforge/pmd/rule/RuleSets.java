@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.rule;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,7 +21,6 @@ import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.internal.RuleApplicator;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
-import net.sourceforge.pmd.rule.Rule;
 import net.sourceforge.pmd.util.log.MessageReporter;
 
 /**

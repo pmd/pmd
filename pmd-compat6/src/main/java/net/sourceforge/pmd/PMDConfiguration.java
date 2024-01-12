@@ -32,6 +32,8 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
+import net.sourceforge.pmd.rule.RulePriority;
+import net.sourceforge.pmd.rule.RuleSetLoader;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 

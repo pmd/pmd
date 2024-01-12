@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -16,6 +15,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.rule.Rule;
+import net.sourceforge.pmd.rule.RulePriority;
 
 /**
  * Base class for Rule implementations which delegate to another Rule instance.

@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.rule;
 
 import static net.sourceforge.pmd.PmdCoreTestUtils.dummyLanguage;
 import static org.junit.jupiter.api.Assertions.assertEquals;

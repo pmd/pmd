@@ -11,6 +11,8 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.document.TestMessageReporter;
 import net.sourceforge.pmd.rule.Rule;
+import net.sourceforge.pmd.rule.RuleSet;
+import net.sourceforge.pmd.rule.RuleSets;
 
 public final class ReportTestUtil {
     private ReportTestUtil() {

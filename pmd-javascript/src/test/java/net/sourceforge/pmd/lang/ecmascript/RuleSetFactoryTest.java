@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.ecmascript;
 
-import net.sourceforge.pmd.AbstractRuleSetFactoryTest;
+import net.sourceforge.pmd.rule.AbstractRuleSetFactoryTest;
 
 /**
  * Test javascript's rulesets

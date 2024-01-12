@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.rule;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,7 +17,6 @@ import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.log.MessageReporter;
 
@@ -74,11 +73,9 @@ import net.sourceforge.pmd.util.log.MessageReporter;
  * </tbody>
  * </table>
  *
- * @deprecated This is part of the internals of the {@link RuleSetLoader}.
+ * <p>Note: This is part of the internals of the {@link RuleSetLoader}.
  */
-@Deprecated
-@InternalApi
-public class RuleSetReferenceId {
+class RuleSetReferenceId {
 
     // todo this class has issues... What is even an "external" ruleset?
     //  terminology and API should be clarified.
@@ -99,8 +96,7 @@ public class RuleSetReferenceId {
      * @throws IllegalArgumentException
      *             If the ID contains a comma character.
      */
-    public RuleSetReferenceId(final String id) {
-
+    RuleSetReferenceId(final String id) {
         this(id, null, null);
     }
 
@@ -127,7 +123,7 @@ public class RuleSetReferenceId {
      * @throws IllegalArgumentException If the ID is not Rule reference when there is an external
      *                                  RuleSetReferenceId.
      */
-    public RuleSetReferenceId(final String id, final RuleSetReferenceId externalRuleSetReferenceId) {
+    RuleSetReferenceId(final String id, final RuleSetReferenceId externalRuleSetReferenceId) {
         this(id, externalRuleSetReferenceId, null);
     }
 

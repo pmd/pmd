@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.rule;
 
 import static net.sourceforge.pmd.PmdCoreTestUtils.dummyLanguage;
 import static net.sourceforge.pmd.PmdCoreTestUtils.dummyLanguage2;
@@ -40,16 +40,19 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
+import net.sourceforge.pmd.DummyParsingHelper;
+import net.sourceforge.pmd.FooRule;
+import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.RuleSet.RuleSetBuilder;
-import net.sourceforge.pmd.lang.DummyLanguageModule;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
-import net.sourceforge.pmd.rule.Rule;
+import net.sourceforge.pmd.rule.RuleSet.RuleSetBuilder;
 
 class RuleSetTest {
 
@@ -573,25 +576,4 @@ class RuleSetTest {
 
         assertThat(report.getViolations(), hasSize(1));
     }
-
-
-    static class MockRule extends net.sourceforge.pmd.lang.rule.MockRule {
-
-        MockRule() {
-            super();
-            setLanguage(DummyLanguageModule.getInstance());
-        }
-
-        MockRule(String name, String description, String message, String ruleSetName, RulePriority priority) {
-            super(name, description, message, ruleSetName, priority);
-            setLanguage(DummyLanguageModule.getInstance());
-        }
-
-        MockRule(String name, String description, String message, String ruleSetName) {
-            super(name, description, message, ruleSetName);
-            setLanguage(DummyLanguageModule.getInstance());
-        }
-
-    }
-
 }

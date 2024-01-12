@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.rule;
 
 import static net.sourceforge.pmd.util.CollectionUtil.mapOf;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -18,9 +18,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.RuleSet.RuleSetBuilder;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.rule.RuleSet.RuleSetBuilder;
 import net.sourceforge.pmd.util.internal.xml.SchemaConstants;
 
 /**
@@ -59,7 +59,7 @@ class RuleSetWriterTest extends RulesetFactoryTestBase {
      */
     @Test
     void testWrite() throws Exception {
-        RuleSet braces = new RuleSetLoader().loadFromResource("net/sourceforge/pmd/TestRuleset1.xml");
+        RuleSet braces = new RuleSetLoader().loadFromResource("net/sourceforge/pmd/rule/TestRuleset1.xml");
         RuleSet ruleSet = new RuleSetBuilder(new Random().nextLong())
                 .withName("ruleset")
                 .withDescription("ruleset description")

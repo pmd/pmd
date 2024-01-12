@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
@@ -23,6 +22,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.rule.Rule;
+import net.sourceforge.pmd.rule.RuleSet;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 

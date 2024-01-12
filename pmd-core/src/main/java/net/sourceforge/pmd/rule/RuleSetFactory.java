@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.rule;
 
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.DESCRIPTION;
@@ -45,11 +45,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import net.sourceforge.pmd.RuleSet.RuleSetBuilder;
+import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.RuleReference;
-import net.sourceforge.pmd.rule.Rule;
-import net.sourceforge.pmd.rules.RuleFactory;
+import net.sourceforge.pmd.rule.RuleSet.RuleSetBuilder;
 import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.internal.xml.PmdXmlReporter;

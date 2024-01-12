@@ -3,8 +3,8 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
 
     <description>
-  Ruleset used by test net.sourceforge.pmd.RuleSetFactoryTest
-  </description>
+        Ruleset used by test net.sourceforge.pmd.rule.RuleSetFactoryTest
+    </description>
 
     <rule name="MockRule" language="dummy" since="1.0" message="Test Rule" class="net.sourceforge.pmd.lang.rule.MockRule"
         externalInfoUrl="${pmd.website.baseurl}/rules/test/external-reference-ruleset.html#MockRule">

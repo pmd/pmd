@@ -23,8 +23,6 @@ import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
-import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.ant.Formatter;
 import net.sourceforge.pmd.ant.PMDTask;
 import net.sourceforge.pmd.ant.SourceLanguage;
@@ -39,6 +37,8 @@ import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.reporting.ReportStats;
 import net.sourceforge.pmd.reporting.ReportStatsListener;
+import net.sourceforge.pmd.rule.RulePriority;
+import net.sourceforge.pmd.rule.RuleSetLoader;
 
 public class PMDTaskImpl {
 

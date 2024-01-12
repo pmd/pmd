@@ -16,7 +16,6 @@ import java.util.Set;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -24,6 +23,7 @@ import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.properties.AbstractPropertySource;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.rule.Rule;
+import net.sourceforge.pmd.rule.RulePriority;
 
 /**
  * Basic abstract implementation of all parser-independent methods of the Rule

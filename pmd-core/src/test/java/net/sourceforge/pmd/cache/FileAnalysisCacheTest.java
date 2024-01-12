@@ -36,7 +36,6 @@ import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mockito;
 
 import net.sourceforge.pmd.PmdCoreTestUtils;
-import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -49,6 +48,7 @@ import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.rule.Rule;
+import net.sourceforge.pmd.rule.RuleSets;
 
 class FileAnalysisCacheTest {
 

@@ -7,11 +7,11 @@ package net.sourceforge.pmd.cache;
 import java.io.IOException;
 import java.util.Collection;
 
-import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
+import net.sourceforge.pmd.rule.RuleSets;
 
 /**
  * Adapter to wrap {@link AnalysisCache} behaviour in a {@link GlobalAnalysisListener}.

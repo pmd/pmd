@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.rule.XPathRule
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener
 import net.sourceforge.pmd.rule.Rule
+import net.sourceforge.pmd.rule.RuleSet
 import java.io.InputStream
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files

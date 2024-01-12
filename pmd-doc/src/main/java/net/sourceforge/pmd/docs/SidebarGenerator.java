@@ -25,8 +25,8 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
 import org.yaml.snakeyaml.representer.Representer;
 
-import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.rule.RuleSet;
 
 public class SidebarGenerator {
     private static final String SIDEBAR_YML = "docs/_data/sidebars/pmd_sidebar.yml";

@@ -12,9 +12,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.lang.LanguageProcessor.AnalysisTask;
 import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.rule.RuleSets;
 import net.sourceforge.pmd.util.log.MessageReporter;
 
 

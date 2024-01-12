@@ -9,8 +9,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetLoader;
+import net.sourceforge.pmd.rule.RuleSet;
+import net.sourceforge.pmd.rule.RuleSetLoader;
 
 class PMD5RulesetTest {
 

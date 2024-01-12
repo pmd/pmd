@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.rule;
 
 import java.io.OutputStream;
 import java.util.HashSet;
@@ -40,7 +40,6 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySerializer;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.properties.PropertyTypeId;
-import net.sourceforge.pmd.rule.Rule;
 import net.sourceforge.pmd.util.internal.xml.SchemaConstants;
 
 /**

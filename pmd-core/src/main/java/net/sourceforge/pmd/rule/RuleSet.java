@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.rule;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,7 +28,6 @@ import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
-import net.sourceforge.pmd.rule.Rule;
 
 /**
  * This class represents a collection of rules along with some optional filter

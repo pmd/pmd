@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.rule;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -21,10 +21,10 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.rule.Rule;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.log.MessageReporter;

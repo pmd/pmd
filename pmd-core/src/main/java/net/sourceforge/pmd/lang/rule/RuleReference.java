@@ -12,11 +12,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.RuleSetReference;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.rule.Rule;
+import net.sourceforge.pmd.rule.RulePriority;
+import net.sourceforge.pmd.rule.RuleSetReference;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
