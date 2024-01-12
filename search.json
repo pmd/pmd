@@ -102,6 +102,22 @@
 
 
 {
+"title": "ADR 3 - API evolution principles",
+"tags": "",
+"keywords": "",
+"url": "pmd_projectdocs_decisions_adr_3.html",
+"summary": ""
+}
+
+
+
+,
+
+
+
+
+
+{
 "title": "ADR NNN - Template",
 "tags": "",
 "keywords": "",
@@ -6499,11 +6515,11 @@
 
 
 {
-"title": "Your first rule XPath",
+"title": "Your first rule",
 "tags": "extendinguserdocs",
 "keywords": "",
 "url": "pmd_userdocs_extending_your_first_rule.html",
-"summary": "Introduction to rule writing through an example."
+"summary": "Introduction to rule writing through an example for a XPath rule."
 }
 
 

@@ -1956,6 +1956,10 @@ with a backslash. This affects the following rules:
 <p>Ideally, you have written good tests already for your custom rules - see <a href="pmd_userdocs_extending_testing.html">Testing your rules</a>.
 This helps to identify problems early on.</p>
 
+<h4 id="ruleset-xml">Ruleset XML</h4>
+<p>The <code class="language-plaintext highlighter-rouge">&lt;rule&gt;</code> tag, that defines your custom rule, is required to have a <code class="language-plaintext highlighter-rouge">language</code> attribute now. This was always the
+case for XPath rules, but is now a requirement for Java rules.</p>
+
 <h4 id="xpath-rules">XPath rules</h4>
 <p>If you have <strong>XPath based</strong> rules, the first step will be to migrate to XPath 2.0 and then to XPath 3.1.
 XPath 2.0 is available in PMD 6 already and can be used right away. PMD 7 will use by default XPath 3.1 and
@@ -1965,6 +1969,14 @@ can be expected to work in PMD 7 without any further changes. So the migration p
 <p>After you have migrated your XPath rules to XPath 2.0, remove the “version” property, since that will be removed
 with PMD 7. PMD 7 by default uses XPath 3.1.
 See below <a href="#xpath-migrating-from-10-to-20">XPath</a> for details.</p>
+
+<p>Additional infos:</p>
+<ul>
+  <li>The custom XPath function <code class="language-plaintext highlighter-rouge">typeOf</code> has been removed (deprecated since 6.4.0).
+Use the function <code class="language-plaintext highlighter-rouge">pmd-java:typeIs</code> or <code class="language-plaintext highlighter-rouge">pmd-java:typeIsExactly</code> instead.
+See <a href="pmd_userdocs_extending_writing_xpath_rules.html#pmd-extension-functions">PMD extension functions</a> for available
+functions.</li>
+</ul>
 
 <h4 id="java-rules">Java rules</h4>
 <p>If you have <strong>Java based rules</strong>, and you are using rulechain, this works a bit different now. The RuleChain API
@@ -5233,7 +5245,7 @@ the ant task is in an own dependency with PMD 7:
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jan 5, 2024 <br />
+             Site last generated: Jan 12, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

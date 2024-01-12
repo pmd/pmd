@@ -1915,7 +1915,9 @@ definitely don’t come for free. It is much effort and requires perseverance to
 
 </div>
 
-<h2 id="1--start-with-a-new-sub-module">1.  Start with a new sub-module</h2>
+<h2 id="steps">Steps</h2>
+
+<h3 id="1--start-with-a-new-sub-module">1.  Start with a new sub-module</h3>
 <ul>
   <li>See pmd-swift for examples.</li>
   <li>Make sure to add your new module to PMD’s parent pom as <code class="language-plaintext highlighter-rouge">&lt;module&gt;</code> entry, so that it is built alongside the
@@ -1924,7 +1926,7 @@ other languages.</li>
 is automatically available in the binary distribution (pmd-dist).</li>
 </ul>
 
-<h2 id="2--implement-an-ast-parser-for-your-language">2.  Implement an AST parser for your language</h2>
+<h3 id="2--implement-an-ast-parser-for-your-language">2.  Implement an AST parser for your language</h3>
 <ul>
   <li>ANTLR will generate the parser for you based on the grammar file. The grammar file needs to be placed in the
 folder <code class="language-plaintext highlighter-rouge">src/main/antlr4</code> in the appropriate sub package <code class="language-plaintext highlighter-rouge">ast</code> of the language. E.g. for swift, the grammar
@@ -1934,7 +1936,7 @@ and is placed in the package <code class="language-plaintext highlighter-rouge">
 classes.</li>
 </ul>
 
-<h2 id="3--create-ast-node-classes">3.  Create AST node classes</h2>
+<h3 id="3--create-ast-node-classes">3.  Create AST node classes</h3>
 <ul>
   <li>The individual AST nodes are generated, but you need to define the common interface for them.</li>
   <li>You need to define the supertype interface for all nodes of the language. For that, we provide
@@ -1981,7 +1983,7 @@ class). Have a look at Swift’s example: <a href="https://github.com/pmd/pmd/bl
 But on most cases you won’t need to do anything.</li>
 </ul>
 
-<h2 id="4--generate-your-parser-using-antlr">4.  Generate your parser (using ANTLR)</h2>
+<h3 id="4--generate-your-parser-using-antlr">4.  Generate your parser (using ANTLR)</h3>
 <ul>
   <li>Make sure, you have the property <code class="language-plaintext highlighter-rouge">&lt;antlr4.visitor&gt;true&lt;/antlr4.visitor&gt;</code> in your <code class="language-plaintext highlighter-rouge">pom.xml</code> file.</li>
   <li>This is just a matter of building the language module. ANTLR is called via ant, and this step is added
@@ -1992,7 +1994,7 @@ source control.</li>
   <li>You should review <a href="https://github.com/pmd/pmd/blob/master/pmd-swift/pom.xml"><code class="language-plaintext highlighter-rouge">pmd-swift/pom.xml</code></a>.</li>
 </ul>
 
-<h2 id="5--create-a-tokenmanager">5.  Create a TokenManager</h2>
+<h3 id="5--create-a-tokenmanager">5.  Create a TokenManager</h3>
 <ul>
   <li>This is needed to support CPD (copy paste detection)</li>
   <li>We provide a default implementation using <a href="https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/impl/AntlrTokenizer.java"><code class="language-plaintext highlighter-rouge">AntlrTokenManager</code></a>.</li>
@@ -2011,7 +2013,7 @@ and return your custom filter. See the tokenizer for C# as an exmaple:
   </li>
 </ul>
 
-<h2 id="6--create-a-pmd-parser-adapter">6.  Create a PMD parser “adapter”</h2>
+<h3 id="6--create-a-pmd-parser-adapter">6.  Create a PMD parser “adapter”</h3>
 <ul>
   <li>Create your own parser, that adapts the ANLTR interface to PMD’s parser interface.</li>
   <li>We provide a <a href="https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/lang/ast/impl/antlr4/AntlrBaseParser.java"><code class="language-plaintext highlighter-rouge">AntlrBaseParser</code></a>
@@ -2019,7 +2021,7 @@ implementation that you need to extend to create your own adapter as we do with
 <a href="https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/ast/PmdSwiftParser.java"><code class="language-plaintext highlighter-rouge">PmdSwiftParser</code></a>.</li>
 </ul>
 
-<h2 id="7--create-a-language-version-handler">7.  Create a language version handler</h2>
+<h3 id="7--create-a-language-version-handler">7.  Create a language version handler</h3>
 <ul>
   <li>Now you need to create your version handler, as we did with <a href="https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/SwiftHandler.java"><code class="language-plaintext highlighter-rouge">SwiftHandler</code></a>.</li>
   <li>This class is sort of a gateway between PMD and all parsing logic specific to your language.</li>
@@ -2036,7 +2038,7 @@ provide the method name or class name, where the violation occurred.</li>
   </li>
 </ul>
 
-<h2 id="8--create-a-base-visitor">8.  Create a base visitor</h2>
+<h3 id="8--create-a-base-visitor">8.  Create a base visitor</h3>
 <ul>
   <li>A parser visitor adapter is not needed anymore with PMD 7. The visitor interface now provides a default
 implementation.</li>
@@ -2048,7 +2050,7 @@ See <a href="https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/
 as an example.</li>
 </ul>
 
-<h2 id="9-make-pmd-recognize-your-language">9. Make PMD recognize your language</h2>
+<h3 id="9-make-pmd-recognize-your-language">9. Make PMD recognize your language</h3>
 <ul>
   <li>Create your own subclass of <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase</code>, see Swift as an example:
   <a href="https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/SwiftLanguageModule.java"><code class="language-plaintext highlighter-rouge">SwiftLanguageModule</code></a>.</li>
@@ -2059,7 +2061,7 @@ Use <code class="language-plaintext highlighter-rouge">addDefaultVersion</code> 
 Add your fully qualified class name as a single line into it.</li>
 </ul>
 
-<h2 id="10-create-an-abstract-rule-class-for-the-language">10. Create an abstract rule class for the language</h2>
+<h3 id="10-create-an-abstract-rule-class-for-the-language">10. Create an abstract rule class for the language</h3>
 <ul>
   <li>You need to create your own abstract rule class in order to interface your language with PMD’s generic rule
 execution.</li>
@@ -2078,7 +2080,7 @@ interface of the specific language). Now the rule just provides a visitor, which
 shared between rules.</li>
 </ul>
 
-<h2 id="11-create-rules">11. Create rules</h2>
+<h3 id="11-create-rules">11. Create rules</h3>
 <ul>
   <li>Creating rules is already pretty well documented in PMD - and it’s no different for a new language, except you
 may have different AST nodes.</li>
@@ -2106,7 +2108,7 @@ resource filtering configuration in the language module’s <code class="languag
   </li>
 </ul>
 
-<h2 id="14-test-the-rules">14. Test the rules</h2>
+<h3 id="12-test-the-rules">12. Test the rules</h3>
 <ul>
   <li>Testing rules is described in depth in <a href="pmd_userdocs_extending_testing.html">Testing your rules</a>.
     <ul>
@@ -2140,7 +2142,7 @@ This will load all rulesets and verify, that all required attributes are provide
   </li>
 </ul>
 
-<h3 id="15-create-documentation-page">15. Create documentation page</h3>
+<h3 id="13-create-documentation-page">13. Create documentation page</h3>
 <p>Finishing up your new language module by adding a page in the documentation. Create a new markdown file
 <code class="language-plaintext highlighter-rouge">&lt;langId&gt;.md</code> in <code class="language-plaintext highlighter-rouge">docs/pages/pmd/languages/</code>. This file should have the following frontmatter:</p>
 
@@ -2159,6 +2161,13 @@ There is also the following Jekyll Include, that creates summary box for the lan
 {% include language_info.html name='&lt;Language Name&gt;' id='&lt;langId&gt;' implementation='&lt;langId&gt;::lang.&lt;langId&gt;.&lt;langId&gt;LanguageModule' supports_cpd=true supports_pmd=true %}
 
 </code></pre></div></div>
+
+<h2 id="optional-features">Optional features</h2>
+
+<p>See <a href="pmd_devdocs_major_adding_new_language_javacc.html#optional-features">Optional features in JavaCC based languages</a>.</p>
+
+<p>In order to implement these, most likely an AST needs to be developed first. The parse tree (CST, concrete
+syntax tree) is not suitable to add methods such as <code class="language-plaintext highlighter-rouge">getSymbol()</code> to the node classes.</p>
 
 
     <div class="tags">
@@ -2201,7 +2210,7 @@ There is also the following Jekyll Include, that creates summary box for the lan
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            April 2023 (7.0.0)<br /> Site last generated: Jan 5, 2024 <br />
+            December 2023 (7.0.0)<br /> Site last generated: Jan 12, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

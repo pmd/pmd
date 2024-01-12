@@ -2474,49 +2474,10 @@ main class <code class="language-plaintext highlighter-rouge">PMD</code> is gone
 have a clear separation between a well-defined API and the implementation, which is internal.
 This should help us in future development.</p>
 
-<p>This however entails some incompatibilities and
-deprecations, see also the sections <a href="#new-api-support-guidelines">New API support guidelines</a> and
-<a href="#api-removals">API removals</a> below.</p>
+<p>This however entails some incompatibilities and deprecations.</p>
 
-<h3 id="new-api-support-guidelines">New API support guidelines</h3>
-
-<p>Until now, all released public members and types were implicitly considered part
-of PMD’s public API, including inheritance-specific members (protected members, abstract methods).
-We have maintained those APIs with the goal to preserve full binary compatibility between minor releases,
-only breaking those APIs infrequently, for major releases.</p>
-
-<p>In order to allow PMD to move forward at a faster pace, this implicit contract will
-be invalidated with PMD 7.0.0. We now introduce more fine-grained distinctions between
-the type of compatibility support we guarantee for our libraries, and ways to make
-them explicit to clients of PMD.</p>
-
-<p><strong><code class="language-plaintext highlighter-rouge">.internal</code> packages and <code class="language-plaintext highlighter-rouge">@InternalApi</code> annotation</strong></p>
-
-<p><em>Internal API</em> is meant for use <em>only</em> by the main PMD codebase. Internal types and methods
-may be modified in any way, or even removed, at any time.</p>
-
-<p>Any API in a package that contains an <code class="language-plaintext highlighter-rouge">.internal</code> segment is considered internal.
-The <code class="language-plaintext highlighter-rouge">@InternalApi</code> annotation will be used for APIs that have to live outside of
-these packages, e.g. methods of a public type that shouldn’t be used outside of PMD (again,
-these can be removed anytime).</p>
-
-<p><strong><code class="language-plaintext highlighter-rouge">@ReservedSubclassing</code></strong></p>
-
-<p>Types marked with the <code class="language-plaintext highlighter-rouge">@ReservedSubclassing</code> annotation are only meant to be subclassed
-by classes within PMD. As such, we may add new abstract methods, or remove protected methods,
-at any time. All published public members remain supported. The annotation is <em>not</em> inherited, which
-means a reserved interface doesn’t prevent its implementors to be subclassed.</p>
-
-<p><strong><code class="language-plaintext highlighter-rouge">@Experimental</code></strong></p>
-
-<p>APIs marked with the <code class="language-plaintext highlighter-rouge">@Experimental</code> annotation at the class or method level are subject to change.
-They can be modified in any way, or even removed, at any time. You should not use or rely
-on them in any production code. They are purely to allow broad testing and feedback.</p>
-
-<p><strong><code class="language-plaintext highlighter-rouge">@Deprecated</code></strong></p>
-
-<p>APIs marked with the <code class="language-plaintext highlighter-rouge">@Deprecated</code> annotation at the class or method level will remain supported
-until the next major release, but it is recommended to stop using them.</p>
+<p>See <a href="pmd_projectdocs_decisions_adr_3.html">ADR 3 - API evolution principles</a> and
+<a href="#api-changes">API changes</a> below.</p>
 
 <h3 id="small-changes-and-cleanups">Small Changes and cleanups</h3>
 
@@ -4952,7 +4913,7 @@ Please use <code class="language-plaintext highlighter-rouge">net.sourceforge.pm
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jan 5, 2024 <br />
+             Site last generated: Jan 12, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

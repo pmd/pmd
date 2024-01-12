@@ -1873,11 +1873,11 @@
         <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
     </details>
 
-  <p>Here is a bunch of thing to do you may consider once your rule is “up and running”.</p>
+  <p>Here is a bunch of things to do you may consider once your rule is “up and running”.</p>
 
 <h2 id="how-to-define-rules-priority">How to define rules priority</h2>
 
-<p>Rule priority may, of course, changes a lot depending on the context of the project. However, you can use the
+<p>Rule priority may, of course, change a lot depending on the context of the project. However, you can use the
 following guidelines to assert the legitimate priority of your rule:</p>
 
 <ol>
@@ -1889,10 +1889,10 @@ standards/style/good taste.</li>
   <li><strong>Low: Change highly optional.</strong> Nice to have, such as a consistent naming policy for package/class/fields…</li>
 </ol>
 
-<p>For instance, let’s take the DoNotCallGarbageCollectionExplicitly rule
+<p>For instance, let’s take the rule <a href="pmd_rules_java_errorprone.html#donotcallgarbagecollectionexplicitly"><code class="language-plaintext highlighter-rouge">DoNotCallGarbageCollectionExplicitly</code></a>
 (“Do not explicitly trigger a garbage collection.”). Calling GC is
 a bad idea, but it doesn’t break the application. So we skip priority one. However, as explicit call to gc may really
-hinder application performances, we set for the priority 2 (“Medium High”).</p>
+hinder application performances, we settle for priority 2 (“Medium High”).</p>
 
 <h2 id="correctness">Correctness</h2>
 
@@ -1903,17 +1903,16 @@ that the rule does not raise exceptions when dealing with unusual constructs.</p
 
 <h2 id="performance-issues">Performance issues</h2>
 
-<p>When writing a new rule, using command line option <code class="language-plaintext highlighter-rouge">--benchmark</code> on a few rules can give an indication on how
-the rule compares to others. To get the full picture, use the <code class="language-plaintext highlighter-rouge">rulesets/internal/all-java.xml</code> ruleset
-with “–benchmark”.</p>
+<p>When writing a new rule, using command line option <a href="pmd_userdocs_cli_reference.html#-benchmark"><code class="language-plaintext highlighter-rouge">--benchmark</code></a>
+on a few rules can give an indication on how the rule compares to others. To get the full picture
+use the <code class="language-plaintext highlighter-rouge">rulesets/internal/all-java.xml</code> ruleset with <code class="language-plaintext highlighter-rouge">--benchmark</code>.</p>
 
-<p>Rules which use the RuleChain to visit the AST are faster than rules which perform manual visitation of the AST.
+<p>Rules which use the <a href="pmd_userdocs_extending_writing_java_rules.html#economic-traversal-the-rulechain">RuleChain</a>
+to visit the AST are faster than rules which perform manual visitation of the AST.
 The difference is small for an individual Java rule, but when running 100s of rules, it is measurable.
 For XPath rules, the difference is extremely noticeable due to the overhead for AST navigation.
 Make sure your XPath rules using the RuleChain. If RuleChain can’t be used for your XPath rule, then this fact
 is logged as a debug message.</p>
-
-<p>(TODO How does one know except by running in a debugger or horrendous performance?).</p>
 
 
     <div class="tags">
@@ -1956,7 +1955,7 @@ is logged as a debug message.</p>
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            Mai 2023 (7.0.0)<br /> Site last generated: Jan 5, 2024 <br />
+            December 2023 (7.0.0)<br /> Site last generated: Jan 12, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

@@ -1886,8 +1886,6 @@
     </div>
 </details>
 
-<div class="alert alert-danger" role="alert"><i class="fas fa-exclamation-circle"></i> <b>Warning:</b> WIP, todo for pmd 7</div>
-
 <h2 id="overview-of-supported-java-language-versions">Overview of supported Java language versions</h2>
 
 <p>Usually the latest non-preview Java Version is the default version.</p>
@@ -2026,24 +2024,91 @@ pmd check --use-version java-21-preview ...
 
 <h2 id="type-and-symbol-resolution">Type and symbol resolution</h2>
 
-<p>Java being a statically typed language, a Java program contains more information that just its syntax tree; for instance, every expression has a static type, and every method call is bound to a method overload statically (even if that overload is virtual). In PMD, much of this information is resolved from the AST by additional passes, which run after parsing, and before rules can inspect the tree.</p>
+<p>Java being a statically typed language, a Java program contains more information than just its syntax tree;
+for instance, every expression has a static type, and every method call is bound to a method overload
+statically (even if that overload is virtual). In PMD, much of this information is resolved from the AST
+by additional passes, which run after parsing, and before rules can inspect the tree.</p>
 
 <p>The semantic analysis roughly works like so:</p>
 <ol>
-  <li>The first passes resolve <em>symbols</em>, which are a model of the named entities that Java programs declare, like classes, methods, and variables.</li>
-  <li>Then, each name in the tree is resolved to a symbol, according to the language’s scoping rules. This may modify the tree to remove <em>ambiguous names</em> (names which could be either a type, package, or variable).</li>
-  <li>The last pass resolves the types of expressions, which performs overload resolution on method calls, and type inference.</li>
+  <li>The first passes resolve <em>symbols</em>, which are a model of the named entities that Java programs declare,
+like classes, methods, and variables.</li>
+  <li>Then, each name in the tree is resolved to a symbol, according to the language’s scoping rules. This may
+modify the tree to remove <em>ambiguous names</em> (names which could be either a type, package, or variable).</li>
+  <li>The last pass resolves the types of expressions, which performs overload resolution on method calls,
+and type inference.</li>
 </ol>
 
-<p>TODO describe</p>
-<ul>
-  <li>why we need auxclasspath, and how to put the java classes onto the auxclasspath (jre/lib/rt.jar or lib/jrt-fs.jar).</li>
-  <li>how disambiguation can fail</li>
-</ul>
+<p>The analyzed code might reference types from other places of the project or even from external
+dependencies. If e.g. the code extends a class from an external dependency, then PMD needs to know
+this external dependency in order to figure out, that a method is actually an override.</p>
 
-<h2 id="type-and-symbol-apis">Type and symbol APIs</h2>
+<p>In order to resolve such types, a complete so-called auxiliary classpath need to be provided.
+Technically, PMD uses the <a href="https://asm.ow2.io/index.html">ASM framework</a> to read the bytecode and build
+up its own representation to resolve names and types. It also reads the bytecode of the Java runtime
+in order to resolve Java API references.</p>
 
-<p>TODO describe APIs: see #4319 and #2689</p>
+<h2 id="providing-the-auxiliary-classpath">Providing the auxiliary classpath</h2>
+
+<p>The auxiliary classpath (or short “auxClasspath”) is configured via the
+<a href="pmd_languages_configuration.html#java-language-properties">Language Property “auxClasspath”</a>.
+It is a string containing multiple paths separated by either a colon (<code class="language-plaintext highlighter-rouge">:</code>) under Linux/MacOS
+or a semicolon (<code class="language-plaintext highlighter-rouge">;</code>) under Windows.</p>
+
+<p>In order to resolve the types of the Java API correctly, the Java Runtime must be on the
+auxClasspath as well. As the Java API and Runtime evolves from version to version, it is important
+to use the correct Java version, that is being analyzed. This might not necessarily be the
+same Java runtime version that is being used to run PMD.</p>
+
+<p>Until Java 8, there exists the jar file <code class="language-plaintext highlighter-rouge">rt.jar</code> in <code class="language-plaintext highlighter-rouge">${JAVA_HOME}/jre/lib</code>. It is enough, to include
+this jar file in the auxClasspath. Usually, you would add this as the first entry in the auxClasspath.</p>
+
+<p>Beginning with Java 9, the Java platform has been modularized and <a href="https://openjdk.org/jeps/220">Modular Run-Time Images</a>
+have been introduced. The file <code class="language-plaintext highlighter-rouge">${JAVA_HOME}/lib/modules</code> contains now all the classes, but it is not a jar file
+anymore. However, each Java installation provides an implementation to read such Run-Time Images in
+<code class="language-plaintext highlighter-rouge">${JAVA_HOME}/lib/jrt-fs.jar</code>. This is an implementation of the <code class="language-plaintext highlighter-rouge">jrt://</code> filesystem and through this, the bytecode
+of the Java runtime classes can be loaded. In order to use this with PMD, the file <code class="language-plaintext highlighter-rouge">${JAVA_HOME}/lib/jrt-fs.jar</code>
+needs to be added to the auxClasspath as the first entry. PMD will make sure, to load the Java runtime classes
+using the jrt-filesystem.</p>
+
+<p>If neither <code class="language-plaintext highlighter-rouge">${JAVA_HOME}/jre/lib/rt.jar</code> nor <code class="language-plaintext highlighter-rouge">${JAVA_HOME}/lib/jrt-fs.jar</code> is added to the auxClasspath, PMD falls
+back to load the JAva runtime classes <strong>from the current runtime</strong>, that is the runtime that was used to
+execute PMD. This might not be the correct version, e.g. you might run PMD with Java 8, but analyze code
+written for Java 21. In that case, you have to provide “jrt-fs.jar” on the auxClasspath.</p>
+
+<h2 id="symbol-table-apis">Symbol table APIs</h2>
+
+<p>Symbol table API related classes are in the package <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/symbols/package-summary.html#"><code>net.sourceforge.pmd.lang.java.symbols</code></a>.
+The root interface for symbols is <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/symbols/JElementSymbol.html#"><code>JElementSymbol</code></a>.</p>
+
+<p>The symbol table can be requested on any node with the method <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/AbstractJavaNode.html#getSymbolTable()"><code>getSymbolTable</code></a>.
+This returns a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/symbols/table/JSymbolTable.html#"><code>JSymbolTable</code></a> which gives you access to variables, methods and types that are
+within scope.</p>
+
+<p>A <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTExpression.html#"><code>ASTExpression</code></a> might represent a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAssignableExpr.ASTNamedReferenceExpr.html#"><code>ASTAssignableExpr.ASTNamedReferenceExpr</code></a>
+if it e.g. references a variable name. In that case, you can access the referenced variable symbol
+with the method <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAssignableExpr.ASTNamedReferenceExpr.html#getReferencedSym()"><code>getReferencedSym</code></a>.</p>
+
+<p>Declaration nodes, such as <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableDeclaratorId.html#"><code>ASTVariableDeclaratorId</code></a> implement the interface
+<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/SymbolDeclaratorNode.html#"><code>SymbolDeclaratorNode</code></a>. Through the method
+<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/SymbolDeclaratorNode.html#getSymbol()"><code>getSymbol</code></a> you can also access the symbol.</p>
+
+<p>To find usages, you can call <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableDeclaratorId.html#getLocalUsages()"><code>getLocalUsages</code></a>.</p>
+
+<h2 id="type-resolution-apis">Type resolution APIs</h2>
+
+<p>Type resolution API related classes are in the package <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/types/package-summary.html#"><code>net.sourceforge.pmd.lang.java.types</code></a>.</p>
+
+<p>The core of the framework is a set of interfaces to represent types. The root interface is
+<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/types/JTypeMirror.html#"><code>JTypeMirror</code></a>. Type mirrors are created by a
+<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/types/TypeSystem.html#"><code>TypeSystem</code></a> object. This object is analysis-global.</p>
+
+<p>The utility class <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/types/TypeTestUtil.html#"><code>TypeTestUtil</code></a> provides simple methods to check types,
+e.g. <code class="language-plaintext highlighter-rouge">TypeTestUtil.isA(String.class, variableDeclaratorIdNode)</code> tests, whether the given
+variableDeclaratorId is of type “String”.</p>
+
+<p>Any <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"><code>TypeNode</code></a> provides access to the type with the method <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/TypeNode.html#getTypeMirror()"><code>getTypeMirror</code></a>.
+E.g. this can be called on <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTMethodCall.html#"><code>ASTMethodCall</code></a> to retrieve the return type of the called method.</p>
 
 <h2 id="metrics-framework">Metrics framework</h2>
 
@@ -2077,6 +2142,13 @@ Java does this by adding the following additional information for each reported 
 </ul>
 
 <p>You can access these via <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/RuleViolation.html#getAdditionalInfo()"><code>getAdditionalInfo</code></a></p>
+
+<h2 id="dataflow">Dataflow</h2>
+
+<p>There is no API yet for dataflow analysis. However, some rules such as <a href="pmd_rules_java_bestpractices.html#unusedassignment"><code class="language-plaintext highlighter-rouge">UnusedAssignment</code></a>
+or <a href="pmd_rules_java_design.html#immutablefield"><code class="language-plaintext highlighter-rouge">ImmutableField</code></a> are using an internal implementation of an additional
+AST pass that adds dataflow information. The implementation can be found in
+<a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/internal/DataflowPass.java">net.sourceforge.pmd.lang.java.rule.internal.DataflowPass</a>.</p>
 
 
     <div class="tags">
@@ -2123,7 +2195,7 @@ Java does this by adding the following additional information for each reported 
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            September 2023 (7.0.0)<br /> Site last generated: Jan 5, 2024 <br />
+            December 2023 (7.0.0)<br /> Site last generated: Jan 12, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

@@ -1875,17 +1875,19 @@
 
   
 <p>Rule properties are a way to make your rules configurable directly from the
-ruleset XML. Their usage is described on the <a href="pmd_userdocs_configuring_rules.html#rule-properties">Configuring Rules</a> page.</p>
+ruleset XML. Their usage is described on the
+<a href="pmd_userdocs_configuring_rules.html#rule-properties">Configuring Rules</a> page.</p>
 
 <p>If you’re a rule developer, you may want to think about what would be useful for
-a user of your rule to parameterise. It could be a numeric report level, a boolean
+a user of your rule to parameterize. It could be a numeric report level, a boolean
 flag changing the behaviour of your rule… Chances are there <em>is</em> some detail
 that can be abstracted away from your implementation, and in that case, this
 page can help you squeeze that sweet flexibility out of your rule.</p>
 
 <h2 id="overview-of-properties">Overview of properties</h2>
 
-<p>The basic thing you need to do as a developer is to define a <strong>property descriptor</strong> and declare that your rule uses it. A property descriptor defines a number of attributes for your property:</p>
+<p>The basic thing you need to do as a developer is to define a <strong>property descriptor</strong> and declare
+that your rule uses it. A property descriptor defines a number of attributes for your property:</p>
 <ul>
   <li>Its <em>name</em>, with which the user will refer to your property;</li>
   <li>Its <em>description</em>, for documentation purposes;</li>
@@ -1900,10 +1902,16 @@ page can help you squeeze that sweet flexibility out of your rule.</p>
 <ul>
   <li>Create a property descriptor of the type you want, by using a
 builder from <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyFactory.html#"><code>PropertyFactory</code></a></li>
-  <li>Call <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertySource.html#definePropertyDescriptor(net.sourceforge.pmd.properties.PropertyDescriptor)"><code>definePropertyDescriptor(PropertyDescriptor)</code></a>` in the rule’s noarg constructor.</li>
+  <li>Call <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertySource.html#definePropertyDescriptor(net.sourceforge.pmd.properties.PropertyDescriptor)"><code>definePropertyDescriptor(PropertyDescriptor)</code></a>
+in the rule’s noarg constructor.</li>
 </ul>
 
-<p>You can then retrieve the value of the property at any time using <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertySource.html#getProperty(net.sourceforge.pmd.properties.PropertyDescriptor)"><code>getProperty(PropertyDescriptor)</code></a>.</p>
+<p>You can then retrieve the value of the property at any time using
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertySource.html#getProperty(net.sourceforge.pmd.properties.PropertyDescriptor)"><code>getProperty(PropertyDescriptor)</code></a>.</p>
+
+<p>Note: The base class for all rule implementations is <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/AbstractRule.html#"><code>AbstractRule</code></a>, which
+is a <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertySource.html#"><code>PropertySource</code></a>. So you can directly call <code class="language-plaintext highlighter-rouge">definePropertyDescriptor(...)</code>
+or <code class="language-plaintext highlighter-rouge">getProperty(...)</code> within your rule.</p>
 
 <h3 id="creating-a-descriptor">Creating a descriptor</h3>
 
@@ -1916,7 +1924,8 @@ string property, you would call</p>
                <span class="o">.</span><span class="na">build</span><span class="o">();</span>
 </code></pre></div></div>
 
-<p>This is fairly more readable than a constructor call, but keep in mind the description and the default value are not optional.</p>
+<p>This is fairly more readable than a constructor call, but keep in mind the description
+and the default value are not optional.</p>
 
 <p>For <strong>numeric properties</strong>, you can add constraints on the range of acceptable values, e.g.</p>
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">PropertyFactory</span><span class="o">.</span><span class="na">intProperty</span><span class="o">(</span><span class="s">"myIntProperty"</span><span class="o">)</span>
@@ -1965,7 +1974,9 @@ doesn’t change).</li>
 
 <h2 id="for-xpath-rules">For XPath rules</h2>
 
-<p>XPath rules can also define their own properties. To do so, you must add a <code class="language-plaintext highlighter-rouge">property</code> element in the <code class="language-plaintext highlighter-rouge">properties</code> element of your rule, which <strong>declares the <code class="language-plaintext highlighter-rouge">type</code> attribute</strong>. This attribute conditions what type the underlying property has, and can have the following values:</p>
+<p>XPath rules can also define their own properties. To do so, you must add a <code class="language-plaintext highlighter-rouge">property</code> element in
+the <code class="language-plaintext highlighter-rouge">properties</code> element of your rule, which <strong>declares the <code class="language-plaintext highlighter-rouge">type</code> attribute</strong>. This attribute conditions
+what type the underlying property has, and can have the following values:</p>
 
 <table>
   <thead>
@@ -2006,7 +2017,7 @@ doesn’t change).</li>
   </tbody>
 </table>
 
-<p>Note that enumerated properties are not available in XPath rules (yet?).</p>
+<p>Note that enumerated properties are not available in XPath rules.</p>
 
 <p>Properties defined in XPath also <em>must</em> declare the <code class="language-plaintext highlighter-rouge">description</code> attribute.
 Numeric properties also expect the <code class="language-plaintext highlighter-rouge">min</code> and <code class="language-plaintext highlighter-rouge">max</code> attributes for now. Here are
@@ -2023,9 +2034,11 @@ a few examples to sum it up:</p>
     <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"maxStatements"</span> <span class="na">type=</span><span class="s">"Integer"</span> <span class="na">value=</span><span class="s">"10"</span> <span class="na">min=</span><span class="s">"1"</span> <span class="na">max=</span><span class="s">"40"</span>
               <span class="na">description=</span><span class="s">"Max number of statements per method"</span><span class="nt">/&gt;</span>
     <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"xpath"</span><span class="nt">&gt;</span>
-    <span class="cp">&lt;![CDATA[
-      //MethodDeclaration/Block[count(//BlockStatement) &gt;</span> $maxStatements]
-    ]]&gt;<span class="nt">&lt;/property&gt;</span>
+      <span class="nt">&lt;value&gt;</span>
+        <span class="cp">&lt;![CDATA[
+            //MethodDeclaration/Block[count(./*) &gt;</span> $maxStatements]
+        ]]&gt;<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
   <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
@@ -2045,16 +2058,17 @@ with a backslash when needed.</p>
     <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"reportedIdentifiers"</span> <span class="na">type=</span><span class="s">"List[String]"</span> <span class="na">value=</span><span class="s">"foo,bar"</span>
               <span class="na">description=</span><span class="s">"A StringMultiProperty."</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"xpath"</span><span class="nt">&gt;</span>
-    <span class="cp">&lt;![CDATA[
-      //VariableDeclaratorId[@Image = $reportedIdentifiers]
-    ]]&gt;</span><span class="nt">&lt;/property&gt;</span>
+        <span class="nt">&lt;value&gt;</span><span class="cp">&lt;![CDATA[
+            //VariableDeclaratorId[@Name = $reportedIdentifiers]
+        ]]&gt;</span><span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
   <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
-<p>Notice that in the example above, <code class="language-plaintext highlighter-rouge">@Image = $reportedIdentifiers</code> doesn’t test
-<code class="language-plaintext highlighter-rouge">@Image</code> for equality with the whole sequence <code class="language-plaintext highlighter-rouge">('foo', 'bar')</code>, it tests whether
-the sequence <em>contains</em> <code class="language-plaintext highlighter-rouge">@Image</code>. That is, the above rule will report all variables
+<p>Notice that in the example above, <code class="language-plaintext highlighter-rouge">@Name = $reportedIdentifiers</code> doesn’t test
+<code class="language-plaintext highlighter-rouge">@Name</code> for equality with the whole sequence <code class="language-plaintext highlighter-rouge">('foo', 'bar')</code>, it tests whether
+the sequence <em>contains</em> <code class="language-plaintext highlighter-rouge">@Name</code>. That is, the above rule will report all variables
 named <code class="language-plaintext highlighter-rouge">foo</code> or <code class="language-plaintext highlighter-rouge">bar</code>. All other XPath 2.0 <a href="https://www.w3.org/TR/xpath-functions/#sequence-functions">functions operating on sequences</a>
 are supported.</p>
 
@@ -2101,7 +2115,7 @@ are supported.</p>
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            August 2022 (7.0.0)<br /> Site last generated: Jan 5, 2024 <br />
+            December 2023 (7.0.0)<br /> Site last generated: Jan 12, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

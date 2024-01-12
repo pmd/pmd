@@ -1880,19 +1880,16 @@ team.</p>
 <h2 id="how-rules-work-the-ast">How rules work: the AST</h2>
 
 <p>Before running rules, PMD parses the source file into a data structure called an
-<strong>abstract syntax tree (AST)</strong>. This tree represents the syntactic structure of the
+<strong><a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree">abstract syntax tree (AST)</a></strong>.
+This tree represents the syntactic structure of the
 code, and encodes syntactic relations between source code elements. For instance,
 in Java, method declarations belong to a class: in the AST, the nodes representing
 method declarations will be descendants of a node representing the declaration of
 their enclosing class. This representation is thus much richer than the original
 source code (which, for a program, is just a chain of characters), or the token
-chain produced by a lexer (which is e.g. what Checkstyle works on). For example:</p>
+chain produced by a lexer. For example:</p>
 
 <table>
-<colgroup>
-<col width="40%" />
-<col width="70%" />
-</colgroup>
 <thead>
 <tr class="header">
 <th>Sample code (Java)</th>
@@ -1912,11 +1909,11 @@ chain produced by a lexer (which is e.g. what Checkstyle works on). For example:
 <td>
 
         <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">└─</span> <span class="nc">CompilationUnit</span>
-   <span class="err">└─</span> <span class="nc">TypeDeclaration</span>
-      <span class="err">└─</span> <span class="nc">ClassOrInterfaceDeclaration</span> <span class="s">"Foo"</span>
-         <span class="err">├─</span> <span class="nc">ExtendsList</span>
-         <span class="err">│</span>  <span class="err">└─</span> <span class="nc">ClassOrInterfaceType</span> <span class="s">"Object"</span>
-         <span class="err">└─</span> <span class="nc">ClassOrInterfaceBody</span>
+        <span class="err">└─</span> <span class="nc">ClassOrInterfaceDeclaration</span> <span class="s">"Foo"</span>
+        <span class="err">├─</span> <span class="nc">ModifierList</span>
+        <span class="err">├─</span> <span class="nc">ExtendsList</span>
+        <span class="err">│</span>  <span class="err">└─</span> <span class="nc">ClassOrInterfaceType</span> <span class="s">"Object"</span>
+        <span class="err">└─</span> <span class="nc">ClassOrInterfaceBody</span>
 </code></pre></div>        </div>
 
       </td>
@@ -1955,6 +1952,9 @@ complicated processing, to which an XPath rule couldn’t scale.</p>
 <p>In the end, choosing one strategy or the other depends on the difficulty of what
 your rule does. I’d advise to keep to XPath unless you have no other choice.</p>
 
+<p>Note: Despite that fact, the Java rules are written in Java, any language that PMD supports
+can be analyzed. E.g. you can write a Java rule to analyze Apex source code.</p>
+
 <h2 id="xml-rule-definition">XML rule definition</h2>
 
 <p>New rules must be declared in a ruleset before they’re referenced. This is the
@@ -1963,16 +1963,18 @@ instead of mentioning the <code class="language-plaintext highlighter-rouge">ref
 with the implementation class of your rule.</p>
 
 <ul>
-  <li><strong>For Java rules:</strong> this is the class extending AbstractRule (transitively)</li>
-  <li><strong>For XPath rules:</strong> this is <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.rule.XPathRule</code></li>
+  <li><strong>For Java rules:</strong> this is the concrete class extending AbstractRule (transitively)</li>
+  <li><strong>For XPath rules:</strong> this is <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.rule.XPathRule</code>.</li>
+  <li><strong>For XPath rules analyzing XML-based languages:</strong> this is <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.xml.rule.DomXPathRule</code>.
+See <a href="pmd_languages_xml.html#xpath-rules-in-xml">XPath rules in XML</a> for more info.</li>
 </ul>
 
-<p>Example:</p>
+<p>Example for Java rule:</p>
 
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">name=</span><span class="s">"MyJavaRule"</span>
       <span class="na">language=</span><span class="s">"java"</span>
       <span class="na">message=</span><span class="s">"Violation!"</span>
-      <span class="na">class=</span><span class="s">"com.me.MyJavaRule"</span> <span class="nt">&gt;</span>
+      <span class="na">class=</span><span class="s">"com.me.MyJavaRule"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;description&gt;</span>
         Description
     <span class="nt">&lt;/description&gt;</span>
@@ -1980,11 +1982,29 @@ with the implementation class of your rule.</p>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
-<div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b> In PMD 7, the <code class="language-plaintext highlighter-rouge">language</code> attribute will be required on all <code class="language-plaintext highlighter-rouge">rule</code>
-    elements that declare a new rule. Some base rule classes set the language implicitly in their
-    constructor, and so this is not required in all cases for the rule to work. But this
-    behavior will be discontinued in PMD 7, so missing <code class="language-plaintext highlighter-rouge">language</code> attributes are
-    reported beginning with PMD 6.27.0 as a forward compatibility warning.</div>
+<p>Example for XPath rule:</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">name=</span><span class="s">"MyXPathRule"</span>
+      <span class="na">language=</span><span class="s">"java"</span>
+      <span class="na">message=</span><span class="s">"Violation!"</span>
+      <span class="na">class=</span><span class="s">"net.sourceforge.pmd.lang.rule.XPathRule"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;description&gt;</span>
+        Description
+    <span class="nt">&lt;/description&gt;</span>
+    <span class="nt">&lt;priority&gt;</span>3<span class="nt">&lt;/priority&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"xpath"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;value&gt;</span><span class="cp">&lt;![CDATA[
+//ClassOrInterfaceDeclaration
+]]&gt;</span><span class="nt">&lt;/value&gt;</span>
+        <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
+</code></pre></div></div>
+
+<div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b> Since PMD 7, the <code class="language-plaintext highlighter-rouge">language</code> attribute is required on all <code class="language-plaintext highlighter-rouge">rule</code>
+    elements that declare a new rule. In PMD 6, this was optional, as the base rule classes sometimes set
+    the language implicitly in their constructor.</div>
 
 <h2 id="resource-index">Resource index</h2>
 
@@ -2054,7 +2074,7 @@ your rule</li>
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            February 2020 (6.22.0)<br /> Site last generated: Jan 5, 2024 <br />
+            December 2023 (7.0.0)<br /> Site last generated: Jan 12, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

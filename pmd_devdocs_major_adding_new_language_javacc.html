@@ -1928,6 +1928,8 @@ stream into an AST tree. Doing it as a JJT simplifies maintenance down the road.
   <li>It’s a good idea to create a parent AST class for all AST classes of the language. This simplifies rule
 creation later. <em>(see SimpleNode for Velocity and AbstractJavaNode for Java for example)</em></li>
   <li>Note: These AST node classes are generated usually once by javacc/jjtree and can then be modified as needed.</li>
+  <li>You can add additional methods in your AST node classes, that can be used in rules. Most getters
+are also available for XPath rules, see section <a href="#xpath-integration">XPath integration</a> below.</li>
 </ul>
 
 <h3 id="4--generate-your-parser-using-jjt">4.  Generate your parser (using JJT)</h3>
@@ -2109,6 +2111,48 @@ There is also the following Jekyll Include, that creates summary box for the lan
 
 </code></pre></div></div>
 
+<h2 id="xpath-integration">XPath integration</h2>
+
+<p>PMD exposes the AST nodes for use by XPath based rules (see <a href="pmd_userdocs_extending_writing_xpath_rules.html#dom-representation-of-asts">DOM representation of ASTs</a>).
+Most Java getters in the AST classes are made available by default. These getters constitute the API of the language.
+If a getter method is renamed, then every XPath rule that uses this getter also needs to be adjusted. In order to
+have more control over this, there are two annotations that can be used for AST classes and their methods:</p>
+
+<ul>
+  <li>
+    <p><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/xpath/DeprecatedAttribute.html#"><code>DeprecatedAttribute</code></a>: Getters might be annotated with that indicating, that
+this getter method should not be used in XPath rules. When a XPath rule uses such a method, a warning is
+issued. If the method additionally has the standard Java <code class="language-plaintext highlighter-rouge">@Deprecated</code> annotation, then the getter is also
+deprecated for java usage. Otherwise, the getter is only deprecated for usage in XPath rules.</p>
+
+    <p>When a getter is deprecated and there is a different getter to be used instead, then the
+attribute <code class="language-plaintext highlighter-rouge">replaceWith</code> should be used.</p>
+  </li>
+  <li>
+    <p><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/xpath/NoAttribute.html#"><code>NoAttribute</code></a>: This annotation can be used on an AST node type or on individual
+methods in order to filter out which methods are available for XPath rules.
+When used on a type, either all methods can be filtered or only inherited methods (see attribute <code class="language-plaintext highlighter-rouge">scope</code>).
+When used directly on an individual method, then only this method will be filtered out.
+That way methods can be added in AST nodes, that should only be used in Java rules, e.g. as auxiliary methods.</p>
+  </li>
+</ul>
+
+<div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b> 
+Not all getters are available for XPath rules. It depends on the result type.
+Especially <strong>Lists</strong> or Collections in general are <strong>not supported</strong>.</div>
+
+<p>Only the following Java result types are supported:</p>
+<ul>
+  <li>String</li>
+  <li>any Enum-type</li>
+  <li>int</li>
+  <li>boolean</li>
+  <li>double</li>
+  <li>long</li>
+  <li>char</li>
+  <li>float</li>
+</ul>
+
 <h2 id="debugging-with-rule-designer">Debugging with Rule Designer</h2>
 
 <p>When implementing your grammar it may be very useful to see how PMD parses your example files.
@@ -2139,6 +2183,54 @@ This can be achieved with Rule Designer:</p>
 </ul>
 
 <p>See <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/metrics/JavaMetrics.html#"><code>JavaMetrics</code></a> for an example.</p>
+
+<h3 id="symbol-table">Symbol table</h3>
+
+<p>A symbol table keeps track of variables and their usages. It is part of semantic analysis and would
+be executed in your parser adapter as an additional pass after you got the initial AST.</p>
+
+<p>There is no general language independent API in PMD core. For now, each language will need to implement
+its own solution. The symbol information that has been resolved in the additional parser pass
+can be made available on the AST nodes via extra methods, e.g. <code class="language-plaintext highlighter-rouge">getSymbolTable()</code>, <code class="language-plaintext highlighter-rouge">getSymbol()</code>, or
+<code class="language-plaintext highlighter-rouge">getUsages()</code>.</p>
+
+<p>Currently only Java provides an implementation for symbol table,
+see <a href="pmd_languages_java.html">Java-specific features and guidance</a>.</p>
+
+<div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b> 
+With PMD 7.0.0 the symbol table and type resolution implementation has been
+rewritten from scratch. There is still an old API for symbol table support, that is used by PLSQL,
+see <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/symboltable/package-summary.html#"><code>net.sourceforge.pmd.lang.symboltable</code></a>. This will be deprecated and should not be used.
+</div>
+
+<h3 id="type-resolution">Type resolution</h3>
+
+<p>For typed languages like Java type information can be useful for writing rules, that trigger only on
+specific types. Resolving types of expressions and variables would be done after in your parser
+adapter as yet another additional pass, potentially after resolving the symbol table.</p>
+
+<p>Type resolution tries to find the actual class type of each used type, following along method calls
+(including overloaded and overwritten methods), allowing to query subtypes and type hierarchy.
+This might require additional configuration for the language, e.g. in Java you need
+to configure an auxiliary classpath.</p>
+
+<p>There is no general language independent API in PMD core. For now, each language will need to implement
+its own solution. The type information can be made available on the AST nodes via extra methods,
+e.g. <code class="language-plaintext highlighter-rouge">getType()</code>.</p>
+
+<p>Currently only Java provides an implementation for type resolution,
+see <a href="pmd_languages_java.html">Java-specific features and guidance</a>.</p>
+
+<h3 id="call-and-data-flow-analysis">Call and data flow analysis</h3>
+
+<p>Call and data flow analysis keep track of the data as it is moving through different execution paths
+a program has. This would be yet another analysis pass.</p>
+
+<p>There is no general language independent API in PMD core. For now, each language will need to implement
+its own solution.</p>
+
+<p>Currently Java has some limited support for data flow analysis,
+see <a href="pmd_languages_java.html">Java-specific features and guidance</a>.</p>
 
 
     <div class="tags">
@@ -2181,7 +2273,7 @@ This can be achieved with Rule Designer:</p>
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            February 2023 (7.0.0)<br /> Site last generated: Jan 5, 2024 <br />
+            December 2023 (7.0.0)<br /> Site last generated: Jan 12, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

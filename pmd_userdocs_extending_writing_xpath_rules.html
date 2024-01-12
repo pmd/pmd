@@ -1875,17 +1875,19 @@
 
   
 <p>This page describes some points of XPath rule support in more details. See
-also <a href="pmd_userdocs_extending_your_first_rule.html">the tutorial about how to write an XPath rule</a>.</p>
+also <a href="pmd_userdocs_extending_your_first_rule.html">the tutorial about how to write a first (XPath) rule</a>.</p>
 
 <!-- Later we can document the specific subset of XPath features our wrappers support -->
 
 <h2 id="xpath-version">XPath version</h2>
 
-<p>PMD uses XPath 3.1 for its XPath rules since PMD 7. Before then, the default version was XPath 1.0, with opt-in support for XPath 2.0.</p>
+<p>PMD uses XPath 3.1 for its XPath rules since PMD 7. Before then, the default version was XPath 1.0,
+with opt-in support for XPath 2.0.</p>
 
-<p>See <a href="https://www.saxonica.com/html/documentation/expressions/xpath31new.html">the Saxonica documentation</a> for an introduction to new features in XPath 3.1.</p>
+<p>See <a href="https://www.saxonica.com/html/documentation/expressions/xpath31new.html">the Saxonica documentation</a>
+for an introduction to new features in XPath 3.1.</p>
 
-<p>The property <code class="language-plaintext highlighter-rouge">version</code> of XPathRule is deprecated and will be removed.</p>
+<p>The property <code class="language-plaintext highlighter-rouge">version</code> of <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/XPathRule.html#"><code>XPathRule</code></a> is deprecated and will be removed.</p>
 
 <h2 id="dom-representation-of-asts">DOM representation of ASTs</h2>
 
@@ -1902,14 +1904,16 @@ for the given node</li>
     <ul>
       <li>This means, that documentation for attributes can be found in our Javadocs. For
 example, the attribute <code class="language-plaintext highlighter-rouge">@SimpleName</code> of the Java node <code class="language-plaintext highlighter-rouge">EnumDeclaration</code> is backed
-by the Java getter <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#getSimpleName()"><code>getSimpleName</code></a>.</li>
+by the Java getter <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/AbstractAnyTypeDeclaration.html#getSimpleName()"><code>getSimpleName</code></a>.</li>
     </ul>
   </li>
 </ul>
 
 <h3 id="value-conversion">Value conversion</h3>
 
-<p>To represent attributes, we must map Java values to <a href="https://www.w3.org/TR/xpath-datamodel/">XPath Data Model (XDM)</a> values. In the following table we refer to the type conversion function as <code class="language-plaintext highlighter-rouge">conv</code>, a function from Java types to XDM types.</p>
+<p>To represent attributes, we must map Java values to <a href="https://www.w3.org/TR/xpath-datamodel/">XPath Data Model (XDM)</a>
+values. In the following table we refer to the type conversion function as <code class="language-plaintext highlighter-rouge">conv</code>, a function from Java types
+to XDM types.</p>
 
 <table>
   <thead>
@@ -1971,9 +1975,9 @@ by the Java getter <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNA
 <p>PMD provides some language-specific XPath functions to access semantic
 information from the AST.</p>
 
-<p>On XPath 2.0, the namespace of custom PMD function must be explicitly mentioned.</p>
+<p>The namespace of custom PMD functions must be explicitly mentioned.</p>
 
-<!-- Generates the documentation of XPath functions. -->
+<!-- Generates the documentation of XPath functions from file docs/_data/xpath_funs.yml -->
 
 <h3 id="all-languages">All languages</h3>
 
@@ -2370,7 +2374,7 @@ Column numbers are 1-based. The end column is exclusive.
 
 </div>
 
-<!-- Generates the documentation of XPath functions. -->
+<!-- Generates the documentation of XPath functions from file docs/_data/xpath_funs.yml -->
 
 <h3 id="java">Java</h3>
 
@@ -2971,10 +2975,6 @@ Column numbers are 1-based. The end column is exclusive.
 
 </div>
 
-<div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b> There is also a <code class="language-plaintext highlighter-rouge">typeOf</code> function which is
-deprecated and whose usages should be replaced with uses of <code class="language-plaintext highlighter-rouge">typeIs</code> or
-<code class="language-plaintext highlighter-rouge">typeIsExactly</code>. That one will be removed with PMD 7.0.0.</div>
-
 
 
     <div class="tags">
@@ -3017,7 +3017,7 @@ deprecated and whose usages should be replaced with uses of <code class="languag
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            February 2020 (6.22.0)<br /> Site last generated: Jan 5, 2024 <br />
+            December 2023 (7.0.0)<br /> Site last generated: Jan 12, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

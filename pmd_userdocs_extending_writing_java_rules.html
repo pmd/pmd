@@ -1874,10 +1874,8 @@
     </details>
 
   
-<div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b> TODO All that should be written in the Javadocs,
-not sure we even need a doc page. Would be simpler to maintain too</div>
-
-<div class="alert alert-danger" role="alert"><i class="fas fa-exclamation-circle"></i> <b>Warning:</b> WIP lots of stuff missing</div>
+<div class="alert alert-info" role="alert"><i class="fas fa-info-circle"></i> <b>Note:</b> Ideally most of what is written in this document would be directly
+in the Javadocs of the relevant classes. This is not the case yet.</div>
 
 <p>This page covers the specifics of writing a rule in Java. The basic development
 process is very similar to the process for XPath rules, which is described in
@@ -1894,13 +1892,14 @@ very similar for other languages.</p>
 <h2 id="basics">Basics</h2>
 
 <p>To write a rule in Java you’ll have to:</p>
+
 <ol>
-  <li>write a Java class that implements the interface <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/Rule.html#"><code>Rule</code></a>. Each
+  <li>Write a Java class that implements the interface <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/Rule.html#"><code>Rule</code></a>. Each
 language implementation provides a base rule class to ease your pain,
 e.g. <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/AbstractJavaRule.html#"><code>AbstractJavaRule</code></a>.</li>
-  <li>compile this class, linking it to PMD APIs (eg using PMD as a maven dependency)</li>
-  <li>bundle this into a JAR and add it to the execution classpath of PMD</li>
-  <li>declare the rule in your ruleset XML</li>
+  <li>Compile this class, linking it to PMD APIs (e.g. using PMD as a Maven dependency)</li>
+  <li>Bundle this into a JAR and add it to the execution classpath of PMD</li>
+  <li>Declare the rule in your ruleset XML</li>
 </ol>
 
 <h2 id="rule-execution">Rule execution</h2>
@@ -1942,7 +1941,7 @@ corresponding <code class="language-plaintext highlighter-rouge">visit</code> me
             <span class="c1">// reports a violation at the position of the node</span>
             <span class="c1">// the "data" parameter is a context object handed to by your rule</span>
             <span class="c1">// the message for the violation is the message defined in the rule declaration XML element</span>
-            <span class="n">addViolation</span><span class="o">(</span><span class="n">data</span><span class="o">,</span> <span class="n">node</span><span class="o">);</span>
+            <span class="n">asCtx</span><span class="o">(</span><span class="n">data</span><span class="o">).</span><span class="na">addViolation</span><span class="o">(</span><span class="n">node</span><span class="o">);</span>
         <span class="o">}</span>
 
         <span class="c1">// this calls back to the default implementation, which recurses further down the subtree</span>
@@ -1973,10 +1972,92 @@ speed-up your rule by using the <strong>rulechain</strong>.</p>
 <p>That mechanism doesn’t recurse on all the tree, instead, your rule will only be
 passed the nodes it is interested in. To use the rulechain correctly:</p>
 <ul>
-  <li>Your rule must register those node types by calling <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/Rule.html#addRuleChainVisit(java.lang.Class)"><code>addRuleChainVisit</code></a>
-in its constructor.</li>
+  <li>Your rule must override the method <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/AbstractRule.html#buildTargetSelector()"><code>buildTargetSelector</code></a>. This method
+should return a target selector, that selects all the node types you are interested in. E.g. the factory
+method <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/RuleTargetSelector.html#forTypes(java.lang.Class,java.lang.Class...)"><code>forTypes</code></a> can be used
+to create such a selector.</li>
+  <li>For the Java language, there is another base class, to make it easier:
+<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/AbstractJavaRulechainRule.html#"><code>AbstractJavaRulechainRule</code></a>. You’ll need to call the super constructor and
+provide the node types you are interested in.</li>
   <li>Your visit methods <strong>must not recurse!</strong> In effect, you should call never
 call <code class="language-plaintext highlighter-rouge">super.visit</code> in the methods.</li>
+</ul>
+
+<h4 id="manual-ast-navigation">Manual AST navigation</h4>
+
+<p>In Java rule implementations, you often need to navigate the AST to find the interesting nodes.
+In your <code class="language-plaintext highlighter-rouge">visit</code> implementation, you can start navigating the AST from the given node.</p>
+
+<p>The <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#"><code>Node</code></a> interface provides a couple of useful methods
+that return a <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/NodeStream.html#"><code>NodeStream</code></a> and can be used to query the AST:</p>
+
+<ul>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#ancestors()"><code>ancestors</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#ancestorsOrSelf()"><code>ancestorsOrSelf</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#children()"><code>children</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#descendants()"><code>descendants</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#descendantsOrSelf()"><code>descendantsOrSelf</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#ancestors(java.lang.Class)"><code>ancestors</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#children(java.lang.Class)"><code>children</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#descendants(java.lang.Class)"><code>descendants</code></a></li>
+</ul>
+
+<p>The returned NodeStream API provides easy to use methods that follow the Java Stream API (<code class="language-plaintext highlighter-rouge">java.util.stream</code>).</p>
+
+<p>Example:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">NodeStream</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">someNode</span><span class="o">)</span>                           <span class="c1">// the stream here is empty if the node is null</span>
+          <span class="o">.</span><span class="na">filterIs</span><span class="o">(</span><span class="nc">ASTVariableDeclaratorId</span><span class="o">.</span><span class="na">class</span><span class="o">)</span><span class="c1">// the stream here is empty if the node was not a variable declarator id</span>
+          <span class="o">.</span><span class="na">followingSiblings</span><span class="o">()</span>                    <span class="c1">// the stream here contains only the siblings, not the original node</span>
+          <span class="o">.</span><span class="na">filterIs</span><span class="o">(</span><span class="nc">ASTVariableInitializer</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+          <span class="o">.</span><span class="na">children</span><span class="o">(</span><span class="nc">ASTExpression</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+          <span class="o">.</span><span class="na">children</span><span class="o">(</span><span class="nc">ASTPrimaryExpression</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+          <span class="o">.</span><span class="na">children</span><span class="o">(</span><span class="nc">ASTPrimaryPrefix</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+          <span class="o">.</span><span class="na">children</span><span class="o">(</span><span class="nc">ASTLiteral</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+          <span class="o">.</span><span class="na">filterMatching</span><span class="o">(</span><span class="nl">Node:</span><span class="o">:</span><span class="n">getImage</span><span class="o">,</span> <span class="s">"0"</span><span class="o">)</span>
+          <span class="o">.</span><span class="na">filterNot</span><span class="o">(</span><span class="nl">ASTLiteral:</span><span class="o">:</span><span class="n">isStringLiteral</span><span class="o">)</span>
+          <span class="o">.</span><span class="na">nonEmpty</span><span class="o">();</span> <span class="c1">// If the stream is non empty here, then all the pipeline matched</span>
+</code></pre></div></div>
+
+<p>The <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#"><code>Node</code></a> interface provides also an alternative way to navigate the AST for convenience:</p>
+
+<ul>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getParent()"><code>getParent</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getNumChildren()"><code>getNumChildren</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getChild(int)"><code>getChild</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getFirstChild()"><code>getFirstChild</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getLastChild()"><code>getLastChild</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getPreviousSibling()"><code>getPreviousSibling</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getNextSibling()"><code>getNextSibling</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#firstChild(java.lang.Class)"><code>firstChild</code></a></li>
+</ul>
+
+<p>Depending on the AST of the language, there might also be more specific methods that can be used to
+navigate. E.g. in Java there exists the method <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTIfStatement.html#getCondition()"><code>ASTIfStatement#getCondition</code></a>
+to get the condition of an If-statement.</p>
+
+<h3 id="reporting-violations">Reporting violations</h3>
+
+<p>In your visit method, you have access to the <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/RuleContext.html#"><code>RuleContext</code></a> which is the entry point into
+reporting back during the analysis.</p>
+
+<ul>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/RuleContext.html#addViolation(net.sourceforge.pmd.lang.ast.Node)"><code>addViolation</code></a> reports a rule violation at
+the position of the given node with the message defined in the rule declaration XML element.</li>
+  <li>The message defined in the rule declaration XML element might contain <strong>placeholder</strong>, such as <code class="language-plaintext highlighter-rouge">{0}</code>.
+In that case, you need to call <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/RuleContext.html#addViolation(net.sourceforge.pmd.lang.ast.Node,java.lang.Object...)"><code>addViolation</code></a>
+and provide the values for the placeholders. The message is actually processed as a <code class="language-plaintext highlighter-rouge">java.text.MessageFormat</code>.</li>
+  <li>Sometimes a rule might want to differentiate between different cases of a violation and use different
+messages. This is possible by calling the methods
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/RuleContext.html#addViolationWithMessage(net.sourceforge.pmd.lang.ast.Node,java.lang.String)"><code>addViolationWithMessage</code></a> or
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/RuleContext.html#addViolationWithMessage(net.sourceforge.pmd.lang.ast.Node,java.lang.String,java.lang.Object...)"><code>addViolationWithMessage</code></a>.
+Using these methods, the message defined in the rule declaration XML element is <em>not used</em>.</li>
+  <li>Rules can be customized using properties and sometimes you want to include the actual value of a property
+in the message, e.g. if the rule enforces a specific limit.
+The syntax for such placeholders is: <code class="language-plaintext highlighter-rouge">${propertyName}</code>.</li>
+  <li>Some languages support additional placeholder variables. E.g. for Java, you can use <code class="language-plaintext highlighter-rouge">${methodName}</code> to insert
+the name of the method in which the violation occurred.
+See <a href="pmd_languages_java.html#violation-decorators">Java-specific features and guidance</a>.</li>
 </ul>
 
 <h3 id="execution-across-files-thread-safety-and-statefulness">Execution across files, thread-safety and statefulness</h3>
@@ -1987,31 +2068,48 @@ instance of the rule. This means, that the rule implementation <strong>does not 
 threading issues</strong>, as PMD makes sure, that a single instance is not used concurrently
 by multiple threads.</p>
 
-<p>However, for performance reasons, the rule instances are used for multiple files.
+<p>However, for performance reasons, the rule instances are reused for multiple files.
 This means, that the constructor of the rule is only executed once (per thread)
 and the rule instance is reused. If you rely on a proper initialization of instance
-properties, you can do the initialization e.g. in the visit-method of the <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTCompilationUnit.html#"><code>ASTCompilationUnit</code></a>
-node - which is visited first and only once per file. However, this
-solution would only work for rules written for the Java language. A language
-independent way is to override the method <code class="language-plaintext highlighter-rouge">start</code> of the rule.
+properties, you can do the initialization in the <code class="language-plaintext highlighter-rouge">start</code> method of the rule
+(you need to override this method).
 The start method is called exactly once per file.</p>
 
-<!-- We don't support language-independent rules anyway... -->
+<h3 id="using-metrics">Using metrics</h3>
+
+<p>Some languages might support metrics.</p>
+
+<ul>
+  <li><a href="pmd_languages_apex.html#metrics-framework">Apex-specific features and guidance</a></li>
+  <li><a href="pmd_languages_java.html#metrics-framework">Java-specific features and guidance</a></li>
+</ul>
+
+<h3 id="using-symbol-table">Using symbol table</h3>
+
+<p>Some languages might support symbol table.</p>
+
+<ul>
+  <li><a href="pmd_languages_java.html#symbol-table-apis">Java-specific features and guidance</a></li>
+</ul>
+
+<h3 id="using-type-resolution">Using type resolution</h3>
+
+<p>Some languages might support type resolution.</p>
+
+<ul>
+  <li><a href="pmd_languages_java.html#type-resolution-apis">Java-specific features and guidance</a></li>
+</ul>
 
 <h2 id="rule-lifecycle-reference">Rule lifecycle reference</h2>
 
 <h3 id="construction">Construction</h3>
 
-<p>Exactly once:</p>
+<p>Exactly once (per thread):</p>
 
 <ol>
   <li>The rule’s no-arg constructor is called when loading the ruleset.
-The rule’s constructor must define:
-    <ul>
-      <li><a href="#economic-traversal-the-rulechain">Rulechain visits</a></li>
-      <li><a href="pmd_userdocs_extending_defining_properties.html#for-java-rules">Property descriptors</a></li>
-    </ul>
-  </li>
+The rule’s constructor must define already any
+<a href="pmd_userdocs_extending_defining_properties.html#for-java-rules">Property descriptors</a> the rule wants to use.</li>
   <li>If the rule was included in the ruleset as a rule reference,
 some properties <a href="pmd_userdocs_configuring_rules.html#rule-properties">may be overridden</a>.
 If an overridden property is unknown, an error is reported.</li>
@@ -2021,17 +2119,22 @@ If an overridden property is unknown, an error is reported.</li>
 <h3 id="execution">Execution</h3>
 
 <p>For each thread, a deep copy of the rule is created. Each thread is given
-a different set of files to analyse. Then, for each such file, for each
+a different set of files to analyse. Then, for each such file and for each
 rule copy:</p>
 
 <ol>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/Rule.html#start(net.sourceforge.pmd.RuleContext)"><code>start</code></a> is called once, before parsing</li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/Rule.html#apply(java.util.List,net.sourceforge.pmd.RuleContext)"><code>apply</code></a> is called with the root
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/Rule.html#apply(net.sourceforge.pmd.lang.ast.Node,net.sourceforge.pmd.RuleContext)"><code>apply</code></a> is called with the root
 of the AST. That method performs the AST traversal that ultimately calls visit methods.
 It’s not called for RuleChain rules.</li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/Rule.html#end(net.sourceforge.pmd.RuleContext)"><code>end</code></a> is called when the rule is done processing
 the file</li>
 </ol>
+
+<h2 id="example-projects">Example projects</h2>
+
+<p>See <a href="https://github.com/pmd/pmd-examples">https://github.com/pmd/pmd-examples</a> for a couple of example projects, that
+create custom PMD rules for different languages.</p>
 
 
     <div class="tags">
@@ -2074,7 +2177,7 @@ the file</li>
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            February 2020 (6.22.0)<br /> Site last generated: Jan 5, 2024 <br />
+            December 2023 (7.0.0)<br /> Site last generated: Jan 12, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
