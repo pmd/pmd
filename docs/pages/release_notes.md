@@ -111,6 +111,7 @@ in the Migration Guide.
   * [#4750](https://github.com/pmd/pmd/pull/4750):   \[core] Fix flaky SummaryHTMLRenderer
 * doc
   * [#995](https://github.com/pmd/pmd/issues/995):   \[doc] Document API evolution principles as ADR
+  * [#2511](https://github.com/pmd/pmd/issues/2511): \[doc] Review guides for writing java/xpath rules for correctness with PMD 7
   * [#3175](https://github.com/pmd/pmd/issues/3175): \[doc] Document language module features
   * [#4659](https://github.com/pmd/pmd/pull/4659):   \[doc] Improve ant documentation
   * [#4669](https://github.com/pmd/pmd/pull/4669):   \[doc] Add bld PMD Extension to Tools / Integrations
@@ -593,6 +594,7 @@ See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.
 * doc
     * [#995](https://github.com/pmd/pmd/issues/995):   \[doc] Document API evolution principles as ADR
     * [#2501](https://github.com/pmd/pmd/issues/2501): \[doc] Verify ANTLR Documentation
+    * [#2511](https://github.com/pmd/pmd/issues/2511): \[doc] Review guides for writing java/xpath rules for correctness with PMD 7
     * [#3175](https://github.com/pmd/pmd/issues/3175): \[doc] Document language module features
     * [#4294](https://github.com/pmd/pmd/issues/4294): \[doc] Migration Guide for upgrading PMD 6 ➡️ 7
     * [#4303](https://github.com/pmd/pmd/issues/4303): \[doc] Document new property framework
