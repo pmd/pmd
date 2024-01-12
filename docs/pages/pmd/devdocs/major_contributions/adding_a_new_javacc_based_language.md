@@ -265,3 +265,52 @@ If you want to add support for computing metrics:
 * Implement {% jdoc core::lang.LanguageVersionHandler#getLanguageMetricsProvider() %}, to make the metrics available in the designer.
 
 See {% jdoc java::lang.java.metrics.JavaMetrics %} for an example.
+
+### Symbol table
+
+A symbol table keeps track of variables and their usages. It is part of semantic analysis and would
+be executed in your parser adapter as an additional pass after you got the initial AST.
+
+There is no general language independent API in PMD core. For now, each language will need to implement
+its own solution. The symbol information that has been resolved in the additional parser pass
+can be made available on the AST nodes via extra methods, e.g. `getSymbolTable()`, `getSymbol()`, or
+`getUsages()`.
+
+Currently only Java provides an implementation for symbol table,
+see [Java-specific features and guidance](pmd_languages_java.html).
+
+{% capture deprecated_symbols_api_note %}
+With PMD 7.0.0 the symbol table and type resolution implementation has been
+rewritten from scratch. There is still an old API for symbol table support, that is used by PLSQL,
+see {% jdoc_package core::lang.symboltable %}. This will be deprecated and should not be used.
+{% endcapture %}
+{% include note.html content=deprecated_symbols_api_note %}
+
+### Type resolution
+
+For typed languages like Java type information can be useful for writing rules, that trigger only on
+specific types. Resolving types of expressions and variables would be done after in your parser
+adapter as yet another additional pass, potentially after resolving the symbol table.
+
+Type resolution tries to find the actual class type of each used type, following along method calls
+(including overloaded and overwritten methods), allowing to query subtypes and type hierarchy.
+This might require additional configuration for the language, e.g. in Java you need
+to configure an auxiliary classpath.
+
+There is no general language independent API in PMD core. For now, each language will need to implement
+its own solution. The type information can be made available on the AST nodes via extra methods,
+e.g. `getType()`.
+
+Currently only Java provides an implementation for type resolution,
+see [Java-specific features and guidance](pmd_languages_java.html).
+
+### Call and data flow analysis
+
+Call and data flow analysis keep track of the data as it is moving through different execution paths
+a program has. This would be yet another analysis pass.
+
+There is no general language independent API in PMD core. For now, each language will need to implement
+its own solution.
+
+Currently Java has some limited support for data flow analysis,
+see [Java-specific features and guidance](pmd_languages_java.html).
