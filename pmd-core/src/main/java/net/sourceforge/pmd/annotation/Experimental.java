@@ -8,10 +8,10 @@ import java.lang.annotation.Documented;
 
 
 /**
- * Indicates the feature is in experimental state: its existence, signature
- * or behavior might change without warning from one release to the next.
- * The only clients that are "safe" using experimental APIs are the sources
- * of PMD itself.
+ * Tagged API members are subject to change.
+ * It is an indication that the feature is in experimental, unstable state.
+ * The API members can be modified in any way, or even removed, at any time, without warning.
+ * You should not use or rely on them in any production code. They are purely to allow broad testing and feedback.
  *
  * @since 6.7.0
  */

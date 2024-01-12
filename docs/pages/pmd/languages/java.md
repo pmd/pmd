@@ -2,14 +2,12 @@
 title: Java support
 permalink: pmd_languages_java.html
 author: Clément Fournier
-last_updated: September 2023 (7.0.0)
+last_updated: December 2023 (7.0.0)
 tags: [languages, PmdCapableLanguage, CpdCapableLanguage]
 summary: "Java-specific features and guidance"
 ---
 
 {% include language_info.html name='Java' id='java' implementation='java::lang.java.JavaLanguageModule' supports_pmd=true supports_cpd=true since='1.0.0' %}
-
-{% include warning.html content="WIP, todo for pmd 7" %}
 
 ## Overview of supported Java language versions
 
@@ -55,20 +53,94 @@ See [Java language properties](pmd_languages_configuration.html#java-language-pr
 
 ## Type and symbol resolution
 
-Java being a statically typed language, a Java program contains more information that just its syntax tree; for instance, every expression has a static type, and every method call is bound to a method overload statically (even if that overload is virtual). In PMD, much of this information is resolved from the AST by additional passes, which run after parsing, and before rules can inspect the tree. 
+Java being a statically typed language, a Java program contains more information than just its syntax tree;
+for instance, every expression has a static type, and every method call is bound to a method overload
+statically (even if that overload is virtual). In PMD, much of this information is resolved from the AST
+by additional passes, which run after parsing, and before rules can inspect the tree. 
 
 The semantic analysis roughly works like so:
-1. The first passes resolve *symbols*, which are a model of the named entities that Java programs declare, like classes, methods, and variables.
-2. Then, each name in the tree is resolved to a symbol, according to the language's scoping rules. This may modify the tree to remove *ambiguous names* (names which could be either a type, package, or variable).
-3. The last pass resolves the types of expressions, which performs overload resolution on method calls, and type inference.
+1. The first passes resolve *symbols*, which are a model of the named entities that Java programs declare,
+   like classes, methods, and variables.
+2. Then, each name in the tree is resolved to a symbol, according to the language's scoping rules. This may
+   modify the tree to remove *ambiguous names* (names which could be either a type, package, or variable).
+3. The last pass resolves the types of expressions, which performs overload resolution on method calls,
+   and type inference.
 
-TODO describe 
-* why we need auxclasspath, and how to put the java classes onto the auxclasspath (jre/lib/rt.jar or lib/jrt-fs.jar).
-* how disambiguation can fail
+The analyzed code might reference types from other places of the project or even from external
+dependencies. If e.g. the code extends a class from an external dependency, then PMD needs to know
+this external dependency in order to figure out, that a method is actually an override.
 
-## Type and symbol APIs
+In order to resolve such types, a complete so-called auxiliary classpath need to be provided.
+Technically, PMD uses the [ASM framework](https://asm.ow2.io/index.html) to read the bytecode and build
+up its own representation to resolve names and types. It also reads the bytecode of the Java runtime
+in order to resolve Java API references.
 
-TODO describe APIs: see #4319 and #2689
+## Providing the auxiliary classpath
+
+The auxiliary classpath (or short "auxClasspath") is configured via the
+[Language Property "auxClasspath"](pmd_languages_configuration.html#java-language-properties).
+It is a string containing multiple paths separated by either a colon (`:`) under Linux/MacOS
+or a semicolon (`;`) under Windows.
+
+In order to resolve the types of the Java API correctly, the Java Runtime must be on the
+auxClasspath as well. As the Java API and Runtime evolves from version to version, it is important
+to use the correct Java version, that is being analyzed. This might not necessarily be the
+same Java runtime version that is being used to run PMD.
+
+Until Java 8, there exists the jar file `rt.jar` in `${JAVA_HOME}/jre/lib`. It is enough, to include
+this jar file in the auxClasspath. Usually, you would add this as the first entry in the auxClasspath.
+
+Beginning with Java 9, the Java platform has been modularized and [Modular Run-Time Images](https://openjdk.org/jeps/220)
+have been introduced. The file `${JAVA_HOME}/lib/modules` contains now all the classes, but it is not a jar file
+anymore. However, each Java installation provides an implementation to read such Run-Time Images in
+`${JAVA_HOME}/lib/jrt-fs.jar`. This is an implementation of the `jrt://` filesystem and through this, the bytecode
+of the Java runtime classes can be loaded. In order to use this with PMD, the file `${JAVA_HOME}/lib/jrt-fs.jar`
+needs to be added to the auxClasspath as the first entry. PMD will make sure, to load the Java runtime classes
+using the jrt-filesystem.
+
+If neither `${JAVA_HOME}/jre/lib/rt.jar` nor `${JAVA_HOME}/lib/jrt-fs.jar` is added to the auxClasspath, PMD falls
+back to load the JAva runtime classes **from the current runtime**, that is the runtime that was used to
+execute PMD. This might not be the correct version, e.g. you might run PMD with Java 8, but analyze code
+written for Java 21. In that case, you have to provide "jrt-fs.jar" on the auxClasspath.
+
+## Symbol table APIs
+
+{% jdoc_nspace :ast java::lang.java.ast %}
+{% jdoc_nspace :symbols java::lang.java.symbols %}
+
+Symbol table API related classes are in the package {% jdoc_package :symbols %}.
+The root interface for symbols is {%jdoc symbols::JElementSymbol %}.
+
+The symbol table can be requested on any node with the method {% jdoc ast::AbstractJavaNode#getSymbolTable() %}.
+This returns a {% jdoc symbols::table.JSymbolTable %} which gives you access to variables, methods and types that are
+within scope.
+
+A {% jdoc ast::ASTExpression %} might represent a {% jdoc ast::ASTAssignableExpr.ASTNamedReferenceExpr %}
+if it e.g. references a variable name. In that case, you can access the referenced variable symbol
+with the method {% jdoc ast::ASTAssignableExpr.ASTNamedReferenceExpr#getReferencedSym() %}.
+
+Declaration nodes, such as {% jdoc ast::ASTVariableDeclaratorId %} implement the interface
+{%jdoc ast::SymbolDeclaratorNode %}. Through the method
+{% jdoc ast::SymbolDeclaratorNode#getSymbol() %} you can also access the symbol.
+
+To find usages, you can call {% jdoc ast::ASTVariableDeclaratorId#getLocalUsages() %}.
+
+## Type resolution APIs
+
+{% jdoc_nspace :types java::lang.java.types %}
+
+Type resolution API related classes are in the package {% jdoc_package :types %}.
+
+The core of the framework is a set of interfaces to represent types. The root interface is
+{% jdoc types::JTypeMirror %}. Type mirrors are created by a
+{% jdoc types::TypeSystem %} object. This object is analysis-global.
+
+The utility class {% jdoc types::TypeTestUtil %} provides simple methods to check types,
+e.g. `TypeTestUtil.isA(String.class, variableDeclaratorIdNode)` tests, whether the given
+variableDeclaratorId is of type "String".
+
+Any {% jdoc ast::TypeNode %} provides access to the type with the method {% jdoc ast::TypeNode#getTypeMirror() %}.
+E.g. this can be called on {% jdoc ast::ASTMethodCall %} to retrieve the return type of the called method.
 
 ## Metrics framework
 
@@ -101,3 +173,10 @@ Java does this by adding the following additional information for each reported 
 * {% jdoc core::RuleViolation#PACKAGE_NAME %}
 
 You can access these via {% jdoc core::RuleViolation#getAdditionalInfo() %}
+
+## Dataflow
+
+There is no API yet for dataflow analysis. However, some rules such as {% rule java/bestpractices/UnusedAssignment %}
+or {% rule java/design/ImmutableField %} are using an internal implementation of an additional
+AST pass that adds dataflow information. The implementation can be found in
+[net.sourceforge.pmd.lang.java.rule.internal.DataflowPass](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/internal/DataflowPass.java).

@@ -83,6 +83,10 @@ Once you have reviewed your ruleset(s), you can switch to PMD 7.
 Ideally, you have written good tests already for your custom rules - see [Testing your rules](pmd_userdocs_extending_testing.html).
 This helps to identify problems early on.
 
+#### Ruleset XML
+The `<rule>` tag, that defines your custom rule, is required to have a `language` attribute now. This was always the
+case for XPath rules, but is now a requirement for Java rules.
+
 #### XPath rules
 If you have **XPath based** rules, the first step will be to migrate to XPath 2.0 and then to XPath 3.1.
 XPath 2.0 is available in PMD 6 already and can be used right away. PMD 7 will use by default XPath 3.1 and
@@ -92,6 +96,12 @@ can be expected to work in PMD 7 without any further changes. So the migration p
 After you have migrated your XPath rules to XPath 2.0, remove the "version" property, since that will be removed
 with PMD 7. PMD 7 by default uses XPath 3.1.
 See below [XPath](#xpath-migrating-from-10-to-20) for details.
+
+Additional infos:
+* The custom XPath function `typeOf` has been removed (deprecated since 6.4.0).
+  Use the function `pmd-java:typeIs` or `pmd-java:typeIsExactly` instead.
+  See [PMD extension functions](pmd_userdocs_extending_writing_xpath_rules.html#pmd-extension-functions) for available
+  functions.
 
 #### Java rules
 If you have **Java based rules**, and you are using rulechain, this works a bit different now. The RuleChain API
