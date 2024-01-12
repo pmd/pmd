@@ -110,6 +110,7 @@ in the Migration Guide.
   * [#4717](https://github.com/pmd/pmd/issues/4717): \[core] XSLTRenderer doesn't close report file
   * [#4750](https://github.com/pmd/pmd/pull/4750):   \[core] Fix flaky SummaryHTMLRenderer
 * doc
+  * [#995](https://github.com/pmd/pmd/issues/995):   \[doc] Document API evolution principles as ADR
   * [#3175](https://github.com/pmd/pmd/issues/3175): \[doc] Document language module features
   * [#4659](https://github.com/pmd/pmd/pull/4659):   \[doc] Improve ant documentation
   * [#4669](https://github.com/pmd/pmd/pull/4669):   \[doc] Add bld PMD Extension to Tools / Integrations
@@ -590,6 +591,7 @@ See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.
     * [#4685](https://github.com/pmd/pmd/pull/4685):   \[cli] Clarify CPD documentation, fix positional parameter handling
     * [#4723](https://github.com/pmd/pmd/issues/4723): \[cli] Launch fails for "bash pmd"
 * doc
+    * [#995](https://github.com/pmd/pmd/issues/995):   \[doc] Document API evolution principles as ADR
     * [#2501](https://github.com/pmd/pmd/issues/2501): \[doc] Verify ANTLR Documentation
     * [#3175](https://github.com/pmd/pmd/issues/3175): \[doc] Document language module features
     * [#4294](https://github.com/pmd/pmd/issues/4294): \[doc] Migration Guide for upgrading PMD 6 ➡️ 7
