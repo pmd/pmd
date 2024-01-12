@@ -3,7 +3,7 @@ title: Adding PMD support for a new ANTLR grammar based language
 short_title: Adding a new language with ANTLR
 tags: [devdocs, extending]
 summary: "How to add a new language to PMD using ANTLR grammar."
-last_updated: April 2023 (7.0.0)
+last_updated: December 2023 (7.0.0)
 sidebar: pmd_sidebar
 permalink: pmd_devdocs_major_adding_new_language_antlr.html
 folder: pmd/devdocs
@@ -51,7 +51,9 @@ definitely don't come for free. It is much effort and requires perseverance to i
 
 " %}
 
-## 1.  Start with a new sub-module
+## Steps
+
+### 1.  Start with a new sub-module
 *   See pmd-swift for examples.
 *   Make sure to add your new module to PMD's parent pom as `<module>` entry, so that it is built alongside the
     other languages.
@@ -59,7 +61,7 @@ definitely don't come for free. It is much effort and requires perseverance to i
     is automatically available in the binary distribution (pmd-dist).
 
 
-## 2.  Implement an AST parser for your language
+### 2.  Implement an AST parser for your language
 *   ANTLR will generate the parser for you based on the grammar file. The grammar file needs to be placed in the
     folder `src/main/antlr4` in the appropriate sub package `ast` of the language. E.g. for swift, the grammar
     file is [Swift.g4](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/antlr4/net/sourceforge/pmd/lang/swift/ast/Swift.g4)
@@ -67,7 +69,7 @@ definitely don't come for free. It is much effort and requires perseverance to i
 *   Configure the options "superClass" and "contextSuperClass". These are the base classes for the generated
     classes.
 
-## 3.  Create AST node classes
+### 3.  Create AST node classes
 *   The individual AST nodes are generated, but you need to define the common interface for them.
 *   You need to define the supertype interface for all nodes of the language. For that, we provide
     [`AntlrNode`](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/lang/ast/impl/antlr4/AntlrNode.java).
@@ -106,7 +108,7 @@ definitely don't come for free. It is much effort and requires perseverance to i
 *   You can add additional methods in your "InnerNode" (e.g. `SwiftInnerNode`) that are available on all nodes.
     But on most cases you won't need to do anything.
 
-## 4.  Generate your parser (using ANTLR)
+### 4.  Generate your parser (using ANTLR)
 *   Make sure, you have the property `<antlr4.visitor>true</antlr4.visitor>` in your `pom.xml` file.
 *   This is just a matter of building the language module. ANTLR is called via ant, and this step is added
     to the phase `generate-sources`. So you can just call e.g. `./mvnw generate-sources -pl pmd-swift` to
@@ -115,7 +117,7 @@ definitely don't come for free. It is much effort and requires perseverance to i
     source control.
 *   You should review [`pmd-swift/pom.xml`](https://github.com/pmd/pmd/blob/master/pmd-swift/pom.xml).
 
-## 5.  Create a TokenManager
+### 5.  Create a TokenManager
 *   This is needed to support CPD (copy paste detection)
 *   We provide a default implementation using [`AntlrTokenManager`](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/impl/AntlrTokenizer.java).
 *   You must create your own "AntlrTokenizer" such as we do with
@@ -130,13 +132,13 @@ definitely don't come for free. It is much effort and requires perseverance to i
     If you don't need a custom token filter, you don't need to override the method. It returns the default
     `AntlrTokenFilter` which doesn't filter anything.
 
-## 6.  Create a PMD parser “adapter”
+### 6.  Create a PMD parser “adapter”
 *   Create your own parser, that adapts the ANLTR interface to PMD's parser interface.
 *   We provide a [`AntlrBaseParser`](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/lang/ast/impl/antlr4/AntlrBaseParser.java)
     implementation that you need to extend to create your own adapter as we do with
     [`PmdSwiftParser`](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/ast/PmdSwiftParser.java).
 
-## 7.  Create a language version handler
+### 7.  Create a language version handler
 *   Now you need to create your version handler, as we did with [`SwiftHandler`](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/SwiftHandler.java).
 *   This class is sort of a gateway between PMD and all parsing logic specific to your language.
 *   For a minimal implementation, it just needs to return a parser *(see step #6)*.
@@ -148,7 +150,7 @@ definitely don't come for free. It is much effort and requires perseverance to i
     *   metrics
     *   custom XPath functions
 
-## 8.  Create a base visitor
+### 8.  Create a base visitor
 *   A parser visitor adapter is not needed anymore with PMD 7. The visitor interface now provides a default
     implementation.
 *   The visitor for ANTLR based AST is generated along the parser from the ANTLR grammar file. The
@@ -158,7 +160,7 @@ definitely don't come for free. It is much effort and requires perseverance to i
     See [`SwiftVisitorBase`](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/ast/SwiftVisitorBase.java)
     as an example.
 
-## 9. Make PMD recognize your language
+### 9. Make PMD recognize your language
 * Create your own subclass of `net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase`, see Swift as an example:
     [`SwiftLanguageModule`](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/SwiftLanguageModule.java).
 *   Add for each version of your language a call to `addVersion` in your language module’s constructor.
@@ -167,7 +169,7 @@ definitely don't come for free. It is much effort and requires perseverance to i
 *   Create the service registration via the text file `src/main/resources/META-INF/services/net.sourceforge.pmd.lang.Language`.
     Add your fully qualified class name as a single line into it.
 
-## 10. Create an abstract rule class for the language
+### 10. Create an abstract rule class for the language
 *   You need to create your own abstract rule class in order to interface your language with PMD's generic rule
     execution.
 *   See [`AbstractSwiftRule`](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/rule/AbstractSwiftRule.java) as an example.
@@ -184,7 +186,7 @@ definitely don't come for free. It is much effort and requires perseverance to i
     interface of the specific language). Now the rule just provides a visitor, which can be hidden and potentially
     shared between rules.
 
-## 11. Create rules
+### 11. Create rules
 *   Creating rules is already pretty well documented in PMD - and it’s no different for a new language, except you
     may have different AST nodes.
 *   PMD supports 2 types of rules, through visitors or XPath.
@@ -207,7 +209,7 @@ definitely don't come for free. It is much effort and requires perseverance to i
         </resources>
     ```
 
-## 14. Test the rules
+### 12. Test the rules
 *   Testing rules is described in depth in [Testing your rules](pmd_userdocs_extending_testing.html).
     *   Each rule has its own test class: Create a test class for your rule extending `PmdRuleTst`
         *(see
@@ -231,7 +233,7 @@ definitely don't come for free. It is much effort and requires perseverance to i
 
     *Note:* You'll need to add your ruleset to `categories.properties`, so that it can be found.
 
-### 15. Create documentation page
+### 13. Create documentation page
 Finishing up your new language module by adding a page in the documentation. Create a new markdown file
 `<langId>.md` in `docs/pages/pmd/languages/`. This file should have the following frontmatter:
 
@@ -252,3 +254,10 @@ There is also the following Jekyll Include, that creates summary box for the lan
 {% include language_info.html name='<Language Name>' id='<langId>' implementation='<langId>::lang.<langId>.<langId>LanguageModule' supports_cpd=true supports_pmd=true %}
 {% endraw %}
 ```
+
+## Optional features
+
+See [Optional features in JavaCC based languages](pmd_devdocs_major_adding_new_language_javacc.html#optional-features).
+
+In order to implement these, most likely an AST needs to be developed first. The parse tree (CST, concrete
+syntax tree) is not suitable to add methods such as `getSymbol()` to the node classes.
