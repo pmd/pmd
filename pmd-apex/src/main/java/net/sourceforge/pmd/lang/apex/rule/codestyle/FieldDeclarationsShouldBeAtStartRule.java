@@ -12,7 +12,8 @@ import java.util.Optional;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTBlockStatement;
-import net.sourceforge.pmd.lang.apex.ast.ASTField;
+import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclarationStatements;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTProperty;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
@@ -41,7 +42,9 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
         // Unfortunately the parser re-orders the AST to put field declarations before method declarations
         // so we have to rely on line numbers / positions to work out where the first non-field declaration starts
         // so we can check if the fields are in acceptable places.
-        List<ASTField> fields = node.findChildrenOfType(ASTField.class);
+        List<ASTFieldDeclaration> fields = node.children(ASTFieldDeclarationStatements.class)
+                                               .children(ASTFieldDeclaration.class)
+                                               .toList();
 
         List<ApexNode<?>> nonFieldDeclarations = new ArrayList<>();
 
@@ -59,7 +62,7 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
             return data;
         }
 
-        for (ASTField field : fields) {
+        for (ASTFieldDeclaration field : fields) {
             if (NODE_BY_SOURCE_LOCATION_COMPARATOR.compare(field, firstNonFieldDeclaration.get()) > 0) {
                 addViolation(data, field, field.getName());
             }

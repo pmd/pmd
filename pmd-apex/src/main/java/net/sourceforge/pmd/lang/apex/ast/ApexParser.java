@@ -20,19 +20,25 @@ import com.google.summit.translation.Translate;
 @SuppressWarnings("PMD.DoNotUseJavaUtilLogging")
 public final class ApexParser implements Parser {
 
+    static {
+        AntlrVersionCheckSuppression.initApexLexer();
+    }
+
     public ApexParser() {
         // Suppress INFO-level output
         Logger.getLogger(Translate.class.getName()).setLevel(Level.WARNING);
-        AntlrVersionCheckSuppression.initApexLexer();
     }
 
     @Override
     public ASTApexFile parse(final ParserTask task) {
-        CompilationUnit astRoot = SummitAST.INSTANCE.parseAndTranslate(task.getTextDocument().getText().toString(), null);
-
-        if (astRoot == null) {
-            throw new ParseException("Couldn't parse the source - there is not root node - Syntax Error??");
+        CompilationUnit astRoot = null;
+        try {
+            astRoot = SummitAST.INSTANCE.parseAndTranslate(task.getFileId().getOriginalPath(), task.getTextDocument().getText().toString(), null);
+        } catch (SummitAST.ParseException e) {
+            throw new ParseException(e);
         }
+
+        assert astRoot != null;
 
         final ApexTreeBuilder treeBuilder = new ApexTreeBuilder(task, (ApexLanguageProcessor) task.getLanguageProcessor());
         return treeBuilder.buildTree(astRoot);

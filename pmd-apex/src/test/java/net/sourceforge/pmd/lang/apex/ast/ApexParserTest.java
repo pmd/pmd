@@ -8,8 +8,10 @@ import static net.sourceforge.pmd.lang.ast.test.NodeExtensionsKt.textOfReportLoc
 import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertPosition;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -21,6 +23,7 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.document.FileLocation;
 
 class ApexParserTest extends ApexParserTestBase {
@@ -44,6 +47,11 @@ class ApexParserTest extends ApexParserTestBase {
         assertEquals(1, methods.size());
     }
 
+    @Test
+    void parseErrors() {
+        ParseException exception = assertThrows(ParseException.class, () -> parse("public class SimpleClass { String x = \"a\"; }"));
+        assertThat(exception.getMessage(), containsString("Syntax error at 1:38: token recognition error at: '\"'"));
+    }
 
     private final String testCodeForLineNumbers =
               "public class SimpleClass {\n" // line 1

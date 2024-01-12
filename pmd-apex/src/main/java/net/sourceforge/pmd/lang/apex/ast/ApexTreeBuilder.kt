@@ -112,6 +112,7 @@ class ApexTreeBuilder(val task: ParserTask, val proc: ApexLanguageProcessor) {
                               is ASTUserInterface,
                               is ASTProperty,
                               is ASTUserClass,
+                              is ASTFieldDeclaration,
                               is ASTMethod -> commentBuilder.buildFormalComment(node)
                             }
                         }

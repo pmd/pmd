@@ -19,6 +19,7 @@ final class AntlrVersionCheckSuppression {
         // utility
     }
 
+    // warning: this must not be called in multiple threads!
     static void initApexLexer() {
         @SuppressWarnings("PMD.CloseResource") // ok not to close; is save/restore pattern
         PrintStream err = System.err;
