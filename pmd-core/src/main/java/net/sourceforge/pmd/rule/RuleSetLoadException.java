@@ -14,7 +14,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * XML is not well-formed, does not respect the ruleset schema, is
  * not a valid ruleset or is otherwise unparsable.
  */
-public final class RuleSetLoadException extends RuntimeException {
+public class RuleSetLoadException extends RuntimeException {
 
     /** Constructors are internal. */
     @InternalApi

@@ -17,6 +17,7 @@ import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.log.MessageReporter;
 
@@ -73,9 +74,11 @@ import net.sourceforge.pmd.util.log.MessageReporter;
  * </tbody>
  * </table>
  *
- * <p>Note: This is part of the internals of the {@link RuleSetLoader}.
+ * @deprecated This is part of the internals of the {@link RuleSetLoader}.
  */
-class RuleSetReferenceId {
+@Deprecated
+@InternalApi
+public class RuleSetReferenceId {
 
     // todo this class has issues... What is even an "external" ruleset?
     //  terminology and API should be clarified.
@@ -96,7 +99,7 @@ class RuleSetReferenceId {
      * @throws IllegalArgumentException
      *             If the ID contains a comma character.
      */
-    RuleSetReferenceId(final String id) {
+    public RuleSetReferenceId(final String id) {
         this(id, null, null);
     }
 
@@ -123,7 +126,7 @@ class RuleSetReferenceId {
      * @throws IllegalArgumentException If the ID is not Rule reference when there is an external
      *                                  RuleSetReferenceId.
      */
-    RuleSetReferenceId(final String id, final RuleSetReferenceId externalRuleSetReferenceId) {
+    public RuleSetReferenceId(final String id, final RuleSetReferenceId externalRuleSetReferenceId) {
         this(id, externalRuleSetReferenceId, null);
     }
 

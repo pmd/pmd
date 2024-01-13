@@ -163,7 +163,7 @@ in the Migration Guide.
     * {%jdoc core::rule.RuleSetLoader %}
     * {%jdoc core::rule.RuleSetLoadException %}
     * {%jdoc core::rule.RuleSetReference %} (note: this is _not_ public API)
-    * {%jdoc core::rule.RuleSetReferenceId %} (has been hidden from public API)
+    * {%jdoc core::rule.RuleSetReferenceId %} (note: this is _not_ public API)
     * {%jdoc core::rule.RuleSets %} (note: this is _not_ public API)
     * {%jdoc core::rule.RuleSetWriter %}
 

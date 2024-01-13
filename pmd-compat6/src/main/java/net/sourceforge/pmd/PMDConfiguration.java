@@ -3,7 +3,10 @@
  */
 
 // This class has been taken from 7.0.0-SNAPSHOT
-// Changes: setSourceEncoding
+// Changes:
+// - setSourceEncoding
+// - setBenchmark (non-functional)
+// - getMinimumPriority
 
 package net.sourceforge.pmd;
 
@@ -32,7 +35,6 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
-import net.sourceforge.pmd.rule.RulePriority;
 import net.sourceforge.pmd.rule.RuleSetLoader;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
@@ -586,5 +588,15 @@ public class PMDConfiguration extends AbstractConfiguration {
     @Deprecated
     public void setSourceEncoding(String sourceEncoding) {
         setSourceEncoding(Charset.forName(Objects.requireNonNull(sourceEncoding)));
+    }
+
+    @Deprecated
+    public void setBenchmark(boolean benchmark) {
+        // ignored
+    }
+
+    // new method to be compatible with PMD 7 - RulePriority has changed package
+    public net.sourceforge.pmd.rule.RulePriority getMinimumPriority$$bridge() { // SUPPRESS CHECKSTYLE ignore
+        return minimumPriority.asPMD7RulePriority();
     }
 }
