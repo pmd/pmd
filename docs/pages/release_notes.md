@@ -105,6 +105,7 @@ in the Migration Guide.
   * [#4723](https://github.com/pmd/pmd/issues/4723): \[cli] Launch fails for "bash pmd"
 * core
   * [#1027](https://github.com/pmd/pmd/issues/1027): \[core] Apply the new PropertyDescriptor&lt;Pattern&gt; type where applicable
+  * [#3917](https://github.com/pmd/pmd/issues/3917): \[core] Consolidate `n.s.pmd.lang.rule` package
   * [#4674](https://github.com/pmd/pmd/issues/4674): \[core] WARNING: Illegal reflective access by org.codehaus.groovy.reflection.CachedClass
   * [#4694](https://github.com/pmd/pmd/pull/4694):   \[core] Fix line/col numbers in TokenMgrError
   * [#4717](https://github.com/pmd/pmd/issues/4717): \[core] XSLTRenderer doesn't close report file
@@ -588,6 +589,7 @@ See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.
     * [#3815](https://github.com/pmd/pmd/issues/3815): \[core] Update Saxon HE to 10.7
     * [#3893](https://github.com/pmd/pmd/pull/3893):   \[core] Text documents
     * [#3902](https://github.com/pmd/pmd/issues/3902): \[core] Violation decorators
+    * [#3917](https://github.com/pmd/pmd/issues/3917): \[core] Consolidate `n.s.pmd.lang.rule` package
     * [#3918](https://github.com/pmd/pmd/issues/3918): \[core] Make LanguageRegistry non static
     * [#3919](https://github.com/pmd/pmd/issues/3919): \[core] Merge CPD and PMD language
     * [#3922](https://github.com/pmd/pmd/pull/3922):   \[core] Better error reporting for the ruleset parser
