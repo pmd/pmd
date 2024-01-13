@@ -70,7 +70,7 @@ public interface RuleViolation {
      *
      * @return The identifying Rule.
      */
-    net.sourceforge.pmd.rule.Rule getRule();
+    net.sourceforge.pmd.lang.rule.Rule getRule();
 
     /**
      * Get the description of this violation.

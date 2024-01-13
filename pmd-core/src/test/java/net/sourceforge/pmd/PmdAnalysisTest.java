@@ -30,10 +30,10 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.SimpleTestTextFile;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
+import net.sourceforge.pmd.lang.rule.MockRule;
+import net.sourceforge.pmd.lang.rule.RuleSet;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.reporting.ReportStats;
-import net.sourceforge.pmd.rule.MockRule;
-import net.sourceforge.pmd.rule.RuleSet;
 import net.sourceforge.pmd.util.log.MessageReporter;
 
 /**

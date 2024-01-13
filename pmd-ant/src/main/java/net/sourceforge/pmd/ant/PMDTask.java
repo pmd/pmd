@@ -19,7 +19,7 @@ import org.apache.tools.ant.types.Resource;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.ant.internal.PMDTaskImpl;
-import net.sourceforge.pmd.rule.RulePriority;
+import net.sourceforge.pmd.lang.rule.RulePriority;
 
 /**
  * PMD Ant task. Setters of this class are interpreted by Ant as properties

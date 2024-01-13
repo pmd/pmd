@@ -10,8 +10,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException.Phase;
-import net.sourceforge.pmd.rule.Rule;
 
 /**
  * @author Clément Fournier

@@ -6,7 +6,7 @@ package net.sourceforge.pmd;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public class RuleSetLoadException extends net.sourceforge.pmd.rule.RuleSetLoadException {
+public class RuleSetLoadException extends net.sourceforge.pmd.lang.rule.RuleSetLoadException {
     public RuleSetLoadException(RuleSetReferenceId rsetId, @NonNull Throwable cause) {
         super(rsetId, cause);
     }

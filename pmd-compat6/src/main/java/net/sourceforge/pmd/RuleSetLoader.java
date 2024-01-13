@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import net.sourceforge.pmd.rule.RuleSet;
+import net.sourceforge.pmd.lang.rule.RuleSet;
 
 public final class RuleSetLoader {
     public RuleSetLoader warnDeprecated(boolean warn) {

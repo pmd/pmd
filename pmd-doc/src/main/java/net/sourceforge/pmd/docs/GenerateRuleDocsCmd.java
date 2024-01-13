@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.internal.util.IOUtil;
-import net.sourceforge.pmd.rule.RuleSet;
-import net.sourceforge.pmd.rule.RuleSetLoader;
+import net.sourceforge.pmd.lang.rule.RuleSet;
+import net.sourceforge.pmd.lang.rule.RuleSetLoader;
 
 public final class GenerateRuleDocsCmd {
 

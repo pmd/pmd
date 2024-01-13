@@ -16,12 +16,12 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.RulePriority;
+import net.sourceforge.pmd.lang.rule.RuleSet;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.PropertySource;
-import net.sourceforge.pmd.rule.RulePriority;
-import net.sourceforge.pmd.rule.RuleSet;
 
 /**
  * This is the basic Rule interface for PMD rules.
@@ -311,7 +311,7 @@ public interface Rule extends PropertySource {
      * Creates a new copy of this rule.
      * @return A new exact copy of this rule
      */
-    net.sourceforge.pmd.rule.Rule deepCopy();
+    net.sourceforge.pmd.lang.rule.Rule deepCopy();
 
     // new method to be compatible with PMD 6 - Rule has changed package
     default Rule deepCopy$$bridge() { // SUPPRESS CHECKSTYLE ignore

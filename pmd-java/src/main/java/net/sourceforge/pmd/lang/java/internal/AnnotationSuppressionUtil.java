@@ -31,7 +31,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.rule.errorprone.ImplicitSwitchFallThroughRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
-import net.sourceforge.pmd.rule.Rule;
+import net.sourceforge.pmd.lang.rule.Rule;
 
 /**
  * Helper methods to suppress violations based on annotations.

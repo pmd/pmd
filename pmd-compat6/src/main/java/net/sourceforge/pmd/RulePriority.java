@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-// Copy of net.sourceforge.pmd.rule.RulePriority
+// Copy of net.sourceforge.pmd.lang.rule.RulePriority
 // Added method:
 // - asPMD7RulePriority
 
@@ -130,7 +130,9 @@ public enum RulePriority {
         }
     }
 
-    public net.sourceforge.pmd.rule.RulePriority asPMD7RulePriority() {
-        return net.sourceforge.pmd.rule.RulePriority.valueOf(name());
+    // ---- compatibility extensions
+
+    public net.sourceforge.pmd.lang.rule.RulePriority asPMD7RulePriority() {
+        return net.sourceforge.pmd.lang.rule.RulePriority.valueOf(name());
     }
 }

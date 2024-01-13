@@ -16,8 +16,8 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.html.ast.ASTHtmlElement;
 import net.sourceforge.pmd.lang.html.ast.HtmlParsingHelper;
 import net.sourceforge.pmd.lang.html.rule.AbstractHtmlRule;
+import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
-import net.sourceforge.pmd.rule.Rule;
 
 class HtmlJavaRuleTest {
     // from https://developer.salesforce.com/docs/component-library/documentation/en/lwc/lwc.js_props_getter

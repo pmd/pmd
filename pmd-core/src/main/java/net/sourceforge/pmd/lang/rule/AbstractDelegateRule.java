@@ -14,8 +14,6 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
-import net.sourceforge.pmd.rule.Rule;
-import net.sourceforge.pmd.rule.RulePriority;
 
 /**
  * Base class for Rule implementations which delegate to another Rule instance.

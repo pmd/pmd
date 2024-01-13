@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
-import net.sourceforge.pmd.rule.Rule;
+import net.sourceforge.pmd.lang.rule.Rule;
 
 class RuleViolationComparatorTest {
 

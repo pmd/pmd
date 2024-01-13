@@ -26,7 +26,7 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
-import net.sourceforge.pmd.rule.Rule;
+import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 class YAHTMLRendererTest extends AbstractRendererTest {

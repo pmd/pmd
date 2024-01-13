@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import net.sourceforge.pmd.PmdAnalysis;
-import net.sourceforge.pmd.rule.RuleSet;
+import net.sourceforge.pmd.lang.rule.RuleSet;
 
 class MonoThreadProcessorTest extends AbstractPMDProcessorTest {
 

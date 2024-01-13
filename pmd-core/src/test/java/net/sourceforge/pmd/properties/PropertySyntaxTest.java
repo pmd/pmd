@@ -13,8 +13,8 @@ import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.rule.Rule;
-import net.sourceforge.pmd.rule.RulesetFactoryTestBase;
+import net.sourceforge.pmd.lang.rule.Rule;
+import net.sourceforge.pmd.lang.rule.RulesetFactoryTestBase;
 import net.sourceforge.pmd.util.internal.xml.XmlErrorMessages;
 
 /**

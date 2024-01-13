@@ -73,19 +73,19 @@ require_relative 'jdoc_namespace_tag'
 #     * a (args) -> adds the simple name of the argument types for method references, noop for other references
 #         *  {% jdoc !a!core::Rule#setName(java.lang.String) %} -> [`setName(String)`](...)
 #     * q (qualify) -> prefix with the fqcn of the class, noop for package references
-#         *  {% jdoc !q!core::rule.Rule %} -> [`net.sourceforge.pmd.rule.Rule`](...)
-#         *  {% jdoc !q!core::rule.Rule#setName(java.lang.String) %} -> [`net.sourceforge.pmd.rule.Rule#setName`](...)
+#         *  {% jdoc !q!core::rule.Rule %} -> [`net.sourceforge.pmd.lang.rule.Rule`](...)
+#         *  {% jdoc !q!core::rule.Rule#setName(java.lang.String) %} -> [`net.sourceforge.pmd.lang.rule.Rule#setName`](...)
 #     * c (class) -> prefix the class name for member references, noop for type and package references, or if "qualify" is specified
 #         *  {% jdoc !c!core::Rule#setName(java.lang.String) %} -> [`Rule#setName`](...)
 #     * Empty options ("!!") - > shorthand to a commonly relevant option
 #         * For field or method references, "!!" is the "c" option
 #           * {% jdoc !!core::Rule#setName(java.lang.String) %} -> [`Rule#setName`](...)
 #         * For type references, "!!" is the "q" option
-#           *  {% jdoc !!core::rule.Rule %} -> [`net.sourceforge.pmd.rule.Rule`](...)
+#           *  {% jdoc !!core::rule.Rule %} -> [`net.sourceforge.pmd.lang.rule.Rule`](...)
 #         * For package references, "!!" is a noop, they're always fully qualified
 #     * Several options may be used at once, though this is only useful for method references:
 #         * {% jdoc !ac!core::Rule#setName(java.lang.String) %} -> [`Rule#setName(String)`](...)
-#         * {% jdoc !aq!core::rule.Rule#setName(java.lang.String) %} -> [`net.sourceforge.pmd.rule.Rule#setName(String)`](...)
+#         * {% jdoc !aq!core::rule.Rule#setName(java.lang.String) %} -> [`net.sourceforge.pmd.lang.rule.Rule#setName(String)`](...)
 #
 # * DO NOT:
 #   - Include spaces in any part of the reference

@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.rule.Rule;
+import net.sourceforge.pmd.lang.rule.Rule;
 
 class XPathJspRuleTest extends AbstractJspNodesTst {
 

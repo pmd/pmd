@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd;
 
-public class RuleSetReferenceId extends net.sourceforge.pmd.rule.internal.RuleSetReferenceId {
+public class RuleSetReferenceId extends net.sourceforge.pmd.lang.rule.internal.RuleSetReferenceId {
     public RuleSetReferenceId(String id) {
         super(id);
     }

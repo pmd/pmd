@@ -29,7 +29,7 @@ import org.yaml.snakeyaml.representer.Representer;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.rule.RuleSet;
+import net.sourceforge.pmd.lang.rule.RuleSet;
 
 class SidebarGeneratorTest {
     private MockedFileWriter writer = new MockedFileWriter();

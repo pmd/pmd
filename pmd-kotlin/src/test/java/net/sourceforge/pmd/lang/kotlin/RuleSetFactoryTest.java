@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.kotlin;
 
-import net.sourceforge.pmd.rule.AbstractRuleSetFactoryTest;
+import net.sourceforge.pmd.lang.rule.AbstractRuleSetFactoryTest;
 
 class RuleSetFactoryTest extends AbstractRuleSetFactoryTest {
     // no additional tests yet

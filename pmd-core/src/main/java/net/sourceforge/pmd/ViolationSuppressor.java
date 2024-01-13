@@ -15,10 +15,10 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.lang.rule.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.rule.xpath.internal.SaxonXPathRuleQuery;
-import net.sourceforge.pmd.rule.Rule;
 
 /**
  * An object that suppresses rule violations. Suppressors are used by

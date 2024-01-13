@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.rule.Rule;
+import net.sourceforge.pmd.lang.rule.Rule;
 
 /**
  * @author Clément Fournier

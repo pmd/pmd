@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 import net.sourceforge.pmd.lang.LanguageProcessor.AnalysisTask;
 import net.sourceforge.pmd.lang.document.TextFile;
-import net.sourceforge.pmd.rule.internal.RuleSets;
+import net.sourceforge.pmd.lang.rule.internal.RuleSets;
 import net.sourceforge.pmd.util.log.MessageReporter;
 
 

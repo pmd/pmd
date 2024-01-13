@@ -17,7 +17,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.internal.TargetSelectorInternal;
 import net.sourceforge.pmd.lang.rule.internal.TreeIndex;
-import net.sourceforge.pmd.rule.Rule;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**

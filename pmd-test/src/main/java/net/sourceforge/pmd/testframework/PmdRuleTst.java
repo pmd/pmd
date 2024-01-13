@@ -7,7 +7,7 @@ package net.sourceforge.pmd.testframework;
 import java.util.Collections;
 import java.util.List;
 
-import net.sourceforge.pmd.rule.Rule;
+import net.sourceforge.pmd.lang.rule.Rule;
 
 public class PmdRuleTst extends RuleTst {
 

@@ -13,10 +13,8 @@ import java.util.Map;
 import java.util.Objects;
 
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.rule.internal.RuleSetReference;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.rule.Rule;
-import net.sourceforge.pmd.rule.RulePriority;
-import net.sourceforge.pmd.rule.internal.RuleSetReference;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**

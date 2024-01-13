@@ -11,7 +11,6 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.reporting.Reportable;
-import net.sourceforge.pmd.rule.Rule;
 import net.sourceforge.pmd.util.AssertionUtil;
 
 /**

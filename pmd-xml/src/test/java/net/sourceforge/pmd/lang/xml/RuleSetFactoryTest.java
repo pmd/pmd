@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.xml;
 
-import net.sourceforge.pmd.rule.AbstractRuleSetFactoryTest;
+import net.sourceforge.pmd.lang.rule.AbstractRuleSetFactoryTest;
 
 /**
  * Test xml's and xslt's rulesets

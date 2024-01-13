@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Properties;
 
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.rule.Rule;
+import net.sourceforge.pmd.lang.rule.Rule;
 
 /**
  * @author Clément Fournier

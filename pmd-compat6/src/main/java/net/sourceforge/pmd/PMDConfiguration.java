@@ -33,9 +33,9 @@ import net.sourceforge.pmd.cache.NoopAnalysisCache;
 import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.rule.RuleSetLoader;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
-import net.sourceforge.pmd.rule.RuleSetLoader;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
@@ -596,7 +596,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     }
 
     // new method to be compatible with PMD 7 - RulePriority has changed package
-    public net.sourceforge.pmd.rule.RulePriority getMinimumPriority$$bridge() { // SUPPRESS CHECKSTYLE ignore
+    public net.sourceforge.pmd.lang.rule.RulePriority getMinimumPriority$$bridge() { // SUPPRESS CHECKSTYLE ignore
         return minimumPriority.asPMD7RulePriority();
     }
 }

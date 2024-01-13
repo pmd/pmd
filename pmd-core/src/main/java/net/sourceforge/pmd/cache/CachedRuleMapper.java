@@ -8,8 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.rule.Rule;
-import net.sourceforge.pmd.rule.internal.RuleSets;
+import net.sourceforge.pmd.lang.rule.Rule;
+import net.sourceforge.pmd.lang.rule.internal.RuleSets;
 
 /**
  * A mapper from rule class names to rule instances for cached rules.

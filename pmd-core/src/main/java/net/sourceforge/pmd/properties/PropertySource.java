@@ -7,7 +7,7 @@ package net.sourceforge.pmd.properties;
 import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.rule.Rule;
+import net.sourceforge.pmd.lang.rule.Rule;
 
 
 /**

@@ -17,7 +17,7 @@ import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
-import net.sourceforge.pmd.rule.RuleSet;
+import net.sourceforge.pmd.lang.rule.RuleSet;
 
 class MultiThreadProcessorTest extends AbstractPMDProcessorTest {
 

@@ -21,8 +21,8 @@ import org.junit.jupiter.api.io.TempDir;
 
 import net.sourceforge.pmd.docs.MockedFileWriter.FileEntry;
 import net.sourceforge.pmd.internal.util.IOUtil;
-import net.sourceforge.pmd.rule.RuleSet;
-import net.sourceforge.pmd.rule.RuleSetLoader;
+import net.sourceforge.pmd.lang.rule.RuleSet;
+import net.sourceforge.pmd.lang.rule.RuleSetLoader;
 
 class RuleDocGeneratorTest {
 
