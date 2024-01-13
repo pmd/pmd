@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.rule.RuleSet.RuleSetBuilder;
+import net.sourceforge.pmd.rule.internal.RuleSetReference;
 import net.sourceforge.pmd.util.internal.xml.SchemaConstants;
 
 /**

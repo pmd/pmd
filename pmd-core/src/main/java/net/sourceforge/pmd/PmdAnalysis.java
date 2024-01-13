@@ -52,7 +52,7 @@ import net.sourceforge.pmd.reporting.ReportStatsListener;
 import net.sourceforge.pmd.rule.Rule;
 import net.sourceforge.pmd.rule.RuleSet;
 import net.sourceforge.pmd.rule.RuleSetLoader;
-import net.sourceforge.pmd.rule.RuleSets;
+import net.sourceforge.pmd.rule.internal.RuleSets;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.log.MessageReporter;

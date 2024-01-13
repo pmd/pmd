@@ -49,6 +49,8 @@ import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.rule.RuleSet.RuleSetBuilder;
+import net.sourceforge.pmd.rule.internal.RuleSetReference;
+import net.sourceforge.pmd.rule.internal.RuleSetReferenceId;
 import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.internal.xml.PmdXmlReporter;

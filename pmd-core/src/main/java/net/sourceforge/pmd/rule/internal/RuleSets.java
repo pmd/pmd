@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.rule;
+package net.sourceforge.pmd.rule.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,7 +12,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
@@ -21,17 +20,15 @@ import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.internal.RuleApplicator;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
+import net.sourceforge.pmd.rule.Rule;
+import net.sourceforge.pmd.rule.RuleSet;
 import net.sourceforge.pmd.util.log.MessageReporter;
 
 /**
  * Grouping of Rules per Language in a RuleSet.
  *
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
- *
- * @deprecated Internal API
  */
-@Deprecated
-@InternalApi
 public class RuleSets {
 
     private final List<RuleSet> ruleSets;

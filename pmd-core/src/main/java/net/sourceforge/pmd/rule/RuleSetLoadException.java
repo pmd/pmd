@@ -7,6 +7,7 @@ package net.sourceforge.pmd.rule;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.rule.internal.RuleSetReferenceId;
 
 /**
  * An exception that is thrown when something wrong occurs while

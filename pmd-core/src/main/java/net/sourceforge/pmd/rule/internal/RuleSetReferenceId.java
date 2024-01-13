@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.rule;
+package net.sourceforge.pmd.rule.internal;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,7 +17,7 @@ import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.rule.RuleSetLoader;
 import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.log.MessageReporter;
 
@@ -74,10 +74,8 @@ import net.sourceforge.pmd.util.log.MessageReporter;
  * </tbody>
  * </table>
  *
- * @deprecated This is part of the internals of the {@link RuleSetLoader}.
+ * <p>Note: This is part of the internals of the {@link RuleSetLoader}.
  */
-@Deprecated
-@InternalApi
 public class RuleSetReferenceId {
 
     // todo this class has issues... What is even an "external" ruleset?
@@ -144,7 +142,7 @@ public class RuleSetReferenceId {
      * @throws IllegalArgumentException If the ID is not Rule reference when there is an external
      *                                  RuleSetReferenceId.
      */
-    RuleSetReferenceId(final String id,
+    public RuleSetReferenceId(final String id,
                        final RuleSetReferenceId externalRuleSetReferenceId,
                        final @Nullable MessageReporter err) {
         this.originalRef = id;
@@ -253,7 +251,7 @@ public class RuleSetReferenceId {
         this.externalRuleSetReferenceId = externalRuleSetReferenceId;
     }
 
-    @Nullable RuleSetReferenceId getParentRulesetIfThisIsARule() {
+    public @Nullable RuleSetReferenceId getParentRulesetIfThisIsARule() {
         if (ruleName == null) {
             return null;
         }
@@ -378,7 +376,7 @@ public class RuleSetReferenceId {
         return parse(referenceString, null);
     }
 
-    static List<RuleSetReferenceId> parse(String referenceString,
+    public static List<RuleSetReferenceId> parse(String referenceString,
                                           MessageReporter err) {
         List<RuleSetReferenceId> references = new ArrayList<>();
         if (referenceString != null && referenceString.trim().length() > 0) {

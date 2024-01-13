@@ -53,6 +53,7 @@ import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.rule.RuleSet.RuleSetBuilder;
+import net.sourceforge.pmd.rule.internal.RuleSets;
 
 class RuleSetTest {
 

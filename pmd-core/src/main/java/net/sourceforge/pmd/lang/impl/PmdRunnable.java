@@ -28,7 +28,7 @@ import net.sourceforge.pmd.lang.ast.SemanticException;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
-import net.sourceforge.pmd.rule.RuleSets;
+import net.sourceforge.pmd.rule.internal.RuleSets;
 
 /**
  * A processing task for a single file.

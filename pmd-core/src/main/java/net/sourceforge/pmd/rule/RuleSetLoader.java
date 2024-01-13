@@ -25,6 +25,7 @@ import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.rule.internal.RuleSetReferenceId;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.ResourceLoader;
 import net.sourceforge.pmd.util.log.MessageReporter;

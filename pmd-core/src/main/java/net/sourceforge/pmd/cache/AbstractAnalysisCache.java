@@ -38,7 +38,7 @@ import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
-import net.sourceforge.pmd.rule.RuleSets;
+import net.sourceforge.pmd.rule.internal.RuleSets;
 
 /**
  * Abstract implementation of the analysis cache. Handles all operations, except for persistence.

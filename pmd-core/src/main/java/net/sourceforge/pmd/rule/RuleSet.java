@@ -28,6 +28,7 @@ import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.rule.internal.RuleSetReference;
 
 /**
  * This class represents a collection of rules along with some optional filter
@@ -626,7 +627,8 @@ public class RuleSet implements ChecksumAware {
      * @return <code>true</code> if the file should be checked,
      *     <code>false</code> otherwise
      */
-    boolean applies(TextFile file) {
+    @InternalApi
+    public boolean applies(TextFile file) {
         return applies(file.getFileId());
     }
 

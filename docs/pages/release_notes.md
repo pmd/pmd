@@ -152,20 +152,28 @@ in the Migration Guide.
 #### API Changes
 
 **Moved classes/consolidated packages**
+
 * pmd-core
   * Many types have been moved from the base package `net.sourceforge.pmd` into the new subpackage {% jdoc_package core::rule %}
     * {%jdoc core::rule.Rule %}
-    * {%jdoc core::rule.RuleFactory %} (moved from `net.sourceforge.pmd.rules`; it has now been hidden from public API)
     * {%jdoc core::rule.RulePriority %}
     * {%jdoc core::rule.RuleSet %}
     * {%jdoc core::rule.RuleSetFactory %}
     * {%jdoc core::rule.RuleSetFactoryCompatibility %}
     * {%jdoc core::rule.RuleSetLoader %}
     * {%jdoc core::rule.RuleSetLoadException %}
-    * {%jdoc core::rule.RuleSetReference %} (note: this is _not_ public API)
-    * {%jdoc core::rule.RuleSetReferenceId %} (note: this is _not_ public API)
-    * {%jdoc core::rule.RuleSets %} (note: this is _not_ public API)
     * {%jdoc core::rule.RuleSetWriter %}
+
+**Internalized classes**
+
+These were marked as `@InternalApi` previously.
+
+* pmd-core
+  * `RuleFactory`: moved from `net.sourceforge.pmd.rules`; it has now been hidden from public API.
+  * Many types have been moved from the base package `net.sourceforge.pmd` into the new subpackage `rule.internal`.
+      * `RuleSetReference`
+      * `RuleSetReferenceId`
+      * `RuleSets`
 
 **Removed classes and methods**
 
