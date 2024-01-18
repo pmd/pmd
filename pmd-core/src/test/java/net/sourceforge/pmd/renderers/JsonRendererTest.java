@@ -12,10 +12,10 @@ import java.io.IOException;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.FooRule;
-import net.sourceforge.pmd.Report.ConfigurationError;
-import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.Report.SuppressedViolation;
-import net.sourceforge.pmd.ViolationSuppressor;
+import net.sourceforge.pmd.reporting.Report.ConfigurationError;
+import net.sourceforge.pmd.reporting.Report.ProcessingError;
+import net.sourceforge.pmd.reporting.Report.SuppressedViolation;
+import net.sourceforge.pmd.reporting.ViolationSuppressor;
 
 class JsonRendererTest extends AbstractRendererTest {
 

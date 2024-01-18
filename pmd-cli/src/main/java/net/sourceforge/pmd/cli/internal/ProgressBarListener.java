@@ -6,12 +6,12 @@ package net.sourceforge.pmd.cli.internal;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.reporting.ListenerInitializer;
+import net.sourceforge.pmd.reporting.Report;
+import net.sourceforge.pmd.reporting.RuleViolation;
 
 import me.tongfei.progressbar.PmdProgressBarFriend;
 import me.tongfei.progressbar.ProgressBar;

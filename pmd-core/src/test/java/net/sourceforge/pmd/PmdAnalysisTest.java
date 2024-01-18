@@ -32,7 +32,9 @@ import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.SimpleTestTextFile;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.ReportStats;
+import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.util.log.MessageReporter;
 
 /**

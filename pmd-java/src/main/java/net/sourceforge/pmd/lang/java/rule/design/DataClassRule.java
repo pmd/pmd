@@ -9,11 +9,11 @@ import static net.sourceforge.pmd.lang.java.metrics.JavaMetrics.NUMBER_OF_PUBLIC
 import static net.sourceforge.pmd.lang.java.metrics.JavaMetrics.WEIGHED_METHOD_COUNT;
 import static net.sourceforge.pmd.lang.java.metrics.JavaMetrics.WEIGHT_OF_CLASS;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.metrics.MetricsUtil;
+import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**

@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.reporting;
 
 import static java.util.Collections.synchronizedList;
 
@@ -15,18 +15,18 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import net.sourceforge.pmd.PmdAnalysis;
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.renderers.AbstractAccumulatingRenderer;
-import net.sourceforge.pmd.reporting.FileAnalysisListener;
-import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.util.BaseResultProducingCloseable;
 
 /**
- * A {@link Report} collects all informations during a PMD execution. This
+ * A {@link Report} collects all information during a PMD execution. This
  * includes violations, suppressed violations, metrics, error during processing
  * and configuration errors.
  *
@@ -44,8 +44,6 @@ import net.sourceforge.pmd.util.BaseResultProducingCloseable;
  * </p>
  */
 public final class Report {
-    // todo move to package reporting
-
     private final List<RuleViolation> violations = synchronizedList(new ArrayList<>());
     private final List<SuppressedViolation> suppressedRuleViolations = synchronizedList(new ArrayList<>());
     private final List<ProcessingError> errors = synchronizedList(new ArrayList<>());
@@ -79,7 +77,7 @@ public final class Report {
         }
 
         /**
-         * Gets the wrongly configured rule
+         * Gets the wrongly configured rule.
          *
          * @return the wrongly configured rule
          */
@@ -362,7 +360,7 @@ public final class Report {
         }
 
         @Override
-        protected Report getResultImpl() {
+        public Report getResultImpl() {
             return report;
         }
     }

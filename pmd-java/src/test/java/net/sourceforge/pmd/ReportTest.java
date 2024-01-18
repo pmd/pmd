@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
+import net.sourceforge.pmd.reporting.Report;
 
 class ReportTest {
 

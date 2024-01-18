@@ -15,10 +15,10 @@ import java.io.StringReader;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.InputSource;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.PlainTextLanguage;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 

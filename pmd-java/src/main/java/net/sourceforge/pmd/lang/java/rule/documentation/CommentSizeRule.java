@@ -6,13 +6,13 @@ package net.sourceforge.pmd.lang.java.rule.documentation;
 
 import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaComment;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * A rule to manage those who just can't shut up...

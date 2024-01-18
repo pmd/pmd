@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.reporting;
 
 import static net.sourceforge.pmd.PmdCoreTestUtils.setDummyLanguage;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,11 +16,11 @@ import java.util.Random;
 
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.lang.rule.MockRule;
-import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 
 class RuleViolationComparatorTest {
 
@@ -71,7 +71,7 @@ class RuleViolationComparatorTest {
     }
 
     private RuleViolation createJavaRuleViolation(Rule rule, String fileName, int beginLine, String description,
-            int beginColumn, int endLine, int endColumn) {
+                                                  int beginColumn, int endLine, int endColumn) {
         FileLocation loc = FileLocation.range(FileId.fromPathLikeString(fileName), TextRange2d.range2d(beginLine, beginColumn, endLine, endColumn));
         return new ParametricRuleViolation(rule, loc, description, Collections.emptyMap());
     }

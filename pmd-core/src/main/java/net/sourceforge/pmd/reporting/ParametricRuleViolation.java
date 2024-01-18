@@ -2,16 +2,14 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.rule;
+package net.sourceforge.pmd.reporting;
 
 import java.util.Collections;
 import java.util.Map;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.document.FileLocation;
-import net.sourceforge.pmd.reporting.Reportable;
 import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
@@ -20,8 +18,6 @@ import net.sourceforge.pmd.util.AssertionUtil;
 @Deprecated
 @InternalApi
 public class ParametricRuleViolation implements RuleViolation {
-    // todo move to package reporting
-
     protected final Rule rule;
     protected final String description;
 

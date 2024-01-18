@@ -13,8 +13,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleViolation;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

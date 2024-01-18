@@ -2,11 +2,12 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.reporting;
 
 import java.util.Comparator;
 import java.util.Map;
 
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
@@ -22,8 +23,6 @@ import net.sourceforge.pmd.lang.document.FileLocation;
  * @see Rule
  */
 public interface RuleViolation {
-    // todo move to package reporting
-
     /**
      * A comparator for rule violations. This compares all exposed attributes
      * of a violation, filename first. The remaining parameters are compared

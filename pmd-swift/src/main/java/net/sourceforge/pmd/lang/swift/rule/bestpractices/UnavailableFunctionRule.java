@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.swift.rule.bestpractices;
 
 import java.util.List;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.swift.ast.SwiftParser.SwAttribute;
 import net.sourceforge.pmd.lang.swift.ast.SwiftParser.SwAttributes;
 import net.sourceforge.pmd.lang.swift.ast.SwiftParser.SwCodeBlock;
@@ -16,6 +15,7 @@ import net.sourceforge.pmd.lang.swift.ast.SwiftParser.SwStatement;
 import net.sourceforge.pmd.lang.swift.ast.SwiftVisitor;
 import net.sourceforge.pmd.lang.swift.ast.SwiftVisitorBase;
 import net.sourceforge.pmd.lang.swift.rule.AbstractSwiftRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class UnavailableFunctionRule extends AbstractSwiftRule {
 

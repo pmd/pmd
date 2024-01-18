@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.reporting;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
@@ -15,17 +15,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.Report.SuppressedViolation;
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
-import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.reporting.FileAnalysisListener;
-import net.sourceforge.pmd.reporting.ViolationDecorator;
+import net.sourceforge.pmd.reporting.Report.SuppressedViolation;
 
 /**
  * The API for rules to report violations or errors during analysis.
@@ -38,8 +36,6 @@ import net.sourceforge.pmd.reporting.ViolationDecorator;
  * not unique throughout the analysis, a separate one is used per file and rule.
  */
 public final class RuleContext {
-    // todo move to package reporting
-
     // Rule contexts do not need to be thread-safe, within PmdRunnable
     // they are stack-local
 
