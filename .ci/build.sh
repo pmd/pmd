@@ -133,6 +133,7 @@ function build() {
     pmd_ci_log_group_end
 
     pmd_ci_log_group_start "Executing build with sonar"
+        pmd_ci_openjdk_setdefault 17
         # Note: Sonar also needs GITHUB_TOKEN (!)
         ./mvnw \
             -Dmaven.javadoc.skip=true \
@@ -146,6 +147,7 @@ function build() {
     pmd_ci_log_group_end
 
     pmd_ci_log_group_start "Executing build with coveralls"
+        pmd_ci_openjdk_setdefault 11
         export CI_NAME="github actions"
         export CI_BUILD_URL="${PMD_CI_JOB_URL}"
         export CI_BRANCH="${PMD_CI_BRANCH}"
