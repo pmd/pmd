@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
-import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.lang.rule.xpath.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 
 class CodeClimateRendererTest extends AbstractRendererTest {

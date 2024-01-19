@@ -20,9 +20,9 @@ import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.test.TestUtilsKt;
 import net.sourceforge.pmd.lang.java.BaseParserTest;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
-import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException;
 import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException.Phase;
+import net.sourceforge.pmd.lang.rule.xpath.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 
 /**

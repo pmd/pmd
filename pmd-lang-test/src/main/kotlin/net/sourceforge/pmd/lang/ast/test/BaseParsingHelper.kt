@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.ast.RootNode
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter
 import net.sourceforge.pmd.lang.document.FileId
 import net.sourceforge.pmd.lang.document.TextDocument
-import net.sourceforge.pmd.lang.rule.XPathRule
+import net.sourceforge.pmd.lang.rule.xpath.XPathRule
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener
 import java.io.InputStream

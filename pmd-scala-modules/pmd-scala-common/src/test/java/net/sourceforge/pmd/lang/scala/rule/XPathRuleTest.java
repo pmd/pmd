@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.lang.rule.xpath.XPathRule;
 import net.sourceforge.pmd.lang.scala.ast.BaseScalaTest;
 
 class XPathRuleTest extends BaseScalaTest {

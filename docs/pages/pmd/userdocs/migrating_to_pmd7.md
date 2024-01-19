@@ -94,8 +94,10 @@ won't support XPath 1.0 anymore. The difference between XPath 2.0 and XPath 3.1 
 can be expected to work in PMD 7 without any further changes. So the migration path is to simply migrate to XPath 2.0.
 
 After you have migrated your XPath rules to XPath 2.0, remove the "version" property, since that will be removed
-with PMD 7. PMD 7 by default uses XPath 3.1.
-See below [XPath](#xpath-migrating-from-10-to-20) for details.
+with PMD 7. PMD 7 by default uses XPath 3.1. See below [XPath](#xpath-migrating-from-10-to-20) for details.
+
+Then change the `class` attribute of your rule to `net.sourceforge.pmd.lang.rule.xpath.XPathRule` - because the
+class {%jdoc core::lang.rule.xpath.XPathRule %} has been moved into subpackage {% jdoc_package core::lang.rule.xpath %}.
 
 Additional infos:
 * The custom XPath function `typeOf` has been removed (deprecated since 6.4.0).

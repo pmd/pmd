@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.rule;
+package net.sourceforge.pmd.lang.rule.xpath;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -21,8 +21,8 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException;
-import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
+import net.sourceforge.pmd.lang.rule.AbstractRule;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.lang.rule.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.rule.xpath.internal.SaxonXPathRuleQuery;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -35,8 +35,6 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 public final class XPathRule extends AbstractRule {
 
     private static final Logger LOG = LoggerFactory.getLogger(XPathRule.class);
-
-    // TODO move to XPath subpackage
 
     /**
      * @deprecated Use {@link #XPathRule(XPathVersion, String)}

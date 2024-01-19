@@ -23,7 +23,7 @@ Just for test
     <!-- variant 2 of a renamed rule. This explicitly mentions the new ruleset which happens to be this (the same) ruleset. -->
     <rule deprecated="true" name="OldNameOfDummyBasicMockRule2" ref="rulesets/dummy/basic.xml/DummyBasicMockRule"/>
 
-    <rule name="SampleXPathRule" language="dummy" since="1.1" message="Test Rule 2" class="net.sourceforge.pmd.lang.rule.XPathRule"
+    <rule name="SampleXPathRule" language="dummy" since="1.1" message="Test Rule 2" class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
         externalInfoUrl="${pmd.website.baseurl}/rules/dummy/basic.xml#SampleXPathRule">
         <description>Test</description>
         <priority>3</priority>
@@ -38,7 +38,7 @@ Just for test
         </properties>
     </rule>
 
-    <rule name="DeprecatedRule" deprecated="true" language="dummy" since="1.0" message="Test Rule 3" class="net.sourceforge.pmd.lang.rule.XPathRule"
+    <rule name="DeprecatedRule" deprecated="true" language="dummy" since="1.0" message="Test Rule 3" class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
         externalInfoUrl="${pmd.website.baseurl}/rules/dummy/basic.xml#deprecatedrule">
         <description>Test Deprecated rule</description>
         <priority>3</priority>

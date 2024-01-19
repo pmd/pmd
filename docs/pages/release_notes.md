@@ -152,7 +152,12 @@ in the Migration Guide.
 
 #### API Changes
 
-**Removed classes and methods**
+**Moved classes/consolidated packages**
+
+* pmd-core
+  * {%jdoc core::lang.rule.xpath.XPathRule %} has been moved into subpackage {% jdoc_package core::lang.rule.xpath %}.
+
+* **Removed classes and methods**
 
 The following previously deprecated classes have been removed:
 
