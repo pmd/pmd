@@ -152,6 +152,11 @@ in the Migration Guide.
 
 #### API Changes
 
+**XPath Rules**
+* The property `version` was already deprecated and has finally been removed. Please don't define the version
+  property anymore in your custom XPath rules. By default, the latest XPath version will be used, which
+  is XPath 3.1.
+
 **Moved classes/consolidated packages**
 
 * pmd-core

@@ -26,7 +26,6 @@ Just for test
         <priority>3</priority>
         <example> </example>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value><![CDATA[
 //DummyNode

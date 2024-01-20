@@ -20,7 +20,6 @@ Rules which enforce generally accepted best practices.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="3.1"/>
             <property name="xpath">
                 <value><![CDATA[
                     //FunctionDeclaration/SimpleIdentifier/T-Identifier[string-length(@Text) < 3]

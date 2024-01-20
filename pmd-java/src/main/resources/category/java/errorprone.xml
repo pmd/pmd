@@ -1035,7 +1035,6 @@ in the `typesThatCompareByReference` property.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="typesThatCompareByReference" type="List[String]" description="List of canonical type names for which reference comparison is allowed.">
                 <value>java.lang.Enum,java.lang.Class</value>
             </property>
@@ -1091,7 +1090,6 @@ class Foo {
         ]]></description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
                     <![CDATA[
@@ -2423,7 +2421,6 @@ log4j2 (since 6.19.0).
         </description>
         <priority>2</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value><![CDATA[
 //ClassOrInterfaceDeclaration[
@@ -2540,7 +2537,6 @@ confusing.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0" />
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -2715,7 +2711,6 @@ See Effective Java, 3rd Edition, Item 54: Return empty collections or arrays ins
         </description>
         <priority>1</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
