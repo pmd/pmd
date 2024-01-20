@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.reporting;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.document.FileId;
 
 public class Report extends net.sourceforge.pmd.Report {
@@ -23,8 +22,16 @@ public class Report extends net.sourceforge.pmd.Report {
     }
 
     public static class SuppressedViolation extends net.sourceforge.pmd.Report.SuppressedViolation {
+        private final RuleViolation rv;
+
         public SuppressedViolation(RuleViolation rv, ViolationSuppressor suppressor, String userMessage) {
             super(rv, suppressor, userMessage);
+            this.rv = rv;
+        }
+
+        @Override
+        public net.sourceforge.pmd.reporting.RuleViolation getRuleViolation() {
+            return rv;
         }
     }
 
