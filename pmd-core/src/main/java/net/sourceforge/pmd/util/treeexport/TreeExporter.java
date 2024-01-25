@@ -12,7 +12,6 @@ import java.util.Collections;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
@@ -30,7 +29,6 @@ import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 
-@Experimental
 public class TreeExporter {
 
     private final TreeExportConfiguration configuration;
@@ -63,8 +61,6 @@ public class TreeExporter {
     }
     
     private void run(LanguageProcessorRegistry langRegistry, final TreeRenderer renderer) throws IOException {
-        printWarning();
-
         LanguageVersion langVersion = configuration.getLanguage().getDefaultVersion();
         @SuppressWarnings("PMD.CloseResource")
         LanguageProcessor processor = langRegistry.getProcessor(configuration.getLanguage());
@@ -93,13 +89,6 @@ public class TreeExporter {
 
     private Reader readFromSystemIn() {
         return new BufferedReader(new InputStreamReader(io.stdin));
-    }
-
-    private void printWarning() {
-        io.stderr.println("-------------------------------------------------------------------------------");
-        io.stderr.println("This command line utility is experimental. It might change at any time without");
-        io.stderr.println("prior notice.");
-        io.stderr.println("-------------------------------------------------------------------------------");
     }
 
     private <T extends PropertySource> T parseProperties(T bundle, Properties properties) {

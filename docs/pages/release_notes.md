@@ -105,6 +105,7 @@ in the Migration Guide.
   * [#4723](https://github.com/pmd/pmd/issues/4723): \[cli] Launch fails for "bash pmd"
 * core
   * [#1027](https://github.com/pmd/pmd/issues/1027): \[core] Apply the new PropertyDescriptor&lt;Pattern&gt; type where applicable
+  * [#3905](https://github.com/pmd/pmd/issues/3905): \[core] Stabilize tree export API
   * [#4674](https://github.com/pmd/pmd/issues/4674): \[core] WARNING: Illegal reflective access by org.codehaus.groovy.reflection.CachedClass
   * [#4694](https://github.com/pmd/pmd/pull/4694):   \[core] Fix line/col numbers in TokenMgrError
   * [#4717](https://github.com/pmd/pmd/issues/4717): \[core] XSLTRenderer doesn't close report file
@@ -151,6 +152,12 @@ in the Migration Guide.
   * [#4592](https://github.com/pmd/pmd/pull/4592):   \[xml] Add MissingEncoding rule
 
 #### API Changes
+
+**New API**
+
+The API around {%jdoc core::util.treeexport.TreeRenderer %} has been declared as stable. It was previously
+experimental. It can be used via the CLI subcommand `ast-dump` or programmatically, as described
+on [Creating XML dump of the AST]({{ baseurl }}pmd_userdocs_extending_ast_dump.html).
 
 **Removed classes and methods**
 
@@ -565,6 +572,7 @@ See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.
     * [#3815](https://github.com/pmd/pmd/issues/3815): \[core] Update Saxon HE to 10.7
     * [#3893](https://github.com/pmd/pmd/pull/3893):   \[core] Text documents
     * [#3902](https://github.com/pmd/pmd/issues/3902): \[core] Violation decorators
+    * [#3905](https://github.com/pmd/pmd/issues/3905): \[core] Stabilize tree export API
     * [#3918](https://github.com/pmd/pmd/issues/3918): \[core] Make LanguageRegistry non static
     * [#3919](https://github.com/pmd/pmd/issues/3919): \[core] Merge CPD and PMD language
     * [#3922](https://github.com/pmd/pmd/pull/3922):   \[core] Better error reporting for the ruleset parser

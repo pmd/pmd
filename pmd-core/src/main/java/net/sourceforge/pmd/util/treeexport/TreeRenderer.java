@@ -6,7 +6,6 @@ package net.sourceforge.pmd.util.treeexport;
 
 import java.io.IOException;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
@@ -14,7 +13,6 @@ import net.sourceforge.pmd.lang.ast.Node;
  *
  * @see XmlTreeRenderer
  */
-@Experimental
 public interface TreeRenderer {
 
 

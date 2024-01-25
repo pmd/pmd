@@ -6,7 +6,6 @@ package net.sourceforge.pmd.util.treeexport;
 
 import java.io.IOException;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.AbstractPropertySource;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -43,10 +42,9 @@ import net.sourceforge.pmd.properties.PropertySource;
  * </pre>
  *
  *
- * By default just prints the structure, like shown above. You can
+ * By default, just prints the structure, like shown above. You can
  * configure it to render nodes differently by overriding {@link #appendNodeInfoLn(Appendable, Node)}.
  */
-@Experimental
 public class TextTreeRenderer implements TreeRenderer {
 
     static final TreeRendererDescriptor DESCRIPTOR = new TreeRendererDescriptor() {

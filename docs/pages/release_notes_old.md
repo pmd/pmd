@@ -6792,7 +6792,7 @@ is of course PMD specific and language dependent. That XML file can be used to e
 if you don't want to use the [Designer](https://github.com/pmd/pmd-designer).
 
 This feature is experimental and might change or even be removed in the future, if it is not
-useful. A short description how to use it is available under [Creating XML dump of the AST](pmd_devdocs_experimental_ast_dump.html).
+useful. A short description how to use it is available under [Creating XML dump of the AST](pmd_userdocs_extending_ast_dump.html).
 
 Any feedback about it, especially about your use cases, is highly appreciated.
 

@@ -72,7 +72,7 @@ example, all Java AST nodes extend {% jdoc java::lang.java.ast.JavaNode %}.
 
 The structure of the AST can be discovered through
  * the [Rule Designer](pmd_userdocs_extending_designer_reference.html#ast-inspection)
- * the [AST dump feature](pmd_devdocs_experimental_ast_dump.html)
+ * the [AST dump feature](pmd_userdocs_extending_ast_dump.html)
 
 
 

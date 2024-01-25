@@ -13,7 +13,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 
@@ -23,7 +22,6 @@ import net.sourceforge.pmd.lang.rule.xpath.Attribute;
  * allows the same XPath queries to match, in theory (it would depend
  * on the XPath engine used I believe).
  */
-@Experimental
 public final class XmlTreeRenderer implements TreeRenderer {
 
     // See https://www.w3.org/TR/2008/REC-xml-20081126/#NT-Name
@@ -170,7 +168,6 @@ public final class XmlTreeRenderer implements TreeRenderer {
     /**
      * A strategy to parameterize an {@link XmlTreeRenderer}.
      */
-    @Experimental
     public static class XmlRenderingConfig {
 
         private String indentString = "    ";
