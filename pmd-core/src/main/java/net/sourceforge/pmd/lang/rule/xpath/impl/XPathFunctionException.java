@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.lang.rule.xpath.impl;
 
+/**
+ * Indicates a problem during the execution of a custom
+ * XPath function.
+ */
 public class XPathFunctionException extends Exception {
     public XPathFunctionException(String message) {
         super(message);

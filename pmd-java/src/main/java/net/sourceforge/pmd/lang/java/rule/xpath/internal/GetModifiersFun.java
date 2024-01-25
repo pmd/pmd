@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 
+import java.util.Collections;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTModifierList;
@@ -43,9 +44,9 @@ public final class GetModifiersFun extends BaseJavaXPathFunction {
                 ASTModifierList modList = ((AccessNode) contextNode).getModifiers();
                 Set<JModifier> mods = explicit ? modList.getExplicitModifiers()
                                                : modList.getEffectiveModifiers();
-                return CollectionUtil.map(mods, JModifier::getToken).toArray(new String[0]);
+                return CollectionUtil.map(mods, JModifier::getToken);
             }
-            return null;
+            return Collections.<String>emptyList();
         };
     }
 }

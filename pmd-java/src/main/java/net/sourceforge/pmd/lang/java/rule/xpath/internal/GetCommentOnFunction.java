@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 
 import java.util.List;
+import java.util.Optional;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaComment;
@@ -47,10 +48,10 @@ public class GetCommentOnFunction extends BaseJavaXPathFunction {
             List<JavaComment> commentList = contextNode.getFirstParentOfType(ASTCompilationUnit.class).getComments();
             for (JavaComment comment : commentList) {
                 if (comment.getBeginLine() == codeBeginLine || comment.getEndLine() == codeEndLine) {
-                    return comment.getText().toString();
+                    return Optional.of(comment.getText().toString());
                 }
             }
-            return null;
+            return Optional.<String>empty();
         };
     }
 }

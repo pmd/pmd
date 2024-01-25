@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.xml.rule;
 
-import static net.sourceforge.pmd.lang.rule.xpath.internal.SaxonXPathRuleQuery.convertAbstractXPathFunctionDefinition;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -21,6 +19,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionDefinition;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 import net.sourceforge.pmd.lang.rule.xpath.internal.DomainConversion;
+import net.sourceforge.pmd.lang.rule.xpath.internal.SaxonExtensionFunctionDefinitionAdapter;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 import net.sourceforge.pmd.lang.xml.ast.internal.XmlParserImpl.RootXmlNode;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -82,7 +81,7 @@ final class SaxonDomXPathQuery {
 
 
         for (XPathFunctionDefinition xpathFun : xpathHandler.getRegisteredExtensionFunctions()) {
-            ExtensionFunctionDefinition fun = convertAbstractXPathFunctionDefinition(xpathFun);
+            ExtensionFunctionDefinition fun = new SaxonExtensionFunctionDefinitionAdapter(xpathFun);
             StructuredQName qname = fun.getFunctionQName();
             xpathStaticContext.declareNamespace(qname.getPrefix(), qname.getURI());
             this.configuration.registerExtensionFunction(fun);
