@@ -6,19 +6,10 @@ package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTModifierList;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
-import net.sourceforge.pmd.lang.rule.xpath.internal.AstElementNode;
 import net.sourceforge.pmd.util.CollectionUtil;
-
-import net.sf.saxon.expr.XPathContext;
-import net.sf.saxon.lib.ExtensionFunctionCall;
-import net.sf.saxon.om.Sequence;
-import net.sf.saxon.value.EmptySequence;
-import net.sf.saxon.value.SequenceExtent;
-import net.sf.saxon.value.StringValue;
 
 /**
  * The two functions {@code modifiers} and {@code explicitModifiers}.
@@ -36,7 +27,7 @@ public final class GetModifiersFun extends BaseJavaXPathFunction {
     }
 
     @Override
-    public Type getResultType(Type[] suppliedArgumentTypes) {
+    public Type getResultType() {
         return Type.STRING_SEQUENCE;
     }
 
@@ -46,21 +37,15 @@ public final class GetModifiersFun extends BaseJavaXPathFunction {
     }
 
     @Override
-    public ExtensionFunctionCall makeCallExpression() {
-        return new ExtensionFunctionCall() {
-            @Override
-            public Sequence call(XPathContext context, Sequence[] arguments) {
-                Node contextNode = ((AstElementNode) context.getContextItem()).getUnderlyingNode();
-
-                if (contextNode instanceof AccessNode) {
-                    ASTModifierList modList = ((AccessNode) contextNode).getModifiers();
-                    Set<JModifier> mods = explicit ? modList.getExplicitModifiers()
-                                                   : modList.getEffectiveModifiers();
-                    return new SequenceExtent(CollectionUtil.map(mods, mod -> new StringValue(mod.getToken())));
-                } else {
-                    return EmptySequence.getInstance();
-                }
+    public FunctionCall makeCallExpression() {
+        return (contextNode, arguments) -> {
+            if (contextNode instanceof AccessNode) {
+                ASTModifierList modList = ((AccessNode) contextNode).getModifiers();
+                Set<JModifier> mods = explicit ? modList.getExplicitModifiers()
+                                               : modList.getEffectiveModifiers();
+                return CollectionUtil.map(mods, JModifier::getToken).toArray(new String[0]);
             }
+            return null;
         };
     }
 }

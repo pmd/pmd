@@ -5,11 +5,13 @@
 package net.sourceforge.pmd.lang.rule.xpath.internal;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.lang3.exception.ContextedRuntimeException;
@@ -22,6 +24,7 @@ import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException;
 import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException.Phase;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionDefinition;
+import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionException;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.DataMap;
@@ -30,15 +33,19 @@ import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 import net.sf.saxon.Configuration;
 import net.sf.saxon.expr.Expression;
 import net.sf.saxon.expr.LocalVariableReference;
+import net.sf.saxon.expr.StaticContext;
+import net.sf.saxon.expr.StringLiteral;
+import net.sf.saxon.expr.XPathContext;
 import net.sf.saxon.lib.ExtensionFunctionCall;
 import net.sf.saxon.lib.ExtensionFunctionDefinition;
 import net.sf.saxon.lib.NamespaceConstant;
 import net.sf.saxon.om.AtomicSequence;
+import net.sf.saxon.om.EmptyAtomicSequence;
 import net.sf.saxon.om.Item;
 import net.sf.saxon.om.NamePool;
+import net.sf.saxon.om.Sequence;
 import net.sf.saxon.om.SequenceIterator;
 import net.sf.saxon.om.StructuredQName;
-import net.sf.saxon.pattern.NameTest;
 import net.sf.saxon.pattern.NodeKindTest;
 import net.sf.saxon.sxpath.IndependentContext;
 import net.sf.saxon.sxpath.XPathDynamicContext;
@@ -46,7 +53,13 @@ import net.sf.saxon.sxpath.XPathEvaluator;
 import net.sf.saxon.sxpath.XPathExpression;
 import net.sf.saxon.sxpath.XPathVariable;
 import net.sf.saxon.trans.XPathException;
+import net.sf.saxon.value.BigDecimalValue;
+import net.sf.saxon.value.BooleanValue;
+import net.sf.saxon.value.EmptySequence;
+import net.sf.saxon.value.Int64Value;
+import net.sf.saxon.value.SequenceExtent;
 import net.sf.saxon.value.SequenceType;
+import net.sf.saxon.value.StringValue;
 
 
 /**
@@ -309,50 +322,10 @@ public class SaxonXPathRuleQuery {
                 }
             }
 
-            private XPathFunctionDefinition.Type convertToType(SequenceType sequenceType) {
-                if (SequenceType.SINGLE_STRING.equals(sequenceType)) {
-                    return XPathFunctionDefinition.Type.SINGLE_STRING;
-                }
-                if (SequenceType.SINGLE_BOOLEAN.equals(sequenceType)) {
-                    return XPathFunctionDefinition.Type.SINGLE_BOOLEAN;
-                }
-                if (SequenceType.SINGLE_INTEGER.equals(sequenceType)) {
-                    return XPathFunctionDefinition.Type.SINGLE_INTEGER;
-                }
-                if (SequenceType.STRING_SEQUENCE.equals(sequenceType)) {
-                    return XPathFunctionDefinition.Type.STRING_SEQUENCE;
-                }
-                if (SequenceType.OPTIONAL_STRING.equals(sequenceType)) {
-                    return XPathFunctionDefinition.Type.OPTIONAL_STRING;
-                }
-                if (SequenceType.OPTIONAL_DECIMAL.equals(sequenceType)) {
-                    return XPathFunctionDefinition.Type.OPTIONAL_DECIMAL;
-                }
-                if (sequenceType.getCardinality() == SINGLE_ELEMENT_SEQUENCE_TYPE.getCardinality()
-                    && sequenceType.getPrimaryType() instanceof NameTest
-                    && ((NameTest) sequenceType.getPrimaryType()).getNodeKind()
-                        == ((NodeKindTest) SINGLE_ELEMENT_SEQUENCE_TYPE.getPrimaryType()).getNodeKind()) {
-                    return XPathFunctionDefinition.Type.SINGLE_ELEMENT;
-                }
-                if (SINGLE_ELEMENT_SEQUENCE_TYPE.equals(sequenceType)) {
-                    return XPathFunctionDefinition.Type.SINGLE_ELEMENT;
-                }
-
-                throw new UnsupportedOperationException("Type " + sequenceType + " is not supported");
-            }
-
             private SequenceType[] convertToSequenceTypes(XPathFunctionDefinition.Type[] types) {
                 SequenceType[] result = new SequenceType[types.length];
                 for (int i = 0; i < types.length; i++) {
                     result[i] = convertToSequenceType(types[i]);
-                }
-                return result;
-            }
-
-            private XPathFunctionDefinition.Type[] convertToTypes(SequenceType[] sequenceTypes) {
-                XPathFunctionDefinition.Type[] result = new XPathFunctionDefinition.Type[sequenceTypes.length];
-                for (int i = 0; i < sequenceTypes.length; i++) {
-                    result[i] = convertToType(sequenceTypes[i]);
                 }
                 return result;
             }
@@ -370,7 +343,7 @@ public class SaxonXPathRuleQuery {
 
             @Override
             public SequenceType getResultType(SequenceType[] suppliedArgumentTypes) {
-                return convertToSequenceType(definition.getResultType(convertToTypes(suppliedArgumentTypes)));
+                return convertToSequenceType(definition.getResultType());
             }
 
             @Override
@@ -380,7 +353,81 @@ public class SaxonXPathRuleQuery {
 
             @Override
             public ExtensionFunctionCall makeCallExpression() {
-                return definition.makeCallExpression();
+                XPathFunctionDefinition.FunctionCall call = definition.makeCallExpression();
+                return new ExtensionFunctionCall() {
+                    @Override
+                    public Expression rewrite(StaticContext context, Expression[] arguments) throws XPathException {
+                        Object[] convertedArguments = new Object[definition.getArgumentTypes().length];
+                        for (int i = 0; i < convertedArguments.length; i++) {
+                            if (arguments[i] instanceof StringLiteral) {
+                                convertedArguments[i] = ((StringLiteral) arguments[i]).getStringValue();
+                            }
+                        }
+                        try {
+                            call.staticInit(convertedArguments);
+                        } catch (XPathFunctionException e) {
+                            XPathException xPathException = new XPathException(e);
+                            xPathException.setIsStaticError(true);
+                            throw xPathException;
+                        }
+                        return null;
+                    }
+
+                    @Override
+                    public Sequence call(XPathContext context, Sequence[] arguments) throws XPathException {
+                        Node contextNode = null;
+                        if (definition.dependsOnContext()) {
+                            contextNode = XPathElementToNodeHelper.itemToNode(context.getContextItem());
+                        }
+                        Object[] convertedArguments = new Object[definition.getArgumentTypes().length];
+                        for (int i = 0; i < convertedArguments.length; i++) {
+                            switch (definition.getArgumentTypes()[i]) {
+                                case SINGLE_STRING:
+                                    convertedArguments[i] = arguments[i].head().getStringValue();
+                                    break;
+                                case SINGLE_ELEMENT:
+                                    convertedArguments[i] = arguments[i].head();
+                                    break;
+                                default:
+                                throw new UnsupportedOperationException("Don't know how to convert argument type " + definition.getArgumentTypes()[i]);
+                            }
+                        }
+
+
+                        Object result = null;
+                        try {
+                            result = call.call(contextNode, convertedArguments);
+                        } catch (XPathFunctionException e) {
+                            throw new XPathException(e);
+                        }
+                        Sequence convertedResult = null;
+                        switch (definition.getResultType()) {
+                            case SINGLE_BOOLEAN:
+                                convertedResult = BooleanValue.get((Boolean) result);
+                                break;
+                            case SINGLE_INTEGER:
+                                convertedResult = Int64Value.makeIntegerValue((Integer) result);
+                                break;
+                            case SINGLE_STRING:
+                                convertedResult = new StringValue((String) result);
+                                break;
+                            case OPTIONAL_STRING:
+                                convertedResult = result != null ? new StringValue((String) result) : EmptyAtomicSequence.INSTANCE;
+                                break;
+                            case STRING_SEQUENCE:
+                                convertedResult = result != null ? new SequenceExtent(Arrays.stream((String[]) result).map(StringValue::new).collect(Collectors.toList()))
+                                        : EmptySequence.getInstance();
+                                break;
+                            case OPTIONAL_DECIMAL:
+                                convertedResult = result != null && Double.isFinite((Double) result) ? new BigDecimalValue((Double) result)
+                                        : EmptySequence.getInstance();
+                                break;
+                            default:
+                                throw new UnsupportedOperationException("Don't know how to convert result type " + definition.getResultType());
+                        }
+                        return convertedResult;
+                    }
+                };
             }
         };
     }

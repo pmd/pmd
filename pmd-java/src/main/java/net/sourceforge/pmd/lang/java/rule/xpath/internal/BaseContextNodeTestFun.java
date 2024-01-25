@@ -6,18 +6,10 @@ package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 
 import java.util.function.BiPredicate;
 
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
-import net.sourceforge.pmd.lang.rule.xpath.internal.AstElementNode;
-
-import net.sf.saxon.expr.XPathContext;
-import net.sf.saxon.lib.ExtensionFunctionCall;
-import net.sf.saxon.om.Sequence;
-import net.sf.saxon.trans.XPathException;
-import net.sf.saxon.value.BooleanValue;
 
 /**
  * XPath function {@code pmd-java:typeIs(typeName as xs:string) as xs:boolean}
@@ -49,7 +41,7 @@ public class BaseContextNodeTestFun<T extends JavaNode> extends BaseJavaXPathFun
     }
 
     @Override
-    public Type getResultType(Type[] suppliedArgumentTypes) {
+    public Type getResultType() {
         return Type.SINGLE_BOOLEAN;
     }
 
@@ -59,16 +51,10 @@ public class BaseContextNodeTestFun<T extends JavaNode> extends BaseJavaXPathFun
     }
 
     @Override
-    public ExtensionFunctionCall makeCallExpression() {
-        return new ExtensionFunctionCall() {
-            @Override
-            public Sequence call(XPathContext context, Sequence[] arguments) throws XPathException {
-                Node contextNode = ((AstElementNode) context.getContextItem()).getUnderlyingNode();
-                String fullTypeName = arguments[0].head().getStringValue();
-
-
-                return BooleanValue.get(klass.isInstance(contextNode) && checker.test(fullTypeName, (T) contextNode));
-            }
+    public FunctionCall makeCallExpression() {
+        return (contextNode, arguments) -> {
+            String fullTypeName = arguments[0].toString();
+            return klass.isInstance(contextNode) && checker.test(fullTypeName, (T) contextNode);
         };
     }
 }

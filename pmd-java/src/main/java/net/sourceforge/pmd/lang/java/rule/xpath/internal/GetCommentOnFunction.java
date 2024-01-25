@@ -6,16 +6,8 @@ package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 
 import java.util.List;
 
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaComment;
-import net.sourceforge.pmd.lang.rule.xpath.internal.AstElementNode;
-
-import net.sf.saxon.expr.XPathContext;
-import net.sf.saxon.lib.ExtensionFunctionCall;
-import net.sf.saxon.om.EmptyAtomicSequence;
-import net.sf.saxon.om.Sequence;
-import net.sf.saxon.value.StringValue;
 
 
 /**
@@ -35,7 +27,7 @@ public class GetCommentOnFunction extends BaseJavaXPathFunction {
     }
 
     @Override
-    public Type getResultType(Type[] suppliedArgumentTypes) {
+    public Type getResultType() {
         return Type.OPTIONAL_STRING;
     }
 
@@ -47,24 +39,18 @@ public class GetCommentOnFunction extends BaseJavaXPathFunction {
 
 
     @Override
-    public ExtensionFunctionCall makeCallExpression() {
-        return new ExtensionFunctionCall() {
-            @Override
-            public Sequence call(XPathContext context, Sequence[] arguments) {
-                Node contextNode = ((AstElementNode) context.getContextItem()).getUnderlyingNode();
+    public FunctionCall makeCallExpression() {
+        return (contextNode, arguments) -> {
+            int codeBeginLine = contextNode.getBeginLine();
+            int codeEndLine = contextNode.getEndLine();
 
-                int codeBeginLine = contextNode.getBeginLine();
-                int codeEndLine = contextNode.getEndLine();
-
-                List<JavaComment> commentList = contextNode.getFirstParentOfType(ASTCompilationUnit.class).getComments();
-                for (JavaComment comment : commentList) {
-                    if (comment.getBeginLine() == codeBeginLine || comment.getEndLine() == codeEndLine) {
-                        return new StringValue(comment.getText());
-                    }
+            List<JavaComment> commentList = contextNode.getFirstParentOfType(ASTCompilationUnit.class).getComments();
+            for (JavaComment comment : commentList) {
+                if (comment.getBeginLine() == codeBeginLine || comment.getEndLine() == codeEndLine) {
+                    return comment.getText().toString();
                 }
-                return EmptyAtomicSequence.INSTANCE;
             }
-
+            return null;
         };
     }
 }

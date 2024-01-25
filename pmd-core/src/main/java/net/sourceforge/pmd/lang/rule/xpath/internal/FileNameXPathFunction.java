@@ -6,15 +6,9 @@ package net.sourceforge.pmd.lang.rule.xpath.internal;
 
 import java.util.Objects;
 
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionDefinition;
-
-import net.sf.saxon.expr.XPathContext;
-import net.sf.saxon.lib.ExtensionFunctionCall;
-import net.sf.saxon.om.Sequence;
-import net.sf.saxon.trans.XPathException;
-import net.sf.saxon.value.StringValue;
+import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionException;
 
 /**
  * A function that returns the current file name.
@@ -30,31 +24,31 @@ public final class FileNameXPathFunction extends XPathFunctionDefinition {
     }
 
     @Override
-    public Type getResultType(Type[] suppliedArgumentTypes) {
-        return Type.STRING_SEQUENCE;
+    public Type getResultType() {
+        return Type.SINGLE_STRING;
     }
 
     @Override
-    public ExtensionFunctionCall makeCallExpression() {
-        return new ExtensionFunctionCall() {
+    public boolean dependsOnContext() {
+        return true;
+    }
 
-            @Override
-            public Sequence call(XPathContext context, Sequence[] arguments) throws XPathException {
-                Node node = XPathElementToNodeHelper.itemToNode(context.getContextItem());
-                if (node == null) {
-                    throw new XPathException(
-                        "Cannot call function '" + getQName().getLocalPart()
-                            + "' with context item " + context.getContextItem()
-                    );
-                }
-                RootNode root = node.getRoot();
-                Objects.requireNonNull(root, "No root node in tree?");
-
-                String fileName = root.getTextDocument().getFileId().getFileName();
-                Objects.requireNonNull(fileName, "File name was not set");
-
-                return new StringValue(fileName);
+    @Override
+    public FunctionCall makeCallExpression() {
+        return (node, arguments) -> {
+            if (node == null) {
+                throw new XPathFunctionException(
+                    "Cannot call function '" + getQName().getLocalPart()
+                        + "' without context item"
+                );
             }
+            RootNode root = node.getRoot();
+            Objects.requireNonNull(root, "No root node in tree?");
+
+            String fileName = root.getTextDocument().getFileId().getFileName();
+            Objects.requireNonNull(fileName, "File name was not set");
+
+            return fileName;
         };
     }
 }

@@ -7,9 +7,7 @@ package net.sourceforge.pmd.lang.rule.xpath.impl;
 import javax.xml.namespace.QName;
 
 import net.sourceforge.pmd.lang.Language;
-
-import net.sf.saxon.lib.ExtensionFunctionCall;
-
+import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * Base impl for an XPath function definition.
@@ -41,7 +39,7 @@ public abstract class XPathFunctionDefinition {
         return new Type[0];
     }
 
-    public abstract Type getResultType(Type[] suppliedArgumentTypes);
+    public abstract Type getResultType();
 
     /**
      * If the function depends on the context item or the default XPath namespace, then
@@ -51,13 +49,23 @@ public abstract class XPathFunctionDefinition {
         return false;
     }
 
-    public abstract ExtensionFunctionCall makeCallExpression();
+    public abstract FunctionCall makeCallExpression();
 
     public enum Type {
         SINGLE_STRING,
         SINGLE_BOOLEAN,
         SINGLE_INTEGER,
         SINGLE_ELEMENT,
-        STRING_SEQUENCE, OPTIONAL_STRING, OPTIONAL_DECIMAL,
+        STRING_SEQUENCE,
+        OPTIONAL_STRING,
+        OPTIONAL_DECIMAL,
+    }
+
+    public interface FunctionCall {
+        default void staticInit(Object[] arguments) throws XPathFunctionException {
+            // default implementation does nothing
+        }
+
+        Object call(Node contextNode, Object[] arguments) throws XPathFunctionException;
     }
 }

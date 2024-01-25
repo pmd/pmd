@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
@@ -37,11 +38,6 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
 import net.sf.saxon.expr.Expression;
-import net.sf.saxon.expr.XPathContext;
-import net.sf.saxon.lib.ExtensionFunctionCall;
-import net.sf.saxon.om.Sequence;
-import net.sf.saxon.trans.XPathException;
-import net.sf.saxon.value.BooleanValue;
 
 class SaxonXPathRuleQueryTest {
 
@@ -429,19 +425,13 @@ class SaxonXPathRuleQueryTest {
             }
 
             @Override
-            public Type getResultType(Type[] suppliedArgumentTypes) {
+            public Type getResultType() {
                 return Type.SINGLE_BOOLEAN;
             }
 
             @Override
-            public ExtensionFunctionCall makeCallExpression() {
-                return new ExtensionFunctionCall() {
-                    @Override
-                    public Sequence call(XPathContext context, Sequence[] arguments) throws XPathException {
-                        Node contextNode = XPathElementToNodeHelper.itemToNode(context.getContextItem());
-                        return BooleanValue.get(arguments[0].head().getStringValue().equals(contextNode.getImage()));
-                    }
-                };
+            public FunctionCall makeCallExpression() {
+                return (contextNode, arguments) -> StringUtils.equals(arguments[0].toString(), contextNode.getImage());
             }
         };
     }
