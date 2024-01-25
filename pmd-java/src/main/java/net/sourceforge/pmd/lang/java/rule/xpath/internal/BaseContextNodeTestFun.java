@@ -18,7 +18,6 @@ import net.sf.saxon.lib.ExtensionFunctionCall;
 import net.sf.saxon.om.Sequence;
 import net.sf.saxon.trans.XPathException;
 import net.sf.saxon.value.BooleanValue;
-import net.sf.saxon.value.SequenceType;
 
 /**
  * XPath function {@code pmd-java:typeIs(typeName as xs:string) as xs:boolean}
@@ -30,7 +29,7 @@ import net.sf.saxon.value.SequenceType;
  */
 public class BaseContextNodeTestFun<T extends JavaNode> extends BaseJavaXPathFunction {
 
-    static final SequenceType[] SINGLE_STRING_SEQ = {SequenceType.SINGLE_STRING};
+    static final Type[] SINGLE_STRING_SEQ = {Type.SINGLE_STRING};
     private final Class<T> klass;
     private final BiPredicate<String, T> checker;
 
@@ -45,17 +44,17 @@ public class BaseContextNodeTestFun<T extends JavaNode> extends BaseJavaXPathFun
     }
 
     @Override
-    public SequenceType[] getArgumentTypes() {
+    public Type[] getArgumentTypes() {
         return SINGLE_STRING_SEQ;
     }
 
     @Override
-    public SequenceType getResultType(SequenceType[] suppliedArgumentTypes) {
-        return SequenceType.SINGLE_BOOLEAN;
+    public Type getResultType(Type[] suppliedArgumentTypes) {
+        return Type.SINGLE_BOOLEAN;
     }
 
     @Override
-    public boolean dependsOnFocus() {
+    public boolean dependsOnContext() {
         return true;
     }
 

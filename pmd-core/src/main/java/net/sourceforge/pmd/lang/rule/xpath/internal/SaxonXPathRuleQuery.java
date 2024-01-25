@@ -10,6 +10,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.xml.namespace.QName;
 
 import org.apache.commons.lang3.exception.ContextedRuntimeException;
 import org.slf4j.Logger;
@@ -20,6 +21,7 @@ import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException;
 import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException.Phase;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
+import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionDefinition;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.DataMap;
@@ -28,6 +30,7 @@ import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 import net.sf.saxon.Configuration;
 import net.sf.saxon.expr.Expression;
 import net.sf.saxon.expr.LocalVariableReference;
+import net.sf.saxon.lib.ExtensionFunctionCall;
 import net.sf.saxon.lib.ExtensionFunctionDefinition;
 import net.sf.saxon.lib.NamespaceConstant;
 import net.sf.saxon.om.AtomicSequence;
@@ -35,12 +38,15 @@ import net.sf.saxon.om.Item;
 import net.sf.saxon.om.NamePool;
 import net.sf.saxon.om.SequenceIterator;
 import net.sf.saxon.om.StructuredQName;
+import net.sf.saxon.pattern.NameTest;
+import net.sf.saxon.pattern.NodeKindTest;
 import net.sf.saxon.sxpath.IndependentContext;
 import net.sf.saxon.sxpath.XPathDynamicContext;
 import net.sf.saxon.sxpath.XPathEvaluator;
 import net.sf.saxon.sxpath.XPathExpression;
 import net.sf.saxon.sxpath.XPathVariable;
 import net.sf.saxon.trans.XPathException;
+import net.sf.saxon.value.SequenceType;
 
 
 /**
@@ -198,7 +204,8 @@ public class SaxonXPathRuleQuery {
             }
         }
 
-        for (ExtensionFunctionDefinition fun : xPathHandler.getRegisteredExtensionFunctions()) {
+        for (XPathFunctionDefinition xpathFun : xPathHandler.getRegisteredExtensionFunctions()) {
+            ExtensionFunctionDefinition fun = convertAbstractXPathFunctionDefinition(xpathFun);
             StructuredQName qname = fun.getFunctionQName();
             staticCtx.declareNamespace(qname.getPrefix(), qname.getURI());
             this.configuration.registerExtensionFunction(fun);
@@ -282,5 +289,99 @@ public class SaxonXPathRuleQuery {
             local.setStaticType(null, converted, 0);
             return local;
         }
+    }
+
+    public static ExtensionFunctionDefinition convertAbstractXPathFunctionDefinition(XPathFunctionDefinition definition) {
+        final SequenceType SINGLE_ELEMENT_SEQUENCE_TYPE = NodeKindTest.ELEMENT.one();
+
+        return new ExtensionFunctionDefinition() {
+            private SequenceType convertToSequenceType(XPathFunctionDefinition.Type type) {
+                switch (type) {
+                    case SINGLE_STRING: return SequenceType.SINGLE_STRING;
+                    case SINGLE_BOOLEAN: return SequenceType.SINGLE_BOOLEAN;
+                    case SINGLE_ELEMENT: return SINGLE_ELEMENT_SEQUENCE_TYPE;
+                    case SINGLE_INTEGER: return SequenceType.SINGLE_INTEGER;
+                    case STRING_SEQUENCE: return SequenceType.STRING_SEQUENCE;
+                    case OPTIONAL_STRING: return SequenceType.OPTIONAL_STRING;
+                    case OPTIONAL_DECIMAL: return SequenceType.OPTIONAL_DECIMAL;
+                    default:
+                        throw new UnsupportedOperationException("Type " + type + " is not supported");
+                }
+            }
+
+            private XPathFunctionDefinition.Type convertToType(SequenceType sequenceType) {
+                if (SequenceType.SINGLE_STRING.equals(sequenceType)) {
+                    return XPathFunctionDefinition.Type.SINGLE_STRING;
+                }
+                if (SequenceType.SINGLE_BOOLEAN.equals(sequenceType)) {
+                    return XPathFunctionDefinition.Type.SINGLE_BOOLEAN;
+                }
+                if (SequenceType.SINGLE_INTEGER.equals(sequenceType)) {
+                    return XPathFunctionDefinition.Type.SINGLE_INTEGER;
+                }
+                if (SequenceType.STRING_SEQUENCE.equals(sequenceType)) {
+                    return XPathFunctionDefinition.Type.STRING_SEQUENCE;
+                }
+                if (SequenceType.OPTIONAL_STRING.equals(sequenceType)) {
+                    return XPathFunctionDefinition.Type.OPTIONAL_STRING;
+                }
+                if (SequenceType.OPTIONAL_DECIMAL.equals(sequenceType)) {
+                    return XPathFunctionDefinition.Type.OPTIONAL_DECIMAL;
+                }
+                if (sequenceType.getCardinality() == SINGLE_ELEMENT_SEQUENCE_TYPE.getCardinality()
+                    && sequenceType.getPrimaryType() instanceof NameTest
+                    && ((NameTest) sequenceType.getPrimaryType()).getNodeKind()
+                        == ((NodeKindTest) SINGLE_ELEMENT_SEQUENCE_TYPE.getPrimaryType()).getNodeKind()) {
+                    return XPathFunctionDefinition.Type.SINGLE_ELEMENT;
+                }
+                if (SINGLE_ELEMENT_SEQUENCE_TYPE.equals(sequenceType)) {
+                    return XPathFunctionDefinition.Type.SINGLE_ELEMENT;
+                }
+
+                throw new UnsupportedOperationException("Type " + sequenceType + " is not supported");
+            }
+
+            private SequenceType[] convertToSequenceTypes(XPathFunctionDefinition.Type[] types) {
+                SequenceType[] result = new SequenceType[types.length];
+                for (int i = 0; i < types.length; i++) {
+                    result[i] = convertToSequenceType(types[i]);
+                }
+                return result;
+            }
+
+            private XPathFunctionDefinition.Type[] convertToTypes(SequenceType[] sequenceTypes) {
+                XPathFunctionDefinition.Type[] result = new XPathFunctionDefinition.Type[sequenceTypes.length];
+                for (int i = 0; i < sequenceTypes.length; i++) {
+                    result[i] = convertToType(sequenceTypes[i]);
+                }
+                return result;
+            }
+
+            @Override
+            public StructuredQName getFunctionQName() {
+                QName qName = definition.getQName();
+                return new StructuredQName(qName.getPrefix(), qName.getNamespaceURI(), qName.getLocalPart());
+            }
+
+            @Override
+            public SequenceType[] getArgumentTypes() {
+                return convertToSequenceTypes(definition.getArgumentTypes());
+            }
+
+            @Override
+            public SequenceType getResultType(SequenceType[] suppliedArgumentTypes) {
+                return convertToSequenceType(definition.getResultType(convertToTypes(suppliedArgumentTypes)));
+            }
+
+            @Override
+            public boolean dependsOnFocus() {
+                return definition.dependsOnContext();
+            }
+
+            @Override
+            public ExtensionFunctionCall makeCallExpression() {
+                return definition.makeCallExpression();
+            }
+        };
     }
 }

@@ -7,16 +7,15 @@ package net.sourceforge.pmd.lang.rule.xpath.internal;
 
 import java.util.Set;
 
+import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionDefinition;
 import net.sourceforge.pmd.util.CollectionUtil;
-
-import net.sf.saxon.lib.ExtensionFunctionDefinition;
 
 /**
  * Default XPath functions provided by pmd-core.
  */
 public final class DefaultXPathFunctions {
 
-    private static final Set<ExtensionFunctionDefinition> DEFAULTS =
+    private static final Set<XPathFunctionDefinition> DEFAULTS =
         CollectionUtil.immutableSetOf(
             FileNameXPathFunction.INSTANCE,
             CoordinateXPathFunction.START_LINE,
@@ -29,7 +28,7 @@ public final class DefaultXPathFunctions {
         // utility class
     }
 
-    public static Set<ExtensionFunctionDefinition> getDefaultFunctions() {
+    public static Set<XPathFunctionDefinition> getDefaultFunctions() {
         return DEFAULTS;
     }
 }

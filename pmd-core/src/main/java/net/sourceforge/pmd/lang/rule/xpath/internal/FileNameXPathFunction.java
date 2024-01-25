@@ -8,13 +8,12 @@ import java.util.Objects;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
-import net.sourceforge.pmd.lang.rule.xpath.impl.AbstractXPathFunctionDef;
+import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionDefinition;
 
 import net.sf.saxon.expr.XPathContext;
 import net.sf.saxon.lib.ExtensionFunctionCall;
 import net.sf.saxon.om.Sequence;
 import net.sf.saxon.trans.XPathException;
-import net.sf.saxon.value.SequenceType;
 import net.sf.saxon.value.StringValue;
 
 /**
@@ -22,7 +21,7 @@ import net.sf.saxon.value.StringValue;
  *
  * @author Clément Fournier
  */
-public final class FileNameXPathFunction extends AbstractXPathFunctionDef {
+public final class FileNameXPathFunction extends XPathFunctionDefinition {
 
     public static final FileNameXPathFunction INSTANCE = new FileNameXPathFunction();
 
@@ -31,13 +30,8 @@ public final class FileNameXPathFunction extends AbstractXPathFunctionDef {
     }
 
     @Override
-    public SequenceType[] getArgumentTypes() {
-        return new SequenceType[0];
-    }
-
-    @Override
-    public SequenceType getResultType(SequenceType[] suppliedArgumentTypes) {
-        return SequenceType.STRING_SEQUENCE;
+    public Type getResultType(Type[] suppliedArgumentTypes) {
+        return Type.STRING_SEQUENCE;
     }
 
     @Override
@@ -49,7 +43,7 @@ public final class FileNameXPathFunction extends AbstractXPathFunctionDef {
                 Node node = XPathElementToNodeHelper.itemToNode(context.getContextItem());
                 if (node == null) {
                     throw new XPathException(
-                        "Cannot call function '" + getFunctionQName().getLocalPart()
+                        "Cannot call function '" + getQName().getLocalPart()
                             + "' with context item " + context.getContextItem()
                     );
                 }

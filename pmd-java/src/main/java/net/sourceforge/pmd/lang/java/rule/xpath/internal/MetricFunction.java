@@ -16,7 +16,6 @@ import net.sf.saxon.om.Sequence;
 import net.sf.saxon.trans.XPathException;
 import net.sf.saxon.value.BigDecimalValue;
 import net.sf.saxon.value.EmptySequence;
-import net.sf.saxon.value.SequenceType;
 
 
 /**
@@ -38,19 +37,19 @@ public final class MetricFunction extends BaseJavaXPathFunction {
     }
 
     @Override
-    public SequenceType[] getArgumentTypes() {
-        return new SequenceType[] {SequenceType.SINGLE_STRING};
+    public Type[] getArgumentTypes() {
+        return new Type[] {Type.SINGLE_STRING};
     }
 
 
     @Override
-    public SequenceType getResultType(SequenceType[] suppliedArgumentTypes) {
-        return SequenceType.OPTIONAL_DECIMAL;
+    public Type getResultType(Type[] suppliedArgumentTypes) {
+        return Type.OPTIONAL_DECIMAL;
     }
 
 
     @Override
-    public boolean dependsOnFocus() {
+    public boolean dependsOnContext() {
         return true;
     }
 

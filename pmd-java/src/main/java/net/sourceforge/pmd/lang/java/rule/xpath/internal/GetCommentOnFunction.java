@@ -15,7 +15,6 @@ import net.sf.saxon.expr.XPathContext;
 import net.sf.saxon.lib.ExtensionFunctionCall;
 import net.sf.saxon.om.EmptyAtomicSequence;
 import net.sf.saxon.om.Sequence;
-import net.sf.saxon.value.SequenceType;
 import net.sf.saxon.value.StringValue;
 
 
@@ -36,19 +35,13 @@ public class GetCommentOnFunction extends BaseJavaXPathFunction {
     }
 
     @Override
-    public SequenceType[] getArgumentTypes() {
-        return new SequenceType[0];
+    public Type getResultType(Type[] suppliedArgumentTypes) {
+        return Type.OPTIONAL_STRING;
     }
 
 
     @Override
-    public SequenceType getResultType(SequenceType[] suppliedArgumentTypes) {
-        return SequenceType.OPTIONAL_STRING;
-    }
-
-
-    @Override
-    public boolean dependsOnFocus() {
+    public boolean dependsOnContext() {
         return true;
     }
 

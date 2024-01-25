@@ -17,7 +17,6 @@ import net.sf.saxon.lib.ExtensionFunctionCall;
 import net.sf.saxon.om.Sequence;
 import net.sf.saxon.trans.XPathException;
 import net.sf.saxon.value.BooleanValue;
-import net.sf.saxon.value.SequenceType;
 
 
 /**
@@ -39,17 +38,17 @@ abstract class BaseRewrittenFunction<S, N extends Node> extends BaseJavaXPathFun
     }
 
     @Override
-    public SequenceType[] getArgumentTypes() {
+    public Type[] getArgumentTypes() {
         return SINGLE_STRING_SEQ;
     }
 
     @Override
-    public SequenceType getResultType(SequenceType[] suppliedArgumentTypes) {
-        return SequenceType.SINGLE_BOOLEAN;
+    public Type getResultType(Type[] suppliedArgumentTypes) {
+        return Type.SINGLE_BOOLEAN;
     }
 
     @Override
-    public boolean dependsOnFocus() {
+    public boolean dependsOnContext() {
         return true;
     }
 

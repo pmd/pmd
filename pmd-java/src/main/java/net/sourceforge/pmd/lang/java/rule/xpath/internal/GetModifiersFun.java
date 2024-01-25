@@ -18,7 +18,6 @@ import net.sf.saxon.lib.ExtensionFunctionCall;
 import net.sf.saxon.om.Sequence;
 import net.sf.saxon.value.EmptySequence;
 import net.sf.saxon.value.SequenceExtent;
-import net.sf.saxon.value.SequenceType;
 import net.sf.saxon.value.StringValue;
 
 /**
@@ -26,7 +25,6 @@ import net.sf.saxon.value.StringValue;
  */
 public final class GetModifiersFun extends BaseJavaXPathFunction {
 
-    private static final SequenceType[] ARGTYPES = {};
     private final boolean explicit;
 
     public static final GetModifiersFun GET_EFFECTIVE = new GetModifiersFun("modifiers", false);
@@ -38,17 +36,12 @@ public final class GetModifiersFun extends BaseJavaXPathFunction {
     }
 
     @Override
-    public SequenceType[] getArgumentTypes() {
-        return ARGTYPES;
+    public Type getResultType(Type[] suppliedArgumentTypes) {
+        return Type.STRING_SEQUENCE;
     }
 
     @Override
-    public SequenceType getResultType(SequenceType[] suppliedArgumentTypes) {
-        return SequenceType.STRING_SEQUENCE;
-    }
-
-    @Override
-    public boolean dependsOnFocus() {
+    public boolean dependsOnContext() {
         return true;
     }
 
