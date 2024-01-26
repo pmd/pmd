@@ -1986,11 +1986,11 @@ require it to function properly.</li>
     <div class="tab-pane fade" id="windows-pmd" role="tabpanel" aria-labelledby="windows-tab">
       <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">C:\&gt; </span><span class="s2">pmd.bat</span> check -f text -R rulesets/java/quickstart.xml ..\..\src\main\java
 
-.../src/main/java/com/me/RuleSet.java:123  These nested if statements could be combined
-.../src/main/java/com/me/RuleSet.java:231  Useless parentheses.
-.../src/main/java/com/me/RuleSet.java:232  Useless parentheses.
-.../src/main/java/com/me/RuleSet.java:357  These nested if statements could be combined
-.../src/main/java/com/me/RuleSetWriter.java:66     Avoid empty catch blocks
+...\src\main\java\com\me\RuleSet.java:123  These nested if statements could be combined
+...\src\main\java\com\me\RuleSet.java:231  Useless parentheses.
+...\src\main\java\com\me\RuleSet.java:232  Useless parentheses.
+...\src\main\java\com\me\RuleSet.java:357  These nested if statements could be combined
+...\src\main\java\com\me\RuleSetWriter.java:66     Avoid empty catch blocks
 </code></pre></figure>
     </div>
   </div>
@@ -2044,7 +2044,7 @@ assertEquals(Boolean.TYPE, expressions.get(index++).getType());
 </code></pre></figure>
     </div>
     <div class="tab-pane fade" id="windows-cpd" role="tabpanel" aria-labelledby="windows-tab">
-      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">C:\&gt; </span><span class="s2">pmd.bat</span> cpd --minimum-tokens 100 /home/me/src
+      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">C:\&gt; </span><span class="s2">pmd.bat</span> cpd --minimum-tokens 100 c:\temp\src
 
 Found a 7 line (110 tokens) duplication in the following files:
 Starting at line 579 of c:\temp\src\test\java\foo\FooTypeTest.java
