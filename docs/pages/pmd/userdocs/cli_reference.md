@@ -120,11 +120,6 @@ The tool comes with a rather extensive help text, simply running with `--help`!
                             Language detection is only influenced by file extensions and the `--force-language` option.</p>
                             <p>See also [Supported Languages](#supported-languages).</p>"
     %}
-    {% include custom/cli_option_row.html options="-language,-l"
-               option_arg="lang"
-               description="Specify the language PMD should use. Used together with `-version`. See also [Supported Languages](#supported-languages).
-                    <p><span class=\"label label-default\">Deprecated</span> since PMD 6.52.0. Use `--use-version` instead.</p>"
-    %}
     {% include custom/cli_option_row.html options="--minimum-priority"
                option_arg="priority"
                description="Rule priority threshold; rules with lower priority than configured here won't be used.
