@@ -4,31 +4,32 @@
 
 package net.sourceforge.pmd.lang.ecmascript.rule.bestpractices;
 
-import java.util.List;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTFunctionNode;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.ecmascript.rule.AbstractEcmascriptRule;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 public class ConsistentReturnRule extends AbstractEcmascriptRule {
 
-    public ConsistentReturnRule() {
-        addRuleChainVisit(ASTFunctionNode.class);
+    @Override
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forTypes(ASTFunctionNode.class);
     }
 
     @Override
     public Object visit(ASTFunctionNode functionNode, Object data) {
-        List<ASTReturnStatement> returnStatements = functionNode.findDescendantsOfType(ASTReturnStatement.class);
         Boolean hasResult = null;
-        for (ASTReturnStatement returnStatement : returnStatements) {
+        for (ASTReturnStatement returnStatement : functionNode.descendants(ASTReturnStatement.class)) {
             // Return for this function?
-            if (functionNode == returnStatement.getFirstParentOfType(ASTFunctionNode.class)) {
+            if (functionNode == returnStatement.ancestors(ASTFunctionNode.class).first()) {
                 if (hasResult == null) {
-                    hasResult = Boolean.valueOf(returnStatement.hasResult());
+                    hasResult = returnStatement.hasResult();
                 } else {
                     // Return has different result from previous return?
-                    if (hasResult.booleanValue() != returnStatement.hasResult()) {
-                        addViolation(data, functionNode);
+                    if (hasResult != returnStatement.hasResult()) {
+                        asCtx(data).addViolation(functionNode);
                         break;
                     }
                 }

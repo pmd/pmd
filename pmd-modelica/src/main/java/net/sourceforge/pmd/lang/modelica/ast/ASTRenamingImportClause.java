@@ -27,8 +27,8 @@ public final class ASTRenamingImportClause extends AbstractModelicaImportClause 
     public void jjtClose() {
         super.jjtClose();
 
-        importWhat = getFirstChildOfType(ASTName.class);
-        renamedTo = getFirstChildOfType(ASTSimpleName.class).getImage();
+        importWhat = firstChild(ASTName.class);
+        renamedTo = firstChild(ASTSimpleName.class).getImage();
     }
 
     @Override

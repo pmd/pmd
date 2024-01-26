@@ -30,12 +30,12 @@ class JspPageStyleTest extends AbstractJspNodesTst {
     void testDirective() {
         ASTCompilationUnit root = jsp.parse(JSP_DIRECTIVE);
 
-        List<ASTJspDirective> directives = root.findDescendantsOfType(ASTJspDirective.class);
+        List<ASTJspDirective> directives = root.descendants(ASTJspDirective.class).toList();
         assertEquals(1, directives.size(), "One directive expected!");
         ASTJspDirective directive = directives.iterator().next();
         assertEquals("page", directive.getName(), "Correct directive name expected!");
 
-        List<ASTJspDirectiveAttribute> directiveAttrs = root.findDescendantsOfType(ASTJspDirectiveAttribute.class);
+        List<ASTJspDirectiveAttribute> directiveAttrs = root.descendants(ASTJspDirectiveAttribute.class).toList();
         assertEquals(2, directiveAttrs.size(), "Two directive attributes expected!");
 
         ASTJspDirectiveAttribute attr = directiveAttrs.get(0);

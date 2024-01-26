@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.scala.rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
-import net.sourceforge.pmd.lang.scala.ast.ScalaNode;
 import net.sourceforge.pmd.lang.scala.ast.ScalaParserVisitor;
 
 /**
@@ -18,7 +17,7 @@ public class ScalaRule extends AbstractRule implements ScalaParserVisitor<RuleCo
 
     @Override
     public void apply(Node target, RuleContext ctx) {
-        ((ScalaNode<?>) target).accept(this, ctx);
+        target.acceptVisitor(this, ctx);
     }
 
     @Override

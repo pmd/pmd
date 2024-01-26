@@ -6,13 +6,19 @@ package net.sourceforge.pmd.lang.jsp.rule;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.jsp.ast.JspParserVisitor;
+import net.sourceforge.pmd.lang.jsp.ast.JspVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 
-public abstract class AbstractJspRule extends AbstractRule implements JspParserVisitor {
+public abstract class AbstractJspRule extends AbstractRule implements JspVisitor<Object, Object> {
 
     @Override
     public void apply(Node target, RuleContext ctx) {
         target.acceptVisitor(this, ctx);
+    }
+
+    @Override
+    public Object visitNode(Node node, Object param) {
+        node.children().forEach(c -> c.acceptVisitor(this, param));
+        return param;
     }
 }

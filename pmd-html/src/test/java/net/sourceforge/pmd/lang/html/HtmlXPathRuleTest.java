@@ -57,14 +57,14 @@ class HtmlXPathRuleTest {
     @Test
     void verifyTextNodeName() {
         ASTHtmlDocument document = HtmlParsingHelper.DEFAULT.parse("<p>foobar</p>");
-        ASTHtmlTextNode textNode = document.getFirstDescendantOfType(ASTHtmlTextNode.class);
+        ASTHtmlTextNode textNode = document.descendants(ASTHtmlTextNode.class).first();
         assertEquals("#text", textNode.getXPathNodeName());
     }
 
     @Test
     void verifyCommentNodeName() {
         ASTHtmlDocument document = HtmlParsingHelper.DEFAULT.parse("<p><!-- a comment --></p>");
-        ASTHtmlComment comment = document.getFirstDescendantOfType(ASTHtmlComment.class);
+        ASTHtmlComment comment = document.descendants(ASTHtmlComment.class).first();
         assertEquals("#comment", comment.getXPathNodeName());
     }
 

@@ -8,6 +8,7 @@ package net.sourceforge.pmd.lang.modelica.rule;
 /**
  * @deprecated Use {@link net.sourceforge.pmd.lang.modelica.rule.bestpractices.AmbiguousResolutionRule}
  */
+@Deprecated
 public class AmbiguousResolutionRule extends net.sourceforge.pmd.lang.modelica.rule.bestpractices.AmbiguousResolutionRule {
 
 }
