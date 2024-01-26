@@ -28,12 +28,12 @@ import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
-import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.PmdReporter;
 
 abstract class AbstractPMDProcessorTest {
     protected SimpleReportListener reportListener;
 
-    protected MessageReporter reporter;
+    protected PmdReporter reporter;
 
     protected abstract int getThreads();
 

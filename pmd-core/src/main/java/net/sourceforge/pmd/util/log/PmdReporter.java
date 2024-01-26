@@ -9,22 +9,18 @@ import java.text.MessageFormat;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.event.Level;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.util.log.internal.QuietReporter;
 
 /**
  * Façade to report user-facing messages (info, warning and error).
- * Note: messages are formatted using {@link MessageFormat}.
  *
- * <p>Internal API: this is a transitional API that will be significantly
- * changed in PMD 7, with the transition to SLF4J. See https://github.com/pmd/pmd/issues/3816
+ * <p>Note: messages are formatted using {@link MessageFormat}.
  *
- *  TODO rename to PmdReporter
+ * <p>Note: This interface was called net.sourceforge.pmd.util.log.MessageReporter in PMD 6.</p>
  *
  * @author Clément Fournier
  */
-@InternalApi
-public interface MessageReporter {
+public interface PmdReporter {
 
     // todo change String to MessageFormat in those arg lists, it's too confusing
     // where to apply MessageFormat otherwise...
@@ -101,7 +97,7 @@ public interface MessageReporter {
      * Returns a reporter instance that does not output anything, but
      * still counts errors.
      */
-    static MessageReporter quiet() {
+    static PmdReporter quiet() {
         return new QuietReporter();
     }
 

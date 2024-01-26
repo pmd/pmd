@@ -42,7 +42,7 @@ import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.util.ContextedAssertionError;
-import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.PmdReporter;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 
@@ -54,7 +54,7 @@ class PmdRunnableTest {
     private static final String THROWS_ASSERTION_ERROR = "1.9-throws";
 
     private PMDConfiguration configuration;
-    private MessageReporter reporter;
+    private PmdReporter reporter;
     private Rule rule;
 
 
@@ -63,7 +63,7 @@ class PmdRunnableTest {
         // reset data
         rule = spy(new RuleThatThrows());
         configuration = new PMDConfiguration(LanguageRegistry.singleton(ThrowingLanguageModule.INSTANCE));
-        reporter = mock(MessageReporter.class);
+        reporter = mock(PmdReporter.class);
         configuration.setReporter(reporter);
         // exceptions thrown on a worker thread are not thrown by the main thread,
         // so this test only makes sense without separate threads

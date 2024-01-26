@@ -33,7 +33,7 @@ import net.sourceforge.pmd.lang.document.SimpleTestTextFile;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.reporting.ReportStats;
-import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.PmdReporter;
 
 /**
  * @author Clément Fournier
@@ -106,7 +106,7 @@ class PmdAnalysisTest {
     void testRuleFailureDuringInitialization() {
         PMDConfiguration config = new PMDConfiguration();
         config.setThreads(1);
-        MessageReporter mockReporter = spy(MessageReporter.quiet());
+        PmdReporter mockReporter = spy(PmdReporter.quiet());
         config.setReporter(mockReporter);
 
         try (PmdAnalysis pmd = PmdAnalysis.create(config)) {

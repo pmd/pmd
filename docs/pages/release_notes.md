@@ -196,6 +196,9 @@ The following previously deprecated classes have been removed:
 
 **Renamed classes, interfaces**
 
+* pmd-core
+  * {%jdoc core::util.log.PmdReporter %} - has been renamed from `net.sourceforge.pmd.util.log.MessageReporter`
+
 * pmd-java
   * The interface `AccessNode` has been renamed to {% jdoc java::lang.ast.ModifierOwner %}. This is only relevant
     for Java rules, which use that type directly e.g. through downcasting.

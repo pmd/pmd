@@ -14,7 +14,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.cache.internal.AnalysisCache;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
-import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.PmdReporter;
 
 /**
  * Stateful object managing the analysis for a given language.
@@ -65,7 +65,7 @@ public interface LanguageProcessor extends AutoCloseable {
         private final GlobalAnalysisListener listener;
         private final int threadCount;
         private final AnalysisCache analysisCache;
-        private final MessageReporter messageReporter;
+        private final PmdReporter messageReporter;
         private final LanguageProcessorRegistry lpRegistry;
 
 
@@ -79,7 +79,7 @@ public interface LanguageProcessor extends AutoCloseable {
                             GlobalAnalysisListener listener,
                             int threadCount,
                             AnalysisCache analysisCache,
-                            MessageReporter messageReporter,
+                            PmdReporter messageReporter,
                             LanguageProcessorRegistry lpRegistry) {
             this.rulesets = rulesets;
             this.files = files;
@@ -110,7 +110,7 @@ public interface LanguageProcessor extends AutoCloseable {
             return analysisCache;
         }
 
-        public MessageReporter getMessageReporter() {
+        public PmdReporter getMessageReporter() {
             return messageReporter;
         }
 

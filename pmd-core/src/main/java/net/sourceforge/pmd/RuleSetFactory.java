@@ -54,7 +54,7 @@ import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.internal.xml.PmdXmlReporter;
 import net.sourceforge.pmd.util.internal.xml.XmlErrorMessages;
 import net.sourceforge.pmd.util.internal.xml.XmlUtil;
-import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.PmdReporter;
 
 import com.github.oowekyala.ooxml.DomUtils;
 import com.github.oowekyala.ooxml.messages.NiceXmlMessageSpec;
@@ -81,7 +81,7 @@ final class RuleSetFactory {
     private final RulePriority minimumPriority;
     private final boolean warnDeprecated;
     private final RuleSetFactoryCompatibility compatibilityFilter;
-    private final MessageReporter reporter;
+    private final PmdReporter reporter;
     private final boolean includeDeprecatedRuleReferences;
 
     private final Map<RuleSetReferenceId, RuleSet> parsedRulesets = new HashMap<>();
@@ -92,7 +92,7 @@ final class RuleSetFactory {
                    boolean warnDeprecated,
                    RuleSetFactoryCompatibility compatFilter,
                    boolean includeDeprecatedRuleReferences,
-                   MessageReporter reporter) {
+                   PmdReporter reporter) {
         this.resourceLoader = resourceLoader;
         this.languageRegistry = Objects.requireNonNull(languageRegistry);
         this.minimumPriority = minimumPriority;
@@ -447,7 +447,7 @@ final class RuleSetFactory {
             return null; // deleted rule
         }
         // only emit a warning if we check for deprecated syntax
-        MessageReporter subReporter = warnDeprecated ? err.at(xmlPlace) : MessageReporter.quiet();
+        PmdReporter subReporter = warnDeprecated ? err.at(xmlPlace) : PmdReporter.quiet();
 
         List<RuleSetReferenceId> references = RuleSetReferenceId.parse(ref, subReporter);
         if (references.size() > 1 && warnDeprecated) {
@@ -677,20 +677,20 @@ final class RuleSetFactory {
     }
 
     private static final class PmdXmlReporterImpl
-        extends XmlMessageReporterBase<MessageReporter>
+        extends XmlMessageReporterBase<PmdReporter>
         implements PmdXmlReporter {
 
-        private final MessageReporter pmdReporter;
+        private final PmdReporter pmdReporter;
         private int errCount;
 
-        PmdXmlReporterImpl(MessageReporter pmdReporter, OoxmlFacade ooxml, XmlPositioner positioner) {
+        PmdXmlReporterImpl(PmdReporter pmdReporter, OoxmlFacade ooxml, XmlPositioner positioner) {
             super(ooxml, positioner);
             this.pmdReporter = pmdReporter;
         }
 
         @Override
-        protected MessageReporter create2ndStage(XmlPosition position, XmlPositioner positioner) {
-            return new MessageReporter() {
+        protected PmdReporter create2ndStage(XmlPosition position, XmlPositioner positioner) {
+            return new PmdReporter() {
                 @Override
                 public boolean isLoggable(Level level) {
                     return pmdReporter.isLoggable(level);

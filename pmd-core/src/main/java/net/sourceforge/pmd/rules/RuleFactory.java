@@ -63,7 +63,7 @@ import net.sourceforge.pmd.util.internal.xml.PmdXmlReporter;
 import net.sourceforge.pmd.util.internal.xml.SchemaConstant;
 import net.sourceforge.pmd.util.internal.xml.XmlErrorMessages;
 import net.sourceforge.pmd.util.internal.xml.XmlUtil;
-import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.PmdReporter;
 
 import com.github.oowekyala.ooxml.DomUtils;
 import com.github.oowekyala.ooxml.messages.XmlException;
@@ -429,7 +429,7 @@ public class RuleFactory {
     }
 
 
-    private static <T> @Nullable T tryParsePropertyValue(BuilderAndMapper<T> factory, String value, MessageReporter err) {
+    private static <T> @Nullable T tryParsePropertyValue(BuilderAndMapper<T> factory, String value, PmdReporter err) {
         try {
             return factory.getXmlMapper().fromString(value);
         } catch (IllegalArgumentException e) {
@@ -437,7 +437,7 @@ public class RuleFactory {
         }
     }
 
-    private static <T> Comparable<T> asComparableOrThrow(T object, MessageReporter err) {
+    private static <T> Comparable<T> asComparableOrThrow(T object, PmdReporter err) {
         if (object instanceof Comparable) {
             return (Comparable) object;
         }

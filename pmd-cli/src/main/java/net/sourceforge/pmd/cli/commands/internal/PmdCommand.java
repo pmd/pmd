@@ -38,7 +38,7 @@ import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
 import net.sourceforge.pmd.reporting.ReportStats;
 import net.sourceforge.pmd.util.StringUtil;
-import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.PmdReporter;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 import picocli.CommandLine.Command;
@@ -311,7 +311,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
             TimeTracker.startGlobalTracking();
         }
 
-        final MessageReporter pmdReporter = configuration.getReporter();
+        final PmdReporter pmdReporter = configuration.getReporter();
 
         try {
             PmdAnalysis pmd = null;
@@ -359,14 +359,14 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
         }
     }
 
-    private void printErrorDetected(MessageReporter reporter, int errors) {
+    private void printErrorDetected(PmdReporter reporter, int errors) {
         String msg = LogMessages.errorDetectedMessage(errors, "pmd");
         // note: using error level here increments the error count of the reporter,
         // which we don't want.
         reporter.info(StringUtil.quoteMessageFormat(msg));
     }
 
-    private void finishBenchmarker(final MessageReporter pmdReporter) {
+    private void finishBenchmarker(final PmdReporter pmdReporter) {
         if (benchmark) {
             final TimingReport timingReport = TimeTracker.stopGlobalTracking();
 

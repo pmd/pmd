@@ -25,7 +25,7 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.util.AssertionUtil;
-import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.PmdReporter;
 
 /**
  * Base configuration class for both PMD and CPD.
@@ -39,7 +39,7 @@ public abstract class AbstractConfiguration {
     private Charset sourceEncoding = Charset.forName(System.getProperty("file.encoding"));
     private final Map<Language, LanguagePropertyBundle> langProperties = new HashMap<>();
     private final LanguageRegistry langRegistry;
-    private MessageReporter reporter;
+    private PmdReporter reporter;
     private final LanguageVersionDiscoverer languageVersionDiscoverer;
     private LanguageVersion forceLanguageVersion;
     private @NonNull List<Path> inputPaths = new ArrayList<>();
@@ -49,7 +49,7 @@ public abstract class AbstractConfiguration {
     private boolean collectRecursive = true;
 
 
-    protected AbstractConfiguration(LanguageRegistry languageRegistry, MessageReporter messageReporter) {
+    protected AbstractConfiguration(LanguageRegistry languageRegistry, PmdReporter messageReporter) {
         this.langRegistry = Objects.requireNonNull(languageRegistry);
         this.languageVersionDiscoverer = new LanguageVersionDiscoverer(languageRegistry);
         this.reporter = Objects.requireNonNull(messageReporter);
@@ -100,7 +100,7 @@ public abstract class AbstractConfiguration {
      * Returns the message reporter that is to be used while running
      * the analysis.
      */
-    public @NonNull MessageReporter getReporter() {
+    public @NonNull PmdReporter getReporter() {
         return reporter;
     }
 
@@ -110,7 +110,7 @@ public abstract class AbstractConfiguration {
      *
      * @param reporter A non-null message reporter
      */
-    public void setReporter(@NonNull MessageReporter reporter) {
+    public void setReporter(@NonNull PmdReporter reporter) {
         AssertionUtil.requireParamNotNull("reporter", reporter);
         this.reporter = reporter;
     }

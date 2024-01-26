@@ -51,7 +51,7 @@ import net.sourceforge.pmd.reporting.ReportStats;
 import net.sourceforge.pmd.reporting.ReportStatsListener;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.StringUtil;
-import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.PmdReporter;
 
 /**
  * Main programmatic API of PMD. This is not a CLI entry point, see module
@@ -122,8 +122,8 @@ import net.sourceforge.pmd.util.log.MessageReporter;
  * <h3>Customizing message output</h3>
  *
  * <p>The analysis reports messages like meta warnings and errors through a
- * {@link MessageReporter} instance. To override how those messages are output,
- * you can set it in {@link PMDConfiguration#setReporter(MessageReporter)}.
+ * {@link PmdReporter} instance. To override how those messages are output,
+ * you can set it in {@link PMDConfiguration#setReporter(PmdReporter)}.
  * By default, it forwards messages to SLF4J.
  *
  */
@@ -136,7 +136,7 @@ public final class PmdAnalysis implements AutoCloseable {
     private final List<GlobalAnalysisListener> listeners = new ArrayList<>();
     private final List<RuleSet> ruleSets = new ArrayList<>();
     private final PMDConfiguration configuration;
-    private final MessageReporter reporter;
+    private final PmdReporter reporter;
 
     private final Map<Language, LanguagePropertyBundle> langProperties = new HashMap<>();
     private boolean closed;
@@ -344,7 +344,7 @@ public final class PmdAnalysis implements AutoCloseable {
      * processed. This does not return a report, as the analysis results
      * are consumed by {@link GlobalAnalysisListener} instances (of which
      * Renderers are a special case). Note that this does
-     * not throw, errors are instead accumulated into a {@link MessageReporter}.
+     * not throw, errors are instead accumulated into a {@link PmdReporter}.
      */
     public void performAnalysis() {
         performAnalysisImpl(Collections.emptyList());
@@ -355,7 +355,7 @@ public final class PmdAnalysis implements AutoCloseable {
      * and finish the registered renderers. All files collected in the
      * {@linkplain #files() file collector} are processed. Returns the
      * output report. Note that this does not throw, errors are instead
-     * accumulated into a {@link MessageReporter}.
+     * accumulated into a {@link PmdReporter}.
      */
     public Report performAnalysisAndCollectReport() {
         try (GlobalReportBuilderListener reportBuilder = new GlobalReportBuilderListener()) {
@@ -534,7 +534,7 @@ public final class PmdAnalysis implements AutoCloseable {
     }
 
 
-    public MessageReporter getReporter() {
+    public PmdReporter getReporter() {
         return reporter;
     }
 
@@ -586,7 +586,7 @@ public final class PmdAnalysis implements AutoCloseable {
         return stats;
     }
 
-    static void printErrorDetected(MessageReporter reporter, int errors) {
+    static void printErrorDetected(PmdReporter reporter, int errors) {
         String msg = LogMessages.errorDetectedMessage(errors, "PMD");
         // note: using error level here increments the error count of the reporter,
         // which we don't want.
@@ -598,7 +598,7 @@ public final class PmdAnalysis implements AutoCloseable {
     }
 
     private static void encourageToUseIncrementalAnalysis(final PMDConfiguration configuration) {
-        final MessageReporter reporter = configuration.getReporter();
+        final PmdReporter reporter = configuration.getReporter();
 
         if (!configuration.isIgnoreIncrementalAnalysis()
             && configuration.getAnalysisCache() instanceof NoopAnalysisCache

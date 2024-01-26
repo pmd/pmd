@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import net.sourceforge.pmd.AbstractConfiguration;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.PmdReporter;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 public class TreeExportConfiguration extends AbstractConfiguration {
@@ -28,7 +28,7 @@ public class TreeExportConfiguration extends AbstractConfiguration {
     private Properties languageProperties = new Properties();
     private Path file;
     private boolean readStdin;
-    private MessageReporter messageReporter = new SimpleMessageReporter(LOG);
+    private PmdReporter messageReporter = new SimpleMessageReporter(LOG);
 
     public TreeExportConfiguration(LanguageRegistry registry) {
         super(registry, new SimpleMessageReporter(LoggerFactory.getLogger(TreeExporter.class)));
@@ -86,11 +86,11 @@ public class TreeExportConfiguration extends AbstractConfiguration {
         this.readStdin = readStdin;
     }
 
-    public MessageReporter getMessageReporter() {
+    public PmdReporter getMessageReporter() {
         return messageReporter;
     }
 
-    public void setMessageReporter(MessageReporter messageReporter) {
+    public void setMessageReporter(PmdReporter messageReporter) {
         this.messageReporter = messageReporter;
     }
 

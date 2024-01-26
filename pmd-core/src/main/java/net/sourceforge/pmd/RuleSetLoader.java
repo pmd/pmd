@@ -26,7 +26,7 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.ResourceLoader;
-import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.PmdReporter;
 
 /**
  * Configurable object to load rulesets from XML resources.
@@ -43,7 +43,7 @@ public final class RuleSetLoader {
     private boolean warnDeprecated = true;
     private @NonNull RuleSetFactoryCompatibility compatFilter = RuleSetFactoryCompatibility.DEFAULT;
     private boolean includeDeprecatedRuleReferences = false;
-    private @NonNull MessageReporter reporter = MessageReporter.quiet();
+    private @NonNull PmdReporter reporter = PmdReporter.quiet();
 
     /**
      * Create a new RuleSetLoader with a default configuration.
@@ -53,7 +53,7 @@ public final class RuleSetLoader {
         // default
     }
 
-    RuleSetLoader withReporter(@NonNull MessageReporter reporter) {
+    RuleSetLoader withReporter(@NonNull PmdReporter reporter) {
         this.reporter = Objects.requireNonNull(reporter);
         return this;
     }
@@ -153,7 +153,7 @@ public final class RuleSetLoader {
         );
     }
 
-    private @Nullable MessageReporter filteredReporter() {
+    private @Nullable PmdReporter filteredReporter() {
         return warnDeprecated ? reporter : null;
     }
 

@@ -19,7 +19,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.util.ResourceLoader;
-import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.PmdReporter;
 
 /**
  * This class is used to parse a RuleSet reference value. Most commonly used for
@@ -147,7 +147,7 @@ public class RuleSetReferenceId {
      */
     RuleSetReferenceId(final String id,
                        final RuleSetReferenceId externalRuleSetReferenceId,
-                       final @Nullable MessageReporter err) {
+                       final @Nullable PmdReporter err) {
         this.originalRef = id;
 
         if (externalRuleSetReferenceId != null && !externalRuleSetReferenceId.isExternal()) {
@@ -380,7 +380,7 @@ public class RuleSetReferenceId {
     }
 
     static List<RuleSetReferenceId> parse(String referenceString,
-                                          MessageReporter err) {
+                                          PmdReporter err) {
         List<RuleSetReferenceId> references = new ArrayList<>();
         if (referenceString != null && referenceString.trim().length() > 0) {
 

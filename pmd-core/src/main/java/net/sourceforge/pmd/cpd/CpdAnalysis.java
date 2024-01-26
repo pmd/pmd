@@ -29,7 +29,7 @@ import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.util.log.MessageReporter;
+import net.sourceforge.pmd.util.log.PmdReporter;
 
 /**
  * Main programmatic API of CPD. This is not a CLI entry point, see module
@@ -70,7 +70,7 @@ public final class CpdAnalysis implements AutoCloseable {
     private static final Logger LOGGER = LoggerFactory.getLogger(CpdAnalysis.class);
     private final CPDConfiguration configuration;
     private final FileCollector files;
-    private final MessageReporter reporter;
+    private final PmdReporter reporter;
     private final @Nullable CPDReportRenderer renderer;
     private @NonNull CPDListener listener = new CPDNullListener();
 
