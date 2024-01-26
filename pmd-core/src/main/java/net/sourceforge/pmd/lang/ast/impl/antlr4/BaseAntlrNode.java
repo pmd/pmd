@@ -72,7 +72,7 @@ public abstract class BaseAntlrNode<A extends AntlrToPmdParseTreeAdapter<N>, N e
     @Override
     public TextRegion getTextRegion() {
         return TextRegion.fromBothOffsets(getFirstAntlrToken().getStartIndex(),
-                                          getFirstAntlrToken().getStopIndex());
+                                          getLastAntlrToken().getStopIndex() + 1);
     }
 
     void setIndexInParent(int indexInParent) {

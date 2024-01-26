@@ -130,6 +130,8 @@ in the Migration Guide.
 * groovy
   * [#4726](https://github.com/pmd/pmd/pull/4726):   \[groovy] Support Groovy to 3 and 4 and CPD suppressions
 * java
+  * [#1307](https://github.com/pmd/pmd/issues/1307): \[java] AccessNode API changes
+  * [#3751](https://github.com/pmd/pmd/issues/3751): \[java] Rename some node types
   * [#4628](https://github.com/pmd/pmd/pull/4628):   \[java] Support loading classes from java runtime images
   * [#4753](https://github.com/pmd/pmd/issues/4753): \[java] PMD crashes while using generics and wildcards
 * java-codestyle
@@ -140,6 +142,7 @@ in the Migration Guide.
 * java-design
   * [#174](https://github.com/pmd/pmd/issues/174):   \[java] SingularField false positive with switch in method that both assigns and reads field
 * java-errorprone
+  * [#718](https://github.com/pmd/pmd/issues/718):   \[java] BrokenNullCheck false positive with parameter/field confusion
   * [#1831](https://github.com/pmd/pmd/issues/1831): \[java] DetachedTestCase reports abstract methods
   * [#4719](https://github.com/pmd/pmd/pull/4719):   \[java] UnnecessaryCaseChange: example doc toUpperCase() should compare to a capitalized string
 * javascript
@@ -151,7 +154,7 @@ in the Migration Guide.
 
 #### API Changes
 
-**Removed classes and methods**
+**Removed classes and methods (previously deprecated)**
 
 The following previously deprecated classes have been removed:
 
@@ -164,6 +167,38 @@ The following previously deprecated classes have been removed:
 
       If the current version is needed, then `Node.getTextDocument().getLanguageVersion()` can be used. This
       is the version that has been selected via CLI `--use-version` parameter.
+
+**Removed classes, interfaces and methods (not previously deprecated)**
+
+* pmd-java
+  * The interface `FinalizableNode` (introduced in 7.0.0-rc1) has been removed.
+    Its method `isFinal()` has been moved down to the
+    nodes where needed, e.g. {% jdoc !!java::lang.java.ast.ASTLocalVariableDeclaration#isFinal() %}.
+  * The method `isPackagePrivate()` in {% jdoc java::lang.java.ast.ASTClassDeclaration %} (formerly ASTClassOrInterfaceDeclaration)
+    has been removed.
+    Use {% jdoc java::lang.java.ast.ModifierOwner#hasVisibility(java::lang.java.ast.ModifierOwner.Visibility) %} instead,
+    which can correctly differentiate between local and package private classes.
+
+**Renamed classes, interfaces**
+
+* pmd-java
+  * The interface `AccessNode` has been renamed to {% jdoc java::lang.ast.ModifierOwner %}. This is only relevant
+    for Java rules, which use that type directly e.g. through downcasting.
+    Or when using the XPath function `pmd-java:nodeIs()`.
+  * The node `ASTClassOrInterfaceType` has been renamed to {% jdoc java::lang.ast.ASTClassType %}. XPath rules
+    need to be adjusted.
+  * The node `ASTClassOrInterfaceDeclaration` has been renamed to {% jdoc java::lang.ast.ASTClassDeclaration %}.
+    XPath rules need to be adjusted.
+  * The interface `ASTAnyTypeDeclaration` has been renamed to {% jdoc java::lang.ast.ASTTypeDeclaration %}.
+    This is only relevant for Java rules, which use that type directly, e.g. through downcasting.
+    Or when using the XPath function `pmd-java:nodeIs()`.
+  * The interface `ASTMethodOrConstructorDeclaration` has been renamed to
+    {% jdoc java::lang.ast.ASTExecutableDeclaration %}. This is only relevant for Java rules, which sue that type
+    directly, e.g. through downcasting. Or when using the XPath function `pmd-java:nodeIs()`.
+  * The node `ASTVariableDeclaratorId` has been renamed to {% jdoc java::lang.ast.ASTVariableId %}. XPath rules
+    need to be adjusted.
+  * The node `ASTClassOrInterfaceBody` has been renamed to {% jdoc java::lang.ast.ASTClassBody %}. XPath rules
+    need to be adjusted.
 
 #### External Contributions
 * [#4640](https://github.com/pmd/pmd/pull/4640): \[cli] Launch script fails if run via "bash pmd" - [Shai Bennathan](https://github.com/shai-bennathan) (@shai-bennathan)
@@ -645,6 +680,7 @@ Language specific fixes:
     * [#1128](https://github.com/pmd/pmd/issues/1128): \[java] Improve ASTLocalVariableDeclaration
     * [#1150](https://github.com/pmd/pmd/issues/1150): \[java] ClassOrInterfaceType AST improvements
     * [#1207](https://github.com/pmd/pmd/issues/1207): \[java] Resolve explicit types using FQCNs, without hitting the classloader
+    * [#1307](https://github.com/pmd/pmd/issues/1307): \[java] AccessNode API changes
     * [#1367](https://github.com/pmd/pmd/issues/1367): \[java] Parsing error on annotated inner class
     * [#1661](https://github.com/pmd/pmd/issues/1661): \[java] About operator nodes
     * [#2366](https://github.com/pmd/pmd/pull/2366):   \[java] Remove qualified names
@@ -653,6 +689,7 @@ Language specific fixes:
     * [#3763](https://github.com/pmd/pmd/issues/3763): \[java] Ambiguous reference error in valid code
     * [#3749](https://github.com/pmd/pmd/issues/3749): \[java] Improve `isOverridden` in ASTMethodDeclaration
     * [#3750](https://github.com/pmd/pmd/issues/3750): \[java] Make symbol table support instanceof pattern bindings
+    * [#3751](https://github.com/pmd/pmd/issues/3751): \[java] Rename some node types
     * [#3752](https://github.com/pmd/pmd/issues/3752): \[java] Expose annotations in symbol API
     * [#4237](https://github.com/pmd/pmd/pull/4237):   \[java] Cleanup handling of Java comments
     * [#4317](https://github.com/pmd/pmd/issues/4317): \[java] Some AST nodes should not be TypeNodes
@@ -763,6 +800,7 @@ Language specific fixes:
     * [#4416](https://github.com/pmd/pmd/pull/4416):   \[java] Fix reported line number in CommentContentRule
 * java-errorprone
     * [#659](https://github.com/pmd/pmd/issues/659):   \[java] MissingBreakInSwitch - last default case does not contain a break
+    * [#718](https://github.com/pmd/pmd/issues/718):   \[java] BrokenNullCheck false positive with parameter/field confusion
     * [#1005](https://github.com/pmd/pmd/issues/1005): \[java] CloneMethodMustImplementCloneable triggers for interfaces
     * [#1669](https://github.com/pmd/pmd/issues/1669): \[java] NullAssignment - FP with ternay and null as constructor argument
     * [#1831](https://github.com/pmd/pmd/issues/1831): \[java] DetachedTestCase reports abstract methods

@@ -171,7 +171,7 @@ with a backslash when needed.
               description="A StringMultiProperty." />
     <property name="xpath">
         <value><![CDATA[
-            //VariableDeclaratorId[@Name = $reportedIdentifiers]
+            //VariableId[@Image = $reportedIdentifiers]
         ]]></value>
     </property>
   </properties>

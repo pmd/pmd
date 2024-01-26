@@ -24,7 +24,7 @@ import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
  *
  * </pre>
  */
-public final class ASTConstructorDeclaration extends AbstractMethodOrConstructorDeclaration<JConstructorSymbol> {
+public final class ASTConstructorDeclaration extends AbstractExecutableDeclaration<JConstructorSymbol> {
 
     ASTConstructorDeclaration(int id) {
         super(id);

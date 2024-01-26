@@ -20,7 +20,7 @@ public class UnusedMethodRule extends AbstractApexRule {
             .filter(issue -> "Unused".equals(issue.category()))
             .filter(issue -> issue.fileLocation().startLineNumber() == node.getBeginLine())
             .filter(issue -> issue.fileLocation().endLineNumber() <= node.getBeginLine())
-            .forEach(issue -> addViolation(data, node));
+            .forEach(issue -> asCtx(data).addViolation(node));
         return data;
     }
 }

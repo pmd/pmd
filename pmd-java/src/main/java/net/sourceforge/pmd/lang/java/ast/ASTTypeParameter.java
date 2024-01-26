@@ -56,7 +56,7 @@ public final class ASTTypeParameter extends AbstractTypedSymbolDeclarator<JTypeP
      */
     @Nullable
     public ASTType getTypeBoundNode() {
-        return getFirstChildOfType(ASTType.class);
+        return firstChild(ASTType.class);
     }
 
     /**

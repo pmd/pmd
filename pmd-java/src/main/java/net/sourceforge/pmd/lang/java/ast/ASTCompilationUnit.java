@@ -32,7 +32,7 @@ import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
  * RegularCompilationUnit ::=
  *   {@linkplain ASTPackageDeclaration PackageDeclaration}?
  *   {@linkplain ASTImportDeclaration ImportDeclaration}*
- *   {@linkplain ASTAnyTypeDeclaration TypeDeclaration}*
+ *   {@linkplain ASTTypeDeclaration TypeDeclaration}*
  *
  * UnnamedClassCompilationUnit ::=
  *   {@linkplain ASTImportDeclaration ImportDeclaration}*
@@ -105,8 +105,8 @@ public final class ASTCompilationUnit extends AbstractJavaNode implements JavaNo
      * unit. This may be empty, eg if this a package-info.java, or a modular
      * compilation unit (but ordinary compilation units may also be empty).
      */
-    public NodeStream<ASTAnyTypeDeclaration> getTypeDeclarations() {
-        return children(ASTAnyTypeDeclaration.class);
+    public NodeStream<ASTTypeDeclaration> getTypeDeclarations() {
+        return children(ASTTypeDeclaration.class);
     }
 
     /**

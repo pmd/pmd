@@ -20,15 +20,15 @@ class VfPageStyleTest extends AbstractVfTest {
         List<ASTElExpression> expressions = vf.getNodes(ASTElExpression.class, VF_EL_EXPRESSION);
         assertEquals(1, expressions.size(), "One expression expected!");
         ASTElExpression expression = expressions.iterator().next();
-        ASTExpression exp = expression.getFirstChildOfType(ASTExpression.class);
-        ASTIdentifier id = exp.getFirstChildOfType(ASTIdentifier.class);
+        ASTExpression exp = expression.firstChild(ASTExpression.class);
+        ASTIdentifier id = exp.firstChild(ASTIdentifier.class);
         assertEquals("myBean", id.getImage(), "Correct expression content expected!");
-        ASTDotExpression dot = exp.getFirstChildOfType(ASTDotExpression.class);
-        ASTIdentifier dotid = dot.getFirstChildOfType(ASTIdentifier.class);
+        ASTDotExpression dot = exp.firstChild(ASTDotExpression.class);
+        ASTIdentifier dotid = dot.firstChild(ASTIdentifier.class);
         assertEquals("get", dotid.getImage(), "Correct expression content expected!");
-        ASTArguments arguments = exp.getFirstChildOfType(ASTArguments.class);
-        ASTExpression innerExpression = arguments.getFirstChildOfType(ASTExpression.class);
-        ASTLiteral literal = innerExpression.getFirstChildOfType(ASTLiteral.class);
+        ASTArguments arguments = exp.firstChild(ASTArguments.class);
+        ASTExpression innerExpression = arguments.firstChild(ASTExpression.class);
+        ASTLiteral literal = innerExpression.firstChild(ASTLiteral.class);
         assertEquals("\"{! World }\"", literal.getImage(), "Correct expression content expected!");
     }
 
@@ -40,15 +40,15 @@ class VfPageStyleTest extends AbstractVfTest {
         List<ASTElExpression> expressions = vf.getNodes(ASTElExpression.class, VF_EL_EXPRESSION_IN_ATTRIBUTE);
         assertEquals(1, expressions.size(), "One expression expected!");
         ASTElExpression expression = expressions.iterator().next();
-        ASTExpression exp = expression.getFirstChildOfType(ASTExpression.class);
-        ASTIdentifier id = exp.getFirstChildOfType(ASTIdentifier.class);
+        ASTExpression exp = expression.firstChild(ASTExpression.class);
+        ASTIdentifier id = exp.firstChild(ASTIdentifier.class);
         assertEquals("myValidator", id.getImage(), "Correct expression content expected!");
-        ASTDotExpression dot = exp.getFirstChildOfType(ASTDotExpression.class);
-        ASTIdentifier dotid = dot.getFirstChildOfType(ASTIdentifier.class);
+        ASTDotExpression dot = exp.firstChild(ASTDotExpression.class);
+        ASTIdentifier dotid = dot.firstChild(ASTIdentifier.class);
         assertEquals("find", dotid.getImage(), "Correct expression content expected!");
-        ASTArguments arguments = exp.getFirstChildOfType(ASTArguments.class);
-        ASTExpression innerExpression = arguments.getFirstChildOfType(ASTExpression.class);
-        ASTLiteral literal = innerExpression.getFirstChildOfType(ASTLiteral.class);
+        ASTArguments arguments = exp.firstChild(ASTArguments.class);
+        ASTExpression innerExpression = arguments.firstChild(ASTExpression.class);
+        ASTLiteral literal = innerExpression.firstChild(ASTLiteral.class);
         assertEquals("\"'vf'\"", literal.getImage(), "Correct expression content expected!");
     }
 

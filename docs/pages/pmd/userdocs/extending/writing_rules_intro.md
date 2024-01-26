@@ -45,11 +45,12 @@ class Foo extends Object {
 
 ```java
 └─ CompilationUnit
-        └─ ClassOrInterfaceDeclaration "Foo"
-        ├─ ModifierList
-        ├─ ExtendsList
-        │  └─ ClassOrInterfaceType "Object"
-        └─ ClassOrInterfaceBody
+   └─ TypeDeclaration
+      └─ ClassDeclaration "Foo"
+         ├─ ModifierList
+         ├─ ExtendsList
+         │  └─ ClassType "Object"
+         └─ ClassBody
 ```
 
 </td>

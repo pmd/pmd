@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.rule.errorprone;
 
-import java.util.List;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
@@ -23,15 +21,13 @@ public class MethodWithSameNameAsEnclosingClassRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTUserClass node, Object data) {
-        String className = node.getImage();
+        String className = node.getSimpleName();
 
-        List<ASTMethod> methods = node.findDescendantsOfType(ASTMethod.class);
-
-        for (ASTMethod m : methods) {
+        for (ASTMethod m : node.descendants(ASTMethod.class)) {
             String methodName = m.getImage();
 
             if (!m.isConstructor() && methodName.equalsIgnoreCase(className)) {
-                addViolation(data, m);
+                asCtx(data).addViolation(m);
             }
         }
 

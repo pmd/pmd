@@ -88,12 +88,12 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRulechainRule {
             }
 
             if (providedArguments < expectedArguments) {
-                addViolationWithMessage(
-                    data, call,
+                asCtx(data).addViolationWithMessage(
+                    call,
                     "Missing arguments," + getExpectedMessage(providedArguments, expectedArguments));
             } else if (providedArguments > expectedArguments) {
-                addViolationWithMessage(
-                    data, call,
+                asCtx(data).addViolationWithMessage(
+                    call,
                     "Too many arguments," + getExpectedMessage(providedArguments, expectedArguments));
             }
 

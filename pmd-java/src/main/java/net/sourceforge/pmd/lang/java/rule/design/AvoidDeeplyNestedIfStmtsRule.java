@@ -41,7 +41,7 @@ public class AvoidDeeplyNestedIfStmtsRule extends AbstractJavaRule {
         }
         super.visit(node, data);
         if (depth == depthLimit) {
-            addViolation(data, node);
+            asCtx(data).addViolation(node);
         }
         depth--;
         return data;

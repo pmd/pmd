@@ -5,18 +5,18 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * Represents the body of a {@linkplain ASTClassOrInterfaceDeclaration class or interface declaration}.
+ * Represents the body of a {@linkplain ASTClassDeclaration class or interface declaration}.
  * This includes anonymous classes, including those defined within an {@linkplain ASTEnumConstant enum constant}.
  *
  * <pre class="grammar">
  *
- * ClassOrInterfaceBody ::=  "{"  {@linkplain ASTBodyDeclaration ClassOrInterfaceBodyDeclaration}* "}"
+ * ClassBody ::=  "{"  {@linkplain ASTBodyDeclaration ClassBodyDeclaration}* "}"
  *
  * </pre>
  */
-public final class ASTClassOrInterfaceBody extends ASTTypeBody {
+public final class ASTClassBody extends ASTTypeBody {
 
-    ASTClassOrInterfaceBody(int id) {
+    ASTClassBody(int id) {
         super(id);
     }
 

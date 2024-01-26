@@ -40,7 +40,7 @@ class JspDocStyleTest extends AbstractJspNodesTst {
     void testElementAttributeAndNamespace() {
         ASTCompilationUnit root = jsp.parse(TEST_ELEMENT_AND_NAMESPACE);
 
-        List<ASTElement> elementNodes = root.findDescendantsOfType(ASTElement.class);
+        List<ASTElement> elementNodes = root.descendants(ASTElement.class).toList();
         assertEquals(1, elementNodes.size(), "One element node expected!");
         ASTElement element = elementNodes.get(0);
         assertEquals("h:html", element.getName(), "Correct name expected!");
@@ -49,7 +49,7 @@ class JspDocStyleTest extends AbstractJspNodesTst {
         assertEquals("h", element.getNamespacePrefix(), "Correct namespace prefix of element expected!");
         assertEquals("html", element.getLocalName(), "Correct local name of element expected!");
 
-        List<ASTAttribute> attributeNodes = root.findDescendantsOfType(ASTAttribute.class);
+        List<ASTAttribute> attributeNodes = root.descendants(ASTAttribute.class).toList();
         assertEquals(1, attributeNodes.size(), "One attribute node expected!");
         ASTAttribute attribute = attributeNodes.get(0);
         assertEquals("MyNsPrefix:MyAttr", attribute.getName(), "Correct name expected!");
@@ -68,21 +68,21 @@ class JspDocStyleTest extends AbstractJspNodesTst {
     void testAttributeValueContainingHash() {
         ASTCompilationUnit root = jsp.parse(TEST_ATTRIBUTE_VALUE_CONTAINING_HASH);
 
-        List<ASTAttribute> attrsList = root.findDescendantsOfType(ASTAttribute.class);
+        List<ASTAttribute> attrsList = root.descendants(ASTAttribute.class).toList();
         assertEquals(3, attrsList.size(), "Three attributes expected!");
 
         ASTAttribute attr = attrsList.get(0);
 
         assertEquals("something", attr.getName(), "Correct attribute name expected!");
-        assertEquals("#yes#", attr.getFirstDescendantOfType(ASTAttributeValue.class).getImage(), "Correct attribute value expected!");
+        assertEquals("#yes#", attr.descendants(ASTAttributeValue.class).first().getImage(), "Correct attribute value expected!");
 
         attr = attrsList.get(1);
         assertEquals("foo", attr.getName(), "Correct attribute name expected!");
-        assertEquals("CREATE", attr.getFirstDescendantOfType(ASTAttributeValue.class).getImage(), "Correct attribute value expected!");
+        assertEquals("CREATE", attr.descendants(ASTAttributeValue.class).first().getImage(), "Correct attribute value expected!");
 
         attr = attrsList.get(2);
         assertEquals("href", attr.getName(), "Correct attribute name expected!");
-        assertEquals("#", attr.getFirstDescendantOfType(ASTAttributeValue.class).getImage(), "Correct attribute value expected!");
+        assertEquals("#", attr.descendants(ASTAttributeValue.class).first().getImage(), "Correct attribute value expected!");
     }
 
     /**
@@ -104,12 +104,12 @@ class JspDocStyleTest extends AbstractJspNodesTst {
     void testDoctype() {
         ASTCompilationUnit root = jsp.parse(TEST_DOCTYPE);
 
-        List<ASTDoctypeDeclaration> docTypeDeclarations = root.findDescendantsOfType(ASTDoctypeDeclaration.class);
+        List<ASTDoctypeDeclaration> docTypeDeclarations = root.descendants(ASTDoctypeDeclaration.class).toList();
         assertEquals(1, docTypeDeclarations.size(), "One doctype declaration expected!");
         ASTDoctypeDeclaration docTypeDecl = docTypeDeclarations.iterator().next();
         assertEquals("html", docTypeDecl.getName(), "Correct doctype-name expected!");
 
-        List<ASTDoctypeExternalId> externalIds = root.findDescendantsOfType(ASTDoctypeExternalId.class);
+        List<ASTDoctypeExternalId> externalIds = root.descendants(ASTDoctypeExternalId.class).toList();
         assertEquals(1, externalIds.size(), "One doctype external id expected!");
         ASTDoctypeExternalId externalId = externalIds.iterator().next();
         assertEquals("-//W3C//DTD XHTML 1.1//EN", externalId.getPublicId(), "Correct external public id expected!");
@@ -149,7 +149,7 @@ class JspDocStyleTest extends AbstractJspNodesTst {
         List<ASTHtmlScript> scripts = jsp.getNodes(ASTHtmlScript.class, TEST_IMPORT_JAVASCRIPT);
         assertEquals(1, scripts.size(), "One script expected!");
         ASTHtmlScript script = scripts.iterator().next();
-        List<ASTAttributeValue> value = script.findDescendantsOfType(ASTAttributeValue.class);
+        List<ASTAttributeValue> value = script.descendants(ASTAttributeValue.class).toList();
         assertEquals("filename.js", value.get(0).getImage());
     }
 
@@ -162,7 +162,7 @@ class JspDocStyleTest extends AbstractJspNodesTst {
         assertEquals(1, scripts.size(), "One script expected!");
         ASTHtmlScript script = scripts.iterator().next();
         assertEquals("Script!", script.getImage(), "Correct script content expected!");
-        List<ASTAttributeValue> attrs = script.findDescendantsOfType(ASTAttributeValue.class);
+        List<ASTAttributeValue> attrs = script.descendants(ASTAttributeValue.class).toList();
         assertEquals("text/javascript", attrs.get(0).getImage());
     }
 

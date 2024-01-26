@@ -25,7 +25,7 @@ class SelectExpressionsTest extends AbstractPLSQLParserTst {
         ASTInput input = plsql.parseResource("SelectSimpleExpression.pls");
         assertNotNull(input);
 
-        List<ASTSimpleExpression> simpleExpressions = input.findDescendantsOfType(ASTSimpleExpression.class);
+        List<ASTSimpleExpression> simpleExpressions = input.descendants(ASTSimpleExpression.class).toList();
         assertEquals(1, simpleExpressions.size());
         ASTSimpleExpression exp = simpleExpressions.get(0);
         assertEquals("e.first_name", exp.getImage());

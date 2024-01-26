@@ -17,13 +17,13 @@ class WhereClauseTest extends AbstractPLSQLParserTst {
     @Test
     void testFunctionCall() {
         ASTInput input = plsql.parseResource("WhereClauseFunctionCall.pls");
-        List<ASTSelectIntoStatement> selectStatements = input.findDescendantsOfType(ASTSelectIntoStatement.class);
+        List<ASTSelectIntoStatement> selectStatements = input.descendants(ASTSelectIntoStatement.class).toList();
         assertEquals(4, selectStatements.size());
 
-        ASTFunctionCall functionCall = selectStatements.get(0).getFirstDescendantOfType(ASTFunctionCall.class);
+        ASTFunctionCall functionCall = selectStatements.get(0).descendants(ASTFunctionCall.class).first();
         assertEquals("UPPER", functionCall.getImage());
 
-        ASTFunctionCall functionCall2 = selectStatements.get(2).getFirstDescendantOfType(ASTFunctionCall.class);
+        ASTFunctionCall functionCall2 = selectStatements.get(2).descendants(ASTFunctionCall.class).first();
         assertEquals("utils.get_colname", functionCall2.getImage());
     }
 
@@ -70,7 +70,7 @@ class WhereClauseTest extends AbstractPLSQLParserTst {
     @Test
     void testRegexpLikeCondition() {
         ASTInput input = plsql.parseResource("WhereClauseRegexpLike.pls");
-        List<ASTRegexpLikeCondition> regexps = input.findDescendantsOfType(ASTRegexpLikeCondition.class);
+        List<ASTRegexpLikeCondition> regexps = input.descendants(ASTRegexpLikeCondition.class).toList();
         assertEquals(3, regexps.size());
         assertEquals("last_name", regexps.get(1).getSourceChar().getImage());
         assertEquals("'([aeiou])\\1'", regexps.get(1).getPattern().getImage());

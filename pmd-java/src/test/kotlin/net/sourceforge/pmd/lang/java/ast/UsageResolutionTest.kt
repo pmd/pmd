@@ -39,7 +39,7 @@ class UsageResolutionTest : ProcessorTestSpec({
                 }
             }
         """)
-        val (barF1, fooF1, fooF2, localF2, localF22) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
+        val (barF1, fooF1, fooF2, localF2, localF22) = acu.descendants(ASTVariableId::class.java).toList()
         barF1.localUsages.map { it.text.toString() }.shouldContainExactly("this.f1", "super.f1")
         fooF1.localUsages.map { it.text.toString() }.shouldContainExactly("f1", "this.f1")
         fooF2.localUsages.map { it.text.toString() }.shouldContainExactly("this.f2")
@@ -60,7 +60,7 @@ class UsageResolutionTest : ProcessorTestSpec({
             }
         """)
 
-        val (p) = acu.descendants(ASTVariableDeclaratorId::class.java).toList()
+        val (p) = acu.descendants(ASTVariableId::class.java).toList()
 
         p::isRecordComponent shouldBe true
         p.localUsages.shouldHaveSize(2)

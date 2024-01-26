@@ -19,13 +19,13 @@ import net.sourceforge.pmd.lang.modelica.ast.ASTExtendsClause;
 import net.sourceforge.pmd.lang.modelica.ast.ASTStoredDefinition;
 import net.sourceforge.pmd.lang.modelica.ast.ModelicaClassSpecifierNode;
 import net.sourceforge.pmd.lang.modelica.ast.ModelicaNode;
-import net.sourceforge.pmd.lang.modelica.ast.ModelicaParserVisitorAdapter;
+import net.sourceforge.pmd.lang.modelica.ast.ModelicaVisitorBase;
 
 class ModelicaResolverTest {
 
     private final ModelicaParsingHelper modelica = ModelicaParsingHelper.DEFAULT;
 
-    private static class NodeFinder extends ModelicaParserVisitorAdapter {
+    private static class NodeFinder extends ModelicaVisitorBase<Object, Object> {
         private ModelicaNode result;
         private Class<?> nodeClass;
         private String nodeName;
@@ -153,7 +153,7 @@ class ModelicaResolverTest {
 
         ASTStoredDefinition ast = modelica.parse(contents);
 
-        List<ASTExtendsClause> extendsClauses = ast.findDescendantsOfType(ASTExtendsClause.class);
+        List<ASTExtendsClause> extendsClauses = ast.descendants(ASTExtendsClause.class).toList();
         assertEquals(1, extendsClauses.size());
         ASTExtendsClause extendsB = extendsClauses.get(0);
         assertEquals("#ROOT#FILE#Class:Test#Class:A", ((AbstractModelicaScope) extendsB.getMostSpecificScope()).getNestingRepresentation());

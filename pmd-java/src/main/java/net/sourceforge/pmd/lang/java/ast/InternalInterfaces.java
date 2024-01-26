@@ -131,22 +131,22 @@ final class InternalInterfaces {
     interface VariableIdOwner extends JavaNode {
 
         /** Returns the id of the declared variable. */
-        ASTVariableDeclaratorId getVarId();
+        ASTVariableId getVarId();
     }
 
-    interface MultiVariableIdOwner extends JavaNode, Iterable<ASTVariableDeclaratorId>, AccessNode {
+    interface MultiVariableIdOwner extends JavaNode, Iterable<ASTVariableId>, ModifierOwner {
 
         /**
          * Returns a stream of the variable ids declared
          * by this node.
          */
-        default NodeStream<ASTVariableDeclaratorId> getVarIds() {
-            return children(ASTVariableDeclarator.class).children(ASTVariableDeclaratorId.class);
+        default NodeStream<ASTVariableId> getVarIds() {
+            return children(ASTVariableDeclarator.class).children(ASTVariableId.class);
         }
 
 
         @Override
-        default Iterator<ASTVariableDeclaratorId> iterator() {
+        default Iterator<ASTVariableId> iterator() {
             return getVarIds().iterator();
         }
 

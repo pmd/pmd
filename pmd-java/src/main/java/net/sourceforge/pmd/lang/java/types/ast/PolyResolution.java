@@ -18,7 +18,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayInitializer;
@@ -42,6 +41,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVoidType;
 import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
@@ -362,10 +362,10 @@ final class PolyResolution {
             context.ancestors().first(
                 it -> it instanceof ASTMethodDeclaration
                     || it instanceof ASTLambdaExpression
-                    || it instanceof ASTAnyTypeDeclaration
+                    || it instanceof ASTTypeDeclaration
             );
 
-        if (methodDecl == null || methodDecl instanceof ASTAnyTypeDeclaration) {
+        if (methodDecl == null || methodDecl instanceof ASTTypeDeclaration) {
             // in initializer, or constructor decl, return with expression is forbidden
             // (this is an error)
             return null;

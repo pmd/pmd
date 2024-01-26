@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLoopStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
@@ -20,7 +20,7 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 public class UseStringBufferForStringAppendsRule extends AbstractJavaRulechainRule {
 
     public UseStringBufferForStringAppendsRule() {
-        super(ASTVariableDeclaratorId.class);
+        super(ASTVariableId.class);
     }
 
     /**
@@ -30,7 +30,7 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRulechainRu
      * @return Object This returns the data passed in. If violation happens, violation is added to data.
      */
     @Override
-    public Object visit(ASTVariableDeclaratorId node, Object data) {
+    public Object visit(ASTVariableId node, Object data) {
         if (!TypeTestUtil.isA(String.class, node) || node.isForeachVariable()) {
             return data;
         }
@@ -71,7 +71,7 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRulechainRu
             if (usage.getAccessType() == AccessType.WRITE && !isSimpleAssignment) {
                 if (isWithinLoop(usage)) {
                     // always report appends within a loop
-                    addViolation(data, usage);
+                    asCtx(data).addViolation(usage);
                 } else {
                     possibleViolations.add(usage);
                 }
@@ -81,7 +81,7 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRulechainRu
         // only report, if it is used more than once
         // then all usage locations are reported
         if (usageCounter > 1) {
-            possibleViolations.forEach(v -> addViolation(data, v));
+            possibleViolations.forEach(v -> asCtx(data).addViolation(v));
         }
 
         return data;

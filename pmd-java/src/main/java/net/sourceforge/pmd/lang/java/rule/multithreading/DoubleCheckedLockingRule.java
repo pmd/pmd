@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
@@ -89,19 +89,19 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
             return data;
         }
 
-        List<ASTIfStatement> isl = node.findDescendantsOfType(ASTIfStatement.class);
+        List<ASTIfStatement> isl = node.descendants(ASTIfStatement.class).toList();
         if (isl.size() == 2) {
             ASTIfStatement outerIf = isl.get(0);
             if (JavaRuleUtil.isNullCheck(outerIf.getCondition(), returnVariable)) {
                 // find synchronized
-                List<ASTSynchronizedStatement> ssl = outerIf.findDescendantsOfType(ASTSynchronizedStatement.class);
+                List<ASTSynchronizedStatement> ssl = outerIf.descendants(ASTSynchronizedStatement.class).toList();
                 if (ssl.size() == 1 && ssl.get(0).ancestors().any(it -> it == outerIf)) {
                     ASTIfStatement is2 = isl.get(1);
                     if (JavaRuleUtil.isNullCheck(is2.getCondition(), returnVariable)) {
-                        List<ASTAssignmentExpression> assignments = is2.findDescendantsOfType(ASTAssignmentExpression.class);
+                        List<ASTAssignmentExpression> assignments = is2.descendants(ASTAssignmentExpression.class).toList();
                         if (assignments.size() == 1
                             && JavaAstUtils.isReferenceToVar(assignments.get(0).getLeftOperand(), returnVariable)) {
-                            addViolation(data, node);
+                            asCtx(data).addViolation(node);
 
                         }
                     }
@@ -114,7 +114,7 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
     private boolean isLocalOnlyStoredWithVolatileField(ASTMethodDeclaration method, JVariableSymbol local) {
         ASTExpression initializer;
         if (local instanceof JLocalVariableSymbol) {
-            ASTVariableDeclaratorId id = local.tryGetNode();
+            ASTVariableId id = local.tryGetNode();
             if (id == null) {
                 return false;
             }

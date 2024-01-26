@@ -42,7 +42,7 @@ public class AppendCharacterWithCharRule extends AbstractJavaRulechainRule {
                     && (TypeTestUtil.isDeclaredInClass(StringBuilder.class, call.getMethodType())
                     || TypeTestUtil.isDeclaredInClass(StringBuffer.class, call.getMethodType()))
                 ) {
-                    addViolation(data, node);
+                    asCtx(data).addViolation(node);
                 }
             }
         }

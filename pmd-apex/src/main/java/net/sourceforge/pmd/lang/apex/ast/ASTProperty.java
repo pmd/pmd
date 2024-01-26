@@ -34,7 +34,7 @@ public final class ASTProperty extends AbstractApexNode.Single<PropertyDeclarati
     }
 
     public ASTModifierNode getModifiers() {
-        return getFirstChildOfType(ASTModifierNode.class);
+        return firstChild(ASTModifierNode.class);
     }
 
     /**

@@ -7,8 +7,8 @@ package net.sourceforge.pmd.lang.java.metrics.impl;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics.NcssOption;
 import net.sourceforge.pmd.lang.metrics.MetricOption;
@@ -33,8 +33,8 @@ public class NcssTestRule extends JavaIntMetricTestRule {
     @Override
     protected boolean reportOn(Node node) {
         return super.reportOn(node)
-            && (node instanceof ASTMethodOrConstructorDeclaration
-            || getProperty(REPORT_CLASSES) && node instanceof ASTAnyTypeDeclaration);
+            && (node instanceof ASTExecutableDeclaration
+            || getProperty(REPORT_CLASSES) && node instanceof ASTTypeDeclaration);
     }
 
     @Override

@@ -12,8 +12,8 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
  * <pre class="grammar">
  *
  * ModuleProvidesDirective ::=
- *     "provides" {@linkplain ASTClassOrInterfaceType ClassType}
- *     "with" {@linkplain ASTClassOrInterfaceType ClassType} ( "," {@linkplain ASTClassOrInterfaceType ClassType} )*
+ *     "provides" {@linkplain ASTClassType ClassType}
+ *     "with" {@linkplain ASTClassType ClassType} ( "," {@linkplain ASTClassType ClassType} )*
  *     ";"
  *
  * </pre>
@@ -32,15 +32,15 @@ public final class ASTModuleProvidesDirective extends ASTModuleDirective {
     /**
      * Returns the node representing the provided interface.
      */
-    public ASTClassOrInterfaceType getService() {
-        return firstChild(ASTClassOrInterfaceType.class);
+    public ASTClassType getService() {
+        return firstChild(ASTClassType.class);
     }
 
     /**
      * Returns the nodes representing the service providers, that is,
      * the service implementations.
      */
-    public NodeStream<ASTClassOrInterfaceType> getServiceProviders() {
-        return children(ASTClassOrInterfaceType.class).drop(1);
+    public NodeStream<ASTClassType> getServiceProviders() {
+        return children(ASTClassType.class).drop(1);
     }
 }

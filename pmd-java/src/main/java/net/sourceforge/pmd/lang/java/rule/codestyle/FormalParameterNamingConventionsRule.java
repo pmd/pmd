@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import java.util.regex.Pattern;
 
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 
@@ -17,7 +17,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  * @author Clément Fournier
  * @since 6.6.0
  */
-public final class FormalParameterNamingConventionsRule extends AbstractNamingConventionRule<ASTVariableDeclaratorId> {
+public final class FormalParameterNamingConventionsRule extends AbstractNamingConventionRule<ASTVariableId> {
 
     // These are not exhaustive, but are chosen to be the most useful, for a start
 
@@ -30,7 +30,7 @@ public final class FormalParameterNamingConventionsRule extends AbstractNamingCo
 
 
     public FormalParameterNamingConventionsRule() {
-        super(ASTVariableDeclaratorId.class);
+        super(ASTVariableId.class);
         definePropertyDescriptor(formalParamRegex);
         definePropertyDescriptor(finalFormalParamRegex);
         definePropertyDescriptor(lambdaParamRegex);
@@ -38,7 +38,7 @@ public final class FormalParameterNamingConventionsRule extends AbstractNamingCo
     }
 
     @Override
-    public Object visit(ASTVariableDeclaratorId node, Object data) {
+    public Object visit(ASTVariableId node, Object data) {
 
         if (node.isLambdaParameter()) {
             checkMatches(node, node.isTypeInferred() ? lambdaParamRegex : explicitLambdaParamRegex, data);
@@ -56,12 +56,12 @@ public final class FormalParameterNamingConventionsRule extends AbstractNamingCo
     }
 
     @Override
-    String nameExtractor(ASTVariableDeclaratorId node) {
+    String nameExtractor(ASTVariableId node) {
         return node.getName();
     }
 
     @Override
-    String kindDisplayName(ASTVariableDeclaratorId node, PropertyDescriptor<Pattern> descriptor) {
+    String kindDisplayName(ASTVariableId node, PropertyDescriptor<Pattern> descriptor) {
         if (node.isLambdaParameter()) {
             return node.isTypeInferred() ? "lambda parameter" : "explicitly-typed lambda parameter";
         } else if (node.isFormalParameter()) { // necessarily a method parameter here

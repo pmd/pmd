@@ -28,7 +28,7 @@ public class AvoidUsingOctalValuesRule extends AbstractJavaRulechainRule {
     public Object visit(ASTNumericLiteral node, Object data) {
         if (node.getBase() == 8) {
             if (getProperty(STRICT_METHODS_DESCRIPTOR) || !isBetweenZeroAnd7(node)) {
-                addViolation(data, node);
+                asCtx(data).addViolation(node);
             }
         }
         return null;

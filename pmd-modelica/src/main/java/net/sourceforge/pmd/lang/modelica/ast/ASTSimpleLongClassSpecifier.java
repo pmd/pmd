@@ -19,6 +19,6 @@ public final class ASTSimpleLongClassSpecifier extends AbstractModelicaClassSpec
     @Override
     void populateExtendsAndImports(ModelicaClassType classTypeDeclaration) {
         super.populateExtendsAndImports(classTypeDeclaration);
-        pushExtendsAndImports(classTypeDeclaration, getFirstChildOfType(ASTComposition.class));
+        pushExtendsAndImports(classTypeDeclaration, firstChild(ASTComposition.class));
     }
 }

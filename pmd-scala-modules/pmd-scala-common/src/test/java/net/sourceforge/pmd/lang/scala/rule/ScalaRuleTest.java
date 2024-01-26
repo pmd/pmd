@@ -47,12 +47,12 @@ class ScalaRuleTest extends BaseScalaTest {
             }
 
             @Override
-            public RuleContext visit(ASTTermApply node, RuleContext data) {
-                ASTTermName child = node.getFirstChildOfType(ASTTermName.class);
+            public RuleContext visit(ASTTermApply node, RuleContext ruleContext) {
+                ASTTermName child = node.firstChild(ASTTermName.class);
                 if (child != null && child.hasImageEqualTo("println")) {
-                    addViolation(data, node);
+                    ruleContext.addViolation(node);
                 }
-                return data;
+                return ruleContext;
             }
         };
         Report report = scala.executeRuleOnResource(rule, SCALA_TEST);

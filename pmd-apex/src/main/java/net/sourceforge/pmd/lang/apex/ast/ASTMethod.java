@@ -151,7 +151,7 @@ public final class ASTMethod extends AbstractApexNode implements ApexQualifiable
     }
 
     public ASTModifierNode getModifiers() {
-        return getFirstChildOfType(ASTModifierNode.class);
+        return firstChild(ASTModifierNode.class);
     }
 
     /**

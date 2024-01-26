@@ -47,11 +47,11 @@ Avoid using dollar signs in variable/method/class/interface names.
             <property name="xpath">
                 <value>
 <![CDATA[
-      //ClassOrInterfaceDeclaration[contains(@SimpleName, '$')]
+      //ClassDeclaration           [contains(@SimpleName, '$')]
     | //EnumDeclaration            [contains(@SimpleName, '$')]
     | //AnnotationTypeDeclaration  [contains(@SimpleName, '$')]
     | //RecordDeclaration          [contains(@SimpleName, '$')]
-    | //VariableDeclaratorId       [contains(@Name, '$')]
+    | //VariableId                 [contains(@Name, '$')]
     | //MethodDeclaration          [contains(@Name, '$')]
 
 ]]>
@@ -81,8 +81,8 @@ Clarify your intent by using private or package access modifiers instead.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[@Final = true()]
-/ClassOrInterfaceBody
+//ClassDeclaration[@Final = true()]
+/ClassBody
 /FieldDeclaration[@Visibility = "protected"]
 ]]>
                 </value>
@@ -115,8 +115,8 @@ visibility cannot be reduced). Clarify your intent by using private or package a
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[@Final= true() and not(ExtendsList)]
-/ClassOrInterfaceBody
+//ClassDeclaration[@Final= true() and not(ExtendsList)]
+/ClassBody
 /MethodDeclaration[@Visibility="protected" and @Name != 'finalize']
  ]]>
                 </value>
@@ -145,7 +145,7 @@ and increases the maintenance burden.
         <priority>2</priority>
         <properties>
             <property name="xpath">
-                <value>//MethodCall[TypeExpression/ClassOrInterfaceType[pmd-java:typeIs('java.lang.System')]
+                <value>//MethodCall[TypeExpression/ClassType[pmd-java:typeIs('java.lang.System')]
                                     and @MethodName = 'loadLibrary']</value>
             </property>
         </properties>
@@ -218,8 +218,8 @@ another constructor (such as an overloaded constructor) is called, this rule wil
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[ExtendsList/*]
-  /ClassOrInterfaceBody
+//ClassDeclaration[ExtendsList/*]
+  /ClassBody
   /ConstructorDeclaration[ not(Block/ExplicitConstructorInvocation) ]
 ]]>
                 </value>
@@ -431,8 +431,8 @@ usage by developers who should be implementing their own versions in the concret
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[@RegularClass = true() and pmd-java:modifiers() = "abstract"]
-    /ClassOrInterfaceBody
+//ClassDeclaration[@RegularClass = true() and pmd-java:modifiers() = "abstract"]
+    /ClassBody
     /MethodDeclaration
     [Block[
       let $size := count(*[not(self::EmptyStatement)])
@@ -517,7 +517,7 @@ class Foo {
             <property name="xpath">
                 <value>
 <![CDATA[
-//ExtendsList/ClassOrInterfaceType[pmd-java:typeIsExactly('java.lang.Object')]
+//ExtendsList/ClassType[pmd-java:typeIsExactly('java.lang.Object')]
 ]]>
                 </value>
             </property>
@@ -852,7 +852,7 @@ The Local Home interface of a Session EJB should be suffixed by 'LocalHome'.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration
+//ClassDeclaration
 [
     pmd-java:typeIs('javax.ejb.EJBLocalHome')
     and not(ends-with(@SimpleName, 'LocalHome'))
@@ -884,7 +884,7 @@ The Local Interface of a Session EJB should be suffixed by 'Local'.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration
+//ClassDeclaration
 [
     pmd-java:typeIs('javax.ejb.EJBLocalObject')
     and not(ends-with(@SimpleName, 'Local'))
@@ -975,7 +975,7 @@ Fields, formal arguments, or local variable names that are too long can make the
             <property name="xpath">
                 <value>
 <![CDATA[
-//VariableDeclaratorId[string-length(@Name) > $minimum]
+//VariableId[string-length(@Name) > $minimum]
 ]]>
                 </value>
             </property>
@@ -1009,7 +1009,7 @@ The EJB Specification states that any MessageDrivenBean or SessionBean should be
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration
+//ClassDeclaration
 [
     (pmd-java:typeIs('javax.ejb.SessionBean')
      or pmd-java:typeIs('javax.ejb.MessageDrivenBean'))
@@ -1088,7 +1088,7 @@ Detects when a class, interface, enum or annotation does not have a package defi
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>/CompilationUnit[not(PackageDeclaration)]/*[pmd-java:nodeIs("AnyTypeDeclaration")][1]</value>
+                <value>/CompilationUnit[not(PackageDeclaration)]/*[pmd-java:nodeIs("TypeDeclaration")][1]</value>
             </property>
         </properties>
         <example>
@@ -1272,7 +1272,7 @@ Remote Interface of a Session EJB should not have a suffix.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration
+//ClassDeclaration
 [
     pmd-java:typeIs('javax.ejb.EJBObject')
     and matches(@SimpleName, '.*(Session|EJB|Bean)$')
@@ -1309,7 +1309,7 @@ A Remote Home interface type of a Session EJB should be suffixed by 'Home'.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration
+//ClassDeclaration
 [
     pmd-java:typeIs('javax.ejb.EJBHome')
     and not(ends-with(@SimpleName, 'Home'))
@@ -1342,7 +1342,7 @@ Short Classnames with fewer than e.g. five characters are not recommended.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[string-length(@SimpleName) < $minimum]
+//ClassDeclaration[string-length(@SimpleName) < $minimum]
 ]]>
                 </value>
             </property>
@@ -1400,7 +1400,7 @@ Fields, local variables, enum constant names or parameter names that are very sh
             <property name="xpath">
                 <value>
 <![CDATA[
-//VariableDeclaratorId[string-length(@Name) < $minimum]
+//VariableId[string-length(@Name) < $minimum]
  (: ForStatement :)
  [not(../../parent::ForInit)]
  (: Foreach statement :)
@@ -1978,8 +1978,8 @@ public class Foo {
             <property name="xpath">
                 <value>
 <![CDATA[
-//ThisExpression/ClassOrInterfaceType
-[ ancestor::*[pmd-java:nodeIs('AnyTypeDeclaration')][1]/@SimpleName = ./@SimpleName ]
+//ThisExpression/ClassType
+[ ancestor::*[pmd-java:nodeIs('TypeDeclaration')][1]/@SimpleName = ./@SimpleName ]
 ]]>
                 </value>
             </property>
@@ -2033,7 +2033,7 @@ E.g. `int[] x = new int[] { 1, 2, 3 };` can be written as `int[] x = { 1, 2, 3 }
             <property name="xpath">
                 <value><![CDATA[
 //VariableDeclarator
-    [VariableDeclaratorId[@TypeInferred = false() and @ArrayType = true()]]
+    [VariableId[@TypeInferred = false() and @ArrayType = true()]]
     [ArrayAllocation/ArrayInitializer]
                 ]]></value>
             </property>

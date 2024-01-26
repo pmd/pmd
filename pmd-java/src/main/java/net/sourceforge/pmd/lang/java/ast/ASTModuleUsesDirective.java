@@ -28,8 +28,8 @@ public final class ASTModuleUsesDirective extends ASTModuleDirective {
     /**
      * Returns the node representing the consumed service.
      */
-    public ASTClassOrInterfaceType getService() {
-        return firstChild(ASTClassOrInterfaceType.class);
+    public ASTClassType getService() {
+        return firstChild(ASTClassType.class);
     }
 
 }

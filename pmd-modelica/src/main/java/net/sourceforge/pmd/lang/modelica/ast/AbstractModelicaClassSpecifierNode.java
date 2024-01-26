@@ -18,7 +18,7 @@ abstract class AbstractModelicaClassSpecifierNode extends AbstractModelicaNode i
     @Override
     public void jjtClose() {
         super.jjtClose();
-        setImage(getFirstChildOfType(ASTSimpleName.class).getImage());
+        setImage(firstChild(ASTSimpleName.class).getImage());
     }
 
     /**
@@ -37,14 +37,14 @@ abstract class AbstractModelicaClassSpecifierNode extends AbstractModelicaNode i
                 InternalModelicaResolverApi.addExtendToClass(
                         classTypeDeclaration,
                         listNode.getVisibility(),
-                        child.getFirstChildOfType(ASTName.class).getCompositeName()
+                        child.firstChild(ASTName.class).getCompositeName()
                 );
             }
             if (child instanceof ASTImportClause) {
                 InternalModelicaResolverApi.addImportToClass(
                         classTypeDeclaration,
                         listNode.getVisibility(),
-                        child.getFirstChildOfType(ModelicaImportClause.class)
+                        child.firstChild(ModelicaImportClause.class)
                 );
             }
         }

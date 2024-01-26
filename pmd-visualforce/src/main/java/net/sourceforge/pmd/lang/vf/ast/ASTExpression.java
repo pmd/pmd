@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.vf.ast;
 
 import java.util.IdentityHashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -90,8 +89,7 @@ public final class ASTExpression extends AbstractVfNode {
         Map<VfTypedNode, String> result = new IdentityHashMap<>();
 
         int numChildren = getNumChildren();
-        List<ASTIdentifier> identifiers = findChildrenOfType(ASTIdentifier.class);
-        for (ASTIdentifier identifier : identifiers) {
+        for (ASTIdentifier identifier : children(ASTIdentifier.class)) {
             @SuppressWarnings("PMD.LooseCoupling") // see #1218 - we are calling getLast() which is LinkedList specific
             LinkedList<VfTypedNode> identifierNodes = new LinkedList<>();
 

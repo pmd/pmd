@@ -43,7 +43,7 @@ public class TooManyFieldsRule extends AbstractApexRule {
     @Override
     public Object visit(ASTUserClass node, Object data) {
 
-        List<ASTField> fields = node.findChildrenOfType(ASTField.class);
+        List<ASTField> fields = node.children(ASTField.class).toList();
 
         int val = 0;
         for (ASTField field : fields) {
@@ -53,7 +53,7 @@ public class TooManyFieldsRule extends AbstractApexRule {
             val++;
         }
         if (val > getProperty(MAX_FIELDS_DESCRIPTOR)) {
-            addViolation(data, node);
+            asCtx(data).addViolation(node);
         }
         return data;
     }

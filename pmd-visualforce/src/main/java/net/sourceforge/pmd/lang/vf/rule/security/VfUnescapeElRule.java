@@ -69,13 +69,13 @@ public class VfUnescapeElRule extends AbstractVfRule {
 
     private void processElInScriptContext(ASTElExpression elExpression, Object data) {
         if (!properlyEscaped(elExpression)) {
-            addViolation(data, elExpression);
+            asCtx(data).addViolation(elExpression);
         }
     }
 
     private boolean properlyEscaped(ASTElExpression el) {
         // Find the first Expression-type child of this top-level node.
-        ASTExpression expression = el.getFirstChildOfType(ASTExpression.class);
+        ASTExpression expression = el.firstChild(ASTExpression.class);
 
         // If no such node was found, then there's nothing to escape, so we're fine.
         return expression == null
@@ -105,7 +105,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
             return;
         }
 
-        final List<ASTAttribute> attributes = node.findChildrenOfType(ASTAttribute.class);
+        final List<ASTAttribute> attributes = node.children(ASTAttribute.class).toList();
         boolean isEL = false;
         final Set<ASTElExpression> toReport = new HashSet<>();
 
@@ -116,7 +116,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
             if (HREF.equalsIgnoreCase(name) || SRC.equalsIgnoreCase(name)) {
                 boolean startingWithSlashText = false;
 
-                final ASTText attrText = attr.getFirstDescendantOfType(ASTText.class);
+                final ASTText attrText = attr.descendants(ASTText.class).first();
                 if (attrText != null) {
                     if (0 == attrText.getIndexInParent()) {
                         String lowerCaseImage = attrText.getImage().toLowerCase(Locale.ROOT);
@@ -128,8 +128,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
                 }
 
                 if (!startingWithSlashText) {
-                    final List<ASTElExpression> elsInVal = attr.findDescendantsOfType(ASTElExpression.class);
-                    for (ASTElExpression el : elsInVal) {
+                    for (ASTElExpression el : attr.descendants(ASTElExpression.class)) {
                         if (startsWithSlashLiteral(el)) {
                             break;
                         }
@@ -151,24 +150,22 @@ public class VfUnescapeElRule extends AbstractVfRule {
 
         if (isEL) {
             for (ASTElExpression expr : toReport) {
-                addViolation(data, expr);
+                asCtx(data).addViolation(expr);
             }
         }
 
     }
 
     private void checkAllOnEventTags(ASTElement node, Object data) {
-        final List<ASTAttribute> attributes = node.findChildrenOfType(ASTAttribute.class);
         boolean isEL = false;
         final Set<ASTElExpression> toReport = new HashSet<>();
 
-        for (ASTAttribute attr : attributes) {
+        for (ASTAttribute attr : node.children(ASTAttribute.class)) {
             String name = attr.getName().toLowerCase(Locale.ROOT);
             // look for onevents
 
             if (ON_EVENT.matcher(name).matches()) {
-                final List<ASTElExpression> elsInVal = attr.findDescendantsOfType(ASTElExpression.class);
-                for (ASTElExpression el : elsInVal) {
+                for (ASTElExpression el : attr.descendants(ASTElExpression.class)) {
                     if (ElEscapeDetector.startsWithSafeResource(el)) {
                         continue;
                     }
@@ -184,16 +181,16 @@ public class VfUnescapeElRule extends AbstractVfRule {
 
         if (isEL) {
             for (ASTElExpression expr : toReport) {
-                addViolation(data, expr);
+                asCtx(data).addViolation(expr);
             }
         }
 
     }
 
     private boolean startsWithSlashLiteral(final ASTElExpression elExpression) {
-        final ASTExpression expression = elExpression.getFirstChildOfType(ASTExpression.class);
+        final ASTExpression expression = elExpression.firstChild(ASTExpression.class);
         if (expression != null) {
-            final ASTLiteral literal = expression.getFirstChildOfType(ASTLiteral.class);
+            final ASTLiteral literal = expression.firstChild(ASTLiteral.class);
             if (literal != null && literal.getIndexInParent() == 0) {
                 String lowerCaseLiteral = literal.getImage().toLowerCase(Locale.ROOT);
                 if (lowerCaseLiteral.startsWith("'/") || lowerCaseLiteral.startsWith("\"/")
@@ -209,18 +206,17 @@ public class VfUnescapeElRule extends AbstractVfRule {
     }
 
     private void checkApexTagsThatSupportEscaping(ASTElement node, Object data) {
-        final List<ASTAttribute> attributes = node.findChildrenOfType(ASTAttribute.class);
         final Set<ASTElExpression> toReport = new HashSet<>();
         boolean isUnescaped = false;
         boolean isEL = false;
         boolean hasPlaceholders = false;
 
-        for (ASTAttribute attr : attributes) {
+        for (ASTAttribute attr : node.children(ASTAttribute.class)) {
             String name = attr.getName().toLowerCase(Locale.ROOT);
             switch (name) {
             case ESCAPE:
             case ITEM_ESCAPED:
-                final ASTText text = attr.getFirstDescendantOfType(ASTText.class);
+                final ASTText text = attr.descendants(ASTText.class).first();
                 if (text != null) {
                     if (FALSE.equalsIgnoreCase(text.getImage())) {
                         isUnescaped = true;
@@ -230,8 +226,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
             case VALUE:
             case ITEM_VALUE:
 
-                final List<ASTElExpression> elsInVal = attr.findDescendantsOfType(ASTElExpression.class);
-                for (ASTElExpression el : elsInVal) {
+                for (ASTElExpression el : attr.descendants(ASTElExpression.class)) {
                     if (ElEscapeDetector.startsWithSafeResource(el)) {
                         continue;
                     }
@@ -243,7 +238,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
                     }
                 }
 
-                final ASTText textValue = attr.getFirstDescendantOfType(ASTText.class);
+                final ASTText textValue = attr.descendants(ASTText.class).first();
                 if (textValue != null) {
 
                     if (PLACEHOLDERS.matcher(textValue.getImage()).matches()) {
@@ -260,13 +255,13 @@ public class VfUnescapeElRule extends AbstractVfRule {
 
         if (hasPlaceholders && isUnescaped) {
             for (ASTElExpression expr : hasELInInnerElements(node)) {
-                addViolation(data, expr);
+                asCtx(data).addViolation(expr);
             }
         }
 
         if (isEL && isUnescaped) {
             for (ASTElExpression expr : toReport) {
-                addViolation(data, expr);
+                asCtx(data).addViolation(expr);
             }
         }
     }
@@ -290,15 +285,12 @@ public class VfUnescapeElRule extends AbstractVfRule {
 
     private Set<ASTElExpression> hasELInInnerElements(final ASTElement node) {
         final Set<ASTElExpression> toReturn = new HashSet<>();
-        final ASTContent content = node.getFirstChildOfType(ASTContent.class);
+        final ASTContent content = node.firstChild(ASTContent.class);
         if (content != null) {
-            final List<ASTElement> innerElements = content.findChildrenOfType(ASTElement.class);
-            for (final ASTElement element : innerElements) {
+            for (final ASTElement element : content.children(ASTElement.class)) {
                 if (APEX_PARAM.equalsIgnoreCase(element.getName())) {
-                    final List<ASTAttribute> innerAttributes = element.findChildrenOfType(ASTAttribute.class);
-                    for (ASTAttribute attrib : innerAttributes) {
-                        final List<ASTElExpression> elsInVal = attrib.findDescendantsOfType(ASTElExpression.class);
-                        for (final ASTElExpression el : elsInVal) {
+                    for (ASTAttribute attrib : element.children(ASTAttribute.class)) {
+                        for (final ASTElExpression el : attrib.descendants(ASTElExpression.class)) {
                             if (ElEscapeDetector.startsWithSafeResource(el)) {
                                 continue;
                             }

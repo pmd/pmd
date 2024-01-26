@@ -86,7 +86,7 @@ suppression methods (e.g. by using `@SuppressWarnings` annotation).
     (: exclude anonymous privileged action classes :)
     [not(ancestor::ConstructorCall[1][pmd-java:typeIs('java.security.PrivilegedAction')]/AnonymousClassDeclaration)]
     (: exclude inner privileged action classes :)
-    [not(ancestor::ClassOrInterfaceDeclaration[1][pmd-java:typeIs('java.security.PrivilegedAction')])]
+    [not(ancestor::ClassDeclaration[1][pmd-java:typeIs('java.security.PrivilegedAction')])]
     (: exclude privileged action lambdas :)
     [not(ancestor::LambdaExpression[pmd-java:typeIs('java.security.PrivilegedAction')])]
 ]]>
@@ -147,7 +147,7 @@ for old Java code before Java 1.4. It can be used to identify problematic code p
         <priority>2</priority>
         <properties>
             <property name="xpath">
-                <value>//VariableDeclaratorId[@Name='assert']</value>
+                <value>//VariableId[@Name='assert']</value>
             </property>
         </properties>
         <example>
@@ -241,7 +241,7 @@ original error, causing other, more subtle problems later on.
             <property name="xpath">
                 <value>
 <![CDATA[
-//CatchClause/CatchParameter/ClassOrInterfaceType[pmd-java:typeIsExactly('java.lang.NullPointerException')]
+//CatchClause/CatchParameter/ClassType[pmd-java:typeIsExactly('java.lang.NullPointerException')]
 ]]>
                 </value>
             </property>
@@ -274,7 +274,7 @@ OutOfMemoryError that should be exposed and managed separately.
         <properties>
             <property name="xpath">
                 <value><![CDATA[
-                //CatchParameter[ClassOrInterfaceType[pmd-java:typeIsExactly('java.lang.Throwable')]]/VariableDeclaratorId
+                //CatchParameter[ClassType[pmd-java:typeIsExactly('java.lang.Throwable')]]/VariableId
                 ]]></value>
             </property>
         </properties>
@@ -369,7 +369,7 @@ for old Java code before Java 1.5. It can be used to identify problematic code p
         <priority>2</priority>
         <properties>
             <property name="xpath">
-                <value>//VariableDeclaratorId[@Name='enum']</value>
+                <value>//VariableId[@Name='enum']</value>
             </property>
         </properties>
         <example>
@@ -399,8 +399,8 @@ Smalltalk often prefer this approach as the methods denote accessor methods.
             <property name="xpath">
                 <value>
 <![CDATA[
-//FieldDeclaration/VariableDeclarator/VariableDeclaratorId
-    [some $method in ../../..[self::ClassOrInterfaceBody or self::EnumBody]/MethodDeclaration
+//FieldDeclaration/VariableDeclarator/VariableId
+    [some $method in ../../..[self::ClassBody or self::EnumBody]/MethodDeclaration
      satisfies lower-case(@Name) = lower-case($method/@Name)]
 ]]>
                 </value>
@@ -433,8 +433,8 @@ This probably means that type and/or field names should be chosen more carefully
             <property name="xpath">
                 <value>
 <![CDATA[
-//FieldDeclaration/VariableDeclarator/VariableDeclaratorId
-    [lower-case(@Name) = lower-case(ancestor::ClassOrInterfaceDeclaration[1]/@SimpleName)]
+//FieldDeclaration/VariableDeclarator/VariableId
+    [lower-case(@Name) = lower-case(ancestor::ClassDeclaration[1]/@SimpleName)]
 ]]>
                 </value>
             </property>
@@ -712,7 +712,7 @@ public String bar(String string) {
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration
+//ClassDeclaration
     [
       pmd-java:typeIs('android.app.Activity') or
       pmd-java:typeIs('android.app.Application') or
@@ -757,7 +757,7 @@ Super should be called at the end of the method
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration
+//ClassDeclaration
     [
       pmd-java:typeIs('android.app.Activity') or
       pmd-java:typeIs('android.app.Application') or
@@ -834,7 +834,7 @@ in a `ClassCastException`.
             <property name="xpath">
                 <value>
 <![CDATA[
-//CastExpression[ArrayType/ClassOrInterfaceType[not(pmd-java:typeIsExactly('java.lang.Object'))]]
+//CastExpression[ArrayType/ClassType[not(pmd-java:typeIsExactly('java.lang.Object'))]]
     /MethodCall[pmd-java:matchesSig("java.util.Collection#toArray()")]
 ]]>
                 </value>
@@ -944,7 +944,7 @@ Note: Such a covariant return type is only possible with Java 1.5 or higher.
 //MethodDeclaration
     [@Name = 'clone']
     [@Arity = 0]
-    [ClassOrInterfaceType[1]/@SimpleName != ancestor::ClassOrInterfaceDeclaration[1]/@SimpleName]
+    [ClassType[1]/@SimpleName != ancestor::ClassDeclaration[1]/@SimpleName]
 ]]>
                 </value>
             </property>
@@ -1250,7 +1250,7 @@ Extend Exception or RuntimeException instead of Throwable.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration/ExtendsList/ClassOrInterfaceType
+//ClassDeclaration/ExtendsList/ClassType
   [pmd-java:typeIsExactly('java.lang.Throwable')]
 ]]>
                 </value>
@@ -1416,7 +1416,7 @@ performance need (space or time).
             <property name="xpath">
                 <value>
 <![CDATA[
-//ForStatement/ForInit//VariableDeclaratorId[pmd-java:typeIs('float')]
+//ForStatement/ForInit//VariableId[pmd-java:typeIs('float')]
 ]]>
                 </value>
             </property>
@@ -1459,7 +1459,7 @@ or reported.
       count(*) = 0
       and ($allowCommentedBlocks = false() or Block/@containsComment = false())
   ]
-  and CatchParameter/VariableDeclaratorId[not(matches(@Name, $allowExceptionNameRegex))]
+  and CatchParameter/VariableId[not(matches(@Name, $allowExceptionNameRegex))]
 ]
 ]]>
                 </value>
@@ -2127,10 +2127,10 @@ Avoid jumbled loop incrementers - it's usually a mistake, and is confusing even 
             <property name="xpath">
                 <value><![CDATA[
 //ForStatement
-    [not(ForInit) or ForInit//VariableDeclaratorId/@Name != ForUpdate//VariableAccess/@Name]
+    [not(ForInit) or ForInit//VariableId/@Name != ForUpdate//VariableAccess/@Name]
     [ForUpdate//VariableAccess[@AccessType = 'WRITE']/@Name
      =
-     ancestor::ForStatement/ForInit//VariableDeclaratorId/@Name
+     ancestor::ForStatement/ForInit//VariableId/@Name
     ]
 ]]>
                 </value>
@@ -2213,7 +2213,7 @@ This would be confusing as it would look like a constructor.
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration[@Name = ancestor::ClassOrInterfaceDeclaration/@SimpleName]
+//MethodDeclaration[@Name = ancestor::ClassDeclaration/@SimpleName]
 ]]>
                 </value>
             </property>
@@ -2316,10 +2316,10 @@ chain needs an own serialVersionUID field. See also [Should an abstract class ha
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration
+//ClassDeclaration
     [@Interface = false()]
-    [count(ClassOrInterfaceBody/FieldDeclaration/VariableDeclarator/VariableDeclaratorId[@Name='serialVersionUID']) = 0]
-    [(ImplementsList | ExtendsList)/ClassOrInterfaceType[pmd-java:typeIs('java.io.Serializable')]]
+    [count(ClassBody/FieldDeclaration/VariableDeclarator/VariableId[@Name='serialVersionUID']) = 0]
+    [(ImplementsList | ExtendsList)/ClassType[pmd-java:typeIs('java.io.Serializable')]]
 ]]>
                 </value>
             </property>
@@ -2354,7 +2354,7 @@ See the property `annotations`.
             <property name="xpath">
                 <value>
 <![CDATA[
-let $topLevelClass := /*/ClassOrInterfaceDeclaration return
+let $topLevelClass := /*/ClassDeclaration return
 let $isLombokUtility := exists($topLevelClass[pmd-java:hasAnnotation('lombok.experimental.UtilityClass')]) return
 $topLevelClass[
         (: non-instantiable :)
@@ -2365,31 +2365,31 @@ $topLevelClass[
                 pmd-java:hasAnnotation('lombok.RequiredArgsConstructor') or
                 pmd-java:hasAnnotation('lombok.AllArgsConstructor')) and
             (: or has non-default constructors … :)
-            ClassOrInterfaceBody/ConstructorDeclaration and
+            ClassBody/ConstructorDeclaration and
                 (: … but only private … :)
-                not(ClassOrInterfaceBody/ConstructorDeclaration[@Visibility != "private"]) and
+                not(ClassBody/ConstructorDeclaration[@Visibility != "private"]) and
                 (: … and none annotated … :)
                 (every $x in $annotations satisfies
-                      not(ClassOrInterfaceBody/ConstructorDeclaration/ModifierList/Annotation[pmd-java:typeIs($x)]))
+                      not(ClassBody/ConstructorDeclaration/ModifierList/Annotation[pmd-java:typeIs($x)]))
         )
     ]
     [
         (: With no visible static methods … :)
-        not(ClassOrInterfaceBody/MethodDeclaration[($isLombokUtility or pmd-java:modifiers() = "static") and @Visibility != "private"]) and
+        not(ClassBody/MethodDeclaration[($isLombokUtility or pmd-java:modifiers() = "static") and @Visibility != "private"]) and
         (: … nor fields … :)
-        not(ClassOrInterfaceBody/FieldDeclaration[($isLombokUtility or pmd-java:modifiers() = "static") and @Visibility != "private"]) and
+        not(ClassBody/FieldDeclaration[($isLombokUtility or pmd-java:modifiers() = "static") and @Visibility != "private"]) and
         (: … no nested classes, that are non-private and static … :)
-        not(ClassOrInterfaceBody/ClassOrInterfaceDeclaration
+        not(ClassBody/ClassDeclaration
             [pmd-java:modifiers() = "static" and @Visibility != "private"]
             (: … with a default or non-private constructor … :)
-            [not(ClassOrInterfaceBody/ConstructorDeclaration) or ClassOrInterfaceBody/ConstructorDeclaration[@Visibility != "private"]]
+            [not(ClassBody/ConstructorDeclaration) or ClassBody/ConstructorDeclaration[@Visibility != "private"]]
             (: … and a non-private method returning the outer class type … :)
-            [(ClassOrInterfaceBody/MethodDeclaration
+            [(ClassBody/MethodDeclaration
                 [@Visibility != "private"]
-                [descendant::ReturnStatement/*[1][pmd-java:typeIs(ancestor::ClassOrInterfaceDeclaration[@Nested = false()]/@BinaryName)]]
+                [descendant::ReturnStatement/*[1][pmd-java:typeIs(ancestor::ClassDeclaration[@Nested = false()]/@BinaryName)]]
             ) or (
                 (: … or the inner class extends the outer class :)
-                ExtendsList/ClassOrInterfaceType[@SimpleName = ancestor::ClassOrInterfaceDeclaration[@Nested = false()]/@SimpleName]
+                ExtendsList/ClassType[@SimpleName = ancestor::ClassDeclaration[@Nested = false()]/@SimpleName]
             )]
     )]
 ]]>
@@ -2426,9 +2426,9 @@ log4j2 (since 6.19.0).
             <property name="version" value="2.0"/>
             <property name="xpath">
                 <value><![CDATA[
-//ClassOrInterfaceDeclaration[
+//ClassDeclaration[
   count(
-    ClassOrInterfaceBody/FieldDeclaration/ClassOrInterfaceType[
+    ClassBody/FieldDeclaration/ClassType[
       pmd-java:typeIs("org.apache.log4j.Logger") or
       pmd-java:typeIs("org.apache.logging.log4j.Logger") or
       pmd-java:typeIs("java.util.logging.Logger") or
@@ -2661,24 +2661,24 @@ with the restriction that the logger needs to be passed into the constructor.
                 <value>
 <![CDATA[
 //FieldDeclaration
-    [ClassOrInterfaceType[pmd-java:typeIs($loggerClass)]]
+    [ClassType[pmd-java:typeIs($loggerClass)]]
     [
         (: check modifiers :)
         (not(pmd-java:modifiers() = 'private') or not(pmd-java:modifiers() = 'final'))
         (: check logger name :)
-        or (pmd-java:modifiers() = 'static' and VariableDeclarator/VariableDeclaratorId/@Name != $staticLoggerName)
-        or (not(pmd-java:modifiers() = 'static') and VariableDeclarator/VariableDeclaratorId/@Name != $loggerName)
+        or (pmd-java:modifiers() = 'static' and VariableDeclarator/VariableId/@Name != $staticLoggerName)
+        or (not(pmd-java:modifiers() = 'static') and VariableDeclarator/VariableId/@Name != $loggerName)
         (: check logger argument type matches class or enum name :)
-        or .//ArgumentList/ClassLiteral/ClassOrInterfaceType/@SimpleName != ancestor::ClassOrInterfaceDeclaration/@SimpleName
-        or .//ArgumentList/ClassLiteral/ClassOrInterfaceType/@SimpleName != ancestor::EnumDeclaration/@SimpleName
+        or .//ArgumentList/ClassLiteral/ClassType/@SimpleName != ancestor::ClassDeclaration/@SimpleName
+        or .//ArgumentList/ClassLiteral/ClassType/@SimpleName != ancestor::EnumDeclaration/@SimpleName
 
         (: special case - final logger initialized inside constructor :)
         or (VariableDeclarator/@Initializer = false()
             and not(pmd-java:modifiers() = 'static')
-            and not(ancestor::ClassOrInterfaceBody/ConstructorDeclaration
+            and not(ancestor::ClassBody/ConstructorDeclaration
                 //AssignmentExpression[@Operator = '=']
                     [FieldAccess[1]/@Name = $loggerName or VariableAccess[1]/@Name = $loggerName]
-                    [*[2][@Name = ancestor::ConstructorDeclaration//FormalParameter/VariableDeclaratorId/@Name]])
+                    [*[2][@Name = ancestor::ConstructorDeclaration//FormalParameter/VariableId/@Name]])
         )
     ]
 ]]>
@@ -2722,7 +2722,7 @@ See Effective Java, 3rd Edition, Item 54: Return empty collections or arrays ins
 //ReturnStatement/NullLiteral
 [ancestor::MethodDeclaration[1]
     [ArrayType
-     or ClassOrInterfaceType[pmd-java:typeIs('java.util.Collection')
+     or ClassType[pmd-java:typeIs('java.util.Collection')
         or pmd-java:typeIs('java.util.Map')]]
 ]
 [not(./ancestor::LambdaExpression)]
@@ -2888,14 +2888,14 @@ behavior especially when instances are distributed by the container on several J
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[ImplementsList/ClassOrInterfaceType[
+//ClassDeclaration[ImplementsList/ClassType[
         pmd-java:typeIs('javax.ejb.SessionBean')
      or pmd-java:typeIs('javax.ejb.EJBHome')
      or pmd-java:typeIs('javax.ejb.EJBLocalObject')
      or pmd-java:typeIs('javax.ejb.EJBLocalHome')
      or pmd-java:typeIs('javax.ejb.EJBObject')
     ]]
-    /ClassOrInterfaceBody/FieldDeclaration
+    /ClassBody/FieldDeclaration
         [pmd-java:modifiers() = 'static']
         [not(pmd-java:modifiers() = 'final')]
 ]]>
@@ -3160,7 +3160,7 @@ an error, use the `fail()` method and provide an indication message of why it di
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration
+//ClassDeclaration
     [pmd-java:typeIs('junit.framework.TestCase')
      or .//Annotation[pmd-java:typeIs('org.junit.Test')
                    or pmd-java:typeIs('org.junit.jupiter.api.Test')

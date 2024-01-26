@@ -49,9 +49,9 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
         List<ApexNode<?>> nonFieldDeclarations = new ArrayList<>();
 
         nonFieldDeclarations.addAll(getMethodNodes(node));
-        nonFieldDeclarations.addAll(node.findChildrenOfType(ASTUserClass.class));
-        nonFieldDeclarations.addAll(node.findChildrenOfType(ASTProperty.class));
-        nonFieldDeclarations.addAll(node.findChildrenOfType(ASTBlockStatement.class));
+        nonFieldDeclarations.addAll(node.children(ASTUserClass.class).toList());
+        nonFieldDeclarations.addAll(node.children(ASTProperty.class).toList());
+        nonFieldDeclarations.addAll(node.children(ASTBlockStatement.class).toList());
 
         Optional<ApexNode<?>> firstNonFieldDeclaration = nonFieldDeclarations.stream()
             .filter(ApexNode::hasRealLoc)
@@ -64,7 +64,7 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
 
         for (ASTFieldDeclaration field : fields) {
             if (NODE_BY_SOURCE_LOCATION_COMPARATOR.compare(field, firstNonFieldDeclaration.get()) > 0) {
-                addViolation(data, field, field.getName());
+                asCtx(data).addViolation(field, field.getName());
             }
         }
 

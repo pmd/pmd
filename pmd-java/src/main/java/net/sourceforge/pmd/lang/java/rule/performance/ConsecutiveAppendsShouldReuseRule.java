@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
@@ -37,7 +37,7 @@ public class ConsecutiveAppendsShouldReuseRule extends AbstractJavaRule {
             if (variable != null) {
                 @Nullable JVariableSymbol nextVariable = getVariableAppended((ASTExpressionStatement) nextSibling);
                 if (nextVariable != null && nextVariable.equals(variable)) {
-                    addViolation(data, node);
+                    asCtx(data).addViolation(node);
                 }
             }
         }
@@ -50,10 +50,10 @@ public class ConsecutiveAppendsShouldReuseRule extends AbstractJavaRule {
         if (nextSibling instanceof ASTExpressionStatement) {
             @Nullable JVariableSymbol nextVariable = getVariableAppended((ASTExpressionStatement) nextSibling);
             if (nextVariable != null) {
-                ASTVariableDeclaratorId varDecl = nextVariable.tryGetNode();
+                ASTVariableId varDecl = nextVariable.tryGetNode();
                 if (varDecl != null && node.getVarIds().any(it -> it == varDecl)
                     && isStringBuilderAppend(varDecl.getInitializer())) {
-                    addViolation(data, node);
+                    asCtx(data).addViolation(node);
                 }
             }
         }

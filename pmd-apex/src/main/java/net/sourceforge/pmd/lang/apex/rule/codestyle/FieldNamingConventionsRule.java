@@ -52,14 +52,14 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionsRule {
 
     @Override
     public Object visit(ASTField node, Object data) {
-        if (node.getFirstParentOfType(ASTProperty.class) != null) {
+        if (node.ancestors(ASTProperty.class).first() != null) {
             return data;
         }
 
         ASTModifierNode modifiers = node.getModifiers();
         ASTFieldDeclaration reportNode = getFieldDeclaration(node);
 
-        if (node.getFirstParentOfType(ASTUserEnum.class) != null) {
+        if (node.ancestors(ASTUserEnum.class).nonEmpty()) {
             // enums don't have a FieldDeclaration, so reportNode would be null
             checkMatches(ENUM_CONSTANT_REGEX, node, data);
         } else if (modifiers == null) {

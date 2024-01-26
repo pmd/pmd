@@ -8,7 +8,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
@@ -20,7 +20,7 @@ final class AstFieldSym extends AbstractAstVariableSym implements JFieldSymbol {
 
     private final JClassSymbol owner;
 
-    AstFieldSym(ASTVariableDeclaratorId node,
+    AstFieldSym(ASTVariableId node,
                 AstSymFactory factory,
                 JClassSymbol owner) {
         super(node, factory);

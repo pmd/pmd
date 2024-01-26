@@ -38,8 +38,8 @@ class XPathRuleTest {
     }
 
     @Test
-    void testPluginname() {
-        XPathRule rule = makeXPath("//VariableDeclaratorId[string-length(@Name) < 3]");
+    void testImageIsAccessibleAsFormatArgument() {
+        XPathRule rule = makeXPath("//VariableId[string-length(@Name) < 3]");
         rule.setMessage("{0}");
         Report report = getReportForTestString(rule, TEST1);
         RuleViolation rv = report.getViolations().get(0);
@@ -49,7 +49,7 @@ class XPathRuleTest {
 
     @Test
     void testXPathMultiProperty() throws Exception {
-        XPathRule rule = makeXPath("//VariableDeclaratorId[@Name=$forbiddenNames]");
+        XPathRule rule = makeXPath("//VariableId[@Name=$forbiddenNames]");
         rule.setMessage("Avoid vars");
         PropertyDescriptor<List<String>> varDescriptor
             = PropertyFactory.stringListProperty("forbiddenNames")
@@ -67,7 +67,7 @@ class XPathRuleTest {
 
     @Test
     void testVariables() throws Exception {
-        XPathRule rule = makeXPath("//VariableDeclaratorId[@Name=$var]");
+        XPathRule rule = makeXPath("//VariableId[@Name=$var]");
         rule.setMessage("Avoid vars");
         PropertyDescriptor<String> varDescriptor =
             PropertyFactory.stringProperty("var").desc("Test var").defaultValue("").availableInXPath(true).build();
@@ -80,7 +80,7 @@ class XPathRuleTest {
 
     @Test
     void testFnPrefixOnSaxon() throws Exception {
-        XPathRule rule = makeXPath("//VariableDeclaratorId[fn:matches(@Name, 'fiddle')]");
+        XPathRule rule = makeXPath("//VariableId[fn:matches(@Name, 'fiddle')]");
         Report report = getReportForTestString(rule, TEST2);
         RuleViolation rv = report.getViolations().get(0);
         assertEquals(3, rv.getBeginLine());
@@ -88,7 +88,7 @@ class XPathRuleTest {
 
     @Test
     void testNoFnPrefixOnSaxon() {
-        XPathRule rule = makeXPath("//VariableDeclaratorId[matches(@Name, 'fiddle')]");
+        XPathRule rule = makeXPath("//VariableId[matches(@Name, 'fiddle')]");
         Report report = getReportForTestString(rule, TEST2);
         RuleViolation rv = report.getViolations().get(0);
         assertEquals(3, rv.getBeginLine());
@@ -96,14 +96,14 @@ class XPathRuleTest {
 
     @Test
     void testSimpleQueryIsRuleChain() {
-        // ((/)/descendant::element(Q{}VariableDeclaratorId))[matches(convertUntyped(data(@Name)), "fiddle", "")]
-        assertIsRuleChain("//VariableDeclaratorId[matches(@Name, 'fiddle')]");
+        // ((/)/descendant::element(Q{}VariableId))[matches(convertUntyped(data(@Name)), "fiddle", "")]
+        assertIsRuleChain("//VariableId[matches(@Name, 'fiddle')]");
     }
 
     @Test
     void testSimpleQueryIsRuleChain2() {
-        // docOrder(((/)/descendant-or-self::node())/(child::element(ClassOrInterfaceType)[typeIs("java.util.Vector")]))
-        assertIsRuleChain("//ClassOrInterfaceType[pmd-java:typeIs('java.util.Vector')]");
+        // docOrder(((/)/descendant-or-self::node())/(child::element(ClassType)[typeIs("java.util.Vector")]))
+        assertIsRuleChain("//ClassType[pmd-java:typeIs('java.util.Vector')]");
     }
 
     private void assertIsRuleChain(String xpath) {
@@ -127,7 +127,7 @@ class XPathRuleTest {
         final String source = "public interface dummy extends Foo, Bar, Baz {}";
         ASTCompilationUnit cu = JavaParsingHelper.DEFAULT.parse(source);
 
-        String xpath = "//ExtendsList/ClassOrInterfaceType/following-sibling::ClassOrInterfaceType";
+        String xpath = "//ExtendsList/ClassType/following-sibling::ClassType";
 
 
         SaxonXPathRuleQuery xpathRuleQuery = new SaxonXPathRuleQuery(xpath,

@@ -58,7 +58,7 @@ public class SimplifiableTestAssertionRule extends AbstractJavaRulechainRule {
                         suggestion = isPositive ? "assertSame" : "assertNotSame";
                     }
                 }
-                addViolation(data, node, suggestion);
+                asCtx(data).addViolation(node, suggestion);
 
             } else {
                 @Nullable ASTExpression negatedExprOperand = getNegatedExprOperand(lastArg);
@@ -66,17 +66,17 @@ public class SimplifiableTestAssertionRule extends AbstractJavaRulechainRule {
                 if (OBJECT_EQUALS.matchesCall(negatedExprOperand)) {
                     //assertTrue(!a.equals(b))
                     String suggestion = isAssertTrue ? "assertNotEquals" : "assertEquals";
-                    addViolation(data, node, suggestion);
+                    asCtx(data).addViolation(node, suggestion);
 
                 } else if (negatedExprOperand != null) {
                     //assertTrue(!something)
                     String suggestion = isAssertTrue ? "assertFalse" : "assertTrue";
-                    addViolation(data, node, suggestion);
+                    asCtx(data).addViolation(node, suggestion);
 
                 } else if (OBJECT_EQUALS.matchesCall(lastArg)) {
                     //assertTrue(a.equals(b))
                     String suggestion = isAssertTrue ? "assertEquals" : "assertNotEquals";
-                    addViolation(data, node, suggestion);
+                    asCtx(data).addViolation(node, suggestion);
                 }
             }
         }
@@ -99,7 +99,7 @@ public class SimplifiableTestAssertionRule extends AbstractJavaRulechainRule {
                     if (comp1.getTypeMirror().isPrimitive(PrimitiveTypeKind.BOOLEAN)) {
                         ASTBooleanLiteral literal = (ASTBooleanLiteral) comp0;
                         String suggestion = literal.isTrue() == isAssertEquals ? "assertTrue" : "assertFalse";
-                        addViolation(data, node, suggestion);
+                        asCtx(data).addViolation(node, suggestion);
                     }
                 }
             }

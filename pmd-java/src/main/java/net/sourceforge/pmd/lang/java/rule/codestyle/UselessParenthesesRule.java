@@ -82,7 +82,7 @@ public final class UselessParenthesesRule extends AbstractJavaRulechainRule {
         if (necessity == NEVER
             || reportClarifying() && necessity == CLARIFYING
             || reportBalancing() && necessity == BALANCING) {
-            addViolation(data, e);
+            asCtx(data).addViolation(e);
         }
 
     }

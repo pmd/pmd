@@ -18,7 +18,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *                     | {@link ASTExpression Expression} "." UnqualifiedAlloc
  *
  * UnqualifiedAlloc                  ::=
- *      "new" {@link ASTTypeArguments TypeArguments}? {@link ASTClassOrInterfaceType ClassOrInterfaceType} {@link ASTArgumentList ArgumentList} {@link ASTAnonymousClassDeclaration AnonymousClassDeclaration}?
+ *      "new" {@link ASTTypeArguments TypeArguments}? {@link ASTClassType ClassType} {@link ASTArgumentList ArgumentList} {@link ASTAnonymousClassDeclaration AnonymousClassDeclaration}?
  *
  * </pre>
  */
@@ -63,7 +63,7 @@ public final class ASTConstructorCall extends AbstractInvocationExpr
 
     @Override
     public @Nullable ASTTypeArguments getExplicitTypeArguments() {
-        return getFirstChildOfType(ASTTypeArguments.class);
+        return firstChild(ASTTypeArguments.class);
     }
 
 
@@ -86,25 +86,25 @@ public final class ASTConstructorCall extends AbstractInvocationExpr
     /**
      * Returns the type node.
      */
-    public ASTClassOrInterfaceType getTypeNode() {
-        return getFirstChildOfType(ASTClassOrInterfaceType.class);
+    public ASTClassType getTypeNode() {
+        return firstChild(ASTClassType.class);
     }
 
 
     /**
      * Returns true if this expression defines a body,
-     * which is compiled to an anonymous class. If this
+     * which is compiled to an anonymous class. Otherwise, this
      * method returns false.
      */
     public boolean isAnonymousClass() {
-        return getChild(getNumChildren() - 1) instanceof ASTAnonymousClassDeclaration;
+        return getLastChild() instanceof ASTAnonymousClassDeclaration;
     }
 
 
     @Nullable
     public ASTAnonymousClassDeclaration getAnonymousClassDeclaration() {
         return isAnonymousClass()
-               ? (ASTAnonymousClassDeclaration) getChild(getNumChildren() - 1)
+               ? (ASTAnonymousClassDeclaration) getLastChild()
                : null;
     }
 }

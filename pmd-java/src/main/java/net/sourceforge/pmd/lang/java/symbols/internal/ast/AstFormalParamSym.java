@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.ast;
 
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol;
 
@@ -15,7 +15,7 @@ final class AstFormalParamSym extends AbstractAstVariableSym implements JFormalP
 
     private final AbstractAstExecSymbol<?> owner;
 
-    AstFormalParamSym(ASTVariableDeclaratorId node, AstSymFactory factory, AbstractAstExecSymbol<?> owner) {
+    AstFormalParamSym(ASTVariableId node, AstSymFactory factory, AbstractAstExecSymbol<?> owner) {
         super(node, factory);
         this.owner = owner;
     }

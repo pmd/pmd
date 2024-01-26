@@ -43,7 +43,7 @@ class ApexParserTest extends ApexParserTestBase {
         ASTUserClassOrInterface<?> rootNode = parse(code);
 
         // Verify
-        List<ASTMethod> methods = rootNode.findDescendantsOfType(ASTMethod.class);
+        List<ASTMethod> methods = rootNode.descendants(ASTMethod.class).toList();
         assertEquals(1, methods.size());
     }
 

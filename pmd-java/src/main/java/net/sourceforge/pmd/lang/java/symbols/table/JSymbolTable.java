@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.symbols.table;
 
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChain;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
@@ -56,7 +56,7 @@ public interface JSymbolTable {
      * in the outer expression. It depends on the type of the left hand expression,
      * which may be an arbitrary expression. {@code types().resolve("Inner")} will
      * return a symbol that is not necessarily the actual reference for {@code Outer.Inner},
-     * or no symbol at all. {@link ASTClassOrInterfaceType#getTypeMirror()}
+     * or no symbol at all. {@link ASTClassType#getTypeMirror()}
      * will be accurate though.
      * </ul>
      */

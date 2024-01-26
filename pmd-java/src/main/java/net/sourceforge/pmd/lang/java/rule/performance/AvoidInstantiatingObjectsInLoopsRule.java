@@ -52,7 +52,7 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractJavaRulechainR
                 && notBreakFollowing(node)
                 && notArrayAssignment(node)
                 && notCollectionAccess(node)) {
-            addViolation(data, node);
+            asCtx(data).addViolation(node);
         }
     }
 

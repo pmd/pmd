@@ -13,7 +13,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
@@ -44,15 +43,17 @@ import net.sourceforge.pmd.lang.java.ast.ASTTemplateExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTTypePattern;
 import net.sourceforge.pmd.lang.java.ast.ASTUnnamedPattern;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaTokenKinds;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
 import net.sourceforge.pmd.util.IteratorUtil;
 
 /**
@@ -426,7 +427,7 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public Void visit(ASTStringLiteral node, T data) {
-            if (node.isStringLiteral() && SPACE_ESCAPE_PATTERN.matcher(node.getImage()).find()) {
+            if (!node.isTextBlock() && SPACE_ESCAPE_PATTERN.matcher(node.getLiteralText()).find()) {
                 check(node, RegularLanguageFeature.SPACE_STRING_ESCAPES, data);
             }
             if (node.isTextBlock()) {
@@ -520,7 +521,7 @@ public class LanguageLevelChecker<T> {
         @Override
         public Void visit(ASTEnumDeclaration node, T data) {
             check(node, RegularLanguageFeature.ENUMS, data);
-            visitTypeDecl((ASTAnyTypeDeclaration) node, data);
+            visitTypeDecl(node, data);
             return null;
         }
 
@@ -531,7 +532,7 @@ public class LanguageLevelChecker<T> {
                 check(node, RegularLanguageFeature.HEXADECIMAL_FLOATING_POINT_LITERALS, data);
             } else if (base == 2) {
                 check(node, RegularLanguageFeature.BINARY_NUMERIC_LITERALS, data);
-            } else if (node.getImage().indexOf('_') >= 0) {
+            } else if (node.getLiteralText().indexOf('_') >= 0) {
                 check(node, RegularLanguageFeature.UNDERSCORES_IN_NUMERIC_LITERALS, data);
             }
             return null;
@@ -555,11 +556,11 @@ public class LanguageLevelChecker<T> {
                 check(node, RegularLanguageFeature.DEFAULT_METHODS, data);
             }
 
-            if (node.isPrivate() && node.getEnclosingType() != null && node.getEnclosingType().isInterface()) {
+            if (node.hasVisibility(ModifierOwner.Visibility.V_PRIVATE) && node.getEnclosingType() != null && node.getEnclosingType().isInterface()) {
                 check(node, RegularLanguageFeature.PRIVATE_METHODS_IN_INTERFACES, data);
             }
 
-            checkIdent(node, node.getMethodName(), data);
+            checkIdent(node, node.getName(), data);
             return null;
         }
 
@@ -650,7 +651,7 @@ public class LanguageLevelChecker<T> {
         }
 
         @Override
-        public Void visit(ASTVariableDeclaratorId node, T data) {
+        public Void visit(ASTVariableId node, T data) {
             checkIdent(node, node.getName(), data);
             return null;
         }
@@ -668,7 +669,7 @@ public class LanguageLevelChecker<T> {
         }
 
         @Override
-        public Void visitTypeDecl(ASTAnyTypeDeclaration node, T data) {
+        public Void visitTypeDecl(ASTTypeDeclaration node, T data) {
             if (node.getModifiers().hasAnyExplicitly(JModifier.SEALED, JModifier.NON_SEALED)) {
                 check(node, RegularLanguageFeature.SEALED_CLASSES, data);
             } else if (node.isLocal() && !node.isRegularClass()) {

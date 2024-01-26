@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.document.FileLocation;
  * {@linkplain ASTForStatement foreach statements}.
  *
  * <p>This statement may define several variables, possibly of different types
- * (see {@link ASTVariableDeclaratorId#getType()}). The nodes corresponding to
+ * (see {@link ASTVariableId#getTypeNode()}). The nodes corresponding to
  * the declared variables are accessible through {@link #getVarIds()}.
  *
  * <pre class="grammar">
@@ -25,9 +25,9 @@ import net.sourceforge.pmd.lang.document.FileLocation;
  */
 // TODO extend AbstractStatement
 public final class ASTLocalVariableDeclaration extends AbstractJavaNode
-    implements Iterable<ASTVariableDeclaratorId>,
+    implements Iterable<ASTVariableId>,
                ASTStatement,
-               FinalizableNode,
+        ModifierOwner,
                LeftRecursiveNode, // ModifierList is parsed separately in BlockStatement
                InternalInterfaces.MultiVariableIdOwner {
 
@@ -56,7 +56,7 @@ public final class ASTLocalVariableDeclaration extends AbstractJavaNode
      * which makes use of local variable type inference, e.g. java10 "var".
      * You can receive the inferred type via {@link ASTVariableDeclarator#getType()}.
      *
-     * @see ASTVariableDeclaratorId#isTypeInferred()
+     * @see ASTVariableId#isTypeInferred()
      */
     public boolean isTypeInferred() {
         return getTypeNode() == null;
@@ -73,8 +73,11 @@ public final class ASTLocalVariableDeclaration extends AbstractJavaNode
      */
     @Override
     public ASTType getTypeNode() {
-        return getFirstChildOfType(ASTType.class);
+        return firstChild(ASTType.class);
     }
 
-
+    @Override
+    public boolean isFinal() {
+        return hasModifiers(JModifier.FINAL);
+    }
 }

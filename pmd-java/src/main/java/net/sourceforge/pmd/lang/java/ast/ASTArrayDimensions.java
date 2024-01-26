@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTList.ASTNonEmptyList;
  * after the formal parameter list. For example:
  * <pre>public int newIntArray(int length) [];</pre>
  * </li>
- * <li>As the {@linkplain ASTVariableDeclaratorId#getExtraDimensions() extra dimensions of a variable declarator id},
+ * <li>As the {@linkplain ASTVariableId#getExtraDimensions() extra dimensions of a variable declarator id},
  * in a {@linkplain ASTVariableDeclarator variable declarator}. For example:
  * <pre>public int a[], b[][];</pre>
  * </li>

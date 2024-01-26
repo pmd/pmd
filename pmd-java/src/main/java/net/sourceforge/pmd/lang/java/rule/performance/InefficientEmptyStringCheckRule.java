@@ -52,7 +52,7 @@ public class InefficientEmptyStringCheckRule extends AbstractJavaRulechainRule {
     public Object visit(ASTMethodCall call, Object data) {
         if (isTrimCall(call.getQualifier())
             && (isLengthZeroCheck(call) || isIsEmptyCall(call))) {
-            addViolation(data, call);
+            asCtx(data).addViolation(call);
         }
         return null;
     }

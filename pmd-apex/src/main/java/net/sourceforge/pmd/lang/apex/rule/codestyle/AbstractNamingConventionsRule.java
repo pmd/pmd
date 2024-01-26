@@ -31,7 +31,7 @@ abstract class AbstractNamingConventionsRule extends AbstractApexRule {
         String name = Objects.requireNonNull(node.getImage());
         if (!overridePattern.matcher(name).matches()) {
             String displayName = displayName(propertyDescriptor.name());
-            addViolation(data, node, new Object[] { displayName, name, overridePattern.toString() });
+            asCtx(data).addViolation(node, displayName, name, overridePattern.toString());
         }
     }
 

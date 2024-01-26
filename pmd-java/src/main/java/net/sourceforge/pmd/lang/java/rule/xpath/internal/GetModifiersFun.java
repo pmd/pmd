@@ -8,8 +8,8 @@ import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTModifierList;
-import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
 import net.sourceforge.pmd.lang.rule.xpath.internal.AstElementNode;
 import net.sourceforge.pmd.util.CollectionUtil;
 
@@ -59,8 +59,8 @@ public final class GetModifiersFun extends BaseJavaXPathFunction {
             public Sequence call(XPathContext context, Sequence[] arguments) {
                 Node contextNode = ((AstElementNode) context.getContextItem()).getUnderlyingNode();
 
-                if (contextNode instanceof AccessNode) {
-                    ASTModifierList modList = ((AccessNode) contextNode).getModifiers();
+                if (contextNode instanceof ModifierOwner) {
+                    ASTModifierList modList = ((ModifierOwner) contextNode).getModifiers();
                     Set<JModifier> mods = explicit ? modList.getExplicitModifiers()
                                                    : modList.getEffectiveModifiers();
                     return new SequenceExtent(CollectionUtil.map(mods, mod -> new StringValue(mod.getToken())));

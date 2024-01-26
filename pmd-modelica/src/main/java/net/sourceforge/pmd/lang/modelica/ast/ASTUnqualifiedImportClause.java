@@ -29,7 +29,7 @@ public final class ASTUnqualifiedImportClause extends AbstractModelicaImportClau
     public void jjtClose() {
         super.jjtClose();
 
-        importFromWhere = getFirstChildOfType(ASTName.class);
+        importFromWhere = firstChild(ASTName.class);
     }
 
     @Override

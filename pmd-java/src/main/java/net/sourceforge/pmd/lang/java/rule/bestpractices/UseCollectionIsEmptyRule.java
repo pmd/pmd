@@ -29,7 +29,7 @@ public class UseCollectionIsEmptyRule extends AbstractJavaRulechainRule {
         if ((TypeTestUtil.isA(Collection.class, call.getQualifier())
             || TypeTestUtil.isA(Map.class, call.getQualifier()))
             && isSizeZeroCheck(call)) {
-            addViolation(data, call);
+            asCtx(data).addViolation(call);
         }
         return null;
     }

@@ -18,7 +18,6 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.java.ast.ASTAmbiguousName;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayDimensions;
@@ -54,12 +53,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
 import net.sourceforge.pmd.lang.java.ast.ASTTemplateExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTTypePattern;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.ASTVoidType;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
@@ -160,7 +160,7 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
     }
 
     @Override
-    public JTypeMirror visitTypeDecl(ASTAnyTypeDeclaration node, TypingContext ctx) {
+    public JTypeMirror visitTypeDecl(ASTTypeDeclaration node, TypingContext ctx) {
         return ts.declaration(node.getSymbol());
     }
 
@@ -180,7 +180,7 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
     }
 
     @Override
-    public JTypeMirror visit(ASTVariableDeclaratorId node, TypingContext ctx) {
+    public JTypeMirror visit(ASTVariableId node, TypingContext ctx) {
         boolean isTypeInferred = node.isTypeInferred();
         if (isTypeInferred && node.getInitializer() != null) {
             // var k = foo()
@@ -485,7 +485,7 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
         if (parent instanceof ASTArrayAllocation) {
             return ((ASTArrayAllocation) parent).getTypeMirror(ctx);
         } else if (parent instanceof ASTVariableDeclarator) {
-            ASTVariableDeclaratorId id = ((ASTVariableDeclarator) parent).getVarId();
+            ASTVariableId id = ((ASTVariableDeclarator) parent).getVarId();
             return id.isTypeInferred() ? ts.ERROR : id.getTypeMirror(ctx);
         } else if (parent instanceof ASTArrayInitializer) {
             JTypeMirror tm = ((ASTArrayInitializer) parent).getTypeMirror(ctx);
@@ -523,7 +523,7 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
         JTypeMirror resultMirror = null;
 
         if (result.getSymbol() instanceof JLocalVariableSymbol) {
-            ASTVariableDeclaratorId id = result.getSymbol().tryGetNode();
+            ASTVariableId id = result.getSymbol().tryGetNode();
             // id may be null if this is a fake formal param sym, for record components
             if (id != null && id.isLambdaParameter()) {
                 // then the type of the parameter depends on the type
@@ -570,7 +570,7 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
             return polyResolution.getContextTypeForStandaloneFallback(node);
         }
 
-        @Nullable ASTAnyTypeDeclaration enclosingType = node.getEnclosingType();
+        @Nullable ASTTypeDeclaration enclosingType = node.getEnclosingType();
         @Nullable JClassSymbol enclosingSymbol =
             enclosingType == null ? null : enclosingType.getSymbol();
         NameResolver<FieldSig> fieldResolver =

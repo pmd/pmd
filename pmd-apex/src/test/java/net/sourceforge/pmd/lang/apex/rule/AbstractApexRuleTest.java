@@ -53,31 +53,31 @@ class AbstractApexRuleTest extends ApexParserTestBase {
 
         @Override
         public Object visit(ASTUserClass node, Object data) {
-            addViolation(data, node);
+            asCtx(data).addViolation(node);
             return data;
         }
 
         @Override
         public Object visit(ASTUserInterface node, Object data) {
-            addViolation(data, node);
+            asCtx(data).addViolation(node);
             return data;
         }
 
         @Override
         public Object visit(ASTUserTrigger node, Object data) {
-            addViolation(data, node);
+            asCtx(data).addViolation(node);
             return data;
         }
 
         @Override
         public Object visit(ASTUserEnum node, Object data) {
-            addViolation(data, node);
+            asCtx(data).addViolation(node);
             return data;
         }
 
         @Override
         public Object visit(ASTAnonymousClass node, Object data) {
-            addViolation(data, node);
+            asCtx(data).addViolation(node);
             return data;
         }
     }

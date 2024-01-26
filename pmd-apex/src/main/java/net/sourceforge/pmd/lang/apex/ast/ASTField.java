@@ -59,7 +59,7 @@ public final class ASTField extends AbstractApexNode.Many<Node> {
     }
 
     public ASTModifierNode getModifiers() {
-        return getFirstChildOfType(ASTModifierNode.class);
+        return firstChild(ASTModifierNode.class);
     }
 
     public String getName() {

@@ -22,7 +22,7 @@ public final class ASTUserEnum extends BaseApexClass<EnumDeclaration> {
     public ApexQualifiedName getQualifiedName() {
         if (qname == null) {
 
-            ASTUserClass parent = this.getFirstParentOfType(ASTUserClass.class);
+            ASTUserClass parent = ancestors(ASTUserClass.class).first();
 
             if (parent != null) {
                 qname = ApexQualifiedName.ofNestedEnum(parent.getQualifiedName(), this);

@@ -18,7 +18,7 @@ public final class ASTWithinClause extends AbstractModelicaNode {
     public void jjtClose() {
         super.jjtClose();
 
-        ASTName name = getFirstChildOfType(ASTName.class);
+        ASTName name = firstChild(ASTName.class);
         if (name != null) {
             setImage(name.getImage());
         } else {

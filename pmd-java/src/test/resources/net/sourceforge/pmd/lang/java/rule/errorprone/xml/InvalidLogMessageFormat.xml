@@ -94,7 +94,7 @@ public class MethodCallClassCastExceptionProblem {
     </test-code>
 
     <test-code>
-        <description>Null pointer with VariableNameDeclaration / VariableDeclaratorId</description>
+        <description>Null pointer with VariableNameDeclaration / VariableId</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class NullPointerTypeProblem {
@@ -498,7 +498,7 @@ public class MethodCallClassCastExceptionProblem {
     </test-code>
 
     <test-code>
-        <description>log4j2: Null pointer with VariableNameDeclaration / VariableDeclaratorId</description>
+        <description>log4j2: Null pointer with VariableNameDeclaration / VariableId</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class NullPointerTypeProblem {

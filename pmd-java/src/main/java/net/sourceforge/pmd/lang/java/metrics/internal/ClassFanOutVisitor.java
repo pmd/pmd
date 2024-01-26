@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.metrics.internal;
 
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
@@ -48,7 +48,7 @@ public final class ClassFanOutVisitor extends JavaVisitorBase<Set<JClassSymbol>,
     }
 
     @Override
-    public Void visit(ASTClassOrInterfaceType node, Set<JClassSymbol> data) {
+    public Void visit(ASTClassType node, Set<JClassSymbol> data) {
         check(node, data);
         return visitChildren(node, data);
     }

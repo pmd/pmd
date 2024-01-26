@@ -22,7 +22,7 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
  *
  * <pre class="grammar">
  *
- * IntersectionType ::= {@link ASTClassOrInterfaceType ClassOrInterfaceType} ("&amp;" {@link ASTClassOrInterfaceType InterfaceType})+
+ * IntersectionType ::= {@link ASTClassType ClassOrInterfaceType} ("&amp;" {@link ASTClassType InterfaceType})+
  *
  * </pre>
  */
@@ -36,8 +36,8 @@ public final class ASTIntersectionType extends AbstractJavaTypeNode
     }
 
     /** Returns a stream of component types. */
-    public NodeStream<ASTClassOrInterfaceType> getComponents() {
-        return children(ASTClassOrInterfaceType.class);
+    public NodeStream<ASTClassType> getComponents() {
+        return children(ASTClassType.class);
     }
 
     @Override

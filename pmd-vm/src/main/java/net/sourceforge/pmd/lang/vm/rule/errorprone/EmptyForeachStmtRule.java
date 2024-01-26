@@ -12,8 +12,8 @@ public class EmptyForeachStmtRule extends AbstractVmRule {
 
     @Override
     public Object visit(final ASTForeachStatement node, final Object data) {
-        if (node.getFirstChildOfType(ASTBlock.class).isEmpty()) {
-            addViolation(data, node);
+        if (node.firstChild(ASTBlock.class).isEmpty()) {
+            asCtx(data).addViolation(node);
         }
         return super.visit(node, data);
     }

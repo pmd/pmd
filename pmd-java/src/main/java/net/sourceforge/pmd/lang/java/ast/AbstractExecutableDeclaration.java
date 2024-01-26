@@ -8,15 +8,15 @@ import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 
 
-abstract class AbstractMethodOrConstructorDeclaration<T extends JExecutableSymbol>
+abstract class AbstractExecutableDeclaration<T extends JExecutableSymbol>
     extends AbstractJavaNode
-    implements ASTMethodOrConstructorDeclaration,
+    implements ASTExecutableDeclaration,
                LeftRecursiveNode {
 
     private T symbol;
     private JMethodSig sig;
 
-    AbstractMethodOrConstructorDeclaration(int i) {
+    AbstractExecutableDeclaration(int i) {
         super(i);
     }
 

@@ -47,7 +47,7 @@ public final class UseTryWithResourcesRule extends AbstractJavaRulechainRule {
                         && TypeTestUtil.isA(AutoCloseable.class, closeTarget)
                         && (isJava9OrLater || JavaAstUtils.isReferenceToLocal(closeTarget))
                         || hasAutoClosableArguments(method)) {
-                    addViolation(data, node);
+                    asCtx(data).addViolation(node);
                     break; // only report the first closeable
                 }
             }

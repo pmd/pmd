@@ -9,7 +9,7 @@ import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -35,7 +35,7 @@ public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRulechainRule 
             return null;
         }
 
-        ASTVariableDeclaratorId varDecl = sym.tryGetNode();
+        ASTVariableId varDecl = sym.tryGetNode();
         if (varDecl == null || !varDecl.isLocalVariable() || varDecl.getDeclaredAnnotations().nonEmpty()) {
             return null;
         }
@@ -47,7 +47,7 @@ public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRulechainRule 
 
         if (!getProperty(STATEMENT_ORDER_MATTERS)
             || varDecl.ancestors(ASTLocalVariableDeclaration.class).firstOrThrow().getNextSibling() == returnStmt) {
-            addViolation(data, varDecl, varDecl.getName());
+            asCtx(data).addViolation(varDecl, varDecl.getName());
         }
         return null;
     }

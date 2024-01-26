@@ -9,11 +9,11 @@ import java.math.BigInteger;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchArrowBranch;
@@ -66,7 +66,7 @@ public class NpathBaseVisitor extends JavaVisitorBase<Void, BigInteger> {
 
 
     @Override
-    public BigInteger visitMethodOrCtor(ASTMethodOrConstructorDeclaration node, Void data) {
+    public BigInteger visitMethodOrCtor(ASTExecutableDeclaration node, Void data) {
         return multiplyChildrenComplexities(node);
     }
 

@@ -55,7 +55,7 @@ public class SimplifyConditionalRule extends AbstractJavaRulechainRule {
             }
 
             if (negated != isInfixExprWithOperator(nullCheckExpr, NE)) {
-                addViolation(data, nullCheckExpr);
+                asCtx(data).addViolation(nullCheckExpr);
             }
         }
         return null;

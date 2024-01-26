@@ -26,7 +26,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
@@ -107,7 +107,7 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
         String logLevel = getLogLevelName(methodCall);
         if (logLevel != null && guardStmtByLogLevel.containsKey(logLevel)) {
             if (needsGuard(methodCall) && !hasGuard(methodCall, logLevel)) {
-                addViolation(data, node);
+                asCtx(data).addViolation(node);
             }
         }
         return null;
@@ -155,7 +155,7 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
                 return false;
             }
             @Nullable
-            ASTVariableDeclaratorId declaratorId = symbol.tryGetNode();
+            ASTVariableId declaratorId = symbol.tryGetNode();
             if (declaratorId != null) {
                 return isConstantStringExpression(declaratorId.getInitializer());
             }

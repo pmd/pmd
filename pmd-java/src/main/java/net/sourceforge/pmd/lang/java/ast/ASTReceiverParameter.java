@@ -31,7 +31,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * <pre class="grammar">
  *
- * ReceiverParameter ::= {@link ASTClassOrInterfaceType ClassOrInterfaceType} (&lt;IDENTIFIER&gt; ".")? "this"
+ * ReceiverParameter ::= {@link ASTClassType ClassType} (&lt;IDENTIFIER&gt; ".")? "this"
  *
  * </pre>
  */
@@ -58,8 +58,8 @@ public final class ASTReceiverParameter extends AbstractJavaNode {
      * must be {@code Identifier.this} where {@code Identifier} is the simple name of C.
      */
     @NonNull
-    public ASTClassOrInterfaceType getReceiverType() {
-        return (ASTClassOrInterfaceType) getChild(0);
+    public ASTClassType getReceiverType() {
+        return (ASTClassType) getChild(0);
     }
 
 }

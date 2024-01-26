@@ -56,8 +56,8 @@ public class NPathComplexityRule extends AbstractCounterCheckRule<ExecutableCode
             return 0;
         }
 
-        List<ASTConditionalAndExpression> andNodes = expr.findDescendantsOfType(ASTConditionalAndExpression.class);
-        List<ASTConditionalOrExpression> orNodes = expr.findDescendantsOfType(ASTConditionalOrExpression.class);
+        List<ASTConditionalAndExpression> andNodes = expr.descendants(ASTConditionalAndExpression.class).toList();
+        List<ASTConditionalOrExpression> orNodes = expr.descendants(ASTConditionalOrExpression.class).toList();
 
         int children = 0;
 

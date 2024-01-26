@@ -285,7 +285,7 @@ class PatternVarScopingTests : ProcessorTestSpec({
                 """
                 ).shouldBeA<ASTForStatement>()
 
-                val (x, v) = loop.descendants(ASTVariableDeclaratorId::class.java).toList()
+                val (x, v) = loop.descendants(ASTVariableId::class.java).toList()
 
                 val (_, vref, xref) = loop.descendants(ASTVariableAccess::class.java).toList()
                 vref.shouldResolveToLocal(v)
