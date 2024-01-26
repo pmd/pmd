@@ -2,23 +2,18 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.cache;
+package net.sourceforge.pmd.cache.internal;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSets;
-import net.sourceforge.pmd.annotation.InternalApi;
 
 /**
  * A mapper from rule class names to rule instances for cached rules.
- *
- * @deprecated This is internal API, will be hidden with 7.0.0
  */
-@Deprecated
-@InternalApi
-public class CachedRuleMapper {
+class CachedRuleMapper {
 
     private final Map<String, Rule> cachedRulesInstances = new HashMap<>();
 

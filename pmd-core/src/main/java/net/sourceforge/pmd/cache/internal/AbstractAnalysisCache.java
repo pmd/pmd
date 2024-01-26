@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.cache;
+package net.sourceforge.pmd.cache.internal;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,11 +29,9 @@ import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
-import net.sourceforge.pmd.cache.internal.ClasspathFingerprinter;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextDocument;
@@ -42,12 +40,8 @@ import net.sourceforge.pmd.reporting.FileAnalysisListener;
 
 /**
  * Abstract implementation of the analysis cache. Handles all operations, except for persistence.
- *
- * @deprecated This is internal API, will be hidden with 7.0.0
  */
-@Deprecated
-@InternalApi
-public abstract class AbstractAnalysisCache implements AnalysisCache {
+abstract class AbstractAnalysisCache implements AnalysisCache {
 
     protected static final Logger LOG = LoggerFactory.getLogger(AbstractAnalysisCache.class);
     protected static final ClasspathFingerprinter FINGERPRINTER = new ClasspathFingerprinter();
@@ -62,7 +56,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
     /**
      * Creates a new empty cache
      */
-    public AbstractAnalysisCache() {
+    AbstractAnalysisCache() {
         pmdVersion = PMDVersion.VERSION;
     }
 

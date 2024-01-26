@@ -3,11 +3,9 @@
  */
 
 /**
- * The violation caching system. This is an internal subsystem that will
- * be largely hidden with 7.0.0.
+ * The violation caching system. This is mostly an internal subsystem.
+ *
+ * <p>The only public API entry point is
+ * {@link net.sourceforge.pmd.PMDConfiguration#setAnalysisCacheLocation(java.lang.String)}.
  */
-@InternalApi
-@Deprecated
 package net.sourceforge.pmd.cache;
-
-import net.sourceforge.pmd.annotation.InternalApi;

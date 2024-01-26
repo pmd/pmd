@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.cache;
+package net.sourceforge.pmd.cache.internal;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -16,20 +16,15 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
- * A {@link RuleViolation} implementation that is immutable, and therefore cache friendly
- *
- * @deprecated This is internal API, will be hidden with 7.0.0
+ * A {@link RuleViolation} implementation that is immutable, and therefore cache friendly.
  */
-@Deprecated
-@InternalApi
-public final class CachedRuleViolation implements RuleViolation {
+final class CachedRuleViolation implements RuleViolation {
 
     private final CachedRuleMapper mapper;
 

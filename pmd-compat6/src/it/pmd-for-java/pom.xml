@@ -32,6 +32,7 @@
                     <printFailingErrors>true</printFailingErrors>
                     <skipPmdError>true</skipPmdError> <!-- we want to capture processing errors -->
                     <minimumTokens>5</minimumTokens>
+                    <analysisCache>true</analysisCache>
                     <rulesets>
                         <ruleset>/rulesets/java/maven-pmd-plugin-default.xml</ruleset>
                         <ruleset>${project.basedir}/exception_ruleset.xml</ruleset>

@@ -2,13 +2,12 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.cache;
+package net.sourceforge.pmd.cache.internal;
 
 import java.io.IOException;
 import java.util.Collection;
 
 import net.sourceforge.pmd.RuleSets;
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
@@ -16,8 +15,6 @@ import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 /**
  * Adapter to wrap {@link AnalysisCache} behaviour in a {@link GlobalAnalysisListener}.
  */
-@Deprecated
-@InternalApi
 public class AnalysisCacheListener implements GlobalAnalysisListener {
 
     private final AnalysisCache cache;

@@ -21,9 +21,10 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.annotation.DeprecatedUntil700;
-import net.sourceforge.pmd.cache.AnalysisCache;
-import net.sourceforge.pmd.cache.FileAnalysisCache;
-import net.sourceforge.pmd.cache.NoopAnalysisCache;
+import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.cache.internal.AnalysisCache;
+import net.sourceforge.pmd.cache.internal.FileAnalysisCache;
+import net.sourceforge.pmd.cache.internal.NoopAnalysisCache;
 import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -475,7 +476,10 @@ public class PMDConfiguration extends AbstractConfiguration {
      * Retrieves the currently used analysis cache. Will never be null.
      *
      * @return The currently used analysis cache. Never null.
+     *
+     * @apiNote This is internal API.
      */
+    @InternalApi
     public AnalysisCache getAnalysisCache() {
         // Make sure we are not null
         if (analysisCache == null || isIgnoreIncrementalAnalysis() && !(analysisCache instanceof NoopAnalysisCache)) {
@@ -493,7 +497,10 @@ public class PMDConfiguration extends AbstractConfiguration {
      * then this method is a noop.
      *
      * @param cache The analysis cache to be used.
+     *
+     * @apiNote This is internal API. Use {@link #setAnalysisCacheLocation(String)} to configure a cache.
      */
+    @InternalApi
     public void setAnalysisCache(final AnalysisCache cache) {
         // the doc says it's a noop if incremental analysis was disabled,
         // but it's actually the getter that enforces that
@@ -502,9 +509,13 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     /**
      * Sets the location of the analysis cache to be used. This will automatically configure
-     * and appropriate AnalysisCache implementation.
+     * and appropriate AnalysisCache implementation. Setting a
+     * value of {@code null} will cause a Noop AnalysisCache to be used.
+     * If incremental analysis was explicitly disabled ({@link #isIgnoreIncrementalAnalysis()}),
+     * then this method is a noop.
      *
-     * @param cacheLocation The location of the analysis cache to be used.
+     * @param cacheLocation The location of the analysis cache to be used. Use {@code null}
+     *                      to disable the cache.
      */
     public void setAnalysisCacheLocation(final String cacheLocation) {
         setAnalysisCache(cacheLocation == null

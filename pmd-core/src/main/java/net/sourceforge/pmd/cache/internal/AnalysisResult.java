@@ -2,21 +2,17 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.cache;
+package net.sourceforge.pmd.cache.internal;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.annotation.InternalApi;
 
 /**
  * The result of a single file analysis.
  * Includes a checksum of the file and the complete list of violations detected.
- * @deprecated This is internal API, will be hidden with 7.0.0
  */
-@Deprecated
-@InternalApi
 public class AnalysisResult {
 
     private final long fileChecksum;

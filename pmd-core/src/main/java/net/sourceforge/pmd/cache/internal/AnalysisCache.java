@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.cache;
+package net.sourceforge.pmd.cache.internal;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -10,7 +10,6 @@ import java.util.List;
 
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
@@ -20,11 +19,7 @@ import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
  * An analysis cache for incremental analysis.
  * Simultaneously manages the old version of the cache,
  * and the new, most up-to-date violation cache.
- *
- * @deprecated This is internal API, will be hidden with 7.0.0
  */
-@Deprecated
-@InternalApi
 public interface AnalysisCache {
 
     /**

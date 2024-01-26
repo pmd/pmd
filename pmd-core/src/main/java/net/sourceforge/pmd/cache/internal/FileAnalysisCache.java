@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.cache;
+package net.sourceforge.pmd.cache.internal;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
@@ -30,11 +29,7 @@ import net.sourceforge.pmd.lang.document.TextFile;
 
 /**
  * An analysis cache backed by a regular file.
- *
- * @deprecated This is internal API, will be hidden with 7.0.0
  */
-@Deprecated
-@InternalApi
 public class FileAnalysisCache extends AbstractAnalysisCache {
 
     private final File cacheFile;

@@ -154,6 +154,21 @@ in the Migration Guide.
 
 #### API Changes
 
+**Internalized classes and interfaces**
+
+The following classes have been marked as @<!-- -->InternalApi before and are now moved into a `internal` package:
+
+* pmd-core
+  * {%jdoc core::cache.internal.AbstractAnalysisCache %} (now package private)
+  * {%jdoc core::cache.internal.AnalysisCache %}
+  * {%jdoc core::cache.internal.AnalysisCacheListener %}
+  * {%jdoc core::cache.internal.AnalysisResult %}
+  * {%jdoc core::cache.internal.CachedRuleMapper %} (now package private)
+  * {%jdoc core::cache.internal.CachedRuleViolation %} (now package private)
+  * {%jdoc core::cache.internal.ChecksumAware %}
+  * {%jdoc core::cache.internal.FileAnalysisCache %}
+  * {%jdoc core::cache.internal.NoopAnalysisCache %}
+
 **Removed classes and methods (previously deprecated)**
 
 The following previously deprecated classes have been removed:
