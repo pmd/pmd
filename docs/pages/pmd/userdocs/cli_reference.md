@@ -303,6 +303,6 @@ Alternatively, you can create a filelist to only analyze files with a given exte
    id="file-list"
    linux="find src/ -name \"*.ext\" > filelist.txt
      pmd check --file-list filelist.txt -f text -R ruleset.xml --force-language xml"
-   windows="for /r src/ %i in (*.ext) do echo %i >> filelist.txt
+   windows="for /r src\ %i in (*.ext) do echo %i >> filelist.txt
      pmd.bat check --file-list filelist.txt -f text -R ruleset.xml --force-language xml" %}
 
