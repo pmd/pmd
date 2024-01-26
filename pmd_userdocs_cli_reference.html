@@ -2739,7 +2739,7 @@ parse errors are suppressed in order to reduce irrelevant noise:</p>
 </code></pre></figure>
     </div>
     <div class="tab-pane fade" id="windows-file-list" role="tabpanel" aria-labelledby="windows-tab">
-      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">C:\&gt; </span><span class="s2">for</span> /r src/ %i in (*.ext) do echo %i &gt;&gt; filelist.txt
+      <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">C:\&gt; </span><span class="s2">for</span> /r src\ %i in (*.ext) do echo %i &gt;&gt; filelist.txt
 <span class="gp">C:\&gt; </span><span class="s2">pmd.bat</span> check --file-list filelist.txt -f text -R ruleset.xml --force-language xml
 </code></pre></figure>
     </div>
