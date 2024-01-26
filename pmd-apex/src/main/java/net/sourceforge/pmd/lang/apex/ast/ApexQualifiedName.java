@@ -146,7 +146,7 @@ public final class ApexQualifiedName {
 
     static ApexQualifiedName ofOuterClass(ASTUserClassOrInterface<?> astUserClass) {
         String ns = astUserClass.getNamespace();
-        String[] classes = {astUserClass.getImage()};
+        String[] classes = {astUserClass.getSimpleName()};
         return new ApexQualifiedName(StringUtils.isEmpty(ns) ? "c" : ns, classes, null);
     }
 
@@ -154,21 +154,21 @@ public final class ApexQualifiedName {
     static ApexQualifiedName ofNestedClass(ApexQualifiedName parent, ASTUserClassOrInterface<?> astUserClass) {
 
         String[] classes = Arrays.copyOf(parent.classes, parent.classes.length + 1);
-        classes[classes.length - 1] = astUserClass.getImage();
+        classes[classes.length - 1] = astUserClass.getSimpleName();
         return new ApexQualifiedName(parent.nameSpace, classes, null);
     }
 
 
     static ApexQualifiedName ofOuterEnum(ASTUserEnum astUserEnum) {
         String ns = astUserEnum.getNamespace();
-        String[] classes = {astUserEnum.getImage()};
+        String[] classes = {astUserEnum.getSimpleName()};
         return new ApexQualifiedName(StringUtils.isEmpty(ns) ? "c" : ns, classes, null);
     }
 
 
     static ApexQualifiedName ofNestedEnum(ApexQualifiedName parent, ASTUserEnum astUserEnum) {
         String[] classes = Arrays.copyOf(parent.classes, parent.classes.length + 1);
-        classes[classes.length - 1] = astUserEnum.getImage();
+        classes[classes.length - 1] = astUserEnum.getSimpleName();
         return new ApexQualifiedName(parent.nameSpace, classes, null);
     }
 
@@ -210,7 +210,7 @@ public final class ApexQualifiedName {
             String ns = trigger.getNamespace();
             String targetObj = trigger.getTargetName();
 
-            return new ApexQualifiedName(StringUtils.isEmpty(ns) ? "c" : ns, new String[]{"trigger", targetObj}, trigger.getImage()); // uses a reserved word as a class name to prevent clashes
+            return new ApexQualifiedName(StringUtils.isEmpty(ns) ? "c" : ns, new String[]{"trigger", targetObj}, trigger.getSimpleName()); // uses a reserved word as a class name to prevent clashes
 
         } else {
             ApexQualifiedName baseName = parent.getQualifiedName();

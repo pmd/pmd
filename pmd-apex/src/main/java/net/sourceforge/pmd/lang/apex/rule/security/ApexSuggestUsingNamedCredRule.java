@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.apex.rule.security;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -47,18 +46,15 @@ public class ApexSuggestUsingNamedCredRule extends AbstractApexRule {
             return data;
         }
 
-        List<ASTVariableDeclaration> variableDecls = node.findDescendantsOfType(ASTVariableDeclaration.class);
-        for (ASTVariableDeclaration varDecl : variableDecls) {
+        for (ASTVariableDeclaration varDecl : node.descendants(ASTVariableDeclaration.class)) {
             findAuthLiterals(varDecl);
         }
 
-        List<ASTField> fieldDecl = node.findDescendantsOfType(ASTField.class);
-        for (ASTField fDecl : fieldDecl) {
+        for (ASTField fDecl : node.descendants(ASTField.class)) {
             findFieldLiterals(fDecl);
         }
 
-        List<ASTMethodCallExpression> methodCalls = node.findDescendantsOfType(ASTMethodCallExpression.class);
-        for (ASTMethodCallExpression method : methodCalls) {
+        for (ASTMethodCallExpression method : node.descendants(ASTMethodCallExpression.class)) {
             flagAuthorizationHeaders(method, data);
         }
 
@@ -78,7 +74,7 @@ public class ApexSuggestUsingNamedCredRule extends AbstractApexRule {
             return;
         }
 
-        final ASTBinaryExpression binaryNode = node.getFirstChildOfType(ASTBinaryExpression.class);
+        final ASTBinaryExpression binaryNode = node.firstChild(ASTBinaryExpression.class);
         if (binaryNode != null) {
             runChecks(binaryNode, data);
         }
@@ -88,9 +84,9 @@ public class ApexSuggestUsingNamedCredRule extends AbstractApexRule {
     }
 
     private void findAuthLiterals(final ApexNode<?> node) {
-        ASTLiteralExpression literal = node.getFirstChildOfType(ASTLiteralExpression.class);
+        ASTLiteralExpression literal = node.firstChild(ASTLiteralExpression.class);
         if (literal != null) {
-            ASTVariableExpression variable = node.getFirstChildOfType(ASTVariableExpression.class);
+            ASTVariableExpression variable = node.firstChild(ASTVariableExpression.class);
             if (variable != null) {
                 if (isAuthorizationLiteral(literal)) {
                     listOfAuthorizationVariables.add(Helper.getFQVariableName(variable));
@@ -100,17 +96,17 @@ public class ApexSuggestUsingNamedCredRule extends AbstractApexRule {
     }
 
     private void runChecks(final ApexNode<?> node, Object data) {
-        ASTLiteralExpression literalNode = node.getFirstChildOfType(ASTLiteralExpression.class);
+        ASTLiteralExpression literalNode = node.firstChild(ASTLiteralExpression.class);
         if (literalNode != null) {
             if (isAuthorizationLiteral(literalNode)) {
-                addViolation(data, literalNode);
+                asCtx(data).addViolation(literalNode);
             }
         }
 
-        final ASTVariableExpression varNode = node.getFirstChildOfType(ASTVariableExpression.class);
+        final ASTVariableExpression varNode = node.firstChild(ASTVariableExpression.class);
         if (varNode != null) {
             if (listOfAuthorizationVariables.contains(Helper.getFQVariableName(varNode))) {
-                addViolation(data, varNode);
+                asCtx(data).addViolation(varNode);
             }
         }
     }

@@ -56,10 +56,10 @@ public class ApexDangerousMethodsRule extends AbstractApexRule {
 
         collectBenignVariables(node);
 
-        List<ASTMethodCallExpression> methodCalls = node.findDescendantsOfType(ASTMethodCallExpression.class);
+        List<ASTMethodCallExpression> methodCalls = node.descendants(ASTMethodCallExpression.class).toList();
         for (ASTMethodCallExpression methodCall : methodCalls) {
             if (Helper.isMethodName(methodCall, CONFIGURATION, DISABLE_CRUD)) {
-                addViolation(data, methodCall);
+                asCtx(data).addViolation(methodCall);
             }
 
             if (Helper.isMethodName(methodCall, SYSTEM, DEBUG)) {
@@ -73,7 +73,7 @@ public class ApexDangerousMethodsRule extends AbstractApexRule {
     }
 
     private void collectBenignVariables(ASTUserClass node) {
-        List<ASTField> fields = node.findDescendantsOfType(ASTField.class);
+        List<ASTField> fields = node.descendants(ASTField.class).toList();
         for (ASTField field : fields) {
             if (BOOLEAN.equalsIgnoreCase(field.getType())) {
                 whiteListedVariables.add(Helper.getFQVariableName(field));
@@ -81,7 +81,7 @@ public class ApexDangerousMethodsRule extends AbstractApexRule {
 
         }
 
-        List<ASTVariableDeclaration> declarations = node.findDescendantsOfType(ASTVariableDeclaration.class);
+        List<ASTVariableDeclaration> declarations = node.descendants(ASTVariableDeclaration.class).toList();
         for (ASTVariableDeclaration decl : declarations) {
             if (BOOLEAN.equalsIgnoreCase(decl.getType())) {
                 whiteListedVariables.add(Helper.getFQVariableName(decl));
@@ -91,11 +91,11 @@ public class ApexDangerousMethodsRule extends AbstractApexRule {
     }
 
     private void validateParameters(ASTMethodCallExpression methodCall, Object data) {
-        List<ASTVariableExpression> variables = methodCall.findDescendantsOfType(ASTVariableExpression.class);
+        List<ASTVariableExpression> variables = methodCall.descendants(ASTVariableExpression.class).toList();
         for (ASTVariableExpression var : variables) {
             if (REGEXP.matcher(var.getImage()).matches()) {
                 if (!whiteListedVariables.contains(Helper.getFQVariableName(var))) {
-                    addViolation(data, methodCall);
+                    asCtx(data).addViolation(methodCall);
                 }
             }
         }

@@ -54,12 +54,12 @@ final class ApexClassPropertyTypesVisitor extends ApexVisitorBase<Void, Void> {
         if (node.getArity() == 0
                 && isVisibleToVisualForce(node)
                 && !RETURN_TYPE_VOID.equalsIgnoreCase(node.getReturnType())
-                && (node.hasRealLoc() || node.getFirstParentOfType(ASTProperty.class) != null)) {
+                && (node.hasRealLoc() || node.ancestors(ASTProperty.class).first() != null)) {
             StringBuilder sb = new StringBuilder();
-            List<ASTUserClass> parents = node.getParentsOfType(ASTUserClass.class);
+            List<ASTUserClass> parents = node.ancestors(ASTUserClass.class).toList();
             Collections.reverse(parents);
             for (ASTUserClass parent : parents) {
-                sb.append(parent.getImage()).append(".");
+                sb.append(parent.getSimpleName()).append(".");
             }
             String name = node.getImage();
             for (String prefix : new String[]{BEAN_GETTER_PREFIX, PROPERTY_PREFIX_ACCESSOR}) {
@@ -80,7 +80,7 @@ final class ApexClassPropertyTypesVisitor extends ApexVisitorBase<Void, Void> {
      * @return true if the method is visible to Visualforce.
      */
     private boolean isVisibleToVisualForce(ASTMethod node) {
-        ASTModifierNode modifier = node.getFirstChildOfType(ASTModifierNode.class);
+        ASTModifierNode modifier = node.firstChild(ASTModifierNode.class);
         return modifier.isGlobal() | modifier.isPublic();
     }
 }

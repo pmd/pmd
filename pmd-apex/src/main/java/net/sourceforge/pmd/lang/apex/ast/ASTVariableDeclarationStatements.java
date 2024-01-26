@@ -19,6 +19,6 @@ public final class ASTVariableDeclarationStatements extends AbstractApexNode<Var
     }
 
     public ASTModifierNode getModifiers() {
-        return getFirstChildOfType(ASTModifierNode.class);
+        return firstChild(ASTModifierNode.class);
     }
 }

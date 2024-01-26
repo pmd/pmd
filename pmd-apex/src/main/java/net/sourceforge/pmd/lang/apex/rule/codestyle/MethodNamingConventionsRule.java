@@ -60,7 +60,7 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionsRule {
             return data;
         }
 
-        if (node.getFirstParentOfType(ASTUserEnum.class) != null) {
+        if (node.ancestors(ASTUserEnum.class).first() != null) {
             return data;
         }
 
@@ -89,7 +89,7 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionsRule {
     }
 
     private boolean isPropertyAccessor(ASTMethod node) {
-        return !node.getParentsOfType(ASTProperty.class).isEmpty();
+        return node.ancestors(ASTProperty.class).nonEmpty();
     }
 
     private boolean isConstructor(ASTMethod node) {

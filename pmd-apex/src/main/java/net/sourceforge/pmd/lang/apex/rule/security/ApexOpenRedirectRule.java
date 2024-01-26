@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.apex.rule.security;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -45,23 +44,19 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
             return data; // stops all the rules
         }
 
-        List<ASTAssignmentExpression> assignmentExprs = node.findDescendantsOfType(ASTAssignmentExpression.class);
-        for (ASTAssignmentExpression assignment : assignmentExprs) {
+        for (ASTAssignmentExpression assignment : node.descendants(ASTAssignmentExpression.class)) {
             findSafeLiterals(assignment);
         }
 
-        List<ASTVariableDeclaration> variableDecls = node.findDescendantsOfType(ASTVariableDeclaration.class);
-        for (ASTVariableDeclaration varDecl : variableDecls) {
+        for (ASTVariableDeclaration varDecl : node.descendants(ASTVariableDeclaration.class)) {
             findSafeLiterals(varDecl);
         }
 
-        List<ASTField> fieldDecl = node.findDescendantsOfType(ASTField.class);
-        for (ASTField fDecl : fieldDecl) {
+        for (ASTField fDecl : node.descendants(ASTField.class)) {
             findSafeLiterals(fDecl);
         }
 
-        List<ASTNewObjectExpression> newObjects = node.findDescendantsOfType(ASTNewObjectExpression.class);
-        for (ASTNewObjectExpression newObj : newObjects) {
+        for (ASTNewObjectExpression newObj : node.descendants(ASTNewObjectExpression.class)) {
             checkNewObjects(newObj, data);
         }
 
@@ -71,25 +66,25 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
     }
 
     private void findSafeLiterals(ApexNode<?> node) {
-        ASTBinaryExpression binaryExp = node.getFirstChildOfType(ASTBinaryExpression.class);
+        ASTBinaryExpression binaryExp = node.firstChild(ASTBinaryExpression.class);
         if (binaryExp != null) {
             findSafeLiterals(binaryExp);
         }
 
-        ASTLiteralExpression literal = node.getFirstChildOfType(ASTLiteralExpression.class);
+        ASTLiteralExpression literal = node.firstChild(ASTLiteralExpression.class);
         if (literal != null) {
             int index = literal.getIndexInParent();
             if (index == 0) {
                 if (node instanceof ASTVariableDeclaration) {
                     addVariable((ASTVariableDeclaration) node);
                 } else if (node instanceof ASTBinaryExpression) {
-                    ASTVariableDeclaration parent = node.getFirstParentOfType(ASTVariableDeclaration.class);
+                    ASTVariableDeclaration parent = node.ancestors(ASTVariableDeclaration.class).first();
                     if (parent != null) {
                         addVariable(parent);
                     }
-                    ASTAssignmentExpression assignment = node.getFirstParentOfType(ASTAssignmentExpression.class);
+                    ASTAssignmentExpression assignment = node.ancestors(ASTAssignmentExpression.class).first();
                     if (assignment != null) {
-                        ASTVariableExpression var = assignment.getFirstChildOfType(ASTVariableExpression.class);
+                        ASTVariableExpression var = assignment.firstChild(ASTVariableExpression.class);
                         if (var != null) {
                             addVariable(var);
                         }
@@ -111,7 +106,7 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
     }
 
     private void addVariable(ASTVariableDeclaration node) {
-        ASTVariableExpression variable = node.getFirstChildOfType(ASTVariableExpression.class);
+        ASTVariableExpression variable = node.firstChild(ASTVariableExpression.class);
         addVariable(variable);
     }
 
@@ -129,7 +124,7 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
      */
     private void checkNewObjects(ASTNewObjectExpression node, Object data) {
 
-        ASTMethod method = node.getFirstParentOfType(ASTMethod.class);
+        ASTMethod method = node.ancestors(ASTMethod.class).first();
         if (method != null && Helper.isTestMethodOrClass(method)) {
             return;
         }
@@ -149,17 +144,15 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
      */
     private void getObjectValue(ApexNode<?> node, Object data) {
         // PageReference(foo);
-        final List<ASTVariableExpression> variableExpressions = node.findChildrenOfType(ASTVariableExpression.class);
-        for (ASTVariableExpression variable : variableExpressions) {
+        for (ASTVariableExpression variable : node.children(ASTVariableExpression.class)) {
             if (variable.getIndexInParent() == 0
                     && !listOfStringLiteralVariables.contains(Helper.getFQVariableName(variable))) {
-                addViolation(data, variable);
+                asCtx(data).addViolation(variable);
             }
         }
 
         // PageReference(foo + bar)
-        final List<ASTBinaryExpression> binaryExpressions = node.findChildrenOfType(ASTBinaryExpression.class);
-        for (ASTBinaryExpression z : binaryExpressions) {
+        for (ASTBinaryExpression z : node.children(ASTBinaryExpression.class)) {
             getObjectValue(z, data);
         }
     }

@@ -38,7 +38,7 @@ public class LocalVariableNamingConventionsRule extends AbstractNamingConvention
 
     @Override
     public Object visit(ASTVariableDeclaration node, Object data) {
-        if (node.getFirstParentOfType(ASTVariableDeclarationStatements.class).getModifiers().isFinal()) {
+        if (node.ancestors(ASTVariableDeclarationStatements.class).first().getModifiers().isFinal()) {
             checkMatches(FINAL_REGEX, node, data);
         } else {
             checkMatches(LOCAL_REGEX, node, data);

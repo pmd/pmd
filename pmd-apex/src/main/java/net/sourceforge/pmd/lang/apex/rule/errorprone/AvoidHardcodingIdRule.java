@@ -45,7 +45,7 @@ public class AvoidHardcodingIdRule extends AbstractApexRule {
                 if (literal.length() == 18 && !validateChecksum(literal)) {
                     return data;
                 }
-                addViolation(data, node);
+                asCtx(data).addViolation(node);
             }
         }
         return data;

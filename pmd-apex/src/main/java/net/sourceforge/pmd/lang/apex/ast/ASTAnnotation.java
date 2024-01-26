@@ -25,7 +25,7 @@ public final class ASTAnnotation extends AbstractApexNode<Annotation> {
     @Override
     @Deprecated
     public String getImage() {
-        return node.getType().getApexName();
+        return getName();
     }
 
     public boolean isResolved() {

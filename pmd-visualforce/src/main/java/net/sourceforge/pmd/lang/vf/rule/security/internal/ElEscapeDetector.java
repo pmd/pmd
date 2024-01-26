@@ -121,7 +121,7 @@ public final class ElEscapeDetector {
                 }
                 // If none of those things are true, then we need to determine whether the field being accessed is
                 // definitely safe.
-                ASTIdentifier propId = child.getFirstChildOfType(ASTIdentifier.class);
+                ASTIdentifier propId = child.firstChild(ASTIdentifier.class);
                 // If there's an identifier for a field/property, we need to check whether that property is inherently safe,
                 // either because it corresponds to a safe field or because its data type is known to be safe.
                 if (propId != null && !isSafeProperty(propId.getImage()) && !typedNodeIsSafe(propId)) {
@@ -278,24 +278,22 @@ public final class ElEscapeDetector {
     }
 
     public static boolean containsSafeFields(final VfNode expression) {
-        final ASTExpression ex = expression.getFirstChildOfType(ASTExpression.class);
+        final ASTExpression ex = expression.firstChild(ASTExpression.class);
 
         return ex != null && innerContainsSafeFields(ex);
     }
 
     public static boolean startsWithSafeResource(final ASTElExpression el) {
-        final ASTExpression expression = el.getFirstChildOfType(ASTExpression.class);
+        final ASTExpression expression = el.firstChild(ASTExpression.class);
         if (expression != null) {
-            final ASTNegationExpression negation = expression.getFirstChildOfType(ASTNegationExpression.class);
+            final ASTNegationExpression negation = expression.firstChild(ASTNegationExpression.class);
             if (negation != null) {
                 return true;
             }
 
-            final ASTIdentifier id = expression.getFirstChildOfType(ASTIdentifier.class);
+            final ASTIdentifier id = expression.firstChild(ASTIdentifier.class);
             if (id != null) {
-                List<ASTArguments> args = expression.findChildrenOfType(ASTArguments.class);
-
-                if (!args.isEmpty()) {
+                if (expression.children(ASTArguments.class).nonEmpty()) {
                     return functionInherentlySafe(id.getImage());
                 } else {
                     return isSafeGlobal(id.getImage());
@@ -317,8 +315,7 @@ public final class ElEscapeDetector {
 
         final Set<ASTIdentifier> nonEscapedIds = new HashSet<>();
 
-        final List<ASTExpression> exprs = elExpression.findChildrenOfType(ASTExpression.class);
-        for (final ASTExpression expr : exprs) {
+        for (final ASTExpression expr : elExpression.children(ASTExpression.class)) {
 
             if (innerContainsSafeFields(expr)) {
                 continue;
@@ -328,8 +325,7 @@ public final class ElEscapeDetector {
                 continue;
             }
 
-            final List<ASTIdentifier> ids = expr.findChildrenOfType(ASTIdentifier.class);
-            for (final ASTIdentifier id : ids) {
+            for (final ASTIdentifier id : expr.children(ASTIdentifier.class)) {
                 boolean isEscaped = false;
 
                 for (Escaping e : escapes) {

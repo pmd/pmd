@@ -41,7 +41,7 @@ abstract class BaseApexClass<T extends Compilation> extends AbstractApexNode<T> 
     public ApexQualifiedName getQualifiedName() {
         if (qname == null) {
 
-            ASTUserClass parent = this.getFirstParentOfType(ASTUserClass.class);
+            ASTUserClass parent = ancestors(ASTUserClass.class).first();
 
             if (parent != null) {
                 qname = ApexQualifiedName.ofNestedClass(parent.getQualifiedName(), this);

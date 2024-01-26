@@ -24,7 +24,7 @@ public final class ASTParameter extends AbstractApexNode<Parameter> {
     }
 
     public ASTModifierNode getModifiers() {
-        return getFirstChildOfType(ASTModifierNode.class);
+        return firstChild(ASTModifierNode.class);
     }
 
     public String getType() {
