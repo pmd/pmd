@@ -2019,6 +2019,8 @@ they contain a comment (<code class="language-plaintext highlighter-rouge">allow
   </li>
   <li>java
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1307">#1307</a>: [java] AccessNode API changes</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3751">#3751</a>: [java] Rename some node types</li>
       <li><a href="https://github.com/pmd/pmd/pull/4628">#4628</a>:   [java] Support loading classes from java runtime images</li>
       <li><a href="https://github.com/pmd/pmd/issues/4753">#4753</a>: [java] PMD crashes while using generics and wildcards</li>
     </ul>
@@ -2062,7 +2064,7 @@ they contain a comment (<code class="language-plaintext highlighter-rouge">allow
 
 <h4 id="api-changes">API Changes</h4>
 
-<p><strong>Removed classes and methods</strong></p>
+<p><strong>Removed classes and methods (previously deprecated)</strong></p>
 
 <p>The following previously deprecated classes have been removed:</p>
 
@@ -2082,6 +2084,48 @@ is the version that has been selected via CLI <code class="language-plaintext hi
           </li>
         </ul>
       </li>
+    </ul>
+  </li>
+</ul>
+
+<p><strong>Removed classes, interfaces and methods (not previously deprecated)</strong></p>
+
+<ul>
+  <li>pmd-java
+    <ul>
+      <li>The interface <code class="language-plaintext highlighter-rouge">FinalizableNode</code> (introduced in 7.0.0-rc1) has been removed.
+Its method <code class="language-plaintext highlighter-rouge">isFinal()</code> has been moved down to the
+nodes where needed, e.g. <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTLocalVariableDeclaration.html#isFinal()"><code>ASTLocalVariableDeclaration#isFinal</code></a>.</li>
+      <li>The method <code class="language-plaintext highlighter-rouge">isPackagePrivate()</code> in <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassDeclaration.html#"><code>ASTClassDeclaration</code></a> (formerly ASTClassOrInterfaceDeclaration)
+has been removed.
+Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#hasVisibility(net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility)"><code>hasVisibility</code></a> instead,
+which can correctly differentiate between local and package private classes.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><strong>Renamed classes, interfaces</strong></p>
+
+<ul>
+  <li>pmd-java
+    <ul>
+      <li>The interface <code class="language-plaintext highlighter-rouge">AccessNode</code> has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/ModifierOwner.html#"><code>ModifierOwner</code></a>. This is only relevant
+for Java rules, which use that type directly e.g. through downcasting.
+Or when using the XPath function <code class="language-plaintext highlighter-rouge">pmd-java:nodeIs()</code>.</li>
+      <li>The node <code class="language-plaintext highlighter-rouge">ASTClassOrInterfaceType</code> has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/ASTClassType.html#"><code>ASTClassType</code></a>. XPath rules
+need to be adjusted.</li>
+      <li>The node <code class="language-plaintext highlighter-rouge">ASTClassOrInterfaceDeclaration</code> has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/ASTClassDeclaration.html#"><code>ASTClassDeclaration</code></a>.
+XPath rules need to be adjusted.</li>
+      <li>The interface <code class="language-plaintext highlighter-rouge">ASTAnyTypeDeclaration</code> has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/ASTTypeDeclaration.html#"><code>ASTTypeDeclaration</code></a>.
+This is only relevant for Java rules, which use that type directly, e.g. through downcasting.
+Or when using the XPath function <code class="language-plaintext highlighter-rouge">pmd-java:nodeIs()</code>.</li>
+      <li>The interface <code class="language-plaintext highlighter-rouge">ASTMethodOrConstructorDeclaration</code> has been renamed to
+<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/ASTExecutableDeclaration.html#"><code>ASTExecutableDeclaration</code></a>. This is only relevant for Java rules, which sue that type
+directly, e.g. through downcasting. Or when using the XPath function <code class="language-plaintext highlighter-rouge">pmd-java:nodeIs()</code>.</li>
+      <li>The node <code class="language-plaintext highlighter-rouge">ASTVariableDeclaratorId</code> has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/ASTVariableId.html#"><code>ASTVariableId</code></a>. XPath rules
+need to be adjusted.</li>
+      <li>The node <code class="language-plaintext highlighter-rouge">ASTClassOrInterfaceBody</code> has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/ASTClassBody.html#"><code>ASTClassBody</code></a>. XPath rules
+need to be adjusted.</li>
     </ul>
   </li>
 </ul>
@@ -2668,6 +2712,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/issues/1128">#1128</a>: [java] Improve ASTLocalVariableDeclaration</li>
       <li><a href="https://github.com/pmd/pmd/issues/1150">#1150</a>: [java] ClassOrInterfaceType AST improvements</li>
       <li><a href="https://github.com/pmd/pmd/issues/1207">#1207</a>: [java] Resolve explicit types using FQCNs, without hitting the classloader</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1307">#1307</a>: [java] AccessNode API changes</li>
       <li><a href="https://github.com/pmd/pmd/issues/1367">#1367</a>: [java] Parsing error on annotated inner class</li>
       <li><a href="https://github.com/pmd/pmd/issues/1661">#1661</a>: [java] About operator nodes</li>
       <li><a href="https://github.com/pmd/pmd/pull/2366">#2366</a>:   [java] Remove qualified names</li>
@@ -2676,6 +2721,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/issues/3763">#3763</a>: [java] Ambiguous reference error in valid code</li>
       <li><a href="https://github.com/pmd/pmd/issues/3749">#3749</a>: [java] Improve <code class="language-plaintext highlighter-rouge">isOverridden</code> in ASTMethodDeclaration</li>
       <li><a href="https://github.com/pmd/pmd/issues/3750">#3750</a>: [java] Make symbol table support instanceof pattern bindings</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3751">#3751</a>: [java] Rename some node types</li>
       <li><a href="https://github.com/pmd/pmd/issues/3752">#3752</a>: [java] Expose annotations in symbol API</li>
       <li><a href="https://github.com/pmd/pmd/pull/4237">#4237</a>:   [java] Cleanup handling of Java comments</li>
       <li><a href="https://github.com/pmd/pmd/issues/4317">#4317</a>: [java] Some AST nodes should not be TypeNodes</li>
@@ -2971,7 +3017,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jan 18, 2024 <br />
+             Site last generated: Jan 26, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

@@ -1904,7 +1904,7 @@ for the given node</li>
     <ul>
       <li>This means, that documentation for attributes can be found in our Javadocs. For
 example, the attribute <code class="language-plaintext highlighter-rouge">@SimpleName</code> of the Java node <code class="language-plaintext highlighter-rouge">EnumDeclaration</code> is backed
-by the Java getter <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/AbstractAnyTypeDeclaration.html#getSimpleName()"><code>getSimpleName</code></a>.</li>
+by the Java getter <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTTypeDeclaration.html#getSimpleName()"><code>getSimpleName</code></a>.</li>
     </ul>
   </li>
 </ul>
@@ -2453,8 +2453,8 @@ Column numbers are 1-based. The end column is exclusive.
                                         <dt><code>//*[pmd-java:nodeIs("Expression")]</code></dt>
                                         <dd>Matches all nodes that implement <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTExpression.html#"><code>ASTExpression</code></a></dd>
                                         
-                                        <dt><code>//*[pmd-java:nodeIs("AnyTypeDeclaration")]</code></dt>
-                                        <dd>Matches all nodes that implement <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnyTypeDeclaration.html#"><code>ASTAnyTypeDeclaration</code></a></dd>
+                                        <dt><code>//*[pmd-java:nodeIs("TypeDeclaration")]</code></dt>
+                                        <dd>Matches all nodes that implement <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTTypeDeclaration.html#"><code>ASTTypeDeclaration</code></a></dd>
                                         
                                         <dt><code>//*[pmd-java:nodeIs("Foo")]</code></dt>
                                         <dd>Runtime error, there's no class ASTFoo in the package</dd>
@@ -2531,7 +2531,7 @@ Column numbers are 1-based. The end column is exclusive.
                                         <dt><code>//FormalParameter[pmd-java:typeIs("java.lang.String[]")]</code></dt>
                                         <dd>Matches formal parameters of type <code>String[]</code> (including vararg parameters)</dd>
                                         
-                                        <dt><code>//VariableDeclaratorId[pmd-java:typeIs("java.lang.List")]</code></dt>
+                                        <dt><code>//VariableId[pmd-java:typeIs("java.lang.List")]</code></dt>
                                         <dd>Matches variable declarators of type <code>List</code> or any of its subtypes (including e.g. <code>ArrayList</code>)</dd>
                                         
                                     </dl>
@@ -2603,7 +2603,7 @@ Column numbers are 1-based. The end column is exclusive.
                                 <dd>
                                     <dl class="code-examples">
                                         
-                                        <dt><code>//VariableDeclaratorId[pmd-java:typeIsExactly("java.lang.List")]</code></dt>
+                                        <dt><code>//VariableId[pmd-java:typeIsExactly("java.lang.List")]</code></dt>
                                         <dd>Matches variable declarators of type <code>List</code> (but not e.g. <code>ArrayList</code>)</dd>
                                         
                                     </dl>
@@ -2675,7 +2675,7 @@ Column numbers are 1-based. The end column is exclusive.
                                 <dd>
                                     <dl class="code-examples">
                                         
-                                        <dt><code>//ClassOrInterfaceDeclaration[metric('NCSS') &gt; 200]</code></dt>
+                                        <dt><code>//ClassDeclaration[metric('NCSS') &gt; 200]</code></dt>
                                         <dd></dd>
                                         
                                         <dt><code>//MethodDeclaration[metric('CYCLO') &gt; 10 and metric('NCSS') &gt; 20]</code></dt>
@@ -2798,7 +2798,7 @@ Column numbers are 1-based. The end column is exclusive.
                                 <dd>Returns a sequence of the effective modifiers of a node as strings. This is documented on <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTModifierList.html#getEffectiveModifiers()"><code>getEffectiveModifiers</code></a>.</dd>
                                 
                                 <dt>Remarks</dt>
-                                <dd>The context node must be an <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/AccessNode.html#"><code>AccessNode</code></a>, otherwise this returns an empty sequence</dd>
+                                <dd>The context node must be an <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#"><code>ModifierOwner</code></a>, otherwise this returns an empty sequence</dd>
 
                                 
 
@@ -2860,7 +2860,7 @@ Column numbers are 1-based. The end column is exclusive.
                                 <dd>Returns a sequence of the explicit modifiers of a node as strings. This is documented on <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTModifierList.html#getExplicitModifiers()"><code>getExplicitModifiers</code></a>.</dd>
                                 
                                 <dt>Remarks</dt>
-                                <dd>The context node must be an <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/AccessNode.html#"><code>AccessNode</code></a>, otherwise this returns an empty sequence</dd>
+                                <dd>The context node must be an <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#"><code>ModifierOwner</code></a>, otherwise this returns an empty sequence</dd>
 
                                 
 
@@ -3017,7 +3017,7 @@ Column numbers are 1-based. The end column is exclusive.
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            December 2023 (7.0.0)<br /> Site last generated: Jan 18, 2024 <br />
+            December 2023 (7.0.0)<br /> Site last generated: Jan 26, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

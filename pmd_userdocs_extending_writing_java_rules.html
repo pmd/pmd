@@ -1923,8 +1923,8 @@ by default just visits the children.</p>
 
 <p>Generally, a rule wants to check for only some node types. In our XPath example
 in <a href="pmd_userdocs_extending_your_first_rule.html">Your First Rule</a>,
-we wanted to check for some <code class="language-plaintext highlighter-rouge">VariableDeclaratorId</code> nodes. That’s the XPath name,
-but in Java, you’ll get access to the <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableDeclaratorId.html#"><code>ASTVariableDeclaratorId</code></a>
+we wanted to check for some <code class="language-plaintext highlighter-rouge">VariableId</code> nodes. That’s the XPath name,
+but in Java, you’ll get access to the <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableId.html#"><code>ASTVariableId</code></a>
 full API.</p>
 
 <p>If you want to check for some specific node types, you can override the
@@ -1933,8 +1933,8 @@ corresponding <code class="language-plaintext highlighter-rouge">visit</code> me
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyRule</span> <span class="kd">extends</span> <span class="nc">AbstractJavaRule</span> <span class="o">{</span>
 
     <span class="nd">@Override</span>
-    <span class="kd">public</span> <span class="nc">Object</span> <span class="nf">visit</span><span class="o">(</span><span class="nc">ASTVariableDeclaratorId</span> <span class="n">node</span><span class="o">,</span> <span class="nc">Object</span> <span class="n">data</span><span class="o">)</span> <span class="o">{</span>
-        <span class="c1">// This method is called on each node of type ASTVariableDeclaratorId</span>
+    <span class="kd">public</span> <span class="nc">Object</span> <span class="nf">visit</span><span class="o">(</span><span class="nc">ASTVariableId</span> <span class="n">node</span><span class="o">,</span> <span class="nc">Object</span> <span class="n">data</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// This method is called on each node of type ASTVariableId</span>
         <span class="c1">// in the AST</span>
 
         <span class="k">if</span> <span class="o">(</span><span class="n">node</span><span class="o">.</span><span class="na">getType</span><span class="o">()</span> <span class="o">==</span> <span class="kt">short</span><span class="o">.</span><span class="na">class</span><span class="o">)</span> <span class="o">{</span>
@@ -2177,7 +2177,7 @@ create custom PMD rules for different languages.</p>
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            December 2023 (7.0.0)<br /> Site last generated: Jan 18, 2024 <br />
+            December 2023 (7.0.0)<br /> Site last generated: Jan 26, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

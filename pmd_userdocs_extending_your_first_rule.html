@@ -1965,10 +1965,10 @@ save it to <a href="pmd_userdocs_extending_testing.html">make test cases</a>.</p
 
 </code></pre></div></div>
 
-<p>Examining the AST, you find out that the LocalVariableDeclaration has a VariableDeclaratorId
+<p>Examining the AST, you find out that the LocalVariableDeclaration has a VariableId
 descendant, whose <code class="language-plaintext highlighter-rouge">Name</code> XPath attribute is exactly <code class="language-plaintext highlighter-rouge">bill</code>. You thus write your first attempt
 in the XPath editor:</p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">VariableDeclaratorId</span><span class="p">[</span><span class="na">@Name</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"bill"</span><span class="p">]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">VariableId</span><span class="p">[</span><span class="na">@Name</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"bill"</span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
 <p>You can see the XPath result list is updated with the variable declarator.
@@ -1990,7 +1990,7 @@ see that the field declaration id is matched even though it’s not of type <cod
 based on your examination of the Type node of the field and local variable
 declaration nodes.</p>
 
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">VariableDeclaratorId</span><span class="p">[</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"bill"</span><span class="p">][..</span><span class="err">/</span><span class="p">..</span><span class="o">/</span><span class="nt">PrimitiveType</span><span class="p">[</span><span class="na">@Kind</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"short"</span><span class="p">]]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">VariableId</span><span class="p">[</span><span class="na">@Name</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"bill"</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="p">..</span><span class="err">/</span><span class="p">..</span><span class="o">/</span><span class="nt">Type</span><span class="p">[</span><span class="na">@TypeImage</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"short"</span><span class="p">]]</span><span class="w">
 </span></code></pre></div></div>
 
 <h3 id="exporting-to-xml">Exporting to XML</h3>
@@ -2012,8 +2012,8 @@ copy-paste into your ruleset XML. The resulting element looks like so:</p>
     <span class="nt">&lt;properties&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"xpath"</span><span class="nt">&gt;</span>
             <span class="nt">&lt;value&gt;</span>
-                <span class="cp">&lt;![CDATA[
-//VariableDeclaratorId[@Image = "bill"][../../PrimitiveType[@Kind = "short"]]
+<span class="cp">&lt;![CDATA[
+//VariableId[@Name = "bill"][../../Type[@TypeImage="short"]]
 ]]&gt;</span>
             <span class="nt">&lt;/value&gt;</span>
         <span class="nt">&lt;/property&gt;</span>
@@ -2065,7 +2065,7 @@ of a rule of type XPathRule, which is how XPath rules are implemented.</p>
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            December 2023 (7.0.0)<br /> Site last generated: Jan 18, 2024 <br />
+            December 2023 (7.0.0)<br /> Site last generated: Jan 26, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

@@ -1934,11 +1934,11 @@ Classes with solely static members are ignored, refer to <a href="pmd_rules_java
 <p>Avoid using dollar signs in variable/method/class/interface names.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="nf">contains</span><span class="p">(</span><span class="na">@SimpleName</span><span class="p">,</span><span class="w"> </span><span class="s1">'$'</span><span class="p">)]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassDeclaration</span><span class="w">           </span><span class="p">[</span><span class="nf">contains</span><span class="p">(</span><span class="na">@SimpleName</span><span class="p">,</span><span class="w"> </span><span class="s1">'$'</span><span class="p">)]</span><span class="w">
     </span><span class="p">|</span><span class="w"> </span><span class="o">//</span><span class="nt">EnumDeclaration</span><span class="w">            </span><span class="p">[</span><span class="nf">contains</span><span class="p">(</span><span class="na">@SimpleName</span><span class="p">,</span><span class="w"> </span><span class="s1">'$'</span><span class="p">)]</span><span class="w">
     </span><span class="p">|</span><span class="w"> </span><span class="o">//</span><span class="nt">AnnotationTypeDeclaration</span><span class="w">  </span><span class="p">[</span><span class="nf">contains</span><span class="p">(</span><span class="na">@SimpleName</span><span class="p">,</span><span class="w"> </span><span class="s1">'$'</span><span class="p">)]</span><span class="w">
     </span><span class="p">|</span><span class="w"> </span><span class="o">//</span><span class="nt">RecordDeclaration</span><span class="w">          </span><span class="p">[</span><span class="nf">contains</span><span class="p">(</span><span class="na">@SimpleName</span><span class="p">,</span><span class="w"> </span><span class="s1">'$'</span><span class="p">)]</span><span class="w">
-    </span><span class="p">|</span><span class="w"> </span><span class="o">//</span><span class="nt">VariableDeclaratorId</span><span class="w">       </span><span class="p">[</span><span class="nf">contains</span><span class="p">(</span><span class="na">@Name</span><span class="p">,</span><span class="w"> </span><span class="s1">'$'</span><span class="p">)]</span><span class="w">
+    </span><span class="p">|</span><span class="w"> </span><span class="o">//</span><span class="nt">VariableId</span><span class="w">                 </span><span class="p">[</span><span class="nf">contains</span><span class="p">(</span><span class="na">@Name</span><span class="p">,</span><span class="w"> </span><span class="s1">'$'</span><span class="p">)]</span><span class="w">
     </span><span class="p">|</span><span class="w"> </span><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="w">          </span><span class="p">[</span><span class="nf">contains</span><span class="p">(</span><span class="na">@Name</span><span class="p">,</span><span class="w"> </span><span class="s1">'$'</span><span class="p">)]</span><span class="w">
 </span></code></pre></div></div>
 
@@ -1962,8 +1962,8 @@ Classes with solely static members are ignored, refer to <a href="pmd_rules_java
 Clarify your intent by using private or package access modifiers instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="na">@Final</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]</span><span class="w">
-</span><span class="o">/</span><span class="nt">ClassOrInterfaceBody</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassDeclaration</span><span class="p">[</span><span class="na">@Final</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]</span><span class="w">
+</span><span class="o">/</span><span class="nt">ClassBody</span><span class="w">
 </span><span class="o">/</span><span class="nt">FieldDeclaration</span><span class="p">[</span><span class="na">@Visibility</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"protected"</span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
@@ -1991,8 +1991,8 @@ only be allowed in final classes that extend other classes with protected method
 visibility cannot be reduced). Clarify your intent by using private or package access modifiers instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="na">@Final</span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="ow">not</span><span class="p">(</span><span class="nt">ExtendsList</span><span class="p">)]</span><span class="w">
-</span><span class="o">/</span><span class="nt">ClassOrInterfaceBody</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassDeclaration</span><span class="p">[</span><span class="na">@Final</span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="ow">not</span><span class="p">(</span><span class="nt">ExtendsList</span><span class="p">)]</span><span class="w">
+</span><span class="o">/</span><span class="nt">ClassBody</span><span class="w">
 </span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="na">@Visibility</span><span class="err">=</span><span class="s2">"protected"</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="na">@Name</span><span class="w"> </span><span class="p">!</span><span class="err">=</span><span class="w"> </span><span class="s1">'finalize'</span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
@@ -2018,7 +2018,7 @@ visibility cannot be reduced). Clarify your intent by using private or package a
 and increases the maintenance burden.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodCall</span><span class="p">[</span><span class="nt">TypeExpression</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.System'</span><span class="p">)]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodCall</span><span class="p">[</span><span class="nt">TypeExpression</span><span class="o">/</span><span class="nt">ClassType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.System'</span><span class="p">)]</span><span class="w">
                                     </span><span class="ow">and</span><span class="w"> </span><span class="na">@MethodName</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'loadLibrary'</span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
@@ -2109,8 +2109,8 @@ prefix for these methods.</p>
 another constructor (such as an overloaded constructor) is called, this rule will not report it.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="nt">ExtendsList</span><span class="err">/*</span><span class="p">]</span><span class="w">
-  </span><span class="o">/</span><span class="nt">ClassOrInterfaceBody</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassDeclaration</span><span class="p">[</span><span class="nt">ExtendsList</span><span class="err">/*</span><span class="p">]</span><span class="w">
+  </span><span class="o">/</span><span class="nt">ClassBody</span><span class="w">
   </span><span class="o">/</span><span class="nt">ConstructorDeclaration</span><span class="p">[</span><span class="w"> </span><span class="ow">not</span><span class="p">(</span><span class="nt">Block</span><span class="o">/</span><span class="nt">ExplicitConstructorInvocation</span><span class="p">)</span><span class="w"> </span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
@@ -2578,8 +2578,8 @@ EmptySwitchStatements, EmptySynchronizedBlock, EmptyTryBlock, and EmptyWhileStmt
 usage by developers who should be implementing their own versions in the concrete subclasses.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="na">@RegularClass</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="ow">mod</span><span class="kr">if</span><span class="nf">iers</span><span class="p">()</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"abstract"</span><span class="p">]</span><span class="w">
-    </span><span class="o">/</span><span class="nt">ClassOrInterfaceBody</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassDeclaration</span><span class="p">[</span><span class="na">@RegularClass</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="ow">mod</span><span class="kr">if</span><span class="nf">iers</span><span class="p">()</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"abstract"</span><span class="p">]</span><span class="w">
+    </span><span class="o">/</span><span class="nt">ClassBody</span><span class="w">
     </span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="w">
     </span><span class="p">[</span><span class="nt">Block</span><span class="p">[</span><span class="w">
       </span><span class="ow">le</span><span class="nt">t</span><span class="w"> </span><span class="nv">$size</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="kn">self::</span><span class="nt">EmptyStatement</span><span class="p">)])</span><span class="w">
@@ -2614,7 +2614,7 @@ usage by developers who should be implementing their own versions in the concret
 <p>No need to explicitly extend Object.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ExtendsList</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIsExactly</span><span class="p">(</span><span class="s1">'java.lang.Object'</span><span class="p">)]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ExtendsList</span><span class="o">/</span><span class="nt">ClassType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIsExactly</span><span class="p">(</span><span class="s1">'java.lang.Object'</span><span class="p">)]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -3170,7 +3170,7 @@ Developers Perceive Them</a>.</p>
 <p>The Local Home interface of a Session EJB should be suffixed by ‘LocalHome’.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassDeclaration</span><span class="w">
 </span><span class="p">[</span><span class="w">
     </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'javax.ejb.EJBLocalHome'</span><span class="p">)</span><span class="w">
     </span><span class="ow">and</span><span class="w"> </span><span class="ow">not</span><span class="p">(</span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@SimpleName</span><span class="p">,</span><span class="w"> </span><span class="s1">'LocalHome'</span><span class="p">))</span><span class="w">
@@ -3197,7 +3197,7 @@ Developers Perceive Them</a>.</p>
 <p>The Local Interface of a Session EJB should be suffixed by ‘Local’.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassDeclaration</span><span class="w">
 </span><span class="p">[</span><span class="w">
     </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'javax.ejb.EJBLocalObject'</span><span class="p">)</span><span class="w">
     </span><span class="ow">and</span><span class="w"> </span><span class="ow">not</span><span class="p">(</span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@SimpleName</span><span class="p">,</span><span class="w"> </span><span class="s1">'Local'</span><span class="p">))</span><span class="w">
@@ -3352,7 +3352,7 @@ properties.</p>
 <p>Fields, formal arguments, or local variable names that are too long can make the code difficult to follow.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">VariableDeclaratorId</span><span class="p">[</span><span class="nf">string-length</span><span class="p">(</span><span class="na">@Name</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nv">$minimum</span><span class="p">]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">VariableId</span><span class="p">[</span><span class="nf">string-length</span><span class="p">(</span><span class="na">@Name</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nv">$minimum</span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -3408,7 +3408,7 @@ properties.</p>
 <p>The EJB Specification states that any MessageDrivenBean or SessionBean should be suffixed by ‘Bean’.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassDeclaration</span><span class="w">
 </span><span class="p">[</span><span class="w">
     </span><span class="p">(</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'javax.ejb.SessionBean'</span><span class="p">)</span><span class="w">
      </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'javax.ejb.MessageDrivenBean'</span><span class="p">))</span><span class="w">
@@ -3545,7 +3545,7 @@ configured through properties.</p>
 <p>Detects when a class, interface, enum or annotation does not have a package definition.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">/</span><span class="nt">CompilationUnit</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">PackageDeclaration</span><span class="p">)]</span><span class="err">/</span><span class="o">*</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">nodeIs</span><span class="p">(</span><span class="s2">"AnyTypeDeclaration"</span><span class="p">)][</span><span class="m">1</span><span class="p">]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">/</span><span class="nt">CompilationUnit</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">PackageDeclaration</span><span class="p">)]</span><span class="err">/</span><span class="o">*</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">nodeIs</span><span class="p">(</span><span class="s2">"TypeDeclaration"</span><span class="p">)][</span><span class="m">1</span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -3675,7 +3675,7 @@ can reorder code.</p>
 <p>Remote Interface of a Session EJB should not have a suffix.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassDeclaration</span><span class="w">
 </span><span class="p">[</span><span class="w">
     </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'javax.ejb.EJBObject'</span><span class="p">)</span><span class="w">
     </span><span class="ow">and</span><span class="w"> </span><span class="nf">matches</span><span class="p">(</span><span class="na">@SimpleName</span><span class="p">,</span><span class="w"> </span><span class="s1">'.*(Session|EJB|Bean)$'</span><span class="p">)</span><span class="w">
@@ -3707,7 +3707,7 @@ can reorder code.</p>
 <p>A Remote Home interface type of a Session EJB should be suffixed by ‘Home’.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassDeclaration</span><span class="w">
 </span><span class="p">[</span><span class="w">
     </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'javax.ejb.EJBHome'</span><span class="p">)</span><span class="w">
     </span><span class="ow">and</span><span class="w"> </span><span class="ow">not</span><span class="p">(</span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@SimpleName</span><span class="p">,</span><span class="w"> </span><span class="s1">'Home'</span><span class="p">))</span><span class="w">
@@ -3734,7 +3734,7 @@ can reorder code.</p>
 <p>Short Classnames with fewer than e.g. five characters are not recommended.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="nf">string-length</span><span class="p">(</span><span class="na">@SimpleName</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nv">$minimum</span><span class="p">]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassDeclaration</span><span class="p">[</span><span class="nf">string-length</span><span class="p">(</span><span class="na">@SimpleName</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nv">$minimum</span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -3834,7 +3834,7 @@ can reorder code.</p>
 <p>Fields, local variables, enum constant names or parameter names that are very short are not helpful to the reader.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">VariableDeclaratorId</span><span class="p">[</span><span class="nf">string-length</span><span class="p">(</span><span class="na">@Name</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nv">$minimum</span><span class="p">]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">VariableId</span><span class="p">[</span><span class="nf">string-length</span><span class="p">(</span><span class="na">@Name</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nv">$minimum</span><span class="p">]</span><span class="w">
  </span><span class="c">(: ForStatement :)</span><span class="w">
  </span><span class="p">[</span><span class="ow">not</span><span class="p">(..</span><span class="err">/</span><span class="p">..</span><span class="o">/</span><span class="kn">parent::</span><span class="nt">ForInit</span><span class="p">)]</span><span class="w">
  </span><span class="c">(: Foreach statement :)</span><span class="w">
@@ -4628,8 +4628,8 @@ just more visually pleasing. Unset the property <code class="language-plaintext 
 <p>Reports qualified this usages in the same class.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ThisExpression</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="w">
-</span><span class="p">[</span><span class="w"> </span><span class="kn">ancestor::</span><span class="o">*</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">nodeIs</span><span class="p">(</span><span class="s1">'AnyTypeDeclaration'</span><span class="p">)][</span><span class="m">1</span><span class="p">]</span><span class="err">/</span><span class="na">@SimpleName</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="p">.</span><span class="err">/</span><span class="na">@SimpleName</span><span class="w"> </span><span class="p">]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ThisExpression</span><span class="o">/</span><span class="nt">ClassType</span><span class="w">
+</span><span class="p">[</span><span class="w"> </span><span class="kn">ancestor::</span><span class="o">*</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">nodeIs</span><span class="p">(</span><span class="s1">'TypeDeclaration'</span><span class="p">)][</span><span class="m">1</span><span class="p">]</span><span class="err">/</span><span class="na">@SimpleName</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="p">.</span><span class="err">/</span><span class="na">@SimpleName</span><span class="w"> </span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -4677,7 +4677,7 @@ using <code class="language-plaintext highlighter-rouge">new</code>. Instead one
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">VariableDeclarator</span><span class="w">
-    </span><span class="p">[</span><span class="nt">VariableDeclaratorId</span><span class="p">[</span><span class="na">@TypeInferred</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="na">@ArrayType</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]]</span><span class="w">
+    </span><span class="p">[</span><span class="nt">VariableId</span><span class="p">[</span><span class="na">@TypeInferred</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="na">@ArrayType</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]]</span><span class="w">
     </span><span class="p">[</span><span class="nt">ArrayAllocation</span><span class="o">/</span><span class="nt">ArrayInitializer</span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
@@ -4793,7 +4793,7 @@ that are misplaced (not making groups of 3 digits) are reported.</p>
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jan 18, 2024 <br />
+             Site last generated: Jan 26, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

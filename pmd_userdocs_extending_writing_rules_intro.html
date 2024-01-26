@@ -1909,11 +1909,12 @@ chain produced by a lexer. For example:</p>
 <td>
 
         <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">└─</span> <span class="nc">CompilationUnit</span>
-        <span class="err">└─</span> <span class="nc">ClassOrInterfaceDeclaration</span> <span class="s">"Foo"</span>
-        <span class="err">├─</span> <span class="nc">ModifierList</span>
-        <span class="err">├─</span> <span class="nc">ExtendsList</span>
-        <span class="err">│</span>  <span class="err">└─</span> <span class="nc">ClassOrInterfaceType</span> <span class="s">"Object"</span>
-        <span class="err">└─</span> <span class="nc">ClassOrInterfaceBody</span>
+   <span class="err">└─</span> <span class="nc">TypeDeclaration</span>
+      <span class="err">└─</span> <span class="nc">ClassDeclaration</span> <span class="s">"Foo"</span>
+         <span class="err">├─</span> <span class="nc">ModifierList</span>
+         <span class="err">├─</span> <span class="nc">ExtendsList</span>
+         <span class="err">│</span>  <span class="err">└─</span> <span class="nc">ClassType</span> <span class="s">"Object"</span>
+         <span class="err">└─</span> <span class="nc">ClassBody</span>
 </code></pre></div>        </div>
 
       </td>
@@ -2074,7 +2075,7 @@ your rule</li>
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            December 2023 (7.0.0)<br /> Site last generated: Jan 18, 2024 <br />
+            December 2023 (7.0.0)<br /> Site last generated: Jan 26, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

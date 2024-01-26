@@ -2043,7 +2043,7 @@ Just create a new instance and use it locally, where you need it.
 Creating a new instance is easier than synchronizing access to a shared instance.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">FieldDeclaration</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.security.MessageDigest'</span><span class="p">)]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">FieldDeclaration</span><span class="o">/</span><span class="nt">ClassType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.security.MessageDigest'</span><span class="p">)]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -2278,7 +2278,7 @@ parameter, then only the first assignment is reported.</p>
 if held within objects with long lifetimes.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">FieldDeclaration</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.StringBuffer'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.StringBuilder'</span><span class="p">)]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">FieldDeclaration</span><span class="o">/</span><span class="nt">ClassType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.StringBuffer'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.StringBuilder'</span><span class="p">)]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -2382,7 +2382,7 @@ If the value return is ‘false’, it should be handled properly.</p>
 For other scenarios, consider using a utility class. See Effective Java’s ‘Use interfaces only to define types’.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="na">@Interface</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()][</span><span class="nv">$ignoreIfHasMethods</span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="ow">not</span><span class="p">(</span><span class="nt">ClassOrInterfaceBody</span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="p">)]</span><span class="o">/</span><span class="nt">ClassOrInterfaceBody</span><span class="o">/</span><span class="nt">FieldDeclaration</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassDeclaration</span><span class="p">[</span><span class="na">@Interface</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()][</span><span class="nv">$ignoreIfHasMethods</span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="ow">not</span><span class="p">(</span><span class="nt">ClassBody</span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="p">)]</span><span class="o">/</span><span class="nt">ClassBody</span><span class="o">/</span><span class="nt">FieldDeclaration</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -2487,7 +2487,7 @@ initialization. There is currently no way to find out whether a method called in
 accessible from outside the anonymous class, and those legit cases should be suppressed for the time being.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ConstructorCall</span><span class="o">/</span><span class="nt">AnonymousClassDeclaration</span><span class="o">/</span><span class="nt">ClassOrInterfaceBody</span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="err">*</span><span class="p">)</span><span class="err">=</span><span class="m">1</span><span class="p">]</span><span class="o">/</span><span class="nt">Initializer</span><span class="p">[</span><span class="na">@Static</span><span class="err">=</span><span class="nf">false</span><span class="p">()]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ConstructorCall</span><span class="o">/</span><span class="nt">AnonymousClassDeclaration</span><span class="o">/</span><span class="nt">ClassBody</span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="err">*</span><span class="p">)</span><span class="err">=</span><span class="m">1</span><span class="p">]</span><span class="o">/</span><span class="nt">Initializer</span><span class="p">[</span><span class="na">@Static</span><span class="err">=</span><span class="nf">false</span><span class="p">()]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -2674,7 +2674,7 @@ with lambdas. The available alternatives depend on the actual logging framework.
 through the @RunWith(Suite.class) annotation.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="na">@Name</span><span class="err">=</span><span class="s1">'suite'</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'junit.framework.Test'</span><span class="p">)]]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="na">@Name</span><span class="err">=</span><span class="s1">'suite'</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="nt">ClassType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'junit.framework.Test'</span><span class="p">)]]</span><span class="w">
                    </span><span class="p">[</span><span class="ow">not</span><span class="p">(.</span><span class="o">//</span><span class="nt">ReturnStatement</span><span class="err">/</span><span class="o">*</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'junit.framework.JUnit4TestAdapter'</span><span class="p">)])]</span><span class="w">
 </span></code></pre></div></div>
 
@@ -2787,9 +2787,9 @@ In JUnit 5, one of the following annotations should be used for tests: @Test, @R
 In TestNG, only methods annotated with the @Test annotation are executed.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="nf">matches</span><span class="p">(</span><span class="na">@SimpleName</span><span class="p">,</span><span class="w"> </span><span class="nv">$testClassPattern</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'junit.framework.TestCase'</span><span class="p">)]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassDeclaration</span><span class="p">[</span><span class="nf">matches</span><span class="p">(</span><span class="na">@SimpleName</span><span class="p">,</span><span class="w"> </span><span class="nv">$testClassPattern</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'junit.framework.TestCase'</span><span class="p">)]</span><span class="w">
     </span><span class="c">(: a junit 3 method :)</span><span class="w">
-    </span><span class="o">/</span><span class="nt">ClassOrInterfaceBody</span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="w">
+    </span><span class="o">/</span><span class="nt">ClassBody</span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="w">
         </span><span class="na">@Visibility</span><span class="err">=</span><span class="s2">"public"</span><span class="w">
         </span><span class="ow">and</span><span class="w"> </span><span class="nf">starts-with</span><span class="p">(</span><span class="na">@Name</span><span class="p">,</span><span class="w"> </span><span class="s1">'test'</span><span class="p">)</span><span class="w">
         </span><span class="ow">and</span><span class="w"> </span><span class="ow">not</span><span class="p">(</span><span class="nt">ModifierList</span><span class="o">/</span><span class="nt">Annotation</span><span class="p">[</span><span class="w">
@@ -2865,10 +2865,10 @@ is a good practice to limit their visibility.</p>
 <code class="language-plaintext highlighter-rouge">@TestFactory</code>, <code class="language-plaintext highlighter-rouge">@TestTemplate</code> or <code class="language-plaintext highlighter-rouge">@ParameterizedTest</code>.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassDeclaration</span><span class="p">[</span><span class="w">
     </span><span class="c">(: a Junit 5 test class, ie, it has methods with the annotation :)</span><span class="w">
     </span><span class="na">@Interface</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()</span><span class="w"> </span><span class="ow">and</span><span class="w">
-    </span><span class="nt">ClassOrInterfaceBody</span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="w">
+    </span><span class="nt">ClassBody</span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="w">
     </span><span class="p">[</span><span class="nt">ModifierList</span><span class="o">/</span><span class="nt">Annotation</span><span class="p">[</span><span class="w">
                </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.Test'</span><span class="p">)</span><span class="w">
             </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.RepeatedTest'</span><span class="p">)</span><span class="w">
@@ -2878,7 +2878,7 @@ is a good practice to limit their visibility.</p>
     </span><span class="p">]]</span><span class="w">
 </span><span class="p">]</span><span class="err">/</span><span class="p">(</span><span class="w">
        </span><span class="kn">self::</span><span class="o">*</span><span class="p">[</span><span class="na">@Abstract</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="na">@Visibility</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="p">(</span><span class="s2">"public"</span><span class="p">,</span><span class="w"> </span><span class="s2">"protected"</span><span class="p">)]</span><span class="w">
-</span><span class="p">|</span><span class="w">      </span><span class="nt">ClassOrInterfaceBody</span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="w">
+</span><span class="p">|</span><span class="w">      </span><span class="nt">ClassBody</span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="w">
        </span><span class="p">[</span><span class="na">@Visibility</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="p">(</span><span class="s2">"public"</span><span class="p">,</span><span class="w"> </span><span class="s2">"protected"</span><span class="p">)]</span><span class="w">
        </span><span class="p">[</span><span class="nt">ModifierList</span><span class="o">/</span><span class="nt">Annotation</span><span class="p">[</span><span class="w">
                </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.Test'</span><span class="p">)</span><span class="w">
@@ -3375,7 +3375,7 @@ are preferred instead of <code class="language-plaintext highlighter-rouge">Bool
 <p>Consider replacing Enumeration usages with the newer java.util.Iterator</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ImplementsList</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIsExactly</span><span class="p">(</span><span class="s1">'java.util.Enumeration'</span><span class="p">)]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ImplementsList</span><span class="o">/</span><span class="nt">ClassType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIsExactly</span><span class="p">(</span><span class="s1">'java.util.Enumeration'</span><span class="p">)]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -3404,7 +3404,7 @@ are preferred instead of <code class="language-plaintext highlighter-rouge">Bool
 <p>Consider replacing Hashtable usage with the newer java.util.Map if thread safety is not required.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIsExactly</span><span class="p">(</span><span class="s1">'java.util.Hashtable'</span><span class="p">)]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIsExactly</span><span class="p">(</span><span class="s1">'java.util.Hashtable'</span><span class="p">)]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -3429,7 +3429,7 @@ are preferred instead of <code class="language-plaintext highlighter-rouge">Bool
 <p>Consider replacing Vector usages with the newer java.util.ArrayList if expensive thread-safe operations are not required.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.Vector'</span><span class="p">)]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.Vector'</span><span class="p">)]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -4065,8 +4065,8 @@ having to deal with the creation of an array.</p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">FormalParameters</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="kn">parent::</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="na">@Overridden</span><span class="err">=</span><span class="nf">true</span><span class="p">()</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="na">@MainMethod</span><span class="err">=</span><span class="nf">true</span><span class="p">()])]</span><span class="w">
   </span><span class="o">/</span><span class="nt">FormalParameter</span><span class="p">[</span><span class="nf">position</span><span class="p">()</span><span class="err">=</span><span class="nf">last</span><span class="p">()]</span><span class="w">
    </span><span class="p">[</span><span class="na">@Varargs</span><span class="err">=</span><span class="nf">false</span><span class="p">()]</span><span class="w">
-   </span><span class="p">[</span><span class="nt">ArrayType</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">PrimitiveType</span><span class="p">[</span><span class="na">@Kind</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"byte"</span><span class="p">]</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Byte'</span><span class="p">)])]</span><span class="w">
-    </span><span class="ow">or</span><span class="w"> </span><span class="nt">VariableDeclaratorId</span><span class="p">[</span><span class="nt">ArrayDimensions</span><span class="p">]</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="p">(</span><span class="nt">PrimitiveType</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="na">@Kind</span><span class="err">=</span><span class="s2">"byte"</span><span class="p">)]</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Byte'</span><span class="p">))])]</span><span class="w">
+   </span><span class="p">[</span><span class="nt">ArrayType</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">PrimitiveType</span><span class="p">[</span><span class="na">@Kind</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"byte"</span><span class="p">]</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nt">ClassType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Byte'</span><span class="p">)])]</span><span class="w">
+    </span><span class="ow">or</span><span class="w"> </span><span class="nt">VariableId</span><span class="p">[</span><span class="nt">ArrayDimensions</span><span class="p">]</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="p">(</span><span class="nt">PrimitiveType</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="na">@Kind</span><span class="err">=</span><span class="s2">"byte"</span><span class="p">)]</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nt">ClassType</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Byte'</span><span class="p">))])]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -4185,7 +4185,7 @@ a block <code class="language-plaintext highlighter-rouge">{}</code> is sufficie
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jan 18, 2024 <br />
+             Site last generated: Jan 26, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

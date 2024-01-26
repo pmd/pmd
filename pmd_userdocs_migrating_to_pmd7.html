@@ -1909,7 +1909,7 @@ to <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/source
   </li>
   <li>If you have written custom XPath rule, look out for warnings about deprecated XPath attributes. These warnings
 might look like
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>WARNING: Use of deprecated attribute 'VariableDeclaratorId/@Image' by XPath rule 'VariableNaming' (in ruleset 'VariableNamingRule'), please use @Name instead
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>WARNING: Use of deprecated attribute 'VariableId/@Image' by XPath rule 'VariableNaming' (in ruleset 'VariableNamingRule'), please use @Name instead
 </code></pre></div>    </div>
     <p>and often already suggest an alternative.</p>
   </li>
@@ -1985,7 +1985,7 @@ But in short, you don’t call <code class="language-plaintext highlighter-rouge
 override the method <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/AbstractRule.html#buildTargetSelector"><code>buildTargetSelector</code></a>:</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="kd">protected</span> <span class="nc">RuleTargetSelector</span> <span class="nf">buildTargetSelector</span><span class="o">()</span> <span class="o">{</span>
-        <span class="k">return</span> <span class="nc">RuleTargetSelector</span><span class="o">.</span><span class="na">forTypes</span><span class="o">(</span><span class="nc">ASTVariableDeclaratorId</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+        <span class="k">return</span> <span class="nc">RuleTargetSelector</span><span class="o">.</span><span class="na">forTypes</span><span class="o">(</span><span class="nc">ASTVariableId</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
     <span class="o">}</span>
 </code></pre></div></div>
 
@@ -2230,7 +2230,7 @@ E.g. the following tests if the node is a variable declarator id initialized to 
 <p>Example:</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>     <span class="nc">NodeStream</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">someNode</span><span class="o">)</span>                           <span class="c1">// the stream here is empty if the node is null</span>
-               <span class="o">.</span><span class="na">filterIs</span><span class="o">(</span><span class="nc">ASTVariableDeclaratorId</span><span class="o">.</span><span class="na">class</span><span class="o">)</span><span class="c1">// the stream here is empty if the node was not a variable declarator id</span>
+               <span class="o">.</span><span class="na">filterIs</span><span class="o">(</span><span class="nc">ASTVariableId</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>          <span class="c1">// the stream here is empty if the node was not a variable id</span>
                <span class="o">.</span><span class="na">followingSiblings</span><span class="o">()</span>                    <span class="c1">// the stream here contains only the siblings, not the original node</span>
                <span class="o">.</span><span class="na">children</span><span class="o">(</span><span class="nc">ASTNumericLiteral</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
                <span class="o">.</span><span class="na">filter</span><span class="o">(</span><span class="nl">ASTNumericLiteral:</span><span class="o">:</span><span class="n">isIntLiteral</span><span class="o">)</span>
@@ -2311,12 +2311,24 @@ PMD 7 AST (“New AST”) and with some background info about the changes.</p>
 <p>When in doubt, it is recommended to use the <a href="pmd_userdocs_extending_designer_reference.html">PMD Designer</a>
 which can also display the AST.</p>
 
+<h4 id="renamed-classes--interfaces">Renamed classes / interfaces</h4>
+
+<ul>
+  <li>AccessNode ➡️ <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#"><code>ModifierOwner</code></a></li>
+  <li>ClassOrInterfaceType ➡️ ClassType (<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassType.html#"><code>ASTClassType</code></a>)</li>
+  <li>ClassOrInterfaceDeclaration ➡️ ClassDeclaration (<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassDeclaration.html#"><code>ASTClassDeclaration</code></a>)</li>
+  <li>AnyTypeDeclaration ➡️ TypeDeclaration (<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTTypeDeclaration.html#"><code>ASTTypeDeclaration</code></a>)</li>
+  <li>MethodOrConstructorDeclaration ➡️ ExecutableDeclaration (<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTExecutableDeclaration.html#"><code>ASTExecutableDeclaration</code></a>)</li>
+  <li>VariableDeclaratorId ➡️ VariableId (<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableId.html#"><code>ASTVariableId</code></a>)</li>
+  <li>ClassOrInterfaceBody ➡️ ClassBody (<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassBody.html#"><code>ASTClassBody</code></a>)</li>
+</ul>
+
 <h4 id="annotations">Annotations</h4>
 
 <ul>
   <li>What: Annotations are consolidated into a single node. <code class="language-plaintext highlighter-rouge">SingleMemberAnnotation</code>, <code class="language-plaintext highlighter-rouge">NormalAnnotation</code> and <code class="language-plaintext highlighter-rouge">MarkerAnnotation</code>
 are removed in favour of <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnnotation.html#"><code>ASTAnnotation</code></a>. The Name node is removed, replaced by a
-<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceType.html#"><code>ASTClassOrInterfaceType</code></a>.</li>
+<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassType.html#"><code>ASTClassType</code></a>.</li>
   <li>Why: Those different node types implement a syntax-only distinction, that only makes semantically equivalent annotations
 have different possible representations. For example, <code class="language-plaintext highlighter-rouge">@A</code> and <code class="language-plaintext highlighter-rouge">@A()</code> are semantically equivalent, yet they were
 parsed as MarkerAnnotation resp. NormalAnnotation. Similarly, <code class="language-plaintext highlighter-rouge">@A("")</code> and <code class="language-plaintext highlighter-rouge">@A(value="")</code> were parsed as
@@ -2362,7 +2374,7 @@ type is used to share the disambiguation logic.</li>
 <td>
 
 <figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="err">└─</span> <span class="nx">Annotation</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
-   <span class="err">├─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
+   <span class="err">├─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
    <span class="err">└─</span> <span class="nx">AnnotationMemberList</span></code></pre></figure>
 
 </td>
@@ -2389,7 +2401,7 @@ type is used to share the disambiguation logic.</li>
 <td>
 
 <figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="err">└─</span> <span class="nx">Annotation</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
-   <span class="err">├─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
+   <span class="err">├─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
    <span class="err">└─</span> <span class="nx">AnnotationMemberList</span>
       <span class="err">└─</span> <span class="nx">MemberValuePair</span> <span class="dl">"</span><span class="s2">value</span><span class="dl">"</span> <span class="p">[</span> <span class="p">@</span><span class="nd">Shorthand</span> <span class="o">=</span> <span class="kc">false</span><span class="p">()</span> <span class="p">]</span>
          <span class="err">└─</span> <span class="nx">StringLiteral</span> <span class="dl">'</span><span class="s1">"v"</span><span class="dl">'</span></code></pre></figure>
@@ -2416,7 +2428,7 @@ type is used to share the disambiguation logic.</li>
 <td>
 
 <figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="err">└─</span> <span class="nx">Annotation</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
-   <span class="err">├─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
+   <span class="err">├─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
    <span class="err">└─</span> <span class="nx">AnnotationMemberList</span>
       <span class="err">└─</span> <span class="nx">MemberValuePair</span> <span class="dl">"</span><span class="s2">value</span><span class="dl">"</span> <span class="p">[</span> <span class="p">@</span><span class="nd">Shorthand</span> <span class="o">=</span> <span class="kc">true</span><span class="p">()</span> <span class="p">]</span>
          <span class="err">└─</span> <span class="nx">StringLiteral</span> <span class="dl">'</span><span class="s1">"v"</span><span class="dl">'</span></code></pre></figure>
@@ -2451,7 +2463,7 @@ type is used to share the disambiguation logic.</li>
 <td>
 
 <figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="err">└─</span> <span class="nx">Annotation</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
-   <span class="err">├─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
+   <span class="err">├─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
    <span class="err">└─</span> <span class="nx">AnnotationMemberList</span>
       <span class="err">├─</span> <span class="nx">MemberValuePair</span> <span class="dl">"</span><span class="s2">value</span><span class="dl">"</span> <span class="p">[</span> <span class="p">@</span><span class="nd">Shorthand</span> <span class="o">=</span> <span class="kc">false</span><span class="p">()</span> <span class="p">]</span>
       <span class="err">│</span>  <span class="err">└─</span> <span class="nx">StringLiteral</span> <span class="dl">'</span><span class="s1">"v"</span><span class="dl">'</span>
@@ -2502,7 +2514,7 @@ Method
 <figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="err">└─</span> <span class="nx">MethodDeclaration</span>
    <span class="err">├─</span> <span class="nx">ModifierList</span>
    <span class="err">│</span>  <span class="err">└─</span> <span class="nx">Annotation</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
-   <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
+   <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
    <span class="err">├─</span> <span class="nx">VoidType</span>
    <span class="err">├─</span> <span class="p">...</span></code></pre></figure>
 
@@ -2527,11 +2539,11 @@ Top-level type declaration
 </td>
 <td>
 
-<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="err">└─</span> <span class="nx">ClassOrInterfaceDeclaration</span>
+<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="err">└─</span> <span class="nx">ClassDeclaration</span>
     <span class="err">├─</span> <span class="nx">ModifierList</span>
     <span class="err">│</span>  <span class="err">└─</span> <span class="nx">Annotation</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
-    <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
-    <span class="err">└─</span> <span class="nx">ClassOrInterfaceBody</span></code></pre></figure>
+    <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
+    <span class="err">└─</span> <span class="nx">ClassBody</span></code></pre></figure>
 
 </td>
 </tr>
@@ -2562,12 +2574,12 @@ Cast expression
 <td>
 
 <figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="err">└─</span> <span class="nx">CastExpression</span>
-   <span class="err">├─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">S</span><span class="dl">"</span>
-   <span class="err">│</span>  <span class="err">├─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">T</span><span class="dl">"</span>
+   <span class="err">├─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">S</span><span class="dl">"</span>
+   <span class="err">│</span>  <span class="err">├─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">T</span><span class="dl">"</span>
    <span class="err">│</span>  <span class="err">│</span>  <span class="err">└─</span> <span class="nx">Annotation</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
-   <span class="err">│</span>  <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
+   <span class="err">│</span>  <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
    <span class="err">│</span>  <span class="err">└─</span> <span class="nx">Annotation</span> <span class="dl">"</span><span class="s2">B</span><span class="dl">"</span>
-   <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">B</span><span class="dl">"</span>
+   <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">B</span><span class="dl">"</span>
    <span class="err">└─</span> <span class="nx">VariableAccess</span> <span class="dl">"</span><span class="s2">expr</span><span class="dl">"</span></code></pre></figure>
 
 </td></tr>
@@ -2598,10 +2610,10 @@ Cast expression with intersection
 
 <figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="err">└─</span> <span class="nx">CastExpression</span>
   <span class="err">├─</span> <span class="nx">IntersectionType</span>
-  <span class="err">│</span>  <span class="err">├─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">T</span><span class="dl">"</span>
+  <span class="err">│</span>  <span class="err">├─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">T</span><span class="dl">"</span>
   <span class="err">│</span>  <span class="err">│</span>  <span class="err">└─</span> <span class="nx">Annotation</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
-  <span class="err">│</span>  <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
-  <span class="err">│</span>  <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">S</span><span class="dl">"</span>
+  <span class="err">│</span>  <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
+  <span class="err">│</span>  <span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">S</span><span class="dl">"</span>
   <span class="err">└─</span> <span class="nx">VariableAccess</span> <span class="dl">"</span><span class="s2">expr</span><span class="dl">"</span></code></pre></figure>
 
 
@@ -2628,9 +2640,9 @@ Constructor call
 <td>
 
 <figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="err">└─</span> <span class="nx">ConstructorCall</span>
-   <span class="err">├─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">T</span><span class="dl">"</span>
+   <span class="err">├─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">T</span><span class="dl">"</span>
    <span class="err">│</span>  <span class="err">└─</span> <span class="nx">Annotation</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
-   <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
+   <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
    <span class="err">└─</span> <span class="nx">ArgumentList</span></code></pre></figure>
 
 </td></tr>
@@ -2661,7 +2673,7 @@ Array allocation
    <span class="err">└─</span> <span class="nx">ArrayType</span>
       <span class="err">├─</span> <span class="nx">PrimitiveType</span> <span class="dl">"</span><span class="s2">int</span><span class="dl">"</span>
       <span class="err">│</span>  <span class="err">└─</span> <span class="nx">Annotation</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
-      <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
+      <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
       <span class="err">└─</span> <span class="nx">ArrayDimensions</span>
          <span class="err">└─</span> <span class="nx">ArrayDimExpr</span>
             <span class="err">└─</span> <span class="nx">NumericLiteral</span> <span class="dl">"</span><span class="s2">0</span><span class="dl">"</span></code></pre></figure>
@@ -2695,15 +2707,15 @@ Array type
 <figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="err">└─</span> <span class="nx">LocalVariableDeclaration</span>
   <span class="err">├─</span> <span class="nx">ModifierList</span>
   <span class="err">│</span>  <span class="err">└─</span> <span class="nx">Annotation</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
-  <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
+  <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
   <span class="err">├─</span> <span class="nx">ArrayType</span>
   <span class="err">│</span>  <span class="err">├─</span> <span class="nx">PrimitiveType</span> <span class="dl">"</span><span class="s2">int</span><span class="dl">"</span>
   <span class="err">│</span>  <span class="err">└─</span> <span class="nx">ArrayDimensions</span>
   <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ArrayTypeDim</span>
   <span class="err">│</span>        <span class="err">└─</span> <span class="nx">Annotation</span> <span class="dl">"</span><span class="s2">B</span><span class="dl">"</span>
-  <span class="err">│</span>           <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">B</span><span class="dl">"</span>
+  <span class="err">│</span>           <span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">B</span><span class="dl">"</span>
   <span class="err">└─</span> <span class="nx">VariableDeclarator</span>
-     <span class="err">└─</span> <span class="nx">VariableDeclaratorId</span> <span class="dl">"</span><span class="s2">x</span><span class="dl">"</span></code></pre></figure>
+     <span class="err">└─</span> <span class="nx">VariableId</span> <span class="dl">"</span><span class="s2">x</span><span class="dl">"</span></code></pre></figure>
 
 
 </td></tr>
@@ -2737,13 +2749,13 @@ Type parameters
 <figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="err">└─</span> <span class="nx">TypeParameters</span>
    <span class="err">├─</span> <span class="nx">TypeParameter</span> <span class="dl">"</span><span class="s2">T</span><span class="dl">"</span>
    <span class="err">│</span>  <span class="err">└─</span> <span class="nx">Annotation</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
-   <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
+   <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
    <span class="err">└─</span> <span class="nx">TypeParameter</span> <span class="dl">"</span><span class="s2">S</span><span class="dl">"</span> <span class="p">[</span> <span class="p">@</span><span class="nd">TypeBound</span> <span class="o">=</span> <span class="kc">true</span><span class="p">()</span> <span class="p">]</span>
       <span class="err">├─</span> <span class="nx">Annotation</span> <span class="dl">"</span><span class="s2">B</span><span class="dl">"</span>
-      <span class="err">│</span>  <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">B</span><span class="dl">"</span>
-      <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">Object</span><span class="dl">"</span>
+      <span class="err">│</span>  <span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">B</span><span class="dl">"</span>
+      <span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">Object</span><span class="dl">"</span>
          <span class="err">└─</span> <span class="nx">Annotation</span> <span class="dl">"</span><span class="s2">C</span><span class="dl">"</span>
-            <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">C</span><span class="dl">"</span></code></pre></figure>
+            <span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">C</span><span class="dl">"</span></code></pre></figure>
 
 
 <ul>
@@ -2782,13 +2794,13 @@ Enum constants
    <span class="err">├─</span> <span class="nx">EnumConstant</span> <span class="dl">"</span><span class="s2">E1</span><span class="dl">"</span>
    <span class="err">│</span>  <span class="err">├─</span> <span class="nx">ModifierList</span>
    <span class="err">│</span>  <span class="err">│</span>  <span class="err">└─</span> <span class="nx">Annotation</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
-   <span class="err">│</span>  <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
-   <span class="err">│</span>  <span class="err">└─</span> <span class="nx">VariableDeclaratorId</span> <span class="dl">"</span><span class="s2">E1</span><span class="dl">"</span>
+   <span class="err">│</span>  <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
+   <span class="err">│</span>  <span class="err">└─</span> <span class="nx">VariableId</span> <span class="dl">"</span><span class="s2">E1</span><span class="dl">"</span>
    <span class="err">└─</span> <span class="nx">EnumConstant</span> <span class="dl">"</span><span class="s2">E2</span><span class="dl">"</span>
       <span class="err">├─</span> <span class="nx">ModifierList</span>
       <span class="err">│</span>  <span class="err">└─</span> <span class="nx">Annotation</span> <span class="dl">"</span><span class="s2">B</span><span class="dl">"</span>
-      <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">B</span><span class="dl">"</span>
-      <span class="err">└─</span> <span class="nx">VariableDeclaratorId</span> <span class="dl">"</span><span class="s2">E2</span><span class="dl">"</span></code></pre></figure>
+      <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">B</span><span class="dl">"</span>
+      <span class="err">└─</span> <span class="nx">VariableId</span> <span class="dl">"</span><span class="s2">E2</span><span class="dl">"</span></code></pre></figure>
 
 
 <ul>
@@ -2807,7 +2819,7 @@ Enum constants
   <li>What:
     <ul>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTType.html#"><code>ASTType</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTReferenceType.html#"><code>ASTReferenceType</code></a> have been turned into
-interfaces, implemented by <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTPrimitiveType.html#"><code>ASTPrimitiveType</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceType.html#"><code>ASTClassOrInterfaceType</code></a>,
+interfaces, implemented by <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTPrimitiveType.html#"><code>ASTPrimitiveType</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassType.html#"><code>ASTClassType</code></a>,
 and the new node <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTArrayType.html#"><code>ASTArrayType</code></a>. This reduces the depth of the relevant
 subtrees, and allows to explore them more easily and consistently.</li>
     </ul>
@@ -2826,12 +2838,12 @@ yield all the types in the tree.</li>
     <ul>
       <li>There is currently no way to match abstract types (or interfaces) with XPath, so <code class="language-plaintext highlighter-rouge">Type</code>
 and <code class="language-plaintext highlighter-rouge">ReferenceType</code> name tests won’t match anything anymore.</li>
-      <li><code class="language-plaintext highlighter-rouge">Type/ReferenceType/ClassOrInterfaceType</code> ➡️ <code class="language-plaintext highlighter-rouge">ClassOrInterfaceType</code></li>
+      <li><code class="language-plaintext highlighter-rouge">Type/ReferenceType/ClassOrInterfaceType</code> ➡️ <code class="language-plaintext highlighter-rouge">ClassType</code></li>
       <li><code class="language-plaintext highlighter-rouge">Type/PrimitiveType</code> ➡️ <code class="language-plaintext highlighter-rouge">PrimitiveType</code>.</li>
-      <li><code class="language-plaintext highlighter-rouge">Type/ReferenceType[@ArrayDepth &gt; 1]/ClassOrInterfaceType</code> ➡️ <code class="language-plaintext highlighter-rouge">ArrayType/ClassOrInterfaceType</code>.</li>
+      <li><code class="language-plaintext highlighter-rouge">Type/ReferenceType[@ArrayDepth &gt; 1]/ClassOrInterfaceType</code> ➡️ <code class="language-plaintext highlighter-rouge">ArrayType/ClassType</code>.</li>
       <li><code class="language-plaintext highlighter-rouge">Type/ReferenceType/PrimitiveType</code> ➡️ <code class="language-plaintext highlighter-rouge">ArrayType/PrimitiveType</code>.</li>
       <li>Note that in most cases you should check the type of a variable with e.g.
-<code class="language-plaintext highlighter-rouge">VariableDeclaratorId[pmd-java:typeIs("java.lang.String[]")]</code> because it
+<code class="language-plaintext highlighter-rouge">VariableId[pmd-java:typeIs("java.lang.String[]")]</code> because it
 considers the additional dimensions on declarations like <code class="language-plaintext highlighter-rouge">String foo[];</code>.
 The Java equivalent is <code class="language-plaintext highlighter-rouge">TypeHelper.isA(id, String[].class);</code></li>
     </ul>
@@ -2868,13 +2880,13 @@ The Java equivalent is <code class="language-plaintext highlighter-rouge">TypeHe
 </td>
 <td>
 
-<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">List</span><span class="dl">"</span>
+<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">List</span><span class="dl">"</span>
    <span class="err">└─</span> <span class="nx">TypeArguments</span>
-      <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">String</span><span class="dl">"</span></code></pre></figure>
+      <span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">String</span><span class="dl">"</span></code></pre></figure>
 
 
 <ul>
-  <li>ClassOrInterfaceType implements ASTReferenceType, which implements ASTType.</li>
+  <li>ClassType implements ASTReferenceType, which implements ASTType.</li>
 </ul>
 
 </td>
@@ -2912,7 +2924,7 @@ The Java equivalent is <code class="language-plaintext highlighter-rouge">TypeHe
 <td>
 
 <figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="err">└─</span> <span class="nx">ArrayType</span><span class="p">[</span> <span class="p">@</span><span class="nd">ArrayDepth</span> <span class="o">=</span> <span class="mi">2</span> <span class="p">]</span>
-   <span class="err">├─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">String</span><span class="dl">"</span>
+   <span class="err">├─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">String</span><span class="dl">"</span>
    <span class="err">└─</span> <span class="nx">ArrayDimensions</span><span class="p">[</span> <span class="p">@</span><span class="nd">Size</span> <span class="o">=</span> <span class="mi">2</span> <span class="p">]</span>
       <span class="err">├─</span> <span class="nx">ArrayTypeDim</span>
       <span class="err">└─</span> <span class="nx">ArrayTypeDim</span></code></pre></figure>
@@ -2939,14 +2951,14 @@ The Java equivalent is <code class="language-plaintext highlighter-rouge">TypeHe
 </td><td>
 
 <figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="err">└─</span> <span class="nx">ArrayType</span><span class="p">[</span> <span class="p">@</span><span class="nd">ArrayDepth</span> <span class="o">=</span> <span class="mi">2</span> <span class="p">]</span>
-   <span class="err">├─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">String</span><span class="dl">"</span>
+   <span class="err">├─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">String</span><span class="dl">"</span>
    <span class="err">└─</span> <span class="nx">ArrayDimensions</span><span class="p">[</span> <span class="p">@</span><span class="nd">Size</span> <span class="o">=</span> <span class="mi">2</span> <span class="p">]</span>
       <span class="err">├─</span> <span class="nx">ArrayTypeDim</span>
       <span class="err">│</span>  <span class="err">└─</span> <span class="nx">Annotation</span> <span class="dl">"</span><span class="s2">Annotation1</span><span class="dl">"</span>
-      <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">Annotation1</span><span class="dl">"</span>
+      <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">Annotation1</span><span class="dl">"</span>
       <span class="err">└─</span> <span class="nx">ArrayTypeDim</span>
          <span class="err">└─</span> <span class="nx">Annotation</span> <span class="dl">"</span><span class="s2">Annotation2</span><span class="dl">"</span>
-            <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">Annotation2</span><span class="dl">"</span></code></pre></figure>
+            <span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">Annotation2</span><span class="dl">"</span></code></pre></figure>
 
 </td></tr>
 
@@ -3010,7 +3022,7 @@ The Java equivalent is <code class="language-plaintext highlighter-rouge">TypeHe
    <span class="err">└─</span> <span class="nx">ArrayType</span><span class="p">[</span> <span class="p">@</span><span class="nd">Array</span> <span class="nx">Depth</span> <span class="o">=</span> <span class="mi">2</span> <span class="p">]</span>
       <span class="err">├─</span> <span class="nx">PrimitiveType</span> <span class="dl">"</span><span class="s2">int</span><span class="dl">"</span>
       <span class="err">│</span>  <span class="err">└─</span> <span class="nx">Annotation</span> <span class="dl">"</span><span class="s2">Bar</span><span class="dl">"</span>
-      <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">Bar</span><span class="dl">"</span>
+      <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">Bar</span><span class="dl">"</span>
       <span class="err">└─</span> <span class="nx">ArrayDimensions</span><span class="p">[</span> <span class="p">@</span><span class="nd">Size</span> <span class="o">=</span> <span class="mi">2</span> <span class="p">]</span>
          <span class="err">├─</span> <span class="nx">ArrayDimExpr</span>
          <span class="err">│</span>  <span class="err">└─</span> <span class="nx">NumericLiteral</span> <span class="dl">"</span><span class="s2">3</span><span class="dl">"</span>
@@ -3019,7 +3031,7 @@ The Java equivalent is <code class="language-plaintext highlighter-rouge">TypeHe
 
 <span class="err">└─</span> <span class="nx">ArrayAllocation</span><span class="p">[</span> <span class="p">@</span><span class="nd">ArrayDepth</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">]</span>
    <span class="err">└─</span> <span class="nx">ArrayType</span><span class="p">[</span> <span class="p">@</span><span class="nd">ArrayDepth</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">]</span>
-   <span class="err">│</span>  <span class="err">├─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">Foo</span><span class="dl">"</span>
+   <span class="err">│</span>  <span class="err">├─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">Foo</span><span class="dl">"</span>
    <span class="err">│</span>  <span class="err">└─</span> <span class="nx">ArrayDimensions</span><span class="p">[</span> <span class="p">@</span><span class="nd">Size</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">]</span>
    <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ArrayTypeDim</span>
    <span class="err">└─</span> <span class="nx">ArrayInitializer</span><span class="p">[</span> <span class="p">@</span><span class="nd">Length</span> <span class="o">=</span> <span class="mi">2</span> <span class="p">]</span>
@@ -3031,16 +3043,17 @@ The Java equivalent is <code class="language-plaintext highlighter-rouge">TypeHe
 
 </details>
 
-<h5 id="classorinterfacetype-nesting">ClassOrInterfaceType nesting</h5>
+<h5 id="classtype-nesting">ClassType nesting</h5>
 
 <ul>
-  <li>What: <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceType.html#"><code>ASTClassOrInterfaceType</code></a> appears to be left recursive now, and encloses its qualifying type.</li>
+  <li>What: <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassType.html#"><code>ASTClassType</code></a> (formerly ASTClassOrInterfaceType) appears to be left recursive now,
+and encloses its qualifying type.</li>
   <li>Why: To preserve the position of annotations and type arguments</li>
   <li>Related issue: <a href="https://github.com/pmd/pmd/issues/1150">[java] ClassOrInterfaceType AST improvements (#1150)</a></li>
 </ul>
 
 <details>
-  <summary>ClassOrInterfaceType Examples</summary>
+  <summary>ClassType Examples</summary>
 
 <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
@@ -3063,11 +3076,11 @@ The Java equivalent is <code class="language-plaintext highlighter-rouge">TypeHe
 </td>
 <td>
 
-<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">Entry</span><span class="dl">"</span>
-   <span class="err">├─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">Map</span><span class="dl">"</span>
+<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">Entry</span><span class="dl">"</span>
+   <span class="err">├─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">Map</span><span class="dl">"</span>
    <span class="err">└─</span> <span class="nx">TypeArguments</span><span class="p">[</span> <span class="p">@</span><span class="nd">Size</span> <span class="o">=</span> <span class="mi">2</span> <span class="p">]</span>
-      <span class="err">├─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">K</span><span class="dl">"</span>
-      <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">V</span><span class="dl">"</span></code></pre></figure>
+      <span class="err">├─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">K</span><span class="dl">"</span>
+      <span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">V</span><span class="dl">"</span></code></pre></figure>
 
 </td>
 </tr>
@@ -3090,13 +3103,13 @@ The Java equivalent is <code class="language-plaintext highlighter-rouge">TypeHe
 
 </td><td>
 
-<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">Third</span><span class="dl">"</span>
-   <span class="err">├─</span>  <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">Second</span><span class="dl">"</span>
-   <span class="err">│</span>   <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">First</span><span class="dl">"</span>
+<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">Third</span><span class="dl">"</span>
+   <span class="err">├─</span>  <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">Second</span><span class="dl">"</span>
+   <span class="err">│</span>   <span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">First</span><span class="dl">"</span>
    <span class="err">│</span>      <span class="err">└─</span> <span class="nx">TypeArguments</span><span class="p">[</span> <span class="p">@</span><span class="nd">Size</span> <span class="o">=</span> <span class="mi">1</span><span class="p">]</span>
-   <span class="err">│</span>         <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">K</span><span class="dl">"</span>
+   <span class="err">│</span>         <span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">K</span><span class="dl">"</span>
    <span class="err">└─</span> <span class="nx">TypeArguments</span><span class="p">[</span> <span class="p">@</span><span class="nd">Size</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">]</span>
-      <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">V</span><span class="dl">"</span></code></pre></figure>
+      <span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">V</span><span class="dl">"</span></code></pre></figure>
 
 </td></tr>
 </table>
@@ -3143,11 +3156,11 @@ of nesting off.</li>
 </td>
 <td>
 
-<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">Entry</span><span class="dl">"</span>
+<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">Entry</span><span class="dl">"</span>
    <span class="err">└─</span> <span class="nx">TypeArguments</span><span class="p">[</span> <span class="p">@</span><span class="nd">Size</span> <span class="o">=</span> <span class="mi">2</span> <span class="p">]</span>
-      <span class="err">├─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">String</span><span class="dl">"</span>
+      <span class="err">├─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">String</span><span class="dl">"</span>
       <span class="err">└─</span> <span class="nx">WildcardType</span><span class="p">[</span> <span class="p">@</span><span class="nd">UpperBound</span> <span class="o">=</span> <span class="kc">true</span><span class="p">()</span> <span class="p">]</span>
-         <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">Node</span><span class="dl">"</span></code></pre></figure>
+         <span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">Node</span><span class="dl">"</span></code></pre></figure>
 
 </td>
 </tr>
@@ -3166,7 +3179,7 @@ of nesting off.</li>
 </td>
 <td>
 
-<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">List</span><span class="dl">"</span>
+<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">List</span><span class="dl">"</span>
    <span class="err">└─</span> <span class="nx">TypeArguments</span><span class="p">[</span> <span class="p">@</span><span class="nd">Size</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">]</span>
       <span class="err">└─</span> <span class="nx">WildcardType</span><span class="p">[</span> <span class="p">@</span><span class="nd">UpperBound</span> <span class="o">=</span> <span class="kc">true</span><span class="p">()</span> <span class="p">]</span></code></pre></figure>
 
@@ -3240,12 +3253,14 @@ It’s too ambiguous to treat in the parser and could just be the image of the i
 <h5 id="modifier-lists">Modifier lists</h5>
 
 <ul>
-  <li>What: <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/AccessNode.html#"><code>AccessNode</code></a> is now based on a node: <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTModifierList.html#"><code>ASTModifierList</code></a>. That node represents
+  <li>What: <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ModifierOwner.html#"><code>ModifierOwner</code></a> (formerly AccessNode) is now based on a node: <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTModifierList.html#"><code>ASTModifierList</code></a>.
+That node represents
 modifiers occurring before a declaration. It provides a flexible API to query modifiers, both explicit and
 implicit. All declaration nodes now have such a modifier list, even if it’s implicit (no explicit modifiers).</li>
-  <li>Why: AccessNode gave a lot of irrelevant methods to its subtypes. E.g. <code class="language-plaintext highlighter-rouge">ASTFieldDeclaration::isSynchronized</code>
+  <li>Why: ModifierOwner (formerly AccessNode) gave a lot of irrelevant methods to its subtypes.
+E.g. <code class="language-plaintext highlighter-rouge">ASTFieldDeclaration::isSynchronized</code>
 makes no sense. Now, these irrelevant methods don’t clutter the API. The API of ModifierList is both more
-general and flexible</li>
+general and flexible.</li>
   <li>Related issue: <a href="https://github.com/pmd/pmd/pull/2259">[java] Rework AccessNode (#2259)</a></li>
 </ul>
 
@@ -3285,15 +3300,15 @@ Method
 <figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="err">└─</span> <span class="nx">MethodDeclaration</span><span class="p">[</span> <span class="nx">pmd</span><span class="o">-</span><span class="nx">java</span><span class="p">:</span><span class="nx">modifiers</span><span class="p">()</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">public</span><span class="dl">'</span> <span class="p">]</span> <span class="dl">"</span><span class="s2">set</span><span class="dl">"</span>
    <span class="err">├─</span> <span class="nx">ModifierList</span>
    <span class="err">│</span>  <span class="err">└─</span> <span class="nx">Annotation</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
-   <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
+   <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
    <span class="err">├─</span> <span class="nx">VoidType</span>
    <span class="err">└─</span> <span class="nx">FormalParameters</span>
       <span class="err">├─</span> <span class="nx">FormalParameter</span><span class="p">[</span> <span class="nx">pmd</span><span class="o">-</span><span class="nx">java</span><span class="p">:</span><span class="nx">modifiers</span><span class="p">()</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">final</span><span class="dl">'</span> <span class="p">]</span>
       <span class="err">│</span>  <span class="err">├─</span> <span class="nx">ModifierList</span>
-      <span class="err">│</span>  <span class="err">└─</span> <span class="nx">VariableDeclaratorId</span> <span class="dl">"</span><span class="s2">x</span><span class="dl">"</span>
+      <span class="err">│</span>  <span class="err">└─</span> <span class="nx">VariableId</span> <span class="dl">"</span><span class="s2">x</span><span class="dl">"</span>
       <span class="err">└─</span> <span class="nx">FormalParameter</span><span class="p">[</span> <span class="nx">pmd</span><span class="o">-</span><span class="nx">java</span><span class="p">:</span><span class="nx">modifiers</span><span class="p">()</span> <span class="o">=</span> <span class="p">()</span> <span class="p">]</span>
          <span class="err">├─</span> <span class="nx">ModifierList</span>
-         <span class="err">└─</span> <span class="nx">VariableDeclaratorId</span> <span class="dl">"</span><span class="s2">y</span><span class="dl">"</span></code></pre></figure>
+         <span class="err">└─</span> <span class="nx">VariableId</span> <span class="dl">"</span><span class="s2">y</span><span class="dl">"</span></code></pre></figure>
 
 </td></tr>
 
@@ -3316,11 +3331,11 @@ Top-level type declaration
 </td>
 <td>
 
-<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="err">└─</span> <span class="nx">ClassOrInterfaceDeclaration</span><span class="p">[</span> <span class="nx">pmd</span><span class="o">-</span><span class="nx">java</span><span class="p">:</span><span class="nx">modifiers</span><span class="p">()</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">public</span><span class="dl">'</span> <span class="p">]</span> <span class="dl">"</span><span class="s2">C</span><span class="dl">"</span>
+<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="err">└─</span> <span class="nx">ClassDeclaration</span><span class="p">[</span> <span class="nx">pmd</span><span class="o">-</span><span class="nx">java</span><span class="p">:</span><span class="nx">modifiers</span><span class="p">()</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">public</span><span class="dl">'</span> <span class="p">]</span> <span class="dl">"</span><span class="s2">C</span><span class="dl">"</span>
    <span class="err">├─</span> <span class="nx">ModifierList</span>
    <span class="err">│</span>  <span class="err">└─</span> <span class="nx">Annotation</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
-   <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
-   <span class="err">└─</span> <span class="nx">ClassOrInterfaceBody</span></code></pre></figure>
+   <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
+   <span class="err">└─</span> <span class="nx">ClassBody</span></code></pre></figure>
 
 </td>
 </tr>
@@ -3365,14 +3380,14 @@ These were unnecessary since annotations are nested (see above <a href="#annotat
 </td><td>
 
 <figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="err">└─</span> <span class="nx">CompilationUnit</span>
-   <span class="err">└─</span> <span class="nx">ClassOrInterfaceDeclaration</span> <span class="dl">"</span><span class="s2">Flat</span><span class="dl">"</span>
+   <span class="err">└─</span> <span class="nx">ClassDeclaration</span> <span class="dl">"</span><span class="s2">Flat</span><span class="dl">"</span>
       <span class="err">├─</span> <span class="nx">ModifierList</span>
-      <span class="err">└─</span> <span class="nx">ClassOrInterfaceBody</span>
+      <span class="err">└─</span> <span class="nx">ClassBody</span>
          <span class="err">└─</span> <span class="nx">FieldDeclaration</span>
             <span class="err">├─</span> <span class="nx">ModifierList</span>
             <span class="err">├─</span> <span class="nx">PrimitiveType</span> <span class="dl">"</span><span class="s2">int</span><span class="dl">"</span>
             <span class="err">└─</span> <span class="nx">VariableDeclarator</span>
-               <span class="err">└─</span> <span class="nx">VariableDeclaratorId</span> <span class="dl">"</span><span class="s2">f</span><span class="dl">"</span></code></pre></figure>
+               <span class="err">└─</span> <span class="nx">VariableId</span> <span class="dl">"</span><span class="s2">f</span><span class="dl">"</span></code></pre></figure>
 
 </td></tr>
 
@@ -3407,7 +3422,7 @@ These were unnecessary since annotations are nested (see above <a href="#annotat
       <span class="err">└─</span> <span class="nx">AnnotationTypeBody</span>
          <span class="err">└─</span> <span class="nx">MethodDeclaration</span> <span class="dl">"</span><span class="s2">value</span><span class="dl">"</span>
             <span class="err">├─</span> <span class="nx">ModifierList</span>
-            <span class="err">├─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">String</span><span class="dl">"</span>
+            <span class="err">├─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">String</span><span class="dl">"</span>
             <span class="err">├─</span> <span class="nx">FormalParameters</span>
             <span class="err">└─</span> <span class="nx">DefaultValue</span>
                <span class="err">└─</span> <span class="nx">StringLiteral</span> <span class="dl">"</span><span class="se">\"\"</span><span class="dl">"</span></code></pre></figure>
@@ -3420,7 +3435,7 @@ These were unnecessary since annotations are nested (see above <a href="#annotat
 <h5 id="module-declarations">Module declarations</h5>
 
 <ul>
-  <li>What: Removes the generic Name node and uses instead <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceType.html#"><code>ASTClassOrInterfaceType</code></a> where appropriate. Also
+  <li>What: Removes the generic Name node and uses instead <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassType.html#"><code>ASTClassType</code></a> where appropriate. Also
 uses specific node types for different directives (requires, exports, uses, provides).</li>
   <li>Why: Simplify queries, support type resolution</li>
   <li>Related issue: <a href="https://github.com/pmd/pmd/pull/3890">[java] Improve module grammar (#3890)</a></li>
@@ -3483,10 +3498,10 @@ uses specific node types for different directives (requires, exports, uses, prov
       <span class="err">├─</span> <span class="nx">ModuleExportsDirective</span><span class="p">[</span> <span class="p">@</span><span class="nd">PackageName</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">com.example.foo.internal</span><span class="dl">'</span> <span class="p">]</span>
       <span class="err">│</span>  <span class="err">└─</span> <span class="nx">ModuleName</span> <span class="p">[</span> <span class="p">@</span><span class="nd">Name</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">com.example.foo.probe</span><span class="dl">'</span> <span class="p">]</span>
       <span class="err">├─</span> <span class="nx">ModuleUsesDirective</span>
-      <span class="err">│</span>  <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span><span class="p">[</span> <span class="nx">pmd</span><span class="o">-</span><span class="nx">java</span><span class="p">:</span><span class="nx">typeIs</span><span class="p">(</span><span class="dl">"</span><span class="s2">com.example.foo.spi.Intf</span><span class="dl">"</span><span class="p">)</span> <span class="p">]</span>
+      <span class="err">│</span>  <span class="err">└─</span> <span class="nx">ClassType</span><span class="p">[</span> <span class="nx">pmd</span><span class="o">-</span><span class="nx">java</span><span class="p">:</span><span class="nx">typeIs</span><span class="p">(</span><span class="dl">"</span><span class="s2">com.example.foo.spi.Intf</span><span class="dl">"</span><span class="p">)</span> <span class="p">]</span>
       <span class="err">└─</span> <span class="nx">ModuleProvidesDirective</span>
-         <span class="err">├─</span> <span class="nx">ClassOrInterfaceType</span><span class="p">[</span> <span class="nx">pmd</span><span class="o">-</span><span class="nx">java</span><span class="p">:</span><span class="nx">typeIs</span><span class="p">(</span><span class="dl">"</span><span class="s2">com.example.foo.spi.Intf</span><span class="dl">"</span><span class="p">)</span> <span class="p">]</span>
-         <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span><span class="p">[</span> <span class="nx">pmd</span><span class="o">-</span><span class="nx">java</span><span class="p">:</span><span class="nx">typeIs</span><span class="p">(</span><span class="dl">"</span><span class="s2">com.example.foo.Impl</span><span class="dl">"</span><span class="p">)</span> <span class="p">]</span></code></pre></figure>
+         <span class="err">├─</span> <span class="nx">ClassType</span><span class="p">[</span> <span class="nx">pmd</span><span class="o">-</span><span class="nx">java</span><span class="p">:</span><span class="nx">typeIs</span><span class="p">(</span><span class="dl">"</span><span class="s2">com.example.foo.spi.Intf</span><span class="dl">"</span><span class="p">)</span> <span class="p">]</span>
+         <span class="err">└─</span> <span class="nx">ClassType</span><span class="p">[</span> <span class="nx">pmd</span><span class="o">-</span><span class="nx">java</span><span class="p">:</span><span class="nx">typeIs</span><span class="p">(</span><span class="dl">"</span><span class="s2">com.example.foo.Impl</span><span class="dl">"</span><span class="p">)</span> <span class="p">]</span></code></pre></figure>
 
 </td></tr>
 </table>
@@ -3539,15 +3554,15 @@ and enums.</li>
 
 <figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="err">└─</span> <span class="nx">LocalVariableDeclaration</span>
    <span class="err">├─</span> <span class="nx">ModifierList</span>
-   <span class="err">├─</span> <span class="nx">ClassOrInterfaceType</span><span class="p">[</span> <span class="p">@</span><span class="nd">SimpleName</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">Object</span><span class="dl">'</span> <span class="p">]</span>
+   <span class="err">├─</span> <span class="nx">ClassType</span><span class="p">[</span> <span class="p">@</span><span class="nd">SimpleName</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">Object</span><span class="dl">'</span> <span class="p">]</span>
    <span class="err">└─</span> <span class="nx">VariableDeclarator</span>
-      <span class="err">├─</span> <span class="nx">VariableDeclaratorId</span><span class="p">[</span> <span class="p">@</span><span class="nd">Name</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">anonymous</span><span class="dl">'</span> <span class="p">]</span>
+      <span class="err">├─</span> <span class="nx">VariableId</span><span class="p">[</span> <span class="p">@</span><span class="nd">Name</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">anonymous</span><span class="dl">'</span> <span class="p">]</span>
       <span class="err">└─</span> <span class="nx">ConstructorCall</span>
-         <span class="err">├─</span> <span class="nx">ClassOrInterfaceType</span><span class="p">[</span> <span class="p">@</span><span class="nd">SimpleName</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">Object</span><span class="dl">'</span> <span class="p">]</span>
+         <span class="err">├─</span> <span class="nx">ClassType</span><span class="p">[</span> <span class="p">@</span><span class="nd">SimpleName</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">Object</span><span class="dl">'</span> <span class="p">]</span>
          <span class="err">├─</span> <span class="nx">ArgumentList</span>
          <span class="err">└─</span> <span class="nx">AnonymousClassDeclaration</span>
             <span class="err">├─</span> <span class="nx">ModifierList</span>
-            <span class="err">└─</span> <span class="nx">ClassOrInterfaceBody</span></code></pre></figure>
+            <span class="err">└─</span> <span class="nx">ClassBody</span></code></pre></figure>
 
 </td></tr>
 </table>
@@ -3616,14 +3631,14 @@ explicitly differentiate between these two.</li>
 </td>
 <td>
 
-<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="err">└─</span> <span class="nx">ClassOrInterfaceBody</span>
+<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="err">└─</span> <span class="nx">ClassBody</span>
    <span class="err">├─</span> <span class="nx">ConstructorDeclaration</span><span class="p">[</span> <span class="p">@</span><span class="nd">Name</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">Sample</span><span class="dl">'</span> <span class="p">]</span>
    <span class="err">│</span>  <span class="err">├─</span> <span class="nx">ModifierList</span>
    <span class="err">│</span>  <span class="err">├─</span> <span class="nx">FormalParameters</span>
    <span class="err">│</span>  <span class="err">│</span>  <span class="err">└─</span> <span class="nx">FormalParameter</span>
    <span class="err">│</span>  <span class="err">│</span>     <span class="err">├─</span> <span class="p">...</span>
    <span class="err">│</span>  <span class="err">├─</span> <span class="nx">ThrowsList</span>
-   <span class="err">│</span>  <span class="err">│</span>  <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span><span class="p">[</span> <span class="p">@</span><span class="nd">SimpleName</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">Exception</span><span class="dl">'</span> <span class="p">]</span>
+   <span class="err">│</span>  <span class="err">│</span>  <span class="err">└─</span> <span class="nx">ClassType</span><span class="p">[</span> <span class="p">@</span><span class="nd">SimpleName</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">Exception</span><span class="dl">'</span> <span class="p">]</span>
    <span class="err">│</span>  <span class="err">└─</span> <span class="nx">Block</span>
    <span class="err">│</span>     <span class="err">├─</span> <span class="nx">ExplicitConstructorInvocation</span>
    <span class="err">│</span>     <span class="err">│</span>  <span class="err">└─</span> <span class="nx">ArgumentList</span>
@@ -3636,7 +3651,7 @@ explicitly differentiate between these two.</li>
       <span class="err">│</span>  <span class="err">└─</span> <span class="nx">FormalParameter</span>
       <span class="err">│</span>     <span class="err">├─</span> <span class="p">...</span>
       <span class="err">├─</span> <span class="nx">ThrowsList</span>
-      <span class="err">│</span>  <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span><span class="p">[</span> <span class="p">@</span><span class="nd">SimpleName</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">Exception</span><span class="dl">'</span> <span class="p">]</span>
+      <span class="err">│</span>  <span class="err">└─</span> <span class="nx">ClassType</span><span class="p">[</span> <span class="p">@</span><span class="nd">SimpleName</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">Exception</span><span class="dl">'</span> <span class="p">]</span>
       <span class="err">└─</span> <span class="nx">Block</span>
          <span class="err">└─</span> <span class="nx">ExpressionStatement</span>
             <span class="err">└─</span> <span class="p">...</span></code></pre></figure>
@@ -3729,11 +3744,11 @@ explicitly differentiate between these two.</li>
       <span class="err">├─</span> <span class="nx">CatchParameter</span>
       <span class="err">│</span>  <span class="err">├─</span> <span class="nx">ModifierList</span>
       <span class="err">│</span>  <span class="err">│</span>  <span class="err">└─</span> <span class="nx">Annotation</span><span class="p">[</span> <span class="p">@</span><span class="nd">SimpleName</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">A</span><span class="dl">'</span> <span class="p">]</span>
-      <span class="err">│</span>  <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span><span class="p">[</span> <span class="p">@</span><span class="nd">SimpleName</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">A</span><span class="dl">'</span> <span class="p">]</span>
+      <span class="err">│</span>  <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassType</span><span class="p">[</span> <span class="p">@</span><span class="nd">SimpleName</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">A</span><span class="dl">'</span> <span class="p">]</span>
       <span class="err">│</span>  <span class="err">├─</span> <span class="nx">UnionType</span>
-      <span class="err">│</span>  <span class="err">│</span>  <span class="err">├─</span> <span class="nx">ClassOrInterfaceType</span><span class="p">[</span> <span class="p">@</span><span class="nd">SimpleName</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">IOException</span><span class="dl">'</span> <span class="p">]</span>
-      <span class="err">│</span>  <span class="err">│</span>  <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span><span class="p">[</span> <span class="p">@</span><span class="nd">SimpleName</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">IllegalArgumentException</span><span class="dl">'</span> <span class="p">]</span>
-      <span class="err">│</span>  <span class="err">└─</span> <span class="nx">VariableDeclaratorId</span><span class="p">[</span> <span class="p">@</span><span class="nd">Name</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">e</span><span class="dl">'</span> <span class="p">]</span>
+      <span class="err">│</span>  <span class="err">│</span>  <span class="err">├─</span> <span class="nx">ClassType</span><span class="p">[</span> <span class="p">@</span><span class="nd">SimpleName</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">IOException</span><span class="dl">'</span> <span class="p">]</span>
+      <span class="err">│</span>  <span class="err">│</span>  <span class="err">└─</span> <span class="nx">ClassType</span><span class="p">[</span> <span class="p">@</span><span class="nd">SimpleName</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">IllegalArgumentException</span><span class="dl">'</span> <span class="p">]</span>
+      <span class="err">│</span>  <span class="err">└─</span> <span class="nx">VariableId</span><span class="p">[</span> <span class="p">@</span><span class="nd">Name</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">e</span><span class="dl">'</span> <span class="p">]</span>
       <span class="err">└─</span> <span class="nx">Block</span></code></pre></figure>
 
 </td></tr>
@@ -3795,10 +3810,10 @@ explicitly differentiate between these two.</li>
       <span class="err">├─</span> <span class="nx">LambdaParameterList</span>
       <span class="err">│</span>  <span class="err">├─</span> <span class="nx">LambdaParameter</span>
       <span class="err">│</span>  <span class="err">│</span>  <span class="err">├─</span> <span class="nx">ModifierList</span>
-      <span class="err">│</span>  <span class="err">│</span>  <span class="err">└─</span> <span class="nx">VariableDeclaratorId</span><span class="p">[</span> <span class="p">@</span><span class="nd">Name</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">a</span><span class="dl">'</span> <span class="p">]</span>
+      <span class="err">│</span>  <span class="err">│</span>  <span class="err">└─</span> <span class="nx">VariableId</span><span class="p">[</span> <span class="p">@</span><span class="nd">Name</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">a</span><span class="dl">'</span> <span class="p">]</span>
       <span class="err">│</span>  <span class="err">└─</span> <span class="nx">LambdaParameter</span>
       <span class="err">│</span>     <span class="err">├─</span> <span class="nx">ModifierList</span>
-      <span class="err">│</span>     <span class="err">└─</span> <span class="nx">VariableDeclaratorId</span><span class="p">[</span> <span class="p">@</span><span class="nd">Name</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">b</span><span class="dl">'</span> <span class="p">]</span>
+      <span class="err">│</span>     <span class="err">└─</span> <span class="nx">VariableId</span><span class="p">[</span> <span class="p">@</span><span class="nd">Name</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">b</span><span class="dl">'</span> <span class="p">]</span>
       <span class="err">└─</span> <span class="nx">Block</span>
 
 <span class="err">└─</span> <span class="nx">ExpressionStatement</span>
@@ -3806,17 +3821,7 @@ explicitly differentiate between these two.</li>
       <span class="err">├─</span> <span class="nx">LambdaParameterList</span>
       <span class="err">│</span>  <span class="err">└─</span> <span class="nx">LambdaParameter</span>
       <span class="err">│</span>     <span class="err">├─</span> <span class="nx">ModifierList</span>
-      <span class="err">│</span>     <span class="err">└─</span> <span class="nx">VariableDeclaratorId</span><span class="p">[</span> <span class="p">@</span><span class="nd">Name</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">c</span><span class="dl">'</span> <span class="p">]</span>
-      <span class="err">└─</span> <span class="nx">Block</span>
-
-<span class="err">└─</span> <span class="nx">ExpressionStatement</span>
-   <span class="err">└─</span> <span class="nx">LambdaExpression</span>
-      <span class="err">├─</span> <span class="nx">LambdaParameterList</span>
-      <span class="err">│</span>  <span class="err">└─</span> <span class="nx">LambdaParameter</span>
-      <span class="err">│</span>     <span class="err">├─</span> <span class="nx">ModifierList</span>
-      <span class="err">│</span>     <span class="err">│</span>  <span class="err">└─</span> <span class="nx">Annotation</span><span class="p">[</span> <span class="p">@</span><span class="nd">SimpleName</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">A</span><span class="dl">'</span> <span class="p">]</span>
-      <span class="err">│</span>     <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span><span class="p">[</span> <span class="p">@</span><span class="nd">SimpleName</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">A</span><span class="dl">'</span> <span class="p">]</span>
-      <span class="err">│</span>     <span class="err">└─</span> <span class="nx">VariableDeclaratorId</span><span class="p">[</span> <span class="p">@</span><span class="nd">Name</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">d</span><span class="dl">'</span> <span class="p">]</span>
+      <span class="err">│</span>     <span class="err">└─</span> <span class="nx">VariableId</span><span class="p">[</span> <span class="p">@</span><span class="nd">Name</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">c</span><span class="dl">'</span> <span class="p">]</span>
       <span class="err">└─</span> <span class="nx">Block</span>
 
 <span class="err">└─</span> <span class="nx">ExpressionStatement</span>
@@ -3825,9 +3830,19 @@ explicitly differentiate between these two.</li>
       <span class="err">│</span>  <span class="err">└─</span> <span class="nx">LambdaParameter</span>
       <span class="err">│</span>     <span class="err">├─</span> <span class="nx">ModifierList</span>
       <span class="err">│</span>     <span class="err">│</span>  <span class="err">└─</span> <span class="nx">Annotation</span><span class="p">[</span> <span class="p">@</span><span class="nd">SimpleName</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">A</span><span class="dl">'</span> <span class="p">]</span>
-      <span class="err">│</span>     <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span><span class="p">[</span> <span class="p">@</span><span class="nd">SimpleName</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">A</span><span class="dl">'</span> <span class="p">]</span>
+      <span class="err">│</span>     <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassType</span><span class="p">[</span> <span class="p">@</span><span class="nd">SimpleName</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">A</span><span class="dl">'</span> <span class="p">]</span>
+      <span class="err">│</span>     <span class="err">└─</span> <span class="nx">VariableId</span><span class="p">[</span> <span class="p">@</span><span class="nd">Name</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">d</span><span class="dl">'</span> <span class="p">]</span>
+      <span class="err">└─</span> <span class="nx">Block</span>
+
+<span class="err">└─</span> <span class="nx">ExpressionStatement</span>
+   <span class="err">└─</span> <span class="nx">LambdaExpression</span>
+      <span class="err">├─</span> <span class="nx">LambdaParameterList</span>
+      <span class="err">│</span>  <span class="err">└─</span> <span class="nx">LambdaParameter</span>
+      <span class="err">│</span>     <span class="err">├─</span> <span class="nx">ModifierList</span>
+      <span class="err">│</span>     <span class="err">│</span>  <span class="err">└─</span> <span class="nx">Annotation</span><span class="p">[</span> <span class="p">@</span><span class="nd">SimpleName</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">A</span><span class="dl">'</span> <span class="p">]</span>
+      <span class="err">│</span>     <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassType</span><span class="p">[</span> <span class="p">@</span><span class="nd">SimpleName</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">A</span><span class="dl">'</span> <span class="p">]</span>
       <span class="err">│</span>     <span class="err">├─</span> <span class="nx">PrimitiveType</span><span class="p">[</span> <span class="p">@</span><span class="nd">Kind</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">int</span><span class="dl">'</span> <span class="p">]</span>
-      <span class="err">│</span>     <span class="err">└─</span> <span class="nx">VariableDeclaratorId</span><span class="p">[</span> <span class="p">@</span><span class="nd">Name</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">e</span><span class="dl">'</span> <span class="p">]</span>
+      <span class="err">│</span>     <span class="err">└─</span> <span class="nx">VariableId</span><span class="p">[</span> <span class="p">@</span><span class="nd">Name</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">e</span><span class="dl">'</span> <span class="p">]</span>
       <span class="err">└─</span> <span class="nx">Block</span></code></pre></figure>
 
 </td></tr>
@@ -3842,7 +3857,7 @@ explicitly differentiate between these two.</li>
   <li>Why: A receiver parameter is not a formal parameter, even though it looks like one: it doesn’t declare a variable,
 and doesn’t affect the arity of the method or constructor. It’s so rarely used that giving it its own node avoids
 matching it by mistake and simplifies the API and grammar of the ubiquitous <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTFormalParameter.html#"><code>ASTFormalParameter</code></a>
-and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableDeclaratorId.html#"><code>ASTVariableDeclaratorId</code></a>.</li>
+and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableId.html#"><code>ASTVariableId</code></a>.</li>
   <li>Related issue: <a href="https://github.com/pmd/pmd/pull/1980">[java] Separate receiver parameter from formal parameter (#1980)</a></li>
 </ul>
 
@@ -3876,13 +3891,13 @@ and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourc
 
 <figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="err">└─</span> <span class="nx">FormalParameters</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span>
    <span class="err">├─</span> <span class="nx">ReceiverParameter</span>
-   <span class="err">│</span>  <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">Foo</span><span class="dl">"</span>
+   <span class="err">│</span>  <span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">Foo</span><span class="dl">"</span>
    <span class="err">│</span>     <span class="err">└─</span> <span class="nx">Annotation</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
-   <span class="err">│</span>        <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
+   <span class="err">│</span>        <span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
    <span class="err">└─</span> <span class="nx">FormalParameter</span>
       <span class="err">├─</span> <span class="nx">ModifierList</span>
-      <span class="err">├─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">Foo</span><span class="dl">"</span>
-      <span class="err">└─</span> <span class="nx">VariableDeclaratorId</span> <span class="dl">"</span><span class="s2">other</span><span class="dl">"</span></code></pre></figure>
+      <span class="err">├─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">Foo</span><span class="dl">"</span>
+      <span class="err">└─</span> <span class="nx">VariableId</span> <span class="dl">"</span><span class="s2">other</span><span class="dl">"</span></code></pre></figure>
 
 </td></tr>
 </table>
@@ -3921,7 +3936,7 @@ and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourc
    <span class="err">│</span>  <span class="err">├─</span> <span class="nx">PrimitiveType</span> <span class="dl">"</span><span class="s2">int</span><span class="dl">"</span>
    <span class="err">│</span>  <span class="err">└─</span> <span class="nx">ArrayDimensions</span>
    <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ArrayTypeDim</span><span class="p">[</span> <span class="p">@</span><span class="nd">Varargs</span> <span class="o">=</span> <span class="kc">true</span><span class="p">()</span> <span class="p">]</span>
-   <span class="err">└─</span> <span class="nx">VariableDeclaratorId</span> <span class="dl">"</span><span class="s2">is</span><span class="dl">"</span></code></pre></figure>
+   <span class="err">└─</span> <span class="nx">VariableId</span> <span class="dl">"</span><span class="s2">is</span><span class="dl">"</span></code></pre></figure>
 
 </td></tr>
 
@@ -3949,8 +3964,8 @@ and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourc
    <span class="err">│</span>  <span class="err">└─</span> <span class="nx">ArrayDimensions</span>
    <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ArrayTypeDim</span><span class="p">[</span> <span class="p">@</span><span class="nd">Varargs</span> <span class="o">=</span> <span class="kc">true</span><span class="p">()</span> <span class="p">]</span>
    <span class="err">│</span>        <span class="err">└─</span> <span class="nx">Annotation</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
-   <span class="err">│</span>           <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
-   <span class="err">└─</span> <span class="nx">VariableDeclaratorId</span> <span class="dl">"</span><span class="s2">is</span><span class="dl">"</span></code></pre></figure>
+   <span class="err">│</span>           <span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">A</span><span class="dl">"</span>
+   <span class="err">└─</span> <span class="nx">VariableId</span> <span class="dl">"</span><span class="s2">is</span><span class="dl">"</span></code></pre></figure>
 
 </td></tr>
 
@@ -3976,7 +3991,7 @@ and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourc
    <span class="err">│</span>  <span class="err">└─</span> <span class="nx">ArrayDimensions</span> <span class="p">(</span><span class="mi">2</span><span class="p">)</span>
    <span class="err">│</span>     <span class="err">├─</span> <span class="nx">ArrayTypeDim</span>
    <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ArrayTypeDim</span><span class="p">[</span> <span class="p">@</span><span class="nd">Varargs</span> <span class="o">=</span> <span class="kc">true</span><span class="p">()</span> <span class="p">]</span>
-   <span class="err">└─</span> <span class="nx">VariableDeclaratorId</span> <span class="dl">"</span><span class="s2">is</span><span class="dl">"</span></code></pre></figure>
+   <span class="err">└─</span> <span class="nx">VariableId</span> <span class="dl">"</span><span class="s2">is</span><span class="dl">"</span></code></pre></figure>
 
 </td></tr>
 </table>
@@ -4094,7 +4109,7 @@ This is a parser-only distinction that’s not that useful for analysis later on
    <span class="err">│</span>  <span class="err">├─</span> <span class="nx">ModifierList</span>
    <span class="err">│</span>  <span class="err">├─</span> <span class="nx">PrimitiveType</span> <span class="dl">"</span><span class="s2">int</span><span class="dl">"</span>
    <span class="err">│</span>  <span class="err">└─</span> <span class="nx">VariableDeclarator</span>
-   <span class="err">│</span>     <span class="err">└─</span> <span class="nx">VariableDeclaratorId</span> <span class="dl">"</span><span class="s2">i</span><span class="dl">"</span>
+   <span class="err">│</span>     <span class="err">└─</span> <span class="nx">VariableId</span> <span class="dl">"</span><span class="s2">i</span><span class="dl">"</span>
    <span class="err">└─</span> <span class="nx">ExpressionStatement</span>
       <span class="err">└─</span> <span class="nx">AssignmentExpression</span> <span class="dl">"</span><span class="s2">=</span><span class="dl">"</span>
          <span class="err">├─</span> <span class="nx">VariableAccess</span> <span class="dl">"</span><span class="s2">i</span><span class="dl">"</span>
@@ -4159,12 +4174,12 @@ subtrees (for loops have additional children ForInit and ForUpdate)</li>
    <span class="err">└─</span> <span class="nx">ForeachStatement</span>
       <span class="err">├─</span> <span class="nx">LocalVariableDeclaration</span>
       <span class="err">│</span>  <span class="err">├─</span> <span class="nx">ModifierList</span>
-      <span class="err">│</span>  <span class="err">├─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">String</span><span class="dl">"</span>
+      <span class="err">│</span>  <span class="err">├─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">String</span><span class="dl">"</span>
       <span class="err">│</span>  <span class="err">└─</span> <span class="nx">VariableDeclarator</span> <span class="dl">"</span><span class="s2">s</span><span class="dl">"</span>
-      <span class="err">│</span>     <span class="err">└─</span> <span class="nx">VariableDeclaratorId</span> <span class="dl">"</span><span class="s2">s</span><span class="dl">"</span>
+      <span class="err">│</span>     <span class="err">└─</span> <span class="nx">VariableId</span> <span class="dl">"</span><span class="s2">s</span><span class="dl">"</span>
       <span class="err">├─</span> <span class="nx">MethodCall</span> <span class="dl">"</span><span class="s2">of</span><span class="dl">"</span>
       <span class="err">│</span>  <span class="err">├─</span> <span class="nx">TypeExpression</span>
-      <span class="err">│</span>  <span class="err">│</span>  <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">List</span><span class="dl">"</span>
+      <span class="err">│</span>  <span class="err">│</span>  <span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">List</span><span class="dl">"</span>
       <span class="err">│</span>  <span class="err">└─</span> <span class="nx">ArgumentList</span> <span class="p">(</span><span class="mi">2</span><span class="p">)</span>
       <span class="err">│</span>     <span class="err">├─</span> <span class="nx">StringLiteral</span><span class="p">[</span> <span class="p">@</span><span class="nd">Image</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">"a"</span><span class="dl">'</span> <span class="p">]</span>
       <span class="err">│</span>     <span class="err">└─</span> <span class="nx">StringLiteral</span><span class="p">[</span> <span class="p">@</span><span class="nd">Image</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">"b"</span><span class="dl">'</span> <span class="p">]</span>
@@ -4220,9 +4235,9 @@ This allows us to have two distinct hierarchies for expressions and statements.<
    <span class="err">│</span>  <span class="err">└─</span> <span class="nx">UnaryExpression</span> <span class="dl">"</span><span class="s2">++</span><span class="dl">"</span>
    <span class="err">│</span>     <span class="err">└─</span> <span class="nx">VariableAccess</span> <span class="dl">"</span><span class="s2">i</span><span class="dl">"</span>
    <span class="err">└─</span> <span class="nx">LocalClassStatement</span>
-      <span class="err">└─</span> <span class="nx">ClassOrInterfaceDeclaration</span> <span class="dl">"</span><span class="s2">LocalClass</span><span class="dl">"</span>
+      <span class="err">└─</span> <span class="nx">ClassDeclaration</span> <span class="dl">"</span><span class="s2">LocalClass</span><span class="dl">"</span>
          <span class="err">├─</span> <span class="nx">ModifierList</span>
-         <span class="err">└─</span> <span class="nx">ClassOrInterfaceBody</span></code></pre></figure>
+         <span class="err">└─</span> <span class="nx">ClassBody</span></code></pre></figure>
 
 </td></tr>
 </table>
@@ -4274,20 +4289,20 @@ It uses now <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/n
       <span class="err">├─</span> <span class="nx">Resource</span><span class="p">[</span> <span class="p">@</span><span class="nd">ConciseResource</span> <span class="o">=</span> <span class="kc">false</span><span class="p">()</span> <span class="p">]</span> <span class="dl">"</span><span class="s2">in</span><span class="dl">"</span>
       <span class="err">│</span>  <span class="err">└─</span> <span class="nx">LocalVariableDeclaration</span>
       <span class="err">│</span>     <span class="err">├─</span> <span class="nx">ModifierList</span>
-      <span class="err">│</span>     <span class="err">├─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">InputStream</span><span class="dl">"</span>
+      <span class="err">│</span>     <span class="err">├─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">InputStream</span><span class="dl">"</span>
       <span class="err">│</span>     <span class="err">└─</span> <span class="nx">VariableDeclarator</span>
-      <span class="err">│</span>        <span class="err">├─</span> <span class="nx">VariableDeclaratorId</span> <span class="dl">"</span><span class="s2">in</span><span class="dl">"</span>
+      <span class="err">│</span>        <span class="err">├─</span> <span class="nx">VariableId</span> <span class="dl">"</span><span class="s2">in</span><span class="dl">"</span>
       <span class="err">│</span>        <span class="err">└─</span> <span class="nx">ConstructorCall</span>
-      <span class="err">│</span>           <span class="err">├─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">FileInputStream</span><span class="dl">"</span>
+      <span class="err">│</span>           <span class="err">├─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">FileInputStream</span><span class="dl">"</span>
       <span class="err">│</span>           <span class="err">└─</span> <span class="nx">ArgumentList</span> <span class="p">(</span><span class="mi">0</span><span class="p">)</span>
       <span class="err">└─</span> <span class="nx">Resource</span><span class="p">[</span> <span class="p">@</span><span class="nd">ConciseResource</span> <span class="o">=</span> <span class="kc">false</span><span class="p">()</span> <span class="p">]</span> <span class="dl">"</span><span class="s2">out</span><span class="dl">"</span>
          <span class="err">└─</span> <span class="nx">LocalVariableDeclaration</span>
             <span class="err">├─</span> <span class="nx">ModifierList</span>
-            <span class="err">├─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">OutputStream</span><span class="dl">"</span>
+            <span class="err">├─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">OutputStream</span><span class="dl">"</span>
             <span class="err">└─</span> <span class="nx">VariableDeclarator</span>
-               <span class="err">├─</span> <span class="nx">VariableDeclaratorId</span> <span class="dl">"</span><span class="s2">out</span><span class="dl">"</span>
+               <span class="err">├─</span> <span class="nx">VariableId</span> <span class="dl">"</span><span class="s2">out</span><span class="dl">"</span>
                <span class="err">└─</span> <span class="nx">ConstructorCall</span>
-                  <span class="err">├─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">FileOutputStream</span><span class="dl">"</span>
+                  <span class="err">├─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">FileOutputStream</span><span class="dl">"</span>
                   <span class="err">└─</span> <span class="nx">ArgumentList</span> <span class="p">(</span><span class="mi">0</span><span class="p">)</span></code></pre></figure>
 
 </td></tr>
@@ -4487,7 +4502,7 @@ primary prefix, suffix and expressions. This was too low level to be easy to be 
       <span class="err">└─</span> <span class="nx">StringLiteral</span> <span class="dl">"</span><span class="se">\"</span><span class="s2">a</span><span class="se">\"</span><span class="dl">"</span>
 
 <span class="err">└─</span> <span class="nx">ConstructorCall</span>
-   <span class="err">├─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">Object</span><span class="dl">"</span>
+   <span class="err">├─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">Object</span><span class="dl">"</span>
    <span class="err">└─</span> <span class="nx">ArgumentList</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span>
       <span class="err">└─</span> <span class="nx">StringLiteral</span> <span class="dl">"</span><span class="se">\"</span><span class="s2">b</span><span class="se">\"</span><span class="dl">"</span>
 
@@ -4554,7 +4569,7 @@ grammar. Subtrees for primary expressions appear to be left-recursive now.</li>
    <span class="err">└─</span> <span class="nx">MethodCall</span> <span class="dl">"</span><span class="s2">foo</span><span class="dl">"</span>
       <span class="err">├─</span> <span class="nx">FieldAccess</span> <span class="dl">"</span><span class="s2">bar</span><span class="dl">"</span>
       <span class="err">│</span>  <span class="err">└─</span> <span class="nx">ConstructorCall</span>
-      <span class="err">│</span>     <span class="err">├─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">Foo</span><span class="dl">"</span>
+      <span class="err">│</span>     <span class="err">├─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">Foo</span><span class="dl">"</span>
       <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ArgumentList</span> <span class="p">(</span><span class="mi">0</span><span class="p">)</span>
       <span class="err">└─</span> <span class="nx">ArgumentList</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span>
          <span class="err">└─</span> <span class="nx">NumericLiteral</span> <span class="dl">"</span><span class="s2">1</span><span class="dl">"</span></code></pre></figure>
@@ -4703,7 +4718,7 @@ Also provide info about the access type, like whether a variable is read or writ
    <span class="err">└─</span> <span class="nx">AssignmentExpression</span> <span class="dl">"</span><span class="s2">=</span><span class="dl">"</span>
       <span class="err">├─</span> <span class="nx">FieldAccess</span><span class="p">[</span> <span class="p">@</span><span class="nd">AccessType</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">WRITE</span><span class="dl">"</span> <span class="p">]</span> <span class="dl">"</span><span class="s2">staticField</span><span class="dl">"</span>
       <span class="err">│</span>  <span class="err">└─</span> <span class="nx">TypeExpression</span>
-      <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">Foo</span><span class="dl">"</span>
+      <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">Foo</span><span class="dl">"</span>
       <span class="err">└─</span> <span class="nx">VariableAccess</span><span class="p">[</span> <span class="p">@</span><span class="nd">AccessType</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">READ</span><span class="dl">"</span> <span class="p">]</span> <span class="dl">"</span><span class="s2">localVar</span><span class="dl">"</span></code></pre></figure>
 
 
@@ -4818,7 +4833,7 @@ Also provide info about the access type, like whether a variable is read or writ
 
 <ul>
   <li>What: The node <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTTypeExpression.html#"><code>ASTTypeExpression</code></a> wraps a <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTType.html#"><code>ASTType</code></a> node (such as
-<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceType.html#"><code>ASTClassOrInterfaceType</code></a>) and is used to qualify a method call or field access or method reference.</li>
+<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassType.html#"><code>ASTClassType</code></a>) and is used to qualify a method call or field access or method reference.</li>
   <li>Why: Simplify the qualifier of method calls, treat instanceof as infix expression.</li>
   <li>Related issue: <a href="https://github.com/pmd/pmd/pull/2039">[java] Grammar type expr (#2039)</a></li>
 </ul>
@@ -4877,23 +4892,23 @@ Also provide info about the access type, like whether a variable is read or writ
 <figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="err">└─</span> <span class="nx">ExpressionStatement</span>
    <span class="err">└─</span> <span class="nx">MethodCall</span> <span class="dl">"</span><span class="s2">staticMethod</span><span class="dl">"</span>
       <span class="err">├─</span> <span class="nx">TypeExpression</span>
-      <span class="err">│</span>  <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">Foo</span><span class="dl">"</span>
+      <span class="err">│</span>  <span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">Foo</span><span class="dl">"</span>
       <span class="err">└─</span> <span class="nx">ArgumentList</span> <span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
 <span class="err">└─</span> <span class="nx">IfStatement</span>
    <span class="err">├─</span> <span class="nx">InfixExpression</span> <span class="dl">"</span><span class="s2">instanceof</span><span class="dl">"</span>
    <span class="err">│</span>  <span class="err">├─</span> <span class="nx">VariableAccess</span><span class="p">[</span> <span class="p">@</span><span class="nd">AccessType</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">READ</span><span class="dl">"</span> <span class="p">]</span> <span class="dl">"</span><span class="s2">x</span><span class="dl">"</span>
    <span class="err">│</span>  <span class="err">└─</span> <span class="nx">TypeExpression</span>
-   <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">Foo</span><span class="dl">"</span>
+   <span class="err">│</span>     <span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">Foo</span><span class="dl">"</span>
    <span class="err">└─</span> <span class="nx">Block</span>
 
 <span class="err">└─</span> <span class="nx">LocalVariableDeclaration</span>
    <span class="err">├─</span> <span class="nx">ModifierList</span>
    <span class="err">└─</span> <span class="nx">VariableDeclarator</span>
-      <span class="err">├─</span> <span class="nx">VariableDeclaratorId</span> <span class="dl">"</span><span class="s2">x</span><span class="dl">"</span>
+      <span class="err">├─</span> <span class="nx">VariableId</span> <span class="dl">"</span><span class="s2">x</span><span class="dl">"</span>
       <span class="err">└─</span> <span class="nx">MethodReference</span> <span class="dl">"</span><span class="s2">method</span><span class="dl">"</span>
          <span class="err">└─</span> <span class="nx">TypeExpression</span>
-            <span class="err">└─</span> <span class="nx">ClassOrInterfaceType</span> <span class="dl">"</span><span class="s2">Foo</span><span class="dl">"</span></code></pre></figure>
+            <span class="err">└─</span> <span class="nx">ClassType</span> <span class="dl">"</span><span class="s2">Foo</span><span class="dl">"</span></code></pre></figure>
 
 </td></tr></table>
 
@@ -5245,7 +5260,7 @@ the ant task is in an own dependency with PMD 7:
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jan 18, 2024 <br />
+             Site last generated: Jan 26, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

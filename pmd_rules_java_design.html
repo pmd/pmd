@@ -1885,9 +1885,9 @@ that is not meant to be instantiated. In this case, it is probably better to use
 protected constructor in order to prevent instantiation than make the class misleadingly abstract.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassDeclaration</span><span class="w">
     </span><span class="p">[</span><span class="na">@Abstract</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="na">@Interface</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]</span><span class="w">
-    </span><span class="p">[</span><span class="nt">ClassOrInterfaceBody</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">ConstructorDeclaration</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="nt">MethodDeclaration</span><span class="p">)]]</span><span class="w">
+    </span><span class="p">[</span><span class="nt">ClassBody</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">ConstructorDeclaration</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="nt">MethodDeclaration</span><span class="p">)]]</span><span class="w">
     </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'com.google.auto.value.AutoValue'</span><span class="p">)</span><span class="w">
          </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'lombok.AllArgsConstructor'</span><span class="p">)</span><span class="w">
          </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'lombok.NoArgsConstructor'</span><span class="p">)</span><span class="w">
@@ -1916,7 +1916,7 @@ protected constructor in order to prevent instantiation than make the class misl
 <p>Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">CatchParameter</span><span class="o">//</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">CatchParameter</span><span class="o">//</span><span class="nt">ClassType</span><span class="p">[</span><span class="w">
     </span><span class="nn">pmd-java:</span><span class="nf">typeIsExactly</span><span class="p">(</span><span class="s1">'java.lang.NullPointerException'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w">
     </span><span class="nn">pmd-java:</span><span class="nf">typeIsExactly</span><span class="p">(</span><span class="s1">'java.lang.Exception'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w">
     </span><span class="nn">pmd-java:</span><span class="nf">typeIsExactly</span><span class="p">(</span><span class="s1">'java.lang.RuntimeException'</span><span class="p">)]</span><span class="w">
@@ -2012,7 +2012,7 @@ protected constructor in order to prevent instantiation than make the class misl
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">CatchClause</span><span class="p">[</span><span class="w">
-  </span><span class="nt">CatchParameter</span><span class="o">/</span><span class="nt">VariableDeclaratorId</span><span class="err">/</span><span class="na">@Name</span><span class="w">
+  </span><span class="nt">CatchParameter</span><span class="o">/</span><span class="nt">VariableId</span><span class="err">/</span><span class="na">@Name</span><span class="w">
 </span><span class="err">=</span><span class="w"> </span><span class="nt">Block</span><span class="p">[</span><span class="na">@Size</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">1</span><span class="p">]</span><span class="o">/</span><span class="nt">ThrowStatement</span><span class="o">/</span><span class="nt">VariableAccess</span><span class="err">/</span><span class="na">@Name</span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
@@ -2043,7 +2043,7 @@ code size and runtime complexity.</p>
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">CatchClause</span><span class="w">
     </span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="nt">Block</span><span class="err">/*</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">1</span><span class="p">]</span><span class="w">
-    </span><span class="p">[</span><span class="nt">CatchParameter</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="err">/</span><span class="na">@SimpleName</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nt">Block</span><span class="o">/</span><span class="nt">ThrowStatement</span><span class="o">/</span><span class="nt">ConstructorCall</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="err">/</span><span class="na">@SimpleName</span><span class="p">]</span><span class="w">
+    </span><span class="p">[</span><span class="nt">CatchParameter</span><span class="o">/</span><span class="nt">ClassType</span><span class="err">/</span><span class="na">@SimpleName</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nt">Block</span><span class="o">/</span><span class="nt">ThrowStatement</span><span class="o">/</span><span class="nt">ConstructorCall</span><span class="o">/</span><span class="nt">ClassType</span><span class="err">/</span><span class="na">@SimpleName</span><span class="p">]</span><span class="w">
     </span><span class="p">[</span><span class="nt">Block</span><span class="o">/</span><span class="nt">ThrowStatement</span><span class="o">/</span><span class="nt">ConstructorCall</span><span class="o">/</span><span class="nt">ArgumentList</span><span class="err">/</span><span class="na">@Size</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">1</span><span class="p">]</span><span class="w">
     </span><span class="o">/</span><span class="nt">Block</span><span class="o">/</span><span class="nt">ThrowStatement</span><span class="o">/</span><span class="nt">ConstructorCall</span><span class="w">
 </span></code></pre></div></div>
@@ -2125,7 +2125,7 @@ Exception, or Error, use a subclassed exception or error instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ThrowStatement</span><span class="o">//</span><span class="nt">ConstructorCall</span><span class="w">
- </span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="w">
+ </span><span class="o">/</span><span class="nt">ClassType</span><span class="p">[</span><span class="w">
  </span><span class="nn">pmd-java:</span><span class="nf">typeIsExactly</span><span class="p">(</span><span class="s1">'java.lang.Throwable'</span><span class="p">)</span><span class="w">
 </span><span class="ow">or</span><span class="w">
  </span><span class="nn">pmd-java:</span><span class="nf">typeIsExactly</span><span class="p">(</span><span class="s1">'java.lang.Exception'</span><span class="p">)</span><span class="w">
@@ -2161,7 +2161,7 @@ so it’s unnecessary except for documentation. A better practice is to document
 exceptional cases with a <code class="language-plaintext highlighter-rouge">@throws</code> Javadoc tag, which allows being more descriptive.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ThrowsList</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.RuntimeException'</span><span class="p">)]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ThrowsList</span><span class="o">/</span><span class="nt">ClassType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.RuntimeException'</span><span class="p">)]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -2551,7 +2551,7 @@ gives information about the values of these metrics:</p>
 <p>Errors are system exceptions. Do not extend them.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="o">/</span><span class="nt">ExtendsList</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Error'</span><span class="p">)]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassDeclaration</span><span class="o">/</span><span class="nt">ExtendsList</span><span class="o">/</span><span class="nt">ClassType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Error'</span><span class="p">)]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -2920,13 +2920,13 @@ in each object at runtime.</p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">FieldDeclaration</span><span class="w">
     </span><span class="p">[</span><span class="nn">pmd-java:</span><span class="ow">mod</span><span class="kr">if</span><span class="nf">iers</span><span class="p">()</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'final'</span><span class="p">]</span><span class="w">
     </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nn">pmd-java:</span><span class="ow">mod</span><span class="kr">if</span><span class="nf">iers</span><span class="p">()</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'static'</span><span class="p">)]</span><span class="w">
-    </span><span class="p">[</span><span class="ow">not</span><span class="p">(.</span><span class="o">/</span><span class="kn">ancestor::</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="m">1</span><span class="p">][</span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'lombok.experimental.UtilityClass'</span><span class="p">)])]</span><span class="w">
+    </span><span class="p">[</span><span class="ow">not</span><span class="p">(.</span><span class="o">/</span><span class="kn">ancestor::</span><span class="nt">ClassDeclaration</span><span class="p">[</span><span class="m">1</span><span class="p">][</span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'lombok.experimental.UtilityClass'</span><span class="p">)])]</span><span class="w">
     </span><span class="p">[</span><span class="ow">not</span><span class="p">(.</span><span class="o">//</span><span class="nt">Annotation</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'lombok.Builder.Default'</span><span class="p">)])]</span><span class="w">
     </span><span class="o">/</span><span class="nt">VariableDeclarator</span><span class="p">[</span><span class="o">*</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">nodeIs</span><span class="p">(</span><span class="s1">'Literal'</span><span class="p">)]</span><span class="w">
-         </span><span class="ow">or</span><span class="w"> </span><span class="nt">VariableAccess</span><span class="p">[</span><span class="na">@Name</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="o">//</span><span class="nt">FieldDeclaration</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="ow">mod</span><span class="kr">if</span><span class="nf">iers</span><span class="p">()</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'static'</span><span class="p">]</span><span class="o">/</span><span class="nt">VariableDeclarator</span><span class="o">/</span><span class="nt">VariableDeclaratorId</span><span class="err">/</span><span class="na">@Name</span><span class="p">]</span><span class="w">
+         </span><span class="ow">or</span><span class="w"> </span><span class="nt">VariableAccess</span><span class="p">[</span><span class="na">@Name</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="o">//</span><span class="nt">FieldDeclaration</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="ow">mod</span><span class="kr">if</span><span class="nf">iers</span><span class="p">()</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'static'</span><span class="p">]</span><span class="o">/</span><span class="nt">VariableDeclarator</span><span class="o">/</span><span class="nt">VariableId</span><span class="err">/</span><span class="na">@Name</span><span class="p">]</span><span class="w">
          </span><span class="ow">or</span><span class="w"> </span><span class="nt">FieldAccess</span><span class="w">
          </span><span class="ow">or</span><span class="w"> </span><span class="nt">ArrayAllocation</span><span class="o">/</span><span class="nt">ArrayType</span><span class="o">/</span><span class="nt">ArrayDimensions</span><span class="o">/</span><span class="nt">ArrayDimExpr</span><span class="o">/</span><span class="nt">NumericLiteral</span><span class="p">[</span><span class="na">@IntLiteral</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()][</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"0"</span><span class="p">]]</span><span class="w">
-    </span><span class="o">/</span><span class="nt">VariableDeclaratorId</span><span class="w">
+    </span><span class="o">/</span><span class="nt">VariableId</span><span class="w">
         </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="na">@Name</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nn">pmd-java:</span><span class="ow">mod</span><span class="kr">if</span><span class="nf">iers</span><span class="p">()</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'static'</span><span class="p">)]</span><span class="w">
             </span><span class="o">//</span><span class="nt">SynchronizedStatement</span><span class="err">/</span><span class="p">(</span><span class="nt">VariableAccess</span><span class="p">|</span><span class="nt">FieldAccess</span><span class="p">[</span><span class="nt">ThisExpression</span><span class="p">])</span><span class="err">/</span><span class="na">@Name</span><span class="p">)]</span><span class="w">
 </span></code></pre></div></div>
@@ -3808,7 +3808,7 @@ possibly through grouping related fields in new objects.  For example, a class w
 city/state/zip fields could park them within a single Address field.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="o">/</span><span class="nt">ClassOrInterfaceBody</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassDeclaration</span><span class="o">/</span><span class="nt">ClassBody</span><span class="w">
   </span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="nt">FieldDeclaration</span><span class="w">
             </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nn">pmd-java:</span><span class="ow">mod</span><span class="kr">if</span><span class="nf">iers</span><span class="p">()</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'final'</span><span class="p">)]</span><span class="w">
             </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nn">pmd-java:</span><span class="ow">mod</span><span class="kr">if</span><span class="nf">iers</span><span class="p">()</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'static'</span><span class="p">)]</span><span class="w">
@@ -3872,7 +3872,7 @@ city/state/zip fields could park them within a single Address field.</p>
 complexity and find a way to have more fine grained objects.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="o">/</span><span class="nt">ClassOrInterfaceBody</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassDeclaration</span><span class="o">/</span><span class="nt">ClassBody</span><span class="w">
      </span><span class="p">[</span><span class="w">
       </span><span class="nf">count</span><span class="p">(</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="w">
          </span><span class="ow">not</span><span class="w"> </span><span class="p">(</span><span class="w">
@@ -4066,7 +4066,7 @@ remember to add a private constructor to prevent instantiation.
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jan 18, 2024 <br />
+             Site last generated: Jan 26, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
