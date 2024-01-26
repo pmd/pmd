@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -36,13 +37,14 @@ class Java10Test {
         // note, it can be parsed, but we'll have a ReferenceType of "var"
 
         List<ASTLocalVariableDeclaration> localVars = java9.parseResource("LocalVariableTypeInference.java")
-                                                           .findDescendantsOfType(ASTLocalVariableDeclaration.class);
+                                                           .descendants(ASTLocalVariableDeclaration.class)
+                                                           .toList();
         assertEquals(3, localVars.size());
 
-        ASTVariableDeclaratorId varId = localVars.get(0).getVarIds().firstOrThrow();
+        ASTVariableId varId = localVars.get(0).getVarIds().firstOrThrow();
 
         // first: var list = new ArrayList<String>();
-        assertTrue(varId.getTypeNode() instanceof ASTClassOrInterfaceType);
+        assertInstanceOf(ASTClassType.class, varId.getTypeNode());
         // in that case, we don't have a class named "var", so the type will be null
         assertTrue(varId.getTypeMirror().getSymbol().isUnresolved());
 
@@ -54,7 +56,7 @@ class Java10Test {
     @Test
     void testLocalVarInferenceCanBeParsedJava10() {
         ASTCompilationUnit compilationUnit = java10.parseResource("LocalVariableTypeInference.java");
-        List<ASTLocalVariableDeclaration> localVars = compilationUnit.findDescendantsOfType(ASTLocalVariableDeclaration.class);
+        List<ASTLocalVariableDeclaration> localVars = compilationUnit.descendants(ASTLocalVariableDeclaration.class).toList();
         assertEquals(3, localVars.size());
 
         TypeSystem ts = compilationUnit.getTypeSystem();
@@ -62,67 +64,71 @@ class Java10Test {
 
         // first: var list = new ArrayList<String>();
         assertNull(localVars.get(0).getTypeNode());
-        ASTVariableDeclaratorId varDecl = localVars.get(0).getVarIds().firstOrThrow();
+        ASTVariableId varDecl = localVars.get(0).getVarIds().firstOrThrow();
         assertEquals(ts.parameterise(ts.getClassSymbol(ArrayList.class), listOf(stringT)), varDecl.getTypeMirror(), "type should be ArrayList<String>");
 
         // second: var stream = list.stream();
         assertNull(localVars.get(1).getTypeNode());
-        ASTVariableDeclaratorId varDecl2 = localVars.get(1).getVarIds().firstOrThrow();
+        ASTVariableId varDecl2 = localVars.get(1).getVarIds().firstOrThrow();
         assertEquals(ts.parameterise(ts.getClassSymbol(Stream.class), listOf(stringT)),
                 varDecl2.getTypeMirror(),
                 "type should be Stream<String>");
 
         // third: var s = "Java 10";
         assertNull(localVars.get(2).getTypeNode());
-        ASTVariableDeclaratorId varDecl3 = localVars.get(2).getVarIds().firstOrThrow();
+        ASTVariableId varDecl3 = localVars.get(2).getVarIds().firstOrThrow();
         assertEquals(stringT, varDecl3.getTypeMirror(), "type should be String");
     }
 
     @Test
     void testForLoopWithVar() {
         List<ASTLocalVariableDeclaration> localVars = java10.parseResource("LocalVariableTypeInferenceForLoop.java")
-                                                            .findDescendantsOfType(ASTLocalVariableDeclaration.class);
+                                                            .descendants(ASTLocalVariableDeclaration.class)
+                                                            .toList();
         assertEquals(1, localVars.size());
 
         assertNull(localVars.get(0).getTypeNode());
-        ASTVariableDeclaratorId varDecl = localVars.get(0).getVarIds().firstOrThrow();
+        ASTVariableId varDecl = localVars.get(0).getVarIds().firstOrThrow();
         assertSame(varDecl.getTypeSystem().INT, varDecl.getTypeMirror(), "type should be int");
     }
 
     @Test
     void testForLoopEnhancedWithVar() {
         List<ASTLocalVariableDeclaration> localVars = java10.parseResource("LocalVariableTypeInferenceForLoopEnhanced.java")
-                                                            .findDescendantsOfType(ASTLocalVariableDeclaration.class);
+                                                            .descendants(ASTLocalVariableDeclaration.class)
+                                                            .toList();
         assertEquals(1, localVars.size());
 
         assertNull(localVars.get(0).getTypeNode());
-        ASTVariableDeclaratorId varDecl = localVars.get(0).getVarIds().firstOrThrow();
+        ASTVariableId varDecl = localVars.get(0).getVarIds().firstOrThrow();
         assertTrue(TypeTestUtil.isA(String.class, varDecl), "type should be String");
     }
 
     @Test
     void testForLoopEnhancedWithVar2() {
         List<ASTLocalVariableDeclaration> localVars = java10.parseResource("LocalVariableTypeInferenceForLoopEnhanced2.java")
-                                                            .findDescendantsOfType(ASTLocalVariableDeclaration.class);
+                                                            .descendants(ASTLocalVariableDeclaration.class)
+                                                            .toList();
         assertEquals(4, localVars.size());
 
         assertNull(localVars.get(1).getTypeNode());
-        @NonNull ASTVariableDeclaratorId varDecl2 = localVars.get(1).getVarIds().firstOrThrow();
+        @NonNull ASTVariableId varDecl2 = localVars.get(1).getVarIds().firstOrThrow();
         assertTrue(TypeTestUtil.isA(String.class, varDecl2), "type should be String");
 
         assertNull(localVars.get(3).getTypeNode());
-        ASTVariableDeclaratorId varDecl4 = localVars.get(3).getVarIds().firstOrThrow();
+        ASTVariableId varDecl4 = localVars.get(3).getVarIds().firstOrThrow();
         assertSame(varDecl2.getTypeSystem().INT, varDecl4.getTypeMirror(), "type should be int");
     }
 
     @Test
     void testTryWithResourcesWithVar() {
         List<ASTResource> resources = java10.parseResource("LocalVariableTypeInferenceTryWithResources.java")
-                                            .findDescendantsOfType(ASTResource.class);
+                                            .descendants(ASTResource.class)
+                                            .toList();
         assertEquals(1, resources.size());
 
         assertNull(resources.get(0).asLocalVariableDeclaration().getTypeNode());
-        ASTVariableDeclaratorId varId = resources.get(0).asLocalVariableDeclaration().getVarIds().firstOrThrow();
+        ASTVariableId varId = resources.get(0).asLocalVariableDeclaration().getVarIds().firstOrThrow();
         assertTrue(TypeTestUtil.isA(FileInputStream.class, varId), "type should be FileInputStream");
     }
 

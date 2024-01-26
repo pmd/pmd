@@ -6,8 +6,8 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 
+import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowsList;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
@@ -44,12 +44,12 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRulechainRu
     public Object visit(ASTThrowsList throwsList, Object o) {
         if (!isIgnored(throwsList.getOwner())
             && throwsList.toStream().any(it -> TypeTestUtil.isExactlyA(Exception.class, it))) {
-            addViolation(o, throwsList);
+            asCtx(o).addViolation(throwsList);
         }
         return null;
     }
 
-    private boolean isIgnored(ASTMethodOrConstructorDeclaration owner) {
+    private boolean isIgnored(ASTExecutableDeclaration owner) {
         if (getProperty(IGNORE_JUNIT_COMPLETELY_DESCRIPTOR)
             && TestFrameworksUtil.isJUnit3Class(owner.getEnclosingType())) {
             return true;

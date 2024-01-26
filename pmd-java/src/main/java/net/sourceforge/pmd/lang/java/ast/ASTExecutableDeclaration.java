@@ -18,16 +18,18 @@ import net.sourceforge.pmd.lang.java.types.JMethodSig;
  *
  * <pre class="grammar">
  *
- * MethodOrConstructorDeclaration ::= {@link ASTMethodDeclaration MethodDeclaration}
- *                                  | {@link ASTConstructorDeclaration ConstructorDeclaration}
+ * ExecutableDeclaration ::= {@link ASTMethodDeclaration MethodDeclaration}
+ *                         | {@link ASTConstructorDeclaration ConstructorDeclaration}
  *
  * </pre>
+ *
+ * <p>Note: This interface was called ASTMethodOrConstructorDeclaration in PMD 6.
  *
  * @author Clément Fournier
  * @since 5.8.1
  */
-public interface ASTMethodOrConstructorDeclaration
-    extends AccessNode,
+public interface ASTExecutableDeclaration
+    extends ModifierOwner,
             ASTBodyDeclaration,
             TypeParamOwnerNode,
             GenericNode<JavaNode>,
@@ -73,9 +75,8 @@ public interface ASTMethodOrConstructorDeclaration
      */
     @NonNull
     default ASTFormalParameters getFormalParameters() {
-        return getFirstChildOfType(ASTFormalParameters.class);
+        return firstChild(ASTFormalParameters.class);
     }
-
 
     /**
      * Returns the number of formal parameters expected by this declaration.
@@ -102,7 +103,7 @@ public interface ASTMethodOrConstructorDeclaration
      */
     @Nullable
     default ASTThrowsList getThrowsList() {
-        return getFirstChildOfType(ASTThrowsList.class);
+        return firstChild(ASTThrowsList.class);
     }
 
     /**

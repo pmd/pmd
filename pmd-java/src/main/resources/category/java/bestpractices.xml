@@ -147,7 +147,7 @@ public class Foo {
             <property name="xpath">
                 <value>
                     <![CDATA[
-//FieldDeclaration/ClassOrInterfaceType[pmd-java:typeIs('java.security.MessageDigest')]
+//FieldDeclaration/ClassType[pmd-java:typeIs('java.security.MessageDigest')]
 ]]>
                 </value>
             </property>
@@ -347,7 +347,7 @@ if held within objects with long lifetimes.
             <property name="xpath">
                 <value>
 <![CDATA[
-//FieldDeclaration/ClassOrInterfaceType[pmd-java:typeIs('java.lang.StringBuffer') or pmd-java:typeIs('java.lang.StringBuilder')]
+//FieldDeclaration/ClassType[pmd-java:typeIs('java.lang.StringBuffer') or pmd-java:typeIs('java.lang.StringBuilder')]
 ]]>
                 </value>
             </property>
@@ -426,7 +426,7 @@ For other scenarios, consider using a utility class. See Effective Java's 'Use i
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[@Interface = true()][$ignoreIfHasMethods= false() or not(ClassOrInterfaceBody/MethodDeclaration)]/ClassOrInterfaceBody/FieldDeclaration
+//ClassDeclaration[@Interface = true()][$ignoreIfHasMethods= false() or not(ClassBody/MethodDeclaration)]/ClassBody/FieldDeclaration
  ]]>
                 </value>
             </property>
@@ -514,7 +514,7 @@ public class Foo {
             <property name="xpath">
                 <value>
                     <![CDATA[
-//ConstructorCall/AnonymousClassDeclaration/ClassOrInterfaceBody[count(*)=1]/Initializer[@Static=false()]
+//ConstructorCall/AnonymousClassDeclaration/ClassBody[count(*)=1]/Initializer[@Static=false()]
 ]]>
                 </value>
             </property>
@@ -643,7 +643,7 @@ through the @RunWith(Suite.class) annotation.
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration[@Name='suite' and ClassOrInterfaceType[pmd-java:typeIs('junit.framework.Test')]]
+//MethodDeclaration[@Name='suite' and ClassType[pmd-java:typeIs('junit.framework.Test')]]
                    [not(.//ReturnStatement/*[pmd-java:typeIs('junit.framework.JUnit4TestAdapter')])]
 ]]>
                 </value>
@@ -772,9 +772,9 @@ In TestNG, only methods annotated with the @Test annotation are executed.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[matches(@SimpleName, $testClassPattern) or pmd-java:typeIs('junit.framework.TestCase')]
+//ClassDeclaration[matches(@SimpleName, $testClassPattern) or pmd-java:typeIs('junit.framework.TestCase')]
     (: a junit 3 method :)
-    /ClassOrInterfaceBody/MethodDeclaration[
+    /ClassBody/MethodDeclaration[
         @Visibility="public"
         and starts-with(@Name, 'test')
         and not(ModifierList/Annotation[
@@ -830,10 +830,10 @@ Test methods are identified as those which use `@Test`, `@RepeatedTest`,
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[
+//ClassDeclaration[
     (: a Junit 5 test class, ie, it has methods with the annotation :)
     @Interface = false() and
-    ClassOrInterfaceBody/MethodDeclaration
+    ClassBody/MethodDeclaration
     [ModifierList/Annotation[
                pmd-java:typeIs('org.junit.jupiter.api.Test')
             or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
@@ -843,7 +843,7 @@ Test methods are identified as those which use `@Test`, `@RepeatedTest`,
     ]]
 ]/(
        self::*[@Abstract = false() and @Visibility = ("public", "protected")]
-|      ClassOrInterfaceBody/MethodDeclaration
+|      ClassBody/MethodDeclaration
        [@Visibility = ("public", "protected")]
        [ModifierList/Annotation[
                pmd-java:typeIs('org.junit.jupiter.api.Test')
@@ -1252,7 +1252,7 @@ Consider replacing Enumeration usages with the newer java.util.Iterator
             <property name="xpath">
                 <value>
 <![CDATA[
-//ImplementsList/ClassOrInterfaceType[pmd-java:typeIsExactly('java.util.Enumeration')]
+//ImplementsList/ClassType[pmd-java:typeIsExactly('java.util.Enumeration')]
 ]]>
                 </value>
             </property>
@@ -1285,7 +1285,7 @@ Consider replacing Hashtable usage with the newer java.util.Map if thread safety
         <properties>
             <property name="xpath">
                 <value><![CDATA[
-                //ClassOrInterfaceType[pmd-java:typeIsExactly('java.util.Hashtable')]
+                //ClassType[pmd-java:typeIsExactly('java.util.Hashtable')]
                 ]]></value>
             </property>
         </properties>
@@ -1313,7 +1313,7 @@ Consider replacing Vector usages with the newer java.util.ArrayList if expensive
         <properties>
             <property name="xpath">
                 <value><![CDATA[
-                //ClassOrInterfaceType[pmd-java:typeIs('java.util.Vector')]
+                //ClassType[pmd-java:typeIs('java.util.Vector')]
                 ]]></value>
             </property>
         </properties>
@@ -1803,8 +1803,8 @@ Byte arrays in any method and String arrays in `public static void main(String[]
 //FormalParameters[not(parent::MethodDeclaration[@Overridden=true() or @MainMethod=true()])]
   /FormalParameter[position()=last()]
    [@Varargs=false()]
-   [ArrayType[not(PrimitiveType[@Kind = "byte"] or ClassOrInterfaceType[pmd-java:typeIs('java.lang.Byte')])]
-    or VariableDeclaratorId[ArrayDimensions] and (PrimitiveType[not(@Kind="byte")] or ClassOrInterfaceType[not(pmd-java:typeIs('java.lang.Byte'))])]
+   [ArrayType[not(PrimitiveType[@Kind = "byte"] or ClassType[pmd-java:typeIs('java.lang.Byte')])]
+    or VariableId[ArrayDimensions] and (PrimitiveType[not(@Kind="byte")] or ClassType[not(pmd-java:typeIs('java.lang.Byte'))])]
 ]]>
                 </value>
             </property>

@@ -15,22 +15,21 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
 /**
  * A node that owns a {@linkplain ASTModifierList modifier list}.
  *
- * <p>{@link AccessNode} methods take into account the syntactic context of the
- * declaration, e.g. {@link #isPublic()} will always return true for a field
+ * <p>{@link ModifierOwner} methods take into account the syntactic context of the
+ * declaration, e.g. {@link #hasModifiers(JModifier, JModifier...) hasModifiers(JModifier.PUBLIC)}
+ * will always return true for a field
  * declared inside an interface, regardless of whether the {@code public}
  * modifier was specified explicitly or not. If you want to know whether
  * the modifier was explicitly stated, use {@link #hasExplicitModifiers(JModifier, JModifier...)}.
  *
- * TODO make modifiers accessible from XPath
- *   * Ideally we'd have two attributes, eg @EffectiveModifiers and @ExplicitModifiers,
- *     which would each return a sequence, eg ("public", "static", "final")
- *   * Ideally we'd have a way to add attributes that are not necessarily
- *     getters on the node. It makes no sense in the Java API to expose
- *     those getters on the node, it's more orthogonal to query getModifiers() directly.
+ * <p>Modifiers are accessible from XPath through the functions {@code pmd:modifiers()} and
+ * {@code pmd:explicitModifiers()}. They return a sequence, e.g. {@code ("public", "static", "final")}.
  *
- * TODO rename to ModifierOwner, kept out from PR to reduce diff
+ * <p>Note: This interface was called AccessNode in PMD 6.
+ *
+ * @see net.sourceforge.pmd.lang.java.rule.xpath.internal.GetModifiersFun
  */
-public interface AccessNode extends Annotatable {
+public interface ModifierOwner extends Annotatable {
 
     @Override
     default NodeStream<ASTAnnotation> getDeclaredAnnotations() {
@@ -83,7 +82,7 @@ public interface AccessNode extends Annotatable {
         if (minv == Visibility.V_LOCAL) {
             return minv;
         }
-        for (ASTAnyTypeDeclaration enclosing : ancestors(ASTAnyTypeDeclaration.class)) {
+        for (ASTTypeDeclaration enclosing : ancestors(ASTTypeDeclaration.class)) {
             minv = Visibility.min(minv, enclosing.getVisibility());
             if (minv == Visibility.V_LOCAL) {
                 return minv;
@@ -109,6 +108,15 @@ public interface AccessNode extends Annotatable {
         return getModifiers().hasAllExplicitly(mod1, mod);
     }
 
+    /**
+     * Returns true if this node has the given visibility
+     * either explicitly written or inferred through context.
+     * @see #getVisibility()
+     * @see #getEffectiveVisibility()
+     */
+    default boolean hasVisibility(Visibility visibility) {
+        return getVisibility() == visibility;
+    }
 
     // TODO remove all those, kept only for compatibility with rules
 

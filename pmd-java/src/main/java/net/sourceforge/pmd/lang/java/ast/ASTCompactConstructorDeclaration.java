@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
  *
  * <p>Compact record constructors must be declared "public".
  *
- * TODO make implicit formal parameter node and implement ASTMethodOrConstructorDeclaration.
+ * TODO make implicit formal parameter node and implement ASTExecutableDeclaration.
  *
  * <pre class="grammar">
  *
@@ -24,7 +24,7 @@ import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
  *
  * </pre>
  */
-public final class ASTCompactConstructorDeclaration extends AbstractJavaNode implements ASTBodyDeclaration, SymbolDeclaratorNode, AccessNode {
+public final class ASTCompactConstructorDeclaration extends AbstractJavaNode implements ASTBodyDeclaration, SymbolDeclaratorNode, ModifierOwner {
 
     ASTCompactConstructorDeclaration(int id) {
         super(id);
@@ -36,7 +36,7 @@ public final class ASTCompactConstructorDeclaration extends AbstractJavaNode imp
     }
 
     public ASTBlock getBody() {
-        return getFirstChildOfType(ASTBlock.class);
+        return firstChild(ASTBlock.class);
     }
 
     public ASTCompactConstructorDeclaration getDeclarationNode() {

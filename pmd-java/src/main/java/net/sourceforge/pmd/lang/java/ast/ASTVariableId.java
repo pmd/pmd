@@ -14,6 +14,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 // @formatter:off
@@ -36,17 +37,18 @@ import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
  *
  * <pre class="grammar">
  *
- * VariableDeclaratorId ::= &lt;IDENTIFIER&gt; {@link ASTArrayDimensions ArrayDimensions}?
+ * VariableId ::= &lt;IDENTIFIER&gt; {@link ASTArrayDimensions ArrayDimensions}?
  *
  * </pre>
  *
+ * <p>Note: This node has been called ASTVariableDeclaratorId in PMD 6.
  */
 // @formatter:on
-public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator<JVariableSymbol> implements AccessNode, SymbolDeclaratorNode, FinalizableNode {
+public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariableSymbol> implements ModifierOwner, SymbolDeclaratorNode {
 
     private List<ASTNamedReferenceExpr> usages = Collections.emptyList();
 
-    ASTVariableDeclaratorId(int id) {
+    ASTVariableId(int id) {
         super(id);
     }
 
@@ -93,18 +95,23 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
     }
 
     @Override
+    public boolean isFinal() {
+        return hasModifiers(JModifier.FINAL);
+    }
+
+    @Override
     public Visibility getVisibility() {
         return isPatternBinding() ? Visibility.V_LOCAL
                                   : getModifierOwnerParent().getVisibility();
     }
 
 
-    private AccessNode getModifierOwnerParent() {
+    private ModifierOwner getModifierOwnerParent() {
         JavaNode parent = getParent();
         if (parent instanceof ASTVariableDeclarator) {
-            return (AccessNode) parent.getParent();
+            return (ModifierOwner) parent.getParent();
         }
-        return (AccessNode) parent;
+        return (ModifierOwner) parent;
     }
 
     /**
@@ -285,13 +292,13 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
      * FormalParameter, LocalVariableDeclaration or FieldDeclaration).
      *
      * <p>The type of the returned node is not necessarily the type of this
-     * node. See {@link #getType()} for an explanation.
+     * node. See {@link #getTypeMirror()} for an explanation.
      *
      * @return the type node, or {@code null} if there is no explicit type,
      *     e.g. if {@link #isTypeInferred()} returns true.
      */
     public @Nullable ASTType getTypeNode() {
-        AccessNode parent = getModifierOwnerParent();
+        ModifierOwner parent = getModifierOwnerParent();
         return parent.firstChild(ASTType.class);
     }
 
@@ -321,7 +328,7 @@ public final class ASTVariableDeclaratorId extends AbstractTypedSymbolDeclarator
     // @formatter:on
     @Override
     @SuppressWarnings("PMD.UselessOverridingMethod")
-    public Class<?> getType() {
-        return super.getType();
+    public @NonNull JTypeMirror getTypeMirror() {
+        return super.getTypeMirror();
     }
 }

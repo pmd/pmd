@@ -53,8 +53,8 @@ public final class InternalApiBridge {
     }
 
     @Deprecated
-    public static ASTVariableDeclaratorId newVarId(String image) {
-        ASTVariableDeclaratorId varid = new ASTVariableDeclaratorId(JavaParserImplTreeConstants.JJTVARIABLEDECLARATORID);
+    public static ASTVariableId newVarId(String image) {
+        ASTVariableId varid = new ASTVariableId(JavaParserImplTreeConstants.JJTVARIABLEID);
         varid.setImage(image);
         return varid;
     }
@@ -64,10 +64,10 @@ public final class InternalApiBridge {
             ((ASTMethodDeclaration) node).setSymbol((JMethodSymbol) symbol);
         } else if (node instanceof ASTConstructorDeclaration) {
             ((ASTConstructorDeclaration) node).setSymbol((JConstructorSymbol) symbol);
-        } else if (node instanceof ASTAnyTypeDeclaration) {
-            ((AbstractAnyTypeDeclaration) node).setSymbol((JClassSymbol) symbol);
-        } else if (node instanceof ASTVariableDeclaratorId) {
-            ((ASTVariableDeclaratorId) node).setSymbol((JVariableSymbol) symbol);
+        } else if (node instanceof ASTTypeDeclaration) {
+            ((AbstractTypeDeclaration) node).setSymbol((JClassSymbol) symbol);
+        } else if (node instanceof ASTVariableId) {
+            ((ASTVariableId) node).setSymbol((JVariableSymbol) symbol);
         } else if (node instanceof ASTTypeParameter) {
             ((ASTTypeParameter) node).setSymbol((JTypeParameterSymbol) symbol);
         } else if (node instanceof ASTRecordComponentList) {
@@ -104,7 +104,7 @@ public final class InternalApiBridge {
             .forEach(node -> {
                 JVariableSymbol sym = node.getReferencedSym();
                 if (sym != null) {
-                    ASTVariableDeclaratorId reffed = sym.tryGetNode();
+                    ASTVariableId reffed = sym.tryGetNode();
                     if (reffed != null) { // declared in this file
                         reffed.addUsage(node);
                     }
@@ -113,7 +113,7 @@ public final class InternalApiBridge {
     }
 
     public static void overrideResolution(JavaAstProcessor processor, ASTCompilationUnit root) {
-        root.descendants(ASTAnyTypeDeclaration.class)
+        root.descendants(ASTTypeDeclaration.class)
             .crossFindBoundaries()
             .forEach(OverrideResolutionPass::resolveOverrides);
     }
@@ -184,8 +184,8 @@ public final class InternalApiBridge {
         ((AbstractJavaNode) node).setSymbolTable(table);
     }
 
-    public static void setQname(ASTAnyTypeDeclaration declaration, String binaryName, @Nullable String canon) {
-        ((AbstractAnyTypeDeclaration) declaration).setBinaryName(binaryName, canon);
+    public static void setQname(ASTTypeDeclaration declaration, String binaryName, @Nullable String canon) {
+        ((AbstractTypeDeclaration) declaration).setBinaryName(binaryName, canon);
     }
 
     public static void assignComments(ASTCompilationUnit root) {
@@ -208,7 +208,7 @@ public final class InternalApiBridge {
         return TypesFromAst.fromAst(ts, lexicalSubst, node);
     }
 
-    public static JTypeDeclSymbol getReferencedSym(ASTClassOrInterfaceType type) {
+    public static JTypeDeclSymbol getReferencedSym(ASTClassType type) {
         return type.getReferencedSym();
     }
 

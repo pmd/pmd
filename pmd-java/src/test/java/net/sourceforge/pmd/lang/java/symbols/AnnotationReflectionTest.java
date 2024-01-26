@@ -33,7 +33,7 @@ import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymImplementation;
 import net.sourceforge.pmd.lang.java.symbols.testdata.AnnotWithDefaults;
@@ -159,7 +159,7 @@ class AnnotationReflectionTest {
         JClassSymbol sym = SymImplementation.AST.getSymbol(SomeClass.class);
 
         @NonNull JVariableSymbol localSym = Objects.requireNonNull(sym.tryGetNode())
-                                                   .descendants(ASTVariableDeclaratorId.class)
+                                                   .descendants(ASTVariableId.class)
                                                    .filter(it -> "local".equals(it.getName()))
                                                    .firstOrThrow()
                                                    .getSymbol();
@@ -169,7 +169,7 @@ class AnnotationReflectionTest {
 
     @Test
     void testAnnotWithInvalidType() {
-        @NonNull ASTVariableDeclaratorId field =
+        @NonNull ASTVariableId field =
             JavaParsingHelper.DEFAULT.parse(
                 "@interface A {}\n"
                     + "class C<A> { @A int a; }\n"

@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import static net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility.V_PRIVATE;
+import static net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility.V_PRIVATE;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
@@ -17,11 +17,11 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 public class ClassWithOnlyPrivateConstructorsShouldBeFinalRule extends AbstractJavaRulechainRule {
 
     public ClassWithOnlyPrivateConstructorsShouldBeFinalRule() {
-        super(ASTClassOrInterfaceDeclaration.class);
+        super(ASTClassDeclaration.class);
     }
 
     @Override
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+    public Object visit(ASTClassDeclaration node, Object data) {
         if (node.isRegularClass()
             && !node.hasModifiers(JModifier.FINAL)
             && !node.isAnnotationPresent("lombok.Value")
@@ -33,7 +33,7 @@ public class ClassWithOnlyPrivateConstructorsShouldBeFinalRule extends AbstractJ
         return null;
     }
 
-    private boolean hasPublicLombokConstructors(ASTClassOrInterfaceDeclaration node) {
+    private boolean hasPublicLombokConstructors(ASTClassDeclaration node) {
         return node.getDeclaredAnnotations()
                    .filter(it -> TypeTestUtil.isA("lombok.NoArgsConstructor", it)
                        || TypeTestUtil.isA("lombok.RequiredArgsConstructor", it)
@@ -41,18 +41,18 @@ public class ClassWithOnlyPrivateConstructorsShouldBeFinalRule extends AbstractJ
                    .any(it -> it.getFlatValue("access").filterIs(ASTNamedReferenceExpr.class).none(ref -> "PRIVATE".equals(ref.getName())));
     }
 
-    private boolean hasNoSubclasses(ASTClassOrInterfaceDeclaration klass) {
+    private boolean hasNoSubclasses(ASTClassDeclaration klass) {
         return klass.getRoot()
-                    .descendants(ASTAnyTypeDeclaration.class)
+                    .descendants(ASTTypeDeclaration.class)
                     .crossFindBoundaries()
                     .none(it -> doesExtend(it, klass));
     }
 
-    private boolean doesExtend(ASTAnyTypeDeclaration sub, ASTClassOrInterfaceDeclaration superClass) {
+    private boolean doesExtend(ASTTypeDeclaration sub, ASTClassDeclaration superClass) {
         return sub != superClass && TypeTestUtil.isA(superClass.getTypeMirror().getErasure(), sub);
     }
 
-    private boolean hasOnlyPrivateCtors(ASTClassOrInterfaceDeclaration node) {
+    private boolean hasOnlyPrivateCtors(ASTClassDeclaration node) {
         return node.getDeclarations(ASTConstructorDeclaration.class).all(it -> it.getVisibility() == V_PRIVATE)
             && (node.getVisibility() == V_PRIVATE // then the default ctor is private
             || node.getDeclarations(ASTConstructorDeclaration.class).nonEmpty());

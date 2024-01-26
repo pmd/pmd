@@ -300,7 +300,7 @@ class JDKVersionTest extends BaseJavaTreeDumpTest {
     @Test
     void jdk7PrivateMethodInnerClassInterface1() {
         ASTCompilationUnit acu = java7.parseResource("private_method_in_inner_class_interface1.java");
-        List<ASTMethodDeclaration> methods = acu.findDescendantsOfType(ASTMethodDeclaration.class, true);
+        List<ASTMethodDeclaration> methods = acu.descendants(ASTMethodDeclaration.class).crossFindBoundaries().toList();
         assertEquals(3, methods.size());
         for (ASTMethodDeclaration method : methods) {
             assertFalse(method.getEnclosingType().isInterface());

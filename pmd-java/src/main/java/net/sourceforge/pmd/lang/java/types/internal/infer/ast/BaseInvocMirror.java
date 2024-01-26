@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -50,7 +50,7 @@ abstract class BaseInvocMirror<T extends InvocationNode> extends BasePolyMirror<
             // check anon class has same type args
             return false;
         } else if (myNode.getParent() instanceof ASTVariableDeclarator) {
-            ASTVariableDeclaratorId varId = ((ASTVariableDeclarator) myNode.getParent()).getVarId();
+            ASTVariableId varId = ((ASTVariableDeclarator) myNode.getParent()).getVarId();
             if (varId.isTypeInferred() && !getInferredType().equals(varId.getTypeMirror())) {
                 return false;
             }

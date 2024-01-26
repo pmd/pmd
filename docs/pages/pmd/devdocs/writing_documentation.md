@@ -76,7 +76,7 @@ Here's a short overview:
 | `{% raw %}{% jdoc !a!core::Rule#setName(java.lang.String) %}{% endraw %}`         | {% jdoc !a!core::Rule#setName(java.lang.String) %} |
 | `{% raw %}{% jdoc !ac!core::Rule#setName(java.lang.String) %}{% endraw %}`        | {% jdoc !ac!core::Rule#setName(java.lang.String) %} |
 | `{% raw %}{% jdoc core::properties.PropertyDescriptor %}{% endraw %}`             | {% jdoc core::properties.PropertyDescriptor %} |
-| `{% raw %}{% jdoc_nspace :jast java::lang.java.ast %}{% jdoc jast::ASTAnyTypeDeclaration %}{% endraw %}`       | {% jdoc_nspace :jast java::lang.java.ast %}{% jdoc jast::ASTAnyTypeDeclaration %} |
+| `{% raw %}{% jdoc_nspace :jast java::lang.java.ast %}{% jdoc jast::ASTTypeDeclaration %}{% endraw %}`       | {% jdoc_nspace :jast java::lang.java.ast %}{% jdoc jast::ASTTypeDeclaration %} |
 | `{% raw %}{% jdoc_nspace :jast java::lang.java.ast %}{% jdoc_package :jast %}{% endraw %}`                     | {% jdoc_nspace :jast java::lang.java.ast %}{% jdoc_package :jast %} |
 | `{% raw %}{% jdoc_nspace :PrD core::properties.PropertyDescriptor %}{% jdoc !ac!:PrD#uiOrder() %}{% endraw %}` | {% jdoc_nspace :PrD core::properties.PropertyDescriptor %}{% jdoc !ac!:PrD#uiOrder() %} |
 | `{% raw %}{% jdoc_old core::Rule %}{% endraw %}`                                  | {% jdoc_old core::Rule %}

@@ -157,7 +157,7 @@ class LambdaInferenceTest : ProcessorTestSpec({
             }
         """)
 
-        val (t_Scratch) = acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList { it.typeMirror }
+        val (t_Scratch) = acu.descendants(ASTClassDeclaration::class.java).toList { it.typeMirror }
         val (f) = acu.descendants(ASTMethodDeclaration::class.java).toList()
         val (fCall) = acu.descendants(ASTMethodCall::class.java).toList()
 
@@ -207,7 +207,7 @@ class LambdaInferenceTest : ProcessorTestSpec({
             }
         """)
 
-        val (t_Scratch) = acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList { it.typeMirror }
+        val (t_Scratch) = acu.descendants(ASTClassDeclaration::class.java).toList { it.typeMirror }
         val (f) = acu.descendants(ASTMethodDeclaration::class.java).toList()
         val (fCall) = acu.descendants(ASTMethodCall::class.java).toList()
 
@@ -259,7 +259,7 @@ class LambdaInferenceTest : ProcessorTestSpec({
             }
         """)
 
-        val (t_Scratch, t_WithField) = acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList { it.typeMirror }
+        val (t_Scratch, t_WithField) = acu.descendants(ASTClassDeclaration::class.java).toList { it.typeMirror }
         val (foo) = acu.descendants(ASTMethodDeclaration::class.java).toList()
         val (fooCall) = acu.descendants(ASTMethodCall::class.java).toList()
 
@@ -312,7 +312,7 @@ class LambdaInferenceTest : ProcessorTestSpec({
             }
         """)
 
-        val (t_Scratch, t_WithField) = acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList { it.typeMirror }
+        val (t_Scratch, t_WithField) = acu.descendants(ASTClassDeclaration::class.java).toList { it.typeMirror }
         val (fetch, foo) = acu.descendants(ASTMethodDeclaration::class.java).toList()
         val (fooCall) = acu.descendants(ASTMethodCall::class.java).toList()
 
@@ -362,7 +362,7 @@ class Scratch {
 
         """.trimIndent())
 
-        val (_, _, t_G) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (_, _, t_G) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
@@ -417,7 +417,7 @@ class Scratch {
 
         """.trimIndent())
 
-        val (_, _, t_G) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (_, _, t_G) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 

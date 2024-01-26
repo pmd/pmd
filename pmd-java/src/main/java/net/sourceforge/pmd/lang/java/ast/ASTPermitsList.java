@@ -16,14 +16,14 @@ import net.sourceforge.pmd.lang.java.ast.ASTList.ASTNonEmptyList;
  *
  * <pre class="grammar">
  *
- *  PermitsList ::= "permits" ClassOrInterfaceType
- *                ( "," ClassOrInterfaceType )*
+ *  PermitsList ::= "permits" ClassType
+ *                ( "," ClassType )*
  * </pre>
  */
-public final class ASTPermitsList extends ASTNonEmptyList<ASTClassOrInterfaceType> {
+public final class ASTPermitsList extends ASTNonEmptyList<ASTClassType> {
 
     ASTPermitsList(int id) {
-        super(id, ASTClassOrInterfaceType.class);
+        super(id, ASTClassType.class);
     }
 
     @Override

@@ -20,7 +20,7 @@ import net.sourceforge.pmd.lang.java.BaseParserTest;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.PatternBindingsUtil.BindSet;
 import net.sourceforge.pmd.util.CollectionUtil;
 
@@ -40,8 +40,8 @@ class PatternBindingsTests extends BaseParserTest {
         };
     }
 
-    private void checkBindings(String expr, Set<String> expected, Set<ASTVariableDeclaratorId> bindings, boolean isTrue) {
-        Set<String> actual = CollectionUtil.map(toSet(), bindings, ASTVariableDeclaratorId::getName);
+    private void checkBindings(String expr, Set<String> expected, Set<ASTVariableId> bindings, boolean isTrue) {
+        Set<String> actual = CollectionUtil.map(toSet(), bindings, ASTVariableId::getName);
         assertEquals(expected, actual, "Bindings of '" + expr + "' when " + isTrue);
     }
 

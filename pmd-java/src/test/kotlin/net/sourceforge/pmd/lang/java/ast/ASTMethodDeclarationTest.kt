@@ -9,8 +9,8 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.textOfReportLocation
-import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility.V_PRIVATE
-import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility.V_PUBLIC
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility.V_PRIVATE
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility.V_PUBLIC
 import net.sourceforge.pmd.lang.java.ast.JModifier.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest

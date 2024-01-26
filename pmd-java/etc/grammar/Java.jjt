@@ -1,4 +1,13 @@
 /**
+ * Renamed various nodes:
+ * ClassOrInterfaceType -> ClassType
+ * ClassOrInterfaceDeclaration -> ClassDeclaration
+ * ClassOrInterfaceBody -> ClassBody
+ * AnyTypeDeclaration -> TypeDeclaration
+ * MethodOrConstructorDeclaration -> ExecutableDeclaration
+ * VariableDeclaratorId -> VariableId
+ * Andreas Dangel 12/2023
+ *====================================================================
  * Support "JEP 443: Unnamed Patterns and Variables" for Java 21 Preview.
  *    New AST nodes: ASTUnnamedPattern
  * Support "JEP 430: String Templates" for Java 21 Preview.
@@ -400,8 +409,8 @@ class JavaParserImpl {
           JavaccToken nonToken = getToken(1);
           JavaccToken minusToken = getToken(2);
           JavaccToken sealedToken = getToken(3);
-          return nonToken.getEndColumn() == minusToken.getBeginColumn()
-            && minusToken.getEndColumn() == sealedToken.getBeginColumn();
+          return nonToken.getReportLocation().getEndColumn() == minusToken.getReportLocation().getStartColumn()
+            && minusToken.getReportLocation().getEndColumn() == sealedToken.getReportLocation().getStartColumn();
       }
       return false;
   }
@@ -1241,7 +1250,7 @@ void TypeDeclaration() #void:
   )
 }
 
-void ClassOrInterfaceDeclaration():
+void ClassOrInterfaceDeclaration() #ClassDeclaration:
 {}
 {
   ( "class" | "interface" { jjtThis.setInterface(); } )
@@ -1373,7 +1382,7 @@ void TypeParameter():
    <IDENTIFIER> {setLastTokenImage(jjtThis);} [ "extends" IntersectionType() ]
 }
 
-void ClassOrInterfaceBody():
+void ClassOrInterfaceBody() #ClassBody:
 {}
 {
   "{" { tokenContexts.push(TokenContext.BLOCK); }
@@ -1410,13 +1419,13 @@ void VariableDeclarator() :
   VariableIdWithDims() [ "=" VariableInitializer() ]
 }
 
-void VariableDeclaratorId() :
+void VariableDeclaratorId() #VariableId:
 {}
 {
   <IDENTIFIER> { setLastTokenImage(jjtThis); }
 }
 
-void VariableIdWithDims() #VariableDeclaratorId :
+void VariableIdWithDims() #VariableId :
 {}
 {
   <IDENTIFIER> { setLastTokenImage(jjtThis); }
@@ -1684,7 +1693,7 @@ void ClassOrInterfaceType() #void:
         // a type name, otherwise it wouldn't have compiled. So it's not ambiguous and we can
         // start fresh: "@B Map.Entry" will be unambiguously [[@B Map].Entry]
 
-        (<IDENTIFIER> {setLastTokenImage(jjtThis);} [ TypeArguments() ]) #ClassOrInterfaceType
+        (<IDENTIFIER> {setLastTokenImage(jjtThis);} [ TypeArguments() ]) #ClassType
   |
 
 
@@ -1694,15 +1703,15 @@ void ClassOrInterfaceType() #void:
        // be sure that the last segment is a type name.
 
       AmbiguousName()
-      [ TypeArguments() #ClassOrInterfaceType(2) ]
+      [ TypeArguments() #ClassType(2) ]
       {
         // At this point the first ClassOrInterfaceType may be on top of the stack,
         // but its image is not set. If it is on the stack we need to shrink the bounds
         // of the ambiguous name, or delete it.
         Node first = jjtree.peekNode();
-        if (first instanceof ASTClassOrInterfaceType) {
+        if (first instanceof ASTClassType) {
           // then we saw type arguments, so the last segment is definitely a type name
-          ASTAmbiguousName name = first.getFirstChildOfType(ASTAmbiguousName.class);
+          ASTAmbiguousName name = first.firstChild(ASTAmbiguousName.class);
           name.shrinkOrDeleteInParentSetImage();
         }
       }
@@ -1720,7 +1729,7 @@ void ClassOrInterfaceType() #void:
   { forceTypeContext(); }
 }
 
-private void ClassTypeSegment() #ClassOrInterfaceType(jjtree.nodeArity() + 1):
+private void ClassTypeSegment() #ClassType(jjtree.nodeArity() + 1):
 {}
 {
      TypeAnnotListNoInject()
@@ -2575,7 +2584,7 @@ void LocalTypeDecl() #void:
     // Wrap the type decl into a statement
     // This can't be done with regular jjtree constructs, as the ModifierList
     // is adopted by the first node to be opened.
-    ASTAnyTypeDeclaration type = (ASTAnyTypeDeclaration) jjtree.popNode();
+    ASTTypeDeclaration type = (ASTTypeDeclaration) jjtree.popNode();
     ASTLocalClassStatement stmt = new ASTLocalClassStatement(type);
     jjtree.pushNode(stmt);
   }

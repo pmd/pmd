@@ -25,15 +25,15 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAmbiguousName;
 import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompactConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
+import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
@@ -48,7 +48,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTLambdaParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalClassStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLoopStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTModifierList;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
 import net.sourceforge.pmd.lang.java.ast.ASTResourceList;
@@ -61,8 +60,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
@@ -137,7 +137,7 @@ public final class SymbolTableResolver {
         private final SymTableFactory f;
         private final Deque<JSymbolTable> stack = new ArrayDeque<>();
 
-        private final Deque<ASTAnyTypeDeclaration> enclosingType = new ArrayDeque<>();
+        private final Deque<ASTTypeDeclaration> enclosingType = new ArrayDeque<>();
 
         private final Set<DeferredNode> deferredInPrevRound;
         private final Set<DeferredNode> newDeferred;
@@ -166,7 +166,7 @@ public final class SymbolTableResolver {
         }
 
         @Override
-        public Void visit(ASTClassOrInterfaceType node, @NonNull ReferenceCtx data) {
+        public Void visit(ASTClassType node, @NonNull ReferenceCtx data) {
             // all types are disambiguated in this resolver, because
             // the symbols available inside the body of an anonymous class
             // depend on the type of the superclass/superinterface (the Runnable in `new Runnable() { }`).
@@ -210,14 +210,14 @@ public final class SymbolTableResolver {
             pushed += pushOnStack(f.samePackageSymTable(top()));
             pushed += pushOnStack(f.singleImportsSymbolTable(top(), isImportOnDemand.get(false)));
 
-            NodeStream<ASTAnyTypeDeclaration> typeDecls = node.getTypeDeclarations();
+            NodeStream<ASTTypeDeclaration> typeDecls = node.getTypeDeclarations();
 
             // types declared inside the compilation unit
             pushed += pushOnStack(f.typesInFile(top(), typeDecls));
 
             setTopSymbolTable(node);
 
-            for (ASTAnyTypeDeclaration td : typeDecls) {
+            for (ASTTypeDeclaration td : typeDecls) {
                 // preprocess all sibling types
                 processTypeHeader(td, ctx);
             }
@@ -231,7 +231,7 @@ public final class SymbolTableResolver {
         }
 
 
-        private void processTypeHeader(ASTAnyTypeDeclaration node, ReferenceCtx ctx) {
+        private void processTypeHeader(ASTTypeDeclaration node, ReferenceCtx ctx) {
             setTopSymbolTable(node.getModifiers());
 
             int pushed = pushOnStack(f.selfType(top(), node.getTypeMirror()));
@@ -252,7 +252,7 @@ public final class SymbolTableResolver {
         }
 
         @Override
-        public Void visitTypeDecl(ASTAnyTypeDeclaration node, @NonNull ReferenceCtx ctx) {
+        public Void visitTypeDecl(ASTTypeDeclaration node, @NonNull ReferenceCtx ctx) {
             int pushed = 0;
 
             enclosingType.push(node);
@@ -264,7 +264,7 @@ public final class SymbolTableResolver {
             setTopSymbolTable(node.getBody());
 
             // preprocess siblings
-            node.getDeclarations(ASTAnyTypeDeclaration.class)
+            node.getDeclarations(ASTTypeDeclaration.class)
                 .forEach(d -> processTypeHeader(d, bodyCtx));
 
 
@@ -299,7 +299,7 @@ public final class SymbolTableResolver {
         }
 
         @Override
-        public Void visitMethodOrCtor(ASTMethodOrConstructorDeclaration node, @NonNull ReferenceCtx ctx) {
+        public Void visitMethodOrCtor(ASTExecutableDeclaration node, @NonNull ReferenceCtx ctx) {
             setTopSymbolTable(node.getModifiers());
             int pushed = pushOnStack(f.bodyDeclaration(top(), enclosing(), node.getFormalParameters(), node.getTypeParameters()));
             setTopSymbolTableAndVisitAllChildren(node, ctx);
@@ -398,14 +398,14 @@ public final class SymbolTableResolver {
                     pushed += processLocalVarDecl((ASTLocalVariableDeclaration) st, ctx);
                     // note we don't pop here, all those variables will be popped at the end of the block
                 } else if (st instanceof ASTLocalClassStatement) {
-                    ASTAnyTypeDeclaration local = ((ASTLocalClassStatement) st).getDeclaration();
+                    ASTTypeDeclaration local = ((ASTLocalClassStatement) st).getDeclaration();
                     pushed += pushOnStack(f.localTypeSymTable(top(), local.getTypeMirror()));
                     processTypeHeader(local, ctx);
                 }
 
                 setTopSymbolTable(st);
                 // those vars are the one produced by pattern bindings/ local var decls
-                PSet<ASTVariableDeclaratorId> newVars = st.acceptVisitor(this.stmtVisitor, ctx);
+                PSet<ASTVariableId> newVars = st.acceptVisitor(this.stmtVisitor, ctx);
                 pushed += pushOnStack(f.localVarSymTable(top(), enclosing(), newVars));
             }
 
@@ -419,7 +419,7 @@ public final class SymbolTableResolver {
             // each variable is visible in its own initializer and the ones of the following variables
             int pushed = 0;
             for (ASTVariableDeclarator declarator : st.children(ASTVariableDeclarator.class)) {
-                ASTVariableDeclaratorId varId = declarator.getVarId();
+                ASTVariableId varId = declarator.getVarId();
                 pushed += pushOnStack(f.localVarSymTable(top(), enclosing(), varId.getSymbol()));
                 // visit initializer
                 setTopSymbolTableAndVisit(declarator.getInitializer(), ctx);
@@ -432,7 +432,7 @@ public final class SymbolTableResolver {
             // the varId is only in scope in the body and not the iterable expr
             setTopSymbolTableAndVisit(node.getIterableExpr(), ctx);
 
-            ASTVariableDeclaratorId varId = node.getVarId();
+            ASTVariableId varId = node.getVarId();
             setTopSymbolTableAndVisit(varId.getTypeNode(), ctx);
 
             int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), varId.getSymbol()));
@@ -487,7 +487,7 @@ public final class SymbolTableResolver {
             BinaryOp op = node.getOperator();
             if (op == BinaryOp.CONDITIONAL_AND) {
 
-                PSet<ASTVariableDeclaratorId> trueBindings = bindersOfExpr(node.getLeftOperand()).getTrueBindings();
+                PSet<ASTVariableId> trueBindings = bindersOfExpr(node.getLeftOperand()).getTrueBindings();
                 if (!trueBindings.isEmpty()) {
                     int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), trueBindings));
                     setTopSymbolTableAndVisit(node.getRightOperand(), ctx);
@@ -497,7 +497,7 @@ public final class SymbolTableResolver {
 
             } else if (op == BinaryOp.CONDITIONAL_OR) {
 
-                PSet<ASTVariableDeclaratorId> falseBindings = bindersOfExpr(node.getLeftOperand()).getFalseBindings();
+                PSet<ASTVariableId> falseBindings = bindersOfExpr(node.getLeftOperand()).getFalseBindings();
                 if (!falseBindings.isEmpty()) {
                     int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), falseBindings));
                     setTopSymbolTableAndVisit(node.getRightOperand(), ctx);
@@ -552,15 +552,15 @@ public final class SymbolTableResolver {
          * implement a visit method in the MyVisitor instance, this visitor will
          * default to that implementation.
          */
-        class StatementVisitor extends JavaVisitorBase<ReferenceCtx, PSet<ASTVariableDeclaratorId>> {
+        class StatementVisitor extends JavaVisitorBase<ReferenceCtx, PSet<ASTVariableId>> {
 
             @Override
-            public PSet<ASTVariableDeclaratorId> visitJavaNode(JavaNode node, ReferenceCtx ctx) {
+            public PSet<ASTVariableId> visitJavaNode(JavaNode node, ReferenceCtx ctx) {
                 throw new IllegalStateException("I only expect statements, got " + node);
             }
 
             @Override
-            public PSet<ASTVariableDeclaratorId> visitStatement(ASTStatement node, ReferenceCtx ctx) {
+            public PSet<ASTVariableId> visitStatement(ASTStatement node, ReferenceCtx ctx) {
                 // Default to calling the method on the outer class,
                 // which will recurse
                 node.acceptVisitor(MyVisitor.this, ctx);
@@ -568,14 +568,14 @@ public final class SymbolTableResolver {
             }
 
             @Override
-            public PSet<ASTVariableDeclaratorId> visit(ASTLabeledStatement node, @NonNull ReferenceCtx ctx) {
+            public PSet<ASTVariableId> visit(ASTLabeledStatement node, @NonNull ReferenceCtx ctx) {
                 // A pattern variable is introduced by a labeled statement
                 // if and only if it is introduced by its immediately contained Statement.
                 return node.getStatement().acceptVisitor(this, ctx);
             }
 
             @Override
-            public PSet<ASTVariableDeclaratorId> visit(ASTIfStatement node, ReferenceCtx ctx) {
+            public PSet<ASTVariableId> visit(ASTIfStatement node, ReferenceCtx ctx) {
                 BindSet bindSet = bindersOfExpr(node.getCondition());
 
                 ASTStatement thenBranch = node.getThenBranch();
@@ -612,7 +612,7 @@ public final class SymbolTableResolver {
             }
 
             @Override
-            public PSet<ASTVariableDeclaratorId> visit(ASTWhileStatement node, ReferenceCtx ctx) {
+            public PSet<ASTVariableId> visit(ASTWhileStatement node, ReferenceCtx ctx) {
                 BindSet bindSet = bindersOfExpr(node.getCondition());
 
                 MyVisitor.this.setTopSymbolTableAndVisit(node.getCondition(), ctx);
@@ -628,7 +628,7 @@ public final class SymbolTableResolver {
             }
 
             @Override
-            public PSet<ASTVariableDeclaratorId> visit(ASTForStatement node, @NonNull ReferenceCtx ctx) {
+            public PSet<ASTVariableId> visit(ASTForStatement node, @NonNull ReferenceCtx ctx) {
                 int pushed = 0;
                 ASTStatement init = node.getInit();
                 if (init instanceof ASTLocalVariableDeclaration) {
@@ -755,7 +755,7 @@ public final class SymbolTableResolver {
         }
 
 
-        static NodeStream<ASTVariableDeclaratorId> formalsOf(ASTLambdaExpression node) {
+        static NodeStream<ASTVariableId> formalsOf(ASTLambdaExpression node) {
             return node.getParameters().toStream().map(ASTLambdaParameter::getVarId);
         }
 

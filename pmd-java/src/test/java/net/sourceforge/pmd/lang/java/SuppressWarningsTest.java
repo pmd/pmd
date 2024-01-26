@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
@@ -30,9 +30,9 @@ class SuppressWarningsTest {
         public Object visit(ASTCompilationUnit cu, Object ctx) {
             // Convoluted rule to make sure the violation is reported for the
             // ASTCompilationUnit node
-            for (ASTClassOrInterfaceDeclaration c : cu.descendants(ASTClassOrInterfaceDeclaration.class)) {
+            for (ASTClassDeclaration c : cu.descendants(ASTClassDeclaration.class)) {
                 if ("bar".equalsIgnoreCase(c.getSimpleName())) {
-                    addViolation(ctx, cu);
+                    asCtx(ctx).addViolation(cu);
                 }
             }
             return super.visit(cu, ctx);

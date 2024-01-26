@@ -51,7 +51,7 @@ public class BigIntegerInstantiationRule extends AbstractJavaRulechainRule {
                         || Integer.valueOf(0).equals(constValue)
                         || Integer.valueOf(1).equals(constValue)
                         || jdk15 && Integer.valueOf(10).equals(constValue)) {
-                    addViolation(data, node);
+                    asCtx(data).addViolation(node);
                 }
             }
         }

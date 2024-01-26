@@ -83,11 +83,11 @@ public class KeepingItSerious {
 
 ```
 
-Examining the AST, you find out that the LocalVariableDeclaration has a VariableDeclaratorId
+Examining the AST, you find out that the LocalVariableDeclaration has a VariableId
 descendant, whose `Name` XPath attribute is exactly `bill`. You thus write your first attempt
 in the XPath editor:
 ```xpath
-//VariableDeclaratorId[@Name = "bill"]
+//VariableId[@Name = "bill"]
 ```
 
 You can see the XPath result list is updated with the variable declarator.
@@ -112,7 +112,7 @@ based on your examination of the Type node of the field and local variable
 declaration nodes.
 
 ```xpath
-//VariableDeclaratorId[@Image = "bill"][../../PrimitiveType[@Kind = "short"]]
+//VariableId[@Name = "bill" and ../../Type[@TypeImage = "short"]]
 ```
 
 ### Exporting to XML
@@ -135,8 +135,8 @@ copy-paste into your ruleset XML. The resulting element looks like so:
     <properties>
         <property name="xpath">
             <value>
-                <![CDATA[
-//VariableDeclaratorId[@Image = "bill"][../../PrimitiveType[@Kind = "short"]]
+<![CDATA[
+//VariableId[@Name = "bill"][../../Type[@TypeImage="short"]]
 ]]>
             </value>
         </property>

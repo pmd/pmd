@@ -87,7 +87,7 @@ public class UselessOverridingMethodRule extends AbstractJavaRulechainRule {
                     && overload.getMethodType().equals(node.getOverriddenMethod())
                     && sameModifiers(node.getOverriddenMethod().getSymbol(), node.getSymbol())
                     && argumentsAreUnchanged(node, methodCall)) {
-                    addViolation(data, node);
+                    asCtx(data).addViolation(node);
                 }
             }
         }

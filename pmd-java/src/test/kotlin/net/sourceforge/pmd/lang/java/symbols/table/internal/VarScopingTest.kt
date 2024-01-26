@@ -58,10 +58,10 @@ class VarScopingTest : ProcessorTestSpec({
         """.trimIndent())
 
         val (outerClass, innerClass) =
-                acu.descendants(ASTClassOrInterfaceDeclaration::class.java).toList()
+                acu.descendants(ASTClassDeclaration::class.java).toList()
 
         val (outerField, localInInit, foreachParam, methodParam, localInBlock, innerField) =
-                acu.descendants(ASTVariableDeclaratorId::class.java)
+                acu.descendants(ASTVariableId::class.java)
                    .crossFindBoundaries().toList()
 
         val (inInitializer, inForeachInit, inForeach, inMethod, inLocalBlock, inInnerClass) =
@@ -137,7 +137,7 @@ class VarScopingTest : ProcessorTestSpec({
         """.trimIndent())
 
         val (outerField, exception1, reader1, exception2, reader2, bufferedReader, reader3, br2) =
-                acu.descendants(ASTVariableDeclaratorId::class.java).toList()
+                acu.descendants(ASTVariableId::class.java).toList()
 
         val (inCatch1, inTry, inCatch2, inFinally, inResource) =
                 acu.descendants(ASTMethodCall::class.java).toList()
@@ -203,7 +203,7 @@ class VarScopingTest : ProcessorTestSpec({
         """.trimIndent())
 
         val (outerField, ivar, jvar, kvar, lvar) =
-                acu.descendants(ASTVariableDeclaratorId::class.java).toList()
+                acu.descendants(ASTVariableId::class.java).toList()
 
         val (fAccess, fAccess2, iAccess, jAccess, kAccess, lAccess, iAccess2) =
                 acu.descendants(ASTVariableAccess::class.java).toList()
@@ -250,7 +250,7 @@ class VarScopingTest : ProcessorTestSpec({
         """.trimIndent())
 
         val (ivar, _) =
-                acu.descendants(ASTVariableDeclaratorId::class.java).toList()
+                acu.descendants(ASTVariableId::class.java).toList()
 
         val iUsages = acu.descendants(ASTVariableAccess::class.java).toList()
         val (initAccess, condAccess, updateAccess, bodyAccess, innerLoopAccess) =
@@ -293,7 +293,7 @@ class VarScopingTest : ProcessorTestSpec({
         """.trimIndent())
 
         val (ivar, _) =
-                acu.descendants(ASTVariableDeclaratorId::class.java).toList()
+                acu.descendants(ASTVariableId::class.java).toList()
 
         val iUsages = acu.descendants(ASTVariableAccess::class.java).toList()
         val (initAccess, condAccess, updateAccess, bodyAccess, innerLoopAccess) =
@@ -341,7 +341,7 @@ class VarScopingTest : ProcessorTestSpec({
         """.trimIndent())
 
         val (xComp, restComp, x2Formal, y2Formal) =
-                acu.descendants(ASTVariableDeclaratorId::class.java).toList()
+                acu.descendants(ASTVariableId::class.java).toList()
 
         val (insideCompact, insideRegular) =
                 acu.descendants(ASTAssertStatement::class.java).toList()
@@ -390,7 +390,7 @@ class VarScopingTest : ProcessorTestSpec({
         """.trimIndent())
 
         val foreachVar =
-                acu.descendants(ASTVariableDeclaratorId::class.java).first { it.name == "s" }!!
+                acu.descendants(ASTVariableId::class.java).first { it.name == "s" }!!
 
         val foreachBody =
                 acu.descendants(ASTForeachStatement::class.java).firstOrThrow().body
@@ -426,11 +426,11 @@ class VarScopingTest : ProcessorTestSpec({
 
         """.trimIndent())
 
-        val (_, t_SomeEnum) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (_, t_SomeEnum) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
         val (enumA, enumB) =
                 acu.descendants(ASTEnumDeclaration::class.java)
-                   .descendants(ASTVariableDeclaratorId::class.java).toList()
+                   .descendants(ASTVariableId::class.java).toList()
 
         val (e, caseA, caseB) =
                 acu.descendants(ASTVariableAccess::class.java).toList()

@@ -86,7 +86,7 @@ class Java16TreeDumpTest extends BaseJavaTreeDumpTest {
         List<ASTRecordComponent> components = recordDecl.descendants(ASTRecordComponentList.class)
                 .children(ASTRecordComponent.class).toList();
 
-        ASTVariableDeclaratorId varId = components.get(0).getVarId();
+        ASTVariableId varId = components.get(0).getVarId();
         JElementSymbol symbol = varId.getSymbol();
         assertEquals("x", symbol.getSimpleName());
         assertTrue(varId.getTypeMirror().isPrimitive(JPrimitiveType.PrimitiveTypeKind.INT));

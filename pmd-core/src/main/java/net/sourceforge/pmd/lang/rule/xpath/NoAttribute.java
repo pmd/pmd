@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.rule.xpath;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -17,6 +18,7 @@ import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
  *
  * @author Clément Fournier
  */
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.TYPE})
 public @interface NoAttribute {

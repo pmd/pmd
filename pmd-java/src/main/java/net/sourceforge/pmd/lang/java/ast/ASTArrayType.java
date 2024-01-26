@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
  * <pre class="grammar">
  *
  * ArrayType ::= {@link ASTPrimitiveType PrimitiveType} {@link ASTArrayDimensions ArrayDimensions}
- *             | {@link ASTClassOrInterfaceType ClassOrInterfaceType} {@link ASTArrayDimensions ArrayDimensions}
+ *             | {@link ASTClassType ClassOrInterfaceType} {@link ASTArrayDimensions ArrayDimensions}
  *
  * </pre>
  */

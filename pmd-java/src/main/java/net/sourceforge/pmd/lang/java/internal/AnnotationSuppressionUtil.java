@@ -21,14 +21,14 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.ViolationSuppressor;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberValue;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberValuePair;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.rule.errorprone.ImplicitSwitchFallThroughRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
@@ -111,8 +111,8 @@ final class AnnotationSuppressionUtil {
 
     @Nullable
     private static Annotatable getSuppressor(Node node) {
-        if (node instanceof ASTAnyTypeDeclaration
-            || node instanceof ASTMethodOrConstructorDeclaration
+        if (node instanceof ASTTypeDeclaration
+            || node instanceof ASTExecutableDeclaration
             // also works for ASTResource when Resource uses LocalVariableDeclaration
             || node instanceof ASTLocalVariableDeclaration
             || node instanceof ASTFieldDeclaration

@@ -16,10 +16,14 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTModifierList;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 
 /**
- * Special tweak to remove deprecated attributes of AccessNode
+ * Special tweak to remove deprecated attributes of {@link ModifierOwner}
+ * and deprecated attributes in general.
+ *
+ * @see BaseJavaTreeDumpTest
  */
 public class JavaAttributesPrinter extends RelevantAttributePrinter {
 

@@ -7,8 +7,6 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldBeEmpty
-import io.kotest.matchers.string.shouldNotContainIgnoringCase
 import net.sourceforge.pmd.lang.ast.test.shouldBeA
 import net.sourceforge.pmd.lang.ast.test.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
@@ -168,7 +166,7 @@ class C {
         )
 
 
-        val t_UnresolvedOfString = acu.descendants(ASTClassOrInterfaceType::class.java)
+        val t_UnresolvedOfString = acu.descendants(ASTClassType::class.java)
                 .first { it.simpleName == "Unresolved" }!!.typeMirror.shouldBeA<JClassType> {
                     it.isParameterizedType shouldBe true
                     it.typeArgs shouldBe listOf(it.typeSystem.STRING)
@@ -300,7 +298,7 @@ class C {
 
 
         val (foo1) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.symbol }
-        val (t_U1, t_U2) = acu.descendants(ASTClassOrInterfaceType::class.java).toList { it.typeMirror }
+        val (t_U1, t_U2) = acu.descendants(ASTClassType::class.java).toList { it.typeMirror }
 
         t_U1.shouldBeUnresolvedClass("U1")
         t_U2.shouldBeUnresolvedClass("U2")
@@ -341,7 +339,7 @@ class C extends U1 {
 
 
         val (foo1) = acu.descendants(ASTMethodDeclaration::class.java).toList { it.symbol }
-        val (t_U1) = acu.descendants(ASTClassOrInterfaceType::class.java).toList { it.typeMirror }
+        val (t_U1) = acu.descendants(ASTClassType::class.java).toList { it.typeMirror }
 
         t_U1.shouldBeUnresolvedClass("U1")
 

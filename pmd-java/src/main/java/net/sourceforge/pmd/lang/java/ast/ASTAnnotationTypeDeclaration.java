@@ -23,7 +23,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  * </pre>
  *
  */
-public final class ASTAnnotationTypeDeclaration extends AbstractAnyTypeDeclaration {
+public final class ASTAnnotationTypeDeclaration extends AbstractTypeDeclaration {
 
 
     ASTAnnotationTypeDeclaration(int id) {

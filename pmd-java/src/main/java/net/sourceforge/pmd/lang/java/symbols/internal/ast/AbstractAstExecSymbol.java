@@ -9,8 +9,8 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTReceiverParameter;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
@@ -22,7 +22,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
 /**
  * @author Clément Fournier
  */
-abstract class AbstractAstExecSymbol<T extends ASTMethodOrConstructorDeclaration>
+abstract class AbstractAstExecSymbol<T extends ASTExecutableDeclaration>
     extends AbstractAstTParamOwner<T>
     implements JExecutableSymbol {
 

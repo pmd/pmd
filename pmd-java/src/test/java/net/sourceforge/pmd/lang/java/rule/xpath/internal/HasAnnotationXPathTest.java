@@ -35,7 +35,7 @@ class HasAnnotationXPathTest extends BaseXPathFunctionTest {
 
     @Test
     void testWrongTypeReturnsFalse() {
-        Rule rule = makeXpathRuleFromXPath("//ClassOrInterfaceBody[pmd-java:hasAnnotation('java.lang.Override')]");
+        Rule rule = makeXpathRuleFromXPath("//ClassBody[pmd-java:hasAnnotation('java.lang.Override')]");
         String code = "interface O { @Override void foo(); }";
 
         assertFinds(rule, 0, code);

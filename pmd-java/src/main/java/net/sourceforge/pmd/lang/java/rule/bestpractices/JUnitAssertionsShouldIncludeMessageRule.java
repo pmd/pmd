@@ -36,7 +36,7 @@ public class JUnitAssertionsShouldIncludeMessageRule extends AbstractJavaRulecha
     public Object visit(ASTMethodCall node, Object data) {
         if (TestFrameworksUtil.isCallOnAssertionContainer(node)) {
             if (checks.anyMatch(node)) {
-                addViolation(data, node);
+                asCtx(data).addViolation(node);
             }
         }
         return null;

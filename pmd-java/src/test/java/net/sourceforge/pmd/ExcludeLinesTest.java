@@ -10,7 +10,7 @@ import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertSuppressed;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.java.BaseParserTest;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 class ExcludeLinesTest extends BaseParserTest {
@@ -28,8 +28,8 @@ class ExcludeLinesTest extends BaseParserTest {
             }
 
             @Override
-            public Object visit(ASTVariableDeclaratorId node, Object data) {
-                addViolation(data, node);
+            public Object visit(ASTVariableId node, Object data) {
+                asCtx(data).addViolation(node);
                 return data;
             }
         };

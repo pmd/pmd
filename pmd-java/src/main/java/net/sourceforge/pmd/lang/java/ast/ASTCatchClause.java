@@ -32,7 +32,7 @@ public final class ASTCatchClause extends AbstractJavaNode {
 
     /** Returns the body of this catch branch. */
     public ASTBlock getBody() {
-        return getFirstChildOfType(ASTBlock.class);
+        return firstChild(ASTBlock.class);
     }
 
 }

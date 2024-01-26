@@ -12,14 +12,14 @@ import net.sourceforge.pmd.lang.java.ast.ASTList.ASTNonEmptyList;
  *
  * <pre class="grammar">
  *
- * ImplementsList ::= "implements" {@link ASTClassOrInterfaceType ClassOrInterfaceType} ( "," {@link ASTClassOrInterfaceType ClassOrInterfaceType})*
+ * ImplementsList ::= "implements" {@link ASTClassType InterfaceType} ( "," {@link ASTClassType InterfaceType})*
  *
  * </pre>
  */
-public final class ASTImplementsList extends ASTNonEmptyList<ASTClassOrInterfaceType> {
+public final class ASTImplementsList extends ASTNonEmptyList<ASTClassType> {
 
     ASTImplementsList(int id) {
-        super(id, ASTClassOrInterfaceType.class);
+        super(id, ASTClassType.class);
     }
 
 

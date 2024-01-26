@@ -157,7 +157,7 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
                     }
                 }
 
-                addViolation(rctx, conversionExpr, reason);
+                rctx.addViolation(conversionExpr, reason);
             }
         }
     }
@@ -176,7 +176,7 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
         if (ctxType != null) {
             if (isImplicitlyConvertible(conversionOutput, ctxType)) {
                 if (conversionOutput.unbox().equals(ctxType)) {
-                    addViolation(rctx, methodCall, "implicit unboxing. Use "
+                    rctx.addViolation(methodCall, "implicit unboxing. Use "
                             + conversionOutput.getSymbol().getSimpleName() + ".parse"
                             + StringUtils.capitalize(ctxType.getSymbol().getSimpleName()) + "(...) instead");
                 }

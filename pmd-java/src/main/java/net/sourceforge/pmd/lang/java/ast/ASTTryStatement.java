@@ -76,7 +76,7 @@ public final class ASTTryStatement extends AbstractStatement {
      */
     @Nullable
     public ASTFinallyClause getFinallyClause() {
-        return getFirstChildOfType(ASTFinallyClause.class);
+        return firstChild(ASTFinallyClause.class);
     }
 
 }

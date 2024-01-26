@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.symbols.internal.ast;
 import static net.sourceforge.pmd.lang.java.types.TypeOps.subst;
 
 import net.sourceforge.pmd.lang.java.ast.ASTType;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.Substitution;
@@ -16,10 +16,10 @@ import net.sourceforge.pmd.lang.java.types.Substitution;
  * @author Clément Fournier
  */
 abstract class AbstractAstVariableSym
-    extends AbstractAstAnnotableSym<ASTVariableDeclaratorId>
+    extends AbstractAstAnnotableSym<ASTVariableId>
     implements JVariableSymbol {
     
-    AbstractAstVariableSym(ASTVariableDeclaratorId node, AstSymFactory factory) {
+    AbstractAstVariableSym(ASTVariableId node, AstSymFactory factory) {
         super(node, factory);
     }
 

@@ -111,8 +111,8 @@ langs:
         examples:
           - code: '//*[pmd-java:nodeIs("Expression")]'
             outcome: "Matches all nodes that implement {% jdoc jast::ASTExpression %}"
-          - code: '//*[pmd-java:nodeIs("AnyTypeDeclaration")]'
-            outcome: "Matches all nodes that implement {% jdoc jast::ASTAnyTypeDeclaration %}"
+          - code: '//*[pmd-java:nodeIs("TypeDeclaration")]'
+            outcome: "Matches all nodes that implement {% jdoc jast::ASTTypeDeclaration %}"
           - code: '//*[pmd-java:nodeIs("Foo")]'
             outcome: "Runtime error, there's no class ASTFoo in the package"
 
@@ -129,7 +129,7 @@ langs:
         examples:
           - code: '//FormalParameter[pmd-java:typeIs("java.lang.String[]")]'
             outcome: "Matches formal parameters of type `String[]` (including vararg parameters)"
-          - code: '//VariableDeclaratorId[pmd-java:typeIs("java.lang.List")]'
+          - code: '//VariableId[pmd-java:typeIs("java.lang.List")]'
             outcome: "Matches variable declarators of type `List` or any of its subtypes (including e.g. `ArrayList`)"
 
       - name: typeIsExactly
@@ -142,7 +142,7 @@ langs:
         parameters:
           - *qname_param
         examples:
-          - code: '//VariableDeclaratorId[pmd-java:typeIsExactly("java.lang.List")]'
+          - code: '//VariableId[pmd-java:typeIsExactly("java.lang.List")]'
             outcome: "Matches variable declarators of type `List` (but not e.g. `ArrayList`)"
 
 
@@ -159,7 +159,7 @@ langs:
             type: "xs:string"
             description: "The name of a metric in {% jdoc jmx::JavaMetrics %} (or an alias thereof)."
         examples:
-          - code: "//ClassOrInterfaceDeclaration[metric('NCSS') > 200]"
+          - code: "//ClassDeclaration[metric('NCSS') > 200]"
             outcome: ""
           - code: "//MethodDeclaration[metric('CYCLO') > 10 and metric('NCSS') > 20]"
             outcome: ""
@@ -186,7 +186,7 @@ langs:
           Returns a sequence of the effective modifiers of a node as strings.
           This is documented on {% jdoc jast::ASTModifierList#getEffectiveModifiers() %}.
 
-        notes: "The context node must be an {% jdoc jast::AccessNode %}, otherwise this returns an empty sequence"
+        notes: "The context node must be an {% jdoc jast::ModifierOwner %}, otherwise this returns an empty sequence"
         parameters:
         examples:
           - code: '//MethodDeclaration[pmd-java:modifiers() = "native"]'
@@ -210,7 +210,7 @@ langs:
           Returns a sequence of the explicit modifiers of a node as strings.
           This is documented on {% jdoc jast::ASTModifierList#getExplicitModifiers() %}.
 
-        notes: "The context node must be an {% jdoc jast::AccessNode %}, otherwise this returns an empty sequence"
+        notes: "The context node must be an {% jdoc jast::ModifierOwner %}, otherwise this returns an empty sequence"
         parameters:
         examples:
           - code: '//MethodDeclaration[pmd-java:explicitModifiers() = "public"]'

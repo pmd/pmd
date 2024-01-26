@@ -21,7 +21,7 @@ class TokenUtilsTest : IntelliMarker, FunSpec({
 
 
         val decl =
-                TopLevelTypeDeclarationParsingCtx.parseAndFind<ASTClassOrInterfaceDeclaration>(
+                TopLevelTypeDeclarationParsingCtx.parseAndFind<ASTClassDeclaration>(
                         "class Foo { /* wassup */ abstract void bar(); }",
                         ParserTestCtx(this@setup1, JavaVersion.J11)
                 )

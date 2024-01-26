@@ -49,7 +49,7 @@ public class JUnitUseExpectedRule extends AbstractJavaRulechainRule {
         if (body != null && isJUnitMethod(node)) {
             body.descendants(ASTTryStatement.class)
                 .filter(this::isWeirdTry)
-                .forEach(it -> addViolation(data, it));
+                .forEach(it -> asCtx(data).addViolation(it));
         }
         return null;
     }

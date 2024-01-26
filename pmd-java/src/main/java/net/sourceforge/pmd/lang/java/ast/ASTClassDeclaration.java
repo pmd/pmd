@@ -15,32 +15,27 @@ import net.sourceforge.pmd.lang.ast.Node;
  *
  * <pre class="grammar">
  *
- * ClassOrInterfaceDeclaration ::= {@link ASTModifierList ModifierList}
- *                                 ( "class" | "interface" )
- *                                 &lt;IDENTIFIER&gt;
- *                                 {@link ASTTypeParameters TypeParameters}?
- *                                 {@link ASTExtendsList ExtendsList}?
- *                                 {@link ASTImplementsList ImplementsList}?
- *                                 {@link ASTClassOrInterfaceBody ClassOrInterfaceBody}
+ * ClassDeclaration ::= {@link ASTModifierList ModifierList}
+ *                      ( "class" | "interface" )
+ *                      &lt;IDENTIFIER&gt;
+ *                      {@link ASTTypeParameters TypeParameters}?
+ *                      {@link ASTExtendsList ExtendsList}?
+ *                      {@link ASTImplementsList ImplementsList}?
+ *                      {@link ASTClassBody ClassBody}
  *
  * </pre>
  */
-public final class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclaration {
+public final class ASTClassDeclaration extends AbstractTypeDeclaration {
 
     private boolean isInterface;
 
-    ASTClassOrInterfaceDeclaration(int id) {
+    ASTClassDeclaration(int id) {
         super(id);
     }
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
-    }
-
-    @Override
-    public boolean isPackagePrivate() {
-        return super.isPackagePrivate() && !isLocal();
     }
 
     @Override
@@ -70,17 +65,17 @@ public final class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclara
      *
      * <p>Returns {@code null} otherwise.
      */
-    public ASTClassOrInterfaceType getSuperClassTypeNode() {
+    public ASTClassType getSuperClassTypeNode() {
         if (isInterface()) {
             return null;
         }
 
-        ASTExtendsList extendsList = getFirstChildOfType(ASTExtendsList.class);
+        ASTExtendsList extendsList = firstChild(ASTExtendsList.class);
         return extendsList == null ? null : extendsList.iterator().next();
     }
 
 
-    public List<ASTClassOrInterfaceType> getPermittedSubclasses() {
+    public List<ASTClassType> getPermittedSubclasses() {
         return ASTList.orEmpty(children(ASTPermitsList.class).first());
     }
 }

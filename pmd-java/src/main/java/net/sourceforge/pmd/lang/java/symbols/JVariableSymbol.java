@@ -5,7 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.symbols;
 
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 
@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.java.types.Substitution;
  *
  * @since 7.0.0
  */
-public interface JVariableSymbol extends BoundToNode<ASTVariableDeclaratorId>, AnnotableSymbol {
+public interface JVariableSymbol extends BoundToNode<ASTVariableId>, AnnotableSymbol {
 
     /**
      * Returns true if this is a field symbol.

@@ -21,9 +21,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTModifierList;
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
-import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.MethodUsage;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractIgnoredAnnotationRule;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
@@ -108,7 +108,7 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
         // those that remain are unused
         consideredNames.forEach((name, unused) -> {
             for (ASTMethodDeclaration m : unused) {
-                addViolation(param, m, PrettyPrintingUtil.displaySignature(m));
+                asCtx(param).addViolation(m, PrettyPrintingUtil.displaySignature(m));
             }
         });
 
