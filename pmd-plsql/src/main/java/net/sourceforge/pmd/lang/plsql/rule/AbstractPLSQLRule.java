@@ -38,28 +38,28 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
         /*
          * Choose the Object Type
          */
-        c = node.getFirstParentOfType(ASTPackageSpecification.class);
+        c = node.ancestors(ASTPackageSpecification.class).first();
         if (c != null) {
             return c.getImage();
         }
 
-        c = node.getFirstParentOfType(ASTTypeSpecification.class);
+        c = node.ancestors(ASTTypeSpecification.class).first();
         if (c != null) {
             return c.getImage();
         }
 
-        c = node.getFirstParentOfType(ASTPackageBody.class);
+        c = node.ancestors(ASTPackageBody.class).first();
         if (c != null) {
             return c.getImage();
         }
 
-        c = node.getFirstParentOfType(ASTTriggerUnit.class);
+        c = node.ancestors(ASTTriggerUnit.class).first();
         if (c != null) {
             return c.getImage();
         }
 
         // Finally Schema-level Methods
-        c = node.getFirstParentOfType(ASTProgramUnit.class);
+        c = node.ancestors(ASTProgramUnit.class).first();
         if (c != null) {
             return c.getImage();
         }

@@ -64,7 +64,7 @@ public final class ASTVariableOrConstantDeclaratorId extends AbstractPLSQLNode {
         } else {
             Node n = getParent().getParent();
             if (n instanceof ASTVariableOrConstantDeclaration || n instanceof ASTFieldDeclaration) {
-                return n.getFirstChildOfType(ASTDatatype.class);
+                return n.firstChild(ASTDatatype.class);
             }
         }
         throw new RuntimeException(

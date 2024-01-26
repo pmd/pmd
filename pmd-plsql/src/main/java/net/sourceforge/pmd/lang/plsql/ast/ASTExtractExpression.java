@@ -29,14 +29,14 @@ public final class ASTExtractExpression extends AbstractPLSQLNode {
 
     public String getXPath() {
         if (xml) {
-            return getFirstChildOfType(ASTStringLiteral.class).getString();
+            return firstChild(ASTStringLiteral.class).getString();
         }
         return "";
     }
 
     public String getNamespace() {
         if (xml) {
-            List<ASTStringLiteral> literals = findChildrenOfType(ASTStringLiteral.class);
+            List<ASTStringLiteral> literals = children(ASTStringLiteral.class).toList();
             if (literals.size() == 2) {
                 return literals.get(1).getString();
             }

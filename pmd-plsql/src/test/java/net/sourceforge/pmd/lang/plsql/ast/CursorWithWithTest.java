@@ -15,7 +15,7 @@ class CursorWithWithTest extends AbstractPLSQLParserTst {
     @Test
     void parseCursorWithWith() {
         ASTInput input = plsql.parseResource("CursorWithWith.pls");
-        ASTCursorUnit cursor = input.getFirstDescendantOfType(ASTCursorUnit.class);
+        ASTCursorUnit cursor = input.descendants(ASTCursorUnit.class).first();
         ASTSelectStatement select = (ASTSelectStatement) cursor.getChild(1);
         ASTWithClause with = (ASTWithClause) select.getChild(0);
         ASTName queryName = (ASTName) with.getChild(0);
