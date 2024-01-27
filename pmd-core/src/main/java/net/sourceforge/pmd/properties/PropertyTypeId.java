@@ -18,14 +18,14 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * of the property that should be built. The mapping between the values of this attribute
  * and the concrete property that is built is encoded in the constants of this enum.
  *
- * <h1>Properties API changes</h1>This class' API is mainly provided to build GUIs for XPath rules
+ * <p>This class' API is mainly provided to build GUIs for XPath rules
  * like the rule designer, so that they have info about the available properties from XML. As such,
- * the number of clients are probably low. Nevertheless, a bunch of members have been deprecated to
- * warn about probable upcoming API changes with 7.0.0, but the amount of change may be greater.
- * See {@link PropertyDescriptor} for more info about property framework changes with 7.0.0.
+ * the number of clients are probably low. Fow now, this stays as Internal API and might be
+ * changed.
  *
  * @author Clément Fournier
  * @since 6.0.0
+ * @apiNote Internal API
  */
 @InternalApi
 public enum PropertyTypeId {
