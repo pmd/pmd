@@ -73,12 +73,8 @@ public final class FileCollector implements AutoCloseable {
         LOG.debug("Created new FileCollector with {}", discoverer);
     }
 
-    public void setRecursive(boolean collectFilesRecursively) {
-        this.recursive = collectFilesRecursively;
-    }
-
     /**
-     * Internal API: please use {@link PmdAnalysis#files()} instead of
+     * @apiNote Internal API - please use {@link PmdAnalysis#files()} instead of
      * creating a collector yourself.
      */
     @InternalApi
@@ -87,7 +83,10 @@ public final class FileCollector implements AutoCloseable {
     }
 
     /**
-     * Returns a new collector using the configuration except for the logger.
+     * Returns a new collector using the same configuration except for the logger.
+     *
+     * @apiNote Internal API - please use {@link PmdAnalysis#files()} instead of
+     * creating a collector yourself.
      */
     @InternalApi
     public FileCollector newCollector(PmdReporter logger) {
@@ -101,9 +100,8 @@ public final class FileCollector implements AutoCloseable {
     /**
      * Returns an unmodifiable list of all files that have been collected.
      *
-     * <p>Internal: This might be unstable until PMD 7, but it's internal.
+     * @throws IllegalStateException if the collector was already closed
      */
-    @InternalApi
     public List<TextFile> getCollectedFiles() {
         if (closed) {
             throw new IllegalStateException("Collector was closed!");
@@ -117,7 +115,6 @@ public final class FileCollector implements AutoCloseable {
     /**
      * Returns the reporter for the file collection phase.
      */
-    @InternalApi
     public PmdReporter getReporter() {
         return reporter;
     }
@@ -396,6 +393,10 @@ public final class FileCollector implements AutoCloseable {
     }
 
     // configuration
+
+    public void setRecursive(boolean collectFilesRecursively) {
+        this.recursive = collectFilesRecursively;
+    }
 
     /**
      * Sets the charset to use for subsequent calls to {@link #addFile(Path)}
