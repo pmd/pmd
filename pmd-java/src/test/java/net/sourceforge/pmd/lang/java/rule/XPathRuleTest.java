@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
@@ -110,7 +111,7 @@ class XPathRuleTest {
         XPathRule rule = makeXPath(xpath);
         try (LanguageProcessor proc = JavaParsingHelper.DEFAULT.newProcessor()) {
             rule.initialize(proc);
-            assertTrue(rule.getTargetSelector().isRuleChain(), "Not recognized as a rulechain query: " + xpath);
+            assertNotSame(rule.getTargetSelector(), RuleTargetSelector.forRootOnly(), "Not recognized as a rulechain query: " + xpath);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

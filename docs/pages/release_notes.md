@@ -171,6 +171,7 @@ package or made package private and are not accessible anymore.
   * {%jdoc core::cache.internal.NoopAnalysisCache %}
   * {%jdoc core::util.internal.ResourceLoader %}
   * {%jdoc core::cpd.Tokens#Tokens() %} (the constructor is now package private)
+  * {%jdoc core::lang.rule.RuleTargetSelector %} - method `isRuleChain()` has been removed. It was internal API before.
 
 **Removed classes and methods (previously deprecated)**
 
