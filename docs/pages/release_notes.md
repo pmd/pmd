@@ -154,9 +154,10 @@ in the Migration Guide.
 
 #### API Changes
 
-**Internalized classes and interfaces**
+**Internalized classes and interfaces and methods**
 
-The following classes have been marked as @<!-- -->InternalApi before and are now moved into a `internal` package:
+The following classes/methods have been marked as @<!-- -->InternalApi before and are now moved into a `internal`
+package or made package private and are not accessible anymore.
 
 * pmd-core
   * {%jdoc core::cache.internal.AbstractAnalysisCache %} (now package private)
@@ -169,6 +170,7 @@ The following classes have been marked as @<!-- -->InternalApi before and are no
   * {%jdoc core::cache.internal.FileAnalysisCache %}
   * {%jdoc core::cache.internal.NoopAnalysisCache %}
   * {%jdoc core::util.internal.ResourceLoader %}
+  * {%jdoc core::cpd.Tokens#Tokens() %} (the constructor is now package private)
 
 **Removed classes and methods (previously deprecated)**
 

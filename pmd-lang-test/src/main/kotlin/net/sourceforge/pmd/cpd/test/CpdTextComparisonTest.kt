@@ -5,17 +5,17 @@
 package net.sourceforge.pmd.cpd.test
 
 import io.kotest.assertions.throwables.shouldThrow
-import net.sourceforge.pmd.cpd.*
-import net.sourceforge.pmd.lang.Language
+import net.sourceforge.pmd.cpd.CpdCapableLanguage
+import net.sourceforge.pmd.cpd.TokenEntry
+import net.sourceforge.pmd.cpd.Tokenizer
+import net.sourceforge.pmd.cpd.Tokens
 import net.sourceforge.pmd.lang.LanguagePropertyBundle
 import net.sourceforge.pmd.lang.LanguageRegistry
 import net.sourceforge.pmd.lang.ast.TokenMgrError
-import net.sourceforge.pmd.lang.document.TextDocument
-import net.sourceforge.pmd.lang.document.TextFile
 import net.sourceforge.pmd.lang.document.FileId
+import net.sourceforge.pmd.lang.document.TextDocument
 import net.sourceforge.pmd.test.BaseTextComparisonTest
 import org.apache.commons.lang3.StringUtils
-import java.util.*
 
 /**
  * CPD test comparing a dump of a file against a saved baseline.
@@ -173,10 +173,7 @@ abstract class CpdTextComparisonTest(
         FileData(fileName = fileName, fileText = text)
 
     fun tokenize(tokenizer: Tokenizer, fileData: FileData): Tokens =
-        Tokens().also { tokens ->
-            val source = sourceCodeOf(fileData)
-            Tokenizer.tokenize(tokenizer, source, tokens)
-        }
+        Tokenizer.tokenize(tokenizer, sourceCodeOf(fileData))
 
     private companion object {
         const val Indent = "    "

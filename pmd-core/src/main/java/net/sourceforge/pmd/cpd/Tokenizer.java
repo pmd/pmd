@@ -27,4 +27,10 @@ public interface Tokenizer {
             tokenizer.tokenize(textDocument, tf);
         }
     }
+
+    static Tokens tokenize(Tokenizer tokenizer, TextDocument textDocument) throws IOException {
+        Tokens tokens = new Tokens();
+        tokenize(tokenizer, textDocument, tokens);
+        return tokens;
+    }
 }
