@@ -18,7 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.util.ResourceLoader;
+import net.sourceforge.pmd.util.internal.ResourceLoader;
 import net.sourceforge.pmd.util.log.PmdReporter;
 
 /**

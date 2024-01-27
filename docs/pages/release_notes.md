@@ -168,6 +168,7 @@ The following classes have been marked as @<!-- -->InternalApi before and are no
   * {%jdoc core::cache.internal.ChecksumAware %}
   * {%jdoc core::cache.internal.FileAnalysisCache %}
   * {%jdoc core::cache.internal.NoopAnalysisCache %}
+  * {%jdoc core::util.internal.ResourceLoader %}
 
 **Removed classes and methods (previously deprecated)**
 

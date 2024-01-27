@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.util;
+package net.sourceforge.pmd.util.internal;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -18,13 +18,10 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.annotation.InternalApi;
 
 /**
- * @deprecated Is internal API
+ * @apiNote  Internal API
  */
-@Deprecated
-@InternalApi
 public class ResourceLoader {
 
     public static final int TIMEOUT;
