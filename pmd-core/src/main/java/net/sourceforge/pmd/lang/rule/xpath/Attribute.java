@@ -99,6 +99,8 @@ public final class Attribute {
     /**
      * Returns null for "not deprecated", empty string for "deprecated without replacement",
      * otherwise name of replacement attribute.
+     *
+     * @apiNote Internal API
      */
     @InternalApi
     public String replacementIfDeprecated() {
