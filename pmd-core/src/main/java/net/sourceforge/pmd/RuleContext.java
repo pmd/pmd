@@ -16,7 +16,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.Report.SuppressedViolation;
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.document.FileLocation;
@@ -165,17 +164,6 @@ public final class RuleContext {
             suppressed = ViolationSuppressor.suppressOrNull(DEFAULT_SUPPRESSORS, rv, location);
         }
         return suppressed;
-    }
-
-    /**
-     * Force the recording of a violation, ignoring the violation
-     * suppression mechanism ({@link ViolationSuppressor}).
-     *
-     * @param rv A violation
-     */
-    @InternalApi
-    public void addViolationNoSuppress(RuleViolation rv) {
-        listener.onRuleViolation(rv);
     }
 
     private String makeMessage(@NonNull String message, Object[] args, Map<String, String> extraVars) {
