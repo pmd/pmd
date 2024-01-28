@@ -173,6 +173,13 @@ package or made package private and are not accessible anymore.
   * {%jdoc core::cpd.Tokens#Tokens() %} (the constructor is now package private)
   * {%jdoc core::lang.rule.RuleTargetSelector %} - method `isRuleChain()` has been removed. It was internal API before.
 
+**Newly internal classes, interfaces and methods**
+
+The following classes/methods are for now considered being internal API. Its usage should
+be avoided.
+
+* {%jdoc core::lang.LanguageProcessor.AnalysisTask#withFiles(java.util.List) %}
+
 **Removed classes and methods (previously deprecated)**
 
 The following previously deprecated classes have been removed:
