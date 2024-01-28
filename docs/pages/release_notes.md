@@ -176,6 +176,9 @@ package or made (package) private and are not accessible anymore.
     and can't be overridden anymore.
   * {%jdoc core::Report %} - the constructor as well as the methods `addRuleViolation`, `addConfigError`, `addError`
     are now private and cannot be accessed anymore.
+  * {%jdoc core::RuleContext %}
+    * Method `getRule()` is now package private
+    * Method `create(FileAnalysisListener listener, Rule rule)` is removed
 
 **Newly internal classes, interfaces and methods**
 

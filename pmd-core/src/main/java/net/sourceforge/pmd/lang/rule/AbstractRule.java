@@ -15,6 +15,7 @@ import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.InternalApiBridge;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RulePriority;
@@ -293,7 +294,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
      */
     protected final RuleContext asCtx(Object ctx) {
         if (ctx instanceof RuleContext) {
-            assert isThisRule(((RuleContext) ctx).getRule())
+            assert isThisRule(InternalApiBridge.getRule((RuleContext) ctx))
                 : "not an appropriate rule context!";
             return (RuleContext) ctx;
         } else {

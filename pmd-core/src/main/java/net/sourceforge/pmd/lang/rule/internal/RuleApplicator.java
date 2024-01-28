@@ -11,6 +11,7 @@ import org.apache.commons.lang3.exception.ExceptionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.InternalApiBridge;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
@@ -61,7 +62,7 @@ public class RuleApplicator {
                 continue; // No point in even trying to apply the rule
             }
             
-            RuleContext ctx = RuleContext.create(listener, rule);
+            RuleContext ctx = InternalApiBridge.createRuleContext(listener, rule);
             rule.start(ctx);
             try (TimedOperation rcto = TimeTracker.startOperation(TimedOperationCategory.RULE, rule.getName())) {
 

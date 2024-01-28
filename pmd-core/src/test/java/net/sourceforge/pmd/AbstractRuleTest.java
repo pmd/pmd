@@ -124,7 +124,7 @@ class AbstractRuleTest {
                                 .withNoPmdComments(Collections.singletonMap(1, "ohio"));
 
         FileAnalysisListener listener = mock(FileAnalysisListener.class);
-        RuleContext ctx = RuleContext.create(listener, new MyRule());
+        RuleContext ctx = InternalApiBridge.createRuleContext(listener, new MyRule());
         ctx.addViolationWithMessage(n, "message");
 
         verify(listener, never()).onRuleViolation(any());

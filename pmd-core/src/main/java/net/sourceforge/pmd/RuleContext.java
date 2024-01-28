@@ -51,7 +51,10 @@ public final class RuleContext {
     private final FileAnalysisListener listener;
     private final Rule rule;
 
-    private RuleContext(FileAnalysisListener listener, Rule rule) {
+    /**
+     * @apiNote Internal API
+     */
+    RuleContext(FileAnalysisListener listener, Rule rule) {
         Objects.requireNonNull(listener, "Listener was null");
         Objects.requireNonNull(rule, "Rule was null");
         this.listener = listener;
@@ -59,11 +62,10 @@ public final class RuleContext {
     }
 
     /**
-     * @deprecated Used in {@link AbstractRule#asCtx(Object)}, when that is gone, will be removed.
+     * @apiNote Internal API. Used in {@link AbstractRule} in {@code asCtx(Object)},
+     * through {@link InternalApiBridge}.
      */
-    @Deprecated
-    @InternalApi
-    public Rule getRule() {
+    Rule getRule() {
         return rule;
     }
 
@@ -214,16 +216,4 @@ public final class RuleContext {
         final PropertyDescriptor<?> propertyDescriptor = rule.getPropertyDescriptor(name);
         return propertyDescriptor == null ? null : String.valueOf(rule.getProperty(propertyDescriptor));
     }
-
-
-    /**
-     * Create a new RuleContext.
-     *
-     * The listener must be closed by its creator.
-     */
-    @InternalApi
-    public static RuleContext create(FileAnalysisListener listener, Rule rule) {
-        return new RuleContext(listener, rule);
-    }
-
 }
