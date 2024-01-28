@@ -157,7 +157,7 @@ in the Migration Guide.
 **Internalized classes and interfaces and methods**
 
 The following classes/methods have been marked as @<!-- -->InternalApi before and are now moved into a `internal`
-package or made package private and are not accessible anymore.
+package or made (package) private and are not accessible anymore.
 
 * pmd-core
   * {%jdoc core::cache.internal.AbstractAnalysisCache %} (now package private)
@@ -174,6 +174,8 @@ package or made package private and are not accessible anymore.
   * {%jdoc core::lang.rule.RuleTargetSelector %} - method `isRuleChain()` has been removed. It was internal API before.
   * {%jdoc !!core::renderers.AbstractAccumulatingRenderer#renderFileReport(Report) %} - this method is now final
     and can't be overridden anymore.
+  * {%jdoc core::Report %} - the constructor as well as the methods `addRuleViolation`, `addConfigError`, `addError`
+    are now private and cannot be accessed anymore.
 
 **Newly internal classes, interfaces and methods**
 
