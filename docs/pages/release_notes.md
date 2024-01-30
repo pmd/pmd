@@ -188,6 +188,13 @@ package or made (package) private and are not accessible anymore.
     * The method `newListener(Project)` is now package private and not accessible anymore.
   * {%jdoc ant::ant.PMDTask %}
     * The method `getRelativizeRoots()` has been removed.
+* pmd-apex
+  * {%jdoc apex::ast.ApexNode %}: Method `getNode()` has been removed - it was deprecated before.
+    It gave access to the wrapped Jorje node and was thus internal API.
+  * {%jdoc apex::ast.AbstractApexNode %}: Method `getNode()` is now package private and not accessible anymore.
+  * {%jdoc !!apex::multifile.ApexMultifileAnalysis#ApexMultifileAnalysis(apex::ApexLanguageProperties) } (the constructor is now package private)
+  * {%jdoc apex::rule.design.AbstractNcssCountRule %} (now package private)
+  * {%jdoc apex::rule.bestpractices.AbstractApexUnitTestRule %} (moved from package `net.sourceforge.pmd.apex.rule`, now package private)
 
 **Newly internal classes, interfaces and methods**
 

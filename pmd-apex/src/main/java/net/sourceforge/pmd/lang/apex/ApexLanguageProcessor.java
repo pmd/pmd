@@ -8,6 +8,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.apex.multifile.ApexMultifileAnalysis;
+import net.sourceforge.pmd.lang.apex.multifile.InternalApiBridge;
 import net.sourceforge.pmd.lang.impl.BatchLanguageProcessor;
 
 public class ApexLanguageProcessor
@@ -18,7 +19,7 @@ public class ApexLanguageProcessor
 
     ApexLanguageProcessor(ApexLanguageProperties bundle) {
         super(bundle);
-        this.multifileAnalysis = new ApexMultifileAnalysis(bundle);
+        this.multifileAnalysis = InternalApiBridge.createApexMultiFileAnalysis(bundle);
         this.services = new ApexLanguageHandler();
     }
 

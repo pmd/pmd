@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.apex.ApexJorjeLogging;
 import net.sourceforge.pmd.lang.apex.ApexLanguageProcessor;
 import net.sourceforge.pmd.lang.ast.ParseException;
@@ -14,7 +13,6 @@ import net.sourceforge.pmd.lang.document.FileLocation;
 import apex.jorje.data.Locations;
 import apex.jorje.semantic.ast.compilation.Compilation;
 
-@InternalApi
 public final class ApexParser implements Parser {
 
     public ApexParser() {

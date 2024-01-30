@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlDeleteStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlInsertStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlMergeStatement;
@@ -36,7 +35,6 @@ import net.sourceforge.pmd.lang.apex.ast.ApexNode;
  * @author sergey.gorbaty
  *
  */
-@InternalApi
 public final class Helper {
     public static final String ANY_METHOD = "*";
     private static final String DATABASE_CLASS_NAME = "Database";

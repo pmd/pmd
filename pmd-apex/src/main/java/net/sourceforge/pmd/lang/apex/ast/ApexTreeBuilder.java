@@ -328,7 +328,7 @@ final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         }
     }
 
-    private boolean containsComments(ASTCommentContainer<?> commentContainer) {
+    private boolean containsComments(AbstractApexCommentContainerNode<?> commentContainer) {
         Location loc = commentContainer.getNode().getLoc();
         if (!Locations.isReal(loc)) {
             // Synthetic nodes don't have a location and can't have comments
