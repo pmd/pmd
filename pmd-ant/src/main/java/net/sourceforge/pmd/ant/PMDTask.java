@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.ant;
 
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -15,10 +14,8 @@ import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
-import org.apache.tools.ant.types.Resource;
 
 import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.ant.internal.PMDTaskImpl;
 
 /**
@@ -298,16 +295,5 @@ public class PMDTask extends Task {
 
     public List<Path> getRelativizePathsWith() {
         return relativizePathsWith;
-    }
-
-    @InternalApi
-    public List<java.nio.file.Path> getRelativizeRoots() {
-        List<java.nio.file.Path> paths = new ArrayList<>();
-        for (Path path : getRelativizePathsWith()) {
-            for (Resource resource : path) {
-                paths.add(Paths.get(resource.toString()));
-            }
-        }
-        return paths;
     }
 }

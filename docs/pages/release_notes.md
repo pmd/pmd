@@ -179,6 +179,15 @@ package or made (package) private and are not accessible anymore.
   * {%jdoc core::RuleContext %}
     * Method `getRule()` is now package private
     * Method `create(FileAnalysisListener listener, Rule rule)` is removed
+* pmd-ant
+  * {%jdoc ant::ant.Formatter %}
+    * The method `getRenderer()` has been removed.
+    * The method `start(String)` is private now and not accessible anymore.
+    * The method `end(Report)` has been removed.
+    * The method `isNoOutputSupplied()` is now package private and not accessible anymore.
+    * The method `newListener(Project)` is now package private and not accessible anymore.
+  * {%jdoc ant::ant.PMDTask %}
+    * The method `getRelativizeRoots()` has been removed.
 
 **Newly internal classes, interfaces and methods**
 

@@ -26,8 +26,6 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.Parameter;
 
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.renderers.Renderer;
@@ -37,7 +35,6 @@ import net.sourceforge.pmd.reporting.FileNameRenderer;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.reporting.ListenerInitializer;
 
-@InternalApi
 public class Formatter {
 
     private File toFile;
@@ -68,15 +65,7 @@ public class Formatter {
         this.parameters.add(parameter);
     }
 
-    @Deprecated
-    @InternalApi
-    public Renderer getRenderer() {
-        return renderer;
-    }
-
-    @Deprecated
-    @InternalApi
-    public void start(String baseDir) {
+    private void start(String baseDir) {
 
         Properties properties = createProperties();
 
@@ -122,25 +111,7 @@ public class Formatter {
         }
     }
 
-    @Deprecated
-    @InternalApi
-    public void end(Report errorReport) {
-        try {
-            renderer.renderFileReport(errorReport);
-            renderer.end();
-            if (toConsole) {
-                writer.flush();
-            } else {
-                writer.close();
-            }
-        } catch (IOException ioe) {
-            throw new BuildException(ioe.getMessage(), ioe);
-        }
-    }
-
-    @Deprecated
-    @InternalApi
-    public boolean isNoOutputSupplied() {
+    boolean isNoOutputSupplied() {
         return toFile == null && !toConsole;
     }
 
@@ -248,12 +219,8 @@ public class Formatter {
         return null;
     }
 
-    @Deprecated
-    @InternalApi
-    public GlobalAnalysisListener newListener(Project project) throws IOException {
+    GlobalAnalysisListener newListener(Project project) throws IOException {
         start(project.getBaseDir().toString());
-        Renderer renderer = getRenderer();
-
         return new GlobalAnalysisListener() {
             final GlobalAnalysisListener listener = renderer.newListener();
 
