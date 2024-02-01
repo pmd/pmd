@@ -195,6 +195,11 @@ package or made (package) private and are not accessible anymore.
   * {%jdoc !!apex::multifile.ApexMultifileAnalysis#ApexMultifileAnalysis(apex::ApexLanguageProperties) } (the constructor is now package private)
   * {%jdoc apex::rule.design.AbstractNcssCountRule %} (now package private)
   * {%jdoc apex::rule.bestpractices.AbstractApexUnitTestRule %} (moved from package `net.sourceforge.pmd.apex.rule`, now package private)
+* pmd-java
+  * {%jdoc java::rule.internal.AbstractIgnoredAnnotationRule %}
+  * {%jdoc java::types.ast.internal.LazyTypeResolver %}
+  * {%jdoc java::types.JMethodSig#internalApi() %} has been removed.
+  * {%jdoc java::types.TypeOps#isSameTypeInInference(java::types.JTypeMirror,java::types.JTypeMirror) %} (now package private)
 
 **Newly internal classes, interfaces and methods**
 

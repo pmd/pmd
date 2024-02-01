@@ -83,11 +83,6 @@ class ArrayMethodSigImpl implements JMethodSig, InternalMethodTypeItf {
     }
 
     @Override
-    public InternalMethodTypeItf internalApi() {
-        return this;
-    }
-
-    @Override
     public JMethodSig withReturnType(JTypeMirror returnType) {
         if (!returnType.equals(owner)) {
             throw new UnsupportedOperationException("Something went wrong");

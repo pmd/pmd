@@ -3,7 +3,7 @@
  */
 
 
-package net.sourceforge.pmd.lang.java.types.ast;
+package net.sourceforge.pmd.lang.java.types.ast.internal;
 
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.ADD;
 import static net.sourceforge.pmd.lang.java.types.TypeConversion.binaryNumericPromotion;
@@ -84,6 +84,7 @@ import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.TypesFromReflection;
 import net.sourceforge.pmd.lang.java.types.TypingContext;
+import net.sourceforge.pmd.lang.java.types.ast.ExprContext;
 import net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind;
 import net.sourceforge.pmd.lang.java.types.internal.infer.Infer;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;

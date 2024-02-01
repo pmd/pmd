@@ -3,11 +3,14 @@
  */
 
 
-package net.sourceforge.pmd.lang.java.types.ast;
+package net.sourceforge.pmd.lang.java.types.ast.internal;
 
 
 import static java.util.Arrays.asList;
 import static net.sourceforge.pmd.lang.java.types.TypeConversion.isConvertibleUsingBoxing;
+import static net.sourceforge.pmd.lang.java.types.ast.InternalApiBridge.canGiveContextToPoly;
+import static net.sourceforge.pmd.lang.java.types.ast.InternalApiBridge.newInvocContext;
+import static net.sourceforge.pmd.lang.java.types.ast.InternalApiBridge.newOtherContext;
 import static net.sourceforge.pmd.util.AssertionUtil.shouldNotReachHere;
 import static net.sourceforge.pmd.util.CollectionUtil.all;
 import static net.sourceforge.pmd.util.CollectionUtil.map;
@@ -61,8 +64,8 @@ import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.java.types.TypesFromReflection;
+import net.sourceforge.pmd.lang.java.types.ast.ExprContext;
 import net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind;
-import net.sourceforge.pmd.lang.java.types.ast.ExprContext.RegularCtx;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.BranchingMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.FunctionalExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
@@ -75,7 +78,7 @@ import net.sourceforge.pmd.util.AssertionUtil;
 /**
  * Routines to handle context around poly expressions.
  */
-final class PolyResolution {
+public final class PolyResolution {
 
     private final Infer infer;
     private final TypeSystem ts;
@@ -163,7 +166,7 @@ final class PolyResolution {
                 JTypeMirror standalone = branchingMirror.getStandaloneType();
                 if (standalone != null) {
                     return standalone;
-                } else if (!ctx.canGiveContextToPoly(false)) {
+                } else if (!canGiveContextToPoly(ctx, false)) {
 
                     // null standalone, force resolution anyway, because there is no context
                     // this is more general than ExprMirror#getStandaloneType, it's not a bug
@@ -431,7 +434,7 @@ final class PolyResolution {
             final InvocationNode papi = (InvocationNode) papa.getParent();
 
             if (papi instanceof ASTExplicitConstructorInvocation || papi instanceof ASTEnumConstant) {
-                return ExprContext.newInvocContext(papi, node.getIndexInParent());
+                return newInvocContext(papi, node.getIndexInParent());
             } else {
                 if (isPreJava8()) {
                     // in java < 8 invocation contexts don't provide a target type
@@ -441,10 +444,10 @@ final class PolyResolution {
                 // Constructor or method call, maybe there's another context around
                 // We want to fetch the outermost invocation node, but not further
                 ExprContext outerCtx = contextOf(papi, /*onlyInvoc:*/true, internalUse);
-                return outerCtx.canGiveContextToPoly(false)
+                return canGiveContextToPoly(outerCtx, false)
                        ? outerCtx
                        // otherwise we're done, this is the outermost context
-                       : ExprContext.newInvocContext(papi, node.getIndexInParent());
+                       : newInvocContext(papi, node.getIndexInParent());
             }
         } else if (doesCascadesContext(papa, node, internalUse)) {
             // switch/conditional
@@ -614,7 +617,7 @@ final class PolyResolution {
 
 
     // test only
-    static JTypeMirror computeStandaloneConditionalType(TypeSystem ts, JTypeMirror t2, JTypeMirror t3) {
+    public static JTypeMirror computeStandaloneConditionalType(TypeSystem ts, JTypeMirror t2, JTypeMirror t3) {
         return computeStandaloneConditionalType(ts, asList(t2, t3));
     }
 
@@ -667,35 +670,35 @@ final class PolyResolution {
             // invalid syntax
             return ExprContext.getMissingInstance();
         }
-        return ExprContext.newOtherContext(targetType, ExprContextKind.ASSIGNMENT);
+        return newOtherContext(targetType, ExprContextKind.ASSIGNMENT);
     }
 
     static ExprContext newNonPolyContext(JTypeMirror targetType) {
-        return ExprContext.newOtherContext(targetType, ExprContextKind.BOOLEAN);
+        return newOtherContext(targetType, ExprContextKind.BOOLEAN);
     }
 
     static ExprContext newStringCtx(TypeSystem ts) {
         JClassType stringType = (JClassType) TypesFromReflection.fromReflect(String.class, ts);
-        return ExprContext.newOtherContext(stringType, ExprContextKind.STRING);
+        return newOtherContext(stringType, ExprContextKind.STRING);
     }
 
     static ExprContext newNumericContext(JTypeMirror targetType) {
         if (targetType.isPrimitive()) {
             assert targetType.isNumeric() : "Not a numeric type - " + targetType;
-            return ExprContext.newOtherContext(targetType, ExprContextKind.NUMERIC);
+            return newOtherContext(targetType, ExprContextKind.NUMERIC);
         }
         return ExprContext.getMissingInstance(); // error
     }
 
     static ExprContext newCastCtx(JTypeMirror targetType) {
-        return ExprContext.newOtherContext(targetType, ExprContextKind.CAST);
+        return newOtherContext(targetType, ExprContextKind.CAST);
     }
 
     static ExprContext newSuperCtorCtx(JTypeMirror superclassType) {
-        return ExprContext.newOtherContext(superclassType, ExprContextKind.ASSIGNMENT);
+        return newOtherContext(superclassType, ExprContextKind.ASSIGNMENT);
     }
 
     static ExprContext newStandaloneTernaryCtx(JTypeMirror ternaryType) {
-        return ExprContext.newOtherContext(ternaryType, ExprContextKind.TERNARY);
+        return newOtherContext(ternaryType, ExprContextKind.TERNARY);
     }
 }
