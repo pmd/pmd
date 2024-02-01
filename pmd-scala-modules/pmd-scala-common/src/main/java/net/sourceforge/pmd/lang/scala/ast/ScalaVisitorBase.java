@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  * @param <D> The type of the data input
  * @param <R> The type of the returned data
  */
-public class ScalaParserVisitorAdapter<D, R> extends AstVisitorBase<D, R> implements ScalaParserVisitor<D, R> {
+public class ScalaVisitorBase<D, R> extends AstVisitorBase<D, R> implements ScalaVisitor<D, R> {
 
     @Override
     public R visitNode(Node node, D param) {
