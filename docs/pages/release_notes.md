@@ -172,6 +172,9 @@ package or made (package) private and are _not accessible_ anymore.
   * `net.sourceforge.pmd.util.ResourceLoader` (moved to internal)
   * {%jdoc !!core::cpd.Tokens %}
     * Constructor is now package private.
+  * {%jdoc !!core::lang.LanguageProcessor.AnalysisTask %}
+    * Constructor is now package private.
+    * Method `withFiles(java.util.List)` is now package private. Note: it was not previously marked with @<!-- -->InternalApi.
   * {%jdoc !!core::lang.rule.RuleTargetSelector %}
     * Method `isRuleChain()` has been removed.
   * {%jdoc !!core::renderers.AbstractAccumulatingRenderer %}
@@ -223,13 +226,6 @@ package or made (package) private and are _not accessible_ anymore.
 * pmd-scala
   * {%jdoc !!scala::ScalaLanguageModule %}
     * Method `dialectOf(LanguageVersion)` has been removed.
-
-**Newly internal classes, interfaces and methods**
-
-The following classes/methods are for now considered being internal API. Its usage should
-be avoided.
-
-* {%jdoc !!core::lang.LanguageProcessor.AnalysisTask#withFiles(java.util.List) %}
 
 **Removed classes and methods (previously deprecated)**
 

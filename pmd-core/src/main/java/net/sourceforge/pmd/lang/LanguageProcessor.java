@@ -10,7 +10,6 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.RuleSets;
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.cache.internal.AnalysisCache;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
@@ -75,8 +74,7 @@ public interface LanguageProcessor extends AutoCloseable {
          *
          * @apiNote Internal API
          */
-        @InternalApi
-        public AnalysisTask(RuleSets rulesets,
+        AnalysisTask(RuleSets rulesets,
                             List<TextFile> files,
                             GlobalAnalysisListener listener,
                             int threadCount,
@@ -125,8 +123,7 @@ public interface LanguageProcessor extends AutoCloseable {
          *
          * @apiNote Internal API
          */
-        @InternalApi
-        public AnalysisTask withFiles(List<TextFile> newFiles) {
+        AnalysisTask withFiles(List<TextFile> newFiles) {
             return new AnalysisTask(
                 rulesets,
                 newFiles,

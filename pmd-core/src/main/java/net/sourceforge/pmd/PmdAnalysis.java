@@ -31,6 +31,7 @@ import net.sourceforge.pmd.internal.LogMessages;
 import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
 import net.sourceforge.pmd.internal.util.FileCollectionUtil;
 import net.sourceforge.pmd.internal.util.IOUtil;
+import net.sourceforge.pmd.lang.InternalApiBridge;
 import net.sourceforge.pmd.lang.JvmLanguagePropertyBundle;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageProcessor.AnalysisTask;
@@ -416,7 +417,7 @@ public final class PmdAnalysis implements AutoCloseable {
                 // Note the analysis task is shared: all processors see
                 // the same file list, which may contain files for other
                 // languages.
-                AnalysisTask analysisTask = new AnalysisTask(
+                AnalysisTask analysisTask = InternalApiBridge.createAnalysisTask(
                     rulesets,
                     textFiles,
                     listener,

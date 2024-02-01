@@ -20,6 +20,7 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
+import net.sourceforge.pmd.lang.InternalApiBridge;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -47,7 +48,7 @@ abstract class AbstractPMDProcessorTest {
     }
 
     private LanguageProcessor.AnalysisTask createTask(int threads) {
-        return new LanguageProcessor.AnalysisTask(null, null, null, threads, null, null, null);
+        return InternalApiBridge.createAnalysisTask(null, null, null, threads, null, null, null);
     }
 
     @Test
