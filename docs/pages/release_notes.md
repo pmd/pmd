@@ -189,6 +189,20 @@ The following previously deprecated classes have been removed:
 
       If the current version is needed, then `Node.getTextDocument().getLanguageVersion()` can be used. This
       is the version that has been selected via CLI `--use-version` parameter.
+* pmd-javascript
+  * {%jdoc javascript::lang.ecmascript.ast.AbstractEcmascriptNode %} - method `getNode()` has been removed.
+    AST nodes still have access to the underlying Rhino node via the protected property `node`.
+  * {%jdoc javascript::lang.ecmascript.ast.ASTFunctionNode %} - method `getBody(int)` removed.
+    Use {%jdoc javascript::lang.ecmascript.ast.ASTFunctionNode#getBody() %} instead.
+  * {%jdoc javascript::lang.ecmascript.ast.ASTTryStatement %}
+    * method `isCatch()` has been removed. Use {%jdoc javascript::lang.ecmascript.ast.ASTTryStatement#hasCatch() %} instead.
+    * method `isFinally()` has been removed. USe {%jdoc javascript::lang.ecmascript.ast.ASTTryStatement#hasFinally() %} instead.
+  * {%jdoc javascript::lang.ecmascript.ast.EcmascriptNode %}
+    * method `jjtAccept()` has been removed. Use {%jdoc core::lang.ast.Node#acceptVisitor(core::lang.ast.AstVisitor,P) %} instead.
+    * method `getNode()` has been removed.  The underlying node is only available in AST nodes, but not in rule implementations.
+  * `net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptParserVisitor`
+    Use {%jdoc javascript::lang.ecmascript.ast.EcmascriptVisitor %} or {%jdoc javascript::lang.ecmascript.ast.EcmascriptVisitorBase %} instead.
+  * `net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptParserVisitorAdapter`
 * pmd-jsp
   * `net.sourceforge.pmd.lang.jsp.ast.JspParserVisitor`
     Use {%jdoc jsp::lang.jsp.ast.JspVisitor %} or {%jdoc jsp::lang.jsp.ast.JspVisitorBase %} instead.
@@ -214,8 +228,8 @@ The following previously deprecated classes have been removed:
 * pmd-scala
   * {%jdoc !!scala::lang.scala.ast.ScalaNode %}
     * Method `accept()` has been removed. Use {%jdoc core::lang.ast.Node#acceptVisitor(core::lang.ast.AstVisitor,P) %} instead.
-    * Method `getNode()` has been removed. It's only available in AST nodes, but not in rule implementations.
-  * {%jdoc !!scala::lang.scala.ast.AbstractScalaNode %} - method `getNode()` has been removed. AST nodes have access
+    * Method `getNode()` has been removed. The underlying node is only available in AST nodes, but not in rule implementations.
+  * {%jdoc !!scala::lang.scala.ast.AbstractScalaNode %} - method `getNode()` has been removed. AST nodes still have access
     to the underlying Scala node via the protected property `node`.
 * pmd-vm
   * {%jdoc !!vm::lang.vm.ast.VmNode %} - method `jjtAccept()` has been removed.

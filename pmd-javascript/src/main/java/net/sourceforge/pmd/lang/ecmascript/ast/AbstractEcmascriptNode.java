@@ -50,12 +50,6 @@ abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNode<Ab
     protected abstract <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data);
 
     @Override
-    @Deprecated
-    public T getNode() {
-        return node;
-    }
-
-    @Override
     public String getJsDoc() {
         return node.getJsDoc();
     }
