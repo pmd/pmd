@@ -22,6 +22,6 @@ This ruleset contains links to rules that are new in PMD v6.0.0
     <rule ref="category/apex/errorprone.xml/EmptyStatementBlock"/>
     <rule ref="category/apex/errorprone.xml/EmptyTryOrFinallyBlock"/>
     <rule ref="category/apex/errorprone.xml/EmptyWhileStmt"/>
-    <rule ref="category/apex/performance.xml/AvoidSoslInLoops" />
+    <!-- Remove with 7.0.0 <rule ref="category/apex/performance.xml/AvoidSoslInLoops" />-->
 </ruleset>
 
