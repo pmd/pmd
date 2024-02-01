@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
  * Acts as a bridge between outer parts (e.g. symbol table) and the restricted
  * access internal API of this package.
  * 
- * <p>Note: This is internal API.
+ * @apiNote  This is internal API.
  */
 @InternalApi
 public final class InternalApiBridge {

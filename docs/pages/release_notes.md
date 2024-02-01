@@ -209,6 +209,8 @@ package or made (package) private and are not accessible anymore.
   * {%jdoc modelica::resolver.internal.ResolutionContext %}
   * {%jdoc modelica::resolver.internal.ResolutionState %} (note: not previously marked as internal api)
   * {%jdoc modelica::resolver.internal.Watchdog %} (note: not previously marked as internal api)
+* pmd-plsql
+  * {%jdoc plsql::rule.design.AbstractNcssCountRule (now package private)
 
 **Newly internal classes, interfaces and methods**
 
