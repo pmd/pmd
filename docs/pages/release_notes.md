@@ -157,63 +157,72 @@ in the Migration Guide.
 **Internalized classes and interfaces and methods**
 
 The following classes/methods have been marked as @<!-- -->InternalApi before and are now moved into a `internal`
-package or made (package) private and are not accessible anymore.
+package or made (package) private and are _not accessible_ anymore.
 
 * pmd-core
-  * {%jdoc core::cache.internal.AbstractAnalysisCache %} (now package private)
-  * {%jdoc core::cache.internal.AnalysisCache %}
-  * {%jdoc core::cache.internal.AnalysisCacheListener %}
-  * {%jdoc core::cache.internal.AnalysisResult %}
-  * {%jdoc core::cache.internal.CachedRuleMapper %} (now package private)
-  * {%jdoc core::cache.internal.CachedRuleViolation %} (now package private)
-  * {%jdoc core::cache.internal.ChecksumAware %}
-  * {%jdoc core::cache.internal.FileAnalysisCache %}
-  * {%jdoc core::cache.internal.NoopAnalysisCache %}
-  * {%jdoc core::util.internal.ResourceLoader %}
-  * {%jdoc !!core::cpd.Tokens#Tokens() %} (the constructor is now package private)
-  * {%jdoc core::lang.rule.RuleTargetSelector %} - method `isRuleChain()` has been removed. It was internal API before.
-  * {%jdoc !!core::renderers.AbstractAccumulatingRenderer#renderFileReport(Report) %} - this method is now final
-    and can't be overridden anymore.
-  * {%jdoc core::Report %} - the constructor as well as the methods `addRuleViolation`, `addConfigError`, `addError`
-    are now private and cannot be accessed anymore.
-  * {%jdoc core::RuleContext %}
-    * Method `getRule()` is now package private
-    * Method `create(FileAnalysisListener listener, Rule rule)` is removed
+  * `net.sourceforge.pmd.cache.AbstractAnalysisCache` (moved to internal, now package private)
+  * `net.sourceforge.pmd.cache.AnalysisCache` (moved to internal)
+  * `net.sourceforge.pmd.cache.AnalysisCacheListener` (moved to internal)
+  * `net.sourceforge.pmd.cache.AnalysisResult` (moved to internal)
+  * `net.sourceforge.pmd.cache.CachedRuleMapper` (moved to internal, now package private)
+  * `net.sourceforge.pmd.cache.CachedRuleViolation` (moved to internal, now package private)
+  * `net.sourceforge.pmd.cache.ChecksumAware` (moved to internal)
+  * `net.sourceforge.pmd.cache.FileAnalysisCache` (moved to internal)
+  * `net.sourceforge.pmd.cache.NoopAnalysisCache` (moved to internal)
+  * `net.sourceforge.pmd.util.ResourceLoader` (moved to internal)
+  * {%jdoc !!core::cpd.Tokens %}
+    * Constructor is now package private.
+  * {%jdoc !!core::lang.rule.RuleTargetSelector %}
+    * Method `isRuleChain()` has been removed.
+  * {%jdoc !!core::renderers.AbstractAccumulatingRenderer %}
+    * {%jdoc core::renderers.AbstractAccumulatingRenderer#renderFileReport(core::Report) %} - this method is now final
+      and can't be overridden anymore.
+  * {%jdoc !!core::Report %}
+    * Constructor as well as the methods `addRuleViolation`, `addConfigError`, `addError` are now private.
+  * {%jdoc !!core::RuleContext %}
+    * Method `getRule()` is now package private.
+    * Method `create(FileAnalysisListener listener, Rule rule)` has been removed.
 * pmd-ant
-  * {%jdoc ant::ant.Formatter %}
-    * The method `getRenderer()` has been removed.
-    * The method `start(String)` is private now and not accessible anymore.
-    * The method `end(Report)` has been removed.
-    * The method `isNoOutputSupplied()` is now package private and not accessible anymore.
-    * The method `newListener(Project)` is now package private and not accessible anymore.
-  * {%jdoc ant::ant.PMDTask %}
-    * The method `getRelativizeRoots()` has been removed.
+  * {%jdoc !!ant::ant.Formatter %}
+    * Method `getRenderer()` has been removed.
+    * Method `start(String)` is private now.
+    * Method `end(Report)` has been removed.
+    * Method `isNoOutputSupplied()` is now package private.
+    * Method `newListener(Project)` is now package private.
+  * {%jdoc !!ant::ant.PMDTask %}
+    * Method `getRelativizeRoots()` has been removed.
 * pmd-apex
-  * {%jdoc apex::ast.ApexNode %}: Method `getNode()` has been removed - it was deprecated before.
-    It gave access to the wrapped Jorje node and was thus internal API.
-  * {%jdoc apex::ast.AbstractApexNode %}: Method `getNode()` is now package private and not accessible anymore.
-  * {%jdoc !!apex::multifile.ApexMultifileAnalysis#ApexMultifileAnalysis(apex::ApexLanguageProperties) } (the constructor is now package private)
-  * {%jdoc apex::rule.design.AbstractNcssCountRule %} (now package private)
-  * {%jdoc apex::rule.bestpractices.AbstractApexUnitTestRule %} (moved from package `net.sourceforge.pmd.apex.rule`, now package private)
+  * {%jdoc !!apex::ast.ApexNode %}
+    * Method `getNode()` has been removed. It was only deprecated before and not marked with @<!-- -->InternalApi.
+      However, it gave access to the wrapped Jorje node and was thus internal API.
+  * {%jdoc !!apex::ast.AbstractApexNode %}
+    * Method `getNode()` is now package private.
+  * {%jdoc !!apex::multifile.ApexMultifileAnalysis %}
+    * Constructor is now package private.
+  * `net.sourceforge.pmd.lang.apex.rule.design.AbstractNcssCountRule` (now package private)
+  * `net.sourceforge.pmd.lang.apex.rule.AbstractApexUnitTestRule` (moved to package `net.sourceforge.pmd.apex.rule.bestpractices`, now package private)
 * pmd-java
-  * {%jdoc java::rule.internal.AbstractIgnoredAnnotationRule %}
-  * {%jdoc java::types.ast.internal.LazyTypeResolver %}
-  * {%jdoc java::types.JMethodSig#internalApi() %} has been removed.
-  * {%jdoc java::types.TypeOps#isSameTypeInInference(java::types.JTypeMirror,java::types.JTypeMirror) %} (now package private)
+  * `net.sourceforge.pmd.lang.java.rule.AbstractIgnoredAnnotationRule` (moved to internal)
+  * `net.sourceforge.pmd.lang.java.types.ast.LazyTypeResolver` (moved to internal)
+  * {%jdoc !!java::types.JMethodSig %}
+    * Method `internalApi()` has been removed.
+  * {%jdoc !!java::types.TypeOps %}
+    * Method `isSameTypeInInference(JTypeMirror,JTypeMirror)` is now package private.
 * pmd-jsp
-  * {%jdoc jsp::ast.JspParser#getTokenBehavior() %} has been removed.
+  * {%jdoc !!jsp::ast.JspParser %}
+    * Method `getTokenBehavior()` has been removed.
 * pmd-modelica
-  * {%jdoc modelica::ast.InternalApiBridge %} renamed from InternalModelicaNodeApi.
-  * {%jdoc modelica::resolver.InternalApiBridge %} renamed from InternalModelicaResolverApi.
-  * {%jdoc modelica::resolver.ModelicaSymbolFacade %} has been removed.
-  * {%jdoc modelica::resolver.internal.ResolutionContext %}
-  * {%jdoc modelica::resolver.internal.ResolutionState %} (note: not previously marked as internal api)
-  * {%jdoc modelica::resolver.internal.Watchdog %} (note: not previously marked as internal api)
+  * {%jdoc !!modelica::ast.InternalApiBridge %} renamed from `InternalModelicaNodeApi`.
+  * {%jdoc !!modelica::resolver.InternalApiBridge %} renamed from `InternalModelicaResolverApi`.
+  * `net.sourceforge.pmd.lang.modelica.resolver.ModelicaSymbolFacade` has been removed.
+  * `net.sourceforge.pmd.lang.modelica.resolver.ResolutionContext` (moved to internal)
+  * `net.sourceforge.pmd.lang.modelica.resolver.ResolutionState` (moved to internal). Note: it was not previously marked with @<!-- -->InternalApi.
+  * `net.sourceforge.pmd.lang.modelica.resolver.Watchdog` (moved to internal). Note: it was not previously marked with @<!-- -->InternalApi.
 * pmd-plsql
-  * {%jdoc plsql::rule.design.AbstractNcssCountRule (now package private)
+  * `net.sourceforge.pmd.lang.plsql.rule.design.AbstractNcssCountRule` is now package private.
 * pmd-scala
-  * {%jdoc scala::ScalaLanguageModule %}
-    * The method `dialectOf(LanguageVersion)` has been removed
+  * {%jdoc !!scala::ScalaLanguageModule %}
+    * Method `dialectOf(LanguageVersion)` has been removed.
 
 **Newly internal classes, interfaces and methods**
 
