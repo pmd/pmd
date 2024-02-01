@@ -11,9 +11,9 @@ import net.sourceforge.pmd.lang.vf.DataType;
  * This is internal API, and can be changed at any time.
  */
 @InternalApi
-public final class VfAstInternals {
+public final class InternalApiBridge {
 
-    private VfAstInternals() {
+    private InternalApiBridge() {
         // utility class
     }
 
