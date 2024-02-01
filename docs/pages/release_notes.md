@@ -211,6 +211,9 @@ package or made (package) private and are not accessible anymore.
   * {%jdoc modelica::resolver.internal.Watchdog %} (note: not previously marked as internal api)
 * pmd-plsql
   * {%jdoc plsql::rule.design.AbstractNcssCountRule (now package private)
+* pmd-scala
+  * {%jdoc scala::ScalaLanguageModule %}
+    * The method `dialectOf(LanguageVersion)` has been removed
 
 **Newly internal classes, interfaces and methods**
 

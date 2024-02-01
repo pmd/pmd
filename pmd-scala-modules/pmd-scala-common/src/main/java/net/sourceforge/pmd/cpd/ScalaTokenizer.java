@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.document.TextDocument;
-import net.sourceforge.pmd.lang.scala.ScalaLanguageModule;
+import net.sourceforge.pmd.lang.scala.internal.ScalaDialect;
 
 import scala.collection.Iterator;
 import scala.meta.Dialect;
@@ -33,7 +33,7 @@ public class ScalaTokenizer implements Tokenizer {
      */
     public ScalaTokenizer(LanguagePropertyBundle bundle) {
         LanguageVersion langVer = bundle.getLanguageVersion();
-        dialect = ScalaLanguageModule.dialectOf(langVer);
+        dialect = ScalaDialect.dialectOf(langVer);
     }
 
     @Override
