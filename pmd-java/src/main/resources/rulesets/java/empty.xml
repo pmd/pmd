@@ -11,6 +11,7 @@ empty block statement, empty try or catch block,...).
 
     <!-- Rules, that have been moved into a category -->
     <rule ref="category/java/errorprone.xml/EmptyCatchBlock" deprecated="true" />
+    <!-- Removed with 7.0.0
     <rule ref="category/java/errorprone.xml/EmptyFinallyBlock" deprecated="true" />
     <rule ref="category/java/errorprone.xml/EmptyIfStmt" deprecated="true" />
     <rule ref="category/java/errorprone.xml/EmptyInitializer" deprecated="true" />
@@ -21,5 +22,6 @@ empty block statement, empty try or catch block,...).
     <rule ref="category/java/errorprone.xml/EmptySynchronizedBlock" deprecated="true" />
     <rule ref="category/java/errorprone.xml/EmptyTryBlock" deprecated="true" />
     <rule ref="category/java/errorprone.xml/EmptyWhileStmt" deprecated="true" />
+    -->
 
 </ruleset>

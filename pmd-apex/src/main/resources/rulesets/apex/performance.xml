@@ -8,8 +8,11 @@
 The Performance ruleset contains a collection of good practices which should be followed.
   </description>
 
+  <!--
     <rule ref="category/apex/performance.xml/AvoidDmlStatementsInLoops" deprecated="true" />
     <rule ref="category/apex/performance.xml/AvoidSoqlInLoops" deprecated="true" />
     <rule ref="category/apex/performance.xml/AvoidSoslInLoops" deprecated="true" />
+  -->
+  <rule ref="rulesets/apex/quickstart.xml/OperationWithLimitsInLoop" deprecated="true" />
 
 </ruleset>
