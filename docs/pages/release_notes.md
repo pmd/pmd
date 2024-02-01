@@ -97,6 +97,15 @@ in the Migration Guide.
 * {% rule java/codestyle/EmptyControlStatement %}: The rule has a new property to allow empty blocks when
   they contain a comment (`allowCommentedBlocks`).
 
+**Removed Rules**
+
+The following previously deprecated rules have been finally removed:
+
+* Apex
+  * {% deleted_rule apex/performance/AvoidSoqlInLoops %} ➡️ use {% rule apex/performance/OperationWithLimitsInLoop %}
+  * {% deleted_rule apex/performance/AvoidSoslInLoops %} ➡️ use {% rule apex/performance/OperationWithLimitsInLoop %}
+  * {% deleted_rule apex/performance/AvoidDmlStatementsInLoops %} ➡️ use {% rule apex/performance/OperationWithLimitsInLoop %}
+
 #### Fixed issues
 
 * cli
