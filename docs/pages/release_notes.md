@@ -202,6 +202,13 @@ package or made (package) private and are not accessible anymore.
   * {%jdoc java::types.TypeOps#isSameTypeInInference(java::types.JTypeMirror,java::types.JTypeMirror) %} (now package private)
 * pmd-jsp
   * {%jdoc jsp::ast.JspParser#getTokenBehavior() %} has been removed.
+* pmd-modelica
+  * {%jdoc modelica::ast.InternalApiBridge %} renamed from InternalModelicaNodeApi.
+  * {%jdoc modelica::resolver.InternalApiBridge %} renamed from InternalModelicaResolverApi.
+  * {%jdoc modelica::resolver.ModelicaSymbolFacade %} has been removed.
+  * {%jdoc modelica::resolver.internal.ResolutionContext %}
+  * {%jdoc modelica::resolver.internal.ResolutionState %} (note: not previously marked as internal api)
+  * {%jdoc modelica::resolver.internal.Watchdog %} (note: not previously marked as internal api)
 
 **Newly internal classes, interfaces and methods**
 

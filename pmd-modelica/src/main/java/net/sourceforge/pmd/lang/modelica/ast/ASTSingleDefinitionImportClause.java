@@ -6,9 +6,9 @@ package net.sourceforge.pmd.lang.modelica.ast;
 
 import net.sourceforge.pmd.lang.modelica.resolver.ModelicaDeclaration;
 import net.sourceforge.pmd.lang.modelica.resolver.ModelicaScope;
-import net.sourceforge.pmd.lang.modelica.resolver.ResolutionContext;
 import net.sourceforge.pmd.lang.modelica.resolver.ResolutionResult;
-import net.sourceforge.pmd.lang.modelica.resolver.ResolutionState;
+import net.sourceforge.pmd.lang.modelica.resolver.internal.ResolutionContext;
+import net.sourceforge.pmd.lang.modelica.resolver.internal.ResolutionState;
 
 public class ASTSingleDefinitionImportClause extends AbstractModelicaImportClause {
     private ASTName importWhat;

@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.modelica.ast.ASTStoredDefinition;
 import net.sourceforge.pmd.lang.modelica.ast.ModelicaClassSpecifierNode;
 import net.sourceforge.pmd.lang.modelica.ast.ModelicaNode;
 import net.sourceforge.pmd.lang.modelica.ast.ModelicaVisitorBase;
+import net.sourceforge.pmd.lang.modelica.resolver.internal.ResolutionState;
 
 class ModelicaResolverTest {
 

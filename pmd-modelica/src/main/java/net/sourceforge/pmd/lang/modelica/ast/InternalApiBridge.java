@@ -7,12 +7,12 @@ package net.sourceforge.pmd.lang.modelica.ast;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.modelica.resolver.ModelicaClassType;
 import net.sourceforge.pmd.lang.modelica.resolver.ModelicaScope;
-import net.sourceforge.pmd.lang.modelica.resolver.ResolutionContext;
-import net.sourceforge.pmd.lang.modelica.resolver.Watchdog;
+import net.sourceforge.pmd.lang.modelica.resolver.internal.ResolutionContext;
+import net.sourceforge.pmd.lang.modelica.resolver.internal.Watchdog;
 
 @InternalApi
-public final class InternalModelicaNodeApi {
-    private InternalModelicaNodeApi() {}
+public final class InternalApiBridge {
+    private InternalApiBridge() {}
 
     public static void setNodeOwnScope(ModelicaNode node, ModelicaScope scope) {
         ((AbstractModelicaNode) node).setOwnScope(scope);

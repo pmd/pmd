@@ -19,6 +19,9 @@ import net.sourceforge.pmd.lang.modelica.ast.ASTSimpleName;
 import net.sourceforge.pmd.lang.modelica.ast.ASTStreamClause;
 import net.sourceforge.pmd.lang.modelica.ast.ASTTypePrefix;
 import net.sourceforge.pmd.lang.modelica.ast.ASTTypeSpecifier;
+import net.sourceforge.pmd.lang.modelica.resolver.internal.ResolutionContext;
+import net.sourceforge.pmd.lang.modelica.resolver.internal.ResolutionState;
+import net.sourceforge.pmd.lang.modelica.resolver.internal.Watchdog;
 
 public class ModelicaComponentDeclaration extends AbstractModelicaDeclaration implements ModelicaDeclaration {
     public enum ComponentKind {

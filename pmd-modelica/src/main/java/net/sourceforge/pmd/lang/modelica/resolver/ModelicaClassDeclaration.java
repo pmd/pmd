@@ -8,10 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.modelica.ast.ASTClassDefinition;
-import net.sourceforge.pmd.lang.modelica.ast.InternalModelicaNodeApi;
+import net.sourceforge.pmd.lang.modelica.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.modelica.ast.ModelicaClassSpecifierNode;
 import net.sourceforge.pmd.lang.modelica.ast.ModelicaImportClause;
 import net.sourceforge.pmd.lang.modelica.ast.Visibility;
+import net.sourceforge.pmd.lang.modelica.resolver.internal.ResolutionContext;
+import net.sourceforge.pmd.lang.modelica.resolver.internal.ResolutionState;
+import net.sourceforge.pmd.lang.modelica.resolver.internal.Watchdog;
 
 /**
  * Internal representation of a declared Modelica class, see {@link ModelicaClassType} for public API.
@@ -32,7 +35,7 @@ class ModelicaClassDeclaration extends AbstractModelicaDeclaration implements Mo
         specialization = node.getSpecialization();
         ModelicaClassSpecifierNode classNode = node.getClassSpecifier();
         simpleName = classNode.getSimpleClassName();
-        InternalModelicaNodeApi.populateExtendsAndImports(classNode, this);
+        InternalApiBridge.populateExtendsAndImports(classNode, this);
     }
 
     /**
@@ -99,8 +102,8 @@ class ModelicaClassDeclaration extends AbstractModelicaDeclaration implements Mo
         ResolutionContext result = state.createContext();
         for (final ModelicaImportClause importClause: imports) {
             ResolutionContext subResult = state.createContext();
-            if (InternalModelicaNodeApi.isQualifiedImport(importClause) == qualified) {
-                InternalModelicaNodeApi.resolveImportedSimpleName(importClause, subResult, firstName);
+            if (InternalApiBridge.isQualifiedImport(importClause) == qualified) {
+                InternalApiBridge.resolveImportedSimpleName(importClause, subResult, firstName);
             }
             result.accumulate(subResult.getDeclaration());
         }

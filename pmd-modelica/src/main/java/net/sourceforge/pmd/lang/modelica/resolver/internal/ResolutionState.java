@@ -2,7 +2,9 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.modelica.resolver;
+package net.sourceforge.pmd.lang.modelica.resolver.internal;
+
+import net.sourceforge.pmd.lang.modelica.resolver.ModelicaComponentDeclaration;
 
 public final class ResolutionState {
     private final Watchdog watchdog;
@@ -21,7 +23,7 @@ public final class ResolutionState {
         return new ResolutionState(false);
     }
 
-    void tick() throws Watchdog.CountdownException {
+    public void tick() throws Watchdog.CountdownException {
         watchdog.decrement();
     }
 

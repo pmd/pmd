@@ -6,8 +6,8 @@ package net.sourceforge.pmd.lang.modelica.ast;
 
 import net.sourceforge.pmd.lang.modelica.resolver.CompositeName;
 import net.sourceforge.pmd.lang.modelica.resolver.ResolutionResult;
-import net.sourceforge.pmd.lang.modelica.resolver.ResolutionState;
 import net.sourceforge.pmd.lang.modelica.resolver.ResolvableEntity;
+import net.sourceforge.pmd.lang.modelica.resolver.internal.ResolutionState;
 
 public final class ASTName extends AbstractModelicaNode implements ResolvableModelicaNode {
     private String[] nameComponents;

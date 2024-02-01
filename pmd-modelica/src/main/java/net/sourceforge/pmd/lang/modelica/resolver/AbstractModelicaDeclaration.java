@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.modelica.resolver;
 
+import net.sourceforge.pmd.lang.modelica.resolver.internal.ResolutionContext;
+import net.sourceforge.pmd.lang.modelica.resolver.internal.Watchdog;
+
 /**
  * Internal base class for Modelica declarations, see ${@link ModelicaDeclaration} for public API.
  */

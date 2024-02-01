@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.modelica.resolver;
+package net.sourceforge.pmd.lang.modelica.resolver.internal;
 
 /**
  * A watchdog counter initialized with some value. Throws an exception after the specified {@link #decrement} calls.

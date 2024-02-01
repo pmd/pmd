@@ -7,6 +7,9 @@ package net.sourceforge.pmd.lang.modelica.resolver;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sourceforge.pmd.lang.modelica.resolver.internal.ResolutionContext;
+import net.sourceforge.pmd.lang.modelica.resolver.internal.Watchdog;
+
 /**
  * A pseudo lexical scope corresponding to "unnamed enclosing class" for top-level entities.
  * See "5.2 Enclosing Classes" from MLS 3.4.

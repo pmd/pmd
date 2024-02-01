@@ -2,15 +2,17 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.modelica.resolver;
+package net.sourceforge.pmd.lang.modelica.resolver.internal;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.modelica.resolver.ModelicaDeclaration;
+import net.sourceforge.pmd.lang.modelica.resolver.ModelicaType;
+import net.sourceforge.pmd.lang.modelica.resolver.ResolutionResult;
+import net.sourceforge.pmd.lang.modelica.resolver.ResolvableEntity;
 
-@InternalApi
 public class ResolutionContext {
     private final ResolutionState state;
     private final List<ResolvableEntity> bestCandidates = new ArrayList<>();
@@ -43,7 +45,7 @@ public class ResolutionContext {
      *
      * Usually, this method is called after catching `Watchdog.CountdownException`.
      */
-    void markTtlExceeded() {
+    public void markTtlExceeded() {
         ttlExceeded = true;
     }
 
@@ -60,7 +62,7 @@ public class ResolutionContext {
         }
     }
 
-    void accumulate(ResolutionResult result) {
+    public void accumulate(ResolutionResult result) {
         bestCandidates.addAll(result.getBestCandidates());
         hiddenCandidates.addAll(result.getHiddenCandidates());
     }
