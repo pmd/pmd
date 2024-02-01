@@ -195,6 +195,16 @@ The following previously deprecated classes have been removed:
   * `net.sourceforge.pmd.lang.jsp.ast.JspParserVisitorAdapter`
   * {%jdoc !!jsp::lang.jsp.ast.JspNode %} - method `jjtAccept()` has been removed.
     Use {%jdoc core::lang.ast.Node#acceptVisitor(core::lang.ast.AstVisitor,P) %} instead.
+* pmd-modelica
+  * `net.sourceforge.pmd.lang.modelica.ast.ModelicaParserVisitor`
+    Use {%jdoc modelica::net.sourceforge.pmd.lang.modelica.ast.ModelicaVisitor %} instead.
+  * `net.sourceforge.pmd.lang.modelica.ast.ModelicaParserVisitorAdapter`
+  * {%jdoc !!modelica::lang.modelica.ast.ModelicaNode %} - method `jjtAccept()` has been removed.
+    Use {%jdoc core::lang.ast.Node#acceptVisitor(core::lang.ast.AstVisitor,P) %} instead.
+  * `net.sourceforge.pmd.lang.modelica.rule.AmbiguousResolutionRule`
+    Use {%jdoc modelica::lang.modelica.rule.bestpractices.AmbiguousResolutionRule %} instead.
+  * `net.sourceforge.pmd.lang.modelica.rule.ConnectUsingNonConnector`
+    Use {%jdoc modelica::lang.modelica.rule.bestpractices.ConnectUsingNonConnectorRule %}
 
 **Removed classes, interfaces and methods (not previously deprecated)**
 
