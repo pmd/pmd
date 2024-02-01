@@ -200,6 +200,8 @@ package or made (package) private and are not accessible anymore.
   * {%jdoc java::types.ast.internal.LazyTypeResolver %}
   * {%jdoc java::types.JMethodSig#internalApi() %} has been removed.
   * {%jdoc java::types.TypeOps#isSameTypeInInference(java::types.JTypeMirror,java::types.JTypeMirror) %} (now package private)
+* pmd-jsp
+  * {%jdoc jsp::ast.JspParser#getTokenBehavior() %} has been removed.
 
 **Newly internal classes, interfaces and methods**
 
