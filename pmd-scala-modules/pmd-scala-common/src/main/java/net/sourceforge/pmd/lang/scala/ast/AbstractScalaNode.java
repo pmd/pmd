@@ -76,12 +76,6 @@ abstract class AbstractScalaNode<T extends Tree> extends AbstractNode<AbstractSc
     }
 
     @Override
-    @Deprecated
-    public T getNode() {
-        return node;
-    }
-
-    @Override
     public String getXPathNodeName() {
         return node.productPrefix().replace(".", "");
     }

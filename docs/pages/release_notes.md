@@ -211,6 +211,12 @@ The following previously deprecated classes have been removed:
   * `net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitorAdapter`
   * {%jdoc !!plsql::lang.plsql.ast.PLSQLNode %} - method `jjtAccept()` has been removed.
     Use {%jdoc core::lang.ast.Node#acceptVisitor(core::lang.ast.AstVisitor,P) %} instead.
+* pmd-scala
+  * {%jdoc !!scala::lang.scala.ast.ScalaNode %}
+    * Method `accept()` has been removed. Use {%jdoc core::lang.ast.Node#acceptVisitor(core::lang.ast.AstVisitor,P) %} instead.
+    * Method `getNode()` has been removed. It's only available in AST nodes, but not in rule implementations.
+  * {%jdoc !!scala::lang.scala.ast.AbstractScalaNode %} - method `getNode()` has been removed. AST nodes have access
+    to the underlying Scala node via the protected property `node`.
 
 **Removed classes, interfaces and methods (not previously deprecated)**
 
