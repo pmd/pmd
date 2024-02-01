@@ -217,6 +217,12 @@ The following previously deprecated classes have been removed:
     * Method `getNode()` has been removed. It's only available in AST nodes, but not in rule implementations.
   * {%jdoc !!scala::lang.scala.ast.AbstractScalaNode %} - method `getNode()` has been removed. AST nodes have access
     to the underlying Scala node via the protected property `node`.
+* pmd-vm
+  * {%jdoc !!vm::lang.vm.ast.VmNode %} - method `jjtAccept()` has been removed.
+    Use {%jdoc core::lang.ast.Node#acceptVisitor(core::lang.ast.AstVisitor,P) %} instead.
+  * `net.sourceforge.pmd.lang.vm.ast.VmParserVisitor`
+    Use {%jdoc vm::lang.vm.ast.VmVisitor %} or {%jdoc vm::lang.vm.ast.VmVisitorBase %} instead.
+  * `net.sourceforge.pmd.lang.vm.ast.VmParserVisitorAdapter`
 
 **Removed classes, interfaces and methods (not previously deprecated)**
 
