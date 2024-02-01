@@ -189,6 +189,12 @@ The following previously deprecated classes have been removed:
 
       If the current version is needed, then `Node.getTextDocument().getLanguageVersion()` can be used. This
       is the version that has been selected via CLI `--use-version` parameter.
+* pmd-jsp
+  * `net.sourceforge.pmd.lang.jsp.ast.JspParserVisitor`
+    Use {%jdoc jsp::lang.jsp.ast.JspVisitor %} instead.
+  * `net.sourceforge.pmd.lang.jsp.ast.JspParserVisitorAdapter`
+  * {%jdoc !!jsp::lang.jsp.ast.JspNode %} - method `jjtAccept()` has been removed.
+    Use {%jdoc core::lang.ast.Node#acceptVisitor(core::lang.ast.AstVisitor,P) %} instead.
 
 **Removed classes, interfaces and methods (not previously deprecated)**
 
