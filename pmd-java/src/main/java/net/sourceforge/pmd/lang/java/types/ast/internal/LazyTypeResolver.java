@@ -14,7 +14,6 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.java.ast.ASTAmbiguousName;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
@@ -93,7 +92,6 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
  * Resolves types of expressions. This is used as the implementation of
  * {@link TypeNode#getTypeMirror(TypingContext)} and is INTERNAL.
  */
-@InternalApi
 public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonNull JTypeMirror> {
 
     private final TypeSystem ts;
