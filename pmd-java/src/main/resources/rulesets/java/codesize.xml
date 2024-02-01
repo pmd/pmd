@@ -11,8 +11,8 @@ The Code Size ruleset contains rules that find problems related to code size or 
 
     <!-- Rules, that have been moved into a category -->
     <rule ref="category/java/design.xml/CyclomaticComplexity" deprecated="true" />
-    <rule ref="category/java/design.xml/ExcessiveClassLength" deprecated="true" />
-    <rule ref="category/java/design.xml/ExcessiveMethodLength" deprecated="true" />
+    <!-- Removed with 7.0.0 <rule ref="category/java/design.xml/ExcessiveClassLength" deprecated="true" />-->
+    <!-- Removed with 7.0.0 <rule ref="category/java/design.xml/ExcessiveMethodLength" deprecated="true" />-->
     <rule ref="category/java/design.xml/ExcessiveParameterList" deprecated="true" />
     <rule ref="category/java/design.xml/ExcessivePublicCount" deprecated="true" />
     <rule ref="category/java/design.xml/NcssCount" deprecated="true" />
