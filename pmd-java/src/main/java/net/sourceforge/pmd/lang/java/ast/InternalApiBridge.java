@@ -35,7 +35,9 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
 import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
- * Acts as a bridge between outer parts of PMD and the restricted access
+ * Internal API.
+ *
+ * <p>Acts as a bridge between outer parts of PMD and the restricted access
  * internal API of this package.
  *
  * <p><b>None of this is published API, and compatibility can be broken anytime!</b>
@@ -43,14 +45,11 @@ import net.sourceforge.pmd.util.AssertionUtil;
  *
  * @author Clément Fournier
  * @since 7.0.0
+ * @apiNote Internal API
  */
 @InternalApi
 public final class InternalApiBridge {
-
-
-    private InternalApiBridge() {
-
-    }
+    private InternalApiBridge() {}
 
     @Deprecated
     public static ASTVariableId newVarId(String image) {
