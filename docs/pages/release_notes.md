@@ -191,13 +191,13 @@ The following previously deprecated classes have been removed:
       is the version that has been selected via CLI `--use-version` parameter.
 * pmd-jsp
   * `net.sourceforge.pmd.lang.jsp.ast.JspParserVisitor`
-    Use {%jdoc jsp::lang.jsp.ast.JspVisitor %} instead.
+    Use {%jdoc jsp::lang.jsp.ast.JspVisitor %} or {%jdoc jsp::lang.jsp.ast.JspVisitorBase %} instead.
   * `net.sourceforge.pmd.lang.jsp.ast.JspParserVisitorAdapter`
   * {%jdoc !!jsp::lang.jsp.ast.JspNode %} - method `jjtAccept()` has been removed.
     Use {%jdoc core::lang.ast.Node#acceptVisitor(core::lang.ast.AstVisitor,P) %} instead.
 * pmd-modelica
   * `net.sourceforge.pmd.lang.modelica.ast.ModelicaParserVisitor`
-    Use {%jdoc modelica::net.sourceforge.pmd.lang.modelica.ast.ModelicaVisitor %} instead.
+    Use {%jdoc modelica::lang.modelica.ast.ModelicaVisitor %} or {%jdoc modelica::lang.modelica.ast.ModelicaVisitorBase %} instead.
   * `net.sourceforge.pmd.lang.modelica.ast.ModelicaParserVisitorAdapter`
   * {%jdoc !!modelica::lang.modelica.ast.ModelicaNode %} - method `jjtAccept()` has been removed.
     Use {%jdoc core::lang.ast.Node#acceptVisitor(core::lang.ast.AstVisitor,P) %} instead.
@@ -205,6 +205,12 @@ The following previously deprecated classes have been removed:
     Use {%jdoc modelica::lang.modelica.rule.bestpractices.AmbiguousResolutionRule %} instead.
   * `net.sourceforge.pmd.lang.modelica.rule.ConnectUsingNonConnector`
     Use {%jdoc modelica::lang.modelica.rule.bestpractices.ConnectUsingNonConnectorRule %}
+* pmd-plsql
+  * `net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitor`
+    Use {%jdoc plsql::lang.plsql.ast.PlsqlVisitor %} or {% jdoc plsql::lang.plsql.ast.PlsqlVisitorBase %} instead.
+  * `net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitorAdapter`
+  * {%jdoc !!plsql::lang.plsql.ast.PLSQLNode %} - method `jjtAccept()` has been removed.
+    Use {%jdoc core::lang.ast.Node#acceptVisitor(core::lang.ast.AstVisitor,P) %} instead.
 
 **Removed classes, interfaces and methods (not previously deprecated)**
 

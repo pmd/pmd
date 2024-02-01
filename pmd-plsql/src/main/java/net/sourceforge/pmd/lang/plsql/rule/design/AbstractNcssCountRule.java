@@ -25,7 +25,7 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
-import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitorAdapter;
+import net.sourceforge.pmd.lang.plsql.ast.PlsqlVisitorBase;
 
 /**
  * Abstract superclass for NCSS counting methods. Analogous to and cribbed from
@@ -50,10 +50,10 @@ public abstract class AbstractNcssCountRule<T extends PLSQLNode> extends Abstrac
 
     @Override
     protected int getMetric(T node) {
-        return 1 + (Integer) node.jjtAccept(new NcssVisitor(), null);
+        return 1 + (Integer) node.acceptVisitor(new NcssVisitor(), null);
     }
 
-    private static final class NcssVisitor extends PLSQLParserVisitorAdapter {
+    private static final class NcssVisitor extends PlsqlVisitorBase<Object, Object> {
 
         @Override
         public Object visitPlsqlNode(PLSQLNode node, Object data) {
@@ -72,7 +72,7 @@ public abstract class AbstractNcssCountRule<T extends PLSQLNode> extends Abstrac
         protected Integer countNodeChildren(Node node, Object data) {
             int nodeCount = 0;
             for (int i = 0; i < node.getNumChildren(); i++) {
-                nodeCount += (Integer) ((PLSQLNode) node.getChild(i)).jjtAccept(this, data);
+                nodeCount += (Integer) node.getChild(i).acceptVisitor(this, data);
             }
             return nodeCount;
         }
