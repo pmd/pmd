@@ -105,6 +105,19 @@ The following previously deprecated rules have been finally removed:
   * {% deleted_rule apex/performance/AvoidSoqlInLoops %} ➡️ use {% rule apex/performance/OperationWithLimitsInLoop %}
   * {% deleted_rule apex/performance/AvoidSoslInLoops %} ➡️ use {% rule apex/performance/OperationWithLimitsInLoop %}
   * {% deleted_rule apex/performance/AvoidDmlStatementsInLoops %} ➡️ use {% rule apex/performance/OperationWithLimitsInLoop %}
+* Java
+  * {% deleted_rule java/design/ExcessiveClassLength %} ➡️ use {% rule java/design/NcssCount %}
+  * {% deleted_rule java/design/ExcessiveMethodLength %} ➡️ use {% rule java/design/NcssCount %}
+  * {% deleted_rule java/errorprone/BeanMembersShouldSerialize %} ➡️ use {% rule java/errorprone/NonSerializableClass %}
+  * {% deleted_rule java/errorprone/EmptyFinallyBlock %} ➡️ use {% rule java/codestyle/EmptyControlStatement %}
+  * {% deleted_rule java/errorprone/EmptyIfStmt %} ➡️ use {% rule java/codestyle/EmptyControlStatement %}
+  * {% deleted_rule java/errorprone/EmptyInitializer %} ➡️ use {% rule java/codestyle/EmptyControlStatement %}
+  * {% deleted_rule java/errorprone/EmptyStatementBlock %} ➡️ use {% rule java/codestyle/EmptyControlStatement %}
+  * {% deleted_rule java/errorprone/EmptyStatementNotInLoop %} ➡️ use {% rule java/codestyle/UnnecessarySemicolon %}
+  * {% deleted_rule java/errorprone/EmptySwitchStatements %} ➡️ use {% rule java/codestyle/EmptyControlStatement %}
+  * {% deleted_rule java/errorprone/EmptySynchronizedBlock %} ➡️ use {% rule java/codestyle/EmptyControlStatement %}
+  * {% deleted_rule java/errorprone/EmptyTryBlock %} ➡️ use {% rule java/codestyle/EmptyControlStatement %}
+  * {% deleted_rule java/errorprone/EmptyWhileStmt %} ➡️ use {% rule java/codestyle/EmptyControlStatement %}
 
 #### Fixed issues
 
