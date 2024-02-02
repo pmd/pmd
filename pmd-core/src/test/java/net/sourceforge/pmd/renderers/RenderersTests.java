@@ -20,7 +20,7 @@ import org.junit.platform.suite.api.Suite;
     HTMLRendererTest.class,
     IDEAJRendererTest.class,
     JsonRendererTest.class,
-    PapariTextRendererTest.class,
+    TextColorRendererTest.class,
     SarifRendererTest.class,
     SummaryHTMLRendererTest.class,
     TextPadRendererTest.class,

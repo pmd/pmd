@@ -167,6 +167,7 @@ The rules have been moved into categories with PMD 6.
 * core
   * [#1027](https://github.com/pmd/pmd/issues/1027): \[core] Apply the new PropertyDescriptor&lt;Pattern&gt; type where applicable
   * [#4065](https://github.com/pmd/pmd/issues/4065): \[core] Rename TokenMgrError to LexException, Tokenizer to CpdLexer
+  * [#4312](https://github.com/pmd/pmd/issues/4312): \[core] Remove unnecessary property `color` and system property `pmd.color` in `TextColorRenderer`
   * [#4313](https://github.com/pmd/pmd/issues/4313): \[core] Remove support for &lt;lang&gt;-&lt;ruleset&gt; hyphen notation for ruleset references
   * [#4314](https://github.com/pmd/pmd/issues/4314): \[core] Remove ruleset compatibility filter (RuleSetFactoryCompatibility) and CLI option `--no-ruleset-compatibility`
   * [#4378](https://github.com/pmd/pmd/issues/4378): \[core] Ruleset loading processes commented rules
@@ -289,6 +290,9 @@ The following previously deprecated classes have been removed:
   The different ways to enable/disable this filter in {% jdoc core::PMDConfiguration %}
   (Property "RuleSetFactoryCompatibilityEnabled") and
   {% jdoc ant::ant.PMDTask %} (Property "noRuleSetCompatibility") have been removed as well.
+* `textcolor` renderer ({%jdoc core::renderers.TextColorRenderer %}) now renders always in color.
+  The property `color` has been removed. The possibility to override this with the system property `pmd.color`
+  has been removed as well. If you don't want colors, use `text` renderer ({%jdoc core::renderers.TextRenderer %}).
 
 #### External Contributions
 * [#4640](https://github.com/pmd/pmd/pull/4640): \[cli] Launch script fails if run via "bash pmd" - [Shai Bennathan](https://github.com/shai-bennathan) (@shai-bennathan)
@@ -699,6 +703,7 @@ See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.
     * [#4204](https://github.com/pmd/pmd/issues/4204): \[core] Provide a CpdAnalysis class as a programmatic entry point into CPD
     * [#4301](https://github.com/pmd/pmd/issues/4301): \[core] Remove deprecated property concrete classes
     * [#4302](https://github.com/pmd/pmd/issues/4302): \[core] Migrate Property Framework API to Java 8
+    * [#4312](https://github.com/pmd/pmd/issues/4312): \[core] Remove unnecessary property `color` and system property `pmd.color` in `TextColorRenderer`
     * [#4313](https://github.com/pmd/pmd/issues/4313): \[core] Remove support for &lt;lang&gt;-&lt;ruleset&gt; hyphen notation for ruleset references
     * [#4314](https://github.com/pmd/pmd/issues/4314): \[core] Remove ruleset compatibility filter (RuleSetFactoryCompatibility) and CLI option `--no-ruleset-compatibility`
     * [#4323](https://github.com/pmd/pmd/issues/4323): \[core] Refactor CPD integration
