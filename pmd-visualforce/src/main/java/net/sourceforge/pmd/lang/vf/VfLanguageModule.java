@@ -5,12 +5,12 @@
 package net.sourceforge.pmd.lang.vf;
 
 import net.sourceforge.pmd.cpd.CpdCapableLanguage;
-import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.cpd.CpdLexer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
-import net.sourceforge.pmd.lang.vf.cpd.VfTokenizer;
+import net.sourceforge.pmd.lang.vf.cpd.VfCpdLexer;
 
 /**
  * @author sergey.gorbaty
@@ -32,8 +32,8 @@ public class VfLanguageModule extends SimpleLanguageModuleBase implements CpdCap
     }
 
     @Override
-    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
-        return new VfTokenizer();
+    public CpdLexer createCpdLexer(LanguagePropertyBundle bundle) {
+        return new VfCpdLexer();
     }
 
     @Override

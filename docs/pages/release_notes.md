@@ -166,6 +166,7 @@ The rules have been moved into categories with PMD 6.
   * [#4723](https://github.com/pmd/pmd/issues/4723): \[cli] Launch fails for "bash pmd"
 * core
   * [#1027](https://github.com/pmd/pmd/issues/1027): \[core] Apply the new PropertyDescriptor&lt;Pattern&gt; type where applicable
+  * [#4065](https://github.com/pmd/pmd/issues/4065): \[core] Rename TokenMgrError to LexException, Tokenizer to CpdLexer
   * [#4313](https://github.com/pmd/pmd/issues/4313): \[core] Remove support for &lt;lang&gt;-&lt;ruleset&gt; hyphen notation for ruleset references
   * [#4314](https://github.com/pmd/pmd/issues/4314): \[core] Remove ruleset compatibility filter (RuleSetFactoryCompatibility) and CLI option `--no-ruleset-compatibility`
   * [#4378](https://github.com/pmd/pmd/issues/4378): \[core] Ruleset loading processes commented rules
@@ -270,6 +271,15 @@ The following previously deprecated classes have been removed:
     need to be adjusted.
   * The node `ASTClassOrInterfaceBody` has been renamed to {% jdoc java::lang.ast.ASTClassBody %}. XPath rules
     need to be adjusted.
+
+**Renamed classes and methods**
+
+* pmd-core
+  * {%jdoc_old core::lang.ast.TokenMgrError %} has been renamed to {% jdoc core::lang.ast.LexException %}
+  * {%jdoc_old core::cpd.Tokenizer %} has been renamed to {% jdoc core::cpd.CpdLexer %}. Along with this rename,
+    all the implementations have been renamed as well (`Tokenizer` -> `CpdLexer`), e.g. "CppCpdLexer", "JavaCpdLexer".
+    This affects all language modules.
+  * {%jdoc_old core::cpd.AnyTokenizer %} has been renamed to {% jdoc core::cpd.AnyCpdLexer %}.
 
 **Removed functionality**
 
@@ -684,6 +694,7 @@ See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.
     * [#3919](https://github.com/pmd/pmd/issues/3919): \[core] Merge CPD and PMD language
     * [#3922](https://github.com/pmd/pmd/pull/3922):   \[core] Better error reporting for the ruleset parser
     * [#4035](https://github.com/pmd/pmd/issues/4035): \[core] ConcurrentModificationException in DefaultRuleViolationFactory
+    * [#4065](https://github.com/pmd/pmd/issues/4065): \[core] Rename TokenMgrError to LexException, Tokenizer to CpdLexer
     * [#4120](https://github.com/pmd/pmd/issues/4120): \[core] Explicitly name all language versions
     * [#4204](https://github.com/pmd/pmd/issues/4204): \[core] Provide a CpdAnalysis class as a programmatic entry point into CPD
     * [#4301](https://github.com/pmd/pmd/issues/4301): \[core] Remove deprecated property concrete classes

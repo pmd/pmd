@@ -37,16 +37,11 @@ PARSER_BEGIN(VmParserImpl)
 package net.sourceforge.pmd.lang.vm.ast;
 
 import java.io.IOException;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.lang.ast.TokenMgrError;
-import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 
 

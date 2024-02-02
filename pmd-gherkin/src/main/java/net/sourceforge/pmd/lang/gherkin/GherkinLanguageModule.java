@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.gherkin;
 
-import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.cpd.CpdLexer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.gherkin.cpd.GherkinTokenizer;
+import net.sourceforge.pmd.lang.gherkin.cpd.GherkinCpdLexer;
 import net.sourceforge.pmd.lang.impl.CpdOnlyLanguageModuleBase;
 
 /**
@@ -28,7 +28,7 @@ public class GherkinLanguageModule extends CpdOnlyLanguageModuleBase {
     }
 
     @Override
-    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
-        return new GherkinTokenizer();
+    public CpdLexer createCpdLexer(LanguagePropertyBundle bundle) {
+        return new GherkinCpdLexer();
     }
 }

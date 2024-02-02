@@ -6,16 +6,13 @@ package net.sourceforge.pmd.cpd.test
 
 import io.kotest.assertions.throwables.shouldThrow
 import net.sourceforge.pmd.cpd.*
-import net.sourceforge.pmd.lang.Language
 import net.sourceforge.pmd.lang.LanguagePropertyBundle
 import net.sourceforge.pmd.lang.LanguageRegistry
-import net.sourceforge.pmd.lang.ast.TokenMgrError
+import net.sourceforge.pmd.lang.ast.LexException
 import net.sourceforge.pmd.lang.document.TextDocument
-import net.sourceforge.pmd.lang.document.TextFile
 import net.sourceforge.pmd.lang.document.FileId
 import net.sourceforge.pmd.test.BaseTextComparisonTest
 import org.apache.commons.lang3.StringUtils
-import java.util.*
 
 /**
  * CPD test comparing a dump of a file against a saved baseline.
@@ -34,9 +31,9 @@ abstract class CpdTextComparisonTest(
         extensionIncludingDot
     )
 
-    fun newTokenizer(config: LanguagePropertyConfig): Tokenizer {
+    fun newCpdLexer(config: LanguagePropertyConfig): CpdLexer {
         val properties = language.newPropertyBundle().also { config.setProperties(it) }
-        return language.createCpdTokenizer(properties)
+        return language.createCpdLexer(properties)
     }
 
     override val resourceLoader: Class<*>
@@ -67,26 +64,26 @@ abstract class CpdTextComparisonTest(
         config: LanguagePropertyConfig = defaultProperties()
     ) {
         super.doTest(fileBaseName, expectedSuffix) { fdata ->
-            val tokens = tokenize(newTokenizer(config), fdata)
+            val tokens = tokenize(newCpdLexer(config), fdata)
             buildString { format(tokens) }
         }
     }
 
     @JvmOverloads
-    fun expectTokenMgrError(
+    fun expectLexException(
         source: String,
         fileName: FileId = FileId.UNKNOWN,
         properties: LanguagePropertyConfig = defaultProperties()
-    ): TokenMgrError =
-        expectTokenMgrError(FileData(fileName, source), properties)
+    ): LexException =
+        expectLexException(FileData(fileName, source), properties)
 
     @JvmOverloads
-    fun expectTokenMgrError(
+    fun expectLexException(
         fileData: FileData,
         config: LanguagePropertyConfig = defaultProperties()
-    ): TokenMgrError =
+    ): LexException =
         shouldThrow {
-            tokenize(newTokenizer(config), fileData)
+            tokenize(newCpdLexer(config), fileData)
         }
 
 
@@ -172,10 +169,10 @@ abstract class CpdTextComparisonTest(
     fun sourceCodeOf(text: String, fileName: FileId = FileId.UNKNOWN): FileData =
         FileData(fileName = fileName, fileText = text)
 
-    fun tokenize(tokenizer: Tokenizer, fileData: FileData): Tokens =
+    fun tokenize(cpdLexer: CpdLexer, fileData: FileData): Tokens =
         Tokens().also { tokens ->
             val source = sourceCodeOf(fileData)
-            Tokenizer.tokenize(tokenizer, source, tokens)
+            CpdLexer.tokenize(cpdLexer, source, tokens)
         }
 
     private companion object {

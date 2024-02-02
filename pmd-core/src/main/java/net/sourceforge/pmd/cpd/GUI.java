@@ -142,8 +142,8 @@ public class GUI implements CPDListener {
                                 .extensions(extension)
                                 .name("By extension...")) {
                 @Override
-                public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
-                    return new AnyTokenizer();
+                public CpdLexer createCpdLexer(LanguagePropertyBundle bundle) {
+                    return new AnyCpdLexer();
                 }
             };
         }

@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.html;
 
-import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.cpd.CpdLexer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.html.ast.HtmlTokenizer;
+import net.sourceforge.pmd.lang.html.ast.HtmlCpdLexer;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
 
 public final class HtmlLanguageModule extends SimpleLanguageModuleBase {
@@ -27,7 +27,7 @@ public final class HtmlLanguageModule extends SimpleLanguageModuleBase {
     }
 
     @Override
-    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
-        return new HtmlTokenizer();
+    public CpdLexer createCpdLexer(LanguagePropertyBundle bundle) {
+        return new HtmlCpdLexer();
     }
 }

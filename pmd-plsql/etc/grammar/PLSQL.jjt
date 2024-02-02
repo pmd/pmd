@@ -157,13 +157,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import java.util.List;
-import java.util.ArrayList;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.document.Chars;
-import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.plsql.ast.internal.ParsingExclusion;
-import net.sourceforge.pmd.lang.ast.TokenMgrError;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PLSQLParserImpl {
 

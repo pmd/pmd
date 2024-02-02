@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.objectivec;
 
-import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.cpd.CpdLexer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.impl.CpdOnlyLanguageModuleBase;
-import net.sourceforge.pmd.lang.objectivec.cpd.ObjectiveCTokenizer;
+import net.sourceforge.pmd.lang.objectivec.cpd.ObjectiveCCpdLexer;
 
 /**
  * Defines the Language module for Objective-C
@@ -29,7 +29,7 @@ public class ObjectiveCLanguageModule extends CpdOnlyLanguageModuleBase {
     }
 
     @Override
-    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
-        return new ObjectiveCTokenizer();
+    public CpdLexer createCpdLexer(LanguagePropertyBundle bundle) {
+        return new ObjectiveCCpdLexer();
     }
 }

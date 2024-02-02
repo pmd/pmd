@@ -5,13 +5,13 @@
 package net.sourceforge.pmd.lang.java;
 
 import net.sourceforge.pmd.cpd.CpdCapableLanguage;
-import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.cpd.CpdLexer;
 import net.sourceforge.pmd.lang.LanguageModuleBase;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.PmdCapableLanguage;
-import net.sourceforge.pmd.lang.java.cpd.JavaTokenizer;
+import net.sourceforge.pmd.lang.java.cpd.JavaCpdLexer;
 import net.sourceforge.pmd.lang.java.internal.JavaLanguageProcessor;
 import net.sourceforge.pmd.lang.java.internal.JavaLanguageProperties;
 
@@ -62,7 +62,7 @@ public class JavaLanguageModule extends LanguageModuleBase implements PmdCapable
     }
 
     @Override
-    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
-        return new JavaTokenizer((JavaLanguageProperties) bundle);
+    public CpdLexer createCpdLexer(LanguagePropertyBundle bundle) {
+        return new JavaCpdLexer((JavaLanguageProperties) bundle);
     }
 }
