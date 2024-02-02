@@ -165,9 +165,9 @@ final class RuleSetFactory {
     private @NonNull RuleSet readDocument(RuleSetReferenceId ruleSetReferenceId, boolean withDeprecatedRuleReferences) {
 
         try (CheckedInputStream inputStream = new CheckedInputStream(ruleSetReferenceId.getInputStream(resourceLoader), new Adler32())) {
-            if (!ruleSetReferenceId.isExternal()) {
+            if (!ruleSetReferenceId.isAbsolute()) {
                 throw new IllegalArgumentException(
-                    "Cannot parse a RuleSet from a non-external reference: <" + ruleSetReferenceId + ">.");
+                    "Cannot parse a RuleSet from a non-absolute reference: <" + ruleSetReferenceId + ">.");
             }
 
             XmlMessageHandler printer = getXmlMessagePrinter();
@@ -446,10 +446,8 @@ final class RuleSetFactory {
             err.at(xmlPlace).warn("Rule reference references a deleted rule, ignoring");
             return null; // deleted rule
         }
-        // only emit a warning if we check for deprecated syntax
-        MessageReporter subReporter = warnDeprecated ? err.at(xmlPlace) : MessageReporter.quiet();
 
-        List<RuleSetReferenceId> references = RuleSetReferenceId.parse(ref, subReporter);
+        List<RuleSetReferenceId> references = RuleSetReferenceId.parse(ref);
         if (references.size() > 1 && warnDeprecated) {
             err.at(xmlPlace).warn("Using a comma separated list as a ref attribute is deprecated. "
                                       + "All references but the first are ignored.");
@@ -527,13 +525,13 @@ final class RuleSetFactory {
         RuleSetFactory ruleSetFactory = toLoader().filterAbovePriority(RulePriority.LOW).warnDeprecated(false).toFactory();
 
         boolean isSameRuleSet = false;
-        if (!otherRuleSetReferenceId.isExternal()
+        if (!otherRuleSetReferenceId.isAbsolute()
             && containsRule(ruleSetReferenceId, otherRuleSetReferenceId.getRuleName())) {
-            otherRuleSetReferenceId = new RuleSetReferenceId(ref, ruleSetReferenceId, err.at(REF.getAttributeNode(ruleNode)));
+            otherRuleSetReferenceId = new RuleSetReferenceId(ref, ruleSetReferenceId);
             isSameRuleSet = true;
-        } else if (otherRuleSetReferenceId.isExternal()
+        } else if (otherRuleSetReferenceId.isAbsolute()
             && otherRuleSetReferenceId.getRuleSetFileName().equals(ruleSetReferenceId.getRuleSetFileName())) {
-            otherRuleSetReferenceId = new RuleSetReferenceId(otherRuleSetReferenceId.getRuleName(), ruleSetReferenceId, err.at(REF.getAttributeNode(ruleNode)));
+            otherRuleSetReferenceId = new RuleSetReferenceId(otherRuleSetReferenceId.getRuleName(), ruleSetReferenceId);
             isSameRuleSet = true;
         }
         // do not ignore deprecated rule references
