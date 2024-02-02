@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>pmd-compat6</artifactId>
-    <version>7.0.0-rc4</version>
+    <version>7.0.0-rc4+with-pr4749</version>
     <name>PMD Compatibility Classes for PMD6</name>
 
     <properties>
@@ -21,7 +21,7 @@
     </properties>
 
     <scm>
-        <tag>pmd_releases/7.0.0-rc4-pmd-compat6</tag>
+        <tag>pmd_releases/7.0.0-rc4-pmd-compat6+with-pr4749</tag>
     </scm>
 
     <dependencies>
