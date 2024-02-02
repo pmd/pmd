@@ -15,7 +15,7 @@ class CursorAttributesTest extends AbstractPLSQLParserTst {
     @Test
     void parseCursorWithAttribute() {
         ASTInput input = plsql.parseResource("CursorAttributes.pls");
-        ASTExpression exp = input.getFirstDescendantOfType(ASTIfStatement.class).getFirstChildOfType(ASTExpression.class);
+        ASTExpression exp = input.descendants(ASTIfStatement.class).first().firstChild(ASTExpression.class);
         assertEquals("TestSearch%notfound", exp.getImage());
     }
 

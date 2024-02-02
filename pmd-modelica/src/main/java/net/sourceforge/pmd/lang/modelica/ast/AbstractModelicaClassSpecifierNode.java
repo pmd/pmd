@@ -31,14 +31,14 @@ abstract class AbstractModelicaClassSpecifierNode extends AbstractModelicaNode i
                 InternalModelicaResolverApi.addExtendToClass(
                         classTypeDeclaration,
                         listNode.getVisibility(),
-                        child.getFirstChildOfType(ASTName.class).getCompositeName()
+                        child.firstChild(ASTName.class).getCompositeName()
                 );
             }
             if (child instanceof ASTImportClause) {
                 InternalModelicaResolverApi.addImportToClass(
                         classTypeDeclaration,
                         listNode.getVisibility(),
-                        child.getFirstChildOfType(ModelicaImportClause.class)
+                        child.firstChild(ModelicaImportClause.class)
                 );
             }
         }

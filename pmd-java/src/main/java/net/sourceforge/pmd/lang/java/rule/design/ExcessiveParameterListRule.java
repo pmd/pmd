@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.design;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
-import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
 import net.sourceforge.pmd.lang.java.rule.internal.AbstractJavaCounterCheckRule;
 
 /**

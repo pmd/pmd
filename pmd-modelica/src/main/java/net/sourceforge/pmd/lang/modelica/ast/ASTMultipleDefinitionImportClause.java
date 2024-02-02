@@ -32,8 +32,8 @@ public final class ASTMultipleDefinitionImportClause extends AbstractModelicaImp
     @Override
     public void jjtClose() {
         super.jjtClose();
-        importFrom = getFirstChildOfType(ASTName.class);
-        ASTImportList importList = getFirstChildOfType(ASTImportList.class);
+        importFrom = firstChild(ASTName.class);
+        ASTImportList importList = firstChild(ASTImportList.class);
         for (int i = 0; i < importList.getNumChildren(); ++i) {
             ASTSimpleName namePart = (ASTSimpleName) importList.getChild(i);
             importedNames.add(namePart.getName());

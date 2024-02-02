@@ -22,7 +22,7 @@ public class FooRule extends AbstractApexRule {
     @Override
     public Object visit(ASTUserClass c, Object ctx) {
         if (c.getSimpleName().equalsIgnoreCase("Foo")) {
-            addViolation(ctx, c);
+            asCtx(ctx).addViolation(c);
         }
         return super.visit(c, ctx);
     }
@@ -30,7 +30,7 @@ public class FooRule extends AbstractApexRule {
     @Override
     public Object visit(ASTVariableDeclaration c, Object ctx) {
         if (c.getImage().equalsIgnoreCase("Foo")) {
-            addViolation(ctx, c);
+            asCtx(ctx).addViolation(c);
         }
         return super.visit(c, ctx);
     }
@@ -38,7 +38,7 @@ public class FooRule extends AbstractApexRule {
     @Override
     public Object visit(ASTField c, Object ctx) {
         if (c.getImage().equalsIgnoreCase("Foo")) {
-            addViolation(ctx, c);
+            asCtx(ctx).addViolation(c);
         }
         return super.visit(c, ctx);
     }
@@ -46,7 +46,7 @@ public class FooRule extends AbstractApexRule {
     @Override
     public Object visit(ASTParameter c, Object ctx) {
         if (c.getImage().equalsIgnoreCase("Foo")) {
-            addViolation(ctx, c);
+            asCtx(ctx).addViolation(c);
         }
         return super.visit(c, ctx);
     }

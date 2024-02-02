@@ -117,14 +117,14 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
 
     /**
      * Called by the parser if this ambiguous name was expected to be
-     * a type name. Then we simply promote it to an {@link ASTClassOrInterfaceType}
+     * a type name. Then we simply promote it to an {@link ASTClassType}
      * with the appropriate LHS.
      *
      * @return the node which will replace this node in the tree
      */
-    ASTClassOrInterfaceType forceTypeContext() {
+    ASTClassType forceTypeContext() {
         // same, there's no parent here
-        return shrinkOneSegment(ASTClassOrInterfaceType::new, ASTClassOrInterfaceType::new);
+        return shrinkOneSegment(ASTClassType::new, ASTClassType::new);
     }
 
 

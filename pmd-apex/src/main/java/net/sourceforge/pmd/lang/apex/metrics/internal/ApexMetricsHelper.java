@@ -29,7 +29,7 @@ public final class ApexMetricsHelper {
      * @return The complexity of the expression
      */
     static int booleanExpressionComplexity(ASTStandardCondition expression) {
-        Set<ASTBooleanExpression> subs = new HashSet<>(expression.findDescendantsOfType(ASTBooleanExpression.class));
+        Set<ASTBooleanExpression> subs = new HashSet<>(expression.descendants(ASTBooleanExpression.class).toList());
         int complexity = 0;
 
         for (ASTBooleanExpression sub : subs) {

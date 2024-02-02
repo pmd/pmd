@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.UnaryOp;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
@@ -153,7 +153,7 @@ public class UnusedAssignmentRule extends AbstractJavaRulechainRule {
                 // practice for exceptions, and may be useful for resources/foreach vars
                 continue;
             }
-            addViolationWithMessage(ruleCtx, entry.getLocation(), makeMessage(entry, reason, entry.isField()));
+            ruleCtx.addViolationWithMessage(entry.getLocation(), makeMessage(entry, reason, entry.isField()));
         }
     }
 
@@ -161,7 +161,7 @@ public class UnusedAssignmentRule extends AbstractJavaRulechainRule {
         return !getProperty(REPORT_UNUSED_VARS) && (entry.isInitializer() || entry.isBlankDeclaration());
     }
 
-    private static String getKind(ASTVariableDeclaratorId id) {
+    private static String getKind(ASTVariableId id) {
         if (id.isField()) {
             return "field";
         } else if (id.isResourceDeclaration()) {

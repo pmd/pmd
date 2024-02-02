@@ -10,13 +10,13 @@ import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
@@ -62,12 +62,12 @@ public class UnsynchronizedStaticFormatterRule extends AbstractJavaRulechainRule
         if (!node.hasModifiers(JModifier.STATIC)) {
             return data;
         }
-        ASTClassOrInterfaceType cit = node.descendants(ASTClassOrInterfaceType.class).first();
+        ASTClassType cit = node.descendants(ASTClassType.class).first();
         if (cit == null || !TypeTestUtil.isA(formatterClassToCheck, cit)) {
             return data;
         }
 
-        ASTVariableDeclaratorId var = node.descendants(ASTVariableDeclaratorId.class).first();
+        ASTVariableId var = node.descendants(ASTVariableId.class).first();
         for (String formatter: THREAD_SAFE_FORMATTER) {
             if (TypeTestUtil.isA(formatter, var)) {
                 return data;
@@ -102,7 +102,7 @@ public class UnsynchronizedStaticFormatterRule extends AbstractJavaRulechainRule
                 }
             }
 
-            addViolation(data, n);
+            asCtx(data).addViolation(n);
         }
         return data;
     }

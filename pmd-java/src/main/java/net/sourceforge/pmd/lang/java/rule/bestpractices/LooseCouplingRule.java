@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTArrayType;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTClassLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExtendsList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -37,29 +37,29 @@ public class LooseCouplingRule extends AbstractJavaRulechainRule {
                        .build();
 
     public LooseCouplingRule() {
-        super(ASTClassOrInterfaceType.class);
+        super(ASTClassType.class);
         definePropertyDescriptor(ALLOWED_TYPES);
     }
 
     @Override
-    public Object visit(ASTClassOrInterfaceType node, Object data) {
+    public Object visit(ASTClassType node, Object data) {
         if (isConcreteCollectionType(node)
             && !isInOverriddenMethodSignature(node)
             && !isInAllowedSyntacticCtx(node)
             && !isAllowedType(node)
             && !isTypeParameter(node)) {
-            addViolation(data, node, node.getSimpleName());
+            asCtx(data).addViolation(node, node.getSimpleName());
         }
         return null;
     }
 
-    private boolean isInAllowedSyntacticCtx(ASTClassOrInterfaceType node) {
+    private boolean isInAllowedSyntacticCtx(ASTClassType node) {
         JavaNode parent = node.getParent();
         return parent instanceof ASTConstructorCall      // new ArrayList<>()
             || parent instanceof ASTTypeExpression       // instanceof, method reference
             || parent instanceof ASTCastExpression       // if we allow instanceof, we should allow cast
             || parent instanceof ASTClassLiteral         // ArrayList.class
-            || parent instanceof ASTClassOrInterfaceType // AbstractMap.SimpleEntry
+            || parent instanceof ASTClassType // AbstractMap.SimpleEntry
             || parent instanceof ASTExtendsList          // extends AbstractMap<...>
             || parent instanceof ASTThisExpression       // Enclosing.this
             || parent instanceof ASTSuperExpression      // Enclosing.super
@@ -67,7 +67,7 @@ public class LooseCouplingRule extends AbstractJavaRulechainRule {
             || parent instanceof ASTArrayType && parent.getParent() instanceof ASTArrayAllocation;
     }
 
-    private boolean isAllowedType(ASTClassOrInterfaceType node) {
+    private boolean isAllowedType(ASTClassType node) {
         for (String allowed : getProperty(ALLOWED_TYPES)) {
             if (TypeTestUtil.isA(allowed, node)) {
                 return true;
@@ -77,7 +77,7 @@ public class LooseCouplingRule extends AbstractJavaRulechainRule {
     }
 
 
-    private boolean isConcreteCollectionType(ASTClassOrInterfaceType node) {
+    private boolean isConcreteCollectionType(ASTClassType node) {
         return (TypeTestUtil.isA(Collection.class, node) || TypeTestUtil.isA(Map.class, node))
             && !node.getTypeMirror().isInterface();
     }
@@ -88,7 +88,7 @@ public class LooseCouplingRule extends AbstractJavaRulechainRule {
         return ancestor instanceof ASTMethodDeclaration && ((ASTMethodDeclaration) ancestor).isOverridden();
     }
 
-    private boolean isTypeParameter(ASTClassOrInterfaceType node) {
+    private boolean isTypeParameter(ASTClassType node) {
         return node.getTypeMirror().isTypeVariable();
     }
 }

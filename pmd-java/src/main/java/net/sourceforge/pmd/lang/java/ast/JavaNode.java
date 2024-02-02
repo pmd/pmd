@@ -44,10 +44,10 @@ public interface JavaNode extends JjtreeNode<JavaNode> {
      * This includes {@linkplain ASTImportDeclaration ImportDeclaration},
      * {@linkplain ASTModuleDeclaration ModuleDeclaration},
      * {@linkplain ASTCompilationUnit CompilationUnit}, and top-level
-     * {@linkplain ASTAnyTypeDeclaration AnyTypeDeclaration}s.
+     * {@linkplain ASTTypeDeclaration TypeDeclaration}s.
      */
-    default ASTAnyTypeDeclaration getEnclosingType() {
-        return getFirstParentOfType(ASTAnyTypeDeclaration.class);
+    default ASTTypeDeclaration getEnclosingType() {
+        return ancestors(ASTTypeDeclaration.class).first();
     }
 
 

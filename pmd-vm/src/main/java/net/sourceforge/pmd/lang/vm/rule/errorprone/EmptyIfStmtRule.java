@@ -31,8 +31,8 @@ public class EmptyIfStmtRule extends AbstractVmRule {
     }
 
     private void handleIf(final VmNode node, final Object data) {
-        if (node.getFirstChildOfType(ASTBlock.class).isEmpty()) {
-            addViolation(data, node);
+        if (node.firstChild(ASTBlock.class).isEmpty()) {
+            asCtx(data).addViolation(node);
         }
     }
 }

@@ -8,7 +8,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -30,7 +30,7 @@ public class AddEmptyStringRule extends AbstractJavaRulechainRule {
         JavaNode parent = node.getParent();
         checkExpr(data, parent);
         if (parent instanceof ASTVariableDeclarator) {
-            ASTVariableDeclaratorId varId = ((ASTVariableDeclarator) parent).getVarId();
+            ASTVariableId varId = ((ASTVariableDeclarator) parent).getVarId();
             if (varId.hasModifiers(JModifier.FINAL)) {
                 for (ASTNamedReferenceExpr usage : varId.getLocalUsages()) {
                     checkExpr(data, usage.getParent());
@@ -43,7 +43,7 @@ public class AddEmptyStringRule extends AbstractJavaRulechainRule {
     private void checkExpr(Object data, JavaNode parent) {
         if (JavaAstUtils.isInfixExprWithOperator(parent, BinaryOp.ADD)
             && parent.ancestors(ASTAnnotation.class).isEmpty()) {
-            addViolation(data, parent);
+            asCtx(data).addViolation(parent);
         }
     }
 }

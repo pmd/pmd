@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
-import java.net.URL;
+import java.io.InputStream;
 import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -23,9 +23,9 @@ public interface Classpath {
      *
      * @param resourcePath Resource path, as described in {@link ClassLoader#getResource(String)}
      *
-     * @return A URL if the resource exists, otherwise null
+     * @return A InputStream if the resource exists, otherwise null
      */
-    @Nullable URL findResource(String resourcePath);
+    @Nullable InputStream findResource(String resourcePath);
 
     // <editor-fold  defaultstate="collapsed" desc="Transformation methods (defaults)">
 
@@ -42,7 +42,7 @@ public interface Classpath {
 
     default Classpath delegateTo(Classpath c) {
         return path -> {
-            URL p = findResource(path);
+            InputStream p = findResource(path);
             if (p != null) {
                 return p;
             }
@@ -56,11 +56,11 @@ public interface Classpath {
 
 
     /**
-     * Returns a classpath instance that uses {@link ClassLoader#getResource(String)}
+     * Returns a classpath instance that uses {@link ClassLoader#getResourceAsStream(String)}
      * to find resources.
      */
     static Classpath forClassLoader(ClassLoader classLoader) {
-        return classLoader::getResource;
+        return classLoader::getResourceAsStream;
     }
 
     static Classpath contextClasspath() {

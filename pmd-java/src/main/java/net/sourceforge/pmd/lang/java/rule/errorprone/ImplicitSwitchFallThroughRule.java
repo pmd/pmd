@@ -40,7 +40,7 @@ public class ImplicitSwitchFallThroughRule extends AbstractJavaRulechainRule {
                 if (bool != OptionalBool.NO
                     && fallthrough.getStatements().nonEmpty()
                     && !nextBranchHasComment(branch)) {
-                    addViolation(data, branch.getNextBranch().getLabel());
+                    asCtx(data).addViolation(branch.getNextBranch().getLabel());
                 }
             } else {
                 return null;

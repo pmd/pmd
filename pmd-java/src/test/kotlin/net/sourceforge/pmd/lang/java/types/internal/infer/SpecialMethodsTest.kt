@@ -109,7 +109,7 @@ class SpecialMethodsTest : ProcessorTestSpec({
         """.trimIndent()
         )
 
-        val t_Foo = acu.descendants(ASTAnyTypeDeclaration::class.java).firstOrThrow().typeMirror
+        val t_Foo = acu.descendants(ASTTypeDeclaration::class.java).firstOrThrow().typeMirror
 
         val streamCall = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
@@ -137,7 +137,7 @@ class SpecialMethodsTest : ProcessorTestSpec({
 
         """.trimIndent())
 
-        val t_Scratch = acu.descendants(ASTAnyTypeDeclaration::class.java).firstOrThrow().typeMirror
+        val t_Scratch = acu.descendants(ASTTypeDeclaration::class.java).firstOrThrow().typeMirror
 
         val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 

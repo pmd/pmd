@@ -72,14 +72,14 @@ public class SidebarGenerator {
             Map<String, Object> ruleIndexSubfolderItem = new LinkedHashMap<>();
             ruleIndexSubfolderItem.put("title", "Index");
             ruleIndexSubfolderItem.put("output", "web, pdf");
-            ruleIndexSubfolderItem.put("url", "/pmd_rules_" + entry.getKey().getTerseName() + ".html");
+            ruleIndexSubfolderItem.put("url", "/pmd_rules_" + entry.getKey().getId() + ".html");
             subfolderitems.add(ruleIndexSubfolderItem);
 
             for (RuleSet ruleset : entry.getValue()) {
                 Map<String, Object> subfolderitem = new LinkedHashMap<>();
                 subfolderitem.put("title", ruleset.getName());
                 subfolderitem.put("output", "web, pdf");
-                subfolderitem.put("url", "/pmd_rules_" + entry.getKey().getTerseName() + "_" + RuleSetUtils.getRuleSetFilename(ruleset) + ".html");
+                subfolderitem.put("url", "/pmd_rules_" + entry.getKey().getId() + "_" + RuleSetUtils.getRuleSetFilename(ruleset) + ".html");
                 subfolderitems.add(subfolderitem);
             }
 

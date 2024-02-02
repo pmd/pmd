@@ -1146,6 +1146,10 @@
         </profile>
 
         <profile>
+            <!--
+              Configuration: https://docs.sonarsource.com/sonarcloud/advanced-setup/ci-based-analysis/sonarscanner-for-maven/
+              Report is available here: https://sonarcloud.io/dashboard?id=net.sourceforge.pmd%3Apmd
+            -->
             <id>sonar</id>
             <properties>
                 <sonar.host.url>https://sonarcloud.io</sonar.host.url>
@@ -1158,7 +1162,7 @@
                         <plugin>
                             <groupId>org.sonarsource.scanner.maven</groupId>
                             <artifactId>sonar-maven-plugin</artifactId>
-                            <version>3.7.0.1746</version>
+                            <version>3.10.0.2594</version>
                         </plugin>
                     </plugins>
                 </pluginManagement>
@@ -1180,9 +1184,11 @@
         </profile>
 
         <profile>
-            <id>cli-dist</id>
+            <id>cli-dist-modules</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>!skip-cli-dist</name>
+                </property>
             </activation>
             <modules>
                 <module>pmd-cli</module>

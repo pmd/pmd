@@ -27,7 +27,7 @@ public final class ASTFieldDeclaration extends AbstractApexNode<FieldDeclaration
         if (node.getFieldInfo() != null) {
             return node.getFieldInfo().getName();
         }
-        ASTVariableExpression variable = getFirstChildOfType(ASTVariableExpression.class);
+        ASTVariableExpression variable = firstChild(ASTVariableExpression.class);
         if (variable != null) {
             return variable.getImage();
         }

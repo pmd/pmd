@@ -80,7 +80,7 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRulechainRule {
             boolean checkIPv4MappedIPv6 = kindsToCheck.contains(AddressKinds.IPV4_MAPPED_IPV6);
 
             if (checkIPv4 && isIPv4(firstChar, image) || isIPv6(firstChar, image, checkIPv6, checkIPv4MappedIPv6)) {
-                addViolation(data, node);
+                asCtx(data).addViolation(node);
             }
         }
         return data;

@@ -21,21 +21,23 @@ import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
  *
  * <pre class="grammar">
  *
- * AnyTypeDeclaration ::= {@link ASTClassOrInterfaceDeclaration ClassOrInterfaceDeclaration}
- *                      | {@link ASTAnonymousClassDeclaration AnonymousClassDeclaration}
- *                      | {@link ASTEnumDeclaration EnumDeclaration}
- *                      | {@link ASTAnnotationTypeDeclaration AnnotationTypeDeclaration}
- *                      | {@link ASTRecordDeclaration RecordDeclaration}
+ * TypeDeclaration ::= {@link ASTClassDeclaration ClassDeclaration}
+ *                   | {@link ASTAnonymousClassDeclaration AnonymousClassDeclaration}
+ *                   | {@link ASTEnumDeclaration EnumDeclaration}
+ *                   | {@link ASTAnnotationTypeDeclaration AnnotationTypeDeclaration}
+ *                   | {@link ASTRecordDeclaration RecordDeclaration}
  *
  * </pre>
+ *
+ * <p>Note: In PMD 6, there was a node with this name (ASTTypeDeclaration) which was a top-level wrapper
+ * node around type declarations. This node has been removed in PMD 7 and the name has been reused.
  */
-public interface ASTAnyTypeDeclaration
+public interface ASTTypeDeclaration
     extends TypeNode,
-            AccessNode,
+        ModifierOwner,
             TypeParamOwnerNode,
             ASTBodyDeclaration,
             ASTTopLevelDeclaration,
-            FinalizableNode,
             JavadocCommentOwner {
 
     @Override
@@ -135,13 +137,25 @@ public interface ASTAnyTypeDeclaration
         return hasModifiers(ABSTRACT);
     }
 
+    /**
+     * Returns true if this type is static. Only inner types can be static.
+     */
+    @Override
+    default boolean isStatic() {
+        return hasModifiers(JModifier.STATIC);
+    }
+
+    @Override
+    default boolean isFinal() {
+        return hasModifiers(JModifier.FINAL);
+    }
 
     /**
      * Returns the enum constants declared by this enum. If this is not
      * an enum declaration, returns an empty stream.
      */
     default NodeStream<ASTEnumConstant> getEnumConstants() {
-        return getFirstChildOfType(ASTEnumBody.class).children(ASTEnumConstant.class);
+        return firstChild(ASTEnumBody.class).children(ASTEnumConstant.class);
     }
 
 
@@ -176,8 +190,8 @@ public interface ASTAnyTypeDeclaration
     /**
      * Returns the operations declared in this class (methods and constructors).
      */
-    default NodeStream<ASTMethodOrConstructorDeclaration> getOperations() {
-        return getDeclarations().filterIs(ASTMethodOrConstructorDeclaration.class);
+    default NodeStream<ASTExecutableDeclaration> getOperations() {
+        return getDeclarations().filterIs(ASTExecutableDeclaration.class);
     }
 
 
@@ -277,7 +291,7 @@ public interface ASTAnyTypeDeclaration
      * Returns the list of interfaces implemented by this class, or
      * extended by this interface. Returns null if no such list is declared.
      */
-    default @NonNull NodeStream<ASTClassOrInterfaceType> getSuperInterfaceTypeNodes() {
+    default @NonNull NodeStream<ASTClassType> getSuperInterfaceTypeNodes() {
         return ASTList.orEmptyStream(isInterface() ? firstChild(ASTExtendsList.class)
                                                    : firstChild(ASTImplementsList.class));
     }

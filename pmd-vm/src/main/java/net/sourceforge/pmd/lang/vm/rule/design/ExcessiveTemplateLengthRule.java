@@ -6,6 +6,9 @@ package net.sourceforge.pmd.lang.vm.rule.design;
 
 import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.lang.rule.internal.CommonPropertyDescriptors;
 import net.sourceforge.pmd.lang.vm.ast.ASTTemplate;
 import net.sourceforge.pmd.lang.vm.rule.AbstractVmRule;
@@ -22,14 +25,18 @@ public class ExcessiveTemplateLengthRule extends AbstractVmRule {
 
     public ExcessiveTemplateLengthRule() {
         definePropertyDescriptor(REPORT_LEVEL);
-        addRuleChainVisit(ASTTemplate.class);
+    }
+
+    @Override
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forTypes(ASTTemplate.class);
     }
 
     @Override
     public Object visit(final ASTTemplate node, final Object data) {
 
         if (node.getEndLine() - node.getBeginLine() >= getProperty(REPORT_LEVEL)) {
-            addViolation(data, node);
+            asCtx(data).addViolation(node);
         }
         return data;
     }

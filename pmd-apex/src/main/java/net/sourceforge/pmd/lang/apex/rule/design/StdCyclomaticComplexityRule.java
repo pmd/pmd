@@ -100,8 +100,8 @@ public class StdCyclomaticComplexityRule extends AbstractApexRule {
         Entry classEntry = entryStack.pop();
         if (showClassesComplexity) {
             if (classEntry.getComplexityAverage() >= reportLevel || classEntry.highestDecisionPoints >= reportLevel) {
-                addViolation(data, node, new String[] { "class", node.getImage(),
-                    classEntry.getComplexityAverage() + " (Highest = " + classEntry.highestDecisionPoints + ')', });
+                asCtx(data).addViolation(node, "class", node.getSimpleName(),
+                    classEntry.getComplexityAverage() + " (Highest = " + classEntry.highestDecisionPoints + ')');
             }
         }
         return data;
@@ -114,8 +114,8 @@ public class StdCyclomaticComplexityRule extends AbstractApexRule {
         Entry classEntry = entryStack.pop();
         if (showClassesComplexity) {
             if (classEntry.getComplexityAverage() >= reportLevel || classEntry.highestDecisionPoints >= reportLevel) {
-                addViolation(data, node, new String[] { "trigger", node.getImage(),
-                    classEntry.getComplexityAverage() + " (Highest = " + classEntry.highestDecisionPoints + ')', });
+                asCtx(data).addViolation(node, "trigger", node.getSimpleName(),
+                    classEntry.getComplexityAverage() + " (Highest = " + classEntry.highestDecisionPoints + ')');
             }
         }
         return data;
@@ -148,8 +148,8 @@ public class StdCyclomaticComplexityRule extends AbstractApexRule {
 
             if (showMethodsComplexity && methodEntry.decisionPoints >= reportLevel) {
                 String methodType = node.isConstructor() ? "constructor" : "method";
-                addViolation(data, node,
-                        new String[] { methodType, node.getImage(), String.valueOf(methodEntry.decisionPoints) });
+                asCtx(data).addViolation(node,
+                        methodType, node.getImage(), String.valueOf(methodEntry.decisionPoints));
             }
         }
         return data;

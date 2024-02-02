@@ -34,13 +34,13 @@ class EcmascriptParserTest extends EcmascriptParserTestBase {
         assertEquals(3, node.getEndLine());
         assertEquals(2, node.getEndColumn());
 
-        Node child = node.getFirstChildOfType(ASTFunctionNode.class);
+        Node child = node.firstChild(ASTFunctionNode.class);
         assertEquals(1, child.getBeginLine());
         assertEquals(1, child.getBeginColumn());
         assertEquals(3, child.getEndLine());
         assertEquals(2, child.getEndColumn());
 
-        child = node.getFirstDescendantOfType(ASTFunctionCall.class);
+        child = node.descendants(ASTFunctionCall.class).first();
         assertEquals(2, child.getBeginLine());
         assertEquals(3, child.getBeginColumn());
         assertEquals(2, child.getEndLine());
@@ -63,7 +63,7 @@ class EcmascriptParserTest extends EcmascriptParserTestBase {
         class MyEcmascriptRule extends AbstractEcmascriptRule {
 
             public Object visit(ASTScope node, Object data) {
-                addViolationWithMessage(data, node, "Scope from " + node.getBeginLine() + " to " + node.getEndLine());
+                asCtx(data).addViolationWithMessage(node, "Scope from " + node.getBeginLine() + " to " + node.getEndLine());
                 return super.visit(node, data);
             }
         }
@@ -82,8 +82,8 @@ class EcmascriptParserTest extends EcmascriptParserTestBase {
      */
     @Test
     void testArrayAccess() {
-        EcmascriptNode<AstRoot> node = js.parse("function a() { b['a'] = 1; c[1] = 2; fun()[1] = 1; }");
-        List<ASTElementGet> arrays = node.findDescendantsOfType(ASTElementGet.class);
+        EcmascriptNode<AstRoot> node = js.parse("function a() { b['a'] = 1; c[1] = 2; }");
+        List<ASTElementGet> arrays = node.descendants(ASTElementGet.class).toList();
         assertEquals("b", ((ASTName) arrays.get(0).getTarget()).getIdentifier());
         assertEquals("a", ((ASTStringLiteral) arrays.get(0).getElement()).getValue());
         assertEquals("c", ((ASTName) arrays.get(1).getTarget()).getIdentifier());
@@ -100,7 +100,7 @@ class EcmascriptParserTest extends EcmascriptParserTestBase {
             "function test(){\n" + "  a();      // OK\n" + "  b.c();    // OK\n" + "  d[0]();   // OK\n"
                 + "  e[0].f(); // OK\n" + "  y.z[0](); // FAIL ==> java.lang.NullPointerException\n" + "}");
 
-        List<ASTFunctionCall> calls = rootNode.findDescendantsOfType(ASTFunctionCall.class);
+        List<ASTFunctionCall> calls = rootNode.descendants(ASTFunctionCall.class).toList();
         List<String> results = new ArrayList<>();
         for (ASTFunctionCall f : calls) {
             Node node = f.getTarget();
@@ -132,7 +132,7 @@ class EcmascriptParserTest extends EcmascriptParserTestBase {
     @Test
     void testCaseAsIdentifier() {
         ASTAstRoot rootNode = js.parse("function f(a){\n" + "    a.case.flag = 1;\n" + "    return;\n" + "}");
-        ASTBlock block = rootNode.getFirstDescendantOfType(ASTBlock.class);
+        ASTBlock block = rootNode.descendants(ASTBlock.class).first();
         assertFalse(block.getChild(0) instanceof ASTEmptyExpression);
         assertTrue(block.getChild(0) instanceof ASTExpressionStatement);
         assertTrue(block.getChild(0).getChild(0) instanceof ASTAssignment);
@@ -164,7 +164,7 @@ class EcmascriptParserTest extends EcmascriptParserTestBase {
         ASTAstRoot rootNode = js.parse("function f(matchFn, fieldval, n){\n"
                                            + "    return (matchFn)?(matcharray = eval(matchFn+\"('\"+fieldval+\"','\"+n.id+\"')\")):void(0);\n"
                                            + "}\n");
-        ASTUnaryExpression unary = rootNode.getFirstDescendantOfType(ASTUnaryExpression.class);
+        ASTUnaryExpression unary = rootNode.descendants(ASTUnaryExpression.class).first();
         assertEquals("void", unary.getOperator());
     }
 
@@ -176,7 +176,7 @@ class EcmascriptParserTest extends EcmascriptParserTestBase {
         ASTAstRoot rootNode = js.parse("function f() { var x = 2; x ^= 2; x &= 2; x |= 2; "
                                            + "x &&= true; x ||= false; x *= 2; x /= 2; x %= 2; x += 2; x -= 2; "
                                            + "x <<= 2; x >>= 2; x >>>= 2; }");
-        ASTAssignment infix = rootNode.getFirstDescendantOfType(ASTAssignment.class);
+        ASTAssignment infix = rootNode.descendants(ASTAssignment.class).first();
         assertEquals("^=", infix.getOperator());
     }
 

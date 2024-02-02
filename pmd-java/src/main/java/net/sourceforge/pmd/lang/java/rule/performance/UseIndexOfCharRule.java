@@ -26,7 +26,7 @@ public class UseIndexOfCharRule extends AbstractJavaRulechainRule {
                 && node.getArguments().size() >= 1) { // there are two overloads of each
                 ASTExpression arg = node.getArguments().get(0);
                 if (arg instanceof ASTStringLiteral && ((ASTStringLiteral) arg).getConstValue().length() == 1) {
-                    addViolation(data, node);
+                    asCtx(data).addViolation(node);
                 }
             }
         }

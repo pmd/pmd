@@ -27,7 +27,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
@@ -60,7 +60,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
         if (behavior == ForeachReassignOption.ALLOW) {
             return data;
         }
-        ASTVariableDeclaratorId loopVar = loopStmt.getVarId();
+        ASTVariableId loopVar = loopStmt.getVarId();
         boolean ignoreNext = behavior == ForeachReassignOption.FIRST_ONLY;
         for (ASTNamedReferenceExpr usage : loopVar.getLocalUsages()) {
             if (usage.getAccessType() == AccessType.WRITE) {
@@ -68,7 +68,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
                     ignoreNext = false;
                     continue;
                 }
-                addViolation(data, usage, loopVar.getName());
+                asCtx(data).addViolation(usage, loopVar.getName());
             } else {
                 ignoreNext = false;
             }
@@ -82,21 +82,21 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
         if (behavior == ForReassignOption.ALLOW) {
             return data;
         }
-        NodeStream<ASTVariableDeclaratorId> loopVars = JavaAstUtils.getLoopVariables(loopStmt);
+        NodeStream<ASTVariableId> loopVars = JavaAstUtils.getLoopVariables(loopStmt);
         if (behavior == ForReassignOption.DENY) {
             ASTForUpdate update = loopStmt.firstChild(ASTForUpdate.class);
-            for (ASTVariableDeclaratorId loopVar : loopVars) {
+            for (ASTVariableId loopVar : loopVars) {
                 for (ASTNamedReferenceExpr usage : loopVar.getLocalUsages()) {
                     if (usage.getAccessType() == AccessType.WRITE) {
                         if (update != null && usage.ancestors(ASTForUpdate.class).first() == update) {
                             continue;
                         }
-                        addViolation(data, usage, loopVar.getName());
+                        asCtx(data).addViolation(usage, loopVar.getName());
                     }
                 }
             }
         } else {
-            Set<String> loopVarNames = loopVars.collect(Collectors.mapping(ASTVariableDeclaratorId::getName, Collectors.toSet()));
+            Set<String> loopVarNames = loopVars.collect(Collectors.mapping(ASTVariableId::getName, Collectors.toSet()));
             Set<String> labels = JavaAstUtils.getStatementLabels(loopStmt);
             new ControlFlowCtx(false, loopVarNames, (RuleContext) data, labels, false, false).roamStatementsForExit(loopStmt.getBody());
         }
@@ -204,7 +204,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
                 .filter(it -> loopVarNames.contains(it.getName()))
                 .filter(it -> onlyConsiderWrite ? JavaAstUtils.isVarAccessStrictlyWrite(it)
                                                 : JavaAstUtils.isVarAccessReadAndWrite(it))
-                .forEach(it -> addViolation(ruleCtx, it, it.getName()));
+                .forEach(it -> asCtx(ruleCtx).addViolation(it, it.getName()));
         }
     }
 

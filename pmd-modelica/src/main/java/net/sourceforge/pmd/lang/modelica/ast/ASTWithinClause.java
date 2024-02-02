@@ -15,7 +15,7 @@ public final class ASTWithinClause extends AbstractModelicaNode {
     }
 
     public String getName() {
-        ASTName name = getFirstChildOfType(ASTName.class);
+        ASTName name = firstChild(ASTName.class);
         if (name != null) {
             return name.getName();
         }

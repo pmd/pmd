@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.vm.rule.bestpractices;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.vm.ast.ASTDirective;
@@ -19,15 +18,13 @@ public class AvoidReassigningParametersRule extends AbstractVmRule {
     public Object visit(final ASTDirective node, final Object data) {
         if ("macro".equals(node.getDirectiveName())) {
             final Set<String> paramNames = new HashSet<>();
-            final List<ASTReference> params = node.findChildrenOfType(ASTReference.class);
-            for (final ASTReference param : params) {
+            for (final ASTReference param : node.children(ASTReference.class)) {
                 paramNames.add(param.getFirstToken().getImage());
             }
-            final List<ASTSetDirective> assignments = node.findDescendantsOfType(ASTSetDirective.class);
-            for (final ASTSetDirective assignment : assignments) {
-                final ASTReference ref = assignment.getFirstChildOfType(ASTReference.class);
+            for (final ASTSetDirective assignment : node.descendants(ASTSetDirective.class)) {
+                final ASTReference ref = assignment.firstChild(ASTReference.class);
                 if (ref != null && paramNames.contains(ref.getFirstToken().getImage())) {
-                    addViolation(data, node, ref.getFirstToken().getImage());
+                    asCtx(data).addViolation(node, ref.getFirstToken().getImage());
                 }
             }
         }

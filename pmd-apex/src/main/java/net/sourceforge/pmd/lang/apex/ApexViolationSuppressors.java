@@ -94,7 +94,7 @@ final class ApexViolationSuppressors {
     private static boolean suppresses(ASTAnnotation annot, Rule rule) {
         final String ruleAnno = "PMD." + rule.getName();
 
-        if ("SuppressWarnings".equals(annot.getName())) {
+        if ("SuppressWarnings".equalsIgnoreCase(annot.getName())) {
             for (ASTAnnotationParameter param : annot.children(ASTAnnotationParameter.class)) {
                 String image = param.getValue();
 

@@ -142,14 +142,14 @@ $construct
             acu.typeDeclarations.firstOrThrow().getDeclarations().firstOrThrow()
 }
 
-object TopLevelTypeDeclarationParsingCtx : NodeParsingCtx<ASTAnyTypeDeclaration>("top-level declaration") {
+object TopLevelTypeDeclarationParsingCtx : NodeParsingCtx<ASTTypeDeclaration>("top-level declaration") {
 
     override fun getTemplate(construct: String, ctx: ParserTestCtx): String = """
             ${ctx.imports.joinToString(separator = "\n")}
             $construct
             """.trimIndent()
 
-    override fun retrieveNode(acu: ASTCompilationUnit): ASTAnyTypeDeclaration = acu.typeDeclarations.firstOrThrow()
+    override fun retrieveNode(acu: ASTCompilationUnit): ASTTypeDeclaration = acu.typeDeclarations.firstOrThrow()
 }
 
 object TypeParsingCtx : NodeParsingCtx<ASTType>("type") {

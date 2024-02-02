@@ -29,7 +29,7 @@ class Java7InferenceTest : ProcessorTestSpec({
             """
         )
 
-        val (t_Gen) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_Gen) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
         val (genCall) = acu.descendants(ASTConstructorCall::class.java).toList()
 
         spy.shouldBeOk {
@@ -52,7 +52,7 @@ class Java7InferenceTest : ProcessorTestSpec({
             """
         )
 
-        val (t_Gen) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_Gen) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
         val (genCall) = acu.descendants(ASTConstructorCall::class.java).toList()
 
@@ -75,7 +75,7 @@ class Java7InferenceTest : ProcessorTestSpec({
             """
         )
 
-        val (t_Gen) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_Gen) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
         val (genCall) = acu.descendants(ASTConstructorCall::class.java).toList()
 
@@ -100,7 +100,7 @@ class Java7InferenceTest : ProcessorTestSpec({
             class Sup<T> {}
             """
         )
-        val (t_Gen) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_Gen) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
 
         val (conditional) = acu.descendants(ASTConditionalExpression::class.java).toList()
@@ -135,7 +135,7 @@ class Java7InferenceTest : ProcessorTestSpec({
             class Sup<T> {}
             """
         )
-        val (t_Gen, t_Sup) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_Gen, t_Sup) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
 
         val (genDiamond, genDiamondString, genString) = acu.ctorCalls().toList()
@@ -172,7 +172,7 @@ class Java7InferenceTest : ProcessorTestSpec({
             class Sup<T> {}
             """
         )
-        val (t_Gen, t_Sup) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_Gen, t_Sup) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
 
         val (genDiamond, genDiamondString, genString) = acu.ctorCalls().toList()

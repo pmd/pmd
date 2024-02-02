@@ -23,7 +23,7 @@ public final class ASTSimpleShortClassSpecifier extends AbstractModelicaClassSpe
         InternalModelicaResolverApi.addExtendToClass(
                 classTypeDeclaration,
                 Visibility.UNSPEC,
-                getFirstChildOfType(ASTName.class).getCompositeName()
+                firstChild(ASTName.class).getCompositeName()
         );
     }
 }

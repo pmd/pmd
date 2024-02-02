@@ -106,10 +106,16 @@ in the Migration Guide.
 * core
   * [#1027](https://github.com/pmd/pmd/issues/1027): \[core] Apply the new PropertyDescriptor&lt;Pattern&gt; type where applicable
   * [#4674](https://github.com/pmd/pmd/issues/4674): \[core] WARNING: Illegal reflective access by org.codehaus.groovy.reflection.CachedClass
+  * [#4694](https://github.com/pmd/pmd/pull/4694):   \[core] Fix line/col numbers in TokenMgrError
+  * [#4717](https://github.com/pmd/pmd/issues/4717): \[core] XSLTRenderer doesn't close report file
   * [#4750](https://github.com/pmd/pmd/pull/4750):   \[core] Fix flaky SummaryHTMLRenderer
   * [#4782](https://github.com/pmd/pmd/pull/4782):   \[core] Avoid using getImage/@<!-- -->Image
 * doc
+  * [#995](https://github.com/pmd/pmd/issues/995):   \[doc] Document API evolution principles as ADR
+  * [#2511](https://github.com/pmd/pmd/issues/2511): \[doc] Review guides for writing java/xpath rules for correctness with PMD 7
   * [#3175](https://github.com/pmd/pmd/issues/3175): \[doc] Document language module features
+  * [#4308](https://github.com/pmd/pmd/issues/4308): \[doc] Document XPath API @<!-- ->NoAttribute and @<!-- -->DeprecatedAttribute
+  * [#4319](https://github.com/pmd/pmd/issues/4319): \[doc] Document TypeRes API and Symbols API
   * [#4659](https://github.com/pmd/pmd/pull/4659):   \[doc] Improve ant documentation
   * [#4669](https://github.com/pmd/pmd/pull/4669):   \[doc] Add bld PMD Extension to Tools / Integrations
   * [#4676](https://github.com/pmd/pmd/issues/4676): \[doc] Clarify how CPD `--ignore-literals` and `--ignore-identifiers` work
@@ -117,6 +123,7 @@ in the Migration Guide.
   * [#4699](https://github.com/pmd/pmd/pull/4699):   Make PMD buildable with java 21
   * [#4586](https://github.com/pmd/pmd/pull/4586):   Use explicit encoding in ruleset xml files
   * [#4642](https://github.com/pmd/pmd/issues/4642): Update regression tests with Java 21 language features
+  * [#4736](https://github.com/pmd/pmd/issues/4736): \[ci] Improve build procedure
   * [#4741](https://github.com/pmd/pmd/pull/4741):   Add pmd-compat6 module for maven-pmd-plugin
   * [#4749](https://github.com/pmd/pmd/pull/4749):   Fixes NoSuchMethodError on processing errors in pmd-compat6
 * apex-performance
@@ -124,13 +131,19 @@ in the Migration Guide.
 * groovy
   * [#4726](https://github.com/pmd/pmd/pull/4726):   \[groovy] Support Groovy to 3 and 4 and CPD suppressions
 * java
+  * [#1307](https://github.com/pmd/pmd/issues/1307): \[java] AccessNode API changes
+  * [#3751](https://github.com/pmd/pmd/issues/3751): \[java] Rename some node types
+  * [#4628](https://github.com/pmd/pmd/pull/4628):   \[java] Support loading classes from java runtime images
   * [#4753](https://github.com/pmd/pmd/issues/4753): \[java] PMD crashes while using generics and wildcards
 * java-codestyle
   * [#2847](https://github.com/pmd/pmd/issues/2847): \[java] New Rule: Use Explicit Types
   * [#4578](https://github.com/pmd/pmd/issues/4578): \[java] CommentDefaultAccessModifier comment needs to be before annotation if present
   * [#4645](https://github.com/pmd/pmd/issues/4645): \[java] CommentDefaultAccessModifier - False Positive with JUnit5's ParameterizedTest
   * [#4754](https://github.com/pmd/pmd/pull/4754):   \[java] EmptyControlStatementRule: Add allowCommentedBlocks property
+* java-design
+  * [#174](https://github.com/pmd/pmd/issues/174):   \[java] SingularField false positive with switch in method that both assigns and reads field
 * java-errorprone
+  * [#718](https://github.com/pmd/pmd/issues/718):   \[java] BrokenNullCheck false positive with parameter/field confusion
   * [#1831](https://github.com/pmd/pmd/issues/1831): \[java] DetachedTestCase reports abstract methods
   * [#4719](https://github.com/pmd/pmd/pull/4719):   \[java] UnnecessaryCaseChange: example doc toUpperCase() should compare to a capitalized string
 * javascript
@@ -147,7 +160,7 @@ in the Migration Guide.
 See [General AST Changes to avoid @Image]({{ baseurl }}pmd_userdocs_migrating_to_pmd7.html#general-ast-changes-to-avoid-image)
 in the migration guide for details.
 
-**Removed classes and methods**
+**Removed classes and methods (previously deprecated)**
 
 The following previously deprecated classes have been removed:
 
@@ -160,6 +173,38 @@ The following previously deprecated classes have been removed:
 
       If the current version is needed, then `Node.getTextDocument().getLanguageVersion()` can be used. This
       is the version that has been selected via CLI `--use-version` parameter.
+
+**Removed classes, interfaces and methods (not previously deprecated)**
+
+* pmd-java
+  * The interface `FinalizableNode` (introduced in 7.0.0-rc1) has been removed.
+    Its method `isFinal()` has been moved down to the
+    nodes where needed, e.g. {% jdoc !!java::lang.java.ast.ASTLocalVariableDeclaration#isFinal() %}.
+  * The method `isPackagePrivate()` in {% jdoc java::lang.java.ast.ASTClassDeclaration %} (formerly ASTClassOrInterfaceDeclaration)
+    has been removed.
+    Use {% jdoc java::lang.java.ast.ModifierOwner#hasVisibility(java::lang.java.ast.ModifierOwner.Visibility) %} instead,
+    which can correctly differentiate between local and package private classes.
+
+**Renamed classes, interfaces**
+
+* pmd-java
+  * The interface `AccessNode` has been renamed to {% jdoc java::lang.ast.ModifierOwner %}. This is only relevant
+    for Java rules, which use that type directly e.g. through downcasting.
+    Or when using the XPath function `pmd-java:nodeIs()`.
+  * The node `ASTClassOrInterfaceType` has been renamed to {% jdoc java::lang.ast.ASTClassType %}. XPath rules
+    need to be adjusted.
+  * The node `ASTClassOrInterfaceDeclaration` has been renamed to {% jdoc java::lang.ast.ASTClassDeclaration %}.
+    XPath rules need to be adjusted.
+  * The interface `ASTAnyTypeDeclaration` has been renamed to {% jdoc java::lang.ast.ASTTypeDeclaration %}.
+    This is only relevant for Java rules, which use that type directly, e.g. through downcasting.
+    Or when using the XPath function `pmd-java:nodeIs()`.
+  * The interface `ASTMethodOrConstructorDeclaration` has been renamed to
+    {% jdoc java::lang.ast.ASTExecutableDeclaration %}. This is only relevant for Java rules, which sue that type
+    directly, e.g. through downcasting. Or when using the XPath function `pmd-java:nodeIs()`.
+  * The node `ASTVariableDeclaratorId` has been renamed to {% jdoc java::lang.ast.ASTVariableId %}. XPath rules
+    need to be adjusted.
+  * The node `ASTClassOrInterfaceBody` has been renamed to {% jdoc java::lang.ast.ASTClassBody %}. XPath rules
+    need to be adjusted.
 
 #### External Contributions
 * [#4640](https://github.com/pmd/pmd/pull/4640): \[cli] Launch script fails if run via "bash pmd" - [Shai Bennathan](https://github.com/shai-bennathan) (@shai-bennathan)
@@ -529,6 +574,7 @@ See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.
     * [#4642](https://github.com/pmd/pmd/issues/4642): Update regression tests with Java 21 language features
     * [#4691](https://github.com/pmd/pmd/issues/4691): \[CVEs] Critical and High CEVs reported on PMD and PMD dependencies
     * [#4699](https://github.com/pmd/pmd/pull/4699):   Make PMD buildable with java 21
+    * [#4736](https://github.com/pmd/pmd/issues/4736): \[ci] Improve build procedure
     * [#4741](https://github.com/pmd/pmd/pull/4741):   Add pmd-compat6 module for maven-pmd-plugin
     * [#4749](https://github.com/pmd/pmd/pull/4749):   Fixes NoSuchMethodError on processing errors in pmd-compat6
 * ant
@@ -577,6 +623,8 @@ See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.
     * [#4611](https://github.com/pmd/pmd/pull/4611):   \[core] Fix loading language properties from env vars
     * [#4621](https://github.com/pmd/pmd/issues/4621): \[core] Make `ClasspathClassLoader::getResource` child first
     * [#4674](https://github.com/pmd/pmd/issues/4674): \[core] WARNING: Illegal reflective access by org.codehaus.groovy.reflection.CachedClass
+    * [#4694](https://github.com/pmd/pmd/pull/4694):   \[core] Fix line/col numbers in TokenMgrError
+    * [#4717](https://github.com/pmd/pmd/issues/4717): \[core] XSLTRenderer doesn't close report file
     * [#4750](https://github.com/pmd/pmd/pull/4750):   \[core] Fix flaky SummaryHTMLRenderer
     * [#4782](https://github.com/pmd/pmd/pull/4782):   \[core] Avoid using getImage/@<!-- -->Image
 * cli
@@ -590,10 +638,14 @@ See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.
     * [#4685](https://github.com/pmd/pmd/pull/4685):   \[cli] Clarify CPD documentation, fix positional parameter handling
     * [#4723](https://github.com/pmd/pmd/issues/4723): \[cli] Launch fails for "bash pmd"
 * doc
+    * [#995](https://github.com/pmd/pmd/issues/995):   \[doc] Document API evolution principles as ADR
     * [#2501](https://github.com/pmd/pmd/issues/2501): \[doc] Verify ANTLR Documentation
+    * [#2511](https://github.com/pmd/pmd/issues/2511): \[doc] Review guides for writing java/xpath rules for correctness with PMD 7
     * [#3175](https://github.com/pmd/pmd/issues/3175): \[doc] Document language module features
     * [#4294](https://github.com/pmd/pmd/issues/4294): \[doc] Migration Guide for upgrading PMD 6 ➡️ 7
     * [#4303](https://github.com/pmd/pmd/issues/4303): \[doc] Document new property framework
+    * [#4308](https://github.com/pmd/pmd/issues/4308): \[doc] Document XPath API @<!-- ->NoAttribute and @<!-- -->DeprecatedAttribute
+    * [#4319](https://github.com/pmd/pmd/issues/4319): \[doc] Document TypeRes API and Symbols API
     * [#4438](https://github.com/pmd/pmd/issues/4438): \[doc] Documentation links in VS Code are outdated
     * [#4521](https://github.com/pmd/pmd/issues/4521): \[doc] Website is not mobile friendly
     * [#4676](https://github.com/pmd/pmd/issues/4676): \[doc] Clarify how CPD `--ignore-literals` and `--ignore-identifiers` work
@@ -635,6 +687,7 @@ Language specific fixes:
     * [#1128](https://github.com/pmd/pmd/issues/1128): \[java] Improve ASTLocalVariableDeclaration
     * [#1150](https://github.com/pmd/pmd/issues/1150): \[java] ClassOrInterfaceType AST improvements
     * [#1207](https://github.com/pmd/pmd/issues/1207): \[java] Resolve explicit types using FQCNs, without hitting the classloader
+    * [#1307](https://github.com/pmd/pmd/issues/1307): \[java] AccessNode API changes
     * [#1367](https://github.com/pmd/pmd/issues/1367): \[java] Parsing error on annotated inner class
     * [#1661](https://github.com/pmd/pmd/issues/1661): \[java] About operator nodes
     * [#2366](https://github.com/pmd/pmd/pull/2366):   \[java] Remove qualified names
@@ -643,6 +696,7 @@ Language specific fixes:
     * [#3763](https://github.com/pmd/pmd/issues/3763): \[java] Ambiguous reference error in valid code
     * [#3749](https://github.com/pmd/pmd/issues/3749): \[java] Improve `isOverridden` in ASTMethodDeclaration
     * [#3750](https://github.com/pmd/pmd/issues/3750): \[java] Make symbol table support instanceof pattern bindings
+    * [#3751](https://github.com/pmd/pmd/issues/3751): \[java] Rename some node types
     * [#3752](https://github.com/pmd/pmd/issues/3752): \[java] Expose annotations in symbol API
     * [#4237](https://github.com/pmd/pmd/pull/4237):   \[java] Cleanup handling of Java comments
     * [#4317](https://github.com/pmd/pmd/issues/4317): \[java] Some AST nodes should not be TypeNodes
@@ -652,6 +706,7 @@ Language specific fixes:
     * [#4401](https://github.com/pmd/pmd/issues/4401): \[java] PMD 7 fails to build under Java 19
     * [#4405](https://github.com/pmd/pmd/issues/4405): \[java] Processing error with ArrayIndexOutOfBoundsException
     * [#4583](https://github.com/pmd/pmd/issues/4583): \[java] Support JDK 21 (LTS)
+    * [#4628](https://github.com/pmd/pmd/pull/4628):   \[java] Support loading classes from java runtime images
     * [#4753](https://github.com/pmd/pmd/issues/4753): \[java] PMD crashes while using generics and wildcards
 * java-bestpractices
     * [#342](https://github.com/pmd/pmd/issues/342):   \[java] AccessorMethodGeneration: Name clash with another public field not properly handled
@@ -726,6 +781,7 @@ Language specific fixes:
     * [#4645](https://github.com/pmd/pmd/issues/4645): \[java] CommentDefaultAccessModifier - False Positive with JUnit5's ParameterizedTest
     * [#4754](https://github.com/pmd/pmd/pull/4754):   \[java] EmptyControlStatementRule: Add allowCommentedBlocks property
 * java-design
+    * [#174](https://github.com/pmd/pmd/issues/174):   \[java] SingularField false positive with switch in method that both assigns and reads field
     * [#1014](https://github.com/pmd/pmd/issues/1014): \[java] LawOfDemeter: False positive with lambda expression
     * [#1605](https://github.com/pmd/pmd/issues/1605): \[java] LawOfDemeter: False positive for standard UTF-8 charset name
     * [#2160](https://github.com/pmd/pmd/issues/2160): \[java] Issues with Law of Demeter
@@ -751,6 +807,7 @@ Language specific fixes:
     * [#4416](https://github.com/pmd/pmd/pull/4416):   \[java] Fix reported line number in CommentContentRule
 * java-errorprone
     * [#659](https://github.com/pmd/pmd/issues/659):   \[java] MissingBreakInSwitch - last default case does not contain a break
+    * [#718](https://github.com/pmd/pmd/issues/718):   \[java] BrokenNullCheck false positive with parameter/field confusion
     * [#1005](https://github.com/pmd/pmd/issues/1005): \[java] CloneMethodMustImplementCloneable triggers for interfaces
     * [#1669](https://github.com/pmd/pmd/issues/1669): \[java] NullAssignment - FP with ternay and null as constructor argument
     * [#1831](https://github.com/pmd/pmd/issues/1831): \[java] DetachedTestCase reports abstract methods

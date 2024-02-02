@@ -175,7 +175,7 @@ public class RuleDocGenerator {
      */
     private void generateLanguageIndex(Map<Language, List<RuleSet>> rulesets, Map<Language, List<RuleSet>> sortedAdditionalRulesets) throws IOException {
         for (Map.Entry<Language, List<RuleSet>> entry : rulesets.entrySet()) {
-            String languageTersename = entry.getKey().getTerseName();
+            String languageTersename = entry.getKey().getId();
             String filename = LANGUAGE_INDEX_FILENAME_PATTERN
                     .replace("${language.tersename}", languageTersename);
             Path path = getAbsoluteOutputPath(filename);
@@ -327,7 +327,7 @@ public class RuleDocGenerator {
     private void generateRuleSetIndex(Map<Language, List<RuleSet>> rulesets) throws IOException {
         for (Map.Entry<Language, List<RuleSet>> entry : rulesets.entrySet()) {
             Language language = entry.getKey();
-            String languageTersename = language.getTerseName();
+            String languageTersename = language.getId();
             String languageName = language.getName();
             for (RuleSet ruleset : entry.getValue()) {
                 String rulesetFilename = RuleSetUtils.getRuleSetFilename(ruleset);

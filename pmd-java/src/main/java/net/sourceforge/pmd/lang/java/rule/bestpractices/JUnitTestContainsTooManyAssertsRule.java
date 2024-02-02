@@ -36,7 +36,7 @@ public class JUnitTestContainsTooManyAssertsRule extends AbstractJavaRulechainRu
                                   .filter(TestFrameworksUtil::isProbableAssertCall)
                                   .count();
             if (assertCount > getProperty(MAX_ASSERTS)) {
-                addViolation(data, method);
+                asCtx(data).addViolation(method);
             }
         }
         return data;

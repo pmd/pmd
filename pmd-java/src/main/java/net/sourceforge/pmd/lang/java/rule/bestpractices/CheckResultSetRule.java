@@ -42,7 +42,7 @@ public class CheckResultSetRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTMethodCall node, Object data) {
         if (isResultSetMethod(node)) {
-            addViolation(data, node);
+            asCtx(data).addViolation(node);
         }
         return super.visit(node, data);
     }

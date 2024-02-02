@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.vm.rule.bestpractices;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.vm.ast.ASTBlock;
@@ -20,22 +19,21 @@ public class UnusedMacroParameterRule extends AbstractVmRule {
     public Object visit(final ASTDirective node, final Object data) {
         if ("macro".equals(node.getDirectiveName())) {
             final Set<String> paramNames = new HashSet<>();
-            final List<ASTReference> params = node.findChildrenOfType(ASTReference.class);
-            for (final ASTReference param : params) {
+            for (final ASTReference param : node.children(ASTReference.class)) {
                 paramNames.add(param.literal());
             }
-            final ASTBlock macroBlock = node.getFirstChildOfType(ASTBlock.class);
+            final ASTBlock macroBlock = node.firstChild(ASTBlock.class);
             if (macroBlock != null) {
-                for (final ASTReference referenceInMacro : macroBlock.findDescendantsOfType(ASTReference.class)) {
+                for (final ASTReference referenceInMacro : macroBlock.descendants(ASTReference.class)) {
                     checkForParameter(paramNames, referenceInMacro.literal());
                 }
-                for (final ASTStringLiteral literalInMacro : macroBlock.findDescendantsOfType(ASTStringLiteral.class)) {
+                for (final ASTStringLiteral literalInMacro : macroBlock.descendants(ASTStringLiteral.class)) {
                     final String text = literalInMacro.literal();
                     checkForParameter(paramNames, text);
                 }
             }
             if (!paramNames.isEmpty()) {
-                addViolation(data, node, paramNames.toString());
+                asCtx(data).addViolation(node, paramNames.toString());
             }
         }
         return super.visit(node, data);

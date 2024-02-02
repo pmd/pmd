@@ -42,7 +42,7 @@ import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
  *
  * </pre>
  */
-public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDeclaration<JMethodSymbol> {
+public final class ASTMethodDeclaration extends AbstractExecutableDeclaration<JMethodSymbol> {
 
     /**
      * Populated by {@link OverrideResolutionPass}.
@@ -132,6 +132,16 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
         return getResultTypeNode().isVoid();
     }
 
+    /** Returns true if this method is static. */
+    @Override
+    public boolean isStatic() {
+        return hasModifiers(JModifier.STATIC);
+    }
+
+    @Override
+    public boolean isFinal() {
+        return hasModifiers(JModifier.FINAL);
+    }
 
     /**
      * Returns the default clause, if this is an annotation method declaration

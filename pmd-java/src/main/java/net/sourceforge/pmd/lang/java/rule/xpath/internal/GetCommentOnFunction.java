@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaComment;
 import net.sourceforge.pmd.lang.rule.xpath.internal.AstElementNode;
@@ -63,9 +64,10 @@ public class GetCommentOnFunction extends BaseJavaXPathFunction {
                 int codeBeginLine = contextNode.getBeginLine();
                 int codeEndLine = contextNode.getEndLine();
 
-                List<JavaComment> commentList = contextNode.getFirstParentOfType(ASTCompilationUnit.class).getComments();
+                List<JavaComment> commentList = contextNode.ancestorsOrSelf().filterIs(ASTCompilationUnit.class).first().getComments();
                 for (JavaComment comment : commentList) {
-                    if (comment.getBeginLine() == codeBeginLine || comment.getEndLine() == codeEndLine) {
+                    FileLocation location = comment.getReportLocation();
+                    if (location.getStartLine() == codeBeginLine || location.getEndLine() == codeEndLine) {
                         return new StringValue(comment.getText());
                     }
                 }

@@ -856,4 +856,49 @@ public class Foo {
             }
             ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>#174 [java] SingularField false positive with switch in method that both assigns and reads field</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Perhaps 'singularField' could be replaced by a local variable.</message>
+        </expected-messages>
+        <code><![CDATA[
+package sample;
+
+public class Sample implements Listener {
+    private Timer timer; // false positive #174
+    private String singularField; // correct case
+
+    public void onEvent(int type) {
+        singularField = "test";
+        System.out.println(singularField);
+
+        switch (type) {
+            case 0: // START
+                timer = new Timer();
+                break;
+            case 1: // FINISHED
+                if (timer != null) {
+                    timer.logDuration();
+                }
+        }
+    }
+}
+
+class Timer {
+    private long start = System.currentTimeMillis();
+
+    public void logDuration() {
+        long duration = System.currentTimeMillis() - start;
+        System.out.printf("Duration: %d%n", (duration / 1000));
+    }
+}
+
+interface Listener {
+    void onEvent(int type);
+}
+        ]]></code>
+    </test-code>
 </test-data>

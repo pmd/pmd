@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 
-class ASTClassOrInterfaceDeclarationTest : ParserTestSpec({
+class ASTClassDeclarationTest : ParserTestSpec({
 
     parserTest("Local classes") {
 
@@ -67,9 +67,9 @@ class ASTClassOrInterfaceDeclarationTest : ParserTestSpec({
                     it::isNested shouldBe false
 
 
-                    it.descendants(ASTClassOrInterfaceDeclaration::class.java)
+                    it.descendants(ASTClassDeclaration::class.java)
                             .first()
-                            .shouldMatchNode<ASTClassOrInterfaceDeclaration> {
+                            .shouldMatchNode<ASTClassDeclaration> {
 
                                 it::getModifiers shouldBe modifiers {}
 

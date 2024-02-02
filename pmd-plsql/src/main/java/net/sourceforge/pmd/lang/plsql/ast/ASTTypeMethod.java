@@ -22,7 +22,7 @@ public final class ASTTypeMethod extends AbstractPLSQLNode implements Executable
      */
     @Override
     public String getMethodName() {
-        ASTMethodDeclarator md = getFirstChildOfType(ASTMethodDeclarator.class);
+        ASTMethodDeclarator md = firstChild(ASTMethodDeclarator.class);
         if (md != null) {
             return md.getImage();
         }

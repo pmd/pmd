@@ -37,4 +37,4 @@ The programmatic API for PMD is centered around {% jdoc core::PmdAnalysis %}, pl
 
 ## Running CPD programmatically
 
-The programmatic API for CPD is centered around {% jdoc core::CpdAnalysis %}, please see the javadocs for usage information.
+The programmatic API for CPD is centered around {% jdoc core::cpd.CpdAnalysis %}, please see the javadocs for usage information.

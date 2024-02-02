@@ -29,7 +29,7 @@ public class JavaVisitorBase<P, R> extends AstVisitorBase<P, R> implements JavaV
     // <editor-fold defaultstate="collapsed" desc="Methods/constructors">
 
 
-    public R visitMethodOrCtor(ASTMethodOrConstructorDeclaration node, P data) {
+    public R visitMethodOrCtor(ASTExecutableDeclaration node, P data) {
         return visitJavaNode(node, data);
     }
 
@@ -47,12 +47,12 @@ public class JavaVisitorBase<P, R> extends AstVisitorBase<P, R> implements JavaV
 
     // <editor-fold defaultstate="collapsed" desc="Type declarations">
 
-    public R visitTypeDecl(ASTAnyTypeDeclaration node, P data) {
+    public R visitTypeDecl(ASTTypeDeclaration node, P data) {
         return visitJavaNode(node, data);
     }
 
     @Override
-    public R visit(ASTClassOrInterfaceDeclaration node, P data) {
+    public R visit(ASTClassDeclaration node, P data) {
         return visitTypeDecl(node, data);
     }
 
@@ -119,7 +119,7 @@ public class JavaVisitorBase<P, R> extends AstVisitorBase<P, R> implements JavaV
     }
 
     @Override
-    public R visit(ASTClassOrInterfaceType node, P data) {
+    public R visit(ASTClassType node, P data) {
         return visitReferenceType(node, data);
     }
 

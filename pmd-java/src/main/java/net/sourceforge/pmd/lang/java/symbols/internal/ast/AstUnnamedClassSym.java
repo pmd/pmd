@@ -14,7 +14,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
@@ -35,7 +35,7 @@ class AstUnnamedClassSym extends EmptyClassSymbol implements JClassSymbol {
             myMethods.add(new AstMethodSym((ASTMethodDeclaration) dnode, factory, this));
         });
         node.children(ASTFieldDeclaration.class).forEach(dnode -> {
-            for (ASTVariableDeclaratorId varId : dnode.getVarIds()) {
+            for (ASTVariableId varId : dnode.getVarIds()) {
                 myFields.add(new AstFieldSym(varId, factory, this));
             }
         });

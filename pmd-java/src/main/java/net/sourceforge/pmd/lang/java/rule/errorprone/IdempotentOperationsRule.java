@@ -19,7 +19,7 @@ public class IdempotentOperationsRule extends AbstractJavaRulechainRule {
     public Object visit(ASTAssignmentExpression node, Object data) {
         if (node.getOperator() == AssignmentOp.ASSIGN
             && JavaAstUtils.isReferenceToSameVar(node.getLeftOperand(), node.getRightOperand())) {
-            addViolation(data, node);
+            asCtx(data).addViolation(node);
         }
         return null;
     }

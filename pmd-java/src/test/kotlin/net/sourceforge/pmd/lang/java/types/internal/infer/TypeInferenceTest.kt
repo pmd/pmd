@@ -325,7 +325,7 @@ class MyMap<K, V> {
 
         """.trimIndent())
 
-        val (t_MyMap, t_MyMapEntry, t_KeyIter) = acu.descendants(ASTAnyTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_MyMap, t_MyMapEntry, t_KeyIter) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
         val (kvar, vvar) = acu.descendants(ASTTypeParameter::class.java).toList { it.typeMirror }
 
         val ctorCall = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()

@@ -21,19 +21,19 @@ import net.sourceforge.pmd.util.AssertionUtil;
  *
  * <pre class="grammar">
  *
- * ClassOrInterfaceType ::= {@link ASTAnnotation Annotation}* &lt;IDENTIFIER&gt; {@link ASTTypeArguments TypeArguments}?
- *                        | ClassOrInterfaceType "." {@link ASTAnnotation Annotation}* &lt;IDENTIFIER&gt; {@link ASTTypeArguments TypeArguments}?
+ * ClassType ::= {@link ASTAnnotation Annotation}* &lt;IDENTIFIER&gt; {@link ASTTypeArguments TypeArguments}?
+ *                        | ClassType "." {@link ASTAnnotation Annotation}* &lt;IDENTIFIER&gt; {@link ASTTypeArguments TypeArguments}?
  *
  * </pre>
+ *
+ * <p>Note: This node was called ASTClassOrInterfaceType in PMD 6.
  *
  * @implNote
  * The parser may produce an AmbiguousName for the qualifier.
  * This is systematically removed by the disambiguation phase.
  */
 // @formatter:on
-public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implements ASTReferenceType {
-    // todo rename to ASTClassType
-
+public final class ASTClassType extends AbstractJavaTypeNode implements ASTReferenceType {
     private JTypeDeclSymbol symbol;
 
     private String simpleName;
@@ -43,8 +43,8 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
     private boolean isFqcn;
     private JClassType implicitEnclosing;
 
-    ASTClassOrInterfaceType(ASTAmbiguousName lhs, String simpleName) {
-        super(JavaParserImplTreeConstants.JJTCLASSORINTERFACETYPE);
+    ASTClassType(ASTAmbiguousName lhs, String simpleName) {
+        super(JavaParserImplTreeConstants.JJTCLASSTYPE);
         assert lhs != null : "Null LHS";
 
         this.addChild(lhs, 0);
@@ -53,8 +53,8 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
     }
 
 
-    ASTClassOrInterfaceType(ASTAmbiguousName simpleName) {
-        super(JavaParserImplTreeConstants.JJTCLASSORINTERFACETYPE);
+    ASTClassType(ASTAmbiguousName simpleName) {
+        super(JavaParserImplTreeConstants.JJTCLASSTYPE);
         this.simpleName = simpleName.getFirstToken().getImage();
 
         assertSimpleNameOk();
@@ -62,13 +62,13 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
 
     // Just for one usage in Symbol table
     @Deprecated
-    public ASTClassOrInterfaceType(String simpleName) {
-        super(JavaParserImplTreeConstants.JJTCLASSORINTERFACETYPE);
+    public ASTClassType(String simpleName) {
+        super(JavaParserImplTreeConstants.JJTCLASSTYPE);
         this.simpleName = simpleName;
     }
 
-    ASTClassOrInterfaceType(@Nullable ASTClassOrInterfaceType lhs, boolean isFqcn, JavaccToken firstToken, JavaccToken identifier) {
-        super(JavaParserImplTreeConstants.JJTCLASSORINTERFACETYPE);
+    ASTClassType(@Nullable ASTClassType lhs, boolean isFqcn, JavaccToken firstToken, JavaccToken identifier) {
+        super(JavaParserImplTreeConstants.JJTCLASSTYPE);
         this.setImage(identifier.getImage());
         this.isFqcn = isFqcn;
         if (lhs != null) {
@@ -79,7 +79,7 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
     }
 
 
-    ASTClassOrInterfaceType(int id) {
+    ASTClassType(int id) {
         super(id);
     }
 
@@ -141,8 +141,8 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
      * @return A type, or null if this is a base type
      */
     @Nullable
-    public ASTClassOrInterfaceType getQualifier() {
-        return getFirstChildOfType(ASTClassOrInterfaceType.class);
+    public ASTClassType getQualifier() {
+        return firstChild(ASTClassType.class);
     }
 
     /**
@@ -150,7 +150,7 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
      */
     @Nullable
     public ASTTypeArguments getTypeArguments() {
-        return getFirstChildOfType(ASTTypeArguments.class);
+        return firstChild(ASTTypeArguments.class);
     }
 
 
@@ -181,7 +181,7 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
     @Deprecated
     public boolean isReferenceToClassSameCompilationUnit() {
         ASTCompilationUnit root = getFirstParentOfType(ASTCompilationUnit.class);
-        for (ASTClassOrInterfaceDeclaration c : root.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class, true)) {
+        for (ASTClassDeclaration c : root.findDescendantsOfType(ASTClassDeclaration.class, true)) {
             if (c.hasImageEqualTo(getImage())) {
                 return true;
             }

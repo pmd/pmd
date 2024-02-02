@@ -38,7 +38,7 @@ There are a couple of deprecated things in PMD 6, you might encounter:
 * If you have written custom XPath rule, look out for warnings about deprecated XPath attributes. These warnings
   might look like
   ```
-  WARNING: Use of deprecated attribute 'VariableDeclaratorId/@Image' by XPath rule 'VariableNaming' (in ruleset 'VariableNamingRule'), please use @Name instead
+  WARNING: Use of deprecated attribute 'VariableId/@Image' by XPath rule 'VariableNaming' (in ruleset 'VariableNamingRule'), please use @Name instead
   ```
   and often already suggest an alternative.
 
@@ -83,6 +83,10 @@ Once you have reviewed your ruleset(s), you can switch to PMD 7.
 Ideally, you have written good tests already for your custom rules - see [Testing your rules](pmd_userdocs_extending_testing.html).
 This helps to identify problems early on.
 
+#### Ruleset XML
+The `<rule>` tag, that defines your custom rule, is required to have a `language` attribute now. This was always the
+case for XPath rules, but is now a requirement for Java rules.
+
 #### XPath rules
 If you have **XPath based** rules, the first step will be to migrate to XPath 2.0 and then to XPath 3.1.
 XPath 2.0 is available in PMD 6 already and can be used right away. PMD 7 will use by default XPath 3.1 and
@@ -96,6 +100,12 @@ See below [XPath](#xpath-migrating-from-10-to-20) for details.
 There are some general changes for AST nodes regarding the `@Image` attribute.
 See below [General AST Changes to avoid @Image](#general-ast-changes-to-avoid-image).
 
+Additional infos:
+* The custom XPath function `typeOf` has been removed (deprecated since 6.4.0).
+  Use the function `pmd-java:typeIs` or `pmd-java:typeIsExactly` instead.
+  See [PMD extension functions](pmd_userdocs_extending_writing_xpath_rules.html#pmd-extension-functions) for available
+  functions.
+
 #### Java rules
 If you have **Java based rules**, and you are using rulechain, this works a bit different now. The RuleChain API
 has changed, see [[core] Simplify the rulechain (#2490)](https://github.com/pmd/pmd/pull/2490) for the full details.
@@ -104,7 +114,7 @@ override the method {% jdoc core::lang.rule.AbstractRule#buildTargetSelector %}:
 
 ```java
     protected RuleTargetSelector buildTargetSelector() {
-        return RuleTargetSelector.forTypes(ASTVariableDeclaratorId.class);
+        return RuleTargetSelector.forTypes(ASTVariableId.class);
     }
 ```
 
@@ -321,7 +331,7 @@ Example:
 
 ```java
      NodeStream.of(someNode)                           // the stream here is empty if the node is null
-               .filterIs(ASTVariableDeclaratorId.class)// the stream here is empty if the node was not a variable declarator id
+               .filterIs(ASTVariableId.class)          // the stream here is empty if the node was not a variable id
                .followingSiblings()                    // the stream here contains only the siblings, not the original node
                .children(ASTNumericLiteral.class)
                .filter(ASTNumericLiteral::isIntLiteral)
@@ -531,11 +541,21 @@ which can also display the AST.
 
 {% jdoc_nspace :jast java::lang.java.ast %}
 
+#### Renamed classes / interfaces
+
+* AccessNode ➡️ {% jdoc jast::ModifierOwner %}
+* ClassOrInterfaceType ➡️ ClassType ({% jdoc jast::ASTClassType %})
+* ClassOrInterfaceDeclaration ➡️ ClassDeclaration ({% jdoc jast::ASTClassDeclaration %})
+* AnyTypeDeclaration ➡️ TypeDeclaration ({% jdoc jast::ASTTypeDeclaration %})
+* MethodOrConstructorDeclaration ➡️ ExecutableDeclaration ({% jdoc jast::ASTExecutableDeclaration %})
+* VariableDeclaratorId ➡️ VariableId ({% jdoc jast::ASTVariableId %})
+* ClassOrInterfaceBody ➡️ ClassBody ({% jdoc jast::ASTClassBody %})
+
 #### Annotations
 
 * What: Annotations are consolidated into a single node. `SingleMemberAnnotation`, `NormalAnnotation` and `MarkerAnnotation`
   are removed in favour of {% jdoc jast::ASTAnnotation %}. The Name node is removed, replaced by a
-  {% jdoc jast::ASTClassOrInterfaceType %}.
+  {% jdoc jast::ASTClassType %}.
 * Why: Those different node types implement a syntax-only distinction, that only makes semantically equivalent annotations
   have different possible representations. For example, `@A` and `@A()` are semantically equivalent, yet they were
   parsed as MarkerAnnotation resp. NormalAnnotation. Similarly, `@A("")` and `@A(value="")` were parsed as
@@ -580,7 +600,7 @@ which can also display the AST.
 <td>
 {% highlight js %}
 └─ Annotation "A"
-   ├─ ClassOrInterfaceType "A"
+   ├─ ClassType "A"
    └─ AnnotationMemberList
 {% endhighlight %}
 </td>
@@ -607,7 +627,7 @@ which can also display the AST.
 <td>
 {% highlight js %}
 └─ Annotation "A"
-   ├─ ClassOrInterfaceType "A"
+   ├─ ClassType "A"
    └─ AnnotationMemberList
       └─ MemberValuePair "value" [ @Shorthand = false() ]
          └─ StringLiteral '"v"'
@@ -634,7 +654,7 @@ which can also display the AST.
 <td>
 {% highlight js %}
 └─ Annotation "A"
-   ├─ ClassOrInterfaceType "A"
+   ├─ ClassType "A"
    └─ AnnotationMemberList
       └─ MemberValuePair "value" [ @Shorthand = true() ]
          └─ StringLiteral '"v"'
@@ -669,7 +689,7 @@ which can also display the AST.
 <td>
 {% highlight js %}
 └─ Annotation "A"
-   ├─ ClassOrInterfaceType "A"
+   ├─ ClassType "A"
    └─ AnnotationMemberList
       ├─ MemberValuePair "value" [ @Shorthand = false() ]
       │  └─ StringLiteral '"v"'
@@ -718,7 +738,7 @@ public void set(int x) { }
 └─ MethodDeclaration
    ├─ ModifierList
    │  └─ Annotation "A"
-   │     └─ ClassOrInterfaceType "A"
+   │     └─ ClassType "A"
    ├─ VoidType
    ├─ ...
 {% endhighlight %}
@@ -743,11 +763,11 @@ Top-level type declaration
 </td>
 <td>
 {% highlight js %}
-└─ ClassOrInterfaceDeclaration
+└─ ClassDeclaration
     ├─ ModifierList
     │  └─ Annotation "A"
-    │     └─ ClassOrInterfaceType "A"
-    └─ ClassOrInterfaceBody
+    │     └─ ClassType "A"
+    └─ ClassBody
 {% endhighlight %}
 </td>
 </tr>
@@ -778,12 +798,12 @@ var x = (@A T.@B S) expr;
 <td>
 {% highlight js %}
 └─ CastExpression
-   ├─ ClassOrInterfaceType "S"
-   │  ├─ ClassOrInterfaceType "T"
+   ├─ ClassType "S"
+   │  ├─ ClassType "T"
    │  │  └─ Annotation "A"
-   │  │     └─ ClassOrInterfaceType "A"
+   │  │     └─ ClassType "A"
    │  └─ Annotation "B"
-   │     └─ ClassOrInterfaceType "B"
+   │     └─ ClassType "B"
    └─ VariableAccess "expr"
 {% endhighlight %}
 </td></tr>
@@ -814,10 +834,10 @@ var x = (@A T & S) expr;
 {% highlight js %}
 └─ CastExpression
   ├─ IntersectionType
-  │  ├─ ClassOrInterfaceType "T"
+  │  ├─ ClassType "T"
   │  │  └─ Annotation "A"
-  │  │     └─ ClassOrInterfaceType "A"
-  │  └─ ClassOrInterfaceType "S"
+  │  │     └─ ClassType "A"
+  │  └─ ClassType "S"
   └─ VariableAccess "expr"
 {% endhighlight %}
 
@@ -844,9 +864,9 @@ new @A T()
 <td>
 {% highlight js %}
 └─ ConstructorCall
-   ├─ ClassOrInterfaceType "T"
+   ├─ ClassType "T"
    │  └─ Annotation "A"
-   │     └─ ClassOrInterfaceType "A"
+   │     └─ ClassType "A"
    └─ ArgumentList
 {% endhighlight %}
 </td></tr>
@@ -877,7 +897,7 @@ new @A int[0]
    └─ ArrayType
       ├─ PrimitiveType "int"
       │  └─ Annotation "A"
-      │     └─ ClassOrInterfaceType "A"
+      │     └─ ClassType "A"
       └─ ArrayDimensions
          └─ ArrayDimExpr
             └─ NumericLiteral "0"
@@ -911,15 +931,15 @@ Array type
 └─ LocalVariableDeclaration
   ├─ ModifierList
   │  └─ Annotation "A"
-  │     └─ ClassOrInterfaceType "A"
+  │     └─ ClassType "A"
   ├─ ArrayType
   │  ├─ PrimitiveType "int"
   │  └─ ArrayDimensions
   │     └─ ArrayTypeDim
   │        └─ Annotation "B"
-  │           └─ ClassOrInterfaceType "B"
+  │           └─ ClassType "B"
   └─ VariableDeclarator
-     └─ VariableDeclaratorId "x"
+     └─ VariableId "x"
 {% endhighlight %}
 
 </td></tr>
@@ -953,13 +973,13 @@ Type parameters
 └─ TypeParameters
    ├─ TypeParameter "T"
    │  └─ Annotation "A"
-   │     └─ ClassOrInterfaceType "A"
+   │     └─ ClassType "A"
    └─ TypeParameter "S" [ @TypeBound = true() ]
       ├─ Annotation "B"
-      │  └─ ClassOrInterfaceType "B"
-      └─ ClassOrInterfaceType "Object"
+      │  └─ ClassType "B"
+      └─ ClassType "Object"
          └─ Annotation "C"
-            └─ ClassOrInterfaceType "C"
+            └─ ClassType "C"
 {% endhighlight %}
 
 <ul>
@@ -998,13 +1018,13 @@ enum E {
    ├─ EnumConstant "E1"
    │  ├─ ModifierList
    │  │  └─ Annotation "A"
-   │  │     └─ ClassOrInterfaceType "A"
-   │  └─ VariableDeclaratorId "E1"
+   │  │     └─ ClassType "A"
+   │  └─ VariableId "E1"
    └─ EnumConstant "E2"
       ├─ ModifierList
       │  └─ Annotation "B"
-      │     └─ ClassOrInterfaceType "B"
-      └─ VariableDeclaratorId "E2"
+      │     └─ ClassType "B"
+      └─ VariableId "E2"
 {% endhighlight %}
 
 <ul>
@@ -1021,7 +1041,7 @@ enum E {
 
 * What:
   * {% jdoc jast::ASTType %} and {% jdoc jast::ASTReferenceType %} have been turned into
-    interfaces, implemented by {% jdoc jast::ASTPrimitiveType %}, {% jdoc jast::ASTClassOrInterfaceType %},
+    interfaces, implemented by {% jdoc jast::ASTPrimitiveType %}, {% jdoc jast::ASTClassType %},
     and the new node {% jdoc jast::ASTArrayType %}. This reduces the depth of the relevant
     subtrees, and allows to explore them more easily and consistently.
 * Why:
@@ -1034,12 +1054,12 @@ enum E {
 * **Migrating**
   * There is currently no way to match abstract types (or interfaces) with XPath, so `Type`
     and `ReferenceType` name tests won't match anything anymore.
-  * `Type/ReferenceType/ClassOrInterfaceType` ➡️ `ClassOrInterfaceType`
+  * `Type/ReferenceType/ClassOrInterfaceType` ➡️ `ClassType`
   * `Type/PrimitiveType` ➡️ `PrimitiveType`.
-  * `Type/ReferenceType[@ArrayDepth > 1]/ClassOrInterfaceType` ➡️ `ArrayType/ClassOrInterfaceType`.
+  * `Type/ReferenceType[@ArrayDepth > 1]/ClassOrInterfaceType` ➡️ `ArrayType/ClassType`.
   * `Type/ReferenceType/PrimitiveType` ➡️ `ArrayType/PrimitiveType`.
   * Note that in most cases you should check the type of a variable with e.g.
-    `VariableDeclaratorId[pmd-java:typeIs("java.lang.String[]")]` because it
+    `VariableId[pmd-java:typeIs("java.lang.String[]")]` because it
     considers the additional dimensions on declarations like `String foo[];`.
     The Java equivalent is `TypeHelper.isA(id, String[].class);`
 
@@ -1073,13 +1093,13 @@ List<String> strs;
 </td>
 <td>
 {% highlight js %}
-└─ ClassOrInterfaceType "List"
+└─ ClassType "List"
    └─ TypeArguments
-      └─ ClassOrInterfaceType "String"
+      └─ ClassType "String"
 {% endhighlight %}
 
 <ul>
-  <li>ClassOrInterfaceType implements ASTReferenceType, which implements ASTType.</li>
+  <li>ClassType implements ASTReferenceType, which implements ASTType.</li>
 </ul>
 
 </td>
@@ -1115,7 +1135,7 @@ String[][] myArray;
 <td>
 {% highlight js %}
 └─ ArrayType[ @ArrayDepth = 2 ]
-   ├─ ClassOrInterfaceType "String"
+   ├─ ClassType "String"
    └─ ArrayDimensions[ @Size = 2 ]
       ├─ ArrayTypeDim
       └─ ArrayTypeDim
@@ -1142,14 +1162,14 @@ String @Annotation1[] @Annotation2[] myArray;
 </td><td>
 {% highlight js %}
 └─ ArrayType[ @ArrayDepth = 2 ]
-   ├─ ClassOrInterfaceType "String"
+   ├─ ClassType "String"
    └─ ArrayDimensions[ @Size = 2 ]
       ├─ ArrayTypeDim
       │  └─ Annotation "Annotation1"
-      │     └─ ClassOrInterfaceType "Annotation1"
+      │     └─ ClassType "Annotation1"
       └─ ArrayTypeDim
          └─ Annotation "Annotation2"
-            └─ ClassOrInterfaceType "Annotation2"
+            └─ ClassType "Annotation2"
 {% endhighlight %}
 </td></tr>
 
@@ -1213,7 +1233,7 @@ new Foo[] { f, g };
    └─ ArrayType[ @Array Depth = 2 ]
       ├─ PrimitiveType "int"
       │  └─ Annotation "Bar"
-      │     └─ ClassOrInterfaceType "Bar"
+      │     └─ ClassType "Bar"
       └─ ArrayDimensions[ @Size = 2 ]
          ├─ ArrayDimExpr
          │  └─ NumericLiteral "3"
@@ -1222,7 +1242,7 @@ new Foo[] { f, g };
 
 └─ ArrayAllocation[ @ArrayDepth = 1 ]
    └─ ArrayType[ @ArrayDepth = 1 ]
-   │  ├─ ClassOrInterfaceType "Foo"
+   │  ├─ ClassType "Foo"
    │  └─ ArrayDimensions[ @Size = 1 ]
    │     └─ ArrayTypeDim
    └─ ArrayInitializer[ @Length = 2 ]
@@ -1234,14 +1254,15 @@ new Foo[] { f, g };
 
 </details>
 
-##### ClassOrInterfaceType nesting
+##### ClassType nesting
 
-* What: {% jdoc jast::ASTClassOrInterfaceType %} appears to be left recursive now, and encloses its qualifying type.
+* What: {% jdoc jast::ASTClassType %} (formerly ASTClassOrInterfaceType) appears to be left recursive now,
+  and encloses its qualifying type.
 * Why: To preserve the position of annotations and type arguments
 * Related issue: [[java] ClassOrInterfaceType AST improvements (#1150)](https://github.com/pmd/pmd/issues/1150)
 
 <details>
-  <summary>ClassOrInterfaceType Examples</summary>
+  <summary>ClassType Examples</summary>
 
 <table>
 <tr><th>Code</th><th>Old AST (PMD 6)</th><th>New AST (PMD 7)</th></tr>
@@ -1264,11 +1285,11 @@ Map.Entry<K,V>
 </td>
 <td>
 {% highlight js %}
-└─ ClassOrInterfaceType "Entry"
-   ├─ ClassOrInterfaceType "Map"
+└─ ClassType "Entry"
+   ├─ ClassType "Map"
    └─ TypeArguments[ @Size = 2 ]
-      ├─ ClassOrInterfaceType "K"
-      └─ ClassOrInterfaceType "V"
+      ├─ ClassType "K"
+      └─ ClassType "V"
 {% endhighlight %}
 </td>
 </tr>
@@ -1291,13 +1312,13 @@ First<K>.Second.Third<V>
 {% endhighlight %}
 </td><td>
 {% highlight js %}
-└─ ClassOrInterfaceType "Third"
-   ├─  ClassOrInterfaceType "Second"
-   │   └─ ClassOrInterfaceType "First"
+└─ ClassType "Third"
+   ├─  ClassType "Second"
+   │   └─ ClassType "First"
    │      └─ TypeArguments[ @Size = 1]
-   │         └─ ClassOrInterfaceType "K"
+   │         └─ ClassType "K"
    └─ TypeArguments[ @Size = 1 ]
-      └─ ClassOrInterfaceType "V"
+      └─ ClassType "V"
 {% endhighlight %}
 </td></tr>
 </table>
@@ -1339,11 +1360,11 @@ Entry<String, ? extends Node>
 </td>
 <td>
 {% highlight js %}
-└─ ClassOrInterfaceType "Entry"
+└─ ClassType "Entry"
    └─ TypeArguments[ @Size = 2 ]
-      ├─ ClassOrInterfaceType "String"
+      ├─ ClassType "String"
       └─ WildcardType[ @UpperBound = true() ]
-         └─ ClassOrInterfaceType "Node"
+         └─ ClassType "Node"
 {% endhighlight %}
 </td>
 </tr>
@@ -1362,7 +1383,7 @@ List<?>
 </td>
 <td>
 {% highlight js %}
-└─ ClassOrInterfaceType "List"
+└─ ClassType "List"
    └─ TypeArguments[ @Size = 1 ]
       └─ WildcardType[ @UpperBound = true() ]
 {% endhighlight %}
@@ -1433,12 +1454,14 @@ package com.example.tool;
 
 ##### Modifier lists
 
-* What: {% jdoc jast::AccessNode %} is now based on a node: {% jdoc jast::ASTModifierList %}. That node represents
+* What: {% jdoc jast::ModifierOwner %} (formerly AccessNode) is now based on a node: {% jdoc jast::ASTModifierList %}.
+  That node represents
   modifiers occurring before a declaration. It provides a flexible API to query modifiers, both explicit and
   implicit. All declaration nodes now have such a modifier list, even if it's implicit (no explicit modifiers).
-* Why: AccessNode gave a lot of irrelevant methods to its subtypes. E.g. `ASTFieldDeclaration::isSynchronized`
+* Why: ModifierOwner (formerly AccessNode) gave a lot of irrelevant methods to its subtypes.
+  E.g. `ASTFieldDeclaration::isSynchronized`
   makes no sense. Now, these irrelevant methods don't clutter the API. The API of ModifierList is both more
-  general and flexible
+  general and flexible.
 * Related issue: [[java] Rework AccessNode (#2259)](https://github.com/pmd/pmd/pull/2259)
 
 <details>
@@ -1477,15 +1500,15 @@ public void set(final int x, int y) { }
 └─ MethodDeclaration[ pmd-java:modifiers() = 'public' ] "set"
    ├─ ModifierList
    │  └─ Annotation "A"
-   │     └─ ClassOrInterfaceType "A"
+   │     └─ ClassType "A"
    ├─ VoidType
    └─ FormalParameters
       ├─ FormalParameter[ pmd-java:modifiers() = 'final' ]
       │  ├─ ModifierList
-      │  └─ VariableDeclaratorId "x"
+      │  └─ VariableId "x"
       └─ FormalParameter[ pmd-java:modifiers() = () ]
          ├─ ModifierList
-         └─ VariableDeclaratorId "y"
+         └─ VariableId "y"
 {% endhighlight %}
 </td></tr>
 
@@ -1508,11 +1531,11 @@ public @A class C {}
 </td>
 <td>
 {% highlight js %}
-└─ ClassOrInterfaceDeclaration[ pmd-java:modifiers() = 'public' ] "C"
+└─ ClassDeclaration[ pmd-java:modifiers() = 'public' ] "C"
    ├─ ModifierList
    │  └─ Annotation "A"
-   │     └─ ClassOrInterfaceType "A"
-   └─ ClassOrInterfaceBody
+   │     └─ ClassType "A"
+   └─ ClassBody
 {% endhighlight %}
 </td>
 </tr>
@@ -1555,14 +1578,14 @@ public class Flat {
 </td><td>
 {% highlight js %}
 └─ CompilationUnit
-   └─ ClassOrInterfaceDeclaration "Flat"
+   └─ ClassDeclaration "Flat"
       ├─ ModifierList
-      └─ ClassOrInterfaceBody
+      └─ ClassBody
          └─ FieldDeclaration
             ├─ ModifierList
             ├─ PrimitiveType "int"
             └─ VariableDeclarator
-               └─ VariableDeclaratorId "f"
+               └─ VariableId "f"
 {% endhighlight %}
 </td></tr>
 
@@ -1597,7 +1620,7 @@ public @interface FlatAnnotation {
       └─ AnnotationTypeBody
          └─ MethodDeclaration "value"
             ├─ ModifierList
-            ├─ ClassOrInterfaceType "String"
+            ├─ ClassType "String"
             ├─ FormalParameters
             └─ DefaultValue
                └─ StringLiteral "\"\""
@@ -1609,7 +1632,7 @@ public @interface FlatAnnotation {
 
 ##### Module declarations
 
-* What: Removes the generic Name node and uses instead {% jdoc jast::ASTClassOrInterfaceType %} where appropriate. Also
+* What: Removes the generic Name node and uses instead {% jdoc jast::ASTClassType %} where appropriate. Also
   uses specific node types for different directives (requires, exports, uses, provides).
 * Why: Simplify queries, support type resolution
 * Related issue: [[java] Improve module grammar (#3890)](https://github.com/pmd/pmd/pull/3890)
@@ -1671,10 +1694,10 @@ open module com.example.foo {
       ├─ ModuleExportsDirective[ @PackageName = 'com.example.foo.internal' ]
       │  └─ ModuleName [ @Name = 'com.example.foo.probe' ]
       ├─ ModuleUsesDirective
-      │  └─ ClassOrInterfaceType[ pmd-java:typeIs("com.example.foo.spi.Intf") ]
+      │  └─ ClassType[ pmd-java:typeIs("com.example.foo.spi.Intf") ]
       └─ ModuleProvidesDirective
-         ├─ ClassOrInterfaceType[ pmd-java:typeIs("com.example.foo.spi.Intf") ]
-         └─ ClassOrInterfaceType[ pmd-java:typeIs("com.example.foo.Impl") ]
+         ├─ ClassType[ pmd-java:typeIs("com.example.foo.spi.Intf") ]
+         └─ ClassType[ pmd-java:typeIs("com.example.foo.Impl") ]
 {% endhighlight %}
 </td></tr>
 </table>
@@ -1722,15 +1745,15 @@ Object anonymous = new Object() {  };
 {% highlight js %}
 └─ LocalVariableDeclaration
    ├─ ModifierList
-   ├─ ClassOrInterfaceType[ @SimpleName = 'Object' ]
+   ├─ ClassType[ @SimpleName = 'Object' ]
    └─ VariableDeclarator
-      ├─ VariableDeclaratorId[ @Name = 'anonymous' ]
+      ├─ VariableId[ @Name = 'anonymous' ]
       └─ ConstructorCall
-         ├─ ClassOrInterfaceType[ @SimpleName = 'Object' ]
+         ├─ ClassType[ @SimpleName = 'Object' ]
          ├─ ArgumentList
          └─ AnonymousClassDeclaration
             ├─ ModifierList
-            └─ ClassOrInterfaceBody
+            └─ ClassBody
 {% endhighlight %}
 </td></tr>
 </table>
@@ -1797,14 +1820,14 @@ public class Sample {
 </td>
 <td>
 {% highlight js %}
-└─ ClassOrInterfaceBody
+└─ ClassBody
    ├─ ConstructorDeclaration[ @Name = 'Sample' ]
    │  ├─ ModifierList
    │  ├─ FormalParameters
    │  │  └─ FormalParameter
    │  │     ├─ ...
    │  ├─ ThrowsList
-   │  │  └─ ClassOrInterfaceType[ @SimpleName = 'Exception' ]
+   │  │  └─ ClassType[ @SimpleName = 'Exception' ]
    │  └─ Block
    │     ├─ ExplicitConstructorInvocation
    │     │  └─ ArgumentList
@@ -1817,7 +1840,7 @@ public class Sample {
       │  └─ FormalParameter
       │     ├─ ...
       ├─ ThrowsList
-      │  └─ ClassOrInterfaceType[ @SimpleName = 'Exception' ]
+      │  └─ ClassType[ @SimpleName = 'Exception' ]
       └─ Block
          └─ ExpressionStatement
             └─ ...
@@ -1905,11 +1928,11 @@ try {
       ├─ CatchParameter
       │  ├─ ModifierList
       │  │  └─ Annotation[ @SimpleName = 'A' ]
-      │  │     └─ ClassOrInterfaceType[ @SimpleName = 'A' ]
+      │  │     └─ ClassType[ @SimpleName = 'A' ]
       │  ├─ UnionType
-      │  │  ├─ ClassOrInterfaceType[ @SimpleName = 'IOException' ]
-      │  │  └─ ClassOrInterfaceType[ @SimpleName = 'IllegalArgumentException' ]
-      │  └─ VariableDeclaratorId[ @Name = 'e' ]
+      │  │  ├─ ClassType[ @SimpleName = 'IOException' ]
+      │  │  └─ ClassType[ @SimpleName = 'IllegalArgumentException' ]
+      │  └─ VariableId[ @Name = 'e' ]
       └─ Block
 {% endhighlight %}
 </td></tr>
@@ -1971,10 +1994,10 @@ c -> {};
       ├─ LambdaParameterList
       │  ├─ LambdaParameter
       │  │  ├─ ModifierList
-      │  │  └─ VariableDeclaratorId[ @Name = 'a' ]
+      │  │  └─ VariableId[ @Name = 'a' ]
       │  └─ LambdaParameter
       │     ├─ ModifierList
-      │     └─ VariableDeclaratorId[ @Name = 'b' ]
+      │     └─ VariableId[ @Name = 'b' ]
       └─ Block
 
 └─ ExpressionStatement
@@ -1982,17 +2005,7 @@ c -> {};
       ├─ LambdaParameterList
       │  └─ LambdaParameter
       │     ├─ ModifierList
-      │     └─ VariableDeclaratorId[ @Name = 'c' ]
-      └─ Block
-
-└─ ExpressionStatement
-   └─ LambdaExpression
-      ├─ LambdaParameterList
-      │  └─ LambdaParameter
-      │     ├─ ModifierList
-      │     │  └─ Annotation[ @SimpleName = 'A' ]
-      │     │     └─ ClassOrInterfaceType[ @SimpleName = 'A' ]
-      │     └─ VariableDeclaratorId[ @Name = 'd' ]
+      │     └─ VariableId[ @Name = 'c' ]
       └─ Block
 
 └─ ExpressionStatement
@@ -2001,9 +2014,19 @@ c -> {};
       │  └─ LambdaParameter
       │     ├─ ModifierList
       │     │  └─ Annotation[ @SimpleName = 'A' ]
-      │     │     └─ ClassOrInterfaceType[ @SimpleName = 'A' ]
+      │     │     └─ ClassType[ @SimpleName = 'A' ]
+      │     └─ VariableId[ @Name = 'd' ]
+      └─ Block
+
+└─ ExpressionStatement
+   └─ LambdaExpression
+      ├─ LambdaParameterList
+      │  └─ LambdaParameter
+      │     ├─ ModifierList
+      │     │  └─ Annotation[ @SimpleName = 'A' ]
+      │     │     └─ ClassType[ @SimpleName = 'A' ]
       │     ├─ PrimitiveType[ @Kind = 'int' ]
-      │     └─ VariableDeclaratorId[ @Name = 'e' ]
+      │     └─ VariableId[ @Name = 'e' ]
       └─ Block
 {% endhighlight %}
 </td></tr>
@@ -2017,7 +2040,7 @@ c -> {};
 * Why: A receiver parameter is not a formal parameter, even though it looks like one: it doesn't declare a variable,
   and doesn't affect the arity of the method or constructor. It's so rarely used that giving it its own node avoids
   matching it by mistake and simplifies the API and grammar of the ubiquitous {% jdoc jast::ASTFormalParameter %}
-  and {% jdoc jast::ASTVariableDeclaratorId %}.
+  and {% jdoc jast::ASTVariableId %}.
 * Related issue: [[java] Separate receiver parameter from formal parameter (#1980)](https://github.com/pmd/pmd/pull/1980)
 
 <details>
@@ -2050,13 +2073,13 @@ void myMethod(@A Foo this, Foo other) {}
 {% highlight js %}
 └─ FormalParameters (1)
    ├─ ReceiverParameter
-   │  └─ ClassOrInterfaceType "Foo"
+   │  └─ ClassType "Foo"
    │     └─ Annotation "A"
-   │        └─ ClassOrInterfaceType "A"
+   │        └─ ClassType "A"
    └─ FormalParameter
       ├─ ModifierList
-      ├─ ClassOrInterfaceType "Foo"
-      └─ VariableDeclaratorId "other"
+      ├─ ClassType "Foo"
+      └─ VariableId "other"
 {% endhighlight %}
 </td></tr>
 </table>
@@ -2093,7 +2116,7 @@ void myMethod(int... is) {}
    │  ├─ PrimitiveType "int"
    │  └─ ArrayDimensions
    │     └─ ArrayTypeDim[ @Varargs = true() ]
-   └─ VariableDeclaratorId "is"
+   └─ VariableId "is"
 {% endhighlight %}
 </td></tr>
 
@@ -2121,8 +2144,8 @@ void myMethod(int @A ... is) {}
    │  └─ ArrayDimensions
    │     └─ ArrayTypeDim[ @Varargs = true() ]
    │        └─ Annotation "A"
-   │           └─ ClassOrInterfaceType "A"
-   └─ VariableDeclaratorId "is"
+   │           └─ ClassType "A"
+   └─ VariableId "is"
 {% endhighlight %}
 </td></tr>
 
@@ -2148,7 +2171,7 @@ void myMethod(int[]... is) {}
    │  └─ ArrayDimensions (2)
    │     ├─ ArrayTypeDim
    │     └─ ArrayTypeDim[ @Varargs = true() ]
-   └─ VariableDeclaratorId "is"
+   └─ VariableId "is"
 {% endhighlight %}
 </td></tr>
 </table>
@@ -2262,7 +2285,7 @@ i = 1;
    │  ├─ ModifierList
    │  ├─ PrimitiveType "int"
    │  └─ VariableDeclarator
-   │     └─ VariableDeclaratorId "i"
+   │     └─ VariableId "i"
    └─ ExpressionStatement
       └─ AssignmentExpression "="
          ├─ VariableAccess "i"
@@ -2325,12 +2348,12 @@ for (String s : List.of("a", "b")) { }
    └─ ForeachStatement
       ├─ LocalVariableDeclaration
       │  ├─ ModifierList
-      │  ├─ ClassOrInterfaceType "String"
+      │  ├─ ClassType "String"
       │  └─ VariableDeclarator "s"
-      │     └─ VariableDeclaratorId "s"
+      │     └─ VariableId "s"
       ├─ MethodCall "of"
       │  ├─ TypeExpression
-      │  │  └─ ClassOrInterfaceType "List"
+      │  │  └─ ClassType "List"
       │  └─ ArgumentList (2)
       │     ├─ StringLiteral[ @Image = '"a"' ]
       │     └─ StringLiteral[ @Image = '"b"' ]
@@ -2384,9 +2407,9 @@ class LocalClass {}
    │  └─ UnaryExpression "++"
    │     └─ VariableAccess "i"
    └─ LocalClassStatement
-      └─ ClassOrInterfaceDeclaration "LocalClass"
+      └─ ClassDeclaration "LocalClass"
          ├─ ModifierList
-         └─ ClassOrInterfaceBody
+         └─ ClassBody
 {% endhighlight %}
 </td></tr>
 </table>
@@ -2436,20 +2459,20 @@ try (InputStream in = new FileInputStream(); OutputStream out = new FileOutputSt
       ├─ Resource[ @ConciseResource = false() ] "in"
       │  └─ LocalVariableDeclaration
       │     ├─ ModifierList
-      │     ├─ ClassOrInterfaceType "InputStream"
+      │     ├─ ClassType "InputStream"
       │     └─ VariableDeclarator
-      │        ├─ VariableDeclaratorId "in"
+      │        ├─ VariableId "in"
       │        └─ ConstructorCall
-      │           ├─ ClassOrInterfaceType "FileInputStream"
+      │           ├─ ClassType "FileInputStream"
       │           └─ ArgumentList (0)
       └─ Resource[ @ConciseResource = false() ] "out"
          └─ LocalVariableDeclaration
             ├─ ModifierList
-            ├─ ClassOrInterfaceType "OutputStream"
+            ├─ ClassType "OutputStream"
             └─ VariableDeclarator
-               ├─ VariableDeclaratorId "out"
+               ├─ VariableId "out"
                └─ ConstructorCall
-                  ├─ ClassOrInterfaceType "FileOutputStream"
+                  ├─ ClassType "FileOutputStream"
                   └─ ArgumentList (0)
 {% endhighlight %}
 </td></tr>
@@ -2630,7 +2653,7 @@ new int[] { 1, 2, 3 };
       └─ StringLiteral "\"a\""
 
 └─ ConstructorCall
-   ├─ ClassOrInterfaceType "Object"
+   ├─ ClassType "Object"
    └─ ArgumentList (1)
       └─ StringLiteral "\"b\""
 
@@ -2695,7 +2718,7 @@ new Foo().bar.foo(1);
    └─ MethodCall "foo"
       ├─ FieldAccess "bar"
       │  └─ ConstructorCall
-      │     ├─ ClassOrInterfaceType "Foo"
+      │     ├─ ClassType "Foo"
       │     └─ ArgumentList (0)
       └─ ArgumentList (1)
          └─ NumericLiteral "1"
@@ -2842,7 +2865,7 @@ Foo.staticField = localVar;
    └─ AssignmentExpression "="
       ├─ FieldAccess[ @AccessType = "WRITE" ] "staticField"
       │  └─ TypeExpression
-      │     └─ ClassOrInterfaceType "Foo"
+      │     └─ ClassType "Foo"
       └─ VariableAccess[ @AccessType = "READ" ] "localVar"
 {% endhighlight %}
 
@@ -2951,7 +2974,7 @@ super.method();
 ##### Type expressions
 
 * What: The node {% jdoc jast::ASTTypeExpression %} wraps a {% jdoc jast::ASTType %} node (such as
-  {% jdoc jast::ASTClassOrInterfaceType %}) and is used to qualify a method call or field access or method reference.
+  {% jdoc jast::ASTClassType %}) and is used to qualify a method call or field access or method reference.
 * Why: Simplify the qualifier of method calls, treat instanceof as infix expression.
 * Related issue: [[java] Grammar type expr (#2039)](https://github.com/pmd/pmd/pull/2039)
 
@@ -3009,23 +3032,23 @@ var x = Foo::method;
 └─ ExpressionStatement
    └─ MethodCall "staticMethod"
       ├─ TypeExpression
-      │  └─ ClassOrInterfaceType "Foo"
+      │  └─ ClassType "Foo"
       └─ ArgumentList (0)
 
 └─ IfStatement
    ├─ InfixExpression "instanceof"
    │  ├─ VariableAccess[ @AccessType = "READ" ] "x"
    │  └─ TypeExpression
-   │     └─ ClassOrInterfaceType "Foo"
+   │     └─ ClassType "Foo"
    └─ Block
 
 └─ LocalVariableDeclaration
    ├─ ModifierList
    └─ VariableDeclarator
-      ├─ VariableDeclaratorId "x"
+      ├─ VariableId "x"
       └─ MethodReference "method"
          └─ TypeExpression
-            └─ ClassOrInterfaceType "Foo"
+            └─ ClassType "Foo"
 {% endhighlight %}
 </td></tr></table>
 

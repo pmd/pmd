@@ -27,7 +27,7 @@ public class SingletonClassReturningNewInstanceRule extends AbstractJavaRulechai
 
         DescendantNodeStream<ASTReturnStatement> rsl = node.descendants(ASTReturnStatement.class);
         if (returnsNewInstances(rsl) || returnsLocalVariables(rsl)) {
-            addViolation(data, node);
+            asCtx(data).addViolation(node);
         }
         return data;
     }

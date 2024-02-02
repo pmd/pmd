@@ -25,9 +25,9 @@ protected constructor in order to prevent instantiation than make the class misl
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration
+//ClassDeclaration
     [@Abstract = true() and @Interface = false()]
-    [ClassOrInterfaceBody[not(ConstructorDeclaration | MethodDeclaration)]]
+    [ClassBody[not(ConstructorDeclaration | MethodDeclaration)]]
     [not(pmd-java:hasAnnotation('com.google.auto.value.AutoValue')
          or pmd-java:hasAnnotation('lombok.AllArgsConstructor')
          or pmd-java:hasAnnotation('lombok.NoArgsConstructor')
@@ -61,7 +61,7 @@ Avoid catching generic exceptions such as NullPointerException, RuntimeException
             <property name="xpath">
                 <value>
 <![CDATA[
-//CatchParameter//ClassOrInterfaceType[
+//CatchParameter//ClassType[
     pmd-java:typeIsExactly('java.lang.NullPointerException') or
     pmd-java:typeIsExactly('java.lang.Exception') or
     pmd-java:typeIsExactly('java.lang.RuntimeException')]
@@ -133,7 +133,7 @@ Catch blocks that merely rethrow a caught exception only add to code size and ru
                 <value>
 <![CDATA[
 //CatchClause[
-  CatchParameter/VariableDeclaratorId/@Name
+  CatchParameter/VariableId/@Name
 = Block[@Size = 1]/ThrowStatement/VariableAccess/@Name]
 ]]>
                 </value>
@@ -169,7 +169,7 @@ code size and runtime complexity.
 <![CDATA[
 //CatchClause
     [count(Block/*) = 1]
-    [CatchParameter/ClassOrInterfaceType/@SimpleName = Block/ThrowStatement/ConstructorCall/ClassOrInterfaceType/@SimpleName]
+    [CatchParameter/ClassType/@SimpleName = Block/ThrowStatement/ConstructorCall/ClassType/@SimpleName]
     [Block/ThrowStatement/ConstructorCall/ArgumentList/@Size = 1]
     /Block/ThrowStatement/ConstructorCall
 ]]>
@@ -255,7 +255,7 @@ Exception, or Error, use a subclassed exception or error instead.
                 <value>
 <![CDATA[
 //ThrowStatement//ConstructorCall
- /ClassOrInterfaceType[
+ /ClassType[
  pmd-java:typeIsExactly('java.lang.Throwable')
 or
  pmd-java:typeIsExactly('java.lang.Exception')
@@ -296,7 +296,7 @@ exceptional cases with a `@throws` Javadoc tag, which allows being more descript
             <property name="xpath">
                 <value>
 <![CDATA[
-//ThrowsList/ClassOrInterfaceType[pmd-java:typeIs('java.lang.RuntimeException')]
+//ThrowsList/ClassType[pmd-java:typeIs('java.lang.RuntimeException')]
 ]]>
                 </value>
             </property>
@@ -589,7 +589,7 @@ Errors are system exceptions. Do not extend them.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration/ExtendsList/ClassOrInterfaceType[pmd-java:typeIs('java.lang.Error')]
+//ClassDeclaration/ExtendsList/ClassType[pmd-java:typeIs('java.lang.Error')]
 ]]>
                 </value>
             </property>
@@ -810,13 +810,13 @@ in each object at runtime.
 //FieldDeclaration
     [pmd-java:modifiers() = 'final']
     [not(pmd-java:modifiers() = 'static')]
-    [not(./ancestor::ClassOrInterfaceDeclaration[1][pmd-java:hasAnnotation('lombok.experimental.UtilityClass')])]
+    [not(./ancestor::ClassDeclaration[1][pmd-java:hasAnnotation('lombok.experimental.UtilityClass')])]
     [not(.//Annotation[pmd-java:typeIs('lombok.Builder.Default')])]
     /VariableDeclarator[*[pmd-java:nodeIs('Literal')]
-         or VariableAccess[@Name = //FieldDeclaration[pmd-java:modifiers() = 'static']/VariableDeclarator/VariableDeclaratorId/@Name]
+         or VariableAccess[@Name = //FieldDeclaration[pmd-java:modifiers() = 'static']/VariableDeclarator/VariableId/@Name]
          or FieldAccess
          or ArrayAllocation/ArrayType/ArrayDimensions/ArrayDimExpr/NumericLiteral[@IntLiteral = true()][@Image = "0"]]
-    /VariableDeclaratorId
+    /VariableId
         [not(@Name = //MethodDeclaration[not(pmd-java:modifiers() = 'static')]
             //SynchronizedStatement/(VariableAccess|FieldAccess[ThisExpression])/@Name)]
 ]]>
@@ -1414,7 +1414,7 @@ city/state/zip fields could park them within a single Address field.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration/ClassOrInterfaceBody
+//ClassDeclaration/ClassBody
   [count(FieldDeclaration
             [not(pmd-java:modifiers() = 'final')]
             [not(pmd-java:modifiers() = 'static')]
@@ -1457,7 +1457,7 @@ complexity and find a way to have more fine grained objects.
             <property name="xpath">
                 <value>
 <![CDATA[
- //ClassOrInterfaceDeclaration/ClassOrInterfaceBody
+ //ClassDeclaration/ClassBody
      [
       count(MethodDeclaration[
          not (

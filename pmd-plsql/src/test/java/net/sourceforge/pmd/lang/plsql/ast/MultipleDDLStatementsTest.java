@@ -17,10 +17,10 @@ class MultipleDDLStatementsTest extends AbstractPLSQLParserTst {
     @Test
     void parseDDLCommands() throws Exception {
         ASTInput input = plsql.parseResource("DDLCommands.sql");
-        List<ASTDDLCommand> ddlcommands = input.findDescendantsOfType(ASTDDLCommand.class);
+        List<ASTDDLCommand> ddlcommands = input.descendants(ASTDDLCommand.class).toList();
         assertEquals(6, ddlcommands.size());
-        List<ASTComment> comments = input.findDescendantsOfType(ASTComment.class);
+        List<ASTComment> comments = input.descendants(ASTComment.class).toList();
         assertEquals(5, comments.size());
-        assertEquals("'abbreviated job title'", comments.get(0).getFirstChildOfType(ASTStringLiteral.class).getImage());
+        assertEquals("'abbreviated job title'", comments.get(0).firstChild(ASTStringLiteral.class).getImage());
     }
 }

@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.java.types.JClassType;
  *
  * <pre class="grammar">
  *
- * Annotation ::= "@" {@link ASTClassOrInterfaceType ClassName} {@link ASTAnnotationMemberList AnnotationMemberList}?
+ * Annotation ::= "@" {@link ASTClassType ClassName} {@link ASTAnnotationMemberList AnnotationMemberList}?
  *
  * </pre>
  */
@@ -32,8 +32,8 @@ public final class ASTAnnotation extends AbstractJavaTypeNode implements TypeNod
     /**
      * Returns the node that represents the name of the annotation.
      */
-    public ASTClassOrInterfaceType getTypeNode() {
-        return (ASTClassOrInterfaceType) getChild(0);
+    public ASTClassType getTypeNode() {
+        return (ASTClassType) getChild(0);
     }
 
     @Override

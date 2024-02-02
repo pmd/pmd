@@ -22,7 +22,7 @@ public class ApexDesignerBindings extends DefaultDesignerBindings {
     @Override
     public Attribute getMainAttribute(Node node) {
         if (node instanceof ApexNode) {
-            Attribute attr = (Attribute) ((ApexNode<?>) node).jjtAccept(MainAttrVisitor.INSTANCE, null);
+            Attribute attr = (Attribute) node.acceptVisitor(MainAttrVisitor.INSTANCE, null);
             if (attr != null) {
                 return attr;
             }

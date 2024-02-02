@@ -11,11 +11,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchFallthroughBranch;
@@ -138,7 +138,7 @@ public class CycloVisitor extends JavaVisitorBase<MutableInt, Void> {
     }
 
     @Override
-    public Void visitMethodOrCtor(ASTMethodOrConstructorDeclaration node, MutableInt data) {
+    public Void visitMethodOrCtor(ASTExecutableDeclaration node, MutableInt data) {
         data.increment();
         return super.visitMethodOrCtor(node, data);
     }

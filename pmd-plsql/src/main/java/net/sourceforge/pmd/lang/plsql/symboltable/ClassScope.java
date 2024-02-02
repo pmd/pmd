@@ -30,7 +30,7 @@ public class ClassScope extends AbstractScope {
     private static ThreadLocal<Integer> anonymousInnerClassCounter = new ThreadLocal<Integer>() {
         @Override
         protected Integer initialValue() {
-            return Integer.valueOf(1);
+            return 1;
         }
     };
 
@@ -38,7 +38,7 @@ public class ClassScope extends AbstractScope {
 
     public ClassScope(String className) {
         this.className = PLSQLNode.getCanonicalImage(className);
-        anonymousInnerClassCounter.set(Integer.valueOf(1));
+        anonymousInnerClassCounter.set(1);
     }
 
     /**

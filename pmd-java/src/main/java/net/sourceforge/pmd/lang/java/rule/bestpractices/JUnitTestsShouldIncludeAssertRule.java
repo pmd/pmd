@@ -25,7 +25,7 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJavaRulechainRule
             && !TestFrameworksUtil.isExpectAnnotated(method)
             && body.descendants(ASTMethodCall.class)
                    .none(TestFrameworksUtil::isProbableAssertCall)) {
-            addViolation(data, method);
+            asCtx(data).addViolation(method);
         }
         return data;
     }

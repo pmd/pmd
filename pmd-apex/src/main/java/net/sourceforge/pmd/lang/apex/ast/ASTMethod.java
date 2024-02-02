@@ -45,7 +45,7 @@ public final class ASTMethod extends AbstractApexNode<Method> implements ApexQua
     }
 
     public ASTModifierNode getModifiers() {
-        return getFirstChildOfType(ASTModifierNode.class);
+        return firstChild(ASTModifierNode.class);
     }
 
     public String getReturnType() {

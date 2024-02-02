@@ -51,10 +51,10 @@ public class ApexInsecureEndpointRule extends AbstractApexRule {
     }
 
     private void findInsecureEndpoints(ApexNode<?> node) {
-        ASTVariableExpression variableNode = node.getFirstChildOfType(ASTVariableExpression.class);
+        ASTVariableExpression variableNode = node.firstChild(ASTVariableExpression.class);
         findInnerInsecureEndpoints(node, variableNode);
 
-        ASTBinaryExpression binaryNode = node.getFirstChildOfType(ASTBinaryExpression.class);
+        ASTBinaryExpression binaryNode = node.firstChild(ASTBinaryExpression.class);
         if (binaryNode != null) {
             findInnerInsecureEndpoints(binaryNode, variableNode);
         }
@@ -62,7 +62,7 @@ public class ApexInsecureEndpointRule extends AbstractApexRule {
     }
 
     private void findInnerInsecureEndpoints(ApexNode<?> node, ASTVariableExpression variableNode) {
-        ASTLiteralExpression literalNode = node.getFirstChildOfType(ASTLiteralExpression.class);
+        ASTLiteralExpression literalNode = node.firstChild(ASTLiteralExpression.class);
 
         if (literalNode != null && variableNode != null) {
             if (literalNode.isString()) {
@@ -85,7 +85,7 @@ public class ApexInsecureEndpointRule extends AbstractApexRule {
             return;
         }
 
-        ASTBinaryExpression binaryNode = node.getFirstChildOfType(ASTBinaryExpression.class);
+        ASTBinaryExpression binaryNode = node.firstChild(ASTBinaryExpression.class);
         if (binaryNode != null) {
             runChecks(binaryNode, data);
         }
@@ -95,18 +95,18 @@ public class ApexInsecureEndpointRule extends AbstractApexRule {
     }
 
     private void runChecks(ApexNode<?> node, Object data) {
-        ASTLiteralExpression literalNode = node.getFirstChildOfType(ASTLiteralExpression.class);
+        ASTLiteralExpression literalNode = node.firstChild(ASTLiteralExpression.class);
         if (literalNode != null && literalNode.isString()) {
             String literal = literalNode.getImage();
             if (PATTERN.matcher(literal).matches()) {
-                addViolation(data, literalNode);
+                asCtx(data).addViolation(literalNode);
             }
         }
 
-        ASTVariableExpression variableNode = node.getFirstChildOfType(ASTVariableExpression.class);
+        ASTVariableExpression variableNode = node.firstChild(ASTVariableExpression.class);
         if (variableNode != null) {
             if (httpEndpointStrings.contains(Helper.getFQVariableName(variableNode))) {
-                addViolation(data, variableNode);
+                asCtx(data).addViolation(variableNode);
             }
 
         }

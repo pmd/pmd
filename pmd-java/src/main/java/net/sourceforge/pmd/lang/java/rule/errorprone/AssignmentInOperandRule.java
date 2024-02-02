@@ -79,7 +79,7 @@ public class AssignmentInOperandRule extends AbstractJavaRulechainRule {
             || parent instanceof ASTWhileStatement && !getProperty(ALLOW_WHILE_DESCRIPTOR)
             || parent instanceof ASTForStatement && ((ASTForStatement) parent).getCondition() == toplevel && !getProperty(ALLOW_FOR_DESCRIPTOR)) {
 
-            addViolation(ctx, impureExpr);
+            ctx.addViolation(impureExpr);
         }
     }
 

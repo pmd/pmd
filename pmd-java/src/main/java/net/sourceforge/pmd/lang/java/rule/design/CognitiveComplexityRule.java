@@ -8,8 +8,8 @@ import static net.sourceforge.pmd.lang.java.metrics.JavaMetrics.COGNITIVE_COMPLE
 import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
@@ -30,7 +30,7 @@ public class CognitiveComplexityRule extends AbstractJavaRulechainRule {
                          .require(positive()).defaultValue(15).build();
 
     public CognitiveComplexityRule() {
-        super(ASTMethodOrConstructorDeclaration.class);
+        super(ASTExecutableDeclaration.class);
         definePropertyDescriptor(REPORT_LEVEL_DESCRIPTOR);
     }
 
@@ -48,7 +48,7 @@ public class CognitiveComplexityRule extends AbstractJavaRulechainRule {
         return visitMethod(node, data);
     }
 
-    private Object visitMethod(ASTMethodOrConstructorDeclaration node, Object data) {
+    private Object visitMethod(ASTExecutableDeclaration node, Object data) {
         if (!COGNITIVE_COMPLEXITY.supports(node)) {
             return data;
         }
@@ -56,7 +56,7 @@ public class CognitiveComplexityRule extends AbstractJavaRulechainRule {
         int cognitive = MetricsUtil.computeMetric(COGNITIVE_COMPLEXITY, node);
         final int reportLevel = getReportLevel();
         if (cognitive >= reportLevel) {
-            addViolation(data, node, new String[] { node instanceof ASTMethodDeclaration ? "method" : "constructor",
+            asCtx(data).addViolation(node, new String[] { node instanceof ASTMethodDeclaration ? "method" : "constructor",
                                                     PrettyPrintingUtil.displaySignature(node),
                                                     String.valueOf(cognitive),
                                                     String.valueOf(reportLevel) });

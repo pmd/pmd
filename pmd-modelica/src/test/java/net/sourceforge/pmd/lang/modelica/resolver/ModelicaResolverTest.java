@@ -122,7 +122,7 @@ class ModelicaResolverTest {
 
         ASTStoredDefinition ast = modelica.parse(contents);
 
-        List<ASTExtendsClause> extendsClauses = ast.findDescendantsOfType(ASTExtendsClause.class);
+        List<ASTExtendsClause> extendsClauses = ast.descendants(ASTExtendsClause.class).toList();
         assertEquals(1, extendsClauses.size());
         ASTExtendsClause extendsB = extendsClauses.get(0);
         assertEquals("#ROOT#FILE#Class:Test#Class:A", ((AbstractModelicaScope) extendsB.getMostSpecificScope()).getNestingRepresentation());

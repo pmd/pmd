@@ -9,11 +9,11 @@ import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.AccessNode.Visibility;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
@@ -126,7 +126,7 @@ public final class TestFrameworksUtil {
     }
 
     /**
-     * Does not check the class (use {@link #isJUnit3Class(ASTAnyTypeDeclaration)}).
+     * Does not check the class (use {@link #isJUnit3Class(ASTTypeDeclaration)}).
      */
     public static boolean isJunit3MethodSignature(ASTMethodDeclaration method) {
         return method.isVoid()
@@ -137,7 +137,7 @@ public final class TestFrameworksUtil {
     /**
      * True if this is a {@code TestCase} class for Junit 3.
      */
-    public static boolean isJUnit3Class(ASTAnyTypeDeclaration node) {
+    public static boolean isJUnit3Class(ASTTypeDeclaration node) {
         return node != null
             && node.isRegularClass()
             && !node.isNested()
@@ -145,7 +145,7 @@ public final class TestFrameworksUtil {
             && TypeTestUtil.isA(JUNIT3_CLASS_NAME, node);
     }
 
-    public static boolean isTestClass(ASTAnyTypeDeclaration node) {
+    public static boolean isTestClass(ASTTypeDeclaration node) {
         return node.isRegularClass() && !node.isAbstract() && !node.isNested()
             && (isJUnit3Class(node)
             || node.getDeclarations(ASTMethodDeclaration.class)
@@ -153,7 +153,7 @@ public final class TestFrameworksUtil {
     }
 
 
-    public static boolean isJUnit5NestedClass(ASTAnyTypeDeclaration innerClassDecl) {
+    public static boolean isJUnit5NestedClass(ASTTypeDeclaration innerClassDecl) {
         return innerClassDecl.isAnnotationPresent(JUNIT5_NESTED);
     }
 

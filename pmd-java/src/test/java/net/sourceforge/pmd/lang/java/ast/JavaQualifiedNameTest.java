@@ -29,8 +29,8 @@ class JavaQualifiedNameTest {
     @Test
     void testEmptyPackage() {
         final String TEST = "class Foo {}";
-        List<ASTClassOrInterfaceDeclaration> nodes = getNodes(ASTClassOrInterfaceDeclaration.class, TEST);
-        for (ASTClassOrInterfaceDeclaration coid : nodes) {
+        List<ASTClassDeclaration> nodes = getNodes(ASTClassDeclaration.class, TEST);
+        for (ASTClassDeclaration coid : nodes) {
             assertEquals("Foo", coid.getBinaryName());
             assertEquals("", coid.getPackageName());
         }
@@ -41,8 +41,8 @@ class JavaQualifiedNameTest {
     void testPackage() {
         final String TEST = "package foo.bar; class Bzaz{}";
 
-        List<ASTClassOrInterfaceDeclaration> nodes = getNodes(ASTClassOrInterfaceDeclaration.class, TEST);
-        for (ASTClassOrInterfaceDeclaration coid : nodes) {
+        List<ASTClassDeclaration> nodes = getNodes(ASTClassDeclaration.class, TEST);
+        for (ASTClassDeclaration coid : nodes) {
             assertEquals("foo.bar.Bzaz", coid.getBinaryName());
         }
     }
@@ -52,10 +52,10 @@ class JavaQualifiedNameTest {
     void testNestedClass() {
         final String TEST = "package foo.bar; class Bzaz{ class Bor{ class Foo{}}}";
 
-        List<ASTClassOrInterfaceDeclaration> nodes = getNodes(ASTClassOrInterfaceDeclaration.class, TEST);
+        List<ASTClassDeclaration> nodes = getNodes(ASTClassDeclaration.class, TEST);
 
-        for (ASTClassOrInterfaceDeclaration coid : nodes) {
-            if ("Foo".equals(coid.getImage())) {
+        for (ASTClassDeclaration coid : nodes) {
+            if ("Foo".equals(coid.getSimpleName())) {
                 assertEquals("foo.bar.Bzaz$Bor$Foo", coid.getBinaryName());
             }
         }
@@ -94,9 +94,9 @@ class JavaQualifiedNameTest {
     void testNestedEmptyPackage() {
         final String TEST = "class Bzaz{ class Bor{ class Foo{}}}";
 
-        List<ASTClassOrInterfaceDeclaration> nodes = getNodes(ASTClassOrInterfaceDeclaration.class, TEST);
+        List<ASTClassDeclaration> nodes = getNodes(ASTClassDeclaration.class, TEST);
 
-        for (ASTClassOrInterfaceDeclaration coid : nodes) {
+        for (ASTClassDeclaration coid : nodes) {
             if ("Foo".equals(coid.getSimpleName())) {
                 assertEquals("Bzaz$Bor$Foo", coid.getBinaryName());
                 assertEquals("", coid.getPackageName());
@@ -108,7 +108,7 @@ class JavaQualifiedNameTest {
     void testSimpleLocalClass() {
         final String TEST = "package bar; class Boron { public void foo(String j) { class Local {} } }";
 
-        List<ASTClassOrInterfaceDeclaration> classes = getNodes(ASTClassOrInterfaceDeclaration.class, TEST);
+        List<ASTClassDeclaration> classes = getNodes(ASTClassDeclaration.class, TEST);
 
         assertEquals("bar.Boron$1Local", classes.get(1).getBinaryName());
     }
@@ -118,8 +118,8 @@ class JavaQualifiedNameTest {
     void testLocalClassNameClash() {
         final String TEST = "package bar; class Bzaz{ void foo() { class Local {} } {// initializer\n class Local {}}}";
 
-        List<ASTClassOrInterfaceDeclaration> classes
-            = getNodes(ASTClassOrInterfaceDeclaration.class, TEST);
+        List<ASTClassDeclaration> classes
+            = getNodes(ASTClassDeclaration.class, TEST);
 
         assertEquals("bar.Bzaz$1Local", classes.get(1).getBinaryName());
         assertEquals("bar.Bzaz$2Local", classes.get(2).getBinaryName());
@@ -139,8 +139,8 @@ class JavaQualifiedNameTest {
             + "  }"
             + "}}";
 
-        List<ASTClassOrInterfaceDeclaration> classes
-            = getNodes(ASTClassOrInterfaceDeclaration.class, TEST);
+        List<ASTClassDeclaration> classes
+            = getNodes(ASTClassDeclaration.class, TEST);
 
         assertEquals("Bzaz$1Local", classes.get(1).getBinaryName());
         assertEquals("Local", classes.get(1).getSimpleName());
@@ -227,7 +227,7 @@ class JavaQualifiedNameTest {
                 + "  };"
                 + "}}";
 
-        List<ASTClassOrInterfaceDeclaration> classes = getNodes(ASTClassOrInterfaceDeclaration.class, TEST);
+        List<ASTClassDeclaration> classes = getNodes(ASTClassDeclaration.class, TEST);
 
         assertTrue(classes.get(1).isLocal());
         assertEquals("Bzaz$1$1FooRunnable", classes.get(1).getBinaryName());

@@ -13,7 +13,7 @@ import java.util.function.Function;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
@@ -47,27 +47,27 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule
             .build();
 
     public UnnecessaryFullyQualifiedNameRule() {
-        super(ASTClassOrInterfaceType.class);
+        super(ASTClassType.class);
         definePropertyDescriptor(REPORT_METHODS);
         definePropertyDescriptor(REPORT_FIELDS);
     }
 
     @Override
-    public Object visit(final ASTClassOrInterfaceType deepest, Object data) {
+    public Object visit(final ASTClassType deepest, Object data) {
         if (deepest.getQualifier() != null) {
             // the child will be visited instead
             return data;
         }
 
-        ASTClassOrInterfaceType next = deepest;
+        ASTClassType next = deepest;
         ScopeInfo bestReason = null;
         if (next.isFullyQualified()) {
             bestReason = typeMeansSame(next);
         }
 
         // try to find the longest prefix that can be removed
-        while (bestReason != null && segmentIsIrrelevant(next) && next.getParent() instanceof ASTClassOrInterfaceType) {
-            ASTClassOrInterfaceType nextParent = (ASTClassOrInterfaceType) next.getParent();
+        while (bestReason != null && segmentIsIrrelevant(next) && next.getParent() instanceof ASTClassType) {
+            ASTClassType nextParent = (ASTClassType) next.getParent();
             ScopeInfo newBestReason = typeMeansSame(nextParent);
             if (newBestReason == null) {
                 break;
@@ -88,7 +88,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule
                     // we don't actually know where the method came from
                     String simpleName = formatMemberName(next, methodCall.getMethodType().getSymbol());
                     String unnecessary = produceQualifier(deepest, next, true);
-                    addViolation(data, next, new Object[] {unnecessary, simpleName, ""});
+                    asCtx(data).addViolation(next, new Object[] {unnecessary, simpleName, ""});
                     return null;
                 }
             } else if (getProperty(REPORT_FIELDS) && opa instanceof ASTFieldAccess) {
@@ -98,7 +98,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule
                     String simpleName = formatMemberName(next, fieldAccess.getReferencedSym());
                     String reasonToString = unnecessaryReasonWrapper(reasonForFieldInScope);
                     String unnecessary = produceQualifier(deepest, next, true);
-                    addViolation(data, next, new Object[] {unnecessary, simpleName, reasonToString});
+                    asCtx(data).addViolation(next, new Object[] {unnecessary, simpleName, reasonToString});
                     return null;
                 }
             }
@@ -108,21 +108,21 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule
             String simpleName = next.getSimpleName();
             String reasonToString = unnecessaryReasonWrapper(bestReason);
             String unnecessary = produceQualifier(deepest, next, false);
-            addViolation(data, next, new Object[] {unnecessary, simpleName, reasonToString});
+            asCtx(data).addViolation(next, new Object[] {unnecessary, simpleName, reasonToString});
         }
         return null;
     }
 
 
-    private String produceQualifier(ASTClassOrInterfaceType startIncluded, ASTClassOrInterfaceType stopExcluded, boolean includeLast) {
+    private String produceQualifier(ASTClassType startIncluded, ASTClassType stopExcluded, boolean includeLast) {
         StringBuilder sb = new StringBuilder();
         if (startIncluded.isFullyQualified()) {
             sb.append(startIncluded.getTypeMirror().getSymbol().getPackageName());
         }
-        ASTClassOrInterfaceType nextSimpleName = startIncluded;
+        ASTClassType nextSimpleName = startIncluded;
         while (nextSimpleName != stopExcluded) { // NOPMD we want identity comparison
             sb.append('.').append(nextSimpleName.getSimpleName());
-            nextSimpleName = (ASTClassOrInterfaceType) nextSimpleName.getParent();
+            nextSimpleName = (ASTClassType) nextSimpleName.getParent();
         }
         if (includeLast) {
             if (sb.length() == 0) {
@@ -133,7 +133,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule
         return sb.toString();
     }
 
-    private boolean segmentIsIrrelevant(ASTClassOrInterfaceType type) {
+    private boolean segmentIsIrrelevant(ASTClassType type) {
         return type.getTypeArguments() == null && type.getDeclaredAnnotations().isEmpty();
     }
 
@@ -145,7 +145,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule
      *
      * @return The reason why the type is in scope. Null if it's not in scope.
      */
-    private static @Nullable ScopeInfo typeMeansSame(@NonNull ASTClassOrInterfaceType typeNode) {
+    private static @Nullable ScopeInfo typeMeansSame(@NonNull ASTClassType typeNode) {
         JTypeDeclSymbol sym = typeNode.getTypeMirror().getSymbol();
         if (sym == null || sym.isUnresolved()) {
             return null;
@@ -221,7 +221,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule
         return null;
     }
 
-    private static String formatMemberName(ASTClassOrInterfaceType qualifier, JAccessibleElementSymbol call) {
+    private static String formatMemberName(ASTClassType qualifier, JAccessibleElementSymbol call) {
         JClassSymbol methodOwner = call.getEnclosingClass();
         if (methodOwner != null && !methodOwner.equals(qualifier.getTypeMirror().getSymbol())) {
             return methodOwner.getSimpleName() + "::" + call.getSimpleName();

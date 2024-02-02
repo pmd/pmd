@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.rule.internal.AbstractJavaCounterCheckRule;
 
 
@@ -15,9 +15,9 @@ import net.sourceforge.pmd.lang.java.rule.internal.AbstractJavaCounterCheckRule;
  * @deprecated Use {@link NcssCountRule} instead.
  */
 @Deprecated
-public class ExcessiveMethodLengthRule extends AbstractJavaCounterCheckRule.AbstractLineLengthCheckRule<ASTMethodOrConstructorDeclaration> {
+public class ExcessiveMethodLengthRule extends AbstractJavaCounterCheckRule.AbstractLineLengthCheckRule<ASTExecutableDeclaration> {
     public ExcessiveMethodLengthRule() {
-        super(ASTMethodOrConstructorDeclaration.class);
+        super(ASTExecutableDeclaration.class);
     }
 
     @Override

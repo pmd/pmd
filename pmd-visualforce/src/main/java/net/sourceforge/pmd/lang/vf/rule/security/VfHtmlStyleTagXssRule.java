@@ -8,6 +8,9 @@ import java.util.EnumSet;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.lang.vf.ast.ASTContent;
 import net.sourceforge.pmd.lang.vf.ast.ASTElExpression;
 import net.sourceforge.pmd.lang.vf.ast.ASTElement;
@@ -24,8 +27,9 @@ public class VfHtmlStyleTagXssRule extends AbstractVfRule {
     private static final Set<ElEscapeDetector.Escaping> ANY_ENCODE = EnumSet.of(ElEscapeDetector.Escaping.ANY);
     private static final Pattern URL_METHOD_PATTERN = Pattern.compile("url\\s*\\([^)]*$", Pattern.CASE_INSENSITIVE);
 
-    public VfHtmlStyleTagXssRule() {
-        addRuleChainVisit(ASTElExpression.class);
+    @Override
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
+        return RuleTargetSelector.forTypes(ASTElExpression.class);
     }
 
     /**
@@ -107,8 +111,7 @@ public class VfHtmlStyleTagXssRule extends AbstractVfRule {
         if (ElEscapeDetector.doesElContainAnyUnescapedIdentifiers(
                 elExpressionNode,
                 URLENCODE_JSINHTMLENCODE)) {
-            addViolationWithMessage(
-                    data,
+            asCtx(data).addViolationWithMessage(
                     elExpressionNode,
                     "Dynamic EL content within URL in style tag should be URLENCODED or JSINHTMLENCODED as appropriate");
         }
@@ -119,8 +122,7 @@ public class VfHtmlStyleTagXssRule extends AbstractVfRule {
         if (ElEscapeDetector.doesElContainAnyUnescapedIdentifiers(
                 elExpressionNode,
                 ANY_ENCODE)) {
-            addViolationWithMessage(
-                    data,
+            asCtx(data).addViolationWithMessage(
                     elExpressionNode,
                     "Dynamic EL content in style tag should be appropriately encoded");
         }

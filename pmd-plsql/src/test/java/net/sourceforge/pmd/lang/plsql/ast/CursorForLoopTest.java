@@ -16,9 +16,9 @@ class CursorForLoopTest extends AbstractPLSQLParserTst {
     @Test
     void parseCursorForLoopSimple() {
         ASTInput input = plsql.parseResource("CursorForLoopSimple.pls");
-        ASTCursorForLoopStatement forloop = input.getFirstDescendantOfType(ASTCursorForLoopStatement.class);
+        ASTCursorForLoopStatement forloop = input.descendants(ASTCursorForLoopStatement.class).first();
         assertNotNull(forloop);
-        ASTForIndex forindex = forloop.getFirstChildOfType(ASTForIndex.class);
+        ASTForIndex forindex = forloop.firstChild(ASTForIndex.class);
         assertNotNull(forindex);
         assertEquals("someone", forindex.getImage());
     }
@@ -26,18 +26,18 @@ class CursorForLoopTest extends AbstractPLSQLParserTst {
     @Test
     void parseCursorForLoopNested() {
         ASTInput input = plsql.parseResource("CursorForLoopNested.pls");
-        ASTCursorForLoopStatement forloop = input.getFirstDescendantOfType(ASTCursorForLoopStatement.class);
+        ASTCursorForLoopStatement forloop = input.descendants(ASTCursorForLoopStatement.class).first();
         assertNotNull(forloop);
-        ASTForIndex forindex = forloop.getFirstChildOfType(ASTForIndex.class);
+        ASTForIndex forindex = forloop.firstChild(ASTForIndex.class);
         assertNotNull(forindex);
         assertEquals("c_cmp", forindex.getImage());
 
-        ASTCursorForLoopStatement forloop2 = forloop.getFirstDescendantOfType(ASTCursorForLoopStatement.class);
-        ASTForIndex forindex2 = forloop2.getFirstChildOfType(ASTForIndex.class);
+        ASTCursorForLoopStatement forloop2 = forloop.descendants(ASTCursorForLoopStatement.class).first();
+        ASTForIndex forindex2 = forloop2.firstChild(ASTForIndex.class);
         assertEquals("c_con", forindex2.getImage());
 
-        ASTCursorForLoopStatement forloop3 = forloop2.getFirstDescendantOfType(ASTCursorForLoopStatement.class);
-        ASTForIndex forindex3 = forloop3.getFirstChildOfType(ASTForIndex.class);
+        ASTCursorForLoopStatement forloop3 = forloop2.descendants(ASTCursorForLoopStatement.class).first();
+        ASTForIndex forindex3 = forloop3.firstChild(ASTForIndex.class);
         assertEquals("c_pa", forindex3.getImage());
     }
 

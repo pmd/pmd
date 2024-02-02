@@ -26,16 +26,16 @@ public class CollapsibleIfStatementsRule extends AbstractVmRule {
     @Override
     public Object visit(final ASTElseIfStatement node, final Object data) {
         // verify that this elseif doesn't have any siblings
-        if (node.getParent().findChildrenOfType(ASTElseIfStatement.class).size() == 1) {
+        if (node.getParent().children(ASTElseIfStatement.class).count() == 1) {
             handleIfElseIf(node, data);
         }
         return super.visit(node, data);
     }
 
     private void handleIfElseIf(final VmNode node, final Object data) {
-        if (node.getFirstChildOfType(ASTElseStatement.class) == null
-                && node.getFirstChildOfType(ASTElseIfStatement.class) == null) {
-            final ASTBlock ifBlock = node.getFirstChildOfType(ASTBlock.class);
+        if (node.firstChild(ASTElseStatement.class) == null
+                && node.firstChild(ASTElseIfStatement.class) == null) {
+            final ASTBlock ifBlock = node.firstChild(ASTBlock.class);
             boolean violationFound = false;
             int ifCounter = 0;
             for (int i = 0; i < ifBlock.getNumChildren(); i++) {
@@ -66,14 +66,14 @@ public class CollapsibleIfStatementsRule extends AbstractVmRule {
                 }
             }
             if (violationFound && ifCounter == 1) {
-                addViolation(data, node);
+                asCtx(data).addViolation(node);
             }
         }
     }
 
     private boolean hasElseOrElseIf(final Node parentIfNode) {
-        return parentIfNode.getFirstChildOfType(ASTElseStatement.class) != null
-                || parentIfNode.getFirstChildOfType(ASTElseIfStatement.class) != null;
+        return parentIfNode.firstChild(ASTElseStatement.class) != null
+                || parentIfNode.firstChild(ASTElseIfStatement.class) != null;
     }
 
 }

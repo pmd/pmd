@@ -20,7 +20,7 @@ class ReportTest extends EcmascriptParserTestBase {
         Rule rule = new AbstractEcmascriptRule() {
             @Override
             public Object visit(ASTFunctionNode node, Object data) {
-                addViolationWithMessage(data, node, "Test");
+                asCtx(data).addViolationWithMessage(node, "Test");
                 return data;
             }
         };

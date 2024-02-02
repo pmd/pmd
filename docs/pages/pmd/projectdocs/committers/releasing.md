@@ -9,24 +9,28 @@ This page describes the current status of the release process.
 
 Since 6.30.0, the automated release process is using [Github Actions](https://github.com/pmd/pmd/actions).
 
-However, there are still a few steps, that need manual examination.
+Since 7.0.0-rc4, the release happens in two phases: First pmd-core with all the languages are released.
+This allows to release then pmd-designer or any other project, that just depends on pmd-core and the
+languages. And in the second phase, pmd-cli and pmd-dist are released. These include e.g. pmd-designer.
+
+While the release is mostly automated, there are still a few steps, that need manual examination.
 
 ## Overview
 
 This page gives an overview which tasks are automated to do a full release of PMD. This knowledge is
 required in order to verify that the release was successful or in case the automated process fails for
 some reason. Then individual steps need to be executed manually. Because the build is reproducible, these
-steps can be repeated again if the same tag is used.
+steps can be repeated if the same tag is used.
 
-There is one special case in this project: The release of PMD is done in two steps:
+There is one special case in this project: As outlined above, the release of PMD consists of two phases or parts:
 1. All modules except pmd-cli and pmd-dist are released. That means, pmd-core and all the language modules
    are released. This is, so that these libs can be used by pmd-designer to create a new release.
-2. pmd-cli and pmd-dist are released afterwards. Both depend on pmd-designer, and this two-step release
+2. pmd-cli and pmd-dist are released after that. Both depend on pmd-designer, and this two-step release
    process is used for now to break the cycling release dependency.
 
 The three main steps are:
 
-* Preparations (which creates the tags) - use `do-release.sh` for that
+* Preparations (which sets the versions and creates the tags) - use `do-release.sh` for that
 * The actual release (which is automated) - GitHub Actions will build the tags when they have been pushed.
 * Prepare the next release (make sure the current main branch is ready for further development)
 
@@ -57,9 +61,9 @@ Also make sure, that the repo "pmd.github.io" is locally up-to-date and has no l
 Before the release, you need to verify the release notes: Does it contain all the relevant changes for the
 release? Is it formatted properly? Are there any typos? Does it render properly?
 
-As the release notes are part of the source code, it is not simple to change it afterwards. While the source
-code for a tag cannot be changed anymore, the published release notes on the github releases pages or the
-new posts can be changed afterwards (although that's an entirely manual process).
+As the release notes are part of the source code, it is not that simple to change it afterward. While the source
+code for a tag cannot be changed anymore, the published release notes on the GitHub Releases pages or the
+news posts can be changed afterward (although that's an entirely manual process).
 
 You can find the release notes here: `docs/pages/release_notes.md`.
 
@@ -86,7 +90,12 @@ Add the new rules as comments to the quickstart rulesets:
 
 The designer lives at [pmd/pmd-designer](https://github.com/pmd/pmd-designer).
 Update property `pmd-designer.version` in **pom.xml** to reference the new version, that will be released
-shortly. Note: This version does at the moment not exist.
+shortly. Note: This version does at the moment not exist. That means, that a full build of the sources
+will currently fail. That's why the first phase of the release will build only pmd-core and languages but
+not pmd-cli and pmd-dist.
+
+In case, there is no need for a new pmd-designer version, we could stick to the latest already available version.
+Then we can skip the release of pmd-designer and immediately start the second phase of the release.
 
 Starting with PMD 6.23.0 we'll provide small statistics for every release. This needs to be added
 to the release notes as the last section. To count the closed issues and pull requests, the milestone
@@ -115,7 +124,7 @@ Check in all (version) changes to branch master or any other branch, from which 
 
 ### The Homepage
 
-The github repo `pmd.github.io` hosts the homepage for [https://pmd.github.io](https://pmd.github.io).
+The GitHub repo `pmd.github.io` hosts the homepage for [https://pmd.github.io](https://pmd.github.io).
 All the following tasks are to be done in this repo.
 
 The new version needs to be entered into `_config.yml`, e.g.:
@@ -132,7 +141,22 @@ in this list, so remove the oldest version.
 Then create a new page for the new release, e.g. `_posts/2021-04-24-PMD-6.34.0.md` and copy
 the release notes into this page. This will appear under the news section.
 
-Check in all (version) changes to branch master:
+Note: The release notes typically contain some Jekyll macros for linking to the rule pages. These macros won't
+work in a plain markdown version. Therefore, you need to render the release notes first:
+
+```shell
+# install bundles needed for rendering release notes
+bundle config set --local path vendor/bundle
+bundle config set --local with release_notes_preprocessing
+bundle install
+
+RELEASE_NOTES_POST="_posts/$(date -u +%Y-%m-%d)-PMD-${RELEASE_VERSION}.md"
+echo "Generating ../pmd.github.io/${RELEASE_NOTES_POST}..."
+NEW_RELEASE_NOTES=$(bundle exec docs/render_release_notes.rb docs/pages/release_notes.md | tail -n +6)
+cat > "../pmd.github.io/${RELEASE_NOTES_POST}" <<EOF
+```
+
+Check in all (version, blog post) changes to branch master:
 
     $ git commit -a -m "Prepare pmd release <version>"
     $ git push
@@ -140,33 +164,45 @@ Check in all (version) changes to branch master:
 
 ## The actual release
 
-The actual release starts with one last local command: calling **maven-release-plugin**.
+The actual release is done by changing the versions, creating a tag and pushing this tag. Previously this was done
+by calling _maven-release-plugin_, but these steps are done without the plugin to have more control. And since we
+might reference a not yet released pmd-designer version, the test-build will fail.
 
-This plugin changes the version by basically removing the "-SNAPSHOT" suffix, builds the changed project
-locally, commits the version change, creates
-a new tag from this commit, changes the version of the project to the next snapshot, commits this change
-and pushes everything.
+We first change the version of PMD and all modules by basically removing the "-SNAPSHOT" suffix, building the changed
+project locally with tests (and with skipping pmd-cli and pmd-dist) in order to be sure, everything is in working
+order. Then the version changes are committed and a new release tag is created. Then, the versions are changed to
+the next snapshot. As last step, everything is pushed.
 
 `RELEASE_VERSION` is the version of the release. It is reused for the tag. `DEVELOPMENT_VERSION` is the
-next snapshot version after the release.
+next snapshot version after the release. Skipping the builds of pmd-cli and pmd-dist is done by setting
+the property `skip-cli-dist`.
 
 ```shell
 RELEASE_VERSION=6.34.0
 DEVELOPMENT_VERSION=6.35.0-SNAPSHOT
-./mvnw -B release:clean release:prepare \
-    -Dtag="pmd_releases/${RELEASE_VERSION}" \
-    -DreleaseVersion="${RELEASE_VERSION}" \
-    -DdevelopmentVersion="${DEVELOPMENT_VERSION}" \
-    -DscmCommentPrefix="[release] " \
-    -Darguments='-Pgenerate-rule-docs,!cli-dist' \
-    '-Pgenerate-rule-docs,!cli-dist'
+# Change version in the POMs to ${RELEASE_VERSION} and update build timestamp
+./mvnw --quiet versions:set -DnewVersion="${RELEASE_VERSION}" -DgenerateBackupPoms=false -DupdateBuildOutputTimestampPolicy=always
+# Transform the SCM information in the POM
+sed -i "s|<tag>.\+</tag>|<tag>pmd_releases/${RELEASE_VERSION}</tag>|" pom.xml
+# Run the project tests against the changed POMs to confirm everything is in running order (skipping cli and dist)
+./mvnw clean verify -Dskip-cli-dist -Pgenerate-rule-docs
+# Commit and create tag
+git commit -a -m "[release] prepare release pmd_releases/${RELEASE_VERSION}"
+git tag -m "[release] copy for tag pmd_releases/${RELEASE_VERSION}" "pmd_releases/${RELEASE_VERSION}"
+# Update POMs to set the new development version ${DEVELOPMENT_VERSION}
+./mvnw --quiet versions:set -DnewVersion="${DEVELOPMENT_VERSION}" -DgenerateBackupPoms=false -DupdateBuildOutputTimestampPolicy=never
+sed -i "s|<tag>.\+</tag>|<tag>HEAD</tag>|" pom.xml
+git commit -a -m "[release] prepare for next development iteration"
+# Push branch and tag pmd_releases/${RELEASE_VERSION}
+git push origin "${CURRENT_BRANCH}"
+git push origin tag "pmd_releases/${RELEASE_VERSION}"
 ```
 
-Once the maven plugin has pushed the tag, github actions will start and build a new version from this tag. Since
-it is a tag build and a released version build, the build script will do a couple of additional stuff.
+Once we have pushed the tag, GitHub Actions take over and build a new version from this tag. Since
+it is a tag build and a release version (version without SNAPSHOT), the build script will do a couple of additional stuff.
 This is all automated in `.ci/build.sh`.
 
-Note: The profile "cli-dist" is deactivated, so this release command doesn't include pmd-cli and pmd-dist.
+Note: The property "skip-cli-dist" is activated, so this release command doesn't include pmd-cli and pmd-dist.
 They will be released separately after pmd-designer is released. Since pmd-dist is not included in this first
 step, no binaries are created yet.
 
@@ -174,13 +210,15 @@ Here is, what happens:
 
 *   Deploy and release the build to maven central, so that it can be downloaded from
     <https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd/>. This is done automatically, if
-    all unit tests pass and the build doesn't fail for any other reason.
-    The plugin [nexus-staging-maven-plugin](https://github.com/sonatype/nexus-maven-plugins/tree/master/staging/maven-plugin) is used for that.
+    the build doesn't fail for any reason. Note, that unit tests are not executed anymore, since they have been
+    run already locally before pushing the tag.
+    The plugin [nexus-staging-maven-plugin](https://github.com/sonatype/nexus-maven-plugins/tree/master/staging/maven-plugin)
+    is used to upload and publish the artifacts to maven central.
 *   Create a draft release on GitHub and upload the release notes from `docs/pages/release_notes.md`.
     Note: During the process, the release is a draft mode and not visible yet.
-    At the end of the process, the release will be published.  
+    At the end of the process, the release will be published.
 *   Render the documentation in `docs/` with `bundle exec jekyll build` and create a zip file from it.
-*   Upload the doc zip file to the current github release under <https://github.com/pmd/pmd/releases> and
+*   Upload the doc zip file to the current (draft) GitHub Release under <https://github.com/pmd/pmd/releases> and
     to <https://sourceforge.net/projects/pmd/files/pmd/>.
 *   Upload the documentation to <https://docs.pmd-code.org>, e.g. <https://docs.pmd-code.org/pmd-doc-6.34.0/> and
     create a symlink, so that <https://docs.pmd-code.org/latest/> points to the new version.
@@ -196,40 +234,21 @@ Here is, what happens:
     <https://pmd.sourceforge.io/pmd-6.34.0/>. All previously copied versions are listed
     under <https://pmd.sourceforge.io/archive.phtml>.
 
-The release on github actions currently takes about 30-45 minutes. Once this is done, you
+The release on GitHub Actions currently takes about 30-45 minutes. Once this is done, you
 can proceed with releasing pmd designer, see <https://github.com/pmd/pmd-designer/blob/master/releasing.md>.
 Make sure to release the version, you have used earlier for the property `pmd-designer.version`.
 
-Once the pmd-designer release is done, you can proceed with part 2. We'll checkout the release tag, add
-a new commit with the changed versions for pmd-cli and pmd-dist on top of it and create a new tag:
+Once the pmd-designer release is done, you can proceed with part 2. This is simply triggering manually
+a build on GitHub Actions: <https://github.com/pmd/pmd/actions/workflows/build.yml> from the same tag again, but
+with the parameter "build_cli_dist_only" set to "true". With this parameter, the script `.ci/build.sh` will
+perform the following steps:
 
-```shell
-git checkout "pmd_releases/${RELEASE_VERSION}"
-./mvnw versions:update-parent -DparentVersion="${RELEASE_VERSION}" -DskipResolution=true -DgenerateBackupPoms=false -pl pmd-cli,pmd-dist
-git add pmd-cli/pom.xml pmd-dist/pom.xml
-git commit -m "[release] prepare release pmd_releases/${RELEASE_VERSION}-dist"
-git tag -m "[release] copy for tag pmd_releases/${RELEASE_VERSION}-dist" "pmd_releases/${RELEASE_VERSION}-dist"
-git push origin tag "pmd_releases/${RELEASE_VERSION}-dist"
-git checkout master
-# make sure parent reference is correct
-./mvnw versions:update-parent -DparentVersion="${DEVELOPMENT_VERSION}" -DskipResolution=true -DgenerateBackupPoms=false -pl pmd-cli,pmd-dist
-git add pmd-cli/pom.xml pmd-dist/pom.xml
-git commit -m "Prepare next development version [skip ci]"
-git push origin "${CURRENT_BRANCH}"
-```
-
-Since pmd-cli/pmd-dist were not part of the first maven-release-plugin call, we might need to fix the parent references
-manually to set to the new development version.
-
-The new created tag ends with the suffix `-dist`, and this is used as a marker for the GitHub action. The same build
-script `.ci/build.sh` is executed, but now, it does the following steps:
-
-*   Build only modules pmd-cli and pmd-dist
-*   Upload the new binaries to the existing draft release under <https://github.com/pmd/pmd/releases>.
+*   Build only modules pmd-cli and pmd-dist (via maven parameter `-pl pmd-cli,pmd-dist`).
+*   Upload the new binaries to the existing draft GitHub Release under <https://github.com/pmd/pmd/releases>.
 *   Upload the new binaries additionally to sourceforge, so that they can be downloaded from
-    <https://sourceforge.net/projects/pmd/files/pmd/>, including the release notes.
-*   After all this is done, the release on github (<https://github.com/pmd/pmd/releases>) is published
-    and the news post on sourceforge (https://sourceforge.net/p/pmd/news/> is published as well.
+    <https://sourceforge.net/projects/pmd/files/pmd/>.
+*   After all this is done, the release on GitHub (<https://github.com/pmd/pmd/releases>) is published
+    and the news post on sourceforge <https://sourceforge.net/p/pmd/news/> is published as well.
 *   The new binary at <https://sourceforge.net/projects/pmd/files/pmd/> is
     selected as the new default for PMD.
 *   As a last step, a new baseline for the [regression tester](https://github.com/pmd/pmd-regression-tester)
@@ -326,7 +345,7 @@ This is a {{ site.pmd.release_type }} release.
 {%endraw%}
 
 
-Finally commit and push the changes:
+Finally, commit and push the changes:
 
     $ git commit -m "Prepare next development version"
     $ git push origin master

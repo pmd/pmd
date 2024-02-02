@@ -54,10 +54,10 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
  * the emptiness of a node stream. E.g. the following tests if the node
  * is a variable declarator id initialized to the value {@code 0}:
  * <pre>
- *     {@linkplain #of(Node) NodeStream.of}(someNode)                           <i>// the stream here is empty if the node is null</i>
- *               {@linkplain #filterIs(Class) .filterIs}(ASTVariableDeclaratorId.class)<i>// the stream here is empty if the node was not a variable declarator id</i>
- *               {@linkplain #followingSiblings() .followingSiblings}()                    <i>// the stream here contains only the siblings, not the original node</i>
- *               {@linkplain #take(int) .take}(1)                                <i>// the stream here contains only the first sibling, if it exists</i>
+ *     {@linkplain #of(Node) NodeStream.of}(someNode)                    <i>// the stream here is empty if the node is null</i>
+ *               {@linkplain #filterIs(Class) .filterIs}(ASTVariableId.class)   <i>// the stream here is empty if the node was not a variable declarator id</i>
+ *               {@linkplain #followingSiblings() .followingSiblings}()             <i>// the stream here contains only the siblings, not the original node</i>
+ *               {@linkplain #take(int) .take}(1)                         <i>// the stream here contains only the first sibling, if it exists</i>
  *               {@linkplain #filterIs(Class) .filterIs}(ASTNumericLiteral.class)
  *               {@linkplain #filter(Predicate) .filter}(it -&gt; !it.isFloatingPoint() &amp;&amp; it.getValueAsInt() == 0)
  *               {@linkplain #nonEmpty() .nonEmpty}(); <i>// If the stream is non empty here, then all the pipeline matched</i>
@@ -1113,9 +1113,9 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
      * explicit type arguments:
      *
      * <pre>{@code
-     *    ASTAnyTypeDeclaration ts =
+     *    ASTTypeDeclaration ts =
      *       node.ancestors()
-     *           .<ASTAnyTypeDeclaration>map(asInstanceOf(ASTClassOrInterfaceDeclaration.class, ASTEnumDeclaration.class))
+     *           .<ASTTypeDeclaration>map(asInstanceOf(ASTClassDeclaration.class, ASTEnumDeclaration.class))
      *           .first(); // would not compile without the explicit type arguments
      * }</pre>
      *
@@ -1123,8 +1123,8 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
      * may be used, which reduces the above to
      *
      * <pre>{@code
-     *    ASTAnyTypeDeclaration ts =
-     *       node.ancestors().firstNonNull(asInstanceOf(ASTClassOrInterfaceDeclaration.class, ASTEnumDeclaration.class));
+     *    ASTTypeDeclaration ts =
+     *       node.ancestors().firstNonNull(asInstanceOf(ASTClassDeclaration.class, ASTEnumDeclaration.class));
      * }</pre>
      *
      * @param c1   First type to test
