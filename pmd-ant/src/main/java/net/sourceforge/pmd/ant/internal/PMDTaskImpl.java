@@ -68,7 +68,6 @@ public class PMDTaskImpl {
             configuration.setRuleSets(Arrays.asList(task.getRulesetFiles().split(",")));
         }
 
-        configuration.setRuleSetFactoryCompatibilityEnabled(!task.isNoRuleSetCompatibility());
         if (task.getEncoding() != null) {
             configuration.setSourceEncoding(Charset.forName(task.getEncoding()));
         }

@@ -2,6 +2,9 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
+// This class has been taken from 7.0.0-SNAPSHOT
+// Before removing RuleSetFactoryCompatibility (#4314)
+
 package net.sourceforge.pmd;
 
 import java.text.MessageFormat;

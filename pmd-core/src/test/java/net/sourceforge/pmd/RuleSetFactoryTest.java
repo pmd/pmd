@@ -525,7 +525,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
 
     @Test
     void testReferencePriority() {
-        RuleSetLoader config = new RuleSetLoader().warnDeprecated(false).enableCompatibility(true);
+        RuleSetLoader config = new RuleSetLoader().warnDeprecated(false);
 
         RuleSetLoader rulesetLoader = config.filterAbovePriority(RulePriority.LOW);
         RuleSet ruleSet = rulesetLoader.loadFromString("ruleset.xml", REF_INTERNAL_TO_INTERNAL_CHAIN);
@@ -567,7 +567,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
     @Test
     void testOverridePriorityLoadWithMinimum() {
         RuleSetLoader rulesetLoader = new RuleSetLoader().filterAbovePriority(RulePriority.MEDIUM_LOW)
-                .warnDeprecated(true).enableCompatibility(true);
+                .warnDeprecated(true);
         RuleSet ruleset = rulesetLoader.loadFromResource("net/sourceforge/pmd/rulesets/ruleset-minimum-priority.xml");
         // only one rule should remain, since we filter out the other rule by minimum priority
         assertEquals(1, ruleset.getRules().size(), "Number of Rules");

@@ -2,6 +2,9 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
+// This class has been taken from 7.0.0-SNAPSHOT
+// Before removing RuleSetFactoryCompatibility (#4314)
+
 package net.sourceforge.pmd;
 
 import java.io.ByteArrayInputStream;
@@ -17,6 +20,7 @@ import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,6 +44,7 @@ public final class RuleSetLoader {
     private ResourceLoader resourceLoader = new ResourceLoader(RuleSetLoader.class.getClassLoader());
     private RulePriority minimumPriority = RulePriority.LOW;
     private boolean warnDeprecated = true;
+    private @NonNull RuleSetFactoryCompatibility compatFilter = RuleSetFactoryCompatibility.DEFAULT;
     private boolean includeDeprecatedRuleReferences = false;
     private @NonNull MessageReporter reporter = MessageReporter.quiet();
 
@@ -101,8 +106,28 @@ public final class RuleSetLoader {
     }
 
     /**
+     * Enable translating old rule references to newer ones, if they have
+     * been moved or renamed. This is enabled by default, if disabled,
+     * unresolved references will not be translated and will produce an
+     * error.
+     *
+     * @return This instance, modified
+     */
+    public RuleSetLoader enableCompatibility(boolean enable) {
+        return setCompatibility(enable ? RuleSetFactoryCompatibility.DEFAULT
+                                       : RuleSetFactoryCompatibility.EMPTY);
+    }
+
+    // test only
+    RuleSetLoader setCompatibility(@NonNull RuleSetFactoryCompatibility filter) {
+        this.compatFilter = filter;
+        return this;
+    }
+
+    /**
      * Follow deprecated rule references. By default this is off,
-     * and those references will be ignored.
+     * and those references will be ignored (with a warning depending
+     * on {@link #enableCompatibility(boolean)}).
      *
      * @return This instance, modified
      */
@@ -125,9 +150,14 @@ public final class RuleSetLoader {
             this.languageRegistry,
             this.minimumPriority,
             this.warnDeprecated,
+            this.compatFilter,
             this.includeDeprecatedRuleReferences,
             this.reporter
         );
+    }
+
+    private @Nullable MessageReporter filteredReporter() {
+        return warnDeprecated ? reporter : null;
     }
 
     /**
@@ -139,7 +169,7 @@ public final class RuleSetLoader {
      * @throws RuleSetLoadException If any error occurs (eg, invalid syntax, or resource not found)
      */
     public RuleSet loadFromResource(String rulesetPath) {
-        return loadFromResource(new RuleSetReferenceId(rulesetPath, null));
+        return loadFromResource(new RuleSetReferenceId(rulesetPath, null, filteredReporter()));
     }
 
     /**
@@ -151,25 +181,12 @@ public final class RuleSetLoader {
      * @throws RuleSetLoadException If any error occurs (eg, invalid syntax)
      */
     public RuleSet loadFromString(String filename, final String rulesetXmlContent) {
-        if (filename == null || filename.isEmpty()) {
-            throw new IllegalArgumentException("Invalid empty filename");
-        }
-
-        ResourceLoader oldLoader = this.resourceLoader;
-        try {
-            loadResourcesWith(new ResourceLoader() {
-                @Override
-                public @NonNull InputStream loadResourceAsStream(String name) throws IOException {
-                    if (Objects.equals(name, filename)) {
-                        return new ByteArrayInputStream(rulesetXmlContent.getBytes(StandardCharsets.UTF_8));
-                    }
-                    return oldLoader.loadResourceAsStream(name);
-                }
-            });
-            return loadFromResource(new RuleSetReferenceId(filename, null));
-        } finally {
-            loadResourcesWith(oldLoader);
-        }
+        return loadFromResource(new RuleSetReferenceId(filename, null, filteredReporter()) {
+            @Override
+            public InputStream getInputStream(ResourceLoader rl) {
+                return new ByteArrayInputStream(rulesetXmlContent.getBytes(StandardCharsets.UTF_8));
+            }
+        });
     }
 
     /**
@@ -264,6 +281,7 @@ public final class RuleSetLoader {
      */
     public static RuleSetLoader fromPmdConfig(PMDConfiguration configuration) {
         return new RuleSetLoader().filterAbovePriority(configuration.getMinimumPriority())
+                                  .enableCompatibility(configuration.isRuleSetFactoryCompatibilityEnabled())
                                   .withLanguages(configuration.getLanguageRegistry())
                                   .withReporter(configuration.getReporter());
     }

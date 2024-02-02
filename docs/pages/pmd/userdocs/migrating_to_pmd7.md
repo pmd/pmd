@@ -203,6 +203,7 @@ Most notable changes:
     an error message such as `[main] ERROR net.sourceforge.pmd.cli.commands.internal.PmdCommand - No such file false`.
   * PMD tries to display a progress bar. If you don't want this (e.g. on a CI build server), you can disable this
     with `--no-progress`.
+  * `--no-ruleset-compatibility` has been removed
 
 ### Custom distribution packages
 

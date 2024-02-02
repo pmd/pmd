@@ -109,7 +109,7 @@ public class RulesetFactoryTestBase {
         try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
             return pmd.newRuleSetLoader()
                       .warnDeprecated(true)
-                      .enableCompatibility(false).loadFromString("dummyRuleset.xml", ruleSetXml);
+                      .loadFromString("dummyRuleset.xml", ruleSetXml);
         }
     }
 

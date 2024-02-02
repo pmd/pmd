@@ -39,6 +39,6 @@ class DefaultRulesetTest {
     }
 
     private RuleSetLoader rulesetLoader() {
-        return new RuleSetLoader().enableCompatibility(false);
+        return new RuleSetLoader();
     }
 }

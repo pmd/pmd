@@ -44,9 +44,6 @@ import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
  * These can be file paths or classpath resources.</li>
  * <li>Use {@link #setMinimumPriority(RulePriority)} to control the minimum priority a
  * rule must have to be included. Defaults to the lowest priority, ie all rules are loaded.</li>
- * <li>Use {@link #setRuleSetFactoryCompatibilityEnabled(boolean)} to disable the
- * compatibility measures for removed and renamed rules in the rulesets that will
- * be loaded.
  * </ul>
  *
  * <h3>Source files</h3>
@@ -106,7 +103,6 @@ public class PMDConfiguration extends AbstractConfiguration {
     // Rule and source file options
     private List<String> ruleSets = new ArrayList<>();
     private RulePriority minimumPriority = RulePriority.LOW;
-    private boolean ruleSetFactoryCompatibilityEnabled = true;
 
     // Reporting options
     private String reportFormat;
@@ -447,28 +443,6 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     public void setFailOnViolation(boolean failOnViolation) {
         this.failOnViolation = failOnViolation;
-    }
-
-    /**
-     * Checks if the rule set factory compatibility feature is enabled.
-     *
-     * @return true, if the rule set factory compatibility feature is enabled
-     *
-     * @see RuleSetLoader#enableCompatibility(boolean)
-     */
-    public boolean isRuleSetFactoryCompatibilityEnabled() {
-        return ruleSetFactoryCompatibilityEnabled;
-    }
-
-    /**
-     * Sets the rule set factory compatibility feature enabled/disabled.
-     *
-     * @param ruleSetFactoryCompatibilityEnabled {@code true} if the feature should be enabled
-     *
-     * @see RuleSetLoader#enableCompatibility(boolean)
-     */
-    public void setRuleSetFactoryCompatibilityEnabled(boolean ruleSetFactoryCompatibilityEnabled) {
-        this.ruleSetFactoryCompatibilityEnabled = ruleSetFactoryCompatibilityEnabled;
     }
 
     /**
