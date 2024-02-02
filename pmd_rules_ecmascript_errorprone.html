@@ -1947,9 +1947,9 @@ same type. The === operator avoids the casting.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">InfixExpression</span><span class="p">[</span><span class="w">
-  </span><span class="p">(</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"=="</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"!="</span><span class="p">)</span><span class="w">
+  </span><span class="p">(</span><span class="na">@Operator</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'=='</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="na">@Operator</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'!='</span><span class="p">)</span><span class="w">
   </span><span class="ow">and</span><span class="w">
-  </span><span class="p">(</span><span class="nt">KeywordLiteral</span><span class="p">[</span><span class="na">@Image</span><span class="err">=</span><span class="s1">'true'</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'false'</span><span class="p">]</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nt">NumberLiteral</span><span class="p">)</span><span class="w">
+  </span><span class="p">(</span><span class="nt">KeywordLiteral</span><span class="p">[</span><span class="na">@Literal</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'true'</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="na">@Literal</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'false'</span><span class="p">]</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nt">NumberLiteral</span><span class="p">)</span><span class="w">
 </span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
@@ -2034,7 +2034,7 @@ precision in a floating point number.  This may result in numeric calculations b
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Feb 1, 2024 <br />
+             Site last generated: Feb 2, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

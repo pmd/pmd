@@ -1970,6 +1970,9 @@ can be expected to work in PMD 7 without any further changes. So the migration p
 with PMD 7. PMD 7 by default uses XPath 3.1.
 See below <a href="#xpath-migrating-from-10-to-20">XPath</a> for details.</p>
 
+<p>There are some general changes for AST nodes regarding the <code class="language-plaintext highlighter-rouge">@Image</code> attribute.
+See below <a href="#general-ast-changes-to-avoid-image">General AST Changes to avoid @Image</a>.</p>
+
 <p>Additional infos:</p>
 <ul>
   <li>The custom XPath function <code class="language-plaintext highlighter-rouge">typeOf</code> has been removed (deprecated since 6.4.0).
@@ -2299,6 +2302,156 @@ with nested classes.</p>
 since there is a built-in function available since XPath 2.0 which can be used instead. If you use “pmd:matches”
 simply remove the “pmd:” prefix.</li>
 </ul>
+
+<h3 id="general-ast-changes-to-avoid-image">General AST Changes to avoid @Image</h3>
+
+<p>An abstract syntax tree should be abstract, but in the same time, should not be too abstract. One of the
+base interfaces for PMD’s AST for all languages is <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#"><code>Node</code></a>, which provides
+the methods <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#getImage()"><code>getImage</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/Node.html#hasImageEqualTo(java.lang.String)"><code>hasImageEqualTo</code></a>.
+However, these methods don’t necessarily make sense for all nodes in all contexts. That’s why <code class="language-plaintext highlighter-rouge">getImage()</code>
+often returns just <code class="language-plaintext highlighter-rouge">null</code>. Also, the name is not very describing. AST nodes should try to use more specific
+names, such as <code class="language-plaintext highlighter-rouge">getValue()</code> or <code class="language-plaintext highlighter-rouge">getName()</code>.</p>
+
+<p>For PMD 7, most languages have been adapted. And when writing XPath rules, you need to replace <code class="language-plaintext highlighter-rouge">@Image</code> with
+whatever is appropriate now (e.g. <code class="language-plaintext highlighter-rouge">@Name</code>). See below for details.</p>
+
+<h4 id="apex-and-visualforce">Apex and Visualforce</h4>
+
+<p>There are many usages of <code class="language-plaintext highlighter-rouge">@Image</code>. These will be refactored after PMD 7 is released
+by deprecating the attribute and providing alternatives.</p>
+
+<p>See also issue <a href="https://github.com/pmd/pmd/issues/4787">Deprecate getImage/@Image #4787</a>.</p>
+
+<h4 id="html">Html</h4>
+
+<ul>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-html/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/html/ast/ASTHtmlTextNode.html#"><code>ASTHtmlTextNode</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Text</code>, <code class="language-plaintext highlighter-rouge">@NormalizedText</code> ➡️ <code class="language-plaintext highlighter-rouge">@Text</code>, <code class="language-plaintext highlighter-rouge">@Text</code> ➡️ <code class="language-plaintext highlighter-rouge">@WholeText</code>.</li>
+</ul>
+
+<h4 id="java">Java</h4>
+
+<p>There are still many usages of <code class="language-plaintext highlighter-rouge">@Image</code> which are not refactored yet. This will be done after PMD 7 is released
+by deprecating the attribute and providing alternatives.</p>
+
+<p>See also issue <a href="https://github.com/pmd/pmd/issues/4787">Deprecate getImage/@Image #4787</a>.</p>
+
+<p>Some nodes have already the image attribute (and others) deprecated. These deprecated attributes are removed now:</p>
+
+<ul>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnnotationTypeDeclaration.html#"><code>ASTAnnotationTypeDeclaration</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@SimpleName</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAnonymousClassDeclaration.html#"><code>ASTAnonymousClassDeclaration</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@SimpleName</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTClassOrInterfaceDeclaration.html#"><code>ASTClassOrInterfaceDeclaration</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@SimpleName</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTEnumDeclaration.html#"><code>ASTEnumDeclaration</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@SimpleName</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#"><code>ASTFieldDeclaration</code></a>: <code class="language-plaintext highlighter-rouge">@VariableName</code> ➡️ <code class="language-plaintext highlighter-rouge">VariableDeclaratorId/@Name</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTMethodDeclaration.html#"><code>ASTMethodDeclaration</code></a>: <code class="language-plaintext highlighter-rouge">@MethodName</code> ➡️ <code class="language-plaintext highlighter-rouge">@Name</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTRecordDeclaration.html#"><code>ASTRecordDeclaration</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@SimpleName</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableDeclaratorId.html#"><code>ASTVariableDeclaratorId</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Name</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableDeclaratorId.html#"><code>ASTVariableDeclaratorId</code></a>: <code class="language-plaintext highlighter-rouge">@VariableName</code> ➡️ <code class="language-plaintext highlighter-rouge">@Name</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableDeclaratorId.html#"><code>ASTVariableDeclaratorId</code></a>: <code class="language-plaintext highlighter-rouge">@Array</code> ➡️ <code class="language-plaintext highlighter-rouge">@ArrayType</code></li>
+</ul>
+
+<h4 id="javascript">JavaScript</h4>
+
+<ul>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTAssignment.html#"><code>ASTAssignment</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Operator</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTBigIntLiteral.html#"><code>ASTBigIntLiteral</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTBreakStatement.html#"><code>ASTBreakStatement</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">Name/@Identifier</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTContinueStatement.html#"><code>ASTContinueStatement</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">Name/@Identifier</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTErrorNode.html#"><code>ASTErrorNode</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Message</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTFunctionNode.html#"><code>ASTFunctionNode</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">Name/@Identifier</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTInfixExpression.html#"><code>ASTInfixExpression</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Operator</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTKeywordLiteral.html#"><code>ASTKeywordLiteral</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Literal</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTLabel.html#"><code>ASTLabel</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Name</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTName.html#"><code>ASTName</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Identifier</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTNumberLiteral.html#"><code>ASTNumberLiteral</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTObjectProperty.html#"><code>ASTObjectProperty</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Operator</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTPropertyGet.html#"><code>ASTPropertyGet</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Operator</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTRegExpLiteral.html#"><code>ASTRegExpLiteral</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTStringLiteral.html#"><code>ASTStringLiteral</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTUnaryExpression.html#"><code>ASTUnaryExpression</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Operator</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTUpdateExpression.html#"><code>ASTUpdateExpression</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Operator</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTXmlDotQuery.html#"><code>ASTXmlDotQuery</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Operator</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTXmlMemberGet.html#"><code>ASTXmlMemberGet</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Operator</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTXmlPropRef.html#"><code>ASTXmlPropRef</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">Name[last()]/@Identifier</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ecmascript/ast/ASTXmlString.html#"><code>ASTXmlString</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Xml</code></li>
+</ul>
+
+<h4 id="jsp">JSP</h4>
+
+<ul>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTAttributeValue.html#"><code>ASTAttributeValue</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTCData.html#"><code>ASTCData</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Content</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTCommentTag.html#"><code>ASTCommentTag</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Content</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTElExpression.html#"><code>ASTElExpression</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Content</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTHtmlScript.html#"><code>ASTHtmlScript</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Content</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTJspComment.html#"><code>ASTJspComment</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Content</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTJspDeclaration.html#"><code>ASTJspDeclaration</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Content</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTJspExpression.html#"><code>ASTJspExpression</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Content</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTJspExpressionInAttribute.html#"><code>ASTJspExpressionInAttribute</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Content</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTJspScriptlet.html#"><code>ASTJspScriptlet</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Content</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTText.html#"><code>ASTText</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Content</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTUnparsedText.html#"><code>ASTUnparsedText</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Content</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-jsp/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/jsp/ast/ASTValueBinding.html#"><code>ASTValueBinding</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Content</code></li>
+</ul>
+
+<h4 id="modelica">Modelica</h4>
+
+<ul>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTAddOp.html#"><code>ASTAddOp</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Operator</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTDerClassSpecifier.html#"><code>ASTDerClassSpecifier</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@SimpleClassName</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTEnumerationShortClassSpecifier.html#"><code>ASTEnumerationShortClassSpecifier</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@SimpleClassName</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTExtendingLongClassSpecifier.html#"><code>ASTExtendingLongClassSpecifier</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@SimpleClassName</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTFactor.html#"><code>ASTFactor</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Operator</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTLanguageSpecification.html#"><code>ASTLanguageSpecification</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@ExternalLanguage</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTMulOp.html#"><code>ASTMulOp</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Operator</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTName.html#"><code>ASTName</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Name</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTNumberLiteral.html#"><code>ASTNumberLiteral</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTRelOp.html#"><code>ASTRelOp</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Operator</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTSimpleLongClassSpecifier.html#"><code>ASTSimpleLongClassSpecifier</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@SimpleClassName</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTSimpleName.html#"><code>ASTSimpleName</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Name</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTSimpleShortClassSpecifier.html#"><code>ASTSimpleShortClassSpecifier</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@SimpleClassName</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTStoredDefinition.html#"><code>ASTStoredDefinition</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Name</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTStringComment.html#"><code>ASTStringComment</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Comment</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTStringLiteral.html#"><code>ASTStringLiteral</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-modelica/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/modelica/ast/ASTWithinClause.html#"><code>ASTWithinClause</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Name</code></li>
+</ul>
+
+<h4 id="plsql">PLSQL</h4>
+
+<p>There are many usages of <code class="language-plaintext highlighter-rouge">@Image</code>. These will be refactored after PMD 7 is released
+by deprecating the attribute and providing alternatives.</p>
+
+<p>See also issue <a href="https://github.com/pmd/pmd/issues/4787">Deprecate getImage/@Image #4787</a>.</p>
+
+<h4 id="scala">Scala</h4>
+
+<ul>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTLitBoolean.html#"><code>ASTLitBoolean</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTLitByte.html#"><code>ASTLitByte</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTLitChar.html#"><code>ASTLitChar</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTLitDouble.html#"><code>ASTLitDouble</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTLitFloat.html#"><code>ASTLitFloat</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTLitInt.html#"><code>ASTLitInt</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTLitLong.html#"><code>ASTLitLong</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTLitNull.html#"><code>ASTLitNull</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTLitShort.html#"><code>ASTLitShort</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTLitString.html#"><code>ASTLitString</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTLitSymbol.html#"><code>ASTLitSymbol</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTLitUnit.html#"><code>ASTLitUnit</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTNameAnonymous.html#"><code>ASTNameAnonymous</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTNameIndeterminate.html#"><code>ASTNameIndeterminate</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTTermName.html#"><code>ASTTermName</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-scala_2.13/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/scala/ast/ASTTypeName.html#"><code>ASTTypeName</code></a>: <code class="language-plaintext highlighter-rouge">@Image</code> ➡️ <code class="language-plaintext highlighter-rouge">@Value</code></li>
+</ul>
+
+<h4 id="xml-and-pom">XML (and POM)</h4>
+
+<p>When using <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/XPathRule.html#"><code>XPathRule</code></a>, text of text nodes was exposed as <code class="language-plaintext highlighter-rouge">@Image</code> of
+normal element type nodes. Now the attribute is called <code class="language-plaintext highlighter-rouge">@Text</code>.</p>
+
+<p>Note: In general, it is recommended to use <a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/rule/DomXPathRule.html#"><code>DomXPathRule</code></a> instead,
+which exposes text nodes as real XPath/XML text nodes which conforms to the XPath spec.
+There is no difference, text of text nodes can be selected using <code class="language-plaintext highlighter-rouge">text()</code>.</p>
 
 <h3 id="java-ast">Java AST</h3>
 
@@ -5260,7 +5413,7 @@ the ant task is in an own dependency with PMD 7:
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Feb 1, 2024 <br />
+             Site last generated: Feb 2, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

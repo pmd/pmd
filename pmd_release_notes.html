@@ -1983,6 +1983,7 @@ they contain a comment (<code class="language-plaintext highlighter-rouge">allow
       <li><a href="https://github.com/pmd/pmd/pull/4694">#4694</a>:   [core] Fix line/col numbers in TokenMgrError</li>
       <li><a href="https://github.com/pmd/pmd/issues/4717">#4717</a>: [core] XSLTRenderer doesn’t close report file</li>
       <li><a href="https://github.com/pmd/pmd/pull/4750">#4750</a>:   [core] Fix flaky SummaryHTMLRenderer</li>
+      <li><a href="https://github.com/pmd/pmd/pull/4782">#4782</a>:   [core] Avoid using getImage/@<!-- -->Image</li>
     </ul>
   </li>
   <li>doc
@@ -2063,6 +2064,11 @@ they contain a comment (<code class="language-plaintext highlighter-rouge">allow
 </ul>
 
 <h4 id="api-changes">API Changes</h4>
+
+<p><strong>General AST Changes to avoid <code class="language-plaintext highlighter-rouge">@Image</code></strong></p>
+
+<p>See <a href="pmd_userdocs_migrating_to_pmd7.html#general-ast-changes-to-avoid-image">General AST Changes to avoid @Image</a>
+in the migration guide for details.</p>
 
 <p><strong>Removed classes and methods (previously deprecated)</strong></p>
 
@@ -2623,6 +2629,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/pull/4694">#4694</a>:   [core] Fix line/col numbers in TokenMgrError</li>
       <li><a href="https://github.com/pmd/pmd/issues/4717">#4717</a>: [core] XSLTRenderer doesn’t close report file</li>
       <li><a href="https://github.com/pmd/pmd/pull/4750">#4750</a>:   [core] Fix flaky SummaryHTMLRenderer</li>
+      <li><a href="https://github.com/pmd/pmd/pull/4782">#4782</a>:   [core] Avoid using getImage/@<!-- -->Image</li>
     </ul>
   </li>
   <li>cli
@@ -3017,7 +3024,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Feb 1, 2024 <br />
+             Site last generated: Feb 2, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
