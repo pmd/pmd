@@ -1913,6 +1913,22 @@ might look like
 </code></pre></div>    </div>
     <p>and often already suggest an alternative.</p>
   </li>
+  <li>If you still reference rulesets or rules the old way which has been deprecated since 6.46.0:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">&lt;lang-name&gt;-&lt;ruleset-name&gt;</code>, eg <code class="language-plaintext highlighter-rouge">java-basic</code>, which resolves to <code class="language-plaintext highlighter-rouge">rulesets/java/basic.xml</code></li>
+      <li>the internal release number, eg <code class="language-plaintext highlighter-rouge">600</code>, which resolves to <code class="language-plaintext highlighter-rouge">rulesets/releases/600.xml</code></li>
+    </ul>
+
+    <p>Such usages produce deprecation warnings that should be easy to spot, e.g.</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Ruleset reference 'java-basic' uses a deprecated form, use 'rulesets/java/basic.xml' instead
+</code></pre></div>    </div>
+
+    <p>Use the explicit forms of these references to be compatible with PMD 7.</p>
+
+    <p>Note: Since PMD 6, all rules are sorted into categories (such as “Best Practices”, “Design”, “Error Prone”)
+and the old rulesets like <code class="language-plaintext highlighter-rouge">basic.xml</code> have been deprecated and have been removed with PMD 7.
+It is about time to create a <a href="pmd_userdocs_making_rulesets.html">custom ruleset</a>.</p>
+  </li>
 </ul>
 
 <h2 id="use-cases">Use cases</h2>
@@ -2072,10 +2088,9 @@ we now have <code class="language-plaintext highlighter-rouge">pmd</code> only (
         <p>If you don’t replace this argument, then “false” will be interpreted as a file to analyze. You might see then
 an error message such as <code class="language-plaintext highlighter-rouge">[main] ERROR net.sourceforge.pmd.cli.commands.internal.PmdCommand - No such file false</code>.</p>
       </li>
-      <li>
-        <p>PMD tries to display a progress bar. If you don’t want this (e.g. on a CI build server), you can disable this
-with <code class="language-plaintext highlighter-rouge">--no-progress</code>.</p>
-      </li>
+      <li>PMD tries to display a progress bar. If you don’t want this (e.g. on a CI build server), you can disable this
+with <code class="language-plaintext highlighter-rouge">--no-progress</code>.</li>
+      <li><code class="language-plaintext highlighter-rouge">--no-ruleset-compatibility</code> has been removed</li>
     </ul>
   </li>
 </ul>

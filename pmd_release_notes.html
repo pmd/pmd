@@ -1966,6 +1966,69 @@ potential performance issue.</li>
 they contain a comment (<code class="language-plaintext highlighter-rouge">allowCommentedBlocks</code>).</li>
 </ul>
 
+<p><strong>Removed deprecated rulesets</strong></p>
+
+<p>The following previously deprecated rulesets have been removed. These were the left-over rulesets from PMD 5.
+The rules have been moved into categories with PMD 6.</p>
+
+<ul>
+  <li>rulesets/apex/apexunit.xml</li>
+  <li>rulesets/apex/braces.xml</li>
+  <li>rulesets/apex/complexity.xml</li>
+  <li>rulesets/apex/empty.xml</li>
+  <li>rulesets/apex/metrics.xml</li>
+  <li>rulesets/apex/performance.xml</li>
+  <li>rulesets/apex/ruleset.xml</li>
+  <li>rulesets/apex/securty.xml</li>
+  <li>rulesets/apex/style.xml</li>
+  <li>rulesets/java/android.xml</li>
+  <li>rulesets/java/basic.xml</li>
+  <li>rulesets/java/clone.xml</li>
+  <li>rulesets/java/codesize.xml</li>
+  <li>rulesets/java/comments.xml</li>
+  <li>rulesets/java/controversial.xml</li>
+  <li>rulesets/java/coupling.xml</li>
+  <li>rulesets/java/design.xml</li>
+  <li>rulesets/java/empty.xml</li>
+  <li>rulesets/java/finalizers.xml</li>
+  <li>rulesets/java/imports.xml</li>
+  <li>rulesets/java/j2ee.xml</li>
+  <li>rulesets/java/javabeans.xml</li>
+  <li>rulesets/java/junit.xml</li>
+  <li>rulesets/java/logging-jakarta-commons.xml</li>
+  <li>rulesets/java/logging-java.xml</li>
+  <li>rulesets/java/metrics.xml</li>
+  <li>rulesets/java/migrating.xml</li>
+  <li>rulesets/java/migrating_to_13.xml</li>
+  <li>rulesets/java/migrating_to_14.xml</li>
+  <li>rulesets/java/migrating_to_15.xml</li>
+  <li>rulesets/java/migrating_to_junit4.xml</li>
+  <li>rulesets/java/naming.xml</li>
+  <li>rulesets/java/optimizations.xml</li>
+  <li>rulesets/java/strictexception.xml</li>
+  <li>rulesets/java/strings.xml</li>
+  <li>rulesets/java/sunsecure.xml</li>
+  <li>rulesets/java/typeresolution.xml</li>
+  <li>rulesets/java/unnecessary.xml</li>
+  <li>rulesets/java/unusedcode.xml</li>
+  <li>rulesets/ecmascript/basic.xml</li>
+  <li>rulesets/ecmascript/braces.xml</li>
+  <li>rulesets/ecmascript/controversial.xml</li>
+  <li>rulesets/ecmascript/unnecessary.xml</li>
+  <li>rulesets/jsp/basic.xml</li>
+  <li>rulesets/jsp/basic-jsf.xml</li>
+  <li>rulesets/plsql/codesize.xml</li>
+  <li>rulesets/plsql/dates.xml</li>
+  <li>rulesets/plsql/strictsyntax.xml</li>
+  <li>rulesets/plsql/TomKytesDespair.xml</li>
+  <li>rulesets/vf/security.xml</li>
+  <li>rulesets/vm/basic.xml</li>
+  <li>rulesets/pom/basic.xml</li>
+  <li>rulesets/xml/basic.xml</li>
+  <li>rulesets/xsl/xpath.xml</li>
+  <li>rulesets/releases/*</li>
+</ul>
+
 <h4 id="fixed-issues">Fixed issues</h4>
 
 <ul>
@@ -1979,6 +2042,11 @@ they contain a comment (<code class="language-plaintext highlighter-rouge">allow
   <li>core
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/1027">#1027</a>: [core] Apply the new PropertyDescriptor&lt;Pattern&gt; type where applicable</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4065">#4065</a>: [core] Rename TokenMgrError to LexException, Tokenizer to CpdLexer</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4312">#4312</a>: [core] Remove unnecessary property <code class="language-plaintext highlighter-rouge">color</code> and system property <code class="language-plaintext highlighter-rouge">pmd.color</code> in <code class="language-plaintext highlighter-rouge">TextColorRenderer</code></li>
+      <li><a href="https://github.com/pmd/pmd/issues/4313">#4313</a>: [core] Remove support for &lt;lang&gt;-&lt;ruleset&gt; hyphen notation for ruleset references</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4314">#4314</a>: [core] Remove ruleset compatibility filter (RuleSetFactoryCompatibility) and CLI option <code class="language-plaintext highlighter-rouge">--no-ruleset-compatibility</code></li>
+      <li><a href="https://github.com/pmd/pmd/issues/4378">#4378</a>: [core] Ruleset loading processes commented rules</li>
       <li><a href="https://github.com/pmd/pmd/issues/4674">#4674</a>: [core] WARNING: Illegal reflective access by org.codehaus.groovy.reflection.CachedClass</li>
       <li><a href="https://github.com/pmd/pmd/pull/4694">#4694</a>:   [core] Fix line/col numbers in TokenMgrError</li>
       <li><a href="https://github.com/pmd/pmd/issues/4717">#4717</a>: [core] XSLTRenderer doesn’t close report file</li>
@@ -2006,6 +2074,7 @@ they contain a comment (<code class="language-plaintext highlighter-rouge">allow
       <li><a href="https://github.com/pmd/pmd/issues/4736">#4736</a>: [ci] Improve build procedure</li>
       <li><a href="https://github.com/pmd/pmd/pull/4741">#4741</a>:   Add pmd-compat6 module for maven-pmd-plugin</li>
       <li><a href="https://github.com/pmd/pmd/pull/4749">#4749</a>:   Fixes NoSuchMethodError on processing errors in pmd-compat6</li>
+      <li><a href="https://github.com/pmd/pmd/pull/4796">#4796</a>:   Remove deprecated and release rulesets</li>
     </ul>
   </li>
   <li>apex-performance
@@ -2134,6 +2203,34 @@ need to be adjusted.</li>
 need to be adjusted.</li>
     </ul>
   </li>
+</ul>
+
+<p><strong>Renamed classes and methods</strong></p>
+
+<ul>
+  <li>pmd-core
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/lang/ast/TokenMgrError.html#"><code>TokenMgrError</code></a> has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/LexException.html#"><code>LexException</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/cpd/Tokenizer.html#"><code>Tokenizer</code></a> has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/CpdLexer.html#"><code>CpdLexer</code></a>. Along with this rename,
+all the implementations have been renamed as well (<code class="language-plaintext highlighter-rouge">Tokenizer</code> -&gt; <code class="language-plaintext highlighter-rouge">CpdLexer</code>), e.g. “CppCpdLexer”, “JavaCpdLexer”.
+This affects all language modules.</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/cpd/AnyTokenizer.html#"><code>AnyTokenizer</code></a> has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/AnyCpdLexer.html#"><code>AnyCpdLexer</code></a>.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><strong>Removed functionality</strong></p>
+
+<ul>
+  <li>The CLI parameter <code class="language-plaintext highlighter-rouge">--no-ruleset-compatibility</code> has been removed. It was only used to allow loading
+some rulesets originally written for PMD 5 also in PMD 6 without fixing the rulesets.</li>
+  <li>The class <a href="https://docs.pmd-code.org/apidocs/pmd-core/6.55.0/net/sourceforge/pmd/RuleSetFactoryCompatibility.html#"><code>RuleSetFactoryCompatibility</code></a> has been removed without replacement.
+The different ways to enable/disable this filter in <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#"><code>PMDConfiguration</code></a>
+(Property “RuleSetFactoryCompatibilityEnabled”) and
+<a href="https://docs.pmd-code.org/apidocs/pmd-ant/7.0.0-SNAPSHOT/net/sourceforge/pmd/ant/PMDTask.html#"><code>PMDTask</code></a> (Property “noRuleSetCompatibility”) have been removed as well.</li>
+  <li><code class="language-plaintext highlighter-rouge">textcolor</code> renderer (<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/renderers/TextColorRenderer.html#"><code>TextColorRenderer</code></a>) now renders always in color.
+The property <code class="language-plaintext highlighter-rouge">color</code> has been removed. The possibility to override this with the system property <code class="language-plaintext highlighter-rouge">pmd.color</code>
+has been removed as well. If you don’t want colors, use <code class="language-plaintext highlighter-rouge">text</code> renderer (<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/renderers/TextRenderer.html#"><code>TextRenderer</code></a>).</li>
 </ul>
 
 <h4 id="external-contributions">External Contributions</h4>
@@ -2574,6 +2671,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/issues/4736">#4736</a>: [ci] Improve build procedure</li>
       <li><a href="https://github.com/pmd/pmd/pull/4741">#4741</a>:   Add pmd-compat6 module for maven-pmd-plugin</li>
       <li><a href="https://github.com/pmd/pmd/pull/4749">#4749</a>:   Fixes NoSuchMethodError on processing errors in pmd-compat6</li>
+      <li><a href="https://github.com/pmd/pmd/pull/4796">#4796</a>:   Remove deprecated and release rulesets</li>
     </ul>
   </li>
   <li>ant
@@ -2612,14 +2710,19 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/issues/3919">#3919</a>: [core] Merge CPD and PMD language</li>
       <li><a href="https://github.com/pmd/pmd/pull/3922">#3922</a>:   [core] Better error reporting for the ruleset parser</li>
       <li><a href="https://github.com/pmd/pmd/issues/4035">#4035</a>: [core] ConcurrentModificationException in DefaultRuleViolationFactory</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4065">#4065</a>: [core] Rename TokenMgrError to LexException, Tokenizer to CpdLexer</li>
       <li><a href="https://github.com/pmd/pmd/issues/4120">#4120</a>: [core] Explicitly name all language versions</li>
       <li><a href="https://github.com/pmd/pmd/issues/4204">#4204</a>: [core] Provide a CpdAnalysis class as a programmatic entry point into CPD</li>
       <li><a href="https://github.com/pmd/pmd/issues/4301">#4301</a>: [core] Remove deprecated property concrete classes</li>
       <li><a href="https://github.com/pmd/pmd/issues/4302">#4302</a>: [core] Migrate Property Framework API to Java 8</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4312">#4312</a>: [core] Remove unnecessary property <code class="language-plaintext highlighter-rouge">color</code> and system property <code class="language-plaintext highlighter-rouge">pmd.color</code> in <code class="language-plaintext highlighter-rouge">TextColorRenderer</code></li>
+      <li><a href="https://github.com/pmd/pmd/issues/4313">#4313</a>: [core] Remove support for &lt;lang&gt;-&lt;ruleset&gt; hyphen notation for ruleset references</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4314">#4314</a>: [core] Remove ruleset compatibility filter (RuleSetFactoryCompatibility) and CLI option <code class="language-plaintext highlighter-rouge">--no-ruleset-compatibility</code></li>
       <li><a href="https://github.com/pmd/pmd/issues/4323">#4323</a>: [core] Refactor CPD integration</li>
       <li><a href="https://github.com/pmd/pmd/pull/4353">#4353</a>:   [core] Micro optimizations for Node API</li>
       <li><a href="https://github.com/pmd/pmd/pull/4365">#4365</a>:   [core] Improve benchmarking</li>
       <li><a href="https://github.com/pmd/pmd/pull/4397">#4397</a>:   [core] Refactor CPD</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4378">#4378</a>: [core] Ruleset loading processes commented rules</li>
       <li><a href="https://github.com/pmd/pmd/pull/4420">#4420</a>:   [core] Remove PMD.EOL</li>
       <li><a href="https://github.com/pmd/pmd/pull/4425">#4425</a>:   [core] Replace TextFile::pathId</li>
       <li><a href="https://github.com/pmd/pmd/issues/4454">#4454</a>: [core] “Unknown option: ‘-min’” but is referenced in documentation</li>

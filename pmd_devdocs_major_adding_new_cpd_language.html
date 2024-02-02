@@ -1876,7 +1876,7 @@
   <h2 id="adding-support-for-a-cpd-language">Adding support for a CPD language</h2>
 
 <p>CPD works generically on the tokens produced by a <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/Tokenizer.html#"><code>Tokenizer</code></a>.
-To add support for a new language, the crucial piece is writing a tokenizer that
+To add support for a new language, the crucial piece is writing a CpdLexer that
 splits the source file into the tokens specific to your language. Thankfully you
 can use a stock <a href="https://github.com/antlr/grammars-v4">Antlr grammar</a> or JavaCC
 grammar to generate a lexer for you. If you cannot use a lexer generator, for
@@ -1901,14 +1901,14 @@ is automatically available in the binary distribution (pmd-dist).</li>
  the lexer from the grammar. To do so, edit <code class="language-plaintext highlighter-rouge">pom.xml</code> (eg like <a href="https://github.com/pmd/pmd/tree/master/pmd-go/pom.xml">the Golang module</a>).
 Once that is done, <code class="language-plaintext highlighter-rouge">mvn generate-sources</code> should generate the lexer sources for you.</p>
 
-        <p>You can now implement a tokenizer, for instance by extending <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/impl/AntlrTokenizer.html#"><code>AntlrTokenizer</code></a>. The following reproduces the Go implementation:
+        <p>You can now implement a CpdLexer, for instance by extending <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/impl/AntlrCpdLexer.html#"><code>AntlrCpdLexer</code></a>. The following reproduces the Go implementation:
  ```java
  // mind the package convention if you are going to make a PR
  package net.sourceforge.pmd.lang.go.cpd;</p>
       </li>
     </ul>
 
-    <p>public class GoTokenizer extends AntlrTokenizer {</p>
+    <p>public class GoCpdLexer extends AntlrCpdLexer {</p>
 
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> @Override
  protected Lexer getLexerForSource(CharStream charStream) {
@@ -1937,9 +1937,9 @@ If your language only supports CPD, then you can subclass <a href="https://docs.
      <span class="o">}</span>
 
      <span class="nd">@Override</span>
-     <span class="kd">public</span> <span class="nc">Tokenizer</span> <span class="nf">createCpdTokenizer</span><span class="o">(</span><span class="nc">LanguagePropertyBundle</span> <span class="n">bundle</span><span class="o">)</span> <span class="o">{</span>
-         <span class="c1">// This method should return an instance of the tokenizer you created.</span>
-         <span class="k">return</span> <span class="k">new</span> <span class="nf">GoTokenizer</span><span class="o">();</span>
+     <span class="kd">public</span> <span class="nc">Tokenizer</span> <span class="nf">createCpdLexer</span><span class="o">(</span><span class="nc">LanguagePropertyBundle</span> <span class="n">bundle</span><span class="o">)</span> <span class="o">{</span>
+         <span class="c1">// This method should return an instance of the CpdLexer you created.</span>
+         <span class="k">return</span> <span class="k">new</span> <span class="nf">GoCpdLexer</span><span class="o">();</span>
      <span class="o">}</span>
  <span class="o">}</span> 
 </code></pre></div>    </div>
@@ -1952,7 +1952,7 @@ If your language only supports CPD, then you can subclass <a href="https://docs.
     <p>Update the test that asserts the list of supported languages by updating the <code class="language-plaintext highlighter-rouge">SUPPORTED_LANGUAGES</code> constant in <a href="https://github.com/pmd/pmd/blob/master/pmd-dist/src/test/java/net/sourceforge/pmd/it/BinaryDistributionIT.java">BinaryDistributionIT</a>.</p>
   </li>
   <li>
-    <p>Add some tests for your tokenizer by following the <a href="#testing-your-implementation">section below</a>.</p>
+    <p>Add some tests for your CpdLexer by following the <a href="#testing-your-implementation">section below</a>.</p>
   </li>
   <li>
     <p>Finishing up your new language module by adding a page in the documentation. Create a new markdown file
@@ -1976,10 +1976,10 @@ There is also the following Jekyll Include, that creates summary box for the lan
   </li>
 </ol>
 
-<h3 id="declaring-tokenizer-options">Declaring tokenizer options</h3>
+<h3 id="declaring-cpdlexer-options">Declaring CpdLexer options</h3>
 
-<p>To make the tokenizer configurable, first define some property descriptors using
-<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyFactory.html#"><code>PropertyFactory</code></a>. Look at <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/Tokenizer.html#"><code>Tokenizer</code></a>
+<p>To make the CpdLexer configurable, first define some property descriptors using
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyFactory.html#"><code>PropertyFactory</code></a>. Look at <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/CpdLexer.html#"><code>CpdLexer</code></a>
 for some predefined ones which you can reuse (prefer reusing property descriptors if you can).
 You need to override <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/Language.html#newPropertyBundle()"><code>newPropertyBundle</code></a>
 and call <code class="language-plaintext highlighter-rouge">definePropertyDescriptor</code> to register the descriptors.
@@ -1988,12 +1988,12 @@ of <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/source
 
 <p>To implement simple token filtering, you can use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/impl/BaseTokenFilter.html#"><code>BaseTokenFilter</code></a>
 as a base class, or another base class in <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/impl/package-summary.html#"><code>net.sourceforge.pmd.cpd.impl</code></a>.
-Take a look at the <a href="https://github.com/pmd/pmd/blob/master/pmd-kotlin/src/main/java/net/sourceforge/pmd/lang/kotlin/cpd/KotlinTokenizer.java">Kotlin token filter implementation</a>, or the <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/cpd/JavaTokenizer.java">Java one</a>.</p>
+Take a look at the <a href="https://github.com/pmd/pmd/blob/master/pmd-kotlin/src/main/java/net/sourceforge/pmd/lang/kotlin/cpd/KotlinCpdLexer.java">Kotlin token filter implementation</a>, or the <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/cpd/JavaCpdLexer.java">Java one</a>.</p>
 
 <h3 id="testing-your-implementation">Testing your implementation</h3>
 
 <p>Add a Maven dependency on <code class="language-plaintext highlighter-rouge">pmd-lang-test</code> (scope <code class="language-plaintext highlighter-rouge">test</code>) in your <code class="language-plaintext highlighter-rouge">pom.xml</code>.
-This contains utilities to test your tokenizer.</p>
+This contains utilities to test your CpdLexer.</p>
 
 <p>Create a test class extending from <a href="https://docs.pmd-code.org/apidocs/pmd-lang-test/7.0.0-SNAPSHOT/net/sourceforge/pmd/cpd/test/CpdTextComparisonTest.html#"><code>CpdTextComparisonTest</code></a>.
 To add tests, you need to write regular JUnit <code class="language-plaintext highlighter-rouge">@Test</code>-annotated methods, and
