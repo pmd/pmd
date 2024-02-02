@@ -10,7 +10,6 @@ import java.io.Reader;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
@@ -278,12 +277,5 @@ public interface TextDocument extends Closeable {
         } catch (IOException e) {
             throw new AssertionError("String text file should never throw IOException", e);
         }
-    }
-
-    @Deprecated
-    @DeprecatedUntil700
-    // note: this method is for backwards compatibility only - currently used by pmd-designer
-    static TextDocument readOnlyString(@NonNull CharSequence source, @NonNull String filename, @NonNull LanguageVersion lv) {
-        return readOnlyString(source, FileId.fromPathLikeString(filename), lv);
     }
 }

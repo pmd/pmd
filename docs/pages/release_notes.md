@@ -195,6 +195,11 @@ The following previously deprecated classes have been removed:
     * `hasDescendantOfType(Class)` - Use {%jdoc core::lang.ast.Node#descendants(java.lang.Class) %} instead, e.g. `node.descendants(targetType).nonEmpty()`
     * `findChildNodesWithXPath(String)` - Use the {%jdoc core::lang.ast.NodeStream %} API instead.
   * {%jdoc !!core::lang.ast.impl.GenericNode %} - method `getNthParent(int)` has been removed. Use {%jdoc core::lang.ast.Node#ancestors() %} instead, e.g. `node.ancestors().get(n-1)`
+  * {%jdoc !!core::lang.document.FileCollector %} - method `addZipFile(java.nio.file.Path)` has been removed. Use {%jdoc core::lang.document.FileCollector#addZipFileWithContent(java.nio.file.Path) %} instead
+  * {%jdoc !!core::lang.document.TextDocument %} - method `readOnlyString(CharSequence,String,LanguageVersion)` has been removed.
+    Use {%jdoc core::lang.document.TextDocument#readOnlyString(java.lang.CharSequence,core::lang.document.FileId,core::lang.LanguageVersion) %} instead.
+  * {%jdoc !!core::lang.document.TextFile %} - method `dataSourceCompat(DataSource,PMDConfiguration)` has been removed.
+    Use {%jdoc core::lang.document.TextFile %} directly, e.g. {%jdoc core::lang.document.TextFile.forPath(java.nio.file.Path,java.nio.charset.Charset,core::lang.LanguageVersion) %}
 * pmd-apex
   * {%jdoc apex::lang.apex.ast.ApexNode %} and {% jdoc apex::lang.apex.ast.ASTApexFile %}
     * `#getApexVersion()`: In PMD 6, this method has been deprecated but was defined in the class `ApexRootNode`.

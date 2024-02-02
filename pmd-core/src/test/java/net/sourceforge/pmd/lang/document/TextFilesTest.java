@@ -23,11 +23,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.lang.DummyLanguageModule;
-import net.sourceforge.pmd.util.datasource.DataSource;
-import net.sourceforge.pmd.util.datasource.FileDataSource;
-
 class TextFilesTest {
 
     @TempDir
@@ -67,49 +62,6 @@ class TextFilesTest {
                     assertEquals(tf.hashCode(), tfPrime.hashCode());
                 }
             }
-        }
-    }
-
-    @Test
-    void testStringDataSourceCompat() throws IOException {
-        DataSource ds = DataSource.forString("text", "filename.dummy");
-        PMDConfiguration config = new PMDConfiguration();
-        try (TextFile tf = TextFile.dataSourceCompat(ds, config)) {
-            assertEquals("filename.dummy", tf.getFileId().getFileName());
-            assertEquals(DummyLanguageModule.getInstance().getDefaultVersion(), tf.getLanguageVersion());
-            assertEquals(Chars.wrap("text"), tf.readContents().getNormalizedText());
-        }
-    }
-
-    @Test
-    void testFileDataSourceCompat() throws IOException {
-        Path file = makeTmpFile(StandardCharsets.UTF_8, "some content");
-
-        DataSource ds = new FileDataSource(file.toFile());
-        PMDConfiguration config = new PMDConfiguration();
-        config.setForceLanguageVersion(DummyLanguageModule.getInstance().getDefaultVersion());
-        try (TextFile tf = TextFile.dataSourceCompat(ds, config)) {
-            assertEquals(ds.getNiceFileName(false, null), tf.getFileId().getOriginalPath());
-            assertEquals(Chars.wrap("some content"), tf.readContents().getNormalizedText());
-        }
-    }
-
-    @Test
-    void testFileDataSourceCompatWithEncoding() throws IOException {
-        Path file = makeTmpFile(StandardCharsets.UTF_16BE, "some content");
-
-        DataSource ds = new FileDataSource(file.toFile());
-        PMDConfiguration config = new PMDConfiguration();
-        config.setForceLanguageVersion(DummyLanguageModule.getInstance().getDefaultVersion());
-        config.setSourceEncoding(StandardCharsets.UTF_16BE);
-        try (TextFile tf = TextFile.dataSourceCompat(ds, config)) {
-            assertEquals(Chars.wrap("some content"), tf.readContents().getNormalizedText());
-        }
-
-        // different encoding to produce garbage, to make sure encoding is used
-        config.setSourceEncoding(StandardCharsets.UTF_16LE);
-        try (TextFile tf = TextFile.dataSourceCompat(ds, config)) {
-            assertNotEquals(Chars.wrap("some content"), tf.readContents().getNormalizedText());
         }
     }
 

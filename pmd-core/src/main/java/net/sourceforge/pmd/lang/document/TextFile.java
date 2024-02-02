@@ -4,22 +4,15 @@
 
 package net.sourceforge.pmd.lang.document;
 
-import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.annotation.DeprecatedUntil700;
-import net.sourceforge.pmd.internal.util.BaseCloseable;
-import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.document.TextFileBuilder.ForCharSeq;
 import net.sourceforge.pmd.lang.document.TextFileBuilder.ForNio;
@@ -225,53 +218,5 @@ public interface TextFile extends Closeable {
      */
     static TextFileBuilder builderForReader(Reader reader, FileId fileId, LanguageVersion languageVersion) {
         return new ForReader(languageVersion, reader, fileId);
-    }
-
-    /**
-     * Wraps the given {@link DataSource} (provided for compatibility).
-     * Note that data sources are only usable once (even {@link DataSource#forString(String, String)}),
-     * so calling {@link TextFile#readContents()} twice will throw the second time.
-     *
-     * @deprecated This is deprecated until PMD 7 is out, after which
-     *     {@link DataSource} will be removed.
-     */
-    @Deprecated
-    @DeprecatedUntil700
-    static TextFile dataSourceCompat(DataSource ds, PMDConfiguration config) {
-        String pathId = ds.getNiceFileName(false, null);
-        FileId fileId2 = FileId.fromPathLikeString(pathId);
-        LanguageVersion languageVersion = config.getLanguageVersionOfFile(pathId);
-        if (languageVersion == null) {
-            throw new NullPointerException("no language version detected for " + pathId);
-        }
-        class DataSourceTextFile extends BaseCloseable implements TextFile {
-
-            @Override
-            public @NonNull LanguageVersion getLanguageVersion() {
-                return languageVersion;
-            }
-
-            @Override
-            public FileId getFileId() {
-                return fileId2;
-            }
-
-            @Override
-            public TextFileContent readContents() throws IOException {
-                ensureOpen();
-                try (InputStream is = ds.getInputStream();
-                     Reader reader = new BufferedReader(new InputStreamReader(is, config.getSourceEncoding()))) {
-                    String contents = IOUtil.readToString(reader);
-                    return TextFileContent.fromCharSeq(contents);
-                }
-            }
-
-            @Override
-            protected void doClose() throws IOException {
-                ds.close();
-            }
-        }
-
-        return new DataSourceTextFile();
     }
 }

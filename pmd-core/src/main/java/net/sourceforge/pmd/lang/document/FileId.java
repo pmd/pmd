@@ -59,6 +59,11 @@ public interface FileId extends Comparable<FileId> {
         public @Nullable FileId getParentFsPath() {
             return null;
         }
+
+        @Override
+        public String toString() {
+            return "FileId(unknown)";
+        }
     };
 
     /** The virtual file ID for standard input. */
@@ -86,6 +91,11 @@ public interface FileId extends Comparable<FileId> {
         @Override
         public @Nullable FileId getParentFsPath() {
             return null;
+        }
+
+        @Override
+        public String toString() {
+            return "FileId(STDIN)";
         }
     };
 
@@ -140,11 +150,8 @@ public interface FileId extends Comparable<FileId> {
      * This method is intentionally only meant for debugging, and its output
      * is unspecified. Code that needs a string representation should use one
      * of the named string conversion methods.
-     *
-     * @deprecated Do not use this method, use one of the other getters
      */
     @Override
-    @Deprecated
     String toString();
 
     /**
@@ -203,6 +210,11 @@ public interface FileId extends Comparable<FileId> {
             @Override
             public @Nullable FileId getParentFsPath() {
                 return null;
+            }
+
+            @Override
+            public String toString() {
+                return "FileId(fromPathLike=" + str + ")";
             }
         };
     }
@@ -264,7 +276,7 @@ public interface FileId extends Comparable<FileId> {
 
             @Override
             public String toString() {
-                return "PathId.forPath(" + path + ")";
+                return "FileId(fromPath=" + path + ")";
             }
         };
     }
@@ -310,6 +322,11 @@ public interface FileId extends Comparable<FileId> {
             @Override
             public String getAbsolutePath() {
                 return self.getAbsolutePath();
+            }
+
+            @Override
+            public String toString() {
+                return "FileId(" + self + ",asChildOf=" + parentFsPath + ")";
             }
         };
     }
@@ -367,6 +384,11 @@ public interface FileId extends Comparable<FileId> {
             @Override
             public int hashCode() {
                 return getUriString().hashCode();
+            }
+
+            @Override
+            public String toString() {
+                return "FileId(fromAbsolutePath=" + absPath + ",outer=" + outer + ")";
             }
         };
     }
