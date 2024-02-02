@@ -181,12 +181,12 @@ public final class ASTClassType extends AbstractJavaTypeNode implements ASTRefer
     @Deprecated
     public boolean isReferenceToClassSameCompilationUnit() {
         ASTCompilationUnit root = ancestors(ASTCompilationUnit.class).first();
-        for (ASTClassDeclaration c : root.findDescendantsOfType(ASTClassDeclaration.class, true)) {
+        for (ASTClassDeclaration c : root.descendants(ASTClassDeclaration.class).crossFindBoundaries()) {
             if (c.hasImageEqualTo(getImage())) {
                 return true;
             }
         }
-        for (ASTEnumDeclaration e : root.findDescendantsOfType(ASTEnumDeclaration.class, true)) {
+        for (ASTEnumDeclaration e : root.descendants(ASTEnumDeclaration.class).crossFindBoundaries()) {
             if (e.hasImageEqualTo(getImage())) {
                 return true;
             }

@@ -186,7 +186,15 @@ The following previously deprecated classes have been removed:
   * {%jdoc !!core::lang.ast.Node %} - many methods have been removed:
     * `getNthParent(int)` - Use {%jdoc core::lang.ast.Node#ancestors() %} instead, e.g. `node.ancestors().get(n-1)`
     * `getFirstParentOfType(Class)` - Use {%jdoc core::lang.ast.Node#ancestors(java.lang.Class) %} instead, e.g. `node.ancestors(parentType).first()`
-  * {%jdoc !!core::lang.ast.impl.GenericNode %} - getNthParent(int)
+    * `getParentsOfType(Class)` - Use {%jdoc core::lang.ast.Node#ancestors(java.lang.Class) %} instead, e.g. `node.ancestors(parentType).toList()`
+    * `findChildrenOfType(Class)` - Use {%jdoc core::lang.ast.Node#children(java.lang.Class) %} instead, e.g. `node.children(childType).toList()`
+    * `findDescendantsOfType(Class)` - Use {%jdoc core::lang.ast.Node#descendants(java.lang.Class) %} instead, e.g. `node.descendants(targetType).toList()`
+    * `findDescendantsOfType(Class,boolean)` - Use {%jdoc core::lang.ast.Node#descendants(java.lang.Class) %} instead, e.g. `node.descendants(targetType).crossFindBoundaries(b).toList()`
+    * `getFirstChildOfType(Class)` - Use {%jdoc core::lang.ast.Node#firstChild(java.lang.Class) %} instead
+    * `getFirstDescendantOfType(Class)` - Use {%jdoc core::lang.ast.Node#descendants(java.lang.Class) %} instead, e.g. `node.descendants(targetType).first()`
+    * `hasDescendantOfType(Class)` - Use {%jdoc core::lang.ast.Node#descendants(java.lang.Class) %} instead, e.g. `node.descendants(targetType).nonEmpty()`
+    * `findChildNodesWithXPath(String)` - Use the {%jdoc core::lang.ast.NodeStream %} API instead.
+  * {%jdoc !!core::lang.ast.impl.GenericNode %} - method `getNthParent(int)` has been removed. Use {%jdoc core::lang.ast.Node#ancestors() %} instead, e.g. `node.ancestors().get(n-1)`
 * pmd-apex
   * {%jdoc apex::lang.apex.ast.ApexNode %} and {% jdoc apex::lang.apex.ast.ASTApexFile %}
     * `#getApexVersion()`: In PMD 6, this method has been deprecated but was defined in the class `ApexRootNode`.

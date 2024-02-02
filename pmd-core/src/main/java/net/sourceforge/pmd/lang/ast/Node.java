@@ -4,10 +4,8 @@
 
 package net.sourceforge.pmd.lang.ast;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -22,11 +20,7 @@ import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
-import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.lang.rule.xpath.impl.AttributeAxisIterator;
-import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
-import net.sourceforge.pmd.lang.rule.xpath.internal.DeprecatedAttrLogger;
-import net.sourceforge.pmd.lang.rule.xpath.internal.SaxonXPathRuleQuery;
 import net.sourceforge.pmd.reporting.Reportable;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.DataKey;
@@ -162,9 +156,6 @@ public interface Node extends Reportable {
      * expected thing to do. For example, in Java, lambdas and nested
      * classes are considered find boundaries.
      *
-     * <p>Note: This attribute is deprecated for XPath queries. It is not useful
-     * for XPath queries and will be removed with PMD 7.0.0.
-     *
      * @return True if this node is a find boundary
      *
      * @see DescendantNodeStream#crossFindBoundaries(boolean)
@@ -173,144 +164,6 @@ public interface Node extends Reportable {
     default boolean isFindBoundary() {
         return false;
     }
-
-    /**
-     * Traverses up the tree to find all of the parent instances of type parentType or one of its subclasses. The nodes
-     * are ordered deepest-first.
-     *
-     * @param parentType Class literal of the type you want to find
-     * @param <T> The type you want to find
-     * @return List of parentType instances found.
-     *
-     * @deprecated Use node stream methods: {@code node.ancestors(parentType).toList()}.
-     *     Most usages don't really need a list though, eg you can iterate the node stream instead
-     */
-    @Deprecated
-    @DeprecatedUntil700
-    default <T extends Node> List<T> getParentsOfType(Class<? extends T> parentType) {
-        return this.<T>ancestors(parentType).toList();
-    }
-
-
-    /**
-     * Traverses the children to find all the instances of type childType or one of its subclasses.
-     *
-     * @param childType class which you want to find.
-     * @return List of all children of type childType. Returns an empty list if none found.
-     * @see #findDescendantsOfType(Class) if traversal of the entire tree is needed.
-     *
-     * @deprecated Use node stream methods: {@code node.children(childType).toList()}.
-     *     Most usages don't really need a list though, eg you can iterate the node stream instead
-     */
-    @Deprecated
-    @DeprecatedUntil700
-    default <T extends Node> List<T> findChildrenOfType(Class<? extends T> childType) {
-        return this.<T>children(childType).toList();
-    }
-
-
-    /**
-     * Traverses down the tree to find all the descendant instances of type descendantType without crossing find
-     * boundaries.
-     *
-     * @param targetType class which you want to find.
-     * @return List of all children of type targetType. Returns an empty list if none found.
-     *
-     * @deprecated Use node stream methods: {@code node.descendants(targetType).toList()}.
-     *     Most usages don't really need a list though, eg you can iterate the node stream instead
-     */
-    @Deprecated
-    @DeprecatedUntil700
-    default <T extends Node> List<T> findDescendantsOfType(Class<? extends T> targetType) {
-        return this.<T>descendants(targetType).toList();
-    }
-
-
-    /**
-     * Traverses down the tree to find all the descendant instances of type
-     * descendantType.
-     *
-     * @param targetType
-     *            class which you want to find.
-     * @param crossFindBoundaries
-     *            if <code>false</code>, recursion stops for nodes for which
-     *            {@link #isFindBoundary()} is <code>true</code>
-     * @return List of all matching descendants
-     *
-     * @deprecated Use node stream methods: {@code node.descendants(targetType).crossFindBoundaries(b).toList()}.
-     *     Most usages don't really need a list though, eg you can iterate the node stream instead
-     */
-    @Deprecated
-    @DeprecatedUntil700
-    default <T extends Node> List<T> findDescendantsOfType(Class<? extends T> targetType, boolean crossFindBoundaries) {
-        return this.<T>descendants(targetType).crossFindBoundaries(crossFindBoundaries).toList();
-    }
-
-    /**
-     * Traverses the children to find the first instance of type childType.
-     *
-     * @param childType class which you want to find.
-     * @return Node of type childType. Returns <code>null</code> if none found.
-     * @see #getFirstDescendantOfType(Class) if traversal of the entire tree is needed.
-     *
-     * @deprecated Use {@link #firstChild(Class)}
-     */
-    @Deprecated
-    @DeprecatedUntil700
-    default <T extends Node> T getFirstChildOfType(Class<? extends T> childType) {
-        return firstChild(childType);
-    }
-
-
-    /**
-     * Traverses down the tree to find the first descendant instance of type descendantType without crossing find
-     * boundaries.
-     *
-     * @param descendantType class which you want to find.
-     * @return Node of type descendantType. Returns <code>null</code> if none found.
-     *
-     * @deprecated Use node stream methods: {@code node.descendants(targetType).first()}.
-     */
-    @Deprecated
-    @DeprecatedUntil700
-    default <T extends Node> T getFirstDescendantOfType(Class<? extends T> descendantType) {
-        return descendants(descendantType).first();
-    }
-
-    /**
-     * Finds if this node contains a descendant of the given type without crossing find boundaries.
-     *
-     * @param type the node type to search
-     * @return <code>true</code> if there is at least one descendant of the given type
-     *
-     * @deprecated Use node stream methods: {@code node.descendants(targetType).nonEmpty()}.
-     */
-    @Deprecated
-    @DeprecatedUntil700
-    default <T extends Node> boolean hasDescendantOfType(Class<? extends T> type) {
-        return descendants(type).nonEmpty();
-    }
-
-    /**
-     * Returns all the nodes matching the xpath expression.
-     *
-     * @param xpathString the expression to check
-     * @return List of all matching nodes. Returns an empty list if none found.
-     * @deprecated This is very inefficient and should not be used in new code. PMD 7.0.0 will remove
-     *             support for this method.
-     */
-    @Deprecated
-    default List<Node> findChildNodesWithXPath(String xpathString) {
-        return new SaxonXPathRuleQuery(
-            xpathString,
-            XPathVersion.DEFAULT,
-            Collections.emptyMap(),
-            XPathHandler.noFunctionDefinitions(),
-            // since this method will be removed, we don't log anything anymore
-            DeprecatedAttrLogger.noop()
-        ).evaluate(this);
-    }
-
 
 
     /**

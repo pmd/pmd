@@ -28,7 +28,7 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
 /**
  * A sequence of AST nodes. Conceptually similar to a {@link Stream},
  * and exposes a specialized API to navigate abstract syntax trees.
- * This API replaces the defunct {@link Node#findChildNodesWithXPath(String)}.
+ * This API can make it as easy as a XPath expression to navigate the tree.
  *
  * <h1>API usage</h1>
  *
@@ -65,14 +65,14 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
  *
  * <p>Many existing operations from the node interface can be written with streams too:
  * <ul>
- * <li><tt>node.{@link Node#getFirstChildOfType(Class) getFirstChildOfType(t)} === node.{@link Node#children(Class) children(t)}.{@link #first()}</tt></li>
- * <li><tt>node.{@link Node#getFirstDescendantOfType(Class) getFirstDescendantOfType(t)} === node.{@link Node#descendants(Class) descendants(t)}.{@link #first()}</tt></li>
+ * <li>Traverse the children to find the first instance of type childType: <tt>node.{@link Node#children(Class) children(t)}.{@link #first()}</tt></li>
+ * <li>Traverse down the tree to find the first descendant instance of type descendantType without crossing find boundaries: <tt>node.{@link Node#descendants(Class) descendants(t)}.{@link #first()}</tt></li>
  * <li>Traverse up the tree to find the first parent instance of type parentType or one of its subclasses: <tt>node.{@link Node#ancestors(Class) ancestors(t)}.{@link #first()}</tt></li>
- * <li><tt>node.{@link Node#findChildrenOfType(Class) findChildrenOfType(t)} === node.{@link Node#descendants(Class) children(t)}.{@link #toList()}</tt></li>
- * <li><tt>node.{@link Node#findDescendantsOfType(Class) findDescendantsOfType(t)} === node.{@link Node#descendants(Class) descendants(t)}.{@link #toList()}</tt></li>
- * <li><tt>node.{@link Node#getParentsOfType(Class) getParentsOfType(t)} === node.{@link Node#descendants(Class) ancestors(t)}.{@link #toList()}</tt></li>
+ * <li>Traverse the children to find all the instances of type childType or one of its subclasses: <tt>node.{@link Node#descendants(Class) children(t)}.{@link #toList()}</tt></li>
+ * <li>Traverse down the tree to find all the descendant instances of type descendantType without crossing find boundaries: <tt>node.{@link Node#descendants(Class) descendants(t)}.{@link #toList()}</tt></li>
+ * <li>Traverse up the tree to find all of the parent instances of type parentType or one of its subclasses, ordering the nodes deepest first: <tt>node.{@link Node#descendants(Class) ancestors(t)}.{@link #toList()}</tt></li>
  * <li>Get the n-th parent or null if there are less than {@code n} ancestors: <tt>node.{@link Node#ancestors() ancestors()}.{@link #get(int) get(n - 1)}</tt></li>
- * <li><tt>node.{@link Node#hasDescendantOfType(Class) hasDescendantOfType(t)} === node.{@link Node#descendants(Class) descendants(t)}.{@link #nonEmpty()}</tt></li>
+ * <li>Find if this node contains a descendant of the given type without crossing find boundaries: <tt>node.{@link Node#descendants(Class) descendants(t)}.{@link #nonEmpty()}</tt></li>
  * <li><tt>node.getFirstParentOfAnyType(c1, c2) ===  node.{@link Node#ancestors() ancestors()}.{@link #firstNonNull(Function) firstNonNull}({@link #asInstanceOf(Class, Class[]) asInstanceOf(c1, c2)})</tt></li>
  * <li><tt>node.hasDescendantOfAnyType(c1, c2) ===  node.{@link Node#descendants() descendants()}.{@link #map(Function) map}({@link #asInstanceOf(Class, Class[]) asInstanceOf(c1, c2)}).{@link #nonEmpty()}</tt></li>
  * </ul>
