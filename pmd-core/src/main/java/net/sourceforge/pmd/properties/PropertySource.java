@@ -145,10 +145,7 @@ public interface PropertySource {
      * between values. Returns null if the receiver is ok.
      *
      * @return String
-     *
-     * @deprecated PMD 7 will introduce another mechanism to report dysfunctional rules better.
      */
-    @Deprecated
     default String dysfunctionReason() {
         return null;
     }
