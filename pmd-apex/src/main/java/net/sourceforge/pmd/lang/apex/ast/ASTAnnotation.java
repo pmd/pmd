@@ -23,7 +23,6 @@ public final class ASTAnnotation extends AbstractApexNode<Annotation> {
     }
 
     @Override
-    @Deprecated
     public String getImage() {
         return getName();
     }
