@@ -49,7 +49,7 @@ class ScalaRuleTest extends BaseScalaTest {
             @Override
             public RuleContext visit(ASTTermApply node, RuleContext ruleContext) {
                 ASTTermName child = node.firstChild(ASTTermName.class);
-                if (child != null && child.hasImageEqualTo("println")) {
+                if (child != null && "println".equals(child.getValue())) {
                     ruleContext.addViolation(node);
                 }
                 return ruleContext;

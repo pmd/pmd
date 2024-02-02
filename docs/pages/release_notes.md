@@ -109,6 +109,7 @@ in the Migration Guide.
   * [#4694](https://github.com/pmd/pmd/pull/4694):   \[core] Fix line/col numbers in TokenMgrError
   * [#4717](https://github.com/pmd/pmd/issues/4717): \[core] XSLTRenderer doesn't close report file
   * [#4750](https://github.com/pmd/pmd/pull/4750):   \[core] Fix flaky SummaryHTMLRenderer
+  * [#4782](https://github.com/pmd/pmd/pull/4782):   \[core] Avoid using getImage/@<!-- -->Image
 * doc
   * [#995](https://github.com/pmd/pmd/issues/995):   \[doc] Document API evolution principles as ADR
   * [#2511](https://github.com/pmd/pmd/issues/2511): \[doc] Review guides for writing java/xpath rules for correctness with PMD 7
@@ -153,6 +154,11 @@ in the Migration Guide.
   * [#4592](https://github.com/pmd/pmd/pull/4592):   \[xml] Add MissingEncoding rule
 
 #### API Changes
+
+**General AST Changes to avoid `@Image`**
+
+See [General AST Changes to avoid @Image]({{ baseurl }}pmd_userdocs_migrating_to_pmd7.html#general-ast-changes-to-avoid-image)
+in the migration guide for details.
 
 **Removed classes and methods (previously deprecated)**
 
@@ -620,6 +626,7 @@ See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.
     * [#4694](https://github.com/pmd/pmd/pull/4694):   \[core] Fix line/col numbers in TokenMgrError
     * [#4717](https://github.com/pmd/pmd/issues/4717): \[core] XSLTRenderer doesn't close report file
     * [#4750](https://github.com/pmd/pmd/pull/4750):   \[core] Fix flaky SummaryHTMLRenderer
+    * [#4782](https://github.com/pmd/pmd/pull/4782):   \[core] Avoid using getImage/@<!-- -->Image
 * cli
     * [#2234](https://github.com/pmd/pmd/issues/2234): \[core] Consolidate PMD CLI into a single command
     * [#3828](https://github.com/pmd/pmd/issues/3828): \[core] Progress reporting

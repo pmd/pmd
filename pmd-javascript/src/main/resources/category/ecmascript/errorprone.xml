@@ -61,9 +61,9 @@ same type. The === operator avoids the casting.
                 <value>
 <![CDATA[
 //InfixExpression[
-  (@Image = "==" or @Image = "!=")
+  (@Operator = '==' or @Operator = '!=')
   and
-  (KeywordLiteral[@Image='true' or @Image = 'false'] or NumberLiteral)
+  (KeywordLiteral[@Literal = 'true' or @Literal = 'false'] or NumberLiteral)
 ]
 ]]>
                 </value>

@@ -20,8 +20,7 @@ public final class ASTTermName extends AbstractScalaNode<Term.Name> {
         return visitor.visit(this, data);
     }
 
-    @Override
-    public String getImage() {
+    public String getValue() {
         return node.value();
     }
 }

@@ -12,7 +12,6 @@ public final class ASTBigIntLiteral extends AbstractEcmascriptNode<BigIntLiteral
 
     ASTBigIntLiteral(BigIntLiteral bigIntLiteral) {
         super(bigIntLiteral);
-        super.setImage(bigIntLiteral.getValue());
     }
 
     @Override
@@ -22,5 +21,9 @@ public final class ASTBigIntLiteral extends AbstractEcmascriptNode<BigIntLiteral
 
     public BigInteger getNumber() {
         return node.getBigInt();
+    }
+
+    public String getValue() {
+        return node.getValue();
     }
 }

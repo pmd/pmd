@@ -20,7 +20,7 @@ class ASTVariableDeclarationTest extends EcmascriptParserTestBase {
 
         ASTVariableInitializer varInit = (ASTVariableInitializer) varDecl.getChild(0);
         ASTName name = (ASTName) varInit.getChild(0);
-        assertEquals("x", name.getImage());
+        assertEquals("x", name.getIdentifier());
     }
 
 }

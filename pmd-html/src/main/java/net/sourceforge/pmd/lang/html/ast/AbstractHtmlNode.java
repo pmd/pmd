@@ -27,6 +27,7 @@ abstract class AbstractHtmlNode<T extends Node> extends AbstractNode<AbstractHtm
 
     @Override
     public String getXPathNodeName() {
+        // note: this might return "#text" or "#comment" as well
         return node.nodeName();
     }
 

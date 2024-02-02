@@ -9,7 +9,6 @@ import org.mozilla.javascript.ast.ContinueStatement;
 public final class ASTContinueStatement extends AbstractEcmascriptNode<ContinueStatement> {
     ASTContinueStatement(ContinueStatement continueStatement) {
         super(continueStatement);
-        super.setImage(continueStatement.getLabel() != null ? continueStatement.getLabel().getIdentifier() : null);
     }
 
     @Override

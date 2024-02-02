@@ -176,7 +176,7 @@ See also: [parseInt()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/R
                 <value>
 <![CDATA[
 //FunctionCall/Name[
-     @Image = 'parseInt'
+     @Identifier = 'parseInt'
      and
      count(../*) < 3
 ]

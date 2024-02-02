@@ -84,10 +84,10 @@ class EcmascriptParserTest extends EcmascriptParserTestBase {
     void testArrayAccess() {
         EcmascriptNode<AstRoot> node = js.parse("function a() { b['a'] = 1; c[1] = 2; }");
         List<ASTElementGet> arrays = node.descendants(ASTElementGet.class).toList();
-        assertEquals("b", arrays.get(0).getTarget().getImage());
-        assertEquals("a", arrays.get(0).getElement().getImage());
-        assertEquals("c", arrays.get(1).getTarget().getImage());
-        assertEquals("1", arrays.get(1).getElement().getImage());
+        assertEquals("b", ((ASTName) arrays.get(0).getTarget()).getIdentifier());
+        assertEquals("a", ((ASTStringLiteral) arrays.get(0).getElement()).getValue());
+        assertEquals("c", ((ASTName) arrays.get(1).getTarget()).getIdentifier());
+        assertEquals("1", ((ASTNumberLiteral) arrays.get(1).getElement()).getValue());
     }
 
     /**
@@ -165,7 +165,7 @@ class EcmascriptParserTest extends EcmascriptParserTestBase {
                                            + "    return (matchFn)?(matcharray = eval(matchFn+\"('\"+fieldval+\"','\"+n.id+\"')\")):void(0);\n"
                                            + "}\n");
         ASTUnaryExpression unary = rootNode.descendants(ASTUnaryExpression.class).first();
-        assertEquals("void", unary.getImage());
+        assertEquals("void", unary.getOperator());
     }
 
     /**
@@ -177,7 +177,7 @@ class EcmascriptParserTest extends EcmascriptParserTestBase {
                                            + "x &&= true; x ||= false; x *= 2; x /= 2; x %= 2; x += 2; x -= 2; "
                                            + "x <<= 2; x >>= 2; x >>>= 2; }");
         ASTAssignment infix = rootNode.descendants(ASTAssignment.class).first();
-        assertEquals("^=", infix.getImage());
+        assertEquals("^=", infix.getOperator());
     }
 
     @Test
