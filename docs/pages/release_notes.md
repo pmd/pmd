@@ -180,6 +180,13 @@ The following previously deprecated rules have been finally removed:
 
 The following previously deprecated classes have been removed:
 
+* pmd-core
+  * {%jdoc !!core::cpd.CpdLanguageProperties %}. The field `DEFAULT_SKIP_BLOCKS_PATTERN` has been removed.
+  * {%jdoc !!core::lang.ast.impl.antlr4.BaseAntlrNode %} - method `joinTokenText()` has been removed.
+  * {%jdoc !!core::lang.ast.Node %} - many methods have been removed:
+    * `getNthParent(int)` - Use {%jdoc core::lang.ast.Node#ancestors() %} instead, e.g. `node.ancestors().get(n-1)`
+    * `getFirstParentOfType(Class)` - Use {%jdoc core::lang.ast.Node#ancestors(java.lang.Class) %} instead, e.g. `node.ancestors(parentType).first()`
+  * {%jdoc !!core::lang.ast.impl.GenericNode %} - getNthParent(int)
 * pmd-apex
   * {%jdoc apex::lang.apex.ast.ApexNode %} and {% jdoc apex::lang.apex.ast.ASTApexFile %}
     * `#getApexVersion()`: In PMD 6, this method has been deprecated but was defined in the class `ApexRootNode`.

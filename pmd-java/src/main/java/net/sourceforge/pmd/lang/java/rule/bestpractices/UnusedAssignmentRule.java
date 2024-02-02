@@ -168,7 +168,7 @@ public class UnusedAssignmentRule extends AbstractJavaRulechainRule {
             return "resource";
         } else if (id.isExceptionBlockParameter()) {
             return "exception parameter";
-        } else if (id.getNthParent(3) instanceof ASTForeachStatement) {
+        } else if (id.ancestors().get(2) instanceof ASTForeachStatement) {
             return "loop variable";
         } else if (id.isFormalParameter()) {
             return "parameter";

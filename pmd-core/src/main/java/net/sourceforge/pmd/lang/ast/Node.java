@@ -175,40 +175,6 @@ public interface Node extends Reportable {
     }
 
     /**
-     * Returns the n-th parent or null if there are less than {@code n} ancestors.
-     *
-     * <pre>{@code
-     *    getNthParent(1) == jjtGetParent
-     * }</pre>
-     *
-     * @param n how many ancestors to iterate over.
-     * @return the n-th parent or null.
-     * @throws IllegalArgumentException if {@code n} is negative or zero.
-     *
-     * @deprecated Use node stream methods: {@code node.ancestors().get(n-1)}
-     */
-    @Deprecated
-    @DeprecatedUntil700
-    default Node getNthParent(int n) {
-        return ancestors().get(n - 1);
-    }
-
-    /**
-     * Traverses up the tree to find the first parent instance of type parentType or one of its subclasses.
-     *
-     * @param parentType Class literal of the type you want to find
-     * @param <T> The type you want to find
-     * @return Node of type parentType. Returns null if none found.
-     *
-     * @deprecated Use node stream methods: {@code node.ancestors(parentType).first()}
-     */
-    @Deprecated
-    @DeprecatedUntil700
-    default <T extends Node> T getFirstParentOfType(Class<? extends T> parentType) {
-        return this.<T>ancestors(parentType).first();
-    }
-
-    /**
      * Traverses up the tree to find all of the parent instances of type parentType or one of its subclasses. The nodes
      * are ordered deepest-first.
      *

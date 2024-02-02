@@ -169,7 +169,7 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
      * a regular {@link ASTLocalVariableDeclaration}.
      */
     public boolean isLocalVariable() {
-        return getNthParent(2) instanceof ASTLocalVariableDeclaration
+        return ancestors().get(1) instanceof ASTLocalVariableDeclaration
             && !isResourceDeclaration()
             && !isForeachVariable();
     }
@@ -180,7 +180,7 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
      */
     public boolean isForeachVariable() {
         // Foreach/LocalVarDecl/VarDeclarator/VarDeclId
-        return getNthParent(3) instanceof ASTForeachStatement;
+        return ancestors().get(2) instanceof ASTForeachStatement;
     }
 
     /**
@@ -189,7 +189,7 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
      */
     public boolean isForLoopVariable() {
         // For/ForInit/LocalVarDecl/VarDeclarator/VarDeclId
-        return getNthParent(3) instanceof ASTForInit;
+        return ancestors().get(2) instanceof ASTForInit;
     }
 
 
@@ -210,7 +210,7 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
      * if you want that).
      */
     public boolean isField() {
-        return getNthParent(2) instanceof ASTFieldDeclaration;
+        return ancestors().get(1) instanceof ASTFieldDeclaration;
     }
 
     /**

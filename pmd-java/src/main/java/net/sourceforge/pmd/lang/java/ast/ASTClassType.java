@@ -180,7 +180,7 @@ public final class ASTClassType extends AbstractJavaTypeNode implements ASTRefer
      */
     @Deprecated
     public boolean isReferenceToClassSameCompilationUnit() {
-        ASTCompilationUnit root = getFirstParentOfType(ASTCompilationUnit.class);
+        ASTCompilationUnit root = ancestors(ASTCompilationUnit.class).first();
         for (ASTClassDeclaration c : root.findDescendantsOfType(ASTClassDeclaration.class, true)) {
             if (c.hasImageEqualTo(getImage())) {
                 return true;

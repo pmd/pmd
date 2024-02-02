@@ -67,11 +67,11 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
  * <ul>
  * <li><tt>node.{@link Node#getFirstChildOfType(Class) getFirstChildOfType(t)} === node.{@link Node#children(Class) children(t)}.{@link #first()}</tt></li>
  * <li><tt>node.{@link Node#getFirstDescendantOfType(Class) getFirstDescendantOfType(t)} === node.{@link Node#descendants(Class) descendants(t)}.{@link #first()}</tt></li>
- * <li><tt>node.{@link Node#getFirstParentOfType(Class) getFirstParentOfType(t)} === node.{@link Node#ancestors(Class) ancestors(t)}.{@link #first()}</tt></li>
+ * <li>Traverse up the tree to find the first parent instance of type parentType or one of its subclasses: <tt>node.{@link Node#ancestors(Class) ancestors(t)}.{@link #first()}</tt></li>
  * <li><tt>node.{@link Node#findChildrenOfType(Class) findChildrenOfType(t)} === node.{@link Node#descendants(Class) children(t)}.{@link #toList()}</tt></li>
  * <li><tt>node.{@link Node#findDescendantsOfType(Class) findDescendantsOfType(t)} === node.{@link Node#descendants(Class) descendants(t)}.{@link #toList()}</tt></li>
  * <li><tt>node.{@link Node#getParentsOfType(Class) getParentsOfType(t)} === node.{@link Node#descendants(Class) ancestors(t)}.{@link #toList()}</tt></li>
- * <li><tt>node.{@link Node#getNthParent(int) getNthParent(n)} === node.{@link Node#ancestors() ancestors()}.{@link #get(int) get(n - 1)}</tt></li>
+ * <li>Get the n-th parent or null if there are less than {@code n} ancestors: <tt>node.{@link Node#ancestors() ancestors()}.{@link #get(int) get(n - 1)}</tt></li>
  * <li><tt>node.{@link Node#hasDescendantOfType(Class) hasDescendantOfType(t)} === node.{@link Node#descendants(Class) descendants(t)}.{@link #nonEmpty()}</tt></li>
  * <li><tt>node.getFirstParentOfAnyType(c1, c2) ===  node.{@link Node#ancestors() ancestors()}.{@link #firstNonNull(Function) firstNonNull}({@link #asInstanceOf(Class, Class[]) asInstanceOf(c1, c2)})</tt></li>
  * <li><tt>node.hasDescendantOfAnyType(c1, c2) ===  node.{@link Node#descendants() descendants()}.{@link #map(Function) map}({@link #asInstanceOf(Class, Class[]) asInstanceOf(c1, c2)}).{@link #nonEmpty()}</tt></li>
