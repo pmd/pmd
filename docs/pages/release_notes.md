@@ -189,6 +189,26 @@ The following previously deprecated classes have been removed:
 
       If the current version is needed, then `Node.getTextDocument().getLanguageVersion()` can be used. This
       is the version that has been selected via CLI `--use-version` parameter.
+  * {%jdoc !!apex::lang.apex.ast.ApexNode %}
+    * method `jjtAccept()` has been removed.
+      Use {%jdoc core::lang.ast.Node#acceptVisitor(core::lang.ast.AstVisitor,P) %} instead.
+    * method `getNode()` has been removed. The underlying node is only available in AST nodes, but not in rule implementations.
+  * {%jdoc !!apex::lang.apex.ast.AbstractApexNode %} - method `getNode()` is now package private.
+    AST nodes still have access to the underlying Jorje node via the protected property `node`.
+  * `net.sourceforge.pmd.lang.apex.ast.ApexParserVisitor`
+    Use {%jdoc apex::lang.apex.ast.ApexVisitor %} or {%jdoc apex::lang.apex.ast.ApexVisitorBase %} instead.
+  * `net.sourceforge.pmd.lang.apex.ast.ApexParserVisitorAdapter`
+  * {%jdoc !!apex::lang.apex.ast.ASTAssignmentExpression %} - method `getOperator()` removed.
+    Use {%jdoc apex::lang.apex.ast.ASTAssignmentExpression#getOp() %} instead.
+  * {%jdoc !!apex::lang.apex.ast.ASTBinaryExpression %} - method `getOperator()` removed.
+    Use {%jdoc apex::lang.apex.ast.ASTBinaryExpression#getOp() %} instead.
+  * {%jdoc !!apex::lang.apex.ast.ASTBooleanExpression %} - method `getOperator()` removed.
+    Use {%jdoc apex::lang.apex.ast.ASTBooleanExpression#getOp() %} instead.
+  * {%jdoc !!apex::lang.apex.ast.ASTPostfixExpression %} - method `getOperator()` removed.
+    Use {%jdoc apex::lang.apex.ast.ASTPostfixExpression#getOp() %} instead.
+  * {%jdoc !!apex::lang.apex.ast.ASTPrefixExpression %} - method `getOperator()` removed.
+    Use {%jdoc apex::lang.apex.ast.ASTPrefixExpression#getOp() %} instead.
+  * `net.sourceforge.pmd.lang.apex.rule.security.Helper` removed. This was actually internal API.
 * pmd-javascript
   * {%jdoc javascript::lang.ecmascript.ast.AbstractEcmascriptNode %} - method `getNode()` has been removed.
     AST nodes still have access to the underlying Rhino node via the protected property `node`.

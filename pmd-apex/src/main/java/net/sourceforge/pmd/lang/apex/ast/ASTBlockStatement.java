@@ -42,6 +42,6 @@ public final class ASTBlockStatement extends AbstractApexNode<BlockStatement> {
 
     @Override
     public boolean hasRealLoc() {
-        return super.hasRealLoc() && !Objects.equals(node.getLoc(), getParent().getNode().getLoc());
+        return super.hasRealLoc() && !Objects.equals(node.getLoc(), ((AbstractApexNode<?>) getParent()).getNode().getLoc());
     }
 }
