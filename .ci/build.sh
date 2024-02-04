@@ -323,7 +323,7 @@ ${rendered_release_notes}"
 #
 function pmd_ci_dogfood() {
     local mpmdVersion=()
-    ./mvnw versions:set -DnewVersion="${PMD_CI_MAVEN_PROJECT_VERSION}-dogfood" -DgenerateBackupPoms=false
+    ./mvnw versions:set -DnewVersion="${PMD_CI_MAVEN_PROJECT_VERSION%-SNAPSHOT}-dogfood-SNAPSHOT" -DgenerateBackupPoms=false
     sed -i 's/<version>[0-9]\{1,\}\.[0-9]\{1,\}\.[0-9]\{1,\}.*<\/version>\( *<!-- pmd.dogfood.version -->\)/<version>'"${PMD_CI_MAVEN_PROJECT_VERSION}"'<\/version>\1/' pom.xml
     ./mvnw verify --show-version --errors --batch-mode "${PMD_MAVEN_EXTRA_OPTS[@]}" \
         "${mpmdVersion[@]}" \
