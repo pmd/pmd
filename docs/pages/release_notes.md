@@ -83,6 +83,12 @@ in the Migration Guide.
 * We now support [suppression](pmd_userdocs_cpd.html#suppression) through `CPD-ON`/`CPD-OFF` comment pairs.
 * See [PR #4726](https://github.com/pmd/pmd/pull/4726) for details.
 
+##### Updated PMD Designer
+
+This PMD release ships a new version of the pmd-designer.
+For the changes, see
+* [PMD Designer Changelog (7.0.0)](https://github.com/pmd/pmd-designer/releases/tag/7.0.0).
+
 #### Rule Changes
 
 **New Rules**
@@ -359,7 +365,10 @@ Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 #### Updated PMD Designer
 
 This PMD release ships a new version of the pmd-designer.
-For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designer/releases/tag/7.0.0-rc1).
+For the changes, see
+* [PMD Designer Changelog (7.0.0-rc1)](https://github.com/pmd/pmd-designer/releases/tag/7.0.0-rc1).
+* [PMD Designer Changelog (7.0.0-rc4)](https://github.com/pmd/pmd-designer/releases/tag/7.0.0-rc4).
+* [PMD Designer Changelog (7.0.0)](https://github.com/pmd/pmd-designer/releases/tag/7.0.0).
 
 #### New CPD report format cpdhtml-v2.xslt
 
