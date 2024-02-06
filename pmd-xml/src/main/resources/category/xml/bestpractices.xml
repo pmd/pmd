@@ -27,7 +27,6 @@ parsing.
        </description>
        <priority>3</priority>
        <properties>
-          <property name="version" value="3.1"/>
           <property name="xpath">
              <value>
     <![CDATA[

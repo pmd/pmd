@@ -599,7 +599,7 @@ See [ADR 3 - API evolution principles](pmd_projectdocs_decisions_adr_3.html) and
 
 ### XPath 3.1 support
 
-Support for XPath versions 1.0, 1.0-compatibility was removed, support for XPath 2.0 is deprecated. The default
+Support for XPath versions 1.0, 1.0-compatibility, 2.0 was removed. The default
 (and only) supported XPath version is now XPath 3.1. This version of the XPath language is mostly identical to
 XPath 2.0.
 

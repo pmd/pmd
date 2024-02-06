@@ -826,7 +826,6 @@ Test methods are identified as those which use `@Test`, `@RepeatedTest`,
             ]]></description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -1880,7 +1879,6 @@ a block `{}` is sufficient.
     ]]
                 ]]></value>
             </property>
-            <property name="version" value="2.0" />
         </properties>
         <example>
 <![CDATA[

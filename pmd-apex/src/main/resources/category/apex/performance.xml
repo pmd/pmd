@@ -24,7 +24,6 @@ For other valid use cases that the statement is in fact valid make use of the `@
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
@@ -89,7 +88,6 @@ Properties:
         <priority>3</priority>
         <properties>
             <property name="noDefault" type="Boolean" value="false" description="Do not allow SObjectDescribeOptions.DEFAULT option to ensure consistent results no matter where getDescribe is called"/>
-            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[

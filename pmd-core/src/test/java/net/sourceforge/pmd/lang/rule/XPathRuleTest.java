@@ -30,15 +30,9 @@ class XPathRuleTest {
     private final DummyParsingHelper helper = new DummyParsingHelper();
 
     @Test
-    void testAttributeDeprecation10() throws Exception {
-        testDeprecation(XPathVersion.XPATH_1_0);
+    void testAttributeDeprecation() throws Exception {
+        testDeprecation(XPathVersion.DEFAULT);
     }
-
-    @Test
-    void testAttributeDeprecation20() throws Exception {
-        testDeprecation(XPathVersion.XPATH_2_0);
-    }
-
 
     void testDeprecation(XPathVersion version) throws Exception {
         XPathRule xpr = makeRule(version, "SomeRule");
@@ -91,7 +85,7 @@ class XPathRuleTest {
 
 
     XPathRule makeXPath(String xpathExpr) {
-        XPathRule xpr = new XPathRule(XPathVersion.XPATH_2_0, xpathExpr);
+        XPathRule xpr = new XPathRule(XPathVersion.DEFAULT, xpathExpr);
         setDummyLanguage(xpr);
         xpr.setName("name");
         xpr.setMessage("gotcha");

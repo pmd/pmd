@@ -176,9 +176,7 @@ The following previously deprecated rules have been finally removed:
 
 #### API Changes
 
-**Removed classes and methods (previously deprecated)**
-
-The following previously deprecated classes have been removed:
+**Removed classes and members (previously deprecated)**
 
 * pmd-core
   * {%jdoc !!core::cpd.CpdLanguageProperties %}. The field `DEFAULT_SKIP_BLOCKS_PATTERN` has been removed.
@@ -200,6 +198,12 @@ The following previously deprecated classes have been removed:
     Use {%jdoc core::lang.document.TextDocument#readOnlyString(java.lang.CharSequence,core::lang.document.FileId,core::lang.LanguageVersion) %} instead.
   * {%jdoc !!core::lang.document.TextFile %} - method `dataSourceCompat(DataSource,PMDConfiguration)` has been removed.
     Use {%jdoc core::lang.document.TextFile %} directly, e.g. {%jdoc core::lang.document.TextFile.forPath(java.nio.file.Path,java.nio.charset.Charset,core::lang.LanguageVersion) %}
+  * {%jdoc !!core::lang.rule.xpath.XPathVersion %}
+    * `XPATH_1_0`
+    * `XPATH_1_0_COMPATIBILITY`
+    * `XPATH_2_0`
+    * Only XPath version 3.1 is now supported.  This version of the XPath language is mostly identical to
+      XPath 2.0. XPath rules by default use now {%jdoc core::lang.rule.xpath.XPathVersion#XPATH_3_1 %}.
 * pmd-apex
   * {%jdoc apex::lang.apex.ast.ApexNode %} and {% jdoc apex::lang.apex.ast.ASTApexFile %}
     * `#getApexVersion()`: In PMD 6, this method has been deprecated but was defined in the class `ApexRootNode`.
