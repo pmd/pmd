@@ -26,10 +26,6 @@ public abstract class AbstractPropertySource implements PropertySource {
     // This would avoid duplicating the implementation between Rule and RuleReference,
     // which should use exactly the same mechanism to override properties (XML).
 
-    // BUT to do that RuleReference should not extend AbstractDelegateRule
-    // Indeed, AbstractDelegateRule has no business having this overriding logic built-in,
-    // it would break its contract. For all deeds and purposes that class should be removed.
-
     // TODO 7.0.0 these fields should be made private final
 
     /**

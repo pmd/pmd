@@ -204,6 +204,7 @@ The following previously deprecated rules have been finally removed:
     * `XPATH_2_0`
     * Only XPath version 3.1 is now supported.  This version of the XPath language is mostly identical to
       XPath 2.0. XPath rules by default use now {%jdoc core::lang.rule.xpath.XPathVersion#XPATH_3_1 %}.
+  * `net.sourceforge.pmd.lang.rule.AbstractDelegateRule` removed. It has been merged with {%jdoc core::lang.rule.RuleReference %}.
 * pmd-apex
   * {%jdoc apex::lang.apex.ast.ApexNode %} and {% jdoc apex::lang.apex.ast.ASTApexFile %}
     * `#getApexVersion()`: In PMD 6, this method has been deprecated but was defined in the class `ApexRootNode`.

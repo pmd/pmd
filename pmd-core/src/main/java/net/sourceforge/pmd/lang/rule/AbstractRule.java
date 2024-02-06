@@ -303,7 +303,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 
     private boolean isThisRule(Rule rule) {
         return rule == this // NOPMD CompareObjectsWithEquals
-            || rule instanceof AbstractDelegateRule && this.isThisRule(((AbstractDelegateRule) rule).getRule());
+            || rule instanceof RuleReference && this.isThisRule(((RuleReference) rule).getRule());
     }
 
     /**
