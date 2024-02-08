@@ -205,6 +205,13 @@ The following previously deprecated rules have been finally removed:
     * Only XPath version 3.1 is now supported.  This version of the XPath language is mostly identical to
       XPath 2.0. XPath rules by default use now {%jdoc core::lang.rule.xpath.XPathVersion#XPATH_3_1 %}.
   * `net.sourceforge.pmd.lang.rule.AbstractDelegateRule` removed. It has been merged with {%jdoc core::lang.rule.RuleReference %}.
+  * {%jdoc !!core::lang.rule.AbstractRule %} - the following methods have been removed:
+    * `deepCopyValuesTo(AbstractRule)` - use {%jdoc core::lang.rule.AbstractRule#deepCopy() %} instead.
+    * `addRuleChainVisit(Class)` - override {%jdoc core::lang.rule.AbstractRule#buildTargetSelector() %} in order to register nodes for rule chain visits.
+    * `addViolation(...)` - use {%jdoc core::RuleContext#addViolation(core::lang.ast.Node) %} instead, e.g. via `asCtx(data).addViolation(...)`.
+      Note: These methods were only marked as deprected in javadoc.
+    * `addViolationWithMessage(...)` - use {%jdoc core::RuleContext#addViolationWithMessage(core::lang.ast.Node,java.lang.String) %} instead, e.g. via
+      `asCtx(data).addViolationWithMessage(...)`. Note: These methods were only marked as deprected in javadoc.
 * pmd-apex
   * {%jdoc apex::lang.apex.ast.ApexNode %} and {% jdoc apex::lang.apex.ast.ASTApexFile %}
     * `#getApexVersion()`: In PMD 6, this method has been deprecated but was defined in the class `ApexRootNode`.

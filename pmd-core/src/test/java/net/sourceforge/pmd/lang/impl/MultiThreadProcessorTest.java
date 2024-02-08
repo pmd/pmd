@@ -111,7 +111,7 @@ class MultiThreadProcessorTest extends AbstractPMDProcessorTest {
 
             letTheOtherThreadRun(100);
             if (hasViolation) {
-                addViolation(ctx, target);
+                ctx.addViolation(target);
             }
         }
 

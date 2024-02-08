@@ -88,7 +88,7 @@ public abstract class AbstractMetricTestRule<N extends Number & Comparable<N>> e
             N result = Metric.compute(metric, target, options);
 
             if (result != null && reportLevel.compareTo(result) <= 0) {
-                addViolationWithMessage(ctx, target, violationMessage(target, result));
+                ctx.addViolationWithMessage(target, violationMessage(target, result));
             }
         }
 

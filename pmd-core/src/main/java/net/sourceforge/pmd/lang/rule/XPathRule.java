@@ -134,7 +134,7 @@ public final class XPathRule extends AbstractRule {
         }
 
         for (Node nodeWithViolation : nodesWithViolation) {
-            addViolation(ctx, nodeWithViolation, nodeWithViolation.getImage());
+            ctx.addViolation(nodeWithViolation, nodeWithViolation.getImage());
         }
     }
 
