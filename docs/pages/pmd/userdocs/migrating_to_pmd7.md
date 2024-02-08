@@ -444,6 +444,7 @@ Some nodes have already the image attribute (and others) deprecated. These depre
 * {% jdoc java::lang.java.ast.ASTClassOrInterfaceDeclaration %}: `@Image` ➡️ `@SimpleName`
 * {% jdoc java::lang.java.ast.ASTEnumDeclaration %}: `@Image` ➡️ `@SimpleName`
 * {% jdoc java::lang.java.ast.ASTFieldDeclaration %}: `@VariableName` ➡️ `VariableDeclaratorId/@Name`
+* {% jdoc java::lang.java.ast.ASTMethodDeclaration %}: `@Image` ➡️ `@Name`
 * {% jdoc java::lang.java.ast.ASTMethodDeclaration %}: `@MethodName` ➡️ `@Name`
 * {% jdoc java::lang.java.ast.ASTRecordDeclaration %}: `@Image` ➡️ `@SimpleName`
 * {% jdoc java::lang.java.ast.ASTVariableDeclaratorId %}: `@Image` ➡️ `@Name`
