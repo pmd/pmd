@@ -215,6 +215,8 @@ The following previously deprecated rules have been finally removed:
   * {%jdoc !!core::lang.rule.RuleReference %} - the following methods have been removed:
     * `setRuleSetReference(RuleSetReference)` - without replacement. Just construct new {%jdoc core::lang.rule.RuleReference %} instead.
     * `hasOverriddenProperty(PropertyDescriptor)` - use {%jdoc core::lang.rule.RuleReference#isPropertyOverridden(core::properties.PropertyDescriptor) %} instead.
+  * {%jdoc !!core::lang.rule.XPathRule %}
+    * The constant `XPATH_DESCRIPTOR` has been made private and is not accessible anymore.
 * pmd-apex
   * {%jdoc apex::lang.apex.ast.ApexNode %} and {% jdoc apex::lang.apex.ast.ASTApexFile %}
     * `#getApexVersion()`: In PMD 6, this method has been deprecated but was defined in the class `ApexRootNode`.

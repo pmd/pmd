@@ -38,11 +38,7 @@ public final class XPathRule extends AbstractRule {
 
     // TODO move to XPath subpackage
 
-    /**
-     * @deprecated Use {@link #XPathRule(XPathVersion, String)}
-     */
-    @Deprecated
-    public static final PropertyDescriptor<String> XPATH_DESCRIPTOR =
+    private static final PropertyDescriptor<String> XPATH_DESCRIPTOR =
         PropertyFactory.stringProperty("xpath")
                        .desc("XPath expression")
                        .defaultValue("")
