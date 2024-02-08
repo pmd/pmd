@@ -17,7 +17,6 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.document.TextFileBuilder.ForCharSeq;
 import net.sourceforge.pmd.lang.document.TextFileBuilder.ForNio;
 import net.sourceforge.pmd.lang.document.TextFileBuilder.ForReader;
-import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
  * Represents some location containing character data. Despite the name,
@@ -28,10 +27,6 @@ import net.sourceforge.pmd.util.datasource.DataSource;
  * <p>Text files must provide read access, and may provide write access.
  * This interface only provides block IO operations, while {@link TextDocument} adds logic
  * about incremental edition (eg replacing a single region of text).
- *
- * <p>This interface is meant to replace {@link DataSource} and SourceCode.
- * "DataSource" is not an appropriate name for a file which can be written
- * to, also, the "data" it provides is text, not bytes.
  */
 public interface TextFile extends Closeable {
 

@@ -241,6 +241,10 @@ The following previously deprecated rules have been finally removed:
     * `getBeginColumn()`
     * `getEndLine()`
     * `getEndColumn()`
+  * `net.sourceforge.pmd.util.datasource.DataSource` - use {%jdoc core::lang.document.TextFile %} instead.
+  * `net.sourceforge.pmd.util.datasource.FileDataSource`
+  * `net.sourceforge.pmd.util.datasource.ReaderDataSource`
+  * `net.sourceforge.pmd.util.datasource.ZipDataSource`
 * pmd-apex
   * {%jdoc apex::lang.apex.ast.ApexNode %} and {% jdoc apex::lang.apex.ast.ASTApexFile %}
     * `#getApexVersion()`: In PMD 6, this method has been deprecated but was defined in the class `ApexRootNode`.
