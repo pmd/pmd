@@ -227,6 +227,15 @@ The following previously deprecated rules have been finally removed:
     * `findByExtension(String)` - removed without replacement.
   * {%jdoc !!core::lang.LanguageVersionDiscoverer %} - method `getLanguagesForFile(java.io.File)` removed.
     Use {%jdoc core::lang.LanguageVersionDiscoverer#getLanguagesForFile(java.lang.String) %} instead.
+  * {%jdoc !!core::properties.AbstractPropertySource %}
+    * field `propertyDescriptors` has been made private and is not accessible anymore.
+      Use {%jdoc core::properties.AbstractPropertySource#getPropertyDescriptors() %} instead.
+    * field `propertyValuesByDescriptor` has been made private and is not accessible anymore.
+      Use {%jdoc core::properties.AbstractPropertySource#getPropertiesByPropertyDescriptor() %}
+      or {%jdoc core::properties.AbstractPropertySource#getOverriddenPropertiesByPropertyDescriptor() %} instead.
+    * method `copyPropertyDescriptors()` has been removed. Use {%jdoc core::properties.AbstractPropertySource#getPropertyDescriptors() %} instead.
+    * method `copyPropertyValues()` has been removed. Use {%jdoc core::properties.AbstractPropertySource#getPropertiesByPropertyDescriptor() %}
+      or {%jdoc core::properties.AbstractPropertySource#getOverriddenPropertiesByPropertyDescriptor() %} instead.
 * pmd-apex
   * {%jdoc apex::lang.apex.ast.ApexNode %} and {% jdoc apex::lang.apex.ast.ASTApexFile %}
     * `#getApexVersion()`: In PMD 6, this method has been deprecated but was defined in the class `ApexRootNode`.
