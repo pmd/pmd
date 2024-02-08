@@ -36,7 +36,7 @@ import net.sourceforge.pmd.util.DataMap.DataKey;
  * like {@link #firstChild(Class)}, and {@link NodeStream}s.
  * <li>The API used to describe nodes in a form understandable by XPath expressions:
  * {@link #getXPathNodeName()},  {@link #getXPathAttributesIterator()}
- * <li>Location metadata: eg {@link #getBeginLine()}, {@link #getBeginColumn()}
+ * <li>Location metadata: {@link #getReportLocation()}
  * <li>An extensible metadata store: {@link #getUserMap()}
  * </ul>
  *
@@ -48,8 +48,7 @@ import net.sourceforge.pmd.util.DataMap.DataKey;
  * no JSP node should have a Java node as its child. Embedding nodes from
  * different languages will not be done via these methods, and conforming
  * implementations should ensure that every node returned by these methods
- * are indeed of the same type. Possibly, a type parameter will be added to
- * the Node interface in 7.0.0 to enforce it at compile-time.
+ * are indeed of the same type.
  */
 public interface Node extends Reportable {
 
@@ -127,25 +126,22 @@ public interface Node extends Reportable {
 
     // Those are kept here because they're handled specially as XPath
     // attributes, for now
+    // ->  [core] Deprecate XPath attributes for node coordinates (eg @BeginLine) #3876 (https://github.com/pmd/pmd/issues/3876)
 
-    @Override
     default int getBeginLine() {
-        return Reportable.super.getBeginLine();
+        return getReportLocation().getStartLine();
     }
 
-    @Override
     default int getBeginColumn() {
-        return Reportable.super.getBeginColumn();
+        return getReportLocation().getStartColumn();
     }
 
-    @Override
     default int getEndLine() {
-        return Reportable.super.getEndLine();
+        return getReportLocation().getEndLine();
     }
 
-    @Override
     default int getEndColumn() {
-        return Reportable.super.getEndColumn();
+        return getReportLocation().getEndColumn();
     }
 
 

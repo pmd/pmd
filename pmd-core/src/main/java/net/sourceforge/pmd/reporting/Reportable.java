@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.reporting;
 
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.document.FileLocation;
@@ -26,58 +25,7 @@ public interface Reportable {
     /**
      * Returns the location at which this element should be reported.
      *
-     * <p>Use this instead of {@link #getBeginColumn()}/{@link #getBeginLine()}, etc.
+     * <p>Use this instead of {@link Node#getBeginColumn()}/{@link Node#getBeginLine()}, etc.
      */
     FileLocation getReportLocation();
-
-
-    /**
-     * Gets the line where the token's region begins
-     *
-     * @deprecated Use {@link #getReportLocation()}
-     */
-    @Deprecated
-    @DeprecatedUntil700
-    default int getBeginLine() {
-        return getReportLocation().getStartPos().getLine();
-    }
-
-
-    /**
-     * Gets the line where the token's region ends
-     *
-     * @deprecated Use {@link #getReportLocation()}
-     */
-    @Deprecated
-    @DeprecatedUntil700
-    default int getEndLine() {
-        return getReportLocation().getEndPos().getLine();
-    }
-
-
-    /**
-     * Gets the column offset from the start of the begin line where the token's region begins
-     *
-     * @deprecated Use {@link #getReportLocation()}
-     */
-    @Deprecated
-    @DeprecatedUntil700
-    default int getBeginColumn() {
-        return getReportLocation().getStartPos().getColumn();
-    }
-
-
-    /**
-     * Gets the column offset from the start of the end line where the token's region ends
-     *
-     * @deprecated Use {@link #getReportLocation()}
-     */
-    @Deprecated
-    @DeprecatedUntil700
-    default int getEndColumn() {
-        return getReportLocation().getEndPos().getColumn();
-    }
-
-
-
 }

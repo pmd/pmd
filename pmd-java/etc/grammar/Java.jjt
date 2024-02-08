@@ -668,7 +668,7 @@ SPECIAL_TOKEN :
     {
         int startOfNOPMD = matchedToken.getImage().indexOf(suppressMarker);
         if (startOfNOPMD != -1) {
-            suppressMap.put(matchedToken.getBeginLine(), matchedToken.getImage().substring(startOfNOPMD + suppressMarker.length()));
+            suppressMap.put(matchedToken.getReportLocation().getStartLine(), matchedToken.getImage().substring(startOfNOPMD + suppressMarker.length()));
         }
         comments.add(new JavaComment(matchedToken));
     }
