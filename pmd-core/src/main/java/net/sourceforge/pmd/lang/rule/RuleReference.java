@@ -279,14 +279,6 @@ public class RuleReference implements Rule {
     }
 
 
-    /**
-     * @deprecated There's no use in setting the ruleset reference after construction
-     */
-    @Deprecated
-    public void setRuleSetReference(RuleSetReference ruleSetReference) {
-        this.ruleSetReference = ruleSetReference;
-    }
-
     private static boolean isSame(String s1, String s2) {
         return StringUtil.isSame(s1, s2, true, false, true);
     }
@@ -305,14 +297,6 @@ public class RuleReference implements Rule {
     public boolean hasDescriptor(PropertyDescriptor<?> descriptor) {
         return propertyDescriptors != null && propertyDescriptors.contains(descriptor)
                 || rule.hasDescriptor(descriptor);
-    }
-
-    /**
-     * @deprecated Use {@link #isPropertyOverridden(PropertyDescriptor)} instead
-     */
-    @Deprecated
-    public boolean hasOverriddenProperty(PropertyDescriptor<?> descriptor) {
-        return isPropertyOverridden(descriptor);
     }
 
     @Override

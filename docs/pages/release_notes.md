@@ -212,6 +212,9 @@ The following previously deprecated rules have been finally removed:
       Note: These methods were only marked as deprected in javadoc.
     * `addViolationWithMessage(...)` - use {%jdoc core::RuleContext#addViolationWithMessage(core::lang.ast.Node,java.lang.String) %} instead, e.g. via
       `asCtx(data).addViolationWithMessage(...)`. Note: These methods were only marked as deprected in javadoc.
+  * {%jdoc !!core::lang.rule.RuleReference %} - the following methods have been removed:
+    * `setRuleSetReference(RuleSetReference)` - without replacement. Just construct new {%jdoc core::lang.rule.RuleReference %} instead.
+    * `hasOverriddenProperty(PropertyDescriptor)` - use {%jdoc core::lang.rule.RuleReference#isPropertyOverridden(core::properties.PropertyDescriptor) %} instead.
 * pmd-apex
   * {%jdoc apex::lang.apex.ast.ApexNode %} and {% jdoc apex::lang.apex.ast.ASTApexFile %}
     * `#getApexVersion()`: In PMD 6, this method has been deprecated but was defined in the class `ApexRootNode`.
