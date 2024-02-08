@@ -261,6 +261,7 @@ The following previously deprecated rules have been finally removed:
       {%jdoc core::PMDConfiguration#addRuleSet(java.lang.String) %} instead.
     * `setReportFile(String)` - use {%jdoc core::PMDConfiguration#setReportFile(java.nio.file.Path) %} instead.
     * `getReportFile()` - use {%jdoc core::PMDConfiguration#getReportFilePath() %} instead.
+  * {%jdoc !!core::Report %} - method `merge(Report)` has been removed. Use {%jdoc core::Report#union(core::Report) %} instead.
 * pmd-apex
   * {%jdoc apex::lang.apex.ast.ApexNode %} and {% jdoc apex::lang.apex.ast.ASTApexFile %}
     * `#getApexVersion()`: In PMD 6, this method has been deprecated but was defined in the class `ApexRootNode`.

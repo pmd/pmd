@@ -20,7 +20,6 @@ import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextFile;
-import net.sourceforge.pmd.renderers.AbstractAccumulatingRenderer;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.util.BaseResultProducingCloseable;
@@ -232,32 +231,6 @@ public final class Report {
     }
 
     /**
-     * Merges the given report into this report. This might be necessary, if a
-     * summary over all violations is needed as PMD creates one report per file
-     * by default.
-     *
-     * <p>This is synchronized on an internal lock (note that other mutation
-     * operations are not synchronized, todo for pmd 7).
-     *
-     * @param r the report to be merged into this.
-     *
-     * @see AbstractAccumulatingRenderer
-     *
-     * @deprecated Convert Renderer to use the reports.
-     */
-    @Deprecated
-    public void merge(Report r) {
-        errors.addAll(r.errors);
-        configErrors.addAll(r.configErrors);
-        suppressedRuleViolations.addAll(r.suppressedRuleViolations);
-
-        for (RuleViolation violation : r.getViolations()) {
-            addRuleViolation(violation);
-        }
-    }
-
-
-    /**
      * Returns an unmodifiable list of violations that were suppressed.
      */
     public List<SuppressedViolation> getSuppressedViolations() {
@@ -392,11 +365,10 @@ public final class Report {
 
     /**
      * Creates a new report by combining this report with another report.
-     * This is similar to {@link #merge(Report)}, but instead a new report
-     * is created. The lowest start time and greatest end time are kept in the copy.
+     * The lowest start time and greatest end time are kept in the copy.
      *
      * @param other the other report to combine
-     * @return
+     * @return a new report which is the combination of this and the other report.
      */
     @Experimental
     public Report union(Report other) {
