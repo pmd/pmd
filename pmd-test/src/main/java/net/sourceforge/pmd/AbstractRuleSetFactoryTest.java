@@ -158,7 +158,7 @@ public abstract class AbstractRuleSetFactoryTest {
                             .append(" is missing 'externalInfoURL' attribute\n");
                 } else {
                     String expectedExternalInfoURL = "https://docs.pmd-code.org/.+/pmd_rules_"
-                            + language.getTerseName() + "_"
+                            + language.getId() + "_"
                             + IOUtil.getFilenameBase(fileName)
                             + ".html#"
                             + rule.getName().toLowerCase(Locale.ROOT);
@@ -177,7 +177,7 @@ public abstract class AbstractRuleSetFactoryTest {
                     }
                 }
                 // Proper class name/packaging?
-                String expectedClassName = "net.sourceforge.pmd.lang." + language.getTerseName() + ".rule." + group
+                String expectedClassName = "net.sourceforge.pmd.lang." + language.getId() + ".rule." + group
                         + "." + rule.getName() + "Rule";
                 if (!rule.getRuleClass().equals(expectedClassName)
                         && !validXPathClassNames.contains(rule.getRuleClass())) {
@@ -309,10 +309,10 @@ public abstract class AbstractRuleSetFactoryTest {
         List<String> result = new ArrayList<>();
 
         for (Language language : LanguageRegistry.PMD.getLanguages()) {
-            if (this.languagesToSkip.contains(language.getTerseName())) {
+            if (this.languagesToSkip.contains(language.getId())) {
                 continue;
             }
-            result.addAll(getRuleSetFileNames(language.getTerseName()));
+            result.addAll(getRuleSetFileNames(language.getId()));
         }
 
         return result;

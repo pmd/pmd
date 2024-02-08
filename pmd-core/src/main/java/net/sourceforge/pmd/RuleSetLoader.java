@@ -301,7 +301,7 @@ public final class RuleSetLoader {
         List<String> ruleSetReferenceIds = new ArrayList<>();
         for (Language language : languageRegistry.getLanguages()) {
             Properties props = new Properties();
-            rulesetsProperties = "category/" + language.getTerseName() + "/categories.properties";
+            rulesetsProperties = "category/" + language.getId() + "/categories.properties";
             try (InputStream inputStream = resourceLoader.loadClassPathResourceAsStreamOrThrow(rulesetsProperties)) {
                 props.load(inputStream);
                 String rulesetFilenames = props.getProperty("rulesets.filenames");

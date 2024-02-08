@@ -260,7 +260,7 @@ public class RuleFactory {
                          .error(
                              message,
                              attrValue,
-                             language.getTerseName(),
+                             language.getId(),
                              supportedVersions
                          );
             }

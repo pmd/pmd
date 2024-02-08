@@ -217,6 +217,16 @@ The following previously deprecated rules have been finally removed:
     * `hasOverriddenProperty(PropertyDescriptor)` - use {%jdoc core::lang.rule.RuleReference#isPropertyOverridden(core::properties.PropertyDescriptor) %} instead.
   * {%jdoc !!core::lang.rule.XPathRule %}
     * The constant `XPATH_DESCRIPTOR` has been made private and is not accessible anymore.
+  * {%jdoc !!core::lang.Language %} - method `getTerseName()` removed. Use {%jdoc core::lang.Language#getId() %} instead.
+  * {%jdoc !!core::lang.LanguageModuleBase %} - method `getTerseName()` removed. Use {%jdoc core::lang.LanguageModuleBase#getId() %} instead.
+  * {%jdoc !!core::lang.LanguageRegistry %} - the following methods have been removed:
+    * `getLanguage(String)` - use {%jdoc core::lang.LanguageRegistry.getLanguageByFullName(java.lang.String) %}
+      via {%jdoc core::lang.LanguageRegistry#PMD %} or {%jdoc core::lang.LanguageRegistry#CPD %} instead.
+    * `findLanguageByTerseName(String)` - use {%jdoc core::lang.LanguageRegistry#getLanguageById(java.lang.String) %}
+      via {%jdoc core::lang.LanguageRegistry#PMD %} or {%jdoc core::lang.LanguageRegistry#CPD %} instead.
+    * `findByExtension(String)` - removed without replacement.
+  * {%jdoc !!core::lang.LanguageVersionDiscoverer %} - method `getLanguagesForFile(java.io.File)` removed.
+    Use {%jdoc core::lang.LanguageVersionDiscoverer#getLanguagesForFile(java.lang.String) %} instead.
 * pmd-apex
   * {%jdoc apex::lang.apex.ast.ApexNode %} and {% jdoc apex::lang.apex.ast.ASTApexFile %}
     * `#getApexVersion()`: In PMD 6, this method has been deprecated but was defined in the class `ApexRootNode`.

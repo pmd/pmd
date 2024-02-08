@@ -211,7 +211,7 @@ public class RuleSetWriter {
         Element ruleElement = createRuleElement();
         // language is now a required attribute, unless this is a rule reference
         if (clazz != null) {
-            ruleElement.setAttribute("language", language.getTerseName());
+            ruleElement.setAttribute("language", language.getId());
         }
         if (minimumLanguageVersion != null) {
             ruleElement.setAttribute("minimumLanguageVersion", minimumLanguageVersion.getVersion());

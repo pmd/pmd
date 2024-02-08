@@ -39,7 +39,7 @@ public class CachedRuleMapper {
      */
     public void initialize(final RuleSets rs) {
         for (final Rule r : rs.getAllRules()) {
-            cachedRulesInstances.put(getRuleKey(r.getRuleClass(), r.getName(), r.getLanguage().getTerseName()), r);
+            cachedRulesInstances.put(getRuleKey(r.getRuleClass(), r.getName(), r.getLanguage().getId()), r);
         }
     }
 

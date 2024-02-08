@@ -2,12 +2,20 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
+// This class has been taken from 7.0.0-SNAPSHOT
+// Changes: The following methods are still here, but deleted in 7.0.0
+// LanguageRegistry#getLanguage
+// LanguageRegistry#findLanguageByTerseName
+// LanguageRegistry#findByExtension
+
 package net.sourceforge.pmd.lang;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
@@ -22,6 +30,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.cpd.CpdCapableLanguage;
 import net.sourceforge.pmd.util.CollectionUtil;
 
@@ -36,7 +45,7 @@ public final class LanguageRegistry implements Iterable<Language> {
     private static final Logger LOG = LoggerFactory.getLogger(LanguageRegistry.class);
 
     private static final LanguageRegistry ALL_LANGUAGES =
-        loadLanguages(LanguageRegistry.class.getClassLoader());
+            loadLanguages(LanguageRegistry.class.getClassLoader());
 
     /**
      * Contains the languages that support PMD and are found on the classpath
@@ -61,8 +70,8 @@ public final class LanguageRegistry implements Iterable<Language> {
      */
     public LanguageRegistry(Set<? extends Language> languages) {
         this.languages = languages.stream()
-                                  .sorted(Comparator.comparing(Language::getId, String::compareToIgnoreCase))
-                                  .collect(CollectionUtil.toUnmodifiableSet());
+                .sorted(Comparator.comparing(Language::getId, String::compareToIgnoreCase))
+                .collect(CollectionUtil.toUnmodifiableSet());
         this.languagesById = CollectionUtil.associateBy(languages, Language::getId);
         this.languagesByFullName = CollectionUtil.associateBy(languages, Language::getName);
     }
@@ -72,7 +81,7 @@ public final class LanguageRegistry implements Iterable<Language> {
      */
     public LanguageRegistry filter(Predicate<Language> filterFun) {
         return new LanguageRegistry(languages.stream().filter(filterFun)
-                                             .collect(Collectors.toSet()));
+                .collect(Collectors.toSet()));
     }
 
     /**
@@ -103,7 +112,7 @@ public final class LanguageRegistry implements Iterable<Language> {
             Language dep = getLanguageById(depId);
             if (dep == null) {
                 throw new IllegalStateException(
-                    "Cannot find language " + depId + " in " + this);
+                        "Cannot find language " + depId + " in " + this);
             }
             if (languages.add(dep)) {
                 addDepsOrThrow(dep, languages);
@@ -156,6 +165,22 @@ public final class LanguageRegistry implements Iterable<Language> {
     }
 
     /**
+     * Returns a language from its {@linkplain Language#getName() full name}
+     * (eg {@code "Java"}). This is case sensitive.
+     *
+     * @param languageName Language name
+     *
+     * @return A language, or null if the name is unknown
+     *
+     * @deprecated Use {@link #getLanguageByFullName(String) LanguageRegistry.PMD.getLanguageByFullName}
+     */
+    @Deprecated
+    @DeprecatedUntil700
+    public static Language getLanguage(String languageName) {
+        return PMD.getLanguageByFullName(languageName);
+    }
+
+    /**
      * Returns a language from its {@linkplain Language#getId() ID}
      * (eg {@code "java"}). This is case-sensitive.
      *
@@ -182,7 +207,7 @@ public final class LanguageRegistry implements Iterable<Language> {
             return null;
         }
         return version == null ? lang.getDefaultVersion()
-                               : lang.getVersion(version);
+                : lang.getVersion(version);
     }
 
     /**
@@ -195,6 +220,41 @@ public final class LanguageRegistry implements Iterable<Language> {
      */
     public @Nullable Language getLanguageByFullName(String languageName) {
         return languagesByFullName.get(languageName);
+    }
+
+    /**
+     * Returns a language from its {@linkplain Language#getId() terse name}
+     * (eg {@code "java"}). This is case sensitive.
+     *
+     * @param terseName Language terse name
+     *
+     * @return A language, or null if the name is unknown
+     *
+     * @deprecated Use {@link #getLanguageById(String) LanguageRegistry.PMD.getLanguageById}.
+     */
+    @Deprecated
+    @DeprecatedUntil700
+    public static @Nullable Language findLanguageByTerseName(@Nullable String terseName) {
+        return PMD.getLanguageById(terseName);
+    }
+
+    /**
+     * Returns all languages that support the given extension.
+     *
+     * @param extensionWithoutDot A file extension (without '.' prefix)
+     *
+     * @deprecated Not replaced, extension will be extended to match full name in PMD 7.
+     */
+    @Deprecated
+    @DeprecatedUntil700
+    public static List<Language> findByExtension(String extensionWithoutDot) {
+        List<Language> languages = new ArrayList<>();
+        for (Language language : PMD.getLanguages()) {
+            if (language.hasExtension(extensionWithoutDot)) {
+                languages.add(language);
+            }
+        }
+        return languages;
     }
 
     /**
