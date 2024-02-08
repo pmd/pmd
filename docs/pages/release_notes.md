@@ -262,6 +262,12 @@ The following previously deprecated rules have been finally removed:
     * `setReportFile(String)` - use {%jdoc core::PMDConfiguration#setReportFile(java.nio.file.Path) %} instead.
     * `getReportFile()` - use {%jdoc core::PMDConfiguration#getReportFilePath() %} instead.
   * {%jdoc !!core::Report %} - method `merge(Report)` has been removed. Use {%jdoc core::Report#union(core::Report) %} instead.
+  * {%jdoc !!core::RuleSetLoader %} - method `toFactory()` has been made package private and is not accessible anymore.
+  * {%jdoc !!core::RuleViolation %} - the following methods have been removed:
+    * `getPackageName()` - use {%jdoc core::RuleViolation#getAdditionalInfo() %} with {%jdoc core::RuleViolation#PACKAGE_NAME %} instead, e.g. `getAdditionalInfo().get(PACKAGE_NAME)`.
+    * `getClassName()` - use {%jdoc core::RuleViolation#getAdditionalInfo() %} with {%jdoc core::RuleViolation#CLASS_NAME %} instead, e.g. `getAdditionalInfo().get(CLASS_NAME)`.
+    * `getMethodName()` - use {%jdoc core::RuleViolation#getAdditionalInfo() %} with {%jdoc core::RuleViolation#METHOD_NAME %} instead, e.g. `getAdditionalInfo().get(METHOD_NAME)`.
+    * `getVariableName()` - use {%jdoc core::RuleViolation#getAdditionalInfo() %} with {%jdoc core::RuleViolation#VARIABLE_NAME %} instead, e.g. `getAdditionalInfo().get(VARIABLE_NAME)`.
 * pmd-apex
   * {%jdoc apex::lang.apex.ast.ApexNode %} and {% jdoc apex::lang.apex.ast.ASTApexFile %}
     * `#getApexVersion()`: In PMD 6, this method has been deprecated but was defined in the class `ApexRootNode`.

@@ -466,17 +466,16 @@ public class RuleSetReferenceId {
     }
 
     /**
-     * Return the String form of this Rule reference.
+     * Return a string representation of this Rule reference.
+     *
+     * <p>Warning: Do not rely on the format of this method, as it might be changed without prior notice.
      *
      * @return Return the String form of this Rule reference, which is
      *         <i>ruleSetFileName</i> for all Rule external references,
      *         <i>ruleSetFileName/ruleName</i>, for a single Rule external
      *         references, or <i>ruleName</i> otherwise.
-     *
-     * @deprecated Do not rely on the format of this method, it may be changed in PMD 7.
      */
     @Override
-    @Deprecated
     public String toString() {
         if (ruleSetFileName != null) {
             if (allRules) {

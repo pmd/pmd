@@ -7,7 +7,6 @@ package net.sourceforge.pmd;
 import java.util.Comparator;
 import java.util.Map;
 
-import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
 
@@ -134,56 +133,4 @@ public interface RuleViolation {
      * The map is unmodifiable.
      */
     Map<String, String> getAdditionalInfo();
-
-
-    /**
-     * Get the package name of the Class in which this violation was identified.
-     *
-     * @return The package name.
-     *
-     * @deprecated Use {@link #PACKAGE_NAME}
-     */
-    @Deprecated
-    @DeprecatedUntil700
-    default String getPackageName() {
-        return getAdditionalInfo().get(PACKAGE_NAME);
-    }
-
-    /**
-     * Get the name of the Class in which this violation was identified.
-     *
-     * @return The Class name.
-     * @deprecated Use {@link #CLASS_NAME}
-     */
-    @Deprecated
-    @DeprecatedUntil700
-    default String getClassName() {
-        return getAdditionalInfo().get(CLASS_NAME);
-    }
-
-    /**
-     * Get the method name in which this violation was identified.
-     *
-     * @return The method name.
-     * @deprecated Use {@link #METHOD_NAME}
-     */
-    @Deprecated
-    @DeprecatedUntil700
-    default String getMethodName() {
-        return getAdditionalInfo().get(METHOD_NAME);
-    }
-
-    /**
-     * Get the variable name on which this violation was identified.
-     *
-     * @return The variable name.
-     * @deprecated Use {@link #VARIABLE_NAME}
-     */
-    @Deprecated
-    @DeprecatedUntil700
-    default String getVariableName() {
-        return getAdditionalInfo().get(VARIABLE_NAME);
-    }
-
-
 }
