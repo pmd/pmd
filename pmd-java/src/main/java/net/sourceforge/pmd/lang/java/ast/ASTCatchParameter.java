@@ -88,7 +88,6 @@ public final class ASTCatchParameter extends AbstractJavaNode
         }
     }
 
-    @Override
     public boolean isFinal() {
         return hasModifiers(JModifier.FINAL);
     }

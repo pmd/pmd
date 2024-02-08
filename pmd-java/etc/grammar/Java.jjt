@@ -1254,7 +1254,7 @@ void ClassOrInterfaceDeclaration() #ClassDeclaration:
 {}
 {
   ( "class" | "interface" { jjtThis.setInterface(); } )
-  <IDENTIFIER> { setLastTokenImage(jjtThis); }
+  <IDENTIFIER> { jjtThis.setSimpleName(getToken(0).getImage()); }
   [ TypeParameters() ]
   [ ExtendsList() ]
   [ ImplementsList() ]
@@ -1288,7 +1288,7 @@ void EnumDeclaration():
 {}
 {
   softKeyword("enum")
-  <IDENTIFIER> {setLastTokenImage(jjtThis);}
+  <IDENTIFIER> { jjtThis.setSimpleName(getToken(0).getImage()); }
   [ ImplementsList() ]
   EnumBody()
 }
@@ -1313,7 +1313,7 @@ void RecordDeclaration():
 {}
 {
   softKeyword("record")
-  <IDENTIFIER> {setLastTokenImage(jjtThis);}
+  <IDENTIFIER> { jjtThis.setSimpleName(getToken(0).getImage()); }
   [ TypeParameters() ]
   RecordHeader()
   [ ImplementsList() ]
@@ -1422,13 +1422,13 @@ void VariableDeclarator() :
 void VariableDeclaratorId() #VariableId:
 {}
 {
-  <IDENTIFIER> { setLastTokenImage(jjtThis); }
+  <IDENTIFIER> { jjtThis.setName(getToken(0).getImage()); }
 }
 
 void VariableIdWithDims() #VariableId :
 {}
 {
-  <IDENTIFIER> { setLastTokenImage(jjtThis); }
+  <IDENTIFIER> { jjtThis.setName(getToken(0).getImage()); }
   [ Dims() ]
 }
 
@@ -1458,7 +1458,7 @@ void MethodDeclaration() :
 {
   [ TypeParameters() ]
   ResultType()
-  <IDENTIFIER> { setLastTokenImage(jjtThis); }
+  <IDENTIFIER> { jjtThis.setName(getToken(0).getImage()); }
   FormalParameters()
   [ Dims() ]
   [ ThrowsList() ]
@@ -1693,7 +1693,7 @@ void ClassOrInterfaceType() #void:
         // a type name, otherwise it wouldn't have compiled. So it's not ambiguous and we can
         // start fresh: "@B Map.Entry" will be unambiguously [[@B Map].Entry]
 
-        (<IDENTIFIER> {setLastTokenImage(jjtThis);} [ TypeArguments() ]) #ClassType
+        (<IDENTIFIER> { jjtThis.setSimpleName(getToken(0).getImage()); } [ TypeArguments() ]) #ClassType
   |
 
 
@@ -1705,7 +1705,7 @@ void ClassOrInterfaceType() #void:
       AmbiguousName()
       [ TypeArguments() #ClassType(2) ]
       {
-        // At this point the first ClassOrInterfaceType may be on top of the stack,
+        // At this point the first ClassType may be on top of the stack,
         // but its image is not set. If it is on the stack we need to shrink the bounds
         // of the ambiguous name, or delete it.
         Node first = jjtree.peekNode();
@@ -1735,7 +1735,7 @@ private void ClassTypeSegment() #ClassType(jjtree.nodeArity() + 1):
      TypeAnnotListNoInject()
      <IDENTIFIER>
      // We'll enclose the previous segment
-     { setLastTokenImage(jjtThis); }
+     { jjtThis.setSimpleName(getToken(0).getImage()); }
      [ TypeArguments() ]
 }
 
@@ -2263,7 +2263,7 @@ void MethodReference() #MethodReference(jjtree.nodeArity() + 1): // LHS is injec
 {
   "::"
   [TypeArguments()]
-  ( "new" | <IDENTIFIER> ) {setLastTokenImage(jjtThis);}
+  ( "new" | <IDENTIFIER> ) { jjtThis.setMethodName(getToken(0).getImage()); }
   {/* empty, to set the image before jjtClose */}
 }
 
@@ -2984,7 +2984,7 @@ void TypeAnnotation() #void:
 void AnnotationTypeDeclaration():
 {}
 {
-  "@" "interface" <IDENTIFIER> { setLastTokenImage(jjtThis); }
+  "@" "interface" <IDENTIFIER> { jjtThis.setSimpleName(getToken(0).getImage()); }
   AnnotationTypeBody()
 }
 
@@ -3019,7 +3019,7 @@ void AnnotationMethodDeclaration() #MethodDeclaration:
 {}
 {
   Type()
-  <IDENTIFIER> { setLastTokenImage(jjtThis); }
+  <IDENTIFIER> { jjtThis.setName(getToken(0).getImage()); }
   ("(" ")") #FormalParameters
   [ Dims() ]
   [ DefaultValue() ] ";"
@@ -3061,7 +3061,7 @@ void ModuleDirective() #void:
 void ModuleName():
 { String name; }
 {
-  name=VoidNameNoLookahead() { jjtThis.setImage(name); }
+  name=VoidNameNoLookahead() { jjtThis.setName(name); }
 }
 
 void AmbiguousName():

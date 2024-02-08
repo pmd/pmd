@@ -38,12 +38,6 @@ public final class ASTPrimitiveType extends AbstractJavaTypeNode implements ASTT
     }
 
     @Override
-    @Deprecated
-    public String getImage() {
-        return null;
-    }
-
-    @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }

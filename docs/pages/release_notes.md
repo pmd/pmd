@@ -297,6 +297,68 @@ The following previously deprecated rules have been finally removed:
   * {%jdoc !!apex::lang.apex.ast.ASTPrefixExpression %} - method `getOperator()` removed.
     Use {%jdoc apex::lang.apex.ast.ASTPrefixExpression#getOp() %} instead.
   * `net.sourceforge.pmd.lang.apex.rule.security.Helper` removed. This was actually internal API.
+* pmd-java
+  * {%jdoc !!java::lang.java.ast.AbstractPackageNameModuleDirective %} - method `getImage()` has been removed.
+    Use {%jdoc java::lang.java.ast.AbstractPackageNameModuleDirective#getPackageName() %} instead.
+  * {%jdoc !!java::lang.java.ast.AbstractTypeDeclaration %} - method `getImage()` has been removed.
+    Use {%jdoc java::lang.java.ast.AbstractTypeDeclaration#getSimpleName() %} instead.
+  * {%jdoc !!java::lang.java.ast.ASTAnnotation %} - method `getAnnotationName()` has been removed.
+  * {%jdoc !!java::lang.java.ast.ASTClassType %}
+    * constructor `ASTClassType(java.lang.String)` has been removed.
+    * method `getImage()` has been removed.
+    * method `isReferenceToClassSameCompilationUnit()` has been removed.
+  * {%jdoc !!java::lang.java.ast.ASTFieldDeclaration %} - method `getVariableName()` has been removed.
+  * {%jdoc !!java::lang.java.ast.ASTLiteral %} - the following methods have been removed:
+    * `isStringLiteral()` - use `node instanceof ASTStringLiteral` instead.
+    * `isCharLiteral()` - use `node instanceof ASTCharLiteral` instead.
+    * `isNullLiteral()` - use `node instanceof ASTNullLiteral` instead.
+    * `isBooleanLiteral()` - use `node instanceof ASTBooleanLiteral` instead.
+    * `isNumericLiteral()` - use `node instanceof ASTNumericLiteral` instead.
+    * `isIntLiteral()` - use {%jdoc lang.java.ast.ASTNumericLiteral#isIntLiteral() %} instead.
+    * `isLongLiteral()` - use {%jdoc lang.java.ast.ASTNumericLiteral#isLongLiteral() %} instead.
+    * `isFloatLiteral()` - use {%jdoc lang.java.ast.ASTNumericLiteral#isFloatLiteral() %} instead.
+    * `isDoubleLiteral()` - use {%jdoc lang.java.ast.ASTNumericLiteral#isDoubleLiteral() %} instead.
+  * {%jdoc !!java::lang.java.ast.ASTMethodDeclaration %} - methods `getImage()` and `getMethodName()` have been removed.
+    Use {%jdoc java::lang.java.ast.ASTMethodDeclaration#getName() %} instead.
+  * {%jdoc !!java::lang.java.ast.ASTMethodReference %} - method `getImage()` has been removed.
+  * {%jdoc !!java::lang.java.ast.ASTModuleName %} - method `getImage()` has been removed.
+  * {%jdoc !!java::lang.java.ast.ASTPrimitiveType %} - method `getImage()` has been removed.
+  * {%jdoc !!java::lang.java.ast.ASTType %}
+    * `getTypeImage()` has been removed.
+    * `getArrayDepth()` has been removed. It's only available for arrays: {%jdoc java::lang.java.ast.ASTArrayType#getArrayDepth() %}.
+    * `isPrimitiveType()` - use `node instanceof ASTPrimitiveType` instead.
+    * `isArrayType()` - use `node instanceof ASTArrayType` instead.
+    * `isClassOrInterfaceType()` - use `node instanceof ASTClassType` instead.
+  * {%jdoc !!java::lang.java.ast.ASTTypeDeclaration %} - method `getImage()` has been removed.
+  * {%jdoc !!java::lang.java.ast.ASTUnaryExpression %} - method `isPrefix()` has been removed.
+    Use {%jdoc java::lang.java.ast.ASTUnaryExpression#getOperator() %}`.isPrefix()` instead.
+  * {%jdoc !!java::lang.java.ast.ASTVariableId %} - methods `getImage()` and `getVariableName()` have been removed.
+    Use {%jdoc java::lang.java.ast.ASTVariableId#getName() %} instead.
+  * {%jdoc !!java::lang.java.ast.JavaComment %} - method `getImage()` has been removed.
+    Use {%jdoc java::lang.java.ast.JavaComment#getText() %} instead.
+  * {%jdoc !!java::lang.java.ast.JavaNode %} - method `jjtAccept()` has been removed.
+    Use {%jdoc core::lang.ast.Node#acceptVisitor(core::lang.ast.AstVisitor,P) %} instead.
+  * `net.sourceforge.pmd.lang.java.ast.JavaParserVisitor`
+    Use {%jdoc java::lang.java.ast.JavaVisitor %} or {%jdoc java::lang.java.ast.JavaVisitorBase %} instead.
+  * `net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter`
+  * {%jdoc !!java::lang.java.ast.ModifierOwner %} 
+    * `isFinal()` - This is still available in various subtypes, where it makes sense, e.g. {%jdoc java::lang.java.ast.ASTLocalVariableDeclaration#isFinal() %}.
+    * `isAbstract()` - This is still available in subtypes, e.g. {%jdoc java::lang.java.ast.ASTTypeDeclaration#isAbstract() %}.
+    * `isStrictfp()` - Use {%jdoc java::lang.java.ast.ModifierOwner#hasModifiers(java::lang.java.ast.JModifier,java::lang.java.ast.JModifier...) %} instead, e.g. `hasModifiers(STRICTFP)`.
+    * `isSynchronized()` - Use {%jdoc java::lang.java.ast.ModifierOwner#hasModifiers(java::lang.java.ast.JModifier,java::lang.java.ast.JModifier...) %} instead, e.g. `hasModifiers(SYNCHRONIZED)`.
+    * `isNative()` - Use {%jdoc java::lang.java.ast.ModifierOwner#hasModifiers(java::lang.java.ast.JModifier,java::lang.java.ast.JModifier...) %} instead, e.g. `hasModifiers(NATIVE)`.
+    * `isStatic()` - This is still available in subtypes, e.g. {%jdoc java::lang.java.ast.ASTMethodDeclaration#isStatic() %}.
+    * `isVolatile()` - Use {%jdoc java::lang.java.ast.ModifierOwner#hasModifiers(java::lang.java.ast.JModifier,java::lang.java.ast.JModifier...) %} instead, e.g. `hasModifiers(VOLATILE)`.
+    * `isTransient()` - Use {%jdoc java::lang.java.ast.ModifierOwner#hasModifiers(java::lang.java.ast.JModifier,java::lang.java.ast.JModifier...) %} instead, e.g. `hasModifiers(TRANSIENT)`.
+    * `isPrivate()` - Use {%jdoc java::lang.java.ast.ModifierOwner#getVisibility() %} instead, e.g. `getVisibility() == Visibility.V_PRIVATE`.
+    * `isPublic()` - Use {%jdoc java::lang.java.ast.ModifierOwner#getVisibility() %} instead, e.g. `getVisibility() == Visibility.V_PUBLIC`.
+    * `isProtected()` - Use {%jdoc java::lang.java.ast.ModifierOwner#getVisibility() %} instead, e.g. `getVisibility() == Visibility.V_PROTECTED`.
+    * `isPackagePrivate()` - Use {%jdoc java::lang.java.ast.ModifierOwner#getVisibility() %} instead, e.g. `getVisibility() == Visibility.V_PACKAGE`.
+    * `isSyntacticallyAbstract()` - Use {%jdoc java::lang.java.ast.ModifierOwner#hasExplicitModifiers(java::lang.java.ast.JModifier,java::lang.java.ast.JModifier...) %} instead, e.g. `hasExplicitModifiers(ABSTRACT)`.
+    * `isSyntacticallyPublic()` - Use {%jdoc java::lang.java.ast.ModifierOwner#hasExplicitModifiers(java::lang.java.ast.JModifier,java::lang.java.ast.JModifier...) %} instead, e.g. `hasExplicitModifiers(PUBLIC)`.
+    * `isSyntacticallyStatic()` - Use {%jdoc java::lang.java.ast.ModifierOwner#hasExplicitModifiers(java::lang.java.ast.JModifier,java::lang.java.ast.JModifier...) %} instead, e.g. `hasExplicitModifiers(STATIC)`.
+    * `isSyntacticallyFinal()` - Use {%jdoc java::lang.java.ast.ModifierOwner#hasExplicitModifiers(java::lang.java.ast.JModifier,java::lang.java.ast.JModifier...) %} instead, e.g. `hasExplicitModifiers(FINAL)`.
+  * {%jdoc !!java::lang.java.ast.TypeNode %} - method `getType()` has been removed. Use {%jdoc java::lang.java.ast.TypeNode#getTypeMirror() %} instead.
 * pmd-javascript
   * {%jdoc javascript::lang.ecmascript.ast.AbstractEcmascriptNode %} - method `getNode()` has been removed.
     AST nodes still have access to the underlying Rhino node via the protected property `node`.

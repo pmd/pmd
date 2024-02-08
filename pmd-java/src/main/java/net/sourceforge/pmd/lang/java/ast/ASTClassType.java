@@ -48,28 +48,18 @@ public final class ASTClassType extends AbstractJavaTypeNode implements ASTRefer
         assert lhs != null : "Null LHS";
 
         this.addChild(lhs, 0);
-        this.simpleName = simpleName;
-        assertSimpleNameOk();
+        this.setSimpleName(simpleName);
     }
 
 
     ASTClassType(ASTAmbiguousName simpleName) {
         super(JavaParserImplTreeConstants.JJTCLASSTYPE);
-        this.simpleName = simpleName.getFirstToken().getImage();
-
-        assertSimpleNameOk();
-    }
-
-    // Just for one usage in Symbol table
-    @Deprecated
-    public ASTClassType(String simpleName) {
-        super(JavaParserImplTreeConstants.JJTCLASSTYPE);
-        this.simpleName = simpleName;
+        this.setSimpleName(simpleName.getFirstToken().getImage());
     }
 
     ASTClassType(@Nullable ASTClassType lhs, boolean isFqcn, JavaccToken firstToken, JavaccToken identifier) {
         super(JavaParserImplTreeConstants.JJTCLASSTYPE);
-        this.setImage(identifier.getImage());
+        this.setSimpleName(identifier.getImage());
         this.isFqcn = isFqcn;
         if (lhs != null) {
             this.addChild(lhs, 0);
@@ -81,25 +71,6 @@ public final class ASTClassType extends AbstractJavaTypeNode implements ASTRefer
 
     ASTClassType(int id) {
         super(id);
-    }
-
-    @Override
-    protected void setImage(String image) {
-        this.simpleName = image;
-        assertSimpleNameOk();
-    }
-
-    @Deprecated
-    @Override
-    public String getImage() {
-        return null;
-    }
-
-    private void assertSimpleNameOk() {
-        assert this.simpleName != null
-            && this.simpleName.indexOf('.') < 0
-            && AssertionUtil.isJavaIdentifier(this.simpleName)
-            : "Invalid simple name '" + this.simpleName + "'";
     }
 
     /**
@@ -160,38 +131,24 @@ public final class ASTClassType extends AbstractJavaTypeNode implements ASTRefer
     }
 
 
+    void setSimpleName(String simpleName) {
+        this.simpleName = simpleName;
+        assertSimpleNameOk();
+    }
+
+    private void assertSimpleNameOk() {
+        assert this.simpleName != null
+                && this.simpleName.indexOf('.') < 0
+                && AssertionUtil.isJavaIdentifier(this.simpleName)
+                : "Invalid simple name '" + this.simpleName + "'";
+    }
+
     /**
      * Returns the simple name of this type. Use the {@linkplain #getReferencedSym() symbol}
      * to get more information.
      */
     public String getSimpleName() {
         return simpleName;
-    }
-
-    /**
-     * Checks whether the type this node is referring to is declared within the
-     * same compilation unit - either a class/interface or a enum type. You want
-     * to check this, if {@link #getType()} is null.
-     *
-     * @return {@code true} if this node referencing a type in the same
-     * compilation unit, {@code false} otherwise.
-     *
-     * @deprecated This may be removed once type resolution is afoot
-     */
-    @Deprecated
-    public boolean isReferenceToClassSameCompilationUnit() {
-        ASTCompilationUnit root = ancestors(ASTCompilationUnit.class).first();
-        for (ASTClassDeclaration c : root.descendants(ASTClassDeclaration.class).crossFindBoundaries()) {
-            if (c.hasImageEqualTo(getImage())) {
-                return true;
-            }
-        }
-        for (ASTEnumDeclaration e : root.descendants(ASTEnumDeclaration.class).crossFindBoundaries()) {
-            if (e.hasImageEqualTo(getImage())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     void setFullyQualified() {

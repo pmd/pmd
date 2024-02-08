@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.rule;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -21,12 +22,14 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.lang.rule.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.rule.xpath.internal.SaxonXPathRuleQuery;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.util.IteratorUtil;
 
 
 /**
@@ -130,8 +133,24 @@ public final class XPathRule extends AbstractRule {
         }
 
         for (Node nodeWithViolation : nodesWithViolation) {
-            ctx.addViolation(nodeWithViolation, nodeWithViolation.getImage());
+            // see Deprecate getImage/@Image #4787 https://github.com/pmd/pmd/issues/4787
+            String messageArg = nodeWithViolation.getImage();
+            // Nodes might already have been refactored to not use getImage anymore.
+            // Therefore, try several other common names
+            if (messageArg == null) {
+                messageArg = getFirstMessageArgFromNode(nodeWithViolation, "Name", "SimpleName", "MethodName");
+            }
+            ctx.addViolation(nodeWithViolation, messageArg);
         }
+    }
+
+    private String getFirstMessageArgFromNode(Node node, String... attributeNames) {
+        List<String> nameList = Arrays.asList(attributeNames);
+        return IteratorUtil.toStream(node.getXPathAttributesIterator())
+                .filter(a -> nameList.contains(a.getName()))
+                .findFirst()
+                .map(Attribute::getStringValue)
+                .orElse(null);
     }
 
     private ContextedRuntimeException addExceptionContext(PmdXPathException e) {
