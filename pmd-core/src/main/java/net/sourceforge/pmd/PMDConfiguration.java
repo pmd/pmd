@@ -9,24 +9,21 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.cache.AnalysisCache;
 import net.sourceforge.pmd.cache.FileAnalysisCache;
 import net.sourceforge.pmd.cache.NoopAnalysisCache;
 import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
 import net.sourceforge.pmd.util.AssertionUtil;
@@ -68,7 +65,7 @@ import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
  *
  * <ul>
  * <li>The renderer format to use for Reports. {@link #getReportFormat()}</li>
- * <li>The file to which the Report should render. {@link #getReportFile()}</li>
+ * <li>The file to which the Report should render. {@link #getReportFilePath()}</li>
  * <li>Configure the root paths that are used to relativize file names in reports via {@link #addRelativizeRoot(Path)}.
  * This enables to get short names in reports.</li>
  * <li>The initialization properties to use when creating a Renderer instance.
@@ -199,35 +196,6 @@ public class PMDConfiguration extends AbstractConfiguration {
      * <code>file://</code>) the file will be read with each line representing
      * an entry on the classpath.</p>
      *
-     * @param classpath
-     *            The prepended classpath.
-     * @throws IOException
-     *             if the given classpath is invalid (e.g. does not exist)
-     * @see PMDConfiguration#setClassLoader(ClassLoader)
-     * @see ClasspathClassLoader
-     *
-     * @deprecated Use {@link #prependAuxClasspath(String)}, which doesn't
-     * throw a checked {@link IOException}
-     */
-    @Deprecated
-    public void prependClasspath(String classpath) throws IOException {
-        try {
-            prependAuxClasspath(classpath);
-        } catch (IllegalArgumentException e) {
-            throw new IOException(e);
-        }
-    }
-
-    /**
-     * Prepend the specified classpath like string to the current ClassLoader of
-     * the configuration. If no ClassLoader is currently configured, the
-     * ClassLoader used to load the {@link PMDConfiguration} class will be used
-     * as the parent ClassLoader of the created ClassLoader.
-     *
-     * <p>If the classpath String looks like a URL to a file (i.e. starts with
-     * <code>file://</code>) the file will be read with each line representing
-     * an entry on the classpath.</p>
-     *
      * <p>You can specify multiple class paths separated by `:` on Unix-systems or `;` under Windows.
      * See {@link File#pathSeparator}.
      *
@@ -249,22 +217,6 @@ public class PMDConfiguration extends AbstractConfiguration {
             // to IllegalArgumentException in ClasspathClassLoader.
             throw new IllegalArgumentException(e);
         }
-    }
-
-    /**
-     * Get the comma separated list of RuleSet URIs.
-     *
-     * @return The RuleSet URIs.
-     *
-     * @deprecated Use {@link #getRuleSetPaths()}
-     */
-    @Deprecated
-    @DeprecatedUntil700
-    public @Nullable String getRuleSets() {
-        if (ruleSets.isEmpty()) {
-            return null;
-        }
-        return String.join(",", ruleSets);
     }
 
     /**
@@ -300,23 +252,6 @@ public class PMDConfiguration extends AbstractConfiguration {
     public void addRuleSet(@NonNull String rulesetPath) {
         AssertionUtil.requireParamNotNull("rulesetPath", rulesetPath);
         this.ruleSets.add(rulesetPath);
-    }
-
-    /**
-     * Set the comma separated list of RuleSet URIs.
-     *
-     * @param ruleSets the rulesets to set
-     *
-     * @deprecated Use {@link #setRuleSets(List)} or {@link #addRuleSet(String)}.
-     */
-    @Deprecated
-    @DeprecatedUntil700
-    public void setRuleSets(@Nullable String ruleSets) {
-        if (ruleSets == null) {
-            this.ruleSets = new ArrayList<>();
-        } else {
-            this.ruleSets = new ArrayList<>(Arrays.asList(ruleSets.split(",")));
-        }
     }
 
     /**
@@ -362,7 +297,7 @@ public class PMDConfiguration extends AbstractConfiguration {
         Renderer renderer = RendererFactory.createRenderer(reportFormat, reportProperties);
         renderer.setShowSuppressedViolations(showSuppressedViolations);
         if (withReportWriter) {
-            renderer.setReportFile(getReportFile());
+            renderer.setReportFile(getReportFilePath() != null ? getReportFilePath().toString() : null);
         }
         return renderer;
     }
@@ -536,18 +471,6 @@ public class PMDConfiguration extends AbstractConfiguration {
         return ignoreIncrementalAnalysis;
     }
 
-
-    /**
-     * Get the file to which the report should render.
-     *
-     * @return The file to which to render.
-     * @deprecated Use {@link #getReportFilePath()}
-     */
-    @Deprecated
-    public String getReportFile() {
-        return reportFile == null ? null : reportFile.toString();
-    }
-
     /**
      * Get the file to which the report should render.
      *
@@ -555,17 +478,6 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     public Path getReportFilePath() {
         return reportFile;
-    }
-
-    /**
-     * Set the file to which the report should render.
-     *
-     * @param reportFile the file to set
-     * @deprecated Use {@link #setReportFile(Path)}
-     */
-    @Deprecated
-    public void setReportFile(String reportFile) {
-        this.reportFile = reportFile == null ? null : Paths.get(reportFile);
     }
 
     /**

@@ -166,7 +166,7 @@ public final class PmdAnalysis implements AutoCloseable {
      * exclude list, etc) are explored and the files to analyse are
      * collected into the file collector ({@link #files()}).
      * More can be added programmatically using the file collector.
-     * <li>The rulesets given in the configuration are loaded ({@link PMDConfiguration#getRuleSets()})
+     * <li>The rulesets given in the configuration are loaded ({@link PMDConfiguration#getRuleSetPaths()})
      * <li>A renderer corresponding to the parameters of the configuration
      * is created and added (but not started).
      * </ul>

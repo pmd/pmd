@@ -248,6 +248,19 @@ The following previously deprecated rules have been finally removed:
   * {%jdoc !!core::util.CollectionUtil %}
     * method `invertedMapFrom(...)` has been removed.
     * method `mapFrom(...)` has been removed.
+  * {%jdoc !!core::AbstractConfiguration %} - the following methods have been removed:
+    * `setIgnoreFilePath(String)` - use {%jdoc core::AbstractConfiguration#setIgnoreFilePath(java.nio.file.Path) %} instead.
+    * `setInputFilePath(String)` - use {%jdoc core::AbstractConfiguration#setInputFilePath(java.nio.file.Path) %} instead.
+    * `setInputPaths(String)` - use {%jdoc core::AbstractConfiguration#setInputPathList(java.util.List) %} or
+      {%jdoc core::AbstractConfiguration#addInputPath(java.nio.file.Path) %} instead.
+    * `setInputUri(String)` - use {%jdoc core::AbstractConfiguration#setInputUri(java.net.URI) %} instead.
+  * {%jdoc !!core::PMDConfiguration %} - the following methods have been removed
+    * `prependClasspath(String)` - use {%jdoc core::PMDConfiguration#prependAuxClasspath(java.lang.String) %} instead.
+    * `getRuleSets()` - use {%jdoc core::PMDConfiguration#getRuleSetPaths() %} instead.
+    * `setRuleSets(String)` - use {%jdoc core::PMDConfiguration#setRuleSets(java.util.List) %} or
+      {%jdoc core::PMDConfiguration#addRuleSet(java.lang.String) %} instead.
+    * `setReportFile(String)` - use {%jdoc core::PMDConfiguration#setReportFile(java.nio.file.Path) %} instead.
+    * `getReportFile()` - use {%jdoc core::PMDConfiguration#getReportFilePath() %} instead.
 * pmd-apex
   * {%jdoc apex::lang.apex.ast.ApexNode %} and {% jdoc apex::lang.apex.ast.ASTApexFile %}
     * `#getApexVersion()`: In PMD 6, this method has been deprecated but was defined in the class `ApexRootNode`.
