@@ -10,7 +10,7 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.cpd.impl.JavaCCTokenizer;
+import net.sourceforge.pmd.cpd.impl.JavaccCpdLexer;
 import net.sourceforge.pmd.lang.ast.impl.TokenDocument;
 import net.sourceforge.pmd.lang.document.TextDocument;
 
@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.document.TextDocument;
  * Token document for Javacc implementations. This is a helper object
  * for generated token managers. Note: the extension point is a custom
  * implementation of {@link TokenDocumentBehavior}, see {@link JjtreeParserAdapter#tokenBehavior()},
- * {@link JavaCCTokenizer#tokenBehavior()}
+ * {@link JavaccCpdLexer#tokenBehavior()}
  */
 public final class JavaccTokenDocument extends TokenDocument<JavaccToken> {
 

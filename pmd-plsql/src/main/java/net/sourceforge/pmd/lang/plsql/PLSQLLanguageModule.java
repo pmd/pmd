@@ -5,11 +5,11 @@
 package net.sourceforge.pmd.lang.plsql;
 
 import net.sourceforge.pmd.cpd.CpdLanguageProperties;
-import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.cpd.CpdLexer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
-import net.sourceforge.pmd.lang.plsql.cpd.PLSQLTokenizer;
+import net.sourceforge.pmd.lang.plsql.cpd.PLSQLCpdLexer;
 
 /**
  * Created by christoferdutz on 20.09.14.
@@ -56,7 +56,7 @@ public class PLSQLLanguageModule extends SimpleLanguageModuleBase {
     }
 
     @Override
-    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
-        return new PLSQLTokenizer(bundle);
+    public CpdLexer createCpdLexer(LanguagePropertyBundle bundle) {
+        return new PLSQLCpdLexer(bundle);
     }
 }

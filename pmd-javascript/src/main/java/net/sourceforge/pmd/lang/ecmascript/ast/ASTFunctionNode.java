@@ -9,7 +9,6 @@ import org.mozilla.javascript.ast.FunctionNode;
 public final class ASTFunctionNode extends AbstractEcmascriptNode<FunctionNode> {
     ASTFunctionNode(FunctionNode functionNode) {
         super(functionNode);
-        super.setImage(functionNode.getName());
     }
 
     @Override

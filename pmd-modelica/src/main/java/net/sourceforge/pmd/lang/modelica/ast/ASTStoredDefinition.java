@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.modelica.ast;
 
+import java.util.stream.Collectors;
+
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
@@ -47,20 +49,9 @@ public class ASTStoredDefinition extends AbstractModelicaNode implements RootNod
         return hasBOM;
     }
 
-    @Override
-    public void jjtClose() {
-        super.jjtClose();
-
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < getNumChildren(); ++i) {
-            AbstractModelicaNode child = (AbstractModelicaNode) getChild(i);
-            if (child instanceof ASTWithinClause) {
-                if (sb.length() > 0) {
-                    sb.append(CompositeName.NAME_COMPONENT_SEPARATOR);
-                }
-                sb.append(child.getImage());
-            }
-        }
-        setImage(sb.toString());
+    public String getName() {
+        return children(ASTWithinClause.class).toStream()
+                .map(ASTWithinClause::getName)
+                .collect(Collectors.joining(CompositeName.NAME_COMPONENT_SEPARATOR));
     }
 }

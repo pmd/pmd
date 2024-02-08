@@ -81,8 +81,6 @@ pmd:
 The release type could be one of "bugfix" (e.g. 6.34.x), "minor" (6.x.0), or "major" (x.0.0).
 
 The release notes usually mention any new rules that have been added since the last release.
-Please double-check the file `pmd-core/src/main/resources/rulesets/releases/<version>.xml`, so
-that all new rules are listed.
 
 Add the new rules as comments to the quickstart rulesets:
 * `pmd-apex/src/main/resources/rulesets/apex/quickstart.xml`

@@ -20,8 +20,7 @@ public final class ASTLitString extends AbstractScalaNode<Lit.String> {
         return visitor.visit(this, data);
     }
 
-    @Override
-    public String getImage() {
+    public String getValue() {
         return String.valueOf(node.value());
     }
 }

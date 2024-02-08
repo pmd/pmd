@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.groovy.ast.impl.antlr4;
 import org.apache.groovy.parser.antlr4.GroovyLexer;
 
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.TokenMgrError;
+import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrTokenManager;
 import net.sourceforge.pmd.lang.document.TextDocument;
 
@@ -81,7 +81,7 @@ public class GroovyTokenManager implements TokenManager<GroovyToken> {
                                 final int charPositionInLine,
                                 final String msg,
                                 final RecognitionException ex) {
-            throw new TokenMgrError(line, charPositionInLine, textDoc.getFileId(), msg, ex);
+            throw new LexException(line, charPositionInLine, textDoc.getFileId(), msg, ex);
         }
     }
 

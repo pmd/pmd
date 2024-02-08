@@ -12,12 +12,15 @@ import org.mozilla.javascript.ast.KeywordLiteral;
 public final class ASTKeywordLiteral extends AbstractEcmascriptNode<KeywordLiteral> {
     ASTKeywordLiteral(KeywordLiteral keywordLiteral) {
         super(keywordLiteral);
-        super.setImage(Token.typeToName(keywordLiteral.getType()).toLowerCase(Locale.ROOT));
     }
 
     @Override
     protected <P, R> R acceptJsVisitor(EcmascriptVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
+    }
+
+    public String getLiteral() {
+        return Token.typeToName(node.getType()).toLowerCase(Locale.ROOT);
     }
 
     public boolean isBoolean() {

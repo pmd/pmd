@@ -38,13 +38,13 @@ class MatchAlgorithmTest {
     @Test
     void testSimple() throws IOException {
         DummyLanguageModule dummy = DummyLanguageModule.getInstance();
-        Tokenizer tokenizer = dummy.createCpdTokenizer(dummy.newPropertyBundle());
+        CpdLexer cpdLexer = dummy.createCpdLexer(dummy.newPropertyBundle());
         FileId fileName = FileId.fromPathLikeString("Foo.dummy");
         TextFile textFile = TextFile.forCharSeq(getSampleCode(), fileName, dummy.getDefaultVersion());
         SourceManager sourceManager = new SourceManager(listOf(textFile));
         Tokens tokens = new Tokens();
         TextDocument sourceCode = sourceManager.get(textFile);
-        Tokenizer.tokenize(tokenizer, sourceCode, tokens);
+        CpdLexer.tokenize(cpdLexer, sourceCode, tokens);
         assertEquals(44, tokens.size());
 
         MatchAlgorithm matchAlgorithm = new MatchAlgorithm(tokens, 5);

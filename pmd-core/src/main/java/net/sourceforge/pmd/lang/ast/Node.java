@@ -65,11 +65,12 @@ public interface Node extends Reportable {
      * node. This is usually an identifier, but you should check that using the Designer. On most nodes though, this
      * method returns {@code null}.
      *
-     * @deprecated Should be replaced with methods that have more specific
-     *     names in node classes.
+     * <p><strong>Note:</strong>
+     * This method will be deprecated in the future (<a href="https://github.com/pmd/pmd/issues/4787">#4787</a>).
+     * It will be replaced with methods that have more specific names in node classes. In some cases, there
+     * are already alternatives available that should be used.</p>
      */
-    @Deprecated
-    @DeprecatedUntil700
+    // @Deprecated // todo deprecate (#4787)
     default String getImage() {
         return null;
     }
@@ -78,12 +79,13 @@ public interface Node extends Reportable {
     /**
      * Returns true if this node's image is equal to the given string.
      *
+     * <p><strong>Note:</strong>
+     * This method will be deprecated in the future (<a href="https://github.com/pmd/pmd/issues/4787">#4787</a>).
+     * See {@link #getImage()}.
+     * </p>
      * @param image The image to check
-     *
-     * @deprecated See {@link #getImage()}
      */
-    @Deprecated
-    @DeprecatedUntil700
+    // @Deprecated // todo deprecate (#4787)
     default boolean hasImageEqualTo(String image) {
         return Objects.equals(getImage(), image);
     }

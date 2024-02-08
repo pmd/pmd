@@ -20,8 +20,7 @@ public final class ASTLitByte extends AbstractScalaNode<Lit.Byte> {
         return visitor.visit(this, data);
     }
 
-    @Override
-    public String getImage() {
+    public String getValue() {
         return String.valueOf(node.value());
     }
 }

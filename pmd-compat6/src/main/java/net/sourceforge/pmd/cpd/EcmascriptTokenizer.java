@@ -4,5 +4,5 @@
 
 package net.sourceforge.pmd.cpd;
 
-public class EcmascriptTokenizer extends net.sourceforge.pmd.lang.ecmascript.cpd.EcmascriptTokenizer {
+public class EcmascriptTokenizer extends net.sourceforge.pmd.lang.ecmascript.cpd.EcmascriptCpdLexer implements Tokenizer {
 }

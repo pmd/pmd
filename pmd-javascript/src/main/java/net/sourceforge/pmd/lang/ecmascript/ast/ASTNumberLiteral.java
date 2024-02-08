@@ -9,7 +9,6 @@ import org.mozilla.javascript.ast.NumberLiteral;
 public final class ASTNumberLiteral extends AbstractEcmascriptNode<NumberLiteral> {
     ASTNumberLiteral(NumberLiteral numberLiteral) {
         super(numberLiteral);
-        super.setImage(numberLiteral.getValue());
     }
 
     @Override
@@ -18,7 +17,7 @@ public final class ASTNumberLiteral extends AbstractEcmascriptNode<NumberLiteral
     }
 
     public String getNormalizedImage() {
-        String image = getImage();
+        String image = getValue();
         image = image.replaceAll("_", "");
         image = normalizeHexIntegerLiteral(image);
         image = normalizeBinaryLiteral(image);
@@ -53,5 +52,9 @@ public final class ASTNumberLiteral extends AbstractEcmascriptNode<NumberLiteral
 
     public double getNumber() {
         return node.getNumber();
+    }
+
+    public String getValue() {
+        return node.getValue();
     }
 }

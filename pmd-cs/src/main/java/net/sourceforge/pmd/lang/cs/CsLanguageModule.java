@@ -5,10 +5,10 @@
 package net.sourceforge.pmd.lang.cs;
 
 import net.sourceforge.pmd.cpd.CpdLanguageProperties;
-import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.cpd.CpdLexer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.cs.cpd.CsTokenizer;
+import net.sourceforge.pmd.lang.cs.cpd.CsCpdLexer;
 import net.sourceforge.pmd.lang.impl.CpdOnlyLanguageModuleBase;
 
 /**
@@ -38,7 +38,7 @@ public class CsLanguageModule extends CpdOnlyLanguageModuleBase {
     }
 
     @Override
-    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
-        return new CsTokenizer(bundle);
+    public CpdLexer createCpdLexer(LanguagePropertyBundle bundle) {
+        return new CsCpdLexer(bundle);
     }
 }

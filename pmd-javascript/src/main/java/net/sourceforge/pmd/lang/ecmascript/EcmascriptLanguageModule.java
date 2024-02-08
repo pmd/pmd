@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.ecmascript;
 
-import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.cpd.CpdLexer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptParser;
-import net.sourceforge.pmd.lang.ecmascript.cpd.EcmascriptTokenizer;
+import net.sourceforge.pmd.lang.ecmascript.cpd.EcmascriptCpdLexer;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
 
 /**
@@ -34,7 +34,7 @@ public class EcmascriptLanguageModule extends SimpleLanguageModuleBase {
     }
 
     @Override
-    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
-        return new EcmascriptTokenizer();
+    public CpdLexer createCpdLexer(LanguagePropertyBundle bundle) {
+        return new EcmascriptCpdLexer();
     }
 }

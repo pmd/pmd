@@ -24,7 +24,7 @@ PropertyName is the name of the property converted to SCREAMING_SNAKE_CASE, that
 
 As a convention, properties whose name start with an *x* are internal and may be removed or changed without notice.
 
-Properties whose name start with **CPD** are used to configure CPD tokenizer options.
+Properties whose name start with **CPD** are used to configure CPD CpdLexer options.
 
 Programmatically, the language properties can be set on `PMDConfiguration` (or `CPDConfiguration`) before using the
 {%jdoc core::PmdAnalyzer %} (or {%jdoc core::cpd.CpdAnalyzer %}) instance

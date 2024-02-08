@@ -210,12 +210,6 @@ class PmdCliTest extends BaseCliTest {
     }
 
     @Test
-    void testDeprecatedRulesetSyntaxOnCommandLine() throws Exception {
-        CliExecutionResult result = runCli(VIOLATIONS_FOUND, "--dir", srcDir.toString(), "--rulesets", "dummy-basic");
-        result.checkStdErr(containsString("Ruleset reference 'dummy-basic' uses a deprecated form, use 'rulesets/dummy/basic.xml' instead"));
-    }
-
-    @Test
     void testReportToStdoutNotClosing() throws Exception {
         PrintStream originalOut = System.out;
         PrintStream out = new PrintStream(new FilterOutputStream(originalOut) {

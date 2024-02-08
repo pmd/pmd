@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.impl;
 
 import net.sourceforge.pmd.cpd.CpdCapableLanguage;
-import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.cpd.CpdLexer;
 import net.sourceforge.pmd.lang.LanguageModuleBase;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 
@@ -27,5 +27,5 @@ public abstract class CpdOnlyLanguageModuleBase extends LanguageModuleBase imple
     }
 
     @Override
-    public abstract Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle);
+    public abstract CpdLexer createCpdLexer(LanguagePropertyBundle bundle);
 }

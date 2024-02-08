@@ -13,9 +13,6 @@ options {
 PARSER_BEGIN(VfParserImpl)
 package net.sourceforge.pmd.lang.vf.ast;
 
-import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
-import net.sourceforge.pmd.lang.ast.TokenMgrError;
-
 public class VfParserImpl {
 
 

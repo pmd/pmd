@@ -6,7 +6,7 @@
     <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" />
 
     <target name="testXML">
-        <pmd rulesetfiles="${pmd.home}/src/main/resources/rulesets/xml/basic.xml">
+        <pmd rulesetfiles="${pmd.home}/src/main/resources/category/xml/errorprone.xml">
             <sourceLanguage name="xml" version="1.0" />
             <formatter type="text" toConsole="true" />
             <fileset dir="${pmd.home}/src/test/resources/ant/xml/">

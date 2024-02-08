@@ -254,10 +254,6 @@ Was expecting one of:
 * warnings: 2
 </pre>
 
-**Properties:**
-
-*   color: Enables colors with anything other than `false` or `0`. Default: yes.
-
 ## textpad
 
 TextPad integration.

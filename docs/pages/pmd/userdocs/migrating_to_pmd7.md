@@ -42,6 +42,22 @@ There are a couple of deprecated things in PMD 6, you might encounter:
   ```
   and often already suggest an alternative.
 
+* If you still reference rulesets or rules the old way which has been deprecated since 6.46.0:
+  - `<lang-name>-<ruleset-name>`, eg `java-basic`, which resolves to `rulesets/java/basic.xml`
+  - the internal release number, eg `600`, which resolves to `rulesets/releases/600.xml`
+
+  Such usages produce deprecation warnings that should be easy to spot, e.g.
+  ```
+  Ruleset reference 'java-basic' uses a deprecated form, use 'rulesets/java/basic.xml' instead
+  ```
+
+  Use the explicit forms of these references to be compatible with PMD 7.
+
+  Note: Since PMD 6, all rules are sorted into categories (such as "Best Practices", "Design", "Error Prone")
+  and the old rulesets like `basic.xml` have been deprecated and have been removed with PMD 7.
+  It is about time to create a [custom ruleset](pmd_userdocs_making_rulesets.html).
+
+
 ## Use cases
 
 ### I'm using only built-in rules
@@ -96,6 +112,9 @@ can be expected to work in PMD 7 without any further changes. So the migration p
 After you have migrated your XPath rules to XPath 2.0, remove the "version" property, since that will be removed
 with PMD 7. PMD 7 by default uses XPath 3.1.
 See below [XPath](#xpath-migrating-from-10-to-20) for details.
+
+There are some general changes for AST nodes regarding the `@Image` attribute.
+See below [General AST Changes to avoid @Image](#general-ast-changes-to-avoid-image).
 
 Additional infos:
 * The custom XPath function `typeOf` has been removed (deprecated since 6.4.0).
@@ -184,6 +203,7 @@ Most notable changes:
     an error message such as `[main] ERROR net.sourceforge.pmd.cli.commands.internal.PmdCommand - No such file false`.
   * PMD tries to display a progress bar. If you don't want this (e.g. on a CI build server), you can disable this
     with `--no-progress`.
+  * `--no-ruleset-compatibility` has been removed
 
 ### Custom distribution packages
 
@@ -386,6 +406,144 @@ XPath 1.0 and 2.0 queries. Here's a list of known incompatibilities:
 * The custom function "pmd:matches" which checks a regular expression against a string has been removed,
   since there is a built-in function available since XPath 2.0 which can be used instead. If you use "pmd:matches"
   simply remove the "pmd:" prefix.
+
+### General AST Changes to avoid @Image
+
+An abstract syntax tree should be abstract, but in the same time, should not be too abstract. One of the
+base interfaces for PMD's AST for all languages is {% jdoc core::lang.ast.Node %}, which provides
+the methods {% jdoc core::lang.ast.Node#getImage() %} and {% jdoc core::lang.ast.Node#hasImageEqualTo(java.lang.String) %}.
+However, these methods don't necessarily make sense for all nodes in all contexts. That's why `getImage()`
+often returns just `null`. Also, the name is not very describing. AST nodes should try to use more specific
+names, such as `getValue()` or `getName()`.
+
+For PMD 7, most languages have been adapted. And when writing XPath rules, you need to replace `@Image` with
+whatever is appropriate now (e.g. `@Name`). See below for details.
+
+#### Apex and Visualforce
+
+There are many usages of `@Image`. These will be refactored after PMD 7 is released
+by deprecating the attribute and providing alternatives.
+
+See also issue [Deprecate getImage/@Image #4787](https://github.com/pmd/pmd/issues/4787).
+
+#### Html
+
+* {% jdoc html::lang.html.ast.ASTHtmlTextNode %}: `@Image` ➡️ `@Text`, `@NormalizedText` ➡️ `@Text`, `@Text` ➡️ `@WholeText`.
+
+#### Java
+
+There are still many usages of `@Image` which are not refactored yet. This will be done after PMD 7 is released
+by deprecating the attribute and providing alternatives.
+
+See also issue [Deprecate getImage/@Image #4787](https://github.com/pmd/pmd/issues/4787).
+
+Some nodes have already the image attribute (and others) deprecated. These deprecated attributes are removed now:
+
+* {% jdoc java::lang.java.ast.ASTAnnotationTypeDeclaration %}: `@Image` ➡️ `@SimpleName`
+* {% jdoc java::lang.java.ast.ASTAnonymousClassDeclaration %}: `@Image` ➡️ `@SimpleName`
+* {% jdoc java::lang.java.ast.ASTClassOrInterfaceDeclaration %}: `@Image` ➡️ `@SimpleName`
+* {% jdoc java::lang.java.ast.ASTEnumDeclaration %}: `@Image` ➡️ `@SimpleName`
+* {% jdoc java::lang.java.ast.ASTFieldDeclaration %}: `@VariableName` ➡️ `VariableDeclaratorId/@Name`
+* {% jdoc java::lang.java.ast.ASTMethodDeclaration %}: `@MethodName` ➡️ `@Name`
+* {% jdoc java::lang.java.ast.ASTRecordDeclaration %}: `@Image` ➡️ `@SimpleName`
+* {% jdoc java::lang.java.ast.ASTVariableDeclaratorId %}: `@Image` ➡️ `@Name`
+* {% jdoc java::lang.java.ast.ASTVariableDeclaratorId %}: `@VariableName` ➡️ `@Name`
+* {% jdoc java::lang.java.ast.ASTVariableDeclaratorId %}: `@Array` ➡️ `@ArrayType`
+
+#### JavaScript
+
+* {% jdoc javascript::lang.ecmascript.ast.ASTAssignment %}: `@Image` ➡️ `@Operator`
+* {% jdoc javascript::lang.ecmascript.ast.ASTBigIntLiteral %}: `@Image` ➡️ `@Value`
+* {% jdoc javascript::lang.ecmascript.ast.ASTBreakStatement %}: `@Image` ➡️ `Name/@Identifier`
+* {% jdoc javascript::lang.ecmascript.ast.ASTContinueStatement %}: `@Image` ➡️ `Name/@Identifier`
+* {% jdoc javascript::lang.ecmascript.ast.ASTErrorNode %}: `@Image` ➡️ `@Message`
+* {% jdoc javascript::lang.ecmascript.ast.ASTFunctionNode %}: `@Image` ➡️ `Name/@Identifier`
+* {% jdoc javascript::lang.ecmascript.ast.ASTInfixExpression %}: `@Image` ➡️ `@Operator`
+* {% jdoc javascript::lang.ecmascript.ast.ASTKeywordLiteral %}: `@Image` ➡️ `@Literal`
+* {% jdoc javascript::lang.ecmascript.ast.ASTLabel %}: `@Image` ➡️ `@Name`
+* {% jdoc javascript::lang.ecmascript.ast.ASTName %}: `@Image` ➡️ `@Identifier`
+* {% jdoc javascript::lang.ecmascript.ast.ASTNumberLiteral %}: `@Image` ➡️ `@Value`
+* {% jdoc javascript::lang.ecmascript.ast.ASTObjectProperty %}: `@Image` ➡️ `@Operator`
+* {% jdoc javascript::lang.ecmascript.ast.ASTPropertyGet %}: `@Image` ➡️ `@Operator`
+* {% jdoc javascript::lang.ecmascript.ast.ASTRegExpLiteral %}: `@Image` ➡️ `@Value`
+* {% jdoc javascript::lang.ecmascript.ast.ASTStringLiteral %}: `@Image` ➡️ `@Value`
+* {% jdoc javascript::lang.ecmascript.ast.ASTUnaryExpression %}: `@Image` ➡️ `@Operator`
+* {% jdoc javascript::lang.ecmascript.ast.ASTUpdateExpression %}: `@Image` ➡️ `@Operator`
+* {% jdoc javascript::lang.ecmascript.ast.ASTXmlDotQuery %}: `@Image` ➡️ `@Operator`
+* {% jdoc javascript::lang.ecmascript.ast.ASTXmlMemberGet %}: `@Image` ➡️ `@Operator`
+* {% jdoc javascript::lang.ecmascript.ast.ASTXmlPropRef %}: `@Image` ➡️ `Name[last()]/@Identifier`
+* {% jdoc javascript::lang.ecmascript.ast.ASTXmlString %}: `@Image` ➡️ `@Xml`
+
+#### JSP
+
+* {% jdoc jsp::lang.jsp.ast.ASTAttributeValue %}: `@Image` ➡️ `@Value`
+* {% jdoc jsp::lang.jsp.ast.ASTCData %}: `@Image` ➡️ `@Content`
+* {% jdoc jsp::lang.jsp.ast.ASTCommentTag %}: `@Image` ➡️ `@Content`
+* {% jdoc jsp::lang.jsp.ast.ASTElExpression %}: `@Image` ➡️ `@Content`
+* {% jdoc jsp::lang.jsp.ast.ASTHtmlScript %}: `@Image` ➡️ `@Content`
+* {% jdoc jsp::lang.jsp.ast.ASTJspComment %}: `@Image` ➡️ `@Content`
+* {% jdoc jsp::lang.jsp.ast.ASTJspDeclaration %}: `@Image` ➡️ `@Content`
+* {% jdoc jsp::lang.jsp.ast.ASTJspExpression %}: `@Image` ➡️ `@Content`
+* {% jdoc jsp::lang.jsp.ast.ASTJspExpressionInAttribute %}: `@Image` ➡️ `@Content`
+* {% jdoc jsp::lang.jsp.ast.ASTJspScriptlet %}: `@Image` ➡️ `@Content`
+* {% jdoc jsp::lang.jsp.ast.ASTText %}: `@Image` ➡️ `@Content`
+* {% jdoc jsp::lang.jsp.ast.ASTUnparsedText %}: `@Image` ➡️ `@Content`
+* {% jdoc jsp::lang.jsp.ast.ASTValueBinding %}: `@Image` ➡️ `@Content`
+
+#### Modelica
+
+* {% jdoc modelica::lang.modelica.ast.ASTAddOp %}: `@Image` ➡️ `@Operator`
+* {% jdoc modelica::lang.modelica.ast.ASTDerClassSpecifier %}: `@Image` ➡️ `@SimpleClassName`
+* {% jdoc modelica::lang.modelica.ast.ASTEnumerationShortClassSpecifier %}: `@Image` ➡️ `@SimpleClassName`
+* {% jdoc modelica::lang.modelica.ast.ASTExtendingLongClassSpecifier %}: `@Image` ➡️ `@SimpleClassName`
+* {% jdoc modelica::lang.modelica.ast.ASTFactor %}: `@Image` ➡️ `@Operator`
+* {% jdoc modelica::lang.modelica.ast.ASTLanguageSpecification %}: `@Image` ➡️ `@ExternalLanguage`
+* {% jdoc modelica::lang.modelica.ast.ASTMulOp %}: `@Image` ➡️ `@Operator`
+* {% jdoc modelica::lang.modelica.ast.ASTName %}: `@Image` ➡️ `@Name`
+* {% jdoc modelica::lang.modelica.ast.ASTNumberLiteral %}: `@Image` ➡️ `@Value`
+* {% jdoc modelica::lang.modelica.ast.ASTRelOp %}: `@Image` ➡️ `@Operator`
+* {% jdoc modelica::lang.modelica.ast.ASTSimpleLongClassSpecifier %}: `@Image` ➡️ `@SimpleClassName`
+* {% jdoc modelica::lang.modelica.ast.ASTSimpleName %}: `@Image` ➡️ `@Name`
+* {% jdoc modelica::lang.modelica.ast.ASTSimpleShortClassSpecifier %}: `@Image` ➡️ `@SimpleClassName`
+* {% jdoc modelica::lang.modelica.ast.ASTStoredDefinition %}: `@Image` ➡️ `@Name`
+* {% jdoc modelica::lang.modelica.ast.ASTStringComment %}: `@Image` ➡️ `@Comment`
+* {% jdoc modelica::lang.modelica.ast.ASTStringLiteral %}: `@Image` ➡️ `@Value`
+* {% jdoc modelica::lang.modelica.ast.ASTWithinClause %}: `@Image` ➡️ `@Name`
+
+#### PLSQL
+
+There are many usages of `@Image`. These will be refactored after PMD 7 is released
+by deprecating the attribute and providing alternatives.
+
+See also issue [Deprecate getImage/@Image #4787](https://github.com/pmd/pmd/issues/4787).
+
+#### Scala
+
+* {% jdoc scala::lang.scala.ast.ASTLitBoolean %}: `@Image` ➡️ `@Value`
+* {% jdoc scala::lang.scala.ast.ASTLitByte %}: `@Image` ➡️ `@Value`
+* {% jdoc scala::lang.scala.ast.ASTLitChar %}: `@Image` ➡️ `@Value`
+* {% jdoc scala::lang.scala.ast.ASTLitDouble %}: `@Image` ➡️ `@Value`
+* {% jdoc scala::lang.scala.ast.ASTLitFloat %}: `@Image` ➡️ `@Value`
+* {% jdoc scala::lang.scala.ast.ASTLitInt %}: `@Image` ➡️ `@Value`
+* {% jdoc scala::lang.scala.ast.ASTLitLong %}: `@Image` ➡️ `@Value`
+* {% jdoc scala::lang.scala.ast.ASTLitNull %}: `@Image` ➡️ `@Value`
+* {% jdoc scala::lang.scala.ast.ASTLitShort %}: `@Image` ➡️ `@Value`
+* {% jdoc scala::lang.scala.ast.ASTLitString %}: `@Image` ➡️ `@Value`
+* {% jdoc scala::lang.scala.ast.ASTLitSymbol %}: `@Image` ➡️ `@Value`
+* {% jdoc scala::lang.scala.ast.ASTLitUnit %}: `@Image` ➡️ `@Value`
+* {% jdoc scala::lang.scala.ast.ASTNameAnonymous %}: `@Image` ➡️ `@Value`
+* {% jdoc scala::lang.scala.ast.ASTNameIndeterminate %}: `@Image` ➡️ `@Value`
+* {% jdoc scala::lang.scala.ast.ASTTermName %}: `@Image` ➡️ `@Value`
+* {% jdoc scala::lang.scala.ast.ASTTypeName %}: `@Image` ➡️ `@Value`
+
+#### XML (and POM)
+
+When using {% jdoc core::lang.rule.XPathRule %}, text of text nodes was exposed as `@Image` of
+normal element type nodes. Now the attribute is called `@Text`.
+
+Note: In general, it is recommended to use {% jdoc xml::lang.xml.rule.DomXPathRule %} instead,
+which exposes text nodes as real XPath/XML text nodes which conforms to the XPath spec.
+There is no difference, text of text nodes can be selected using `text()`.
 
 ### Java AST
 

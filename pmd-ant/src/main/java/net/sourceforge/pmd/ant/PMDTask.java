@@ -61,7 +61,6 @@ public class PMDTask extends Task {
     private final List<Path> relativizePathsWith = new ArrayList<>();
     private String suppressMarker;
     private String rulesetFiles;
-    private boolean noRuleSetCompatibility;
     private String encoding;
     private int threads = 1; // same default as in PMDParameters (CLI)
     private int minimumPriority = RulePriority.LOW.getPriority(); // inclusive
@@ -265,14 +264,6 @@ public class PMDTask extends Task {
 
     public Collection<RuleSetWrapper> getNestedRules() {
         return nestedRules;
-    }
-
-    public boolean isNoRuleSetCompatibility() {
-        return noRuleSetCompatibility;
-    }
-
-    public void setNoRuleSetCompatibility(boolean noRuleSetCompatibility) {
-        this.noRuleSetCompatibility = noRuleSetCompatibility;
     }
 
     public String getCacheLocation() {

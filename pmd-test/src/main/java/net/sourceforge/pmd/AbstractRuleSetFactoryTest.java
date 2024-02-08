@@ -460,7 +460,7 @@ public abstract class AbstractRuleSetFactoryTest {
 
         // Read RuleSet from XML, first time
         RuleSetLoader loader = new RuleSetLoader();
-        RuleSet ruleSet2 = loader.loadFromString("", xml2);
+        RuleSet ruleSet2 = loader.loadFromString("readRuleSet1.xml", xml2);
 
         // Do write/read a 2nd time, just to be sure
 
@@ -473,7 +473,7 @@ public abstract class AbstractRuleSetFactoryTest {
         // System.out.println("xml3: " + xml3);
 
         // Read RuleSet from XML, second time
-        RuleSet ruleSet3 = loader.loadFromString("", xml3);
+        RuleSet ruleSet3 = loader.loadFromString("readRuleSet2.xml", xml3);
 
         // The 2 written XMLs should all be valid w.r.t Schema/DTD
         assertTrue(validateAgainstSchema(new ByteArrayInputStream(xml2.getBytes())),

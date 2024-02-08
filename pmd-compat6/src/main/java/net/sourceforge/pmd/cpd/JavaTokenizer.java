@@ -9,7 +9,7 @@ import java.util.Properties;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.internal.JavaLanguageProperties;
 
-public class JavaTokenizer extends net.sourceforge.pmd.lang.java.cpd.JavaTokenizer {
+public class JavaTokenizer extends net.sourceforge.pmd.lang.java.cpd.JavaCpdLexer implements Tokenizer {
     public JavaTokenizer(Properties properties) {
         super(convertLanguageProperties(properties));
     }

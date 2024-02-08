@@ -3,6 +3,6 @@
  */
 
 /**
- * Utilities to implement a CPD {@link net.sourceforge.pmd.cpd.Tokenizer}.
+ * Utilities to implement a CPD {@link net.sourceforge.pmd.cpd.CpdLexer}.
  */
 package net.sourceforge.pmd.cpd.impl;

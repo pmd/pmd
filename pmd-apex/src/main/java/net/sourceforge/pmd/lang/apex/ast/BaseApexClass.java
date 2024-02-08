@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.DeprecatedUntil700;
-
 import apex.jorje.semantic.ast.compilation.Compilation;
 
 abstract class BaseApexClass<T extends Compilation> extends AbstractApexNode<T> implements ASTUserClassOrInterface<T> {
@@ -21,12 +19,7 @@ abstract class BaseApexClass<T extends Compilation> extends AbstractApexNode<T> 
         return true;
     }
 
-    /**
-     * @deprecated Use {@link #getSimpleName()}
-     */
     @Override
-    @Deprecated
-    @DeprecatedUntil700
     public String getImage() {
         return getSimpleName();
     }

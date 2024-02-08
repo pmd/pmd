@@ -25,7 +25,6 @@ import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
-import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 import net.sourceforge.pmd.lang.rule.xpath.impl.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 
@@ -125,13 +124,6 @@ public final class XmlParserImpl {
             return getNode().getXmlVersion();
         }
 
-        // Hide the image attribute
-        @NoAttribute
-        @Override
-        public String getImage() {
-            return super.getImage();
-        }
-        
         @Override
         public Iterator<Attribute> getXPathAttributesIterator() {
             // Expose this node's attributes through reflection

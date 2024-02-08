@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.document.FileLocation;
 /**
  * An exception that occurs while processing a file. Subtypes include
  * <ul>
- * <li>{@link TokenMgrError}: lexical syntax errors
+ * <li>{@link LexException}: lexical syntax errors
  * <li>{@link ParseException}: syntax errors
  * <li>{@link SemanticException}: exceptions occurring after the parsing
  * phase, because the source code is semantically invalid

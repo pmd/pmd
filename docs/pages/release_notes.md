@@ -83,6 +83,12 @@ in the Migration Guide.
 * We now support [suppression](pmd_userdocs_cpd.html#suppression) through `CPD-ON`/`CPD-OFF` comment pairs.
 * See [PR #4726](https://github.com/pmd/pmd/pull/4726) for details.
 
+##### Updated PMD Designer
+
+This PMD release ships a new version of the pmd-designer.
+For the changes, see
+* [PMD Designer Changelog (7.0.0)](https://github.com/pmd/pmd-designer/releases/tag/7.0.0).
+
 #### Rule Changes
 
 **New Rules**
@@ -119,6 +125,67 @@ The following previously deprecated rules have been finally removed:
   * {% deleted_rule java/errorprone/EmptyTryBlock %} ➡️ use {% rule java/codestyle/EmptyControlStatement %}
   * {% deleted_rule java/errorprone/EmptyWhileStmt %} ➡️ use {% rule java/codestyle/EmptyControlStatement %}
 
+**Removed deprecated rulesets**
+
+The following previously deprecated rulesets have been removed. These were the left-over rulesets from PMD 5.
+The rules have been moved into categories with PMD 6.
+
+* rulesets/apex/apexunit.xml
+* rulesets/apex/braces.xml
+* rulesets/apex/complexity.xml
+* rulesets/apex/empty.xml
+* rulesets/apex/metrics.xml
+* rulesets/apex/performance.xml
+* rulesets/apex/ruleset.xml
+* rulesets/apex/securty.xml
+* rulesets/apex/style.xml
+* rulesets/java/android.xml
+* rulesets/java/basic.xml
+* rulesets/java/clone.xml
+* rulesets/java/codesize.xml
+* rulesets/java/comments.xml
+* rulesets/java/controversial.xml
+* rulesets/java/coupling.xml
+* rulesets/java/design.xml
+* rulesets/java/empty.xml
+* rulesets/java/finalizers.xml
+* rulesets/java/imports.xml
+* rulesets/java/j2ee.xml
+* rulesets/java/javabeans.xml
+* rulesets/java/junit.xml
+* rulesets/java/logging-jakarta-commons.xml
+* rulesets/java/logging-java.xml
+* rulesets/java/metrics.xml
+* rulesets/java/migrating.xml
+* rulesets/java/migrating_to_13.xml
+* rulesets/java/migrating_to_14.xml
+* rulesets/java/migrating_to_15.xml
+* rulesets/java/migrating_to_junit4.xml
+* rulesets/java/naming.xml
+* rulesets/java/optimizations.xml
+* rulesets/java/strictexception.xml
+* rulesets/java/strings.xml
+* rulesets/java/sunsecure.xml
+* rulesets/java/typeresolution.xml
+* rulesets/java/unnecessary.xml
+* rulesets/java/unusedcode.xml
+* rulesets/ecmascript/basic.xml
+* rulesets/ecmascript/braces.xml
+* rulesets/ecmascript/controversial.xml
+* rulesets/ecmascript/unnecessary.xml
+* rulesets/jsp/basic.xml
+* rulesets/jsp/basic-jsf.xml
+* rulesets/plsql/codesize.xml
+* rulesets/plsql/dates.xml
+* rulesets/plsql/strictsyntax.xml
+* rulesets/plsql/TomKytesDespair.xml
+* rulesets/vf/security.xml
+* rulesets/vm/basic.xml
+* rulesets/pom/basic.xml
+* rulesets/xml/basic.xml
+* rulesets/xsl/xpath.xml
+* rulesets/releases/*
+
 #### Fixed issues
 
 * cli
@@ -127,10 +194,16 @@ The following previously deprecated rules have been finally removed:
   * [#4723](https://github.com/pmd/pmd/issues/4723): \[cli] Launch fails for "bash pmd"
 * core
   * [#1027](https://github.com/pmd/pmd/issues/1027): \[core] Apply the new PropertyDescriptor&lt;Pattern&gt; type where applicable
+  * [#4065](https://github.com/pmd/pmd/issues/4065): \[core] Rename TokenMgrError to LexException, Tokenizer to CpdLexer
+  * [#4312](https://github.com/pmd/pmd/issues/4312): \[core] Remove unnecessary property `color` and system property `pmd.color` in `TextColorRenderer`
+  * [#4313](https://github.com/pmd/pmd/issues/4313): \[core] Remove support for &lt;lang&gt;-&lt;ruleset&gt; hyphen notation for ruleset references
+  * [#4314](https://github.com/pmd/pmd/issues/4314): \[core] Remove ruleset compatibility filter (RuleSetFactoryCompatibility) and CLI option `--no-ruleset-compatibility`
+  * [#4378](https://github.com/pmd/pmd/issues/4378): \[core] Ruleset loading processes commented rules
   * [#4674](https://github.com/pmd/pmd/issues/4674): \[core] WARNING: Illegal reflective access by org.codehaus.groovy.reflection.CachedClass
   * [#4694](https://github.com/pmd/pmd/pull/4694):   \[core] Fix line/col numbers in TokenMgrError
   * [#4717](https://github.com/pmd/pmd/issues/4717): \[core] XSLTRenderer doesn't close report file
   * [#4750](https://github.com/pmd/pmd/pull/4750):   \[core] Fix flaky SummaryHTMLRenderer
+  * [#4782](https://github.com/pmd/pmd/pull/4782):   \[core] Avoid using getImage/@<!-- -->Image
 * doc
   * [#995](https://github.com/pmd/pmd/issues/995):   \[doc] Document API evolution principles as ADR
   * [#2511](https://github.com/pmd/pmd/issues/2511): \[doc] Review guides for writing java/xpath rules for correctness with PMD 7
@@ -147,6 +220,7 @@ The following previously deprecated rules have been finally removed:
   * [#4736](https://github.com/pmd/pmd/issues/4736): \[ci] Improve build procedure
   * [#4741](https://github.com/pmd/pmd/pull/4741):   Add pmd-compat6 module for maven-pmd-plugin
   * [#4749](https://github.com/pmd/pmd/pull/4749):   Fixes NoSuchMethodError on processing errors in pmd-compat6
+  * [#4796](https://github.com/pmd/pmd/pull/4796):   Remove deprecated and release rulesets
 * apex-performance
   * [#4675](https://github.com/pmd/pmd/issues/4675): \[apex] New Rule: OperationWithHighCostInLoop
 * groovy
@@ -175,6 +249,11 @@ The following previously deprecated rules have been finally removed:
   * [#4592](https://github.com/pmd/pmd/pull/4592):   \[xml] Add MissingEncoding rule
 
 #### API Changes
+
+**General AST Changes to avoid `@Image`**
+
+See [General AST Changes to avoid @Image]({{ baseurl }}pmd_userdocs_migrating_to_pmd7.html#general-ast-changes-to-avoid-image)
+in the migration guide for details.
 
 **Removed classes and members (previously deprecated)**
 
@@ -453,6 +532,27 @@ The following previously deprecated rules have been finally removed:
   * The class `ScalaParserVisitorAdapter` has been renamed to {%jdoc scala::lang.scala.ast.ScalaVisitorBase %} in order
     to align the naming scheme for the different language modules.
 
+**Renamed classes and methods**
+
+* pmd-core
+  * {%jdoc_old core::lang.ast.TokenMgrError %} has been renamed to {% jdoc core::lang.ast.LexException %}
+  * {%jdoc_old core::cpd.Tokenizer %} has been renamed to {% jdoc core::cpd.CpdLexer %}. Along with this rename,
+    all the implementations have been renamed as well (`Tokenizer` -> `CpdLexer`), e.g. "CppCpdLexer", "JavaCpdLexer".
+    This affects all language modules.
+  * {%jdoc_old core::cpd.AnyTokenizer %} has been renamed to {% jdoc core::cpd.AnyCpdLexer %}.
+
+**Removed functionality**
+
+* The CLI parameter `--no-ruleset-compatibility` has been removed. It was only used to allow loading
+  some rulesets originally written for PMD 5 also in PMD 6 without fixing the rulesets.
+* The class {% jdoc_old core::RuleSetFactoryCompatibility %} has been removed without replacement.
+  The different ways to enable/disable this filter in {% jdoc core::PMDConfiguration %}
+  (Property "RuleSetFactoryCompatibilityEnabled") and
+  {% jdoc ant::ant.PMDTask %} (Property "noRuleSetCompatibility") have been removed as well.
+* `textcolor` renderer ({%jdoc core::renderers.TextColorRenderer %}) now renders always in color.
+  The property `color` has been removed. The possibility to override this with the system property `pmd.color`
+  has been removed as well. If you don't want colors, use `text` renderer ({%jdoc core::renderers.TextRenderer %}).
+
 #### External Contributions
 * [#4640](https://github.com/pmd/pmd/pull/4640): \[cli] Launch script fails if run via "bash pmd" - [Shai Bennathan](https://github.com/shai-bennathan) (@shai-bennathan)
 * [#4673](https://github.com/pmd/pmd/pull/4673): \[javascript] CPD: Added support for decorator notation - [Wener](https://github.com/wener-tiobe) (@wener-tiobe)
@@ -518,7 +618,10 @@ Contributors: [Lucas Soncini](https://github.com/lsoncini) (@lsoncini),
 #### Updated PMD Designer
 
 This PMD release ships a new version of the pmd-designer.
-For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designer/releases/tag/7.0.0-rc1).
+For the changes, see
+* [PMD Designer Changelog (7.0.0-rc1)](https://github.com/pmd/pmd-designer/releases/tag/7.0.0-rc1).
+* [PMD Designer Changelog (7.0.0-rc4)](https://github.com/pmd/pmd-designer/releases/tag/7.0.0-rc4).
+* [PMD Designer Changelog (7.0.0)](https://github.com/pmd/pmd-designer/releases/tag/7.0.0).
 
 #### New CPD report format cpdhtml-v2.xslt
 
@@ -824,6 +927,7 @@ See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.
     * [#4736](https://github.com/pmd/pmd/issues/4736): \[ci] Improve build procedure
     * [#4741](https://github.com/pmd/pmd/pull/4741):   Add pmd-compat6 module for maven-pmd-plugin
     * [#4749](https://github.com/pmd/pmd/pull/4749):   Fixes NoSuchMethodError on processing errors in pmd-compat6
+    * [#4796](https://github.com/pmd/pmd/pull/4796):   Remove deprecated and release rulesets
 * ant
     * [#4080](https://github.com/pmd/pmd/issues/4080): \[ant] Split off Ant integration into a new submodule
 * core
@@ -856,14 +960,19 @@ See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.
     * [#3919](https://github.com/pmd/pmd/issues/3919): \[core] Merge CPD and PMD language
     * [#3922](https://github.com/pmd/pmd/pull/3922):   \[core] Better error reporting for the ruleset parser
     * [#4035](https://github.com/pmd/pmd/issues/4035): \[core] ConcurrentModificationException in DefaultRuleViolationFactory
+    * [#4065](https://github.com/pmd/pmd/issues/4065): \[core] Rename TokenMgrError to LexException, Tokenizer to CpdLexer
     * [#4120](https://github.com/pmd/pmd/issues/4120): \[core] Explicitly name all language versions
     * [#4204](https://github.com/pmd/pmd/issues/4204): \[core] Provide a CpdAnalysis class as a programmatic entry point into CPD
     * [#4301](https://github.com/pmd/pmd/issues/4301): \[core] Remove deprecated property concrete classes
     * [#4302](https://github.com/pmd/pmd/issues/4302): \[core] Migrate Property Framework API to Java 8
+    * [#4312](https://github.com/pmd/pmd/issues/4312): \[core] Remove unnecessary property `color` and system property `pmd.color` in `TextColorRenderer`
+    * [#4313](https://github.com/pmd/pmd/issues/4313): \[core] Remove support for &lt;lang&gt;-&lt;ruleset&gt; hyphen notation for ruleset references
+    * [#4314](https://github.com/pmd/pmd/issues/4314): \[core] Remove ruleset compatibility filter (RuleSetFactoryCompatibility) and CLI option `--no-ruleset-compatibility`
     * [#4323](https://github.com/pmd/pmd/issues/4323): \[core] Refactor CPD integration
     * [#4353](https://github.com/pmd/pmd/pull/4353):   \[core] Micro optimizations for Node API
     * [#4365](https://github.com/pmd/pmd/pull/4365):   \[core] Improve benchmarking
     * [#4397](https://github.com/pmd/pmd/pull/4397):   \[core] Refactor CPD
+    * [#4378](https://github.com/pmd/pmd/issues/4378): \[core] Ruleset loading processes commented rules
     * [#4420](https://github.com/pmd/pmd/pull/4420):   \[core] Remove PMD.EOL
     * [#4425](https://github.com/pmd/pmd/pull/4425):   \[core] Replace TextFile::pathId
     * [#4454](https://github.com/pmd/pmd/issues/4454): \[core] "Unknown option: '-min'" but is referenced in documentation
@@ -873,6 +982,7 @@ See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.
     * [#4694](https://github.com/pmd/pmd/pull/4694):   \[core] Fix line/col numbers in TokenMgrError
     * [#4717](https://github.com/pmd/pmd/issues/4717): \[core] XSLTRenderer doesn't close report file
     * [#4750](https://github.com/pmd/pmd/pull/4750):   \[core] Fix flaky SummaryHTMLRenderer
+    * [#4782](https://github.com/pmd/pmd/pull/4782):   \[core] Avoid using getImage/@<!-- -->Image
 * cli
     * [#2234](https://github.com/pmd/pmd/issues/2234): \[core] Consolidate PMD CLI into a single command
     * [#3828](https://github.com/pmd/pmd/issues/3828): \[core] Progress reporting

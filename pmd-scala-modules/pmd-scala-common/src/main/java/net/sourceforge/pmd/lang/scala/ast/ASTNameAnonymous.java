@@ -20,8 +20,7 @@ public final class ASTNameAnonymous extends AbstractScalaNode<Name.Anonymous> {
         return visitor.visit(this, data);
     }
 
-    @Override
-    public String getImage() {
+    public String getValue() {
         return node.value();
     }
 }

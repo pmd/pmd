@@ -102,8 +102,6 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
 
     private String auxClasspath;
 
-    private boolean noRuleSetCompatibility;
-
     private Path cacheLocation;
 
     private boolean noCache;
@@ -213,12 +211,6 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
         this.auxClasspath = auxClasspath;
     }
 
-    @Option(names = "--no-ruleset-compatibility",
-            description = "Disable the ruleset compatibility filter. The filter is active by default and tries automatically 'fix' old ruleset files with old rule names")
-    public void setNoRuleSetCompatibility(final boolean noRuleSetCompatibility) {
-        this.noRuleSetCompatibility = noRuleSetCompatibility;
-    }
-
     @Option(names = "--cache",
             description = "Specify the location of the cache file for incremental analysis. "
                     + "This should be the full path to the file, including the desired file name (not just the parent directory). "
@@ -274,7 +266,6 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
             configuration.addRelativizeRoots(relativizeRootPaths);
         }
         configuration.setRuleSets(rulesets);
-        configuration.setRuleSetFactoryCompatibilityEnabled(!this.noRuleSetCompatibility);
         configuration.setShowSuppressedViolations(showSuppressed);
         configuration.setSuppressMarker(suppressMarker);
         configuration.setThreads(threads);

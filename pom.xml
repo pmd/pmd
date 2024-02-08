@@ -115,7 +115,7 @@
 
         <pmd.build-tools.version>23-SNAPSHOT</pmd.build-tools.version>
 
-        <pmd-designer.version>7.0.0-rc4</pmd-designer.version>
+        <pmd-designer.version>7.0.0-SNAPSHOT</pmd-designer.version>
         <javacc.jar>${settings.localRepository}/net/java/dev/javacc/javacc/${javacc.version}/javacc-${javacc.version}.jar</javacc.jar>
         <javacc.outputDirectory>${project.build.directory}/generated-sources/javacc</javacc.outputDirectory>
         <javacc.ant.wrapper>${project.basedir}/../javacc-wrapper.xml</javacc.ant.wrapper>
@@ -860,13 +860,6 @@
                 <groupId>net.bytebuddy</groupId>
                 <artifactId>byte-buddy-agent</artifactId>
                 <version>1.14.9</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>com.github.tomakehurst</groupId>
-                <artifactId>wiremock-jre8</artifactId>
-                <version>2.35.1</version>
                 <scope>test</scope>
             </dependency>
 
