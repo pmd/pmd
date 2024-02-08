@@ -245,6 +245,9 @@ The following previously deprecated rules have been finally removed:
   * `net.sourceforge.pmd.util.datasource.FileDataSource`
   * `net.sourceforge.pmd.util.datasource.ReaderDataSource`
   * `net.sourceforge.pmd.util.datasource.ZipDataSource`
+  * {%jdoc !!core::util.CollectionUtil %}
+    * method `invertedMapFrom(...)` has been removed.
+    * method `mapFrom(...)` has been removed.
 * pmd-apex
   * {%jdoc apex::lang.apex.ast.ApexNode %} and {% jdoc apex::lang.apex.ast.ASTApexFile %}
     * `#getApexVersion()`: In PMD 6, this method has been deprecated but was defined in the class `ApexRootNode`.
