@@ -7,12 +7,12 @@ package net.sourceforge.pmd.cpd;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.ast.TokenMgrError;
+import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
 
 /**
- * Proxy to record tokens from within {@link Tokenizer#tokenize(TextDocument, TokenFactory)}.
+ * Proxy to record tokens from within {@link CpdLexer#tokenize(TextDocument, TokenFactory)}.
  */
 public interface TokenFactory extends AutoCloseable {
 
@@ -43,7 +43,7 @@ public interface TokenFactory extends AutoCloseable {
         recordToken(image, location.getStartLine(), location.getStartColumn(), location.getEndLine(), location.getEndColumn());
     }
 
-    TokenMgrError makeLexException(int line, int column, String message, @Nullable Throwable cause);
+    LexException makeLexException(int line, int column, String message, @Nullable Throwable cause);
 
     /**
      * Sets the image of an existing token entry.
@@ -57,7 +57,7 @@ public interface TokenFactory extends AutoCloseable {
 
     /**
      * This adds the EOF token, it must be called when
-     * {@link Tokenizer#tokenize(TextDocument, TokenFactory)} is done.
+     * {@link CpdLexer#tokenize(TextDocument, TokenFactory)} is done.
      */
     @Override
     void close();

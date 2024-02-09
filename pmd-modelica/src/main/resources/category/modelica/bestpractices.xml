@@ -23,7 +23,7 @@ Rules which enforce generally accepted best practices.
             <property name="xpath">
                 <value>
                     <![CDATA[
-//ClassSpecifier/*[SimpleName[1]/@Image != SimpleName[last()]/@Image]
+//ClassSpecifier/*[SimpleName[1]/@Name != SimpleName[last()]/@Name]
 ]]>
                 </value>
             </property>

@@ -5,11 +5,11 @@
 package net.sourceforge.pmd.lang.kotlin;
 
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.cpd.CpdLexer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
-import net.sourceforge.pmd.lang.kotlin.cpd.KotlinTokenizer;
+import net.sourceforge.pmd.lang.kotlin.cpd.KotlinCpdLexer;
 
 /**
  * Language Module for Kotlin
@@ -35,7 +35,7 @@ public class KotlinLanguageModule extends SimpleLanguageModuleBase {
     }
 
     @Override
-    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
-        return new KotlinTokenizer();
+    public CpdLexer createCpdLexer(LanguagePropertyBundle bundle) {
+        return new KotlinCpdLexer();
     }
 }

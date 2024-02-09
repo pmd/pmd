@@ -31,10 +31,10 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  * <ul>
  * <li>{@link XPathRule} uses <i>elements</i> to represent text nodes.
  * This is contrary to the XPath spec, in which element and text nodes
- * are different kinds of nodes. To replace the query {@code //elt/text[@Image="abc"]},
+ * are different kinds of nodes. To replace the query {@code //elt/text[@Text="abc"]},
  * use the XPath function {@code text()}, eg {@code //elt[text()="abc"]}.
  * <li>{@link XPathRule} adds additional attributes to each element
- * (eg {@code @BeginLine} and {@code @Image}). These attributes are not
+ * (eg {@code @BeginLine} and {@code @Text}). These attributes are not
  * XML attributes, so they are not accessible using DomXPathRule rule.
  * Instead, use the XPath functions {@code pmd:startLine(node)}, {@code pmd:endLine(node)} and related.
  * For instance, replace {@code //elt[@EndLine - @BeginLine > 10]} with

@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.annotation.DeprecatedUntil700;
-
 import com.google.summit.ast.declaration.TypeDeclaration;
 
 abstract class BaseApexClass<T extends TypeDeclaration> extends AbstractApexNode.Single<T> implements ASTUserClassOrInterface<T> {
@@ -21,12 +19,7 @@ abstract class BaseApexClass<T extends TypeDeclaration> extends AbstractApexNode
         return true;
     }
 
-    /**
-     * @deprecated Use {@link #getSimpleName()}
-     */
     @Override
-    @Deprecated
-    @DeprecatedUntil700
     public String getImage() {
         return getSimpleName();
     }

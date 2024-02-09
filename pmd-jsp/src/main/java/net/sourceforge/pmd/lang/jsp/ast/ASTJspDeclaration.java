@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.jsp.ast;
 
-public final class ASTJspDeclaration extends AbstractJspNode {
+public final class ASTJspDeclaration extends AbstractContentNode {
     ASTJspDeclaration(int id) {
         super(id);
     }

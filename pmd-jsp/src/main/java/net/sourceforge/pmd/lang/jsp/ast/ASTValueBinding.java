@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.jsp.ast;
 
-public final class ASTValueBinding extends AbstractJspNode {
+public final class ASTValueBinding extends AbstractExpression {
 
     ASTValueBinding(int id) {
         super(id);

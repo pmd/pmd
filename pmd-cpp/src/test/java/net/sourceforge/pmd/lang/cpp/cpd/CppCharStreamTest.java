@@ -20,7 +20,7 @@ class CppCharStreamTest {
     public CharStream charStreamFor(String source) {
         CppLanguageModule cpp = CppLanguageModule.getInstance();
         TextDocument textDoc = TextDocument.readOnlyString(source, FileId.UNKNOWN, cpp.getDefaultVersion());
-        CPPTokenizer tokenizer = new CPPTokenizer(cpp.newPropertyBundle());
+        CppCpdLexer tokenizer = new CppCpdLexer(cpp.newPropertyBundle());
         return tokenizer.newCharStream(textDoc);
     }
 

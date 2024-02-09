@@ -42,7 +42,7 @@ public class JavaComment implements Reportable {
      */
     @Deprecated
     public String getImage() {
-        return getToken().getImage();
+        return getText().toString();
     }
 
     /** The token underlying this comment. */

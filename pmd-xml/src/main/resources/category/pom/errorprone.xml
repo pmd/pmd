@@ -26,7 +26,7 @@ The following types are considered valid: pom, jar, maven-plugin, ejb, war, ear,
             <property name="xpath">
                 <value>
 <![CDATA[
-//dependencyManagement/dependency/type/text[not(@Image = $validTypes)]
+//dependencyManagement/dependency/type/text[not(@Text = $validTypes)]
 ]]>
                 </value>
             </property>
@@ -71,11 +71,11 @@ By far the most common problem is the use of \${project.version} in a BOM or par
                 <value>
 <![CDATA[
 //dependencies/dependency
-    [contains(version/text/@Image,'{project.version}')]
+    [contains(version/text/@Text,'{project.version}')]
     [
-        (/document/project/parent/groupId and groupId/text/@Image != /document/project/parent/groupId/text/@Image)
+        (/document/project/parent/groupId and groupId/text/@Text != /document/project/parent/groupId/text/@Text)
         or
-        (/document/project/groupId and groupId/text/@Image != /document/project/groupId/text/@Image)
+        (/document/project/groupId and groupId/text/@Text != /document/project/groupId/text/@Text)
     ]/version
 ]]>
                 </value>

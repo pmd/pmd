@@ -13,9 +13,12 @@ import java.nio.file.Path;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.RuleSetLoader;
 import net.sourceforge.pmd.internal.util.IOUtil;
+import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 class RuleSetResolverTest {
 
@@ -33,7 +36,9 @@ class RuleSetResolverTest {
         assertFalse(additionalRulesets.isEmpty());
 
         for (String filename : additionalRulesets) {
-            new RuleSetLoader().warnDeprecated(false).loadFromResource(filename); // will throw if invalid
+            PMDConfiguration config = new PMDConfiguration();
+            config.setReporter(new SimpleMessageReporter(LoggerFactory.getLogger(RuleSetResolverTest.class)));
+            RuleSetLoader.fromPmdConfig(config).warnDeprecated(false).loadFromResource(filename); // will throw if invalid
         }
     }
 

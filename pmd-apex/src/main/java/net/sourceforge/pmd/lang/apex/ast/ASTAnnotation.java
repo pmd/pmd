@@ -81,7 +81,6 @@ public final class ASTAnnotation extends AbstractApexNode.Single<AnnotationModif
     }
     
     @Override
-    @Deprecated
     public String getImage() {
         return getName();
     }

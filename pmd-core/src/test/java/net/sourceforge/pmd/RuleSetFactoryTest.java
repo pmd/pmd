@@ -265,7 +265,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
     @Test
     void testRuleSetWithDeprecatedRenamedRuleForDoc() {
         RuleSetLoader loader = new RuleSetLoader().includeDeprecatedRuleReferences(true);
-        RuleSet rs = loader.loadFromString("",
+        RuleSet rs = loader.loadFromString("ruleset.xml",
                                            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n"
                                                + "  <description>ruleset desc</description>\n"
                                                + "     <rule deprecated=\"true\" ref=\"NewName\" name=\"OldName\"/>"
@@ -525,41 +525,41 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
 
     @Test
     void testReferencePriority() {
-        RuleSetLoader config = new RuleSetLoader().warnDeprecated(false).enableCompatibility(true);
+        RuleSetLoader config = new RuleSetLoader().warnDeprecated(false);
 
         RuleSetLoader rulesetLoader = config.filterAbovePriority(RulePriority.LOW);
-        RuleSet ruleSet = rulesetLoader.loadFromString("", REF_INTERNAL_TO_INTERNAL_CHAIN);
+        RuleSet ruleSet = rulesetLoader.loadFromString("ruleset.xml", REF_INTERNAL_TO_INTERNAL_CHAIN);
         assertEquals(3, ruleSet.getRules().size(), "Number of Rules");
         assertNotNull(ruleSet.getRuleByName("MockRuleName"));
         assertNotNull(ruleSet.getRuleByName("MockRuleNameRef"));
         assertNotNull(ruleSet.getRuleByName("MockRuleNameRefRef"));
 
         rulesetLoader = config.filterAbovePriority(RulePriority.MEDIUM_HIGH);
-        ruleSet = rulesetLoader.loadFromString("", REF_INTERNAL_TO_INTERNAL_CHAIN);
+        ruleSet = rulesetLoader.loadFromString("ruleset.xml", REF_INTERNAL_TO_INTERNAL_CHAIN);
         assertEquals(2, ruleSet.getRules().size(), "Number of Rules");
         assertNotNull(ruleSet.getRuleByName("MockRuleNameRef"));
         assertNotNull(ruleSet.getRuleByName("MockRuleNameRefRef"));
 
         rulesetLoader = config.filterAbovePriority(RulePriority.HIGH);
-        ruleSet = rulesetLoader.loadFromString("", REF_INTERNAL_TO_INTERNAL_CHAIN);
+        ruleSet = rulesetLoader.loadFromString("ruleset.xml", REF_INTERNAL_TO_INTERNAL_CHAIN);
         assertEquals(1, ruleSet.getRules().size(), "Number of Rules");
         assertNotNull(ruleSet.getRuleByName("MockRuleNameRefRef"));
 
         rulesetLoader = config.filterAbovePriority(RulePriority.LOW);
-        ruleSet = rulesetLoader.loadFromString("", REF_INTERNAL_TO_EXTERNAL_CHAIN);
+        ruleSet = rulesetLoader.loadFromString("ruleset.xml", REF_INTERNAL_TO_EXTERNAL_CHAIN);
         assertEquals(3, ruleSet.getRules().size(), "Number of Rules");
         assertNotNull(ruleSet.getRuleByName("ExternalRefRuleName"));
         assertNotNull(ruleSet.getRuleByName("ExternalRefRuleNameRef"));
         assertNotNull(ruleSet.getRuleByName("ExternalRefRuleNameRefRef"));
 
         rulesetLoader = config.filterAbovePriority(RulePriority.MEDIUM_HIGH);
-        ruleSet = rulesetLoader.loadFromString("", REF_INTERNAL_TO_EXTERNAL_CHAIN);
+        ruleSet = rulesetLoader.loadFromString("ruleset.xml", REF_INTERNAL_TO_EXTERNAL_CHAIN);
         assertEquals(2, ruleSet.getRules().size(), "Number of Rules");
         assertNotNull(ruleSet.getRuleByName("ExternalRefRuleNameRef"));
         assertNotNull(ruleSet.getRuleByName("ExternalRefRuleNameRefRef"));
 
         rulesetLoader = config.filterAbovePriority(RulePriority.HIGH);
-        ruleSet = rulesetLoader.loadFromString("", REF_INTERNAL_TO_EXTERNAL_CHAIN);
+        ruleSet = rulesetLoader.loadFromString("ruleset.xml", REF_INTERNAL_TO_EXTERNAL_CHAIN);
         assertEquals(1, ruleSet.getRules().size(), "Number of Rules");
         assertNotNull(ruleSet.getRuleByName("ExternalRefRuleNameRefRef"));
     }
@@ -567,7 +567,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
     @Test
     void testOverridePriorityLoadWithMinimum() {
         RuleSetLoader rulesetLoader = new RuleSetLoader().filterAbovePriority(RulePriority.MEDIUM_LOW)
-                .warnDeprecated(true).enableCompatibility(true);
+                .warnDeprecated(true);
         RuleSet ruleset = rulesetLoader.loadFromResource("net/sourceforge/pmd/rulesets/ruleset-minimum-priority.xml");
         // only one rule should remain, since we filter out the other rule by minimum priority
         assertEquals(1, ruleset.getRules().size(), "Number of Rules");
@@ -625,9 +625,9 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
     @Test
     void testSetPriority() {
         RuleSetLoader rulesetLoader = new RuleSetLoader().filterAbovePriority(RulePriority.MEDIUM_HIGH).warnDeprecated(false);
-        assertEquals(0, rulesetLoader.loadFromString("", SINGLE_RULE).size());
+        assertEquals(0, rulesetLoader.loadFromString("ruleset.xml", SINGLE_RULE).size());
         rulesetLoader = new RuleSetLoader().filterAbovePriority(RulePriority.MEDIUM_LOW).warnDeprecated(false);
-        assertEquals(1, rulesetLoader.loadFromString("", SINGLE_RULE).size());
+        assertEquals(1, rulesetLoader.loadFromString("ruleset.xml", SINGLE_RULE).size());
     }
 
     @Test
@@ -975,20 +975,6 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
                         + "  </ruleset>\n"
         );
         verifyFoundAWarningWithMessage(containing("RuleSet description is missing."));
-    }
-
-    @Test
-    void testDeprecatedRulesetReferenceProducesWarning() throws Exception {
-        String log = SystemLambda.tapSystemErr(
-            () -> loadRuleSetWithDeprecationWarnings(
-                rulesetXml(
-                    ruleRef("dummy-basic")
-                )));
-        System.out.println(log);
-
-        verifyFoundAWarningWithMessage(containing(
-            "Ruleset reference 'dummy-basic' uses a deprecated form, use 'rulesets/dummy/basic.xml' instead"
-        ));
     }
 
     private static final String REF_OVERRIDE_ORIGINAL_NAME = "<?xml version=\"1.0\"?>\n"

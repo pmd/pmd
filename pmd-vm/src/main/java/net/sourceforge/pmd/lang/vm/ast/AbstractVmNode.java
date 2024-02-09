@@ -31,11 +31,6 @@ abstract class AbstractVmNode extends AbstractJjtreeNode<AbstractVmNode, VmNode>
     }
 
 
-    @Override // override to make protected member accessible to parser
-    protected void setImage(String image) {
-        super.setImage(image);
-    }
-
     @Override
     public String getXPathNodeName() {
         return VmParserImplTreeConstants.jjtNodeName[id];

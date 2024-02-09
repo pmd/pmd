@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.xml;
 
-import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.cpd.CpdLexer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
-import net.sourceforge.pmd.lang.xml.cpd.XmlTokenizer;
+import net.sourceforge.pmd.lang.xml.cpd.XmlCpdLexer;
 
 /**
  * Created by christoferdutz on 20.09.14.
@@ -29,7 +29,7 @@ public class XmlLanguageModule extends SimpleLanguageModuleBase {
     }
 
     @Override
-    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
-        return new XmlTokenizer();
+    public CpdLexer createCpdLexer(LanguagePropertyBundle bundle) {
+        return new XmlCpdLexer();
     }
 }

@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.php;
 
-import net.sourceforge.pmd.cpd.AnyTokenizer;
-import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.cpd.AnyCpdLexer;
+import net.sourceforge.pmd.cpd.CpdLexer;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.impl.CpdOnlyLanguageModuleBase;
@@ -25,7 +25,7 @@ public class PhpLanguageModule extends CpdOnlyLanguageModuleBase {
     }
 
     @Override
-    public Tokenizer createCpdTokenizer(LanguagePropertyBundle bundle) {
-        return new AnyTokenizer("#|//");
+    public CpdLexer createCpdLexer(LanguagePropertyBundle bundle) {
+        return new AnyCpdLexer("#|//");
     }
 }

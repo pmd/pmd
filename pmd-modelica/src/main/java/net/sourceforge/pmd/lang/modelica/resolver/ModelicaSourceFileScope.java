@@ -14,7 +14,7 @@ public final class ModelicaSourceFileScope extends AbstractModelicaScope {
     private final String[] packageComponents;
 
     ModelicaSourceFileScope(ASTStoredDefinition node) {
-        fileFQCN = node.getImage();
+        fileFQCN = node.getName();
         if (fileFQCN.isEmpty()) {
             packageComponents = new String[0];
         } else {

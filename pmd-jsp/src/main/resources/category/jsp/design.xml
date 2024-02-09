@@ -24,7 +24,7 @@ Externalized script could be reused between pages.  Browsers can also cache the 
             <property name="xpath">
                 <value>
 <![CDATA[
-//HtmlScript[@Image != '']
+//HtmlScript[@Content != '']
 ]]>
                 </value>
             </property>
