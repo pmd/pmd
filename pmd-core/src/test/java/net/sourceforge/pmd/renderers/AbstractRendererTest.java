@@ -34,7 +34,7 @@ import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.RulePriority;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
-import net.sourceforge.pmd.reporting.ParametricRuleViolation;
+import net.sourceforge.pmd.reporting.InternalApiBridge;
 import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.Report.ConfigurationError;
 import net.sourceforge.pmd.reporting.Report.ProcessingError;
@@ -107,7 +107,11 @@ abstract class AbstractRendererTest {
 
     protected RuleViolation newRuleViolation(int beginLine, int beginColumn, int endLine, int endColumn, Rule rule) {
         FileLocation loc = createLocation(beginLine, beginColumn, endLine, endColumn);
-        return new ParametricRuleViolation(rule, loc, "blah", Collections.emptyMap());
+        return newRuleViolation(rule, loc, "blah");
+    }
+
+    protected RuleViolation newRuleViolation(Rule rule, FileLocation location, String message) {
+        return InternalApiBridge.createRuleViolation(rule, location, message, Collections.emptyMap());
     }
 
     /**

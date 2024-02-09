@@ -265,7 +265,6 @@ in the migration guide for details.
     * {%jdoc core::reporting.RuleContext %}
     * {%jdoc core::reporting.RuleViolation %}
     * {%jdoc core::reporting.ViolationSuppressor %}
-    * {%jdoc core::reporting.ParametricRuleViolation %} (moved from `net.sourcceforge.pmd.lang.rule`)
   * {%jdoc core::lang.rule.xpath.XPathRule %} has been moved into subpackage {% jdoc_package core::lang.rule.xpath %}.
 
 **Internalized classes and interfaces and methods**
@@ -305,6 +304,8 @@ package or made (package) private and are _not accessible_ anymore.
     * `net.sourceforge.pmd.RuleSetReference`
     * `net.sourceforge.pmd.RuleSetReferenceId`
     * `net.sourceforge.pmd.RuleSets`
+  * `net.sourceforge.pmd.lang.rule.ParametricRuleViolation` is now package private and moved to `net.sourceforge.pmd.reporting.ParametricRuleViolation`.
+    The only public API is {%jdoc core::reporting.RuleViolation %}.
 * pmd-ant
   * {%jdoc !!ant::ant.Formatter %}
     * Method `getRenderer()` has been removed.

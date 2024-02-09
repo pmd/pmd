@@ -30,7 +30,6 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.InternalApiBridge;
-import net.sourceforge.pmd.reporting.ParametricRuleViolation;
 import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.reporting.RuleViolation;
 
@@ -86,23 +85,26 @@ class AbstractRuleTest {
         r.setRuleSetName("foo");
         DummyRootNode s = helper.parse("abc()", FileId.fromPathLikeString("abc"));
 
-        RuleViolation rv = new ParametricRuleViolation(r, s, r.getMessage());
-        assertEquals(1, rv.getBeginLine(), "Line number mismatch!");
-        assertEquals("abc", rv.getFileId().getOriginalPath(), "Filename mismatch!");
-        assertEquals(r, rv.getRule(), "Rule object mismatch!");
-        assertEquals("my rule msg", rv.getDescription(), "Rule msg mismatch!");
-        assertEquals("foo", rv.getRule().getRuleSetName(), "RuleSet name mismatch!");
+        InternalApiBridge.createRuleContext((rv) -> {
+            assertEquals(1, rv.getBeginLine(), "Line number mismatch!");
+            assertEquals("abc", rv.getFileId().getOriginalPath(), "Filename mismatch!");
+            assertEquals(r, rv.getRule(), "Rule object mismatch!");
+            assertEquals("my rule msg", rv.getDescription(), "Rule msg mismatch!");
+            assertEquals("foo", rv.getRule().getRuleSetName(), "RuleSet name mismatch!");
+        }, r).addViolation(s);
     }
 
     @Test
     void testCreateRV2() {
         MyRule r = new MyRule();
         DummyRootNode s = helper.parse("abc()", FileId.fromPathLikeString("filename"));
-        RuleViolation rv = new ParametricRuleViolation(r, s, "specificdescription");
-        assertEquals(1, rv.getBeginLine(), "Line number mismatch!");
-        assertEquals("filename", rv.getFileId().getOriginalPath(), "Filename mismatch!");
-        assertEquals(r, rv.getRule(), "Rule object mismatch!");
-        assertEquals("specificdescription", rv.getDescription(), "Rule description mismatch!");
+
+        InternalApiBridge.createRuleContext((rv) -> {
+            assertEquals(1, rv.getBeginLine(), "Line number mismatch!");
+            assertEquals("filename", rv.getFileId().getOriginalPath(), "Filename mismatch!");
+            assertEquals(r, rv.getRule(), "Rule object mismatch!");
+            assertEquals("specificdescription", rv.getDescription(), "Rule description mismatch!");
+        }, r).addViolationWithMessage(s, "specificdescription");
     }
 
     @Test

@@ -47,7 +47,7 @@ import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.internal.RuleSets;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
-import net.sourceforge.pmd.reporting.ParametricRuleViolation;
+import net.sourceforge.pmd.reporting.InternalApiBridge;
 import net.sourceforge.pmd.reporting.RuleViolation;
 
 class FileAnalysisCacheTest {
@@ -170,7 +170,9 @@ class FileAnalysisCacheTest {
         try (TextDocument doc0 = TextDocument.create(mockFile)) {
             cache.isUpToDate(doc0);
             try (FileAnalysisListener listener = cache.startFileAnalysis(doc0)) {
-                listener.onRuleViolation(new ParametricRuleViolation(rule, FileLocation.range(doc0.getFileId(), textLocation), "message"));
+                listener.onRuleViolation(InternalApiBridge.createRuleViolation(rule,
+                        FileLocation.range(doc0.getFileId(), textLocation), "message",
+                        Collections.emptyMap()));
             }
         } finally {
             cache.persist();

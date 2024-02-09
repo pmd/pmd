@@ -4,7 +4,10 @@
 
 package net.sourceforge.pmd.reporting;
 
+import java.util.Map;
+
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.rule.Rule;
 
 /**
@@ -33,5 +36,9 @@ public final class InternalApiBridge {
      */
     public static RuleContext createRuleContext(FileAnalysisListener listener, Rule rule) {
         return new RuleContext(listener, rule);
+    }
+
+    public static ParametricRuleViolation createRuleViolation(Rule theRule, FileLocation location, String message, Map<String, String> additionalInfo) {
+        return new ParametricRuleViolation(theRule, location, message, additionalInfo);
     }
 }
