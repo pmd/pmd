@@ -19,6 +19,7 @@ import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.DummyNodeWithDeprecatedAttribute;
 import net.sourceforge.pmd.lang.document.TextRegion;
+import net.sourceforge.pmd.lang.rule.xpath.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.reporting.Report;
 

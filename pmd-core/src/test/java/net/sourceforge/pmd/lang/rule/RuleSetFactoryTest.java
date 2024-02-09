@@ -241,7 +241,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n"
                     + "  <description>ruleset desc</description>\n"
                     + "     <rule deprecated=\"true\" ref=\"NewName\" name=\"OldName\"/>"
-                    + "     <rule name=\"NewName\" message=\"m\" class=\"net.sourceforge.pmd.lang.rule.XPathRule\" language=\"dummy\">"
+                    + "     <rule name=\"NewName\" message=\"m\" class=\"net.sourceforge.pmd.lang.rule.xpath.XPathRule\" language=\"dummy\">"
                     + "         <description>d</description>\n" + "         <priority>2</priority>\n" + "     </rule>"
                     + "</ruleset>");
             assertEquals(1, rs.getRules().size());
@@ -269,7 +269,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
                                            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n"
                                                + "  <description>ruleset desc</description>\n"
                                                + "     <rule deprecated=\"true\" ref=\"NewName\" name=\"OldName\"/>"
-                                               + "     <rule name=\"NewName\" message=\"m\" class=\"net.sourceforge.pmd.lang.rule.XPathRule\" language=\"dummy\">"
+                                               + "     <rule name=\"NewName\" message=\"m\" class=\"net.sourceforge.pmd.lang.rule.xpath.XPathRule\" language=\"dummy\">"
                                                + "         <description>d</description>\n"
                                                + "         <priority>2</priority>\n"
                                                + "     </rule>"

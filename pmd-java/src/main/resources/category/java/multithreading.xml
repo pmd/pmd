@@ -13,7 +13,7 @@ Rules that flag issues when dealing with multiple threads of execution.
           language="java"
           since="3.0"
           message="Use block level rather than method level synchronization"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#avoidsynchronizedatmethodlevel">
         <description>
 Method-level synchronization can cause problems when new code is added to the method.
@@ -76,7 +76,7 @@ public class Foo {
           language="java"
           since="3.6"
           message="Avoid using java.lang.ThreadGroup; it is not thread safe"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#avoidthreadgroup">
         <description>
 Avoid using java.lang.ThreadGroup; although it is intended to be used in a threaded environment
@@ -110,7 +110,7 @@ public class Bar {
     <rule name="AvoidUsingVolatile"
           language="java"
           since="4.1"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           message="Use of modifier volatile is not recommended."
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#avoidusingvolatile">
         <description>
@@ -137,7 +137,7 @@ public class ThrDeux {
     <rule name="DoNotUseThreads"
           language="java"
           since="4.1"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           message="To be compliant to J2EE, a webapp should not use any thread."
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#donotusethreads">
         <description>
@@ -209,7 +209,7 @@ public class UsingExecutors {
           language="java"
           since="4.3"
           message="Don't call Thread.run() explicitly, use Thread.start()"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#dontcallthreadrun">
         <description>
 Explicitly calling Thread.run() method will execute in the caller's thread of control.  Instead, call Thread.start() for the intended behavior.
@@ -339,7 +339,7 @@ public class Foo {
           minimumLanguageVersion="1.5"
           since="4.2.6"
           message="If you run in Java5 or newer and have concurrent access, you should use the ConcurrentHashMap implementation"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#useconcurrenthashmap">
         <description>
 Since Java5 brought a new implementation of the Map designed for multi-threaded access, you can
@@ -374,7 +374,7 @@ public class ConcurrentApp {
           language="java"
           since="3.0"
           message="Call Thread.notifyAll() rather than Thread.notify()"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#usenotifyallinsteadofnotify">
         <description>
 Thread.notify() awakens a thread monitoring the object. If more than one thread is monitoring, then only

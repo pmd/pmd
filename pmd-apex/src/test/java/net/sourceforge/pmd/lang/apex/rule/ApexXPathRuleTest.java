@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.apex.ast.ApexParserTestBase;
 import net.sourceforge.pmd.lang.document.FileId;
-import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.lang.rule.xpath.XPathRule;
 import net.sourceforge.pmd.reporting.Report;
 
 /**

@@ -12,14 +12,13 @@ Sample ruleset to test rule doc generation.
           language="java"
           since="1.0"
           message="Avoid modifying an outer loop incrementer in an inner loop for update expression"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_sample.html#jumbledincrementer">
      <description>
 Avoid jumbled loop incrementers - its usually a mistake, and is confusing even if intentional.
      </description>
      <priority>3</priority>
      <properties>
-         <property name="version" value="2.0"/>
          <property name="xpath">
              <value>
 <![CDATA[

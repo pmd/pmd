@@ -109,9 +109,11 @@ XPath 2.0 is available in PMD 6 already and can be used right away. PMD 7 will u
 won't support XPath 1.0 anymore. The difference between XPath 2.0 and XPath 3.1 is not big, so your XPath 2.0
 can be expected to work in PMD 7 without any further changes. So the migration path is to simply migrate to XPath 2.0.
 
-After you have migrated your XPath rules to XPath 2.0, remove the "version" property, since that will be removed
-with PMD 7. PMD 7 by default uses XPath 3.1.
-See below [XPath](#xpath-migrating-from-10-to-20) for details.
+After you have migrated your XPath rules to XPath 2.0, remove the "version" property, since that has been removed
+with PMD 7. PMD 7 by default uses XPath 3.1. See below [XPath](#xpath-migrating-from-10-to-20) for details.
+
+Then change the `class` attribute of your rule to `net.sourceforge.pmd.lang.rule.xpath.XPathRule` - because the
+class {%jdoc core::lang.rule.xpath.XPathRule %} has been moved into subpackage {% jdoc_package core::lang.rule.xpath %}.
 
 There are some general changes for AST nodes regarding the `@Image` attribute.
 See below [General AST Changes to avoid @Image](#general-ast-changes-to-avoid-image).

@@ -2,7 +2,7 @@
     <description/>
     <rule name="ExceptionThrowingRule"
           language="java"
-          class="net.sourceforge.pmd.lang.rule.XPathRule">
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
         <description>Use this rule to produce a processing error.</description>
         <priority>3</priority>
         <properties>

@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.rule.RuleSet.RuleSetBuilder;
 import net.sourceforge.pmd.lang.rule.internal.RuleSetReference;
+import net.sourceforge.pmd.lang.rule.xpath.XPathRule;
 import net.sourceforge.pmd.util.internal.xml.SchemaConstants;
 
 /**

@@ -40,7 +40,7 @@ import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.RuleSet;
 import net.sourceforge.pmd.lang.rule.RuleSetLoadException;
 import net.sourceforge.pmd.lang.rule.RuleSetLoader;
-import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.lang.rule.xpath.XPathRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public class RuleDocGenerator {
@@ -437,7 +437,6 @@ public class RuleDocGenerator {
                     properties.remove(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR);
                     properties.remove(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR);
                     properties.remove(XPathRule.XPATH_DESCRIPTOR);
-                    properties.remove(XPathRule.VERSION_DESCRIPTOR);
 
                     if (!properties.isEmpty()) {
                         lines.add("**This rule has the following properties:**");

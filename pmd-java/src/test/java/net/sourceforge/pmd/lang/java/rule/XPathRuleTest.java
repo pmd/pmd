@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.rule.Rule;
-import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.lang.rule.xpath.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 import net.sourceforge.pmd.lang.rule.xpath.internal.DeprecatedAttrLogger;

@@ -14,7 +14,7 @@ Rules which enforce a specific coding style.
           language="ecmascript"
           since="5.0"
           message="Avoid assignments in operands"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_codestyle.html#assignmentinoperand">
         <description>
 Avoid assignments in operands; this can make code more complicated and harder to read.  This is sometime
@@ -65,7 +65,7 @@ function getX() {
           language="ecmascript"
           since="5.0"
           message="Avoid using 'for' statements without curly braces"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_codestyle.html#forloopsmustusebraces">
         <description>
 Avoid using 'for' statements without using curly braces.
@@ -100,7 +100,7 @@ for (var i = 0; i < 42; i++)
           language="ecmascript"
           since="5.0"
           message="Avoid using 'if...else' statements without curly braces"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_codestyle.html#ifelsestmtsmustusebraces">
         <description>
 Avoid using if..else statements without using curly braces.
@@ -139,7 +139,7 @@ else
           language="ecmascript"
           since="5.0"
           message="Avoid using if statements without curly braces"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_codestyle.html#ifstmtsmustusebraces">
         <description>
 Avoid using if statements without using curly braces.
@@ -172,7 +172,7 @@ if (foo)
           language="ecmascript"
           since="5.5.0"
           message="The else block is unnecessary"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_codestyle.html#noelsereturn">
         <description>
 The else block in a if-else-construct is unnecessary if the `if` block contains a return.
@@ -212,7 +212,7 @@ return z;
           language="ecmascript"
           since="5.0"
           message="Unnecessary block."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_codestyle.html#unnecessaryblock">
         <description>
 An unnecessary Block is present.  Such Blocks are often used in other languages to
@@ -251,7 +251,7 @@ if (bar) {
           language="ecmascript"
           since="5.0"
           message="Unnecessary parentheses."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_codestyle.html#unnecessaryparentheses">
         <description>Unnecessary parentheses should be removed.</description>
         <priority>4</priority>
@@ -277,7 +277,7 @@ var z = ((1 + 1)); // Bad
           language="ecmascript"
           since="5.0"
           message="A ''return'', ''break'', ''continue'', or ''throw'' statement should be the last in a block."
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_codestyle.html#unreachablecode">
         <description>
 A 'return', 'break', 'continue', or 'throw' statement should be the last in a block. Statements after these
@@ -319,7 +319,7 @@ function bar() {
           language="ecmascript"
           since="5.0"
           message="Avoid using 'while' statements without curly braces"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_codestyle.html#whileloopsmustusebraces">
         <description>
 Avoid using 'while' statements without using curly braces.

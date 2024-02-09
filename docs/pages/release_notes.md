@@ -175,6 +175,7 @@ The rules have been moved into categories with PMD 6.
   * [#3903](https://github.com/pmd/pmd/issues/3903): \[core] Consolidate `n.s.pmd.reporting` package
   * [#3917](https://github.com/pmd/pmd/issues/3917): \[core] Consolidate `n.s.pmd.lang.rule` package
   * [#4065](https://github.com/pmd/pmd/issues/4065): \[core] Rename TokenMgrError to LexException, Tokenizer to CpdLexer
+  * [#4309](https://github.com/pmd/pmd/issues/4309): \[core] Cleanups in XPath area
   * [#4312](https://github.com/pmd/pmd/issues/4312): \[core] Remove unnecessary property `color` and system property `pmd.color` in `TextColorRenderer`
   * [#4313](https://github.com/pmd/pmd/issues/4313): \[core] Remove support for &lt;lang&gt;-&lt;ruleset&gt; hyphen notation for ruleset references
   * [#4314](https://github.com/pmd/pmd/issues/4314): \[core] Remove ruleset compatibility filter (RuleSetFactoryCompatibility) and CLI option `--no-ruleset-compatibility`
@@ -235,6 +236,11 @@ The rules have been moved into categories with PMD 6.
 See [General AST Changes to avoid @Image]({{ baseurl }}pmd_userdocs_migrating_to_pmd7.html#general-ast-changes-to-avoid-image)
 in the migration guide for details.
 
+**XPath Rules**
+* The property `version` was already deprecated and has finally been removed. Please don't define the version
+  property anymore in your custom XPath rules. By default, the latest XPath version will be used, which
+  is XPath 3.1.
+
 **Moved classes/consolidated packages**
 
 * pmd-core
@@ -252,6 +258,7 @@ in the migration guide for details.
     * {%jdoc core::reporting.RuleViolation %}
     * {%jdoc core::reporting.ViolationSuppressor %}
     * {%jdoc core::reporting.ParametricRuleViolation %} (moved from `net.sourcceforge.pmd.lang.rule`)
+  * {%jdoc core::lang.rule.xpath.XPathRule %} has been moved into subpackage {% jdoc_package core::lang.rule.xpath %}.
 
 **Internalized classes**
 
@@ -746,6 +753,7 @@ See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.
     * [#4204](https://github.com/pmd/pmd/issues/4204): \[core] Provide a CpdAnalysis class as a programmatic entry point into CPD
     * [#4301](https://github.com/pmd/pmd/issues/4301): \[core] Remove deprecated property concrete classes
     * [#4302](https://github.com/pmd/pmd/issues/4302): \[core] Migrate Property Framework API to Java 8
+    * [#4309](https://github.com/pmd/pmd/issues/4309): \[core] Cleanups in XPath area
     * [#4312](https://github.com/pmd/pmd/issues/4312): \[core] Remove unnecessary property `color` and system property `pmd.color` in `TextColorRenderer`
     * [#4313](https://github.com/pmd/pmd/issues/4313): \[core] Remove support for &lt;lang&gt;-&lt;ruleset&gt; hyphen notation for ruleset references
     * [#4314](https://github.com/pmd/pmd/issues/4314): \[core] Remove ruleset compatibility filter (RuleSetFactoryCompatibility) and CLI option `--no-ruleset-compatibility`
