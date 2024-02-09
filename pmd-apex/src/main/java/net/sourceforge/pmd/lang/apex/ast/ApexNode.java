@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.ast.impl.GenericNode;
  * Root interface implemented by all Apex nodes. Apex nodes wrap a tree
  * obtained from an external parser.
  *
- * @param <T> placeholder
+ * @param <T> Type of the underlying Summit AST node (or Void)
  */
 public interface ApexNode<T> extends GenericNode<ApexNode<?>> {
 
