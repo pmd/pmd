@@ -11,10 +11,6 @@ public class UnusedMethodRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTMethod node, Object data) {
-        if (node.isSynthetic()) {
-            return data;
-        }
-
         // Check if any 'Unused' Issues align with this method
         node.getRoot().getGlobalIssues().stream()
             .filter(issue -> "Unused".equals(issue.category()))

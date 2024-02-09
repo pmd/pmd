@@ -133,24 +133,22 @@ public class StdCyclomaticComplexityRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTMethod node, Object data) {
-        if (!node.isSynthetic()) {
-            entryStack.push(new Entry());
-            super.visit(node, data);
-            Entry methodEntry = entryStack.pop();
-            int methodDecisionPoints = methodEntry.decisionPoints;
-            Entry classEntry = entryStack.peek();
-            classEntry.methodCount++;
-            classEntry.bumpDecisionPoints(methodDecisionPoints);
+        entryStack.push(new Entry());
+        super.visit(node, data);
+        Entry methodEntry = entryStack.pop();
+        int methodDecisionPoints = methodEntry.decisionPoints;
+        Entry classEntry = entryStack.peek();
+        classEntry.methodCount++;
+        classEntry.bumpDecisionPoints(methodDecisionPoints);
 
-            if (methodDecisionPoints > classEntry.highestDecisionPoints) {
-                classEntry.highestDecisionPoints = methodDecisionPoints;
-            }
+        if (methodDecisionPoints > classEntry.highestDecisionPoints) {
+            classEntry.highestDecisionPoints = methodDecisionPoints;
+        }
 
-            if (showMethodsComplexity && methodEntry.decisionPoints >= reportLevel) {
-                String methodType = node.isConstructor() ? "constructor" : "method";
-                asCtx(data).addViolation(node,
-                        methodType, node.getImage(), String.valueOf(methodEntry.decisionPoints));
-            }
+        if (showMethodsComplexity && methodEntry.decisionPoints >= reportLevel) {
+            String methodType = node.isConstructor() ? "constructor" : "method";
+            asCtx(data).addViolation(node,
+                    methodType, node.getImage(), String.valueOf(methodEntry.decisionPoints));
         }
         return data;
     }

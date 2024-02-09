@@ -39,7 +39,7 @@ public class ExcessivePublicCountRule extends AbstractCounterCheckRule<ASTUserCl
     protected int getMetric(ASTUserClass node) {
         int publicMethods =
                 node.children(ASTMethod.class)
-                        .filter(it -> it.getModifiers().isPublic() && !it.isSynthetic())
+                        .filter(it -> it.getModifiers().isPublic())
                         .count();
         int publicFields =
                 node.children(ASTFieldDeclarationStatements.class)

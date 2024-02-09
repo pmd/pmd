@@ -3276,6 +3276,17 @@ a = (((1)));
 
 </details>
 
+### Apex AST
+
+PMD 7.0.0 switched the underlying parser for Apex code from Jorje to [Summit AST](https://github.com/google/summit-ast),
+which is based on an open source grammar for Apex: [apex-parser](https://github.com/nawforce/apex-parser).
+
+The produced AST is mostly compatible, there are some unavoidable changes however:
+
+* Method
+  * No attribute `@Synthetic` anymore. Unlike Jorje, Summit AST doesn't generate synthetic methods anymore, so
+    this attribute would have been always false and is of no use. Therefore it has been removed completely.
+
 ### Language versions
 
 * Since all languages now have defined language versions, you could now write rules that apply only for specific

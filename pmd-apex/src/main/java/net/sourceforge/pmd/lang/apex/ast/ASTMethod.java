@@ -15,6 +15,17 @@ import com.google.summit.ast.SourceLocation;
 import com.google.summit.ast.declaration.MethodDeclaration;
 
 public final class ASTMethod extends AbstractApexNode implements ApexQualifiableNode {
+    /**
+     * Internal name used by constructors.
+     * @see #isConstructor()
+     */
+    private static final String CONSTRUCTOR_ID = "<init>";
+
+    /**
+     * Internal name used by static initialization blocks.
+     * @see #isStaticInitializer()
+     */
+    private static final String STATIC_INIT_ID = "<clinit>";
 
     // Store the details instead of wrapping a com.google.summit.ast.Node.
     // This is to allow synthetic ASTMethod nodes.
@@ -24,22 +35,6 @@ public final class ASTMethod extends AbstractApexNode implements ApexQualifiable
     private final List<String> parameterTypes;
     private final String returnType;
     private final SourceLocation sourceLocation;
-
-    /**
-     * Internal name used by constructors.
-     * @deprecated The name of the constructor should be the class name. Use {@link #isConstructor()} instead.
-     */
-    // Note: we probably make this private
-    @Deprecated
-    public static final String CONSTRUCTOR_ID = "<init>";
-
-    /**
-     * Internal name used by static initialization blocks.
-     * @deprecated This should be private. Use {@link #isStaticInitializer()} instead.
-     */
-    // Note: we probably make this private
-    @Deprecated
-    public static final String STATIC_INIT_ID = "<clinit>";
 
     ASTMethod(
         String name,
@@ -130,18 +125,6 @@ public final class ASTMethod extends AbstractApexNode implements ApexQualifiable
         return ApexQualifiedName.ofMethod(this);
     }
 
-    /**
-     * Returns true if this is a synthetic class initializer, inserted
-     * by the parser.
-     *
-     * @deprecated Only jorje added these synthetic methods. ApexParser/Summit doesn't. That's why this method
-     * is useless now.
-     */
-    @Deprecated
-    public boolean isSynthetic() {
-        return false;
-    }
-    
     public boolean isConstructor() {
         return CONSTRUCTOR_ID.equals(internalName);
     }
