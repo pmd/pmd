@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import net.sourceforge.pmd.lang.document.Chars;
+
 import com.google.summit.ast.expression.LiteralExpression;
 import com.google.summit.ast.expression.VariableExpression;
 
@@ -38,7 +40,12 @@ public final class ASTLiteralExpression extends AbstractApexNode.Single<LiteralE
         } else if (node instanceof LiteralExpression.IntegerVal) {
             return LiteralType.INTEGER;
         } else if (node instanceof LiteralExpression.DoubleVal) {
-            return LiteralType.DOUBLE;
+            Chars source = getTextDocument().getText().slice(getTextRegion());
+            if (source.indexOf('d') > -1 || source.indexOf('D') > -1) {
+                return LiteralType.DOUBLE;
+            } else {
+                return LiteralType.DECIMAL;
+            }
         } else if (node instanceof LiteralExpression.LongVal) {
             return LiteralType.LONG;
         /* TODO(b/239648780): the parser must distinguish decimal vs. double
@@ -88,8 +95,8 @@ public final class ASTLiteralExpression extends AbstractApexNode.Single<LiteralE
     /**
      * Returns the name of this literal when it is labeled in an object initializer with named
      * arguments ({@link ASTNewKeyValueObjectExpression}).
-     * <p>
-     * For example, in the Apex code
+     *
+     * <p>For example, in the Apex code
      * <pre>{@code
      * new X(a = 1, b = 2)
      * }</pre>
