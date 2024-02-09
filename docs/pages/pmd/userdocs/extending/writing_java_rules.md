@@ -172,18 +172,18 @@ to get the condition of an If-statement.
 
 ### Reporting violations
 
-In your visit method, you have access to the {% jdoc core::RuleContext %} which is the entry point into
+In your visit method, you have access to the {% jdoc core::reporting.RuleContext %} which is the entry point into
 reporting back during the analysis.
 
-* {% jdoc core::RuleContext#addViolation(core::lang.ast.Node) %} reports a rule violation at
+* {% jdoc core::reporting.RuleContext#addViolation(core::lang.ast.Node) %} reports a rule violation at
   the position of the given node with the message defined in the rule declaration XML element.
 * The message defined in the rule declaration XML element might contain **placeholder**, such as `{0}`.
-  In that case, you need to call {% jdoc core::RuleContext#addViolation(core::lang.ast.Node,java.lang.Object...) %}
+  In that case, you need to call {% jdoc core::reporting.RuleContext#addViolation(core::lang.ast.Node,java.lang.Object...) %}
   and provide the values for the placeholders. The message is actually processed as a `java.text.MessageFormat`.
 * Sometimes a rule might want to differentiate between different cases of a violation and use different
   messages. This is possible by calling the methods
-  {% jdoc core::RuleContext#addViolationWithMessage(core::lang.ast.Node,java.lang.String) %} or
-  {% jdoc core::RuleContext#addViolationWithMessage(core::lang.ast.Node,java.lang.String,java.lang.Object...) %}.
+  {% jdoc core::reporting.RuleContext#addViolationWithMessage(core::lang.ast.Node,java.lang.String) %} or
+  {% jdoc core::reporting.RuleContext#addViolationWithMessage(core::lang.ast.Node,java.lang.String,java.lang.Object...) %}.
   Using these methods, the message defined in the rule declaration XML element is _not used_.
 * Rules can be customized using properties and sometimes you want to include the actual value of a property
   in the message, e.g. if the rule enforces a specific limit.
@@ -247,11 +247,11 @@ For each thread, a deep copy of the rule is created. Each thread is given
 a different set of files to analyse. Then, for each such file and for each
 rule copy:
 
-1. {% jdoc core::lang.rule.Rule#start(core::RuleContext) %} is called once, before parsing
-2. {% jdoc core::lang.rule.Rule#apply(core::lang.ast.Node,core::RuleContext) %} is called with the root
+1. {% jdoc core::lang.rule.Rule#start(core::reporting.RuleContext) %} is called once, before parsing
+2. {% jdoc core::lang.rule.Rule#apply(core::lang.ast.Node,core::reporting.RuleContext) %} is called with the root
 of the AST. That method performs the AST traversal that ultimately calls visit methods.
 It's not called for RuleChain rules.
-3. {% jdoc core::lang.rule.Rule#end(core::RuleContext) %} is called when the rule is done processing
+3. {% jdoc core::lang.rule.Rule#end(core::reporting.RuleContext) %} is called when the rule is done processing
 the file
 
 ## Example projects

@@ -27,7 +27,7 @@ There are a couple of deprecated things in PMD 6, you might encounter:
   See also [Defining rule properties](pmd_userdocs_extending_defining_properties.html)
 
 * When reporting a violation, you might see a deprecation of the `addViolation` methods. These methods have been moved
-  to {% jdoc core::RuleContext %}. E.g. instead of `addViolation(data, node, ...)` use `asCtx(data).addViolation(node, ...)`.
+  to {% jdoc core::reporting.RuleContext %}. E.g. instead of `addViolation(data, node, ...)` use `asCtx(data).addViolation(node, ...)`.
 
 * When you are calling PMD from CLI, you need to stop using deprecated CLI params, e.g.
   * `-no-cache` ➡️ `--no-cache`
@@ -161,7 +161,7 @@ Most notable changes are:
 * A rule violation factory is not needed anymore. For language specific information on rule violations, there is
   now a {% jdoc core::reporting.ViolationDecorator %} that a language can implement. These ViolationDecorators
   are called when a violation is reported and they can provide the additional information. This information can be
-  used by renderers via {% jdoc !!core::RuleViolation#getAdditionalInfo() %}.
+  used by renderers via {% jdoc !!core::reporting.RuleViolation#getAdditionalInfo() %}.
 * A parser visitor adapter is not needed anymore. The visitor interface now provides a default implementation.
   Instead, a base visitor for the language should be created, which extends {% jdoc core::lang.ast.AstVisitorBase %}.
 * A rule chain visitor is not needed anymore. PMD provides a common implementation that fits all languages.
