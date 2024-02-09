@@ -172,6 +172,7 @@ The rules have been moved into categories with PMD 6.
   * [#4723](https://github.com/pmd/pmd/issues/4723): \[cli] Launch fails for "bash pmd"
 * core
   * [#1027](https://github.com/pmd/pmd/issues/1027): \[core] Apply the new PropertyDescriptor&lt;Pattern&gt; type where applicable
+  * [#3917](https://github.com/pmd/pmd/issues/3917): \[core] Consolidate `n.s.pmd.lang.rule` package
   * [#4065](https://github.com/pmd/pmd/issues/4065): \[core] Rename TokenMgrError to LexException, Tokenizer to CpdLexer
   * [#4312](https://github.com/pmd/pmd/issues/4312): \[core] Remove unnecessary property `color` and system property `pmd.color` in `TextColorRenderer`
   * [#4313](https://github.com/pmd/pmd/issues/4313): \[core] Remove support for &lt;lang&gt;-&lt;ruleset&gt; hyphen notation for ruleset references
@@ -232,6 +233,31 @@ The rules have been moved into categories with PMD 6.
 
 See [General AST Changes to avoid @Image]({{ baseurl }}pmd_userdocs_migrating_to_pmd7.html#general-ast-changes-to-avoid-image)
 in the migration guide for details.
+
+**Moved classes/consolidated packages**
+
+* pmd-core
+  * Many types have been moved from the base package `net.sourceforge.pmd` into subpackage {% jdoc_package core::lang.rule %}
+    * {%jdoc core::lang.rule.Rule %}
+    * {%jdoc core::lang.rule.RulePriority %}
+    * {%jdoc core::lang.rule.RuleSet %}
+    * {%jdoc core::lang.rule.RuleSetFactory %}
+    * {%jdoc core::lang.rule.RuleSetFactoryCompatibility %}
+    * {%jdoc core::lang.rule.RuleSetLoader %}
+    * {%jdoc core::lang.rule.RuleSetLoadException %}
+    * {%jdoc core::lang.rule.RuleSetWriter %}
+
+**Internalized classes**
+
+These were marked as `@InternalApi` previously.
+
+* pmd-core
+  * `RuleFactory`: moved from `net.sourceforge.pmd.rules` into subpackage `lang.rule`.
+    It has now been hidden completely from public API.
+  * Many types have been moved from the base package `net.sourceforge.pmd` into subpackage `lang.rule.internal`.
+      * `RuleSetReference`
+      * `RuleSetReferenceId`
+      * `RuleSets`
 
 **Removed classes and methods (previously deprecated)**
 
@@ -703,6 +729,7 @@ See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.
     * [#3815](https://github.com/pmd/pmd/issues/3815): \[core] Update Saxon HE to 10.7
     * [#3893](https://github.com/pmd/pmd/pull/3893):   \[core] Text documents
     * [#3902](https://github.com/pmd/pmd/issues/3902): \[core] Violation decorators
+    * [#3917](https://github.com/pmd/pmd/issues/3917): \[core] Consolidate `n.s.pmd.lang.rule` package
     * [#3918](https://github.com/pmd/pmd/issues/3918): \[core] Make LanguageRegistry non static
     * [#3919](https://github.com/pmd/pmd/issues/3919): \[core] Merge CPD and PMD language
     * [#3922](https://github.com/pmd/pmd/pull/3922):   \[core] Better error reporting for the ruleset parser

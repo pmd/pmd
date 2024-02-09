@@ -7,9 +7,7 @@ package net.sourceforge.pmd.lang.rule;
 import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageVersion;

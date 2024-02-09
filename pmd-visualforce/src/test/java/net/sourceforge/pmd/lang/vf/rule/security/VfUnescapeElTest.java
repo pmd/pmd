@@ -13,8 +13,8 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.vf.VFTestUtils;
 import net.sourceforge.pmd.lang.vf.ast.VfParsingHelper;
 import net.sourceforge.pmd.testframework.PmdRuleTst;

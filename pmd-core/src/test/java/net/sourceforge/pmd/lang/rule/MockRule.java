@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.rule;
 import static net.sourceforge.pmd.properties.NumericConstraints.inRange;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RulePriority;
+import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
@@ -17,7 +17,7 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  * This is a Rule implementation which can be used in scenarios where an actual
  * functional Rule is not needed. For example, during unit testing, or as an
  * editable surrogate used by IDE plugins. The Language of this Rule defaults to
- * Java.
+ * Dummy.
  */
 public class MockRule extends MockRuleWithNoProperties {
 
@@ -28,11 +28,13 @@ public class MockRule extends MockRuleWithNoProperties {
 
     public MockRule() {
         super();
+        setLanguage(DummyLanguageModule.getInstance());
         definePropertyDescriptor(PROP);
     }
 
     public MockRule(String name, String description, String message, String ruleSetName, RulePriority priority) {
         super(name, description, message, ruleSetName, priority);
+        setLanguage(DummyLanguageModule.getInstance());
         definePropertyDescriptor(PROP);
     }
 

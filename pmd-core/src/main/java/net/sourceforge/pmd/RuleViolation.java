@@ -10,6 +10,7 @@ import java.util.Map;
 import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.rule.Rule;
 
 /**
  * A RuleViolation is created by a Rule when it identifies a violation of the

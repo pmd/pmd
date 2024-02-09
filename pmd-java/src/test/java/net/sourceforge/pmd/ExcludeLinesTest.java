@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import net.sourceforge.pmd.lang.java.BaseParserTest;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.rule.Rule;
 
 class ExcludeLinesTest extends BaseParserTest {
 

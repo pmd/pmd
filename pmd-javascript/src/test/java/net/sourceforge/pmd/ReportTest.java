@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTFunctionNode;
 import net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptParserTestBase;
 import net.sourceforge.pmd.lang.ecmascript.rule.AbstractEcmascriptRule;
+import net.sourceforge.pmd.lang.rule.Rule;
 
 class ReportTest extends EcmascriptParserTestBase {
 

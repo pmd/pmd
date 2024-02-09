@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.rule;
 import java.util.Collections;
 import java.util.Map;
 
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.document.FileLocation;

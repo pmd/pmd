@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.rules;
+package net.sourceforge.pmd.lang.rule;
 
 import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.CLASS;
 import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.DELIMITER;
@@ -41,14 +41,10 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RulePriority;
-import net.sourceforge.pmd.RuleSetReference;
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.rule.RuleReference;
+import net.sourceforge.pmd.lang.rule.internal.RuleSetReference;
 import net.sourceforge.pmd.properties.ConstraintViolatedException;
 import net.sourceforge.pmd.properties.NumericConstraints;
 import net.sourceforge.pmd.properties.PropertyBuilder;
@@ -75,9 +71,7 @@ import com.github.oowekyala.ooxml.messages.XmlException;
  * @author Clément Fournier
  * @since 6.0.0
  */
-@InternalApi
-@Deprecated
-public class RuleFactory {
+class RuleFactory {
 
     private final ResourceLoader resourceLoader;
     private final LanguageRegistry languageRegistry;
@@ -85,7 +79,7 @@ public class RuleFactory {
     /**
      * @param resourceLoader The resource loader to load the rule from jar
      */
-    public RuleFactory(ResourceLoader resourceLoader,
+    RuleFactory(ResourceLoader resourceLoader,
                        LanguageRegistry languageRegistry) {
         this.resourceLoader = resourceLoader;
         this.languageRegistry = languageRegistry;

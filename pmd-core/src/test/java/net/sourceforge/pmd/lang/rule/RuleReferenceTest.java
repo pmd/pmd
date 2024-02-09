@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.lang.rule;
 
 import static net.sourceforge.pmd.PmdCoreTestUtils.dummyLanguage;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,8 +15,7 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.Dummy2LanguageModule;
 import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.rule.MockRule;
-import net.sourceforge.pmd.lang.rule.RuleReference;
+import net.sourceforge.pmd.lang.rule.internal.RuleSetReference;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 

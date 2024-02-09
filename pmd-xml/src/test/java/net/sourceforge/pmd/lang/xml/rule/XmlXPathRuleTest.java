@@ -9,8 +9,8 @@ import static net.sourceforge.pmd.lang.ast.test.TestUtilsKt.assertSize;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.document.FileId;
+import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.xml.XmlParsingHelper;
 
 class XmlXPathRuleTest {

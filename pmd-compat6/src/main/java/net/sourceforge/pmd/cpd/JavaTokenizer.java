@@ -14,9 +14,9 @@ public class JavaTokenizer extends net.sourceforge.pmd.lang.java.cpd.JavaCpdLexe
         super(convertLanguageProperties(properties));
     }
 
-    private static final String IGNORE_LITERALS = "ignore_literals";
-    private static final String IGNORE_IDENTIFIERS = "ignore_identifiers";
-    private static final String IGNORE_ANNOTATIONS = "ignore_annotations";
+    public static final String IGNORE_LITERALS = "ignore_literals";
+    public static final String IGNORE_IDENTIFIERS = "ignore_identifiers";
+    public static final String IGNORE_ANNOTATIONS = "ignore_annotations";
 
     private static JavaLanguageProperties convertLanguageProperties(Properties properties) {
         boolean ignoreAnnotations = Boolean.parseBoolean(properties.getProperty(IGNORE_ANNOTATIONS, "false"));

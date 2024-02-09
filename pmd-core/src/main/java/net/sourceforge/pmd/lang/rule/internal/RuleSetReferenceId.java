@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.lang.rule.internal;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -15,7 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.rule.RuleSetLoader;
 import net.sourceforge.pmd.util.ResourceLoader;
 
 /**
@@ -92,10 +92,8 @@ import net.sourceforge.pmd.util.ResourceLoader;
  * to a rulesets and all rules are referenced. To avoid this ambiguity, rulesets should always use the extension ".xml",
  * e.g. "https://example.org/ruleset.xml/MyRule".
  *
- * @deprecated This is part of the internals of the {@link RuleSetLoader}.
+ * <p>Note: This is part of the internals of the {@link RuleSetLoader}.
  */
-@Deprecated
-@InternalApi
 public class RuleSetReferenceId {
 
     // might be a file path, classpath or URI. Can be null.
@@ -191,7 +189,7 @@ public class RuleSetReferenceId {
         }
     }
 
-    @Nullable RuleSetReferenceId getParentRulesetIfThisIsARule() {
+    public @Nullable RuleSetReferenceId getParentRulesetIfThisIsARule() {
         if (ruleName == null) {
             return null;
         }

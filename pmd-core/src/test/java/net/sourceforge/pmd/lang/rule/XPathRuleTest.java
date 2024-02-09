@@ -138,7 +138,7 @@ class XPathRuleTest {
         assertThat(report.getViolations(), hasSize(1));
     }
 
-    Report executeRule(net.sourceforge.pmd.Rule rule, DummyNode node) {
+    Report executeRule(Rule rule, DummyNode node) {
         return getReportForRuleApply(rule, node);
     }
 

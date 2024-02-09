@@ -2,11 +2,12 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.lang.rule;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.rule.internal.RuleSetReferenceId;
 
 /**
  * An exception that is thrown when something wrong occurs while
@@ -14,7 +15,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * XML is not well-formed, does not respect the ruleset schema, is
  * not a valid ruleset or is otherwise unparsable.
  */
-public final class RuleSetLoadException extends RuntimeException {
+public class RuleSetLoadException extends RuntimeException {
 
     /** Constructors are internal. */
     @InternalApi
