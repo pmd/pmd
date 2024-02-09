@@ -7,7 +7,6 @@ package net.sourceforge.pmd.reporting;
 import java.util.Comparator;
 import java.util.Map;
 
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.annotation.DeprecatedUntil700;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;

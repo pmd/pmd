@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageVersion;

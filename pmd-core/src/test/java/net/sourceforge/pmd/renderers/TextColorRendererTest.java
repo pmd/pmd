@@ -8,8 +8,8 @@ import java.io.FileNotFoundException;
 import java.io.Reader;
 import java.io.StringReader;
 
-import net.sourceforge.pmd.Report.ConfigurationError;
-import net.sourceforge.pmd.Report.ProcessingError;
+import net.sourceforge.pmd.reporting.Report.ConfigurationError;
+import net.sourceforge.pmd.reporting.Report.ProcessingError;
 
 class TextColorRendererTest extends AbstractRendererTest {
 
