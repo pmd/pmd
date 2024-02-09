@@ -26,11 +26,6 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
         Comparator
             .<ApexNode<?>>comparingInt(ApexNode::getBeginLine)
             .thenComparing(ApexNode::getBeginColumn);
-    /**
-     * @deprecated not used anymore, see also {@link ASTMethod#STATIC_INIT_ID}
-     */
-    @Deprecated
-    public static final String STATIC_INITIALIZER_METHOD_NAME = "<clinit>";
 
     @Override
     protected @NonNull RuleTargetSelector buildTargetSelector() {
