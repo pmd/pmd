@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.summit.ast.TypeRef;
 import com.google.summit.ast.declaration.FieldDeclarationGroup;
 
 
@@ -30,40 +31,29 @@ public final class ASTFieldDeclarationStatements extends AbstractApexNode.Single
     /**
      * Returns the type name.
      *
-     * This includes any type arguments.
+     * <p>This includes any type arguments.
      * If the type is a primitive, its case will be normalized.
      */
     public String getTypeName() {
         return caseNormalizedTypeIfPrimitive(node.getType().asCodeString());
     }
 
-    /*
-    private static String identifiersToString(List<Identifier> identifiers) {
-        return identifiers.stream().map(Identifier::getValue).collect(Collectors.joining("."));
-    }
+    /**
+     * This returns the first level of the type arguments. If there are nested
+     * types (e.g. {@code List<List<String>>}), then these returned types
+     * contain themselves type arguments.
+     *
+     * <p>Note: This method only exists for this AST type and in no other type,
+     * even though type arguments are possible e.g. for {@link ASTVariableDeclaration#getType()}.
      */
-    // TODO(b/239648780)
-
     public List<String> getTypeArguments() {
-        /*
         List<String> result = new ArrayList<>();
-
-        if (node.getTypeName() != null) {
-            List<TypeRef> typeArgs = node.getTypeName().getTypeArguments();
-            for (TypeRef arg : typeArgs) {
-                if (arg instanceof ClassTypeRef) {
-                    result.add(identifiersToString(arg.getNames()));
-                } else if (arg instanceof ArrayTypeRef) {
-                    ArrayTypeRef atr = (ArrayTypeRef) arg;
-                    if (atr.getHeldType() instanceof ClassTypeRef) {
-                        result.add(identifiersToString(atr.getHeldType().getNames()));
-                    }
-                }
+        // note: for void types, there are no components anyway
+        for (TypeRef.Component component : node.getType().getComponents()) {
+            for (TypeRef typeRef : component.getArgs()) {
+                result.add(caseNormalizedTypeIfPrimitive(typeRef.asCodeString()));
             }
         }
-         */
-        // TODO(b/239648780)
-
-        return new ArrayList<>();
+        return result;
     }
 }

@@ -70,6 +70,8 @@ import com.google.common.collect.HashMultimap;
 public class ApexCRUDViolationRule extends AbstractApexRule {
     private static final Pattern SELECT_FROM_PATTERN = Pattern.compile("[\\S|\\s]+?FROM[\\s]+?(\\w+)",
             Pattern.CASE_INSENSITIVE);
+    private static final Pattern EXTRACT_SIMPLE_TYPE_PATTERN = Pattern.compile("^(?:list<)?list<(\\S+?)>>?$",
+            Pattern.CASE_INSENSITIVE);
 
     private static final String IS_CREATEABLE = "isCreateable";
     private static final String IS_DELETABLE = "isDeletable";
@@ -359,18 +361,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         ASTFieldDeclarationStatements field = node.ancestors(ASTFieldDeclarationStatements.class).first();
         if (field != null) {
             String namesString = field.getTypeName();
-
-            switch (namesString.toLowerCase(Locale.ROOT)) {
-            case "list":
-            case "map":
-                for (String typeArg : field.getTypeArguments()) {
-                    varToTypeMapping.put(Helper.getFQVariableName(node), typeArg);
-                }
-                break;
-            default:
-                varToTypeMapping.put(Helper.getFQVariableName(node), getSimpleType(namesString));
-                break;
-            }
+            addVariableToMapping(Helper.getFQVariableName(node), namesString);
         }
         final ASTSoqlExpression soql = node.firstChild(ASTSoqlExpression.class);
         if (soql != null) {
@@ -378,7 +369,6 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         }
 
         return data;
-
     }
 
     @Override
@@ -402,21 +392,18 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     private void addVariableToMapping(final String variableName, final String type) {
-        switch (type.toLowerCase(Locale.ROOT)) {
-        case "list":
-        case "map":
-            break;
-        default:
-            varToTypeMapping.put(variableName, getSimpleType(type));
-            break;
-        }
+        varToTypeMapping.put(variableName, getSimpleType(type));
     }
 
+    /**
+     * Extracts the type arguments from a type, e.g. given {@code List<String>} it will return {@code String}.
+     *
+     * <p>Note: Maps are not supported
+     */
     private String getSimpleType(final String type) {
         String typeToUse = type;
 
-        Pattern pattern = Pattern.compile("^[list<]?list<(\\S+?)>[>]?$", Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(typeToUse);
+        Matcher matcher = EXTRACT_SIMPLE_TYPE_PATTERN.matcher(typeToUse);
 
         if (matcher.find()) {
             typeToUse = matcher.group(1);

@@ -27,7 +27,7 @@ public final class ASTVariableDeclaration extends AbstractApexNode.Single<Variab
     /**
      * Returns the variable's type name.
      *
-     * This includes any type arguments.
+     * <p>This includes any type arguments.
      * If the type is a primitive, its case will be normalized.
      */
     public String getType() {

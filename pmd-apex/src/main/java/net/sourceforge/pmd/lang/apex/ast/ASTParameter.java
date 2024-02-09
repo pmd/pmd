@@ -30,7 +30,7 @@ public final class ASTParameter extends AbstractApexNode.Single<ParameterDeclara
     /**
      * Returns the parameter's type name.
      *
-     * This includes any type arguments.
+     * <p>This includes any type arguments.
      * If the type is a primitive, its case will be normalized.
      */
     public String getType() {

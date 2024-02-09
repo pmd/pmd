@@ -51,7 +51,7 @@ public final class ASTField extends AbstractApexNode.Many<Node> {
     /**
      * Returns the type name.
      *
-     * This includes any type arguments. (This is tested.)
+     * <p>This includes any type arguments. (This is tested.)
      * If the type is a primitive, its case will be normalized.
      */
     public String getType() {
