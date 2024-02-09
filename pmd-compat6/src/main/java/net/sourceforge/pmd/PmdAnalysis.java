@@ -44,6 +44,8 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.document.FileCollector;
 import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.lang.rule.RuleSet;
+import net.sourceforge.pmd.lang.rule.RuleSetLoader;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.reporting.ConfigurableFileNameRenderer;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
@@ -189,7 +191,7 @@ public final class PmdAnalysis implements AutoCloseable {
         }
 
         if (!config.getRuleSetPaths().isEmpty()) {
-            final RuleSetLoader ruleSetLoader = pmd.newRuleSetLoader();
+            final net.sourceforge.pmd.lang.rule.RuleSetLoader ruleSetLoader = pmd.newRuleSetLoader();
             final List<RuleSet> ruleSets = ruleSetLoader.loadRuleSetsWithoutException(config.getRuleSetPaths());
             pmd.addRuleSets(ruleSets);
         }
@@ -247,7 +249,7 @@ public final class PmdAnalysis implements AutoCloseable {
      * }
      * }</pre>
      */
-    public RuleSetLoader newRuleSetLoader() {
+    public net.sourceforge.pmd.lang.rule.RuleSetLoader newRuleSetLoader() {
         return RuleSetLoader.fromPmdConfig(configuration);
     }
 
@@ -375,7 +377,7 @@ public final class PmdAnalysis implements AutoCloseable {
     }
 
     void performAnalysisImpl(List<? extends Report.GlobalReportBuilderListener> extraListeners, List<TextFile> textFiles) {
-        RuleSets rulesets = new RuleSets(this.ruleSets);
+        net.sourceforge.pmd.lang.rule.internal.RuleSets rulesets = new net.sourceforge.pmd.lang.rule.internal.RuleSets(this.ruleSets);
 
         GlobalAnalysisListener listener;
         try {
@@ -487,7 +489,7 @@ public final class PmdAnalysis implements AutoCloseable {
                 Objects.requireNonNull(ruleLanguage, "Rule has no language " + rule);
                 if (!languages.contains(ruleLanguage)) {
                     LanguageVersion version = discoverer.getDefaultLanguageVersion(ruleLanguage);
-                    if (RuleSet.applies(rule, version)) {
+                    if (RuleSet.applies((net.sourceforge.pmd.lang.rule.Rule) rule, version)) {
                         configuration.checkLanguageIsRegistered(ruleLanguage);
                         languages.add(ruleLanguage);
                         if (!quiet) {
@@ -524,8 +526,8 @@ public final class PmdAnalysis implements AutoCloseable {
      * Remove and return the misconfigured rules from the rulesets and log them
      * for good measure.
      */
-    private Set<Rule> removeBrokenRules(final RuleSets ruleSets) {
-        final Set<Rule> brokenRules = new HashSet<>();
+    private Set<net.sourceforge.pmd.lang.rule.Rule> removeBrokenRules(final RuleSets ruleSets) {
+        final Set<net.sourceforge.pmd.lang.rule.Rule> brokenRules = new HashSet<>();
         ruleSets.removeDysfunctionalRules(brokenRules);
 
         for (final Rule rule : brokenRules) {
