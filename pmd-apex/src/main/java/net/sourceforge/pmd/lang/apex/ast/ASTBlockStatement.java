@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.apex.ast;
 import net.sourceforge.pmd.lang.document.TextDocument;
 
 import com.google.summit.ast.Node;
-import com.google.summit.ast.SourceLocation;
 
 public final class ASTBlockStatement extends AbstractApexNode.Single<Node> {
     private boolean curlyBrace;
@@ -33,12 +32,9 @@ public final class ASTBlockStatement extends AbstractApexNode.Single<Node> {
             return;
         }
 
-        // check, whether the this block statement really begins with a curly brace
+        // check, whether this block statement really begins with a curly brace
         // unfortunately, for-loop and if-statements always contain a block statement,
         // regardless whether curly braces where present or not.
-        // TODO: Revisit this, because it is Jorje-specific.
-        SourceLocation loc = node.getSourceLocation();
-        String sourceRegion = loc.extractFrom(sourceCode.getText().toString());
-        this.curlyBrace = sourceRegion.charAt(0) == '{';
+        this.curlyBrace = sourceCode.getText().slice(getTextRegion()).charAt(0) == '{';
     }
 }
