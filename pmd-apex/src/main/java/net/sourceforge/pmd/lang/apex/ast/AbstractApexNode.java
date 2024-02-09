@@ -186,7 +186,7 @@ abstract class AbstractApexNode extends AbstractNode<AbstractApexNode, ApexNode<
     }
 
     /** Returns the string value of the {@link LiteralExpression}. */
-    protected static String literalToString(LiteralExpression expr) {
+    static String literalToString(LiteralExpression expr) {
         if (expr instanceof LiteralExpression.StringVal) {
             return ((LiteralExpression.StringVal) expr).getValue();
         } else if (expr instanceof LiteralExpression.NullVal) {
@@ -202,7 +202,7 @@ abstract class AbstractApexNode extends AbstractNode<AbstractApexNode, ApexNode<
       *
       * See: https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/langCon_apex_primitives.htm
       */
-    public static String caseNormalizedTypeIfPrimitive(String name) {
+    static String caseNormalizedTypeIfPrimitive(String name) {
         String floor = caseNormalizedTypeNames.floor(name);
         return name.equalsIgnoreCase(floor) ? floor : name;
     }
