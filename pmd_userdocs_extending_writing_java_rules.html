@@ -366,6 +366,12 @@
                         
                         
                         
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_ast_dump.html">Creating (XML) dump of the AST</a></li>
+                        
+                        
+                        
                     </ul>
                 </li>
                 
@@ -1636,12 +1642,6 @@
                         
                         
                         
-                        <li><a href="pmd_devdocs_experimental_ast_dump.html">Creating (XML) dump of the AST</a></li>
-                        
-                        
-                        
-                        
-                        
                         <li><a href="tag_experimental.html">List of experimental Features</a></li>
                         
                         
@@ -1894,7 +1894,7 @@ very similar for other languages.</p>
 <p>To write a rule in Java you’ll have to:</p>
 
 <ol>
-  <li>Write a Java class that implements the interface <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/Rule.html#"><code>Rule</code></a>. Each
+  <li>Write a Java class that implements the interface <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/Rule.html#"><code>Rule</code></a>. Each
 language implementation provides a base rule class to ease your pain,
 e.g. <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/AbstractJavaRule.html#"><code>AbstractJavaRule</code></a>.</li>
   <li>Compile this class, linking it to PMD APIs (e.g. using PMD as a Maven dependency)</li>
@@ -2038,19 +2038,19 @@ to get the condition of an If-statement.</p>
 
 <h3 id="reporting-violations">Reporting violations</h3>
 
-<p>In your visit method, you have access to the <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/RuleContext.html#"><code>RuleContext</code></a> which is the entry point into
+<p>In your visit method, you have access to the <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/reporting/RuleContext.html#"><code>RuleContext</code></a> which is the entry point into
 reporting back during the analysis.</p>
 
 <ul>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/RuleContext.html#addViolation(net.sourceforge.pmd.lang.ast.Node)"><code>addViolation</code></a> reports a rule violation at
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/reporting/RuleContext.html#addViolation(net.sourceforge.pmd.lang.ast.Node)"><code>addViolation</code></a> reports a rule violation at
 the position of the given node with the message defined in the rule declaration XML element.</li>
   <li>The message defined in the rule declaration XML element might contain <strong>placeholder</strong>, such as <code class="language-plaintext highlighter-rouge">{0}</code>.
-In that case, you need to call <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/RuleContext.html#addViolation(net.sourceforge.pmd.lang.ast.Node,java.lang.Object...)"><code>addViolation</code></a>
+In that case, you need to call <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/reporting/RuleContext.html#addViolation(net.sourceforge.pmd.lang.ast.Node,java.lang.Object...)"><code>addViolation</code></a>
 and provide the values for the placeholders. The message is actually processed as a <code class="language-plaintext highlighter-rouge">java.text.MessageFormat</code>.</li>
   <li>Sometimes a rule might want to differentiate between different cases of a violation and use different
 messages. This is possible by calling the methods
-<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/RuleContext.html#addViolationWithMessage(net.sourceforge.pmd.lang.ast.Node,java.lang.String)"><code>addViolationWithMessage</code></a> or
-<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/RuleContext.html#addViolationWithMessage(net.sourceforge.pmd.lang.ast.Node,java.lang.String,java.lang.Object...)"><code>addViolationWithMessage</code></a>.
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/reporting/RuleContext.html#addViolationWithMessage(net.sourceforge.pmd.lang.ast.Node,java.lang.String)"><code>addViolationWithMessage</code></a> or
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/reporting/RuleContext.html#addViolationWithMessage(net.sourceforge.pmd.lang.ast.Node,java.lang.String,java.lang.Object...)"><code>addViolationWithMessage</code></a>.
 Using these methods, the message defined in the rule declaration XML element is <em>not used</em>.</li>
   <li>Rules can be customized using properties and sometimes you want to include the actual value of a property
 in the message, e.g. if the rule enforces a specific limit.
@@ -2123,11 +2123,11 @@ a different set of files to analyse. Then, for each such file and for each
 rule copy:</p>
 
 <ol>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/Rule.html#start(net.sourceforge.pmd.RuleContext)"><code>start</code></a> is called once, before parsing</li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/Rule.html#apply(net.sourceforge.pmd.lang.ast.Node,net.sourceforge.pmd.RuleContext)"><code>apply</code></a> is called with the root
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/Rule.html#start(net.sourceforge.pmd.reporting.RuleContext)"><code>start</code></a> is called once, before parsing</li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/Rule.html#apply(net.sourceforge.pmd.lang.ast.Node,net.sourceforge.pmd.reporting.RuleContext)"><code>apply</code></a> is called with the root
 of the AST. That method performs the AST traversal that ultimately calls visit methods.
 It’s not called for RuleChain rules.</li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/Rule.html#end(net.sourceforge.pmd.RuleContext)"><code>end</code></a> is called when the rule is done processing
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/Rule.html#end(net.sourceforge.pmd.reporting.RuleContext)"><code>end</code></a> is called when the rule is done processing
 the file</li>
 </ol>
 
@@ -2177,7 +2177,7 @@ create custom PMD rules for different languages.</p>
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            December 2023 (7.0.0)<br /> Site last generated: Feb 4, 2024 <br />
+            December 2023 (7.0.0)<br /> Site last generated: Feb 9, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

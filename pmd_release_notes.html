@@ -366,6 +366,12 @@
                         
                         
                         
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_ast_dump.html">Creating (XML) dump of the AST</a></li>
+                        
+                        
+                        
                     </ul>
                 </li>
                 
@@ -1636,12 +1642,6 @@
                         
                         
                         
-                        <li><a href="pmd_devdocs_experimental_ast_dump.html">Creating (XML) dump of the AST</a></li>
-                        
-                        
-                        
-                        
-                        
                         <li><a href="tag_experimental.html">List of experimental Features</a></li>
                         
                         
@@ -2050,7 +2050,11 @@ The rules have been moved into categories with PMD 6.</p>
   <li>core
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/1027">#1027</a>: [core] Apply the new PropertyDescriptor&lt;Pattern&gt; type where applicable</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3903">#3903</a>: [core] Consolidate <code class="language-plaintext highlighter-rouge">n.s.pmd.reporting</code> package</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3905">#3905</a>: [core] Stabilize tree export API</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3917">#3917</a>: [core] Consolidate <code class="language-plaintext highlighter-rouge">n.s.pmd.lang.rule</code> package</li>
       <li><a href="https://github.com/pmd/pmd/issues/4065">#4065</a>: [core] Rename TokenMgrError to LexException, Tokenizer to CpdLexer</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4309">#4309</a>: [core] Cleanups in XPath area</li>
       <li><a href="https://github.com/pmd/pmd/issues/4312">#4312</a>: [core] Remove unnecessary property <code class="language-plaintext highlighter-rouge">color</code> and system property <code class="language-plaintext highlighter-rouge">pmd.color</code> in <code class="language-plaintext highlighter-rouge">TextColorRenderer</code></li>
       <li><a href="https://github.com/pmd/pmd/issues/4313">#4313</a>: [core] Remove support for &lt;lang&gt;-&lt;ruleset&gt; hyphen notation for ruleset references</li>
       <li><a href="https://github.com/pmd/pmd/issues/4314">#4314</a>: [core] Remove ruleset compatibility filter (RuleSetFactoryCompatibility) and CLI option <code class="language-plaintext highlighter-rouge">--no-ruleset-compatibility</code></li>
@@ -2142,10 +2146,73 @@ The rules have been moved into categories with PMD 6.</p>
 
 <h4 id="api-changes">API Changes</h4>
 
+<p><strong>New API</strong></p>
+
+<p>The API around <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/util/treeexport/TreeRenderer.html#"><code>TreeRenderer</code></a> has been declared as stable. It was previously
+experimental. It can be used via the CLI subcommand <code class="language-plaintext highlighter-rouge">ast-dump</code> or programmatically, as described
+on <a href="pmd_userdocs_extending_ast_dump.html">Creating XML dump of the AST</a>.</p>
+
 <p><strong>General AST Changes to avoid <code class="language-plaintext highlighter-rouge">@Image</code></strong></p>
 
 <p>See <a href="pmd_userdocs_migrating_to_pmd7.html#general-ast-changes-to-avoid-image">General AST Changes to avoid @Image</a>
 in the migration guide for details.</p>
+
+<p><strong>XPath Rules</strong></p>
+<ul>
+  <li>The property <code class="language-plaintext highlighter-rouge">version</code> was already deprecated and has finally been removed. Please don’t define the version
+property anymore in your custom XPath rules. By default, the latest XPath version will be used, which
+is XPath 3.1.</li>
+</ul>
+
+<p><strong>Moved classes/consolidated packages</strong></p>
+
+<ul>
+  <li>pmd-core
+    <ul>
+      <li>Many types have been moved from the base package <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd</code> into subpackage <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/package-summary.html#"><code>net.sourceforge.pmd.lang.rule</code></a>
+        <ul>
+          <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/Rule.html#"><code>Rule</code></a></li>
+          <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/RulePriority.html#"><code>RulePriority</code></a></li>
+          <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/RuleSet.html#"><code>RuleSet</code></a></li>
+          <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/RuleSetFactory.html#"><code>RuleSetFactory</code></a></li>
+          <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/RuleSetLoader.html#"><code>RuleSetLoader</code></a></li>
+          <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/RuleSetLoadException.html#"><code>RuleSetLoadException</code></a></li>
+          <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/RuleSetWriter.html#"><code>RuleSetWriter</code></a></li>
+        </ul>
+      </li>
+      <li>Many types have been moved from the base package <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd</code> into subpackage <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/reporting/package-summary.html#"><code>net.sourceforge.pmd.reporting</code></a>
+        <ul>
+          <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/reporting/Report.html#"><code>Report</code></a></li>
+          <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/reporting/RuleContext.html#"><code>RuleContext</code></a></li>
+          <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/reporting/RuleViolation.html#"><code>RuleViolation</code></a></li>
+          <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/reporting/ViolationSuppressor.html#"><code>ViolationSuppressor</code></a></li>
+          <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/reporting/ParametricRuleViolation.html#"><code>ParametricRuleViolation</code></a> (moved from <code class="language-plaintext highlighter-rouge">net.sourcceforge.pmd.lang.rule</code>)</li>
+        </ul>
+      </li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/xpath/XPathRule.html#"><code>XPathRule</code></a> has been moved into subpackage <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/xpath/package-summary.html#"><code>net.sourceforge.pmd.lang.rule.xpath</code></a>.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><strong>Internalized classes</strong></p>
+
+<p>These were marked as <code class="language-plaintext highlighter-rouge">@InternalApi</code> previously.</p>
+
+<ul>
+  <li>pmd-core
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">RuleFactory</code>: moved from <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.rules</code> into subpackage <code class="language-plaintext highlighter-rouge">lang.rule</code>.
+It has now been hidden completely from public API.</li>
+      <li>Many types have been moved from the base package <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd</code> into subpackage <code class="language-plaintext highlighter-rouge">lang.rule.internal</code>.
+        <ul>
+          <li><code class="language-plaintext highlighter-rouge">RuleSetReference</code></li>
+          <li><code class="language-plaintext highlighter-rouge">RuleSetReferenceId</code></li>
+          <li><code class="language-plaintext highlighter-rouge">RuleSets</code></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
 
 <p><strong>Removed classes and methods (previously deprecated)</strong></p>
 
@@ -2719,6 +2786,9 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/issues/3815">#3815</a>: [core] Update Saxon HE to 10.7</li>
       <li><a href="https://github.com/pmd/pmd/pull/3893">#3893</a>:   [core] Text documents</li>
       <li><a href="https://github.com/pmd/pmd/issues/3902">#3902</a>: [core] Violation decorators</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3903">#3903</a>: [core] Consolidate <code class="language-plaintext highlighter-rouge">n.s.pmd.reporting</code> package</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3905">#3905</a>: [core] Stabilize tree export API</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3917">#3917</a>: [core] Consolidate <code class="language-plaintext highlighter-rouge">n.s.pmd.lang.rule</code> package</li>
       <li><a href="https://github.com/pmd/pmd/issues/3918">#3918</a>: [core] Make LanguageRegistry non static</li>
       <li><a href="https://github.com/pmd/pmd/issues/3919">#3919</a>: [core] Merge CPD and PMD language</li>
       <li><a href="https://github.com/pmd/pmd/pull/3922">#3922</a>:   [core] Better error reporting for the ruleset parser</li>
@@ -2728,6 +2798,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
       <li><a href="https://github.com/pmd/pmd/issues/4204">#4204</a>: [core] Provide a CpdAnalysis class as a programmatic entry point into CPD</li>
       <li><a href="https://github.com/pmd/pmd/issues/4301">#4301</a>: [core] Remove deprecated property concrete classes</li>
       <li><a href="https://github.com/pmd/pmd/issues/4302">#4302</a>: [core] Migrate Property Framework API to Java 8</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4309">#4309</a>: [core] Cleanups in XPath area</li>
       <li><a href="https://github.com/pmd/pmd/issues/4312">#4312</a>: [core] Remove unnecessary property <code class="language-plaintext highlighter-rouge">color</code> and system property <code class="language-plaintext highlighter-rouge">pmd.color</code> in <code class="language-plaintext highlighter-rouge">TextColorRenderer</code></li>
       <li><a href="https://github.com/pmd/pmd/issues/4313">#4313</a>: [core] Remove support for &lt;lang&gt;-&lt;ruleset&gt; hyphen notation for ruleset references</li>
       <li><a href="https://github.com/pmd/pmd/issues/4314">#4314</a>: [core] Remove ruleset compatibility filter (RuleSetFactoryCompatibility) and CLI option <code class="language-plaintext highlighter-rouge">--no-ruleset-compatibility</code></li>
@@ -3140,7 +3211,7 @@ of the changes listed here, see <a href="pmd_release_notes_pmd7.html">Detailed R
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Feb 4, 2024 <br />
+             Site last generated: Feb 9, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

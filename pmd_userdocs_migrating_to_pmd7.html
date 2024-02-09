@@ -366,6 +366,12 @@
                         
                         
                         
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_ast_dump.html">Creating (XML) dump of the AST</a></li>
+                        
+                        
+                        
                     </ul>
                 </li>
                 
@@ -1636,12 +1642,6 @@
                         
                         
                         
-                        <li><a href="pmd_devdocs_experimental_ast_dump.html">Creating (XML) dump of the AST</a></li>
-                        
-                        
-                        
-                        
-                        
                         <li><a href="tag_experimental.html">List of experimental Features</a></li>
                         
                         
@@ -1897,7 +1897,7 @@ This factory can create properties of any type. E.g. instead of <code class="lan
   </li>
   <li>
     <p>When reporting a violation, you might see a deprecation of the <code class="language-plaintext highlighter-rouge">addViolation</code> methods. These methods have been moved
-to <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/RuleContext.html#"><code>RuleContext</code></a>. E.g. instead of <code class="language-plaintext highlighter-rouge">addViolation(data, node, ...)</code> use <code class="language-plaintext highlighter-rouge">asCtx(data).addViolation(node, ...)</code>.</p>
+to <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/reporting/RuleContext.html#"><code>RuleContext</code></a>. E.g. instead of <code class="language-plaintext highlighter-rouge">addViolation(data, node, ...)</code> use <code class="language-plaintext highlighter-rouge">asCtx(data).addViolation(node, ...)</code>.</p>
   </li>
   <li>When you are calling PMD from CLI, you need to stop using deprecated CLI params, e.g.
     <ul>
@@ -1982,9 +1982,11 @@ XPath 2.0 is available in PMD 6 already and can be used right away. PMD 7 will u
 won’t support XPath 1.0 anymore. The difference between XPath 2.0 and XPath 3.1 is not big, so your XPath 2.0
 can be expected to work in PMD 7 without any further changes. So the migration path is to simply migrate to XPath 2.0.</p>
 
-<p>After you have migrated your XPath rules to XPath 2.0, remove the “version” property, since that will be removed
-with PMD 7. PMD 7 by default uses XPath 3.1.
-See below <a href="#xpath-migrating-from-10-to-20">XPath</a> for details.</p>
+<p>After you have migrated your XPath rules to XPath 2.0, remove the “version” property, since that has been removed
+with PMD 7. PMD 7 by default uses XPath 3.1. See below <a href="#xpath-migrating-from-10-to-20">XPath</a> for details.</p>
+
+<p>Then change the <code class="language-plaintext highlighter-rouge">class</code> attribute of your rule to <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.rule.xpath.XPathRule</code> - because the
+class <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/xpath/XPathRule.html#"><code>XPathRule</code></a> has been moved into subpackage <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/xpath/package-summary.html#"><code>net.sourceforge.pmd.lang.rule.xpath</code></a>.</p>
 
 <p>There are some general changes for AST nodes regarding the <code class="language-plaintext highlighter-rouge">@Image</code> attribute.
 See below <a href="#general-ast-changes-to-avoid-image">General AST Changes to avoid @Image</a>.</p>
@@ -2038,7 +2040,7 @@ token managers. This base class is <a href="https://docs.pmd-code.org/apidocs/pm
   <li>A rule violation factory is not needed anymore. For language specific information on rule violations, there is
 now a <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/reporting/ViolationDecorator.html#"><code>ViolationDecorator</code></a> that a language can implement. These ViolationDecorators
 are called when a violation is reported and they can provide the additional information. This information can be
-used by renderers via <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/RuleViolation.html#getAdditionalInfo()"><code>RuleViolation#getAdditionalInfo</code></a>.</li>
+used by renderers via <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/reporting/RuleViolation.html#getAdditionalInfo()"><code>RuleViolation#getAdditionalInfo</code></a>.</li>
   <li>A parser visitor adapter is not needed anymore. The visitor interface now provides a default implementation.
 Instead, a base visitor for the language should be created, which extends <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/AstVisitorBase.html#"><code>AstVisitorBase</code></a>.</li>
   <li>A rule chain visitor is not needed anymore. PMD provides a common implementation that fits all languages.</li>
@@ -5428,7 +5430,7 @@ the ant task is in an own dependency with PMD 7:
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Feb 4, 2024 <br />
+             Site last generated: Feb 9, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

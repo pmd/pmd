@@ -366,6 +366,12 @@
                         
                         
                         
+                        
+                        
+                        <li><a href="pmd_userdocs_extending_ast_dump.html">Creating (XML) dump of the AST</a></li>
+                        
+                        
+                        
                     </ul>
                 </li>
                 
@@ -1633,12 +1639,6 @@
                 <li class="subfolders">
                     <a href="#">Experimental features</a>
                     <ul>
-                        
-                        
-                        
-                        <li><a href="pmd_devdocs_experimental_ast_dump.html">Creating (XML) dump of the AST</a></li>
-                        
-                        
                         
                         
                         
@@ -3321,7 +3321,7 @@ You can identify them with the <code class="language-plaintext highlighter-rouge
 should be used.</li>
   <li>Several members of <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.0.0-SNAPSHOT/net/sourceforge/pmd/cli/BaseCPDCLITest.html#"><code>BaseCPDCLITest</code></a> have been deprecated with replacements.</li>
   <li>The methods <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/ant/Formatter.html#start(java.lang.String)"><code>Formatter#start</code></a>,
-<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/ant/Formatter.html#end(net.sourceforge.pmd.Report)"><code>Formatter#end</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/ant/Formatter.html#getRenderer()"><code>Formatter#getRenderer</code></a>,
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/ant/Formatter.html#end(net.sourceforge.pmd.reporting.Report)"><code>Formatter#end</code></a>, <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/ant/Formatter.html#getRenderer()"><code>Formatter#getRenderer</code></a>,
 and <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/ant/Formatter.html#isNoOutputSupplied()"><code>Formatter#isNoOutputSupplied</code></a> have been internalized.</li>
 </ul>
 
@@ -3334,7 +3334,7 @@ and <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourc
     <ul>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/Report.html#filterViolations(net.sourceforge.pmd.util.Predicate)"><code>Report#filterViolations</code></a> creates a new report with
 some violations removed with a given predicate based filter.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/Report.html#union(net.sourceforge.pmd.Report)"><code>Report#union</code></a> can combine two reports into a single new Report.</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/Report.html#union(net.sourceforge.pmd.reporting.Report)"><code>Report#union</code></a> can combine two reports into a single new Report.</li>
     </ul>
   </li>
   <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/util/Predicate.html#"><code>net.sourceforge.pmd.util.Predicate</code></a> will be replaced in PMD7 with the standard Predicate interface from java8.</li>
@@ -3834,7 +3834,7 @@ reported as a forward compatibility warning.</li>
   <li>
     <p>Properties of <a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.0.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/rule/AbstractXmlRule.html#"><code>AbstractXmlRule</code></a></p>
   </li>
-  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/Report.ReadableDuration.html#"><code>net.sourceforge.pmd.Report.ReadableDuration</code></a></li>
+  <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/Report/ReadableDuration.html#"><code>net.sourceforge.pmd.Report.ReadableDuration</code></a></li>
   <li>
     <p>Many methods of <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/Report.html#"><code>net.sourceforge.pmd.Report</code></a>. They are replaced by accessors
 that produce a List. For example, <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.0.0-SNAPSHOT/net/sourceforge/pmd/Report.html#iterator()"><code>iterator()</code></a>
@@ -4913,7 +4913,7 @@ Please use <code class="language-plaintext highlighter-rouge">net.sourceforge.pm
         <div class="col-lg-12 footer">
             &copy;2024 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Feb 4, 2024 <br />
+             Site last generated: Feb 9, 2024 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
