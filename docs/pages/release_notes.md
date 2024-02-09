@@ -173,6 +173,7 @@ The rules have been moved into categories with PMD 6.
 * core
   * [#1027](https://github.com/pmd/pmd/issues/1027): \[core] Apply the new PropertyDescriptor&lt;Pattern&gt; type where applicable
   * [#3903](https://github.com/pmd/pmd/issues/3903): \[core] Consolidate `n.s.pmd.reporting` package
+  * [#3905](https://github.com/pmd/pmd/issues/3905): \[core] Stabilize tree export API
   * [#3917](https://github.com/pmd/pmd/issues/3917): \[core] Consolidate `n.s.pmd.lang.rule` package
   * [#4065](https://github.com/pmd/pmd/issues/4065): \[core] Rename TokenMgrError to LexException, Tokenizer to CpdLexer
   * [#4309](https://github.com/pmd/pmd/issues/4309): \[core] Cleanups in XPath area
@@ -230,6 +231,12 @@ The rules have been moved into categories with PMD 6.
   * [#4592](https://github.com/pmd/pmd/pull/4592):   \[xml] Add MissingEncoding rule
 
 #### API Changes
+
+**New API**
+
+The API around {%jdoc core::util.treeexport.TreeRenderer %} has been declared as stable. It was previously
+experimental. It can be used via the CLI subcommand `ast-dump` or programmatically, as described
+on [Creating XML dump of the AST]({{ baseurl }}pmd_userdocs_extending_ast_dump.html).
 
 **General AST Changes to avoid `@Image`**
 
@@ -743,6 +750,7 @@ See also [Detailed Release Notes for PMD 7]({{ baseurl }}pmd_release_notes_pmd7.
     * [#3893](https://github.com/pmd/pmd/pull/3893):   \[core] Text documents
     * [#3902](https://github.com/pmd/pmd/issues/3902): \[core] Violation decorators
     * [#3903](https://github.com/pmd/pmd/issues/3903): \[core] Consolidate `n.s.pmd.reporting` package
+    * [#3905](https://github.com/pmd/pmd/issues/3905): \[core] Stabilize tree export API
     * [#3917](https://github.com/pmd/pmd/issues/3917): \[core] Consolidate `n.s.pmd.lang.rule` package
     * [#3918](https://github.com/pmd/pmd/issues/3918): \[core] Make LanguageRegistry non static
     * [#3919](https://github.com/pmd/pmd/issues/3919): \[core] Merge CPD and PMD language
