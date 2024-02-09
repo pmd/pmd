@@ -242,7 +242,6 @@ in the migration guide for details.
     * {%jdoc core::lang.rule.RulePriority %}
     * {%jdoc core::lang.rule.RuleSet %}
     * {%jdoc core::lang.rule.RuleSetFactory %}
-    * {%jdoc core::lang.rule.RuleSetFactoryCompatibility %}
     * {%jdoc core::lang.rule.RuleSetLoader %}
     * {%jdoc core::lang.rule.RuleSetLoadException %}
     * {%jdoc core::lang.rule.RuleSetWriter %}

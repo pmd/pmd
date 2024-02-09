@@ -32,7 +32,7 @@ very similar for other languages.
 
 To write a rule in Java you'll have to:
 
-1. Write a Java class that implements the interface {% jdoc core::Rule %}. Each
+1. Write a Java class that implements the interface {% jdoc core::lang.rule.Rule %}. Each
 language implementation provides a base rule class to ease your pain,
 e.g. {% jdoc jrule::AbstractJavaRule %}.
 2. Compile this class, linking it to PMD APIs (e.g. using PMD as a Maven dependency)
@@ -247,11 +247,11 @@ For each thread, a deep copy of the rule is created. Each thread is given
 a different set of files to analyse. Then, for each such file and for each
 rule copy:
 
-1. {% jdoc core::Rule#start(core::RuleContext) %} is called once, before parsing
-2. {% jdoc core::Rule#apply(core::lang.ast.Node,core::RuleContext) %} is called with the root
+1. {% jdoc core::lang.rule.Rule#start(core::RuleContext) %} is called once, before parsing
+2. {% jdoc core::lang.rule.Rule#apply(core::lang.ast.Node,core::RuleContext) %} is called with the root
 of the AST. That method performs the AST traversal that ultimately calls visit methods.
 It's not called for RuleChain rules.
-3. {% jdoc core::Rule#end(core::RuleContext) %} is called when the rule is done processing
+3. {% jdoc core::lang.rule.Rule#end(core::RuleContext) %} is called when the rule is done processing
 the file
 
 ## Example projects
